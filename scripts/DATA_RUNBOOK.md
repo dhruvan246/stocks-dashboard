@@ -20701,8 +20701,23 @@ our rule was not applied evenly. Two user decisions (2026-09-29), both measured 
   'Foreign Institutional Investor' sub-row), STAR x2 (Foreign Venture Capital 2.30, B1d), BASF, IOB, AGI; PVRINOX Mar-2016 kept at
   28.03 (the block is the Dec-2016 'Foreign Corporate Bodies' one).
 Written with `_shp_164_write.py "§164r batch 7"`: 4 new + 99 superseding, 0 skipped; rebuilt feed (`fetch_shareholding.py
---apply-ledgers`) moves exactly those 103 rows, 0 others; four shareholding guards green. Page-era part (generic-row floor 0.5 ->
-0, the 600001 placeholder code that hid KARURVYSYA 590003 / SUNDARMFIN 590071 / WHEELS 590073) follows separately.
+--apply-ledgers`) moves exactly those 103 rows, 0 others; four shareholding guards green.
+- **Page era (label "§164r batch 7 page-era", 83 cells incl. JSWSTEEL Mar-2018).** `_shp_aspx_rowfix.py` now has `GENERIC_FLOOR`
+  (default 0; `ASPX_GENERIC_FLOOR=0.5` reproduces §160b-d): measured first — 89 unresolved institutional sub-rows < 0.5 pp in 20,454
+  page-era cells, 21 of them the company's own neighbouring 'Foreign Bank' / 'Foreign Mutual Fund' / 'FPI (Corporate)' row (HINDPETRO
+  Jun-2015 'Others' 2 holders 0.09 between 'Foreign Bank' 2 holders 0.09). The local page-cache code map had the placeholder BSE code
+  600001 for KARURVYSYA / SUNDARMFIN / WHEELS (empty pages: their page era was never read); real codes 590003 / 590071 / 590073
+  (checked against the page's own company name; 590075 is Lambodhara Textile), 114 pages fetched with bse_headers. Store-wide run
+  (`_shp_164g_pages.py run` over 1,253 current + former members, 21,490 pages, work dir `~/stocks-cache/shp/reply6/pagefloor_all`):
+  92 proposals; written 82 after review (`reply6/page_b7.py`): 59 small / skipped rows (ABAN Jun-2015 15.31, HINDPETRO 18.95, IPCALAB
+  22.11, TATAINVEST 2.19, TV18BRDCST 9.04 - each now equal to Quantmac's independent figure), 8 first reads (KARURVYSYA Dec-14 / Mar-15
+  28.34 / 26.28 and SUNDARMFIN Dec-14 / Mar-15 5.96 / 6.72 = Quantmac; the page labels the row 'Foreign Portfolio Investor
+  (Corporate)'), 15 reviewed (BALLARPUR, DENABANK, EROSMEDIA, MBLINFRA, UTTAMSTL Jun-2015 2.55 -> 27.45 = its neighbours, SINTEX, JBFIND
+  ...). Not written: KSB Jun-2015, DHANI Mar-2009, IMAGICAA Jun-2015, LAOPALA Sep-2015 (held: single-quarter moves against the
+  neighbours - §160c trap); GREENPLY / MAYURUNIQ (WestBridge Crossover: residency only - documents-only rule) and HATHWAY 2013-14
+  (the Route One account is unplaced only because its name is truncated; both Route One funds are FPI-listed, 97 / 69 filings).
+  JSWSTEEL Mar-2018 34.86 -> 19.86 (JFE Steel International Europe 15.00: JSW Steel's own 2022-form row is Foreign Companies, as
+  Dec-2017 / Jun-2018). Rebuilt feed moves exactly these 83 rows; guards green.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

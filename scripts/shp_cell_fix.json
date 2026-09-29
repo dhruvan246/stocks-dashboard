@@ -580,6 +580,26 @@
     ],
     "src": "bseaspx:524208_85",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.76 -> 0.89, dii 12.33 -> 12.34. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.13. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [12.34, 0.0])"
+   },
+   "2015-06-30": {
+    "cell": [
+     59.0789,
+     1.14,
+     12.1866,
+     12.1705,
+     0.0,
+     "2015-07-16"
+    ],
+    "was": [
+     59.0789,
+     0.9789,
+     12.1866,
+     12.1705,
+     0.0,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:524208_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.98 -> 1.14, dii 12.19 -> 12.19. generic-row-B Others 0.45 pub: prev 'Unclaimed Suspense A/c' 1 holders 0.45; next 'Unclaimed Suspense A/c' 1 holders 0.47; generic-row-B Others 0.16 fii: prev 'Foreign Portolio Investor ( Corpor' 3 holders 0.13; next 'Foreign Portfolio Investments Corp' 11 holders 0.27; inst-sub-fii Others 0.16. Evidence: _shp_164_audit.json"
    }
   },
   "ADANIGREEN": {
@@ -7906,7 +7926,7 @@
    "2015-06-30": {
     "cell": [
      49.4277,
-     16.45,
+     17.01,
      13.9286,
      4.1398,
      9.7198,
@@ -7914,14 +7934,34 @@
     ],
     "was": [
      49.4277,
-     16.214,
+     16.45,
      13.9286,
      4.1398,
      9.7198,
      "2015-07-22"
     ],
     "src": "bseaspx:500102_86",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.21 -> 16.45, dii 13.93 -> 13.93. std-fii-rows FPI/QFI/FVCI rows in institutions 0.24; inst-sub-unresolved Others 0.56 stays as stored. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 16.45 -> 17.01, dii 13.93 -> 13.93. generic-row-B Others 0.87 pub: prev 'Foreign Corporate Bodies' 4 holders 0.87; next 'Others' 4 holders 0.87; generic-row-B Others 0.56 fii: prev 'Foreign Financial Institutions' 1 holders 0.56; next 'Others' 1 holders 0.56; std-fii-rows FPI/QFI/FVCI rows in institutions 0.24; inst-sub-fii Others 0.56. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      49.4277,
+      16.45,
+      13.9286,
+      4.1398,
+      9.7198,
+      "2015-07-22"
+     ],
+     "was": [
+      49.4277,
+      16.214,
+      13.9286,
+      4.1398,
+      9.7198,
+      "2015-07-22"
+     ],
+     "src": "bseaspx:500102_86",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.21 -> 16.45, dii 13.93 -> 13.93. std-fii-rows FPI/QFI/FVCI rows in institutions 0.24; inst-sub-unresolved Others 0.56 stays as stored. Evidence: _shp_164_audit.json"
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -8074,6 +8114,26 @@
     ],
     "src": "bsexbrl:500102_137201815352_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.21 -> 5.21, dii 34.04 -> 34.13. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.09"
+   },
+   "2015-09-30": {
+    "cell": [
+     49.4277,
+     16.0,
+     13.9527,
+     4.1841,
+     9.7198,
+     "2015-10-23"
+    ],
+    "was": [
+     49.4277,
+     15.4412,
+     13.9527,
+     4.1841,
+     9.7198,
+     "2015-10-23"
+    ],
+    "src": "bseaspx:500102_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 15.44 -> 16.00, dii 13.95 -> 13.95. generic-row-B Others 0.87 pub: prev 'Others' 4 holders 0.87; generic-row-B Others 0.56 fii: prev 'Others' 1 holders 0.56; next 'Qualified Foreign Investor' 3 holders 0.55; inst-sub-fii Others 0.56. Evidence: _shp_164_audit.json"
    }
   },
   "BANARISUG": {
@@ -11065,6 +11125,26 @@
     ],
     "src": "bseaspx:532430_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.28 -> 0.35, dii 0.31 -> 0.31. noninst-fii Foreign Portfolio Investors 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     65.6384,
+     0.4,
+     0.6656,
+     0.3619,
+     0.0838,
+     "2015-07-14"
+    ],
+    "was": [
+     65.6384,
+     0.3339,
+     0.6656,
+     0.3619,
+     0.0838,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:532430_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.33 -> 0.40, dii 0.67 -> 0.67. generic-row-B Others 0.07 fii: prev 'Foreign Port Folio Investor Corpor' 5 holders 0.07; next 'Foreign Portfolio Investors' 6 holders 0.07; noninst-fii Others 0.07. Evidence: _shp_164_audit.json"
    }
   },
   "BHARATFORG": {
@@ -19535,6 +19615,26 @@
     ],
     "src": "bsexbrl:500645_127202118059_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.80 -> 2.80, dii 5.38 -> 5.60. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others ALTERNATIVE INVESTMENT FUND 0.21 ; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+   },
+   "2015-06-30": {
+    "cell": [
+     50.7455,
+     15.05,
+     4.0371,
+     2.0456,
+     1.9549,
+     "2015-07-15"
+    ],
+    "was": [
+     50.7455,
+     14.8152,
+     4.0371,
+     2.0456,
+     1.9549,
+     "2015-07-15"
+    ],
+    "src": "bseaspx:500645_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 14.82 -> 15.05, dii 4.04 -> 4.04. generic-row-B Others 0.23 fii: prev 'Foreign Portolio Investor ( Corpor' 4 holders 0.18; inst-sub-fii Others 0.23. Evidence: _shp_164_audit.json"
    }
   },
   "DEEPAKNTR": {
@@ -23150,7 +23250,7 @@
    "2015-06-30": {
     "cell": [
      74.3743,
-     18.2602,
+     20.47,
      0.1823,
      0.1508,
      0.0012,
@@ -23159,13 +23259,33 @@
     "was": [
      74.3743,
      18.2602,
-     2.3952,
+     0.1823,
      0.1508,
      0.0012,
      "2015-07-21"
     ],
-    "src": "bseaspx:533261:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.21pp) folded in by a minority route. Healed to the page's own domestic rows (0.1823). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:533261_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 18.26 -> 20.47, dii 0.18 -> 0.18. generic-row-B Others 2.21 fii: prev 'Foreign Portolio Investor ( Corpor' 15 holders 1.85; next 'Foreign Portfolio Investments Corp' 28 holders 1.89; inst-sub-fii Others 2.21. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      74.3743,
+      18.2602,
+      0.1823,
+      0.1508,
+      0.0012,
+      "2015-07-21"
+     ],
+     "was": [
+      74.3743,
+      18.2602,
+      2.3952,
+      0.1508,
+      0.0012,
+      "2015-07-21"
+     ],
+     "src": "bseaspx:533261:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.21pp) folded in by a minority route. Healed to the page's own domestic rows (0.1823). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -25608,6 +25728,26 @@
     ],
     "src": "bseaspx:505744_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.21 -> 0.27, dii 13.58 -> 13.58. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.06. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     74.9845,
+     0.27,
+     13.6786,
+     10.3121,
+     3.361,
+     "2015-07-21"
+    ],
+    "was": [
+     74.9845,
+     0.2073,
+     13.6786,
+     10.3121,
+     3.361,
+     "2015-07-21"
+    ],
+    "src": "bseaspx:505744_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.21 -> 0.27, dii 13.68 -> 13.68. generic-row-B Others 0.06 fii: prev 'Foreign Portolio Investor ( Corpor' 3 holders 0.06; next 'Foreign Portfolio Investments Corp' 3 holders 0.06; inst-sub-fii Others 0.06. Evidence: _shp_164_audit.json"
    }
   },
   "FOODSIN": {
@@ -29228,7 +29368,7 @@
    "2015-09-30": {
     "cell": [
      18.3731,
-     15.19,
+     15.26,
      6.5617,
      0.0168,
      3.0194,
@@ -29236,14 +29376,34 @@
     ],
     "was": [
      18.3731,
-     13.9034,
+     15.19,
      6.5617,
      0.0168,
      3.0194,
      "2015-10-07"
     ],
     "src": "bseaspx:500171_87",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.90 -> 15.19, dii 6.56 -> 6.56. inst-sub-unresolved Others 0.07 stays as stored; noninst-fii Foreign Portfolio Investors 1.29. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 15.19 -> 15.26, dii 6.56 -> 6.56. generic-row-B Others 0.07 fii: prev 'Others' 2 holders 0.07; inst-sub-fii Others 0.07; noninst-fii Foreign Portfolio Investors 1.29. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      18.3731,
+      15.19,
+      6.5617,
+      0.0168,
+      3.0194,
+      "2015-10-07"
+     ],
+     "was": [
+      18.3731,
+      13.9034,
+      6.5617,
+      0.0168,
+      3.0194,
+      "2015-10-07"
+     ],
+     "src": "bseaspx:500171_87",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.90 -> 15.19, dii 6.56 -> 6.56. inst-sub-unresolved Others 0.07 stays as stored; noninst-fii Foreign Portfolio Investors 1.29. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-08-16": {
     "cell": [
@@ -29288,6 +29448,26 @@
     ],
     "src": "bsexbrl:500171_932020152345_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.77 -> 14.77, dii 17.77 -> 18.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.26"
+   },
+   "2015-06-30": {
+    "cell": [
+     18.3731,
+     12.48,
+     6.5397,
+     0.0169,
+     3.0694,
+     "2015-07-15"
+    ],
+    "was": [
+     18.3731,
+     12.4101,
+     6.5397,
+     0.0169,
+     3.0694,
+     "2015-07-15"
+    ],
+    "src": "bseaspx:500171_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 12.41 -> 12.48, dii 6.54 -> 6.54. generic-row-B Others 0.11 pub: prev 'Directors & their Relatives & Frie' 5 holders 0.11; next 'Directors & their Relatives & Frie' 5 holders 0.11; generic-row-B Others 0.07 fii: prev 'Foreign Mutual Fund' 2 holders 0.07; next 'Others' 2 holders 0.07; inst-sub-fii Others 0.07. Evidence: _shp_164_audit.json"
    }
   },
   "GODREJIND": {
@@ -31132,6 +31312,26 @@
     ],
     "src": "bseaspx:500104_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.75 -> 19.84, dii 14.64 -> 14.64. inst-sub-fii Foreign Bank 0.09. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     51.1113,
+     18.95,
+     15.3643,
+     9.5345,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     51.1113,
+     18.8551,
+     15.3643,
+     9.5345,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:500104_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 18.86 -> 18.95, dii 15.36 -> 15.36. generic-row-B Others 0.09 fii: prev 'Foreign Bank' 2 holders 0.09; next 'Foreign Bank' 2 holders 0.09; generic-row-B Others 0.07 pub: prev 'Office Bearer' 555 holders 0.07; next 'Employees' 529 holders 0.07; inst-sub-fii Others 0.09. Evidence: _shp_164_audit.json"
    }
   },
   "HINDZINC": {
@@ -32923,6 +33123,46 @@
      "src": "bsexbrl:532659_1872018102734_SHP.xml",
      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 33.47 -> 39.20, dii 22.01 -> 17.63. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Bodies Corporate 5.73  keyword; R2-named Clearing Members 1.33 HDFC Bank Llimited 1.33(regex); R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 5.73"
     }
+   },
+   "2015-06-30": {
+    "cell": [
+     0.0,
+     47.78,
+     12.9871,
+     9.2738,
+     3.044,
+     "2015-07-04"
+    ],
+    "was": [
+     0.0,
+     47.4118,
+     12.9871,
+     9.2738,
+     3.044,
+     "2015-07-04"
+    ],
+    "src": "bseaspx:532659_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 47.41 -> 47.78, dii 12.99 -> 12.99. generic-row-B Others 0.37 fii: prev 'FDI' 1 holders 0.37; next 'Others' 1 holders 0.32; inst-sub-fii Others 0.37. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     0.0,
+     46.59,
+     10.2038,
+     6.2871,
+     3.044,
+     "2015-10-08"
+    ],
+    "was": [
+     0.0,
+     46.2735,
+     10.2038,
+     6.2871,
+     3.044,
+     "2015-10-08"
+    ],
+    "src": "bseaspx:532659_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 46.27 -> 46.59, dii 10.20 -> 10.20. generic-row-B Others 0.32 fii: prev 'Others' 1 holders 0.37; inst-sub-fii Others 0.32. Evidence: _shp_164_audit.json"
    }
   },
   "IL&FSENGG": {
@@ -33319,6 +33559,26 @@
     ],
     "src": "bseaspx:533177_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.82 -> 5.91, dii 2.68 -> 2.68. std-fii-rows FPI/QFI/FVCI rows in institutions 0.05; inst-sub-fii Foreign Portolio Investor ( Corporate) 0.04. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     70.7887,
+     7.67,
+     2.4954,
+     1.7413,
+     0.0,
+     "2015-07-14"
+    ],
+    "was": [
+     70.7887,
+     7.6103,
+     2.4954,
+     1.7413,
+     0.0,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:533177_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.61 -> 7.67, dii 2.50 -> 2.50. generic-row-by-holders Others 4.06 pub [adjacent quarter's composition, rest 0.80 follows]: Standard Chartered IL&FS Asia Infrastruc 3.26 (2015-form XBRL row); generic-row-B Others 0.89 pub: prev 'Directors & their Relatives & Frie' 13 holders 0.89; next 'Directors & their Relatives & Frie' 13 holders 0.89; generic-row-C Others 0.01 fii: qtrid 85 'Foreign Portolio Investor ( Corpor' 3 holders 0.04; qtrid 87 'Foreign Portfolio Investments Corp' 6 holders 0.07; std-fii-rows FPI/QFI/FVCI rows in institutions 0.05; dii-block-out Others 0.01 stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution; inst-sub-fii Others 0.01. Evidence: _shp_164_audit.json"
    }
   },
   "IMAGICAA": {
@@ -34927,6 +35187,26 @@
     ],
     "src": "bsexbrl:532388_44201714854_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 0.81 -> 1.05, dii 12.83 -> 12.59. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.24 | R1: R1-unresolved no typed rows 0.24. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     73.8019,
+     1.44,
+     15.0752,
+     0.36,
+     0.379,
+     "2015-07-08"
+    ],
+    "was": [
+     73.8019,
+     1.3772,
+     15.0752,
+     0.36,
+     0.379,
+     "2015-07-08"
+    ],
+    "src": "bseaspx:532388_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.38 -> 1.44, dii 15.08 -> 15.08. generic-row-C Others 0.06 fii: qtrid 85 'Foreign Portolio Investor ( Corpor' 7 holders 0.15; qtrid 87 'Foreign Portfolio Investments Corp' 9 holders 0.17; inst-sub-fii Others 0.06. Evidence: _shp_164_audit.json"
    }
   },
   "IRB": {
@@ -36570,6 +36850,26 @@
      49411
     ],
     "why": "BULK STAMP: 4 quarters of this symbol all carry the single submission date 2020-11-10, which is 133 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+   },
+   "2015-06-30": {
+    "cell": [
+     30.35,
+     3.08,
+     0.0,
+     0.0,
+     0.0,
+     "2015-07-10"
+    ],
+    "was": [
+     30.35,
+     1.37,
+     0.0,
+     0.0,
+     0.0,
+     "2015-07-10"
+    ],
+    "src": "bseaspx:570004_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.37 -> 3.08, dii 0.00 -> 0.00. row-by-holders Others 1.71 International Finance Corporation 1.71 (curated); noninst-fii Others 1.71. Evidence: _shp_164_audit.json"
    }
   },
   "JISLJALEQS": {
@@ -39183,7 +39483,7 @@
    "2014-12-31": {
     "cell": [
      2.1771,
-     23.9467,
+     28.34,
      18.1215,
      12.6547,
      4.1295,
@@ -39192,18 +39492,38 @@
     "was": [
      2.1771,
      23.9467,
-     22.515,
+     18.1215,
      12.6547,
      4.1295,
      "2015-01-14"
     ],
-    "src": "bseaspx:590003:qtrid84",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.39pp) folded in by a minority route. Healed to the page's own domestic rows (18.1215). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590003_84",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 23.95 -> 28.34, dii 18.12 -> 18.12. inst-sub-fii Foreign Portolio Investor ( Corporate) 4.39. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      2.1771,
+      23.9467,
+      18.1215,
+      12.6547,
+      4.1295,
+      "2015-01-14"
+     ],
+     "was": [
+      2.1771,
+      23.9467,
+      22.515,
+      12.6547,
+      4.1295,
+      "2015-01-14"
+     ],
+     "src": "bseaspx:590003:qtrid84",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.39pp) folded in by a minority route. Healed to the page's own domestic rows (18.1215). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-03-31": {
     "cell": [
      2.1615,
-     21.6699,
+     26.28,
      20.0884,
      14.7774,
      3.9978,
@@ -39212,18 +39532,38 @@
     "was": [
      2.1615,
      21.6699,
-     24.6949,
+     20.0884,
      14.7774,
      3.9978,
      "2015-04-11"
     ],
-    "src": "bseaspx:590003:qtrid85",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.61pp) folded in by a minority route. Healed to the page's own domestic rows (20.0884). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590003_85",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 21.67 -> 26.28, dii 20.09 -> 20.09. inst-sub-fii Foreign Portolio Investor ( Corporate) 4.61. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      2.1615,
+      21.6699,
+      20.0884,
+      14.7774,
+      3.9978,
+      "2015-04-11"
+     ],
+     "was": [
+      2.1615,
+      21.6699,
+      24.6949,
+      14.7774,
+      3.9978,
+      "2015-04-11"
+     ],
+     "src": "bseaspx:590003:qtrid85",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.61pp) folded in by a minority route. Healed to the page's own domestic rows (20.0884). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-06-30": {
     "cell": [
      2.1631,
-     21.2244,
+     25.13,
      20.1578,
      14.8,
      4.1062,
@@ -39232,13 +39572,33 @@
     "was": [
      2.1631,
      21.2244,
-     24.0695,
+     20.1578,
      14.8,
      4.1062,
      "2015-07-22"
     ],
-    "src": "bseaspx:590003:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.91pp) folded in by a minority route. Healed to the page's own domestic rows (20.1578). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590003_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 21.22 -> 25.13, dii 20.16 -> 20.16. generic-row-B Others 3.91 fii: prev 'Foreign Portolio Investor ( Corpor' 20 holders 4.61; next 'Foreign Portfolio Investments Corp' 24 holders 4.32; generic-row-B Others 0.07 pub: prev 'Directors & their Relatives & Frie' 13 holders 0.08; next 'Directors & their Relatives & Frie' 15 holders 0.12; inst-sub-fii Others 3.91. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      2.1631,
+      21.2244,
+      20.1578,
+      14.8,
+      4.1062,
+      "2015-07-22"
+     ],
+     "was": [
+      2.1631,
+      21.2244,
+      24.0695,
+      14.8,
+      4.1062,
+      "2015-07-22"
+     ],
+     "src": "bseaspx:590003:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.91pp) folded in by a minority route. Healed to the page's own domestic rows (20.1578). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -39283,6 +39643,26 @@
      "src": "bsexbrl:590003_982016172216_SHP.xml",
      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Warhol Ltd (FII) 4.35; Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34) \u2014 moved dii -> fii (6.6886 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
     }
+   },
+   "2015-12-31": {
+    "cell": [
+     2.16,
+     22.99,
+     21.81,
+     16.26,
+     4.34,
+     "2016-02-03"
+    ],
+    "was": [
+     2.16,
+     22.99,
+     20.75,
+     16.26,
+     4.34,
+     "2016-02-03"
+    ],
+    "src": "bseaspx:590003_88",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 22.99 -> 22.99, dii 20.75 -> 21.81. std-vcf Venture Capital Funds row 1.06. Evidence: _shp_164_audit.json"
    }
   },
   "KEC": {
@@ -39772,6 +40152,26 @@
     ],
     "src": "bseaspx:532732_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.10 -> 11.55, dii 9.32 -> 9.32. noninst-fii Foreign Port Folio Investor Corporate 0.45. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     74.2105,
+     11.77,
+     9.1736,
+     9.1736,
+     0.0,
+     "2015-07-10"
+    ],
+    "was": [
+     74.2105,
+     11.2702,
+     9.1736,
+     9.1736,
+     0.0,
+     "2015-07-10"
+    ],
+    "src": "bseaspx:532732_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 11.27 -> 11.77, dii 9.17 -> 9.17. generic-row-B Others 0.5 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 0.45; generic-row-B Others 0.03 pub: prev 'Office Bearer' 6 holders 0.03; next 'Others' 6 holders 0.03; noninst-fii Others 0.5. Evidence: _shp_164_audit.json"
    }
   },
   "KOLTEPATIL": {
@@ -40365,7 +40765,7 @@
    "2015-06-30": {
     "cell": [
      58.813,
-     5.5,
+     5.99,
      0.0405,
      0.0196,
      0.0,
@@ -40373,14 +40773,34 @@
     ],
     "was": [
      58.813,
-     5.3066,
+     5.5,
      0.0405,
      0.0196,
      0.0,
      "2015-07-21"
     ],
     "src": "bseaspx:530813_86",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.31 -> 5.50, dii 0.04 -> 0.04. std-fii-rows FPI/QFI/FVCI rows in institutions 0.19; inst-sub-unresolved Others 0.49 stays as stored. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 5.50 -> 5.99, dii 0.04 -> 0.04. generic-row-by-holders Others 9.73 pub [exact]: RELIANCE COMMODITIES DMCC 9.73 (new-format:ForeignCompanies); generic-row-B Others 0.49 fii: prev 'Foreign Portolio Investor ( Corpor' 4 holders 0.33; next 'Foreign Portfolio Investments Corp' 10 holders 0.70; std-fii-rows FPI/QFI/FVCI rows in institutions 0.19; inst-sub-fii Others 0.49. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      58.813,
+      5.5,
+      0.0405,
+      0.0196,
+      0.0,
+      "2015-07-21"
+     ],
+     "was": [
+      58.813,
+      5.3066,
+      0.0405,
+      0.0196,
+      0.0,
+      "2015-07-21"
+     ],
+     "src": "bseaspx:530813_86",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.31 -> 5.50, dii 0.04 -> 0.04. std-fii-rows FPI/QFI/FVCI rows in institutions 0.19; inst-sub-unresolved Others 0.49 stays as stored. Evidence: _shp_164_audit.json"
+    }
    }
   },
   "KRN": {
@@ -43344,7 +43764,7 @@
    "2015-06-30": {
     "cell": [
      28.3484,
-     1.8347,
+     2.97,
      25.4735,
      13.4375,
      12.0112,
@@ -43353,13 +43773,33 @@
     "was": [
      28.3484,
      1.8347,
-     26.6109,
+     25.4735,
      13.4375,
      12.0112,
      "2015-07-08"
     ],
-    "src": "bseaspx:500252:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.14pp) folded in by a minority route. Healed to the page's own domestic rows (25.4735). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:500252_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.83 -> 2.97, dii 25.47 -> 25.47. generic-row-B Others 1.14 fii: prev 'Foreign Portolio Investor ( Corpor' 6 holders 0.79; next 'Foreign Portfolio Investments Corp' 9 holders 1.81; generic-row-B Others 0.04 pub: prev 'Directors & their Relatives & Frie' 3 holders 0.04; next 'Directors & their Relatives & Frie' 3 holders 0.04; inst-sub-fii Others 1.14. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      28.3484,
+      1.8347,
+      25.4735,
+      13.4375,
+      12.0112,
+      "2015-07-08"
+     ],
+     "was": [
+      28.3484,
+      1.8347,
+      26.6109,
+      13.4375,
+      12.0112,
+      "2015-07-08"
+     ],
+     "src": "bseaspx:500252:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.14pp) folded in by a minority route. Healed to the page's own domestic rows (25.4735). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-09-30": {
     "cell": [
@@ -47752,7 +48192,7 @@
    "2015-06-30": {
     "cell": [
      46.6567,
-     5.2638,
+     10.85,
      28.5899,
      24.819,
      3.7562,
@@ -47761,13 +48201,33 @@
     "was": [
      46.6567,
      5.2638,
-     34.1789,
+     28.5899,
      24.819,
      3.7562,
      "2015-07-07"
     ],
-    "src": "bseaspx:533152:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.59pp) folded in by a minority route. Healed to the page's own domestic rows (28.5899). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:533152_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 5.26 -> 10.85, dii 28.59 -> 28.59. generic-row-B Others 5.59 fii: prev 'Foreign Portfolio Investments Corp' 4 holders 4.63; next 'Foreign Portfolio Investments Corp' 4 holders 5.81; inst-sub-fii Others 5.59. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      46.6567,
+      5.2638,
+      28.5899,
+      24.819,
+      3.7562,
+      "2015-07-07"
+     ],
+     "was": [
+      46.6567,
+      5.2638,
+      34.1789,
+      24.819,
+      3.7562,
+      "2015-07-07"
+     ],
+     "src": "bseaspx:533152:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (5.59pp) folded in by a minority route. Healed to the page's own domestic rows (28.5899). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2018-03-31": {
     "cell": [
@@ -50985,6 +51445,26 @@
     ],
     "src": "bsexbrl:500304_23122018151116_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.29 -> 15.29, dii 12.46 -> 14.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.61 RELIANCE NIPPON LIFE INSURANCE COMPANY LTD SHAREHOLDERS BEYOND SOLVENCY MARGIN 1.61(regex); R3-nbfc NBFCsRegisteredWithRbi 0.03"
+   },
+   "2015-06-30": {
+    "cell": [
+     34.2513,
+     12.89,
+     11.1312,
+     10.6734,
+     0.3679,
+     "2015-07-16"
+    ],
+    "was": [
+     34.2513,
+     12.8016,
+     11.1312,
+     10.6734,
+     0.3679,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:500304_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 12.80 -> 12.89, dii 11.13 -> 11.13. generic-row-B Others 0.09 fii: next 'Foreign Portfolio Investments Corp' 3 holders 0.14; inst-sub-fii Others 0.09. Evidence: _shp_164_audit.json"
    }
   },
   "NIPPOBATRY": {
@@ -55301,6 +55781,26 @@
     ],
     "src": "bseaspx:524230_86",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 3.04 -> 4.06, dii 6.92 -> 6.92. generic-row-B Others 1.02 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.58; noninst-fii Others 1.02. Evidence: _shp_164_audit.json"
+   },
+   "2014-12-31": {
+    "cell": [
+     80.0006,
+     2.75,
+     8.0545,
+     0.0069,
+     7.424,
+     "2015-01-06"
+    ],
+    "was": [
+     80.0006,
+     2.3241,
+     8.0545,
+     0.0069,
+     7.424,
+     "2015-01-06"
+    ],
+    "src": "bseaspx:524230_84",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.32 -> 2.75, dii 8.05 -> 8.05. generic-row-B Foreign Investors 0.43 fii: next 'Foreign Port Folio Investor Corpor' 6 holders 0.58; noninst-fii Foreign Investors 0.43. Evidence: _shp_164_audit.json"
    }
   },
   "RCOM": {
@@ -56683,6 +57183,26 @@
     ],
     "src": "bsexbrl:532915_1972021173630_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.29 -> 21.44, dii 5.24 -> 1.15. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 0.44 public=0.00 fii=0.00  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=4.09 INTERNATIONAL FINANCE CORPORATION 4.09 foreign->fii(new-format:ForeignDirectInvestment); R1-uncovered-remainder 0.06; R3-nbfc NBFCsRegisteredWithRbi 0.06; D1-unnamed-remainder-in-dii 0.06"
+   },
+   "2013-09-30": {
+    "cell": [
+     60.8977,
+     12.95,
+     1.0767,
+     0.0003,
+     0.0,
+     "2013-10-21"
+    ],
+    "was": [
+     60.8977,
+     10.3175,
+     1.0767,
+     0.0003,
+     0.0,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:532915_79",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.32 -> 12.95, dii 1.08 -> 1.08. generic-row-by-holders Foreign Investors 2.63 fii [exact]: CB Green Ventures Pte Ltd 2.63 (documented:filing); noninst-fii Foreign Investors 2.63. Evidence: _shp_164_audit.json"
    }
   },
   "REPRO": {
@@ -66700,6 +67220,26 @@
     ],
     "src": "bseaspx:531426_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.45 -> 10.52, dii 24.52 -> 24.52. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     35.3196,
+     10.59,
+     24.4852,
+     9.0199,
+     14.7259,
+     "2015-07-22"
+    ],
+    "was": [
+     35.3196,
+     10.5176,
+     24.4852,
+     9.0199,
+     14.7259,
+     "2015-07-22"
+    ],
+    "src": "bseaspx:531426_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.52 -> 10.59, dii 24.49 -> 24.49. generic-row-B Others 0.07 fii: prev 'Foreign Portolio Investor ( Corpor' 2 holders 0.07; inst-sub-fii Others 0.07. Evidence: _shp_164_audit.json"
    }
   },
   "TNTELE": {
@@ -77469,7 +78009,7 @@
    "2015-06-30": {
     "cell": [
      47.0426,
-     13.0273,
+     15.31,
      6.6146,
      3.8658,
      0.0,
@@ -77478,13 +78018,33 @@
     "was": [
      47.0426,
      13.0273,
-     8.8927,
+     6.6146,
      3.8658,
      0.0,
      "2015-07-13"
     ],
-    "src": "bseaspx:523204:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.28pp) folded in by a minority route. Healed to the page's own domestic rows (6.6146). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:523204_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 13.03 -> 15.31, dii 6.61 -> 6.61. generic-row-B Others 2.28 fii: prev 'Foreign Portfolio Investments Corp' 10 holders 3.85; generic-row-B Others 0.14 pub: prev 'Directors & their Relatives & Frie' 6 holders 0.14; next 'Directors & their Relatives & Frie' 6 holders 0.14; inst-sub-fii Others 2.28. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      47.0426,
+      13.0273,
+      6.6146,
+      3.8658,
+      0.0,
+      "2015-07-13"
+     ],
+     "was": [
+      47.0426,
+      13.0273,
+      8.8927,
+      3.8658,
+      0.0,
+      "2015-07-13"
+     ],
+     "src": "bseaspx:523204:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.28pp) folded in by a minority route. Healed to the page's own domestic rows (6.6146). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -84151,6 +84711,26 @@
     ],
     "src": "bseaspx:500020:88+nseresults:1005025",
     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 203,755,475 shares \u2014 it leaves out 2,779,425 shares that the Sep-2015 page (206,534,900, block C 2,779,425) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002751 paid-up 4131.0, 2015-12-31 #1005025 paid-up 4131.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 206,534,900 (\u00b1 50,000 shares, the filings' rounding): x 0.986543."
+   },
+   "2015-06-30": {
+    "cell": [
+     52.3508,
+     8.59,
+     9.6532,
+     5.151,
+     4.2211,
+     "2015-07-16"
+    ],
+    "was": [
+     52.3508,
+     8.3121,
+     9.6532,
+     5.151,
+     4.2211,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:500020_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 8.31 -> 8.59, dii 9.65 -> 9.65. generic-row-B Others 0.28 fii: prev 'Foreign Portolio Investor ( Corpor' 6 holders 0.30; next 'Foreign Portfolio Investments Corp' 7 holders 0.29; inst-sub-fii Others 0.28. Evidence: _shp_164_audit.json"
    }
   },
   "BRITANNIA": {
@@ -85863,6 +86443,26 @@
     ],
     "src": "bsexbrl:519600_1972017112515_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 23.75 -> 24.16, dii 4.19 -> 3.78. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.41 | R1: R1-unresolved no typed rows 0.41. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     44.539,
+     7.88,
+     9.1198,
+     9.0894,
+     0.0,
+     "2015-07-10"
+    ],
+    "was": [
+     44.539,
+     7.7225,
+     9.1198,
+     9.0894,
+     0.0,
+     "2015-07-10"
+    ],
+    "src": "bseaspx:519600_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.72 -> 7.88, dii 9.12 -> 9.12. generic-row-B Others 3.63 pub: prev 'Foreign Collaborators' 8 holders 3.63; generic-row-B Others 0.16 fii: prev 'Foreign Port Folio Investor Corpor' 3 holders 0.20; noninst-fii Others 0.16. Evidence: _shp_164_audit.json"
    }
   },
   "CENTURYPLY": {
@@ -97955,6 +98555,46 @@
     ],
     "src": "bseaspx:500010_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 79.65 -> 79.84, dii 8.48 -> 8.48. inst-sub-fii FDI - Foreign Institutions 0.19. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     0.0,
+     78.99,
+     9.2327,
+     2.2235,
+     5.8111,
+     "2015-07-08"
+    ],
+    "was": [
+     0.0,
+     78.8232,
+     9.2327,
+     2.2235,
+     5.8111,
+     "2015-07-08"
+    ],
+    "src": "bseaspx:500010_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 78.82 -> 78.99, dii 9.23 -> 9.23. generic-row-B Others 0.56 pub: prev 'Directors & their Relatives & Frie' 38 holders 0.56; next 'Directors & their Relatives & Frie' 37 holders 0.53; generic-row-B Others 0.17 fii: prev 'FDI - Foreign Institutions' 5 holders 0.19; next 'Others' 5 holders 0.17; inst-sub-fii Others 0.17. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     0.0,
+     78.34,
+     9.6108,
+     2.6204,
+     5.7875,
+     "2015-10-07"
+    ],
+    "was": [
+     0.0,
+     78.1743,
+     9.6108,
+     2.6204,
+     5.7875,
+     "2015-10-07"
+    ],
+    "src": "bseaspx:500010_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 78.17 -> 78.34, dii 9.61 -> 9.61. generic-row-B Others 0.17 fii: prev 'Others' 5 holders 0.17; inst-sub-fii Others 0.17. Evidence: _shp_164_audit.json"
    }
   },
   "HEROMOTOCO": {
@@ -99975,27 +100615,47 @@
    "2015-09-30": {
     "cell": [
      45.8943,
-     21.77,
-     14.75,
+     22.23,
+     14.7493,
      14.6435,
      0.0,
      "2015-10-20"
     ],
     "was": [
      45.8943,
-     15.3663,
+     21.77,
      14.7493,
      14.6435,
      0.0,
      "2015-10-20"
     ],
     "src": "bseaspx:524494_87",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 15.37 -> 21.77, dii 14.75 -> 14.75. inst-sub-unresolved Others 0.46 stays as stored; noninst-fii Foreign Portfolio Investors 6.4. Evidence: _shp_aspx_rowfix_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 21.77 -> 22.23, dii 14.75 -> 14.75. generic-row-B Others 0.46 fii: prev 'Others' 2 holders 0.44; inst-sub-fii Others 0.46; noninst-fii Foreign Portfolio Investors 6.4. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      45.8943,
+      21.77,
+      14.75,
+      14.6435,
+      0.0,
+      "2015-10-20"
+     ],
+     "was": [
+      45.8943,
+      15.3663,
+      14.7493,
+      14.6435,
+      0.0,
+      "2015-10-20"
+     ],
+     "src": "bseaspx:524494_87",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 15.37 -> 21.77, dii 14.75 -> 14.75. inst-sub-unresolved Others 0.46 stays as stored; noninst-fii Foreign Portfolio Investors 6.4. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-06-30": {
     "cell": [
      45.8943,
-     21.67,
+     22.11,
      13.9939,
      13.958,
      0.0,
@@ -100003,19 +100663,19 @@
     ],
     "was": [
      45.8943,
-     19.9367,
-     15.73,
+     21.67,
+     13.9939,
      13.958,
      0.0,
      "2015-07-17"
     ],
     "src": "bseaspx:524494_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.94 -> 21.67, dii 15.73 -> 13.99. generic-row-B Others 1.73 fii: prev 'Foreign Port Folio Investor Corpor' 23 holders 1.56; inst-sub-unresolved Others 0.44 stays as stored; noninst-fii Others 1.73. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 21.67 -> 22.11, dii 13.99 -> 13.99. generic-row-B Others 1.73 fii: prev 'Foreign Port Folio Investor Corpor' 23 holders 1.56; generic-row-B Others 0.44 fii: prev 'Foreign Mutual Fund' 2 holders 0.41; next 'Others' 2 holders 0.46; inst-sub-fii Others 0.44; noninst-fii Others 1.73. Evidence: _shp_164_audit.json",
     "superseded": {
      "cell": [
       45.8943,
-      19.9367,
-      15.73,
+      21.67,
+      13.9939,
       13.958,
       0.0,
       "2015-07-17"
@@ -100023,13 +100683,33 @@
      "was": [
       45.8943,
       19.9367,
-      13.9939,
+      15.73,
       13.958,
       0.0,
       "2015-07-17"
      ],
      "src": "bseaspx:524494_86",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.94 -> 19.94, dii 13.99 -> 15.73. generic-row-by-holders Others 1.73 dii [exact]: Reliance Capital Trustee Co Ltd 1.69 (2015-form XBRL row); inst-sub-unresolved Others 0.44 stays as stored; noninst-dii Others 1.73. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.94 -> 21.67, dii 15.73 -> 13.99. generic-row-B Others 1.73 fii: prev 'Foreign Port Folio Investor Corpor' 23 holders 1.56; inst-sub-unresolved Others 0.44 stays as stored; noninst-fii Others 1.73. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "superseded": {
+      "cell": [
+       45.8943,
+       19.9367,
+       15.73,
+       13.958,
+       0.0,
+       "2015-07-17"
+      ],
+      "was": [
+       45.8943,
+       19.9367,
+       13.9939,
+       13.958,
+       0.0,
+       "2015-07-17"
+      ],
+      "src": "bseaspx:524494_86",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.94 -> 19.94, dii 13.99 -> 15.73. generic-row-by-holders Others 1.73 dii [exact]: Reliance Capital Trustee Co Ltd 1.69 (2015-form XBRL row); inst-sub-unresolved Others 0.44 stays as stored; noninst-dii Others 1.73. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)"
+     }
     }
    }
   },
@@ -101055,7 +101735,7 @@
    "2018-03-31": {
     "cell": [
      41.75,
-     34.8618,
+     19.8618,
      2.7789,
      2.4228,
      0.0,
@@ -101064,15 +101744,37 @@
     ],
     "was": [
      41.75,
-     19.8612,
-     17.7805,
+     34.8618,
+     2.7789,
      2.4228,
      0.0,
      "2018-04-12",
      598406
     ],
     "src": "bsexbrl:500228_114201816329_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.00pp, holders: LOTUS GLOBAL INVESTMENTS LTD; THE INDIAMAN FUND (MAURITIUS) LIMITED; APMS INVESTMENT FUND LTD; jfe steel international europe bv) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.7789 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 7 \u2014 JSWSTEEL Mar-2018 (found building the Quantmac v5 reply #6; listed there as a cross-quarter consistency item): the August SW-2 sweep had put the institutional Any-Other block (15.00 = JFE Steel International Europe B.V.) in FII for this quarter only. JSW Steel's own first 2022-form filing lists JFE Steel International Europe under Non-institutions - Foreign Companies, the placement Dec-2017 and Jun-2018 already carry (19.76 / 19.88). fii 34.8618 -> 19.8618 (JFE -> public); dii unchanged 2.7789.",
+    "superseded": {
+     "cell": [
+      41.75,
+      34.8618,
+      2.7789,
+      2.4228,
+      0.0,
+      "2018-04-12",
+      598406
+     ],
+     "was": [
+      41.75,
+      19.8612,
+      17.7805,
+      2.4228,
+      0.0,
+      "2018-04-12",
+      598406
+     ],
+     "src": "bsexbrl:500228_114201816329_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.00pp, holders: LOTUS GLOBAL INVESTMENTS LTD; THE INDIAMAN FUND (MAURITIUS) LIMITED; APMS INVESTMENT FUND LTD; jfe steel international europe bv) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.7789 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
@@ -103945,6 +104647,26 @@
     ],
     "src": "bsexbrl:526947_187201712032_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.96 -> 20.04, dii 1.86 -> 1.78. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other FOREIGN INSTITUTIONAL INVESTOR 0.08 public=0.00 fii=0.08  keyword. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     65.0225,
+     15.0,
+     1.7684,
+     1.7537,
+     0.0,
+     "2015-07-18"
+    ],
+    "was": [
+     65.0225,
+     10.463,
+     1.7684,
+     1.7537,
+     0.0,
+     "2015-07-18"
+    ],
+    "src": "bseaspx:526947_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.46 -> 15.00, dii 1.77 -> 1.77. generic-row-by-holders Others 4.54 fii [exact]: Malabar India Fund Ltd 3.37 (2015-form XBRL row); ABC Capital 1.22 (2015-form XBRL row); noninst-fii Others 4.54. Evidence: _shp_164_audit.json"
    }
   },
   "LINDEINDIA": {
@@ -107313,6 +108035,26 @@
     ],
     "src": "bsexbrl:524084_279201816828_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 3.17 -> 3.17, dii 0.33 -> 0.40. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.07"
+   },
+   "2015-06-30": {
+    "cell": [
+     72.144,
+     2.25,
+     3.6909,
+     3.6187,
+     0.0,
+     "2015-07-10"
+    ],
+    "was": [
+     72.144,
+     2.1305,
+     3.6909,
+     3.6187,
+     0.0,
+     "2015-07-10"
+    ],
+    "src": "bseaspx:524084_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.13 -> 2.25, dii 3.69 -> 3.69. generic-row-B Others 0.12 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.09; noninst-fii Others 0.12. Evidence: _shp_164_audit.json"
    }
   },
   "MOREPENLAB": {
@@ -118813,6 +119555,26 @@
     ],
     "src": "bsexbrl:523598_1012022174548_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 2.21 -> 2.36, dii 9.51 -> 9.36. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.15 | R1: R1-unresolved no typed rows 0.15. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     63.7492,
+     2.58,
+     19.2749,
+     0.6583,
+     17.1189,
+     "2015-10-12"
+    ],
+    "was": [
+     63.7492,
+     2.4178,
+     19.2749,
+     0.6583,
+     17.1189,
+     "2015-10-12"
+    ],
+    "src": "bseaspx:523598_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.42 -> 2.58, dii 19.27 -> 19.27. generic-row-C Others 0.16 fii: qtrid 86 'Others' 2 holders 0.03; inst-sub-fii Others 0.16. Evidence: _shp_164_audit.json"
    }
   },
   "SECURKLOUD": {
@@ -123769,6 +124531,46 @@
     ],
     "src": "bsexbrl:532800_2072017193113_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 10.95 -> 11.08, dii 5.03 -> 4.92. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Institutional Investors 0.13 public=0.00 fii=0.13  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02"
+   },
+   "2015-06-30": {
+    "cell": [
+     60.4027,
+     9.04,
+     3.025,
+     2.8599,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     60.4027,
+     8.8416,
+     3.025,
+     2.8599,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:532800_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 8.84 -> 9.04, dii 3.02 -> 3.02. generic-row-B Others 0.2 fii: prev 'Foreign Portolio Investor ( Corpor' 8 holders 0.16; inst-sub-fii Others 0.2. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     60.4027,
+     9.31,
+     4.0696,
+     4.0293,
+     0.0,
+     "2015-10-20"
+    ],
+    "was": [
+     60.4027,
+     8.8833,
+     4.0696,
+     4.0293,
+     0.0,
+     "2015-10-20"
+    ],
+    "src": "bseaspx:532800_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 8.88 -> 9.31, dii 4.07 -> 4.07. generic-row-C Others 0.43 fii: qtrid 86 'Others' 10 holders 0.20; inst-sub-fii Others 0.43. Evidence: _shp_164_audit.json"
    }
   },
   "UFLEX": {
@@ -129495,6 +130297,26 @@
     ],
     "src": "bseaspx:517300_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 3.15 -> 3.38, dii 18.10 -> 18.10. noninst-fii Foreign Portfolio Investors 0.23. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     58.208,
+     3.43,
+     16.4561,
+     6.8229,
+     9.6113,
+     "2015-07-06"
+    ],
+    "was": [
+     58.208,
+     3.2625,
+     16.4561,
+     6.8229,
+     9.6113,
+     "2015-07-06"
+    ],
+    "src": "bseaspx:517300_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.26 -> 3.43, dii 16.46 -> 16.46. generic-row-B Others 0.17 fii: next 'Foreign Portfolio Investors' 5 holders 0.23; noninst-fii Others 0.17. Evidence: _shp_164_audit.json"
    }
   },
   "NATIONALUM": {
@@ -134783,7 +135605,7 @@
    "2015-09-30": {
     "cell": [
      50.1084,
-     3.4,
+     3.45,
      15.4792,
      12.7313,
      2.7004,
@@ -134791,14 +135613,34 @@
     ],
     "was": [
      50.1084,
-     2.8799,
+     3.4,
      15.4792,
      12.7313,
      2.7004,
      "2015-10-10"
     ],
     "src": "bseaspx:506690_87",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.88 -> 3.40, dii 15.48 -> 15.48. noninst-fii Foreign Portfolio Investors 0.52. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.40 -> 3.45, dii 15.48 -> 15.48. generic-row-B Others 0.05 fii: prev 'Others' 1 holders 0.05; noninst-fii Others 0.05; noninst-fii Foreign Portfolio Investors 0.52. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      50.1084,
+      3.4,
+      15.4792,
+      12.7313,
+      2.7004,
+      "2015-10-10"
+     ],
+     "was": [
+      50.1084,
+      2.8799,
+      15.4792,
+      12.7313,
+      2.7004,
+      "2015-10-10"
+     ],
+     "src": "bseaspx:506690_87",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.88 -> 3.40, dii 15.48 -> 15.48. noninst-fii Foreign Portfolio Investors 0.52. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -134887,6 +135729,26 @@
     ],
     "src": "bsexbrl:506690_1172017171441_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 4.31 -> 4.38, dii 13.02 -> 12.95. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Mutual Fund 0.07 public=0.00 fii=0.07  keyword"
+   },
+   "2015-06-30": {
+    "cell": [
+     50.1379,
+     3.17,
+     15.4986,
+     12.6548,
+     2.791,
+     "2015-07-11"
+    ],
+    "was": [
+     50.1379,
+     3.1171,
+     15.4986,
+     12.6548,
+     2.791,
+     "2015-07-11"
+    ],
+    "src": "bseaspx:506690_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.12 -> 3.17, dii 15.50 -> 15.50. generic-row-B Others 0.13 pub: prev 'Directors & their Relatives & Frie' 9 holders 0.13; next 'Directors & their Relatives & Frie' 10 holders 0.15; generic-row-B Others 0.05 fii: prev 'Foreign Mutual Fund' 1 holders 0.04; next 'Others' 1 holders 0.05; noninst-fii Others 0.05. Evidence: _shp_164_audit.json"
    }
   },
   "JSL": {
@@ -143623,22 +144485,42 @@
    "2015-09-30": {
     "cell": [
      39.463,
-     7.62,
-     20.6,
+     8.11,
+     20.6041,
      19.6184,
      0.961,
      "2015-10-10"
     ],
     "was": [
      39.463,
-     6.7547,
+     7.62,
      20.6041,
      19.6184,
      0.961,
      "2015-10-10"
     ],
     "src": "bseaspx:500067_87",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.75 -> 7.62, dii 20.60 -> 20.60. inst-sub-unresolved Others 0.49 stays as stored; noninst-fii Foreign Portfolio Investors 0.87. Evidence: _shp_aspx_rowfix_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.62 -> 8.11, dii 20.60 -> 20.60. generic-row-B Others 0.49 fii: prev 'Others' 3 holders 0.48; inst-sub-fii Others 0.49; noninst-fii Foreign Portfolio Investors 0.87. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      39.463,
+      7.62,
+      20.6,
+      19.6184,
+      0.961,
+      "2015-10-10"
+     ],
+     "was": [
+      39.463,
+      6.7547,
+      20.6041,
+      19.6184,
+      0.961,
+      "2015-10-10"
+     ],
+     "src": "bseaspx:500067_87",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.75 -> 7.62, dii 20.60 -> 20.60. inst-sub-unresolved Others 0.49 stays as stored; noninst-fii Foreign Portfolio Investors 0.87. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2008-06-30": {
     "cell": [
@@ -143983,7 +144865,7 @@
    "2015-06-30": {
     "cell": [
      39.463,
-     7.36,
+     7.84,
      20.7006,
      19.6433,
      1.0147,
@@ -143991,14 +144873,34 @@
     ],
     "was": [
      39.463,
-     6.5362,
+     7.36,
      20.7006,
      19.6433,
      1.0147,
      "2015-07-11"
     ],
     "src": "bseaspx:500067_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.54 -> 7.36, dii 20.70 -> 20.70. generic-row-B Others 0.82 fii: next 'Foreign Portfolio Investors' 5 holders 0.87; inst-sub-unresolved Others 0.48 stays as stored; noninst-fii Others 0.82. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.36 -> 7.84, dii 20.70 -> 20.70. generic-row-B Others 0.82 fii: next 'Foreign Portfolio Investors' 5 holders 0.87; generic-row-B Others 0.48 fii: prev 'Foreign Mutual Fund' 3 holders 0.42; next 'Others' 3 holders 0.49; inst-sub-fii Others 0.48; noninst-fii Others 0.82. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      39.463,
+      7.36,
+      20.7006,
+      19.6433,
+      1.0147,
+      "2015-07-11"
+     ],
+     "was": [
+      39.463,
+      6.5362,
+      20.7006,
+      19.6433,
+      1.0147,
+      "2015-07-11"
+     ],
+     "src": "bseaspx:500067_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.54 -> 7.36, dii 20.70 -> 20.70. generic-row-B Others 0.82 fii: next 'Foreign Portfolio Investors' 5 holders 0.87; inst-sub-unresolved Others 0.48 stays as stored; noninst-fii Others 0.82. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+    }
    },
    "2016-09-30": {
     "cell": [
@@ -144159,7 +145061,7 @@
    "2015-06-30": {
     "cell": [
      69.2678,
-     7.9069,
+     9.71,
      6.1313,
      3.0253,
      3.0637,
@@ -144168,13 +145070,33 @@
     "was": [
      69.2678,
      7.9069,
-     7.9338,
+     6.1313,
      3.0253,
      3.0637,
      "2015-07-18"
     ],
-    "src": "bseaspx:500165:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.80pp) folded in by a minority route. Healed to the page's own domestic rows (6.1313). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:500165_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.91 -> 9.71, dii 6.13 -> 6.13. generic-row-B Others 1.8 fii: next 'Foreign Portfolio Investments Corp' 19 holders 1.76; generic-row-B Others 0.06 pub: prev 'Unclaimed Suspense A/c' 1 holders 0.06; next 'Unclaimed Suspense A/c' 1 holders 0.06; inst-sub-fii Others 1.8. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      69.2678,
+      7.9069,
+      6.1313,
+      3.0253,
+      3.0637,
+      "2015-07-18"
+     ],
+     "was": [
+      69.2678,
+      7.9069,
+      7.9338,
+      3.0253,
+      3.0637,
+      "2015-07-18"
+     ],
+     "src": "bseaspx:500165:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.80pp) folded in by a minority route. Healed to the page's own domestic rows (6.1313). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -144831,7 +145753,7 @@
    "2014-12-31": {
     "cell": [
      36.2034,
-     3.8104,
+     5.96,
      7.4456,
      4.6851,
      2.7463,
@@ -144840,18 +145762,38 @@
     "was": [
      36.2034,
      3.8104,
-     9.5913,
+     7.4456,
      4.6851,
      2.7463,
      "2015-01-06"
     ],
-    "src": "bseaspx:590071:qtrid84",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.15pp) folded in by a minority route. Healed to the page's own domestic rows (7.4456). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590071_84",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590071 - this company's page-era filings had never been read): fii 3.81 -> 5.96, dii 7.45 -> 7.45. generic-row-by-holders Any Other 1.6 pub [exact]: M S Parthasarathy & S Krishnamurthy 1.56 (filer's own page label); inst-sub-fii Foreign Portolio Investor ( Corporate) 2.15. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      36.2034,
+      3.8104,
+      7.4456,
+      4.6851,
+      2.7463,
+      "2015-01-06"
+     ],
+     "was": [
+      36.2034,
+      3.8104,
+      9.5913,
+      4.6851,
+      2.7463,
+      "2015-01-06"
+     ],
+     "src": "bseaspx:590071:qtrid84",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.15pp) folded in by a minority route. Healed to the page's own domestic rows (7.4456). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-03-31": {
     "cell": [
      36.1817,
-     4.4971,
+     6.72,
      8.492,
      5.7288,
      2.7463,
@@ -144860,18 +145802,38 @@
     "was": [
      36.1817,
      4.4971,
-     10.7125,
+     8.492,
      5.7288,
      2.7463,
      "2015-04-10"
     ],
-    "src": "bseaspx:590071:qtrid85",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.22pp) folded in by a minority route. Healed to the page's own domestic rows (8.4920). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590071_85",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590071 - this company's page-era filings had never been read): fii 4.50 -> 6.72, dii 8.49 -> 8.49. inst-sub-fii Foreign Portolio Investor ( Corporate) 2.22. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      36.1817,
+      4.4971,
+      8.492,
+      5.7288,
+      2.7463,
+      "2015-04-10"
+     ],
+     "was": [
+      36.1817,
+      4.4971,
+      10.7125,
+      5.7288,
+      2.7463,
+      "2015-04-10"
+     ],
+     "src": "bseaspx:590071:qtrid85",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.22pp) folded in by a minority route. Healed to the page's own domestic rows (8.4920). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-09-30": {
     "cell": [
      36.1638,
-     4.0614,
+     6.54,
      9.3911,
      6.7168,
      2.6515,
@@ -144880,18 +145842,38 @@
     "was": [
      36.1638,
      4.0614,
-     11.8794,
+     9.3911,
      6.7168,
      2.6515,
      "2015-10-09"
     ],
-    "src": "bseaspx:590071:qtrid87",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.49pp) folded in by a minority route. Healed to the page's own domestic rows (9.3911). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590071_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590071 - this company's page-era filings had never been read): fii 4.06 -> 6.54, dii 9.39 -> 9.39. inst-sub-fii Foreign Portfolio Investments Corporation 2.48. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      36.1638,
+      4.0614,
+      9.3911,
+      6.7168,
+      2.6515,
+      "2015-10-09"
+     ],
+     "was": [
+      36.1638,
+      4.0614,
+      11.8794,
+      6.7168,
+      2.6515,
+      "2015-10-09"
+     ],
+     "src": "bseaspx:590071:qtrid87",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.49pp) folded in by a minority route. Healed to the page's own domestic rows (9.3911). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-06-30": {
     "cell": [
      36.1638,
-     4.3599,
+     6.82,
      8.8289,
      6.0785,
      2.7202,
@@ -144900,13 +145882,33 @@
     "was": [
      36.1638,
      4.3599,
-     11.2849,
+     8.8289,
      6.0785,
      2.7202,
      "2015-07-08"
     ],
-    "src": "bseaspx:590071:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.46pp) folded in by a minority route. Healed to the page's own domestic rows (8.8289). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:590071_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590071 - this company's page-era filings had never been read): fii 4.36 -> 6.82, dii 8.83 -> 8.83. generic-row-B Others 2.46 fii: prev 'Foreign Portolio Investor ( Corpor' 17 holders 2.22; next 'Foreign Portfolio Investments Corp' 22 holders 2.48; inst-sub-fii Others 2.46. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      36.1638,
+      4.3599,
+      8.8289,
+      6.0785,
+      2.7202,
+      "2015-07-08"
+     ],
+     "was": [
+      36.1638,
+      4.3599,
+      11.2849,
+      6.0785,
+      2.7202,
+      "2015-07-08"
+     ],
+     "src": "bseaspx:590071:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.46pp) folded in by a minority route. Healed to the page's own domestic rows (8.8289). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -146349,6 +147351,26 @@
     ],
     "src": "bsexbrl:500877_912202020057_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.82 -> 18.82, dii 13.50 -> 19.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others QUALIFIED INVESTORS BUYERS (QIB) 5.92 HDFC LIFE INSURANCE COMPANY LIMITED 1.35; SBI LIFE INSURANCE CO. LTD 1.17"
+   },
+   "2015-09-30": {
+    "cell": [
+     44.0564,
+     30.04,
+     10.6179,
+     10.0769,
+     0.4017,
+     "2015-10-13"
+    ],
+    "was": [
+     44.0564,
+     29.5935,
+     10.6179,
+     10.0769,
+     0.4017,
+     "2015-10-13"
+    ],
+    "src": "bseaspx:500877_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 29.59 -> 30.04, dii 10.62 -> 10.62. generic-row-B Others 0.45 fii: prev 'Others' 1 holders 0.52. Evidence: _shp_164_audit.json"
    }
   },
   "NAVNETEDUL": {
@@ -146451,6 +147473,26 @@
     ],
     "src": "bseaspx:508989_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.51 -> 6.49, dii 15.23 -> 15.23. noninst-fii Foreign Portfolio Investors 3.98. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     61.7982,
+     6.64,
+     15.0449,
+     15.0273,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     61.7982,
+     3.0505,
+     15.0449,
+     15.0273,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:508989_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.05 -> 6.64, dii 15.04 -> 15.04. generic-row-A-rest Others 3.59 fii: Somerset Emerging Markets Small Cap Fund 2.80 (documented:filing) + 3 unnamed holder(s) 0.79 (rest follows, \u00a7158 R1); generic-row-B Others 0.03 pub: prev 'Office Bearer' 16 holders 0.03; next 'Others' 15 holders 0.03; noninst-fii Others 3.59. Evidence: _shp_164_audit.json"
    }
   },
   "ABREL": {
@@ -149043,6 +150085,26 @@
     ],
     "src": "bsexbrl:500459_1842018104640_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 3.49 -> 3.61, dii 10.01 -> 9.89. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Financial Institution 0.12 public=0.00 fii=0.12  keyword; R1-domestic-label Other UTI 0.01 public=0.00 fii=0.00  label-as-holder:curated"
+   },
+   "2015-06-30": {
+    "cell": [
+     70.6385,
+     2.9,
+     10.7233,
+     7.8626,
+     2.6391,
+     "2015-07-21"
+    ],
+    "was": [
+     70.6385,
+     2.5776,
+     10.7233,
+     7.8626,
+     2.6391,
+     "2015-07-21"
+    ],
+    "src": "bseaspx:500459_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.58 -> 2.90, dii 10.72 -> 10.72. generic-row-B Others 0.32 fii: prev 'Foreign Port Folio Investor Corpor' 12 holders 0.31; next 'Foreign Portfolio Investors' 16 holders 0.52; generic-row-B Others 0.05 pub: prev 'Directors & their Relatives & Frie' 6 holders 0.05; next 'Directors & their Relatives & Frie' 6 holders 0.05; noninst-fii Others 0.32. Evidence: _shp_164_audit.json"
    }
   },
   "BAJAJHLDNG": {
@@ -150689,6 +151751,26 @@
     ],
     "src": "bsexbrl:500570_12122019162236_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.71 -> 17.71, dii 15.17 -> 15.26. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others QIB Insurance Registered with IRDA 0.09 "
+   },
+   "2007-12-31": {
+    "cell": [
+     33.4153,
+     17.61,
+     17.0136,
+     3.275,
+     13.4381,
+     "2008-01-21"
+    ],
+    "was": [
+     33.4153,
+     17.478,
+     17.0136,
+     3.275,
+     13.4381,
+     "2008-01-21"
+    ],
+    "src": "bseaspx:500570_56",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 17.48 -> 17.61, dii 17.01 -> 17.01. generic-row-B Any Other 0.13 fii: prev 'Foreign Financial Institutions' 3 holders 0.14; inst-sub-fii Any Other 0.13. Evidence: _shp_164_audit.json"
    }
   },
   "SIEMENS": {
@@ -156537,13 +157619,53 @@
     ],
     "src": "bsexbrl:SHP_138205_111997_09072019102400_WEB.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.62 -> 15.62, dii 3.05 -> 11.09. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Others Others 8.01 MAX  LIFE INSURANCE CO LTD A/C PARTICIPATING FUND 3.45(curated); DHFL PRAMERICA LIFE INSURANCE CO. LTD 2.73(regex); ADITYA BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.83(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03"
+   },
+   "2014-12-31": {
+    "cell": [
+     9.5879,
+     11.25,
+     6.3943,
+     0.0182,
+     0.2237,
+     "2015-01-15"
+    ],
+    "was": [
+     9.5879,
+     10.9325,
+     6.3943,
+     0.0182,
+     0.2237,
+     "2015-01-15"
+    ],
+    "src": "bseaspx:534690_84",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.93 -> 11.25, dii 6.39 -> 6.39. generic-row-B Others 0.32 fii: prev 'Foreign Portolio Investor ( Corpor' 1 holders 0.32; next 'Others' 3 holders 0.38; inst-sub-fii Others 0.32. Evidence: _shp_164_audit.json"
+   },
+   "2015-03-31": {
+    "cell": [
+     9.5502,
+     12.2,
+     5.3998,
+     0.2174,
+     0.2234,
+     "2015-04-13"
+    ],
+    "was": [
+     9.5502,
+     11.8156,
+     5.3998,
+     0.2174,
+     0.2234,
+     "2015-04-13"
+    ],
+    "src": "bseaspx:534690_85",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 11.82 -> 12.20, dii 5.40 -> 5.40. generic-row-B Others 0.38 fii: prev 'Others' 1 holders 0.32; inst-sub-fii Others 0.38. Evidence: _shp_164_audit.json"
    }
   },
   "ABGSHIP": {
    "2015-06-30": {
     "cell": [
      55.7137,
-     1.7743,
+     3.43,
      8.0123,
      0.0005,
      0.5565,
@@ -156552,13 +157674,33 @@
     "was": [
      55.7137,
      1.7743,
-     9.6756,
+     8.0123,
      0.0005,
      0.5565,
      "2015-07-21"
     ],
-    "src": "bseaspx:532682:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.66pp) folded in by a minority route. Healed to the page's own domestic rows (8.0123). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:532682_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.77 -> 3.43, dii 8.01 -> 8.01. generic-row-B Others 1.66 fii: next 'Foreign Portfolio Investments Corp' 9 holders 1.57; generic-row-B Others 0.01 pub: prev 'Office Bearer' 16 holders 0.01; next 'Others' 15 holders 0.01; inst-sub-fii Others 1.66. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      55.7137,
+      1.7743,
+      8.0123,
+      0.0005,
+      0.5565,
+      "2015-07-21"
+     ],
+     "was": [
+      55.7137,
+      1.7743,
+      9.6756,
+      0.0005,
+      0.5565,
+      "2015-07-21"
+     ],
+     "src": "bseaspx:532682:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.66pp) folded in by a minority route. Healed to the page's own domestic rows (8.0123). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -156829,7 +157971,7 @@
    "2015-06-30": {
     "cell": [
      59.7529,
-     3.3214,
+     7.09,
      15.6987,
      0.0005,
      15.643,
@@ -156838,13 +157980,33 @@
     "was": [
      59.7529,
      3.3214,
-     19.468,
+     15.6987,
      0.0005,
      15.643,
      "2015-07-17"
     ],
-    "src": "bseaspx:532121:qtrid86",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.77pp) folded in by a minority route. Healed to the page's own domestic rows (15.6987). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:532121_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.32 -> 7.09, dii 15.70 -> 15.70. generic-row-B Others 3.77 fii: prev 'Foreign Portolio Investor ( Corpor' 13 holders 3.78; inst-sub-fii Others 3.77. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      59.7529,
+      3.3214,
+      15.6987,
+      0.0005,
+      15.643,
+      "2015-07-17"
+     ],
+     "was": [
+      59.7529,
+      3.3214,
+      19.468,
+      0.0005,
+      15.643,
+      "2015-07-17"
+     ],
+     "src": "bseaspx:532121:qtrid86",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.77pp) folded in by a minority route. Healed to the page's own domestic rows (15.6987). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -156873,7 +158035,7 @@
    "2014-12-31": {
     "cell": [
      46.2479,
-     12.0256,
+     13.53,
      2.5373,
      0.0008,
      0.0,
@@ -156882,13 +158044,33 @@
     "was": [
      46.2479,
      12.0256,
-     4.2722,
+     2.5373,
      0.0008,
      0.0,
      "2015-01-14"
     ],
-    "src": "bseaspx:512579:qtrid84",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.73pp) folded in by a minority route. Healed to the page's own domestic rows (2.5373). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bseaspx:512579_84",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 12.03 -> 13.53, dii 2.54 -> 2.54. generic-row-B Any Other 1.5 fii: next 'Foreign Portolio Investor ( Corpor' 4 holders 1.49; inst-sub-fii Any Other 1.5. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      46.2479,
+      12.0256,
+      2.5373,
+      0.0008,
+      0.0,
+      "2015-01-14"
+     ],
+     "was": [
+      46.2479,
+      12.0256,
+      4.2722,
+      0.0008,
+      0.0,
+      "2015-01-14"
+     ],
+     "src": "bseaspx:512579:qtrid84",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.73pp) folded in by a minority route. Healed to the page's own domestic rows (2.5373). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2015-03-31": {
     "cell": [
@@ -159483,6 +160665,26 @@
     ],
     "src": "bseaspx:532715_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.30 -> 5.40, dii 4.96 -> 4.96. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.1. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     35.2066,
+     4.76,
+     4.9696,
+     0.0009,
+     0.0,
+     "2015-07-21"
+    ],
+    "was": [
+     35.2066,
+     4.2256,
+     4.9696,
+     0.0009,
+     0.0,
+     "2015-07-21"
+    ],
+    "src": "bseaspx:532715_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 4.23 -> 4.76, dii 4.97 -> 4.97. generic-row-B Others 0.53 fii: next 'Foreign Portfolio Investments Corp' 4 holders 0.30; inst-sub-fii Others 0.53. Evidence: _shp_164_audit.json"
    }
   },
   "GRINDWELL": {
@@ -161543,6 +162745,26 @@
     ],
     "src": "bseaspx:500210_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.51 -> 0.56, dii 8.20 -> 8.20. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.05. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     73.999,
+     0.71,
+     8.3015,
+     3.8561,
+     4.2999,
+     "2015-07-11"
+    ],
+    "was": [
+     73.999,
+     0.6361,
+     8.3015,
+     3.8561,
+     4.2999,
+     "2015-07-11"
+    ],
+    "src": "bseaspx:500210_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.64 -> 0.71, dii 8.30 -> 8.30. generic-row-B Others 0.07 fii: prev 'Foreign Portolio Investor ( Corpor' 2 holders 0.05; next 'Foreign Portfolio Investments Corp' 3 holders 0.06; inst-sub-fii Others 0.07. Evidence: _shp_164_audit.json"
    }
   },
   "NOCIL": {
@@ -163001,6 +164223,26 @@
     ],
     "src": "bsexbrl:533281_1942018153113_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 1.53 -> 1.53, dii 22.26 -> 24.77. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 2.51 ICICI PRUDENTIAL LIFE INSURANCE COMPANY 1.33(regex); MAX LIFE INSURANCE CO LTD A/C PARTICIPAT 1.18(regex)"
+   },
+   "2015-06-30": {
+    "cell": [
+     57.9785,
+     6.67,
+     14.807,
+     14.6915,
+     0.0,
+     "2015-07-09"
+    ],
+    "was": [
+     57.9785,
+     6.5766,
+     14.807,
+     14.6915,
+     0.0,
+     "2015-07-09"
+    ],
+    "src": "bseaspx:533281_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 6.58 -> 6.67, dii 14.81 -> 14.81. generic-row-C Others 0.09 fii: qtrid 87 'Foreign Portfolio Investments Corp' 3 holders 0.41; inst-sub-fii Others 0.09. Evidence: _shp_164_audit.json"
    }
   },
   "THOMASCOOK": {
@@ -163501,6 +164743,26 @@
     ],
     "src": "bsexbrl:500413_3062022173257_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 0.36 -> 0.36, dii 9.12 -> 9.20. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.08"
+   },
+   "2015-06-30": {
+    "cell": [
+     74.7711,
+     9.95,
+     4.6646,
+     2.3308,
+     2.3223,
+     "2015-07-19"
+    ],
+    "was": [
+     74.7711,
+     9.1116,
+     4.6646,
+     2.3308,
+     2.3223,
+     "2015-07-19"
+    ],
+    "src": "bseaspx:500413_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 9.11 -> 9.95, dii 4.66 -> 4.66. generic-row-B Others 0.84 fii: prev 'Foreign Portfolio Investments Corp' 6 holders 0.51; generic-row-B Others 0.04 pub: prev 'Directors & their Relatives & Frie' 1 holders 0.04; next 'Directors & their Relatives & Frie' 2 holders 0.03; inst-sub-fii Others 0.84. Evidence: _shp_164_audit.json"
    }
   },
   "IGARASHI": {
@@ -172635,7 +173897,7 @@
    "2007-09-30": {
     "cell": [
      43.4454,
-     5.9377,
+     9.2077,
      4.6974,
      0.0227,
      0.3622,
@@ -172644,13 +173906,33 @@
     "was": [
      43.4454,
      5.9377,
-     2.56,
+     4.6974,
      0.0227,
      0.3622,
      "2007-10-21"
     ],
     "src": "bseaspx:517015_55",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.94 -> 5.94, dii 2.56 -> 4.70. generic-row-A Societies 10.58 fii 0.00 / dii 2.14 / rest 8.44: Life Insurance Corporation of India 2.14 (curated); Acacia Institutional Partners LP 1.96 (name marker (fund-type)); Citigroup Global Markets Mauritius Pvt L 1.31 (name marker (fund-type)); Shyamadevi Agrawal 2.50 (2015-form XBRL row); Rachanadevi Agrawal 1.36 (unplaced); Sheetal R Mehta 1.35 (unplaced); noninst-dii Societies [dii part] 2.1374. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 5.94 -> 9.21, dii 4.70 -> 4.70. generic-row-A Societies 10.58 fii 3.27 / dii 2.14 / rest 5.17: Life Insurance Corporation of India 2.14 (curated); Acacia Institutional Partners LP 1.96 (documented:filing); Citigroup Global Markets Mauritius Pvt L 1.31 (documented:filing); Shyamadevi Agrawal 2.50 (2015-form XBRL row); Rachanadevi Agrawal 1.36 (unplaced); Sheetal R Mehta 1.35 (unplaced); noninst-fii Societies [fii part] 3.2677; noninst-dii Societies [dii part] 2.1374. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      43.4454,
+      5.9377,
+      4.6974,
+      0.0227,
+      0.3622,
+      "2007-10-21"
+     ],
+     "was": [
+      43.4454,
+      5.9377,
+      2.56,
+      0.0227,
+      0.3622,
+      "2007-10-21"
+     ],
+     "src": "bseaspx:517015_55",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.94 -> 5.94, dii 2.56 -> 4.70. generic-row-A Societies 10.58 fii 0.00 / dii 2.14 / rest 8.44: Life Insurance Corporation of India 2.14 (curated); Acacia Institutional Partners LP 1.96 (name marker (fund-type)); Citigroup Global Markets Mauritius Pvt L 1.31 (name marker (fund-type)); Shyamadevi Agrawal 2.50 (2015-form XBRL row); Rachanadevi Agrawal 1.36 (unplaced); Sheetal R Mehta 1.35 (unplaced); noninst-dii Societies [dii part] 2.1374. Evidence: _shp_164_audit.json"
+    }
    }
   },
   "TRITURBINE": {
@@ -181473,6 +182755,26 @@
     ],
     "src": "bseaspx:532775_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.49 -> 8.82, dii 38.17 -> 38.17. generic-row-B Others 8.46 pub: prev 'Others' 10 holders 8.72; inst-sub-fii Foreign Bank 0.33. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     27.0446,
+     8.86,
+     38.1668,
+     0.0011,
+     1.2943,
+     "2015-07-15"
+    ],
+    "was": [
+     27.0446,
+     8.5254,
+     38.1668,
+     0.0011,
+     1.2943,
+     "2015-07-15"
+    ],
+    "src": "bseaspx:532775_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 8.53 -> 8.86, dii 38.17 -> 38.17. generic-row-B Others 8.72 pub: prev 'Foreign Corporate Bodies' 8 holders 5.10; next 'Others' 10 holders 8.46; generic-row-B Others 0.33 fii: prev 'Foreign Bank' 1 holders 0.33; next 'Foreign Bank' 1 holders 0.33; inst-sub-fii Others 0.33. Evidence: _shp_164_audit.json"
    }
   },
   "AVANTEL": {
@@ -182504,6 +183806,46 @@
     ],
     "src": "bseaspx:501301_85",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.49 -> 1.55, dii 3.75 -> 3.76. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.06. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [3.76, 1.3174])"
+   },
+   "2015-06-30": {
+    "cell": [
+     73.017,
+     2.19,
+     3.583,
+     2.392,
+     1.1394,
+     "2015-07-10"
+    ],
+    "was": [
+     73.017,
+     2.0744,
+     3.583,
+     2.392,
+     1.1394,
+     "2015-07-10"
+    ],
+    "src": "bseaspx:501301_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.07 -> 2.19, dii 3.58 -> 3.58. generic-row-B Others 0.12 fii: prev 'Foreign Portolio Investor ( Corpor' 1 holders 0.06; next 'Others' 2 holders 0.09; generic-row-B Others 0.09 pub: prev 'Directors & their Relatives & Frie' 10 holders 0.09; next 'Others' 10 holders 0.09; inst-sub-fii Others 0.12. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     73.017,
+     2.23,
+     3.5405,
+     2.392,
+     1.097,
+     "2015-10-20"
+    ],
+    "was": [
+     73.017,
+     2.1415,
+     3.5405,
+     2.392,
+     1.097,
+     "2015-10-20"
+    ],
+    "src": "bseaspx:501301_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.14 -> 2.23, dii 3.54 -> 3.54. generic-row-B Others 0.09 fii: prev 'Others' 2 holders 0.12; generic-row-B Others 0.09 pub: prev 'Others' 10 holders 0.09; inst-sub-fii Others 0.09. Evidence: _shp_164_audit.json"
    }
   },
   "ABINFRA": {
@@ -188190,6 +189532,26 @@
     ],
     "src": "bsexbrl:SHP_129300_35725_16082018115912_WEB.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-28 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 6.73 -> 6.73, dii 2.09 -> 2.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.05"
+   },
+   "2015-06-30": {
+    "cell": [
+     67.1281,
+     6.28,
+     1.2092,
+     1.0653,
+     0.0439,
+     "2015-07-16"
+    ],
+    "was": [
+     67.1281,
+     6.0799,
+     1.2092,
+     1.0653,
+     0.0439,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:532872_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 6.08 -> 6.28, dii 1.21 -> 1.21. generic-row-B Others 0.2 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.20; next 'Foreign Portfolio Investors' 9 holders 0.24; generic-row-B Others 0.03 pub: next 'Directors & their Relatives & Frie' 2 holders 0.03; noninst-fii Others 0.2. Evidence: _shp_164_audit.json"
    }
   },
   "SUPERSPIN": {
@@ -204011,7 +205373,7 @@
    "2015-06-30": {
     "cell": [
      62.1545,
-     10.3159,
+     10.53,
      1.28,
      0.0006,
      0.0,
@@ -204020,13 +205382,33 @@
     "was": [
      62.1545,
      10.3159,
-     0.6666,
+     1.28,
      0.0006,
      0.0,
      "2015-07-29"
     ],
     "src": "bseaspx:533160_86",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.32 -> 10.32, dii 0.67 -> 1.28. generic-row-by-holders Others 12.84 pub [exact]: Walkinson Investments Ltd 5.99 (2015-form XBRL row); Bollywood Mauritius Holdings 2.80 (2015-form XBRL row); IIRF Holdings VI Ltd 4.05 (2015-form XBRL row); std-vcf Venture Capital Funds row 0.61; inst-sub-unresolved Others 0.21 stays as stored. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.32 -> 10.53, dii 1.28 -> 1.28. generic-row-by-holders Others 12.84 pub [exact]: Walkinson Investments Ltd 5.99 (2015-form XBRL row); Bollywood Mauritius Holdings 2.80 (2015-form XBRL row); IIRF Holdings VI Ltd 4.05 (2015-form XBRL row); generic-row-B Others 0.21 fii: prev 'Foreign Portolio Investor ( Corpor' 5 holders 0.21; std-vcf Venture Capital Funds row 0.61; inst-sub-fii Others 0.21. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      62.1545,
+      10.3159,
+      1.28,
+      0.0006,
+      0.0,
+      "2015-07-29"
+     ],
+     "was": [
+      62.1545,
+      10.3159,
+      0.6666,
+      0.0006,
+      0.0,
+      "2015-07-29"
+     ],
+     "src": "bseaspx:533160_86",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.32 -> 10.32, dii 0.67 -> 1.28. generic-row-by-holders Others 12.84 pub [exact]: Walkinson Investments Ltd 5.99 (2015-form XBRL row); Bollywood Mauritius Holdings 2.80 (2015-form XBRL row); IIRF Holdings VI Ltd 4.05 (2015-form XBRL row); std-vcf Venture Capital Funds row 0.61; inst-sub-unresolved Others 0.21 stays as stored. Evidence: _shp_164_audit.json"
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -256357,7 +257739,7 @@
    "2015-06-30": {
     "cell": [
      75.0,
-     1.81,
+     1.98,
      14.61,
      9.1365,
      4.6501,
@@ -256366,13 +257748,33 @@
     "was": [
      75.0,
      1.8128,
-     13.7912,
+     14.61,
      9.1365,
      4.6501,
      "2015-07-15"
     ],
     "src": "bseaspx:522275_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.81 -> 1.81, dii 13.79 -> 14.61. std-vcf Venture Capital Funds row 0.82. Evidence: _shp_aspx_rowfix_audit.json"
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.81 -> 1.98, dii 14.61 -> 14.61. generic-row-B Others 0.17 fii: next 'Foreign Portfolio Investors' 14 holders 0.29; std-vcf Venture Capital Funds row 0.82; noninst-fii Others 0.17. Evidence: _shp_164_audit.json",
+    "superseded": {
+     "cell": [
+      75.0,
+      1.81,
+      14.61,
+      9.1365,
+      4.6501,
+      "2015-07-15"
+     ],
+     "was": [
+      75.0,
+      1.8128,
+      13.7912,
+      9.1365,
+      4.6501,
+      "2015-07-15"
+     ],
+     "src": "bseaspx:522275_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.81 -> 1.81, dii 13.79 -> 14.61. std-vcf Venture Capital Funds row 0.82. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -266055,6 +267457,26 @@
     ],
     "src": "bseaspx:532922_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.04 -> 29.41, dii 1.49 -> 1.49. generic-row-by-holders Others 2.0 fii [exact]: Fidelity Investment Trust Fidelity Inter 2.02 (name marker (fund-type)); noninst-fii Others 2.0; noninst-fii Foreign Portfolio Investors 9.37. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     37.2181,
+     25.66,
+     0.6776,
+     0.628,
+     0.0,
+     "2015-07-22"
+    ],
+    "was": [
+     37.2181,
+     25.5261,
+     0.6776,
+     0.628,
+     0.0,
+     "2015-07-22"
+    ],
+    "src": "bseaspx:532922_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 25.53 -> 25.66, dii 0.68 -> 0.68. generic-row-T Others 5.99 pub: same row walked to qtrid 85 'Foreign Corporate Bodies' 5 holders 6.07; generic-row-B Others 1.0 pub: prev 'Directors & their Relatives & Frie' 3 holders 1.03; next 'Directors & their Relatives & Frie' 4 holders 1.00; generic-row-B Others 0.12 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 0.09; std-fii-rows FPI/QFI/FVCI rows in institutions 0.01; noninst-fii Others 0.12. Evidence: _shp_164_audit.json"
    }
   },
   "ENIL": {
@@ -274729,6 +276151,26 @@
     ],
     "src": "bseaspx:532942_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.71 -> 1.83, dii 25.49 -> 25.49. noninst-fii Foreign Portfolio Investors 0.12. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     60.8607,
+     1.47,
+     25.0503,
+     25.0309,
+     0.0,
+     "2015-07-03"
+    ],
+    "was": [
+     60.8607,
+     1.3463,
+     25.0503,
+     25.0309,
+     0.0,
+     "2015-07-03"
+    ],
+    "src": "bseaspx:532942_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.35 -> 1.47, dii 25.05 -> 25.05. generic-row-B Any Other 0.12 fii: next 'Foreign Portfolio Investors' 2 holders 0.12; noninst-fii Any Other 0.12. Evidence: _shp_164_audit.json"
    }
   },
   "KSL": {
@@ -286479,6 +287921,26 @@
     ],
     "src": "bsexbrl:533553_63201994712_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.69 -> 2.69, dii 19.45 -> 19.51. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.06"
+   },
+   "2015-06-30": {
+    "cell": [
+     54.0519,
+     11.71,
+     22.0061,
+     21.9834,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     54.0519,
+     11.4279,
+     22.0061,
+     21.9834,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:533553_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 11.43 -> 11.71, dii 22.01 -> 22.01. generic-row-by-holders Others 2.64 pub [exact]: Toyo Denki Seizo KK 2.64 (2015-form XBRL row); generic-row-B Others 0.28 fii: prev 'Foreign Port Folio Investor Corpor' 1 holders 0.32; next 'Foreign Portfolio Investors' 1 holders 0.26; noninst-fii Others 0.28. Evidence: _shp_164_audit.json"
    }
   },
   "TFCILTD": {
@@ -290611,6 +292073,26 @@
     ],
     "src": "bseaspx:532938_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.74 -> 8.25, dii 10.26 -> 10.26. noninst-fii Foreign Portfolio Investors 0.51. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     65.2983,
+     8.04,
+     9.9989,
+     5.9885,
+     3.8298,
+     "2015-07-11"
+    ],
+    "was": [
+     65.2983,
+     7.7342,
+     9.9989,
+     5.9885,
+     3.8298,
+     "2015-07-11"
+    ],
+    "src": "bseaspx:532938_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.73 -> 8.04, dii 10.00 -> 10.00. generic-row-B Others 0.31 fii: prev 'Foreign Port Folio Investor Corpor' 2 holders 0.24; next 'Foreign Portfolio Investors' 5 holders 0.51; noninst-fii Others 0.31. Evidence: _shp_164_audit.json"
    }
   },
   "ELDERPHARM": {
@@ -291359,6 +292841,26 @@
     ],
     "src": "bseaspx:533204_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.68 -> 3.35, dii 5.10 -> 5.10. noninst-fii Foreign Portfolio Investments Corporation 2.67. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     71.116,
+     2.72,
+     5.1716,
+     0.0004,
+     3.2511,
+     "2015-07-22"
+    ],
+    "was": [
+     71.116,
+     0.6478,
+     5.1716,
+     0.0004,
+     3.2511,
+     "2015-07-22"
+    ],
+    "src": "bseaspx:533204_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.65 -> 2.72, dii 5.17 -> 5.17. generic-row-by-holders Others 2.07 fii [exact]: Polus Global Fund 2.07 (documented:filing); generic-row-B Others 0.06 pub: prev 'Directors & their Relatives & Frie' 1 holders 0.06; next 'Directors & their Relatives & Frie' 1 holders 0.06; noninst-fii Others 2.07. Evidence: _shp_164_audit.json"
    }
   },
   "GEOMETRIC": {
@@ -291709,6 +293211,26 @@
     ],
     "src": "bsexbrl:514034_157202215657_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 0.00 -> 0.00, dii 2.48 -> 2.56. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.08"
+   },
+   "2015-06-30": {
+    "cell": [
+     53.9358,
+     17.22,
+     4.1004,
+     0.0213,
+     4.0009,
+     "2015-07-11"
+    ],
+    "was": [
+     53.9358,
+     10.069,
+     4.1004,
+     0.0213,
+     4.0009,
+     "2015-07-11"
+    ],
+    "src": "bseaspx:514034_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.07 -> 17.22, dii 4.10 -> 4.10. generic-row-B Others 7.15 fii: next 'Foreign Portfolio Investors' 9 holders 4.84; noninst-fii Others 7.15. Evidence: _shp_164_audit.json"
    }
   },
   "JMTAUTOLTD": {
@@ -291753,6 +293275,26 @@
     ],
     "src": "bsexbrl:513691_1452020212859_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 7.27 -> 7.27, dii 4.97 -> 0.01. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Bodies Corporate 0.0 public=4.96 fii=0.00 VISTRA ITCL (INDIA) LTD 4.96 foreign->public(new-format~:BodiesCorporate)"
+   },
+   "2015-06-30": {
+    "cell": [
+     71.73,
+     17.94,
+     0.01,
+     0.01,
+     0.0,
+     "2015-07-16"
+    ],
+    "was": [
+     71.73,
+     9.79,
+     0.01,
+     0.01,
+     0.0,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:513691_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 9.79 -> 17.94, dii 0.01 -> 0.01. generic-row-by-holders Others 8.15 fii [exact]: Hypnos Fund Ltd 8.15 (2015-form XBRL row); noninst-fii Others 8.15. Evidence: _shp_164_audit.json"
    }
   },
   "JSWISPAT": {
@@ -292147,6 +293689,26 @@
     ],
     "src": "bsexbrl:532778_1912017175923_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 0.38 -> 0.60, dii 4.16 -> 3.95. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.22; R3-nbfc NBFCsRegisteredWithRbi 0.01; D1-unnamed-remainder-in-dii 0.22"
+   },
+   "2015-06-30": {
+    "cell": [
+     67.4508,
+     2.32,
+     4.8405,
+     0.0004,
+     0.0,
+     "2015-07-18"
+    ],
+    "was": [
+     67.4508,
+     1.3435,
+     4.8405,
+     0.0004,
+     0.0,
+     "2015-07-18"
+    ],
+    "src": "bseaspx:532778_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.34 -> 2.32, dii 4.84 -> 4.84. generic-row-B Others 0.98 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 1.40; generic-row-B Others 0.03 pub: prev 'Foreign Corporate Bodies' 1 holders 0.03; next 'Others' 1 holders 0.02; noninst-fii Others 0.98. Evidence: _shp_164_audit.json"
    }
   },
   "MANINFRA": {
@@ -292961,6 +294523,26 @@
     ],
     "src": "bsexbrl:502742_5102016165556_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.38 -> 30.75, dii 16.07 -> 2.80. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Institutional Investors 13.27 public=0.00 fii=13.27 BARCLAYS MERCHANT BANK (SINGAPORE) LTD. 4.56 foreign->fii(documented:filing); MORGAN STANLEY ASIA (SINGAPORE) PTE. 1.66 foreign->fii(curated) keyword; R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii; R2FII-holders Other Foreign Companies 2.97 2.09 Government Of Singapore 2.09 fii(curated)"
+   },
+   "2015-06-30": {
+    "cell": [
+     32.5024,
+     39.65,
+     1.99,
+     1.5331,
+     0.0112,
+     "2015-07-14"
+    ],
+    "was": [
+     32.5024,
+     25.6274,
+     1.99,
+     1.5331,
+     0.0112,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:502742_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 25.63 -> 39.65, dii 1.99 -> 1.99. generic-row-K Others 14.02 fii: all 16 admissible named-holder explanations are fii, e.g. Government of Singapore 2.55 (curated); Platinum Asia Fund 4.66 (2015-form XBRL row); noninst-fii Others 14.02. Evidence: _shp_164_audit.json"
    }
   },
   "SYNDIBANK": {
@@ -293235,6 +294817,46 @@
     ],
     "src": "bseaspx:520056_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.05 -> 0.13, dii 14.91 -> 14.91. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.08. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     75.0,
+     0.15,
+     15.0129,
+     12.2832,
+     0.0,
+     "2015-07-16"
+    ],
+    "was": [
+     75.0,
+     0.0457,
+     15.0129,
+     12.2832,
+     0.0,
+     "2015-07-16"
+    ],
+    "src": "bseaspx:520056_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.05 -> 0.15, dii 15.01 -> 15.01. generic-row-B Others 0.1 fii: prev 'Foreign Portolio Investor ( Corpor' 1 holders 0.08; next 'Others' 1 holders 0.13; generic-row-B Others 0.03 pub: prev 'Directors & their Relatives & Frie' 9 holders 0.03; next 'Directors & their Relatives & Frie' 9 holders 0.03; inst-sub-fii Others 0.1. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     75.0,
+     0.18,
+     15.0498,
+     12.3193,
+     0.0,
+     "2015-10-18"
+    ],
+    "was": [
+     75.0,
+     0.0457,
+     15.0498,
+     12.3193,
+     0.0,
+     "2015-10-18"
+    ],
+    "src": "bseaspx:520056_87",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.05 -> 0.18, dii 15.05 -> 15.05. generic-row-B Others 0.13 fii: prev 'Others' 1 holders 0.10; inst-sub-fii Others 0.13. Evidence: _shp_164_audit.json"
    }
   },
   "UTTAMSTL": {
@@ -293279,6 +294901,26 @@
     ],
     "src": "bsexbrl:513216_217202115841_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 0.09 -> 0.09, dii 0.03 -> 0.50. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.47"
+   },
+   "2015-06-30": {
+    "cell": [
+     60.8703,
+     27.45,
+     0.1457,
+     0.0272,
+     0.0872,
+     "2015-07-24"
+    ],
+    "was": [
+     60.8703,
+     2.5524,
+     0.1457,
+     0.0272,
+     0.0872,
+     "2015-07-24"
+    ],
+    "src": "bseaspx:513216_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.55 -> 27.45, dii 0.15 -> 0.15. generic-row-by-holders Others 24.9 fii [exact]: Albula Investment Fund Limited 9.04 (2015-form XBRL row); Asia Investment Corporation (Mauritius)  5.93 (documented:filing); Cresta Fund Limited 9.91 (2015-form XBRL row); noninst-fii Others 24.9. Evidence: _shp_164_audit.json"
    }
   },
   "VARUNSHIP": {
@@ -293823,6 +295465,26 @@
     ],
     "src": "bseaspx:532401_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.53 -> 2.67, dii 8.17 -> 8.17. noninst-fii Foreign Portfolio Investors 0.14. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     74.0581,
+     3.1,
+     8.1706,
+     0.0,
+     0.8907,
+     "2015-07-21"
+    ],
+    "was": [
+     74.0581,
+     2.9703,
+     8.1706,
+     0.0,
+     0.8907,
+     "2015-07-21"
+    ],
+    "src": "bseaspx:532401_86",
+    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.97 -> 3.10, dii 8.17 -> 8.17. generic-row-B Others 0.13 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 0.12; next 'Foreign Portfolio Investors' 5 holders 0.14; noninst-fii Others 0.13. Evidence: _shp_164_audit.json"
    }
   },
   "ASHIANA": {
