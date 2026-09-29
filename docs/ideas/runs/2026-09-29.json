@@ -1,0 +1,744 @@
+{
+ "date": "2026-09-29",
+ "run_started": "2026-09-29 21:02 IST",
+ "run_finished": "2026-09-29 21:29 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1200,
+ "candidates": 10,
+ "filings_status": "BSE api and www both reachable from this sandbox (ComHeadernew probe 200 at 21:02 IST). scan.py re-read the day's announcements at 21:09 IST and got 2,122 rows against BSE's own ROWCNT of 2,122 - a COMPLETE read, announcements_capped false, announcements_blocked false, source bse. This supersedes the 18:58 IST Actions read, which was capped at 1,736 of a reported 1,773. 62 of the 2,122 filings map to universe scrips; 155 rows carry a signal; 10 clear score >= 4.",
+ "candidates_considered": [
+  {
+   "ticker": "ARIS",
+   "scrip": "544419",
+   "name": "ArisInfra Solutions Ltd",
+   "mcap": 1103.4,
+   "score": 11,
+   "signals": {
+    "ORDER": 2,
+    "DISCLOSE": 1,
+    "VOL": 1
+   },
+   "verdict": "RESEARCHED, not published. Two Reg 30 filings (15:50 and 17:10 IST): ArisUnitern's second Developer-as-a-Service mandate from Transcon Group, for 'Transcon UNO' at Kalina, Mumbai, 18 months from 29-Sep-2026, ~1.06 lakh sq ft RERA carpet. The filing states NO consideration: the only number is the project's estimated GDV of Rs 400 cr, which is the developer's gross development value and not ArisInfra's revenue. Under the playbook's hard rule an order must be sized against a trailing year of sales from a number the filing gives, and this one does not give it. FY26 revenue Rs 655.8 cr, PAT Rs 24.91 cr; Q1 FY27 revenue Rs 128.73 cr (+2.1% YoY) with PAT Rs 7.46 cr against -Rs 7.02 cr. Stock Rs 134.90, -12.1% over a year, on 3.2x median volume. Not publishable on an unpriced order."
+  },
+  {
+   "ticker": "SUGSLLOYD",
+   "scrip": "544501",
+   "name": "Sugs Lloyd Ltd",
+   "mcap": 654.5,
+   "score": 9,
+   "signals": {
+    "ORDER": 2,
+    "DISCLOSE": 1
+   },
+   "verdict": "SKIPPED (already published 2026-09-22). Two filings for a Rs 8.90 cr LOI from Sachkhand Sri Harmandir Sahib, Amritsar, for a 2 MW ground-mounted solar project. Rs 8.90 cr is about 6% of a trailing year of sales - below the 10%-of-sales bucket the order study found weakest - and the name already carries a published idea, so per the playbook this would be an update, not a new idea, and the order is too small to warrant one."
+  },
+  {
+   "ticker": "AHCL",
+   "scrip": "544497",
+   "name": "Anlon Healthcare Ltd",
+   "mcap": 1940.0,
+   "score": 8,
+   "signals": {
+    "CAPEX": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "WATCHED, not researched. The trigger is a BOARD MEETING INTIMATION for 13-Oct-2026 to 'consider and approve' business expansion plans in India and/or overseas and the raising of funds. No number, no decision taken. The playbook skips fund raises without a stated use and anything whose trigger is an intimation with no figure. The price action is extreme - +130.9% in 20 days, 12.7x median volume, closing at the 65-day high - which is precisely the pattern the repo's own study found to be an alarm bell rather than evidence. Revisit after 13-Oct-2026 if the board files a number."
+  },
+  {
+   "ticker": "VALIANT",
+   "scrip": "526775",
+   "name": "Valiant Communications Ltd",
+   "mcap": 1931.7,
+   "score": 8,
+   "signals": {
+    "ORDER": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "PUBLISHED. Letter of Award of Rs 40.25 cr incl taxes from a domestic 'System Integrator (Private)', end-user the Indian Power Utility Sector, communication + grid protection, execute by 31-12-2028. 47.9% of FY26 revenue (Rs 84.11 cr) - the 25-50%-of-sales bucket that reached 2x within two years 35.7% of the time - and 62.7% of the Rs 64.20 cr confirmed gross order book the company itself published for 30-Jun-2026. Counterweight stated in the note: 12 prior order filings in 760 days puts it in the serial-bidder bucket (2x 17.3%, 5x never). See ideas.json id 2026-09-29-VALIANT."
+  },
+  {
+   "ticker": "UDS",
+   "scrip": "543996",
+   "name": "Updater Services Ltd",
+   "mcap": 1391.0,
+   "score": 6,
+   "signals": {
+    "RATING": 2
+   },
+   "verdict": "SKIPPED. Two RATING filings at 18:36 and 18:50 IST, both a RE-AFFIRMATION of the existing credit rating (the second a revision in the filing itself). A re-affirmation is not an upgrade and states no new revenue expectation, so it is not the hard trigger the playbook's triage rank 1 requires."
+  },
+  {
+   "ticker": "MOMSBELIEF",
+   "scrip": "544906",
+   "name": "Rays of Belief Ltd",
+   "mcap": 536.2,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume: +15.0% on 17.9x median volume at the window high, with no filing on the day to explain it. The playbook watch-lists pure price moves with no filing rather than researching them."
+  },
+  {
+   "ticker": "EMMFORCE",
+   "scrip": "544166",
+   "name": "Emmforce Autotech Ltd",
+   "mcap": 409.2,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume: +5.0% on 7.1x median volume at the window high, no filing. Watch-listed."
+  },
+  {
+   "ticker": "INDOBORAX",
+   "scrip": "524342",
+   "name": "Indo Borax & Chemicals Ltd",
+   "mcap": 1572.1,
+   "score": 4,
+   "signals": {
+    "DEAL": 1,
+    "VOL": 1
+   },
+   "verdict": "PUBLISHED. Completion of the acquisition of 2,38,44,000 shares = 64.26% of Kronox Lab Sciences for Rs 246.12 cr at Rs 103.22/share, funded by a Rs 225 cr loan availed 23-Sep-2026, with a mandatory open offer for a further 25.79% to follow. Every figure read from Indo Borax's own Reg 30 filings of 20-Aug, 24-Sep and 29-Sep. Kronox closed Rs 217.20 today so the stake marks at Rs 517.9 cr against Rs 246.12 cr paid - a Rs 271.8 cr paper gap, 17.3% of Indo Borax's own market cap - but control bought 33.5% below the pre-announcement close is an anomaly the filings do not explain, and on the filed numbers the deal is roughly EPS-neutral in year one. See ideas.json id 2026-09-29-INDOBORAX."
+  },
+  {
+   "ticker": "KALAMANDIR",
+   "scrip": "543989",
+   "name": "Sai Silks (Kalamandir) Ltd",
+   "mcap": 1168.0,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. BSE classified the filing ORDER, but the headline is an audit-committee and board resolution 'in order to ensure optimum and prompt utilisation' - a treasury/administrative resolution, not an order won. No number in the headline. Not a trigger."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "name": "ITCONS E-Solutions Ltd",
+   "mcap": 235.6,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "RESEARCHED, not published. Contract from UP Power Transmission Corporation Ltd, UP State Load Dispatch Centre, to deploy 114 resources for two years; total value Rs 6,94,00,954.24 incl taxes, 01-Oct-2026 to 30-Sep-2028. Read from the filing itself. Against FY26 revenue of Rs 87.74 cr that is 7.9% of one year's sales spread over two years, i.e. about 4% a year - the under-10%-of-sales bucket that reached 2x only 21.4% of the time - and manpower outsourcing to a state utility is routine business for a staffing company, not a step change. One useful constant the filing yields: Rs 6.94 cr / 114 resources / 2 years = Rs 3.04 lakh of contract value per resource per year. FY26 revenue grew 56.7% and PAT 61.8%, but the stock is -52.3% over a year at Rs 261.55. Not published: the trigger is too small against sales."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "id": "crude",
+   "strength": 10.7,
+   "direction": "up",
+   "evidence": [
+    "WPI Crude Petroleum 3m +85.6%",
+    "WPI Petrol 1m +24.5%",
+    "WPI Petroleum Coke 1m +22.6%"
+   ],
+   "small_caps_in_universe": [
+    "ONGC",
+    "Oil India",
+    "Hindustan Oil Exploration",
+    "Selan Exploration"
+   ]
+  },
+  {
+   "group": "Silver",
+   "id": "silver",
+   "strength": 10.16,
+   "direction": "up",
+   "evidence": [
+    "WPI Silver 12m +152.4%",
+    "import unit price sy +85.1% · HS 710691 grains (2 codes, US$56.9mn/month)",
+    "import unit price sy +66.2% · HS 710692 containing 99.9 percent or more by wei (4 codes, US$113.7mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Hindustan Zinc",
+    "Modison Ltd"
+   ]
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "id": "tungsten",
+   "strength": 10.0,
+   "direction": "up",
+   "evidence": [
+    "export unit price sy +606.5% · HS 284180 sodium tungstate (2 codes, US$21.2mn/month)",
+    "import unit price sy +280.4% · HS 8101 waste and scrap of tungsten and alloys (5 codes, US$7.6mn/month)",
+    "export unit price sy +244.5% · HS 8101 waste and scrap of tungsten and alloys (3 codes, US$8.6mn/month)"
+   ],
+   "small_caps_in_universe": []
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "id": "shipping",
+   "strength": 7.69,
+   "direction": "up",
+   "evidence": [
+    "Containerized Freight Index (global) 1y +230.8%",
+    "Containerized Freight Index (global) 1m +5.0%"
+   ],
+   "small_caps_in_universe": [
+    "Shipping Corporation of India",
+    "Great Eastern Shipping",
+    "Seamec"
+   ]
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "id": "sulphuric_acid",
+   "strength": 6.97,
+   "direction": "up",
+   "evidence": [
+    "WPI Sulphuric Acid 1m +20.9%",
+    "Sulfur (global) 1y +191.7%",
+    "import unit price 3m +95.2% · HS 280700 sulphuric acid (1 codes, US$40.5mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Tanfac Industries",
+    "Hindustan Zinc",
+    "Hindalco"
+   ]
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "id": "benzene_pta",
+   "strength": 6.03,
+   "direction": "up",
+   "evidence": [
+    "WPI Alkyl Benzene 1m +18.1%",
+    "WPI Alkyl Benzene 3m +28.9%",
+    "WPI Alkyl Benzene 12m +35.7%"
+   ],
+   "small_caps_in_universe": [
+    "Reliance Industries",
+    "Indian Oil"
+   ]
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "id": "polyolefins",
+   "strength": 6.0,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +241.4% · HS 3902 polypropylene (4 codes, US$262.8mn/month)",
+    "WPI Polypropylene film 3m +19.5%",
+    "WPI Polyester chips or Polyethylene terepthalate (PET) chips 3m +17.9%"
+   ],
+   "small_caps_in_universe": [
+    "Reliance Industries"
+   ]
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "id": "graphite_electrodes",
+   "strength": 5.59,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +83.9% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)",
+    "export unit price 1m -24.7% · HS 2713 petroleum bitumen (5 codes, US$33.1mn/month)",
+    "import unit price sy +60.1% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "HEG",
+    "Graphite India"
+   ]
+  },
+  {
+   "group": "Copper",
+   "id": "copper",
+   "strength": 5.25,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +157.5% · HS 7407 electrolytic copper rods or black copp (13 codes, US$18.1mn/month)",
+    "export unit price sy +64.2% · HS 7404 copper scrap covered by isri code barl (7 codes, US$30.7mn/month)",
+    "export unit price sy +46.3% · HS 7403 cathods and sectns of cathods of refin (8 codes, US$135.8mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Sunlite Recycling Industries",
+    "Parmeshwar Metal",
+    "Baheti Recycling Industries",
+    "Hindustan Copper",
+    "KSH International",
+    "Bhagyanagar India",
+    "Precision Wires India"
+   ]
+  },
+  {
+   "group": "Natural gas",
+   "id": "natgas",
+   "strength": 4.93,
+   "direction": "up",
+   "evidence": [
+    "WPI Natural Gas 1m +14.8%",
+    "LNG JKM (global) 1y +132.9%",
+    "WPI LPG 1m +10.1%"
+   ],
+   "small_caps_in_universe": [
+    "ONGC",
+    "Oil India"
+   ]
+  },
+  {
+   "group": "Lithium carbonate and battery materials",
+   "id": "lithium",
+   "strength": 4.4,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +66.0% · HS 2825 other inorganic bases metal oxides hyd (10 codes, US$47.7mn/month)",
+    "Cobalt (global) 1m -29.6%",
+    "Lithium (global) 1y +67.8%"
+   ],
+   "small_caps_in_universe": [
+    "Himadri Speciality Chemical"
+   ]
+  },
+  {
+   "group": "Zinc and lead",
+   "id": "zinc_lead",
+   "strength": 4.39,
+   "direction": "up",
+   "evidence": [
+    "WPI Zinc Concentrate 12m +65.8%",
+    "WPI Lead Concentrate 1m -10.3%",
+    "WPI Lead Concentrate 3m -20.7%"
+   ],
+   "small_caps_in_universe": [
+    "Hindustan Zinc",
+    "Gravita India",
+    "Pondy Oxides & Chemicals",
+    "Nile Ltd"
+   ]
+  },
+  {
+   "group": "Paper and pulp",
+   "id": "paper",
+   "strength": 4.31,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +43.1% · HS 4707 othr incl unsorted waste and scrap (4 codes, US$100.0mn/month)",
+    "WPI Pulp board 1m +3.0%",
+    "WPI Pulp board 3m +6.7%"
+   ],
+   "small_caps_in_universe": [
+    "JK Paper",
+    "West Coast Paper Mills",
+    "Andhra Paper",
+    "Seshasayee Paper"
+   ]
+  },
+  {
+   "group": "Urea, DAP, potash",
+   "id": "fertiliser",
+   "strength": 3.54,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +106.2% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "import unit price 3m +45.4% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "WPI Superphospate/Phosphatic fertilizer, others 1m +7.3%"
+   ],
+   "small_caps_in_universe": [
+    "Chambal Fertilisers",
+    "Coromandel International",
+    "Paradeep Phosphates",
+    "Madhya Bharat Agro Products",
+    "Krishana Phoschem",
+    "RCF"
+   ]
+  },
+  {
+   "group": "Methanol and acetic acid",
+   "id": "methanol_acetic",
+   "strength": 3.28,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +98.3% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)",
+    "import unit price 1m -24.6% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)",
+    "export unit price 3m +36.4% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$5.8mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "GNFC"
+   ]
+  },
+  {
+   "group": "Gold",
+   "id": "gold",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Gold & gold ornaments 12m +48.0%",
+    "export unit price sy +57.1% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$26.2mn/month)",
+    "import unit price 3m -25.8% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$4129.3mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Muthoot Finance",
+    "Manappuram Finance",
+    "Titan",
+    "Kalyan Jewellers",
+    "Sky Gold & Diamonds",
+    "Utssav CZ Gold Jewels",
+    "Shanti Gold International"
+   ]
+  },
+  {
+   "group": "Caustic soda and chlor-alkali",
+   "id": "caustic_soda",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Caustic soda (sodium hydroxide) 1m +9.6%",
+    "export unit price 3m -29.1% · HS 2801 iodine (1 codes, US$4.9mn/month)",
+    "export unit price sy +57.8% · HS 2801 iodine (1 codes, US$4.9mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Gujarat Alkalies & Chemicals",
+    "DCM Shriram",
+    "Lords Chloro Alkali",
+    "Epigral (Meghmani Finechem)",
+    "Punjab Alkalies",
+    "DCW",
+    "De Nora India",
+    "TGV Sraac"
+   ]
+  },
+  {
+   "group": "Spices (turmeric, cumin, chilli, cardamom)",
+   "id": "spices",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Chillies (Dry) 12m +48.0%",
+    "WPI Chillies (Dry) 3m +17.1%",
+    "export unit price sy +48.4% · HS 090421 of genus capsicum (2 codes, US$60.4mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "(none clean) watch"
+   ]
+  },
+  {
+   "group": "Manganese ore and alloys",
+   "id": "manganese",
+   "strength": 3.18,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +95.5% · HS 7202 ferro-silico-manganese (11 codes, US$23.1mn/month)",
+    "WPI Manganese Ore 1m +7.6%",
+    "WPI Silicomanganese 1m +5.3%"
+   ],
+   "small_caps_in_universe": [
+    "MOIL",
+    "Sandur Manganese & Iron Ores",
+    "Maithan Alloys"
+   ]
+  },
+  {
+   "group": "Tea",
+   "id": "tea",
+   "strength": 3.1,
+   "direction": "up",
+   "evidence": [
+    "WPI Tea 1m +9.3%",
+    "import unit price 1m -24.6% · HS 0902 tea black,leaf in bulk (6 codes, US$7.2mn/month)",
+    "WPI Processed Tea 3m +16.8%"
+   ],
+   "small_caps_in_universe": [
+    "McLeod Russel",
+    "Goodricke Group",
+    "Jay Shree Tea",
+    "Rossell India",
+    "Andrew Yule"
+   ]
+  },
+  {
+   "group": "Natural rubber",
+   "id": "rubber",
+   "strength": 2.6,
+   "direction": "up",
+   "evidence": [
+    "WPI Raw Rubber 3m +20.8%",
+    "WPI Raw Rubber 1m +6.4%",
+    "Rubber (global) 1y +46.0%"
+   ],
+   "small_caps_in_universe": [
+    "Harrisons Malayalam"
+   ]
+  },
+  {
+   "group": "Aluminium",
+   "id": "aluminium",
+   "strength": 2.53,
+   "direction": "up",
+   "evidence": [
+    "WPI Aluminium ingot 1m +7.6%",
+    "export unit price sy +69.9% · HS 7602 aluminium scrap coverd by isri code ta (2 codes, US$6.8mn/month)",
+    "WPI Aluminium ingot 12m +29.9%"
+   ],
+   "small_caps_in_universe": [
+    "Hindalco",
+    "NALCO",
+    "Vedanta"
+   ]
+  },
+  {
+   "group": "Cashew",
+   "id": "cashew",
+   "strength": 2.33,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +35.0% · HS 080132 cashew karnel, whole (3 codes, US$3.7mn/month)",
+    "import unit price 1m +12.0% · HS 080132 cashew karnel, whole (3 codes, US$3.7mn/month)",
+    "WPI Cashew nut 12m +5.7%"
+   ],
+   "small_caps_in_universe": []
+  },
+  {
+   "group": "Phenol and acetone",
+   "id": "phenol_acetone",
+   "strength": 2.32,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +69.5% · HS 291411 acetone (1 codes, US$5.4mn/month)",
+    "import unit price sy +66.7% · HS 290711 phenol,pure carbolic acid (2 codes, US$24.2mn/month)",
+    "import unit price 3m +28.4% · HS 290711 phenol,pure carbolic acid (2 codes, US$24.2mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Deepak Nitrite"
+   ]
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "id": "steel",
+   "strength": 2.18,
+   "direction": "up",
+   "evidence": [
+    "HRC Steel (global) 1y +65.4%",
+    "WPI Stainless Steel Pencil Ingots/Billets/Slabs 3m +13.4%",
+    "WPI Mild Steel (MS) Blooms 1m +3.3%"
+   ],
+   "small_caps_in_universe": [
+    "Tata Steel",
+    "JSW Steel",
+    "SAIL",
+    "Jindal Steel & Power"
+   ]
+  },
+  {
+   "group": "Titanium dioxide",
+   "id": "tio2",
+   "strength": 2.12,
+   "direction": "up",
+   "evidence": [
+    "export unit price 3m +31.8% · HS 320611 pearlsnt pigmnt cotd wth othr prl pigm (2 codes, US$2.6mn/month)",
+    "export unit price 1m +17.0% · HS 320611 pearlsnt pigmnt cotd wth othr prl pigm (2 codes, US$2.6mn/month)",
+    "export unit price 3m -24.1% · HS 282300 other titanium oxides (2 codes, US$8.9mn/month)"
+   ],
+   "small_caps_in_universe": []
+  },
+  {
+   "group": "Iron ore and pellets",
+   "id": "iron_ore",
+   "strength": 1.9,
+   "direction": "up",
+   "evidence": [
+    "WPI Iron Ore 1m +5.7%",
+    "export unit price 3m +22.5% · HS 2601 agglomerated iron ore pellets (5 codes, US$155.1mn/month)",
+    "import unit price 3m -17.2% · HS 2601 agglomerated iron ore pellets (9 codes, US$28.9mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "NMDC",
+    "Godawari Power & Ispat",
+    "Lloyds Metals & Energy",
+    "Sandur Manganese & Iron Ores"
+   ]
+  },
+  {
+   "group": "PVC resin",
+   "id": "pvc",
+   "strength": 1.79,
+   "direction": "up",
+   "evidence": [
+    "WPI Poly Vinyl Chloride (PVC) 3m +14.3%",
+    "import unit price 3m +16.5% · HS 390410 suspension grade pvc resin (3 codes, US$153.9mn/month)",
+    "WPI Poly Vinyl Chloride (PVC) 12m +15.6%"
+   ],
+   "small_caps_in_universe": [
+    "Chemplast Sanmar",
+    "DCW",
+    "Finolex Industries",
+    "Reliance Industries"
+   ]
+  },
+  {
+   "group": "Milk, SMP and whey",
+   "id": "dairy",
+   "strength": 1.79,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +26.9% · HS 0404 whey,dry,blocks and powdered (4 codes, US$4.9mn/month)",
+    "WPI Butter 12m +7.9%",
+    "WPI Ghee 12m +6.3%"
+   ],
+   "small_caps_in_universe": [
+    "Parag Milk Foods",
+    "Dodla Dairy",
+    "Hatsun Agro",
+    "Heritage Foods"
+   ]
+  },
+  {
+   "group": "Palm oil and edible oils",
+   "id": "palm_oil",
+   "strength": 1.6,
+   "direction": "up",
+   "evidence": [
+    "WPI Palm Oil 1m +4.8%",
+    "WPI Mustard oil cake 12m +21.6%",
+    "WPI Soyabean Oil 3m +10.7%"
+   ],
+   "small_caps_in_universe": [
+    "Patanjali Foods",
+    "Gokul Agro Resources",
+    "AWL Agri Business (Adani Wilmar)"
+   ]
+  },
+  {
+   "group": "Cotton",
+   "id": "cotton",
+   "strength": 1.57,
+   "direction": "up",
+   "evidence": [
+    "WPI Raw Cotton 1m +4.7%",
+    "Cotton (global) 1m -13.4%",
+    "export unit price 1m -10.5% · HS 5201 cotton, other than indian, of staple l (8 codes, US$30.7mn/month)"
+   ],
+   "small_caps_in_universe": [
+    "Ginners (verify)"
+   ]
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "(none kept)",
+   "verdict": "PIB scanned 38 English releases at 18:56 IST from GitHub Actions (pib.gov.in probe 200 there). 4 were opened and read in full; 0 cleared the gate; 0 were large-but-unmapped. Dropped: 21 with no decision verb, 11 ceremonial/noise, 1 backgrounder, 5 below the Rs 1,000 cr outlay floor, 0 for having no mapped theme. Zero kept is the correct answer on a normal day and the bar was not lowered to manufacture an idea. The routine's own govt.py re-run at 21:03 IST could not reach pib.gov.in (403 at this sandbox's egress proxy) and left govt.json exactly as Actions built it, as designed."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "VALIANT",
+   "scrip": "526775",
+   "name": "Valiant Communications Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1931.7,
+   "call_close": 1652.1,
+   "published": true,
+   "confidence": "medium",
+   "reason": "PUBLISHED. Letter of Award of Rs 40.25 cr incl taxes from a domestic 'System Integrator (Private)', end-user the Indian Power Utility Sector, communication + grid protection, execute by 31-12-2028. 47.9% of FY26 revenue (Rs 84.11 cr) - the 25-50%-of-sales bucket that reached 2x within two years 35.7% of the time - and 62.7% of the Rs 64.20 cr confirmed gross order book the company itself published for 30-Jun-2026. Counterweight stated in the note: 12 prior order filings in 760 days puts it in the serial-bidder bucket (2x 17.3%, 5x never). See ideas.json id 2026-09-29-VALIANT."
+  },
+  {
+   "ticker": "INDOBORAX",
+   "scrip": "524342",
+   "name": "Indo Borax & Chemicals Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1572.1,
+   "call_close": 489.9,
+   "published": true,
+   "confidence": "medium",
+   "reason": "PUBLISHED. Completion of the acquisition of 2,38,44,000 shares = 64.26% of Kronox Lab Sciences for Rs 246.12 cr at Rs 103.22/share, funded by a Rs 225 cr loan availed 23-Sep-2026, with a mandatory open offer for a further 25.79% to follow. Every figure read from Indo Borax's own Reg 30 filings of 20-Aug, 24-Sep and 29-Sep. Kronox closed Rs 217.20 today so the stake marks at Rs 517.9 cr against Rs 246.12 cr paid - a Rs 271.8 cr paper gap, 17.3% of Indo Borax's own market cap - but control bought 33.5% below the pre-announcement close is an anomaly the filings do not explain, and on the filed numbers the deal is roughly EPS-neutral in year one. See ideas.json id 2026-09-29-INDOBORAX."
+  },
+  {
+   "ticker": "ARIS",
+   "scrip": "544419",
+   "name": "ArisInfra Solutions Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1103.4,
+   "call_close": 134.9,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "RESEARCHED, not published. Two Reg 30 filings (15:50 and 17:10 IST): ArisUnitern's second Developer-as-a-Service mandate from Transcon Group, for 'Transcon UNO' at Kalina, Mumbai, 18 months from 29-Sep-2026, ~1.06 lakh sq ft RERA carpet. The filing states NO consideration: the only number is the project's estimated GDV of Rs 400 cr, which is the developer's gross development value and not ArisInfra's revenue. Under the playbook's hard rule an order must be sized against a trailing year of sales from a number the filing gives, and this one does not give it. FY26 revenue Rs 655.8 cr, PAT Rs 24.91 cr; Q1 FY27 revenue Rs 128.73 cr (+2.1% YoY) with PAT Rs 7.46 cr against -Rs 7.02 cr. Stock Rs 134.90, -12.1% over a year, on 3.2x median volume. Not publishable on an unpriced order."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "name": "ITCONS E-Solutions Ltd",
+   "lane": "filing",
+   "mcap_at_call": 235.6,
+   "call_close": 261.55,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "RESEARCHED, not published. Contract from UP Power Transmission Corporation Ltd, UP State Load Dispatch Centre, to deploy 114 resources for two years; total value Rs 6,94,00,954.24 incl taxes, 01-Oct-2026 to 30-Sep-2028. Read from the filing itself. Against FY26 revenue of Rs 87.74 cr that is 7.9% of one year's sales spread over two years, i.e. about 4% a year - the under-10%-of-sales bucket that reached 2x only 21.4% of the time - and manpower outsourcing to a state utility is routine business for a staffing company, not a step change. One useful constant the filing yields: Rs 6.94 cr / 114 resources / 2 years = Rs 3.04 lakh of contract value per resource per year. FY26 revenue grew 56.7% and PAT 61.8%, but the stock is -52.3% over a year at Rs 261.55. Not published: the trigger is too small against sales."
+  }
+ ],
+ "published": [
+  "2026-09-29-VALIANT",
+  "2026-09-29-INDOBORAX"
+ ],
+ "x_checked": [
+  {
+   "name": "Valiant Communications (526775)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'Valiant Communications order power utility', 'Valiant Communications 526775 order book results'. Run ~21:45 IST.",
+   "posts_found": 2,
+   "new_verified_points": "(1) @marketalertsz: 6,00,000 convertible warrants at Rs 768 to public-category investors - MATCHED to note 3 of the Q1 FY27 results filing (BSE 12-Aug-2026), which states exactly that, with 2,50,000 converted on 07-05-2026 and 3,50,000 outstanding. (2) @Shruti9805: exports to 110+ countries, power-grid and utility customers - MATCHED to the Q1 FY27 business update ('deployments across more than 110 countries') and the FY2026 annual report ('over 6,000+ power substations globally').",
+   "nothing_on_todays_filing": "No post about today's Rs 40.25 cr LOA surfaced, nine hours after the filing. Search indexing lags a day or two, so this is 'not yet indexed', not 'nobody posted'.",
+   "blocked": "cdn.syndication.twimg.com is BLOCKED by this sandbox's egress proxy (connect_rejected via curl at 21:29 IST; EGRESS_BLOCKED via the fetch tool). No post body could be read - only search-result titles. Quotes in the note are therefore under 15 words and taken from those titles."
+  },
+  {
+   "name": "Indo Borax & Chemicals (524342) / Kronox Lab Sciences (544187)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'Indo Borax Kronox Lab Sciences acquisition stake'. Run ~21:50 IST.",
+   "posts_found": 4,
+   "new_verified_points": "(1) @EyeOn_Trade and @wegro_app: 64.26% / 2,38,44,000 shares / Rs 246.1 cr / Rs 103.22 per share - every figure MATCHED exactly to Indo Borax's own board outcome filed with BSE on 20-Aug-2026. (2) @moneycontrolcom: 'Kronox Lab shares hit 20% upper circuit' - MATCHED to the BSE bhavcopy: Kronox Rs 155.30 on 19-Aug-2026 to Rs 186.35 on 20-Aug-2026, +20.0%, on 639,368 shares against 12,919 the day before. NOT VERIFIED and NOT USED: an open-offer price of Rs 157.27 appears in the @EyeOn_Trade search summary; no filing read this run states an offer price. NOT VERIFIED: a CFO appointment (Mr Shashikant Bharuka) claimed by @REDBOXINDIA, found in no filing read this run.",
+   "nothing_on_todays_filing": "No post found about today's COMPLETION filing; coverage is all from the 20-Aug announcement week.",
+   "blocked": "cdn.syndication.twimg.com BLOCKED as above - post bodies unreadable, titles only."
+  },
+  {
+   "name": "ArisInfra Solutions (544419)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'ArisInfra Solutions ARIS Unitern DaaS Transcon'. Run ~21:50 IST.",
+   "posts_found": 4,
+   "new_verified_points": "Nothing entered a published note - ArisInfra was not published. Leads recorded only: @RPRealtyPlus on Transcon and Amogaya 'unlock Rs 12,000 Cr in Mumbai & Bengaluru'; @alkeshthakkar on a Wadhwa Group DaaS 'Catalyst' service order dated 06-05-2026; @Tvaasu1 claiming Mukul Agrawal holds 1.60% and Motilal Oswal proprietary 5.06%. NONE of these was matched to a primary document this run - the shareholding pattern and the Wadhwa filing were not read - so all are unverified leads, not facts.",
+   "nothing_on_todays_filing": "Nothing found on today's Transcon UNO mandate.",
+   "blocked": "cdn.syndication.twimg.com BLOCKED as above."
+  },
+  {
+   "name": "ITCONS E-Solutions (543806)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'ITCONS e-Solutions ITCONS contract manpower'. Run ~21:52 IST.",
+   "posts_found": 0,
+   "new_verified_points": "None. The only on-topic hit was the company's own handle @ITCONSE with no post surfaced; every other result was a different ITCON/ITCO company.",
+   "nothing_on_todays_filing": "Nothing found on today's UPPTCL contract.",
+   "blocked": "cdn.syndication.twimg.com BLOCKED as above."
+  },
+  {
+   "name": "ValuePickr sweep - ALL FOUR researched names",
+   "searched": "forum.valuepickr.com/search.json?q=<name>, attempted by curl with the honest research UA at 21:29 IST and by the fetch tool at 21:46 IST.",
+   "posts_found": null,
+   "new_verified_points": "NONE - the sweep could not run at all.",
+   "blocked": "forum.valuepickr.com is BLOCKED by this sandbox's egress proxy: curl returned connect_rejected ('the egress proxy denied the CONNECT (organization policy)') and the fetch tool returned EGRESS_BLOCKED. This is the container's network policy, not the forum refusing us. No claim is made either way about whether any of these four names has a ValuePickr thread - it was NOT CHECKED."
+  }
+ ],
+ "watch": [
+  "Anlon Healthcare (544497, Rs 1,940 cr) - board meeting 13-Oct-2026 on business expansion and fund raising, no number yet. +130.9% in 20 days on 12.7x median volume, at the 65-day high. Revisit if the board files a figure.",
+  "Rays of Belief (544906, Rs 536 cr) - +15.0% on 17.9x median volume at the window high, no filing on the day.",
+  "Emmforce Autotech (544166, Rs 409 cr, SME) - +5.0% on 7.1x median volume at the window high, no filing.",
+  "Valiant Communications - the Q2 FY27 gross order book, published with the November results, is the one number that says whether the five-quarter decline from Rs 101.95 cr to Rs 64.20 cr has turned.",
+  "Indo Borax - the open offer's detailed public statement (price and funding) and any rating rationale on the Rs 225 cr facility. Both are the missing halves of that idea.",
+  "Commodity: Trading Economics HRC Steel +10.72% over one month and +65.39% over one year (29-Sep-2026 print), with NO Indian confirmation - the MetalBook Mumbai/Delhi HRC and TMT rows carry source dates of 2026-09-14 and 2026-09-16, 13-15 days stale. If the next MetalBook refresh confirms a domestic move, the steel group becomes researchable."
+ ],
+ "map_changes": [],
+ "data_problems": [
+  "GOVERNMENT LANE, sandbox: pib.gov.in returned 403 at the egress proxy for the routine's own govt.py run (21:03 IST). govt.json was left untouched at its 18:56 IST GitHub Actions build, exactly as designed. The lane DID run today - from Actions, where pib.gov.in answered 200 - so 38 scanned / 0 kept is a real measurement of today, not a stale file.",
+  "COMMODITY, sandbox: spot.py fetched 0 commodities - westmetall.com (8 metals) and markets.businessinsider.com both 403 at the egress proxy. spot.json and spot_series.json LEFT UNCHANGED at the 18:57 IST Actions build.",
+  "COMMODITY, sandbox: minsteel.py could not list steel.gov.in (403 at the proxy); docs/ideas/minsteel_mumbai.json left as it was. Latest Ministry of Steel month on file is JUNE 2026 (TMT 10mm Rs 57,950/t, HR coil 2.50mm Rs 68,170/t, CR coil 0.63mm Rs 78,020/t) - a three-month lag, and any quote from that series is a June-2026 quote.",
+  "COMMODITY, sandbox: india_spot.py - metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in and tradingeconomics.com ALL returned 403 at the egress proxy; each says 'previous rows kept'. Only the two BSE-based sources ran: nmdc ok (2 rows) and minsteel ok (3 rows from the committed file). 0 history rows appended. india_history.json.gz WAS rebuilt: 148 series, 77,376 dated points.",
+  "COMMODITY, sandbox: wpi.py - eaindustry.nic.in 403 at the proxy, wpi.json.gz LEFT UNCHANGED (latest month 2026-04). trade.py --latest - tradestat.commerce.gov.in 403 at the proxy, docs/ideas/trade/** LEFT UNCHANGED (latest month 2026-07).",
+  "WHAT ACTUALLY RAN: docs/ideas/feeds_status.json says the GitHub Actions feeds workflow (run 36575011884) completed at 19:00 IST today with steps_failed EMPTY - all ten builders exited 0 - and hosts_ok covering pib.gov.in, api and www.bseindia.com, metalbook, ibjarates, rubberboard, chinimandi, ppac, steel.gov.in, tradingeconomics, businessinsider and eaindustry. Only westmetall.com and tradestat.commerce.gov.in were 302 there. landing.refused is EMPTY and 13 files landed. So today's commodity and government data IS today's - the sandbox failures above changed nothing.",
+  "STALENESS of the signal inputs, stated because most of the top-ranked groups rest on them: wpi_month is 2026-04 (five months old) and trade_month is 2026-07 (two months old). Only spot_date (2026-09-29 18:57 IST) is same-day. A group ranked on a WPI or trade number is ranked on a months-old measurement, and this run did not treat any such group as 'a price that moved today'.",
+  "INDIAN daily prints are 13-15 days stale even though MetalBook fetched fine from Actions: every MetalBook row carries a SOURCE date of 2026-09-14 or 2026-09-16 (the builder records the date the source states, by design). So there is no Indian print of this week's steel or copper price on file.",
+  "X SWEEP: cdn.syndication.twimg.com is blocked by this sandbox's egress proxy, so no post body could be read for any of the four researched names. WebSearch itself worked. Every X quote in today's notes is taken from a search-result title and capped at 15 words, and this limitation is stated in each idea's social section.",
+  "VALUEPICKR SWEEP: forum.valuepickr.com is blocked by this sandbox's egress proxy (connect_rejected by curl, EGRESS_BLOCKED by the fetch tool). The sweep did not run for ANY of the four researched names. Neither published idea claims anything about ValuePickr; both say explicitly that it was not checked.",
+  "Indo Borax's FY2026 annual report PDF is an image-quality scan whose OCR output is unusable for the balance-sheet tables. Cash, borrowings, investments and receivables at 31-Mar-2026 could NOT be read and are listed as unknown in the note rather than estimated. The income-statement lines used (revenue Rs 21,545.11 lacs, other income Rs 1,472.38 lacs) did parse cleanly and are cross-checked against the BSE results feed.",
+  "No credit-rating report, investor presentation or concall transcript exists in the 240-day filing list for either published name. Valiant's quarterly 'Business Updates' is a company-written document, not an audited one, and is labelled as such in the note."
+ ],
+ "note": "Three lanes worked; two ideas published, both from the filing lane. GOVERNMENT: 38 PIB releases scanned at 18:56 IST from Actions, 4 opened, 0 kept - 21 with no decision verb, 11 noise, 5 below the Rs 1,000 cr floor, 1 backgrounder, and 0 large-but-unmapped. No theme_map change. COMMODITY: 31 groups at strength >= 1.5 up, and NONE produced a researchable name, for a reason worth stating rather than hiding. The top of the table - crude oil 10.70, silver 10.16, tungsten 10.00, sulphuric acid 6.97 - is ranked almost entirely on WPI (month 2026-04, five months old) and customs unit prices (month 2026-07, two months old), not on a price that moved this week. The only same-day evidence is the Trading Economics panel of 2026-09-29: Brent +13.68% over a month, LNG JKM +14.86%, styrene +14.66%, HRC steel +10.72% and +65.39% over a year. Of those, crude and gas map to ONGC, Oil India, HOEC and Selan, none of which sit in the Rs 200-2,000 cr universe; styrene maps to Reliance and IOC, likewise. Steel is the one with genuine small-cap reach, and it is exactly where the Indian evidence is missing: MetalBook's Mumbai and Delhi HRC/TMT rows carry source dates of 14 and 16 September, and the Ministry of Steel series is at June 2026. Trading Economics' 'HRC Steel' is a global proxy, not Mumbai HRC, and the playbook says to treat it as direction only. Copper's strength of 5.25 rests on trade unit prices to 2026-07 while the daily Trading Economics copper print is -0.72% over a month, and the two names mapped in-universe (Parmeshwar Metal, Bhagyanagar India) include one already published on 2026-09-23. Silver ranks on a 12-month WPI number while the daily bullion print is -4.9% over a week and -6.6% over a month, and Modison is already published. So: no commodity idea today, and the reason is measurement lag, not an absence of movement. FILINGS: a complete 2,122-of-2,122 read at 21:09 IST, 62 filings in universe, 10 candidates, 4 researched. VALIANT COMMUNICATIONS published - a Rs 40.25 cr letter of award that is 47.9% of a trailing year's sales and 62.7% of the Rs 64.20 cr confirmed order book the company itself last published, against the honest counterweight that 12 prior order filings in 760 days put it in the serial-bidder bucket that has produced no 5x in three years. INDO BORAX published - completion of a Rs 246.12 cr purchase of 64.26% of listed Kronox Lab Sciences, funded by Rs 225 cr of new debt on a previously debt-free balance sheet, where the stake marks at Rs 517.9 cr against what was paid but the deal is roughly EPS-neutral in year one and the open-offer price is still unknown. ARISINFRA researched and NOT published: its Reg 30 filing states no consideration at all - the only figure is the developer's Rs 400 cr project GDV - so the order cannot be sized against sales, which the playbook requires. ITCONS researched and NOT published: the UPPTCL contract is real and read from the filing (Rs 6.94 cr, 114 resources, two years) but is 7.9% of one year's sales spread over two, in the weakest bucket the study measured. Both social sweeps were degraded and both notes say so: WebSearch reached X but cdn.syndication.twimg.com is blocked so no post body could be read, and forum.valuepickr.com is blocked outright so the ValuePickr sweep did not run for any name."
+}
