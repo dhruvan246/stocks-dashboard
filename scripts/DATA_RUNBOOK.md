@@ -20613,6 +20613,16 @@ file reads cleanly, 69.81 + 30.18).
 quarter (2016+) with 2+ BSE XBRL versions, parse each version and find which one the earliest served row reproduces (promoter + MF,
 then FII). On the 1,555 quarters whose files were cached: 0 served a revision's figures before the revision; 179 serve the
 original where versions differ; 1,326 versions identical; 24 match no single version (row rules moved them).
+**Batch 6e (2026-09-29): 5 more cells.** Table III re-reads under the merged tickers (code override `SYM|qe|code=NNNNNN`):
+ACLGATI Dec-2015 16.05 -> 11.10 (= Quantmac; Kintetsu World Express -> public as in its other quarters), HEXAWARE Mar-2016 5.03
+-> 10.53 (= Quantmac 10.52; neighbours 9.78 / 9.65). Jun-2015 (qtrid 86) BSE pages render some NON-institution sub-rows only as
+'Others'; the generic-row rule (§160/§164g, so far institutional block only) is applied where the company's own neighbouring
+filings label that row: an exact match (MTEDUCARE: 1 holder 2.20 % = Mar-2015 'Foreign Portfolio Investments Corporation' -> 23.99
+= Quantmac) or a row lying between the Mar-2015 and Sep-2015 labelled foreign-portfolio rows in both holder count and size (CAIRN:
+89 holders 2.26 between 71 / 1.66 and 115 / 2.81 -> 15.76 = Quantmac; JISLJALEQS: 21 holders 7.27 between 19 / 6.23 and 29 / 9.03 ->
+48.77, Quantmac 48.83). Held (no label evidence): JBFIND, KSB, NAVNETEDUL, NAVA Jun-2015; RNAVAL Dec-2015 (stored 46.42 from a
+page-seam fill is wrong — Table III names Indian companies + Sembcorp Marine in the institutional block — but their classes are not
+documented yet). Checked, ours = the page's FII row: HEXAWARE Jun-2009 / Jun-2013, KSOILS Mar-2009. Rebuilt feed: 5 / 5 exact.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

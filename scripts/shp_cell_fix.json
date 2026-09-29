@@ -36856,7 +36856,7 @@
    "2015-06-30": {
     "cell": [
      28.6862,
-     41.5,
+     48.77,
      2.0106,
      1.2535,
      0.0,
@@ -36864,14 +36864,34 @@
     ],
     "was": [
      28.6862,
-     31.8538,
+     41.5,
      2.0106,
      1.2535,
      0.0,
      "2015-07-09"
     ],
-    "src": "bseaspx:500219_86",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 31.85 -> 41.50, dii 2.01 -> 2.01. std-fii-rows FPI/QFI/FVCI rows in institutions 9.65. Evidence: _shp_164_audit.json"
+    "src": "bseaspx:500219:86 + neighbouring pages 85/87",
+    "why": "\u00a7164r batch 6e (Quantmac v5): BSE's Jun-2015 page renders a non-institution sub-row without its label; the page's non-institution row shows only 'Others' (21 holders, 7.27 %); the company labels the same row 'Foreign Portfolio Investments Corporation' in Mar-2015 (19 holders, 6.23 %) and 'Foreign Portfolio Investors' in Sep-2015 (29 holders, 9.03 %) - this quarter's row sits between them, so the row is the company's foreign portfolio holding (page-era generic-row rule, \u00a7160/\u00a7164g, applied to the non-institution block). fii 41.50 -> 48.77.",
+    "superseded": {
+     "cell": [
+      28.6862,
+      41.5,
+      2.0106,
+      1.2535,
+      0.0,
+      "2015-07-09"
+     ],
+     "was": [
+      28.6862,
+      31.8538,
+      2.0106,
+      1.2535,
+      0.0,
+      "2015-07-09"
+     ],
+     "src": "bseaspx:500219_86",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 31.85 -> 41.50, dii 2.01 -> 2.01. std-fii-rows FPI/QFI/FVCI rows in institutions 9.65. Evidence: _shp_164_audit.json"
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -78001,6 +78021,26 @@
     ],
     "src": "bsexbrl:532345_301202012613_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.70 -> 4.70, dii 0.52 -> 1.29. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others ALTERNATE INVESTMENT FUND 0.76 ; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+   },
+   "2015-12-31": {
+    "cell": [
+     41.3246,
+     11.0966,
+     0.4605,
+     0.1038,
+     0.0,
+     "2016-01-28"
+    ],
+    "was": [
+     41.32,
+     16.05,
+     0.41,
+     0.1,
+     0.0,
+     "2016-01-28"
+    ],
+    "src": "bsetable3:532345:88 + bseaspx:532345:88",
+    "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 88) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 16.05 -> 11.10, dii 0.41 -> 0.46. Rows: B1i-label Kintetsu World Express Inc (Foreign Corp 4.95 pub; B3b-NBFC R3 0.04 dii"
    }
   },
   "ADANIENSOL": {
@@ -97785,6 +97825,26 @@
     ],
     "src": "bsexbrl:532129_6102018113135_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 19.39 -> 19.57, dii 8.44 -> 8.25. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.18 public=0.00 fii=0.18  keyword"
+   },
+   "2016-03-31": {
+    "cell": [
+     71.2906,
+     10.5294,
+     7.6521,
+     7.5918,
+     0.0121,
+     "2016-04-12"
+    ],
+    "was": [
+     71.2906,
+     5.0336,
+     13.1199,
+     7.5918,
+     0.0121,
+     "2016-04-12"
+    ],
+    "src": "bsetable3:532129:89 + bseaspx:532129:89",
+    "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 5.03 -> 10.53, dii 13.12 -> 7.65. Rows: B1i-named T ROWE PRICE INTERNATIONAL DISCOVERY FUN 1.28 foreign/fii curated; B1i-unnamed-rest D1 4.22 fii; B3b-NBFC R3 0.03 dii"
    }
   },
   "HFCL": {
@@ -274019,6 +274079,26 @@
     ],
     "src": "bsexbrl:534312_542018181247_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 1.89 -> 1.99, dii 0.16 -> 0.16. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-label Foreign Portfolio Investor (Category - III) 0.1 0.1 FII-labelled row 0.10 -> fii"
+   },
+   "2015-06-30": {
+    "cell": [
+     42.7837,
+     23.9931,
+     1.3388,
+     1.3068,
+     0.0,
+     "2015-07-14"
+    ],
+    "was": [
+     42.7837,
+     21.7931,
+     1.3388,
+     1.3068,
+     0.0,
+     "2015-07-14"
+    ],
+    "src": "bseaspx:534312:86 + neighbouring pages 85/87",
+    "why": "\u00a7164r batch 6e (Quantmac v5): BSE's Jun-2015 page renders a non-institution sub-row without its label; the page's non-institution row shows only 'Others' (1 holder, 2.20 %); the company labels exactly that row (1 holder, 2.20 %) 'Foreign Portfolio Investments Corporation' in Mar-2015, so the row is the company's foreign portfolio holding (page-era generic-row rule, \u00a7160/\u00a7164g, applied to the non-institution block). fii 21.79 -> 23.99."
    }
   },
   "NDLVENTURE": {
@@ -288217,6 +288297,26 @@
     ],
     "src": "bseaspx:532792_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 13.08 -> 15.89, dii 10.34 -> 10.34. noninst-fii Foreign Portfolio Investors 2.81. Evidence: _shp_164_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     59.8828,
+     15.7581,
+     10.4437,
+     1.1151,
+     0.2717,
+     "2015-07-07"
+    ],
+    "was": [
+     59.8828,
+     13.4981,
+     10.4437,
+     1.1151,
+     0.2717,
+     "2015-07-07"
+    ],
+    "src": "bseaspx:532792:86 + neighbouring pages 85/87",
+    "why": "\u00a7164r batch 6e (Quantmac v5): BSE's Jun-2015 page renders a non-institution sub-row without its label; the page's non-institution row shows only 'Others' (89 holders, 2.26 %); the company labels the same row 'Foreign Port Folio Investor Corp' in Mar-2015 (71 holders, 1.66 %) and 'Foreign Portfolio Investors' in Sep-2015 (115 holders, 2.81 %) - this quarter's row sits between them in holders and size, so the row is the company's foreign portfolio holding (page-era generic-row rule, \u00a7160/\u00a7164g, applied to the non-institution block). fii 13.50 -> 15.76."
    }
   },
   "CAPF": {

@@ -134,10 +134,10 @@ def _late(max_lag=21):
             qd = date(q // 10000, q // 100 % 100, q % 100); sd = date(sub // 10000, sub // 100 % 100, sub % 100)
             if (sd - qd).days > max_lag: out.append((sym, qd.isoformat(), sd.isoformat(), (sd - qd).days))
     return sorted(out)
-def anndates_fetch():
+def anndates_fetch(items=None):
     import time, urllib.request, bse_headers
     from datetime import date, timedelta
-    os.makedirs(ANN, exist_ok=True); items = _late(); n = ok = bad = 0; t0 = time.time()
+    os.makedirs(ANN, exist_ok=True); items = items if items is not None else _late(); n = ok = bad = 0; t0 = time.time()
     for sym, qe, sub, lag in items:
         rows = _list(sym) or _list(_fa().get(sym) or "")
         code = _code(rows)
@@ -402,10 +402,14 @@ def t3fix(keys, out):
             time.sleep(10 * (a + 1))
         return None
     for key in keys:
-        base = None
-        if key.count("|") == 2: key, base = key.rsplit("|", 1)
+        base = None; code_ov = None
+        parts = key.split("|")
+        for extra in parts[2:]:
+            if extra.startswith("code="): code_ov = extra[5:]
+            elif extra: base = extra
+        key = "|".join(parts[:2])
         sym, qe = key.split("|"); qi = qtrid(qe); cur = (hist.get(sym) or {}).get(qe)
-        code = _code(_list(sym) or _list(_fa().get(sym) or "") or [])
+        code = code_ov or _code(_list(sym) or _list(_fa().get(sym) or "") or [])
         if not code or not cur: print("  %s: no code / no store row" % key); continue
         tj = get("https://api.bseindia.com/BseIndiaAPI/api/Corp_shpSec_SHPPubShold_ng/w?SCRIPCODE=%s&QtrCode=%d.00" % (code, qi), os.path.join(cache, "%s_%d_t3.json" % (code, qi)))
         pg = get("https://www.bseindia.com/corporates/ShareholdingPattern.aspx?scripcd=%s&flag_qtr=1&qtrid=%d.00&Flag=New" % (code, qi), os.path.join(cache, "%s_%d_page.html" % (code, qi)))
@@ -643,6 +647,64 @@ def lag_revert(path, ledger="shp_lag_fix.json"):
     open(lp, "w", encoding="utf-8").write(txt + ("\n" if raw.endswith("\n") else ""))
     print("%s: %d restored to the replaced entry, %d removed, %d not a §164r entry" % (ledger, rest, rem, miss))
 
+def _undated_items():
+    """In-scope quarters Mar-2014..Mar-2016 the engine still serves UN-DATED (fallback quarter-end + 28): window quarter-end ->
+    + 150 days for the company's first SHP announcement."""
+    from datetime import date, timedelta
+    keys = json.load(open(os.path.join(W, "undated_2014_16.json")))
+    return [(s, "%d-%02d-%02d" % (q // 10000, q // 100 % 100, q % 100), (date(q // 10000, q // 100 % 100, q % 100) + timedelta(days=150)).isoformat(), 0) for s, q in keys]
+
+def undated_decide(out):
+    """Batch 6d (Quantmac v5 'you serve a quarter-end + 28 estimate, its real filing is later'): date the un-dated 2014..Mar-2016
+    quarters from the company's first 'Shareholding for the Period Ended' announcement. LATER than the + 28 fallback -> always
+    served from the announcement (removes look-ahead). EARLIER -> only for an XBRL-era quarter (Dec-2015 / Mar-2016) whose BSE list
+    shows ONE version, never revised, whose parse equals our stored promoter + MF (the announced filing IS our figures); page-era
+    quarters keep the fallback when the announcement is earlier (the page shows the latest version; a revision's figures must not be
+    served from the first filing's day - batch 6b)."""
+    from datetime import date, timedelta
+    import fetch_shareholding as F
+    hist = json.load(open(os.path.join(HERE, "shp_history.json"))); sub_led = json.load(open(os.path.join(HERE, "shp_sub_dates.json"), encoding="utf-8"))
+    P, st = {}, {}
+    def bump(k): st[k] = st.get(k, 0) + 1
+    MONQ = {"March": 3, "June": 6, "September": 9, "December": 12}
+    for sym, qe, _, _ in _undated_items():
+        rows = _list(sym) or _list(_fa().get(sym) or ""); code = _code(rows)
+        k = sym if sym in hist else _fa().get(sym, sym); cur = (hist.get(k) or {}).get(qe)
+        if not code or not cur: bump("no code / no store row"); continue
+        pth = os.path.join(ANN, "%s_%s.json" % (code, qe))
+        if not os.path.exists(pth): bump("not fetched"); continue
+        d = json.load(open(pth)); rx = _period_rx(qe); hits = []
+        for r in d["rows"]:
+            txt = " ".join(str(r.get(x) or "") for x in ("NEWSSUB", "HEADLINE"))
+            if re.search(r"share\s*holding\s+(pattern\s+)?for\s+the\s+(period|quarter)\s+ended|submitted\s+to\s+bse\s+the\s+share\s*holding\s+pattern", txt, re.I) and rx.search(txt):
+                ts = (r.get("NEWS_DT") or r.get("DT_TM") or "")[:19]
+                if ts: hits.append((ts, txt[:120]))
+        if not hits: bump("no SHP announcement in the window"); continue
+        ts, txt = min(hits); day = int(ts[:10].replace("-", "")); qd = date.fromisoformat(qe)
+        fb = int((qd + timedelta(days=28)).strftime("%Y%m%d")); conv = int((qd + timedelta(days=21)).strftime("%Y%m%d"))
+        key = "%s|%s" % (k, qe.replace("-", ""))
+        if key in sub_led: bump("sub_dates entry exists"); continue
+        stored = int(str(cur[5]).replace("-", "")) if re.match(r"\d{4}-\d\d-\d\d$", str(cur[5])) else None
+        if stored != conv: bump("stored date is not the + 21 convention (served un-dated for another reason)"); continue
+        if day > fb: why = "later than the + 28 fallback"
+        else:
+            if qe < "2015-12-31": bump("earlier than fallback, page era: held (revision unknown)"); continue
+            vers = [r for r in rows if (lambda x: len(x) == 2 and x[0] in MONQ and "%s-%02d-%02d" % (x[1], MONQ[x[0]], 31 if MONQ[x[0]] in (3, 12) else 30) == qe)((r.get("qtr") or "").split())]
+            if len(vers) != 1 or vers[0].get("revised_date_time") or not (vers[0].get("XbrlFile") or "").strip():
+                bump("earlier than fallback, BSE lists a revision / no single version: held"); continue
+            import _shp_dii_rowfix as D
+            f = vers[0]["XbrlFile"].strip(); fp = D.find_file(f)
+            if not fp: bump("earlier than fallback, version file not cached: held"); continue
+            raw = open(fp, "rb").read(); raw = __import__("gzip").decompress(raw) if fp.endswith(".gz") else raw
+            pr = F.parse_shp(raw.decode("utf-8", "ignore"), qe)
+            if not pr or abs((pr.get("prom") or 0) - (cur[0] or 0)) > 0.02 or abs((pr.get("mf") or 0) - (cur[3] or 0)) > 0.02:
+                bump("earlier than fallback, the single version's figures differ from ours: held"); continue
+            why = "earlier than the fallback; BSE lists one never-revised version (%s) whose promoter/MF equal ours" % f
+        P[key] = {"gated_1530": False, "prov": "bse:AnnSubCategoryGetData NEWS_DT of the company's first SHP announcement ('%s'); %s; CALENDAR day (midnight rule §149); §164r batch 6d 2026-09-29 (Quantmac v5)" % (txt[:90], why),
+                  "src": "bse-ann", "sub": day, "ts": ts.replace(" ", "T"), "was": stored, "rule": "midnight-2026-09-23"}
+        bump("dated (%s)" % ("later" if day > fb else "earlier"))
+    json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("undated-decide:", st, "-> %d entries" % len(P))
+
 def wb_older():
     """Pages whose NEWEST capture holds no filing table (BSE's own 'Error Code:404' page archived with HTTP 200 once the
     page was retired — HINDPETRO 2012-10-02) fall back to that scrip's earlier captures, newest first, up to 4 tries."""
@@ -798,6 +860,8 @@ if __name__ == "__main__":
     elif st == "drrebase": drrebase(sys.argv[2])
     elif st == "d1gate": d1gate(sys.argv[2])
     elif st == "t3fix": t3fix(sys.argv[2].split(","), sys.argv[3])
+    elif st == "undated-fetch": anndates_fetch(_undated_items())
+    elif st == "undated-decide": undated_decide(sys.argv[2])
     elif st == "lag-revert": lag_revert(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
