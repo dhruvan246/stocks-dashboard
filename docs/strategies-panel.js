@@ -1646,6 +1646,7 @@ function renderSellAll(list){
 }
 function sellCardHTML(it, disp, favNum){
   const X = sellExits(it), RW = X.RW, held = X.held, p = X.p, isReset = X.isReset, pickSet = X.pickSet;
+  const kept = isReset ? X.rows.filter(r => r.stays).map(r => r.h.sym) : [];   // a reset strategy's re-picks the cash plan keeps
   const isSold = zbSoldSet().has(it.id), PR = proceedsOf(it.id);
   let body = '', btn = '';
   if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) \u2014 or this strategy has no live book.</div>';
@@ -1669,7 +1670,7 @@ function sellCardHTML(it, disp, favNum){
                     : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
       '</tbody></table></div>' +
       '<div class="khelp">' + (isReset
-        ? 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again. Sells near the ' + RW.tlab + ' close; re-enters the morning of ' + RW.t1lab + '.' + rtTxt
+        ? (kept.length ? 'Reset strategy: sells its basket and re-enters fresh \u2014 except ' + kept.join(', ') + ', picked again: the cash plan keeps those shares (no sell-and-buy-back; the old MTF loan stays).' : 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again.') + ' Sells near the ' + RW.tlab + ' close; re-enters the morning of ' + RW.t1lab + '.' + rtTxt
         : (pickSet ? todo.length + ' ' + (RW.buyIn ? 'straggler' : 'exit') + (todo.length === 1 ? '' : 's') + ' to sell' + (est && !RW.buyIn ? ' \u2248 ' + zinr(est) : '') + rtTxt + ' \u00b7 greyed rows stay for next month and are never sold.'
                    : 'Load the picks (\ud83c\udfaf) first \u2014 without them the exits are unknown, so nothing can be sold.')) +
       (rows.some(r => r.bd) ? '<br>\u26a0 <b>borderline</b> = could still flip by the close (hover for the numbers) \u2014 sell the clear exits first, these last (~3:25 IST). A borderline stay you keep shows up on ' + RW.t1lab + ' as a straggler if it drops out.' : '') +
@@ -1680,7 +1681,7 @@ function sellCardHTML(it, disp, favNum){
     else if ((pickSet || isReset) && exits.length && !RW.in) btn = '<span class="tag off" title="Sell baskets act only on the rebalance window \u2014 exits near the ' + esc(RW.tlab) + ' close (month-end), stragglers from ' + esc(RW.t1lab) + '. Until then this list is informational.">Locked \u00b7 arms ' + esc(RW.tlab) + '</span>';
     else if ((pickSet || isReset) && exits.length && !X.legOk) btn = '<span class="tag warn" title="' + esc(X.legMsg) + '">' + (RW.buyIn ? 'Rebalance picks required' : 'Live picks required') + '</span>';
     else if (isSold && !todo.length) btn = '<button class="btn" disabled style="opacity:.5;cursor:not-allowed;color:var(--down)" title="Sold this rebalance \u2014 click the \u2713 sold chip to re-enable">\u2713 Sold</button>';
-    else if ((pickSet || isReset) && todo.length) btn = '<button class="btn sell" data-sellbasket="' + esc(it.id) + '">Sell ' + (isSold || RW.buyIn ? 'remaining ' : (isReset ? 'all ' : '')) + todo.length + (isReset ? '' : (todo.length === 1 ? ' exit' : ' exits')) + '</button>';
+    else if ((pickSet || isReset) && todo.length) btn = '<button class="btn sell" data-sellbasket="' + esc(it.id) + '">Sell ' + (isSold || RW.buyIn ? 'remaining ' : (isReset && !kept.length ? 'all ' : '')) + todo.length + (isReset ? (kept.length ? ' \u00b7 keeps ' + kept.join(', ') : '') : (todo.length === 1 ? ' exit' : ' exits')) + '</button>';
   }
   const mk = mixMarks(it.cfg);
   return '<div class="sblk' + (mk.length ? ' mixed' : '') + '"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum' + (mk.length ? ' mixn' : '') + '" style="font-size:11px;background:var(--down);color:#fff;border-color:var(--down);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') +
@@ -1704,7 +1705,8 @@ async function sellBasketStart(id){
     const todo0 = X.exits.filter(r => r.remain == null ? true : r.remain > 0);
     if (!todo0.length){ ktoast(X.exits.length ? 'Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own' : 'Nothing to sell \u2014 every holding stays next month'); return; }
     btn.dataset.arm = '1';
-    btn.textContent = 'Confirm SELL ' + todo0.length + (isReset ? ' (reset: all)' : ' exit' + (todo0.length === 1 ? '' : 's')) + ' ?';
+    const keptC = isReset ? X.rows.filter(r => r.stays).map(r => r.h.sym) : [];
+    btn.textContent = 'Confirm SELL ' + todo0.length + (isReset ? (keptC.length ? ' (keeps ' + keptC.join(', ') + ')' : ' (reset: all)') : ' exit' + (todo0.length === 1 ? '' : 's')) + ' ?';
     clearTimeout(sellBasketStart._t); sellBasketStart._t = setTimeout(() => { btn.dataset.arm = ''; renderCards(); }, 8000); return; }
   if (btn) btn.dataset.arm = '';
   await loadTicks();
