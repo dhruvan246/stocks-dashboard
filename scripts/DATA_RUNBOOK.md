@@ -423,6 +423,24 @@ not return) → built 09-07 = **4,441** (99.8% of committed), 09-08 = 4,717 (fin
   reading and it was right *then*; here the exchange bhavcopy shows 2,652 traded symbols behind Yahoo's nulls. The
   bhavcopy is the reader that adjudicates a null — never Yahoo alone (memory: `feedback-null-close-is-not-untraded`).
 
+### 1b-iv. 2026-09-29 — Yahoo nulled the NEWEST session (09-28) at 00:04 IST, and both the floor pass and the guard exempted the newest session
+*(found 2026-09-29 ~12:10 IST while checking Top Movers: the page's stored prices ended "Fri 25 Sep")*
+
+- **What happened (measured):** GitHub fired refresh.yml's 16:00 IST cron at 00:01 IST (7 h late, runbook §217). At 00:04 IST
+  Yahoo served 2026-09-28 with `close: null` for ~3,500 tickers (OAL.NS still null at 12:15 IST 09-29). `fetch_all.py` drops
+  null closes; the heal floor pass used `floor_from <= o < newest`, and 09-28 WAS the newest session, so nothing was re-added;
+  `guard_sessions` check A exempted the committed copy's newest session as "still filling". Commit a037debd8 (00:10 IST)
+  published 09-28 = **1,490 bars, down from 5,032** (1,637 .NS + 2,344 .BO lost it). `docs/stock_data.bin` (last committed
+  eaeae28e0, 5,032 on 09-28) and the NSE bhavcopy store were NOT affected.
+- **Heal:** `price_gap_fills.json` **+3,542 cells for 2026-09-28** (1,582 .NS, 1,960 .BO) from dash_slim @f0ebf5a1a/3c719eb4c/
+  eaeae28e0, **every one equal to the exchange bhavcopy to the paisa** (NSE sec_bhavdata_full_28092026 DATE1=28-Sep-2026; BSE
+  BhavCopy_BSE_CM_0_0_0_20260928 TradDt=2026-09-28), all volume > 0; anchor = 09-25 close, nextDate empty. Replay on the
+  collapsed build: ledger re-added 3,542 → 09-28 = 5,032.
+- **Guards:** (1) heal floor pass is now `<= newest` — replay against the collapsed fetch with the ledger removed: floor
+  re-added 3,540. (2) guard_sessions check A no longer exempts the committed newest session — calibrated over the 30 builds
+  2026-09-23..29: the committed newest never shrank build-to-build (min 100.0%) except this collapse (29.6%); replaying
+  a037debd8 against f0ebf5a1a now FAILS, the good builds pass.
+
 ### 1b-iii. 2026-09-18 — PHANTOM SESSIONS: Yahoo pads exchange HOLIDAYS with flat bars, and 2026-09-14 (Ganesh Chaturthi) wedged the refresh for 3 days
 *(found + fixed 2026-09-18 from the "Run failed: Daily stock data refresh" mails — red on every run from 2026-09-15 10:00Z; the dashboard's Yahoo store froze at the 09-11 build)*
 

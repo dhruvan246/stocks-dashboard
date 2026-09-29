@@ -82,10 +82,11 @@ def main():
     if old is None:
         print("guard_sessions: no committed copy to compare against — CHECK A skipped")
     else:
-        old_newest = max(old)
+        # The committed copy's newest session is checked too (it used to be exempt as "still filling"). A
+        # filling session only GROWS between builds — measured over 30 consecutive builds 2026-09-23..29: the
+        # committed newest never dropped (min 100.0%) until 2026-09-29 00:10 IST, when 09-28 fell 5,032 -> 1,490
+        # and sailed through the exemption (runbook §1b-iv).
         for date, n in sorted(old.items()):
-            if date == old_newest:
-                continue            # was still filling when it was committed
             now = new.get(date)
             if now is None:
                 continue            # rolled out of the 250-day window

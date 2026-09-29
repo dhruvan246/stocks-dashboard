@@ -188,7 +188,10 @@ def main():
                 theirs = dict(zip(cs["d"], cs["p"]))
                 anchors = {o: p for o, p in theirs.items() if o != slim_newest}
                 floor_from = min(mine)
-                gaps = [o for o in theirs if o not in mine and floor_from <= o < newest]
+                # `<= newest` (was `< newest` until 2026-09-29): the NEWEST session is floored too. At 00:04 IST
+                # on 09-29 Yahoo served 09-28 with close=null for ~3,500 tickers; 09-28 was the fetch's newest
+                # session, so the strict bound let a published full session collapse 5,032 -> 1,490 (runbook §1b-iv).
+                gaps = [o for o in theirs if o not in mine and floor_from <= o <= newest]
                 for o in gaps:
                     if o not in off2ts:
                         stat["skip_no_session_ts"] += 1
