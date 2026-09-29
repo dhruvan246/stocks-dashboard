@@ -440,6 +440,19 @@ not return) → built 09-07 = **4,441** (99.8% of committed), 09-08 = 4,717 (fin
   re-added 3,540. (2) guard_sessions check A no longer exempts the committed newest session — calibrated over the 30 builds
   2026-09-23..29: the committed newest never shrank build-to-build (min 100.0%) except this collapse (29.6%); replaying
   a037debd8 against f0ebf5a1a now FAILS, the good builds pass.
+- **Whole-history scan (user: "check if any more such days has missing data"):** per-exchange interior gaps (a ticker with a
+  bar on both neighbouring sessions but not this one) + count vs trailing-20 median, over dash_slim (169 sessions 2026-01-21→)
+  and stock_data.bin (1,669 sessions 2020→). NSE: no damaged session in either file. BSE-only (.BO) in stock_data.bin:
+  **2024-03-15 = 145 bars (median 2,002)** and **2025-02-01 = 120 (median 2,082, the Budget-day Saturday session)** — BSE's
+  own store (docs/bse_prices.bin) has 1,709 / 1,896 traded scrips those days. 2020-11-14 (Muhurat, 886 .BO bars vs BSE's
+  718 traded) is complete, not a hole. Healed: `price_gap_fills.json` **+2,728 .BO cells** (1,356 + 1,372) with closes from
+  the BSE store, accepted only where BOTH neighbouring closes in the store equal stock_data.bin's to the paisa (37 anchor
+  mismatches + 192 without a BSE neighbour excluded). Replay: 2024-03-15 145 → 1,501, 2025-02-01 120 → 1,492 .BO bars.
+  stock_data.bin picks them up at its next commit (≤5 days, `stock_bin_stale.py`); dash_slim does not span those dates.
+- **guard_sessions now checks all / NSE / BSE separately** (`GROUPS`, `MIN_GROUP_BARS` 100). Measured over 40 builds:
+  10e95b3fb / 80902fb02 / dd1856cfb shipped 2026-09-22 with NSE at 42% of trailing median while the combined count
+  passed. Replaying all 39 consecutive build pairs, the new guard FAILS exactly two: cc1a21a70 (09-22 4,910 → 479, shipped
+  at the time through the newest-session exemption) and a037debd8 (09-28) — every other build passes.
 
 ### 1b-iii. 2026-09-18 — PHANTOM SESSIONS: Yahoo pads exchange HOLIDAYS with flat bars, and 2026-09-14 (Ganesh Chaturthi) wedged the refresh for 3 days
 *(found + fixed 2026-09-18 from the "Run failed: Daily stock data refresh" mails — red on every run from 2026-09-15 10:00Z; the dashboard's Yahoo store froze at the 09-11 build)*
