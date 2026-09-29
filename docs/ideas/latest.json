@@ -1,15 +1,15 @@
 {
- "updated": "2026-09-28 21:12 IST",
- "scan_date": "2026-09-28",
- "scan_file": "scan/2026-09-28.json",
- "run_file": "runs/2026-09-28.json",
- "ideas_count": 17,
- "universe": 1202,
- "candidates": 18,
- "signals_strong": 33,
+ "updated": "2026-09-29 21:30 IST",
+ "scan_date": "2026-09-29",
+ "scan_file": "ideas/scan/2026-09-29.json",
+ "run_file": "ideas/runs/2026-09-29.json",
+ "ideas_count": 21,
+ "universe": 1200,
+ "candidates": 10,
+ "signals_strong": 31,
  "govt_kept": 0,
- "filings_status": "BSE announcement list read to 2,282 of the 2,287 rows BSE reports for 2026-09-28 (99.8%), read at 2026-09-28 20:21 IST after two capped reads (531 and 699 rows) earlier in the evening; 30 September is an annual-report deadline. 51 in-universe filings classified, 18 candidates. announcements_capped stays true: 5 rows were never reached, so the counts are a floor.",
- "govt_status": "PIB read from GitHub Actions at 2026-09-28 19:57 IST (feeds run 36435985270, dispatched by this routine because the 18:50 IST schedule did not fire): 54 releases scanned, 4 opened, 0 kept, 0 unmapped. PIB is blocked from the routine's own sandbox, so this lane depends on the Actions run.",
- "commodity_status": "Panels rebuilt from GitHub Actions at 2026-09-28 20:15 IST, steps_failed none. Fresh: Trading Economics 2026-09-28, Rubber Board 26-09-2026, Chinimandi sugar 26/09/2026, PPAC fuel 25-Sep-26. Stale or failed: IBJA did not parse (gold and silver are the 2026-09-25 rows), MetalBook's Indian metal and steel rows self-dated 2026-09-16, Ministry of Steel Mumbai prices 2026-06-30, NMDC w.e.f. 2026-09-09, WPI 2026-04, HS trade 2026-07. india_history.json.gz was rebuilt.",
- "track_status": "Re-priced this run from BSE: 17 of 17 ideas priced, 0 via bhavcopy, 1 carried forward stale."
+ "filings_status": "BSE announcement list read COMPLETE for 2026-09-29: 2,122 rows against BSE's own reported count of 2,122, read at 2026-09-29 21:09 IST, announcements_capped false, announcements_blocked false, source bse. api.bseindia.com and www.bseindia.com both answered 200 from the routine's own sandbox this evening. 62 in-universe filings classified, 155 rows with a signal, 10 candidates. This read supersedes the 18:58 IST GitHub Actions read, which was capped at 1,736 of a reported 1,773.",
+ "govt_status": "PIB read from GitHub Actions at 2026-09-29 18:56 IST (feeds run 36575011884, all ten steps exited 0): 38 releases scanned, 4 opened, 0 kept, 0 large-but-unmapped. Dropped: 21 no decision verb, 11 noise, 5 below the Rs 1,000 cr floor, 1 backgrounder. PIB is blocked from the routine's own sandbox (403 at the egress proxy at 21:03 IST), so govt.json was left exactly as Actions built it - this lane's verdict is today's, measured from Actions.",
+ "commodity_status": "Panels rebuilt from GitHub Actions at 2026-09-29 19:00 IST, steps_failed empty, landing.refused empty, 13 files landed. Fresh (2026-09-29): the Trading Economics panel - Brent +13.68% 1m, LNG JKM +14.86% 1m, styrene +14.66% 1m, HRC steel +10.72% 1m and +65.39% 1y. Stale, and every quote from them is dated as such: MetalBook's Indian metal and steel rows self-date 2026-09-14 / 2026-09-16, Ministry of Steel Mumbai prices 2026-06-30 (June 2026), NMDC w.e.f. 2026-09-09, WPI 2026-04, HS trade 2026-07. The routine's own re-run of every commodity builder at 21:03-21:08 IST failed at the egress proxy on all eleven external hosts (westmetall, businessinsider, steel.gov.in, metalbook, ibjarates, rubberboard, chinimandi, ppac, tradingeconomics, eaindustry, tradestat) and each builder kept its previous rows, as designed. The two BSE-based sources did run: NMDC 2 rows, Ministry of Steel 3 rows. india_history.json.gz was rebuilt: 148 series, 77,376 dated points.",
+ "track_status": "Re-priced this run from BSE at 2026-09-29 21:29 IST: 21 of 21 ideas priced from the api, 0 via the bhavcopy fallback, 0 carried forward stale. Median return since call -0.8%, mean -0.9%, 6 of 21 up, 0 above +20%."
 }
