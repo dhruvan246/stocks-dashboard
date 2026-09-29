@@ -24813,3 +24813,7 @@ ProfitLossForPeriod tag — the stored 3.06 comes from another element, not trac
   ~6 min behind. Fallback when that file isn't today's: a BSE-only name's same-day bar from the latest refresh, labelled
   as a snapshot with its time; no same-day bar → hidden, counted in the note.
 - The Worker's `?bse=1` route stays (harmless, 403s today); the page no longer calls it.
+- **2026-09-29 — start trigger:** GitHub cron never fired the 09:10 IST slot (refresh.yml's 16:00 slot fired at 23:43 the
+  day before; ci-janitor's */30 fired once in a day). bse-live.yml now takes `repository_dispatch {"event_type":"bse-live"}`
+  from the external scheduler (cron-job.org, like refresh.yml) as its primary start, re-dispatches itself before the 6 h
+  job cap while the market is open, and stops at ~09:45 on a holiday (BSE still showing an older session).

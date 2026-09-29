@@ -6,18 +6,25 @@ name: BSE live prices (Top Movers)
 # Why GitHub and not the Cloudflare Worker: BSE's API answers Akamai 403 to Cloudflare's
 # network (measured 2026-09-28). Runbook §216.
 #
-# Two runs a day because a job may run at most 6 h: the morning run stops at 12:30 IST and
-# the midday run (queued behind it by the concurrency group) carries on to 15:40 IST.
-# GitHub cron can start late or skip — the page then keeps the site's own BSE snapshot.
+# START: GitHub's own cron runs hours late in this repo (2026-09-29: the 09:10 IST slot never
+# fired by 12:00; refresh.yml's 16:00 slot fired at 23:43), so the primary trigger is the
+# external scheduler (cron-job.org) sending repository_dispatch {"event_type":"bse-live"}
+# at ~09:10 IST on weekdays — same mechanism as refresh.yml's "scheduled-refresh".
+# The crons below are only a late backup.
+# KEEP-ALIVE: a job may run at most 6 h, so each run stops after ≤345 min and, if the market
+# is still open, dispatches the next run itself. A holiday stops the chain at ~09:45.
 
 on:
-  schedule:
-    - cron: "40 3 * * 1-5"    # 09:10 IST
-    - cron: "55 6 * * 1-5"    # 12:25 IST
+  repository_dispatch:
+    types: [bse-live]
   workflow_dispatch: {}
+  schedule:
+    - cron: "40 3 * * 1-5"    # 09:10 IST (backup — GitHub cron is unreliable here)
+    - cron: "55 6 * * 1-5"    # 12:25 IST (backup)
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: bse-live
@@ -26,7 +33,7 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    timeout-minutes: 260
+    timeout-minutes: 355
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,10 +44,22 @@ jobs:
             scripts/bse_headers.py
           sparse-checkout-cone-mode: false
       - name: Poll BSE and publish to live-bse
+        env:
+          BSE_LIVE_HOLIDAY_FLAG: /tmp/bse_holiday
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          H=$(TZ=Asia/Kolkata date +%H)
-          if [ "$H" -lt 12 ]; then UNTIL=12:30; else UNTIL=15:40; fi
-          echo "polling until $UNTIL IST"
-          python3 scripts/fetch_bse_live.py --until "$UNTIL" --interval 60
+          python3 scripts/fetch_bse_live.py --until 15:40 --interval 60 --max-minutes 345
+      - name: Keep going until the close
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOW=$(TZ=Asia/Kolkata date +%H%M)
+          if [ -f /tmp/bse_holiday ]; then echo "market closed today — no follow-up run"; exit 0; fi
+          if [ "$NOW" -ge 0900 ] && [ "$NOW" -lt 1535 ]; then
+            echo "market still open at $NOW IST — dispatching the next run"
+            gh workflow run bse-live.yml --repo "$GITHUB_REPOSITORY"
+          else
+            echo "done for the day ($NOW IST)"
+          fi

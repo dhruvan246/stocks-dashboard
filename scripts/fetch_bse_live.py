@@ -95,17 +95,25 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--until", default="15:40", help="stop at this IST time (HH:MM)")
     ap.add_argument("--interval", type=int, default=60, help="seconds between polls")
+    ap.add_argument("--max-minutes", type=int, default=345, help="also stop after this many minutes (GitHub job cap is 6 h)")
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--no-push", action="store_true", help="write ./bse_live.json instead of pushing")
     a = ap.parse_args()
     hh, mm = map(int, a.until.split(":"))
-    stop = now_ist().replace(hour=hh, minute=mm, second=0, microsecond=0)
+    stop = min(now_ist().replace(hour=hh, minute=mm, second=0, microsecond=0),
+               now_ist() + dt.timedelta(minutes=a.max_minutes))
 
     last_ts, pushes, fails = None, 0, 0
     while True:
         t0 = time.time()
         try:
             out = compact(fetch())
+            today = now_ist().strftime("%Y-%m-%d")
+            if out["timestamp"][:10] < today and now_ist().hour * 60 + now_ist().minute >= 9 * 60 + 45:
+                # 30 min after the open and BSE still shows an older session: market holiday — nothing to poll
+                print("BSE still shows %s at %s — market closed today, stopping" % (out["timestamp"], now_ist().strftime("%H:%M")), flush=True)
+                open(os.environ.get("BSE_LIVE_HOLIDAY_FLAG", os.devnull), "w").write("1")
+                break
             if out["timestamp"] != last_ts:  # BSE's own clock moved — publish; unchanged data isn't re-pushed
                 body = json.dumps(out, separators=(",", ":"))
                 if a.no_push:
