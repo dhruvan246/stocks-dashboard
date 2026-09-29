@@ -64,7 +64,8 @@ function spList(all, favs){
   if (SP_FILT === 'mark') l = all.filter(it => mark.has(it.id));
   else if (SP_FILT === 'priv') l = all.filter(it => it._priv);
   else if (FAVONLY && B.fav > 0) l = all.filter(it => isFavCfg(favs, it.cfg));
-  return l.slice().sort((a, b) => (isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0));   // ★ float to the top
+  // ★ float to the top, in ★-number order (#1, #2, …) so the blocks read in the order their badges count
+  return l.slice().sort((a, b) => ((isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0)) || ((favNumOf(a.cfg) || 1e9) - (favNumOf(b.cfg) || 1e9)));
 }
 function spActive(B){ return SP_FILT || ((FAVONLY && B.fav > 0) ? 'fav' : 'all'); }
 function spChipName(k){ return k === 'fav' ? '★ Favourites' : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
@@ -501,10 +502,10 @@ function wizardAct(a){
 function renderCards(){
   if (document.querySelector('#cards [data-arm="1"], #buyall [data-arm="1"]')) return;   // an armed Sell/Buy confirm is showing — don't rebuild under it
   const favs = loadFavs();
-  const favNum = favNumOf;   // one numbering for the block headers and the "held by #n" tags
   const all = uniqStrategies();
   // favourites float to the top; the chips narrow the list (★ on by default when stars exist)
   const list = spList(all, favs);
+  const NUM = blockNums(list), favNum = cfg => NUM.get((list.find(x => x.cfg === cfg) || {}).id) || 0;   // the same number the This-rebalance table shows
   spChipsRender(all, spBuckets(all, favs), list);
   if (!list.length){ $('cards').innerHTML = '<div class="empty">No saved strategies found.</div>'; renderBuyAll(list); return; }
   const bought = zbBoughtSet();
@@ -588,7 +589,7 @@ function rebuyRows(it, p){
   return out;
 }
 function buyAllAgg(list){
-  const agg = {}, missing = [];
+  const agg = {}, missing = [], NUM = blockNums(list);   // numbered like the blocks' badges, not by list position
   let nAct = 0, nEst = 0;
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
@@ -615,11 +616,11 @@ function buyAllAgg(list){
         const exitVal = PR ? Math.max(0, PR.amt - backVal) : held.rows.filter(h => !pickSet.has(h.sym)).reduce((s, h) => s + h.qty * pxOf(h), 0);
         const stays = held.rows.filter(h => pickSet.has(h.sym)).length;
         per = exitVal / Math.max(1, (held.topN || p.rows.length) - stays); }
-    } else { const amt = zbaGet(it.id); if (!amt) missing.push(i + 1); per = amt && rows2.length ? amt / rows2.length : 0; }
+    } else { const amt = zbaGet(it.id); if (!amt) missing.push(NUM.get(it.id)); per = amt && rows2.length ? amt / rows2.length : 0; }
     const add = (sym, px0, contrib, back) => {
       const q = liveQ(sym), px = (q && q.ltp != null) ? q.ltp : px0;
       const a = agg[sym] = agg[sym] || { sym: sym, px: px, amt: 0, from: [], capped: false, back: false };
-      a.px = px; a.amt += contrib; a.from.push(i + 1); if (back) a.back = true; return a; };
+      a.px = px; a.amt += contrib; a.from.push(NUM.get(it.id)); if (back) a.back = true; return a; };
     rows2.forEach(r => { const cap = zbCap(r.sym), contrib = cap > 0 ? Math.min(per, cap) : per;   // per-basket ₹ cap (HFCL)
       const a = add(r.sym, r.px, contrib, false); if (cap > 0 && contrib < per) a.capped = true; });
     backs.forEach(b => { const q = liveQ(b.sym), px = (q && q.ltp != null) ? q.ltp : b.px; add(b.sym, b.px, b.qty * px, true); });
@@ -1210,6 +1211,16 @@ function heldFor(cfg){ try { return (FEED.byKey || {})[identityKey(cfg)] || null
    the strategy blocks. */
 function favNumOf(cfg){ let o = []; try { o = JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]'); } catch(e){}
   let i = o.indexOf(identityKey(cfg)); if (i < 0 && typeof ruleKey === 'function') i = o.indexOf(ruleKey(cfg)); return i + 1; }
+/* ONE number per strategy block, used by the block badges AND the This-rebalance table (user 2026-09-29: the table
+   said CPPLUS came from "#2 #5 #6 #8" — list POSITIONS — while the badges carry the ★ number, so the table's #2
+   was the block badged #1). A favourite keeps its ★ number; any other block shown (All / Private / ✓ chips)
+   continues after the last ★ number. */
+function blockNums(list){
+  let favN = 0; try { favN = JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]').length; } catch(e){}
+  const m = new Map(); let k = 0;
+  list.forEach(it => { const n = favNumOf(it.cfg); m.set(it.id, n || favN + (++k)); });
+  return m;
+}
 function heldTag(sym, it){
   const own = FEED.own ? (FEED.own[baseSym(sym)] || []) : null;
   if (!own) return '<span class="tag keep" title="In your Zerodha account — your strategy books have not loaded yet">held</span>';
