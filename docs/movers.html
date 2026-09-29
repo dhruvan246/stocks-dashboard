@@ -513,12 +513,19 @@ function renderModeNote(){
 const BSE_LIVE_URL = 'https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
 const MON = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
 async function loadLive(){
-  try {
-    const j = await fetch(WORKER + '/?nse=traded', {cache:'no-store'}).then(r => r.json());
-    const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j && j.timestamp) || '');
-    if (!m || !MON[m[2]] || !j.data || !Object.keys(j.data).length) return;
-    LIVE = { date: m[3] + '-' + MON[m[2]] + '-' + m[1].padStart(2, '0'), time: m[4] + ':' + m[5], data: j.data };
-  } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
+  // NSE's feed answers 502 now and then (seen 2026-09-29: 502, then 200 a second later) — one quick retry.
+  // Never `return` out of here: the BSE block below must run even when NSE fails.
+  for (let attempt = 0; attempt < 2; attempt++){
+    try {
+      const j = await fetch(WORKER + '/?nse=traded', {cache:'no-store'}).then(r => r.json());
+      const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j && j.timestamp) || '');
+      if (m && MON[m[2]] && j.data && Object.keys(j.data).length){
+        LIVE = { date: m[3] + '-' + MON[m[2]] + '-' + m[1].padStart(2, '0'), time: m[4] + ':' + m[5], data: j.data };
+        break;
+      }
+    } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
+    if (!attempt) await new Promise(r => setTimeout(r, 2500));
+  }
   // BSE's data API refuses Cloudflare's network (Akamai 403, measured 2026-09-28), so BSE prices come from
   // a GitHub job that polls BSE every minute and publishes to the live-bse branch (runbook §216).
   // GitHub caches raw files ~5 min. Missing/stale file → BSE-only names fall back to the site's snapshot.
