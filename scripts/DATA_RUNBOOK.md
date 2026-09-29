@@ -21793,6 +21793,14 @@ window): 2 real gaps, both BE-only on the days NSE's sec_bhavdata_full carried n
 2020-04-13**; the other 512 hits are the ANSALINFRA dead fragment. Rows in `bar_inserts.json` (anchor raw close == PREVCLOSE,
 two-sided f, next-session PREVCLOSE confirms, dv 100 = BE convention). Dry run: exactly those 2 symbols gain one bar; second pass 0.
 **Rule for any missing-bar scan:** judge membership over the following 400 days, not on the day itself.
+### 179c. THOMASCOOK 2008 rights — missed by §173 because NSE's feed spells it "Rhgt" (2026-09-29, quantmac round 2)
+Quantmac's corrected file applies a rights TERP to THOMASCOOK's pre-19-Dec-2008 prices; we had none. NSE's feed row reads
+"Rhgt 35:100@Prem Rs.34.50" (exDate 19-Dec-2008 = the no-delivery start; ND 19-26 Dec, record date 27-Dec), which the §173 scan's
+"Rights" pattern never matched. Company filings (17-Dec-2008 terms: Rs 35.50 incl. premium 34.50, 35 per 100; 22-Jan-2009 allotment)
+confirm; FV was already Re 1 (split 14-May-2007). TERP = (100 x 49.30 + 35 x 35.50) / 135 = 45.72 -> **0.927428** in `rights_adj.json`.
+The tape has no single ex-day gap (-0.5 / -4.1 / -4.9 / -3.1 / -1.9% over 19-26 Dec), so the adjusted 19-Dec reads +7.3% (the rights
+value; same mechanics as NEULANDLAB 2012). **Full rescan** of NSE's feed with Rights / Rght / Rhgt / Rgt / Rts for point-in-time Nifty-500
+members: this was the ONLY missed row. Dry run: only THOMASCOOK changes (history before 19-Dec-2008 x0.9273); second pass 0.
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
