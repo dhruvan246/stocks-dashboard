@@ -20718,6 +20718,12 @@ Written with `_shp_164_write.py "§164r batch 7"`: 4 new + 99 superseding, 0 ski
   (the Route One account is unplaced only because its name is truncated; both Route One funds are FPI-listed, 97 / 69 filings).
   JSWSTEEL Mar-2018 34.86 -> 19.86 (JFE Steel International Europe 15.00: JSW Steel's own 2022-form row is Foreign Companies, as
   Dec-2017 / Jun-2018). Rebuilt feed moves exactly these 83 rows; guards green.
+- **Event rows (label "§164r batch 7 events", 4 cells).** `_shp_164_write.py` reads current values from shp_history only, so the
+  documents-only flips on mid-quarter EVENT rows (shp_events.json; the ledger keys them by as-on date, §142e) were skipped as "no
+  store row": IIFL 30-Mar-2020 35.55 -> 20.09 (CDC), IEX 11-Apr-2019 19.01 -> 23.56 (Rimco), IDFCFIRSTB 5-Jan-2019 23.30 -> 24.69
+  (Caladium), APLAPOLLO 12-Apr-2019 0.99 -> 4.34 (Goldman Sachs India) - each now in line with its quarter rows. Written with the
+  same was-guard / superseded chain against shp_events; rebuilt feed moves exactly these 4 rows. RBLBANK 9-Aug-2017 held with its
+  quarters. **Lesson:** a batch that touches holders must list event rows too - check `shp_events.json` for the same holder.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
