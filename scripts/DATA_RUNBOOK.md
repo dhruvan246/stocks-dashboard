@@ -20594,6 +20594,25 @@ Dec-18 / LMW Mar-18 (foreign holders filed under OCB — Rule 3). OPEN for the u
 quarter to quarter by the row it was filed on (SHILPAMED Jun-16 / Jun-20 Baring, ACLGATI Jun-17 Goldman Sachs International, NH
 Mar-18 CDC, JSWSTEEL Mar-18's August SW-2 sweep of the JFE block) — today's rules reproduce these; a cross-quarter consistency rule
 is a decision. Rebuilt feed: exactly the 18 cells moved, 0 other rows.
+**Batch 6b (2026-09-29): 45 batch-2 re-dates reverted (`lag-revert`).** Quantmac v5 held 45 of our 341 announcement dates because the
+XBRL we serve was re-uploaded after the announcement (28), BSE's first listed version is a revision (10) or the listed row is not the
+announced document (7). Measured: BSE's "Shareholding for the Period Ended ..." announcements carry NO attachment — the announcement
+is BSE's notice of the filing, so there is no announced document whose figures could be read. Where the served XBRL post-dates the
+announcement or is a revision, the figures public on the announcement day cannot be shown to equal ours, and serving ours from that
+day could be look-ahead. The 45 go back to their pre-batch-2 served dates (22 restored to the entry they replaced, 23 removed);
+rebuilt feed: exactly those 45 rows moved, each to its earlier served date. Kept: the other 296 (Quantmac re-dated 80 of them the
+same way; the rest had no figure objection).
+**Batch 6c (2026-09-29): NSR-PE Mauritius, LLC documented; VRLLOG Mar-2016 loaded.** SEBI's own list of registered Foreign Venture
+Capital Investors (sebi.gov.in/sebi_data/attachdocs/1333436005879.pdf, page 14, entry 134: 'NSR-PE Mauritius, LLC IN/FVCI/08-09/119
+16.01.2009') -> shp_foreign_holder_evidence.json (proof "sebi-register"; SEBI's search form is behind a WAF that refuses scripted
+POSTs — not worked around; the PDF is public). `table3` then loads VRLLOG Mar-2016 from BSE's Table III: FII 17.06 = FPI 11.90 +
+NSR-PE 5.16 (= Quantmac). VBL 29-Jul-2019 (NSE event file Quantmac supplied) stays unloaded: the file prints promoter 73.56 % +
+public 43.23 % = 116.79 % against its own 100 % total — internally inconsistent, so parse_shp's anchor refuses it (their 07-Sep
+file reads cleanly, 69.81 + 30.18).
+**Step 3 (revised figures on original dates, their NSE finding):** `~/stocks-cache/shp/v4work/revcheck.py` — for every in-scope
+quarter (2016+) with 2+ BSE XBRL versions, parse each version and find which one the earliest served row reproduces (promoter + MF,
+then FII). On the 1,555 quarters whose files were cached: 0 served a revision's figures before the revision; 179 serve the
+original where versions differ; 1,326 versions identical; 24 match no single version (row rules moved them).
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
