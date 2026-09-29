@@ -20640,6 +20640,39 @@ fallback (held: a page shows the latest version, so an earlier date cannot be sh
 row. 12 got a date — all LATER than the +28 fallback (30-76 days after quarter-end), removing 2-48 days of look-ahead
 (shp_sub_dates, src bse-ann). Rebuilt feed 12 / 12 exact, 0 other rows; guards green.
 
+**Batch 7 (2026-09-29, building Quantmac v5 reply #6; user: "mention cell by cell why we are right" on Rule 3).** Checking the
+186 company-quarters reply #5 had filed under Rule 3 found 47 that were not Rule 3 but our own reading errors, and two places where
+our rule was not applied evenly. Two user decisions (2026-09-29), both measured store-wide first:
+- **Documents only.** A holder filed among non-institutions (or on a company-type sub-row of the institutional Any-Other block) is
+  FII only on the company's own mark — its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row; its own 'Foreign Companies' row
+  keeps it public — or, where the company is silent, another company's filing listing the same legal name under Institutions
+  (Foreign). The SW-2 curated list alone no longer counts. Evidence per holder in `shp_foreign_holder_evidence.json` (inst /
+  inst_n / company_n over 33,899 cached XBRLs, `~/stocks-cache/shp/proof/corpus_axes2.py`; strict identity: exact name or >= 0.96
+  alike with the same series markers — Norwest VII-A is not Norwest X FII). Code: `inst_documented()` in `_shp_dii_rowfix` (R1
+  company-type sub-rows) and `_shp_fii_rowfix.eval_fii` (R2-FII; a curated verdict no longer carries FII forward via holder memory).
+  Written: 50 cells in continuous runs — IIFL Mar-2020..Jun-2022 (CDC Group plc 15.46 -> public: 0 institution listings, 64
+  company-type; RBL Bank's own filing lists it under Foreign Companies), NH Jun-2018..Dec-2019 (CDC), TCI 2018-19 (Arcee Holdings),
+  IEX Jun-2018..Sep-2021 (Rimco (Mauritius) 4.55 -> FII: 13 FDI listings), APLAPOLLO 2016-19 (Goldman Sachs India 585 FPI listings,
+  Kotak Mahindra (International), WF Asian Reconnaissance), IDFCFIRSTB 2019 (Caladium), LMW Mar-2018 (PineBridge), plus IEX Jun-2020
+  read row by row for the first time (the stored row carried Mar-2020's fii / mf). Held (would leave zig-zags — the §160c open item):
+  page-era IFC cells CHOLAFIN / POONAWALLA / MFSL / RKFORGE, RBLBANK Jun-2018, VLSFINANCE Jun-2020, TCIEXP Sep-2018. Note: several
+  documented institutions are listed as companies more often than as institutions (IFC 50 vs 151, Rimco 13 vs 36, Plenty 7 vs 33,
+  Caladium 26 vs 56); the decision counts any institution listing.
+- **Follow the later label (D1).** The unnamed institutional Any-Other block follows the label the company gives a same-size block
+  (within 12 %) in a neighbouring filing, walking up to 6 quarters through filings where it stays unnamed
+  (`_shp_d1_rowfix.d1_follow_label`; a block with no typed rows is sized from the filing's own total). 46 cells: PVRINOX Jun/Sep-2016
+  49.70 / 50.90 -> 30.63 / 32.58 (Dec-2016 'FOREIGN CORPORATE BODIES' 17.89 = Plenty 8.81 + Multiples 6.22 + ...), ORIENTPPR
+  Sep-2019..Jun-2022 (-1.80, OCB), BIOCON 2016-17 (-0.36, Foreign Nationals), PIIND, WIPRO, FORTIS, TATACOMM, BPL, ACC, GRANULES, TANLA
+  -> public; SYNGENE, CGPOWER, GREAVESCOT, MBLINFRA -> DII. (The list shown to the user had 37; fixing a sizing bug in the measurement
+  added the 9 earlier quarters of the same ORIENTPPR / BIOCON / TATACOMM runs.) 27 other same-size neighbours are foreign-institution
+  labels (stay FII); 402 D1 blocks have no labelled same-size neighbour (unchanged).
+- **Dec-2015 / Mar-2016 Table III (batch-6 method).** 7 cells reply #5 had called Rule 3: BAJAJHIND and KSB (the company's own
+  'Foreign Institutional Investor' sub-row), STAR x2 (Foreign Venture Capital 2.30, B1d), BASF, IOB, AGI; PVRINOX Mar-2016 kept at
+  28.03 (the block is the Dec-2016 'Foreign Corporate Bodies' one).
+Written with `_shp_164_write.py "§164r batch 7"`: 4 new + 99 superseding, 0 skipped; rebuilt feed (`fetch_shareholding.py
+--apply-ledgers`) moves exactly those 103 rows, 0 others; four shareholding guards green. Page-era part (generic-row floor 0.5 ->
+0, the 600001 placeholder code that hid KARURVYSYA 590003 / SUNDARMFIN 590071 / WHEELS 590073) follows separately.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
