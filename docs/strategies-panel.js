@@ -973,10 +973,11 @@ async function buyResidual(){
   const orders = res.map(r => { const q = liveQ(r.sym); return { variety:'regular', validity:'DAY', tag:'swresid',
     tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET', quantity: Math.floor(+r.qty),
     product: (r.product || 'MTF'), _px: (q && q.ltp != null ? q.ltp : (+r.px || 0)) }; });
-  const slices = buySlices(orders);
+  const P = planBasket(orders, 'buy'); if (!P) return;
+  const slices = P.slices;
   if (BUYSLICER['__residual__']) buyStop('__residual__');
-  BUYSLICER['__residual__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
-  ktoast('Buying ' + res.length + ' remaining in ' + slices.length + ' slices (HFCL as CNC)', 6500);
+  BUYSLICER['__residual__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
+  ktoast('Buying ' + res.length + ' remaining in ' + slices.length + ' slices (HFCL as CNC)' + planNote(P), P.how === 'normal' ? 6500 : 9000);
   buyFire('__residual__');
   renderCards();
 }
@@ -1060,12 +1061,13 @@ async function exitAllStart(){
     if (r.coll > 0) pledged.push(r.sym + ' (' + r.coll + ')');
   });
   if (!orders.length){ ktoast('Nothing sellable'); return; }
+  const P = planBasket(orders, 'sell'); if (!P) return;
   exitSnapSet(snap);                                     // persist the book BEFORE firing, so re-entry survives a reload
   if (pledged.length) ktoast('⚠ pledged shares NOT sold (unpledge first): ' + pledged.join(', '), 8000);
-  const slices = buySlices(orders);
+  const slices = P.slices;
   if (BUYSLICER['__exitall__']) buyStop('__exitall__');
-  BUYSLICER['__exitall__'] = { slices: slices, i: 0, n: slices.length, btn: g || null, t: 0, sell: true };
-  ktoast('EXIT ALL: selling ' + rows.length + ' holdings in ' + slices.length + ' slices, limit ≤' + sliceRng() + '% below live — keep this tab open; tap the counter to stop', 8000);
+  BUYSLICER['__exitall__'] = { slices: slices, i: 0, n: slices.length, btn: g || null, t: 0, sell: true, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
+  ktoast('EXIT ALL: selling ' + rows.length + ' holdings in ' + slices.length + ' slices, limit ≤' + sliceRng() + '% below live' + planNote(P) + ' — keep this tab open; tap the counter to stop', P.how === 'normal' ? 8000 : 9000);
   buyFire('__exitall__');
   renderCards();
 }
@@ -1099,10 +1101,11 @@ async function reenterStart(){
   const orders = rows.map(r => { const q = liveQ(r.sym); return { variety:'regular', validity:'DAY', tag:'swreenter',
     tradingsymbol: r.sym, exchange:'NSE', transaction_type:'BUY', order_type:'MARKET', quantity: Math.floor(+r.qty),
     product: (r.product || 'MTF'), _px: (q && q.ltp != null ? +q.ltp : 0) }; });
-  const slices = buySlices(orders);
+  const P = planBasket(orders, 'buy'); if (!P) return;
+  const slices = P.slices;
   if (BUYSLICER['__reenter__']) buyStop('__reenter__');
-  BUYSLICER['__reenter__'] = { slices: slices, i: 0, n: slices.length, btn: g || null, t: 0 };
-  ktoast('Re-entering ' + n + ' stocks in ' + slices.length + ' slices, limit ≤' + sliceRng() + '% above live — tap the counter to stop; ✕ forgets it after', 8000);
+  BUYSLICER['__reenter__'] = { slices: slices, i: 0, n: slices.length, btn: g || null, t: 0, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
+  ktoast('Re-entering ' + n + ' stocks in ' + slices.length + ' slices, limit ≤' + sliceRng() + '% above live' + planNote(P) + ' — tap the counter to stop; ✕ forgets it after', P.how === 'normal' ? 8000 : 9000);
   buyFire('__reenter__');
   renderCards();
 }
@@ -1120,9 +1123,10 @@ async function buyAllStart(rows){
   const orders = live.map(r => ({ variety: 'regular', validity: 'DAY', tag: 'swbasket', tradingsymbol: r.sym,
     exchange: 'NSE', transaction_type: 'BUY', order_type: 'MARKET', quantity: r.qty, product: 'MTF', _px: r.px }));
   if (!Z.connected || Z.directBlocked){ ktoast('Not connected for paced slices — use each strategy’s ⚡ dialog to send via the Zerodha basket', 5600); return; }
-  const slices = buySlices(orders);
-  BUYSLICER['__all__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
-  ktoast('Buying all ' + live.length + ' stocks in ' + slices.length + ' liquidity-sized slices (1% of each stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr) every ' + sliceGap() + 's, each a limit \u2264' + sliceRng() + '% above live \u2014 keep this tab open; tap the counter to stop', 7000);
+  const P = planBasket(orders, 'buy'); if (!P) return;
+  const slices = P.slices;
+  BUYSLICER['__all__'] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
+  ktoast('Buying all ' + live.length + ' stocks in ' + slices.length + ' liquidity-sized slices (1% of each stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr) every ' + P.gapS + 's, each a limit \u2264' + sliceRng() + '% above live' + planNote(P) + ' \u2014 keep this tab open; tap the counter to stop', P.how === 'normal' ? 7000 : 9000);
   renderCards();
   buyFire('__all__');
 }
@@ -1700,6 +1704,7 @@ async function sellBasketStart(id){
   if (!RW.in){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 exits near the ' + RW.tlab + ' close (month-end), stragglers from ' + RW.t1lab + '. Nothing sent.', 7500); return; }
   if (!X.legOk){ ktoast('\u26a0 ' + X.legMsg + ' \u2014 selling is locked until then', 7500); return; }
   if (!Z.connected){ ktoast('Zerodha not connected'); return; }
+  if (closeGuard('sell')) return;
   const btn = document.querySelector('[data-sellbasket="' + id + '"]');
   if (btn && btn.dataset.arm !== '1'){
     const todo0 = X.exits.filter(r => r.remain == null ? true : r.remain > 0);
@@ -1726,13 +1731,14 @@ async function sellBasketStart(id){
     if (mq + cq > 0) sent[h.sym] = mq + cq;
   });
   if (!orders.length){ ktoast('Zerodha shows no sellable shares for these exits \u2014 nothing sent', 6000); return; }
+  const P = planBasket(orders, 'sell'); if (!P) return;   // the clock: slices + gaps that finish by 15:29
   if (short.length) ktoast('\u26a0 selling fewer shares than the ledger for ' + short.join(', '), 7000);
-  const slices = buySlices(orders);
+  const slices = P.slices;
   if (BUYSLICER[id]) buyStop(id);
-  BUYSLICER[id] = { slices: slices, i: 0, n: slices.length, btn: btn || null, t: 0, sell: true };
+  BUYSLICER[id] = { slices: slices, i: 0, n: slices.length, btn: btn || null, t: 0, sell: true, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
   zbSetSold(id, true, sent);
   ktoast('Selling ' + todo.length + ' stock' + (todo.length === 1 ? '' : 's') + ' in ' + slices.length +
-    ' slices \u2014 each a limit \u2264' + sliceRng() + '% BELOW live on NSE, MTF shares as MTF, demat as CNC; tap the counter to stop', 7000);
+    ' slices \u2014 each a limit \u2264' + sliceRng() + '% BELOW live on NSE, MTF shares as MTF, demat as CNC' + planNote(P) + '; tap the counter to stop', P.how === 'normal' ? 7000 : 9000);
   buyFire(id);
   renderCards();
 }
@@ -1781,17 +1787,84 @@ function advSliceCap(sym){
   } catch (e){}
   ADVCAP[sym] = cap; return cap;
 }
-function buySlices(orders){
+function buySlices(orders, maxParts){
   const per = {};
   orders.forEach(o => { const cap = advSliceCap(o.tradingsymbol);
     const px = o._px || o.price || 0;
-    const chunk = Math.min(80000, px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity);   // hard 80k-share cap: Zerodha refuses single orders >=1,00,000 (5-level market-depth limit)
+    let chunk = Math.min(80000, px > 0 ? Math.max(1, Math.floor(cap / px)) : o.quantity);   // hard 80k-share cap: Zerodha refuses single orders >=1,00,000 (5-level market-depth limit)
+    /* squeezed by the 15:30 close (fitPlan): at most maxParts slices per order — never over 80,000 shares or ₹1 Cr a slice */
+    if (maxParts > 0) chunk = Math.max(chunk, Math.min(Math.ceil(o.quantity / maxParts), 80000, px > 0 ? Math.max(1, Math.floor(1e7 / px)) : o.quantity));
     const list = []; let q = o.quantity;
     while (q > 0){ const take = Math.min(chunk, q); q -= take; list.push(Object.assign({}, o, { quantity: take })); }
     per[o.tradingsymbol + '|' + (o.product || '')] = list; });
   const out = []; let more = true, round = 0;       // round-robin; TAG each slice with its round #
   while (more){ more = false; for (const k in per){ const l = per[k]; if (l.length){ const sl = l.shift(); sl._round = round; out.push(sl); if (l.length) more = true; } } round++; }
   return out;
+}
+/* ================= THE 15:30 CLOSE (user 2026-09-29: "if I don't get time to sell my stocks and I click on sell at 3:25 it
+   should always check how much time is left for the closure of the market and plan the slices accordingly") =================
+   NSE's normal market closes at 15:30:00 IST. Every basket — sell or buy, cloud or this tab — plans backwards from 15:29:00
+   (the last slice's send-by; a minute is left for status reads and a tick retry), preferring in this order:
+     1. the usual liquidity-sized slices, sliceGap() apart, when they finish in time;
+     2. the same slices with shorter gaps (never under 10 s);
+     3. fewer, BIGGER slices — each order cut into k parts, k shrinking until it fits (never over 80,000 shares or ₹1 Cr);
+     4. the biggest allowed slices back to back.
+   endBy travels with a cloud job: the box re-fits its gaps after every round and fires nothing after 15:30 (kite-relay v4.3).
+   The in-tab slicer does the same (gapFor, buyFire). From 15:29:30 until 09:00 no basket starts at all (closeGuard). */
+const SEND_BY_S = 15 * 3600 + 29 * 60, LAST_CALL_S = SEND_BY_S + 30, OPEN_S = 9 * 3600, MIN_GAP_S = 10;
+const istSecOf = t => { const d = new Date(t + 330 * 60000); return d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds(); };
+const sendByMs = t => Math.floor((t + 330 * 60000) / 864e5) * 864e5 - 330 * 60000 + SEND_BY_S * 1000;   // that IST day's 15:29:00
+const sliceSecs = () => cloudOn() ? 3.3 : 5.5;   // one slice's own send time: the box ≈ place + 1.8 s status read + 1.1 s; this tab adds a price read + 3 s spacing
+const planRounds = sl => new Set(sl.map(s => s._round)).size;
+function fitPlan(orders, now){
+  now = now || Date.now();
+  const endBy = sendByMs(now), budget = (endBy - now) / 1000, gap0 = sliceGap(), per = sliceSecs();
+  const dur = (sl, g) => Math.max(0, planRounds(sl) - 1) * g + sl.length * per;
+  const s0 = buySlices(orders), n0 = s0.length;
+  const P = (slices, gapS, how) => ({ slices, gapS: Math.max(3, Math.round(gapS)), how, endBy, n0, R: planRounds(slices), left: Math.max(0, Math.round(budget)) });
+  if (dur(s0, gap0) <= budget) return P(s0, gap0, 'normal');
+  const R0 = planRounds(s0);
+  if (R0 > 1){ const g = Math.floor((budget - n0 * per) / (R0 - 1)); if (g >= MIN_GAP_S) return P(s0, Math.min(gap0, g), 'gaps'); }
+  for (let k = R0 - 1; k >= 1; k--){
+    const sl = buySlices(orders, k), R = planRounds(sl);
+    if (R === 1){ if (sl.length * per <= budget) return P(sl, gap0, 'bigger'); break; }
+    const g = Math.floor((budget - sl.length * per) / (R - 1)); if (g >= MIN_GAP_S) return P(sl, Math.min(gap0, g), 'bigger');
+  }
+  return P(buySlices(orders, 1), 3, 'burst');
+}
+function planNote(P){
+  if (!P || P.how === 'normal') return '';
+  const m = Math.floor(P.left / 60), s = P.left % 60, left = m ? m + ' min' + (s ? ' ' + s + ' s' : '') : s + ' s';
+  return ' · ⏱ ' + left + ' to the 3:30 close — ' + (P.how === 'gaps' ? 'gaps cut to ' + P.gapS + ' s'
+    : P.how === 'bigger' ? 'bigger slices (' + P.n0 + ' → ' + P.slices.length + ')' + (P.R > 1 ? ', ' + P.gapS + ' s apart' : ', one round')
+    : 'everything back to back in ' + P.slices.length + ' slice' + (P.slices.length === 1 ? '' : 's'));
+}
+function closeGuard(verb){
+  const s = istSecOf(Date.now());
+  if (s >= OPEN_S && s < LAST_CALL_S) return false;
+  ktoast('⏰ NSE closes at 3:30 — ' + (s >= LAST_CALL_S ? 'too late to ' + verb + ' today. Nothing was sent; ' + verb + ' them next session.' : 'nothing is sent before 9:00.'), 8000);
+  return true;
+}
+/* build a basket's plan against the clock — null (after a toast) when NSE is shut. Call it BEFORE any side effect. */
+function planBasket(orders, verb){ return closeGuard(verb) ? null : fitPlan(orders); }
+/* the in-tab slicer's wait before its next round: the job's gap, cut so the rounds left still fit before endBy */
+function gapFor(B){
+  const base = B.gapS || sliceGap();
+  if (!B.endBy) return base;
+  const rest = B.slices.slice(B.i), R = new Set(rest.map(s => s._round)).size || 1;
+  const fit = ((B.endBy - Date.now()) / 1000 - rest.length * 5.5) / R;
+  return fit >= base ? base : Math.max(3, Math.floor(fit));
+}
+/* A slice's live price: Zerodha's own, from its order-margin calculator — a 1-share CNC MARKET buy is priced at the current
+   LTP (measured 2026-09-29: CHENNPETRO 1436.9, INFY 1015.4, HFCL-BE 216.21 = Kite's last_price). The free Kite 'Personal'
+   app refuses /quote (403 PermissionException), the margin calculator it allows. Fallback: the Yahoo quote (~15 min old).
+   A price 20%+ away from the one the basket was planned at is distrusted (same guard as the box). */
+async function sliceLtp(sym, planned){
+  const r = await zFetch('/margincalc', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify([{ exchange: 'NSE', tradingsymbol: ordSym(sym), transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }]) });
+  const d = r.st === 200 && r.j && r.j.data && r.j.data[0], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
+  if (v > 0 && !(planned > 0 && Math.abs(v / planned - 1) > 0.2)) return v;
+  return await freshLtp(sym);
 }
 /* ================= CLOUD SLICER (user 2026-09-23: "execution that survives the tab") =================
    The slicer can run on the static-IP relay VM (kite-relay.js v2) instead of this tab: the tab submits
@@ -1802,12 +1875,15 @@ function buySlices(orders){
    A job id carries the strategy id (slug~stamp) so any device maps it back to its card. The same
    per-strategy sell tags travel with the slices, so proceeds capture is unchanged. */
 const CLOUD = { ok: null, at: 0, seen: {}, timer: null };
+/* 'live' = the box prices every round off Zerodha's current price (Kite quote if the app ever gets market data, else the
+   order-margin calculator — kite-relay v4.3); 'page' = the old way, the Yahoo quote captured when the basket was sent */
+const PX_SRC = 'live';
 const cloudWanted = () => { try { return localStorage.getItem('sw_cloud_slicer') !== '0'; } catch(e){ return true; } };
 const cloudOn = () => !!CLOUD.ok && cloudWanted();
 async function cloudProbe(force){
   if (!force && CLOUD.at && Date.now() - CLOUD.at < 600000) return CLOUD.ok;
   const r = await zFetch('/jobs');
-  CLOUD.ok = !!(r.st === 200 && r.j && r.j.ok && r.j.v >= 2); CLOUD.at = Date.now();
+  CLOUD.ok = !!(r.st === 200 && r.j && r.j.ok && r.j.v >= 2); CLOUD.at = Date.now(); CLOUD.v = (r.j && +r.j.v) || 0;
   if (CLOUD.ok){ cloudApply(r.j.jobs || []); cloudTags(); ledgerStatus(); }
   cloudChip(); return CLOUD.ok;
 }
@@ -1823,7 +1899,8 @@ async function cloudSubmit(id){
   const jobId = jobSlug(id) + '~' + Date.now().toString(36);
   const body = { id: jobId, label: String(label).slice(0, 80), device: ((navigator.platform || '') + ' ' + new Date().toTimeString().slice(0, 5)).slice(0, 40),
     pfId: ((typeof heldFor === 'function' && it && heldFor(it.cfg)) || {}).pfId || '', sid: String(id),   // v4: the box books this basket's fills to that portfolio
-    gapS: sliceGap(), rngPct: sliceRng(), peg: 'touch', partPct: partPct(),
+    gapS: B.gapS || sliceGap(), rngPct: sliceRng(), peg: 'touch', partPct: partPct(),
+    endBy: B.endBy || 0, pxSrc: PX_SRC,   // v4.3 box: the last slice's send-by (15:29 IST) + where each round's price comes from
     slices: B.slices.map(s => ({ tradingsymbol: ordSym(s.tradingsymbol), transaction_type: s.transaction_type, quantity: s.quantity, product: s.product,
       tag: s.tag, px: +s._px || 0, tick: TICKMEM[s.tradingsymbol] || 0.05, round: s._round })) };
   let r = null;
@@ -1836,7 +1913,8 @@ async function cloudSubmit(id){
     ktoast('☁ Cloud slicer refused (' + why + ') — NOTHING was sent. Tap again to ' + (CLOUD.ok ? 'retry' : 'slice in this tab instead') + '.', 9000); return; }
   Object.assign(B, { remote: true, jobId: jobId, i: r.j.job.i, n: r.j.job.n, slices: [] });
   CLOUD.seen[jobId] = 'running';
-  ktoast('☁ Sent to the cloud slicer — ' + B.n + ' slices keep firing even if this tab closes; limits pegged to the live bid/ask' + (partPct() ? ', each slice ≤ ' + partPct() + '% of the last 5 min’s volume' : '') + '; any device can stop it', 8000);
+  ktoast('☁ Sent to the cloud slicer — ' + B.n + ' slices keep firing even if this tab closes; each a limit ≤' + sliceRng() + '% off ' + (CLOUD.v >= 4.3 && PX_SRC === 'live' ? 'Zerodha’s live price' : 'the live price') +
+    (B.endBy && CLOUD.v >= 4.3 ? ', all sent by 3:29' : '') + (B.note || '') + '; any device can stop it', B.note ? 10000 : 8000);
   cloudLoop(true); renderCards();
 }
 function cloudApply(jobs){
@@ -1993,8 +2071,11 @@ function buyFire(id){
   if (cloudOn() && B.i === 0 && !B.cloudTried && B.slices && B.slices.length){ B.cloudTried = 1; cloudSubmit(id); return; }
   if (B.i === 0 && !B.symsOk && B.slices && B.slices.length){ B.symsOk = 1; kiteSyms(B.slices.map(s => s.tradingsymbol)).then(() => buyFire(id)); return; }
   if (B.i >= B.slices.length){ buyDone(id); return; }
+  if (B.endBy && Date.now() >= B.endBy + 60000){                                                // 15:30: the exchange would reject the rest
+    const left = [...new Set(B.slices.slice(B.i).map(s => s.tradingsymbol))];
+    buyStop(id, '⏰ Market closed at 3:30 — ' + (B.n - B.i) + ' slice' + (B.n - B.i === 1 ? '' : 's') + ' not sent (' + left.join(', ') + '). ' + (B.sell ? 'Sell' : 'Buy') + ' them next session.'); return; }
   const o0 = B.slices[B.i];
-  freshLtp(o0.tradingsymbol).then(ltp => {
+  sliceLtp(o0.tradingsymbol, o0._px).then(ltp => {
     const px = (ltp || o0._px || 0), o = Object.assign({}, o0); delete o._px;
     if (px > 0 && sliceRng() > 0){ o.order_type = 'LIMIT'; o.price = (o.transaction_type === 'SELL' ? sellLimitPx : buyLimitPx)(o.tradingsymbol, px); }
     o.tradingsymbol = ordSym(o.tradingsymbol);   // today's Zerodha name (HFCL → HFCL-BE); the price above used our symbol's tick
@@ -2015,7 +2096,7 @@ function buyFire(id){
           B.i++; if (B.btn) B.btn.textContent = (B.sell ? 'Selling ' : 'Buying ') + B.i + '/' + B.n;
           if (B.i >= B.slices.length) buyDone(id);
           else { const sameRound = B.slices[B.i] && B.slices[B.i]._round === o0._round;   // o0 = slice just filled
-                 const wait = sameRound ? 3 : Math.max(3, sliceGap() - 2);                // gap ONLY between rounds
+                 const wait = sameRound ? 3 : Math.max(3, gapFor(B) - 2);                 // gap ONLY between rounds (shorter near the close)
                  B.t = setTimeout(() => buyFire(id), wait * 1000); }
         }); }, 1800);
       }
@@ -2053,12 +2134,13 @@ async function zbPlaceAll(){
   if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true, sentMap(orders)); $('zbWrap').classList.remove('open'); } return; }
   await loadTicks();
   orders.forEach(o => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); o._px = (r && r.px) || o.price || 0; });
-  const slices = buySlices(orders);
+  const P = planBasket(orders, 'buy'); if (!P) return;
+  const slices = P.slices;
   if (BUYSLICER[ZB.id]) buyStop(ZB.id);
-  BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0 };
+  BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
   zbSetBought(ZB.id, true, sentMap(orders));
   $('zbWrap').classList.remove('open');
-  ktoast('Buying in ' + slices.length + ' liquidity-sized slices (1% of the stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr each) every ' + sliceGap() + 's, each a limit \u2264' + sliceRng() + '% above live \u2014 keep this tab open; tap the \u26a1 counter to stop', 6500);
+  ktoast('Buying in ' + slices.length + ' liquidity-sized slices (1% of the stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr each) every ' + P.gapS + 's, each a limit \u2264' + sliceRng() + '% above live' + planNote(P) + ' \u2014 keep this tab open; tap the \u26a1 counter to stop', P.how === 'normal' ? 6500 : 9000);
   renderCards();
   buyFire(ZB.id);
 }
