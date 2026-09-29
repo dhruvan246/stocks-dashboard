@@ -2,7 +2,8 @@
  "_doc": [
   "§164j (2026-09-26, user decision on Quantmac reply v3: named foreign holders need DOCUMENTARY proof). A holder whose only sign of being foreign is its name (jurisdiction/entity markers, _shp_dii_rowfix.FORLAB or the sovereign-name rule) counts as FII only when listed here. Proof = (filing) the holder appears under a foreign-institution row (FPI/FII/FVCI/FDI/foreign SWF/Institutions(Foreign)) in another cached BSE SHP XBRL, with no domestic listing or >= 90% of >= 5 listings; or (gleif) a GLEIF LEI record with the same legal name (or previous legal name) and a legal jurisdiction outside India. Unlisted name-only holders are unresolved (never FII by name alone).",
   "Built from ~/stocks-cache/shp/proof (corpus_axes.json over 33898 cached XBRLs; proof_gleif.json).",
-  "§164n (2026-09-27): + holders the §158a/§164 rest-follows rule had swept into fii while UNRESOLVED (named, no class): 17 documented foreign (other filings' foreign-institution rows / GLEIF), 1 documented DOMESTIC (listed only under Indian rows: INDIA BUSINESS EXCELLENCE FUND IIA = an AIF). Entries now carry class foreign|domestic; holder_class consults this list for EVERY name (exact, or a >= 20-char prefix / >= 0.92 match)."
+  "§164n (2026-09-27): + holders the §158a/§164 rest-follows rule had swept into fii while UNRESOLVED (named, no class): 17 documented foreign (other filings' foreign-institution rows / GLEIF), 1 documented DOMESTIC (listed only under Indian rows: INDIA BUSINESS EXCELLENCE FUND IIA = an AIF). Entries now carry class foreign|domestic; holder_class consults this list for EVERY name (exact, or a >= 20-char prefix / >= 0.92 match).",
+  "§164r batch 6 (2026-09-29): proof may also be (sebi-register) the holder's own SEBI registration in a SEBI-published list (FVCI/FPI), e.g. NSR-PE Mauritius, LLC IN/FVCI/08-09/119."
  ],
  "names": {
   "NATIONALWESTMINSTERBANKPLCASTRUSTEEOFTHEJU": {
@@ -7150,6 +7151,12 @@
    "class": "foreign",
    "proof": "gleif",
    "detail": "GLEIF LEI 549300ZGZMZ7M6BEMC40 Standard Chartered IL&FS Asia Infrastructure Growth Fund Company Limited, legal jurisdiction KY (and the LP 549300BTMPTLOBTQ4290, LU) — the filer writes 'IL AND FS' for IL&FS (DEN; §164r 2026-09-28)"
+  },
+  "NSRPEMAURITIUSLLC": {
+   "name": "NSR-PE MAURITIUS, LLC",
+   "class": "foreign",
+   "proof": "sebi-register",
+   "detail": "SEBI's list of registered Foreign Venture Capital Investors (https://www.sebi.gov.in/sebi_data/attachdocs/1333436005879.pdf, sha256 4084341848f484588ed207941eba5bf50a4e320bf8d9eec5b5da94d506f74f31, page 14): entry 134 'NSR-PE Mauritius, LLC  IN/FVCI/08-09/119  16.01.2009' (Quantmac v5 named the registration; checked on SEBI's own document 2026-09-29)"
   }
  }
 }
