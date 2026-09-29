@@ -97,6 +97,65 @@ def d1_corroborated(sym, qe, fii_after, dd):
     ok = pv >= need or nv >= need
     return ok, "%s FII %.2f, %s FII %.2f vs %.2f needed (moved level %.2f)" % (p, pv, n, nv, need, fii_after)
 
+# §164r batch 7 (user 2026-09-29 'Follow the later label', 37 cells measured and approved): the UNNAMED institutional Any-Other
+# block follows the label the company itself gives a block of the same size (within D1_LABEL_TOL) in a neighbouring filing —
+# walking quarter by quarter (up to 6 hops each way) through filings where the block stays unnamed and the same size. PVRINOX
+# Jun/Sep-2016: 19.07 / 18.32 unnamed, then Dec-2016 'FOREIGN CORPORATE BODIES' 17.89 (Plenty 8.81, Multiples 6.22 ...) -> public,
+# not FII (the 19-point spike and drop was the default rule, not a trade). A company-type / DR / foreign-national label -> public;
+# a domestic-institution label -> DII; a foreign-institution label (or none found) -> FII as before.
+D1_LABEL_TOL = 0.12
+_D1Q = []
+_y, _m = 2015, 12
+while (_y, _m) <= (2022, 6):
+    _D1Q.append("%d-%02d-%02d" % (_y, _m, {3: 31, 6: 30, 9: 30, 12: 31}[_m])); _m += 3
+    if _m > 12: _m = 3; _y += 1
+_FORW = re.compile(r"foreign|forign|foriegn|global|overseas|\bfii|\bfpi|\bqfi|sovereign", re.I)
+_DRW = re.compile(r"\bdr\b|depositor|\bgdr|\badr", re.I)
+def d1_lab_class(L):
+    if _DRW.search(L) or D.LAB_PUB.search(L): return "pub"
+    if D.LAB_FII.search(L) or (_FORW.search(L) and D.DOMLAB.search(L)): return "fii"
+    if D.DOMLAB.search(L): return "dii"
+    return None
+_D1BLK = {}
+def _d1_block(sym, qe, byq, ctx):
+    if (sym, qe) in _D1BLK: return _D1BLK[(sym, qe)]
+    out = None
+    for fd, f in sorted(byq.get(qe) or []):
+        p = D.find_file(f)
+        if not p: continue
+        try: txt = open(p, "rb").read(); rows = D.rows_of(txt)
+        except Exception: continue
+        gs = D.groups(rows, "OtherInstitutionsMember") or D.groups(rows, "OtherInstitutions")
+        lab = []; unnamed = 0.0
+        if not gs:              # a block filed with no typed rows (PVRINOX Sep-2016): its size is the filing's own block total
+            try: unnamed = D.breakdown(txt).get("OtherInstitutionsMember") or 0.0
+            except Exception: unnamed = 0.0
+        for g in gs:
+            cls = d1_lab_class(g["label"]); hs = [(hn, hp) + tuple(ctx.hclass(hn, hp)[:2]) for hp, hn in g["holders"]]
+            if cls is None and not hs: unnamed += g["pct"]
+            lab.append((g["label"], g["pct"], cls, hs))
+        out = (lab, unnamed, f); break
+    _D1BLK[(sym, qe)] = out; return out
+def d1_follow_label(sym, qe, dd, byq, ctx, _depth=0):
+    """-> (class 'pub'|'dii'|'fii', evidence) of the unnamed block from the nearest same-size labelled block, or (None, reason)."""
+    if qe not in _D1Q: return None, "outside the Dec-2015..Jun-2022 form"
+    for step in (1, -1):
+        i = _D1Q.index(qe); hops = 0
+        while 0 <= i + step < len(_D1Q) and hops < 6:
+            i += step; hops += 1; b = _d1_block(sym, _D1Q[i], byq, ctx)
+            if not b: break
+            lab, unnamed, f = b
+            cand = [x for x in lab if (x[2] or x[3]) and abs(x[1] - dd) <= D1_LABEL_TOL * dd]
+            if not cand and unnamed and abs(unnamed - dd) <= D1_LABEL_TOL * dd: continue      # the same block, still unnamed
+            if cand:
+                x = cand[0]; cls = x[2]
+                if not cls:
+                    dests = collections.Counter("fii" if h[3] == "fii" else "dii" if h[2] == "domestic" else "pub" for h in x[3])
+                    cls = dests.most_common(1)[0][0]
+                return cls, "%s filing %s labels a %.2f block '%s'%s" % (_D1Q[i], f, x[1], x[0], (" (" + "; ".join("%s %.2f" % (h[0], h[1]) for h in x[3][:3]) + ")") if x[3] else "")
+            break
+    return None, "no same-size labelled block within 6 filings either way"
+
 def prior_inputs(led, sym, qe, cur, audit158, audit164=None):
     prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0; mv159_prev=0.0
     chain=prior; depth=0; seen164=False
@@ -181,7 +240,13 @@ def classify(syms, tag, ex_set):
                 if dd>=D1_GATE_MIN:
                     ok_g,why_g=d1_corroborated(sym,qe,t_fii+dd,dd)
                     if not ok_g: ev.append(("D1-held-uncorroborated",round(dd,4),why_g)); st["d1_held_uncorroborated"]+=1; dd=0.0
-                if dd>=0.005: t_fii=round(t_fii+dd,4); t_dii=round(t_dii-dd,4); ev+=dev; parts.append("D1 unnamed remainder -> FII")
+                lc=None
+                if dd>=0.005:
+                    lc,lwhy=d1_follow_label(sym,qe,dd,byq,ctx)
+                    if lc in ("pub","dii"): ev.append(("D1-follows-label",round(dd,4),lc,lwhy)); st["d1_follows_label_"+lc]+=1
+                if dd>=0.005 and lc=="pub": t_dii=round(t_dii-dd,4); ev+=dev; parts.append("D1 unnamed remainder follows the company's own neighbouring label -> public")
+                elif dd>=0.005 and lc=="dii": parts.append("D1 unnamed remainder follows the company's own neighbouring label -> DII (stays)")
+                elif dd>=0.005: t_fii=round(t_fii+dd,4); t_dii=round(t_dii-dd,4); ev+=dev; parts.append("D1 unnamed remainder -> FII")
             if abs(t_fii-(cur[1] or 0))<0.05 and abs(t_dii-(cur[2] or 0))<0.05: st["unchanged"]+=1; continue
             new=list(cur); new[1]=round(t_fii,4); new[2]=round(t_dii,4)
             if is_ex and cur[4] is not None and r["add_ins"]>0: new[4]=round(r["ins_base"]+r["add_ins"],4)

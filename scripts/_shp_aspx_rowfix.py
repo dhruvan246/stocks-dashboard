@@ -13,6 +13,12 @@ HERE=os.environ.get("DII_ROWFIX_WORK") or os.path.join(SCRIPTS,"_shp_dii_rowfix_
 os.chdir(HERE); sys.path.insert(0,SCRIPTS); sys.path.insert(0,HERE)
 import _shp_dii_rowfix as D
 
+# Generic-row floor. §160b-§160d looked only at unresolved sub-rows >= 0.5 pp; §164r batch 7 (2026-09-29, Quantmac v5) measured the
+# rows below it: 89 unresolved institutional sub-rows < 0.5 pp in 20,454 page-era cells, 21 of them the company's own neighbouring
+# 'Foreign Bank' / 'Foreign Mutual Fund' / 'FPI (Corporate)' row (HINDPETRO Jun-2015 'Others' 2 holders 0.09 between 'Foreign Bank'
+# 2 holders 0.09 on both sides) left out of FII. The same tiers now decide every row > 0; ASPX_GENERIC_FLOOR=0.5 reproduces the old run.
+GENERIC_FLOOR=float(os.environ.get("ASPX_GENERIC_FLOOR","0"))
+def gen_ok(p): return p>0 and p>=GENERIC_FLOOR
 # ---- page table parser ----
 def rows_of(h):
     out=[]
@@ -443,7 +449,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
     # generic rows ('Others', 'Any Other', 'FDI', 'Private Equity'...): the row must equal the UNIQUE exact sum of named >1% holders
     # that ALL carry one class by the filer's own evidence (holder_cls_full) -> that class; anything else stays as stored
     if gctx is not None and code and qi:
-        candg=[(lst,i) for lst in (subi,subn) for i,(lab,p,cls,io) in enumerate(lst) if cls is None and p>=0.5 and not DR_LAB.search(lab) and not MECH_LAB.search(lab) and not is_ho_row(p)]
+        candg=[(lst,i) for lst in (subi,subn) for i,(lab,p,cls,io) in enumerate(lst) if cls is None and gen_ok(p) and not DR_LAB.search(lab) and not MECH_LAB.search(lab) and not is_ho_row(p)]
         if candg:
             tot=total_shares(h); hp=fetch(code,qi)
             if code not in _KNOWN: _KNOWN[code]=sibling_foreign_names(code)
@@ -491,7 +497,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
     #  C  the block's sole Any-Others sub-row, persisting quarter to quarter, labelled by the filer at the nearest labelled quarter
     if gctx is not None and code and qi and gctx.get("pagefull"):
         pf=gctx["pagefull"]; me=pf.get(qi) or []
-        candc=[(lst,i) for lst in (subi,subn) for i,(lab,p,cls,io) in enumerate(lst) if cls is None and p>=0.5 and not DR_LAB.search(lab) and not MECH_LAB.search(lab) and not is_ho_row(p)]
+        candc=[(lst,i) for lst in (subi,subn) for i,(lab,p,cls,io) in enumerate(lst) if cls is None and gen_ok(p) and not DR_LAB.search(lab) and not MECH_LAB.search(lab) and not is_ho_row(p)]
         if candc:
             tot=total_shares(h); hp=fetch(code,qi)
             if code not in _KNOWN: _KNOWN[code]=sibling_foreign_names(code)
@@ -699,7 +705,7 @@ def evaluate(h, cur, sym=None, qi=None, code=None, ctx=None, gctx=None):
                         v=sh/tot*100
                         if v>=0.005: moved+=v; used_shp=True; ev.append(("handoff-fii",n,round(v,4),HO["note"]+" (shpperent)"))
         t_fii+=moved
-    generic_left=[(("inst" if lst is subi else "noninst"),lab,round(p,4)) for lst in (subi,subn) for lab,p,cls,io in lst if cls is None and p>=0.5 and not DR_LAB.search(lab) and not MECH_LAB.search(lab)]
+    generic_left=[(("inst" if lst is subi else "noninst"),lab,round(p,4)) for lst in (subi,subn) for lab,p,cls,io in lst if cls is None and gen_ok(p) and not DR_LAB.search(lab) and not MECH_LAB.search(lab)]
     subs_final=[(("inst" if lst is subi else "noninst"),lab,round(p,4),cls) for lst in (subi,subn) for lab,p,cls,io in lst]
     generic_left=[g for g in generic_left if not is_ho_row(g[2])]
     return dict(t_fii=round(t_fii,4),t_dii=round(t_dii,4),add_ins=round(add_ins,4),ev=ev,base=(prom,base_fii,base_dii),conv=(fm[0],dm[0]),prom_fix=prom_fix,shpperent=used_shp,rowsets=rowsets,generic_left=generic_left,subs_final=subs_final),None
@@ -731,7 +737,8 @@ def F_cell_eq_(a,b):
     return all(abs((a[i] or 0)-(b[i] or 0))<=1e-9+1e-6*abs(b[i] or 0) for i in range(min(len(a),len(b),5)) if isinstance(a[i],(int,float)) and isinstance(b[i],(int,float)))
 def scan_generic_rows():
     """(sym, qe, block, label, pct) for every unresolved sub-row >= 0.5 pp on the cached pages; cached in generic_rows.json (112 symbols on 2026-09-24)."""
-    if os.path.exists("generic_rows.json"): return json.load(open("generic_rows.json"))
+    gp="generic_rows.json" if GENERIC_FLOOR>=0.5 else "generic_rows_f%g.json"%GENERIC_FLOOR
+    if os.path.exists(gp): return json.load(open(gp))
     hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json"))); codes=json.load(open("aspx_codes.json")); syms=json.load(open("n500_syms.json")); gen=[]
     for s in syms:
         c=codes.get(s)
@@ -743,8 +750,8 @@ def scan_generic_rows():
             b=parse(gzip.open(f,"rt",encoding="utf-8").read())
             for blk in ("inst","noninst"):
                 for lab,p,cls,io in classify_rows(b[blk],blk)[1]:
-                    if cls is None and p>=0.5 and not DR_LAB.search(lab): gen.append((s,q,blk,lab,p))
-    json.dump(gen,open("generic_rows.json","w")); return gen
+                    if cls is None and gen_ok(p) and not DR_LAB.search(lab): gen.append((s,q,blk,lab,p))
+    json.dump(gen,open(gp,"w")); return gen
 GENERIC_SYMS=set(g[0] for g in scan_generic_rows())
 def classify():
     hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json")))

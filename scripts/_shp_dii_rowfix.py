@@ -151,6 +151,17 @@ def _evidence(n):
             if k[:12]!=n[:12]: continue
             if (len(n)>=20 and k.startswith(n)) or (len(k)>=20 and n.startswith(k)) or difflib.SequenceMatcher(None,n,k).ratio()>=0.92: e=v; break
     return e
+_SER=re.compile(r"^(?:[IVX]+|\d+|FII|FPI|FDI|ODI|[A-H])$")
+def _series(name): return tuple(sorted(t for t in re.split(r"[^A-Z0-9]+",str(name).upper()) if _SER.match(t)))
+def inst_documented(name):
+    """§164r batch 7 (user 2026-09-29 'Documents only'): True when the evidence file marks this legal name inst=true — another
+    company's filing lists it under Institutions (Foreign). Strict identity: the exact name, or >= 0.96 alike with the same series
+    markers (Norwest Venture Partners VII-A is not Norwest ... X FII; APMS INVESTMENTS FUND = APMS INVESTMENT FUND)."""
+    n=norm(name); e=EVIDENCE.get(n)
+    if e is None and len(n)>=10:
+        for k,v in EVIDENCE.items():
+            if k[:8]==n[:8] and difflib.SequenceMatcher(None,n,k).ratio()>=0.96 and _series(v.get("name",k))==_series(name): e=v; break
+    return bool(e and e.get("inst"))
 def _documented_foreign(n, what):
     """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
     foreign-institution row); otherwise unresolved — never foreign by name alone."""
@@ -267,7 +278,9 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 if c=="foreign" and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"):
                     # the label decides an unnamed-type holder; an institution-type holder (FPI/FII tag in its own name, or a
                     # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
-                    if src=="curated" or inst_tag: dest="fii"
+                    # §164r batch 7 (user 2026-09-29 'Documents only'): a curated verdict alone no longer counts — the holder needs an
+                    # institution tag in its own name or another company's filing listing it under Institutions (Foreign)
+                    if inst_tag or inst_documented(hn): dest="fii"
                     else: dest=lab_kind
                 hs2.append((hp,hn,c,dest,src))
             hs=hs2

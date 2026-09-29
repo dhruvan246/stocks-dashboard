@@ -10,8 +10,9 @@ adjudicated by §158 R1):
     foreign SWF / other foreign institution) -> fii;  placed under Foreign Companies / Bodies Corporate / NRI /
     other non-institutions -> stays public;
   * a holder absent from that filing: fii only when its own name carries an institution tag ((FPI)/(FII)/foreign
-    portfolio/foreign institutional/FVCI/foreign venture/foreign bank/sovereign) or the SW-2 curated verdict says
-    foreign; every other name is decided by its row LABEL — and every non-institution label is public;
+    portfolio/foreign institutional/FVCI/foreign venture/foreign bank/sovereign) or (§164r batch 7, 'Documents only') another
+    company's filing lists the same legal name under Institutions (Foreign) (shp_foreign_holder_evidence.json inst=true; the SW-2 curated verdict alone no longer counts);
+    every other name is decided by its row LABEL — and every non-institution label is public;
   * a whole row whose LABEL is FII-type (Foreign Portfolio Investors / FII / QFI / foreign institution ...) is fii,
     less any domestic-classified holder inside it.
 Nothing else moves: dii, mf, ins untouched; the change is a pure public -> fii move, so fii+dii+prom can only grow
@@ -103,7 +104,9 @@ class FiiCtx(D.SymCtx):
             c=("foreign" if cls in ("fii","public") else "domestic"); dest=(cls if cls in ("fii","public") else None)
             self.memory[n]=(c,dest,how); return c,dest,how
         c,dest,src=D.holder_class(hn,self.verdicts,{})
-        if src=="curated": self.memory[n]=(c,dest,src); return c,dest,src
+        if src=="curated":      # §164r batch 7: a curated foreign verdict carries FII into later quarters only with an institution document
+            if c=="foreign": dest=("fii" if D.inst_documented(hn) else "public")
+            self.memory[n]=(c,dest,src); return c,dest,src
         if n in self.memory: c,dest,src=self.memory[n]; return c,dest,"memory"
         for k,v in self.memory.items():
             if len(n)>=8 and D.difflib.SequenceMatcher(None,n,k).ratio()>=0.85: c,dest,src=v; return c,dest,"memory~"
@@ -130,7 +133,7 @@ def eval_fii(ctx, qe, txt, bd, res, cur):
         else:
             for hp,hn,c,dest,src in hs:
                 if src.startswith("new-format") or src in ("memory","memory~"): go=(dest=="fii"); how=src
-                elif c=="foreign" and src=="curated": go=True; how="curated"
+                elif c=="foreign" and D.inst_documented(hn): go=True; how="documented-institution"   # §164r batch 7 'Documents only': not the curated list alone
                 elif c=="foreign" and INST_TAG.search(hn): go=True; how="inst-tag"
                 else: go=False; how=(src or "label")
                 if go: take+=hp
@@ -243,7 +246,7 @@ def write(stamp=None):
     n_new=n_sup=n_skip=0
     audit={"_doc":[
         "%s (%s), old-format XBRL era Jun-2015..Jun-2022, Nifty 500. FII = Institutions(Foreign) B2 (less depository receipts, §151) in every format."%(MARK,stamp),
-        "R2-FII Non-institutions -> Any Other rows: a >=1% holder the filer's FIRST 2022-form filing places under Institutions(Foreign) (FDI/FPI/FVCI/foreign SWF) joins fii; one it places under Foreign Companies / Bodies Corporate / NRI / other non-institutions stays public; a holder absent from that filing joins fii only on an institution tag in its own name or a SW-2 curated foreign verdict, else its row label decides (every non-institution label is public). A row whose LABEL is FII-type (FPI/FII/QFI/foreign institution) is fii in full, less domestic-classified holders.",
+        "R2-FII Non-institutions -> Any Other rows: a >=1% holder the filer's FIRST 2022-form filing places under Institutions(Foreign) (FDI/FPI/FVCI/foreign SWF) joins fii; one it places under Foreign Companies / Bodies Corporate / NRI / other non-institutions stays public; a holder absent from that filing joins fii only on an institution tag in its own name or another company's filing listing it under Institutions (Foreign) (§164r batch 7: the curated list alone no longer counts), else its row label decides (every non-institution label is public). A row whose LABEL is FII-type (FPI/FII/QFI/foreign institution) is fii in full, less domestic-classified holders.",
         "Pure public -> fii move: dii, mf, ins untouched. Materiality 0.05 pp. Evidence per cell: file, every row hit with label, holders and the tier that decided each."],"cells":{}}
     for k,v in sorted(P.items()):
         sym,qe=k.split("|"); cur=(hist.get(sym) or {}).get(qe)
