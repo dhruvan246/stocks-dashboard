@@ -16,9 +16,13 @@ name: Insights — read operating KPIs from company filings
 # pass over 500 names × ~25 filings each (~12,500 documents) takes roughly two weeks.
 
 on:
-  schedule:
-    - cron: "30 21 * * *"      # 03:00 IST — BSE quiet, after every results workflow of the day
-    - cron: "30 8 * * *"       # 14:00 IST — second daily pass while the 2020→date backfill runs
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "30 21 * * *"  # 03:00 IST — BSE quiet, after every results workflow of the day
+  # dispatch-cron: "30 8 * * *"  # 14:00 IST — second daily pass while the 2020→date backfill runs
+  repository_dispatch:
+    types: [tick-refresh-kpi-insights]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       symbols:

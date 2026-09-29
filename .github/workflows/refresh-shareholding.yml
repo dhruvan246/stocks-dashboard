@@ -1,15 +1,17 @@
 name: Daily shareholding (FII/DII holdings) refresh
 
 on:
-  schedule:
-    # Twice daily INCLUDING weekends — SHP filings land any day (quarterly deadline
-    # can fall on a weekend). 07:10 UTC = 12:40 IST midday sweep; 16:10 UTC = 21:40 IST
-    # evening sweep (AFTER the 20:45 IST price refresh publishes the `data` release
-    # asset, so the backtest rebuild sees today's closes). Off-season runs are cheap.
-    - cron: "10 7 * * *"
-    - cron: "10 16 * * *"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # Twice daily INCLUDING weekends — SHP filings land any day (quarterly deadline
+  # can fall on a weekend). 07:10 UTC = 12:40 IST midday sweep; 16:10 UTC = 21:40 IST
+  # evening sweep (AFTER the 20:45 IST price refresh publishes the `data` release
+  # asset, so the backtest rebuild sees today's closes). Off-season runs are cheap.
+  # dispatch-cron: "10 7 * * *"
+  # dispatch-cron: "10 16 * * *"
   repository_dispatch:
-    types: [shareholding-refresh]
+    types: [shareholding-refresh, tick-refresh-shareholding]
   workflow_dispatch: {}
 
 permissions:
@@ -141,7 +143,7 @@ jobs:
       # it deliberately (shp_cell_fix.json), because ~15% of flagged "revisions" are themselves the
       # wrong document — APTECHT Mar-2024 has sites backing the STORED value over the revision.
       - name: Weekly BSE revision sweep (report only, never heals)
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '10 16 * * *'
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '10 16 * * *' || github.event.client_payload.schedule == '10 16 * * *'   # client_payload = the cron dispatcher's slot (runbook §217)
         continue-on-error: true
         run: |
           if [ "$(date -u +%u)" != "7" ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then

@@ -24817,3 +24817,21 @@ ProfitLossForPeriod tag — the stored 3.06 comes from another element, not trac
   day before; ci-janitor's */30 fired once in a day). bse-live.yml now takes `repository_dispatch {"event_type":"bse-live"}`
   from the external scheduler (cron-job.org, like refresh.yml) as its primary start, re-dispatches itself before the 6 h
   job cap while the market is open, and stops at ~09:45 on a holiday (BSE still showing an older session).
+
+## §217 — SCHEDULED WORKFLOWS START FROM A DISPATCHER, NOT GITHUB CRON (2026-09-29, user: "fix it and other jobs as well that dont run on time by shifting them to cron job like we did for other jobs in past")
+
+- **Measured 2026-09-27 13:00 → 09-29 06:30 UTC, 45 scheduled workflows:** GitHub cron started runs a median 4-7 h
+  after their slot (refresh-bse 6 h, bse-results-xbrl 6.6 h, refresh.yml's 16:00 IST fallback at 23:43), and dropped
+  many outright (portfolio-feed 2 of 32 slots, ci-janitor 8 of 83, bse-live's 09:10 IST slot never). Only the jobs
+  cron-job.org already dispatched ran on time: refresh, refresh-fundamentals, backup-backtest-history,
+  refresh-backtest-data (15:15 UTC slot), refresh-fii-dii, refresh-market-mood, refresh-mf — those keep their native
+  crons as before.
+- **Now:** 39 workflows carry their slots as `# dispatch-cron: "<UTC cron>"` comment lines (old `schedule:` removed,
+  comments kept) and accept `repository_dispatch` type `tick-<file stem>`. `.github/workflows/cron-dispatch.yml` runs
+  `scripts/cron_dispatch.py` on a cron-job.org `{"event_type":"cron-tick"}` every 5 min: per workflow, the latest slot in
+  (now-180 min, now-2 min]; if no run of it (any trigger) was created since slot-1 min → dispatch with
+  client_payload `{schedule, slot}`. Slots older than 3 h are dropped, not run late. Matcher verified identical to
+  croniter on 165k random times over all 55 expressions.
+- **Slot-specific branches** must read `github.event.client_payload.schedule` as well as `github.event.schedule`
+  (refresh-shareholding's weekly sweep does). A new scheduled workflow: add a `# dispatch-cron:` line + the tick type —
+  a plain `schedule:` will run hours late.

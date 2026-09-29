@@ -7,8 +7,12 @@
 name: Annual BS/CF fill
 
 on:
-  schedule:
-    - cron: "20 */6 * * *"       # every 6h — this text pass uses NO Anthropic tokens, so run it at full speed: it lands the clean-text filers for free and feeds the vision queue. (Only the token-spending nightly vision routine is paced down.)
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "20 */6 * * *"  # every 6h — this text pass uses NO Anthropic tokens, so run it at full speed: it lands the clean-text filers for free and feeds the vision queue. (Only the token-spending nightly vision routine is paced down.)
+  repository_dispatch:
+    types: [tick-annual-bscf]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       limit:

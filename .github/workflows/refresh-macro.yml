@@ -1,16 +1,18 @@
 name: Refresh Macro dashboard
 
 on:
-  schedule:
-    # 15:10 UTC = 20:40 IST daily — after NSE close so Nifty PE/PB/DY, VIX and the
-    # Yahoo rate/commodity series carry the day's value. The feed is CUMULATIVE
-    # (every series merges into docs/macro.json and never shrinks), so a skipped
-    # or partially-failed run self-heals on the next one.
-    - cron: "10 15 * * *"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # 15:10 UTC = 20:40 IST daily — after NSE close so Nifty PE/PB/DY, VIX and the
+  # Yahoo rate/commodity series carry the day's value. The feed is CUMULATIVE
+  # (every series merges into docs/macro.json and never shrinks), so a skipped
+  # or partially-failed run self-heals on the next one.
+  # dispatch-cron: "10 15 * * *"
   # Optional external trigger (cron-job.org):
   #   POST /repos/dhruvan246/stocks-dashboard/dispatches {"event_type":"macro-refresh"}
   repository_dispatch:
-    types: [macro-refresh]
+    types: [macro-refresh, tick-refresh-macro]
   workflow_dispatch: {}
 
 permissions:

@@ -1,17 +1,19 @@
 name: Refresh Banking Growth (bank credit)
 
 on:
-  schedule:
-    # RBI releases bank loan growth ~fortnightly (Fridays). Run Tue & Sat
-    # 15:00 UTC = 20:30 IST to catch the new print soon after it posts.
-    # GitHub cron is best-effort; the feed is cumulative so a skipped run
-    # self-heals on the next one (the history file only grows).
-    - cron: "0 15 * * 2,6"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # RBI releases bank loan growth ~fortnightly (Fridays). Run Tue & Sat
+  # 15:00 UTC = 20:30 IST to catch the new print soon after it posts.
+  # GitHub cron is best-effort; the feed is cumulative so a skipped run
+  # self-heals on the next one (the history file only grows).
+  # dispatch-cron: "0 15 * * 2,6"
   # Optional external trigger (cron-job.org) — its own event type, independent
   # of the stock / MF / FII-DII jobs. POST /repos/dhruvan246/stocks-dashboard/dispatches
   #   {"event_type":"bank-credit-refresh"}
   repository_dispatch:
-    types: [bank-credit-refresh]
+    types: [bank-credit-refresh, tick-refresh-bank-credit]
   workflow_dispatch: {}
 
 permissions:

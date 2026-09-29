@@ -8,9 +8,13 @@ name: Shareholding update — BSE-only + SME companies (new quarters)
 # committed ledger (tested: a June-2026 window rebuild reproduced all 2,282 cells and 4,476 share counts exactly).
 # Runs around each filing deadline (SEBI: 21 days after the quarter) plus two late-filer sweeps the month after.
 on:
-  schedule:
-    - cron: "30 13 12,19,22,26 1,4,7,10 *"   # 19:00 IST around the deadline of the Dec/Mar/Jun/Sep quarters
-    - cron: "30 13 5,20 2,5,8,11 *"          # late filers
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "30 13 12,19,22,26 1,4,7,10 *"  # 19:00 IST around the deadline of the Dec/Mar/Jun/Sep quarters
+  # dispatch-cron: "30 13 5,20 2,5,8,11 *"  # late filers
+  repository_dispatch:
+    types: [tick-shp-allstocks-update]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       quarters:

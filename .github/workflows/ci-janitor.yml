@@ -21,8 +21,12 @@ name: CI janitor (unwedge Pages + resweep stragglers)
 # This job holds no runner between sweeps, so it can keep trying for as long as it takes.
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"     # every 30 min — cheap (a few API calls), no runner held between sweeps
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "*/30 * * * *"  # every 30 min — cheap (a few API calls), no runner held between sweeps
+  repository_dispatch:
+    types: [tick-ci-janitor]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
 
 permissions:

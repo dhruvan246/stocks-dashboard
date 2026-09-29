@@ -12,8 +12,12 @@ name: Supabase keep-alive (prevent free-tier pause)
 # writes) — the exact public RPC every visitor's browser already calls.
 
 on:
-  schedule:
-    - cron: "17 5,17 * * *"   # 05:17 & 17:17 UTC (10:47 & 22:47 IST)
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "17 5,17 * * *"  # 05:17 & 17:17 UTC (10:47 & 22:47 IST)
+  repository_dispatch:
+    types: [tick-supabase-keepalive]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
 
 permissions:

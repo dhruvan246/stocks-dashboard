@@ -9,11 +9,13 @@ name: Refresh indices table
 # so the history persists between runs. Runbook §35.
 
 on:
-  schedule:
-    - cron: "35 15 * * 1-5"   # 21:05 IST weekdays — after the close (final levels + valuation)
-    - cron: "20 3 * * 2-6"    # 08:50 IST Tue-Sat — catch-up for a missed evening
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "35 15 * * 1-5"  # 21:05 IST weekdays — after the close (final levels + valuation)
+  # dispatch-cron: "20 3 * * 2-6"  # 08:50 IST Tue-Sat — catch-up for a missed evening
   repository_dispatch:
-    types: [indices-refresh]
+    types: [indices-refresh, tick-refresh-indices]
   workflow_dispatch: {}
   push:
     paths:

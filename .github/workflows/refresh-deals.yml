@@ -8,11 +8,13 @@ name: Refresh bulk & block deals
 # window accumulates day by day (docs/deals.json merges + self-heals).
 
 on:
-  schedule:
-    - cron: "0 16 * * 1-5"   # 21:30 IST weekdays — evening grab
-    - cron: "15 3 * * 2-6"   # 08:45 IST Tue-Sat — catch-up for a missed evening
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 16 * * 1-5"  # 21:30 IST weekdays — evening grab
+  # dispatch-cron: "15 3 * * 2-6"  # 08:45 IST Tue-Sat — catch-up for a missed evening
   repository_dispatch:
-    types: [deals-refresh]
+    types: [deals-refresh, tick-refresh-deals]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

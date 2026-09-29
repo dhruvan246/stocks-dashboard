@@ -1,16 +1,18 @@
 name: Refresh announcements
 
 on:
-  schedule:
-    # ~4×/day IST: 08:30, 14:00, 18:00, 21:30 — filings arrive all day, with the
-    # big flood after market close. Runs daily (weekend board meetings exist).
-    # GitHub cron is best-effort; the fetch self-heals (31-day window, merge-based).
-    - cron: "0 3 * * *"
-    - cron: "30 8 * * *"
-    - cron: "30 12 * * *"
-    - cron: "0 16 * * *"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # ~4×/day IST: 08:30, 14:00, 18:00, 21:30 — filings arrive all day, with the
+  # big flood after market close. Runs daily (weekend board meetings exist).
+  # GitHub cron is best-effort; the fetch self-heals (31-day window, merge-based).
+  # dispatch-cron: "0 3 * * *"
+  # dispatch-cron: "30 8 * * *"
+  # dispatch-cron: "30 12 * * *"
+  # dispatch-cron: "0 16 * * *"
   repository_dispatch:
-    types: [announcements-refresh]
+    types: [announcements-refresh, tick-refresh-announcements]
   workflow_dispatch: {}
 
 permissions:

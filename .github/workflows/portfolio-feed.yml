@@ -10,14 +10,18 @@
 name: Portfolio widget feed
 
 on:
-  schedule:
-    # Through the session (03:09-09:49 UTC = 08:39-15:19 IST, Mon-Fri), 3x/hour.
-    # OFFSET minutes (:09/:29/:49), NOT round numbers: GitHub sheds :00/:20/:40 crons
-    # under load — 2026-08-27 EVERY :00/:20/:40 trigger was dropped all morning while
-    # the market was open, so the widget froze on the prior close. Offset minutes dodge
-    # that contention, and each run loops 35 min (> the 20-min gap) so a dropped trigger
-    # is bridged by the previous run. Writes are idempotent, so overlap costs nothing.
-    - cron: '9,29,49 3-9 * * 1-5'
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # Through the session (03:09-09:49 UTC = 08:39-15:19 IST, Mon-Fri), 3x/hour.
+  # OFFSET minutes (:09/:29/:49), NOT round numbers: GitHub sheds :00/:20/:40 crons
+  # under load — 2026-08-27 EVERY :00/:20/:40 trigger was dropped all morning while
+  # the market was open, so the widget froze on the prior close. Offset minutes dodge
+  # that contention, and each run loops 35 min (> the 20-min gap) so a dropped trigger
+  # is bridged by the previous run. Writes are idempotent, so overlap costs nothing.
+  # dispatch-cron: "9,29,49 3-9 * * 1-5"
+  repository_dispatch:
+    types: [tick-portfolio-feed]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       loop_minutes:

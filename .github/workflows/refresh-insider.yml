@@ -7,11 +7,13 @@ name: Refresh insider trades (PIT)
 # evening (21:45 IST) + morning (09:00 IST Tue-Sat) for late-evening broadcasts.
 
 on:
-  schedule:
-    - cron: "15 16 * * 1-5"   # 21:45 IST weekdays
-    - cron: "30 3 * * 2-6"    # 09:00 IST Tue-Sat
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "15 16 * * 1-5"  # 21:45 IST weekdays
+  # dispatch-cron: "30 3 * * 2-6"  # 09:00 IST Tue-Sat
   repository_dispatch:
-    types: [insider-refresh]
+    types: [insider-refresh, tick-refresh-insider]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

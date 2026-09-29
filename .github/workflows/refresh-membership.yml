@@ -7,11 +7,13 @@ name: Weekly index membership refresh
 # instead of silently lagging (the failure that mis-dated the March-2026 reshuffle).
 
 on:
-  schedule:
-    - cron: "30 16 * * 6"   # Saturday 22:00 IST
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "30 16 * * 6"  # Saturday 22:00 IST
   # External trigger (cron-job.org) — reliable timing; native cron above stays as backup.
   repository_dispatch:
-    types: [membership-refresh]
+    types: [membership-refresh, tick-refresh-membership]
   workflow_dispatch: {}
   push:
     paths:

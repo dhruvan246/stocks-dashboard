@@ -1,10 +1,14 @@
 name: Feed monitor (nightly data health)
 
 on:
-  schedule:
-    # 21:30 UTC = 03:00 IST — after every daily refresh job (last is the
-    # backtest-history backup at 19:30 UTC) so the night's commits are in.
-    - cron: "30 21 * * *"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # 21:30 UTC = 03:00 IST — after every daily refresh job (last is the
+  # backtest-history backup at 19:30 UTC) so the night's commits are in.
+  # dispatch-cron: "30 21 * * *"
+  repository_dispatch:
+    types: [tick-feed-monitor]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
 
 permissions:

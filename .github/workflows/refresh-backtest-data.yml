@@ -11,12 +11,13 @@ on:
     # best-effort and can skip a slot entirely; the cron-job.org dispatch is the other
     # leg but has failed before too). The updater self-heals and picks log by data-day
     # (SF.end), so this is a no-op when the evening run succeeded.
-    - cron: "25 3 * * 2-6"
+    # moved to the dispatcher (scripts/cron_dispatch.py):
+    # dispatch-cron: "25 3 * * 2-6"
   # Optional external trigger (cron-job.org), SEPARATE event type from the
   # stock/MF/FII jobs: POST /repos/dhruvan246/stocks-dashboard/dispatches
   # with {"event_type":"backtest-data-refresh"}
   repository_dispatch:
-    types: [backtest-data-refresh]
+    types: [backtest-data-refresh, tick-refresh-backtest-data]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the updater itself changes
   push:

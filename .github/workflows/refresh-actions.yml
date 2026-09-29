@@ -6,11 +6,13 @@ name: Refresh ex-dates calendar
 # evening run catches actions announced with board-meeting outcomes that day.
 
 on:
-  schedule:
-    - cron: "0 3 * * 1-6"     # 08:30 IST Mon-Sat — morning calendar refresh
-    - cron: "20 13 * * 1-5"   # 18:50 IST weekdays — evening announcements top-up
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 3 * * 1-6"  # 08:30 IST Mon-Sat — morning calendar refresh
+  # dispatch-cron: "20 13 * * 1-5"  # 18:50 IST weekdays — evening announcements top-up
   repository_dispatch:
-    types: [actions-refresh]
+    types: [actions-refresh, tick-refresh-actions]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

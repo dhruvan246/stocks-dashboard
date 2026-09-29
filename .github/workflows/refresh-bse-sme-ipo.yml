@@ -7,9 +7,13 @@ name: Refresh BSE SME IPO index
 # list for a Monday is already published over the weekend: measured Sun 27-Sep → list dated 28-Sep).
 
 on:
-  schedule:
-    - cron: "15 14 * * *"   # 19:45 IST daily — after BSE publishes the day's index close
-    - cron: "30 3 * * *"    # 09:00 IST daily — catch-up capture before the open
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "15 14 * * *"  # 19:45 IST daily — after BSE publishes the day's index close
+  # dispatch-cron: "30 3 * * *"  # 09:00 IST daily — catch-up capture before the open
+  repository_dispatch:
+    types: [tick-refresh-bse-sme-ipo]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
   push:
     paths:

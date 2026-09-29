@@ -4,11 +4,13 @@ name: Refresh sector classification
 # the Sector & Industry Indexes page. It changes rarely, so weekly is plenty.
 # Isolated from the daily price refresh so a flaky BSE day never blocks prices.
 on:
-  schedule:
-    - cron: "0 18 * * 6"        # Saturdays 18:00 UTC = 23:30 IST
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 18 * * 6"  # Saturdays 18:00 UTC = 23:30 IST
   # External trigger (cron-job.org) — reliable timing; native cron above stays as backup.
   repository_dispatch:
-    types: [classification-refresh]
+    types: [classification-refresh, tick-refresh-classification]
   workflow_dispatch: {}
 
 permissions:

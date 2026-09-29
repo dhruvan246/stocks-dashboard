@@ -14,9 +14,13 @@ name: Employees — read headcount from annual reports
 # could never add a new year. Re-reading one name from scratch: workflow_dispatch with symbols (overwrites).
 
 on:
-  schedule:
-    - cron: "15 22 * 6-10 0"  # Mondays 03:45 IST, June-October: the annual-report filing window
-    - cron: "15 22 15 11 *"   # one straggler pass on 15 November
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "15 22 * 6-10 0"  # Mondays 03:45 IST, June-October: the annual-report filing window
+  # dispatch-cron: "15 22 15 11 *"  # one straggler pass on 15 November
+  repository_dispatch:
+    types: [tick-refresh-headcount]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       symbols:

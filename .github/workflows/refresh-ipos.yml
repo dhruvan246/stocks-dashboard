@@ -7,11 +7,13 @@ name: Refresh IPOs & listings
 # issues (they move all day).
 
 on:
-  schedule:
-    - cron: "10 3 * * 1-6"    # 08:40 IST Mon-Sat — morning refresh
-    - cron: "10 13 * * 1-5"   # 18:40 IST weekdays — subscription top-up
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "10 3 * * 1-6"  # 08:40 IST Mon-Sat — morning refresh
+  # dispatch-cron: "10 13 * * 1-5"  # 18:40 IST weekdays — subscription top-up
   repository_dispatch:
-    types: [ipos-refresh]
+    types: [ipos-refresh, tick-refresh-ipos]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

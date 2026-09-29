@@ -9,11 +9,13 @@ name: Refresh index monthly returns
 # 1st can't poison the new month — so evening + catch-up runs are both safe.
 
 on:
-  schedule:
-    - cron: "50 15 * * 1-5"   # 21:20 IST weekdays — after the close
-    - cron: "10 3 * * 2-6"    # 08:40 IST Tue-Sat — catch-up for a missed evening
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "50 15 * * 1-5"  # 21:20 IST weekdays — after the close
+  # dispatch-cron: "10 3 * * 2-6"  # 08:40 IST Tue-Sat — catch-up for a missed evening
   repository_dispatch:
-    types: [index-monthly-refresh]
+    types: [index-monthly-refresh, tick-refresh-index-monthly]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

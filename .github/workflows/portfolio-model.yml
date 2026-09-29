@@ -17,8 +17,12 @@
 name: Portfolio strategy model
 
 on:
-  schedule:
-    - cron: '0 17 * * 1-5'          # 17:00 UTC = 22:30 IST, after the weekday sf-data rebuild
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 17 * * 1-5"  # 17:00 UTC = 22:30 IST, after the weekday sf-data rebuild
+  repository_dispatch:
+    types: [tick-portfolio-model]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
 
 permissions:

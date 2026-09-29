@@ -10,8 +10,12 @@ name: Refresh pre-IPO history
 # 'dormant' (checked occasionally). So the job naturally works down the backlog and then idles.
 
 on:
-  schedule:
-    - cron: "30 14 * * *"     # 20:00 IST daily — after the fundamentals refresh, so anchors are current
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "30 14 * * *"  # 20:00 IST daily — after the fundamentals refresh, so anchors are current
+  repository_dispatch:
+    types: [tick-refresh-ipo-prehistory]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the builder or this workflow changes.
   push:

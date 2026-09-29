@@ -11,17 +11,21 @@ name: Nightly coverage matrix
 # runs late, after every other refresh has landed.
 
 on:
-  schedule:
-    # NIGHTLY, 19:40 UTC = 01:10 IST — after the evening backtest-data refresh (15:15 UTC), the
-    # nightly fundamentals jobs and the 23:45 IST Trendlyne reconcile, so the matrix reflects the
-    # whole day.
-    #
-    # Nightly was a MEASURED call, not an assumed one. The payload is ~1.5 MB across 31 files and
-    # is rewritten whole each build, which looks expensive — but git delta-compresses it: seven
-    # simulated daily rebuilds (last row's date + counts drift, history untouched) cost **~13 KB
-    # packed per commit → ~4.5 MB/yr**, against a first-guess estimate of ~300 MB/yr that was wrong
-    # by 60×. Re-measure before changing this, don't re-estimate.
-    - cron: "40 19 * * *"
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # NIGHTLY, 19:40 UTC = 01:10 IST — after the evening backtest-data refresh (15:15 UTC), the
+  # nightly fundamentals jobs and the 23:45 IST Trendlyne reconcile, so the matrix reflects the
+  # whole day.
+  #
+  # Nightly was a MEASURED call, not an assumed one. The payload is ~1.5 MB across 31 files and
+  # is rewritten whole each build, which looks expensive — but git delta-compresses it: seven
+  # simulated daily rebuilds (last row's date + counts drift, history untouched) cost **~13 KB
+  # packed per commit → ~4.5 MB/yr**, against a first-guess estimate of ~300 MB/yr that was wrong
+  # by 60×. Re-measure before changing this, don't re-estimate.
+  # dispatch-cron: "40 19 * * *"
+  repository_dispatch:
+    types: [tick-refresh-coverage]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
   # Bootstrap/self-test: rebuild when the builder itself changes.
   push:

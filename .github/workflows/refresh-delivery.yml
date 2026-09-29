@@ -7,11 +7,13 @@ name: Refresh delivery spikes
 # deals CSVs which only serve the latest day). Evening run + morning catch-up.
 
 on:
-  schedule:
-    - cron: "45 15 * * 1-5"   # 21:15 IST weekdays — evening grab
-    - cron: "5 3 * * 2-6"     # 08:35 IST Tue-Sat — catch-up for a missed evening
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "45 15 * * 1-5"  # 21:15 IST weekdays — evening grab
+  # dispatch-cron: "5 3 * * 2-6"  # 08:35 IST Tue-Sat — catch-up for a missed evening
   repository_dispatch:
-    types: [delivery-refresh]
+    types: [delivery-refresh, tick-refresh-delivery]
   workflow_dispatch: {}
   # Bootstrap/self-test: also run when the fetcher or this workflow changes.
   push:

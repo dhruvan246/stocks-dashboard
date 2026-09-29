@@ -6,9 +6,13 @@ name: Daily F&O options store refresh
 # late file still lands the same day. Holidays = 404 = clean no-op.
 
 on:
-  schedule:
-    - cron: "0 14 * * 1-5"    # 19:30 IST weekdays
-    - cron: "30 16 * * 1-5"   # 22:00 IST catch-up
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 14 * * 1-5"  # 19:30 IST weekdays
+  # dispatch-cron: "30 16 * * 1-5"  # 22:00 IST catch-up
+  repository_dispatch:
+    types: [tick-refresh-fo]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
 
 permissions:

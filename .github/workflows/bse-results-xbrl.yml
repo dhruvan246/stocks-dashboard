@@ -3,8 +3,12 @@ name: BSE results XBRL (fill-only)
 # One plain, honestly identified client. When BSE's api answers 403 the fetch prints BSE-REFUSED, writes no fills,
 # and the job ends green with nothing committed — it simply tries again tomorrow.
 on:
-  schedule:
-    - cron: "20 4 * * *"      # 09:50 IST daily
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "20 4 * * *"  # 09:50 IST daily
+  repository_dispatch:
+    types: [tick-bse-results-xbrl]   # sent by scripts/cron_dispatch.py
   workflow_dispatch:
     inputs:
       budget:

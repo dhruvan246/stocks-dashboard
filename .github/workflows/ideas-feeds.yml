@@ -18,10 +18,12 @@
 name: Daily Ideas feeds
 
 on:
-  schedule:
-    - cron: "20 13 * * 1-5"   # 18:50 IST on trading days: off the :00/:30 marks, 40 min before the routine
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "20 13 * * 1-5"  # 18:50 IST on trading days: off the :00/:30 marks, 40 min before the routine
   repository_dispatch:
-    types: [ideas-feeds]
+    types: [ideas-feeds, tick-ideas-feeds]
   workflow_dispatch: {}
 
 permissions:

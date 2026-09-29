@@ -8,9 +8,13 @@ name: Refresh Nifty SME Emerge index
 # needs the sf price bin and is rebuilt by refresh-market-mood.yml each weekday evening.
 
 on:
-  schedule:
-    - cron: "0 14 * * *"    # 19:30 IST daily — after NSE publishes the day's index close file
-    - cron: "45 3 * * *"    # 09:15 IST daily — catch-up (lists / releases published overnight)
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
+  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
+  # dispatch-cron: "0 14 * * *"  # 19:30 IST daily — after NSE publishes the day's index close file
+  # dispatch-cron: "45 3 * * *"  # 09:15 IST daily — catch-up (lists / releases published overnight)
+  repository_dispatch:
+    types: [tick-refresh-nse-sme-emerge]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}
   push:
     paths:
