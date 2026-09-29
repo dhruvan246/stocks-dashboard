@@ -20623,6 +20623,22 @@ filings label that row: an exact match (MTEDUCARE: 1 holder 2.20 % = Mar-2015 'F
 48.77, Quantmac 48.83). Held (no label evidence): JBFIND, KSB, NAVNETEDUL, NAVA Jun-2015; RNAVAL Dec-2015 (stored 46.42 from a
 page-seam fill is wrong — Table III names Indian companies + Sembcorp Marine in the institutional block — but their classes are not
 documented yet). Checked, ours = the page's FII row: HEXAWARE Jun-2009 / Jun-2013, KSOILS Mar-2009. Rebuilt feed: 5 / 5 exact.
+**Step 3 final + batch 6f (2026-09-29): 11 revision rows re-dated.** All 1,292 missing XBRL versions downloaded (2 failed), so
+`revcheck.py` covers every in-scope 2016+ quarter with 2+ BSE versions (2,330): 1,961 versions identical, 202 + 10 serve the
+original where versions differ, 24 match no single version (row rules moved them), 11 LOOK-AHEAD — the served figures are a
+revision's while the row opened on the original's day (NEUEON Mar-2024..Mar-2026 x6, RNAVAL Dec-2023..Jun-2024 x3 [the original
+XBRL parses empty], JPASSOCIAT Jun-2024, NILKAMAL Mar-2023). Cause: earlier date campaigns (§142c `days_earlier` from BSE's
+original filing_date_time) moved rows whose STORED figures are a later revision onto the original's date — Quantmac's NSE-summary
+finding, in our data. Each now opens on the revision's filing day (shp_lag_fix `days_later`, src bse-revision; 4 new, 7 replacing
+the older entry under `replaced`); rebuilt feed 11 / 11 on the revision date, 0 other rows. NEUEON Dec-2025 had been served from
+its own quarter-end day (a 1-day-early entry) — gone with it. Rule for every future date heal: an earlier date is valid only for the
+figures that filing printed; when the store holds a revision's figures, the revision's date is the floor.
+**Batch 6d (2026-09-29): the un-dated Mar-2014..Mar-2016 quarters (338 in scope).** `undated-fetch` / `undated-decide`: BSE's
+announcement stream carries no "Shareholding for the Period Ended" notice for 258 of them (BSE's automatic SHP announcements begin
+with the XBRL era, Dec-2015), 46 have a revision / no single version and 19 are page-era with an announcement earlier than the +28
+fallback (held: a page shows the latest version, so an earlier date cannot be shown to fit our figures), 3 have no code / store
+row. 12 got a date — all LATER than the +28 fallback (30-76 days after quarter-end), removing 2-48 days of look-ahead
+(shp_sub_dates, src bse-ann). Rebuilt feed 12 / 12 exact, 0 other rows; guards green.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
