@@ -20569,6 +20569,31 @@ other 7.8 pp from named-holder rules stays), SYNGENE Jun-2018, EQUITAS Mar-2020,
 took every §164 re-read entry that moved >= 1 pp; 11 of those moves came from the named-holder rules (R1-R3 / R2-FII), not D1,
 and are outside this decision. Verified: rebuilt feed (event fixes applied as CI does) moves exactly the 13 rows; re-running the
 gated runner on a CI-equivalent store (cell_fix applied to history) for the 10 companies: 250 rows, 0 proposals, 9 moves held.
+**Batch 6a (2026-09-29, Quantmac v5; user "yes"): 18 Dec-2015 / Mar-2016 cells re-read from BSE's own Table III.** Quantmac's v5
+gave the Table III call's real parameters: `api.bseindia.com/BseIndiaAPI/api/Corp_shpSec_SHPPubShold_ng/w?SCRIPCODE=<code>&QtrCode=
+<qtrid>.00` (our `scripcode`/`qtrid` got an empty template) — it answers our honest bse_headers client. New stage `t3fix` (shared
+`t3_compute`, the §164r batch-1 reading) + the quarter's BSE page for the (A)+(B)+(C) total and promoter row. Rules sharpened while
+checking against the company's neighbouring quarters: (i) an Any-Other sub-row is a LABEL only when its text is a category the
+classifier knows — a holder name with a holder count of 1 is a HOLDER (SHREECEM 'FLT LIMITED' 10.33 -> public by its 2022-form
+placement, not an unnamed FII rest), a name cell holding an FII label counts as that label ('OTHER FII', the misspelt 'Fil
+(foriegn Institutional Investor)'), 'Domestic / Non Domestic Companies' are company-type (public) like 'Foreign Companies';
+(ii) the unnamed rest takes the batch-5 D1 gate; (iii) `base`: a FULL-count DR company whose Table III % leaves its custodian out
+divides by the page total (UFLEX Dec-2015), a page whose total does not belong to the table uses the table's own base (VAIBHAVGBL
+Mar-2016). Result (was -> now, FII; the company's neighbours; Quantmac): BANKINDIA Mar-16 2.16 -> 4.49 (=), BERGEPAINT Mar-16 6.15
+-> 11.38 (=), EVEREADY Mar-16 12.55 -> 22.90 (=), FLFL Dec-15 2.53 -> 5.96 (=), GFLLIMITED Dec-15 1.82 -> 5.02 (Q 3.89: the misspelt
+FII label), GIPCL Dec-15 1.47 -> 3.38 (=), LAOPALA Mar-16 14.95 -> 17.80 (=), SUDARCOLOR Mar-16 0.83 -> 3.47 (=), VESUVIUS Dec-15
+10.45 -> 11.95 (=), COROMANDEL Dec-15 8.25 -> 4.91 (=) and Mar-16 6.27 -> 4.63 (Groupe Chimique Tunisien -> public, as Dec-15 /
+Jun-16; ICICI Pru Life under non-institutions -> DII by R2 both quarters), TATACOMM Dec-15 8.99 -> 6.54 (=), IL&FSENGG Dec-15 8.97
+-> 0.00 (=), SHREECEM Dec-15 23.94 -> 13.61 (=) and Mar-16 DII 15.48 -> 5.14, AEGISLOG Mar-16 5.33 -> 7.11 (=), UFLEX Dec-15 1.99
+-> 8.52 (Q 9.23: DR base), VAIBHAVGBL Mar-16 2.12 / DII 16.81 -> 18.92 / 0.10 (the third-party fill had the foreign block in DII;
+Q 17.38 leaves out 'MATTEWS India Fund'). Each now fits its own neighbours. Held: MINDTREE Dec-15 (three named holders without
+a document), BERGEPAINT Dec-15 (store 11.18 is right; Quantmac now serves it), NAVA Jun-15 ('Others 5.48' not decomposable),
+KARURVYSYA Sep-16 (our cached BSE list for it carries scrip code 600001, not 590003). Rule-consistent, not errors: JISLJALEQS Jun-15
+(MKCP, no document), WABAG Jun-15 (Emerging Markets Growth Fund, curated), INDIABULLS Mar-09 (the page's FII row), DEN Sep-18 / HDFC
+Dec-18 / LMW Mar-18 (foreign holders filed under OCB — Rule 3). OPEN for the user: the same named holder classed differently from
+quarter to quarter by the row it was filed on (SHILPAMED Jun-16 / Jun-20 Baring, ACLGATI Jun-17 Goldman Sachs International, NH
+Mar-18 CDC, JSWSTEEL Mar-18's August SW-2 sweep of the JFE block) — today's rules reproduce these; a cross-quarter consistency rule
+is a decision. Rebuilt feed: exactly the 18 cells moved, 0 other rows.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

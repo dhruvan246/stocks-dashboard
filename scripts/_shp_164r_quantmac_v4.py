@@ -302,7 +302,11 @@ def table3(out):
     json.dump(P, open(out, "w"), indent=1, ensure_ascii=False); print("table3: %d cells" % len(P))
 
 
-def t3_compute(sym, qe, t, page, ctx, D, A):
+def t3_compute(sym, qe, t, page, ctx, D, A, base=None):
+    """base: None = the page total must reproduce the table's %; "page" = the company reports on the FULL share count and the
+    table's % leaves its depository-receipt block out (UFLEX Dec-2015) -> divide by the page's (A)+(B)+(C); "table" = the page
+    total does not belong to this table (VAIBHAVGBL Mar-2016: page 28.6 M shares vs the table's 32.5 M) -> the table's own
+    base, promoter = 100 - public %."""
     import _shp_d1_rowfix as D1
     """One Dec-2015 / Mar-2016 quarter from BSE's Table III JSON + the same quarter's BSE page (total (A)+(B)+(C) and the promoter
     row), read with the XBRL-era rules exactly as `table3` does. -> (cell5, ev, T) or (None, reason, None)."""
@@ -313,7 +317,11 @@ def t3_compute(sym, qe, t, page, ctx, D, A):
     stb = [r for r in t if r["Fld_Code"] == "STB1B2B3"]
     if stb and stb[0]["Fld_TotalPercentageOf_A_B_C2"]:
         chk = stb[0]["Fld_TotalNoOfShares"] / T * 100
-        if abs(chk - stb[0]["Fld_TotalPercentageOf_A_B_C2"]) > 0.02: return None, "page total does not reproduce the table's %% (%.3f vs %.2f)" % (chk, stb[0]["Fld_TotalPercentageOf_A_B_C2"]), None
+        if base == "table":
+            T = stb[0]["Fld_TotalNoOfShares"] / stb[0]["Fld_TotalPercentageOf_A_B_C2"] * 100; PR = T * (100 - stb[0]["Fld_TotalPercentageOf_A_B_C2"]) / 100
+        elif base == "page":
+            if chk >= stb[0]["Fld_TotalPercentageOf_A_B_C2"]: return None, "page base is not the larger (full) count", None
+        elif abs(chk - stb[0]["Fld_TotalPercentageOf_A_B_C2"]) > 0.02: return None, "page total does not reproduce the table's %% (%.3f vs %.2f)" % (chk, stb[0]["Fld_TotalPercentageOf_A_B_C2"]), None
     pct = lambda sh: (sh or 0) / T * 100
     cat = [r for r in t if not r["Fld_ShareHolderName"] and r["Fld_Code"] and not r["Fld_Code"].startswith("ST")]
     subs = [r for r in t if r["Fld_ShareHolderName"]]
@@ -394,6 +402,8 @@ def t3fix(keys, out):
             time.sleep(10 * (a + 1))
         return None
     for key in keys:
+        base = None
+        if key.count("|") == 2: key, base = key.rsplit("|", 1)
         sym, qe = key.split("|"); qi = qtrid(qe); cur = (hist.get(sym) or {}).get(qe)
         code = _code(_list(sym) or _list(_fa().get(sym) or "") or [])
         if not code or not cur: print("  %s: no code / no store row" % key); continue
@@ -403,7 +413,7 @@ def t3fix(keys, out):
         t = (json.loads(tj).get("Table1") or [])
         if not t: print("  %s: empty Table III" % key); continue
         ctx = D.SymCtx(sym, _list(sym) or [], verdicts)
-        cell, ev, T = t3_compute(sym, qe, t, pg.decode("utf-8", "ignore"), ctx, D, A)
+        cell, ev, T = t3_compute(sym, qe, t, pg.decode("utf-8", "ignore"), ctx, D, A, base)
         if cell is None: print("  %-12s HELD: %s" % (key, ev)); continue
         new = list(cur); new[:5] = cell
         P[key] = {"was": cur, "cell": new, "src": "bsetable3:%s:%d + bseaspx:%s:%d" % (code, qi, code, qi), "ev": ev, "denominator": T,

@@ -122941,6 +122941,26 @@
     ],
     "src": "bseaspx:500148_61",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.92 -> 2.92, dii 12.04 -> 0.14. dii-block-out Foreign Companies 11.9 stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     44.0156,
+     8.5234,
+     0.1853,
+     0.0313,
+     0.0,
+     "2016-01-25"
+    ],
+    "was": [
+     47.62,
+     1.99,
+     7.44,
+     0.03,
+     0.0,
+     "2016-01-25"
+    ],
+    "src": "bsetable3:500148:88 + bseaspx:500148:88",
+    "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 88) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 1.99 -> 8.52, dii 7.44 -> 0.19. Rows: B1i-unnamed-rest D1 6.69 fii"
    }
   },
   "VAIBHAVGBL": {
@@ -123601,6 +123621,26 @@
     ],
     "src": "bseaspx:532156:88+nseresults:1004341",
     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 28,558,005 shares \u2014 it leaves out 3,950,014 shares that the Sep-2015 page (32,477,919, block C 3,950,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002945 paid-up 3246.18, 2015-12-31 #1004341 paid-up 3249.19, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 32,508,019 (\u00b1 100 shares, the filings' rounding): x 0.878491."
+   },
+   "2016-03-31": {
+    "cell": [
+     68.41,
+     18.9201,
+     0.1,
+     0.0005,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     68.24,
+     2.12,
+     16.81,
+     0.0,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bsetable3:532156:89 + bseaspx:532156:89",
+    "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 2.12 -> 18.92, dii 16.81 -> 0.10. Rows: B1i-label FOREIGN INSTITUIONAL INVESTORS 2.62 fii; B1i-named MATTEWS INDIA FUND 1.54 foreign/fii curated; B1i-named NALANDA INDIA FUND LIMITED 12.64 foreign/fii new-format~:ForeignDirectInvestment; B3b-NBFC R3 0.09 dii"
    }
   },
   "VEEDOL": {
