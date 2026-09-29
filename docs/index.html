@@ -322,6 +322,7 @@
         var px = j.px || {}, dates = Object.keys(px).sort();
         if (dates.length < 2) throw 0;
         el._daily = dates.map(function (d) { return px[d]; });
+        el._pxDates = dates; el._px = px;
         var last = px[dates[dates.length - 1]], prev = px[dates[dates.length - 2]];
         paint(el, last, prev, null, false);
       })
@@ -372,11 +373,27 @@
           }
           var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
           if (price == null || prev == null) throw 0;
-          return { price: price, prev: prev, series: series };
+          return { price: price, prev: prev, series: series, at: m.regularMarketTime };
         })
         .catch(function () { return tryNext(); });
     }
     return tryNext();
+  }
+  // Yahoo's intraday meta.chartPreviousClose for ^ index symbols can lag a session: on
+  // 2026-09-29 every Indian index quoted Friday 25-Sep as "previous close" (VIX read +10.3%
+  // vs NSE's -2.32%), while Yahoo's own daily bars and our committed JSON had Monday right.
+  // So the previous close comes from the committed daily closes: the latest one dated before
+  // the live bar's IST day, if it is within 6 days (a stale file falls back to Yahoo's).
+  function storePrev(el, at, yprev) {
+    var ds = el._pxDates;
+    if (!ds || !ds.length || !at) return yprev;
+    var day = new Date(at * 1000 + 5.5 * 3600000).toISOString().slice(0, 10);
+    for (var i = ds.length - 1; i >= 0; i--) {
+      if (ds[i] < day) {
+        return (Date.parse(day) - Date.parse(ds[i]) <= 6 * 86400000) ? el._px[ds[i]] : yprev;
+      }
+    }
+    return yprev;
   }
 
   // GIFT NIFTY (Nifty futures at NSE IX) — Yahoo doesn't carry it. Primary: our
@@ -421,7 +438,7 @@
   function refreshLive(el) {
     var gift = el.getAttribute('data-kind') === 'gift';
     return (gift ? fetchGift() : fetchLive(el.getAttribute('data-ysym')))
-      .then(function (q) { paint(el, q.price, q.prev, q.series, gift ? giftOpen() : marketOpen()); })
+      .then(function (q) { paint(el, q.price, gift ? q.prev : storePrev(el, q.at, q.prev), q.series, gift ? giftOpen() : marketOpen()); })
       .catch(function () {
         // keep last good paint; the live-only GIFT card has none to keep
         if (!el._painted) el.innerHTML = '<div class="nm">' + el.getAttribute('data-name') + '</div>' +

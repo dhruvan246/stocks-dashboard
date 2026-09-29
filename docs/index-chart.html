@@ -526,12 +526,25 @@ function fetchLive(sym) {
         }
         var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
         if (price == null || prev == null) throw 0;
-        return { price: price, prev: prev, series: series, dayHi: m.regularMarketDayHigh, dayLo: m.regularMarketDayLow,
-                 at: m.regularMarketTime ? m.regularMarketTime * 1000 : Date.now() };
+        var at = m.regularMarketTime ? m.regularMarketTime * 1000 : Date.now();
+        return { price: price, prev: storePrev(at, prev), series: series, dayHi: m.regularMarketDayHigh, dayLo: m.regularMarketDayLow,
+                 at: at };
       })
       .catch(function () { return next(); });
   }
   return next();
+}
+// Yahoo's intraday meta.chartPreviousClose for ^ index symbols can lag a session (2026-09-29:
+// every Indian index quoted Friday as "previous close"; VIX read +10.3% vs NSE's -2.32%). The
+// committed daily closes (D/P) had Monday right, so the previous close is the latest committed
+// close dated before the live bar's IST day, if within 6 days; otherwise Yahoo's.
+function storePrev(atMs, yprev) {
+  if (!D.length) return yprev;
+  var day = new Date(atMs + 5.5 * 3600000).toISOString().slice(0, 10);
+  for (var i = D.length - 1; i >= 0; i--) {
+    if (D[i] < day) return (Date.parse(day) - Date.parse(D[i]) <= 6 * 86400000) ? P[i] : yprev;
+  }
+  return yprev;
 }
 function marketOpen() {                          // NSE cash: Mon–Fri 09:15–15:30 IST
   var ist = new Date(Date.now() + (new Date().getTimezoneOffset() * 60000) + 5.5 * 3600000);

@@ -635,9 +635,26 @@ def update_nifty():
     except Exception:
         px = {}
     n0 = len(px)
-    for r in _load_rows(OUT).values():
+    rows = _load_rows(OUT)
+    for r in rows.values():
         if r.get("nifty") is not None and r["date"] not in px:
             px[r["date"]] = round(r["nifty"], 2)
+    # NiftyTrader (the cash feed's only Nifty close) answered "Unauthorized" from 2026-09-28, so a
+    # day NSE's FII/DII feed has but with no close stayed missing here. Fill such days from Yahoo
+    # ^NSEI daily bars — only days the cash feed proves were sessions (Yahoo pads holidays).
+    gaps = {d for d, r in rows.items() if r.get("nifty") is None and d not in px}
+    if gaps:
+        try:
+            url = ("https://query1.finance.yahoo.com/v8/finance/chart/%5ENSEI?period1=" +
+                   str(int(time.time()) - 60 * 86400) + "&period2=" + str(int(time.time())) + "&interval=1d")
+            res = json.loads(_get(url, headers={"User-Agent": UA}))["chart"]["result"][0]
+            for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]):
+                d = time.strftime("%Y-%m-%d", time.gmtime(t))
+                if c is not None and d in gaps:
+                    px[d] = round(c, 2)
+                    print("  nifty.json: %s filled from Yahoo ^NSEI (%.2f)" % (d, c))
+        except Exception as e:
+            print("  nifty.json: Yahoo ^NSEI gap-fill failed (%s)" % e)
     px, nf = apply_index_fix(OUT_NIFTY, px)
     if nf:
         print("  nifty.json: index_close_fix applied %d" % nf)
