@@ -462,6 +462,17 @@ if RIGHTS_ADJ:
     _kept = [r for r in MANUAL_RIGHTS if not any(abs(_ord(int(r[1])) - b) <= 30 for b in _ra_by.get(r[0], ()))]
     print("  rights_adj.json: %d bar targets; %d MANUAL_RIGHTS/rights_terp rows superseded" % (len(RIGHTS_ADJ), len(MANUAL_RIGHTS) - len(_kept)))
     MANUAL_RIGHTS = _kept
+# §179d (2026-09-29): split/bonus factors whose BAKED step is wrong or missing, as bar-exact targets in the same reconcile
+# (scripts/ca_bar_targets.json): promoter-excluded bonuses (OMAXE / AJRINFRA 2013 — the nominal ratio went to the public only),
+# JMFINANCIL 2008 (inferred 1/20; NSE: FV split 10->1 + bonus 3:2 = 1/25), GDL 2007 and GODREJIND 2015 (never applied; the latter
+# is below self_heal's 2% gate). Merged AFTER the MANUAL_RIGHTS supersede above, which stays about rights rows only.
+try:
+    _cbt = {(x[0], int(x[1])): (float(x[2]), float(x[3]))
+            for x in (json.load(open(os.path.join(ROOT, "scripts", "ca_bar_targets.json"))) or {}).get("rows") or []}
+    RIGHTS_ADJ.update(_cbt)
+    print("  ca_bar_targets.json: %d split/bonus bar targets" % len(_cbt))
+except Exception as _e:
+    print("  (ca_bar_targets.json not loaded: %s)" % _e)
 
 # --- DEMERGER price adjustment (2026-08-03). A demerger is not a loss — holders receive the
 # spin-off's shares — but the raw tape keeps the ex-date value separation as a price fall, so every
@@ -538,8 +549,11 @@ def apply_manual_rights(data):
 def reconcile_rights(data):
     """§173: converge every rights_adj.json bar to its target. applied = NSE raw ratio / stored ratio at the EXACT bar
     (a row whose date is not a bar is reported, never guessed onto a neighbour); corr = target / applied; rescale the
-    pre-bar history when |corr-1| exceeds the 2-decimal rounding floor (max 0.15%, 0.011/price). Sub-Rs0.25 boundaries
-    are skipped (rounding noise, §self_heal quantization guard). Idempotent: a converged bar reads corr ~ 1."""
+    pre-bar history when |corr-1| exceeds the 2-decimal rounding floor (max 0.02%, 0.011/price). Sub-Rs0.25 boundaries
+    are skipped (rounding noise, §self_heal quantization guard). Idempotent: a converged bar reads corr ~ 1.
+    §179d (2026-09-29): the absolute floor was 0.15% — it left 10 rows 0.05-0.14% off their textbook target for good
+    (SHRIRAMFIN 2020 baked 0.9730 vs 0.9744, PVRINOX, BHARTIARTL 2021, INDHOTEL 2021, BAJAJFINSV 2012, DHANI 2018 never applied
+    at 0.999) and could never apply a sub-0.15% event (GODREJIND 2015 1:1250). 0.011/price still covers 2-decimal rounding."""
     n = 0
     for (sym, bar), (target, raw) in sorted(RIGHTS_ADJ.items(), key=lambda kv: kv[0][1]):
         e = data.get(sym); ds = e.get("d") if e else None
@@ -550,7 +564,7 @@ def reconcile_rights(data):
         c = e["c"]
         if min(c[j], c[j - 1]) < 0.25: continue
         applied = raw / (c[j] / c[j - 1]); corr = target / applied
-        if abs(corr - 1) > max(0.0015, 0.011 / min(c[j], c[j - 1])):
+        if abs(corr - 1) > max(0.0002, 0.011 / min(c[j], c[j - 1])):
             for key in ("c", "h", "l", "op", "vw"):
                 if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
             n += 1

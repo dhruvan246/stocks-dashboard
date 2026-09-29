@@ -21801,6 +21801,50 @@ confirm; FV was already Re 1 (split 14-May-2007). TERP = (100 x 49.30 + 35 x 35.
 The tape has no single ex-day gap (-0.5 / -4.1 / -4.9 / -3.1 / -1.9% over 19-26 Dec), so the adjusted 19-Dec reads +7.3% (the rights
 value; same mechanics as NEULANDLAB 2012). **Full rescan** of NSE's feed with Rights / Rght / Rhgt / Rgt / Rts for point-in-time Nifty-500
 members: this was the ONLY missed row. Dry run: only THOMASCOOK changes (history before 19-Dec-2008 x0.9273); second pass 0.
+### 179d. Quantmac round-2 cell-by-cell recheck — 21 of OUR factor errors fixed (2026-09-29, user: "i think we r wrong on many cells that u thought they r wrong at. pls check cell by cell and fix all")
+**Method.** Every cell we had blamed on quantmac was rebuilt independently (`~/stocks-cache/qm-recon-tools/cellcheck.py`): our level = NSE
+raw bars x our own factor chain (F = our close / NSE close) reproduces our value in all 1,373 non-rounding cells (0 bad bars, 0 missing
+sessions; 10 cells use BSE bars from before an NSE listing), and for each adjustment step inside the window the factor that would reproduce
+THEIR value was solved. NSE-feed events inside the window with NO step in our series were listed too (`rights_sweep.py`). Their implied
+factors landed exactly on the textbook value in the events below — we were the ones wrong. Two tool bugs came first: qm_classify2's
+"their level = ours without step X" test was not discriminating (a cell whose extreme bar sits AFTER the event matched any step within
+0.15% — HCC/INFIBEAM/IIFL one-paisa cells had been called a "missed bonus"; 31 -> 18), and the reply builder's same-bar-rounding regex
+dropped negative gaps (164 cells mislabelled "not on NSE's tape").
+**Fixed:**
+- **Promoter-excluded bonuses** (SEBI minimum-public-shareholding; the nominal ratio went to the public only): OMAXE 11-Nov-2013 "10 for
+  39 ... to the exception of the promoters and promoter group" (NSE ann. 31-Oct-2013; BSE shareholding 04-Oct 173,567,000 -> 13-Nov
+  182,900,540; public 36,400,806 x 10/39 = the increase exactly) -> **0.948969** (was 0.795918); AJRINFRA (Gammon Infra) 23-Jan-2013 1:34
+  (promoters 550,400,000 before and after; total 728,763,618 -> 734,026,438) -> **0.992830** (was 0.971429). Screen of all 356 N500
+  bonuses by promoter-stake change, then BSE share counts (`mps_bonus_check.py`, first filing that shows the allotment): no other.
+- **JMFINANCIL** 08-Sep-2008 "Fv Spl-Rs10tore1/Bon-3:2" = 1/10 x 2/5 = **0.04** (series had inferred 0.05, no ledger row); **GDL**
+  02-Aug-2007 bonus 1:4 never applied (**0.8**; company ESOP note confirms); **GODREJIND** 05-Jan-2015 bonus 1:1250 never applied
+  (**0.999201**; below the builder's 0.98 gate and self_heal's 2% band).
+- **16 rights never applied.** Feed spellings the §173 scan missed: "Rhs" HINDALCO 2008 3:7 @ Rs96, "Rht" ALOKTEXT 2009 83:40 @ Rs11,
+  "Rhts" INDHOTEL 2008 1:5 @ Rs70, a rights row inside an AGM/dividend row VIDEOIND 2010 2:9 @ Rs225, "9 Ccds For Every 40" INDHOTEL 2014
+  (CCD Rs55 -> 1 share). §173 NOT_COMPUTED rows, now with filed terms: TMPV 2008 ordinary 1:6 @ Rs340, ABFRL 2020 partly paid 9:77 @
+  Rs110, TATASTEEL 2018 4:25 @ 510 + 2:25 partly paid @ 615, SINTEX 2016 26:151 @ 65, TINPLATE 2009 3:2 @ 45 + FCD 5:8 (11 FCD -> 20 sh @
+  55), SADBHAV 2010 1:20 @ 725, TATAINVEST 2008 ZCCB (2 sh per 5 @ 300/350), BAJFINANCE 2006 6:10 @ 325, ORIENTPPR 2007 3:10 @ 360, CHOLAFIN
+  2007 (CHOLADBS) 3:8 @ 140, TATASTEEL 2007 equity 1:5 @ 300. Rules: equity part at the filed price; partly paid at the full price (as
+  RELIANCE 2020); compulsorily convertible debentures / bonds = equity at the conversion price (the user's TRENT CCPS policy A, §214a);
+  warrants, DVR shares and pure debt not priced in. FORTIS 2009 2:5 @ 110 > cum 101.50 -> capped at 1 (provenance only). Terms quoted in
+  provenance from NSE/BSE announcements; 2006-07 closes from NSE cm bhavcopies.
+- **reconcile_rights floor 0.15% -> 0.02%** (+0.011/price for rounding): 17 rows sat 0.02-0.14% off their own textbook target for good
+  (SHRIRAMFIN 2020 0.9730 vs 0.9744, PVRINOX, BHARTIARTL 2021, INDHOTEL 2021, BAJAJFINSV 2012, RELIANCE 2020 0.9902 vs 0.9906 ...;
+  DHANI 2018 0.999 never applied).
+**Mechanism.** New `scripts/ca_bar_targets.json` (split/bonus bar-exact targets, merged into RIGHTS_ADJ AFTER the MANUAL_RIGHTS supersede,
+same reconcile); `corp_actions_hist.json` + `corp_actions.json` carry the same factors so a rebuild agrees; `rights_adj.json` +16 rows.
+**Dry run** (live release rev 1d8fa53de0, CI-sim; baseline = main's code on the same bin): exactly 35 symbols change, price arrays only
+(c/h/l/op/vw); 895,880 price points = baseline x the product of the corrections, 0 off beyond 2-decimal rounding; bars after each symbol's
+last event unchanged; the AJRINFRA "matches neither" self-heal warning is gone; second pass 0 changes.
+**Not ours (reply):** PAISALO 2012 (their series lacks the pre-17-Oct-2011 SEINVEST history; the FV 1->10 consolidation is handled here),
+52-week window / 200-session definitions, their stated demerger and rights-on-lows conventions. **Ours, structural:** KESORAMIND / MVL /
+SUZLON / VIVIDHA — ~Rs1-4 adjusted prices at 2 decimals = +/-0.25% per bar.
+**OPEN (user decision):** our series carries BSE prices before an NSE listing (VALIANTORG < 5-Oct-2020 — BSE SME, EQ270520 low 1,251 =
+our bar / 0.9976; LLOYDSME < 17-Jul-2023; AIIL < 23-Apr-2024; 10 cells) while the reply's Methodology A says NSE-only; SADBHAV 2010
+warrants were deep in the money (exercise Rs425 vs 1,321) and are not priced in; TATAINVEST 2008 ZCCB treated as equity (policy A).
+**OPEN (research):** TATASTEEL 2007 CCPS final conversion price (filing: "Rs 500 to Rs 600 ... as may be decided"); GTLINFRA 2007 (old
+~0.585 step on NSE's 20-Jul ex-date, BSE record date 27-Jul); TATACOFFEE 2006 PCD; LAKSHVILAS 2006 bonus + rights (no price found);
+UNIWESTBNK 2006 (no series).
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),

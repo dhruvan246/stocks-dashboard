@@ -1,5 +1,5 @@
 {
- "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had. | 2026-09-26 §179: LAKSHVILAS 2014-07-25 (Rights 5:6) added — issue price Rs 50 (FV 10 + premium 40) read from NSE's own corporate announcement of 16-Jul-2014 (the feed row states no price). | 2026-09-26 §179: WHEELS 2014-02-13 TERP on the ACTUAL shares issued (promoters forwent — SEBI MPS rights), ALOKINDS 2013 row keyed to era key ALOKTEXT; CHEMPLASTS 2009 / NEULANDLAB 2012 statuses resolved. | 2026-09-28 §206: SCOPE WIDENED (user) to the NSE SME board + main-board rights 2026 no ledger covered: 33 rows added (SME feed index=sme 2013-2026: 36 rights rows, 25 targets incl. 2 split-inference steps corrected [MPEL 2026-08-31, DHARIWAL 2026-02-27]; main board 2026: 8 targets). FV for SME rows = the SME feed row's faceVal (at-event: BTML/ABINFRA rows keep FV 10 across their later splits). Held (EXCLUDED/NOT_COMPUTED, see provenance board=sme/equities): COOLCAPS, IEML, ROCKINGDCE, RCDL, SUNREST x2, DESTINY x2, SADHNANIQ, GANGAFORGE, QUINT. | 2026-09-29 §179c: THOMASCOOK 2008-12-19 rights (NSE feed spelling 'Rhgt' missed by the §173 scan; a full rescan with Rights/Rght/Rhgt/Rgt/Rts found no other N500 miss).",
+ "_doc": "DATA_RUNBOOK §173 (2026-09-26, user-approved task 2): Nifty-500 rights issues as ABSOLUTE bar-exact targets. rows = [symbol, ex trading day, target factor, NSE raw close ratio across that bar]. target = min(1, TERP/cum), TERP = (A*cum + B*issue)/(A+B) for 'Rights B:A', issue = face value AT THE EVENT + premium ('@ Par Rs X' = X), face value = NSE EQUITY_L.csv walked back through every later FV split/consolidation on NSE's feed (the feed's faceVal is the CURRENT FV), cum = NSE's raw close the session before the ex trading day. update_sf_data.reconcile_rights measures the factor baked at each bar (raw ratio / stored ratio) and rescales the pre-bar history to the target (idempotent, rounding-aware tolerance). Rows with target 1.0 on an ordinary session UNDO a fake step an old late-dated row baked there. Any MANUAL_RIGHTS / rights_terp.json row within 30 days of a row here is superseded (not applied). 'provenance' lists every N500 rights row on NSE's feed 2006-2026 incl. the ones NOT computed (partly paid, warrants, NCD, no price) or EXCLUDED because the tape contradicts the filed terms - those keep whatever they had. | 2026-09-26 §179: LAKSHVILAS 2014-07-25 (Rights 5:6) added — issue price Rs 50 (FV 10 + premium 40) read from NSE's own corporate announcement of 16-Jul-2014 (the feed row states no price). | 2026-09-26 §179: WHEELS 2014-02-13 TERP on the ACTUAL shares issued (promoters forwent — SEBI MPS rights), ALOKINDS 2013 row keyed to era key ALOKTEXT; CHEMPLASTS 2009 / NEULANDLAB 2012 statuses resolved. | 2026-09-28 §206: SCOPE WIDENED (user) to the NSE SME board + main-board rights 2026 no ledger covered: 33 rows added (SME feed index=sme 2013-2026: 36 rights rows, 25 targets incl. 2 split-inference steps corrected [MPEL 2026-08-31, DHARIWAL 2026-02-27]; main board 2026: 8 targets). FV for SME rows = the SME feed row's faceVal (at-event: BTML/ABINFRA rows keep FV 10 across their later splits). Held (EXCLUDED/NOT_COMPUTED, see provenance board=sme/equities): COOLCAPS, IEML, ROCKINGDCE, RCDL, SUNREST x2, DESTINY x2, SADHNANIQ, GANGAFORGE, QUINT. | 2026-09-29 §179c: THOMASCOOK 2008-12-19 rights (NSE feed spelling 'Rhgt' missed by the §173 scan; a full rescan with Rights/Rght/Rhgt/Rgt/Rts found no other N500 miss). §179d (2026-09-29): +16 rows found by the quantmac round-2 cell-by-cell recheck — feed spellings the §173 scan missed (\"Rht\", \"Rhs\", \"Rhts\", a rights row inside an AGM/dividend row, \"9 Ccds For Every 40\") and rows §173 left NOT_COMPUTED (partly paid, rights with warrants/NCDs/DVR, no price on the feed) whose terms were read from the NSE/BSE filings: equity parts at the filed price; partly paid at the full price (as RELIANCE 2020); compulsorily convertible debentures/bonds as equity at the conversion price (the user's TRENT CCPS policy A); warrants and pure debt not priced in. Cum/ex closes 2006-07 from NSE cm bhavcopies.",
  "rows": [
   [
    "3IINFOLTD",
@@ -1134,6 +1134,102 @@
    20081219,
    0.927428,
    0.994929
+  ],
+  [
+   "BAJFINANCE",
+   20061113,
+   0.913291,
+   0.917564
+  ],
+  [
+   "ORIENTPPR",
+   20070608,
+   0.957443,
+   0.956955
+  ],
+  [
+   "CHOLAFIN",
+   20070911,
+   0.911726,
+   0.925362
+  ],
+  [
+   "TATASTEEL",
+   20071029,
+   0.883953,
+   0.913693
+  ],
+  [
+   "INDHOTEL",
+   20080221,
+   0.92135,
+   0.939268
+  ],
+  [
+   "HINDALCO",
+   20080828,
+   0.906897,
+   0.866379
+  ],
+  [
+   "TMPV",
+   20080909,
+   0.96843,
+   0.96357
+  ],
+  [
+   "TATAINVEST",
+   20080910,
+   0.901649,
+   0.871469
+  ],
+  [
+   "ALOKTEXT",
+   20090318,
+   0.907381,
+   0.964706
+  ],
+  [
+   "TINPLATE",
+   20090909,
+   0.801898,
+   0.840825
+  ],
+  [
+   "VIDEOIND",
+   20100318,
+   0.995316,
+   0.986577
+  ],
+  [
+   "SADBHAV",
+   20100616,
+   0.978519,
+   0.94019
+  ],
+  [
+   "INDHOTEL",
+   20140718,
+   0.917196,
+   0.9336
+  ],
+  [
+   "SINTEX",
+   20160808,
+   0.98266,
+   1.006106
+  ],
+  [
+   "TATASTEEL",
+   20180131,
+   0.942411,
+   0.908745
+  ],
+  [
+   "ABFRL",
+   20200630,
+   0.985707,
+   0.983516
   ]
  ],
  "provenance": [
@@ -1162,8 +1258,24 @@
    "sym": "ABFRL",
    "feed_sym": "ABFRL",
    "feed_ex": 20200630,
-   "subject": " Rights 9:77 Partly Paid @ Premium Rs 100/-",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "subject": "Rights 9:77 Partly Paid @ Premium Rs 100/-",
+   "status": "TARGET",
+   "bar": 20200630,
+   "prev_bar": 20200629,
+   "new_per_held": "9:77 @ Rs110",
+   "fv_then": 10.0,
+   "issue": [
+    110.0
+   ],
+   "cum": 127.4,
+   "ex_close": 125.3,
+   "terp": 125.57907,
+   "factor": 0.985707,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcement 25-Jun-2020: \"9 partly paid up Equity Shares for every 77 ... Issue Price is 110 per share\"; record date 01-Jul-2020.",
+   "note": "Partly paid: TERP at the full issue price, as RELIANCE 2020 (partly paid, Rs1,257) already is.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "ABIRLANUVO",
@@ -1411,10 +1523,26 @@
   },
   {
    "sym": "BAJFINANCE",
-   "feed_sym": "BAJFINANCE",
+   "feed_sym": "BAJAUTOFIN",
    "feed_ex": 20061113,
    "subject": "Right-Eq6:10 & 1ncd:4eq",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "status": "TARGET",
+   "bar": 20061113,
+   "prev_bar": 20061110,
+   "new_per_held": "6:10 @ Rs325",
+   "fv_then": 10.0,
+   "issue": [
+    325.0
+   ],
+   "cum": 422.75,
+   "ex_close": 387.9,
+   "terp": 386.09375,
+   "factor": 0.913291,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcement 02-Nov-2006 (Bajaj Auto Finance): \"equity shares of the face value of Rs 10/- each at Rs 325/- per share including a premium of Rs 315/- ... 6 equity shares for every 10\"; cum/ex closes from NSE cm bhavcopies 10/13-Nov-2006 (symbol BAJAUTOFIN).",
+   "note": "Equity part only; the NCDs with detachable warrants (1 per 4 shares) are debt + an option -> not adjusted.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "BAJFINANCE",
@@ -1732,10 +1860,26 @@
   },
   {
    "sym": "CHOLAFIN",
-   "feed_sym": "CHOLAFIN",
+   "feed_sym": "CHOLADBS",
    "feed_ex": 20070911,
    "subject": "Rights Equity/Warrant",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "status": "TARGET",
+   "bar": 20070911,
+   "prev_bar": 20070910,
+   "new_per_held": "3:8 @ Rs140",
+   "fv_then": 10.0,
+   "issue": [
+    140.0
+   ],
+   "cum": 207.0,
+   "ex_close": 191.55,
+   "terp": 188.727273,
+   "factor": 0.911726,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcement 03-Sep-2007 (Cholamandalam DBS Finance): \"Rights Issue Price: Rs 140/- comprising of face value of Rs 10/- and premium of Rs 130/- ... three new shares for every eight existing shares\"; record date 18-Sep-2007; closes from NSE cm bhavcopies 10/11-Sep-2007 (symbol CHOLADBS).",
+   "note": "Equity part only; one detachable warrant per rights share is not priced in.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "CUB",
@@ -3321,7 +3465,23 @@
    "feed_sym": "ORIENTPPR",
    "feed_ex": 20070608,
    "subject": "Div-60% / Rights-Eq 3:10 Purpose Revised",
-   "status": "NOT_COMPUTED: issue price not stated"
+   "status": "TARGET",
+   "bar": 20070608,
+   "prev_bar": 20070607,
+   "new_per_held": "3:10 @ Rs360",
+   "fv_then": 10.0,
+   "issue": [
+    360.0
+   ],
+   "cum": 441.4,
+   "ex_close": 422.4,
+   "terp": 422.615385,
+   "factor": 0.957443,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcement 25-May-2007: \"3:10 ... Equity shares of a face value of Rs 10 will be issued at a price of Rs 360/- per share ... 50% payable with the application, balance on call\"; record date 15-Jun-2007; closes from NSE cm bhavcopies 07/08-Jun-2007.",
+   "note": "Partly paid (50% on call): full issue price, as RELIANCE 2020.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: issue price not stated"
   },
   {
    "sym": "ORIENTPPR",
@@ -3643,7 +3803,23 @@
    "feed_sym": "SADBHAV",
    "feed_ex": 20100616,
    "subject": "Rights Eq 1:20 @ Premium Rs.715 Per Share And 3 Warrants : 1 Eq",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "status": "TARGET",
+   "bar": 20100616,
+   "prev_bar": 20100615,
+   "new_per_held": "1:20 @ Rs725",
+   "fv_then": 10.0,
+   "issue": [
+    725.0
+   ],
+   "cum": 1320.85,
+   "ex_close": 1241.85,
+   "terp": 1292.47619,
+   "factor": 0.978519,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcement 08-Jun-2010: \"1:20 ... Price: Rs. 725/- per Equity Share (Rs 10 face value + Rs 715 premium) ... Three detachable warrants for every one equity share allotted ... exercise price Rs. 425\".",
+   "note": "Equity part only; the detachable warrants (exercisable 3-18 months later @ Rs425) are not priced in, as for every other rights-with-warrants row. NOTE: they were deep in the money (market Rs1,321) — flagged to the user.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "SAMMAANCAP",
@@ -3808,8 +3984,24 @@
    "sym": "SINTEX",
    "feed_sym": "SINTEX",
    "feed_ex": 20160808,
-   "subject": " Dividend - Re 0.70/- Per Share/ Right 26:151",
-   "status": "NOT_COMPUTED: issue price not stated"
+   "subject": "Dividend - Re 0.70/- Per Share/ Right 26:151",
+   "status": "TARGET",
+   "bar": 20160808,
+   "prev_bar": 20160805,
+   "new_per_held": "26:151 @ Rs65",
+   "fv_then": 1.0,
+   "issue": [
+    65.0
+   ],
+   "cum": 73.7,
+   "ex_close": 74.15,
+   "terp": 72.422034,
+   "factor": 0.98266,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcement 28-Jul-2016: \"equity shares of face value of Re 1 each at a price of Rs 65 per equity share (including a premium of Rs 64) ... 26 Rights Equity Shares for every 151\"; record date 09-Aug-2016.",
+   "note": "",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: issue price not stated"
   },
   {
    "sym": "SMLMAH",
@@ -4117,14 +4309,47 @@
    "feed_sym": "TATASTEEL",
    "feed_ex": 20071029,
    "subject": "Right-Eq1:5 & 9ccps:10eq",
-   "status": "NOT_COMPUTED: issue price not stated"
+   "status": "TARGET",
+   "bar": 20071029,
+   "prev_bar": 20071026,
+   "new_per_held": "1:5 @ Rs300",
+   "fv_then": 10.0,
+   "issue": [
+    300.0
+   ],
+   "cum": 987.75,
+   "ex_close": 902.5,
+   "terp": 873.125,
+   "factor": 0.883953,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcements 08-Oct-2007: \"Equity Shares in the ratio of one Equity Share for every five Equity Shares held at a price of Rs 300 per share (face value Rs 10 + premium Rs 290)\"; record date 05-Nov-2007; closes from NSE cm bhavcopies 26/29-Oct-2007.",
+   "note": "Equity part only. The simultaneous 2% CCPS (Rs100 each, 9 per 10 shares, compulsorily convertible at \"Rs 500 to Rs 600 ... as may be decided\") would add value under policy A, but the FINAL conversion price is not yet read from a filing -> OPEN.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: issue price not stated"
   },
   {
    "sym": "TATASTEEL",
    "feed_sym": "TATASTEEL",
    "feed_ex": 20180131,
-   "subject": " Rights - 4:25 Fully Paid Up Shares @ Premium Rs 500/- Per Share / 2:25 Partly Paid Up Shares @ Premium Rs 605/- Per Share",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "subject": "Rights - 4:25 Fully Paid Up Shares @ Premium Rs 500/- Per Share / 2:25 Partly Paid Up Shares @ Premium Rs 605/- Per Share",
+   "status": "TARGET",
+   "bar": 20180131,
+   "prev_bar": 20180130,
+   "new_per_held": "4:25 @ Rs510 + 2:25 @ Rs615",
+   "fv_then": 10.0,
+   "issue": [
+    510.0,
+    615.0
+   ],
+   "cum": 775.85,
+   "ex_close": 705.05,
+   "terp": 731.169355,
+   "factor": 0.942411,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE feed (FV Rs10 then; split 10 -> 1 in 2022): 4:25 fully paid @ Rs510 and 2:25 partly paid @ Rs615; record date 01-Feb-2018 (NSE announcement 23-Jan-2018).",
+   "note": "Both parts are ordinary shares; the partly paid ones at their full issue price (as RELIANCE 2020).",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "TATASTLBSL",
@@ -4233,10 +4458,26 @@
   },
   {
    "sym": "TMPV",
-   "feed_sym": "TMPV",
+   "feed_sym": "TATAMOTORS",
    "feed_ex": 20080909,
    "subject": "Rights Eq 1:6/Dif Vot 1:6",
-   "status": "NOT_COMPUTED: exotic instrument - left as is"
+   "status": "TARGET",
+   "bar": 20080909,
+   "prev_bar": 20080908,
+   "new_per_held": "1:6 @ Rs340",
+   "fv_then": 10.0,
+   "issue": [
+    340.0
+   ],
+   "cum": 436.45,
+   "ex_close": 420.55,
+   "terp": 422.671429,
+   "factor": 0.96843,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcement 02-Sep-2008 (Tata Motors press release): \"1 ordinary share for every 6 ... at a price of Rs 340/- per share of face value Rs 10\"; record date 16-Sep-2008.",
+   "note": "Ordinary part only. The simultaneous, unlinked 'A' Ordinary (DVR) rights 1:6 @ Rs305 are a different security (not priced into the ordinary TERP), as with warrants.",
+   "added": "2026-09-29",
+   "replaces_status": "NOT_COMPUTED: exotic instrument - left as is"
   },
   {
    "sym": "TMPV",
@@ -5576,6 +5817,181 @@
    "factor": 0.927428,
    "capped": false,
    "issue_src": "§179c (2026-09-29): missed by the §173 scan — NSE's feed spells it 'Rhgt'. Company filings 17-Dec-2008 (Rs 35.50 incl. premium 34.50, 35:100, record date 27-Dec-2008) and 22-Jan-2009 (allotment); NSE feed ND 19-26 Dec 2008, exDate 19-Dec-2008 = ND start. Tape: no single ex-day gap (19-26 Dec drift -0.5/-4.1/-4.9/-3.1/-1.9%). Quantmac's round-2 52w high applies the same TERP."
+  },
+  {
+   "sym": "HINDALCO",
+   "feed_sym": "HINDALCO",
+   "feed_ex": 20080828,
+   "subject": "Rhs 3:7@Prem Rs95/Div185%",
+   "status": "TARGET",
+   "bar": 20080828,
+   "prev_bar": 20080827,
+   "new_per_held": "3:7 @ Rs96",
+   "fv_then": 1.0,
+   "issue": [
+    96.0
+   ],
+   "cum": 139.2,
+   "ex_close": 120.6,
+   "terp": 126.24,
+   "factor": 0.906897,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE feed \"Rhs 3:7@Prem Rs95\" (FV Re1 then and now) -> issue Rs96.",
+   "note": "",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "feed_sym": "ALOKTEXT",
+   "feed_ex": 20090318,
+   "subject": "Rht 83:40@Prem Re1 Per Sh",
+   "status": "TARGET",
+   "bar": 20090318,
+   "prev_bar": 20090317,
+   "new_per_held": "83:40 @ Rs11",
+   "fv_then": 10.0,
+   "issue": [
+    11.0
+   ],
+   "cum": 12.75,
+   "ex_close": 12.3,
+   "terp": 11.569106,
+   "factor": 0.907381,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE feed \"Rht 83:40@Prem Re1\" (FV Rs10 in 2009: the 2013 rights were \"at par\" = Rs10) -> issue Rs11.",
+   "note": "",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "INDHOTEL",
+   "feed_sym": "INDHOTEL",
+   "feed_ex": 20080221,
+   "subject": "Rhts-Eq1:5&1ncd/Wrnt:10eq",
+   "status": "TARGET",
+   "bar": 20080221,
+   "prev_bar": 20080220,
+   "new_per_held": "1:5 @ Rs70",
+   "fv_then": 1.0,
+   "issue": [
+    70.0
+   ],
+   "cum": 132.55,
+   "ex_close": 124.5,
+   "terp": 122.125,
+   "factor": 0.92135,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcement 30-Jan-2008: \"Ratio: 1:5 ... Price: Rs.70/- per share (including Rs.69/- premium)\"; record date 28-Feb-2008.",
+   "note": "Equity part only; the unlinked 6% NCDs with detachable warrants (exercise Rs150, far above the market) are debt + an option -> not adjusted.",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "VIDEOIND",
+   "feed_sym": "VIDEOIND",
+   "feed_ex": 20100318,
+   "subject": "Agm/Div-Rs.2/Rh2:9@Prm215",
+   "status": "TARGET",
+   "bar": 20100318,
+   "prev_bar": 20100317,
+   "new_per_held": "2:9 @ Rs225",
+   "fv_then": 10.0,
+   "issue": [
+    225.0
+   ],
+   "cum": 230.95,
+   "ex_close": 227.85,
+   "terp": 229.868182,
+   "factor": 0.995316,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcements 10-Mar-2010 (\"Fixed price of Rs.225/- inclusive of premium ... Two Equity Shares for every Nine\") and 23-Mar-2010.",
+   "note": "The rights row hides inside a dividend/AGM row (\"Rh2:9@Prm215\").",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "INDHOTEL",
+   "feed_sym": "INDHOTEL",
+   "feed_ex": 20140718,
+   "subject": "9 Ccds For Every 40 Equity Shares",
+   "status": "TARGET",
+   "bar": 20140718,
+   "prev_bar": 20140717,
+   "new_per_held": "9:40 @ Rs55",
+   "fv_then": 1.0,
+   "issue": [
+    55.0
+   ],
+   "cum": 100.15,
+   "ex_close": 93.5,
+   "terp": 91.857143,
+   "factor": 0.917196,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. Company letter to NSE/BSE 24-Jun-2014: \"Issue Price of CCDs: Rs 55 per CCD ... 9 CCDs for every 40 equity shares ... automatically and compulsorily converted into 1 Equity Share ... at a premium of Rs 54 after 18 months\"; no interest, no redemption.",
+   "note": "Compulsorily convertible debentures = deferred equity: adjusted like equity rights at the conversion price (the user's TRENT 2010 CCPS decision, §214a policy A).",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "TINPLATE",
+   "feed_sym": "TINPLATE",
+   "feed_ex": 20090909,
+   "subject": "Rhts Eq 3:2 / Fcd 5:8 Eq",
+   "status": "TARGET",
+   "bar": 20090909,
+   "prev_bar": 20090908,
+   "new_per_held": "12:8 @ Rs45 + 9.09091:8 @ Rs55",
+   "fv_then": 10.0,
+   "issue": [
+    45.0,
+    55.0
+   ],
+   "cum": 67.85,
+   "ex_close": 57.05,
+   "terp": 54.40875,
+   "factor": 0.801898,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. BSE announcement 01-Sep-2009: equity 3 for every 2 @ Rs45 (FV 10 + premium 35); FCD Rs100, 5 FCDs for every 8 shares, every 11 FCDs automatically and compulsorily converted into 20 equity shares @ Rs55 on 01-Apr-2011.",
+   "note": "FCDs compulsorily convertible -> deferred equity at Rs55 (policy A): per 8 held, 12 new @ Rs45 + 9.0909 new @ Rs55.",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "TATAINVEST",
+   "feed_sym": "TATAINVEST",
+   "feed_ex": 20080910,
+   "subject": "Rhts 1 Zccb/War : 5 Eq",
+   "status": "TARGET",
+   "bar": 20080910,
+   "prev_bar": 20080909,
+   "new_per_held": "1:5 @ Rs300 + 1:5 @ Rs350",
+   "fv_then": 10.0,
+   "issue": [
+    300.0,
+    350.0
+   ],
+   "cum": 495.6,
+   "ex_close": 431.9,
+   "terp": 446.857143,
+   "factor": 0.901649,
+   "capped": false,
+   "issue_src": "§179d (2026-09-29): missed by the §173 scan / left NOT_COMPUTED there. NSE announcement 02-Sep-2008: \"1 ZCCB with detachable warrant for 5 Equity Shares ... Part A of Rs 300 compulsorily converted into 1 equity share at Rs 300 on 1st August 2009; Part B of Rs 350 compulsorily converted into 1 equity share at Rs 350 within 18 months; Part C detachable warrant ... one equity share at Rs 400 during April 2011\".",
+   "note": "Compulsorily convertible parts A+B = deferred equity (policy A): 2 new per 5 held @ Rs300 / Rs350; the optional Part C warrant is not priced in. Flagged to the user.",
+   "added": "2026-09-29"
+  },
+  {
+   "sym": "FORTIS",
+   "feed_sym": "FORTIS",
+   "feed_ex": 20090818,
+   "subject": "Rhts Eq 2:5 & 2 Wrnt:2 Eq",
+   "status": "NO ADJUSTMENT: issue Rs110 above the cum close 101.50 -> TERP 103.93 > cum, factor capped at 1.0 (warrants not priced in)",
+   "bar": 20090818,
+   "prev_bar": 20090817,
+   "new_per_held": "2:5",
+   "fv_then": 10.0,
+   "premium": 100.0,
+   "issue": 110.0,
+   "cum": 101.5,
+   "ex_close": 101.3,
+   "factor": 1.0,
+   "capped": true,
+   "issue_src": "NSE announcement 10-Aug-2009: \"Price : Rs. 110/- per Equity Shares (Rs 10 face value + Rs 100 premium) ... Ratio : 2 : 5\"; record date 20-Aug-2009.",
+   "added": "2026-09-29"
   }
  ]
 }

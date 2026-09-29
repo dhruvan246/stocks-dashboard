@@ -1,0 +1,92 @@
+{
+ "_doc": "DATA_RUNBOOK §179d (2026-09-29, quantmac round-2 recheck, user: \"check cell by cell and fix all\"): split/bonus factors as ABSOLUTE bar-exact targets for events whose BAKED step is wrong or missing — rows = [symbol, ex trading day, target price factor, NSE raw close ratio across that bar]. Loaded by update_sf_data.py into the SAME reconcile as rights_adj.json (reconcile_rights: applied = raw ratio / stored ratio at the exact bar; the pre-bar history is rescaled to the target; idempotent). corp_actions_hist.json carries the same factors so a from-scratch rebuild agrees. provenance = the filing / share-count evidence per row.",
+ "rows": [
+  [
+   "OMAXE",
+   20131111,
+   0.948969,
+   0.879316
+  ],
+  [
+   "AJRINFRA",
+   20130123,
+   0.99283,
+   0.985816
+  ],
+  [
+   "JMFINANCIL",
+   20080908,
+   0.04,
+   0.048032
+  ],
+  [
+   "GODREJIND",
+   20150105,
+   0.999201,
+   0.997462
+  ],
+  [
+   "GDL",
+   20070802,
+   0.8,
+   0.824811
+  ]
+ ],
+ "provenance": [
+  {
+   "sym": "OMAXE",
+   "bar": 20131111,
+   "target": 0.948969,
+   "raw_ratio": 0.879316,
+   "status": "TARGET",
+   "added": "2026-09-29",
+   "subject": "Bonus 10:39 (NSE feed); BSE CA \"Bonus issue 10:39\"",
+   "old_factor": 0.795918,
+   "why": "Promoter-excluded (minimum-public-shareholding) bonus: NSE announcement 31-Oct-2013 \"10 new equity shares for every 39 existing ... to the exception of the promoters and promoter group\". BSE shareholding filings: 04-Oct-2013 total 173,567,000 (promoters 141,194,187) -> 13-Nov-2013 (allotment) total 182,900,540 (promoters 137,166,194 after the 29-Oct OFS); public 36,400,806 x 10/39 = 9,333,540 bonus shares = the increase exactly. Price factor = 173,567,000 / 182,900,540 = 0.948969 (the nominal 39/49 = 0.795918 treated every holder as receiving the bonus). Quantmac round-2 52w high / 200-DMA imply 0.9490."
+  },
+  {
+   "sym": "AJRINFRA",
+   "bar": 20130123,
+   "target": 0.99283,
+   "raw_ratio": 0.985816,
+   "status": "TARGET",
+   "added": "2026-09-29",
+   "subject": "Bonus 1:34 (NSE feed, as GAMMNINFRA); BSE CA \"Bonus issue 1:34\"",
+   "old_factor": 0.971429,
+   "why": "Promoter-excluded bonus: BSE shareholding Dec-2012 total 728,763,618 (promoters 550,400,000) -> Mar-2013 total 734,026,438 (promoters 550,400,000, unchanged). Public 178,363,618 / 34 = 5,245,989 bonus shares; the filed increase is 5,262,820 (residual 16,831 = 0.002%, other allotments in the quarter). Price factor = 728,763,618 / 734,026,438 = 0.992830 (nominal 34/35 = 0.971429). Quantmac round-2 implies 0.9924-0.9931."
+  },
+  {
+   "sym": "JMFINANCIL",
+   "bar": 20080908,
+   "target": 0.04,
+   "raw_ratio": 0.048032,
+   "status": "TARGET",
+   "added": "2026-09-29",
+   "subject": "Fv Spl-Rs10tore1/Bon-3:2 (NSE feed); BSE CA \"Bonus issue 3:2\" + FV split, ex 08-Sep-2008 (record 15-Sep)",
+   "old_factor": 0.05,
+   "why": "Face-value split Rs10 -> Re1 (x1/10) and bonus 3:2 (3 new for 2 held, x2/5) on the same ex-date: combined 0.04. Our series had inferred 0.05 (no ledger row) from the price drop. Tape: prev close 1,402.20 -> ex-day open 66.00 / close 67.35 = new basis 56.09 x 1.18 (x0.05 basis 70.11: open -5.9%). Quantmac round-2 implies 0.0400."
+  },
+  {
+   "sym": "GODREJIND",
+   "bar": 20150105,
+   "target": 0.999201,
+   "raw_ratio": 0.997462,
+   "status": "TARGET",
+   "added": "2026-09-29",
+   "subject": "Bonus 1 : 1250 (NSE feed); BSE CA \"Scheme of Arrangement\"",
+   "old_factor": null,
+   "why": "NSE records a 1-for-1,250 bonus issued under the scheme: factor 1250/1251 = 0.999201. Never applied: corp_actions builds gate factors above 0.98 and self_heal skips |f-1| < 2%. Quantmac round-2 implies 0.99920."
+  },
+  {
+   "sym": "GDL",
+   "bar": 20070802,
+   "target": 0.8,
+   "raw_ratio": 0.824811,
+   "status": "TARGET",
+   "added": "2026-09-29",
+   "subject": "Bonus 1:4 (NSE feed, ex 02-Aug-2007); BSE record date 03-Aug-2007; company ESOP note 18-Jul-2007 (options +25%, price -20% after the bonus record date)",
+   "old_factor": null,
+   "why": "Bonus 1:4 (1 new for 4 held) = 0.8, never applied (no corp_actions row; our series kept the -17.5% ex-day). Tape: NSE cm bhavcopy prev close 172.10 -> ex-day close 141.95 (new basis 137.68, +3.1%); the 162.20 open was a lone early print (day low 140.55). Outside quantmac's 2009+ window."
+  }
+ ]
+}
