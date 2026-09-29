@@ -628,6 +628,21 @@ def d1gate(path):
     json.dump(aud, open(ap, "w", encoding="utf-8"), indent=0, ensure_ascii=("\\u00" in araw))
     print("d1gate: %d written, skipped %s" % (n, skip))
 
+def lag_revert(path, ledger="shp_lag_fix.json"):
+    """Undo batch-2 re-dates for the keys in <path> (a JSON list whose items start with the key): restore the entry each one
+    replaced (kept under `replaced`), else remove the key. Same format-preserving writer as lag_write."""
+    keys = [x[0] if isinstance(x, list) else x for x in json.load(open(path))]
+    lp = os.path.join(HERE, ledger); raw = open(lp, encoding="utf-8").read(); led = json.loads(raw); rest = rem = miss = 0
+    for k in keys:
+        e = led.get(k)
+        if not e or "§164r" not in str(e.get("prov", "")): miss += 1; continue
+        if isinstance(e.get("replaced"), dict): led[k] = e["replaced"]; rest += 1
+        else: del led[k]; rem += 1
+    compact = raw.lstrip().startswith('{"')
+    txt = json.dumps(led, ensure_ascii=("\\u00" in raw) or not any(ord(ch) > 127 for ch in raw), **({"separators": (",", ":")} if compact else {"indent": 0}))
+    open(lp, "w", encoding="utf-8").write(txt + ("\n" if raw.endswith("\n") else ""))
+    print("%s: %d restored to the replaced entry, %d removed, %d not a §164r entry" % (ledger, rest, rem, miss))
+
 def wb_older():
     """Pages whose NEWEST capture holds no filing table (BSE's own 'Error Code:404' page archived with HTTP 200 once the
     page was retired — HINDPETRO 2012-10-02) fall back to that scrip's earlier captures, newest first, up to 4 tries."""
@@ -783,6 +798,7 @@ if __name__ == "__main__":
     elif st == "drrebase": drrebase(sys.argv[2])
     elif st == "d1gate": d1gate(sys.argv[2])
     elif st == "t3fix": t3fix(sys.argv[2].split(","), sys.argv[3])
+    elif st == "lag-revert": lag_revert(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "wb-early": wb_early(sys.argv[2])
     elif st == "lag-write": lag_write(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "shp_lag_fix.json")
     elif st == "table3-write": table3_write(sys.argv[2])
