@@ -149,7 +149,9 @@ function startTickLoop(){ if (TK.timer) return; TK.timer = setInterval(fetchTick
 const baCell = sym => { const q = liveQ(sym); return (q && q.bid > 0 && q.ask > 0) ? ' <span class="sym" title="best bid / best ask (live depth)">' + (+q.bid).toFixed(2) + '/' + (+q.ask).toFixed(2) + '</span>' : ''; };
 function startLiveLoop(){
   if (LIVE_TIMER) return;
-  LIVE_TIMER = setInterval(() => { if (!document.hidden && marketOpen()){ zbaPull(); if (Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll();
+  LIVE_TIMER = setInterval(async () => { if (!document.hidden && marketOpen()){ await zbaPull(); if (Object.keys(PICKS).length){ fetchLive(); if (PICKMODE === 'live') liveRerankAll();
+    /* zba41: the pull is AWAITED — un-awaited, a second device read its stale doc, missed that the phone had started
+       selling and re-worked the plan off half-sold holdings (30 Sep 14:21) */
     if (PICKMODE === 'live' && rebalWindow().sellIn && Z.connected && !cpSellsStarted() && Date.now() - CPL.at > 300000) cashPlanRun(true); } } }, 60000);
   startTickLoop(); fetchTicks();
 }
@@ -372,9 +374,14 @@ async function zHoldRefresh(){
     h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), p = Z.hold[k] || { mtf: 0, cnc: 0, coll: 0 };   // HFCL-BE / BSE HFCL are our HFCL
       Z.hold[k] = { mtf: p.mtf + ((r.mtf || {}).quantity || 0), cnc: p.cnc + (r.quantity || 0) + (r.t1_quantity || 0), coll: p.coll + (r.collateral_quantity || 0) }; });
     Z.hraw = {};   // the cash plan's inputs: MTF qty / entry value / own margin / avg, demat qty, prices
-    h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), m = r.mtf || {}, a = Z.hraw[k] || { mq: 0, cq: 0, mval: 0, mim: 0, mavgV: 0, ltp: 0, close: 0 };
-      a.mq += m.quantity || 0; a.cq += (r.quantity || 0) + (r.t1_quantity || 0) + (r.collateral_quantity || 0); a.mval += m.value || 0; a.mim += m.initial_margin || 0;
-      a.mavgV += (m.average_price || 0) * (m.quantity || 0); a.ltp = r.last_price || a.ltp; a.close = r.close_price || a.close; a.mavg = a.mq ? a.mavgV / a.mq : 0; Z.hraw[k] = a; });
+    /* zba41: mu/cu = shares SOLD TODAY (Kite's used_quantity). Until settlement Kite keeps an MTF lot's value and
+       margin for the WHOLE original lot, so the plan prices a lot per original share (qty + used) — dividing by the
+       shares left made a half-sold lot's loan look 2-3x bigger (30 Sep: #1 "freed −₹2.73 Cr"). */
+    h.j.data.forEach(r => { const k = baseSym(r.tradingsymbol), m = r.mtf || {}, a = Z.hraw[k] || { mq: 0, mu: 0, cq: 0, cu: 0, mval: 0, mim: 0, mavgV: 0, ltp: 0, close: 0 };
+      a.mq += m.quantity || 0; a.mu += m.used_quantity || 0; a.cq += (r.quantity || 0) + (r.t1_quantity || 0) + (r.collateral_quantity || 0); a.cu += r.used_quantity || 0;
+      a.mval += m.value || 0; a.mim += m.initial_margin || 0;
+      a.mavgV += (m.average_price || 0) * ((m.quantity || 0) + (m.used_quantity || 0)); a.ltp = r.last_price || a.ltp; a.close = r.close_price || a.close;
+      a.mavg = (a.mq + a.mu) ? a.mavgV / (a.mq + a.mu) : 0; Z.hraw[k] = a; });
     Z.held = new Set(h.j.data.filter(r => ((r.quantity||0)+(r.t1_quantity||0)+(r.collateral_quantity||0)+((r.mtf||{}).quantity||0)) > 0)
                              .map(r => baseSym(r.tradingsymbol)));
     kiteSyms(Object.keys(Z.hold));   // today's Zerodha names for everything held
@@ -670,8 +677,9 @@ function planCompute(inp){
   const H = inp.hraw || {}, PX = inp.px || {}, LV = inp.lev || {}, warn = [];
   const price = s => +(PX[s] || (H[s] && H[s].ltp) || 0);
   const mtfOk = s => LV[s] != null && LV[s] > 1.05;
-  const pos = s => { const h = H[s]; if (!h) return null; const tot = (h.mq || 0) + (h.cq || 0);
-    return { mfrac: tot ? (h.mq || 0) / tot : 0, loan: h.mq ? ((h.mval || 0) - (h.mim || 0)) / h.mq : 0, block: h.mq ? Math.max(0, (h.mavg || 0) - (h.close || 0)) : 0 }; };
+  const pos = s => { const h = H[s]; if (!h) return null;
+    const mq0 = (h.mq || 0) + (h.mu || 0), cq0 = (h.cq || 0) + (h.cu || 0), tot = mq0 + cq0;   // zba41: per ORIGINAL share (qty + sold today) — see zHoldRefresh
+    return { mfrac: tot ? mq0 / tot : 0, loan: mq0 ? ((h.mval || 0) - (h.mim || 0)) / mq0 : 0, block: mq0 ? Math.max(0, (h.mavg || 0) - (h.close || 0)) : 0 }; };
   const eqPs = s => { const p = price(s), z = pos(s); return z ? z.mfrac * (p - z.loan + z.block) + (1 - z.mfrac) * p : p; };
   const freed = (s, q) => { if (!pos(s)){ warn.push(s + ' is not in the Zerodha holdings — counted as ₹0 freed'); return 0; }
     return q * eqPs(s) - 0.0011 * q * price(s); };
@@ -755,6 +763,8 @@ function planKeeps(it){   // a reset strategy's kept re-picks — still in today
   return new Set(Object.keys(o.keep).filter(s => !now || now.has(s)));
 }
 const cpSellsStarted = () => zbSoldSet().size > 0;
+/* zba41: the picks are the FINAL list for this rebalance — rebalance mode, screened on the T close itself */
+function finalPicks(it){ const p = PICKS[it.id]; return !!(p && p.rows && p.rows.length && !p.live && p.asOf === rebalWindow().tIso); }
 /* After the sells the plan is frozen — but the final list lands only at ~8:45 pm, after money has moved. A strategy
    whose final screen differs is re-planned on the SAME rules (user 2026-09-29: "the list shouldn't matter"): its
    rows net of what it sold at T, the cash those sells froze in the plan (soldFx), stragglers from today's demat,
@@ -780,16 +790,26 @@ async function cashPlanRun(auto){
   if (CPL.busy) return;
   const say = m => { if (!auto) ktoast(m, 6000); };
   if (!Z.connected){ say('Connect Zerodha first — the plan reads your holdings, funds and Zerodha’s margin per stock'); return; }
+  await zbaPull();   // zba41: plan off the NEWEST synced doc — a tab left open for hours must not re-plan from its stale copy
+  if (CPL.busy) return;
   const books = uniqStrategies().filter(it => { const h = heldFor(it.cfg); return h && h.rows.length; });
   if (!books.length){ say('No strategy books loaded yet'); return; }
   const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows.length));
   if (noPicks.length){ say('Load all picks first — ' + noPicks.length + ' strateg' + (noPicks.length === 1 ? 'y has' : 'ies have') + ' none'); return; }
   const P0 = cpDoc(), frozen = !!(P0 && cpSellsStarted());
-  const changed = frozen ? books.filter(it => P0.S[it.id] && !planFor(it)) : [];
-  if (frozen && !changed.length){ say('Frozen — the sells have started and every strategy still matches its plan'); return; }
+  /* zba41: once the sells are out, re-plan ONLY on the final list (rebalance picks dated T). Live picks flip intraday and
+     rebalance picks dated T−1 are yesterday's screen — re-planning on either replaced a good plan (30 Sep). */
+  const changed = frozen ? books.filter(it => P0.S[it.id] && !planFor(it) && finalPicks(it)) : [];
+  if (frozen && !changed.length){ const RWf = rebalWindow();
+    say(books.some(it => P0.S[it.id] && !planFor(it)) ? 'Frozen — waiting for the final ' + RWf.tlab + ' close list (tonight); the plan stays as it is' : 'Frozen — the sells have started and every strategy still matches its plan'); return; }
   CPL.busy = true; CPL.at = Date.now(); say(frozen ? 'Re-planning ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' on the final list…' : 'Working out the cash plan…');
   try {
     await zHoldRefresh();
+    if (!frozen && P0){   // zba41: this device sees no sold mark yet — ask Zerodha before overwriting a plan (a basket may have left from another device)
+      const ob = await zFetch('/orders');
+      const gone = ob.st === 200 && ((ob.j && ob.j.data) || []).some(o => o.transaction_type === 'SELL' && /^ss/.test(o.tag || '') && (+o.filled_quantity > 0 || /OPEN|PENDING/i.test(o.status || '')));
+      if (gone){ say('Sell baskets have already gone out today — the plan stays as it was worked out before them'); return; }
+    }
     const px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
     const strats = frozen ? changed.map(it => replanInputs(P0, it)).filter(Boolean) : books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3;
       return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym) }; });
@@ -828,7 +848,7 @@ async function cashPlanRun(auto){
 function cashPlanHTML(list){
   const P = cpDoc(), frozen = !!(P && cpSellsStarted());
   const when = P ? hhmm(new Date(P.at + 330 * 60000)) : '';
-  const changed = P ? list.filter(it => P.S[it.id] && PICKS[it.id] && PICKS[it.id].rows.length && !planFor(it)) : [];
+  const changed = P ? list.filter(it => P.S[it.id] && PICKS[it.id] && PICKS[it.id].rows.length && !planFor(it) && (!frozen || finalPicks(it))) : [];   // zba41: frozen → only the final list re-plans
   if (frozen && changed.length && Z.connected && !CPL.busy && Date.now() - CPL.at > 60000) setTimeout(() => cashPlanRun(true), 50);   // the final list changed after the sells → same rules, on its own
   let h = '<div class="bal"><div class="bal-h"><b>Cash plan</b><span class="sub">' +
     (P ? 'worked out ' + when + ' on ' + (P.live ? 'live' : 'rebalance') + ' picks' + (P.re ? ' · re-planned ' + hhmm(new Date(P.re.at + 330 * 60000)) + ' on the final list' : '') + (frozen ? ' · <b>frozen</b> — sell baskets have gone out' + (changed.length ? '; the final list changed for ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' — re-planning on the same rules' : '') : ' · refreshes itself on sell day until the first sell basket')
@@ -2216,7 +2236,7 @@ function kiteSend(orders){
   document.addEventListener('click', e => { const b = e.target.closest('#spWizard [data-wz]'); if (b) wizardAct(b.dataset.wz); });
   loadHolidays();
   cloudLoop();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) cloudLoop(true); });   // a phone opened mid-basket updates at once
+  document.addEventListener('visibilitychange', () => { if (!document.hidden){ cloudLoop(true); zbaPull(); } });   // a phone opened mid-basket updates at once (zba41: and takes the newest synced plan)
   renderCards();
   refreshFavsFromSettings();
   zbaPull();   // synced \u20b9 amounts (token-gated row) \u2014 lands before any basket dialog opens
