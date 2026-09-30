@@ -742,7 +742,12 @@ function planCompute(inp){
     o.pct = w.nv ? Math.min.apply(null, w.noMtf.map(s => o.tgt[s] / w.nv)) : 1; trims.push('#' + o.num + ' ' + w.noMtf.join('/') + ' cut further'); });
   let freedT = 0, keptT = 0;
   Object.keys(S).forEach(id => { const o = S[id]; freedT += o.freed; keptT += o.keptEq;
-    o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0, q = p > 0 ? Math.floor(o.tgt[s] / p) : 0;
+    o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0;
+      /* zba42 (user 2026-09-30 "let the extra money come in cash"): a reset strategy's kept re-pick is never topped up —
+         what its equal-split target asked for above the kept shares stays as cash in the strategy's leftover. The ⚡
+         basket always left kept rows alone; "Buy all" bought the top-up (#4 CPPLUS +115) — now both skip it. */
+      if (kq > 0 && W[id] && o.tgt[s] > kq * p){ o.left += W[id].cost(s, o.tgt[s]) - W[id].cost(s, kq * p); o.tgt[s] = kq * p; }
+      const q = p > 0 ? Math.floor(o.tgt[s] / p) : 0;
       o.holdQ[s] = Math.max(kq, q); o.buyQ[s] = Math.max(0, q - kq); o.tgt[s] = Math.round(o.tgt[s]); o.normal[s] = Math.round(o.normal[s]); });
     o.freed = Math.round(o.freed); o.keptEq = Math.round(o.keptEq); o.left = Math.round(o.left); o.pct = +o.pct.toFixed(4);
     Object.keys(o.fx).forEach(k => { o.fx[k] = Math.round(o.fx[k]); o.xv[k] = Math.round(o.xv[k] || 0); }); });
