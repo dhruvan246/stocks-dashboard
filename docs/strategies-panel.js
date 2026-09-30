@@ -1515,6 +1515,14 @@ function keeperQty(sym, it){
     q += Math.max(0, row.qty - gone); });
   return q;
 }
+/* zba40 (user 2026-09-30): another strategy's sell basket that sent this stock is still running (in this tab
+   or on the cloud box). Its unsold shares still sit in the demat, and keeperQty counts them as gone (they
+   were sent), so an already-sold strategy would read them as its own leftovers ("Sell remaining") and a
+   tap would race that basket. Two strategies selling IDEA at once did exactly that on 30 Sep. */
+function sellingElsewhere(sym, it){
+  const me = identityKey(it.cfg);
+  return uniqStrategies().some(o => identityKey(o.cfg) !== me && BUYSLICER[o.id] && BUYSLICER[o.id].sell && (+zbSentSyms('soldReb', o.id)[sym] || 0) > 0);
+}
 function dematQty(sym){ const b = Z.hold[sym]; return b ? (b.mtf + b.cnc) : 0; }   // pledged shares excluded: not sellable
 /* Borderline for a HELD stock on the sell day (mirror of borderMap, user 2026-09-23): a STAY at the cut
    can drop out by the close, an EXIT just outside (rank N+1 on a price-sensitive sort, or failing a
@@ -1633,7 +1641,8 @@ function sellExits(it){
       const stays = isReset ? !!(cpKeep && cpKeep.has(h.sym)) : !!(pickSet && pickSet.has(h.sym));
       const fv = pickFV(fmap[h.sym], cols);
       const keep = Z.connected ? keeperQty(h.sym, it) : null;
-      const remain = (Z.connected && !stays) ? Math.min(h.qty, Math.max(0, dematQty(h.sym) - keep)) : null;   // shares still to sell
+      const busy = Z.connected && !stays && (+sent[h.sym] || 0) > 0 && sellingElsewhere(h.sym, it);   // zba40: another basket is still selling it — nothing of ours to offer until it ends
+      const remain = (Z.connected && !stays) ? (busy ? 0 : Math.min(h.qty, Math.max(0, dematQty(h.sym) - keep))) : null;   // shares still to sell
       const bd = (!isReset && p && p.live && RW.sellIn) ? heldBorder(it, p, h, stays, fv) : null;
       return { h: h, px: px, mism: mism, stays: stays, val: px != null ? h.qty * px : null, fv: fv, keep: keep, remain: remain, sent: +sent[h.sym] || 0, bd: bd };
     }) : [];
@@ -1917,6 +1926,15 @@ async function cloudSubmit(id){
     (B.endBy && CLOUD.v >= 4.3 ? ', all sent by 3:29' : '') + (B.note || '') + '; any device can stop it', B.note ? 10000 : 8000);
   cloudLoop(true); renderCards();
 }
+/* zba40 (user 2026-09-30, phone screenshot): when a sell basket ends, re-read Zerodha. The card otherwise
+   keeps offering "Sell remaining N" off the holdings read just before the sale, because nothing re-read
+   them afterwards. Twice: ~3 s after the end, and a minute later for limit tails that fill late. */
+const HOLD_AFTER = { a: 0, b: 0 };
+function holdAfterSell(){
+  clearTimeout(HOLD_AFTER.a); clearTimeout(HOLD_AFTER.b);
+  const go = () => { if (Z.connected) zHoldRefresh().then(() => renderCards()).catch(() => {}); };
+  HOLD_AFTER.a = setTimeout(go, 3000); HOLD_AFTER.b = setTimeout(go, 60000);
+}
 function cloudApply(jobs){
   CLOUD.jobs = jobs;                                                                        // the fills panel reads these
   let changed = false;
@@ -1932,6 +1950,7 @@ function cloudApply(jobs){
       ktoast('☁ ' + (j.side === 'SELL' ? 'Sell' : 'Buy') + ' basket ' + j.status + ' — ' + j.i + '/' + j.n + ' slices sent' +
         (j.failed && j.failed.length ? ' · FAILED (' + (j.side === 'SELL' ? 'sell' : 'buy') + ' separately): ' + j.failed.join(', ') : ''), 8000);
       if (j.side === 'SELL' && !/^__/.test(sid) && j.status === 'done') setTimeout(() => captureProceeds(sid), 120000);   // actual proceeds fund the T+1 buys
+      if (j.side === 'SELL') holdAfterSell();                                               // zba40: the card shows what Zerodha holds now
     }
     CLOUD.seen[j.id] = j.status;
   });
@@ -2047,6 +2066,7 @@ async function ledgerApply(){
 }
 function buyStop(id, msg){ const B = BUYSLICER[id]; if (!B) return; clearTimeout(B.t);
   if (B.remote && B.jobId){ zFetch('/jobs/' + encodeURIComponent(B.jobId) + '/stop', { method: 'POST' }); CLOUD.seen[B.jobId] = 'stopped'; }   // stops it on the VM, from any device
+  if (B.sell) holdAfterSell();                                                              // zba40: done or stopped, re-read what is actually left
   delete BUYSLICER[id];
   if (msg) ktoast(msg, 6500); renderCards(); }
 /* A per-stock failure SKIPS that stock (drops its remaining slices) and continues the rest,
