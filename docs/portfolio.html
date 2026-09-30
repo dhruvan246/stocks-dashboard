@@ -2241,8 +2241,12 @@ function zRender(){
      Kite reports each MTF holding's value at purchase (mtf.value) and initial margin (mtf.initial_margin = the cash you
      put in); the loan is the rest. "Your money now" = today's value − the loan = what selling it would hand back, before
      the MTF interest and charges Zerodha bills separately. Negative = the stock is worth less than its loan. */
+  /* Until settlement Kite keeps mtf.value / initial_margin for the WHOLE original lot, while shares sold today move to
+     mtf.used_quantity (user 2026-09-30: CHENNPETRO, 10,493 left of 41,973, read "−₹233.8 L"). Scale the lot to the shares
+     still held; once settled, used_quantity is 0 and nothing changes. */
   const mtfRows=D.hold.map(r=>{ const m=r.mtf||{}, n=+m.quantity||0; if(!(n>0)) return null;
-      const bought=(+m.value>0)?+m.value:n*(+m.average_price||0), own=+m.initial_margin||0, loan=Math.max(0,bought-own), now=n*(+r.last_price||0);
+      const lot=n+(+m.used_quantity||0), f=lot>0?n/lot:1;
+      const bought=(+m.value>0)?(+m.value)*f:n*(+m.average_price||0), own=(+m.initial_margin||0)*f, loan=Math.max(0,bought-own), now=n*(+r.last_price||0);
       return {sym:r.tradingsymbol, bought:bought, own:own, loan:loan, lev:own>0?bought/own:null, now:now, mine:now-loan}; })
     .filter(Boolean).sort((a,b)=>b.bought-a.bought);
   if(mtfRows.length){
