@@ -38,12 +38,25 @@
   .vbtn[aria-selected="true"]{background:#4f46e5;color:#fff}
   html[data-theme] .vbtn:not([aria-selected="true"]):hover{color:var(--text,#334155) !important}
   html[data-theme] .vbtn[aria-selected="true"]{color:#fff !important}
-  #board .grid-row{display:grid;grid-template-columns:28px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr) minmax(240px,2.6fr);gap:12px;align-items:center}
+  #board .grid-row{display:grid;grid-template-columns:36px minmax(170px,1.6fr) 92px 92px 58px minmax(240px,2.6fr) minmax(240px,2.6fr);gap:12px;align-items:center}
   /* padding+negative margin grows the tap area into the header row's own padding without
      moving the label: the text alone is a 15px-tall target, which is a miss on a phone. */
   .sortcol{cursor:pointer;user-select:none;padding:10px 0;margin:-10px 0}
   .sortcol:hover{color:var(--text,#475569)}
   .sortcol .ar{font-size:9px;margin-left:3px;opacity:.9}
+  /* ★ numbers + saved-mix marks — the SAME number as the terminal's Strategies panel and its violet for a mix that is
+     part of the ★ set ("🍀 The Four" inside the eight). User 2026-09-30: "#4 must be #4 everywhere". */
+  :root{--mix:#7c3aed}
+  html[data-theme="dark"]{--mix:#b79cff}
+  .snum{display:inline-block;font-size:10.5px;font-weight:800;line-height:1.4;border-radius:5px;padding:0 5px;white-space:nowrap;
+        color:var(--text-muted,#64748b);border:1px solid var(--border,#e2e8f0);background:var(--surface,#fff)}
+  .snum.fav{background:#4f46e5;border-color:#4f46e5;color:#fff}
+  .snum.mixn{box-shadow:0 0 0 2px var(--mix)}
+  .mixchip{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;white-space:nowrap;vertical-align:1px;color:var(--mix);
+           background:color-mix(in srgb,var(--mix) 13%,transparent);border:1px solid color-mix(in srgb,var(--mix) 45%,transparent)}
+  #board .mixrow{background:linear-gradient(90deg,color-mix(in srgb,var(--mix) 9%,transparent),transparent 65%);box-shadow:inset 3px 0 0 var(--mix)}
+  .scard.mixed{border-color:color-mix(in srgb,var(--mix) 55%,var(--border,#e2e8f0));
+               background:linear-gradient(180deg,color-mix(in srgb,var(--mix) 8%,var(--surface,#fff)),var(--surface,#fff) 70%)}
   @media (max-width:1176px){ #boardScroll{overflow-x:auto} #boardScroll>div{min-width:1176px} }
   /* ---- Monthly-returns card + matrix modal ---- */
   #mrCard{cursor:pointer;transition:.18s cubic-bezier(.4,0,.2,1)}
@@ -158,7 +171,7 @@
            card's own top" rather than "clear of the site header", so the label row sat
            parked on top of row 1 at every scroll position. -->
       <div id="boardHead" class="grid-row bg-slate-50 border-b border-slate-200 px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold text-slate-400 sticky top-0 z-10">
-        <div>#</div>
+        <div data-sort="num" class="sortcol" title="The strategy's number — the same as the terminal's Strategies panel: a ⭐ favourite's number is its place in your favourites; the rest continue after it">#<span class="ar"></span></div>
         <div data-sort="name" class="sortcol">Strategy<span class="ar"></span></div>
         <div data-sort="ret" class="sortcol text-right" title="Held basket's return since its last rebalance">Since reb.<span class="ar"></span></div>
         <div data-sort="day" class="sortcol text-right" title="Held basket's move since the previous close"><span id="hDay">Since prev close</span><span class="ar"></span></div>
@@ -283,6 +296,28 @@ function uniText(k) { return k === '__FAV__' ? '⭐ Favourite strategies'
 function loadMixes() { try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]');
   return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch (e) { return []; } }
 function inKeySet(set, c) { return set.has(identityKey(c)) || set.has(ruleKey(c)); }
+/* ★ numbers — the SAME numbering as the terminal (user 2026-09-30: "the strategy numbers must match everywhere"):
+ * a favourite's number is its place in the synced ⭐ list (bt_fav_strategies); every other strategy continues after
+ * the last ★ number, in name order. A saved mix that is PART of the ★ set (🍀 The Four inside the eight) marks its
+ * rows in violet. KEEP IN SYNC with strategies-panel.js favNumOf / blockNums / subMixes. */
+function favNumOf(c) { let o = []; try { o = JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]'); } catch (e) {}
+  if (!Array.isArray(o)) return 0; let i = o.indexOf(identityKey(c)); if (i < 0) i = o.indexOf(ruleKey(c)); return i + 1; }
+function subMixes() { const favs = loadFavs();
+  return loadMixes().filter(m => m.sel.length && m.sel.length < favs.size && m.sel.every(k => favs.has(k)))
+    .map(m => ({ label: String(m.label), keys: new Set(m.sel) })); }
+function assignNums() {   // read fresh every sort/paint, like visible(), so a star or mix edited elsewhere shows here
+  let favN = 0; try { const o = JSON.parse(localStorage.getItem('bt_fav_strategies') || '[]'); favN = Array.isArray(o) ? o.length : 0; } catch (e) {}
+  const SM = subMixes(); let k = 0;
+  RESULT.forEach(r => { r.fav = favNumOf(r.cfg); r.mix = SM.filter(m => inKeySet(m.keys, r.cfg)); });
+  RESULT.filter(r => !r.fav).sort((a, b) => String(a.name).localeCompare(String(b.name), 'en', { numeric: true, sensitivity: 'base' }))
+    .forEach(r => { r.num = favN + (++k); });
+  RESULT.forEach(r => { if (r.fav) r.num = r.fav; });
+}
+function numBadge(r) {
+  return `<span class="snum${r.fav ? ' fav' : ''}${r.mix && r.mix.length ? ' mixn' : ''}" title="${r.fav
+    ? '⭐ #' + r.num + ' — the same number as in the terminal' + (r.mix && r.mix.length ? ' · in ' + esc(r.mix.map(m => m.label).join(', ')) : '')
+    : 'Not a favourite — numbered after your ⭐ strategies'}">#${r.num}</span>`; }
+const mixChipsAP = r => (r.mix || []).map(m => ` <span class="mixchip" title="In your saved mix “${esc(m.label)}”">${esc(m.label)}</span>`).join('');
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
 const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty SME Emerge', '__FNO__'];
 function uniRank(k) {
@@ -466,7 +501,7 @@ function stampLive(live) {
 /* ---------- sorting ----------
  * One order for the whole page: RESULT is what both views map over, so sorting the board
  * re-orders the cards too rather than leaving the two disagreeing about what rank 1 is.  */
-let SORT = { key: 'name', asc: true };
+let SORT = { key: 'num', asc: true };   // user 2026-09-30: by the terminal's ★ number — #1…#8 first, in order
 function sortCmp(a, b) {
   const k = SORT.key, dir = SORT.asc ? 1 : -1;
   if (k === 'name') return String(a.name).localeCompare(String(b.name), 'en', { numeric: true, sensitivity: 'base' }) * dir;
@@ -478,7 +513,7 @@ function sortCmp(a, b) {
   if (y == null) return -1;
   return (x - y) * dir;
 }
-function applySort() { RESULT.sort(sortCmp); }
+function applySort() { assignNums(); RESULT.sort(sortCmp); }
 function paintSortArrows() {
   document.querySelectorAll('#boardHead [data-sort]').forEach(el => {
     const on = el.dataset.sort === SORT.key;
@@ -489,8 +524,8 @@ function paintSortArrows() {
 function onSortClick(e) {
   const h = e.target.closest('[data-sort]'); if (!h) return;
   const k = h.dataset.sort;
-  // same column toggles; a new one starts A→Z for names and biggest-first for numbers
-  if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: k === 'name' };
+  // same column toggles; a new one starts A→Z for names, #1 first for the number, biggest-first for the rest
+  if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: k === 'name' || k === 'num' };
   applySort(); renderCards(); renderBoard(); paintSortArrows();
 }
 
@@ -540,9 +575,9 @@ function renderStats() {
 function renderCards() {
   const favs = loadFavs();
   $('cards').innerHTML = visible().map(r => `
-    <article class="card p-4 pb-0 scard flex flex-col">
+    <article class="card p-4 pb-0 scard${r.mix && r.mix.length ? ' mixed' : ''} flex flex-col">
       <div class="flex items-start justify-between gap-2">
-        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span></a>
+        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="text-[13.5px] font-bold text-slate-900 hover:text-indigo-600 leading-snug">${numBadge(r)} ${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span>${mixChipsAP(r)}</a>
         ${!r.held.length
           ? `<span class="text-[11px] font-bold whitespace-nowrap px-2 py-0.5 rounded-full text-slate-500 bg-slate-100">${heldWord(r)}</span>`
           : `<span class="flex flex-col items-end gap-1 shrink-0">
@@ -598,10 +633,10 @@ function renderBoard() {
   const favs = loadFavs();
   const rows = visible();
   $('boardRows').innerHTML = rows.map((r, i) => `
-    <div class="grid-row brow px-4 py-2.5 border-b border-slate-100 transition">
-      <div class="text-[11px] text-slate-400 font-bold">${i + 1}</div>
+    <div class="grid-row brow${r.mix && r.mix.length ? ' mixrow' : ''} px-4 py-2.5 border-b border-slate-100 transition">
+      <div>${numBadge(r)}</div>
       <div class="min-w-0">
-        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span></a>
+        <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span>${mixChipsAP(r)}</a>
         <div class="text-[10.5px] text-slate-400 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(identityKey(r.cfg)) || '—')}</span>${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
       </div>
       <div class="text-right text-[12.5px] font-bold ${kls(r.ret)}" title="${r.rebDate ? 'Held basket\'s return from the ' + esc(r.rebDate) + ' rebalance' + (ASOF ? ' to ' + esc(ASOF) : '') : 'The rebalance before this date falls outside the dataset'}">${
@@ -668,9 +703,9 @@ function paintRewindUI() {
 }
 
 function paint() {
-  // Defaults to alphabetical by strategy name — a stable running order, so a card stays where
-  // you last saw it instead of jumping around as prices move. `numeric` keeps top-3 ahead of
-  // top-10. A ↻ Refresh re-paints under whatever sort you picked rather than resetting it.
+  // Defaults to the terminal's ★ number (#1…#8, then the rest by name) — a stable running order, so
+  // a card stays where you last saw it instead of jumping around as prices move, and #4 is #4 on
+  // every page. A ↻ Refresh re-paints under whatever sort you picked rather than resetting it.
   applySort();
   buildUniSelect();
   if (RESULT.length && !visible().length) {   // a membership with nothing here — offer the way back
