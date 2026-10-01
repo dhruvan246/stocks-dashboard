@@ -208,6 +208,16 @@ select,input[type=text],input[type=number],input[type=date]{
 .cal .d .v{font-size:17px; font-weight:800; margin-top:3px}
 .cal .d .s{font-size:11.5px; color:var(--text-2); margin-top:2px}
 .mstrip{display:flex; gap:4px; flex-wrap:wrap; margin:2px 0 8px}
+tr.vgrp td{background:var(--surface-2); white-space:normal; padding:10px 10px 8px; border-top:2px solid var(--grid)}
+.vg{display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 10px}
+.vnum{font-size:11px; font-weight:800; padding:1px 6px; border-radius:6px; background:var(--accent); color:#fff}
+.vchips{display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:5px; font-size:12px; color:var(--text-2)}
+.vchips b{font-size:13.5px}
+tr.vper td{white-space:normal; padding:4px 10px 12px}
+tr.vper .mstrip{margin:0}
+.mstrip .lbl{background:none; color:var(--text-3); font-weight:600; padding-left:0}
+/* phones: the table scrolls sideways — keep each strategy's heading + periods wrapped to the screen and in view */
+@media(max-width:640px){ tr.vgrp td>div, tr.vper td>div{position:sticky; left:10px; max-width:calc(100vw - 64px)} }
 .mstrip span{font-size:11px; font-weight:700; padding:3px 7px; border-radius:6px; background:var(--surface-2)}
 /* ---------- Zerodha trade (Kite basket) ---------- */
 .kbtns{display:flex; gap:4px}
@@ -549,7 +559,7 @@ const offToISO = o => new Date(EPOCH + o*864e5).toISOString().slice(0,10);
 const isoToOff = s => Math.round((Date.parse(s+'T00:00:00Z') - EPOCH)/864e5);
 
 let DOC=null, META={}, SERIES={}, NIFTY=null, NIFTY500=null, QUOTES={}, QASOF=0, ROWS=[], HIST=null, MODEL=null, TRADES=null;
-let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}, stratTab:null, closedTab:null};
+let SEL = {acct:new Set(), pf:new Set(), alloc:'pf', sort:{k:'value',dir:-1}, closedTab:null};
 
 /* ---------------- formatting (Indian) ---------------- */
 function inr(x, dec){
@@ -1504,40 +1514,10 @@ function modelStrategies(rows){
     .map(p=>({pf:p, m:MODEL.strategies[p.id], next:nextRebalance(p.cycle)}))
     .sort((a,b)=>(a.next||'9').localeCompare(b.next||'9'));
 }
-function stratTabsHTML(list, sel){
-  const cur = sel==='__all__' ? 'All '+list.length+' strategies'
-    : (list.find(z=>z.pf.id===sel)||{pf:{name:sel}}).pf.name;
-  const i = sel==='__all__' ? -1 : (DOC.portfolios||[]).findIndex(p=>p.id===sel);
-  return '<div class="stabs"><button class="stab on" id="stDrop">'+
-    (i>=0?'<span class="dot2" style="background:'+SLOT[i%8]+'"></span>':'')+
-    esc(String(cur).length>52?String(cur).slice(0,50)+'\u2026':cur)+' <span style="opacity:.6">\u25be</span></button></div>';
-}
 function stMenuEl(){ let m=$('stMenu');
   if(!m){ m=document.createElement('div'); m.id='stMenu'; document.body.appendChild(m);
     document.addEventListener('click',e=>{ if(m.classList.contains('open') && !m.contains(e.target) && e.target.id!=='stDrop') m.classList.remove('open'); }); }
   return m; }
-function stMenuOpen(btn, list){
-  const m=stMenuEl(), sel=resolveStratTab(list);
-  let k=0, h='<div class="hd"><b>Strategy</b></div>';
-  h+='<div class="pfrow'+(sel==='__all__'?' on':'')+'" data-v="__all__"><span class="pn">All '+list.length+' strategies</span><span class="ck">'+(sel==='__all__'?'\u2713':'')+'</span></div>';
-  list.forEach(x=>{ const id=x.pf.id, i=(DOC.portfolios||[]).findIndex(p=>p.id===id);
-    h+='<div class="pfrow'+(sel===id?' on':'')+'" data-v="'+esc(id)+'">'+
-       '<span class="sw" style="background:'+SLOT[(i<0?0:i)%8]+'"></span><span class="snum2">#'+(++k)+'</span>'+
-       '<span class="pn" title="'+esc(x.pf.cfgName||'')+'">'+esc(x.pf.name)+'</span><span class="ck">'+(sel===id?'\u2713':'')+'</span></div>'; });
-  m.innerHTML=h;
-  m.querySelectorAll('.pfrow').forEach(r=>r.onclick=e=>{ e.stopPropagation();
-    SEL.stratTab=r.dataset.v; m.classList.remove('open'); renderModel(visibleRows()); });
-  const rct=btn.getBoundingClientRect();
-  m.style.top=Math.round(rct.bottom+8)+'px';
-  m.style.left=Math.round(Math.min(rct.left, innerWidth-390))+'px';
-  m.classList.add('open');
-}
-function resolveStratTab(list){ const ids=list.map(x=>x.pf.id); let sel=SEL.stratTab;
-  if(sel!=='__all__' && !ids.includes(sel)) sel=ids[0]; return sel; }
-function wireStratTabs(host){ const b=host.querySelector('#stDrop'); if(!b) return;
-  b.onclick=e=>{ e.stopPropagation(); const m=$('stMenu');
-    if(m && m.classList.contains('open')){ m.classList.remove('open'); return; }
-    stMenuOpen(b, modelStrategies(visibleRows())); }; }
 function renderModel(rows){
   const body=$('modelBody'), sub=$('modelSub');
   if(!MODEL){ sub.textContent='No model file yet.'; body.innerHTML='<div class="empty">Publish from the Mac (double-click <code>Publish.command</code>) to generate it.</div>'; return; }
@@ -1545,8 +1525,11 @@ function renderModel(rows){
   if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
   sub.innerHTML='The strategy\u2019s basket from its last rebalance close vs. what you actually hold, both priced live. '+
     'A stock you held through the rebalance starts from that same close; only what you bought since starts from your own price — so the gap is your entry timing on the new buys. Model run '+esc(MODEL.generated)+', bars to '+shortDate(MODEL.dataEnd)+'.';
-  const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
-  let h = list.length>1 ? stratTabsHTML(list, sel) : '';
+  /* ONE table for every strategy (user 2026-10-01: "instead of selecting from dropdown, show all fields in a table"):
+     a heading row per strategy carries its baskets + gap, its stock rows follow, then its last periods. */
+  const ord=id=>(DOC.portfolios||[]).findIndex(p=>p.id===id);
+  const shown=list.slice().sort((a,b)=>ord(a.pf.id)-ord(b.pf.id));
+  let h='<div class="twrap"><table class="vstab"><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your entry</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
   shown.forEach(({pf,m})=>{
     let last=m.rebs[m.rebs.length-1]; if(!last) return;
     const mine=ROWS.filter(r=>r.pf===pf.id);
@@ -1588,17 +1571,18 @@ function renderModel(rows){
     let interest=0; if(rate>0) mine2.forEach(r=>{ interest+=r.qty*entryOf(r)*(rate/100)*((held(r)?days:r.days)/365); });
     const netRet=(rate>0&&yb>0)?(yn-yb-interest)/yb*100:null;
     const basis=(pf.strategy&&pf.strategy.earnBasis)?String(pf.strategy.earnBasis).toUpperCase():'';
-    h+='<div class="sblk"><div class="shead"><span class="nm2" title="'+esc(pf.cfgName||pf.name)+'">'+esc(pf.name)+'</span>'+
-       (basis?'<span class="cyc">'+basis+'</span>':'')+cycBadge(pf.cycle)+
-       '<span class="meta">strategy rebalanced <b>'+shortDate(last.td)+'</b> ('+days+' days ago)'+
-       (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>';
-    h+='<div class="trio">'+
-      '<div class="t"><div class="l">Strategy basket</div><div class="v '+cls(modelRet)+'">'+pct(modelRet)+'</div><div class="s">from the '+shortDate(last.td)+' close'+(eod?' · '+eod+' at last close':'')+'</div></div>'+
-      '<div class="t"><div class="l">Your basket</div><div class="v '+cls(yourRet)+'">'+pct(yourRet)+'</div><div class="s">held stocks from the '+shortDate(last.td)+' close, new buys from your price'+(mine.length!==mine2.length?' · '+(mine.length-mine2.length)+' unpriced':'')+'</div></div>'+
-      '<div class="t"><div class="l">Gap</div><div class="v '+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</div><div class="s">'+(gap==null?'':gap>=0?'you are ahead of the strategy':'entry timing cost you this much')+'</div></div>'+(netRet!=null?'<div class="t"><div class="l">After MTF interest</div><div class="v '+cls(netRet)+'">'+pct(netRet)+'</div><div class="s">'+rate.toFixed(2)+'%/yr on cost, '+days+'d \u2014 <span class="secret">−'+inr(interest,2)+'</span></div></div>':'')+'</div>';
+    const num=pfNum(pf.name);
+    h+='<tr class="vgrp"><td colspan="7"><div class="vg">'+(num?'<span class="vnum">'+num+'</span>':'')+
+       '<b class="nm2" title="'+esc(pf.cfgName||pf.name)+'">'+esc(pf.name)+'</b>'+(basis?'<span class="cyc">'+basis+'</span>':'')+cycBadge(pf.cycle)+
+       '<span class="meta">rebalanced <b>'+shortDate(last.td)+'</b> ('+days+' days ago)'+
+       (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>'+
+       '<div class="vchips"><span>Strategy <b class="'+cls(modelRet)+'">'+pct(modelRet)+'</b>'+(eod?' <span class="sym">('+eod+' at last close)</span>':'')+'</span>'+
+       '<span>You <b class="'+cls(yourRet)+'">'+pct(yourRet)+'</b>'+(mine.length!==mine2.length?' <span class="sym">('+(mine.length-mine2.length)+' unpriced)</span>':'')+'</span>'+
+       '<span>Gap <b class="'+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</b></span>'+
+       (netRet!=null?'<span>After MTF interest <b class="'+cls(netRet)+'">'+pct(netRet)+'</b> <span class="sym">'+rate.toFixed(2)+'%/yr, '+days+'d · <span class="secret">−'+inr(interest,2)+'</span></span></span>':'')+
+       '</div></td></tr>';
     /* union of the two baskets, one row per stock */
     const syms=[...new Set([...last.h.map(x=>x[0]), ...mine.map(r=>r.sym.replace(/\.(NS|BO)$/,''))])];
-    h+='<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your entry</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
     syms.forEach(sym=>{
       const mr=mrows.find(x=>x.sym===sym), yr=mine.find(r=>r.sym.replace(/\.(NS|BO)$/,'')===sym);
       const now=(yr&&yr.px!=null)?yr.px:(mr?mr.px:null);
@@ -1614,19 +1598,29 @@ function renderModel(rows){
          '<td class="'+cls(mr?mr.ret:null)+'">'+(mr?pct(mr.ret):'—')+'</td>'+
          '<td class="'+cls(yret)+'"><b>'+pct(yret)+'</b></td></tr>';
     });
-    h+='</tbody></table></div>';
     /* the strategy's last few periods, for scale. A period's return runs from the PREVIOUS
        rebalance to this one; a previous rebalance that found nothing to buy (cashWt 100)
        means the whole period was spent in cash — say so rather than show a bare 0.0%. */
     const n8=Math.min(8, m.rebs.length-1);
-    if(n8>0){ h+='<div class="note" style="padding:8px 4px 0">Strategy\u2019s last '+n8+' periods (to each rebalance):</div><div class="mstrip">';
-      for(let i=m.rebs.length-n8;i<m.rebs.length;i++){ const r=m.rebs[i], prev=m.rebs[i-1], allCash=prev&&prev.cashWt>=99.5;
+    const per=[]; for(let i=m.rebs.length-n8;i<m.rebs.length;i++) if(i>0) per.push({r:m.rebs[i], prev:m.rebs[i-1]});
+    /* the period that ended at the latest month-end rebalance: the model closes it as a leg only after the NEXT
+       session's bake, so for a day it was missing (user 2026-10-01: "it doesnt show sep returns"). Its return is the
+       last leg's basket marked at that close — the model's own arithmetic (August reproduced to the decimal on all 8). */
+    const L0=m.rebs[m.rebs.length-1], pk=m.picks;
+    if(L0 && pk && pk.asOf && pk.asOf>L0.td && isMonthEndTD(pk.asOf)){
+      let num=0, den=0, ok=(L0.h||[]).length>0; const o=isoToOff(pk.asOf);
+      (L0.h||[]).forEach(([sym,wt,px0])=>{ const sr=SERIES[sym+'.NS'], i=(sr&&sr.d)?sr.d.indexOf(o):-1;
+        if(i<0||!px0){ ok=false; return; } num+=wt*(sr.p[i]/100)/px0; den+=wt; });
+      if(ok && den>0) per.push({r:{d:pk.asOf, td:pk.asOf, ret:(num+(L0.cashWt||0))/(den+(L0.cashWt||0))*100-100}, prev:L0, calc:true});
+    }
+    if(per.length){ h+='<tr class="vper"><td colspan="7"><div class="mstrip"><span class="lbl">Last '+per.length+' periods (to each rebalance)</span>';
+      per.forEach(({r,prev,calc})=>{ const allCash=prev&&prev.cashWt>=99.5;
         const lab=new Date(r.d+'T00:00:00Z').toLocaleDateString('en-GB',{month:'short',year:'2-digit',timeZone:'UTC'});
-        h+='<span class="'+(allCash?'flat':cls(r.ret))+'" title="'+esc(prev?prev.td+' → '+r.td:r.td)+'">'+lab+' '+(allCash?'all cash':pct(r.ret,1))+'</span>'; }
-      h+='</div>'; }
-    h+='</div>';
+        h+='<span class="'+(allCash?'flat':cls(r.ret))+'" title="'+esc((prev?prev.td+' → '+r.td:r.td)+(calc?' · from the '+shortDate(r.td)+' closes (the model adds this period after the next session)':''))+'">'+lab+' '+(allCash?'all cash':pct(r.ret,1))+'</span>'; });
+      h+='</div></td></tr>'; }
   });
-  body.innerHTML=h; wireStratTabs(body);
+  h+='</tbody></table></div>';
+  body.innerHTML=h;
 }
 function renderClosed(rows){
   const body=$('closedBody'), sub=$('closedSub');
