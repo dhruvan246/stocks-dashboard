@@ -501,7 +501,7 @@ function renderModeNote(){
   } else if (W === '1D'){
     h = '1D is the move on <b>' + fmtDay(LAST_BAR) + '</b> (latest prices in our data)' +
         (STALE_1D ? '; ' + STALE_1D.toLocaleString('en-IN') + ' stocks whose latest price is older show their own last session\'s move' : '') +
-        (marketOpenIST() ? ' — <b>live prices did not load</b>, so this may not be today\'s move.' : '.');
+        ((marketOpenIST() || liveStillMissing()) ? ' — <b>today\'s live prices did not load yet</b> (retrying every minute), so this is NOT today\'s move.' : '.');
   } else {
     h = 'Stored prices up to <b>' + fmtDay(LAST_BAR) + '</b>.';
   }
@@ -513,9 +513,10 @@ function renderModeNote(){
 const BSE_LIVE_URL = 'https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
 const MON = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
 async function loadLive(){
-  // NSE's feed answers 502 now and then (seen 2026-09-29: 502, then 200 a second later) — one quick retry.
+  // NSE's feed answers 502 now and then (seen 2026-09-29: 502, then 200 a second later). On 2026-10-01 NSE
+  // 403'd the Worker on ~1 call in 3 (measured) — two tries left 1D on yesterday's move, so try 4 times.
   // Never `return` out of here: the BSE block below must run even when NSE fails.
-  for (let attempt = 0; attempt < 2; attempt++){
+  for (let attempt = 0; attempt < 4; attempt++){
     try {
       const j = await fetch(WORKER + '/?nse=traded', {cache:'no-store'}).then(r => r.json());
       const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j && j.timestamp) || '');
@@ -524,7 +525,7 @@ async function loadLive(){
         break;
       }
     } catch (e){ /* worker route missing / NSE hiccup — table stays on last close, the note says so */ }
-    if (!attempt) await new Promise(r => setTimeout(r, 2500));
+    if (attempt < 3) await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
   }
   // BSE's data API refuses Cloudflare's network (Akamai 403, measured 2026-09-28), so BSE prices come from
   // a GitHub job that polls BSE every minute and publishes to the live-bse branch (runbook §216).
@@ -653,7 +654,9 @@ async function init(){
     $('content').classList.remove('hidden');
     refresh();
     loadLive();
-    setInterval(() => { if (!document.hidden && marketOpenIST()) loadLive(); }, 60000);
+    // After the close the stored prices still end yesterday until the nightly refresh, so keep retrying
+    // until today's live feed has loaded at least once (a page opened at 6 pm must not settle on yesterday).
+    setInterval(() => { if (!document.hidden && (marketOpenIST() || liveStillMissing())) loadLive(); }, 60000);
   } catch (e){
     $('status').textContent = 'Failed to load market data: ' + e.message;
     console.error(e);
@@ -667,6 +670,12 @@ init();
    EOD and must stay that way. Market-hours only; strip stays hidden if the
    Worker route isn't deployed yet or NSE hiccups. ---- */
 const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+// Weekday session started, stored prices end before today, and no NSE feed has loaded yet this visit.
+// (A holiday feed loads with an older date → LIVE is set → stops retrying.)
+function liveStillMissing(){
+  const n = new Date(Date.now() + 330*60000), d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
+  return !LIVE && d >= 1 && d <= 5 && h >= 9.25 && !!LAST_BAR && LAST_BAR < todayIST();
+}
 function marketOpenIST(){
   const n = new Date(Date.now() + 330*60000);
   const d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes()/60;
