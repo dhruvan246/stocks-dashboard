@@ -369,7 +369,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 #pfMenu .pn,#stMenu .pn{flex:1; font-weight:600; white-space:normal}
 #pfMenu .ck,#stMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
 .snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
-#tblToday td:first-child,#tblMonthEnd td:first-child,#tblBuy td:first-child{white-space:normal;min-width:250px;line-height:1.45}
+#tblToday td:first-child{white-space:normal;min-width:250px;line-height:1.45}
 .legend span{display:inline-flex;align-items:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .legend .ll{font-style:normal;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:5px}
 .legend b{flex:none}
@@ -456,16 +456,6 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
       <div class="card c12" id="cardModel" data-card="model"><h2>You vs the strategy — since its last rebalance</h2>
         <div class="sub" id="modelSub"></div>
         <div class="body" id="modelBody"></div></div>
-
-      <div class="card c12" data-card="ret-monthend"><h2>Strategy returns since last month</h2>
-        <div class="sub" id="meSub"></div>
-        <div class="body"><div id="chMonthEnd"></div>
-          <div class="twrap"><table id="tblMonthEnd"></table></div></div></div>
-
-      <div class="card c12" data-card="ret-purchase"><h2>My returns since last month</h2>
-        <div class="sub" id="buySub"></div>
-        <div class="body"><div id="chBuy"></div>
-          <div class="twrap"><table id="tblBuy"></table></div></div></div>
 
       <div class="sechead c12">Trades</div>
       <div class="card c12" data-card="closed"><h2>Closed trades — realized P&amp;L</h2>
@@ -756,11 +746,6 @@ function priceFor(h){
   }
   return {px:null, prev:null, psrc:'none'};
 }
-function idxPxOnOrBefore(map, iso){ if(!map||!map.px) return null; let d=iso;
-  for(let i=0;i<12;i++){ const v=map.px[d]; if(v!=null) return v; const dt=new Date(d+'T00:00:00Z'); dt.setUTCDate(dt.getUTCDate()-1); d=dt.toISOString().slice(0,10); } return null; }
-function idxLatestPx(map){ if(!map||!map.px) return null; let mk=null,mv=null; for(const k in map.px){ if(mk==null||k>mk){ mk=k; mv=map.px[k]; } } return mv; }
-function idxLatestISO(map){ if(!map||!map.px) return null; let mk=null; for(const k in map.px){ if(mk==null||k>mk) mk=k; } return mk; }
-function idxRetSince(map, iso){ const a=idxPxOnOrBefore(map,iso), b=idxLatestPx(map); return (a&&b)?(b/a-1)*100:null; }
 function pfById(id){ return (DOC.portfolios||[]).find(p=>p.id===id)||{}; }
 function acctName(id){ const a=(DOC.accounts||[]).find(x=>x.id===id); return a?a.name:'Unassigned'; }
 
@@ -826,28 +811,48 @@ function xirr(rows){
   return (lo+hi)/2*100;
 }
 
-/* ---------------- history: value / TWR / drawdown ---------------- */
+/* ---------------- history: value / TWR / drawdown ----------------
+   Closed positions count too (user 2026-10-01): rebuilt from TODAY's holdings only, the history lost every stock the
+   moment it was sold — after the 30 Sep rebalance the chart read ~₹12 Cr for days the book was ~₹33 Cr. A closed trade
+   is held from its open day to its close day, and on the close day it counts at the price it was sold for (the money it
+   became), so a rebalance doesn't read as a one-day crash. The web copy carries only each portfolio's most recent
+   trades, so its earliest history can still miss older sales (TRADES.partial). */
+function historyLegs(rows){
+  const legs=rows.filter(r=>SERIES[r.hist] && SERIES[r.hist].d && SERIES[r.hist].d.length)
+    .map(r=>({pf:r.pf, hist:r.hist, qty:r.qty, cost:r.cost, buyOff:r.buyOff, sellOff:Infinity, sellPx:null, live:r.px}));
+  if(TRADES && TRADES.byPf){
+    const vis=id=>(SEL.acct.size===0 || SEL.acct.has(pfById(id).account||'')) && (SEL.pf.size===0 || SEL.pf.has(id));
+    for(const pf in TRADES.byPf){ if(!vis(pf)) continue;
+      TRADES.byPf[pf].forEach(t=>{
+        const hist=SERIES[t.sym+'.NS'] ? t.sym+'.NS' : SERIES[t.sym+'.BO'] ? t.sym+'.BO' : null;
+        if(!hist || !t.od || !t.cd || !(t.qty>0)) return;
+        legs.push({pf, hist, qty:t.qty, cost:t.qty*t.opx, buyOff:isoToOff(t.od), sellOff:isoToOff(t.cd), sellPx:t.cpx, live:null});
+      }); }
+  }
+  return legs;
+}
 function buildHistory(rows){
   const used=rows.filter(r=>SERIES[r.hist] && SERIES[r.hist].d && SERIES[r.hist].d.length);
-  if(!used.length) return null;
-  const set=new Set(); used.forEach(r=>SERIES[r.hist].d.forEach(o=>set.add(o)));
+  const legs=historyLegs(rows);
+  if(!legs.length) return null;
+  const set=new Set(); legs.forEach(L=>SERIES[L.hist].d.forEach(o=>set.add(o)));
   const cal=[...set].sort((a,b)=>a-b);
-  const px=used.map(r=>{                                   // forward-filled, null before first bar
-    const s=SERIES[r.hist], m=new Map();
-    s.d.forEach((o,i)=>m.set(o,s.p[i]/100));
-    let last=null;
-    return cal.map(o=>{ if(m.has(o)) last=m.get(o); return last; });
-  });
+  const ff={};                                             // forward-filled per symbol, null before first bar
+  const pxOf=h=>{ if(ff[h]) return ff[h]; const s=SERIES[h], m=new Map(); s.d.forEach((o,i)=>m.set(o,s.p[i]/100));
+    let last=null; return (ff[h]=cal.map(o=>{ if(m.has(o)) last=m.get(o); return last; })); };
+  const px=legs.map(L=>pxOf(L.hist));
+  const at=(L,k,i)=> (cal[i]===L.sellOff && L.sellPx!=null) ? L.sellPx : px[k][i];   // its close while held, its sale price on the sale day
   const val=[], cost=[], twr=[];
-  const usedPfs=[...new Set(used.map(r=>r.pf))]; const valByPf={}; usedPfs.forEach(p=>valByPf[p]=[]);   // per-strategy value over time
+  const usedPfs=[...new Set(legs.map(L=>L.pf))]; const valByPf={}; usedPfs.forEach(p=>valByPf[p]=[]);   // per-strategy value over time
   for(let i=0;i<cal.length;i++){
     let v=0,c=0; const pv={}; usedPfs.forEach(p=>pv[p]=0);
-    used.forEach((r,k)=>{ if(r.buyOff<=cal[i] && px[k][i]!=null){ const x=r.qty*px[k][i]; v+=x; c+=r.cost; pv[r.pf]+=x; } });
+    legs.forEach((L,k)=>{ if(L.buyOff<=cal[i] && cal[i]<=L.sellOff){ const p=at(L,k,i); if(p!=null){ const x=L.qty*p; v+=x; c+=L.cost; pv[L.pf]+=x; } } });
     val.push(v); cost.push(c); usedPfs.forEach(p=>valByPf[p].push(pv[p]));
     if(i===0){ twr.push(1); continue; }
     let num=0,den=0;
-    used.forEach((r,k)=>{ const a=px[k][i-1],b=px[k][i];
-      if(a!=null&&b!=null&&r.buyOff<=cal[i-1]){ num+=r.qty*b; den+=r.qty*a; } });
+    legs.forEach((L,k)=>{ if(L.buyOff>cal[i-1] || cal[i]>L.sellOff) return;     // held at the previous close, not sold before today
+      const a=px[k][i-1], b=at(L,k,i);
+      if(a!=null&&b!=null){ num+=L.qty*b; den+=L.qty*a; } });
     twr.push(twr[i-1]*(den>0? num/den : 1));
   }
   /* extend to today with live prices (series stops at the last CI build) */
@@ -855,10 +860,12 @@ function buildHistory(rows){
   if(todayOff>cal[cal.length-1]){
     const last=cal.length-1;
     let v=0,c=0,num=0,den=0; const pv={}; usedPfs.forEach(p=>pv[p]=0);
-    used.forEach((r,k)=>{
-      if(r.buyOff<=todayOff && r.px!=null){ const x=r.qty*r.px; v+=x; c+=r.cost; pv[r.pf]+=x; }
+    legs.forEach((L,k)=>{
+      if(L.buyOff>todayOff || todayOff>L.sellOff) return;
+      const b=(todayOff===L.sellOff && L.sellPx!=null) ? L.sellPx : L.live;   // sold today: its sale price; held: the live price
+      if(b!=null){ const x=L.qty*b; v+=x; c+=L.cost; pv[L.pf]+=x; }
       const a=px[k][last];
-      if(a!=null && r.px!=null && r.buyOff<=cal[last]){ num+=r.qty*r.px; den+=r.qty*a; }
+      if(a!=null && b!=null && L.buyOff<=cal[last]){ num+=L.qty*b; den+=L.qty*a; }
     });
     if(v>0){ cal.push(todayOff); val.push(v); cost.push(c); twr.push(twr[last]*(den>0?num/den:1)); usedPfs.forEach(p=>valByPf[p].push(pv[p])); }
   }
@@ -874,81 +881,6 @@ function buildHistory(rows){
   return {cal, val, cost, twr:twr.map(v=>v*100), nif500, dd, valByPf, usedPfs,
           excluded: rows.length-used.length,
           exclValue: rows.filter(r=>!(SERIES[r.hist]&&SERIES[r.hist].d)).reduce((s,r)=>s+(r.value||0),0)};
-}
-/* ---- returns since the last WORKING DAY of last month (its 15:30 close) ----
-   The daily bar's close IS the 15:30 close, so the month-end bar is the anchor.
-   The baseline session is MEASURED from the price calendar, never assumed to be
-   the 31st — and positions opened after it are measured from their buy price,
-   because no month-end close exists for capital that wasn't deployed yet. */
-function baselineOffset(){
-  const cut = isoToOff(istTodayISO().slice(0,8)+'01');       // 1st of this month
-  let best=null;
-  ROWS.forEach(r=>{
-    const s=SERIES[r.hist]; if(!s||!s.d) return;
-    for(let i=s.d.length-1;i>=0;i--){
-      if(s.d[i]<cut){ if(best==null||s.d[i]>best) best=s.d[i]; break; }
-    }
-  });
-  return best;
-}
-function pxOn(hist,off){
-  const s=SERIES[hist]; if(!s||!s.d) return null;
-  let lo=0,hi=s.d.length-1,ans=-1;
-  while(lo<=hi){ const m=(lo+hi)>>1; if(s.d[m]<=off){ans=m;lo=m+1;} else hi=m-1; }
-  return ans<0? null : {px:s.p[ans]/100, off:s.d[ans]};       // WHICH bar, not just the price
-}
-/* Two DIFFERENT questions from the same month-end close (user 2026-10-01: "strategy returns since last
-   month" vs "my returns since last month"):
-     mode 'close' — the STRATEGY: everything at last month's final close. What it sold went out at that close
-                    and what it bought came in at that same close, so EVERY holding — kept or bought since —
-                    is measured from the month-end close (the stock has that close even if you didn't own it yet).
-     mode 'mine'  — YOU, at your real prices: a stock you kept counts from the close; a stock bought on/after the
-                    close day from what you paid (today's order book); a stock sold since adds what the sale got
-                    versus that close (yesterday's order book). Change = the strategy's change + sells-vs-close −
-                    buys-vs-close, so the gap between the cards is exactly what your orders gained or lost. */
-function tradeHist(sym){ return SERIES[sym+'.NS'] ? sym+'.NS' : SERIES[sym+'.BO'] ? sym+'.BO' : null; }
-function strategyReturns(rows, mode){
-  const off = baselineOffset();
-  if(off==null) return null;
-  const iso = offToISO(off), mine = mode==='mine';
-  const out=[]; let tb=0,tn=0,tc=0,noBase=0,stale=0,noTradePx=0; const staleDates={};
-  const atClose = hist => { const hit=pxOn(hist,off); if(hit==null) return null;
-    if(hit.off!==off){ stale++; staleDates[offToISO(hit.off)]=(staleDates[offToISO(hit.off)]||0)+1; } return hit; };
-  groupBy(rows,r=>r.pfName).forEach((rs,name)=>{
-    let cbase=0,base=0,now=0,used=0,pstale=0,first=null,last=null,buyCost=0,sellGain=0,nSold=0;
-    const sold=new Set(), bought=new Set();
-    rs.forEach(r=>{
-      if(r.px==null) return;
-      const hit=atClose(r.hist);
-      if(hit==null){ noBase++; return; }                // no series at all (SME names)
-      if(hit.off!==off) pstale++;
-      const after = r.date>=iso;                        // bought on/after the close day: your real entry price exists
-      const b = (mine && after) ? r.avg : hit.px;
-      if(mine && after){ buyCost+=r.qty*(r.avg-hit.px); bought.add(r.date); }
-      if(!first||r.date<first) first=r.date;
-      if(!last ||r.date>last ) last =r.date;
-      cbase+=r.qty*hit.px; base+=r.qty*b; now+=r.qty*r.px; used++;
-    });
-    if(mine && TRADES && TRADES.byPf){
-      new Set(rs.map(r=>r.pf)).forEach(id=>(TRADES.byPf[id]||[]).forEach(t=>{
-        if(!(t.cd>=iso)) return;                        // sold before the month-end close: last month's business
-        let entry=t.opx;
-        if(t.od<iso){ const h=tradeHist(t.sym), hit=h&&pxOn(h,off); if(!hit){ noTradePx++; return; } entry=hit.px; }
-        sellGain+=t.qty*(t.cpx-entry); nSold++; sold.add(t.cd);
-      }));
-    }
-    if(cbase>0){
-      const chg = mine ? (now-base)+sellGain : now-cbase, start = now-chg;
-      out.push({name,base:start,now,chg,ret:start>0?chg/start*100:null,retC:(now/cbase-1)*100,
-                buyCost,sellGain,nSold,sold:[...sold].sort(),bought:[...bought].sort(),
-                used,stale:pstale,first,last,n:rs.length});
-      tb+=start; tn+=now; tc+=cbase;
-    }
-  });
-  out.sort((a,b)=>b.ret-a.ret);
-  const tchg=tn-tb;
-  return {mode, off, iso, rows:out, noBase, stale, staleDates, noTradePx, tradesMissing:mine&&!(TRADES&&TRADES.byPf),
-          total:{base:tb, now:tn, chg:tchg, ret:tb>0?tchg/tb*100:null, retC:tc>0?(tn/tc-1)*100:null}};
 }
 function monthlyReturns(H){
   if(!H) return [];
@@ -1360,7 +1292,7 @@ function renderCharts(rows){
       fmtY:v=>inr(v,1), fmtT:v=>inr(v),
       extra:i=>{ const g=H.val[i]-H.cost[i];
         return '<div class="r"><span>Unrealised</span><b class="'+cls(g)+'">'+inrSigned(g)+'</b></div>'; }});
-    $('valueSub').innerHTML='Daily closes'+(H.excluded?' · <b>'+H.excluded+' holding'+(H.excluded>1?'s':'')+' with no price history excluded</b> ('+inr(H.exclValue)+' of current value)':'')+'. Cost basis steps up on each purchase.';
+    $('valueSub').innerHTML='Daily closes'+(H.excluded?' · <b>'+H.excluded+' holding'+(H.excluded>1?'s':'')+' with no price history excluded</b> ('+inr(H.exclValue)+' of current value)':'')+'. Includes stocks since sold, up to the day they were sold (at their sale price that day)'+(TRADES&&TRADES.partial?' — the web copy carries each portfolio’s most recent sales only, so the earliest history can miss older ones':'')+'. Cost basis steps up on each purchase and down on each sale.';
     const stackSeries=(H.usedPfs||[]).map(pf=>{ const idx=(DOC.portfolios||[]).findIndex(p=>p.id===pf); const p=pfById(pf);
         return {name:p.name||pf, color:SLOT[(idx<0?0:idx)%8], vals:H.valByPf[pf]||[]}; })
       .sort((a,b)=>(b.vals[b.vals.length-1]||0)-(a.vals[a.vals.length-1]||0));   // biggest at the bottom
@@ -1532,78 +1464,6 @@ function renderToday(rows){
     TODAY_OPEN.has(name)? TODAY_OPEN.delete(name) : TODAY_OPEN.add(name);
     renderToday(visibleRows());
   }));
-}
-function renderStrategyCard(rows, mode, ids){
-  const M=strategyReturns(rows, mode);
-  const sub=$(ids.sub), chart=$(ids.chart), tbl=$(ids.tbl);
-  if(!M||!M.rows.length){
-    sub.textContent='Nothing to measure for this selection.';
-    chart.innerHTML='<div class="empty">Nothing to measure.</div>'; tbl.innerHTML=''; return;
-  }
-  const isClose = mode==='close', when=shortDate(M.iso);
-  const staleNote = M.stale?' <b class="down">⚠ '+M.stale+' price'+(M.stale>1?'s have':' has')+' no '+when+
-        ' bar in the data</b> — taken from the last earlier close ('+
-        Object.keys(M.staleDates).sort().map(d=>shortDate(d)+'×'+M.staleDates[d]).join(', ')+').':'';
-  const skipNote = M.noBase?' '+M.noBase+' holding(s) skipped: no price history at all.':'';
-  /* Nifty 500 is an end-of-day series: before its first close after the baseline it has no move to
-     show, and while the book is priced live it lags by a session — alpha only when both are current. */
-  const benchISO = idxLatestISO(NIFTY500);
-  const benchRet = (isClose && benchISO && benchISO>M.iso) ? idxRetSince(NIFTY500, M.iso) : null;
-  const alphaOk = benchRet!=null && benchISO>=lastCloseISO();
-  if(isClose){
-    sub.innerHTML='Everything at the <b>'+when+'</b> close (15:30 IST), the last trading session of last month: '+
-      'what each strategy sold went out at that close and what it bought came in at that same close. '+
-      'So every stock it holds now — kept or new — is measured from that close: what the <i>strategy</i> has made since month-end. '+
-      'Whole book <b class="'+cls(M.total.ret)+'">'+pct(M.total.ret)+'</b> ('+inrSigned(M.total.chg)+').'+skipNote+staleNote+
-      (benchRet==null ? ' Nifty 500: no close after '+when+' in the data yet.'
-        : ' Nifty 500 <b class="'+cls(benchRet)+'">'+pct(benchRet)+'</b>'+(alphaOk?' over the same window.':' to its '+shortDate(benchISO)+' close (a session behind these prices, so no alpha).'));
-  } else {
-    const gap = (M.total.ret!=null&&M.total.retC!=null) ? (Math.round((M.total.ret-M.total.retC)*100)/100||0) : null;
-    sub.innerHTML='From the same <b>'+when+'</b> close, at <b>your real prices</b>: a stock you kept counts from that close, '+
-      'a stock you sold since adds what your sell actually got against that close (the sell day’s order book), '+
-      'and a stock you bought since counts from what you actually paid (the buy day’s order book). '+
-      'Whole book <b class="'+cls(M.total.ret)+'">'+pct(M.total.ret)+'</b> ('+inrSigned(M.total.chg)+')'+
-      (gap!=null?', <b class="'+cls(gap)+'">'+pct(gap)+'</b> vs the strategy — what your orders gained or lost against the close.':'.')+
-      skipNote+staleNote+
-      (M.tradesMissing?' <b class="down">⚠ Trade history didn’t load — sells since '+when+' are not counted.</b>':'')+
-      (M.noTradePx?' <b class="down">⚠ '+M.noTradePx+' sell'+(M.noTradePx>1?'s':'')+' skipped: no '+when+' close for the stock.</b>':'');
-  }
-  barsH(chart, M.rows.map(r=>({
-      label:(pfNum(r.name)?pfNum(r.name)+' ':'')+r.name.slice(0,24), full:r.name, value:r.ret,
-      tip:'<div class="r"><span>Return</span><b>'+pct(r.ret)+'</b></div>'+
-          (isClose ? '<div class="r"><span>Measured from</span><b>'+when+' close</b></div>'
-                   : '<div class="r"><span>vs the strategy</span><b>'+pct(Math.round((r.ret-r.retC)*100)/100||0)+'</b></div>'+
-                     (r.nSold?'<div class="r"><span>Sells vs close</span><b class="secret">'+inrSigned(r.sellGain)+'</b></div>':'')+
-                     (r.bought.length?'<div class="r"><span>Buys vs close</span><b class="secret">'+inrSigned(-r.buyCost)+'</b></div>':''))+
-          '<div class="r"><span>Change</span><b class="secret">'+inrSigned(r.chg)+'</b></div>'+
-          '<div class="r"><span>'+(isClose?'Base':'Start')+' → now</span><b class="secret">'+inr(r.base)+' → '+inr(r.now)+'</b></div>'+
-          (r.used<r.n?'<div class="r"><span>Measured</span><b>'+r.used+' of '+r.n+'</b></div>':'')})),
-    {fmtV:v=>pct(v), labW:190, rowH:26});
-  const tradesCell = r => { const p=[];
-      if(r.sold.length) p.push('sold '+r.sold.map(shortDate).join(', '));
-      if(r.bought.length) p.push('bought '+r.bought.map(shortDate).join(', '));
-      return p.length? p.join(' · ') : 'none — from the close'; };
-  const cell2 = r => isClose
-      ? when+' close'+(r.stale?' <span class="badge warn">'+r.stale+' pre-dated</span>':'')
-      : tradesCell(r)+(r.stale?' <span class="badge warn">'+r.stale+' pre-dated</span>':'');
-  const xTh = isClose ? (alphaOk?'<th>Alpha</th>':'') : '<th>vs strategy</th>';
-  const gap = (a,b) => { const g=Math.round((a-b)*100)/100; return g===0?0:g; };   // no "−0.00%" from float noise
-  const xCell = (ret,retC) => isClose ? (alphaOk?'<td class="'+cls(gap(ret,benchRet))+'"><b>'+pct(gap(ret,benchRet))+'</b></td>':'')
-                                     : '<td class="'+cls(gap(ret,retC))+'"><b>'+pct(gap(ret,retC))+'</b></td>';
-  let h='<thead><tr><th>Strategy</th><th>'+(isClose?'Measured from':'Your trades')+'</th><th>Positions</th><th>'+(isClose?'Value at baseline':'Start value')+'</th>'+
-        '<th>Value now</th><th>Change</th><th>Return</th>'+xTh+'</tr></thead><tbody>';
-  M.rows.forEach(r=>{ h+='<tr><td><b>'+esc(r.name)+'</b></td>'+
-    '<td><span class="sym">'+cell2(r)+'</span></td>'+
-    '<td>'+(r.used<r.n? '<span class="badge warn">'+r.used+' of '+r.n+'</span>' : r.n)+'</td>'+
-    '<td class="secret">'+inr(r.base)+'</td><td class="secret">'+inr(r.now)+'</td>'+
-    '<td class="'+cls(r.chg)+' secret">'+inrSigned(r.chg)+'</td>'+
-    '<td class="'+cls(r.ret)+'"><b>'+pct(r.ret)+'</b></td>'+xCell(r.ret,r.retC)+'</tr>'; });
-  h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td><td></td>'+
-     '<td>'+M.rows.reduce((a,r)=>a+r.used,0)+' of '+M.rows.reduce((a,r)=>a+r.n,0)+'</td>'+
-     '<td class="secret">'+inr(M.total.base)+'</td><td class="secret">'+inr(M.total.now)+'</td>'+
-     '<td class="'+cls(M.total.chg)+' secret">'+inrSigned(M.total.chg)+'</td>'+
-     '<td class="'+cls(M.total.ret)+'"><b>'+pct(M.total.ret)+'</b></td>'+xCell(M.total.ret,M.total.retC)+'</tr></tfoot>';
-  tbl.innerHTML=h;
 }
 /* ============================ you vs the strategy ============================ */
 /* Price for a MODEL symbol (NSE name): the live quote, else the site's last close (EOD). */
@@ -1822,8 +1682,6 @@ function renderAll(){
   const rows=visibleRows();
   renderKPIs(rows); renderToday(rows); renderFilters();
   renderModel(rows); renderClosed(rows);
-  renderStrategyCard(rows,'close',{sub:'meSub',chart:'chMonthEnd',tbl:'tblMonthEnd'});
-  renderStrategyCard(rows,'mine', {sub:'buySub',chart:'chBuy',    tbl:'tblBuy'});
   renderCharts(rows); renderHoldings(rows); renderAccounts();
   updateBadge();
 }
