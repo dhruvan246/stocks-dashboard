@@ -746,6 +746,9 @@ function priceFor(h){
   }
   return {px:null, prev:null, psrc:'none'};
 }
+function closeOnOrBefore(hist, iso){ const s=SERIES[hist]; if(!s||!s.d||!s.d.length) return null; const off=isoToOff(iso);
+  let lo=0,hi=s.d.length-1,ans=-1; while(lo<=hi){ const m=(lo+hi)>>1; if(s.d[m]<=off){ans=m;lo=m+1;} else hi=m-1; }
+  return ans<0? null : s.p[ans]/100; }
 function pfById(id){ return (DOC.portfolios||[]).find(p=>p.id===id)||{}; }
 function acctName(id){ const a=(DOC.accounts||[]).find(x=>x.id===id); return a?a.name:'Unassigned'; }
 
@@ -1541,7 +1544,7 @@ function renderModel(rows){
   const list=modelStrategies(rows);
   if(!list.length){ sub.textContent='No strategy in this selection.'; body.innerHTML='<div class="empty">Pick an MTF strategy.</div>'; return; }
   sub.innerHTML='The strategy\u2019s basket from its last rebalance close vs. what you actually hold, both priced live. '+
-    'The gap is what your entry timing cost (or earned) — same stocks, different buy prices. Model run '+esc(MODEL.generated)+', bars to '+shortDate(MODEL.dataEnd)+'.';
+    'A stock you held through the rebalance starts from that same close; only what you bought since starts from your own price — so the gap is your entry timing on the new buys. Model run '+esc(MODEL.generated)+', bars to '+shortDate(MODEL.dataEnd)+'.';
   const sel=resolveStratTab(list), shown = sel==='__all__'? list : list.filter(x=>x.pf.id===sel);
   let h = list.length>1 ? stratTabsHTML(list, sel) : '';
   shown.forEach(({pf,m})=>{
@@ -1552,7 +1555,12 @@ function renderModel(rows){
        bought on/after that rebalance, anchor to it — not the prior closed leg — so entry,
        slip and returns compare against what you actually bought, not last month's basket. */
     const _lb=mine.map(r=>r.date).sort().slice(-1)[0], _pk=m.picks;
-    if(_pk && _pk.asOf && _pk.rows && _pk.asOf>last.td && isMonthEndTD(_pk.asOf) && (!_lb || _lb>=_pk.asOf)){
+    /* a rebalance that changed nothing — every pick already held, nothing else held — is done the moment it
+       happens (user 2026-10-01: #3 kept its three stocks on 30 Sep and still compared against 31 Aug) */
+    const _ps=(_pk&&_pk.rows)? _pk.rows.slice(0, m.topN||last.h.length||_pk.rows.length).map(r=>r.sym) : [];
+    const _hs=[...new Set(mine.map(r=>r.sym.replace(/\.(NS|BO)$/,'')))];
+    const _same=_ps.length>0 && _ps.length===_hs.length && _ps.every(x=>_hs.includes(x));
+    if(_pk && _pk.asOf && _pk.rows && _pk.asOf>last.td && isMonthEndTD(_pk.asOf) && (!_lb || _lb>=_pk.asOf || _same)){
       const _tn=m.topN||last.h.length||_pk.rows.length;
       const _held=_pk.rows.slice(0,_tn).filter(r=>r.px!=null);
       const _wt=_held.length?100/_tn:0;
@@ -1564,14 +1572,20 @@ function renderModel(rows){
       const r=(p.px!=null&&px0)?(p.px/px0-1)*100:null; if(r!=null){ mnum+=wt*(p.px/px0); mden+=wt; }
       return {sym,wt,px0,isNew,px:p.px,src:p.src,ret:r}; });
     const modelRet=mden>0? (mnum+(last.cashWt||0))/(mden+(last.cashWt||0))*100-100 : null;
-    const mine2=mine.filter(r=>r.px!=null); const yb=mine2.reduce((s,r)=>s+r.cost,0), yn=mine2.reduce((s,r)=>s+r.value,0);
+    /* "Since its last rebalance" for YOU too (user 2026-10-01: ACMESOLAR + CHENNPETRO were measured from their 1 Sep buy):
+       a stock you held through the rebalance starts from the same rebalance close as the strategy — its old buy price
+       is last period's business; only what you bought on/after the rebalance day starts from your own price. */
+    const held=r=>r.date<last.td;
+    const entryOf=r=>{ if(!held(r)) return r.avg; const sym=r.sym.replace(/\.(NS|BO)$/,''), mr=mrows.find(x=>x.sym===sym);
+      if(mr&&mr.px0) return mr.px0; const c=closeOnOrBefore(r.hist,last.td); return c!=null?c:r.avg; };
+    const mine2=mine.filter(r=>r.px!=null); const yb=mine2.reduce((s,r)=>s+r.qty*entryOf(r),0), yn=mine2.reduce((s,r)=>s+r.value,0);
     const yourRet=yb>0?(yn/yb-1)*100:null;
     const gap=(modelRet!=null&&yourRet!=null)?yourRet-modelRet:null;
     const first=mine.map(r=>r.date).sort()[0], lastD=mine.map(r=>r.date).sort().slice(-1)[0];
     const days=daysBetween(last.td, istTodayISO());
     /* MTF interest drag on YOUR basket: cost × rate × days-held/365, per holding. Dormant at rate 0. */
     const rate=(DOC.mtfRate!=null&&isFinite(DOC.mtfRate))?DOC.mtfRate:0;
-    let interest=0; if(rate>0) mine2.forEach(r=>{ interest+=r.cost*(rate/100)*(r.days/365); });
+    let interest=0; if(rate>0) mine2.forEach(r=>{ interest+=r.qty*entryOf(r)*(rate/100)*((held(r)?days:r.days)/365); });
     const netRet=(rate>0&&yb>0)?(yn-yb-interest)/yb*100:null;
     const basis=(pf.strategy&&pf.strategy.earnBasis)?String(pf.strategy.earnBasis).toUpperCase():'';
     h+='<div class="sblk"><div class="shead"><span class="nm2" title="'+esc(pf.cfgName||pf.name)+'">'+esc(pf.name)+'</span>'+
@@ -1580,20 +1594,21 @@ function renderModel(rows){
        (first?' · you bought '+(first===lastD?shortDate(first):shortDate(first)+' – '+shortDate(lastD)):'')+'</span></div>';
     h+='<div class="trio">'+
       '<div class="t"><div class="l">Strategy basket</div><div class="v '+cls(modelRet)+'">'+pct(modelRet)+'</div><div class="s">from the '+shortDate(last.td)+' close'+(eod?' · '+eod+' at last close':'')+'</div></div>'+
-      '<div class="t"><div class="l">Your basket</div><div class="v '+cls(yourRet)+'">'+pct(yourRet)+'</div><div class="s">from your buy prices'+(mine.length!==mine2.length?' · '+(mine.length-mine2.length)+' unpriced':'')+'</div></div>'+
+      '<div class="t"><div class="l">Your basket</div><div class="v '+cls(yourRet)+'">'+pct(yourRet)+'</div><div class="s">held stocks from the '+shortDate(last.td)+' close, new buys from your price'+(mine.length!==mine2.length?' · '+(mine.length-mine2.length)+' unpriced':'')+'</div></div>'+
       '<div class="t"><div class="l">Gap</div><div class="v '+cls(gap)+'">'+(gap==null?'—':(gap>=0?'+':'−')+Math.abs(gap).toFixed(2)+' pp')+'</div><div class="s">'+(gap==null?'':gap>=0?'you are ahead of the strategy':'entry timing cost you this much')+'</div></div>'+(netRet!=null?'<div class="t"><div class="l">After MTF interest</div><div class="v '+cls(netRet)+'">'+pct(netRet)+'</div><div class="s">'+rate.toFixed(2)+'%/yr on cost, '+days+'d \u2014 <span class="secret">−'+inr(interest,2)+'</span></div></div>':'')+'</div>';
     /* union of the two baskets, one row per stock */
     const syms=[...new Set([...last.h.map(x=>x[0]), ...mine.map(r=>r.sym.replace(/\.(NS|BO)$/,''))])];
-    h+='<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your avg</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
+    h+='<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategy entry</th><th>Your entry</th><th>Entry slip</th><th>Now</th><th>Strategy</th><th>You</th></tr></thead><tbody>';
     syms.forEach(sym=>{
       const mr=mrows.find(x=>x.sym===sym), yr=mine.find(r=>r.sym.replace(/\.(NS|BO)$/,'')===sym);
       const now=(yr&&yr.px!=null)?yr.px:(mr?mr.px:null);
-      const slip=(mr&&yr&&mr.px0)?(yr.avg/mr.px0-1)*100:null;
-      const yret=(yr&&yr.pnlPct!=null)?yr.pnlPct:null;
+      const ye=yr?entryOf(yr):null;
+      const slip=(mr&&yr&&mr.px0)?(ye/mr.px0-1)*100:null;
+      const yret=(yr&&yr.px!=null&&ye)?(yr.px/ye-1)*100:null;
       const note= !mr?'<span class="tag off">not in strategy</span>' : !yr?'<span class="tag off">not held</span>' : '';
       h+='<tr><td><span class="secret"><b>'+esc(sym)+'</b></span>'+(note?' '+note:'')+(mr&&mr.wt!==20&&mr.wt!=null?' <span class="sym">'+mr.wt.toFixed(0)+'% wt</span>':'')+'</td>'+
          '<td>'+(mr&&mr.px0?'₹'+mr.px0.toFixed(2):'—')+'</td>'+
-         '<td>'+(yr?'₹'+yr.avg.toFixed(2):'—')+'</td>'+
+         '<td>'+(yr?'₹'+ye.toFixed(2)+(held(yr)?' <span class="sym" title="held through the rebalance: starts from its '+shortDate(last.td)+' close, like the strategy">held</span>':''):'—')+'</td>'+
          '<td class="'+(slip==null?'':slip>0?'down':'up')+'">'+(slip==null?'—':pct(slip))+'</td>'+
          '<td>'+(now!=null?'₹'+now.toFixed(2):'—')+(mr&&mr.src==='eod'?' <span class="badge">EOD</span>':'')+'</td>'+
          '<td class="'+cls(mr?mr.ret:null)+'">'+(mr?pct(mr.ret):'—')+'</td>'+
