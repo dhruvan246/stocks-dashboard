@@ -283,7 +283,9 @@ jobs:
       # reaction. The visibility date (ann) is NOT touched: midnight rule, §149.
       - name: Fetch BSE broadcast times for results-page filing days
         run: |
-          NIGHTLY=0; [ "${{ github.event.schedule }}" = "45 15 * * *" ] && NIGHTLY=1      # same gate as the payload rebuild below
+          NIGHTLY=0; [ "${{ github.event.schedule }}" = "45 15 * * *" ] && NIGHTLY=1
+          # §218 calendar rule: a new quarter opened (IST) that the committed payload doesn't show yet → rebuild now
+          python3 -c "import json,sys; sys.path.insert(0,'scripts'); import build_quarterly_results as B; sys.exit(0 if json.load(open('docs/quarterly_results.json'))['quarters'][0] < B.last_ended_qe(B.ist_today()) else 1)" 2>/dev/null && { echo "new quarter opened — rebuilding the payload"; NIGHTLY=1; }      # same gate as the payload rebuild below
           if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then echo "no rebuild this run — skipped"; exit 0; fi
           python3 -X utf8 scripts/fetch_filing_times.py --result-dates --max-minutes 12 \
             || echo "::warning::result broadcast-time fetch failed — reactions for new filings use the filing day until the next run"
@@ -297,6 +299,8 @@ jobs:
           # prices (published ~20:45 IST). Hour 15 OR 16 UTC = nightly, drift-tolerant —
           # same reasoning as the insurer/IPO-base gates above.
           NIGHTLY=0; [ "${{ github.event.schedule }}" = "45 15 * * *" ] && NIGHTLY=1
+          # §218 calendar rule: a new quarter opened (IST) that the committed payload doesn't show yet → rebuild now
+          python3 -c "import json,sys; sys.path.insert(0,'scripts'); import build_quarterly_results as B; sys.exit(0 if json.load(open('docs/quarterly_results.json'))['quarters'][0] < B.last_ended_qe(B.ist_today()) else 1)" 2>/dev/null && { echo "new quarter opened — rebuilding the payload"; NIGHTLY=1; }
           if [ ! -f docs/.fund_updated ] && [ "$NIGHTLY" != "1" ]; then
             echo "No new earnings this run — skipping payload rebuild"
             exit 0
@@ -452,6 +456,9 @@ jobs:
               if [ -f /tmp/qr/sf_stock_data.bin ]; then QRBIN=/tmp/qr/sf_stock_data.bin; else QRBIN=docs/sf_stock_data.bin; fi
               SF_BIN=$QRBIN python3 -X utf8 scripts/build_quarterly_results.py && git add docs/quarterly_results.json \
                 || echo "::warning::quarterly_results rebuild failed — the payload keeps origin's copy"
+              # BSE-only rows ride on the same quarter list — rebuild them in the same commit (§218)
+              python3 -X utf8 scripts/build_bse_results.py > /tmp/bser.log 2>&1 && git add docs/bse_results.json \
+                || { tail -3 /tmp/bser.log; echo "::warning::bse_results rebuild failed — the page re-aligns by quarter"; }
             fi
             # Fill-coverage scoreboard (docs/fill-coverage.html) — built HERE, inside the loop and
             # AFTER the three-way merge, deliberately. It is derived from sf_revop + sf_fundamentals,

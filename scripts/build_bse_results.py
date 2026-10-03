@@ -64,7 +64,13 @@ def reaction(series, ann, after=None):
 
 def main():
     qr = json.load(open(QR, encoding="utf-8"))
-    quarters = qr["quarters"]                         # e.g. [20260630, 20260331, …] newest-first
+    quarters = list(qr["quarters"])                   # e.g. [20260630, 20260331, …] newest-first
+    # CALENDAR RULE (§218): a new quarter opens on its first IST day even before quarterly_results.json is rebuilt —
+    # else a BSE-only first filer (HIIL Sep-2026) has no column to land in. Same window length; the page lines the two
+    # files up by quarter while they differ.
+    import build_quarterly_results as _BQ
+    while quarters and quarters[0] < _BQ.last_ended_qe(_BQ.ist_today()):
+        quarters = [_BQ.next_qe(quarters[0])] + quarters[:-1]
     qidx = {int(q): i for i, q in enumerate(quarters)}
     nse_syms = set(qr["co"].keys())
 

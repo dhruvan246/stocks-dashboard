@@ -55,6 +55,18 @@ def next_qe(qe):
     last = {3: 31, 6: 30, 9: 30, 12: 31}[m2]
     return y2 * 10000 + m2 * 100 + last
 
+def ist_today():
+    """Today's date in India (runners are UTC: 00:00-05:30 IST on a quarter's first day is still the old day in UTC)."""
+    return (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()
+
+def last_ended_qe(day):
+    """The latest quarter-end strictly before `day` — 2026-10-01 -> 20260930, 2026-09-30 -> 20260630."""
+    y, m = day.year, day.month
+    for qm, qd in ((12, 31), (9, 30), (6, 30), (3, 31)):
+        if datetime.date(y, qm, qd) < day:
+            return y * 10000 + qm * 100 + qd
+    return (y - 1) * 10000 + 1231
+
 def main():
     fund = jload(os.path.join(DOCS, "sf_fundamentals.json"))
     revop = jload(os.path.join(DOCS, "sf_revop.json"))
@@ -126,7 +138,7 @@ def main():
     # BSE-only and vision-read results count too (§218): a quarter's first filers can be BSE-only names
     # (HIIL filed Sep-2026 on 2026-10-03, before any NSE name) whose numbers live only in bse_fundamentals /
     # vision_fills — without this the page had no column for them and their filing sat unread.
-    _today = int(datetime.date.today().strftime("%Y%m%d"))
+    _today = int(ist_today().strftime("%Y%m%d"))
     for _fn, _key in (("bse_fundamentals.json", "px"), ("vision_fills.json", None)):
         try:
             _st = jload(os.path.join(DOCS, _fn))
@@ -141,6 +153,10 @@ def main():
                 if latest < q < _today and q % 10000 in (331, 630, 930, 1231) \
                         and isinstance(c, dict) and c.get("pat") is not None:
                     latest = q
+    # CALENDAR RULE (§218, user 2026-10-04: "as soon as the date is first October, quarterly results table should show
+    # September 26, zero results filed … every quarter in future"): the newest column is the latest quarter that has
+    # ENDED by today's IST date, whether or not anyone has filed — a filing can never open its quarter late again.
+    latest = max(latest, last_ended_qe(ist_today()))
     quarters = []
     q = latest
     for _ in range(N_Q):

@@ -1486,11 +1486,26 @@ async function load(){
       fetch('./vision_fills.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)  // NSE vision overlay (fills gaps until XBRL lands)
     ]);
     QR=qr; CAL=cal; FEED=feed; QTRS=qr.quarters; CO=qr.co;
-    // Merge BSE-only companies (not on NSE) as first-class rows. Their q-arrays are pre-aligned to
-    // qr.quarters by build_bse_results.py; never shadow an existing NSE symbol.
-    if(bse&&bse.co&&JSON.stringify(bse.quarters)===JSON.stringify(qr.quarters)){
-      let added=0; for(const k in bse.co){ if(!CO[k]){ CO[k]=bse.co[k]; added++; } }
+    // CALENDAR RULE (runbook §218, user 2026-10-04): from a quarter's first calendar day (IST) the newest column is
+    // that quarter, with zero results filed if nobody has filed yet. The payload adopts it on its next rebuild; this
+    // opens it from midnight so the page never waits for a CI run (or a first filing) to show the new quarter.
+    (function(){ const ist=new Date(Date.now()+330*60000), y=ist.getUTCFullYear(), md=(ist.getUTCMonth()+1)*100+ist.getUTCDate();
+      const want=md>=1001?y*10000+930:md>=701?y*10000+630:md>=401?y*10000+331:(y-1)*10000+1231;   // latest quarter-end before today
+      const nextQ=q=>{ const yy=Math.floor(q/10000), m=q%10000; return m===1231?(yy+1)*10000+331:yy*10000+({331:630,630:930,930:1231})[m]; };
+      let n=0; while(QTRS.length&&QTRS[0]<want&&n<4){ QTRS.unshift(nextQ(QTRS[0])); for(const k in CO){ if(Array.isArray(CO[k].q)) CO[k].q.unshift(null); } n++; }
+      if(n) console.log('opened '+n+' new quarter column(s) by the calendar: '+QTRS[0]);
+    })();
+    // Merge BSE-only companies (not on NSE) as first-class rows; never shadow an existing NSE symbol.
+    // build_bse_results.py aligns their q-arrays to qr.quarters, but the two files are rebuilt by different
+    // jobs: on the day the quarter list moves (a new quarter opens on its first calendar day, runbook §218)
+    // they differ for a while. Re-align BY QUARTER instead of dropping every BSE-only company until then.
+    const bseSame=bse&&JSON.stringify(bse.quarters)===JSON.stringify(qr.quarters);
+    const bseIx={}; ((bse&&bse.quarters)||[]).forEach((q,i)=>bseIx[q]=i);
+    const bseAlign=row=>bseSame?row:qr.quarters.map(q=>bseIx[q]==null?null:(row[bseIx[q]]||null));
+    if(bse&&bse.co){
+      let added=0; for(const k in bse.co){ if(!CO[k]){ const c=bse.co[k]; if(!bseSame) c.q=bseAlign(c.q||[]); CO[k]=c; added++; } }
       BSE_COUNT=added;
+      if(!bseSame) console.log('bse_results quarters differ from quarterly_results — re-aligned by quarter');
     }
     if(bse&&bse.pdf_only) PDF_ONLY=new Set(bse.pdf_only);   // filed but not machine-readable → label honestly
     // DUAL-LISTED OVERLAY: a BSE scrip whose ticker is also an NSE symbol can't be merged into CO as a
@@ -1499,7 +1514,7 @@ async function load(){
     // NSE/XBRL value always supersedes. Without this, 47 tickers / 140 quarter-cells were unreachable
     // and the biggest names on the "+N coming" list (FREDUN, KMCSHIL, INDOKEM, MIIL…) stayed pending
     // forever despite having been read months earlier. See runbook §17d.
-    if(bse&&bse.nse_overlay&&JSON.stringify(bse.quarters)===JSON.stringify(qr.quarters)){
+    if(bse&&bse.nse_overlay){   // keyed by quarter (oqix), so a differing quarter list is harmless
       const oqix={}; qr.quarters.forEach((q,i)=>oqix[q]=i);
       let ocells=0;
       for(const sym in bse.nse_overlay){ const c=CO[sym]; if(!c) continue;
