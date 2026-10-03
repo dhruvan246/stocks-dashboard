@@ -17,7 +17,7 @@ files the figures under the right quarters.
 Run: python -X utf8 scripts/bse_vision_prep.py [--limit N] [--outdir DIR]
 """
 import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
-import os, sys, re, json, time
+import os, sys, re, json, time, datetime
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fitz, bse_render
 import bse_fetch as B
@@ -343,11 +343,21 @@ def _render_bse(bse, qe, outdir, manifest):
     """Render pending BSE-only names' result filings for quarter `qe` into `manifest`."""
     if bse:
         op = B.session(); time.sleep(1)
-        for scrip, (tkr, name, mcap) in bse:
+        for scrip, v in bse:
+            tkr, name, mcap = v[:3]
             pngs = []
+            # FIRST the feed row's own attachment — the filing that put this quarter on the to-do list (§218b): newest-
+            # first announcements alone let a later quarter's filings take every slot, so a late filer's older quarter
+            # was skipped by the tripwire below and never rendered. Then the announcement search, its window reaching
+            # back to the quarter (5 months from today missed late filings of older quarters).
+            feed_att = str(v[3] or "").rstrip("/").rsplit("/", 1)[-1] if len(v) > 3 and v[3] and "bseindia.com" in str(v[3]) else ""
+            qd = datetime.date(qe // 10000, qe // 100 % 100, qe % 100)
+            months = max(5, (datetime.date.today() - qd).days // 30 + 2)
+            cands = ([("feed", feed_att, "feed row")] if feed_att else []) + \
+                [c for c in bse_render.announcements(op, scrip, months=months) if c[1] != feed_att][:3]
             # try the next-best announcement when one yields no P&L pages (a board-outcome cover letter
             # often has none) — costs extra BSE hits only on the names that would otherwise stay empty
-            for annd, att, hd in bse_render.announcements(op, scrip)[:3]:
+            for annd, att, hd in cands:
                 raw = bse_render.fetch_pdf(op, att)
                 if not raw: continue
                 # TRIPWIRE: never hand vision a PDF for the wrong quarter. If the filing states a period and

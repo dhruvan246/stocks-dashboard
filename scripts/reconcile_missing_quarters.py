@@ -298,6 +298,13 @@ def main():
     if a.only:
         roster = set(x.strip().upper() for x in a.only.split(",") if x.strip())
     quarters = [a.quarter] if a.quarter else quarter_ends_before(today, 2)
+    if not a.quarter:
+        # §218b: early filers exist (HIIL filed Sep-2026 three days after quarter-end), so the newest ended quarter is
+        # also targeted inside its first MIN_LAG_DAYS — on top of the two lagged ones, never instead of them.
+        newest = max(qe for qe in (yyyymmdd(today) // 10000 * 10000 + md for md in (331, 630, 930, 1231)) if qe < int(tstr)) \
+            if int(tstr) % 10000 > 331 else (int(tstr) // 10000 - 1) * 10000 + 1231
+        if newest not in quarters:
+            quarters = [newest] + quarters
     ledger = load_json(LEDGER, []); pending = load_json(PENDING, {}); skips = load_json(SKIPS, {})
     print("reconcile_missing_quarters %s: roster %d names, quarters %s%s" % (
         today, len(roster), quarters, " (DRY)" if a.dry else ""))

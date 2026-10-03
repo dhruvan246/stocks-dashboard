@@ -41,6 +41,9 @@ jobs:
         run: |
           N=$(python3 -c "import json;print(len(json.load(open('$RUNNER_TEMP/fills.json'))))")
           echo "fills: $N"
+          # §218b: an XBRL fill (NSE gap quarters land in sf_fundamentals/sf_revop) must reach the results page in THIS
+          # run — refresh-fundamentals rebuilds the payload only on its own NSE updates or at night (up to ~11 h later)
+          if [ "$N" -gt 0 ]; then mkdir -p /tmp/qr; python3 scripts/fetch_release_bin.py /tmp/qr/sf_stock_data.bin --tries 3 || echo "::warning::bin download failed — results payload waits for the nightly rebuild"; fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for attempt in 1 2 3 4 5; do
@@ -49,6 +52,10 @@ jobs:
             if [ "$N" -gt 0 ]; then python3 -X utf8 scripts/fetch_bse_results_xbrl.py --apply "$RUNNER_TEMP/fills.json"; fi
             # BSE-only fills reach the results page only through bse_results.json — rebuild it here too
             # (it used to wait for the next refresh-bse run)
+            if [ "$N" -gt 0 ] && [ -f /tmp/qr/sf_stock_data.bin ]; then
+              SF_BIN=/tmp/qr/sf_stock_data.bin python3 -X utf8 scripts/build_quarterly_results.py > /tmp/qr.log 2>&1 && git add docs/quarterly_results.json \
+                || { tail -3 /tmp/qr.log; echo "::warning::quarterly_results rebuild failed — keeps origin's copy"; }
+            fi
             if [ "$N" -gt 0 ]; then python3 -X utf8 scripts/build_bse_results.py && git add docs/bse_results.json; fi
             git add docs/bse_fundamentals.json docs/sf_fundamentals.json docs/sf_revop.json scripts/revop_fundamentals.json scripts/xbrl_extra.json.gz
             git add -f scripts/_bse_xbrl_state.json 2>/dev/null || true

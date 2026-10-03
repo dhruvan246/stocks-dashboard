@@ -164,7 +164,7 @@ def main():
     qidx = {q: i for i, q in enumerate(quarters)}
     print("quarters:", quarters[0], "..", quarters[-1])
 
-    today = datetime.date.today()
+    today = ist_today()
     sr_cut = int((today - datetime.timedelta(days=SR_WINDOW_DAYS)).strftime("%Y%m%d"))
 
     out_co, n_rx, n_sr = {}, 0, 0

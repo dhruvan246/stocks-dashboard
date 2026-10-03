@@ -48,7 +48,8 @@ def _candidate(txt):
     return bool(RESULT_HEAD.search(txt)) and not NOT_RESULT.search(txt)
 
 def announcements(op, code, months=5):
-    hi = datetime.date.today(); lo = hi - datetime.timedelta(days=30 * months)
+    # IST day (runners are UTC — a 00:00-05:30 IST run would end the window yesterday and miss after-midnight filings)
+    hi = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date(); lo = hi - datetime.timedelta(days=30 * months)
     url = ("https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=1&strCat=-1"
            "&strPrevDate=%s&strToDate=%s&strScrip=%s&strSearch=P&strType=C&subcategory=-1"
            % (lo.strftime("%Y%m%d"), hi.strftime("%Y%m%d"), code))

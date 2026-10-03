@@ -559,11 +559,13 @@ def targets(today):
     return out[:sum(1 for t in out if t[2] == "nse")] + early + out[sum(1 for t in out if t[2] == "nse"):]
 
 
-def early_filed(due):
+def early_filed(due, within_days=None, today=None):
     """{feed key: {qe}} — quarters NOT yet past their 45/60-day deadline that a BSE-only company has already FILED,
     per docs/results_feed.json (quarter as the feed files it, feed_qe_fix applied). Without this an early filer
-    (HIIL, Sep-2026 results filed 2026-10-03) was never asked for until qe+45 d — six weeks off the page (§218)."""
+    (HIIL, Sep-2026 results filed 2026-10-03) was never asked for until qe+45 d — six weeks off the page (§218).
+    within_days=N (with today): instead every quarter filed in the last N days, due or not (§218b re-list rule)."""
     last_due = max(due) if due else 0
+    cut = int((today - datetime.timedelta(days=within_days)).strftime("%Y%m%d")) if within_days else 0
     out = {}
     try:
         rows = json.load(open(os.path.join(DOCS, "results_feed.json"), encoding="utf-8")).get("rows") or []
@@ -574,14 +576,14 @@ def early_filed(due):
             qe, fd = int(r[3] or 0), int(str(r[2])[:10].replace("-", ""))
         except (TypeError, ValueError, IndexError):
             continue
-        if qe > last_due and qe % 10000 in (331, 630, 930, 1231) and fd > qe:   # filed after its own quarter-end
+        if qe > last_due and fd >= cut and qe % 10000 in (331, 630, 930, 1231) and fd > qe:   # filed after its quarter-end
             out.setdefault(str(r[0]).upper(), set()).add(qe)
     return out
 
 
 def fetch(budget, fills_path, from_dir=None, codes=None):
     import xbrl_symbol
-    today = datetime.date.today()
+    today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()   # IST day (runners are UTC)
     state = json.load(open(STATE)) if os.path.exists(STATE) else {}
     bs = json.load(open(os.path.join(HERE, "bse_scrips.json")))
     code2tk = {str(v): k for k, v in bs["by_id"].items()}
@@ -592,6 +594,8 @@ def fetch(budget, fills_path, from_dir=None, codes=None):
     except (OSError, ValueError):
         px_all = {}
     tlist = targets(today)
+    last_due = max(due_quarters(today) or [0])
+    recent = early_filed([], within_days=7, today=today)     # {feed key: {qe}} filed in the last 7 days, any quarter
     if codes:                                                # --codes: only these scrips (a manual / test run)
         tlist = [t for t in tlist if t[0] in codes]
     print("targets: %d scrips (%d NSE-quarter targets, %d BSE-only)" %
@@ -620,9 +624,12 @@ def fetch(budget, fills_path, from_dir=None, codes=None):
         asked = set(st.get("q") or []) if isinstance(st, dict) else (set(miss) if kind == "nse" else None)
         # (old int entries: an NSE target's quarters are the ones it was already asked for; a BSE-only scrip may now
         # want detail quarters it was never asked for, so it is listed again)
+        fkey = (sym or bse_resolve.bse_key(code2tk.get(code) or "")).upper()
+        fresh_q = {q for q in miss if q > last_due or q in recent.get(fkey, ())}
         if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS \
-                and asked is not None and set(miss) <= asked:
+                and asked is not None and set(miss) <= asked and not (fresh_q and last < ymd(today)):
             continue                                         # listed recently for these same quarters — nothing new
+            # (§218b: a freshly filed quarter is re-listed once a day until its XBRL lands, whatever the state says)
         try:
             body = get(LIST % code, want_json=True)
         except Refused as e:
@@ -681,7 +688,11 @@ def fetch(budget, fills_path, from_dir=None, codes=None):
         else:
             got = handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol)
         if DL[0] < MAX_FILES:                                # a scrip cut short by the per-run cap is listed again next run
-            state[code] = {"d": ymd(today), "q": sorted(miss)}
+            # A quarter filed in the last few days (or not yet due) that got no fill is NOT recorded as asked: BSE posts
+            # the XBRL hours to a day after the PDF, so the 20-day re-list wait would bury it (§218b: HAWAENG filed
+            # Sep-2026 on 2026-10-03 with no XBRL yet → next look 2026-10-23). It is listed again on the next run.
+            fresh = fresh_q - {g.get("qe") for g in got}
+            state[code] = {"d": ymd(today), "q": sorted(set(miss) - fresh)}
             held = {**held_was, **{str(q): links(q) for q in held}}
             if held:                                         # held SME quarters: re-read only when a filing changes
                 state[code]["held"] = held

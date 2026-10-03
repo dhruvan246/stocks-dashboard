@@ -325,6 +325,8 @@ const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
 const MONTHS = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+// YYYY-MM-DD of (today + n days) in India — feed/calendar dates are IST days (runbook §218b)
+const istDay=n=>new Date(Date.now()+330*60000+n*864e5).toISOString().slice(0,10);
 let QR=null, CAL=null, FEED=null, QTRS=[], CO=null, BSE_COUNT=0, PDF_ONLY=new Set();
 const ST = { tab:'overview', qi:0, mode:'yoy', basis:'auto', uni:'all', mcap:'all', sector:'all',
              search:'', screen:'all', heat:'pat', cal:'conf', sort:{k:'ann',dir:-1}, shown:100,
@@ -978,7 +980,7 @@ function renderFeed(){
   $('feedChips').querySelectorAll('[data-fd]').forEach(b=>b.onclick=()=>{ feedDays=b.getAttribute('data-fd'); feedDay='all'; feedShown=24; renderFeed(); });
   $('feedChips').querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{ feedSort=b.getAttribute('data-fs'); feedShown=24; renderFeed(); });
   $('feedChips').querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{ feedTurn=!feedTurn; feedShown=24; renderFeed(); });
-  const cut=new Date(Date.now()-(+feedDays)*864e5).toISOString().slice(0,10);
+  const cut=istDay(-(+feedDays));
   let all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
                   .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
   const items=new Map(); all.forEach(r=>items.set(r,feedItem(r)));
@@ -1002,7 +1004,7 @@ function renderFeed(){
   if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
   else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
   else if(feedSort==='rx')     list=list.slice().sort((a,b)=>(b.rx==null?-1e9:b.rx)-(a.rx==null?-1e9:a.rx));
-  const today=new Date().toISOString().slice(0,10), yest=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  const today=istDay(0), yest=istDay(-1);   // India dates (toISOString is UTC: 00:00-05:30 IST read as yesterday)
   let html='', used=0;
   if(feedSort==='latest'){
     const groups={}, pgroups={};
@@ -1034,8 +1036,8 @@ function qe2qe(v){ return +v; }
 function renderCalendar(){
   const confBy={};                                  // sym -> [date,purpose]
   (CAL&&CAL.rows||[]).forEach(r=>{ if(!confBy[r[0]]||r[2]<confBy[r[0]][0]) confBy[r[0]]=[r[2],r[3],r[1]]; });
-  const today=new Date().toISOString().slice(0,10);
-  const horizon=new Date(Date.now()+56*864e5).toISOString().slice(0,10);
+  const today=istDay(0);
+  const horizon=istDay(56);
   const items=[];                                   // {d, sym, co, conf, purpose}
   for(const sym in confBy){
     const [d,purpose,co]=confBy[sym];

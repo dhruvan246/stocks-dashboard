@@ -139,7 +139,7 @@ def find_unknown_qe(limit=12):
 def _split(rows, limit):
     nse = [(e["sym"], e["name"], e["mcap"], e["pdf"], e["ann"])
            for e in rows if e["status"] == "pending" and e["exch"] == "NSE"]
-    bse = [(e["scrip"], (e["sym"], e["name"], e["mcap"]))
+    bse = [(e["scrip"], (e["sym"], e["name"], e["mcap"], e["pdf"]))   # pdf = the feed row's own attachment (§218b)
            for e in rows if e["status"] == "pending" and e["exch"] == "BSE"]
     nse.sort(key=lambda x: -(x[2] or 0))
     bse.sort(key=lambda kv: -(kv[1][2] or 0))
@@ -160,7 +160,7 @@ def find_pending_ahead(limit):
     import datetime
     qr = _load("quarterly_results.json") or {}
     cur = int((qr.get("quarters") or [0])[0])
-    today = int(datetime.date.today().strftime("%Y%m%d"))
+    today = int((datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).strftime("%Y%m%d"))   # IST day
     feed = (_load("results_feed.json") or {"rows": []})["rows"]
     ahead = sorted({int(r[3]) for r in feed
                     if isinstance(r[3], int) and cur < r[3] < today and r[3] % 10000 in (331, 630, 930, 1231)},
