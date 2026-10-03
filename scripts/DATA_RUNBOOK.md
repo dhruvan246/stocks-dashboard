@@ -24965,3 +24965,19 @@ ProfitLossForPeriod tag — the stored 3.06 comes from another element, not trac
 - **Slot-specific branches** must read `github.event.client_payload.schedule` as well as `github.event.schedule`
   (refresh-shareholding's weekly sweep does). A new scheduled workflow: add a `# dispatch-cron:` line + the tick type —
   a plain `schedule:` will run hours late.
+
+## §218 — A SEASON'S EARLY FILERS AND EVERY QUARTER'S LATE FILERS ARE READ FOR THEIR OWN QUARTER (2026-10-04, user: "hindusthan insulators announced sep quarter results but i cannot see it in quarterly results" → "fix it . should not happen ever again for any quarter"; "companies releasing their June quarter results very late … should be filed in June results, not in September")
+
+**What happened.** HIIL (BSE-only, 539984) filed Sep-2026 results 2026-10-03 17:33 IST (XBRL posted 17:56). Two gates kept it off the page:
+1. `fetch_bse_results_xbrl.targets()` asked a BSE-only scrip only for quarters past `due_quarters()` (qe + 45 d, Mar + 60 d — the SEBI deadline, used to keep the 300-scrip budget off quarters nobody has filed yet). Sep-2026 was not "due" until 2026-11-14.
+2. The vision routine (`bse_vision_prep` → `results_pending.classify`) reads only `quarterly_results.json.quarters[0]` (+ 2 late quarters). That axis advances only once some company's numbers are stored, so the season's first filers were never read; its qe==0 pass even resolved HIIL → 20260930 (feed_qe_fix) and then skipped it because 20260930 ≠ the target Jun.
+
+**Fix (all fill-only, no stored value touched).**
+- `fetch_bse_results_xbrl.early_filed()` — a quarter newer than the last due one is also wanted when `results_feed.json` shows that company already filed it (feed quarter = the filing's own stated quarter, feed_qe_fix applied; filing date must be after the quarter-end). Early filers are listed right after the NSE targets so the budget never delays them.
+- `build_quarterly_results` quarter axis also counts PAT stored in `bse_fundamentals.json` px and `vision_fills.json` (real quarter-ends before today only) — a BSE-only first filer opens the new column.
+- `results_pending.find_pending_ahead()` + `bse_vision_prep`: quarters newer than the page's current one that the feed shows filed are queued for vision; the qe==0 pass renders a newer-quarter filing at once, for ITS quarter. The "ambiguous" check (filing also prints the target quarter) now applies only when the parsed quarter is OLDER than the target — a newer quarter's filing always prints the target as its previous-quarter column, so that mention proves nothing (before: a Sep filing could be handed to the reader as Jun).
+- `find_pending_late` depth 2 → 12 (every older quarter on the page): catch-up filers (CMICABLES Jun/Sep/Dec-2025, FUTURAPOLY Dec-2024, filed Sep-2026) were filed to the right quarter but never read. `build_results_coverage` lists the same early + late groups.
+
+**Late June filers stay June.** Every route files by the filing's own period, never by the season: XBRL by the file's OneD context, the feed by the filing's stated quarter (feed_qe_fix when the caption is wrong), vision by the manifest `qe` with `_render_bse`'s period tripwire. Measured in a test worktree with the axis flipped to Sep: 21 unread late-Jun NSE filings queued under 20260630, March stragglers under 20260331; Jun-2026 cells for all 2,379 companies byte-identical before/after (old vs new builder, same bin). ELCIDIN/KESARENT drop off because Sep-2023 leaves the 13-quarter window — the normal season roll.
+
+**Verify.** HIIL Sep-2026 (standalone XBRL): revenue 172.06, op 75.02, PAT 55.37 cr, ann 20261003; page shows rev +146.9% / PAT +227.9% YoY. HAWAENG (539176) filed the same day but had no XBRL posted — it is now in the vision routine's early-filer queue.

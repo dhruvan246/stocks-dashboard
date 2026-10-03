@@ -60,11 +60,16 @@ def main():
     # "open" = declared but no numbers yet, i.e. what the routine still owes you
     stat["open"] = stat["pending"] + stat["no_pdf"] + stat.get("unknown_qe", 0)   # same meaning as byExch.open
 
-    # LATE FILERS for the two quarters before the current one — the vision routine reads them too
-    # (results_pending.find_pending_late, runbook §187), so the page must show what it still owes there.
+    # EARLY + LATE FILERS for every other quarter — the vision routine reads them too
+    # (results_pending.find_pending_ahead / find_pending_late, runbook §187/§218), so the page must show what it
+    # still owes there: quarters newer than the current one (a season's first filers), then every older quarter.
     late = []
     qr = _load("quarterly_results.json") or {}
-    for lq in (qr.get("quarters") or [])[1:3]:
+    _cur = int((qr.get("quarters") or [0])[0])
+    _ahead = sorted({int(r[3]) for r in ((_load("results_feed.json") or {}).get("rows") or [])
+                     if isinstance(r[3], int) and _cur < r[3] <= int(time.strftime("%Y%m%d"))
+                     and r[3] % 10000 in (331, 630, 930, 1231)}, reverse=True)
+    for lq in _ahead + list((qr.get("quarters") or [])[1:13]):
         _, lrows = classify(lq, unknown=False)
         lopen = [[e["sym"], e["name"], e["exch"], round(e["mcap"] or 0, 1), e["ann"], e["status"]]
                  for e in lrows if e["status"] in ("pending", "no_pdf")]

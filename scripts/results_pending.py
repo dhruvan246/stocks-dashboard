@@ -153,10 +153,34 @@ def find_pending(limit):
     return qe, nse, bse
 
 
-def find_pending_late(limit, depth=2):
+def find_pending_ahead(limit):
+    """[(qe, nse, bse)] for quarters NEWER than the page's current one that the feed shows already filed —
+    newest first. The current quarter only advances once some company's numbers are stored, so a season's
+    first filers were never read (HIIL, Sep-2026 filed 2026-10-03 while quarters[0] was still Jun) — §218."""
+    import datetime
+    qr = _load("quarterly_results.json") or {}
+    cur = int((qr.get("quarters") or [0])[0])
+    today = int(datetime.date.today().strftime("%Y%m%d"))
+    feed = (_load("results_feed.json") or {"rows": []})["rows"]
+    ahead = sorted({int(r[3]) for r in feed
+                    if isinstance(r[3], int) and cur < r[3] < today and r[3] % 10000 in (331, 630, 930, 1231)},
+                   reverse=True)
+    out = []
+    for qe in ahead:
+        _, rows = classify(qe, unknown=False)
+        nse, bse = _split(rows, limit)
+        if nse or bse:
+            out.append((qe, nse, bse))
+    return out
+
+
+def find_pending_late(limit, depth=12):
     """[(qe, nse, bse)] for the `depth` quarters BEFORE the current one: late filers. When the newest
     quarter flips (Jun -> Sep), every Jun filing still unread used to fall off the vision to-do list,
-    because only quarters[0] was ever classified (2026-09-27: 18 older-quarter feed rows unqueued)."""
+    because only quarters[0] was ever classified (2026-09-27: 18 older-quarter feed rows unqueued).
+    depth 12 = every older quarter on the page (§218): at depth 2 catch-up filers for older quarters
+    (CMICABLES Jun/Sep/Dec-2025, FUTURAPOLY Dec-2024, filed Sep-2026) were filed to the right quarter but
+    never read. Each filing stays in ITS OWN stated quarter; a late Jun result is never read as Sep."""
     qr = _load("quarterly_results.json") or {}
     out = []
     for qe in (qr.get("quarters") or [])[1:1 + depth]:

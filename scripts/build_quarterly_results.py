@@ -123,6 +123,24 @@ def main():
             except Exception:
                 continue
             if q > latest: latest = q
+    # BSE-only and vision-read results count too (§218): a quarter's first filers can be BSE-only names
+    # (HIIL filed Sep-2026 on 2026-10-03, before any NSE name) whose numbers live only in bse_fundamentals /
+    # vision_fills — without this the page had no column for them and their filing sat unread.
+    _today = int(datetime.date.today().strftime("%Y%m%d"))
+    for _fn, _key in (("bse_fundamentals.json", "px"), ("vision_fills.json", None)):
+        try:
+            _st = jload(os.path.join(DOCS, _fn))
+        except (OSError, ValueError):
+            continue
+        for _cells in ((_st.get(_key) if _key else _st) or {}).values():
+            for k, c in (_cells.items() if isinstance(_cells, dict) else ()):
+                try:
+                    q = int(k)
+                except Exception:
+                    continue
+                if latest < q < _today and q % 10000 in (331, 630, 930, 1231) \
+                        and isinstance(c, dict) and c.get("pat") is not None:
+                    latest = q
     quarters = []
     q = latest
     for _ in range(N_Q):

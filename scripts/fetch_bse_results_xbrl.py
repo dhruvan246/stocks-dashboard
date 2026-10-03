@@ -539,6 +539,8 @@ def targets(today):
     # BSE ticker; a ticker that is also an NSE tape key never takes BSE detail (apply's clash guard), so it is not chased.
     code2tk = {str(v): k for k, v in json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"].items()}
     due = due_quarters(today)
+    filed = early_filed(due)
+    early = []
     for r in univ:
         code = str(r[0]); sme = (r[4] or "") in SME_GROUPS
         have = {int(q) for q, c in (px.get(code) or {}).items()
@@ -549,9 +551,31 @@ def targets(today):
         if tk and tk.upper() not in tape and not sme:          # SME half-year files carry no quarterly detail
             dq = {int(q) for q in (xl.get(tk) or {}) if str(q).isdigit()}
             have = {q for q in have if q in dq}
-        miss = [q for q in due if q not in have and not (sme and q % 10000 in (630, 1231))]
+        ef = sorted(filed.get(bse_resolve.bse_key(r[1]), ()))
+        miss = [q for q in due + ef if q not in have and not (sme and q % 10000 in (630, 1231))]
         if miss:
-            out.append((code, None, "bse", sme, miss))
+            (early if any(q in miss for q in ef) else out).append((code, None, "bse", sme, miss))
+    # early filers go ahead of the mcap queue so the 300-scrip budget never pushes a fresh filing back a day
+    return out[:sum(1 for t in out if t[2] == "nse")] + early + out[sum(1 for t in out if t[2] == "nse"):]
+
+
+def early_filed(due):
+    """{feed key: {qe}} — quarters NOT yet past their 45/60-day deadline that a BSE-only company has already FILED,
+    per docs/results_feed.json (quarter as the feed files it, feed_qe_fix applied). Without this an early filer
+    (HIIL, Sep-2026 results filed 2026-10-03) was never asked for until qe+45 d — six weeks off the page (§218)."""
+    last_due = max(due) if due else 0
+    out = {}
+    try:
+        rows = json.load(open(os.path.join(DOCS, "results_feed.json"), encoding="utf-8")).get("rows") or []
+    except (OSError, ValueError):
+        return out
+    for r in rows:
+        try:
+            qe, fd = int(r[3] or 0), int(str(r[2])[:10].replace("-", ""))
+        except (TypeError, ValueError, IndexError):
+            continue
+        if qe > last_due and qe % 10000 in (331, 630, 930, 1231) and fd > qe:   # filed after its own quarter-end
+            out.setdefault(str(r[0]).upper(), set()).add(qe)
     return out
 
 

@@ -23,7 +23,7 @@ import fitz, bse_render
 import bse_fetch as B
 import qe_util as QU
 import fetch_announcements as FA
-from results_pending import find_pending, find_pending_late, find_unknown_qe   # shared with build_results_coverage.py
+from results_pending import find_pending, find_pending_ahead, find_pending_late, find_unknown_qe   # shared with build_results_coverage.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
@@ -433,7 +433,9 @@ def main():
             # the wrong quarter. DAULAT|2026-08-14 did exactly that (2026-08-18) and was one merge away
             # from being re-filed into March. A ledgered quarter fix is not a guess we get to make on a
             # coin toss — when the filing prints the target quarter TOO, write nothing and render it.
-            ambiguous = bool(real != qe and pdf_mentions_qe(raw, qe))
+            # (only when the parsed quarter is OLDER: a newer quarter's filing always prints the target quarter as
+            # its "previous quarter" column, so for real > qe the mention proves nothing — §218)
+            ambiguous = bool(real < qe and pdf_mentions_qe(raw, qe))
             if ambiguous:
                 print("  qe? %-11s %s -> parsed %d BUT the filing also prints %d — ambiguous, no quarter "
                       "fix ledgered; rendering for the reader to adjudicate" % (sym, fdate, real, qe))
@@ -441,14 +443,17 @@ def main():
                 qfix["%s|%s" % (sym, fdate)] = real
                 print("  qe? %-11s %s -> %d%s" % (sym, fdate, real, " (target quarter — rendering now)" if real == qe else ""))
             qeatt.pop("%s|%s" % (sym, fdate), None)      # resolved — clear any earlier failed attempts
-            if real == qe or ambiguous:
+            # a NEWER quarter than the page's current one is a season's early filer — render it now too, for
+            # ITS quarter (§218: HIIL Sep-2026 was resolved here, then skipped because the page still showed Jun)
+            if real == qe or ambiguous or real > qe:
                 pngs = []
                 for i, png in enumerate(render_pdf_pages(raw)):
                     p = os.path.join(outdir, "%s_%s_p%d.png" % ("BSE" if scrip else "NSE", scrip or sym, i))
                     open(p, "wb").write(png); pngs.append(p)
                 if pngs:
                     manifest.append({"exch": "BSE" if scrip else "NSE", "sym": sym, "scrip": scrip,
-                                     "name": name, "mcap": mcap, "pngs": pngs})
+                                     "name": name, "mcap": mcap, "pngs": pngs,
+                                     "qe": str(qe if (real == qe or ambiguous) else real)})
 
     # merge quarter corrections into the persistent side-file (write_results_feed applies them hourly)
     fixp = os.path.join(D, "feed_qe_fix.json")
@@ -475,9 +480,12 @@ def main():
 
     # ---- LATE FILERS for the two quarters before the current one (never on --enrich): when the newest
     # quarter flips (Jun -> Sep) every still-unread Jun filing used to drop off this list for good.
+    # ---- EARLY FILERS for quarters AFTER the current one (§218): the current quarter only advances once
+    # some company's numbers are stored, so a season's first filings (HIIL Sep-2026) were never read.
     if "--enrich" not in sys.argv:
-        for lq, lnse, lbse in find_pending_late(limit):
-            print("late filers, quarter %d — pending: %d NSE, %d BSE-only" % (lq, len(lnse), len(lbse)))
+        for lq, lnse, lbse in find_pending_ahead(limit) + find_pending_late(limit):
+            print("%s filers, quarter %d — pending: %d NSE, %d BSE-only"
+                  % ("early" if lq > qe else "late", lq, len(lnse), len(lbse)))
             start = len(manifest)
             _render_nse(lnse, lq, outdir, manifest, qfix)
             _render_bse(lbse, lq, outdir, manifest)
