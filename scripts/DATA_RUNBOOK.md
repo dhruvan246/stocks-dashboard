@@ -21054,6 +21054,61 @@ rebuilt feed: 0 rows change); the fix stops future row-code runs from proposing 
 (New York Life, Prudential Assurance UK, Sanlam, Mitsui Sumitomo, GOSI, Vanguard ...) unchanged. Lesson: an evidence class must weigh
 domestic listings too - one misfiled foreign row must not outvote hundreds of domestic ones.
 
+
+### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
+**Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
+`_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
+Table III served the filing; the Trendlyne-rows value had missed STAR's own FVCI row). This section measures every cell still served
+from that ledger.
+**Measured (read-only, work dir `~/stocks-cache/shp/tp_audit/`, worktree `~/stocks-wt/shp-tp-audit`).** 358 ledger cells; **239 still
+served exactly as stored** (store = live `docs/shp_engine.json`, checked on Pages 2026-10-04 19:17 IST): 197 are Dec-2015/Mar-2016
+seam quarters. Routes in order: (1) BSE Table III api `Corp_shpSec_SHPPubShold_ng/w?SCRIPCODE=<code>&QtrCode=<qtrid>.00`, (2)
+`ShareholdingPattern.aspx` Flag=New for the (A)+(B)+(C) share total and the promoter row, (3) the SHP XBRL from BSE's SHPQNewFormat
+list (honest `bse_headers`, one request at a time, 438 requests, all 200). Reader = `_shp_164r_quantmac_v4.t3_compute` (the batch-13
+reader) plus the batch-7 follow-label check (it never fired). Where the page total includes a depository-receipt / C block (8 cells),
+the table's own base reproduces the stored promoter in every case, so that base is used. ICICIBANK has no promoter, so the tie
+goes to the filing's own % = its (A+B) XBRL basis (§164a). Misspelt 'Foreign Nations' / 'Foreign Naitional' labels are read as Foreign
+Nationals (public; 0.03 / 0.00 pp).
+Verdicts (0.05 pp floor):
+- **139 match the filing.**
+- **26 wrong rows** — the third-party numbers dropped or double-counted a line of the filing:
+  - AIF line missing: KARURVYSYA Mar-17..Jun-18 (6), SUNDARMFIN Dec-21.
+  - Pension line missing: ICICIBANK Mar-16 (0.43).
+  - NLCINDIA Dec-15: insurance counted twice (ins 1.96 vs 0.98). Its own revised XBRL agrees with Table III.
+  - PGHL Mar-16: the 0.23 'Foreign Institutional Investors' line counted in BOTH fii and dii.
+  - Promoter lines dropped in 16 cells, e.g. UBL Dec-15 32.30 vs 74.68, ECLERX Dec-15/Mar-16 ~25 vs ~50, GUJALKALI Mar-16 36.59 vs
+    46.28, AUROPHARMA Mar-16 50.71 vs 53.79. In each, the filing equals the neighbouring quarters.
+- **50 rules-only** — the numbers equal the filing, but R2 (a named Indian insurer under non-institutions -> DII), R3 (NBFC -> DII),
+  foreign-institution labels, D1 or R2-FII were never applied. Examples: ENIL Mar-16 SBI Life 4.31; SUNDRMFAST Dec-15's own 2.23
+  'Foreign Institutional Institution' line; JMFINANCIL Dec-15 Vikram Pandit 1.48 (its 2022-form FDI row).
+- **24 have no BSE document:**
+  - BSE Ltd x21: not listed on BSE; the NSE routes are dead (§22f).
+  - SUNDARMFIN Jun-18: BSE has no filing.
+  - KIOCL Mar/Jun-17: already KIOCL's own Reg-31 filings via its website.
+**Written: 58 `shp_cell_fix` entries.** `was` = the stored cell; `cell` = [prom, fii, dii, mf, ins] from the filing; date / nsh slots
+unchanged, because `shp_lag_fix` carries the filing day. Every why starts "§164t third-party ledger re-read", which matches
+VALUE_HEAL_MARK. Evidence is in `_shp_164_audit.json` (label §164t); builder `build_p164t.py`, writer `write_164t.py`. The 58 are the
+22 wrong-row cells and the 36 rules-only cells that create no new one-quarter spike.
+**Held — 18 cells:**
+- **Spike (13).** A spike = the new value is a local extreme with both jumps >= 0.5 pp and >= 0.5 pp above the stored value's own
+  spike. The test is iterated with held neighbours at their stored values. The cause is the neighbouring seam quarter: it is still an
+  archived-Moneycontrol aggregator cell (`shp_fill_hist_2010_2016`) or is itself held. Cells: AUTOAXLES Mar-16, CARERATING Dec-15,
+  DBCORP Dec-15, GODREJPROP Dec-15, GVPIL Dec-15, IMAGICAA Mar-16, JKIL Dec-15, LT Dec-15, MPHASIS Dec-15, POWERGRID Dec-15 + Mar-16,
+  SRF Dec-15, WHIRLPOOL Mar-16.
+- **Revision-only (5).** BSE keeps only a LATER revision, so the original is not on BSE and the stored numbers cannot be shown wrong
+  against it (§142k). Cells: NLCINDIA Dec-15 (revised 16-Dec-2016), JAGRAN Dec-15 (9-May-2016), MOTHERSON Mar-16 (12-May-2016),
+  KARURVYSYA Jun-18 (13-Aug-2018), SUNDARMFIN Dec-21 (29-Jan-2022).
+**Traps:**
+- The cached BSE lists (and `dii_session/aspx_codes.json`) carry the placeholder code 600001 for KARURVYSYA / SUNDARMFIN. Their real
+  codes 590003 / 590071 list XBRL names for 2016-18, which is likely why third-party values were used. Those XBRL files are now 404
+  on both `/XBRLFILES/SHPXBRLDataXML/` and `/XBRL1/`; a known-good file returns 200 with the same request.
+- Table III's `Fld_AuthoriseDate` tells which version BSE serves. When it is later than the served date, check the list: a revision
+  may be the only version.
+- An evidence-file change by another session (§164s part 5, HDFC Life domestic) moved 4 readings between the first measurement and
+  the write. Re-run on origin before writing.
+**Open:** 560 Dec-15/Mar-16 quarters are still served from `shp_fill_hist_2010_2016` (archived Moneycontrol pages). The same re-read
+is the next step (user-approved, read-only).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
