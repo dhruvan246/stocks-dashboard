@@ -22017,6 +22017,19 @@ KESORAMIND 2013, ALOKTEXT 2009, IDEA 2019, SUZLON 2022, SINTEX 2016, ABINFRA 202
 adjusted prices. Cause: `reconcile_rights` judges "applied" from ONE pair of 2-decimal closes (BAJFINANCE 13.49 -> 13.20 reads 0.9709,
 inside the 0.083% floor, while every bar either side says 0.9703). Same root cause as the storage finding; fix together with it (more
 stored precision, or a multi-bar reconcile against a ledger of raw closes) — user decision.
+**CORRECTION (2026-10-04 evening, user: "i went to their vedanta page n checked the chart. it was 157 on same date").** My line above
+"quantmac's raw demerger convention = NSE's published practice" was WRONG as a statement about quantmac's data. Measured on their site
+(`https://quantmac.tail8b8f87.ts.net/api/stock/VEDL/prices?period=3y`, adjusted=true and =false return the SAME series): 29-Aug-2025
+close 157.40 = NSE 420.65 x 0.3742, i.e. their price SERIES is demerger-adjusted exactly as ours; their corp_actions carries the 30-Apr-2026
+"Spin Off" scheme. In their backtest file the 200-DMA (227.24 = ours) and 52-week HIGH (360 = ours) use that series — only the 52-week LOW
+column prints the traded low (268.70). Classified every one of the 45 demergers by their own 200-DMA cells in the 250 days after the ex-date
+(`~/stocks-cache/dry/demerger_spine.json`): **26 events (all 2016+) their series ADJUSTS** — 132 low cells + 5 FRETAIL-2017 high cells are
+their low column contradicting their own chart (a "please check", not a convention); **13 events (2008-2015) their series does NOT carry**
+(200-DMA, high and low all raw — 183 cells); 6 events have no 200-DMA cell in reach (14 cells). NSE's own 52-week file is raw across
+demergers, so it sits with their LOW column, not with their chart. Their chart's 52-week low to 29-May-2026 is 151.83 (9-Jul-2025), below
+the demerger-adjusted 157.19, because their chart series is ALSO dividend-adjusted (their Technicals note: "adj_close (split/bonus/
+dividend-corrected)"; Rs 16 interim ex 26-Aug-2025 lies between the two dates) — we do not adjust dividends (§174). Reply #3 now splits the
+demerger cells into "DL: your series adjusts, your low column doesn't" and "D: demergers before 2016 absent from your series".
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
