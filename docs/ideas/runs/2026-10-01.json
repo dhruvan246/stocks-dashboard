@@ -1,0 +1,1117 @@
+{
+ "date": "2026-10-01",
+ "run_started": "2026-10-04 13:06 IST",
+ "run_finished": "2026-10-04 13:33 IST",
+ "mode": "scheduled cloud routine - CATCH-UP RUN covering the two trading days missed since 2026-09-29",
+ "covers_trading_days": [
+  "2026-09-30",
+  "2026-10-01"
+ ],
+ "universe": 1205,
+ "candidates": 16,
+ "candidates_2026_09_30": 25,
+ "filings_status": "CATCH-UP. The routine last ran on 2026-09-29; the only trading days missed are 2026-09-30 (Wed) and 2026-10-01 (Thu). 2026-10-02 (Gandhi Jayanti) and 2026-10-03 (Sat) produced NO BSE bhavcopy - verified by fetching both and getting zero rows - and 2026-10-04 is a Sunday. Both missed days were RE-SCANNED from scratch this run and both are now COMPLETE reads: 2026-09-30 read 3,104 of BSE's reported 3,104 rows at 13:11 IST, 2026-10-01 read 1,793 of 1,793 at 13:13 IST, announcements_capped false on both. This MATTERS for 30-Sep: the GitHub Actions scan of that evening was CAPPED at 2,342 of a then-reported 2,361 because it ran at 18:59 IST on an annual-report deadline day and missed the evening flood - the true count is 3,104. The re-read lifted in-universe filings from 95 to 105 and candidates from 22 to 25, and the three names it newly exposed include HIGHWAY INFRASTRUCTURE, whose second order was filed at 21:17 IST, after the Actions read. Without the re-read that name would not have been seen at all.",
+ "candidates_considered": [
+  {
+   "ticker": "GPTINFRA",
+   "scrip": "533761",
+   "name": "GPT Infraprojects Ltd",
+   "mcap": 1503.1,
+   "score": 6.0,
+   "signals": {
+    "ORDER": 3,
+    "DISCLOSE": 2,
+    "VOL": 1
+   },
+   "verdict": "RESEARCHED, NOT PUBLISHED. Three filings read in full. (a) Subsidiary GPT Concrete Products South Africa (Pty) Ltd won a contract from the Chief Procurement Officer, Transnet Freight Rail, South Africa to manufacture railway concrete sleepers at Ladysmith, KZN: ZAR 660 million plus VAT, approximately Rs 385 crore, OVER 5 YEARS. (b) WOS Alcon Builders and Engineers was declared L1 (first lowest) in an order valued Rs 134.11 crore from CSTE Western Railway for 4-aspect automatic block signalling - L1 IS NOT AN AWARD. (c) A Rs 21.21 crore contract win by Alcon. Why not published: the Rs 385 cr headline is a 5-year contract, so it annualises to about Rs 77 cr against FY26 revenue of Rs 1,226.27 cr = 6.3% a year, the under-10%-of-sales bucket the study found weakest; GPT filed 18 ORDER-TYPE DISCLOSURES IN 760 DAYS, putting it in the 8-or-more bucket that reached 2x 17.3% of the time and 5x never; and growth has stalled - Q1 FY27 revenue Rs 282.07 cr is DOWN 9.0% YoY with PAT down 1.1%. Also illiquid: median 60-day turnover Rs 9.0 lakh."
+  },
+  {
+   "ticker": "EVEXIA",
+   "scrip": "524444",
+   "name": "Evexia Lifecare Ltd",
+   "mcap": 377.3,
+   "score": 6,
+   "signals": {
+    "DEAL": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. SAST Reg 29(2) disclosures plus a breakout. Filed by acquirers, no operational filing."
+  },
+  {
+   "ticker": "RSL",
+   "scrip": "544731",
+   "name": "Rajputana Stainless Ltd",
+   "mcap": 1456.6,
+   "score": 6,
+   "signals": {
+    "DEAL": 5,
+    "VOL": 1
+   },
+   "verdict": "SKIPPED. Five-plus SEBI SAST Regulation 29(2) disclosures across 2026-09-30 and 2026-10-01 - these are filed BY acquirers, not by the company, and signal someone accumulating. The playbook skips promoter/holding changes as a trigger; there is no operational filing behind it."
+  },
+  {
+   "ticker": "GKSL",
+   "scrip": "544666",
+   "name": "Gujarat Kidney and Super Speciality Ltd",
+   "mcap": 1531.1,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume: +8.2% on 58.2x the 60-day median volume at the window high, with no filing on the day to explain it. The playbook watch-lists these rather than researching them, and the repo's own study found a volume explosion is an alarm bell, not evidence - 81% of 5x runs had one and so did 78% of the stocks that went nowhere."
+  },
+  {
+   "ticker": "UNIFIED",
+   "scrip": "544406",
+   "name": "Unified Data Tech Solutions Ltd",
+   "mcap": 998.3,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Receipt of Purchase Order' with no value in the headline, on both days."
+  },
+  {
+   "ticker": "CRYOGENIC",
+   "scrip": "544440",
+   "name": "Cryogenic Ogs Ltd",
+   "mcap": 632.6,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume on 01-Oct; the 30-Sep purchase order stated no value."
+  },
+  {
+   "ticker": "GCSL",
+   "scrip": "543324",
+   "name": "Gretex Corporate Services Ltd",
+   "mcap": 1641.6,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume, no filing."
+  },
+  {
+   "ticker": "CEINSYS",
+   "scrip": "538734",
+   "name": "Ceinsys Tech Ltd",
+   "mcap": 1366.9,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Intimation of Extension of Letter of Award from MSRDC Tunnels Limited' - an extension of an existing LOA with no value in the headline. Not a new order."
+  },
+  {
+   "ticker": "NILAINFRA",
+   "scrip": "530377",
+   "name": "Nila Infrastructures Ltd",
+   "mcap": 261.5,
+   "score": 4.0,
+   "signals": {
+    "ORDER": 2
+   },
+   "verdict": "SKIPPED. Two 'Intimation of Amendment in Work Order' filings at 22:00 and 22:02 IST. Amendments to existing work orders, no value in the headline. Median turnover Rs 1.7 lakh."
+  },
+  {
+   "ticker": "SEPC",
+   "scrip": "532945",
+   "name": "SEPC Ltd",
+   "mcap": 823.1,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. BSE classified it ORDER but the filing is an update on a High Court order, settlement of disputes and removal of attachments - litigation, not an order won."
+  },
+  {
+   "ticker": "SILVERTUC",
+   "scrip": "543525",
+   "name": "Silver Touch Technologies Ltd",
+   "mcap": 1769.0,
+   "score": 4,
+   "signals": {
+    "DEAL": 2
+   },
+   "verdict": "SKIPPED. SAST Reg 29(2) disclosures only."
+  },
+  {
+   "ticker": "ORIRAIL",
+   "scrip": "531859",
+   "name": "Oriental Rail Infrastructure Ltd",
+   "mcap": 832.2,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Receipt of order' with no value stated in the headline."
+  },
+  {
+   "ticker": "GAJA",
+   "scrip": "544885",
+   "name": "Gaja Alternative Asset Management Ltd",
+   "mcap": 1907.9,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. Classified ORDER but it is the outcome of litigation involving a subsidiary - a court order, not a customer order."
+  },
+  {
+   "ticker": "CEWATER",
+   "scrip": "544315",
+   "name": "Concord Enviro Systems Ltd",
+   "mcap": 525.5,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. Subsidiary Rochem order, no value in the headline read."
+  },
+  {
+   "ticker": "DHABRIYA",
+   "scrip": "538715",
+   "name": "Dhabriya Polywood Ltd",
+   "mcap": 518.8,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Intimation of receiving of work order' on both days with no value in the headline."
+  },
+  {
+   "ticker": "PRANAV",
+   "scrip": "544909",
+   "name": "Pranav Constructions Ltd",
+   "mcap": 1098.8,
+   "score": 4,
+   "signals": {
+    "RESULT": 3
+   },
+   "verdict": "SKIPPED. Q1 FY27 results filed late (18:58-21:33 IST on 01-Oct). A results filing qualifies as a trigger only at revenue growth >= 30% YoY with PAT growth; not assessed this run because the research budget was spent on the two government-lane names and the two order names above."
+  }
+ ],
+ "candidates_considered_2026_09_30": [
+  {
+   "ticker": "CSML",
+   "scrip": "544900",
+   "name": "Complete Sports and Management India Ltd",
+   "mcap": 417.4,
+   "score": 7,
+   "signals": {
+    "ORDER": 1,
+    "DISCLOSE": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Press release claims a Rs 40 crore order to develop 'India's Largest Family Entertainment Centre'. A press release headline is not a Reg 30 order disclosure with the mandated fields, the awarding entity is not identified in the headline, and the playbook skips triggers that are only a press release. Would need the filing itself plus a trailing sales figure to size; not pursued this run."
+  },
+  {
+   "ticker": "ADMACH",
+   "scrip": "544669",
+   "name": "Admach Systems Ltd",
+   "mcap": 338.5,
+   "score": 4.5,
+   "signals": {
+    "ORDER": 2,
+    "DISCLOSE": 1
+   },
+   "verdict": "SKIPPED after reading the filings. Purchase order of Rs 53.10 lakh (incl GST) for a complete NDT machine setup, plus a useful disclosure that the TOTAL ORDER BOOK stands at Rs 69.04 crore incl GST. The order is 0.08% of the book - far too small to be a trigger."
+  },
+  {
+   "ticker": "DELTACORP",
+   "scrip": "532848",
+   "name": "Delta Corp Ltd",
+   "mcap": 1962.0,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. Pure price/volume, no filing."
+  },
+  {
+   "ticker": "VALIANT",
+   "scrip": "526775",
+   "name": "Valiant Communications Ltd",
+   "mcap": 1971.7,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "UPDATE, not a new idea. Valiant Communications appeared as VOL + BREAKOUT on 2026-09-30, continuing the run that followed the Rs 40.25 cr letter of award published as 2026-09-29-VALIANT. Per the playbook a published name is re-examined only on a NEW hard trigger; there was none in this window, so no update note was written."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "name": "Regency Fincorp Ltd",
+   "mcap": 430.8,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "3BBLACKBIO",
+   "scrip": "532067",
+   "name": "3B BlackBio Dx Ltd",
+   "mcap": 1420.3,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "SYSTEMATIC",
+   "scrip": "544541",
+   "name": "Systematic Industries Ltd",
+   "mcap": 637.7,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "SWARAJ",
+   "scrip": "544861",
+   "name": "Swaraj Suiting Ltd",
+   "mcap": 1003.8,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "BIZOTIC",
+   "scrip": "543926",
+   "name": "Bizotic Commercial Ltd",
+   "mcap": 721.4,
+   "score": 4,
+   "signals": {
+    "RESULT": 1,
+    "VOL": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "TIPCO",
+   "scrip": "544740",
+   "name": "Tipco Engineering India Ltd",
+   "mcap": 656.1,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "UNIFIED",
+   "scrip": "544406",
+   "name": "Unified Data Tech Solutions Ltd",
+   "mcap": 998.3,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "PRARUH",
+   "scrip": "544538",
+   "name": "Praruh Technologies Ltd",
+   "mcap": 250.7,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "NATFIT",
+   "scrip": "531289",
+   "name": "National Fittings Ltd",
+   "mcap": 283.0,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "PHCAP",
+   "scrip": "500143",
+   "name": "PH Capital Ltd",
+   "mcap": 400.4,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "CRYOGENIC",
+   "scrip": "544440",
+   "name": "Cryogenic Ogs Ltd",
+   "mcap": 632.6,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Purchase Order from an International MNC Specializing Industrial...' - the headline states no value. Not sized, not pursued."
+  },
+  {
+   "ticker": "RSL",
+   "scrip": "544731",
+   "name": "Rajputana Stainless Ltd",
+   "mcap": 1456.6,
+   "score": 4,
+   "signals": {
+    "DEAL": 3
+   },
+   "verdict": "SKIPPED. Five-plus SEBI SAST Regulation 29(2) disclosures across 2026-09-30 and 2026-10-01 - these are filed BY acquirers, not by the company, and signal someone accumulating. The playbook skips promoter/holding changes as a trigger; there is no operational filing behind it."
+  },
+  {
+   "ticker": "EVEXIA",
+   "scrip": "524444",
+   "name": "Evexia Lifecare Ltd",
+   "mcap": 377.3,
+   "score": 4,
+   "signals": {
+    "DEAL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "SOLARWORLD",
+   "scrip": "544532",
+   "name": "Solarworld Energy Solutions Ltd",
+   "mcap": 1091.2,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "RESEARCHED and PUBLISHED (lane govt). Reg 30: WOS ZNShine Solarworld received a PO for 96,000 G12R 625 Wp panels at Rs 7,812.50 each = Rs 75.00 cr basic / Rs 78.75 cr incl 5% IGST. 96,000 x 625 Wp = 60.0 MW, so Rs 1.25 cr per MW - within 4% of the playbook's Rs 1.3 cr non-DCR module constant. The order itself is only 5.6-6.6% of a year's sales (the WEAKEST bucket the order study measured) and is not the reason to look. The reason is the BESS franchise behind it: three NTPC awards read field by field, 257 MW / 514 MWh for Rs 599.39 cr at Rs 1.08-1.19 cr per MWh, a sum the annual report independently confirms at Rs 5.99 bn - against GEC-III's Rs 50,000 cr for 50 GWh, an implied Rs 1.00 cr per MWh. Order book Rs 2,813 cr = 2.58x market cap; 8.2x trailing earnings, 1.29x book, at the 52-week low after -62.2% in a year. See ideas.json 2026-10-01-SOLARWORLD."
+  },
+  {
+   "ticker": "IZMO",
+   "scrip": "532341",
+   "name": "IZMO Ltd",
+   "mcap": 1285.9,
+   "score": 4,
+   "signals": {
+    "DEAL": 4
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "SWASTIKA",
+   "scrip": "530585",
+   "name": "Swastika Investmart Ltd",
+   "mcap": 293.4,
+   "score": 4,
+   "signals": {
+    "FUNDRAISE": 2
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "TIRUMALCHM",
+   "scrip": "500412",
+   "name": "Thirumalai Chemicals Ltd",
+   "mcap": 1767.3,
+   "score": 4,
+   "signals": {
+    "FUNDRAISE": 2
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  },
+  {
+   "ticker": "TGVSL",
+   "scrip": "507753",
+   "name": "TGV Sraac Ltd",
+   "mcap": 1247.6,
+   "score": 4,
+   "signals": {
+    "CAPEX": 1
+   },
+   "verdict": "SKIPPED. Solar generating capacity rising from 70.40 MWp to 75.40 MWp - a 5 MWp captive addition. Real but immaterial for a Rs 1,248 cr company."
+  },
+  {
+   "ticker": "DHABRIYA",
+   "scrip": "538715",
+   "name": "Dhabriya Polywood Ltd",
+   "mcap": 518.8,
+   "score": 4,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "SKIPPED. 'Intimation of receiving of work order' on both days with no value in the headline."
+  },
+  {
+   "ticker": "HILINFRA",
+   "scrip": "544477",
+   "name": "Highway Infrastructure Ltd",
+   "mcap": 321.1,
+   "score": 4.0,
+   "signals": {
+    "ORDER": 2
+   },
+   "verdict": "RESEARCHED, NOT PUBLISHED. Two orders read from the filings: a contract agreement for Gorakhpur Link Expressway toll collection from UPEIDA worth Rs 220,66,33,332 over 2 years (Rs 105,07,77,777 year one plus 10% escalation - arithmetic checks: 105.08 + 115.58 = 220.66), and an NHAI LOA of Rs 24,45,99,930 for the Velanchettiyur Fee Plaza, Tamil Nadu. Rs 220.66 cr against a Rs 321 cr market cap looks dramatic until you count the filings: HIGHWAY INFRASTRUCTURE FILED 35 ORDER-TYPE DISCLOSURES IN THE 760 DAYS TO 2026-10-01 (Moti Naroli, Katiyara, Venkatapalem, Kozhinjipatti, Palayam, Velanchettiyur...). Toll-plaza LOAs are its routine business, which puts it in the 8-or-more bucket the study found reached 2x only 17.3% of the time and 5x NEVER. Second problem: the filing never states which way the money flows on a user-fee collection contract - whether Rs 220.66 cr is revenue to the company or its remittance obligation to UPEIDA - so it cannot be sized against sales at all. Third: median 60-day turnover Rs 2.4 lakh, and only 1,423 shares traded on 2026-09-30. Not publishable."
+  },
+  {
+   "ticker": "BEEZAASAN",
+   "scrip": "544369",
+   "name": "Beezaasan Explotech Ltd",
+   "mcap": 1098.6,
+   "score": 4,
+   "signals": {
+    "RESULT": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "SKIPPED. No filing with a stated number on the day, or a pure price/volume move - watch-listed, not researched."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "id": "crude",
+   "strength": 10.7,
+   "direction": "up",
+   "evidence": [
+    "WPI Crude Petroleum 3m +85.6%",
+    "WPI Petrol 1m +24.5%",
+    "WPI Petroleum Coke 1m +22.6%"
+   ],
+   "mapped_benefit": [
+    "ONGC",
+    "Oil India",
+    "Hindustan Oil Exploration",
+    "Selan Exploration"
+   ]
+  },
+  {
+   "group": "Silver",
+   "id": "silver",
+   "strength": 10.16,
+   "direction": "up",
+   "evidence": [
+    "WPI Silver 12m +152.4%",
+    "import unit price sy +85.1% · HS 710691 grains (2 codes, US$56.9mn/month)",
+    "import unit price sy +66.2% · HS 710692 containing 99.9 percent or more by wei (4 codes, US$113.7mn/month)"
+   ],
+   "mapped_benefit": [
+    "Hindustan Zinc",
+    "Modison Ltd"
+   ]
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "id": "tungsten",
+   "strength": 10.0,
+   "direction": "up",
+   "evidence": [
+    "export unit price sy +606.5% · HS 284180 sodium tungstate (2 codes, US$21.2mn/month)",
+    "import unit price sy +280.4% · HS 8101 waste and scrap of tungsten and alloys (5 codes, US$7.6mn/month)",
+    "export unit price sy +244.5% · HS 8101 waste and scrap of tungsten and alloys (3 codes, US$8.6mn/month)"
+   ],
+   "mapped_benefit": []
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "id": "shipping",
+   "strength": 7.62,
+   "direction": "up",
+   "evidence": [
+    "Containerized Freight Index (global) 1y +228.6%",
+    "Containerized Freight Index (global) 1m +4.3%"
+   ],
+   "mapped_benefit": [
+    "Shipping Corporation of India",
+    "Great Eastern Shipping",
+    "Seamec"
+   ]
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "id": "sulphuric_acid",
+   "strength": 6.97,
+   "direction": "up",
+   "evidence": [
+    "WPI Sulphuric Acid 1m +20.9%",
+    "import unit price 3m +95.2% · HS 280700 sulphuric acid (1 codes, US$40.5mn/month)",
+    "Sulfur (global) 1y +189.8%"
+   ],
+   "mapped_benefit": [
+    "Tanfac Industries",
+    "Hindustan Zinc",
+    "Hindalco"
+   ]
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "id": "benzene_pta",
+   "strength": 6.03,
+   "direction": "up",
+   "evidence": [
+    "WPI Alkyl Benzene 1m +18.1%",
+    "WPI Alkyl Benzene 3m +28.9%",
+    "WPI Alkyl Benzene 12m +35.7%"
+   ],
+   "mapped_benefit": [
+    "Reliance Industries",
+    "Indian Oil"
+   ]
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "id": "polyolefins",
+   "strength": 6.0,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +241.4% · HS 3902 polypropylene (4 codes, US$262.8mn/month)",
+    "WPI Polypropylene film 3m +19.5%",
+    "WPI Polyester chips or Polyethylene terepthalate (PET) chips 3m +17.9%"
+   ],
+   "mapped_benefit": [
+    "Reliance Industries"
+   ]
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "id": "graphite_electrodes",
+   "strength": 5.59,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +83.9% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)",
+    "export unit price 1m -24.7% · HS 2713 petroleum bitumen (5 codes, US$33.1mn/month)",
+    "import unit price sy +60.1% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)"
+   ],
+   "mapped_benefit": [
+    "HEG",
+    "Graphite India"
+   ]
+  },
+  {
+   "group": "Copper",
+   "id": "copper",
+   "strength": 5.25,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +157.5% · HS 7407 electrolytic copper rods or black copp (13 codes, US$18.1mn/month)",
+    "export unit price sy +64.2% · HS 7404 copper scrap covered by isri code barl (7 codes, US$30.7mn/month)",
+    "export unit price sy +46.3% · HS 7403 cathods and sectns of cathods of refin (8 codes, US$135.8mn/month)"
+   ],
+   "mapped_benefit": [
+    "Sunlite Recycling Industries",
+    "Parmeshwar Metal",
+    "Baheti Recycling Industries",
+    "Hindustan Copper",
+    "KSH International",
+    "Bhagyanagar India",
+    "Precision Wires India"
+   ]
+  },
+  {
+   "group": "Natural gas",
+   "id": "natgas",
+   "strength": 4.93,
+   "direction": "up",
+   "evidence": [
+    "WPI Natural Gas 1m +14.8%",
+    "LNG JKM (global) 1y +133.9%",
+    "WPI LPG 1m +10.1%"
+   ],
+   "mapped_benefit": [
+    "ONGC",
+    "Oil India"
+   ]
+  },
+  {
+   "group": "Lithium carbonate and battery materials",
+   "id": "lithium",
+   "strength": 4.4,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +66.0% · HS 2825 other inorganic bases metal oxides hyd (10 codes, US$47.7mn/month)",
+    "Cobalt (global) 1m -30.5%",
+    "Lithium (global) 1m -22.5%"
+   ],
+   "mapped_benefit": [
+    "Himadri Speciality Chemical"
+   ]
+  },
+  {
+   "group": "Zinc and lead",
+   "id": "zinc_lead",
+   "strength": 4.39,
+   "direction": "up",
+   "evidence": [
+    "WPI Zinc Concentrate 12m +65.8%",
+    "WPI Lead Concentrate 1m -10.3%",
+    "WPI Lead Concentrate 3m -20.7%"
+   ],
+   "mapped_benefit": [
+    "Hindustan Zinc",
+    "Gravita India",
+    "Pondy Oxides & Chemicals",
+    "Nile Ltd"
+   ]
+  },
+  {
+   "group": "Paper and pulp",
+   "id": "paper",
+   "strength": 4.31,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +43.1% · HS 4707 othr incl unsorted waste and scrap (4 codes, US$100.0mn/month)",
+    "WPI Pulp board 1m +3.0%",
+    "WPI Pulp board 3m +6.7%"
+   ],
+   "mapped_benefit": [
+    "JK Paper",
+    "West Coast Paper Mills",
+    "Andhra Paper",
+    "Seshasayee Paper"
+   ]
+  },
+  {
+   "group": "Urea, DAP, potash",
+   "id": "fertiliser",
+   "strength": 3.54,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +106.2% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "import unit price 3m +45.4% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "WPI Superphospate/Phosphatic fertilizer, others 1m +7.3%"
+   ],
+   "mapped_benefit": [
+    "Chambal Fertilisers",
+    "Coromandel International",
+    "Paradeep Phosphates",
+    "Madhya Bharat Agro Products",
+    "Krishana Phoschem",
+    "RCF"
+   ]
+  },
+  {
+   "group": "Methanol and acetic acid",
+   "id": "methanol_acetic",
+   "strength": 3.28,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +98.3% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)",
+    "Methanol (global) 1y +76.0%",
+    "import unit price 1m -24.6% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)"
+   ],
+   "mapped_benefit": [
+    "GNFC"
+   ]
+  },
+  {
+   "group": "Gold",
+   "id": "gold",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Gold & gold ornaments 12m +48.0%",
+    "export unit price sy +57.1% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$26.2mn/month)",
+    "import unit price 3m -25.8% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$4129.3mn/month)"
+   ],
+   "mapped_benefit": [
+    "Muthoot Finance",
+    "Manappuram Finance",
+    "Titan",
+    "Kalyan Jewellers",
+    "Sky Gold & Diamonds",
+    "Utssav CZ Gold Jewels",
+    "Shanti Gold International"
+   ]
+  },
+  {
+   "group": "Caustic soda and chlor-alkali",
+   "id": "caustic_soda",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Caustic soda (sodium hydroxide) 1m +9.6%",
+    "export unit price 3m -29.1% · HS 2801 iodine (1 codes, US$4.9mn/month)",
+    "export unit price sy +57.8% · HS 2801 iodine (1 codes, US$4.9mn/month)"
+   ],
+   "mapped_benefit": [
+    "Gujarat Alkalies & Chemicals",
+    "DCM Shriram",
+    "Lords Chloro Alkali",
+    "Epigral (Meghmani Finechem)",
+    "Punjab Alkalies",
+    "DCW",
+    "De Nora India",
+    "TGV Sraac"
+   ]
+  },
+  {
+   "group": "Spices (turmeric, cumin, chilli, cardamom)",
+   "id": "spices",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Chillies (Dry) 12m +48.0%",
+    "WPI Chillies (Dry) 3m +17.1%",
+    "export unit price sy +48.4% · HS 090421 of genus capsicum (2 codes, US$60.4mn/month)"
+   ],
+   "mapped_benefit": [
+    "(none clean) watch"
+   ]
+  },
+  {
+   "group": "Manganese ore and alloys",
+   "id": "manganese",
+   "strength": 3.18,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +95.5% · HS 7202 ferro-silico-manganese (11 codes, US$23.1mn/month)",
+    "WPI Manganese Ore 1m +7.6%",
+    "WPI Silicomanganese 1m +5.3%"
+   ],
+   "mapped_benefit": [
+    "MOIL",
+    "Sandur Manganese & Iron Ores",
+    "Maithan Alloys"
+   ]
+  },
+  {
+   "group": "Tea",
+   "id": "tea",
+   "strength": 3.1,
+   "direction": "up",
+   "evidence": [
+    "WPI Tea 1m +9.3%",
+    "import unit price 1m -24.6% · HS 0902 tea black,leaf in bulk (6 codes, US$7.2mn/month)",
+    "WPI Processed Tea 3m +16.8%"
+   ],
+   "mapped_benefit": [
+    "McLeod Russel",
+    "Goodricke Group",
+    "Jay Shree Tea",
+    "Rossell India",
+    "Andrew Yule"
+   ]
+  },
+  {
+   "group": "Natural rubber",
+   "id": "rubber",
+   "strength": 2.6,
+   "direction": "up",
+   "evidence": [
+    "WPI Raw Rubber 3m +20.8%",
+    "WPI Raw Rubber 1m +6.4%",
+    "Rubber (global) 1y +49.4%"
+   ],
+   "mapped_benefit": [
+    "Harrisons Malayalam"
+   ]
+  },
+  {
+   "group": "Aluminium",
+   "id": "aluminium",
+   "strength": 2.53,
+   "direction": "up",
+   "evidence": [
+    "WPI Aluminium ingot 1m +7.6%",
+    "export unit price sy +69.9% · HS 7602 aluminium scrap coverd by isri code ta (2 codes, US$6.8mn/month)",
+    "WPI Aluminium ingot 12m +29.9%"
+   ],
+   "mapped_benefit": [
+    "Hindalco",
+    "NALCO",
+    "Vedanta"
+   ]
+  },
+  {
+   "group": "Cashew",
+   "id": "cashew",
+   "strength": 2.33,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +35.0% · HS 080132 cashew karnel, whole (3 codes, US$3.7mn/month)",
+    "import unit price 1m +12.0% · HS 080132 cashew karnel, whole (3 codes, US$3.7mn/month)",
+    "WPI Cashew nut 12m +5.7%"
+   ],
+   "mapped_benefit": []
+  },
+  {
+   "group": "Phenol and acetone",
+   "id": "phenol_acetone",
+   "strength": 2.32,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +69.5% · HS 291411 acetone (1 codes, US$5.4mn/month)",
+    "import unit price sy +66.7% · HS 290711 phenol,pure carbolic acid (2 codes, US$24.2mn/month)",
+    "import unit price 3m +28.4% · HS 290711 phenol,pure carbolic acid (2 codes, US$24.2mn/month)"
+   ],
+   "mapped_benefit": [
+    "Deepak Nitrite"
+   ]
+  },
+  {
+   "group": "Titanium dioxide",
+   "id": "tio2",
+   "strength": 2.12,
+   "direction": "up",
+   "evidence": [
+    "export unit price 3m +31.8% · HS 320611 pearlsnt pigmnt cotd wth othr prl pigm (2 codes, US$2.6mn/month)",
+    "export unit price 1m +17.0% · HS 320611 pearlsnt pigmnt cotd wth othr prl pigm (2 codes, US$2.6mn/month)",
+    "export unit price 3m -24.1% · HS 282300 other titanium oxides (2 codes, US$8.9mn/month)"
+   ],
+   "mapped_benefit": []
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "id": "steel",
+   "strength": 2.09,
+   "direction": "up",
+   "evidence": [
+    "HRC Steel (global) 1y +62.6%",
+    "WPI Stainless Steel Pencil Ingots/Billets/Slabs 3m +13.4%",
+    "WPI Mild Steel (MS) Blooms 1m +3.3%"
+   ],
+   "mapped_benefit": [
+    "Tata Steel",
+    "JSW Steel",
+    "SAIL",
+    "Jindal Steel & Power"
+   ]
+  },
+  {
+   "group": "Iron ore and pellets",
+   "id": "iron_ore",
+   "strength": 1.9,
+   "direction": "up",
+   "evidence": [
+    "WPI Iron Ore 1m +5.7%",
+    "export unit price 3m +22.5% · HS 2601 agglomerated iron ore pellets (5 codes, US$155.1mn/month)",
+    "import unit price 3m -17.2% · HS 2601 agglomerated iron ore pellets (9 codes, US$28.9mn/month)"
+   ],
+   "mapped_benefit": [
+    "NMDC",
+    "Godawari Power & Ispat",
+    "Lloyds Metals & Energy",
+    "Sandur Manganese & Iron Ores"
+   ]
+  },
+  {
+   "group": "PVC resin",
+   "id": "pvc",
+   "strength": 1.79,
+   "direction": "up",
+   "evidence": [
+    "WPI Poly Vinyl Chloride (PVC) 3m +14.3%",
+    "import unit price 3m +16.5% · HS 390410 suspension grade pvc resin (3 codes, US$153.9mn/month)",
+    "WPI Poly Vinyl Chloride (PVC) 12m +15.6%"
+   ],
+   "mapped_benefit": [
+    "Chemplast Sanmar",
+    "DCW",
+    "Finolex Industries",
+    "Reliance Industries"
+   ]
+  },
+  {
+   "group": "Milk, SMP and whey",
+   "id": "dairy",
+   "strength": 1.79,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +26.9% · HS 0404 whey,dry,blocks and powdered (4 codes, US$4.9mn/month)",
+    "spot milk 1w -6.3%",
+    "Milk (global) 1m -7.3%"
+   ],
+   "mapped_benefit": [
+    "Parag Milk Foods",
+    "Dodla Dairy",
+    "Hatsun Agro",
+    "Heritage Foods"
+   ]
+  },
+  {
+   "group": "Palm oil and edible oils",
+   "id": "palm_oil",
+   "strength": 1.6,
+   "direction": "up",
+   "evidence": [
+    "WPI Palm Oil 1m +4.8%",
+    "WPI Mustard oil cake 12m +21.6%",
+    "WPI Soyabean Oil 3m +10.7%"
+   ],
+   "mapped_benefit": [
+    "Patanjali Foods",
+    "Gokul Agro Resources",
+    "AWL Agri Business (Adani Wilmar)"
+   ]
+  },
+  {
+   "group": "Cotton",
+   "id": "cotton",
+   "strength": 1.57,
+   "direction": "up",
+   "evidence": [
+    "WPI Raw Cotton 1m +4.7%",
+    "spot cotton 1w -7.5%",
+    "export unit price 1m -10.5% · HS 5201 cotton, other than indian, of staple l (8 codes, US$30.7mn/month)"
+   ],
+   "mapped_benefit": [
+    "Ginners (verify)"
+   ]
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "Cabinet approves Green Energy Corridor Phase-III scheme for Development of Intra-State Transmission System with Battery Energy Storage Systems (Cabinet, PRID 2316948, 30-Sep-2026)",
+   "outlay_cr": 186405.0,
+   "verdict": "KEPT AND WORKED - the one decision in this window whose money becomes somebody's order book. Rs 1,86,405 crore as parsed from the PIB release body by our own govt.py. Mapped to the 'transmission' basket (measured history: 47 companies, median 4.7x base-to-peak against 3.0x for the market, 49% made 5x) and to 'solar_kusum'. Two names researched and both published: JYOTI STRUCTURES (transmission tower + EPC, whose FY26 annual report names Green Energy Corridors AND BESS as its demand drivers, order book Rs 2,274 cr = 2.94x FY26 income, Q1 FY27 total income +57.1%, stock -41.0% over a year) and SOLARWORLD ENERGY SOLUTIONS (257 MW / 514 MWh of NTPC BESS EPC already won at Rs 1.08-1.19 cr per MWh against the Rs 1.00 cr per MWh GEC-III implies for its 50 GWh). CAVEAT ON THE SPLIT: pib.gov.in and pmindia.gov.in are both blocked from this sandbox, so the release body was NOT re-read. A web search of the official release gives Rs 1,36,378 cr for intra-State transmission, Rs 50,000 cr for 50 GWh of BESS, central support Rs 54,082 cr, target FY2032-33, 135 GW of RE evacuation - a search summary, not a document opened, and it does not reconcile exactly (1,36,378 + 50,000 = 1,86,378 against 1,86,405, a Rs 27 cr gap)."
+  },
+  {
+   "release": "Cabinet approves Minimum Support Prices (MSP) for Rabi Crops for Marketing Season 2027-28 (CCEA, PRID 2316941, 30-Sep-2026)",
+   "outlay_cr": 836000.0,
+   "verdict": "KEPT BY THE GATE, DISCARDED ON READING. Rs 8.36 lakh crore is the largest number in the window and it is the wrong KIND of number: farmer price support is a household/producer subsidy, which is the exact shape of PM Surya Ghar - the one basket in this repo's measured table that UNDERPERFORMED the market outright (1.8x against 2.0x). The question the playbook asks is not how big the number is but whose order book it lands in, and MSP lands in none. Also note the theme mapper tagged this release 'shipbuilding', a plain false positive, so its mapped company list is meaningless and was ignored."
+  },
+  {
+   "release": "Shri Chouhan Approves Rs 5,547.99 Crore Procurement of Pulses and Oilseeds Under PSS for Kharif 2026-27 (Ministry of Agriculture & Farmers Welfare, PRID 2316939, 30-Sep-2026)",
+   "outlay_cr": 5548.0,
+   "verdict": "KEPT BY THE GATE, DISCARDED ON READING. Price-support procurement of agricultural commodities - again a producer subsidy, not an order book, and again mis-tagged 'shipbuilding' by the theme mapper. No listed small-cap beneficiary follows from it."
+  },
+  {
+   "release": "Cabinet approves One Network, Smarter Traffic: Delhi Moves to Real-Time Traffic Management (CCEA, PRID 2316953, 30-Sep-2026)",
+   "outlay_cr": 1789.5,
+   "verdict": "KEPT BY THE GATE, NOT RESEARCHED. Rs 1,789.52 crore for Delhi real-time traffic management IS a procurement that becomes somebody's order book - ITMS hardware, cameras, signal controllers, software integration - and it was mapped to 'defence' and 'shipbuilding', both false positives for this subject. The honest position: this release deserves research that the run's four-name budget did not allow, and the right basket for it (urban ITMS / surveillance electronics) does not exist in theme_map.json yet. Carried to the watch list rather than silently dropped."
+  },
+  {
+   "release": "2026-10-01: 74 PIB releases scanned, 5 opened, 0 kept (dropped: 43 no decision verb, 25 noise, 1 backgrounder, 5 below the Rs 1,000 cr floor). 2026-10-02: 46 scanned, 1 opened, 0 kept.",
+   "outlay_cr": null,
+   "verdict": "Nothing cleared the bar on either day, which on a normal day is the correct answer. Recovered from the committed govt.json at commits 7a14c01de and 55145afc7 - the routine did not run on those days, so these are the GitHub Actions builds, not a re-read."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "JYOTISTRUC",
+   "scrip": "513250",
+   "name": "Jyoti Structures Ltd",
+   "lane": "govt",
+   "mcap_at_call": 1063.5,
+   "call_close": 8.91,
+   "published": true,
+   "confidence": "low",
+   "reason": "PUBLISHED. The government lane's primary name. Transmission tower fabrication and EPC; its own FY2026 annual report names Green Energy Corridors AND Battery Energy Storage Systems as stated demand drivers, and it has FILED completion of an intra-State 400 kV line (Gadag-II, Karnataka, 04-Mar-2026) and a 400 kV LILO at a POWERGRID substation (23-Feb-2026) - so GEC-III's asset class is documented, not inferred. Order book Rs 2,274 cr at 1-Apr-2026 = 2.94x FY26 total income, and larger than the Rs 1,974 cr it has billed in the four and a half years since its Resolution Plan. FY26 total income +53.1%, Q1 FY27 +57.1% with EBITDA +90.0% and margin up 169 bps, while the stock is -41.0% over a year at 17x trailing. 5 order filings in 760 days - between the study's measured extremes. LOW confidence, and the reason is the balance sheet and the register, not the thesis: lenders are at the NCLAT in CONTEMPT PROCEEDINGS over disbursement of NON-FUND-BASED LIMITS, which is the bank-guarantee facility an EPC contractor cannot bid without; the company has NO PROMOTER AT ALL (1,193,651,437 shares, 100.00% public across 201,951 holders - and note the dossier builder's 'promoter 100.0%' was a PARSER ERROR reading the Public row, corrected in the note); reported net profit EXCEEDS PBT in both FY26 and Q1 FY27 because insolvency losses shelter it, so headline EPS is not fully-taxed EPS; a Rights Issue II was live in June 2026; and inside four months the CEO resigned, the Chairman and Independent Director died, and an internal auditor appointed on 30-Apr-2026 was removed on 04-Aug-2026. See ideas.json 2026-10-01-JYOTISTRUC."
+  },
+  {
+   "ticker": "SOLARWORLD",
+   "scrip": "544532",
+   "name": "Solarworld Energy Solutions Ltd",
+   "lane": "govt",
+   "mcap_at_call": 1091.2,
+   "call_close": 125.9,
+   "published": true,
+   "confidence": "medium-low",
+   "reason": "RESEARCHED and PUBLISHED (lane govt). Reg 30: WOS ZNShine Solarworld received a PO for 96,000 G12R 625 Wp panels at Rs 7,812.50 each = Rs 75.00 cr basic / Rs 78.75 cr incl 5% IGST. 96,000 x 625 Wp = 60.0 MW, so Rs 1.25 cr per MW - within 4% of the playbook's Rs 1.3 cr non-DCR module constant. The order itself is only 5.6-6.6% of a year's sales (the WEAKEST bucket the order study measured) and is not the reason to look. The reason is the BESS franchise behind it: three NTPC awards read field by field, 257 MW / 514 MWh for Rs 599.39 cr at Rs 1.08-1.19 cr per MWh, a sum the annual report independently confirms at Rs 5.99 bn - against GEC-III's Rs 50,000 cr for 50 GWh, an implied Rs 1.00 cr per MWh. Order book Rs 2,813 cr = 2.58x market cap; 8.2x trailing earnings, 1.29x book, at the 52-week low after -62.2% in a year. See ideas.json 2026-10-01-SOLARWORLD."
+  },
+  {
+   "ticker": "GPTINFRA",
+   "scrip": "533761",
+   "name": "GPT Infraprojects Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1503.1,
+   "call_close": 118.95,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "RESEARCHED, NOT PUBLISHED. Three filings read in full. (a) Subsidiary GPT Concrete Products South Africa (Pty) Ltd won a contract from the Chief Procurement Officer, Transnet Freight Rail, South Africa to manufacture railway concrete sleepers at Ladysmith, KZN: ZAR 660 million plus VAT, approximately Rs 385 crore, OVER 5 YEARS. (b) WOS Alcon Builders and Engineers was declared L1 (first lowest) in an order valued Rs 134.11 crore from CSTE Western Railway for 4-aspect automatic block signalling - L1 IS NOT AN AWARD. (c) A Rs 21.21 crore contract win by Alcon. Why not published: the Rs 385 cr headline is a 5-year contract, so it annualises to about Rs 77 cr against FY26 revenue of Rs 1,226.27 cr = 6.3% a year, the under-10%-of-sales bucket the study found weakest; GPT filed 18 ORDER-TYPE DISCLOSURES IN 760 DAYS, putting it in the 8-or-more bucket that reached 2x 17.3% of the time and 5x never; and growth has stalled - Q1 FY27 revenue Rs 282.07 cr is DOWN 9.0% YoY with PAT down 1.1%. Also illiquid: median 60-day turnover Rs 9.0 lakh."
+  },
+  {
+   "ticker": "HILINFRA",
+   "scrip": "544477",
+   "name": "Highway Infrastructure Ltd",
+   "lane": "filing",
+   "mcap_at_call": 321.1,
+   "call_close": 44.77,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "RESEARCHED, NOT PUBLISHED. Two orders read from the filings: a contract agreement for Gorakhpur Link Expressway toll collection from UPEIDA worth Rs 220,66,33,332 over 2 years (Rs 105,07,77,777 year one plus 10% escalation - arithmetic checks: 105.08 + 115.58 = 220.66), and an NHAI LOA of Rs 24,45,99,930 for the Velanchettiyur Fee Plaza, Tamil Nadu. Rs 220.66 cr against a Rs 321 cr market cap looks dramatic until you count the filings: HIGHWAY INFRASTRUCTURE FILED 35 ORDER-TYPE DISCLOSURES IN THE 760 DAYS TO 2026-10-01 (Moti Naroli, Katiyara, Venkatapalem, Kozhinjipatti, Palayam, Velanchettiyur...). Toll-plaza LOAs are its routine business, which puts it in the 8-or-more bucket the study found reached 2x only 17.3% of the time and 5x NEVER. Second problem: the filing never states which way the money flows on a user-fee collection contract - whether Rs 220.66 cr is revenue to the company or its remittance obligation to UPEIDA - so it cannot be sized against sales at all. Third: median 60-day turnover Rs 2.4 lakh, and only 1,423 shares traded on 2026-09-30. Not publishable."
+  }
+ ],
+ "published": [
+  "2026-10-01-JYOTISTRUC",
+  "2026-10-01-SOLARWORLD"
+ ],
+ "x_checked": [
+  {
+   "name": "Jyoti Structures (513250)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'Jyoti Structures JYOTISTRUC transmission order book results'. Run ~13:30 IST 2026-10-04.",
+   "posts_found": 4,
+   "new_verified_points": "(1) A PowerGrid order EXISTS - matched to Jyoti's own BSE filing of 23-Jan-2025 ('notification of Award from PowerGrid Corporation of India Limited') and to the FY26 annual report's '800 kV HVDC transmission project awarded by Power Grid Corporation of India Limited'. The Rs 741 cr figure in the posts is NOT in any document read this run. (2) 'Orders in hand near Rs 2,000 cr' - confirmed and SUPERSEDED by the annual report's Rs 2,274 cr at 1-Apr-2026. (3) Second Nashik unit - confirmed (Nashik Plant-2, total capacity ~72,000 MT per annum); the '+33,000 MT' increment is not separately stated. (4) A ~2.5% shareholder block - the 30-Jun-2026 shareholding XBRL does show a 3,00,00,000-share block at 2.51%, so the FIGURE corroborates, but the IDENTITY (claimed as Ashish Kacholia) is NOT verified by any primary document read this run. NOTABLE SILENCE: none of the four posts mentions the NCLAT contempt proceeding, the CEO resignation, the internal-auditor removal or the rights issue - the four facts that most constrain the idea.",
+   "blocked": "cdn.syndication.twimg.com is BLOCKED by this sandbox's egress proxy (HTTP 000 / connect_rejected at 13:08 IST). No post body could be read; titles only, quotes capped at 15 words."
+  },
+  {
+   "name": "Solarworld Energy Solutions (544532)",
+   "searched": "WebSearch restricted to x.com/twitter.com/threadreaderapp.com: 'Solarworld Energy Solutions SOLARWORLD BESS NTPC order'. Run ~13:30 IST 2026-10-04.",
+   "posts_found": 4,
+   "new_verified_points": "Business description matched to the annual report (solar EPC and O&M for PSU and C&I clients; BESS presence confirmed to the filings). TWO CLAIMS CONTRADICTED BY THE FILINGS AND THIS IS THE MOST USEFUL RESULT OF THE SWEEP: a post claims an Rs 806 crore GUVNL battery-storage EPC WIN, and another an Rs 725.33 crore NTPC Renewable Energy 250 MWac solar order. NEITHER appears anywhere in Solarworld's BSE announcements across the 300 days to 2026-10-01 (117 filings, read complete). Worse, the only GUVNL-related filing found is OPPOSITE IN SIGN: the 18-Sep-2026 disclosure that Solarworld had to invoke a DISPUTE ADJUDICATION BOARD against SJVN Green Energy on the GUVNL Phase XIII (100 MW) and XIV (260 MW) contracts, claiming Rs 219.33 cr of retention monies and overdue invoices and recovering Rs 40.27 cr (18.4%), of which only Rs 7.88 cr is cash. A reader taking X at face value would hold a materially more favourable view of this company's Gujarat exposure than its own filings support. The IPO band Rs 333-351 / size Rs 490 cr is consistent with the Rs 338.70 52-week high but the prospectus was not read, so it stays unverified.",
+   "blocked": "cdn.syndication.twimg.com BLOCKED as above - titles only."
+  },
+  {
+   "name": "GPT Infraprojects (533761) and Highway Infrastructure (544477)",
+   "searched": "Not searched on X. Both were taken out of contention on the filings and the order-filing counts alone (18 and 35 order-type disclosures in 760 days respectively), before a social sweep could have changed the verdict.",
+   "posts_found": null,
+   "new_verified_points": "None - sweep not run for these two. Stated so rather than implying nothing exists.",
+   "blocked": "cdn.syndication.twimg.com and forum.valuepickr.com are both blocked from this sandbox in any case."
+  },
+  {
+   "name": "ValuePickr sweep - ALL researched names",
+   "searched": "forum.valuepickr.com probed at 13:08 IST 2026-10-04 with the honest research UA.",
+   "posts_found": null,
+   "new_verified_points": "NONE - the sweep could not run at all.",
+   "blocked": "forum.valuepickr.com returned HTTP 000 / connect_rejected ('the egress proxy denied the CONNECT (organization policy)') by curl, and EGRESS_BLOCKED via the fetch tool. This is the container's network policy, not the forum refusing us. No claim is made either way about whether any researched name has a ValuePickr thread - it was NOT CHECKED, and both published notes say so explicitly."
+  }
+ ],
+ "watch": [
+  "STEEL - the commodity lane's one real development, and it cuts both ways. MetalBook's Indian prints are now dated 2026-10-01 (on 2026-09-29 the freshest were 09-14/09-16), so the Indian confirmation that was missing a week ago now exists. TMT Fe500D rose between 16-Sep and 1-Oct: Mumbai 59.9 -> 62.7 (+4.7%), Delhi 60.0 -> 62.5 (+4.2%), Bangalore 60.6 -> 63.0 (+4.0%), Raipur 56.7 -> 59.0 (+4.1%) Rs/kg, while melting scrap rose far less (Mumbai 36.5 -> 36.7, +0.5%; Raipur 37.4 -> 38.6, +3.2%). A fortnight of spread expansion. BUT over the longer window the spread COMPRESSED: since 12-Feb-2026 Mumbai TMT is +7.0% (58.6 -> 62.7) while Mumbai scrap is +9.6% (33.5 -> 36.7). So this is a two-week expansion inside a compressing trend, on series with only 10-11 readings and a gap between February and September - a watch, not a conviction. Mumbai TMT at Rs 62.7/kg is the highest of the 10 readings since 2025-07-14, which is a statement about OUR span and not an all-time high.",
+  "STEEL - the map gap behind that watch. commodity_map.json's 'steel' group lists only Tata Steel, JSW, SAIL and Jindal Steel as beneficiaries - every one outside the Rs 200-2,000 cr universe - so a confirmed domestic rebar move has NO small-cap name to research. Measured from the fresh universe, the candidates a future run should verify are Rhetan TMT (543590, Rs 1,328 cr), VMS TMT (544521, Rs 235 cr), Mahamaya Steel (513554, Rs 1,949 cr), Steel Exchange India (534748, Rs 1,431 cr), Beekay Steel (539018, Rs 863 cr), Scan Steels (511672, Rs 296 cr) and Vraj Iron and Steel (544204, Rs 403 cr). They were deliberately NOT added to commodity_map.json this run: the playbook allows a name into the map only when its exposure has been read in a document, and no filing or annual report for any of the seven was opened. Adding them on the strength of the word 'TMT' in a company name would be exactly the hunch the rule forbids.",
+  "GOVERNMENT - the Rs 1,789.52 crore Delhi real-time traffic management approval (CCEA, 30-Sep-2026) is a genuine procurement that was kept by the gate but not researched, because the four-name budget went elsewhere. theme_map.json has no urban-ITMS or surveillance-electronics basket, so it mapped to 'defence' and 'shipbuilding', both wrong. Worth a basket and a name.",
+  "Solarworld - the Q1 FY27 investor presentation (14-Aug-2026) and the Q4 FY26 earnings-call recording (26-May-2026) are both on file and neither was read. They are the first place to look for why the PAT margin halved to 10.3% of total income from 20.2%.",
+  "Jyoti Structures - the NCLAT contempt proceeding over non-fund-based limits, and the Rights Issue II terms and post-issue share count. Both change the idea materially and neither was read.",
+  "Pranav Constructions (544447 / PRANAV, Rs 1,099 cr) filed Q1 FY27 results at 18:58-21:33 IST on 01-Oct with median turnover Rs 456.6 lakh. Not assessed this run; a results filing is a trigger at >= 30% revenue growth YoY with PAT growth, which was not checked.",
+  "Gujarat Kidney and Super Speciality (GKSL, Rs 1,531 cr) traded +8.2% on 58.2x its 60-day median volume on 01-Oct with no filing. The loudest volume event in the window and entirely unexplained."
+ ],
+ "map_changes": [],
+ "data_problems": [
+  "CATCH-UP CONTEXT: the routine did not run on 2026-09-30 or 2026-10-01, so latest.json pointed at the 2026-09-29 run for five days. The checkout was 528 commits behind origin/main at the start of this run (0 ahead, clean tree - all 528 already upstream) and was fast-forwarded before any measurement was taken.",
+  "THE GOVERNMENT LANE FOR THE MISSED DAYS WAS RECOVERED FROM GIT, NOT RE-READ. pib.gov.in returns HTTP 000 / 403 at this sandbox's egress proxy, and govt.py has no --date flag, so the PIB releases of 30-Sep and 01-Oct could not be re-fetched. Instead the committed govt.json was read at the three commits GitHub Actions wrote it (9c9926604 for 30-Sep, 7a14c01de for 01-Oct, 55145afc7 for 02-Oct). That is how the Rs 1,86,405 crore GEC-III approval was found at all - it would otherwise have been invisible, because the live govt.json now holds only the 02-Oct build. THE LIMIT OF THIS RECOVERY: govt.json stores no release BODY, so the kept releases' text was never available, and pib.gov.in and pmindia.gov.in are both blocked for a direct read.",
+  "EVERY NON-BSE HOST IS BLOCKED FROM THIS SANDBOX (probed directly at 13:08 IST, all HTTP 000 / connect_rejected): pib.gov.in, metalbook.com, ibjarates.com, tradingeconomics.com, steel.gov.in, ppac.gov.in, forum.valuepickr.com, cdn.syndication.twimg.com. api.bseindia.com and www.bseindia.com both answered 200. Consequently spot.py fetched 0 commodities (westmetall + businessinsider 403) and left spot.json untouched; minsteel.py could not list steel.gov.in; wpi.py left wpi.json.gz untouched; trade.py left trade/** untouched; india_spot.py failed on metalbook, ibja, rubber, sugar, fuel and Trading Economics, each keeping previous rows, with only the two BSE-based sources running (nmdc 2 rows, minsteel 3 rows). india_history.json.gz WAS rebuilt: 152 series, 77,687 dated points.",
+  "WHAT ACTUALLY RAN: feeds_status.json shows the GitHub Actions feeds workflow last completed 2026-10-02 18:59 IST (run 37012926457) with steps_failed EMPTY, landing.refused EMPTY and 15 files landed. So the commodity and government data IS Friday's, and the sandbox failures above changed nothing. Note the workflow ran on 02-Oct even though it was a market holiday, because its cron is weekdays-only and does not check the trading calendar.",
+  "SIGNAL-INPUT STALENESS, unchanged from 2026-09-29 and the reason the commodity lane produced no name again: wpi_month is 2026-04 (six months old) and trade_month is 2026-07 (three months old). spot_date is 2026-10-02 18:56 IST. The top of the signals table - crude 10.70, silver 10.16, tungsten 10.00, sulphuric acid 6.97 - is ranked almost entirely on those two stale sources, NOT on a price that moved this week, and no group was treated as a fresh move on that basis.",
+  "The 2026-09-30 scan committed by GitHub Actions was CAPPED at 2,342 of a then-reported 2,361 rows (read 18:59 IST on an annual-report deadline day). The true count re-read this run is 3,104. Anyone reading the previously committed file would have under-counted that day's filings by 25% and would never have seen Highway Infrastructure's 21:17 IST order. Both days' scan files in this commit are complete reads.",
+  "X SWEEP DEGRADED: WebSearch worked but cdn.syndication.twimg.com is blocked, so no post body could be read for any name. Every X quote in both notes is taken from a search-result title and capped at 15 words, and each note's social section states this. Post DATES are therefore unknown and are recorded as such rather than guessed from the snowflake id.",
+  "VALUEPICKR SWEEP DID NOT RUN AT ALL: forum.valuepickr.com is blocked (connect_rejected by curl, EGRESS_BLOCKED by the fetch tool). Neither published note claims anything about ValuePickr; both say explicitly that it was not checked, so 'not checked' and 'nothing found' stay distinguishable.",
+  "A DOSSIER PARSER BUG FOUND AND CORRECTED IN THE NOTE, NOT IN THE CODE: dossier.py reported 'promoter 100.0%' for Jyoti Structures in all six quarters. Reading the 30-Jun-2026 shareholding XBRL directly shows the regex matched the '(B) Public' row - 201,951 holders, 1,193,651,437 shares, 100.00%. Jyoti has NO promoter. Publishing the builder's figure would have asserted the exact opposite of the truth. The scripts were not edited (the owner is studying the method and changes them himself, per the run instructions), so this is recorded here and in the note for him to fix.",
+  "Jyoti Structures' peer table could not be built honestly. The site's industry index for 'Heavy Electrical Equipment' returned Kamdhenu, Commercial Syn Bags, Nelcast, Hariom Pipe, Bharat Wire Ropes, GRP, R M Drip and Borosil Scientific - matched by market cap, not by business. Solarworld is classified 'Civil Construction', which mixes it with road and building contractors. Neither note contains a peer multiple table and both say why.",
+  "Balance-sheet detail is missing for both published names: no debt, cash, receivable or contingent-liability figure at 31-Mar-2026 was extracted for Jyoti Structures or Solarworld. Both notes list these under unknowns rather than estimating them."
+ ],
+ "note": "CATCH-UP RUN. The routine had not run since 2026-09-29; the only trading days missed were 2026-09-30 and 2026-10-01 (02-Oct was Gandhi Jayanti and 03-Oct a Saturday - both verified by fetching the bhavcopy and getting zero rows). Both days were re-scanned to completion and the as-of is 2026-10-01. Two ideas published, both government lane, and the headline is that the gap hid a large decision. GOVERNMENT: the 30-Sep PIB set, recovered from the committed govt.json in git because PIB is blocked here, kept 7 releases (4 distinct). Three are not order-book events and were discarded on reading - MSP for Rabi crops at Rs 8.36 lakh crore and Rs 5,547.99 cr of PSS pulses procurement are producer subsidies, the same shape as PM Surya Ghar, the one basket in this repo's table that underperformed the market outright; both were also mis-tagged 'shipbuilding' by the theme mapper. The fourth, Rs 1,789.52 cr for Delhi real-time traffic management, is a genuine procurement but has no basket in theme_map and went to the watch list. THE ONE THAT MATTERED is GREEN ENERGY CORRIDOR PHASE-III, approved 30-Sep-2026, outlay Rs 1,86,405 crore as parsed from the PIB body by our own builder - intra-State transmission plus Battery Energy Storage, mapped to the transmission basket whose measured history is 47 companies at a median 4.7x against 3.0x for the market with 49% making 5x. Two names researched and published against it. JYOTI STRUCTURES: its own annual report names Green Energy Corridors and BESS as demand drivers, it has filed completion of an intra-State 400 kV line, order book Rs 2,274 cr is 2.94x FY26 income and larger than everything billed since its 2021 Resolution Plan, Q1 FY27 total income +57.1% with EBITDA +90.0%, stock -41.0% over a year at 17x - published at LOW confidence because lenders are at the NCLAT in contempt proceedings over the non-fund-based limits an EPC contractor cannot bid without, there is no promoter at all, and profit exceeds PBT because insolvency losses shelter it. SOLARWORLD ENERGY SOLUTIONS: 257 MW / 514 MWh of NTPC BESS EPC already won at Rs 1.08-1.19 cr per MWh against the Rs 1.00 cr per MWh GEC-III implies for its 50 GWh, order book Rs 2,813 cr at 2.58x market cap, 8.2x trailing earnings and 1.29x book at the 52-week low - at MEDIUM-LOW because the trigger order is only 5.6-6.6% of a year's sales, the margin halved last quarter unexplained, and it had to take its own client to a Dispute Adjudication Board over Rs 219 cr of retention and overdue invoices and recovered 18.4%. FILINGS: 3,104-of-3,104 and 1,793-of-1,793 complete reads, 105 and 90 in-universe filings, 25 and 16 candidates. The 30-Sep re-read mattered: the Actions scan that evening was capped at 2,342 and missed Highway Infrastructure's 21:17 IST order entirely. Two order names researched and NEITHER published, both on the same measured ground: GPT INFRAPROJECTS won a real Rs 385 cr Transnet sleeper contract but it runs 5 years (Rs 77 cr a year = 6.3% of sales), its Rs 134.11 cr Western Railway number is only L1 and not an award, it has filed 18 order disclosures in 760 days, and Q1 FY27 revenue is DOWN 9.0% YoY; HIGHWAY INFRASTRUCTURE's Rs 220.66 cr Gorakhpur toll contract looks enormous against a Rs 321 cr market cap until you count 35 order filings in 760 days - toll LOAs are its routine business - and the filing never says which way the money flows on a user-fee contract, so it cannot be sized against sales at all. COMMODITY: 31 groups at strength >= 1.5 up and still no researchable name, but one real change since 29-Sep - MetalBook's Indian prints are now dated 01-Oct and they CONFIRM a domestic rebar move (Mumbai TMT +4.7%, Delhi +4.2%, Raipur +4.1% between 16-Sep and 1-Oct) against scrap up only 0.5-3.2%. Honest caveat: over the longer window the spread compressed (Mumbai TMT +7.0% since 12-Feb against scrap +9.6%), the series carry only 10-11 readings with a February-to-September gap, and the 'steel' group maps exclusively to Tata, JSW, SAIL and Jindal - all outside the universe. Seven small-cap producers were measured as candidates for the map but deliberately NOT added, because no document establishing their exposure was read and the playbook forbids adding a name on a hunch. Both social sweeps were degraded and both notes say so; the ValuePickr sweep did not run at all. The most useful thing the X sweep produced was negative: two circulating order claims for Solarworld (Rs 806 cr GUVNL, Rs 725.33 cr NTPC Re) appear in none of its 117 filings over 300 days, and the only GUVNL filing that does exist is a dispute, not a win."
+}
