@@ -20743,6 +20743,12 @@ the company's-own-mark half of Rule 3, not the cross-company half; they flagged 
   Held (would zig-zag, §160c): RKFORGE, POLYCAB (also: an institutional 'Bodies Corporate' sub-row is not yet read as company-type),
   POONAWALLA, CHOLAFIN; MFSL kept (IFC is on MFSL's own FDI row from Sep-2011 - the company's own mark).
 Rebuilt feed moves exactly these 154 rows; guards green.
+- **Scope of the standard (user 2026-10-04, option A, after measuring that 77 previously-matching cells had moved away).** The strict
+  >= 90 %-of->= 5 proof applies to holders the company lists among ORDINARY shareholders only, as Quantmac applies it. A holder the
+  company itself lists inside its Institutions block (on a company-type sub-row such as 'Overseas Corporate Bodies') needs the
+  company's placement plus one other filing listing it under Institutions (Foreign): `_shp_dii_rowfix.inst_listed()` (R1); R2-FII
+  keeps `inst_documented()`. 24 cells of the 93 put back (label "§164r batch 8 scope A"): IEX 2018-21 Rimco (Jun-2020 35.80 =
+  Quantmac again), IDFCFIRSTB 5-Jan-2019 Caladium, BANDHANBNK 2018 IFC, BHARATFIN Tree Line. Rebuilt feed moves exactly 24 rows.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

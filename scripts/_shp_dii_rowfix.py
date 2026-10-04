@@ -163,6 +163,20 @@ def inst_documented(name):
         for k,v in EVIDENCE.items():
             if k[:8]==n[:8] and difflib.SequenceMatcher(None,n,k).ratio()>=0.96 and _series(v.get("name",k))==_series(name): e=v; break
     return bool(e and e.get("inst"))
+def inst_listed(name):
+    """§164r batch 8 scope (user 2026-10-04, option A): the proof a holder needs when the COMPANY ITSELF lists it inside its
+    Institutions block (on a company-type sub-row such as 'Overseas Corporate Bodies'): the company's own placement plus at least
+    one other filing listing the same legal name under Institutions (Foreign) (inst_n >= 1, never a domestic-dominated name). The
+    strict >= 90 %-of->= 5 proof (inst_documented) is for holders the company lists among ordinary shareholders only - as Quantmac
+    applies it. IEX's Rimco (Mauritius) 4.55 inside IEX's Institutions block: 13 institution listings -> FII."""
+    n=norm(name); e=EVIDENCE.get(n)
+    if e is None and len(n)>=10:
+        for k,v in EVIDENCE.items():
+            if k[:8]==n[:8] and difflib.SequenceMatcher(None,n,k).ratio()>=0.96 and _series(v.get("name",k))==_series(name): e=v; break
+    if not e: return False
+    if e.get("inst"): return True
+    fi=e.get("inst_n") or 0; dm=e.get("domestic_n") or 0
+    return fi>=1 and (dm==0 or fi>=0.9*(fi+dm))
 def _documented_foreign(n, what):
     """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
     foreign-institution row); otherwise unresolved — never foreign by name alone."""
@@ -281,7 +295,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                     # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
                     # §164r batch 7 (user 2026-09-29 'Documents only'): a curated verdict alone no longer counts — the holder needs an
                     # institution tag in its own name or another company's filing listing it under Institutions (Foreign)
-                    if inst_tag or inst_documented(hn): dest="fii"
+                    if inst_tag or inst_listed(hn): dest="fii"      # §164r batch 8 option A: inside the Institutions block the company's own placement + one institution listing
                     else: dest=lab_kind
                 hs2.append((hp,hn,c,dest,src))
             hs=hs2
