@@ -21986,6 +21986,37 @@ snapshot carries TATAMTRDVR like its 21 other derived snapshots).
 map: SUJANATOW -> NTL (66 cells, all agree), ANSALINFRA -> ANSALAPI (our dead fragment), RDEL -> RNAVAL. `qm_classify2.py`: the rounding
 budget counts BOTH our stored prices; per-bar step noise (a real 0.1% step on a Rs 200+ stock counts, one-paisa jitter on Rs 13 does not);
 "all steps of one type" (FRL / IBREALEST: two demergers) and "demerger + raw ex-day print" (GRASIM 2010) hypotheses.
+**LIVE VERIFIED 2026-10-04 ~14:15 IST.** refresh-membership 37188747876 (push-triggered) committed 6219501f2 — its
+`indices_history.json` is byte-identical to the worktree build; pages run 37189262614 deployed it; the live `stock_data.bin`
+indicesHistory equals the build for all 27 indices and passes 13/13 spot checks (3IINFOTECH 2009-12-31 in, AJMERA 2010-06-30 out, ERIS
+2018-03-28 in, SWSOLAR 2020-04-30 in, JIOFIN 2023-08-31 in / 2023-09-29 out, NTL 2012 in ...). The live engine on quantmac's 213 dates:
+member flags moved for exactly 25 stock-dates (3IINFOTECH 20, SWSOLAR 3, ERIS 1, JIOFIN 1); every remaining membership difference with
+quantmac is the Tata Motors DVR (125) or an NSE DUMMY demerger placeholder (77).
+**NSE's OWN 52-week figures as a third reader** — `nsearchives.nseindia.com/content/CM_52_wk_High_low_DDMMYYYY.csv` (plain curl with a
+browser UA; first available month-end 2019-10-31; 82 of 84 month-ends since; header: "adjusted for corporate actions (bonus, splits &
+rights). For actual (unadjusted) 52 week high & low prices, kindly refer bhavcopy"). Tool: `~/stocks-cache/qm-recon-tools/nse52_check.py`.
+- RIGHTS: NSE adjusts its 52-week LOW (and high) for rights, as we do — of 235 rights-convention cells NSE is nearer ours in 215 (median
+  0.73 pp from ours, 4.02 pp from quantmac's raw lows). NSE rounds its factor to 2 decimals (1.01, 1.02 ...: RELIANCE 2020 ours 0.9906 /
+  NSE 0.9901), so a tiny issue becomes 1.00 (MINDAIND 2020, GRASIM 2024 -> NSE = quantmac). NSE's own factor is WRONG on IBULHSGFIN 2024
+  (1/1.5, as if a free bonus; the 1:2 issue at Rs 150 with cum 222.50 gives 0.8914 and the ex-day opened -11.9%), HATSUN 2022 (0.9612 vs
+  textbook 0.9817), PEL 2019-12-31 (1/11); SAMMAANCAP 2024: NSE's 52-week history restarts at the rename.
+- DEMERGERS: NSE does NOT adjust 52-week figures for demergers — 98 of 109 cells = quantmac exactly; the other 11 take a low from after
+  the demerger (INFIBEAM 2021; ITC, RAYMOND, SANOFI, ABFRL, SKFINDIA 2025) or, on VEDL's ex-day, the raw pre-demerger low. Quantmac's raw
+  demerger convention = NSE's published practice; ours (Methodology C, user rule §170) is a choice, not a correction of NSE.
+- BSE PRE-LISTING bars (VALIANTORG / LLOYDSME / AIIL): NSE = quantmac in 9 of 10 cells (NSE's lows exclude them). ALOKINDS 2020: NSE's
+  low = OURS (Rs 3.80, 01-Apr-2020 — NSE restarts at the relisting).
+- 2-decimal-storage cells: NSE nearer quantmac in 202, ours 10, both 33 — NSE's exact figures confirm the gap is our storage.
+**Every one of the 950 convention cells, one by one** (user: "dont assume quantmac wrong. take all 950 one by one";
+`deep_conventions.py` -> `out/quantmac_round3_950_cells_deep_check.xlsx`): quantmac's value rebuilt from NSE raw x our live factor runs
+with ONLY the named adjustment(s) removed lands on theirs in 950 / 950 (FRL 2014-01-31 needs BOTH 2013 demergers removed); all 122 actions
+re-derived from NSE's prices and the filed terms (69 textbook TERP, 8 convertible / mixed from filings, 45 demerger rule incl. WIPRO 2013
+Case A test 2: the whole ex-day traded within 5% of the open).
+**OURS, OPEN: 13 of 185 rights_adj rows carry a LIVE step 0.04-0.22% off their own target** (25-bar F medians each side): KESORAMIND 2021
++0.22%, BTML 2022 -0.14%, BAJFINANCE 2013 -0.13% (live 0.9703 = the OLD rights_terp factor; target 0.971585), PATELENG 2019 +0.13%,
+KESORAMIND 2013, ALOKTEXT 2009, IDEA 2019, SUZLON 2022, SINTEX 2016, ABINFRA 2024, JKTYRE 2008, SUZLON 2010, CUB 2009 — all at Rs 2-18
+adjusted prices. Cause: `reconcile_rights` judges "applied" from ONE pair of 2-decimal closes (BAJFINANCE 13.49 -> 13.20 reads 0.9709,
+inside the 0.083% floor, while every bar either side says 0.9703). Same root cause as the storage finding; fix together with it (more
+stored precision, or a multi-bar reconcile against a ledger of raw closes) — user decision.
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
