@@ -20993,6 +20993,17 @@ undated (qe+28 convention). **3 ours, fixed via shp_lag_fix.json `days_later`:**
 from an assumed 2020-04-21 (quarter-end + 21) while the companies filed on 08 / 11 / 14 May 2020 (COVID deadline extension) ->
 dated at the notice day (midnight rule). Effect: the 30-Apr-2020 month-end now serves Dec-2019 (= Quantmac).
 
+**§164s part 4 (2026-10-04, user: "fill the 162 missing quarters"):** re-measured before filling - most were not gaps.
+4 BSE-only names Quantmac keys as `<SYM>_BSE` (AZTECSOFT, BINANICEM, BONGAIREFN, VISHALEXPO): we hold every quarter under the plain
+symbol and the values agree (key naming only). 31 "event filings we lack": the SAME event filing on both sides, Quantmac labels the
+as-on date a few days differently (ICICIBANK 15-Aug vs 17-Aug-2020; KPRMILL 20-Nov vs the file's DateOfReport 02-Dec-2019).
+9 page-era quarters (BALMLAWRIE Dec-11/Jun-12, CHENNPETRO Mar-11/Mar-12, DCHL Sep/Dec-10, DWARKESH Jun-09, JAYSREETEA Jun-09, RAMCOSYS
+Dec-09): BSE's page prints FII 0.00 beside neighbours of 1-12 % - the page filler's fabricated-zero guard refuses them; not filled,
+document asked of Quantmac. 8 Dec-15/Mar-16 seam quarters held (unreliable category render). 19 NSE-only event filings (BANKINDIA,
+CENTRALBK, GICRE, KOTAKBANK, UCOBANK ...) - not in any cache, NSE master no longer serves them: asked of Quantmac. IDFC held (FII
+session). **Filled: SUPPETRO Jun-2017** from its only surviving BSE filing (Revised, 2017-07-21) into shp_fill_hist_2016_2019.json.gz
+with §158 rules (dii 0.9575 = six lines 0.9251 + NBFC 0.0324; 'Foreign Corporate Bodies' 0.0177 public).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
