@@ -5,7 +5,8 @@
   "§164n (2026-09-27): + holders the §158a/§164 rest-follows rule had swept into fii while UNRESOLVED (named, no class): 17 documented foreign (other filings' foreign-institution rows / GLEIF), 1 documented DOMESTIC (listed only under Indian rows: INDIA BUSINESS EXCELLENCE FUND IIA = an AIF). Entries now carry class foreign|domestic; holder_class consults this list for EVERY name (exact, or a >= 20-char prefix / >= 0.92 match).",
   "§164r batch 6 (2026-09-29): proof may also be (sebi-register) the holder's own SEBI registration in a SEBI-published list (FVCI/FPI), e.g. NSR-PE Mauritius, LLC IN/FVCI/08-09/119.",
   "§164r batch 7 (2026-09-29, user decision on the Quantmac v5 reply: 'Documents only'). Entries now carry inst=true|false: whether another company's filing lists the same legal name under Institutions (Foreign) (FPI/FII/FVCI/FDI/foreign SWF) — counted over 33,899 cached BSE XBRLs with company-type listings (Foreign Companies / Bodies Corporate / OCB) counted beside it (inst_n / company_n). A holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark (its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row) or, where the company is silent, inst=true. The SW-2 curated list alone no longer counts (CDC Group plc: 0 institution listings, 64 company-type).",
-  "§164r batch 8 (2026-10-04, user decision on Quantmac v6: their evidence standard). Without the company's own mark, inst=true needs >= 90 % of >= 5 classified listings to be Institutions (Foreign) (inst_n vs company_n + domestic_n over 33,899 cached BSE XBRLs, suffix-insensitive same-name match), or a registry document on file (proof sebi-register). 10 holders fell to inst=false: IFC 50 vs 151 company listings, APMS Investment Fund 138 vs 21 (87 %), DVI Fund Mauritius 36 vs 5, Tree Line Asia Master Fund 74 vs 15, Caladium 26 vs 58, Rimco (Mauritius) 13 vs 36, Plenty Private Equity Fund I 7 vs 33, VOF Master 4 + 1."
+  "§164r batch 8 (2026-10-04, user decision on Quantmac v6: their evidence standard). Without the company's own mark, inst=true needs >= 90 % of >= 5 classified listings to be Institutions (Foreign) (inst_n vs company_n + domestic_n over 33,899 cached BSE XBRLs, suffix-insensitive same-name match), or a registry document on file (proof sebi-register). 10 holders fell to inst=false: IFC 50 vs 151 company listings, APMS Investment Fund 138 vs 21 (87 %), DVI Fund Mauritius 36 vs 5, Tree Line Asia Master Fund 74 vs 15, Caladium 26 vs 58, Rimco (Mauritius) 13 vs 36, Plenty Private Equity Fund I 7 vs 33, VOF Master 4 + 1.",
+  "§164r batch 8 step 4 (2026-10-04): + Ontario Teachers' Pension Plan Board NP3A - ALL from the corpus (1 FPI listing) - RCOM's filings list it inside their Institutions block, where our name filter had read 'Pension' as domestic."
  ],
  "names": {
   "NATIONALWESTMINSTERBANKPLCASTRUSTEEOFTHEJU": {
@@ -7420,6 +7421,17 @@
    "company_n": 1,
    "inst_detail": "listed under Institutions (Foreign) in 3 cached BSE filing(s) (company-type rows: 1), e.g. 511333_16102019165251_SHP.xml InstitutionsForeignPortfolioInvestor",
    "domestic_n": 0
+  },
+  "ONTARIOTEACHERSPENSIONPLANBOARDNP3AALL": {
+   "name": "ONTARIO TEACHERS  PENSION PLAN BOARD NP3A - ALL",
+   "class": "foreign",
+   "proof": "filing",
+   "detail": "listed under a foreign-institution row in 1 cached BSE filing(s), e.g. 532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne (PVRINOX Mar-2023)",
+   "inst": false,
+   "inst_n": 1,
+   "company_n": 0,
+   "domestic_n": 0,
+   "inst_detail": "listed under Institutions (Foreign) in 1 cached BSE filing(s) (company-type rows: 0), e.g. 532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; registered FPI per Quantmac v6 (NSDL INCAFP244216, Canada, Category I pension fund) - added §164r batch 8 step 4 (RCOM)"
   }
  }
 }

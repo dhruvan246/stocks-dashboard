@@ -20773,6 +20773,35 @@ Rebuilt feed moves exactly these 154 rows; guards green.
   its §142k ledger note named a sidecar row that was never written; BBTC's 26-Dec-2023 mass re-filing of 2021-23) added to
   shp_revisions.json, dated by the re-filing's own BSE stamp; 9 held where the original carries a value heal (needs a row-level
   re-read of the revision). guard_shp_revisions: 1,031 sidecar rows checked, green.
+- **Step 4 - Quantmac v6 'please check your side' + small diffs (reproduced from the filings, `reply7/repro/`).** Kept, with the
+  arithmetic for the reply: AFFLE Jun-22 (both BSE versions and NSE's copy: FPI 19,573,152 of 133,251,060 = 14.6889; Quantmac's
+  +0.062 matches no row or pair); HINDZINC Jun-21, IDBI Sep-21, INDUSTOWER Mar-20, LEMONTREE Dec-21, THERMAX Sep-21 (Quantmac's
+  extra = the company's 'Qualified Institutional Buyer' Any-Other row - THERMAX its unnamed part 0.18 - a domestic-type label);
+  BANDHANBNK Dec-19 (the unnamed 0.66 of an 'Overseas Corporate Bodies' sub-row: company-type label -> public; Caladium FDI
+  on BANDHANBNK's own 2022 form -> FII); LAURUSLABS Mar-18 / PVRINOX Jun+Sep-18 (OCB holders inside the institutions block with
+  no institution listing in 33,899 filings - FIL Capital Management (Mauritius), Bluewater, Multiples PE Fund I, which PVRINOX's
+  own 2022 form lists under Foreign Companies - public under option A); MEDPLUS Dec-21/Mar-22/Jun-22 (the unnamed rest of the
+  Any-Other block: MEDPLUS's own re-filing of Jun-22, 12-Oct-2022 on the 2022 form, puts the whole block under Institutions
+  (Domestic)); JINDALSAW Dec-24 (BSE re-filing 20-Jan-2025 17:01:40 'Filed with correct details' - public before 31-Jan) and
+  Dec-18 (BSE re-filing 30-Jan-2019 12:30:52). **Fixed (cell_fix, 8):** JKCEMENT Dec-18 + 0.0334 (its own 'Foreign
+  Institutional Investors' Any-Other row; below the row pass's 0.05 write threshold); BANKBARODA Jun-21 = BSE's genuine copy
+  7.8698 from 14-Jul-2021 (the NSE copy re-printed Mar-21 to the share); RCOM Jun-16..Jun-17 (Ontario Teachers' Pension Plan
+  Board NP3A - ALL, 1.0044, read as a DOMESTIC pension fund by the name filter - FPI Cat I in PVRINOX's Mar-2023 filing, now in
+  the evidence file; with it foreign the §164 D1 rule moves the unnamed rest too: 12.09 -> 16.54, 13.96 -> 17.02, 14.07 ->
+  16.27, 8.22 -> 9.52); BAJAJELEC Dec-21 (the two versions were served in reverse order - store row back to NSE's 19-Jan
+  original 11.8006, BSE's 28-Jan re-filing 11.7489 in shp_revisions.json). **Dates (shp_lag_fix, 18):** 15 §153 entries had
+  dated a quarter ON its own quarter-end from a cached NSE master whose submissionDate read as the as-on date (NSE's live
+  master gives the real day; 7 were in Quantmac's v6 Dates list: BSE Mar-22, JKTYRE Dec-25, JSL Mar-22, KEC/MOTHERSON/
+  PHOENIXLTD Sep-24, UNOMINDA Jun-22) -> the earliest exchange publication of a document that parses to the stored figures
+  (13 back to the pre-§153 day, ZEEMEDIA Jun-26 to NSE's first broadcast 3-Jul-2026, BSE Ltd Mar-22 kept at 8-Apr); kept
+  INNOVANA Mar-23 (NSE broadcast 31-Mar-2023 18:40:02, same figures) and BBOX Mar-26 (BSE filing 31-Mar-2026 17:50:41 = the
+  stored original). SUNDARMFIN Sep-25 15-Oct -> 20-Nov-2025 (the only document carrying the stored figures was generated
+  18-Nov, broadcast 20-Nov; nothing on BSE - the look-ahead rule) and Dec-18 28-Feb -> 22-Jan-2019 (BSE notice 17:15:19 after
+  the served file's upload 16:21:09). **Filled:** SPLPETRO Jun-17..Mar-18 (PIT member 29-Sep-2017..2-Apr-2018; BSE XBRLs, §158
+  rules; Jun-17 0.489 = Quantmac). **Open:** CDSL Mar-18 (NSE-only; NSE's master no longer serves 2018 - asked Quantmac for the
+  archive URL); ~100 more §153 NSE-submissionDate moves whose XBRL is stamped > 7 days after the date (SUNDARMFIN's question,
+  needs a per-row document check); curated FII placements still standing in §164 / SW-2 entries that batch 7-8 never re-tested
+  (NH Jun-16..Mar-18 CDC Group while NH Jun-18+ is public; TCIEXP Arcee; JKPAPER DEG) - for the user.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

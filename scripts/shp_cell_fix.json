@@ -7503,25 +7503,47 @@
   "BAJAJELEC": {
    "2021-12-31": {
     "cell": [
-     63.01,
-     11.75,
-     11.61,
-     11.25,
-     0.17,
-     "2022-01-28",
-     66825
-    ],
-    "src": "bse:500031_28120221602_SHP.xml",
-    "was": [
      62.85,
-     11.8,
-     11.66,
-     11.3,
-     0.17,
+     11.8006,
+     11.6581,
+     11.3015,
+     0.1689,
      "2022-01-19",
      66824
     ],
-    "why": "BSE revision 2022-01-28 supersedes stored (sub 2022-01-19); diffs {'prom': [62.85, 63.01]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+    "was": [
+     63.01,
+     11.7489,
+     11.607,
+     11.252,
+     0.1682,
+     "2022-01-28",
+     66825
+    ],
+    "src": "nsexbrl:SHP_165288_594457_19012022112043_WEB.xml",
+    "why": "\u00a7142k option C, batch 8 (Quantmac v6 BAJAJELEC Dec-2021): the store row is the ORIGINAL filing again - NSE's XBRL SHP_165288_594457_19012022112043 (generated 19-Jan-2022 11:20:43; NSE submission 19-Jan; BSE's own notice of the original 2022-01-20 08:20:09) prints promoter 62.85 / fii 11.8006; BSE's re-filing 500031_28120221602_SHP.xml (revised 2022-01-28 16:45:06, 'An entry in the Promoter Group was inadvertently missed out': promoter 63.01 / fii 11.7489) now rides in shp_revisions.json from its own date. Before: the re-filing's numbers were served from 19-Jan and the original's from 2-Feb (NSE's re-broadcast of the 19-Jan file), i.e. the two versions in reverse order.",
+    "superseded": {
+     "cell": [
+      63.01,
+      11.75,
+      11.61,
+      11.25,
+      0.17,
+      "2022-01-28",
+      66825
+     ],
+     "src": "bse:500031_28120221602_SHP.xml",
+     "was": [
+      62.85,
+      11.8,
+      11.66,
+      11.3,
+      0.17,
+      "2022-01-19",
+      66824
+     ],
+     "why": "BSE revision 2022-01-28 supersedes stored (sub 2022-01-19); diffs {'prom': [62.85, 63.01]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+    }
    },
    "2025-12-31": {
     "cell": [
@@ -38433,6 +38455,28 @@
     ],
     "src": "bseaspx:532644_89 shpperent",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; seam cell resolved by the FII session from the page's own rows): fii 1.25 -> 11.73, dii 24.00 -> 13.52. institutions 'Any Others' 10.48 = Fidelity Investment Trust Fidelity Series 4.63 + Franklin Templeton Investment Funds 2.24 + Templeton Global Investment Trust 2.09 + Other Foreign Institutional Investors 1.52 (share counts / 69,957,250) \u2014 every holder foreign; the stored row had folded the block into dii (23.9977 = 13.51 domestic + 10.48); fii = QFI row 1.25 + 10.48, dii = MF 8.08 + FI 0.02 + Ins 5.41. Evidence: BSE ShareholdingPattern.aspx main page + shpperent.aspx holders-above-1% table (share counts / total shares)."
+   },
+   "2018-12-31": {
+    "cell": [
+     58.07,
+     9.8607,
+     24.6622,
+     21.2995,
+     3.3407,
+     "2019-01-21",
+     67588
+    ],
+    "was": [
+     58.07,
+     9.8273,
+     24.6956,
+     21.2995,
+     3.3407,
+     "2019-01-21",
+     67588
+    ],
+    "src": "bsexbrl:532644_2112019144220_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'please re-check which rows your figure adds'): the company's own Institutions -> Any Other row labelled 'Foreign Institutional Investors' (25,826 of 77,268,251 shares = 0.0334) is FII by its label (\u00a7158 R1, FII-labelled row) - it sat in dii because the row-level pass writes only moves >= 0.05 pp: fii 9.8273 -> 9.8607, dii 24.6956 -> 24.6622. Evidence: _shp_164_audit.json"
    }
   },
   "JPPOWER": {
@@ -56989,8 +57033,8 @@
    "2016-06-30": {
     "cell": [
      59.05,
-     16.8779,
-     9.8004,
+     17.8823,
+     8.796,
      1.4349,
      7.1064,
      "2016-07-12",
@@ -56998,17 +57042,26 @@
     ],
     "was": [
      59.05,
-     11.4058,
-     15.2725,
+     16.8779,
+     9.8004,
      1.4349,
      7.1064,
      "2016-07-12",
      1638341
     ],
     "src": "bsexbrl:532712_127201613347_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 11.41 -> 16.88, dii 15.27 -> 9.80. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.46 | R1: R1-foreign-holders Other 0.0 public=0.00 fii=2.27 EUROPACIFIC GROWTH FUND 2.27 foreign->fii(curated); R1-domestic-holders Other 0.0 ONTARIO TEACHERS' PENSION PLAN BOARD-NP3A - ALL 1.01 domestic->-(regex); R1-uncovered-remainder 5.46. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'RCOM Ontario Teachers''): ONTARIO TEACHERS' PENSION PLAN BOARD - NP3A - ALL is listed under Institutions (Foreign), FPI Category I, in PVRINOX's Mar-2023 filing (532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; corpus: 1 institution listing, 0 domestic, 0 company-type) - registered FPI per Quantmac (NSDL INCAFP244216, Canada, Category I pension fund). Inside the company's Institutions block that is FII under \u00a7164r batch 8 option A (the company's placement + one institution listing); our name filter had read 'Pension' as a domestic pension fund. Ontario Teachers' 1.0044 (25,000,000 of 2,488,979,745 shares, the filer's base) moves dii -> fii; the rest of the block is unchanged (EuroPacific 2.26 and the unnamed 5.47 already FII): fii 16.8779 -> 17.8823, dii 9.8004 -> 8.7960. Evidence: _shp_164_audit.json",
     "superseded": {
      "cell": [
+      59.05,
+      16.8779,
+      9.8004,
+      1.4349,
+      7.1064,
+      "2016-07-12",
+      1638341
+     ],
+     "was": [
       59.05,
       11.4058,
       15.2725,
@@ -57017,17 +57070,30 @@
       "2016-07-12",
       1638341
      ],
-     "was": [
-      59.05,
-      9.1479,
-      17.5304,
-      1.4349,
-      7.1064,
-      "2016-07-12",
-      1638341
-     ],
      "src": "bsexbrl:532712_127201613347_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (EUROPACIFIC GROWTH FUND 2.27) \u2014 moved dii -> fii (2.2579 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 11.41 -> 16.88, dii 15.27 -> 9.80. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.46 | R1: R1-foreign-holders Other 0.0 public=0.00 fii=2.27 EUROPACIFIC GROWTH FUND 2.27 foreign->fii(curated); R1-domestic-holders Other 0.0 ONTARIO TEACHERS' PENSION PLAN BOARD-NP3A - ALL 1.01 domestic->-(regex); R1-uncovered-remainder 5.46. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       59.05,
+       11.4058,
+       15.2725,
+       1.4349,
+       7.1064,
+       "2016-07-12",
+       1638341
+      ],
+      "was": [
+       59.05,
+       9.1479,
+       17.5304,
+       1.4349,
+       7.1064,
+       "2016-07-12",
+       1638341
+      ],
+      "src": "bsexbrl:532712_127201613347_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (EUROPACIFIC GROWTH FUND 2.27) \u2014 moved dii -> fii (2.2579 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+     }
     }
    },
    "2017-09-30": {
@@ -57095,6 +57161,94 @@
     ],
     "src": "bsexbrl:532712_10112017132851_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 8.24 -> 8.32, dii 8.82 -> 8.74. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.08; D1-unnamed-remainder-in-dii 0.08"
+   },
+   "2016-09-30": {
+    "cell": [
+     59.09,
+     16.5414,
+     8.977,
+     1.6113,
+     7.1112,
+     "2016-10-08",
+     1635158
+    ],
+    "was": [
+     59.09,
+     12.0864,
+     13.432,
+     1.6113,
+     7.1112,
+     "2016-10-08",
+     1635158
+    ],
+    "src": "bsexbrl:532712_8102016132353_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'RCOM Ontario Teachers''): ONTARIO TEACHERS' PENSION PLAN BOARD - NP3A - ALL is listed under Institutions (Foreign), FPI Category I, in PVRINOX's Mar-2023 filing (532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; corpus: 1 institution listing, 0 domestic, 0 company-type) - registered FPI per Quantmac (NSDL INCAFP244216, Canada, Category I pension fund). Inside the company's Institutions block that is FII under \u00a7164r batch 8 option A (the company's placement + one institution listing); our name filter had read 'Pension' as a domestic pension fund. the institutional Any-Other block 4.4550 (Ontario Teachers' 1.0044 x 1.004121 on the stored basis + the unnamed rest) moves dii -> fii: with its one named holder foreign, the \u00a7164 D1 rule (unnamed rest of the institutional block = FII unless every named holder is domestic) applies - the domestic misreading had blocked it: fii 12.0864 -> 16.5414, dii 13.4320 -> 8.9770. Evidence: _shp_164_audit.json"
+   },
+   "2016-12-31": {
+    "cell": [
+     59.09,
+     17.0227,
+     8.5161,
+     1.176,
+     7.1112,
+     "2017-01-15",
+     1637435
+    ],
+    "was": [
+     59.09,
+     13.9605,
+     11.5783,
+     1.176,
+     7.1112,
+     "2017-01-15",
+     1637435
+    ],
+    "src": "bsexbrl:532712_1412017181517_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'RCOM Ontario Teachers''): ONTARIO TEACHERS' PENSION PLAN BOARD - NP3A - ALL is listed under Institutions (Foreign), FPI Category I, in PVRINOX's Mar-2023 filing (532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; corpus: 1 institution listing, 0 domestic, 0 company-type) - registered FPI per Quantmac (NSDL INCAFP244216, Canada, Category I pension fund). Inside the company's Institutions block that is FII under \u00a7164r batch 8 option A (the company's placement + one institution listing); our name filter had read 'Pension' as a domestic pension fund. the institutional Any-Other block 3.0622 (Ontario Teachers' 1.0044 x 1.004121 on the stored basis + the unnamed rest) moves dii -> fii: with its one named holder foreign, the \u00a7164 D1 rule (unnamed rest of the institutional block = FII unless every named holder is domestic) applies - the domestic misreading had blocked it: fii 13.9605 -> 17.0227, dii 11.5783 -> 8.5161. Evidence: _shp_164_audit.json"
+   },
+   "2017-03-31": {
+    "cell": [
+     59.08,
+     16.266,
+     8.6134,
+     1.2607,
+     7.11,
+     "2017-04-11",
+     1626651
+    ],
+    "was": [
+     59.08,
+     14.0707,
+     10.8087,
+     1.2607,
+     7.11,
+     "2017-04-11",
+     1626651
+    ],
+    "src": "bsexbrl:532712_104201716226_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'RCOM Ontario Teachers''): ONTARIO TEACHERS' PENSION PLAN BOARD - NP3A - ALL is listed under Institutions (Foreign), FPI Category I, in PVRINOX's Mar-2023 filing (532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; corpus: 1 institution listing, 0 domestic, 0 company-type) - registered FPI per Quantmac (NSDL INCAFP244216, Canada, Category I pension fund). Inside the company's Institutions block that is FII under \u00a7164r batch 8 option A (the company's placement + one institution listing); our name filter had read 'Pension' as a domestic pension fund. the institutional Any-Other block 2.1953 (Ontario Teachers' 1.0044 x 1.003953 on the stored basis + the unnamed rest) moves dii -> fii: with its one named holder foreign, the \u00a7164 D1 rule (unnamed rest of the institutional block = FII unless every named holder is domestic) applies - the domestic misreading had blocked it: fii 14.0707 -> 16.2660, dii 10.8087 -> 8.6134. Evidence: _shp_164_audit.json"
+   },
+   "2017-06-30": {
+    "cell": [
+     59.0,
+     9.5236,
+     8.8648,
+     1.3102,
+     7.1003,
+     "2017-07-14",
+     1632040
+    ],
+    "was": [
+     59.0,
+     8.2183,
+     10.1701,
+     1.3102,
+     7.1003,
+     "2017-07-14",
+     1632040
+    ],
+    "src": "bsexbrl:532712_1472017123943_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 'RCOM Ontario Teachers''): ONTARIO TEACHERS' PENSION PLAN BOARD - NP3A - ALL is listed under Institutions (Foreign), FPI Category I, in PVRINOX's Mar-2023 filing (532689_332023162529_SHP.xml InstitutionsForeignPortfolioInvestorOne; corpus: 1 institution listing, 0 domestic, 0 company-type) - registered FPI per Quantmac (NSDL INCAFP244216, Canada, Category I pension fund). Inside the company's Institutions block that is FII under \u00a7164r batch 8 option A (the company's placement + one institution listing); our name filter had read 'Pension' as a domestic pension fund. the institutional Any-Other block 1.3053 (Ontario Teachers' 1.0044 x 1.002586 on the stored basis + the unnamed rest) moves dii -> fii: with its one named holder foreign, the \u00a7164 D1 rule (unnamed rest of the institutional block = FII unless every named holder is domestic) applies - the domestic misreading had blocked it: fii 8.2183 -> 9.5236, dii 10.1701 -> 8.8648. Evidence: _shp_164_audit.json"
    }
   },
   "RELCAPITAL": {
@@ -231433,6 +231587,28 @@
     ],
     "src": "bsexbrl:532134_332021204744_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 8.87 -> 8.87, dii 16.58 -> 17.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others Qualified Institutional Buyer 0.92 ; R3-nbfc NBFCsRegisteredWithRbi 0.07"
+   },
+   "2021-06-30": {
+    "cell": [
+     63.97,
+     7.8698,
+     16.521,
+     9.2065,
+     5.0015,
+     "2021-07-14",
+     1195489
+    ],
+    "was": [
+     63.97,
+     6.89,
+     15.89,
+     9.2065,
+     6.32,
+     "2021-07-15",
+     1167220
+    ],
+    "src": "bsexbrl:532134_1372021144423_SHP.xml",
+    "why": "\u00a7164r batch 8 (Quantmac v6 ruling C, stale exchange copy): the stored Jun-2021 row is NSE's copy that re-prints Mar-2021 to the share (holders 1,167,220 = Mar-2021's, fii 6.89 = Mar-2021's 6.8887); BSE's own Jun-2021 filing 532134_1372021144423_SHP.xml (filing_date_time 2021-07-14 10:13:48; BSE notice 2021-07-12 16:28:07 precedes the file, so the file's day is used) is the genuine quarter: FPI 406,984,803 of 5,171,362,179 = 7.8698, read with the \u00a7158 rules (R2 'Others: Qualified Institutional Buyer' 2.04 + R3 NBFC 0.02 -> dii): fii 6.89 -> 7.8698, dii 15.89 -> 16.521, holders 1,195,489. Evidence: _shp_164_audit.json"
    }
   },
   "BAYERCROP": {
