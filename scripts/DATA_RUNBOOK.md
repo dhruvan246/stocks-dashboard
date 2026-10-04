@@ -20982,6 +20982,17 @@ AVANTIFEED Dec-16..Dec-17 serve Thai Union in fii via SW-2 entries (FII-side; do
   Bodies' 108,198,047 = the two holders exactly; Dec-17 XBRL lists Steel Traders under Bodies Corporate); GULFOILLUB Jun-16..Jun-17 (5)
   IAM Ltd -> public (Gulf Oil's Sep-15 BSE page: 'Overseas Corporate Bodies' 1,333,333). Every new value = Quantmac's to ~0.01.
 
+**§164s part 3 (2026-10-04, user: "investigate the 54 date cells and fix any that are ours"):** the 54 cells where we serve a
+newer quarter than Quantmac but BSE's SHP list shows only a later filing. 29 company-quarters checked against BSE's announcement
+stream (AnnSubCategoryGetData, paged - the endpoint caps at 50 rows per page, newest first; `~/stocks-cache/shp/dii_qm/ann_check.py`
++ `ann_pages.json`). Most rows are renamed companies Quantmac still files under the OLD ticker, frozen at Sep-2018 (SEQUENT->VIYASH,
+MAHINDCIE->CIEINDIA, MERCK->PGHL, GMRINFRA->GMRAIRPORT, ESSELPACK->EPL, MAGMA->POONAWALLA, RNAM->NAM-INDIA, STRTECH->STLTECH,
+WABCOINDIA->ZFCVINDIA, PVR->PVRINOX, LAXMIMACH->LMW, GUJFLUORO->GFLLIMITED, SMLISUZU->SMLMAH). 26 quarters: the company's own
+'Shareholding for the Period Ended' notice is on or before our served date -> Quantmac stale. BLUESTARCO Mar-16: no notice; served
+undated (qe+28 convention). **3 ours, fixed via shp_lag_fix.json `days_later`:** CROMPTON / FMGOETZE / JISLJALEQS Mar-2020 were served
+from an assumed 2020-04-21 (quarter-end + 21) while the companies filed on 08 / 11 / 14 May 2020 (COVID deadline extension) ->
+dated at the notice day (midnight rule). Effect: the 30-Apr-2020 month-end now serves Dec-2019 (= Quantmac).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
