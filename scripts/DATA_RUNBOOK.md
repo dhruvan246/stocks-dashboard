@@ -20907,6 +20907,10 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     FUND' 4.34 + QIB (DII 13.25 -> 8.23 -> 11.93 dip gone) - the last four labels all carried a double space. Held: ROSSARI Sep-2021
     India Acorn Fund 1.28 - with the summed counts it now passes the >= 90 %-of->= 5 test, but it sits on ROSSARI's own 'Foreign
     Companies' row (documents-only keeps it public; for the user). Re-run on the 10b symbols: no proposal on any written cell.
+    **Lesson (DEN, first push):** a cell written twice before origin's store moved (batch 10, then 10b) carried the LOCAL
+    intermediate value as the later entry's `was`; CI's was-guard rightly refused it and the 6 DEN cells stayed old on the live feed.
+    Fixed by one entry per cell (was = origin's stored value, both reasons kept). Before pushing a superseding write, check `was`
+    against origin's shp_history.json, not the locally re-applied one.
   - **Open (measured, not changed):** 302 proposals both codes make identically - code/ledger gaps that predate this batch (largest:
     SCHAEFFLER 11, JAGRAN 11, CHOLAFIN 10, KINETICENG 10 R2-FII +9.88, SHILPAMED 10 Baring -7.36, GREENPLY 9, TECHNO 9, CUB 9; TCI /
     TCIEXP OCB-row Arcee via the holder memory; UJJIVAN 2016-18 DII -3.55 x10; POONAWALLA 2018-19 DII x4); `reply7/cmp_runs.json`.
