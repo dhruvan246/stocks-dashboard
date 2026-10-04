@@ -158,7 +158,7 @@ def d1_follow_label(sym, qe, dd, byq, ctx, _depth=0):
 
 def prior_inputs(led, sym, qe, cur, audit158, audit164=None):
     prior=(led.get(sym) or {}).get(qe); ext_fii=0.0; add_prev=0.0; mv159_prev=0.0
-    chain=prior; depth=0; seen164=False
+    chain=prior; depth=0; seen164=False; add14=0.0; seen14=False
     while chain and depth<8:
         w=chain.get("why") or ""
         if "§159 row-level FII heal" in w and chain.get("was") and chain.get("cell"):
@@ -170,7 +170,12 @@ def prior_inputs(led, sym, qe, cur, audit158, audit164=None):
             a=audit164.get("%s|%s"%(sym,qe)) or {}; seen164=True
             mv159_prev=float(a.get("mv159") or 0.0); ext_fii+=mv159_prev
             if not add_prev: add_prev=float(a.get("add_dii") or 0.0)
+        # §164r batch 14 (FDI-line holders, user 2026-10-04 'yes go with A'): its §164 audit entry carries the non-institution
+        # (R2-FII-type) part of its move as mv159_add - count it, or the cell reads as an inexplicable split (split_unknown)
+        if "§164r batch 14" in w and not seen14 and audit164 is not None:
+            add14=float((audit164.get("%s|%s"%(sym,qe)) or {}).get("mv159_add") or 0.0); seen14=True
         chain=chain.get("superseded") if isinstance(chain.get("superseded"),dict) else None; depth+=1
+    ext_fii+=add14; mv159_prev+=add14
     healed=False; chain=prior; depth=0
     while chain and depth<8:
         if F.VALUE_HEAL_MARK.search(str(chain.get("why") or "")): healed=True; break

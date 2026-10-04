@@ -237,7 +237,17 @@ OWN_FII_EXTRA={"POONAWALLA":["INDIUM V (MAURITIUS) HOLDINGS LIMITED"],          
 # 6,000,000 shares (7.4881) = 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' 6,000,000 shares in Dec-2016 and Sep-2017, filed on
 # company-type rows (Foreign / Overseas Corporate Bodies) with no institution listing under that name; the short form's 12
 # institution listings are other companies' FPI rows (e.g. 531213). Checked on the cached filings 2026-10-04.
-OWN_NAME={"SHILPAMED":{"BARING INDIA PRIVATE EQUITY FUND III":"BARING INDIA PRIVATE EQUITY FUND III LIMITED"}}
+OWN_NAME={"SHILPAMED":{"BARING INDIA PRIVATE EQUITY FUND III":"BARING INDIA PRIVATE EQUITY FUND III LIMITED"},
+          # §164r batch 14: 'Internation Finance Corporation' on PARAGMILK's FDI line (29-Sep-2025 filing) = 'International Finance
+          # Corporation' on its Foreign Companies line Dec-2025..Jun-2026 - the same 5,733,713 shares (checked 2026-10-04)
+          "PARAGMILK":{"INTERNATION FINANCE CORPORATION":"INTERNATIONAL FINANCE CORPORATION"},
+          # §164r batch 14, same share count in the company's adjacent filings (checked 2026-10-04): SMLMAH Mar-2020 'ISUZU MOTORSLIMITED'
+          # 2,170,747 = 'ISUZU MOTORS LIMITED' Dec-2019; SWANCORP Mar/Sep-2018 '2I CAPITAL PCC - Foreign Company' 23,077,000 = '2I CAPITAL PCC'
+          # Dec-2017 / Jun-2018; JSWSTEEL: JFE moved its block to its Dutch subsidiary - 'JFE Steel Corporation' 33,467,580 shares in
+          # Mar-2012, 'JFE Steel International Europe B V' 33,467,580 in Jun-2012 (BSE >1% lists, qtrid 73 / 74)
+          "SMLMAH":{"ISUZU MOTORSLIMITED":"ISUZU MOTORS LIMITED"},
+          "SWANCORP":{"2I CAPITAL PCC - FOREIGN COMPANY":"2I CAPITAL PCC"},
+          "JSWSTEEL":{"JFE STEEL CORPORATION":"JFE STEEL INTERNATIONAL EUROPE B.V."}}
 def own_name(sym, hn):
     return (OWN_NAME.get(sym) or {}).get(re.sub(r"\s+"," ",str(hn or "")).strip().upper(), hn)
 OWN_FOR_AX=("InstitutionsForeignPortfolioInvestor","ForeignPortfolioInvestor","ForeignDirectInvestment","ForeignVentureCapital","SovereignWealthFunds",
@@ -257,6 +267,24 @@ def _same_holder(a, b):
     if x==y: return True
     if min(len(x),len(y))>=25 and (x.startswith(y) or y.startswith(x)): return True
     return difflib.SequenceMatcher(None,x,y).ratio()>=0.96 and _series(a)==_series(b)
+# §164r batch 14 (user 2026-10-04 'yes go with A'): the company's own 'Foreign Direct Investment' line (2022 form, B2 Institutions
+# (Foreign)) in ANY of its filings - not only the FIRST 2022-form filing newmap_for reads - decides that holder in every quarter.
+# Companies moved the same shares between 'Foreign Companies' and the FDI line (JSWSTEEL: JFE Steel 15.00 under Foreign Companies in
+# Sep-2022, on the FDI line from Dec-2022; DELHIVERY 49.78 at Mar-2023; PPLPHARMA: CA Alchemy back to Foreign Companies in Jun-2026),
+# so a first-filing read made FII jump or drop with no trade. Registry scripts/shp_fdi_holders.json: per company, every holder it
+# files on its FDI line, with the first and last such filing (quarter, %, XBRL). Strict identity (_same_holder on the bare name).
+def _load_fdi_reg():
+    try: return json.load(open(os.path.join(REPO,"scripts","shp_fdi_holders.json"),encoding="utf-8")).get("holders") or {}
+    except (OSError,ValueError): return {}
+FDI_REG=_load_fdi_reg()
+def fdi_line(sym, hn):
+    """The registry entry when the company itself files `hn` on its FDI line in some 2022-form filing, else None."""
+    regs=FDI_REG.get(sym)
+    if not regs or not hn: return None
+    hb=_bare_name(own_name(sym,hn))
+    for h in regs:
+        if _same_holder(hb,_bare_name(own_name(sym,h["name"]))): return h
+    return None
 def _documented_foreign(n, what):
     """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
     foreign-institution row); otherwise unresolved — never foreign by name alone."""
@@ -348,6 +376,7 @@ class SymCtx:
             self._ownfii=names
         hb=_bare_name(hn); return any(_same_holder(hb,_bare_name(n)) for n in self._ownfii)
     def hclass(self, hn, pct=None):
+        if fdi_line(self.sym,hn): return "foreign","fii","new-format:ForeignDirectInvestment(any filing)"   # §164r batch 14; not kept in memory (no fuzzy spread)
         if self.newmap is None: self.newmap,self.newfile=newmap_for(self.sym,self.bse_rows)
         c,dest,src=holder_class(hn,self.verdicts,self.newmap,pct)
         n=norm(hn)

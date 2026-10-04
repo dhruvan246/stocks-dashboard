@@ -20984,6 +20984,29 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     DELHIVERY 9.20 -> 67.62 (Mar-2023), FIVESTAR +41.5, 360ONE +38.1, ASTERDM +30.7, POLICYBZR +30.1, KALYANKJIL +27.3, STARHEALTH +25.2,
     REDINGTON +22.9, JSWSTEEL 10.75 -> 26.04 (JFE Steel 15.0, Dec-2022); ~585 older stock-months. Not changed - definition decision
     with the user (keep counting FDI and carry back from ANY 2022-form FDI placement, or stop counting the FDI line).
+    **Batch 14 = Option A (2026-10-04, user: "yes go with A"): a holder the company itself files on its 'Foreign Direct Investment' line
+    in ANY of its filings is FII in EVERY quarter where the company lists it on a public line - 470 cells / 36 companies, FII only (dii
+    untouched in every cell), label "§164r batch 14".** Registry `scripts/shp_fdi_holders.json` (57 companies, 192 holders, first / last
+    FDI-line filing each, read from every 2022-form filing of the PIT roster; 9,145 XBRLs fetched). Code: `_shp_dii_rowfix.fdi_line()` (strict
+    `_same_holder` + `OWN_NAME` aliases proven by identical share counts: PARAGMILK 'Internation Finance Corporation' 5,733,713; SMLMAH
+    'ISUZU MOTORSLIMITED' 2,170,747; SWANCORP '2I CAPITAL PCC - Foreign Company' 23,077,000; JSWSTEEL 'JFE Steel Corporation' -> 'JFE Steel
+    International Europe B.V.' 33,467,580 Mar -> Jun-2012) checked first by `SymCtx.hclass` and `FiiCtx.hclass_p`; new `_shp_fii_rowfix.py
+    fdi22` stage (2022-form rows: registry holder on a public B4 line - Foreign Companies / Bodies Corporate / NRI / Other Non-Institutions;
+    promoter A2 lines never read; share counts); `_shp_d1_rowfix.prior_inputs` reads the batch's non-institution part (`mv159_add` in
+    `_shp_164_audit.json`) so later runs do not see a split_unknown. Cells: 284 old-format quarters (§158 / D1 / §159 re-run, new code minus
+    the original code on identical data - `reply7/origcode3`), 22 old-format event rows (§164q runner, same delta), 84 2022-form rows, 79
+    pre-2016 page cells (holder on the >1% list outside the page's FII-type rows; guarded: NELCO 2009-15 untouched - Schlumberger IS its
+    3-holder FII row; VAIBHAVGBL / AHLUCONT Nalanda inside the FII row; RELIGARE 2012-14 IFC 1,000 shares under the 0.05 floor), JSWSTEEL
+    Mar-2018 (batch 7 had removed JFE on the first-2022-form reading), NELCO Jun-2021. Removed jumps: 360ONE 38.1 -> 4.8 max QoQ, DELHIVERY
+    58.4 -> 7.6, FIVESTAR 41.5 -> 4.5, ASTERDM 30.7 -> 7.5, POLICYBZR 30.1 -> 10.9, KALYANKJIL 27.3 -> 5.4, STARHEALTH 25.2 -> 5.0,
+    PPLPHARMA 17.7 -> 4.3 (CA Alchemy back to Foreign Companies in Jun-2026), RESPONIND 24.7 -> 2.3. Today: GROWW 6.89 -> 47.62, LENSKART
+    12.76 -> 45.16 (their listing-day filings put the VC funds on the FDI line). Left as real: JSWSTEEL Mar-2011 (JFE's allotment), LTFOODS
+    Mar-2023 (SALIC), MARKSANS Jan-2023 (OrbiMed), ARE&M Sep-2020 (Clarios moved from the PROMOTER line), SWANCORP Jun-2017 (2i Capital
+    bought). Not moved: KIMS Jun-2021 (General Atlantic not named in the listing quarter). REDINGTON Mar-2016 written after the DII session
+    fixed its dii double count (ba93c24e4). After the write a full re-run proposes only the pre-existing gaps (11 quarterly = the original
+    code's own: UJJIVAN dii x10; 24 event rows = unchanged set). The engine drops 4 re-filing rows that now equal their healed original
+    (MARKSANS Dec-25, UJJIVAN Jun-23, KALYANKJIL Dec-22, SHRIRAMFIN Dec-22). Scripts: `~/stocks-cache/shp/fdi_scan/` (scan_filings, b14,
+    page_era3, page_guard, run_eval.sh).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

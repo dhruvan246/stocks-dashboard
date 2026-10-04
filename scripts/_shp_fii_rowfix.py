@@ -88,6 +88,7 @@ class FiiCtx(D.SymCtx):
         best=min(ents,key=lambda e:abs(e[2]-hp))
         return best if abs(best[2]-hp)<=max(1.0,0.25*hp) else max(ents,key=lambda e:e[2])
     def hclass_p(self, hn, hp):
+        if D.fdi_line(self.sym,hn): return "foreign","fii","new-format:ForeignDirectInvestment(any filing)"   # §164r batch 14 (user 2026-10-04 'yes go with A')
         if self.multi is None:
             self.multi,self.newfile=newmap_multi(self.sym,self.bse_rows)
             self.newmap={k:(self._pick(v,0)[0],self._pick(v,0)[1]) for k,v in self.multi.items()}   # keeps the parent class usable
@@ -277,6 +278,96 @@ def write(stamp=None):
     json.dump(audit,open(os.path.join(REPO,"scripts","_shp_fii_rowfix_audit.json"),"w",encoding="utf-8"),indent=0,ensure_ascii=False)
     print("write: %d new, %d superseding earlier entries, %d skipped (store moved), %d re-filing rows healed"%(n_new,n_sup,n_skip,n_rev))
 
+# §164r batch 14 (user 2026-10-04 'yes go with A'): the 2022-form rows (quarters and mid-quarter event rows). A holder the company files on
+# its FDI line in another of its filings (D.FDI_REG) but lists here on a PUBLIC line joins fii - the same holder counted the same way
+# in every quarter (JSWSTEEL Sep-2022: JFE Steel 15.00 under Foreign Companies, FDI line from Dec-2022; PPLPHARMA Jun-2026: CA Alchemy
+# 17.93 back under Foreign Companies after ten quarters on the FDI line). Public lines only (B4: Foreign Companies, Bodies Corporate,
+# NRIs, Foreign Nationals, Other Non-Institutions); the promoter lines (A2 'Any other' = OtherForeignShareholders, A2 individuals,
+# A1 rows) are never read. Pure public -> fii move from the holder's own share count; dii, mf, ins untouched. Materiality 0.05 pp.
+PUB22={"ForeignCompanies","BodiesCorporate","OtherNonInstitutions","NonResidentIndians","ForeignNationals"}
+def _key_of(lab):
+    q=D.qe_of(lab)
+    if q: return q
+    try: return time.strftime("%Y-%m-%d",time.strptime((lab or "").strip(),"%d %b %Y"))
+    except ValueError: return None
+def _holder_shares(txt):
+    """-> (total shares, [(axis, shares, kind, name)]) from the typed (holder) contexts of one 2022-form XBRL."""
+    import xml.etree.ElementTree as ET
+    root=ET.fromstring(txt); strip=lambda t:t.split("}",1)[-1]; ctx={}
+    for c in root.iter():
+        if strip(c.tag)!="context": continue
+        mems=[]; typ=None
+        for m in c.iter():
+            st=strip(m.tag)
+            if st=="explicitMember": mems.append((m.text or "").split(":")[-1].strip())
+            elif st=="typedMember":
+                typ=((m.get("dimension") or "").split(":")[-1].replace("DetailsOfSharesHeldBy","").replace("DetailsSharesHeldBy","").replace("Axis",""),
+                     "".join((x.text or "") for x in m.iter() if x is not m).strip())
+        ctx[c.get("id")]=("T",typ) if typ else (("W",None) if mems==["ShareholdingPatternMember"] else (None,None))
+    R={}; tot=None
+    for f in root.iter():
+        t=strip(f.tag); k=ctx.get(f.get("contextRef"))
+        if not k or not k[0]: continue
+        if k[0]=="W":
+            if t=="NumberOfShares":
+                try: tot=float(f.text)
+                except (TypeError,ValueError): pass
+            continue
+        r=R.setdefault(k[1],{})
+        if t=="NumberOfShares":
+            try: r["n"]=float(f.text)
+            except (TypeError,ValueError): pass
+        elif t.startswith("NameOf"): r["name"]=(f.text or "").strip()
+        elif t.startswith("WhetherACategory"): r["kind"]=(f.text or "").strip()
+    return tot,[(ax,v["n"],v.get("kind") or "",v.get("name") or "") for (ax,val),v in R.items() if "n" in v]
+def fdi22(only=None):
+    hist=json.load(open(os.path.join(REPO,"scripts","shp_history.json"))); evt=json.load(open(os.path.join(REPO,"scripts","shp_events.json")))
+    P={}; stats=collections.Counter(); held=[]
+    for sym in sorted(D.FDI_REG):
+        if only and sym not in only: continue
+        lp=os.path.join(D.LISTS,sym+".json")
+        if not os.path.exists(lp): stats["no_bse_list"]+=1; continue
+        d=json.load(open(lp)); bse_rows=d.get("Table") if isinstance(d,dict) else d
+        byk=collections.defaultdict(list)
+        for r in bse_rows or []:
+            k=_key_of(r.get("qtr")); f=(r.get("XbrlFile") or "").strip()
+            if k and f and k>="2022-06-30": byk[k].append(((r.get("filing_date_time") or ""),f))
+        for k,fl in sorted(byk.items()):
+            store=hist if k[5:] in ("03-31","06-30","09-30","12-31") else evt
+            cur=(store.get(sym) or {}).get(k)
+            if not cur: stats["no_store_row"]+=1; continue
+            hit=None
+            for fd,f in sorted(fl):          # earliest first: the store row is the original filing (§142k)
+                pth=D.find_file(f)
+                if not pth: continue
+                txt=open(pth,'rb').read()
+                if b"InstitutionsForeignMember" not in txt: continue
+                try: res=F.parse_shp(txt,k)
+                except Exception: res=None
+                if res and abs((res["prom"] or 0)-(cur[0] or 0))<=0.06 and abs((res["fii"] or 0)-(cur[1] or 0))<=0.06: hit=(f,txt); break
+            if not hit:
+                stats["no_matching_filing" if any(D.find_file(f) for fd,f in fl) else "not_cached"]+=1
+                if any(D.find_file(f) for fd,f in fl): held.append((sym,k,"stored row matches no 2022-form filing as filed (healed or re-filed)"))
+                continue
+            f,txt=hit; tot,rows=_holder_shares(txt)
+            if not tot: stats["no_total"]+=1; continue
+            best={}
+            for ax,n,kind,nm in rows:
+                if ax not in PUB22 or not nm or kind.lower().startswith("categ"): continue
+                h=D.fdi_line(sym,nm)
+                if not h: continue
+                pc=100.0*n/tot
+                if pc>best.get(h["name"],(0,))[0]: best[h["name"]]=(pc,ax,nm,h["first"][0])
+            mv=sum(v[0] for v in best.values())
+            if mv<0.05: stats["unchanged"]+=1; continue
+            new=list(cur); new[1]=round((cur[1] or 0)+mv,4)
+            P["%s|%s"%(sym,k)]={"file":f,"was":cur,"cell":new,"d_fii":round(mv,4),
+                                "ev":[("FDI-holder-on-public-line",v[1],round(v[0],4),v[2],"FDI line first %s"%v[3]) for v in sorted(best.values(),key=lambda x:-x[0])]}
+            stats["proposed"]+=1
+    json.dump(P,open(os.path.join(WORK,"fii22_proposals.json"),"w"),indent=0)
+    json.dump(held,open(os.path.join(WORK,"fii22_held.json"),"w"),indent=0)
+    print("fdi22",dict(stats)); return P
+
 if __name__=="__main__":
     st=sys.argv[1]
     if st=="classify": classify()
@@ -284,3 +375,4 @@ if __name__=="__main__":
     elif st=="verify": verify()
     elif st=="revfix": revfix()
     elif st=="write": write()
+    elif st=="fdi22": fdi22(only=(sys.argv[2].split(",") if len(sys.argv)>2 else None))
