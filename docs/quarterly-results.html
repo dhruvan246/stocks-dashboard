@@ -219,7 +219,7 @@
           <button id="bCsv" class="ml-auto px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
         </div>
       </div>
-      <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · <b>LP</b> = loss→profit, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making (an <b>LL</b> counts as profit-<i>down</i> however small its loss got) · banks/NBFCs show total income &amp; PAT only.</p>
+      <p class="text-[11px] text-slate-500 mt-2">₹ crore · YoY/QoQ computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value (so a turnaround reads positive, e.g. BHEL −455 → +377 = +182.7%) · growth is the same figure the backtest uses (a still-loss-making quarter counts as profit-<i>down</i> in the tallies) · banks/NBFCs show total income &amp; PAT only.</p>
     </section>
 
     <!-- ============ FEED ============ -->
@@ -228,7 +228,7 @@
       <div class="dstrip" id="feedDates"></div>
       <div id="feedList"></div>
       <div class="text-center mt-4"><button id="fMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
-      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · <b>LP</b> = loss→profit turnaround, <b>PL</b> = profit→loss, <b>LL</b> = still loss-making · banks/NBFCs show total income &amp; PAT only · cards appear once a filing's numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
+      <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · the same growth figure the backtest uses · banks/NBFCs show total income &amp; PAT only · cards appear once a filing's numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
     </section>
 
     <!-- ============ CALENDAR ============ -->
@@ -430,6 +430,9 @@ function growth(qarr, qi, metric, lag){           // same-basis growth; returns 
 // (LL) now computes a POSITIVE % against |base| — but it is not profit growth, so it must stay out of
 // the up-counts/filters/streaks, where it would otherwise be counted as BOTH up and down.
 function isUp(pct, flag){ return flag==='LP' || (pct!=null && pct>0 && !flag); }
+// Two profit figures from the same filing: equal to the paise after rounding to 2 dp (0.015 cr tolerance).
+// A null stored profit always "agrees" (nothing to contradict); a null estimate never does.
+function samePat(stored,est){ return stored==null || (est!=null && Math.abs(stored-est)<=0.015); }
 function patFlag(g){                              // profit→loss detection needs cur sign too
   if(!g) return null;
   if(g.flag) return g.flag;
@@ -795,13 +798,11 @@ function vdot(r){
   return '<span class="vdot" style="background:'+c+'" title="'+t+' quarter (rule-based: PAT/revenue growth + margin change)"></span>';
 }
 function gcell(pct,flag,dp){
-  // Show the % AND the flag: the number is the Trendlyne-comparable growth, the flag says the base
-  // was a loss (which the % alone can't convey — +182.7% off -455cr is a turnaround, not a beat).
-  const tag = flag ? ' <span class="'+(flag==='LP'?'pos':'neg')+' font-extrabold text-[10px]" title="'
-      +(flag==='LP'?'Loss → Profit (year-ago quarter was a loss; growth vs |base|)'
-        :flag==='PL'?'Profit → Loss':'Loss both periods (growth vs |base|)')+'">'+flag+'</span>' : '';
-  if(pct==null) return tag || '<span class="font-bold '+pctCls(pct)+'">'+fmtPct(pct)+'</span>';
-  return '<span class="font-bold '+pctCls(flag==='LP'?1:flag==='LL'||flag==='PL'?-1:pct)+'">'+fmtPct(pct)+'</span>'+tag;
+  // The number ONLY — the same (cur−base)/|base| figure the backtest uses (profitAt in backtest-engine.js),
+  // even when the base quarter was a loss (user 2026-10-05: no LP/PL/LL text, show the %). The flag stays
+  // internal (counts, chips, verdict) and in the tooltip, which says the base was a loss.
+  const tip = flag==='LP'?'Loss → profit: growth vs |base|':flag==='PL'?'Profit → loss':flag==='LL'?'Loss both periods: growth vs |base|':'';
+  return '<span class="font-bold '+pctCls(pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(pct)+'</span>';
 }
 function renderResults(){
   $('screenChips').innerHTML=SCREENS.map(([k,l])=>'<button class="chip'+(ST.screen===k?' on':'')+'" data-sc="'+k+'">'+l+'</button>').join('');
@@ -907,10 +908,11 @@ function feedItem(r){
 }
 function fYoyTd(g,isPat){
   if(!g) return '<td class="text-slate-400">—</td>';
+  // Always the % (backtest formula, ÷|base| when the year-ago quarter was a loss) — never an LP/PL/LL word.
   const fl=isPat?patFlag(g):(g.flag||null);
-  if(fl) return '<td class="'+(fl==='LP'?'pos':'neg')+' font-bold" title="'+
-    (fl==='LP'?'Turnaround: loss a year ago, profit now':fl==='PL'?'Profit a year ago, loss now':'Loss both years — shrunk '+fmtPct(g.pct,0)+' vs |base|')+'">'+fl+'</td>';
-  return '<td class="'+pctCls(g.pct)+' font-bold">'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
+  const tip=fl==='LP'?' title="Turnaround: loss a year ago, profit now (growth vs |base|)"':fl==='PL'?' title="Profit a year ago, loss now"':fl==='LL'?' title="Loss both years (growth vs |base|)"':'';
+  if(g.pct==null) return '<td class="text-slate-400">—</td>';
+  return '<td class="'+pctCls(g.pct)+' font-bold"'+tip+'>'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
 }
 const fValTd = v => '<td class="'+(v!=null&&v<0?'neg font-semibold':'text-slate-800')+'">'+fmtCr(v)+'</td>';
 function feedCard(it){
@@ -1122,7 +1124,7 @@ function openModal(sym){
       const [v]=pick(c.q[i],metric);
       const g=growth(c.q,i,metric,4);
       tds+='<td><div class="font-bold '+(v!=null&&v<0?'neg':'text-slate-800')+'">'+fmtCr(v)+'</div>'+
-           '<div class="growthsub '+(g&&g.flag?'neg':pctCls(g&&g.pct))+'">'+(g? (g.flag||fmtPct(g.pct,0)) :'')+'</div></td>';
+           '<div class="growthsub '+pctCls(g&&g.pct)+'">'+(g?fmtPct(g.pct,0):'')+'</div></td>';   // the % even off a loss base (backtest formula), never LP/LL
     }
     return '<tr><th>'+label+'</th>'+tds+'</tr>';
   };
@@ -1521,9 +1523,14 @@ async function load(){
       let ocells=0;
       for(const sym in bse.nse_overlay){ const c=CO[sym]; if(!c) continue;
         for(const qk in bse.nse_overlay[sym]){ const qi=oqix[+qk]; if(qi==null) continue;
-          const cur=c.q[qi];
-          if(cur&&(cur[0]!=null||cur[2]!=null||cur[3]!=null||cur[5]!=null)) continue;  // real value wins
-          c.q[qi]=bse.nse_overlay[sym][qk]; c.bsefill=1; ocells++; } }
+          const cur=c.q[qi], o=bse.nse_overlay[sym][qk];
+          if(!cur||!(cur[0]!=null||cur[2]!=null||cur[3]!=null||cur[5]!=null)){ c.q[qi]=o; c.bsefill=1; ocells++; continue; }
+          // a PARTIAL cell (profit parsed, revenue missing): fill only its empty slots, per basis, and only
+          // where the stored profit agrees with the overlay's — one filing, never two reads mixed (§219)
+          const r=cur.slice(); let n=0;
+          [0,3].forEach(b=>{ if(r[b+2]==null||!samePat(r[b+2],o[b+2])) return;
+            [0,1,2].forEach(k=>{ if(r[b+k]==null&&o[b+k]!=null){ r[b+k]=o[b+k]; n++; } }); });
+          if(n){ c.q[qi]=r; c.bsefill=1; ocells++; } } }
       if(ocells) console.log('bse overlay: filled '+ocells+' empty cells on dual-listed tickers');
     }
     // NSE vision overlay: fill a company's quarter cell ONLY when it has no parsed number yet, so the
@@ -1538,9 +1545,14 @@ async function load(){
           c=CO[sym]={ n:fname[sym], s:'', m:0, orphan:1, q:QTRS.map(()=>null) }; BSE_COUNT+=0;
         }
         for(const qk in vfill[sym]){ const qi=qix[+qk]; if(qi==null) continue;
-          const cur=c.q[qi], has=cur&&(cur[2]!=null||cur[5]!=null);
-          if(has) continue;                                 // real number present → don't overlay
+          const cur=c.q[qi];
           const f=vfill[sym][qk], rev=f.rev==null?null:+f.rev, pat=f.pat==null?null:+f.pat, op=f.op==null?null:+f.op;
+          // A real number in the estimate's basis wins. But a PARTIAL cell — profit parsed, revenue/OP empty —
+          // used to be skipped whole, leaving Sales blank beside a Net profit (HIIL Jun-2026: PAT 36.62 stored,
+          // the vision read of the SAME filing had revenue 116.02). Fill its empty slots when the stored profit
+          // agrees with the estimate's (= same filing); a disagreeing profit means a different read → skip (§219).
+          const bb=f.basis==='S'?0:3;
+          if(cur&&(cur[2]!=null||cur[5]!=null)&&!(cur[bb+2]!=null&&samePat(cur[bb+2],pat))) continue;
           // Into the estimate's OWN basis slots only (a con estimate in the std slot made std YoY compare
           // it with a real std base — GOLDSTAR +1955% vs −127% same-basis), filling only empty slots so a
           // real revenue/OP already parsed stays, and keeping the row's real ann/rx/sr. No invented date:

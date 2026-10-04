@@ -1689,8 +1689,9 @@ list — what sectoral-index clicks write, so the view is shareable).
 - The page's Declared tile = with-numbers + feed-only filers ("+K filed, numbers coming"), deduped against
   numbers by SYMBOL and by normalized COMPANY NAME (dual-listed cos arrive under different tickers per
   exchange, e.g. a BSE fallback ticker; NB INDBNK=Ind Bank Housing is a DIFFERENT co from INDBANK).
-- Growth math is CLIENT-side, always same-basis both periods (con preferred, else std; LP/PL/LL flags when the
-  base is ≤0 — never a % off a negative base). Verdict dot = rule score (PAT YoY, Rev YoY, ΔOPM), transparent.
+- Growth math is CLIENT-side, always same-basis both periods (con preferred, else std). Off a LOSS base the % is
+  (cur−base)/|base| — the backtest's profitAt formula — and since §219 (2026-10-05) the page shows that % everywhere,
+  never LP/PL/LL text (the flags stay internal: tallies, Turnarounds chip, verdict). Verdict dot = rule score (PAT YoY, Rev YoY, ΔOPM), transparent.
 - Universe filter = CURRENT index membership (a display filter, not point-in-time — backtests stay elsewhere).
 - ⚠️ Weekend/post-close filings carry NEXT-trading-day ann (the §12 gate) — the table "Date" column shows that
   tradable date (can read a day ahead of the filing timestamp shown in the feed tab; intentional).
@@ -25525,3 +25526,21 @@ ProfitLossForPeriod tag — the stored 3.06 comes from another element, not trac
 5. **BSE-only vision render ignored the feed's own attachment** — `_render_bse` tried only the 3 newest announcements of the last 5 months, so a later quarter's filings crowded out a late filer's older quarter. Now the feed row's attachment goes first and the search window reaches back to the quarter. Verified: prep run rendered HAWAENG Sep-2026 (auditor page dated 03.10.2026) + 8 late filers each under its own quarter (Mar-26, Jun-25, Mar-25, Dec-24).
 6. **UTC dates** — results page Today/Yesterday labels, feed window and calendar horizon (`istDay()`), `bse_render.announcements` window end, `results_pending`, `build_quarterly_results` drift cutoff now use the IST day.
 **Still open (not fixed, reported to the user):** (a) the feed keeps 31 days, so a still-unfilled filing drops off the vision queue/coverage page after a month (SRIRAM Mar-26, CMICABLES Jun-25 ~2026-10-08..12 — both are in tonight's queue); (b) two filings for DIFFERENT quarters by one company on one day collapse to one feed row / one feed_qe_fix key (not seen in data yet); (c) filings for quarters older than the page's 13-quarter window (FUTURAPOLY Dec-2022) have no column.
+
+
+## §219 — NET PROFIT WITH A BLANK SALES CELL, AND "LP" INSTEAD OF A GROWTH % (2026-10-05, user: "HIIL June 26 sales blank, net profit showing … fix it and it should not happen in any new results"; "don't write LP — calculate like the backtest, even if the previous quarter was negative"; "Hawa Engineers table not showing in Just Declared")
+
+**HIIL Jun-2026 (BSE-only 539984) — three gates, each alone enough to keep Sales blank:**
+1. `bse_fundamentals.json` held `{pat 36.62, no rev, no src}` (an older OCR read that missed the revenue line). The vision read of the SAME filing (rev 116.02 / pat 36.62) had landed in `vision_fills.json` (the routine item carried no scrip).
+2. `quarterly-results.html` applied a vision_fills / BSE-overlay figure only to a cell with NO profit (`if(has) continue`) — a partial cell was skipped whole.
+3. `fetch_bse_results_xbrl`: `targets()` treated any stored BSE-only quarter as held, so a profit-only cell was never asked again; `apply()` only wrote a BSE cell that was empty, so it could not have added the revenue anyway.
+
+**Fixes (fill-only — no stored figure changes):**
+- Page: vision_fills and the BSE dual-listed overlay fill a partial cell's EMPTY slots when the stored profit of that basis agrees with the source's to 0.015 cr (`samePat`) — same filing; a disagreeing profit means a different read and is skipped.
+- XBRL: `targets()` counts a BSE-only quarter without revenue as missing; `apply()` fills ONLY the empty `rev` of a same-basis cell whose profit agrees with the filing (counter `bse rev filled`).
+- Heal run (2026-10-05, worktree `~/stocks-wt/rev-gap`): 56 BSE-only scrips had profit-but-no-revenue cells in the 13-quarter window; 21 were listed (others inside the 20-day re-list wait — the nightly picks them up), 24 revenues filled, every one profit-matched (HIIL Jun-26 116.02; several shells read 0.00 = the XBRL's own zero). The same run also landed 4 SME half-year rows through the normal §194 pair proof (543782 Sep-23/Sep-24/Mar-25, 544001 Sep-24).
+- Measured, not fixed here: the NSE payload has 393 cells (latest 8 quarters) with profit but no revenue on either basis — the NSE side's revenue comes from sf_revop/XBRL; this run does not touch it.
+
+**"LP" text → the %.** `growth()` already computed (cur−base)/|base| — identical to `profitAt` in backtest-engine.js. The display swapped it for a word in three places: the Just-Declared card's YoY cell (`fYoyTd`, LP/PL/LL only), the All-Results table (`gcell`, % + tag) and the company pop-up's sub-figures. All three now show the % only, coloured by its sign, with the loss-base note in the tooltip. HIIL Sep-26 net profit: Sep-25 −43.3 → 55.37 = **+228%** (was "LP").
+
+**HAWAENG Sep-2026** (filed 2026-10-03 15:46, no XBRL posted on BSE as of 2026-10-05 00:30): queued by §218b, read by the bse-vision-fill routine run #507 (00:25 IST) — rev 20.93 / PAT 0.57, ann 20261003. Cross-checked against Screener: 20.93 / 0.57 exact. The card was missing only because no route had read the scanned PDF yet (the routine's previous run, 2026-10-04 00:26, predated the §218b queue fix).

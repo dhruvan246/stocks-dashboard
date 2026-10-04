@@ -544,7 +544,8 @@ def targets(today):
     for r in univ:
         code = str(r[0]); sme = (r[4] or "") in SME_GROUPS
         have = {int(q) for q, c in (px.get(code) or {}).items()
-                if str(q).isdigit() and not (isinstance(c, dict) and c.get("prov"))}   # a provisional H1 stays wanted
+                if str(q).isdigit() and not (isinstance(c, dict) and (c.get("prov")       # a provisional H1 stays wanted
+                                                                     or c.get("rev") is None))}   # §219: profit without revenue too
         tk = code2tk.get(code)
         if tk and bse_resolve.bse_blocked_under(tk, r[3] if len(r) > 3 else None, code):
             tk = None                                          # §203: the ticker's page is another company — never chased
@@ -845,6 +846,12 @@ def apply(fills_path):
                         if f.get("pf"): rec["pf"] = f["pf"]        # the arithmetic that proved it (§194)
                         if f.get("prov"): rec["prov"] = 1          # Apr-Sep YTD, not yet closed by the Mar filing
                     cur[str(qe)] = rec; C["bse q"] += 1
+            elif (old is not None and rev is not None and old.get("rev") is None and old.get("basis", basis) == basis
+                  and (old.get("pat") is None or (pat is not None and abs(old["pat"] - pat) <= 0.015))):
+                # §219: a stored cell with profit but NO revenue (an OCR/vision read that missed the revenue line —
+                # HIIL Jun-2026 showed Net profit beside a blank Sales). Fill ONLY the empty revenue, and only when the
+                # filing's own profit agrees with the stored one (same filing, same basis); nothing stored is changed.
+                old["rev"] = rev; C["bse rev filled"] = C.get("bse rev filled", 0) + 1
         else:
             sym = f["sym"]; ann = f["ann"] or None
             if bse_resolve.nse_blocked_under(sym, f.get("isin")):
