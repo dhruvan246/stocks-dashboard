@@ -20945,6 +20945,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     to re-base; its gap to Quantmac shrinks 1.10x (2009) -> 1.027x (2015), so it is not a DR base (asked Quantmac). Other sites:
     Screener and Trendlyne show the company's printed % (custodian out); Moneycontrol divides by ALL shares (HDFC Bank Jun-2026
     FII 36.26 vs 41.83 printed).
+    **Trendlyne as a third opinion (sample of 112 Quantmac-differ cells, Dec-2015 on).** Trendlyne marks with '*' the rows it counts as
+    FII (tooltip: "identified by trendlyne as belonging to FII/FPI category") - in practice ONLY the FPI / FII category lines, never an
+    Any-Other holder, an FDI / strategic holder or a QFI line. So it is a third, narrower definition: it sides with whichever side leaves
+    a disputed holder out - = ours 35, = Quantmac 28, both 4, neither 35 (32 below both), no page 10. = ours: Any-Other PE funds / Silver
+    Leaf / FIL Capital-type holders (LAURUSLABS Dec-19 10.52, ARE&M, SPANDANA, KIMS), QIB rows, INFY / AXISBANK DR column, MEDPLUS.
+    = Quantmac: FDI / strategic holders we carry back from the company's 2022 form (ITC Mar-16 20.49, JSWSTEEL, ADANIENT, VAIBHAVGBL),
+    SHILPAMED's Baring (already suspected ours). Possible OUR errors it surfaced, not changed: STAR Sep-2016 (35.29) misses STAR's own
+    'Foreign Venture Capital Investors' row - OrbiMed Asia Mauritius 1.59, present in its Jun / Dec-2016 cells - 36.88 = Quantmac =
+    Trendlyne; WIPRO Mar-2016 +0.69 over the FPI line, untraced. Method: browser fetch + DOMParser of
+    trendlyne.com/equity/share-holding/<k>/<SYM>/<dd-mm-yyyy>/<slug>/ (k via /member/api/ac_snames/stock/?term= with an
+    X-Requested-With header), sum of starred category rows (a starred holder only when its category is not starred);
+    `reply7/tl_results.json`. Never copied - verify-only.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
