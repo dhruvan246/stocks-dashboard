@@ -186,6 +186,13 @@ DATE2_RE = re.compile(r"(?:with\s+)?effect\s+from\s+([A-Z][a-z]+\s+\d{1,2}\s*,\s
 # ind_prs29082017 (RELCAPITAL) and ind_prs07032017 (SBBJ / MYSOREBANK / SBT: 16-Mar, not 31-Mar 2017)
 # was dated 15-24 days late. Returns (announced, rescheduled) or None.
 RESCHED_RE = re.compile(r"reschedul", re.I)
+# The same defect without the word "reschedule" (2026-10-04, quantmac round 3): ind_prs06032018 first QUOTES the
+# 21-Feb-2018 review ("replacement of Videocon Industries Ltd. ... effective from April 02, 2018"), then: "NSE vide its
+# circular NSE/CML/37115 dated March 5, 2018 has announced shifting of Videocon Industries Ltd. to 'BZ' series effective
+# from March 13, 2018. In view of above, the IMSC has decided to replace Videocon Industries Ltd. from various indices
+# ... effective from March 13, 2018 (close of March 12, 2018)" — NIFTY 500 / Smallcap 250 / MidSmallcap 400:
+# VIDEOIND out, ERIS in. NSE's IndexInclExcl register dates the Nifty 500 swap 2018-03-13. {stem: (announced, new)}
+RESCHED_OVERRIDES = {"06032018": ("2018-04-02", "2018-03-13")}
 def resched_dates(txt):
     m = RESCHED_RE.search(txt)
     if not m:
@@ -318,12 +325,15 @@ def parse_pdf(fp):
 #    member 2020-2024. Verified from the PR text: net 27 out / 27 in on 2024-09-30. 2026-07-03.
 MANUAL_CHANGELOG_FIXES = [
     ("Nifty 500", "2024-09-30", {"IDEA"}, {"PRSMJOHNSN"}, set(), set()),
-    #  - ind_prs10062020 (eff 2020-06-26, the COVID re-done reconstitution): IRCTC & SWSOLAR are missing
-    #    from the parsed N500 include list (very long company names — rows lost across a page break in the
-    #    pypdf text layer). PROOF they entered on 2020-06-26: both are in the 2020-07-25 archived NSE CSV
-    #    (Wayback checkpoint) and NO other event exists between 2020-06-26 and 2020-07-25; their only other
-    #    add (Feb-18-2020) was nulled. Without this they phantom-extend back to listing (Jan-May 2020). 2026-07-10.
-    ("Nifty 500", "2020-06-26", set(), set(), set(), {"IRCTC", "SWSOLAR"}),
+    #  - ind_prs10062020 (eff 2020-06-26, the COVID re-done reconstitution): IRCTC is missing from the parsed
+    #    N500 include list (a very long company name — the row is lost across a page break in the pypdf text
+    #    layer; the notice's text does list "Indian Railway Catering And Tourism Corporation Ltd. IRCTC").
+    #    It is in the 2020-07-25 archived NSE CSV and has no other event in between. 2026-07-10.
+    #    SWSOLAR REMOVED from this add (2026-10-04, quantmac round 3): it is NOT in ind_prs10062020 — it entered
+    #    the Nifty 500 on 2020-03-19 as Yes Bank's replacement (ind_prs16032020 section 3: "NIFTY 500 ... excluded
+    #    Yes Bank Ltd. YESBANK ... included Sterling And Wilson Solar Ltd. SWSOLAR", w.e.f. 19-Mar-2020; NSE's
+    #    IndexInclExcl register the same). The extra 06-26 inclusion made the backward walk drop it 03-19 -> 06-25.
+    ("Nifty 500", "2020-06-26", set(), set(), set(), {"IRCTC"}),
     #  - ind_prs12032020 (Nifty Bank, redated 2020-03-19 above): the notice's next section "B. Replacement
     #    in NIFTY50 Value 20 index" is a lettered heading HEAD_RE does not recognise, so its rows (excluded
     #    Yes Bank, included ITC) bleed into the Nifty Bank block — ITC as a pre-2020 Nifty Bank member.
@@ -345,6 +355,21 @@ MANUAL_CHANGELOG_EVENTS = [
     ("Nifty Bank", "2025-12-31", [], ["UNIONBANK", "YESBANK"], "01122025",
      "index widened 12->14 (SEBI F&O eligibility), ind_prs01122025 section B"),
 ]
+#  - Jio Financial Services (2026-10-04, quantmac round 3): ind_prs17072023 "Corporate Adjustment for Reliance
+#    Industries Ltd." — the spun-off entity "shall be included in following indices effective from July 20, 2023
+#    (close of July 19, 2023)"; ind_prs05092023 "Exclusion of Jio Financial Services Limited from Nifty indices ...
+#    effective from September 7, 2023 (close of September 6, 2023) ... if JIOFIN hits the price band on September 6,
+#    2023, the exclusion shall not be deferred further." Both notices list the indices in a table (no swap rows), so
+#    parse_pdf yields nothing. Same 19-index table in both; the tracked ones below. (JIOFIN re-entered the Nifty 500
+#    on 2024-03-28 through the regular review, 28022024 — already parsed.)
+#    Dated from its LISTING DAY, 21-Aug-2023, not 20-Jul: until listing the index held the spun-off entity at a fixed
+#    price and NSE's own published constituent files of 3 / 8 / 11-Aug-2023 (archived pins: Nifty 100 / 200 / LargeMidcap
+#    250 / Oil & Gas) do not list it — and a stock with no traded price cannot be screened either way.
+for _idx in ("Nifty 50", "Nifty 100", "Nifty 200", "Nifty 500", "Nifty Energy", "Nifty LargeMidcap 250", "Nifty Oil & Gas"):
+    MANUAL_CHANGELOG_EVENTS.append((_idx, "2023-08-21", [], ["JIOFIN"], "17072023",
+                                    "Reliance demerger: spun-off entity in the index from 20-Jul-2023 (ind_prs17072023), listed 21-Aug-2023"))
+    MANUAL_CHANGELOG_EVENTS.append((_idx, "2023-09-07", ["JIOFIN"], [], "05092023",
+                                    "JIOFIN excluded w.e.f. 7-Sep-2023, ind_prs05092023"))
 
 def apply_revocations(changelog, revs, src):
     for idx, eff, act, sym in revs:
@@ -411,9 +436,12 @@ def main():
         try:
             _rtxt = "\n".join(p.extract_text() or "" for p in PdfReader(fp).pages)
             _revs = parse_revocations(_rtxt) + parse_symbol_lists(_rtxt)
-            _rs = resched_dates(_rtxt)
+            _rs = RESCHED_OVERRIDES.get(stem) or resched_dates(_rtxt)
         except Exception:
-            _revs = []; _rs = None
+            _revs = []; _rs = RESCHED_OVERRIDES.get(stem)
+        if stem in RESCHED_OVERRIDES:
+            for b in blocks:
+                b["eff"] = RESCHED_OVERRIDES[stem][1]
         if _revs:
             revocations.append((stem, _revs))
         if _rs and blocks:

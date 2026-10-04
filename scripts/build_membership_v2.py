@@ -243,6 +243,24 @@ def validate_n500(snaps, wb):
         worst = min(worst, pct)
     return worst
 
+# ARCHIVED-LIST CORRECTIONS (2026-10-04, quantmac round 3). A Wayback capture can carry a list OLDER than its capture
+# date: _wb_n500_snaps.json's "2010-01-02" agrees with every NSE register change through 22-Oct-2009 but not with the
+# 22-Dec-2009 swap — IISL press release ind_prs16122009 (16-Dec-2009): "the ex-date for Zandu Pharmaceutical Ltd and Emami
+# Ltd. is 22 December, 2009 ... S&P CNX 500 Index: the following company is being excluded: Zandu Pharmaceutical Ltd. /
+# included: 3i Infotech Ltd.", effective 22-Dec-2009 (NSE's IndexInclExcl register the same; its 21-Dec correction
+# touches only CNX FMCG). Pinned as captured, the list kept Zandu and — via register_inc_is_live — refused 3i Infotech
+# at every later Moneycontrol checkpoint, so 3IINFOTECH was missing 22-Dec-2009 -> 29-Aug-2011.
+WB_PIN_FIXES = {"2010-01-02": {"add": ["3IINFOTECH"], "drop": ["ZANDUPHARM"], "src": "ind_prs16122009"}}
+# STALE MONEYCONTROL NAMES (2026-10-04, quantmac round 3) that the register scrub cannot see because NSE's register
+# files the company under another name. Dropped from every MC checkpoint dated AFTER the date given:
+#  AJMERA = Shree Precoated Steels renamed (NSE bhavcopy: AJMERA's first PREVCLOSE, 16-Jun-2009, = SPSL's last close
+#    46.75, 8-May-2009). The register EXCLUDES "Shree Precoated Steels Ltd." 11-May-2009 and never includes Ajmera; NSE's
+#    archived list of 2010-01-02 has no AJMERA. Moneycontrol kept listing it 2009-09-25 .. 2011-08-04.
+#  DALBHARAT on the 2011 MC pages: the register EXCLUDES "Dalmia Bharat Sugar and Industries Ltd." 24-Sep-2010 (with DB
+#    Realty in) and records no Dalmia inclusion until "Dalmia Bharat Ltd." on 1-Apr-2016. Kept, the 2011 pins carried the
+#    name back (ERA_OVERRIDES -> DALMIACEM) and held Dalmia as a 501st member 24-Sep-2010 -> 26-Jan-2011.
+MC_STALE = {"AJMERA": "2009-05-11", "DALBHARAT": "2010-09-24"}
+
 def load_inclexcl_register(fname="_n500_inclexcl_events.json"):
     """NSE's own dated inclusion/exclusion register (IndexInclExcl.xls -> Nifty 500 sheet,
     parsed by scripts/_staleness_fix/gen_inclexcl_events.py). 1,765 mapped events, 1998-2020.
@@ -451,6 +469,10 @@ def register_state(reg_by_sym, sym, iso_date):
 def main():
     changelog = json.load(open(os.path.join(HERE, "_changelog.json")))
     wb = json.load(open(os.path.join(HERE, "_wb_n500_snaps.json")))
+    for _d, _fx in WB_PIN_FIXES.items():
+        if _d in wb:
+            wb[_d] = sorted((set(wb[_d]) - set(_fx["drop"])) | set(_fx["add"]))
+            print(f"  archived list {_d} corrected ({_fx['src']}): +{_fx['add']} -{_fx['drop']}")
     REG_BY_SYM, REG_EVENTS = load_inclexcl_register()
     # Other sheets of the same NSE register, one ledger per index (runbook §141a/§141b). Each index
     # listed here merges its register events into the walk exactly like the Nifty 500 block below.
@@ -661,7 +683,9 @@ def main():
                 for _d, _v in json.load(open(os.path.join(HERE, "_mc_n500_snaps.json"))).items():
                     _keep, _drop = set(), []
                     for _s in _v:
-                        if register_state(REG_BY_SYM, canon(_s), _d) == "exc":
+                        # judge the ERA identity (ERA_OVERRIDES: MC's "Shree Precoated" code SHPRE is SPSL before 2009-10-15 —
+                        # its 2009-05-29 page still listed SPSL, excluded 2009-05-11) — and drop the MC_STALE names
+                        if (_s in MC_STALE and _d > MC_STALE[_s]) or register_state(REG_BY_SYM, canon(era_fix(_s, _d)), _d) == "exc":
                             _drop.append(_s)
                         else:
                             _keep.add(_s)

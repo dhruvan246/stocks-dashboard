@@ -21912,6 +21912,51 @@ relistings ("stale base -> fake return"), but BSE's shareholding filings show 1,
 relisting (only the face value was cut 10 -> 1; RIL/JMARC allotment came 28-Feb) — so an old share IS a new share and the 3.30 -> 17.70
 move was a real return for holders. Joining (SEAM_MERGES seam 1.0) would make quantmac's 2020 lows (Rs 1.40, Oct-2019) agree and change
 2020 momentum signals for ALOKINDS; left for the user. Only stranded-history case among quantmac's cells (scan of every window).
+### 179e. Quantmac round 3 (their month-end file of 1-Oct-2026): 8 of OUR Nifty 500 membership errors fixed from NSE's own notices; 81% of the strict cell differences proven to be our 2-decimal storage (2026-10-04)
+**Their file.** `Nifty_500_PIT_MonthEnd_Indicators_2009_2026_corrected_20261001.xlsx` — the same 213 month-ends, one StockView release
+2026-09-30 22:12 IST. Two format changes: "Stock symbol" is now the point-in-time ticker (3,275 stock-dates relabelled, e.g. TATAGLOBAL,
+GUJFLUORO, KPIT; "Calculation label" keeps the current one) and the 52w levels print on the as-of-date RAW scale (the % columns are
+unchanged). Parsed with `parse_qm_corrected.py` (OUT=`~/stocks-cache/nse_bhav/qm_ind_r3.json`). Their changes: our demerger factors now
+applied on 52w HIGHS (238 cells: RELIANCE 2023, SIEMENS 2025, ITC 2025, RAYMOND 2024 ...), TATASTEEL 2018 rights (22), PAISALO's
+SEINVEST history; they REMOVED the INDHOTEL 2014 CCD and TATAINVEST 2008 ZCCB adjustments from their highs (our policy A stays).
+**Result on live rev 5660fe750e, identical rules for both rounds (`~/stocks-cache/qm-recon-tools/qm_verdict.py`):** round 2 312,794 /
+318,410 (98.24%; 99.61% counting rounding) -> round 3 313,136 / 318,494 (98.32%; 99.69%). Real differences 1,239 -> 982: their
+rights-on-lows 624, their demerger convention 311, our close-priced ex-days 15, BSE pre-listing bars 10 and the ALOKINDS seam 5 (both user
+decisions), SUMMITSEC's BSE prices 3, INFIBEAM 1 (on the rounding line).
+**Exact-arithmetic proof (`qm_exact.py`).** Our value rebuilt from NSE raw prices x our UNROUNDED factor runs (a run is cut only at our
+ledger events or an isolated >1% jump — cutting on rounding jitter invents steps, HCC) equals theirs on 4,323 of the 5,358 strictly
+differing cells (80.7%): those differ ONLY because adjusted prices are stored to 2 decimals and re-rounded at every later rescale. Worst:
+BAJFINANCE 2010-03-31 above-low 408.2% stored vs 402.3% exact (2008-09 prices adjust to Rs 0.6-1.4). **OPEN (user decision):** more precision.
+**Our membership errors — each proven by an NSE notice or NSE's IndexInclExcl register; quantmac's dated membership matched every one:**
+- **3IINFOTECH in / ZANDUREALT out 22-Dec-2009** (IISL `ind_prs16122009`: "S&P CNX 500 ... excluded Zandu Pharmaceutical Ltd. / included 3i
+  Infotech Ltd.", effective 22-Dec-2009). `_wb_n500_snaps.json` "2010-01-02" is a STALE capture — it agrees with every register change through
+  22-Oct-2009 but not this swap — and, through `register_inc_is_live`, kept 3i Infotech out of every later checkpoint to 29-Aug-2011.
+  Fix: `WB_PIN_FIXES` (the list corrected at load, so validation uses it too).
+- **AJMERA was never a member** (= Shree Precoated Steels renamed; NSE's bhavcopy links them — AJMERA's first PREVCLOSE 46.75 on 16-Jun-2009 =
+  SPSL's last close 8-May-2009). The register EXCLUDES SPSL 11-May-2009 and has no Ajmera row; NSE's 2010-01-02 list has no AJMERA; only
+  Moneycontrol's stale pages (2009-09-25 .. 2011-08-04) listed it -> `MC_STALE`. **SPSL 11-May -> 16-Jun-2009**: MC's 2009-05-29 "SHPRE" is SPSL
+  (ERA_OVERRIDES) -> the MC scrub now judges `canon(era_fix(sym, date))`, not `canon(sym)`.
+- **DALMIASUG out 24-Sep-2010** (register, DB Realty in; no Dalmia inclusion until "Dalmia Bharat Ltd." 1-Apr-2016). The 2011 MC pins'
+  DALBHARAT walked back through ERA_OVERRIDES and held Dalmia as a 501st member to 26-Jan-2011 -> `MC_STALE`.
+- **VIDEOIND -> ERIS on 13-Mar-2018, not 2-Apr** (`ind_prs06032018`: Videocon shifted to BZ from 13-Mar; the notice first quotes the 21-Feb
+  review's April date, which the parser took) -> `RESCHED_OVERRIDES` in build_changelog + the hunt ledger entry's eff 20180313 (+ `eff_note`);
+  the RESCHEDULED-LEGS step strips the pair from 21022018.
+- **SWSOLAR in from 19-Mar-2020** as Yes Bank's replacement (`ind_prs16032020` section 3). The 2026-07-10 manual add dated it 26-Jun-2020 — it is
+  not in `ind_prs10062020` (IRCTC is) — and that extra inclusion made the backward walk drop it 19-Mar -> 25-Jun. Removed from the add.
+- **JIOFIN 21-Aug -> 6-Sep-2023** in Nifty 50 / 100 / 200 / 500 / Energy / LargeMidcap 250 / Oil & Gas (`ind_prs17072023` included the spun-off
+  entity from 20-Jul; `ind_prs05092023` excluded it from 7-Sep, final). Dated from LISTING (21-Aug): NSE's own constituent files of 3 / 8 /
+  11-Aug-2023 omit it, and it has no price before. -> MANUAL_CHANGELOG_EVENTS. The DUMMYREL placeholder now ends there (Oil & Gas had held it
+  to 2025-04-07).
+**Verified (worktree, live sf bin 5660fe750e, today's NSE anchors, the 1,416-PDF corpus as `_pr_cache`):** unchanged code reproduced the
+committed `_changelog.json` and `indices_history.json` byte-for-byte; after the change Nifty 500 = 39/39 archived lists at 100% and every
+`pin_report` line is identical to the baseline; the Nifty 500 diff is exactly the items above (snapshot sizes 501 -> 500 across 2009-05..12 and
+2010-09..2011-01; 2020-03-19 +SWSOLAR; 2023-08-21 +JIOFIN); derived MidSmallcap 400 / Smallcap 250 follow (MidSmallcap 400's new 2023-08-21
+snapshot carries TATAMTRDVR like its 21 other derived snapshots).
+**My tools, not our data:** SUJANATOW was never missing (rounds 1-2 said it was) — it is our NTL key (SEAM_MERGES NTL <- SUJANATOW, tape
+2008-2020) and a roster member 10-Oct-2011 -> 6-Aug-2013 (register: out 7-Aug); `qm_cells.py` had joined it to NEUEON (tape from 2017). FORCE
+map: SUJANATOW -> NTL (66 cells, all agree), ANSALINFRA -> ANSALAPI (our dead fragment), RDEL -> RNAVAL. `qm_classify2.py`: the rounding
+budget counts BOTH our stored prices; per-bar step noise (a real 0.1% step on a Rs 200+ stock counts, one-paisa jitter on Rs 13 does not);
+"all steps of one type" (FRL / IBREALEST: two demergers) and "demerger + raw ex-day print" (GRASIM 2010) hypotheses.
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
