@@ -20940,6 +20940,19 @@ unknown, need documents); IDFC Mar-16 (held while the FII session's §164r batch
 sub-row (same batch 11 question); BSE Ltd 2018-20 (aggregator, NSE serves only the latest 22 filings — ask Quantmac for the XBRLs);
 AVANTIFEED Dec-16..Dec-17 serve Thai Union in fii via SW-2 entries (FII-side; documents say public).
 
+**§164s part 2 (2026-10-04, user: "B, public for the 5, and write JSW/Gulf too") - 17 rows:**
+- DII neighbour gate (version B, measured first: `~/stocks-cache/shp/dii_qm/gate_measure.py`): an UNNAMED institutional Any-Other
+  block >= 1 pp counts in DII only if the quarters just before and after its run (runs <= 2 quarters) show DII at least halfway to the
+  moved level. The FII gate's exact form (adjacent quarters) misses 2-quarter spikes (LICHSGFIN Sep/Dec-17 back each other); applying
+  it to runs of any length hits steady multi-year blocks (CHOLAFIN, ITC, BHARTIARTL). 5 cells: LICHSGFIN Sep/Dec-17 -> fii (FII side
+  backed), PVRINOX Jun-17, CENTRALBK Jun-18, BEML Sep-17 -> public (neither side backed, user decision). M&M Sep-19, SUNTV Jun-22,
+  LAURUSLABS Jun-20 first looked unnamed but the filer wrote "Qualified Institutional Buyer" in the NAME field -> QIB = DII (Rule 1),
+  unchanged. Ledger-only; the code (`_shp_d1_rowfix.py`) does not yet carry the DII gate (FII session owns the file during §164r
+  batch 11) - add it there before any store-wide D1 re-run, or a re-run proposes undoing these 5.
+- Holder documents: JSWENERGY Mar-16..Sep-17 (7) Indus Capital Group + Steel Traders -> public (JSW's Dec-15 >1% table: 'Foreign
+  Bodies' 108,198,047 = the two holders exactly; Dec-17 XBRL lists Steel Traders under Bodies Corporate); GULFOILLUB Jun-16..Jun-17 (5)
+  IAM Ltd -> public (Gulf Oil's Sep-15 BSE page: 'Overseas Corporate Bodies' 1,333,333). Every new value = Quantmac's to ~0.01.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
