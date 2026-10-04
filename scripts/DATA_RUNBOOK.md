@@ -21030,6 +21030,17 @@ CENTRALBK, GICRE, KOTAKBANK, UCOBANK ...) - not in any cache, NSE master no long
 session). **Filled: SUPPETRO Jun-2017** from its only surviving BSE filing (Revised, 2017-07-21) into shp_fill_hist_2016_2019.json.gz
 with §158 rules (dii 0.9575 = six lines 0.9251 + NBFC 0.0324; 'Foreign Corporate Bodies' 0.0177 public).
 
+**§164s part 5 (2026-10-04, user: "check the wipro 2021 cells and fix if ours"):** WIPRO Sep/Dec-2021 live DII 6.85 / 7.09 are
+RIGHT (non-institutions 'Qualified Institutional Buyer' row 4.79 / 4.31 incl. LICI New Endowment Plus-Growth Fund 3.90 / 3.19 -> DII).
+The row code proposed 2.95 / 3.90 because `shp_foreign_holder_evidence.json` (batch-10 corpus rebuild, "any Institutions (Foreign)
+listing = foreign") classed that LIC fund FOREIGN on ONE filer's misplacement (NMDC Jan-2019 FPI row) against 4 domestic listings.
+Store-wide scan: 20 Indian institutions had the same defect (ICICI Pru Life 2 vs 737 domestic, HDFC Life 1 vs 78, Sundaram MF 3 vs
+163, L&T / Kotak / IDFC Sterling / Aditya Birla SL / Mirae MF schemes, Birla Sun Life Insurance) -> class=domestic; 2 Indian companies
+(Rajasthan Global Securities, Shine Star Build Cap) and a junk "0" key removed. No live cell had been moved by them (ledger scan: 0;
+rebuilt feed: 0 rows change); the fix stops future row-code runs from proposing those moves. Genuinely foreign insurers / funds
+(New York Life, Prudential Assurance UK, Sanlam, Mitsui Sumitomo, GOSI, Vanguard ...) unchanged. Lesson: an evidence class must weigh
+domestic listings too - one misfiled foreign row must not outvote hundreds of domestic ones.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
