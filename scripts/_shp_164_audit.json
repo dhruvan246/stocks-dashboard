@@ -118516,6 +118516,86 @@
 ]
 ],
 "label": "§164r batch 10b (store-wide re-run of the corrected code)"
+},
+"ARVIND|2015-12-31": {
+"src": "bseaspx:500101:88 + shpperent",
+"ev": "value came from an aggregator (Trendlyne) row read with our old-format formula, which added the institutional Any-Other block to dii although the aggregator's fii already held it: BSE's seam table lists 'Foreign Institutional Investors' 32,600,327 shares = 12.6239% of 258,243,069. fii (already 23.09, in line with the neighbouring quarters) unchanged; the double-counted block leaves dii: 29.2500 -> 16.6261.",
+"label": "§164s DII round a+b+c"
+},
+"AVANTIFEED|2016-03-31": {
+"src": "bseaspx:512573:89 + shpperent 89",
+"ev": "THAI UNION FROZEN PRODUCTS (11,410,210 shares = 25.1242% of 45,415,210) sat in dii by the old-format default for the institutional Any-Other row; it is a foreign company, not a domestic institution - the company itself labels it 'Foreign Corporate Bodies- Thai Union Frozen Products' on its Dec-2015 >1% holders table (BSE shpperent qtrid 88). Moved to public (documents-only rule); fii unchanged. dii 25.2511 -> 0.1269.",
+"label": "§164s DII round a+b+c"
+},
+"AVANTIFEED|2016-06-30": {
+"src": "bsexbrl:512573_1972016172959_SHP.xml",
+"ev": "THAI UNION FROZEN PRODUCTS (11,410,210 shares = 25.1242% of 45,415,210) sat in dii by the old-format default for the institutional Any-Other row; it is a foreign company, not a domestic institution - the company itself labels it 'Foreign Corporate Bodies- Thai Union Frozen Products' on its Dec-2015 >1% holders table (BSE shpperent qtrid 88). Moved to public (documents-only rule); fii unchanged. dii 25.3719 -> 0.2477.",
+"label": "§164s DII round a+b+c"
+},
+"AVANTIFEED|2016-09-30": {
+"src": "bsexbrl:512573_19102016152419_SHP.xml",
+"ev": "THAI UNION FROZEN PRODUCTS (11,410,210 shares = 25.1242% of 45,415,210) sat in dii by the old-format default for the institutional Any-Other row; it is a foreign company, not a domestic institution - the company itself labels it 'Foreign Corporate Bodies- Thai Union Frozen Products' on its Dec-2015 >1% holders table (BSE shpperent qtrid 88). Moved to public (documents-only rule); fii unchanged. dii 25.6865 -> 0.5623.",
+"label": "§164s DII round a+b+c"
+},
+"BANKINDIA|2015-12-31": {
+"src": "bseaspx:532149:88",
+"ev": "value came from an aggregator (Trendlyne) row; BSE's own Dec-2015 page (qtrid 88) reads MF 6,293,827 + Banks 2,196,111 + Insurance 113,405,595 shares of 791,913,170 = dii 15.3925 (ins 14.3205); its QFI 1.46 + institutional Any-Others 3.87 (91 holders = the 'Foreign Institutional Investors' line on the seam table) are the stored fii 5.33 already - the old formula counted the 3.87 block in dii as well. dii 21.04 -> 15.3925, ins 16.10 -> 14.3205.",
+"label": "§164s DII round a+b+c"
+},
+"BBTC|2015-12-31": {
+"src": "bseaspx:501425:88 + shpperent 88",
+"ev": "BSE Dec-2015 page (qtrid 88): the institutions block's 'Any Others (Specify)' row (649 holders, 7,463,041 shares = 10.6963% of 69,771,900) is a lump of non-institution categories - its >1% table shows Wallace Brothers Trading & Industrial Ltd (Non Domestic Companies) 5,660,700, Domestic Companies 1,758,341, Non Resident, Foreign Companies/Bodies - none a domestic institution. To public, as Mar-2016 is already served (5.38). dii 16.0261 -> 5.3298, fii unchanged.",
+"label": "§164s DII round a+b+c"
+},
+"CCL|2016-03-31": {
+"src": "bseaspx:519600:89 + shpperent 89",
+"ev": "BSE Mar-2016 seam table lists a 'Foreign Institutional Investors' line of 11,072,764 shares = 8.3236% of 133,027,920 (the legacy-FII block, §160a); it sat in dii. Moved to fii: fii 11.4002 -> 19.7238, dii 10.8884 -> 2.5648 - matching Jun-2016 (fii 20.92 / dii 2.53).",
+"label": "§164s DII round a+b+c"
+},
+"IEX|2018-03-31": {
+"src": "bsexbrl:540750_2042018143716_SHP.xml",
+"ev": "the filing's institutional Any-Other block (23.74pp) is 'Overseas Corporate Bodies' holders plus an MGT-4 line - not domestic institutions; placed holder by holder as the company's adjacent quarters already are (Dec-2017 §164r batch 10, Jun-2018 §164r batch 8): RIMCO (MAURITIUS) 4.50 -> fii (option A); WESTBRIDGE 4.75 / LIGHTSPEED 3.00 / AFHOLDINGS 2.31 / MADISON 1.03 / SG BRIC 1.61 / SIGULER GUFF 3.02 / MGT-4 0.84 -> public; INDIA BUSINESS EXCELLENCE FUND-IIA 2.68 -> dii (documented domestic, as Jun-2018); SBI LIFE 2.50 (Bodies Corporate row) -> dii+ins (R2, as Jun-2018); NBFC 0.08 -> dii (R3). fii 7.32 -> 11.8117, dii 35.91 -> 17.4142 (share counts, 540750_2042018143716_SHP.xml).",
+"label": "§164s DII round a+b+c"
+},
+"JETAIRWAYS|2016-03-31": {
+"src": "bseaspx:532617:89 + shpperent 89",
+"ev": "BSE Mar-2016 seam page (qtrid 89): the institutional block carried Etihad Airways PJSC 27,263,372 shares = 24.0000% of 113,597,383 - a foreign airline (strategic holder), not a domestic institution; Jun-2016 (filer XBRL) already serves it outside fii and dii. dii 33.9895 -> 9.9895 (public), fii unchanged.",
+"label": "§164s DII round a+b+c"
+},
+"KARURVYSYA|2016-09-30": {
+"src": "bset3:590003:91",
+"ev": "§164s Quantmac DII round (user 2026-10-04 'go ahead with c'): value was an aggregator (Trendlyne) row read with the old-format formula; BSE's own Table III for this filing (api Corp_shpSec_SHPPubShold_ng SCRIPCODE=590003 QtrCode=91) shows B1 = MF 14.27 + VCF 1.06 + Banks 0.10 + Insurance 4.06 (dii 19.49) + FPI 15.41 + Any Other (specify) 8.26. That Any-Other row is the legacy foreign-institution block: the same row in Jun-2016 (n=40) names Saif Advisors Mauritius / Warhol Ltd (FII) and in Dec-2016 WARHOL LIMITED (FFI) - the company's own FII labels - and Jun-2016 is already served with it in fii (§158b). fii 15.41 -> 23.67, dii 27.75 -> 19.49.",
+"label": "§164s DII round a+b+c"
+},
+"KARURVYSYA|2016-12-31": {
+"src": "bset3:590003:92",
+"ev": "§164s Quantmac DII round (user 2026-10-04 'go ahead with c'): value was an aggregator (Trendlyne) row read with the old-format formula; BSE's own Table III for this filing (api Corp_shpSec_SHPPubShold_ng SCRIPCODE=590003 QtrCode=92) shows B1 = MF 13.30 + VCF 1.06 + Banks 0.10 + Insurance 4.15 (dii 18.61) + FPI 18.69 + Any Other (specify) 5.68. That Any-Other row is the legacy foreign-institution block: the same row in Jun-2016 (n=40) names Saif Advisors Mauritius / Warhol Ltd (FII) and in Dec-2016 WARHOL LIMITED (FFI) - the company's own FII labels - and Jun-2016 is already served with it in fii (§158b). fii 18.69 -> 24.37, dii 24.29 -> 18.61.",
+"label": "§164s DII round a+b+c"
+},
+"MANPASAND|2016-03-31": {
+"src": "bseaspx:539207:89 + shpperent 89",
+"ev": "BSE Mar-2016 seam page: SAIF PARTNERS INDIA IV LIMITED 11,186,000 shares = 22.3479% of 50,054,000 sat in dii; a foreign PE vehicle, not a domestic institution; the next quarter (Jun-2016 filer XBRL) serves it outside dii and fii, so it follows that placement (public). dii 39.9581 -> 17.6102, fii unchanged.",
+"label": "§164s DII round a+b+c"
+},
+"MFSL|2017-06-30": {
+"src": "bsexbrl:500271_1472017161228_SHP.xml",
+"ev": "XENOK LIMITED 4.1449 (institutional Any-Other row, sole holder) out of dii: MFSL files Xenok among its foreign direct investors (§160c: 'the filer's own FDI label follows its holders - MFSL Parkville/Xenok/IFC') and the store already serves Xenok in fii Jun-2016..Dec-2016 (§158a). dii 26.1958 -> 22.0509, fii 29.6339 -> 33.7788.",
+"label": "§164s DII round a+b+c"
+},
+"SINTEX|2016-03-31": {
+"src": "bseaspx:502742:89 + shpperent",
+"ev": "value came from an aggregator (Trendlyne) row read with our old-format formula, which added the institutional Any-Other block to dii although the aggregator's fii already held it: BSE's seam table lists 'Foreign Institutional Investors' 73,194,145 shares = 16.3910% of 446,550,721. fii (already 35.02, in line with the neighbouring quarters) unchanged; the double-counted block leaves dii: 18.5600 -> 2.1690.",
+"label": "§164s DII round a+b+c"
+},
+"SKUMARSYNF|2011-06-30": {
+"src": "bseaspx:514304:70:New",
+"ev": "BSE ShareholdingPattern.aspx (qtrid 70): the institutions block's 'Any Others (Specify)' row is 'NRI Company' (3 holders, 7,356,631 shares = 2.5815%) - a non-resident company, not an institution; the page reader's exclusion list knew 'Non-Resident Indian' but not 'NRI Company'. dii 2.83 -> 0.2485; fii unchanged.",
+"label": "§164s DII round a+b+c"
+},
+"SKUMARSYNF|2011-09-30": {
+"src": "bseaspx:514304:71:New",
+"ev": "BSE ShareholdingPattern.aspx (qtrid 71): the institutions block's 'Any Others (Specify)' row is 'NRI Company' (3 holders, 7,356,631 shares = 2.5815%) - a non-resident company, not an institution; the page reader's exclusion list knew 'Non-Resident Indian' but not 'NRI Company'. dii 2.74 -> 0.1585; fii unchanged.",
+"label": "§164s DII round a+b+c"
 }
 }
 }

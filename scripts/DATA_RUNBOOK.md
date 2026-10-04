@@ -20917,6 +20917,29 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     The ledger is right for the batch-7..10 decisions; these need a pass of their own before any re-run of the row-level code is
     written. The holder memory carries a curated placement into other quarters as 'memory' and skips option A (TCI / TCIEXP).
 
+### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
+**Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
+feed with the exact engine port (`~/stocks-cache/shp/quantmac/ourfii.py`, field 2 = dii, 400-day cap): 85,434 agree, 14,253 value
+differs, 1,238 quarter differs, 4,511 we-have/they-blank, 120 we-blank. ~9,330 differing cells = Quantmac equals OUR raw value before a
+deliberate heal (§158 NBFC/domestic rows, §164 D1, §164a, §159) = definition. 71 company-quarters (206 cells) >= 2 pp with no heal were
+read against the filings (BSE XBRL, BSE ShareholdingPattern.aspx + shpperent seam tables, BSE Table III api) — work dir
+`~/stocks-cache/shp/dii_qm/` (cmp.py, cls2.json, step1.json, prop_ab.json).
+**Written (16 rows, `shp_cell_fix.json`, label "§164s DII round a+b+c", writer `reply7/write_b8.py`):**
+- holder in dii that is not a domestic institution: IEX Mar-18 (OCB block, placed holder by holder as Dec-17/Jun-18 already are;
+  Rimco -> fii, others public, IBEF/SBI Life/NBFC dii), AVANTIFEED Mar/Jun/Sep-16 (Thai Union 25.12 -> public: the company's own Dec-15
+  table labels it "Foreign Corporate Bodies"), MFSL Jun-17 (Xenok 4.14 -> fii, as Jun-Dec-16), SKUMARSYNF Jun/Sep-11 ("NRI Company"
+  row inside the institutions block; the page reader's exclusion regex lacks that label), JETAIRWAYS Mar-16 (Etihad 24.00 -> public, as
+  Jun-16), MANPASAND Mar-16 (SAIF Partners 22.35 -> public, as Jun-16), BBTC Dec-15 (non-institution lump 10.70 -> public, as Mar-16);
+- legacy-FII "Any Others" block in dii: CCL Mar-16 (-> fii), KARURVYSYA Sep/Dec-16 (BSE Table III: the company's own FII labels on
+  the same row in Jun-16/Dec-16);
+- aggregator (Trendlyne) fills whose old-format formula counted the legacy-FII block in BOTH fii and dii: ARVIND Dec-15, SINTEX
+  Mar-16, BANKINDIA Dec-15 (also ins re-read from the BSE page).
+Rebuilt feed: exactly these 16 rows move; guards green. **Open (not written):** LICHSGFIN Sep/Dec-17 D1 rest -> dii spike (user
+question: DII neighbour-corroboration gate); JSWENERGY 2016-17 Indus Capital Group / Steel Traders, GULFOILLUB 2016 IAM Ltd (class
+unknown, need documents); IDFC Mar-16 (held while the FII session's §164r batch 11 label fix runs); NH Mar-20 Bodies-Corporate
+sub-row (same batch 11 question); BSE Ltd 2018-20 (aggregator, NSE serves only the latest 22 filings — ask Quantmac for the XBRLs);
+AVANTIFEED Dec-16..Dec-17 serve Thai Union in fii via SW-2 entries (FII-side; documents say public).
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
