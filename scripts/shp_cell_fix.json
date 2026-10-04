@@ -2970,7 +2970,7 @@
    "2018-06-30": {
     "cell": [
      44.0,
-     14.007,
+     12.4183,
      9.9267,
      4.2695,
      1.49,
@@ -2979,17 +2979,26 @@
     ],
     "was": [
      44.0,
-     12.4157,
-     6.328,
+     14.007,
+     9.9267,
      4.2695,
-     0.0,
+     1.49,
      "2018-07-09",
      41007
     ],
     "src": "bsexbrl:540902_672018152928_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.33 -> 9.93, fii 12.42 -> 14.01. R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59 foreign->fii(curated); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 DF INTERNATIONAL PRIVATE PARTNERS 1.59 foreign->fii(regex); R2-named Trusts 3.7 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 3.70(regex); R2-named Bodies Corporate 1.49 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.49(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): DF INTERNATIONAL PRIVATE PARTNERS 1.59; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; AMBER's own sub-row label is 'Bodies Corporate' (a company-type label) (the earlier run placed it FII by its name or residency alone). fii 14.0070 -> 12.4183 (share counts of 540902_672018152928_SHP.xml), dii unchanged.",
     "superseded": {
      "cell": [
+      44.0,
+      14.007,
+      9.9267,
+      4.2695,
+      1.49,
+      "2018-07-09",
+      41007
+     ],
+     "was": [
       44.0,
       12.4157,
       6.328,
@@ -2998,23 +3007,36 @@
       "2018-07-09",
       41007
      ],
-     "was": [
-      44.0,
-      10.827,
-      7.9167,
-      4.2695,
-      0.0,
-      "2018-07-09",
-      41007
-     ],
      "src": "bsexbrl:540902_672018152928_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59) \u2014 moved dii -> fii (1.5887 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.33 -> 9.93, fii 12.42 -> 14.01. R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59 foreign->fii(curated); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 DF INTERNATIONAL PRIVATE PARTNERS 1.59 foreign->fii(regex); R2-named Trusts 3.7 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 3.70(regex); R2-named Bodies Corporate 1.49 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.49(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       44.0,
+       12.4157,
+       6.328,
+       4.2695,
+       0.0,
+       "2018-07-09",
+       41007
+      ],
+      "was": [
+       44.0,
+       10.827,
+       7.9167,
+       4.2695,
+       0.0,
+       "2018-07-09",
+       41007
+      ],
+      "src": "bsexbrl:540902_672018152928_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59) \u2014 moved dii -> fii (1.5887 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2018-12-31": {
     "cell": [
      44.02,
-     13.9064,
+     12.3177,
      10.6088,
      4.7319,
      1.71,
@@ -3023,17 +3045,26 @@
     ],
     "was": [
      44.02,
-     12.3151,
-     6.4701,
+     13.9064,
+     10.6088,
      4.7319,
-     0.0,
+     1.71,
      "2019-01-08",
      37391
     ],
     "src": "bsexbrl:540902_81201911183_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.47 -> 10.61, fii 12.32 -> 13.91. R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59 foreign->fii(curated); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 DF INTERNATIONAL PRIVATE PARTNERS 1.59 foreign->fii(regex); R2-named Bodies Corporate 4.02 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 4.02(regex); R2-named Bodies Corporate 1.71 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.71(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): DF INTERNATIONAL PRIVATE PARTNERS 1.59; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; AMBER's own sub-row label is 'Bodies Corporate' (a company-type label) (the earlier run placed it FII by its name or residency alone). fii 13.9064 -> 12.3177 (share counts of 540902_81201911183_SHP.xml), dii unchanged.",
     "superseded": {
      "cell": [
+      44.02,
+      13.9064,
+      10.6088,
+      4.7319,
+      1.71,
+      "2019-01-08",
+      37391
+     ],
+     "was": [
       44.02,
       12.3151,
       6.4701,
@@ -3042,17 +3073,30 @@
       "2019-01-08",
       37391
      ],
-     "was": [
-      44.02,
-      10.7264,
-      8.0588,
-      4.7319,
-      0.0,
-      "2019-01-08",
-      37391
-     ],
      "src": "bsexbrl:540902_81201911183_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59) \u2014 moved dii -> fii (1.5887 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.47 -> 10.61, fii 12.32 -> 13.91. R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59 foreign->fii(curated); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.59 DF INTERNATIONAL PRIVATE PARTNERS 1.59 foreign->fii(regex); R2-named Bodies Corporate 4.02 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 4.02(regex); R2-named Bodies Corporate 1.71 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.71(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       44.02,
+       12.3151,
+       6.4701,
+       4.7319,
+       0.0,
+       "2019-01-08",
+       37391
+      ],
+      "was": [
+       44.02,
+       10.7264,
+       8.0588,
+       4.7319,
+       0.0,
+       "2019-01-08",
+       37391
+      ],
+      "src": "bsexbrl:540902_81201911183_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES 1.59) \u2014 moved dii -> fii (1.5887 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2019-03-31": {
@@ -16093,8 +16137,8 @@
    "2016-12-31": {
     "cell": [
      69.09,
-     4.8518,
-     0.128,
+     4.5507,
+     0.1691,
      0.0748,
      0.0,
      "2017-01-10",
@@ -16102,15 +16146,37 @@
     ],
     "was": [
      69.09,
-     4.5507,
-     0.4291,
+     4.8518,
+     0.128,
      0.0748,
      0.0,
      "2017-01-10",
      21267
     ],
     "src": "bsexbrl:524742_912017155537_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.30pp, holders: FOREIGN  BODY CORPORATES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.1280 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): the institutions-block sub-row CAPLIPOINT labels 'FOREIGN BODY CORPORATES' (0.30) is a company-type label: public (the label's double space had defeated the company-type pattern). fii 4.8518 -> 4.5507, dii 0.1280 -> 0.1691.",
+    "superseded": {
+     "cell": [
+      69.09,
+      4.8518,
+      0.128,
+      0.0748,
+      0.0,
+      "2017-01-10",
+      21267
+     ],
+     "was": [
+      69.09,
+      4.5507,
+      0.4291,
+      0.0748,
+      0.0,
+      "2017-01-10",
+      21267
+     ],
+     "src": "bsexbrl:524742_912017155537_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.30pp, holders: FOREIGN  BODY CORPORATES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.1280 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
@@ -80817,7 +80883,7 @@
    "2017-06-30": {
     "cell": [
      32.86,
-     17.442,
+     8.1936,
      0.3384,
      0.0,
      0.0,
@@ -80826,15 +80892,37 @@
     ],
     "was": [
      32.86,
-     8.192,
-     13.9484,
+     17.442,
+     0.3384,
      0.0,
      0.0,
      "2017-07-21",
      104820
     ],
     "src": "bsexbrl:532345_2072017182627_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.19 -> 17.44, dii 13.95 -> 0.34. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=4.40 fii=0.00 KINTETSU WORLD EXPRESS INC 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=9.25 Goldman Sach International 9.25 foreign->fii(regex); R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): Goldman Sach International 9.25; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; ACLGATI itself files the holder under 'Other Foreign Corporate Bodies' / 'Overseas Corporate Bodies' from Sep-2017 (the earlier run placed it FII by its name or residency alone). fii 17.4420 -> 8.1936 (share counts of 532345_2072017182627_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      32.86,
+      17.442,
+      0.3384,
+      0.0,
+      0.0,
+      "2017-07-21",
+      104820
+     ],
+     "was": [
+      32.86,
+      8.192,
+      13.9484,
+      0.0,
+      0.0,
+      "2017-07-21",
+      104820
+     ],
+     "src": "bsexbrl:532345_2072017182627_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.19 -> 17.44, dii 13.95 -> 0.34. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=4.40 fii=0.00 KINTETSU WORLD EXPRESS INC 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=9.25 Goldman Sach International 9.25 foreign->fii(regex); R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
@@ -92899,7 +92987,7 @@
    "2018-06-30": {
     "cell": [
      36.45,
-     44.4165,
+     17.1565,
      4.3759,
      0.871,
      0.0,
@@ -92908,20 +92996,20 @@
     ],
     "was": [
      36.45,
-     44.42,
-     1.8405,
+     20.136,
+     4.3759,
      0.871,
      0.0,
      "2018-07-10",
      12526
     ],
     "src": "bsexbrl:533137_107201813546_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 44.42 -> 44.42, dii 1.84 -> 4.38. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=21.37 BROAD STREET INVESTMENTS (SINGAPORE) PTE LTD 21.37 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.47 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.44 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44 foreign->fii(regex); R1-foreign-holders Bodies Corpor. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 20.1360 -> 17.1565, dii unchanged.",
     "superseded": {
      "cell": [
       36.45,
-      44.42,
-      1.8405,
+      20.136,
+      4.3759,
       0.871,
       0.0,
       "2018-07-10",
@@ -92929,15 +93017,59 @@
      ],
      "was": [
       36.45,
-      16.2265,
-      30.0359,
+      44.4165,
+      4.3759,
       0.871,
       0.0,
       "2018-07-10",
       12526
      ],
      "src": "bsexbrl:533137_107201813546_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (28.19pp, holders: BROAD STREET INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD; STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.8405 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE) PTE LTD 21.37; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.4165 -> 20.1360 (share counts of 533137_107201813546_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       36.45,
+       44.4165,
+       4.3759,
+       0.871,
+       0.0,
+       "2018-07-10",
+       12526
+      ],
+      "was": [
+       36.45,
+       44.42,
+       1.8405,
+       0.871,
+       0.0,
+       "2018-07-10",
+       12526
+      ],
+      "src": "bsexbrl:533137_107201813546_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 44.42 -> 44.42, dii 1.84 -> 4.38. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=21.37 BROAD STREET INVESTMENTS (SINGAPORE) PTE LTD 21.37 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.47 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.44 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44 foreign->fii(regex); R1-foreign-holders Bodies Corpor. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        36.45,
+        44.42,
+        1.8405,
+        0.871,
+        0.0,
+        "2018-07-10",
+        12526
+       ],
+       "was": [
+        36.45,
+        16.2265,
+        30.0359,
+        0.871,
+        0.0,
+        "2018-07-10",
+        12526
+       ],
+       "src": "bsexbrl:533137_107201813546_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (28.19pp, holders: BROAD STREET INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD; STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.8405 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
+     }
     }
    },
    "2018-09-30": {
@@ -92987,7 +93119,7 @@
    "2018-12-31": {
     "cell": [
      36.45,
-     39.6909,
+     13.1309,
      2.8286,
      1.4361,
      0.963,
@@ -92996,20 +93128,20 @@
     ],
     "was": [
      36.45,
-     39.6943,
-     2.4134,
+     15.4104,
+     2.8286,
      1.4361,
      0.963,
      "2019-01-14",
      13582
     ],
     "src": "bsexbrl:533137_1112019175354_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 39.69 -> 39.69, dii 2.41 -> 2.83. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=21.37 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.37 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.47 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.44 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44 foreign->fii(regex); R1-foreign-holders Bodies Corpor. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 15.4104 -> 13.1309, dii unchanged.",
     "superseded": {
      "cell": [
       36.45,
-      39.6943,
-      2.4134,
+      15.4104,
+      2.8286,
       1.4361,
       0.963,
       "2019-01-14",
@@ -93017,15 +93149,59 @@
      ],
      "was": [
       36.45,
-      12.5709,
-      29.5386,
+      39.6909,
+      2.8286,
       1.4361,
       0.963,
       "2019-01-14",
       13582
      ],
      "src": "bsexbrl:533137_1112019175354_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (27.12pp, holders: BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD; STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.4134 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.37; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 39.6909 -> 15.4104 (share counts of 533137_1112019175354_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       36.45,
+       39.6909,
+       2.8286,
+       1.4361,
+       0.963,
+       "2019-01-14",
+       13582
+      ],
+      "was": [
+       36.45,
+       39.6943,
+       2.4134,
+       1.4361,
+       0.963,
+       "2019-01-14",
+       13582
+      ],
+      "src": "bsexbrl:533137_1112019175354_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 39.69 -> 39.69, dii 2.41 -> 2.83. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=21.37 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.37 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.47 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.47 foreign->fii(regex); R1-foreign-holders Bodies Corporate 0.0 public=0.00 fii=1.44 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD 1.44 foreign->fii(regex); R1-foreign-holders Bodies Corpor. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        36.45,
+        39.6943,
+        2.4134,
+        1.4361,
+        0.963,
+        "2019-01-14",
+        13582
+       ],
+       "was": [
+        36.45,
+        12.5709,
+        29.5386,
+        1.4361,
+        0.963,
+        "2019-01-14",
+        13582
+       ],
+       "src": "bsexbrl:533137_1112019175354_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (27.12pp, holders: BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD; STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 2.4134 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
+     }
     }
    },
    "2015-12-31": {
@@ -93269,7 +93445,7 @@
    "2016-06-30": {
     "cell": [
      40.05,
-     44.0843,
+     22.9543,
      1.1443,
      0.0286,
      0.0,
@@ -93278,20 +93454,64 @@
     ],
     "was": [
      40.05,
-     21.1643,
-     24.0143,
+     26.29,
+     1.1443,
      0.0286,
      0.0,
      "2016-07-20",
      9647
     ],
     "src": "bsexbrl:533137_2072016125930_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.16 -> 44.08, dii 24.01 -> 1.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=3.28 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE L. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2900 -> 22.9543, dii unchanged.",
+    "superseded": {
+     "cell": [
+      40.05,
+      26.29,
+      1.1443,
+      0.0286,
+      0.0,
+      "2016-07-20",
+      9647
+     ],
+     "was": [
+      40.05,
+      44.0843,
+      1.1443,
+      0.0286,
+      0.0,
+      "2016-07-20",
+      9647
+     ],
+     "src": "bsexbrl:533137_2072016125930_SHP.xml",
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0843 -> 26.2900 (share counts of 533137_2072016125930_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       40.05,
+       44.0843,
+       1.1443,
+       0.0286,
+       0.0,
+       "2016-07-20",
+       9647
+      ],
+      "was": [
+       40.05,
+       21.1643,
+       24.0143,
+       0.0286,
+       0.0,
+       "2016-07-20",
+       9647
+      ],
+      "src": "bsexbrl:533137_2072016125930_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.16 -> 44.08, dii 24.01 -> 1.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=3.28 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE L. Evidence: _shp_164_audit.json"
+     }
+    }
    },
    "2016-09-30": {
     "cell": [
      40.05,
-     44.0181,
+     22.9081,
      1.1033,
      0.0005,
      0.0,
@@ -93300,20 +93520,64 @@
     ],
     "was": [
      40.05,
-     21.0981,
-     23.9933,
+     26.2238,
+     1.1033,
      0.0005,
      0.0,
      "2016-10-25",
      10570
     ],
     "src": "bsexbrl:533137_2510201617137_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.10 -> 44.02, dii 23.99 -> 1.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62 foreign->fii(regex); R1-unresolved Other 0.0 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE G 3.28 ?->-(-) keyword; R1-rest-follows-foreign-holders. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2238 -> 22.9081, dii unchanged.",
+    "superseded": {
+     "cell": [
+      40.05,
+      26.2238,
+      1.1033,
+      0.0005,
+      0.0,
+      "2016-10-25",
+      10570
+     ],
+     "was": [
+      40.05,
+      44.0181,
+      1.1033,
+      0.0005,
+      0.0,
+      "2016-10-25",
+      10570
+     ],
+     "src": "bsexbrl:533137_2510201617137_SHP.xml",
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0181 -> 26.2238 (share counts of 533137_2510201617137_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       40.05,
+       44.0181,
+       1.1033,
+       0.0005,
+       0.0,
+       "2016-10-25",
+       10570
+      ],
+      "was": [
+       40.05,
+       21.0981,
+       23.9933,
+       0.0005,
+       0.0,
+       "2016-10-25",
+       10570
+      ],
+      "src": "bsexbrl:533137_2510201617137_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.10 -> 44.02, dii 23.99 -> 1.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62 foreign->fii(regex); R1-unresolved Other 0.0 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE G 3.28 ?->-(-) keyword; R1-rest-follows-foreign-holders. Evidence: _shp_164_audit.json"
+     }
+    }
    },
    "2016-12-31": {
     "cell": [
      36.78,
-     48.8802,
+     21.3502,
      0.9875,
      0.0,
      0.0,
@@ -93322,20 +93586,64 @@
     ],
     "was": [
      36.78,
-     19.6702,
-     30.1875,
+     24.3807,
+     0.9875,
      0.0,
      0.0,
      "2017-01-11",
      11150
     ],
     "src": "bsexbrl:533137_101201717489_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.67 -> 48.88, dii 30.19 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.3807 -> 21.3502, dii unchanged.",
+    "superseded": {
+     "cell": [
+      36.78,
+      24.3807,
+      0.9875,
+      0.0,
+      0.0,
+      "2017-01-11",
+      11150
+     ],
+     "was": [
+      36.78,
+      48.8802,
+      0.9875,
+      0.0,
+      0.0,
+      "2017-01-11",
+      11150
+     ],
+     "src": "bsexbrl:533137_101201717489_SHP.xml",
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.8802 -> 24.3807 (share counts of 533137_101201717489_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       36.78,
+       48.8802,
+       0.9875,
+       0.0,
+       0.0,
+       "2017-01-11",
+       11150
+      ],
+      "was": [
+       36.78,
+       19.6702,
+       30.1875,
+       0.0,
+       0.0,
+       "2017-01-11",
+       11150
+      ],
+      "src": "bsexbrl:533137_101201717489_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.67 -> 48.88, dii 30.19 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     }
+    }
    },
    "2017-03-31": {
     "cell": [
      36.78,
-     48.6832,
+     21.1632,
      0.9869,
      0.0,
      0.0,
@@ -93344,15 +93652,59 @@
     ],
     "was": [
      36.78,
-     19.4732,
-     30.1969,
+     24.1837,
+     0.9869,
      0.0,
      0.0,
      "2017-04-17",
      10748
     ],
     "src": "bsexbrl:533137_1342017164710_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.47 -> 48.68, dii 30.20 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.1837 -> 21.1632, dii unchanged.",
+    "superseded": {
+     "cell": [
+      36.78,
+      24.1837,
+      0.9869,
+      0.0,
+      0.0,
+      "2017-04-17",
+      10748
+     ],
+     "was": [
+      36.78,
+      48.6832,
+      0.9869,
+      0.0,
+      0.0,
+      "2017-04-17",
+      10748
+     ],
+     "src": "bsexbrl:533137_1342017164710_SHP.xml",
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.6832 -> 24.1837 (share counts of 533137_1342017164710_SHP.xml), dii unchanged.",
+     "superseded": {
+      "cell": [
+       36.78,
+       48.6832,
+       0.9869,
+       0.0,
+       0.0,
+       "2017-04-17",
+       10748
+      ],
+      "was": [
+       36.78,
+       19.4732,
+       30.1969,
+       0.0,
+       0.0,
+       "2017-04-17",
+       10748
+      ],
+      "src": "bsexbrl:533137_1342017164710_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.47 -> 48.68, dii 30.20 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     }
+    }
    },
    "2021-12-31": {
     "cell": [
@@ -103065,7 +103417,7 @@
    "2017-03-31": {
     "cell": [
      54.99,
-     10.9135,
+     9.6684,
      2.7896,
      0.0461,
      2.6821,
@@ -103074,7 +103426,7 @@
     ],
     "was": [
      54.99,
-     12.4484,
+     10.9135,
      2.7896,
      0.0461,
      2.6821,
@@ -103082,11 +103434,11 @@
      26240
     ],
     "src": "bsexbrl:532162_184201717721_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.4484 -> 10.9135 (share counts of 532162_184201717721_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): Societe De Promotion Et De Participation Pour La Cooperation Economique (PROPARCO) 1.25 inside JKPAPER's Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public - as JKPAPER Jun-2017 and the 17-Oct-2017 event already serve it. fii 10.9135 -> 9.6684, dii unchanged.",
     "superseded": {
      "cell": [
       54.99,
-      12.4484,
+      10.9135,
       2.7896,
       0.0461,
       2.6821,
@@ -103095,17 +103447,26 @@
      ],
      "was": [
       54.99,
-      11.204,
-      4.014,
+      12.4484,
+      2.7896,
       0.0461,
       2.6821,
       "2017-04-19",
       26240
      ],
      "src": "bsexbrl:532162_184201717721_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 11.20 -> 12.45, dii 4.01 -> 2.79. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=0.00 fii=4.93 International Finance Corporation 4.93 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.53 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53 foreign->fii(curated); R1-unresolved Other 0.0 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 1.25 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.25; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.4484 -> 10.9135 (share counts of 532162_184201717721_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
      "superseded": {
       "cell": [
+       54.99,
+       12.4484,
+       2.7896,
+       0.0461,
+       2.6821,
+       "2017-04-19",
+       26240
+      ],
+      "was": [
        54.99,
        11.204,
        4.014,
@@ -103114,17 +103475,30 @@
        "2017-04-19",
        26240
       ],
-      "was": [
-       54.99,
-       4.7384,
-       10.4796,
-       0.0461,
-       2.6821,
-       "2017-04-19",
-       26240
-      ],
       "src": "bsexbrl:532162_184201717721_SHP.xml",
-      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (International Finance Corporation 4.93; DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53) \u2014 moved dii -> fii (6.4656 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 11.20 -> 12.45, dii 4.01 -> 2.79. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=0.00 fii=4.93 International Finance Corporation 4.93 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.53 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53 foreign->fii(curated); R1-unresolved Other 0.0 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 1.25 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.25; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        54.99,
+        11.204,
+        4.014,
+        0.0461,
+        2.6821,
+        "2017-04-19",
+        26240
+       ],
+       "was": [
+        54.99,
+        4.7384,
+        10.4796,
+        0.0461,
+        2.6821,
+        "2017-04-19",
+        26240
+       ],
+       "src": "bsexbrl:532162_184201717721_SHP.xml",
+       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (International Finance Corporation 4.93; DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.53) \u2014 moved dii -> fii (6.4656 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      }
      }
     }
    },
@@ -113953,8 +114327,8 @@
    "2016-06-30": {
     "cell": [
      50.0,
-     31.2694,
-     6.4775,
+     21.2691,
+     6.4879,
      6.4599,
      0.0,
      "2016-07-15",
@@ -113962,18 +114336,49 @@
     ],
     "was": [
      50.0,
-     21.2691,
-     16.4779,
+     31.2694,
+     6.4775,
      6.4599,
      0.0,
      "2016-07-15",
      276678
     ],
     "src": "bsexbrl:532522_1572016124336_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: OVERSEAS CORPORATE BODIES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 6.4775 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): the institutions-block line PETRONET itself names 'OVERSEAS CORPORATE BODIES' (10.00, GDF International's 75,000,000 shares) carries the company's own company-type label: public (the 2026-08-30 SW-2 sweep had made the block FII by name). Sep-2015..Mar-2016 already serve it public. fii 31.2694 -> 21.2691, dii 6.4775 -> 6.4879.",
+    "superseded": {
+     "cell": [
+      50.0,
+      31.2694,
+      6.4775,
+      6.4599,
+      0.0,
+      "2016-07-15",
+      276678
+     ],
+     "was": [
+      50.0,
+      21.2691,
+      16.4779,
+      6.4599,
+      0.0,
+      "2016-07-15",
+      276678
+     ],
+     "src": "bsexbrl:532522_1572016124336_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: OVERSEAS CORPORATE BODIES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 6.4775 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
+     50.0,
+     21.7116,
+     5.9658,
+     5.9377,
+     0.0,
+     "2016-10-25",
+     272409
+    ],
+    "was": [
      50.0,
      31.7118,
      5.9556,
@@ -113982,22 +114387,35 @@
      "2016-10-25",
      272409
     ],
-    "was": [
-     50.0,
-     21.7116,
-     15.9558,
-     5.9377,
-     0.0,
-     "2016-10-25",
-     272409
-    ],
     "src": "bsexbrl:532522_24102016165848_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: OVERSEAS CORPORATE BODIES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 5.9556 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): the institutions-block line PETRONET itself names 'OVERSEAS CORPORATE BODIES' (10.00, GDF International's 75,000,000 shares) carries the company's own company-type label: public (the 2026-08-30 SW-2 sweep had made the block FII by name). Sep-2015..Mar-2016 already serve it public. fii 31.7118 -> 21.7116, dii 5.9556 -> 5.9658.",
+    "superseded": {
+     "cell": [
+      50.0,
+      31.7118,
+      5.9556,
+      5.9377,
+      0.0,
+      "2016-10-25",
+      272409
+     ],
+     "was": [
+      50.0,
+      21.7116,
+      15.9558,
+      5.9377,
+      0.0,
+      "2016-10-25",
+      272409
+     ],
+     "src": "bsexbrl:532522_24102016165848_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: OVERSEAS CORPORATE BODIES) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 5.9556 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
      50.0,
-     31.6906,
+     21.6906,
      6.3057,
      6.2838,
      0.0,
@@ -114006,20 +114424,42 @@
     ],
     "was": [
      50.0,
-     21.6904,
-     16.3059,
+     31.6906,
+     6.3057,
      6.2838,
      0.0,
      "2017-01-12",
      275378
     ],
     "src": "bsexbrl:532522_1112017175816_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: GDF INTERNATIONAL) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 6.3057 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): GDF INTERNATIONAL 10.00 (75,000,000 shares - the same block PETRONET names 'OVERSEAS CORPORATE BODIES' in Jun/Sep-2016) on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; the company's own label for the block is company-type. fii 31.6906 -> 21.6906, dii unchanged.",
+    "superseded": {
+     "cell": [
+      50.0,
+      31.6906,
+      6.3057,
+      6.2838,
+      0.0,
+      "2017-01-12",
+      275378
+     ],
+     "was": [
+      50.0,
+      21.6904,
+      16.3059,
+      6.2838,
+      0.0,
+      "2017-01-12",
+      275378
+     ],
+     "src": "bsexbrl:532522_1112017175816_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: GDF INTERNATIONAL) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 6.3057 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
      50.0,
-     29.4261,
+     19.4261,
      7.6979,
      7.6549,
      0.0,
@@ -114028,15 +114468,37 @@
     ],
     "was": [
      50.0,
-     19.4259,
-     17.6981,
+     29.4261,
+     7.6979,
      7.6549,
      0.0,
      "2017-04-12",
      277488
     ],
     "src": "bsexbrl:532522_1242017101222_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: GDF INTERNATIONAL) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.6979 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): GDF INTERNATIONAL 10.00 (75,000,000 shares - the same block PETRONET names 'OVERSEAS CORPORATE BODIES' in Jun/Sep-2016) on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; the company's own label for the block is company-type. fii 29.4261 -> 19.4261, dii unchanged.",
+    "superseded": {
+     "cell": [
+      50.0,
+      29.4261,
+      7.6979,
+      7.6549,
+      0.0,
+      "2017-04-12",
+      277488
+     ],
+     "was": [
+      50.0,
+      19.4259,
+      17.6981,
+      7.6549,
+      0.0,
+      "2017-04-12",
+      277488
+     ],
+     "src": "bsexbrl:532522_1242017101222_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.00pp, holders: GDF INTERNATIONAL) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.6979 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -117905,7 +118367,7 @@
    "2017-08-09": {
     "cell": [
      0.0,
-     20.9736,
+     17.8863,
      6.2458,
      4.3256,
      0.2357,
@@ -117914,7 +118376,7 @@
     ],
     "was": [
      0.0,
-     13.6036,
+     20.9736,
      6.2458,
      4.3256,
      0.2357,
@@ -117922,11 +118384,11 @@
      197383
     ],
     "src": "bsexbrl:540065_1682017142023_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 13.60 -> 20.97, dii 6.25 -> 6.25. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Bank 3.48 public=0.00 fii=3.48 Asian Development Bank 3.48 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2FII-holders Other Foreign Companies 32.62 7.36 CDC Group Plc 6.86 stay(new-format:ForeignCompanies); International Finance Corporation 3.09 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.04 fii(inst-tag); Cartica Capital 2 Limited 2.75 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.45 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.14 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.67 stay(label); Galileo Investments Limited 1.44 stay(label); Plenty Private Equity Fund I Limited 1.3",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): International Finance Corporation 3.09; the company files it on its own 'Overseas corporate bodies' / 'Other Foreign ...' non-institution row, where a holder needs >= 90 % of >= 5 classified listings under Institutions (Foreign) or a registry document - IFC has 50 institution vs 151 company-type listings - as every RBLBANK quarter from Sep-2016 already serves. fii 20.9736 -> 17.8863 (share counts of 540065_1682017142023_SHP.xml), dii unchanged.",
     "superseded": {
      "cell": [
       0.0,
-      13.6036,
+      20.9736,
       6.2458,
       4.3256,
       0.2357,
@@ -117935,15 +118397,37 @@
      ],
      "was": [
       0.0,
-      10.1236,
-      9.7258,
+      13.6036,
+      6.2458,
       4.3256,
       0.2357,
       "2017-08-16",
       197383
      ],
-     "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 09 Aug 2017)",
-     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 3.48 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2017-06-30 3.81 / 2017-09-30 3.45 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+     "src": "bsexbrl:540065_1682017142023_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 13.60 -> 20.97, dii 6.25 -> 6.25. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Bank 3.48 public=0.00 fii=3.48 Asian Development Bank 3.48 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2FII-holders Other Foreign Companies 32.62 7.36 CDC Group Plc 6.86 stay(new-format:ForeignCompanies); International Finance Corporation 3.09 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.04 fii(inst-tag); Cartica Capital 2 Limited 2.75 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.45 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.14 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.67 stay(label); Galileo Investments Limited 1.44 stay(label); Plenty Private Equity Fund I Limited 1.3",
+     "superseded": {
+      "cell": [
+       0.0,
+       13.6036,
+       6.2458,
+       4.3256,
+       0.2357,
+       "2017-08-16",
+       197383
+      ],
+      "was": [
+       0.0,
+       10.1236,
+       9.7258,
+       4.3256,
+       0.2357,
+       "2017-08-16",
+       197383
+      ],
+      "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 09 Aug 2017)",
+      "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 3.48 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2017-06-30 3.81 / 2017-09-30 3.45 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+     }
     }
    },
    "2020-11-12": {
@@ -117971,7 +118455,7 @@
    "2016-08-29": {
     "cell": [
      0.0,
-     16.1911,
+     12.7522,
      15.7282,
      2.4827,
      0.2894,
@@ -117980,15 +118464,37 @@
     ],
     "was": [
      0.0,
-     2.8911,
-     20.8382,
+     16.1911,
+     15.7282,
      2.4827,
      0.2894,
      "2016-09-09",
      304259
     ],
     "src": "bsexbrl:540065_892016195055_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.89 -> 16.19, dii 20.84 -> 15.73. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=3.88 ASIAN DEVELOPMENT BANK 3.88 foreign->fii(new-format:OtherInstitutionsForeign); R1-fii-label Other Foreign Institutional Investors 1.23 public=0.00 fii=1.23  keyword; R2FII-holders Overseas corporate bodies 29.51 8.19 CDC GROUP PLC 4.28 stay(new-format:ForeignCompanies); INTERNATIONAL FINANCE CORPORATION 3.44 fii(curated); NORWEST VENTURE PARTNERS X FII - MAURITIUS 3.38 fii(inst-tag); CARTICA CAPITAL 2 LIMITED 3.06 stay(label); ASIA CAPITAL FINANCIAL OPPORTUNITIES PTE LTD 2.73 stay(new-format:ForeignCompanies); HOUSING DEVELOPMENT FINANCE CORPORATION LIMIT 2.38 stay(new-format~:BodiesCorporate); GPE (INDIA) LTD 1.86 stay(label); GALILEO INVEST"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): INTERNATIONAL FINANCE CORPORATION 3.44; the company files it on its own 'Overseas corporate bodies' / 'Other Foreign ...' non-institution row, where a holder needs >= 90 % of >= 5 classified listings under Institutions (Foreign) or a registry document - IFC has 50 institution vs 151 company-type listings - as every RBLBANK quarter from Sep-2016 already serves. fii 16.1911 -> 12.7522 (share counts of 540065_892016195055_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      0.0,
+      16.1911,
+      15.7282,
+      2.4827,
+      0.2894,
+      "2016-09-09",
+      304259
+     ],
+     "was": [
+      0.0,
+      2.8911,
+      20.8382,
+      2.4827,
+      0.2894,
+      "2016-09-09",
+      304259
+     ],
+     "src": "bsexbrl:540065_892016195055_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.89 -> 16.19, dii 20.84 -> 15.73. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=3.88 ASIAN DEVELOPMENT BANK 3.88 foreign->fii(new-format:OtherInstitutionsForeign); R1-fii-label Other Foreign Institutional Investors 1.23 public=0.00 fii=1.23  keyword; R2FII-holders Overseas corporate bodies 29.51 8.19 CDC GROUP PLC 4.28 stay(new-format:ForeignCompanies); INTERNATIONAL FINANCE CORPORATION 3.44 fii(curated); NORWEST VENTURE PARTNERS X FII - MAURITIUS 3.38 fii(inst-tag); CARTICA CAPITAL 2 LIMITED 3.06 stay(label); ASIA CAPITAL FINANCIAL OPPORTUNITIES PTE LTD 2.73 stay(new-format:ForeignCompanies); HOUSING DEVELOPMENT FINANCE CORPORATION LIMIT 2.38 stay(new-format~:BodiesCorporate); GPE (INDIA) LTD 1.86 stay(label); GALILEO INVEST"
+    }
    },
    "2019-12-06": {
     "cell": [
@@ -124525,7 +125031,7 @@
    "2016-06-30": {
     "cell": [
      74.55,
-     14.4495,
+     4.5245,
      1.2626,
      1.2543,
      0.0,
@@ -124534,20 +125040,42 @@
     ],
     "was": [
      74.55,
-     4.5245,
-     11.1876,
+     14.4495,
+     1.2626,
      1.2543,
      0.0,
      "2016-07-05",
      46779
     ],
     "src": "bsexbrl:539268_572016104420_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.93pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.2626 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): SILVER LEAF OAK (MAURITIUS) LIMITED 9.93; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; SYNGENE never labels it in any filing (Jun-2016..Jun-2017 the row is 'Other') (the earlier SW-2 sweep / run placed it FII by its Mauritius name alone). fii 14.4495 -> 4.5245, dii unchanged (share counts of 539268_572016104420_SHP.xml).",
+    "superseded": {
+     "cell": [
+      74.55,
+      14.4495,
+      1.2626,
+      1.2543,
+      0.0,
+      "2016-07-05",
+      46779
+     ],
+     "was": [
+      74.55,
+      4.5245,
+      11.1876,
+      1.2543,
+      0.0,
+      "2016-07-05",
+      46779
+     ],
+     "src": "bsexbrl:539268_572016104420_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.93pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.2626 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
      74.52,
-     15.6452,
+     6.0113,
      1.9989,
      0.9701,
      1.01,
@@ -124556,17 +125084,26 @@
     ],
     "was": [
      74.52,
-     15.6491,
-     0.9851,
+     15.6452,
+     1.9989,
      0.9701,
-     0.0,
+     1.01,
      "2016-10-06",
      45371
     ],
     "src": "bsexbrl:539268_610201694359_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 0.99 -> 2.00, fii 15.65 -> 15.65. R1-foreign-holders Other 0.0 public=0.00 fii=9.63 SILVER LEAF OAK (MAURITIUS) LIMITED 9.63 foreign->fii(regex); R2-named Bodies Corporate 1.01 CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE COMPANY LTD 1.01(curated). Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): SILVER LEAF OAK (MAURITIUS) LIMITED 9.63; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; SYNGENE never labels it in any filing (Jun-2016..Jun-2017 the row is 'Other') (the earlier SW-2 sweep / run placed it FII by its Mauritius name alone). fii 15.6452 -> 6.0113, dii unchanged (share counts of 539268_610201694359_SHP.xml).",
     "superseded": {
      "cell": [
+      74.52,
+      15.6452,
+      1.9989,
+      0.9701,
+      1.01,
+      "2016-10-06",
+      45371
+     ],
+     "was": [
       74.52,
       15.6491,
       0.9851,
@@ -124575,23 +125112,36 @@
       "2016-10-06",
       45371
      ],
-     "was": [
-      74.52,
-      6.0152,
-      10.6189,
-      0.9701,
-      0.0,
-      "2016-10-06",
-      45371
-     ],
      "src": "bsexbrl:539268_610201694359_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.63pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.9851 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 0.99 -> 2.00, fii 15.65 -> 15.65. R1-foreign-holders Other 0.0 public=0.00 fii=9.63 SILVER LEAF OAK (MAURITIUS) LIMITED 9.63 foreign->fii(regex); R2-named Bodies Corporate 1.01 CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE COMPANY LTD 1.01(curated). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       74.52,
+       15.6491,
+       0.9851,
+       0.9701,
+       0.0,
+       "2016-10-06",
+       45371
+      ],
+      "was": [
+       74.52,
+       6.0152,
+       10.6189,
+       0.9701,
+       0.0,
+       "2016-10-06",
+       45371
+      ],
+      "src": "bsexbrl:539268_610201694359_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.63pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.9851 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2016-12-31": {
     "cell": [
      74.52,
-     16.1397,
+     8.9443,
      1.0695,
      1.0026,
      0.0,
@@ -124600,20 +125150,42 @@
     ],
     "was": [
      74.52,
-     8.9443,
-     8.2654,
+     16.1397,
+     1.0695,
      1.0026,
      0.0,
      "2017-01-09",
      47447
     ],
     "src": "bsexbrl:539268_61201717526_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.20pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.0695 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): SILVER LEAF OAK (MAURITIUS) LIMITED 7.20; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; SYNGENE never labels it in any filing (Jun-2016..Jun-2017 the row is 'Other') (the earlier SW-2 sweep / run placed it FII by its Mauritius name alone). fii 16.1397 -> 8.9443, dii unchanged (share counts of 539268_61201717526_SHP.xml).",
+    "superseded": {
+     "cell": [
+      74.52,
+      16.1397,
+      1.0695,
+      1.0026,
+      0.0,
+      "2017-01-09",
+      47447
+     ],
+     "was": [
+      74.52,
+      8.9443,
+      8.2654,
+      1.0026,
+      0.0,
+      "2017-01-09",
+      47447
+     ],
+     "src": "bsexbrl:539268_61201717526_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.20pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.0695 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
      74.51,
-     15.5179,
+     8.3225,
      1.3354,
      1.2229,
      0.0,
@@ -124622,20 +125194,42 @@
     ],
     "was": [
      74.51,
-     8.3225,
-     8.5303,
+     15.5179,
+     1.3354,
      1.2229,
      0.0,
      "2017-04-06",
      51557
     ],
     "src": "bsexbrl:539268_642017143038_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.20pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.3354 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): SILVER LEAF OAK (MAURITIUS) LIMITED 7.20; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; SYNGENE never labels it in any filing (Jun-2016..Jun-2017 the row is 'Other') (the earlier SW-2 sweep / run placed it FII by its Mauritius name alone). fii 15.5179 -> 8.3225, dii unchanged (share counts of 539268_642017143038_SHP.xml).",
+    "superseded": {
+     "cell": [
+      74.51,
+      15.5179,
+      1.3354,
+      1.2229,
+      0.0,
+      "2017-04-06",
+      51557
+     ],
+     "was": [
+      74.51,
+      8.3225,
+      8.5303,
+      1.2229,
+      0.0,
+      "2017-04-06",
+      51557
+     ],
+     "src": "bsexbrl:539268_642017143038_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.20pp, holders: SILVER LEAF OAK (MAURITIUS) LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.3354 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-06-30": {
     "cell": [
      74.51,
-     15.5103,
+     12.8155,
      1.5448,
      1.38,
      0.0,
@@ -124644,15 +125238,37 @@
     ],
     "was": [
      74.51,
-     12.8155,
-     4.2394,
+     15.5103,
+     1.5448,
      1.38,
      0.0,
      "2017-07-12",
      52599
     ],
     "src": "bsexbrl:539268_1272017143340_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (2.69pp, holders: Silver Leaf Oak (Mauritius) Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.5448 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): Silver Leaf Oak (Mauritius) Limited 2.69; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; SYNGENE never labels it in any filing (Jun-2016..Jun-2017 the row is 'Other') (the earlier SW-2 sweep / run placed it FII by its Mauritius name alone). fii 15.5103 -> 12.8155, dii unchanged (share counts of 539268_1272017143340_SHP.xml).",
+    "superseded": {
+     "cell": [
+      74.51,
+      15.5103,
+      1.5448,
+      1.38,
+      0.0,
+      "2017-07-12",
+      52599
+     ],
+     "was": [
+      74.51,
+      12.8155,
+      4.2394,
+      1.38,
+      0.0,
+      "2017-07-12",
+      52599
+     ],
+     "src": "bsexbrl:539268_1272017143340_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (2.69pp, holders: Silver Leaf Oak (Mauritius) Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.5448 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
@@ -124763,6 +125379,26 @@
     ],
     "src": "bsexbrl:539268_2042021185152_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 14.25 -> 14.34, dii 5.27 -> 5.18. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.09 | R1: R1-unresolved no typed rows 0.09. Evidence: _shp_164_audit.json"
+   },
+   "2016-03-31": {
+    "cell": [
+     74.5489,
+     6.3611,
+     0.2829,
+     0.2793,
+     0.0,
+     "2016-04-18"
+    ],
+    "was": [
+     74.5489,
+     16.2861,
+     0.2829,
+     0.2793,
+     0.0,
+     "2016-04-18"
+    ],
+    "src": "bseaspx:539268_89+shpperent",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): SILVER LEAF OAK (MAURITIUS) LIMITED 9.93; the same holder, on BSE's Mar-2016 page (no FII/FPI/QFI mark); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; the stored FII 16.29 must contain it (public 8.88 and DII 0.28 are both smaller than its 9.93). fii 16.2861 -> 6.3611, dii unchanged (share counts of 539268_89+shpperent)."
    }
   },
   "TCIEXP": {
@@ -131751,8 +132387,8 @@
    "2018-06-30": {
     "cell": [
      74.31,
-     9.5456,
-     6.2765,
+     8.7214,
+     6.2707,
      2.7419,
      3.151,
      "2018-07-13",
@@ -131760,15 +132396,37 @@
     ],
     "was": [
      74.31,
-     8.7214,
-     7.1007,
+     9.5456,
+     6.2765,
      2.7419,
      3.151,
      "2018-07-13",
      281400
     ],
     "src": "bsexbrl:507685_1372018125354_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN  NATIONALS 0.82) \u2014 moved dii -> fii (0.8242 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): the institutions-block sub-row WIPRO labels 'FOREIGN NATIONALS' (0.82) is a company-type label: public (the label's double space had defeated the company-type pattern). fii 9.5456 -> 8.7214, dii 6.2765 -> 6.2707.",
+    "superseded": {
+     "cell": [
+      74.31,
+      9.5456,
+      6.2765,
+      2.7419,
+      3.151,
+      "2018-07-13",
+      281400
+     ],
+     "was": [
+      74.31,
+      8.7214,
+      7.1007,
+      2.7419,
+      3.151,
+      "2018-07-13",
+      281400
+     ],
+     "src": "bsexbrl:507685_1372018125354_SHP.xml",
+     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN  NATIONALS 0.82) \u2014 moved dii -> fii (0.8242 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+    }
    },
    "2018-12-31": {
     "cell": [
@@ -146211,7 +146869,7 @@
    "2017-03-31": {
     "cell": [
      20.15,
-     40.8522,
+     39.2368,
      12.4145,
      12.1926,
      0.0,
@@ -146220,20 +146878,20 @@
     ],
     "was": [
      20.15,
-     38.9422,
-     14.3245,
+     40.8522,
+     12.4145,
      12.1926,
      0.0,
      "2017-04-19",
      30466
     ],
     "src": "bsexbrl:532689_1942017142038_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.32 -> 12.41, fii 38.94 -> 40.85. R1-rest-follows-foreign-holders 1.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; PVRINOX itself files the holder on a 'Foreign Companies' row in Dec-2016 (the earlier run swept this named holder into FII with the block's rest). fii 40.8522 -> 39.2368, dii unchanged (share counts of 532689_1942017142038_SHP.xml).",
     "superseded": {
      "cell": [
       20.15,
-      38.9422,
-      14.3245,
+      40.8522,
+      12.4145,
       12.1926,
       0.0,
       "2017-04-19",
@@ -146242,14 +146900,36 @@
      "was": [
       20.15,
       38.9422,
-      29.7945,
+      14.3245,
       12.1926,
       0.0,
       "2017-04-19",
       30466
      ],
      "src": "bsexbrl:532689_1942017142038_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 14.32, fii 38.94 -> 38.94. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 1.91; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.32 -> 12.41, fii 38.94 -> 40.85. R1-rest-follows-foreign-holders 1.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.15,
+       38.9422,
+       14.3245,
+       12.1926,
+       0.0,
+       "2017-04-19",
+       30466
+      ],
+      "was": [
+       20.15,
+       38.9422,
+       29.7945,
+       12.1926,
+       0.0,
+       "2017-04-19",
+       30466
+      ],
+      "src": "bsexbrl:532689_1942017142038_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 14.32, fii 38.94 -> 38.94. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 1.91; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-09-30": {
@@ -156074,7 +156754,7 @@
     "cell": [
      24.68,
      25.4062,
-     8.2321,
+     12.5721,
      7.0333,
      0.8118,
      "2019-10-22",
@@ -156083,14 +156763,36 @@
     "was": [
      24.68,
      25.4062,
-     8.0621,
+     8.2321,
      7.0333,
      0.8118,
      "2019-10-22",
      68289
     ],
     "src": "bsexbrl:533269_21102019172325_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.41 -> 25.41, dii 8.06 -> 8.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.17 . Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): WABAG's non-institution sub-rows 'ALTERNATIVE INVESTMENT FUND' (4.34, VANTAGE EQUITY FUND 3.08) and 'QUALIFIED INSTITUTIONAL BUYER' are domestic institutions: DII (\u00a7158 R2; the label's double space had defeated the pattern) - DII had dipped 13.25 -> 8.23 -> 11.93 around this quarter. fii 25.4062 -> 25.4062, dii 8.2321 -> 12.5721.",
+    "superseded": {
+     "cell": [
+      24.68,
+      25.4062,
+      8.2321,
+      7.0333,
+      0.8118,
+      "2019-10-22",
+      68289
+     ],
+     "was": [
+      24.68,
+      25.4062,
+      8.0621,
+      7.0333,
+      0.8118,
+      "2019-10-22",
+      68289
+     ],
+     "src": "bsexbrl:533269_21102019172325_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.41 -> 25.41, dii 8.06 -> 8.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.17 . Evidence: _shp_164_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -161585,7 +162287,7 @@
    "2016-06-30": {
     "cell": [
      2.06,
-     64.6058,
+     63.0084,
      16.1876,
      10.8307,
      0.0784,
@@ -161594,20 +162296,42 @@
     ],
     "was": [
      2.06,
-     61.8358,
-     18.9376,
+     64.6058,
+     16.1876,
      10.8307,
      0.0784,
      "2016-07-25",
      51798
     ],
     "src": "bsexbrl:533228_2572016122346_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 61.84 -> 64.61, dii 18.94 -> 16.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 4.05 SANDSTONE INVESTMENT PARTNERS I 4.05; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 4.05 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.60 KISMET SKS II 1.60 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.17 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.17 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.60; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; BHARATFIN itself files Kismet under 'Foreign Corporate Bodies' (2014-15), 'Foreign Bodies Corporates' (Sep/Dec-2016) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 64.6058 -> 63.0084 (share counts of 533228_2572016122346_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      2.06,
+      64.6058,
+      16.1876,
+      10.8307,
+      0.0784,
+      "2016-07-25",
+      51798
+     ],
+     "was": [
+      2.06,
+      61.8358,
+      18.9376,
+      10.8307,
+      0.0784,
+      "2016-07-25",
+      51798
+     ],
+     "src": "bsexbrl:533228_2572016122346_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 61.84 -> 64.61, dii 18.94 -> 16.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 4.05 SANDSTONE INVESTMENT PARTNERS I 4.05; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 4.05 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.60 KISMET SKS II 1.60 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.17 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.17 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    }
    },
    "2016-09-30": {
     "cell": [
      1.75,
-     74.5018,
+     71.3822,
      9.0994,
      7.3365,
      0.6476,
@@ -161616,15 +162340,37 @@
     ],
     "was": [
      1.75,
-     70.2918,
-     13.2994,
+     74.5018,
+     9.0994,
      7.3365,
      0.6476,
      "2016-10-18",
      53706
     ],
     "src": "bsexbrl:533228_18102016162419_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 70.29 -> 74.50, dii 13.30 -> 9.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign  Bodies Corporates 4.2 public=0.00 fii=2.50 SANDSTONE INVESTMENT PARTNERS I 1.71 ?->-(-); KISMET SKS II 1.41 foreign->fii(documented:gleif); TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.09 foreign->fii(curated) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.41; SANDSTONE INVESTMENT PARTNERS I 1.71; the company's own row label 'Foreign Bodies Corporates' is a company-type label (the earlier run read it as an FII label): Kismet SKS II has no institution listing and Sandstone Investment Partners I (class unknown, not the 'Sandstone Private Investments' on SEBI's FVCI register) follows the row label; Tree Line Asia Master Fund on the same row stays FII (institution listings, option A). fii 74.5018 -> 71.3822, dii unchanged (share counts of 533228_18102016162419_SHP.xml).",
+    "superseded": {
+     "cell": [
+      1.75,
+      74.5018,
+      9.0994,
+      7.3365,
+      0.6476,
+      "2016-10-18",
+      53706
+     ],
+     "was": [
+      1.75,
+      70.2918,
+      13.2994,
+      7.3365,
+      0.6476,
+      "2016-10-18",
+      53706
+     ],
+     "src": "bsexbrl:533228_18102016162419_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 70.29 -> 74.50, dii 13.30 -> 9.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign  Bodies Corporates 4.2 public=0.00 fii=2.50 SANDSTONE INVESTMENT PARTNERS I 1.71 ?->-(-); KISMET SKS II 1.41 foreign->fii(documented:gleif); TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.09 foreign->fii(curated) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -161695,7 +162441,7 @@
    "2017-03-31": {
     "cell": [
      1.66,
-     67.4475,
+     66.0513,
      11.449,
      7.8003,
      0.7247,
@@ -161704,20 +162450,42 @@
     ],
     "was": [
      1.66,
-     64.9675,
-     13.899,
+     67.4475,
+     11.449,
      7.8003,
      0.7247,
      "2017-04-13",
      63615
     ],
     "src": "bsexbrl:533228_134201711811_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 64.97 -> 67.45, dii 13.90 -> 11.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.7 SANDSTONE INVESTMENT PARTNERS I 1.70; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.70 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.40 KISMET SKS II 1.40 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.40; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; BHARATFIN itself files Kismet under 'Foreign Corporate Bodies' (2014-15), 'Foreign Bodies Corporates' (Sep/Dec-2016) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 67.4475 -> 66.0513 (share counts of 533228_134201711811_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      1.66,
+      67.4475,
+      11.449,
+      7.8003,
+      0.7247,
+      "2017-04-13",
+      63615
+     ],
+     "was": [
+      1.66,
+      64.9675,
+      13.899,
+      7.8003,
+      0.7247,
+      "2017-04-13",
+      63615
+     ],
+     "src": "bsexbrl:533228_134201711811_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 64.97 -> 67.45, dii 13.90 -> 11.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.7 SANDSTONE INVESTMENT PARTNERS I 1.70; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.70 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.40 KISMET SKS II 1.40 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03"
+    }
    },
    "2017-06-30": {
     "cell": [
      1.66,
-     70.8108,
+     69.4151,
      11.7167,
      7.2059,
      1.5232,
@@ -161726,20 +162494,42 @@
     ],
     "was": [
      1.66,
-     68.3308,
-     14.1767,
+     70.8108,
+     11.7167,
      7.2059,
      1.5232,
      "2017-07-13",
      66236
     ],
     "src": "bsexbrl:533228_1372017142820_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 68.33 -> 70.81, dii 14.18 -> 11.72. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.7 SANDSTONE INVESTMENT PARTNERS I 1.70; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.70 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.40 KISMET SKS II 1.40 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.40; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; BHARATFIN itself files Kismet under 'Foreign Corporate Bodies' (2014-15), 'Foreign Bodies Corporates' (Sep/Dec-2016) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 70.8108 -> 69.4151 (share counts of 533228_1372017142820_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      1.66,
+      70.8108,
+      11.7167,
+      7.2059,
+      1.5232,
+      "2017-07-13",
+      66236
+     ],
+     "was": [
+      1.66,
+      68.3308,
+      14.1767,
+      7.2059,
+      1.5232,
+      "2017-07-13",
+      66236
+     ],
+     "src": "bsexbrl:533228_1372017142820_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 68.33 -> 70.81, dii 14.18 -> 11.72. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.7 SANDSTONE INVESTMENT PARTNERS I 1.70; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.70 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.40 KISMET SKS II 1.40 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02"
+    }
    },
    "2017-09-30": {
     "cell": [
      1.65,
-     71.2968,
+     69.9058,
      14.3677,
      9.6395,
      1.8034,
@@ -161748,20 +162538,42 @@
     ],
     "was": [
      1.65,
-     68.8268,
-     16.8377,
+     71.2968,
+     14.3677,
      9.6395,
      1.8034,
      "2017-10-12",
      46007
     ],
     "src": "bsexbrl:533228_1110201717575_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 68.83 -> 71.30, dii 16.84 -> 14.37. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.69 SANDSTONE INVESTMENT PARTNERS I 1.69; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.69 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.39 KISMET SKS II 1.39 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated)"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.39; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; BHARATFIN itself files Kismet under 'Foreign Corporate Bodies' (2014-15), 'Foreign Bodies Corporates' (Sep/Dec-2016) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 71.2968 -> 69.9058 (share counts of 533228_1110201717575_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      1.65,
+      71.2968,
+      14.3677,
+      9.6395,
+      1.8034,
+      "2017-10-12",
+      46007
+     ],
+     "was": [
+      1.65,
+      68.8268,
+      16.8377,
+      9.6395,
+      1.8034,
+      "2017-10-12",
+      46007
+     ],
+     "src": "bsexbrl:533228_1110201717575_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 68.83 -> 71.30, dii 16.84 -> 14.37. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.69 SANDSTONE INVESTMENT PARTNERS I 1.69; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.69 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.39 KISMET SKS II 1.39 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.08 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.08 foreign->fii(curated)"
+    }
    },
    "2017-12-31": {
     "cell": [
      1.65,
-     63.1679,
+     61.7815,
      21.5255,
      17.0455,
      1.479,
@@ -161770,15 +162582,37 @@
     ],
     "was": [
      1.65,
-     60.7079,
-     23.9855,
+     63.1679,
+     21.5255,
      17.0455,
      1.479,
      "2018-01-10",
      42817
     ],
     "src": "bsexbrl:533228_101201812316_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 60.71 -> 63.17, dii 23.99 -> 21.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.69 SANDSTONE INVESTMENT PARTNERS I 1.69; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.69 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.39 KISMET SKS II 1.39 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.07 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.07 foreign->fii(curated)"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KISMET SKS II 1.39; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; BHARATFIN itself files Kismet under 'Foreign Corporate Bodies' (2014-15), 'Foreign Bodies Corporates' (Sep/Dec-2016) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 63.1679 -> 61.7815 (share counts of 533228_101201812316_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      1.65,
+      63.1679,
+      21.5255,
+      17.0455,
+      1.479,
+      "2018-01-10",
+      42817
+     ],
+     "was": [
+      1.65,
+      60.7079,
+      23.9855,
+      17.0455,
+      1.479,
+      "2018-01-10",
+      42817
+     ],
+     "src": "bsexbrl:533228_101201812316_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 60.71 -> 63.17, dii 23.99 -> 21.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.69 SANDSTONE INVESTMENT PARTNERS I 1.69; R1-unresolved Other 0.0 SANDSTONE INVESTMENT PARTNERS I 1.69 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.39 KISMET SKS II 1.39 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.07 TREE LINE ASIA MASTER FUND (SINGAPORE) PTE LTD 1.07 foreign->fii(curated)"
+    }
    },
    "2018-03-31": {
     "cell": [
@@ -171839,7 +172673,7 @@
    "2016-06-30": {
     "cell": [
      65.23,
-     4.4606,
+     1.4763,
      14.7583,
      3.0272,
      0.0,
@@ -171848,17 +172682,26 @@
     ],
     "was": [
      65.23,
-     1.3906,
-     17.8283,
+     4.4606,
+     14.7583,
      3.0272,
      0.0,
      "2016-12-13",
      5670
     ],
     "src": "bsexbrl:538962_13122016175225_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 17.83 -> 14.76, fii 1.39 -> 4.46. R1-rest-follows-foreign-holders 3.07; R1-foreign-holders Other 0.0 public=0.00 fii=1.30 GOVERNMENT PENSION FUND GLOBAL 1.30 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 2.98 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KOTAK INDIA PRIVATE EQUITY FUND 2.98; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; MINDACORP itself files the holder among non-institutions in Dec-2015 and under 'Bodies Corporate' from Dec-2016 (the earlier run swept this named holder into FII with the block's rest). fii 4.4606 -> 1.4763, dii unchanged (share counts of 538962_13122016175225_SHP.xml).",
     "superseded": {
      "cell": [
+      65.23,
+      4.4606,
+      14.7583,
+      3.0272,
+      0.0,
+      "2016-12-13",
+      5670
+     ],
+     "was": [
       65.23,
       1.3906,
       17.8283,
@@ -171867,23 +172710,36 @@
       "2016-12-13",
       5670
      ],
-     "was": [
-      65.23,
-      0.0906,
-      19.1283,
-      3.0272,
-      0.0,
-      "2016-12-13",
-      5670
-     ],
      "src": "bsexbrl:538962_13122016175225_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.13 -> 17.83, fii 0.09 -> 1.39. R1-foreign-holders Other 0.0 public=0.00 fii=1.30 GOVERNMENT PENSION FUND GLOBAL 1.30 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 2.98 ?->-(-) keyword; R1-uncovered-remainder 3.07. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 17.83 -> 14.76, fii 1.39 -> 4.46. R1-rest-follows-foreign-holders 3.07; R1-foreign-holders Other 0.0 public=0.00 fii=1.30 GOVERNMENT PENSION FUND GLOBAL 1.30 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 2.98 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       65.23,
+       1.3906,
+       17.8283,
+       3.0272,
+       0.0,
+       "2016-12-13",
+       5670
+      ],
+      "was": [
+       65.23,
+       0.0906,
+       19.1283,
+       3.0272,
+       0.0,
+       "2016-12-13",
+       5670
+      ],
+      "src": "bsexbrl:538962_13122016175225_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.13 -> 17.83, fii 0.09 -> 1.39. R1-foreign-holders Other 0.0 public=0.00 fii=1.30 GOVERNMENT PENSION FUND GLOBAL 1.30 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 2.98 ?->-(-) keyword; R1-uncovered-remainder 3.07. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2016-09-30": {
     "cell": [
      70.21,
-     2.9604,
+     1.2593,
      9.7387,
      3.0271,
      0.0,
@@ -171892,17 +172748,26 @@
     ],
     "was": [
      70.21,
-     1.1604,
-     11.5387,
+     2.9604,
+     9.7387,
      3.0271,
      0.0,
      "2016-12-13",
      7951
     ],
     "src": "bsexbrl:538962_13122016173857_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 11.54 -> 9.74, fii 1.16 -> 2.96. R1-rest-follows-foreign-holders 1.8; R1-foreign-holders Other 0.0 public=0.00 fii=1.10 GOVERNMENT PENSION FUND GLOBAL 1.10 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 1.70 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KOTAK INDIA PRIVATE EQUITY FUND 1.70; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; MINDACORP itself files the holder among non-institutions in Dec-2015 and under 'Bodies Corporate' from Dec-2016 (the earlier run swept this named holder into FII with the block's rest). fii 2.9604 -> 1.2593, dii unchanged (share counts of 538962_13122016173857_SHP.xml).",
     "superseded": {
      "cell": [
+      70.21,
+      2.9604,
+      9.7387,
+      3.0271,
+      0.0,
+      "2016-12-13",
+      7951
+     ],
+     "was": [
       70.21,
       1.1604,
       11.5387,
@@ -171911,17 +172776,30 @@
       "2016-12-13",
       7951
      ],
-     "was": [
-      70.21,
-      0.0604,
-      12.6387,
-      3.0271,
-      0.0,
-      "2016-12-13",
-      7951
-     ],
      "src": "bsexbrl:538962_13122016173857_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.64 -> 11.54, fii 0.06 -> 1.16. R1-foreign-holders Other 0.0 public=0.00 fii=1.10 GOVERNMENT PENSION FUND GLOBAL 1.10 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 1.70 ?->-(-) keyword; R1-uncovered-remainder 1.8. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 11.54 -> 9.74, fii 1.16 -> 2.96. R1-rest-follows-foreign-holders 1.8; R1-foreign-holders Other 0.0 public=0.00 fii=1.10 GOVERNMENT PENSION FUND GLOBAL 1.10 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 1.70 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       70.21,
+       1.1604,
+       11.5387,
+       3.0271,
+       0.0,
+       "2016-12-13",
+       7951
+      ],
+      "was": [
+       70.21,
+       0.0604,
+       12.6387,
+       3.0271,
+       0.0,
+       "2016-12-13",
+       7951
+      ],
+      "src": "bsexbrl:538962_13122016173857_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.64 -> 11.54, fii 0.06 -> 1.16. R1-foreign-holders Other 0.0 public=0.00 fii=1.10 GOVERNMENT PENSION FUND GLOBAL 1.10 foreign->fii(regex); R1-unresolved Other 0.0 KOTAK INDIA PRIVATE EQUITY FUND 1.70 ?->-(-) keyword; R1-uncovered-remainder 1.8. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-06-30": {
@@ -172211,7 +173089,7 @@
    "2016-03-31": {
     "cell": [
      65.33,
-     4.52,
+     1.5236,
      14.84,
      3.06,
      0.0,
@@ -172219,14 +173097,34 @@
     ],
     "was": [
      65.33,
-     4.53,
-     3.06,
+     4.52,
+     14.84,
      3.06,
      0.0,
      "2016-04-19"
     ],
-    "src": "bseaspx:538962_89",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.53 -> 4.52, dii 3.06 -> 14.84. std-vcf Venture Capital Funds row 11.78. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:538962_89+shpperent",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): KOTAK INDIA PRIVATE EQUITY FUND 3.00; the company lists it inside its Institutions block (Mar-2016 XBRL 'Other' row); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; MINDACORP itself files the holder among non-institutions in Dec-2015 and under 'Bodies Corporate' from Dec-2016. fii 4.5200 -> 1.5236, dii unchanged (share counts of 538962_89+shpperent).",
+    "superseded": {
+     "cell": [
+      65.33,
+      4.52,
+      14.84,
+      3.06,
+      0.0,
+      "2016-04-19"
+     ],
+     "was": [
+      65.33,
+      4.53,
+      3.06,
+      3.06,
+      0.0,
+      "2016-04-19"
+     ],
+     "src": "bseaspx:538962_89",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.53 -> 4.52, dii 3.06 -> 14.84. std-vcf Venture Capital Funds row 11.78. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -183911,8 +184809,8 @@
    "2016-06-30": {
     "cell": [
      42.3,
-     22.2581,
-     18.5322,
+     20.156,
+     20.6343,
      15.8653,
      2.4653,
      "2016-07-22",
@@ -183920,17 +184818,26 @@
     ],
     "was": [
      42.3,
-     17.0339,
-     23.7564,
+     22.2581,
+     18.5322,
      15.8653,
      2.4653,
      "2016-07-22",
      21732
     ],
     "src": "bsexbrl:500260_2272016103947_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 23.76 -> 18.53, fii 17.03 -> 22.26. R1-rest-follows-foreign-holders 5.22; R1-unresolved Other 0.0 AMRIT PETROLEUMS PVT LIMITED 2.10 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.13 AMANSA HOLDINGS PRIVATE LIMITED 1.13 foreign->fii(curated). Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): AMRIT PETROLEUMS PVT LIMITED 2.10; a named holder of unknown class inside the company's Institutions block that the earlier run swept into FII with the block's unnamed rest; under \u00a7164n it keeps its place before the sweep (DII), as RAMCOCEM Sep/Dec-2016 already serve (RAMCOCEM files it under 'Bodies Corporate' from Mar-2017). fii 22.2581 -> 20.1560, dii 18.5322 -> 20.6343 (share counts of 500260_2272016103947_SHP.xml).",
     "superseded": {
      "cell": [
+      42.3,
+      22.2581,
+      18.5322,
+      15.8653,
+      2.4653,
+      "2016-07-22",
+      21732
+     ],
+     "was": [
       42.3,
       17.0339,
       23.7564,
@@ -183939,17 +184846,30 @@
       "2016-07-22",
       21732
      ],
-     "was": [
-      42.3,
-      15.9081,
-      24.8822,
-      15.8653,
-      2.4653,
-      "2016-07-22",
-      21732
-     ],
      "src": "bsexbrl:500260_2272016103947_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (AMANSA HOLDINGS PRIVATE LIMITED 1.13) \u2014 moved dii -> fii (1.1258 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 23.76 -> 18.53, fii 17.03 -> 22.26. R1-rest-follows-foreign-holders 5.22; R1-unresolved Other 0.0 AMRIT PETROLEUMS PVT LIMITED 2.10 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.13 AMANSA HOLDINGS PRIVATE LIMITED 1.13 foreign->fii(curated). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       42.3,
+       17.0339,
+       23.7564,
+       15.8653,
+       2.4653,
+       "2016-07-22",
+       21732
+      ],
+      "was": [
+       42.3,
+       15.9081,
+       24.8822,
+       15.8653,
+       2.4653,
+       "2016-07-22",
+       21732
+      ],
+      "src": "bsexbrl:500260_2272016103947_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (AMANSA HOLDINGS PRIVATE LIMITED 1.13) \u2014 moved dii -> fii (1.1258 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+     }
     }
    },
    "2017-03-31": {
@@ -210255,7 +211175,7 @@
    "2016-12-31": {
     "cell": [
      30.64,
-     40.5641,
+     9.1454,
      13.368,
      12.4611,
      0.0,
@@ -210264,17 +211184,26 @@
     ],
     "was": [
      30.64,
-     20.6441,
-     33.288,
+     40.5641,
+     13.368,
      12.4611,
      0.0,
      "2017-01-10",
      82891
     ],
     "src": "bsexbrl:540222_9120171984_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 33.29 -> 13.37, fii 20.64 -> 40.56. R1-rest-follows-foreign-holders 19.92; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.47. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL Capital Management (Mauritius) Ltd 11.57; Bluewater Investment Ltd. 19.85; the company lists both inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed FIL Capital FII by its Mauritius name and swept Bluewater, a named holder, into FII with the block's rest). fii 40.5641 -> 9.1454, dii unchanged (share counts of 540222_9120171984_SHP.xml).",
     "superseded": {
      "cell": [
+      30.64,
+      40.5641,
+      13.368,
+      12.4611,
+      0.0,
+      "2017-01-10",
+      82891
+     ],
+     "was": [
       30.64,
       20.6441,
       33.288,
@@ -210283,23 +211212,36 @@
       "2017-01-10",
       82891
      ],
-     "was": [
-      30.64,
-      9.0741,
-      44.388,
-      12.4611,
-      0.0,
-      "2017-01-10",
-      82891
-     ],
      "src": "bsexbrl:540222_9120171984_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 44.39 -> 33.29, fii 9.07 -> 20.64. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 19.92; R3-nbfc NBFCsRegisteredWithRbi 0.47. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 33.29 -> 13.37, fii 20.64 -> 40.56. R1-rest-follows-foreign-holders 19.92; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.47. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       30.64,
+       20.6441,
+       33.288,
+       12.4611,
+       0.0,
+       "2017-01-10",
+       82891
+      ],
+      "was": [
+       30.64,
+       9.0741,
+       44.388,
+       12.4611,
+       0.0,
+       "2017-01-10",
+       82891
+      ],
+      "src": "bsexbrl:540222_9120171984_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 44.39 -> 33.29, fii 9.07 -> 20.64. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 19.92; R3-nbfc NBFCsRegisteredWithRbi 0.47. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-03-31": {
     "cell": [
      30.64,
-     41.2825,
+     9.8638,
      12.798,
      11.0861,
      0.0,
@@ -210308,17 +211250,26 @@
     ],
     "was": [
      30.64,
-     21.3625,
-     32.718,
+     41.2825,
+     12.798,
      11.0861,
      0.0,
      "2017-04-18",
      56722
     ],
     "src": "bsexbrl:540222_1742017154849_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 32.72 -> 12.80, fii 21.36 -> 41.28. R1-rest-follows-foreign-holders 19.92; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL Capital Management (Mauritius) Ltd 11.57; Bluewater Investment Ltd. 19.85; the company lists both inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed FIL Capital FII by its Mauritius name and swept Bluewater, a named holder, into FII with the block's rest). fii 41.2825 -> 9.8638, dii unchanged (share counts of 540222_1742017154849_SHP.xml).",
     "superseded": {
      "cell": [
+      30.64,
+      41.2825,
+      12.798,
+      11.0861,
+      0.0,
+      "2017-04-18",
+      56722
+     ],
+     "was": [
       30.64,
       21.3625,
       32.718,
@@ -210327,23 +211278,36 @@
       "2017-04-18",
       56722
      ],
-     "was": [
-      30.64,
-      9.7925,
-      43.988,
-      11.0861,
-      0.0,
-      "2017-04-18",
-      56722
-     ],
      "src": "bsexbrl:540222_1742017154849_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.99 -> 32.72, fii 9.79 -> 21.36. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 19.92; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 32.72 -> 12.80, fii 21.36 -> 41.28. R1-rest-follows-foreign-holders 19.92; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       30.64,
+       21.3625,
+       32.718,
+       11.0861,
+       0.0,
+       "2017-04-18",
+       56722
+      ],
+      "was": [
+       30.64,
+       9.7925,
+       43.988,
+       11.0861,
+       0.0,
+       "2017-04-18",
+       56722
+      ],
+      "src": "bsexbrl:540222_1742017154849_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.99 -> 32.72, fii 9.79 -> 21.36. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 19.92; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-06-30": {
     "cell": [
      30.64,
-     41.6021,
+     10.1834,
      11.8489,
      10.3533,
      0.0,
@@ -210352,17 +211316,26 @@
     ],
     "was": [
      30.64,
-     20.8921,
-     32.5589,
+     41.6021,
+     11.8489,
      10.3533,
      0.0,
      "2017-07-18",
      51013
     ],
     "src": "bsexbrl:540222_1772017163517_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 32.56 -> 11.85, fii 20.89 -> 41.60. R1-rest-follows-foreign-holders 20.71; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL Capital Management (Mauritius) Ltd 11.57; Bluewater Investment Ltd. 19.85; the company lists both inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed FIL Capital FII by its Mauritius name and swept Bluewater, a named holder, into FII with the block's rest). fii 41.6021 -> 10.1834, dii unchanged (share counts of 540222_1772017163517_SHP.xml).",
     "superseded": {
      "cell": [
+      30.64,
+      41.6021,
+      11.8489,
+      10.3533,
+      0.0,
+      "2017-07-18",
+      51013
+     ],
+     "was": [
       30.64,
       20.8921,
       32.5589,
@@ -210371,23 +211344,36 @@
       "2017-07-18",
       51013
      ],
-     "was": [
-      30.64,
-      9.3221,
-      43.8289,
-      10.3533,
-      0.0,
-      "2017-07-18",
-      51013
-     ],
      "src": "bsexbrl:540222_1772017163517_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.83 -> 32.56, fii 9.32 -> 20.89. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 20.71; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 32.56 -> 11.85, fii 20.89 -> 41.60. R1-rest-follows-foreign-holders 20.71; R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       30.64,
+       20.8921,
+       32.5589,
+       10.3533,
+       0.0,
+       "2017-07-18",
+       51013
+      ],
+      "was": [
+       30.64,
+       9.3221,
+       43.8289,
+       10.3533,
+       0.0,
+       "2017-07-18",
+       51013
+      ],
+      "src": "bsexbrl:540222_1772017163517_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.83 -> 32.56, fii 9.32 -> 20.89. R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(regex); R1-unresolved Other 0.0 Bluewater Investment Ltd. 19.85 ?->-(-) keyword; R1-uncovered-remainder 20.71; R3-nbfc NBFCsRegisteredWithRbi 0.3. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-09-30": {
     "cell": [
      30.56,
-     42.3578,
+     11.0202,
      9.9547,
      8.4701,
      0.0,
@@ -210396,17 +211382,26 @@
     ],
     "was": [
      30.56,
-     22.2778,
-     30.0347,
+     42.3578,
+     9.9547,
      8.4701,
      0.0,
      "2017-10-11",
      50197
     ],
     "src": "bsexbrl:540222_1010201718187_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 30.03 -> 9.95, fii 22.28 -> 42.36. R1-rest-follows-foreign-holders 20.08; R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.2. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54; BLUEWATER INVESTMENT LTD 19.80; the company lists both inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed FIL Capital FII by its Mauritius name and swept Bluewater, a named holder, into FII with the block's rest). fii 42.3578 -> 11.0202, dii unchanged (share counts of 540222_1010201718187_SHP.xml).",
     "superseded": {
      "cell": [
+      30.56,
+      42.3578,
+      9.9547,
+      8.4701,
+      0.0,
+      "2017-10-11",
+      50197
+     ],
+     "was": [
       30.56,
       22.2778,
       30.0347,
@@ -210415,23 +211410,36 @@
       "2017-10-11",
       50197
      ],
-     "was": [
-      30.56,
-      10.7378,
-      41.3747,
-      8.4701,
-      0.0,
-      "2017-10-11",
-      50197
-     ],
      "src": "bsexbrl:540222_1010201718187_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.37 -> 30.03, fii 10.74 -> 22.28. R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R1-uncovered-remainder 20.08; R3-nbfc NBFCsRegisteredWithRbi 0.2. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 30.03 -> 9.95, fii 22.28 -> 42.36. R1-rest-follows-foreign-holders 20.08; R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.2. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       30.56,
+       22.2778,
+       30.0347,
+       8.4701,
+       0.0,
+       "2017-10-11",
+       50197
+      ],
+      "was": [
+       30.56,
+       10.7378,
+       41.3747,
+       8.4701,
+       0.0,
+       "2017-10-11",
+       50197
+      ],
+      "src": "bsexbrl:540222_1010201718187_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.37 -> 30.03, fii 10.74 -> 22.28. R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R1-uncovered-remainder 20.08; R3-nbfc NBFCsRegisteredWithRbi 0.2. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-12-31": {
     "cell": [
      30.57,
-     41.8595,
+     10.5219,
      8.9205,
      7.4921,
      0.0,
@@ -210440,17 +211448,26 @@
     ],
     "was": [
      30.57,
-     21.9895,
-     28.7905,
+     41.8595,
+     8.9205,
      7.4921,
      0.0,
      "2018-01-05",
      51147
     ],
     "src": "bsexbrl:540222_412018182546_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 28.79 -> 8.92, fii 21.99 -> 41.86. R1-rest-follows-foreign-holders 19.87; R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.18. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54; BLUEWATER INVESTMENT LTD 19.80; the company lists both inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed FIL Capital FII by its Mauritius name and swept Bluewater, a named holder, into FII with the block's rest). fii 41.8595 -> 10.5219, dii unchanged (share counts of 540222_412018182546_SHP.xml).",
     "superseded": {
      "cell": [
+      30.57,
+      41.8595,
+      8.9205,
+      7.4921,
+      0.0,
+      "2018-01-05",
+      51147
+     ],
+     "was": [
       30.57,
       21.9895,
       28.7905,
@@ -210459,17 +211476,30 @@
       "2018-01-05",
       51147
      ],
-     "was": [
-      30.57,
-      10.4495,
-      40.1505,
-      7.4921,
-      0.0,
-      "2018-01-05",
-      51147
-     ],
      "src": "bsexbrl:540222_412018182546_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 40.15 -> 28.79, fii 10.45 -> 21.99. R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R1-uncovered-remainder 19.87; R3-nbfc NBFCsRegisteredWithRbi 0.18. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 28.79 -> 8.92, fii 21.99 -> 41.86. R1-rest-follows-foreign-holders 19.87; R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.18. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       30.57,
+       21.9895,
+       28.7905,
+       7.4921,
+       0.0,
+       "2018-01-05",
+       51147
+      ],
+      "was": [
+       30.57,
+       10.4495,
+       40.1505,
+       7.4921,
+       0.0,
+       "2018-01-05",
+       51147
+      ],
+      "src": "bsexbrl:540222_412018182546_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 40.15 -> 28.79, fii 10.45 -> 21.99. R1-foreign-holders Other 0.0 public=0.00 fii=11.54 FIL CAPITAL MANAGEMENT (MAURITIUS) LIMITED 11.54 foreign->fii(regex); R1-unresolved Other 0.0 BLUEWATER INVESTMENT LTD 19.80 ?->-(-) keyword; R1-uncovered-remainder 19.87; R3-nbfc NBFCsRegisteredWithRbi 0.18. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-03-31": {
@@ -211069,7 +212099,7 @@
    "2016-12-15": {
     "cell": [
      30.64,
-     38.5719,
+     7.1532,
      7.9107,
      6.6159,
      1.2189,
@@ -211078,15 +212108,37 @@
     ],
     "was": [
      30.64,
-     7.0819,
-     39.4007,
+     38.5719,
+     7.9107,
      6.6159,
      1.2189,
      "2017-01-10",
      309467
     ],
     "src": "bsexbrl:540222_1012017172522_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 7.08 -> 38.57, dii 39.40 -> 7.91. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=19.85 Bluewater Investment Ltd. 19.85 foreign->fii(documented:gleif); R1-rest-follows-foreign-holders 0.07"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): FIL Capital Management (Mauritius) Ltd 11.57; Bluewater Investment Ltd. 19.85; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; LAURUSLABS itself files both holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed it FII by its name or residency alone). fii 38.5719 -> 7.1532 (share counts of 540222_1012017172522_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      30.64,
+      38.5719,
+      7.9107,
+      6.6159,
+      1.2189,
+      "2017-01-10",
+      309467
+     ],
+     "was": [
+      30.64,
+      7.0819,
+      39.4007,
+      6.6159,
+      1.2189,
+      "2017-01-10",
+      309467
+     ],
+     "src": "bsexbrl:540222_1012017172522_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 7.08 -> 38.57, dii 39.40 -> 7.91. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=11.57 FIL Capital Management (Mauritius) Ltd 11.57 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=19.85 Bluewater Investment Ltd. 19.85 foreign->fii(documented:gleif); R1-rest-follows-foreign-holders 0.07"
+    }
    }
   },
   "LEMONTREE": {
@@ -231971,6 +233023,28 @@
     ],
     "src": "bsexbrl:502355_1872022124423_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.17 -> 18.23, fii 14.30 -> 14.30. R2-label Others ALTERNATIVE INVESTMENT FUND 0.16 ; R2-label Others Qualified Institutional Buyer 6.9 LIFE INSURANCE CORPORATION OF INDIA 3.87; HDFC LIFE INSURANCE COMPANY LIMITED 1.40. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2018-06-30": {
+    "cell": [
+     58.3,
+     15.7774,
+     13.0347,
+     12.3501,
+     0.0,
+     "2018-07-25",
+     37614
+    ],
+    "was": [
+     58.3,
+     15.7774,
+     12.4547,
+     12.3501,
+     0.0,
+     "2018-07-25",
+     37614
+    ],
+    "src": "bsexbrl:502355_257201818636_SHP.xml",
+    "why": "\u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): BALKRISIND's non-institution sub-row 'Alternative Investment Fund' (0.54) is a domestic institution parked under non-institutions: DII (\u00a7158 R2; the label's double space had defeated the pattern). fii 15.7774 -> 15.7774, dii 12.4547 -> 13.0347."
    }
   },
   "BALRAMCHIN": {
@@ -243827,7 +244901,7 @@
    "2017-12-31": {
     "cell": [
      0.0,
-     25.594,
+     15.5312,
      17.6586,
      6.6955,
      2.65,
@@ -243836,17 +244910,26 @@
     ],
     "was": [
      0.0,
-     28.274,
-     14.9786,
+     25.594,
+     17.6586,
      6.6955,
      2.65,
      "2018-01-19",
      130542
     ],
     "src": "bsexbrl:540750_1912018134420_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 14.98 -> 17.66, fii 28.27 -> 25.59. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(documented:gleif); R1-named-unresolved-kept Other 1.61 SG BRIC III TRADING LLC 1.61; R1-unresolved Other 0.0 SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document)) keyword; R1-named-unre. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): WESTBRIDGE CROSSOVER FUND, LLC 4.75; LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00; AFHOLDINGS 2.31; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; IEX itself files these holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed it FII by its name or residency alone). fii 25.5940 -> 15.5312 (share counts of 540750_1912018134420_SHP.xml), dii unchanged.",
     "superseded": {
      "cell": [
+      0.0,
+      25.594,
+      17.6586,
+      6.6955,
+      2.65,
+      "2018-01-19",
+      130542
+     ],
+     "was": [
       0.0,
       28.274,
       14.9786,
@@ -243855,19 +244938,19 @@
       "2018-01-19",
       130542
      ],
-     "was": [
-      0.0,
-      19.234,
-      24.0186,
-      6.6955,
-      2.65,
-      "2018-01-19",
-      130542
-     ],
      "src": "bsexbrl:540750_1912018134420_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 24.02 -> 14.98, fii 19.23 -> 28.27. R1-rest-follows-foreign-holders 9.04; R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 14.98 -> 17.66, fii 28.27 -> 25.59. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(documented:gleif); R1-named-unresolved-kept Other 1.61 SG BRIC III TRADING LLC 1.61; R1-unresolved Other 0.0 SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document)) keyword; R1-named-unre. Evidence: _shp_dii_rowfix_audit.json",
      "superseded": {
       "cell": [
+       0.0,
+       28.274,
+       14.9786,
+       6.6955,
+       2.65,
+       "2018-01-19",
+       130542
+      ],
+      "was": [
        0.0,
        19.234,
        24.0186,
@@ -243876,17 +244959,30 @@
        "2018-01-19",
        130542
       ],
-      "was": [
-       0.0,
-       5.374,
-       35.0186,
-       6.6955,
-       0.0,
-       "2018-01-19",
-       130542
-      ],
       "src": "bsexbrl:540750_1912018134420_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 35.02 -> 24.02, fii 5.37 -> 19.23. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R1-uncovered-remainder 9.04; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 24.02 -> 14.98, fii 19.23 -> 28.27. R1-rest-follows-foreign-holders 9.04; R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        19.234,
+        24.0186,
+        6.6955,
+        2.65,
+        "2018-01-19",
+        130542
+       ],
+       "was": [
+        0.0,
+        5.374,
+        35.0186,
+        6.6955,
+        0.0,
+        "2018-01-19",
+        130542
+       ],
+       "src": "bsexbrl:540750_1912018134420_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 35.02 -> 24.02, fii 5.37 -> 19.23. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R1-uncovered-remainder 9.04; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
@@ -245521,7 +246617,7 @@
    "2017-10-20": {
     "cell": [
      0.0,
-     14.56,
+     6.81,
      23.5311,
      6.028,
      2.9,
@@ -245530,15 +246626,37 @@
     ],
     "was": [
      0.0,
-     0.0,
-     34.1411,
+     14.56,
+     23.5311,
      6.028,
-     0.0,
+     2.9,
      "2017-10-27",
      253282
     ],
     "src": "bsexbrl:540750_27102017114728_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 0.00 -> 14.56, dii 34.14 -> 23.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(doc"
+    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): WESTBRIDGE CROSSOVER FUND, LLC 4.75; LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; IEX itself files these holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed it FII by its name or residency alone). fii 14.5600 -> 6.8100 (share counts of 540750_27102017114728_SHP.xml), dii unchanged.",
+    "superseded": {
+     "cell": [
+      0.0,
+      14.56,
+      23.5311,
+      6.028,
+      2.9,
+      "2017-10-27",
+      253282
+     ],
+     "was": [
+      0.0,
+      0.0,
+      34.1411,
+      6.028,
+      0.0,
+      "2017-10-27",
+      253282
+     ],
+     "src": "bsexbrl:540750_27102017114728_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 0.00 -> 14.56, dii 34.14 -> 23.53. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(doc"
+    }
    },
    "2019-04-11": {
     "cell": [

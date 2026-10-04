@@ -20842,6 +20842,76 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     version of the quarter), 3 option C (BSE's original kept with its own date, the stored figures as the re-filing: BPL Mar-25,
     GAMMONIND Jun-26, KSOILS Dec-25), 12 held (no exchange document now carries the stored figures - typically a row-level heal;
     left as dated).
+- **Batch 10 (user 2026-10-04 "fix the open items too").** The four items batch 9 left open, plus what re-testing every live
+  holder placement under the corrected code turned up.
+  - **CDSL Mar-2018 loaded** (`shp_fill_nse_gaps.json.gz`, undated in `shp_undated.json` - no exchange timestamp: NSE's master no
+    longer serves 2018 and CDSL is NSE-only): from CDSL's own scanned shareholding PDF (CDSL website, registrar stamp 'GENERATED ON
+    02/04/2018'), read from the page image: FII 9.3713 = FPI 2,292,865 + Standard Chartered Bank ('Any Other - Foreign Bank')
+    7,500,000 + FPI (Individual) 140 of 104,500,000 (Quantmac 9.3711); DII 40.7857.
+  - **Evidence file completed** (`shp_foreign_holder_evidence.json`, `_doc` batch-10 line): counts refreshed for every name from
+    `corpus_axes2.json` (33,899 BSE XBRLs) and every name the corpus lists under Institutions (Foreign) at least once added. Before,
+    1,163 of 1,204 entries carried no counts, so `inst_listed()` read them as unlisted.
+  - **Code (`_shp_dii_rowfix.py`).** (a) Name identity `_ev_matches`: legal-form words spelled one way (LIMITED=LTD, PRIVATE=PVT,
+    COMPANY=CO, CORPORATION=CORP, INCORPORATED=INC), >= 0.96 alike with the same series markers, or the start of a name cut off at
+    >= 38 characters; counts summed across the matched spellings (`_ev_counts`). (b) Option A now also covers a holder on an
+    UNLABELLED institutions row (the batch-9 curated leftovers had been fixed in the ledger only); the unnamed rest still follows
+    the pre-option-A placements (D1). (c) **The company's own label decides first:** a holder the company itself files as a foreign
+    investor in another of its filings - an FPI / FDI / FVCI row, or a row it labels FII / FPI / QFI - stays FII where the same
+    company leaves the row unlabelled (`SymCtx.own_fii`; `OWN_FII_EXTRA` for marks only BSE's pre-2016 pages or a spelling variant
+    carry: POONAWALLA Indium V 'QFI -' Dec-2015, JISLJALEQS MKCP 7.93 % fitting only the FII / QFI rows of Jun/Sep-2015, BRITANNIA
+    'Arisag' = 'Arisaig Partners (Asia)' on its own 'Foreign Institutional Investors' row Sep-2016..Jun-2017). Without it option A
+    would zig-zag FII -> public -> FII against the company's labels on both sides. (d) Runs of spaces collapse in group labels
+    (BHARATFIN Sep-2016 'Other Foreign  Bodies Corporates' - two spaces - had missed the company-type pattern and read as FII).
+    (e) A category written in front of the holder ('Foreign Bodies Corporate- Jomei Investments Limited', ABCAPITAL 2020-22; 'QFI -' /
+    'FII -' on 2015 lists) is stripped before the 2022-form lookup and the own-label test (`_bare_name`): ABCAPITAL files Jomei on its
+    own Foreign Direct Investment row from Sep-2022, so it stays FII throughout (the MFSL FCB -> FDI precedent, §159). (f) A line
+    named like a foreign-institution category ('Foreign Mutual Fund', BSOFT Mar-2018 1.61) counts as an institution tag.
+  - **Dates (`shp_lag_fix.json`, 5 entries back to the ORIGINAL filing day).** Batch 9 had dated these from NSE's re-filed copy
+    because NSE no longer holds the original file; each company's own shareholding PDF carries exactly the figures we serve:
+    KARURVYSYA Jun-2025 19-Jul-2025 (PDF created 29-Jul-2025) and Mar-2026 17-Apr-2026 (PDF 17-Apr 13:01), SUNDARMFIN Sep-2025
+    15-Oct-2025 (PDF 15-Oct 22:22 - reverses batch 8's 20-Nov) and Mar-2026 16-Apr-2026 (PDF 17-Apr 16:35), SPIC Dec-2025
+    21-Jan-2026 (PDF 22-Jan 10:37). Three PDFs post-date the original day (1, 1 and 10 days); no month-end value depends on it.
+    Kept on the later date (no original found): SPIC Sep-2025 (the company file is the re-filing), ANDHRSUGAR Jun-2025,
+    DSKULKARNI Mar-2024.
+  - **36 holder cells** (`reply7/holder_recheck.py` -> `recheck_fix.py` -> own-label + series checks `own_marks.py` /
+    `series_check.py` -> `b10_final.py`; `v4work/p_b10_final.json`). Public now - inside the company's Institutions block on a
+    row it does not label, no institution listing in any filing, not on SEBI's FVCI register (2012 list,
+    `v4work/sebi_fvci_list.pdf`), and filed by its own company as a COMPANY elsewhere (or never labelled): LAURUSLABS Dec-2016
+    event..Dec-2017 FIL Capital Management (Mauritius) 11.57 + Bluewater Investment 19.85 (OCB from Mar-2018; Bluewater had been
+    swept in with the block's rest), DEN Jun-2016..Mar-2017 + Jun/Dec-2018 Broad Street Investments (Singapore) + MBD Bridge Street
+    2013/2016, SYNGENE Mar-2016..Jun-2017 Silver Leaf Oak (Mauritius) 9.93 -> 2.69 (never labelled; four SW-2 cells + one R1 cell -
+    all six together, else a zig-zag), IEX 20-Oct-2017 + Dec-2017 (WestBridge Crossover, Lightspeed VIII, AFHoldings), BHARATFIN
+    Jun-2016 + Mar..Dec-2017 Kismet SKS II and Sep-2016 Kismet + Sandstone Investment Partners I (company-type label, see (d);
+    Tree Line stays FII), MINDACORP Mar..Sep-2016 Kotak India Private Equity Fund (non-institutions Dec-2015, Bodies Corporate from
+    Dec-2016), ACLGATI Jun-2017 Goldman Sachs International 9.25, AMBER Jun/Dec-2018 DF International Private Partners ('Bodies
+    Corporate' sub-row), PVRINOX Mar-2017 Major Cineplex (swept), RBLBANK events 29-Aug-2016 / 9-Aug-2017 IFC (the company's own
+    OCB / 'Other Foreign' non-institution row, as every RBLBANK quarter already serves). RAMCOCEM Jun-2016: Amrit Petroleums Pvt
+    Ltd 2.10, a named holder of unknown class the old rest rule had swept into FII, back in DII (§164n; Sep/Dec-2016 already
+    serve it there). **Held FII - the company files the holder as a foreign investor elsewhere:** POONAWALLA Jun-2016..Jun-2017
+    Zend / Indium V / Leapfrog ('QFI -' on BSE's Dec-2015 list, 'QFI-Corporate' = IFC 9.71 + Leapfrog 5.58 + Zend 14.46 from
+    Sep-2017), JKCEMENT 2016 Templeton Global Investment Trust (FII-type row from Mar-2017), JISLJALEQS Jun-2016 MKCP, BRITANNIA
+    Jun-2016 Arisaig, MFSL 2016 Xenok (MFSL's own FDI row 2011-15, §159).
+  - **Verified:** the rebuilt feed differs from the live one only in these 36 cells, CDSL Mar-2018 and the 5 dates; a re-run of the
+    §158 pass on the 16 symbols reproduces every batch-10 and held cell (the batch-9 code would have reverted LAURUSLABS x5 and
+    SYNGENE x5).
+  - **Batch 10b - store-wide re-run of the corrected code** (`reply7/wide` vs the ORIGINAL code on identical data,
+    `reply7/origcode`, compared by `reply7/cmp_runs.py`; §158 pass over 1,253 members + D1 over 757 former + 500 current).
+    Old-code-only 44 (the batch-9 code would undo them; the new code reproduces the ledger): the 28 batch-10 cells it reaches, NH
+    CDC Group, TCI / TCIEXP Arcee, JKPAPER DEG (batch 9). New-code-only after fixes (e)/(f): 7, plus 7 different-target cells -
+    15 written (`v4work/p_b10b.json`): DEN x6 + Standard Chartered IL&FS Asia Infrastructure Growth Fund (same unlabelled row;
+    DEN files it under Foreign / Overseas Corporate Bodies Jun-2017..Sep-2018); JKPAPER Mar-2017 PROPARCO 1.25 (Jun-2017 and the
+    Oct-2017 event already public); PETRONET Jun-2016..Mar-2017 GDF International's 10 % block (75,000,000 shares; PETRONET itself
+    names it 'OVERSEAS CORPORATE BODIES' in Jun/Sep-2016; SW-2 had made it FII by name) -> 21.27 / 21.71 / 21.69 / 19.43 =
+    Quantmac; CAPLIPOINT Dec-2016 'FOREIGN BODY CORPORATES' 0.30 (4.5507 = Quantmac), WIPRO Jun-2018 'FOREIGN NATIONALS' 0.82
+    (8.7214 = Quantmac); DII only: BALKRISIND Jun-2018 'Alternative Investment Fund' 0.54, WABAG Sep-2019 'ALTERNATIVE INVESTMENT
+    FUND' 4.34 + QIB (DII 13.25 -> 8.23 -> 11.93 dip gone) - the last four labels all carried a double space. Held: ROSSARI Sep-2021
+    India Acorn Fund 1.28 - with the summed counts it now passes the >= 90 %-of->= 5 test, but it sits on ROSSARI's own 'Foreign
+    Companies' row (documents-only keeps it public; for the user). Re-run on the 10b symbols: no proposal on any written cell.
+  - **Open (measured, not changed):** 302 proposals both codes make identically - code/ledger gaps that predate this batch (largest:
+    SCHAEFFLER 11, JAGRAN 11, CHOLAFIN 10, KINETICENG 10 R2-FII +9.88, SHILPAMED 10 Baring -7.36, GREENPLY 9, TECHNO 9, CUB 9; TCI /
+    TCIEXP OCB-row Arcee via the holder memory; UJJIVAN 2016-18 DII -3.55 x10; POONAWALLA 2018-19 DII x4); `reply7/cmp_runs.json`.
+    The ledger is right for the batch-7..10 decisions; these need a pass of their own before any re-run of the row-level code is
+    written. The holder memory carries a curated placement into other quarters as 'memory' and skips option A (TCI / TCIEXP).
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label

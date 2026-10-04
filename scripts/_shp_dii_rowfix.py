@@ -115,7 +115,9 @@ def groups(rows, axis):
     for ax,seq,p,kind,cat,name in rows:
         if ax!=axis: continue
         is_cat = kind.lower().startswith('categ') or (not kind and not name)
-        if is_cat: cats.append({"seq":seq,"pct":p,"label":(cat+" "+name).strip(),"cat":cat,"name":name,"holders":[]})
+        # §164r batch 10: runs of spaces collapse in the label the rules read (BHARATFIN Sep-2016 'Other Foreign  Bodies Corporates' - two
+        # spaces - missed the company-type pattern and fell through to the FII reading); attachment still compares the raw text
+        if is_cat: cats.append({"seq":seq,"pct":p,"label":re.sub(r"\s+"," ",cat+" "+name).strip(),"cat":cat,"name":name,"holders":[]})
         else: holders.append((seq,p,name or cat,cat))
     def room(g,p): return sum(h[0] for h in g["holders"])+p<=g["pct"]+0.02
     for seq,p,name,cat in sorted(holders,key=lambda x:-x[1]):
@@ -131,7 +133,7 @@ def groups(rows, axis):
             if before: target=before[-1]
             elif after: target=after[0]
         if target is None:
-            target={"seq":seq,"pct":0.0,"label":cat,"cat":cat,"name":"","holders":[],"orphan":True}; cats.append(target)
+            target={"seq":seq,"pct":0.0,"label":re.sub(r"\s+"," ",cat).strip(),"cat":cat,"name":"","holders":[],"orphan":True}; cats.append(target)
         target["holders"].append((p,name))
     return sorted([g for g in cats if g["pct"]>0.0049 or g["holders"]],key=lambda g:g["seq"])
 def norm(n): return re.sub(r'[^A-Z0-9]','',(n or '').upper())
@@ -153,30 +155,79 @@ def _evidence(n):
     return e
 _SER=re.compile(r"^(?:[IVX]+|\d+|FII|FPI|FDI|ODI|[A-H])$")
 def _series(name): return tuple(sorted(t for t in re.split(r"[^A-Z0-9]+",str(name).upper()) if _SER.match(t)))
+_ABBR=[(r"\bLIMITED\b","LTD"),(r"\bPRIVATE\b","PVT"),(r"\bCOMPANY\b","CO"),(r"\bCORPORATION\b","CORP"),(r"\bINCORPORATED\b","INC")]
+def anorm(name):
+    """norm() after spelling legal-form words one way (LIMITED = LTD, PRIVATE = PVT, COMPANY = CO ...): the same legal name
+    written 'Ltd' by one filer and 'Limited' by another (Morgan Stanley Mauritius Company Ltd / Limited) is one holder."""
+    s=re.sub(r"^\W*[ivx]+\)\s*","",str(name).upper())
+    for a,b in _ABBR: s=re.sub(a,b,s)
+    return re.sub(r"[^A-Z0-9]","",s)
+_AIDX=None
+def _ev_matches(name):
+    """§164r batch 10: every evidence entry that names the same legal holder - the exact spelling (legal-form words spelled one
+    way), every spelling >= 0.96 alike with the same series markers (batch 7's corpus test), and - for a holder name the filer cut
+    off at ~40 characters - the full names it is the start of. Counts across the matched spellings are summed, as batch 7 did."""
+    global _AIDX
+    if _AIDX is None:
+        _AIDX={}
+        for k,v in EVIDENCE.items(): _AIDX.setdefault(anorm(v.get("name") or k),[]).append(v)
+    a=anorm(name); out=list(_AIDX.get(a,[]))
+    if len(a)>=10:
+        ser=_series(name); cut=len(str(name).strip())>=38 and len(a)>=25
+        for k,vs in _AIDX.items():
+            if k==a or k[:8]!=a[:8]: continue
+            if (difflib.SequenceMatcher(None,a,k).ratio()>=0.96 and _series(vs[0].get("name",k))==ser) or (cut and k.startswith(a)): out+=vs
+    return out
+def _ev_counts(name):
+    vs=_ev_matches(name)
+    if not vs: return None
+    f=sum(v.get("inst_n") or 0 for v in vs); d=sum(v.get("domestic_n") or 0 for v in vs); c=sum(v.get("company_n") or 0 for v in vs)
+    reg=any(v.get("proof")=="sebi-register" for v in vs)
+    return f,d,c,reg
 def inst_documented(name):
-    """§164r batch 7 (user 2026-09-29 'Documents only'): True when the evidence file marks this legal name inst=true — another
-    company's filing lists it under Institutions (Foreign); since batch 8 (user 2026-10-04, Quantmac's standard) inst=true needs
-    >= 90 % of >= 5 classified listings, or a registry document. Strict identity: the exact name, or >= 0.96 alike with the same series
-    markers (Norwest Venture Partners VII-A is not Norwest ... X FII; APMS INVESTMENTS FUND = APMS INVESTMENT FUND)."""
-    n=norm(name); e=EVIDENCE.get(n)
-    if e is None and len(n)>=10:
-        for k,v in EVIDENCE.items():
-            if k[:8]==n[:8] and difflib.SequenceMatcher(None,n,k).ratio()>=0.96 and _series(v.get("name",k))==_series(name): e=v; break
-    return bool(e and e.get("inst"))
+    """§164r batch 7 (user 2026-09-29 'Documents only') + batch 8 (user 2026-10-04, Quantmac's standard): a holder filed among
+    ordinary shareholders is an institution on another company's filing only with >= 90 % of >= 5 classified listings under
+    Institutions (Foreign), or a registry document (SEBI FPI / FVCI register). Identity: see _ev_matches."""
+    x=_ev_counts(name)
+    if not x: return False
+    f,d,c,reg=x
+    return reg or (f+d+c>=5 and f>=0.9*(f+d+c))
 def inst_listed(name):
     """§164r batch 8 scope (user 2026-10-04, option A): the proof a holder needs when the COMPANY ITSELF lists it inside its
-    Institutions block (on a company-type sub-row such as 'Overseas Corporate Bodies'): the company's own placement plus at least
-    one other filing listing the same legal name under Institutions (Foreign) (inst_n >= 1, never a domestic-dominated name). The
-    strict >= 90 %-of->= 5 proof (inst_documented) is for holders the company lists among ordinary shareholders only - as Quantmac
-    applies it. IEX's Rimco (Mauritius) 4.55 inside IEX's Institutions block: 13 institution listings -> FII."""
-    n=norm(name); e=EVIDENCE.get(n)
-    if e is None and len(n)>=10:
-        for k,v in EVIDENCE.items():
-            if k[:8]==n[:8] and difflib.SequenceMatcher(None,n,k).ratio()>=0.96 and _series(v.get("name",k))==_series(name): e=v; break
-    if not e: return False
-    if e.get("inst"): return True
-    fi=e.get("inst_n") or 0; dm=e.get("domestic_n") or 0
-    return fi>=1 and (dm==0 or fi>=0.9*(fi+dm))
+    Institutions block (on a company-type or unlabelled sub-row): the company's own placement plus at least one other filing
+    listing the same legal name under Institutions (Foreign) (never a domestic-dominated name), or a registry document. The strict
+    >= 90 %-of->= 5 proof (inst_documented) is for holders the company lists among ordinary shareholders only - as Quantmac applies
+    it. IEX's Rimco (Mauritius) 4.55 inside IEX's Institutions block: 13 institution listings -> FII."""
+    x=_ev_counts(name)
+    if not x: return False
+    f,d,c,reg=x
+    return reg or (f>=1 and (d==0 or f>=0.9*(f+d)))
+# §164r batch 10 (user 2026-10-04 'fix the open items'): a holder the company ITSELF files as a foreign investor in another of its
+# filings - on an FPI / FDI / FVCI row, or on a row it labels FII / FPI / QFI - stays FII in a quarter where the same company lists
+# it on an UNLABELLED institutions row: option A must not make the silent quarters public against the company's own label on both
+# sides (POONAWALLA Jun-2016..Jun-2017: 'QFI - ZEND / INDIUM V / LEAPFROG' on BSE's Dec-2015 holder list, 'QFI-Corporate' from
+# Sep-2017). SymCtx.own_fii reads the symbol's own XBRLs; OWN_FII_EXTRA carries the company marks that only BSE's pre-2016 pages or a
+# spelling variant show (each checked 2026-10-04 on the cached pages / filings).
+OWN_FII_EXTRA={"POONAWALLA":["INDIUM V (MAURITIUS) HOLDINGS LIMITED"],          # 'QFI - INDIUM V (MAURITIUS) HOLDINGS LIMITED', BSE Dec-2015 list
+               "JISLJALEQS":["MKCP INSTITUTIONAL INVESTOR (MAURITIUS) II LTD"], # its 7.93 % fits only the FII (121) / QFI (3 holders) rows of the Jun/Sep-2015 pages
+               "BRITANNIA":["ARISAG PARTNERS (ASIA)PTE LTD A/C ARISAG"]}     # = 'Arisaig Partners (Asia) Pte Ltd A/C Arisaig India Fund', BRITANNIA's own 'Foreign Institutional Investors' row Sep-2016..Jun-2017
+OWN_FOR_AX=("InstitutionsForeignPortfolioInvestor","ForeignPortfolioInvestor","ForeignDirectInvestment","ForeignVentureCapital","SovereignWealthFunds",
+            "OtherInstitutionsForeign","InstitutionsForeign","ForeignInstitutionalInvestors")
+# §164r batch 10: some filers write their category in front of the holder ('Foreign Bodies Corporate- Jomei Investments Limited',
+# ABCAPITAL 2020-22; 'QFI - ZEND ...' on BSE's 2015 lists). The bare name is what the company's own 2022-form row and its other
+# filings carry ('Jomei Investments Limited' on ABCAPITAL's Foreign Direct Investment row from Sep-2022).
+_CATPFX=re.compile(r"^\s*(?:(?:foreign|overseas)\s+(?:bod(?:y|ies)\s+corporates?|corporate\s+bod(?:y|ies)|compan(?:y|ies))|fiis?|fpis?|qfis?|fdi|fvci|ocb)\s*[-\u2013:]\s*", re.I)
+def _bare_name(name):
+    b=_CATPFX.sub("",str(name or ""),count=1).strip()
+    return b if len(b)>=3 else str(name or "")
+def _same_holder(a, b):
+    """Strict legal-name identity (as the evidence test): exact after legal-form normalisation, >= 0.96 alike with the same series
+    markers, or the start of a name cut off at >= 25 characters."""
+    x,y=anorm(a),anorm(b)
+    if not x or not y: return False
+    if x==y: return True
+    if min(len(x),len(y))>=25 and (x.startswith(y) or y.startswith(x)): return True
+    return difflib.SequenceMatcher(None,x,y).ratio()>=0.96 and _series(a)==_series(b)
 def _documented_foreign(n, what):
     """A name whose only sign of being foreign is the name itself: FII only with a document on file (GLEIF / another filing's
     foreign-institution row); otherwise unresolved — never foreign by name alone."""
@@ -191,9 +242,10 @@ def holder_class(name, verdicts, newmap, pct=None):
     """-> (cls 'foreign'|'domestic'|None, dest 'fii'|'public'|None, evidence). Priority: the filer's own
     new-format placement > curated verdict > strong domestic markers (insurer/NPS/LIC/MF/QIB) > foreign
     markers (jurisdiction, plc/llc/pte, 'global', university...) > weak domestic markers (bank, FI, AIF)."""
-    n=norm(name); newmap=newmap or {}
+    n=norm(name); newmap=newmap or {}; nb=norm(_bare_name(name))
     hit=None
     if n in newmap: pr=pick_row(newmap[n],pct); hit=(pr,"new-format:"+pr[1])
+    elif nb!=n and nb in newmap: pr=pick_row(newmap[nb],pct); hit=(pr,"new-format:"+pr[1])      # §164r batch 10: category-prefixed name
     else:
         best=None
         for k,rows in newmap.items():
@@ -250,7 +302,22 @@ class SymCtx:
     """Per-symbol state: the filer's first new-format holder map, holder memory, label memory."""
     def __init__(self, sym, bse_rows, verdicts):
         self.sym=sym; self.bse_rows=bse_rows; self.verdicts=verdicts
-        self.newmap=None; self.newfile=None; self.memory={}; self.label_memory={}
+        self.newmap=None; self.newfile=None; self.memory={}; self.label_memory={}; self._ownfii=None
+    def own_fii(self, hn):
+        """§164r batch 10: True when this company files the same holder as a foreign investor in any of its own filings."""
+        if self._ownfii is None:
+            names=list(OWN_FII_EXTRA.get(self.sym,[]))
+            for r in self.bse_rows or []:
+                f=(r.get("XbrlFile") or "").strip(); p=find_file(f) if f else None
+                if not p: continue
+                try: rr=rows_of(open(p,'rb').read())
+                except Exception: continue
+                for ax in sorted({x[0] for x in rr}):
+                    fa=any(ax.startswith(a) for a in OWN_FOR_AX)
+                    for g in groups(rr,ax):
+                        if fa or (LAB_FII.search(g["label"]) and not LAB_PUB.search(g["label"])): names+=[n for _,n in g["holders"]]
+            self._ownfii=names
+        hb=_bare_name(hn); return any(_same_holder(hb,_bare_name(n)) for n in self._ownfii)
     def hclass(self, hn, pct=None):
         if self.newmap is None: self.newmap,self.newfile=newmap_for(self.sym,self.bse_rows)
         c,dest,src=holder_class(hn,self.verdicts,self.newmap,pct)
@@ -287,16 +354,21 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 if c=="foreign": lab_kind=dest or "fii"; lab_src="label-as-holder:"+src
                 elif c=="domestic": lab_kind="domestic"; lab_src="label-as-holder:"+src
                 elif norm(lab) in ctx.label_memory: lab_kind=ctx.label_memory[norm(lab)]; lab_src="label-memory"
+            hs_pre=hs        # the placements before option A: the unnamed rest below follows THESE (D1), not the option-A outcome
             hs2=[]
             for hp,hn,c,dest,src in hs:
-                inst_tag=bool(re.search(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|foreign direct|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I))
-                if (c=="foreign" or (c!="domestic" and inst_tag)) and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"):
+                inst_tag=bool(re.search(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|foreign direct|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I)) or bool(re.search(r"\bforeign\b", hn, re.I) and re.search(r"mutual funds?|financial institutions?|\bbanks?\b|insurance|pension", hn, re.I))   # §164r batch 10: a line named like a foreign-institution category (BSOFT Mar-2018 'Foreign Mutual Fund' 1.61)
+                # §164r batch 10 (user 2026-10-04 'fix the open items'): option A covers a holder the company lists on an UNLABELLED
+                # institutions sub-row too (lab_kind None) - the curated list / a Mauritius name had kept CDC Group (NH, UJJIVAN),
+                # JP Morgan Mauritius IV (NH), Arcee 'OCB' (TCI) and DEG (JKPAPER) in FII there with no institution listing anywhere
+                if (c=="foreign" or (c!="domestic" and inst_tag)) and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii",None):
                     # the label decides an unnamed-type holder; an institution-type holder (FPI/FII tag in its own name, or a
                     # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
                     # §164r batch 7 (user 2026-09-29 'Documents only'): a curated verdict alone no longer counts — the holder needs an
                     # institution tag in its own name or another company's filing listing it under Institutions (Foreign)
                     if inst_tag or inst_listed(hn): dest="fii"      # §164r batch 8 option A: inside the Institutions block the company's own placement + one institution listing
-                    else: dest=lab_kind
+                    elif lab_kind is None and ctx.own_fii(hn): dest="fii"    # §164r batch 10: the company files this holder as a foreign investor elsewhere (no zig-zag)
+                    else: dest=lab_kind or "public"
                 hs2.append((hp,hn,c,dest,src))
             hs=hs2
             # §164j: a named holder that is foreign ONLY by its name and has no document on file (holder_class -> "name-only")
@@ -326,7 +398,8 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 ev.append(("R1-public-label",lab,round(g["pct"],4),"public=%.2f fii=%.2f"%(named_f_pub+rest,named_f_fii),desc,lab_src))
             else:
                 if fh and not dh:
-                    rest_dest="public" if all(h[3]=="public" for h in fh) else "fii"
+                    fh_pre=[h for h in hs_pre if h[2]=="foreign"]
+                    rest_dest="public" if all(h[3]=="public" for h in fh_pre) else "fii"
                     ctx.label_memory.setdefault(norm(lab),rest_dest)
                     mv_pub+=named_f_pub+(rest if rest_dest=="public" else 0.0); mv_fii+=named_f_fii+(rest if rest_dest=="fii" else 0.0)
                     ev.append(("R1-foreign-holders",lab,round(g["pct"],4),"public=%.2f fii=%.2f"%(named_f_pub+(rest if rest_dest=="public" else 0.0),named_f_fii+(rest if rest_dest=="fii" else 0.0)),desc))
