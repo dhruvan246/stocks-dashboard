@@ -20749,6 +20749,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
   company's placement plus one other filing listing it under Institutions (Foreign): `_shp_dii_rowfix.inst_listed()` (R1); R2-FII
   keeps `inst_documented()`. 24 cells of the 93 put back (label "§164r batch 8 scope A"): IEX 2018-21 Rimco (Jun-2020 35.80 =
   Quantmac again), IDFCFIRSTB 5-Jan-2019 Caladium, BANDHANBNK 2018 IFC, BHARATFIN Tree Line. Rebuilt feed moves exactly 24 rows.
+- **Quarters we never held (Quantmac v6 'no row on our side' / 'you lack a filing').** 19 Dec-2015 / Mar-2016 quarters read with
+  the batch-6 Table III route (`reply7/seam_fill.py`: BSE Table III + page, XBRL-era rules, 2022-form placements; FILL-ONLY into
+  shp_fill_seam_aspx.json.gz) and dated from the company's own 'Shareholding for the Period Ended' announcement (shp_sub_dates,
+  ann-stream, SW-1 rule): 11 written - PETRONET Dec-15 22.32 (GDF's 10.00 'Overseas Corporate Bodies' block public), BHARATFORG
+  16.74, GAYAPROJ 38.25, SHK 12.45, BALLARPUR 1.05, EXIDEIND 15.16, MOIL 5.45, POLARIS 7.97, BOSCH-HCIL 1.70, GLOBOFFS 1.98, VGUARD
+  16.71 (each equal to Quantmac's figure where they list it); SCHNEIDER Dec-15 was held UNDATED with fii 0.00 - Table III 0.30, dated
+  7-Feb-2016. Held: COX&KINGS / GESHIP / JISLJALEQS / RCOM Mar-16 (page total does not reproduce the table's % - a base question),
+  GUJALKALI / SHRENUJ Dec-15 (rows of unproven class). SBT Dec-15 is in the fills but the symbol is not served (merged into SBI).
+  Event rows Quantmac holds that we lack: IEX 12-Apr-2019 / INFY 7-Sep-2018 are our 11-Apr / BSE's 6-Sep rows (as-on label);
+  KOTAKBANK 30-May-2020, GAIL 12-Jul-2019 and others are NSE-only - NSE's master no longer serves 2017-20 submissions (asked).
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
