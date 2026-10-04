@@ -20759,6 +20759,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
   GUJALKALI / SHRENUJ Dec-15 (rows of unproven class). SBT Dec-15 is in the fills but the symbol is not served (merged into SBI).
   Event rows Quantmac holds that we lack: IEX 12-Apr-2019 / INFY 7-Sep-2018 are our 11-Apr / BSE's 6-Sep rows (as-on label);
   KOTAKBANK 30-May-2020, GAIL 12-Jul-2019 and others are NSE-only - NSE's master no longer serves 2017-20 submissions (asked).
+- **Dates (Quantmac v6 'the newer quarter was public').** BSE's own 'Shareholding for the Period Ended <as-on>' notice
+  (`reply7/ann_check.py`, honest client, pages walked past the 50-row cap) confirms our date for 13 cases; moves 3: BAJAJHLDNG
+  Mar-2018 4-May -> 16-Apr-2018 (notice 17:43:55; the XBRL we serve was uploaded 17:06:22 the same day - shp_lag_fix),
+  IOB 12-Nov-2018 event 14-Jan-2019 -> 20-Nov-2018 (notice; XBRL uploaded 19-Nov), PCBL 3-Nov-2025 event 3-Dec -> 10-Nov-2025
+  (NSE broadcast 16:31:01, NSE's file = our figures to 4 dp) - the two events via shp_cell_fix. Kept (the revision look-ahead
+  rule): ARE&M, AUBANK, BOMDYEING, DIXON, POLYCAB, SHILPAMED, JKCEMENT, 360ONE, ANDHRABANK, ASTERDM - BSE's notice is earlier but
+  the XBRL whose figures we serve was uploaded later (ASTERDM: notice 20-Apr-2018, only a May-2019 upload on BSE's list); we ask
+  Quantmac for the NSE file names to compare. Dec-2015 'page' dates (21-Jan etc.): no document carries them (BSE's list has no
+  date, the page none); BSE's notices cluster on 3-4 Feb 2016 - kept, source asked.
+- **Re-filings (option C, §142k).** `reply7/rev_lane.py` over revcheck's 2,330 multi-version quarters: 38 re-filings whose
+  fii / dii / prom differ from the original we serve and that the sidecar lacked (incl. FORTIS Sep-2023 26.31 from 20-Oct-2023 -
+  its §142k ledger note named a sidecar row that was never written; BBTC's 26-Dec-2023 mass re-filing of 2021-23) added to
+  shp_revisions.json, dated by the re-filing's own BSE stamp; 9 held where the original carries a value heal (needs a row-level
+  re-read of the revision). guard_shp_revisions: 1,031 sidecar rows checked, green.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
