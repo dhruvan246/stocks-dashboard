@@ -135287,6 +135287,26 @@
     ],
     "src": "bsexbrl:507685_291202117197_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 9.12 -> 9.12, dii 6.26 -> 7.61. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others Qualified Institutional Buyer 1.35 "
+   },
+   "2016-03-31": {
+    "cell": [
+     73.3401,
+     10.9339,
+     4.5697,
+     1.9547,
+     2.2329,
+     "2016-04-21"
+    ],
+    "was": [
+     73.3401,
+     11.616,
+     4.5697,
+     1.9547,
+     2.2329,
+     "2016-04-21"
+    ],
+    "src": "bseaspx:507685:89",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): the Mar-2016 BSE page's Institutions 'Any Others (Specify)' line (12 holders, 16853544 shares, 0.6821 of (A+B+C)) carries no label or names, and D1 had moved it to FII as the unnamed rest. WIPRO's own next filings label the same-size line inside its institutions block 'FOREIGN NATIONALS' (Jun-2016 0.7547, Sep-2016 and Dec-2016 0.7669: within the +-12% neighbour-label band of \u00a7164r batch 7) - a non-institution category - so it follows that label: public, neither FII nor DII. FII = the page's Qualified Foreign Investor line 270144642 shares = 10.9339 of (A+B+C) (WIPRO's own basis keeps the ADR custodian inside the 100). fii 11.6160 -> 10.9339, dii unchanged."
    }
   },
   "PAISALO": {
@@ -173069,7 +173089,7 @@
    "2016-06-30": {
     "cell": [
      56.89,
-     21.52,
+     13.74,
      1.6828,
      0.0952,
      0.0,
@@ -173079,16 +173099,25 @@
     "was": [
      56.89,
      21.52,
-     7.3528,
+     1.6828,
      0.0952,
      0.0,
      "2016-07-16",
      12920
     ],
     "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.67 (named: Pivotl Securities Private Limited 4.18) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 21.5200 -> 21.5200, dii 7.3528 -> 1.6828.",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.7819) sits on the company's own company-type sub-row 'Foreign Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 21.5200 -> 13.7400, dii unchanged.",
     "superseded": {
      "cell": [
+      56.89,
+      21.52,
+      1.6828,
+      0.0952,
+      0.0,
+      "2016-07-16",
+      12920
+     ],
+     "was": [
       56.89,
       21.52,
       7.3528,
@@ -173097,19 +173126,19 @@
       "2016-07-16",
       12920
      ],
-     "was": [
-      56.89,
-      23.01,
-      5.8628,
-      0.0952,
-      0.0,
-      "2016-07-16",
-      12920
-     ],
-     "src": "bsexbrl:530549_1672016115523_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.67 (named: Pivotl Securities Private Limited 4.18) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 21.5200 -> 21.5200, dii 7.3528 -> 1.6828.",
      "superseded": {
       "cell": [
+       56.89,
+       21.52,
+       7.3528,
+       0.0952,
+       0.0,
+       "2016-07-16",
+       12920
+      ],
+      "was": [
        56.89,
        23.01,
        5.8628,
@@ -173118,19 +173147,19 @@
        "2016-07-16",
        12920
       ],
-      "was": [
-       56.89,
-       13.74,
-       13.5828,
-       0.0952,
-       0.0,
-       "2016-07-16",
-       12920
-      ],
       "src": "bsexbrl:530549_1672016115523_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+      "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
       "superseded": {
        "cell": [
+        56.89,
+        23.01,
+        5.8628,
+        0.0952,
+        0.0,
+        "2016-07-16",
+        12920
+       ],
+       "was": [
         56.89,
         13.74,
         13.5828,
@@ -173139,17 +173168,30 @@
         "2016-07-16",
         12920
        ],
-       "was": [
-        56.89,
-        21.5219,
-        5.8009,
-        0.0952,
-        0.0,
-        "2016-07-16",
-        12920
-       ],
        "src": "bsexbrl:530549_1672016115523_SHP.xml",
-       "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+       "superseded": {
+        "cell": [
+         56.89,
+         13.74,
+         13.5828,
+         0.0952,
+         0.0,
+         "2016-07-16",
+         12920
+        ],
+        "was": [
+         56.89,
+         21.5219,
+         5.8009,
+         0.0952,
+         0.0,
+         "2016-07-16",
+         12920
+        ],
+        "src": "bsexbrl:530549_1672016115523_SHP.xml",
+        "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+       }
       }
      }
     }
@@ -173157,7 +173199,7 @@
    "2016-12-31": {
     "cell": [
      54.74,
-     26.0056,
+     18.5156,
      0.2415,
      0.0591,
      0.0,
@@ -173166,17 +173208,26 @@
     ],
     "was": [
      54.74,
-     18.5156,
-     7.5815,
+     26.0056,
+     0.2415,
      0.0591,
      0.0,
      "2017-01-20",
      13682
     ],
-    "src": "bsexbrl:530549_1912017191114_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.52 -> 26.01, dii 7.58 -> 0.24. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.4881) sits on the company's own company-type sub-row 'FOREIGN CORPORATE BODIES' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.0056 -> 18.5156, dii unchanged.",
     "superseded": {
      "cell": [
+      54.74,
+      26.0056,
+      0.2415,
+      0.0591,
+      0.0,
+      "2017-01-20",
+      13682
+     ],
+     "was": [
       54.74,
       18.5156,
       7.5815,
@@ -173185,23 +173236,36 @@
       "2017-01-20",
       13682
      ],
-     "was": [
-      54.74,
-      26.0037,
-      0.0934,
-      0.0591,
-      0.0,
-      "2017-01-20",
-      13682
-     ],
      "src": "bsexbrl:530549_1912017191114_SHP.xml",
-     "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.52 -> 26.01, dii 7.58 -> 0.24. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       54.74,
+       18.5156,
+       7.5815,
+       0.0591,
+       0.0,
+       "2017-01-20",
+       13682
+      ],
+      "was": [
+       54.74,
+       26.0037,
+       0.0934,
+       0.0591,
+       0.0,
+       "2017-01-20",
+       13682
+      ],
+      "src": "bsexbrl:530549_1912017191114_SHP.xml",
+      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     }
     }
    },
    "2017-03-31": {
     "cell": [
      54.74,
-     27.4387,
+     19.9487,
      0.2089,
      0.0591,
      0.0,
@@ -173211,16 +173275,25 @@
     "was": [
      54.74,
      27.4387,
-     4.2289,
+     0.2089,
      0.0591,
      0.0,
      "2017-04-22",
      14396
     ],
     "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'INDIAN BODY CORPORATE' 4.02 (named: PIVOTAL SECURITIES PRIVATE LIMITED 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 27.4387 -> 27.4387, dii 4.2289 -> 0.2089.",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.4881) sits on the company's own company-type sub-row 'FOREIGN BODY CORPORATES (holder name cut to 'BARING INDIA PRIVATE EQUITY FUND III')' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 27.4387 -> 19.9487, dii unchanged.",
     "superseded": {
      "cell": [
+      54.74,
+      27.4387,
+      0.2089,
+      0.0591,
+      0.0,
+      "2017-04-22",
+      14396
+     ],
+     "was": [
       54.74,
       27.4387,
       4.2289,
@@ -173229,19 +173302,19 @@
       "2017-04-22",
       14396
      ],
-     "was": [
-      54.74,
-      25.9768,
-      5.5808,
-      0.0591,
-      0.0,
-      "2017-04-22",
-      14396
-     ],
-     "src": "bsexbrl:530549_214201720948_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.98 -> 27.44, dii 5.58 -> 4.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN BODY CORPORATES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III 7.49 foreign->fii(curated) keyword; R1-unresolved Other INDIAN BODY CORPORATE 4.02 PIVOTAL SECURITIES PRIVATE LIMITED 4.02 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.46; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'INDIAN BODY CORPORATE' 4.02 (named: PIVOTAL SECURITIES PRIVATE LIMITED 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 27.4387 -> 27.4387, dii 4.2289 -> 0.2089.",
      "superseded": {
       "cell": [
+       54.74,
+       27.4387,
+       4.2289,
+       0.0591,
+       0.0,
+       "2017-04-22",
+       14396
+      ],
+      "was": [
        54.74,
        25.9768,
        5.5808,
@@ -173250,17 +173323,30 @@
        "2017-04-22",
        14396
       ],
-      "was": [
-       54.74,
-       18.4887,
-       13.0689,
-       0.0591,
-       0.0,
-       "2017-04-22",
-       14396
-      ],
       "src": "bsexbrl:530549_214201720948_SHP.xml",
-      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODY CORPORATES 7.49; BARING INDIA PRIVATE EQUITY FUND III 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.98 -> 27.44, dii 5.58 -> 4.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN BODY CORPORATES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III 7.49 foreign->fii(curated) keyword; R1-unresolved Other INDIAN BODY CORPORATE 4.02 PIVOTAL SECURITIES PRIVATE LIMITED 4.02 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.46; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        54.74,
+        25.9768,
+        5.5808,
+        0.0591,
+        0.0,
+        "2017-04-22",
+        14396
+       ],
+       "was": [
+        54.74,
+        18.4887,
+        13.0689,
+        0.0591,
+        0.0,
+        "2017-04-22",
+        14396
+       ],
+       "src": "bsexbrl:530549_214201720948_SHP.xml",
+       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODY CORPORATES 7.49; BARING INDIA PRIVATE EQUITY FUND III 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      }
      }
     }
    },
@@ -173333,7 +173419,7 @@
    "2017-09-30": {
     "cell": [
      54.74,
-     26.403,
+     18.913,
      0.1657,
      0.1173,
      0.0,
@@ -173342,17 +173428,26 @@
     ],
     "was": [
      54.74,
-     27.933,
-     4.1857,
+     26.403,
+     0.1657,
      0.1173,
      0.0,
      "2017-10-23",
      15081
     ],
     "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.55 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.9330 -> 26.4030, dii 4.1857 -> 0.1657.",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.4881) sits on the company's own company-type sub-row 'FOREIGN CORPORATE BODIES' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.4030 -> 18.9130, dii unchanged.",
     "superseded": {
      "cell": [
+      54.74,
+      26.403,
+      0.1657,
+      0.1173,
+      0.0,
+      "2017-10-23",
+      15081
+     ],
+     "was": [
       54.74,
       27.933,
       4.1857,
@@ -173361,19 +173456,19 @@
       "2017-10-23",
       15081
      ],
-     "was": [
-      54.74,
-      18.913,
-      13.1857,
-      0.1173,
-      0.0,
-      "2017-10-23",
-      15081
-     ],
-     "src": "bsexbrl:530549_20102017101823_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.91 -> 27.93, dii 13.19 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATE 5.55 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.55 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.9330 -> 26.4030, dii 4.1857 -> 0.1657.",
      "superseded": {
       "cell": [
+       54.74,
+       27.933,
+       4.1857,
+       0.1173,
+       0.0,
+       "2017-10-23",
+       15081
+      ],
+      "was": [
        54.74,
        18.913,
        13.1857,
@@ -173382,24 +173477,37 @@
        "2017-10-23",
        15081
       ],
-      "was": [
-       54.74,
-       26.4011,
-       5.6976,
-       0.1173,
-       0.0,
-       "2017-10-23",
-       15081
-      ],
       "src": "bsexbrl:530549_20102017101823_SHP.xml",
-      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.91 -> 27.93, dii 13.19 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATE 5.55 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        54.74,
+        18.913,
+        13.1857,
+        0.1173,
+        0.0,
+        "2017-10-23",
+        15081
+       ],
+       "was": [
+        54.74,
+        26.4011,
+        5.6976,
+        0.1173,
+        0.0,
+        "2017-10-23",
+        15081
+       ],
+       "src": "bsexbrl:530549_20102017101823_SHP.xml",
+       "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+      }
      }
     }
    },
    "2017-12-31": {
     "cell": [
      53.8,
-     26.0163,
+     18.6563,
      0.2346,
      0.0975,
      0.0,
@@ -173408,17 +173516,26 @@
     ],
     "was": [
      53.8,
-     27.7263,
-     4.1946,
+     26.0163,
+     0.2346,
      0.0975,
      0.0,
      "2018-01-20",
      14719
     ],
     "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.67 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.7263 -> 26.0163, dii 4.1946 -> 0.2346.",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'FOREIGN CORPORATE BODIES' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.0163 -> 18.6563, dii unchanged.",
     "superseded": {
      "cell": [
+      53.8,
+      26.0163,
+      0.2346,
+      0.0975,
+      0.0,
+      "2018-01-20",
+      14719
+     ],
+     "was": [
       53.8,
       27.7263,
       4.1946,
@@ -173427,19 +173544,19 @@
       "2018-01-20",
       14719
      ],
-     "was": [
-      53.8,
-      18.6563,
-      13.1346,
-      0.0975,
-      0.0,
-      "2018-01-20",
-      14719
-     ],
-     "src": "bsexbrl:530549_2012018132555_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.66 -> 27.73, dii 13.13 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.71 ['named holders of unknown class left as stored', 3.96] | R1: R1-unresolved Other BODIES CORPORATE 5.67 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.67 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.7263 -> 26.0163, dii 4.1946 -> 0.2346.",
      "superseded": {
       "cell": [
+       53.8,
+       27.7263,
+       4.1946,
+       0.0975,
+       0.0,
+       "2018-01-20",
+       14719
+      ],
+      "was": [
        53.8,
        18.6563,
        13.1346,
@@ -173448,17 +173565,30 @@
        "2018-01-20",
        14719
       ],
-      "was": [
-       53.8,
-       26.0158,
-       5.7751,
-       0.0975,
-       0.0,
-       "2018-01-20",
-       14719
-      ],
       "src": "bsexbrl:530549_2012018132555_SHP.xml",
-      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.66 -> 27.73, dii 13.13 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.71 ['named holders of unknown class left as stored', 3.96] | R1: R1-unresolved Other BODIES CORPORATE 5.67 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        53.8,
+        18.6563,
+        13.1346,
+        0.0975,
+        0.0,
+        "2018-01-20",
+        14719
+       ],
+       "was": [
+        53.8,
+        26.0158,
+        5.7751,
+        0.0975,
+        0.0,
+        "2018-01-20",
+        14719
+       ],
+       "src": "bsexbrl:530549_2012018132555_SHP.xml",
+       "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+      }
      }
     }
    },
@@ -173487,7 +173617,7 @@
    "2018-03-31": {
     "cell": [
      53.8,
-     26.163,
+     18.803,
      0.2444,
      0.0975,
      0.0,
@@ -173496,20 +173626,42 @@
     ],
     "was": [
      53.8,
-     18.803,
-     13.1044,
+     26.163,
+     0.2444,
      0.0975,
      0.0,
      "2018-04-18",
      16409
     ],
-    "src": "bsexbrl:530549_1842018114625_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.80 -> 26.16, dii 13.10 -> 0.24. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.63 public=5.63 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.1630 -> 18.8030, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.163,
+      0.2444,
+      0.0975,
+      0.0,
+      "2018-04-18",
+      16409
+     ],
+     "was": [
+      53.8,
+      18.803,
+      13.1044,
+      0.0975,
+      0.0,
+      "2018-04-18",
+      16409
+     ],
+     "src": "bsexbrl:530549_1842018114625_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.80 -> 26.16, dii 13.10 -> 0.24. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.63 public=5.63 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
      53.8,
-     26.3083,
+     18.9483,
      0.2266,
      0.0711,
      0.0,
@@ -173518,20 +173670,42 @@
     ],
     "was": [
      53.8,
-     18.9483,
-     13.0466,
+     26.3083,
+     0.2266,
      0.0711,
      0.0,
      "2018-07-23",
      16475
     ],
-    "src": "bsexbrl:530549_2172018165519_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.95 -> 26.31, dii 13.05 -> 0.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.59 public=5.59 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3083 -> 18.9483, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.3083,
+      0.2266,
+      0.0711,
+      0.0,
+      "2018-07-23",
+      16475
+     ],
+     "was": [
+      53.8,
+      18.9483,
+      13.0466,
+      0.0711,
+      0.0,
+      "2018-07-23",
+      16475
+     ],
+     "src": "bsexbrl:530549_2172018165519_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.95 -> 26.31, dii 13.05 -> 0.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.59 public=5.59 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-09-30": {
     "cell": [
      53.8,
-     26.3511,
+     18.9911,
      0.307,
      0.1704,
      0.0,
@@ -173540,20 +173714,42 @@
     ],
     "was": [
      53.8,
-     18.9911,
-     13.167,
+     26.3511,
+     0.307,
      0.1704,
      0.0,
      "2018-10-20",
      15578
     ],
-    "src": "bsexbrl:530549_20102018132835_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.99 -> 26.35, dii 13.17 -> 0.31. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.62 public=5.62 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.12. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3511 -> 18.9911, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.3511,
+      0.307,
+      0.1704,
+      0.0,
+      "2018-10-20",
+      15578
+     ],
+     "was": [
+      53.8,
+      18.9911,
+      13.167,
+      0.1704,
+      0.0,
+      "2018-10-20",
+      15578
+     ],
+     "src": "bsexbrl:530549_20102018132835_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.99 -> 26.35, dii 13.17 -> 0.31. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.62 public=5.62 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.12. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-12-31": {
     "cell": [
      53.8,
-     26.3727,
+     19.0127,
      0.1849,
      0.1722,
      0.0,
@@ -173562,20 +173758,42 @@
     ],
     "was": [
      53.8,
-     19.0127,
-     13.3349,
+     26.3727,
+     0.1849,
      0.1722,
      0.0,
      "2019-01-22",
      16576
     ],
-    "src": "bsexbrl:530549_221201910040_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.01 -> 26.37, dii 13.33 -> 0.18. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.79 public=5.79 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3727 -> 19.0127, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.3727,
+      0.1849,
+      0.1722,
+      0.0,
+      "2019-01-22",
+      16576
+     ],
+     "was": [
+      53.8,
+      19.0127,
+      13.3349,
+      0.1722,
+      0.0,
+      "2019-01-22",
+      16576
+     ],
+     "src": "bsexbrl:530549_221201910040_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.01 -> 26.37, dii 13.33 -> 0.18. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.79 public=5.79 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-03-31": {
     "cell": [
      53.8,
-     26.4113,
+     19.0513,
      0.1542,
      0.1232,
      0.0,
@@ -173584,20 +173802,42 @@
     ],
     "was": [
      53.8,
-     19.0513,
-     7.5142,
+     26.4113,
+     0.1542,
      0.1232,
      0.0,
      "2019-05-03",
      16546
     ],
-    "src": "bsexbrl:530549_352019101527_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.05 -> 26.41, dii 7.51 -> 0.15. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.4113 -> 19.0513, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.4113,
+      0.1542,
+      0.1232,
+      0.0,
+      "2019-05-03",
+      16546
+     ],
+     "was": [
+      53.8,
+      19.0513,
+      7.5142,
+      0.1232,
+      0.0,
+      "2019-05-03",
+      16546
+     ],
+     "src": "bsexbrl:530549_352019101527_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.05 -> 26.41, dii 7.51 -> 0.15. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-06-30": {
     "cell": [
      53.8,
-     26.4087,
+     19.0487,
      0.1922,
      0.0592,
      0.0,
@@ -173606,20 +173846,42 @@
     ],
     "was": [
      53.8,
-     19.0487,
-     7.5422,
+     26.4087,
+     0.1922,
      0.0592,
      0.0,
      "2019-07-22",
      16073
     ],
-    "src": "bsexbrl:530549_2072019142745_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.05 -> 26.41, dii 7.54 -> 0.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.4087 -> 19.0487, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.4087,
+      0.1922,
+      0.0592,
+      0.0,
+      "2019-07-22",
+      16073
+     ],
+     "was": [
+      53.8,
+      19.0487,
+      7.5422,
+      0.0592,
+      0.0,
+      "2019-07-22",
+      16073
+     ],
+     "src": "bsexbrl:530549_2072019142745_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.05 -> 26.41, dii 7.54 -> 0.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-09-30": {
     "cell": [
      53.8,
-     26.4219,
+     19.0619,
      0.5371,
      0.039,
      0.0,
@@ -173628,20 +173890,42 @@
     ],
     "was": [
      53.8,
-     19.0619,
-     7.8871,
+     26.4219,
+     0.5371,
      0.039,
      0.0,
      "2019-10-17",
      15612
     ],
-    "src": "bsexbrl:530549_17102019191910_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.06 -> 26.42, dii 7.89 -> 0.54. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R2-label Others ALTERNATIVE INVESTMENT FUNDS 0.01 . Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.4219 -> 19.0619, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.4219,
+      0.5371,
+      0.039,
+      0.0,
+      "2019-10-17",
+      15612
+     ],
+     "was": [
+      53.8,
+      19.0619,
+      7.8871,
+      0.039,
+      0.0,
+      "2019-10-17",
+      15612
+     ],
+     "src": "bsexbrl:530549_17102019191910_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.06 -> 26.42, dii 7.89 -> 0.54. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R2-label Others ALTERNATIVE INVESTMENT FUNDS 0.01 . Evidence: _shp_164_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
      53.8,
-     26.4178,
+     19.0578,
      0.4762,
      0.0026,
      0.0,
@@ -173650,15 +173934,37 @@
     ],
     "was": [
      53.8,
-     19.0578,
-     7.8262,
+     26.4178,
+     0.4762,
      0.0026,
      0.0,
      "2020-01-20",
      15277
     ],
-    "src": "bsexbrl:530549_301202011391_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.06 -> 26.42, dii 7.83 -> 0.48. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R2-label Others ALTERNATIVE INVESTMENT FUNDS 0.01 . Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.4178 -> 19.0578, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.4178,
+      0.4762,
+      0.0026,
+      0.0,
+      "2020-01-20",
+      15277
+     ],
+     "was": [
+      53.8,
+      19.0578,
+      7.8262,
+      0.0026,
+      0.0,
+      "2020-01-20",
+      15277
+     ],
+     "src": "bsexbrl:530549_301202011391_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.06 -> 26.42, dii 7.83 -> 0.48. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R2-label Others ALTERNATIVE INVESTMENT FUNDS 0.01 . Evidence: _shp_164_audit.json"
+    }
    },
    "2020-03-31": {
     "cell": [
@@ -173707,7 +174013,7 @@
    "2020-06-30": {
     "cell": [
      53.8,
-     26.3851,
+     19.0251,
      0.4509,
      0.0,
      0.0,
@@ -173716,21 +174022,43 @@
     ],
     "was": [
      53.8,
-     19.0251,
-     7.8109,
+     26.3851,
+     0.4509,
      0.0,
      0.0,
      "2020-07-20",
      19098
     ],
-    "src": "bsexbrl:530549_1872020173323_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.03 -> 26.39, dii 7.81 -> 0.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3851 -> 19.0251, dii unchanged.",
+    "superseded": {
+     "cell": [
+      53.8,
+      26.3851,
+      0.4509,
+      0.0,
+      0.0,
+      "2020-07-20",
+      19098
+     ],
+     "was": [
+      53.8,
+      19.0251,
+      7.8109,
+      0.0,
+      0.0,
+      "2020-07-20",
+      19098
+     ],
+     "src": "bsexbrl:530549_1872020173323_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.03 -> 26.39, dii 7.81 -> 0.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-12-26": {
     "cell": [
      54.74,
      18.5176,
-     7.8099,
+     0.3218,
      0.1272,
      0.0,
      "2017-01-12",
@@ -173739,14 +174067,36 @@
     "was": [
      54.74,
      18.5176,
-     7.6599,
+     7.8099,
      0.1272,
      0.0,
      "2017-01-12",
      13113
     ],
     "src": "bsexbrl:530549_1212017154440_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.52 -> 18.52, dii 7.66 -> 7.81. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 7.49 Baring India Private Equity Fund III Limited 7.49; R1-unresolved Other 0.0 Baring India Private Equity Fund III Limited 7.49 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.15"
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): mid-quarter event filing (as on 26-Dec-2016) lists the same 6,000,000-share holding (7.4881) as 'Baring India Private Equity Fund III Limited' on an unlabelled 'Other' row of its institutions block; it had been kept in DII as a named holder of unknown class. The company files this holder on Foreign / Overseas Corporate Bodies rows in every other filing and no filing lists it under Institutions, so it follows the company's own placement: public, neither FII nor DII. dii 7.8099 -> 0.3218, fii unchanged.",
+    "superseded": {
+     "cell": [
+      54.74,
+      18.5176,
+      7.8099,
+      0.1272,
+      0.0,
+      "2017-01-12",
+      13113
+     ],
+     "was": [
+      54.74,
+      18.5176,
+      7.6599,
+      0.1272,
+      0.0,
+      "2017-01-12",
+      13113
+     ],
+     "src": "bsexbrl:530549_1212017154440_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.52 -> 18.52, dii 7.66 -> 7.81. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 7.49 Baring India Private Equity Fund III Limited 7.49; R1-unresolved Other 0.0 Baring India Private Equity Fund III Limited 7.49 ?->-(-) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.15"
+    }
    }
   },
   "ROLEXRINGS": {
@@ -294701,6 +295051,26 @@
     ],
     "src": "bsetable3:532531:89 + bseaspx:532531:89",
     "why": "\u00a7164r batch 7 (Quantmac v5, reply #6 build: 8 cells reply #5 had filed under Rule 3 are Dec-2015/Mar-2016 page cells; PVRINOX Mar-2016 held): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 34.27 -> 36.60, dii 10.41 -> 10.74. Rows: B1i-unnamed-rest D1 0.02 fii; B3b-NBFC R3 0.36 dii"
+   },
+   "2016-09-30": {
+    "cell": [
+     31.1373,
+     36.905,
+     11.3719,
+     9.463,
+     1.3197,
+     "2016-10-21"
+    ],
+    "was": [
+     31.14,
+     35.29,
+     11.02,
+     9.46,
+     1.32,
+     "2016-10-21"
+    ],
+    "src": "bsetable3:532531:91 + bseaspx:532531:91",
+    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): this quarter's stored cell was a legacy THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne rows + our old-format formula) that left out the company's own Foreign Venture Capital Investors row (B1d: ORBIMED ASIA MAURITIUS LIMITED 1425000 shares, 1.5945) - the same holder our Jun-2016 and Dec-2016 cells count as FII. Replaced by the company's own filing as BSE serves it (Corp_shpSec_SHPPubShold_ng Table III, authorised 2016-10-20 16:19:46; ShareholdingPattern.aspx qtrid 91) with our rules: FII = FPI 31534523 + FVCI 1425000 + unnamed institutional Any-Other rest 21000 (D1) = 36.9050; DII = MF 8456728 + FI/banks 200591 + insurance 1179359 + NBFC 325938 (R3) = 11.3719; date field unchanged (shp_lag_fix carries the 2016-10-20 filing day). fii 35.29 -> 36.9050, dii 11.02 -> 11.3719."
    }
   },
   "SUBROS": {

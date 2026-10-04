@@ -20957,6 +20957,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     trendlyne.com/equity/share-holding/<k>/<SYM>/<dd-mm-yyyy>/<slug>/ (k via /member/api/ac_snames/stock/?term= with an
     X-Requested-With header), sum of starred category rows (a starred holder only when its category is not starred);
     `reply7/tl_results.json`. Never copied - verify-only.
+    **Batch 13 (2026-10-04, user: "yes fix all three"): the three cells Trendlyne surfaced - 17 rows (`shp_cell_fix.json`, label
+    "§164r batch 13", `reply7/b13.py`).** (1) STAR Sep-2016: the stored cell was a legacy THIRD-PARTY fill (`shp_fill_thirdparty`,
+    Trendlyne rows + old formula) missing STAR's own FVCI row (OrbiMed Asia Mauritius 1,425,000 sh = 1.59); replaced by the company's own
+    BSE Table III (authorised 2016-10-20 16:19:46) with our rules: fii 35.29 -> 36.905, dii 11.02 -> 11.3719 (NBFC 0.36 R3), date field
+    unchanged (`shp_lag_fix` serves 2016-10-20). The other two thirdparty STAR cells (Dec-15, Mar-16) are not served (earlier ledgers win).
+    (2) WIPRO Mar-2016: the page's institutional 'Any Others (Specify)' line (12 holders, 0.6821) is the line WIPRO labels 'FOREIGN
+    NATIONALS' inside the same block from Jun-2016 (0.7547 / 0.7669; within the batch-7 +-12% band) -> public; fii 11.616 -> 10.9339 =
+    the QFI line (Quantmac = Trendlyne = 10.93). (3) SHILPAMED: 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 sh) sits on
+    the company's own Foreign / Overseas Corporate Bodies rows in every filing and has no institution listing anywhere (0 inst, 2
+    company) -> public in all 14 quarters it had reached FII (holder memory~ / the cut name 'BARING INDIA PRIVATE EQUITY FUND III',
+    whose 12 listings are other companies' FPI rows; `_shp_dii_rowfix.OWN_NAME` now reads the company's cut name as its own full name)
+    + the 26-Dec-2016 event row (dii 7.8099 -> 0.3218). FII Jun-16 ... Jun-20 now 13.74 / 18.52 / 19.95 / 18.91 / 18.66 / 18.80-19.06
+    (Quantmac and Trendlyne ~19.0). Baring's FPI vehicle '...Fund III Listed Investments Limited' (52 listings) stays FII. Targets =
+    the rules engine's own (D1 run `reply7/wide5`); a re-run proposes nothing more for SHILPAMED.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

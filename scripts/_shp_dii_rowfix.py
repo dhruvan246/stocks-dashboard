@@ -231,6 +231,15 @@ def inst_listed(name):
 OWN_FII_EXTRA={"POONAWALLA":["INDIUM V (MAURITIUS) HOLDINGS LIMITED"],          # 'QFI - INDIUM V (MAURITIUS) HOLDINGS LIMITED', BSE Dec-2015 list
                "JISLJALEQS":["MKCP INSTITUTIONAL INVESTOR (MAURITIUS) II LTD"], # its 7.93 % fits only the FII (121) / QFI (3 holders) rows of the Jun/Sep-2015 pages
                "BRITANNIA":["ARISAG PARTNERS (ASIA)PTE LTD A/C ARISAG"]}     # = 'Arisaig Partners (Asia) Pte Ltd A/C Arisaig India Fund', BRITANNIA's own 'Foreign Institutional Investors' row Sep-2016..Jun-2017
+# §164r batch 13 (user 2026-10-04 'yes fix all three'): a holder name the company cut short in ONE filing is read as the full
+# legal name the SAME company prints for the same holding (same share count) in its neighbouring filings, before the evidence
+# test - the short form can collide with a different vehicle's listings. SHILPAMED Mar-2017 'BARING INDIA PRIVATE EQUITY FUND III'
+# 6,000,000 shares (7.4881) = 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' 6,000,000 shares in Dec-2016 and Sep-2017, filed on
+# company-type rows (Foreign / Overseas Corporate Bodies) with no institution listing under that name; the short form's 12
+# institution listings are other companies' FPI rows (e.g. 531213). Checked on the cached filings 2026-10-04.
+OWN_NAME={"SHILPAMED":{"BARING INDIA PRIVATE EQUITY FUND III":"BARING INDIA PRIVATE EQUITY FUND III LIMITED"}}
+def own_name(sym, hn):
+    return (OWN_NAME.get(sym) or {}).get(re.sub(r"\s+"," ",str(hn or "")).strip().upper(), hn)
 OWN_FOR_AX=("InstitutionsForeignPortfolioInvestor","ForeignPortfolioInvestor","ForeignDirectInvestment","ForeignVentureCapital","SovereignWealthFunds",
             "OtherInstitutionsForeign","InstitutionsForeign","ForeignInstitutionalInvestors")
 # §164r batch 10: some filers write their category in front of the holder ('Foreign Bodies Corporate- Jomei Investments Limited',
@@ -386,7 +395,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                     # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
                     # §164r batch 7 (user 2026-09-29 'Documents only'): a curated verdict alone no longer counts — the holder needs an
                     # institution tag in its own name or another company's filing listing it under Institutions (Foreign)
-                    if inst_tag or inst_listed(hn): dest="fii"      # §164r batch 8 option A: inside the Institutions block the company's own placement + one institution listing
+                    if inst_tag or inst_listed(own_name(ctx.sym,hn)): dest="fii"      # §164r batch 8 option A: inside the Institutions block the company's own placement + one institution listing
                     elif lab_kind is None and ctx.own_fii(hn): dest="fii"    # §164r batch 10: the company files this holder as a foreign investor elsewhere (no zig-zag)
                     else: dest=lab_kind or "public"
                 hs2.append((hp,hn,c,dest,src))
