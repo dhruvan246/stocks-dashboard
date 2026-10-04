@@ -4,7 +4,8 @@
   "Built from ~/stocks-cache/shp/proof (corpus_axes.json over 33898 cached XBRLs; proof_gleif.json).",
   "§164n (2026-09-27): + holders the §158a/§164 rest-follows rule had swept into fii while UNRESOLVED (named, no class): 17 documented foreign (other filings' foreign-institution rows / GLEIF), 1 documented DOMESTIC (listed only under Indian rows: INDIA BUSINESS EXCELLENCE FUND IIA = an AIF). Entries now carry class foreign|domestic; holder_class consults this list for EVERY name (exact, or a >= 20-char prefix / >= 0.92 match).",
   "§164r batch 6 (2026-09-29): proof may also be (sebi-register) the holder's own SEBI registration in a SEBI-published list (FVCI/FPI), e.g. NSR-PE Mauritius, LLC IN/FVCI/08-09/119.",
-  "§164r batch 7 (2026-09-29, user decision on the Quantmac v5 reply: 'Documents only'). Entries now carry inst=true|false: whether another company's filing lists the same legal name under Institutions (Foreign) (FPI/FII/FVCI/FDI/foreign SWF) — counted over 33,899 cached BSE XBRLs with company-type listings (Foreign Companies / Bodies Corporate / OCB) counted beside it (inst_n / company_n). A holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark (its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row) or, where the company is silent, inst=true. The SW-2 curated list alone no longer counts (CDC Group plc: 0 institution listings, 64 company-type)."
+  "§164r batch 7 (2026-09-29, user decision on the Quantmac v5 reply: 'Documents only'). Entries now carry inst=true|false: whether another company's filing lists the same legal name under Institutions (Foreign) (FPI/FII/FVCI/FDI/foreign SWF) — counted over 33,899 cached BSE XBRLs with company-type listings (Foreign Companies / Bodies Corporate / OCB) counted beside it (inst_n / company_n). A holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark (its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row) or, where the company is silent, inst=true. The SW-2 curated list alone no longer counts (CDC Group plc: 0 institution listings, 64 company-type).",
+  "§164r batch 8 (2026-10-04, user decision on Quantmac v6: their evidence standard). Without the company's own mark, inst=true needs >= 90 % of >= 5 classified listings to be Institutions (Foreign) (inst_n vs company_n + domestic_n over 33,899 cached BSE XBRLs, suffix-insensitive same-name match), or a registry document on file (proof sebi-register). 10 holders fell to inst=false: IFC 50 vs 151 company listings, APMS Investment Fund 138 vs 21 (87 %), DVI Fund Mauritius 36 vs 5, Tree Line Asia Master Fund 74 vs 15, Caladium 26 vs 58, Rimco (Mauritius) 13 vs 36, Plenty Private Equity Fund I 7 vs 33, VOF Master 4 + 1."
  ],
  "names": {
   "NATIONALWESTMINSTERBANKPLCASTRUSTEEOFTHEJU": {
@@ -54,10 +55,11 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 50 cached BSE filing(s), under a domestic row in 1 (filer slips), e.g. 500469_2672023185332_SHP.xml InstitutionsForeignPortfolioInvestorOne",
-   "inst": true,
+   "inst": false,
    "inst_n": 50,
    "company_n": 151,
-   "inst_detail": "listed under Institutions (Foreign) in 50 cached BSE filing(s) (company-type rows: 151), e.g. 500469_2672023185332_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+   "inst_detail": "listed under Institutions (Foreign) in 50 cached BSE filing(s) (company-type rows: 151), e.g. 500469_2672023185332_SHP.xml InstitutionsForeignPortfolioInvestorOne",
+   "domestic_n": 1
   },
   "BANKMUSCATINDIAFUND": {
    "name": "BANK MUSCAT INDIA FUND",
@@ -71,9 +73,10 @@
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 126 cached BSE filing(s), e.g. 505726_147201716556_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 126,
+   "inst_n": 129,
    "company_n": 2,
-   "inst_detail": "listed under Institutions (Foreign) in 126 cached BSE filing(s) (company-type rows: 2), e.g. 505726_147201716556_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 126 cached BSE filing(s) (company-type rows: 2), e.g. 505726_147201716556_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "NOMURASINGAPORELIMITEDODI": {
    "name": "Nomura Singapore Limited Odi",
@@ -87,9 +90,10 @@
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 1090 cached BSE filing(s), e.g. 500209_1872024191039_SHP.xml InstitutionsForeignPortfolioInvestorOne",
    "inst": true,
-   "inst_n": 1091,
-   "company_n": 11,
-   "inst_detail": "listed under Institutions (Foreign) in 1091 cached BSE filing(s) (company-type rows: 11), e.g. 500209_1872024191039_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+   "inst_n": 1115,
+   "company_n": 16,
+   "inst_detail": "listed under Institutions (Foreign) in 1091 cached BSE filing(s) (company-type rows: 11), e.g. 500209_1872024191039_SHP.xml InstitutionsForeignPortfolioInvestorOne",
+   "domestic_n": 0
   },
   "SMALLCAPWORLDFUNDINC": {
    "name": "SMALLCAP WORLD FUND, INC",
@@ -225,7 +229,8 @@
    "inst": true,
    "inst_n": 450,
    "company_n": 11,
-   "inst_detail": "listed under Institutions (Foreign) in 450 cached BSE filing(s) (company-type rows: 11), e.g. 532749_1742021162244_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 450 cached BSE filing(s) (company-type rows: 11), e.g. 532749_1742021162244_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "ACACIACONSERVATIONFUNDLP": {
    "name": "Acacia Conservation Fund Lp",
@@ -241,7 +246,8 @@
    "inst": true,
    "inst_n": 377,
    "company_n": 11,
-   "inst_detail": "listed under Institutions (Foreign) in 377 cached BSE filing(s) (company-type rows: 11), e.g. 532749_1742021162244_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 377 cached BSE filing(s) (company-type rows: 11), e.g. 532749_1742021162244_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "ELLIPSISPARTNERSLLC": {
    "name": "Ellipsis Partners Llc",
@@ -488,10 +494,11 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 36 cached BSE filing(s), e.g. 534809_31201817447_SHP.xml InstitutionsForeignPortfolioInvestor",
-   "inst": true,
+   "inst": false,
    "inst_n": 36,
    "company_n": 5,
-   "inst_detail": "listed under Institutions (Foreign) in 36 cached BSE filing(s) (company-type rows: 5), e.g. 534809_31201817447_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 36 cached BSE filing(s) (company-type rows: 5), e.g. 534809_31201817447_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "MAWERGLOBALSMALLCAPFUND": {
    "name": "MAWER GLOBAL SMALL CAP FUND",
@@ -669,7 +676,8 @@
    "inst": true,
    "inst_n": 141,
    "company_n": 8,
-   "inst_detail": "listed under Institutions (Foreign) in 141 cached BSE filing(s) (company-type rows: 8), e.g. 532900_1242017174921_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 141 cached BSE filing(s) (company-type rows: 8), e.g. 532900_1242017174921_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "BARCLAYSMERCHANTBANKSINGAPORELTD": {
    "name": "BARCLAYS MERCHANT BANK (SINGAPORE) LTD",
@@ -971,9 +979,10 @@
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 215 cached BSE filing(s), e.g. 538666_1612020172650_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 219,
+   "inst_n": 226,
    "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 219 cached BSE filing(s) (company-type rows: 0), e.g. 538666_1612020172650_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 219 cached BSE filing(s) (company-type rows: 0), e.g. 538666_1612020172650_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "MARSHALGLOBALCAPITALFUNDLTD": {
    "name": "Marshal Global Capital Fund Ltd",
@@ -989,7 +998,8 @@
    "inst": true,
    "inst_n": 29,
    "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 29 cached BSE filing(s) (company-type rows: 0), e.g. 539658_1742023185559_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+   "inst_detail": "listed under Institutions (Foreign) in 29 cached BSE filing(s) (company-type rows: 0), e.g. 539658_1742023185559_SHP.xml InstitutionsForeignPortfolioInvestorOne",
+   "domestic_n": 0
   },
   "INDUSINDIAFUNDMAURITIUSLIMITED": {
    "name": "INDUS INDIA FUND (MAURITIUS) LIMITED",
@@ -1488,10 +1498,11 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 72 cached BSE filing(s), e.g. 532830_1342023163117_SHP.xml InstitutionsForeignPortfolioInvestorOne",
-   "inst": true,
-   "inst_n": 72,
+   "inst": false,
+   "inst_n": 74,
    "company_n": 15,
-   "inst_detail": "listed under Institutions (Foreign) in 72 cached BSE filing(s) (company-type rows: 15), e.g. 532830_1342023163117_SHP.xml InstitutionsForeignPortfolioInvestorOne"
+   "inst_detail": "listed under Institutions (Foreign) in 72 cached BSE filing(s) (company-type rows: 15), e.g. 532830_1342023163117_SHP.xml InstitutionsForeignPortfolioInvestorOne",
+   "domestic_n": 0
   },
   "ORBISSICAVASIAEXJAPANEQUITYFUND": {
    "name": "ORBIS SICAV - ASIA EX-JAPAN EQUITY FUND",
@@ -1588,10 +1599,11 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 26 cached BSE filing(s), e.g. 544397_1072026183133_SHP.xml ForeignDirectInvestment",
-   "inst": true,
+   "inst": false,
    "inst_n": 26,
    "company_n": 58,
-   "inst_detail": "listed under Institutions (Foreign) in 26 cached BSE filing(s) (company-type rows: 58), e.g. 544397_1072026183133_SHP.xml ForeignDirectInvestment"
+   "inst_detail": "listed under Institutions (Foreign) in 26 cached BSE filing(s) (company-type rows: 58), e.g. 544397_1072026183133_SHP.xml ForeignDirectInvestment",
+   "domestic_n": 0
   },
   "FSSAASIANEQUITYPLUSFUNDASASUBFUNDOFFIRSTSENTIERINVESTORSGLOBALUMBRELLAFUNDPLC": {
    "name": "Fssa Asian Equity Plus Fund As A Sub Fund Of First Sentier Investors Global Umbrella Fund Plc",
@@ -1917,9 +1929,10 @@
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 33 cached BSE filing(s), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 33,
+   "inst_n": 57,
    "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 33 cached BSE filing(s) (company-type rows: 0), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 33 cached BSE filing(s) (company-type rows: 0), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "CREDITSUISSESINGAPORELIMITED": {
    "name": "CREDIT SUISSE (SINGAPORE) LIMITED",
@@ -2430,10 +2443,11 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under a foreign-institution row in 13 cached BSE filing(s), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
-   "inst": true,
+   "inst": false,
    "inst_n": 13,
    "company_n": 36,
-   "inst_detail": "listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment"
+   "inst_detail": "listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
+   "domestic_n": 0
   },
   "CLASSDSERIESOFGEFPSLP": {
    "name": "CLASS D SERIES OF GEF-PS, LP",
@@ -6985,7 +6999,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 9,
-   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 9, e.g. 533137_2172019233742_SHP.xml OtherNonInstitutions)"
+   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 9, e.g. 533137_2172019233742_SHP.xml OtherNonInstitutions)",
+   "domestic_n": 0
   },
   "MBDBRIDGESTREET2013INVESTMENTSSINGAPOREPTELTD": {
    "name": "MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD",
@@ -6995,7 +7010,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "MBDBRIDGESTREET2016INVESTMENTSSINGAPOREPTELTD": {
    "name": "MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE LTD",
@@ -7005,7 +7021,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "MBDBRIDGESTREET2013INVESTMENTSSINGAPOREPTE": {
    "name": "MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE",
@@ -7015,7 +7032,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "MBDBRIDGESTREET2016INVESTMENTSSINGAPOREPTE": {
    "name": "MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE",
@@ -7025,7 +7043,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "SILVERLEAFOAKMAURITIUSLIMITED": {
    "name": "SILVER LEAF OAK (MAURITIUS) LIMITED",
@@ -7047,7 +7066,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "FILCAPITALMANAGEMENTMAURITIUSLTD": {
    "name": "FIL Capital Management (Mauritius) Ltd",
@@ -7063,7 +7083,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "WESTBRIDGECROSSOVERFUNDLLC": {
    "name": "WESTBRIDGE CROSSOVER FUND, LLC",
@@ -7072,8 +7093,9 @@
    "detail": "GLEIF LEI 254900ALABL910ZKU959 WestBridge Crossover Fund, LLC, legal jurisdiction MU",
    "inst": false,
    "inst_n": 0,
-   "company_n": 101,
-   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 101, e.g. 539524_1972016165054_SHP.xml OtherNonInstitutions)"
+   "company_n": 111,
+   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 101, e.g. 539524_1972016165054_SHP.xml OtherNonInstitutions)",
+   "domestic_n": 0
   },
   "LIGHTSPEEDVENTUREPARTNERSVIIIMAURITIUS": {
    "name": "LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS",
@@ -7083,7 +7105,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "GOLDMANSACHINTERNATIONAL": {
    "name": "Goldman Sach International",
@@ -7099,7 +7122,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 4,
-   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 4, e.g. 532345_1712020141433_SHP.xml OtherNonInstitutions)"
+   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 4, e.g. 532345_1712020141433_SHP.xml OtherNonInstitutions)",
+   "domestic_n": 0
   },
   "ABUDHABIINVESTMENTAUTHORITYBEHAVE": {
    "name": "ABU DHABI INVESTMENT AUTHORITY - BEHAVE",
@@ -7121,7 +7145,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 6,
-   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 6, e.g. 544315_62202614236_SHP.xml ForeignCompanies)"
+   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 6, e.g. 544315_62202614236_SHP.xml ForeignCompanies)",
+   "domestic_n": 0
   },
   "BAYCAPITALINDIAFIXEDINCOMEFUNDLTD": {
    "name": "BAY CAPITAL INDIA FIXED INCOME FUND LTD",
@@ -7130,8 +7155,9 @@
    "detail": "GLEIF LEI 549300C1KE3Y4GGRBC91 BAY CAPITAL INDIA FIXED INCOME FUND LTD, legal jurisdiction MU",
    "inst": false,
    "inst_n": 0,
-   "company_n": 5,
-   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 5, e.g. 532345_2012021161818_SHP.xml OtherNonInstitutions)"
+   "company_n": 8,
+   "inst_detail": "no filing lists it under Institutions (Foreign) (company-type rows: 5, e.g. 532345_2012021161818_SHP.xml OtherNonInstitutions)",
+   "domestic_n": 0
   },
   "BAYPONDMB": {
    "name": "BAY POND MB",
@@ -7147,7 +7173,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "BRIDGEINDIAFUND": {
    "name": "BRIDGE INDIA FUND",
@@ -7181,7 +7208,8 @@
    "inst": false,
    "inst_n": 0,
    "company_n": 0,
-   "inst_detail": "no filing lists it under Institutions (Foreign)"
+   "inst_detail": "no filing lists it under Institutions (Foreign)",
+   "domestic_n": 0
   },
   "KOTAKINDIAPRIVATEEQUITYFUND": {
    "name": "KOTAK INDIA PRIVATE EQUITY FUND",
@@ -7227,7 +7255,8 @@
    "inst": true,
    "inst_n": 175,
    "company_n": 17,
-   "inst_detail": "listed under Institutions (Foreign) in 175 cached BSE filing(s) (company-type rows: 17), e.g. 543335_1842022191116_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 175 cached BSE filing(s) (company-type rows: 17), e.g. 543335_1842022191116_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "MAWERINVESTMENTMANAGEMENTLTD": {
    "name": "MAWER INVESTMENT MANAGEMENT LTD",
@@ -7276,30 +7305,33 @@
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
-   "inst": true,
-   "inst_n": 59,
-   "company_n": 21,
-   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst": false,
+   "inst_n": 0,
+   "company_n": 1,
+   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "APMSINVESTMENTFUNDLTD": {
    "name": "APMS INVESTMENT FUND LTD",
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
-   "inst": true,
-   "inst_n": 59,
+   "inst": false,
+   "inst_n": 138,
    "company_n": 21,
-   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "APMSINVESTMENTSFUNDLTD": {
    "name": "APMS INVESTMENTS FUND LTD",
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
-   "inst": true,
+   "inst": false,
    "inst_n": 59,
    "company_n": 21,
-   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 59 cached BSE filing(s) (company-type rows: 21), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "AMANSAHOLDINGSPRIVATELIMITED": {
    "name": "Amansa Holdings Private Limited",
@@ -7307,9 +7339,10 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 635 cached BSE filing(s) (company-type rows: 19), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 635,
+   "inst_n": 640,
    "company_n": 19,
-   "inst_detail": "listed under Institutions (Foreign) in 635 cached BSE filing(s) (company-type rows: 19), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 635 cached BSE filing(s) (company-type rows: 19), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "BARINGINDIAPRIVATEEQUITYFUNDIII": {
    "name": "BARING INDIA PRIVATE EQUITY FUND III",
@@ -7317,9 +7350,10 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 11 cached BSE filing(s) (company-type rows: 0), e.g. 531213_2610201817013_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 11,
-   "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 11 cached BSE filing(s) (company-type rows: 0), e.g. 531213_2610201817013_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_n": 73,
+   "company_n": 2,
+   "inst_detail": "listed under Institutions (Foreign) in 11 cached BSE filing(s) (company-type rows: 0), e.g. 531213_2610201817013_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "BARINGINDIAPRIVATEEQUITYFUNDIIILIMITED": {
    "name": "BARING INDIA PRIVATE EQUITY FUND III LIMITED",
@@ -7327,9 +7361,10 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 2 cached BSE filing(s) (company-type rows: 2), e.g. 530549_352019101527_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 2,
+   "inst_n": 73,
    "company_n": 2,
-   "inst_detail": "listed under Institutions (Foreign) in 2 cached BSE filing(s) (company-type rows: 2), e.g. 530549_352019101527_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 2 cached BSE filing(s) (company-type rows: 2), e.g. 530549_352019101527_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "GMOEMERGINGDOMESTICOPPORTUNITIESFUNDASERIES": {
    "name": "GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES",
@@ -7337,9 +7372,10 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 19 cached BSE filing(s) (company-type rows: 0), e.g. 532767_812019122644_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 19,
+   "inst_n": 52,
    "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 19 cached BSE filing(s) (company-type rows: 0), e.g. 532767_812019122644_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 19 cached BSE filing(s) (company-type rows: 0), e.g. 532767_812019122644_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 1
   },
   "GOLDMANSACHSINDIALIMITED": {
    "name": "GOLDMAN SACHS INDIA LIMITED",
@@ -7347,9 +7383,10 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 586 cached BSE filing(s) (company-type rows: 15), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 586,
+   "inst_n": 594,
    "company_n": 15,
-   "inst_detail": "listed under Institutions (Foreign) in 586 cached BSE filing(s) (company-type rows: 15), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 586 cached BSE filing(s) (company-type rows: 15), e.g. 506655_2072020122725_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "LOTUSGLOBALINVESTMENTLTD": {
    "name": "Lotus Global Investment Ltd",
@@ -7357,29 +7394,32 @@
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 33 cached BSE filing(s) (company-type rows: 0), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
    "inst": true,
-   "inst_n": 33,
+   "inst_n": 57,
    "company_n": 0,
-   "inst_detail": "listed under Institutions (Foreign) in 33 cached BSE filing(s) (company-type rows: 0), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 33 cached BSE filing(s) (company-type rows: 0), e.g. 500117_1610201816348_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   },
   "PLENTYPRIVATEEQUITYFUNDILIMITED": {
    "name": "Plenty Private Equity Fund I Limited",
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 7 cached BSE filing(s) (company-type rows: 33), e.g. 542484_1572024165259_SHP.xml ForeignDirectInvestment",
-   "inst": true,
+   "inst": false,
    "inst_n": 7,
    "company_n": 33,
-   "inst_detail": "listed under Institutions (Foreign) in 7 cached BSE filing(s) (company-type rows: 33), e.g. 542484_1572024165259_SHP.xml ForeignDirectInvestment"
+   "inst_detail": "listed under Institutions (Foreign) in 7 cached BSE filing(s) (company-type rows: 33), e.g. 542484_1572024165259_SHP.xml ForeignDirectInvestment",
+   "domestic_n": 0
   },
   "VOFMASTERLTD": {
    "name": "VOF Master Ltd.",
    "class": "foreign",
    "proof": "filing",
    "detail": "listed under Institutions (Foreign) in 3 cached BSE filing(s) (company-type rows: 1), e.g. 511333_16102019165251_SHP.xml InstitutionsForeignPortfolioInvestor",
-   "inst": true,
-   "inst_n": 3,
+   "inst": false,
+   "inst_n": 4,
    "company_n": 1,
-   "inst_detail": "listed under Institutions (Foreign) in 3 cached BSE filing(s) (company-type rows: 1), e.g. 511333_16102019165251_SHP.xml InstitutionsForeignPortfolioInvestor"
+   "inst_detail": "listed under Institutions (Foreign) in 3 cached BSE filing(s) (company-type rows: 1), e.g. 511333_16102019165251_SHP.xml InstitutionsForeignPortfolioInvestor",
+   "domestic_n": 0
   }
  }
 }

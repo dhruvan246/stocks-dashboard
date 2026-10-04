@@ -29,7 +29,7 @@ import _shp_dii_rowfix as D
 import fetch_shareholding as F
 WORK=os.environ.get("FII_ROWFIX_WORK") or D.HERE
 MARK="§159 row-level FII heal"
-INST_TAG=re.compile(r"\((fpi|fii)\)|\bfpi\b|\bfii\b|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", re.I)
+INST_TAG=re.compile(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|foreign direct|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", re.I)
 
 DII_AUDIT=os.path.join(SCRIPTS,"_shp_dii_rowfix_audit.json")
 _dii_files=None
@@ -134,7 +134,7 @@ def eval_fii(ctx, qe, txt, bd, res, cur):
             for hp,hn,c,dest,src in hs:
                 if src.startswith("new-format") or src in ("memory","memory~"): go=(dest=="fii"); how=src
                 elif c=="foreign" and D.inst_documented(hn): go=True; how="documented-institution"   # §164r batch 7 'Documents only': not the curated list alone
-                elif c=="foreign" and INST_TAG.search(hn): go=True; how="inst-tag"
+                elif c!="domestic" and INST_TAG.search(hn): go=True; how="inst-tag"   # §164r batch 8: the company's own tag is itself the mark (Blackstone Capital Partners (Singapore) VI FDI Two at SHK had no residency document)
                 else: go=False; how=(src or "label")
                 if go: take+=hp
                 desc.append("%s %.2f %s(%s)"%(hn,hp,"fii" if go else "stay",how))

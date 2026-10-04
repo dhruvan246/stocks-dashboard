@@ -155,7 +155,8 @@ _SER=re.compile(r"^(?:[IVX]+|\d+|FII|FPI|FDI|ODI|[A-H])$")
 def _series(name): return tuple(sorted(t for t in re.split(r"[^A-Z0-9]+",str(name).upper()) if _SER.match(t)))
 def inst_documented(name):
     """§164r batch 7 (user 2026-09-29 'Documents only'): True when the evidence file marks this legal name inst=true — another
-    company's filing lists it under Institutions (Foreign). Strict identity: the exact name, or >= 0.96 alike with the same series
+    company's filing lists it under Institutions (Foreign); since batch 8 (user 2026-10-04, Quantmac's standard) inst=true needs
+    >= 90 % of >= 5 classified listings, or a registry document. Strict identity: the exact name, or >= 0.96 alike with the same series
     markers (Norwest Venture Partners VII-A is not Norwest ... X FII; APMS INVESTMENTS FUND = APMS INVESTMENT FUND)."""
     n=norm(name); e=EVIDENCE.get(n)
     if e is None and len(n)>=10:
@@ -274,8 +275,8 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 elif norm(lab) in ctx.label_memory: lab_kind=ctx.label_memory[norm(lab)]; lab_src="label-memory"
             hs2=[]
             for hp,hn,c,dest,src in hs:
-                inst_tag=bool(re.search(r"\((fpi|fii)\)|\bfpi\b|\bfii\b|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I))
-                if c=="foreign" and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"):
+                inst_tag=bool(re.search(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|foreign direct|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I))
+                if (c=="foreign" or (c!="domestic" and inst_tag)) and not src.startswith("new-format") and src not in ("memory","memory~") and lab_kind in ("public","fii"):
                     # the label decides an unnamed-type holder; an institution-type holder (FPI/FII tag in its own name, or a
                     # curated FPI fund) is FII whatever the row was called — the 2022 form would list it in B2
                     # §164r batch 7 (user 2026-09-29 'Documents only'): a curated verdict alone no longer counts — the holder needs an
