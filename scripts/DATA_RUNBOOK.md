@@ -20934,6 +20934,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     SUPRAJIT, POONAWALLA Jun-18 (IEPF 0.10), VEEDOL (IEPF), BAJFINANCE, BOMDYEING, NEUEON. Re-run on the 23 symbols: no proposal on a
     written cell except the pre-existing parts (SHILPAMED Baring, POONAWALLA Jun-18 DII -4.13). An FDI-label addition to LAB_FII was
     tried and dropped (it would have read the mixed SECURKLOUD row as FII; rows labelled only 'FDI' already reach FII through D1).
+  - **Batch 12 - depository-receipt base for 2 mislabelled companies (user 2026-10-04 'yes fix the 3 companies').** Checking
+    Trendlyne (it copies whatever % was printed: BSE's (A+B) column before 2016, the company's XBRL % after - UFLEX promoter 47.62 ->
+    44.02 at Jun-2016 on the same 31,784,339 shares) showed reply4 `d2_basis.json` mislabels 3 of 68 DR companies 'FULL share
+    count' although their own first XBRL puts the custodian OUTSIDE promoter + public (+ employee trust) = 100: RELINFRA (49.84 +
+    49.99 + 0.18, custodian 3.05), RCOM (0.34), CHOLAHLDNG (2.31). Same method as batch 4 `drrebase` (`reply7/b12_drrebase.py`):
+    79 cells re-based onto (A+B) - RELINFRA 40 (2006-16; all 90 of Quantmac's cells now equal; promoter 49.92 / 49.83 / 49.84 across
+    the 2016 seam instead of 48.36 -> 49.84), RCOM 39 (27 more Quantmac cells equal, 6 still differ for other reasons); 28 pages
+    2001-06 unreadable (empty shells). CHOLAHLDNG: no custodian shares on ANY pre-2016 page ((C) = 0, (A+B) = (A+B+C)) - nothing
+    to re-base; its gap to Quantmac shrinks 1.10x (2009) -> 1.027x (2015), so it is not a DR base (asked Quantmac). Other sites:
+    Screener and Trendlyne show the company's printed % (custodian out); Moneycontrol divides by ALL shares (HDFC Bank Jun-2026
+    FII 36.26 vs 41.83 printed).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
