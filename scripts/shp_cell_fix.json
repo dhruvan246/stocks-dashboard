@@ -120830,21 +120830,41 @@
     "cell": [
      13.327,
      34.5292,
-     43.953,
+     24.1138,
      18.7766,
      5.095,
      "2016-04-21"
     ],
     "was": [
      13.327,
-     14.6916,
+     34.5292,
      43.953,
      18.7766,
      5.095,
      "2016-04-21"
     ],
-    "src": "bseaspx:532805_89 shpperent",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 14.69 -> 34.53, dii 43.95 -> 43.95. seam-fii-reconstruction base 14.69 19.8392; lump-fii FOREIGN INSTITUTIONAL INVESTORS 19.8392. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:532805:89:New",
+    "why": "\u00a7164s DII round (user 2026-10-04 'fix if ours') - correction of the \u00a7160 page-era row-level heal: BSE page qtrid 89 prints MF 18.78 + Banks 0.08 + Insurance 5.09 + QFI 14.69 + institutional 'Any Others (Specify)' 20.00 = Sub Total 58.64. The \u00a7160 entry moved 19.8392 of the Any-Others line (lump-fii FOREIGN INSTITUTIONAL INVESTORS) into fii but left it in dii as well (double count). dii 43.953 -> 24.1138 (MF+banks+insurance 23.9533 + the 0.16 unresolved rest of the line kept as stored); fii unchanged. Neighbours Dec-15 20.86, Jun-16 24.69.",
+    "superseded": {
+     "cell": [
+      13.327,
+      34.5292,
+      43.953,
+      18.7766,
+      5.095,
+      "2016-04-21"
+     ],
+     "was": [
+      13.327,
+      14.6916,
+      43.953,
+      18.7766,
+      5.095,
+      "2016-04-21"
+     ],
+     "src": "bseaspx:532805_89 shpperent",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 14.69 -> 34.53, dii 43.95 -> 43.95. seam-fii-reconstruction base 14.69 19.8392; lump-fii FOREIGN INSTITUTIONAL INVESTORS 19.8392. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-12-31": {
     "cell": [
