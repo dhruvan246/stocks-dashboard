@@ -21131,6 +21131,37 @@ VALUE_HEAL_MARK. Evidence is in `_shp_164_audit.json` (label §164t); builder `b
   the write. Re-run on origin before writing.
 **Open:** 560 Dec-15/Mar-16 quarters are still served from `shp_fill_hist_2010_2016` (archived Moneycontrol pages). The same re-read
 is the next step (user-approved, read-only).
+**§164t part 2 (2026-10-04 ~23:00 IST, user: "Yes, write the 120") - 116 cells: archived-Moneycontrol Dec-15/Mar-16 + 6 held §164t cells.**
+- **Measured.** 556 Dec-2015/Mar-2016 cells were still served exactly as `shp_fill_hist_2010_2016` stores them (Wayback-archived Moneycontrol
+  pages; Moneycontrol's own FII / DII split). Same routes and reader, on origin 61cbb8a93, after §164r batch 14. Verdicts: 381 match; 132 differ;
+  held 33 for a named holder of unproven class, 3 with an undecided share base (INFY Dec-15/Mar-16, COX&KINGS Dec-15: no base reproduces the
+  stored promoter), 5 revision-only; 2 have no BSE code (LAKSHMIEFL).
+- **Why they differ.** Almost all are our rules never applied: R3 NBFC row -> DII ~90, R2 named Indian insurer -> DII ~55, foreign-institution
+  lines -> FII ~20, D1 ~24, company-type lines -> public ~9 (Moneycontrol put Any-Other blocks in FII by default).
+- **Written: 115** = the spike-safe cells of a JOINT spike test over these differs + the 13 §164t spike-held cells, with held neighbours at their
+  stored values, minus NBCC Mar-16 (below). That is 109 Moneycontrol cells + 6 §164t cells (AUTOAXLES Mar-16, DBCORP / GVPIL / JKIL / MPHASIS / SRF Dec-15), whose
+  neighbouring quarters are now corrected too. `was` = the live cell, date slot unchanged; why starts "§164t part 2 seam re-read".
+- **Held from the 120 shown to the user:**
+  - JMFINANCIL Mar-16: §164r batch 14 already serves it.
+  - FORTIS Dec-15 (IFC 4.24) and RADICO Dec-15 (ACACIA PARTNERS LP 1.00): an institution-listed holder sits INSIDE the company's own
+    'Foreign Corporate Bodies' institutions line. Option A says FII; t3_compute makes the line public.
+  - RKFORGE Dec-15: the FII session's deliberate IFC hold.
+  - NBCC Mar-16 (DII session's check): Table III prints no FPI / FVCI line; the 2.31 unnamed block (21 holders) follows Jun-16's
+    'Other FOREIGN COMPANIES' label (batch 7) to public, giving fii 0.00 between 2.03 and 0.40 / 2.98. That looks like the company's own
+    mislabel; held for the user.
+  - Follow-up, not written: PRAKASH Dec-15. Its 22.57 NBFC row (R3) already sits in Dec-15's own table, so writing Mar-16 (21.09) moves
+    the step to Dec-15 -> Mar-16. Writing Dec-15 too would put it at the format seam (Sep-15 page era -> Dec-15). The spike test flags
+    Dec-15 only because its other neighbour is the page era.
+- **t3_compute weaknesses** found on these filings; corrected locally in `~/stocks-cache/shp/tp_audit/reader_patch.py`, NOT in the repo:
+  1. Holder lines nested inside a category line are added again (KKCL Dec-15: 12.00 + 9.74 + 2.16).
+  2. 'Lic' (LLC) matches DII_LAB `\blic\b` (LALPATHLAB 'westbridge Crossover fund, Lic' 12.88).
+  3. `A.label_class` lacks the FORWORD guard (PNB 'Foreign Fin Inst/bank' 10.24 -> DII).
+  4. Holder NAMES with a category word read as category lines ('Government Pension Fund Global' -> DII).
+  5. Non-institution holder names reach FII by MLT / name words alone (SNOWMAN IFC 9.23).
+  6. '(other than ...)' categories read by the excluded holder's words (BHARTIARTL).
+  Also: the B1i holder path lacks option A / inst_listed / own_fii. The 239-cell §164t set reads identically with and without the
+  corrections. The FII session (owner of `_shp_164r_quantmac_v4.py`) was told. Fold them in before any further t3_compute run on seam filings.
+- **Reports:** `~/Downloads/SHP_waybackMC_seam_audit_20261004.xlsx` (one row per cell, with the proposal); files in `~/stocks-cache/shp/tp_audit/`.
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
