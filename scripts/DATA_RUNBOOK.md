@@ -20725,6 +20725,25 @@ Written with `_shp_164_write.py "§164r batch 7"`: 4 new + 99 superseding, 0 ski
   same was-guard / superseded chain against shp_events; rebuilt feed moves exactly these 4 rows. RBLBANK 9-Aug-2017 held with its
   quarters. **Lesson:** a batch that touches holders must list event rows too - check `shp_events.json` for the same holder.
 
+**Batch 8 (2026-10-04, Quantmac v6; user: "yes" to steps 1-5, their evidence standard, VBL field-by-field).** Quantmac v6 adopted
+the company's-own-mark half of Rule 3, not the cross-company half; they flagged 376 cells as ours.
+- **FDI tag (our bug).** Our Rule 3 names an (FPI)/FII/FDI tag, but `INST_TAG` read FPI/FII only, and a tagged holder counted only
+  with a separate residency document. Fixed in `_shp_fii_rowfix` / `_shp_dii_rowfix` (FDI / 'Foreign Direct' added; a tag counts
+  unless the holder is known domestic). Order unchanged: the company's own first 2022-form placement, when it names the holder,
+  still decides first (RBA / SPANDANA Valiant, AXISBANK BC Asia - 'Foreign Companies' in their 2022 filings - stay public; Quantmac
+  agrees on AXISBANK). Scan of all 33,899 cached XBRLs (`reply7/fdi_scan.py`, `tag_scan.py`) then the old vs new code per cell
+  (`reply7/fdi_apply.py`): 61 cells - SHK 2016-21 (Blackstone ... VI FDI Two, 21.50 -> 10.22), APARINDS 2016 (Templeton ... -FDI 9.45),
+  NAM-INDIA 2017-21 and RNAVAL 2016-21 (Valiant Mauritius Partners FDI), PNCINFRA 2016-17 ('(Fvci)' in the holder's name, which §164n
+  had removed for want of a residency document) - each equal to Quantmac's figure where they list it. ZENSARTECH skipped (Marina
+  already counted).
+- **Cross-company evidence standard (user decision).** inst=true now needs >= 90 % of >= 5 classified listings, or a registry
+  document; IFC (50 vs 151 company listings), APMS (138 vs 21), DVI, Tree Line, Caladium, Rimco, Plenty, VOF fall out. 93 cells
+  (`reply7/std_flips.py`, incl. 5 event rows) FII -> public: AUBANK, SNOWMAN, RBLBANK (IFC, DVI), RAJESHEXPO (APMS), IEX (Rimco - batch
+  7's move undone, Jun-2020 back to its FPI 31.25), IDFCFIRSTB (Caladium), WESTLIFE / BHARATFIN (Tree Line), BANDHANBNK, JISLDVREQS.
+  Held (would zig-zag, §160c): RKFORGE, POLYCAB (also: an institutional 'Bodies Corporate' sub-row is not yet read as company-type),
+  POONAWALLA, CHOLAFIN; MFSL kept (IFC is on MFSL's own FDI row from Sep-2011 - the company's own mark).
+Rebuilt feed moves exactly these 154 rows; guards green.
+
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
 to "domestic" when DOMLAB matched ("mutual fund", "financial institution", "\bbank") and LAB_FII did not — so "Foreign Mutual
