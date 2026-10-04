@@ -48,6 +48,26 @@ def breakdown(txt):
 MON={"March":3,"June":6,"September":9,"December":12}
 LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|foreig\w* portfolio|foreig\w* instit|foreign bank|foreign venture|qualified foreign|sovereign", re.I)
 LAB_PUB=re.compile(r"overseas corporate|\bocb\b|foreig\w* compan|foreig\w* (corporate )?bod|corporate bodies|foreig\w* national|foreig\w* individual|non.?resident|\bnri\b", re.I)
+# §164r batch 11 (user 2026-10-04 'yes fix the label bug'): a non-institution category a company writes on a sub-row of its
+# institutions 'Any Other' block - Bodies Corporate, Central / State Government, IEPF, trusts, clearing members, individuals, HUF,
+# employees, directors, unclaimed / suspense accounts - is company-, government- or person-type: never FII and never DII
+# (Institutions (Domestic)). These had read as UNLABELLED, so D1 / rest-follows moved them into FII: IDFC Jun-2016 'BODIES
+# CORPORATE' 5.44, TNPL Jun-2016 'CENTRALGOVERNMENT /STATE GOVERNMENT' 4.07. (Not added to LAB_PUB: the R2 non-institution loop
+# must keep reading named domestic institutions a company files under 'Bodies Corporate'.)
+_NI_CAT=(r"(?:indian\s+)?bod(?:y|ies)\s*corporates?|corporate\s+bod(?:y|ies)|corporates?"
+         r"|limited\s+liab\w*\s+partnerships?(?:\s*/\s*corporate\s+bod(?:y|ies))?(?:\s*-\s*llps?)?|llps?"
+         r"|central\s*(?:/|and|&)?\s*state\s*gov\w*(?:\s*\(s\))?|centralgovernment\s*/?\s*state\s*government(?:\s*\(s\))?|(?:central|state)\s+gov\w*(?:\s*\(s\))?"
+         r"|government(?:\s+of\s+india)?|govt\.?(?:\s+of\s+india)?|president\s+of\s+india"
+         r"|iepf(?:\s+authority)?|investor\s+education\s+(?:and|&)\s+protection\s+fund(?:\s+authority)?(?:\s*\(mca\))?"
+         r"|trusts?|clearing\s+members?|individuals?|huf|hindu\s+undivided\s+famil(?:y|ies)|employees?|directors?(?:\s+(?:and|&)\s+(?:their\s+)?relatives?)?"
+         r"|unclaimed\b.*|suspense\b.*|escrow\b.*")
+NONINST_LAB=re.compile(r"(?:%s)(?:\s*\([^)]*\))?" % _NI_CAT, re.I)
+def noninst_label(lab):
+    """True when the WHOLE label (after the filer's 'Other / Others / Any Other' prefix) is a non-institution category - never
+    for a holder's name that merely contains such a word ('GOLDMAN SACHS TRUST - ...', 'CITY OF NEW YORK GROUP TRUST',
+    'PACIFIC ASSETS TRUST PLC', 'Employees Retirement plan of Duke University' are foreign institutions)."""
+    core=re.sub(r"^\s*(?:any\s+)?others?\b[\s:\-\u2013]*","",lab or "",flags=re.I).strip(" .:-\u2013")
+    return bool(core) and bool(NONINST_LAB.fullmatch(core)) and not LAB_FII.search(lab or "") and not DOMLAB.search(lab or "")
 FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
@@ -346,7 +366,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
         if not gi: unres+=oth_inst; ev.append(("R1-unresolved","no typed rows",round(oth_inst,4)))
         for g in gi:
             lab=g["label"]; hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]]
-            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab) and not FORWORD.search(lab)) else "public" if LAB_PUB.search(lab) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
+            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab) and not FORWORD.search(lab)) else "public" if (LAB_PUB.search(lab) or noninst_label(lab)) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
             lab_src="keyword"
             if lab_kind is None and not g["holders"]:
                 ltxt=re.sub(r"^(other|others|any other)\s*","",lab,flags=re.I).strip()

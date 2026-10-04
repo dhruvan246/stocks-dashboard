@@ -17065,7 +17065,7 @@
    "2020-03-31": {
     "cell": [
      67.61,
-     0.9874,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17074,36 +17074,58 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.9874,
+     0.0,
      0.0,
      0.0,
      "2020-05-12",
      9821
     ],
-    "src": "bsexbrl:532324_125202010122_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.99, dii 0.99 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.99 | R1: R1-unresolved Bodies Corporate 0.99  keyword. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.99 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9874 -> 0.0000, dii 0.0000 -> 0.0000.",
     "superseded": {
      "cell": [
       67.61,
+      0.9874,
       0.0,
-      0.99,
       0.0,
       0.0,
       "2020-05-12",
       9821
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       67.61,
       0.0,
-      0.99,
+      0.9874,
       0.0,
       0.0,
-      "2020-10-19",
+      "2020-05-12",
       9821
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 202d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:532324_125202010122_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.99, dii 0.99 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.99 | R1: R1-unresolved Bodies Corporate 0.99  keyword. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       67.61,
+       0.0,
+       0.99,
+       0.0,
+       0.0,
+       "2020-05-12",
+       9821
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       67.61,
+       0.0,
+       0.99,
+       0.0,
+       0.0,
+       "2020-10-19",
+       9821
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 202d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2023-12-31": {
@@ -17131,7 +17153,7 @@
    "2019-09-30": {
     "cell": [
      67.61,
-     1.7775,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17140,20 +17162,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      1.7775,
+     0.0,
      0.0,
      0.0,
      "2019-10-17",
      9847
     ],
-    "src": "bsexbrl:532324_17102019145141_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 1.78, dii 1.78 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.78 | R1: R1-unresolved Bodies Corporate 1.78  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 1.78 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 1.7775 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      1.7775,
+      0.0,
+      0.0,
+      0.0,
+      "2019-10-17",
+      9847
+     ],
+     "was": [
+      67.61,
+      0.0,
+      1.7775,
+      0.0,
+      0.0,
+      "2019-10-17",
+      9847
+     ],
+     "src": "bsexbrl:532324_17102019145141_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 1.78, dii 1.78 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.78 | R1: R1-unresolved Bodies Corporate 1.78  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
      67.61,
-     0.99,
+     0.0,
      0.0482,
      0.0,
      0.0,
@@ -17162,20 +17206,42 @@
     ],
     "was": [
      67.61,
-     0.0,
-     1.0382,
+     0.99,
+     0.0482,
      0.0,
      0.0,
      "2020-01-20",
      9926
     ],
-    "src": "bsexbrl:532324_1712020152453_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.99, dii 1.04 -> 0.05. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.99 | R1: R1-unresolved Bodies Corporate 0.99  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.99 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9900 -> 0.0000, dii 0.0482 -> 0.0482.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.99,
+      0.0482,
+      0.0,
+      0.0,
+      "2020-01-20",
+      9926
+     ],
+     "was": [
+      67.61,
+      0.0,
+      1.0382,
+      0.0,
+      0.0,
+      "2020-01-20",
+      9926
+     ],
+     "src": "bsexbrl:532324_1712020152453_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.99, dii 1.04 -> 0.05. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.99 | R1: R1-unresolved Bodies Corporate 0.99  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2020-06-30": {
     "cell": [
      67.61,
-     0.9493,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17184,20 +17250,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.9493,
+     0.0,
      0.0,
      0.0,
      "2020-07-19",
      9657
     ],
-    "src": "bsexbrl:532324_197202095419_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.95, dii 0.95 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.95 | R1: R1-unresolved Bodies Corporate 0.95  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.95 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9493 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.9493,
+      0.0,
+      0.0,
+      0.0,
+      "2020-07-19",
+      9657
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.9493,
+      0.0,
+      0.0,
+      "2020-07-19",
+      9657
+     ],
+     "src": "bsexbrl:532324_197202095419_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.95, dii 0.95 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.95 | R1: R1-unresolved Bodies Corporate 0.95  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2020-09-30": {
     "cell": [
      67.61,
-     0.8051,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17206,20 +17294,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.8051,
+     0.0,
      0.0,
      0.0,
      "2020-10-19",
      9971
     ],
-    "src": "bsexbrl:532324_191020208134_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.81, dii 0.81 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.81 | R1: R1-unresolved Bodies Corporate 0.81  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.81 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.8051 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.8051,
+      0.0,
+      0.0,
+      0.0,
+      "2020-10-19",
+      9971
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.8051,
+      0.0,
+      0.0,
+      "2020-10-19",
+      9971
+     ],
+     "src": "bsexbrl:532324_191020208134_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.81, dii 0.81 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.81 | R1: R1-unresolved Bodies Corporate 0.81  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2020-12-31": {
     "cell": [
      67.61,
-     0.9582,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17228,20 +17338,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.9582,
+     0.0,
      0.0,
      0.0,
      "2021-01-18",
      9659
     ],
-    "src": "bsexbrl:532324_181202195940_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.96, dii 0.96 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.96 | R1: R1-unresolved Bodies Corporate 0.96  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.96 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9582 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.9582,
+      0.0,
+      0.0,
+      0.0,
+      "2021-01-18",
+      9659
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.9582,
+      0.0,
+      0.0,
+      "2021-01-18",
+      9659
+     ],
+     "src": "bsexbrl:532324_181202195940_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.96, dii 0.96 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.96 | R1: R1-unresolved Bodies Corporate 0.96  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2021-03-31": {
     "cell": [
      67.61,
-     0.8955,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17250,20 +17382,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.8955,
+     0.0,
      0.0,
      0.0,
      "2021-04-14",
      9624
     ],
-    "src": "bsexbrl:532324_144202184938_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.90, dii 0.90 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.9 | R1: R1-unresolved Bodies Corporate 0.9  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.90 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.8955 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.8955,
+      0.0,
+      0.0,
+      0.0,
+      "2021-04-14",
+      9624
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.8955,
+      0.0,
+      0.0,
+      "2021-04-14",
+      9624
+     ],
+     "src": "bsexbrl:532324_144202184938_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.90, dii 0.90 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.9 | R1: R1-unresolved Bodies Corporate 0.9  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2021-06-30": {
     "cell": [
      67.61,
-     0.9491,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17272,20 +17426,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.9491,
+     0.0,
      0.0,
      0.0,
      "2021-07-20",
      10063
     ],
-    "src": "bsexbrl:532324_20720211189_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.95, dii 0.95 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.95 | R1: R1-unresolved Bodies Corporate 0.95  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.95 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9491 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.9491,
+      0.0,
+      0.0,
+      0.0,
+      "2021-07-20",
+      10063
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.9491,
+      0.0,
+      0.0,
+      "2021-07-20",
+      10063
+     ],
+     "src": "bsexbrl:532324_20720211189_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.95, dii 0.95 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.95 | R1: R1-unresolved Bodies Corporate 0.95  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2021-09-30": {
     "cell": [
      67.61,
-     0.89,
+     0.0,
      0.0001,
      0.0,
      0.0,
@@ -17294,20 +17470,42 @@
     ],
     "was": [
      67.61,
-     0.0,
-     0.8901,
+     0.89,
+     0.0001,
      0.0,
      0.0,
      "2021-10-21",
      9968
     ],
-    "src": "bsexbrl:532324_2110202184837_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.89, dii 0.89 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.89 | R1: R1-unresolved Bodies Corporate 0.89  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.89 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.8900 -> 0.0000, dii 0.0001 -> 0.0001.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.89,
+      0.0001,
+      0.0,
+      0.0,
+      "2021-10-21",
+      9968
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.8901,
+      0.0,
+      0.0,
+      "2021-10-21",
+      9968
+     ],
+     "src": "bsexbrl:532324_2110202184837_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.89, dii 0.89 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.89 | R1: R1-unresolved Bodies Corporate 0.89  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2021-12-31": {
     "cell": [
      67.61,
-     0.8969,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17316,20 +17514,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.8969,
+     0.0,
      0.0,
      0.0,
      "2022-01-19",
      10605
     ],
-    "src": "bsexbrl:532324_1812022201018_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.90, dii 0.90 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.9 | R1: R1-unresolved Bodies Corporate 0.9  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.90 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.8969 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.8969,
+      0.0,
+      0.0,
+      0.0,
+      "2022-01-19",
+      10605
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.8969,
+      0.0,
+      0.0,
+      "2022-01-19",
+      10605
+     ],
+     "src": "bsexbrl:532324_1812022201018_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.90, dii 0.90 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.9 | R1: R1-unresolved Bodies Corporate 0.9  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2022-03-31": {
     "cell": [
      67.61,
-     0.8897,
+     0.0,
      0.0,
      0.0,
      0.0,
@@ -17338,20 +17558,42 @@
     ],
     "was": [
      67.61,
-     0.0,
      0.8897,
+     0.0,
      0.0,
      0.0,
      "2022-04-21",
      13101
     ],
-    "src": "bsexbrl:532324_1752022194237_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.89, dii 0.89 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.89 | R1: R1-unresolved Bodies Corporate 0.89  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.89 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.8897 -> 0.0000, dii 0.0000 -> 0.0000.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.8897,
+      0.0,
+      0.0,
+      0.0,
+      "2022-04-21",
+      13101
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.8897,
+      0.0,
+      0.0,
+      "2022-04-21",
+      13101
+     ],
+     "src": "bsexbrl:532324_1752022194237_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.89, dii 0.89 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.89 | R1: R1-unresolved Bodies Corporate 0.89  keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2022-06-30": {
     "cell": [
      67.61,
-     0.97,
+     0.0,
      0.0029,
      0.0,
      0.0,
@@ -17360,15 +17602,37 @@
     ],
     "was": [
      67.61,
-     0.0,
-     0.9729,
+     0.97,
+     0.0029,
      0.0,
      0.0,
      "2022-07-12",
      11956
     ],
-    "src": "bsexbrl:532324_127202215127_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.97, dii 0.97 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.97 | R1: R1-unresolved Bodies Corporate 0.97  keyword. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.97 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.9700 -> 0.0000, dii 0.0029 -> 0.0029.",
+    "superseded": {
+     "cell": [
+      67.61,
+      0.97,
+      0.0029,
+      0.0,
+      0.0,
+      "2022-07-12",
+      11956
+     ],
+     "was": [
+      67.61,
+      0.0,
+      0.9729,
+      0.0,
+      0.0,
+      "2022-07-12",
+      11956
+     ],
+     "src": "bsexbrl:532324_127202215127_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.00 -> 0.97, dii 0.97 -> 0.00. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.97 | R1: R1-unresolved Bodies Corporate 0.97  keyword. Evidence: _shp_164_audit.json"
+    }
    }
   },
   "CLCIND": {
@@ -32551,7 +32815,7 @@
    "2016-06-30": {
     "cell": [
      0.0,
-     51.7733,
+     46.3333,
      12.4458,
      8.4912,
      3.0404,
@@ -32560,20 +32824,42 @@
     ],
     "was": [
      0.0,
-     46.0133,
-     18.1758,
+     51.7733,
+     12.4458,
      8.4912,
      3.0404,
      "2016-07-05",
      486460
     ],
-    "src": "bsexbrl:532659_472016164720_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 46.01 -> 51.77, dii 18.18 -> 12.45. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.76 | R1: R1-unresolved Other FDI 0.32  keyword; R1-unresolved Other BODIES CORPORATE 5.44  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.44 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 51.7733 -> 46.3333, dii 12.4458 -> 12.4458.",
+    "superseded": {
+     "cell": [
+      0.0,
+      51.7733,
+      12.4458,
+      8.4912,
+      3.0404,
+      "2016-07-05",
+      486460
+     ],
+     "was": [
+      0.0,
+      46.0133,
+      18.1758,
+      8.4912,
+      3.0404,
+      "2016-07-05",
+      486460
+     ],
+     "src": "bsexbrl:532659_472016164720_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 46.01 -> 51.77, dii 18.18 -> 12.45. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.76 | R1: R1-unresolved Other FDI 0.32  keyword; R1-unresolved Other BODIES CORPORATE 5.44  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
      0.0,
-     51.4187,
+     46.0687,
      12.4987,
      8.6244,
      3.0404,
@@ -32582,20 +32868,42 @@
     ],
     "was": [
      0.0,
-     45.7487,
-     18.0987,
+     51.4187,
+     12.4987,
      8.6244,
      3.0404,
      "2016-10-04",
      465450
     ],
-    "src": "bsexbrl:532659_410201613432_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.75 -> 51.42, dii 18.10 -> 12.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.67 | R1: R1-unresolved Other BODIES CORPORATES 5.35  keyword; R1-unresolved Other FDI 0.32  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 5.35 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 51.4187 -> 46.0687, dii 12.4987 -> 12.4987.",
+    "superseded": {
+     "cell": [
+      0.0,
+      51.4187,
+      12.4987,
+      8.6244,
+      3.0404,
+      "2016-10-04",
+      465450
+     ],
+     "was": [
+      0.0,
+      45.7487,
+      18.0987,
+      8.6244,
+      3.0404,
+      "2016-10-04",
+      465450
+     ],
+     "src": "bsexbrl:532659_410201613432_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.75 -> 51.42, dii 18.10 -> 12.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.67 | R1: R1-unresolved Other BODIES CORPORATES 5.35  keyword; R1-unresolved Other FDI 0.32  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
      0.0,
-     50.4853,
+     45.5553,
      13.3707,
      9.4751,
      3.0404,
@@ -32604,20 +32912,42 @@
     ],
     "was": [
      0.0,
-     45.2453,
-     18.5407,
+     50.4853,
+     13.3707,
      9.4751,
      3.0404,
      "2017-01-09",
      465771
     ],
-    "src": "bsexbrl:532659_612017164417_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.25 -> 50.49, dii 18.54 -> 13.37. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.24 | R1: R1-unresolved Other BODIES CORPORATE 4.93  keyword; R1-unresolved Other FDI 0.31  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 4.93 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 50.4853 -> 45.5553, dii 13.3707 -> 13.3707.",
+    "superseded": {
+     "cell": [
+      0.0,
+      50.4853,
+      13.3707,
+      9.4751,
+      3.0404,
+      "2017-01-09",
+      465771
+     ],
+     "was": [
+      0.0,
+      45.2453,
+      18.5407,
+      9.4751,
+      3.0404,
+      "2017-01-09",
+      465771
+     ],
+     "src": "bsexbrl:532659_612017164417_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.25 -> 50.49, dii 18.54 -> 13.37. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.24 | R1: R1-unresolved Other BODIES CORPORATE 4.93  keyword; R1-unresolved Other FDI 0.31  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
      0.0,
-     43.2465,
+     38.6665,
      17.902,
      13.8126,
      3.0404,
@@ -32626,18 +32956,49 @@
     ],
     "was": [
      0.0,
-     38.3865,
-     22.702,
+     43.2465,
+     17.902,
      13.8126,
      3.0404,
      "2017-04-07",
      467702
     ],
-    "src": "bsexbrl:532659_74201711312_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 38.39 -> 43.25, dii 22.70 -> 17.90. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.86 | R1: R1-unresolved Other BODIES CORPORATES 4.58  keyword; R1-unresolved Other FDI 0.28  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.06. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 4.58 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 43.2465 -> 38.6665, dii 17.9020 -> 17.9020.",
+    "superseded": {
+     "cell": [
+      0.0,
+      43.2465,
+      17.902,
+      13.8126,
+      3.0404,
+      "2017-04-07",
+      467702
+     ],
+     "was": [
+      0.0,
+      38.3865,
+      22.702,
+      13.8126,
+      3.0404,
+      "2017-04-07",
+      467702
+     ],
+     "src": "bsexbrl:532659_74201711312_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 38.39 -> 43.25, dii 22.70 -> 17.90. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.86 | R1: R1-unresolved Other BODIES CORPORATES 4.58  keyword; R1-unresolved Other FDI 0.28  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.06. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-12-31": {
     "cell": [
+     0.0,
+     33.1341,
+     19.7966,
+     16.0241,
+     3.037,
+     "2018-01-05",
+     436654
+    ],
+    "was": [
      0.0,
      33.1341,
      25.1366,
@@ -32646,19 +33007,19 @@
      "2018-01-05",
      436654
     ],
-    "was": [
-     0.0,
-     38.4741,
-     19.7966,
-     16.0241,
-     3.037,
-     "2018-01-05",
-     436654
-    ],
-    "src": "bsexbrl:532659_512018114420_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (5.34 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2017-09-30 FII 29.89, 2018-03-31 FII 32.08 vs 35.80 needed (moved level 38.47)). Only the D1 amount moves; fii 38.47 -> 33.13, dii 19.80 -> 25.14.",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.34 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 33.1341 -> 33.1341, dii 25.1366 -> 19.7966.",
     "superseded": {
      "cell": [
+      0.0,
+      33.1341,
+      25.1366,
+      16.0241,
+      3.037,
+      "2018-01-05",
+      436654
+     ],
+     "was": [
       0.0,
       38.4741,
       19.7966,
@@ -32667,17 +33028,30 @@
       "2018-01-05",
       436654
      ],
-     "was": [
-      0.0,
-      33.1341,
-      25.1266,
-      16.0241,
-      3.037,
-      "2018-01-05",
-      436654
-     ],
      "src": "bsexbrl:532659_512018114420_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 33.13 -> 38.47, dii 25.13 -> 19.80. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.34 | R1: R1-unresolved Other Bodies Corporates 5.34  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (5.34 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2017-09-30 FII 29.89, 2018-03-31 FII 32.08 vs 35.80 needed (moved level 38.47)). Only the D1 amount moves; fii 38.47 -> 33.13, dii 19.80 -> 25.14.",
+     "superseded": {
+      "cell": [
+       0.0,
+       38.4741,
+       19.7966,
+       16.0241,
+       3.037,
+       "2018-01-05",
+       436654
+      ],
+      "was": [
+       0.0,
+       33.1341,
+       25.1266,
+       16.0241,
+       3.037,
+       "2018-01-05",
+       436654
+      ],
+      "src": "bsexbrl:532659_512018114420_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 33.13 -> 38.47, dii 25.13 -> 19.80. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 5.34 | R1: R1-unresolved Other Bodies Corporates 5.34  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2018-06-30": {
@@ -52036,7 +52410,7 @@
    "2020-03-31": {
     "cell": [
      37.27,
-     0.06,
+     0.0,
      0.8813,
      0.0,
      0.0,
@@ -52045,15 +52419,37 @@
     ],
     "was": [
      37.27,
-     0.0,
-     0.9413,
+     0.06,
+     0.8813,
      0.0,
      0.0,
      "2020-05-30",
      21005
     ],
-    "src": "bsexbrl:532887_30520202098_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 0.00 -> 0.06, dii 0.94 -> 0.88. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Trust 0.06  keyword; D1-unnamed-remainder-in-dii 0.06"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Trust' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.0600 -> 0.0000, dii 0.8813 -> 0.8813.",
+    "superseded": {
+     "cell": [
+      37.27,
+      0.06,
+      0.8813,
+      0.0,
+      0.0,
+      "2020-05-30",
+      21005
+     ],
+     "was": [
+      37.27,
+      0.0,
+      0.9413,
+      0.0,
+      0.0,
+      "2020-05-30",
+      21005
+     ],
+     "src": "bsexbrl:532887_30520202098_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 0.00 -> 0.06, dii 0.94 -> 0.88. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Trust 0.06  keyword; D1-unnamed-remainder-in-dii 0.06"
+    }
    }
   },
   "NIITLTD": {
@@ -68946,7 +69342,7 @@
    "2016-06-30": {
     "cell": [
      35.32,
-     14.3498,
+     10.2798,
      21.2197,
      6.6093,
      13.8612,
@@ -68955,17 +69351,26 @@
     ],
     "was": [
      35.32,
-     10.2818,
-     25.2877,
+     14.3498,
+     21.2197,
      6.6093,
      13.8612,
      "2016-07-19",
      29510
     ],
-    "src": "bsexbrl:531426_1872016133056_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.28 -> 14.35, dii 25.29 -> 21.22. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.068 | R1: R1-unresolved Other CENTRALGOVERNMENT /STATE GOVERNMENT 4.07  keyword; R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.92 public=0.00 fii=0.92  keyword. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'CENTRALGOVERNMENT /STATE GOVERNMENT' 4.07 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 14.3498 -> 10.2798, dii 21.2197 -> 21.2197.",
     "superseded": {
      "cell": [
+      35.32,
+      14.3498,
+      21.2197,
+      6.6093,
+      13.8612,
+      "2016-07-19",
+      29510
+     ],
+     "was": [
       35.32,
       10.2818,
       25.2877,
@@ -68974,23 +69379,36 @@
       "2016-07-19",
       29510
      ],
-     "was": [
-      35.32,
-      9.3598,
-      26.2097,
-      6.6093,
-      13.8612,
-      "2016-07-19",
-      29510
-     ],
      "src": "bsexbrl:531426_1872016133056_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.92) \u2014 moved dii -> fii (0.9220 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.28 -> 14.35, dii 25.29 -> 21.22. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.068 | R1: R1-unresolved Other CENTRALGOVERNMENT /STATE GOVERNMENT 4.07  keyword; R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.92 public=0.00 fii=0.92  keyword. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       35.32,
+       10.2818,
+       25.2877,
+       6.6093,
+       13.8612,
+       "2016-07-19",
+       29510
+      ],
+      "was": [
+       35.32,
+       9.3598,
+       26.2097,
+       6.6093,
+       13.8612,
+       "2016-07-19",
+       29510
+      ],
+      "src": "bsexbrl:531426_1872016133056_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.92) \u2014 moved dii -> fii (0.9220 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2016-09-30": {
     "cell": [
      35.32,
-     14.2484,
+     10.1884,
      21.6542,
      7.1117,
      13.8612,
@@ -68999,17 +69417,26 @@
     ],
     "was": [
      35.32,
-     10.1926,
-     25.71,
+     14.2484,
+     21.6542,
      7.1117,
      13.8612,
      "2016-10-19",
      29272
     ],
-    "src": "bsexbrl:531426_19102016104842_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.19 -> 14.25, dii 25.71 -> 21.65. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.0558 | R1: R1-unresolved Other CENTRAL/STATE GOVERNMENT(S) 4.06  keyword; R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.46 public=0.00 fii=0.46  keyword. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'CENTRAL/STATE GOVERNMENT(S)' 4.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 14.2484 -> 10.1884, dii 21.6542 -> 21.6542.",
     "superseded": {
      "cell": [
+      35.32,
+      14.2484,
+      21.6542,
+      7.1117,
+      13.8612,
+      "2016-10-19",
+      29272
+     ],
+     "was": [
       35.32,
       10.1926,
       25.71,
@@ -69018,17 +69445,30 @@
       "2016-10-19",
       29272
      ],
-     "was": [
-      35.32,
-      9.7284,
-      26.1742,
-      7.1117,
-      13.8612,
-      "2016-10-19",
-      29272
-     ],
      "src": "bsexbrl:531426_19102016104842_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.46) \u2014 moved dii -> fii (0.4642 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.19 -> 14.25, dii 25.71 -> 21.65. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.0558 | R1: R1-unresolved Other CENTRAL/STATE GOVERNMENT(S) 4.06  keyword; R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.46 public=0.00 fii=0.46  keyword. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       35.32,
+       10.1926,
+       25.71,
+       7.1117,
+       13.8612,
+       "2016-10-19",
+       29272
+      ],
+      "was": [
+       35.32,
+       9.7284,
+       26.1742,
+       7.1117,
+       13.8612,
+       "2016-10-19",
+       29272
+      ],
+      "src": "bsexbrl:531426_19102016104842_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.46) \u2014 moved dii -> fii (0.4642 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2017-03-31": {
@@ -86743,7 +87183,7 @@
    "2016-03-31": {
     "cell": [
      53.69,
-     12.5973,
+     12.5373,
      7.8848,
      3.29,
      4.22,
@@ -86752,15 +87192,37 @@
     ],
     "was": [
      53.69,
-     2.23,
-     18.24,
+     12.5973,
+     7.8848,
      3.29,
      4.22,
      "2016-08-23",
      102325
     ],
-    "src": "bsexbrl:500020_2382016154319_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.23 -> 12.60, dii 18.24 -> 7.88. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.89 | R1: R1-fii-label Other Foreign Institutional Investors 5.48 public=0.00 fii=5.48  keyword; R1-public-label Other Overseas Corporate Bodies 0.01 public=0.01 fii=0.00  keyword; R1-unresolved Other Domestic Companies 4.83  keyword; R1-unresolved Other Trust 0.06  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Trust' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 12.5973 -> 12.5373, dii 7.8848 -> 7.8848.",
+    "superseded": {
+     "cell": [
+      53.69,
+      12.5973,
+      7.8848,
+      3.29,
+      4.22,
+      "2016-08-23",
+      102325
+     ],
+     "was": [
+      53.69,
+      2.23,
+      18.24,
+      3.29,
+      4.22,
+      "2016-08-23",
+      102325
+     ],
+     "src": "bsexbrl:500020_2382016154319_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.23 -> 12.60, dii 18.24 -> 7.88. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.89 | R1: R1-fii-label Other Foreign Institutional Investors 5.48 public=0.00 fii=5.48  keyword; R1-public-label Other Overseas Corporate Bodies 0.01 public=0.01 fii=0.00  keyword; R1-unresolved Other Domestic Companies 4.83  keyword; R1-unresolved Other Trust 0.06  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -93101,7 +93563,7 @@
    "2018-03-31": {
     "cell": [
      22.18,
-     40.9736,
+     40.4236,
      25.6011,
      18.4153,
      7.1039,
@@ -93110,20 +93572,20 @@
     ],
     "was": [
      22.18,
-     40.4236,
-     26.1611,
+     40.9736,
+     25.6011,
      18.4153,
      7.1039,
      "2018-07-16",
      25385
     ],
-    "src": "bsexbrl:532175_2042018153453_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 40.42 -> 40.97, dii 26.16 -> 25.60. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.55 | R1: R1-unresolved Bodies Corporate 0.56  keyword; R1-fii-label Other Foreign Colloborators 1.33 public=1.33 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.33 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.56 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 40.9736 -> 40.4236, dii 25.6011 -> 25.6011.",
     "superseded": {
      "cell": [
       22.18,
-      40.4236,
-      26.1611,
+      40.9736,
+      25.6011,
       18.4153,
       7.1039,
       "2018-07-16",
@@ -93132,14 +93594,36 @@
      "was": [
       22.18,
       40.4236,
-      27.4311,
+      26.1611,
       18.4153,
       7.1039,
       "2018-07-16",
       25385
      ],
      "src": "bsexbrl:532175_2042018153453_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 27.43 -> 26.16, fii 40.42 -> 40.42. R1-unresolved Bodies Corporate 0.56  keyword; R1-fii-label Other Foreign Colloborators 1.33 public=1.33 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.33 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 40.42 -> 40.97, dii 26.16 -> 25.60. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.55 | R1: R1-unresolved Bodies Corporate 0.56  keyword; R1-fii-label Other Foreign Colloborators 1.33 public=1.33 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.33 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       22.18,
+       40.4236,
+       26.1611,
+       18.4153,
+       7.1039,
+       "2018-07-16",
+       25385
+      ],
+      "was": [
+       22.18,
+       40.4236,
+       27.4311,
+       18.4153,
+       7.1039,
+       "2018-07-16",
+       25385
+      ],
+      "src": "bsexbrl:532175_2042018153453_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 27.43 -> 26.16, fii 40.42 -> 40.42. R1-unresolved Bodies Corporate 0.56  keyword; R1-fii-label Other Foreign Colloborators 1.33 public=1.33 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.33 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-06-30": {
@@ -112035,7 +112519,7 @@
    "2019-12-31": {
     "cell": [
      63.85,
-     15.22,
+     14.08,
      7.905,
      5.6417,
      0.0,
@@ -112044,19 +112528,19 @@
     ],
     "was": [
      63.85,
-     20.98,
+     15.22,
      7.905,
      5.6417,
      0.0,
      "2020-01-07",
      31016
     ],
-    "src": "bsexbrl:539551_712020121523_SHP.xml",
-    "why": "\u00a7164r batch 7 \u2014 documents-only holder test (user 2026-09-29, Quantmac v5 reply #6 build: a holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark \u2014 its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row \u2014 or, where the company is silent, another company's filing listing the same legal name under Institutions (Foreign); the curated list, residency or a name pattern alone never count): fii 20.98 -> 15.22. CDC Group PLC 5.76 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') fii -> public: no filing lists it under Institutions (Foreign) (company-type rows: 64, e.g. 539844_18102019195734_SHP.xml OtherNonInstitutions)",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 4.31 (named: CDC INDIA OPPORTUNITIES LIMITED 2.13, MAX LIFE INSURANCE COMPANY LIMITED A/C - 1.04) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 15.2200 -> 14.0800, dii 7.9050 -> 7.9050.",
     "superseded": {
      "cell": [
       63.85,
-      20.98,
+      15.22,
       7.905,
       5.6417,
       0.0,
@@ -112065,17 +112549,26 @@
      ],
      "was": [
       63.85,
-      18.85,
-      10.035,
+      20.98,
+      7.905,
       5.6417,
       0.0,
       "2020-01-07",
       31016
      ],
      "src": "bsexbrl:539551_712020121523_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; current member): fii 18.85 -> 20.98, dii 10.04 -> 7.91. R1-R3 re-read (\u00a7164j: foreign-labelled rows are never a domestic label; name-only holders need a document), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=5.76 CDC Group PLC 5.76 foreign->fii(curated) keyword; R1-mixed Bodies Corporate 4.31 public=0.00 fii=2.13 CDC INDIA OPPORTUNITIES LIMITED 2.13 foreign->fii(documented:filing); MAX LIFE INSURANCE COMPANY LIMITED A/C - ULIF01108/02/07LIFEGRWSUP104 - GROWTH SUPER FUND 1.04 domestic->-(curated); R1-domestic-label Other CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE 0.83 public=0.00 fii=0.00  keyword; D1-rest-beside-mixed-holders Bodies Corporate 1.14",
+     "why": "\u00a7164r batch 7 \u2014 documents-only holder test (user 2026-09-29, Quantmac v5 reply #6 build: a holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark \u2014 its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row \u2014 or, where the company is silent, another company's filing listing the same legal name under Institutions (Foreign); the curated list, residency or a name pattern alone never count): fii 20.98 -> 15.22. CDC Group PLC 5.76 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') fii -> public: no filing lists it under Institutions (Foreign) (company-type rows: 64, e.g. 539844_18102019195734_SHP.xml OtherNonInstitutions)",
      "superseded": {
       "cell": [
+       63.85,
+       20.98,
+       7.905,
+       5.6417,
+       0.0,
+       "2020-01-07",
+       31016
+      ],
+      "was": [
        63.85,
        18.85,
        10.035,
@@ -112084,19 +112577,19 @@
        "2020-01-07",
        31016
       ],
-      "was": [
-       63.85,
-       17.707,
-       11.178,
-       5.6417,
-       0.0,
-       "2020-01-07",
-       31016
-      ],
       "src": "bsexbrl:539551_712020121523_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 17.71 -> 18.85, dii 11.18 -> 10.04. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-rest-beside-domestic-row-in-mixed-block Bodies Corporate 1.14 | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=5.76 CDC Group PLC 5.76 foreign->fii(curated) keyword; R1-domestic-holders Bodies Corporate 4.31 CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-); MAX LIFE INSURANCE COMPANY LIMITED A/C - ULIF01108/02/07LIFEGRWSUP104 - GROWTH SUPER FUND 1.04 domestic->-(curated); R1-domestic-label Other CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE 0.83 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json",
+      "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; current member): fii 18.85 -> 20.98, dii 10.04 -> 7.91. R1-R3 re-read (\u00a7164j: foreign-labelled rows are never a domestic label; name-only holders need a document), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=5.76 CDC Group PLC 5.76 foreign->fii(curated) keyword; R1-mixed Bodies Corporate 4.31 public=0.00 fii=2.13 CDC INDIA OPPORTUNITIES LIMITED 2.13 foreign->fii(documented:filing); MAX LIFE INSURANCE COMPANY LIMITED A/C - ULIF01108/02/07LIFEGRWSUP104 - GROWTH SUPER FUND 1.04 domestic->-(curated); R1-domestic-label Other CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE 0.83 public=0.00 fii=0.00  keyword; D1-rest-beside-mixed-holders Bodies Corporate 1.14",
       "superseded": {
        "cell": [
+        63.85,
+        18.85,
+        10.035,
+        5.6417,
+        0.0,
+        "2020-01-07",
+        31016
+       ],
+       "was": [
         63.85,
         17.707,
         11.178,
@@ -112105,17 +112598,30 @@
         "2020-01-07",
         31016
        ],
-       "was": [
-        63.85,
-        11.95,
-        16.935,
-        5.6417,
-        0.0,
-        "2020-01-07",
-        31016
-       ],
        "src": "bsexbrl:539551_712020121523_SHP.xml",
-       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (CDC Group PLC 5.76) \u2014 moved dii -> fii (5.7570 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 17.71 -> 18.85, dii 11.18 -> 10.04. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-rest-beside-domestic-row-in-mixed-block Bodies Corporate 1.14 | R1: R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=5.76 CDC Group PLC 5.76 foreign->fii(curated) keyword; R1-domestic-holders Bodies Corporate 4.31 CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-); MAX LIFE INSURANCE COMPANY LIMITED A/C - ULIF01108/02/07LIFEGRWSUP104 - GROWTH SUPER FUND 1.04 domestic->-(curated); R1-domestic-label Other CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE 0.83 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json",
+       "superseded": {
+        "cell": [
+         63.85,
+         17.707,
+         11.178,
+         5.6417,
+         0.0,
+         "2020-01-07",
+         31016
+        ],
+        "was": [
+         63.85,
+         11.95,
+         16.935,
+         5.6417,
+         0.0,
+         "2020-01-07",
+         31016
+        ],
+        "src": "bsexbrl:539551_712020121523_SHP.xml",
+        "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (CDC Group PLC 5.76) \u2014 moved dii -> fii (5.7570 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+       }
       }
      }
     }
@@ -112205,6 +112711,160 @@
     ],
     "src": "bseaspx:539551_88",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 20.91 -> 20.90, dii 5.00 -> 5.32. std-vcf Venture Capital Funds row 0.32. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2020-03-31": {
+    "cell": [
+     63.85,
+     9.578,
+     17.4888,
+     13.9254,
+     0.0,
+     "2020-04-23",
+     34671
+    ],
+    "was": [
+     63.85,
+     9.578,
+     19.4388,
+     13.9254,
+     0.0,
+     "2020-04-23",
+     34671
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 3.55 (named: MAX LIFE INSURANCE COMPANY LIMITED A/C - 1.60) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 9.5780 -> 9.5780, dii 19.4388 -> 17.4888."
+   },
+   "2020-06-30": {
+    "cell": [
+     63.85,
+     9.2791,
+     18.9227,
+     14.5506,
+     0.0,
+     "2020-07-13",
+     35099
+    ],
+    "was": [
+     63.85,
+     9.2791,
+     19.9627,
+     14.5506,
+     0.0,
+     "2020-07-13",
+     35099
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 1.04 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 9.2791 -> 9.2791, dii 19.9627 -> 18.9227."
+   },
+   "2020-09-30": {
+    "cell": [
+     63.85,
+     8.5386,
+     20.5808,
+     16.2711,
+     0.0,
+     "2020-10-14",
+     32928
+    ],
+    "was": [
+     63.85,
+     8.5386,
+     21.0908,
+     16.2711,
+     0.0,
+     "2020-10-14",
+     32928
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.51 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 8.5386 -> 8.5386, dii 21.0908 -> 20.5808."
+   },
+   "2020-12-31": {
+    "cell": [
+     63.85,
+     8.9533,
+     20.8319,
+     15.5493,
+     0.0,
+     "2021-01-12",
+     31447
+    ],
+    "was": [
+     63.85,
+     8.9533,
+     21.1719,
+     15.5493,
+     0.0,
+     "2021-01-12",
+     31447
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.34 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 8.9533 -> 8.9533, dii 21.1719 -> 20.8319."
+   },
+   "2021-03-31": {
+    "cell": [
+     63.85,
+     10.9622,
+     19.4912,
+     14.7948,
+     0.0,
+     "2021-04-15",
+     36360
+    ],
+    "was": [
+     63.85,
+     10.9622,
+     19.5912,
+     14.7948,
+     0.0,
+     "2021-04-15",
+     36360
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.10 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 10.9622 -> 10.9622, dii 19.5912 -> 19.4912."
+   },
+   "2021-06-30": {
+    "cell": [
+     63.85,
+     10.1229,
+     19.8379,
+     15.5489,
+     0.0,
+     "2021-07-14",
+     44526
+    ],
+    "was": [
+     63.85,
+     10.1229,
+     20.0479,
+     15.5489,
+     0.0,
+     "2021-07-14",
+     44526
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.20 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 10.1229 -> 10.1229, dii 20.0479 -> 19.8379."
+   },
+   "2021-09-30": {
+    "cell": [
+     63.85,
+     10.742,
+     19.5276,
+     16.1545,
+     0.0,
+     "2021-10-12",
+     43565
+    ],
+    "was": [
+     63.85,
+     10.742,
+     19.6276,
+     16.1545,
+     0.0,
+     "2021-10-12",
+     43565
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.11 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 10.7420 -> 10.7420, dii 19.6276 -> 19.5276."
    }
   },
   "NMDC": {
@@ -129249,8 +129909,8 @@
    "2017-12-31": {
     "cell": [
      57.27,
-     0.4934,
-     11.1791,
+     0.43,
+     11.1822,
      0.0,
      11.1048,
      "2018-01-09",
@@ -129258,18 +129918,49 @@
     ],
     "was": [
      57.27,
-     0.0,
-     11.6722,
+     0.4934,
+     11.1791,
      0.0,
      11.1048,
      "2018-01-09",
      20127
     ],
-    "src": "bsexbrl:590005_912018105857_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.49pp, holders: FOREIGN INSTITUTIONAL INVESTOR; INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY (MCA)) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.1791 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY (MCA)' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.4934 -> 0.4300, dii 11.1791 -> 11.1822.",
+    "superseded": {
+     "cell": [
+      57.27,
+      0.4934,
+      11.1791,
+      0.0,
+      11.1048,
+      "2018-01-09",
+      20127
+     ],
+     "was": [
+      57.27,
+      0.0,
+      11.6722,
+      0.0,
+      11.1048,
+      "2018-01-09",
+      20127
+     ],
+     "src": "bsexbrl:590005_912018105857_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.49pp, holders: FOREIGN INSTITUTIONAL INVESTOR; INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY (MCA)) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.1791 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2018-03-31": {
     "cell": [
+     57.27,
+     0.47,
+     11.2171,
+     0.0,
+     11.1048,
+     "2018-04-06",
+     20663
+    ],
+    "was": [
      57.27,
      0.531,
      11.2163,
@@ -129278,17 +129969,30 @@
      "2018-04-06",
      20663
     ],
-    "was": [
-     57.27,
-     0.0,
-     11.7471,
-     0.0,
-     11.1048,
-     "2018-04-06",
-     20663
-    ],
-    "src": "bsexbrl:590005_64201813139_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.53pp, holders: FOREIGN INSTITUTIONAL INVESTORS; INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.2163 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 0.5310 -> 0.4700, dii 11.2163 -> 11.2171.",
+    "superseded": {
+     "cell": [
+      57.27,
+      0.531,
+      11.2163,
+      0.0,
+      11.1048,
+      "2018-04-06",
+      20663
+     ],
+     "was": [
+      57.27,
+      0.0,
+      11.7471,
+      0.0,
+      11.1048,
+      "2018-04-06",
+      20663
+     ],
+     "src": "bsexbrl:590005_64201813139_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.53pp, holders: FOREIGN INSTITUTIONAL INVESTORS; INVESTOR EDUCATION AND PROTECTION FUND AUTHORITY) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.2163 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2018-09-30": {
     "cell": [
@@ -137857,7 +138561,7 @@
    "2018-06-30": {
     "cell": [
      24.42,
-     38.8885,
+     38.7885,
      29.3593,
      13.609,
      4.13,
@@ -137866,17 +138570,26 @@
     ],
     "was": [
      24.42,
-     38.7885,
-     29.4593,
+     38.8885,
+     29.3593,
      13.609,
      4.13,
      "2018-07-13",
      18423
     ],
-    "src": "bsexbrl:524000_1272018174734_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 38.79 -> 38.89, dii 29.46 -> 29.36. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.1 | R1: R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R1-rest-follows-foreign-holders 4.92; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Comp. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'IEPF Authority' 0.10 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 38.8885 -> 38.7885, dii 29.3593 -> 29.3593.",
     "superseded": {
      "cell": [
+      24.42,
+      38.8885,
+      29.3593,
+      13.609,
+      4.13,
+      "2018-07-13",
+      18423
+     ],
+     "was": [
       24.42,
       38.7885,
       29.4593,
@@ -137885,22 +138598,13 @@
       "2018-07-13",
       18423
      ],
-     "was": [
-      24.42,
-      38.5183,
-      29.7295,
-      13.609,
-      4.13,
-      "2018-07-13",
-      18423
-     ],
      "src": "bsexbrl:524000_1272018174734_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 29.73 -> 29.46, fii 38.52 -> 38.79. R1-rest-follows-foreign-holders 4.92; R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Company 1.68(regex). Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 38.79 -> 38.89, dii 29.46 -> 29.36. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.1 | R1: R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R1-rest-follows-foreign-holders 4.92; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Comp. Evidence: _shp_164_audit.json",
      "superseded": {
       "cell": [
        24.42,
-       38.5183,
-       29.7295,
+       38.7885,
+       29.4593,
        13.609,
        4.13,
        "2018-07-13",
@@ -137909,16 +138613,25 @@
       "was": [
        24.42,
        38.5183,
-       25.5995,
+       29.7295,
        13.609,
-       0.0,
+       4.13,
        "2018-07-13",
        18423
       ],
       "src": "bsexbrl:524000_1272018174734_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.60 -> 29.73, fii 38.52 -> 38.52. R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R1-uncovered-remainder 4.92; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Company 1.68(regex). Evidence: _shp_dii_rowfix_audit.json",
+      "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 29.73 -> 29.46, fii 38.52 -> 38.79. R1-rest-follows-foreign-holders 4.92; R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Company 1.68(regex). Evidence: _shp_dii_rowfix_audit.json",
       "superseded": {
        "cell": [
+        24.42,
+        38.5183,
+        29.7295,
+        13.609,
+        4.13,
+        "2018-07-13",
+        18423
+       ],
+       "was": [
         24.42,
         38.5183,
         25.5995,
@@ -137927,17 +138640,30 @@
         "2018-07-13",
         18423
        ],
-       "was": [
-        24.42,
-        25.0685,
-        39.0493,
-        13.609,
-        0.0,
-        "2018-07-13",
-        18423
-       ],
        "src": "bsexbrl:524000_1272018174734_SHP.xml",
-       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 0.26; QFI  - Corporate 13.45; International Finance Corporation 8.54) \u2014 moved dii -> fii (13.4498 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.60 -> 29.73, fii 38.52 -> 38.52. R1-fii-label Other Foreign Institutional Investors 0.26 public=0.00 fii=0.26  keyword; R1-fii-label Other QFI  - Corporate 13.45 public=0.00 fii=8.54 International Finance Corporation 8.54 foreign->fii(curated); Leapfrog Financial Inclusion India Holdings Limited 4.91 ?->-(-) keyword; R1-unresolved Other IEPF Authority 0.1  keyword; R1-uncovered-remainder 4.92; R2-named Bodies Corporate 4.13 HDFC Standard Life Insurance Company Limited 2.45(memory~); ICICI Prudential Life Insurance Company 1.68(regex). Evidence: _shp_dii_rowfix_audit.json",
+       "superseded": {
+        "cell": [
+         24.42,
+         38.5183,
+         25.5995,
+         13.609,
+         0.0,
+         "2018-07-13",
+         18423
+        ],
+        "was": [
+         24.42,
+         25.0685,
+         39.0493,
+         13.609,
+         0.0,
+         "2018-07-13",
+         18423
+        ],
+        "src": "bsexbrl:524000_1272018174734_SHP.xml",
+        "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 0.26; QFI  - Corporate 13.45; International Finance Corporation 8.54) \u2014 moved dii -> fii (13.4498 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+       }
       }
      }
     }
@@ -152589,6 +153315,28 @@
     ],
     "src": "bsexbrl:500034_28112019134059_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.51 -> 23.26, dii 9.97 -> 9.22. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.75; D1-unnamed-remainder-in-dii 0.75"
+   },
+   "2019-12-31": {
+    "cell": [
+     56.15,
+     22.224,
+     9.7264,
+     7.8494,
+     0.8355,
+     "2020-01-21",
+     220885
+    ],
+    "was": [
+     56.15,
+     22.224,
+     10.4564,
+     7.8494,
+     0.8355,
+     "2020-01-21",
+     220885
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 0.73 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 22.2240 -> 22.2240, dii 10.4564 -> 9.7264."
    }
   },
   "TATACONSUM": {
@@ -170742,7 +171490,7 @@
     "cell": [
      56.89,
      21.52,
-     7.3528,
+     1.6828,
      0.0952,
      0.0,
      "2016-07-16",
@@ -170750,17 +171498,26 @@
     ],
     "was": [
      56.89,
-     23.01,
-     5.8628,
+     21.52,
+     7.3528,
      0.0952,
      0.0,
      "2016-07-16",
      12920
     ],
-    "src": "bsexbrl:530549_1672016115523_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.67 (named: Pivotl Securities Private Limited 4.18) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 21.5200 -> 21.5200, dii 7.3528 -> 1.6828.",
     "superseded": {
      "cell": [
+      56.89,
+      21.52,
+      7.3528,
+      0.0952,
+      0.0,
+      "2016-07-16",
+      12920
+     ],
+     "was": [
       56.89,
       23.01,
       5.8628,
@@ -170769,19 +171526,19 @@
       "2016-07-16",
       12920
      ],
-     "was": [
-      56.89,
-      13.74,
-      13.5828,
-      0.0952,
-      0.0,
-      "2016-07-16",
-      12920
-     ],
      "src": "bsexbrl:530549_1672016115523_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+     "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
      "superseded": {
       "cell": [
+       56.89,
+       23.01,
+       5.8628,
+       0.0952,
+       0.0,
+       "2016-07-16",
+       12920
+      ],
+      "was": [
        56.89,
        13.74,
        13.5828,
@@ -170790,17 +171547,30 @@
        "2016-07-16",
        12920
       ],
-      "was": [
-       56.89,
-       21.5219,
-       5.8009,
-       0.0952,
-       0.0,
-       "2016-07-16",
-       12920
-      ],
       "src": "bsexbrl:530549_1672016115523_SHP.xml",
-      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        56.89,
+        13.74,
+        13.5828,
+        0.0952,
+        0.0,
+        "2016-07-16",
+        12920
+       ],
+       "was": [
+        56.89,
+        21.5219,
+        5.8009,
+        0.0952,
+        0.0,
+        "2016-07-16",
+        12920
+       ],
+       "src": "bsexbrl:530549_1672016115523_SHP.xml",
+       "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+      }
      }
     }
    },
@@ -170852,7 +171622,7 @@
     "cell": [
      54.74,
      27.4387,
-     4.2289,
+     0.2089,
      0.0591,
      0.0,
      "2017-04-22",
@@ -170860,17 +171630,26 @@
     ],
     "was": [
      54.74,
-     25.9768,
-     5.5808,
+     27.4387,
+     4.2289,
      0.0591,
      0.0,
      "2017-04-22",
      14396
     ],
-    "src": "bsexbrl:530549_214201720948_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.98 -> 27.44, dii 5.58 -> 4.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN BODY CORPORATES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III 7.49 foreign->fii(curated) keyword; R1-unresolved Other INDIAN BODY CORPORATE 4.02 PIVOTAL SECURITIES PRIVATE LIMITED 4.02 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.46; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'INDIAN BODY CORPORATE' 4.02 (named: PIVOTAL SECURITIES PRIVATE LIMITED 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 27.4387 -> 27.4387, dii 4.2289 -> 0.2089.",
     "superseded": {
      "cell": [
+      54.74,
+      27.4387,
+      4.2289,
+      0.0591,
+      0.0,
+      "2017-04-22",
+      14396
+     ],
+     "was": [
       54.74,
       25.9768,
       5.5808,
@@ -170879,21 +171658,43 @@
       "2017-04-22",
       14396
      ],
-     "was": [
-      54.74,
-      18.4887,
-      13.0689,
-      0.0591,
-      0.0,
-      "2017-04-22",
-      14396
-     ],
      "src": "bsexbrl:530549_214201720948_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODY CORPORATES 7.49; BARING INDIA PRIVATE EQUITY FUND III 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 25.98 -> 27.44, dii 5.58 -> 4.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-public-label Other FOREIGN BODY CORPORATES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III 7.49 foreign->fii(curated) keyword; R1-unresolved Other INDIAN BODY CORPORATE 4.02 PIVOTAL SECURITIES PRIVATE LIMITED 4.02 ?->-(-) keyword; R1-rest-follows-foreign-holders 1.46; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       54.74,
+       25.9768,
+       5.5808,
+       0.0591,
+       0.0,
+       "2017-04-22",
+       14396
+      ],
+      "was": [
+       54.74,
+       18.4887,
+       13.0689,
+       0.0591,
+       0.0,
+       "2017-04-22",
+       14396
+      ],
+      "src": "bsexbrl:530549_214201720948_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN BODY CORPORATES 7.49; BARING INDIA PRIVATE EQUITY FUND III 7.49) \u2014 moved dii -> fii (7.4881 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2017-06-30": {
     "cell": [
+     54.74,
+     18.7075,
+     0.2475,
+     0.0798,
+     0.0,
+     "2017-07-21",
+     14593
+    ],
+    "was": [
      54.74,
      20.2375,
      4.2675,
@@ -170902,19 +171703,19 @@
      "2017-07-21",
      14593
     ],
-    "was": [
-     54.74,
-     18.7075,
-     13.1775,
-     0.0798,
-     0.0,
-     "2017-07-21",
-     14593
-    ],
-    "src": "bsexbrl:530549_207201717572_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.71 -> 20.24, dii 13.18 -> 4.27. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATES 5.55 JASVANTLAL Chhotalal & Company PVT Ltd 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=7.49 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 5.55 (named: JASVANTLAL Chhotalal & Company PVT Ltd 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII. fii 20.2375 -> 18.7075, dii 4.2675 -> 0.2475.",
     "superseded": {
      "cell": [
+      54.74,
+      20.2375,
+      4.2675,
+      0.0798,
+      0.0,
+      "2017-07-21",
+      14593
+     ],
+     "was": [
       54.74,
       18.7075,
       13.1775,
@@ -170923,21 +171724,43 @@
       "2017-07-21",
       14593
      ],
-     "was": [
-      54.74,
-      26.1956,
-      5.6894,
-      0.0798,
-      0.0,
-      "2017-07-21",
-      14593
-     ],
      "src": "bsexbrl:530549_207201717572_SHP.xml",
-     "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.71 -> 20.24, dii 13.18 -> 4.27. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATES 5.55 JASVANTLAL Chhotalal & Company PVT Ltd 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=7.49 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       54.74,
+       18.7075,
+       13.1775,
+       0.0798,
+       0.0,
+       "2017-07-21",
+       14593
+      ],
+      "was": [
+       54.74,
+       26.1956,
+       5.6894,
+       0.0798,
+       0.0,
+       "2017-07-21",
+       14593
+      ],
+      "src": "bsexbrl:530549_207201717572_SHP.xml",
+      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     }
     }
    },
    "2017-09-30": {
     "cell": [
+     54.74,
+     26.403,
+     0.1657,
+     0.1173,
+     0.0,
+     "2017-10-23",
+     15081
+    ],
+    "was": [
      54.74,
      27.933,
      4.1857,
@@ -170946,19 +171769,19 @@
      "2017-10-23",
      15081
     ],
-    "was": [
-     54.74,
-     18.913,
-     13.1857,
-     0.1173,
-     0.0,
-     "2017-10-23",
-     15081
-    ],
-    "src": "bsexbrl:530549_20102017101823_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.91 -> 27.93, dii 13.19 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATE 5.55 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.55 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.9330 -> 26.4030, dii 4.1857 -> 0.1657.",
     "superseded": {
      "cell": [
+      54.74,
+      27.933,
+      4.1857,
+      0.1173,
+      0.0,
+      "2017-10-23",
+      15081
+     ],
+     "was": [
       54.74,
       18.913,
       13.1857,
@@ -170967,21 +171790,43 @@
       "2017-10-23",
       15081
      ],
-     "was": [
-      54.74,
-      26.4011,
-      5.6976,
-      0.1173,
-      0.0,
-      "2017-10-23",
-      15081
-     ],
      "src": "bsexbrl:530549_20102017101823_SHP.xml",
-     "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.91 -> 27.93, dii 13.19 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.53 ['named holders of unknown class left as stored', 4.02] | R1: R1-unresolved Other BODIES CORPORATE 5.55 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 4.02 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.49 public=0.00 fii=7.49 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.49 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       54.74,
+       18.913,
+       13.1857,
+       0.1173,
+       0.0,
+       "2017-10-23",
+       15081
+      ],
+      "was": [
+       54.74,
+       26.4011,
+       5.6976,
+       0.1173,
+       0.0,
+       "2017-10-23",
+       15081
+      ],
+      "src": "bsexbrl:530549_20102017101823_SHP.xml",
+      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     }
     }
    },
    "2017-12-31": {
     "cell": [
+     53.8,
+     26.0163,
+     0.2346,
+     0.0975,
+     0.0,
+     "2018-01-20",
+     14719
+    ],
+    "was": [
      53.8,
      27.7263,
      4.1946,
@@ -170990,19 +171835,19 @@
      "2018-01-20",
      14719
     ],
-    "was": [
-     53.8,
-     18.6563,
-     13.1346,
-     0.0975,
-     0.0,
-     "2018-01-20",
-     14719
-    ],
-    "src": "bsexbrl:530549_2012018132555_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.66 -> 27.73, dii 13.13 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.71 ['named holders of unknown class left as stored', 3.96] | R1: R1-unresolved Other BODIES CORPORATE 5.67 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATE' 5.67 (named: JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII and DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 27.7263 -> 26.0163, dii 4.1946 -> 0.2346.",
     "superseded": {
      "cell": [
+      53.8,
+      27.7263,
+      4.1946,
+      0.0975,
+      0.0,
+      "2018-01-20",
+      14719
+     ],
+     "was": [
       53.8,
       18.6563,
       13.1346,
@@ -171011,17 +171856,30 @@
       "2018-01-20",
       14719
      ],
-     "was": [
-      53.8,
-      26.0158,
-      5.7751,
-      0.0975,
-      0.0,
-      "2018-01-20",
-      14719
-     ],
      "src": "bsexbrl:530549_2012018132555_SHP.xml",
-     "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.66 -> 27.73, dii 13.13 -> 4.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.71 ['named holders of unknown class left as stored', 3.96] | R1: R1-unresolved Other BODIES CORPORATE 5.67 JASVANTLAL CHHOTALAL & COMPANY PVT LTD 3.96 ?->-(-) keyword; R1-public-label Other FOREIGN CORPORATE BODIES 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       53.8,
+       18.6563,
+       13.1346,
+       0.0975,
+       0.0,
+       "2018-01-20",
+       14719
+      ],
+      "was": [
+       53.8,
+       26.0158,
+       5.7751,
+       0.0975,
+       0.0,
+       "2018-01-20",
+       14719
+      ],
+      "src": "bsexbrl:530549_2012018132555_SHP.xml",
+      "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+     }
     }
    },
    "2016-09-30": {
@@ -175009,7 +175867,7 @@
    "2020-12-31": {
     "cell": [
      44.57,
-     3.5303,
+     3.4503,
      12.7029,
      10.7638,
      0.8999,
@@ -175018,15 +175876,37 @@
     ],
     "was": [
      44.57,
-     3.4503,
-     12.7729,
+     3.5303,
+     12.7029,
      10.7638,
      0.8999,
      "2021-01-08",
      50265
     ],
-    "src": "bsexbrl:532509_812021101728_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.45 -> 3.53, dii 12.77 -> 12.70. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.08 | R1: R1-unresolved Clearing Member 0.08  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Clearing Member' 0.08 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 3.5303 -> 3.4503, dii 12.7029 -> 12.7029.",
+    "superseded": {
+     "cell": [
+      44.57,
+      3.5303,
+      12.7029,
+      10.7638,
+      0.8999,
+      "2021-01-08",
+      50265
+     ],
+     "was": [
+      44.57,
+      3.4503,
+      12.7729,
+      10.7638,
+      0.8999,
+      "2021-01-08",
+      50265
+     ],
+     "src": "bsexbrl:532509_812021101728_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.45 -> 3.53, dii 12.77 -> 12.70. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.08 | R1: R1-unresolved Clearing Member 0.08  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-09-14": {
     "cell": [
@@ -216643,7 +217523,7 @@
    "2017-03-31": {
     "cell": [
      52.88,
-     22.9246,
+     20.1846,
      2.9379,
      1.2663,
      1.4274,
@@ -216652,17 +217532,26 @@
     ],
     "was": [
      52.88,
-     20.1846,
-     5.6779,
+     22.9246,
+     2.9379,
      1.2663,
      1.4274,
      "2017-04-05",
      573960
     ],
-    "src": "bsexbrl:539437_34201717112_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 20.18 -> 22.92, dii 5.68 -> 2.94. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.74 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.74  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 2.74 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 22.9246 -> 20.1846, dii 2.9379 -> 2.9379.",
     "superseded": {
      "cell": [
+      52.88,
+      22.9246,
+      2.9379,
+      1.2663,
+      1.4274,
+      "2017-04-05",
+      573960
+     ],
+     "was": [
       52.88,
       20.1846,
       5.6779,
@@ -216671,23 +217560,36 @@
       "2017-04-05",
       573960
      ],
-     "was": [
-      52.88,
-      20.1846,
-      5.7879,
-      1.2663,
-      1.4274,
-      "2017-04-05",
-      573960
-     ],
      "src": "bsexbrl:539437_34201717112_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 5.79 -> 5.68, fii 20.18 -> 20.18. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.74  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 20.18 -> 22.92, dii 5.68 -> 2.94. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.74 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.74  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       52.88,
+       20.1846,
+       5.6779,
+       1.2663,
+       1.4274,
+       "2017-04-05",
+       573960
+      ],
+      "was": [
+       52.88,
+       20.1846,
+       5.7879,
+       1.2663,
+       1.4274,
+       "2017-04-05",
+       573960
+      ],
+      "src": "bsexbrl:539437_34201717112_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 5.79 -> 5.68, fii 20.18 -> 20.18. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.74  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-06-30": {
     "cell": [
      52.85,
-     20.5501,
+     17.3001,
      3.3032,
      1.4453,
      1.4266,
@@ -216696,17 +217598,26 @@
     ],
     "was": [
      52.85,
-     17.3001,
-     6.5532,
+     20.5501,
+     3.3032,
      1.4453,
      1.4266,
      "2017-07-10",
      602681
     ],
-    "src": "bsexbrl:539437_1072017104435_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 17.30 -> 20.55, dii 6.55 -> 3.30. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.25 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.25  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 3.25 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 20.5501 -> 17.3001, dii 3.3032 -> 3.3032.",
     "superseded": {
      "cell": [
+      52.85,
+      20.5501,
+      3.3032,
+      1.4453,
+      1.4266,
+      "2017-07-10",
+      602681
+     ],
+     "was": [
       52.85,
       17.3001,
       6.5532,
@@ -216715,23 +217626,36 @@
       "2017-07-10",
       602681
      ],
-     "was": [
-      52.85,
-      17.3001,
-      6.6732,
-      1.4453,
-      1.4266,
-      "2017-07-10",
-      602681
-     ],
      "src": "bsexbrl:539437_1072017104435_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.67 -> 6.55, fii 17.30 -> 17.30. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.25  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 17.30 -> 20.55, dii 6.55 -> 3.30. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.25 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.25  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       52.85,
+       17.3001,
+       6.5532,
+       1.4453,
+       1.4266,
+       "2017-07-10",
+       602681
+      ],
+      "was": [
+       52.85,
+       17.3001,
+       6.6732,
+       1.4453,
+       1.4266,
+       "2017-07-10",
+       602681
+      ],
+      "src": "bsexbrl:539437_1072017104435_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.67 -> 6.55, fii 17.30 -> 17.30. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.25  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-09-30": {
     "cell": [
      52.84,
-     18.5815,
+     15.6515,
      4.2753,
      2.4835,
      1.4263,
@@ -216740,17 +217664,26 @@
     ],
     "was": [
      52.84,
-     15.6515,
-     7.2053,
+     18.5815,
+     4.2753,
      2.4835,
      1.4263,
      "2017-10-05",
      623081
     ],
-    "src": "bsexbrl:539437_4102017172420_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 15.65 -> 18.58, dii 7.21 -> 4.28. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.93 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.93  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 2.93 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 18.5815 -> 15.6515, dii 4.2753 -> 4.2753.",
     "superseded": {
      "cell": [
+      52.84,
+      18.5815,
+      4.2753,
+      2.4835,
+      1.4263,
+      "2017-10-05",
+      623081
+     ],
+     "was": [
       52.84,
       15.6515,
       7.2053,
@@ -216759,23 +217692,36 @@
       "2017-10-05",
       623081
      ],
-     "was": [
-      52.84,
-      15.6515,
-      7.3253,
-      2.4835,
-      1.4263,
-      "2017-10-05",
-      623081
-     ],
      "src": "bsexbrl:539437_4102017172420_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 7.33 -> 7.21, fii 15.65 -> 15.65. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.93  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 15.65 -> 18.58, dii 7.21 -> 4.28. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.93 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.93  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       52.84,
+       15.6515,
+       7.2053,
+       2.4835,
+       1.4263,
+       "2017-10-05",
+       623081
+      ],
+      "was": [
+       52.84,
+       15.6515,
+       7.3253,
+       2.4835,
+       1.4263,
+       "2017-10-05",
+       623081
+      ],
+      "src": "bsexbrl:539437_4102017172420_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 7.33 -> 7.21, fii 15.65 -> 15.65. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.93  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-12-31": {
     "cell": [
      52.83,
-     17.7504,
+     14.9404,
      4.9663,
      3.1862,
      1.4248,
@@ -216784,17 +217730,26 @@
     ],
     "was": [
      52.83,
-     14.9404,
-     7.7763,
+     17.7504,
+     4.9663,
      3.1862,
      1.4248,
      "2018-01-06",
      618338
     ],
-    "src": "bsexbrl:539437_612018133929_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 14.94 -> 17.75, dii 7.78 -> 4.97. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.81 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.81  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 2.81 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 17.7504 -> 14.9404, dii 4.9663 -> 4.9663.",
     "superseded": {
      "cell": [
+      52.83,
+      17.7504,
+      4.9663,
+      3.1862,
+      1.4248,
+      "2018-01-06",
+      618338
+     ],
+     "was": [
       52.83,
       14.9404,
       7.7763,
@@ -216803,23 +217758,36 @@
       "2018-01-06",
       618338
      ],
-     "was": [
-      52.83,
-      14.9404,
-      7.8963,
-      3.1862,
-      1.4248,
-      "2018-01-06",
-      618338
-     ],
      "src": "bsexbrl:539437_612018133929_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 7.90 -> 7.78, fii 14.94 -> 14.94. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.81  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 14.94 -> 17.75, dii 7.78 -> 4.97. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.81 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.81  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       52.83,
+       14.9404,
+       7.7763,
+       3.1862,
+       1.4248,
+       "2018-01-06",
+       618338
+      ],
+      "was": [
+       52.83,
+       14.9404,
+       7.8963,
+       3.1862,
+       1.4248,
+       "2018-01-06",
+       618338
+      ],
+      "src": "bsexbrl:539437_612018133929_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 7.90 -> 7.78, fii 14.94 -> 14.94. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.81  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-03-31": {
     "cell": [
      52.8,
-     17.1559,
+     14.6959,
      5.5469,
      3.8239,
      1.3965,
@@ -216828,17 +217796,26 @@
     ],
     "was": [
      52.8,
-     14.6959,
-     8.0069,
+     17.1559,
+     5.5469,
      3.8239,
      1.3965,
      "2018-04-03",
      612565
     ],
-    "src": "bsexbrl:539437_34201813205_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 14.70 -> 17.16, dii 8.01 -> 5.55. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.46 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 2.46 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 17.1559 -> 14.6959, dii 5.5469 -> 5.5469.",
     "superseded": {
      "cell": [
+      52.8,
+      17.1559,
+      5.5469,
+      3.8239,
+      1.3965,
+      "2018-04-03",
+      612565
+     ],
+     "was": [
       52.8,
       14.6959,
       8.0069,
@@ -216847,23 +217824,36 @@
       "2018-04-03",
       612565
      ],
-     "was": [
-      52.8,
-      14.6959,
-      8.1169,
-      3.8239,
-      1.3965,
-      "2018-04-03",
-      612565
-     ],
      "src": "bsexbrl:539437_34201813205_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.12 -> 8.01, fii 14.70 -> 14.70. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 14.70 -> 17.16, dii 8.01 -> 5.55. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.46 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       52.8,
+       14.6959,
+       8.0069,
+       3.8239,
+       1.3965,
+       "2018-04-03",
+       612565
+      ],
+      "was": [
+       52.8,
+       14.6959,
+       8.1169,
+       3.8239,
+       1.3965,
+       "2018-04-03",
+       612565
+      ],
+      "src": "bsexbrl:539437_34201813205_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.12 -> 8.01, fii 14.70 -> 14.70. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-06-30": {
     "cell": [
      54.3,
-     13.4121,
+     10.2721,
      5.1834,
      3.0929,
      1.383,
@@ -216872,17 +217862,26 @@
     ],
     "was": [
      54.3,
-     10.2721,
-     8.3234,
+     13.4121,
+     5.1834,
      3.0929,
      1.383,
      "2018-07-10",
      624947
     ],
-    "src": "bsexbrl:539437_107201813228_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 10.27 -> 13.41, dii 8.32 -> 5.18. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.14 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 3.14 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 13.4121 -> 10.2721, dii 5.1834 -> 5.1834.",
     "superseded": {
      "cell": [
+      54.3,
+      13.4121,
+      5.1834,
+      3.0929,
+      1.383,
+      "2018-07-10",
+      624947
+     ],
+     "was": [
       54.3,
       10.2721,
       8.3234,
@@ -216891,23 +217890,36 @@
       "2018-07-10",
       624947
      ],
-     "was": [
-      54.3,
-      10.2721,
-      8.4134,
-      3.0929,
-      1.383,
-      "2018-07-10",
-      624947
-     ],
      "src": "bsexbrl:539437_107201813228_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.41 -> 8.32, fii 10.27 -> 10.27. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 10.27 -> 13.41, dii 8.32 -> 5.18. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.14 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       54.3,
+       10.2721,
+       8.3234,
+       3.0929,
+       1.383,
+       "2018-07-10",
+       624947
+      ],
+      "was": [
+       54.3,
+       10.2721,
+       8.4134,
+       3.0929,
+       1.383,
+       "2018-07-10",
+       624947
+      ],
+      "src": "bsexbrl:539437_107201813228_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.41 -> 8.32, fii 10.27 -> 10.27. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-09-30": {
     "cell": [
      56.16,
-     12.9613,
+     10.1313,
      3.7576,
      1.7995,
      1.3505,
@@ -216916,17 +217928,26 @@
     ],
     "was": [
      56.16,
-     10.1313,
-     6.5876,
+     12.9613,
+     3.7576,
      1.7995,
      1.3505,
      "2018-10-11",
      634116
     ],
-    "src": "bsexbrl:539437_1010201817914_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 10.13 -> 12.96, dii 6.59 -> 3.76. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.83 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.83  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 2.83 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 12.9613 -> 10.1313, dii 3.7576 -> 3.7576.",
     "superseded": {
      "cell": [
+      56.16,
+      12.9613,
+      3.7576,
+      1.7995,
+      1.3505,
+      "2018-10-11",
+      634116
+     ],
+     "was": [
       56.16,
       10.1313,
       6.5876,
@@ -216935,23 +217956,36 @@
       "2018-10-11",
       634116
      ],
-     "was": [
-      56.16,
-      10.1313,
-      6.6876,
-      1.7995,
-      1.3505,
-      "2018-10-11",
-      634116
-     ],
      "src": "bsexbrl:539437_1010201817914_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.69 -> 6.59, fii 10.13 -> 10.13. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.83  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 10.13 -> 12.96, dii 6.59 -> 3.76. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.83 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.83  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       56.16,
+       10.1313,
+       6.5876,
+       1.7995,
+       1.3505,
+       "2018-10-11",
+       634116
+      ],
+      "was": [
+       56.16,
+       10.1313,
+       6.6876,
+       1.7995,
+       1.3505,
+       "2018-10-11",
+       634116
+      ],
+      "src": "bsexbrl:539437_1010201817914_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 6.69 -> 6.59, fii 10.13 -> 10.13. R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.83  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-12-31": {
     "cell": [
      56.18,
-     12.6673,
+     9.7173,
      2.5735,
      0.7982,
      1.3065,
@@ -216960,20 +217994,20 @@
     ],
     "was": [
      56.18,
-     9.7173,
-     5.5235,
+     12.6673,
+     2.5735,
      0.7982,
      1.3065,
      "2019-01-11",
      647179
     ],
-    "src": "bsexbrl:539437_1012019182111_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 9.72 -> 12.67, dii 5.52 -> 2.57. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.95 | R1: R1-unresolved Bodies Corporate 2.95  keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 2.95 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 12.6673 -> 9.7173, dii 2.5735 -> 2.5735.",
     "superseded": {
      "cell": [
       56.18,
-      9.7173,
-      5.5235,
+      12.6673,
+      2.5735,
       0.7982,
       1.3065,
       "2019-01-11",
@@ -216982,14 +218016,36 @@
      "was": [
       56.18,
       9.7173,
-      5.4535,
+      5.5235,
       0.7982,
       1.3065,
       "2019-01-11",
       647179
      ],
      "src": "bsexbrl:539437_1012019182111_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 5.45 -> 5.52, fii 9.72 -> 9.72. R1-unresolved Bodies Corporate 2.95  keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 9.72 -> 12.67, dii 5.52 -> 2.57. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.95 | R1: R1-unresolved Bodies Corporate 2.95  keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       56.18,
+       9.7173,
+       5.5235,
+       0.7982,
+       1.3065,
+       "2019-01-11",
+       647179
+      ],
+      "was": [
+       56.18,
+       9.7173,
+       5.4535,
+       0.7982,
+       1.3065,
+       "2019-01-11",
+       647179
+      ],
+      "src": "bsexbrl:539437_1012019182111_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 5.45 -> 5.52, fii 9.72 -> 9.72. R1-unresolved Bodies Corporate 2.95  keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2019-03-31": {
@@ -217567,7 +218623,7 @@
    "2016-09-30": {
     "cell": [
      52.95,
-     25.4866,
+     22.2266,
      2.8279,
      1.1189,
      1.4293,
@@ -217576,20 +218632,42 @@
     ],
     "was": [
      52.95,
-     22.2266,
-     6.1379,
+     25.4866,
+     2.8279,
      1.1189,
      1.4293,
      "2016-10-05",
      502192
     ],
-    "src": "bsexbrl:539437_4102016164622_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 22.23 -> 25.49, dii 6.14 -> 2.83. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.26 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.26  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 3.26 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 25.4866 -> 22.2266, dii 2.8279 -> 2.8279.",
+    "superseded": {
+     "cell": [
+      52.95,
+      25.4866,
+      2.8279,
+      1.1189,
+      1.4293,
+      "2016-10-05",
+      502192
+     ],
+     "was": [
+      52.95,
+      22.2266,
+      6.1379,
+      1.1189,
+      1.4293,
+      "2016-10-05",
+      502192
+     ],
+     "src": "bsexbrl:539437_4102016164622_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 22.23 -> 25.49, dii 6.14 -> 2.83. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 3.26 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.26  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
      52.93,
-     23.7832,
+     21.1432,
      2.7874,
      1.0381,
      1.4287,
@@ -217598,15 +218676,37 @@
     ],
     "was": [
      52.93,
-     21.1432,
-     5.4674,
+     23.7832,
+     2.7874,
      1.0381,
      1.4287,
      "2017-01-04",
      551264
     ],
-    "src": "bsexbrl:539437_312017183755_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 21.14 -> 23.78, dii 5.47 -> 2.79. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.64 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.64  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_164_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'BODIES CORPORATES' 2.64 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 23.7832 -> 21.1432, dii 2.7874 -> 2.7874.",
+    "superseded": {
+     "cell": [
+      52.93,
+      23.7832,
+      2.7874,
+      1.0381,
+      1.4287,
+      "2017-01-04",
+      551264
+     ],
+     "was": [
+      52.93,
+      21.1432,
+      5.4674,
+      1.0381,
+      1.4287,
+      "2017-01-04",
+      551264
+     ],
+     "src": "bsexbrl:539437_312017183755_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 21.14 -> 23.78, dii 5.47 -> 2.79. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 2.64 | R1: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.64  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-07-05": {
     "cell": [
@@ -219015,7 +220115,7 @@
    "2020-09-30": {
     "cell": [
      34.56,
-     27.4436,
+     27.1536,
      4.9245,
      4.2548,
      0.0195,
@@ -219024,17 +220124,26 @@
     ],
     "was": [
      34.56,
-     47.4013,
-     15.5368,
+     27.4436,
+     4.9245,
      4.2548,
      0.0195,
      "2020-10-22",
      13108
     ],
-    "src": "bsexbrl:532498_2110202016519_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.40 -> 27.44, dii 15.54 -> 4.92. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.38 | R1: R1-public-label Other CORPORATE BODY-FOREIGN BODY 20.34 public=20.34 fii=0.00 DYNASTY ACQUISITION (FPI) LTD 20.34 foreign->public(new-format:ForeignCompanies) keyword; R1-unresolved Clearing Member 0.11  keyword; R1-foreign-holders Bodies Corporate 10.1 public=10.10 fii=0.00 PIRAMAL ENTERPRISES LIMITED 9.97 foreign->public(new-format:BodiesCorporate); R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.01 public=0.00 fii=0.01  keyword; R1-unreso. Evidence: _shp_164_audit.json",
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 10.10 (named: PIRAMAL ENTERPRISES LIMITED 9.97); 'Clearing Member' 0.11; 'LIMITED LIABLITY PARTNERSHIP/ CORPORATE BODY - LLP' 0.03; 'Trust' 0.15 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 27.4436 -> 27.1536, dii 4.9245 -> 4.9245.",
     "superseded": {
      "cell": [
+      34.56,
+      27.4436,
+      4.9245,
+      4.2548,
+      0.0195,
+      "2020-10-22",
+      13108
+     ],
+     "was": [
       34.56,
       47.4013,
       15.5368,
@@ -219043,17 +220152,30 @@
       "2020-10-22",
       13108
      ],
-     "was": [
-      34.56,
-      27.0536,
-      35.8845,
-      4.2548,
-      0.0195,
-      "2020-10-22",
-      13108
-     ],
      "src": "bsexbrl:532498_2110202016519_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.01; DYNASTY ACQUISITION (FPI) LTD 20.34) \u2014 moved dii -> fii (20.3477 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.40 -> 27.44, dii 15.54 -> 4.92. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.38 | R1: R1-public-label Other CORPORATE BODY-FOREIGN BODY 20.34 public=20.34 fii=0.00 DYNASTY ACQUISITION (FPI) LTD 20.34 foreign->public(new-format:ForeignCompanies) keyword; R1-unresolved Clearing Member 0.11  keyword; R1-foreign-holders Bodies Corporate 10.1 public=10.10 fii=0.00 PIRAMAL ENTERPRISES LIMITED 9.97 foreign->public(new-format:BodiesCorporate); R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.01 public=0.00 fii=0.01  keyword; R1-unreso. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       34.56,
+       47.4013,
+       15.5368,
+       4.2548,
+       0.0195,
+       "2020-10-22",
+       13108
+      ],
+      "was": [
+       34.56,
+       27.0536,
+       35.8845,
+       4.2548,
+       0.0195,
+       "2020-10-22",
+       13108
+      ],
+      "src": "bsexbrl:532498_2110202016519_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.01; DYNASTY ACQUISITION (FPI) LTD 20.34) \u2014 moved dii -> fii (20.3477 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2016-06-30": {
@@ -241612,7 +242734,7 @@
     "cell": [
      52.75,
      4.2662,
-     12.8471,
+     7.3171,
      5.7542,
      0.0,
      "2021-01-20",
@@ -241621,14 +242743,36 @@
     "was": [
      52.75,
      4.2662,
-     11.3171,
+     12.8471,
      5.7542,
      0.0,
      "2021-01-20",
      64645
     ],
-    "src": "bsexbrl:505714_201202111288_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.32 -> 12.85, fii 4.27 -> 4.27. R1-unresolved Bodies Corporate 0.0 KYB CORPORATION 5.53 ?->-(-) keyword; R1-uncovered-remainder 5.53; R2-label Others ICICI LOMBARD GENERAL INSURANCE COMPANY LTD 1.52 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 5.53 (named: KYB CORPORATION 5.53) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 4.2662 -> 4.2662, dii 12.8471 -> 7.3171.",
+    "superseded": {
+     "cell": [
+      52.75,
+      4.2662,
+      12.8471,
+      5.7542,
+      0.0,
+      "2021-01-20",
+      64645
+     ],
+     "was": [
+      52.75,
+      4.2662,
+      11.3171,
+      5.7542,
+      0.0,
+      "2021-01-20",
+      64645
+     ],
+     "src": "bsexbrl:505714_201202111288_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.32 -> 12.85, fii 4.27 -> 4.27. R1-unresolved Bodies Corporate 0.0 KYB CORPORATION 5.53 ?->-(-) keyword; R1-uncovered-remainder 5.53; R2-label Others ICICI LOMBARD GENERAL INSURANCE COMPANY LTD 1.52 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-03-31": {
     "cell": [
@@ -308569,6 +309713,52 @@
     ],
     "src": "bseaspx:514304:71:New",
     "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with a'): BSE ShareholdingPattern.aspx (qtrid 71): the institutions block's 'Any Others (Specify)' row is 'NRI Company' (3 holders, 7,356,631 shares = 2.5815%) - a non-resident company, not an institution; the page reader's exclusion list knew 'Non-Resident Indian' but not 'NRI Company'. dii 2.74 -> 0.1585; fii unchanged."
+   }
+  },
+  "RAMCOSYS": {
+   "2019-09-30": {
+    "cell": [
+     54.71,
+     5.2873,
+     14.0549,
+     12.9137,
+     0.0,
+     "2019-10-13",
+     13753
+    ],
+    "was": [
+     54.71,
+     5.2873,
+     15.4049,
+     12.9137,
+     0.0,
+     "2019-10-13",
+     13753
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 1.35 (named: BT FUNDS MANAGEMENT LIMITED AS\nTRUSTEE O 1.35) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 5.2873 -> 5.2873, dii 15.4049 -> 14.0549."
+   },
+   "2020-03-31": {
+    "cell": [
+     54.71,
+     4.7622,
+     13.0803,
+     12.9137,
+     0.0,
+     "2020-04-16",
+     15624
+    ],
+    "was": [
+     54.71,
+     4.7622,
+     14.3103,
+     12.9137,
+     0.0,
+     "2020-04-16",
+     15624
+    ],
+    "src": "ledger",
+    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 1.23 (named: BT FUNDS MANAGEMENT LIMITED AS\nTRUSTEE O 1.23) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII. fii 4.7622 -> 4.7622, dii 14.3103 -> 13.0803."
    }
   }
  },

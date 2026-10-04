@@ -20916,6 +20916,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     TCIEXP OCB-row Arcee via the holder memory; UJJIVAN 2016-18 DII -3.55 x10; POONAWALLA 2018-19 DII x4); `reply7/cmp_runs.json`.
     The ledger is right for the batch-7..10 decisions; these need a pass of their own before any re-run of the row-level code is
     written. The holder memory carries a curated placement into other quarters as 'memory' and skips option A (TCI / TCIEXP).
+  - **Batch 11 - the label bug (user 2026-10-04 "yes fix the label bug").** The R1 label reader (`eval_filing` lab_kind) and D1's
+    `d1_lab_class` did not recognise non-institution categories a company writes on a sub-row of its institutions 'Any Other' block -
+    'Bodies Corporate(s)' (LAB_PUB knew only 'corporate bodies'), 'Central / State Government', 'IEPF', 'Trust', 'Clearing Member' - so
+    the row read as UNLABELLED and D1 / rest-follows moved it into FII (or a named holder stayed in DII). Fix: `noninst_label()` - the
+    WHOLE label after the 'Other / Others / Any Other' prefix must be such a category (a holder's NAME containing 'Trust' / 'Employee'
+    is not: Goldman Sachs Trust funds, City of New York Group Trust, Pacific Assets Trust plc, the Boeing and Duke University plans
+    stay FII); never for a label LAB_FII or DOMLAB already reads. Not added to LAB_PUB, so R2 still reads named domestic institutions
+    filed under 'Bodies Corporate' among non-institutions. Measured: the corrected code vs the committed code on identical data
+    (`reply7/wide3` vs `reply7/origcode2/wide3`, `cmp_label.py`; the store-wide first pass with the too-broad pattern listed 65
+    cells - the name-labels and a mixed 'Foreign Corp Bodies (including FDI)' row (SECURKLOUD Jun-17) were then excluded): 54 cells
+    written (`v4work/p_b11.json`), each = the misread row exactly: IDFC Jun-16..Mar-17 'BODIES CORPORATE' 5.44..4.58 out of FII
+    (46.33 = Quantmac) + Dec-17 5.34 out of DII; IDFCFIRSTB Sep-16..Dec-18 2.5-3.3 out of FII; TNPL Jun/Sep-16 government row 4.07
+    (10.28 = Quantmac); CINEVISTA Sep-19..Jun-22 its whole ~1 % 'FII' (0 from Sep-22 on); NH Dec-19..Sep-21; SHILPAMED 2016-17 (only the
+    'Bodies Corporate' part - its Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate, unapproved
+    question); GABRIEL Dec-20 KYB Corporation 5.53 out of DII (12.85 -> 7.32 = its neighbours); RAMCOSYS, CYIENT, SHRIRAMCIT,
+    SUPRAJIT, POONAWALLA Jun-18 (IEPF 0.10), VEEDOL (IEPF), BAJFINANCE, BOMDYEING, NEUEON. Re-run on the 23 symbols: no proposal on a
+    written cell except the pre-existing parts (SHILPAMED Baring, POONAWALLA Jun-18 DII -4.13). An FDI-label addition to LAB_FII was
+    tried and dropped (it would have read the mixed SECURKLOUD row as FII; rows labelled only 'FDI' already reach FII through D1).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

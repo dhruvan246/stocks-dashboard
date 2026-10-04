@@ -112,7 +112,7 @@ while (_y, _m) <= (2022, 6):
 _FORW = re.compile(r"foreign|forign|foriegn|global|overseas|\bfii|\bfpi|\bqfi|sovereign", re.I)
 _DRW = re.compile(r"\bdr\b|depositor|\bgdr|\badr", re.I)
 def d1_lab_class(L):
-    if _DRW.search(L) or D.LAB_PUB.search(L): return "pub"
+    if _DRW.search(L) or D.LAB_PUB.search(L) or D.noninst_label(L): return "pub"     # §164r batch 11: Bodies Corporate / Government / IEPF ... rows are not FII
     if D.LAB_FII.search(L) or (_FORW.search(L) and D.DOMLAB.search(L)): return "fii"
     if D.DOMLAB.search(L): return "dii"
     return None
