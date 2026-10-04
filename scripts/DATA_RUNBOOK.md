@@ -20802,6 +20802,46 @@ Rebuilt feed moves exactly these 154 rows; guards green.
   archive URL); ~100 more §153 NSE-submissionDate moves whose XBRL is stamped > 7 days after the date (SUNDARMFIN's question,
   needs a per-row document check); curated FII placements still standing in §164 / SW-2 entries that batch 7-8 never re-tested
   (NH Jun-16..Mar-18 CDC Group while NH Jun-18+ is public; TCIEXP Arcee; JKPAPER DEG) - for the user.
+- **Batch 9 (user 2026-10-04, all four asks approved after the batch-8 report).**
+  - **VBL 29-Jul-2019 (Quantmac ruling E, "serve the consistent field").** Measured first: in NSE's reachable window (Sep-2021 on,
+    43,486 master filings) no other file is rescued - our reader refuses 54 there, 53 with no FII line at all and 1 whose share
+    counts fail too (`reply7/repro/vbl_scan.py`). The supplied file is written as an event fill (`shp_event_fills.json`, NSE upload
+    day 31-Jul-2019): promoter 73.56 / FII 14.4684 / DII 6.4084 / MF 6.1875, each reconciling with its own share count; only the
+    printed public 43.23 and non-institutions 22.35 contradict their counts and neither is served.
+  - **The nine scanned 2015 PDFs, read as page images** (PyMuPDF render at 100 dpi; `reply7/pdf2015/`). Every institutions row BSE's
+    page shows as 'Others' is labelled in the company's own PDF: REDINGTON Jun-15 FPI Corporate Cat I-III 11.95 -> 39.15; NAVA Jun-15
+    the 5.48 'Others' = Unclaimed 0.72 + Directors 0.32 + Employee Welfare Trust 1.57 + 'viii. Foreign Portfolio Investors' 2.88
+    (only the last is FII) -> 32.03; POONAWALLA Sep-15 'Foreign Bodies Corporate' 30.89 (Zend Mauritius VC 14.48, Indium V
+    (Mauritius) 8.60, Leapfrog 7.82 - no mark in the PDF's or BSE's holder list, no institution listing: public under option A) +
+    'Multilateral Development Organization (IFC)' 9.71 (option A: FII) + FPI Cat II/III -> 32.69; CASTEXTECH Sep-15 'Foreign
+    Financial Institutions/Bank' 1.73 -> 22.60; MONSANTO 'Foreign Mutual Fund' + FPI (Corporate) -> 3.45; VIPIND FPI (Corporate)
+    -> 3.87; KITEX FPI Cat I/II -> 2.93; ELGIEQUIP FPI (Corporates) -> 13.37 (all = Quantmac). BLUESTARCO Jun-15 kept at 7.84: the
+    PDF labels the page's extra non-institution 0.82 'Foreign Portfolio Investor (Individual)' (an FPI is FII for us; Quantmac
+    leaves it out). POONAWALLA Mar-2013..Jun-2015: the same company-type sub-row (Zend; + Indium V, Leapfrog from Jun-2015) had been
+    placed FII by its Mauritius name ("regex") - public now (= Quantmac); from Dec-2015 the company itself prefixes these holders
+    'QFI -' and they stay FII (both sides). BSE's page shows Leapfrog with NO prefix - our page-era read's "filer FII/FPI/QFI
+    prefix" for it was wrong.
+  - **Curated-list leftovers** (`reply7/curated_left.py` / `curated_fix.py`): 342 curated placements live; on reading each,
+    those on a row the company labels 'Foreign Institutional Investors' stay FII by the label (ASTRAL Tree Line, EVEREADY,
+    MCLEODRUSS, VAIBHAVGBL, WOCKPHARMA) and institution-listed holders stay (IFC, CDC India Opportunities 3, Fidelity Puritan
+    Balanced 3 - the corpus, not the evidence file, lists the last two). Public now, inside the company's Institutions block with
+    no institution listing anywhere (option A): CDC Group plc (NH Jun-16..Mar-18, UJJIVAN Sep-16..Dec-17), JP Morgan Mauritius
+    Holdings IV (NH Jun-16..Jun-17, "regex" only), Arcee Holdings Ltd 'OCB' (TCI Sep-16..Mar-18, TCIEXP Dec-16..Jun-19 incl. the
+    14-Dec-2016 event), DEG (JKPAPER Dec-16..Jun-17 incl. 3 events) - 37 cells, holder shares from each filing's own counts.
+    Deliberate holds kept: RKFORGE, POLYCAB, CHOLAFIN (page-era IFC zig-zag).
+  - **Lesson.** The batch-8 option-A code tests a holder only on a company-type or FII-labelled sub-row; on an UNLABELLED institutions
+    'Other' row a curated / name-pattern holder still went to FII. And `inst_listed()` reads only shp_foreign_holder_evidence.json:
+    names the corpus lists as institutions but the evidence file lacks read as unlisted - extend the evidence file from the corpus
+    before the next row-level run (open).
+  - **§153 NSE dates re-checked** (`reply7/d153_check.py` + `d153_bse.py`): the 258 shp_lag_fix entries the §153 sweep dated by NSE's
+    submissionDate. A document "carries the stored figures" when its parse has the same promoter and FII (0.01) and holder count;
+    an NSE file dates from its submission day when NSE generated it that day (re-broadcast stamps ignored - ASIANPAINT Sep-21: file
+    21-Oct-2021, broadcast 7-Jan-2022), else from its broadcast day; a BSE version from its filing day. Result: 110 kept (a document
+    with the figures was public on the §153 date), 133 moved LATER to the first document carrying the figures (99 within 14 days;
+    the largest: ANDHRSUGAR Jun-25, KARURVYSYA Jun-25, SPIC Sep/Dec-25 - each re-filed months later and BSE's list carries no
+    version of the quarter), 3 option C (BSE's original kept with its own date, the stored figures as the re-filing: BPL Mar-25,
+    GAMMONIND Jun-26, KSOILS Dec-25), 12 held (no exchange document now carries the stored figures - typically a row-level heal;
+    left as dated).
 
 ### 164j. Quantmac reply v3 (26-Sep): foreign-labelled rows were read as domestic; named foreign holders now need a document
 **Bug (reported by Quantmac for CUMMINSIND / IPCALAB, measured on origin).** `_shp_dii_rowfix.eval_filing` R1 set a category label
