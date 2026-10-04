@@ -20971,6 +20971,19 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     + the 26-Dec-2016 event row (dii 7.8099 -> 0.3218). FII Jun-16 ... Jun-20 now 13.74 / 18.52 / 19.95 / 18.91 / 18.66 / 18.80-19.06
     (Quantmac and Trendlyne ~19.0). Baring's FPI vehicle '...Fund III Listed Investments Limited' (52 listings) stays FII. Targets =
     the rules engine's own (D1 run `reply7/wide5`); a re-run proposes nothing more for SHILPAMED.
+    **FDI-line check across the PIT Nifty 500 (2026-10-04, read-only; user: "check this across our site for all nifty 500 stocks").**
+    Every roster name's 2022-form filings read for the 'Foreign Direct Investment' line (Institutions (Foreign)); its holders tracked
+    back through the company's 2015-22 XBRL rows and BSE's >1% pages; each of Quantmac's 106,001 month-ends compared at the quarter our
+    engine serves (`~/stocks-cache/shp/fdi_scan/`: scan_filings.py, compare.py, report.py; 4,911 missing XBRLs fetched). Measured:
+    54 of 1,095 names ever file an FDI line; 29 of today's members (URBANCO 53.96 of FII 55.29, YESBANK 33.39, 360ONE 28.25,
+    REDINGTON 24.12, PAYTM 23.80, ITC 22.91 ...). Quantmac COUNTS the FDI line from the 2022 form (1,048 stock-months equal ours; ITC
+    Aug-2026 34.22) and leaves those holders out only before it (237 older stock-months: ITC, JMFINANCIL, IDFCFIRSTB, RESPONIND, PAYTM,
+    ETERNAL). Trendlyne never counts it (28 of 28 Jun-2026 pages: its FII = ours minus the FDI line within 0.02). Our defect: about 19
+    companies first filed these holders under 'Foreign Companies' and moved the same shares onto the FDI line a quarter or more later;
+    `newmap_for` reads only the FIRST 2022-form filing, so older quarters leave them out and our FII jumps at the move with no trade -
+    DELHIVERY 9.20 -> 67.62 (Mar-2023), FIVESTAR +41.5, 360ONE +38.1, ASTERDM +30.7, POLICYBZR +30.1, KALYANKJIL +27.3, STARHEALTH +25.2,
+    REDINGTON +22.9, JSWSTEEL 10.75 -> 26.04 (JFE Steel 15.0, Dec-2022); ~585 older stock-months. Not changed - definition decision
+    with the user (keep counting FDI and carry back from ANY 2022-form FDI placement, or stop counting the FDI line).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
