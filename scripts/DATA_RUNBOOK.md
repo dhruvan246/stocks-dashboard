@@ -20985,7 +20985,7 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     REDINGTON +22.9, JSWSTEEL 10.75 -> 26.04 (JFE Steel 15.0, Dec-2022); ~585 older stock-months. Not changed - definition decision
     with the user (keep counting FDI and carry back from ANY 2022-form FDI placement, or stop counting the FDI line).
     **Batch 14 = Option A (2026-10-04, user: "yes go with A"): a holder the company itself files on its 'Foreign Direct Investment' line
-    in ANY of its filings is FII in EVERY quarter where the company lists it on a public line - 470 cells / 36 companies, FII only (dii
+    in ANY of its filings is FII in EVERY quarter where the company lists it on a public line - 470 cells / 35 companies, FII only (dii
     untouched in every cell), label "§164r batch 14".** Registry `scripts/shp_fdi_holders.json` (57 companies, 192 holders, first / last
     FDI-line filing each, read from every 2022-form filing of the PIT roster; 9,145 XBRLs fetched). Code: `_shp_dii_rowfix.fdi_line()` (strict
     `_same_holder` + `OWN_NAME` aliases proven by identical share counts: PARAGMILK 'Internation Finance Corporation' 5,733,713; SMLMAH
@@ -20993,7 +20993,7 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     International Europe B.V.' 33,467,580 Mar -> Jun-2012) checked first by `SymCtx.hclass` and `FiiCtx.hclass_p`; new `_shp_fii_rowfix.py
     fdi22` stage (2022-form rows: registry holder on a public B4 line - Foreign Companies / Bodies Corporate / NRI / Other Non-Institutions;
     promoter A2 lines never read; share counts); `_shp_d1_rowfix.prior_inputs` reads the batch's non-institution part (`mv159_add` in
-    `_shp_164_audit.json`) so later runs do not see a split_unknown. Cells: 284 old-format quarters (§158 / D1 / §159 re-run, new code minus
+    `_shp_164_audit.json`) so later runs do not see a split_unknown. Cells: 283 old-format quarters (§158 / D1 / §159 re-run, new code minus
     the original code on identical data - `reply7/origcode3`), 22 old-format event rows (§164q runner, same delta), 84 2022-form rows, 79
     pre-2016 page cells (holder on the >1% list outside the page's FII-type rows; guarded: NELCO 2009-15 untouched - Schlumberger IS its
     3-holder FII row; VAIBHAVGBL / AHLUCONT Nalanda inside the FII row; RELIGARE 2012-14 IFC 1,000 shares under the 0.05 floor), JSWSTEEL
