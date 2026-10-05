@@ -245,13 +245,14 @@
    "low": 16.0,
    "close": 20.2,
    "vwap": 18.76,
-   "rule": "open",
-   "cls": "rebased",
-   "factor": 0.9559,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.9902,
    "raw_drop": 0.9902,
-   "flatten_exday": false,
-   "why": "auction open: the day's price band was reset around the open (low 16.00 / high 20.45)",
-   "filing": "06-Oct-2008: Arrow Webtex Limited has informed the Exchange that the Board of Directors at its meeting held on September 30, 2008 fixed October 31, 2008 as record date for ascertaining the entitlement of the shareholders of the company for allotment of shares of Arrow Textiles Ltd."
+   "flatten_exday": true,
+   "why": "open 19.50 was a lone print the day traded >5% away from (low 16.00 / high 20.45 / close 20.20); ex-date before NSE's 2015-10-01 restructuring auction - re-classified 2026-10-05 (runbook §179f): the old band test read the high 20.45 (+4.9%) as a band limit measured from the open, but the day's low 16.00 sits 17.9% below the open, which that band forbids",
+   "filing": "06-Oct-2008: Arrow Webtex Limited has informed the Exchange that the Board of Directors at its meeting held on September 30, 2008 fixed October 31, 2008 as record date for ascertaining the entitlement of the shareholders of the company for allotment of shares of Arrow Textiles Ltd.",
+   "repriced_from": 0.9559
   },
   {
    "sym": "MPSLTD",
@@ -302,13 +303,14 @@
    "low": 30.0,
    "close": 34.2,
    "vwap": 34.2,
-   "rule": "open",
-   "cls": "rebased",
-   "factor": 0.8855,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.8424,
    "raw_drop": 0.8424,
-   "flatten_exday": false,
-   "why": "auction open: the day's price band was reset around the open (low 30.00 / high 36.70)",
-   "filing": "08-Apr-2009: In this connection the Company has now informed the Exchange that it has been decided to fix April 24, 2009 as the record date for the purpose of ascertaining the entitlement of shares of Bhilwara Technical Textiles Limited, as per the exchange ratio decided and informed earlier, to the Shareholders of the Company pursuant to Scheme of Arrangement/De-merger as approved by the Hon'ble High Court of Rajasthan at Jodhpu"
+   "flatten_exday": true,
+   "why": "open 35.95 was a lone print the day traded >5% away from (low 30.00 / high 36.70 / close 34.20); ex-date before NSE's 2015-10-01 restructuring auction - re-classified 2026-10-05 (runbook §179f): the old band test read the high 36.70 (+2.1%) as a band limit measured from the open, but the day's low 30.00 sits 16.6% below the open, which that band forbids",
+   "filing": "08-Apr-2009: In this connection the Company has now informed the Exchange that it has been decided to fix April 24, 2009 as the record date for the purpose of ascertaining the entitlement of shares of Bhilwara Technical Textiles Limited, as per the exchange ratio decided and informed earlier, to the Shareholders of the Company pursuant to Scheme of Arrangement/De-merger as approved by the Hon'ble High Court of Rajasthan at Jodhpu",
+   "repriced_from": 0.8855
   },
   {
    "sym": "SMARTLINK",
@@ -378,13 +380,14 @@
    "low": 701.1,
    "close": 1003.5,
    "vwap": 1012.57,
-   "rule": "open",
-   "cls": "rebased",
-   "factor": 0.8474,
+   "rule": "close",
+   "cls": "stray",
+   "factor": 0.8517,
    "raw_drop": 0.8517,
-   "flatten_exday": false,
-   "why": "auction open: the day's price band was reset around the open (low 701.10 / high 1047.00)",
-   "filing": "02-Mar-2010: Composite Scheme of Arrangement between BF Utilities Limited (Demerged Company) ... and BF Investment Limited (Resulting Company) [demerger of the investment business]; BF Investment first traded on NSE 2011-01-14"
+   "flatten_exday": true,
+   "why": "open 998.40 was a lone print the day traded >5% away from (low 701.10 / high 1047.00 / close 1003.50); ex-date before NSE's 2015-10-01 restructuring auction - re-classified 2026-10-05 (runbook §179f): the old band test read the high 1047.00 (+4.9%) as a band limit measured from the open, but the day's low 701.10 sits 29.8% below the open, which that band forbids",
+   "filing": "02-Mar-2010: Composite Scheme of Arrangement between BF Utilities Limited (Demerged Company) ... and BF Investment Limited (Resulting Company) [demerger of the investment business]; BF Investment first traded on NSE 2011-01-14",
+   "repriced_from": 0.8474
   },
   {
    "sym": "ZEEMEDIA",
