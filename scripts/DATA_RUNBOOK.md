@@ -21553,6 +21553,25 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     never reached still counted IFC as fii: Dec-2016 45.61 -> 42.75 (block 13,168,025 = IFC 13,167,025 + 1,000); the 16-Sep-2017 event
     39.21 -> 36.571 (= Quantmac 36.5708; the §164q event re-read had moved IFC dii -> fii); Dec-2017 37.10 -> 34.85 (block 11,159,320 =
     'Foreign Bank' 1,000 + IFC 11,158,320 by the company's own total; its IFC line still prints Sep-2017's 13,167,025).
+    **Batch 30 part 28 (label "§164r batch 30 part 28 (SW-2 survivors)"; 22 cells).** Some cells still rest on the SW-2 other-institutions
+    sweep (2026-08-30), which moved whole institutions Any-Other blocks into fii by how the names looked. `~/stocks-cache/shp/audit_all/
+    sw2/sweep.py` lists those whose named holders lack today's evidence: 95 cells, most of them FII-type labels SW-2 had listed as
+    'holders' ('Foreign Bank', 'Foreign Mutual Fund' - fii by label, no change). Read from each filing, the errors are:
+    HEROMOTOCO Dec-15..Dec-16 -2.78 / -2.78 / -1.85 / -1.22 / -1.21. LATHE INVESTMENT PTE LTD (Bain's vehicle) is labelled 'Foreign
+    Corporte Bodies' by the company itself in Dec-2015 and has no institution listing anywhere.
+    VESUVIUS Mar-18..Sep-19 -0.46..-0.48. Standard Life Investments GS Mauritius Holdings Ltd, 93,461 / 96,431 sh, is named in
+    Mar/Jun-2018 and Jun-2019 and sits in the company's 'Private Equity Fund' row in Dec-18 / Mar-19; there is no listing anywhere.
+    PIIND Mar-16, Dec-16, Mar-17 -1.53 / -0.80 / -0.80. Rowanhill Investments is the company's 'Foreign Corporate Bodies' holder; Mar-16
+    and Dec-16 now equal Quantmac.
+    VEEDOL Dec-16..Sep-17 -0.015: one 'FOREIGN NATIONAL' (528 sh) beside the FII row.
+    KSCL Mar-17 -0.007: 'Foreign Companies' 4,833 sh.
+    ABCAPITAL Mar / Jun-22: the block's 'Qualified Institutional Buyer' row (57,800 / 235,386 sh) moves fii -> dii.
+    Not changed:
+    - FORTIS / JKPAPER: IFC is institution-listed; the FCCB lines carry 0 sh.
+    - RENUKA: Standard Chartered Bank UAE is fii by the company's 2022 form.
+    - JAMNAAUTO: 'CITYGROUP GLOBAL MARKETS MAURITIUS' = the documented Citigroup entity.
+    - PHOENIXLTD: Nordea sits inside the company's own 'Foreign Inst. Investor' row.
+    - DHANI: with the user.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
