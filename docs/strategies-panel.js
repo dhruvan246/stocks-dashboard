@@ -1483,7 +1483,7 @@ async function feedPull(force){
     (doc.portfolios || []).forEach(pf => {
       if (!pf.strategy || pf.archived) return;
       const rows = (doc.holdings || []).filter(h => h.pf === pf.id)
-        .map(h => ({ sym: String(h.sym || '').replace(/\.(NS|BO)$/, ''), qty: Math.floor(+h.qty || 0), avg: +h.avg || 0 }))
+        .map(h => ({ sym: String(h.sym || '').replace(/\.(NS|BO)$/, ''), qty: Math.floor(+h.qty || 0), avg: +h.avg || 0, date: String(h.date || '') }))
         .filter(h => h.sym && h.qty > 0);
       map[identityKey(pf.strategy)] = { pfId: pf.id, method: (pf.strategy.method || 'hold'),
                                         topN: (pf.strategy.topN || 3), rows: rows };
@@ -1688,7 +1688,9 @@ function sellExits(it){
   let legOk = true, legMsg = '';
   if (!isReset && p && RW.sellIn && marketOpen() && !livePicksOk(p)){ legOk = false;
     legMsg = p.live ? 'Live picks are stale \u2014 refresh them' : 'Switch to \u26a1 Live picks \u2014 the ' + RW.tlab + ' close screen bakes only this evening'; }
-  if (!isReset && p && RW.buyIn && (p.live || p.asOf !== RW.tIso)){ legOk = false;
+  /* buy days judge EVERY strategy on the official T-close screen — a reset strategy too, since the cash plan keeps its
+     re-picks (5 Oct: on a buffer day #4's keeps were judged on the 1 Oct screen and its kept CPPLUS read as dropped) */
+  if (p && RW.buyIn && (p.live || p.asOf !== RW.tIso)){ legOk = false;
     legMsg = p.live ? 'Switch to Rebalance picks \u2014 stragglers are judged on the official ' + RW.tlab + ' close screen' : 'Waiting for the ' + RW.tlab + ' close in the data (picks are as of ' + p.asOf + ') \u2014 refresh picks'; }
   const rows = (held && held.rows.length) ? held.rows.map(h => {
       const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
@@ -1696,7 +1698,11 @@ function sellExits(it){
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
       const lt = (FEED.symTot || {})[h.sym];
       const mism = (zt != null && lt != null && zt !== lt) ? (zt - lt) : null;   // demat vs strategy-ledger, both ways
-      const stays = isReset ? !!(cpKeep && cpKeep.has(h.sym)) : !!(pickSet && pickSet.has(h.sym));
+      /* a row opened on/after T is THIS rebalance's new book — never an exit of it (the box's ledger rule, 'fresh'): after
+         the books update, a reset strategy's fresh buys read as exits and a buffer day offered to sell #4's new
+         AEGISLOG + SYRMA (dry rehearsal, 5 Oct) */
+      const fresh = !!(h.date && h.date >= RW.tIso);
+      const stays = fresh || (isReset ? !!(cpKeep && cpKeep.has(h.sym)) : !!(pickSet && pickSet.has(h.sym)));
       const fv = pickFV(fmap[h.sym], cols);
       const keep = Z.connected ? keeperQty(h.sym, it) : null;
       const busy = Z.connected && !stays && (+sent[h.sym] || 0) > 0 && sellingElsewhere(h.sym, it);   // zba40: another basket is still selling it — nothing of ours to offer until it ends
