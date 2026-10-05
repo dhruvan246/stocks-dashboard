@@ -44,6 +44,11 @@ body{
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .err{color:var(--down); font-size:14px; margin-top:16px; max-width:320px; line-height:1.5}
 .tapHint{position:fixed; bottom:18px; left:0; right:0; text-align:center; font-size:11px; color:var(--text-2); opacity:.7}
+.keyForm{display:none; gap:8px; margin:14px auto 0; max-width:340px}
+.keyForm.on{display:flex}
+.keyForm input{flex:1; min-width:0; background:var(--surface); color:var(--text); border:1px solid var(--border);
+  border-radius:10px; padding:10px 12px; font:inherit; font-size:14px; user-select:text; -webkit-user-select:text}
+.keyForm button{background:var(--up); color:#fff; border:0; border-radius:10px; padding:10px 16px; font:inherit; font-size:14px; font-weight:700; cursor:pointer}
 </style>
 </head>
 <body>
@@ -56,6 +61,10 @@ body{
   </div>
   <div class="status"><span class="dot" id="dot"></span><span id="status">loading…</span></div>
   <div class="err" id="err"></div>
+  <form class="keyForm" id="keyForm" autocomplete="off">
+    <input id="keyIn" type="password" placeholder="Paste your key" spellcheck="false" autocapitalize="off">
+    <button type="submit">Save</button>
+  </form>
 </div>
 <div class="tapHint">tap anywhere to refresh</div>
 <script>
@@ -83,9 +92,14 @@ async function load(){
   const t=readToken();
   if(!t){
     document.getElementById('hero').textContent='—';
-    document.getElementById('err').textContent='Needs a key: open this page once with ?t=YOUR-TOKEN and it will remember it.';
+    document.getElementById('status').textContent='no key';
+    /* The paste box is the only way in for an installed app (Dock / home screen): it has its own
+       storage, no address bar, and always opens start_url without ?t= (5 Oct 2026). */
+    document.getElementById('err').textContent='Needs a key: paste it below, or open this page once with ?t=YOUR-KEY.';
+    document.getElementById('keyForm').classList.add('on');
     return;
   }
+  document.getElementById('keyForm').classList.remove('on');
   document.getElementById('status').textContent='updating…';
   try{
     const r=await fetch(SUPA+'?token='+encodeURIComponent(t)+'&apikey='+ANON+'&cb='+Date.now(),{cache:'no-store'});
@@ -112,6 +126,18 @@ async function load(){
     document.getElementById('err').textContent=e.message;
   }
 }
+const keyForm=document.getElementById('keyForm');
+keyForm.addEventListener('click', e=>e.stopPropagation());   // typing in the box must not trigger tap-to-refresh
+keyForm.addEventListener('submit', e=>{
+  e.preventDefault();
+  const k=document.getElementById('keyIn').value.trim();
+  if(!k) return;
+  try{ localStorage.setItem('glance_token',k); }catch(err){
+    document.getElementById('err').textContent='Could not save the key here: '+err.message; return;
+  }
+  document.getElementById('keyIn').value='';
+  load();
+});
 document.body.addEventListener('click', load);
 load();
 setInterval(()=>{ if(!document.hidden && marketOpen()) load(); }, 30000);
