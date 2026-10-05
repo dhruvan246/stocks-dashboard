@@ -1,5 +1,15 @@
 # stocks-dashboard — session rules
 
+## ★★★★ FIRST RULE — comparisons with outside sources are judged CELL BY CELL (user, 2026-10-05)
+
+Every cell where our data differs from Quantmac / StockView / Trendlyne / Screener / Moneycontrol / any other source gets its
+OWN verdict, made only after reading THAT cell's own filing (that company, that quarter, the exact rows and arithmetic) in this
+session: OUR ERROR (fix via ledger) / THEIR ERROR (name the row) / RULE DIFFERENCE (name the rule + show the row) / UNKNOWN
+(not read yet — say so). Never claim "ours is right" in bulk, from a sample, a category label, an earlier reply, a classification
+file or a memory note — those have been wrong (1,570 of our cells found wrong in one day of real cell-by-cell reading). Check
+renamed tickers (both ways) and renamed holders first. The user asked for this many times over three months and said they will stop
+using Claude if it happens again. Full rule: DATA_RUNBOOK §0, first rule. Applies to every session and every model.
+
 ## Concurrency contract — multiple writers share this repo, READ FIRST
 
 Three kinds of actors write this repo, often at the same time:
@@ -78,10 +88,6 @@ Standing rule from the user (2026-08-10), applying to data, code, UI, and answer
 Go measure it. Can't measure it? Say "unknown" — a plausible guess presented as fact is worse
 than an admitted gap. (Top golden rule in DATA_RUNBOOK §0; every campaign doc carries the same line.)
 
-**Comparisons with outside sources are judged cell by cell (user, 2026-10-05, after asking many times).** Every cell where we
-differ from Quantmac / Trendlyne / Screener / Moneycontrol / any other site gets its own verdict from THAT cell's own filing, read
-this session. Never claim "ours is right" in bulk, from a sample, from a category label, or from an earlier reply or memory note;
-unread cells are "unknown". Check renamed tickers and holders first. Full rule: DATA_RUNBOOK §0 (first rule).
 
 ## Data work
 
