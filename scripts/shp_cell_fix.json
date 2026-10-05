@@ -44468,15 +44468,15 @@
    "2016-06-30": {
     "cell": [
      53.59,
-     0.5963,
-     20.5155,
-     9.1919,
+     5.1922,
+     15.9193,
+     9.192,
      2.2678,
      "2016-07-18",
      49433
     ],
     "was": [
-     63.01,
+     53.59,
      0.5963,
      20.5155,
      9.192,
@@ -44485,28 +44485,51 @@
      49433
     ],
     "src": "bsexbrl:500378_1872016121853_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06): the same rule one quarter on, so the series has no one-quarter dip - the original Jun-2016 XBRL files CRESTA FUND LTD 11,367,245 and DIMENSIONAL EMERGING MARKETS VALUE FUND 3,328,288 on 'FinancialInstitutionOrBanks' (28,955,546) -> fii (documented foreign funds, batch 27 treatment); FPI 1,906,750; DII = MF 29,391,007 + FI/Banks rest + Insurance 7,251,334 + NBFC 400; total 319,754,117. fii 0.5963 -> 5.1922, dii 20.5155 -> 15.9193.",
+    "exact": true,
     "superseded": {
      "cell": [
-      63.01,
-      0.6,
-      20.52,
-      9.19,
-      2.27,
+      53.59,
+      0.5963,
+      20.5155,
+      9.1919,
+      2.2678,
       "2016-07-18",
       49433
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       63.01,
-      0.6,
-      20.52,
-      9.19,
-      2.27,
-      "2023-02-28",
+      0.5963,
+      20.5155,
+      9.192,
+      2.2678,
+      "2016-07-18",
       49433
      ],
-     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2023-02-28, which is 2434 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:500378_1872016121853_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       63.01,
+       0.6,
+       20.52,
+       9.19,
+       2.27,
+       "2016-07-18",
+       49433
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       63.01,
+       0.6,
+       20.52,
+       9.19,
+       2.27,
+       "2023-02-28",
+       49433
+      ],
+      "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2023-02-28, which is 2434 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2016-12-31": {
@@ -45164,6 +45187,48 @@
     ],
     "src": "bseaspx:500378_51",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.004364 = total (A+B+C) 48364458 / (A+B) 48154308 shares on the same quarter's BSE page; fii 15.42 -> 15.48."
+   },
+   "2015-12-31": {
+    "cell": [
+     51.2688,
+     4.941,
+     18.6826,
+     10.6875,
+     2.3696,
+     "2016-01-22"
+    ],
+    "was": [
+     51.27,
+     0.13,
+     23.49,
+     10.69,
+     2.37,
+     "2016-01-22"
+    ],
+    "src": "bsetable3:500378:88",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, agreed with the DII session): the company's B1f 'Financial Institutions/ Banks' row (31,755,998 sh) names CRESTA FUND LTD 11,367,245 (169 Institutions (Foreign) listings; the company's own revised Dec-2016 filing lists it under FPI Category I) and DIMENSIONAL EMERGING MARKETS VALUE FUND 3,257,302 (76 listings) - documented foreign funds -> fii (the batch 27 BALLARPUR treatment); the rest of the row stays dii (own label; Dec-2015's KUWAIT INVESTMENT AUTHORITY FUND 224 has no listing under that name and stays). FII = FPI 422,225 + the two funds; DII = MF 32,546,739 + FI/Banks rest + Insurance 7,216,061 + NBFC 0; total 304,530,631. fii 0.13 -> 4.941, dii 23.49 -> 18.6826, prom 51.27 -> 51.2688.",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     51.2688,
+     4.9444,
+     17.5712,
+     9.8998,
+     2.3665,
+     "2016-04-18"
+    ],
+    "was": [
+     61.13,
+     0.12,
+     12.27,
+     9.9,
+     2.37,
+     "2016-04-20"
+    ],
+    "src": "bsetable3:500378:89",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, agreed with the DII session): the company's B1f 'Financial Institutions/ Banks' row (30,850,393 sh) names CRESTA FUND LTD 11,367,245 (169 Institutions (Foreign) listings; the company's own revised Dec-2016 filing lists it under FPI Category I) and DIMENSIONAL EMERGING MARKETS VALUE FUND 3,328,288 (76 listings) - documented foreign funds -> fii (the batch 27 BALLARPUR treatment); the rest of the row stays dii (own label; Dec-2015's KUWAIT INVESTMENT AUTHORITY FUND 224 has no listing under that name and stays). FII = FPI 361,658 + the two funds; DII = MF 30,148,014 + FI/Banks rest + Insurance 7,206,688 + NBFC 0; total 304,530,631. fii 0.12 -> 4.9444, dii 12.27 -> 17.5712, prom 61.13 -> 51.2688, date 2016-04-20 -> 2016-04-18 (BSE announcement).",
+    "exact": true
    }
   },
   "JINDCOT": {
@@ -63448,6 +63513,27 @@
     ],
     "src": "bsetable3:513683:89 + bseaspx:513683:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-18 15:51:17; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): 'Foreign Portfolio Investor-Corporate 3' 0.03 filed under non-institutions -> FII (foreign-institution label); 'Foreign Institutional Investors' 0.06 filed under non-institutions -> FII (foreign-institution label). Date unchanged (shp_lag_fix carries the filing day). prom 90.00 -> 90.0000, fii 0.08 -> 0.1607, dii 4.74 -> 4.7458."
+   },
+   "2015-12-31": {
+    "cell": [
+     90.0,
+     0.1346,
+     4.7872,
+     0.1027,
+     0.9795,
+     "2016-01-21"
+    ],
+    "was": [
+     90.0,
+     0.07,
+     5.76,
+     0.1,
+     1.96,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:513683:88",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the stored cell was a third-party fill (shp_fill_thirdparty: ins 1.96 vs the filing's 0.98) - rebuilt from the filing; the non-institutions 'Any Other' sub-rows the company labels 'Foreign Institutional Investors' and 'Foreign Portfolio Investor-Corporate' are fii (R2-FII; = Quantmac 0.1345, their 'decision 1'); dii = MF + FI/Banks (LIC) + Insurance + NBFC; B2 Central/State Govt (SIPCOT) is not an institution. FII = FPI 1,170,022 + FVCI 0 + the company's FII/FPI-labelled rows ('Foreign Institutional Investors' 807,800; 'Foreign Portfolio Investor-Corporate' 280,129) on 1,677,709,600 sh. fii 0.07 -> 0.1346, dii 5.76 -> 4.7872, mf 0.1 -> 0.1027, ins 1.96 -> 0.9795, prom 90.0 -> 90.0.",
+    "exact": true
    }
   },
   "ORCHPHARMA": {
@@ -222899,24 +222985,33 @@
    "2016-03-31": {
     "cell": [
      38.8168,
-     18.9048,
+     19.0825,
      9.8926,
      4.0219,
      1.2705,
      "2016-04-16"
     ],
     "was": [
-     44.3,
-     21.5752,
-     11.29,
-     4.59,
-     1.45,
+     38.8168,
+     18.9048,
+     9.8926,
+     4.0219,
+     1.2705,
      "2016-04-16"
     ],
-    "src": "bseaspx:500477:89+nseresults:1008206",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+    "src": "bsetable3:500477:89",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 had been left out; 'FOREIGN INSTITUTIONAL INVESTORS-DR' 88,500 is depository-receipt stock - out of FII (user rule) - and had been counted. = Quantmac 19.0825. Base = Table I's full count (the \u00a7164p re-base). FII = FPI 180,710,605 + FVCI 0 + the company's FII/FPI-labelled rows ('FOREIGN INSTITUTIONAL INVESTORS' 357,217,540; 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701) on 2,845,876,634 sh. fii 18.9048 -> 19.0825.",
+    "exact": true,
     "superseded": {
      "cell": [
+      38.8168,
+      18.9048,
+      9.8926,
+      4.0219,
+      1.2705,
+      "2016-04-16"
+     ],
+     "was": [
       44.3,
       21.5752,
       11.29,
@@ -222924,16 +223019,28 @@
       1.45,
       "2016-04-16"
      ],
-     "was": [
-      44.3,
-      7.25,
-      11.29,
-      4.59,
-      1.45,
-      "2016-04-16"
-     ],
-     "src": "bseaspx:500477_89 shpperent",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+     "src": "bseaspx:500477:89+nseresults:1008206",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+     "superseded": {
+      "cell": [
+       44.3,
+       21.5752,
+       11.29,
+       4.59,
+       1.45,
+       "2016-04-16"
+      ],
+      "was": [
+       44.3,
+       7.25,
+       11.29,
+       4.59,
+       1.45,
+       "2016-04-16"
+      ],
+      "src": "bseaspx:500477_89 shpperent",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+     }
     }
    },
    "2015-06-30": {
@@ -237078,6 +237185,27 @@
     ],
     "src": "bsexbrl:531349_2142026145842_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 531349_2142026145842_SHP.xml was public 2026-04-21 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
+   },
+   "2016-03-31": {
+    "cell": [
+     74.65,
+     2.0849,
+     0.23,
+     0.19,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
+     74.65,
+     0.46,
+     0.23,
+     0.19,
+     0.0,
+     "2016-04-21"
+    ],
+    "src": "bsetable3:531349:89",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the company's 'Foreign Portfolio Investors' row filed among non-institutions (998,777 sh) is fii (R2-FII) beside its institutions 'Foreign Institutional Investor' row (278,242); 'Foreign Corporate Bodies' 2,455 and 'Foreign Individuals or NRI' stay public. FII = FPI 0 + FVCI 0 + the company's FII/FPI-labelled rows ('Foreign Institutional Investor' 278,242; 'Foreign Portfolio Investors' 998,777) on 61,250,746 sh. fii 0.46 -> 2.0849.",
+    "exact": true
    }
   },
   "AARTIPHARM": {
@@ -262066,7 +262194,7 @@
    "2015-12-31": {
     "cell": [
      33.78,
-     28.2699,
+     29.7349,
      2.17,
      2.02,
      0.0,
@@ -262074,14 +262202,35 @@
     ],
     "was": [
      33.78,
-     16.48,
+     28.2699,
      2.17,
      2.02,
      0.0,
      "2016-01-28"
     ],
-    "src": "bseaspx:532498_88 shpperent",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.48 -> 28.27, dii 2.17 -> 2.17. seam-fii-reconstruction base 16.48 11.7899; lump-fii Foreign Institutional Investor 11.7899. Evidence: _shp_164_audit.json"
+    "src": "bsetable3:532498:88",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'Foreign Port Folio Investor Corporation' 966,250 had been left out beside the counted 'Foreign Institutional Investor' row (both FII-labelled -> fii, R2-FII); 'Foreign Body' 13,421,889 (Dynasty Acquisition (FPI) Ltd, which the company's 2022-form filing places outside Institutions (Foreign)) stays public, as in every later quarter. Quantmac 16.48 counts the FPI block only - RULE DIFFERENCE. FII = FPI 10,864,202 + FVCI 0 + the company's FII/FPI-labelled rows ('Foreign Port Folio Investor Corporation' 966,250; 'Foreign Institutional Investor' 7,772,673) on 65,926,272 sh. fii 28.2699 -> 29.7349.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      33.78,
+      28.2699,
+      2.17,
+      2.02,
+      0.0,
+      "2016-01-28"
+     ],
+     "was": [
+      33.78,
+      16.48,
+      2.17,
+      2.02,
+      0.0,
+      "2016-01-28"
+     ],
+     "src": "bseaspx:532498_88 shpperent",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.48 -> 28.27, dii 2.17 -> 2.17. seam-fii-reconstruction base 16.48 11.7899; lump-fii Foreign Institutional Investor 11.7899. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -365261,6 +365410,27 @@
     ],
     "src": "bsexbrl:532200_71201713547_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 0.05 -> 0.18, dii 2.51 -> 2.51. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-label Other FOREIGN INSTITUTIONAL INVESTOR 0.13 0.13 FII-labelled row 0.13 -> fii"
+   },
+   "2015-12-31": {
+    "cell": [
+     90.0,
+     0.1258,
+     3.0142,
+     0.3126,
+     1.62,
+     "2016-01-21"
+    ],
+    "was": [
+     90.0,
+     0.0,
+     3.0142,
+     0.3126,
+     1.62,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:532200:88",
+    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions 'Any Other' sub-row the company labels 'Foreign Institutional Institution' (60,383 sh) is fii (R2-FII); the stored fii was 0. FII = FPI 0 + FVCI 0 + the company's FII/FPI-labelled rows ('Foreign Institutional Institution' 60,383) on 48,013,420 sh. fii 0.0 -> 0.1258.",
+    "exact": true
    }
   },
   "OPTOCIRCUI": {

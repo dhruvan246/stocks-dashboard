@@ -21411,6 +21411,21 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     qe+21 convention date (served un-dated) -> BSE announcement dates in `shp_sub_dates.json` (MFSL 01-22, APLAPOLLO 01-25, SUDARSCHEM
     01-23, NH 04-12, RUCHISOYA 04-16). The sweep's DII-only list (rule-4 / NBFC rows, ABGSHIP 'Citi Bank', VIVIDHA 'Banke Behari
     Shoppers', JINDALSAW FI/Banks row, NLCINDIA third-party cell) went to the DII session for review before any write.
+    **Batch 30 part 16 (label "§164r batch 30 part 16 (FII-labelled seam rows, JINDALSAW funds)"): the FII-side seam check**
+    (`r4sweep/fii_sweep.py`: non-institution sub-rows the company labels FII / FPI - fii in full, R2-FII / §159) found 5 cells, each OUR
+    ERROR: NLCINDIA Dec-15 0.07 -> 0.1346 ('Foreign Institutional Investors' + 'Foreign Portfolio Investor-Corporate'; = Quantmac 0.1345;
+    the cell was a third-party fill - rebuilt from the filing, dii 5.76 -> 4.7872); MYSOREBANK Dec-15 0 -> 0.1258; PANACEABIO Mar-16 0.46 ->
+    2.0849 ('Foreign Portfolio Investors' 998,777 among non-institutions); SHRIRAMCIT Dec-15 28.27 -> 29.73 ('Foreign Port Folio Investor
+    Corporation' 966,250; 'Foreign Body' = Dynasty Acquisition (FPI) stays public as in every later quarter - its 2022 form places it
+    outside Institutions (Foreign); Quantmac 16.48 counts the FPI block only = RULE DIFFERENCE); ASHOKLEY Mar-16 18.9048 -> 19.0825
+    ('FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' in, 'FII-DR' 88,500 out - DR rule; = Quantmac). NLCINDIA Jun-16: Quantmac 0.09 leaves out
+    the same two FII-labelled rows it counts in Dec-15 - THEIR ERROR (ours 0.1695 unchanged). JINDALSAW Dec-15 / Mar-16 / Jun-16 (agreed
+    with the DII session): CRESTA FUND LTD (169 Institutions (Foreign) listings; the company's own revised Dec-2016 filing lists it under
+    FPI Category I) and DIMENSIONAL EMERGING MARKETS VALUE FUND (76) sit inside the B1f FI/Banks row -> fii (the batch 27 BALLARPUR
+    treatment); KUWAIT INVESTMENT AUTHORITY FUND 224 (Dec-15, no listing under that name) stays: fii 0.13 / 0.12 / 0.60 -> 4.94 / 4.94 /
+    5.19, dii 23.49 / 12.27 / 20.52 -> 18.68 / 17.57 / 15.92; Mar-16 was a bad fill (prom 61.13 vs the filing's 51.27) - rebuilt, date
+    04-18 (announcement). JINDALSAW Sep-2016 is a quarter we never held (only revised versions on BSE's list; announced 2016-10-13) - left
+    for the missing-quarters work.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
