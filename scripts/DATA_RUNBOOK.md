@@ -21088,6 +21088,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     only). Old vs new code on identical data, all 6 alias symbols: 0 vs 5 proposals, all AVANTIFEED. 5 cells: fii 29.41 -> 4.29 etc.
     (= Quantmac 4.2902), dii +0.015..0.026 (R3 NBFC row). A store-wide re-run of the current row code (`~/stocks-cache/shp/audit_all/
     wide6`) proposes 110 cells (was 302 on 4-Oct); the FII-relevant ones are held for a per-holder review.
+    **Batch 20 = the clear-cut FII part of that re-run (2026-10-05), label "§164r batch 20".** 53 of the 110 cells move FII >= 0.05;
+    38 written, each checked against the holder evidence: KINETICENG 2020-22 x10 (Ashoka Investment Holdings 9.88 on an unlabelled
+    'Any Other' public line; other companies list it under Institutions (Foreign) 10 of 11 times - passes the batch-8 >= 90 % of >= 5
+    standard), ESABINDIA 2016-17 x5 (Acacia Partners LP: the company's own 2022 form, Institutions (Foreign)), ORIENTPPR x5 (D1),
+    DHANUKA x4 (Ashoka PTE 41:1, Ocean Dial), GOODYEAR 2020 x3 (Swedbank Robur 8:0), LAKSHVILAS x2 (Jupiter India Fund 172:2),
+    RUCHISOYA 2017 x2 (Cresta Fund 142:3 among the FCCB holders), EQUITAS 2016-06 (+2.76 of the Foreign Corporate Bodies block after
+    CDC / IFC go public on the company's 2022 placement), RENUKA 2018-03 (Standard Chartered Bank UAE, 'Foreign Bank' tag), SBT,
+    SHRIRAMCIT, ORCHPHARMA, VSTIND, FORTIS. HELD (15): TCI / TCIEXP Arcee (the reader's memory~ path re-proposes what batch 10 took
+    out - a reader quirk, the store is right), ROSSARI India Acorn (open user question), RBLBANK d1acc (batch-7 hold), KSOILS / IEX
+    (passes disagree), BHARATFORG. The 57 DII-only cells are with the DII session. Rebuilt feed: only these 38 rows move; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
