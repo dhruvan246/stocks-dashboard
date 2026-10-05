@@ -21478,6 +21478,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     the other undocumented holders of the unlabelled block were still fii (6.81 / 15.5312 -> 4.496 / 9.8699 = FPI + Rimco only, as
     every IEX cell from Mar-2018); 3IINFOLTD 15-Jan-2018 event - its institutions 'Foreign Banks' row 195,245,241 sh (Standard
     Chartered Bank + DBS Bank) sat in dii -> fii 0.1414 -> 12.359, dii 40.8614 -> 28.6438.
+    **Batch 30 part 22 (label "§164r batch 30 part 22 (per-company review)"; 2026-10-06; 3 cells), each read from its own XBRL.**
+    SHOPERSTOP Jun-2021: the institutions 'Any Other' block (498,840 sh) is a LABELLED Category, 'National Investment Fund' (5 holders),
+    not a foreign-institution label. D1 covers only an unlabelled block, but the §164 reader had read the Category label as an unresolved
+    holder and moved it to fii -> 6.2197 -> 5.7595 (FPI 6,298,559 / 109,358,910). NH Jun-2016: the block's Category rows
+    'CLEARING MEMBERS' 10,456 + 'BODIES CORPORATES' 834,708 are company-type (never FII) and had been counted -> 9.8383 -> 9.4184
+    (FVCI 19,247,576 / 204,360,804; CDC Group plc and JPMorgan Mauritius Holdings IV stay public, batch 9). NH Sep-2017: Category
+    'Clearing Members' 39,515 sat in the block's D1 rest -> 9.0792 -> 9.0599. Verdicts were also recorded (no change) for LAKSHVILAS
+    Jun / Sep-2015: the page's institutions 'Others' row (5 / 9 holders, 2.59 / 3.13) is the bank's own 'Foreign Portolio Investor
+    ( Corporate)' row - so labelled on the Sep-2014 page (1 holder, 578,504 sh; the same holder prints as 'Others' in Dec-2014), with the
+    holder count rising 1 -> 1 -> 3 -> 5 -> 9 into Dec-2015's FPI row (13 holders, 3.35). That makes it FII by the company's own label
+    (RULE DIFFERENCE: Quantmac leaves page-era generic rows out).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

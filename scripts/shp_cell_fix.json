@@ -132677,7 +132677,7 @@
    "2017-09-30": {
     "cell": [
      63.85,
-     9.0792,
+     9.0599,
      14.3617,
      6.6806,
      0.0,
@@ -132686,7 +132686,7 @@
     ],
     "was": [
      63.85,
-     14.8362,
+     9.0792,
      14.3617,
      6.6806,
      0.0,
@@ -132694,11 +132694,12 @@
      33968
     ],
     "src": "bsexbrl:539551_10102017143039_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 14.8362 -> 9.0792 (share counts of 539551_10102017143039_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 30 part 22 (2026-10-06, per-company review): the institutions 'Any Other' block's Category row 'Clearing Members' 39,515 sh is company-type (never FII) and had been counted in the block's D1 rest. FII = FPI + FVCI + CDC India Opportunities (its own 2016 FVCI row) + the unnamed rest less Clearing Members. fii 9.0792 -> 9.0599.",
+    "exact": true,
     "superseded": {
      "cell": [
       63.85,
-      14.8362,
+      9.0792,
       14.3617,
       6.6806,
       0.0,
@@ -132707,15 +132708,37 @@
      ],
      "was": [
       63.85,
-      5.3101,
-      23.8876,
+      14.8362,
+      14.3617,
       6.6806,
       0.0,
       "2017-10-10",
       33968
      ],
      "src": "bsexbrl:539551_10102017143039_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.53pp, holders: CDC GROUP PLC; CDC INDIA OPPORTUNITIES LIMITED; Clearing Members) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 14.3617 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 14.8362 -> 9.0792 (share counts of 539551_10102017143039_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+     "superseded": {
+      "cell": [
+       63.85,
+       14.8362,
+       14.3617,
+       6.6806,
+       0.0,
+       "2017-10-10",
+       33968
+      ],
+      "was": [
+       63.85,
+       5.3101,
+       23.8876,
+       6.6806,
+       0.0,
+       "2017-10-10",
+       33968
+      ],
+      "src": "bsexbrl:539551_10102017143039_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.53pp, holders: CDC GROUP PLC; CDC INDIA OPPORTUNITIES LIMITED; Clearing Members) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 14.3617 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2017-12-31": {
@@ -133381,7 +133404,7 @@
    "2016-06-30": {
     "cell": [
      64.85,
-     9.8383,
+     9.4184,
      10.1903,
      6.1344,
      0.0,
@@ -133390,7 +133413,7 @@
     ],
     "was": [
      64.85,
-     20.2683,
+     9.8383,
      10.1903,
      6.1344,
      0.0,
@@ -133398,11 +133421,12 @@
      31088
     ],
     "src": "bsexbrl:539551_282016124552_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 20.2683 -> 9.8383 (share counts of 539551_282016124552_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 30 part 22 (2026-10-06, per-company review): the institutions 'Any Other' block's Category rows 'CLEARING MEMBERS' 10,456 + 'BODIES CORPORATES' 834,708 are company-type labels (never FII) and had been counted in fii; CDC Group plc and JPMorgan Mauritius Holdings IV are public (batch 9). FII = FVCI 19,247,576 / 204,360,804. fii 9.8383 -> 9.4184.",
+    "exact": true,
     "superseded": {
      "cell": [
       64.85,
-      20.2683,
+      9.8383,
       10.1903,
       6.1344,
       0.0,
@@ -133411,17 +133435,26 @@
      ],
      "was": [
       64.85,
-      19.8483,
-      10.6103,
+      20.2683,
+      10.1903,
       6.1344,
       0.0,
       "2016-08-02",
       31088
      ],
      "src": "bsexbrl:539551_282016124552_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.85 -> 20.27, dii 10.61 -> 10.19. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.42 | R1: R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_164_audit.json",
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 20.2683 -> 9.8383 (share counts of 539551_282016124552_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
      "superseded": {
       "cell": [
+       64.85,
+       20.2683,
+       10.1903,
+       6.1344,
+       0.0,
+       "2016-08-02",
+       31088
+      ],
+      "was": [
        64.85,
        19.8483,
        10.6103,
@@ -133430,17 +133463,30 @@
        "2016-08-02",
        31088
       ],
-      "was": [
-       64.85,
-       9.4183,
-       21.0303,
-       6.1344,
-       0.0,
-       "2016-08-02",
-       31088
-      ],
       "src": "bsexbrl:539551_282016124552_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.03 -> 10.61, fii 9.42 -> 19.85. R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_dii_rowfix_audit.json"
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.85 -> 20.27, dii 10.61 -> 10.19. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.42 | R1: R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        64.85,
+        19.8483,
+        10.6103,
+        6.1344,
+        0.0,
+        "2016-08-02",
+        31088
+       ],
+       "was": [
+        64.85,
+        9.4183,
+        21.0303,
+        6.1344,
+        0.0,
+        "2016-08-02",
+        31088
+       ],
+       "src": "bsexbrl:539551_282016124552_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.03 -> 10.61, fii 9.42 -> 19.85. R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
@@ -347480,7 +347526,7 @@
    "2021-06-30": {
     "cell": [
      65.46,
-     6.2197,
+     5.7595,
      19.9382,
      14.8503,
      4.6255,
@@ -347490,16 +347536,26 @@
     "was": [
      65.46,
      6.2197,
-     19.4821,
+     19.9382,
      14.8503,
      4.6255,
      "2021-07-20",
      31022
     ],
     "src": "bsexbrl:532638_1972021203645_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 532638_1972021203645_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists inst row 'National Investment Fund' 0.4561 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 19.4821 -> 19.9382 (Quantmac 19.9420).",
+    "why": "\u00a7164r batch 30 part 22 (2026-10-06, per-company review): the institutions 'Any Other' block 498,840 sh is a LABELLED Category - 'National Investment Fund' (5 holders) - not a foreign-institution label; D1 covers only an unlabelled block, and the \u00a7164 reader had taken the Category label for an unresolved holder name and moved it to fii. FII = FPI 6,298,559 / 109,358,910 (= Quantmac 5.76). fii 6.2197 -> 5.7595.",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.46,
+      6.2197,
+      19.9382,
+      14.8503,
+      4.6255,
+      "2021-07-20",
+      31022
+     ],
+     "was": [
       65.46,
       6.2197,
       19.4821,
@@ -347508,17 +347564,30 @@
       "2021-07-20",
       31022
      ],
-     "was": [
-      65.46,
-      5.7597,
-      19.9321,
-      14.8503,
-      4.6255,
-      "2021-07-20",
-      31022
-     ],
      "src": "bsexbrl:532638_1972021203645_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 5.76 -> 6.22, dii 19.93 -> 19.48. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.46 | R1: R1-unresolved National Investment Fund 0.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 532638_1972021203645_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists inst row 'National Investment Fund' 0.4561 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 19.4821 -> 19.9382 (Quantmac 19.9420).",
+     "superseded": {
+      "cell": [
+       65.46,
+       6.2197,
+       19.4821,
+       14.8503,
+       4.6255,
+       "2021-07-20",
+       31022
+      ],
+      "was": [
+       65.46,
+       5.7597,
+       19.9321,
+       14.8503,
+       4.6255,
+       "2021-07-20",
+       31022
+      ],
+      "src": "bsexbrl:532638_1972021203645_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 5.76 -> 6.22, dii 19.93 -> 19.48. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.46 | R1: R1-unresolved National Investment Fund 0.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2018-01-12": {
