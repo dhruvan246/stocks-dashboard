@@ -21192,6 +21192,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     (IFC 7.19), UNICHEMLAB, WABAG x2, ZFCVINDIA x2 - 13 now equal Quantmac within 0.01. The other 34 SW-2 cells already carry the
     block in fii (stored fii = FPI + block) or the block is company-type (JSWENERGY 'Foreign Bodies', PETRONET OCB, PVRINOX OCB / its
     Mar-16 rest follows Dec-16's 'FOREIGN CORPORATE BODIES' label, RELIGARE FCB rest, RADICO, PIIND, MHRIL).
+    **Batch 27 = seam cells against the company's own Table I / III (2026-10-05), label "§164r batch 27".** (a) Every C1 company's
+    Dec-2015 / Mar-2016 cell checked by its promoter slot against Table I (87 cells): CIPLA Mar-16, ADVANTA Dec-15, PAISALO Dec-15 / Mar-16 sat
+    on the FULL count although the company files its DR shares as C1 outside the 100 - all slots x (A+B+C1+C2)/(A+B+C2) (CIPLA 20.0575 =
+    Quantmac 20.06; PAISALO's C1 is 41 % of its shares: fii 16.63 -> 28.43). AXISBANK / RCOM / RELINFRA / DCW seam prom slots miss
+    Table I by 0.05-1.8 pp - open. (b) BALLARPUR Dec-15 / Mar-16: four foreign funds (Samena Special Situations Mauritius, Platinum Asia,
+    Premier Investment Fund, Citigroup Global Markets Mauritius; 42-95 institution listings, 0 company) filed under B1f 'Financial
+    Institutions / Banks' sat in dii (Dec-15: three of them in fii as well, counted twice) -> fii, out of dii. (c) BOMDYEING Dec-15 /
+    Mar-16 counted its institutions sub-rows 'Domestic Companies' / 'Trust' / OCB / 'Foreign Bodies' in fii: FII = FPI + its 'Foreign
+    Institutional Investors' sub-row on (A+B+C2) = 7.8065 / 7.7026 = Quantmac. 8 cells.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

@@ -10511,22 +10511,42 @@
    "2015-12-31": {
     "cell": [
      49.43,
-     12.5984,
-     28.69,
+     15.3477,
+     14.4452,
      2.38,
      9.64,
      "2016-02-04"
     ],
     "was": [
      49.43,
-     1.1,
+     12.5984,
      28.69,
      2.38,
      9.64,
      "2016-02-04"
     ],
-    "src": "bseaspx:500102_88 shpperent",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.10 -> 12.60, dii 28.69 -> 28.69. seam-fii-reconstruction base 0.55 12.0484; named-fii Samena Special Situations Mauritius 8.5276 regex; named-fii Premier Investment Fund Limited 2.0102 curated; named-fii Citigroup Global Markets Mauritius Private Li 1.5105 regex. Evidence: _shp_164_audit.json"
+    "src": "bsetable3:500102:88",
+    "why": "\u00a7164r batch 27 (2026-10-05, cell by cell vs Quantmac): BALLARPUR's own Table III (Corp_shpSec_SHPPubShold_ng 500102 qtrid 88) lists under B1f 'Financial Institutions / Banks' the holders Citigroup Global Markets Mauritius Private Li 9,901,876; Premier Investment Fund Limited 13,177,240; Platinum Asia Fund 14,373,718; Samena Special Situations Mauritius 55,900,692 - foreign funds, each listed under Institutions (Foreign) in 42-95 other filings and never as a company (documents: FII; and out of DII under the DII rule 'no Indian document -> out of DII'). The stored cell had them in dii and three of them in fii too (counted twice). FII = FPI 3,578,206 + 'Foreign Financial Institutions' 3,676,010 + the funds 93,353,526; DII = MF 15,574,235 + B1f 109,290,235 less the funds + insurance 63,180,469; of 655,523,839 shares. fii 12.5984 -> 15.3477, dii 28.6900 -> 14.4452.",
+    "superseded": {
+     "cell": [
+      49.43,
+      12.5984,
+      28.69,
+      2.38,
+      9.64,
+      "2016-02-04"
+     ],
+     "was": [
+      49.43,
+      1.1,
+      28.69,
+      2.38,
+      9.64,
+      "2016-02-04"
+     ],
+     "src": "bseaspx:500102_88 shpperent",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 1.10 -> 12.60, dii 28.69 -> 28.69. seam-fii-reconstruction base 0.55 12.0484; named-fii Samena Special Situations Mauritius 8.5276 regex; named-fii Premier Investment Fund Limited 2.0102 curated; named-fii Citigroup Global Markets Mauritius Private Li 1.5105 regex. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -10943,6 +10963,26 @@
     ],
     "src": "bsexbrl:500102_2172021124455_SHP.xml",
     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 29.6710 -> 32.6043."
+   },
+   "2016-03-31": {
+    "cell": [
+     49.4277,
+     13.3899,
+     12.7487,
+     0.7168,
+     9.5932,
+     "2016-04-21"
+    ],
+    "was": [
+     49.4277,
+     1.0512,
+     25.0875,
+     0.7168,
+     9.5932,
+     "2016-04-21"
+    ],
+    "src": "bsetable3:500102:89",
+    "why": "\u00a7164r batch 27 (2026-10-05, cell by cell vs Quantmac): BALLARPUR's own Table III (Corp_shpSec_SHPPubShold_ng 500102 qtrid 89) lists under B1f 'Financial Institutions / Banks' the holders CITIGROUP GLOBAL MARKETS MAURITIUS PRIVATE LI 10,225,367; PREMIER INVESTMENT FUND LIMITED 11,177,240; SAMENA SPECIAL SITUATIONS MAURITIUS 59,480,544 - foreign funds, each listed under Institutions (Foreign) in 42-95 other filings and never as a company (documents: FII; and out of DII under the DII rule 'no Indian document -> out of DII'). The stored cell had them in dii. FII = FPI 3,214,932 + 'Foreign Financial Institutions' 3,676,010 + the funds 80,883,151; DII = MF 4,698,735 + B1f 96,869,580 less the funds + insurance 62,885,911; of 655,523,839 shares. fii 1.0512 -> 13.3899, dii 25.0875 -> 12.7487."
    }
   },
   "BANARISUG": {
@@ -99617,7 +99657,7 @@
    "2016-03-31": {
     "cell": [
      53.69,
-     12.5373,
+     7.7026,
      7.8848,
      3.29,
      4.22,
@@ -99626,19 +99666,19 @@
     ],
     "was": [
      53.69,
-     12.5973,
+     12.5373,
      7.8848,
      3.29,
      4.22,
      "2016-08-23",
      102325
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Trust' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 12.5973 -> 12.5373, dii 7.8848 -> 7.8848.",
+    "src": "bsetable3:500020:89",
+    "why": "\u00a7164r batch 27 (2026-10-05, cell by cell vs Quantmac): BOMDYEING's own Table III (500020 qtrid 89) splits its institutions 'Any Other' block into 'Trust' 134,075; 'Domestic Companies' 9,964,218; 'Overseas Corporate Bodies' 15,400; 'Foreign Bodies' 1,950 and 'Foreign Institutional Investors' 11,305,964 shares; the stored fii counted the whole block. Company-type sub-rows ('Domestic Companies', 'Trust', 'Overseas Corporate Bodies', 'Foreign Bodies') are never FII (batch 11 / batch 26 labels). Base (A+B+C2) 206,485,475 from its Table I: BOMDYEING files its DR shares outside the 100 (batch 15). FII = FPI 4,598,749 + 11,305,964. fii 12.5373 -> 7.7026, dii unchanged.",
     "superseded": {
      "cell": [
       53.69,
-      12.5973,
+      12.5373,
       7.8848,
       3.29,
       4.22,
@@ -99647,15 +99687,37 @@
      ],
      "was": [
       53.69,
-      2.23,
-      18.24,
+      12.5973,
+      7.8848,
       3.29,
       4.22,
       "2016-08-23",
       102325
      ],
-     "src": "bsexbrl:500020_2382016154319_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.23 -> 12.60, dii 18.24 -> 7.88. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.89 | R1: R1-fii-label Other Foreign Institutional Investors 5.48 public=0.00 fii=5.48  keyword; R1-public-label Other Overseas Corporate Bodies 0.01 public=0.01 fii=0.00  keyword; R1-unresolved Other Domestic Companies 4.83  keyword; R1-unresolved Other Trust 0.06  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Trust' 0.06 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 12.5973 -> 12.5373, dii 7.8848 -> 7.8848.",
+     "superseded": {
+      "cell": [
+       53.69,
+       12.5973,
+       7.8848,
+       3.29,
+       4.22,
+       "2016-08-23",
+       102325
+      ],
+      "was": [
+       53.69,
+       2.23,
+       18.24,
+       3.29,
+       4.22,
+       "2016-08-23",
+       102325
+      ],
+      "src": "bsexbrl:500020_2382016154319_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.23 -> 12.60, dii 18.24 -> 7.88. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 4.89 | R1: R1-fii-label Other Foreign Institutional Investors 5.48 public=0.00 fii=5.48  keyword; R1-public-label Other Overseas Corporate Bodies 0.01 public=0.01 fii=0.00  keyword; R1-unresolved Other Domestic Companies 4.83  keyword; R1-unresolved Other Trust 0.06  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2016-12-31": {
@@ -99943,22 +100005,42 @@
    "2015-12-31": {
     "cell": [
      52.3459,
-     13.5452,
+     7.8065,
      7.991,
      3.4332,
      4.2224,
      "2016-02-03"
     ],
     "was": [
-     53.06,
-     13.73,
-     8.1,
-     3.48,
-     4.28,
+     52.3459,
+     13.5452,
+     7.991,
+     3.4332,
+     4.2224,
      "2016-02-03"
     ],
-    "src": "bseaspx:500020:88+nseresults:1005025",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 203,755,475 shares \u2014 it leaves out 2,779,425 shares that the Sep-2015 page (206,534,900, block C 2,779,425) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002751 paid-up 4131.0, 2015-12-31 #1005025 paid-up 4131.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 206,534,900 (\u00b1 50,000 shares, the filings' rounding): x 0.986543."
+    "src": "bsetable3:500020:88",
+    "why": "\u00a7164r batch 27 (2026-10-05, cell by cell vs Quantmac): BOMDYEING's own Table III (500020 qtrid 88) splits its institutions 'Any Other' block into 'Trust' 134,075; 'Domestic Companies' 11,700,692; 'Overseas Corporate Bodies' 15,400; 'Foreign Bodies' 1,950 and 'Foreign Institutional Investors' 15,534,020 shares; the stored fii counted the whole block. Company-type sub-rows ('Domestic Companies', 'Trust', 'Overseas Corporate Bodies', 'Foreign Bodies') are never FII (batch 11 / batch 26 labels). Base (A+B+C2) 206,534,900 from its Table I: BOMDYEING files its DR shares outside the 100 (batch 15). FII = FPI 589,118 + 15,534,020. fii 13.5452 -> 7.8065, dii unchanged.",
+    "superseded": {
+     "cell": [
+      52.3459,
+      13.5452,
+      7.991,
+      3.4332,
+      4.2224,
+      "2016-02-03"
+     ],
+     "was": [
+      53.06,
+      13.73,
+      8.1,
+      3.48,
+      4.28,
+      "2016-02-03"
+     ],
+     "src": "bseaspx:500020:88+nseresults:1005025",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 203,755,475 shares \u2014 it leaves out 2,779,425 shares that the Sep-2015 page (206,534,900, block C 2,779,425) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002751 paid-up 4131.0, 2015-12-31 #1005025 paid-up 4131.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 206,534,900 (\u00b1 50,000 shares, the filings' rounding): x 0.986543."
+    }
    },
    "2015-06-30": {
     "cell": [
@@ -105274,6 +105356,14 @@
    },
    "2016-03-31": {
     "cell": [
+     37.5035,
+     20.0575,
+     14.7802,
+     7.8974,
+     6.333,
+     "2016-04-21"
+    ],
+    "was": [
      36.7802,
      19.6707,
      14.4951,
@@ -105281,16 +105371,28 @@
      6.2109,
      "2016-04-21"
     ],
-    "was": [
-     36.7802,
-     19.6707,
-     25.1958,
-     7.7451,
-     6.2109,
-     "2016-04-21"
-    ],
-    "src": "bseaspx:500087:89:New+seam164l",
-    "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 25.1958 - 10.7007 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+    "src": "bsetable1:500087:89",
+    "why": "\u00a7164r batch 27 (2026-10-05, seam-quarter base check of every C1 company): the company's own Table I for this quarter (CorporatesSHPSecuritybeta 500087 qtrid 89) files 15,494,159 shares underlying DRs on the C1 line OUTSIDE Promoter + Public = 100 (A 295,485,978 + B 492,404,145 + C2 0), but this cell sat on the full count (prom 36.7802 = A / all shares). A company that reports its DR shares separately is on (A+B+C2) (user rule 2026-10-05 'ok'), as its other cells already are: all slots x 1.019665 = (A+B+C1+C2) / (A+B+C2). fii 19.6707 -> 20.0575, dii 14.4951 -> 14.7802.",
+    "superseded": {
+     "cell": [
+      36.7802,
+      19.6707,
+      14.4951,
+      7.7451,
+      6.2109,
+      "2016-04-21"
+     ],
+     "was": [
+      36.7802,
+      19.6707,
+      25.1958,
+      7.7451,
+      6.2109,
+      "2016-04-21"
+     ],
+     "src": "bseaspx:500087:89:New+seam164l",
+     "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 25.1958 - 10.7007 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+    }
    }
   },
   "CONTROLPR": {
@@ -155228,6 +155330,14 @@
    },
    "2015-12-31": {
     "cell": [
+     44.4999,
+     28.4299,
+     4.0799,
+     0.0,
+     0.0,
+     "2016-03-17"
+    ],
+    "was": [
      26.0351,
      16.6332,
      2.387,
@@ -155235,19 +155345,39 @@
      0.0,
      "2016-03-17"
     ],
-    "was": [
-     44.5,
-     28.43,
-     4.08,
-     0.0,
-     0.0,
-     "2016-03-17"
-    ],
-    "src": "bseaspx:532900:88+nseresults:1004937",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2015-12-31 #1004937 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
+    "src": "bsetable1:532900:88",
+    "why": "\u00a7164r batch 27 (2026-10-05, seam-quarter base check of every C1 company): the company's own Table I for this quarter (CorporatesSHPSecuritybeta 532900 qtrid 88) files 16,830,000 shares underlying DRs on the C1 line OUTSIDE Promoter + Public = 100 (A 10,560,583 + B 13,169,417 + C2 0), but this cell sat on the full count (prom 26.0351 = A / all shares). A company that reports its DR shares separately is on (A+B+C2) (user rule 2026-10-05 'ok'), as its other cells already are: all slots x 1.709229 = (A+B+C1+C2) / (A+B+C2). fii 16.6332 -> 28.4299, dii 2.3870 -> 4.0799.",
+    "superseded": {
+     "cell": [
+      26.0351,
+      16.6332,
+      2.387,
+      0.0,
+      0.0,
+      "2016-03-17"
+     ],
+     "was": [
+      44.5,
+      28.43,
+      4.08,
+      0.0,
+      0.0,
+      "2016-03-17"
+     ],
+     "src": "bseaspx:532900:88+nseresults:1004937",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2015-12-31 #1004937 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
+    }
    },
    "2016-03-31": {
     "cell": [
+     44.4999,
+     28.42,
+     4.0799,
+     0.0,
+     0.0,
+     "2016-05-12"
+    ],
+    "was": [
      26.0351,
      16.6274,
      2.387,
@@ -155255,16 +155385,28 @@
      0.0,
      "2016-05-12"
     ],
-    "was": [
-     44.5,
-     28.42,
-     4.08,
-     0.0,
-     0.0,
-     "2016-05-12"
-    ],
-    "src": "bseaspx:532900:89+nseresults:1008332",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2016-03-31 #1008332 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
+    "src": "bsetable1:532900:89",
+    "why": "\u00a7164r batch 27 (2026-10-05, seam-quarter base check of every C1 company): the company's own Table I for this quarter (CorporatesSHPSecuritybeta 532900 qtrid 89) files 16,830,000 shares underlying DRs on the C1 line OUTSIDE Promoter + Public = 100 (A 10,560,583 + B 13,169,417 + C2 0), but this cell sat on the full count (prom 26.0351 = A / all shares). A company that reports its DR shares separately is on (A+B+C2) (user rule 2026-10-05 'ok'), as its other cells already are: all slots x 1.709229 = (A+B+C1+C2) / (A+B+C2). fii 16.6274 -> 28.4200, dii 2.3870 -> 4.0799.",
+    "superseded": {
+     "cell": [
+      26.0351,
+      16.6274,
+      2.387,
+      0.0,
+      0.0,
+      "2016-05-12"
+     ],
+     "was": [
+      44.5,
+      28.42,
+      4.08,
+      0.0,
+      0.0,
+      "2016-05-12"
+     ],
+     "src": "bseaspx:532900:89+nseresults:1008332",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 23,730,000 shares \u2014 it leaves out 16,830,000 shares that the Sep-2015 page (40,560,000, block C 16,830,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002230 paid-up 4056.0, 2016-03-31 #1008332 paid-up 4056.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 40,560,000 (\u00b1 10,000 shares, the filings' rounding): x 0.585059."
+    }
    },
    "2022-03-25": {
     "cell": [
@@ -187808,6 +187950,14 @@
    },
    "2015-12-31": {
     "cell": [
+     72.9901,
+     17.56,
+     0.71,
+     0.7,
+     0.0,
+     "2016-02-08"
+    ],
+    "was": [
      59.1244,
      14.2242,
      0.5751,
@@ -187815,16 +187965,28 @@
      0.0,
      "2016-02-08"
     ],
-    "was": [
-     72.99,
-     17.56,
-     0.71,
-     0.7,
-     0.0,
-     "2016-02-08"
-    ],
-    "src": "bseaspx:532840:88+nseresults:1008143",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 84,686,235 shares \u2014 it leaves out 19,860,270 shares that the Sep-2015 page (100,545,505, block C 15,888,280) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002369 paid-up 2010.91, 2015-12-31 #1008143 paid-up 2090.93, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 104,546,505 (\u00b1 500 shares, the filings' rounding): x 0.810034."
+    "src": "bsetable1:532840:88",
+    "why": "\u00a7164r batch 27 (2026-10-05, seam-quarter base check of every C1 company): the company's own Table I for this quarter (CorporatesSHPSecuritybeta 532840 qtrid 88) files 19,860,350 shares underlying DRs on the C1 line OUTSIDE Promoter + Public = 100 (A 61,811,682 + B 22,874,553 + C2 0), but this cell sat on the full count (prom 59.1244 = A / all shares). A company that reports its DR shares separately is on (A+B+C2) (user rule 2026-10-05 'ok'), as its other cells already are: all slots x 1.234517 = (A+B+C1+C2) / (A+B+C2). fii 14.2242 -> 17.5600, dii 0.5751 -> 0.7100.",
+    "superseded": {
+     "cell": [
+      59.1244,
+      14.2242,
+      0.5751,
+      0.567,
+      0.0,
+      "2016-02-08"
+     ],
+     "was": [
+      72.99,
+      17.56,
+      0.71,
+      0.7,
+      0.0,
+      "2016-02-08"
+     ],
+     "src": "bseaspx:532840:88+nseresults:1008143",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 84,686,235 shares \u2014 it leaves out 19,860,270 shares that the Sep-2015 page (100,545,505, block C 15,888,280) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002369 paid-up 2010.91, 2015-12-31 #1008143 paid-up 2090.93, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 104,546,505 (\u00b1 500 shares, the filings' rounding): x 0.810034."
+    }
    },
    "2015-03-31": {
     "cell": [
