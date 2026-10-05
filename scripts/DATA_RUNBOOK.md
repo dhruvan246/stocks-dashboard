@@ -22458,6 +22458,19 @@ called JINDALSAW 2011 a band reset; its low 115.00 is the OLD band's limit (0.9 
 **Reply #4:** `~/stocks-cache/qm-recon-tools/out/StockWorld_indicators_reply4_to_Quantmac_20261005.xlsx` (`build_ind_reply_r4.py`; inputs in
 its docstring; rounds 2-3 totals and round-3 groups from `r3_groups_dump.py`).
 
+**§179f fix — LIVE VERIFIED 2026-10-05 ~15:30 IST (user: "go ahead").** DELTACORP 2008-10-29 0.9559 -> 0.9902, RSWM 2009-04-17 0.8855 ->
+0.8424, BFUTILITIE 2010-03-11 0.8474 -> 0.8517: Case C (close / previous close = each row's own raw_drop), `flatten_exday` true,
+`repriced_from` kept — commit 3cce6e6f6 (`~/stocks-cache/qm-recon-tools/apply_179f_ledger.py`). `build_catchup.py`'s band test now also
+requires the whole day inside the band it hit (re-run over all 76 catch-up events: exactly these 3 move). Dry run on the release base
+(end 2026-10-01, `dry_main.py`, real main(), NSE refused): baseline decompressed = the live release (sha256 29f21ca9...); fixed run
+"Self-heal corrected 3" + 3 ex-day bars; `audit179f.py`: only these 3 symbols differ, 79,670 price cells = baseline x exact correction
+within rounding, ex-day bars o=h=l=c, ex-date boundaries 1.0000; second pass identical. LIVE: dispatch run 37288392319 (every step
+success, same two log lines; release re-published; sf-data rev 5660fe750e -> e38553885d, confirmed by the run's own check); origin's
+two ledgers still hold the 3 rows after the run's marker commit; the live per-stock slices (stk/) equal the dry run on every close; the
+merged live parts (`gridmega_fetch_live.py`) equal the dry run on all 5,260 symbols (`verify179f_live.py`). Quantmac round 4 on the new
+data: unchanged 313,860 / 318,494 (only RSWM 2009-02-27 / 03-31 lows swap across the 0.05 line — 2-decimal storage at Rs 14-16); reply #4
+rebuilt on it (`SUF=r4b LIVE_REV=e38553885d python3 build_ind_reply_r4.py`) with the fix in its Note and "Our fixes".
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
