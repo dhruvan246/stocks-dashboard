@@ -21348,6 +21348,14 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     percentages, not share counts). SPARC Dec-2016: the block 449,803 sh is unnamed in this filing, but the company labels the IDENTICAL
     count 'Unit Trust of India' / 'UTI' in Jun-2016, Sep-2016, Mar-2017 and Jun-2017 -> follow the label: domestic; the §164 remainder
     rule had sent it to FII by D1 -> fii 7.4763 -> 7.2966 (= Quantmac), dii 1.3337 -> 1.5138. Guards green.
+    **Batch 30 part 10 (label "§164r batch 30 part 10 (3IINFOLTD Foreign Bank)"): 3IINFOLTD Dec-2009..Dec-2010, 5 cells, flagged by the
+    DII session.** The public institutions block's 'Any Others (Specify)' row is labelled 'Foreign Bank' (2 holders, 4,608,537 sh) on every
+    page Sep-2009..Jun-2011; §164g had put it in fii in Sep-2009 and Mar-2011 onward but these 5 quarters still carried it in dii ->
+    fii +2.40..2.73, dii the same down (e.g. Jun-2010 8.222 / 32.9705 -> 10.6245 / 30.5679). Quantmac covers 3IINFOLTD only at
+    2009-12-31 and May-2011..2013 and leaves the row out of FII there (RULE DIFFERENCE: Institutions (Foreign) = FII, §160). Scan of every
+    cached old page (`~/stocks-cache/shp/audit_all/fbscan/`): of the material (>= 0.05 pp) foreign-bank / foreign-FI rows under public
+    institutions, 3IINFOLTD's 5 were the only ones in dii; LUPIN 2009-11 'Foreign Bodies/Bank' (mixed company-type + bank label) stays
+    public in both (= Quantmac) - not changed.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
