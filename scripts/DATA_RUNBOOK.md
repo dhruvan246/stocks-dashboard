@@ -22552,6 +22552,24 @@ merged live parts (`gridmega_fetch_live.py`) equal the dry run on all 5,260 symb
 data: unchanged 313,860 / 318,494 (only RSWM 2009-02-27 / 03-31 lows swap across the 0.05 line — 2-decimal storage at Rs 14-16); reply #4
 rebuilt on it (`SUF=r4b LIVE_REV=e38553885d python3 build_ind_reply_r4.py`) with the fix in its Note and "Our fixes".
 
+**§179f — precision TEST + reply #4 under the FIRST RULE (2026-10-05 evening).** (1) User: "do the test run first". Exact copy of the live
+store (`build_exact_bin.py`: NSE raw x unrounded factor runs, 6 decimals; 8,213,329 bars 2008+ rebuilt, 1,830,120 kept = pre-2008 or no
+NSE raw). Quantmac matches by stored precision (`qm_ind_dumper_prec.js`, PREC env; control at PREC=2 == the normal dump): 2 dec (today)
+313,860 (98.55%) | 2 dec rounded once 314,963 | 3 dec 318,049 | 4 dec 318,170 (99.90%) | 6 dec 318,175 — 4 decimals is the ceiling.
+Strategy test (`~/stocks-cache/precision_test/ab_precision.js`: the 8 synced favourites, saved window + 2010->, engine copy keeping paise
+to 4 more decimals in `_sfNorm`, local sf parts): control A == C on every run; exact prices change 0 of 1,964 strategy-months' picks,
+|delta CAGR| <= 0.01 pp, trades identical. (2) FIRST RULE (user, 2026-10-05; §0): `verdict4.py` judges each of the 4,634 differing cells
+from its own NSE rows (identity = NSE's era symbol / ISIN on the date): OUR ERROR 4,474 = 2-decimal storage 4,382 + stored steps off
+their own / official value 92 (rights 60: ALOKTEXT 2009 0.90802 vs TERP 0.907381, BAJFINANCE 2013, CUB 2009, SUZLON, SINTEX, HCC;
+split/bonus 26: SOUTHBANK 2008 0.79923 vs 1:4 = 0.8, VIVIDHA, VAKRANSOFT, INFIBEAM 2017, JMTAUTOLTD; demerger 6: CCAVENUE 2020-12-10
+stored 0.98932 vs ledger 0.9904) — all one root cause (2-decimal storage; the steps are set from rounded prices); RULE DIFFERENCE 122
+(pre-2016 demerger factor = their chart's ex-day VWAP 82 / open 8, ex-day print 17, BSE pre-listing 10, ALOKINDS 5); THEIR ERROR 0;
+UNKNOWN 38 (CADILAHC 2008 / GRASIM 2010 / WIPRO 2013 factors 34; SUMMITSEC 4 — their rows = BSE 504807 "SUMMIT SEC", one-company
+identity with NSE's SUMMIT unproven). My tool errors caught on the way: run cutting on 2-decimal jitter (MVL at Rs 0.1 produced false
+"their DMA = 201 sessions" verdicts — withdrawn), VWAP read from a rounded field. Reply #4 rebuilt on the verdicts
+(`build_ind_reply_r4v.py`). Reply #3 had called the storage cells "rounding, nothing to change" — corrected in reply #4: they are OUR
+errors. OPEN (user): the precision upgrade (would clear all 4,474; picks unchanged).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
