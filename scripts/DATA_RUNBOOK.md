@@ -21022,6 +21022,27 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     8.11). Rebuilt feed: exactly these 178 rows move, 0 others; guards green. ELECTCAST / SREINFRA cannot be told apart (5,000 / 21,600
     DR shares). UFLEX not changed (the user's call): its Dec-2015 new-form page also leaves its 54,65,840 DR shares outside (47.62 =
     A/(A+B)), but by Jun-2016 the same count sits in Public as Kebale Trading Ltd (Foreign Bodies Corporate) and counts in the 100.
+    **Batch 16 = depository-receipt base, part 2 (2026-10-05, user: "work on every single cell"), label "§164r batch 16".** A full
+    per-company check of all 113 DR companies against BSE's own Table I for Dec-2015 / Mar-2016 / Jun-2016 (api CorporatesSHPSecuritybeta,
+    `~/stocks-cache/shp/audit_all/dr_basis_check.json`; promoter / public % tested against shares / (A+B+C2) vs shares / all, rounding
+    to 2 dp) found 3 more served on the full count although EVERY new-form quarter leaves C1 outside the 100: RELCAPITAL (its % add to
+    99.36 because of a 1,600,000-share employee trust, which fooled the d2 sum test), CHOLAHLDNG and GESHIP. **Correction of batch 12:**
+    "CHOLAHLDNG: no custodian shares on ANY pre-2016 page" was false - its pre-2016 rows sit under the former symbol TUBEINVEST (alias
+    in fund_alias.json) and batch 12 read only the 7 rows of 2001-02 under CHOLAHLDNG; the old pages show (C) 16,759,250 = 9.07 % (2009)
+    falling to 4,830,630 = 2.58 % (Sep-2015) - exactly Quantmac's 1.10x -> 1.027x, so our reply-#7 answer "its pages show no ADR/GDR
+    shares, not a base difference" for 84 CHOLAHLDNG cells was wrong. GESHIP's 2002-06 rows sit under GESHIPPING and were never read.
+    `reply7/b16_drrebase.py`: 80 cells (TUBEINVEST 40, RELCAPITAL 38, GESHIPPING 2; 56 pre-2006 / 1997-format pages unparsed). New in
+    the method: the two new-form quarters (Dec-2015, Mar-2016) use the company's own Table I factor (A+B+C1+C2)/(A+B+C2) - BSE's
+    old-layout rendering of those quarters folds the employee trust C2 into (C), so (A+B+C)/(A+B) would push C2 out too (RELCAPITAL
+    Dec-2015 would read 52.47 instead of the printed 52.13); batch 15's three such cells (CESC x2, JISL) had C2 = 0 and equal the
+    printed values. Quantmac: all 84 CHOLAHLDNG and all 54 RELCAPITAL DR cells now equal. Rebuilt feed: exactly these 80 rows move,
+    0 others; guards green. **Open, the user's call (rule reading):** 8 companies change practice between Dec-2015 and Jun-2016 -
+    UFLEX / AKSHOPTFBR / INDHOTEL / NOIDATOLL leave C1 out in Dec-2015 (first new-form filing) but have no C1 by Mar/Jun-2016; BOMDYEING
+    / TATACONSUM / UNITDSPR / UPL put the DR shares inside Public in Dec-2015 and move them out from Mar/Jun-2016 - batches 4/12/15 read
+    the first XBRL (Jun-2016), the rule as worded ("its own first filing in the new format") reads Dec-2015. KEMROCK's only new-form
+    filing (Dec-2015) leaves its 36.77 % C1 out. 6 never-filers (CRESTANI, ELDERPHARM, ESSARPORTS, PATNI, RANBAXY, SHREEASHTA) use the
+    'majority' full-count default, but that majority (53 of 68) counted companies with no DR shares at all; among companies with DR shares
+    in their first new-form filing ~51 leave them out vs ~23 inside, and SEBI's own column is "% of (A+B+C2)".
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
