@@ -21572,6 +21572,22 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     - JAMNAAUTO: 'CITYGROUP GLOBAL MARKETS MAURITIUS' = the documented Citigroup entity.
     - PHOENIXLTD: Nordea sits inside the company's own 'Foreign Inst. Investor' row.
     - DHANI: with the user.
+    **Batch 30 part 29 (label "§164r batch 30 part 29 (per-company review)"; 16 cells + 1 date).**
+    SUZLON Dec-20 / Mar-21 / 16-Apr-21 event / Jun-21 / Sep-21: TOR ASIA CREDIT MASTER FUND LP sits inside the company's Institutions
+    block on its 'Overseas Corporate Bodies' sub-row, and the company's OWN 14-Jul-2020 event pattern lists the same legal name under
+    Institutions (Foreign) - FPI (304,398,677 sh) -> fii by batch 8 option A. §158 had read the sub-row's company-type label as public.
+    Dec-20 / Apr-21 / Jun-21 / Sep-21 now equal Quantmac (5.638 / 9.887 / 6.038 / 6.042); Mar-21 4.22 -> 6.58. Belgrave Investment Fund
+    stays public (2022-form Foreign Companies). Sep-2020, where Tor Asia sits on a non-institution row, is unchanged: the documents rule
+    lists no 'other filing's FPI row' mark.
+    SUNPHARMA Dec-15, Mar-16, Jun-16, Jun-17, Sep-17, Sep-19..Dec-20 (-0.05..-0.18 fii, the same +dii): the institutions sub-row the
+    company labels 'UTI' / 'UTI and its Schemes and Funds' (Unit Trust of India, a domestic mutual-fund trust) is domestic.
+    `_shp_d1_rowfix.d1_lab_class` has no UTI word, so the §164 pass read 'UTI and its Schemes and Funds' as unlabelled and moved it
+    dii -> fii by D1; the unlabelled 18-19 holder blocks of Jun-16 / Jun-17 / Sep-17 are the same UTI + 'Foreign Bank' block. Sep-16..Mar-17
+    and Dec-17..Jun-19 already read UTI as domestic. A store-wide check (`~/stocks-cache/shp/audit_all/uti/sweep.py`) finds no other
+    material UTI row in fii; ABFRL / ABREL / CUMMINSIND / GHCL / PGHH / STYRENIX carry 0.01 UTI rows.
+    Date: SONATSOFTW Jun-2019 is now served from the company's notice 2019-07-16 12:28:52; the stored 2019-07-31 was the re-filing that
+    only added Table V (significant beneficial owners).
+    TODO in code: add UTI / Unit Trust of India to the domestic label words of d1_lab_class before any re-run.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
