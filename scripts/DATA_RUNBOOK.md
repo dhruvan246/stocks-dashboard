@@ -21222,6 +21222,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Dec-15 counted its 'Foreign Nationals' sub-row (8.24 -> 8.1078 = Quantmac). 10 cells. Left: THERMAX Mar-16 (§164p counted 6,541,440
     shares Table I leaves out - a base question, not changed), FINCABLES Mar-16 (Table I's C1 12,043,100 disagrees with the page's C
     6,021,550; the company's printed % follow the page - not changed), AXISBANK / AMBUJACEM / CESC / ICICIBANK seam residues < 0.12 pp.
+    **Batch 30 = ICICIBANK at share-count precision (2026-10-05), label "§164r batch 30".** Every ICICI quarter re-read from the company's
+    own filing (`~/stocks-cache/shp/audit_all/b30/mk_b30_icici.py`), 54 cells, fii only unless noted. Page era Jun-2008..Sep-2015 (28):
+    stored fii = the page's 2-decimal (A+B+C) percentages summed (§142e) then re-based (§164a), residues -0.006..+0.007 -> the rows'
+    share counts on (A+B); Jun-2008 had also left out 'Foreign Financial Institutions / Banks' (189,826 sh); Jun/Sep-2015 institutions
+    'Others' sub-rows follow the company's own labels for the same holders in neighbouring filings ('FIIs-DR' 4 holders ~4.6 M sh,
+    'Foreign Bank' 10 holders) -> FII (+0.15 / +0.11; the §164a flag had kept the batch-7 page reader off ICICI). Dec-2015 had been read
+    from BSE's old-style band page, whose institutions 'Any Others' 0.58 merges Provident/Pension Funds (B1h 17,559,740 sh, domestic)
+    with the Any-Other block: fii 54.0564 -> 53.6339, dii 33.6591 -> 34.0786, mf/ins to Table III counts. XBRL Jun-2016..Jun-2022 (25):
+    the institutions Any-Other block (the company's own sub-rows 'Foreign Banks' + 'FII-DR' / 'FIIs-DR', unnamed in some XBRLs) sat in
+    DII in 13 quarters (2017-06..2018-06, 2019-06..2020-12 -> moved to fii, dii - the block), in neither in 2021-06 / 2022-03 / 2022-06,
+    and at 2-decimal precision elsewhere. Rebuilt store moves exactly these 54 (+ batch 29's 10 not yet refreshed); guards green.
+    Quantmac (v5 rows) counts 'Foreign Banks' but not 'FII-DR' (page era: divides by (A+B) minus FIIs-DR) - rule difference, row named;
+    their Jun-2016 53.20 = FPI 52.58 + PF/Pension B1h 0.47 + Any-Other 0.15 (their 'Any Others' band 0.62, held as
+    ANYOTHERS_BAND_LABEL_NOT_RENDERED) - their error, share counts 53.2027. **Open (asked, not changed):** from Mar-2026 ICICI files
+    its ADR custodian (Deutsche Bank, 1.29 B sh) inside the public block (company note: ADS holders got voting rights from 2 Jan 2026),
+    so fii on the filed base drops 43.87 -> 34.49 while FPI shares fell 3.2 % (42.05 on the earlier base). INFY did the opposite at
+    Sep-2022 (custodian moved out of B: 31.72 -> 36.20 with FPI shares down 1.3 %). **Tool trap:** BSE's CorporatesSHPSecuritybeta
+    (Table I) with QtrCode=/SCRIPCODE= silently returns the LATEST filing - use qtrid=/scripcode= (`show.t1api` checks the reply's Qtr_Id).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
