@@ -21380,6 +21380,12 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Dec-15 (02-10), EVEREADY Mar-16 (04-06), GODFRYPHLP Mar-16 (04-15). UNKNOWN: POWERGRID Mar-16 (BSE 06-22) and UCOBANK Mar-16 (BSE
     05-17) - Quantmac serves them a month earlier, no earlier BSE document found; BLUESTARCO Mar-16 and MAHLIFE Sep-15 stay un-dated
     (no BSE notice). Guards green.
+    **Batch 30 part 13 (label "§164r batch 30 part 13 (AGI D1, CARERATING rule 4)"):** AGI Dec-2015 fii 7.3951 -> 10.2683 (= Quantmac
+    10.27): the institutions 'Any Other' block 5,082,266 sh = Kotak Mahindra (UK) India Midcap 879,521 + Mondrian EM Small Cap 2,124,450
+    + an unlabelled remainder 2,078,295 that §164g had left out - D1 (its Mar-2016 cell already counts the same remainder). AGI Mar-2016
+    stays 10.7892: Quantmac's 11.07 counts BSE's page 'Any Others' 5.31, which lumps in the domestic Alternate Investment Funds row
+    (204,000 sh, 0.2822; Table III B1c) - THEIR ERROR. CARERATING Mar-2016 dii 45.5148 -> 48.9249: 'BAJAJ HOLDINGS AND INVESTMENT LTD.'
+    1,002,615 on the non-institutions block = RBI NBFC (rule 4, confirmed by the DII session; XBRL-era cells already count it).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

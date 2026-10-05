@@ -164256,7 +164256,7 @@
    "2015-12-31": {
     "cell": [
      47.11,
-     7.3951,
+     10.2683,
      22.5804,
      22.1,
      0.0,
@@ -164264,18 +164264,19 @@
     ],
     "was": [
      47.11,
-     3.24,
+     7.3951,
      22.5804,
      22.1,
      0.0,
      "2016-01-25"
     ],
-    "src": "bseaspx:500187_88 shpperent",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 3.24 -> 7.40, dii 22.58 -> 22.58. seam-fii-reconstruction base 3.24 4.1551; named-fii MONDRIAN EMERGING MARKETS SMALL CAP EQUITY FUND,L.P. 2.9385 curated; named-fii KOTAK MAHINDRA (UK) LTD A/C INDIA MIDCAP (MAURITIUS) LTD 1.2165 regex. Evidence: _shp_164_audit.json",
+    "src": "bsetable3:500187:88",
+    "why": "\u00a7164r batch 30 part 13 (2026-10-05, Quantmac v6 'Under review (ours)'): the institutions 'Any Other' block 5,082,266 sh = KOTAK MAHINDRA (UK) A/C INDIA MIDCAP 879,521 + MONDRIAN EMERGING MARKETS SMALL CAP 2,124,450 + an unnamed, unlabelled remainder 2,078,295; \u00a7164g had counted only the two named holders. D1: the unlabelled remainder of the institutions Any-Other block is FII (its Mar-2016 cell already counts the same block's remainder by D1). FII = FPI 2,341,328 + the whole block = Quantmac's 10.27. fii 7.3951 -> 10.2683.",
+    "exact": true,
     "superseded": {
      "cell": [
       47.11,
-      3.24,
+      7.3951,
       22.5804,
       22.1,
       0.0,
@@ -164284,13 +164285,33 @@
      "was": [
       47.11,
       3.24,
-      29.61,
+      22.5804,
       22.1,
       0.0,
       "2016-01-25"
      ],
-     "src": "bseaspx:500187:qtrid88",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (7.03pp) folded in by a minority route. Healed to the page's own domestic rows (22.5804). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bseaspx:500187_88 shpperent",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 3.24 -> 7.40, dii 22.58 -> 22.58. seam-fii-reconstruction base 3.24 4.1551; named-fii MONDRIAN EMERGING MARKETS SMALL CAP EQUITY FUND,L.P. 2.9385 curated; named-fii KOTAK MAHINDRA (UK) LTD A/C INDIA MIDCAP (MAURITIUS) LTD 1.2165 regex. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       47.11,
+       3.24,
+       22.5804,
+       22.1,
+       0.0,
+       "2016-01-25"
+      ],
+      "was": [
+       47.11,
+       3.24,
+       29.61,
+       22.1,
+       0.0,
+       "2016-01-25"
+      ],
+      "src": "bseaspx:500187:qtrid88",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (7.03pp) folded in by a minority route. Healed to the page's own domestic rows (22.5804). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    },
    "2016-06-30": {
@@ -320598,21 +320619,42 @@
     "cell": [
      0.0,
      30.5312,
-     45.5148,
+     48.9249,
      14.4618,
      0.0,
      "2016-04-15"
     ],
     "was": [
-     0,
-     30.53,
-     44.07,
-     14.46,
+     0.0,
+     30.5312,
+     45.5148,
+     14.4618,
      0.0,
      "2016-04-15"
     ],
-    "src": "bsetable3:534804:89 + bseaspx:534804:89",
-    "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and equals the company's rows, but our standing row rules had never been applied to it. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-15 12:19:35; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute): NBFC row 0.03 -> DII (R3); 'HDFC STANDARD LIFE INSURANCE COMPANY LIMITED' 1.42 under non-institutions -> dii (R2, documented:filing). Date unchanged (shp_lag_fix carries the filing day). prom 0.00 -> 0.0000, fii 30.53 -> 30.5312, dii 44.07 -> 45.5148."
+    "src": "bsetable3:534804:89",
+    "why": "\u00a7164r batch 30 part 13 (2026-10-05, rule 4 confirmed by the DII session): 'BAJAJ HOLDINGS AND INVESTMENT LTD.' 1,002,615 sh on the non-institutions 'Any Other' block is an RBI-registered NBFC (CoR N-13.01952; the issuer's own 2022-form filings list it under 'NBFCs registered with RBI') -> DII, as in every XBRL-era cell. DII = MF 4,251,915 + FI/Banks 8,704,656 + NBFC row 8,110 + HDFC Life 417,167 + Bajaj Holdings. dii 45.5148 -> 48.9249.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      0.0,
+      30.5312,
+      45.5148,
+      14.4618,
+      0.0,
+      "2016-04-15"
+     ],
+     "was": [
+      0,
+      30.53,
+      44.07,
+      14.46,
+      0.0,
+      "2016-04-15"
+     ],
+     "src": "bsetable3:534804:89 + bseaspx:534804:89",
+     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and equals the company's rows, but our standing row rules had never been applied to it. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-15 12:19:35; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute): NBFC row 0.03 -> DII (R3); 'HDFC STANDARD LIFE INSURANCE COMPANY LIMITED' 1.42 under non-institutions -> dii (R2, documented:filing). Date unchanged (shp_lag_fix carries the filing day). prom 0.00 -> 0.0000, fii 30.53 -> 30.5312, dii 44.07 -> 45.5148."
+    }
    }
   },
   "CERA": {
