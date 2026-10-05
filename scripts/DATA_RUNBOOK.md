@@ -21168,6 +21168,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     store-wide `_shp_fii_rowfix.py classify` ADDS its move to the stored fii, so on a cell already healed it double counts (PAYTM
     75 -> 142): only cells with no R2-FII entry are first reads. RBA 2021-22 (Valiant Mauritius Partners FDI 1.74 on an OCB row) stays
     public: RBA's own 2022 form files it under Foreign Companies (rule difference with Quantmac v6, row named).
+    **Batch 25 = batch 23 round 2, each cell on ITS OWN basis (2026-10-05), label "§164r batch 25".** Batch 23's check compared the
+    stored fii with min(% of (A+B), % of (A+B+C)), which hid misses in re-based (A+B) cells. `~/stocks-cache/shp/audit_all/lb/old_lb2.py`
+    judges a §164a cell on (A+B) and every other cell on (A+B+C), share counts exact: 86 more cells hold less than the company's own
+    foreign-labelled rows - DCW 2006-15 x36 (Foreign Financial Institutions / Foreign Bank 42,225 sh), SCHAEFFLER x9, ICICIBANK
+    2006-08 x8 (Foreign Financial Institutions 189,826 sh), GARDENSILK x5, HDFCBANK 2014 x4 (QFI 689,000 sh), RAMANEWS x4, ... -
+    all FII-only (stored dii = the page's domestic rows), plus GRAPHITE Sep-2006 (stored 3.09 matches no row set of its page;
+    re-read 3.1535) and STER Sep-2007. Also ICICIBANK Sep/Dec-2008: every other ICICI page-era cell from Jun-2008 counts the
+    company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares inside (A+B), not the (C) custodian block, §142e); these two had
+    left it out (+0.18 / +0.31). Quantmac's ICICI rows (v5 'Rows behind our figure') divide FII by (A+B) minus the FIIs-DR shares
+    and leave the row out: a rule difference, row named. 88 cells; rebuilt store: only these move (plus batch 24 not yet refreshed).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
