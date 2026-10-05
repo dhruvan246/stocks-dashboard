@@ -21386,6 +21386,14 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     stays 10.7892: Quantmac's 11.07 counts BSE's page 'Any Others' 5.31, which lumps in the domestic Alternate Investment Funds row
     (204,000 sh, 0.2822; Table III B1c) - THEIR ERROR. CARERATING Mar-2016 dii 45.5148 -> 48.9249: 'BAJAJ HOLDINGS AND INVESTMENT LTD.'
     1,002,615 on the non-institutions block = RBI NBFC (rule 4, confirmed by the DII session; XBRL-era cells already count it).
+    **Batch 30 part 14 (2026-10-05): the FDI-holder registry rebuilt over every filing version - and a CORRECTION of the part 8 note.**
+    With all 2,101 uncached revised 2022-form XBRLs fetched, `~/stocks-cache/shp/fdi_scan/scan_versions.py` re-reads 16,886 filing versions
+    of Quantmac's grid universe with the registry's own identity test (`_same_holder`). The only holders the original-filings registry
+    lacked are DELHIVERY's three (already written in part 8); `shp_fdi_holders.json` now carries them, and first / last / n span every
+    version. The part 8 list of "11 companies" was a faulty quick comparison by exact name: YESBANK 'VERVENTA HOLDINGS LTD' = the
+    registry's 'Verventa Holdings Limited'; 360ONE's 'Government Pension Fund Global' = the registry's 'Government Pesnion Fund Global'
+    (the company's own misspelling, also in its ORIGINAL filings); SAMHI, UGROCAP, SURAKSHA, SSWL, SIL, SIRCA and TRU were never
+    point-in-time Nifty 500 members (outside the audit scope). No other cell moves.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
