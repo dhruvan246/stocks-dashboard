@@ -21424,6 +21424,20 @@ Verdict pass status at 92ba8c962 (5,495 differing cells): RULE DIFFERENCE 3,953 
 our neighbouring quarter -> date check; 162 = Dec-15/Mar-16 seam, pending the FII session's Table III re-read) / REVIEW-OURS 363 /
 OUR ERROR 102 (written in parts 8-9) / BASE 56 (page era, (A+B+C) vs (A+B) - DR companies, handed to the FII session) / THEIR ERROR 19.
 
+**§164s part 10 (2026-10-05) - 45 rows + three reader rules (two user decisions).** (1) User "Count none of it": ONE non-institutions
+row that mixes an institution with NRIs / IEPF / individuals and gives no split ('QUALIFIED INSTITUTIONAL BUYER + NON RESIDENT INDIAN',
+'Alternative Investment Fund & IEPF', 'NRN+AIF+QIB') is not a domestic-institution row (`MIXLAB`, `DII_MIXED_OUT`); a register-proven
+holder named inside it still counts (LTTS Dec-19 ICICI Pru 1.01). LTTS x8, ENGINERSIN x6, CARERATING x5, HAPPSTMNDS, GSKCONS; VSTIND
+Dec-17 'Investor Education and Provident Fund' (= IEPF, the word 'Provident' had made it a pension label). (2) User "Follow IEX's own
+label": a holder the company files under its own foreign-company label inside Institutions is not domestic on other companies' filings
+alone (`OWN_LABEL_FIRST`) - IEX Mar-18..Dec-20 India Business Excellence Fund IIA out of DII (12 rows; Mar-18 14.7353 = Quantmac).
+(3) Row attachment (`groups(..., total)`, `DII_GROUP_OUTSIDE`): a named holder whose category has no row of its own sits OUTSIDE the
+category rows only when the axis total the filer reports leaves room for it; otherwise the old nearest-row attachment stands (the
+category rows already add up to the total - CREDITACC / IEX / SRF). GABRIEL Sep/Dec-21 ICICI Lombard 1.52 had been pinned inside the
+NRI row -> DII; AMBER Sep-20 exact. Also WABAG Jun-18 (OCB row out, AIF + Tata AIA in; total moved 0.04 so the 0.05 proposal threshold
+had hidden it) and 7 event rows from the FII session's event re-read (CGPOWER x2, JWL, LEMONTREE, RAINBOW, SAFARI, IDFC). NCC Sep/Dec-21:
+the filing is internally inconsistent (two 'Firm' holders fit only inside its QIB row) - left as stored, verdict UNKNOWN.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its

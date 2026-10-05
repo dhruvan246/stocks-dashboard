@@ -80,6 +80,15 @@ FORLAB=re.compile(r'foreig|forieg|forign|foregin|forein|forigin|foerign|foregn|q
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
 SOVNAME=re.compile(r"pension fund global|government of (?!india)|monetary authority|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b|sovereign", re.I)   # §164s part 7
+# §164s part 10 (user 2026-10-05 "Count none of it"): ONE row that mixes an institution with NRIs / IEPF / non-institutions and gives
+# no split (LTTS Sep-2019 'QUALIFIED INSTITUTIONAL BUYER + NON RESIDENT INDIAN' 1.57) is not a domestic-institution row - none of it is DII
+MIXLAB=re.compile(r"non.?resident|\bnri\b|\bnrn\b|\biepf\b|investor education|non.?indian|\bhuf\b|individual", re.I)
+MIXED_OUT=os.environ.get("DII_MIXED_OUT","1")=="1"
+# §164s part 10 (user 2026-10-05 "Follow IEX's own label"): a holder the company files under its own foreign-company label inside the
+# Institutions block ('Overseas Corporate Bodies') is not domestic on the strength of OTHER companies' filings alone (IEX 2018-20 'India
+# Business Excellence Fund IIA'); only the company's own 2022-form placement or an official register can make it domestic there
+OWN_LABEL_FIRST=os.environ.get("DII_OWN_LABEL_FIRST","1")=="1"
+GROUP_OUTSIDE=os.environ.get("DII_GROUP_OUTSIDE","1")=="1"   # §164s part 10; env 0 = the earlier attachment
 NAMED_UNPROVEN_OUT=os.environ.get("DII_NAMED_UNPROVEN_OUT","1")=="1"   # §164s part 7 (user 2026-10-05); env 0 = the earlier evaluation
 REST_FOLLOWS=True     # §158a/§158b (2026-09-25): with the rule on, a full N500 run proposes 0 on the live store; False = the §158 (2026-09-24) evaluation
 # §164 (FII session, 2026-09-25): "§164 row-level remainder rule" (D1 unnamed Any-Other rest -> fii, ex-member re-reads) and "§164a
@@ -136,7 +145,7 @@ def rows_of(txt):
         seq=int(re.sub(r'\D','',val) or 0)
         out.append((ax,seq,v['p']*(100 if frac else 1),(v.get('kind') or ''),(v.get('cat') or ''),(v.get('name') or '')))
     return sorted(out)
-def groups(rows, axis):
+def groups(rows, axis, total=None):
     """Category rows on one axis with their attached >=1% holders. A holder row carries the filer's own
     category text; it is attached to the category row with the SAME text that has room for it (the nearest
     preceding one first), then to any same-text row, then to the preceding row if it fits, else it forms
@@ -150,6 +159,7 @@ def groups(rows, axis):
         if is_cat: cats.append({"seq":seq,"pct":p,"label":re.sub(r"\s+"," ",cat+" "+name).strip(),"cat":cat,"name":name,"holders":[]})
         else: holders.append((seq,p,name or cat,cat))
     def room(g,p): return sum(h[0] for h in g["holders"])+p<=g["pct"]+0.02
+    outside=[(total-sum(g["pct"] for g in cats)) if total is not None else 0.0]
     for seq,p,name,cat in sorted(holders,key=lambda x:-x[1]):
         same=[g for g in cats if norm(g["cat"])==norm(cat)]
         prev=[g for g in same if g["seq"]<seq]; nxt=[g for g in same if g["seq"]>seq]
@@ -159,6 +169,13 @@ def groups(rows, axis):
         if target is None:
             # no same-text row has room: the holder still belongs to SOME row on this axis (the filer changed
             # its label between the category row and the holder row) — nearest preceding row with room, else next
+            # §164s part 10: when the axis TOTAL the filer reports has room OUTSIDE its category rows for this holder, the holder is
+            # not inside any of them (GABRIEL Sep-2021: categories 4.66 of a 6.19 Any-Other total, 'ICICI Lombard' 1.52 filed under
+            # 'Others' with no such row) - it forms its own group instead of borrowing a different label's row. When the category rows
+            # already add up to the total (CREDITACC / IEX / SRF), every holder sits inside one of them and the borrowing stands.
+            if GROUP_OUTSIDE and total is not None and outside[0]>=p-0.02:
+                outside[0]-=p; target={"seq":seq,"pct":0.0,"label":re.sub(r"\s+"," ",cat).strip(),"cat":cat,"name":"","holders":[],"orphan":True}; cats.append(target)
+                target["holders"].append((p,name)); continue
             before=[g for g in cats if g["seq"]<seq and room(g,p)]; after=[g for g in cats if g["seq"]>seq and room(g,p)]
             if before: target=before[-1]
             elif after: target=after[0]
@@ -423,7 +440,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
     if fii_shift<-0.03 or fii_shift>oth_inst+0.03: return None
     fii_shift=min(max(fii_shift,0.0),oth_inst)
     split="a" if fii_shift<=0.03 else ("b" if abs(fii_shift-oth_inst)<=0.03 else "p")
-    rows=rows_of(txt); gi=groups(rows,"OtherInstitutions"); gn=groups(rows,"OtherNonInstitutions")
+    rows=rows_of(txt); gi=groups(rows,"OtherInstitutions",bd.get("OtherInstitutionsMember")); gn=groups(rows,"OtherNonInstitutions",bd.get("OtherNonInstitutionsMember"))
     ev=[]; mv_fii=mv_pub=keep=unres=unp=0.0; overflow=False
     if oth_inst>=0.005:
         if not gi: unres+=oth_inst; ev.append(("R1-unresolved","no typed rows",round(oth_inst,4)))
@@ -483,6 +500,11 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 mv_pub+=named_f_pub; mv_fii+=named_f_fii+rest; keep+=named_d
                 ev.append(("R1-fii-label",lab,round(g["pct"],4),"public=%.2f fii=%.2f"%(named_f_pub,named_f_fii+rest),desc,lab_src))
             elif lab_kind=="public":
+                if OWN_LABEL_FIRST:
+                    weak=[h for h in dh if str(h[4]).startswith("documented") and FORWORD.search(lab)]
+                    if weak:
+                        named_d-=sum(h[0] for h in weak); named_f_pub+=sum(h[0] for h in weak)
+                        ev.append(("R1-own-label-first",lab,round(sum(h[0] for h in weak),4),"; ".join("%s %.2f (%s)"%(h[1],h[0],h[4]) for h in weak)))
                 mv_pub+=named_f_pub+rest; mv_fii+=named_f_fii; keep+=named_d
                 ev.append(("R1-public-label",lab,round(g["pct"],4),"public=%.2f fii=%.2f"%(named_f_pub+rest,named_f_fii),desc,lab_src))
             else:
@@ -521,7 +543,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
         dh=[h for h in hs if h[2]=="domestic" and (DOMLAB.search(h[1]) or h[4].startswith("new-format"))]
         fh=[h for h in hs if h[2]=="foreign"]
         contained=(sum(h[0] for h in hs)<=g["pct"]+0.02)
-        if DOMLAB.search(lab) and not re.search(r'trust', lab, re.I):
+        if DOMLAB.search(lab) and not re.search(r'trust', lab, re.I) and not (MIXED_OUT and MIXLAB.search(lab)):
             take=g["pct"]-(sum(h[0] for h in fh) if contained else 0.0)
             if not contained: take+=sum(h[0] for h in dh)
             if take>0.005:
