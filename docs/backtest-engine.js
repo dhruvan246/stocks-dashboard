@@ -152,7 +152,7 @@ async function _sfPart(file, key, ver, allowClear) {
   }
   return JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
 }
-// Normalise one symbol's raw record into engine arrays: day offsets, integer-paise closes, exact
+// Normalise one symbol's raw record into engine arrays: day offsets, paise closes (2 paise decimals, §179f), exact
 // intraday high/low when the data carries them, legacy per-mil offsets otherwise.
 function _sfNorm(o, ts) {
   const n = o.d.length, d = new Array(n), p = new Array(n), t = new Array(n);
@@ -160,8 +160,8 @@ function _sfNorm(o, ts) {
   for (let i = 0; i < n; i++) {
     const y = o.d[i];
     const off = Math.floor((Date.UTC(Math.floor(y / 10000), (Math.floor(y / 100) % 100) - 1, y % 100) / 1000 - ts) / DAY);
-    d[i] = off; p[i] = Math.round(o.c[i] * 100); t[i] = o.t[i] || 0;
-    if (hasHL) { h[i] = Math.round(o.h[i] * 100); l[i] = Math.round(o.l[i] * 100); }
+    d[i] = off; p[i] = Math.round(o.c[i] * 1e4) / 100; t[i] = o.t[i] || 0;   // paise, kept to 2 decimals: the store carries 4-decimal adjusted prices (runbook §179f)
+    if (hasHL) { h[i] = Math.round(o.h[i] * 1e4) / 100; l[i] = Math.round(o.l[i] * 1e4) / 100; }
   }
   const ser = { d, p };
   if (hasHL) { ser.h = h; ser.l = l; }                     // EXACT intraday high/low (x100, like p)

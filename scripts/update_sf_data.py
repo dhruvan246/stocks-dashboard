@@ -17,6 +17,10 @@ import os, sys, json, gzip, datetime, urllib.request, time
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 OUT = os.path.join(ROOT, "docs", "sf_stock_data.bin")
 MARK = os.path.join(ROOT, "docs", ".sf_updated")
+# Adjusted prices keep PX_DP decimals (runbook §179f, 2026-10-05). At 2 decimals an adjusted old price of a few rupees loses up to
+# 1.6% per paisa and every later re-scale re-rounds it: quantmac round 4 traced 4,474 of our cells to exactly that. Raw NSE
+# prices still arrive with 2 decimals; only the multiplications that convert history onto today's share basis use PX_DP.
+PX_DP = 4
 RELEASE_URL = "https://github.com/dhruvan246/stocks-dashboard/releases/download/data/sf_stock_data.bin"
 
 sys.path.insert(0, HERE)
@@ -374,7 +378,7 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         tol = max(0.0015, 0.011 / min(c[j], c[j - 1])) if (dem is not None and dem_exact) else 0.02
         if abs(corr - 1) > tol:   # baked-in treatment disagrees with the rebuild's -> fix
             for key in ("c", "h", "l", "op", "vw"):
-                if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
+                if key in e: e[key] = [round(x * corr, PX_DP) for x in e[key][:j]] + e[key][j:]
             kind = ("demerger f=%.4f" % correct_f) if dem is not None else \
                    ("demerger:keep-drop" if correct_f == 1.0 else "split/bonus f=%.4f" % correct_f)
             print("  SELF-HEAL %s ex %d: was f=%.4f -> %s  (rescaled %d pre-ex points x%.4f)"
@@ -540,7 +544,7 @@ def apply_manual_rights(data):
         cur = c[j] / c[j - 1]                    # ex-date ratio currently baked into the series
         if abs(cur - raw_drop) < abs(cur - raw_drop / factor):   # still ~raw drop -> not yet applied
             for key in ("c", "h", "l", "op", "vw"):
-                if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
+                if key in e: e[key] = [round(x * factor, PX_DP) for x in e[key][:j]] + e[key][j:]
             n += 1
             print("  MANUAL-RIGHTS %s ex %d x%.4f (%d pre-ex points -> Trendlyne parity)" % (sym, ex, factor, j))
     return n
@@ -566,7 +570,7 @@ def reconcile_rights(data):
         applied = raw / (c[j] / c[j - 1]); corr = target / applied
         if abs(corr - 1) > max(0.0002, 0.011 / min(c[j], c[j - 1])):
             for key in ("c", "h", "l", "op", "vw"):
-                if key in e: e[key] = [round(x * corr, 2) for x in e[key][:j]] + e[key][j:]
+                if key in e: e[key] = [round(x * corr, PX_DP) for x in e[key][:j]] + e[key][j:]
             n += 1
             print("  RIGHTS-RECONCILE %s %d: baked %.4f -> target %.4f (%d pre-bar points x%.4f)" % (sym, bar, applied, target, j, corr))
     return n
@@ -608,7 +612,7 @@ def apply_ca_arbitrated(data):
         cur = c[j] / c[j - 1]                    # ex-date ratio currently baked into the series
         if abs(cur - raw_drop) < abs(cur - raw_drop / factor):   # still ~raw drop -> not yet applied
             for key in ("c", "h", "l", "op", "vw"):
-                if key in e: e[key] = [round(x * factor, 2) for x in e[key][:j]] + e[key][j:]
+                if key in e: e[key] = [round(x * factor, PX_DP) for x in e[key][:j]] + e[key][j:]
             n += 1
             print("  CA-OPEN-ARB %s ex %d x%.6f (%d pre-ex points; ratio %.6f -> %.6f)"
                   % (sym, ex, factor, j, cur, cur / factor))
@@ -797,14 +801,14 @@ def insert_weekend_sessions(data, j, old2new=None):
                 raw_prev = _day_raw[pdate].get(osym)
             if not raw_prev: skip += 1; continue
             f = e["c"][i - 1] / raw_prev               # CA-adjustment level at the insertion point
-            adj_c = round(c * f, 2)
+            adj_c = round(c * f, PX_DP)
             # implausible day move vs the neighbour = ex-date-on-session edge or bad anchor -> leave out
             # floor 0.001 (was 0.01): two 1:10 splits are exactly 0.01 and a rights term pushes BAJFINANCE
             # pre-2016 to 0.0097 — the old floor rejected it on five §106b sessions (§106h)
             if not (0.001 < f < 100) or not (0.6 <= adj_c / e["c"][i - 1] <= 1.6):
                 skip += 1; continue
-            hi = round(max(h, c) * f, 2); lo_ = round((min(l, c) if l > 0 else c) * f, 2)
-            opx = round(o_ * f, 2) if o_ > 0 else adj_c; vwx = round(vw * f, 2) if vw > 0 else adj_c
+            hi = round(max(h, c) * f, PX_DP); lo_ = round((min(l, c) if l > 0 else c) * f, PX_DP)
+            opx = round(o_ * f, PX_DP) if o_ > 0 else adj_c; vwx = round(vw * f, PX_DP) if vw > 0 else adj_c
             e["d"].insert(i, ymd); e["c"].insert(i, adj_c); e["t"].insert(i, round(t, 1))
             e["h"].insert(i, hi); e["l"].insert(i, lo_); e["op"].insert(i, opx)
             e["v"].insert(i, int(v)); e["dv"].insert(i, round(dlv, 2) if dlv else 0); e["vw"].insert(i, vwx)
@@ -850,13 +854,13 @@ def apply_bar_inserts(data, cal=None):
         if not (a.get("c") and ai < len(ds) and ds[ai] == aymd and ai < i):
             print("  BAR-INSERT %s %d: anchor bar %d not in series — left out" % (sym, ymd, aymd)); continue
         f = e["c"][ai] / float(a["c"])
-        c = round(float(r["c"]) * f, 2)
+        c = round(float(r["c"]) * f, PX_DP)
         if not (0.001 < f < 100) or not (0.6 <= c / e["c"][ai] <= 1.6):
             print("  BAR-INSERT %s %d: implausible (f=%.5f, close/anchor %.3f) — left out" % (sym, ymd, f, c / e["c"][ai])); continue
-        h = round(max(float(r["h"]), float(r["c"])) * f, 2)
-        l = round((min(float(r["l"]), float(r["c"])) if float(r["l"]) > 0 else float(r["c"])) * f, 2)
-        o = round(float(r["o"]) * f, 2) if float(r.get("o") or 0) > 0 else c
-        vw = round(float(r["vw"]) * f, 2) if float(r.get("vw") or 0) > 0 else c
+        h = round(max(float(r["h"]), float(r["c"])) * f, PX_DP)
+        l = round((min(float(r["l"]), float(r["c"])) if float(r["l"]) > 0 else float(r["c"])) * f, PX_DP)
+        o = round(float(r["o"]) * f, PX_DP) if float(r.get("o") or 0) > 0 else c
+        vw = round(float(r["vw"]) * f, PX_DP) if float(r.get("vw") or 0) > 0 else c
         e["d"].insert(i, ymd); e["c"].insert(i, c); e["t"].insert(i, round(float(r["tl"]), 1))
         e["h"].insert(i, h); e["l"].insert(i, l); e["op"].insert(i, o)
         e["v"].insert(i, int(r["v"])); e["dv"].insert(i, round(float(r.get("dv") or 0), 2)); e["vw"].insert(i, vw)
@@ -1215,7 +1219,7 @@ def insert_sme_history(data, meta, cal=None):
         for i, k in enumerate(KEYS):
             vals = [b[i] for b in bars]
             if k in ("c", "h", "l", "op", "vw") and abs(s - 1.0) > 1e-9:
-                vals = [round(x * s, 2) for x in vals]
+                vals = [round(x * s, PX_DP) for x in vals]
             e[k][pos:pos] = vals
         if pos:
             print("  SME-BACKFILL %s->%s: %d bars filled the hole %d -> %d before the anchor" % (sym, tgt, len(bars), e["d"][pos - 1], a0))
@@ -1287,7 +1291,7 @@ def insert_bz_history(data, cal=None):
                 lo = bisect.bisect_right(ds, int(b.get("from") or 0))
                 for key in ("c", "h", "l", "op", "vw"):
                     if key in e:
-                        e[key][lo:j + 1] = [round(x * pre, 2) for x in e[key][lo:j + 1]]
+                        e[key][lo:j + 1] = [round(x * pre, PX_DP) for x in e[key][lo:j + 1]]
                 scaled += 1
                 print("  BZ-BACKFILL %s: undid a phantom corporate action x%.4f on bars %d..%d"
                       % (sym, pre, ds[lo], ds[j]))
@@ -1344,7 +1348,7 @@ def apply_bz_scale_fix(data):
             lo, hi = bisect.bisect_left(ds, seg["lo"]), bisect.bisect_right(ds, seg["hi"])
             for key in ("c", "h", "l", "op", "vw"):
                 if key in e:
-                    e[key][lo:hi] = [round(x * seg["f"], 2) for x in e[key][lo:hi]]
+                    e[key][lo:hi] = [round(x * seg["f"], PX_DP) for x in e[key][lo:hi]]
             print("  BZ-SCALE-FIX %s: bars %d..%d x%.6f" % (sym, ds[lo] if lo < len(ds) else 0,
                                                             ds[hi - 1] if hi else 0, seg["f"]))
         n += 1
@@ -1422,7 +1426,7 @@ def apply_series_surgery(data, meta, cal=None):
                   and anc.get("c") and abs(e["c"][ai] / anc["c"] - 1) < 0.005)
             if ok:
                 for key in ("c", "h", "l", "op", "vw"):
-                    e[key][:i0] = [round(x * pre, 2) for x in e[key][:i0]]
+                    e[key][:i0] = [round(x * pre, PX_DP) for x in e[key][:i0]]
                 print("  SURGERY %s: pre-%d history rescaled x%.6f onto the official CA level"
                       % (sym, frm, pre))
             else:
@@ -1558,10 +1562,10 @@ def main():
         if "h" not in e and "hb" in e:
             c = e["c"]; n = len(c)
             hb = e.get("hb", [0] * n); lb = e.get("lb", [0] * n); ob = e.get("ob", [0] * n); vwo = e.get("vw", [0] * n)
-            e["h"] = [round(c[i] * (1000 + hb[i]) / 1000, 2) for i in range(n)]
-            e["l"] = [round(c[i] * (1000 - lb[i]) / 1000, 2) for i in range(n)]
-            e["op"] = [round(c[i] * (1000 + ob[i]) / 1000, 2) for i in range(n)]
-            e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, 2) for i in range(n)]
+            e["h"] = [round(c[i] * (1000 + hb[i]) / 1000, PX_DP) for i in range(n)]
+            e["l"] = [round(c[i] * (1000 - lb[i]) / 1000, PX_DP) for i in range(n)]
+            e["op"] = [round(c[i] * (1000 + ob[i]) / 1000, PX_DP) for i in range(n)]
+            e["vw"] = [round(c[i] * (1000 + vwo[i]) / 1000, PX_DP) for i in range(n)]
             e["dv"] = [round(x / 10, 2) for x in e.get("dv", [])]
             for kk in ("hb", "lb", "ob"): e.pop(kk, None)
     # §167: exchange HOLIDAYS stored as full-universe sessions (NSE's holiday misdirect, old full build) —
@@ -1772,7 +1776,7 @@ def main():
                 for f in ("d", "c", "t", "h", "l", "op", "v", "dv", "vw"):
                     if f in oo and f in on:
                         if adj != 1.0 and f in ("c", "h", "l", "op", "vw"):
-                            on[f] = [round(oo[f][i] * adj, 2) for i in idx] + on[f]
+                            on[f] = [round(oo[f][i] * adj, PX_DP) for i in idx] + on[f]
                         else:
                             on[f] = [oo[f][i] for i in idx] + on[f]
                 # "inlife" (§207): an official split/bonus of the NEW key dated INSIDE the old fragment's life. NSE files a
@@ -1789,7 +1793,7 @@ def main():
                     baked = (rbar / rprev) / (on["c"][j] / on["c"][j - 1]); corr = fac / baked
                     if abs(corr - 1) > max(0.0015, 0.011 / min(on["c"][j], on["c"][j - 1])):
                         for f in ("c", "h", "l", "op", "vw"):
-                            if f in on: on[f] = [round(x * corr, 2) for x in on[f][:j]] + on[f][j:]
+                            if f in on: on[f] = [round(x * corr, PX_DP) for x in on[f][:j]] + on[f][j:]
                         print("  MANUAL RENAME MERGE %s -> %s: in-life official factor at %d: baked %.4f -> %.4f "
                               "(%d earlier bars x%.6f)" % (old, new, bar, baked, fac, j, corr))
                 # The new ticker's stub meta is a placeholder (name=symbol, ind=Unknown, often no ISIN —
@@ -1938,7 +1942,7 @@ def main():
             f = ingest_factor(day, sym, ymd, e["d"][-1], prev_raw, c, o_, off, nd, today.isoformat())
             if f != 1.0:   # corporate action: re-anchor history (prices scale by f; dv % does not)
                 for key in ("c", "h", "l", "op", "vw"):
-                    if key in e: e[key] = [round(x * f, 2) for x in e[key]]
+                    if key in e: e[key] = [round(x * f, PX_DP) for x in e[key]]
                 print("  %s: %s corporate action f=%s%s (history re-anchored)"
                       % (day, sym, f, " [official]" if off is not None and f == off else ""))
             e["d"].append(ymd); e["c"].append(round(c, 2)); e["t"].append(round(t, 1))

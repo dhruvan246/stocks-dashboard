@@ -86,6 +86,12 @@ PEER_N = 8          # same-industry rows besides the stock itself
 _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 
 
+def _px100(x):
+    """price x100 (paise) as the engine holds it: an integer for a 2-decimal price, 2 paise decimals for the 4-decimal adjusted
+    store (runbook §179f) — ints stay ints so unchanged prices keep their exact bytes."""
+    v = round(x * 100, 2)
+    return int(v) if v == int(v) else v
+
 def slug(sym):
     """Filename for a symbol. Mirrored by slugSym() in docs/stock.html."""
     return _UNSAFE.sub("_", sym)
@@ -343,7 +349,7 @@ def build_slice(sym, o, m, end, ts, chips, fno, core):
     # Day offsets exactly as backtest-engine.js computes them (floor((utc - startTs)/DAY)),
     # then delta-encoded — a run of 1s and 3s gzips to nothing, absolute offsets do not.
     offs = [(_days(y) * 86400 - ts) // 86400 for y in o["d"]]
-    p = [int(round(c * 100)) for c in o["c"]]
+    p = [_px100(c) for c in o["c"]]
 
     out = {
         "sv": SCHEMA, "sym": sym,
@@ -363,8 +369,8 @@ def build_slice(sym, o, m, end, ts, chips, fno, core):
     # and converting the per-mil high/low into x100 paise moved 52-week lows on sub-₹10 names.
     if o.get("h") and o.get("l"):
         out["hl"] = 1                                              # exact intraday high/low…
-        out["h"] = [int(round(x * 100)) for x in o["h"][-k:]]      # …stored x100, as loadSF does
-        out["l"] = [int(round(x * 100)) for x in o["l"][-k:]]
+        out["h"] = [_px100(x) for x in o["h"][-k:]]      # …stored x100, as loadSF does
+        out["l"] = [_px100(x) for x in o["l"][-k:]]
     elif o.get("hb") and o.get("lb"):
         out["hb"] = o["hb"][-k:]                                   # legacy per-mil offsets from close
         out["lb"] = o["lb"][-k:]

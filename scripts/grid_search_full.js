@@ -51,8 +51,8 @@
     const hasHL = o.h && o.l, h = hasHL ? new Array(n) : null, l = hasHL ? new Array(n) : null;
     for (let i = 0; i < n; i++) { const y = o.d[i];
       const off = Math.floor((Date.UTC(Math.floor(y/10000),(Math.floor(y/100)%100)-1,y%100)/1000 - ts)/DAY);
-      d[i]=off; p[i]=Math.round(o.c[i]*100); t[i]=o.t[i]||0;
-      if (hasHL){h[i]=Math.round(o.h[i]*100);l[i]=Math.round(o.l[i]*100);} }
+      d[i]=off; p[i]=Math.round(o.c[i]*1e4)/100; t[i]=o.t[i]||0;
+      if (hasHL){h[i]=Math.round(o.h[i]*1e4)/100;l[i]=Math.round(o.l[i]*1e4)/100;} }
     ser[sym]={d,p}; turn[sym]={d,t}; const sm=SFD.meta[sym]||{};
     if (hasHL){ser[sym].h=h;ser[sym].l=l;} else if(o.hb&&o.lb){ser[sym].hb=o.hb;ser[sym].lb=o.lb;}
     if(o.v)ser[sym].v=o.v; if(o.dv)ser[sym].dv=hasHL?o.dv:o.dv.map(x=>x/10);
