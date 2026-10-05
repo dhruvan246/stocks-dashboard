@@ -21240,6 +21240,23 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     so fii on the filed base drops 43.87 -> 34.49 while FPI shares fell 3.2 % (42.05 on the earlier base). INFY did the opposite at
     Sep-2022 (custodian moved out of B: 31.72 -> 36.20 with FPI shares down 1.3 %). **Tool trap:** BSE's CorporatesSHPSecuritybeta
     (Table I) with QtrCode=/SCRIPCODE= silently returns the LATEST filing - use qtrid=/scripcode= (`show.t1api` checks the reply's Qtr_Id).
+    **Batch 30 part 2 (same label): EDELWEISS 28, ADANIPOWER 5, ADANIENT 1 - each read cell by cell.** EDELWEISS: Sep-2015's
+    non-institution 'Others' row (4 holders, 16,214,530 sh) had gone to fii on a 2.00-vs-2.02 name match to a Fidelity fund (§164g
+    generic-row-by-holders); the company's own Dec-2015 filing labels the same 4 holders / same shares 'Foreign Company' -> public
+    (29.41 -> 27.412 = Quantmac v6); Dec-2015 / Mar-2016 had left out BIH SA's non-institution block 14,043,180 sh, which every other
+    quarter counts (documents-only: the company's first 2022-form row files 'Bih Sa' 48,257,748 = FPI 34,214,568 + this block under FPI
+    Cat II) -> +1.74 / +1.72; 25 more cells off 2-decimal sums onto share counts. **§160f premises corrected with BSE's >1% public holder
+    pages (shpperent.aspx):** 'Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773' was a coincidence - the Mar-2015 6-holder
+    'Foreign Corporate Bodies' row 319,107,182 = Opal + 3i Power 73,329,272 + 32,541,000 to the share, and Sep-2015 'Others' 319,263,884 /
+    Dec-2015 B1i 319,263,782 hold Opal and 3i (Table III names them there); the funds sit in the FII / FPI row. So ADANIPOWER Mar-2015..
+    Mar-2016 = FII row + 3i under §160f's own classes: 11.1163 / 23.4628 / 22.3376 / 22.567 / 19.8293 -> 9.9832 / 21.4635 / 21.2239 /
+    21.4532 / 18.8486 (Jun-2015 inferred from the neighbouring quarters - stated in the entry). ADANIENT Mar-2016: Table III names Elara and
+    Emerging India Focus inside the FII lump and Cresta / Albula inside the 'Overseas corporate bodies' lump (§160f had read the lump as
+    EIF + Elara + Albula + 265,092 - another matching sum): FII lump + Cresta + Albula = 15.7706 (was 17.6662; the lump's 64 other holders
+    public). ADANIENT Jun-2015 (whole 'Others' row 64,215,539 in fii) cannot be split from the page + >1% list: unchanged, open.
+    **Open for the user:** 3i Power Investments A1 (ADANIPOWER 2009-12..2016-03, 160.6 M -> 73.3 M sh) is FII only by §160f; under the
+    later documents-only rule it has no FPI/FII/FDI mark (always on the company-type 'Foreign Corporate Bodies' row; no other filing in
+    corpus_axes2 lists it) - Quantmac counts it public. Rebuilt store moves exactly 34 + parts 1 / batch 29; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
