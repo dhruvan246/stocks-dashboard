@@ -51434,21 +51434,42 @@
     "cell": [
      57.4943,
      16.4217,
-     9.3737,
+     7.5348,
      7.474,
      0.0,
      "2016-01-29"
     ],
     "was": [
-     57.49,
-     16.43,
-     7.53,
-     7.47,
+     57.4943,
+     16.4217,
+     9.3737,
+     7.474,
      0.0,
      "2016-01-29"
     ],
-    "src": "bsetable3:532899:88 + bseaspx:532899:88",
-    "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-01-29 12:11:53; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules: institutions 'Any Other' line 'Others (FII's)' 7.03 -> FII; institutions 'Any Other' holder 'ASHOKA PTE LTD' 5.45 -> foreign/fii documented:filing; institutions 'Any Other' holder 'FRANKLIN TEMPLETON INVESTMENT FUNDS' 2.18 -> foreign/fii curated; institutions 'Any Other' holder 'SMALLCAP WORLD FUND, INC' 1.76 -> foreign/fii documented:f ... (full list in _shp_164_audit.json). Date unchanged (shp_lag_fix carries the filing day). prom 57.49 -> 57.4943, fii 16.43 -> 16.4217, dii 7.53 -> 9.3737."
+    "src": "bsetable3:532899:88",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): DEUTSCHE BANK A.G. 1,269,879 sh is a sub-row of the NON-institutions 'Any Other' block (no category given); \u00a7164t part 2 read it as a domestic bank (R2 regex on 'BANK'). It is a foreign bank (RBI list of foreign banks; shp_foreign_holder_evidence class foreign) -> not DII; and not FII: no KSCL filing marks it FPI/FII/FDI and other companies list it under Institutions (Foreign) once against 7 company-type listings (batch 8 standard: inst=false) -> public. DII = MF 5,161,151 + FI/Banks 41,983. FII unchanged = institutions 'Any Other' 11,340,014 (Others (FII's) + Ashoka / Franklin / Smallcap World). Total (A+B+C) 69,055,095 sh (Table I, qtrid 88). fii 16.4217 -> 16.4217, dii 9.3737 -> 7.5348, mf 7.474 -> 7.474, ins 0.0 -> 0.0.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      57.4943,
+      16.4217,
+      9.3737,
+      7.474,
+      0.0,
+      "2016-01-29"
+     ],
+     "was": [
+      57.49,
+      16.43,
+      7.53,
+      7.47,
+      0.0,
+      "2016-01-29"
+     ],
+     "src": "bsetable3:532899:88 + bseaspx:532899:88",
+     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-01-29 12:11:53; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules: institutions 'Any Other' line 'Others (FII's)' 7.03 -> FII; institutions 'Any Other' holder 'ASHOKA PTE LTD' 5.45 -> foreign/fii documented:filing; institutions 'Any Other' holder 'FRANKLIN TEMPLETON INVESTMENT FUNDS' 2.18 -> foreign/fii curated; institutions 'Any Other' holder 'SMALLCAP WORLD FUND, INC' 1.76 -> foreign/fii documented:f ... (full list in _shp_164_audit.json). Date unchanged (shp_lag_fix carries the filing day). prom 57.49 -> 57.4943, fii 16.43 -> 16.4217, dii 7.53 -> 9.3737."
+    }
    }
   },
   "KSOILS": {
@@ -232595,6 +232616,48 @@
     ],
     "src": "bseaspx:526612_84",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 526612 qtrid 84) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Non-Institutions, 11,311 shares = 0.0477) - and the stored fii 7.8521 held only 'Foreign Institutional Investors' 7.8521. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 23,727,934 shares. fii 7.8521 -> 7.8998, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-12-31": {
+    "cell": [
+     75.0,
+     7.8629,
+     6.6876,
+     5.4846,
+     1.195,
+     "2016-01-28"
+    ],
+    "was": [
+     75.0,
+     7.87,
+     5.49,
+     5.48,
+     0.0,
+     "2016-01-28"
+    ],
+    "src": "bsetable3:526612:88",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): same rule one quarter earlier: 'SBI Life Insurance Co. Ltd' 283,545 sh is named inside the non-institutions Bodies Corporate row (the category rows sum to the block total 1,804,436 without it) - IRDAI life insurer -> DII and insurance (\u00a7164s part 6 rule 4). DII = MF 1,301,394 + FI/Banks 1,884 + SBI Life. FII = FPI 232,067 + institutions 'Any Other' 1,633,648 ('Foreign Institutional Investors' 1,633,448 + 'UTI (FII)' 200 - the company's own (FII) tag) at share counts. Total (A+B+C) 23,727,934 sh (Table I, qtrid 88). fii 7.87 -> 7.8629, dii 5.49 -> 6.6876, mf 5.48 -> 5.4846, ins 0.0 -> 1.195.",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     75.0,
+     7.7663,
+     6.4283,
+     5.4196,
+     1.0001,
+     "2016-04-13"
+    ],
+    "was": [
+     75.0,
+     7.76,
+     5.43,
+     5.42,
+     0.0,
+     "2016-04-13"
+    ],
+    "src": "bsetable3:526612:89",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): 'Sbi Life Insurance Co. Ltd' 237,313 sh is its own sub-row of the non-institutions 'Any Other' block (sub-rows sum to 1,816,443 with it) - IRDAI life insurer (reg. 111) -> DII and insurance (\u00a7164s part 6 rule 4); institutions 'Any Other' sub-row 'UTI' 200 sh -> DII (domestic). DII = MF 1,285,965 + FI/Banks 1,817 + UTI + SBI Life. FII = FPI 442,293 + institutions 'Any Other' sub-row 'Foreign Institutional Investor' 1,400,497 at share counts. Total (A+B+C) 23,727,934 sh (Table I, qtrid 89). fii 7.76 -> 7.7663, dii 5.43 -> 6.4283, mf 5.42 -> 5.4196, ins 0.0 -> 1.0001.",
+    "exact": true
    }
   },
   "VIDYAWIRES": {
@@ -232717,8 +232780,8 @@
    "2016-12-31": {
     "cell": [
      66.93,
-     7.4763,
-     1.3337,
+     7.2966,
+     1.5138,
      1.1982,
      0.0,
      "2017-01-24",
@@ -232726,15 +232789,38 @@
     ],
     "was": [
      66.93,
-     7.2963,
-     1.5137,
+     7.4763,
+     1.3337,
      1.1982,
      0.0,
      "2017-01-24",
      87853
     ],
-    "src": "bsexbrl:532872_231201716317_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.30 -> 7.48, dii 1.51 -> 1.33. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.18 | R1: R1-unresolved no typed rows 0.18. Evidence: _shp_164_audit.json"
+    "src": "bsexbrl:532872_231201716317_SHP.xml + bsetable3:532872:92",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): the institutions 'Any Other' block 449,803 sh is unnamed in this filing (XBRL OtherInstitutionsI, no sub-row); the company labels the identical 449,803-share block 'Unit Trust of India' (Jun-2016), 'UTI' (Sep-2016, Mar-2017, Jun-2017) -> follow the label (batch 7 D1 rule, same size in the neighbouring filings) -> domestic. OUR ERROR: the \u00a7164 remainder rule had read it as an unlabelled block (D1 -> FII). FII = FPI 18,015,048 only; DII = MF 2,958,425 + FI/Banks 329,180 + UTI. Total (A+B+C) 246,895,977 sh (Table I, qtrid 92). fii 7.4763 -> 7.2966, dii 1.3337 -> 1.5138, mf 1.1982 -> 1.1982, ins 0.0 -> 0.0.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      66.93,
+      7.4763,
+      1.3337,
+      1.1982,
+      0.0,
+      "2017-01-24",
+      87853
+     ],
+     "was": [
+      66.93,
+      7.2963,
+      1.5137,
+      1.1982,
+      0.0,
+      "2017-01-24",
+      87853
+     ],
+     "src": "bsexbrl:532872_231201716317_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.30 -> 7.48, dii 1.51 -> 1.33. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.18 | R1: R1-unresolved no typed rows 0.18. Evidence: _shp_164_audit.json"
+    }
    },
    "2021-09-30": {
     "cell": [
@@ -232971,6 +233057,27 @@
     ],
     "src": "bseaspx:532872_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 6.08 -> 6.28, dii 1.21 -> 1.21. generic-row-B Others 0.2 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.20; next 'Foreign Portfolio Investors' 9 holders 0.24; generic-row-B Others 0.03 pub: next 'Directors & their Relatives & Frie' 2 holders 0.03; noninst-fii Others 0.2. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     67.4,
+     6.6789,
+     1.3106,
+     1.0633,
+     0.0,
+     "2016-01-27"
+    ],
+    "was": [
+     67.4,
+     6.84,
+     1.15,
+     1.06,
+     0.0,
+     "2016-01-27"
+    ],
+    "src": "bsetable3:532872:88",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): institutions 'Any Other' block 15,373,945 = 'Foreign Institutional Investors' 15,012,663 + 'UTI' 361,282 (domestic; the company labels the same block 'UTI' / 'Unit Trust of India' in Mar-2016..Jun-2017). OUR ERROR: the stored fii carried the whole block (page 0.34 + 6.50) incl. UTI. FII = FPI 795,417 + FII row; DII = MF 2,516,689 + FI/Banks 224,041 + UTI. Total (A+B+C) 236,687,354 sh (Table I, qtrid 88). fii 6.84 -> 6.6789, dii 1.15 -> 1.3106, mf 1.06 -> 1.0633, ins 0.0 -> 0.0.",
+    "exact": true
    }
   },
   "SUPERSPIN": {
@@ -341958,6 +342065,27 @@
     ],
     "src": "bsexbrl:532710_2172021114247_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 4.39 -> 4.39, dii 22.17 -> 22.24. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     47.1,
+     15.2584,
+     31.5819,
+     26.9523,
+     4.6176,
+     "2016-01-21"
+    ],
+    "was": [
+     47.1,
+     15.26,
+     26.96,
+     26.95,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:532710:88",
+    "why": "\u00a7164r batch 30 part 9 (2026-10-05, seam cells - the DII session's re-read, one writer per key): 'Icici Prudential life insurance company' 7,920,717 sh is its own sub-row of the non-institutions 'Any Other' block (the sub-rows sum to the block total 14,894,526 with it) - an IRDAI-registered life insurer (reg. 105) -> DII and insurance (\u00a7164s part 6 rule 4). DII = MF 46,232,241 + FI/Banks 20,602 + ICICI Pru Life. FII = FPI 7,991,315 + institutions 'Any Other' 18,182,068 (Kotak Mahindra (UK) India Midcap, ADIA, Eastspring + unnamed remainder, D1) at share counts (was the 2-dp page sum). Total (A+B+C) 171,533,800 sh (Table I, qtrid 88). fii 15.26 -> 15.2584, dii 26.96 -> 31.5819, mf 26.95 -> 26.9523, ins 0.0 -> 4.6176.",
+    "exact": true
    }
   },
   "SESHAPAPER": {

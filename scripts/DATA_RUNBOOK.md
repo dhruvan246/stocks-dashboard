@@ -21335,6 +21335,19 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     (KALYANKJIL, RESPONIND, MARKSANS, SHRIRAMFIN, UJJIVAN) already equal their healed originals to <= 0.001 (the 2022-form re-filings count
     the FDI line) - no entry. Rebuilt store / events / revisions move exactly these (+ the earlier unrefreshed parts and the DII session's
     §164s part 10/11); guards green.
+    **Batch 30 part 9 (label "§164r batch 30 part 9 (seam DII cells + SPARC)"): the DII session's 4 seam DII cells + 2 of ours.** Each
+    read from BSE's Table III api (share counts), totals from Table I (qtrid-checked). KSCL Dec-2015: 'DEUTSCHE BANK A.G.' 1,269,879 sh
+    sits on a non-institutions 'Any Other' sub-row (no category; §164t part 2 had read 'BANK' as a domestic bank) -> foreign bank, so not
+    DII; not FII either (no KSCL filing marks it, inst=false: 1 Institutions (Foreign) listing vs 7 company-type; at JAICORPLTD Dec-2016
+    the same name is a 'Clearing Members' row) -> public; dii 9.3737 -> 7.5348. SADBHAV Dec-2015: 'Icici Prudential life insurance
+    company ltd.' 7,920,717 (own non-institutions sub-row) -> DII + insurance (§164s part 6 rule 4), dii 26.96 -> 31.5819, ins 4.6176.
+    BLUEDART Mar-2016: SBI Life 237,313 (own sub-row) + institutions 'UTI' 200 -> DII (6.4283, ins 1.0001); Dec-2015 the same rule (SBI
+    Life 283,545 named inside Bodies Corporate - not in the DII session's list; told them) -> 6.6876, ins 1.195. SPARC Dec-2015: the
+    institutions 'Any Other' block = 'Foreign Institutional Investors' 15,012,663 + 'UTI' 361,282 - OUR fii carried UTI (page 0.34 +
+    6.50) -> fii 6.84 -> 6.6789, dii 1.15 -> 1.3106 (the DII session's 1.3026 and Quantmac's 1.3027 come from the page's 2-dp
+    percentages, not share counts). SPARC Dec-2016: the block 449,803 sh is unnamed in this filing, but the company labels the IDENTICAL
+    count 'Unit Trust of India' / 'UTI' in Jun-2016, Sep-2016, Mar-2017 and Jun-2017 -> follow the label: domestic; the §164 remainder
+    rule had sent it to FII by D1 -> fii 7.4763 -> 7.2966 (= Quantmac), dii 1.3337 -> 1.5138. Guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
