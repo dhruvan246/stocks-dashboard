@@ -21455,6 +21455,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     convention (label "§164r batch 30 part 19 (AXISBANK seam, printed convention)"): fii 42.0947 / 42.2499 -> 42.1373 / 42.2798 (FPI
     total incl. DR column + institutions 'Foreign Bank' 125,195; base Table I A+B+C2), dii -> 16.3829 / 16.2718 (+ NBFC); the §164a page
     re-base had given col IV over the page's (A+B) without the public's DR column. Guards green.
+    **Batch 30 part 20 (2026-10-06, label "§164r batch 30 part 20 (DEN Tara India Holdings)"): company reviews MFSL .. DEN.**
+    COROMANDEL 33 / TEAMLEASE 24 = RULE DIFFERENCE (D1's own exception: every named holder of the institutions block is a domestic
+    insurer - ICICI Pru Life, Max Life, Tata AIA, LIC - so the unnamed rest stays domestic; from Jun-21 COROMANDEL labels the block
+    'Qualified Institutional Buyer'; each gap = that unnamed rest to the second decimal; our D1 runner re-run: 0 proposals); SYNGENE 24 /
+    HINDZINC 2020-21 = the company's own QIB Category (domestic for us); IEX 24 = documents rule (WestBridge Crossover 0 institution / 100
+    company listings, Lightspeed VIII, SG BRIC III - public; Rimco 13 listings - FII); HINDZINC Dec-15 = THEIR ERROR (Dec-15 announced
+    2016-02-27, they keep Sep-15 to May-16) + UNKNOWN (Mar-16: BSE's only notice is 2016-08-11); DEN 22 = batch 10 (Broad Street /
+    MBD Bridge Street - Goldman vehicles, 0 institution listings - public) and the company's own 'Foreign / Overseas Corporate Bodies'
+    labels (2017-19). OUR ERROR found in DEN: TARA INDIA HOLDINGS A LTD (2,748,253 sh, named inside the same unlabelled block, no
+    listing, no GLEIF / register) had stayed in fii Jun-2016..Mar-2017 only through §164n's 'keep the stored split' for unresolved
+    holders, while the seam quarters and batch 10's own reading of the block have it public -> fii 22.95 / 22.91 / 21.35 / 21.16 ->
+    21.4749 / 21.4087 / 19.9542 / 19.7573 (FPI + the block's unnamed rest 550,464 sh, D1).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

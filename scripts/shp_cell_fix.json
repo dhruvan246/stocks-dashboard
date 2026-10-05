@@ -109678,7 +109678,7 @@
    "2016-06-30": {
     "cell": [
      40.05,
-     22.9543,
+     21.4749,
      1.1443,
      0.0286,
      0.0,
@@ -109687,7 +109687,7 @@
     ],
     "was": [
      40.05,
-     44.0843,
+     22.9543,
      1.1443,
      0.0286,
      0.0,
@@ -109695,11 +109695,12 @@
      9647
     ],
     "src": "bsexbrl:533137_2072016125930_SHP.xml",
-    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0843 -> 26.2900 (share counts of 533137_2072016125930_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2900 -> 22.9543, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+    "why": "\u00a7164r batch 30 part 20 (2026-10-06): TARA INDIA HOLDINGS A LTD 2,748,253 sh, named inside DEN's unlabelled institutions Any-Other block, has no Institutions (Foreign) listing in 33,899 BSE XBRLs, no GLEIF / register document - it had stayed in fii only through \u00a7164n's 'keep the stored split' for unresolved holders; batch 8 / 10 (user 2026-10-04): a holder the company lists inside its Institutions block counts as FII only with an institution listing -> public, as batch 10 did for Broad Street / MBD Bridge Street / Standard Chartered IL&FS on the same block. FII = FPI 37,717,736 + the block's unnamed rest 550,464 (D1) on 178,199,806 sh. fii 22.9543 -> 21.4749.",
+    "exact": true,
     "superseded": {
      "cell": [
       40.05,
-      44.0843,
+      22.9543,
       1.1443,
       0.0286,
       0.0,
@@ -109708,19 +109709,50 @@
      ],
      "was": [
       40.05,
-      21.1643,
-      24.0143,
+      44.0843,
+      1.1443,
       0.0286,
       0.0,
       "2016-07-20",
       9647
      ],
      "src": "bsexbrl:533137_2072016125930_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.16 -> 44.08, dii 24.01 -> 1.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=3.28 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE L. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0843 -> 26.2900 (share counts of 533137_2072016125930_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2900 -> 22.9543, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+     "superseded": {
+      "cell": [
+       40.05,
+       44.0843,
+       1.1443,
+       0.0286,
+       0.0,
+       "2016-07-20",
+       9647
+      ],
+      "was": [
+       40.05,
+       21.1643,
+       24.0143,
+       0.0286,
+       0.0,
+       "2016-07-20",
+       9647
+      ],
+      "src": "bsexbrl:533137_2072016125930_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.16 -> 44.08, dii 24.01 -> 1.14. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE LTD 1.62 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=3.28 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE L. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2016-09-30": {
     "cell": [
+     40.05,
+     21.4087,
+     1.1033,
+     0.0005,
+     0.0,
+     "2016-10-25",
+     10570
+    ],
+    "was": [
      40.05,
      22.9081,
      1.1033,
@@ -109729,21 +109761,13 @@
      "2016-10-25",
      10570
     ],
-    "was": [
-     40.05,
-     44.0181,
-     1.1033,
-     0.0005,
-     0.0,
-     "2016-10-25",
-     10570
-    ],
     "src": "bsexbrl:533137_2510201617137_SHP.xml",
-    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0181 -> 26.2238 (share counts of 533137_2510201617137_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2238 -> 22.9081, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+    "why": "\u00a7164r batch 30 part 20 (2026-10-06): TARA INDIA HOLDINGS A LTD 2,748,253 sh, named inside DEN's unlabelled institutions Any-Other block, has no Institutions (Foreign) listing in 33,899 BSE XBRLs, no GLEIF / register document - it had stayed in fii only through \u00a7164n's 'keep the stored split' for unresolved holders; batch 8 / 10 (user 2026-10-04): a holder the company lists inside its Institutions block counts as FII only with an institution listing -> public, as batch 10 did for Broad Street / MBD Bridge Street / Standard Chartered IL&FS on the same block. FII = FPI 37,599,726 + the block's unnamed rest 550,464 (D1) on 178,199,806 sh. fii 22.9081 -> 21.4087.",
+    "exact": true,
     "superseded": {
      "cell": [
       40.05,
-      44.0181,
+      22.9081,
       1.1033,
       0.0005,
       0.0,
@@ -109752,19 +109776,50 @@
      ],
      "was": [
       40.05,
-      21.0981,
-      23.9933,
+      44.0181,
+      1.1033,
       0.0005,
       0.0,
       "2016-10-25",
       10570
      ],
      "src": "bsexbrl:533137_2510201617137_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.10 -> 44.02, dii 23.99 -> 1.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62 foreign->fii(regex); R1-unresolved Other 0.0 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE G 3.28 ?->-(-) keyword; R1-rest-follows-foreign-holders. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 44.0181 -> 26.2238 (share counts of 533137_2510201617137_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 26.2238 -> 22.9081, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+     "superseded": {
+      "cell": [
+       40.05,
+       44.0181,
+       1.1033,
+       0.0005,
+       0.0,
+       "2016-10-25",
+       10570
+      ],
+      "was": [
+       40.05,
+       21.0981,
+       23.9933,
+       0.0005,
+       0.0,
+       "2016-10-25",
+       10570
+      ],
+      "src": "bsexbrl:533137_2510201617137_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 21.10 -> 44.02, dii 23.99 -> 1.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.54 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=16.18 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 16.18 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.62 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.62 foreign->fii(regex); R1-unresolved Other 0.0 STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE G 3.28 ?->-(-) keyword; R1-rest-follows-foreign-holders. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2016-12-31": {
     "cell": [
+     36.78,
+     19.9542,
+     0.9875,
+     0.0,
+     0.0,
+     "2017-01-11",
+     11150
+    ],
+    "was": [
      36.78,
      21.3502,
      0.9875,
@@ -109773,21 +109828,13 @@
      "2017-01-11",
      11150
     ],
-    "was": [
-     36.78,
-     48.8802,
-     0.9875,
-     0.0,
-     0.0,
-     "2017-01-11",
-     11150
-    ],
     "src": "bsexbrl:533137_101201717489_SHP.xml",
-    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.8802 -> 24.3807 (share counts of 533137_101201717489_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.3807 -> 21.3502, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+    "why": "\u00a7164r batch 30 part 20 (2026-10-06): TARA INDIA HOLDINGS A LTD 2,748,253 sh, named inside DEN's unlabelled institutions Any-Other block, has no Institutions (Foreign) listing in 33,899 BSE XBRLs, no GLEIF / register document - it had stayed in fii only through \u00a7164n's 'keep the stored split' for unresolved holders; batch 8 / 10 (user 2026-10-04): a holder the company lists inside its Institutions block counts as FII only with an institution listing -> public, as batch 10 did for Broad Street / MBD Bridge Street / Standard Chartered IL&FS on the same block. FII = FPI 38,165,935 + the block's unnamed rest 550,464 (D1) on 194,025,845 sh. fii 21.3502 -> 19.9542.",
+    "exact": true,
     "superseded": {
      "cell": [
       36.78,
-      48.8802,
+      21.3502,
       0.9875,
       0.0,
       0.0,
@@ -109796,21 +109843,43 @@
      ],
      "was": [
       36.78,
-      19.6702,
-      30.1875,
+      48.8802,
+      0.9875,
       0.0,
       0.0,
       "2017-01-11",
       11150
      ],
      "src": "bsexbrl:533137_101201717489_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.67 -> 48.88, dii 30.19 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.8802 -> 24.3807 (share counts of 533137_101201717489_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.3807 -> 21.3502, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+     "superseded": {
+      "cell": [
+       36.78,
+       48.8802,
+       0.9875,
+       0.0,
+       0.0,
+       "2017-01-11",
+       11150
+      ],
+      "was": [
+       36.78,
+       19.6702,
+       30.1875,
+       0.0,
+       0.0,
+       "2017-01-11",
+       11150
+      ],
+      "src": "bsexbrl:533137_101201717489_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.67 -> 48.88, dii 30.19 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2017-03-31": {
     "cell": [
      36.78,
-     21.1632,
+     19.7573,
      0.9869,
      0.0,
      0.0,
@@ -109819,7 +109888,7 @@
     ],
     "was": [
      36.78,
-     48.6832,
+     21.1632,
      0.9869,
      0.0,
      0.0,
@@ -109827,11 +109896,12 @@
      10748
     ],
     "src": "bsexbrl:533137_1342017164710_SHP.xml",
-    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.6832 -> 24.1837 (share counts of 533137_1342017164710_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.1837 -> 21.1632, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+    "why": "\u00a7164r batch 30 part 20 (2026-10-06): TARA INDIA HOLDINGS A LTD 2,748,253 sh, named inside DEN's unlabelled institutions Any-Other block, has no Institutions (Foreign) listing in 33,899 BSE XBRLs, no GLEIF / register document - it had stayed in fii only through \u00a7164n's 'keep the stored split' for unresolved holders; batch 8 / 10 (user 2026-10-04): a holder the company lists inside its Institutions block counts as FII only with an institution listing -> public, as batch 10 did for Broad Street / MBD Bridge Street / Standard Chartered IL&FS on the same block. FII = FPI 37,783,785 + the block's unnamed rest 550,464 (D1) on 194,025,845 sh. fii 21.1632 -> 19.7573.",
+    "exact": true,
     "superseded": {
      "cell": [
       36.78,
-      48.6832,
+      21.1632,
       0.9869,
       0.0,
       0.0,
@@ -109840,15 +109910,37 @@
      ],
      "was": [
       36.78,
-      19.4732,
-      30.1969,
+      48.6832,
+      0.9869,
       0.0,
       0.0,
       "2017-04-17",
       10748
      ],
      "src": "bsexbrl:533137_1342017164710_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.47 -> 48.68, dii 30.20 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56; MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49; MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; DEN itself files these holders under 'Foreign Corporate Bodies' (2014-15, Jun-2017..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018 on) (the earlier run placed it FII by its name or residency alone). fii 48.6832 -> 24.1837 (share counts of 533137_1342017164710_SHP.xml), dii unchanged. | then \u00a7164r batch 10b - store-wide re-run of the corrected row-level code (user 2026-10-04 'fix the open items'): STANDARD CHARTERED IL AND FS ASIA INFRASTRUCTURE GROWTH FUND COMPANY PTE LTD (GLEIF Singapore) sits on the same row DEN does not label as Broad Street / MBD Bridge Street (batch 10); no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's FVCI register, so under option A it is public; DEN itself files it under 'Foreign Corporate Bodies' (Jun..Dec-2017) and 'Overseas Corporate Bodies' (Mar-2018, Sep-2018). fii 24.1837 -> 21.1632, dii unchanged. (one entry: the batch-10 step never reached the live store, so both moves apply from the stored value)",
+     "superseded": {
+      "cell": [
+       36.78,
+       48.6832,
+       0.9869,
+       0.0,
+       0.0,
+       "2017-04-17",
+       10748
+      ],
+      "was": [
+       36.78,
+       19.4732,
+       30.1969,
+       0.0,
+       0.0,
+       "2017-04-17",
+       10748
+      ],
+      "src": "bsexbrl:533137_1342017164710_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.47 -> 48.68, dii 30.20 -> 0.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-unresolved Other 0.0 TARA INDIA HOLDINGS A LTD 1.42 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=21.56 BROAD STREET INVESTMENTS (SINGAPORE)PTE. LTD 21.56 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.49 MBD BRIDGE STREET 2013 INVESTMENTS (SINGAPORE) PTE 1.49 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=1.46 MBD BRIDGE STREET 2016 INVESTMENTS (SINGAPORE) PTE 1.46 foreign->fii(regex); R. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2021-12-31": {
