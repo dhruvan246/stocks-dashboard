@@ -45,18 +45,18 @@ jobs:
           print("joined bin OK: sha256 %s, end %s, %d symbols" % (h, D["end"], len(D["data"])))
           EOF
 
-      - name: Refuse if the live release has moved past this bin (no day may be lost)
+      - name: Refuse unless the live release is exactly the file this bin was built from (nothing may be lost)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download data --pattern sf_stock_data.bin --output live.bin --clobber
           python3 - <<'EOF'
-          import json, gzip
-          live = json.loads(gzip.decompress(open("live.bin", "rb").read()))
+          import json, gzip, hashlib
+          b = open("live.bin", "rb").read(); live = json.loads(gzip.decompress(b)); h = hashlib.sha256(b).hexdigest()
           m = json.load(open("manifest.json"))
-          print("live release end %s | this bin end %s | built from live end %s" % (live.get("end"), m["end"], m["base_end"]))
-          if live.get("end") != m["base_end"]:
-              raise SystemExit("ABORT: the live release (end %s) is not the base this bin was built from (end %s) — rebuild from the current release" % (live.get("end"), m["base_end"]))
+          print("live release end %s sha256 %s | built from end %s sha256 %s" % (live.get("end"), h, m["base_end"], m["base_sha256"]))
+          if h != m["base_sha256"]:
+              raise SystemExit("ABORT: the live release changed since this bin was built (sha256 differs) — rebuild from the current release")
           EOF
 
       - name: Publish the exact-price bin as the release asset
