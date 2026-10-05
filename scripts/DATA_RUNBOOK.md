@@ -21538,6 +21538,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     document), and Sep-22 files the same single 4,200,000-sh holder under Institutions (Domestic); this is with the user. VESUVIUS Sep-18 /
     Sep-19 - the neighbours name 'Standard Life Investments GS Mauritius Holdings Ltd' / 'Private Equity Fund', no company-type label.
     `d1_follow_label` itself is unchanged: compare the whole block, not the rest, before any re-run.
+    **Batch 30 part 26 (JISLJALEQS, 2026-10-06; 1 new quarter + 13 dates).** The Mar-2016 quarter had never been held: Quantmac's
+    Apr-Jun-2016 cells (39.5657) faced our Dec-2015 (47.18). Read from BSE Table III qtrid 89 (the 2016-04-28 revision; the 2016-04-21
+    original is no longer served) and dated 2016-04-28: base A + B = 456,505,337 (custodian outside, the company's (A+B) basis); FII =
+    FPI 144,439,571 + Mkcp Institutional Investor (Mauritius) II 35,154,335 + the block's unnamed rest 1,027,831 -> 39.5662. IFC stays
+    public: the company's 2022 form files it among non-institutions. Written to `shp_fill_seam_aspx.json.gz`. Dates: Jun-2016..Jun-2019
+    carried the quarter-end+21 convention that replaced the 2021-01-04 bulk re-filing stamp. BSE's announcement stream has the company's
+    own notices 3-11 days earlier (2016-07-18, 2016-10-16, 2017-01-12, 2017-04-17, 2017-07-12, 2017-10-10, 2018-01-11, 2018-04-13,
+    2018-07-12, 2018-10-13, 2019-01-16, 2019-07-10) and Sep-2019 one day LATER (2019-10-22, a look-ahead day). The 2021 re-filings state
+    their reason - 'to reflect the correct status of Individual (Ordinary Equity Shares)' - so the FII / DII rows we hold are the
+    first-published ones. Entries in `shp_lag_fix.json` (src ann-stream).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
