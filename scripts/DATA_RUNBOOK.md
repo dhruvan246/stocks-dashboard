@@ -23164,6 +23164,34 @@ dvl_dtil_surgery.json.gz at 2 decimals (skipped by design); (c) VIVIDHA 31-Mar-1
 guard kept them at 2 decimals. Fixes for (a)/(b)/(c) await the user. adopt-exact-prices.yml + branch exact-prices-base deleted after the
 live check (this commit).
 
+**§179f — PRICES UNDER Rs 1 KEEP 6 DECIMALS, LIVE 2026-10-06 ~04:08 IST (user: "go ahead with 6 decimals for prices under Rs 1").** Code
+a4ffeabf9: `update_sf_data._pxr()` = the one rounding rule (4 decimals, 6 below Rs 1; all 25 re-scale roundings); both engine twins + grid
+tools read paise to 4 decimals (`Math.round(x*1e6)/1e4`); slices `_px100` keeps 4 paise decimals; sw v238. Data: built on the LIVE store as
+**precision only** (`~/stocks-cache/qm-recon-tools/build_exact_store10.py` + `choose_consistent.py`) — every bar re-derived as NSE raw x its
+run factor, every ledger step within 1% set exactly, and a re-derived price ACCEPTED only when it equals the live price within 4-decimal
+rounding + 0.01% (more decimals, same price) or the pre-5-Oct price within its 2-decimal rounding (undoes a v1 shift). Results: 9,467,943 bars
+re-derived; 162,152 live prices now carry 5-6 decimals; the 12 quantmac cells (BAJAUTOFIN 2009-10 x6, MVL Oct/Nov-2012 x2, VIVIDHA 2015 x4) all
+match; quantmac on LIVE 318,329 / 318,494 (99.95%, +12, no other cell changed); verdict4: 165 differ = RULE DIFFERENCE 122, UNKNOWN 38,
+OUR ERROR 5 (RASOYPR 2013 x2 = dvl_dtil_surgery ledger at 2 decimals; VIVIDHA 31-Mar-2016 x3 = its 2016-20 level) — both still await the user.
+Favourites: 0 changed picks in 16 runs, |dCAGR| < 0.001pp. Nightly updater on the new file: byte-identical (dry run). LIVE: rev 1e32651a88,
+merged parts == the built file on all 5,266 symbols; stock-backtest 2010 run (all 4 parts), stock.html MVL/BAJFINANCE, mixer, sectors: 0
+console errors. **Mistakes of the 5-Oct rebuild (v1) found while doing this, all repaired in this file:** (1) its per-bar guard
+max(0.3%, 4 paise/price) is ~50% wide at Rs 0.08: inside runs that held two old levels it moved some days to the run median — ESSENTIA
+Nov-2019 alternated 0.0443/0.09 day to day; 28 penny stocks (old close <= Rs 0.37), 3,912 bars moved > max(5%, rounding). For each such
+stretch the version whose day-to-day moves follow NSE's closes is kept (`choose_consistent.py`, mean |dlog(stored/raw)|): 325 bars went back
+to the pre-5-Oct price (ESSENTIA, VISESHINFO, FARMAXIND, UVSL, VKSPL...), 3,587 kept v1's (MVL, LCCINFOTEC, SRGINFOTEC, BIRLAPOWER — v1
+replaced 2-decimal floors). (2) It copied NSE's no-trade open/high/low of 0 (SRGINFOTEC 15-Sep-2003 o/h/l = 0.00) — such fields now take
+the close (3). (3) Bars it kept beside bars it re-levelled by a step correction were left unscaled — 517 bars re-levelled where the
+boundary (no ledger event) then matches the old store again. (4) It set AJMERA 2024-08-02 / AGI 2019-08-19 on NSE closes, but the nightly
+self-heal / reconcile_rights measure EVERY row that carries its own raw ex-day ratio (demerger_adj / rights_adj / ca_bar_targets 4th field)
+as stored c[j]/c[j-1] = raw_ledger / target — the build now uses that measure (only those 2 of 385 rows differ from NSE closes).
+**Traps:** a whole-run rebuild from a store that already went through v1 drifts again (median of a mixed run) — re-derive, never re-level;
+rounding allowances at penny prices are as large as real level jumps, so judge a penny stretch by its day-to-day agreement with NSE, not by
+size; the adoption guard now compares the release's DATA (decompressed sha256), since the daily job re-uploads identical data with new gzip
+bytes (a delayed scheduled run did so at 03:35 IST). **Open (for the user):** the price LEVEL of ~30 penny stocks is unreliable before and
+after (ESSENTIA 2019-20 sits at 2x the official-ratio product; FCSSOFT / LCCINFOTEC / RMMIL levels no ledger event explains) — a per-stock
+ledger check, not a precision question. adopt-exact-prices.yml + branch exact-prices-base deleted after the live check (this commit).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
