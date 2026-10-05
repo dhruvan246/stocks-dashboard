@@ -1,0 +1,532 @@
+{
+ "date": "2026-10-05",
+ "run_started": "2026-10-05 19:49 IST",
+ "run_finished": "2026-10-05 20:21 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1212,
+ "candidates": 12,
+ "filings_status": "BSE api answered 200 from this sandbox today, so the scan ran live. Re-read at 19:56 IST: 864 announcements read of a reported 865 (ROWCNT), announcements_capped TRUE by one row, 65 in-universe filings, 137 rows with signals, 12 candidates. This supersedes the GitHub Actions scan of 18:59 IST, which read 777 of a then-reported 785. Counts are therefore a floor by one row; the missing row is the day's earliest filing. announcements_blocked false, source bse.",
+ "govt_status": "pib.gov.in is blocked at this sandbox's proxy (403 at CONNECT), so govt.py exited 0 and left the file alone, as designed. The committed govt.json IS today's: GitHub Actions built it at 18:56 IST from a reachable PIB. 26 releases scanned, 1 opened, 0 KEPT, 0 unmapped. Dropped: 21 no decision verb, 3 noise, 2 below the Rs 1,000 cr floor, 0 backgrounder. So lane one produced nothing today, and that is a measurement, not a gap.",
+ "commodity_status": "Panels are today's, built by GitHub Actions at 18:56-19:00 IST (run 37316716854, steps_failed empty, 15 files landed, landing.refused empty). From this sandbox every external commodity host was refused at the proxy, so each builder kept its previous rows: spot (westmetall + businessinsider), minsteel (steel.gov.in), wpi (eaindustry.nic.in), trade (tradestat), and india_spot's metalbook, ibja, rubber, sugar, fuel and te sources. india_spot's nmdc source worked (BSE is reachable: ok, 2 rows, no new NMDC letter) and minsteel served the committed file (3 rows). india_history.json.gz WAS rebuilt: 152 series, 77,761 dated points, 0 rows appended. Freshness of the prints the ideas use: Rubber Board 05-Oct-2026 (today), IBJA 05-Oct-2026, PPAC 05-Oct-2026, Chinimandi 01-Oct-2026, MetalBook 25-Sep to 01-Oct-2026, NMDC w.e.f. 09-Sep-2026, Ministry of Steel 30-Jun-2026, WPI 2026-04, HS trade 2026-07. The last four are more than three trading days old and are named as such wherever quoted. NOTE ON WHAT WAS COMMITTED: this run did NOT commit india_spot.json, nmdc_history.json, india_history.json.gz or signals.json. Its own builder re-runs changed nothing but the stamps and would have replaced Actions' accurate per-source status ('metalbook: ok, 51 rows', 'ibja: ok, 7 rows', 'rubber: ok, 8 rows', 'fuel: ok, 8 rows', 'te: ok, 65 rows') with this sandbox's proxy-403 'FAILED' messages for reads that in fact succeeded today. Those four files stay at the version GitHub Actions wrote, so the page's staleness guard reads the true status. The scan file IS this run's, because it is strictly better: 864 announcements against 777.",
+ "candidates_considered": [
+  {
+   "ticker": "BMW",
+   "scrip": "542669",
+   "name": "BMW Industries Ltd",
+   "mcap": 1250.1,
+   "score": 9.0,
+   "signals": {
+    "CAPEX": 2,
+    "DISCLOSE": 1
+   },
+   "verdict": "RESEARCHED AND PUBLISHED. Both filings opened. Reg 30 at 14:47 IST: Consent to Operate received 05-Oct-2026 for the Colour Coating line, the first phase of the Bokaro greenfield complex. Press release at 15:08 IST carries the numbers: total project cost Rs 803 cr, Rs 341.6 cr deployed to 30-Jun-2026 (Rs 139.2 cr accruals + Rs 202.4 cr debt), ~Rs 60 cr capitalised for this line, Rs 500 cr debt tied up from an SBI/HDFC/Yes consortium, PLI 1.1 for Coated/Plated Steel, subsequent phases 550,000 TPA CRFH and 540,000 TPA GA/GI/ZAM, revenue from Q3 FY27. Then the 17-Aug-2026 call transcript and the 14-Aug-2026 presentation, the FY26 annual report and the Jun-2026 shareholding pattern. The decisive fact: FY26 revenue is 62.0% CONVERSION income (Rs 411.72 cr of Rs 664.07 cr, note 32), falling, while product sales rose 2.4x - this is a toll processor turning into a product seller, which is why management guides 70-75% revenue CAGR to FY28 with PAT margin falling to 5-6%."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "name": "Regency Fincorp Ltd",
+   "mcap": 437.2,
+   "score": 8.0,
+   "signals": {
+    "FUNDRAISE": 1,
+    "RESULT": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. Both of today's filings are the same event: a board approval to issue listed rated secured NCDs on private placement. The playbook skips fund raises with no stated use of proceeds, and this is an NBFC where a debenture issue is funding, not a trigger. Price +27.1% over the 65-day window at the window high on 3.3x volume - watch-listed, not researched."
+  },
+  {
+   "ticker": "RAMBHAJO",
+   "scrip": "544803",
+   "name": "Advit Jewels Ltd",
+   "mcap": 1399.7,
+   "score": 6.0,
+   "signals": {
+    "DEAL": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. The only filing is a Reg 29(1) SAST disclosure for Ramesh Saraogi & PACs - a shareholding disclosure with no operational number. The playbook skips promoter/shareholding changes as a trigger. The price has already run 82.9% over the window and closed at the window high on 4.7x volume; the 2026-09-22 study found a volume explosion present in 81% of 5x runs AND 78% of the stocks that went nowhere, so the volume is not evidence."
+  },
+  {
+   "ticker": "INDIAHOMES",
+   "scrip": "513361",
+   "name": "India Homes Ltd",
+   "mcap": 1187.5,
+   "score": 6.0,
+   "signals": {
+    "DEAL": 1,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. Same reason: a Reg 29(2) SAST disclosure (Indi Steel International Pvt Ltd & Others), no operational number. Price +30.2% over the window, at the window high, 4.1x volume."
+  },
+  {
+   "ticker": "INDOSMC",
+   "scrip": "544681",
+   "name": "INDO SMC Ltd",
+   "mcap": 1153.0,
+   "score": 4.0,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "RESEARCHED, NOT PUBLISHED. Order filing opened in full: a purchase order worth **Rs 31.71 cr** (Rs 3,171.22 lakh, PO/AMP/105/26-27) received 05-Oct-2026 for 800/630/400 AMP Fuse Section Pillars and 250/125 AMP Mini Section Pillars plus 4-pole switch fuse units and FRP fencing, from an unnamed Gujarat-based power-distribution manufacturer, to be supplied in 4-5 weeks. Measured against the two tests that the 2026-09-22 study (1,245 order filings) found actually work: (1) SIZE AGAINST SALES - FY26 audited revenue Rs 309.74 cr, so the order is **10.2% of a year's sales**, in the band whose 2-year 2x rate is 21.4%, no better than base, and far from the 25-50% band that reached 2x 35.7% of the time. (2) RARITY - the 240-day announcement list holds **8 purchase-order filings** (05-Oct, 22-Jul, 19-May, 05-May, 30-Apr, 22-Apr, 21-Apr, 11-Mar), i.e. 7 prior in under eight months: a serial filer, the cohort that reached 2x only 17.3% of the time and 5x NEVER. On top of that the stock is +207.5% in six months at a trailing PE of 55.08 and the customer is not named. Nothing here clears the bar."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "name": "ITCONS E-Solutions Ltd",
+   "mcap": 224.3,
+   "score": 4.0,
+   "signals": {
+    "ORDER": 1
+   },
+   "verdict": "RESEARCHED, NOT PUBLISHED. Contract filing opened in full: an EPFO (Ministry of Labour & Employment) contract to provide **48 resources for one year**, total value **Rs 1,92,86,946.73 (Rs 1.93 cr) inclusive of all taxes**, running 03-Oct-2026 to 02-Oct-2027. Against FY26 audited revenue of Rs 87.74 cr (BSE detailed results, 01-Apr-2025 to 31-Mar-2026; FY25 Rs 55.98 cr, PAT Rs 5.26 cr vs Rs 3.25 cr) the contract is **2.2% of a year's sales** - the under-10% bucket, 2-year 2x rate 21.4%. The market cap of Rs 224 cr also sits below the Rs 300 cr floor of the band where the study found 5x runs happen. A real government contract, too small to be an idea."
+  },
+  {
+   "ticker": "NATFIT",
+   "scrip": "531289",
+   "name": "National Fittings Ltd",
+   "mcap": 297.2,
+   "score": 4.0,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. No filing at all - the score is pure price and volume (+121.8% over the window, 9.0x volume, at the window high). The playbook watch-lists price moves with no filing to explain them. Median turnover Rs 27.1 lakh."
+  },
+  {
+   "ticker": "PANORAMA",
+   "scrip": "539469",
+   "name": "Panorama Studios International Ltd",
+   "mcap": 1657.0,
+   "score": 4.0,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. No filing; price and volume only (+22.5% window, 5.7x volume)."
+  },
+  {
+   "ticker": "LOGICA",
+   "scrip": "543746",
+   "name": "Logica Infoway Ltd",
+   "mcap": 335.6,
+   "score": 4.0,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. No filing; price and volume only (+16.5% window, 3.5x volume)."
+  },
+  {
+   "ticker": "CWD",
+   "scrip": "543378",
+   "name": "CWD Ltd",
+   "mcap": 716.9,
+   "score": 4.0,
+   "signals": {
+    "FUNDRAISE": 1,
+    "RESULT": 1
+   },
+   "verdict": "NOT RESEARCHED. The two filings are one event: allotment of equity on conversion of warrants. Dilution with no stated use of proceeds - skipped by the playbook."
+  },
+  {
+   "ticker": "TLL",
+   "scrip": "543616",
+   "name": "Trident Lifeline Ltd",
+   "mcap": 464.3,
+   "score": 4.0,
+   "signals": {
+    "FUNDRAISE": 1,
+    "RESULT": 1
+   },
+   "verdict": "NOT RESEARCHED. A preferential issue of equity shares and warrants - a fund raise with no stated use of proceeds. Skipped."
+  },
+  {
+   "ticker": "ULTRAMAR",
+   "scrip": "506685",
+   "name": "Ultramarine & Pigments Ltd",
+   "mcap": 1182.5,
+   "score": 4.0,
+   "signals": {
+    "DEAL": 2
+   },
+   "verdict": "NOT RESEARCHED. Two Reg 29(2) SAST disclosures for the same acquirer family - shareholding, not operations. No price or volume signal either (0.7x volume, -6.9% over 20 days)."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "id": "crude",
+   "strength": 10.7,
+   "direction": "up",
+   "evidence": [
+    "WPI Crude Petroleum 3m +85.6% (April-2026 index)",
+    "WPI Crude Petroleum 12m +88.1%",
+    "TE Brent US$101.75 1y +55.4%"
+   ],
+   "mapped_benefit": [
+    "ONGC",
+    "Oil India",
+    "Hindustan Oil Exploration",
+    "Selan Exploration"
+   ],
+   "verdict": "NOT WORKED. No mapped beneficiary is in the Rs 200-2,000 cr universe (Selan and HOEC are both above it). The evidence is also mostly WPI at April-2026, five months stale."
+  },
+  {
+   "group": "Silver",
+   "id": "silver",
+   "strength": 10.16,
+   "direction": "up",
+   "evidence": [
+    "WPI Silver 12m +152.4% (April-2026)",
+    "IBJA silver 999 Rs 2,24,157/kg dated 05-Oct-2026, 1w +0.5% but 1m -4.8%"
+   ],
+   "mapped_benefit": [
+    "MODISONLTD"
+   ],
+   "verdict": "NOT WORKED. The one mapped small cap, Modison (Rs 1,522 cr), is already published (2026-09-22) and no new hard trigger arrived; the playbook re-examines a published name only on a new trigger. The current Indian print is also 4.8% BELOW its level a month ago, so the signal's strength is carried by a stale WPI month, not by today's price."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "id": "tungsten",
+   "strength": 10.0,
+   "direction": "up",
+   "evidence": [
+    "HS 284180 export unit price smoothed-yoy +606.5% (July-2026 month)",
+    "HS 8101 import unit price sy +280.4%"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped beneficiary in the universe, and the evidence is entirely HS trade unit prices for July 2026 with the 1m and 3m legs NEGATIVE (-43.4% and -36.8% on exports). A smoothed-yoy spike with falling recent months is not a live signal."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "id": "shipping",
+   "strength": 7.62,
+   "direction": "up",
+   "evidence": [
+    "Containerized Freight Index 1y +228.6%",
+    "1m +2.0%"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap; a single global index with a +2.0% month is not a trigger."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "id": "sulphuric_acid",
+   "strength": 6.97,
+   "direction": "up",
+   "evidence": [
+    "WPI Sulphuric Acid 1m +20.9% and 12m +91.4% (April-2026)",
+    "HS 280700 import unit price 3m +95.2% (July-2026)"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped beneficiary in the universe. Flagged for a future map addition - this is one of the strongest two-source signals with no basket."
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "id": "benzene_pta",
+   "strength": 6.03,
+   "direction": "up",
+   "evidence": [
+    "WPI Alkyl Benzene 1m +18.1%, 3m +28.9% (April-2026)"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "id": "polyolefins",
+   "strength": 6.0,
+   "direction": "up",
+   "evidence": [
+    "HS 3902 import unit price 1m +241.4% (July-2026)"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap, and a lone +241% one-month unit price on a US$262.8mn/month code is the kind of print the playbook calls noise."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "id": "graphite_electrodes",
+   "strength": 5.59,
+   "direction": "up",
+   "evidence": [
+    "HS 2713 import unit price 3m +83.9%",
+    "TE Coking Coal 1y +36.0%"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap. Note the HS 2713 description is petroleum bitumen, a wide code - direction only."
+  },
+  {
+   "group": "Copper",
+   "id": "copper",
+   "strength": 5.25,
+   "direction": "up",
+   "evidence": [
+    "MetalBook Mumbai copper CC rod Rs 1,468/kg dated 29-Sep-2026, 1y +47.2%, at the series high",
+    "HS 7407 import unit price sy +157.5%"
+   ],
+   "mapped_benefit": [
+    "BHAGYANGR"
+   ],
+   "verdict": "NOT WORKED. Bhagyanagar India is already published (2026-09-23) and its copper business is being demerged into Tieramet Ltd under the scheme NCLT approved 07-Sep-2026; no new trigger today."
+  },
+  {
+   "group": "Zinc and lead",
+   "id": "zinc_lead",
+   "strength": 4.39,
+   "direction": "up",
+   "evidence": [
+    "MetalBook Mumbai zinc SHG Rs 435/kg dated 01-Oct-2026, 1y +51.6%, at the series high on 24 readings",
+    "WPI Zinc Concentrate 12m +65.8%"
+   ],
+   "mapped_benefit": [
+    "NILE"
+   ],
+   "verdict": "NOT WORKED THIS RUN. Nile Ltd (Rs 370 cr) is a LEAD smelter, and the lead evidence is negative (WPI Lead Concentrate 1m -10.3%, 3m -20.7%) while the positive evidence is zinc. The mapped exposure does not match the moving metal; recorded as a map question for the owner rather than researched."
+  },
+  {
+   "group": "Paper and pulp",
+   "id": "paper",
+   "strength": 4.31,
+   "direction": "up",
+   "evidence": [
+    "HS 4707 import unit price 1m +43.1% (July-2026)",
+    "WPI Pulp board 1m +3.0%"
+   ],
+   "mapped_benefit": [
+    "ANDHRAPAP",
+    "SESHAPAPER"
+   ],
+   "verdict": "NOT WORKED. HS 4707 is waste paper - a COST for Andhra Paper and Seshasayee, not a price they receive, so a rising 4707 unit price hurts the mapped beneficiaries. The output evidence (WPI printing & writing paper 1m +2.0%) is far weaker than the input. Recorded as a watch, and as a map question."
+  },
+  {
+   "group": "Natural rubber",
+   "id": "rubber",
+   "strength": 2.6,
+   "direction": "up",
+   "evidence": [
+    "Rubber Board Kottayam RSS4 Rs 28,000/100kg dated 05-10-2026; 1y +50.5%, 6m +22.3%, on 6,860 readings since 24-Jan-2001",
+    "ISNR20 Kottayam Rs 26,400 dated 05-10-2026, Q2 FY27 mean +43.0% YoY",
+    "WPI Raw Rubber 3m +20.8% (April-2026)",
+    "TE Rubber 1y +50.9%"
+   ],
+   "mapped_benefit": [
+    "HARRMALAYA"
+   ],
+   "verdict": "WORKED AND PUBLISHED. This is the only strong group whose Indian print is dated TODAY, is deep (6,860 readings since 2001, stats.deep true) and has a mapped small cap in the universe. Exposure verified from the company's own FY26 segment note (rubber 54.3% of external revenue, Rs 25.64 cr of Rs 39.77 cr segment profit) and the CARE rationale. Published with the measured caveat that Q1 FY27 transmission was weak."
+  },
+  {
+   "group": "Sugar (and ethanol)",
+   "id": "sugar",
+   "strength": 3.34,
+   "direction": "up",
+   "evidence": [
+    "spot sugar 1w +16.7% (global panel)",
+    "TE Sugar 1m +14.5%"
+   ],
+   "mapped_benefit": [
+    "DHAMPURSUG",
+    "DWARKESH"
+   ],
+   "verdict": "NOT WORKED - the Indian prints CONTRADICT the signal. Chinimandi M/30 spot dated 01-10-2026 is flat over a week and DOWN 7.4% to 15.9% over a month across all eight cities (Delhi -15.7%, Muzaffarnagar -15.9%, Kolhapur -7.4%), on a deep series of 989 readings since 2023-03-06. The group's strength is carried by the global/TE legs. Where the domestic print disagrees with the global proxy for a domestically-priced, domestically-regulated commodity, the domestic print wins. No idea."
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "id": "steel",
+   "strength": 2.13,
+   "direction": "up",
+   "evidence": [
+    "MetalBook Mumbai HRC Rs 63.7/kg dated 29-Sep-2026, 1y +31.3%, at the series high",
+    "Mumbai PPGI Rs 89.3/kg dated 25-Sep-2026, 1w +2.3%",
+    "Mumbai GP coil Rs 84.5/kg dated 25-Sep-2026, 1w +3.9%",
+    "Ministry of Steel Mumbai TMT Rs 57,950/t - for 30-Jun-2026, 3 months stale, and 1m -6.7%"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NO SMALL CAP MAPPED in this group, but it is the price backdrop to today's published filing idea: BMW Industries commissioned a colour-coating line into a market where the Mumbai PPGI print is Rs 89.3/kg against an HRC input of Rs 63.7/kg. Both prints are at the high of their (short) MetalBook series - PPGI has only 6 readings since 31-Jul-2025, GP coil 5, so these are levels, not continuous histories. The Ministry of Steel's official monthly series, which IS deep (48 month-ends to 30-Jun-2026), shows Mumbai TMT down 6.7% in its latest month and down 10.5% over three - long products and flats are moving in opposite directions, and BMW is a flats story."
+  },
+  {
+   "group": "Gold",
+   "id": "gold",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "IBJA gold 999 Rs 1,48,198/10g dated 05-Oct-2026",
+    "WPI Gold 12m +48.0%"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap, and the current print is 4.3% below a month ago."
+  },
+  {
+   "group": "Caustic soda and chlor-alkali",
+   "id": "caustic_soda",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Caustic soda 1m +9.6%, 3m +8.5% (April-2026)"
+   ],
+   "mapped_benefit": [
+    "LORDSCHLO",
+    "PUNJABCHEM",
+    "DCW",
+    "DENORA",
+    "TGVSL"
+   ],
+   "verdict": "NOT WORKED. Five mapped small caps, but the only evidence is a WPI index for April 2026 - five months stale - with no Indian daily print and no trade corroboration. The playbook wants two sources agreeing; here there is effectively one, and it is old."
+  },
+  {
+   "group": "Tea",
+   "id": "tea",
+   "strength": 3.1,
+   "direction": "up",
+   "evidence": [
+    "WPI Tea 1m +9.3%, 3m +7.9% (April-2026)",
+    "WPI Processed Tea 3m +16.8%"
+   ],
+   "mapped_benefit": [
+    "MCLEODRUSS",
+    "JAYSREETEA",
+    "ANDREWYU"
+   ],
+   "verdict": "NOT WORKED AS ITS OWN IDEA, but read alongside the rubber idea. All three mapped names are loss-making (BSE headers read today: JAYSREETEA PE -12.92, MCLEODRUSS -6.63, ANDREWYU -16.20). Harrisons Malayalam, published today, is 45.0% tea - and its tea segment result FELL 77.6% YoY in Q1 FY27 despite the WPI rise, which is the single clearest piece of evidence that this group's prices are not reaching producers' profits. No daily Indian tea auction print is in the panel."
+  },
+  {
+   "group": "Aluminium",
+   "id": "aluminium",
+   "strength": 2.53,
+   "direction": "up",
+   "evidence": [
+    "WPI Aluminium ingot 1m +7.6%, 12m +29.9% (April-2026)"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NOT WORKED. No mapped small cap; WPI-only, stale month."
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "none",
+   "outlay_cr": null,
+   "verdict": "ZERO releases cleared the gate and ZERO were large-but-unmapped. govt.json, built by GitHub Actions at 18:56 IST from a reachable PIB, records 26 releases scanned, 1 opened, 0 kept; the drops were 21 with no decision verb, 3 ceremonial/noise, 2 carrying an outlay below the Rs 1,000 cr floor, 0 backgrounders. Because unmapped_releases is also empty, there was no large decision in an unmapped sector to chase, so no theme_map.json addition was warranted. This is the correct answer on most days and the playbook says so explicitly. NOTE on coverage: 26 releases is low against the 42-74 the lane has seen on other days - PIB published less on this Monday, or the listing was short when Actions read it at 18:56 IST. The routine cannot re-check from this sandbox (pib.gov.in blocked) and govt.py has no --date flag, so whether a late-evening release was missed is UNKNOWN."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "BMW",
+   "scrip": "542669",
+   "name": "BMW Industries Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1250.1,
+   "call_close": 55.54,
+   "published": true,
+   "confidence": "medium",
+   "reason": "Hard, dated operational trigger with the capital already spent: Consent to Operate received and the colour-coating line commissioned 05-Oct-2026, first phase of a Rs 803 cr project with Rs 341.6 cr deployed and Rs 500 cr of bank debt tied up. The business reason to care is in the accounts, not the press release: FY26 revenue is 62.0% conversion income and falling, while product sales tripled - a toll processor becoming a product seller, which multiplies revenue per tonne 7-10x at a thinner margin. Management guides 70-75% revenue CAGR to FY28, which the arithmetic says needs the two phases that carry no commissioning date."
+  },
+  {
+   "ticker": "HARRMALAYA",
+   "scrip": "500467",
+   "name": "Harrisons Malayalam Ltd",
+   "lane": "price",
+   "mcap_at_call": 321.1,
+   "call_close": 174.0,
+   "published": true,
+   "confidence": "low",
+   "reason": "The only strong commodity group with a deep Indian print dated today AND a mapped small cap whose exposure is documented: Kottayam RSS4 Rs 280/kg, the highest in 6,860 readings since 2001, against rubber at 54.3% of FY26 external revenue and 90% of segment profit. Published at LOW confidence because the one quarter already reported at the higher price (Q1 FY27) showed rubber revenue up only 7.8% against a 27.7% price rise and total PBT down 33.9%, and because the auditor's Key Audit Matter is title litigation over 23,200.21 hectares."
+  },
+  {
+   "ticker": "INDOSMC",
+   "scrip": "544681",
+   "name": "INDO SMC Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1153.0,
+   "call_close": 504.5,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "Order read in full: Rs 31.71 cr = 10.2% of FY26 audited sales of Rs 309.74 cr, and the company has filed 8 purchase-order intimations in 240 days. Both measured tests point the wrong way: the under-25%-of-sales band's 2-year 2x rate is 21.4%, and a serial filer with 8+ prior filings reached 2x only 17.3% of the time and 5x never. Stock already +207.5% in six months at a trailing PE of 55."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "name": "ITCONS E-Solutions Ltd",
+   "lane": "filing",
+   "mcap_at_call": 224.3,
+   "call_close": 249.0,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "Contract read in full: Rs 1.93 cr for 48 EPFO resources over one year = 2.2% of FY26 audited revenue of Rs 87.74 cr. Immaterial, and the Rs 224 cr market cap is below the Rs 300 cr floor of the band where the study found 5x runs occur."
+  }
+ ],
+ "published": [
+  "2026-10-05-BMW",
+  "2026-10-05-HARRMALAYA"
+ ],
+ "x_checked": [
+  {
+   "name": "BMW Industries (542669)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com, twice: 'BMW Industries Bokaro colour coating line commissioned' and '\"BMW Industries\" BMWIL steel PLI 803 crore'. Run ~20:10 IST 2026-10-05. Post BODIES could not be read: cdn.syndication.twimg.com is blocked by this sandbox's egress proxy (curl: CONNECT tunnel failed, 403; WebFetch: EGRESS_BLOCKED), so gists come from search-result text and dates were computed arithmetically from the snowflake id ((id >> 22) + 1288834974657 ms).",
+   "posts_found": 5,
+   "new_verified_points": "(1) The Rs 803 cr project cost that @EconomicTimes (2025-08-24) and @i3masterminds (2025-08-31) reported matches today's press release exactly. (2) @wegro_app (2025-07-28) posted Q1 FY26 total income Rs 15,354 lakh, PAT Rs 1,520 lakh and EBITDA Rs 3,631 lakh at 23.6% - all three reconcile to the company's own Q1 FY27 presentation (revenue 14,869 + other income 486 = 15,355; PAT 1,520 exact; operating EBITDA 3,145 + other income 486 = 3,631), so the post's EBITDA definition includes other income. Nothing unverified and nothing contradicting the filings. No post dated October 2026 surfaced, i.e. nothing about today's commissioning - expected, search indexing lags a day or two."
+  },
+  {
+   "name": "Harrisons Malayalam (500467)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'Harrisons Malayalam rubber price plantation' and 'Harrisons Malayalam HARRMALAYA rubber tea results'. Run ~19:55 and ~20:20 IST 2026-10-05. Same block on cdn.syndication.twimg.com, so bodies unread.",
+   "posts_found": 4,
+   "new_verified_points": "Nothing numeric. @hvgoenka's 2025-05-21 post confirms RP-SG group ownership of Kerala rubber estates, which CARE states independently. @RubberBoard posts the same daily domestic price table this note measures. NO post found discusses the Rs 280/kg print or its effect on HML's earnings; one search result quoted HML's Q1 FY26 figures (revenue Rs 116 cr, PBT Rs 6 cr) which match the BSE detailed results (Rs 116.46 cr, Rs 5.96 cr). Nothing unverified, nothing contradicting."
+  },
+  {
+   "name": "INDO SMC (544681)",
+   "searched": "WebSearch restricted to x.com / twitter.com: '\"INDO SMC\" order power distribution pillar'. Run ~20:12 IST 2026-10-05.",
+   "posts_found": 0,
+   "new_verified_points": "Nothing. Every result was a different 'SMC' entity (SMC Indicators, SMC India Ltd, SMC Clean India) or an unrelated power discom account. No post about INDO SMC surfaced. Not 'nothing on X' - the search ran and returned no match for this company, and post bodies could not be fetched in any case (cdn.syndication.twimg.com blocked)."
+  },
+  {
+   "name": "ITCONS E-Solutions (543806)",
+   "searched": "Not searched on X. The name was rejected on arithmetic from its own filing (contract 2.2% of a year's sales, market cap below the measured Rs 300 cr floor) before a sweep would have changed anything.",
+   "posts_found": null,
+   "new_verified_points": "n/a - sweep not run. Recording this honestly rather than reporting a zero that was never measured."
+  }
+ ],
+ "vp_checked": [
+  {
+   "name": "BMW Industries (542669)",
+   "result": "BLOCKED. forum.valuepickr.com is refused by this sandbox's egress proxy: curl to search.json returned HTTP 000 with 'connect_rejected (the egress proxy denied the CONNECT (organization policy))', and WebFetch returned EGRESS_BLOCKED. The thread was NOT read. A WebSearch restricted to the forum's domain located it: 'BMW Industries Ltd (Steel Service center) - Untested - but worth a good look', https://forum.valuepickr.com/t/bmw-industries-ltd-steel-service-center/120924 - post count, dates, tone and members' arguments all UNKNOWN. One search snippet (describing BMWIL as a steel service centre for Tata Steel, JSW and SAIL earning service revenue) is half-confirmed: note 32 of the FY26 annual report gives conversion income of Rs 411.72 cr (62.0% of revenue), but no filing read today names those customers, so the names are not used in the note."
+  },
+  {
+   "name": "Harrisons Malayalam (500467)",
+   "result": "BLOCKED, same reason. Thread located by domain-restricted WebSearch but NOT read: 'Harrisons Malayalam Ltd' (Stock Opportunities), https://forum.valuepickr.com/t/harrisons-malayalam-ltd/406. A search snippet claiming '11 rubber plantations spread over 7,338 hectares' and a 49% rubber / 46% tea revenue split is partly WRONG against the annual report, which states 8 rubber estates in Kerala and 11 TEA estates in Kerala and Tamil Nadu, and whose FY26 segment note gives 54.3% rubber and 45.0% tea. The 7,338 ha figure is unconfirmed. None of it is used in the note. The snippet's claim that HML's rubber commands a premium over tyre-grade rubber IS independently measurable at +8.9% (FY26 realisation Rs 214.84/kg vs the Rs 197.30/kg Rubber Board FY26 mean)."
+  },
+  {
+   "name": "INDO SMC (544681)",
+   "result": "BLOCKED - host refused at the proxy, and no domain-restricted search was run for this name once the order arithmetic had rejected it."
+  },
+  {
+   "name": "ITCONS E-Solutions (543806)",
+   "result": "Not searched - rejected on its own filing's arithmetic before a sweep would have mattered. Host is blocked in any case."
+  }
+ ],
+ "watch": [
+  "Harrisons Malayalam Q2/H1 FY27 results, due in the November window (trading window closed 25-Sep-2026). Q2 FY27's Kottayam RSS4 mean was Rs 277.13/kg against Rs 197.89 a year earlier (+40.0%), the largest YoY gain in the series, and Q2 is seasonally a heavier crop quarter than Q1. If rubber segment revenue again rises far less than the price, the transmission question is answered negatively and the idea should be closed.",
+  "BMW Industries: commissioning dates for the 550,000 TPA CRFH and 540,000 TPA GA/GI/ZAM phases, and the first Bokaro despatch tonnage. Management's FY28 revenue guidance cannot be met by the colour-coating line alone.",
+  "Sugar: the domestic Chinimandi prints are DOWN 7-16% over a month while the global panel shows +14-17%. Worth the owner's attention as a case where signals.py's strength is driven by a global proxy against a contradicting domestic print.",
+  "Paper: HS 4707 (waste paper) import unit price +43.1% in a month is a COST increase for the two mapped beneficiaries, Andhra Paper and Seshasayee. Rising input with weak output evidence (WPI printing & writing paper 1m +2.0%) is a red flag on those names, not a reason to buy them.",
+  "Zinc/lead: the moving metal is zinc (Mumbai SHG at the series high, 1y +51.6%) while the mapped small cap, Nile Ltd, is a LEAD smelter and the lead evidence is negative. The group's mapped exposure does not match its moving price.",
+  "Sulphuric acid and sulphur: strength 6.97 with two independent sources agreeing (WPI 1m +20.9%, HS 280700 import unit price 3m +95.2%) and NO mapped beneficiary at all. The strongest unmapped signal in the panel."
+ ],
+ "map_changes": [
+  "docs/ideas/commodity_map.json - rubber group, HARRMALAYA: the `why` was one unsourced phrase ('rubber plantations'). Replaced with the documents read this run: FY26 segment note (rubber Rs 292.68 cr of Rs 539.08 cr = 54.3%; segment profit Rs 25.64 cr of Rs 39.77 cr), own crop 4,341 MT + 4,020 MT bought, realisation Rs 214.84/kg vs the Rs 197.30/kg RSS4 FY26 mean, the CARE 17-Feb-2026 quote, AND the measured caveat that Q1 FY27 transmission was weak plus the 23,200.21 ha title litigation. No name was added or removed from any map."
+ ],
+ "data_problems": [
+  "pib.gov.in BLOCKED from this sandbox (403 Forbidden at the proxy CONNECT). govt.py exited 0 and left govt.json untouched, as designed. Not a data gap: GitHub Actions read PIB successfully at 18:56 IST today, so the government lane's verdict for 2026-10-05 is a real measurement.",
+  "Every external commodity host BLOCKED from this sandbox at the proxy: westmetall.com and markets.businessinsider.com (spot.py: 0 of 35 commodities, file left unchanged), steel.gov.in (minsteel.py: no report listed, committed file kept), eaindustry.nic.in (wpi.py), tradestat.commerce.gov.in (trade.py), and metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, tradingeconomics.com (india_spot.py - all six FAILED, previous rows kept). Only BSE answered, so india_spot's nmdc source ran clean (2 rows, no new NMDC letter since w.e.f. 09-Sep-2026). Again NOT a data gap for the day: feeds_status.json shows GitHub Actions reached all of these at 18:56-19:00 IST (run 37316716854), steps_failed empty, 15 files landed, landing.refused empty. 'Blocked from the sandbox' and 'blocked from Actions' are different facts and only the second would mean the day's data is missing.",
+  "india_history.json.gz WAS rebuilt (152 series, 77,761 dated points); 0 history rows appended, because every source that could have added a row was blocked here and Actions had already appended today's.",
+  "The scan is CAPPED BY ONE ROW: 864 announcements read against BSE's own reported count of 865 at 19:56 IST. announcements_capped is true, so the classified counts (65 in-universe, 137 rows with signals, 12 candidates) are a floor. The missing row is the day's earliest filing.",
+  "cdn.syndication.twimg.com BLOCKED from this sandbox - 403 at CONNECT via curl and EGRESS_BLOCKED via WebFetch. So NO X post body was read this run. WebSearch itself works, so posts could be FOUND; their text is only the search-result snippet and their dates were computed from the Twitter snowflake id, not from a fetched created_at. Every X figure used in a note was matched to a filing before use.",
+  "forum.valuepickr.com BLOCKED from this sandbox - curl to /search.json returned HTTP 000 with 'connect_rejected (the egress proxy denied the CONNECT (organization policy))', and WebFetch returned EGRESS_BLOCKED. NO ValuePickr thread was read for any researched name. Domain-restricted WebSearch did locate the two dedicated threads and their URLs are recorded in the ideas so a future run starts from them; post counts, dates, tone and members' arguments are UNKNOWN, and nothing from the search snippets entered either thesis.",
+  "Two stale panels, named wherever quoted: the WPI panel is at April 2026 (five months behind) and the HS trade panel at July 2026 (three months). Most of the high-strength groups in signals.json are carried by those two legs, so a 'strength 10' on crude or silver is a statement about the spring, not about today. The groups worked in this run were chosen for having a CURRENT Indian daily print, not for their strength rank. Ministry of Steel is at 30-Jun-2026 and NMDC at w.e.f. 09-Sep-2026.",
+  "BSE's detailed-results feed disagrees with BMW Industries' own presentation for Q1 FY26: the feed gives revenue Rs 130.37 cr and PAT Rs 10.64 cr, the company's Q1 FY27 presentation gives Rs 148.69 cr and Rs 15.20 cr for the same quarter (FY26 and Q1 FY27 agree between the two to within Rs 1 cr). The company's figures were used for Q1 FY26 comparisons. Cause UNKNOWN - the Q1 FY26 results PDF was not opened in this run.",
+  "For Harrisons Malayalam, BSE's detailed-results feed labels PRE-TAX profit as PAT: the feed's FY26 figure of Rs 29.15 cr equals the audited profit BEFORE tax (Rs 2,915.02 lakh), while the Directors' Report states profit of Rs 24.50 cr for FY26 (FY25: Rs 10.26 cr vs the feed's Rs 14.90 cr). The BSE header's EPS of Rs 14.70 and PE of 11.84 are therefore pre-tax figures for this scrip. The published note states both and prices the stock on FY26 PAT. This may affect other plantation/agricultural filers in the feed and is flagged for the owner.",
+  "Harrisons Malayalam has NO concall transcript and NO investor presentation in its 240-day announcement list, so there is no management guidance of any kind to test the model against; the CARE rationale of 17-Feb-2026 is the only forward-looking third-party document. Its tonnage figures also do not reconcile with the annual report's (CARE: FY25 rubber sales volume 11.88 thousand MT; annual report: 4,800 MT own + 3,062 MT bought), so no per-kg model was built off segment revenue.",
+  "COMMIT DECISION recorded on purpose: india_spot.json, nmdc_history.json, india_history.json.gz and signals.json were restored to the version GitHub Actions committed at 18:56-19:00 IST and were NOT included in this run's commit. The routine's own re-runs added no data (0 history rows appended, no new NMDC letter) but did rewrite each source's status string to this sandbox's proxy-403 'FAILED', which would have made the page report metalbook, ibja, rubberboard, ppac and tradingeconomics as failed on a day they all answered 200 from Actions - a failure this routine could not measure being rendered as a measurement. The scan file WAS committed from this run because it read 864 of 865 announcements against Actions' 777 of 785."
+ ],
+ "note": "Three lanes, three different outcomes, all measured. GOVERNMENT produced nothing: 26 PIB releases scanned by Actions at 18:56 IST, 0 kept, 0 large-but-unmapped - the correct answer on most days, though 26 is a thin listing and whether a late release was missed is unknown from this sandbox. COMMODITY produced one idea out of 19 groups above threshold, and the reason only one survived is worth recording: the top of the strength table (crude 10.70, silver 10.16, tungsten 10.00) is carried by a WPI panel at April 2026 and an HS trade panel at July 2026, with no mapped small cap in most cases. The rubber group ranks 22nd on strength at 2.60 and was the one worked, because it is the only strong group whose Indian print is dated TODAY, sits on a deep series (6,860 Rubber Board readings since 24-Jan-2001) and has a mapped company in the universe whose exposure could be verified from its own segment note. Ranking by freshness and depth rather than by strength is what the lane needed today. FILING produced the day's best idea: BMW Industries' colour-coating line at Bokaro, a dated commissioning with Rs 341.6 cr already spent of Rs 803 cr, where the interesting fact is not the capex but what it does to the revenue line - 62.0% of FY26 revenue is conversion income and falling, and the new plant books the full product value instead of a toll, which is why management guides revenue up 70-75% CAGR while PAT margin falls to 5-6%. Two names were researched and rejected on the measured order tests rather than on judgement: INDO SMC (order 10.2% of sales, 8 order filings in 240 days - the serial-bidder cohort that never reached 5x) and ITCONS (contract 2.2% of sales, market cap below the Rs 300 cr floor). Both X and ValuePickr were partly unavailable: WebSearch worked, but cdn.syndication.twimg.com and forum.valuepickr.com are both refused by this sandbox's egress proxy, so no post body and no forum thread was read. Posts were found and verified against filings where a number was quoted; the two ValuePickr thread URLs are recorded in the ideas so a future run can start from them. One data defect found and recorded for the owner: BSE's detailed-results feed reports Harrisons Malayalam's PRE-TAX profit in the PAT column, which makes the BSE header's EPS and PE pre-tax for that scrip."
+}
