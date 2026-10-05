@@ -21317,6 +21317,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     11:41 = our date; they date it from the 2015-02-11 REVISED filing); 2022-03/06 = follow-the-label to the company's own 'QUALIFIED
     INSTITUIONAL BUYERS' block (-11.1 % / -0.8 %, within 12 %) -> domestic, rule difference. Rebuilt store moves exactly these 27 (+ part 6's
     88 and the DII session's §164s part 10 38 not yet refreshed); guards green.
+    **Batch 30 part 8 (same label): NATCOPHARM 25, DELHIVERY 3 + 1 event, and the first two re-filing (#rev, §164s part 11) entries.**
+    NATCOPHARM: EM Resurgent Fund (42 FPI listings) / Nomura Singapore (141 + the company's own 2020 FPI row) FII as before; its own
+    'FOREIGN INSTITUTIONAL INVESTORS' Category rows (16,053 - 52,878 sh, 2020-09..2021-12, misspelt 'Investores' / 'Instituional' on some)
+    had been left out -> in; the 'Qualified Institutional Buyers' Category stays domestic (Jun-2020's row figure 593,505 is a filer typo -
+    Sub Total B1 proves 5,935,905); share counts elsewhere. **DELHIVERY - the batch 14 FDI registry read ORIGINAL filings only:** the
+    company's Feb-2023 REVISED Sep/Dec-2022 filings move its whole 'Foreign Companies' block (480,616,317 / 436,338,894 sh - identical to
+    the originals) onto the 'Foreign Direct Investment' line, naming three holders the registry lacked (Alpine Opportunity Fund II 2.37,
+    Steadview Capital Mauritius 1.12, Alpine Opportunity Fund V 1.01); Option A says ANY of its filings -> Sep/Dec-2022 originals 62.0216
+    / 59.9742 -> 74.2412 / 69.1209 (= the revisions), Jun-2022 and the 20-May-2022 IPO filing 62.106 -> 66.612 (FPI + all 14 named holders;
+    the 2015 form gives no category total for the small ones). A scan of 3,175 cached revised 2022-form filings finds 11 companies with
+    FDI-line holders the registry lacks (YESBANK Verventa, SAMHI ACIC Mauritius / GTI / Blue Chandra, UGROCAP Danish IFU, SURAKSHA OrbiMed,
+    SSWL Sumitomo Metal, SIL Satin, SIRCA, TRU Aviator, 360ONE GPFG, DELHIVERY) - registry rebuild incl. revisions pending
+    (`~/stocks-cache/shp/audit_all/drmove/fdi_registry_revised_gaps.json`; 808 revised filings not yet cached). **#rev entries:** MINDACORP
+    2016-03-31#rev (its Dec-2016 re-filing served fii 0.0835 / dii 19.2844 raw -> 1.5305 / 14.8402: FPI + GPFG + D1 rest; Kotak India PE
+    public) and JAGSNPHARM 2021-12-31#rev (0.0 / 0.1179 -> 0.1148 / 0.0031, D1). The DII session's other FII-only re-filing rows
+    (KALYANKJIL, RESPONIND, MARKSANS, SHRIRAMFIN, UJJIVAN) already equal their healed originals to <= 0.001 (the 2022-form re-filings count
+    the FDI line) - no entry. Rebuilt store / events / revisions move exactly these (+ the earlier unrefreshed parts and the DII session's
+    §164s part 10/11); guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
