@@ -22782,6 +22782,30 @@ windows each, CPU time (the Mac was loaded by other sessions, load avg 4-8, so w
 (median 88.2 vs 84.7) — no measurable slowdown; Node heap identical (299 MB recent data, 601 MB full history); data load recent 5.2 -> 5.9 s,
 deep 2.7 -> 3.7 s (more digits to parse; 6-decimal test data, 4 decimals would sit between); published parts 200.5 -> 209.9 MB (+4.7%).
 
+**§179f — EXACT 4-DECIMAL PRICES LIVE 2026-10-05 ~21:48 IST (user: "Go").** Code b3b5598a3: `PX_DP = 4` in update_sf_data.py (25 roundings on
+the price-rescale lines; raw appends / turnover / dv untouched); both engine twins (backtest-engine.js `_sfNorm`, stock-backtest.html) + grid
+tools read paise to 2 decimals (`Math.round(x*1e4)/100`); build_stock_slices `_px100`; sw v237. Data: `~/stocks-cache/qm-recon-tools/
+build_exact_store.py` on the 2026-10-05 release — 9,461,122 bars of 4,588 symbols rebuilt as NSE raw x exact factor (runs cut at ledger events
++ isolated jumps above 2-decimal noise; every ledger step set to its official value when within 1%: 347 set, 80 left), 865,103 bars kept (no
+NSE raw row, or the per-bar guard max(0.3%, 4 paise/price)), DVL/DTIL/RASOYPR skipped (nightly surgery); idempotent under the patched updater
+(dry run byte-identical). Adoption: `push_exact_base.sh` -> orphan branch exact-prices-base (3 chunks + manifest) -> adopt-exact-prices.yml
+run 37335084720 (refuses unless the live release sha256 == manifest base_sha256) -> refresh-backtest-data 37335235983. **Trap 1:** the
+push-triggered refresh of b3b5598a3 had re-uploaded the release with IDENTICAL content but new gzip bytes (sha e5f7... -> 9dca...): compare
+the decompressed content (0 of 5,266 symbols differed), then build the manifest against the CURRENT live sha. **Trap 2:** attempt 1 failed at
+"Verify clients" — the sf-data Pages deploy job sat QUEUED with no runner 15:54 -> 16:16 UTC (the deploy before it too, 15:36 -> 15:54,
+cancelled) while githubstatus was all green and the main site's deploys ran; the CI janitor re-ran the job, attempt 2 force-pushed sf-data
+again and that deploy finished in ~1 min (rev 450f0dc47e -> 26d6816eb2; recent parts 1 -> 2). LIVE verified (`verify179f_exact_live.py`):
+merged live parts == exact store on every array of all 5,266 symbols; slices carry decimals (SUZLON first p 12723.77 = Rs 127.2377);
+browser: stock-backtest 2020 + 2010 runs on rev 26d6816eb2 parts, stock.html?sym=SUZLON, strategy-mixer, sectors, coverage — 0 console
+errors. Quantmac on the LIVE data 318,317 / 318,494 (99.94%); the 8 favourites: 0 changed picks. **Left (verdict4 on the live data, each
+cell from its own rows): 177 differing — RULE DIFFERENCE 122, UNKNOWN 38 (both unchanged), OUR ERROR 17 (was 4,474):** (a) 12 = 4-decimal
+storage still coarse below Rs 1 adjusted: BAJAUTOFIN Sep-09..Feb-10 d52low x6 (NSE low 45.25 x 0.009716 = 0.43965, stored 0.4396), MVL
+Oct/Nov-12 x2 (Rs 0.09), VIVIDHA May..Aug-15 d52low x4 (Rs 0.1166); (b) RASOYPR Sep/Nov-13 x2 — its 2012-15 bars come from
+dvl_dtil_surgery.json.gz at 2 decimals (skipped by design); (c) VIVIDHA 31-Mar-16 x3 — our VIVIDHA bars 30-Mar-2016 -> Apr-2020 sit at
+~1/42 of NSE's traded prices (stored/raw 0.0238, ramping to 1.0 Oct-2019 -> Apr-2020) with no recorded corporate action behind it, so the
+guard kept them at 2 decimals. Fixes for (a)/(b)/(c) await the user. adopt-exact-prices.yml + branch exact-prices-base deleted after the
+live check (this commit).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
