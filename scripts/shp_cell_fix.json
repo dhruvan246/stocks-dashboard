@@ -23428,6 +23428,14 @@
    },
    "2015-12-31": {
     "cell": [
+     48.566,
+     7.0232,
+     4.0797,
+     0.01,
+     3.7197,
+     "2016-02-04"
+    ],
+    "was": [
      46.8022,
      6.7645,
      3.9315,
@@ -23435,16 +23443,28 @@
      3.5846,
      "2016-02-04"
     ],
-    "was": [
-     48.57,
-     7.02,
-     4.08,
-     0.01,
-     3.72,
-     "2016-02-04"
-    ],
-    "src": "bseaspx:500117:88+nseresults:1005575",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 211,685,907 shares \u2014 it leaves out 7,995,750 shares that the Sep-2015 page (213,494,657, block C 2,708,750) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003608 paid-up 4269.89, 2015-12-31 #1005575 paid-up 4393.63, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 219,681,657 (\u00b1 500 shares, the filings' rounding): x 0.963603."
+    "src": "bsetable3:500117:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): DCW 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500117 qtrid 88) A 102,807,360 + B 108,878,547 + C2 0 = 211,685,907 shares (C1 1,808,750 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 0; 'Foreign Financial Institutions Banks' 42,225; 'FIIS' 14,824,834 = 14,867,059 shares. fii 6.7645 -> 7.0232. The cell's other slots were on 219,663,520 shares (its promoter slot = A / that count); all move onto Table I's (A+B+C2) 211,685,907 (x 1.037686).",
+    "superseded": {
+     "cell": [
+      46.8022,
+      6.7645,
+      3.9315,
+      0.0096,
+      3.5846,
+      "2016-02-04"
+     ],
+     "was": [
+      48.57,
+      7.02,
+      4.08,
+      0.01,
+      3.72,
+      "2016-02-04"
+     ],
+     "src": "bseaspx:500117:88+nseresults:1005575",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 211,685,907 shares \u2014 it leaves out 7,995,750 shares that the Sep-2015 page (213,494,657, block C 2,708,750) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003608 paid-up 4269.89, 2015-12-31 #1005575 paid-up 4393.63, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 219,681,657 (\u00b1 500 shares, the filings' rounding): x 0.963603."
+    }
    },
    "2006-06-30": {
     "cell": [
@@ -38317,6 +38337,26 @@
     ],
     "src": "bsexbrl:500193_30102017114952_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 0.06 -> 0.06, dii 3.79 -> 3.85. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.06"
+   },
+   "2015-12-31": {
+    "cell": [
+     63.8838,
+     0.3229,
+     5.3263,
+     0.0003,
+     5.1798,
+     "2016-01-21"
+    ],
+    "was": [
+     63.8838,
+     0.0,
+     5.3263,
+     0.0003,
+     5.1798,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:500193:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): HLVLTD 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500193 qtrid 88) A 298,087,074 + B 168,521,233 + C2 0 = 466,608,307 shares (C1 0 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 1,506,829 = 1,506,829 shares. fii 0.0000 -> 0.3229."
    }
   },
   "ICDSLTD": {
@@ -68044,6 +68084,14 @@
    },
    "2015-12-31": {
     "cell": [
+     59.0984,
+     21.2542,
+     8.315,
+     0.9841,
+     7.1099,
+     "2016-01-22"
+    ],
+    "was": [
      59.613,
      21.4343,
      8.3874,
@@ -68051,16 +68099,28 @@
      7.1718,
      "2016-01-22"
     ],
-    "was": [
-     58.85,
-     21.16,
-     8.28,
-     0.98,
-     7.08,
-     "2016-01-22"
-    ],
-    "src": "bseaspx:532712_88",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (532712_127201613347_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.012965 = total (A+B+C) 2488979745 shares / (A+B) 2457122992 shares on the same quarter's BSE page; fii 21.16 -> 21.43."
+    "src": "bsetable3:532712:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): RCOM 2015-12-31 - Table I (CorporatesSHPSecuritybeta 532712 qtrid 88) A 1,464,696,844 + B 992,426,148 + C2 21,279,000 = 2,478,401,992 shares (C1 10,577,753 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 526,763,519 = 526,763,519 shares. fii 21.4343 -> 21.2542. The cell's other slots were on 2,457,009,115 shares (its promoter slot = A / that count); all move onto Table I's (A+B+C2) 2,478,401,992 (x 0.991368).",
+    "superseded": {
+     "cell": [
+      59.613,
+      21.4343,
+      8.3874,
+      0.9927,
+      7.1718,
+      "2016-01-22"
+     ],
+     "was": [
+      58.85,
+      21.16,
+      8.28,
+      0.98,
+      7.08,
+      "2016-01-22"
+     ],
+     "src": "bseaspx:532712_88",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (532712_127201613347_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.012965 = total (A+B+C) 2488979745 shares / (A+B) 2457122992 shares on the same quarter's BSE page; fii 21.16 -> 21.43."
+    }
    }
   },
   "RELCAPITAL": {
@@ -139594,6 +139654,14 @@
    },
    "2016-03-31": {
     "cell": [
+     49.7403,
+     20.6825,
+     16.4448,
+     0.111,
+     15.9012,
+     "2016-04-21"
+    ],
+    "was": [
      49.828,
      20.7223,
      16.4738,
@@ -139601,18 +139669,18 @@
      15.9292,
      "2016-04-21"
     ],
-    "was": [
-     48.3581,
-     20.111,
-     15.9878,
-     0.1079,
-     15.4593,
-     "2016-04-21"
-    ],
-    "src": "bseaspx:500390_89",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (500390_1972016143713_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.030396 = total (A+B+C) 262990000 shares / (A+B) 255231998 shares on the same quarter's BSE page; fii 20.11 -> 20.72.",
+    "src": "bsetable3:500390:89",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): RELINFRA 2016-03-31 - Table I (CorporatesSHPSecuritybeta 500390 qtrid 89) A 127,177,036 + B 128,054,962 + C2 450,000 = 255,681,998 shares (C1 7,308,002 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 31,708,011; 'FOREIGN INSTITUTIONAL INVESTORS(FII)' 21,173,369 = 52,881,380 shares. fii 20.7223 -> 20.6825. The cell's other slots were on 255,232,070 shares (its promoter slot = A / that count); all move onto Table I's (A+B+C2) 255,681,998 (x 0.998240).",
     "superseded": {
      "cell": [
+      49.828,
+      20.7223,
+      16.4738,
+      0.1112,
+      15.9292,
+      "2016-04-21"
+     ],
+     "was": [
       48.3581,
       20.111,
       15.9878,
@@ -139620,16 +139688,28 @@
       15.4593,
       "2016-04-21"
      ],
-     "was": [
-      48.3581,
-      20.111,
-      24.0388,
-      0.1079,
-      15.4593,
-      "2016-04-21"
-     ],
-     "src": "bseaspx:500390:89:New+seam164l",
-     "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 24.0388 - 8.0510 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+     "src": "bseaspx:500390_89",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (500390_1972016143713_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.030396 = total (A+B+C) 262990000 shares / (A+B) 255231998 shares on the same quarter's BSE page; fii 20.11 -> 20.72.",
+     "superseded": {
+      "cell": [
+       48.3581,
+       20.111,
+       15.9878,
+       0.1079,
+       15.4593,
+       "2016-04-21"
+      ],
+      "was": [
+       48.3581,
+       20.111,
+       24.0388,
+       0.1079,
+       15.4593,
+       "2016-04-21"
+      ],
+      "src": "bseaspx:500390:89:New+seam164l",
+      "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 24.0388 - 8.0510 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+     }
     }
    },
    "2006-06-30": {
@@ -140394,6 +140474,14 @@
    },
    "2015-12-31": {
     "cell": [
+     49.8333,
+     18.7852,
+     17.7137,
+     0.3916,
+     16.8893,
+     "2016-01-29"
+    ],
+    "was": [
      49.9232,
      18.8193,
      17.7457,
@@ -140401,16 +140489,28 @@
      16.9198,
      "2016-01-29"
     ],
-    "was": [
-     48.36,
-     18.23,
-     17.19,
-     0.38,
-     16.39,
-     "2016-01-29"
-    ],
-    "src": "bseaspx:500390_88",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (500390_1972016143713_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.032325 = total (A+B+C) 262990000 shares / (A+B) 254755043 shares on the same quarter's BSE page; fii 18.23 -> 18.82."
+    "src": "bsetable3:500390:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): RELINFRA 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500390 qtrid 88) A 127,177,036 + B 127,578,007 + C2 450,000 = 255,205,043 shares (C1 7,784,957 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 47,940,829 = 47,940,829 shares. fii 18.8193 -> 18.7852. The cell's other slots were on 254,745,360 shares (its promoter slot = A / that count); all move onto Table I's (A+B+C2) 255,205,043 (x 0.998199).",
+    "superseded": {
+     "cell": [
+      49.9232,
+      18.8193,
+      17.7457,
+      0.3923,
+      16.9198,
+      "2016-01-29"
+     ],
+     "was": [
+      48.36,
+      18.23,
+      17.19,
+      0.38,
+      16.39,
+      "2016-01-29"
+     ],
+     "src": "bseaspx:500390_88",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 12, user 2026-10-04 'yes fix the 3 companies'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (500390_1972016143713_SHP.xml) prints Promoter + Public (+ employee trust) = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.032325 = total (A+B+C) 262990000 shares / (A+B) 254755043 shares on the same quarter's BSE page; fii 18.23 -> 18.82."
+    }
    }
   },
   "RENUKA": {
@@ -214831,6 +214931,26 @@
     ],
     "src": "bseaspx:500125_87",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 15, user 2026-10-05 'yes fix the 5'; reply4 d2_basis.json had mislabelled this company 'FULL share count'): its own first XBRL (500125_2272016185147_SHP.xml) prints Promoter + Public = 100 on (A+B) shares with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values move from the page's % of (A+B+C) column onto (A+B): all slots x 1.000409 = total (A+B+C) 175814884 shares / (A+B) 175742954 shares on the same quarter's BSE page; fii 9.61 -> 9.61."
+   },
+   "2015-12-31": {
+    "cell": [
+     45.28,
+     8.1078,
+     10.11,
+     3.67,
+     6.37,
+     "2016-02-03"
+    ],
+    "was": [
+     45.28,
+     8.24,
+     10.11,
+     3.67,
+     6.37,
+     "2016-02-03"
+    ],
+    "src": "bsetable3:500125:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): EIDPARRY 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500125 qtrid 88) A 79,577,050 + B 96,165,904 + C2 0 = 175,742,954 shares (C1 71,930 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 14,248,838 = 14,248,838 shares. fii 8.2400 -> 8.1078."
    }
   },
   "KWIL": {
@@ -275193,6 +275313,26 @@
     ],
     "src": "bsexbrl:500093_2452022192318_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 12.58 -> 12.58, dii 5.25 -> 6.18. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 0.12 public=0.00 fii=0.00  keyword; R2-label Others STANDARD CHARTERED BANK (SINGAPORE) LIMITED 0.91 STANDARD CHARTERED BANK (SINGAPORE) LIMITED 0.91; R3-nbfc NBFCsRegisteredWithRbi 0.02"
+   },
+   "2015-12-31": {
+    "cell": [
+     34.4246,
+     18.1697,
+     31.0012,
+     23.922,
+     6.883,
+     "2016-01-21"
+    ],
+    "was": [
+     34.4246,
+     0.0,
+     49.1709,
+     23.922,
+     6.883,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:500093:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): CGPOWER 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500093 qtrid 88) A 215,451,070 + B 410,412,743 + C2 0 = 625,863,813 shares (C1 882,329 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 0; 'Foreign Institutional Investors' 113,717,598 = 113,717,598 shares. fii 0.0000 -> 18.1697. The block sat in dii (stored fii 0): dii 49.1709 -> 31.0012."
    }
   },
   "CHENNPETRO": {
@@ -278577,7 +278717,7 @@
    "2015-12-31": {
     "cell": [
      0,
-     37.5472,
+     38.2502,
      30.67,
      26.22,
      1.87,
@@ -278585,14 +278725,34 @@
     ],
     "was": [
      0,
-     8.41,
+     37.5472,
      30.67,
      26.22,
      1.87,
      "2016-01-28"
     ],
-    "src": "bseaspx:500469_88 shpperent",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.41 -> 37.55, dii 30.67 -> 30.67. seam-fii-reconstruction base 8.25 29.2972; lump-fii Foreign Institutional Institution 29.2972. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bsetable3:500469:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): FEDERALBNK 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500469 qtrid 88) A 0 + B 1,686,838,392 + C2 0 = 1,686,838,392 shares (C1 31,511,952 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 141,790,359; 'Foreign Institutional Institution' 503,429,392 = 645,219,751 shares. fii 37.5472 -> 38.2502.",
+    "superseded": {
+     "cell": [
+      0,
+      37.5472,
+      30.67,
+      26.22,
+      1.87,
+      "2016-01-28"
+     ],
+     "was": [
+      0,
+      8.41,
+      30.67,
+      26.22,
+      1.87,
+      "2016-01-28"
+     ],
+     "src": "bseaspx:500469_88 shpperent",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.41 -> 37.55, dii 30.67 -> 30.67. seam-fii-reconstruction base 8.25 29.2972; lump-fii Foreign Institutional Institution 29.2972. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -307098,6 +307258,26 @@
     ],
     "src": "bseaspx:532371_75",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.55 -> 0.82, dii 0.14 -> 0.14. inst-sub-fii Foreign Bank 0.27. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     74.8987,
+     0.6062,
+     0.1374,
+     0.0,
+     0.0478,
+     "2016-01-21"
+    ],
+    "was": [
+     74.8987,
+     0.0,
+     0.1374,
+     0.0,
+     0.0478,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:532371:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): TTML 2015-12-31 - Table I (CorporatesSHPSecuritybeta 532371 qtrid 88) A 1,464,215,308 + B 490,712,419 + C2 0 = 1,954,927,727 shares (C1 0 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 11,850,517 = 11,850,517 shares. fii 0.0000 -> 0.6062."
    }
   },
   "UBL": {
@@ -367131,6 +367311,26 @@
     ],
     "src": "bseaspx:502165_87",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check): the stored cell [75.0, 0.95, 0.18, 0.04, 0.0] matches no row set of the company's own BSE page for this quarter (ShareholdingPattern.aspx 502165 qtrid 87) and breaks from its own neighbouring quarters; no document carrying the stored figures was found. Re-read whole from the page, % of total 56,900,220 shares: 'Individuals / Hindu Undivided Family' 110,541 shares; 'Bodies Corporate' 42,479,273 shares; 'Any Others (Specify)' 20,708 shares; 'Trusts' 20,708 shares; 'Mutual Funds / UTI' 17,500 shares; 'Financial Institutions / Banks' 77,097 shares; 'Foreign Institutional Investors' 298,959 shares; 'Foreign Portfolio Investors' 660,993 shares. FII = the rows labelled foreign institutions, DII = mutual funds + banks/FIs + insurance (+ VCF) (\u00a7160). prom 75.0000 -> 74.8864, fii 0.9500 -> 1.6871, dii 0.1800 -> 0.1663, mf 0.0400 -> 0.0308, ins 0.0000 -> 0.0000."
+   },
+   "2015-12-31": {
+    "cell": [
+     74.8864,
+     2.0157,
+     0.1564,
+     0.0308,
+     0.0,
+     "2016-01-21"
+    ],
+    "was": [
+     74.8864,
+     0.0,
+     0.1564,
+     0.0308,
+     0.0,
+     "2016-01-21"
+    ],
+    "src": "bsetable3:502165:88",
+    "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): OCL 2015-12-31 - Table I (CorporatesSHPSecuritybeta 502165 qtrid 88) A 42,610,522 + B 14,289,698 + C2 0 = 56,900,220 shares (C1 0 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 855,891; 'Foreign Institution Investors' 291,019 = 1,146,910 shares. fii 0.0000 -> 2.0157."
    }
   },
   "RAJTV": {

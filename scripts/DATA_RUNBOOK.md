@@ -21213,6 +21213,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     524091 / 532907 / 508814 'Foreign Portfolio Investor (Individual) Category II' ...) - the 2022-form parse reads Institutions
     (Foreign) members only; not yet counted. 'Foreign Collaborators' (CYIENT 2015-17 Carrier International 13.6 %, 532413) is FII in the
     XBRL reader (curated) but public in the page era (COLLAB_LAB) - a user question, not changed.
+    **Batch 29 = seam cells on the company's own Table I base (2026-10-05), label "§164r batch 29".** Checks over all 1,158 seam
+    cells: (1) stored fii below the company's own printed FPI % -> HLVLTD / OCL / TTML Dec-15 had fii 0 (FPI 0.32 / 1.50+0.51 FII sub-row /
+    0.61 never stored); (2) every C1 company's seam fii against FPI + its FII-labelled rows on Table I's (A+B+C2): FEDERALBNK Dec-15 on
+    the full count (37.55 -> 38.25), RCOM Dec-15 and RELINFRA Dec-15 / Mar-16 re-based with the BSE PAGE's (A+B) instead of Table I
+    (RCOM 21.4343 -> 21.2542 = Quantmac; RELINFRA 18.7852 = Quantmac), DCW Dec-15 on the paid-up count incl. the old GDR block (7.0232);
+    CGPOWER Dec-15 had its whole institutions 'Foreign Institutional Investors' block (18.17, incl. GPFG) in dii with fii 0; EIDPARRY
+    Dec-15 counted its 'Foreign Nationals' sub-row (8.24 -> 8.1078 = Quantmac). 10 cells. Left: THERMAX Mar-16 (§164p counted 6,541,440
+    shares Table I leaves out - a base question, not changed), FINCABLES Mar-16 (Table I's C1 12,043,100 disagrees with the page's C
+    6,021,550; the company's printed % follow the page - not changed), AXISBANK / AMBUJACEM / CESC / ICICIBANK seam residues < 0.12 pp.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
