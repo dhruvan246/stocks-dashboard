@@ -267533,7 +267533,7 @@
    "2017-12-31": {
     "cell": [
      38.93,
-     12.8919,
+     11.4122,
      20.3375,
      16.01,
      4.02,
@@ -267542,17 +267542,27 @@
     ],
     "was": [
      38.93,
-     11.4119,
-     21.8175,
+     12.8919,
+     20.3375,
      16.01,
      4.02,
      "2018-01-11",
      34139
     ],
     "src": "bsexbrl:540699_1112018135554_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 21.82 -> 20.34, fii 11.41 -> 12.89. R1-rest-follows-foreign-holders 1.48; R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R2-named Bodies Corporate 4.02 TATA AIA LIFE INSURANCE CO LTD-WHOLE LIFE MID CAP EQUITY FUND-ULIF 009 04/01/07 WLE 110 1.60(regex); BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.39(regex); ICICI Prudential Life Insurance Company Limited 1.03(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.08. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 30 part 30 (2026-10-06, per-company review): the institutions block (700,064 sh, 4 holders) is the block Jun-2018 splits into 'FOREIGN BODIES' 339,751 (= GMO Emerging Domestic Opportunities Fund, documented -> fii) and 'FOREIGN BODIES CORPORATES' 360,313 (= Steadview Capital Mauritius 192,191, public by the company's 2022-form row, + 168,122 sh of 2 holders) -> the 168,122 rest follows the company's company-type label: public. FII = FPI 952,695 + GMO 339,751 on 11,325,091. fii 12.8919 -> 11.4122.",
+    "exact": true,
     "superseded": {
      "cell": [
+      38.93,
+      12.8919,
+      20.3375,
+      16.01,
+      4.02,
+      "2018-01-11",
+      34139
+     ],
+     "was": [
       38.93,
       11.4119,
       21.8175,
@@ -267561,19 +267571,19 @@
       "2018-01-11",
       34139
      ],
-     "was": [
-      38.93,
-      10.1089,
-      20.7205,
-      16.01,
-      0.0,
-      "2018-01-11",
-      34139
-     ],
      "src": "bsexbrl:540699_1112018135554_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.72 -> 21.82, fii 10.11 -> 11.41. R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R1-uncovered-remainder 1.48; R2-named Bodies Corporate 4.02 TATA AIA LIFE INSURANCE CO LTD-WHOLE LIFE MID CAP EQUITY FUND-ULIF 009 04/01/07 WLE 110 1.60(regex); BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.39(regex); ICICI Prudential Life Insurance Company Limited 1.03(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.08. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 21.82 -> 20.34, fii 11.41 -> 12.89. R1-rest-follows-foreign-holders 1.48; R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R2-named Bodies Corporate 4.02 TATA AIA LIFE INSURANCE CO LTD-WHOLE LIFE MID CAP EQUITY FUND-ULIF 009 04/01/07 WLE 110 1.60(regex); BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.39(regex); ICICI Prudential Life Insurance Company Limited 1.03(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.08. Evidence: _shp_dii_rowfix_audit.json",
      "superseded": {
       "cell": [
+       38.93,
+       11.4119,
+       21.8175,
+       16.01,
+       4.02,
+       "2018-01-11",
+       34139
+      ],
+      "was": [
        38.93,
        10.1089,
        20.7205,
@@ -267582,24 +267592,37 @@
        "2018-01-11",
        34139
       ],
-      "was": [
-       38.93,
-       8.4119,
-       22.4175,
-       16.01,
-       0.0,
-       "2018-01-11",
-       34139
-      ],
       "src": "bsexbrl:540699_1112018135554_SHP.xml",
-      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Steadview Capital Mauritius Limited 1.70) \u2014 moved dii -> fii (1.6970 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.72 -> 21.82, fii 10.11 -> 11.41. R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R1-uncovered-remainder 1.48; R2-named Bodies Corporate 4.02 TATA AIA LIFE INSURANCE CO LTD-WHOLE LIFE MID CAP EQUITY FUND-ULIF 009 04/01/07 WLE 110 1.60(regex); BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.39(regex); ICICI Prudential Life Insurance Company Limited 1.03(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.08. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        38.93,
+        10.1089,
+        20.7205,
+        16.01,
+        0.0,
+        "2018-01-11",
+        34139
+       ],
+       "was": [
+        38.93,
+        8.4119,
+        22.4175,
+        16.01,
+        0.0,
+        "2018-01-11",
+        34139
+       ],
+       "src": "bsexbrl:540699_1112018135554_SHP.xml",
+       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Steadview Capital Mauritius Limited 1.70) \u2014 moved dii -> fii (1.6970 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+      }
      }
     }
    },
    "2018-03-31": {
     "cell": [
      38.93,
-     13.3989,
+     11.9192,
      18.1706,
      16.6563,
      1.1,
@@ -267608,17 +267631,27 @@
     ],
     "was": [
      38.93,
-     11.9189,
-     19.6506,
+     13.3989,
+     18.1706,
      16.6563,
      1.1,
      "2018-04-14",
      34830
     ],
     "src": "bsexbrl:540699_134201817354_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 19.65 -> 18.17, fii 11.92 -> 13.40. R1-rest-follows-foreign-holders 1.48; R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R2-named Bodies Corporate 1.1 ICICI Prudential Life Insurance Company Limited 1.10(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "why": "\u00a7164r batch 30 part 30 (2026-10-06, per-company review): the institutions block (700,064 sh, 4 holders) is the block Jun-2018 splits into 'FOREIGN BODIES' 339,751 (= GMO Emerging Domestic Opportunities Fund, documented -> fii) and 'FOREIGN BODIES CORPORATES' 360,313 (= Steadview Capital Mauritius 192,191, public by the company's 2022-form row, + 168,122 sh of 2 holders) -> the 168,122 rest follows the company's company-type label: public. FII = FPI 1,010,112 + GMO 339,751 on 11,325,091. fii 13.3989 -> 11.9192.",
+    "exact": true,
     "superseded": {
      "cell": [
+      38.93,
+      13.3989,
+      18.1706,
+      16.6563,
+      1.1,
+      "2018-04-14",
+      34830
+     ],
+     "was": [
       38.93,
       11.9189,
       19.6506,
@@ -267627,19 +267660,19 @@
       "2018-04-14",
       34830
      ],
-     "was": [
-      38.93,
-      10.6159,
-      21.5436,
-      16.6563,
-      0.0,
-      "2018-04-14",
-      34830
-     ],
      "src": "bsexbrl:540699_134201817354_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.54 -> 19.65, fii 10.62 -> 11.92. R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R1-uncovered-remainder 1.48; R2-named Bodies Corporate 1.1 ICICI Prudential Life Insurance Company Limited 1.10(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 19.65 -> 18.17, fii 11.92 -> 13.40. R1-rest-follows-foreign-holders 1.48; R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R2-named Bodies Corporate 1.1 ICICI Prudential Life Insurance Company Limited 1.10(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
      "superseded": {
       "cell": [
+       38.93,
+       11.9189,
+       19.6506,
+       16.6563,
+       1.1,
+       "2018-04-14",
+       34830
+      ],
+      "was": [
        38.93,
        10.6159,
        21.5436,
@@ -267648,17 +267681,30 @@
        "2018-04-14",
        34830
       ],
-      "was": [
-       38.93,
-       8.9189,
-       23.2406,
-       16.6563,
-       0.0,
-       "2018-04-14",
-       34830
-      ],
       "src": "bsexbrl:540699_134201817354_SHP.xml",
-      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Steadview Capital Mauritius Limited 1.70) \u2014 moved dii -> fii (1.6970 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.54 -> 19.65, fii 10.62 -> 11.92. R1-foreign-holders Other 0.0 public=1.70 fii=0.00 Steadview Capital Mauritius Limited 1.70 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 GMO Emerging Domestic Opporunities Fund, A Series 3.00 foreign->fii(memory~); R1-uncovered-remainder 1.48; R2-named Bodies Corporate 1.1 ICICI Prudential Life Insurance Company Limited 1.10(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        38.93,
+        10.6159,
+        21.5436,
+        16.6563,
+        0.0,
+        "2018-04-14",
+        34830
+       ],
+       "was": [
+        38.93,
+        8.9189,
+        23.2406,
+        16.6563,
+        0.0,
+        "2018-04-14",
+        34830
+       ],
+       "src": "bsexbrl:540699_134201817354_SHP.xml",
+       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Steadview Capital Mauritius Limited 1.70) \u2014 moved dii -> fii (1.6970 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+      }
      }
     }
    },

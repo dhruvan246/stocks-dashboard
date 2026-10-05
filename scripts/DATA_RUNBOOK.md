@@ -21588,6 +21588,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Date: SONATSOFTW Jun-2019 is now served from the company's notice 2019-07-16 12:28:52; the stored 2019-07-31 was the re-filing that
     only added Table V (significant beneficial owners).
     TODO in code: add UTI / Unit Trust of India to the domestic label words of d1_lab_class before any re-run.
+    **Batch 30 part 30 (label "§164r batch 30 part 30 (per-company review)"; 2 cells + 1 date + 3 new quarters).**
+    DIXON Dec-17 / Mar-18 12.89 / 13.40 -> 11.41 / 11.92. The institutions block (700,064 sh, 4 holders, identical Dec-17..Jun-18) is the
+    block Jun-2018 splits into 'FOREIGN BODIES' 339,751 (= GMO Emerging Domestic Opportunities Fund, documented, fii) and 'FOREIGN BODIES
+    CORPORATES' 360,313 (= Steadview Capital Mauritius 192,191, public by the company's 2022-form row, + 168,122 sh of 2 holders).
+    §158a's rest-follows had put the 168,122 rest in fii. DIXON Mar-2019 is now served from the company's notice 2019-04-12 (the stored
+    2019-05-03 is BSE's re-filing, which only moved 'Foreign Bodies' from Institutions to Non-Institutions; FII / DII unchanged), so at
+    2019-04-30 Mar-19 (6.0357 = Quantmac) is visible.
+    AKSHOPTFBR Mar-2009, Dec-2009, Mar-2010 were never held, so the store kept serving Dec-08 (2.75) and Sep-09 (0.34). BSE's pages
+    (qtrid 61 / 64 / 65) print an institutions block with only 'Any Others (Specify)' 0 -> fii 0, dii 0 (= Quantmac 0); promoter is on
+    the (A+B) basis. Added to `shp_fill_seam_aspx.json.gz` and served un-dated (§164e) like the company's other page-era rows.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
