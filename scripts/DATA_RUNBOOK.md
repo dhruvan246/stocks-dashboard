@@ -21479,6 +21479,14 @@ classification) except LUXIND Dec-21 (Mar-2022 NSE re-filing 6.6555; its XBRL gi
 row - UNKNOWN, not written). FII-only rows handed to the FII session. (2) SBILIFE Jun-21: 'MACRITCHIE INVESTMENTS PTE LTD' 1.5098 is the
 company's 'Overseas Corporate Bodies' row (same 1.5098), not inside its QIB row 2.7271 - DII 10.8558 -> 12.3623 (whole QIB row).
 
+**§164s part 12 (2026-10-05) - page-era 'Venture Capital Funds' rows (18 cells).** A scan of every cached BSE page (453 carry a VCF row)
+found 18 cells whose stored DII equals the page's other domestic rows exactly and leaves the institutions 'Venture Capital Funds' row
+out: VIPIND / WOCKPHARMA Mar-2010 had it in FII (fii 0.6417 / 1.5218 = the VCF row, both pages have no FII row) - both slots;
+AJRINFRA 2011-14 x10, LICHSGFIN 2011-15 x5, FDC Jun-2010 had dropped it (0.03-0.05) - dii only. VCF is a domestic institution line.
+Held: VARUNSHIP 2009-15 (stored dii does not rebuild from the page at all); 3IINFOLTD 2009-10 'Foreign Bank' inside institutions
+'Any Others' sits in dii - page era, handed to the FII session. Also from the verdict pass: seam errors KSCL Dec-15 (Deutsche Bank AG),
+SADBHAV Dec-15 / BLUEDART Mar-16 (register insurers left out), SPARC Dec-15 ('UTI' row) - handed to the FII session's seam re-read.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
