@@ -71,6 +71,8 @@ def noninst_label(lab):
 FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
+SOVNAME=re.compile(r"pension fund global|government of (?!india)|monetary authority|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b|sovereign", re.I)   # §164s part 7
+NAMED_UNPROVEN_OUT=os.environ.get("DII_NAMED_UNPROVEN_OUT","1")=="1"   # §164s part 7 (user 2026-10-05); env 0 = the earlier evaluation
 REST_FOLLOWS=True     # §158a/§158b (2026-09-25): with the rule on, a full N500 run proposes 0 on the live store; False = the §158 (2026-09-24) evaluation
 # §164 (FII session, 2026-09-25): "§164 row-level remainder rule" (D1 unnamed Any-Other rest -> fii, ex-member re-reads) and "§164a
 # depository-receipt basis" (pre-2016 re-base of all five slots). These rules re-decide cells this script and _shp_aspx_rowfix.py
@@ -410,18 +412,24 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
     fii_shift=min(max(fii_shift,0.0),oth_inst)
     split="a" if fii_shift<=0.03 else ("b" if abs(fii_shift-oth_inst)<=0.03 else "p")
     rows=rows_of(txt); gi=groups(rows,"OtherInstitutions"); gn=groups(rows,"OtherNonInstitutions")
-    ev=[]; mv_fii=mv_pub=keep=unres=0.0; overflow=False
+    ev=[]; mv_fii=mv_pub=keep=unres=unp=0.0; overflow=False
     if oth_inst>=0.005:
         if not gi: unres+=oth_inst; ev.append(("R1-unresolved","no typed rows",round(oth_inst,4)))
         for g in gi:
             lab=g["label"]; hs=[(hp,hn)+ctx.hclass(hn,hp) for hp,hn in g["holders"]]
-            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab) and not FORWORD.search(lab)) else "public" if (LAB_PUB.search(lab) or noninst_label(lab)) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
+            lab_kind=("domestic" if (DOMLAB.search(lab) and not LAB_FII.search(lab) and not FORWORD.search(lab) and not SOVNAME.search(lab)) else "public" if (LAB_PUB.search(lab) or noninst_label(lab)) else "fii" if (LAB_FII.search(lab) or FORLAB.search(lab)) else None)
             lab_src="keyword"
+            if SOVNAME.search(lab) and not g["holders"]: lab_kind=None     # §164s part 7: the label is a sovereign fund's NAME, not a category
             if lab_kind is None and not g["holders"]:
                 ltxt=re.sub(r"^(other|others|any other)\s*","",lab,flags=re.I).strip()
                 c,dest,src=ctx.hclass(ltxt,g["pct"]) if ltxt else (None,None,"")
                 if c=="foreign": lab_kind=dest or "fii"; lab_src="label-as-holder:"+src
                 elif c=="domestic": lab_kind="domestic"; lab_src="label-as-holder:"+src
+                elif c is None and SOVNAME.search(ltxt):
+                    # §164s part 7: a row whose label IS a sovereign / foreign public fund's name (MHRIL Sep-2016 'Government Pension
+                    # Fund Global' 0.54 - Norway's fund; 'pension' had made it a domestic label) is that named holder, of unknown
+                    # class without a document - it follows the named-holder rules below, never the domestic-label rule
+                    hs=[(g["pct"],ltxt,None,None,"label-as-holder")]
                 elif norm(lab) in ctx.label_memory: lab_kind=ctx.label_memory[norm(lab)]; lab_src="label-memory"
             hs_pre=hs        # the placements before option A: the unnamed rest below follows THESE (D1), not the option-A outcome
             hs2=[]
@@ -450,7 +458,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
                 if lab_kind=="domestic": keep+=lsum
                 elif lab_kind=="fii": mv_fii+=lsum
                 elif lab_kind=="public": mv_pub+=lsum
-                else: unres+=lsum; ev.append(("R1-named-unresolved-kept",lab,round(lsum,4),"; ".join("%s %.2f"%(h[1],h[0]) for h in lh)))
+                else: unres+=lsum; unp+=lsum; ev.append(("R1-named-unresolved-kept",lab,round(lsum,4),"; ".join("%s %.2f"%(h[1],h[0]) for h in lh)))
             fh=[h for h in hs if h[2]=="foreign"]; dh=[h for h in hs if h[2]=="domestic"]
             named_f_pub=sum(h[0] for h in fh if h[3]=="public"); named_f_fii=sum(h[0] for h in fh if h[3]=="fii"); named_d=sum(h[0] for h in dh)
             contained=(sum(h[0] for h in hs)<=g["pct"]+0.02)
@@ -492,7 +500,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
         elif rem>0.02: unres+=rem; ev.append(("R1-uncovered-remainder",round(rem,4)))
         tot=mv_fii+mv_pub+keep+unres
         if tot>oth_inst+0.05:
-            overflow=True; ev.append(("R1-overflow",round(tot,2),round(oth_inst,2))); mv_fii=mv_pub=keep=0.0; unres=oth_inst
+            overflow=True; ev.append(("R1-overflow",round(tot,2),round(oth_inst,2))); mv_fii=mv_pub=keep=0.0; unres=oth_inst; unp=0.0
     add_dii=add_ins=0.0
     for g in gn:
         lab=g["label"]
@@ -519,6 +527,14 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
     left=min(oth_inst,max(0.0,res["dii"]+add_prev-(cur[2] or 0)))
     u_out=min(unres,max(0.0,left-(mv_fii+mv_pub)))
     u_fii=min(u_out,max(0.0,fii_shift-mv_fii)); u_pub=u_out-u_fii; u_dii=unres-u_out
+    # §164s part 7 (user 2026-10-05 'Take them out'): DII counts only holders shown to be Indian. A NAMED holder of unknown
+    # class (no new-form placement, no curated verdict, no register / filing document - holder_class -> None) that the store
+    # holds in dii leaves dii for public ("neither"); FII takes it only with a foreign document (the FII session's rules).
+    # UJJIVAN Sep-2019: Alena Pvt Ltd 8.88 + Elevar Equity Mauritius 1.66 + CX Partners Fund 1 2.14 -> dii 27.23 -> 14.55.
+    unp_out=min(unp,u_dii) if NAMED_UNPROVEN_OUT else 0.0
+    if unp_out>0.004:
+        u_dii-=unp_out; unres-=unp_out; u_pub+=unp_out; ev.append(("R1-named-unproven-out-of-dii",round(unp_out,4)))
+    else: unp_out=0.0
     t_dii=dom_only+keep+u_dii+add_dii
     t_fii=res["fii"]+mv_fii+u_fii+ext_fii
     return dict(t_fii=round(max(0.0,t_fii),4),t_dii=round(max(0.0,t_dii),4),add_ins=round(add_ins,4),ins_base=round(res.get("ins") or 0.0,4),ev=ev,split=split,

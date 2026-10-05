@@ -21194,6 +21194,31 @@ rebuilt feed: 0 rows change); the fix stops future row-code runs from proposing 
 (New York Life, Prudential Assurance UK, Sanlam, Mitsui Sumitomo, GOSI, Vanguard ...) unchanged. Lesson: an evidence class must weigh
 domestic listings too - one misfiled foreign row must not outvote hundreds of domestic ones.
 
+**§164s part 6 (2026-10-05, cell-by-cell under the §0 first rule; 00dd6b1ab) - 21 rows** from a store-wide re-run of the current reader,
+each re-read from its own XBRL: Deutsche Bank AG on 'Clearing Members' out of DII (DBREALTY Jun-19 -2.15, NAZARA Mar-21 -2.64,
+ALLCARGO Dec-16 -1.00, LMW Dec-16 -1.03, DIXON Sep-18 -1.59; Quantmac matches DIXON exactly), 'Standard Chartered Bank (Singapore)
+Limited' out (CGPOWER Dec-21..Jun-22, -0.9..-1.0), register-proven LIC / HDFC Life / NPS Trust into DII (BHARATFORG Jun-19..Dec-20; three
+quarters now equal Quantmac), missed NBFC rows (GFLLIMITED, RENUKA, GOODYEAR Mar-21, GVKPIL, SOLARA, SWARAJENG Jun-22). Not written:
+REPCOHOME (the reader would drop DSP BlackRock Core Fund, a domestic AIF on an AIF-labelled row - reader wrong), ORIENTPPR (arithmetic did
+not close), IEX Mar-18 (passes disagree).
+
+**§164s part 7 (2026-10-05, user: "Take them out") - 55 rows.** Rule: DII counts only holders shown to be Indian. A NAMED holder in an
+institutions 'Any Other' row whose class is unknown (no 2022-form placement, curated verdict, register or filing document) used to stay
+where the store had it (`R1-named-unresolved-kept`), which for most cells meant DII. Now `eval_filing` moves the part the store holds in
+dii to public ("neither"; flag `NAMED_UNPROVEN_OUT`, env `DII_NAMED_UNPROVEN_OUT=0` restores the old evaluation); FII still takes a
+holder only with a foreign document (FII session's rules). Example the user approved: UJJIVAN Sep-2019 Alena Pvt Ltd 8.88 + Elevar Equity
+Mauritius 1.66 + CX Partners Fund 1 2.14 -> DII 27.23 -> 14.55 (Quantmac 14.55). Cells: UJJIVAN Sep-16..Mar-22 (also Sequoia Capital
+India Investments III, already documented foreign, -> public), RAMCOSYS Jun-16..Dec-19 (BT Funds Management as trustee of BT Asian Share
+Fund), MAXINDIA Sep-16..Mar-17 + MFSL Mar-17 (Xenok Ltd), BHARATFIN Jun-16..Dec-17 (Sandstone Investment Partners I), SAFARI Sep-19 /
+Dec-19 / Mar-21 (Tano India PE Fund II, Malabar Value Fund), PENIND Sep-16 (Eight Capital Master Fund), RAMCOCEM Jun-Dec-16 (Amrit
+Petroleums Pvt Ltd - Indian but a company, not an institution). Reader bug fixed in the same change: a row whose LABEL is a sovereign
+fund's name ('Government Pension Fund Global', MHRIL Sep-16 0.54) was a domestic label because of the word 'pension' (`SOVNAME` now
+blocks that; the label is read as the holder - documented foreign -> FII 0.54, DII 8.38 -> 7.84 = Quantmac 7.83). Depository banks inside
+Institutions 'Any Other' out of DII, base as printed (FII session's call): MTNL Dec-19 'The Bank Of New York Mellon' 1.12 (DII 15.72 ->
+14.60), DISHTV Mar-18 'Deutsche Bank Trust Company Americas' 15.05 (DII 19.44 -> 4.39 = Quantmac). 42 of the 55 now equal Quantmac
+within 0.01; the rest differ by register-proven Indian holders (rule 4, e.g. HDFC Life 2.32 at UJJIVAN Jun-17) or are cells Quantmac
+does not list.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
