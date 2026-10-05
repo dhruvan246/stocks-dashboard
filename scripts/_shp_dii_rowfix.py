@@ -47,8 +47,12 @@ def breakdown(txt):
     if tot is not None and tot<=1.5: out={k:v*100 for k,v in out.items()}
     return out
 MON={"March":3,"June":6,"September":9,"December":12}
-LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|foreig\w* portfolio|foreig\w* instit|foreign bank|foreign venture|qualified foreign|sovereign", re.I)
-LAB_PUB=re.compile(r"overseas corporate|\bocb\b|foreig\w* compan|foreig\w* (corporate )?bod|corporate bodies|foreig\w* national|foreig\w* individual|non.?resident|\bnri\b", re.I)
+# §164r batch 24 (2026-10-05, cell by cell vs Quantmac): filers misspell the category words - BLUESTARCO Jun-2016 'FORIGN MUTUAL FUND',
+# ADANIPOWER Jun-2016 'FORIEGN CORPORATE BODIES', SHRIRAMCIT Jun-2016 'Foreign Port Folio Investor', 'Foreign Portolio Investor' -
+# and the exact-spelling patterns read those rows as UNLABELLED. _FOR / _PFO accept the spellings seen in filings.
+_FOR=r"(?:foreig|forieg|forign|foregin|forein|forigin|foerign|foregn|foreigh)"; _PFO=r"port\s*-?\s*f?olio"
+LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|"+_FOR+r"\w*\s+"+_PFO+r"|"+_FOR+r"\w*\s+instit|"+_FOR+r"\w*\s+bank|"+_FOR+r"\w*\s+venture|qualified\s+"+_FOR+r"|sovereign", re.I)
+LAB_PUB=re.compile(r"overseas corporate|\bocb\b|"+_FOR+r"\w* compan|"+_FOR+r"\w* (corporate )?bod|corporate bodies|"+_FOR+r"\w* national|"+_FOR+r"\w* individual|non.?resident|\bnri\b", re.I)
 # §164r batch 11 (user 2026-10-04 'yes fix the label bug'): a non-institution category a company writes on a sub-row of its
 # institutions 'Any Other' block - Bodies Corporate, Central / State Government, IEPF, trusts, clearing members, individuals, HUF,
 # employees, directors, unclaimed / suspense accounts - is company-, government- or person-type: never FII and never DII
@@ -69,7 +73,7 @@ def noninst_label(lab):
     'PACIFIC ASSETS TRUST PLC', 'Employees Retirement plan of Duke University' are foreign institutions)."""
     core=re.sub(r"^\s*(?:any\s+)?others?\b[\s:\-\u2013]*","",lab or "",flags=re.I).strip(" .:-\u2013")
     return bool(core) and bool(NONINST_LAB.fullmatch(core)) and not LAB_FII.search(lab or "") and not DOMLAB.search(lab or "")
-FORLAB=re.compile(r'foreig|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
+FORLAB=re.compile(r'foreig|forieg|forign|foregin|forein|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
 SOVNAME=re.compile(r"pension fund global|government of (?!india)|monetary authority|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b|sovereign", re.I)   # §164s part 7
@@ -160,7 +164,7 @@ def groups(rows, axis):
         target["holders"].append((p,name))
     return sorted([g for g in cats if g["pct"]>0.0049 or g["holders"]],key=lambda g:g["seq"])
 def norm(n): return re.sub(r'[^A-Z0-9]','',(n or '').upper())
-FORWORD=re.compile(r"for[ei]{0,2}g[nh]|overseas", re.I)   # §164s part 9: also the filers' misspellings (BLUESTARCO Jun-2016 'FORIGN MUTUAL FUND' 0.53, IPCALAB Jun-2017 'Foreigh Mutual Fund' 0.55, 'Foriegn')      # §164j: a label naming a FOREIGN institution ("Foreign Mutual Fund", "Foreign Financial Institutions / Banks", "Bank Foreign") is never a domestic label, whatever domestic keyword it also carries
+FORWORD=re.compile(r"for[ei]{0,2}g[nh]|"+_FOR+r"|overseas", re.I)   # §164s part 9: also the filers' misspellings (BLUESTARCO Jun-2016 'FORIGN MUTUAL FUND' 0.53, IPCALAB Jun-2017 'Foreigh Mutual Fund' 0.55, 'Foriegn')      # §164j: a label naming a FOREIGN institution ("Foreign Mutual Fund", "Foreign Financial Institutions / Banks", "Bank Foreign") is never a domestic label, whatever domestic keyword it also carries
 def _load_evidence():
     """§164j (user 2026-09-26: named foreign holders need DOCUMENTARY proof): norm(name) -> entry from scripts/shp_foreign_holder_evidence.json."""
     try: e=json.load(open(os.path.join(REPO,"scripts","shp_foreign_holder_evidence.json"),encoding="utf-8")).get("names") or {}
@@ -439,7 +443,7 @@ def eval_filing(ctx, qe, txt, bd, res, cur, final=True, unres_log=None, ext_fii=
             hs_pre=hs        # the placements before option A: the unnamed rest below follows THESE (D1), not the option-A outcome
             hs2=[]
             for hp,hn,c,dest,src in hs:
-                inst_tag=bool(re.search(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|foreign direct|foreign portfolio|foreign institutional|\bfvci\b|foreign venture|foreign bank|sovereign", hn, re.I)) or bool(re.search(r"\bforeign\b", hn, re.I) and re.search(r"mutual funds?|financial institutions?|\bbanks?\b|insurance|pension", hn, re.I))   # §164r batch 10: a line named like a foreign-institution category (BSOFT Mar-2018 'Foreign Mutual Fund' 1.61)
+                inst_tag=bool(re.search(r"\((fpi|fii|fdi)\)|\bfpi\b|\bfii\b|\bfdi\b|"+_FOR+r"\w*\s+direct|"+_FOR+r"\w*\s+"+_PFO+r"|"+_FOR+r"\w*\s+institutional|\bfvci\b|"+_FOR+r"\w*\s+venture|"+_FOR+r"\w*\s+bank|sovereign", hn, re.I)) or bool(re.search(r"\b"+_FOR+r"\w*\b", hn, re.I) and re.search(r"mutual funds?|financial institutions?|\bbanks?\b|insurance|pension", hn, re.I))   # §164r batch 10: a line named like a foreign-institution category (BSOFT Mar-2018 'Foreign Mutual Fund' 1.61)
                 # §164r batch 10 (user 2026-10-04 'fix the open items'): option A covers a holder the company lists on an UNLABELLED
                 # institutions sub-row too (lab_kind None) - the curated list / a Mauritius name had kept CDC Group (NH, UJJIVAN),
                 # JP Morgan Mauritius IV (NH), Arcee 'OCB' (TCI) and DEG (JKPAPER) in FII there with no institution listing anywhere

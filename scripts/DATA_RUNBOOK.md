@@ -21150,6 +21150,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     document carrying the stored figures found): SBBJ Dec-2010 [75.07, 1.11, 4.20, mf 0.50, ins 3.46] -> [75.0713, 3.1106, 2.1996,
     0.50, 1.6113]; OCL Sep-2015 [75.00, 0.95, 0.18, 0.04] -> [74.8864, 1.6871, 0.1663, 0.0308]. BHARATFORG Sep-2014 also carries the
     batch-18 re-base it supersedes (not landed yet). Rebuilt store: exactly these 82 cells move besides batch 22; guards green.
+    **Batch 24 = misspelt labels, event rows behind their quarters, never-re-read R2-FII cells (2026-10-05), label "§164r batch 24".**
+    (a) Reader: filers misspell category words ('FORIGN MUTUAL FUND', 'FORIEGN CORPORATE BODIES', 'Foreign Port Folio Investor',
+    'Foreign Portolio', 'forigin', 'foerign', 'foregn', 'Foreigh') and `LAB_FII` / `LAB_PUB` / `FORLAB` / `inst_tag` matched only the
+    exact spelling, so an FII-labelled row read as unlabelled. `_shp_dii_rowfix._FOR` / `_PFO` now accept them (merged with the DII
+    session's §164s part 9 FORWORD). Old vs new reader on identical data, store-wide (dii/d1/fii passes): only TVSSRICHAK Sep-18
+    (+0.065), NLCINDIA Sep-16 (+0.033), SHRIRAMCIT Jun-16 (row 'Foreign Port Folio Investor' 2,954,661 sh -> 30.0312 = Quantmac
+    30.0312), SHRIRAMFIN Jun-16 (+0.25), SUNDRMFAST Mar-18..Jun-19 x6 (+0.006..0.02) and BLUESTARCO Jun-16 (written by the DII session)
+    change. (b) 34 mid-quarter EVENT rows (§164q, 27-Sep) re-read with the current reader: IDFCFIRSTB x22 / IDFC x4 / POONAWALLA x1 still
+    carried 'BODIES CORPORATES' / IEPF rows that batch 11 had taken out of FII in the quarter cells only; BERGEPAINT 05-Aug-16 (Nalanda
+    India Fund 5.23 dii -> fii), DHANUKA, NAM-INDIA, JKPAPER x3 (option A), IDFCFIRSTB 06-Apr-21, APLAPOLLO 28-Oct-19. Held: 3IINFOLTD x5
+    (no quarter cells 2011-21 to compare), INDORAMA, IEX pre-listing row, ROSSARI (open user question); DII-only event moves are the
+    DII session's. (c) 21 quarter cells the current R2-FII reader re-reads but no pass ever wrote (no R2-FII entry in their trail):
+    APLAPOLLO Jun-19..Sep-20 x6 (Goldman Sachs India 3.35 on the company's 'Overseas Corporate Bodies' row; stored fii was 0),
+    CANFINHOME 2018-22 x11 (Apax Global Alpha, PineBridge, Vanguard funds on company-type rows; stored fii 0), CAMS Dec-20..Sep-21 x4
+    (Acacia Banyan Partners 1.25) - all documents-only institutions (batch 7/8 standard); moved rows at share-count precision. NOTE: the
+    store-wide `_shp_fii_rowfix.py classify` ADDS its move to the stored fii, so on a cell already healed it double counts (PAYTM
+    75 -> 142): only cells with no R2-FII entry are first reads. RBA 2021-22 (Valiant Mauritius Partners FDI 1.74 on an OCB row) stays
+    public: RBA's own 2022 form files it under Foreign Companies (rule difference with Quantmac v6, row named).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

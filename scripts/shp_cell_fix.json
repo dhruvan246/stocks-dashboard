@@ -5845,7 +5845,7 @@
    "2019-06-30": {
     "cell": [
      37.18,
-     0.0,
+     3.349,
      13.615,
      11.1503,
      1.04,
@@ -5855,14 +5855,36 @@
     "was": [
      37.18,
      0.0,
-     12.575,
+     13.615,
      11.1503,
-     0.0,
+     1.04,
      "2019-07-22",
      23587
     ],
     "src": "bsexbrl:533758_2072019164358_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.57 -> 13.62, fii 0.00 -> 0.00. R2-named Bodies Corporate 1.04 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMIT 1.04(regex). Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_2072019164358_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 812,153 shares = 3.3490 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,250,381 shares. fii 0.0000 -> 3.3490, dii unchanged.",
+    "superseded": {
+     "cell": [
+      37.18,
+      0.0,
+      13.615,
+      11.1503,
+      1.04,
+      "2019-07-22",
+      23587
+     ],
+     "was": [
+      37.18,
+      0.0,
+      12.575,
+      11.1503,
+      0.0,
+      "2019-07-22",
+      23587
+     ],
+     "src": "bsexbrl:533758_2072019164358_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.57 -> 13.62, fii 0.00 -> 0.00. R2-named Bodies Corporate 1.04 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMIT 1.04(regex). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -6367,6 +6389,138 @@
      "src": "bsexbrl:533758_1942019145659_SHP.xml",
      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 0.00 -> 0.99, dii 13.51 -> 13.51. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-holders Bodies Corporate 23.82 0.99 KITARA PIIN 1001 12.37 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.51 stay(new-format~:ForeignCompanies); GOLDMAN SACHS INDIA LIMITED 3.35 stay(label); EMBLEM FII 0.99 fii(inst-tag)"
     }
+   },
+   "2019-09-30": {
+    "cell": [
+     37.18,
+     3.349,
+     14.8435,
+     11.4969,
+     0.0,
+     "2019-10-19",
+     23526
+    ],
+    "was": [
+     37.18,
+     0.0,
+     14.8435,
+     11.4969,
+     0.0,
+     "2019-10-19",
+     23526
+    ],
+    "src": "bsexbrl:533758_1810201922468_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_1810201922468_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 812,153 shares = 3.3490 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,250,381 shares. fii 0.0000 -> 3.3490, dii unchanged."
+   },
+   "2019-10-28": {
+    "cell": [
+     38.44,
+     3.28,
+     15.5311,
+     12.4557,
+     0.0,
+     "2020-01-06",
+     23737
+    ],
+    "was": [
+     38.44,
+     0.0,
+     15.5311,
+     12.4557,
+     0.0,
+     "2020-01-06",
+     23737
+    ],
+    "src": "bsexbrl:533758_5112019103236_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 533758_5112019103236_SHP.xml with the current reader: fii 0.0000 -> 3.2800, dii 15.5311 -> 15.5311. Rows: R2FII-holders Overseas Corporate Bodies 24.03 3.28 KITARA PIIN 1001 12.12 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.44 stay(new-format~:ForeignCompa"
+   },
+   "2019-12-31": {
+    "cell": [
+     38.26,
+     3.1413,
+     14.9477,
+     11.805,
+     0.0,
+     "2020-01-07",
+     23725
+    ],
+    "was": [
+     38.26,
+     0.0,
+     14.9477,
+     11.805,
+     0.0,
+     "2020-01-07",
+     23725
+    ],
+    "src": "bsexbrl:533758_612020152614_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_612020152614_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 781,164 shares = 3.1413 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,867,265 shares. fii 0.0000 -> 3.1413, dii unchanged."
+   },
+   "2020-03-31": {
+    "cell": [
+     38.4,
+     2.3009,
+     13.6979,
+     9.8277,
+     0.0,
+     "2020-04-15",
+     27245
+    ],
+    "was": [
+     38.4,
+     0.0,
+     13.6979,
+     9.8277,
+     0.0,
+     "2020-04-15",
+     27245
+    ],
+    "src": "bsexbrl:533758_1442020164749_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_1442020164749_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 572,223 shares = 2.3009 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,869,015 shares. fii 0.0000 -> 2.3009, dii unchanged."
+   },
+   "2020-06-30": {
+    "cell": [
+     38.4,
+     2.3009,
+     15.5265,
+     10.1602,
+     0.0,
+     "2020-07-16",
+     26278
+    ],
+    "was": [
+     38.4,
+     0.0,
+     15.5265,
+     10.1602,
+     0.0,
+     "2020-07-16",
+     26278
+    ],
+    "src": "bsexbrl:533758_1672020115726_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_1672020115726_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 572,223 shares = 2.3009 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,869,015 shares. fii 0.0000 -> 2.3009, dii unchanged."
+   },
+   "2020-09-30": {
+    "cell": [
+     39.52,
+     3.3332,
+     13.4657,
+     8.8974,
+     0.0,
+     "2020-10-12",
+     26036
+    ],
+    "was": [
+     39.52,
+     0.0,
+     13.4657,
+     8.8974,
+     0.0,
+     "2020-10-12",
+     26036
+    ],
+    "src": "bsexbrl:533758_10102020171433_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 533758_10102020171433_SHP.xml files 'GOLDMAN SACHS INDIA LIMITED' 428,762 shares = 1.7202 (row 'Overseas Corporate Bodies', documented-institution); 'TAIYO GREATER INDIA FUND LTD' 402,049 shares = 1.6130 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 24,925,379 shares. fii 0.0000 -> 3.3332, dii unchanged."
    }
   },
   "APTUS": {
@@ -19667,6 +19821,248 @@
     ],
     "src": "bseaspx:511196_82",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 82) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6228 held only 'Foreign Institutional Investors' 0.6228. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6228 -> 0.6633, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2018-06-30": {
+    "cell": [
+     29.99,
+     1.1505,
+     4.7622,
+     4.0811,
+     0.0075,
+     "2018-07-07",
+     88360
+    ],
+    "was": [
+     29.99,
+     0.0,
+     4.7622,
+     4.0811,
+     0.0075,
+     "2018-07-07",
+     88360
+    ],
+    "src": "bsexbrl:511196_67201820541_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_67201820541_SHP.xml files 'APAX GLOBAL ALPHA LIMITED' 1,532,000 shares = 1.1505 (row 'Bodies Corporate', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.1505, dii unchanged."
+   },
+   "2018-09-30": {
+    "cell": [
+     29.99,
+     1.1505,
+     3.8765,
+     3.0815,
+     0.0225,
+     "2018-10-11",
+     91045
+    ],
+    "was": [
+     29.99,
+     0.0,
+     3.8765,
+     3.0815,
+     0.0225,
+     "2018-10-11",
+     91045
+    ],
+    "src": "bsexbrl:511196_10102018175245_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_10102018175245_SHP.xml files 'APAX GLOBAL ALPHA LIMITED' 1,532,000 shares = 1.1505 (row 'Bodies Corporate', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.1505, dii unchanged."
+   },
+   "2018-12-31": {
+    "cell": [
+     29.99,
+     1.1505,
+     4.2789,
+     3.3837,
+     0.1436,
+     "2019-01-15",
+     90831
+    ],
+    "was": [
+     29.99,
+     0.0,
+     4.2789,
+     3.3837,
+     0.1436,
+     "2019-01-15",
+     90831
+    ],
+    "src": "bsexbrl:511196_1412019174713_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_1412019174713_SHP.xml files 'APAX GLOBAL ALPHA LIMITED' 1,532,000 shares = 1.1505 (row 'Bodies Corporate', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.1505, dii unchanged."
+   },
+   "2019-03-31": {
+    "cell": [
+     29.99,
+     1.1505,
+     3.7573,
+     2.8435,
+     0.1436,
+     "2019-04-10",
+     88692
+    ],
+    "was": [
+     29.99,
+     0.0,
+     3.7573,
+     2.8435,
+     0.1436,
+     "2019-04-10",
+     88692
+    ],
+    "src": "bsexbrl:511196_942019183255_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_942019183255_SHP.xml files 'APAX GLOBAL ALPHA LIMITED' 1,532,000 shares = 1.1505 (row 'Bodies Corporate', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.1505, dii unchanged."
+   },
+   "2019-06-30": {
+    "cell": [
+     30.11,
+     1.1505,
+     1.851,
+     1.1223,
+     0.1437,
+     "2019-08-08",
+     85986
+    ],
+    "was": [
+     30.11,
+     0.0,
+     1.851,
+     1.1223,
+     0.1437,
+     "2019-08-08",
+     85986
+    ],
+    "src": "bsexbrl:511196_187201917538_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_187201917538_SHP.xml files 'APAX GLOBAL ALPHA LIMITED' 1,532,000 shares = 1.1505 (row 'Bodies Corporate', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.1505, dii unchanged."
+   },
+   "2020-06-30": {
+    "cell": [
+     29.99,
+     1.083,
+     13.2131,
+     11.3478,
+     0.474,
+     "2020-07-14",
+     73524
+    ],
+    "was": [
+     29.99,
+     0.0,
+     13.2131,
+     11.3478,
+     0.474,
+     "2020-07-14",
+     73524
+    ],
+    "src": "bsexbrl:511196_147202012434_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_147202012434_SHP.xml files 'PINEBRIDGE GLOBAL FUNDS - PINEBRIDGE INDIA EQUITY FUND' 1,442,034 shares = 1.0830 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.0830, dii unchanged."
+   },
+   "2020-12-31": {
+    "cell": [
+     29.99,
+     2.3861,
+     15.3256,
+     13.9715,
+     1.3512,
+     "2021-01-12",
+     68864
+    ],
+    "was": [
+     29.99,
+     0.0,
+     15.3256,
+     13.9715,
+     1.3512,
+     "2021-01-12",
+     68864
+    ],
+    "src": "bsexbrl:511196_1112021161832_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_1112021161832_SHP.xml files 'VANGUARD TOTAL INTERNATIONAL STOCK INDEX FUND' 1,661,535 shares = 1.2478 (row 'Overseas Corporate Bodies', documented-institution); 'VANGUARD EMERGING MARKETS STOCK INDEX FUND' 1,515,673 shares = 1.1383 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 2.3861, dii unchanged."
+   },
+   "2021-03-31": {
+    "cell": [
+     29.99,
+     2.3255,
+     17.379,
+     13.8691,
+     3.507,
+     "2021-04-19",
+     68590
+    ],
+    "was": [
+     29.99,
+     0.0,
+     17.379,
+     13.8691,
+     3.507,
+     "2021-04-19",
+     68590
+    ],
+    "src": "bsexbrl:511196_16420211860_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_16420211860_SHP.xml files 'VANGUARD EMERGING MARKETS STOCK INDEX FUND' 1,593,847 shares = 1.1970 (row 'Overseas Corporate Bodies', documented-institution); 'VANGUARD TOTAL INTERNATIONAL STOCK INDEX FUND' 1,502,584 shares = 1.1285 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 2.3255, dii unchanged."
+   },
+   "2021-06-30": {
+    "cell": [
+     29.99,
+     2.3723,
+     17.3087,
+     14.118,
+     3.1652,
+     "2021-07-09",
+     83304
+    ],
+    "was": [
+     29.99,
+     0.0,
+     17.3087,
+     14.118,
+     3.1652,
+     "2021-07-09",
+     83304
+    ],
+    "src": "bsexbrl:511196_872021172827_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_872021172827_SHP.xml files 'VANGUARD EMERGING MARKETS STOCK INDEX FUND' 1,656,172 shares = 1.2438 (row 'Overseas Corporate Bodies', documented-institution); 'VANGUARD TOTAL INTERNATIONAL STOCK INDEX FUND' 1,502,584 shares = 1.1285 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 2.3723, dii unchanged."
+   },
+   "2021-12-31": {
+    "cell": [
+     29.99,
+     1.0124,
+     22.4077,
+     19.6342,
+     1.6969,
+     "2022-01-13",
+     100338
+    ],
+    "was": [
+     29.99,
+     0.0,
+     22.4077,
+     19.6342,
+     1.6969,
+     "2022-01-13",
+     100338
+    ],
+    "src": "bsexbrl:511196_121202217404_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_121202217404_SHP.xml files 'VANGUARD EMERGING MARKETS STOCK INDEX FUND' 1,347,993 shares = 1.0124 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.0124, dii unchanged."
+   },
+   "2022-03-31": {
+    "cell": [
+     29.99,
+     1.0327,
+     24.6937,
+     21.6748,
+     2.0138,
+     "2022-04-13",
+     95547
+    ],
+    "was": [
+     29.99,
+     0.0,
+     24.6937,
+     21.6748,
+     2.0138,
+     "2022-04-13",
+     95547
+    ],
+    "src": "bsexbrl:511196_1342022124613_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 511196_1342022124613_SHP.xml files 'VANGUARD EMERGING MARKETS STOCK INDEX FUND' 1,375,023 shares = 1.0327 (row 'Overseas Corporate Bodies', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 133,154,125 shares. fii 0.0000 -> 1.0327, dii unchanged."
    }
   },
   "CAPLIPOINT": {
@@ -25162,6 +25558,28 @@
     ],
     "src": "bsexbrl:507717_1042019154812_SHP.xml",
     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.00 -> 1.01, dii 10.89 -> 10.89. Rows: R2FII-holders OCEAN DIAL GATEWAY TO INDIA MAURITIUS LIMITED 1.01 fii(documented-institution)"
+   },
+   "2019-02-16": {
+    "cell": [
+     75.26,
+     1.01,
+     10.0992,
+     10.0959,
+     0.0,
+     "2019-02-20",
+     26498
+    ],
+    "was": [
+     75.26,
+     0.0,
+     10.0992,
+     10.0959,
+     0.0,
+     "2019-02-20",
+     26498
+    ],
+    "src": "bsexbrl:507717_2022019154442_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 507717_2022019154442_SHP.xml with the current reader: fii 0.0000 -> 1.0100, dii 10.0992 -> 10.0992. Rows: R2FII-holders Overseas Corporate Bodies 1.81 1.01 OCEAN DIAL GATEWAY TO INDIA MAURITIUS LIMITED 1.01 fii(documented-institution)"
    }
   },
   "DHARSUGAR": {
@@ -38474,7 +38892,7 @@
    "2016-11-18": {
     "cell": [
      0.0,
-     50.9841,
+     45.7041,
      13.677,
      9.7705,
      3.0404,
@@ -38483,20 +38901,42 @@
     ],
     "was": [
      0.0,
-     45.3941,
-     19.197,
+     50.9841,
+     13.677,
      9.7705,
      3.0404,
      "2016-11-23",
      464217
     ],
     "src": "bsexbrl:532659_23112016142513_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 45.39 -> 50.98, dii 19.20 -> 13.68. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other FDI 0.31  keyword; R1-unresolved Other BODIES CORPORATES 5.28  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07; D1-unnamed-remainder-in-dii 5.59"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532659_23112016142513_SHP.xml with the current reader: fii 50.9841 -> 45.7041, dii 13.6770 -> 13.6770. Rows: R1-unresolved Other FDI 0.31  keyword; R1-public-label Other BODIES CORPORATES 5.28 public=5.28 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07",
+    "superseded": {
+     "cell": [
+      0.0,
+      50.9841,
+      13.677,
+      9.7705,
+      3.0404,
+      "2016-11-23",
+      464217
+     ],
+     "was": [
+      0.0,
+      45.3941,
+      19.197,
+      9.7705,
+      3.0404,
+      "2016-11-23",
+      464217
+     ],
+     "src": "bsexbrl:532659_23112016142513_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 45.39 -> 50.98, dii 19.20 -> 13.68. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other FDI 0.31  keyword; R1-unresolved Other BODIES CORPORATES 5.28  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.07; D1-unnamed-remainder-in-dii 5.59"
+    }
    },
    "2017-05-17": {
     "cell": [
      0.0,
-     37.3877,
+     32.3977,
      25.1172,
      19.7224,
      4.0604,
@@ -38505,20 +38945,42 @@
     ],
     "was": [
      0.0,
-     32.3977,
-     29.0372,
+     37.3877,
+     25.1172,
      19.7224,
-     3.0404,
+     4.0604,
      "2017-05-19",
      459489
     ],
     "src": "bsexbrl:532659_195201715351_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 32.40 -> 37.39, dii 29.04 -> 25.12. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other Bodies Corporate 4.99  keyword; R2-named Trusts 1.02 NPS TRUST- A/C LIC PENSION FUND SCHEME - CENTRAL G 1.02(regex); R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 4.99"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532659_195201715351_SHP.xml with the current reader: fii 37.3877 -> 32.3977, dii 25.1172 -> 25.1172. Rows: R1-public-label Other Bodies Corporate 4.99 public=4.99 fii=0.00  keyword; R2-named Trusts 1.02 NPS TRUST- A/C LIC PENSION FUND SCHEME - CENTRAL G 1.02(regex); R3-nbfc NBFCsRegisteredWithRbi 0.05",
+    "superseded": {
+     "cell": [
+      0.0,
+      37.3877,
+      25.1172,
+      19.7224,
+      4.0604,
+      "2017-05-19",
+      459489
+     ],
+     "was": [
+      0.0,
+      32.3977,
+      29.0372,
+      19.7224,
+      3.0404,
+      "2017-05-19",
+      459489
+     ],
+     "src": "bsexbrl:532659_195201715351_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 32.40 -> 37.39, dii 29.04 -> 25.12. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other Bodies Corporate 4.99  keyword; R2-named Trusts 1.02 NPS TRUST- A/C LIC PENSION FUND SCHEME - CENTRAL G 1.02(regex); R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 4.99"
+    }
    },
    "2017-06-15": {
     "cell": [
      0.0,
-     36.9643,
+     32.1843,
      23.5043,
      19.2713,
      3.0403,
@@ -38527,20 +38989,42 @@
     ],
     "was": [
      0.0,
-     32.1843,
-     28.2343,
+     36.9643,
+     23.5043,
      19.2713,
      3.0403,
      "2017-06-20",
      455938
     ],
     "src": "bsexbrl:532659_206201715573_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 32.18 -> 36.96, dii 28.23 -> 23.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 4.78  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 4.78"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532659_206201715573_SHP.xml with the current reader: fii 36.9643 -> 32.1843, dii 23.5043 -> 23.5043. Rows: R1-public-label Other BODIES CORPORATES 4.78 public=4.78 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05",
+    "superseded": {
+     "cell": [
+      0.0,
+      36.9643,
+      23.5043,
+      19.2713,
+      3.0403,
+      "2017-06-20",
+      455938
+     ],
+     "was": [
+      0.0,
+      32.1843,
+      28.2343,
+      19.2713,
+      3.0403,
+      "2017-06-20",
+      455938
+     ],
+     "src": "bsexbrl:532659_206201715573_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 32.18 -> 36.96, dii 28.23 -> 23.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 4.78  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 4.78"
+    }
    },
    "2017-12-21": {
     "cell": [
      0.0,
-     39.4912,
+     34.2612,
      19.0411,
      15.2767,
      3.037,
@@ -38549,15 +39033,37 @@
     ],
     "was": [
      0.0,
-     34.2612,
-     24.2611,
+     39.4912,
+     19.0411,
      15.2767,
      3.037,
      "2017-12-21",
      439200
     ],
     "src": "bsexbrl:532659_2112201715154_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 34.26 -> 39.49, dii 24.26 -> 19.04. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other Bodies Corporate 5.23  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01; D1-unnamed-remainder-in-dii 5.23"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532659_2112201715154_SHP.xml with the current reader: fii 39.4912 -> 34.2612, dii 19.0411 -> 19.0411. Rows: R1-public-label Other Bodies Corporate 5.23 public=5.23 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01",
+    "superseded": {
+     "cell": [
+      0.0,
+      39.4912,
+      19.0411,
+      15.2767,
+      3.037,
+      "2017-12-21",
+      439200
+     ],
+     "was": [
+      0.0,
+      34.2612,
+      24.2611,
+      15.2767,
+      3.037,
+      "2017-12-21",
+      439200
+     ],
+     "src": "bsexbrl:532659_2112201715154_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 34.26 -> 39.49, dii 24.26 -> 19.04. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other Bodies Corporate 5.23  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01; D1-unnamed-remainder-in-dii 5.23"
+    }
    },
    "2018-07-02": {
     "cell": [
@@ -59591,6 +60097,28 @@
     ],
     "src": "bsexbrl:540767_412022184743_SHP.xml",
     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names INDUSIND BANK LTD. 3.2963 [IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 8.3698 -> 11.6661."
+   },
+   "2017-11-02": {
+    "cell": [
+     85.75,
+     4.1691,
+     4.2566,
+     1.2459,
+     0.0,
+     "2017-11-08",
+     364232
+    ],
+    "was": [
+     85.75,
+     2.4091,
+     4.2566,
+     1.2459,
+     0.0,
+     "2017-11-08",
+     364232
+    ],
+    "src": "bsexbrl:540767_8112017103436_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 540767_8112017103436_SHP.xml with the current reader: fii 2.4091 -> 4.1691, dii 4.2566 -> 4.2566. Rows: R2FII-holders Bodies Corporate 0.0 1.76 Valiant Mauritius Partners FDI Limited 1.76 fii(inst-tag)"
    }
   },
   "NARMADA": {
@@ -61009,7 +61537,7 @@
    "2016-09-30": {
     "cell": [
      90.0,
-     0.1646,
+     0.1972,
      4.6343,
      0.0157,
      0.9133,
@@ -61018,7 +61546,7 @@
     ],
     "was": [
      90.0,
-     0.1146,
+     0.1646,
      4.6343,
      0.0157,
      0.9133,
@@ -61026,7 +61554,29 @@
      88846
     ],
     "src": "bsexbrl:513683_14122016155629_SHP.xml",
-    "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 0.11 -> 0.16 (+0.05 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Other Foreign Institutional Investors 0.05 0.05 FII-labelled row 0.05 -> fii. Evidence: _shp_fii_rowfix_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Other Foreign Port Folio Investor-Corporate 3' (546,740 shares = 0.0326 of 1,677,709,600) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 0.1646 -> 0.1972, dii unchanged.",
+    "superseded": {
+     "cell": [
+      90.0,
+      0.1646,
+      4.6343,
+      0.0157,
+      0.9133,
+      "2016-12-14",
+      88846
+     ],
+     "was": [
+      90.0,
+      0.1146,
+      4.6343,
+      0.0157,
+      0.9133,
+      "2016-12-14",
+      88846
+     ],
+     "src": "bsexbrl:513683_14122016155629_SHP.xml",
+     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 0.11 -> 0.16 (+0.05 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Other Foreign Institutional Investors 0.05 0.05 FII-labelled row 0.05 -> fii. Evidence: _shp_fii_rowfix_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -73766,7 +74316,7 @@
    "2016-06-30": {
     "cell": [
      26.05,
-     52.8307,
+     53.0813,
      2.6832,
      2.4451,
      0.0,
@@ -73775,7 +74325,7 @@
     ],
     "was": [
      26.05,
-     27.0507,
+     52.8307,
      2.6832,
      2.4451,
      0.0,
@@ -73783,7 +74333,29 @@
      43862
     ],
     "src": "bsexbrl:511218_1872016115412_SHP.xml",
-    "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 27.05 -> 52.83 (+25.78 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Other FOREIGN INSTITUTIONAL INVESTOR 25.78 25.78 FII-labelled row 25.78 -> fii; GOVERNMENT OF SINGAPORE - FOREIGN INSTITUTIONAL INVESTOR 1.93 in-row(regex); NEW WORLD FUND INC - FOREIGN INSTITUTIONAL INVESTOR 1.58 in-row(regex); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND -  FOREIGN INSTITUTIONAL INVESTOR 1.15 in-row(memory~); KUWAIT INVESTMENT AUTHORITY - FUND NO. 208 - FOREIGN INSTITUTIONAL INVESTOR 1.05 in-row(regex). Evidence: _shp_fii_rowfix_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Other FOREIGN PORT FOLIO INVESTOR-CORPORATE 3' (568,530 shares = 0.2506 of 226,882,736) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 52.8307 -> 53.0813, dii unchanged.",
+    "superseded": {
+     "cell": [
+      26.05,
+      52.8307,
+      2.6832,
+      2.4451,
+      0.0,
+      "2016-07-18",
+      43862
+     ],
+     "was": [
+      26.05,
+      27.0507,
+      2.6832,
+      2.4451,
+      0.0,
+      "2016-07-18",
+      43862
+     ],
+     "src": "bsexbrl:511218_1872016115412_SHP.xml",
+     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 27.05 -> 52.83 (+25.78 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Other FOREIGN INSTITUTIONAL INVESTOR 25.78 25.78 FII-labelled row 25.78 -> fii; GOVERNMENT OF SINGAPORE - FOREIGN INSTITUTIONAL INVESTOR 1.93 in-row(regex); NEW WORLD FUND INC - FOREIGN INSTITUTIONAL INVESTOR 1.58 in-row(regex); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND -  FOREIGN INSTITUTIONAL INVESTOR 1.15 in-row(memory~); KUWAIT INVESTMENT AUTHORITY - FUND NO. 208 - FOREIGN INSTITUTIONAL INVESTOR 1.05 in-row(regex). Evidence: _shp_fii_rowfix_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
@@ -97047,8 +97619,8 @@
    "2016-08-05": {
     "cell": [
      74.99,
-     7.0662,
-     7.4928,
+     12.2962,
+     2.2628,
      0.7933,
      1.4446,
      "2016-08-11",
@@ -97056,15 +97628,37 @@
     ],
     "was": [
      74.99,
-     4.9262,
-     9.6228,
+     7.0662,
+     7.4928,
      0.7933,
      1.4446,
      "2016-08-11",
      54916
     ],
     "src": "bsexbrl:509480_118201616440_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.93 -> 7.07, dii 9.62 -> 7.49. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other FII 2.14 public=0.00 fii=2.14  keyword; R1-named-unresolved-kept Other 5.23 NALANDA INDIA FUND LTTD. 5.23; R1-unresolved Other 0.0 NALANDA INDIA FUND LTTD. 5.23 ?->-(-) keyword"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 509480_118201616440_SHP.xml with the current reader: fii 7.0662 -> 12.2962, dii 7.4928 -> 2.2628. Rows: R1-fii-label Other FII 2.14 public=0.00 fii=2.14  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.23 NALANDA INDIA FUND LTTD. 5.23 foreign->fii(documented:filing)",
+    "superseded": {
+     "cell": [
+      74.99,
+      7.0662,
+      7.4928,
+      0.7933,
+      1.4446,
+      "2016-08-11",
+      54916
+     ],
+     "was": [
+      74.99,
+      4.9262,
+      9.6228,
+      0.7933,
+      1.4446,
+      "2016-08-11",
+      54916
+     ],
+     "src": "bsexbrl:509480_118201616440_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.93 -> 7.07, dii 9.62 -> 7.49. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other FII 2.14 public=0.00 fii=2.14  keyword; R1-named-unresolved-kept Other 5.23 NALANDA INDIA FUND LTTD. 5.23; R1-unresolved Other 0.0 NALANDA INDIA FUND LTTD. 5.23 ?->-(-) keyword"
+    }
    }
   },
   "BGRENERGY": {
@@ -118765,7 +119359,7 @@
    "2016-12-07": {
     "cell": [
      54.99,
-     10.5311,
+     9.2797,
      3.0127,
      0.0468,
      2.9115,
@@ -118774,7 +119368,7 @@
     ],
     "was": [
      54.99,
-     12.2897,
+     10.5311,
      3.0127,
      0.0468,
      2.9115,
@@ -118782,11 +119376,11 @@
      24927
     ],
     "src": "bsexbrl:532162_16122016153744_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.2897 -> 10.5311 (share counts of 532162_16122016153744_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532162_16122016153744_SHP.xml with the current reader: fii 10.5311 -> 9.2797, dii 3.0127 -> 3.0127. Rows: R1-foreign-holders Other 0.0 public=0.00 fii=4.93 International Finance Corporation 4.93 foreign->fii(curated); R1-foreign-holders Other 0.0 public=1.76 fii=0.00 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.76 foreign->public(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.76 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=1.25 fii=0.00 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 1.25 foreign->public(documented:gleif)",
     "superseded": {
      "cell": [
       54.99,
-      12.2897,
+      10.5311,
       3.0127,
       0.0468,
       2.9115,
@@ -118795,19 +119389,50 @@
      ],
      "was": [
       54.99,
-      2.5897,
-      12.7027,
+      12.2897,
+      3.0127,
       0.0468,
       2.9115,
       "2016-12-16",
       24927
      ],
      "src": "bsexbrl:532162_16122016153744_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.59 -> 12.29, dii 12.70 -> 3.01. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.93 International Finance Corporation 4.93 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.76 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.76 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.25 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 1.25 foreign->fii(documented:gleif)"
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.2897 -> 10.5311 (share counts of 532162_16122016153744_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+     "superseded": {
+      "cell": [
+       54.99,
+       12.2897,
+       3.0127,
+       0.0468,
+       2.9115,
+       "2016-12-16",
+       24927
+      ],
+      "was": [
+       54.99,
+       2.5897,
+       12.7027,
+       0.0468,
+       2.9115,
+       "2016-12-16",
+       24927
+      ],
+      "src": "bsexbrl:532162_16122016153744_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.59 -> 12.29, dii 12.70 -> 3.01. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.93 International Finance Corporation 4.93 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.76 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.76 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.25 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 1.25 foreign->fii(documented:gleif)"
+     }
     }
    },
    "2017-05-06": {
     "cell": [
+     52.49,
+     11.134,
+     2.7992,
+     0.0723,
+     2.6673,
+     "2017-05-15",
+     25623
+    ],
+    "was": [
      52.49,
      13.5153,
      2.7992,
@@ -118816,21 +119441,12 @@
      "2017-05-15",
      25623
     ],
-    "was": [
-     52.49,
-     15.194,
-     2.7992,
-     0.0723,
-     2.6673,
-     "2017-05-15",
-     25623
-    ],
     "src": "bsexbrl:532162_1552017171350_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.68 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 15.1940 -> 13.5153 (share counts of 532162_1552017171350_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532162_1552017171350_SHP.xml with the current reader: fii 13.5153 -> 11.1340, dii 2.7992 -> 2.7992. Rows: R1-foreign-holders Other 0.0 public=0.00 fii=4.71 International Finance Corporation 4.71 foreign->fii(curated); R1-foreign-holders Other 0.0 public=2.38 fii=0.00 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.38 foreign->public(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.68 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.68 foreign->fii(curated); R1-foreign-holders Other 0.0 public=1.68 fii=0.00 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.68 foreign->public(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01",
     "superseded": {
      "cell": [
       52.49,
-      15.194,
+      13.5153,
       2.7992,
       0.0723,
       2.6673,
@@ -118839,21 +119455,43 @@
      ],
      "was": [
       52.49,
-      4.744,
-      13.2292,
+      15.194,
+      2.7992,
       0.0723,
       2.6673,
       "2017-05-15",
       25623
      ],
      "src": "bsexbrl:532162_1552017171350_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.74 -> 15.19, dii 13.23 -> 2.80. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.71 International Finance Corporation 4.71 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.38 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.38 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.68 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.68 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.68 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.68 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.68 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 15.1940 -> 13.5153 (share counts of 532162_1552017171350_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+     "superseded": {
+      "cell": [
+       52.49,
+       15.194,
+       2.7992,
+       0.0723,
+       2.6673,
+       "2017-05-15",
+       25623
+      ],
+      "was": [
+       52.49,
+       4.744,
+       13.2292,
+       0.0723,
+       2.6673,
+       "2017-05-15",
+       25623
+      ],
+      "src": "bsexbrl:532162_1552017171350_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.74 -> 15.19, dii 13.23 -> 2.80. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.71 International Finance Corporation 4.71 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.38 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.38 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=1.68 Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 1.68 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=1.68 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 1.68 foreign->fii(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     }
     }
    },
    "2017-06-08": {
     "cell": [
      50.78,
-     12.3636,
+     10.066,
      2.6705,
      0.0414,
      2.5804,
@@ -118862,7 +119500,7 @@
     ],
     "was": [
      50.78,
-     17.236,
+     12.3636,
      2.6705,
      0.0414,
      2.5804,
@@ -118870,11 +119508,11 @@
      27534
     ],
     "src": "bsexbrl:532162_1662017172917_SHP.xml",
-    "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 4.87 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.2360 -> 12.3636 (share counts of 532162_1662017172917_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 532162_1662017172917_SHP.xml with the current reader: fii 12.3636 -> 10.0660, dii 2.6705 -> 2.6705. Rows: R1-foreign-holders Other 0.0 public=4.87 fii=0.00 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 4.87 foreign->public(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.55 International Finance Corporation 4.55 foreign->fii(curated); R1-foreign-holders Other 0.0 public=2.30 fii=0.00 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.30 foreign->public(documented:gleif); R1-fii-label Other Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 0.76 public=0.00 fii=0.76  label-as-holder:curated; R3-nbfc NBFCsRegisteredWithRbi 0.01",
     "superseded": {
      "cell": [
       50.78,
-      17.236,
+      12.3636,
       2.6705,
       0.0414,
       2.5804,
@@ -118883,15 +119521,37 @@
      ],
      "was": [
       50.78,
-      4.756,
-      15.1505,
+      17.236,
+      2.6705,
       0.0414,
       2.5804,
       "2017-06-16",
       27534
      ],
      "src": "bsexbrl:532162_1662017172917_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.76 -> 17.24, dii 15.15 -> 2.67. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.87 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 4.87 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.55 International Finance Corporation 4.55 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.30 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.30 foreign->fii(documented:gleif); R1-fii-label Other Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 0.76 public=0.00 fii=0.76  label-as-holder:curated; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 4.87 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.2360 -> 12.3636 (share counts of 532162_1662017172917_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+     "superseded": {
+      "cell": [
+       50.78,
+       17.236,
+       2.6705,
+       0.0414,
+       2.5804,
+       "2017-06-16",
+       27534
+      ],
+      "was": [
+       50.78,
+       4.756,
+       15.1505,
+       0.0414,
+       2.5804,
+       "2017-06-16",
+       27534
+      ],
+      "src": "bsexbrl:532162_1662017172917_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 4.76 -> 17.24, dii 15.15 -> 2.67. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=4.87 DEG-Deutsche Investitions- Und Entwicklungsgesellschaft Mbh 4.87 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.55 International Finance Corporation 4.55 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.30 Soci\u00e9t\u00e9 De Promotion Et De Participation Pour La Coop\u00e9ration Economique 2.30 foreign->fii(documented:gleif); R1-fii-label Other Nederlandse Financierings-Maatschappij Voor Ontwikkelingslanden N.V. 0.76 public=0.00 fii=0.76  label-as-holder:curated; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     }
     }
    },
    "2017-10-17": {
@@ -159007,7 +159667,7 @@
    "2018-04-12": {
     "cell": [
      24.42,
-     40.7645,
+     40.6645,
      25.519,
      11.1609,
      3.54,
@@ -159016,15 +159676,37 @@
     ],
     "was": [
      24.42,
-     23.7745,
-     38.979,
+     40.7645,
+     25.519,
      11.1609,
-     0.0,
+     3.54,
      "2018-04-14",
      17373
     ],
     "src": "bsexbrl:524000_1342018182352_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 23.77 -> 40.76, dii 38.98 -> 25.52. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other QFI-Corporate 16.89 public=0.00 fii=16.89 International Finance Corporation 8.54 foreign->fii(curated); LEAPFROG FINANCIAL INCLUSION INDIA HOLDINGS LIMITED 4.91 foreign->fii(documented:gleif); ZEND MAURITIUS VC INVESTMENTS LTD 3.44 foreign->fii(documented:gleif) keyword; R1-unresolved Other IEPF 0.1  keyword; R2-named Bodies Corporate 3.54 HDFC STANDARD LIFE INSURANCE COMPANY LIM 1.86(regex); ICICI PRUDENTIAL LIFE INSURANCE COMPANY 1.68(regex); D1-unnamed-remainder-in-dii 0.1"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 524000_1342018182352_SHP.xml with the current reader: fii 40.7645 -> 40.6645, dii 25.5190 -> 25.5190. Rows: R1-fii-label Other QFI-Corporate 16.89 public=0.00 fii=16.89 International Finance Corporation 8.54 foreign->fii(curated); LEAPFROG FINANCIAL INCLUSION INDIA HO; R1-public-label Other IEPF 0.1 public=0.10 fii=0.00  keyword; R2-named Bodies Corporate 3.54 HDFC STANDARD LIFE INSURANCE COMPANY LIM 1.86(documented:filing); ICICI PRUDENTIAL LIFE INSURANCE COMPANY 1.68(documented:filing)",
+    "superseded": {
+     "cell": [
+      24.42,
+      40.7645,
+      25.519,
+      11.1609,
+      3.54,
+      "2018-04-14",
+      17373
+     ],
+     "was": [
+      24.42,
+      23.7745,
+      38.979,
+      11.1609,
+      0.0,
+      "2018-04-14",
+      17373
+     ],
+     "src": "bsexbrl:524000_1342018182352_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 23.77 -> 40.76, dii 38.98 -> 25.52. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other QFI-Corporate 16.89 public=0.00 fii=16.89 International Finance Corporation 8.54 foreign->fii(curated); LEAPFROG FINANCIAL INCLUSION INDIA HOLDINGS LIMITED 4.91 foreign->fii(documented:gleif); ZEND MAURITIUS VC INVESTMENTS LTD 3.44 foreign->fii(documented:gleif) keyword; R1-unresolved Other IEPF 0.1  keyword; R2-named Bodies Corporate 3.54 HDFC STANDARD LIFE INSURANCE COMPANY LIM 1.86(regex); ICICI PRUDENTIAL LIFE INSURANCE COMPANY 1.68(regex); D1-unnamed-remainder-in-dii 0.1"
+    }
    },
    "2021-05-06": {
     "cell": [
@@ -209285,6 +209967,94 @@
      "src": "bsexbrl:543232_94202616038_SHP.xml",
      "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 543232_94202616038_SHP.xml was public 2026-04-10 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
     }
+   },
+   "2020-12-31": {
+    "cell": [
+     30.98,
+     23.3907,
+     26.2658,
+     14.0174,
+     2.5347,
+     "2021-01-13",
+     163785
+    ],
+    "was": [
+     30.98,
+     22.1409,
+     26.2658,
+     14.0174,
+     2.5347,
+     "2021-01-13",
+     163785
+    ],
+    "src": "bsexbrl:543232_131202112845_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 543232_131202112845_SHP.xml files 'Acacia Banyan Partners' 609,756 shares = 1.2498 (row 'Foreign Nationals', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 48,786,800 shares. fii 22.1409 -> 23.3907, dii unchanged."
+   },
+   "2021-03-31": {
+    "cell": [
+     30.98,
+     25.2418,
+     24.0239,
+     12.6925,
+     2.403,
+     "2021-04-15",
+     161790
+    ],
+    "was": [
+     30.98,
+     23.9921,
+     24.0239,
+     12.6925,
+     2.403,
+     "2021-04-15",
+     161790
+    ],
+    "src": "bsexbrl:543232_154202111333_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 543232_154202111333_SHP.xml files 'Acacia Banyan Partners' 609,756 shares = 1.2497 (row 'Foreign Nationals', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 48,791,038 shares. fii 23.9921 -> 25.2418, dii unchanged."
+   },
+   "2021-06-30": {
+    "cell": [
+     30.96,
+     26.3558,
+     21.821,
+     11.0665,
+     2.0317,
+     "2021-07-09",
+     186315
+    ],
+    "was": [
+     30.96,
+     25.107,
+     21.821,
+     11.0665,
+     2.0317,
+     "2021-07-09",
+     186315
+    ],
+    "src": "bsexbrl:543232_972021112956_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 543232_972021112956_SHP.xml files 'Acacia Banyan Partners' 609,756 shares = 1.2488 (row 'Foreign Nationals', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 48,825,520 shares. fii 25.1070 -> 26.3558, dii unchanged."
+   },
+   "2021-09-30": {
+    "cell": [
+     30.96,
+     27.7405,
+     15.1495,
+     8.8692,
+     1.9982,
+     "2021-10-18",
+     281120
+    ],
+    "was": [
+     30.96,
+     26.4917,
+     15.1495,
+     8.8692,
+     1.9982,
+     "2021-10-18",
+     281120
+    ],
+    "src": "bsexbrl:543232_18102021124453_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, store-wide re-run of the current R2-FII reader, user 'work on every single cell'): the company's own filing 543232_18102021124453_SHP.xml files 'Acacia Banyan Partners' 609,756 shares = 1.2488 (row 'Foreign Nationals', documented-institution) on a non-institution line; under the documents-only rule (batch 7/8: listed under Institutions (Foreign) in >= 90 % of >= 5 other filings) it is FII, and this stored cell had never been re-read (no R2-FII entry in its ledger trail). % of total 48,825,520 shares. fii 26.4917 -> 27.7405, dii unchanged."
    }
   },
   "SAIPARENT": {
@@ -250608,7 +251378,7 @@
    "2016-07-05": {
     "cell": [
      52.95,
-     26.2653,
+     22.8453,
      3.0704,
      1.2917,
      1.4293,
@@ -250617,20 +251387,42 @@
     ],
     "was": [
      52.95,
-     22.8453,
-     6.5804,
+     26.2653,
+     3.0704,
      1.2917,
      1.4293,
      "2016-07-14",
      502801
     ],
     "src": "bsexbrl:539437_1372016201731_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.85 -> 26.27, dii 6.58 -> 3.07. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.42  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.06; D1-unnamed-remainder-in-dii 3.42"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_1372016201731_SHP.xml with the current reader: fii 26.2653 -> 22.8453, dii 3.0704 -> 3.0704. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.42 public=3.42 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.06",
+    "superseded": {
+     "cell": [
+      52.95,
+      26.2653,
+      3.0704,
+      1.2917,
+      1.4293,
+      "2016-07-14",
+      502801
+     ],
+     "was": [
+      52.95,
+      22.8453,
+      6.5804,
+      1.2917,
+      1.4293,
+      "2016-07-14",
+      502801
+     ],
+     "src": "bsexbrl:539437_1372016201731_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.85 -> 26.27, dii 6.58 -> 3.07. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.42  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.06; D1-unnamed-remainder-in-dii 3.42"
+    }
    },
    "2016-09-17": {
     "cell": [
      52.95,
-     25.672,
+     22.332,
      3.0569,
      1.2982,
      1.4293,
@@ -250639,20 +251431,42 @@
     ],
     "was": [
      52.95,
-     22.332,
-     6.4569,
+     25.672,
+     3.0569,
      1.2982,
      1.4293,
      "2016-09-21",
      501383
     ],
     "src": "bsexbrl:539437_2192016181121_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.33 -> 25.67, dii 6.46 -> 3.06. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 3.34  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 3.34"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2192016181121_SHP.xml with the current reader: fii 25.6720 -> 22.3320, dii 3.0569 -> 3.0569. Rows: R1-public-label Other BODIES CORPORATES 3.34 public=3.34 fii=0.00  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1",
+    "superseded": {
+     "cell": [
+      52.95,
+      25.672,
+      3.0569,
+      1.2982,
+      1.4293,
+      "2016-09-21",
+      501383
+     ],
+     "was": [
+      52.95,
+      22.332,
+      6.4569,
+      1.2982,
+      1.4293,
+      "2016-09-21",
+      501383
+     ],
+     "src": "bsexbrl:539437_2192016181121_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.33 -> 25.67, dii 6.46 -> 3.06. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 3.34  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 3.34"
+    }
    },
    "2016-10-15": {
     "cell": [
      52.94,
-     25.0679,
+     21.9979,
      2.7593,
      1.0645,
      1.429,
@@ -250661,20 +251475,42 @@
     ],
     "was": [
      52.94,
-     21.9979,
-     5.8893,
+     25.0679,
+     2.7593,
      1.0645,
      1.429,
      "2016-10-22",
      514108
     ],
     "src": "bsexbrl:539437_21102016185030_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.00 -> 25.07, dii 5.89 -> 2.76. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.07  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09; D1-unnamed-remainder-in-dii 3.07"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_21102016185030_SHP.xml with the current reader: fii 25.0679 -> 21.9979, dii 2.7593 -> 2.7593. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.07 public=3.07 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09",
+    "superseded": {
+     "cell": [
+      52.94,
+      25.0679,
+      2.7593,
+      1.0645,
+      1.429,
+      "2016-10-22",
+      514108
+     ],
+     "was": [
+      52.94,
+      21.9979,
+      5.8893,
+      1.0645,
+      1.429,
+      "2016-10-22",
+      514108
+     ],
+     "src": "bsexbrl:539437_21102016185030_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 22.00 -> 25.07, dii 5.89 -> 2.76. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.15 public=0.15 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.07  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09; D1-unnamed-remainder-in-dii 3.07"
+    }
    },
    "2016-11-18": {
     "cell": [
      52.94,
-     24.8034,
+     21.9334,
      2.8454,
      1.0916,
      1.429,
@@ -250683,20 +251519,42 @@
     ],
     "was": [
      52.94,
-     21.9334,
-     5.7554,
+     24.8034,
+     2.8454,
      1.0916,
      1.429,
      "2016-11-23",
      531130
     ],
     "src": "bsexbrl:539437_22112016183731_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 21.93 -> 24.80, dii 5.76 -> 2.85. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATE 2.87  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.87"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_22112016183731_SHP.xml with the current reader: fii 24.8034 -> 21.9334, dii 2.8454 -> 2.8454. Rows: R1-public-label Other BODIES CORPORATE 2.87 public=2.87 fii=0.00  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1",
+    "superseded": {
+     "cell": [
+      52.94,
+      24.8034,
+      2.8454,
+      1.0916,
+      1.429,
+      "2016-11-23",
+      531130
+     ],
+     "was": [
+      52.94,
+      21.9334,
+      5.7554,
+      1.0916,
+      1.429,
+      "2016-11-23",
+      531130
+     ],
+     "src": "bsexbrl:539437_22112016183731_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 21.93 -> 24.80, dii 5.76 -> 2.85. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATE 2.87  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.87"
+    }
    },
    "2016-12-15": {
     "cell": [
      52.93,
-     24.6602,
+     21.8102,
      2.606,
      0.8506,
      1.4287,
@@ -250705,20 +251563,42 @@
     ],
     "was": [
      52.93,
-     21.8102,
-     5.496,
+     24.6602,
+     2.606,
      0.8506,
      1.4287,
      "2016-12-21",
      544242
     ],
     "src": "bsexbrl:539437_21122016153253_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 21.81 -> 24.66, dii 5.50 -> 2.61. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 2.85  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.85"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_21122016153253_SHP.xml with the current reader: fii 24.6602 -> 21.8102, dii 2.6060 -> 2.6060. Rows: R1-public-label Other BODIES CORPORATES 2.85 public=2.85 fii=0.00  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1",
+    "superseded": {
+     "cell": [
+      52.93,
+      24.6602,
+      2.606,
+      0.8506,
+      1.4287,
+      "2016-12-21",
+      544242
+     ],
+     "was": [
+      52.93,
+      21.8102,
+      5.496,
+      0.8506,
+      1.4287,
+      "2016-12-21",
+      544242
+     ],
+     "src": "bsexbrl:539437_21122016153253_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 21.81 -> 24.66, dii 5.50 -> 2.61. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 2.85  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.85"
+    }
    },
    "2017-01-17": {
     "cell": [
      52.92,
-     23.532,
+     20.812,
      3.1946,
      1.4316,
      1.4285,
@@ -250727,20 +251607,42 @@
     ],
     "was": [
      52.92,
-     20.812,
-     5.9446,
+     23.532,
+     3.1946,
      1.4316,
      1.4285,
      "2017-01-24",
      557085
     ],
     "src": "bsexbrl:539437_231201719039_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.81 -> 23.53, dii 5.94 -> 3.19. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 2.72  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.72"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_231201719039_SHP.xml with the current reader: fii 23.5320 -> 20.8120, dii 3.1946 -> 3.1946. Rows: R1-public-label Other BODIES CORPORATES 2.72 public=2.72 fii=0.00  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1",
+    "superseded": {
+     "cell": [
+      52.92,
+      23.532,
+      3.1946,
+      1.4316,
+      1.4285,
+      "2017-01-24",
+      557085
+     ],
+     "was": [
+      52.92,
+      20.812,
+      5.9446,
+      1.4316,
+      1.4285,
+      "2017-01-24",
+      557085
+     ],
+     "src": "bsexbrl:539437_231201719039_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.81 -> 23.53, dii 5.94 -> 3.19. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BODIES CORPORATES 2.72  keyword; R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1; D1-unnamed-remainder-in-dii 2.72"
+    }
    },
    "2017-02-15": {
     "cell": [
      52.91,
-     23.5028,
+     20.5228,
      2.8652,
      1.1205,
      1.4282,
@@ -250749,20 +251651,42 @@
     ],
     "was": [
      52.91,
-     20.5228,
-     5.8952,
+     23.5028,
+     2.8652,
      1.1205,
      1.4282,
      "2017-02-21",
      565365
     ],
     "src": "bsexbrl:539437_202201718551_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.52 -> 23.50, dii 5.90 -> 2.87. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.98  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09; D1-unnamed-remainder-in-dii 2.98"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_202201718551_SHP.xml with the current reader: fii 23.5028 -> 20.5228, dii 2.8652 -> 2.8652. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.98 public=2.98 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09",
+    "superseded": {
+     "cell": [
+      52.91,
+      23.5028,
+      2.8652,
+      1.1205,
+      1.4282,
+      "2017-02-21",
+      565365
+     ],
+     "was": [
+      52.91,
+      20.5228,
+      5.8952,
+      1.1205,
+      1.4282,
+      "2017-02-21",
+      565365
+     ],
+     "src": "bsexbrl:539437_202201718551_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.52 -> 23.50, dii 5.90 -> 2.87. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.98  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.09; D1-unnamed-remainder-in-dii 2.98"
+    }
    },
    "2017-03-16": {
     "cell": [
      52.88,
-     23.1364,
+     20.2964,
      2.9124,
      1.247,
      1.4274,
@@ -250771,20 +251695,42 @@
     ],
     "was": [
      52.88,
-     20.2964,
-     5.8524,
+     23.1364,
+     2.9124,
      1.247,
      1.4274,
      "2017-03-22",
      569228
     ],
     "src": "bsexbrl:539437_2132017185727_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.30 -> 23.14, dii 5.85 -> 2.91. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.84  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.04; D1-unnamed-remainder-in-dii 2.84"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2132017185727_SHP.xml with the current reader: fii 23.1364 -> 20.2964, dii 2.9124 -> 2.9124. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.84 public=2.84 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.04",
+    "superseded": {
+     "cell": [
+      52.88,
+      23.1364,
+      2.9124,
+      1.247,
+      1.4274,
+      "2017-03-22",
+      569228
+     ],
+     "was": [
+      52.88,
+      20.2964,
+      5.8524,
+      1.247,
+      1.4274,
+      "2017-03-22",
+      569228
+     ],
+     "src": "bsexbrl:539437_2132017185727_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 20.30 -> 23.14, dii 5.85 -> 2.91. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.84  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.04; D1-unnamed-remainder-in-dii 2.84"
+    }
    },
    "2017-04-17": {
     "cell": [
      52.88,
-     22.205,
+     19.165,
      3.3864,
      1.6436,
      1.4274,
@@ -250793,20 +251739,42 @@
     ],
     "was": [
      52.88,
-     19.165,
-     6.5364,
+     22.205,
+     3.3864,
      1.6436,
      1.4274,
      "2017-04-25",
      579724
     ],
     "src": "bsexbrl:539437_2442017193552_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 19.16 -> 22.20, dii 6.54 -> 3.39. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.04  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.04"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2442017193552_SHP.xml with the current reader: fii 22.2050 -> 19.1650, dii 3.3864 -> 3.3864. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.04 public=3.04 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.88,
+      22.205,
+      3.3864,
+      1.6436,
+      1.4274,
+      "2017-04-25",
+      579724
+     ],
+     "was": [
+      52.88,
+      19.165,
+      6.5364,
+      1.6436,
+      1.4274,
+      "2017-04-25",
+      579724
+     ],
+     "src": "bsexbrl:539437_2442017193552_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 19.16 -> 22.20, dii 6.54 -> 3.39. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.04  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.04"
+    }
    },
    "2017-05-16": {
     "cell": [
      52.86,
-     21.5681,
+     18.2281,
      3.3571,
      1.5862,
      1.4268,
@@ -250815,20 +251783,42 @@
     ],
     "was": [
      52.86,
-     18.2281,
-     6.8171,
+     21.5681,
+     3.3571,
      1.5862,
      1.4268,
      "2017-05-19",
      589943
     ],
     "src": "bsexbrl:539437_1952017161025_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.23 -> 21.57, dii 6.82 -> 3.36. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.34  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.34"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_1952017161025_SHP.xml with the current reader: fii 21.5681 -> 18.2281, dii 3.3571 -> 3.3571. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.34 public=3.34 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.86,
+      21.5681,
+      3.3571,
+      1.5862,
+      1.4268,
+      "2017-05-19",
+      589943
+     ],
+     "was": [
+      52.86,
+      18.2281,
+      6.8171,
+      1.5862,
+      1.4268,
+      "2017-05-19",
+      589943
+     ],
+     "src": "bsexbrl:539437_1952017161025_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.23 -> 21.57, dii 6.82 -> 3.36. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.34  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.34"
+    }
    },
    "2017-06-15": {
     "cell": [
      52.85,
-     21.0338,
+     17.7738,
      3.3688,
      1.506,
      1.4266,
@@ -250837,20 +251827,42 @@
     ],
     "was": [
      52.85,
-     17.7738,
-     6.7488,
+     21.0338,
+     3.3688,
      1.506,
      1.4266,
      "2017-06-24",
      600012
     ],
     "src": "bsexbrl:539437_2362017191730_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.77 -> 21.03, dii 6.75 -> 3.37. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.26  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.26"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2362017191730_SHP.xml with the current reader: fii 21.0338 -> 17.7738, dii 3.3688 -> 3.3688. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.26 public=3.26 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.85,
+      21.0338,
+      3.3688,
+      1.506,
+      1.4266,
+      "2017-06-24",
+      600012
+     ],
+     "was": [
+      52.85,
+      17.7738,
+      6.7488,
+      1.506,
+      1.4266,
+      "2017-06-24",
+      600012
+     ],
+     "src": "bsexbrl:539437_2362017191730_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.77 -> 21.03, dii 6.75 -> 3.37. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.26  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.26"
+    }
    },
    "2017-07-14": {
     "cell": [
      52.84,
-     19.9948,
+     16.5948,
      3.7104,
      1.96,
      1.4263,
@@ -250859,20 +251871,42 @@
     ],
     "was": [
      52.84,
-     16.5948,
-     7.2304,
+     19.9948,
+     3.7104,
      1.96,
      1.4263,
      "2017-07-20",
      612155
     ],
     "src": "bsexbrl:539437_2072017125645_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 16.59 -> 19.99, dii 7.23 -> 3.71. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.4  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.4"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2072017125645_SHP.xml with the current reader: fii 19.9948 -> 16.5948, dii 3.7104 -> 3.7104. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.4 public=3.40 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.84,
+      19.9948,
+      3.7104,
+      1.96,
+      1.4263,
+      "2017-07-20",
+      612155
+     ],
+     "was": [
+      52.84,
+      16.5948,
+      7.2304,
+      1.96,
+      1.4263,
+      "2017-07-20",
+      612155
+     ],
+     "src": "bsexbrl:539437_2072017125645_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 16.59 -> 19.99, dii 7.23 -> 3.71. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.4  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.4"
+    }
    },
    "2017-09-14": {
     "cell": [
      52.84,
-     18.7053,
+     15.6353,
      4.2288,
      2.4046,
      1.4263,
@@ -250881,20 +251915,42 @@
     ],
     "was": [
      52.84,
-     15.6353,
-     7.4088,
+     18.7053,
+     4.2288,
      2.4046,
      1.4263,
      "2017-09-19",
      624659
     ],
     "src": "bsexbrl:539437_1892017171442_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.64 -> 18.71, dii 7.41 -> 4.23. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.07  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.07"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_1892017171442_SHP.xml with the current reader: fii 18.7053 -> 15.6353, dii 4.2288 -> 4.2288. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.07 public=3.07 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.84,
+      18.7053,
+      4.2288,
+      2.4046,
+      1.4263,
+      "2017-09-19",
+      624659
+     ],
+     "was": [
+      52.84,
+      15.6353,
+      7.4088,
+      2.4046,
+      1.4263,
+      "2017-09-19",
+      624659
+     ],
+     "src": "bsexbrl:539437_1892017171442_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.64 -> 18.71, dii 7.41 -> 4.23. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.07  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.07"
+    }
    },
    "2017-10-16": {
     "cell": [
      52.84,
-     18.5619,
+     15.6619,
      4.283,
      2.4903,
      1.4263,
@@ -250903,20 +251959,42 @@
     ],
     "was": [
      52.84,
-     15.6619,
-     7.303,
+     18.5619,
+     4.283,
      2.4903,
      1.4263,
      "2017-10-23",
      621873
     ],
     "src": "bsexbrl:539437_23102017113840_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.66 -> 18.56, dii 7.30 -> 4.28. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.9  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.9"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_23102017113840_SHP.xml with the current reader: fii 18.5619 -> 15.6619, dii 4.2830 -> 4.2830. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.9 public=2.90 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.84,
+      18.5619,
+      4.283,
+      2.4903,
+      1.4263,
+      "2017-10-23",
+      621873
+     ],
+     "was": [
+      52.84,
+      15.6619,
+      7.303,
+      2.4903,
+      1.4263,
+      "2017-10-23",
+      621873
+     ],
+     "src": "bsexbrl:539437_23102017113840_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.66 -> 18.56, dii 7.30 -> 4.28. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.9  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.9"
+    }
    },
    "2017-11-15": {
     "cell": [
      52.83,
-     18.709,
+     15.529,
      4.519,
      2.7843,
      1.4248,
@@ -250925,20 +252003,42 @@
     ],
     "was": [
      52.83,
-     15.529,
-     7.819,
+     18.709,
+     4.519,
      2.7843,
      1.4248,
      "2017-11-20",
      617035
     ],
     "src": "bsexbrl:539437_2011201715512_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.53 -> 18.71, dii 7.82 -> 4.52. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.18  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.18"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2011201715512_SHP.xml with the current reader: fii 18.7090 -> 15.5290, dii 4.5190 -> 4.5190. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 3.18 public=3.18 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.83,
+      18.709,
+      4.519,
+      2.7843,
+      1.4248,
+      "2017-11-20",
+      617035
+     ],
+     "was": [
+      52.83,
+      15.529,
+      7.819,
+      2.7843,
+      1.4248,
+      "2017-11-20",
+      617035
+     ],
+     "src": "bsexbrl:539437_2011201715512_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.53 -> 18.71, dii 7.82 -> 4.52. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 3.18  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 3.18"
+    }
    },
    "2017-12-14": {
     "cell": [
      52.83,
-     17.8541,
+     14.9441,
      4.9402,
      3.1493,
      1.4248,
@@ -250947,20 +252047,42 @@
     ],
     "was": [
      52.83,
-     14.9441,
-     7.9702,
+     17.8541,
+     4.9402,
      3.1493,
      1.4248,
      "2017-12-20",
      620319
     ],
     "src": "bsexbrl:539437_20122017114335_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.94 -> 17.85, dii 7.97 -> 4.94. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.91  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.91"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_20122017114335_SHP.xml with the current reader: fii 17.8541 -> 14.9441, dii 4.9402 -> 4.9402. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.91 public=2.91 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.83,
+      17.8541,
+      4.9402,
+      3.1493,
+      1.4248,
+      "2017-12-20",
+      620319
+     ],
+     "was": [
+      52.83,
+      14.9441,
+      7.9702,
+      3.1493,
+      1.4248,
+      "2017-12-20",
+      620319
+     ],
+     "src": "bsexbrl:539437_20122017114335_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.94 -> 17.85, dii 7.97 -> 4.94. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.91  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.91"
+    }
    },
    "2018-01-15": {
     "cell": [
      52.82,
-     17.8048,
+     15.0448,
      5.3633,
      3.5996,
      1.4245,
@@ -250969,20 +252091,42 @@
     ],
     "was": [
      52.82,
-     15.0448,
-     8.2333,
+     17.8048,
+     5.3633,
      3.5996,
      1.4245,
      "2018-01-22",
      592965
     ],
     "src": "bsexbrl:539437_2212018132754_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.04 -> 17.80, dii 8.23 -> 5.36. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.76  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.76"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2212018132754_SHP.xml with the current reader: fii 17.8048 -> 15.0448, dii 5.3633 -> 5.3633. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.76 public=2.76 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.82,
+      17.8048,
+      5.3633,
+      3.5996,
+      1.4245,
+      "2018-01-22",
+      592965
+     ],
+     "was": [
+      52.82,
+      15.0448,
+      8.2333,
+      3.5996,
+      1.4245,
+      "2018-01-22",
+      592965
+     ],
+     "src": "bsexbrl:539437_2212018132754_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.04 -> 17.80, dii 8.23 -> 5.36. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.76  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.76"
+    }
    },
    "2018-02-15": {
     "cell": [
      52.81,
-     17.5856,
+     14.9356,
      5.3821,
      3.6385,
      1.4216,
@@ -250991,20 +252135,42 @@
     ],
     "was": [
      52.81,
-     14.9356,
-     8.1421,
+     17.5856,
+     5.3821,
      3.6385,
      1.4216,
      "2018-02-24",
      607643
     ],
     "src": "bsexbrl:539437_232201818739_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.94 -> 17.59, dii 8.14 -> 5.38. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.65  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.65"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_232201818739_SHP.xml with the current reader: fii 17.5856 -> 14.9356, dii 5.3821 -> 5.3821. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.65 public=2.65 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.81,
+      17.5856,
+      5.3821,
+      3.6385,
+      1.4216,
+      "2018-02-24",
+      607643
+     ],
+     "was": [
+      52.81,
+      14.9356,
+      8.1421,
+      3.6385,
+      1.4216,
+      "2018-02-24",
+      607643
+     ],
+     "src": "bsexbrl:539437_232201818739_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.94 -> 17.59, dii 8.14 -> 5.38. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.65  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.65"
+    }
    },
    "2018-03-16": {
     "cell": [
      52.8,
-     17.3481,
+     14.7881,
      5.4962,
      3.7653,
      1.3965,
@@ -251013,20 +252179,42 @@
     ],
     "was": [
      52.8,
-     14.7881,
-     8.1762,
+     17.3481,
+     5.4962,
      3.7653,
      1.3965,
      "2018-03-21",
      611102
     ],
     "src": "bsexbrl:539437_2132018173848_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.79 -> 17.35, dii 8.18 -> 5.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.56  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.56"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2132018173848_SHP.xml with the current reader: fii 17.3481 -> 14.7881, dii 5.4962 -> 5.4962. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Other BODIES CORPORATES 2.56 public=2.56 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.8,
+      17.3481,
+      5.4962,
+      3.7653,
+      1.3965,
+      "2018-03-21",
+      611102
+     ],
+     "was": [
+      52.8,
+      14.7881,
+      8.1762,
+      3.7653,
+      1.3965,
+      "2018-03-21",
+      611102
+     ],
+     "src": "bsexbrl:539437_2132018173848_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.79 -> 17.35, dii 8.18 -> 5.50. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Other BODIES CORPORATES 2.56  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.56"
+    }
    },
    "2018-04-16": {
     "cell": [
      52.8,
-     16.9494,
+     14.4894,
      5.7027,
      3.9809,
      1.3965,
@@ -251035,20 +252223,42 @@
     ],
     "was": [
      52.8,
-     14.4894,
-     8.2827,
+     16.9494,
+     5.7027,
      3.9809,
      1.3965,
      "2018-04-24",
      616509
     ],
     "src": "bsexbrl:539437_2442018164828_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.49 -> 16.95, dii 8.28 -> 5.70. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other Foreign Corporate Bodies 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.46"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_2442018164828_SHP.xml with the current reader: fii 16.9494 -> 14.4894, dii 5.7027 -> 5.7027. Rows: R1-public-label Other Foreign Corporate Bodies 0.14 public=0.14 fii=0.00  keyword; R1-public-label Bodies Corporate 2.46 public=2.46 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02",
+    "superseded": {
+     "cell": [
+      52.8,
+      16.9494,
+      5.7027,
+      3.9809,
+      1.3965,
+      "2018-04-24",
+      616509
+     ],
+     "was": [
+      52.8,
+      14.4894,
+      8.2827,
+      3.9809,
+      1.3965,
+      "2018-04-24",
+      616509
+     ],
+     "src": "bsexbrl:539437_2442018164828_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.49 -> 16.95, dii 8.28 -> 5.70. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other Foreign Corporate Bodies 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.46  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 2.46"
+    }
    },
    "2018-07-02": {
     "cell": [
      54.3,
-     13.4121,
+     10.2721,
      5.1834,
      3.0929,
      1.383,
@@ -251057,20 +252267,42 @@
     ],
     "was": [
      54.3,
-     10.2721,
-     8.4134,
+     13.4121,
+     5.1834,
      3.0929,
      1.383,
      "2018-07-12",
      624948
     ],
     "src": "bsexbrl:539437_127201810432_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.27 -> 13.41, dii 8.41 -> 5.18. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 3.14"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_127201810432_SHP.xml with the current reader: fii 13.4121 -> 10.2721, dii 5.1834 -> 5.1834. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Bodies Corporate 3.14 public=3.14 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05",
+    "superseded": {
+     "cell": [
+      54.3,
+      13.4121,
+      5.1834,
+      3.0929,
+      1.383,
+      "2018-07-12",
+      624948
+     ],
+     "was": [
+      54.3,
+      10.2721,
+      8.4134,
+      3.0929,
+      1.383,
+      "2018-07-12",
+      624948
+     ],
+     "src": "bsexbrl:539437_127201810432_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.27 -> 13.41, dii 8.41 -> 5.18. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 3.14  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.05; D1-unnamed-remainder-in-dii 3.14"
+    }
    },
    "2018-09-25": {
     "cell": [
      56.16,
-     13.0696,
+     10.1996,
      3.9783,
      2.0056,
      1.3505,
@@ -251079,15 +252311,37 @@
     ],
     "was": [
      56.16,
-     10.1996,
-     6.9483,
+     13.0696,
+     3.9783,
      2.0056,
      1.3505,
      "2018-10-01",
      632100
     ],
     "src": "bsexbrl:539437_1102018175958_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.20 -> 13.07, dii 6.95 -> 3.98. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.87  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03; D1-unnamed-remainder-in-dii 2.87"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_1102018175958_SHP.xml with the current reader: fii 13.0696 -> 10.1996, dii 3.9783 -> 3.9783. Rows: R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-public-label Bodies Corporate 2.87 public=2.87 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03",
+    "superseded": {
+     "cell": [
+      56.16,
+      13.0696,
+      3.9783,
+      2.0056,
+      1.3505,
+      "2018-10-01",
+      632100
+     ],
+     "was": [
+      56.16,
+      10.1996,
+      6.9483,
+      2.0056,
+      1.3505,
+      "2018-10-01",
+      632100
+     ],
+     "src": "bsexbrl:539437_1102018175958_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.20 -> 13.07, dii 6.95 -> 3.98. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Other FOREIGN CORPORATE BODIES 0.14 public=0.14 fii=0.00  keyword; R1-unresolved Bodies Corporate 2.87  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03; D1-unnamed-remainder-in-dii 2.87"
+    }
    },
    "2019-01-05": {
     "cell": [
@@ -251246,8 +252500,8 @@
    "2021-04-06": {
     "cell": [
      36.6,
-     19.5726,
-     17.6247,
+     22.2426,
+     14.0847,
      2.3864,
      0.4527,
      "2021-04-07",
@@ -251255,15 +252509,37 @@
     ],
     "was": [
      36.6,
-     10.3326,
-     19.2647,
+     19.5726,
+     17.6247,
      2.3864,
      0.4527,
      "2021-04-07",
      1182756
     ],
     "src": "bsexbrl:539437_74202117586_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.33 -> 19.57, dii 19.26 -> 17.62. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BAYVK A2 FONDS 0.14  keyword; R1-unresolved Other BAILLIE GIFFORD EMERGING MARKETS EQUITIES FUND 0.96  keyword; R1-fii-label Other COPTHALL MAURITIUS INVESTMENT LIMITED - ODI ACCOUN 0.24 public=0.00 fii=0.24  keyword; R1-domestic-label Insurance Companies 1.96 public=0.00 fii=0.00 HDFC LIFE INSURANCE COMPANY LIMITED 1.96 domestic->-(curated) keyword; R1-domestic-label Insurance Companies 4.17 public=0.00 fii=0.00 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.17 domestic->-(new-format:InsuranceCompanies) keyword; R1-domestic-label Insurance Companies 0.25 public=0.00 fii=0.00  keyword; R1-unresolved Other BAILLIE GIFFORD EMERGING MARKETS FUND 0.07  keyword; R1-unresolv"
+    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 539437_74202117586_SHP.xml with the current reader: fii 19.5726 -> 22.2426, dii 17.6247 -> 14.0847. Rows: R1-unresolved Other BAYVK A2 FONDS 0.14  keyword; R1-fii-label Other BAILLIE GIFFORD EMERGING MARKETS EQUITIES FUND 0.96 public=0.00 fii=0.96  label-as-holder:documented:filing; R1-fii-label Other COPTHALL MAURITIUS INVESTMENT LIMITED - ODI ACCOUN 0.24 public=0.00 fii=0.24  keyword; R1-domestic-label Insurance Companies 1.96 public=0.00 fii=0.00 HDFC LIFE INSURANCE COMPANY LIMITED 1.96 domestic->-(curated) keyword; R1-domestic-label Insurance Companies 4.17 public=0.00 fii=0.00 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.17 domestic->-(new-format:InsuranceCompanies) ; R1-domestic-label Insurance Companies 0.25 public=0.00 fii=0.00  keyword; R1-fii-label Other BAILLIE GIFFORD EMERGING MARKETS FUND 0.07 public=0.00 fii=0.07  label-as-holder:memory~; R1-public-label Trust 0.74 public=0.74 fii=0.00  keyword; R1-public-label Trust 0.03 public=0.03 fii=0.00  keyword; R1-public-label Trust 0.02 public=0.02 fii=0.00  keyword; R1-fii-label Other EASTSPRING INVESTMENTS-INDIA EQUITY FUND 0.03 public=0.00 fii=0.03  label-as-holder:memory~; R1-unresolved Other EASTSPRING INVESTMENTS-DRAGON PEACOCK FUND 0.05  keyword; R1-public-label Trust 0.08 public=0.08 fii=0.00  keyword; R1-domestic-label Other SUNDARAM MUTUAL FUND A/C SUNDARAM MID CAP FUND 0.34 public=0.00 fii=0.00  keyword; R1-unresolved Other TATA QUANT FUND 0.12  keyword; R1-fii-label Other ICG Q LIMITED 0.17 public=0.00 fii=0.",
+    "superseded": {
+     "cell": [
+      36.6,
+      19.5726,
+      17.6247,
+      2.3864,
+      0.4527,
+      "2021-04-07",
+      1182756
+     ],
+     "was": [
+      36.6,
+      10.3326,
+      19.2647,
+      2.3864,
+      0.4527,
+      "2021-04-07",
+      1182756
+     ],
+     "src": "bsexbrl:539437_74202117586_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 10.33 -> 19.57, dii 19.26 -> 17.62. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved Other BAYVK A2 FONDS 0.14  keyword; R1-unresolved Other BAILLIE GIFFORD EMERGING MARKETS EQUITIES FUND 0.96  keyword; R1-fii-label Other COPTHALL MAURITIUS INVESTMENT LIMITED - ODI ACCOUN 0.24 public=0.00 fii=0.24  keyword; R1-domestic-label Insurance Companies 1.96 public=0.00 fii=0.00 HDFC LIFE INSURANCE COMPANY LIMITED 1.96 domestic->-(curated) keyword; R1-domestic-label Insurance Companies 4.17 public=0.00 fii=0.00 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.17 domestic->-(new-format:InsuranceCompanies) keyword; R1-domestic-label Insurance Companies 0.25 public=0.00 fii=0.00  keyword; R1-unresolved Other BAILLIE GIFFORD EMERGING MARKETS FUND 0.07  keyword; R1-unresolv"
+    }
    }
   },
   "J&KBANK": {
@@ -252100,7 +253376,7 @@
    "2016-06-30": {
     "cell": [
      33.78,
-     28.0676,
+     30.0312,
      2.0221,
      1.4473,
      0.0,
@@ -252109,7 +253385,7 @@
     ],
     "was": [
      33.78,
-     27.0676,
+     28.0676,
      2.0221,
      1.4473,
      0.0,
@@ -252117,11 +253393,11 @@
      6990
     ],
     "src": "bsexbrl:532498_2572016183429_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 27.07 -> 28.07, dii 2.02 -> 2.02. Rows: R3-nbfc 0.03; R2FII-label FII-labelled row 9.42 -> fii; Matthews India Fund 4.04 in-row(new-format:InstitutionsForeignPortfolioInvestorO; R2FII-holders Acacia Partners LP 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne); Acacia Institutional Partners",
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Other Foreign Port Folio Investor' (2,954,661 shares = 4.4817 of 65,927,727) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 28.0676 -> 30.0312 (share counts: FPI 10,632,945 + 'Foreign Institutional Institution' 6,211,291 + 'Foreign Port Folio Investor' 2,954,661 of 65,927,727), dii unchanged.",
     "superseded": {
      "cell": [
       33.78,
-      27.0676,
+      28.0676,
       2.0221,
       1.4473,
       0.0,
@@ -252130,15 +253406,37 @@
      ],
      "was": [
       33.78,
-      16.1276,
-      1.9921,
+      27.0676,
+      2.0221,
       1.4473,
       0.0,
       "2016-07-25",
       6990
      ],
      "src": "bsexbrl:532498_2572016183429_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 16.13 -> 27.07, dii 1.99 -> 2.02. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Other Foreign Institutional Institution 9.42 9.42 FII-labelled row 9.42 -> fii; Matthews India Fund 4.04 in-row(new-format:InstitutionsForeignPortfolioInvestorOne); Morgan Stanley Asia (Singapore) Pte 2.30 in-row(curated); Bank Muscat S A O G A/C Bank Muscat \nIndia Fund 1.59 in-row(regex); R2FII-holders Other Foreign Port Folio Investor 4.48 1.52 Acacia Partners LP 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne); Acacia I | R1: R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 27.07 -> 28.07, dii 2.02 -> 2.02. Rows: R3-nbfc 0.03; R2FII-label FII-labelled row 9.42 -> fii; Matthews India Fund 4.04 in-row(new-format:InstitutionsForeignPortfolioInvestorO; R2FII-holders Acacia Partners LP 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne); Acacia Institutional Partners",
+     "superseded": {
+      "cell": [
+       33.78,
+       27.0676,
+       2.0221,
+       1.4473,
+       0.0,
+       "2016-07-25",
+       6990
+      ],
+      "was": [
+       33.78,
+       16.1276,
+       1.9921,
+       1.4473,
+       0.0,
+       "2016-07-25",
+       6990
+      ],
+      "src": "bsexbrl:532498_2572016183429_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 16.13 -> 27.07, dii 1.99 -> 2.02. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Other Foreign Institutional Institution 9.42 9.42 FII-labelled row 9.42 -> fii; Matthews India Fund 4.04 in-row(new-format:InstitutionsForeignPortfolioInvestorOne); Morgan Stanley Asia (Singapore) Pte 2.30 in-row(curated); Bank Muscat S A O G A/C Bank Muscat \nIndia Fund 1.59 in-row(regex); R2FII-holders Other Foreign Port Folio Investor 4.48 1.52 Acacia Partners LP 1.52 fii(new-format:InstitutionsForeignPortfolioInvestorOne); Acacia I | R1: R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2016-09-30": {
@@ -333404,7 +334702,7 @@
    "2018-03-31": {
     "cell": [
      49.53,
-     8.4021,
+     8.4223,
      15.4351,
      9.7181,
      4.1913,
@@ -333413,20 +334711,42 @@
     ],
     "was": [
      49.53,
-     8.1921,
-     15.3051,
+     8.4021,
+     15.4351,
      9.7181,
      4.1913,
      "2018-04-20",
      52449
     ],
     "src": "bsexbrl:500403_1942018184144_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.19 -> 8.40, dii 15.31 -> 15.44. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (42,537 shares = 0.0202 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 8.4021 -> 8.4223, dii unchanged.",
+    "superseded": {
+     "cell": [
+      49.53,
+      8.4021,
+      15.4351,
+      9.7181,
+      4.1913,
+      "2018-04-20",
+      52449
+     ],
+     "was": [
+      49.53,
+      8.1921,
+      15.3051,
+      9.7181,
+      4.1913,
+      "2018-04-20",
+      52449
+     ],
+     "src": "bsexbrl:500403_1942018184144_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.19 -> 8.40, dii 15.31 -> 15.44. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
      49.53,
-     8.3659,
+     8.385,
      15.4995,
      9.8236,
      4.1116,
@@ -333435,20 +334755,42 @@
     ],
     "was": [
      49.53,
-     8.1559,
-     15.3695,
+     8.3659,
+     15.4995,
      9.8236,
      4.1116,
      "2018-07-20",
      54730
     ],
     "src": "bsexbrl:500403_1972018165450_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.16 -> 8.37, dii 15.37 -> 15.50. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (40,100 shares = 0.0191 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 8.3659 -> 8.3850, dii unchanged.",
+    "superseded": {
+     "cell": [
+      49.53,
+      8.3659,
+      15.4995,
+      9.8236,
+      4.1116,
+      "2018-07-20",
+      54730
+     ],
+     "was": [
+      49.53,
+      8.1559,
+      15.3695,
+      9.8236,
+      4.1116,
+      "2018-07-20",
+      54730
+     ],
+     "src": "bsexbrl:500403_1972018165450_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.16 -> 8.37, dii 15.37 -> 15.50. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-09-30": {
     "cell": [
      49.53,
-     8.4892,
+     8.51,
      15.5367,
      9.9243,
      4.0192,
@@ -333457,20 +334799,42 @@
     ],
     "was": [
      49.53,
-     8.2792,
-     15.4067,
+     8.4892,
+     15.5367,
      9.9243,
      4.0192,
      "2018-10-19",
      57773
     ],
     "src": "bsexbrl:500403_17102018173431_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.28 -> 8.49, dii 15.41 -> 15.54. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (43,771 shares = 0.0208 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 8.4892 -> 8.5100, dii unchanged.",
+    "superseded": {
+     "cell": [
+      49.53,
+      8.4892,
+      15.5367,
+      9.9243,
+      4.0192,
+      "2018-10-19",
+      57773
+     ],
+     "was": [
+      49.53,
+      8.2792,
+      15.4067,
+      9.9243,
+      4.0192,
+      "2018-10-19",
+      57773
+     ],
+     "src": "bsexbrl:500403_17102018173431_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.28 -> 8.49, dii 15.41 -> 15.54. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.21 0.21 FII-labelled row 0.21 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.13. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-12-31": {
     "cell": [
      49.53,
-     7.8399,
+     7.8457,
      15.5654,
      9.9406,
      4.0402,
@@ -333479,20 +334843,43 @@
     ],
     "was": [
      49.53,
-     7.5999,
-     15.5454,
+     7.8399,
+     15.5654,
      9.9406,
      4.0402,
      "2019-01-22",
      60745
     ],
     "src": "bsexbrl:500403_2112019163141_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.60 -> 7.84, dii 15.55 -> 15.57. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.24 0.24 FII-labelled row 0.24 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (12,281 shares = 0.0058 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 7.8399 -> 7.8457, dii unchanged.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      49.53,
+      7.8399,
+      15.5654,
+      9.9406,
+      4.0402,
+      "2019-01-22",
+      60745
+     ],
+     "was": [
+      49.53,
+      7.5999,
+      15.5454,
+      9.9406,
+      4.0402,
+      "2019-01-22",
+      60745
+     ],
+     "src": "bsexbrl:500403_2112019163141_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.60 -> 7.84, dii 15.55 -> 15.57. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.24 0.24 FII-labelled row 0.24 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-03-31": {
     "cell": [
      49.53,
-     7.8705,
+     7.8784,
      15.8663,
      10.2433,
      4.0402,
@@ -333501,20 +334888,43 @@
     ],
     "was": [
      49.53,
-     7.6305,
-     15.8463,
+     7.8705,
+     15.8663,
      10.2433,
      4.0402,
      "2019-04-18",
      59349
     ],
     "src": "bsexbrl:500403_1742019202234_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.63 -> 7.87, dii 15.85 -> 15.87. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.24 0.24 FII-labelled row 0.24 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (16,632 shares = 0.0079 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 7.8705 -> 7.8784, dii unchanged.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      49.53,
+      7.8705,
+      15.8663,
+      10.2433,
+      4.0402,
+      "2019-04-18",
+      59349
+     ],
+     "was": [
+      49.53,
+      7.6305,
+      15.8463,
+      10.2433,
+      4.0402,
+      "2019-04-18",
+      59349
+     ],
+     "src": "bsexbrl:500403_1742019202234_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.63 -> 7.87, dii 15.85 -> 15.87. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.24 0.24 FII-labelled row 0.24 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-06-30": {
     "cell": [
      49.53,
-     8.0908,
+     8.0974,
      16.0053,
      10.3712,
      4.0354,
@@ -333523,15 +334933,38 @@
     ],
     "was": [
      49.53,
-     7.8408,
-     15.9853,
+     8.0908,
+     16.0053,
      10.3712,
      4.0354,
      "2019-07-18",
      58531
     ],
     "src": "bsexbrl:500403_1772019153844_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.84 -> 8.09, dii 15.99 -> 16.01. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.25 0.25 FII-labelled row 0.25 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR - CORPORATE' (13,952 shares = 0.0066 of 210,128,370) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 8.0908 -> 8.0974, dii unchanged.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      49.53,
+      8.0908,
+      16.0053,
+      10.3712,
+      4.0354,
+      "2019-07-18",
+      58531
+     ],
+     "was": [
+      49.53,
+      7.8408,
+      15.9853,
+      10.3712,
+      4.0354,
+      "2019-07-18",
+      58531
+     ],
+     "src": "bsexbrl:500403_1772019153844_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.84 -> 8.09, dii 15.99 -> 16.01. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Others FOREIGN INSTITUTIONAL INVESTOR 0.25 0.25 FII-labelled row 0.25 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+    }
    },
    "2012-06-30": {
     "cell": [
@@ -338568,6 +340001,28 @@
     ],
     "src": "bsexbrl:509243_14102019161333_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 1.08 -> 1.15, dii 6.04 -> 6.05. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-label Foreign Portfolio Investor (Category - III) 0.07 0.07 FII-labelled row 0.07 -> fii | R1: R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json"
+   },
+   "2018-09-30": {
+    "cell": [
+     45.36,
+     2.945,
+     5.182,
+     4.9588,
+     0.0,
+     "2018-10-22",
+     27420
+    ],
+    "was": [
+     45.36,
+     2.8797,
+     5.182,
+     4.9588,
+     0.0,
+     "2018-10-22",
+     27420
+    ],
+    "src": "bsexbrl:509243_19102018154222_SHP.xml",
+    "why": "\u00a7164r batch 24 (2026-10-05, found cell by cell vs Quantmac): the company labels this non-institution row 'Others FOREIGN PORT FOLIO INVESTOR-CORPORATE' (5,000 shares = 0.0653 of 7,657,050) - a foreign portfolio investor category written with 'Port Folio' / a misspelling the reader's label pattern did not accept, so the row stayed out of FII. Reader fix: _shp_dii_rowfix._FOR / _PFO (LAB_FII, LAB_PUB, FORLAB, FORWORD, inst_tag accept the spellings seen in filings); old vs new reader on identical data changes only these cells. fii 2.8797 -> 2.9450, dii unchanged."
    }
   },
   "TVTODAY": {
