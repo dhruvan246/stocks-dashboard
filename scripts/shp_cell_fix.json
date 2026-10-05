@@ -171223,7 +171223,7 @@
    "2023-02-22": {
     "cell": [
      27.46,
-     32.4104,
+     32.4099,
      26.4283,
      20.7268,
      4.6752,
@@ -171231,19 +171231,51 @@
      196152
     ],
     "was": [
-     31.82,
-     37.5559,
-     30.6241,
-     24.0174,
-     5.4174,
+     27.46,
+     32.4104,
+     26.4283,
+     20.7268,
+     4.6752,
      "2023-03-13",
-     338
+     196152
     ],
     "src": "bsexbrl:532689_332023162529_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged."
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2023-02-22 - 532689_332023162529_SHP.xml: FII rows 31,746,385 sh / total 97,952,814 = 32.4099; Institutions (Foreign) = FPI I 30,172,269 + FPI II 1,541,234 + 'Foreign Institutional Investors' 32,882; total 97,952,814 (promoters 26,899,076 = 27.46 %, as NSE's own summary of the revised filing states - the revised NSE XBRL's total 84,532,315 contradicts it). fii 32.4104 -> 32.4099.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      27.46,
+      32.4104,
+      26.4283,
+      20.7268,
+      4.6752,
+      "2023-03-13",
+      196152
+     ],
+     "was": [
+      31.82,
+      37.5559,
+      30.6241,
+      24.0174,
+      5.4174,
+      "2023-03-13",
+      338
+     ],
+     "src": "bsexbrl:532689_332023162529_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged."
+    }
    },
    "2016-12-31": {
     "cell": [
+     25.25,
+     31.0001,
+     12.8621,
+     12.647,
+     0.0,
+     "2017-01-05",
+     31698
+    ],
+    "was": [
      25.25,
      30.999,
      12.8621,
@@ -171252,21 +171284,13 @@
      "2017-01-05",
      31698
     ],
-    "was": [
-     25.25,
-     32.929,
-     12.8621,
-     12.647,
-     0.0,
-     "2017-01-05",
-     31698
-    ],
-    "src": "bsexbrl:532689_412017164217_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 12.86 -> 12.86, fii 32.93 -> 31.00. R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:92",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2016-12-31 - BSE Table III (qtrid 92): FPI B1e 14,488,995 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 31.0001. The institutions Any-Other block (8,361,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 4,119,762; MULTIPLES PRIVATE EQUITY FUND I LIMITED 2,908,125; MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMI 900,000 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (433,143 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 30.9990 -> 31.0001.",
+    "exact": true,
     "superseded": {
      "cell": [
       25.25,
-      32.929,
+      30.999,
       12.8621,
       12.647,
       0.0,
@@ -171275,17 +171299,26 @@
      ],
      "was": [
       25.25,
-      30.999,
-      14.7921,
+      32.929,
+      12.8621,
       12.647,
       0.0,
       "2017-01-05",
       31698
      ],
      "src": "bsexbrl:532689_412017164217_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.79 -> 12.86, fii 31.00 -> 32.93. R1-rest-follows-foreign-holders 1.93; R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 12.86 -> 12.86, fii 32.93 -> 31.00. R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
      "superseded": {
       "cell": [
+       25.25,
+       32.929,
+       12.8621,
+       12.647,
+       0.0,
+       "2017-01-05",
+       31698
+      ],
+      "was": [
        25.25,
        30.999,
        14.7921,
@@ -171294,19 +171327,19 @@
        "2017-01-05",
        31698
       ],
-      "was": [
-       25.25,
-       30.999,
-       30.5521,
-       12.647,
-       0.0,
-       "2017-01-05",
-       31698
-      ],
       "src": "bsexbrl:532689_412017164217_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.55 -> 14.79, fii 31.00 -> 31.00. R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R1-uncovered-remainder 1.93; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+      "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.79 -> 12.86, fii 31.00 -> 32.93. R1-rest-follows-foreign-holders 1.93; R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
       "superseded": {
        "cell": [
+        25.25,
+        30.999,
+        14.7921,
+        12.647,
+        0.0,
+        "2017-01-05",
+        31698
+       ],
+       "was": [
         25.25,
         30.999,
         30.5521,
@@ -171315,23 +171348,45 @@
         "2017-01-05",
         31698
        ],
-       "was": [
-        25.25,
-        48.8879,
-        12.6632,
-        12.647,
-        0.0,
-        "2017-01-05",
-        31698
-       ],
        "src": "bsexbrl:532689_412017164217_SHP.xml",
-       "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.55 -> 14.79, fii 31.00 -> 31.00. R1-public-label Other FOREIGN CORPORATE BODIES 17.89 public=15.96 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 8.81 foreign->public(new-format:ForeignCompanies); MULTIPLES PRIVATE EQUITY FUND I LIMITED 6.22 foreign->public(new-format~:ForeignCompanies); MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.93 ?->-(-) keyword; R1-uncovered-remainder 1.93; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+       "superseded": {
+        "cell": [
+         25.25,
+         30.999,
+         30.5521,
+         12.647,
+         0.0,
+         "2017-01-05",
+         31698
+        ],
+        "was": [
+         25.25,
+         48.8879,
+         12.6632,
+         12.647,
+         0.0,
+         "2017-01-05",
+         31698
+        ],
+        "src": "bsexbrl:532689_412017164217_SHP.xml",
+        "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN COR"
+       }
       }
      }
     }
    },
    "2017-03-31": {
     "cell": [
+     20.15,
+     38.9417,
+     12.4145,
+     12.1926,
+     0.0,
+     "2017-04-19",
+     30466
+    ],
+    "was": [
      20.15,
      39.2368,
      12.4145,
@@ -171340,21 +171395,13 @@
      "2017-04-19",
      30466
     ],
-    "was": [
-     20.15,
-     40.8522,
-     12.4145,
-     12.1926,
-     0.0,
-     "2017-04-19",
-     30466
-    ],
-    "src": "bsexbrl:532689_1942017142038_SHP.xml",
-    "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; PVRINOX itself files the holder on a 'Foreign Companies' row in Dec-2016 (the earlier run swept this named holder into FII with the block's rest). fii 40.8522 -> 39.2368, dii unchanged (share counts of 532689_1942017142038_SHP.xml).",
+    "src": "bsetable3:532689:93",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2017-03-31 - BSE Table III (qtrid 93): FPI B1e 18,200,790 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 38.9417. The institutions Any-Other block (8,216,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMI 755,000; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 39.2368 -> 38.9417.",
+    "exact": true,
     "superseded": {
      "cell": [
       20.15,
-      40.8522,
+      39.2368,
       12.4145,
       12.1926,
       0.0,
@@ -171363,20 +171410,20 @@
      ],
      "was": [
       20.15,
-      38.9422,
-      14.3245,
+      40.8522,
+      12.4145,
       12.1926,
       0.0,
       "2017-04-19",
       30466
      ],
      "src": "bsexbrl:532689_1942017142038_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.32 -> 12.41, fii 38.94 -> 40.85. R1-rest-follows-foreign-holders 1.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; PVRINOX itself files the holder on a 'Foreign Companies' row in Dec-2016 (the earlier run swept this named holder into FII with the block's rest). fii 40.8522 -> 39.2368, dii unchanged (share counts of 532689_1942017142038_SHP.xml).",
      "superseded": {
       "cell": [
        20.15,
-       38.9422,
-       14.3245,
+       40.8522,
+       12.4145,
        12.1926,
        0.0,
        "2017-04-19",
@@ -171385,21 +171432,43 @@
       "was": [
        20.15,
        38.9422,
-       29.7945,
+       14.3245,
        12.1926,
        0.0,
        "2017-04-19",
        30466
       ],
       "src": "bsexbrl:532689_1942017142038_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 14.32, fii 38.94 -> 38.94. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 1.91; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 14.32 -> 12.41, fii 38.94 -> 40.85. R1-rest-follows-foreign-holders 1.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        20.15,
+        38.9422,
+        14.3245,
+        12.1926,
+        0.0,
+        "2017-04-19",
+        30466
+       ],
+       "was": [
+        20.15,
+        38.9422,
+        29.7945,
+        12.1926,
+        0.0,
+        "2017-04-19",
+        30466
+       ],
+       "src": "bsexbrl:532689_1942017142038_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 14.32, fii 38.94 -> 38.94. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-unresolved Other 0.0 MAJOR CINEPLEX GROUP PUBLIC COMPANY LIMITED 1.62 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 1.91; R2-label Other ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2017-09-30": {
     "cell": [
      20.25,
-     42.31,
+     41.3992,
      9.8354,
      9.8012,
      0.0,
@@ -171408,17 +171477,27 @@
     ],
     "was": [
      20.25,
-     41.4,
-     10.7454,
+     42.31,
+     9.8354,
      9.8012,
      0.0,
      "2017-10-12",
      36706
     ],
-    "src": "bsexbrl:532689_12102017103957_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.75 -> 9.84, fii 41.40 -> 42.31. R1-rest-follows-foreign-holders 0.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:95",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2017-09-30 - BSE Table III (qtrid 95): FPI B1e 19,349,395 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 41.3992. The institutions Any-Other block (7,751,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (431,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 42.3100 -> 41.3992.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      42.31,
+      9.8354,
+      9.8012,
+      0.0,
+      "2017-10-12",
+      36706
+     ],
+     "was": [
       20.25,
       41.4,
       10.7454,
@@ -171427,23 +171506,36 @@
       "2017-10-12",
       36706
      ],
-     "was": [
-      20.25,
-      41.4,
-      26.4154,
-      9.8012,
-      0.0,
-      "2017-10-12",
-      36706
-     ],
      "src": "bsexbrl:532689_12102017103957_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.42 -> 10.75, fii 41.40 -> 41.40. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.91. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.75 -> 9.84, fii 41.40 -> 42.31. R1-rest-follows-foreign-holders 0.91; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       41.4,
+       10.7454,
+       9.8012,
+       0.0,
+       "2017-10-12",
+       36706
+      ],
+      "was": [
+       20.25,
+       41.4,
+       26.4154,
+       9.8012,
+       0.0,
+       "2017-10-12",
+       36706
+      ],
+      "src": "bsexbrl:532689_12102017103957_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.42 -> 10.75, fii 41.40 -> 41.40. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.91. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-12-31": {
     "cell": [
      20.25,
-     44.0658,
+     43.5549,
      9.6833,
      9.6695,
      0.0,
@@ -171452,17 +171544,27 @@
     ],
     "was": [
      20.25,
-     43.5558,
-     10.1933,
+     44.0658,
+     9.6833,
      9.6695,
      0.0,
      "2018-01-04",
      34776
     ],
-    "src": "bsexbrl:532689_312018164828_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.19 -> 9.68, fii 43.56 -> 44.07. R1-rest-follows-foreign-holders 0.51; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CG=REEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:96",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2017-12-31 - BSE Table III (qtrid 96): FPI B1e 20,356,943 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 43.5549. The institutions Any-Other block (7,561,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CG=REEK INVESTMENT LIMITED 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (241,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 44.0658 -> 43.5549.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      44.0658,
+      9.6833,
+      9.6695,
+      0.0,
+      "2018-01-04",
+      34776
+     ],
+     "was": [
       20.25,
       43.5558,
       10.1933,
@@ -171471,23 +171573,36 @@
       "2018-01-04",
       34776
      ],
-     "was": [
-      20.25,
-      43.5558,
-      25.8633,
-      9.6695,
-      0.0,
-      "2018-01-04",
-      34776
-     ],
      "src": "bsexbrl:532689_312018164828_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.86 -> 10.19, fii 43.56 -> 43.56. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CG=REEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.51. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.19 -> 9.68, fii 43.56 -> 44.07. R1-rest-follows-foreign-holders 0.51; R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CG=REEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       43.5558,
+       10.1933,
+       9.6695,
+       0.0,
+       "2018-01-04",
+       34776
+      ],
+      "was": [
+       20.25,
+       43.5558,
+       25.8633,
+       9.6695,
+       0.0,
+       "2018-01-04",
+       34776
+      ],
+      "src": "bsexbrl:532689_312018164828_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.86 -> 10.19, fii 43.56 -> 43.56. R1-foreign-holders Other 0.0 public=7.67 fii=0.00 BERRY CG=REEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.51. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-03-31": {
     "cell": [
      19.93,
-     44.0999,
+     43.8095,
      9.9428,
      9.9104,
      0.0,
@@ -171496,17 +171611,27 @@
     ],
     "was": [
      19.93,
-     43.8099,
-     10.2328,
+     44.0999,
+     9.9428,
      9.9104,
      0.0,
      "2018-04-20",
      33465
     ],
-    "src": "bsexbrl:532689_194201816109_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.23 -> 9.94, fii 43.81 -> 44.10. R1-rest-follows-foreign-holders 0.29; R1-foreign-holders Bodies Corporate 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND LIMITED 3.79 foreign->public(memory~); R1-foreign-holders Bodies Corporate 0.0 public=4.21 fii=0.00 PLENTY  PRIVATE EQUITY FUND LIMITED 4.21 foreign->public(new-format~:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:97",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2018-03-31 - BSE Table III (qtrid 97): FPI B1e 20,475,945 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 43.8095. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY  PRIVATE EQUITY FUND LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND LIMITED 1,771,598; BERRY CREEK INVESTMENT LIMITED 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 44.0999 -> 43.8095.",
+    "exact": true,
     "superseded": {
      "cell": [
+      19.93,
+      44.0999,
+      9.9428,
+      9.9104,
+      0.0,
+      "2018-04-20",
+      33465
+     ],
+     "was": [
       19.93,
       43.8099,
       10.2328,
@@ -171515,23 +171640,36 @@
       "2018-04-20",
       33465
      ],
-     "was": [
-      19.93,
-      43.8099,
-      25.8928,
-      9.9104,
-      0.0,
-      "2018-04-20",
-      33465
-     ],
      "src": "bsexbrl:532689_194201816109_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.89 -> 10.23, fii 43.81 -> 43.81. R1-foreign-holders Bodies Corporate 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND LIMITED 3.79 foreign->public(memory~); R1-foreign-holders Bodies Corporate 0.0 public=4.21 fii=0.00 PLENTY  PRIVATE EQUITY FUND LIMITED 4.21 foreign->public(new-format~:ForeignCompanies); R1-uncovered-remainder 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.23 -> 9.94, fii 43.81 -> 44.10. R1-rest-follows-foreign-holders 0.29; R1-foreign-holders Bodies Corporate 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND LIMITED 3.79 foreign->public(memory~); R1-foreign-holders Bodies Corporate 0.0 public=4.21 fii=0.00 PLENTY  PRIVATE EQUITY FUND LIMITED 4.21 foreign->public(new-format~:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       19.93,
+       43.8099,
+       10.2328,
+       9.9104,
+       0.0,
+       "2018-04-20",
+       33465
+      ],
+      "was": [
+       19.93,
+       43.8099,
+       25.8928,
+       9.9104,
+       0.0,
+       "2018-04-20",
+       33465
+      ],
+      "src": "bsexbrl:532689_194201816109_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.89 -> 10.23, fii 43.81 -> 43.81. R1-foreign-holders Bodies Corporate 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LIMITED 7.67 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND LIMITED 3.79 foreign->public(memory~); R1-foreign-holders Bodies Corporate 0.0 public=4.21 fii=0.00 PLENTY  PRIVATE EQUITY FUND LIMITED 4.21 foreign->public(new-format~:ForeignCompanies); R1-uncovered-remainder 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-06-30": {
     "cell": [
      20.25,
-     41.2239,
+     40.9331,
      13.2644,
      13.2234,
      0.0,
@@ -171540,17 +171678,27 @@
     ],
     "was": [
      20.25,
-     40.9339,
-     13.5544,
+     41.2239,
+     13.2644,
      13.2234,
      0.0,
      "2018-07-06",
      33673
     ],
-    "src": "bsexbrl:532689_672018104833_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 13.55 -> 13.26, fii 40.93 -> 41.22. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:98",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2018-06-30 - BSE Table III (qtrid 98): FPI B1e 19,131,530 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 40.9331. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 41.2239 -> 40.9331.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      41.2239,
+      13.2644,
+      13.2234,
+      0.0,
+      "2018-07-06",
+      33673
+     ],
+     "was": [
       20.25,
       40.9339,
       13.5544,
@@ -171559,23 +171707,36 @@
       "2018-07-06",
       33673
      ],
-     "was": [
-      20.25,
-      40.9339,
-      29.2144,
-      13.2234,
-      0.0,
-      "2018-07-06",
-      33673
-     ],
      "src": "bsexbrl:532689_672018104833_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.21 -> 13.55, fii 40.93 -> 40.93. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 13.55 -> 13.26, fii 40.93 -> 41.22. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       40.9339,
+       13.5544,
+       13.2234,
+       0.0,
+       "2018-07-06",
+       33673
+      ],
+      "was": [
+       20.25,
+       40.9339,
+       29.2144,
+       13.2234,
+       0.0,
+       "2018-07-06",
+       33673
+      ],
+      "src": "bsexbrl:532689_672018104833_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.21 -> 13.55, fii 40.93 -> 40.93. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-09-30": {
     "cell": [
      20.25,
-     39.762,
+     39.4712,
      14.3282,
      14.2487,
      0.0,
@@ -171584,17 +171745,27 @@
     ],
     "was": [
      20.25,
-     39.472,
-     14.6182,
+     39.762,
+     14.3282,
      14.2487,
      0.0,
      "2018-10-18",
      36014
     ],
-    "src": "bsexbrl:532689_1810201893020_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 14.62 -> 14.33, fii 39.47 -> 39.76. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others Alternate Investment Fund 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:99",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2018-09-30 - BSE Table III (qtrid 99): FPI B1e 18,448,284 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 39.4712. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 39.7620 -> 39.4712.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      39.762,
+      14.3282,
+      14.2487,
+      0.0,
+      "2018-10-18",
+      36014
+     ],
+     "was": [
       20.25,
       39.472,
       14.6182,
@@ -171603,23 +171774,36 @@
       "2018-10-18",
       36014
      ],
-     "was": [
-      20.25,
-      39.472,
-      30.2382,
-      14.2487,
-      0.0,
-      "2018-10-18",
-      36014
-     ],
      "src": "bsexbrl:532689_1810201893020_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.24 -> 14.62, fii 39.47 -> 39.47. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others Alternate Investment Fund 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 14.62 -> 14.33, fii 39.47 -> 39.76. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others Alternate Investment Fund 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       39.472,
+       14.6182,
+       14.2487,
+       0.0,
+       "2018-10-18",
+       36014
+      ],
+      "was": [
+       20.25,
+       39.472,
+       30.2382,
+       14.2487,
+       0.0,
+       "2018-10-18",
+       36014
+      ],
+      "src": "bsexbrl:532689_1810201893020_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.24 -> 14.62, fii 39.47 -> 39.47. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others Alternate Investment Fund 0.04 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2018-12-31": {
     "cell": [
      20.25,
-     40.3276,
+     40.0368,
      14.15,
      13.9861,
      0.0,
@@ -171628,17 +171812,27 @@
     ],
     "was": [
      20.25,
-     40.0376,
-     14.44,
+     40.3276,
+     14.15,
      13.9861,
      0.0,
      "2019-01-17",
      33805
     ],
-    "src": "bsexbrl:532689_1712019133510_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 14.44 -> 14.15, fii 40.04 -> 40.33. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.13 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:100",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2018-12-31 - BSE Table III (qtrid 100): FPI B1e 18,712,650 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 40.0368. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 40.3276 -> 40.0368.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      40.3276,
+      14.15,
+      13.9861,
+      0.0,
+      "2019-01-17",
+      33805
+     ],
+     "was": [
       20.25,
       40.0376,
       14.44,
@@ -171647,23 +171841,36 @@
       "2019-01-17",
       33805
      ],
-     "was": [
-      20.25,
-      40.0376,
-      29.97,
-      13.9861,
-      0.0,
-      "2019-01-17",
-      33805
-     ],
      "src": "bsexbrl:532689_1712019133510_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.97 -> 14.44, fii 40.04 -> 40.04. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.13 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 14.44 -> 14.15, fii 40.04 -> 40.33. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.13 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       40.0376,
+       14.44,
+       13.9861,
+       0.0,
+       "2019-01-17",
+       33805
+      ],
+      "was": [
+       20.25,
+       40.0376,
+       29.97,
+       13.9861,
+       0.0,
+       "2019-01-17",
+       33805
+      ],
+      "src": "bsexbrl:532689_1712019133510_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.97 -> 14.44, fii 40.04 -> 40.04. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.13 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2019-03-31": {
     "cell": [
      20.25,
-     42.3327,
+     42.0419,
      12.5429,
      12.3069,
      0.0,
@@ -171672,17 +171879,27 @@
     ],
     "was": [
      20.25,
-     42.0427,
-     12.8329,
+     42.3327,
+     12.5429,
      12.3069,
      0.0,
      "2019-04-08",
      33264
     ],
-    "src": "bsexbrl:532689_54201917136_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 12.83 -> 12.54, fii 42.04 -> 42.33. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:101",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2019-03-31 - BSE Table III (qtrid 101): FPI B1e 19,649,772 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 42.0419. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 42.3327 -> 42.0419.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      42.3327,
+      12.5429,
+      12.3069,
+      0.0,
+      "2019-04-08",
+      33264
+     ],
+     "was": [
       20.25,
       42.0427,
       12.8329,
@@ -171691,23 +171908,36 @@
       "2019-04-08",
       33264
      ],
-     "was": [
-      20.25,
-      42.0427,
-      28.3029,
-      12.3069,
-      0.0,
-      "2019-04-08",
-      33264
-     ],
      "src": "bsexbrl:532689_54201917136_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.30 -> 12.83, fii 42.04 -> 42.04. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 12.83 -> 12.54, fii 42.04 -> 42.33. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.25,
+       42.0427,
+       12.8329,
+       12.3069,
+       0.0,
+       "2019-04-08",
+       33264
+      ],
+      "was": [
+       20.25,
+       42.0427,
+       28.3029,
+       12.3069,
+       0.0,
+       "2019-04-08",
+       33264
+      ],
+      "src": "bsexbrl:532689_54201917136_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.30 -> 12.83, fii 42.04 -> 42.04. R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.19 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2019-06-30": {
     "cell": [
      20.24,
-     45.2228,
+     44.9241,
      10.0978,
      9.4942,
      0.0,
@@ -171716,17 +171946,27 @@
     ],
     "was": [
      20.24,
-     44.9228,
-     10.3978,
+     45.2228,
+     10.0978,
      9.4942,
      0.0,
      "2019-07-18",
      34635
     ],
-    "src": "bsexbrl:532689_177201916919_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.40 -> 10.10, fii 44.92 -> 45.22. R1-rest-follows-foreign-holders 0.3; R1-public-label Overseas Corporate Bodies 0.0 public=7.66 fii=0.00 BERRY CREEK INVESTMENT LTD 7.66 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.20 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.20 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.46 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:102",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2019-06-30 - BSE Table III (qtrid 102): FPI B1e 21,011,258 + FVCI B1d 0 on (A+B+C2) 46,770,588 = 44.9241. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 45.2228 -> 44.9241.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.24,
+      45.2228,
+      10.0978,
+      9.4942,
+      0.0,
+      "2019-07-18",
+      34635
+     ],
+     "was": [
       20.24,
       44.9228,
       10.3978,
@@ -171735,23 +171975,36 @@
       "2019-07-18",
       34635
      ],
-     "was": [
-      20.24,
-      44.9228,
-      25.5778,
-      9.4942,
-      0.0,
-      "2019-07-18",
-      34635
-     ],
      "src": "bsexbrl:532689_177201916919_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.58 -> 10.40, fii 44.92 -> 44.92. R1-public-label Overseas Corporate Bodies 0.0 public=7.66 fii=0.00 BERRY CREEK INVESTMENT LTD 7.66 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.20 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.20 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.3; R2-label Others ALTERNATIVE INVESTMENT FUND 0.46 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 10.40 -> 10.10, fii 44.92 -> 45.22. R1-rest-follows-foreign-holders 0.3; R1-public-label Overseas Corporate Bodies 0.0 public=7.66 fii=0.00 BERRY CREEK INVESTMENT LTD 7.66 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.20 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.20 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.46 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       20.24,
+       44.9228,
+       10.3978,
+       9.4942,
+       0.0,
+       "2019-07-18",
+       34635
+      ],
+      "was": [
+       20.24,
+       44.9228,
+       25.5778,
+       9.4942,
+       0.0,
+       "2019-07-18",
+       34635
+      ],
+      "src": "bsexbrl:532689_177201916919_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.58 -> 10.40, fii 44.92 -> 44.92. R1-public-label Overseas Corporate Bodies 0.0 public=7.66 fii=0.00 BERRY CREEK INVESTMENT LTD 7.66 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.20 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.20 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.3; R2-label Others ALTERNATIVE INVESTMENT FUND 0.46 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2019-09-30": {
     "cell": [
      19.57,
-     42.7882,
+     42.5005,
      11.7772,
      11.0925,
      0.0,
@@ -171760,17 +172013,27 @@
     ],
     "was": [
      19.57,
-     42.4982,
-     12.0672,
+     42.7882,
+     11.7772,
      11.0925,
      0.0,
      "2019-10-18",
      32811
     ],
-    "src": "bsexbrl:532689_18102019102350_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 12.07 -> 11.78, fii 42.50 -> 42.79. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.57 ; R2-label Others Qualified Institutional Buyer 0.04 . Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:103",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2019-09-30 - BSE Table III (qtrid 103): FPI B1e 20,560,497 + FVCI B1d 0 on (A+B+C2) 48,377,062 = 42.5005. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 42.7882 -> 42.5005.",
+    "exact": true,
     "superseded": {
      "cell": [
+      19.57,
+      42.7882,
+      11.7772,
+      11.0925,
+      0.0,
+      "2019-10-18",
+      32811
+     ],
+     "was": [
       19.57,
       42.4982,
       12.0672,
@@ -171779,23 +172042,36 @@
       "2019-10-18",
       32811
      ],
-     "was": [
-      19.57,
-      42.4982,
-      26.5872,
-      11.0925,
-      0.0,
-      "2019-10-18",
-      32811
-     ],
      "src": "bsexbrl:532689_18102019102350_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.59 -> 12.07, fii 42.50 -> 42.50. R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.57 ; R2-label Others Qualified Institutional Buyer 0.04 . Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 12.07 -> 11.78, fii 42.50 -> 42.79. R1-rest-follows-foreign-holders 0.29; R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.57 ; R2-label Others Qualified Institutional Buyer 0.04 . Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       19.57,
+       42.4982,
+       12.0672,
+       11.0925,
+       0.0,
+       "2019-10-18",
+       32811
+      ],
+      "was": [
+       19.57,
+       42.4982,
+       26.5872,
+       11.0925,
+       0.0,
+       "2019-10-18",
+       32811
+      ],
+      "src": "bsexbrl:532689_18102019102350_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.59 -> 12.07, fii 42.50 -> 42.50. R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.57 ; R2-label Others Qualified Institutional Buyer 0.04 . Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2019-12-31": {
     "cell": [
      18.44,
-     43.2102,
+     42.9406,
      15.5223,
      15.5065,
      0.0,
@@ -171804,17 +172080,27 @@
     ],
     "was": [
      18.44,
-     42.9402,
-     15.7923,
+     43.2102,
+     15.5223,
      15.5065,
      0.0,
      "2020-01-17",
      38285
     ],
-    "src": "bsexbrl:532689_522020171634_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 15.79 -> 15.52, fii 42.94 -> 43.21. R1-rest-follows-foreign-holders 0.27; R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:104",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2019-12-31 - BSE Table III (qtrid 104): FPI B1e 22,042,411 + FVCI B1d 0 on (A+B+C2) 51,332,345 = 42.9406. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 43.2102 -> 42.9406.",
+    "exact": true,
     "superseded": {
      "cell": [
+      18.44,
+      43.2102,
+      15.5223,
+      15.5065,
+      0.0,
+      "2020-01-17",
+      38285
+     ],
+     "was": [
       18.44,
       42.9402,
       15.7923,
@@ -171823,23 +172109,36 @@
       "2020-01-17",
       38285
      ],
-     "was": [
-      18.44,
-      42.9402,
-      30.0523,
-      15.5065,
-      0.0,
-      "2020-01-17",
-      38285
-     ],
      "src": "bsexbrl:532689_522020171634_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.05 -> 15.79, fii 42.94 -> 42.94. R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 15.79 -> 15.52, fii 42.94 -> 43.21. R1-rest-follows-foreign-holders 0.27; R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       18.44,
+       42.9402,
+       15.7923,
+       15.5065,
+       0.0,
+       "2020-01-17",
+       38285
+      ],
+      "was": [
+       18.44,
+       42.9402,
+       30.0523,
+       15.5065,
+       0.0,
+       "2020-01-17",
+       38285
+      ],
+      "src": "bsexbrl:532689_522020171634_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.05 -> 15.79, fii 42.94 -> 42.94. R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2020-03-31": {
     "cell": [
      18.54,
-     38.6225,
+     38.3506,
      20.1578,
      20.0058,
      0.1266,
@@ -171848,17 +172147,27 @@
     ],
     "was": [
      18.54,
-     38.3525,
-     20.4278,
+     38.6225,
+     20.1578,
      20.0058,
      0.1266,
      "2020-04-17",
      53126
     ],
-    "src": "bsexbrl:532689_1742020111935_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 20.43 -> 20.16, fii 38.35 -> 38.62. R1-rest-follows-foreign-holders 0.27; R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.45 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(memory~) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies) keyword. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:105",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2020-03-31 - BSE Table III (qtrid 105): FPI B1e 19,692,725 + FVCI B1d 0 on (A+B+C2) 51,349,145 = 38.3506. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507; MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,582,585 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 38.6225 -> 38.3506.",
+    "exact": true,
     "superseded": {
      "cell": [
+      18.54,
+      38.6225,
+      20.1578,
+      20.0058,
+      0.1266,
+      "2020-04-17",
+      53126
+     ],
+     "was": [
       18.54,
       38.3525,
       20.4278,
@@ -171867,23 +172176,36 @@
       "2020-04-17",
       53126
      ],
-     "was": [
-      18.54,
-      38.3525,
-      34.6878,
-      20.0058,
-      0.1266,
-      "2020-04-17",
-      53126
-     ],
      "src": "bsexbrl:532689_1742020111935_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 34.69 -> 20.43, fii 38.35 -> 38.35. R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.45 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(memory~) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 20.43 -> 20.16, fii 38.35 -> 38.62. R1-rest-follows-foreign-holders 0.27; R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.45 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(memory~) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies) keyword. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       18.54,
+       38.3525,
+       20.4278,
+       20.0058,
+       0.1266,
+       "2020-04-17",
+       53126
+      ],
+      "was": [
+       18.54,
+       38.3525,
+       34.6878,
+       20.0058,
+       0.1266,
+       "2020-04-17",
+       53126
+      ],
+      "src": "bsexbrl:532689_1742020111935_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 34.69 -> 20.43, fii 38.35 -> 38.35. R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.45 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(memory~) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2020-06-30": {
     "cell": [
      18.56,
-     37.2654,
+     36.9949,
      15.2632,
      14.9097,
      0.2337,
@@ -171892,17 +172214,27 @@
     ],
     "was": [
      18.56,
-     36.9954,
-     15.5332,
+     37.2654,
+     15.2632,
      14.9097,
      0.2337,
      "2020-07-02",
      134639
     ],
-    "src": "bsexbrl:532689_27202014123_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 15.53 -> 15.26, fii 37.00 -> 37.27. R1-rest-follows-foreign-holders 0.27; R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:106",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2020-06-30 - BSE Table III (qtrid 106): FPI B1e 18,996,581 + FVCI B1d 0 on (A+B+C2) 51,349,145 = 36.9949. The institutions Any-Other block (7,461,030 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders BERRY CREEK INVESTMENT LTD 3,582,585; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; PLENTY PRIVATE EQUITY FUND I LIMITED 1,965,507 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (141,340 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 37.2654 -> 36.9949.",
+    "exact": true,
     "superseded": {
      "cell": [
+      18.56,
+      37.2654,
+      15.2632,
+      14.9097,
+      0.2337,
+      "2020-07-02",
+      134639
+     ],
+     "was": [
       18.56,
       36.9954,
       15.5332,
@@ -171911,23 +172243,36 @@
       "2020-07-02",
       134639
      ],
-     "was": [
-      18.56,
-      36.9954,
-      29.7932,
-      14.9097,
-      0.2337,
-      "2020-07-02",
-      134639
-     ],
      "src": "bsexbrl:532689_27202014123_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 15.53, fii 37.00 -> 37.00. R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 15.53 -> 15.26, fii 37.00 -> 37.27. R1-rest-follows-foreign-holders 0.27; R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       18.56,
+       36.9954,
+       15.5332,
+       14.9097,
+       0.2337,
+       "2020-07-02",
+       134639
+      ],
+      "was": [
+       18.56,
+       36.9954,
+       29.7932,
+       14.9097,
+       0.2337,
+       "2020-07-02",
+       134639
+      ],
+      "src": "bsexbrl:532689_27202014123_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.79 -> 15.53, fii 37.00 -> 37.00. R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.83 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.83 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.27. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2020-09-30": {
     "cell": [
      18.79,
-     34.8847,
+     34.6037,
      18.2182,
      15.6776,
      2.2,
@@ -171936,20 +172281,21 @@
     ],
     "was": [
      18.79,
-     34.6047,
-     18.4982,
+     34.8847,
+     18.2182,
      15.6776,
      2.2,
      "2020-10-09",
      150880
     ],
-    "src": "bsexbrl:532689_8102020174844_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 18.50 -> 18.22, fii 34.60 -> 34.88. R1-rest-follows-foreign-holders 0.28; R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.32 ; R2-label Others Qualified Institutional Buyer 2.22 ICICI PRUDENTILAL LIFE INSURANCE COMPANY LIMTIED 2.20. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:107",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2020-09-30 - BSE Table III (qtrid 107): FPI B1e 19,091,923 + FVCI B1d 0 on (A+B+C2) 55,173,017 = 34.6037. The institutions Any-Other block (7,928,276 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; BERRY CREEK INVESTMENT LTD 3,849,373 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,788 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 34.8847 -> 34.6037.",
+    "exact": true,
     "superseded": {
      "cell": [
       18.79,
-      34.6047,
-      18.4982,
+      34.8847,
+      18.2182,
       15.6776,
       2.2,
       "2020-10-09",
@@ -171958,20 +172304,42 @@
      "was": [
       18.79,
       34.6047,
-      30.0482,
+      18.4982,
       15.6776,
-      0.0,
+      2.2,
       "2020-10-09",
       150880
      ],
      "src": "bsexbrl:532689_8102020174844_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.05 -> 18.50, fii 34.60 -> 34.60. R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.28; R2-label Others ALTERNATIVE INVESTMENT FUND 0.32 ; R2-label Others Qualified Institutional Buyer 2.22 ICICI PRUDENTILAL LIFE INSURANCE COMPANY LIMTIED 2.20. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 18.50 -> 18.22, fii 34.60 -> 34.88. R1-rest-follows-foreign-holders 0.28; R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.32 ; R2-label Others Qualified Institutional Buyer 2.22 ICICI PRUDENTILAL LIFE INSURANCE COMPANY LIMTIED 2.20. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       18.79,
+       34.6047,
+       18.4982,
+       15.6776,
+       2.2,
+       "2020-10-09",
+       150880
+      ],
+      "was": [
+       18.79,
+       34.6047,
+       30.0482,
+       15.6776,
+       0.0,
+       "2020-10-09",
+       150880
+      ],
+      "src": "bsexbrl:532689_8102020174844_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 30.05 -> 18.50, fii 34.60 -> 34.60. R1-public-label Overseas Corporate Bodies 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.28; R2-label Others ALTERNATIVE INVESTMENT FUND 0.32 ; R2-label Others Qualified Institutional Buyer 2.22 ICICI PRUDENTILAL LIFE INSURANCE COMPANY LIMTIED 2.20. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2020-12-31": {
     "cell": [
      18.79,
-     38.7848,
+     38.5037,
      16.4345,
      13.8534,
      2.58,
@@ -171980,20 +172348,21 @@
     ],
     "was": [
      18.79,
-     38.5048,
-     16.7145,
+     38.7848,
+     16.4345,
      13.8534,
      2.58,
      "2021-01-11",
      156535
     ],
-    "src": "bsexbrl:532689_81202116131_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 16.71 -> 16.43, fii 38.50 -> 38.78. R1-rest-follows-foreign-holders 0.28; R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.59 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1.59 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R2-named Others 2.58 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.58(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:108",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2020-12-31 - BSE Table III (qtrid 108): FPI B1e 21,243,678 + FVCI B1d 0 on (A+B+C2) 55,173,017 = 38.5037. The institutions Any-Other block (7,034,831 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; MULTIPLIES PRIVATE EQUITY FUND I LIMITED 878,153; BERRY CREEK INVESTMENT LTD 3,849,373 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,788 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 38.7848 -> 38.5037.",
+    "exact": true,
     "superseded": {
      "cell": [
       18.79,
-      38.5048,
-      16.7145,
+      38.7848,
+      16.4345,
       13.8534,
       2.58,
       "2021-01-11",
@@ -172002,20 +172371,42 @@
      "was": [
       18.79,
       38.5048,
-      26.6045,
+      16.7145,
       13.8534,
-      0.0,
+      2.58,
       "2021-01-11",
       156535
      ],
      "src": "bsexbrl:532689_81202116131_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.60 -> 16.71, fii 38.50 -> 38.50. R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.59 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1.59 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.28; R2-named Others 2.58 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.58(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 16.71 -> 16.43, fii 38.50 -> 38.78. R1-rest-follows-foreign-holders 0.28; R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.59 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1.59 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R2-named Others 2.58 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.58(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       18.79,
+       38.5048,
+       16.7145,
+       13.8534,
+       2.58,
+       "2021-01-11",
+       156535
+      ],
+      "was": [
+       18.79,
+       38.5048,
+       26.6045,
+       13.8534,
+       0.0,
+       "2021-01-11",
+       156535
+      ],
+      "src": "bsexbrl:532689_81202116131_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.60 -> 16.71, fii 38.50 -> 38.50. R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.59 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1.59 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.28; R2-named Others 2.58 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.58(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2021-03-31": {
     "cell": [
      17.06,
-     42.856,
+     42.6041,
      19.7365,
      16.3013,
      3.43,
@@ -172024,20 +172415,21 @@
     ],
     "was": [
      17.06,
-     42.606,
-     19.9865,
+     42.856,
+     19.7365,
      16.3013,
      3.43,
      "2021-04-19",
      164894
     ],
-    "src": "bsexbrl:532689_164202117359_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 19.99 -> 19.74, fii 42.61 -> 42.86. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.27 HDFC LIFE INSURANCE COMPANY LIMITED 1.27(new-format:InsuranceCompanies); R2-named Others 2.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.16(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:109",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2021-03-31 - BSE Table III (qtrid 109): FPI B1e 25,887,170 + FVCI B1d 0 on (A+B+C2) 60,762,172 = 42.6041. The institutions Any-Other block (4,979,189 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,812 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 42.8560 -> 42.6041.",
+    "exact": true,
     "superseded": {
      "cell": [
       17.06,
-      42.606,
-      19.9865,
+      42.856,
+      19.7365,
       16.3013,
       3.43,
       "2021-04-19",
@@ -172046,20 +172438,42 @@
      "was": [
       17.06,
       42.606,
-      24.4965,
+      19.9865,
       16.3013,
-      0.0,
+      3.43,
       "2021-04-19",
       164894
      ],
      "src": "bsexbrl:532689_164202117359_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.50 -> 19.99, fii 42.61 -> 42.61. R1-public-label Overseas Corporate Bodies 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.27 HDFC LIFE INSURANCE COMPANY LIMITED 1.27(new-format:InsuranceCompanies); R2-named Others 2.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.16(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 19.99 -> 19.74, fii 42.61 -> 42.86. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.27 HDFC LIFE INSURANCE COMPANY LIMITED 1.27(new-format:InsuranceCompanies); R2-named Others 2.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.16(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       17.06,
+       42.606,
+       19.9865,
+       16.3013,
+       3.43,
+       "2021-04-19",
+       164894
+      ],
+      "was": [
+       17.06,
+       42.606,
+       24.4965,
+       16.3013,
+       0.0,
+       "2021-04-19",
+       164894
+      ],
+      "src": "bsexbrl:532689_164202117359_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.50 -> 19.99, fii 42.61 -> 42.61. R1-public-label Overseas Corporate Bodies 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.27 HDFC LIFE INSURANCE COMPANY LIMITED 1.27(new-format:InsuranceCompanies); R2-named Others 2.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.16(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2021-06-30": {
     "cell": [
      17.06,
-     38.4414,
+     38.1897,
      22.5889,
      18.1936,
      4.39,
@@ -172068,20 +172482,21 @@
     ],
     "was": [
      17.06,
-     38.1914,
-     22.8389,
+     38.4414,
+     22.5889,
      18.1936,
      4.39,
      "2021-07-14",
      176307
     ],
-    "src": "bsexbrl:532689_1472021132619_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 22.84 -> 22.59, fii 38.19 -> 38.44. R1-rest-follows-foreign-holders 0.25; R1-foreign-holders Other 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R2-named Others 1.25 HDFC LIFE INSURANCE COMPANY LIMITED 1.25(new-format:InsuranceCompanies); R2-named Others 3.14 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.14(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:110",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2021-06-30 - BSE Table III (qtrid 110): FPI B1e 23,204,874 + FVCI B1d 0 on (A+B+C2) 60,762,172 = 38.1897. The institutions Any-Other block (4,979,258 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,881 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 38.4414 -> 38.1897.",
+    "exact": true,
     "superseded": {
      "cell": [
       17.06,
-      38.1914,
-      22.8389,
+      38.4414,
+      22.5889,
       18.1936,
       4.39,
       "2021-07-14",
@@ -172090,20 +172505,42 @@
      "was": [
       17.06,
       38.1914,
-      26.3889,
+      22.8389,
       18.1936,
-      0.0,
+      4.39,
       "2021-07-14",
       176307
      ],
      "src": "bsexbrl:532689_1472021132619_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.39 -> 22.84, fii 38.19 -> 38.19. R1-foreign-holders Other 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.25; R2-named Others 1.25 HDFC LIFE INSURANCE COMPANY LIMITED 1.25(new-format:InsuranceCompanies); R2-named Others 3.14 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.14(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 22.84 -> 22.59, fii 38.19 -> 38.44. R1-rest-follows-foreign-holders 0.25; R1-foreign-holders Other 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R2-named Others 1.25 HDFC LIFE INSURANCE COMPANY LIMITED 1.25(new-format:InsuranceCompanies); R2-named Others 3.14 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.14(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       17.06,
+       38.1914,
+       22.8389,
+       18.1936,
+       4.39,
+       "2021-07-14",
+       176307
+      ],
+      "was": [
+       17.06,
+       38.1914,
+       26.3889,
+       18.1936,
+       0.0,
+       "2021-07-14",
+       176307
+      ],
+      "src": "bsexbrl:532689_1472021132619_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.39 -> 22.84, fii 38.19 -> 38.19. R1-foreign-holders Other 0.0 public=4.40 fii=0.00 BERRY CREEK INVESTMENT LTD 4.40 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-uncovered-remainder 0.25; R2-named Others 1.25 HDFC LIFE INSURANCE COMPANY LIMITED 1.25(new-format:InsuranceCompanies); R2-named Others 3.14 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.14(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2021-09-30": {
     "cell": [
      17.04,
-     38.0856,
+     37.8346,
      24.6026,
      17.6435,
      5.0344,
@@ -172112,20 +172549,21 @@
     ],
     "was": [
      17.04,
-     37.8356,
-     24.8526,
+     38.0856,
+     24.6026,
      17.6435,
      5.0344,
      "2021-10-21",
      168064
     ],
-    "src": "bsexbrl:532689_21102021133059_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 24.85 -> 24.60, fii 37.84 -> 38.09. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.39 fii=0.00 BERRY CREEK INVESTMENT LTD 4.39 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.12 ; R2-label Others Qualified Institutional Buyer 6.66 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.80; HDFC LIFE INSURANCE COMPANY LIMITED 1.07; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:111",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2021-09-30 - BSE Table III (qtrid 111): FPI B1e 23,018,281 + FVCI B1d 0 on (A+B+C2) 60,839,172 = 37.8346. The institutions Any-Other block (4,979,258 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders FOREIGN NATIONALS 93; PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,881 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 38.0856 -> 37.8346.",
+    "exact": true,
     "superseded": {
      "cell": [
       17.04,
-      37.8356,
-      24.8526,
+      38.0856,
+      24.6026,
       17.6435,
       5.0344,
       "2021-10-21",
@@ -172134,20 +172572,42 @@
      "was": [
       17.04,
       37.8356,
-      25.9926,
+      24.8526,
       17.6435,
-      0.1644,
+      5.0344,
       "2021-10-21",
       168064
      ],
      "src": "bsexbrl:532689_21102021133059_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.99 -> 24.85, fii 37.84 -> 37.84. R1-public-label Overseas Corporate Bodies 0.0 public=4.39 fii=0.00 BERRY CREEK INVESTMENT LTD 4.39 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-label Others ALTERNATIVE INVESTMENT FUND 0.12 ; R2-label Others Qualified Institutional Buyer 6.66 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.80; HDFC LIFE INSURANCE COMPANY LIMITED 1.07; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 24.85 -> 24.60, fii 37.84 -> 38.09. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.39 fii=0.00 BERRY CREEK INVESTMENT LTD 4.39 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.12 ; R2-label Others Qualified Institutional Buyer 6.66 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.80; HDFC LIFE INSURANCE COMPANY LIMITED 1.07; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       17.04,
+       37.8356,
+       24.8526,
+       17.6435,
+       5.0344,
+       "2021-10-21",
+       168064
+      ],
+      "was": [
+       17.04,
+       37.8356,
+       25.9926,
+       17.6435,
+       0.1644,
+       "2021-10-21",
+       168064
+      ],
+      "src": "bsexbrl:532689_21102021133059_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 25.99 -> 24.85, fii 37.84 -> 37.84. R1-public-label Overseas Corporate Bodies 0.0 public=4.39 fii=0.00 BERRY CREEK INVESTMENT LTD 4.39 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-label Others ALTERNATIVE INVESTMENT FUND 0.12 ; R2-label Others Qualified Institutional Buyer 6.66 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.80; HDFC LIFE INSURANCE COMPANY LIMITED 1.07; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2021-12-31": {
     "cell": [
      17.02,
-     32.1649,
+     31.9054,
      27.6608,
      19.5597,
      5.4724,
@@ -172156,20 +172616,21 @@
     ],
     "was": [
      17.02,
-     31.9049,
-     27.9208,
+     32.1649,
+     27.6608,
      19.5597,
      5.4724,
      "2022-01-14",
      196438
     ],
-    "src": "bsexbrl:532689_1412022125549_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 27.92 -> 27.66, fii 31.90 -> 32.16. R1-rest-follows-foreign-holders 0.26; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.5 ; R2-label Others Qualified Institutional Buyer 7.05 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.92. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:112",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2021-12-31 - BSE Table III (qtrid 112): FPI B1e 19,447,783 + FVCI B1d 0 on (A+B+C2) 60,954,587 = 31.9054. The institutions Any-Other block (4,979,258 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,881 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 32.1649 -> 31.9054.",
+    "exact": true,
     "superseded": {
      "cell": [
       17.02,
-      31.9049,
-      27.9208,
+      32.1649,
+      27.6608,
       19.5597,
       5.4724,
       "2022-01-14",
@@ -172178,20 +172639,42 @@
      "was": [
       17.02,
       31.9049,
-      28.2808,
+      27.9208,
       19.5597,
-      0.5524,
+      5.4724,
       "2022-01-14",
       196438
      ],
      "src": "bsexbrl:532689_1412022125549_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.28 -> 27.92, fii 31.90 -> 31.90. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.26; R2-label Others ALTERNATIVE INVESTMENT FUND 0.5 ; R2-label Others Qualified Institutional Buyer 7.05 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.92. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 27.92 -> 27.66, fii 31.90 -> 32.16. R1-rest-follows-foreign-holders 0.26; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.5 ; R2-label Others Qualified Institutional Buyer 7.05 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.92. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       17.02,
+       31.9049,
+       27.9208,
+       19.5597,
+       5.4724,
+       "2022-01-14",
+       196438
+      ],
+      "was": [
+       17.02,
+       31.9049,
+       28.2808,
+       19.5597,
+       0.5524,
+       "2022-01-14",
+       196438
+      ],
+      "src": "bsexbrl:532689_1412022125549_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.28 -> 27.92, fii 31.90 -> 31.90. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.26; R2-label Others ALTERNATIVE INVESTMENT FUND 0.5 ; R2-label Others Qualified Institutional Buyer 7.05 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.92. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2022-03-31": {
     "cell": [
      17.01,
-     33.5637,
+     33.3148,
      27.0722,
      19.1772,
      7.8911,
@@ -172200,20 +172683,21 @@
     ],
     "was": [
      17.01,
-     33.3137,
-     27.3222,
+     33.5637,
+     27.0722,
      19.1772,
      7.8911,
      "2022-04-19",
      153843
     ],
-    "src": "bsexbrl:532689_184202219647_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 27.32 -> 27.07, fii 33.31 -> 33.56. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.24 HDFC LIFE INSURANCE COMPANY LIMITED 1.24(new-format:InsuranceCompanies); R2-named Others 4.67 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.67(new-format:InsuranceCompanies); R2-named Others 1.88 SBI LIFE INSURANCE CO. LTD 1.88(curated). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:113",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2022-03-31 - BSE Table III (qtrid 113): FPI B1e 20,320,904 + FVCI B1d 0 on (A+B+C2) 60,996,587 = 33.3148. The institutions Any-Other block (4,979,258 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,881 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 33.5637 -> 33.3148.",
+    "exact": true,
     "superseded": {
      "cell": [
       17.01,
-      33.3137,
-      27.3222,
+      33.5637,
+      27.0722,
       19.1772,
       7.8911,
       "2022-04-19",
@@ -172222,20 +172706,42 @@
      "was": [
       17.01,
       33.3137,
-      27.4422,
+      27.3222,
       19.1772,
-      0.1011,
+      7.8911,
       "2022-04-19",
       153843
      ],
      "src": "bsexbrl:532689_184202219647_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 27.44 -> 27.32, fii 33.31 -> 33.31. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.24 HDFC LIFE INSURANCE COMPANY LIMITED 1.24(new-format:InsuranceCompanies); R2-named Others 4.67 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.67(new-format:InsuranceCompanies); R2-named Others 1.88 SBI LIFE INSURANCE CO. LTD 1.88(curated). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 27.32 -> 27.07, fii 33.31 -> 33.56. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.24 HDFC LIFE INSURANCE COMPANY LIMITED 1.24(new-format:InsuranceCompanies); R2-named Others 4.67 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.67(new-format:InsuranceCompanies); R2-named Others 1.88 SBI LIFE INSURANCE CO. LTD 1.88(curated). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       17.01,
+       33.3137,
+       27.3222,
+       19.1772,
+       7.8911,
+       "2022-04-19",
+       153843
+      ],
+      "was": [
+       17.01,
+       33.3137,
+       27.4422,
+       19.1772,
+       0.1011,
+       "2022-04-19",
+       153843
+      ],
+      "src": "bsexbrl:532689_184202219647_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 27.44 -> 27.32, fii 33.31 -> 33.31. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.53 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.53 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.24 HDFC LIFE INSURANCE COMPANY LIMITED 1.24(new-format:InsuranceCompanies); R2-named Others 4.67 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.67(new-format:InsuranceCompanies); R2-named Others 1.88 SBI LIFE INSURANCE CO. LTD 1.88(curated). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2022-06-30": {
     "cell": [
      16.99,
-     36.8064,
+     36.556,
      23.5608,
      17.9363,
      5.621,
@@ -172244,20 +172750,21 @@
     ],
     "was": [
      16.99,
-     36.5564,
-     23.8108,
+     36.8064,
+     23.5608,
      17.9363,
      5.621,
      "2022-07-19",
      139828
     ],
-    "src": "bsexbrl:532689_1972022124935_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 23.81 -> 23.56, fii 36.56 -> 36.81. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.52 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.52 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.55 HDFC LIFE INSURANCE COMPANY LIMITED 1.55(new-format:InsuranceCompanies); R2-named Others 3.97 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.97(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:532689:114",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2022-06-30 - BSE Table III (qtrid 114): FPI B1e 22,324,776 + FVCI B1d 0 on (A+B+C2) 61,070,135 = 36.5560. The institutions Any-Other block (4,979,258 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517; BERRY CREEK INVESTMENT LTD 2,671,860 are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (154,881 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 36.8064 -> 36.5560.",
+    "exact": true,
     "superseded": {
      "cell": [
       16.99,
-      36.5564,
-      23.8108,
+      36.8064,
+      23.5608,
       17.9363,
       5.621,
       "2022-07-19",
@@ -172266,14 +172773,36 @@
      "was": [
       16.99,
       36.5564,
-      26.1908,
+      23.8108,
       17.9363,
-      0.101,
+      5.621,
       "2022-07-19",
       139828
      ],
      "src": "bsexbrl:532689_1972022124935_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.19 -> 23.81, fii 36.56 -> 36.56. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.52 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.52 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.55 HDFC LIFE INSURANCE COMPANY LIMITED 1.55(new-format:InsuranceCompanies); R2-named Others 3.97 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.97(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 23.81 -> 23.56, fii 36.56 -> 36.81. R1-rest-follows-foreign-holders 0.25; R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.52 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.52 foreign->public(new-format:ForeignCompanies) keyword; R2-named Others 1.55 HDFC LIFE INSURANCE COMPANY LIMITED 1.55(new-format:InsuranceCompanies); R2-named Others 3.97 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.97(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       16.99,
+       36.5564,
+       23.8108,
+       17.9363,
+       5.621,
+       "2022-07-19",
+       139828
+      ],
+      "was": [
+       16.99,
+       36.5564,
+       26.1908,
+       17.9363,
+       0.101,
+       "2022-07-19",
+       139828
+      ],
+      "src": "bsexbrl:532689_1972022124935_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.19 -> 23.81, fii 36.56 -> 36.56. R1-public-label Overseas Corporate Bodies 0.0 public=4.38 fii=0.00 BERRY CREEK INVESTMENT LTD 4.38 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.52 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.52 foreign->public(new-format:ForeignCompanies) keyword; R1-uncovered-remainder 0.25; R2-named Others 1.55 HDFC LIFE INSURANCE COMPANY LIMITED 1.55(new-format:InsuranceCompanies); R2-named Others 3.97 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 3.97(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2016-06-30": {
@@ -172367,7 +172896,7 @@
    "2017-06-30": {
     "cell": [
      20.25,
-     39.6821,
+     39.6813,
      11.5975,
      11.5625,
      0.0,
@@ -172377,16 +172906,26 @@
     "was": [
      20.25,
      39.6821,
-     28.7213,
+     11.5975,
      11.5625,
      0.0,
      "2017-07-12",
      33364
     ],
-    "src": "bsexbrl:532689_117201716322_SHP.xml",
-    "why": "\u00a7164s DII neighbour gate (user 2026-10-04: 'B, public for the 5') - \u00a7164 row-level remainder rule, DII side: an UNNAMED institutional Any-Other block counts in DII only when the quarters just before and after its run (runs of <= 2 quarters) show a DII level at least halfway to the moved level. Block 17.1238 (unnamed part of the Other-Institutions row, share counts of 532689_117201716322_SHP.xml); before/after the run: 2017-03-31 DII 12.41, 2017-09-30 DII 9.84 vs 20.16 needed (moved level 28.72) -> not backed. Neither the DII nor the FII side is backed (the FII gate already refused it where tested), so it counts as neither (public, user decision): dii 28.7213 -> 11.5975, fii unchanged.",
+    "src": "bsetable3:532689:94",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX re-read cell by cell): 2017-06-30 - BSE Table III (qtrid 94): FPI B1e 18,546,500 + FVCI B1d 0 on (A+B+C2) 46,738,588 = 39.6813. The institutions Any-Other block (8,003,412 sh) is the company-type block the company labels 'Foreign Corporate Bodies' (Dec-2016) / 'Overseas Corporate Bodies' (2018-21): its named holders (none named this quarter) are public (PVRINOX's own 2022 form files Berry Creek / Plenty / Multiples under Foreign Companies; Major Cineplex public by batch 10) and its unnamed rest (8,003,412 sh) follows the row's own company-type label -> public (as BANDHANBNK Dec-19). The stored value had added that rest to fii ('rest-follows-foreign-holders', \u00a7158b, at 2 decimals). fii 39.6821 -> 39.6813.",
+    "exact": true,
     "superseded": {
      "cell": [
+      20.25,
+      39.6821,
+      11.5975,
+      11.5625,
+      0.0,
+      "2017-07-12",
+      33364
+     ],
+     "was": [
       20.25,
       39.6821,
       28.7213,
@@ -172395,28 +172934,10 @@
       "2017-07-12",
       33364
      ],
-     "was": [
-      20.25,
-      56.8021,
-      11.6013,
-      11.5625,
-      0.0,
-      "2017-07-12",
-      33364
-     ],
      "src": "bsexbrl:532689_117201716322_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (17.12 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2017-03-31 FII 40.85, 2017-09-30 FII 42.31 vs 48.24 needed (moved level 56.80)). Only the D1 amount moves; fii 56.80 -> 39.68, dii 11.60 -> 28.72.",
+     "why": "\u00a7164s DII neighbour gate (user 2026-10-04: 'B, public for the 5') - \u00a7164 row-level remainder rule, DII side: an UNNAMED institutional Any-Other block counts in DII only when the quarters just before and after its run (runs of <= 2 quarters) show a DII level at least halfway to the moved level. Block 17.1238 (unnamed part of the Other-Institutions row, share counts of 532689_117201716322_SHP.xml); before/after the run: 2017-03-31 DII 12.41, 2017-09-30 DII 9.84 vs 20.16 needed (moved level 28.72) -> not backed. Neither the DII nor the FII side is backed (the FII gate already refused it where tested), so it counts as neither (public, user decision): dii 28.7213 -> 11.5975, fii unchanged.",
      "superseded": {
       "cell": [
-       20.25,
-       56.8021,
-       11.6013,
-       11.5625,
-       0.0,
-       "2017-07-12",
-       33364
-      ],
-      "was": [
        20.25,
        39.6821,
        28.7213,
@@ -172425,8 +172946,39 @@
        "2017-07-12",
        33364
       ],
+      "was": [
+       20.25,
+       56.8021,
+       11.6013,
+       11.5625,
+       0.0,
+       "2017-07-12",
+       33364
+      ],
       "src": "bsexbrl:532689_117201716322_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 39.68 -> 56.80, dii 28.72 -> 11.60. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 17.12 | R1: R1-unresolved no typed rows 17.12. Evidence: _shp_164_audit.json"
+      "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (17.12 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2017-03-31 FII 40.85, 2017-09-30 FII 42.31 vs 48.24 needed (moved level 56.80)). Only the D1 amount moves; fii 56.80 -> 39.68, dii 11.60 -> 28.72.",
+      "superseded": {
+       "cell": [
+        20.25,
+        56.8021,
+        11.6013,
+        11.5625,
+        0.0,
+        "2017-07-12",
+        33364
+       ],
+       "was": [
+        20.25,
+        39.6821,
+        28.7213,
+        11.5625,
+        0.0,
+        "2017-07-12",
+        33364
+       ],
+       "src": "bsexbrl:532689_117201716322_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 39.68 -> 56.80, dii 28.72 -> 11.60. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 17.12 | R1: R1-unresolved no typed rows 17.12. Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
@@ -172455,7 +173007,7 @@
    "2019-09-03": {
     "cell": [
      19.57,
-     43.1653,
+     42.8776,
      11.0971,
      10.5278,
      0.0,
@@ -172464,20 +173016,43 @@
     ],
     "was": [
      19.57,
-     42.8753,
-     25.9771,
+     43.1653,
+     11.0971,
      10.5278,
      0.0,
      "2019-09-17",
      34473
     ],
     "src": "bsexbrl:532689_1792019105646_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 42.88 -> 43.17, dii 25.98 -> 11.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R1-rest-follows-foreign-holders 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.53 ; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2019-09-03 - 532689_1792019105646_SHP.xml: FII rows 20,742,941 sh / total 48,377,062 = 42.8776; the institutions Any-Other block (Overseas Corporate Bodies: Berry Creek, Multiples PE Fund I, Plenty PE Fund I + unnamed rest) is public. fii 43.1653 -> 42.8776.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      19.57,
+      43.1653,
+      11.0971,
+      10.5278,
+      0.0,
+      "2019-09-17",
+      34473
+     ],
+     "was": [
+      19.57,
+      42.8753,
+      25.9771,
+      10.5278,
+      0.0,
+      "2019-09-17",
+      34473
+     ],
+     "src": "bsexbrl:532689_1792019105646_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 42.88 -> 43.17, dii 25.98 -> 11.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=7.41 fii=0.00 BERRY CREEK INVESTMENT LTD 7.41 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.66 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.66 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.06 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 4.06 foreign->public(new-format:ForeignCompanies) keyword; R1-rest-follows-foreign-holders 0.29; R2-label Others ALTERNATIVE INVESTMENT FUND 0.53 ; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    }
    },
    "2019-10-30": {
     "cell": [
      18.41,
-     42.1396,
+     42.1419,
      28.189,
      13.5036,
      0.0397,
@@ -172486,17 +173061,27 @@
     ],
     "was": [
      18.41,
-     56.6896,
-     13.639,
+     42.1396,
+     28.189,
      13.5036,
      0.0397,
      "2019-11-02",
      34441
     ],
     "src": "bsexbrl:532689_3010201914442_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (14.55 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2019-09-30 FII 42.79, 2019-12-31 FII 43.21 vs 49.41 needed (moved level 56.69)). Only the D1 amount moves; fii 56.69 -> 42.14, dii 13.64 -> 28.19.",
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2019-10-30 - 532689_3010201914442_SHP.xml: FII rows 21,614,961 sh / total 51,290,845 = 42.1419; precision only. fii 42.1396 -> 42.1419.",
+    "exact": true,
     "superseded": {
      "cell": [
+      18.41,
+      42.1396,
+      28.189,
+      13.5036,
+      0.0397,
+      "2019-11-02",
+      34441
+     ],
+     "was": [
       18.41,
       56.6896,
       13.639,
@@ -172505,23 +173090,36 @@
       "2019-11-02",
       34441
      ],
-     "was": [
-      18.41,
-      42.1396,
-      28.169,
-      13.5036,
-      0.0397,
-      "2019-11-02",
-      34441
-     ],
      "src": "bsexbrl:532689_3010201914442_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 42.14 -> 56.69, dii 28.17 -> 13.64. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 14.55; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 14.55"
+     "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (14.55 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2019-09-30 FII 42.79, 2019-12-31 FII 43.21 vs 49.41 needed (moved level 56.69)). Only the D1 amount moves; fii 56.69 -> 42.14, dii 13.64 -> 28.19.",
+     "superseded": {
+      "cell": [
+       18.41,
+       56.6896,
+       13.639,
+       13.5036,
+       0.0397,
+       "2019-11-02",
+       34441
+      ],
+      "was": [
+       18.41,
+       42.1396,
+       28.169,
+       13.5036,
+       0.0397,
+       "2019-11-02",
+       34441
+      ],
+      "src": "bsexbrl:532689_3010201914442_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 42.14 -> 56.69, dii 28.17 -> 13.64. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 14.55; R3-nbfc NBFCsRegisteredWithRbi 0.02; D1-unnamed-remainder-in-dii 14.55"
+     }
     }
    },
    "2020-08-07": {
     "cell": [
      18.79,
-     36.8079,
+     36.5269,
      17.124,
      16.8732,
      0.2156,
@@ -172530,20 +173128,43 @@
     ],
     "was": [
      18.79,
-     36.5279,
-     31.494,
+     36.8079,
+     17.124,
      16.8732,
      0.2156,
      "2020-08-10",
      124198
     ],
     "src": "bsexbrl:532689_982020151755_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 36.53 -> 36.81, dii 31.49 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28"
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2020-08-07 - 532689_982020151755_SHP.xml: FII rows 20,152,993 sh / total 55,173,017 = 36.5269; the block's unnamed rest follows its company-type rows -> public. fii 36.8079 -> 36.5269.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      18.79,
+      36.8079,
+      17.124,
+      16.8732,
+      0.2156,
+      "2020-08-10",
+      124198
+     ],
+     "was": [
+      18.79,
+      36.5279,
+      31.494,
+      16.8732,
+      0.2156,
+      "2020-08-10",
+      124198
+     ],
+     "src": "bsexbrl:532689_982020151755_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 36.53 -> 36.81, dii 31.49 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Bodies Corporate 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.21 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Bodies Corporate 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28"
+    }
    },
    "2020-10-09": {
     "cell": [
      18.79,
-     35.3954,
+     35.1144,
      17.3172,
      15.1167,
      2.2,
@@ -172552,20 +173173,43 @@
     ],
     "was": [
      18.79,
-     35.1154,
-     29.4872,
+     35.3954,
+     17.3172,
      15.1167,
-     0.0,
+     2.2,
      "2020-10-10",
      161509
     ],
     "src": "bsexbrl:532689_1010202018461_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.12 -> 35.40, dii 29.49 -> 17.32. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.21 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28; R2-named Others 2.2 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.20(new-format:InsuranceCompanies)"
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2020-10-09 - 532689_1010202018461_SHP.xml: FII rows 19,373,701 sh / total 55,173,017 = 35.1144; the block's unnamed rest follows its company-type rows -> public. fii 35.3954 -> 35.1144.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      18.79,
+      35.3954,
+      17.3172,
+      15.1167,
+      2.2,
+      "2020-10-10",
+      161509
+     ],
+     "was": [
+      18.79,
+      35.1154,
+      29.4872,
+      15.1167,
+      0.0,
+      "2020-10-10",
+      161509
+     ],
+     "src": "bsexbrl:532689_1010202018461_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.12 -> 35.40, dii 29.49 -> 17.32. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.21 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28; R2-named Others 2.2 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.20(new-format:InsuranceCompanies)"
+    }
    },
    "2021-02-01": {
     "cell": [
      17.07,
-     41.0201,
+     40.7685,
      17.1216,
      15.8589,
      1.2579,
@@ -172574,15 +173218,38 @@
     ],
     "was": [
      17.07,
-     40.7701,
-     28.7016,
+     41.0201,
+     17.1216,
      15.8589,
      1.2579,
      "2021-02-02",
      142027
     ],
     "src": "bsexbrl:532689_222021133257_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 40.77 -> 41.02, dii 28.70 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.34 fii=0.00 BERRY CREEK INVESTMENT LTD 6.34 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 1.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.25"
+    "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2021-02-01 - 532689_222021133257_SHP.xml: FII rows 24,758,157 sh / total 60,728,572 = 40.7685; the block's unnamed rest follows its company-type rows -> public. fii 41.0201 -> 40.7685.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      17.07,
+      41.0201,
+      17.1216,
+      15.8589,
+      1.2579,
+      "2021-02-02",
+      142027
+     ],
+     "was": [
+      17.07,
+      40.7701,
+      28.7016,
+      15.8589,
+      1.2579,
+      "2021-02-02",
+      142027
+     ],
+     "src": "bsexbrl:532689_222021133257_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 40.77 -> 41.02, dii 28.70 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.34 fii=0.00 BERRY CREEK INVESTMENT LTD 6.34 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 1.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.25"
+    }
    }
   },
   "CENTRALBK": {
@@ -369425,6 +370092,92 @@
     ],
     "src": "bseaspx:500356_59",
     "why": "\u00a7164r batch 25 (2026-10-05, store-wide lower-bound check on each cell's own basis, round 2 of batch 23): the company's own BSE page (ShareholdingPattern.aspx 500356 qtrid 59) labels these rows foreign institutions - 'Foreign Mutual Fund' (Institutions, 12,300 shares = 0.0211) - and the stored fii 0.3013 held only 'Foreign Institutional Investors' 0.3013. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign FI / foreign mutual fund counts wherever it sits) they are FII. % of the page's (A+B+C) total 58,158,032 shares. fii 0.3013 -> 0.3224, dii unchanged."
+   }
+  },
+  "BSE": {
+   "2020-12-31": {
+    "cell": [
+     0.0,
+     15.0383,
+     1.9893,
+     1.1402,
+     0.2657,
+     "2021-01-21"
+    ],
+    "was": [
+     0.0,
+     12.41,
+     4.17,
+     1.14,
+     0.27,
+     "2021-01-21"
+    ],
+    "src": "bseltd_pdf:Shareholding_Pattern_31Dec2020.pdf",
+    "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - NSE-only listing, re-read from its own filing): 2020-12-31 - BSE Ltd's own SHP (bseindia.com/downloads1/Shareholding_Pattern_31Dec2020.pdf): Foreign Portfolio Investors 55,85,467; Any Other (i-i) 'Foreign Direct Investment' 2 holders 11,85,417 (Acacia Banyan Partners 7,85,417 named). Option A (user 2026-10-04): holders on the company's FDI line are FII -> fii = (FPI 5,585,467 + FDI line 1,185,417) / total 45,024,297 (Public + 'Trading Members and Associates', the company's own Non Promoter-Non Public category) = 15.0383 (= Quantmac v6). dii = Institutions (Domestic) from the same filing: MF 513,352 + AIF 217,075 + FI/Banks 45,600 + Insurance 119,633 = 1.9893; mf 1.1402, ins 0.2657. Stored [12.41, 4.17, 1.14, 0.27] came from Trendlyne's category rows (shp_fill_thirdparty) and left the FDI line out of fii.",
+    "exact": true
+   },
+   "2021-03-31": {
+    "cell": [
+     0.0,
+     12.6933,
+     2.0393,
+     1.1554,
+     0.3005,
+     "2021-04-21"
+    ],
+    "was": [
+     0.0,
+     10.95,
+     3.33,
+     1.16,
+     0.3,
+     "2021-04-21"
+    ],
+    "src": "bseltd_pdf:Shareholding_Pattern_31Mar2021.pdf",
+    "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - NSE-only listing, re-read from its own filing): 2021-03-31 - BSE Ltd's own SHP (Shareholding_Pattern_31Mar2021.pdf): Foreign Portfolio Investors 49,29,643; Any Other (i-i) 'Foreign Direct Investment' 1 holder 7,85,417 = Acacia Banyan Partners. Option A (user 2026-10-04): holders on the company's FDI line are FII -> fii = (FPI 4,929,643 + FDI line 785,417) / total 45,024,297 (Public + 'Trading Members and Associates', the company's own Non Promoter-Non Public category) = 12.6933 (= Quantmac v6). dii = Institutions (Domestic) from the same filing: MF 520,206 + AIF 217,075 + FI/Banks 45,600 + Insurance 135,318 = 2.0393; mf 1.1554, ins 0.3005. Stored [10.95, 3.33, 1.16, 0.3] came from Trendlyne's category rows (shp_fill_thirdparty) and left the FDI line out of fii.",
+    "exact": true
+   },
+   "2021-09-30": {
+    "cell": [
+     0.0,
+     9.3346,
+     2.3772,
+     1.2824,
+     0.2025,
+     "2021-10-19"
+    ],
+    "was": [
+     0.0,
+     7.59,
+     4.11,
+     1.28,
+     0.2,
+     "2021-10-19"
+    ],
+    "src": "nsexbrl:SHP_162385_537585_19102021010854_WEB.xml",
+    "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - NSE-only listing, re-read from its own filing): 2021-09-30 - NSE XBRL SHP_162385_537585_19102021010854_WEB.xml: InstitutionsForeignPortfolioInvestor 3,417,437; OtherInstitutions 785,417 = 'ACACIA BANYAN PARTNERS LIMITED' (the row the company's PDFs label 'Foreign Direct Investment'). Option A (user 2026-10-04): holders on the company's FDI line are FII -> fii = (FPI 3,417,437 + FDI line 785,417) / total 45,024,297 (Public + 'Trading Members and Associates', the company's own Non Promoter-Non Public category) = 9.3346 (= Quantmac v6). dii = Institutions (Domestic) from the same filing: MF 577,409 + AIF 382,209 + FI/Banks 19,498 + Insurance 91,180 = 2.3772; mf 1.2824, ins 0.2025. Stored [7.59, 4.11, 1.28, 0.2] came from the parser (institutional Any-Other -> dii) and left the FDI line out of fii (it sat in dii).",
+    "exact": true
+   },
+   "2021-12-31": {
+    "cell": [
+     0.0,
+     10.8051,
+     1.6113,
+     0.767,
+     0.0679,
+     "2022-01-19"
+    ],
+    "was": [
+     0.0,
+     9.06,
+     3.35,
+     0.77,
+     0.07,
+     "2022-01-19"
+    ],
+    "src": "nsexbrl:SHP_165086_592949_19012022120637_WEB.xml",
+    "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - NSE-only listing, re-read from its own filing): 2021-12-31 - NSE XBRL SHP_165086_592949_19012022120637_WEB.xml: InstitutionsForeignPortfolioInvestor 4,079,498; OtherInstitutions 785,417 = 'ACACIA BANYAN PARTNERS LIMITED'. Option A (user 2026-10-04): holders on the company's FDI line are FII -> fii = (FPI 4,079,498 + FDI line 785,417) / total 45,024,297 (Public + 'Trading Members and Associates', the company's own Non Promoter-Non Public category) = 10.8051 (= Quantmac v6). dii = Institutions (Domestic) from the same filing: MF 345,317 + AIF 330,064 + FI/Banks 19,498 + Insurance 30,580 = 1.6113; mf 0.7670, ins 0.0679. Stored [9.06, 3.35, 0.77, 0.07] came from the parser (institutional Any-Other -> dii) and left the FDI line out of fii (it sat in dii).",
+    "exact": true
    }
   }
  },

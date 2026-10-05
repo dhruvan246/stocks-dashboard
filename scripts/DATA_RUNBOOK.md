@@ -21257,6 +21257,21 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     **Open for the user:** 3i Power Investments A1 (ADANIPOWER 2009-12..2016-03, 160.6 M -> 73.3 M sh) is FII only by §160f; under the
     later documents-only rule it has no FPI/FII/FDI mark (always on the company-type 'Foreign Corporate Bodies' row; no other filing in
     corpus_axes2 lists it) - Quantmac counts it public. Rebuilt store moves exactly 34 + parts 1 / batch 29; guards green.
+    **Batch 30 part 3 (same label): BSE Ltd 4, PVRINOX 23 + 6 event rows.** BSE Ltd (NSE-only listing; our readers never opened its
+    filings): its own SHP PDFs (bseindia.com/downloads1/Shareholding_Pattern_31Dec2020.pdf, _31Mar2021.pdf - text layer) and NSE XBRLs
+    (Sep/Dec-2021) carry an institutions Any-Other 'Foreign Direct Investment' line (Acacia Banyan Partners 785,417 + 1 holder 400,000 in
+    Dec-20) that Option A counts as FII; total = Public + the company's own 'Trading Members and Associates' (Non Promoter-Non Public)
+    = 45,024,297 -> Dec-20 / Mar-21 / Sep-21 / Dec-21 = 15.0383 / 12.6933 / 9.3346 / 10.8051 (= Quantmac); dii = the filing's domestic
+    institutions (the Trendlyne-row fills and the parser had carried the FDI line or unexplained extra in dii). BSE Ltd 2017-2020: its PDFs
+    for Mar/Sep/Dec-2017, Mar/Dec-2018, Mar/Dec-2019 are SCANNED (no text) - an image read needs the user's OK; the other quarters' files
+    were not found (NSE purged its master to Sep-2021+): UNKNOWN. PVRINOX: the institutions Any-Other block (Berry Creek / Plenty PE /
+    Multiples PE Fund I - all 'Foreign Companies' in PVRINOX's own 2022 form - + Major Cineplex + an unnamed rest) is the company-type
+    'Foreign Corporate Bodies' / 'Overseas Corporate Bodies' block; its unnamed rest (141,340 -> 154,881 sh; 0.25-0.92 pp) had gone to
+    fii via §158b 'rest-follows-foreign-holders' at 2 decimals - public by the row's own label (as BANDHANBNK Dec-19) -> fii = FPI (+FVCI)
+    at share counts in 21 quarters + 2 precision; events 2019-09-03 / 2020-08-07 / 2020-10-09 / 2021-02-01 likewise, 2019-10-30 and
+    2023-02-22 precision. Remaining PVRINOX gaps = Multiples PE Fund I (rule difference) exactly. Quantmac's PVRINOX 22-Feb-2023 37.56
+    divides by 84,532,315, the total in NSE's revised XBRL, which contradicts that filing's own summary (promoters 26,899,076 = 27.46 %
+    => 97,952,814) - their error. Rebuilt store + events move exactly these 33; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
