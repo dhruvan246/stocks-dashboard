@@ -21435,6 +21435,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     vs 24.51...). PRAKASH Dec-15 dii 0.04 -> 22.62 (its 'NBFCs registered with RBI' row 30,357,849 sh, counted in its Jun-2016 cell too);
     ABGSHIP Mar-16 9.89 -> 8.36 ('Citi Bank' = Citibank N.A., foreign - evidence entry 5179adf1e); VIVIDHA Mar-16 3.75 -> 2.47 ('BANKE
     BEHARI SHOPPERS' is a company). ins = B1g + register insurers (53 cells rise, none fall); other slots unchanged. Guards green.
+    **Batch 30 part 18 (2026-10-06): MFSL and IIFLWAM (360ONE) reviewed cell by cell.** MFSL 37 cells = RULE DIFFERENCE: the
+    'Foreign Corporate Bodies' row (Dec-08..Jun-11: Parkville Holdings, IFC, Xenok) and Xenok on the institutions 'Other' row (Jun/Sep-16)
+    are holders the company itself files on its FDI rows from Sep-2011 ('FDI' 22.37, 'Foreign Direct Investments' 15.9) and tags '(FDI)'
+    in Mar-2016 - Option A -> FII in every quarter; each quarter's gap = exactly those holders. IIFLWAM 2020 (10 cells): our fii = FPI +
+    the holders 360ONE files on its 2022-form FDI line (General Atlantic Singapore 21.36, FIH Mauritius 13.87, Rimco 2.29, WF Asian 1.56,
+    Amit Nitin Shah 1.80) + Amansa Holdings 1.25 (documented FPI) - rebuilt from each filing to the second decimal (Mar/Jun/Sep/Dec-20,
+    Mar-21: 62.19 / 62.20 / 63.08 / 63.75 / 64.63 = stored) - RULE DIFFERENCE vs Quantmac's FPI-only 20-22. OUR ERROR on two dates:
+    Sep-2020 and Dec-2020 were served from BSE's revision times (2020-10-31, 2021-02-25) - BSE's announcements of the originals are
+    2020-10-15 and 2021-01-20 -> `shp_lag_fix.json` (days_earlier; the revisions' values stay - the originals' XBRLs are not on BSE's list).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
