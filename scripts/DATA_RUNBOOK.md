@@ -21548,6 +21548,11 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     2018-07-12, 2018-10-13, 2019-01-16, 2019-07-10) and Sep-2019 one day LATER (2019-10-22, a look-ahead day). The 2021 re-filings state
     their reason - 'to reflect the correct status of Individual (Ordinary Equity Shares)' - so the FII / DII rows we hold are the
     first-published ones. Entries in `shp_lag_fix.json` (src ann-stream).
+    **Batch 30 part 27 (JISLJALEQS IFC, 3 cells).** International Finance Corporation is public by the company's own first 2022-form row
+    (non-institutions), and the §164 row-level pass reads Jun-2016, Sep-2016, Mar-2017, Jun-2017 and Sep-2017 that way. Three filings it
+    never reached still counted IFC as fii: Dec-2016 45.61 -> 42.75 (block 13,168,025 = IFC 13,167,025 + 1,000); the 16-Sep-2017 event
+    39.21 -> 36.571 (= Quantmac 36.5708; the §164q event re-read had moved IFC dii -> fii); Dec-2017 37.10 -> 34.85 (block 11,159,320 =
+    'Foreign Bank' 1,000 + IFC 11,158,320 by the company's own total; its IFC line still prints Sep-2017's 13,167,025).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
