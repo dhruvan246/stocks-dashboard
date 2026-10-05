@@ -21467,6 +21467,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     listing, no GLEIF / register) had stayed in fii Jun-2016..Mar-2017 only through §164n's 'keep the stored split' for unresolved
     holders, while the seam quarters and batch 10's own reading of the block have it public -> fii 22.95 / 22.91 / 21.35 / 21.16 ->
     21.4749 / 21.4087 / 19.9542 / 19.7573 (FPI + the block's unnamed rest 550,464 sh, D1).
+    **Batch 30 part 21 (label "§164r batch 30 part 21 (uneven rule inside one company)"): a store-wide check for the DEN pattern**
+    (`~/stocks-cache/shp/audit_all/unres/scan.py`: every scope quarter 2016-22, named holders without any document inside an unlabelled
+    institutions block, tested against the stored fii) flagged 18 cells; most are not errors - documented under a correct spelling
+    (Arisaig 'A/C Arisaig India Fund' 31 listings, Citigroup Global Markets Mauritius 36, Acacia Partners 443, Fujikura 8), the
+    company's own mark elsewhere (HEXAWARE files T. Rowe Price International Discovery Fund under FPI from Mar-2017; POONAWALLA QFI;
+    MFSL Xenok '(FDI)'), a label (BSOFT 'Foreign Mutual Fund'). OUR ERRORS (the rule applied unevenly within one company): HDFC Jun /
+    Sep-2018 - WAVERLY PTE. LTD. (no institution listing; HDFC never files it as FPI/FII/FDI) had stayed in fii via the retired SW-2
+    curated sweep while Dec-2018 reads it public -> 75.3087 / 74.5427 -> 73.5193 / 72.767; IEX 20-Oct-2017 / Dec-2017 - AFHoldings and
+    the other undocumented holders of the unlabelled block were still fii (6.81 / 15.5312 -> 4.496 / 9.8699 = FPI + Rimco only, as
+    every IEX cell from Mar-2018); 3IINFOLTD 15-Jan-2018 event - its institutions 'Foreign Banks' row 195,245,241 sh (Standard
+    Chartered Bank + DBS Bank) sat in dii -> fii 0.1414 -> 12.359, dii 40.8614 -> 28.6438.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
