@@ -254,7 +254,11 @@ OWN_NAME={"SHILPAMED":{"BARING INDIA PRIVATE EQUITY FUND III":"BARING INDIA PRIV
           # files 'THAI UNION GROUP PUBLIC COMPANY LTD' under 'Overseas Corporate Bodies' and in its 2022 form under Foreign Companies
           "AVANTIFEED":{"THAI UNION FROZEN PRODUCTS PUBLIC CO LTD":"THAI UNION GROUP PUBLIC COMPANY LIMITED",
                         "THAI UNION FROZEN PRODUCTS PUBLIC COMPANY LIMITED":"THAI UNION GROUP PUBLIC COMPANY LIMITED",
-                        "THAI UNION FORZEN PRODUCTS PLC":"THAI UNION GROUP PUBLIC COMPANY LIMITED"}}   # Jun-2017's misspelling, same 11,410,210 shares
+                        "THAI UNION FORZEN PRODUCTS PLC":"THAI UNION GROUP PUBLIC COMPANY LIMITED"},   # Jun-2017's misspelling, same 11,410,210 shares
+          # 2026-10-05: HEXAWARE files T. Rowe Price International Discovery Fund as 'T ROWE PRICE DISCVERY FUND' (Jun-2016, 5,786,515) and
+          # 'T ROWE PRICE INTERNATIONAL DISCVERY FUND' (Dec-2016, 6,213,210 = the 6,213,210 of Sep-2016's correctly spelt row)
+          "HEXAWARE":{"T ROWE PRICE DISCVERY FUND":"T ROWE PRICE INTERNATIONAL DISCOVERY FUND",
+                      "T ROWE PRICE INTERNATIONAL DISCVERY FUND":"T ROWE PRICE INTERNATIONAL DISCOVERY FUND"}}
 def own_name(sym, hn):
     return (OWN_NAME.get(sym) or {}).get(re.sub(r"\s+"," ",str(hn or "")).strip().upper(), hn)
 OWN_FOR_AX=("InstitutionsForeignPortfolioInvestor","ForeignPortfolioInvestor","ForeignDirectInvestment","ForeignVentureCapital","SovereignWealthFunds",

@@ -21116,6 +21116,14 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     SHRIRAMCIT, ORCHPHARMA, VSTIND, FORTIS. HELD (15): TCI / TCIEXP Arcee (the reader's memory~ path re-proposes what batch 10 took
     out - a reader quirk, the store is right), ROSSARI India Acorn (open user question), RBLBANK d1acc (batch-7 hold), KSOILS / IEX
     (passes disagree), BHARATFORG. The 57 DII-only cells are with the DII session. Rebuilt feed: only these 38 rows move; guards green.
+    **Batch 21 = a misspelt foreign fund (2026-10-05, found cell by cell vs Quantmac), label "§164r batch 21".** HEXAWARE Jun-2016:
+    Quantmac 11.6178 = FPI 6.76 + the whole Institutions - Any Other block 4.81 + 'Overseas Depositories (holding DRs)' 0.05; ours
+    9.6468 = FPI + only the block's unnamed rest 2.89 - the block's named holder 'T ROWE PRICE DISCVERY FUND' (1.92) is the company's
+    misspelling of T. Rowe Price International Discovery Fund (Dec-2016 'T ROWE PRICE INTERNATIONAL DISCVERY FUND' holds the 6,213,210
+    shares of Sep-2016's correctly spelt row) and the misspelling defeated the evidence match, leaving it in dii. `OWN_NAME['HEXAWARE']`
+    maps both misspellings; old vs new reader on identical data (7 alias symbols): only HEXAWARE Jun-2016 changes, fii 9.65 -> 11.57,
+    dii 8.16 -> 6.24. Remaining 0.05 vs Quantmac = the depository line our owner's rule leaves out (rule difference, row named).
+    Found with `~/stocks-cache/shp/audit_all/explain.py` (per-cell: which filing rows reproduce each side's number).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
