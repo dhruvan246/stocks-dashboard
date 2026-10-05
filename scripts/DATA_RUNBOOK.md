@@ -21619,6 +21619,14 @@ Held: VARUNSHIP 2009-15 (stored dii does not rebuild from the page at all); 3IIN
 'Any Others' sits in dii - page era, handed to the FII session. Also from the verdict pass: seam errors KSCL Dec-15 (Deutsche Bank AG),
 SADBHAV Dec-15 / BLUEDART Mar-16 (register insurers left out), SPARC Dec-15 ('UTI' row) - handed to the FII session's seam re-read.
 
+**§164s parts 13-15 (2026-10-06).** Part 13 (6375c0b15): `_shp_registers` bare 'LIC' only as a name's first word, never LIC Housing /
+LIC MF ('Matrix Partners India Investment Holdings, Lic' - TREEHOUSE Dec-15 - had read as LIC; 0 written cells relied on it). Part 14
+(5179adf1e): Citibank N.A. foreign in the evidence file (ABGSHIP Mar-16). Part 15: the 'Follow IEX's own label' decision also on IEX's
+EVENT rows - 2017-10-20 and 2019-04-11 carried India Business Excellence Fund IIA (2.68 / 2.71) in dii (part 10 covered quarter-ends only).
+Unknown-cell work for reply 3 (`r3/hyp_unknown.py`, `r3/fetch/`): 255 of 494 'their value not rebuilt' cells equal OUR earlier reading
+of the same filing before a documented correction (112 = archived Moneycontrol / Trendlyne values we replaced with Table III); event
+filings are on the company's BSE list under their date label ('15 Jan 2020'); BSE serves some XBRLs with a UTF-8 BOM before '<?xml'.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
