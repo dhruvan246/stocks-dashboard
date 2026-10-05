@@ -21444,6 +21444,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Mar-21: 62.19 / 62.20 / 63.08 / 63.75 / 64.63 = stored) - RULE DIFFERENCE vs Quantmac's FPI-only 20-22. OUR ERROR on two dates:
     Sep-2020 and Dec-2020 were served from BSE's revision times (2020-10-31, 2021-02-25) - BSE's announcements of the originals are
     2020-10-15 and 2021-01-20 -> `shp_lag_fix.json` (days_earlier; the revisions' values stay - the originals' XBRLs are not on BSE's list).
+    **Batch 30 part 19 (2026-10-06): POWERGRID and AXISBANK reviewed cell by cell.** POWERGRID 24 cells = RULE DIFFERENCE, each gap =
+    exactly the row named: 2019-03..2020-09 the institutions Category row 'FOREIGN CORPORATE BODIES' 0.07-0.08 (company-type label, never
+    FII; Quantmac counts it), 2022-03 / 2022-06 the unnamed part of the 'Qualified Institutional Buyer' Category 1.61 / 1.60 (domestic
+    for us, FII for Quantmac's b-3). AXISBANK 34 cells: 2016-06..2021-06 (27) = RULE DIFFERENCE - the gap = the FPI row's DR column (VI)
+    share to the second decimal (2020-03: 5,877,250 sh = 0.2124 vs gap 0.2141); we keep the company's printed FPI total incl. col VI
+    (the INFY ruling; Screener / Trendlyne); the 2019-09-26 event = the QIB rule (unnamed QIB 0.74; its Bain 'BC ASIA ... - FDI' holders
+    stay public for both - the 2022 form lists them under Foreign Companies); Dec-15 / Mar-16 (6) = THEIR ERROR - Quantmac serves
+    Sep-2015's page 43.82 through Jun-2016 (it lacks both quarters). Our two seam cells were rebuilt from Table III on the printed
+    convention (label "§164r batch 30 part 19 (AXISBANK seam, printed convention)"): fii 42.0947 / 42.2499 -> 42.1373 / 42.2798 (FPI
+    total incl. DR column + institutions 'Foreign Bank' 125,195; base Table I A+B+C2), dii -> 16.3829 / 16.2718 (+ NBFC); the §164a page
+    re-base had given col IV over the page's (A+B) without the public's DR column. Guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
