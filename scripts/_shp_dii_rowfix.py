@@ -247,7 +247,14 @@ OWN_NAME={"SHILPAMED":{"BARING INDIA PRIVATE EQUITY FUND III":"BARING INDIA PRIV
           # Mar-2012, 'JFE Steel International Europe B V' 33,467,580 in Jun-2012 (BSE >1% lists, qtrid 73 / 74)
           "SMLMAH":{"ISUZU MOTORSLIMITED":"ISUZU MOTORS LIMITED"},
           "SWANCORP":{"2I CAPITAL PCC - FOREIGN COMPANY":"2I CAPITAL PCC"},
-          "JSWSTEEL":{"JFE STEEL CORPORATION":"JFE STEEL INTERNATIONAL EUROPE B.V."}}
+          "JSWSTEEL":{"JFE STEEL CORPORATION":"JFE STEEL INTERNATIONAL EUROPE B.V."},
+          # §164r batch 19 (2026-10-05): Thai Union Frozen Products PCL renamed itself Thai Union Group PCL in 2015. AVANTIFEED's own
+          # Dec-2015 Table III files 'Foreign Corporate Bodies- Thai Union Fro...' 11,410,210 shares; Dec-2016..Dec-2017 file the same
+          # 11,410,210 shares as 'THAI UNION FROZEN PRODUCTS PUBLIC CO LTD' inside Institutions - Any Other; from Mar-2018 the company
+          # files 'THAI UNION GROUP PUBLIC COMPANY LTD' under 'Overseas Corporate Bodies' and in its 2022 form under Foreign Companies
+          "AVANTIFEED":{"THAI UNION FROZEN PRODUCTS PUBLIC CO LTD":"THAI UNION GROUP PUBLIC COMPANY LIMITED",
+                        "THAI UNION FROZEN PRODUCTS PUBLIC COMPANY LIMITED":"THAI UNION GROUP PUBLIC COMPANY LIMITED",
+                        "THAI UNION FORZEN PRODUCTS PLC":"THAI UNION GROUP PUBLIC COMPANY LIMITED"}}   # Jun-2017's misspelling, same 11,410,210 shares
 def own_name(sym, hn):
     return (OWN_NAME.get(sym) or {}).get(re.sub(r"\s+"," ",str(hn or "")).strip().upper(), hn)
 OWN_FOR_AX=("InstitutionsForeignPortfolioInvestor","ForeignPortfolioInvestor","ForeignDirectInvestment","ForeignVentureCapital","SovereignWealthFunds",
@@ -378,7 +385,7 @@ class SymCtx:
     def hclass(self, hn, pct=None):
         if fdi_line(self.sym,hn): return "foreign","fii","new-format:ForeignDirectInvestment(any filing)"   # §164r batch 14; not kept in memory (no fuzzy spread)
         if self.newmap is None: self.newmap,self.newfile=newmap_for(self.sym,self.bse_rows)
-        c,dest,src=holder_class(hn,self.verdicts,self.newmap,pct)
+        c,dest,src=holder_class(own_name(self.sym,hn),self.verdicts,self.newmap,pct)   # §164r batch 19: the company's own name for the holder (OWN_NAME) reaches its 2022-form placement too
         n=norm(hn)
         if src.startswith("new-format") or src=="curated" or src.startswith("documented"): self.memory[n]=(c,dest,src)
         elif n in self.memory: c,dest,src=self.memory[n]; src="memory"

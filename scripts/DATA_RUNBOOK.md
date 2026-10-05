@@ -21077,6 +21077,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     (A+B): its current ARVIND / RNRL / HCC values equal the full count (ARVIND Jan-2009 2.62 = 2.6236 full vs 2.6326 (A+B)) while it
     moved HEXT / STER / INDIABULLS to (A+B) in v6 - measured on its current values (v6 list over the original grid), batches 17 + 18
     take 1,021 cells differ -> agree and 5 agree -> differ at its 0.05 tolerance. Rebuilt feed: only these symbols move; guards green.
+    **Batch 19 = a holder renamed between filings (2026-10-05), label "§164r batch 19".** AVANTIFEED Dec-2016..Dec-2017 served FII
+    29.4 = FPI 4.3 + Thai Union 25.12 although the company itself labels that holder public: 'Foreign Corporate Bodies- Thai Union
+    Fro...' (Dec-2015), 'Overseas Corporate Bodies' (Mar-2018 on), Foreign Companies (its 2022 form) - the same 11,410,210 shares.
+    Thai Union Frozen Products PCL renamed itself Thai Union Group PCL in 2015, so `holder_class` never matched the old name to the
+    2022-form row, and the company's own Institutions - Any Other placement plus that listing made it FII (option A). These quarters
+    had also never been re-read (§164s re-read Mar-Sep-2016 only). Fix in code: `_shp_dii_rowfix.OWN_NAME['AVANTIFEED']` maps the old
+    names (incl. Jun-2017's misspelt 'THAI UNION FORZEN PRODUCTS PLC') to the company's current name, and `SymCtx.hclass` now passes
+    `own_name(sym, hn)` into `holder_class`, so an alias reaches the 2022-form placement as well (before: fdi_line / inst_listed
+    only). Old vs new code on identical data, all 6 alias symbols: 0 vs 5 proposals, all AVANTIFEED. 5 cells: fii 29.41 -> 4.29 etc.
+    (= Quantmac 4.2902), dii +0.015..0.026 (R3 NBFC row). A store-wide re-run of the current row code (`~/stocks-cache/shp/audit_all/
+    wide6`) proposes 110 cells (was 302 on 4-Oct); the FII-relevant ones are held for a per-holder review.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
