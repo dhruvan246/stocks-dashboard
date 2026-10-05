@@ -22644,6 +22644,12 @@ identity with NSE's SUMMIT unproven). My tool errors caught on the way: run cutt
 (`build_ind_reply_r4v.py`). Reply #3 had called the storage cells "rounding, nothing to change" — corrected in reply #4: they are OUR
 errors. OPEN (user): the precision upgrade (would clear all 4,474; picks unchanged).
 
+**§179f — speed / memory of exact prices (2026-10-05 ~19:30 IST, user: "will the backtest perform slower?").** `precision_test/bench_cpu.js`:
+3 alternating rounds per engine (today's engine on today's parts vs the 4-more-decimal engine on the exact parts), 4 passes of the 8 favourites x 2
+windows each, CPU time (the Mac was loaded by other sessions, load avg 4-8, so wall time was useless): fastest pass 52.2 s today vs 51.5 s exact
+(median 88.2 vs 84.7) — no measurable slowdown; Node heap identical (299 MB recent data, 601 MB full history); data load recent 5.2 -> 5.9 s,
+deep 2.7 -> 3.7 s (more digits to parse; 6-decimal test data, 4 decimals would sit between); published parts 200.5 -> 209.9 MB (+4.7%).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
