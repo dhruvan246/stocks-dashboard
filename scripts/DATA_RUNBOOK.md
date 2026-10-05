@@ -21008,6 +21008,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     code's own: UJJIVAN dii x10; 24 event rows = unchanged set). The engine drops 4 re-filing rows that now equal their healed original
     (MARKSANS Dec-25, UJJIVAN Jun-23, KALYANKJIL Dec-22, SHRIRAMFIN Dec-22). Scripts: `~/stocks-cache/shp/fdi_scan/` (scan_filings, b14,
     page_era3, page_guard, run_eval.sh).
+    **Batch 15 = depository-receipt base for 5 more mislabelled companies (2026-10-05, user: "yes fix the 5"), label "§164r batch 15".**
+    Found while capturing BSE pages for the user: reply4 `d2_basis.json` had JISLJALEQS, BOMDYEING, DHANI, EIDPARRY and CESC as 'FULL
+    share count', but each one's own first XBRL prints promoter / public as shares / (A+B) with the DR custodian (C1) OUTSIDE the 100.
+    Proof by share counts, not by the % sum (their C1 % is 0.02-0.04 or absent, too small for a sum test): JISLJALEQS promoter 30.95 =
+    30.9485 (÷ all shares 30.9002), BOMDYEING 53.69 = 53.6854 (53.6726), CESC 49.93 = 49.9311 (49.9199), EIDPARRY 45.27 = 45.2712
+    (45.2527), DHANI public 66.38 = 66.3778 (66.3641); JISL's Dec-2015 new-form page agrees (28.75 = 12,71,81,661 / 44,23,94,448). Same
+    method as batches 4 / 12 (`reply7/b15_drrebase.py`): 183 pre-2016 cells x (A+B+C)/(A+B) shares of the same quarter's BSE page (CESC
+    40, JISLJALEQS 39, BOMDYEING 38, EIDPARRY 38, DHANI 28; 167 new + 16 superseding; 76 pre-2006 pages unreadable, 5 quarters without
+    custodian shares). 5 DHANI cells (2014-15, factor 1.0002) move < 0.01 pp and stay as stored (`_cell_eq`). Quantmac's 214 Rule-2
+    cells for these 5: 206 now equal (JISLJALEQS 84/84, e.g. Jun-2012 50.51 -> 50.81; DHANI 38/38; BOMDYEING 78/84; CESC 3/3; EIDPARRY
+    3/5); the 8 left are not a base difference (BOMDYEING Jun-2015 8.59 vs 8.43 and Dec-2015 13.55 vs 7.81, EIDPARRY Dec-2015 8.24 vs
+    8.11). Rebuilt feed: exactly these 178 rows move, 0 others; guards green. ELECTCAST / SREINFRA cannot be told apart (5,000 / 21,600
+    DR shares). UFLEX not changed (the user's call): its Dec-2015 new-form page also leaves its 54,65,840 DR shares outside (47.62 =
+    A/(A+B)), but by Jun-2016 the same count sits in Public as Kebale Trading Ltd (Foreign Bodies Corporate) and counts in the 100.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
