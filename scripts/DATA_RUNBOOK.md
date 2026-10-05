@@ -21272,6 +21272,16 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     2023-02-22 precision. Remaining PVRINOX gaps = Multiples PE Fund I (rule difference) exactly. Quantmac's PVRINOX 22-Feb-2023 37.56
     divides by 84,532,315, the total in NSE's revised XBRL, which contradicts that filing's own summary (promoters 26,899,076 = 27.46 %
     => 97,952,814) - their error. Rebuilt store + events move exactly these 33; guards green.
+    **Batch 30 part 4 (same label): VAIBHAVGBL 26, INDUSTOWER 21.** VAIBHAVGBL: every Quantmac difference is a rule difference -
+    2013-15 DR base (the company's own first XBRL counts its 3,950,000 promoter GDR shares inside the 100 -> pages served as filed on
+    (A+B+C); Quantmac = the page's own (A+B) column to 2 dp), Mar-2016 Matthews India Fund (FPI-listed in 339 filings), 2019-21 NALANDA
+    INDIA FUND LIMITED (FII) (the company's own '(FII)' tag, its 2022-form FDI line, 217 FPI listings; Quantmac follows NSE's copy label
+    'Bodies Corporate'); our cells re-done at share counts (26, all moves <= 0.009). INDUSTOWER: Sep-2021..Jun-2022 the institutions
+    Any-Other block = named LIC + an unnamed, unlabelled rest (6.5-9.9 M sh, no same-size labelled block nearby) - D1 makes the rest FII;
+    the parser had left it in dii -> fii 26.83 / 26.09 / 28.23 / 26.62 -> 27.0706 / 26.3956 / 28.4284 / 26.9882 (= Quantmac), dii minus
+    the rest; 2019-09..2021-06 the block is the company's own 'Qualified Institutional Buyers' category (labelled, read domestic - rule
+    difference); 2012-14 §160 classes (Anadale Ltd per the prospectus, the 18,027,840-share holder labelled 'Qualified Foreign Investor'
+    from Sep-2014) kept, precision re-done. Rebuilt store moves exactly these 47 (+ part 3's 27 not yet refreshed); guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
