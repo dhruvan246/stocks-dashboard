@@ -13576,6 +13576,26 @@
     ],
     "src": "bseaspx:532430_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 0.33 -> 0.40, dii 0.67 -> 0.67. generic-row-B Others 0.07 fii: prev 'Foreign Port Folio Investor Corpor' 5 holders 0.07; next 'Foreign Portfolio Investors' 6 holders 0.07; noninst-fii Others 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2014-12-31": {
+    "cell": [
+     65.6384,
+     0.9768,
+     0.5855,
+     0.362,
+     0.0838,
+     "2015-01-13"
+    ],
+    "was": [
+     65.6384,
+     0.9461,
+     0.5855,
+     0.362,
+     0.0838,
+     "2015-01-13"
+    ],
+    "src": "bseaspx:532430_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532430 qtrid 84) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Non-Institutions, 11,548 shares = 0.0307) - and the stored fii 0.9461 held only 'Foreign Institutional Investors' 0.9461. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 37,667,628 shares. fii 0.9461 -> 0.9768, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "BHARATFORG": {
@@ -15590,7 +15610,7 @@
    "2014-09-30": {
     "cell": [
      46.746,
-     16.6994,
+     16.7207,
      15.2165,
      10.9453,
      1.7985,
@@ -15605,8 +15625,28 @@
      "2014-10-14"
     ],
     "src": "bseaspx:500493_83",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings report the shares underlying its DRs on SEBI's separate C1 line, outside the 100, and a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.000040 = total (A+B+C) 232794316 / (A+B) 232785116 shares on the same quarter's BSE page; fii 16.70 -> 16.70.",
-    "exact": true
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500493 qtrid 83) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 49,854 shares = 0.0214) - and the stored fii 16.6987 held only 'Foreign Institutional Investors' 16.6993. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 232,785,116 shares. fii 16.6987 -> 16.7207, dii unchanged (it holds only the page's domestic rows). The superseded batch-18 entry (\u00a7164a re-base x1.000040, flagged exact in batch 22) had not landed yet, so prom / dii / mf / ins carry its re-based values.",
+    "superseded": {
+     "cell": [
+      46.746,
+      16.6994,
+      15.2165,
+      10.9453,
+      1.7985,
+      "2014-10-14"
+     ],
+     "was": [
+      46.7442,
+      16.6987,
+      15.2159,
+      10.9449,
+      1.7984,
+      "2014-10-14"
+     ],
+     "src": "bseaspx:500493_83",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings report the shares underlying its DRs on SEBI's separate C1 line, outside the 100, and a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.000040 = total (A+B+C) 232794316 / (A+B) 232785116 shares on the same quarter's BSE page; fii 16.70 -> 16.70.",
+     "exact": true
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -19174,6 +19214,126 @@
     ],
     "src": "bseaspx:511196_84",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.58 -> 0.70, dii 0.53 -> 0.53. inst-sub-fii Foreign Financial Institutions 0.01; noninst-fii Qualified Foreign Investor 0.11. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2013-03-31": {
+    "cell": [
+     42.3808,
+     0.6463,
+     0.6414,
+     0.0024,
+     0.6385,
+     "2013-04-21"
+    ],
+    "was": [
+     42.3808,
+     0.6058,
+     0.6414,
+     0.0024,
+     0.6385,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:511196_77",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 77) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6058 held only 'Foreign Institutional Investors' 0.6058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6058 -> 0.6463, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-06-30": {
+    "cell": [
+     42.3808,
+     0.6463,
+     0.5031,
+     0.0023,
+     0.5003,
+     "2013-07-21"
+    ],
+    "was": [
+     42.3808,
+     0.6058,
+     0.5031,
+     0.0023,
+     0.5003,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:511196_78",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 78) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6058 held only 'Foreign Institutional Investors' 0.6058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6058 -> 0.6463, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-09-30": {
+    "cell": [
+     42.3808,
+     0.6463,
+     0.5134,
+     0.0019,
+     0.5003,
+     "2013-10-21"
+    ],
+    "was": [
+     42.3808,
+     0.6058,
+     0.5134,
+     0.0019,
+     0.5003,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:511196_79",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 79) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6058 held only 'Foreign Institutional Investors' 0.6058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6058 -> 0.6463, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-12-31": {
+    "cell": [
+     42.3808,
+     0.6463,
+     0.5115,
+     0.0018,
+     0.5003,
+     "2014-01-21"
+    ],
+    "was": [
+     42.3808,
+     0.6058,
+     0.5115,
+     0.0018,
+     0.5003,
+     "2014-01-21"
+    ],
+    "src": "bseaspx:511196_80",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 80) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6058 held only 'Foreign Institutional Investors' 0.6058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6058 -> 0.6463, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-03-31": {
+    "cell": [
+     42.3808,
+     0.6463,
+     0.2577,
+     0.0018,
+     0.2451,
+     "2014-04-12"
+    ],
+    "was": [
+     42.3808,
+     0.6058,
+     0.2577,
+     0.0018,
+     0.2451,
+     "2014-04-12"
+    ],
+    "src": "bseaspx:511196_81",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 81) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6058 held only 'Foreign Institutional Investors' 0.6058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6058 -> 0.6463, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-06-30": {
+    "cell": [
+     42.3808,
+     0.6633,
+     0.3342,
+     0.3116,
+     0.0,
+     "2014-07-14"
+    ],
+    "was": [
+     42.3808,
+     0.6228,
+     0.3342,
+     0.3116,
+     0.0,
+     "2014-07-14"
+    ],
+    "src": "bseaspx:511196_82",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 511196 qtrid 82) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 2,500 shares = 0.0122); 'Qualified Foreign Investor' (Non-Institutions, 5,800 shares = 0.0283) - and the stored fii 0.6228 held only 'Foreign Institutional Investors' 0.6228. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 20,485,250 shares. fii 0.6228 -> 0.6633, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "CAPLIPOINT": {
@@ -27419,6 +27579,26 @@
     ],
     "src": "bsexbrl:533261_2112019193228_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 6.09 -> 6.09, dii 0.00 -> 0.16. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.16"
+   },
+   "2014-09-30": {
+    "cell": [
+     74.5184,
+     17.8109,
+     1.2455,
+     0.2725,
+     0.8733,
+     "2014-10-09"
+    ],
+    "was": [
+     74.5184,
+     17.776,
+     1.2455,
+     0.2725,
+     0.8733,
+     "2014-10-09"
+    ],
+    "src": "bseaspx:533261_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 533261 qtrid 83) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 32,208 shares = 0.0349) - and the stored fii 17.7760 held only 'Foreign Institutional Investors' 17.7760. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 92,370,907 shares. fii 17.7760 -> 17.8109, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "ESSENTIA": {
@@ -29161,7 +29341,7 @@
    "2014-12-31": {
     "cell": [
      46.8542,
-     18.5123,
+     18.5414,
      4.38,
      0.7176,
      0.0416,
@@ -29170,13 +29350,33 @@
     "was": [
      46.8542,
      18.5123,
-     4.0553,
+     4.38,
      0.7176,
      0.0416,
      "2015-01-20"
     ],
     "src": "bseaspx:523574_84",
-    "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.51 -> 18.51, dii 4.06 -> 4.38. std-vcf Venture Capital Funds row 0.32; inst-sub-fii Foreign Portolio Investor ( Corporate) 0.03. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 523574 qtrid 84) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 69,596 shares = 0.0291) - and the stored fii 18.5123 held only 'Foreign Institutional Investors' 18.5123. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 239,018,954 shares. fii 18.5123 -> 18.5414, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      46.8542,
+      18.5123,
+      4.38,
+      0.7176,
+      0.0416,
+      "2015-01-20"
+     ],
+     "was": [
+      46.8542,
+      18.5123,
+      4.0553,
+      0.7176,
+      0.0416,
+      "2015-01-20"
+     ],
+     "src": "bseaspx:523574_84",
+     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.51 -> 18.51, dii 4.06 -> 4.38. std-vcf Venture Capital Funds row 0.32; inst-sub-fii Foreign Portolio Investor ( Corporate) 0.03. Evidence: _shp_164_audit.json"
+    }
    }
   },
   "FELDVR": {
@@ -29815,6 +30015,26 @@
     ],
     "src": "bsetable3:505744:88 + bseaspx:505744:88",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and equals the company's rows, but our standing row rules had never been applied to it. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-02-04 16:26:35; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules (t3_compute): unnamed institutions 'Any Other' block 0.20 -> FII (D1); NBFC row 0.01 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 74.98 -> 74.9845, fii 0.06 -> 0.2605, dii 13.79 -> 13.5951."
+   },
+   "2014-12-31": {
+    "cell": [
+     74.9845,
+     0.2477,
+     13.2637,
+     9.8971,
+     3.361,
+     "2015-01-17"
+    ],
+    "was": [
+     74.9845,
+     0.1931,
+     13.2637,
+     9.8971,
+     3.361,
+     "2015-01-17"
+    ],
+    "src": "bseaspx:505744_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505744 qtrid 84) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 30,349 shares = 0.0546) - and the stored fii 0.1931 held only 'Foreign Institutional Investors' 0.1931. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 55,632,130 shares. fii 0.1931 -> 0.2477, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "FOODSIN": {
@@ -38080,6 +38300,26 @@
     ],
     "src": "bseaspx:533177_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 7.61 -> 7.67, dii 2.50 -> 2.50. generic-row-by-holders Others 4.06 pub [adjacent quarter's composition, rest 0.80 follows]: Standard Chartered IL&FS Asia Infrastruc 3.26 (2015-form XBRL row); generic-row-B Others 0.89 pub: prev 'Directors & their Relatives & Frie' 13 holders 0.89; next 'Directors & their Relatives & Frie' 13 holders 0.89; generic-row-C Others 0.01 fii: qtrid 85 'Foreign Portolio Investor ( Corpor' 3 holders 0.04; qtrid 87 'Foreign Portfolio Investments Corp' 6 holders 0.07; std-fii-rows FPI/QFI/FVCI rows in institutions 0.05; dii-block-out Others 0.01 stored dii held the institutional Any-Others block; this fii sub-row is not a domestic institution; inst-sub-fii Others 0.01. Evidence: _shp_164_audit.json"
+   },
+   "2014-06-30": {
+    "cell": [
+     70.7887,
+     5.4993,
+     2.3051,
+     1.5746,
+     0.0,
+     "2014-07-16"
+    ],
+    "was": [
+     70.7887,
+     5.4509,
+     2.3051,
+     1.5746,
+     0.0,
+     "2014-07-16"
+    ],
+    "src": "bseaspx:533177_82",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 533177 qtrid 82) labels these rows foreign institutions - 'Foreign Venture Capital Investors' (Institutions, 119,351 shares = 0.0484) - and the stored fii 5.4509 held only 'Foreign Institutional Investors' 5.4509. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 246,720,020 shares. fii 5.4509 -> 5.4993, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "IMAGICAA": {
@@ -46423,6 +46663,26 @@
     ],
     "src": "bsetable3:590003:97 + bseaspx:590003:97",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and differs from the company's own filing: FII: stored - the filing's rows = -0.01; DII: stored - the filing's rows = -0.75 = AIF (B1c) 0.76. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2018-05-07 12:37:05; ShareholdingPattern.aspx qtrid 97: share total + promoter row), read with our rules (t3_compute): institutions 'Any Other' line 'FOREIGN FINANCIAL INSTITUTIONS' 0.04 -> FII. Date unchanged (shp_lag_fix carries the filing day). prom 2.08 -> 2.0827, fii 19.53 -> 19.5701, dii 19.90 -> 20.6148."
+   },
+   "2014-09-30": {
+    "cell": [
+     2.2239,
+     28.4724,
+     17.7809,
+     12.5612,
+     3.8267,
+     "2014-10-22"
+    ],
+    "was": [
+     2.2239,
+     28.4341,
+     17.7809,
+     12.5612,
+     3.8267,
+     "2014-10-22"
+    ],
+    "src": "bseaspx:590003_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 590003 qtrid 83) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 140 shares = 0.0001); 'Foreign Portolio Investor ( Corporate)' (Institutions, 46,207 shares = 0.0382) - and the stored fii 28.4341 held only 'Foreign Institutional Investors' 28.4341. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 120,862,609 shares. fii 28.4341 -> 28.4724, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "KEC": {
@@ -46610,6 +46870,26 @@
     ],
     "src": "bseaspx:532714_85",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 4.53 -> 4.66, dii 26.18 -> 26.19. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.13. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [26.19, 3.1588])"
+   },
+   "2014-09-30": {
+    "cell": [
+     50.0105,
+     4.7815,
+     29.8804,
+     26.6708,
+     3.1588,
+     "2014-10-08"
+    ],
+    "was": [
+     50.0105,
+     4.7535,
+     29.8804,
+     26.6708,
+     3.1588,
+     "2014-10-08"
+    ],
+    "src": "bseaspx:532714_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532714 qtrid 83) labels these rows foreign institutions - 'Foreign Bank' (Institutions, 5,480 shares = 0.0021); 'Foreign Portolio Investor ( Corporate)' (Institutions, 65,442 shares = 0.0255); 'Qualified Foreign Investor - Corporate' (Institutions, 1,150 shares = 0.0004) - and the stored fii 4.7535 held only 'Foreign Institutional Investors' 4.7535. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 257,088,370 shares. fii 4.7535 -> 4.7815, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "KIRIINDUS": {
@@ -61338,6 +61618,26 @@
     ],
     "src": "bsetable3:500126:89 + bseaspx:500126:89",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and differs from the company's own filing: FII: stored - the filing's rows = +0.23 = inst Any-Other (B1i) 0.23. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-06-22 17:34:39; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute): institutions 'Any Other' line 'Foreign Institutional Investors' 0.23 -> FII. Date unchanged (shp_lag_fix carries the filing day). prom 51.80 -> 51.8045, fii 1.39 -> 1.3907, dii 12.61 -> 12.3762."
+   },
+   "2015-03-31": {
+    "cell": [
+     51.8045,
+     1.3959,
+     17.0914,
+     7.4186,
+     9.5977,
+     "2015-04-16"
+    ],
+    "was": [
+     51.8045,
+     1.3658,
+     17.0914,
+     7.4186,
+     9.5977,
+     "2015-04-16"
+    ],
+    "src": "bseaspx:500126_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500126 qtrid 85) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 5,000 shares = 0.0301) - and the stored fii 1.3658 held only 'Foreign Institutional Investors' 1.3658. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 16,599,382 shares. fii 1.3658 -> 1.3959, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "PIDILITIND": {
@@ -63936,6 +64236,46 @@
      "src": "bseaspx:531500_86",
      "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.77 -> 21.19, dii 2.47 -> 2.47. row-by-holders Others 3.59 Apms Investment Fund Ltd 3.59 (curated); generic-row-B Others 0.83 fii: prev 'Foreign Portolio Investor ( Corpor' 7 holders 0.81; next 'Foreign Portfolio Investments Corp' 21 holders 0.99; inst-sub-fii Others 0.83; noninst-fii Others 3.59. Evidence: _shp_164_audit.json"
     }
+   },
+   "2009-12-31": {
+    "cell": [
+     57.9502,
+     4.5031,
+     4.7333,
+     1.1424,
+     3.1301,
+     "2010-01-21"
+    ],
+    "was": [
+     57.9502,
+     4.4531,
+     4.7333,
+     1.1424,
+     3.1301,
+     "2010-01-21"
+    ],
+    "src": "bseaspx:531500_64",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531500 qtrid 64) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 128,622 shares = 0.0500) - and the stored fii 4.4531 held only 'Foreign Institutional Investors' 4.4531. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 257,336,909 shares. fii 4.4531 -> 4.5031, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2010-03-31": {
+    "cell": [
+     57.9502,
+     4.5031,
+     4.7333,
+     1.1424,
+     3.1301,
+     "2010-04-21"
+    ],
+    "was": [
+     57.9502,
+     4.4531,
+     4.7333,
+     1.1424,
+     3.1301,
+     "2010-04-21"
+    ],
+    "src": "bseaspx:531500_65",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531500 qtrid 65) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 128,622 shares = 0.0500) - and the stored fii 4.4531 held only 'Foreign Institutional Investors' 4.4531. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 257,336,909 shares. fii 4.4531 -> 4.5031, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "RAMRAT": {
@@ -71411,6 +71751,26 @@
      ],
      "why": "22j field adjudication: BSE document read (self-consistent on every denominator) corroborated by the symbol own series \u2014 stored was a lone outlier between two identical neighbours. fields: prom,ins [sub advanced in lockstep with the ann-stream re-dating, 2026-08-30 \u2014 see runbook \u00a7105/\u00a7117]"
     }
+   },
+   "2010-12-31": {
+    "cell": [
+     75.0713,
+     3.1106,
+     2.1996,
+     0.5,
+     1.6113,
+     "2011-01-21"
+    ],
+    "was": [
+     75.07,
+     1.11,
+     4.2,
+     0.5,
+     3.46,
+     "2011-01-21"
+    ],
+    "src": "bseaspx:501061_68",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check): the stored cell [75.07, 1.11, 4.2, 0.5, 3.46] matches no row set of the company's own BSE page for this quarter (ShareholdingPattern.aspx 501061 qtrid 68) and breaks from its own neighbouring quarters; no document carrying the stored figures was found. Re-read whole from the page, % of total 50,000,000 shares: 'Financial Institutions / Banks' 37,535,660 shares; 'Mutual Funds / UTI' 250,000 shares; 'Financial Institutions / Banks' 44,157 shares; 'Insurance Companies' 805,650 shares; 'Foreign Institutional Investors' 1,555,291 shares. FII = the rows labelled foreign institutions, DII = mutual funds + banks/FIs + insurance (+ VCF) (\u00a7160). prom 75.0700 -> 75.0713, fii 1.1100 -> 3.1106, dii 4.2000 -> 2.1996, mf 0.5000 -> 0.5000, ins 3.4600 -> 1.6113."
    }
   },
   "SBILIFE": {
@@ -78208,6 +78568,26 @@
     ],
     "src": "bseaspx:531426_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 10.52 -> 10.59, dii 24.49 -> 24.49. generic-row-B Others 0.07 fii: prev 'Foreign Portolio Investor ( Corpor' 2 holders 0.07; inst-sub-fii Others 0.07. Evidence: _shp_164_audit.json"
+   },
+   "2014-12-31": {
+    "cell": [
+     35.3196,
+     10.453,
+     24.5349,
+     9.0503,
+     14.7289,
+     "2015-01-14"
+    ],
+    "was": [
+     35.3196,
+     10.414,
+     24.5349,
+     9.0503,
+     14.7289,
+     "2015-01-14"
+    ],
+    "src": "bseaspx:531426_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531426 qtrid 84) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 27,000 shares = 0.0390) - and the stored fii 10.4140 held only 'Foreign Institutional Investors' 10.4140. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 69,210,600 shares. fii 10.4140 -> 10.4530, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "TNTELE": {
@@ -80414,6 +80794,26 @@
     ],
     "src": "bsetable3:507878:88 + bseaspx:507878:88",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-01-27 15:31:56; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): NBFC row 0.06 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 30.14 -> 30.1362, fii 18.27 -> 18.2610, dii 2.75 -> 2.8164."
+   },
+   "2014-09-30": {
+    "cell": [
+     47.6181,
+     26.2072,
+     2.0966,
+     0.6244,
+     0.8828,
+     "2014-10-22"
+    ],
+    "was": [
+     47.6181,
+     26.1799,
+     2.0966,
+     0.6244,
+     0.8828,
+     "2014-10-22"
+    ],
+    "src": "bseaspx:507878_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 507878 qtrid 83) labels these rows foreign institutions - 'Qualified Foreign Investor' (Non-Institutions, 4,274 shares = 0.0002); 'Foreign Port Folio Investor Corporate' (Non-Institutions, 708,500 shares = 0.0271) - and the stored fii 26.1799 held only 'Foreign Institutional Investors' 26.1799. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 2,616,301,047 shares. fii 26.1799 -> 26.2072, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "UNIVPHOTO": {
@@ -95577,6 +95977,26 @@
     ],
     "src": "bseaspx:532930:88:New+seam164l",
     "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 4.2628 - 1.4386 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+   },
+   "2015-03-31": {
+    "cell": [
+     75.0,
+     1.942,
+     2.9237,
+     2.4684,
+     0.3845,
+     "2015-04-16"
+    ],
+    "was": [
+     75.0,
+     1.8944,
+     2.9237,
+     2.4684,
+     0.3845,
+     "2015-04-16"
+    ],
+    "src": "bseaspx:532930_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532930 qtrid 85) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 34,356 shares = 0.0476) - and the stored fii 1.8944 held only 'Foreign Institutional Investors' 1.8944. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 72,161,560 shares. fii 1.8944 -> 1.9420, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "BIOCON": {
@@ -107744,22 +108164,42 @@
    "2015-03-31": {
     "cell": [
      37.7708,
-     26.5033,
+     33.5053,
      1.265,
      1.1642,
      0.0,
      "2015-04-18"
     ],
     "was": [
-     37.7298,
-     26.4745,
-     1.2636,
-     1.1629,
+     37.7708,
+     26.5033,
+     1.265,
+     1.1642,
      0.0,
      "2015-04-18"
     ],
     "src": "bseaspx:532832_85",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001086 = total (A+B+C) 424977739 shares / (A+B) 424516654 shares on the same quarter's BSE page; fii 26.47 -> 26.50, dii 1.26 -> 1.26."
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532832 qtrid 85) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 29,724,645 shares = 7.0020) - and the stored fii 26.5033 held only 'Foreign Institutional Investors' 26.5033. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 424,516,654 shares. fii 26.5033 -> 33.5053, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      37.7708,
+      26.5033,
+      1.265,
+      1.1642,
+      0.0,
+      "2015-04-18"
+     ],
+     "was": [
+      37.7298,
+      26.4745,
+      1.2636,
+      1.1629,
+      0.0,
+      "2015-04-18"
+     ],
+     "src": "bseaspx:532832_85",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001086 = total (A+B+C) 424977739 shares / (A+B) 424516654 shares on the same quarter's BSE page; fii 26.47 -> 26.50, dii 1.26 -> 1.26."
+    }
    },
    "2015-06-30": {
     "cell": [
@@ -107784,22 +108224,42 @@
    "2015-09-30": {
     "cell": [
      42.7343,
-     13.906,
+     18.4336,
      1.5817,
      1.4943,
      0.0,
      "2015-10-10"
     ],
     "was": [
-     42.6798,
-     13.8883,
-     1.5797,
-     1.4924,
+     42.7343,
+     13.906,
+     1.5817,
+     1.4943,
      0.0,
      "2015-10-10"
     ],
     "src": "bseaspx:532832_87",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001277 = total (A+B+C) 461677739 shares / (A+B) 461088737 shares on the same quarter's BSE page; fii 13.89 -> 13.91, dii 1.58 -> 1.58."
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532832 qtrid 87) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 20,876,324 shares = 4.5276) - and the stored fii 13.9060 held only 'Foreign Institutional Investors' 13.9060. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 461,088,737 shares. fii 13.9060 -> 18.4336, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      42.7343,
+      13.906,
+      1.5817,
+      1.4943,
+      0.0,
+      "2015-10-10"
+     ],
+     "was": [
+      42.6798,
+      13.8883,
+      1.5797,
+      1.4924,
+      0.0,
+      "2015-10-10"
+     ],
+     "src": "bseaspx:532832_87",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001277 = total (A+B+C) 461677739 shares / (A+B) 461088737 shares on the same quarter's BSE page; fii 13.89 -> 13.91, dii 1.58 -> 1.58."
+    }
    },
    "2017-01-11": {
     "cell": [
@@ -130717,6 +131177,26 @@
     ],
     "src": "bseaspx:503100_64",
     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.41 -> 19.41, dii 7.32 -> 5.28. dii-block-out Trusts 1.01 stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution; dii-block-out Foreign Companies 1.04 stored dii held the institutional Any-Others block; this pub sub-row is not a domestic institution. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+   },
+   "2015-09-30": {
+    "cell": [
+     62.5238,
+     28.3397,
+     3.5804,
+     3.5787,
+     0.0,
+     "2015-10-21"
+    ],
+    "was": [
+     62.5238,
+     27.6863,
+     3.5804,
+     3.5787,
+     0.0,
+     "2015-10-21"
+    ],
+    "src": "bseaspx:503100_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 503100 qtrid 87) labels these rows foreign institutions - 'Foreign Venture Capital Investors' (Institutions, 999,507 shares = 0.6533) - and the stored fii 27.6863 held only 'Foreign Institutional Investors' 20.2618; 'Foreign Portfolio Investments Corporation' 7.4246. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 152,988,852 shares. fii 27.6863 -> 28.3397, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "PIIND": {
@@ -140357,6 +140837,26 @@
     ],
     "src": "bseaspx:523598_87",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.42 -> 2.58, dii 19.27 -> 19.27. generic-row-C Others 0.16 fii: qtrid 86 'Others' 2 holders 0.03; inst-sub-fii Others 0.16. Evidence: _shp_164_audit.json"
+   },
+   "2015-03-31": {
+    "cell": [
+     63.7492,
+     1.9624,
+     18.6602,
+     0.018,
+     17.1189,
+     "2015-04-11"
+    ],
+    "was": [
+     63.7492,
+     1.933,
+     18.6602,
+     0.018,
+     17.1189,
+     "2015-04-11"
+    ],
+    "src": "bseaspx:523598_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 523598 qtrid 85) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 136,754 shares = 0.0294) - and the stored fii 1.9330 held only 'Foreign Institutional Investors' 1.9330. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 465,799,010 shares. fii 1.9330 -> 1.9624, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "SECURKLOUD": {
@@ -152727,6 +153227,26 @@
     ],
     "src": "bseaspx:517300_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.26 -> 3.43, dii 16.46 -> 16.46. generic-row-B Others 0.17 fii: next 'Foreign Portfolio Investors' 5 holders 0.23; noninst-fii Others 0.17. Evidence: _shp_164_audit.json"
+   },
+   "2015-03-31": {
+    "cell": [
+     58.208,
+     2.726,
+     16.7492,
+     6.6144,
+     10.1091,
+     "2015-04-07"
+    ],
+    "was": [
+     58.208,
+     2.6724,
+     16.7492,
+     6.6144,
+     10.1091,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:517300_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 517300 qtrid 85) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Non-Institutions, 81,078 shares = 0.0536) - and the stored fii 2.6724 held only 'Foreign Institutional Investors' 2.6724. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 151,251,188 shares. fii 2.6724 -> 2.7260, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "NATIONALUM": {
@@ -157833,6 +158353,86 @@
     ],
     "src": "bsetable3:505790:89 + bseaspx:505790:89",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and equals the company's rows, but our standing row rules had never been applied to it. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-14 13:47:47; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute): institutions 'Any Other' line 'Foreign Financial Institution' 0.02 -> FII; 'ICICI Prudential Life Insurance Company Limited' 1.54 under non-institutions -> dii (R2, curated); 'HDFC Standard Life Insurance Company Limited' 2.41 under non-institutions -> dii (R2, documented:filing). Date unchanged (shp_lag_fix carries the filing day). prom 51.33 -> 51.3272, fii 4.78 -> 4.7978, dii 26.77 -> 30.6949."
+   },
+   "2011-12-31": {
+    "cell": [
+     51.3272,
+     13.7867,
+     18.1771,
+     16.838,
+     1.32,
+     "2012-01-21"
+    ],
+    "was": [
+     51.3272,
+     13.7665,
+     18.1771,
+     16.838,
+     1.32,
+     "2012-01-21"
+    ],
+    "src": "bseaspx:505790_72",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505790 qtrid 72) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 3,360 shares = 0.0202) - and the stored fii 13.7665 held only 'Foreign Institutional Investors' 13.7665. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 16,617,270 shares. fii 13.7665 -> 13.7867, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2012-12-31": {
+    "cell": [
+     51.3272,
+     15.1787,
+     17.0034,
+     15.6744,
+     1.308,
+     "2013-01-21"
+    ],
+    "was": [
+     51.3272,
+     15.1585,
+     17.0034,
+     15.6744,
+     1.308,
+     "2013-01-21"
+    ],
+    "src": "bseaspx:505790_76",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505790 qtrid 76) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 3,360 shares = 0.0202) - and the stored fii 15.1585 held only 'Foreign Institutional Investors' 15.1585. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 16,617,270 shares. fii 15.1585 -> 15.1787, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-12-31": {
+    "cell": [
+     51.3272,
+     15.008,
+     18.5107,
+     17.2076,
+     1.2908,
+     "2014-01-21"
+    ],
+    "was": [
+     51.3272,
+     14.9612,
+     18.5107,
+     17.2076,
+     1.2908,
+     "2014-01-21"
+    ],
+    "src": "bseaspx:505790_80",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505790 qtrid 80) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,412 shares = 0.0266); 'Foreign Financial Institutions' (Institutions, 3,360 shares = 0.0202) - and the stored fii 14.9612 held only 'Foreign Institutional Investors' 14.9612. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 16,617,270 shares. fii 14.9612 -> 15.0080, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-03-31": {
+    "cell": [
+     51.3272,
+     14.6875,
+     18.2213,
+     17.1587,
+     1.0501,
+     "2014-04-04"
+    ],
+    "was": [
+     51.3272,
+     14.6407,
+     18.2213,
+     17.1587,
+     1.0501,
+     "2014-04-04"
+    ],
+    "src": "bseaspx:505790_81",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505790 qtrid 81) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,412 shares = 0.0266); 'Foreign Financial Institutions' (Institutions, 3,360 shares = 0.0202) - and the stored fii 14.6407 held only 'Foreign Institutional Investors' 14.6407. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 16,617,270 shares. fii 14.6407 -> 14.6875, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "AGI": {
@@ -158505,6 +159105,46 @@
     ],
     "src": "bseaspx:506690_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.12 -> 3.17, dii 15.50 -> 15.50. generic-row-B Others 0.13 pub: prev 'Directors & their Relatives & Frie' 9 holders 0.13; next 'Directors & their Relatives & Frie' 10 holders 0.15; generic-row-B Others 0.05 fii: prev 'Foreign Mutual Fund' 1 holders 0.04; next 'Others' 1 holders 0.05; noninst-fii Others 0.05. Evidence: _shp_164_audit.json"
+   },
+   "2014-12-31": {
+    "cell": [
+     50.1487,
+     2.7586,
+     14.1717,
+     11.3143,
+     2.7916,
+     "2015-01-21"
+    ],
+    "was": [
+     50.1487,
+     2.7204,
+     14.1717,
+     11.3143,
+     2.7916,
+     "2015-01-21"
+    ],
+    "src": "bseaspx:506690_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 506690 qtrid 84) labels these rows foreign institutions - 'Foreign Mutual Fund' (Non-Institutions, 33,802 shares = 0.0372); 'Foreign Financial Banks' (Non-Institutions, 500 shares = 0.0006); 'Foreign Port Folio Investor Corporate' (Non-Institutions, 387 shares = 0.0004) - and the stored fii 2.7204 held only 'Foreign Institutional Investors' 2.7204. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 90,751,175 shares. fii 2.7204 -> 2.7586, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-03-31": {
+    "cell": [
+     50.139,
+     3.0529,
+     15.1094,
+     12.2597,
+     2.7911,
+     "2015-04-10"
+    ],
+    "was": [
+     50.139,
+     3.0147,
+     15.1094,
+     12.2597,
+     2.7911,
+     "2015-04-10"
+    ],
+    "src": "bseaspx:506690_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 506690 qtrid 85) labels these rows foreign institutions - 'Foreign Mutual Fund' (Non-Institutions, 33,802 shares = 0.0372); 'Foreign Financial Banks' (Non-Institutions, 500 shares = 0.0006); 'Foreign Port Folio Investor Corporate' (Non-Institutions, 387 shares = 0.0004) - and the stored fii 3.0147 held only 'Foreign Institutional Investors' 3.0147. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 90,768,725 shares. fii 3.0147 -> 3.0529, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "JSL": {
@@ -162055,6 +162695,26 @@
     ],
     "src": "bseaspx:532218_87",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 19.34 -> 41.05, dii 12.59 -> 12.59. noninst-fii Foreign Portfolio Investors 21.71. Evidence: _shp_164_audit.json"
+   },
+   "2014-03-31": {
+    "cell": [
+     0.0,
+     41.7262,
+     12.0196,
+     0.3285,
+     4.677,
+     "2014-04-10"
+    ],
+    "was": [
+     0.0,
+     41.6886,
+     12.0196,
+     0.3285,
+     4.677,
+     "2014-04-10"
+    ],
+    "src": "bseaspx:532218_81",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532218 qtrid 81) labels these rows foreign institutions - 'Qualified Foreign Investor' (Non-Institutions, 505,547 shares = 0.0376) - and the stored fii 41.6886 held only 'Foreign Institutional Investors' 41.6886. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 1,343,947,561 shares. fii 41.6886 -> 41.7262, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "CASTROLIND": {
@@ -162333,6 +162993,26 @@
     ],
     "src": "bseaspx:533573_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.08 -> 9.49, dii 2.45 -> 2.45. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.41. Evidence: _shp_164_audit.json"
+   },
+   "2014-09-30": {
+    "cell": [
+     74.1256,
+     9.4393,
+     1.677,
+     1.1588,
+     0.0,
+     "2014-10-14"
+    ],
+    "was": [
+     74.1256,
+     9.3932,
+     1.677,
+     1.1588,
+     0.0,
+     "2014-10-14"
+    ],
+    "src": "bseaspx:533573_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 533573 qtrid 83) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 86,987 shares = 0.0461) - and the stored fii 9.3932 held only 'Foreign Institutional Investors' 9.3932. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 188,515,914 shares. fii 9.3932 -> 9.4393, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "GULFOILLUB": {
@@ -165319,6 +165999,66 @@
     ],
     "src": "bseaspx:500472_85",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.93 -> 10.77, dii 21.14 -> 21.14. inst-sub-fii Foreign Portolio Investor ( Corporate) 0.84. Evidence: _shp_164_audit.json"
+   },
+   "2013-06-30": {
+    "cell": [
+     53.5809,
+     16.8676,
+     15.2376,
+     11.532,
+     3.6351,
+     "2013-07-21"
+    ],
+    "was": [
+     53.5809,
+     16.8458,
+     15.2376,
+     11.532,
+     3.6351,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:500472_78",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500472 qtrid 78) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 11,515 shares = 0.0218) - and the stored fii 16.8458 held only 'Foreign Institutional Investors' 16.8458. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 52,732,538 shares. fii 16.8458 -> 16.8676, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-09-30": {
+    "cell": [
+     53.5809,
+     16.3799,
+     15.7738,
+     12.089,
+     3.6147,
+     "2013-10-21"
+    ],
+    "was": [
+     53.5809,
+     16.3581,
+     15.7738,
+     12.089,
+     3.6147,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:500472_79",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500472 qtrid 79) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 11,515 shares = 0.0218) - and the stored fii 16.3581 held only 'Foreign Institutional Investors' 16.3581. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 52,732,538 shares. fii 16.3581 -> 16.3799, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-06-30": {
+    "cell": [
+     53.5809,
+     15.52,
+     17.1053,
+     14.3715,
+     2.6617,
+     "2014-07-18"
+    ],
+    "was": [
+     53.5809,
+     15.4982,
+     17.1053,
+     14.3715,
+     2.6617,
+     "2014-07-18"
+    ],
+    "src": "bseaspx:500472_82",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500472 qtrid 82) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 11,515 shares = 0.0218) - and the stored fii 15.4982 held only 'Foreign Institutional Investors' 15.4982. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 52,732,538 shares. fii 15.4982 -> 15.5200, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "CENTENKA": {
@@ -167889,6 +168629,26 @@
       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 0.27 -> 9.39, dii 18.51 -> 9.39. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 9.12 | R1: R1-unresolved no typed rows 9.12. Evidence: _shp_164_audit.json"
      }
     }
+   },
+   "2015-09-30": {
+    "cell": [
+     81.4599,
+     0.3684,
+     13.3204,
+     0.0001,
+     0.4075,
+     "2015-10-07"
+    ],
+    "was": [
+     81.4599,
+     0.3251,
+     13.3204,
+     0.0001,
+     0.4075,
+     "2015-10-07"
+    ],
+    "src": "bseaspx:532885_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532885 qtrid 87) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 717,281 shares = 0.0433) - and the stored fii 0.3251 held only 'Foreign Institutional Investors' 0.3251. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 1,658,273,181 shares. fii 0.3251 -> 0.3684, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "BLUESTARCO": {
@@ -171248,6 +172008,26 @@
     ],
     "src": "bseaspx:508989_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 3.05 -> 6.64, dii 15.04 -> 15.04. generic-row-A-rest Others 3.59 fii: Somerset Emerging Markets Small Cap Fund 2.80 (documented:filing) + 3 unnamed holder(s) 0.79 (rest follows, \u00a7158 R1); generic-row-B Others 0.03 pub: prev 'Office Bearer' 16 holders 0.03; next 'Others' 15 holders 0.03; noninst-fii Others 3.59. Evidence: _shp_164_audit.json"
+   },
+   "2014-09-30": {
+    "cell": [
+     61.7973,
+     6.9767,
+     13.4218,
+     13.4018,
+     0.0,
+     "2014-10-18"
+    ],
+    "was": [
+     61.7973,
+     6.9343,
+     13.4218,
+     13.4018,
+     0.0,
+     "2014-10-18"
+    ],
+    "src": "bseaspx:508989_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 508989 qtrid 83) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 101,092 shares = 0.0424) - and the stored fii 6.9343 held only 'Foreign Institutional Investors' 6.9343. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 238,215,000 shares. fii 6.9343 -> 6.9767, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "ABREL": {
@@ -174686,6 +175466,26 @@
      "src": "bseaspx:500249:qtrid88",
      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (0.25pp) folded in by a minority route. Healed to the page's own domestic rows (15.3252). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
     }
+   },
+   "2015-03-31": {
+    "cell": [
+     66.4055,
+     2.7581,
+     14.5122,
+     12.2802,
+     2.216,
+     "2015-04-15"
+    ],
+    "was": [
+     66.4055,
+     2.7227,
+     14.5122,
+     12.2802,
+     2.216,
+     "2015-04-15"
+    ],
+    "src": "bseaspx:500249_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500249 qtrid 85) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 1,000 shares = 0.0029); 'Foreign Port Folio Investor Corporate' (Non-Institutions, 11,299 shares = 0.0325) - and the stored fii 2.7227 held only 'Foreign Institutional Investors' 2.7227. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 34,807,844 shares. fii 2.7227 -> 2.7581, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "PGHH": {
@@ -186944,22 +187744,42 @@
    "2014-12-31": {
     "cell": [
      59.0332,
-     8.1678,
+     8.2036,
      7.5222,
      4.0522,
      3.4272,
      "2015-01-20"
     ],
     "was": [
-     59.0179,
-     8.1657,
-     7.5203,
-     4.0512,
-     3.4263,
+     59.0332,
+     8.1678,
+     7.5222,
+     4.0522,
+     3.4272,
      "2015-01-20"
     ],
     "src": "bseaspx:532978_84",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings report the shares underlying its DRs on SEBI's separate C1 line, outside the 100, and a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.000259 = total (A+B+C) 159125184 / (A+B) 159084052 shares on the same quarter's BSE page; fii 8.17 -> 8.17."
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532978 qtrid 84) labels these rows foreign institutions - 'Foreign Portolio Investor ( Corporate)' (Institutions, 57,003 shares = 0.0358) - and the stored fii 8.1678 held only 'Foreign Institutional Investors' 8.1678. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 159,084,052 shares. fii 8.1678 -> 8.2036, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      59.0332,
+      8.1678,
+      7.5222,
+      4.0522,
+      3.4272,
+      "2015-01-20"
+     ],
+     "was": [
+      59.0179,
+      8.1657,
+      7.5203,
+      4.0512,
+      3.4263,
+      "2015-01-20"
+     ],
+     "src": "bseaspx:532978_84",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings report the shares underlying its DRs on SEBI's separate C1 line, outside the 100, and a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.000259 = total (A+B+C) 159125184 / (A+B) 159084052 shares on the same quarter's BSE page; fii 8.17 -> 8.17."
+    }
    }
   },
   "CDSL": {
@@ -196472,6 +197292,66 @@
     ],
     "src": "bsexbrl:531335_12201918212_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 3.31 -> 3.31, dii 6.97 -> 19.49. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 12.52 Threpsi Care LLP 12.52(new-format:AlternativeInvestmentFunds)"
+   },
+   "2014-12-31": {
+    "cell": [
+     72.542,
+     8.8265,
+     5.8616,
+     1.4391,
+     4.4111,
+     "2015-01-07"
+    ],
+    "was": [
+     72.542,
+     8.8066,
+     5.8616,
+     1.4391,
+     4.4111,
+     "2015-01-07"
+    ],
+    "src": "bseaspx:531335_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531335 qtrid 84) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 7,759 shares = 0.0199) - and the stored fii 8.8066 held only 'Foreign Institutional Investors' 8.8066. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 39,072,089 shares. fii 8.8066 -> 8.8265, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-03-31": {
+    "cell": [
+     72.542,
+     9.1072,
+     5.3124,
+     1.0192,
+     4.2808,
+     "2015-04-07"
+    ],
+    "was": [
+     72.542,
+     9.07,
+     5.3124,
+     1.0192,
+     4.2808,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:531335_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531335 qtrid 85) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 14,524 shares = 0.0372) - and the stored fii 9.0700 held only 'Foreign Institutional Investors' 9.0700. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 39,072,089 shares. fii 9.0700 -> 9.1072, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-09-30": {
+    "cell": [
+     72.542,
+     7.5781,
+     5.3154,
+     1.0185,
+     4.2795,
+     "2015-10-06"
+    ],
+    "was": [
+     72.542,
+     7.5333,
+     5.3154,
+     1.0185,
+     4.2795,
+     "2015-10-06"
+    ],
+    "src": "bseaspx:531335_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531335 qtrid 87) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 17,509 shares = 0.0448) - and the stored fii 7.5333 held only 'Foreign Institutional Investors' 7.5333. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 39,072,089 shares. fii 7.5333 -> 7.5781, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "FINPIPE": {
@@ -196918,6 +197798,46 @@
     ],
     "src": "bsetable3:500940:89 + bseaspx:500940:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-20 17:36:24; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): none move it. Date unchanged (shp_lag_fix carries the filing day). prom 52.47 -> 52.4707, fii 5.84 -> 5.1577, dii 6.21 -> 6.8931."
+   },
+   "2008-03-31": {
+    "cell": [
+     52.1166,
+     2.9615,
+     0.8799,
+     0.0268,
+     0.8238,
+     "2008-04-21"
+    ],
+    "was": [
+     52.1166,
+     2.918,
+     0.8799,
+     0.0268,
+     0.8238,
+     "2008-04-21"
+    ],
+    "src": "bseaspx:500940_57",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500940 qtrid 57) labels these rows foreign institutions - 'Foreign Mutual Fund' (Institutions, 54,000 shares = 0.0435) - and the stored fii 2.9180 held only 'Foreign Institutional Investors' 2.9180. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 124,026,467 shares. fii 2.9180 -> 2.9615, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2008-06-30": {
+    "cell": [
+     52.1166,
+     2.9104,
+     0.9083,
+     0.0268,
+     0.8238,
+     "2008-07-21"
+    ],
+    "was": [
+     52.1166,
+     2.8765,
+     0.9083,
+     0.0268,
+     0.8238,
+     "2008-07-21"
+    ],
+    "src": "bseaspx:500940_58",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500940 qtrid 58) labels these rows foreign institutions - 'Foreign Mutual Fund' (Institutions, 42,000 shares = 0.0339) - and the stored fii 2.8765 held only 'Foreign Institutional Investors' 2.8765. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 124,026,467 shares. fii 2.8765 -> 2.9104, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "PRAXIS": {
@@ -215326,6 +216246,46 @@
     ],
     "src": "bseaspx:532775_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 8.53 -> 8.86, dii 38.17 -> 38.17. generic-row-B Others 8.72 pub: prev 'Foreign Corporate Bodies' 8 holders 5.10; next 'Others' 10 holders 8.46; generic-row-B Others 0.33 fii: prev 'Foreign Bank' 1 holders 0.33; next 'Foreign Bank' 1 holders 0.33; inst-sub-fii Others 0.33. Evidence: _shp_164_audit.json"
+   },
+   "2007-12-31": {
+    "cell": [
+     46.8854,
+     2.6982,
+     5.3826,
+     0.0,
+     0.4399,
+     "2008-01-21"
+    ],
+    "was": [
+     46.8854,
+     2.6445,
+     5.3826,
+     0.0,
+     0.4399,
+     "2008-01-21"
+    ],
+    "src": "bseaspx:532775_56",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532775 qtrid 56) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 362,054 shares = 0.0537) - and the stored fii 2.6445 held only 'Foreign Institutional Investors' 2.6445. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 674,821,238 shares. fii 2.6445 -> 2.6982, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2008-03-31": {
+    "cell": [
+     48.1918,
+     1.9311,
+     4.9314,
+     0.0,
+     0.4043,
+     "2008-04-21"
+    ],
+    "was": [
+     48.1918,
+     1.8818,
+     4.9314,
+     0.0,
+     0.4043,
+     "2008-04-21"
+    ],
+    "src": "bseaspx:532775_57",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532775 qtrid 57) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 362,054 shares = 0.0493) - and the stored fii 1.8818 held only 'Foreign Institutional Investors' 1.8818. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 734,263,728 shares. fii 1.8818 -> 1.9311, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "AVANTEL": {
@@ -220939,6 +221899,46 @@
     ],
     "src": "bseaspx:532725:88:New+seam164l",
     "why": "\u00a7164p repair of a \u00a7164l seam fill (2026-09-27): dii 22.5045 - 1.8978 moved to fii (page institutions: mf/banks/ins in dii, the FII block in fii, never both)."
+   },
+   "2014-12-31": {
+    "cell": [
+     72.91,
+     0.7943,
+     18.1433,
+     14.8947,
+     3.2486,
+     "2015-01-08"
+    ],
+    "was": [
+     72.91,
+     0.7683,
+     18.1433,
+     14.8947,
+     3.2486,
+     "2015-01-08"
+    ],
+    "src": "bseaspx:532725_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532725 qtrid 84) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 4,700 shares = 0.0260) - and the stored fii 0.7683 held only 'Foreign Institutional Investors' 0.7683. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 18,098,011 shares. fii 0.7683 -> 0.7943, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-03-31": {
+    "cell": [
+     72.91,
+     1.0916,
+     17.78,
+     14.79,
+     2.99,
+     "2015-04-07"
+    ],
+    "was": [
+     72.91,
+     1.07,
+     17.78,
+     14.79,
+     2.99,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:532725_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532725 qtrid 85) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 4,700 shares = 0.0260) - and the stored fii 1.0700 held only 'Foreign Institutional Investors' 1.0656. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 18,098,011 shares. fii 1.0700 -> 1.0916, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "PVSL": {
@@ -221887,6 +222887,26 @@
     ],
     "src": "bseaspx:526612_86",
     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 6.72 -> 7.24, dii 6.00 -> 6.00. generic-row-B Others 0.52 fii: next 'Foreign Portfolio Investors' 19 holders 0.57; noninst-fii Others 0.52. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+   },
+   "2014-12-31": {
+    "cell": [
+     75.0,
+     7.8998,
+     5.7342,
+     5.7276,
+     0.0,
+     "2015-01-10"
+    ],
+    "was": [
+     75.0,
+     7.8521,
+     5.7342,
+     5.7276,
+     0.0,
+     "2015-01-10"
+    ],
+    "src": "bseaspx:526612_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 526612 qtrid 84) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Non-Institutions, 11,311 shares = 0.0477) - and the stored fii 7.8521 held only 'Foreign Institutional Investors' 7.8521. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 23,727,934 shares. fii 7.8521 -> 7.8998, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "VIDYAWIRES": {
@@ -238441,6 +239461,26 @@
     ],
     "src": "bsetable3:524348:89 + bseaspx:524348:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-20 11:03:50; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): unnamed institutions 'Any Other' block 0.08 -> FII (D1); NBFC row 0.06 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 61.93 -> 61.9266, fii 0.17 -> 0.1777, dii 3.64 -> 3.7006."
+   },
+   "2014-12-31": {
+    "cell": [
+     60.61,
+     0.2916,
+     0.04,
+     0.0,
+     0.0,
+     "2015-01-14"
+    ],
+    "was": [
+     60.61,
+     0.27,
+     0.04,
+     0.0,
+     0.0,
+     "2015-01-14"
+    ],
+    "src": "bseaspx:524348_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 524348 qtrid 84) labels these rows foreign institutions - 'Foreign Venture Capital Investors' (Institutions, 3,208 shares = 0.0265) - and the stored fii 0.2700 held only 'Foreign Institutional Investors' 0.2651. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 12,108,550 shares. fii 0.2700 -> 0.2916, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "KAYA": {
@@ -238972,6 +240012,46 @@
     ],
     "src": "bseaspx:534809_82",
     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.15 -> 11.26, dii 2.90 -> 2.90. noninst-fii Qualified Foreign Investor 0.11. Evidence: _shp_164_audit.json"
+   },
+   "2013-03-31": {
+    "cell": [
+     70.0193,
+     13.3748,
+     3.5645,
+     3.5579,
+     0.0,
+     "2013-04-21"
+    ],
+    "was": [
+     70.0193,
+     13.3579,
+     3.5645,
+     3.5579,
+     0.0,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:534809_77",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 534809 qtrid 77) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 30,270 shares = 0.0169) - and the stored fii 13.3579 held only 'Foreign Institutional Investors' 13.3579. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 179,100,000 shares. fii 13.3579 -> 13.3748, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-06-30": {
+    "cell": [
+     70.0193,
+     12.873,
+     3.4441,
+     3.4359,
+     0.0,
+     "2013-07-21"
+    ],
+    "was": [
+     70.0193,
+     12.8561,
+     3.4441,
+     3.4359,
+     0.0,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:534809_78",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 534809 qtrid 78) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 30,270 shares = 0.0169) - and the stored fii 12.8561 held only 'Foreign Institutional Investors' 12.8561. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 179,100,000 shares. fii 12.8561 -> 12.8730, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "ARCHIES": {
@@ -299260,6 +300340,26 @@
     ],
     "src": "bseaspx:500878_86",
     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 21.28 -> 23.59, dii 8.12 -> 8.12. generic-row-B Others 2.31 fii: prev 'Foreign Port Folio Investor Corpor' 10 holders 1.55; noninst-fii Others 2.31. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)"
+   },
+   "2014-12-31": {
+    "cell": [
+     50.7631,
+     24.866,
+     6.1324,
+     3.9572,
+     2.1285,
+     "2015-01-16"
+    ],
+    "was": [
+     50.7631,
+     24.813,
+     6.1324,
+     3.9572,
+     2.1285,
+     "2015-01-16"
+    ],
+    "src": "bseaspx:500878_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500878 qtrid 84) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 21,435 shares = 0.0530) - and the stored fii 24.8130 held only 'Foreign Institutional Investors' 24.8130. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 40,450,092 shares. fii 24.8130 -> 24.8660, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "GRAPHITE": {
@@ -300308,6 +301408,26 @@
     ],
     "src": "bseaspx:532892_87",
     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 12.20 -> 12.53, dii 2.28 -> 2.28. noninst-fii Qualified Foreign Investor 0.33. Evidence: _shp_aspx_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     72.4119,
+     12.4779,
+     2.2195,
+     2.2161,
+     0.0,
+     "2015-07-17"
+    ],
+    "was": [
+     72.4119,
+     12.4406,
+     2.2195,
+     2.2161,
+     0.0,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:532892_86",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532892 qtrid 86) labels these rows foreign institutions - 'Qualified Foreign Investor' (Non-Institutions, 52,804 shares = 0.0373) - and the stored fii 12.4406 held only 'Foreign Institutional Investors' 12.4406. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 141,396,475 shares. fii 12.4406 -> 12.4779, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "MUTHOOTFIN": {
@@ -309057,6 +310177,66 @@
     ],
     "src": "bseaspx:532922_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 25.53 -> 25.66, dii 0.68 -> 0.68. generic-row-T Others 5.99 pub: same row walked to qtrid 85 'Foreign Corporate Bodies' 5 holders 6.07; generic-row-B Others 1.0 pub: prev 'Directors & their Relatives & Frie' 3 holders 1.03; next 'Directors & their Relatives & Frie' 4 holders 1.00; generic-row-B Others 0.12 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 0.09; std-fii-rows FPI/QFI/FVCI rows in institutions 0.01; noninst-fii Others 0.12. Evidence: _shp_164_audit.json"
+   },
+   "2014-06-30": {
+    "cell": [
+     36.7423,
+     22.4533,
+     1.5645,
+     1.5483,
+     0.0,
+     "2014-07-17"
+    ],
+    "was": [
+     36.7423,
+     22.4276,
+     1.5645,
+     1.5483,
+     0.0,
+     "2014-07-17"
+    ],
+    "src": "bseaspx:532922_82",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532922 qtrid 82) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 200,000 shares = 0.0257) - and the stored fii 22.4276 held only 'Foreign Institutional Investors' 22.4276. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 777,620,488 shares. fii 22.4276 -> 22.4533, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-09-30": {
+    "cell": [
+     36.7423,
+     22.637,
+     1.5035,
+     1.4889,
+     0.0,
+     "2014-10-22"
+    ],
+    "was": [
+     36.7423,
+     22.6113,
+     1.5035,
+     1.4889,
+     0.0,
+     "2014-10-22"
+    ],
+    "src": "bseaspx:532922_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532922 qtrid 83) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 200,000 shares = 0.0257) - and the stored fii 22.6113 held only 'Foreign Institutional Investors' 22.6113. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 777,620,488 shares. fii 22.6113 -> 22.6370, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-12-31": {
+    "cell": [
+     36.2763,
+     23.3641,
+     0.7395,
+     0.725,
+     0.0,
+     "2015-01-22"
+    ],
+    "was": [
+     36.2763,
+     23.3387,
+     0.7395,
+     0.725,
+     0.0,
+     "2015-01-22"
+    ],
+    "src": "bseaspx:532922_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532922 qtrid 84) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 200,000 shares = 0.0254) - and the stored fii 23.3387 held only 'Foreign Institutional Investors' 23.3387. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 787,609,394 shares. fii 23.3387 -> 23.3641, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "ENIL": {
@@ -310787,6 +311967,126 @@
     ],
     "src": "bsetable3:500133:88 + bseaspx:500133:88",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-02-02 11:13:31; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): NBFC row 0.21 -> DII (R3); 'Bajaj Allianz Life Insurance Company Ltd' 1.83 filed under non-institutions -> DII (R2); 'Foreign Institutional Institution' 1.39 filed under non-institutions -> FII (foreign-institution label). Date unchanged (shp_lag_fix carries the filing day). prom 73.72 -> 73.7215, fii 10.14 -> 11.5311, dii 0.71 -> 2.7543."
+   },
+   "2013-06-30": {
+    "cell": [
+     73.7215,
+     11.7395,
+     0.0748,
+     0.0545,
+     0.0,
+     "2013-07-21"
+    ],
+    "was": [
+     73.7215,
+     11.7086,
+     0.0748,
+     0.0545,
+     0.0,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:500133_78",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 78) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,750 shares = 0.0309) - and the stored fii 11.7086 held only 'Foreign Institutional Investors' 11.7086. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.7086 -> 11.7395, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-09-30": {
+    "cell": [
+     73.7215,
+     11.8164,
+     0.0669,
+     0.0545,
+     0.0,
+     "2013-10-21"
+    ],
+    "was": [
+     73.7215,
+     11.7855,
+     0.0669,
+     0.0545,
+     0.0,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:500133_79",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 79) labels these rows foreign institutions - 'Qualified Foreign Investor' (Non-Institutions, 4,750 shares = 0.0309) - and the stored fii 11.7855 held only 'Foreign Institutional Investors' 11.7855. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.7855 -> 11.8164, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-12-31": {
+    "cell": [
+     73.7215,
+     11.069,
+     0.0681,
+     0.0545,
+     0.0,
+     "2014-01-21"
+    ],
+    "was": [
+     73.7215,
+     11.0381,
+     0.0681,
+     0.0545,
+     0.0,
+     "2014-01-21"
+    ],
+    "src": "bseaspx:500133_80",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 80) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,750 shares = 0.0309) - and the stored fii 11.0381 held only 'Foreign Institutional Investors' 11.0381. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.0381 -> 11.0690, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-03-31": {
+    "cell": [
+     73.7215,
+     11.1185,
+     0.086,
+     0.0724,
+     0.0,
+     "2014-04-14"
+    ],
+    "was": [
+     73.7215,
+     11.0876,
+     0.086,
+     0.0724,
+     0.0,
+     "2014-04-14"
+    ],
+    "src": "bseaspx:500133_81",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 81) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,750 shares = 0.0309) - and the stored fii 11.0876 held only 'Foreign Institutional Investors' 11.0876. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.0876 -> 11.1185, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-06-30": {
+    "cell": [
+     73.7215,
+     11.4107,
+     0.6296,
+     0.6094,
+     0.0,
+     "2014-07-08"
+    ],
+    "was": [
+     73.7215,
+     11.3798,
+     0.6296,
+     0.6094,
+     0.0,
+     "2014-07-08"
+    ],
+    "src": "bseaspx:500133_82",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 82) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,750 shares = 0.0309) - and the stored fii 11.3798 held only 'Foreign Institutional Investors' 11.3798. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.3798 -> 11.4107, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-09-30": {
+    "cell": [
+     73.7215,
+     11.5214,
+     0.7221,
+     0.7085,
+     0.0,
+     "2014-10-17"
+    ],
+    "was": [
+     73.7215,
+     11.4905,
+     0.7221,
+     0.7085,
+     0.0,
+     "2014-10-17"
+    ],
+    "src": "bseaspx:500133_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500133 qtrid 83) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 4,750 shares = 0.0309) - and the stored fii 11.4905 held only 'Foreign Institutional Investors' 11.4905. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,393,020 shares. fii 11.4905 -> 11.5214, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "FINEORG": {
@@ -318365,6 +319665,26 @@
     ],
     "src": "bseaspx:532942_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.35 -> 1.47, dii 25.05 -> 25.05. generic-row-B Any Other 0.12 fii: next 'Foreign Portfolio Investors' 2 holders 0.12; noninst-fii Any Other 0.12. Evidence: _shp_164_audit.json"
+   },
+   "2015-03-31": {
+    "cell": [
+     65.5156,
+     0.8722,
+     20.766,
+     20.7403,
+     0.0,
+     "2015-04-06"
+    ],
+    "was": [
+     65.5156,
+     0.8457,
+     20.766,
+     20.7403,
+     0.0,
+     "2015-04-06"
+    ],
+    "src": "bseaspx:532942_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532942 qtrid 85) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 7,444 shares = 0.0265) - and the stored fii 0.8457 held only 'Foreign Institutional Investors' 0.8457. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 28,123,460 shares. fii 0.8457 -> 0.8722, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "KSL": {
@@ -328732,6 +330052,46 @@
     ],
     "src": "bsetable3:532531:91 + bseaspx:532531:91",
     "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): this quarter's stored cell was a legacy THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne rows + our old-format formula) that left out the company's own Foreign Venture Capital Investors row (B1d: ORBIMED ASIA MAURITIUS LIMITED 1425000 shares, 1.5945) - the same holder our Jun-2016 and Dec-2016 cells count as FII. Replaced by the company's own filing as BSE serves it (Corp_shpSec_SHPPubShold_ng Table III, authorised 2016-10-20 16:19:46; ShareholdingPattern.aspx qtrid 91) with our rules: FII = FPI 31534523 + FVCI 1425000 + unnamed institutional Any-Other rest 21000 (D1) = 36.9050; DII = MF 8456728 + FI/banks 200591 + insurance 1179359 + NBFC 325938 (R3) = 11.3719; date field unchanged (shp_lag_fix carries the 2016-10-20 filing day). fii 35.29 -> 36.9050, dii 11.02 -> 11.3719."
+   },
+   "2013-06-30": {
+    "cell": [
+     27.3906,
+     51.7671,
+     8.0404,
+     5.6755,
+     2.2958,
+     "2013-07-21"
+    ],
+    "was": [
+     27.3906,
+     51.7417,
+     8.0404,
+     5.6755,
+     2.2958,
+     "2013-07-21"
+    ],
+    "src": "bseaspx:532531_78",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532531 qtrid 78) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 15,000 shares = 0.0254) - and the stored fii 51.7417 held only 'Foreign Institutional Investors' 51.7417. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 59,050,121 shares. fii 51.7417 -> 51.7671, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-09-30": {
+    "cell": [
+     27.356,
+     53.4647,
+     5.1075,
+     3.4822,
+     1.5896,
+     "2013-10-21"
+    ],
+    "was": [
+     27.356,
+     53.4224,
+     5.1075,
+     3.4822,
+     1.5896,
+     "2013-10-21"
+    ],
+    "src": "bseaspx:532531_79",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532531 qtrid 79) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 5,000 shares = 0.0085); 'Qualified Foreign Investor' (Non-Institutions, 20,020 shares = 0.0338) - and the stored fii 53.4224 held only 'Foreign Institutional Investors' 53.4224. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 59,161,371 shares. fii 53.4224 -> 53.4647, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "SUBROS": {
@@ -338472,25 +339832,53 @@
    "2010-03-31": {
     "cell": [
      56.3178,
-     0.0069,
+     0.0232,
      1.9591,
      0.0362,
      0.5681,
      "2010-04-21"
     ],
     "was": [
-     55.9511,
+     56.3178,
      0.0069,
-     1.9463,
-     0.036,
-     0.5644,
+     1.9591,
+     0.0362,
+     0.5681,
      "2010-04-21"
     ],
     "src": "bseaspx:500155_65",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.006554 = total (A+B+C) 38290560 / (A+B) 38041235 shares on the same quarter's BSE page; fii 0.01 -> 0.01."
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500155 qtrid 65) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 6,190 shares = 0.0163) - and the stored fii 0.0069 held only 'Foreign Institutional Investors' 0.0069. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 38,041,235 shares. fii 0.0069 -> 0.0232, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      56.3178,
+      0.0069,
+      1.9591,
+      0.0362,
+      0.5681,
+      "2010-04-21"
+     ],
+     "was": [
+      55.9511,
+      0.0069,
+      1.9463,
+      0.036,
+      0.5644,
+      "2010-04-21"
+     ],
+     "src": "bseaspx:500155_65",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.006554 = total (A+B+C) 38290560 / (A+B) 38041235 shares on the same quarter's BSE page; fii 0.01 -> 0.01."
+    }
    },
    "2010-06-30": {
     "cell": [
+     56.3175,
+     0.0215,
+     1.9591,
+     0.0362,
+     0.5681,
+     "2010-07-21"
+    ],
+    "was": [
      56.3175,
      0.0058,
      1.9591,
@@ -338498,16 +339886,28 @@
      0.5681,
      "2010-07-21"
     ],
-    "was": [
-     55.9508,
-     0.0058,
-     1.9463,
-     0.036,
-     0.5644,
-     "2010-07-21"
-    ],
     "src": "bseaspx:500155_66",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.006554 = total (A+B+C) 38290560 / (A+B) 38041235 shares on the same quarter's BSE page; fii 0.01 -> 0.01."
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500155 qtrid 66) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 5,960 shares = 0.0157) - and the stored fii 0.0058 held only 'Foreign Institutional Investors' 0.0058. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B) total 38,041,235 shares. fii 0.0058 -> 0.0215, dii unchanged (it holds only the page's domestic rows).",
+    "superseded": {
+     "cell": [
+      56.3175,
+      0.0058,
+      1.9591,
+      0.0362,
+      0.5681,
+      "2010-07-21"
+     ],
+     "was": [
+      55.9508,
+      0.0058,
+      1.9463,
+      0.036,
+      0.5644,
+      "2010-07-21"
+     ],
+     "src": "bseaspx:500155_66",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.006554 = total (A+B+C) 38290560 / (A+B) 38041235 shares on the same quarter's BSE page; fii 0.01 -> 0.01."
+    }
    },
    "2010-09-30": {
     "cell": [
@@ -338548,6 +339948,66 @@
     ],
     "src": "bseaspx:500155_69",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings (Dec-2015 / Mar-2016 / Jun-2016 Table I + III) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.003247 = total (A+B+C) 38290560 / (A+B) 38166635 shares on the same quarter's BSE page; fii 0.01 -> 0.01."
+   },
+   "2012-09-30": {
+    "cell": [
+     57.2224,
+     0.0432,
+     0.039,
+     0.036,
+     0.0,
+     "2012-10-21"
+    ],
+    "was": [
+     57.2224,
+     0.0036,
+     0.039,
+     0.036,
+     0.0,
+     "2012-10-21"
+    ],
+    "src": "bseaspx:500155_75",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500155 qtrid 75) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 15,155 shares = 0.0396) - and the stored fii 0.0036 held only 'Foreign Institutional Investors' 0.0036. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 38,290,560 shares. fii 0.0036 -> 0.0432, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2012-12-31": {
+    "cell": [
+     57.2224,
+     0.0432,
+     0.0389,
+     0.036,
+     0.0,
+     "2013-01-21"
+    ],
+    "was": [
+     57.2224,
+     0.0036,
+     0.0389,
+     0.036,
+     0.0,
+     "2013-01-21"
+    ],
+    "src": "bseaspx:500155_76",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500155 qtrid 76) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 15,155 shares = 0.0396) - and the stored fii 0.0036 held only 'Foreign Institutional Investors' 0.0036. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 38,290,560 shares. fii 0.0036 -> 0.0432, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2013-03-31": {
+    "cell": [
+     57.2224,
+     0.0424,
+     0.0389,
+     0.036,
+     0.0,
+     "2013-04-21"
+    ],
+    "was": [
+     57.2224,
+     0.0036,
+     0.0389,
+     0.036,
+     0.0,
+     "2013-04-21"
+    ],
+    "src": "bseaspx:500155_77",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500155 qtrid 77) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 14,855 shares = 0.0388) - and the stored fii 0.0036 held only 'Foreign Institutional Investors' 0.0036. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 38,290,560 shares. fii 0.0036 -> 0.0424, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "GBGLOBAL": {
@@ -339753,6 +341213,26 @@
     ],
     "src": "bseaspx:532778_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 1.34 -> 2.32, dii 4.84 -> 4.84. generic-row-B Others 0.98 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 1.40; generic-row-B Others 0.03 pub: prev 'Foreign Corporate Bodies' 1 holders 0.03; next 'Others' 1 holders 0.02; noninst-fii Others 0.98. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     70.548,
+     0.6986,
+     4.3643,
+     0.0004,
+     0.0,
+     "2015-10-12"
+    ],
+    "was": [
+     70.548,
+     0.6555,
+     4.3643,
+     0.0004,
+     0.0,
+     "2015-10-12"
+    ],
+    "src": "bseaspx:532778_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532778 qtrid 87) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 1,186,000 shares = 0.0431) - and the stored fii 0.6555 held only 'Foreign Institutional Investors' 0.6555. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 2,749,326,655 shares. fii 0.6555 -> 0.6986, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "MANINFRA": {
@@ -340859,6 +342339,26 @@
     ],
     "src": "bseaspx:513010_86",
     "why": "\u00a7164n page-era re-read (first read: no BSE code at \u00a7164g) of a former Nifty 500 member (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 2.99 -> 3.55, dii 1.02 -> 1.02. generic-row-C Others 0.56 fii: qtrid 85 'Foreign Portolio Investor ( Corpor' 2 holders 0.23; qtrid 87 'Foreign Portfolio Investments Corp' 1 holders 0.04; inst-sub-fii Others 0.56. Evidence: _shp_164_audit.json"
+   },
+   "2015-09-30": {
+    "cell": [
+     54.5036,
+     1.7212,
+     1.0224,
+     0.0754,
+     0.6494,
+     "2015-10-21"
+    ],
+    "was": [
+     54.5036,
+     1.68,
+     1.0224,
+     0.0754,
+     0.6494,
+     "2015-10-21"
+    ],
+    "src": "bseaspx:513010_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 513010 qtrid 87) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Institutions, 6,000 shares = 0.0390) - and the stored fii 1.6800 held only 'Foreign Institutional Investors' 1.6822. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 15,400,000 shares. fii 1.6800 -> 1.7212, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "TVSHLTD": {
@@ -341165,6 +342665,26 @@
     ],
     "src": "bseaspx:513216_61",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.237288 = total (A+B+C) 113973443 / (A+B) 92115519 shares on the same quarter's BSE page; fii 19.91 -> 24.63."
+   },
+   "2015-03-31": {
+    "cell": [
+     60.8703,
+     27.4822,
+     0.1312,
+     0.0272,
+     0.0872,
+     "2015-04-11"
+    ],
+    "was": [
+     60.8703,
+     27.466,
+     0.1312,
+     0.0272,
+     0.0872,
+     "2015-04-11"
+    ],
+    "src": "bseaspx:513216_85",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 513216 qtrid 85) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 23,078 shares = 0.0162) - and the stored fii 27.4660 held only 'Foreign Institutional Investors' 27.4660. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 142,260,103 shares. fii 27.4660 -> 27.4822, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "VARUNSHIP": {
@@ -341729,6 +343249,26 @@
     ],
     "src": "bseaspx:532401_86",
     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 2.97 -> 3.10, dii 8.17 -> 8.17. generic-row-B Others 0.13 fii: prev 'Foreign Port Folio Investor Corpor' 4 holders 0.12; next 'Foreign Portfolio Investors' 5 holders 0.14; noninst-fii Others 0.13. Evidence: _shp_164_audit.json"
+   },
+   "2014-12-31": {
+    "cell": [
+     74.0581,
+     2.9407,
+     7.5659,
+     0.0,
+     0.8907,
+     "2015-01-09"
+    ],
+    "was": [
+     74.0581,
+     2.9089,
+     7.5659,
+     0.0,
+     0.8907,
+     "2015-01-09"
+    ],
+    "src": "bseaspx:532401_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532401 qtrid 84) labels these rows foreign institutions - 'Foreign Port Folio Investor Corporate' (Non-Institutions, 272,898 shares = 0.0318) - and the stored fii 2.9089 held only 'Foreign Institutional Investors' 2.9089. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 859,119,307 shares. fii 2.9089 -> 2.9407, dii unchanged (it holds only the page's domestic rows)."
    }
   },
   "ASHIANA": {
@@ -358920,6 +360460,114 @@
     ],
     "src": "bsexbrl:541540_102202017196_SHP.xml",
     "why": "\u00a7164s part 6 (2026-10-05, cell-by-cell re-read of the filing): the filing's 'NBFCs registered with RBI' row (an Institutions (Domestic) line in the 2022 form) was missing from DII. Rows: ['R1-unresolved', 'no typed rows', 0.01]; ['R2-label', 'Others Qualified Institutional Buyer', 0.05, '']"
+   }
+  },
+  "FOSECOIND": {
+   "2007-06-30": {
+    "cell": [
+     66.481,
+     0.0314,
+     0.0258,
+     0.0188,
+     0.0,
+     "2007-07-21"
+    ],
+    "was": [
+     66.481,
+     0.0157,
+     0.0258,
+     0.0188,
+     0.0,
+     "2007-07-21"
+    ],
+    "src": "bseaspx:500150_54",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500150 qtrid 54) labels these rows foreign institutions - 'Foreign Mutual Fund' (Non-Institutions, 1,000 shares = 0.0157) - and the stored fii 0.0157 held only 'Foreign Venture Capital Investors' 0.0157. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 6,386,459 shares. fii 0.0157 -> 0.0314, dii unchanged (it holds only the page's domestic rows)."
+   }
+  },
+  "IFBIND": {
+   "2014-09-30": {
+    "cell": [
+     74.9608,
+     0.2734,
+     1.7564,
+     1.7417,
+     0.0,
+     "2014-10-16"
+    ],
+    "was": [
+     74.9608,
+     0.2297,
+     1.7564,
+     1.7417,
+     0.0,
+     "2014-10-16"
+    ],
+    "src": "bseaspx:505726_83",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505726 qtrid 83) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 17,712 shares = 0.0437) - and the stored fii 0.2297 held only 'Foreign Institutional Investors' 0.2297. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 40,518,796 shares. fii 0.2297 -> 0.2734, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2014-12-31": {
+    "cell": [
+     74.9608,
+     0.4349,
+     3.1592,
+     3.1499,
+     0.0,
+     "2015-02-04"
+    ],
+    "was": [
+     74.9608,
+     0.3912,
+     3.1592,
+     3.1499,
+     0.0,
+     "2015-02-04"
+    ],
+    "src": "bseaspx:505726_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 505726 qtrid 84) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 17,712 shares = 0.0437) - and the stored fii 0.3912 held only 'Foreign Institutional Investors' 0.3912. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 40,518,796 shares. fii 0.3912 -> 0.4349, dii unchanged (it holds only the page's domestic rows)."
+   }
+  },
+  "OCL": {
+   "2015-09-30": {
+    "cell": [
+     74.8864,
+     1.6871,
+     0.1663,
+     0.0308,
+     0.0,
+     "2015-10-17"
+    ],
+    "was": [
+     75.0,
+     0.95,
+     0.18,
+     0.04,
+     0.0,
+     "2015-10-17"
+    ],
+    "src": "bseaspx:502165_87",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check): the stored cell [75.0, 0.95, 0.18, 0.04, 0.0] matches no row set of the company's own BSE page for this quarter (ShareholdingPattern.aspx 502165 qtrid 87) and breaks from its own neighbouring quarters; no document carrying the stored figures was found. Re-read whole from the page, % of total 56,900,220 shares: 'Individuals / Hindu Undivided Family' 110,541 shares; 'Bodies Corporate' 42,479,273 shares; 'Any Others (Specify)' 20,708 shares; 'Trusts' 20,708 shares; 'Mutual Funds / UTI' 17,500 shares; 'Financial Institutions / Banks' 77,097 shares; 'Foreign Institutional Investors' 298,959 shares; 'Foreign Portfolio Investors' 660,993 shares. FII = the rows labelled foreign institutions, DII = mutual funds + banks/FIs + insurance (+ VCF) (\u00a7160). prom 75.0000 -> 74.8864, fii 0.9500 -> 1.6871, dii 0.1800 -> 0.1663, mf 0.0400 -> 0.0308, ins 0.0000 -> 0.0000."
+   }
+  },
+  "RAJTV": {
+   "2014-12-31": {
+    "cell": [
+     68.6139,
+     0.0674,
+     0.0997,
+     0.0005,
+     0.0,
+     "2015-01-10"
+    ],
+    "was": [
+     68.6139,
+     0.03,
+     0.0997,
+     0.0005,
+     0.0,
+     "2015-01-10"
+    ],
+    "src": "bseaspx:532826_84",
+    "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532826 qtrid 84) labels these rows foreign institutions - 'Foreign Portfolio Investments Corporation' (Institutions, 20,000 shares = 0.0385) - and the stored fii 0.0300 held only 'Foreign Institutional Investors' 0.0289. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 51,913,344 shares. fii 0.0300 -> 0.0674, dii unchanged (it holds only the page's domestic rows)."
    }
   }
  },

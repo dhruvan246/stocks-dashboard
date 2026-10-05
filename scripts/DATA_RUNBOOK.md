@@ -21136,6 +21136,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     no-op. The 257 entries are flagged. Rebuild vs origin: exactly those 257 cells move (max 0.01 pp), plus the DII session's
     5ca3bc95a cells not yet rebuilt on origin; guards green. RULE for writers: a fix whose every slot moves <= 0.01 pp MUST carry
     `"exact": true`, or it silently never lands. Verifying LIVE means exact equality with the ledger cell, never a 0.01 tolerance.
+    **Batch 23 = page-era cells below the company's own foreign-labelled rows (2026-10-05), label "§164r batch 23".** A store-wide
+    lower-bound check (`~/stocks-cache/shp/audit_all/lb/old_lb.py`, 20,552 Jun-2006..Sep-2015 cells with a cached BSE page): the
+    stored fii must be at least the sum of the page's rows the company labels foreign institutions (FII / FPI / QFI / FVCI / foreign
+    bank / foreign FI / foreign mutual fund, Institutions or Non-Institutions block; never DR lines or mixed foreign+public labels).
+    82 cells fail. 80: the stored fii is exactly the FII row (share counts) and the missing rows sit in neither fii nor dii (stored dii
+    = the page's domestic rows exactly) - they were below the page-era runs' 0.05 pp write threshold, or the cell carried a §164a
+    re-base and `_shp_aspx_rowfix.classify` never re-reads §164 cells: EMBDL Mar-15 / Sep-15 (Non-Institutions 'Foreign Portfolio
+    Investors' 7.00 / 4.53 -> 33.5053 / 18.4336 = Quantmac 33.5 / 18.44), PHOENIXLTD Sep-15 (FVCI 0.6533 -> 28.3397 = Quantmac 28.33),
+    and 0.016-0.055 pp rows at CANFINHOME x6, ESABINDIA x6, SCHAEFFLER x4, GARDENSILK x5, ZYDUSWELL x3, SKFINDIA x3, EDELWEISS x3 ...
+    Quantmac counts only the FII row in those small cases (CANFINHOME 0.61, STAR 51.74, SCHAEFFLER 15.16): a rule difference, rows
+    named. 2 whole-cell re-reads where the stored cell matches no row set of the company's page and breaks from its neighbours (no
+    document carrying the stored figures found): SBBJ Dec-2010 [75.07, 1.11, 4.20, mf 0.50, ins 3.46] -> [75.0713, 3.1106, 2.1996,
+    0.50, 1.6113]; OCL Sep-2015 [75.00, 0.95, 0.18, 0.04] -> [74.8864, 1.6871, 0.1663, 0.0308]. BHARATFORG Sep-2014 also carries the
+    batch-18 re-base it supersedes (not landed yet). Rebuilt store: exactly these 82 cells move besides batch 22; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
