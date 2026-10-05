@@ -560,6 +560,26 @@ def _cell_eq(a, b):
         elif x != y: return False
     return True
 
+def _cell_exact(a, b):
+    """Exact cell comparison (numbers to 1e-9) - for ledger entries flagged "exact" only."""
+    if a is None or b is None: return a is b
+    if len(a) != len(b): return False
+    for x, y in zip(a, b):
+        if isinstance(x, bool) or isinstance(y, bool):
+            if x != y: return False
+        elif isinstance(x, (int, float)) and isinstance(y, (int, float)):
+            if abs(float(x) - float(y)) > 1e-9: return False
+        elif x != y: return False
+    return True
+
+def _small_move_due(ent, cur):
+    """§164r (2026-10-05): an entry flagged "exact" is a deliberate move SMALLER than one 2dp step - a depository re-base by
+    a factor below ~1.0002 moves every slot by <= 0.01 pp - so under _cell_eq it reads as "already applied" and was never
+    written (258 entries measured on origin 2026-10-05: INDHOTEL, AMTEKAUTO, BHARATFORG, NCC ...). It is applied while the
+    store still holds the recorded value EXACTLY; once written the store equals the fix exactly and the entry is a no-op."""
+    was, want = ent.get("was"), ent.get("cell")
+    return bool(ent.get("exact")) and was is not None and _cell_exact(cur, was) and not _cell_exact(cur, want)
+
 def apply_cell_fix_events(ev, led=None):
     """§142e (2026-09-22): the cell_fix ledger also corrects EVENT rows (scripts/shp_events.json).
     Same `fix.<SYM>.<DATE>` shape; a key that is not a quarter-end names an event row (as-on date).
@@ -575,7 +595,7 @@ def apply_cell_fix_events(ev, led=None):
             cur = (ev.get(sym) or {}).get(d)
             want, was = ent.get("cell"), ent.get("was")
             if cur is None: continue
-            if _cell_eq(cur, want): continue
+            if _cell_eq(cur, want) and not _small_move_due(ent, cur): continue
             if was is not None and not _cell_eq(cur, was):
                 print("WARN cell_fix(event) %s %s: stored row is neither the fix nor the recorded bad "
                       "value (%s) — leaving it alone, re-adjudicate" % (sym, d, cur))
@@ -594,7 +614,7 @@ def apply_cell_fix(h, led=None):
             cur = (h.get(sym) or {}).get(qe)
             want, was = ent.get("cell"), ent.get("was")
             if cur is None: continue                      # correct only what exists — a fix
-            if _cell_eq(cur, want): continue              # ledger must never INVENT a cell
+            if _cell_eq(cur, want) and not _small_move_due(ent, cur): continue   # ledger must never INVENT a cell
             if was is not None and not _cell_eq(cur, was):
                 print("WARN cell_fix %s %s: stored cell is neither the fix nor the recorded bad "
                       "value (%s) — leaving it alone, re-adjudicate" % (sym, qe, cur))

@@ -21124,6 +21124,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     maps both misspellings; old vs new reader on identical data (7 alias symbols): only HEXAWARE Jun-2016 changes, fii 9.65 -> 11.57,
     dii 8.16 -> 6.24. Remaining 0.05 vs Quantmac = the depository line our owner's rule leaves out (rule difference, row named).
     Found with `~/stocks-cache/shp/audit_all/explain.py` (per-cell: which filing rows reproduce each side's number).
+    **Batch 22 = small ledger moves that never landed (2026-10-05, found verifying batches 15-21 LIVE; the entries keep their own
+    labels and gain `"exact": true`).**
+    A ledger entry whose fix moves EVERY slot by <= 0.01 pp read as "already applied" under `_cell_eq`'s one-2dp-step tolerance
+    (CELL_TOL), so `apply_cell_fix` skipped it and the store kept the recorded bad value. Measured on origin 2026-10-05: 258 such
+    entries, the store still exactly at `was` - 256 §164a depository re-bases by a small factor (INDHOTEL 1.000242, AMTEKAUTO
+    1.000065, BHARATFORG, HFCL, SREINFRA, NOIDATOLL, NCC, TATACONSUM ...; 226 of them batches 15/17/18), BLUESTARCO Jun-2015 (batch 9
+    PDF share-count precision 7.84 -> 7.8303) and KMSUGAR Sep-2025 (§142i re-date; its 2dp numbers would only lose the store's 4dp
+    precision - left as is). Fix: entries flagged `"exact": true` are applied while the store holds `was` EXACTLY
+    (`fetch_shareholding._small_move_due`, also for event rows); once written the store equals the fix exactly and the entry is a
+    no-op. The 257 entries are flagged. Rebuild vs origin: exactly those 257 cells move (max 0.01 pp), plus the DII session's
+    5ca3bc95a cells not yet rebuilt on origin; guards green. RULE for writers: a fix whose every slot moves <= 0.01 pp MUST carry
+    `"exact": true`, or it silently never lands. Verifying LIVE means exact equality with the ledger cell, never a 0.01 tolerance.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
