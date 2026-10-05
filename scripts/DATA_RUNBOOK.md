@@ -99,6 +99,24 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§137** ★★ INSIGHTS CARD — per-company OPERATING KPIs (stores, subscribers, ARPU, order book, NIM, GNPA…) read from the company's OWN presentations on BSE; screener's card is login-gated and is only a calibration holdout; every cell carries filing+page; Gemini walker 2× daily over Nifty 500 back to 2020 (**read before touching kpi_extract.py / the Insights card, and before reading any KPI off a deck by hand**)
 
 ## 0. GOLDEN RULES (the things that bite if forgotten)
+- **★★★★ EVERY COMPARISON WITH AN OUTSIDE SOURCE (QUANTMAC, TRENDLYNE, SCREENER, MONEYCONTROL, STOCKVIEW ...) IS JUDGED CELL BY
+  CELL FROM THAT CELL'S OWN FILING - NEVER "WE ARE RIGHT, THEY ARE WRONG" IN BULK, NEVER AN ASSUMPTION.** User-mandated 2026-10-05,
+  after asking for it many times over three months (the user said they will stop using Claude if it happens again).
+  1. Each disagreeing cell gets its OWN verdict, made only after reading that company's filing for that quarter in this session
+     (the exact rows and the arithmetic, recorded per cell: filing id / URL, rows, numbers).
+  2. Only four verdicts exist: OUR ERROR (fix it through the ledger), THEIR ERROR (name the row they misread), RULE DIFFERENCE (name
+     the rule AND show the row it applies to in that filing), UNKNOWN (not read yet - say so). A topic label in a builder, a reply or
+     a memory ("Rule 2", "Checked", "Definition difference", "Our rows") is a HYPOTHESIS until that cell's filing is attached.
+  3. Never carry a verdict from a sample, a neighbouring quarter, a company-level label or an earlier classification file /
+     reply / memory note to other cells. Those have been wrong: reply4 d2_basis.json mislabelled 13 companies.
+  4. Check identity first: old and new tickers BOTH ways (fund_alias.json - CHOLAHLDNG = TUBEINVEST, SUJANATOW = NEUEON, GESHIP =
+     GESHIPPING), renamed holders (Thai Union Frozen Products = Thai Union Group), and the right company's code (HEXT 532129, not
+     544362).
+  5. Before telling the user or the outside party "ours stands", count ONLY cells verified this way and state how many are not.
+  Evidence: one day of real cell-by-cell reading (2026-10-05, §164r batches 15-20) found 1,570 of OUR cells wrong that earlier replies
+  had defended - the DR-basis mislabels, 84 CHOLAHLDNG cells called "checked, ours stands" by a check that read the wrong ticker, 38
+  DR companies never tested, HEXT answered "please name your rows" when our base was wrong, the AVANTIFEED holder rename, and the
+  Dec-2015 / Mar-2016 seam misreads. (memory: feedback-outside-comparisons-cell-by-cell)
 - **§89f** ★★★ THE DATE INSIDE AN EXCHANGE FILE DECIDES, NEVER THE URL — NSE re-serves the prior session PER ROUTE (zip 404s, `sec_bhavdata_full` answers with Friday's rows under a Sunday URL), a whole-file signature dedup is FORMAT-sensitive and let 12 phantom Sundays into DVL/DTIL; `fetch_day` now rejects a file stamped with another day, every bar-emitting ledger is gated on the market calendar at the splice (`session_calendar`, ≥100 symbol-bars from `dailyFrom`), and `phantom_date_audit` prints `PHANTOM-DATE` lines nightly (**read before any calendar-walking rebuild or any ledger that inserts bars**)
 - **§114** ★★★ THE HTML-ESCAPED PHANTOM SYMBOLS WERE NOT INVISIBLE — `M&AMP;M` was RENDERING in docs/discovery.json (47 rows / 21 buckets), and the fundamentals rows were NOT all duplicates (4 unique, 46 contested, both sides filing-sourced). Fundamentals stores retracted to zero + guarded; the Trendlyne sitemap escape was writing off all 10 ampersand tickers (**read before trusting any recorded coverage/absence claim, and before deleting a phantom key**)
 - **§115** ★★★ THE PHANTOM CLASS IS CLOSED — root cause was `build_revop.py` upper-casing a RAW XML capture (XBRL escapes `&`), still firing in a 2026 filing; closing sf_revop ADDED +784 values / +63 quarters. FOUR gate defects: a retraction that RAISED a score, a derived flag voting, "target has no row" read as nothing-to-do, and the resume-cache treated as a mirror. A filing's own ScripCode OUTRANKS the overlap proxy (**read before trusting any agreement gate, and before retracting anything a gate could still harvest**)
