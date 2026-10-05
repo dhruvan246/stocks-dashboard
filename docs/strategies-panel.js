@@ -264,7 +264,7 @@ async function loadPicks(id){
   if (!await ensureEngine()){ ktoast('Could not load market data — try again'); return; }
   await screenPick(it); renderCards(); fetchLive(); startLiveLoop();
 }
-$('btnLoadAll').onclick = async () => {
+async function loadAllPicks(){   // the "Load picks" button — named so the auto-pilot can await it
   const favs = loadFavs();
   const all = uniqStrategies();
   const nFav = all.filter(it => isFavCfg(favs, it.cfg)).length;
@@ -280,7 +280,8 @@ $('btnLoadAll').onclick = async () => {
     (PICKMODE === 'live' ? ' — re-ranked LIVE (fundamentals as filed; ranking updates every minute while the market is open).' : '.');
   $('btnLoadAll').disabled = false;
   renderCards(); fetchLive(); startLiveLoop();
-};
+}
+$('btnLoadAll').onclick = loadAllPicks;
 
 /* ---------- Zerodha plumbing (shares the portfolio page's localStorage on this origin) ---------- */
 const Z = { connected: false, user: null, held: new Set(), hold: {} };
@@ -294,14 +295,19 @@ const Z = { connected: false, user: null, held: new Set(), hold: {} };
    the sold exits — and for a stock two strategies share, that re-armed basket would sell the OTHER
    strategy's shares. Each mark also records what was SENT per strategy ({SYM: qty}), so the buy leg
    can tell a sold-then-kept stock (buy it back) from a genuinely kept one. Synced in the same
-   token-gated row; whole-field newer-wins like every other field there. */
+   token-gated row. MERGED PER STRATEGY, not whole-field newer-wins (1 Oct 2026: #8/#7/#6 bought within 11 s, a
+   device's copy without #7 won and #7's card re-armed a second ₹2.6 Cr buy): each mark carries when it was set (at)
+   and an un-mark leaves a dated tombstone (off), so devices' lists UNION and only a deliberate un-mark removes one —
+   the auto-pilot's never-send-twice guard rests on this. */
 function zbRebKey(){ return rebalWindow().tIso; }
-function zbMarkDoc(field){ try { const d = zbaDoc()[field]; if (d && d.k === zbRebKey()) return { k: d.k, ids: Array.isArray(d.ids) ? d.ids.slice() : [], syms: Object.assign({}, d.syms || {}) }; } catch(e){} return { k: zbRebKey(), ids: [], syms: {} }; }
+function zbMarkDoc(field){ try { const d = zbaDoc()[field]; if (d && d.k === zbRebKey()) return { k: d.k, ids: Array.isArray(d.ids) ? d.ids.slice() : [], syms: Object.assign({}, d.syms || {}),
+    at: Object.assign({}, d.at || {}), off: Object.assign({}, d.off || {}) }; } catch(e){} return { k: zbRebKey(), ids: [], syms: {}, at: {}, off: {} }; }
 function zbMarkReb(field, id, on, sent){ try {
-    const m = zbMarkDoc(field), a = new Set(m.ids);
+    const m = zbMarkDoc(field), a = new Set(m.ids), now = Date.now();
     on ? a.add(id) : a.delete(id);
+    if (on){ m.at[id] = now; delete m.off[id]; } else { m.off[id] = now; delete m.at[id]; }
     if (on && sent){ const cur = m.syms[id] = Object.assign({}, m.syms[id] || {}); for (const k in sent) cur[k] = (+cur[k] || 0) + (+sent[k] || 0); } else if (!on) delete m.syms[id];
-    const d = zbaDoc(); d[field] = { k: m.k, ids: [...a], syms: m.syms }; d.ts = Date.now();
+    const d = zbaDoc(); d[field] = { k: m.k, ids: [...a], syms: m.syms, at: m.at, off: m.off }; d.ts = now;
     localStorage.setItem(ZBA_LS, JSON.stringify(d));
     clearTimeout(zbaSet._t); zbaSet._t = setTimeout(zbaPush, 1200);
   } catch(e){} renderCards(); }
@@ -506,6 +512,7 @@ function renderWizard(){
   box.innerHTML = '<div class="bal wz"><div class="bal-h"><b>' + esc(title) + '</b><span class="sub">' + (live ? done + ' of ' + total + ' checks green' : esc(W.steps[0].detail)) + '</span></div>' +
     (live ? W.steps : W.steps.slice(1)).map(x => '<div class="wz-row wz-' + x.st + '"><span class="wz-ic">' + WZ_ICON[x.st] + '</span><span class="wz-l"><b>' + esc(x.label) + '</b>' + (x.detail ? ' <span class="sym">' + esc(x.detail) + '</span>' : '') + '</span>' + (x.act ? '<button class="btn wz-b" data-wz="' + x.act + '">' + esc(WZ_ACT[x.act]) + '</button>' : '') + '</div>').join('') + '</div>';
   if (live) ledgerStatus();   // v4: keep the box's ledger status fresh on the live legs (throttled inside)
+  try { renderAuto(); } catch(e){}
 }
 function wizardAct(a){
   if (a === 'login'){ const b = $('btnZLogin'); if (b) b.click(); }
@@ -1423,10 +1430,36 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            boughtDay: (newer.boughtDay && (!older.boughtDay || String(newer.boughtDay.d) >= String(older.boughtDay.d))) ? newer.boughtDay : older.boughtDay,
            soldDay:   (newer.soldDay   && (!older.soldDay   || String(newer.soldDay.d)   >= String(older.soldDay.d)))   ? newer.soldDay   : older.soldDay,
            exitSnap:  (newer.exitSnap !== undefined ? newer.exitSnap : older.exitSnap),
-           soldReb:   zbMergeReb(newer.soldReb, older.soldReb), boughtReb: zbMergeReb(newer.boughtReb, older.boughtReb),
+           soldReb:   zbMergeMarks(newer.soldReb, older.soldReb), boughtReb: zbMergeMarks(newer.boughtReb, older.boughtReb),
            proceeds:  zbMergeReb(newer.proceeds, older.proceeds),
+           autos:     zbMergeAutos(newer.autos, older.autos),
            plan:      zbMergeReb(newer.plan, older.plan) }; }
 function zbMergeReb(n, o){ return (n && (!o || String(n.k) >= String(o.k))) ? n : o; }
+/* auto-pilot state, per rebalance: the arm switch follows its latest flip (armedAt); log lines from every device (the
+   robot's and the user's) union by time — newest 60 kept */
+function zbMergeAutos(N, O){
+  if (!N) return O; if (!O) return N;
+  const out = {};
+  [...new Set([...Object.keys(O), ...Object.keys(N)])].forEach(k => { const n = N[k], o = O[k];
+    if (!n || !o){ out[k] = n || o; return; }
+    const sw = (+n.armedAt || 0) >= (+o.armedAt || 0) ? n : o, seen = new Set(), log = [];
+    (o.log || []).concat(n.log || []).forEach(x => { const key = x.at + '|' + x.m; if (!seen.has(key)){ seen.add(key); log.push(x); } });
+    log.sort((a, b) => a.at - b.at);
+    out[k] = { armed: !!sw.armed, armedAt: sw.armedAt || 0, armedBy: sw.armedBy || '', log: log.slice(-60) }; });
+  return out;
+}
+/* sold/bought marks of the SAME rebalance: union per strategy; a mark survives unless a later dated un-mark (off) beats
+   when it was set (at; a mark from before 'at' existed counts as set) — the sent quantities follow the later mark */
+function zbMergeMarks(n, o){
+  if (!n || !o || String(n.k) !== String(o.k)) return zbMergeReb(n, o);
+  const at = {}, off = {}, mx = (dst, src) => { for (const k in (src || {})) dst[k] = Math.max(+dst[k] || 0, +src[k] || 0); };
+  mx(at, o.at); mx(at, n.at); mx(off, o.off); mx(off, n.off);
+  const ids = [...new Set([...(o.ids || []), ...(n.ids || [])])].filter(id => (at[id] || 1) > (off[id] || 0));
+  const syms = {};
+  ids.forEach(id => { const na = (n.at || {})[id] || 0, oa = (o.at || {})[id] || 0, ns = (n.syms || {})[id], os = (o.syms || {})[id];
+    const src = (ns && (na >= oa || !os)) ? ns : os; if (src) syms[id] = Object.assign({}, src); });
+  return { k: n.k, ids: ids, syms: syms, at: at, off: off };
+}
 
 /* ================= SELL BASKETS (user 2026-09-01) =================
    Month-end mirror of the buy side. The card shows EVERY stock the strategy holds (exact
@@ -1730,17 +1763,18 @@ function sellCardHTML(it, disp, favNum){
     '<span style="margin-left:auto;display:flex;gap:6px">' +
     '<button class="btn" data-load="' + esc(it.id) + '">' + (p ? 'Refresh picks' : 'Picks') + '</button>' + btn + '</span></div>' + body + '</div>';
 }
-async function sellBasketStart(id){
-  const it = strategies().find(x => x.id === id); if (!it) return;
+async function sellBasketStart(id, opts){
+  opts = opts || {};   // auto: the armed auto-pilot (no confirm tap) · dry: build the exact orders, send nothing
+  const it = strategies().find(x => x.id === id); if (!it) return { err: 'unknown strategy' };
   const X = sellExits(it), held = X.held, isReset = X.isReset, p = X.p, RW = X.RW;
-  if (!held || !held.rows.length){ ktoast('No holdings on record for this strategy'); return; }
-  if (!isReset && (!p || !p.rows.length)){ ktoast('Load the picks first \u2014 exits are unknown without them'); return; }
-  if (!RW.in){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 exits near the ' + RW.tlab + ' close (month-end), stragglers from ' + RW.t1lab + '. Nothing sent.', 7500); return; }
-  if (!X.legOk){ ktoast('\u26a0 ' + X.legMsg + ' \u2014 selling is locked until then', 7500); return; }
-  if (!Z.connected){ ktoast('Zerodha not connected'); return; }
-  if (closeGuard('sell')) return;
+  if (!held || !held.rows.length){ ktoast('No holdings on record for this strategy'); return { err: 'no holdings on record' }; }
+  if (!isReset && (!p || !p.rows.length)){ ktoast('Load the picks first \u2014 exits are unknown without them'); return { err: 'picks not loaded' }; }
+  if (!RW.in && !opts.dry){ ktoast('\ud83d\udd12 Sell baskets act only on the rebalance window \u2014 exits near the ' + RW.tlab + ' close (month-end), stragglers from ' + RW.t1lab + '. Nothing sent.', 7500); if (!opts.dry) return { err: 'outside the rebalance window' }; }
+  if (!X.legOk){ ktoast('\u26a0 ' + X.legMsg + ' \u2014 selling is locked until then', 7500); return { err: X.legMsg }; }
+  if (!Z.connected){ ktoast('Zerodha not connected'); return { err: 'Zerodha not connected' }; }
+  if (!opts.dry && closeGuard('sell')) return { err: 'NSE closed' };
   const btn = document.querySelector('[data-sellbasket="' + id + '"]');
-  if (btn && btn.dataset.arm !== '1'){
+  if (btn && btn.dataset.arm !== '1' && !opts.auto && !opts.dry){
     const todo0 = X.exits.filter(r => r.remain == null ? true : r.remain > 0);
     if (!todo0.length){ ktoast(X.exits.length ? 'Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own' : 'Nothing to sell \u2014 every holding stays next month'); return; }
     btn.dataset.arm = '1';
@@ -1751,7 +1785,7 @@ async function sellBasketStart(id){
   await loadTicks();
   await zHoldRefresh();                 // fresh per-product buckets right before selling
   const todo = sellExits(it).exits.filter(r => r.remain > 0);   // remaining quantities off the fresh demat
-  if (!todo.length){ ktoast('Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own', 6000); renderCards(); return; }
+  if (!todo.length){ ktoast('Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own', 6000); renderCards(); return { nothing: true }; }
   const orders = [], short = [], sent = {};
   todo.forEach(r => {
     const h = r.h, px = (r.px != null ? r.px : (h.avg || 0));
@@ -1764,8 +1798,9 @@ async function sellBasketStart(id){
     if (cq > 0) orders.push(Object.assign({}, base, { quantity: cq, product: 'CNC' }));
     if (mq + cq > 0) sent[h.sym] = mq + cq;
   });
-  if (!orders.length){ ktoast('Zerodha shows no sellable shares for these exits \u2014 nothing sent', 6000); return; }
-  const P = planBasket(orders, 'sell'); if (!P) return;   // the clock: slices + gaps that finish by 15:29
+  if (!orders.length){ ktoast('Zerodha shows no sellable shares for these exits \u2014 nothing sent', 6000); return { nothing: true }; }
+  const P = opts.dry ? fitPlan(orders) : planBasket(orders, 'sell'); if (!P) return { err: 'NSE closed' };   // the clock: slices + gaps that finish by 15:29 (a dry rehearsal sizes them any time)
+  if (opts.dry) return { dry: true, orders: orders.map(o => ({ sym: o.tradingsymbol, qty: o.quantity, product: o.product })), slices: P.slices.length, short: short };
   if (short.length) ktoast('\u26a0 selling fewer shares than the ledger for ' + short.join(', '), 7000);
   const slices = P.slices;
   if (BUYSLICER[id]) buyStop(id);
@@ -1775,6 +1810,7 @@ async function sellBasketStart(id){
     ' slices \u2014 each a limit \u2264' + sliceRng() + '% BELOW live on NSE, MTF shares as MTF, demat as CNC' + planNote(P) + '; tap the counter to stop', P.how === 'normal' ? 7000 : 9000);
   buyFire(id);
   renderCards();
+  return { sent: todo.length, slices: slices.length };
 }
 
 const TICKMEM = {};
@@ -2167,19 +2203,21 @@ function buyLegGuard(){
   return true;
 }
 function sentMap(orders){ const m = {}; orders.forEach(o => { m[o.tradingsymbol] = (m[o.tradingsymbol] || 0) + (+o.quantity || 0); }); return m; }
-async function zbPlaceAll(){
-  if (!buyLegGuard()) return;
+async function zbPlaceAll(opts){
+  opts = (opts && opts.auto) ? opts : {};   // the button passes a click event; the armed auto-pilot passes {auto:true} (no confirm tap)
+  if (!buyLegGuard()) return { err: 'buy leg locked' };
   const orders = zbOrders();
-  if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return; }
+  if (!orders.length){ ktoast('Nothing to buy — set an amount first'); return { nothing: true }; }
   const b = $('zbGo'), est = orders.reduce((s, o) => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); return s + o.quantity * ((r && r.px) || 0); }, 0);
-  if (b.dataset.arm !== '1'){ b.dataset.arm = '1';
+  if (b.dataset.arm !== '1' && !opts.auto){ b.dataset.arm = '1';
     b.textContent = 'Confirm ' + orders.length + ' BUY orders ≈ ' + zinr(est) + ' ?';
-    clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return; }
+    clearTimeout(ZB.t); ZB.t = setTimeout(zbArmReset, 8000); return { armed: true }; }
   b.dataset.arm = '';
-  if (Z.directBlocked){ if (kiteSend(orders)){ zbSetBought(ZB.id, true, sentMap(orders)); $('zbWrap').classList.remove('open'); } return; }
+  if (Z.directBlocked){ if (opts.auto) return { err: 'direct orders are blocked from this connection — needs the cloud slicer' };
+    if (kiteSend(orders)){ zbSetBought(ZB.id, true, sentMap(orders)); $('zbWrap').classList.remove('open'); } return { popup: true }; }
   await loadTicks();
   orders.forEach(o => { const r = ZB.rows.find(x => x.sym === o.tradingsymbol); o._px = (r && r.px) || o.price || 0; });
-  const P = planBasket(orders, 'buy'); if (!P) return;
+  const P = planBasket(orders, 'buy'); if (!P) return { err: 'NSE closed' };
   const slices = P.slices;
   if (BUYSLICER[ZB.id]) buyStop(ZB.id);
   BUYSLICER[ZB.id] = { slices: slices, i: 0, n: slices.length, btn: null, t: 0, gapS: P.gapS, endBy: P.endBy, note: planNote(P) };
@@ -2187,7 +2225,8 @@ async function zbPlaceAll(){
   $('zbWrap').classList.remove('open');
   ktoast('Buying in ' + slices.length + ' liquidity-sized slices (1% of the stock\u2019s 10-day traded value, \u20b95L\u2013\u20b91Cr each) every ' + P.gapS + 's, each a limit \u2264' + sliceRng() + '% above live' + planNote(P) + ' \u2014 keep this tab open; tap the \u26a1 counter to stop', P.how === 'normal' ? 6500 : 9000);
   renderCards();
-  buyFire(ZB.id);
+  const sentId = ZB.id; buyFire(sentId);
+  return { sent: orders.length, slices: slices.length };
 }
 function kiteSend(orders){
   const key = (function(){ try { return localStorage.getItem('pf_kite_key') || ''; } catch(e){ return ''; } })();
@@ -2204,6 +2243,201 @@ function kiteSend(orders){
   return true;
 }
 
+function modeLabel(){ const mb = $('spMode'); if (mb){ mb.textContent = PICKMODE === 'live' ? 'Live picks' : 'Rebalance picks'; mb.classList.toggle('on', PICKMODE === 'live'); } }
+async function pickModeSet(mode){   // the Live / Rebalance picks switch — awaitable for the auto-pilot
+  if (mode !== 'live' && mode !== 'reb') return;
+  if (mode !== PICKMODE){ PICKMODE = mode; try { localStorage.setItem('sp_pick_mode', PICKMODE); } catch(e){} }
+  modeLabel();
+  const ids = Object.keys(PICKS);
+  if (ids.length && await ensureEngine()){
+    for (const id of ids){ const it = strategies().find(x => x.id === id); if (it) await screenPick(it); }
+    renderCards(); fetchLive();
+  }
+}
+/* ================= AUTO-PILOT (approved by the user 2026-09-29; built Oct 2026) =================
+   The robot (scripts/rebalance_autopilot.mjs, GitHub Actions, dispatched 14:30 IST on T and 09:30 on T+1, plus watch
+   passes) opens this page with the pf token and calls window.spAuto. It drives the SAME code as the buttons — one source
+   of truth, so the robot and the manual flow cannot disagree:
+     prepare(leg)  the checklist's own fixes (cloud slicer, Live/Rebalance picks, fresh picks, the cash plan) until green
+     preview(leg)  what each ⭐ strategy would sell / buy right now — sends nothing
+     run(leg)      sends the baskets: T = every strategy's exits; T+1 = stragglers first, then every strategy's buys
+     watch()       the cloud jobs' progress; captures a finished sell basket's proceeds
+   NOTHING is sent unless the user ARMED this rebalance on this panel (doc.autos[T].armed); dry:true builds the exact
+   orders through the same code and sends nothing. Never twice: the synced sold/bought marks (merged per strategy) AND
+   today's jobs on the box are both checked before a basket goes out. The robot cannot arm itself (no arm on window). */
+const AUTO_GAP_MS = 45000;   // between strategies' baskets: five baskets that share a stock don't all hit it in the same minute
+const autoSleep = ms => new Promise(r => setTimeout(r, ms));
+/* state per rebalance (keyed by its T date) in the synced row: an arm for next month can never be clobbered by this
+   month's log lines, and vice versa */
+function autoDocFor(k){ const A = zbaDoc().autos || {}, a = A[k]; return a ? Object.assign({ log: [] }, a, { k: k }) : { k: k, armed: false, armedAt: 0, log: [] }; }
+function autoDoc(){ return autoDocFor(zbRebKey()); }   // the rebalance whose legs run now
+function autoSave(a, now){ const d = zbaDoc(), A = Object.assign({}, d.autos || {});
+  A[a.k] = { armed: !!a.armed, armedAt: a.armedAt || 0, armedBy: a.armedBy || '', log: (a.log || []).slice(-60) };
+  Object.keys(A).sort().slice(0, -3).forEach(k => delete A[k]);   // keep the last three rebalances
+  d.autos = A; d.ts = Date.now(); try { localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch(e){}
+  clearTimeout(zbaSet._t); if (now) return zbaPush(); zbaSet._t = setTimeout(zbaPush, 800); }
+function autoLog(m, lvl){ const a = autoDoc(); a.log = (a.log || []).concat([{ at: Date.now(), m: String(m).slice(0, 240), l: lvl || 'i' }]).slice(-60); autoSave(a); renderAuto(); }
+/* the rebalance the Arm switch applies to: the one running on its T / T+1 days, else the NEXT one — on a buffer day
+   (T+2, T+3) the month just done is over, so arming means next month */
+function autoTarget(){ const RW = rebalWindow();
+  if (!(RW.buyIn && !RW.planned)) return { k: RW.tIso, tlab: RW.tlab, t1lab: RW.t1lab };
+  const t0 = new Date(RW.tIso + 'T00:00:00Z'), lab = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  let t = new Date(Date.UTC(t0.getUTCFullYear(), t0.getUTCMonth() + 2, 0)); while (isOff(t)) t = new Date(t.getTime() - 864e5);
+  let t1 = new Date(t.getTime() + 864e5); while (isOff(t1)) t1 = new Date(t1.getTime() + 864e5);
+  return { k: t.toISOString().slice(0, 10), tlab: lab(t), t1lab: lab(t1) }; }
+function autoSetArmed(on, why, k){ const tg = k ? { k: k } : autoTarget(), a = autoDocFor(tg.k); a.armed = !!on; a.armedAt = Date.now();
+  a.armedBy = ((navigator.userAgent || '').match(/iPhone|iPad|Android|Macintosh|Windows|Linux/) || ['a device'])[0];
+  a.log = (a.log || []).concat([{ at: a.armedAt, m: why || (on ? 'Armed for the ' + (tg.tlab || tg.k) + ' rebalance' : 'Disarmed'), l: on ? 'ok' : 'i' }]).slice(-60);
+  autoSave(a, true); renderAuto(); }
+/* the ⭐ strategies that hold a book — exactly the ones the rebalance trades */
+function autoList(){ const favs = loadFavs(); return uniqStrategies().filter(it => isFavCfg(favs, it.cfg) && heldFor(it.cfg)); }
+async function autoJobs(){ const r = await zFetch('/jobs'); const all = (r && r.st === 200 && r.j && r.j.jobs) || [], day = istNow().toISOString().slice(0, 10);
+  return all.filter(j => new Date((+j.created || 0) + 330 * 60000).toISOString().slice(0, 10) === day); }
+const autoJobFor = (jobs, id, side, running) => jobs.find(j => String(j.id).split('~')[0] === jobSlug(id) && j.side === side &&
+  (running ? j.status === 'running' : j.status !== 'stopped'));
+function autoStatus(){
+  let W = null; try { W = wizardSteps(); } catch(e){}
+  const a = autoDoc(), RW = rebalWindow();
+  const steps = W ? W.steps.map(x => ({ k: x.k, st: x.st, act: x.act })) : [];   // keys + states only: labels carry amounts, the robot's logs are public
+  return { v: 1, leg: W ? W.leg : 'off', k: a.k, armed: !!a.armed, armedAt: a.armedAt || 0, tIso: RW.tIso, t1Iso: RW.t1Iso, sellIn: RW.sellIn, buyIn: RW.buyIn,
+           connected: !!Z.connected, cloud: cloudOn(), strategies: autoList().length, steps: steps, blockers: steps.filter(x => x.st === 'bad').map(x => x.k) };
+}
+async function autoPrepare(leg, maxMs){
+  const until = Date.now() + (maxMs || 6 * 60000), want = leg === 'sell' ? 'live' : 'reb';
+  if (!cloudWanted()){ try { localStorage.setItem('sw_cloud_slicer', '1'); } catch(e){} cloudChip(); }
+  try { await cloudProbe(true); } catch(e){}
+  while (Date.now() < until){
+    if (!autoList().length){ await autoSleep(3000); continue; }                  // the ⭐ list + books are still arriving
+    if (PICKMODE !== want) await pickModeSet(want);
+    const T = rebalWindow().tIso;
+    const stale = autoList().filter(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return true;
+      return want === 'live' ? !livePicksOk(p) : (p.live || p.asOf !== T); });
+    if (stale.length) await loadAllPicks();
+    if (leg === 'sell' && Z.connected && !cpSellsStarted() && !CPL.busy && Date.now() - CPL.at > 120000) await cashPlanRun(true);
+    const S = autoStatus(), bad = k => (S.steps.find(x => x.k === k) || {}).st === 'bad';
+    const need = ['zerodha', 'cloud', 'feed', 'picks', 'mode'].filter(bad);
+    if (!need.length && (leg !== 'sell' || cpDoc())) return Object.assign(S, { ready: true, need: [] });
+    await autoSleep(5000);
+  }
+  const S = autoStatus();
+  return Object.assign(S, { ready: false, need: ['zerodha', 'cloud', 'feed', 'picks', 'mode'].filter(k => (S.steps.find(x => x.k === k) || {}).st === 'bad') });
+}
+const autoTodo = it => { const X = sellExits(it); return { X: X, todo: X.known ? X.exits.filter(r => r.remain == null ? true : r.remain > 0) : [] }; };
+/* the ⚡ dialog's own sizing: open it, read its orders, close it — the exact rows a buy would send */
+function autoBuyOrders(it){
+  if (!PICKS[it.id] || !PICKS[it.id].rows.length) return { err: 'picks not loaded' };
+  zBasketOpen(it.id);
+  if (!ZB || ZB.id !== it.id) return { err: 'basket did not open' };
+  const orders = zbOrders().map(o => ({ sym: o.tradingsymbol, qty: o.quantity, product: o.product }));
+  return { orders: orders, planned: !!planFor(it) };
+}
+const autoClose = () => { const w = $('zbWrap'); if (w) w.classList.remove('open'); };
+async function autoPreview(leg){
+  const RW = rebalWindow(), out = { leg: leg, tIso: RW.tIso, t1Iso: RW.t1Iso, sellIn: RW.sellIn, buyIn: RW.buyIn, rows: [] };
+  for (const it of autoList()){
+    const row = { id: it.id, num: favNumOf(it.cfg) || 0, name: it.name || '', sells: [], buys: [], note: '' };
+    const T = autoTodo(it);
+    row.sells = T.todo.map(r => ({ sym: r.h.sym, qty: r.remain != null ? r.remain : r.h.qty }));
+    if (!T.X.legOk) row.note = T.X.legMsg || '';
+    if (leg === 'buy'){ const b = autoBuyOrders(it); autoClose();
+      if (b.err) row.note = (row.note ? row.note + ' · ' : '') + b.err; else { row.buys = b.orders; if (!b.planned) row.note = (row.note ? row.note + ' · ' : '') + 'no cash plan — dialog sizing'; } }
+    out.rows.push(row);
+  }
+  return out;
+}
+async function autoRun(leg, opts){
+  opts = opts || {}; const dry = !!opts.dry, RW = rebalWindow(), a = autoDoc();
+  const out = { leg: leg, dry: dry, at: Date.now(), done: [], skipped: [], errors: [] };
+  const fail = m => { out.errors.push(m); if (!dry) autoLog('Stopped: ' + m, 'bad'); return out; };
+  if (!dry && !a.armed) return fail('not armed for the ' + RW.tlab + ' rebalance');
+  if (!dry && leg === 'sell' && !RW.sellIn) return fail('today is not the sell day (' + RW.tlab + ')');
+  if (!dry && leg === 'buy' && !RW.buyIn) return fail('today is not a buy day (' + RW.t1lab + ' to ' + RW.t3lab + ')');
+  if (dry && !(leg === 'sell' ? RW.sellIn : RW.buyIn)) out.note = 'rehearsal — today is not the ' + leg + ' day, so this shows what would go out if it were';
+  if (!Z.connected) return fail('Zerodha is not connected — log in to Kite');
+  if (!dry && !cloudOn()) return fail('the cloud slicer is off');
+  const jobs = await autoJobs(), list = autoList(), gap = opts.gapMs != null ? opts.gapMs : AUTO_GAP_MS;
+  const num = it => '#' + (favNumOf(it.cfg) || '?');
+  let first = true;
+  const pace = async () => { if (!first && !dry && gap > 0) await autoSleep(gap); first = false; };
+  // 1. sells: T = the exits; T+1 = stragglers left over (judged on the official close screen)
+  for (const it of list){
+    const T = autoTodo(it); if (!T.todo.length) continue;
+    if (!T.X.legOk){ out.skipped.push(num(it) + ' sell: ' + T.X.legMsg); continue; }
+    if (autoJobFor(jobs, it.id, 'SELL', true)){ out.skipped.push(num(it) + ' sell: a sell basket is still running'); continue; }
+    if (leg === 'sell' && (zbSoldSet().has(it.id) || autoJobFor(jobs, it.id, 'SELL'))){ out.skipped.push(num(it) + ' sell: already sent today'); continue; }
+    await pace();
+    const r = await sellBasketStart(it.id, dry ? { dry: true } : { auto: true });
+    if (r && r.err) out.errors.push(num(it) + ' sell: ' + r.err);
+    else if (r && (r.sent || r.dry)) out.done.push({ id: it.id, num: num(it), side: 'SELL', stocks: dry ? r.orders.length : r.sent, slices: r.slices, orders: dry ? r.orders : undefined });
+  }
+  // 2. buys (T+1 to T+3): each strategy's ⚡ basket, sized by the frozen cash plan
+  if (leg === 'buy'){
+    for (const it of list){
+      if (zbBoughtSet().has(it.id) || autoJobFor(jobs, it.id, 'BUY')){ out.skipped.push(num(it) + ' buy: already sent'); continue; }
+      const b = autoBuyOrders(it);
+      if (b.err){ autoClose(); out.errors.push(num(it) + ' buy: ' + b.err); continue; }
+      if (!b.orders.length){ autoClose(); continue; }                              // nothing to buy (kept every stock)
+      if (!b.planned){ autoClose(); out.errors.push(num(it) + ' buy: no cash plan for these picks — not sized, left for you'); continue; }
+      if (dry){ autoClose(); out.done.push({ id: it.id, num: num(it), side: 'BUY', stocks: b.orders.length, orders: b.orders }); continue; }
+      await pace();
+      zBasketOpen(it.id);                                                          // fresh live prices at send time
+      const r = await zbPlaceAll({ auto: true }); autoClose();
+      if (r && r.err) out.errors.push(num(it) + ' buy: ' + r.err);
+      else if (r && r.sent) out.done.push({ id: it.id, num: num(it), side: 'BUY', stocks: r.sent, slices: r.slices });
+    }
+  }
+  if (!dry){
+    autoLog((leg === 'sell' ? 'Sell leg: ' : 'Buy leg: ') + out.done.length + ' basket' + (out.done.length === 1 ? '' : 's') + ' sent' +
+      (out.done.length ? ' (' + out.done.map(d => d.num + ' ' + d.side.toLowerCase()).join(', ') + ')' : '') +
+      (out.errors.length ? ' · ' + out.errors.length + ' problem' + (out.errors.length === 1 ? '' : 's') + ': ' + out.errors.join('; ') : ''), out.errors.length ? 'warn' : 'ok');
+    if (leg === 'buy'){   // every strategy that has something to buy is marked bought → the month is done: disarm
+      const left = list.filter(it => !zbBoughtSet().has(it.id) && (() => { const b = autoBuyOrders(it); autoClose(); return !b.err && b.orders.length; })());
+      if (!left.length) autoSetArmed(false, 'All buys sent — the auto-pilot disarmed itself until you arm the next rebalance', zbRebKey());
+    }
+  }
+  return out;
+}
+async function autoWatch(){
+  const jobs = await autoJobs(), out = { at: Date.now(), jobs: [], captured: [] };
+  for (const j of jobs){
+    const it = uniqStrategies().find(x => jobSlug(x.id) === String(j.id).split('~')[0]);
+    out.jobs.push({ num: it ? (favNumOf(it.cfg) || 0) : 0, side: j.side, status: j.status, i: j.i, n: j.n, failed: (j.failed || []).length,
+                    open: (j.fill && j.fill.open) || 0, needsAuth: !!j.needsAuth });
+    if (it && j.side === 'SELL' && j.status === 'done' && !proceedsOf(it.id)){ try { await captureProceeds(it.id, true); if (proceedsOf(it.id)) out.captured.push(it.id); } catch(e){} }
+  }
+  return out;
+}
+window.spAuto = { v: 1, status: autoStatus, prepare: autoPrepare, preview: autoPreview, run: autoRun, watch: autoWatch, log: autoLog, flush: () => zbaPush() };
+/* ---- the auto-pilot box on the panel: state, Preview, Arm (two taps) / Disarm, the robot's last lines ---- */
+var AUTO_PV = null;   // var: renderWizard can draw the box before this line runs
+function renderAuto(){
+  let box = $('spAutoBox');
+  if (!box){ const wz = $('spWizard') || $('spChips'); if (!wz) return; box = document.createElement('div'); box.id = 'spAutoBox'; wz.insertAdjacentElement('beforebegin', box); }
+  const RW = rebalWindow(), tg = autoTarget(), a = autoDocFor(tg.k), cur = autoDoc(), t = d => hhmm(new Date(d + 330 * 60000));
+  const state = a.armed ? '<span class="tag keep">ARMED · ' + esc(tg.tlab) + '</span>' : '<span class="tag off">OFF</span>';
+  const lg = (tg.k === cur.k ? a.log : (cur.log || []).concat(a.log || [])) || [];
+  const lines = lg.slice().sort((x, y) => x.at - y.at).slice(-5).reverse().map(x => '<div class="sym">' + t(x.at) + ' · ' + esc(x.m) + '</div>').join('');
+  let pv = '';
+  if (AUTO_PV){ const P = AUTO_PV;
+    pv = '<div class="khelp" style="margin-top:6px">Preview ' + (P.leg === 'buy' ? 'of the buy leg' : 'of the sell leg') + ((P.leg === 'sell' && !P.sellIn) || (P.leg === 'buy' && !P.buyIn) ? ' — a rehearsal: today is not that day, so this is what would go out if it were' : '') + ':</div>' +
+      P.rows.map(r => '<div class="sym">#' + r.num + ' ' + (r.sells.length ? 'sell ' + r.sells.map(x => esc(x.sym) + ' ' + x.qty.toLocaleString('en-IN')).join(', ') : 'no sells') +
+        (P.leg === 'buy' ? ' · ' + (r.buys.length ? 'buy ' + r.buys.map(x => esc(x.sym) + ' ' + x.qty.toLocaleString('en-IN') + (x.product === 'CNC' ? ' (cash)' : '')).join(', ') : 'no buys') : '') +
+        (r.note ? ' · <i>' + esc(r.note) + '</i>' : '') + '</div>').join(''); }
+  box.innerHTML = '<div class="bal"><div class="bal-h"><b>Auto-pilot</b> ' + state + '<span class="sub">sells at 14:30 on ' + esc(tg.tlab) + ' · buys at 09:30 on ' + esc(tg.t1lab) +
+    ' · you still log in to Zerodha that morning</span><span class="go">' +
+    '<button class="btn" id="spAutoPv">Preview</button> ' +
+    (a.armed ? '<button class="btn" id="spAutoOff">Disarm</button>' : '<button class="btn on" id="spAutoArm">Arm for ' + esc(tg.tlab) + '</button>') + '</span></div>' +
+    '<div class="khelp">When armed, a robot runs the same steps you do on this panel — live picks, the cash plan, each strategy’s sell basket on the sell day, then stragglers and each strategy’s buy basket next morning — and alerts your phone. Nothing is sent while it is OFF; it disarms itself after the buys.</div>' +
+    (lines ? '<div style="margin-top:4px">' + lines + '</div>' : '') + pv + '</div>';
+  const arm = $('spAutoArm');
+  if (arm) arm.onclick = () => { if (arm.dataset.arm !== '1'){ arm.dataset.arm = '1'; arm.textContent = 'Confirm: arm the ' + tg.tlab + ' rebalance?';
+      clearTimeout(renderAuto._t); renderAuto._t = setTimeout(renderAuto, 8000); return; }
+    autoSetArmed(true, null, tg.k); ktoast('Auto-pilot armed for the ' + tg.tlab + ' rebalance', 4500); };
+  const off = $('spAutoOff'); if (off) off.onclick = () => { autoSetArmed(false, null, tg.k); ktoast('Auto-pilot disarmed', 3000); };
+  const pb = $('spAutoPv'); if (pb) pb.onclick = async () => { pb.disabled = true; pb.textContent = 'Working…';
+    try { AUTO_PV = await autoPreview(RW.buyIn ? 'buy' : 'sell'); } catch(e){ ktoast('Preview failed: ' + (e && e.message || e), 5000); }
+    renderAuto(); };
+}
 /* ---------- boot ---------- */
 (async function boot(){
   const ch = $('spChips');
@@ -2213,18 +2447,8 @@ function kiteSend(orders){
     try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){}
     renderCards(); };
   const mb = $('spMode');
-  const mLbl = () => { if (mb){ mb.textContent = PICKMODE === 'live' ? 'Live picks' : 'Rebalance picks'; mb.classList.toggle('on', PICKMODE === 'live'); } };
-  if (mb) mb.onclick = async () => {
-    PICKMODE = PICKMODE === 'live' ? 'reb' : 'live';
-    try { localStorage.setItem('sp_pick_mode', PICKMODE); } catch(e){}
-    mLbl();
-    const ids = Object.keys(PICKS);
-    if (ids.length && await ensureEngine()){
-      for (const id of ids){ const it = strategies().find(x => x.id === id); if (it) await screenPick(it); }
-      renderCards(); fetchLive();
-    }
-  };
-  mLbl();
+  if (mb) mb.onclick = () => pickModeSet(PICKMODE === 'live' ? 'reb' : 'live');
+  modeLabel();
   const sb2 = $('spSide');
   const sLbl = () => { if (sb2){ sb2.textContent = SIDE === 'sell' ? 'Sell side' : 'Buy side'; sb2.classList.toggle('on', SIDE === 'sell'); } };
   if (sb2) sb2.onclick = async () => {
