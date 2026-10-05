@@ -75295,7 +75295,7 @@
     "cell": [
      55.7,
      27.2454,
-     10.8558,
+     12.3623,
      8.5967,
      0.0,
      "2021-07-17",
@@ -75304,14 +75304,36 @@
     "was": [
      55.7,
      27.2454,
-     9.6358,
+     10.8558,
      8.5967,
      0.0,
      "2021-07-17",
      383487
     ],
     "src": "bsexbrl:540719_1772021121342_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.64 -> 10.86, fii 27.25 -> 27.25. R2-label Others Qualified Institutional Buyer 1.22 MACRITCHIE INVESTMENTS PTE LTD 1.51. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 11 (2026-10-05, cell-by-cell re-read of 540719_1772021121342_SHP.xml): 'MACRITCHIE INVESTMENTS PTE LTD' 1.5098 is the company's 'Overseas Corporate Bodies' row (same 1.5098 - its only holder), not part of the 'Qualified Institutional Buyer' row 2.7271 (whose named holder is ICICI Prudential Life 1.3637); the reader had subtracted it from the QIB row. DII = domestic lines + NBFC 9.6352 + the whole QIB row 2.7271 = 12.3623 (Quantmac counts only ICICI Pru: 10.9988 - rule difference).",
+    "superseded": {
+     "cell": [
+      55.7,
+      27.2454,
+      10.8558,
+      8.5967,
+      0.0,
+      "2021-07-17",
+      383487
+     ],
+     "was": [
+      55.7,
+      27.2454,
+      9.6358,
+      8.5967,
+      0.0,
+      "2021-07-17",
+      383487
+     ],
+     "src": "bsexbrl:540719_1772021121342_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.64 -> 10.86, fii 27.25 -> 27.25. R2-label Others Qualified Institutional Buyer 1.22 MACRITCHIE INVESTMENTS PTE LTD 1.51. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-09-30": {
     "cell": [

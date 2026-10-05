@@ -1283,9 +1283,29 @@ def load_revs():
     (same as-on, the re-filing dated by ITS gated publication) so a screen sees the original until the
     correction was public and the correction after; the stock page shows the re-filing (latest truth)."""
     if os.path.exists(REVS):
-        try: return json.load(open(REVS, encoding="utf-8"))
+        try:
+            r = json.load(open(REVS, encoding="utf-8"))
+            apply_rev_fix(r)                       # §164s part 11: #rev ledger entries, like load_hist applies cell_fix
+            return r
         except Exception as e: print("WARN shp_revisions.json unreadable (%s) — starting empty" % e)
     return {}
+def apply_rev_fix(revs, led=None):
+    """§164s part 11: apply fix[SYM]["<as-on>#rev"] entries to the stored re-filing rows (slots 0-4), only while the row
+    equals the entry's `was` exactly in slots 0-4 (see heal_refiling). Returns the number of rows changed."""
+    led = load_cell_fix() if led is None else led
+    n = 0
+    for sym, qs in (led.get("fix") or {}).items():
+        for key, ent in qs.items():
+            if not key.endswith("#rev"): continue
+            rc = (revs.get(sym) or {}).get(key[:-4])
+            if not rc or not ent.get("was") or not ent.get("cell"): continue
+            if _rev_same(rc, ent["cell"]): continue
+            if not _rev_same(rc, ent["was"]):
+                print("WARN rev_fix %s %s: re-filing row is neither the fix nor the recorded value (%s) - left alone" % (sym, key, rc[:5])); continue
+            for i in range(5): rc[i] = ent["cell"][i]
+            n += 1
+    if n: print("shp_cell_fix #rev applied to %d re-filing row(s)" % n)
+    return n
 def save_revs(r):
     tmp = REVS + ".tmp"
     json.dump(r, open(tmp, "w", encoding="utf-8"), separators=(",", ":"), sort_keys=True)
@@ -1318,6 +1338,11 @@ def audited_block(sym, key):
             print("WARN %s unreadable (%s) — no audited blocks" % (os.path.basename(AUDIT_JSON), e)); _AUDIT_CELLS = {}
     return _AUDIT_CELLS.get("%s|%s" % (sym, key), 0.0)
 
+def _rev_same(a, b):
+    """Slots 0-4 of two cells equal to 1e-9 (a #rev entry's was-guard)."""
+    try: return all((x is None and y is None) or (x is not None and y is not None and abs(float(x) - float(y)) <= 1e-9) for x, y in zip(a[:5], b[:5]))
+    except (TypeError, ValueError): return False
+
 def heal_refiling(sym, key, rc, cellfix):
     """§152: return (cell, how) — the re-filing cell `rc` carrying the original's adjudicated heals.
     (1) Its holdings repeat the raw numbers a VALUE heal adjudicated (`was` of a cell_fix entry) -> serve
@@ -1325,6 +1350,16 @@ def heal_refiling(sym, key, rc, cellfix):
     (2) Otherwise (numbers changed) a quarter with an audited foreign Any-Other block still gets that block
         moved dii -> fii, provided the re-filing's dii can hold it. Date-only / option-C entries are never
         used: their `was` is a wrong date or a revision's values, not an adjudicated reading."""
+    # §164s part 11 (2026-10-05, agreed with the FII session): a re-filing whose numbers differ from the original's cannot
+    # inherit the original's heal (rule (1) needs the same raw numbers), and before this no ledger could reach it - its RAW
+    # parse served from its own date (LUXIND Dec-2021: the Mar-2022 re-filing dropped the QIB / LIC 4.74 the original's heal
+    # had added). fix[SYM]["<as-on>#rev"] = {was, cell, src, why} re-reads THE RE-FILING'S OWN document; it is checked first
+    # and applied (slots 0-4; date / nsh / src stay the re-filing's) only while the sidecar row equals `was` EXACTLY in
+    # slots 0-4 - so a move of <= 0.01 lands too ("exact"), and a later re-filing with other numbers is never overwritten.
+    rev = ((cellfix or {}).get("fix") or {}).get(sym, {}).get(key + "#rev")
+    if rev and rev.get("was") and rev.get("cell") and _rev_same(rc, rev["was"]):
+        c = rev["cell"]
+        return [c[0], c[1], c[2], c[3], c[4]] + list(rc[5:]), "rev-ledger"
     ent = ((cellfix or {}).get("fix") or {}).get(sym, {}).get(key)
     if ent and VALUE_HEAL_MARK.search(str(ent.get("why", ""))) and ent.get("was") and ent.get("cell"):
         # §156: an entry that supersedes an earlier value heal keeps that heal under `superseded`; the raw
@@ -1702,6 +1737,7 @@ if __name__ == "__main__":
         print("history: %d cells (%+d) after ledgers" % (after, after - before))
         _revs = load_revs()
         if apply_ledger_revisions(_revs): save_revs(_revs)   # §180c fill-ledger re-filings, fill-only
+        save_revs(_revs)                                     # §164s part 11: persist #rev ledger rows (load_revs applied them)
         ev = load_events()
         if apply_cell_fix_events(ev): save_events(ev)     # §142e: event rows take cell_fix too
         build_feed()

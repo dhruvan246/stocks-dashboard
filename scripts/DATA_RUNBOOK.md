@@ -21449,6 +21449,18 @@ NRI row -> DII; AMBER Sep-20 exact. Also WABAG Jun-18 (OCB row out, AIF + Tata A
 had hidden it) and 7 event rows from the FII session's event re-read (CGPOWER x2, JWL, LEMONTREE, RAINBOW, SAFARI, IDFC). NCC Sep/Dec-21:
 the filing is internally inconsistent (two 'Firm' holders fit only inside its QIB row) - left as stored, verdict UNKNOWN.
 
+**§164s part 11 (2026-10-05) - re-filing ledger + SBILIFE.** (1) `fetch_shareholding.py`: `fix[SYM]["<as-on>#rev"]` (agreed with the
+FII session) heals a §142k RE-FILING row whose numbers differ from the original's (§152 inheritance needs equal raw numbers, so such a
+row served its raw parse with no ledger route). Applied in `heal_refiling` (checked first) and in `load_revs` via `apply_rev_fix`
+(slots 0-4 only; only while the sidecar row equals `was` EXACTLY, so <= 0.01 moves land; a later re-filing is never overwritten);
+`--apply-ledgers` persists shp_revisions.json. Old vs new on identical data with no #rev entry: shp_history / shp_events /
+shp_revisions / shareholding.json byte-identical, engine feed content identical (0 rows). Measured the gap: of 37 re-filings whose
+original carries a >= 0.05 value heal and no heal tag, the DII-moving ones are already right (2023-24 re-filings in the 2022 form put
+NBFC / insurers in Institutions (Domestic) themselves - BBTC, JINDALSAW, ZENSARTECH; CAMLINFINE = the company's own 2022-form
+classification) except LUXIND Dec-21 (Mar-2022 NSE re-filing 6.6555; its XBRL gives only the 'Any Other' total 7.06, not the QIB/LIC
+row - UNKNOWN, not written). FII-only rows handed to the FII session. (2) SBILIFE Jun-21: 'MACRITCHIE INVESTMENTS PTE LTD' 1.5098 is the
+company's 'Overseas Corporate Bodies' row (same 1.5098), not inside its QIB row 2.7271 - DII 10.8558 -> 12.3623 (whole QIB row).
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
