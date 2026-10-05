@@ -4,7 +4,7 @@
  "themes": {
   "defence": {
    "name": "Defence procurement and indigenisation",
-   "keywords": "ministry of defence|defence|army|navy|air force|drdo|indigenisation|hal|bdl|bel\\b|defence acquisition council|\\bdac\\b|emergency procurement",
+   "keywords": "ministry of defence|defence|army|navy|air force|drdo|indigenisation|hal\\b|bdl|bel\\b|defence acquisition council|(?<!-)dac\\b|emergency procurement",
    "history": "First positive indigenisation list 9-Aug-2020. The 34 companies that later won defence orders ran a median 17.4x base-to-peak against 4.3x for the market over the same window; 76% of them made 5x.",
    "companies": [
     {
@@ -215,7 +215,7 @@
   },
   "shipbuilding": {
    "name": "Shipbuilding, shipyards and ports",
-   "keywords": "shipyard|shipbuilding|maritime|sagarmala|port|vessel|indian navy|coast guard|shipping corporation",
+   "keywords": "shipyard|shipbuilding|maritime|sagarmala|ports?\\b|vessel|indian navy|coast guard|shipping corporation",
    "history": "Same 2020 indigenisation push: 21 companies, median 16.2x, 81% made 5x.",
    "companies": [
     {

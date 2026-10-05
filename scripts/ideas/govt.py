@@ -128,7 +128,10 @@ def main():
     a = ap.parse_args()
 
     tm = json.load(open(os.path.join(DOCS, 'theme_map.json')))
-    themes = {k: (v, re.compile(v['keywords'], re.I)) for k, v in tm['themes'].items()}
+    # A keyword must START a word: bare 'port' matched 'support' (every MSP release was tagged shipbuilding on
+    # 2026-09-30) and 'hal' matched 'shall'. Suffixes stay open so 'railway' still finds 'railways'; a keyword
+    # that must also END a word carries its own \\b in theme_map.json (ports?\\b, hal\\b).
+    themes = {k: (v, re.compile(r'\b(?:' + v['keywords'] + ')', re.I)) for k, v in tm['themes'].items()}
 
     try:
         rels = listing()
@@ -149,7 +152,14 @@ def main():
     stamp = ist.stamp()
     kept, unmapped, opened = [], [], 0
     dropped = {'noise': 0, 'backgrounder': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}
+    seen_titles = set()
     for prid, ministry, title in rels:
+        # PIB posts one decision under several ministries with the same title (Cabinet + MNRE): keep the first.
+        tkey = re.sub(r'\s+', ' ', title).strip().lower()
+        if tkey in seen_titles:
+            dropped['duplicate'] = dropped.get('duplicate', 0) + 1
+            continue
+        seen_titles.add(tkey)
         if NOISE.search(title):
             dropped['noise'] += 1
             continue
@@ -166,7 +176,9 @@ def main():
         if opened < a.max_bodies and (not hit or amt is None):
             text = title + ' ' + body_text(prid)
             opened += 1
-            hit = [k for k, (v, rx) in themes.items() if rx.search(text)] or hit
+            # the title names the programme; the body is read for the amount and, only when the title named no
+            # sector, for the sector. Body-wide matching tagged GEC-III 'solar' from the phrase "non-solar hour".
+            hit = hit or [k for k, (v, rx) in themes.items() if rx.search(text)]
             if amt is None:
                 amt, amt_text = amount_hit(text)
                 amt_in = 'body' if amt is not None else None
