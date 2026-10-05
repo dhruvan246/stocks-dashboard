@@ -21178,6 +21178,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares inside (A+B), not the (C) custodian block, §142e); these two had
     left it out (+0.18 / +0.31). Quantmac's ICICI rows (v5 'Rows behind our figure') divide FII by (A+B) minus the FIIs-DR shares
     and leave the row out: a rule difference, row named. 88 cells; rebuilt store: only these move (plus batch 24 not yet refreshed).
+    **Batch 26 = seam blocks left in NEITHER fii nor dii (2026-10-05), label "§164r batch 26".** 55 Dec-2015 / Mar-2016 cells have
+    SW-2 phase-2 (2026-08-30) as their top entry: it took the institutions 'Any Other' block out of dii ("pre-2016 family convention")
+    and wrote "fii left as authored (block nationality not adjudicated here)" - in 21 of them nothing ever placed the block, so it
+    sat in neither. Read now from BSE's Table III with the current rules (`~/stocks-cache/shp/audit_all/seam_block.py`: a corrected
+    form of the batch-6 t3_compute, which double-counted named '(FII)' holders inside their category row and read 'Government Pension
+    Fund Global' / 'Foreign Fin Inst/Bank' as domestic and 'X Trust' fund names as public - its 1,112 seam proposals are NOT
+    usable as they stand): FII-labelled rows, documented holders (GPFG), option-A holders inside the Institutions block (IFC, 50
+    institution listings), FDI-tagged holders (Dynasty Acquisition FDI), the unnamed rest by D1 (BLUESTARCO Mar-16's rest follows
+    its Jun-16 label 'FORIGN MUTUAL FUND'). Not FII: GLEIF-documented companies (DEN: Broad Street / MBD Bridge Street / StanChart
+    IL&FS fund), holders without a document (Tara India Holdings A, Creador I LLC, IAM Ltd, Sattiva India Opportunities). 21 cells:
+    BAJAJHIND, BLUESTARCO, CENTENKA, CENTURYPLY, CHAMBLFERT x2, CHOLAFIN x2, DEN x2, HINDZINC, JSWDULUX x2, LGBBROSLTD, PGHH, RELIGARE
+    (IFC 7.19), UNICHEMLAB, WABAG x2, ZFCVINDIA x2 - 13 now equal Quantmac within 0.01. The other 34 SW-2 cells already carry the
+    block in fii (stored fii = FPI + block) or the block is company-type (JSWENERGY 'Foreign Bodies', PETRONET OCB, PVRINOX OCB / its
+    Mar-16 rest follows Dec-16's 'FOREIGN CORPORATE BODIES' label, RELIGARE FCB rest, RADICO, PIIND, MHRIL).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
