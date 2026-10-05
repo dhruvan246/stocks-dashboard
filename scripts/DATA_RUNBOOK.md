@@ -22391,6 +22391,38 @@ demergers, so it sits with their LOW column, not with their chart. Their chart's
 the demerger-adjusted 157.19, because their chart series is ALSO dividend-adjusted (their Technicals note: "adj_close (split/bonus/
 dividend-corrected)"; Rs 16 interim ex 26-Aug-2025 lies between the two dates) — we do not adjust dividends (§174). Reply #3 now splits the
 demerger cells into "DL: your series adjusts, your low column doesn't" and "D: demergers before 2016 absent from your series".
+### 179f. Quantmac round 4 (their month-end file of 5-Oct-2026): every reply-#3 item fixed on their side; 158 real differences left, 139 of them pre-2016 demerger factors; a loose test of OURS found (2026-10-05)
+**Their file.** `Nifty_500_PIT_MonthEnd_Indicators_2009_2026_corrected_20261005c.xlsx` — same 213 month-ends and point-in-time tickers,
+one release 2026-10-05 07:50 IST; Overview unchanged but for that line. Parsed with `parse_qm_corrected.py` (OUT=`qm_ind_r4.json`). vs round 3
+they changed 769 above-low, 91 vs-200 and 76 52w-high values — every one a convention cell of reply #3.
+**Our side did not move:** sf rev 5660fe750e (prices to 2026-10-01); a fresh `gridmega_fetch_live.py` + the live engine (worktree at
+201fb5ce1) gives a dump byte-identical to round 3's (sha256 d9f6c96c...), so every change is theirs.
+**Result (same rules, `qm_verdict.py`):** 313,136 -> 313,860 / 318,494 agree (98.32 -> 98.55%); counting rounding 99.70 -> 99.95%; real
+differences 969 -> 158. Their 52w LOW now comes from their adjusted series across rights (563 cells: 487 agree, 75 rounding, 1 ours) and
+2016+ demergers (137: 127 + 10 rounding); the three convertible rights (TATAINVEST 2008, TRENT 2010, INDHOTEL 2014) are in their series
+(61: 59 + 2); the pre-2016 demergers are in their series (189: 48 agree, 2 rounding, 139 -> next paragraph).
+**139 cells = 14 demergers before Oct-2015 where their factor differs.** Their file's factor = the step their own chart applies on the
+ex-date (their site API `/api/stock/<SYM>/prices?period=max`, slow: ~40-75 s per stock, cached in `~/stocks-cache/qm_api/`; tools
+`qm_chart_factor.py`, `qm_chart_steps.py`; `qm_vwap_hyp.py` rebuilds every cell of the stock under OURS / OURS_RAW / VWAP / their CHART and
+reproduces 135 of 139 exactly, the other 4 within 0.07 pp = their factor's 4th decimal). What their step equals: ex-day VWAP (bhavcopy
+TOTTRDVAL / TOTTRDQTY) / previous close on 9 events (SKUMARSYNF 2008, D-LINK 2009, JUBILANT 2010, IBREALEST Apr + Dec 2011, JINDALSAW 2011,
+ALSTOMT&D 2011, FRL Jun-2013, ADANIENT 2015); last trade / previous close on BAJAJHLDNG 2008 (0.3689); the open PINNED at the old -10% band on
+FRL 17-Apr-2013 (0.9000); not reproducible from NSE's ex-day prices on CADILAHC 2008 (0.9260), GRASIM 2010 (0.7722 — nor from Samruddhi's
+listing: close 0.7911, VWAP 0.7854) and WIPRO 2013 (0.8922) -> asked in reply #4. Their chart = OUR factor on BALKRISIND 2015, MARICO 2013,
+WELCORP 2014. Their file keeps the ex-day's traded prints on GRASIM 2010, IBREALEST 2011 x2, BAJAJHLDNG 2008 (17 of the 139 differ by that
+alone) but matches our flattened ex-day on FRL x2 and ADANIENT 2015. Methodology C (user rule, §170) unchanged — a convention difference.
+**Rest:** ours 15 (BSE pre-listing 10, ALOKINDS seam 5 — user decisions); BAJFINANCE 2013-06-28 low = our live rights step 0.9703 vs the
+ledger target 0.971585 (the 13-row reconcile issue above; with the target our value is theirs, 63.63%); SUMMITSEC_BSE 3 (not NSE prices);
+INFIBEAM 2017-11 vs200: exact rebuild 0.051 pp from theirs = rounding.
+**OURS, FOUND — not in their cells, NOT changed (needs the user's go-ahead):** `build_catchup.py`'s 'rebased' test accepts a low / high within
+0.25% of a 2/5/10/20% band measured from the open. 8 of its 11 'rebased' events also pass the 5%-of-open test (Case A stands), but
+DELTACORP 29-Oct-2008, RSWM 17-Apr-2009 and BFUTILITIE 11-Mar-2010 pass ONLY the band test while the day's other extreme breaks the
+claimed band (RSWM: high 36.70 ~ open +2%, low 30.00 = open -16.6%; BFUTILITIE: low 701.10 = open -30%). By Methodology C they are Case C
+(close / previous close + flattened ex-day): DELTACORP 0.9559 -> 0.9902, RSWM 0.8855 -> 0.8424, BFUTILITIE 0.8474 -> 0.8517. Reply #3 also
+called JINDALSAW 2011 a band reset; its low 115.00 is the OLD band's limit (0.9 x 127.75) — still Case A by the 5% test; reply #4 corrects it.
+**Reply #4:** `~/stocks-cache/qm-recon-tools/out/StockWorld_indicators_reply4_to_Quantmac_20261005.xlsx` (`build_ind_reply_r4.py`; inputs in
+its docstring; rounds 2-3 totals and round-3 groups from `r3_groups_dump.py`).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
