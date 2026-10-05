@@ -12,6 +12,7 @@ is 403 since 23-Sep), raw XBRLs in the cache dirs (www.bseindia.com/XBRLFILES/SH
 <work>/n500_syms.json (the N500 roster present in the store). Environment: DII_ROWFIX_WORK, DII_ROWFIX_LISTS,
 DII_ROWFIX_CACHES (os.pathsep-separated). See the runbook section for the rules; every decision is written to the audit file.
 """
+import _shp_registers as _REG
 import json, os, re, sys, time, copy, collections, difflib
 import xml.etree.ElementTree as ET
 SCRIPTS=os.path.dirname(os.path.abspath(__file__))
@@ -159,7 +160,7 @@ def groups(rows, axis):
         target["holders"].append((p,name))
     return sorted([g for g in cats if g["pct"]>0.0049 or g["holders"]],key=lambda g:g["seq"])
 def norm(n): return re.sub(r'[^A-Z0-9]','',(n or '').upper())
-FORWORD=re.compile(r"foreig|overseas", re.I)      # §164j: a label naming a FOREIGN institution ("Foreign Mutual Fund", "Foreign Financial Institutions / Banks", "Bank Foreign") is never a domestic label, whatever domestic keyword it also carries
+FORWORD=re.compile(r"for[ei]{0,2}g[nh]|overseas", re.I)   # §164s part 9: also the filers' misspellings (BLUESTARCO Jun-2016 'FORIGN MUTUAL FUND' 0.53, IPCALAB Jun-2017 'Foreigh Mutual Fund' 0.55, 'Foriegn')      # §164j: a label naming a FOREIGN institution ("Foreign Mutual Fund", "Foreign Financial Institutions / Banks", "Bank Foreign") is never a domestic label, whatever domestic keyword it also carries
 def _load_evidence():
     """§164j (user 2026-09-26: named foreign holders need DOCUMENTARY proof): norm(name) -> entry from scripts/shp_foreign_holder_evidence.json."""
     try: e=json.load(open(os.path.join(REPO,"scripts","shp_foreign_holder_evidence.json"),encoding="utf-8")).get("names") or {}
@@ -326,6 +327,10 @@ def holder_class(name, verdicts, newmap, pct=None):
     if hit:
         (cls,src),how=hit
         if cls=="fii": return "foreign","fii",how
+        # §164s part 9 (rule 4, user 2026-10-04 "use registers"): a holder an official register proves to be an Indian institution
+        # (IRDAI insurer, PFRDA NPS Trust, RBI bank / NBFC) is domestic even when the company's 2022 form files it among
+        # non-institutions - BAJAJCON 2020 'ICICI Lombard General Insurance' 1.40 inside its QIB row had been read as foreign
+        if cls=="public" and _REG.register(name): return "domestic",None,"register:"+_REG.register(name)[:60]
         if cls=="public": return "foreign","public",how
         return "domestic",None,how
     if n in verdicts: return verdicts[n], ("fii" if verdicts[n]=="foreign" else None), "curated"

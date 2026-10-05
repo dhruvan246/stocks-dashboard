@@ -21255,6 +21255,19 @@ Dec-20..Jun-22, IndusInd Bank at NAM-INDIA, NPS Trust at CONCOR, National Invest
 DII (CANFINHOME, CENTENKA, DCW, RAYMOND, SCHAEFFLER; 0.008-0.025 each) -> FII. Held: LT Jun-2023 (new-form filing, 'Nationalised Banks'
 on a non-institutions row - rule not settled for the 2022 form).
 
+**§164s part 9 (2026-10-05) - 72 rows + two reader fixes.** (1) Rule 4 in code: `scripts/_shp_registers.py` (IRDAI life / general
+insurers, PFRDA NPS Trust, RBI scheduled banks / registered NBFCs, SEBI-registered AIFs named by registration; whole-word matching so
+'LIC' never matches 'PUBLIC CO LTD') and `holder_class` now returns DOMESTIC for a register-proven name even when the company's 2022
+form files it among non-institutions - that placement had been read as "foreign -> public" and dropped ICICI Lombard (BAJAJCON
+Sep-19..Jun-22), Kotak Mahindra Bank (BALLARPUR 2017-21, YESBANK Mar/Jun/Sep-20), IndusInd Bank (COFFEEDAY / DISHTV / NAM-INDIA
+pledge invocations), HDFC Life (CERA 2017), NPS Trust (DRREDDY, LUPIN) out of DII. 70 rows, each added at the filing's exact
+share-count amount on the stored base. (2) `FORWORD` also catches the filers' misspellings ('FORIGN MUTUAL FUND' BLUESTARCO Jun-16 ->
+FII 0.53, both slots; 'Foreigh Mutual Fund' IPCALAB Jun-17 - the old FORWORD would have moved it INTO dii). (3) IDFCFIRSTB event
+filing 2019-01-05: a 'Bodies Corporate' row the company put inside Institutions left DII (3.33; = Quantmac 4.03).
+Verdict pass status at 92ba8c962 (5,495 differing cells): RULE DIFFERENCE 3,953 (row named per cell) / UNKNOWN 972 (249 = Quantmac shows
+our neighbouring quarter -> date check; 162 = Dec-15/Mar-16 seam, pending the FII session's Table III re-read) / REVIEW-OURS 363 /
+OUR ERROR 102 (written in parts 8-9) / BASE 56 (page era, (A+B+C) vs (A+B) - DR companies, handed to the FII session) / THEIR ERROR 19.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
