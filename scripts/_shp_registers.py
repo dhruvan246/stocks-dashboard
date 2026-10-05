@@ -3,7 +3,7 @@ PFRDA's NPS Trust, SEBI-registered AIFs named by their registration, RBI-registe
 holder matched here is a DOMESTIC institution whatever row the filer put it on (rule 4). Matching is on whole words, so 'LIC'
 never matches 'PUBLIC' (THAI UNION ... PUBLIC CO LTD). Built 2026-10-04/05 from the regulators' published lists."""
 import re,difflib
-LIFE=[("LIFE INSURANCE CORPORATION OF INDIA",512,"Life Insurance Corporation of India",["LIC OF INDIA","LICI","LIC"]),("AXIS MAX LIFE",104,"Axis Max Life Insurance Ltd (formerly Max Life)",["MAX LIFE","MAX  LIFE","MAC LIFE"]),
+LIFE=[("LIFE INSURANCE CORPORATION OF INDIA",512,"Life Insurance Corporation of India",["LIC OF INDIA","LICI"]),("AXIS MAX LIFE",104,"Axis Max Life Insurance Ltd (formerly Max Life)",["MAX LIFE","MAX  LIFE","MAC LIFE"]),
 ("HDFC LIFE",101,"HDFC Life Insurance Co Ltd (formerly HDFC Standard Life)",["HDFC STANDARD","HDFC STANDRAD","HDFCSTANDARD","HDFC SL "]),("ICICI PRUDENTIAL LIFE",105,"ICICI Prudential Life Insurance Co Ltd",["ICICI PRU","ICICI PREDUNTIAL","ICICI PURTENTIAL","ICICI PREDEMTIAL","CICI PRUDENTIAL"]),
 ("KOTAK MAHINDRA LIFE",107,"Kotak Mahindra Life Insurance Co Ltd (formerly Kotak Mahindra Old Mutual)",["KOTAK MAHINDRA OLD MUTUAL","KOTAK LIFE"]),("ADITYA BIRLA SUN LIFE INSURANCE",109,"Aditya Birla Sun Life Insurance Co Ltd (formerly Birla Sun Life Insurance)",["BIRLA SUN LIFE INSURANCE","BIRLA SUNLIFE INSURANCE"]),
 ("TATA AIA LIFE",110,"Tata AIA Life Insurance Co Ltd",["TATA AIF LIFE","TATA LIFE INSURANCE"]),("SBI LIFE",111,"SBI Life Insurance Co Ltd",[]),("BAJAJ ALLIANZ LIFE",116,"Bajaj Life Insurance Ltd (formerly Bajaj Allianz Life)",["BAJAJ ALLIANCE LIFE","BAJAJ ALIANCE LIFE"]),
@@ -24,6 +24,10 @@ def register(name):
     n=norm(name)
     for key in ("NPS TRUST","NATIONAL PENSION SYSTEM"):          # an NPS scheme account names its pension-fund manager (LIC / SBI / UTI ...)
         if _has(n,key): return dict(OTHER)[key]
+    # bare 'LIC' only as the name's FIRST word, never LIC Housing Finance / LIC Mutual Fund (Indian, but not the insurer) and never
+    # a filer's typo for LLC ('Matrix Partners India Investment Holdings, Lic' - TREEHOUSE Dec-2015, found by the FII session)
+    if re.match(r"LIC\b", n) and not re.search(r"HOUSING|\bHFL\b|\bMF\b|MUTUAL", n):
+        return "IRDAI-registered life insurer no. 512: Life Insurance Corporation of India"
     for key,no,full,alts in LIFE:
         if _has(n,key) or any(_has(n,a) for a in alts): return "IRDAI-registered life insurer no. %d: %s"%(no,full)
     for key,full in GEN:
