@@ -21489,6 +21489,30 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     ( Corporate)' row - so labelled on the Sep-2014 page (1 holder, 578,504 sh; the same holder prints as 'Others' in Dec-2014), with the
     holder count rising 1 -> 1 -> 3 -> 5 -> 9 into Dec-2015's FPI row (13 holders, 3.35). That makes it FII by the company's own label
     (RULE DIFFERENCE: Quantmac leaves page-era generic rows out).
+    **Batch 30 part 23 (label "§164r batch 30 part 23 (Dec-2015/Mar-2016 reader gap)"; 2026-10-06; 23 cells / 13 symbols, fii only).**
+    The Table III reader of the two 2015-form seam quarters (`t3_compute`, batch 6) moves a NON-institution named holder to fii only on
+    the company's own 2022-form placement. It never ran the two other tests the XBRL reader applies from Jun-2016: the documents test
+    (>= 90 % of >= 5 institution listings, batch 7/8) and the company's own FDI / FVCI tag (batch 8). It also reads a named holder with a
+    holder count of 1 as a category label. `~/stocks-cache/shp/audit_all/t3docs/sweep.py` re-read every Quantmac-universe Dec-2015 / Mar-2016
+    cell (911 read, 130 held by t3_compute itself) and flagged 26. Each was checked against the same company's Jun-2016+ filings and
+    against the share arithmetic of its own category rows. No change where the holder is nested inside an FII-labelled row we already
+    count (SHRIRAMFIN, SHRIRAMCIT) or an earlier heal already counts it (ADANIENT, EDELWEISS, KOTAKBANK, LTF, ZENSARTECH). Written:
+    LAKSHVILAS Dec-15 / Mar-16 3.35 / 4.30 -> 7.92 / 7.01 (Morgan Stanley Asia (Singapore), Morgan Stanley Mauritius, NatWest a/c Jupiter
+    India Fund); ADANIENSOL Mar-16 10.17 -> 15.57 (Albula, Cresta - FPI from Jun-2016); APARINDS Dec-15 / Mar-16 8.47 / 8.59 -> 17.92 / 18.03
+    ('Templeton ... Fund III, LDC -FDI'); ASTRAL Dec-15 / Mar-16 11.31 -> 17.21 / 17.20 (ABG Capital, DF International Partners - FPI
+    from Jun-2016); PNCINFRA Dec-15 / Mar-16 6.48 -> 13.03 / 13.00 ('Nylim Jacob Ballas India (Fvci) III'); SBT Mar-16 0.28 -> 1.92
+    (Edgbaston); SHK Dec-15 / Mar-16 12.45 / 14.02 -> 33.96 / 35.51 ('Blackstone Capital Partners (Singapore) VI FDI Two', batch 8's
+    own-tag holder); LICHSGFIN Mar-16 27.53 -> 28.58 (FIL Investments (Mauritius)); SIMPLEXINF Dec-15 / Mar-16 5.75 / 4.43 -> 6.79 / 5.69
+    (The Master Trust Bank of Japan as trustee); GTLINFRA Dec-15 / Mar-16 / Jun-16 11.51 / 11.46 / 11.39 -> 14.05 / 13.87 / 13.80
+    (Goldman Sachs Investments (Mauritius) I, 7/0/0; Jun-2016 spells it '... -FCCB', which defeated the evidence match).
+    FEDERALBNK: International Finance Corporation is fii by the company's first 2022-form row (FPI Category I), but the reader counted it
+    in Sep-2016 only. Its 37,926,414 sh decompose the company's foreign-body row exactly: Dec-15 2 holders 37,932,414 = IFC + 6,000 (the
+    Dec-2016 total, with IFC named); Jun-16 38,630,078 = IFC + the 703,664 'FOREIGN CORPORATE BODY-DR' holder; Mar-17 24,383,914 = IFC
+    named. In Dec-16 / Mar-17 the reader had grouped the named IFC inside the counted FII row, which left IFC's own row public.
+    Dec-15 38.25 -> 40.50, Mar-16 38.98 -> 41.23, Jun-16 41.48 -> 43.72, Dec-16 37.67 -> 39.91, Mar-17 39.04 -> 40.48. Left for their own
+    review: CASTEXTECH Dec-15 (foreign banks holding invoked-pledge shares inside 'Other Foreign Body Corp') and RAMCOCEM Mar-16 (BSE's
+    Table III files its FPIs under 'Alternate Investment Funds' and foreign funds under 'Mutual Funds'). t3_compute itself is
+    unchanged: fold the documents / own-tag / holder-count-1 tests into its B3e path before any re-run (weakness 7 of §164t part 2's list).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
