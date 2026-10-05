@@ -21245,6 +21245,16 @@ Institutions 'Any Other' out of DII, base as printed (FII session's call): MTNL 
 within 0.01; the rest differ by register-proven Indian holders (rule 4, e.g. HDFC Life 2.32 at UJJIVAN Jun-17) or are cells Quantmac
 does not list.
 
+**§164s part 8 (2026-10-05, the first per-cell verdict pass `~/stocks-cache/shp/dii_qm/r3/verdict3.py`) - 56 rows.** Every cell that differs
+from Quantmac is rebuilt from its own XBRL (six domestic lines + the rows our rules count, share-count precision, on the printed base or
+on (A+B) when the company files its DR shares on the C1 line) and Quantmac's value is rebuilt the same way. 33 rows where Quantmac
+counts a register-proven Indian institution our stored cell left out (older heals missed the name): SBI Life at CUMMINSIND Sep-21..Jun-22,
+ICICI Pru Life at QUESS Mar-21..Jun-22, Bajaj Allianz Life at SANOFI, HDFC Life at CERA / RBLBANK, Kotak Mahindra Bank at YESBANK
+Dec-20..Jun-22, IndusInd Bank at NAM-INDIA, NPS Trust at CONCOR, National Investment Fund at SHOPERSTOP. 23 rows (both slots, `exact`):
+'Foreign Financial Institution(s)' / 'Foreign Mutual Fund' / 'Foreign Bank' institutions rows that pre-FORWORD §158 heals had put into
+DII (CANFINHOME, CENTENKA, DCW, RAYMOND, SCHAEFFLER; 0.008-0.025 each) -> FII. Held: LT Jun-2023 (new-form filing, 'Nationalised Banks'
+on a non-institutions row - rule not settled for the 2022 form).
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
