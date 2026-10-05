@@ -21282,6 +21282,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     the rest; 2019-09..2021-06 the block is the company's own 'Qualified Institutional Buyers' category (labelled, read domestic - rule
     difference); 2012-14 §160 classes (Anadale Ltd per the prospectus, the 18,027,840-share holder labelled 'Qualified Foreign Investor'
     from Sep-2014) kept, precision re-done. Rebuilt store moves exactly these 47 (+ part 3's 27 not yet refreshed); guards green.
+    **Batch 30 part 5 (same label): BSE Ltd 7 quarters from its own SCANNED SHP PDFs (image read, user OK 2026-10-05 "yes").**
+    bseindia.com/downloads1/Shareholding_Pattern_as_on_31st_March_2017.pdf, _as_on_30th_September_2017, _as_on_31st_December_2017,
+    _as_on_31st_March_2018, _31_Dec_2018, _31st_March_2019, _31Dec2019 (rendered with PyMuPDF; Dec-2017 / Mar-2017 / Dec-2019 pages are
+    rotated). Each quarter: FPI + the institutions Any-Other '(i-i) Foreign Direct Investment' line (Deutsche Boerse AG, Caldwell India
+    Holdings (Fairfax), Acacia Banyan Partners: 4,730,534 sh 2017-18, 4,330,534 Mar-19, 3,445,182 Dec-19) + '(i-ii) Foreign Institutional
+    Investor' row (GKFF Ventures etc.), on Public + 'Trading Members and Associates' (53,678,172 / 53,808,172 / 53,305,252 / 51,789,002 /
+    45,024,297); every category row re-added to the printed Sub-Total (B)(1) exactly. fii 10.87 / 14.64 / 13.35 / 7.22 / 7.84 / 9.10 / 13.79 ->
+    23.6018 / 23.432 / 24.4748 / 18.4455 / 19.3605 / 18.9307 / 21.8067; Mar-18, Dec-18 and Dec-19 equal Quantmac's independent XBRL reads to
+    the share (a check on the image read). dii -> the filing's domestic institutions (the Trendlyne-row fills had put the FDI / FII lines in
+    dii). Still UNKNOWN (no file found: BSE Ltd's site under the tried names, NSE master purged to Sep-2021+, NSE announcements carry no SHP):
+    Jun-2017, Jun/Sep-2018, Jun/Sep-2019, Mar/Jun/Sep-2020, Jun-2021 - ask Quantmac for the XBRLs they read; and 2024-06 / 2024-12 / 2025-03
+    (Screener fills; NSE lists those filings without XBRL). Rebuilt store moves exactly these 7 (+ part 4's 47 not yet refreshed); guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
