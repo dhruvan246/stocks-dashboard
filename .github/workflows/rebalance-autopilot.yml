@@ -1,0 +1,82 @@
+# Rebalance AUTO-PILOT (approved by the user 2026-09-29; built Oct 2026) — scripts/rebalance_autopilot.mjs.
+#
+# Drives the terminal's own Strategies panel (window.spAuto) on the rebalance days: the sell leg on the month's last
+# trading day (T, from 14:30 IST) and stragglers + buys on the next trading day (T+1, from 09:30 IST; buffer to T+3).
+# It acts ONLY when the user ARMED that rebalance on the panel's Auto-pilot box; otherwise every pass exits in seconds
+# at the pre-check (no browser). Every pass is idempotent — it sends only baskets not already sent — so the later
+# passes pick up anything the first one could not (e.g. a Kite login that came late) and capture sell proceeds.
+#
+# The daily Zerodha login stays the user's (2FA). This repo and its logs are PUBLIC: the script prints counts and
+# states only; the token, the worker address and the alert topic come from repo secrets (PF_HOLDINGS_TOKEN,
+# PF_KITE_WORKER, NTFY_TOPIC — alerts are skipped while NTFY_TOPIC is unset).
+#
+# Manual rehearsal: Actions → "Rebalance auto-pilot" → Run workflow → mode "dry" (sends nothing, any day).
+name: Rebalance auto-pilot
+
+on:
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron (runs 4-7 h late
+  # here, runbook §217). UTC; day-of-month only (with a day-of-week too, cron ORs them and every weekday would fire).
+  # The script decides the exact days from the NSE holiday calendar: T = the month's last trading day (24th-31st),
+  # T+1..T+3 = the first trading days of the next month (1st-8th).
+  # dispatch-cron: "45 3 1-8,24-31 * *"   # 09:15 IST — Kite-login check on armed T / T+1 mornings
+  # dispatch-cron: "0 9 24-31 * *"        # 14:30 IST — SELL leg
+  # dispatch-cron: "20,40 9 24-31 * *"    # 14:50, 15:10 IST — sell passes (anything unsent, problems)
+  # dispatch-cron: "0,15 10 24-31 * *"    # 15:30, 15:45 IST — last pass: proceeds of the finished sell baskets
+  # dispatch-cron: "0 4 1-8 * *"          # 09:30 IST — BUY leg (stragglers first, then each strategy's basket)
+  # dispatch-cron: "20,40 4 1-8 * *"      # 09:50, 10:10 IST — buy passes
+  # dispatch-cron: "10 5 1-8 * *"         # 10:40 IST
+  # dispatch-cron: "30 6,8 1-8 * *"       # 12:00, 14:00 IST
+  repository_dispatch:
+    types: [tick-rebalance-autopilot]   # sent by scripts/cron_dispatch.py
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry = rehearse (sends NOTHING, any day) · auto = act only if armed on a rebalance day'
+        type: choice
+        options: [dry, auto]
+        default: dry
+      leg:
+        description: 'dry runs: which leg to rehearse'
+        type: choice
+        options: [sell, buy]
+        default: sell
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rebalance-autopilot
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PF_HOLDINGS_TOKEN: ${{ secrets.PF_HOLDINGS_TOKEN }}
+      PF_KITE_WORKER: ${{ secrets.PF_KITE_WORKER }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      AP_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+      AP_LEG: ${{ github.event_name == 'workflow_dispatch' && inputs.leg || '' }}
+      AP_SLOT: ${{ github.event.client_payload.schedule || '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/rebalance_autopilot.mjs
+            docs/nse_holidays.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pre-check (calendar, armed, Kite login — no browser)
+        id: pre
+        run: node scripts/rebalance_autopilot.mjs --precheck
+      - name: Install Playwright (only when there is a leg to run)
+        if: steps.pre.outputs.go == 'true'
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+      - name: Run the leg through the panel's own steps
+        if: steps.pre.outputs.go == 'true'
+        run: node scripts/rebalance_autopilot.mjs

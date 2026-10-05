@@ -2302,7 +2302,8 @@ function autoStatus(){
   return { v: 1, leg: W ? W.leg : 'off', k: a.k, armed: !!a.armed, armedAt: a.armedAt || 0, tIso: RW.tIso, t1Iso: RW.t1Iso, sellIn: RW.sellIn, buyIn: RW.buyIn,
            connected: !!Z.connected, cloud: cloudOn(), strategies: autoList().length, steps: steps, blockers: steps.filter(x => x.st === 'bad').map(x => x.k) };
 }
-async function autoPrepare(leg, maxMs){
+async function autoPrepare(leg, maxMs, opts){
+  opts = opts || {};   // dry: a rehearsal saves nothing — no cash plan is worked out (it would be written to the synced row)
   const until = Date.now() + (maxMs || 6 * 60000), want = leg === 'sell' ? 'live' : 'reb';
   if (!cloudWanted()){ try { localStorage.setItem('sw_cloud_slicer', '1'); } catch(e){} cloudChip(); }
   try { await cloudProbe(true); } catch(e){}
@@ -2313,10 +2314,10 @@ async function autoPrepare(leg, maxMs){
     const stale = autoList().filter(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return true;
       return want === 'live' ? !livePicksOk(p) : (p.live || p.asOf !== T); });
     if (stale.length) await loadAllPicks();
-    if (leg === 'sell' && Z.connected && !cpSellsStarted() && !CPL.busy && Date.now() - CPL.at > 120000) await cashPlanRun(true);
+    if (leg === 'sell' && !opts.dry && Z.connected && !cpSellsStarted() && !CPL.busy && Date.now() - CPL.at > 120000) await cashPlanRun(true);
     const S = autoStatus(), bad = k => (S.steps.find(x => x.k === k) || {}).st === 'bad';
     const need = ['zerodha', 'cloud', 'feed', 'picks', 'mode'].filter(bad);
-    if (!need.length && (leg !== 'sell' || cpDoc())) return Object.assign(S, { ready: true, need: [] });
+    if (!need.length && (leg !== 'sell' || cpDoc() || opts.dry)) return Object.assign(S, { ready: true, need: [] });
     await autoSleep(5000);
   }
   const S = autoStatus();
