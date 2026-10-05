@@ -45418,7 +45418,7 @@
    "2022-03-31": {
     "cell": [
      26.91,
-     5.1594,
+     6.283,
      10.4356,
      0.0006,
      0.0018,
@@ -45427,17 +45427,26 @@
     ],
     "was": [
      26.91,
-     6.2874,
-     10.4076,
+     5.1594,
+     10.4356,
      0.0006,
      0.0018,
      "2022-04-19",
      202177
     ],
     "src": "bsexbrl:500219_1842022161341_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 6.29 -> 5.16, dii 10.41 -> 10.44. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Bank 1.06 public=0.00 fii=1.06  keyword; R1-foreign-holder-under-domestic-label Other Qualified Fore. Investor-Corporate 1.12 public=1.12 fii=0.00 International Finance Corporation 1.12 foreign->public(new-format:OtherNonInstitutions) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 28 (2026-10-05, labels scan): JISLJALEQS's own filing 500219_1842022161341_SHP.xml files 'International Finance Corporation' (6,658,233 shares = 1.1236 of 592,604,061) on its institutions sub-row 'Qualified Fore. Investor-Corporate' - a foreign-institution category the reader read as domestic ('qualified ...' matched the domestic QIB pattern; the 'Fore.' abbreviation was not a foreign word), so it sat in neither fii nor dii (stored dii = the domestic rows). Reader fix: LAB_FII / FORLAB accept 'Qualified Fore.'; IFC is listed under Institutions (Foreign) in 50 other filings. fii 5.1594 -> 6.2830, dii unchanged.",
     "superseded": {
      "cell": [
+      26.91,
+      5.1594,
+      10.4356,
+      0.0006,
+      0.0018,
+      "2022-04-19",
+      202177
+     ],
+     "was": [
       26.91,
       6.2874,
       10.4076,
@@ -45446,23 +45455,36 @@
       "2022-04-19",
       202177
      ],
-     "was": [
-      26.91,
-      4.0994,
-      12.5956,
-      0.0006,
-      0.0018,
-      "2022-04-19",
-      202177
-     ],
      "src": "bsexbrl:500219_1842022161341_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank 1.06; International Finance Corporation 1.12) \u2014 moved dii -> fii (2.1880 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 6.29 -> 5.16, dii 10.41 -> 10.44. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Bank 1.06 public=0.00 fii=1.06  keyword; R1-foreign-holder-under-domestic-label Other Qualified Fore. Investor-Corporate 1.12 public=1.12 fii=0.00 International Finance Corporation 1.12 foreign->public(new-format:OtherNonInstitutions) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       26.91,
+       6.2874,
+       10.4076,
+       0.0006,
+       0.0018,
+       "2022-04-19",
+       202177
+      ],
+      "was": [
+       26.91,
+       4.0994,
+       12.5956,
+       0.0006,
+       0.0018,
+       "2022-04-19",
+       202177
+      ],
+      "src": "bsexbrl:500219_1842022161341_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank 1.06; International Finance Corporation 1.12) \u2014 moved dii -> fii (2.1880 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2022-06-30": {
     "cell": [
      26.91,
-     5.8825,
+     7.0061,
      10.4456,
      0.0006,
      0.0018,
@@ -45471,17 +45493,26 @@
     ],
     "was": [
      26.91,
-     7.0105,
-     10.4076,
+     5.8825,
+     10.4456,
      0.0006,
      0.0018,
      "2022-07-20",
      204210
     ],
     "src": "bsexbrl:500219_207202293416_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.01 -> 5.88, dii 10.41 -> 10.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Bank 1.06 public=0.00 fii=1.06  keyword; R1-foreign-holder-under-domestic-label Other Qualified Fore. Investor-Corporate 1.12 public=1.12 fii=0.00 International Finance Corporation 1.12 foreign->public(new-format:OtherNonInstitutions) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 28 (2026-10-05, labels scan): JISLJALEQS's own filing 500219_207202293416_SHP.xml files 'International Finance Corporation' (6,658,233 shares = 1.1236 of 592,604,061) on its institutions sub-row 'Qualified Fore. Investor-Corporate' - a foreign-institution category the reader read as domestic ('qualified ...' matched the domestic QIB pattern; the 'Fore.' abbreviation was not a foreign word), so it sat in neither fii nor dii (stored dii = the domestic rows). Reader fix: LAB_FII / FORLAB accept 'Qualified Fore.'; IFC is listed under Institutions (Foreign) in 50 other filings. fii 5.8825 -> 7.0061, dii unchanged.",
     "superseded": {
      "cell": [
+      26.91,
+      5.8825,
+      10.4456,
+      0.0006,
+      0.0018,
+      "2022-07-20",
+      204210
+     ],
+     "was": [
       26.91,
       7.0105,
       10.4076,
@@ -45490,17 +45521,30 @@
       "2022-07-20",
       204210
      ],
-     "was": [
-      26.91,
-      4.8225,
-      12.5956,
-      0.0006,
-      0.0018,
-      "2022-07-20",
-      204210
-     ],
      "src": "bsexbrl:500219_207202293416_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank 1.06; International Finance Corporation 1.12) \u2014 moved dii -> fii (2.1880 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 7.01 -> 5.88, dii 10.41 -> 10.45. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Bank 1.06 public=0.00 fii=1.06  keyword; R1-foreign-holder-under-domestic-label Other Qualified Fore. Investor-Corporate 1.12 public=1.12 fii=0.00 International Finance Corporation 1.12 foreign->public(new-format:OtherNonInstitutions) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       26.91,
+       7.0105,
+       10.4076,
+       0.0006,
+       0.0018,
+       "2022-07-20",
+       204210
+      ],
+      "was": [
+       26.91,
+       4.8225,
+       12.5956,
+       0.0006,
+       0.0018,
+       "2022-07-20",
+       204210
+      ],
+      "src": "bsexbrl:500219_207202293416_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank 1.06; International Finance Corporation 1.12) \u2014 moved dii -> fii (2.1880 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+     }
     }
    },
    "2014-03-31": {
@@ -98803,8 +98847,8 @@
    "2017-06-30": {
     "cell": [
      60.67,
-     15.4296,
-     3.3725,
+     15.0733,
+     3.3789,
      2.0494,
      0.0,
      "2017-07-18",
@@ -98812,15 +98856,37 @@
     ],
     "was": [
      60.67,
-     15.0733,
-     3.7289,
+     15.4296,
+     3.3725,
      2.0494,
      0.0,
      "2017-07-18",
      129379
     ],
     "src": "bsexbrl:532523_1772017183545_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.36pp, holders: Foreign Natonals) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.3725 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164r batch 28 (2026-10-05, labels scan): BIOCON's own filing 532523_1772017183545_SHP.xml writes 'Other Foreign Natonals' (0.36) inside its institutions 'Any Other' block - foreign individuals, a person-type category; the misspelling defeated the 'foreign national' pattern and the bare word 'foreign' made it FII. Reader fix: LAB_PUB accepts misspelt 'nat...nals'. Old vs new reader on identical data: fii 15.4296 -> 15.0733 (dii 3.3725 -> 3.3789: the R3 NBFC row the current reader reads).",
+    "superseded": {
+     "cell": [
+      60.67,
+      15.4296,
+      3.3725,
+      2.0494,
+      0.0,
+      "2017-07-18",
+      129379
+     ],
+     "was": [
+      60.67,
+      15.0733,
+      3.7289,
+      2.0494,
+      0.0,
+      "2017-07-18",
+      129379
+     ],
+     "src": "bsexbrl:532523_1772017183545_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.36pp, holders: Foreign Natonals) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 3.3725 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-09-30": {
     "cell": [

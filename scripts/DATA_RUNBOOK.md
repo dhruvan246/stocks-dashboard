@@ -21201,6 +21201,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Institutions / Banks' sat in dii (Dec-15: three of them in fii as well, counted twice) -> fii, out of dii. (c) BOMDYEING Dec-15 /
     Mar-16 counted its institutions sub-rows 'Domestic Companies' / 'Trust' / OCB / 'Foreign Bodies' in fii: FII = FPI + its 'Foreign
     Institutional Investors' sub-row on (A+B+C2) = 7.8065 / 7.7026 = Quantmac. 8 cells.
+    **Batch 28 = reader vocabulary from a scan of every cached XBRL label (2026-10-05), label "§164r batch 28".** A scan of the
+    institutions / non-institutions 'Any Other' sub-row labels in 44,814 cached XBRLs (`~/stocks-cache/shp/audit_all/labels/scan_labels.py`,
+    1,480 distinct labels) listed the ones the reader could not class. `_shp_dii_rowfix` now reads 'Domestic Companies' / 'Indian Company'
+    / 'Market Maker' / 'NRIs' / 'Non Resident Indians (Repat)' / 'Individual - HUF' (repeated 'Other' prefix) as company- / person-type
+    (never FII or DII), misspelt 'Foreign Natonals' as public, and 'Qualified Fore. Investor' as a foreign category. Old vs new reader on
+    identical data, store-wide incl. events: only BIOCON Jun-17 ('Other Foreign Natonals' 0.36 out of fii; the bare word 'foreign' had
+    made it FII) and BOMDYEING Mar-16 (already batch 27) change. JISLJALEQS Mar/Jun-2022 (a §164 cell the passes do not re-read):
+    IFC 6,658,233 sh on its institutions sub-row 'Qualified Fore. Investor-Corporate' sat in neither fii nor dii -> fii +1.1236.
+    Open: 2022-form filings that put FPIs on a non-institutions 'Others' row (JISLJALEQS 2022-25 the same IFC, 532904 / 500199 /
+    524091 / 532907 / 508814 'Foreign Portfolio Investor (Individual) Category II' ...) - the 2022-form parse reads Institutions
+    (Foreign) members only; not yet counted. 'Foreign Collaborators' (CYIENT 2015-17 Carrier International 13.6 %, 532413) is FII in the
+    XBRL reader (curated) but public in the page era (COLLAB_LAB) - a user question, not changed.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

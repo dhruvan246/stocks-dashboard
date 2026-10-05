@@ -51,8 +51,8 @@ MON={"March":3,"June":6,"September":9,"December":12}
 # ADANIPOWER Jun-2016 'FORIEGN CORPORATE BODIES', SHRIRAMCIT Jun-2016 'Foreign Port Folio Investor', 'Foreign Portolio Investor' -
 # and the exact-spelling patterns read those rows as UNLABELLED. _FOR / _PFO accept the spellings seen in filings.
 _FOR=r"(?:foreig|forieg|forign|foregin|forein|forigin|foerign|foregn|foreigh)"; _PFO=r"port\s*-?\s*f?olio"
-LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|"+_FOR+r"\w*\s+"+_PFO+r"|"+_FOR+r"\w*\s+instit|"+_FOR+r"\w*\s+bank|"+_FOR+r"\w*\s+venture|qualified\s+"+_FOR+r"|sovereign", re.I)
-LAB_PUB=re.compile(r"overseas corporate|\bocb\b|"+_FOR+r"\w* compan|"+_FOR+r"\w* (corporate )?bod|corporate bodies|"+_FOR+r"\w* national|"+_FOR+r"\w* individual|non.?resident|\bnri\b", re.I)
+LAB_FII=re.compile(r"\bfiis?\b|\bfpis?\b|\bqfi\b|"+_FOR+r"\w*\s+"+_PFO+r"|"+_FOR+r"\w*\s+instit|"+_FOR+r"\w*\s+bank|"+_FOR+r"\w*\s+venture|qualified\s+(?:"+_FOR+r"|fore\b)|sovereign", re.I)
+LAB_PUB=re.compile(r"overseas corporate|\bocb\b|"+_FOR+r"\w* compan|"+_FOR+r"\w* (corporate )?bod|corporate bodies|"+_FOR+r"\w* nat\w*nals?|"+_FOR+r"\w* individual|non.?resident|\bnris?\b", re.I)
 # §164r batch 11 (user 2026-10-04 'yes fix the label bug'): a non-institution category a company writes on a sub-row of its
 # institutions 'Any Other' block - Bodies Corporate, Central / State Government, IEPF, trusts, clearing members, individuals, HUF,
 # employees, directors, unclaimed / suspense accounts - is company-, government- or person-type: never FII and never DII
@@ -64,16 +64,19 @@ _NI_CAT=(r"(?:indian\s+)?bod(?:y|ies)\s*corporates?|corporate\s+bod(?:y|ies)|cor
          r"|central\s*(?:/|and|&)?\s*state\s*gov\w*(?:\s*\(s\))?|centralgovernment\s*/?\s*state\s*government(?:\s*\(s\))?|(?:central|state)\s+gov\w*(?:\s*\(s\))?"
          r"|government(?:\s+of\s+india)?|govt\.?(?:\s+of\s+india)?|president\s+of\s+india"
          r"|iepf(?:\s+authority)?|investor\s+education\s+(?:and|&)\s+protection\s+fund(?:\s+authority)?(?:\s*\(mca\))?"
-         r"|trusts?|clearing\s+members?|individuals?|huf|hindu\s+undivided\s+famil(?:y|ies)|employees?|directors?(?:\s+(?:and|&)\s+(?:their\s+)?relatives?)?"
-         r"|unclaimed\b.*|suspense\b.*|escrow\b.*")
+         r"|trusts?|clearing\s+members?|individuals?(?:\s*-\s*huf)?|huf|hindu\s+undivided\s+famil(?:y|ies)|employees?|directors?(?:\s+(?:and|&)\s+(?:their\s+)?relatives?)?"
+         r"|unclaimed\b.*|suspense\b.*|escrow\b.*"
+         # §164r batch 26 (labels scan 2026-10-05): more company- / person-type categories filers write on institutions sub-rows
+         r"|(?:domestic|indian)\s+(?:compan(?:y|ies)|bod(?:y|ies)\s*corporates?|corporates?)|market\s+makers?|nris?"
+         r"|non[\s-]*resident\s+indians?(?:\s*\((?:non[\s-]*)?repat\w*\))?")
 NONINST_LAB=re.compile(r"(?:%s)(?:\s*\([^)]*\))?" % _NI_CAT, re.I)
 def noninst_label(lab):
     """True when the WHOLE label (after the filer's 'Other / Others / Any Other' prefix) is a non-institution category - never
     for a holder's name that merely contains such a word ('GOLDMAN SACHS TRUST - ...', 'CITY OF NEW YORK GROUP TRUST',
     'PACIFIC ASSETS TRUST PLC', 'Employees Retirement plan of Duke University' are foreign institutions)."""
-    core=re.sub(r"^\s*(?:any\s+)?others?\b[\s:\-\u2013]*","",lab or "",flags=re.I).strip(" .:-\u2013")
+    core=re.sub(r"^\s*(?:(?:any\s+)?others?\b[\s:\-\u2013]*)+","",lab or "",flags=re.I).strip(" .:-\u2013")
     return bool(core) and bool(NONINST_LAB.fullmatch(core)) and not LAB_FII.search(lab or "") and not DOMLAB.search(lab or "")
-FORLAB=re.compile(r'foreig|forieg|forign|foregin|forein|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
+FORLAB=re.compile(r'foreig|forieg|forign|foregin|forein|forigin|foerign|foregn|qualified\s+fore\b|muscat|s\.?a\.?o\.?g\b|overseas|\bfpi\b|\bfii\b|\bocb\b|non.?resident|\bnri\b|mauritius|singapore|\bpte\b|\bb\.?v\.?\b|\bllc\b|\bl\.?p\.?\b|\binc\b|\bplc\b|\bltd\.? *\((uk|usa|us)\)|university|college|\bsa\b|\bag\b|\bgmbh\b|\bnv\b|luxembourg|cayman|netherlands|\busa\b|\buk\b|japan|korea|hong ?kong|cyprus|delaware|\bsarl\b|\bs\.?a\.?r\.?l\b|holdings? (ii|iii|iv|v)\b|\bpty\b|\bcapital partners\b|\bglobal\b|international|\bsicav\b|\bucits\b|\boeic\b', re.I)
 DOMSTRONG=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\bmagnum\b|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib", re.I)
 DOMLAB=re.compile(r"insur|assurance|provident|pension|nps trust|national pension|mutual fund|\blic\b|\blici\b|qualified inst|q[au]+lified|instit\w* buyers?|\bqib|\bnbfc|non.?banking|financial institution|\bbank|alternat(e|ive) investment|venture capital|asset reconstruct|general insurance corp", re.I)
 SOVNAME=re.compile(r"pension fund global|government of (?!india)|monetary authority|\bnorges\b|abu dhabi|\bqatar\b|\bkuwait\b|sovereign", re.I)   # §164s part 7
