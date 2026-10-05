@@ -21598,6 +21598,26 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     AKSHOPTFBR Mar-2009, Dec-2009, Mar-2010 were never held, so the store kept serving Dec-08 (2.75) and Sep-09 (0.34). BSE's pages
     (qtrid 61 / 64 / 65) print an institutions block with only 'Any Others (Specify)' 0 -> fii 0, dii 0 (= Quantmac 0); promoter is on
     the (A+B) basis. Added to `shp_fill_seam_aspx.json.gz` and served un-dated (§164e) like the company's other page-era rows.
+    **Batch 30 part 31 (label "§164r batch 30 part 31"; 45 cells, 9 companies; per-company review continued).**
+    AMTEKAUTO Sep-15 17.10 -> 13.17: the institutions 'Others' row is the company's 'Foreign Bodies Corporate' (rule C, sole-row chain).
+    HATHWAY Sep-13..Mar-14: the institutions block's 1-holder 'Any Other' 2,229,376 sh is SATISH B RAHEJA (an individual - the >1% lists of
+    Jun/Sep-2014 name him with exactly that count, under 'Non Resident Indians'), not the Route One account §164g name-matched -> public.
+    IRB Dec-15..Sep-19 (16 quarters): the non-institutions row the company labels 'External Portfolio Investor' is FII by the company's own
+    annual reports (category table 'FIIs' = FPI + that row to the share at 31-Mar-2016 / 2017 / 2018 / 2019); its institutions row
+    'Indian Company' is a domestic company (FY16 report: Bodies Corporate 5,982,714 = 5,180,930 + 801,784) -> public.
+    BALLARPUR Jun-16..Jun-21 (17): the institutions Any-Other row the company labels 'Foreign Institutional Investors' (33,750-460,941 sh) is
+    its own FII label; the reader parks the whole Any-Other block in dii (OLD_OTHER_TO_DII) and §159's 0.05 pp floor never moved it, so it
+    goes fii + / dii - (Dec-16 / Jun-17 only the 2-dp rounding of §164n's move); all on the XBRL's own total. Sep-18..Jun-19 stay unfilled:
+    BALLARPUR (roster BILT) left the Nifty 500 on 2018-09-28.
+    JBFIND Dec-15 13.97 -> 13.9704 (precision). STARHEALTH 19-Dec-2021 (event) / Dec-21 / Mar-22 / Jun-22: FPI + the eight FDI-line holders
+    (batch 14) only - the block's 8-holder rest 14,393,916 is the company's own 'Bodies Corporate' (19-Dec-2021 and Jun-2022 category rows,
+    Sep-2022 'Foreign Companies' line) -> public (D1 had swept it in); Jun-22 / 19-Dec had also counted AMERICAN FUNDS twice.
+    SUNDARMFIN Jun-19: the 960,960-share employee trust is filed as C1 (DR custodian) in this one filing (C2 everywhere else) - no DRs, so
+    all five slots go back to the full 111,103,860 (7.9522 -> 7.8828). BAJAJELEC Mar-15 / Jun-15: a generic 4-holder 679,200-sh block had been
+    size-matched to the 5-holder 'Foreign Port Folio Investor Corporate' row (663,062) printed beside it on the same page -> public.
+    SWEEP (not yet applied): `~/stocks-cache/shp/audit_all/fiilabel/sweep_xbrl.py` - 357 XBRL-era cells (72 symbols, all < 0.12 pp, most
+    < 0.01) where an institutions Any-Other row the company labels 'Foreign Institutional Investors' / 'FII' sits in dii under the §158/§159
+    0.05 pp floor; 708 cells already count such rows. Fix = fii + / dii - per cell after checking the stored dii holds the row.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
