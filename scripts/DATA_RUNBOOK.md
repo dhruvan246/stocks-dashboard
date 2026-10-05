@@ -21294,6 +21294,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     dii). Still UNKNOWN (no file found: BSE Ltd's site under the tried names, NSE master purged to Sep-2021+, NSE announcements carry no SHP):
     Jun-2017, Jun/Sep-2018, Jun/Sep-2019, Mar/Jun/Sep-2020, Jun-2021 - ask Quantmac for the XBRLs they read; and 2024-06 / 2024-12 / 2025-03
     (Screener fills; NSE lists those filings without XBRL). Rebuilt store moves exactly these 7 (+ part 4's 47 not yet refreshed); guards green.
+    **Batch 30 part 6 (label "§164r batch 30 part 6" for PVRINOX, "§164r batch 30" for the rest): UJJIVAN 24, KOTAKBANK 21, LAURUSLABS
+    22, PVRINOX 21 + 4 events - and a CORRECTION of part 3.** Part 3 took PVRINOX's institutions Any-Other remainder out of fii by the
+    BANDHANBNK Dec-19 precedent - but BANDHANBNK files a labelled 'Overseas Corporate Bodies' CATEGORY row with its own total and the
+    unnamed part sits inside it, while PVRINOX's filings carry holder rows only (their category text 'Other' / 'Overseas Corporate Bodies' /
+    'Bodies Corporate' on each holder, no Category row): the remainder is an UNCOVERED remainder -> FII by D1. Part 6 restores it at share
+    counts (2017-03..2022-06, events 2019-09-03 / 2020-08-07 / 2020-10-09 / 2021-02-01); Dec-2016 (Category row 'FOREIGN CORPORATE BODIES' =
+    the whole block) and Jun-2017 (no detail; same-size labelled block in Dec-2016) stay public. RULE for readers: the 'label' of an unnamed
+    part comes only from a Category row that contains it - never from the category text on neighbouring holder rows. UJJIVAN / KOTAKBANK
+    / LAURUSLABS: every Quantmac gap verified per quarter as a rule difference (UJJIVAN: IFC + NewQuest Asia II on the company's own FDI
+    line vs Quantmac's Elevar / CX Partners / Sequoia III; KOTAKBANK: (A+B+C) as filed + SMBC; LAURUSLABS: Bluewater / FIL Capital public);
+    ours re-done at share counts - LAURUSLABS also had left out its Mar-2019 uncovered remainder (22,339 sh) and its 2021-22
+    'FOREIGN INSTITUTIONAL INVESTOR' Category row (0.02-0.04). Rebuilt store moves exactly these 88 + 4 events; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
