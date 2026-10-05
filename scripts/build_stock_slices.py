@@ -87,9 +87,9 @@ _UNSAFE = re.compile(r"[^A-Za-z0-9._-]")
 
 
 def _px100(x):
-    """price x100 (paise) as the engine holds it: an integer for a 2-decimal price, 2 paise decimals for the 4-decimal adjusted
-    store (runbook §179f) — ints stay ints so unchanged prices keep their exact bytes."""
-    v = round(x * 100, 2)
+    """price x100 (paise) as the engine holds it: an integer for a 2-decimal price, up to 4 paise decimals for the adjusted store
+    (4 decimals, 6 below Rs 1 — runbook §179f) — ints stay ints so unchanged prices keep their exact bytes."""
+    v = round(x * 100, 4)
     return int(v) if v == int(v) else v
 
 def slug(sym):

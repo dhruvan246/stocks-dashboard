@@ -1,0 +1,76 @@
+name: Adopt the exact-price sf_stock_data.bin (one-shot)
+
+# ONE-SHOT (runbook §179f; 2026-10-05 4 decimals, 2026-10-06 6 decimals below Rs 1): adopts a locally rebuilt sf_stock_data.bin
+# (~/stocks-cache/qm-recon-tools/build_exact_store10.py + choose_consistent.py) as the new `data` release asset, then re-triggers the
+# normal daily pipeline so it re-splits, force-pushes to sf-data and bumps clients (rev).
+# The bin is 200+ MB: a session can't `gh release upload` it (permission classifier) or commit it as one file, so it is byte-split into
+# <95 MB chunks on the `exact-prices-base` orphan branch with a SHA-256 manifest; this workflow only joins, checks and uploads.
+# Delete this file + the exact-prices-base branch once the adoption is verified live (same pattern as 2026-08-02 adopt-rebuilt-base.yml).
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh-backtest-data      # never overlap the daily price job
+  cancel-in-progress: false
+
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact-prices-base (byte chunks + manifest)
+        uses: actions/checkout@v5
+        with:
+          ref: exact-prices-base
+
+      - name: Join the chunks and check them against the manifest
+        run: |
+          cat $(ls sf_stock_data.bin.part* | sort) > sf_stock_data.bin
+          echo "joined: $(ls -la sf_stock_data.bin)"
+          python3 - <<'EOF'
+          import json, gzip, hashlib
+          m = json.load(open("manifest.json"))
+          h = hashlib.sha256(open("sf_stock_data.bin", "rb").read()).hexdigest()
+          if h != m["sha256"]:
+              raise SystemExit("ABORT: joined file sha256 %s != manifest %s" % (h, m["sha256"]))
+          D = json.loads(gzip.decompress(open("sf_stock_data.bin", "rb").read()))
+          if "ZOMATO" in D["data"] or not D["data"].get("ETERNAL"):
+              raise SystemExit("ABORT: bin looks UN-merged (ZOMATO present or ETERNAL missing)")
+          if D.get("end") != m["end"] or len(D["data"]) != m["symbols"]:
+              raise SystemExit("ABORT: end/symbols %s/%d differ from the manifest %s/%d" % (D.get("end"), len(D["data"]), m["end"], m["symbols"]))
+          print("joined bin OK: sha256 %s, end %s, %d symbols" % (h, D["end"], len(D["data"])))
+          EOF
+
+      - name: Refuse unless the live release still holds exactly the data this bin was built from (nothing may be lost)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download data --pattern sf_stock_data.bin --output live.bin --clobber
+          python3 - <<'EOF'
+          import json, gzip, hashlib
+          # compare the DATA (the decompressed JSON), not the gzip bytes: the daily job re-uploads identical data with new gzip
+          # bytes (2026-10-05: sha e5f7... -> 9dca..., 0 of 5,266 symbols different), which a byte check would wrongly refuse
+          raw = gzip.decompress(open("live.bin", "rb").read()); h = hashlib.sha256(raw).hexdigest(); live = json.loads(raw)
+          m = json.load(open("manifest.json"))
+          print("live release end %s data-sha256 %s | built from end %s data-sha256 %s" % (live.get("end"), h, m["base_end"], m["base_json_sha256"]))
+          if h != m["base_json_sha256"]:
+              raise SystemExit("ABORT: the live release's data changed since this bin was built — rebuild from the current release")
+          EOF
+
+      - name: Publish the exact-price bin as the release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload data sf_stock_data.bin --clobber
+          echo "Uploaded the exact-price sf_stock_data.bin to the 'data' release."
+
+      - name: Trigger the daily refresh workflow to re-split + publish to sf-data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run refresh-backtest-data.yml
+          echo "Triggered refresh-backtest-data.yml — it re-splits the new base and force-pushes to sf-data (rev changes)."
