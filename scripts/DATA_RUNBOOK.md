@@ -21043,6 +21043,25 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     filing (Dec-2015) leaves its 36.77 % C1 out. 6 never-filers (CRESTANI, ELDERPHARM, ESSARPORTS, PATNI, RANBAXY, SHREEASHTA) use the
     'majority' full-count default, but that majority (53 of 68) counted companies with no DR shares at all; among companies with DR shares
     in their first new-form filing ~51 leave them out vs ~23 inside, and SEBI's own column is "% of (A+B+C2)".
+    **Batch 17 = the depository-receipt RULE, settled by the user (2026-10-05: "go ahead" on silent companies, "ok" on changed
+    practice), label "§164r batch 17".** Rule now: a pre-2016 cell is on the full share count ONLY for a company whose own new-form
+    filings keep its DR shares INSIDE Public (an 'Overseas Depositories (holding DRs)' line in Table III / XBRL, or a named depository
+    bank, with no C1) - 25 companies: INFY, WIPRO, TATASTEEL, TMPV, LICHSGFIN, AFTEK, ESSAROIL, VAIBHAVGBL, RASOYPR, GRASIM, VEDL ...
+    Every other company is on (A+B), SEBI's own "% of (A+B+C2)": (i) any company that EVER reported its DR shares on the separate C1
+    line in a new-form filing (adds UFLEX, AKSHOPTFBR, INDHOTEL, NOIDATOLL - C1 in Dec-2015, none by Mar/Jun-2016 -, KEMROCK - its
+    only new-form filing, C1 36.77 % -, SREINFRA / ELECTCAST - a C1 line too small for the % to show the base); (ii) SILENT companies
+    whose receipts had ended before Dec-2015 (no C1, no depository line, no named depository in Dec-2015 / Mar-2016 Table III or the
+    Jun-2016 XBRL): 63MOONS, ABIRLANUVO, ACC, ANANTRAJ, BAJAJHIND, BRFL, DISHTV, ERAINFRA, GAMMONIND, GITANJALI, JKLAKSHMI, JSWSTEEL,
+    KSOILS, REIAGROLTD, SUJANATOW (rows under NEUEON), TATACOMM, UTTAMSTL; (iii) the 6 NEVER-filers CRESTANI, ELDERPHARM, ESSARPORTS,
+    PATNI, RANBAXY, SHREEASHTA. Why: of the 76 companies that still had DR shares at their first new-form filing, 51 left them
+    outside the 100 and 25 kept them inside (the earlier "53 full-count" majority counted companies with no DR shares at all);
+    `Fld_IsDRShares` is NOT evidence (TMPV answered "No" with 50.97 crore shares on its Overseas Depositories line, LICHSGFIN and AFTEK
+    too). `reply7/b17_drrebase.py`, batch-16 method: 633 cells (UFLEX 40, SREINFRA 40, ELECTCAST 40, INDHOTEL 39, ABIRLANUVO 38,
+    NOIDATOLL 37, BAJAJHIND 36, RANBAXY 35, ANANTRAJ 30, TATACOMM 29, 63MOONS 26, REIAGROLTD 25, PATNI 24 (x1.33 in 2006-11), CRESTANI
+    22, AKSHOPTFBR 17, DISHTV 16, ELDERPHARM 14, KEMROCK 14 (x1.40), ACC / GAMMONIND / JKLAKSHMI / KSOILS 13, GITANJALI 12, UTTAMSTL 9,
+    BRFL 8, NEUEON 8, JSWSTEEL 7, ERAINFRA 6, ESSARPORTS 5, SHREEASHTA 4; 607 new + 26 superseding); 65 move < 0.01 pp and stay as
+    stored. Quantmac's DR-base list: 724 more cells equal, ~26 within 0.015; still differing by DEFINITION (DR inside Public): ESSAROIL
+    62, VAIBHAVGBL 22, RASOYPR 19, AFTEK 3. Rebuilt feed: only these symbols' rows move; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
