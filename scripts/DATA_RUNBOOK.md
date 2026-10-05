@@ -21306,6 +21306,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     line vs Quantmac's Elevar / CX Partners / Sequoia III; KOTAKBANK: (A+B+C) as filed + SMBC; LAURUSLABS: Bluewater / FIL Capital public);
     ours re-done at share counts - LAURUSLABS also had left out its Mar-2019 uncovered remainder (22,339 sh) and its 2021-22
     'FOREIGN INSTITUTIONAL INVESTOR' Category row (0.02-0.04). Rebuilt store moves exactly these 88 + 4 events; guards green.
+    **Batch 30 part 7 (same label): APLAPOLLO 18, APOLLOTYRE 9.** APLAPOLLO: KITARA PIIN 1101 (852,000 sh, ex 'Kotak Mahindra
+    (International) Limited' - same shares from Dec-2016) is filed by APLAPOLLO ITSELF under Foreign Portfolio Investors in Dec-2020 /
+    Mar-2021 (4,260,000 after the split) -> FII under documents-only in every earlier quarter; we had dropped it at the rename (a fake -3.6
+    pp step from Dec-2016) -> 2016-12..2020-09 re-read from Table III: FPI + institutions 'Foreign Institutional Investor' + Kitara 1101 +
+    Emblem FII (own tag) + Goldman Sachs India (585 FPI listings) + WF Asian Reconnaissance (174); KITARA PIIN 1001 stays public (the
+    company's own 2022 form: Foreign Companies). APOLLOTYRE: page-era precision (the institutions 'Any Other' / 'Others' sub-rows hold
+    FPI-listed holders per BSE's >1% holder pages - Merrill Lynch Capital Markets Espana, Copthall Mauritius, Morgan Stanley Asia, Credit
+    Suisse Singapore); its Sep-2014 'Dates' cell is Quantmac's (BSE notice 'Shareholding Pattern For September 30, 2014' 2014-10-22
+    11:41 = our date; they date it from the 2015-02-11 REVISED filing); 2022-03/06 = follow-the-label to the company's own 'QUALIFIED
+    INSTITUIONAL BUYERS' block (-11.1 % / -0.8 %, within 12 %) -> domestic, rule difference. Rebuilt store moves exactly these 27 (+ part 6's
+    88 and the DII session's §164s part 10 38 not yet refreshed); guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
