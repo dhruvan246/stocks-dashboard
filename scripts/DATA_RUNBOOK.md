@@ -21426,6 +21426,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     5.19, dii 23.49 / 12.27 / 20.52 -> 18.68 / 17.57 / 15.92; Mar-16 was a bad fill (prom 61.13 vs the filing's 51.27) - rebuilt, date
     04-18 (announcement). JINDALSAW Sep-2016 is a quarter we never held (only revised versions on BSE's list; announced 2016-10-13) - left
     for the missing-quarters work.
+    **Batch 30 part 17 (label "§164r batch 30 part 17 (seam rule-4 / NBFC sweep)"): 204 seam cells, approved by the DII session
+    2026-10-06** (`r4sweep/for_dii_session.json`; builder `v4work/mk_b30_p17.py`): every scope symbol's Dec-2015 / Mar-2016 cell whose dii
+    left out the NBFC row (R3, 154 cells) and / or register-proven Indian institutions filed among non-institutions (rule 4, 61 cells:
+    life insurers, Bajaj Holdings (RBI NBFC), Kotak Mahindra Bank), recomputed with the corrected register (6375c0b15: bare 'LIC' only as a
+    name's first word - TREEHOUSE's 'Matrix Partners ... Lic' is not LIC: 8.2222, not 20.27). The DII session checked all 61 moves >= 1 pp
+    against our Jun-2016 XBRL cells (which already apply rule 4 / R3): in line (TECHNO 22.04 vs 22.04, SCHAEFFLER 30.64 vs 30.64, GSPL 25.07
+    vs 24.51...). PRAKASH Dec-15 dii 0.04 -> 22.62 (its 'NBFCs registered with RBI' row 30,357,849 sh, counted in its Jun-2016 cell too);
+    ABGSHIP Mar-16 9.89 -> 8.36 ('Citi Bank' = Citibank N.A., foreign - evidence entry 5179adf1e); VIVIDHA Mar-16 3.75 -> 2.47 ('BANKE
+    BEHARI SHOPPERS' is a company). ins = B1g + register insurers (53 cells rise, none fall); other slots unchanged. Guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
