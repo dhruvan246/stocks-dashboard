@@ -2315,13 +2315,22 @@ async function autoPrepare(leg, maxMs, opts){
       return want === 'live' ? !livePicksOk(p) : (p.live || p.asOf !== T); });
     if (stale.length) await loadAllPicks();
     if (leg === 'sell' && !opts.dry && Z.connected && !cpSellsStarted() && !CPL.busy && Date.now() - CPL.at > 120000) await cashPlanRun(true);
-    const S = autoStatus(), bad = k => (S.steps.find(x => x.k === k) || {}).st === 'bad';
-    const need = ['zerodha', 'cloud', 'feed', 'picks', 'mode'].filter(bad);
-    if (!need.length && (leg !== 'sell' || cpDoc() || opts.dry)) return Object.assign(S, { ready: true, need: [] });
+    const need = autoNeed(leg, opts.dry);
+    if (!need.length && (leg !== 'sell' || cpDoc() || opts.dry)) return Object.assign(autoStatus(), { ready: true, need: [] });
     await autoSleep(5000);
   }
-  const S = autoStatus();
-  return Object.assign(S, { ready: false, need: ['zerodha', 'cloud', 'feed', 'picks', 'mode'].filter(k => (S.steps.find(x => x.k === k) || {}).st === 'bad') });
+  return Object.assign(autoStatus(), { ready: false, need: autoNeed(leg, opts.dry) });
+}
+/* readiness for THE LEG BEING RUN (not the checklist's idea of today — a rehearsal of the sell leg on a buy day must not
+   wait for the buy-day screen): Zerodha, cloud slicer, books, and every ⭐ strategy's picks in the leg's mode — sell =
+   live and fresh (< 3 min), buy = the official close screen dated T. A dry rehearsal accepts loaded picks in the right
+   mode at any freshness / date (the market may be shut, T may be weeks away). */
+function autoNeed(leg, dry){
+  const L = autoList(), T = rebalWindow().tIso;
+  const picksOk = L.length > 0 && L.every(it => { const p = PICKS[it.id]; if (!p || !p.rows.length) return false;
+    if (leg === 'sell') return p.live && (dry || livePicksOk(p));
+    return !p.live && (dry || p.asOf === T); });
+  return [!Z.connected && 'zerodha', !cloudOn() && 'cloud', !L.length && 'books', !picksOk && 'picks'].filter(Boolean);
 }
 const autoTodo = it => { const X = sellExits(it); return { X: X, todo: X.known ? X.exits.filter(r => r.remain == null ? true : r.remain > 0) : [] }; };
 /* the ⚡ dialog's own sizing: open it, read its orders, close it — the exact rows a buy would send */
