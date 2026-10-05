@@ -21062,6 +21062,21 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     BRFL 8, NEUEON 8, JSWSTEEL 7, ERAINFRA 6, ESSARPORTS 5, SHREEASHTA 4; 607 new + 26 superseding); 65 move < 0.01 pp and stay as
     stored. Quantmac's DR-base list: 724 more cells equal, ~26 within 0.015; still differing by DEFINITION (DR inside Public): ESSAROIL
     62, VAIBHAVGBL 22, RASOYPR 19, AFTEK 3. Rebuilt feed: only these symbols' rows move; guards green.
+    **Batch 18 = the batch-17 DR rule for companies the DR rule never looked at (2026-10-05, user "work on every single cell"), label
+    "§164r batch 18".** The DR company list (reply4 d2_basis.json + the §164a selection) came from Quantmac's DR-basis cells, so DR
+    companies whose cells Quantmac filed under other topics were never tested - e.g. HEXT (Quantmac "Our rows": 45.38 = page (A+B) vs
+    our 42.11 = (A+B+C)). A scan of every cached BSE ShareholdingPattern page 2006-15 (`~/stocks-cache/shp/audit_all/
+    dr_codes_from_pages.json`, 21,933 pages) found 187 companies with (C) custodian shares, 85 outside the list; 47 of those show (C)
+    only in BSE's old-layout rendering of Dec-2015 / Mar-2016 (the employee trust C2 - not DR), leaving 38. Classified from their own
+    Dec-2015 / Mar-2016 / Jun-2016 Table I + III (`audit_all/dr_missed_old_class.json`): EVER_C1 10 (HEXAWARE, SAIL, STLTECH, RPOWER,
+    PVP, BAJAJFINSV, BHARATFORG, BAJAJ-AUTO, ORCHIDPHAR, JISLDVREQS), SILENT 16 (ABREL, GRANULES, ARVIND, HFCL, AMTEKAUTO, BALRAMCHIN,
+    HIMATSEIDE, HCC, GARDENSILK, GDL, DWARKESH, WSTCSTPAPR, DHAMPURSUG, JINDALSAW, RUCHISOYA, MANINDS), NEVER_FILED 7 (INDIABULLS,
+    RNRL, JSWISPAT, STER, HINVDIR, IPCL, NIRMA) -> (A+B); INSIDE 5 (KOTAKBANK, INDSWFTLAB, GTOFFSHORE, APTECHT, BALLARPUR/BILT) ->
+    unchanged. `reply7/b18_drrebase.py` (batch-17 method, Jun-2006 onward): 631 cells (577 new + 54 superseding), 156 move < 0.01 pp.
+    Quantmac: 237 of the 606 "Our rows" cells now equal (HEXT, STER, ORCHPHARMA, INDIABULLS ...). NOTE Quantmac is NOT uniformly
+    (A+B): its current ARVIND / RNRL / HCC values equal the full count (ARVIND Jan-2009 2.62 = 2.6236 full vs 2.6326 (A+B)) while it
+    moved HEXT / STER / INDIABULLS to (A+B) in v6 - measured on its current values (v6 list over the original grid), batches 17 + 18
+    take 1,021 cells differ -> agree and 5 agree -> differ at its 0.05 tolerance. Rebuilt feed: only these symbols move; guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
