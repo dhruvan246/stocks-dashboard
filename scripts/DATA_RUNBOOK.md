@@ -21522,6 +21522,22 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     25.5126. Part 16's '= Quantmac 19.0825' had stopped short: both sides missed the four lines. KESORAMIND Dec-15 / Mar-16 4.12 / 2.74 ->
     5.75 / 5.04 (Hypnos Fund, 176/0/0, counted from Jun-2016; full-count bases of the §164p re-base). VAKRANGEE Dec-15 / Mar-16
     6.48 / 6.81 -> 8.14 / 8.36 (Wellington Trust Company NA Multiple Common Trust Funds Trust, 29/0/0; FPI from Jun-2016).
+    **Batch 30 part 25 (label "§164r batch 30 part 25 (batch-7 label at block level)"; 14 cells, fii only).** Batch 7 says an institutions
+    Any-Other block filed with no category row follows the label the company gives the SAME block in a neighbouring filing. But
+    `_shp_d1_rowfix.d1_follow_label` compares only the unnamed rest's size with labelled blocks. So a block that also carries named
+    holders never matched, and some fully unnamed blocks kept an older SW-2 / §164 reading.
+    `~/stocks-cache/shp/audit_all/d1block/sweep.py` (block total from the filing's own breakdown, neighbour label within 2 % and 6
+    quarters) + `check.py` (does the stored fii include the rest?) found 81 blocks, 14 still counted. BANDHANBNK Mar / Jun / Sep-2019:
+    the block is 87,072,908 sh, 3 holders - Caladium 54,648,030 + IFC 21,076,171 + one holder 11,348,707. It is labelled 'FOREIGN BODIES
+    CORPORATE(S)' in Sep/Dec-2018 and 'Overseas Corporate Bodies' (shrunk) in Dec-2019. Caladium (FDI line) and IFC (institution-listed)
+    stay fii -> 12.86 / 13.57 / 14.20 -> 11.91 (= Quantmac) / 12.62 / 13.25. BIOCON Sep-17, Mar / Jun / Sep-18, Mar-19 (-0.35 / -0.36, the
+    block the company labels 'Foreign Nationals'; batch 7 already read Jun-16..Mar-17 this way); CAPLIPOINT Sep-16 / Mar-17 (-0.30,
+    'FOREIGN BODY CORPORATE(S)'); PIIND Jun-16 (-0.80, 'Foreign corporate bodies'); WABAG Jun / Sep-16, Mar-18 (-0.38 / -0.38 / -0.32 -
+    the rest beside Sattva India Opportunities, public by the company's 2022 form - 'FOREIGN BODIES CORPORATE' / 'Overseas Corporate
+    Bodies'). Not changed: DHANI Jun-21..Jun-22 (one holder, 4,200,000 sh) - Dec-20 / Mar-21 name it 'FIRST ROYALTY VENTURES LLC' (no
+    document), and Sep-22 files the same single 4,200,000-sh holder under Institutions (Domestic); this is with the user. VESUVIUS Sep-18 /
+    Sep-19 - the neighbours name 'Standard Life Investments GS Mauritius Holdings Ltd' / 'Private Equity Fund', no company-type label.
+    `d1_follow_label` itself is unchanged: compare the whole block, not the rest, before any re-run.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
