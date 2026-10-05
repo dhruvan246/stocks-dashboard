@@ -21394,6 +21394,23 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     registry's 'Verventa Holdings Limited'; 360ONE's 'Government Pension Fund Global' = the registry's 'Government Pesnion Fund Global'
     (the company's own misspelling, also in its ORIGINAL filings); SAMHI, UGROCAP, SURAKSHA, SSWL, SIL, SIRCA and TRU were never
     point-in-time Nifty 500 members (outside the audit scope). No other cell moves.
+    **Batch 30 part 15 (label "§164r batch 30 part 15 (seam B1i blocks out of dii)"): the seam-wide sweep
+    (`~/stocks-cache/shp/audit_all/r4sweep/`: every scope symbol's Dec-2015 / Mar-2016 Table III, 1,219 cells) found 8 cells whose
+    institutions 'Any Other' block (B1i) sat in dii - the BSE-page reader's default.** Holder decisions by our code's own tests
+    (`inst_listed` for holders the company lists inside its Institutions block, the company's own FII/FPI/FDI tag, its 2022-form
+    placement, its own FPI mark in its next filings, D1 for the unnamed rest): MFSL Dec-15 fii 0 -> 37.1789 / dii 50.39 -> 13.40 (an
+    unlabelled 37.16 block; its Mar-16 filing tags the holders '(FDI)'); APLAPOLLO Dec-15 3.1529 -> 7.2221 (Emblem FII + Kotak Mahindra
+    International + rest; KITARA PIIN 1001 12.80 public - its 2022 form lists it under Foreign Companies); VIYASH Mar-16 5.34 -> 16.49
+    (Morgan Stanley Asia, Goldman Sachs India Fund, DVI Fund Mauritius, DB International - all institution-listed); IDFC Mar-16 45.79 ->
+    46.1137 (its 'FDI' sub-row; = Quantmac 46.1133; 'Bodies Corporate' 86,794,103 public); RUCHISOYA Mar-16 0 -> 5.1052 (unlabelled block,
+    labelled 'Foreign Institutional Investors' in Sep-16; Quantmac PATANJALI 5.11); SUDARSCHEM Dec-15 0 -> 3.0115 (Norges Bank GPFG: the
+    company files 'GOVERNMENT PENSION FUND GLOBAL' under FPI from Mar-16); IFBIND Dec-15 0 -> 1.6986 (its own 'Foreign Institutional
+    Investors' row); NH Mar-16 fii unchanged 9.4184 (CDC Group, JPMorgan Mauritius IV: no institution listing -> public, as in NH's own
+    Jun-16..Dec-19 cells), dii 20.85 -> 9.92. dii everywhere = MF + VCF + AIF + FI/Banks + Ins + PF + NBFC (R3) + register-proven rows.
+    MFSL Mar-2016 was a quarter we never held (announced 2016-04-15) -> `shp_fill_seam_aspx.json.gz`. Five of these quarters had only the
+    qe+21 convention date (served un-dated) -> BSE announcement dates in `shp_sub_dates.json` (MFSL 01-22, APLAPOLLO 01-25, SUDARSCHEM
+    01-23, NH 04-12, RUCHISOYA 04-16). The sweep's DII-only list (rule-4 / NBFC rows, ABGSHIP 'Citi Bank', VIVIDHA 'Banke Behari
+    Shoppers', JINDALSAW FI/Banks row, NLCINDIA third-party cell) went to the DII session for review before any write.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
