@@ -225379,7 +225379,7 @@
    "2016-03-31": {
     "cell": [
      38.8168,
-     19.0825,
+     25.5126,
      9.8926,
      4.0219,
      1.2705,
@@ -225387,17 +225387,25 @@
     ],
     "was": [
      38.8168,
-     18.9048,
+     19.0825,
      9.8926,
      4.0219,
      1.2705,
      "2016-04-16"
     ],
     "src": "bsetable3:500477:89",
-    "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 had been left out; 'FOREIGN INSTITUTIONAL INVESTORS-DR' 88,500 is depository-receipt stock - out of FII (user rule) - and had been counted. = Quantmac 19.0825. Base = Table I's full count (the \u00a7164p re-base). FII = FPI 180,710,605 + FVCI 0 + the company's FII/FPI-labelled rows ('FOREIGN INSTITUTIONAL INVESTORS' 357,217,540; 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701) on 2,845,876,634 sh. fii 18.9048 -> 19.0825.",
+    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): four named non-institution lines outside every category row (block 674,576,974 = categories 491,584,065 + 182,992,909): AMANSA HOLDINGS PRIVATE LIMITED 33,000,000 (639/0/18 institution listings), GOVERNMENT PENSION FUND GLOBAL 65,035,392 (the company's own 2022-form FPI row), KUWAIT INVESTMENT AUTHORITY (Under various sub accounts) 34,033,725 and ABU DHABI INVESTMENT AUTHORITY (Under various sub-accounts) 50,923,792 (the company files both under Institutions - FPI from Mar/Jun-2017; Dec-2015 and Jun-2016 hold all four inside its 'Foreign Institutional Investors' row). FII = FPI 180,710,605 + 'FOREIGN INSTITUTIONAL INVESTORS' 357,217,540 + 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 + the four on the full count 2,845,876,634 (part 16 had stopped at 19.0825). fii 19.0825 -> 25.5126.",
     "exact": true,
     "superseded": {
      "cell": [
+      38.8168,
+      19.0825,
+      9.8926,
+      4.0219,
+      1.2705,
+      "2016-04-16"
+     ],
+     "was": [
       38.8168,
       18.9048,
       9.8926,
@@ -225405,18 +225413,19 @@
       1.2705,
       "2016-04-16"
      ],
-     "was": [
-      44.3,
-      21.5752,
-      11.29,
-      4.59,
-      1.45,
-      "2016-04-16"
-     ],
-     "src": "bseaspx:500477:89+nseresults:1008206",
-     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+     "src": "bsetable3:500477:89",
+     "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 had been left out; 'FOREIGN INSTITUTIONAL INVESTORS-DR' 88,500 is depository-receipt stock - out of FII (user rule) - and had been counted. = Quantmac 19.0825. Base = Table I's full count (the \u00a7164p re-base). FII = FPI 180,710,605 + FVCI 0 + the company's FII/FPI-labelled rows ('FOREIGN INSTITUTIONAL INVESTORS' 357,217,540; 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701) on 2,845,876,634 sh. fii 18.9048 -> 19.0825.",
+     "exact": true,
      "superseded": {
       "cell": [
+       38.8168,
+       18.9048,
+       9.8926,
+       4.0219,
+       1.2705,
+       "2016-04-16"
+      ],
+      "was": [
        44.3,
        21.5752,
        11.29,
@@ -225424,16 +225433,28 @@
        1.45,
        "2016-04-16"
       ],
-      "was": [
-       44.3,
-       7.25,
-       11.29,
-       4.59,
-       1.45,
-       "2016-04-16"
-      ],
-      "src": "bseaspx:500477_89 shpperent",
-      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+      "src": "bseaspx:500477:89+nseresults:1008206",
+      "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+      "superseded": {
+       "cell": [
+        44.3,
+        21.5752,
+        11.29,
+        4.59,
+        1.45,
+        "2016-04-16"
+       ],
+       "was": [
+        44.3,
+        7.25,
+        11.29,
+        4.59,
+        1.45,
+        "2016-04-16"
+       ],
+       "src": "bseaspx:500477_89 shpperent",
+       "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+      }
      }
     }
    },
@@ -259283,25 +259304,54 @@
    "2015-12-31": {
     "cell": [
      46.0063,
-     4.1177,
+     5.7488,
      5.456,
      0.2808,
      3.8463,
      "2016-02-19"
     ],
     "was": [
-     49.16,
-     4.4,
-     5.83,
-     0.3,
-     4.11,
+     46.0063,
+     4.1177,
+     5.456,
+     0.2808,
+     3.8463,
      "2016-02-19"
     ],
-    "src": "bseaspx:502937:88+nseresults:1004272",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 102,726,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2015-12-31 #1004272 paid-up 10977.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 109,768,650 (\u00b1 10,000 shares, the filings' rounding): x 0.935848."
+    "src": "bsetable3:502937:88",
+    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): HYPNOS FUND LTD 1,800,000 sh on a non-institution line (176/0/0 institution listings; counted from Jun-2016, FPI row from Mar-2017); FPI 4,510,435 on the documented full count 109,768,650 (the \u00a7164p base). fii 4.1177 -> 5.7488.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      46.0063,
+      4.1177,
+      5.456,
+      0.2808,
+      3.8463,
+      "2016-02-19"
+     ],
+     "was": [
+      49.16,
+      4.4,
+      5.83,
+      0.3,
+      4.11,
+      "2016-02-19"
+     ],
+     "src": "bseaspx:502937:88+nseresults:1004272",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 102,726,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2015-12-31 #1004272 paid-up 10977.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 109,768,650 (\u00b1 10,000 shares, the filings' rounding): x 0.935848."
+    }
    },
    "2016-03-31": {
     "cell": [
+     49.4602,
+     5.0357,
+     4.9629,
+     0.1316,
+     3.6094,
+     "2016-04-21"
+    ],
+    "was": [
      49.4602,
      2.7353,
      4.9629,
@@ -259309,16 +259359,29 @@
      3.6094,
      "2016-04-21"
     ],
-    "was": [
-     52.62,
-     2.91,
-     5.28,
-     0.14,
-     3.84,
-     "2016-04-21"
-    ],
-    "src": "bseaspx:502937:89+nseresults:1008248",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 110,226,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2016-03-31 #1008248 paid-up 11727.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 117,268,650 (\u00b1 10,000 shares, the filings' rounding): x 0.939951."
+    "src": "bsetable3:502937:89",
+    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): HYPNOS FUND LIMITED 2,700,000 sh on its own non-institution line (176/0/0; counted from Jun-2016); FPI 3,205,276 on the documented full count 117,268,650 (the \u00a7164p base). fii 2.7353 -> 5.0357.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      49.4602,
+      2.7353,
+      4.9629,
+      0.1316,
+      3.6094,
+      "2016-04-21"
+     ],
+     "was": [
+      52.62,
+      2.91,
+      5.28,
+      0.14,
+      3.84,
+      "2016-04-21"
+     ],
+     "src": "bseaspx:502937:89+nseresults:1008248",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 110,226,775 shares \u2014 it leaves out 7,041,875 shares that the Sep-2015 page (109,768,650, block C 7,041,875) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1004126 paid-up 10977.0, 2016-03-31 #1008248 paid-up 11727.0, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 117,268,650 (\u00b1 10,000 shares, the filings' rounding): x 0.939951."
+    }
    },
    "2021-10-21": {
     "cell": [
@@ -275306,6 +275369,48 @@
     ],
     "src": "bsexbrl:511431_2812201714566_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 26.45 -> 29.45, dii 9.95 -> 7.19. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 3.01; R3-nbfc NBFCsRegisteredWithRbi 0.25; D1-unnamed-remainder-in-dii 3.01"
+   },
+   "2015-12-31": {
+    "cell": [
+     41.61,
+     8.1383,
+     7.07,
+     0.01,
+     0.0,
+     "2016-01-28"
+    ],
+    "was": [
+     41.61,
+     6.48,
+     7.07,
+     0.01,
+     0.0,
+     "2016-01-28"
+    ],
+    "src": "bsetable3:511431:88",
+    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): 'Wellington Trust Company, National Association Multiple Common Trust Funds Trust' 8,776,247 sh on a non-institution line (29/0/0 institution listings; the company files it under Institutions - FPI from Jun-2016); institutions Any-Other 34,288,046 (Janus Overseas Fund + 63 holders, D1) on 529,157,295. fii 6.48 -> 8.1383.",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     41.61,
+     8.3575,
+     7.01,
+     0.0,
+     6.57,
+     "2016-04-20"
+    ],
+    "was": [
+     41.61,
+     6.81,
+     7.01,
+     0.0,
+     6.57,
+     "2016-04-20"
+    ],
+    "src": "bsetable3:511431:89",
+    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): 'WELLINGTON TRUST COMPANY, NATIONAL ASSOCIATION MULTIPLE COMMON TRUST FUNDS TRUST' 8,238,505 sh on its own non-institution line (29/0/0; FPI from Jun-2016); institutions Any-Other 35,989,316 (D1) on 529,196,170. fii 6.81 -> 8.3575.",
+    "exact": true
    }
   },
   "WELCORP": {

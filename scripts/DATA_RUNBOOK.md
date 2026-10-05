@@ -21513,6 +21513,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     review: CASTEXTECH Dec-15 (foreign banks holding invoked-pledge shares inside 'Other Foreign Body Corp') and RAMCOCEM Mar-16 (BSE's
     Table III files its FPIs under 'Alternate Investment Funds' and foreign funds under 'Mutual Funds'). t3_compute itself is
     unchanged: fold the documents / own-tag / holder-count-1 tests into its B3e path before any re-run (weakness 7 of §164t part 2's list).
+    **Batch 30 part 24 (label "§164r batch 30 part 24 (Dec-2015/Mar-2016 reader gap, held cells)"; 5 cells).** The same check on the 130
+    cells t3_compute had HELD. ASHOKLEY Mar-16: its non-institution Any-Other block (674,576,974 sh) = the category rows 491,584,065 + four
+    SEPARATE named lines 182,992,909: Amansa (639/0/18 institution listings), Government Pension Fund Global (the company's own 2022-form
+    FPI row), Kuwait Investment Authority and Abu Dhabi Investment Authority ('under various sub-accounts'; the company files both under
+    Institutions - FPI from Mar/Jun-2017). Dec-15 and Jun-16 hold all four inside the company's own 'Foreign Institutional Investors'
+    row (block = category sum exactly). FII-type stock Dec-15 726,162,674 vs Mar-16 726,056,755 once the four are added -> 19.0825 ->
+    25.5126. Part 16's '= Quantmac 19.0825' had stopped short: both sides missed the four lines. KESORAMIND Dec-15 / Mar-16 4.12 / 2.74 ->
+    5.75 / 5.04 (Hypnos Fund, 176/0/0, counted from Jun-2016; full-count bases of the §164p re-base). VAKRANGEE Dec-15 / Mar-16
+    6.48 / 6.81 -> 8.14 / 8.36 (Wellington Trust Company NA Multiple Common Trust Funds Trust, 29/0/0; FPI from Jun-2016).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
