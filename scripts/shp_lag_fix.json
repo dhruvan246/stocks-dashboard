@@ -373048,12 +373048,24 @@
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
 },
 "WOCKPHARMA|20180331": {
+"days_earlier": 10,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the filing ('Shareholding for the Period Ended March 31, 2018 Wockhardt Ltd has submitted to BSE the Shareholding Pattern', 2018-04-11T18:24:11); BSE's SHP list shows only the 2018-08-06 revision (XBRL copy stamped 16-04-2018), so the within-symbol-outlier pass had estimated qe+21; CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 11 2026-10-05 (Quantmac v6 Dates cell)",
+"src": "new",
+"sub": 20180411,
+"ts": "2018-04-11T18:24:11",
+"was": 20180421,
+"served_before": 20180423,
+"rule": "midnight-2026-09-23",
+"attachment": "",
+"superseded": {
 "days_later": 2,
 "gated_1530": true,
 "src": "new",
 "sub": 20180423,
 "was": 20180421,
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
+}
 },
 "WOCKPHARMA|20210630": {
 "days_later": 2,

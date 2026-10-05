@@ -21356,6 +21356,13 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     cached old page (`~/stocks-cache/shp/audit_all/fbscan/`): of the material (>= 0.05 pp) foreign-bank / foreign-FI rows under public
     institutions, 3IINFOLTD's 5 were the only ones in dii; LUPIN 2009-11 'Foreign Bodies/Bank' (mixed company-type + bank label) stays
     public in both (= Quantmac) - not changed.
+    **Batch 30 part 11 (2026-10-05): WOCKPHARMA Mar-2018 visibility date (Quantmac v6 'Dates' cells Apr/May/Jun-2018: QM 4.84 =
+    Dec-2017, ours 5.4538 = Mar-2018).** BSE's announcement stream has 'Shareholding for the Period Ended March 31, 2018 - Wockhardt Ltd
+    has submitted to BSE the Shareholding Pattern' at 2018-04-11T18:24:11; BSE's SHP list shows the quarter only as 'Revised'
+    (2018-08-06, XBRL copy stamped 16-04-2018), so Quantmac never serves it (THEIR ERROR: the quarter was public from 11-Apr) and our
+    within-symbol-outlier pass had estimated qe+21 = 2018-04-21 (served 04-23 after the weekend shift). `shp_lag_fix.json` entry ->
+    days_earlier 10, sub 20180411 (old gate-shift entry kept under `superseded`), the same route as its Jun-2018 quarter (07-18 by
+    the announcement, §164r 2026-09-28). Month-end values unchanged; feed date 20180423 -> 20180411.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
