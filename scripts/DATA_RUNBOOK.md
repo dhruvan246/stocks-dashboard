@@ -21363,6 +21363,23 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     within-symbol-outlier pass had estimated qe+21 = 2018-04-21 (served 04-23 after the weekend shift). `shp_lag_fix.json` entry ->
     days_earlier 10, sub 20180411 (old gate-shift entry kept under `superseded`), the same route as its Jun-2018 quarter (07-18 by
     the announcement, §164r 2026-09-28). Month-end values unchanged; feed date 20180423 -> 20180411.
+    **Batch 30 part 12 (label "§164r batch 30 part 12 (seam REVIEW cells)"): the DII session's REVIEW seam cells
+    (`~/stocks-cache/shp/dii_qm/r3/verdict_seam.json`), each read from BSE Table III share counts + BSE's announcement stream
+    (`~/stocks-cache/shp/v4work/mk_b30_seam2.py`, `audit_all/seamdates/ann.py`).** OUR ERRORS fixed: COX&KINGS Dec-2015 was not the
+    filing's own cell (prom 48.92 vs 48.7335) -> fii 33.46 -> 33.3354 (= Quantmac), dii 4.06 -> 7.4426 (MF + FI/Banks + NBFC + ICICI
+    Pru Life 5,419,343 named on the non-institutions block, rule 4); COX&KINGS Mar-2016 was a quarter we never held (announced
+    2016-04-07) -> added to `shp_fill_seam_aspx.json.gz` (fii 32.5438 = Quantmac); POWERGRID Dec-15 / Mar-16 had the institutions
+    'Foreign Corporate Bodies' row (0.2126) in dii -> out (company-type: not FII either), + NBFC + ICICI Pru Life named (rule 4): dii
+    9.14 / 8.51 -> 10.6555 / 10.0172; MAHLIFE Mar-16 left out ICICI Pru Life 1,800,896 (rule 4; its Jun-16 XBRL cell counts it) -> dii
+    1.2213 -> 5.6302 (= Quantmac 5.6137 within base), date 04-28 (revision) -> 04-18 (announcement); THERMAX Mar-16 exact on the §164p
+    full count 119,156,300 + NBFC (9.262 -> 9.3016; Quantmac 9.8 uses BSE's Mar-16 total that omits the trust's 6,541,440 shares);
+    RKFORGE Jun-2016 date 2016-08-03 (revision) -> 2016-07-20 (announcement, `shp_lag_fix.json`); APOLLOTYRE / UCOBANK Dec-15 at share
+    counts. Ours confirmed (no change): AGI Mar-16 23.2118 = MF + AIF + FI + Ins + NBFC 353,226 exactly (Quantmac subtracts the named
+    Mirae MF holder and adds Clearing Members); CARERATING Mar-16 45.5148 = MF + FI/Banks + NBFC + HDFC Life (rule 4). Dates where
+    Quantmac serves the wrong quarter (BSE announcement = our date): APOLLOTYRE Dec-15 (01-29), RATNAMANI Dec-15 (01-30), MBLINFRA
+    Dec-15 (02-10), EVEREADY Mar-16 (04-06), GODFRYPHLP Mar-16 (04-15). UNKNOWN: POWERGRID Mar-16 (BSE 06-22) and UCOBANK Mar-16 (BSE
+    05-17) - Quantmac serves them a month earlier, no earlier BSE document found; BLUESTARCO Mar-16 and MAHLIFE Sep-15 stay un-dated
+    (no BSE notice). Guards green.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

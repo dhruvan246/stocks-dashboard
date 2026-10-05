@@ -56006,6 +56006,14 @@
    },
    "2016-03-31": {
     "cell": [
+     50.8586,
+     25.8947,
+     5.6302,
+     1.1835,
+     4.3943,
+     "2016-04-18"
+    ],
+    "was": [
      50.8555,
      25.8983,
      1.2213,
@@ -56013,16 +56021,29 @@
      0.0,
      "2016-04-29"
     ],
-    "was": [
-     50.8,
-     25.87,
-     1.22,
-     1.18,
-     0.0,
-     "2016-04-29"
-    ],
-    "src": "bseaspx:532313_89",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001092 = total (A+B+C) 41033150 shares / (A+B) 40988380 shares on the same quarter's BSE page; fii 25.87 -> 25.90, dii 1.22 -> 1.22."
+    "src": "bsetable3:532313:89",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): ICICI Prudential Life Insurance 1,800,896 sh named on the non-institutions 'Any Other' block (IRDAI 105, rule 4) had been left out of dii (its Jun-2016 XBRL cell already counts it: 5.7715); base A+B (\u00a7164a: the company's first XBRL puts the 44,770 DR shares outside the 100); visibility date = BSE announcement 2016-04-18T12:54:28 (was the 2016-04-28 revision time). DII also counts the NBFC row (R3, block B3b) where the filing has one. Parts: T 40,988,380; A 20,846,126; mf 485,086; fpi 6,372,110; fi 16,956; ins 250; nbfc 4,540; r4 [('ICICI Prudential Life Insurance Company Ltd.', 1800896)]; fii_parts [(\"institutions 'Any Other' (American Funds Insurance Series Global Small Cap, Amansa Holdings, 'FOREIGN INSTITUTIONAL INVESTORS')\", 4241699)]. fii 25.8983 -> 25.8947, dii 1.2213 -> 5.6302, mf 1.1813 -> 1.1835, ins 0.0 -> 4.3943.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.8555,
+      25.8983,
+      1.2213,
+      1.1813,
+      0.0,
+      "2016-04-29"
+     ],
+     "was": [
+      50.8,
+      25.87,
+      1.22,
+      1.18,
+      0.0,
+      "2016-04-29"
+     ],
+     "src": "bseaspx:532313_89",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001092 = total (A+B+C) 41033150 shares / (A+B) 40988380 shares on the same quarter's BSE page; fii 25.87 -> 25.90, dii 1.22 -> 1.22."
+    }
    },
    "2016-09-30": {
     "cell": [
@@ -179365,6 +179386,27 @@
      "src": "bseaspx:500877_87",
      "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 29.59 -> 30.04, dii 10.62 -> 10.62. generic-row-B Others 0.45 fii: prev 'Others' 1 holders 0.52. Evidence: _shp_164_audit.json"
     }
+   },
+   "2015-12-31": {
+    "cell": [
+     44.1465,
+     28.8711,
+     10.4944,
+     9.8085,
+     0.444,
+     "2016-02-01"
+    ],
+    "was": [
+     44.15,
+     28.87,
+     10.47,
+     9.81,
+     0.44,
+     "2016-02-01"
+    ],
+    "src": "bsetable3:500877:88",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): share-count precision (the stored cell summed the 2-dp page %); 'Central Government/ State Government(s)' 10,000,000 sh is block B2, not an institution. DII also counts the NBFC row (R3, block B3b) where the filing has one. Parts: T 509,024,770; A 224,716,742; mf 49,927,615; fpi 146,960,988; fi 1,098,250; ins 2,260,005; nbfc 133,170. fii 28.87 -> 28.8711, dii 10.47 -> 10.4944, mf 9.81 -> 9.8085, ins 0.44 -> 0.444.",
+    "exact": true
    }
   },
   "NAVNETEDUL": {
@@ -229086,6 +229128,14 @@
    },
    "2016-03-31": {
     "cell": [
+     61.9819,
+     15.8296,
+     9.3016,
+     7.5804,
+     1.5056,
+     "2016-06-23"
+    ],
+    "was": [
      61.9892,
      15.8305,
      9.262,
@@ -229093,16 +229143,29 @@
      1.5027,
      "2016-06-23"
     ],
-    "was": [
-     65.59,
-     16.75,
-     9.8,
-     8.02,
-     1.59,
-     "2016-06-23"
-    ],
-    "src": "bseaspx:500411:89+nseresults:1008475",
-    "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 112,614,860 shares \u2014 it leaves out 6,541,440 shares that the Sep-2015 page (119,156,300, block C 0) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002332 paid-up 2383.13, 2016-03-31 #1008475 paid-up 2383.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 119,156,300 (\u00b1 25,250 shares, the filings' rounding): x 0.945102."
+    "src": "bsetable3:500411:89",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): on the documented full count 119,156,300 = A 73,855,305 + B 38,759,555 + the employee trust's 6,541,440 (C2 in the company's Dec-2015 and Jun-2016 filings, same three counts; BSE's Mar-2016 Table I prints C2 = 0 - \u00a7164p) at share counts; the NBFC row (R3) had been left out of dii. Parts: T 119,156,300; A 73,855,305; mf 9,032,529; fpi 18,861,954; fi 210,587; ins 1,793,990; nbfc 46,284. fii 15.8305 -> 15.8296, dii 9.262 -> 9.3016, mf 7.5797 -> 7.5804, ins 1.5027 -> 1.5056.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      61.9892,
+      15.8305,
+      9.262,
+      7.5797,
+      1.5027,
+      "2016-06-23"
+     ],
+     "was": [
+      65.59,
+      16.75,
+      9.8,
+      8.02,
+      1.59,
+      "2016-06-23"
+     ],
+     "src": "bseaspx:500411:89+nseresults:1008475",
+     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 112,614,860 shares \u2014 it leaves out 6,541,440 shares that the Sep-2015 page (119,156,300, block C 0) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002332 paid-up 2383.13, 2016-03-31 #1008475 paid-up 2383.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 119,156,300 (\u00b1 25,250 shares, the filings' rounding): x 0.945102."
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -306987,6 +307050,48 @@
     ],
     "src": "bsexbrl:532898_1972022164830_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 15.18 -> 15.39, fii 30.25 -> 30.25. R1-domestic-label Other Qualified Institutional Buyer 6.59 public=0.00 fii=0.00 LICI ULIP-GROWTH FUND 4.99 domestic->-(curated) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.2 ; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-12-31": {
+    "cell": [
+     57.8951,
+     25.679,
+     10.6555,
+     5.0571,
+     4.6709,
+     "2016-01-29"
+    ],
+    "was": [
+     57.9,
+     25.68,
+     9.14,
+     5.06,
+     2.97,
+     "2016-01-29"
+    ],
+    "src": "bsetable3:532898:88",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): the institutions 'Any Other' row 'Foreign Corporate Bodies' 11,123,476 sh (0.2126) had been counted in dii - a foreign company-type label: not DII, not FII (company-type labels never FII) -> public; the NBFC row (R3) had been left out; ICICI Prudential Life named on the non-institutions block (IRDAI 105, rule 4) -> DII and insurance. FII = FPI. Parts: T 5,231,589,648; A 3,028,835,198; mf 264,567,765; fpi 1,343,421,234; fi 47,014,421; ins 155,381,540; nbfc 1,509,173; r4 [('ICICI Prudential Life Insurance Company Ltd', 88980572)]. fii 25.68 -> 25.679, dii 9.14 -> 10.6555, mf 5.06 -> 5.0571, ins 2.97 -> 4.6709.",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     57.8951,
+     26.28,
+     10.0172,
+     4.7645,
+     4.4364,
+     "2016-06-23"
+    ],
+    "was": [
+     57.9,
+     26.28,
+     8.51,
+     4.76,
+     2.75,
+     "2016-06-23"
+    ],
+    "src": "bsetable3:532898:89",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): the institutions 'Any Other' row 'Foreign Corporate Bodies' 11,123,476 sh (0.2126) had been counted in dii - a foreign company-type label: not DII, not FII (company-type labels never FII) -> public; the NBFC row (R3) had been left out; ICICI Prudential Life named on the non-institutions block (IRDAI 105, rule 4) -> DII and insurance. FII = FPI. Parts: T 5,231,589,648; A 3,028,835,198; mf 249,258,323; fpi 1,374,862,451; fi 41,222,176; ins 144,088,169; nbfc 1,484,274; r4 [('ICICI Prudential Life Insurance Company Ltd', 88005551)]. fii 26.28 -> 26.28, dii 8.51 -> 10.0172, mf 4.76 -> 4.7645, ins 2.75 -> 4.4364.",
+    "exact": true
    }
   },
   "POWERINDIA": {
@@ -358359,6 +358464,27 @@
     ],
     "src": "bsexbrl:533144_19102021113414_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 0.05 -> 0.05, dii 0.00 -> 2.04. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others Qualified Institutional Placement 2.04 "
+   },
+   "2015-12-31": {
+    "cell": [
+     48.7335,
+     33.3354,
+     7.4426,
+     1.5225,
+     3.2007,
+     "2016-01-27"
+    ],
+    "was": [
+     48.92,
+     33.46,
+     4.06,
+     1.53,
+     0.0,
+     "2016-01-27"
+    ],
+    "src": "bsetable3:533144:88",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): the stored cell did not come from the filing (prom 48.92 vs the filing's 48.7335). FII = FPI only (= Quantmac 33.3354); DII = MF + FI/Banks (Axis Bank, LIC named inside) + ICICI Prudential Life 5,419,343 named on the non-institutions 'Any Other' block (IRDAI 105, rule 4 -> also insurance). DII also counts the NBFC row (R3, block B3b) where the filing has one. Parts: T 169,314,890; A 82,512,993; mf 2,577,770; fpi 56,441,755; fi 4,262,868; nbfc 341,385; r4 [('ICICI Prudential Life Insurance Company Ltd', 5419343)]. fii 33.46 -> 33.3354, dii 4.06 -> 7.4426, mf 1.53 -> 1.5225, ins 0.0 -> 3.2007.",
+    "exact": true
    }
   },
   "GAEL": {
@@ -376380,6 +376506,29 @@
     ],
     "src": "bseltd_pdf_vision:Shareholding_Pattern_31Dec2019.pdf",
     "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - its own SHP, a scanned PDF read as an image with the user's OK 2026-10-05: bseindia.com/downloads1/Shareholding_Pattern_31Dec2019.pdf; every category row re-added to the printed Sub-Total (B)(1) exactly): 2019-12-31 - Table III institutions: FPI 6,208,982; Any Other (i-i) 'Foreign Direct Investment' 3 holders 3,445,182 (Deutsche Boerse AG 1,986,933; Acacia Banyan Partners 785,417; Caldwell India Holdings Inc 672,832); (i-ii) 'Foreign Institutional Investor' 164,132 (1 holder) - FII under Option A / the row's own label; total 45,024,297 (Public + the company's 'Trading Members and Associates' category, Table I) -> fii 21.8067. Quantmac's independent read of the same filing's XBRL = 21.8067 (equal). dii = MF 919,194 + AIF 220,895 + FI/Banks 65,080 + Insurance 418,730 = 3.6067; mf 2.0416, ins 0.9300. Stored [13.79, 11.15, 2.04, 0.93] was a Trendlyne-row fill that left the FDI / FII lines out of fii (and put them in dii).",
+    "exact": true
+   }
+  },
+  "UCOBANK": {
+   "2015-12-31": {
+    "cell": [
+     72.8281,
+     3.0118,
+     14.8244,
+     0.1342,
+     14.5397,
+     "2016-01-20"
+    ],
+    "was": [
+     72.83,
+     3.02,
+     14.81,
+     0.13,
+     14.54,
+     "2016-01-20"
+    ],
+    "src": "bsetable3:532505:88",
+    "why": "\u00a7164r batch 30 part 12 (2026-10-05, seam re-read of the DII session's REVIEW cells, BSE Table III share counts): share-count precision (the stored cell summed the 2-dp page %). DII also counts the NBFC row (R3, block B3b) where the filing has one. Parts: T 1,075,591,712; A 783,333,288; mf 1,443,489; fpi 32,394,353; fi 1,542,135; ins 156,388,166; nbfc 75,698. fii 3.02 -> 3.0118, dii 14.81 -> 14.8244, mf 0.13 -> 0.1342, ins 14.54 -> 14.5397.",
     "exact": true
    }
   }
