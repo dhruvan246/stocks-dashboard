@@ -2108,13 +2108,15 @@
   },
   {
    "bhavNew": {
-    "close": 111.85,
+    "close": 18.0,
+    "date": 20201103,
     "eraName": false,
     "found": true,
     "isin": "",
-    "prevclose": 106.55,
-    "series": "BE",
-    "symbol": "ORCHPHARMA"
+    "prevclose": 5.45,
+    "series": "BZ",
+    "symbol": "ORCHPHARMA",
+    "volume": 734
    },
    "bhavOld": {
     "close": 5.45,
@@ -2135,7 +2137,7 @@
    },
    "eraCandidates": [],
    "eraResolvedBy": null,
-   "gapDays": 524,
+   "gapDays": 468,
    "inRenameMap": null,
    "issuer": "INE191A",
    "kind": "sequential-far",
@@ -2145,11 +2147,12 @@
    ],
    "new": "ORCHPHARMA",
    "newAlive": true,
-   "newFirst": 20201229,
+   "newFirst": 20201103,
    "newIsin": "INE191A01027",
    "newIsinSrc": "bin",
    "newName": "Orchid Pharma Ltd",
    "notes": {
+    "firstSession220c": "\u00a7220c (2026-10-06): NSE's FIRST ORCHPHARMA session is 03-Nov-2020 (series BZ, close 18.00, PREV_CLOSE 5.45; sec_bhavdata_full_03112020.csv) \u2014 this row used a bin first bar of 29-Dec-2020 (the live store now starts 03-Nov-2020). PREV_CLOSE 5.45 = ORCHIDPHAR's last close carried UNADJUSTED across the ~218:1 IBC reduction (\u00a7220b): not a seam factor. The stored 03-Nov..28-Dec-2020 bars carry NSE's closes but not NSE's volumes (78 vs 734 on 03-Nov) or delivery \u2014 source not traced (\u00a7220c open item).",
     "symchg": [
      "ORCHIDCHEM->ORCHIDPHAR 21-DEC-2015"
     ],
@@ -4201,13 +4204,15 @@
   },
   {
    "bhavNew": {
-    "close": 7.6,
+    "close": 3.6,
+    "date": 20201007,
     "eraName": false,
     "found": true,
     "isin": "",
-    "prevclose": 7.25,
-    "series": "EQ",
-    "symbol": "ROML"
+    "prevclose": 1.7,
+    "series": "BZ",
+    "symbol": "ROML",
+    "volume": 303
    },
    "bhavOld": {
     "close": 1.7,
@@ -4244,7 +4249,7 @@
    },
    "eraCandidates": [],
    "eraResolvedBy": null,
-   "gapDays": 860,
+   "gapDays": 833,
    "inRenameMap": null,
    "issuer": "INE294G",
    "kind": "sequential-far",
@@ -4254,12 +4259,13 @@
    ],
    "new": "ROML",
    "newAlive": true,
-   "newFirst": 20201103,
+   "newFirst": 20201007,
    "newIsin": "INE294G01026",
    "newIsinSrc": "bin",
    "newName": "Raj Oil Mills Ltd",
    "notes": {
     "face": "10 -> 10",
+    "firstSession220c": "\u00a7220c (2026-10-06): NSE's FIRST ROML session is 07-Oct-2020 (series BZ, close 3.60, PREV_CLOSE 1.70; sec_bhavdata_full_07102020.csv) \u2014 this row used the bin's first bar (03-Nov-2020 EQ 7.60/7.25) because the bin lacked the 17 BZ sessions 07-30 Oct 2020 (spliced in by scripts/bz_prefix_fill.json). PREV_CLOSE 1.70 = RAJOIL's last close carried UNADJUSTED across the 20:1 IBC reduction (\u00a7220b): not a seam factor.",
     "name": {
      "new": "Raj Oil Mills Limited (live)",
      "old": "Raj Oil Mills Limited (wb_20111030)"

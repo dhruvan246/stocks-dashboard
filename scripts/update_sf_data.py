@@ -1316,6 +1316,60 @@ def insert_bz_history(data, cal=None):
     return total
 
 
+def insert_bz_prefix(data, cal=None):
+    """§220c: splice in series-BZ sessions that PRECEDE a series' first stored bar (scripts/bz_prefix_fill.json).
+    insert_bz_history() attaches each block AFTER an existing bar, so a relisting that traded in BZ before its first EQ
+    session never landed — RAJOIL -> ROML's 17 BZ sessions of 07-30 Oct 2020 (the series began 03-Nov-2020). Each block
+    names the bar it attaches in front of (`before`) and NSE's raw close there (`anchorRaw`); its bars are RAW NSE rows,
+    put on the series' CURRENT level at apply time by f = stored close on `before` / anchorRaw — nothing pre-scaled, the
+    bar_inserts.json rule, so a later heal that re-anchors history can never double-scale them. Idempotent: a block whose
+    first bar is present is skipped; one whose f strays >0.5% from its measured expectedScale is reported and left out.
+    Returns bars inserted."""
+    import bisect
+    lp = os.path.join(HERE, "bz_prefix_fill.json")
+    if not os.path.exists(lp): return 0
+    try:
+        led = json.load(open(lp, encoding="utf-8"))
+    except Exception as ex:
+        print("  bz_prefix_fill ledger unreadable (%s) — skipped" % ex); return 0
+    total = 0
+    for sym, blocks in (led.get("blocks") or {}).items():
+        e = data.get(sym)
+        if not e or not e.get("d"): continue
+        if any(k not in e for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")): continue
+        for b in blocks:
+            bars = b.get("bars") or []      # RAW: [ymd, close, turnover_lakhs, high, low, open, volume, deliv_pct, avg, prev_close]
+            if cal is not None:                                   # §89f splice guard
+                bad = set(off_calendar([x[0] for x in bars], cal))
+                if bad:
+                    print("  BZ-PREFIX %s: %d ledger bar(s) on non-session dates DROPPED: %s"
+                          % (sym, len(bad), ", ".join(map(str, sorted(bad)[:12]))))
+                    bars = [x for x in bars if x[0] not in bad]
+            if not bars: continue
+            ds = e["d"]
+            i = bisect.bisect_left(ds, bars[0][0])
+            if i < len(ds) and ds[i] == bars[0][0]: continue      # already applied
+            if ds[0] != b.get("before") or bars[-1][0] >= ds[0]:
+                print("  BZ-PREFIX %s: series starts %s, block expects %s — left out, not guessed" % (sym, ds[0], b.get("before")))
+                continue
+            f = e["c"][0] / float(b["anchorRaw"])
+            if abs(f / float(b["expectedScale"]) - 1) > 0.005:
+                print("  BZ-PREFIX %s: series scale at %d is x%.6f, block was measured at x%s — left out, re-adjudicate"
+                      % (sym, ds[0], f, b["expectedScale"])); continue
+            new = {k: [] for k in ("c", "t", "h", "l", "op", "v", "dv", "vw")}
+            for ymd, c, t, h, l, o, v, dl, avg, _pc in bars:
+                new["c"].append(_pxr(c * f)); new["t"].append(round(t, 1))
+                new["h"].append(_pxr(max(h, c) * f)); new["l"].append(_pxr((min(l, c) if l > 0 else c) * f))
+                new["op"].append(_pxr((o if o > 0 else c) * f)); new["v"].append(int(v))
+                new["dv"].append(round(dl, 2) if dl else 0); new["vw"].append(_pxr((avg if avg > 0 else c) * f))
+            for k in new:
+                e[k] = new[k] + e[k]
+            e["d"] = [x[0] for x in bars] + ds
+            total += len(bars)
+            print("  BZ-PREFIX %s: %d bars %d..%d spliced in front of %d at x%.6f" % (sym, len(bars), bars[0][0], bars[-1][0], b["before"], f))
+    return total
+
+
 # BZ-block SCALE corrections for blocks ALREADY spliced into the live series (DATA_RUNBOOK §165e).
 # insert_bz_history skips a block whose first bar is present, so correcting a block's `pre`/bars in
 # bz_backfill.json.gz cannot reach a series that already carries it. The 2026-08-10 build's exit test
@@ -1878,6 +1932,7 @@ def main():
     print("Session calendar: %d session dates judged in %d..%d (floor %d symbol-bars; earlier dates not judged)"
           % (sum(1 for x in cal[0] if _cal_lo <= x <= _cal_hi), _cal_lo, _cal_hi, SESSION_FLOOR))
     bz = insert_bz_history(data, cal=cal)
+    bz += insert_bz_prefix(data, cal=cal)   # §220c: BZ sessions before a series' first bar (bz_prefix_fill.json)
     bzf = apply_bz_scale_fix(data)   # §165e: scale fixes for BZ blocks already spliced in (ledger edits can't reach them)
     sm = insert_sme_history(data, meta, cal=cal)     # NSE SME-platform history (create + main-board prepends, §145)
     sg = apply_series_surgery(data, meta, cal=cal)   # wrong-company stitch repair (DVL/DTIL, §89) — before the
