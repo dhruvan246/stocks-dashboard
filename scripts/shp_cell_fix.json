@@ -11424,7 +11424,7 @@
     "cell": [
      25.05,
      5.5848,
-     37.3715,
+     34.0348,
      0.1638,
      7.5321,
      "2017-10-10",
@@ -11432,18 +11432,26 @@
     ],
     "was": [
      25.05,
-     5.5811,
-     37.3752,
+     5.5848,
+     37.3715,
      0.1638,
      7.5321,
      "2017-10-10",
      80522
     ],
     "src": "bsexbrl:500102_9102017164953_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 72,188,932 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 48,342 sh (14 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.5811 -> 5.5848, dii 37.3752 -> 37.3715.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS BANK LIMITED 22,320,138 sh + DEUTSCHE BANK A.G. 20,839,168 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 37.3715 -> 34.0348 (43,159,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      25.05,
+      5.5848,
+      37.3715,
+      0.1638,
+      7.5321,
+      "2017-10-10",
+      80522
+     ],
+     "was": [
       25.05,
       5.5811,
       37.3752,
@@ -11452,19 +11460,20 @@
       "2017-10-10",
       80522
      ],
-     "was": [
-      25.05,
-      5.5811,
-      34.4419,
-      0.1638,
-      7.5321,
-      "2017-10-10",
-      80522
-     ],
      "src": "bsexbrl:500102_9102017164953_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.4419 -> 37.3752.",
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 72,188,932 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 48,342 sh (14 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.5811 -> 5.5848, dii 37.3752 -> 37.3715.",
+     "exact": true,
      "superseded": {
       "cell": [
+       25.05,
+       5.5811,
+       37.3752,
+       0.1638,
+       7.5321,
+       "2017-10-10",
+       80522
+      ],
+      "was": [
        25.05,
        5.5811,
        34.4419,
@@ -11473,22 +11482,44 @@
        "2017-10-10",
        80522
       ],
-      "was": [
-       25.05,
-       5.5811,
-       34.3419,
-       0.1638,
-       7.5321,
-       "2017-10-10",
-       80522
-      ],
       "src": "bsexbrl:500102_9102017164953_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.58 -> 5.58, dii 34.34 -> 34.44. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.4419 -> 37.3752.",
+      "superseded": {
+       "cell": [
+        25.05,
+        5.5811,
+        34.4419,
+        0.1638,
+        7.5321,
+        "2017-10-10",
+        80522
+       ],
+       "was": [
+        25.05,
+        5.5811,
+        34.3419,
+        0.1638,
+        7.5321,
+        "2017-10-10",
+        80522
+       ],
+       "src": "bsexbrl:500102_9102017164953_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.58 -> 5.58, dii 34.34 -> 34.44. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      }
      }
     }
    },
    "2017-12-31": {
     "cell": [
+     25.05,
+     5.3035,
+     33.7906,
+     0.0015,
+     7.5321,
+     "2018-01-19",
+     73258
+    ],
+    "was": [
      25.05,
      5.3035,
      37.1273,
@@ -11497,20 +11528,19 @@
      "2018-01-19",
      73258
     ],
-    "was": [
-     25.05,
-     5.3004,
-     37.1304,
-     0.0015,
-     7.5321,
-     "2018-01-19",
-     73258
-    ],
     "src": "bsexbrl:500102_181201815057_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 68,558,754 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.3004 -> 5.3035, dii 37.1304 -> 37.1273.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 22,320,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 37.1273 -> 33.7906 (43,159,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      25.05,
+      5.3035,
+      37.1273,
+      0.0015,
+      7.5321,
+      "2018-01-19",
+      73258
+     ],
+     "was": [
       25.05,
       5.3004,
       37.1304,
@@ -11519,19 +11549,20 @@
       "2018-01-19",
       73258
      ],
-     "was": [
-      25.05,
-      5.3004,
-      34.1971,
-      0.0015,
-      7.5321,
-      "2018-01-19",
-      73258
-     ],
      "src": "bsexbrl:500102_181201815057_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.1971 -> 37.1304.",
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 68,558,754 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.3004 -> 5.3035, dii 37.1304 -> 37.1273.",
+     "exact": true,
      "superseded": {
       "cell": [
+       25.05,
+       5.3004,
+       37.1304,
+       0.0015,
+       7.5321,
+       "2018-01-19",
+       73258
+      ],
+      "was": [
        25.05,
        5.3004,
        34.1971,
@@ -11540,22 +11571,44 @@
        "2018-01-19",
        73258
       ],
-      "was": [
-       25.05,
-       5.3004,
-       34.0971,
-       0.0015,
-       7.5321,
-       "2018-01-19",
-       73258
-      ],
       "src": "bsexbrl:500102_181201815057_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.30 -> 5.30, dii 34.10 -> 34.20. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.1971 -> 37.1304.",
+      "superseded": {
+       "cell": [
+        25.05,
+        5.3004,
+        34.1971,
+        0.0015,
+        7.5321,
+        "2018-01-19",
+        73258
+       ],
+       "was": [
+        25.05,
+        5.3004,
+        34.0971,
+        0.0015,
+        7.5321,
+        "2018-01-19",
+        73258
+       ],
+       "src": "bsexbrl:500102_181201815057_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.30 -> 5.30, dii 34.10 -> 34.20. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      }
      }
     }
    },
    "2018-03-31": {
     "cell": [
+     25.05,
+     5.2047,
+     33.6904,
+     0.0015,
+     7.4188,
+     "2018-04-13",
+     75506
+    ],
+    "was": [
      25.05,
      5.2047,
      37.0271,
@@ -11564,20 +11617,19 @@
      "2018-04-13",
      75506
     ],
-    "was": [
-     25.05,
-     5.2017,
-     37.0302,
-     0.0015,
-     7.4188,
-     "2018-04-13",
-     75506
-    ],
     "src": "bsexbrl:500102_13420181197_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 67,281,313 + the institutions Any-Other row the company labels 'Foreign Institutional Investor' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.2017 -> 5.2047, dii 37.0302 -> 37.0271.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 22,320,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 37.0271 -> 33.6904 (43,159,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      25.05,
+      5.2047,
+      37.0271,
+      0.0015,
+      7.4188,
+      "2018-04-13",
+      75506
+     ],
+     "was": [
       25.05,
       5.2017,
       37.0302,
@@ -11586,19 +11638,20 @@
       "2018-04-13",
       75506
      ],
-     "was": [
-      25.05,
-      5.2017,
-      34.0969,
-      0.0015,
-      7.4188,
-      "2018-04-13",
-      75506
-     ],
      "src": "bsexbrl:500102_13420181197_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.0969 -> 37.0302.",
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 67,281,313 + the institutions Any-Other row the company labels 'Foreign Institutional Investor' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.2017 -> 5.2047, dii 37.0302 -> 37.0271.",
+     "exact": true,
      "superseded": {
       "cell": [
+       25.05,
+       5.2017,
+       37.0302,
+       0.0015,
+       7.4188,
+       "2018-04-13",
+       75506
+      ],
+      "was": [
        25.05,
        5.2017,
        34.0969,
@@ -11607,22 +11660,44 @@
        "2018-04-13",
        75506
       ],
-      "was": [
-       25.05,
-       5.2017,
-       33.9969,
-       0.0015,
-       7.4188,
-       "2018-04-13",
-       75506
-      ],
       "src": "bsexbrl:500102_13420181197_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.20 -> 5.20, dii 34.00 -> 34.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.0969 -> 37.0302.",
+      "superseded": {
+       "cell": [
+        25.05,
+        5.2017,
+        34.0969,
+        0.0015,
+        7.4188,
+        "2018-04-13",
+        75506
+       ],
+       "was": [
+        25.05,
+        5.2017,
+        33.9969,
+        0.0015,
+        7.4188,
+        "2018-04-13",
+        75506
+       ],
+       "src": "bsexbrl:500102_13420181197_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.20 -> 5.20, dii 34.00 -> 34.10. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.1"
+      }
      }
     }
    },
    "2018-06-30": {
     "cell": [
+     25.05,
+     5.2142,
+     33.7232,
+     0.0015,
+     7.4188,
+     "2018-07-16",
+     75230
+    ],
+    "was": [
      25.05,
      5.2142,
      37.0599,
@@ -11631,23 +11706,13 @@
      "2018-07-16",
      75230
     ],
-    "was": [
-     25.05,
-     5.2111,
-     37.063,
-     0.0015,
-     7.4188,
-     "2018-07-16",
-     75230
-    ],
     "src": "bsexbrl:500102_137201815352_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 67,403,336 + the institutions Any-Other row the company labels 'Foreign Insitutional Investors' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.2111 -> 5.2142, dii 37.063 -> 37.0599.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 22,320,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 37.0599 -> 33.7232 (43,159,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
       25.05,
-      5.2111,
-      37.063,
+      5.2142,
+      37.0599,
       0.0015,
       7.4188,
       "2018-07-16",
@@ -11656,19 +11721,20 @@
      "was": [
       25.05,
       5.2111,
-      34.1297,
+      37.063,
       0.0015,
       7.4188,
       "2018-07-16",
       75230
      ],
      "src": "bsexbrl:500102_137201815352_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.1297 -> 37.0630.",
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 67,403,336 + the institutions Any-Other row the company labels 'Foreign Insitutional Investors' 39,750 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 5.2111 -> 5.2142, dii 37.063 -> 37.0599.",
+     "exact": true,
      "superseded": {
       "cell": [
        25.05,
        5.2111,
-       34.1297,
+       37.063,
        0.0015,
        7.4188,
        "2018-07-16",
@@ -11677,14 +11743,36 @@
       "was": [
        25.05,
        5.2111,
-       34.0397,
+       34.1297,
        0.0015,
        7.4188,
        "2018-07-16",
        75230
       ],
       "src": "bsexbrl:500102_137201815352_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.21 -> 5.21, dii 34.04 -> 34.13. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.09"
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 34.1297 -> 37.0630.",
+      "superseded": {
+       "cell": [
+        25.05,
+        5.2111,
+        34.1297,
+        0.0015,
+        7.4188,
+        "2018-07-16",
+        75230
+       ],
+       "was": [
+        25.05,
+        5.2111,
+        34.0397,
+        0.0015,
+        7.4188,
+        "2018-07-16",
+        75230
+       ],
+       "src": "bsexbrl:500102_137201815352_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 5.21 -> 5.21, dii 34.04 -> 34.13. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.09"
+      }
      }
     }
    },
@@ -11712,7 +11800,7 @@
     "cell": [
      24.22,
      7.8915,
-     36.1535,
+     33.0255,
      0.0011,
      7.4187,
      "2019-10-22",
@@ -11720,18 +11808,26 @@
     ],
     "was": [
      24.22,
-     7.8885,
-     36.1562,
+     7.8915,
+     36.1535,
      0.0011,
      7.4187,
      "2019-10-22",
      78476
     ],
     "src": "bsexbrl:500102_19102019153355_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 102,036,953 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 35,550 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 7.8885 -> 7.8915, dii 36.1562 -> 36.1535.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 19,620,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 36.1535 -> 33.0255 (40,459,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      24.22,
+      7.8915,
+      36.1535,
+      0.0011,
+      7.4187,
+      "2019-10-22",
+      78476
+     ],
+     "was": [
       24.22,
       7.8885,
       36.1562,
@@ -11740,21 +11836,44 @@
       "2019-10-22",
       78476
      ],
-     "was": [
-      24.22,
-      7.8885,
-      33.2229,
-      0.0011,
-      7.4187,
-      "2019-10-22",
-      78476
-     ],
      "src": "bsexbrl:500102_19102019153355_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2229 -> 36.1562."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 102,036,953 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 35,550 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 7.8885 -> 7.8915, dii 36.1562 -> 36.1535.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       24.22,
+       7.8885,
+       36.1562,
+       0.0011,
+       7.4187,
+       "2019-10-22",
+       78476
+      ],
+      "was": [
+       24.22,
+       7.8885,
+       33.2229,
+       0.0011,
+       7.4187,
+       "2019-10-22",
+       78476
+      ],
+      "src": "bsexbrl:500102_19102019153355_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2229 -> 36.1562."
+     }
     }
    },
    "2019-12-31": {
     "cell": [
+     24.22,
+     3.7463,
+     33.0726,
+     0.0011,
+     6.666,
+     "2020-01-20",
+     81060
+    ],
+    "was": [
      24.22,
      3.7463,
      36.2006,
@@ -11763,20 +11882,19 @@
      "2020-01-20",
      81060
     ],
-    "was": [
-     24.22,
-     3.7435,
-     36.2033,
-     0.0011,
-     6.666,
-     "2020-01-20",
-     81060
-    ],
     "src": "bsexbrl:500102_171202017435_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTORS' 35,550 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7463, dii 36.2033 -> 36.2006.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 19,620,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 36.2006 -> 33.0726 (40,459,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      24.22,
+      3.7463,
+      36.2006,
+      0.0011,
+      6.666,
+      "2020-01-20",
+      81060
+     ],
+     "was": [
       24.22,
       3.7435,
       36.2033,
@@ -11785,21 +11903,44 @@
       "2020-01-20",
       81060
      ],
-     "was": [
-      24.22,
-      3.7435,
-      33.27,
-      0.0011,
-      6.666,
-      "2020-01-20",
-      81060
-     ],
      "src": "bsexbrl:500102_171202017435_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2700 -> 36.2033."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTORS' 35,550 sh (9 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7463, dii 36.2033 -> 36.2006.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       24.22,
+       3.7435,
+       36.2033,
+       0.0011,
+       6.666,
+       "2020-01-20",
+       81060
+      ],
+      "was": [
+       24.22,
+       3.7435,
+       33.27,
+       0.0011,
+       6.666,
+       "2020-01-20",
+       81060
+      ],
+      "src": "bsexbrl:500102_171202017435_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2700 -> 36.2033."
+     }
     }
    },
    "2020-03-31": {
     "cell": [
+     24.22,
+     3.7461,
+     33.0255,
+     0.0011,
+     6.666,
+     "2020-04-29",
+     79868
+    ],
+    "was": [
      24.22,
      3.7461,
      36.1535,
@@ -11808,20 +11949,19 @@
      "2020-04-29",
      79868
     ],
-    "was": [
-     24.22,
-     3.7435,
-     36.1561,
-     0.0011,
-     6.666,
-     "2020-04-29",
-     79868
-    ],
     "src": "bsexbrl:500102_2942020145811_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7461, dii 36.1561 -> 36.1535.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 19,620,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 36.1535 -> 33.0255 (40,459,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      24.22,
+      3.7461,
+      36.1535,
+      0.0011,
+      6.666,
+      "2020-04-29",
+      79868
+     ],
+     "was": [
       24.22,
       3.7435,
       36.1561,
@@ -11830,21 +11970,44 @@
       "2020-04-29",
       79868
      ],
-     "was": [
-      24.22,
-      3.7435,
-      33.2228,
-      0.0011,
-      6.666,
-      "2020-04-29",
-      79868
-     ],
      "src": "bsexbrl:500102_2942020145811_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2228 -> 36.1561."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7461, dii 36.1561 -> 36.1535.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       24.22,
+       3.7435,
+       36.1561,
+       0.0011,
+       6.666,
+       "2020-04-29",
+       79868
+      ],
+      "was": [
+       24.22,
+       3.7435,
+       33.2228,
+       0.0011,
+       6.666,
+       "2020-04-29",
+       79868
+      ],
+      "src": "bsexbrl:500102_2942020145811_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2228 -> 36.1561."
+     }
     }
    },
    "2020-06-30": {
     "cell": [
+     24.22,
+     3.7461,
+     33.0205,
+     0.0011,
+     6.666,
+     "2020-07-21",
+     81797
+    ],
+    "was": [
      24.22,
      3.7461,
      36.1485,
@@ -11853,20 +12016,19 @@
      "2020-07-21",
      81797
     ],
-    "was": [
-     24.22,
-     3.7435,
-     36.1511,
-     0.0011,
-     6.666,
-     "2020-07-21",
-     81797
-    ],
     "src": "bsexbrl:500102_207202014826_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7461, dii 36.1511 -> 36.1485.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 19,620,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 36.1485 -> 33.0205 (40,459,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      24.22,
+      3.7461,
+      36.1485,
+      0.0011,
+      6.666,
+      "2020-07-21",
+      81797
+     ],
+     "was": [
       24.22,
       3.7435,
       36.1511,
@@ -11875,21 +12037,44 @@
       "2020-07-21",
       81797
      ],
-     "was": [
-      24.22,
-      3.7435,
-      33.2178,
-      0.0011,
-      6.666,
-      "2020-07-21",
-      81797
-     ],
      "src": "bsexbrl:500102_207202014826_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2178 -> 36.1511."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 48,421,023 + the institutions Any-Other row the company labels 'foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 3.7435 -> 3.7461, dii 36.1511 -> 36.1485.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       24.22,
+       3.7435,
+       36.1511,
+       0.0011,
+       6.666,
+       "2020-07-21",
+       81797
+      ],
+      "was": [
+       24.22,
+       3.7435,
+       33.2178,
+       0.0011,
+       6.666,
+       "2020-07-21",
+       81797
+      ],
+      "src": "bsexbrl:500102_207202014826_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 33.2178 -> 36.1511."
+     }
     }
    },
    "2020-09-30": {
     "cell": [
+     2.68,
+     1.7673,
+     32.2468,
+     0.0011,
+     6.6658,
+     "2020-10-22",
+     92740
+    ],
+    "was": [
      2.68,
      1.7673,
      35.3748,
@@ -11898,20 +12083,19 @@
      "2020-10-22",
      92740
     ],
-    "was": [
-     2.68,
-     1.7646,
-     35.3774,
-     0.0011,
-     6.6658,
-     "2020-10-22",
-     92740
-    ],
     "src": "bsexbrl:500102_21102020164450_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 22,825,615 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTOR' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 1.7646 -> 1.7673, dii 35.3774 -> 35.3748.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh + DBS BANK LIMITED 19,620,138 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 35.3748 -> 32.2468 (40,459,306 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      2.68,
+      1.7673,
+      35.3748,
+      0.0011,
+      6.6658,
+      "2020-10-22",
+      92740
+     ],
+     "was": [
       2.68,
       1.7646,
       35.3774,
@@ -11920,21 +12104,44 @@
       "2020-10-22",
       92740
      ],
-     "was": [
-      2.68,
-      1.7646,
-      32.4441,
-      0.0011,
-      6.6658,
-      "2020-10-22",
-      92740
-     ],
      "src": "bsexbrl:500102_21102020164450_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 32.4441 -> 35.3774."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 22,825,615 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTOR' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 1.7646 -> 1.7673, dii 35.3774 -> 35.3748.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       2.68,
+       1.7646,
+       35.3774,
+       0.0011,
+       6.6658,
+       "2020-10-22",
+       92740
+      ],
+      "was": [
+       2.68,
+       1.7646,
+       32.4441,
+       0.0011,
+       6.6658,
+       "2020-10-22",
+       92740
+      ],
+      "src": "bsexbrl:500102_21102020164450_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 32.4441 -> 35.3774."
+     }
     }
    },
    "2020-12-31": {
     "cell": [
+     2.68,
+     0.6278,
+     31.5623,
+     0.0011,
+     6.6658,
+     "2021-02-26",
+     94957
+    ],
+    "was": [
      2.68,
      0.6278,
      33.1734,
@@ -11943,20 +12150,19 @@
      "2021-02-26",
      94957
     ],
-    "was": [
-     2.68,
-     0.6251,
-     33.176,
-     0.0011,
-     6.6658,
-     "2021-02-26",
-     94957
-    ],
     "src": "bsexbrl:500102_2622021135755_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTORS' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 33.176 -> 33.1734.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 33.1734 -> 31.5623 (20,839,168 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
+      2.68,
+      0.6278,
+      33.1734,
+      0.0011,
+      6.6658,
+      "2021-02-26",
+      94957
+     ],
+     "was": [
       2.68,
       0.6251,
       33.176,
@@ -11965,24 +12171,38 @@
       "2021-02-26",
       94957
      ],
-     "was": [
-      2.68,
-      0.6251,
-      30.2427,
-      0.0011,
-      6.6658,
-      "2021-02-26",
-      94957
-     ],
      "src": "bsexbrl:500102_2622021135755_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 30.2427 -> 33.1760."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'FOREIGN INSTITUTIONAL INVESTORS' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 33.176 -> 33.1734.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       2.68,
+       0.6251,
+       33.176,
+       0.0011,
+       6.6658,
+       "2021-02-26",
+       94957
+      ],
+      "was": [
+       2.68,
+       0.6251,
+       30.2427,
+       0.0011,
+       6.6658,
+       "2021-02-26",
+       94957
+      ],
+      "src": "bsexbrl:500102_2622021135755_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 30.2427 -> 33.1760."
+     }
     }
    },
    "2021-03-31": {
     "cell": [
      2.68,
      0.6278,
-     32.6017,
+     30.9906,
      0.0011,
      7.4185,
      "2021-07-07",
@@ -11990,21 +12210,20 @@
     ],
     "was": [
      2.68,
-     0.6251,
-     32.6043,
+     0.6278,
+     32.6017,
      0.0011,
      7.4185,
      "2021-07-07",
      98901
     ],
     "src": "bsexbrl:500102_772021124239_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 32.6043 -> 32.6017.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 32.6017 -> 30.9906 (20,839,168 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
       2.68,
-      0.6251,
-      32.6043,
+      0.6278,
+      32.6017,
       0.0011,
       7.4185,
       "2021-07-07",
@@ -12013,18 +12232,50 @@
      "was": [
       2.68,
       0.6251,
-      29.671,
+      32.6043,
       0.0011,
       7.4185,
       "2021-07-07",
       98901
      ],
      "src": "bsexbrl:500102_772021124239_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 29.6710 -> 32.6043."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 32.6043 -> 32.6017.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       2.68,
+       0.6251,
+       32.6043,
+       0.0011,
+       7.4185,
+       "2021-07-07",
+       98901
+      ],
+      "was": [
+       2.68,
+       0.6251,
+       29.671,
+       0.0011,
+       7.4185,
+       "2021-07-07",
+       98901
+      ],
+      "src": "bsexbrl:500102_772021124239_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 29.6710 -> 32.6043."
+     }
     }
    },
    "2021-06-30": {
     "cell": [
+     2.68,
+     0.6278,
+     30.9906,
+     0.0011,
+     7.4185,
+     "2021-07-21",
+     106660
+    ],
+    "was": [
      2.68,
      0.6278,
      32.6017,
@@ -12033,23 +12284,13 @@
      "2021-07-21",
      106660
     ],
-    "was": [
-     2.68,
-     0.6251,
-     32.6043,
-     0.0011,
-     7.4185,
-     "2021-07-21",
-     106660
-    ],
     "src": "bsexbrl:500102_2172021124455_SHP.xml",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 32.6043 -> 32.6017.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DEUTSCHE BANK A.G. 20,839,168 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 32.6017 -> 30.9906 (20,839,168 sh / 1,293,455,756); fii is the FII session's call.",
     "superseded": {
      "cell": [
       2.68,
-      0.6251,
-      32.6043,
+      0.6278,
+      32.6017,
       0.0011,
       7.4185,
       "2021-07-21",
@@ -12058,14 +12299,37 @@
      "was": [
       2.68,
       0.6251,
-      29.671,
+      32.6043,
       0.0011,
       7.4185,
       "2021-07-21",
       106660
      ],
      "src": "bsexbrl:500102_2172021124455_SHP.xml",
-     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 29.6710 -> 32.6043."
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): FII = FPI 8,086,000 + the institutions Any-Other row the company labels 'Foreign Institutional Investors' 33,750 sh (8 holders) on the filing's 1,293,455,756 shares - the company's own FII label; our reader had parked the row in dii (the \u00a7159 heal's 0.05 pp floor kept it there), so it leaves dii too. fii 0.6251 -> 0.6278, dii 32.6043 -> 32.6017.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       2.68,
+       0.6251,
+       32.6043,
+       0.0011,
+       7.4185,
+       "2021-07-21",
+       106660
+      ],
+      "was": [
+       2.68,
+       0.6251,
+       29.671,
+       0.0011,
+       7.4185,
+       "2021-07-21",
+       106660
+      ],
+      "src": "bsexbrl:500102_2172021124455_SHP.xml",
+      "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names KOTAK MAHINDRA BANK LTD 2.9333 [Kotak Mahindra Bank Ltd - RBI scheduled commercial bank (Indian privat] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 29.6710 -> 32.6043."
+     }
     }
    },
    "2016-03-31": {
@@ -35323,23 +35587,45 @@
     "cell": [
      11.54,
      0.04,
-     63.65,
+     62.534,
      0.0,
      0.05,
      "2020-07-21",
      42720
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      11.54,
-     0.04,
-     63.65,
+     0.0377,
+     63.6514,
      0.0,
-     0.05,
-     "2020-12-16",
+     0.0474,
+     "2020-07-21",
      42720
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 169d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "src": "bsexbrl:509550_16122020161053_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6500 -> 62.5340 (4,124,496 sh / 369,573,105); fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      11.54,
+      0.04,
+      63.65,
+      0.0,
+      0.05,
+      "2020-07-21",
+      42720
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      11.54,
+      0.04,
+      63.65,
+      0.0,
+      0.05,
+      "2020-12-16",
+      42720
+     ],
+     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 169d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    }
    },
    "2023-06-30": {
     "cell": [
@@ -35727,6 +36013,248 @@
     "src": "bseaspx:509550:86",
     "why": "\u00a7164r batch 30 part 37 (2026-10-06, per-company review): the non-institutions 'Others' row (5 holders, 1,782,327) is BSE's merge of the company's directors row (3 holders 823,472) and its 'Foreign Port Folio Investor Corp' row (2 holders 958,855) - both exactly so in Mar-2015 and again separately in Sep-2015 -> the FPI part is fii. FII = 'Foreign Institutional Investors' 6,937,299 + 958,855 on 136,500,468 (= Quantmac 5.7848). fii 5.0823 -> 5.7847.",
     "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5353,
+     0.0,
+     0.0474,
+     "2019-11-13",
+     42958
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6513,
+     0.0,
+     0.0474,
+     "2019-11-13",
+     42958
+    ],
+    "src": "bsexbrl:509550_1311201913418_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6513 -> 62.5353 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2019-12-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.0474,
+     "2020-01-31",
+     42651
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.0474,
+     "2020-01-31",
+     42651
+    ],
+    "src": "bsexbrl:509550_311202012235_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2020-03-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.0474,
+     "2020-05-14",
+     42691
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.0474,
+     "2020-05-14",
+     42691
+    ],
+    "src": "bsexbrl:509550_1352020181646_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS Bank Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2020-09-30": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.5826,
+     "2020-12-17",
+     42786
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.5826,
+     "2020-12-17",
+     42786
+    ],
+    "src": "bsexbrl:509550_16122020163129_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS Bank Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2020-12-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.5826,
+     "2021-01-19",
+     42779
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.5826,
+     "2021-01-19",
+     42779
+    ],
+    "src": "bsexbrl:509550_1912021123450_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2021-03-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.5826,
+     "2021-04-16",
+     42747
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.5826,
+     "2021-04-16",
+     42747
+    ],
+    "src": "bsexbrl:509550_1642021151612_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2021-06-30": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.5826,
+     "2021-08-02",
+     42733
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.5826,
+     "2021-08-02",
+     42733
+    ],
+    "src": "bsexbrl:509550_307202117147_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2021-09-30": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.6966,
+     "2021-10-22",
+     42714
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.6966,
+     "2021-10-22",
+     42714
+    ],
+    "src": "bsexbrl:509550_21102021182116_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2021-12-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.6966,
+     "2022-01-24",
+     42698
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.6966,
+     "2022-01-24",
+     42698
+    ],
+    "src": "bsexbrl:509550_211202219447_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2022-03-31": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.6966,
+     "2022-05-09",
+     42687
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.6966,
+     "2022-05-09",
+     42687
+    ],
+    "src": "bsexbrl:509550_65202216283_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
+   },
+   "2022-06-30": {
+    "cell": [
+     11.54,
+     0.0377,
+     62.5354,
+     0.0,
+     0.6966,
+     "2022-07-27",
+     42674
+    ],
+    "was": [
+     11.54,
+     0.0377,
+     63.6514,
+     0.0,
+     0.6966,
+     "2022-07-27",
+     42674
+    ],
+    "src": "bsexbrl:509550_2672022175819_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank India Limited 4,124,496 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even as its Indian-incorporated wholly-owned subsidiary 'DBS Bank India Limited' (from Dec-2020) - user rule: a foreign-owned bank is not DII (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 63.6514 -> 62.5354 (4,124,496 sh / 369,573,105); fii is the FII session's call."
    }
   },
   "GAYAPROJ": {
@@ -141211,6 +141739,116 @@
     ],
     "src": "bsetable3:531120:89 + bseaspx:531120:89",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and differs from the company's own filing: promoter: stored 49.91 vs the company's 50.6253. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-18 15:16:25; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute): none move it. Date unchanged (shp_lag_fix carries the filing day). prom 49.91 -> 50.6253, fii 0.09 -> 0.0898, dii 4.78 -> 4.7827."
+   },
+   "2016-12-31": {
+    "cell": [
+     24.77,
+     0.0,
+     48.4395,
+     0.0,
+     1.4438,
+     "2017-01-13",
+     59705
+    ],
+    "was": [
+     24.77,
+     0.0,
+     52.5216,
+     0.0,
+     1.4438,
+     "2017-01-13",
+     59705
+    ],
+    "src": "bsexbrl:531120_121201717565_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS Bank Limited 3,541,117 sh + Standard Chartered Bank 2,867,576 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 52.5216 -> 48.4395 (6,408,693 sh / 156,994,691); fii is the FII session's call."
+   },
+   "2017-03-31": {
+    "cell": [
+     24.77,
+     0.0587,
+     49.3314,
+     0.0,
+     1.4438,
+     "2017-04-11",
+     59891
+    ],
+    "was": [
+     24.77,
+     0.0587,
+     53.4135,
+     0.0,
+     1.4438,
+     "2017-04-11",
+     59891
+    ],
+    "src": "bsexbrl:531120_1142017114949_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS Bank Limited 3,541,117 sh + Standard Chartered Bank 2,867,576 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 53.4135 -> 49.3314 (6,408,693 sh / 156,994,691); fii is the FII session's call."
+   },
+   "2017-06-30": {
+    "cell": [
+     24.77,
+     0.4915,
+     49.3164,
+     0.0,
+     1.4438,
+     "2017-07-13",
+     58408
+    ],
+    "was": [
+     24.77,
+     0.4915,
+     53.3985,
+     0.0,
+     1.4438,
+     "2017-07-13",
+     58408
+    ],
+    "src": "bsexbrl:531120_13720171566_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files DBS Bank Limited 3,541,117 sh + Standard Chartered Bank 2,867,576 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 53.3985 -> 49.3164 (6,408,693 sh / 156,994,691); fii is the FII session's call."
+   },
+   "2017-09-30": {
+    "cell": [
+     24.77,
+     0.4534,
+     49.2953,
+     0.0,
+     1.4438,
+     "2017-10-14",
+     58556
+    ],
+    "was": [
+     24.77,
+     0.4534,
+     53.3774,
+     0.0,
+     1.4438,
+     "2017-10-14",
+     58556
+    ],
+    "src": "bsexbrl:531120_141020171297_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank Limited 3,541,117 sh + Standard Chartered Bank 2,867,576 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 53.3774 -> 49.2953 (6,408,693 sh / 156,994,691); fii is the FII session's call."
+   },
+   "2018-03-31": {
+    "cell": [
+     20.74,
+     0.6587,
+     51.0084,
+     0.0,
+     1.4438,
+     "2018-04-18",
+     58822
+    ],
+    "was": [
+     20.74,
+     0.6587,
+     55.4876,
+     0.0,
+     1.4438,
+     "2018-04-18",
+     58822
+    ],
+    "src": "bsexbrl:531120_1742018164557_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Dbs Bank Limited 3,944,491 sh + Standard Chartered Bank 3,087,554 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 55.4876 -> 51.0084 (7,032,045 sh / 156,994,691); fii is the FII session's call."
    }
   },
   "PETRONET": {
@@ -149967,7 +150605,7 @@
     "cell": [
      54.47,
      2.7528,
-     4.0391,
+     2.3004,
      0.0,
      0.0,
      "2017-07-21",
@@ -149975,18 +150613,49 @@
     ],
     "was": [
      54.47,
-     2.7028,
-     4.0491,
+     2.7528,
+     4.0391,
      0.0,
      0.0,
      "2017-07-21",
      193263
     ],
     "src": "bsexbrl:532670_2172017122859_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.70 -> 2.75, dii 4.05 -> 4.04. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.05 | R1: R1-unresolved no typed rows 0.05; R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Chartered Bank 16,435,338 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 4.0391 -> 2.3004 (16,435,338 sh / 945,246,580); fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      54.47,
+      2.7528,
+      4.0391,
+      0.0,
+      0.0,
+      "2017-07-21",
+      193263
+     ],
+     "was": [
+      54.47,
+      2.7028,
+      4.0491,
+      0.0,
+      0.0,
+      "2017-07-21",
+      193263
+     ],
+     "src": "bsexbrl:532670_2172017122859_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.70 -> 2.75, dii 4.05 -> 4.04. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.05 | R1: R1-unresolved no typed rows 0.05; R3-nbfc NBFCsRegisteredWithRbi 0.04. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-09-30": {
     "cell": [
+     54.47,
+     2.8539,
+     2.5712,
+     0.0,
+     0.0,
+     "2017-10-17",
+     187647
+    ],
+    "was": [
      54.47,
      2.8539,
      4.3099,
@@ -149995,17 +150664,30 @@
      "2017-10-17",
      187647
     ],
-    "was": [
-     54.47,
-     2.8039,
-     4.1399,
-     0.0,
-     0.0,
-     "2017-10-17",
-     187647
-    ],
     "src": "bsexbrl:532670_17102017144311_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.80 -> 2.85, dii 4.14 -> 4.31. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.05 | R1: R1-unresolved no typed rows 0.05; R3-nbfc NBFCsRegisteredWithRbi 0.22. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Chartered Bank 16,435,338 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 4.3099 -> 2.5712 (16,435,338 sh / 945,246,580); fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      54.47,
+      2.8539,
+      4.3099,
+      0.0,
+      0.0,
+      "2017-10-17",
+      187647
+     ],
+     "was": [
+      54.47,
+      2.8039,
+      4.1399,
+      0.0,
+      0.0,
+      "2017-10-17",
+      187647
+     ],
+     "src": "bsexbrl:532670_17102017144311_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 2.80 -> 2.85, dii 4.14 -> 4.31. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.05 | R1: R1-unresolved no typed rows 0.05; R3-nbfc NBFCsRegisteredWithRbi 0.22. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-03-31": {
     "cell": [
@@ -150139,7 +150821,7 @@
     "cell": [
      54.47,
      2.936,
-     4.1325,
+     2.3938,
      0.0,
      0.0,
      "2018-01-17",
@@ -150147,21 +150829,20 @@
     ],
     "was": [
      54.47,
-     2.8832,
-     4.1855,
+     2.936,
+     4.1325,
      0.0,
      0.0,
      "2018-01-17",
      182575
     ],
     "src": "bsexbrl:532670_171201814238_SHP.xml",
-    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): D1: the institutions Any-Other block 501,000 sh (0.0530 %) names nobody and carries no label -> fii (the store held it in dii; the D1 run's 2-dp edge missed it). FII = FPI 27,251,287 + 501,000 on 945,246,580 (= Quantmac 2.936). fii 2.8832 -> 2.936, dii 4.1855 -> 4.1325.",
-    "exact": true,
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Chartered Bank 16,435,338 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 4.1325 -> 2.3938 (16,435,338 sh / 945,246,580); fii is the FII session's call.",
     "superseded": {
      "cell": [
       54.47,
-      2.8832,
-      4.1855,
+      2.936,
+      4.1325,
       0.0,
       0.0,
       "2018-01-17",
@@ -150170,15 +150851,60 @@
      "was": [
       54.47,
       2.8832,
-      4.1055,
+      4.1855,
       0.0,
       0.0,
       "2018-01-17",
       182575
      ],
      "src": "bsexbrl:532670_171201814238_SHP.xml",
-     "why": "\u00a7164s part 6 (2026-10-05, cell-by-cell re-read of the filing): the filing's 'NBFCs registered with RBI' row (an Institutions (Domestic) line in the 2022 form) was missing from DII. Rows: ['R1-unresolved', 'no typed rows', 0.05]; ['R3-nbfc', 'NBFCsRegisteredWithRbi', 0.08]"
+     "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): D1: the institutions Any-Other block 501,000 sh (0.0530 %) names nobody and carries no label -> fii (the store held it in dii; the D1 run's 2-dp edge missed it). FII = FPI 27,251,287 + 501,000 on 945,246,580 (= Quantmac 2.936). fii 2.8832 -> 2.936, dii 4.1855 -> 4.1325.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       54.47,
+       2.8832,
+       4.1855,
+       0.0,
+       0.0,
+       "2018-01-17",
+       182575
+      ],
+      "was": [
+       54.47,
+       2.8832,
+       4.1055,
+       0.0,
+       0.0,
+       "2018-01-17",
+       182575
+      ],
+      "src": "bsexbrl:532670_171201814238_SHP.xml",
+      "why": "\u00a7164s part 6 (2026-10-05, cell-by-cell re-read of the filing): the filing's 'NBFCs registered with RBI' row (an Institutions (Domestic) line in the 2022 form) was missing from DII. Rows: ['R1-unresolved', 'no typed rows', 0.05]; ['R3-nbfc', 'NBFCsRegisteredWithRbi', 0.08]"
+     }
     }
+   },
+   "2017-03-31": {
+    "cell": [
+     54.47,
+     2.5862,
+     2.2889,
+     0.0,
+     0.0,
+     "2017-04-21",
+     196803
+    ],
+    "was": [
+     54.47,
+     2.5862,
+     4.0276,
+     0.0,
+     0.0,
+     "2017-04-21",
+     196803
+    ],
+    "src": "bsexbrl:532670_2142017104717_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Chartered Bank 16,435,338 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 4.0276 -> 2.2889 (16,435,338 sh / 945,246,580); fii is the FII session's call."
    }
   },
   "RIIL": {
@@ -333692,6 +334418,72 @@
     ],
     "src": "bseaspx:532678_71",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.324803 = total (A+B+C) 134600000 / (A+B) 101600000 shares on the same quarter's BSE page; fii 11.78 -> 15.60."
+   },
+   "2017-09-30": {
+    "cell": [
+     41.78,
+     0.0764,
+     52.1466,
+     0.0,
+     0.0,
+     "2017-10-17",
+     7264
+    ],
+    "was": [
+     41.78,
+     0.0764,
+     54.8762,
+     0.0,
+     0.0,
+     "2017-10-17",
+     7264
+    ],
+    "src": "bsexbrl:532678_16102017202045_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Charterd Bank 8,138,888 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 54.8762 -> 52.1466 (8,138,888 sh / 298,166,418); fii is the FII session's call."
+   },
+   "2017-12-31": {
+    "cell": [
+     39.07,
+     0.1233,
+     55.0448,
+     0.0,
+     0.0,
+     "2018-01-18",
+     20069
+    ],
+    "was": [
+     39.07,
+     0.1233,
+     57.6084,
+     0.0,
+     0.0,
+     "2018-01-18",
+     20069
+    ],
+    "src": "bsexbrl:532678_1812018145645_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Charterd Bank 8,138,888 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 57.6084 -> 55.0448 (8,138,888 sh / 317,476,479); fii is the FII session's call."
+   },
+   "2018-03-31": {
+    "cell": [
+     38.51,
+     0.0914,
+     55.0393,
+     0.0,
+     0.0,
+     "2018-04-20",
+     25457
+    ],
+    "was": [
+     38.51,
+     0.0914,
+     57.6029,
+     0.0,
+     0.0,
+     "2018-04-20",
+     25457
+    ],
+    "src": "bsexbrl:532678_1942018164545_SHP.xml",
+    "why": "\u00a7164s part 29 (2026-10-06, user: foreign banks 'Not DII'): the company files Standard Chartered Bank 8,138,888 sh inside its 'Financial Institutions/Banks' line - a foreign-owned bank (lender shareholding) is not a domestic institution, even through its RBI-licensed Indian branch (same treatment as Deutsche Bank AG / Standard Chartered Singapore, RELCAPITAL's Sumitomo). dii 57.6029 -> 55.0393 (8,138,888 sh / 317,476,479); fii is the FII session's call."
    }
   },
   "BSL": {
