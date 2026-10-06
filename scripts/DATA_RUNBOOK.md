@@ -23228,6 +23228,17 @@ bytes (a delayed scheduled run did so at 03:35 IST). **Open (for the user):** th
 after (ESSENTIA 2019-20 sits at 2x the official-ratio product; FCSSOFT / LCCINFOTEC / RMMIL levels no ledger event explains) — a per-stock
 ledger check, not a precision question. adopt-exact-prices.yml + branch exact-prices-base deleted after the live check (this commit).
 
+**§179f — RASOYPR REPAIR FILE AT 4 DECIMALS, LIVE 2026-10-06 ~11:47 IST (user: "fix the RASOYPR repair file to 4 decimals"; commit 2d216ffd7,
+sf rev 5957b0d70d).** RASOYPR 2012-09-03..2015-08-31 is spliced every night from `scripts/dvl_dtil_surgery.json.gz` (`replace.RASOYPR`, 734
+full bars d/c/t/h/l/op/v/dv/vw), so its 2-decimal prices survived both exact rebuilds (they skip DVL/DTIL/RASOYPR). Re-derived each bar as NSE
+bhavcopy OHLC x 0.066667 (the official 1:15 of 2013-03-21, corp_actions value) before the split and x1 after, `_pxr`-rounded; vw =
+TOTTRDVAL/TOTTRDQTY x factor; t/v/dv untouched; provenance appended to the row's `why`. Checked first on all 734: the old c/h/l/op ==
+round2(NSE x factor), TOTTRDQTY == v, TOTTRDVAL/1e5 == t to the store's 1 decimal. The 8 `bar_inserts.json` RASOYPR rows re-anchor on the
+new 4-decimal neighbours by themselves. Dry run: only RASOYPR changes (c 104 / h 87 / l 84 / op 93 / vw 678 values), second run identical, no
+self-heal at the split. LIVE: all 5,266 symbols == the dry run; quantmac 318,331 / 318,494 (+2: RASOYPR 2013-09-30 445.294 vs their 445.288,
+2013-11-29 189.884 vs 189.888); verdict4 OUR ERROR 3 (VIVIDHA 31-Mar-2016 only, its 2016-20 level — the user's); favourites 0 changes;
+stock.html?sym=RASOYPR 0 console errors, slice holds 272.33 (= Rs 2.7233 on 2012-10-01). DVL / DTIL in the same file are still 2 decimals.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
