@@ -47888,24 +47888,47 @@
    "2019-12-31": {
     "cell": [
      28.64,
-     18.35,
-     1.02,
-     0.0,
+     18.3731,
+     1.0257,
+     0.0045,
      0.0,
      "2020-01-21",
      213581
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      28.64,
-     18.35,
-     1.02,
+     18.345,
+     1.0257,
+     0.0045,
      0.0,
-     0.0,
-     "2020-11-10",
+     "2020-01-21",
      213581
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 315d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "src": "bsexbrl:500219_512021114557_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 91,062,085 + the institutions 'Foreign Bank' row 1,000 (FII label) + the non-institutions 'Foreign Portfolio Investor (Category - III)' row 134,710 (\u00a7159) on 496,366,053 - BSE's only version (the 2021-01-05 revision); Quantmac's reading of the NSE original (18.3731) has the same rows. The stored 18.345 had FPI only. fii 18.345 -> 18.3731.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      28.64,
+      18.35,
+      1.02,
+      0.0,
+      0.0,
+      "2020-01-21",
+      213581
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      28.64,
+      18.35,
+      1.02,
+      0.0,
+      0.0,
+      "2020-11-10",
+      213581
+     ],
+     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 315d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    }
    },
    "2020-03-31": {
     "cell": [
@@ -49440,7 +49463,7 @@
    "2018-12-31": {
     "cell": [
      58.07,
-     9.8607,
+     9.8601,
      24.6622,
      21.2995,
      3.3407,
@@ -49449,15 +49472,38 @@
     ],
     "was": [
      58.07,
-     9.8273,
-     24.6956,
+     9.8607,
+     24.6622,
      21.2995,
      3.3407,
      "2019-01-21",
      67588
     ],
     "src": "bsexbrl:532644_2112019144220_SHP.xml",
-    "why": "\u00a7164r batch 8 (Quantmac v6 'please re-check which rows your figure adds'): the company's own Institutions -> Any Other row labelled 'Foreign Institutional Investors' (25,826 of 77,268,251 shares = 0.0334) is FII by its label (\u00a7158 R1, FII-labelled row) - it sat in dii because the row-level pass writes only moves >= 0.05 pp: fii 9.8273 -> 9.8607, dii 24.6956 -> 24.6622. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): precision: FPI 7,592,863 + the institutions 'Foreign Institutional Investors' row 25,826 on 77,268,251 (Quantmac's 9.9048 is not reproducible from this filing's rows). fii 9.8607 -> 9.8601.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      58.07,
+      9.8607,
+      24.6622,
+      21.2995,
+      3.3407,
+      "2019-01-21",
+      67588
+     ],
+     "was": [
+      58.07,
+      9.8273,
+      24.6956,
+      21.2995,
+      3.3407,
+      "2019-01-21",
+      67588
+     ],
+     "src": "bsexbrl:532644_2112019144220_SHP.xml",
+     "why": "\u00a7164r batch 8 (Quantmac v6 'please re-check which rows your figure adds'): the company's own Institutions -> Any Other row labelled 'Foreign Institutional Investors' (25,826 of 77,268,251 shares = 0.0334) is FII by its label (\u00a7158 R1, FII-labelled row) - it sat in dii because the row-level pass writes only moves >= 0.05 pp: fii 9.8273 -> 9.8607, dii 24.6956 -> 24.6622. Evidence: _shp_164_audit.json"
+    }
    }
   },
   "JPPOWER": {
@@ -68690,7 +68736,7 @@
    "2017-12-31": {
     "cell": [
      53.94,
-     17.88,
+     17.8931,
      5.4524,
      0.3938,
      5.0372,
@@ -68699,19 +68745,20 @@
     ],
     "was": [
      53.94,
-     20.3,
+     17.88,
      5.4524,
      0.3938,
      5.0372,
      "2018-01-16",
      28142
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.30 -> 17.88. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_15120181707_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 52,798,139 + its 'Foreign Financial Institutions' row 32,956 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only (= Quantmac). fii 17.88 -> 17.8931.",
+    "exact": true,
     "superseded": {
      "cell": [
       53.94,
-      20.3,
+      17.88,
       5.4524,
       0.3938,
       5.0372,
@@ -68720,43 +68767,65 @@
      ],
      "was": [
       53.94,
-      17.88,
-      5.45,
+      20.3,
+      5.4524,
       0.3938,
       5.0372,
       "2018-01-16",
       28142
      ],
-     "src": "bsexbrl:531500_15120181707_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.88 -> 20.30, dii 5.45 -> 5.45. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas corporate bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.01 public=0.00 fii=0.00  keyword; R1-fii-label Other Foreign Portfolio Investment-Corporates 17.88 public=0.00 fii=7.94 BRIDGE INDIA FUND 9.94 ?->-(-); ASIA INVESTMENT CORPORATION (MAURITIUS) 1.62 foreign->fii(regex) keyword; R1-uncovered-remainder 9.94. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.30 -> 17.88. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        53.94,
-       17.88,
-       5.45,
-       0.39,
-       5.04,
+       20.3,
+       5.4524,
+       0.3938,
+       5.0372,
        "2018-01-16",
        28142
       ],
-      "src": "bsexbrl:531500:531500_15120181707_SHP.xml",
       "was": [
        53.94,
-       0.0,
-       23.33,
-       0.39,
-       5.04,
-       "2018-01-15",
+       17.88,
+       5.45,
+       0.3938,
+       5.0372,
+       "2018-01-16",
        28142
       ],
-      "why": "foreign block swallowed by OtherInstitutionsMember (o_other 17.89, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+      "src": "bsexbrl:531500_15120181707_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.88 -> 20.30, dii 5.45 -> 5.45. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas corporate bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.01 public=0.00 fii=0.00  keyword; R1-fii-label Other Foreign Portfolio Investment-Corporates 17.88 public=0.00 fii=7.94 BRIDGE INDIA FUND 9.94 ?->-(-); ASIA INVESTMENT CORPORATION (MAURITIUS) 1.62 foreign->fii(regex) keyword; R1-uncovered-remainder 9.94. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        53.94,
+        17.88,
+        5.45,
+        0.39,
+        5.04,
+        "2018-01-16",
+        28142
+       ],
+       "src": "bsexbrl:531500:531500_15120181707_SHP.xml",
+       "was": [
+        53.94,
+        0.0,
+        23.33,
+        0.39,
+        5.04,
+        "2018-01-15",
+        28142
+       ],
+       "why": "foreign block swallowed by OtherInstitutionsMember (o_other 17.89, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+      }
      }
     }
    },
    "2018-03-31": {
     "cell": [
      53.94,
-     17.83,
+     17.8444,
      5.6779,
      0.0027,
      5.2827,
@@ -68765,19 +68834,20 @@
     ],
     "was": [
      53.94,
-     20.25,
+     17.83,
      5.6779,
      0.0027,
      5.2827,
      "2018-04-21",
      26637
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.25 -> 17.83. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_2142018133346_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 52,656,640 + its 'Foreign Financial Institutions' row 30,662 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only (= Quantmac). fii 17.83 -> 17.8444.",
+    "exact": true,
     "superseded": {
      "cell": [
       53.94,
-      20.25,
+      17.83,
       5.6779,
       0.0027,
       5.2827,
@@ -68786,36 +68856,58 @@
      ],
      "was": [
       53.94,
-      17.83,
-      5.67,
+      20.25,
+      5.6779,
       0.0027,
       5.2827,
       "2018-04-21",
       26637
      ],
-     "src": "bsexbrl:531500_2142018133346_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.83 -> 20.25, dii 5.67 -> 5.68. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.01 public=0.00 fii=0.00  keyword; R1-fii-label Other Foreign Portfolio Investment-Corporates 17.83 public=0.00 fii=8.02 BRIDGE INDIA FUND 9.81 ?->-(-); ASIA INVESTMENT CORPORATION (MAURITIUS) 1.68 foreign->fii(regex) keyword; R1-uncovered-remainder 9.81. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.25 -> 17.83. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        53.94,
-       17.83,
-       5.67,
-       0.0,
-       5.28,
+       20.25,
+       5.6779,
+       0.0027,
+       5.2827,
        "2018-04-21",
        26637
       ],
-      "src": "bsexbrl:531500:531500_2142018133346_SHP.xml",
       "was": [
        53.94,
-       0.0,
-       23.5,
-       0.0,
-       5.28,
+       17.83,
+       5.67,
+       0.0027,
+       5.2827,
        "2018-04-21",
        26637
       ],
-      "why": "foreign block swallowed by OtherInstitutionsMember (o_other 17.84, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+      "src": "bsexbrl:531500_2142018133346_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.83 -> 20.25, dii 5.67 -> 5.68. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.01 public=0.00 fii=0.00  keyword; R1-fii-label Other Foreign Portfolio Investment-Corporates 17.83 public=0.00 fii=8.02 BRIDGE INDIA FUND 9.81 ?->-(-); ASIA INVESTMENT CORPORATION (MAURITIUS) 1.68 foreign->fii(regex) keyword; R1-uncovered-remainder 9.81. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        53.94,
+        17.83,
+        5.67,
+        0.0,
+        5.28,
+        "2018-04-21",
+        26637
+       ],
+       "src": "bsexbrl:531500:531500_2142018133346_SHP.xml",
+       "was": [
+        53.94,
+        0.0,
+        23.5,
+        0.0,
+        5.28,
+        "2018-04-21",
+        26637
+       ],
+       "why": "foreign block swallowed by OtherInstitutionsMember (o_other 17.84, no domestic other-institutions residue in the symbol's itemised filings); chain-corroborated <=3pp"
+      }
      }
     }
    },
@@ -68970,7 +69062,7 @@
    "2018-06-30": {
     "cell": [
      54.03,
-     17.8536,
+     17.8637,
      5.6148,
      0.0031,
      5.2473,
@@ -68979,26 +69071,18 @@
     ],
     "was": [
      54.03,
-     20.2736,
+     17.8536,
      5.6148,
      0.0031,
      5.2473,
      "2018-07-19",
      24842
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.27 -> 17.85. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_1972018124629_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 52,714,596 + its 'Foreign Financial Institutions' row 29,677 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only (= Quantmac). fii 17.8536 -> 17.8637.",
+    "exact": true,
     "superseded": {
      "cell": [
-      54.03,
-      20.2736,
-      5.6148,
-      0.0031,
-      5.2473,
-      "2018-07-19",
-      24842
-     ],
-     "was": [
       54.03,
       17.8536,
       5.6148,
@@ -69007,12 +69091,52 @@
       "2018-07-19",
       24842
      ],
-     "src": "bsexbrl:531500_1972018124629_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.85 -> 20.27, dii 5.61 -> 5.61. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other FOREIGHN FINANCIAL INSTITUTIONS 0.01 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     "was": [
+      54.03,
+      20.2736,
+      5.6148,
+      0.0031,
+      5.2473,
+      "2018-07-19",
+      24842
+     ],
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.27 -> 17.85. APMS INVESTMENT FUND LTD 2.42 (non-institution row) FII -> public",
+     "superseded": {
+      "cell": [
+       54.03,
+       20.2736,
+       5.6148,
+       0.0031,
+       5.2473,
+       "2018-07-19",
+       24842
+      ],
+      "was": [
+       54.03,
+       17.8536,
+       5.6148,
+       0.0031,
+       5.2473,
+       "2018-07-19",
+       24842
+      ],
+      "src": "bsexbrl:531500_1972018124629_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.85 -> 20.27, dii 5.61 -> 5.61. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.42 2.42 APMS INVESTMENT FUND LTD 2.42 fii(curated) | R1: R1-domestic-label Other FOREIGHN FINANCIAL INSTITUTIONS 0.01 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2018-09-30": {
     "cell": [
+     54.03,
+     18.6233,
+     5.5624,
+     0.0024,
+     5.2106,
+     "2018-10-22",
+     24615
+    ],
+    "was": [
      54.03,
      18.6034,
      5.5624,
@@ -69021,28 +69145,11 @@
      "2018-10-22",
      24615
     ],
-    "was": [
-     54.03,
-     20.9534,
-     5.5624,
-     0.0024,
-     5.2106,
-     "2018-10-22",
-     24615
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.95 -> 18.60. APMS INVESTMENT FUND LTD 2.35 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_20102018162946_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 54,928,392 + its 'Foreign Financial Institutions' row 58,832 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only (= Quantmac). fii 18.6034 -> 18.6233.",
+    "exact": true,
     "superseded": {
      "cell": [
-      54.03,
-      20.9534,
-      5.5624,
-      0.0024,
-      5.2106,
-      "2018-10-22",
-      24615
-     ],
-     "was": [
       54.03,
       18.6034,
       5.5624,
@@ -69051,14 +69158,45 @@
       "2018-10-22",
       24615
      ],
-     "src": "bsexbrl:531500_20102018162946_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.60 -> 20.95, dii 5.56 -> 5.56. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FUND LTD 2.35 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.02 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     "was": [
+      54.03,
+      20.9534,
+      5.5624,
+      0.0024,
+      5.2106,
+      "2018-10-22",
+      24615
+     ],
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.95 -> 18.60. APMS INVESTMENT FUND LTD 2.35 (non-institution row) FII -> public",
+     "superseded": {
+      "cell": [
+       54.03,
+       20.9534,
+       5.5624,
+       0.0024,
+       5.2106,
+       "2018-10-22",
+       24615
+      ],
+      "was": [
+       54.03,
+       18.6034,
+       5.5624,
+       0.0024,
+       5.2106,
+       "2018-10-22",
+       24615
+      ],
+      "src": "bsexbrl:531500_20102018162946_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 18.60 -> 20.95, dii 5.56 -> 5.56. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FUND LTD 2.35 fii(curated) | R1: R1-domestic-label Other Foreign Financial Institutions 0.02 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2018-12-31": {
     "cell": [
      54.03,
-     17.8116,
+     17.8401,
      6.409,
      0.0033,
      6.0534,
@@ -69067,26 +69205,18 @@
     ],
     "was": [
      54.03,
-     20.1616,
+     17.8116,
      6.409,
      0.0033,
      6.0534,
      "2019-01-28",
      25127
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.16 -> 17.81. APMS INVESTMENT FLIND LTD 2.35 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_2812019134548_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 52,590,523 + its 'Foreign Financial Institutions' row 84,004 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only (= Quantmac). fii 17.8116 -> 17.8401.",
+    "exact": true,
     "superseded": {
      "cell": [
-      54.03,
-      20.1616,
-      6.409,
-      0.0033,
-      6.0534,
-      "2019-01-28",
-      25127
-     ],
-     "was": [
       54.03,
       17.8116,
       6.409,
@@ -69095,8 +69225,39 @@
       "2019-01-28",
       25127
      ],
-     "src": "bsexbrl:531500_2812019134548_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.81 -> 20.16, dii 6.41 -> 6.41. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FLIND LTD 2.35 fii(memory~) | R1: R1-domestic-label Other Foreign Financial Institutions 0.03 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     "was": [
+      54.03,
+      20.1616,
+      6.409,
+      0.0033,
+      6.0534,
+      "2019-01-28",
+      25127
+     ],
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.16 -> 17.81. APMS INVESTMENT FLIND LTD 2.35 (non-institution row) FII -> public",
+     "superseded": {
+      "cell": [
+       54.03,
+       20.1616,
+       6.409,
+       0.0033,
+       6.0534,
+       "2019-01-28",
+       25127
+      ],
+      "was": [
+       54.03,
+       17.8116,
+       6.409,
+       0.0033,
+       6.0534,
+       "2019-01-28",
+       25127
+      ],
+      "src": "bsexbrl:531500_2812019134548_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.81 -> 20.16, dii 6.41 -> 6.41. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FLIND LTD 2.35 fii(memory~) | R1: R1-domestic-label Other Foreign Financial Institutions 0.03 public=0.00 fii=0.00  keyword. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2019-03-31": {
@@ -69146,7 +69307,7 @@
    "2019-06-30": {
     "cell": [
      54.03,
-     17.6227,
+     17.6239,
      6.8942,
      0.0117,
      6.5819,
@@ -69155,26 +69316,18 @@
     ],
     "was": [
      54.03,
-     19.9727,
+     17.6227,
      6.8942,
      0.0117,
      6.5819,
      "2019-07-30",
      23802
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.97 -> 17.62. APMS INVESTMENT FUND LTD 2.35 (non-institution row) FII -> public",
+    "src": "bsexbrl:531500_3072019161044_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the company's foreign rows: FPI 52,032,716 + its 'Foreign Financial Institutions' row 3,556 (a foreign-institution label) on 295,259,959; the stored value had the FPI part only. fii 17.6227 -> 17.6239.",
+    "exact": true,
     "superseded": {
      "cell": [
-      54.03,
-      19.9727,
-      6.8942,
-      0.0117,
-      6.5819,
-      "2019-07-30",
-      23802
-     ],
-     "was": [
       54.03,
       17.6227,
       6.8942,
@@ -69183,8 +69336,39 @@
       "2019-07-30",
       23802
      ],
-     "src": "bsexbrl:531500_3072019161044_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.62 -> 19.97, dii 6.89 -> 6.89. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FUND LTD 2.35 fii(curated) | R1: . Evidence: _shp_164_audit.json"
+     "was": [
+      54.03,
+      19.9727,
+      6.8942,
+      0.0117,
+      6.5819,
+      "2019-07-30",
+      23802
+     ],
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.97 -> 17.62. APMS INVESTMENT FUND LTD 2.35 (non-institution row) FII -> public",
+     "superseded": {
+      "cell": [
+       54.03,
+       19.9727,
+       6.8942,
+       0.0117,
+       6.5819,
+       "2019-07-30",
+       23802
+      ],
+      "was": [
+       54.03,
+       17.6227,
+       6.8942,
+       0.0117,
+       6.5819,
+       "2019-07-30",
+       23802
+      ],
+      "src": "bsexbrl:531500_3072019161044_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.62 -> 19.97, dii 6.89 -> 6.89. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). R2FII-holders Overseas Corporate Bodies 2.35 2.35 APMS INVESTMENT FUND LTD 2.35 fii(curated) | R1: . Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2019-09-30": {
@@ -125966,7 +126150,7 @@
    "2016-06-30": {
     "cell": [
      41.48,
-     35.0982,
+     35.1171,
      1.993,
      1.4955,
      0.0,
@@ -125975,7 +126159,7 @@
     ],
     "was": [
      41.48,
-     20.0982,
+     35.0982,
      1.993,
      1.4955,
      0.0,
@@ -125983,11 +126167,12 @@
      722984
     ],
     "src": "bsexbrl:500228_12720161161_SHP.xml",
-    "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 20.0982 -> 35.0982 (+15.0000), dii unchanged.",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 48,578,296 + the whole institutions Any-Other block 36,307,431 = JFE STEEL INTERNATIONAL EUROPE B V 36,258,307 (its 2022-form FDI line, batch 14) + an unnamed, unlabelled rest 49,124 that follows it (D1) on 241,722,044 (= Quantmac 35.1171). fii 35.0982 -> 35.1171.",
+    "exact": true,
     "superseded": {
      "cell": [
       41.48,
-      20.0982,
+      35.0982,
       1.993,
       1.4955,
       0.0,
@@ -125996,17 +126181,26 @@
      ],
      "was": [
       41.48,
-      35.1185,
-      1.9815,
+      20.0982,
+      1.993,
       1.4955,
       0.0,
       "2016-07-12",
       722984
      ],
      "src": "bsexbrl:500228_12720161161_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 1.98 -> 1.99, fii 35.12 -> 20.10. R1-foreign-holders Other 0.0 public=15.00 fii=0.00 JFE STEEL INTERNATIONAL EUROPE B V 15.00 foreign->public(new-format:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 20.0982 -> 35.0982 (+15.0000), dii unchanged.",
      "superseded": {
       "cell": [
+       41.48,
+       20.0982,
+       1.993,
+       1.4955,
+       0.0,
+       "2016-07-12",
+       722984
+      ],
+      "was": [
        41.48,
        35.1185,
        1.9815,
@@ -126015,24 +126209,37 @@
        "2016-07-12",
        722984
       ],
-      "was": [
-       41.48,
-       20.0982,
-       17.003,
-       1.4955,
-       0.0,
-       "2016-07-12",
-       722984
-      ],
       "src": "bsexbrl:500228_12720161161_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.02pp, holders: JFE STEEL INTERNATIONAL EUROPE B V) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.9815 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 1.98 -> 1.99, fii 35.12 -> 20.10. R1-foreign-holders Other 0.0 public=15.00 fii=0.00 JFE STEEL INTERNATIONAL EUROPE B V 15.00 foreign->public(new-format:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        41.48,
+        35.1185,
+        1.9815,
+        1.4955,
+        0.0,
+        "2016-07-12",
+        722984
+       ],
+       "was": [
+        41.48,
+        20.0982,
+        17.003,
+        1.4955,
+        0.0,
+        "2016-07-12",
+        722984
+       ],
+       "src": "bsexbrl:500228_12720161161_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.02pp, holders: JFE STEEL INTERNATIONAL EUROPE B V) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.9815 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2016-09-30": {
     "cell": [
      41.48,
-     35.6223,
+     35.6439,
      1.4044,
      1.0158,
      0.0,
@@ -126041,7 +126248,7 @@
     ],
     "was": [
      41.48,
-     20.6223,
+     35.6223,
      1.4044,
      1.0158,
      0.0,
@@ -126049,11 +126256,12 @@
      705124
     ],
     "src": "bsexbrl:500228_24102016182843_SHP.xml",
-    "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 20.6223 -> 35.6223 (+15.0000), dii unchanged.",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 49,851,852 + the whole institutions Any-Other block 36,307,406 = JFE STEEL INTERNATIONAL EUROPE B.V. 36,258,307 (FDI line, batch 14) + an unnamed rest 49,099 (D1) on 241,722,044 (= Quantmac 35.6439). fii 35.6223 -> 35.6439.",
+    "exact": true,
     "superseded": {
      "cell": [
       41.48,
-      20.6223,
+      35.6223,
       1.4044,
       1.0158,
       0.0,
@@ -126062,17 +126270,26 @@
      ],
      "was": [
       41.48,
-      35.6426,
-      1.3851,
+      20.6223,
+      1.4044,
       1.0158,
       0.0,
       "2016-10-24",
       705124
      ],
      "src": "bsexbrl:500228_24102016182843_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 1.39 -> 1.40, fii 35.64 -> 20.62. R1-foreign-holders Other 0.0 public=15.00 fii=0.00 JFE STEEL INTERNATIONAL EUROPE B.V. 15.00 foreign->public(new-format:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 20.6223 -> 35.6223 (+15.0000), dii unchanged.",
      "superseded": {
       "cell": [
+       41.48,
+       20.6223,
+       1.4044,
+       1.0158,
+       0.0,
+       "2016-10-24",
+       705124
+      ],
+      "was": [
        41.48,
        35.6426,
        1.3851,
@@ -126081,17 +126298,30 @@
        "2016-10-24",
        705124
       ],
-      "was": [
-       41.48,
-       20.6223,
-       16.4044,
-       1.0158,
-       0.0,
-       "2016-10-24",
-       705124
-      ],
       "src": "bsexbrl:500228_24102016182843_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.02pp, holders: JFE STEEL INTERNATIONAL EUROPE B.V.) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.3851 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 1.39 -> 1.40, fii 35.64 -> 20.62. R1-foreign-holders Other 0.0 public=15.00 fii=0.00 JFE STEEL INTERNATIONAL EUROPE B.V. 15.00 foreign->public(new-format:ForeignCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        41.48,
+        35.6426,
+        1.3851,
+        1.0158,
+        0.0,
+        "2016-10-24",
+        705124
+       ],
+       "was": [
+        41.48,
+        20.6223,
+        16.4044,
+        1.0158,
+        0.0,
+        "2016-10-24",
+        705124
+       ],
+       "src": "bsexbrl:500228_24102016182843_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (15.02pp, holders: JFE STEEL INTERNATIONAL EUROPE B.V.) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.3851 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
@@ -140220,6 +140450,29 @@
     ],
     "src": "bseaspx:503100_87",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 503100 qtrid 87) labels these rows foreign institutions - 'Foreign Venture Capital Investors' (Institutions, 999,507 shares = 0.6533) - and the stored fii 27.6863 held only 'Foreign Institutional Investors' 20.2618; 'Foreign Portfolio Investments Corporation' 7.4246. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 152,988,852 shares. fii 27.6863 -> 28.3397, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2024-09-23": {
+    "cell": [
+     47.27,
+     35.4429,
+     13.1744,
+     12.1128,
+     0.2695,
+     "2024-09-30",
+     84801
+    ],
+    "was": [
+     47.27,
+     35.4398,
+     13.1744,
+     12.1128,
+     0.2695,
+     "2024-09-30",
+     84801
+    ],
+    "src": "bsexbrl:503100_3092024173135_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): precision: FPI Category I 122,042,316 + Category II 4,662,462 on 357,489,842. fii 35.4398 -> 35.4429.",
+    "exact": true
    }
   },
   "PIIND": {
@@ -157392,22 +157645,43 @@
    "2016-03-31": {
     "cell": [
      47.6248,
-     9.5639,
+     9.5551,
      0.2597,
      0.0866,
      0.0,
      "2016-04-29"
     ],
     "was": [
-     44.02,
-     8.84,
-     0.24,
-     0.08,
+     47.6248,
+     9.5639,
+     0.2597,
+     0.0866,
      0.0,
      "2016-04-29"
     ],
-    "src": "bseapi:CorporatesSHPSecuritybeta:500148_89",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own first new-form filing (Dec-2015 Table I) reported the shares underlying its ADRs/GDRs separately (C1) OUTSIDE Promoter + Public = 100; a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.081891 = (A+B+C1+C2) 72211486 / (A+B+C2) 66745646 shares in the company's own Table I; fii 8.84 -> 9.56."
+    "src": "bsetable3:500148:89",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): precision: FPI 2,885,968 + the unnamed, unlabelled institutions Any-Other block 3,491,616 (D1) on (A+B) 66,745,646 (\u00a7164a DR basis; C1 5,465,840 outside); the batch-17 re-base had multiplied a 2-dp value (= Quantmac 9.55). fii 9.5639 -> 9.5551.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      47.6248,
+      9.5639,
+      0.2597,
+      0.0866,
+      0.0,
+      "2016-04-29"
+     ],
+     "was": [
+      44.02,
+      8.84,
+      0.24,
+      0.08,
+      0.0,
+      "2016-04-29"
+     ],
+     "src": "bseapi:CorporatesSHPSecuritybeta:500148_89",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own first new-form filing (Dec-2015 Table I) reported the shares underlying its ADRs/GDRs separately (C1) OUTSIDE Promoter + Public = 100; a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.081891 = (A+B+C1+C2) 72211486 / (A+B+C2) 66745646 shares in the company's own Table I; fii 8.84 -> 9.56."
+    }
    }
   },
   "VAIBHAVGBL": {
@@ -171442,6 +171716,52 @@
     ],
     "src": "bseaspx:532508:89+nseresults:1009287",
     "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 213,581,111 shares \u2014 it leaves out 17,604,334 shares that the Sep-2015 page (231,185,445, block C 17,604,334) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003271 paid-up 46.24, 2016-03-31 #1009287 paid-up 4624.0, face value 2.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 231,185,445 (\u00b1 50,000 shares, the filings' rounding): x 0.923852."
+   },
+   "2021-12-31": {
+    "cell": [
+     68.6,
+     15.0102,
+     7.2135,
+     3.0146,
+     0.5556,
+     "2022-01-14",
+     101600
+    ],
+    "was": [
+     68.6,
+     15.0072,
+     7.2135,
+     3.0146,
+     0.5556,
+     "2022-01-14",
+     101600
+    ],
+    "src": "bsexbrl:532508_1312022162644_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 75,679,033 + the unnamed, unlabelled institutions Any-Other block 13,520 (D1) on 504,272,990; the DR line 869,350 stays out (\u00a7151) (= Quantmac 15.0103). fii 15.0072 -> 15.0102.",
+    "exact": true
+   },
+   "2022-03-28": {
+    "cell": [
+     69.87,
+     14.9778,
+     6.351,
+     2.7196,
+     0.3539,
+     "2022-03-31",
+     111066
+    ],
+    "was": [
+     69.87,
+     14.9753,
+     6.351,
+     2.7196,
+     0.3539,
+     "2022-03-31",
+     111066
+    ],
+    "src": "bsexbrl:532508_313202219040_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 78,694,122 + the unnamed, unlabelled institutions Any-Other block 13,520 (D1) on 525,495,468; the DR line 869,350 stays out (\u00a7151). fii 14.9753 -> 14.9778.",
+    "exact": true
    }
   },
   "ITC": {
@@ -212850,7 +213170,7 @@
    "2018-12-31": {
     "cell": [
      53.8,
-     19.0127,
+     19.0138,
      0.1849,
      0.1722,
      0.0,
@@ -212859,19 +213179,20 @@
     ],
     "was": [
      53.8,
-     26.3727,
+     19.0127,
      0.1849,
      0.1722,
      0.0,
      "2019-01-22",
      16576
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3727 -> 19.0127, dii unchanged.",
+    "src": "bsexbrl:530549_221201910040_SHP.xml",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): precision: FPI 15,501,396 on 81,526,898; the institutions block is the company's company-type rows (Bodies Corporate, Overseas Corporate Bodies = Baring) and the MGT-4 row - none FII (Quantmac's 19.0525 is not reproducible from this filing's rows). fii 19.0127 -> 19.0138.",
+    "exact": true,
     "superseded": {
      "cell": [
       53.8,
-      26.3727,
+      19.0127,
       0.1849,
       0.1722,
       0.0,
@@ -212880,15 +213201,37 @@
      ],
      "was": [
       53.8,
-      19.0127,
-      13.3349,
+      26.3727,
+      0.1849,
       0.1722,
       0.0,
       "2019-01-22",
       16576
      ],
-     "src": "bsexbrl:530549_221201910040_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.01 -> 26.37, dii 13.33 -> 0.18. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.79 public=5.79 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+     "src": "ledger",
+     "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.3595) sits on the company's own company-type sub-row 'Overseas Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 26.3727 -> 19.0127, dii unchanged.",
+     "superseded": {
+      "cell": [
+       53.8,
+       26.3727,
+       0.1849,
+       0.1722,
+       0.0,
+       "2019-01-22",
+       16576
+      ],
+      "was": [
+       53.8,
+       19.0127,
+       13.3349,
+       0.1722,
+       0.0,
+       "2019-01-22",
+       16576
+      ],
+      "src": "bsexbrl:530549_221201910040_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 19.01 -> 26.37, dii 13.33 -> 0.18. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Bodies Corporate 5.79 public=5.79 fii=0.00 PIVOTAL ENTERPRISES PRIVATE LIMITED 3.96 foreign->public(new-format:BodiesCorporate); R1-public-label Overseas Corporate Bodies 7.36 public=0.00 fii=7.36 BARING INDIA PRIVATE EQUITY FUND III LIMITED 7.36 foreign->fii(memory~) keyword. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2019-03-31": {
@@ -364448,26 +364791,27 @@
    "2010-09-30": {
     "cell": [
      19.177,
-     2.773,
+     2.7607,
      0.0,
      0.0,
      0.0,
      "2010-10-21"
     ],
     "was": [
-     9.7509,
-     1.41,
+     19.177,
+     2.773,
      0.0,
      0.0,
      0.0,
      "2010-10-21"
     ],
-    "src": "bseaspx:532351_67",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own first new-form filing (Dec-2015 Table I) reported the shares underlying its ADRs/GDRs separately (C1) OUTSIDE Promoter + Public = 100; a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.966694 = total (A+B+C) 138129939 / (A+B) 70234597 shares on the same quarter's BSE page; fii 1.41 -> 2.77.",
+    "src": "bseaspx:532351:71",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): precision: 'Foreign Institutional Investors' 1,282,249 + the non-institutions 'Foreign Banks' row 656,688 on (A+B) 70,234,597 (\u00a7164a DR basis); the batch-17 re-base had multiplied the page's 2-dp 1.41 by 1.966694 (= Quantmac 2.76). fii 2.773 -> 2.7607.",
+    "exact": true,
     "superseded": {
      "cell": [
-      9.7509,
-      1.41,
+      19.177,
+      2.773,
       0.0,
       0.0,
       0.0,
@@ -364475,14 +364819,34 @@
      ],
      "was": [
       9.7509,
-      0.9283,
+      1.41,
       0.0,
       0.0,
       0.0,
       "2010-10-21"
      ],
      "src": "bseaspx:532351_67",
-     "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.93 -> 1.41, dii 0.00 -> 0.00. noninst-fii Foreign Banks 0.48. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own first new-form filing (Dec-2015 Table I) reported the shares underlying its ADRs/GDRs separately (C1) OUTSIDE Promoter + Public = 100; a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.966694 = total (A+B+C) 138129939 / (A+B) 70234597 shares on the same quarter's BSE page; fii 1.41 -> 2.77.",
+     "superseded": {
+      "cell": [
+       9.7509,
+       1.41,
+       0.0,
+       0.0,
+       0.0,
+       "2010-10-21"
+      ],
+      "was": [
+       9.7509,
+       0.9283,
+       0.0,
+       0.0,
+       0.0,
+       "2010-10-21"
+      ],
+      "src": "bseaspx:532351_67",
+      "why": "\u00a7164g page-era re-read of a former Nifty 500 member (2026-09-26; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 0.93 -> 1.41, dii 0.00 -> 0.00. noninst-fii Foreign Banks 0.48. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2015-12-31": {
@@ -382901,22 +383265,43 @@
    "2008-12-31": {
     "cell": [
      42.6719,
-     21.2983,
+     21.305,
      17.49,
      5.143,
      2.5699,
      "2009-01-21"
     ],
     "was": [
-     41.1998,
-     20.5635,
-     16.8866,
-     4.9656,
-     2.4812,
+     42.6719,
+     21.2983,
+     17.49,
+     5.143,
+     2.5699,
      "2009-01-21"
     ],
-    "src": "bseaspx:500303_60",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.035732 = total (A+B+C) 95009290 / (A+B) 91731565 shares on the same quarter's BSE page; fii 20.56 -> 21.30."
+    "src": "bseaspx:500303:80",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,195 sh) - FII by its label; FII = 'Foreign Institutional Investors' 19,537,228 + 6,195 on (A+B) 91,731,565 (Quantmac 2-dp within 0.007). fii 21.2983 -> 21.305.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      42.6719,
+      21.2983,
+      17.49,
+      5.143,
+      2.5699,
+      "2009-01-21"
+     ],
+     "was": [
+      41.1998,
+      20.5635,
+      16.8866,
+      4.9656,
+      2.4812,
+      "2009-01-21"
+     ],
+     "src": "bseaspx:500303_60",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.035732 = total (A+B+C) 95009290 / (A+B) 91731565 shares on the same quarter's BSE page; fii 20.56 -> 21.30."
+    }
    },
    "2009-03-31": {
     "cell": [
@@ -382981,22 +383366,43 @@
    "2009-12-31": {
     "cell": [
      47.5719,
-     17.1174,
+     17.1238,
      15.078,
      3.4364,
      2.3301,
      "2010-01-21"
     ],
     "was": [
-     46.0585,
-     16.5729,
-     14.5983,
-     3.3271,
-     2.256,
+     47.5719,
+     17.1174,
+     15.078,
+     3.4364,
+     2.3301,
      "2010-01-21"
     ],
-    "src": "bseaspx:500303_64",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.032858 = total (A+B+C) 103009475 / (A+B) 99732483 shares on the same quarter's BSE page; fii 16.57 -> 17.12."
+    "src": "bseaspx:500303:84",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,326 sh) - FII by its label; FII = 'Foreign Institutional Investors' 17,071,691 + 6,326 on (A+B) 99,732,483 (Quantmac 2-dp within 0.007). fii 17.1174 -> 17.1238.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      47.5719,
+      17.1174,
+      15.078,
+      3.4364,
+      2.3301,
+      "2010-01-21"
+     ],
+     "was": [
+      46.0585,
+      16.5729,
+      14.5983,
+      3.3271,
+      2.256,
+      "2010-01-21"
+     ],
+     "src": "bseaspx:500303_64",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.032858 = total (A+B+C) 103009475 / (A+B) 99732483 shares on the same quarter's BSE page; fii 16.57 -> 17.12."
+    }
    },
    "2010-03-31": {
     "cell": [
@@ -383081,22 +383487,43 @@
    "2011-03-31": {
     "cell": [
      52.54,
-     17.9473,
+     17.953,
      12.5038,
      1.043,
      2.2184,
      "2011-04-21"
     ],
     "was": [
-     51.0482,
-     17.4377,
-     12.1488,
-     1.0134,
-     2.1554,
+     52.54,
+     17.9473,
+     12.5038,
+     1.043,
+     2.2184,
      "2011-04-21"
     ],
-    "src": "bseaspx:500303_69",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.029224 = total (A+B+C) 113509729 / (A+B) 110286736 shares on the same quarter's BSE page; fii 17.44 -> 17.95."
+    "src": "bseaspx:500303:89",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,286 sh) - FII by its label; FII = 'Foreign Institutional Investors' 19,793,541 + 6,286 on (A+B) 110,286,736 (Quantmac 2-dp within 0.007). fii 17.9473 -> 17.953.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.54,
+      17.9473,
+      12.5038,
+      1.043,
+      2.2184,
+      "2011-04-21"
+     ],
+     "was": [
+      51.0482,
+      17.4377,
+      12.1488,
+      1.0134,
+      2.1554,
+      "2011-04-21"
+     ],
+     "src": "bseaspx:500303_69",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.029224 = total (A+B+C) 113509729 / (A+B) 110286736 shares on the same quarter's BSE page; fii 17.44 -> 17.95."
+    }
    },
    "2011-06-30": {
     "cell": [
@@ -383141,25 +383568,54 @@
    "2011-12-31": {
     "cell": [
      52.5378,
-     19.6474,
+     19.6531,
      12.0449,
      1.7165,
      2.019,
      "2012-01-21"
     ],
     "was": [
-     51.0463,
-     19.0896,
-     11.7029,
-     1.6678,
-     1.9617,
+     52.5378,
+     19.6474,
+     12.0449,
+     1.7165,
+     2.019,
      "2012-01-21"
     ],
-    "src": "bseaspx:500303_72",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.029220 = total (A+B+C) 113513984 / (A+B) 110291324 shares on the same quarter's BSE page; fii 19.09 -> 19.65."
+    "src": "bseaspx:500303:92",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,286 sh) - FII by its label; FII = 'Foreign Institutional Investors' 21,669,334 + 6,286 on (A+B) 110,291,324 (Quantmac 2-dp within 0.007). fii 19.6474 -> 19.6531.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.5378,
+      19.6474,
+      12.0449,
+      1.7165,
+      2.019,
+      "2012-01-21"
+     ],
+     "was": [
+      51.0463,
+      19.0896,
+      11.7029,
+      1.6678,
+      1.9617,
+      "2012-01-21"
+     ],
+     "src": "bseaspx:500303_72",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.029220 = total (A+B+C) 113513984 / (A+B) 110291324 shares on the same quarter's BSE page; fii 19.09 -> 19.65."
+    }
    },
    "2012-03-31": {
     "cell": [
+     52.5225,
+     19.8951,
+     12.0311,
+     1.984,
+     1.9796,
+     "2012-04-21"
+    ],
+    "was": [
      52.5225,
      19.8893,
      12.0311,
@@ -383167,19 +383623,40 @@
      1.9796,
      "2012-04-21"
     ],
-    "was": [
-     51.0457,
-     19.3301,
-     11.6928,
-     1.9282,
-     1.9239,
-     "2012-04-21"
-    ],
-    "src": "bseaspx:500303_73",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.028931 = total (A+B+C) 113515242 / (A+B) 110323448 shares on the same quarter's BSE page; fii 19.33 -> 19.89."
+    "src": "bseaspx:500303:93",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,286 sh) - FII by its label; FII = 'Foreign Institutional Investors' 21,942,641 + 6,286 on (A+B) 110,323,448 (Quantmac 2-dp within 0.007). fii 19.8893 -> 19.8951.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.5225,
+      19.8893,
+      12.0311,
+      1.984,
+      1.9796,
+      "2012-04-21"
+     ],
+     "was": [
+      51.0457,
+      19.3301,
+      11.6928,
+      1.9282,
+      1.9239,
+      "2012-04-21"
+     ],
+     "src": "bseaspx:500303_73",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.028931 = total (A+B+C) 113515242 / (A+B) 110323448 shares on the same quarter's BSE page; fii 19.33 -> 19.89."
+    }
    },
    "2012-06-30": {
     "cell": [
+     52.5224,
+     19.4831,
+     12.1775,
+     2.1449,
+     2.0126,
+     "2012-07-21"
+    ],
+    "was": [
      52.5224,
      19.4774,
      12.1775,
@@ -383187,16 +383664,29 @@
      2.0126,
      "2012-07-21"
     ],
-    "was": [
-     51.0457,
-     18.9298,
-     11.8351,
-     2.0846,
-     1.956,
-     "2012-07-21"
-    ],
-    "src": "bseaspx:500303_74",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.028929 = total (A+B+C) 113515242 / (A+B) 110323681 shares on the same quarter's BSE page; fii 18.93 -> 19.48."
+    "src": "bseaspx:500303:94",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,286 sh) - FII by its label; FII = 'Foreign Institutional Investors' 21,488,235 + 6,286 on (A+B) 110,323,681 (Quantmac 2-dp within 0.007). fii 19.4774 -> 19.4831.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.5224,
+      19.4774,
+      12.1775,
+      2.1449,
+      2.0126,
+      "2012-07-21"
+     ],
+     "was": [
+      51.0457,
+      18.9298,
+      11.8351,
+      2.0846,
+      1.956,
+      "2012-07-21"
+     ],
+     "src": "bseaspx:500303_74",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.028929 = total (A+B+C) 113515242 / (A+B) 110323681 shares on the same quarter's BSE page; fii 18.93 -> 19.48."
+    }
    },
    "2012-09-30": {
     "cell": [
@@ -383301,22 +383791,43 @@
    "2013-12-31": {
     "cell": [
      58.6641,
-     15.4296,
+     15.4348,
      12.924,
      6.1588,
      1.1848,
      "2014-01-21"
     ],
     "was": [
-     57.2291,
-     15.0522,
-     12.6079,
-     6.0081,
-     1.1558,
+     58.6641,
+     15.4296,
+     12.924,
+     6.1588,
+     1.1848,
      "2014-01-21"
     ],
-    "src": "bseaspx:500303_80",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.025075 = total (A+B+C) 130081841 / (A+B) 126899789 shares on the same quarter's BSE page; fii 15.05 -> 15.43."
+    "src": "bseaspx:500303:100",
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): the institutions 'Any Others' row is the company's own 'Foreign Bank' row (6,648 sh) - FII by its label; FII = 'Foreign Institutional Investors' 19,580,143 + 6,648 on (A+B) 126,899,789 (Quantmac 2-dp within 0.007). fii 15.4296 -> 15.4348.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      58.6641,
+      15.4296,
+      12.924,
+      6.1588,
+      1.1848,
+      "2014-01-21"
+     ],
+     "was": [
+      57.2291,
+      15.0522,
+      12.6079,
+      6.0081,
+      1.1558,
+      "2014-01-21"
+     ],
+     "src": "bseaspx:500303_80",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.025075 = total (A+B+C) 130081841 / (A+B) 126899789 shares on the same quarter's BSE page; fii 15.05 -> 15.43."
+    }
    },
    "2014-03-31": {
     "cell": [
@@ -389492,6 +390003,27 @@
     ],
     "src": "bsetable3:523236:89",
     "why": "\u00a7164s part 24 (2026-10-06; raised by the FII session's part 38): BSE Table III Mar-2016 names HSBC PRIVATE BANK (SUISSE) SA 10,177,740 sh INSIDE the company's 'Financial Institutions/Banks' line (10,390,703). A Swiss private bank is not a domestic institution - the same treatment as Samena (BALLARPUR) / Deutsche Bank AG / Standard Chartered (Singapore) inside domestic lines (parts 6, seam reader). It leaves dii; FII only with a foreign document (FII session's call), else public. dii 5.39 -> 0.1104 = (10,390,703 - 10,177,740) / 192,903,861; no other domestic line in the filing."
+   },
+   "2015-12-31": {
+    "cell": [
+     53.7946,
+     16.0798,
+     0.0323,
+     0.0,
+     0.0,
+     "2016-02-27"
+    ],
+    "was": [
+     53.7946,
+     16.0798,
+     5.3083,
+     0.0,
+     0.0,
+     "2016-02-27"
+    ],
+    "src": "bsetable3:523236:88",
+    "exact": true,
+    "why": "\u00a7164r batch 30 part 39 (2026-10-06): the part-38 fill's dii counted HSBC PRIVATE BANK (SUISSE) SA 10,177,740 inside the FI / Banks line - a Swiss private bank with no institution document leaves dii (DII session \u00a7164s part 24 did Mar-2016); dii = (10,240,014 - 10,177,740) on 192,907,258. Guarded on the fill row the part-38 refresh may store first; the fill ledger row carries the same value. fii unchanged (HSBC stays public). [53.7946, 16.0798, 5.3083, 0.0, 0.0] -> [53.7946, 16.0798, 0.0323, 0.0, 0.0]."
    }
   }
  },

@@ -21760,6 +21760,21 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     fixes must be the only latest entry with 'was' = the stored event row (RBLBANK, fixed by the DII session a124bd554). OPEN (class,
     to measure): the 2014-16 ann-stream dates use a quarter's FIRST BSE notice without checking for a later revision notice (APTECHT,
     DCW, GPPL, TNPL, RTNPOWER, TUBEINVEST, IFBIND, PATELENG here) - a store-wide §164b pass.
+    **Batch 30 part 39 (label "§164r batch 30 part 39"; 23 cells + 1 date + SHRENUJ Dec-15 dii; Quantmac's 0.01-0.05 'small-gap'
+    cells).** Rows our own rules count that the store had left out: ABIRLANUVO 2008-13 (7 quarters) the institutions 'Foreign Bank'
+    row; JISLJALEQS Dec-2019 'Foreign Bank' 1,000 + non-institutions FPI Cat-III 134,710 (§159); RAJESHEXPO Dec-2017..Dec-2018 and
+    Jun-2019 its 'Foreign Financial Institutions' row (the stored values were the FPI part, some 2-dp); JSWSTEEL Jun / Sep-2016 and JSL
+    Dec-2021 + its 2022-03-28 event the unnamed, unlabelled institutions rest (D1). Precision: AKSHOPTFBR Sep-2010 and UFLEX Mar-2016
+    (the batch-17 DR re-base had multiplied 2-dp values - a class to measure), JKCEMENT Dec-2018, SHILPAMED Dec-2018, PHOENIXLTD
+    2024-09-23 event. Date: DHANI Jun-2020 -> 2020-07-20 (the original's notice; Quantmac's reading inside [original, 2020-08-08
+    revision) = the revision's FII). SHRENUJ Dec-2015 (part-38 fill) dii 5.3083 -> 0.0323: HSBC PRIVATE BANK (SUISSE) SA leaves the
+    FI / Banks line (DII session §164s part 24 for Mar-2016) - fill row + a guarded cell_fix (the pending part-38 refresh may store the
+    old fill first). Held: NAM-INDIA Mar-2021 precision 6.9776 -> 6.9784 (write_b8 skipped it: the DII session's part-23 entry on the
+    same key is not in the store yet). Quantmac-side / rules recorded: STAR Sep-2016 (Quantmac leaves out the unnamed, unlabelled
+    institutions block 21,000 its own rule b-3 counts); RAJESHEXPO Mar-2020 (Quantmac divides by NSE's 295,933,114 - every BSE filing
+    Dec-2019..Sep-2020 shows 295,259,959); NAM-INDIA / ICICIGI / JAGRAN / TCI QIB rows; JSL / PHOENIXLTD midnight rule. UNKNOWN:
+    JKCEMENT Dec-2018, SHILPAMED Dec-2018, RAJESHEXPO Jun-2019 (Quantmac's figures not reproducible from BSE's files); MINDACORP
+    Jun-2016 (a re-filed quarter + the open annual-report-category question). IBVENTURES = DHANI (renamed): 10 'blank' cells agree.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
