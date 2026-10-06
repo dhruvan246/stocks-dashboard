@@ -1,0 +1,650 @@
+{
+ "date": "2026-10-06",
+ "run_started": "2026-10-06 19:51 IST",
+ "run_finished": "2026-10-06 20:22 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1192,
+ "candidates": 13,
+ "filings_status": "BSE api answered 200 from this sandbox (probe on ComHeadernew), so the scan ran live and universe.py rebuilt from the scrip master: 1,192 names in the Rs 200-2,000 cr band (767 B, 126 X, 112 T, 78 M, 60 XT, 44 MT, 3 A, 1 MS, 1 P; 831 with an NSE symbol; 123 SME). The re-scan at 19:59 IST read 1,035 announcements against BSE's own ROWCNT of 1,041 - announcements_capped TRUE by six rows, because a page came back short of the stated count, so the 1,035 is a FLOOR and the six unread rows are the day's earliest. 45 in-universe filings, 153 rows with signals, 13 candidates. This supersedes the GitHub Actions scan of 18:58 IST (1,035 vs its 966 read, 974 reported, 12 candidates) and the extra read MATTERED: it picked up two filings Actions missed, both central to this run - Om Power Transmission's second GETCO LOI (filed 19:41 IST) and Veegaland's investor presentation (19:52 IST, which arrived during the scan itself). Without the re-read the day's strongest candidate would have shown one LOI, not two.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), so govt.py exited 0 and left govt.json untouched, exactly as runbook 144e designs it. This is NOT a data gap: GitHub Actions read a reachable PIB at 18:56 IST today (feeds_status.json: pib.gov.in 200, steps.govt 0, 15 files landed, landing.refused empty), so the government lane's verdict for 2026-10-06 is a real measurement, taken 1h55m before this run. 41 releases scanned, 4 opened, 0 KEPT, 1 large-but-unmapped. Dropped: 31 no decision verb, 3 below the Rs 1,000 cr floor, 2 backgrounders, 2 duplicates, 2 ceremonial/noise, 1 no mapped theme.",
+ "commodity_status": "Every panel is today's, built by GitHub Actions at 18:56-19:00 IST (run 37470720444; steps_failed EMPTY - all ten steps exited 0; 15 files landed, identical 0, refused 0, rebuilt 0, so nothing was lost to a mid-run race). From THIS sandbox every external commodity host was refused at the proxy, so each builder kept its previous rows as designed: spot 0 of 35 (westmetall and markets.businessinsider.com both 403 - spot.json and spot_series.json LEFT UNCHANGED), wpi LEFT UNCHANGED (eaindustry.nic.in 403, still Apr-2026), trade LEFT UNCHANGED (tradestat.commerce.gov.in 403, still 2026-07), minsteel 'no report listed; committed file left as it was' (steel.gov.in 403). india_spot: metalbook, ibja, rubber, sugar, fuel and te all FAILED at the proxy and 'previous rows kept'; the only two sources that worked are the ones that read BSE - nmdc 'ok, 2 rows' and minsteel 'ok, 3 rows' from the committed file. 0 history rows appended (Actions had already appended today's). india_history.json.gz WAS rebuilt - 152 series, 77,833 dated points - so the click-a-price chart is current. Two stamps are older than 3 trading days and that is inherent to the series, not a failure: WPI is Apr-2026 (about 6 months, 2-month publication lag plus no new file since) and the HS trade panel is 2026-07 (about 3 months, ~45-day lag). Ministry of Steel: no month recorded in signals.json (minsteel_month null). Note this run's run-order artefact: minsteel.py and india_spot.py first failed on 'No module named fitz' because PyMuPDF 1.28.2 had been pip-installed into python3.13 while python3 here is 3.11; re-installed with python3 -m pip and both re-run - the second run is the one reported above.",
+ "candidates_considered": [
+  {
+   "ticker": "VEEGALAND",
+   "scrip": "544923",
+   "name": "Veegaland Developers Ltd",
+   "mcap": 726.1,
+   "score": 10,
+   "signals": {
+    "RESULT": 4,
+    "DISCLOSE": 2,
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "RESEARCHED AND PUBLISHED. All four filings opened. First results as a listed company (listed 18-Sep-2026): Q1 FY27 revenue Rs 74.32 cr +79.1% YoY, EBITDA Rs 14.31 cr +134.7%, PAT Rs 9.72 cr +202.6%, on an unmodified Varma & Varma limited review (UDIN 26203094FVTWRM1534). Forward indicators moved with them: pre-sales Rs 129.85 cr +64.8%, collections Rs 70.97 cr +72.5%. Order value Rs 910 cr with Rs 431 cr unrecognised = 1.72x FY26 revenue of Rs 250.98 cr. Promoter bought 11,00,000 shares in the open market on 18 and 21 Sep (63.69% to 65.95%), nil encumbrance. Two caveats published with it: the auditor says the +79% comparative base was NOT reviewed, and the filing contradicts itself (note 1 says the quarter was reviewed, note 5 says it was not - the attached review report settles it in favour of note 1). Also found and published: the presentation's realisation slide prints bars giving +4.2% QoQ / +21.7% YoY while its arrows say -5.5% / +17.5%."
+  },
+  {
+   "ticker": "SOLEX",
+   "scrip": "544862",
+   "name": "Solex Energy Ltd",
+   "mcap": 745.6,
+   "score": 5,
+   "signals": {
+    "DISCLOSE": 1,
+    "ORDER": 1
+   },
+   "verdict": "RESEARCHED, NOT PUBLISHED - the trigger fails both measured order tests and the press release overstates it. All five of its order filings since its 13-Aug-2026 BSE listing were opened. Today's NEW order is Rs 180.98 cr incl GST, won by subsidiary Solex Green Energy for TOPCon bifacial G2G modules, delivery to January 2027. The press release headline of 'Rs 194.14 Crore Combined Work Orders' adds back the parent's Rs 13.16 cr order that the company had ALREADY filed separately the previous evening (05-Oct-2026 21:01 IST) - so the day's new business is Rs 180.98 cr, not Rs 194.14 cr. Against FY26 net sales of Rs 1,618.06 cr that is 11.2% - the weak bucket (<25% of sales, 21.4% reached 2x in two years vs 35.7% for 25-50%) - and it adds 5.3% to an order book the company already puts at about Rs 3,400 cr. On rarity it is firmly a serial filer: Rs 42.47 cr (13-Aug), Rs 74.77 cr (03-Sep), Rs 75.96 cr (03-Oct), Rs 13.16 cr (05-Oct) and Rs 180.98 cr (06-Oct) = Rs 387.34 cr across five BSE filings in eight weeks, plus a Rs 628.37 cr July order and a Rs 175 cr LOI named in the Q1 presentation. Earnings are going the wrong way: Q1 FY27 PAT Rs 8.26 cr, DOWN 66.6% YoY, EBITDA margin 12.7% from 16.4%, and FY27 utilisation guided DOWN to about 55% from about 70% in FY26 after the late-May ALMM/ALCM timeline clarification put buyers in wait-and-watch. The Rs 1,050 cr 2.2 GW cell line is unfunded: Rs 700 cr of debt 'at an advanced stage of discussion', Rs 350 cr of NCD/CCD equity 'progressing through due diligence', on net debt/equity already 0.57x. See `watch` - the valuation is the reason to come back, not this order."
+  },
+  {
+   "ticker": "OMPOWER",
+   "scrip": "544750",
+   "name": "Om Power Transmission Ltd",
+   "mcap": 528.4,
+   "score": 4.0,
+   "signals": {
+    "ORDER": 2
+   },
+   "verdict": "RESEARCHED AND PUBLISHED. Both LOI filings opened: Rs 69.18 cr for the 220 kV D/C Prantij-Jantral Line Package 2 (24 months) and Rs 60.48 cr for the 220 kV Kotda-Sanghani AIS substation (18 months), both from GETCO, Rs 129.66 cr incl GST. Size test is FAVOURABLE: 28.9% of FY26 revenue of Rs 449.16 cr, inside the 25-50%-of-sales band. What makes it an idea rather than routine EPC noise is the direction it reverses - the company's own disclosures show the order book falling two quarters running (Rs 745 cr at Dec-25 per the FY26 call, Rs 621.28 cr at Mar-26, Rs 567.47 cr at Jun-26) on a Q1 book-to-bill of 0.56x, with the Chairman naming muted GETCO tendering as the cause. Today is Rs 129.66 cr from that same counterparty in one evening. Rarity test is UNFAVOURABLE and published as the main caveat: eight order filings (30-Apr, 25-Jun, 09-Jul, 10-Aug, 27-Aug, 17-Sep and two today) in the 5.7 months since its 17-Apr-2026 listing, the bucket that reached 2x only 17.3% of the time and NEVER 5x - qualified by the fact that it had no filing obligation before April 2026. Trailing PE 13.2x on 3.4245 cr post-IPO shares, 11.8% below its Rs 175 IPO price, at the bottom of its 65-day range, volume 0.7x median (the LOIs landed after the close). Thin: median turnover Rs 18.9 lakh."
+  },
+  {
+   "ticker": "MOBIKWIK",
+   "scrip": "544305",
+   "name": "One Mobikwik Systems Ltd",
+   "mcap": 1906.5,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +20.0% in a day on 68.2x the 60-day median volume, closing at the 65-day window high - and ZERO announcements. The playbook watch-lists a pure price move with no filing to explain it rather than researching it. Watch-listed."
+  },
+  {
+   "ticker": "MANIKA",
+   "scrip": "544929",
+   "name": "Manika Plastech Ltd",
+   "mcap": 596.9,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +19.6% in a day, 9.6x volume, at the window high, no announcement, and only 11 days of price history. Pure price move - watch-listed."
+  },
+  {
+   "ticker": "AVADHSUGAR",
+   "scrip": "540649",
+   "name": "Avadh Sugar & Energy Ltd",
+   "mcap": 1746.8,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +62.8% over the 65-day window, 8.6x volume, at the window high - but no filing. Notable because it breaks out alongside Dhampur Sugar on a day when the sugar signal's Indian prints are FALLING (see signals_considered): the move is not explained by the domestic sugar price, and no filing explains it either. Watch-listed."
+  },
+  {
+   "ticker": "DHAMPURSUG",
+   "scrip": "500119",
+   "name": "Dhampur Sugar Mills Ltd",
+   "mcap": 1215.1,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +6.9% on the day, +30.5% over the window, 3.7x volume, at the window high, no filing. It is the mapped small-cap beneficiary of the sugar group, but the group's signal is driven by a GLOBAL proxy while every Indian sugar print in the panel is down 7-16% over a month. Publishing a sugar beneficiary on that evidence would contradict the measured domestic price. Watch-listed."
+  },
+  {
+   "ticker": "MANALIPETC",
+   "scrip": "500268",
+   "name": "Manali Petrochemicals Ltd",
+   "mcap": 1587.4,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +45.6% over the window, 7.5x volume, at the window high, no filing. Propylene-oxide/polyol maker, so plausibly connected to the polyolefins and benzene groups, but with no filing and no verified exposure document read this run it stays a watch line."
+  },
+  {
+   "ticker": "INOVSYNTH",
+   "scrip": "533315",
+   "name": "Innovassynth Technologies (India) Ltd",
+   "mcap": 1490.4,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. 8.2x volume at the window high, +22.8% over the window, no announcement. Watch-listed."
+  },
+  {
+   "ticker": "NATFIT",
+   "scrip": "531289",
+   "name": "National Fittings Ltd",
+   "mcap": 310.0,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. The biggest window move of the day at +127.4% (and +45.5% in 20 days) on 4.1x volume, at the window high, with NO filing at all. A 127% run with nothing disclosed to explain it is a reason for caution, not research. Watch-listed."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "name": "Regency Fincorp Ltd",
+   "mcap": 467.5,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +36.0% over the window, 4.5x volume, at the window high, no filing. Watch-listed."
+  },
+  {
+   "ticker": "EIMCOELECO",
+   "scrip": "523708",
+   "name": "Eimco Elecon (India) Ltd",
+   "mcap": 1366.1,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. +24.2% over the window, 4.3x volume, at the window high, no filing. Watch-listed."
+  },
+  {
+   "ticker": "GKSL",
+   "scrip": "544666",
+   "name": "Gujarat Kidney and Super Speciality Hospital Ltd",
+   "mcap": 1524.8,
+   "score": 4,
+   "signals": {
+    "VOL": 1,
+    "BREAKOUT": 1
+   },
+   "verdict": "NOT RESEARCHED. 3.9x volume at the window high, no filing. Watch-listed."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "id": "crude",
+   "strength": 10.7,
+   "direction": "up",
+   "evidence": [
+    "WPI Crude Petroleum 3m +85.6%",
+    "WPI Petrol 1m +24.5%",
+    "WPI Petroleum Coke 1m +22.6%",
+    "WPI Crude Petroleum 12m +88.1%"
+   ],
+   "mapped_benefit": [
+    "ONGC",
+    "Oil India",
+    "Hindustan Oil Exploration",
+    "Selan Exploration"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. Every mapped beneficiary sits outside the Rs 200-2,000 cr universe. And the strength is almost entirely WPI, whose latest month is Apr-2026 - about six months stale - so the '3m +85.6%' is a move that ended in April. The fresh Indian prints in this group are the PPAC metro fuel series, dated today, and they are FLAT: Delhi petrol Rs 102.12, 1w 0.0%, 1m 0.0%, 3m 0.0% (administered prices do not move daily). Not actionable."
+  },
+  {
+   "group": "Silver",
+   "id": "silver",
+   "strength": 10.16,
+   "direction": "up",
+   "evidence": [
+    "WPI Silver 12m +152.4%",
+    "import unit price sy +85.1% · HS 710691 grains (2 codes, US$56.9mn/month)",
+    "import unit price sy +66.2% · HS 710692 containing 99.9 percent or more by wei (4 codes, US$113.7mn/month)",
+    "import unit price 3m -29.9% · HS 710691 grains (2 codes, US$56.9mn/month)"
+   ],
+   "mapped_benefit": [
+    "Hindustan Zinc",
+    "Modison Ltd"
+   ],
+   "verdict": "NO NEW WORK. The only in-universe name is Modison (506261, Rs 1,596.7 cr), already published on 2026-09-22 on exactly this signal; the playbook re-examines a published name only on a NEW hard trigger, and it filed nothing today. The IBJA silver-999 print is genuinely fresh (today, Rs 2,22,820/kg) but it is DOWN 3.8% over a month from a high of Rs 2,71,100, so the WPI 12m +152.4% describes a move that has since turned. No update written."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "id": "tungsten",
+   "strength": 10.0,
+   "direction": "up",
+   "evidence": [
+    "export unit price sy +606.5% · HS 284180 sodium tungstate (2 codes, US$21.2mn/month)",
+    "import unit price sy +280.4% · HS 8101 waste and scrap of tungsten and alloys (5 codes, US$7.6mn/month)",
+    "export unit price sy +244.5% · HS 8101 waste and scrap of tungsten and alloys (3 codes, US$8.6mn/month)",
+    "export unit price 1m -43.4% · HS 8101 waste and scrap of tungsten and alloys (3 codes, US$8.6mn/month)"
+   ],
+   "mapped_benefit": [],
+   "verdict": "NO BENEFICIARY MAPPED, and correctly so - the map lists only sufferers (Diffusion Engineers, Ador Welding), for whom tungsten is an input. Strength is entirely from the HS trade panel at 2026-07, and the series disagree with themselves: export unit price smoothed y/y +606.5% on HS 284180 while HS 8101 export unit price is -43.4% over 1 month and -36.8% over 3. On US$21.2mn and US$7.6-8.6mn a month these are small codes where one shipment moves the unit price, which is the caveat the panel itself carries. No Indian spot print exists for tungsten. Not actionable; no name added to the map on a hunch."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "id": "shipping",
+   "strength": 7.62,
+   "direction": "up",
+   "evidence": [
+    "Containerized Freight Index (global) 1y +228.6%",
+    "Containerized Freight Index (global) 1m +2.0%"
+   ],
+   "mapped_benefit": [
+    "Shipping Corporation of India",
+    "Great Eastern Shipping",
+    "Seamec"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. All three mapped names are outside the universe. The signal is one Trading Economics series (Containerized Freight Index 1y +228.6%, 1m +2.0%) with no Indian print behind it, so direction only. Not actionable."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "id": "sulphuric_acid",
+   "strength": 6.97,
+   "direction": "up",
+   "evidence": [
+    "WPI Sulphuric Acid 1m +20.9%",
+    "import unit price 3m +95.2% · HS 280700 sulphuric acid (1 codes, US$40.5mn/month)",
+    "Sulfur (global) 1y +189.8%",
+    "WPI Sulphuric Acid 12m +91.4%"
+   ],
+   "mapped_benefit": [
+    "Tanfac Industries",
+    "Hindustan Zinc",
+    "Hindalco"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. All three beneficiaries are outside the Rs 200-2,000 cr band. Two sources do agree here (WPI Sulphuric Acid 1m +20.9% and 12m +91.4%, import unit price 3m +95.2% on HS 280700 at US$40.5mn/month, TE Sulfur 1y +189.8%), which is the configuration the playbook says to trust - but both the WPI and trade legs are stale months (Apr-2026, 2026-07). Watch for a producer inside the band; none found in the universe this run."
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "id": "benzene_pta",
+   "strength": 6.03,
+   "direction": "up",
+   "evidence": [
+    "WPI Alkyl Benzene 1m +18.1%",
+    "WPI Alkyl Benzene 3m +28.9%",
+    "WPI Alkyl Benzene 12m +35.7%",
+    "export unit price 3m +28.6% · HS 290531 ethylene glycol (ethanediol) (1 codes, US$2.7mn/month)"
+   ],
+   "mapped_benefit": [
+    "Reliance Industries",
+    "Indian Oil"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. Both mapped names are giants. Not actionable."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "id": "polyolefins",
+   "strength": 6.0,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +241.4% · HS 3902 polypropylene (4 codes, US$262.8mn/month)",
+    "WPI Polypropylene film 3m +19.5%",
+    "WPI Polyester chips or Polyethylene terepthalate (PET) chips 3m +17.9%",
+    "WPI Polypropylene film 1m +6.6%"
+   ],
+   "mapped_benefit": [
+    "Reliance Industries"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH, and the headline should be distrusted: 'import unit price 1m +241.4%' on HS 3902 polypropylene is a one-month jump of a kind the playbook explicitly calls noise unless the 3-month move agrees, and the WPI legs behind it are modest (+6.5% to +19.5%). Not actionable."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "id": "graphite_electrodes",
+   "strength": 5.59,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +83.9% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)",
+    "export unit price 1m -24.7% · HS 2713 petroleum bitumen (5 codes, US$33.1mn/month)",
+    "import unit price sy +60.1% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)",
+    "import unit price 1m +14.8% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)"
+   ],
+   "mapped_benefit": [
+    "HEG",
+    "Graphite India"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. Both mapped names are outside the band - and this is the precedent group the user originally pointed at (electrodes ~10x in 2017-18), so it is checked every run. The HS prefix carrying the signal is 2713 'petroleum bitumen', a proxy for needle coke rather than the thing itself, at 2026-07. No in-universe electrode or needle-coke producer exists in the universe. Not actionable."
+  },
+  {
+   "group": "Copper",
+   "id": "copper",
+   "strength": 5.25,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +157.5% · HS 7407 electrolytic copper rods or black copp (13 codes, US$18.1mn/month)",
+    "export unit price sy +64.2% · HS 7404 copper scrap covered by isri code barl (7 codes, US$30.7mn/month)",
+    "export unit price sy +46.3% · HS 7403 cathods and sectns of cathods of refin (8 codes, US$135.8mn/month)",
+    "import unit price sy +42.0% · HS 7408 othr coppr wire wth max crs-sec diamtr (9 codes, US$85.6mn/month)"
+   ],
+   "mapped_benefit": [
+    "Sunlite Recycling",
+    "Parmeshwar Metal",
+    "Baheti Recycling",
+    "Hindustan Copper",
+    "KSH International",
+    "Bhagyanagar India",
+    "Precision Wires"
+   ],
+   "verdict": "NO NEW WORK. Two mapped names are in the universe: Bhagyanagar India (512296, Rs 1,448.2 cr), already published 2026-09-23 on this exact signal and with no filing today, and Parmeshwar Metal (544330, Rs 455.9 cr, SME). The freshest Indian copper print is MetalBook Mumbai CCR 8mm at Rs 1,468/kg - but dated 2026-09-29, a week old, because metalbook was refused at this sandbox's proxy and Actions' own last reading is that date. Strength is otherwise trade-panel smoothed y/y at 2026-07. No new hard trigger, so no update."
+  },
+  {
+   "group": "Natural gas",
+   "id": "natgas",
+   "strength": 4.93,
+   "direction": "up",
+   "evidence": [
+    "WPI Natural Gas 1m +14.8%",
+    "LNG JKM (global) 1y +131.0%",
+    "WPI LPG 1m +10.1%",
+    "WPI Natural Gas 3m +23.8%"
+   ],
+   "mapped_benefit": [
+    "ONGC",
+    "Oil India"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. Both outside the band. Not actionable."
+  },
+  {
+   "group": "Sugar (and ethanol)",
+   "id": "sugar",
+   "strength": 4.7,
+   "direction": "up",
+   "evidence": [
+    "spot sugar 1w +23.5%",
+    "Sugar (global) 1m +15.1%",
+    "Sugar (global) 1y +25.3%",
+    "import unit price 1m -8.2% · HS 1701 othr refnd sugar includng centrifugal  (3 codes, US$59.0mn/month)"
+   ],
+   "mapped_benefit": [
+    "Balrampur Chini",
+    "Triveni",
+    "Dhampur Sugar",
+    "Dalmia Bharat Sugar",
+    "EID Parry",
+    "Shree Renuka",
+    "Dwarikesh Sugar"
+   ],
+   "verdict": "NOT PUBLISHED - THE SIGNAL AND THE INDIAN PRICE POINT OPPOSITE WAYS, and this is the clearest example of the day of why the playbook says to quote the Indian print. The group's headline is 'spot sugar 1w +23.5%' and 'Sugar (global) 1m +15.1%' - both GLOBAL proxies. Every Indian spot print in sources.india, dated 2026-10-01, is DOWN over a month: Delhi M/30 Rs 4,777.5/qtl (1m -15.7%), Muzaffarnagar Rs 4,725.0 (-15.9%), Chennai Rs 5,113.5 (-15.3%), Bengaluru Rs 4,882.5 (-14.7%), Kanpur Rs 4,798.5 (-13.8%), Ahmedabad Rs 4,746.0 (-12.2%), Kolkata Rs 4,714.5 (-9.3%), Kolhapur Rs 4,567.5 (-7.4%); 1-week changes are 0.0% to -1.6%. The import and export unit prices in the same group are also negative (1m -8.2%, smoothed y/y -14.7% and -12.7%). So there is no case for a domestic sugar beneficiary today, and the Dhampur and Avadh Sugar breakouts in the filings lane are NOT explained by the sugar price. Two in-universe names (Dhampur 500119 Rs 1,215.1 cr, Dwarikesh 532610 Rs 869.6 cr) left unresearched for that reason."
+  },
+  {
+   "group": "Lithium carbonate and battery materials",
+   "id": "lithium",
+   "strength": 4.4,
+   "direction": "up",
+   "evidence": [
+    "import unit price 3m +66.0% · HS 2825 other inorganic bases metal oxides hyd (10 codes, US$47.7mn/month)",
+    "Lithium (global) 1m -22.5%",
+    "Lithium (global) 1y +67.0%",
+    "export unit price sy +58.2% · HS 2825 other inorganic bases metal oxides hyd (7 codes, US$10.5mn/month)"
+   ],
+   "mapped_benefit": [
+    "Himadri Speciality Chemical"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. The only mapped name is outside the band, and the signal contradicts itself on the fresh leg: TE Lithium is 1m -22.5% and Cobalt 1m -15.5% even as the 2026-07 trade panel shows import unit price 3m +66.0%. Direction is turning down on the only current source. Not actionable."
+  },
+  {
+   "group": "Zinc and lead",
+   "id": "zinc_lead",
+   "strength": 4.39,
+   "direction": "up",
+   "evidence": [
+    "WPI Zinc Concentrate 12m +65.8%",
+    "WPI Lead Concentrate 1m -10.3%",
+    "WPI Lead Concentrate 3m -20.7%",
+    "WPI Zinc Concentrate 3m +16.1%"
+   ],
+   "mapped_benefit": [
+    "Hindustan Zinc",
+    "Gravita India",
+    "Pondy Oxides",
+    "Nile Ltd"
+   ],
+   "verdict": "NOT PUBLISHED - the group mixes two metals moving in opposite directions, and the only in-universe name is on the wrong side of the split. ZINC is rising and the Indian print is fresh and at the top of its recorded range: MetalBook Mumbai Zinc Ingots SHG Rs 435/kg at 2026-10-01, 1y +51.6%, with the recorded high equal to the last price (n=24 readings since 2025-06-18, so a 15-month span, NOT an all-time high); Delhi Rs 437/kg, 1y +49.7%. WPI Zinc Concentrate 12m +65.8%, 3m +16.1%. LEAD is FALLING: WPI Lead Concentrate 1m -10.3%, 3m -20.7%, 12m -15.7%. The only mapped name inside the band is Nile Ltd (530129, Rs 372.2 cr), described in the map as a LEAD smelter - so the rising metal is not its metal. Gravita and Pondy Oxides, the other lead recyclers, are outside the band, and Hindustan Zinc is a giant. No in-universe zinc producer exists to add. Left unresearched, and the zinc/lead split is recorded here so tomorrow's run does not read this group's strength as one signal."
+  },
+  {
+   "group": "Paper and pulp",
+   "id": "paper",
+   "strength": 4.31,
+   "direction": "up",
+   "evidence": [
+    "import unit price 1m +43.1% · HS 4707 othr incl unsorted waste and scrap (4 codes, US$100.0mn/month)",
+    "WPI Pulp board 1m +3.0%",
+    "WPI Pulp board 3m +6.7%",
+    "import unit price sy -22.1% · HS 4707 othr incl unsorted waste and scrap (4 codes, US$100.0mn/month)"
+   ],
+   "mapped_benefit": [
+    "JK Paper",
+    "West Coast Paper",
+    "Andhra Paper",
+    "Seshasayee Paper"
+   ],
+   "verdict": "NOT RESEARCHED - the signal is an INPUT cost, not a selling price, for the names it maps as beneficiaries. The strength comes from the import unit price of HS 4707 (waste paper and scrap) at 1m +43.1% and 3m +9.3%, which is what a recycled-fibre mill BUYS; the output legs are weak (WPI Paper for printing & writing 1m +2.0%, Pulp board 1m +3.0%), and the same code is -22.1% on smoothed y/y. Two in-universe names (Andhra Paper 502330 Rs 1,401.9 cr, Seshasayee 502450 Rs 1,476.1 cr) left alone: on this evidence rising waste-paper prices are a margin headwind for them unless they are integrated, which no document read this run establishes. Recorded as a sufferer-side watch, per playbook rule 4."
+  },
+  {
+   "group": "Urea, DAP, potash",
+   "id": "fertiliser",
+   "strength": 3.54,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +106.2% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "import unit price 3m +45.4% · HS 310210 fertilizer grade, conforming to standa (2 codes, US$1079.0mn/month)",
+    "WPI Superphospate/Phosphatic fertilizer, others 1m +7.3%",
+    "import unit price 3m +29.7% · HS 310530 diamonm hydrgnorthphospht(diamonm phos (1 codes, US$818.5mn/month)"
+   ],
+   "mapped_benefit": [
+    "Chambal",
+    "Coromandel",
+    "Paradeep",
+    "Madhya Bharat Agro",
+    "Krishana Phoschem",
+    "RCF"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. All six mapped names are outside the Rs 200-2,000 cr band. Also note the direction problem: a rising DAP import unit price (US$1,079mn/month on HS 310210, +106.2% smoothed y/y) is a cost to Indian fertiliser makers whose selling prices are subsidy-controlled, so the group's 'benefit' framing needs revisiting. Not actionable today."
+  },
+  {
+   "group": "Caustic soda",
+   "id": "caustic_soda",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Caustic soda (sodium hydroxide) 1m +9.6%",
+    "export unit price 3m -29.1% · HS 2801 iodine (1 codes, US$4.9mn/month)",
+    "export unit price sy +57.8% · HS 2801 iodine (1 codes, US$4.9mn/month)",
+    "export unit price 1m -14.1% · HS 281512 naoh in aqs soln (soda lye or lqd soda (1 codes, US$9.8mn/month)"
+   ],
+   "mapped_benefit": [
+    "Gujarat Alkalies",
+    "DCM Shriram",
+    "Lords Chloro Alkali",
+    "Epigral",
+    "Punjab Alkalies",
+    "DCW",
+    "De Nora India",
+    "TGV Sraac"
+   ],
+   "verdict": "NOT RESEARCHED THIS RUN - the richest in-universe list of the day (Lords Chloro 500284 Rs 399.4 cr, Punjab Alkalies 506618 Rs 1,269.1 cr, DCW 500117 Rs 1,367.8 cr, De Nora 590031 Rs 388.7 cr, TGV Sraac 507753 Rs 1,342.4 cr) but at strength 3.2 it ranks below three names that had hard, dated filings today, and the research budget is at most four names. No Indian caustic print exists in the panel, so the exposure work would rest on WPI and the trade panel alone. Carried to tomorrow as the first commodity name to open if nothing harder arrives."
+  },
+  {
+   "group": "Gold",
+   "id": "gold",
+   "strength": 3.2,
+   "direction": "up",
+   "evidence": [
+    "WPI Gold & gold ornaments 12m +48.0%",
+    "export unit price sy +57.1% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$26.2mn/month)",
+    "import unit price 3m -25.8% · HS 710812 containing 99.5 percent or more by wei (2 codes, US$4129.3mn/month)",
+    "export unit price sy +41.4% · HS 710813 containing 99.5 percent or more by wei (2 codes, US$3.5mn/month)"
+   ],
+   "mapped_benefit": [
+    "Muthoot",
+    "Manappuram",
+    "Titan",
+    "Kalyan",
+    "Sky Gold",
+    "Utssav CZ",
+    "Shanti Gold"
+   ],
+   "verdict": "NO NEW WORK. No mapped name is inside the Rs 200-2,000 cr band on today's universe build; Utssav CZ and Shanti Gold were both already written up on 2026-09-28 as on-request deep-dives, and neither filed today. The fresh IBJA print is today's but the import unit price on HS 710812 is 3m -25.8%. No update."
+  },
+  {
+   "group": "Manganese",
+   "id": "manganese",
+   "strength": 3.18,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +95.5% · HS 7202 ferro-silico-manganese (11 codes, US$23.1mn/month)",
+    "WPI Manganese Ore 1m +7.6%",
+    "WPI Silicomanganese 1m +5.3%",
+    "WPI Ferromanganese 1m +3.2%"
+   ],
+   "mapped_benefit": [
+    "MOIL",
+    "Sandur Manganese",
+    "Maithan Alloys"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. All three outside the band. Not actionable."
+  },
+  {
+   "group": "Tea",
+   "id": "tea",
+   "strength": 3.1,
+   "direction": "up",
+   "evidence": [
+    "WPI Tea 1m +9.3%",
+    "import unit price 1m -24.6% · HS 0902 tea black,leaf in bulk (6 codes, US$7.2mn/month)",
+    "WPI Processed Tea 3m +16.8%",
+    "WPI Processed Tea 1m +4.5%"
+   ],
+   "mapped_benefit": [
+    "McLeod Russel",
+    "Goodricke",
+    "Jay Shree Tea",
+    "Rossell India",
+    "Andrew Yule"
+   ],
+   "verdict": "NOT RESEARCHED. Four in-universe names (McLeod Russel 532654 Rs 444.6 cr, Goodricke 500166 Rs 502.6 cr, Jay Shree Tea 509715 Rs 248.1 cr, Andrew Yule 526173 Rs 1,215.0 cr) but at strength 3.1 it ranks below the day's filings, and none of the four filed anything today. Carried forward."
+  },
+  {
+   "group": "Methanol and acetic acid",
+   "id": "methanol_acetic",
+   "strength": 3.28,
+   "direction": "up",
+   "evidence": [
+    "import unit price sy +98.3% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)",
+    "Methanol (global) 1y +76.0%",
+    "import unit price 1m -24.6% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$143.9mn/month)",
+    "export unit price 3m +36.4% · HS 290511 saturated methanol (methyl alcohol) (1 codes, US$5.8mn/month)"
+   ],
+   "mapped_benefit": [
+    "GNFC"
+   ],
+   "verdict": "NO SMALL-CAP TO RESEARCH. GNFC is outside the band, and the one current source (TE Methanol) is +23.6% over a month while the trade panel's import unit price is -24.6% over the same month - the two disagree. Not actionable."
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "Cabinet approves Commitment of Rs.10,000 Crore towards establishment of the SME Growth Fund for direct equity investments in Small and Medium Enterprises to create future champions",
+   "ministry": "Cabinet",
+   "prid": 2319532,
+   "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=2319532",
+   "outlay_cr": 10000.0,
+   "status": "unmapped",
+   "verdict": "NOT MAPPED, NOT RESEARCHED, NO NAME ADDED. This is the day's one large-but-unmapped decision and it is above the floor at Rs 10,000 cr, so the gate was right to surface it. But on what the title itself states, the money is a commitment to a FUND making DIRECT EQUITY INVESTMENTS in small and medium enterprises - it is growth capital for (overwhelmingly unlisted) SMEs, not procurement and not an outlay that becomes anybody's order book. That is exactly the distinction this page's own measured history turns on: the programmes that paid were the ones that landed in an order book (defence 17.4x, shipbuilding 16.2x, RDSS smart meters 12.0x), while PM Surya Ghar - a household subsidy, money that did not become an order book - returned 1.8x against the market's 2.0x and produced no 5x at all. An equity fund is further from an order book than a subsidy is. A listed beneficiary class could be argued (SME-focused merchant bankers, NBFCs), but that would be a hunch: no company's own filing was read this run showing this programme is material to it, and the playbook forbids adding a name to theme_map.json on anything less. The release BODY could not be read either - pib.gov.in is blocked from this sandbox and govt.py stores only the title and the matched amount for an unmapped release - so which agency administers the fund, and whether any listed entity is named as a manager or channel, is UNKNOWN. Re-open if a listed company files a disclosure naming this fund."
+  },
+  {
+   "release": "none kept",
+   "outlay_cr": null,
+   "status": "kept: 0",
+   "verdict": "ZERO releases cleared the gate. govt.json, built by GitHub Actions at 18:56 IST from a PIB that answered 200, records 41 releases scanned and 4 opened, with the drops itemised: 31 carried no decision verb, 3 fell below the Rs 1,000 cr floor, 2 were backgrounders (the retrospective pattern added after the 2026-09-24 coal false positive), 2 were duplicates, 2 ceremonial/noise and 1 had no mapped theme. On most days this is the correct answer and the bar was not lowered to manufacture a government idea. Both names published today came from the filings lane. One of them, Om Power Transmission, sits in the transmission theme of theme_map.json, whose measured history is 47 companies at a median 4.7x against the market's 3.0x with 49% making 5x - but it is published on its own GETCO LOIs, not on any government announcement made today."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "OMPOWER",
+   "scrip": "544750",
+   "name": "Om Power Transmission Ltd",
+   "lane": "filing",
+   "mcap_at_call": 528.4,
+   "call_close": 154.3,
+   "published": true,
+   "confidence": "medium",
+   "reason": "Two dated GETCO Letters of Intent totalling Rs 129.66 cr incl GST = 28.9% of FY26 revenue, the predictive order-size band, landing on the one metric the company's own last two disclosures showed deteriorating (order book Rs 745 cr to Rs 621 cr to Rs 567 cr; Q1 book-to-bill 0.56x; Chairman cited muted GETCO tendering). 13.2x trailing, 11.8% below its IPO price, no volume chase. Capped at medium by eight order filings in 5.7 months, 93% of revenue from ten customers, and a 50%+ FY27 guidance that needs a 51% step-up on the Q1 run-rate."
+  },
+  {
+   "ticker": "VEEGALAND",
+   "scrip": "544923",
+   "name": "Veegaland Developers Ltd",
+   "lane": "filing",
+   "mcap_at_call": 726.1,
+   "call_close": 148.95,
+   "published": true,
+   "confidence": "medium",
+   "reason": "First reviewed quarter as a listed company with revenue +79.1%, EBITDA +134.7%, PAT +202.6%, pre-sales +64.8% and collections +72.5% all moving together, Rs 431 cr of contracted-but-unrecognised revenue against FY26 sales of Rs 251 cr, leverage down to 0.26x, nil encumbrance, and the promoter buying 11 lakh shares in the open market on listing day and the Monday after. Capped at medium by thirteen sessions of history, one quarter, no concall or annual report, no measurable peer, an unreviewed growth base, and two self-contradictions in the company's own documents - both published."
+  },
+  {
+   "ticker": "SOLEX",
+   "scrip": "544862",
+   "name": "Solex Energy Ltd",
+   "lane": "filing",
+   "mcap_at_call": 745.6,
+   "call_close": 690.25,
+   "published": false,
+   "confidence": "n/a - not published",
+   "reason": "The order fails both measured tests and the press release overstates it. New business today is Rs 180.98 cr, not the Rs 194.14 cr headline, which adds back the Rs 13.16 cr order already filed the previous evening - 11.2% of FY26 net sales of Rs 1,618.06 cr (the weak band) and 5.3% of an existing ~Rs 3,400 cr order book, from a filer with five BSE order announcements in eight weeks plus a Rs 628.37 cr July order. Q1 FY27 PAT fell 66.6% YoY, FY27 utilisation is guided down to ~55% from ~70%, and the Rs 1,050 cr cell line's Rs 700 cr debt and Rs 350 cr NCD/CCD equity are both unclosed on 0.57x net debt/equity. The valuation is interesting (see watch); this order is not the reason to act on it."
+  }
+ ],
+ "published": [
+  "2026-10-06-OMPOWER",
+  "2026-10-06-VEEGALAND"
+ ],
+ "x_checked": [
+  {
+   "name": "Om Power Transmission (544750)",
+   "searched": "WebSearch restricted to x.com / twitter.com: 'Om Power Transmission OMPOWER GETCO order substation'. Run ~20:08 IST 2026-10-06.",
+   "posts_found": "2 relevant (@Akash17971 IPO-period profile; @renewablemirror on the SEBI approval). NOTHING on today's two LOIs, which is expected - they were filed at 17:02 and 19:41 IST and search indexing lags a day or two. This is 'not yet indexed', not 'nothing on X'.",
+   "bodies_read": "NO. cdn.syndication.twimg.com is refused by this sandbox's egress proxy (curl returned HTTP 000, 'connect_rejected (the egress proxy denied the CONNECT (organization policy))'), so no post body was read by id. Everything used came from the search result snippets, and is labelled as such in the idea.",
+   "new_verified": "ONE, and it matters: the post's 'order book ~Rs 744.6 cr as of December 2025' was matched to the company's own FY26 earnings call, where management says 'our order book was INR 745 crores at the end of December 25'. That is what establishes two consecutive quarters of decline to Rs 567.47 cr - the central fact in the published note. Also part-confirmed: the IPO's stated uses, quantified against the Q1 IPO-objects table; and Rajesh Power as a genuine listed comparable, priced from BSE's header at PE 9.62.",
+   "unverified": "'1 crore equity shares' (the executed issue was 85,75,000 at Rs 175); '11 substations since inception' (the FY26 presentation says 14); the four-way order-mix split 69.7/22.7/3.9/3.7 (the presentation publishes 72/23 and no such split)."
+  },
+  {
+   "name": "Veegaland Developers (544923)",
+   "searched": "WebSearch restricted to x.com / twitter.com, twice: 'Veegaland Developers IPO Q1 FY27 results Kerala' and 'Veegaland listing V-Guard group builder shares'. Run ~20:09 IST 2026-10-06.",
+   "posts_found": "2 relevant, both IPO-period (@rroshandotcom in Mathrubhumi on Kerala's first real-estate IPO; @moneycontrolcom on the 10-Sep open and Rs 130-140 band). NOTHING on today's results - filed 15:11 IST with the presentation at 19:52 IST, so indexing lag again. Thirteen sessions after listing there is no analyst following to search.",
+   "bodies_read": "NO - cdn.syndication.twimg.com blocked as above. Snippets only.",
+   "new_verified": "Issue price Rs 140 and the 18-Sep-2026 listing, both confirmed by results note 3 (the top of the Rs 130-140 band was taken); third listed company from the V-Guard promoter family, confirmed by the presentation's leadership page; promoter's leading role, confirmed and extended by the SAST filing showing him buying 11 lakh shares.",
+   "unverified": "'IPO to raise Rs. 250 Cr' against Rs 210 cr actually issued (1.5 cr shares x Rs 140). The Rs 40 cr gap is not explained by any document read this run."
+  },
+  {
+   "name": "Solex Energy (544862)",
+   "searched": "WebSearch restricted to x.com / twitter.com: 'Solex Energy SOLEX order TOPCon modules'. Run ~20:05 IST 2026-10-06.",
+   "posts_found": "Several, mostly dated (@Solexenergyin the company account, @CapitalMarket17, @AlphaTribe_in, @Rahul_Invest, @raghavwadhwa on the solar value chain). Nothing on today's order.",
+   "bodies_read": "NO - cdn.syndication.twimg.com blocked as above.",
+   "new_verified": "None used - the name was not published, so nothing was carried into a note.",
+   "unverified": "A @CapitalMarket17 snippet says the Surat facility is ALMM-enlisted at '3.78 GW per year' while the company's own Q1 presentation and concall both claim 4 GW of module capacity achieved in November 2025. If the ALMM-enlisted figure is lower than nameplate that is a real distinction for anyone modelling DCR-eligible volume, but it was NOT verified against a primary document this run (the MNRE ALMM list was not read) and is recorded here only as a lead for a future run. Also unverified: an @AlphaTribe_in snippet on a 24.1 MW / Rs 68.69 cr Solex Green Energy project order."
+  }
+ ],
+ "vp_checked": [
+  {
+   "name": "all three researched names (OMPOWER 544750, VEEGALAND 544923, SOLEX 544862)",
+   "result": "BLOCKED. forum.valuepickr.com is refused outright by this sandbox's egress proxy: curl to search.json returned HTTP 000 with 'connect_rejected (the egress proxy denied the CONNECT (organization policy))', and WebFetch returned EGRESS_BLOCKED. No thread was opened, no post read, nothing quoted or verified. A search engine restricted to forum.valuepickr.com was used as a substitute to establish only WHETHER threads exist, and that result is itself indexing-limited: SOLEX has a dedicated thread, 'Solex Energy - Undervalued Solar PV Manufacturer or Microcap Value Trap?' (topic 53512), contents NOT read; OMPOWER has NO dedicated thread, only a thematically relevant sector discussion, 'Understanding the current pain in transmission EPC stocks despite strong order books' (topic 216661), contents NOT read; VEEGALAND surfaced NO thread at all, expected thirteen sessions after listing but unconfirmed. For every one of the three, the forum's bull and bear arguments are UNKNOWN this run - not absent."
+  }
+ ],
+ "watch": [
+  "Solex Energy (544862) on valuation rather than on an order. Not published today because the order fails both measured tests, but the numbers read this run are worth returning to: FY26 net sales Rs 1,618.06 cr with PAT Rs 98.25 cr, an order book management puts at about Rs 3,400 cr (2.1x FY26 sales) spread across confirmed POs, signed MSAs and advanced-stage MSAs, 4 GW of module capacity, and a trailing PE of roughly 9x at Rs 690.25 with the stock 22% below its 65-day window high. The business is explicitly H2-weighted and FY28 aspirations are Rs 4,500 cr of revenue at a 5-6% PAT margin. The things that would make it an idea are a Q2 FY27 print showing utilisation moving toward the 55% assumption, and FINANCIAL CLOSE on the cell line (Rs 700 cr debt, Rs 350 cr NCD/CCD). Re-open on either.",
+  "Caustic soda, strength 3.2, five in-universe names (Lords Chloro 500284, Punjab Alkalies 506618, DCW 500117, De Nora 590031, TGV Sraac 507753). The best unworked commodity list on the board; left only because three names had hard dated filings today. First to open tomorrow if nothing harder arrives - noting that the panel carries NO Indian caustic print, so the exposure work would rest on WPI (Apr-2026) and the trade panel (2026-07).",
+  "Zinc, as a group that needs splitting. The Indian zinc print is fresh and strong (MetalBook Mumbai SHG ingots Rs 435/kg at 2026-10-01, 1y +51.6%, at the top of a 15-month recorded range) while lead in the same mapped group is falling on every WPI leg. The map's only in-universe name, Nile Ltd, is a lead smelter. No in-universe zinc producer was found in the 1,192-name universe this run, so nothing was added to commodity_map.json - but a zinc-exposed small cap, if one exists, is the gap worth filling.",
+  "Om Power Transmission's Q2 FY27 order intake, and the LOA dates on today's two LOIs. The published note turns on whether GETCO tendering has genuinely resumed; Q1 intake was Rs 67.82 cr against Rs 121.63 cr executed. Both execution clocks today run from the LOA, not the LOI, and the LOA date is in neither filing.",
+  "National Fittings (531289, Rs 310 cr) is up 127.4% over the 65-day window and 45.5% in 20 days with NO filing of any kind. Not an idea - a thing to notice if a disclosure eventually explains it, and a caution if one never does."
+ ],
+ "map_changes": [
+  "NONE. Both published names were already correctly mapped - OMPOWER sits in theme_map.json's transmission theme (n_order_filings 2) and SOLEX in solar_kusum (n_order_filings 1) - so there was nothing to add. The n_order_filings counts are deliberately left alone: the field records evidence from the three-year NSE order-filing study behind runbook 144c, and overwriting it with this run's BSE-listing-era counts (8 for OMPOWER since April 2026, 5 for SOLEX since August 2026) would corrupt the study's basis. Those counts are stated inside the ideas instead. The SME Growth Fund release was NOT added to theme_map.json: no company's own filing was read showing the programme is material to it, and the playbook forbids adding on a hunch. commodity_map.json unchanged: the one gap found (no in-universe zinc producer) could not be filled with a documented name."
+ ],
+ "data_problems": [
+  "pib.gov.in BLOCKED from this sandbox (403 Forbidden at the proxy CONNECT). govt.py exited 0 and left govt.json untouched, as designed. NOT a data gap for the verdict: GitHub Actions read PIB successfully at 18:56 IST today, so 41 scanned / 0 kept / 1 unmapped is a real measurement. It IS a gap for the one unmapped release: the body of the SME Growth Fund release could not be read, so which agency administers the fund and whether any listed entity is named is UNKNOWN.",
+  "Every external commodity host refused at this sandbox's proxy (403 at CONNECT): westmetall.com, markets.businessinsider.com, eaindustry.nic.in, tradestat.commerce.gov.in, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, tradingeconomics.com. Every builder kept its previous rows as designed. The committed panels are nonetheless TODAY'S, because GitHub Actions reached all of them at 18:56-19:00 IST (feeds_status.json run 37470720444: hosts_blocked lists only tradestat and westmetall, both 302 root redirects whose builders worked; steps_failed EMPTY). The only sources this sandbox could refresh itself are the two that read BSE: nmdc (ok, 2 rows) and minsteel from the committed file (ok, 3 rows).",
+  "forum.valuepickr.com BLOCKED from this sandbox - curl HTTP 000 'connect_rejected (organization policy)' and WebFetch EGRESS_BLOCKED. The ValuePickr sweep could NOT be performed for any of the three researched names. What the forum says about them is UNKNOWN, not absent.",
+  "cdn.syndication.twimg.com BLOCKED from this sandbox - curl HTTP 000, same connect_rejected. So NO X post body was read by id for any name. WebSearch itself worked, so posts were FOUND and their snippets used, clearly labelled; but the playbook's read-the-post-by-id step could not run, and a snippet is a weaker source than a post body. Every number taken from a snippet and used in a published idea was matched to a primary filing first.",
+  "The scan read is CAPPED: 1,035 announcements against BSE's reported ROWCNT of 1,041 for 2026-10-06, because a page came back short of the stated count. The six unread rows are the day's EARLIEST filings. So announcements_total is a FLOOR and any in-universe filing among those six is unknown. The read was not cached, correctly.",
+  "WPI is Apr-2026 and the HS trade panel is 2026-07 - both more than 3 trading days old, which the prompt asks to be stated. These are inherent publication lags (WPI about 2 months, MEIDB about 45 days) compounded by eaindustry.nic.in and tradestat being unreachable from here; Actions did reach both and neither has published a newer month. Consequence for this run: the three highest-strength groups (Crude 10.7, Silver 10.16, Tungsten 10.0) are driven by stale monthly series, and in two of them the fresh Indian print disagrees with the stale signal - silver is down 3.8% over a month, metro fuel is flat. Ministry of Steel month: signals.json records minsteel_month as null, so which month the TMT/HRC/CRC series is quoting is not readable from the file.",
+  "Run-order artefact, fixed mid-run and reported for completeness: minsteel.py and india_spot.py first failed with \"No module named 'fitz'\" because the prompt's `pip install pymupdf` installed into python3.13's dist-packages while `python3` on this VM is 3.11. Re-installed with `python3 -m pip install pymupdf xlrd` and both builders re-run; the statuses reported in commodity_status are from the second, successful run. No committed file was affected by the first attempt - the builders keep-previous on failure.",
+  "Solex's dossier was built at both --days 240 and --days 60 per the prompt's warning about the 50-filing single-page cap; the 240-day read returned 32 announcements with announcements_status 'complete', under the cap, so nothing was dropped. Om Power's 240-day read returned 57 with status 'complete'. Veegaland's returned 12 - its entire filing history, since it listed on 18-Sep-2026."
+ ],
+ "note": "Three lanes, and this time the filings lane carried the day. GOVERNMENT produced nothing: Actions scanned 41 PIB releases at 18:56 IST and kept zero, with one large-but-unmapped decision - a Rs 10,000 cr Cabinet commitment to an SME Growth Fund for direct equity investments in SMEs. It was surfaced correctly and rejected deliberately: equity capital for mostly unlisted SMEs is not procurement and does not become anybody's order book, which is the exact distinction behind this page's own measured history, where the order-book programmes made 12-17x and PM Surya Ghar's household subsidy returned 1.8x against the market's 2.0x. No name was added to theme_map.json on a hunch. COMMODITY produced no publishable idea either, and two of its findings are worth more than an idea would have been. The sugar group's headline ('spot sugar 1w +23.5%') is a GLOBAL proxy while all eight Indian sugar prints are down 7-16% over a month - so the Dhampur and Avadh Sugar breakouts in the filings lane are NOT the sugar price, and no sugar beneficiary was published. The zinc/lead group mixes a rising metal with a falling one, and its only in-universe name is a lead smelter, so a 4.39 strength resolves to nothing actionable. Of the top three groups by strength, all are driven by WPI at Apr-2026 or the trade panel at 2026-07, and where a fresh Indian print exists it contradicts them. FILINGS produced both ideas, and the run's own re-scan is why there are two: scanning again at 19:59 IST, after the Actions build of 18:58, picked up Om Power's second GETCO LOI (filed 19:41) and Veegaland's investor presentation (19:52, which landed during the scan itself). Om Power Transmission is published on Rs 129.66 cr of GETCO Letters of Intent - 28.9% of a trailing year's sales, the one order ratio the 1,245-filing study found predictive - landing precisely on the metric its own last two disclosures showed falling, at 13.2x trailing and 11.8% below its IPO price, with the eight-filings-in-5.7-months rarity problem published as the main caveat. Veegaland Developers is published on its first reviewed quarter, where revenue, EBITDA, PAT, pre-sales, collections and realisation all moved together, with Rs 431 cr of contracted revenue still to recognise against FY26 sales of Rs 251 cr and the promoter buying in the open market on listing day - capped at medium because thirteen sessions and one quarter cannot meet this page's research standard, and because the company's own first filing contradicts itself twice (note 1 versus note 5 on whether the quarter was reviewed; a realisation slide whose arrows disagree with its own bars). Both contradictions are published rather than smoothed over. Solex Energy was researched and NOT published: its press-release headline of Rs 194.14 cr adds back an order it had already filed the previous evening, the genuinely new Rs 180.98 cr is 11.2% of a trailing year's sales from a filer with five order announcements in eight weeks, and Q1 PAT fell 66.6% - the valuation is interesting enough to carry forward as a watch, but this order was not a reason to publish. Nine further candidates were pure price-and-volume breakouts with no filing, including MobiKwik at +20% on 68x volume and National Fittings at +127% over the window with nothing disclosed at all; all were watch-listed, not researched, exactly as the playbook directs. Two sweeps could not be run: forum.valuepickr.com and cdn.syndication.twimg.com are both refused by this sandbox's egress proxy, so no forum thread was read and no X post body was read by id - what those sources say is unknown, not absent, and every snippet-sourced number that entered a published idea was matched to a primary filing first."
+}
