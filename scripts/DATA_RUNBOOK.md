@@ -27248,7 +27248,7 @@ exit 0. The FII session checked the 39 fii keys: none feeds one of Quantmac's 4,
 - Gap-fill mode (`shp_fill_n500_gaps.json.gz`, `row_for` newest): 21 entries read a later filing than the quarter's first;
   20 never applied (the store had the quarter), 1 is the stored row.
 
-**LIVE** — filled in after the push (below).
+**LIVE (2026-10-07 00:08–01:35 IST).** Pushed 7e4410a63 + af4bcbb36; `refresh-shareholding.yml` dispatched at af4bcbb36 (run 37512888579, success) → store commit 0ab30f980; the next refresh (run 37513939259, §224's dispatch) → 62545a025, Pages 37516871306 success. Fresh-origin `--apply-ledgers` ×2 at af4bcbb36: 0 WARN, run 2 refines 0 cells and equals run 1 and the A/B. Committed store at 62545a025: 62/62 healed cells as built (BBTC Sep-17 dii 4.7007; RAMRAT Dec-25, SANWARIA Mar-26, BBTC Dec-17, UPL Jun-19 unchanged). Live `shp_engine.json` (cache-busted): 61/61 changed rows carry the new values, 0 still old; live `shareholding.json` WELINV Sep-25 dii 0.1338; live `fin/*.json` for the 25 symbols (built by refresh-stock-fin run 37513964692 at bdd536abf, after the store commit): 62/62 cells as built (`shpH`, the original nested where a re-filing row exists).
 
 ## §224 — shp_revisions.json AUDITED ROW BY ROW: 291 re-filing dates moved to the earliest exchange publication, 36 rows that were not re-filings removed, 8 FII values re-based for §151; new ledger scripts/shp_rev_fix.json (2026-10-07, user: "measure each class across the whole sidecar (cell by cell from each filing, never in bulk) … propose the fix route" → "All five", "Ledger + code guards")
 
