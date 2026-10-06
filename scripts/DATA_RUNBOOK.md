@@ -23387,6 +23387,33 @@ the same company (SUMMIT) give 5.90 / 34.20 / 5.05 and 5.15 / 29.75 / 5.00 (ours
 BSE 504807's rows used for a company NSE traded as SUMMIT (their ticker 'SUMMITSEC_BSE'; today's NSE SUMMITSEC is another ISIN, INE519C01017).
 **Tally on the LIVE data (rev c1e4544027), 160 differing cells: RULE DIFFERENCE 144 (122 + GRASIM/CADILAHC value-based 22), THEIR ERROR 4
 (SUMMITSEC), UNKNOWN 12 (CADILAHC Jul-Nov-2009 4, WIPRO 2013 8), OUR ERROR 0.**
+**§179f — REPLY #5 BUILT 2026-10-06 ~14:05 IST (user: "build reply #5 for quantmac .mention cell wise issues").** Builder
+`~/stocks-cache/qm-recon-tools/build_ind_reply_r5.py` -> `out/StockWorld_indicators_reply5_to_Quantmac_20261006.xlsx` (Note, Summary, Cell
+answers, Fixed since reply #4, All cells, Demergers, Our fixes, Tickers). Self-contained: every number it quotes is recomputed from NSE's /
+BSE's daily files, the live bars (live_P.bin, rev c1e4544027) and the ledgers, with asserts; cross-check of all 141 demerger cells: each
+quoted NSE price, our factor and their chart step == NSE's file / demerger_adj / qm_chart_steps (0 mismatches). **FIRST-RULE gap closed:
+replies #1-#4 printed the cells where only ONE file has a value as "n/a" — they are differences and now carry verdicts (27, all 200-DMA):**
+ALOKINDS Sep-Nov-2020 (3; ours blank, 153-194 sessions since the relisting; their 200-DMA 18.28175 / 20.31825 / 22.33200 = the joined
+ALOKTEXT+ALOKINDS raw closes exactly) and VALIANTORG Mar-Jun-2021 (4) / LLOYDSME Mar-Apr-2024 (2; theirs blank, 123-196 NSE sessions since
+listing) -> RULE DIFFERENCE by the user's decisions; REIAGROLTD May-Aug-2009 (4) -> RULE DIFFERENCE, their rule read from their own file:
+blank while the window holds the 67-day halt (REIAGRO last 19-Sep-2008 close 950.65, REIAGROLTD first 25-Nov-2008 with NSE PREVCLOSE 950.65),
+present from Sep-2009 (205 sessions after it, = ours); every 200-DMA their file does have spans gaps <= 33 days (TIFIN 2018, HFCL 2011) —
+asked to confirm; SUMMITSEC_BSE Jan/Feb-2009 (2) -> THEIR ERROR (same BSE-rows identity; NSE KECINFRA/SUMMIT rows hold 200 sessions -> ours);
+**KENNAMET + SPICEJET Dec-2019..May-2020 (12) -> OUR ERROR, OPEN:** our series has NO rows from 30-Sep-2002 (WIDIA) / 19-Jul-1999 (MODILUFT,
+weekly) to 19-Aug-2019 (NSE symbol-change file: WIDIA -> KENNAMET and MODILUFT -> SPICEJET, both 19-Aug-2019), though both traded on BSE
+throughout (BSE 505890 / 500285 rows read for 2008, 2010, 2012, 2016), so smaBarsAt(200) averages 2002 / 1997 bars with 2019-20 ones (KENNAMET
+31-Dec-2019: 200 bars from 25-Apr-2002, average 516.17 vs close 1,005.40 -> +94.8%; theirs blank, 90 NSE sessions since the restart). **The
+same holes break the engine's momentum look-back** (priceAt has no staleness cap): ret12m on 31-Dec-2019 = KENNAMET +1,310% (30-Sep-2002 bar,
+Rs 71.30), SPICEJET +1,688% (19-Jul-1999 bar, Rs 6.30). Scan of every quantmac-file stock-month (N500 PIT 2009-2026) for a 3/6/12-month
+look-back bar > 60 days stale: KENNAMET ret12m 6 / ret6m 2, SPICEJET ret12m 8 / ret6m 2, ESSARSHIP ret12m 2 (Jan/Feb-2009, 29-Oct-2001 bar),
+nothing else (other dates / universes not scanned). Fix options put to the user, none chosen: (A) fill the holes from BSE's daily rows
+(consistent with the keep-BSE-history decision), (B) cut the pre-hole fragment (ALOKINDS-style), (C) an engine staleness guard. **Evidence
+fix while building:** the 10 two-sided BSE-pre-listing cells now state our scale for prepended BSE bars (bse_sme_prepend anchor = stored NSE
+close / BSE raw close on the listing day): VALIANTORG 0.4988 = the x0.5 action of 24-Dec-2020 x NSE 2,948.50 / BSE 2,955.60 on 05-Oct-2020;
+LLOYDSME 1.0; AIIL 0.2 = the x0.2 action of 13-Jan-2026 — the old text quoted BSE's raw Rs 999.00 next to our stored 498.30 with no scale.
+**Tally (live rev c1e4544027): both-valued 318,334 / 318,494 agree; 187 differing = 160 two-sided + 27 one-sided -> RULE DIFFERENCE 157,
+THEIR ERROR 6, UNKNOWN 12 (WIPRO 8, CADILAHC 4), OUR ERROR 12 (open); 982 cells blank in both; fixed since reply #4: 4,474 (4,469 exact
+prices, 2 RASOYPR, 3 VIVIDHA).** Rule for every later reply: count and judge the one-sided cells too.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
