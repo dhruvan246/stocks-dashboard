@@ -27249,3 +27249,58 @@ exit 0. The FII session checked the 39 fii keys: none feeds one of Quantmac's 4,
   20 never applied (the store had the quarter), 1 is the stored row.
 
 **LIVE** — filled in after the push (below).
+
+## §224 — shp_revisions.json AUDITED ROW BY ROW: 291 re-filing dates moved to the earliest exchange publication, 36 rows that were not re-filings removed, 8 FII values re-based for §151; new ledger scripts/shp_rev_fix.json (2026-10-07, user: "measure each class across the whole sidecar (cell by cell from each filing, never in bulk) … propose the fix route" → "All five", "Ledger + code guards")
+
+**Evidence (read this session; cache `~/stocks-cache/shp/revaudit/`, workbook `report/shp_revisions_audit_2026-10-06.xlsx`).**
+BSE `SHPQNewFormat` lists for all 587 sidecar companies and NSE `corporate-share-holdings-master?symbol=` for all 587 (0
+failed requests, one at a time); each row's own XBRL (1,032 of 1,036 — the 3 page-era rows are notice-dated, BILVYAPAR
+Jun-2026's NSE file was checked against the master only) plus 275 other versions of the same quarters, read with
+`fetch_shp_allstocks.analyse` (production `parse_shp` + the zero-institution partition proof). ⚠️ `parse_shp` alone returns
+None for a filing with no institutional holders; comparing two such files through it compares share counts only — the first
+pass called 244 rows "same as the original" that way. Use `analyse()` for any document-to-document comparison.
+1,007 of 1,032 rows equal their own document's reading; the 25 others are explained (14 = class 3 below, 9 recorded heals,
+MINDACORP Mar-16 + JAGSNPHARM Dec-21 = FII-session `#rev` entries).
+
+**Five classes (baseline origin 476df99af):**
+| class | rows | evidence / example | action |
+|---|---|---|---|
+| 1 date still on the retired 15:30 gate | 196 + 5 | the §142k backfill gated BSE timestamps and `--regate` only re-reads NSE's 3-quarter window (20 NSE-dated rows from that backfill were missed too). BBTC Dec-17 2024-01-04 → 01-03 (BSE 2024-01-03 18:46:38), RAMRAT Dec-25 06-02 → 06-01, SUPREMEINF Mar-26 05-29 → 05-27; the 5 also published earlier on the other exchange with identical figures (IONEXCHANG Dec-24 BSE 2025-09-26, NSE 2025-06-03; DHAMPURSUG, NPST, JAYNECOIND, RESPONIND Sep-25) | `redate` |
+| 1b dated by a LATER re-filing that repeats figures an earlier version printed | 90 | exact to 4 dp in all five figures from that earlier version's own reading (§164b); 79 written by the all-stocks §180c writer, which dates BSE's latest revision by its own time. KZLFIN Jun-25 2026-02-06 → 2025-08-06, ARCHIES Mar-25 2026-02-09 → 2025-07-14 (NSE). EBIX Mar-23 excluded (0.01 apart) | `redate` |
+| 2 not a re-filing of that as-on | 7 | MBLINFRA Mar-26 (Reg 31(1)(c) as on 30-May, already its event row), ISTRNETWK Mar-26 (31(1)(c) as on 4-Mar), SHRYDUS Mar-23 (31(1)(c)), STARHFL Sep-22 (31(1)(a) for a preferential offer), SPICEJET 2025-03-18 (company: "are of quarter ended March 31, 2025 … inadvertently filed … dated March 18"), SUPREMEINF Sep-25 + Dec-25 (NSE uploads of 21-Apr-2026 = the Mar-2026 pattern: 96,735,760 shares vs 25,698,372) | `drop` |
+| 3 FII still includes the Overseas Depositories line (§151) | 14 | 2022-form re-filings of OLD quarters (§151 re-based sidecar rows by quarter, not by document). UPL Jun-19…Sep-20 identical to the original once the line is out → `drop` (6); UPL Dec-20…Jun-22 + HINDALCO Mar-22 → fii from the parser (`#rev` in shp_cell_fix.json; HINDALCO's DII-session entry updated with that session, dii 21.5078 kept) | `drop` / `#rev` |
+| 4 NSE "Revised" record whose XBRL is still the ORIGINAL upload | 23 | file-name date (`SHP_<id>_<seq>_<ddmmyyyyhhmmss>_WEB.xml`) == the record's `submissionDate`, revision broadcast later: the "re-filing" was the original document served from the revision date, after the store's later version. LUXIND Dec-21 (fake +5.39 pp DII at the Apr-Jun-2022 month-ends), ATLANTAA Jun-23 (re-served the rejected 68.45) | `drop` |
+
+**Fix.** `scripts/shp_rev_fix.json` (session-owned, never written by CI): `redate` {SYM|ASON: was, sub, own, src, class} and
+`drop` {SYM|ASON: file, class, why, was}. `fetch_shareholding.load_revs()` applies it after `apply_rev_fix` (date moves only
+while the row still holds `was`; drops only while the row's src names `file`); `apply_ledger_revisions()` never re-adds a
+dropped document and re-dates what it adds; the NSE paths (`refresh_quarters` / `refresh_events`) skip a "Revised" record
+whose XBRL is the original upload (`nse_xbrl_is_original_upload`, a same-day correction is kept) and a dropped document, and
+only WARN when a re-filing repeats a later as-on's pattern to the holder (`copies_later_pattern` — 62 surviving rows match
+a later quarter without proof, e.g. LYONSCO's Mar-2024 re-filings of 2020-23; SUPREMEINF was proven by share capital).
+`fetch_shp_allstocks.py` §180c: `pattern_kind()` leaves out Reg 31(1)(c) / capital-restructuring revisions, 31(1)(a)
+revisions of a quarterly original and documents dated off the quarter-end; a revision is dated by the FIRST version with the
+same figures (exact to 4 dp) when that version is cached. `guard_shp_revisions.py` reads the FILE (build_stock_fin reads it
+raw) and fails if a dropped document or a `was` date is back; a row equal to its own `#rev` cell is no longer flagged against
+a store entry's `was` (HINDALCO Mar-22: the store entry withdraws dii 21.5078 from the original, the re-filing reads it).
+
+**Verified before landing (worktree ~/stocks-wt/shp-rev-audit, rebased on 7cd8d0ab5).** Sidecar 1,036 → 1,000 rows; two
+consecutive `--apply-ledgers` runs: 0 WARN (baseline 0), the file byte-identical after both; guard_shp_gate /
+guard_shp_definition / guard_shp_revisions / guard_feed exit 0, and guard_shp_revisions exits 1 when MBLINFRA's row and
+BBTC's old date are put back; NSE detector right on all 80 NSE rows (23/23, 57/57); a full local all-stocks build removed
+exactly ISTRNETWK / SHRYDUS / STARHFL and re-dated 10 rows to the same days the ledger proved, values unchanged (182 earlier
+versions are not in `all_fill`, so the writer keeps those rows' own date there — the ledger re-asserts); build_stock_fin: 209
+slices change, all explained (167 in the change set + their former-ticker slugs; UPL Jun-19 fii 51.21 → 42.94 with no "rev",
+SUPREMEINF Sep/Dec-25 back to 34.68 / 8.5535, MBLINFRA Mar-26 back to the quarterly, LUXIND Dec-21 back to 73.95 / 12.2158).
+Effect (shpAt replay incl. §154 cap, previous-quarter walk, §220c gap rule, every month-end 2016-01 → 2026-10): 207 cells in
+69 symbols change; Nifty-500 point-in-time members 5 cells (LUXIND ×4, UPL ×1); stock-page feed 89 cells (mostly the "rev:"
+date). Agreed before writing: DII session (HINDALCO `#rev`), FII session (fii re-bases, JAGSNPHARM's `#rev` left unused);
+the refine session (§223) owns no overlapping key.
+
+**Open — measured, not changed:** JINDALSAW ×7 / CAMLINFINE ×4 / JITFINFRA: NSE shows a revised record with the same promoter %
+and remark months before BSE (29-Sep-2022, 03-Nov-2023) but no XBRL, so whether NSE published the same FII/DII is UNKNOWN —
+BSE's day kept. Store-side: BANCOINDIA Dec-24 and PIDILITIND Sep-25 originals are post-bonus Reg 31(1)(c) patterns (the
+quarterly is the sidecar row; §221 OILCOUNTUB class); the 23 class-4 quarters' option-C order (NSE's earlier upload would be
+the store original). 146 rows whose share capital differs >2% from the original (screen only, mostly omitted allotments);
+PICCADIL Jun-25 (one NSE file 404). AFFLE Sep-19: BSE lists only the revision, so the store row is dated by it
+(shp_sub_dates fallback, served 2019-11-02); its re-filing now lands on that same day and is served as a same-day correction.
