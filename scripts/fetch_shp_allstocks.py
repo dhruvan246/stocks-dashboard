@@ -300,6 +300,22 @@ def read_doc(path):
     b = open(path, "rb").read()
     return gzip.decompress(b) if path.endswith(".gz") else b
 
+def pattern_kind(raw):
+    """§224: what kind of shareholding pattern a BSE XBRL is, from its own fields -> {event, prelisting, instant}.
+    event = Regulation 31(1)(c) / 'Capital Restructuring' (filed on an allotment or capital change, as on that date);
+    prelisting = Regulation 31(1)(a) / 'Pre-listing'; instant = the date most of the document's contexts carry (a quarterly
+    pattern's is its quarter-end; MBLINFRA's Capital Restructuring file of 5-Jun-2026 carries 2026-05-30 under a 2026-03-31
+    DateOfReport)."""
+    if isinstance(raw, str): raw = raw.encode("utf-8")
+    def fld(name):
+        m = re.search(rb"<[A-Za-z0-9_-]+:" + name + rb"\b[^>]*>([^<]*)<", raw)
+        return m.group(1).decode("utf-8", "replace").strip() if m else ""
+    typ = fld(b"TypeOfReport").lower(); und = re.sub(r"\s+", "", fld(b"ShareholdingPatternFiledUnder")).lower()
+    inst = collections.Counter(m.group(1).decode() for m in re.finditer(rb"<(?:xbrli:)?instant>([^<]+)<", raw))
+    return {"event": "31(1)(c)" in und or "capitalrestructuring" in typ.replace(" ", ""),
+            "prelisting": "31(1)(a)" in und or "pre-listing" in typ or "prelisting" in typ,
+            "instant": inst.most_common(1)[0][0].strip() if inst else None}
+
 
 # ------------------------------------------------------------------------------------------ master + download
 def stage_master(cache):
@@ -1238,8 +1254,20 @@ def build(cache, window=None):
             if not rv: continue
             r = rv[-1]; xf = str(r.get("XbrlFile") or "").strip(); xp = os.path.join(XD, xf + ".gz")
             if not os.path.exists(xp): rev_stat["revision file not cached"] += 1; continue
-            try: ra = analyse(read_doc(xp), qe)
+            try: raw_rev = read_doc(xp); ra = analyse(raw_rev, qe)
             except Exception: rev_stat["revision unreadable"] += 1; continue
+            # §224: BSE lists a Reg 31(1)(c) capital-restructuring pattern (and a 31(1)(a) pre-listing one) as "Revised" under
+            # the quarter it falls in — MBLINFRA's 30-May-2026 allotment pattern, ISTRNETWK's 4-Mar-2026 one, SHRYDUS Mar-2023,
+            # STARHFL's 12-Nov-2022 preferential-offer pattern were stored as those quarters' re-filings. Read the document's own
+            # TypeOfReport / ShareholdingPatternFiledUnder / context date before treating it as a version of the quarter.
+            pk = pattern_kind(raw_rev)
+            if pk["event"]: rev_stat["revision is a Reg 31(1)(c) pattern (left out)"] += 1; continue
+            if pk["prelisting"]:                       # a pre-listing re-filing is a version only of a pre-listing original
+                op = os.path.join(XD, cell[7].split()[0].split(":", 1)[1] + ".gz")
+                try: orig_pre = pattern_kind(read_doc(op))["prelisting"]
+                except Exception: orig_pre = False
+                if not orig_pre: rev_stat["revision is a Reg 31(1)(a) pattern of a quarterly original (left out)"] += 1; continue
+            elif pk["instant"] and pk["instant"] != qe: rev_stat["revision dated off the quarter-end (left out)"] += 1; continue
             ra.pop("_pct", None); ra.pop("_shc", None)
             ra.update({"bse_code": code, "bse_grp": tv.get("grp"), "src": "bsexbrl:" + xf})
             bad, _ = identity_bse(sym, ra)
@@ -1256,6 +1284,21 @@ def build(cache, window=None):
             if rdate < cell[5]: rev_stat["revision dated before the original"] += 1; continue
             new = [round(rc["prom"], 4), round(rc["fii"], 4), round(rc["dii"], 4), round(rc["mf"], 4), round(rc["ins"], 4)]
             if max(abs(new[i] - cell[i]) for i in range(5)) < 0.005: rev_stat["revision repeats the original"] += 1; continue
+            # §224 / §164b: the LATEST revision often repeats figures an earlier version of the quarter already printed (KZLFIN
+            # Jun-2025: 6-Aug-2025 and again 6-Feb-2026; 79 rows dated by the later copy on 2026-10-07). Those figures were
+            # public from the FIRST version that printed them — date the row there (exact to 4 dp, read from that version).
+            t_own = str(r.get("revised_date_time") or "")
+            for r2 in sorted([x for x in rows if bse_label_qe(x.get("qtr")) == qe and x is not r
+                              and str(x.get("revised_date_time") or x.get("filing_date_time") or "") < t_own],
+                             key=lambda x: str(x.get("revised_date_time") or x.get("filing_date_time"))):
+                x2 = os.path.join(XD, str(r2.get("XbrlFile") or "").strip() + ".gz")
+                if not os.path.exists(x2): rev_stat["earlier version not cached (own date kept)"] += 1; continue
+                try: c2 = analyse(read_doc(x2), qe).get("cell")
+                except Exception: c2 = None
+                if c2 and all(abs(round(c2[f_], 4) - new[i]) <= 0.00005 for i, f_ in enumerate(("prom", "fii", "dii", "mf", "ins"))):
+                    rdate = max(str(r2.get("revised_date_time") or r2.get("filing_date_time"))[:10], cell[5])
+                    rev_stat["dated by an earlier version with the same figures"] += 1
+                    break
             revisions[sym][qe] = new + [rdate, rc.get("nsh"), "bsexbrl:%s bse-revision" % xf]
             rev_stat["revision recorded"] += 1
     print("RE-FILINGS %s" % dict(rev_stat))

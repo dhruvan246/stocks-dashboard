@@ -40997,20 +40997,38 @@
    "2022-03-31#rev": {
     "was": [
      34.64,
-     32.5734,
+     28.8476,
      19.216,
      10.5359,
      8.6636
     ],
     "cell": [
      34.64,
-     32.5734,
+     28.8476,
      21.5078,
      10.5359,
      8.6636
     ],
     "src": "bsexbrl:500440_762023185948_SHP.xml",
-    "why": "\u00a7164s part 23b (2026-10-06): HINDALCO Mar-2022 RE-FILING of 2023-06-07 (500440_762023185948_SHP.xml) names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORATE CG 1.1225 ('Trusts') and ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 ('Bodies Corporate') on non-institution rows - Indian institutions on official registers (NPS Trust; IRDAI life insurer no. 105), never counted (re-filing dii = its domestic lines 19.2006 + 0.0154). R2 + rule 4 (user 'Register wins'): dii 19.216 -> 21.5078. The ORIGINAL filing of 2022-04-20 (500440_2042022121242_SHP.xml) names neither holder, so the original row is left as it was (part 23's write onto it is withdrawn)."
+    "why": "\u00a7164s part 23b (2026-10-06): HINDALCO Mar-2022 RE-FILING of 2023-06-07 (500440_762023185948_SHP.xml) names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORATE CG 1.1225 ('Trusts') and ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 ('Bodies Corporate') on non-institution rows - Indian institutions on official registers (NPS Trust; IRDAI life insurer no. 105), never counted (re-filing dii = its domestic lines 19.2006 + 0.0154). R2 + rule 4 (user 'Register wins'): dii 19.216 -> 21.5078. The ORIGINAL filing of 2022-04-20 (500440_2042022121242_SHP.xml) names neither holder, so the original row is left as it was (part 23's write onto it is withdrawn). | \u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit, agreed with the DII session): fii in was/cell 32.5734 -> 28.8476 = this 2022-form re-filing read by the production parser with the 'Overseas Depositories (holding DRs)' line 3.7257 excluded; the dii heal (19.216 -> 21.5078) is unchanged.",
+    "superseded": {
+     "was": [
+      34.64,
+      32.5734,
+      19.216,
+      10.5359,
+      8.6636
+     ],
+     "cell": [
+      34.64,
+      32.5734,
+      21.5078,
+      10.5359,
+      8.6636
+     ],
+     "src": "bsexbrl:500440_762023185948_SHP.xml",
+     "why": "\u00a7164s part 23b (2026-10-06): HINDALCO Mar-2022 RE-FILING of 2023-06-07 (500440_762023185948_SHP.xml) names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORATE CG 1.1225 ('Trusts') and ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 ('Bodies Corporate') on non-institution rows - Indian institutions on official registers (NPS Trust; IRDAI life insurer no. 105), never counted (re-filing dii = its domestic lines 19.2006 + 0.0154). R2 + rule 4 (user 'Register wins'): dii 19.216 -> 21.5078. The ORIGINAL filing of 2022-04-20 (500440_2042022121242_SHP.xml) names neither holder, so the original row is left as it was (part 23's write onto it is withdrawn)."
+    }
    },
    "2022-03-31": {
     "cell": [
@@ -92234,6 +92252,132 @@
     "src": "bsetable3:512070:88",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 43,244,811, VCF 0, AIF 0, FI/Banks 459,157, Insurance 2,264,954, PF 0, NBFC 0; 'HDFC Standard Life Insurance Co' 4,839,777 (IRDAI-registered life insurer no. 101: HDFC Life Insurance C); 'ICICI Preduntial Life Insurance Co' 4,967,405 (IRDAI-registered life insurer no. 105: ICICI Prudential Life); total 428,604,274. dii 10.73 -> 13.0134, ins 0.53 -> 2.8166.",
     "exact": true
+   },
+   "2020-12-31#rev": {
+    "was": [
+     28.02,
+     43.6099,
+     16.3461,
+     4.5783,
+     10.8725
+    ],
+    "cell": [
+     28.02,
+     35.344,
+     16.3461,
+     4.5783,
+     10.8725
+    ],
+    "src": "bsexbrl:512070_3172024162637_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2020-12-31 RE-FILING 512070_3172024162637_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 8.2659; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 43.6099). Production parser (DR line out): fii 35.3440; prom/dii/mf/ins unchanged."
+   },
+   "2021-03-31#rev": {
+    "was": [
+     28.12,
+     45.9781,
+     15.8485,
+     4.3364,
+     10.6569
+    ],
+    "cell": [
+     28.12,
+     37.816,
+     15.8485,
+     4.3364,
+     10.6569
+    ],
+    "src": "bsexbrl:512070_3172024164649_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2021-03-31 RE-FILING 512070_3172024164649_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 8.1620; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 45.9781). Production parser (DR line out): fii 37.8160; prom/dii/mf/ins unchanged."
+   },
+   "2021-06-30#rev": {
+    "was": [
+     28.12,
+     46.0271,
+     16.1794,
+     4.8224,
+     10.6662
+    ],
+    "cell": [
+     28.12,
+     37.8649,
+     16.1794,
+     4.8224,
+     10.6662
+    ],
+    "src": "bsexbrl:512070_3172024164036_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2021-06-30 RE-FILING 512070_3172024164036_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 8.1621; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 46.0271). Production parser (DR line out): fii 37.8649; prom/dii/mf/ins unchanged."
+   },
+   "2021-09-30#rev": {
+    "was": [
+     28.12,
+     43.2886,
+     17.9747,
+     5.5154,
+     11.81
+    ],
+    "cell": [
+     28.12,
+     35.1263,
+     17.9747,
+     5.5154,
+     11.81
+    ],
+    "src": "bsexbrl:512070_317202416507_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2021-09-30 RE-FILING 512070_317202416507_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 8.1623; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 43.2886). Production parser (DR line out): fii 35.1263; prom/dii/mf/ins unchanged."
+   },
+   "2021-12-31#rev": {
+    "was": [
+     28.41,
+     42.2018,
+     18.6591,
+     6.3407,
+     11.7112
+    ],
+    "cell": [
+     28.41,
+     34.2633,
+     18.6591,
+     6.3407,
+     11.7112
+    ],
+    "src": "bsexbrl:512070_3172024163531_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2021-12-31 RE-FILING 512070_3172024163531_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 7.9385; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 42.2018). Production parser (DR line out): fii 34.2633; prom/dii/mf/ins unchanged."
+   },
+   "2022-03-31#rev": {
+    "was": [
+     28.62,
+     43.0182,
+     17.8046,
+     5.9,
+     11.2678
+    ],
+    "cell": [
+     28.62,
+     35.292,
+     17.8046,
+     5.9,
+     11.2678
+    ],
+    "src": "bsexbrl:512070_3172024164740_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2022-03-31 RE-FILING 512070_3172024164740_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 7.7261; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 43.0182). Production parser (DR line out): fii 35.2920; prom/dii/mf/ins unchanged."
+   },
+   "2022-06-30#rev": {
+    "was": [
+     29.13,
+     43.637,
+     16.4674,
+     5.6209,
+     10.3784
+    ],
+    "cell": [
+     29.13,
+     36.4384,
+     16.4674,
+     5.6209,
+     10.3784
+    ],
+    "src": "bsexbrl:512070_3172024164344_SHP.xml",
+    "why": "\u00a7224 / \u00a7151 (2026-10-07, shp_revisions audit): UPL 2022-06-30 RE-FILING 512070_3172024164344_SHP.xml is a 2022-form document whose Institutions (Foreign) total includes the 'Overseas Depositories (holding DRs) (balancing figure)' line 7.1986; the sidecar row was written by the \u00a7142k backfill before \u00a7151 and still carried it (fii 43.6370). Production parser (DR line out): fii 36.4384; prom/dii/mf/ins unchanged."
    }
   },
   "URAVIDEF": {

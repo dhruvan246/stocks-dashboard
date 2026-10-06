@@ -326,11 +326,13 @@ def apply_ledger_revisions(revs):
         except Exception as e:
             print("%s unreadable (%s) — revisions skipped" % (os.path.basename(path), e)); continue
         for sym, qs in rv.items():
-            dest = revs.setdefault(sym, {})
             for key, row in qs.items():
-                if key in dest: continue
-                dest[key] = list(row); n += 1
-    if n: print("ledger re-filings added to shp_revisions.json: %d" % n)
+                if key in (revs.get(sym) or {}): continue
+                if rev_dropped(sym, key, row[7] if len(row) > 7 else ""): continue   # §224: a proven non-re-filing
+                revs.setdefault(sym, {})[key] = list(row); n += 1
+    if n:
+        print("ledger re-filings added to shp_revisions.json: %d" % n)
+        apply_rev_ledger(revs)                                                    # §224: their dates, as on load
     return n
 
 # §22j PRECISION REFRESH ledger (scripts/fetch_shp_bse_hist.py --refine). Cells parsed before the
@@ -1163,10 +1165,20 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
                     # revisions sidecar dated by THEIR gated publication (r["sub"]); an identical re-publication
                     # (TCS Mar-2026, NSE re-broadcast of the same numbers) records nothing.
                     seen["%s|%s" % (sym, qe)] = r["xb"]
+                    if nse_xbrl_is_original_upload(r["xb"], r["first"], r["sub"]):            # §224: no new document
+                        print("  §224 %s %s: 'Revised' record broadcast %s still links the original upload of %s — not a re-filing"
+                              % (sym, qe, r["sub"], r["first"]))
+                        done += 1; continue
                     rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
                           "nse:" + r["xb"].rsplit("/", 1)[-1]]
                     rc, how = heal_refiling(sym, qe, rc, cellfix)                     # §152
                     if how: rc[7] += " §152 heal:" + how
+                    if rev_dropped(sym, qe, rc[7]): done += 1; continue                # §224: proven non-re-filing
+                    later = copies_later_pattern(sym, qe, rc, hist)
+                    if later:   # §224: report only — SUPREMEINF was PROVEN by share capital; a match alone proves nothing
+                        print("::warning::§224 %s %s: re-filing %s repeats the stored %s pattern to the holder — check the "
+                              "share capital before trusting it (shp_rev_fix.json drop if it is that quarter's document)"
+                              % (sym, qe, rc[7], later))
                     if not _same_cell(rc, have):
                         revs.setdefault(sym, {})[qe] = rc; rev_new += 1
                     elif qe in (revs.get(sym) or {}):
@@ -1301,9 +1313,79 @@ def load_revs():
         try:
             r = json.load(open(REVS, encoding="utf-8"))
             apply_rev_fix(r)                       # §164s part 11: #rev ledger entries, like load_hist applies cell_fix
+            apply_rev_ledger(r)                    # §224: re-filing dates / rows proven wrong, re-asserted on every load
             return r
         except Exception as e: print("WARN shp_revisions.json unreadable (%s) — starting empty" % e)
     return {}
+# ---- §224 (2026-10-07): re-filing rows whose DATE or whole DOCUMENT was proven wrong from the exchange record ----
+# scripts/shp_rev_fix.json (session-owned, never written by CI):
+#   "redate": {"SYM|ASON": {"was", "sub", "src", "class"}} — the row is served from `sub` (calendar day of the EARLIEST
+#       exchange publication of the row's figures, §149) while it still holds `was` (the retired 15:30 gate the §142k
+#       backfill applied to BSE timestamps, which --regate never reaches; or the day of a LATER re-filing repeating figures
+#       an earlier version had already published, §164b reading attached per entry).
+#   "drop": {"SYM|ASON": {"file", "class", "why"}} — the row's document is not a re-filing of that as-on (a Reg 31(1)(c) /
+#       31(1)(a) pattern, another quarter's pattern uploaded under this date, an NSE "Revised" record whose XBRL is still the
+#       ORIGINAL upload, a §151 re-reading identical to the original) — removed while its source is that document.
+# Applied on every load (load_revs) and to fill-ledger re-filings (apply_ledger_revisions), so no rebuild brings them back.
+REV_FIX = os.path.join(HERE, "shp_rev_fix.json")
+_REV_FIX = None
+def load_rev_fix():
+    global _REV_FIX
+    if _REV_FIX is None:
+        try:
+            _REV_FIX = json.load(open(REV_FIX, encoding="utf-8")) if os.path.exists(REV_FIX) else {}
+        except Exception as e:
+            print("::warning::shp_rev_fix.json unreadable (%s) — re-filing date/drop fixes not applied" % e); _REV_FIX = {}
+    return _REV_FIX
+def rev_dropped(sym, key, src):
+    """True when (sym, as-on) carries a §224 drop entry for the document `src` names."""
+    ent = (load_rev_fix().get("drop") or {}).get("%s|%s" % (sym, key))
+    return bool(ent and ent.get("file") and ent["file"] in str(src or ""))
+def apply_rev_ledger(revs, led=None):
+    """§224: apply shp_rev_fix.json to re-filing rows — drop the rows whose source is a dropped document, move a row's date
+    to the ledger's `sub` while it still holds the recorded `was`. Returns (dropped, redated)."""
+    led = load_rev_fix() if led is None else led
+    nd = nr = 0
+    for k, ent in (led.get("drop") or {}).items():
+        sym, key = k.split("|", 1)
+        rc = (revs.get(sym) or {}).get(key)
+        if isinstance(rc, list) and len(rc) > 7 and ent.get("file") and ent["file"] in str(rc[7]):
+            del revs[sym][key]; nd += 1
+            if not revs[sym]: del revs[sym]
+    for k, ent in (led.get("redate") or {}).items():
+        sym, key = k.split("|", 1)
+        rc = (revs.get(sym) or {}).get(key)
+        if isinstance(rc, list) and len(rc) > 5 and ent.get("was") and ent.get("sub") and str(rc[5]) == ent["was"]:
+            rc[5] = ent["sub"]; nr += 1
+    if nd or nr: print("shp_rev_fix (§224): %d re-filing row(s) dropped, %d re-dated" % (nd, nr))
+    return nd, nr
+_NSE_XB_DAY = re.compile(r"_(\d{2})(\d{2})(\d{4})\d{6}_WEB\.xml$", re.I)
+def nse_xbrl_is_original_upload(xb, subm_day, bc_day):
+    """§224: NSE's master keeps ONE record per (symbol, as-on). A re-filing moves broadcastDate and flags the record
+    "Revised" but does not always attach a new XBRL — the link can still be the ORIGINAL upload, whose file name carries its
+    upload time (SHP_<id>_<seq>_<ddmmyyyyhhmmss>_WEB.xml). Parsing it as "the re-filing" served the ORIGINAL's figures from
+    the revision's date, after a later correction (LUXIND Dec-2021: the 7-Jan-2022 file from 3-Mar-2022, a fake +5.39 pp
+    DII jump; 23 rows on 2026-10-07). True when the file's own date is the record's submission day and the revision was
+    broadcast on a LATER day; a same-day correction keeps the same date and is not caught."""
+    m = _NSE_XB_DAY.search(str(xb or ""))
+    if not m or not subm_day or not bc_day: return False
+    return "%s-%s-%s" % (m.group(3), m.group(2), m.group(1)) == subm_day and bc_day > subm_day
+def copies_later_pattern(sym, key, rc, *stores):
+    """§224: a "re-filing" whose five percentages AND holder count equal the stored pattern of a LATER as-on of the same
+    symbol MAY be that later pattern uploaded under this date (SUPREMEINF Sep-2025 / Dec-2025: NSE uploads of 21-Apr-2026
+    that are the Mar-2026 quarterly — proven by the share capital, 96,735,760 against 25,698,372). A match alone proves
+    nothing (62 surviving BSE rows match a later quarter, e.g. LYONSCO's 2024 re-filings of 2020-23), so callers only WARN.
+    Returns the later as-on, or None."""
+    if not isinstance(rc, list) or len(rc) < 7 or rc[6] is None: return None
+    for st in stores:
+        for k2, c in (st.get(sym) or {}).items():
+            if k2 <= key or not isinstance(c, list) or len(c) < 7 or c[6] is None: continue
+            try:
+                if int(c[6]) == int(rc[6]) and all(abs(float(c[i] or 0) - float(rc[i] or 0)) <= 0.0001 for i in range(5)):
+                    return k2
+            except (TypeError, ValueError):
+                continue
+    return None
 def apply_rev_fix(revs, led=None):
     """§164s part 11: apply fix[SYM]["<as-on>#rev"] entries to the stored re-filing rows (slots 0-4), only while the row
     equals the entry's `was` exactly in slots 0-4 (see heal_refiling). Returns the number of rows changed."""
@@ -1431,9 +1513,10 @@ def refresh_events(qes, only=None, reparse=False):
             if not sym or not ason or not sub or not xb.lower().startswith("http"): continue
             if only is not None and sym not in only: continue
             k = (sym, ason)
-            if k not in best: best[k] = {"sub": sub, "xb": xb, "first": sub}
+            subm = iso_date(r.get("submissionDate"))                 # §224: the record's ORIGINAL submission day
+            if k not in best: best[k] = {"sub": sub, "xb": xb, "first": sub, "subm": subm}
             else:
-                if sub >= best[k]["sub"]: best[k]["sub"], best[k]["xb"] = sub, xb
+                if sub >= best[k]["sub"]: best[k]["sub"], best[k]["xb"], best[k]["subm"] = sub, xb, subm
                 if sub < best[k]["first"]: best[k]["first"] = sub
         # §142c (2026-09-21): a company re-files the SAME event pattern (BRIGADE 18-Jun-2026: 25-Jun, again 3-Jul;
         # LENSKART 7-Nov-2025: 10-Nov, again 13-Feb). Values come from the newest filing, but the row's visibility
@@ -1461,10 +1544,20 @@ def refresh_events(qes, only=None, reparse=False):
                 if prev and str(prev[5]) < r["sub"]:
                     # §142k: a re-filed event pattern — the stored row (original values, first date) stays; the
                     # re-filing goes to the sidecar dated by its own gated publication unless identical.
+                    if nse_xbrl_is_original_upload(r["xb"], r.get("subm"), r["sub"]):        # §224: no new document
+                        print("  §224 %s %s: 'Revised' event record broadcast %s still links the original upload of %s — "
+                              "not a re-filing" % (sym, ason, r["sub"], r.get("subm")))
+                        done += 1; continue
                     rc = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"], r["sub"], res.get("nsh"),
                           "nse:" + r["xb"].rsplit("/", 1)[-1]]
                     rc, how = heal_refiling(sym, ason, rc, cellfix_ev)                # §152
                     if how: rc[7] += " §152 heal:" + how
+                    if rev_dropped(sym, ason, rc[7]): done += 1; continue              # §224: proven non-re-filing
+                    later = copies_later_pattern(sym, ason, rc, ev)
+                    if later:   # §224: report only (see refresh_quarters)
+                        print("::warning::§224 %s %s: re-filing %s repeats the stored %s pattern to the holder — check the "
+                              "share capital before trusting it (shp_rev_fix.json drop if it is that date's document)"
+                              % (sym, ason, rc[7], later))
                     if not _same_cell(rc, prev):
                         revs.setdefault(sym, {})[ason] = rc; rev_new += 1
                     elif ason in (revs.get(sym) or {}):

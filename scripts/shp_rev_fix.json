@@ -1,0 +1,2765 @@
+{
+ "_meta": {
+  "runbook": "§224",
+  "built": "2026-10-07",
+  "rule": "re-filing rows (scripts/shp_revisions.json) proven wrong from each row's own exchange record; redate applies while the row holds `was`, drop while its source is `file`; applied by fetch_shareholding.load_revs / apply_ledger_revisions, asserted by guard_shp_revisions.py",
+  "evidence": "BSE SHPQNewFormat lists + NSE corporate-share-holdings-master for all 587 sidecar companies fetched 2026-10-06/07; each row's XBRL and every other version read with fetch_shp_allstocks.analyse (production parse_shp); cache ~/stocks-cache/shp/revaudit/",
+  "counts": {
+   "redate": {
+    "retired-gate": 196,
+    "earlier-publication": 90,
+    "retired-gate+earlier-publication": 5
+   },
+   "drop": {
+    "nse-original-upload": 23,
+    "reg31-1c-pattern": 3,
+    "quarterly-under-event-date": 1,
+    "reg31-1a-pattern": 1,
+    "another-quarter-pattern": 2,
+    "identical-after-§151": 6
+   }
+  },
+  "excluded": "EBIX 2023-03-31: the earlier BSE version (531035_1252023124330_SHP.xml) differs by 0.01 in one figure, so under §164b it cannot date this row's figures; kept on its own date"
+ },
+ "redate": {
+  "360ONE|2026-03-31": {
+   "was": "2026-05-25",
+   "sub": "2026-05-22",
+   "own": "BSE SHPQNewFormat qtrid 129.01 Revised 2026-05-22T21:48:30.403 -> 542772_2252026214641_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 129.01 Revised 2026-05-22T21:48:30.403 -> 542772_2252026214641_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-05-25 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ABCAPITAL|2023-06-30": {
+   "was": "2023-07-24",
+   "sub": "2023-07-21",
+   "own": "BSE SHPQNewFormat qtrid 118.01 Revised 2023-07-21T15:33:46.123 -> 540691_217202315310_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 118.01 Revised 2023-07-21T15:33:46.123 -> 540691_217202315310_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-07-24 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ACSTECH|2024-09-30": {
+   "was": "2024-11-26",
+   "sub": "2024-10-26",
+   "own": "BSE SHPQNewFormat qtrid 123.05 Revised 2024-11-26T16:52:17.29 -> 530745_26112024164612_SHP.xml",
+   "src": "BSE Revised 2024-10-26T17:04:43 -> 530745_2610202417428_SHP.xml: the same figures to 4 dp (prom 47.7, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "ADLINE|2025-06-30": {
+   "was": "2025-11-03",
+   "sub": "2025-10-31",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-11-03T17:14:15.17 -> 524604_3112025171345_SHP.xml",
+   "src": "BSE Revised 2025-10-31T14:38:09 -> 524604_31102025143648_SHP.xml: the same figures to 4 dp (prom 29.61, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "ADVAIT|2026-06-30": {
+   "was": "2026-08-03",
+   "sub": "2026-08-01",
+   "own": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-08-01T18:56:17.02 -> 543230_182026185557_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-08-01T18:56:17.02 -> 543230_182026185557_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-08-03 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ADVMULT|2024-03-31": {
+   "was": "2024-05-20",
+   "sub": "2024-05-13",
+   "own": "BSE SHPQNewFormat qtrid 121.02 Revised 2024-05-20T18:48:56.867 -> 526331_2052024184741_SHP.xml",
+   "src": "BSE Revised 2024-05-13T17:21:55 -> 526331_135202417207_SHP.xml: the same figures to 4 dp (prom 40.74, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "AFFLE|2019-09-30": {
+   "was": "2019-11-04",
+   "sub": "2019-11-02",
+   "own": "BSE SHPQNewFormat qtrid 103.0 Revised 2019-11-02T18:26:27 -> 542752_2112019135858_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 103.0 Revised 2019-11-02T18:26:27 -> 542752_2112019135858_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2019-11-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "AKI|2024-06-30": {
+   "was": "2024-11-07",
+   "sub": "2024-11-06",
+   "own": "NSE corporate-share-holdings-master as-on 30-JUN-2024, Revised broadcast 06-NOV-2024 17:36:32 -> SHP_190726_1275456_17102024054833_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 30-JUN-2024, Revised broadcast 06-NOV-2024 17:36:32 -> SHP_190726_1275456_17102024054833_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-11-07 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "APTUS|2024-06-30": {
+   "was": "2024-08-19",
+   "sub": "2024-08-17",
+   "own": "BSE SHPQNewFormat qtrid 122.02 Revised 2024-08-17T11:10:51.493 -> 543335_178202411759_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.02 Revised 2024-08-17T11:10:51.493 -> 543335_178202411759_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-19 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "AQYLON|2024-03-31": {
+   "was": "2024-05-14",
+   "sub": "2024-05-13",
+   "own": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-13T20:13:33.88 -> 530943_1352024201137_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-13T20:13:33.88 -> 530943_1352024201137_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-05-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ARCHIES|2025-03-31": {
+   "was": "2026-02-09",
+   "sub": "2025-07-14",
+   "own": "BSE SHPQNewFormat qtrid 125.0 Revised 2026-02-09T14:17:57.29 -> 532212_922026141736_SHP.xml",
+   "src": "NSE Revised 14-JUL-2025 12:54:48 -> SHP_1480713_11072025012012_WEB.xml: the same figures to 4 dp (prom 62.25, fii 0.0015, dii 0.222, mf 0.0, ins 0.222)",
+   "class": "earlier-publication"
+  },
+  "ASGARD|2024-09-30": {
+   "was": "2024-12-09",
+   "sub": "2024-11-07",
+   "own": "BSE SHPQNewFormat qtrid 123.03 Revised 2024-12-09T08:56:45.937 -> 512025_91220248563_SHP.xml",
+   "src": "BSE Revised 2024-11-07T12:14:45 -> 512025_7112024121421_SHP.xml: the same figures to 4 dp (prom 0.13, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "ATAM|2024-03-31": {
+   "was": "2024-06-04",
+   "sub": "2024-06-03",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2024, Revised broadcast 03-JUN-2024 17:01:49 -> SHP_187975_1152065_03062024040622_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2024, Revised broadcast 03-JUN-2024 17:01:49 -> SHP_187975_1152065_03062024040622_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-06-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "AUROLAB|2023-09-30": {
+   "was": "2024-02-01",
+   "sub": "2023-10-19",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-02-01T14:08:38.23 -> 530233_12202414435_SHP.xml",
+   "src": "BSE Revised 2023-10-19T19:21:06 -> 530233_19102023192023_SHP.xml: the same figures to 4 dp (prom 52.09, fii 0.0, dii 0.0064, mf 0.0064, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "AUTOIND|2026-06-30": {
+   "was": "2026-08-17",
+   "sub": "2026-08-14",
+   "own": "BSE SHPQNewFormat qtrid 130.0 Revised 2026-08-14T15:39:30.927 -> 532797_148202615399_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 130.0 Revised 2026-08-14T15:39:30.927 -> 532797_148202615399_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-08-17 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "AUTOINT|2025-03-31": {
+   "was": "2026-01-12",
+   "sub": "2025-10-18",
+   "own": "BSE SHPQNewFormat qtrid 125.0 Revised 2026-01-12T10:52:21.517 -> 512277_121202610524_SHP.xml",
+   "src": "BSE Revised 2025-10-18T14:37:06 -> 512277_18102025143616_SHP.xml: the same figures to 4 dp (prom 62.43, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "AUTOINT|2025-06-30": {
+   "was": "2026-01-12",
+   "sub": "2025-10-18",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-01-12T10:54:09.287 -> 512277_1212026105357_SHP.xml",
+   "src": "BSE Revised 2025-10-18T14:45:08 -> 512277_18102025144321_SHP.xml: the same figures to 4 dp (prom 62.43, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "AUTOPINS|2022-06-30": {
+   "was": "2022-08-08",
+   "sub": "2022-07-13",
+   "own": "BSE SHPQNewFormat qtrid 114.02 Revised 2022-08-08T13:29:36.59 -> 531994_882022132646_SHP.xml",
+   "src": "BSE New 2022-07-13T17:09:00 -> 531994_137202217859_SHP.xml: the same figures to 4 dp (prom 70.03, fii 0.0, dii 0.0315, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "B2BSOFT|2024-12-31": {
+   "was": "2025-03-20",
+   "sub": "2025-01-21",
+   "own": "BSE SHPQNewFormat qtrid 124.02 Revised 2025-03-20T13:01:51.213 -> 531268_203202513028_SHP.xml",
+   "src": "BSE Revised 2025-01-21T16:14:14 -> 531268_2112025161257_SHP.xml: the same figures to 4 dp (prom 59.83, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BANCOINDIA|2024-12-31": {
+   "was": "2025-01-21",
+   "sub": "2025-01-20",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-20T16:55:39.973 -> 500039_2012025165516_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-20T16:55:39.973 -> 500039_2012025165516_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-01-21 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2016-06-30": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 90.01 Revised 2024-01-05T17:54:03.62 -> 501425_512024175348_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 90.01 Revised 2024-01-05T17:54:03.62 -> 501425_512024175348_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2016-09-30": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 91.01 Revised 2024-01-05T16:21:27.76 -> 501425_512024162112_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 91.01 Revised 2024-01-05T16:21:27.76 -> 501425_512024162112_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2016-12-31": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 92.01 Revised 2024-01-05T19:24:49.053 -> 501425_512024192436_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 92.01 Revised 2024-01-05T19:24:49.053 -> 501425_512024192436_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2017-03-31": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 93.01 Revised 2024-01-05T17:54:35.11 -> 501425_512024175424_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 93.01 Revised 2024-01-05T17:54:35.11 -> 501425_512024175424_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2017-06-30": {
+   "was": "2024-01-05",
+   "sub": "2024-01-04",
+   "own": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-01-04T17:19:24.797 -> 501425_412024171916_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-01-04T17:19:24.797 -> 501425_412024171916_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2017-09-30": {
+   "was": "2024-01-05",
+   "sub": "2024-01-04",
+   "own": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-01-04T17:12:54.723 -> 501425_412024171237_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-01-04T17:12:54.723 -> 501425_412024171237_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2017-12-31": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 96.01 Revised 2024-01-03T18:46:38.733 -> 501425_31202418464_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 96.01 Revised 2024-01-03T18:46:38.733 -> 501425_31202418464_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2018-03-31": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 97.01 Revised 2024-01-03T18:10:22.41 -> 501425_312024181015_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 97.01 Revised 2024-01-03T18:10:22.41 -> 501425_312024181015_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2018-06-30": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 98.01 Revised 2024-01-03T18:10:00.753 -> 501425_31202418953_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 98.01 Revised 2024-01-03T18:10:00.753 -> 501425_31202418953_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2018-09-30": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-01-03T18:09:41.49 -> 501425_31202418935_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-01-03T18:09:41.49 -> 501425_31202418935_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2018-12-31": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-01-03T18:09:23.707 -> 501425_31202418917_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-01-03T18:09:23.707 -> 501425_31202418917_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2019-03-31": {
+   "was": "2024-01-04",
+   "sub": "2024-01-03",
+   "own": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-01-03T18:09:05.64 -> 501425_31202418856_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-01-03T18:09:05.64 -> 501425_31202418856_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2019-06-30": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 102.01 Revised 2024-01-05T16:04:44.57 -> 501425_51202416433_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 102.01 Revised 2024-01-05T16:04:44.57 -> 501425_51202416433_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2019-09-30": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 103.01 Revised 2024-01-05T16:05:47.293 -> 501425_51202416540_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 103.01 Revised 2024-01-05T16:05:47.293 -> 501425_51202416540_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2019-12-31": {
+   "was": "2024-01-08",
+   "sub": "2024-01-05",
+   "own": "BSE SHPQNewFormat qtrid 104.01 Revised 2024-01-05T16:06:05.543 -> 501425_51202416559_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 104.01 Revised 2024-01-05T16:06:05.543 -> 501425_51202416559_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2020-09-30": {
+   "was": "2024-01-03",
+   "sub": "2024-01-02",
+   "own": "BSE SHPQNewFormat qtrid 107.01 Revised 2024-01-02T19:20:17.14 -> 501425_212024191949_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 107.01 Revised 2024-01-02T19:20:17.14 -> 501425_212024191949_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-03 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2020-12-31": {
+   "was": "2024-01-03",
+   "sub": "2024-01-02",
+   "own": "BSE SHPQNewFormat qtrid 108.01 Revised 2024-01-02T19:35:58.283 -> 501425_212024193551_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 108.01 Revised 2024-01-02T19:35:58.283 -> 501425_212024193551_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-03 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BBTC|2025-06-30": {
+   "was": "2025-07-23",
+   "sub": "2025-07-22",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-07-22T19:19:20.817 -> 501425_2272025191734_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-07-22T19:19:20.817 -> 501425_2272025191734_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-23 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCG|2019-09-30": {
+   "was": "2023-04-28",
+   "sub": "2023-04-27",
+   "own": "BSE SHPQNewFormat qtrid 103.01 Revised 2023-04-27T17:20:05.103 -> 532368_2742023171950_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 103.01 Revised 2023-04-27T17:20:05.103 -> 532368_2742023171950_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-04-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCG|2019-12-31": {
+   "was": "2023-04-28",
+   "sub": "2023-04-27",
+   "own": "BSE SHPQNewFormat qtrid 104.01 Revised 2023-04-27T17:20:30.457 -> 532368_2742023172018_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 104.01 Revised 2023-04-27T17:20:30.457 -> 532368_2742023172018_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-04-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCG|2020-06-30": {
+   "was": "2023-04-28",
+   "sub": "2023-04-27",
+   "own": "BSE SHPQNewFormat qtrid 106.01 Revised 2023-04-27T23:29:24.447 -> 532368_2742023232911_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 106.01 Revised 2023-04-27T23:29:24.447 -> 532368_2742023232911_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-04-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCG|2020-09-30": {
+   "was": "2023-04-28",
+   "sub": "2023-04-27",
+   "own": "BSE SHPQNewFormat qtrid 107.01 Revised 2023-04-27T23:30:00.55 -> 532368_2742023232945_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 107.01 Revised 2023-04-27T23:30:00.55 -> 532368_2742023232945_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-04-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCG|2020-12-31": {
+   "was": "2023-04-28",
+   "sub": "2023-04-27",
+   "own": "BSE SHPQNewFormat qtrid 108.01 Revised 2023-04-27T23:30:24.79 -> 532368_2742023233014_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 108.01 Revised 2023-04-27T23:30:24.79 -> 532368_2742023233014_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-04-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BCLIND|2023-03-31": {
+   "was": "2023-05-22",
+   "sub": "2023-05-20",
+   "own": "BSE SHPQNewFormat qtrid 117.01 Revised 2023-05-20T09:36:15.807 -> 524332_205202393410_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 117.01 Revised 2023-05-20T09:36:15.807 -> 524332_205202393410_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-05-22 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BGIL|2022-09-30": {
+   "was": "2023-08-23",
+   "sub": "2023-07-26",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-08-23T17:02:39.04 -> 511664_23820231715_SHP.xml",
+   "src": "BSE Revised 2023-07-26T11:51:02 -> 511664_2672023115048_SHP.xml: the same figures to 4 dp (prom 41.84, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BGIL|2024-09-30": {
+   "was": "2025-09-26",
+   "sub": "2024-10-22",
+   "own": "BSE SHPQNewFormat qtrid 123.0 Revised 2025-09-26T14:26:15.75 -> 511664_269202514263_SHP.xml",
+   "src": "BSE Revised 2024-10-22T14:24:10 -> 511664_22102024142213_SHP.xml: the same figures to 4 dp (prom 41.84, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BHARATFORG|2016-06-30": {
+   "was": "2022-06-01",
+   "sub": "2022-05-31",
+   "own": "BSE SHPQNewFormat qtrid 90.01 Revised 2022-05-31T18:53:27.117 -> 500493_3152022185242_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 90.01 Revised 2022-05-31T18:53:27.117 -> 500493_3152022185242_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2022-06-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BHARATFORG|2016-12-31": {
+   "was": "2022-06-01",
+   "sub": "2022-05-31",
+   "own": "BSE SHPQNewFormat qtrid 92.01 Revised 2022-05-31T19:55:50.987 -> 500493_3152022195521_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 92.01 Revised 2022-05-31T19:55:50.987 -> 500493_3152022195521_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2022-06-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BHARATFORG|2021-12-31": {
+   "was": "2022-05-25",
+   "sub": "2022-05-23",
+   "own": "BSE SHPQNewFormat qtrid 112.02 Revised 2022-05-25T10:37:12.347 -> 500493_2552022103632_SHP.xml",
+   "src": "BSE Revised 2022-05-23T17:02:31 -> 500493_23520221724_SHP.xml: the same figures to 4 dp (prom 45.25, fii 23.361, dii 20.0257, mf 14.3239, ins 5.4724)",
+   "class": "earlier-publication"
+  },
+  "BHARTIARTL|2026-06-30": {
+   "was": "2026-07-27",
+   "sub": "2026-07-24",
+   "own": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-07-24T21:21:16.54 -> 532454_2472026211415_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-07-24T21:21:16.54 -> 532454_2472026211415_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-07-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BOMTALKIES|2023-06-30": {
+   "was": "2024-02-27",
+   "sub": "2024-01-25",
+   "own": "BSE SHPQNewFormat qtrid 118.02 Revised 2024-02-27T19:11:19.123 -> 511246_2722024191043_SHP.xml",
+   "src": "BSE Revised 2024-01-25T12:23:37 -> 511246_2512024122244_SHP.xml: the same figures to 4 dp (prom 10.0, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BOMTALKIES|2023-09-30": {
+   "was": "2024-02-27",
+   "sub": "2024-01-25",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-02-27T19:12:43.843 -> 511246_2722024191235_SHP.xml",
+   "src": "BSE Revised 2024-01-25T12:26:42 -> 511246_2512024122614_SHP.xml: the same figures to 4 dp (prom 10.0, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BOMTALKIES|2023-12-31": {
+   "was": "2024-02-27",
+   "sub": "2024-01-25",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-02-27T19:13:50.133 -> 511246_2722024191345_SHP.xml",
+   "src": "BSE Revised 2024-01-25T12:27:37 -> 511246_2512024122711_SHP.xml: the same figures to 4 dp (prom 10.0, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "BPL|2025-09-30": {
+   "was": "2025-10-10",
+   "sub": "2025-10-09",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-09T16:25:54.9 -> 500074_9102025162531_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-09T16:25:54.9 -> 500074_9102025162531_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-10 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "BRISK|2025-06-30": {
+   "was": "2025-09-01",
+   "sub": "2025-07-23",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-09-01T13:07:58.4 -> 544101_19202513719_SHP.xml",
+   "src": "BSE Revised 2025-07-23T16:09:59 -> 544101_23720251652_SHP.xml: the same figures to 4 dp (prom 59.99, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "CAMLINFINE|2017-03-31": {
+   "was": "2024-04-12",
+   "sub": "2024-04-11",
+   "own": "BSE SHPQNewFormat qtrid 93.01 Revised 2024-04-11T16:42:18.087 -> 532834_1142024164147_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 93.01 Revised 2024-04-11T16:42:18.087 -> 532834_1142024164147_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2017-06-30": {
+   "was": "2024-04-12",
+   "sub": "2024-04-11",
+   "own": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-04-11T16:01:39.73 -> 532834_114202416128_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-04-11T16:01:39.73 -> 532834_114202416128_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2017-09-30": {
+   "was": "2024-04-12",
+   "sub": "2024-04-11",
+   "own": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-04-11T15:50:11.18 -> 532834_1142024154958_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-04-11T15:50:11.18 -> 532834_1142024154958_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2018-09-30": {
+   "was": "2024-04-12",
+   "sub": "2024-04-11",
+   "own": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-04-11T11:12:28.94 -> 532834_114202411121_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-04-11T11:12:28.94 -> 532834_114202411121_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2018-12-31": {
+   "was": "2024-04-12",
+   "sub": "2024-04-11",
+   "own": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-04-11T10:09:50.983 -> 532834_114202410932_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-04-11T10:09:50.983 -> 532834_114202410932_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2019-03-31": {
+   "was": "2024-04-09",
+   "sub": "2024-04-08",
+   "own": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-04-08T16:51:18.777 -> 532834_842024165053_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-04-08T16:51:18.777 -> 532834_842024165053_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-09 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2019-06-30": {
+   "was": "2024-04-09",
+   "sub": "2024-04-08",
+   "own": "BSE SHPQNewFormat qtrid 102.01 Revised 2024-04-08T16:06:50.48 -> 532834_84202416621_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 102.01 Revised 2024-04-08T16:06:50.48 -> 532834_84202416621_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-09 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2021-06-30": {
+   "was": "2024-04-05",
+   "sub": "2024-04-04",
+   "own": "BSE SHPQNewFormat qtrid 110.01 Revised 2024-04-04T17:15:50.71 -> 532834_442024171519_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 110.01 Revised 2024-04-04T17:15:50.71 -> 532834_442024171519_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2021-09-30": {
+   "was": "2024-04-05",
+   "sub": "2024-04-04",
+   "own": "BSE SHPQNewFormat qtrid 111.01 Revised 2024-04-04T15:53:59.467 -> 532834_442024155327_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 111.01 Revised 2024-04-04T15:53:59.467 -> 532834_442024155327_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2022-09-30": {
+   "was": "2024-04-04",
+   "sub": "2024-04-03",
+   "own": "BSE SHPQNewFormat qtrid 115.01 Revised 2024-04-03T16:53:13.523 -> 532834_34202416535_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.01 Revised 2024-04-03T16:53:13.523 -> 532834_34202416535_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAMLINFINE|2022-12-31": {
+   "was": "2024-04-04",
+   "sub": "2024-04-03",
+   "own": "BSE SHPQNewFormat qtrid 116.01 Revised 2024-04-03T16:26:08.81 -> 532834_342024162348_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.01 Revised 2024-04-03T16:26:08.81 -> 532834_342024162348_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CAPILLARY|2025-11-20": {
+   "was": "2025-12-12",
+   "sub": "2025-12-11",
+   "own": "NSE corporate-share-holdings-master as-on 20-NOV-2025, Revised broadcast 11-DEC-2025 19:25:47 -> SHP_1583680_08122025025059_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 20-NOV-2025, Revised broadcast 11-DEC-2025 19:25:47 -> SHP_1583680_08122025025059_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CCCL|2023-03-31": {
+   "was": "2024-08-16",
+   "sub": "2024-08-14",
+   "own": "BSE SHPQNewFormat qtrid 117.01 Revised 2024-08-14T15:46:14.56 -> 532902_1482024154448_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 117.01 Revised 2024-08-14T15:46:14.56 -> 532902_1482024154448_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-16 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CCCL|2025-03-31": {
+   "was": "2025-05-12",
+   "sub": "2025-05-10",
+   "own": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-05-10T15:21:06.137 -> 532902_105202515197_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-05-10T15:21:06.137 -> 532902_105202515197_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-05-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "CELEBRITY|2025-03-31": {
+   "was": "2025-06-04",
+   "sub": "2025-06-03",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 03-JUN-2025 18:09:06 -> SHP_198394_1462708_03062025055133_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 03-JUN-2025 18:09:06 -> SHP_198394_1462708_03062025055133_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "COLORCHIPS|2022-12-31": {
+   "was": "2023-01-25",
+   "sub": "2023-01-23",
+   "own": "BSE SHPQNewFormat qtrid 116.02 Revised 2023-01-25T18:42:47.05 -> 540023_2512023184130_SHP.xml",
+   "src": "BSE Revised 2023-01-23T12:43:34 -> 540023_2312023124218_SHP.xml: the same figures to 4 dp (prom 74.88, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "DBREALTY|2024-06-30": {
+   "was": "2024-07-30",
+   "sub": "2024-07-29",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-29T19:19:11.793 -> 533160_2972024191825_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-29T19:19:11.793 -> 533160_2972024191825_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-07-30 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DCI|2024-12-31": {
+   "was": "2025-04-16",
+   "sub": "2025-04-15",
+   "own": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 15-APR-2025 20:04:49 -> SHP_196036_1415238_15042025073440_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 15-APR-2025 20:04:49 -> SHP_196036_1415238_15042025073440_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-04-16 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DELHIVERY|2022-09-30": {
+   "was": "2023-02-07",
+   "sub": "2023-02-06",
+   "own": "BSE SHPQNewFormat qtrid 115.01 Revised 2023-02-06T16:38:39.55 -> 543529_622023163815_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.01 Revised 2023-02-06T16:38:39.55 -> 543529_622023163815_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-02-07 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DELHIVERY|2022-12-31": {
+   "was": "2023-02-07",
+   "sub": "2023-02-06",
+   "own": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-02-06T16:39:15.28 -> 543529_62202316397_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-02-06T16:39:15.28 -> 543529_62202316397_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-02-07 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DHAMPURSUG|2025-06-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-26",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-12-27T14:06:48.58 -> 500119_2712202514630_SHP.xml",
+   "src": "NSE Revised 26-DEC-2025 16:54:29 -> SHP_1590677_26122025044003_WEB.xml: the same figures to 4 dp (prom 49.87, fii 2.0397, dii 0.4815, mf 0.0003, ins 0.4673)",
+   "class": "retired-gate+earlier-publication"
+  },
+  "DHAMPURSUG|2025-09-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-12-27T14:02:47.977 -> 500119_2712202514131_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-12-27T14:02:47.977 -> 500119_2712202514131_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DHRUVCA|2025-09-30": {
+   "was": "2026-04-26",
+   "sub": "2026-04-24",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-04-26T16:36:23.07 -> 531237_2642026163433_SHP.xml",
+   "src": "BSE Revised 2026-04-24T17:57:10 -> 531237_2442026175631_SHP.xml: the same figures to 4 dp (prom 45.91, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "DHRUVCA|2025-12-31": {
+   "was": "2026-04-26",
+   "sub": "2026-04-24",
+   "own": "BSE SHPQNewFormat qtrid 128.02 Revised 2026-04-26T16:37:09.41 -> 531237_2642026163655_SHP.xml",
+   "src": "BSE Revised 2026-04-24T17:57:56 -> 531237_2442026175742_SHP.xml: the same figures to 4 dp (prom 45.91, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "DIACABS|2024-06-30": {
+   "was": "2024-09-12",
+   "sub": "2024-09-11",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-09-11T17:21:29.02 -> 522163_119202417200_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-09-11T17:21:29.02 -> 522163_119202417200_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-09-12 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DNAMEDIA|2024-12-31": {
+   "was": "2025-04-15",
+   "sub": "2025-04-11",
+   "own": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 11-APR-2025 18:58:15 -> SHP_195888_1412784_11042025053229_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 11-APR-2025 18:58:15 -> SHP_195888_1412784_11042025053229_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-04-15 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "DUCON|2024-09-30": {
+   "was": "2024-10-21",
+   "sub": "2024-10-19",
+   "own": "BSE SHPQNewFormat qtrid 123.02 Revised 2024-10-19T15:16:30.663 -> 534674_19102024151424_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.02 Revised 2024-10-19T15:16:30.663 -> 534674_19102024151424_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-10-21 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ECOSMOBLTY|2024-09-30": {
+   "was": "2024-11-06",
+   "sub": "2024-11-05",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2024-11-05T18:21:37.467 -> 544239_5112024182013_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.01 Revised 2024-11-05T18:21:37.467 -> 544239_5112024182013_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-11-06 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "EPACKPEB|2025-09-30": {
+   "was": "2025-11-13",
+   "sub": "2025-11-12",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-11-12T22:07:52.617 -> 544540_121120252260_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-11-12T22:07:52.617 -> 544540_121120252260_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-11-13 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "FLEXITUFF|2025-03-31": {
+   "was": "2025-06-30",
+   "sub": "2025-06-28",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 28-JUN-2025 20:57:23 -> SHP_198008_1474122_28062025083750_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 28-JUN-2025 20:57:23 -> SHP_198008_1474122_28062025083750_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-30 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "FOODSIN|2023-12-31": {
+   "was": "2024-02-08",
+   "sub": "2024-02-07",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-02-07T18:47:59.617 -> 507552_722024184630_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-02-07T18:47:59.617 -> 507552_722024184630_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-02-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "FORTIS|2024-06-30": {
+   "was": "2024-08-07",
+   "sub": "2024-08-06",
+   "own": "NSE corporate-share-holdings-master as-on 30-JUN-2024, Revised broadcast 07-AUG-2024 10:45:55 -> SHP_190277_1213583_06082024010651_WEB.xml",
+   "src": "BSE Revised 2024-08-06T15:47:52 -> 532843_682024154442_SHP.xml: the same figures to 4 dp (prom 31.17, fii 23.3072, dii 32.3107, mf 27.5192, ins 3.3666)",
+   "class": "earlier-publication"
+  },
+  "GALAGEX|2023-12-31": {
+   "was": "2024-03-04",
+   "sub": "2024-01-20",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-03-04T12:43:12.073 -> 531911_432024124229_SHP.xml",
+   "src": "BSE Revised 2024-01-20T21:40:46 -> 531911_2012024214010_SHP.xml: the same figures to 4 dp (prom 73.22, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "GALXBRG|2025-09-30": {
+   "was": "2026-02-06",
+   "sub": "2025-10-30",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-02-06T13:59:38.837 -> 526073_622026135554_SHP.xml",
+   "src": "BSE Revised 2025-10-30T11:31:34 -> 526073_30102025113053_SHP.xml: the same figures to 4 dp (prom 46.28, fii 0.2678, dii 0.3612, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "GAYAPROJ|2020-09-30": {
+   "was": "2020-11-03",
+   "sub": "2020-11-02",
+   "own": "BSE SHPQNewFormat qtrid 107.0 Revised 2020-11-02T16:33:02 -> 532767_3110202017109_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 107.0 Revised 2020-11-02T16:33:02 -> 532767_3110202017109_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2020-11-03 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "GENSOL|2022-03-31": {
+   "was": "2022-05-14",
+   "sub": "2022-05-06",
+   "own": "BSE SHPQNewFormat qtrid 113.02 Revised 2022-05-14T16:15:55.857 -> 542851_1452022161447_SHP.xml",
+   "src": "BSE Revised 2022-05-06T18:13:58 -> 542851_65202218559_SHP.xml: the same figures to 4 dp (prom 71.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "GHVINFRA|2024-12-31": {
+   "was": "2025-02-24",
+   "sub": "2025-02-10",
+   "own": "BSE SHPQNewFormat qtrid 124.03 Revised 2025-02-24T12:19:19.313 -> 505504_242202512191_SHP.xml",
+   "src": "BSE Revised 2025-02-10T14:16:48 -> 505504_102202514163_SHP.xml: the same figures to 4 dp (prom 3.57, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "GSS|2024-03-31": {
+   "was": "2024-05-09",
+   "sub": "2024-05-08",
+   "own": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-08T17:42:27.7 -> 532951_852024173637_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-08T17:42:27.7 -> 532951_852024173637_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-05-09 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "GUJRAFFIA|2025-03-31": {
+   "was": "2025-06-18",
+   "sub": "2025-06-17",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 17-JUN-2025 18:33:08 -> SHP_198845_1467624_17062025050344_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 17-JUN-2025 18:33:08 -> SHP_198845_1467624_17062025050344_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-18 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "HINDALCO|2022-03-31": {
+   "was": "2023-06-08",
+   "sub": "2023-06-07",
+   "own": "BSE SHPQNewFormat qtrid 113.01 Revised 2023-06-07T19:00:17.857 -> 500440_762023185948_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.01 Revised 2023-06-07T19:00:17.857 -> 500440_762023185948_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "HINDALCO|2022-06-30": {
+   "was": "2023-06-08",
+   "sub": "2023-06-07",
+   "own": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-06-07T18:59:34.377 -> 500440_762023185912_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-06-07T18:59:34.377 -> 500440_762023185912_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "HINDUST|2024-09-30": {
+   "was": "2024-11-22",
+   "sub": "2024-10-21",
+   "own": "BSE SHPQNewFormat qtrid 123.03 Revised 2024-11-22T14:04:51.957 -> 519574_2211202414416_SHP.xml",
+   "src": "BSE Revised 2024-10-21T13:42:02 -> 519574_21102024133925_SHP.xml: the same figures to 4 dp (prom 9.61, fii 0.1273, dii 1.3772, mf 1.0772, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "HUBTOWN|2025-09-30": {
+   "was": "2025-10-20",
+   "sub": "2025-10-18",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-10-18T20:23:16.477 -> 532799_18102025202252_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-10-18T20:23:16.477 -> 532799_18102025202252_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IDEAFORGE|2025-09-30": {
+   "was": "2026-06-02",
+   "sub": "2026-06-01",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-06-01T16:07:41.36 -> 543932_16202616733_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-06-01T16:07:41.36 -> 543932_16202616733_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-06-02 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IDEAFORGE|2025-12-31": {
+   "was": "2026-06-02",
+   "sub": "2026-06-01",
+   "own": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-06-01T16:08:08.213 -> 543932_1620261681_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-06-01T16:08:08.213 -> 543932_1620261681_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-06-02 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IDEAFORGE|2026-03-31": {
+   "was": "2026-06-02",
+   "sub": "2026-06-01",
+   "own": "BSE SHPQNewFormat qtrid 129.0 Revised 2026-06-01T16:08:38.407 -> 543932_16202616833_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 129.0 Revised 2026-06-01T16:08:38.407 -> 543932_16202616833_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-06-02 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IDEA|2022-03-31": {
+   "was": "2022-04-20",
+   "sub": "2022-04-19",
+   "own": "BSE SHPQNewFormat qtrid 113.01 Revised 2022-04-19T16:01:51.66 -> 532822_1942022153325_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.01 Revised 2022-04-19T16:01:51.66 -> 532822_1942022153325_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2022-04-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "INANISEC|2022-12-31": {
+   "was": "2023-04-01",
+   "sub": "2023-02-14",
+   "own": "BSE SHPQNewFormat qtrid 116.02 Revised 2023-04-01T16:31:03.09 -> 531672_142023162725_SHP.xml",
+   "src": "BSE Revised 2023-02-14T16:10:58 -> 531672_1422023161012_SHP.xml: the same figures to 4 dp (prom 57.38, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "INDIANVSH|2024-06-30": {
+   "was": "2024-08-26",
+   "sub": "2024-07-20",
+   "own": "BSE SHPQNewFormat qtrid 122.03 Revised 2024-08-26T16:36:55.6 -> 501700_268202416366_SHP.xml",
+   "src": "BSE Revised 2024-07-20T12:33:38 -> 501700_207202412327_SHP.xml: the same figures to 4 dp (prom 62.45, fii 0.0, dii 0.8857, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "INDSWFTLAB|2025-07-02": {
+   "was": "2025-07-17",
+   "sub": "2025-07-16",
+   "own": "NSE corporate-share-holdings-master as-on 02-JUL-2025, Revised broadcast 16-JUL-2025 17:57:03 -> SHP_1484184_16072025032651_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 02-JUL-2025, Revised broadcast 16-JUL-2025 17:57:03 -> SHP_1484184_16072025032651_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-17 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "INDTERRAIN|2025-06-30": {
+   "was": "2025-08-29",
+   "sub": "2025-08-28",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-28T18:35:08.62 -> 533329_2882025183312_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-28T18:35:08.62 -> 533329_2882025183312_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-08-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IONEXCHANG|2024-09-30": {
+   "was": "2025-02-13",
+   "sub": "2025-02-12",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-02-12T15:39:38.51 -> 500214_1222025153854_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-02-12T15:39:38.51 -> 500214_1222025153854_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-02-13 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "IONEXCHANG|2024-12-31": {
+   "was": "2025-09-29",
+   "sub": "2025-06-03",
+   "own": "BSE SHPQNewFormat qtrid 124.0 Revised 2025-09-26T16:51:10.93 -> 500214_269202516513_SHP.xml",
+   "src": "NSE Revised 03-JUN-2025 18:08:40 -> SHP_194611_1462670_03062025051719_WEB.xml: the same figures to 4 dp (prom 25.78, fii 5.8311, dii 13.624, mf 11.0921, ins 0.1703)",
+   "class": "retired-gate+earlier-publication"
+  },
+  "ISFT|2024-03-31": {
+   "was": "2024-06-03",
+   "sub": "2024-05-31",
+   "own": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-31T17:54:50.213 -> 533181_3152024175416_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-05-31T17:54:50.213 -> 533181_3152024175416_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-06-03 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2019-09-30": {
+   "was": "2025-07-24",
+   "sub": "2025-07-23",
+   "own": "BSE SHPQNewFormat qtrid 103.0 Revised 2025-07-23T16:54:50.957 -> 522285_2372025165436_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 103.0 Revised 2025-07-23T16:54:50.957 -> 522285_2372025165436_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-24 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2019-12-31": {
+   "was": "2025-07-24",
+   "sub": "2025-07-23",
+   "own": "BSE SHPQNewFormat qtrid 104.0 Revised 2025-07-23T16:53:41.41 -> 522285_2372025165314_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 104.0 Revised 2025-07-23T16:53:41.41 -> 522285_2372025165314_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-24 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2020-06-30": {
+   "was": "2025-07-14",
+   "sub": "2025-07-11",
+   "own": "BSE SHPQNewFormat qtrid 106.0 Revised 2025-07-11T17:10:24.8 -> 522285_1172025171014_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 106.0 Revised 2025-07-11T17:10:24.8 -> 522285_1172025171014_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2020-09-30": {
+   "was": "2025-07-14",
+   "sub": "2025-07-11",
+   "own": "BSE SHPQNewFormat qtrid 107.0 Revised 2025-07-11T17:07:12.157 -> 522285_11720251772_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 107.0 Revised 2025-07-11T17:07:12.157 -> 522285_11720251772_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2020-12-31": {
+   "was": "2025-07-14",
+   "sub": "2025-07-11",
+   "own": "BSE SHPQNewFormat qtrid 108.0 Revised 2025-07-11T17:04:07.51 -> 522285_117202517357_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 108.0 Revised 2025-07-11T17:04:07.51 -> 522285_117202517357_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2021-03-31": {
+   "was": "2025-07-14",
+   "sub": "2025-07-11",
+   "own": "BSE SHPQNewFormat qtrid 109.0 Revised 2025-07-11T17:01:31.097 -> 522285_117202517112_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 109.0 Revised 2025-07-11T17:01:31.097 -> 522285_117202517112_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2021-10-28": {
+   "was": "2026-03-11",
+   "sub": "2026-03-10",
+   "own": "NSE corporate-share-holdings-master as-on 28-OCT-2021, Revised broadcast 10-MAR-2026 18:19:19 -> SHP_1634099_10032026120422_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 28-OCT-2021, Revised broadcast 10-MAR-2026 18:19:19 -> SHP_1634099_10032026120422_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2026-03-11 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2022-03-31": {
+   "was": "2026-03-11",
+   "sub": "2025-07-01",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2022, Revised broadcast 10-MAR-2026 18:10:09 -> SHP_1633965_09032026061037_WEB.xml",
+   "src": "BSE New 2025-07-01T18:02:36 -> 522285_17202518215_SHP.xml: the same figures to 4 dp (prom 49.48, fii 0.0, dii 0.0011, mf 0.0007, ins 0.0)",
+   "class": "retired-gate+earlier-publication"
+  },
+  "JAYNECOIND|2022-06-30": {
+   "was": "2025-07-01",
+   "sub": "2025-06-30",
+   "own": "BSE SHPQNewFormat qtrid 114.01 Revised 2025-06-30T17:09:37.067 -> 522285_306202517921_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.01 Revised 2025-06-30T17:09:37.067 -> 522285_306202517921_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2023-12-31": {
+   "was": "2025-06-26",
+   "sub": "2025-06-25",
+   "own": "BSE SHPQNewFormat qtrid 120.01 Revised 2025-06-25T17:33:28.953 -> 522285_256202517335_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 120.01 Revised 2025-06-25T17:33:28.953 -> 522285_256202517335_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2024-03-31": {
+   "was": "2025-06-26",
+   "sub": "2025-06-25",
+   "own": "BSE SHPQNewFormat qtrid 121.01 Revised 2025-06-25T17:30:25.4 -> 522285_256202517302_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.01 Revised 2025-06-25T17:30:25.4 -> 522285_256202517302_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2024-06-30": {
+   "was": "2025-06-26",
+   "sub": "2025-06-25",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2025-06-25T17:26:09.82 -> 522285_2562025172535_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2025-06-25T17:26:09.82 -> 522285_2562025172535_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2024-09-30": {
+   "was": "2025-06-26",
+   "sub": "2025-06-25",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-06-25T17:20:56.93 -> 522285_2562025171941_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-06-25T17:20:56.93 -> 522285_2562025171941_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JAYNECOIND|2024-12-31": {
+   "was": "2025-06-23",
+   "sub": "2025-06-21",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-06-21T16:55:14.123 -> 522285_2162025165432_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-06-21T16:55:14.123 -> 522285_2162025165432_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-06-23 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JFL|2025-12-31": {
+   "was": "2026-02-06",
+   "sub": "2026-01-27",
+   "own": "BSE SHPQNewFormat qtrid 128.01 Revised 2026-02-06T18:22:30.7 -> 540850_62202618207_SHP.xml",
+   "src": "BSE Revised 2026-01-27T15:13:47 -> 540850_2712026145552_SHP.xml: the same figures to 4 dp (prom 55.27, fii 0.0, dii 0.0721, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "JINDALSAW|2016-03-31": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 89.01 Revised 2023-02-28T17:04:21.22 -> 500378_282202317413_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 89.01 Revised 2023-02-28T17:04:21.22 -> 500378_282202317413_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2016-06-30": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 90.01 Revised 2023-02-28T17:05:01.577 -> 500378_282202317453_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 90.01 Revised 2023-02-28T17:05:01.577 -> 500378_282202317453_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2016-12-31": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 92.01 Revised 2023-02-28T17:06:06.3 -> 500378_282202317558_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 92.01 Revised 2023-02-28T17:06:06.3 -> 500378_282202317558_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2017-03-31": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 93.01 Revised 2023-02-28T17:06:38.653 -> 500378_282202317631_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 93.01 Revised 2023-02-28T17:06:38.653 -> 500378_282202317631_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2017-06-30": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 94.01 Revised 2023-02-28T17:07:14.187 -> 500378_28220231775_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 94.01 Revised 2023-02-28T17:07:14.187 -> 500378_28220231775_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2017-09-30": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 95.01 Revised 2023-02-28T17:07:47.607 -> 500378_282202317740_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 95.01 Revised 2023-02-28T17:07:47.607 -> 500378_282202317740_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2017-12-31": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 96.01 Revised 2023-02-28T17:08:20.413 -> 500378_282202317811_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 96.01 Revised 2023-02-28T17:08:20.413 -> 500378_282202317811_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2018-03-31": {
+   "was": "2023-03-01",
+   "sub": "2023-02-28",
+   "own": "BSE SHPQNewFormat qtrid 97.01 Revised 2023-02-28T17:08:53.297 -> 500378_282202317844_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 97.01 Revised 2023-02-28T17:08:53.297 -> 500378_282202317844_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JINDALSAW|2024-12-31": {
+   "was": "2025-01-21",
+   "sub": "2025-01-20",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-20T17:01:40.81 -> 500378_201202517112_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-20T17:01:40.81 -> 500378_201202517112_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-01-21 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JISLJALEQS|2025-06-30": {
+   "was": "2025-08-28",
+   "sub": "2025-08-26",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-26T16:25:04.447 -> 500219_268202516240_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-26T16:25:04.447 -> 500219_268202516240_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-08-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "JOINDRE|2026-03-31": {
+   "was": "2026-05-21",
+   "sub": "2026-05-04",
+   "own": "BSE SHPQNewFormat qtrid 129.02 Revised 2026-05-21T17:36:01.693 -> 531861_2152026173544_SHP.xml",
+   "src": "BSE Revised 2026-05-04T15:20:25 -> 531861_452026151834_SHP.xml: the same figures to 4 dp (prom 63.96, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "JSWHL|2024-12-31": {
+   "was": "2025-01-17",
+   "sub": "2025-01-16",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-16T16:52:06.513 -> 532642_1612025164557_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-16T16:52:06.513 -> 532642_1612025164557_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-01-17 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KACHCHH|2023-12-31": {
+   "was": "2024-03-18",
+   "sub": "2024-01-24",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-03-18T12:44:24.58 -> 531778_183202412449_SHP.xml",
+   "src": "BSE Revised 2024-01-24T13:23:37 -> 531778_2412024132114_SHP.xml: the same figures to 4 dp (prom 44.7, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "KEEPLEARN|2024-06-30": {
+   "was": "2024-07-25",
+   "sub": "2024-07-24",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-24T21:52:07.823 -> 526677_2472024215055_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-24T21:52:07.823 -> 526677_2472024215055_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-07-25 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KIRLOSIND|2024-12-31": {
+   "was": "2025-08-07",
+   "sub": "2025-08-06",
+   "own": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 06-AUG-2025 17:12:07 -> SHP_1500664_01082025073353_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-DEC-2024, Revised broadcast 06-AUG-2025 17:12:07 -> SHP_1500664_01082025073353_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-08-07 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KISAN|2025-12-31": {
+   "was": "2026-04-02",
+   "sub": "2026-02-07",
+   "own": "BSE SHPQNewFormat qtrid 128.06 Revised 2026-04-02T17:01:20.267 -> 530145_242026165853_SHP.xml",
+   "src": "BSE Revised 2026-02-07T15:46:36 -> 530145_72202615442_SHP.xml: the same figures to 4 dp (prom 67.33, fii 0.5374, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "KOTHARIPRO|2024-09-30": {
+   "was": "2025-03-26",
+   "sub": "2025-03-25",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-03-25T17:45:32.473 -> 530299_2532025174515_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-03-25T17:45:32.473 -> 530299_2532025174515_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-03-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KOTHARIPRO|2024-12-31": {
+   "was": "2025-03-26",
+   "sub": "2025-03-25",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-03-25T17:45:59.763 -> 530299_2532025174551_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-03-25T17:45:59.763 -> 530299_2532025174551_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-03-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KPRMILL|2025-09-30": {
+   "was": "2026-02-27",
+   "sub": "2026-02-06",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-02-27T09:40:08.593 -> 532889_272202693911_SHP.xml",
+   "src": "NSE Revised 06-FEB-2026 16:46:33 -> SHP_1616403_02022026053252_WEB.xml: the same figures to 4 dp (prom 67.52, fii 6.4527, dii 19.3761, mf 17.5277, ins 1.5051)",
+   "class": "earlier-publication"
+  },
+  "KRN|2025-12-31": {
+   "was": "2026-01-16",
+   "sub": "2026-01-14",
+   "own": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-01-14T20:01:29.637 -> 544263_141202620027_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-01-14T20:01:29.637 -> 544263_141202620027_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-01-16 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "KRYPTONQ|2024-06-30": {
+   "was": "2024-08-12",
+   "sub": "2024-07-16",
+   "own": "BSE SHPQNewFormat qtrid 122.03 Revised 2024-08-12T11:06:32.1 -> 523550_128202411618_SHP.xml",
+   "src": "BSE Revised 2024-07-16T14:52:34 -> 523550_167202414522_SHP.xml: the same figures to 4 dp (prom 26.54, fii 0.0, dii 0.0878, mf 0.0191, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "KTIL|2024-06-30": {
+   "was": "2024-10-03",
+   "sub": "2024-07-18",
+   "own": "BSE SHPQNewFormat qtrid 122.02 Revised 2024-10-03T17:12:14.35 -> 533289_3102024171026_SHP.xml",
+   "src": "BSE Revised 2024-07-18T17:38:41 -> 533289_187202417386_SHP.xml: the same figures to 4 dp (prom 61.08, fii 0.0, dii 2.4511, mf 0.0, ins 2.4388)",
+   "class": "earlier-publication"
+  },
+  "KZLFIN|2025-06-30": {
+   "was": "2026-02-06",
+   "sub": "2025-08-06",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-02-06T15:29:21.907 -> 511728_62202615295_SHP.xml",
+   "src": "BSE Revised 2025-08-06T10:38:16 -> 511728_682025103655_SHP.xml: the same figures to 4 dp (prom 30.25, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LCCINFOTEC|2020-03-31": {
+   "was": "2021-03-16",
+   "sub": "2021-03-15",
+   "own": "BSE SHPQNewFormat qtrid 105.0 Revised 2021-03-15T15:52:52 -> 532019_1532021133351_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 105.0 Revised 2021-03-15T15:52:52 -> 532019_1532021133351_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2021-03-16 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LCCINFOTEC|2020-06-30": {
+   "was": "2021-03-16",
+   "sub": "2021-03-15",
+   "own": "BSE SHPQNewFormat qtrid 106.0 Revised 2021-03-15T15:51:54 -> 532019_1532021131911_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 106.0 Revised 2021-03-15T15:51:54 -> 532019_1532021131911_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2021-03-16 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LCCINFOTEC|2023-06-30": {
+   "was": "2024-05-29",
+   "sub": "2024-05-28",
+   "own": "BSE SHPQNewFormat qtrid 118.01 Revised 2024-05-28T16:51:25.257 -> 532019_2852024165027_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 118.01 Revised 2024-05-28T16:51:25.257 -> 532019_2852024165027_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-05-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LCCINFOTEC|2025-06-30": {
+   "was": "2025-11-06",
+   "sub": "2025-11-05",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-11-05T14:58:03.563 -> 532019_5112025145754_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-11-05T14:58:03.563 -> 532019_5112025145754_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-11-06 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LCCINFOTEC|2025-09-30": {
+   "was": "2025-11-06",
+   "sub": "2025-11-05",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-11-05T13:14:40.83 -> 532019_5112025131416_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-11-05T13:14:40.83 -> 532019_5112025131416_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-11-06 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LLOYDSENGG|2025-09-30": {
+   "was": "2025-10-27",
+   "sub": "2025-10-24",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-24T19:00:36.007 -> 539992_24102025185955_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-24T19:00:36.007 -> 539992_24102025185955_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "LYONSCO|2020-03-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 105.02 Revised 2024-08-08T18:18:20.17 -> 531441_882024181812_SHP.xml",
+   "src": "BSE Revised 2024-03-14T17:39:19 -> 531441_143202417395_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2020-06-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-11",
+   "own": "BSE SHPQNewFormat qtrid 106.03 Revised 2024-08-08T18:11:13.993 -> 531441_88202418115_SHP.xml",
+   "src": "BSE Revised 2024-03-11T14:38:29 -> 531441_1132024143814_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2020-09-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 107.02 Revised 2024-08-08T18:14:08.34 -> 531441_882024181359_SHP.xml",
+   "src": "BSE Revised 2024-03-14T15:14:37 -> 531441_1432024151417_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2020-12-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 108.02 Revised 2024-08-08T18:21:32.49 -> 531441_882024182123_SHP.xml",
+   "src": "BSE Revised 2024-03-14T15:51:32 -> 531441_1432024155118_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2021-03-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-15",
+   "own": "BSE SHPQNewFormat qtrid 109.02 Revised 2024-08-08T18:18:42.923 -> 531441_882024181833_SHP.xml",
+   "src": "BSE Revised 2024-03-15T12:21:32 -> 531441_1532024122117_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2021-06-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-12",
+   "own": "BSE SHPQNewFormat qtrid 110.03 Revised 2024-08-08T18:11:45.55 -> 531441_882024181127_SHP.xml",
+   "src": "BSE Revised 2024-03-12T11:34:26 -> 531441_123202411341_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2021-09-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 111.02 Revised 2024-08-08T18:14:29.45 -> 531441_882024181421_SHP.xml",
+   "src": "BSE Revised 2024-03-14T15:16:37 -> 531441_1432024151615_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2021-12-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 112.02 Revised 2024-08-08T18:22:04.69 -> 531441_882024182151_SHP.xml",
+   "src": "BSE Revised 2024-03-14T16:18:04 -> 531441_1432024161731_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2022-03-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-15",
+   "own": "BSE SHPQNewFormat qtrid 113.02 Revised 2024-08-08T18:19:08.447 -> 531441_882024181856_SHP.xml",
+   "src": "BSE Revised 2024-03-15T12:23:10 -> 531441_1532024122254_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2022-06-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-12",
+   "own": "BSE SHPQNewFormat qtrid 114.03 Revised 2024-08-08T18:12:10.663 -> 531441_88202418121_SHP.xml",
+   "src": "BSE Revised 2024-03-12T11:06:04 -> 531441_123202411546_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2022-09-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2024-08-08T18:14:55.02 -> 531441_882024181445_SHP.xml",
+   "src": "BSE Revised 2024-03-14T15:17:37 -> 531441_1432024151721_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2022-12-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 116.02 Revised 2024-08-08T18:22:33.077 -> 531441_882024182223_SHP.xml",
+   "src": "BSE Revised 2024-03-14T16:33:16 -> 531441_143202416331_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2023-03-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-15",
+   "own": "BSE SHPQNewFormat qtrid 117.02 Revised 2024-08-08T18:33:03.377 -> 531441_882024183252_SHP.xml",
+   "src": "BSE Revised 2024-03-15T12:36:24 -> 531441_1532024123542_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2023-06-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-12",
+   "own": "BSE SHPQNewFormat qtrid 118.03 Revised 2024-08-08T18:12:33.62 -> 531441_882024181224_SHP.xml",
+   "src": "BSE Revised 2024-03-12T11:06:57 -> 531441_123202411648_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2023-09-30": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-08-08T18:15:21.093 -> 531441_88202418159_SHP.xml",
+   "src": "BSE Revised 2024-03-14T15:18:54 -> 531441_1432024151834_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "LYONSCO|2023-12-31": {
+   "was": "2024-08-08",
+   "sub": "2024-03-14",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-08-08T18:22:59.767 -> 531441_882024182250_SHP.xml",
+   "src": "BSE Revised 2024-03-14T16:48:33 -> 531441_1432024164752_SHP.xml: the same figures to 4 dp (prom 52.17, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "MALTLAND|2025-03-31": {
+   "was": "2025-06-05",
+   "sub": "2025-05-23",
+   "own": "BSE SHPQNewFormat qtrid 125.02 Revised 2025-06-05T11:48:46.213 -> 539560_562025114734_SHP.xml",
+   "src": "BSE Revised 2025-05-23T11:00:37 -> 539560_2352025105735_SHP.xml: the same figures to 4 dp (prom 16.18, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "MANINDS|2024-09-30": {
+   "was": "2025-02-03",
+   "sub": "2025-01-24",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2025-02-03T11:49:17.507 -> 513269_322025114826_SHP.xml",
+   "src": "NSE Revised 24-JAN-2025 20:00:08 -> SHP_193109_1347950_16012025061448_WEB.xml: the same figures to 4 dp (prom 46.15, fii 2.5243, dii 3.2797, mf 1.263, ins 0.0386)",
+   "class": "earlier-publication"
+  },
+  "MARBLE|2026-03-31": {
+   "was": "2026-08-12",
+   "sub": "2026-05-04",
+   "own": "BSE SHPQNewFormat qtrid 129.0 Revised 2026-08-12T14:41:10.833 -> 531281_1282026144045_SHP.xml",
+   "src": "BSE Revised 2026-05-04T16:36:59 -> 531281_45202616365_SHP.xml: the same figures to 4 dp (prom 40.2, fii 0.0, dii 1.1366, mf 1.1366, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "MASFIN|2025-03-31": {
+   "was": "2025-04-21",
+   "sub": "2025-04-17",
+   "own": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-17T20:03:15.36 -> 540749_17420252032_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-17T20:03:15.36 -> 540749_17420252032_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-04-21 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "MBLINFRA|2016-03-31": {
+   "was": "2016-07-08",
+   "sub": "2016-07-07",
+   "own": "BSE SHPQNewFormat qtrid 89.0 Revised 2016-07-07T16:45:17 -> 533152_772016161816_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 89.0 Revised 2016-07-07T16:45:17 -> 533152_772016161816_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2016-07-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "MEHAI|2022-06-30": {
+   "was": "2024-12-18",
+   "sub": "2022-10-14",
+   "own": "BSE SHPQNewFormat qtrid 114.02 Revised 2024-12-18T12:46:59.563 -> 540730_18122024124651_SHP.xml",
+   "src": "BSE Revised 2022-10-14T15:09:58 -> 540730_1410202215154_SHP.xml: the same figures to 4 dp (prom 70.14, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "MINDACORP|2016-03-31": {
+   "was": "2016-12-14",
+   "sub": "2016-12-13",
+   "own": "BSE SHPQNewFormat qtrid 89.0 Revised 2016-12-13T18:02:56 -> 538962_13122016175837_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 89.0 Revised 2016-12-13T18:02:56 -> 538962_13122016175837_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2016-12-14 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "MIVENMACH|2024-06-30": {
+   "was": "2025-06-11",
+   "sub": "2024-07-29",
+   "own": "BSE SHPQNewFormat qtrid 122.05 Revised 2025-06-11T18:43:26.767 -> 522036_1162025184317_SHP.xml",
+   "src": "BSE Revised 2024-07-29T16:22:41 -> 522036_2972024162229_SHP.xml: the same figures to 4 dp (prom 75.0, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "MODIRUBBER|2023-09-30": {
+   "was": "2024-05-30",
+   "sub": "2024-05-29",
+   "own": "NSE corporate-share-holdings-master as-on 30-SEP-2023, Revised broadcast 29-MAY-2024 15:52:18 -> SHP_182971_1144151_29052024034831_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 30-SEP-2023, Revised broadcast 29-MAY-2024 15:52:18 -> SHP_182971_1144151_29052024034831_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-05-30 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "MODIRUBBER|2023-12-31": {
+   "was": "2024-05-30",
+   "sub": "2024-05-29",
+   "own": "NSE corporate-share-holdings-master as-on 31-DEC-2023, Revised broadcast 29-MAY-2024 15:54:21 -> SHP_185381_1144174_29052024035350_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-DEC-2023, Revised broadcast 29-MAY-2024 15:54:21 -> SHP_185381_1144174_29052024035350_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-05-30 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "MSPL|2024-06-30": {
+   "was": "2024-08-22",
+   "sub": "2024-08-21",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-21T19:45:58.79 -> 532650_2182024194420_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-21T19:45:58.79 -> 532650_2182024194420_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-22 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "NACLIND|2025-03-31": {
+   "was": "2026-06-05",
+   "sub": "2026-06-04",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 04-JUN-2026 15:41:39 -> SHP_1595357_06012026122733_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 04-JUN-2026 15:41:39 -> SHP_1595357_06012026122733_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2026-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "NAHARPOLY|2025-03-31": {
+   "was": "2025-04-15",
+   "sub": "2025-04-14",
+   "own": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-14T16:19:10.187 -> 523391_1442025161559_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-14T16:19:10.187 -> 523391_1442025161559_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-04-15 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "NARMADA|2024-12-31": {
+   "was": "2025-03-06",
+   "sub": "2025-03-05",
+   "own": "BSE SHPQNewFormat qtrid 124.02 Revised 2025-03-05T18:12:12.853 -> 543643_532025181014_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.02 Revised 2025-03-05T18:12:12.853 -> 543643_532025181014_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-03-06 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "NITINFIRE|2024-03-31": {
+   "was": "2025-01-10",
+   "sub": "2024-12-07",
+   "own": "BSE SHPQNewFormat qtrid 121.02 Revised 2025-01-10T20:27:57.523 -> 532854_101202520276_SHP.xml",
+   "src": "BSE Revised 2024-12-07T17:18:38 -> 532854_7122024171825_SHP.xml: the same figures to 4 dp (prom 51.68, fii 1.4575, dii 0.0671, mf 0.0, ins 0.0376)",
+   "class": "earlier-publication"
+  },
+  "NKIND|2023-12-31": {
+   "was": "2024-01-25",
+   "sub": "2024-01-24",
+   "own": "BSE SHPQNewFormat qtrid 120.01 Revised 2024-01-24T18:32:21.39 -> 519494_2412024183112_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 120.01 Revised 2024-01-24T18:32:21.39 -> 519494_2412024183112_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-01-25 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "NPST|2025-09-30": {
+   "was": "2025-11-25",
+   "sub": "2025-11-17",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-11-24T17:17:38.037 -> 544396_24112025171610_SHP.xml",
+   "src": "NSE Revised 17-NOV-2025 17:40:09 -> SHP_1577008_17112025043416_WEB.xml: the same figures to 4 dp (prom 60.29, fii 0.11, dii 9.9514, mf 9.4158, ins 0.0)",
+   "class": "retired-gate+earlier-publication"
+  },
+  "OILCOUNTUB|2025-06-30": {
+   "was": "2025-07-28",
+   "sub": "2025-07-25",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-07-25T15:41:36.127 -> 500313_257202515382_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-07-25T15:41:36.127 -> 500313_257202515382_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-28 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ORICONENT|2022-09-30": {
+   "was": "2023-03-20",
+   "sub": "2023-03-17",
+   "own": "BSE SHPQNewFormat qtrid 115.01 Revised 2023-03-17T15:54:08.33 -> 513121_173202315480_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.01 Revised 2023-03-17T15:54:08.33 -> 513121_173202315480_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ORIENTHOT|2024-12-31": {
+   "was": "2025-01-30",
+   "sub": "2025-01-29",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-29T19:21:39.497 -> 500314_2912025191923_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-29T19:21:39.497 -> 500314_2912025191923_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-01-30 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ORIENTTR|2023-06-30": {
+   "was": "2023-07-28",
+   "sub": "2023-07-19",
+   "own": "BSE SHPQNewFormat qtrid 118.02 Revised 2023-07-28T17:57:36.613 -> 531512_2872023175515_SHP.xml",
+   "src": "BSE Revised 2023-07-19T15:38:36 -> 531512_1972023153749_SHP.xml: the same figures to 4 dp (prom 14.79, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "OSWALGREEN|2025-09-30": {
+   "was": "2025-11-07",
+   "sub": "2025-11-06",
+   "own": "NSE corporate-share-holdings-master as-on 30-SEP-2025, Revised broadcast 07-NOV-2025 14:58:48 -> SHP_1567574_07112025110933_WEB.xml",
+   "src": "BSE Revised 2025-11-06T15:52:38 -> 539290_611202515515_SHP.xml: the same figures to 4 dp (prom 69.19, fii 0.0053, dii 0.0179, mf 0.01, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "PALREDTEC|2025-09-30": {
+   "was": "2026-03-27",
+   "sub": "2026-03-25",
+   "own": "NSE corporate-share-holdings-master as-on 30-SEP-2025, Revised broadcast 25-MAR-2026 16:31:22 -> SHP_1639268_24032026022759_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 30-SEP-2025, Revised broadcast 25-MAR-2026 16:31:22 -> SHP_1639268_24032026022759_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2026-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PETPLST|2022-03-31": {
+   "was": "2022-05-16",
+   "sub": "2022-04-22",
+   "own": "BSE SHPQNewFormat qtrid 113.04 Revised 2022-05-16T16:22:51.55 -> 524046_1652022162234_SHP.xml",
+   "src": "BSE Revised 2022-04-22T13:53:43 -> 524046_2242022135245_SHP.xml: the same figures to 4 dp (prom 29.1, fii 0.0, dii 21.44, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "PICCADIL|2025-06-30": {
+   "was": "2025-07-15",
+   "sub": "2025-07-14",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-07-14T16:29:37.63 -> 530305_1472025162837_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-07-14T16:29:37.63 -> 530305_1472025162837_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-15 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PIDILITIND|2025-09-30": {
+   "was": "2025-10-20",
+   "sub": "2025-10-17",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-17T17:55:34.29 -> 500331_17102025175436_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-10-17T17:55:34.29 -> 500331_17102025175436_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PNC|2025-03-31": {
+   "was": "2025-07-01",
+   "sub": "2025-06-30",
+   "own": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-06-30T20:24:42.15 -> 532387_3062025202412_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-06-30T20:24:42.15 -> 532387_3062025202412_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-07-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "POCL|2024-03-31": {
+   "was": "2024-06-04",
+   "sub": "2024-06-03",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2024, Revised broadcast 03-JUN-2024 17:18:06 -> SHP_188240_1146598_30052024120330_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 31-MAR-2024, Revised broadcast 03-JUN-2024 17:18:06 -> SHP_188240_1146598_30052024120330_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-06-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "POLYPLEX|2025-06-30": {
+   "was": "2026-02-25",
+   "sub": "2026-02-24",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-02-24T17:45:26.473 -> 524051_242202617458_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-02-24T17:45:26.473 -> 524051_242202617458_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-02-25 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "POLYPLEX|2025-09-30": {
+   "was": "2026-02-27",
+   "sub": "2026-02-26",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-02-26T17:56:46.2 -> 524051_2622026175633_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-02-26T17:56:46.2 -> 524051_2622026175633_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-02-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "POPULARES|2021-06-30": {
+   "was": "2022-07-14",
+   "sub": "2022-07-02",
+   "own": "BSE SHPQNewFormat qtrid 110.02 Revised 2022-07-14T14:18:40.93 -> 531870_147202214170_SHP.xml",
+   "src": "BSE New 2022-07-02T12:36:36 -> 531870_272022123634_SHP.xml: the same figures to 4 dp (prom 66.82, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "PRARUH|2025-09-30": {
+   "was": "2026-02-03",
+   "sub": "2025-10-18",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2026-02-03T13:57:40.677 -> 544538_32202613574_SHP.xml",
+   "src": "BSE Revised 2025-10-18T11:38:36 -> 544538_18102025113618_SHP.xml: the same figures to 4 dp (prom 73.22, fii 0.0, dii 6.475, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "PRUDMOULI|2022-03-31": {
+   "was": "2023-06-05",
+   "sub": "2023-06-02",
+   "own": "BSE SHPQNewFormat qtrid 113.01 Revised 2023-06-02T16:41:49.947 -> 500342_26202316317_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.01 Revised 2023-06-02T16:41:49.947 -> 500342_26202316317_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PRUDMOULI|2022-06-30": {
+   "was": "2023-06-05",
+   "sub": "2023-06-02",
+   "own": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-06-02T16:42:41.637 -> 500342_262023164229_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-06-02T16:42:41.637 -> 500342_262023164229_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PRUDMOULI|2022-09-30": {
+   "was": "2023-06-05",
+   "sub": "2023-06-02",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-06-02T16:43:21.867 -> 500342_262023164314_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-06-02T16:43:21.867 -> 500342_262023164314_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PRUDMOULI|2022-12-31": {
+   "was": "2023-06-05",
+   "sub": "2023-06-02",
+   "own": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-06-02T16:44:06.44 -> 500342_262023164358_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-06-02T16:44:06.44 -> 500342_262023164358_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PRUDMOULI|2023-03-31": {
+   "was": "2023-06-05",
+   "sub": "2023-06-02",
+   "own": "BSE SHPQNewFormat qtrid 117.01 Revised 2023-06-02T16:44:58.023 -> 500342_262023164452_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 117.01 Revised 2023-06-02T16:44:58.023 -> 500342_262023164452_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-06-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "PURVA|2025-03-31": {
+   "was": "2025-09-22",
+   "sub": "2025-09-20",
+   "own": "NSE corporate-share-holdings-master as-on 31-MAR-2025, Revised broadcast 22-SEP-2025 14:53:30 -> SHP_1516875_25082025011417_WEB.xml",
+   "src": "BSE Revised 2025-09-20T14:35:28 -> 532891_2092025143337_SHP.xml: the same figures to 4 dp (prom 75.0, fii 17.329, dii 0.7895, mf 0.0, ins 0.3705)",
+   "class": "earlier-publication"
+  },
+  "RAMRAT|2025-12-31": {
+   "was": "2026-06-02",
+   "sub": "2026-06-01",
+   "own": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-06-01T17:37:38.337 -> 522281_162026173642_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-06-01T17:37:38.337 -> 522281_162026173642_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-06-02 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RELIABVEN|2023-12-31": {
+   "was": "2024-03-07",
+   "sub": "2024-02-05",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-03-07T15:50:05.09 -> 532124_732024154842_SHP.xml",
+   "src": "BSE Revised 2024-02-05T14:43:00 -> 532124_522024144158_SHP.xml: the same figures to 4 dp (prom 54.08, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2021-03-31": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 109.0 Revised 2025-12-27T13:07:16.64 -> 505509_2712202513712_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 109.0 Revised 2025-12-27T13:07:16.64 -> 505509_2712202513712_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2021-06-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 110.0 Revised 2025-12-27T12:59:10.793 -> 505509_2712202512594_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 110.0 Revised 2025-12-27T12:59:10.793 -> 505509_2712202512594_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2021-09-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 111.0 Revised 2025-12-27T12:52:51.203 -> 505509_27122025125243_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 111.0 Revised 2025-12-27T12:52:51.203 -> 505509_27122025125243_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2021-12-31": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 112.0 Revised 2025-12-27T12:41:20.373 -> 505509_27122025124114_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 112.0 Revised 2025-12-27T12:41:20.373 -> 505509_27122025124114_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2022-03-31": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 113.0 Revised 2025-12-27T12:32:57.853 -> 505509_27122025123252_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.0 Revised 2025-12-27T12:32:57.853 -> 505509_27122025123252_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2022-06-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 114.0 Revised 2025-12-27T12:25:46.483 -> 505509_27122025122540_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.0 Revised 2025-12-27T12:25:46.483 -> 505509_27122025122540_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2022-09-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 115.0 Revised 2025-12-27T12:08:43.483 -> 505509_2712202512838_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.0 Revised 2025-12-27T12:08:43.483 -> 505509_2712202512838_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2022-12-31": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 116.0 Revised 2025-12-27T12:05:51.94 -> 505509_2712202512543_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.0 Revised 2025-12-27T12:05:51.94 -> 505509_2712202512543_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2023-03-31": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 117.0 Revised 2025-12-27T11:43:54.623 -> 505509_27122025114344_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 117.0 Revised 2025-12-27T11:43:54.623 -> 505509_27122025114344_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2023-06-30": {
+   "was": "2025-12-29",
+   "sub": "2025-12-27",
+   "own": "BSE SHPQNewFormat qtrid 118.0 Revised 2025-12-27T11:27:03.433 -> 505509_27122025112517_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 118.0 Revised 2025-12-27T11:27:03.433 -> 505509_27122025112517_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RESPONIND|2023-12-31": {
+   "was": "2025-12-22",
+   "sub": "2024-01-20",
+   "own": "BSE SHPQNewFormat qtrid 120.0 Revised 2025-12-22T13:21:49.607 -> 505509_22122025132145_SHP.xml",
+   "src": "NSE N 20-JAN-2024 16:06:10 -> SHP_185273_1031840_20012024040610_WEB.xml: the same figures to 4 dp (prom 59.5, fii 35.1203, dii 3.5745, mf 0.0123, ins 3.5622)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2024-03-31": {
+   "was": "2025-12-22",
+   "sub": "2024-04-15",
+   "own": "BSE SHPQNewFormat qtrid 121.0 Revised 2025-12-22T13:21:22.997 -> 505509_22122025132115_SHP.xml",
+   "src": "NSE N 15-APR-2024 15:54:09 -> SHP_186761_1092156_15042024035409_WEB.xml: the same figures to 4 dp (prom 59.14, fii 35.0794, dii 3.5834, mf 0.0165, ins 3.5664)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2024-06-30": {
+   "was": "2025-12-22",
+   "sub": "2024-07-17",
+   "own": "BSE SHPQNewFormat qtrid 122.0 Revised 2025-12-22T13:14:59.13 -> 505509_22122025131449_SHP.xml",
+   "src": "NSE N 17-JUL-2024 16:14:40 -> SHP_189820_1189499_17072024041439_WEB.xml: the same figures to 4 dp (prom 59.14, fii 35.1153, dii 3.5856, mf 0.0191, ins 3.5664)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2024-09-30": {
+   "was": "2025-12-22",
+   "sub": "2024-10-15",
+   "own": "BSE SHPQNewFormat qtrid 123.0 Revised 2025-12-22T13:11:57.563 -> 505509_22122025131152_SHP.xml",
+   "src": "NSE N 15-OCT-2024 16:28:09 -> SHP_192079_1270411_15102024042808_WEB.xml: the same figures to 4 dp (prom 59.14, fii 34.7771, dii 3.5663, mf 0.0247, ins 3.5416)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2024-12-31": {
+   "was": "2025-12-22",
+   "sub": "2025-01-13",
+   "own": "BSE SHPQNewFormat qtrid 124.0 Revised 2025-12-22T13:11:28.297 -> 505509_22122025131124_SHP.xml",
+   "src": "NSE N 13-JAN-2025 17:59:50 -> SHP_194512_1344033_13012025055949_WEB.xml: the same figures to 4 dp (prom 59.14, fii 32.4802, dii 3.5067, mf 0.0298, ins 3.4769)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2025-03-31": {
+   "was": "2025-12-22",
+   "sub": "2025-04-17",
+   "own": "BSE SHPQNewFormat qtrid 125.0 Revised 2025-12-22T13:11:02.217 -> 505509_22122025131054_SHP.xml",
+   "src": "NSE N 17-APR-2025 17:10:59 -> SHP_197764_1417437_17042025051058_WEB.xml: the same figures to 4 dp (prom 59.14, fii 31.6204, dii 3.5128, mf 0.0375, ins 3.4753)",
+   "class": "earlier-publication"
+  },
+  "RESPONIND|2025-09-30": {
+   "was": "2025-12-15",
+   "sub": "2025-10-17",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-12-12T17:07:11.67 -> 505509_1212202517219_SHP.xml",
+   "src": "NSE N 17-OCT-2025 15:35:28 -> SHP_1551768_17102025033523_WEB.xml: the same figures to 4 dp (prom 59.14, fii 30.6091, dii 3.3025, mf 0.0, ins 3.3024)",
+   "class": "retired-gate+earlier-publication"
+  },
+  "RFLL|2023-06-30": {
+   "was": "2023-11-08",
+   "sub": "2023-08-09",
+   "own": "BSE SHPQNewFormat qtrid 118.02 Revised 2023-11-08T19:04:33.95 -> 543256_811202319347_SHP.xml",
+   "src": "BSE Revised 2023-08-09T15:35:06 -> 543256_982023153226_SHP.xml: the same figures to 4 dp (prom 71.74, fii 0.0, dii 0.1387, mf 0.0, ins 0.1387)",
+   "class": "earlier-publication"
+  },
+  "RGIL|2023-09-30": {
+   "was": "2024-02-02",
+   "sub": "2023-11-08",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-02-02T15:29:13.983 -> 539922_222024152545_SHP.xml",
+   "src": "BSE Revised 2023-11-08T17:33:06 -> 539922_8112023172954_SHP.xml: the same figures to 4 dp (prom 8.24, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "RISAINTL|2023-06-30": {
+   "was": "2023-12-14",
+   "sub": "2023-07-20",
+   "own": "BSE SHPQNewFormat qtrid 118.02 Revised 2023-12-14T16:54:00.89 -> 530251_14122023165248_SHP.xml",
+   "src": "BSE Revised 2023-07-20T14:02:38 -> 530251_207202314144_SHP.xml: the same figures to 4 dp (prom 13.09, fii 0.2383, dii 0.3162, mf 0.0, ins 0.3135)",
+   "class": "earlier-publication"
+  },
+  "RUCHIRA|2024-09-30": {
+   "was": "2024-11-04",
+   "sub": "2024-11-02",
+   "own": "BSE SHPQNewFormat qtrid 123.01 Revised 2024-11-02T10:19:18.753 -> 532785_2112024101623_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 123.01 Revised 2024-11-02T10:19:18.753 -> 532785_2112024101623_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-11-04 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "RVTH|2025-12-31": {
+   "was": "2026-02-19",
+   "sub": "2026-02-18",
+   "own": "BSE SHPQNewFormat qtrid 128.01 Revised 2026-02-18T17:24:19.86 -> 544246_182202617240_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 128.01 Revised 2026-02-18T17:24:19.86 -> 544246_182202617240_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-02-19 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SALASAR|2024-06-30": {
+   "was": "2024-08-26",
+   "sub": "2024-08-25",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-25T16:35:15.04 -> 540642_2582024163416_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-25T16:35:15.04 -> 540642_2582024163416_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-26 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SAMHI|2024-06-30": {
+   "was": "2024-08-08",
+   "sub": "2024-08-07",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-07T19:59:18.54 -> 543984_782024195829_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-08-07T19:59:18.54 -> 543984_782024195829_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SANDUPHQ|2022-09-30": {
+   "was": "2023-07-11",
+   "sub": "2023-07-01",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-07-11T13:21:17.54 -> 524703_1172023132029_SHP.xml",
+   "src": "BSE Revised 2023-07-01T11:18:59 -> 524703_172023111836_SHP.xml: the same figures to 4 dp (prom 50.43, fii 0.0, dii 0.0057, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SANWARIA|2025-09-30": {
+   "was": "2025-12-01",
+   "sub": "2025-11-28",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-11-28T20:50:20.74 -> 519260_28112025204949_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-11-28T20:50:20.74 -> 519260_28112025204949_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SAWACA|2022-06-30": {
+   "was": "2023-03-20",
+   "sub": "2022-07-21",
+   "own": "BSE SHPQNewFormat qtrid 114.03 Revised 2023-03-20T17:08:04.287 -> 531893_203202317041_SHP.xml",
+   "src": "BSE New 2022-07-21T15:38:02 -> 531893_217202215380_SHP.xml: the same figures to 4 dp (prom 7.1, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SEIL|2022-03-31": {
+   "was": "2022-05-12",
+   "sub": "2022-04-11",
+   "own": "BSE SHPQNewFormat qtrid 113.02 Revised 2022-05-12T10:31:44.17 -> 539921_1252022103019_SHP.xml",
+   "src": "BSE Revised 2022-04-11T13:06:56 -> 539921_11420221360_SHP.xml: the same figures to 4 dp (prom 64.2, fii 14.5142, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SEJALLTD|2025-12-31": {
+   "was": "2026-04-01",
+   "sub": "2026-03-31",
+   "own": "BSE SHPQNewFormat qtrid 128.01 Revised 2026-03-31T17:24:57.88 -> 532993_3132026172420_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 128.01 Revised 2026-03-31T17:24:57.88 -> 532993_3132026172420_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-04-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SHAHCON|2023-12-31": {
+   "was": "2024-06-14",
+   "sub": "2024-02-05",
+   "own": "BSE SHPQNewFormat qtrid 120.03 Revised 2024-06-14T14:21:36.927 -> 509870_146202414212_SHP.xml",
+   "src": "BSE Revised 2024-02-05T14:23:43 -> 509870_522024142320_SHP.xml: the same figures to 4 dp (prom 73.67, fii 0.0, dii 6.1274, mf 0.0, ins 3.5258)",
+   "class": "earlier-publication"
+  },
+  "SHILPAMED|2024-03-31": {
+   "was": "2024-04-22",
+   "sub": "2024-04-20",
+   "own": "BSE SHPQNewFormat qtrid 121.02 Revised 2024-04-20T16:27:11.173 -> 530549_2042024162542_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.02 Revised 2024-04-20T16:27:11.173 -> 530549_2042024162542_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-22 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SHREMETAL|2024-06-30": {
+   "was": "2024-07-24",
+   "sub": "2024-07-19",
+   "own": "BSE SHPQNewFormat qtrid 122.02 Revised 2024-07-24T19:17:06.513 -> 531962_2472024191558_SHP.xml",
+   "src": "BSE Revised 2024-07-19T19:22:12 -> 531962_1972024192147_SHP.xml: the same figures to 4 dp (prom 67.36, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SHRINIWAS|2022-09-30": {
+   "was": "2023-03-27",
+   "sub": "2022-11-22",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-03-27T14:14:55.84 -> 538897_273202314147_SHP.xml",
+   "src": "BSE Revised 2022-11-22T14:14:42 -> 538897_22112022141418_SHP.xml: the same figures to 4 dp (prom 1.94, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SKIPPER|2024-12-31": {
+   "was": "2025-01-20",
+   "sub": "2025-01-17",
+   "own": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-17T17:41:15.357 -> 538562_171202517396_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 124.01 Revised 2025-01-17T17:41:15.357 -> 538562_171202517396_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-01-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SPAR|2025-12-31": {
+   "was": "2026-04-18",
+   "sub": "2026-03-28",
+   "own": "BSE SHPQNewFormat qtrid 128.0 Revised 2026-04-18T14:12:30.59 -> 531370_184202614821_SHP.xml",
+   "src": "BSE Revised 2026-03-28T20:11:18 -> 531370_283202620928_SHP.xml: the same figures to 4 dp (prom 26.53, fii 0.0, dii 0.2066, mf 0.2066, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SSWL|2022-12-31": {
+   "was": "2023-01-19",
+   "sub": "2023-01-18",
+   "own": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-01-18T18:31:42.203 -> 513262_1812023183111_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.01 Revised 2023-01-18T18:31:42.203 -> 513262_1812023183111_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-01-19 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "STCORP|2022-03-31": {
+   "was": "2022-05-16",
+   "sub": "2022-04-26",
+   "own": "BSE SHPQNewFormat qtrid 113.02 Revised 2022-05-16T11:50:16.507 -> 514197_1652022114758_SHP.xml",
+   "src": "BSE Revised 2022-04-26T18:13:13 -> 514197_2642022181044_SHP.xml: the same figures to 4 dp (prom 72.52, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "STCORP|2022-06-30": {
+   "was": "2022-08-03",
+   "sub": "2022-07-27",
+   "own": "BSE SHPQNewFormat qtrid 114.02 Revised 2022-08-03T11:37:21.807 -> 514197_382022113551_SHP.xml",
+   "src": "BSE New 2022-07-27T14:47:15 -> 514197_2772022144713_SHP.xml: the same figures to 4 dp (prom 68.74, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SUPREMEINF|2026-03-31": {
+   "was": "2026-05-29",
+   "sub": "2026-05-27",
+   "own": "BSE SHPQNewFormat qtrid 129.01 Revised 2026-05-27T20:01:17.28 -> 532904_275202620036_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 129.01 Revised 2026-05-27T20:01:17.28 -> 532904_275202620036_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-05-29 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "SURBHIN|2022-09-30": {
+   "was": "2023-01-11",
+   "sub": "2022-11-01",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2023-01-11T18:31:12.633 -> 514260_1112023183045_SHP.xml",
+   "src": "BSE Revised 2022-11-01T17:51:45 -> 514260_1112022175050_SHP.xml: the same figures to 4 dp (prom 64.76, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "SUYOG|2025-06-30": {
+   "was": "2026-01-08",
+   "sub": "2026-01-07",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-01-07T18:50:51.467 -> 537259_712026184924_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.0 Revised 2026-01-07T18:50:51.467 -> 537259_712026184924_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-01-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "TAHMARENT|2025-06-30": {
+   "was": "2025-08-29",
+   "sub": "2025-07-23",
+   "own": "BSE SHPQNewFormat qtrid 126.02 Revised 2025-08-29T16:51:24.417 -> 516032_2982025165050_SHP.xml",
+   "src": "BSE Revised 2025-07-23T19:04:37 -> 516032_237202519151_SHP.xml: the same figures to 4 dp (prom 63.66, fii 0.0, dii 11.1293, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "TELOGICA|2023-06-30": {
+   "was": "2024-06-22",
+   "sub": "2023-08-03",
+   "own": "BSE SHPQNewFormat qtrid 118.04 Revised 2024-06-22T11:56:48.21 -> 532975_2262024115639_SHP.xml",
+   "src": "BSE Revised 2023-08-03T14:45:25 -> 532975_382023144514_SHP.xml: the same figures to 4 dp (prom 29.63, fii 0.0, dii 0.3456, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "TICL|2025-06-30": {
+   "was": "2025-08-11",
+   "sub": "2025-08-09",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-09T13:28:19.997 -> 532738_982025132744_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-08-09T13:28:19.997 -> 532738_982025132744_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-08-11 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "TPHQ|2022-09-30": {
+   "was": "2024-04-08",
+   "sub": "2024-04-06",
+   "own": "BSE SHPQNewFormat qtrid 115.01 Revised 2024-04-06T16:36:02.133 -> 533048_642024163545_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.01 Revised 2024-04-06T16:36:02.133 -> 533048_642024163545_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-04-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "TRANSPACT|2023-09-30": {
+   "was": "2024-02-02",
+   "sub": "2023-10-20",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-02-02T15:07:55.167 -> 542765_22202415725_SHP.xml",
+   "src": "BSE Revised 2023-10-20T16:43:55 -> 542765_20102023164226_SHP.xml: the same figures to 4 dp (prom 32.2, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "TREJHARA|2025-11-05": {
+   "was": "2025-11-24",
+   "sub": "2025-11-21",
+   "own": "NSE corporate-share-holdings-master as-on 05-NOV-2025, Revised broadcast 21-NOV-2025 16:04:58 -> SHP_1578717_21112025035142_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 05-NOV-2025, Revised broadcast 21-NOV-2025 16:04:58 -> SHP_1578717_21112025035142_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-11-24 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "TRUALT|2025-10-01": {
+   "was": "2025-10-08",
+   "sub": "2025-10-07",
+   "own": "NSE corporate-share-holdings-master as-on 01-OCT-2025, Revised broadcast 07-OCT-2025 19:57:25 -> SHP_1542157_07102025074146_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 01-OCT-2025, Revised broadcast 07-OCT-2025 19:57:25 -> SHP_1542157_07102025074146_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-08 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UHZAVERI|2024-09-30": {
+   "was": "2024-11-14",
+   "sub": "2024-11-12",
+   "own": "BSE SHPQNewFormat qtrid 123.02 Revised 2024-11-14T16:06:39.953 -> 541338_1411202416630_SHP.xml",
+   "src": "BSE Revised 2024-11-12T16:32:24 -> 541338_12112024163148_SHP.xml: the same figures to 4 dp (prom 45.27, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "UNIVPHOTO|2022-06-30": {
+   "was": "2023-03-20",
+   "sub": "2023-03-18",
+   "own": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-03-18T16:15:25.937 -> 542933_1832023161324_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.01 Revised 2023-03-18T16:15:25.937 -> 542933_1832023161324_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2023-03-20 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2017-06-30": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-03-26T16:30:36.977 -> 512070_263202416304_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 94.01 Revised 2024-03-26T16:30:36.977 -> 512070_263202416304_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2017-09-30": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-03-26T16:32:54.13 -> 512070_2632024163152_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 95.01 Revised 2024-03-26T16:32:54.13 -> 512070_2632024163152_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2017-12-31": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 96.01 Revised 2024-03-26T16:33:47.347 -> 512070_2632024163329_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 96.01 Revised 2024-03-26T16:33:47.347 -> 512070_2632024163329_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2018-03-31": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 97.01 Revised 2024-03-26T16:36:02.277 -> 512070_2632024163448_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 97.01 Revised 2024-03-26T16:36:02.277 -> 512070_2632024163448_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2018-06-30": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 98.01 Revised 2024-03-26T16:36:53.253 -> 512070_2632024163641_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 98.01 Revised 2024-03-26T16:36:53.253 -> 512070_2632024163641_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2018-09-30": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-03-26T16:37:42.39 -> 512070_2632024163726_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 99.01 Revised 2024-03-26T16:37:42.39 -> 512070_2632024163726_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2018-12-31": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-03-26T16:38:41.587 -> 512070_2632024163829_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 100.01 Revised 2024-03-26T16:38:41.587 -> 512070_2632024163829_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2019-03-31": {
+   "was": "2024-03-27",
+   "sub": "2024-03-26",
+   "own": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-03-26T18:47:46.053 -> 512070_2632024184723_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 101.01 Revised 2024-03-26T18:47:46.053 -> 512070_2632024184723_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-03-27 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2020-12-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 108.02 Revised 2024-07-31T16:28:57.393 -> 512070_3172024162637_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 108.02 Revised 2024-07-31T16:28:57.393 -> 512070_3172024162637_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2021-03-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 109.02 Revised 2024-07-31T16:47:17.77 -> 512070_3172024164649_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 109.02 Revised 2024-07-31T16:47:17.77 -> 512070_3172024164649_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2021-06-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 110.02 Revised 2024-07-31T16:40:55.333 -> 512070_3172024164036_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 110.02 Revised 2024-07-31T16:40:55.333 -> 512070_3172024164036_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2021-09-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 111.02 Revised 2024-07-31T16:50:18.483 -> 512070_317202416507_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 111.02 Revised 2024-07-31T16:50:18.483 -> 512070_317202416507_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2021-12-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 112.02 Revised 2024-07-31T16:36:06.11 -> 512070_3172024163531_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 112.02 Revised 2024-07-31T16:36:06.11 -> 512070_3172024163531_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2022-03-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 113.02 Revised 2024-07-31T16:48:03.08 -> 512070_3172024164740_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.02 Revised 2024-07-31T16:48:03.08 -> 512070_3172024164740_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2022-06-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 114.02 Revised 2024-07-31T16:44:08.75 -> 512070_3172024164344_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 114.02 Revised 2024-07-31T16:44:08.75 -> 512070_3172024164344_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2022-09-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 115.02 Revised 2024-07-31T16:50:41.22 -> 512070_3172024165031_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 115.02 Revised 2024-07-31T16:50:41.22 -> 512070_3172024165031_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2022-12-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 116.02 Revised 2024-07-31T16:37:15.337 -> 512070_317202416372_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 116.02 Revised 2024-07-31T16:37:15.337 -> 512070_317202416372_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2023-03-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 117.02 Revised 2024-07-31T16:48:57.753 -> 512070_3172024164842_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 117.02 Revised 2024-07-31T16:48:57.753 -> 512070_3172024164842_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2023-06-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 118.02 Revised 2024-07-31T16:45:14.59 -> 512070_3172024164446_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 118.02 Revised 2024-07-31T16:45:14.59 -> 512070_3172024164446_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2023-09-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-07-31T16:51:12.623 -> 512070_3172024165058_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 119.02 Revised 2024-07-31T16:51:12.623 -> 512070_3172024165058_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2023-12-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-07-31T16:37:43.747 -> 512070_3172024163733_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 120.02 Revised 2024-07-31T16:37:43.747 -> 512070_3172024163733_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2024-03-31": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-07-31T16:49:42.213 -> 512070_3172024164930_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 121.01 Revised 2024-07-31T16:49:42.213 -> 512070_3172024164930_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "UPL|2024-06-30": {
+   "was": "2024-08-01",
+   "sub": "2024-07-31",
+   "own": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-31T16:46:10.177 -> 512070_3172024164545_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 122.01 Revised 2024-07-31T16:46:10.177 -> 512070_3172024164545_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2024-08-01 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "VEGA|2025-09-30": {
+   "was": "2025-11-24",
+   "sub": "2025-11-07",
+   "own": "BSE SHPQNewFormat qtrid 127.0 Revised 2025-11-24T19:34:33.88 -> 512026_24112025193426_SHP.xml",
+   "src": "BSE Revised 2025-11-07T16:34:16 -> 512026_7112025163155_SHP.xml: the same figures to 4 dp (prom 69.73, fii 0.0, dii 0.0, mf 0.0, ins 0.0)",
+   "class": "earlier-publication"
+  },
+  "VGL|2025-06-30": {
+   "was": "2025-10-06",
+   "sub": "2025-10-03",
+   "own": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-10-03T19:26:20.39 -> 514274_3102025192342_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 126.01 Revised 2025-10-03T19:26:20.39 -> 514274_3102025192342_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-10-06 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "VIJAYA|2026-06-30": {
+   "was": "2026-07-23",
+   "sub": "2026-07-22",
+   "own": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-07-22T16:39:49.22 -> 543350_2272026163915_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-07-22T16:39:49.22 -> 543350_2272026163915_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-07-23 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "VIKASLIFE|2024-04-05": {
+   "was": "2024-06-10",
+   "sub": "2024-06-07",
+   "own": "NSE corporate-share-holdings-master as-on 05-APR-2024, Revised broadcast 07-JUN-2024 17:34:59 -> SHP_186127_1135377_23052024040212_WEB.xml",
+   "src": "NSE corporate-share-holdings-master as-on 05-APR-2024, Revised broadcast 07-JUN-2024 17:34:59 -> SHP_186127_1135377_23052024040212_WEB.xml",
+   "class": "retired-gate",
+   "gate": "2024-06-10 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "WANBURY|2025-09-30": {
+   "was": "2025-12-15",
+   "sub": "2025-12-13",
+   "own": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-12-13T20:43:48.44 -> 524212_1312202520421_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 127.01 Revised 2025-12-13T20:43:48.44 -> 524212_1312202520421_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-12-15 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "WARRENTEA|2025-06-30": {
+   "was": "2025-08-28",
+   "sub": "2025-08-04",
+   "own": "BSE SHPQNewFormat qtrid 126.0 Revised 2025-08-28T11:47:25.507 -> 508494_2882025112835_SHP.xml",
+   "src": "BSE Revised 2025-08-04T17:17:11 -> 508494_48202517815_SHP.xml: the same figures to 4 dp (prom 66.02, fii 0.0243, dii 0.0025, mf 0.0, ins 0.0015)",
+   "class": "earlier-publication"
+  },
+  "YASHO|2026-06-30": {
+   "was": "2026-08-05",
+   "sub": "2026-08-04",
+   "own": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-08-04T16:07:08.043 -> 541167_48202616418_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 130.01 Revised 2026-08-04T16:07:08.043 -> 541167_48202616418_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2026-08-05 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ZENSARTECH|2022-03-31": {
+   "was": "2022-06-13",
+   "sub": "2022-06-10",
+   "own": "BSE SHPQNewFormat qtrid 113.01 Revised 2022-06-10T17:57:30.513 -> 504067_1062022175447_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 113.01 Revised 2022-06-10T17:57:30.513 -> 504067_1062022175447_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2022-06-13 was the retired 15:30 gate's day for that timestamp (§149)"
+  },
+  "ZENTEC|2025-03-31": {
+   "was": "2025-04-21",
+   "sub": "2025-04-17",
+   "own": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-17T17:34:42.46 -> 533339_1742025173435_SHP.xml",
+   "src": "BSE SHPQNewFormat qtrid 125.01 Revised 2025-04-17T17:34:42.46 -> 533339_1742025173435_SHP.xml",
+   "class": "retired-gate",
+   "gate": "2025-04-21 was the retired 15:30 gate's day for that timestamp (§149)"
+  }
+ },
+ "drop": {
+  "AGARIND|2022-10-06": {
+   "file": "SHP_171146_726128_14102022024722_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2022-10-06 flagged Revised (broadcast 06-JAN-2023 22:41:44) still links the original upload: the XBRL file is dated 2022-10-14 = submissionDate 2022-10-14, so its figures [59.18, 3.5326, 0.0, 0.0, 0.0] are the original document, served from 2023-01-09 after the store row (2022-10-22)",
+   "was": [
+    59.18,
+    3.5326,
+    0.0,
+    0.0,
+    0.0,
+    "2023-01-09",
+    12122
+   ]
+  },
+  "ATAM|2023-11-03": {
+   "file": "SHP_183036_981735_08112023105926_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-11-03 flagged Revised (broadcast 06-MAY-2024 09:48:24) still links the original upload: the XBRL file is dated 2023-11-08 = submissionDate 2023-11-08, so its figures [74.15, 0.0016, 0.0, 0.0, 0.0] are the original document, served from 2024-05-06 after the store row (2024-05-02)",
+   "was": [
+    74.15,
+    0.0016,
+    0.0,
+    0.0,
+    0.0,
+    "2024-05-06",
+    7338
+   ]
+  },
+  "ATLANTAA|2023-06-30": {
+   "file": "SHP_179390_889646_18072023012407_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-06-30 flagged Revised (broadcast 16-APR-2025 17:01:18) still links the original upload: the XBRL file is dated 2023-07-18 = submissionDate 2023-07-18, so its figures [68.45, 0.0, 0.0, 0.0, 0.0] are the original document, served from 2025-04-17 after the store row (2023-07-18)",
+   "was": [
+    68.45,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2025-04-17",
+    24673
+   ]
+  },
+  "BANG|2023-03-31": {
+   "file": "SHP_177315_824997_19042023114155_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-03-31 flagged Revised (broadcast 26-JUL-2023 14:49:47) still links the original upload: the XBRL file is dated 2023-04-19 = submissionDate 2023-04-19, so its figures [72.63, 0.0, 0.0, 0.0, 0.0] are the original document, served from 2023-07-26 after the store row (2023-04-19)",
+   "was": [
+    72.63,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2023-07-26",
+    7605
+   ]
+  },
+  "CINEVISTA|2023-12-31": {
+   "file": "SHP_184178_1020941_15012024030612_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-12-31 flagged Revised (broadcast 26-MAR-2024 15:27:01) still links the original upload: the XBRL file is dated 2024-01-15 = submissionDate 2024-01-15, so its figures [67.02, 0.0, 0.0, 0.0, 0.0] are the original document, served from 2024-03-26 after the store row (2024-01-15)",
+   "was": [
+    67.02,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2024-03-26",
+    12005
+   ]
+  },
+  "DHARAN|2021-09-30": {
+   "file": "SHP_163046_542908_21102021024719_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-09-30 flagged Revised (broadcast 07-JAN-2022 02:25:01) still links the original upload: the XBRL file is dated 2021-10-21 = submissionDate 2021-10-21, so its figures [48.02, 12.092, 1.801, 0.0, 0.0] are the original document, served from 2022-01-07 after the store row (2021-11-01)",
+   "was": [
+    48.02,
+    12.092,
+    1.801,
+    0.0,
+    0.0,
+    "2022-01-07",
+    37863
+   ]
+  },
+  "ESSENTIA|2021-09-30": {
+   "file": "SHP_163054_542962_21102021030946_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-09-30 flagged Revised (broadcast 14-JAN-2022 13:10:13) still links the original upload: the XBRL file is dated 2021-10-21 = submissionDate 2021-10-21, so its figures [39.61, 0.0031, 4.5557, 0.0071, 4.4586] are the original document, served from 2022-01-14 after the store row (2022-01-13)",
+   "was": [
+    39.61,
+    0.0031,
+    4.5557,
+    0.0071,
+    4.4586,
+    "2022-01-14",
+    16768
+   ]
+  },
+  "GENESYS|2023-02-11": {
+   "file": "SHP_175609_797170_20022023034140_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-02-11 flagged Revised (broadcast 24-FEB-2023 19:40:04) still links the original upload: the XBRL file is dated 2023-02-20 = submissionDate 2023-02-20, so its figures [40.55, 6.6254, 0.0062, 0.0062, 0.0] are the original document, served from 2023-02-27 after the store row (2023-02-20)",
+   "was": [
+    40.55,
+    6.6254,
+    0.0062,
+    0.0062,
+    0.0,
+    "2023-02-27",
+    7390
+   ]
+  },
+  "IFCI|2024-04-18": {
+   "file": "SHP_188365_1108278_25042024064148_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2024-04-18 flagged Revised (broadcast 02-MAY-2024 11:33:55) still links the original upload: the XBRL file is dated 2024-04-25 = submissionDate 2024-04-25, so its figures [70.32, 2.4205, 2.0321, 0.042, 1.9485] are the original document, served from 2024-05-02 after the store row (2024-04-26)",
+   "was": [
+    70.32,
+    2.4205,
+    2.0321,
+    0.042,
+    1.9485,
+    "2024-05-02",
+    833026
+   ]
+  },
+  "IL&FSENGG|2022-12-31": {
+   "file": "SHP_173940_763311_12012023124127_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2022-12-31 flagged Revised (broadcast 17-MAY-2023 17:49:45) still links the original upload: the XBRL file is dated 2023-01-12 = submissionDate 2023-01-12, so its figures [42.25, 0.0, 1.6476, 0.0, 0.0] are the original document, served from 2023-05-18 after the store row (2023-01-25)",
+   "was": [
+    42.25,
+    0.0,
+    1.6476,
+    0.0,
+    0.0,
+    "2023-05-18",
+    32453
+   ]
+  },
+  "IMAGICAA|2022-06-22": {
+   "file": "SHP_170756_703356_04082022060915_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2022-06-22 flagged Revised (broadcast 06-JAN-2023 22:41:44) still links the original upload: the XBRL file is dated 2022-08-04 = submissionDate 2022-08-04, so its figures [66.25, 0.6647, 11.9729, 0.0, 0.5232] are the original document, served from 2023-01-09 after the store row (2022-12-27)",
+   "was": [
+    66.25,
+    0.6647,
+    11.9729,
+    0.0,
+    0.5232,
+    "2023-01-09",
+    36121
+   ]
+  },
+  "ISTRNETWK|2026-03-31": {
+   "file": "524622_195202620213_SHP.xml",
+   "class": "reg31-1c-pattern",
+   "why": "TypeOfReport Capital Restructuring, Regulation 31 (1) (c), DateOfAllotment and context 2026-03-04 (66,466,668 shares vs the quarterly 21,300,000); BSE revised_reson \"Resubmission pursuant to Reg. 31 (1)(c)\"",
+   "was": [
+    19.33,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2026-05-19",
+    13095
+   ]
+  },
+  "JAGSNPHARM|2021-12-31": {
+   "file": "SHP_165285_594436_19012022101950_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-12-31 flagged Revised (broadcast 02-MAR-2022 16:10:05) still links the original upload: the XBRL file is dated 2022-01-19 = submissionDate 2022-01-19, so its figures [70.34, 0.0, 0.1179, 0.0, 0.0] are the original document, served from 2022-03-03 after the store row (2022-02-07)",
+   "was": [
+    70.34,
+    0.1148,
+    0.0031,
+    0.0,
+    0.0,
+    "2022-03-03",
+    14353
+   ]
+  },
+  "LUXIND|2021-12-31": {
+   "file": "SHP_163616_578046_07012022111658_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-12-31 flagged Revised (broadcast 02-MAR-2022 16:10:05) still links the original upload: the XBRL file is dated 2022-01-07 = submissionDate 2022-01-07, so its figures [73.61, 3.8946, 6.6555, 6.6555, 0.0] are the original document, served from 2022-03-03 after the store row (2022-02-04)",
+   "was": [
+    73.61,
+    3.8946,
+    6.6555,
+    6.6555,
+    0.0,
+    "2022-03-03",
+    45642
+   ]
+  },
+  "MANINDS|2021-06-30": {
+   "file": "SHP_159763_488897_19072021104400_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-06-30 flagged Revised (broadcast 06-JAN-2022 21:06:51) still links the original upload: the XBRL file is dated 2021-07-19 = submissionDate 2021-07-19, so its figures [42.57, 4.3939, 0.1988, 0.0004, 0.1964] are the original document, served from 2022-01-07 after the store row (2021-07-19)",
+   "was": [
+    42.57,
+    4.3939,
+    0.1988,
+    0.0004,
+    0.1964,
+    "2022-01-07",
+    32870
+   ]
+  },
+  "MBLINFRA|2026-03-31": {
+   "file": "533152_562026144429_SHP.xml",
+   "class": "reg31-1c-pattern",
+   "why": "TypeOfReport Capital Restructuring, ShareholdingPatternFiledUnder Regulation 31 (1) (c), DateOfAllotment and context 2026-05-30; BSE revised_reson \"Shareholding Pattern under Regulation 31(1)(C)\"; the pattern is already event row 2026-05-30",
+   "was": [
+    74.57,
+    0.0,
+    0.4236,
+    0.0,
+    0.0,
+    "2026-06-05",
+    24120
+   ]
+  },
+  "MEP|2021-12-31": {
+   "file": "SHP_164626_588586_15012022113616_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-12-31 flagged Revised (broadcast 21-JAN-2022 19:10:23) still links the original upload: the XBRL file is dated 2022-01-15 = submissionDate 2022-01-15, so its figures [58.12, 3.8835, 7.7862, 7.4055, 0.0] are the original document, served from 2022-01-24 after the store row (2022-01-21)",
+   "was": [
+    58.12,
+    3.8835,
+    7.7862,
+    7.4055,
+    0.0,
+    "2022-01-24",
+    23598
+   ]
+  },
+  "PRECWIRE|2021-12-31": {
+   "file": "SHP_164036_582415_11012022014931_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-12-31 flagged Revised (broadcast 10-MAR-2022 11:10:03) still links the original upload: the XBRL file is dated 2022-01-11 = submissionDate 2022-01-11, so its figures [60.43, 0.5837, 0.0004, 0.0, 0.0] are the original document, served from 2022-03-10 after the store row (2022-02-04)",
+   "was": [
+    60.43,
+    0.5837,
+    0.0004,
+    0.0,
+    0.0,
+    "2022-03-10",
+    25768
+   ]
+  },
+  "PVRINOX|2023-02-22": {
+   "file": "SHP_175652_802009_13032023055851_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2023-02-22 flagged Revised (broadcast 21-APR-2023 11:05:08) still links the original upload: the XBRL file is dated 2023-03-13 = submissionDate 2023-03-13, so its figures [31.82, 37.5559, 30.6241, 24.0174, 5.4174] are the original document, served from 2023-04-21 after the store row (2023-03-13)",
+   "was": [
+    31.82,
+    37.5559,
+    30.6241,
+    24.0174,
+    5.4174,
+    "2023-04-21",
+    338
+   ]
+  },
+  "REPRO|2021-12-31": {
+   "file": "SHP_164442_586594_13012022043325_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-12-31 flagged Revised (broadcast 02-MAR-2022 15:40:10) still links the original upload: the XBRL file is dated 2022-01-13 = submissionDate 2022-01-13, so its figures [51.12, 15.6446, 0.9013, 0.0, 0.0] are the original document, served from 2022-03-03 after the store row (2022-02-10)",
+   "was": [
+    51.12,
+    15.6446,
+    0.9013,
+    0.0,
+    0.0,
+    "2022-03-03",
+    6259
+   ]
+  },
+  "SARLAPOLY|2021-09-30": {
+   "file": "SHP_161842_532550_14102021123407_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-09-30 flagged Revised (broadcast 06-JAN-2022 21:06:51) still links the original upload: the XBRL file is dated 2021-10-14 = submissionDate 2021-10-14, so its figures [41.82, 0.6739, 0.0, 0.0, 0.0] are the original document, served from 2022-01-07 after the store row (2021-10-14)",
+   "was": [
+    41.82,
+    0.6739,
+    0.0,
+    0.0,
+    0.0,
+    "2022-01-07",
+    20952
+   ]
+  },
+  "SENCO|2024-12-13": {
+   "file": "SHP_193777_1327310_16122024031805_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2024-12-13 flagged Revised (broadcast 04-FEB-2025 16:29:25) still links the original upload: the XBRL file is dated 2024-12-16 = submissionDate 2024-12-16, so its figures [64.11, 10.0833, 12.8648, 7.5838, 2.6891] are the original document, served from 2025-02-05 after the store row (2024-12-16)",
+   "was": [
+    64.11,
+    10.0833,
+    12.8648,
+    7.5838,
+    2.6891,
+    "2025-02-05",
+    132576
+   ]
+  },
+  "SHRYDUS|2023-03-31": {
+   "file": "511493_17202315208_SHP.xml",
+   "class": "reg31-1c-pattern",
+   "why": "TypeOfReport Capital Restructuring, Regulation 31 (1) (c), DateOfAllotment 2023-03-31 (10,250,286 shares vs the quarterly 9,050,286); BSE revised_reson \"SHP is filed under regulation 31(c)\"",
+   "was": [
+    32.4,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2023-07-01",
+    10079
+   ]
+  },
+  "SKIL|2022-12-31": {
+   "file": "SHP_174022_764167_12012023045935_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2022-12-31 flagged Revised (broadcast 21-FEB-2023 16:40:06) still links the original upload: the XBRL file is dated 2023-01-12 = submissionDate 2023-01-12, so its figures [54.68, 5.44, 0.0, 0.0, 0.0] are the original document, served from 2023-02-22 after the store row (2023-01-13)",
+   "was": [
+    54.68,
+    5.44,
+    0.0,
+    0.0,
+    0.0,
+    "2023-02-22",
+    8642
+   ]
+  },
+  "SPICEJET|2025-03-18": {
+   "file": "500285_214202510462_SHP.xml",
+   "class": "quarterly-under-event-date",
+   "why": "BSE 124.02 revised_reson: \"Details in this shareholding pattern are of quarter ended March 31, 2025, however, this has been inadvertently filed by the Company being dated March 18, 2025 ... refer correct shareholding pattern dated March 18, 2025 earlier filed on March 28\"; the 2025-03-31 quarter row already holds these figures (BSE 125.0 500285_2142025125533)",
+   "was": [
+    33.46,
+    11.847,
+    6.915,
+    2.5316,
+    0.8501,
+    "2025-04-21",
+    422935
+   ]
+  },
+  "STARHFL|2022-09-30": {
+   "file": "539017_15112022144638_SHP.xml",
+   "class": "reg31-1a-pattern",
+   "why": "TypeOfReport Pre-listing, Regulation 31 (1) (a), context 2022-11-12; BSE revised_reson \"submitted pursuant to the preferential offer of the Company\"; the quarterly original of 2022-10-20 is the Sep-2022 pattern",
+   "was": [
+    25.57,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    "2022-11-15",
+    3792
+   ]
+  },
+  "SUPREMEINF|2025-09-30": {
+   "file": "SHP_1656859_21042026092619_WEB.xml",
+   "class": "another-quarter-pattern",
+   "why": "NSE upload of 21-Apr-2026 09:26 = the Mar-2026 quarterly (96,735,760 shares; 47.32/3.0218/5.9933; 7,907 holders = BSE 532904_2142026184717); Sep-2025 share capital was 25,698,372 (BSE 532904_1410202512239 and its revision 532904_173202616359)",
+   "was": [
+    47.32,
+    3.0218,
+    5.9933,
+    0.0,
+    0.0,
+    "2026-04-22",
+    7907
+   ]
+  },
+  "SUPREMEINF|2025-12-31": {
+   "file": "SHP_1656869_21042026093519_WEB.xml",
+   "class": "another-quarter-pattern",
+   "why": "NSE upload of 21-Apr-2026 09:35 = the same Mar-2026 quarterly; Dec-2025 BSE quarterly 532904_1612026173510 has 25,698,372 shares",
+   "was": [
+    47.32,
+    3.0218,
+    5.9933,
+    0.0,
+    0.0,
+    "2026-04-22",
+    7907
+   ]
+  },
+  "UPL|2019-06-30": {
+   "file": "512070_263202416403_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_263202416403_SHP.xml read by the production parser (Overseas Depositories 8.2693 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.89,
+    51.2079,
+    9.5838,
+    5.2633,
+    0.0,
+    "2024-03-27",
+    82466
+   ]
+  },
+  "UPL|2019-09-30": {
+   "file": "512070_2632024164057_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_2632024164057_SHP.xml read by the production parser (Overseas Depositories 8.2691 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.89,
+    52.1212,
+    10.6273,
+    4.309,
+    1.0159,
+    "2024-03-27",
+    93464
+   ]
+  },
+  "UPL|2019-12-31": {
+   "file": "512070_2632024164149_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_2632024164149_SHP.xml read by the production parser (Overseas Depositories 8.2688 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.89,
+    51.7666,
+    11.1383,
+    4.0962,
+    1.0375,
+    "2024-03-27",
+    96104
+   ]
+  },
+  "UPL|2020-03-31": {
+   "file": "512070_2632024164311_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_2632024164311_SHP.xml read by the production parser (Overseas Depositories 8.2688 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.89,
+    50.1793,
+    12.2746,
+    4.1454,
+    1.8036,
+    "2024-03-27",
+    117424
+   ]
+  },
+  "UPL|2020-06-30": {
+   "file": "512070_2632024164413_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_2632024164413_SHP.xml read by the production parser (Overseas Depositories 8.2661 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.88,
+    48.8217,
+    12.8598,
+    4.5364,
+    7.8226,
+    "2024-03-27",
+    160252
+   ]
+  },
+  "UPL|2020-09-30": {
+   "file": "512070_263202418493_SHP.xml",
+   "class": "identical-after-§151",
+   "why": "2022-form re-filing 512070_263202418493_SHP.xml read by the production parser (Overseas Depositories 8.2661 excluded, §151) = the stored original in all five figures; the only change in the re-filing is a promoter-group tag that moves no percentage",
+   "was": [
+    27.88,
+    45.4161,
+    15.9293,
+    5.1999,
+    10.2026,
+    "2024-03-27",
+    163629
+   ]
+  },
+  "WEBELSOLAR|2022-11-02": {
+   "file": "SHP_173265_745549_11112022091141_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2022-11-02 flagged Revised (broadcast 06-JAN-2023 22:41:44) still links the original upload: the XBRL file is dated 2022-11-11 = submissionDate 2022-11-11, so its figures [25.37, 1.7945, 0.0172, 0.0169, 0.0] are the original document, served from 2023-01-09 after the store row (2022-12-10)",
+   "was": [
+    25.37,
+    1.7945,
+    0.0172,
+    0.0169,
+    0.0,
+    "2023-01-09",
+    76432
+   ]
+  },
+  "WINDMACHIN|2021-09-30": {
+   "file": "SHP_161812_532322_14102021101131_WEB.xml",
+   "class": "nse-original-upload",
+   "why": "NSE record as-on 2021-09-30 flagged Revised (broadcast 06-JAN-2022 21:06:51) still links the original upload: the XBRL file is dated 2021-10-14 = submissionDate 2021-10-14, so its figures [53.9, 0.1518, 0.0288, 0.0232, 0.0] are the original document, served from 2022-01-07 after the store row (2021-10-14)",
+   "was": [
+    53.9,
+    0.1518,
+    0.0288,
+    0.0232,
+    0.0,
+    "2022-01-07",
+    16230
+   ]
+  }
+ }
+}
