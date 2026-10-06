@@ -22024,6 +22024,13 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
   - TRAP: `explain.items` may read the RE-FILING XBRL while the store row is the original. HINDALCO Mar-22's 2022-04-20 original names neither holder, so the fix moved to `#rev`. Check the file against SHPQNewFormat 'New' before writing a plain key.
   - Event rows: the event path applies only the LATEST ledger entry, and only if its `was` equals the stored event row (no chain walk). Re-base on the stored row (RBLBANK 2017-08-09, part 21c a124bd554).
   - SHRENUJ Mar-16: HSBC Private Bank (Suisse) SA inside the FI/Banks line leaves dii (5.39 → 0.1104). The FII session writes Dec-15; page quarters stay UNKNOWN until a named list is read.
+- **The 38 earlier-notice date rows (user: 'work on the 50 earlier-notice date cells too').** 12 of the 50 already carry the original's date beside a re-filing row. In the other 38, BSE shows an earlier 'Shareholding for the Period Ended' notice than the filing whose numbers we hold. That filing is a 'Revised' version, or a re-upload BSE logs as 'New' (mass days: 28-Oct-2020 ~12:10, 28-Jul-2021 ~20:00). Every route to the EARLIER version's numbers was tried:
+  - BSE notices carry no attachment; they link to the live shpSecurities page.
+  - Wayback has no capture of those pages.
+  - NSE's per-symbol list holds only the last ~20 filings, and its date-window list returns only rows revised recently.
+  - BSE's XBRL file name is the upload second, 3-55 minutes before the notice. A full 3,700-second filename sweep before BODALCHEM's 2021-07-08 notice found nothing, so replaced originals are not served.
+  - Verdict: UNKNOWN for all 38. They keep the date of the filing we hold (never earlier than evidenced numbers).
+  - FII-session lesson (§164r part 40): a second, identical notice is not by itself a revision. It does not apply here: these are true replacements whose originals are unread.
 - **Also in this round.** FII session part 29 (SUNPHARMA 'UTI' rows back into dii) was checked against each filing. User decision: the unlabelled Foreign Bank + UTI block in Jun-16 / Jun-17 / Sep-17 stays whole in dii. All 321 dii moves by the FII session on 5-6 Oct were rebuilt from their filings (`r3/check_peer321.py`): one regression, VSTIND Dec-16, which the FII session fixes in its part 37.
 
 
