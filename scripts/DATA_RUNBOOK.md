@@ -21735,6 +21735,31 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     DII-subtraction re-test (DII session's test, `~/stocks-cache/shp/audit_all/diitest.py`): all 85 FII-session fixes since 5-Oct that
     lowered stored dii outside part 17 compared with the filing's own domestic lines - errors BALLARPUR Mar-2017 (DII session §164s
     part 19) and VSTIND Dec-2016 (this part); ICICIBANK's 12 quarters were right but short of the NBFC row (§164s part 20).
+    **Batch 30 part 38 (label "§164r batch 30 part 38"; 10 cells + 19 dates + 2 quarters; Quantmac's 2-cell and 1-cell companies).**
+    Values: SHRENUJ Dec-2015 added (fii 16.0798: India Max + Bridge India + Afrin Dia inside its institutions block, option A; Quantmac
+    leaves out Afrin Dia); SBT Dec-2015 re-added (fii 2.4655 = FPI + its non-institution 'Foreign Institutional Institution' row (§159) +
+    Edgbaston Asian Equity Trust (27 listings); the §164l seam fill of 0.8948 that §164p had retracted is replaced - the drop's guard no
+    longer matches); IMAGICAA / INOXWIND Jun-2015 'Others' rows = the next quarter's FPI rows (rule B, elimination); INTELLECT 2018-09
+    NSE event re-computed on its own total (16.1214 -> 16.3471, dii 6.8456 -> 6.94; the fill is keyed by the report date 2018-09-11,
+    as-on 2018-09-06 - kept); TCI Jun-2022 its own 'FOREIGN INSTITUTIONAL INVESTORS' row added; precision TMPV Dec-15, UCOBANK Mar-16,
+    ORISSAMINE Mar-16, SHILPAMED Jun-18, ICICIGI / JAGRAN events. Dates (§164b / batch 6f): APTECHT, DCW, GPPL, TNPL Jun-2014,
+    RTNPOWER Dec-2014, TUBEINVEST (= CHOLAHLDNG) / IFBIND Mar-2015, PATELENG Sep-2015 -> their revision notices (the originals cannot be
+    read; no contemporaneous reading); HTMEDIA / JSWHL / NITINFIRE Dec-2015 -> 2016-03-18 and EMAMILTD / KIRLOSENG Mar-2016 -> the
+    version BSE serves (Table I Fld_AuthoriseDate); CIEINDIA Jun-2016 / SHILPI Jun-2017 / BFUTILITIE Mar-2018 quarter-end+21
+    placeholders -> evidenced dates; ASTERDM Mar-2018 / ARE&M Sep-2020 revision dates -> the originals' notices (Quantmac's reading in
+    [original, revision) = the revision's figures); ANDHRABANK 2018-10-11 event 2018-11-02 -> 2018-10-25 (BSE notice). Rule differences
+    recorded: quarter-end+~20 dates with no stamp where BSE's Table I authorise = its first notice (63MOONS, BAJAJCON, COFORGE, JSWDULUX,
+    NAVA, PGHL, POONAWALLA, PRSMJOHNSN, ZFCVINDIA Dec-2015); the midnight rule (BLISSGVS, GTL, JKTYRE, JYOTHYLAB, TVTODAY, RTNPOWER); the
+    > quarter-end+45 BSE-page hold (DYNAMATECH Sep-2011, MAHINDUGIN Dec-2008); QIB rows (ICICIGI, JAGRAN, TCI); batch 14 (ASTERDM).
+    Quantmac-side: DEEPAKFERT / JBCHEPHARM Dec-2018, DELTACORP / RAYMOND Mar-2014, TREEHOUSE Sep-2014, EMAMILTD / ORISSAMINE Mar-2016
+    (BSE records before the month-end), SHILPAMED Jun-2018 (a labelled 'Bodies Corporate' remainder counted), VAKRANGEE Mar-2014.
+    UNKNOWN (ask Quantmac for the NSE files): COHANCE 2020-09-29, INDIAMART 2021-02-22, INDUSINDBK 2019-07-06, JSLHISAR Mar-2019,
+    UCOBANK 2019-11-07 event, RELIGARE 2018-08-27 date, TMPV Dec-2015 date (an archived Moneycontrol page captured 2016-03-02 already
+    shows the figures BSE first stamped 2016-03-18 - open user question whether an archive capture may date a filing). Traps: a
+    days_later date entry fires only when the STORED row date equals its 'was' (not the served shp_sub_dates date); event-row cell
+    fixes must be the only latest entry with 'was' = the stored event row (RBLBANK, fixed by the DII session a124bd554). OPEN (class,
+    to measure): the 2014-16 ann-stream dates use a quarter's FIRST BSE notice without checking for a later revision notice (APTECHT,
+    DCW, GPPL, TNPL, RTNPOWER, TUBEINVEST, IFBIND, PATELENG here) - a store-wide §164b pass.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
