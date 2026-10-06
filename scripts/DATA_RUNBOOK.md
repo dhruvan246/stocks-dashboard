@@ -21895,6 +21895,25 @@ Unknown-cell work for reply 3 (`r3/hyp_unknown.py`, `r3/fetch/`): 255 of 494 'th
 of the same filing before a documented correction (112 = archived Moneycontrol / Trendlyne values we replaced with Table III); event
 filings are on the company's BSE list under their date label ('15 Jan 2020'); BSE serves some XBRLs with a UTF-8 BOM before '<?xml'.
 
+**§164s parts 16-22 (2026-10-06).**
+- **Part 17 (85df72710), visibility dates.** User asked "check cell by cell that dates exist". I checked the 254 post-Dec-2015 rows served on a placeholder date (undated, or day 28) against four sources: the BSE notice (AnnSubCategoryGetData), the filing list (SHPQNewFormat), Table I `Fld_AuthoriseDate` and NSE broadcastDate. Script: `~/stocks-cache/shp/dii_qm/r3/date_finder.py`.
+  - 112 rows were real day-28 filings.
+  - 12 already carried their original date beside a re-filing row.
+  - 52 were written:
+    - 48 undated Dec-15/Mar-16 rows → `shp_sub_dates.json`.
+    - 4 rows that were served one day or more before their filing → `shp_lag_fix.json` `days_later`.
+  - The date written is the LATEST evidenced date of the filing whose numbers we hold. A BSE notice that predates a revision or a re-upload (mass revisions on 28 Oct 2020 and 28 Jul 2021) is NOT used: the earlier version's numbers are unread.
+  - Left as found: 38 such rows, plus UBL Sep-18 (third-party values), BHARATFORG Mar-16 (2022 revision) and BEFOUNDMOL Jun-22 (two 'New' filings).
+  - No exchange date exists anywhere before the Dec-2015 quarter (Table I, notices and NSE all start there).
+- **Part 18 (66af57959), GESHIP Dec-15.** ICICI Pru Life 5,503,490 is named on B1i, but B1i's own total is 1,052; the shares are carried in B3e. Counted by R2.
+- **Part 19 (3f21d7512), BALLARPUR Mar-17.** The FII session's part 31 subtracted an FII-labelled row that the stored dii never held. Lesson: before subtracting a row, test (stored dii − the filing's own lines) against the row size.
+- **Part 20 (950215000), ICICIBANK.** Twelve quarters, 2017-06..2020-12, gained the NBFC row (R3) on the (A+B) DR factor.
+- **Part 21 / 21b (3acc1e72c, 0c5c31a51), RBLBANK. User decision: "Register wins: count them".** A register-proven Indian institution counts as DII even when the company files it on a non-institution row it labels 'Foreign Companies'. Covered here: HDFC Bank (RBI register) and HDFC Life (IRDAI register); HDFC Ltd (NHB) stays out.
+- **Part 22 (869c53b39), register sweep.** `r3/reg_scan.py` covered N500, 2015-06..2022-06. 49 cells across 16 companies were written, only where stored dii = the six domestic lines exactly.
+  - Holders: Bajaj Holdings (NBFC), insurers, NPS Trust and pure AIF rows filed on Bodies Corporate / Others rows.
+  - 38 cells stay UNKNOWN (`r3/b22_unknown.json`): stored dii there is not the bare lines, so which rows it holds is unproven.
+- **Also in this round.** FII session part 29 (SUNPHARMA 'UTI' rows back into dii) was checked against each filing. User decision: the unlabelled Foreign Bank + UTI block in Jun-16 / Jun-17 / Sep-17 stays whole in dii. All 321 dii moves by the FII session on 5-6 Oct were rebuilt from their filings (`r3/check_peer321.py`): one regression, VSTIND Dec-16, which the FII session fixes in its part 37.
+
 
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
