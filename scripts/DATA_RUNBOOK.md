@@ -21708,6 +21708,33 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Kotak India Private Equity Fund 3.00 % in 'FIIs'); INDIACEM Jun-2015 merged row (FII in [34.02, 34.24]); D1's 2-dp edge (unnamed
     blocks 0.050-0.055 % left in dii) and the 22j adjudication (values swapped for a later BSE document without re-dating) - both to be
     measured store-wide.
+    **Batch 30 part 37 (label "§164r batch 30 part 37"; 19 cells + 5 dates).** Our errors: TRENT Mar-2016 the domestic 'Alternate
+    Investment Funds' row (B1c 21,595) sat on the FPI side -> dii; VEEDOL Sep-2016 the institutions Any-Other block is the company's
+    own 'FOREIGN INSTITUTIONAL INVESTOR' category (1,748) -> fii + / dii -; VTL / WELCORP / GAMMONIND Jun-2015 the page's merged or
+    renamed non-institutions 'Others' rows = the company's FPI rows of the neighbouring quarters (rule B) -> fii; OSWALGREEN Dec-2015 the
+    §164g seam reconstruction counted Clareville twice (already inside FPI) and left out Elara ('Elare', 0.9667 alike) and the unnamed
+    rest -> FPI + the whole B1i block = 10.2915 (= Quantmac); PIPAVAVDOC (store key RNAVAL) Dec-2015 the fill counted the whole B1i block
+    339,821,894 (bodies corporate incl. Reliance Defence 18.84 %) -> FPI + the company's 'FOREIGN INSTITUTIONAL INVESTOR' row +
+    VALIANT MAURITIUS PARTNERS FDI LIMITED 16,400,000 under its 'FOREIGN BODIES' row (own FDI tag + 6 institution listings, option A;
+    its 2022 form does not list it) = 5.6064 (Quantmac 3.3802 leaves Valiant FDI out - rule difference); RBLBANK 2017-08-09 event still
+    counted Dvi Fund Mauritius (36 vs 5 listings, 88 % < 90 %) -> 16.6593 (= Quantmac); VSTIND Dec-2016 batch 20's wide6 re-run had put
+    the company's own 'Foreign Institutional Investors' row back into dii through R1's overflow guard, undoing the 2026-09-28 fix (found
+    by the DII session's check of the FII session's 321 dii moves) -> fii 9.7557 / dii 16.4137 at share counts. Precision (2-dp sums
+    -> share counts): VESUVIUS Jun-2015, CUMMINSIND Mar-2016, GEOJITFSL Dec-2015, RELIGARE Mar / Jun / Sep-2018 and its 29-May, 26-Jul,
+    27-Aug and 14-Sep-2018 event rows (FPI + the IFC block 13,014,267 incl. its unnamed 195,936 rest, D1). Dates (§164b / batch 6f):
+    ABAN Dec-2015 -> 2016-12-16 (the only readable version is the 2016-12-16 revision; the 2016-02-02 original cannot be read and no
+    contemporaneous reading of it exists); AUBANK Mar-2018 2018-04-21 and CCAVENUE Jun / Sep-2017 + its 2017-09-08 event (the
+    originals' notices; Quantmac's reading inside [original, revision) = the revision's FII) replace QE+21 / bulk-stamp placeholders.
+    Rule differences / Quantmac-side recorded: RBA Mar-2021..Jun-2022 (7 rows; its Sep-2022 form files 'Valiant Mauritius Partners Fdi
+    Limited' 6,666,666 under Foreign Companies -> public, batch 7; Quantmac counts it); RELIGARE Jun-2018 (Quantmac leaves out the
+    195,936-share unnamed rest of the IFC block, though its own rule b-3 and its own 27-Aug-2018 reading count it). UNKNOWN: RELIGARE
+    27-Aug-2018 event date (BSE published it 2018-09-01T08:34:57; Quantmac cites an NSE stamp of 2018-08-31 - NSE's API no longer
+    serves 2018 filings). OPEN (class, to measure): `_ev_matches` requires the first 8 normalised characters to agree before its
+    >= 0.96 test - stricter than the documented identity rule - so a typo there ('Elare' / 'Elera' for ELARA INDIA OPPORTUNITIES FUND)
+    finds no evidence (RUCHISOYA Jun-2017 FCCB holder 'Elera India Opportunities Fund Limited' 4.15 % left public by batch 20; held).
+    DII-subtraction re-test (DII session's test, `~/stocks-cache/shp/audit_all/diitest.py`): all 85 FII-session fixes since 5-Oct that
+    lowered stored dii outside part 17 compared with the filing's own domestic lines - errors BALLARPUR Mar-2017 (DII session §164s
+    part 19) and VSTIND Dec-2016 (this part); ICICIBANK's 12 quarters were right but short of the NBFC row (§164s part 20).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

@@ -370192,12 +370192,22 @@
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
 },
 "AUBANK|20180331": {
+"days_later": 0,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the ORIGINAL filing 'Shareholding for the Period Ended March 31, 2018' (2018-04-21T13:10:37, NEWSID f03e36d7-1cc5-4e5a-ad9e-6e4dc83dc248); BSE keeps only the 2018-09-21 revision; \u00a7164b: Quantmac's reading inside [original, revision) (7.40, Apr-Aug 2018) equals the revision's FII (7.4049). Replaces the within-symbol-outlier QE+21 / next-trading-day placeholder. CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 37 2026-10-06.",
+"src": "new",
+"sub": 20180421,
+"ts": "2018-04-21T13:10:37",
+"was": 20180421,
+"rule": "midnight-2026-09-23",
+"replaced": {
 "days_later": 2,
 "gated_1530": true,
 "src": "new",
 "sub": 20180423,
 "was": 20180421,
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
+}
 },
 "AUBANK|20191231": {
 "days_later": 2,
@@ -373144,12 +373154,22 @@
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
 },
 "CCAVENUE|20170930": {
+"days_earlier": 16,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the ORIGINAL filing 'Shareholding for the Period Ended September 30, 2017' (2017-10-05T16:31:57, NEWSID f6e8a3ca-d1ea-490f-8dc7-43398028d58a); BSE keeps only the 2018-07-23 revision; \u00a7164b: Quantmac's reading inside [original, revision) (6.86, Oct-Dec 2017) equals the revision's FII (6.8594). Replaces the bulk-stamp QE+21 placeholder. CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 37 2026-10-06.",
+"src": "new",
+"sub": 20171005,
+"ts": "2017-10-05T16:31:57",
+"was": 20171021,
+"rule": "midnight-2026-09-23",
+"replaced": {
 "days_later": 2,
 "gated_1530": true,
 "src": "new",
 "sub": 20171023,
 "was": 20171021,
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
+}
 },
 "CCAVENUE|20171231": {
 "days_later": 1,
@@ -396202,6 +396222,36 @@
 "sub": 20200429,
 "ts": "2020-04-29T07:49",
 "was": 20200428,
+"rule": "midnight-2026-09-23"
+},
+"ABAN|20151231": {
+"days_later": 318,
+"gated_1530": false,
+"prov": "bse:SHPQNewFormat revised_date_time of the only BSE version of Dec-2015 (Revised 2016-12-16T15:12:43); the stored figures are what BSE shows now; the original notice 2016-02-02T11:03:41 (NEWSID 1dad3a3b-0f89-4001-944a-a66530ccc41b) cannot be read and no contemporaneous reading of it exists (Quantmac's 21-Sep workbook serves Sep-2015 to Mar-2016) -> the revision's date is the floor (\u00a7164b, batch 6f). CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 37 2026-10-06.",
+"src": "bse-revision",
+"sub": 20161216,
+"ts": "2016-12-16T15:12:43",
+"was": 20160202,
+"rule": "midnight-2026-09-23"
+},
+"CCAVENUE|20170630": {
+"days_earlier": 18,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the ORIGINAL filing 'Shareholding for the Period Ended June 30, 2017' (2017-07-03T17:54:07, NEWSID 129ffa07-298c-4364-870b-91d8439f402b); BSE keeps only the 2018-07-23 revision; \u00a7164b: Quantmac's reading inside [original, revision) (6.23, Jul-Aug 2017) equals the revision's FII (6.2325). Replaces the bulk-stamp QE+21 placeholder. CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 37 2026-10-06.",
+"src": "new",
+"sub": 20170703,
+"ts": "2017-07-03T17:54:07",
+"was": 20170721,
+"rule": "midnight-2026-09-23"
+},
+"CCAVENUE|20170908": {
+"days_earlier": 306,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the ORIGINAL event filing 'Shareholding for the Period Ended September 19, 2017' (2017-09-20T11:04:09, NEWSID ad54e952-b09d-4609-a162-23de20c7fdf9); BSE's SHP list holds only the 2018-07-23 XBRL ('08 Sep 2017', 539807_67201816583_SHP.xml); \u00a7164b: Quantmac's reading at 2017-09-29 (7.92) equals the event figures we hold (7.9229). CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 37 2026-10-06.",
+"src": "new",
+"sub": 20170920,
+"ts": "2017-09-20T11:04:09",
+"was": 20180723,
 "rule": "midnight-2026-09-23"
 }
 }
