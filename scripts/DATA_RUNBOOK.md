@@ -21688,6 +21688,26 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     with no institution listing anywhere stay out (option A). OPEN: named, documented holders inside company-labelled page-era rows
     (GTLINFRA's 'Foreign Corporate Bodies': Morgan Stanley Asia (Singapore) 184 listings, Goldman Sachs Investments (Mauritius) I 7) -
     the §160c chain-consistency class.
+    **Batch 30 part 36 (label "§164r batch 30 part 36"; 13 cells + 2 dates + 2 new quarters).** Our errors: KSB Jun-2015 the
+    3-holder 'Others' 904,550 = the company's FPI row (the FII row fell 947,727 -> 80,763 into it; Sep-2015 'Foreign Portfolio
+    Investments' 4 / 934,973); SCI Jun-2018 'Financial Institutional Investors' = its legacy FII block (typo; 'FII' / 'Foreign
+    Institutional Investors' in every neighbour) -> fii + / dii -; NCC Mar-2017 the unlabelled B1i block 443,341 = exactly the shares
+    released by DR cancellations (custodian 945,172 -> 501,831), labelled 'FOREIGN BOADIES DR' from Jun-2017 -> out (§151); TATASTEEL
+    Dec-2015 'Foreign Bodies DR' 587,612 out of the counted B1i block; RENUKA Dec-2017 / RPOWER Sep-2019 unnamed, unlabelled B1i blocks
+    of 0.0530 / 0.0535 % (D1 - the D1 run's 2-dp edge had missed them) -> fii + / dii -; missing quarters added: LTF Mar-2015 (BSE page
+    'Insurance Companies' 44 holders = the FII row; the company's annual report 2015 lists 'FIIs & FPI-Corp.' 134,238,232 = that row +
+    its 'Private Equity Funds' row exactly) and MIRZAINT Mar-2010 (fii 0). Dates: PFIZER Jun-2021 -> 2021-10-19 (the stored figures are
+    BSE's only version, a 2021-10-19 re-submission swapped in by the 22j adjudication; the 2021-07-14 original differed); POLYCAB
+    Sep-2020 -> 2020-10-21 (the original's notice; Quantmac's reading in [original, revision) = ours, §164b). Precision: KPIL Jun / Sep-15,
+    OFSS Sep-15, PIDILITIND / TATACHEM / TITAN Jun-15, INDIABULLS Dec-09. Rule differences / Quantmac-side recorded: QIP / D1-exception
+    blocks (EQUITAS, INOXLEISUR, MTARTECH, NAM-INDIA), page-era rule-B rows (OFSS 'Foreign Mutual Fund', PIDILITIND, TATACHEM, TITAN),
+    §160b holder match (JUBLPHARMA Deutsche Securities Mauritius), §159 labels (KITEX, SHRIRAMCIT), SHRIRAMCIT Dynasty Acquisition (FPI)
+    -> public by its 2022-form 'Foreign Companies' row, dates (JKCEMENT 2018 / 2021, KEI 2024 event, RENUKA Jun-2018, TATASTEEL Mar-2014
+    - Quantmac late; KPIL / KSK / MAHLIFE / MINDACORP - conventions), IL&FSTRANS Mar-2015 kept on its 2015-04-17 original. OPEN: the
+    company's annual-report category as its own mark (LTF 'Private Equity Funds' Mace Cipef 3.00 % in 'FIIs & FPI-Corp.', MINDACORP
+    Kotak India Private Equity Fund 3.00 % in 'FIIs'); INDIACEM Jun-2015 merged row (FII in [34.02, 34.24]); D1's 2-dp edge (unnamed
+    blocks 0.050-0.055 % left in dii) and the 22j adjudication (values swapped for a later BSE document without re-dating) - both to be
+    measured store-wide.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

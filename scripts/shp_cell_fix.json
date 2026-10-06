@@ -66971,7 +66971,7 @@
    "2015-06-30": {
     "cell": [
      69.7386,
-     14.65,
+     14.6516,
      5.0197,
      3.5869,
      1.3756,
@@ -66979,18 +66979,19 @@
     ],
     "was": [
      69.7386,
-     5.7902,
+     14.65,
      5.0197,
      3.5869,
      1.3756,
      "2015-07-18"
     ],
-    "src": "bseaspx:500331_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.79 -> 14.65, dii 5.02 -> 5.02. generic-row-B Others 8.86 fii: next 'Foreign Portfolio Investments Corp' 45 holders 8.83; inst-sub-fii Others 8.86. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+    "src": "bseaspx:500331:86",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 29,684,385 + the institutions Any-Other block's only row 'Others' 45,428,958 (38 holders; the same block's only row is 'Foreign Portfolio Investments Corporation' 25 holders in Mar-2015 and 45 holders in Sep-2015 - rule B) on 512,662,830 (the stored 14.65 was the page's 2-dp sum). fii 14.65 -> 14.6516.",
+    "exact": true,
     "superseded": {
      "cell": [
       69.7386,
-      5.7902,
+      14.65,
       5.0197,
       3.5869,
       1.3756,
@@ -66999,13 +67000,33 @@
      "was": [
       69.7386,
       5.7902,
-      13.8811,
+      5.0197,
       3.5869,
       1.3756,
       "2015-07-18"
      ],
-     "src": "bseaspx:500331:qtrid86",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.86pp) folded in by a minority route. Healed to the page's own domestic rows (5.0197). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bseaspx:500331_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.79 -> 14.65, dii 5.02 -> 5.02. generic-row-B Others 8.86 fii: next 'Foreign Portfolio Investments Corp' 45 holders 8.83; inst-sub-fii Others 8.86. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "superseded": {
+      "cell": [
+       69.7386,
+       5.7902,
+       5.0197,
+       3.5869,
+       1.3756,
+       "2015-07-18"
+      ],
+      "was": [
+       69.7386,
+       5.7902,
+       13.8811,
+       3.5869,
+       1.3756,
+       "2015-07-18"
+      ],
+      "src": "bseaspx:500331:qtrid86",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (8.86pp) folded in by a minority route. Healed to the page's own domestic rows (5.0197). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    },
    "2025-09-30": {
@@ -82593,6 +82614,27 @@
     ],
     "src": "bsexbrl:500470_108202222356_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 21.76 -> 21.76, dii 18.36 -> 19.59. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Trusts 1.23 NPS Trust - Various Trust Accounts 1.23(regex)"
+   },
+   "2015-12-31": {
+    "cell": [
+     31.35,
+     11.9728,
+     26.72,
+     5.95,
+     20.27,
+     "2016-02-03"
+    ],
+    "was": [
+     31.35,
+     12.03,
+     26.72,
+     5.95,
+     20.27,
+     "2016-02-03"
+    ],
+    "src": "bsetable3:500470:88",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): the institutions Any-Other block 594,293 sh is 'Foreign Bodies DR' 587,612 + 'Foreign National DR' 164 (depository-receipt lines, never fii - \u00a7151) + 'Overseas corporate bodies' 5,625 (public) + 'Foreign Portfolio Investment Individual' 892 (fii); the stored 12.03 had counted the whole block. FII = FPI 116,281,081 + 892 on 971,215,439 (= Quantmac 11.97). fii 12.03 -> 11.9728.",
+    "exact": true
    }
   },
   "TEAMLEASE": {
@@ -83816,7 +83858,7 @@
    "2015-06-30": {
     "cell": [
      53.0542,
-     21.5,
+     21.5023,
      3.205,
      1.7749,
      1.3677,
@@ -83824,18 +83866,19 @@
     ],
     "was": [
      53.0542,
-     20.0927,
+     21.5,
      3.205,
      1.7749,
      1.3677,
      "2015-07-15"
     ],
-    "src": "bseaspx:500114_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 20.09 -> 21.50, dii 3.21 -> 3.21. generic-row-B Others 1.41 fii: prev 'Foreign Portfolio Investments Corp' 29 holders 1.26; next 'Foreign Portfolio Investments Corp' 51 holders 1.87; inst-sub-fii Others 1.41. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+    "src": "bseaspx:500114:86",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 178,380,623 + the institutions 'Others' 38 holders 12,514,120 (between the company's 'Foreign Portfolio Investments' rows of Mar-2015 29 / 11,169,812 and Sep-2015 51 / 16,589,569 - rule B) on 887,786,160 (the stored 21.5 was the page's 2-dp sum). fii 21.5 -> 21.5023.",
+    "exact": true,
     "superseded": {
      "cell": [
       53.0542,
-      20.0927,
+      21.5,
       3.205,
       1.7749,
       1.3677,
@@ -83844,13 +83887,33 @@
      "was": [
       53.0542,
       20.0927,
-      4.6146,
+      3.205,
       1.7749,
       1.3677,
       "2015-07-15"
      ],
-     "src": "bseaspx:500114:qtrid86",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.41pp) folded in by a minority route. Healed to the page's own domestic rows (3.2050). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bseaspx:500114_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 20.09 -> 21.50, dii 3.21 -> 3.21. generic-row-B Others 1.41 fii: prev 'Foreign Portfolio Investments Corp' 29 holders 1.26; next 'Foreign Portfolio Investments Corp' 51 holders 1.87; inst-sub-fii Others 1.41. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "superseded": {
+      "cell": [
+       53.0542,
+       20.0927,
+       3.205,
+       1.7749,
+       1.3677,
+       "2015-07-15"
+      ],
+      "was": [
+       53.0542,
+       20.0927,
+       4.6146,
+       1.7749,
+       1.3677,
+       "2015-07-15"
+      ],
+      "src": "bseaspx:500114:qtrid86",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.41pp) folded in by a minority route. Healed to the page's own domestic rows (3.2050). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    }
   },
@@ -136867,7 +136930,7 @@
    "2015-09-30": {
     "cell": [
      74.3755,
-     13.72,
+     13.731,
      3.9241,
      3.9168,
      0.0,
@@ -136875,18 +136938,19 @@
     ],
     "was": [
      74.3755,
-     11.59,
+     13.72,
      3.9241,
      3.9168,
      0.0,
      "2015-10-13"
     ],
-    "src": "bseaspx:532466_87",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.59 -> 13.72, dii 3.92 -> 3.92. generic-row-K Others 2.13 fii: all 4 admissible named-holder explanations are fii, e.g. Macquarie Bank Limited 1.83 (curated); noninst-fii Others 2.13; noninst-fii Foreign Portfolio Investors 1.14. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160d)",
+    "src": "bseaspx:532466:87",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 8,861,495 + non-institutions 'Foreign Portfolio Investors' 970,293 + the 9-holder 'Others' 1,808,590 (the company's 'Foreign Mutual Fund' row - 10 holders 1,708,991 in Mar-2015, 9 holders 1,833,150 with 'FMU - Macquarie Bank Ltd' in Dec-2015; rule B) on 84,774,180 (the stored 13.72 was the page's 2-dp sum). fii 13.72 -> 13.731.",
+    "exact": true,
     "superseded": {
      "cell": [
       74.3755,
-      11.59,
+      13.72,
       3.9241,
       3.9168,
       0.0,
@@ -136894,14 +136958,34 @@
      ],
      "was": [
       74.3755,
-      10.4531,
+      11.59,
       3.9241,
       3.9168,
       0.0,
       "2015-10-13"
      ],
      "src": "bseaspx:532466_87",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.45 -> 11.59, dii 3.92 -> 3.93. noninst-fii Foreign Portfolio Investors 1.14. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [3.93, 0.0])"
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.59 -> 13.72, dii 3.92 -> 3.92. generic-row-K Others 2.13 fii: all 4 admissible named-holder explanations are fii, e.g. Macquarie Bank Limited 1.83 (curated); noninst-fii Others 2.13; noninst-fii Foreign Portfolio Investors 1.14. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160d)",
+     "superseded": {
+      "cell": [
+       74.3755,
+       11.59,
+       3.9241,
+       3.9168,
+       0.0,
+       "2015-10-13"
+      ],
+      "was": [
+       74.3755,
+       10.4531,
+       3.9241,
+       3.9168,
+       0.0,
+       "2015-10-13"
+      ],
+      "src": "bseaspx:532466_87",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.45 -> 11.59, dii 3.92 -> 3.93. noninst-fii Foreign Portfolio Investors 1.14. Evidence: _shp_aspx_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count dii/ins (the page's 2-dp value was re-derived after apply_cell_fix; proposed [3.93, 0.0])"
+     }
     }
    },
    "2015-06-30": {
@@ -146966,8 +147050,8 @@
    "2017-12-31": {
     "cell": [
      54.47,
-     2.8832,
-     4.1855,
+     2.936,
+     4.1325,
      0.0,
      0.0,
      "2018-01-17",
@@ -146976,14 +147060,37 @@
     "was": [
      54.47,
      2.8832,
-     4.1055,
+     4.1855,
      0.0,
      0.0,
      "2018-01-17",
      182575
     ],
     "src": "bsexbrl:532670_171201814238_SHP.xml",
-    "why": "\u00a7164s part 6 (2026-10-05, cell-by-cell re-read of the filing): the filing's 'NBFCs registered with RBI' row (an Institutions (Domestic) line in the 2022 form) was missing from DII. Rows: ['R1-unresolved', 'no typed rows', 0.05]; ['R3-nbfc', 'NBFCsRegisteredWithRbi', 0.08]"
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): D1: the institutions Any-Other block 501,000 sh (0.0530 %) names nobody and carries no label -> fii (the store held it in dii; the D1 run's 2-dp edge missed it). FII = FPI 27,251,287 + 501,000 on 945,246,580 (= Quantmac 2.936). fii 2.8832 -> 2.936, dii 4.1855 -> 4.1325.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      54.47,
+      2.8832,
+      4.1855,
+      0.0,
+      0.0,
+      "2018-01-17",
+      182575
+     ],
+     "was": [
+      54.47,
+      2.8832,
+      4.1055,
+      0.0,
+      0.0,
+      "2018-01-17",
+      182575
+     ],
+     "src": "bsexbrl:532670_171201814238_SHP.xml",
+     "why": "\u00a7164s part 6 (2026-10-05, cell-by-cell re-read of the filing): the filing's 'NBFCs registered with RBI' row (an Institutions (Domestic) line in the 2022 form) was missing from DII. Rows: ['R1-unresolved', 'no typed rows', 0.05]; ['R3-nbfc', 'NBFCsRegisteredWithRbi', 0.08]"
+    }
    }
   },
   "RIIL": {
@@ -149116,6 +149223,29 @@
     ],
     "src": "bseapi:CorporatesSHPSecuritybeta:532939_89",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): its own new-form filings report the shares underlying its DRs on SEBI's separate C1 line, outside the 100, and a company that ever reported its DR shares separately is on (A+B) before 2016 (user 2026-10-05 'ok'), so this pre-2016 value moves onto that base: all slots x 1.000213 = (A+B+C1+C2) 2805126466 / (A+B+C2) 2804529770 shares in the company's own Table I; fii 4.20 -> 4.20."
+   },
+   "2019-09-30": {
+    "cell": [
+     43.2,
+     6.282,
+     5.057,
+     0.1491,
+     3.832,
+     "2019-10-20",
+     3101011
+    ],
+    "was": [
+     43.2,
+     6.2289,
+     5.1105,
+     0.1491,
+     3.832,
+     "2019-10-20",
+     3101011
+    ],
+    "src": "bsexbrl:532939_18102019181819_SHP.xml",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): D1: the institutions Any-Other block 1,499,237 sh (0.0535 % of (A+B)) names nobody and carries no label -> fii (the store held it in dii; the D1 run's 2-dp edge missed it). FII = FPI 174,684,758 + 1,499,237 on (A+B) 2,804,571,452 (DR custodian 555,014 outside, \u00a7164a). fii 6.2289 -> 6.282, dii 5.1105 -> 5.057.",
+    "exact": true
    }
   },
   "RUPA": {
@@ -149346,8 +149476,8 @@
    "2018-06-30": {
     "cell": [
      63.75,
-     2.275,
-     18.6558,
+     3.0419,
+     17.8788,
      0.0873,
      16.3371,
      "2018-07-12",
@@ -149355,17 +149485,27 @@
     ],
     "was": [
      63.75,
-     3.042,
-     17.8786,
+     2.275,
+     18.6458,
      0.0873,
      16.3371,
      "2018-07-12",
      148118
     ],
-    "src": "bsexbrl:523598_127201814533_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.88 -> 18.66, fii 3.04 -> 2.27. R1-domestic-label Other Financial Institutional Investors 0.77 public=0.00 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsexbrl:523598_SHP_Jun2018",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): the institutions Any-Other block 'Financial Institutional Investors' (18 holders, 3,572,587 sh) is the company's legacy FII block - labelled 'FII' / 'FIIs' in Dec-2016..Jun-2017 (30 -> 27 holders) and 'Foreign Institutional Investors' in Sep / Dec-2018 (17 / 14 holders); every other quarter already counts it -> fii (the R1 reader had read the typo as domestic). FII = FPI 10,596,634 + 3,572,587 on 465,799,010 (= Quantmac 3.0419). fii 2.275 -> 3.0419, dii 18.6458 -> 17.8788.",
+    "exact": true,
     "superseded": {
      "cell": [
+      63.75,
+      2.275,
+      18.6558,
+      0.0873,
+      16.3371,
+      "2018-07-12",
+      148118
+     ],
+     "was": [
       63.75,
       3.042,
       17.8786,
@@ -149374,17 +149514,30 @@
       "2018-07-12",
       148118
      ],
-     "was": [
-      63.75,
-      2.275,
-      18.6458,
-      0.0873,
-      16.3371,
-      "2018-07-12",
-      148118
-     ],
      "src": "bsexbrl:523598_127201814533_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.77pp, holders: Financial Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.8786 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.88 -> 18.66, fii 3.04 -> 2.27. R1-domestic-label Other Financial Institutional Investors 0.77 public=0.00 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       63.75,
+       3.042,
+       17.8786,
+       0.0873,
+       16.3371,
+       "2018-07-12",
+       148118
+      ],
+      "was": [
+       63.75,
+       2.275,
+       18.6458,
+       0.0873,
+       16.3371,
+       "2018-07-12",
+       148118
+      ],
+      "src": "bsexbrl:523598_127201814533_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.77pp, holders: Financial Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.8786 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2018-09-30": {
@@ -188117,6 +188270,27 @@
     ],
     "src": "bseaspx:500249_85",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 500249 qtrid 85) labels these rows foreign institutions - 'Foreign Financial Institutions' (Institutions, 1,000 shares = 0.0029); 'Foreign Port Folio Investor Corporate' (Non-Institutions, 11,299 shares = 0.0325) - and the stored fii 2.7227 held only 'Foreign Institutional Investors' 2.7227. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 34,807,844 shares. fii 2.7227 -> 2.7581, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2015-06-30": {
+    "cell": [
+     66.4055,
+     2.8336,
+     14.7474,
+     12.4453,
+     2.287,
+     "2015-07-18"
+    ],
+    "was": [
+     66.4055,
+     0.232,
+     14.7474,
+     12.4453,
+     2.287,
+     "2015-07-18"
+    ],
+    "src": "bseaspx:500249:86",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): the non-institutions 3-holder 'Others' row 904,550 is the company's FPI row - the FII row fell 947,727 -> 80,763 between Mar and Jun-2015 and this row appeared where Mar-2015 files 'Foreign Port Folio Investor Corp'; Sep-2015 files it as 'Foreign Portfolio Investments' 4 holders 934,973 (rule B) -> fii; the institutions 'Others' 1 / 1,000 is Mar-2015's 'Foreign Financial Institutions' 1 / 1,000. FII = 80,763 + 1,000 + 904,550 on 34,807,844 (= Quantmac 2.83). fii 0.232 -> 2.8336.",
+    "exact": true
    }
   },
   "PGHH": {
@@ -193670,7 +193844,7 @@
    "2015-06-30": {
     "cell": [
      30.9809,
-     21.05,
+     21.0522,
      25.9463,
      11.5803,
      14.1761,
@@ -193678,18 +193852,19 @@
     ],
     "was": [
      30.9809,
-     18.9035,
+     21.05,
      25.9463,
      11.5803,
      14.1761,
      "2015-07-18"
     ],
-    "src": "bseaspx:500770_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.90 -> 21.05, dii 25.95 -> 25.95. generic-row-B Others 2.15 fii: prev 'Foreign Portolio Investor ( Corpor' 21 holders 2.08; next 'Foreign Portfolio Investments Corp' 41 holders 2.50; inst-sub-fii Others 2.15. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+    "src": "bseaspx:500770:86",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 48,157,756 + the institutions 'Others' 24 holders 5,473,961 (between the company's 'Foreign Portolio Investor ( Corporate)' 21 / 5,304,532 in Mar-2015 and 'Foreign Portfolio Investments' 41 / 6,374,552 in Sep-2015 - rule B) on 254,756,278; the 1-holder 556 ('Foreign Nationals - DR') and 2-holder 6,290 ('Foreign Corporate Bodies/OCBs') 'Others' rows stay out. fii 21.05 -> 21.0522.",
+    "exact": true,
     "superseded": {
      "cell": [
       30.9809,
-      18.9035,
+      21.05,
       25.9463,
       11.5803,
       14.1761,
@@ -193698,13 +193873,33 @@
      "was": [
       30.9809,
       18.9035,
-      28.0977,
+      25.9463,
       11.5803,
       14.1761,
       "2015-07-18"
      ],
-     "src": "bseaspx:500770:qtrid86",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.15pp) folded in by a minority route. Healed to the page's own domestic rows (25.9463). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bseaspx:500770_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 18.90 -> 21.05, dii 25.95 -> 25.95. generic-row-B Others 2.15 fii: prev 'Foreign Portolio Investor ( Corpor' 21 holders 2.08; next 'Foreign Portfolio Investments Corp' 41 holders 2.50; inst-sub-fii Others 2.15. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "superseded": {
+      "cell": [
+       30.9809,
+       18.9035,
+       25.9463,
+       11.5803,
+       14.1761,
+       "2015-07-18"
+      ],
+      "was": [
+       30.9809,
+       18.9035,
+       28.0977,
+       11.5803,
+       14.1761,
+       "2015-07-18"
+      ],
+      "src": "bseaspx:500770:qtrid86",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (2.15pp) folded in by a minority route. Healed to the page's own domestic rows (25.9463). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    },
    "2017-06-30": {
@@ -308208,7 +308403,7 @@
    "2015-06-30": {
     "cell": [
      59.4515,
-     9.94,
+     9.9446,
      21.31,
      18.0382,
      3.0858,
@@ -308216,34 +308411,76 @@
     ],
     "was": [
      59.4515,
-     9.7441,
-     21.1498,
+     9.94,
+     21.31,
      18.0382,
      3.0858,
      "2015-07-10"
     ],
-    "src": "bseaspx:522287_86",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.74 -> 9.94, dii 21.15 -> 21.31. std-vcf Venture Capital Funds row 0.15; noninst-fii Foreign Portfolio Investors 0.2. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:522287:86",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 14,953,417 + non-institutions 'Foreign Portfolio Investors' 307,616 on 153,460,570 (the stored 9.94 was the page's 2-dp sum). fii 9.94 -> 9.9446.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      59.4515,
+      9.94,
+      21.31,
+      18.0382,
+      3.0858,
+      "2015-07-10"
+     ],
+     "was": [
+      59.4515,
+      9.7441,
+      21.1498,
+      18.0382,
+      3.0858,
+      "2015-07-10"
+     ],
+     "src": "bseaspx:522287_86",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.74 -> 9.94, dii 21.15 -> 21.31. std-vcf Venture Capital Funds row 0.15; noninst-fii Foreign Portfolio Investors 0.2. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-09-30": {
     "cell": [
      59.4515,
-     9.54,
-     21.94,
+     9.539,
+     21.9437,
      18.8535,
      3.0682,
      "2015-10-21"
     ],
     "was": [
      59.4515,
-     9.1454,
+     9.54,
      21.9437,
      18.8535,
      3.0682,
      "2015-10-21"
     ],
-    "src": "bseaspx:522287_87",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.15 -> 9.54, dii 21.94 -> 21.94. noninst-fii Foreign Portfolio Investors 0.39. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:522287:87",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 14,034,587 + non-institutions 'Foreign Portfolio Investors' 604,071 on 153,460,570 (the stored 9.54 was the page's 2-dp sum). fii 9.54 -> 9.539.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      59.4515,
+      9.54,
+      21.94,
+      18.8535,
+      3.0682,
+      "2015-10-21"
+     ],
+     "was": [
+      59.4515,
+      9.1454,
+      21.9437,
+      18.8535,
+      3.0682,
+      "2015-10-21"
+     ],
+     "src": "bseaspx:522287_87",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 9.15 -> 9.54, dii 21.94 -> 21.94. noninst-fii Foreign Portfolio Investors 0.39. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -311648,7 +311885,7 @@
    "2017-03-31": {
     "cell": [
      19.72,
-     23.3276,
+     23.2478,
      24.2938,
      22.4088,
      1.52,
@@ -311657,20 +311894,21 @@
     ],
     "was": [
      19.72,
-     23.2476,
-     24.3738,
+     23.3276,
+     24.2938,
      22.4088,
      1.52,
      "2017-04-17",
      96309
     ],
     "src": "bsexbrl:500294_134201716244_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 23.25 -> 23.33, dii 24.37 -> 24.29. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.08 | R1: R1-unresolved no typed rows 0.08; R2-named Bodies Corporate 1.52 HDFC Standard Life Insurance Company Limited 1.52(new-format~:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): the unlabelled institutions Any-Other block 443,341 sh is exactly the shares released by DR cancellations this quarter (custodian 945,172 in Dec-2016 -> 501,831) and the company labels the block 'FOREIGN BOADIES DR' from Jun-2017 - a depository-receipt line, never fii (\u00a7151); D1 had counted it. FII = FPI 129,124,947 on (A+B) 555,429,757 (= Quantmac 23.2478). fii 23.3276 -> 23.2478.",
+    "exact": true,
     "superseded": {
      "cell": [
       19.72,
-      23.2476,
-      24.3738,
+      23.3276,
+      24.2938,
       22.4088,
       1.52,
       "2017-04-17",
@@ -311679,14 +311917,36 @@
      "was": [
       19.72,
       23.2476,
-      22.8438,
+      24.3738,
       22.4088,
-      0.0,
+      1.52,
       "2017-04-17",
       96309
      ],
      "src": "bsexbrl:500294_134201716244_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.84 -> 24.37, fii 23.25 -> 23.25. R1-unresolved no typed rows 0.08; R2-named Bodies Corporate 1.52 HDFC Standard Life Insurance Company Limited 1.52(new-format~:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 23.25 -> 23.33, dii 24.37 -> 24.29. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.08 | R1: R1-unresolved no typed rows 0.08; R2-named Bodies Corporate 1.52 HDFC Standard Life Insurance Company Limited 1.52(new-format~:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       19.72,
+       23.2476,
+       24.3738,
+       22.4088,
+       1.52,
+       "2017-04-17",
+       96309
+      ],
+      "was": [
+       19.72,
+       23.2476,
+       22.8438,
+       22.4088,
+       0.0,
+       "2017-04-17",
+       96309
+      ],
+      "src": "bsexbrl:500294_134201716244_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.84 -> 24.37, fii 23.25 -> 23.25. R1-unresolved no typed rows 0.08; R2-named Bodies Corporate 1.52 HDFC Standard Life Insurance Company Limited 1.52(new-format~:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-06-30": {
@@ -371467,24 +371727,33 @@
    "2009-12-31": {
     "cell": [
      25.5536,
-     51.1721,
+     51.1714,
      3.1837,
      3.1417,
      0.0,
      "2010-01-21"
     ],
     "was": [
-     24.32,
-     48.7017,
-     3.03,
-     2.99,
+     25.5536,
+     51.1721,
+     3.1837,
+     3.1417,
      0.0,
      "2010-01-21"
     ],
-    "src": "bseaspx:532544_64",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): it never filed the 2015 form, so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.050725 = total (A+B+C) 309888300 / (A+B) 294928051 shares on the same quarter's BSE page; fii 48.70 -> 51.17.",
+    "src": "bseaspx:532544:64 + bseshpperent:532544:64",
+    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 141,369,414 + the documented holders of the company's 'Other Foreign entities' row - CITIGROUP GLOBAL MARKETS MAURITIUS PVT LTD 6,173,462 and COPTHALL MAURITIUS INVESTMENT LTD 3,376,080 (both institution-listed, this quarter's >1 % table) - on (A+B) 294,928,051 (\u00a7164a; the stored 51.1721 was the 2-dp sum x 1.050725). Farallon / Sloane Robinson / Frontpoint (no institution document) stay public. fii 51.1721 -> 51.1714.",
+    "exact": true,
     "superseded": {
      "cell": [
+      25.5536,
+      51.1721,
+      3.1837,
+      3.1417,
+      0.0,
+      "2010-01-21"
+     ],
+     "was": [
       24.32,
       48.7017,
       3.03,
@@ -371492,16 +371761,28 @@
       0.0,
       "2010-01-21"
      ],
-     "was": [
-      24.32,
-      45.62,
-      3.03,
-      2.99,
-      0.0,
-      "2010-01-21"
-     ],
      "src": "bseaspx:532544_64",
-     "why": "\u00a7164n page-era re-read (first read: no BSE code at \u00a7164g) of a former Nifty 500 member (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 45.62 -> 48.70, dii 3.03 -> 3.03. generic-row-A Other Foreign entities 7.84 fii 3.08 / dii 0.00 / rest 4.76: Farallon Capital Institutional Partners  1.19 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.25 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.02 (unplaced); Citigroup Global Markets Mauritius Pvt L 1.99 (documented:filing); Copthall Mauritius Investment Ltd 1.09 (documented:filing); Frontpoint Financial Services Fund LP 1.28 (filer's own page label); noninst-fii Other Foreign entities [fii part] 3.0817. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): it never filed the 2015 form, so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.050725 = total (A+B+C) 309888300 / (A+B) 294928051 shares on the same quarter's BSE page; fii 48.70 -> 51.17.",
+     "superseded": {
+      "cell": [
+       24.32,
+       48.7017,
+       3.03,
+       2.99,
+       0.0,
+       "2010-01-21"
+      ],
+      "was": [
+       24.32,
+       45.62,
+       3.03,
+       2.99,
+       0.0,
+       "2010-01-21"
+      ],
+      "src": "bseaspx:532544_64",
+      "why": "\u00a7164n page-era re-read (first read: no BSE code at \u00a7164g) of a former Nifty 500 member (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 45.62 -> 48.70, dii 3.03 -> 3.03. generic-row-A Other Foreign entities 7.84 fii 3.08 / dii 0.00 / rest 4.76: Farallon Capital Institutional Partners  1.19 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.25 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.02 (unplaced); Citigroup Global Markets Mauritius Pvt L 1.99 (documented:filing); Copthall Mauritius Investment Ltd 1.09 (documented:filing); Frontpoint Financial Services Fund LP 1.28 (filer's own page label); noninst-fii Other Foreign entities [fii part] 3.0817. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2006-06-30": {
