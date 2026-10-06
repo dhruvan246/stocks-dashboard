@@ -143547,7 +143547,7 @@
     ],
     "was": [
      0.0,
-     16.6593,
+     17.8863,
      6.2458,
      4.3256,
      0.2357,
@@ -143555,9 +143555,18 @@
      197383
     ],
     "src": "bsexbrl:540065_1682017142023_SHP.xml",
-    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files HDFC Bank Limited 1.2672 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 6.2458 -> 7.5130; fii untouched.",
+    "why": "\u00a7164s part 21c (2026-10-06): the event-row ledger path applies only the latest entry against the stored row, and the stored event row was still the pre-part-37 one (fii 17.8863) - so neither the FII session's part 37 (fii -> 16.6593) nor part 21b (dii -> 7.513) reached the feed (CI: 'stored row is neither the fix nor the recorded bad value'). This entry re-bases both on the stored row: fii 17.8863 -> 16.6593 (FII session part 37: Dvi out) and dii 6.2458 -> 7.513 (HDFC Bank 1.2672 by R2, user 'Register wins').",
     "superseded": {
      "cell": [
+      0.0,
+      16.6593,
+      7.513,
+      4.3256,
+      0.2357,
+      "2017-08-16",
+      197383
+     ],
+     "was": [
       0.0,
       16.6593,
       6.2458,
@@ -143566,22 +143575,12 @@
       "2017-08-16",
       197383
      ],
-     "was": [
-      0.0,
-      17.8863,
-      6.2458,
-      4.3256,
-      0.2357,
-      "2017-08-16",
-      197383
-     ],
      "src": "bsexbrl:540065_1682017142023_SHP.xml",
-     "why": "\u00a7164r batch 30 part 37 (2026-10-06, per-company review): FII = FPI 41,701,681 + the institutions 'Foreign Bank' row (ASIAN DEVELOPMENT BANK 14,350,000) + 'Norwest Venture Partners X Fii - Mauritius' 12,515,162 (the FII tag in its own name, batch 8) + the non-institutions 'Foreign Portfolio Investors (Category III)' row 57,264 (\u00a7159) on 411,926,386 (= Quantmac 16.6593). The event row still counted Dvi Fund Mauritius Ltd 5,067,797 (36 institution vs 5 company-type listings, 88 % < 90 %; public in every RBLBANK quarter since batch 8) and was a 2-dp sum. The other 'Foreign Companies' holders have no institution document: CDC Group and Asia Capital Financial Opportunities (the company's 2022 form: Foreign Companies), IFC (50 vs 151), Cartica Capital 2, Gpe (India), Galileo, Plenty Private Equity Fund I (7 vs 33) -> public. fii 17.8863 -> 16.6593.",
-     "exact": true,
+     "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files HDFC Bank Limited 1.2672 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 6.2458 -> 7.5130; fii untouched.",
      "superseded": {
       "cell": [
        0.0,
-       17.8863,
+       16.6593,
        6.2458,
        4.3256,
        0.2357,
@@ -143590,7 +143589,7 @@
       ],
       "was": [
        0.0,
-       20.9736,
+       17.8863,
        6.2458,
        4.3256,
        0.2357,
@@ -143598,11 +143597,12 @@
        197383
       ],
       "src": "bsexbrl:540065_1682017142023_SHP.xml",
-      "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): International Finance Corporation 3.09; the company files it on its own 'Overseas corporate bodies' / 'Other Foreign ...' non-institution row, where a holder needs >= 90 % of >= 5 classified listings under Institutions (Foreign) or a registry document - IFC has 50 institution vs 151 company-type listings - as every RBLBANK quarter from Sep-2016 already serves. fii 20.9736 -> 17.8863 (share counts of 540065_1682017142023_SHP.xml), dii unchanged.",
+      "why": "\u00a7164r batch 30 part 37 (2026-10-06, per-company review): FII = FPI 41,701,681 + the institutions 'Foreign Bank' row (ASIAN DEVELOPMENT BANK 14,350,000) + 'Norwest Venture Partners X Fii - Mauritius' 12,515,162 (the FII tag in its own name, batch 8) + the non-institutions 'Foreign Portfolio Investors (Category III)' row 57,264 (\u00a7159) on 411,926,386 (= Quantmac 16.6593). The event row still counted Dvi Fund Mauritius Ltd 5,067,797 (36 institution vs 5 company-type listings, 88 % < 90 %; public in every RBLBANK quarter since batch 8) and was a 2-dp sum. The other 'Foreign Companies' holders have no institution document: CDC Group and Asia Capital Financial Opportunities (the company's 2022 form: Foreign Companies), IFC (50 vs 151), Cartica Capital 2, Gpe (India), Galileo, Plenty Private Equity Fund I (7 vs 33) -> public. fii 17.8863 -> 16.6593.",
+      "exact": true,
       "superseded": {
        "cell": [
         0.0,
-        20.9736,
+        17.8863,
         6.2458,
         4.3256,
         0.2357,
@@ -143611,7 +143611,7 @@
        ],
        "was": [
         0.0,
-        13.6036,
+        20.9736,
         6.2458,
         4.3256,
         0.2357,
@@ -143619,11 +143619,11 @@
         197383
        ],
        "src": "bsexbrl:540065_1682017142023_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 13.60 -> 20.97, dii 6.25 -> 6.25. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Bank 3.48 public=0.00 fii=3.48 Asian Development Bank 3.48 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2FII-holders Other Foreign Companies 32.62 7.36 CDC Group Plc 6.86 stay(new-format:ForeignCompanies); International Finance Corporation 3.09 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.04 fii(inst-tag); Cartica Capital 2 Limited 2.75 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.45 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.14 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.67 stay(label); Galileo Investments Limited 1.44 stay(label); Plenty Private Equity Fund I Limited 1.3",
+       "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): International Finance Corporation 3.09; the company files it on its own 'Overseas corporate bodies' / 'Other Foreign ...' non-institution row, where a holder needs >= 90 % of >= 5 classified listings under Institutions (Foreign) or a registry document - IFC has 50 institution vs 151 company-type listings - as every RBLBANK quarter from Sep-2016 already serves. fii 20.9736 -> 17.8863 (share counts of 540065_1682017142023_SHP.xml), dii unchanged.",
        "superseded": {
         "cell": [
          0.0,
-         13.6036,
+         20.9736,
          6.2458,
          4.3256,
          0.2357,
@@ -143632,15 +143632,37 @@
         ],
         "was": [
          0.0,
-         10.1236,
-         9.7258,
+         13.6036,
+         6.2458,
          4.3256,
          0.2357,
          "2017-08-16",
          197383
         ],
-        "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 09 Aug 2017)",
-        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 3.48 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2017-06-30 3.81 / 2017-09-30 3.45 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+        "src": "bsexbrl:540065_1682017142023_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 13.60 -> 20.97, dii 6.25 -> 6.25. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Bank 3.48 public=0.00 fii=3.48 Asian Development Bank 3.48 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2FII-holders Other Foreign Companies 32.62 7.36 CDC Group Plc 6.86 stay(new-format:ForeignCompanies); International Finance Corporation 3.09 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.04 fii(inst-tag); Cartica Capital 2 Limited 2.75 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.45 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.14 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.67 stay(label); Galileo Investments Limited 1.44 stay(label); Plenty Private Equity Fund I Limited 1.3",
+        "superseded": {
+         "cell": [
+          0.0,
+          13.6036,
+          6.2458,
+          4.3256,
+          0.2357,
+          "2017-08-16",
+          197383
+         ],
+         "was": [
+          0.0,
+          10.1236,
+          9.7258,
+          4.3256,
+          0.2357,
+          "2017-08-16",
+          197383
+         ],
+         "src": "bsexbrl event filing (BSE SHPQNewFormat list, label 09 Aug 2017)",
+         "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): event-row institutions Any-Others block 3.48 = Asian Development Bank (Foreign Bank), the SAME holder the SW-2 sweep confirmed foreign in the adjacent quarter-ends (2017-06-30 3.81 / 2017-09-30 3.45 foreign-confirmed). Event rows had no ledger route until apply_cell_fix_events (this commit). fii += block, dii -= block."
+        }
        }
       }
      }
