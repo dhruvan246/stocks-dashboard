@@ -26999,6 +26999,15 @@ new WARN; store 6 cells changed, engine feed 4 symbols (BBTC, RAMRAT, SANWARIA 4
 false "rev:" marker; SANWARIA); the second run reproduces the first (stable); guard_shp_gate / guard_shp_definition /
 guard_shp_revisions / guard_feed exit 0. No new entry carries a VALUE_HEAL_MARK, so `heal_refiling` leaves re-filings alone.
 
+**LIVE (2026-10-06 22:16-22:21 IST).** Pushed 74a74d633; `refresh-shareholding.yml` dispatched after the push (run
+37498195076, headSha 74a74d633) -> store commit a0b69eb63 -> Pages 37498367383. Fresh-origin `--apply-ledgers` at 74a74d633: 0
+WARN lines (was 44). Live `shp_engine.json` (cache-busted): the 12 expected rows present, the 4 old rows gone, OILCOUNTUB has one
+2026-06-30 row (the quarterly, from 20260717) beside its 20260618 event row; live `shareholding.json`: OILCOUNTUB Jun-26 30,361
+holders with no "rev:", both SANWARIA cells as written; all 11 store cells on a0b69eb63 equal the table. Per-stock slices: the
+bot's store commit cannot trigger `refresh-stock-fin.yml` (GITHUB_TOKEN recursion guard, §41b), so it was dispatched by hand (run
+37498654316 -> 646ae7773, exactly BBTC / OILCOUNTUB / RAMRAT / SANWARIA / UPL; Pages 37498776762); live `fin/*.json` carry the
+healed cells (`shp`, and the originals nested in `shpH`; UPL dated 2019-07-19).
+
 **Open — measured, not changed (outside this task's files):**
 - `shp_revisions.json` rows for BSE-only re-filings still on the retired 15:30 gate (`--regate` reads only NSE's master):
   BBTC 2024-01-04 (BSE 2024-01-03 18:46), UPL 2024-03-27 (03-26 16:40), RAMRAT 2026-06-02 (06-01 17:37), SUPREMEINF 2026-05-29
@@ -27007,3 +27016,5 @@ guard_shp_revisions / guard_feed exit 0. No new entry carries a VALUE_HEAL_MARK,
   re-filing of the quarter; OILCOUNTUB's now equals the store (inert).
 - Cause 2 beyond these 11 keys is NOT measured: any original whose refine entry came from a later re-filing may hold
   re-filing values in a slot within 0.02 pp.
+- UPL 2019-06-30's re-filing row carries fii 51.2079, i.e. WITH the 8.2693 Overseas Depositories line (the 2022-form re-filing
+  parses to 42.9386 under §151): the sidecar was never re-based for §151, so the stock page's history shows 51.21 for Jun-2019.
