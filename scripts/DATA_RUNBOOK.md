@@ -21881,6 +21881,25 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     the new ledger, run `fetch_shareholding.py --apply-ledgers` and grep `WARN cell_fix` for the new keys - it must print none.
     Second trap, same afternoon: a workflow_dispatch run checks out the commit main had when it was DISPATCHED, so a push made while
     it sat queued is not in it - read `gh run view <id> --json headSha` and re-dispatch after the last push.
+    **Batch 30 part 46 (2026-10-06 evening, user: "check this once again and also other stocks one by one") - the 82 "revised-notice"
+    quarters of 2014-15 (§164b class, `audit_all/revscan/`) re-read from BSE's OWN records, quarter by quarter.** The claim "BSE shows
+    only one set of numbers, so we cannot tell which version it is" was wrong: BSE's SHPQNewFormat list keeps every STRUCTURED
+    re-filing of the page era as its own row, `qtrid X.01 / X.02` (status 'Revised' on some; `filing_date_time` null for all
+    pre-2016 rows), and `ShareholdingPattern.aspx?scripcd=&flag_qtr=1&qtrid=X.01&Flag=New` serves that version (other Flag values
+    return an empty page); `shpperent.aspx?scripcd=&qtrid=X.01&CompName=X&QtrName=X` lists its >1 % holders. Measured over the 82:
+    BSE holds ONE structured version for 76 (the figure we serve, public from the first notice - the 'Revised Shareholding Pattern'
+    announcements were PDF-only; every one of the 210 attachments is gone from AttachHis/AttachLive (a current attachment downloads
+    fine, so the request path is sound) and none was ever archived) and TWO or three for 6: JINDALSAW Mar-14 (identical FII), ASTRAL
+    Sep-14 (.00 15.9343 -> .01 13.6852, notice 2014-10-20), CUB Jun-14 (32.2295 -> 33.4327, 2014-08-26), TMPV Mar-15 (25.84 ->
+    25.9064 on the (A)+(B)+(C) base, 2015-04-22), KGL Jun-15 (.01 on a larger base, no notice and no stamp - undated), RELIGARE
+    Mar-14 (.01 2014-04-10, .02 undated). Every stored value of the 82 was matched to the .00 page under our rules (the four Jun-2015
+    'Others' sub-rows and TMPV's DR base included). Written: the three dated re-filings as §142k sidecar rows in `shp_revisions.json`
+    (ASTRAL 2014-09-30 from 2014-10-20, CUB 2014-06-30 from 2014-08-26, TMPV 2015-03-31 from 2015-04-22; dii = MF + FI/Banks +
+    Insurance, the page-era composition; no VCF row and no foreign name in a domestic line on any of the three pages; DII session
+    told row by row first and agreed). No date moved. Verdicts: the 8 cells set to UNKNOWN earlier today went back to THEIR ERROR
+    (dating) with the BSE row ids; CUB also OUR ERROR (the second version was missing). **Rule for the §164b class from now on: before
+    calling a first-notice date unproven, read the SHPQNewFormat list - a quarter with no `.01` row has one structured version, the
+    one on the page, and that is what the first notice published.**
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
