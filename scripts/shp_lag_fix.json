@@ -371364,12 +371364,22 @@
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
 },
 "CHAMBLFERT|20170930": {
+"days_later": 102,
+"gated_1530": false,
+"prov": "bse:SHP list revised_date_time 2018-01-31T17:14:53 (500085_3112018165857_SHP.xml) - BSE keeps only this revision and the stored figures are its; the original's notice 2017-10-18T11:23:59 (NEWSID f938e251-ae75-448c-aaff-c506c92c044c) links only to the page that now shows the revision, so the original's FII cannot be read -> the revision's date is the floor (\u00a7164b, batch 6f). Replaces the within-symbol-outlier QE+21 estimate. CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 34 2026-10-06.",
+"src": "bse-revision",
+"sub": 20180131,
+"ts": "2018-01-31T17:14:53",
+"was": 20171021,
+"rule": "midnight-2026-09-23",
+"replaced": {
 "days_later": 2,
 "gated_1530": true,
 "src": "new",
 "sub": 20171023,
 "was": 20171021,
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
+}
 },
 "SPANDANA|20200331": {
 "days_later": 1,
@@ -396112,6 +396122,16 @@
 "sub": 20161227,
 "ts": "2016-12-27T12:26:33",
 "was": 20160721,
+"rule": "midnight-2026-09-23"
+},
+"JINDALSAW|20181231": {
+"days_earlier": 13,
+"gated_1530": false,
+"prov": "bse:AnnSubCategoryGetData NEWS_DT of the company's notice 'Shareholding for the Period Ended December 31, 2018' (2019-01-17T17:35:12); BSE keeps only the 2019-01-30T12:30:52 revision (500378_301201910423_SHP.xml), reason 'this shareholding pattern is being revised due to correction in interse promoters holding' - a reshuffle inside the promoter group, so the FII / DII we serve were public from the original (\u00a7142k). CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 34 2026-10-06.",
+"src": "new",
+"sub": 20190117,
+"ts": "2019-01-17T17:35:12",
+"was": 20190130,
 "rule": "midnight-2026-09-23"
 }
 }

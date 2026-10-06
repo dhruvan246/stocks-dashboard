@@ -21647,6 +21647,26 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     company's own Sep-2022 form files the unnamed rest under Insurance Companies / PF / domestic SWF; QIP 'Qualified Institutional Buyer'
     event rows (BHARTIARTL, GODREJPROP); misspelt fund names left out (SAMMAANCAP 'Smallcap World Find', GODREJIND 'JP Morgan Slcav',
     MARKSANS CalPERS); REDINGTON Mar-16 page 'Any Others' includes a domestic AIF (Table III B1c).
+    **Batch 30 part 34 (label "§164r batch 30 part 34"; 24 cells + 2 dates + 2 new quarters; per-company review continued).** Our
+    errors: CHENNPETRO Mar-2011..Mar-2012 - BSE's pages file the FII row as 'Insurance Companies' (59 / 51 / 48 / 45 / 45 holders; the
+    company's own annual reports, 'Shareholding Pattern as on 31.03.2011 / 31.03.2012', label the same rows 'Foreign Institutional
+    Investors' 5,136,388 / 5,813,839) -> Jun / Sep / Dec-2011 fii 0 -> 3.18 / 3.72 / 3.92 (dii and ins down by the same row), Mar-2011
+    and Mar-2012 added (never held; DCHL part 32 is the same BSE mislabel); PHOENIXLTD Dec-15 / Mar-16 D1 (all-foreign named holders);
+    ROLTA / WELSPUNLIV / GHCL / TATAELXSI / ALOKTEXT / ASAHIINDIA Jun-2015 'Others' rows = the company's FPI rows (rule B; ASAHIINDIA's
+    2-holder row is the only unmatched row and sits where Sep-2015 files 'Foreign Portfolio Investors'); DISHTV Mar-2018 'Nomura
+    Singapore Limited' (company label 'Bodies Corporate', no institution document) out - the R2-FII pass had taken it on the SW-2 list,
+    which batch 7 retired. Dates: CHAMBLFERT Sep-2017 opens on the 2018-01-31 revision (BSE keeps only it; the 2017-10-18 original
+    cannot be read and no contemporaneous reading shows its FII - §164b / batch 6f; the within-symbol-outlier pass had put it on
+    QE+21); JINDALSAW Dec-2018 dated by the company's notice 2019-01-17 (the revision only corrected inter-se promoter holdings).
+    Precision (2-dp page sums -> share counts): APLLTD / BAJAJ-AUTO / BAJAJFINSV / EROSMEDIA Mar + Jun-15, CASTROLIND / CAMLINFINE
+    Jun-15, ASAHIINDIA Mar / Sep-15 ('Foreign Bank' 2,024 rounds to 0.00 on the page). Rule differences recorded (manual_verdicts):
+    undated 2011 / 2015 quarters (§120 +28 vs Quantmac's Dec-2014 cutoff: BASF, CAMLINFINE, ESSDEE, EROSMEDIA, BLUESTARCO Mar-16;
+    CMC 2011 - Quantmac cites page-capture times we cannot read), D1 exception / QIB blocks (AUROPHARMA, CHALET, DALBHARAT, EQUITAS),
+    BLUESTARCO Jun-15 'Foreign Portfolio Investor (Individual)'. Quantmac-side: CHENNPETRO Mar-2011 read as fii 0 (the mislabelled
+    row), CIPLA Sep-2018 legacy 'Foreign Institutional Investors / ... - DR' row left out (DR part = 1 holder, <= 0.01 %).
+    Open (measured, not yet fixed): the within-symbol-outlier date pass touched 230 ledger cells; 43 sit in quarters BSE keeps only as
+    a revision and others carry a late 'New' stamp (AMTEKAUTO Mar-2017 2021-12-06, ARSHIYA Sep-2024 2026-03-17) - each needs the §164b
+    test before its date stays (list: ~/stocks-cache/shp/audit_all/wso_rows.json).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
