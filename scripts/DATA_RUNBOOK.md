@@ -21905,6 +21905,28 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     (dating) with the BSE row ids; CUB also OUR ERROR (the second version was missing). **Rule for the §164b class from now on: before
     calling a first-notice date unproven, read the SHPQNewFormat list - a quarter with no `.01` row has one structured version, the
     one on the page, and that is what the first notice published.**
+    **Batch 30 part 47 (2026-10-07 00:40 IST, user: "check the lender banks and prakash filings one by one") - FII side of the DII
+    session's §164s parts 28-30; 38 store cells + 2 RENUKA event rows, each read from its own XBRL (audit_all/xsh.py).** The banks sit
+    INSIDE the institutions block (Financial Institutions/Banks line), so the institution-listing rule applies (>= 1 Institutions
+    (Foreign) listing of the same legal name: DBS Bank Limited 4 (FPI Cat II), Standard Chartered Bank 31, International Finance
+    Corporation 50 - shp_foreign_holder_evidence.json), reinforced by the company's own later label: GAMMONIND files the same 4,124,496
+    'Dbs Bank India Limited' sh under Institutions (Foreign) in every 2022-form filing from Sep-2022 (our fii already 1.1537 there);
+    RENUKA tags 'Standard Chartered Bank, UAE Branch (Category: Forei..)' in Mar-2018 and files it under Institutions (Foreign) from
+    Sep-2022 (Jun-18..Dec-21 it sits in the institutions Any-Other block and was already in our fii); BRFL files 'Standard Chartered
+    Bank' under Institutions (Foreign) from Sep-2022 (Jun-22 it filed it as 'OtherInstitutionsDomestic'). Written: PATELENG x5
+    (+4.0821 / +4.4792), RENUKA Mar-17..Dec-17 x4 (+1.7387) + events 2018-03-08 (+1.7387) and 2018-03-09 (45,821,835 sh on
+    1,916,819,292 = +2.3905), BRFL Sep-17 / Dec-17 / Mar-18 / Jun-22 (+2.7296 / +2.5636 / +2.5636 / +1.9315), GAMMONIND Sep-19..Jun-22
+    x12 (+1.1160), DEEPAKFERT Sep-21 (+4.6270, IFC), BALLARPUR x9 DBS only (+1.7256 Sep-17..Jun-18, +1.5169 Sep-19..Sep-20), PRAKASH
+    Jun-17 (+3.3693 'BNP PARIBAS ARBITAGE' = BNP Paribas Arbitrage, 148 Institutions (Foreign) listings, inside the company's
+    mislabelled 'NBFCs registered with RBI' block), Sep-17 (+6.6410, BNP + 'ACADIAN EMERGING MARKETS SMALL CAP EQUITY FUND' = the same
+    1,944,759 sh PRAKASH files under FPI from Mar-2018), Dec-17 (+1.2743 Acadian). PRAKASH Dec-15..Mar-17 (Table III qtrid 88/89 +
+    XBRLs): the block's named holders are Indian brokers / trading companies (SMC Comtrade, Sunidhi Capital, Kumar Shre Brokers, Infosoft
+    Global, Amarjoti Vanijya, Makrana Tradecom, Rajnil Sales, First Techsolution) or unnamed - no fii change. NOT written, a rule
+    choice put to the user: DEUTSCHE BANK A.G. 20,839,168 sh at BALLARPUR Sep-17..Sep-21 (13 quarters, 1.6111 each) - no Institutions
+    (Foreign) listing in any filing, only the RBI register of foreign banks; the user's 'not DII' ruling leaves it public under the
+    rule as written. Found for the DII session: BALLARPUR Sep-21 (Deutsche still in the Banks line and in dii), the two RENUKA event
+    rows (bank in dii), BRFL Jun-22 (OtherInstitutionsDomestic label in dii). dii copied unchanged from origin; write_b8's committed-store
+    `was` check passed (0 WARN on a fresh tree, 40 / 40 in the local feed).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
