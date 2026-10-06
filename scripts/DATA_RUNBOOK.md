@@ -21775,6 +21775,20 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Dec-2019..Sep-2020 shows 295,259,959); NAM-INDIA / ICICIGI / JAGRAN / TCI QIB rows; JSL / PHOENIXLTD midnight rule. UNKNOWN:
     JKCEMENT Dec-2018, SHILPAMED Dec-2018, RAJESHEXPO Jun-2019 (Quantmac's figures not reproducible from BSE's files); MINDACORP
     Jun-2016 (a re-filed quarter + the open annual-report-category question). IBVENTURES = DHANI (renamed): 10 'blank' cells agree.
+    **Batch 30 part 40 (label "§164r batch 30 part 40"; 2 cells, 2 date reverts).** BSE Ltd Jun-2017 read from its own scanned
+    SHP (bseindia.com/downloads1/Shareholding_Pattern_as_on_30_June_2017.pdf, user OK for BSE scanned PDFs): FPI 7,735,772 + the
+    'Foreign Direct Investment' row 4,730,534 (Deutsche Boerse, Caldwell India, Acacia Banyan) + the non-institutions 'Foreign
+    Institutional Investor' row 1,292,297 (incl. GKFF Ventures) on 53,808,172 (Public + 'Trading Members and Associates') -> fii
+    25.5697, dii 8.7738 - the stored row was a Trendlyne-row fill (fii 14.38 = FPI only), as Mar / Sep-2017 were before batch 30
+    (Quantmac blank). NAM-INDIA Mar-2021 precision (held in part 39) written on top of the DII session's part-23 entry. CORRECTION of
+    part 38: HTMEDIA and NITINFIRE Dec-2015 go back to their February BSE notices (2016-02-06 / 2016-02-07). On 2016-03-18 BSE
+    re-published many Dec-2015 patterns (a second, identical 'has submitted to BSE the Shareholding Pattern' notice; Table I
+    authorise = that time), and part 38 had treated that as a revision. Archived Moneycontrol pages captured BEFORE 2016-03-18 show
+    the same figures as BSE's served version - HTMEDIA (captured 2016-03-06) FPI 28,961,318 / 44 holders, NITINFIRE (2016-02-18) the
+    institutions 'Any Others' 32,697,215 / 14 holders - so the February versions carried them (§164b exception) and Quantmac's
+    '2016-03-18 earliest' is the error. JSWHL Dec-2015 keeps 2016-03-18 (no reading of its February version exists - probably the
+    same re-publication, unproven). Trap: a second identical BSE notice months later is not by itself a revision - check for a
+    contemporaneous reading before moving a date.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

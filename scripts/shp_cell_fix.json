@@ -64012,7 +64012,7 @@
    "2021-03-31": {
     "cell": [
      74.46,
-     6.9776,
+     6.9784,
      10.027,
      1.9433,
      2.6996,
@@ -64022,16 +64022,26 @@
     "was": [
      74.46,
      6.9776,
-     6.7022,
+     10.027,
      1.9433,
      2.6996,
      "2021-04-13",
      167543
     ],
     "src": "bsexbrl:540767_124202120735_SHP.xml",
-    "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names INDUSIND BANK LTD. 3.3248 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 6.6910 + those, gap 0.0112), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 6.7022 -> 10.0270; fii untouched.",
+    "why": "\u00a7164r batch 30 part 40 (2026-10-06, per-company review): precision: FPI 36,480,549 + VALIANT MAURITIUS PARTNERS FDI LIMITED 6,541,886 (the FDI tag in its own name; the company's 2022 form does not list it) on 616,504,767; the institutions 'Qualified Institutional Buyer' row 80,600 is domestic (Rule 1). Written on top of the DII session's \u00a7164s part 23 entry (dii) on this key. fii 6.9776 -> 6.9784.",
+    "exact": true,
     "superseded": {
      "cell": [
+      74.46,
+      6.9776,
+      10.027,
+      1.9433,
+      2.6996,
+      "2021-04-13",
+      167543
+     ],
+     "was": [
       74.46,
       6.9776,
       6.7022,
@@ -64040,17 +64050,30 @@
       "2021-04-13",
       167543
      ],
-     "was": [
-      74.46,
-      5.9176,
-      6.7022,
-      1.9433,
-      2.6996,
-      "2021-04-13",
-      167543
-     ],
      "src": "bsexbrl:540767_124202120735_SHP.xml",
-     "why": "\u00a7164r batch 8 \u2014 the company's own FDI tag (Quantmac v6; our Rule 3 counts an (FPI)/FII/FDI tag the company writes in the holder's name, but the code's tag check read FPI/FII only): in filing 540767_124202120735_SHP.xml the company files VALIANT MAURITIUS PARTNERS FDI LIMITED 1.06 fii(inst-tag) on a non-institution row and its first 2022-form filing does not name the holder, so the tag decides: fii 5.92 -> 6.98."
+     "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names INDUSIND BANK LTD. 3.3248 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 6.6910 + those, gap 0.0112), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 6.7022 -> 10.0270; fii untouched.",
+     "superseded": {
+      "cell": [
+       74.46,
+       6.9776,
+       6.7022,
+       1.9433,
+       2.6996,
+       "2021-04-13",
+       167543
+      ],
+      "was": [
+       74.46,
+       5.9176,
+       6.7022,
+       1.9433,
+       2.6996,
+       "2021-04-13",
+       167543
+      ],
+      "src": "bsexbrl:540767_124202120735_SHP.xml",
+      "why": "\u00a7164r batch 8 \u2014 the company's own FDI tag (Quantmac v6; our Rule 3 counts an (FPI)/FII/FDI tag the company writes in the holder's name, but the code's tag check read FPI/FII only): in filing 540767_124202120735_SHP.xml the company files VALIANT MAURITIUS PARTNERS FDI LIMITED 1.06 fii(inst-tag) on a non-institution row and its first 2022-form filing does not name the holder, so the tag decides: fii 5.92 -> 6.98."
+     }
     }
    },
    "2022-03-31": {
@@ -389756,6 +389779,27 @@
     ],
     "src": "bseltd_pdf_vision:Shareholding_Pattern_31Dec2019.pdf",
     "why": "\u00a7164r batch 30 (2026-10-05, BSE Ltd - its own SHP, a scanned PDF read as an image with the user's OK 2026-10-05: bseindia.com/downloads1/Shareholding_Pattern_31Dec2019.pdf; every category row re-added to the printed Sub-Total (B)(1) exactly): 2019-12-31 - Table III institutions: FPI 6,208,982; Any Other (i-i) 'Foreign Direct Investment' 3 holders 3,445,182 (Deutsche Boerse AG 1,986,933; Acacia Banyan Partners 785,417; Caldwell India Holdings Inc 672,832); (i-ii) 'Foreign Institutional Investor' 164,132 (1 holder) - FII under Option A / the row's own label; total 45,024,297 (Public + the company's 'Trading Members and Associates' category, Table I) -> fii 21.8067. Quantmac's independent read of the same filing's XBRL = 21.8067 (equal). dii = MF 919,194 + AIF 220,895 + FI/Banks 65,080 + Insurance 418,730 = 3.6067; mf 2.0416, ins 0.9300. Stored [13.79, 11.15, 2.04, 0.93] was a Trendlyne-row fill that left the FDI / FII lines out of fii (and put them in dii).",
+    "exact": true
+   },
+   "2017-06-30": {
+    "cell": [
+     0.0,
+     25.5697,
+     8.7739,
+     3.8516,
+     4.6642,
+     "2017-07-21"
+    ],
+    "was": [
+     0.0,
+     14.38,
+     17.51,
+     3.85,
+     4.66,
+     "2017-07-21"
+    ],
+    "src": "bseltd_pdf_vision:Shareholding_Pattern_as_on_30_June_2017.pdf",
+    "why": "\u00a7164r batch 30 part 40 (2026-10-06, Quantmac blank / small-gap cells): BSE Ltd - its own SHP, a scanned PDF read as an image with the user's OK (bseindia.com/downloads1/Shareholding_Pattern_as_on_30_June_2017.pdf; every institutions row re-added to the printed Sub-Total (B)(1) 17,185,514 and every non-institutions row to (B)(3) 16,699,429): FPI 7,735,772; Any Other (i-i) 'Foreign Direct Investment' 3 holders 4,730,534 (Deutsche Boerse AG 2,549,443; Caldwell India Holdings Inc 1,173,319; Acacia Banyan Partners 1,007,772); non-institutions 'Foreign Institutional Investor' 5 holders 1,292,297 (incl. GKFF VENTURES 1,228,465 - the row the company files inside its institutions block in Mar-2017) - FII by the rows' own labels; total 53,808,172 (Public 33,884,943 + the company's 'Trading Members and Associates' category 19,923,229, Table I) -> fii 25.5697. dii = MF 2,072,449 + AIF 21,656 + FI/Banks 115,382 + Insurance 2,509,721 + NBFC 1,844. The stored row was a Trendlyne-row fill (FPI only in fii; dii 17.51), as Mar / Sep-2017 were before batch 30. [0.0, 14.38, 17.51, 3.85, 4.66] -> [0.0, 25.5697, 8.7739, 3.8516, 4.6642].",
     "exact": true
    }
   },
