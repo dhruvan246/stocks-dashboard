@@ -13598,44 +13598,67 @@
     "cell": [
      65.91,
      4.4914,
-     3.463,
+     3.4822,
      2.7038,
      0.5508,
      "2018-01-19",
      20070
     ],
     "was": [
-     74.02,
+     65.91,
      4.4914,
      3.4821,
      2.7037,
-     0.0,
+     0.5508,
      "2018-01-19",
      20070
     ],
     "src": "bsexbrl:501425_1912018111555_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (BSE New 2018-01-19 11:23:34; NSE submissionDate 19-JAN-2018). Its rows: MF 1,886,466 + FI/Banks 145,389 + Insurance 384,289 sh, and 'NBFCs registered with RBI' 13,425 sh under Non-institutions; the runbook \u00a7158 R3 rule (old-format NBFC row joins dii) gives dii = 2,429,569 / 69,770,513 (parse_shp's base, promoter row) = 3.4822; fii 3,133,686 FPI = 4.4914, mf 2.7038, ins 0.5508, prom 65.91, 20,070 holders. The stored 3.4821 / mf 2.7037 were the 2024-01-03 re-filing's (2022 form, Institutions(Domestic) 2,429,569 sh on its own base) pulled in by shp_refine_4dp (built from BSE's newest filing; it re-pulls them every run, `exact` re-applies). The superseded entry's 3.463 was the raw parse without R3. dii value = the DII session's verdict (2026-10-06).",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.91,
+      4.4914,
+      3.463,
+      2.7038,
+      0.5508,
+      "2018-01-19",
+      20070
+     ],
+     "was": [
       74.02,
-      4.49,
-      3.48,
-      2.7,
+      4.4914,
+      3.4821,
+      2.7037,
       0.0,
       "2018-01-19",
       20070
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-     "was": [
-      74.02,
-      4.49,
-      3.48,
-      2.7,
-      0.0,
-      "2024-01-03",
-      20070
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2194d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_1912018111555_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.02,
+       4.49,
+       3.48,
+       2.7,
+       0.0,
+       "2018-01-19",
+       20070
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.02,
+       4.49,
+       3.48,
+       2.7,
+       0.0,
+       "2024-01-03",
+       20070
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2194d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2018-03-31": {
@@ -62119,50 +62142,6 @@
    }
   },
   "MBLINFRA": {
-   "2026-03-31": {
-    "cell": [
-     74.01,
-     0.0802,
-     0.3608,
-     0.0,
-     0.0,
-     "2026-04-17",
-     24369
-    ],
-    "was": [
-     74.57,
-     0.0,
-     0.4236,
-     0.0,
-     0.0,
-     "2026-04-17",
-     24120
-    ],
-    "src": "bsexbrl:533152_164202617914_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-    "superseded": {
-     "cell": [
-      74.57,
-      0.0,
-      0.42,
-      0.0,
-      0.0,
-      "2026-04-17",
-      24120
-     ],
-     "src": "bse:533152_562026144429_SHP.xml",
-     "was": [
-      74.01,
-      0.08,
-      0.36,
-      0.0,
-      0.0,
-      "2026-04-16",
-      24369
-     ],
-     "why": "Company REVISED its filing (BSE revised_date_time=2026-06-05); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '0.08->0.0', 'prom': '74.01->74.57'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
-    }
-   },
    "2015-06-30": {
     "cell": [
      46.6567,
@@ -71183,41 +71162,64 @@
      0.4164,
      0.0,
      0.0,
-     "2026-01-19",
+     "2026-01-16",
      20231
     ],
     "was": [
-     69.3,
+     68.54,
      0.093,
      0.4165,
      0.0,
      0.0,
-     "2026-01-19",
+     "2026-01-16",
      20231
     ],
     "src": "bsexbrl:522281_1612026183257_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-01-16 18:32:58, NSE broadcast 16-Jan-2026 18:32:41 -> 2026-01-16 (midnight rule; the superseded entry's 2026-01-19 was the retired 15:30 gate). parse_shp of that document: prom 68.54, fii 0.0929, dii 0.4164, 20,231 holders. The stored fii 0.093 / dii 0.4165 are the 2026-06-01 re-filing's (522281_162026173642, prom 69.30) pulled in by shp_refine_4dp, which re-pulls them every run (`exact` re-applies). The re-filing itself is in shp_revisions.json from its own date.",
+    "exact": true,
     "superseded": {
      "cell": [
-      69.3,
-      0.09,
-      0.42,
+      68.54,
+      0.0929,
+      0.4164,
       0.0,
       0.0,
       "2026-01-19",
       20231
      ],
-     "src": "bse:522281_162026173642_SHP.xml",
      "was": [
-      68.54,
-      0.09,
-      0.42,
+      69.3,
+      0.093,
+      0.4165,
       0.0,
       0.0,
-      "2026-01-16",
+      "2026-01-19",
       20231
      ],
-     "why": "Company REVISED its filing (BSE revised_date_time=2026-06-01); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '68.54->69.3'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+     "src": "bsexbrl:522281_1612026183257_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       69.3,
+       0.09,
+       0.42,
+       0.0,
+       0.0,
+       "2026-01-19",
+       20231
+      ],
+      "src": "bse:522281_162026173642_SHP.xml",
+      "was": [
+       68.54,
+       0.09,
+       0.42,
+       0.0,
+       0.0,
+       "2026-01-16",
+       20231
+      ],
+      "why": "Company REVISED its filing (BSE revised_date_time=2026-06-01); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '68.54->69.3'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+     }
     }
    }
   },
@@ -78822,45 +78824,90 @@
     "cell": [
      12.42,
      0.0,
-     0.0,
-     0.0,
-     0.0,
-     "2026-01-22",
-     140382
-    ],
-    "src": "bse:519260_3012026152425_SHP.xml",
-    "was": [
-     12.42,
-     0.0,
-     0.0,
+     0.0001,
      0.0,
      0.0,
      "2026-01-21",
      141893
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=2026-01-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141893->140382'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "was": [
+     12.42,
+     0.0,
+     0.0001,
+     0.0,
+     0.0,
+     "2026-01-21",
+     140382
+    ],
+    "src": "bsexbrl:519260_2112026214129_SHP.xml",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-01-21 21:41:30, NSE broadcast 21-Jan-2026 21:36:37 -> 2026-01-21 (midnight rule). Banks 862 sh = Institutions(Domestic) 862 / 736,100,000 = dii 0.0001; 141,893 holders. The 2026-01-30 15:24 re-filing (519260_3012026152425, 'typographic error') changes only the holder count (140,382) - that value had been written into the original's row by the superseded 2026-08-09 entry (whose 0.0 dii was the filer's 2dp figure and 2026-01-22 the retired 15:30 gate). dii confirmed by the DII session (2026-10-06).",
+    "superseded": {
+     "cell": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-01-22",
+      140382
+     ],
+     "src": "bse:519260_3012026152425_SHP.xml",
+     "was": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-01-21",
+      141893
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-01-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141893->140382'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    },
    "2026-03-31": {
     "cell": [
      12.42,
      0.0,
-     0.0,
-     0.0,
-     0.0,
-     "2026-04-22",
-     139953
-    ],
-    "src": "bse:519260_852026154243_SHP.xml",
-    "was": [
-     12.42,
-     0.0,
-     0.0,
+     0.0001,
      0.0,
      0.0,
      "2026-04-21",
-     141437
+     139953
     ],
-    "why": "Company REVISED its filing (BSE revised_date_time=2026-05-08); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141437->139953'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    "was": [
+     12.42,
+     0.0,
+     0.0002,
+     0.0,
+     0.0,
+     "2026-04-21",
+     139953
+    ],
+    "src": "bsexbrl:519260_2142026204535_SHP.xml",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-04-21 20:45:37, NSE broadcast 21-Apr-2026 20:49:27 -> 2026-04-21 (midnight rule). Banks 862 sh / 736,100,000 = dii 0.0001. The stored 0.0002 is the 2026-05-08 15:43 re-filing's (519260_852026154243, 'clerical mistake in figures': Banks 1,257 sh) - a later document's value under the original's date; it belongs in shp_revisions.json dated 2026-05-08 (no such row exists yet). The holder count stays at the stored 139,953 (the re-filing's; the original files 141,437): shp_refine_4dp holds the re-filing and re-pulls dii to 0.0002 every run, and `exact` can re-apply 0.0001 only while the post-refine row equals `was` exactly - a different holder count here would leave dii at 0.0002 for good. dii value = the DII session's verdict (2026-10-06).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-04-22",
+      139953
+     ],
+     "src": "bse:519260_852026154243_SHP.xml",
+     "was": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-04-21",
+      141437
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-05-08); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141437->139953'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    }
    },
    "2025-09-30": {
     "cell": [
@@ -81119,120 +81166,6 @@
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 521034_972026135616_SHP.xml was public 2026-07-09 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
    }
   },
-  "SPMLINFRA": {
-   "2026-03-31": {
-    "cell": [
-     39.54,
-     0.3149,
-     15.2682,
-     0.0,
-     0.0,
-     "2026-04-20",
-     22977
-    ],
-    "was": [
-     40.19,
-     0.3598,
-     15.1041,
-     0.0,
-     0.0,
-     "2026-04-20",
-     22442
-    ],
-    "src": "bsexbrl:500402_1842026112748_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-    "superseded": {
-     "cell": [
-      40.19,
-      0.3598,
-      15.1041,
-      0.0,
-      0.0,
-      "2026-04-20",
-      22442
-     ],
-     "was": [
-      39.54,
-      0.3149,
-      15.2682,
-      0.0,
-      0.0,
-      "2026-04-20",
-      22977
-     ],
-     "src": "bsexbrl:500402:500402_1842026114528_SHP.xml",
-     "why": "\u00a7142g 2026-09-22 orphan re-adjudication: SAME-DAY REVISION WINS \u2014 original 2026-04-18 11:27 and revision 11:47 (Sat) are both first visible Mon 2026-04-20; the later document of the same visibility window serves.",
-     "superseded": {
-      "cell": [
-       40.19,
-       0.36,
-       15.11,
-       0.0,
-       0.0,
-       "2026-04-18",
-       22442
-      ],
-      "src": "bse:500402_1842026114528_SHP.xml",
-      "was": [
-       39.54,
-       0.31,
-       15.27,
-       0.0,
-       0.0,
-       "2026-04-18",
-       22977
-      ],
-      "why": "Company REVISED its filing (BSE revised_date_time=2026-04-18); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '39.54->40.19'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
-     }
-    }
-   }
-  },
-  "SRHHYPOLTD": {
-   "2025-12-31": {
-    "cell": [
-     60.45,
-     0.063,
-     0.0453,
-     0.0077,
-     0.0,
-     "2026-01-14",
-     42527
-    ],
-    "was": [
-     61.84,
-     0.063,
-     0.0453,
-     0.0077,
-     0.0,
-     "2026-01-14",
-     42527
-    ],
-    "src": "bsexbrl:532842_13120261729_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-    "superseded": {
-     "cell": [
-      61.84,
-      0.06,
-      0.05,
-      0.01,
-      0.0,
-      "2026-01-14",
-      42527
-     ],
-     "src": "bse:532842_2912026133747_SHP.xml",
-     "was": [
-      60.45,
-      0.06,
-      0.05,
-      0.01,
-      0.0,
-      "2026-01-13",
-      42527
-     ],
-     "why": "Company REVISED its filing (BSE revised_date_time=2026-01-29); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '60.45->61.84'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
-    }
-   }
-  },
   "SRPL": {
    "2024-06-30": {
     "cell": [
@@ -82712,50 +82645,6 @@
        "why": "Company REVISED its filing (BSE revised_date_time=n/a); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,tickertape). Diffs: {'dii': '5.99->0.0', 'fii': '3.02->8.55', 'prom': '47.32->34.68'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
       }
      }
-    }
-   },
-   "2026-03-31": {
-    "cell": [
-     47.32,
-     3.0218,
-     5.9933,
-     0.0,
-     0.0,
-     "2026-04-22",
-     7907
-    ],
-    "was": [
-     46.95,
-     2.9979,
-     5.9459,
-     0.0,
-     0.0,
-     "2026-04-22",
-     7907
-    ],
-    "src": "bsexbrl:532904_2142026184717_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-    "superseded": {
-     "cell": [
-      46.95,
-      3.0,
-      5.95,
-      0.0,
-      0.0,
-      "2026-04-22",
-      7907
-     ],
-     "src": "bse:532904_275202620036_SHP.xml",
-     "was": [
-      47.32,
-      3.02,
-      5.99,
-      0.0,
-      0.0,
-      "2026-04-21",
-      7907
-     ],
-     "why": "Company REVISED its filing (BSE revised_date_time=2026-05-27); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '47.32->46.95'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
     }
    },
    "2016-12-31": {
@@ -89180,15 +89069,15 @@
     "cell": [
      27.89,
      42.9386,
-     9.5725,
+     9.5838,
      5.2633,
      0.0,
-     "2019-07-22",
+     "2019-07-19",
      82466
     ],
     "was": [
      27.89,
-     51.2079,
+     42.9386,
      9.5838,
      5.2633,
      0.0,
@@ -89196,28 +89085,50 @@
      82466
     ],
     "src": "bsexbrl:512070_197201917929_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing: BSE New 2019-07-19 17:29:11 (NSE submissionDate 19-JUL-2019), so the date is 2019-07-19 under the midnight rule (\u00a7149; 2019-07-22 was the retired 15:30 gate - the engine already served 20190719 via shp_sub_dates). Its rows: MF 26,798,469 + AIF 72,330 + FI/Banks 21,843,446 + Other Institutions 25,500 sh, and 'NBFCs registered with RBI' 57,501 sh under Non-institutions; \u00a7158 R3 gives dii = 48,797,246 / 509,161,754 (parse_shp's base, public row) = 9.5838 = the stored value. fii = FPI 218,627,110 = 42.9386 (Overseas Depositories 8.2693 outside FII), mf 5.2633. The superseded entry's 9.5725 was the raw parse without R3. dii value confirmed by the DII session (2026-10-06).",
     "superseded": {
      "cell": [
       27.89,
-      51.21,
-      9.58,
-      5.26,
+      42.9386,
+      9.5725,
+      5.2633,
       0.0,
       "2019-07-22",
       82466
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.89,
-      51.21,
-      9.58,
-      5.26,
+      51.2079,
+      9.5838,
+      5.2633,
       0.0,
-      "2024-03-26",
+      "2019-07-22",
       82466
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1731 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_197201917929_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.89,
+       51.21,
+       9.58,
+       5.26,
+       0.0,
+       "2019-07-22",
+       82466
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.89,
+       51.21,
+       9.58,
+       5.26,
+       0.0,
+       "2024-03-26",
+       82466
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1731 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2019-09-30": {
@@ -229224,28 +229135,6 @@
     ],
     "src": "bsexbrl:539046_94202616233_SHP.xml",
     "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 539046_94202616233_SHP.xml was public 2026-04-10 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
-   },
-   "2026-06-30": {
-    "cell": [
-     57.78,
-     0.2179,
-     0.5871,
-     0.0,
-     0.0,
-     "2026-07-07",
-     27944
-    ],
-    "was": [
-     57.78,
-     0.2179,
-     0.5871,
-     0.0,
-     0.0,
-     "2026-07-27",
-     27944
-    ],
-    "src": "bsexbrl:539046_672026171127_SHP.xml",
-    "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 539046_672026171127_SHP.xml was public 2026-07-07 (gated). Values and date restored from that original document (runbook \u00a7142g rule)."
    }
   },
   "XTGLOBAL": {
@@ -266619,25 +266508,47 @@
    },
    "2026-06-30": {
     "cell": [
-     51.17,
-     0.0096,
-     0.0915,
-     0.0433,
-     0.0,
-     "2026-07-20",
-     31155
-    ],
-    "was": [
      47.23,
      0.0104,
      0.0989,
      0.0468,
      0.0,
-     "2026-07-20",
+     "2026-07-17",
      30361
     ],
-    "src": "bsexbrl:500313_3720261378_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged."
+    "was": [
+     51.17,
+     0.0096,
+     0.0915,
+     0.0433,
+     0.0,
+     "2026-07-17",
+     31155
+    ],
+    "src": "bsexbrl:500313_1772026163026_SHP.xml",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the stored values (prom 51.17, 31,155 holders) are the CAPITAL-RESTRUCTURING pattern as on 2026-06-18 (500313_3720261378: TypeOfReport 'Capital Restructuring', Regulation 31(1)(c), DateOfAllotment 2026-06-18, every context dated 2026-06-18; NSE lists it as-on 2026-06-18, broadcast 03-Jul-2026 14:41; it is already the 2026-06-18 event row). The quarter-ended 30-Jun-2026 pattern is 500313_1772026163026 (Quarterly, Regulation 31(1)(b); company: 'The Shareholding Pattern submitted on 03.07.2026 pertained to the Capital Restructuring and was not the Shareholding Pattern for the quarter ended June 30, 2026'): prom 47.23, fii 0.0104, dii 0.0989, mf 0.0468, 30,361 holders; first public NSE 17-Jul-2026 16:13:36 (BSE 16:36:35) -> 2026-07-17. The superseded \u00a7142k entry had treated the two different patterns as original + re-filing.",
+    "superseded": {
+     "cell": [
+      51.17,
+      0.0096,
+      0.0915,
+      0.0433,
+      0.0,
+      "2026-07-20",
+      31155
+     ],
+     "was": [
+      47.23,
+      0.0104,
+      0.0989,
+      0.0468,
+      0.0,
+      "2026-07-20",
+      30361
+     ],
+     "src": "bsexbrl:500313_3720261378_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged."
+    }
    }
   },
   "ORIENTLTD": {
@@ -395766,7 +395677,242 @@
     "retired": "\u00a7142g 2026-09-22 orphan re-adjudication: the Dec-2025 pattern really was filed on 2026-06-29 15:38 (BSE list, NSE broadcast 29-Jun-2026 18:49); the store's 2026-06-30 is that filing gated, not a bulk stamp"
    }
   },
-  "UPL": {}
+  "UPL": {},
+  "MANAKCOAT": {
+   "2026-06-30": {
+    "cell": [
+     57.78,
+     0.2179,
+     0.5871,
+     0.0,
+     0.0,
+     "2026-07-07",
+     27944
+    ],
+    "was": [
+     57.78,
+     0.2179,
+     0.5871,
+     0.0,
+     0.0,
+     "2026-07-27",
+     27944
+    ],
+    "src": "bsexbrl:539046_672026171127_SHP.xml",
+    "why": "\u00a7142i 2026-09-22 dark-window repair: the daily fetch re-dated this row to a later re-publication (NSE moves broadcastDate to the latest version); BSE's ORIGINAL filing 539046_672026171127_SHP.xml was public 2026-07-07 (gated). Values and date restored from that original document (runbook \u00a7142g rule).",
+    "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [57.78, 0.2179, 0.5871, 0.0, 0.0, 2026-07-06, 27944]. BSE lists three files on 2026-07-06: 17:11:28 New (539046_672026171127) and 18:18:48 Revised are 'Capital Restructuring' patterns (Regulation 31(1)(c), allotment 2026-06-30); 18:24:07 (539046_67202618222) is the Quarterly (31(1)(b)) - company: 'The earlier file pertained to the allotment of securities on 30th June, 2026, whereas the current file relates to the quarter ended 30th June, 2026'. All three parse to the same numbers; NSE's first broadcast 06-Jul-2026 17:13:18. Filing day 2026-07-06 (midnight rule, \u00a7149); the entry's 2026-07-07 was the retired 15:30 gate."
+   }
+  },
+  "MBLINFRA": {
+   "2026-03-31": {
+    "cell": [
+     74.01,
+     0.0802,
+     0.3608,
+     0.0,
+     0.0,
+     "2026-04-17",
+     24369
+    ],
+    "was": [
+     74.57,
+     0.0,
+     0.4236,
+     0.0,
+     0.0,
+     "2026-04-17",
+     24120
+    ],
+    "src": "bsexbrl:533152_164202617914_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "superseded": {
+     "cell": [
+      74.57,
+      0.0,
+      0.42,
+      0.0,
+      0.0,
+      "2026-04-17",
+      24120
+     ],
+     "src": "bse:533152_562026144429_SHP.xml",
+     "was": [
+      74.01,
+      0.08,
+      0.36,
+      0.0,
+      0.0,
+      "2026-04-16",
+      24369
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-06-05); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'fii': '0.08->0.0', 'prom': '74.01->74.57'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    },
+    "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [74.01, 0.0802, 0.3608, 0.0, 0.0, 2026-04-16, 24369] = the Quarterly 533152_164202617914 (BSE New 2026-04-16 17:09:15; NSE broadcast 16-Apr-2026 17:13:26) -> filing day 2026-04-16 (midnight rule; the entry's 2026-04-17 was the retired 15:30 gate). The two BSE 'Revised' rows are NOT re-filings of this quarter: 533152_214202615229 (2026-04-21) is a Capital Restructuring pattern as on 2026-04-11 and 533152_562026144429 (2026-06-05) one as on 2026-05-30 (Regulation 31(1)(c); NSE lists both as their own as-on dates) - the superseded 2026-08-09 entry and its `was` had taken the 2026-05-30 pattern for a correction."
+   }
+  },
+  "SPMLINFRA": {
+   "2026-03-31": {
+    "cell": [
+     39.54,
+     0.3149,
+     15.2682,
+     0.0,
+     0.0,
+     "2026-04-20",
+     22977
+    ],
+    "was": [
+     40.19,
+     0.3598,
+     15.1041,
+     0.0,
+     0.0,
+     "2026-04-20",
+     22442
+    ],
+    "src": "bsexbrl:500402_1842026112748_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "superseded": {
+     "cell": [
+      40.19,
+      0.3598,
+      15.1041,
+      0.0,
+      0.0,
+      "2026-04-20",
+      22442
+     ],
+     "was": [
+      39.54,
+      0.3149,
+      15.2682,
+      0.0,
+      0.0,
+      "2026-04-20",
+      22977
+     ],
+     "src": "bsexbrl:500402:500402_1842026114528_SHP.xml",
+     "why": "\u00a7142g 2026-09-22 orphan re-adjudication: SAME-DAY REVISION WINS \u2014 original 2026-04-18 11:27 and revision 11:47 (Sat) are both first visible Mon 2026-04-20; the later document of the same visibility window serves.",
+     "superseded": {
+      "cell": [
+       40.19,
+       0.36,
+       15.11,
+       0.0,
+       0.0,
+       "2026-04-18",
+       22442
+      ],
+      "src": "bse:500402_1842026114528_SHP.xml",
+      "was": [
+       39.54,
+       0.31,
+       15.27,
+       0.0,
+       0.0,
+       "2026-04-18",
+       22977
+      ],
+      "why": "Company REVISED its filing (BSE revised_date_time=2026-04-18); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '39.54->40.19'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+     }
+    },
+    "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [39.54, 0.3149, 15.2682, 0.0, 0.0, 2026-04-18, 22977] = the Quarterly 500402_1842026112748 (BSE New Sat 2026-04-18 11:27:49; NSE broadcast 18-Apr-2026 11:33:07) -> filing day 2026-04-18 (midnight rule; the entry's 2026-04-20 was the retired 15:30 gate). The 11:47 'Revised' file (500402_1842026114528, prom 40.19) is the pattern for the allotment of 10-Apr-2026 - company: 'Shareholding pattern is for allotment of equity shares on 10.04.2026. Shareholding pattern earlier submitted was for Quarter ended 31st March 2026'; NSE lists it as-on 2026-04-10 (broadcast 12:23:12); shares 78,821,335 -> 79,671,335 - so the superseded \u00a7142g 'same-day revision wins' entry was wrong."
+   }
+  },
+  "SRHHYPOLTD": {
+   "2025-12-31": {
+    "cell": [
+     60.45,
+     0.063,
+     0.0453,
+     0.0077,
+     0.0,
+     "2026-01-14",
+     42527
+    ],
+    "was": [
+     61.84,
+     0.063,
+     0.0453,
+     0.0077,
+     0.0,
+     "2026-01-14",
+     42527
+    ],
+    "src": "bsexbrl:532842_13120261729_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "superseded": {
+     "cell": [
+      61.84,
+      0.06,
+      0.05,
+      0.01,
+      0.0,
+      "2026-01-14",
+      42527
+     ],
+     "src": "bse:532842_2912026133747_SHP.xml",
+     "was": [
+      60.45,
+      0.06,
+      0.05,
+      0.01,
+      0.0,
+      "2026-01-13",
+      42527
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-01-29); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '60.45->61.84'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    },
+    "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [60.45, 0.063, 0.0453, 0.0077, 0.0, 2026-01-13, 42527] = the ORIGINAL 532842_13120261729 (BSE New 2026-01-13 17:02:10; NSE broadcast 13-Jan-2026 17:05:24) -> filing day 2026-01-13 (midnight rule; the entry's 2026-01-14 was the retired 15:30 gate). The 2026-01-29 re-filing (prom 61.84) is in shp_revisions.json from 2026-01-29."
+   }
+  },
+  "SUPREMEINF": {
+   "2026-03-31": {
+    "cell": [
+     47.32,
+     3.0218,
+     5.9933,
+     0.0,
+     0.0,
+     "2026-04-22",
+     7907
+    ],
+    "was": [
+     46.95,
+     2.9979,
+     5.9459,
+     0.0,
+     0.0,
+     "2026-04-22",
+     7907
+    ],
+    "src": "bsexbrl:532904_2142026184717_SHP.xml",
+    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "superseded": {
+     "cell": [
+      46.95,
+      3.0,
+      5.95,
+      0.0,
+      0.0,
+      "2026-04-22",
+      7907
+     ],
+     "src": "bse:532904_275202620036_SHP.xml",
+     "was": [
+      47.32,
+      3.02,
+      5.99,
+      0.0,
+      0.0,
+      "2026-04-21",
+      7907
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-05-27); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '47.32->46.95'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    },
+    "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [47.32, 3.0218, 5.9933, 0.0, 0.0, 2026-04-21, 7907] = the ORIGINAL 532904_2142026184717 (BSE New 2026-04-21 18:47:18; NSE broadcast 21-Apr-2026 21:36:29) -> filing day 2026-04-21 (midnight rule; the entry's 2026-04-22 was the retired 15:30 gate). The 2026-05-27 re-filing (prom 46.95) is in shp_revisions.json."
+   }
+  }
  },
  "drop": {
   "RELIANCE": {

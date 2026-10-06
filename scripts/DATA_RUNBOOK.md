@@ -72,6 +72,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220** ★★★ A SAME-ISSUER SEAM PROVES THE LEGAL ENTITY, NOT THE EQUITY — DHFL's shares were extinguished in 2021 and PIRAMALFIN's went to PEL's holders 1:1 (NSE PREV_CLOSE 1124.20 = PEL's last close), so DHFL → PIRAMALFIN is gone from FUND_ALIAS / _rename_map / the seam verdicts and PEL → PIRAMALFIN exists only as the engines' SHP_ALIAS (**read before adding any alias, seam or rename-map entry across a scheme, relisting or IBC resolution**)
 - **§220b** ★★★ THE 9 LONG-GAP SEAMS ARE THE SAME EQUITY (kept) — and four live defects fixed: BSE Riddhi Display (RDEL) kept out of SWANDEF's shareholding fold, 5 tape-less predecessors pointed at the dead key holding their era's tape (74 F&O member-slots; `check_fund_alias.ERA_TAPE`), a 400-day results staleness cap (`RESULT_MAX_AGE_DAYS`), CURAA's lakh-as-crore IPO-base cells (**read before any seam price join — NSE's prevclose is never the factor — and before trusting a tiny filer's backfilled base**)
 - **§220c** ★★★ §220b's SIX OPEN ITEMS CLOSED (user: "yes to all 6, blank the first change after a gap") — every §197 BSE-collision ticker out of the shareholding fold (6 NSE stocks read another company's pattern: 3,788 bar days), an event-row holding change across an OVERDUE quarter is blank (`shpGapBefore`), 13 IPO-base cells read wrong from results PDFs healed via fund_cell_fix + the reader fixed (decimal comma, lost decimal point, capped ₹2 cr anchor), builders read a renamed company's old-ticker history like the engine (results season, stock pages, index lists), ROML's 17 missing BZ sessions (prefix ledger `bz_prefix_fill.json`), COMPUAGE → COMPINFO = same shares (**read before any shareholding fold, any change-metric across a listing gap, any PDF comparative-column fill, any BZ block that precedes a series' first bar**)
+- **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
@@ -26944,3 +26945,65 @@ Each is a fund_cell_fix.json entry with page, column, unit and a SECOND check �
 4. 259 text cells read identically under both readers but were not read by eye (UNKNOWN by the strict rule); the 6 Gemini-vision cells were not re-checked.
 5. Other BZ blocks that precede a series' first bar, or whose scale includes a rights TERP, may be missing for the same two reasons as ROML's (unmeasured).
 6. COMPUAGE (2010-15) and COMPINFO (2016-) remain separate price keys across the 525-day NSE gap; joining them is a separate SEAM_MERGES decision (seam 1.0 by ISIN + BSE close).
+
+## §221 — THE 11 shp_cell_fix ENTRIES apply_cell_fix SKIPPED, RE-ADJUDICATED FROM EACH FILING: 6 re-based, 5 retired; OILCOUNTUB's Jun-2026 row was a capital-restructuring pattern (2026-10-06, user: "read that filing's exchange record … decide which date and values are right … re-base … or retire"; OILCOUNTUB: "Fix both ledgers")
+
+**Symptom.** Every refresh-shareholding / shp-allstocks run printed `WARN cell_fix SYM QE: stored cell is neither the fix
+nor the recorded bad value` for 11 keys (4 lines each, 44 per `--apply-ledgers`): those entries were silently not in effect.
+**Evidence read this session** (`~/stocks-cache/cellfix-warn/`): BSE `SHPQNewFormat` lists (status, `filing_date_time`,
+`revised_date_time`, `revised_reson`), all 24 XBRLs of those quarters parsed with the production `parse_shp`/`parse_shares`
+plus each file's `TypeOfReport` / `ShareholdingPatternFiledUnder` / context instant, and NSE `corporate-share-holdings-master`
+per symbol (as-on, broadcast clock). Store = origin 029139d75.
+
+**Three causes, each measured:**
+1. **The retired 15:30 gate left inside the ledger.** Entries written before §149 (2026-08-09 §22h, 2026-09-22 §142i/§142k)
+   carry GATED dates; on 09-23 §149 + `--regate` moved the stored rows to the filing day, so `cell` and the store differed in
+   the date slot (dates compare exactly in `_cell_eq`). 9 of the 11 `cell`s held a gated day the store no longer had (UPL's
+   store still held its gated day too).
+2. **`shp_refine_4dp.json.gz` holds BSE's NEWEST filing — the RE-FILING of a re-filed quarter** (`row_for` sorts by
+   `revised_date_time`). Its per-field 0.02-pp merge pulls the §142k ORIGINAL row toward the re-filing, leaving a hybrid of
+   two documents: BBTC Dec-17 dii 3.463 → 3.4821 and mf, UPL Jun-19 dii 9.5725 → 9.5838, RAMRAT Dec-25 fii/dii 4th dp,
+   SANWARIA Mar-26 dii 0.0001 → 0.0002. It re-pulls on EVERY run (load_hist cell_fix → refine → final cell_fix), so an entry
+   that undoes a pull must carry `exact` with `was` = the post-refine row; the final `apply_cell_fix` then re-applies each
+   run. `_small_move_due` fires only while the post-refine row equals `was` EXACTLY, and the refine never touches slots 5-6
+   (date, holders) — so such an entry must not change the date or holder count, or it lands once and is pulled back for good
+   with no WARN (measured: SANWARIA Mar-26 with the original's 141,437 holders ended at dii 0.0002 after two runs).
+3. **"Original" and "revision" that are different shareholding patterns.** BSE files event patterns (Regulation 31(1)(c):
+   capital restructuring / allotment) under the quarter's row as `New` or `Revised`. Before treating two files as versions of
+   one quarter, read `TypeOfReport`, `ShareholdingPatternFiledUnder`, the context instant and `revised_reson`; NSE's master
+   lists each pattern under its own as-on date — a free second reader. Cases here: OILCOUNTUB, SPMLINFRA, MANAKCOAT, MBLINFRA.
+
+**Verdicts, cell by cell** (dates = calendar day of the earliest exchange publication, §149):
+| key | store before | verdict | evidence | action |
+|---|---|---|---|---|
+| BBTC 2017-12-31 | dii 3.4821, mf 2.7037 (re-filing's base) | OUR ERROR (store, 0.0001) and the entry's 3.463 (raw parse without §158 R3) | original 501425_1912018111555 (BSE New 2018-01-19 11:23:34): MF 1,886,466 + FI/Banks 145,389 + Ins 384,289 + NBFC 13,425 (Non-institutions; R3 joins it) = 2,429,569 / 69,770,513 = 3.4822; mf 2.7038 | re-based, `exact`; dii value = DII session's verdict |
+| UPL 2019-06-30 | date 2019-07-22 | OUR ERROR (date: retired gate); dii 9.5838 right under R3 | original 512070_197201917929 (BSE New 2019-07-19 17:29:11, NSE submission 19-JUL-2019): MF + AIF + FI/Banks + Other inst 48,739,745 + NBFC 57,501 = 48,797,246 / 509,161,754 = 9.5838 | re-based → 2019-07-19 (engine already served it via shp_sub_dates) |
+| MANAKCOAT 2026-06-30 | right | entry's 07-07 = retired gate | three BSE files on 07-06: 17:11 New + 18:18 = Capital Restructuring (allotment 30-Jun), 18:24 = Quarterly ("the earlier file pertained to the allotment"), identical numbers; NSE 07-06 17:13 | retired |
+| MBLINFRA 2026-03-31 | right | entry's 04-17 = retired gate; its `was` was the 30-May pattern | Quarterly 533152_164202617914 (BSE 04-16 17:09, NSE 04-16 17:13); the two "Revised" rows are Reg 31(1)(c) patterns as on 2026-04-11 and 2026-05-30 | retired |
+| OILCOUNTUB 2026-06-30 | prom 51.17, 31,155 holders = the 18-Jun pattern | OUR ERROR (wrong document) | 500313_3720261378 (BSE New 07-03): Capital Restructuring, Reg 31(1)(c), as on 2026-06-18 (NSE: as-on 2026-06-18, already our event row); company 17-Jul: it "was not the Shareholding Pattern for the quarter ended June 30, 2026"; Quarterly 500313_1772026163026: 47.23 / 0.0104 / 0.0989 / mf 0.0468, 30,361 holders, NSE 07-17 16:13 | re-based to the quarterly dated 2026-07-17 AND `shp_lag_fix` OILCOUNTUB\|20260630 (days_earlier → 20260703, the 18-Jun pattern's filing) deleted — else the engine would serve the 17-Jul numbers from 3-Jul |
+| RAMRAT 2025-12-31 | fii 0.093, dii 0.4165 (re-filing's) | OUR ERROR (0.0001) | original 522281_1612026183257 (BSE 01-16 18:32:58, NSE 18:32:41) on its own base: fii 0.0929, dii 0.4164 | re-based, `exact` |
+| SANWARIA 2025-12-31 | 140,382 holders (re-filing's) | OUR ERROR (holders) | original 519260_2112026214129 (BSE 01-21 21:41, NSE 21:36): Banks 862 sh → dii 0.0001, 141,893 holders; the 01-30 re-filing changes only holders | re-based |
+| SANWARIA 2026-03-31 | dii 0.0002 (re-filing's) | OUR ERROR (dii) | original 519260_2142026204535 (BSE 04-21 20:45, NSE 20:49): Banks 862 → 0.0001; re-filing 05-08: Banks 1,257 → 0.0002 | re-based, `exact`, holders stay 139,953 (cause 2) |
+| SPMLINFRA 2026-03-31 | right | entry's 04-20 = retired gate; the §142g "same-day revision wins" it superseded was wrong | Quarterly 500402_1842026112748 (BSE Sat 04-18 11:27, NSE 11:33); the 11:47 file is the 10-Apr allotment pattern (company's reason; NSE as-on 2026-04-10; shares 78,821,335 → 79,671,335) | retired |
+| SRHHYPOLTD 2025-12-31 | right | entry's 01-14 = retired gate | original 532842_13120261729 (BSE 01-13 17:02, NSE 17:05) | retired |
+| SUPREMEINF 2026-03-31 | right | entry's 04-22 = retired gate | original 532904_2142026184717 (BSE 04-21 18:47, NSE 21:36) | retired |
+
+**DII slot:** every dii value above (BBTC, UPL, RAMRAT, both SANWARIA, OILCOUNTUB) was agreed row by row with the "DII data
+coverage analysis" session before writing — §158 R3 applied on the ORIGINAL's own share counts. It declined a SANWARIA Mar-26
+re-filing row in `shp_revisions.json`: a 0.0001 difference is below the 0.01 tolerance of both `build_engine_feed` (`_eq`) and
+`build_feed` (`_same_cell`), so it would be stored but never served.
+
+**Verified before landing** (copy of origin 029139d75, two consecutive `--apply-ledgers` runs = two CI runs): WARN 44 → 0, no
+new WARN; store 6 cells changed, engine feed 4 symbols (BBTC, RAMRAT, SANWARIA 4th dp; OILCOUNTUB's 03-Jul Jun-30 row gone —
+3-16 Jul now serves the 2026-06-18 event row, same 51.17 figures), stock-page feed 2 symbols (OILCOUNTUB holders 30,361, no
+false "rev:" marker; SANWARIA); the second run reproduces the first (stable); guard_shp_gate / guard_shp_definition /
+guard_shp_revisions / guard_feed exit 0. No new entry carries a VALUE_HEAL_MARK, so `heal_refiling` leaves re-filings alone.
+
+**Open — measured, not changed (outside this task's files):**
+- `shp_revisions.json` rows for BSE-only re-filings still on the retired 15:30 gate (`--regate` reads only NSE's master):
+  BBTC 2024-01-04 (BSE 2024-01-03 18:46), UPL 2024-03-27 (03-26 16:40), RAMRAT 2026-06-02 (06-01 17:37), SUPREMEINF 2026-05-29
+  (05-27 20:01) — each served 1-2 days late.
+- MBLINFRA's re-filing row for 2026-03-31 is the 2026-05-30 capital-restructuring pattern (already its own event row), not a
+  re-filing of the quarter; OILCOUNTUB's now equals the store (inert).
+- Cause 2 beyond these 11 keys is NOT measured: any original whose refine entry came from a later re-filing may hold
+  re-filing values in a slot within 0.02 pp.
