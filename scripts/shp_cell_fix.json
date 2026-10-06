@@ -71472,26 +71472,57 @@
     "cell": [
      52.13,
      16.2445,
+     9.3733,
+     4.9443,
+     4.2821,
+     "2016-07-21",
+     997795
+    ],
+    "was": [
+     52.13,
+     16.2445,
      12.1441,
      4.9443,
      4.2821,
      "2016-07-21",
      997795
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
-    "was": [
-     52.13,
-     6.5408,
-     21.9002,
-     4.9443,
-     4.2821,
-     "2016-07-21",
-     997795
-    ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+    "src": "bsexbrl:500111_23122016183336_SHP.xml",
+    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 12.1441 as printed). dii 12.1441 -> 9.3733; fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.13,
+      16.2445,
+      12.1441,
+      4.9443,
+      4.2821,
+      "2016-07-21",
+      997795
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
+     "was": [
+      52.13,
+      6.5408,
+      21.9002,
+      4.9443,
+      4.2821,
+      "2016-07-21",
+      997795
+     ],
+     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
+     52.13,
+     19.0788,
+     7.7786,
+     3.3283,
+     4.306,
+     "2016-12-27",
+     969442
+    ],
+    "was": [
      52.13,
      19.0788,
      10.5494,
@@ -71500,20 +71531,42 @@
      "2016-12-27",
      969442
     ],
-    "was": [
-     52.13,
-     11.6289,
-     18.0425,
-     3.3283,
-     4.306,
-     "2016-12-27",
-     969442
-    ],
     "src": "bsexbrl:500111_23122016183413_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.45pp, holders: Foreign Institutional Investors; Morgan Stanley Mauritius Company Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.5494 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 10.5494 as printed). dii 10.5494 -> 7.7786; fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.13,
+      19.0788,
+      10.5494,
+      3.3283,
+      4.306,
+      "2016-12-27",
+      969442
+     ],
+     "was": [
+      52.13,
+      11.6289,
+      18.0425,
+      3.3283,
+      4.306,
+      "2016-12-27",
+      969442
+     ],
+     "src": "bsexbrl:500111_23122016183413_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.45pp, holders: Foreign Institutional Investors; Morgan Stanley Mauritius Company Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.5494 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2016-12-31": {
     "cell": [
+     52.13,
+     17.4826,
+     8.9174,
+     4.4789,
+     4.302,
+     "2017-01-14",
+     972137
+    ],
+    "was": [
      52.13,
      17.4826,
      11.6882,
@@ -71522,20 +71575,42 @@
      "2017-01-14",
      972137
     ],
-    "was": [
-     52.13,
-     13.7799,
-     15.4279,
-     4.4789,
-     4.302,
-     "2017-01-14",
-     972137
-    ],
     "src": "bsexbrl:500111_1312017185834_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.70pp, holders: Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.6882 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 11.6882 as printed). dii 11.6882 -> 8.9174; fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.13,
+      17.4826,
+      11.6882,
+      4.4789,
+      4.302,
+      "2017-01-14",
+      972137
+     ],
+     "was": [
+      52.13,
+      13.7799,
+      15.4279,
+      4.4789,
+      4.302,
+      "2017-01-14",
+      972137
+     ],
+     "src": "bsexbrl:500111_1312017185834_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.70pp, holders: Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.6882 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
+     52.31,
+     17.5843,
+     9.4322,
+     4.9774,
+     4.3169,
+     "2017-04-15",
+     949982
+    ],
+    "was": [
      52.31,
      17.5843,
      12.2193,
@@ -71544,20 +71619,42 @@
      "2017-04-15",
      949982
     ],
-    "was": [
-     52.31,
-     16.0458,
-     13.7578,
-     4.9774,
-     4.3169,
-     "2017-04-15",
-     949982
-    ],
     "src": "bsexbrl:500111_1442017212335_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 1.55) \u2014 moved dii -> fii (1.5385 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7871 = 7,000,000 / 252,632,800 x DR factor 1.0059 (the basis the stored cell is on: six lines 12.2105 on (A+B)). dii 12.2193 -> 9.4322; fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.31,
+      17.5843,
+      12.2193,
+      4.9774,
+      4.3169,
+      "2017-04-15",
+      949982
+     ],
+     "was": [
+      52.31,
+      16.0458,
+      13.7578,
+      4.9774,
+      4.3169,
+      "2017-04-15",
+      949982
+     ],
+     "src": "bsexbrl:500111_1442017212335_SHP.xml",
+     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 1.55) \u2014 moved dii -> fii (1.5385 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+    }
    },
    "2017-06-30": {
     "cell": [
+     52.27,
+     18.1976,
+     9.3335,
+     4.8625,
+     4.3136,
+     "2017-07-15",
+     934944
+    ],
+    "was": [
      52.27,
      18.1976,
      12.1183,
@@ -71566,20 +71663,42 @@
      "2017-07-15",
      934944
     ],
-    "was": [
-     52.27,
-     17.7498,
-     12.5661,
-     4.8625,
-     4.3136,
-     "2017-07-15",
-     934944
-    ],
     "src": "bsexbrl:500111_1472017195250_SHP.xml",
-    "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 0.45) \u2014 moved dii -> fii (0.4478 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7848 = 7,000,000 / 252,632,800 x DR factor 1.0051 (the basis the stored cell is on: six lines 12.1156 on (A+B)). dii 12.1183 -> 9.3335; fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.27,
+      18.1976,
+      12.1183,
+      4.8625,
+      4.3136,
+      "2017-07-15",
+      934944
+     ],
+     "was": [
+      52.27,
+      17.7498,
+      12.5661,
+      4.8625,
+      4.3136,
+      "2017-07-15",
+      934944
+     ],
+     "src": "bsexbrl:500111_1472017195250_SHP.xml",
+     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Institutional Investors 0.45) \u2014 moved dii -> fii (0.4478 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mismatch-other-source."
+    }
    },
    "2016-03-31": {
     "cell": [
+     52.13,
+     16.4838,
+     9.4486,
+     4.9778,
+     4.2821,
+     "2016-12-27",
+     1008890
+    ],
+    "was": [
      52.13,
      16.4838,
      12.2286,
@@ -71588,17 +71707,30 @@
      "2016-12-27",
      1008890
     ],
-    "was": [
-     52.13,
-     4.4638,
-     24.2486,
-     4.9778,
-     4.2821,
-     "2016-12-27",
-     1008890
-    ],
-    "src": "bsexbrl:500111_23122016183245_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 4.46 -> 16.48, dii 24.25 -> 12.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Institutional Investors 12.02 public=0.00 fii=12.02 MORGAN STANLEY ASIA (SINGAPORE) PTE. 1.80 foreign->fii(curated); VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED 1.44 foreign->fii(curated); VALIANT MAURITIUS PARTNERS LIMITED 1.18 foreign->fii(curated) keyword. Evidence: _shp_164_audit.json"
+    "src": "bsetable3:500111:89",
+    "why": "\u00a7164s part 25 (2026-10-06): BSE Table III names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh on the B1f 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ / Samena / Deutsche Bank AG). dii at share counts = (MF + FI/Banks + Insurance 30,811,526 - 7,000,000) / 252,010,991 (A+B+C2, the base the FII session's part 41 uses) = 9.4486; was 12.2286. fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      52.13,
+      16.4838,
+      12.2286,
+      4.9778,
+      4.2821,
+      "2016-12-27",
+      1008890
+     ],
+     "was": [
+      52.13,
+      4.4638,
+      24.2486,
+      4.9778,
+      4.2821,
+      "2016-12-27",
+      1008890
+     ],
+     "src": "bsexbrl:500111_23122016183245_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 4.46 -> 16.48, dii 24.25 -> 12.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-fii-label Other Foreign Institutional Investors 12.02 public=0.00 fii=12.02 MORGAN STANLEY ASIA (SINGAPORE) PTE. 1.80 foreign->fii(curated); VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED 1.44 foreign->fii(curated); VALIANT MAURITIUS PARTNERS LIMITED 1.18 foreign->fii(curated) keyword. Evidence: _shp_164_audit.json"
+    }
    },
    "2017-09-30": {
     "cell": [
@@ -72410,24 +72542,31 @@
     "cell": [
      52.1383,
      17.2592,
-     11.7088,
+     8.9376,
      4.471,
      4.2805,
      "2016-01-29"
     ],
     "was": [
      52.1383,
-     17.2725,
+     17.2592,
      11.7088,
      4.471,
      4.2805,
      "2016-01-29"
     ],
-    "src": "bsetable3:500111:88+mc_archive:20160305",
-    "why": "\u00a7164r batch 30 part 41 (2026-10-06, verdict re-audit after the parts 38-40 re-compare): precision: batch 16's DR re-base multiplied a 2-dp value (17.23 x 1.002467); FPI 43,495,185 / (A+B+C2) 252,010,991 (company's Table I base, ADR shares outside) = 17.2592 - the same count in BSE's served 2016-12-27 version (Table III) and in the ORIGINAL archived by Moneycontrol on 2016-03-05 / 2016-05-07 (RC/88.00: 420 holders, 43,495,185), so the 2016-01-29 date is unchanged; 'Overseas Corporate Bodies' 6,326 is company-type (out). [52.1383, 17.2725, 11.7088, 4.471, 4.2805] -> [52.1383, 17.2592, 11.7088, 4.471, 4.2805].",
-    "exact": true,
+    "src": "bsetable3:500111:88",
+    "why": "\u00a7164s part 25 (2026-10-06): BSE Table III names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh on the B1f 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ / Samena / Deutsche Bank AG). dii at share counts = (MF + FI/Banks + Insurance 29,523,697 - 7,000,000) / 252,010,991 (A+B+C2, the base the FII session's part 41 uses) = 8.9376; was 11.7088. fii is the FII session's call.",
     "superseded": {
      "cell": [
+      52.1383,
+      17.2592,
+      11.7088,
+      4.471,
+      4.2805,
+      "2016-01-29"
+     ],
+     "was": [
       52.1383,
       17.2725,
       11.7088,
@@ -72435,16 +72574,29 @@
       4.2805,
       "2016-01-29"
      ],
-     "was": [
-      52.01,
-      17.23,
-      11.68,
-      4.46,
-      4.27,
-      "2016-01-29"
-     ],
-     "src": "bseapi:CorporatesSHPSecuritybeta:500111_88",
-     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 16, user 2026-10-05 'work on every single cell'; reply4 d2_basis.json had it 'FULL share count' (its promoter + public add up to 99.36 because of a 1,600,000-share employee trust, so a sum-to-100 test misread it)): the company's own Dec-2015, Mar-2016 and Jun-2016 Table I print Promoter + Public (+ employee trust) = 100 with the shares underlying ADRs/GDRs (C1) OUTSIDE the 100, so this pre-2016 value moves onto that base: all slots x 1.002467 = (A+B+C1+C2) 252632800 / (A+B+C2) 252010991 shares in the company's own Table I; fii 17.23 -> 17.27."
+     "src": "bsetable3:500111:88+mc_archive:20160305",
+     "why": "\u00a7164r batch 30 part 41 (2026-10-06, verdict re-audit after the parts 38-40 re-compare): precision: batch 16's DR re-base multiplied a 2-dp value (17.23 x 1.002467); FPI 43,495,185 / (A+B+C2) 252,010,991 (company's Table I base, ADR shares outside) = 17.2592 - the same count in BSE's served 2016-12-27 version (Table III) and in the ORIGINAL archived by Moneycontrol on 2016-03-05 / 2016-05-07 (RC/88.00: 420 holders, 43,495,185), so the 2016-01-29 date is unchanged; 'Overseas Corporate Bodies' 6,326 is company-type (out). [52.1383, 17.2725, 11.7088, 4.471, 4.2805] -> [52.1383, 17.2592, 11.7088, 4.471, 4.2805].",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       52.1383,
+       17.2725,
+       11.7088,
+       4.471,
+       4.2805,
+       "2016-01-29"
+      ],
+      "was": [
+       52.01,
+       17.23,
+       11.68,
+       4.46,
+       4.27,
+       "2016-01-29"
+      ],
+      "src": "bseapi:CorporatesSHPSecuritybeta:500111_88",
+      "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 16, user 2026-10-05 'work on every single cell'; reply4 d2_basis.json had it 'FULL share count' (its promoter + public add up to 99.36 because of a 1,600,000-share employee trust, so a sum-to-100 test misread it)): the company's own Dec-2015, Mar-2016 and Jun-2016 Table I print Promoter + Public (+ employee trust) = 100 with the shares underlying ADRs/GDRs (C1) OUTSIDE the 100, so this pre-2016 value moves onto that base: all slots x 1.002467 = (A+B+C1+C2) 252632800 / (A+B+C2) 252010991 shares in the company's own Table I; fii 17.23 -> 17.27."
+     }
     }
    }
   },
