@@ -21840,6 +21840,22 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     RETIREMENT PLANS' 29,674: the DII session took it out of dii (§164s part 26); fii vs public waits on the user's name-match
     question (AFFLE Sep-22 lists '...PLANS MASTE[R TRUST]' under Institutions (Foreign); KEI's Dec-21 / Mar-22 name the Master Trust
     and those are fii; the evidence file had no Boeing key at all - a gap, not proof).
+    **Batch 30 part 44 (label "§164r batch 30 part 44"; BSE Ltd - 6 quarters, 2 event rows, 1 date).** BSE Ltd (NSE-only) quarters the
+    5-Oct round could not read because their PDF names were unknown: the Wayback CDX for `bseindia.com/downloads1/Share*` lists every
+    pattern BSE Ltd published (`Shareholding_Pattern_30_Sept_2018.pdf`, `shareholding_pattern_as_on3062019.pdf`, `..._as_on30Sep2019.pdf`,
+    `..._as_on27Sep2019.pdf`, `Shareholding_Pattern_31March20.pdf`, `..._as_on3062020.pdf`, `..._as_on30Sep2020.pdf`,
+    `Shareholding_Pattern_as_on_31st_May_2018.pdf`); all still live on bseindia.com (`~/stocks-cache/shp/nse_bse/pdf2`). 2018-19 files are
+    scans (read as images, user's BSE scanned-PDF OK), 2020 files text. Same composition as batch 30: fii = FPI + (i-i) 'Foreign Direct
+    Investment' + (i-ii) 'Foreign Institutional Investor'; dii = MF + AIF + FI/Banks + Insurance + NBFC (+ register-proven Bajaj Holdings
+    662,969 on the May-2018 event's Bodies Corporate row, DII session); base = Public + 'Trading Members and Associates'; every
+    institutions row re-adds to the printed Sub-Total (B)(1). Sep-18 20.2172, Jun-19 20.2819, Sep-19 20.8632, Mar-20 19.6983, Jun-20
+    18.8037, Sep-20 15.6502 (stored values were Trendlyne fills holding the FPI line only; Quantmac's figures equal ours in all six).
+    New event rows (shp_event_fills, visible-from = the PDF's own creation date): 2018-05-31 (Reg 31(1)(c) after the buyback, 52,537,072
+    sh) fii 20.3931 from 2018-06-08 (= Quantmac's 2018-05-30 cell and NSE stamp), 2019-09-27 fii 20.7158 from 2019-10-03. DATE: Mar-2020's
+    PDF was created 2020-05-13 18:06 IST (Quantmac's NSE stamp is the same day; SEBI's COVID deadline 2020-05-15) - the shp_undated
+    QE+28 convention served it from 2020-04-28, a 15-day look-ahead -> BSE|20200331 removed from shp_undated.json + shp_lag_fix days_later
+    20200421 -> 20200513. Every other BSE Ltd PDF was created before its QE+28 date (Mar-2017's June ModDate is a later edit; its
+    CreationDate is 2017-04-21). Still UNKNOWN: Jun-2018 and Jun-2021 (no PDF in the archive or on the site; NSE serves neither).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
