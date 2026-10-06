@@ -206118,7 +206118,7 @@
     "cell": [
      0.0,
      46.6775,
-     40.3308,
+     40.3413,
      20.4769,
      18.8875,
      "2017-07-19",
@@ -206126,19 +206126,50 @@
     ],
     "was": [
      0.0,
-     46.6464,
-     40.3619,
+     46.6775,
+     40.3308,
      20.4769,
      18.8875,
      "2017-07-19",
      931165
     ],
-    "src": "bsetable3:532174:94",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 94) FPI B1e 2,240,587,729 + FVCI B1d 0 + institutions Any-Other block B1i 1,494,316 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,803,343,717 sh (Table I) = 46.6775. fii 46.6464 -> 46.6775; dii 40.3619 -> 40.3308 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_187201717552_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0105 (on the stored (A+B) base, DR factor 1.3351) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 40.3308 -> 40.3413.",
+    "superseded": {
+     "cell": [
+      0.0,
+      46.6775,
+      40.3308,
+      20.4769,
+      18.8875,
+      "2017-07-19",
+      931165
+     ],
+     "was": [
+      0.0,
+      46.6464,
+      40.3619,
+      20.4769,
+      18.8875,
+      "2017-07-19",
+      931165
+     ],
+     "src": "bsetable3:532174:94",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 94) FPI B1e 2,240,587,729 + FVCI B1d 0 + institutions Any-Other block B1i 1,494,316 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,803,343,717 sh (Table I) = 46.6775. fii 46.6464 -> 46.6775; dii 40.3619 -> 40.3308 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2017-09-30": {
     "cell": [
+     0.0,
+     45.9602,
+     42.3199,
+     22.5711,
+     18.5192,
+     "2017-10-14",
+     963044
+    ],
+    "was": [
      0.0,
      45.9602,
      42.3148,
@@ -206147,21 +206178,44 @@
      "2017-10-14",
      963044
     ],
-    "was": [
-     0.0,
-     45.9292,
-     42.3458,
-     22.5711,
-     18.5192,
-     "2017-10-14",
-     963044
-    ],
-    "src": "bsetable3:532174:95",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 95) FPI B1e 2,214,085,079 + FVCI B1d 0 + institutions Any-Other block B1i 1,494,316 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,820,647,712 sh (Table I) = 45.9602. fii 45.9292 -> 45.9602; dii 42.3458 -> 42.3148 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_14102017133033_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0051 (on the stored (A+B) base, DR factor 1.3311) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.3148 -> 42.3199.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      0.0,
+      45.9602,
+      42.3148,
+      22.5711,
+      18.5192,
+      "2017-10-14",
+      963044
+     ],
+     "was": [
+      0.0,
+      45.9292,
+      42.3458,
+      22.5711,
+      18.5192,
+      "2017-10-14",
+      963044
+     ],
+     "src": "bsetable3:532174:95",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 95) FPI B1e 2,214,085,079 + FVCI B1d 0 + institutions Any-Other block B1i 1,494,316 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,820,647,712 sh (Table I) = 45.9602. fii 45.9292 -> 45.9602; dii 42.3458 -> 42.3148 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2017-12-31": {
     "cell": [
+     0.0,
+     47.3685,
+     41.836,
+     22.6832,
+     18.0181,
+     "2018-01-20",
+     877043
+    ],
+    "was": [
      0.0,
      47.3685,
      41.8316,
@@ -206170,21 +206224,44 @@
      "2018-01-20",
      877043
     ],
-    "was": [
-     0.0,
-     47.3379,
-     41.8622,
-     22.6832,
-     18.0181,
-     "2018-01-20",
-     877043
-    ],
-    "src": "bsetable3:532174:96",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 96) FPI B1e 2,306,511,100 + FVCI B1d 0 + institutions Any-Other block B1i 1,492,476 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,872,441,573 sh (Table I) = 47.3685. fii 47.3379 -> 47.3685; dii 41.8622 -> 41.8316 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_1912018202629_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0044 (on the stored (A+B) base, DR factor 1.3181) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 41.8316 -> 41.8360.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      0.0,
+      47.3685,
+      41.8316,
+      22.6832,
+      18.0181,
+      "2018-01-20",
+      877043
+     ],
+     "was": [
+      0.0,
+      47.3379,
+      41.8622,
+      22.6832,
+      18.0181,
+      "2018-01-20",
+      877043
+     ],
+     "src": "bsetable3:532174:96",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 96) FPI B1e 2,306,511,100 + FVCI B1d 0 + institutions Any-Other block B1i 1,492,476 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,872,441,573 sh (Table I) = 47.3685. fii 47.3379 -> 47.3685; dii 41.8622 -> 41.8316 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2018-03-31": {
     "cell": [
+     0.0,
+     48.0976,
+     41.5816,
+     22.659,
+     17.7207,
+     "2018-04-20",
+     855495
+    ],
+    "was": [
      0.0,
      48.0976,
      41.5621,
@@ -206193,21 +206270,43 @@
      "2018-04-20",
      855495
     ],
-    "was": [
-     0.0,
-     48.0683,
-     41.5915,
-     22.659,
-     17.7207,
-     "2018-04-20",
-     855495
-    ],
-    "src": "bsetable3:532174:97",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97) FPI B1e 2,342,979,176 + FVCI B1d 0 + institutions Any-Other block B1i 1,431,246 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,874,274,281 sh (Table I) = 48.0976. fii 48.0683 -> 48.0976; dii 41.5915 -> 41.5621 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_2042018144317_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0195 (on the stored (A+B) base, DR factor 1.3188) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 41.5621 -> 41.5816.",
+    "superseded": {
+     "cell": [
+      0.0,
+      48.0976,
+      41.5621,
+      22.659,
+      17.7207,
+      "2018-04-20",
+      855495
+     ],
+     "was": [
+      0.0,
+      48.0683,
+      41.5915,
+      22.659,
+      17.7207,
+      "2018-04-20",
+      855495
+     ],
+     "src": "bsetable3:532174:97",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97) FPI B1e 2,342,979,176 + FVCI B1d 0 + institutions Any-Other block B1i 1,431,246 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,874,274,281 sh (Table I) = 48.0976. fii 48.0683 -> 48.0976; dii 41.5915 -> 41.5621 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2018-06-30": {
     "cell": [
+     0.0,
+     46.8943,
+     42.2554,
+     23.2182,
+     17.7461,
+     "2018-07-19",
+     874970
+    ],
+    "was": [
      0.0,
      46.8943,
      42.2015,
@@ -206216,21 +206315,43 @@
      "2018-07-19",
      874970
     ],
-    "was": [
-     0.0,
-     46.8665,
-     42.2293,
-     23.2182,
-     17.7461,
-     "2018-07-19",
-     874970
-    ],
-    "src": "bsetable3:532174:98",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98) FPI B1e 2,266,749,060 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,609,081 sh (Table I) = 46.8943. fii 46.8665 -> 46.8943; dii 42.2293 -> 42.2015 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_1872018183541_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0539 (on the stored (A+B) base, DR factor 1.3298) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.2015 -> 42.2554.",
+    "superseded": {
+     "cell": [
+      0.0,
+      46.8943,
+      42.2015,
+      23.2182,
+      17.7461,
+      "2018-07-19",
+      874970
+     ],
+     "was": [
+      0.0,
+      46.8665,
+      42.2293,
+      23.2182,
+      17.7461,
+      "2018-07-19",
+      874970
+     ],
+     "src": "bsetable3:532174:98",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98) FPI B1e 2,266,749,060 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,609,081 sh (Table I) = 46.8943. fii 46.8665 -> 46.8943; dii 42.2293 -> 42.2015 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2019-06-30": {
     "cell": [
+     0.0,
+     43.2244,
+     45.3638,
+     27.9699,
+     15.5924,
+     "2019-07-22",
+     820416
+    ],
+    "was": [
      0.0,
      43.2244,
      45.348,
@@ -206239,21 +206360,43 @@
      "2019-07-22",
      820416
     ],
-    "was": [
-     0.0,
-     43.1971,
-     45.3753,
-     27.9699,
-     15.5924,
-     "2019-07-22",
-     820416
-    ],
-    "src": "bsetable3:532174:102",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102) FPI B1e 2,120,338,874 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,908,517,545 sh (Table I) = 43.2244. fii 43.1971 -> 43.2244; dii 45.3753 -> 45.3480 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_197201918145_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0158 (on the stored (A+B) base, DR factor 1.3146) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.3480 -> 45.3638.",
+    "superseded": {
+     "cell": [
+      0.0,
+      43.2244,
+      45.348,
+      27.9699,
+      15.5924,
+      "2019-07-22",
+      820416
+     ],
+     "was": [
+      0.0,
+      43.1971,
+      45.3753,
+      27.9699,
+      15.5924,
+      "2019-07-22",
+      820416
+     ],
+     "src": "bsetable3:532174:102",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102) FPI B1e 2,120,338,874 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,908,517,545 sh (Table I) = 43.2244. fii 43.1971 -> 43.2244; dii 45.3753 -> 45.3480 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2019-09-30": {
     "cell": [
+     0.0,
+     40.8173,
+     47.707,
+     29.6634,
+     16.0429,
+     "2019-10-18",
+     846122
+    ],
+    "was": [
      0.0,
      40.8173,
      47.6926,
@@ -206262,21 +206405,43 @@
      "2019-10-18",
      846122
     ],
-    "was": [
-     0.0,
-     40.7906,
-     47.7193,
-     29.6634,
-     16.0429,
-     "2019-10-18",
-     846122
-    ],
-    "src": "bsetable3:532174:103",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103) FPI B1e 2,047,179,933 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,018,752,127 sh (Table I) = 40.8173. fii 40.7906 -> 40.8173; dii 47.7193 -> 47.6926 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_18102019142043_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0144 (on the stored (A+B) base, DR factor 1.2871) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 47.6926 -> 47.7070.",
+    "superseded": {
+     "cell": [
+      0.0,
+      40.8173,
+      47.6926,
+      29.6634,
+      16.0429,
+      "2019-10-18",
+      846122
+     ],
+     "was": [
+      0.0,
+      40.7906,
+      47.7193,
+      29.6634,
+      16.0429,
+      "2019-10-18",
+      846122
+     ],
+     "src": "bsetable3:532174:103",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103) FPI B1e 2,047,179,933 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,018,752,127 sh (Table I) = 40.8173. fii 40.7906 -> 40.8173; dii 47.7193 -> 47.6926 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2019-12-31": {
     "cell": [
+     0.0,
+     45.8143,
+     43.1412,
+     25.9779,
+     15.1444,
+     "2020-01-21",
+     899608
+    ],
+    "was": [
      0.0,
      45.8143,
      43.1371,
@@ -206285,21 +206450,44 @@
      "2020-01-21",
      899608
     ],
-    "was": [
-     0.0,
-     45.7881,
-     43.1633,
-     25.9779,
-     15.1444,
-     "2020-01-21",
-     899608
-    ],
-    "src": "bsetable3:532174:104",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104) FPI B1e 2,338,981,805 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,108,276,445 sh (Table I) = 45.8143. fii 45.7881 -> 45.8143; dii 43.1633 -> 43.1371 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_201202016413_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0041 (on the stored (A+B) base, DR factor 1.2664) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.1371 -> 43.1412.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      0.0,
+      45.8143,
+      43.1371,
+      25.9779,
+      15.1444,
+      "2020-01-21",
+      899608
+     ],
+     "was": [
+      0.0,
+      45.7881,
+      43.1633,
+      25.9779,
+      15.1444,
+      "2020-01-21",
+      899608
+     ],
+     "src": "bsetable3:532174:104",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104) FPI B1e 2,338,981,805 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,108,276,445 sh (Table I) = 45.8143. fii 45.7881 -> 45.8143; dii 43.1633 -> 43.1371 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2020-03-31": {
     "cell": [
+     0.0,
+     43.7213,
+     44.5977,
+     27.6063,
+     14.5212,
+     "2020-04-22",
+     1101300
+    ],
+    "was": [
      0.0,
      43.7213,
      44.5841,
@@ -206308,21 +206496,43 @@
      "2020-04-22",
      1101300
     ],
-    "was": [
-     0.0,
-     43.6957,
-     44.6097,
-     27.6063,
-     14.5212,
-     "2020-04-22",
-     1101300
-    ],
-    "src": "bsetable3:532174:105",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105) FPI B1e 2,286,827,687 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,233,527,872 sh (Table I) = 43.7213. fii 43.6957 -> 43.7213; dii 44.6097 -> 44.5841 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_2142020192128_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0136 (on the stored (A+B) base, DR factor 1.2368) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 44.5841 -> 44.5977.",
+    "superseded": {
+     "cell": [
+      0.0,
+      43.7213,
+      44.5841,
+      27.6063,
+      14.5212,
+      "2020-04-22",
+      1101300
+     ],
+     "was": [
+      0.0,
+      43.6957,
+      44.6097,
+      27.6063,
+      14.5212,
+      "2020-04-22",
+      1101300
+     ],
+     "src": "bsetable3:532174:105",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105) FPI B1e 2,286,827,687 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,233,527,872 sh (Table I) = 43.7213. fii 43.6957 -> 43.7213; dii 44.6097 -> 44.5841 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2020-06-30": {
     "cell": [
+     0.0,
+     42.9897,
+     45.7377,
+     28.2775,
+     14.8004,
+     "2020-07-20",
+     1289712
+    ],
+    "was": [
      0.0,
      42.9897,
      45.7253,
@@ -206331,21 +206541,43 @@
      "2020-07-20",
      1289712
     ],
-    "was": [
-     0.0,
-     42.9645,
-     45.7506,
-     28.2775,
-     14.8004,
-     "2020-07-20",
-     1289712
-    ],
-    "src": "bsetable3:532174:106",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106) FPI B1e 2,275,164,204 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,295,456,839 sh (Table I) = 42.9897. fii 42.9645 -> 42.9897; dii 45.7506 -> 45.7253 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_1772020202056_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0124 (on the stored (A+B) base, DR factor 1.2229) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.7253 -> 45.7377.",
+    "superseded": {
+     "cell": [
+      0.0,
+      42.9897,
+      45.7253,
+      28.2775,
+      14.8004,
+      "2020-07-20",
+      1289712
+     ],
+     "was": [
+      0.0,
+      42.9645,
+      45.7506,
+      28.2775,
+      14.8004,
+      "2020-07-20",
+      1289712
+     ],
+     "src": "bsetable3:532174:106",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106) FPI B1e 2,275,164,204 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,295,456,839 sh (Table I) = 42.9897. fii 42.9645 -> 42.9897; dii 45.7506 -> 45.7253 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2020-09-30": {
     "cell": [
+     0.0,
+     45.6854,
+     43.7765,
+     27.0674,
+     13.9244,
+     "2020-10-20",
+     1421644
+    ],
+    "was": [
      0.0,
      45.6854,
      43.7051,
@@ -206354,21 +206586,43 @@
      "2020-10-20",
      1421644
     ],
-    "was": [
-     0.0,
-     45.6617,
-     43.7288,
-     27.0674,
-     13.9244,
-     "2020-10-20",
-     1421644
-    ],
-    "src": "bsetable3:532174:107",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107) FPI B1e 2,574,015,194 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,637,146,884 sh (Table I) = 45.6854. fii 45.6617 -> 45.6854; dii 43.7288 -> 43.7051 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_20102020131958_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0714 (on the stored (A+B) base, DR factor 1.2234) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.7051 -> 43.7765.",
+    "superseded": {
+     "cell": [
+      0.0,
+      45.6854,
+      43.7051,
+      27.0674,
+      13.9244,
+      "2020-10-20",
+      1421644
+     ],
+     "was": [
+      0.0,
+      45.6617,
+      43.7288,
+      27.0674,
+      13.9244,
+      "2020-10-20",
+      1421644
+     ],
+     "src": "bsetable3:532174:107",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107) FPI B1e 2,574,015,194 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,637,146,884 sh (Table I) = 45.6854. fii 45.6617 -> 45.6854; dii 43.7288 -> 43.7051 (the block had been counted in DII).",
+     "exact": true
+    }
    },
    "2020-12-31": {
     "cell": [
+     0.0,
+     47.4567,
+     42.5177,
+     26.3509,
+     13.3952,
+     "2021-01-19",
+     1266791
+    ],
+    "was": [
      0.0,
      47.4567,
      42.4598,
@@ -206377,18 +206631,31 @@
      "2021-01-19",
      1266791
     ],
-    "was": [
-     0.0,
-     47.4324,
-     42.484,
-     26.3509,
-     13.3952,
-     "2021-01-19",
-     1266791
-    ],
-    "src": "bsetable3:532174:108",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108) FPI B1e 2,617,642,087 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,518,677,142 sh (Table I) = 47.4567. fii 47.4324 -> 47.4567; dii 42.4840 -> 42.4598 (the block had been counted in DII).",
-    "exact": true
+    "src": "bsexbrl:532174_1912021151424_SHP.xml",
+    "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0579 (on the stored (A+B) base, DR factor 1.2510) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.4598 -> 42.5177.",
+    "superseded": {
+     "cell": [
+      0.0,
+      47.4567,
+      42.4598,
+      26.3509,
+      13.3952,
+      "2021-01-19",
+      1266791
+     ],
+     "was": [
+      0.0,
+      47.4324,
+      42.484,
+      26.3509,
+      13.3952,
+      "2021-01-19",
+      1266791
+     ],
+     "src": "bsetable3:532174:108",
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108) FPI B1e 2,617,642,087 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,518,677,142 sh (Table I) = 47.4567. fii 47.4324 -> 47.4567; dii 42.4840 -> 42.4598 (the block had been counted in DII).",
+     "exact": true
+    }
    }
   },
   "INGERRAND": {
