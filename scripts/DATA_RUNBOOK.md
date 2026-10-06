@@ -21807,6 +21807,21 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     (1) D1 blocks under 0.05 pp left in dii / out of fii by the runner's floor; (2) batch-16/17 DR re-bases of 2-dp values. Lesson:
     a verdict is a claim about the CURRENT served value at that month-end - re-run recompare.py after every part and re-read any
     cell whose value moved after its verdict was written.
+    **Batch 30 part 42 (label "§164r batch 30 part 42"; 102 cells) - the D1 class under the runner's write floor.** `_shp_d1_rowfix.py`
+    computes D1 for every cell but writes only moves >= 0.05 pp, so unnamed institutions Any-Other blocks of 0.005-0.05 pp stayed in
+    dii (CHAMBLFERT Jun-2017 in part 41 was one). Measured with a read-only copy of the runner without the floor (worktree
+    `~/stocks-wt/d1measure`, outputs `~/stocks-cache/shp/reply7/d1_floor/`): 154 candidates. Each was then re-read from its own XBRL
+    independently of the runner (`d1_check.py`: block with no named / Category row, no R2-type row, stored dii = domestic lines +
+    block within 0.006, stored fii = the FPI line) and against the company's own labels two quarters either side (`d1_neighbours.py`,
+    the batch-7 label rule - the runner's regex had missed SPARC's 'UTI'). 101 moved (40 companies, each <= 0.052 pp, 1.67 pp in all;
+    19 confirmed by a same-size block labelled foreign nearby - 'Foreign Institutional Investors', 'FII', 'Foreign Bank', 'Foreign
+    Financial Institutions'), fii + block, dii - block; agreed by the DII session (10 rows recomputed). Not moved: ABFRL Jun / Sep-16
+    and SUNPHARMA (same-size 'Foreign Bank + UTI' block - the SUNPHARMA decision), PGHH / STYRENIX ('UTI' nearby), SPARC (part 9);
+    44 set aside for reading by hand (dii not explained by lines + block, named / labelled rows, odd neighbours - incl. ORIENTPPR,
+    where batch 20 put 0.89 of a 1.80 unnamed block into fii without lowering dii). Also CHAMBLFERT Jun-2017 mf / ins at share counts.
+    The runner's other 2026-10-06 proposals (ex-member R1-R3 dii moves: BAJAJHIND, CARERATING ...) are stale against the DII session's
+    §164s register decisions and were not used. Trap: a run threshold is not part of a rule - re-run a rule's runner without its
+    floor before saying a class is done.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
