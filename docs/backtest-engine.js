@@ -879,8 +879,15 @@ const SHP_ALIAS = { 'PEL': 'PIRAMALFIN' };
 // ticker on the other exchange (§197, docs/bse_alias_collisions.json). Folded, its Mar-2026 pattern (promoter 71.43,
 // sub 2026-04-20) became SWANDEF's "re-filing": SWANDEF screened on Riddhi's holdings for 61 sessions (2026-04-20..07-16)
 // and measured its Jun-2026 change against them for 55 more. The alias still serves the roster/profit lookups (an NSE
-// fact); only the shareholding fold skips it. The other 11 §197 collision tickers are not measured yet. (Sync: stock-backtest.html)
-const SHP_FOLD_SKIP = new Set(['RDEL']);
+// fact); only the shareholding fold skips it.
+// §220c: the set is EVERY §197 collision ticker (docs/bse_alias_collisions.json; check_fund_alias.py fails CI if they drift).
+// Measured 2026-10-06: 8 of the other 11 are FUND_ALIAS keys whose shp_engine.json rows are the BSE company's (each quarter
+// differs from the target's own), and the fold served them as re-filings — 3,788 bar days on 6 live stocks: ADROITINFO
+// 1,247 (Colorchips), WORTHPERI 747 (Worth Investment), DVL 601 (Dipna Pharmachem; promoter 9.13 for 75.0), CNL 571
+// (Creative Castings), AJMERA 372 (Shree Marutinandan), AGI 250 (Hemant Surgical; DII 10.73 for 2.25); 184 month-end cells,
+// none a Nifty 500 member. ARVINDREM / ELAND (no bars in that era) and AZTEC / BCCL / MIL (not FUND_ALIAS keys) moved
+// nothing; listed so a future alias cannot re-open the leak. (Sync: stock-backtest.html)
+const SHP_FOLD_SKIP = new Set(['ARL', 'AZTEC', 'BCCL', 'COLORCHIPS', 'CREATIVE', 'DPL', 'HSIL', 'MIL', 'MUDRA', 'RDEL', 'SHREE', 'WORTH']);
 async function loadShp() {
   if (Object.keys(SHPD).length) return;
   try { SHPD = await (await fetch('./shp_engine.json')).json(); } catch (e) { console.warn('no shareholding data', e); SHPD = {}; return; }
@@ -941,6 +948,26 @@ function daysBetweenInt(a, b) {   // a, b as YYYYMMDD ints -> a minus b in days
   const d = x => Date.UTC(Math.floor(x / 10000), Math.floor(x / 100) % 100 - 1, x % 100);
   return Math.round((d(a) - d(b)) / 86400000);
 }
+// §220c (user 2026-10-06, "blank the first change after a gap"): an EVENT row (below) measures its change against the
+// latest already-visible reading — but not across a GAP. A gap = a calendar quarter between that reading and this row whose
+// pattern was already more than SHP_GAP_GRACE_DAYS overdue on the day this row became public (cur[3]): the company was
+// away (delisted, suspended, relisted under a new symbol) or the store has a hole. Judged on the row's own public date, so
+// no future knowledge and no flip from month to month; a quarter merely filed late is not a gap — 90 d clears 99% of first
+// filings 2014-26 (measured on shp_engine.json). The quarter-end path below already breaks on any missing quarter. Before
+// this, HEXT's Feb-2025 listing pattern measured FII +7.36 / DII +8.65 / promoter −16.45 pp against HEXAWARE's Sep-2020
+// pattern, 4.4 years earlier. Measured: 474 month-end cells blank (53 symbols, none a Nifty 500 member), all 52 saved
+// strategies unchanged; PIRAMALFIN's listing pattern still measures against PEL's (§220, no quarter overdue). (Sync: stock-backtest.html)
+const SHP_GAP_GRACE_DAYS = 90;
+function nextQeAfter(d) {   // the first calendar quarter-end strictly after YYYYMMDD d
+  let y = Math.floor(d / 10000), m = Math.ceil((Math.floor(d / 100) % 100) / 3) * 3;
+  const end = (yy, mm) => yy * 10000 + mm * 100 + { 3: 31, 6: 30, 9: 30, 12: 31 }[mm];
+  let q = end(y, m); if (q <= d) { m += 3; if (m > 12) { m = 3; y++; } q = end(y, m); }
+  return q;
+}
+function shpGapBefore(base, cur) {   // when cur became public (cur[3]), a quarter between base and cur was already overdue
+  const q1 = nextQeAfter(base[0]);
+  return q1 < cur[0] && daysBetweenInt(cur[3], q1) > SHP_GAP_GRACE_DAYS;
+}
 function shpAt(sym, dateInt) {
   const arr = SHPD[sym] || (FUND_ALIAS[sym] ? SHPD[FUND_ALIAS[sym]] : null); if (!arr || !arr.length) return null;
   let ci = -1; for (let i = arr.length - 1; i >= 0; i--) { if (arr[i][3] <= dateInt) { ci = i; break; } }
@@ -971,7 +998,7 @@ function shpAt(sym, dateInt) {
       // screen, silently dropping the stock from every diiChgPp/fiiChgPp strategy in exactly the
       // month its stake actually moved. Measure the change against the latest ALREADY-VISIBLE
       // reading instead, which is what "change since we last knew" means for an event filing.
-      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[3] <= dateInt) { setDeltas(q); break; } }
+      for (let i = ci - 1; i >= 0; i--) { const q = arr[i]; if (q[3] <= dateInt) { if (!shpGapBefore(q, cur)) setDeltas(q); break; } }   // §220c
     }
   }
   return { fii: cur[1], dii: cur[2], prom: cur[4] ?? null, mf: cur[5] ?? null, dfii, ddii, dprom, dmf };

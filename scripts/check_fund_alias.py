@@ -212,6 +212,22 @@ def collision_audit(rmap, baked):
         if n_rv or n_fd:
             probs.append("%s re-seeded with %s's rows (%d revenue, %d profit quarters) — fix: python3 "
                          "scripts/retract_bse_alias_collision_rows.py --apply" % (old, t, n_rv, n_fd))
+    # §220c: both engines' SHP_FOLD_SKIP must name every collision ticker. shp_engine.json keys a BSE-only company by its
+    # BSE ticker, so a ledger ticker that is also a FUND_ALIAS key and is NOT skipped gets the BSE company's patterns
+    # folded into the NSE target as "re-filings" (8 did until 2026-10-06: 3,788 bar days on 6 live stocks).
+    for path in TARGETS:
+        rel = os.path.relpath(path, ROOT)
+        try:
+            with open(path, encoding="utf-8") as fh:
+                m = re.search(r"const SHP_FOLD_SKIP\s*=\s*new Set\(\[([^\]]*)\]\)", fh.read())
+        except Exception as e:
+            probs.append("%s unreadable (%s)" % (rel, e)); continue
+        if not m:
+            probs.append("%s: SHP_FOLD_SKIP not found" % rel); continue
+        miss = sorted(set(coll) - set(re.findall(r"'([^']+)'", m.group(1))))
+        if miss:
+            probs.append("%s: SHP_FOLD_SKIP lacks collision ticker(s) %s — add them to both engines (runbook §220c)"
+                         % (rel, ", ".join(miss)))
     return probs
 
 
