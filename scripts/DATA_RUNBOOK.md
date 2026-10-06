@@ -27297,6 +27297,18 @@ Effect (shpAt replay incl. §154 cap, previous-quarter walk, §220c gap rule, ev
 date). Agreed before writing: DII session (HINDALCO `#rev`), FII session (fii re-bases, JAGSNPHARM's `#rev` left unused);
 the refine session (§223) owns no overlapping key.
 
+**LIVE (2026-10-07 00:46-02:12 IST).** Pushed d4f787ca9 + 528df7478; `refresh-shareholding.yml` dispatched (run 37513939259,
+headSha 528df7478): engine feed 920 re-filing rows / 21 same-day corrections (= the local build), guard_shp_revisions "327 §224
+date/drop fixes still in the file", store commit 62545a025, Pages 37516871306. The live `shp_engine.json` equals the local build
+for all 185 symbols in the change set; 0 re-filing rows on a retired date. `refresh-stock-fin.yml` dispatched by hand (run
+37525729885 -> 150a8d026, Pages success; the earlier 18:47 run at bdd536abf had already read the healed sidecar). Cache-busted
+live checks 25/25 (`~/stocks-cache/shp/revaudit/live_check.py --fin`): BBTC Dec-17 from 2024-01-03, RAMRAT Dec-25 from
+2026-06-01, SUPREMEINF Mar-26 from 2026-05-27 and Sep/Dec-25 back to 34.68 / 8.5535 (page: no "rev:"), MBLINFRA Mar-26 only
+the quarterly, UPL Jun-19 fii 42.9386 with no re-filing (fin shpH too), UPL Mar-21 re-filing fii 37.816 from 2024-07-31,
+HINDALCO Mar-22 original 28.8476 / 19.216 from 2022-04-20 + re-filing 28.8476 / 21.5078 from 2023-06-07, LUXIND Dec-21 only
+the store row (dii 12.2158), KZLFIN Jun-25 from 2025-08-06, IONEXCHANG Dec-24 from 2025-06-03, KPRMILL page rev:2026-02-06.
+Re-checked 02:12 IST: origin's sidecar still byte-equal to the §224 commit.
+
 **Open — measured, not changed:** JINDALSAW ×7 / CAMLINFINE ×4 / JITFINFRA: NSE shows a revised record with the same promoter %
 and remark months before BSE (29-Sep-2022, 03-Nov-2023) but no XBRL, so whether NSE published the same FII/DII is UNKNOWN —
 BSE's day kept. Store-side: BANCOINDIA Dec-24 and PIDILITIND Sep-25 originals are post-bonus Reg 31(1)(c) patterns (the
