@@ -23667,6 +23667,33 @@ ROML +17 bars and 2 new symbols — every one of the 106,502 rows x 3 indicators
 RULE DIFFERENCE 157, UNKNOWN 12 (their answers on WIPRO / CADILAHC not in this file), OUR ERROR 12 (KENNAMET/SPICEJET hole, fix A/B/C
 awaiting the user), THEIR ERROR 0.** Each of the 181 keeps its own reply-#5 verdict (same cell, both values unchanged).
 
+**§179g — KENNAMET + SPICEJET HOLES FILLED FROM BSE (option A; user 2026-10-07: "go ahead with option A, fill from BSE").** Problem
+(§179f reply #5): no bars 30-Sep-2002 -> 19-Aug-2019 (KENNAMET) and 19-Jul-1999 -> 19-Aug-2019 (SPICEJET) — NSE printed neither (its
+symbol-change file: WIDIA -> KENNAMET, MODILUFT -> SPICEJET, both 19-Aug-2019), BSE traded both throughout — so smaBarsAt(200) and the
+3/6/12-month look-backs reached 17-20 years back (ret12m on 31-Dec-2019: KENNAMET +1,310 %, SPICEJET +1,688 %; 12 quantmac vs200 cells OUR
+ERROR). **Fix:** `scripts/build_bse_hole_fill.py` -> 2 `prepend` blocks in `scripts/bse_sme_prepend.json.gz` (439 blocks; the other 437
+byte-identical), applied by `insert_sme_history`'s HOLE mode (§171a). Source: BSE's per-scrip daily history (api.bseindia.com
+StockPriceCSVDownload — ONE request per scrip for the whole gap, bse_headers; cache ~/stocks-cache/bse_hist). Gates: same ISIN on both
+exchanges (INE717A01029 / INE285B01017, bse_scrip_master); median NSE-stored / BSE-raw over the first 10 common sessions 1.0010 / 1.0000
+vs CA product 1.0; BSE's corporate actions inside the holes: none (KENNAMET dividends only — its 1:1 bonus is 19-Sep-2000, before the
+hole; SPICEJET has no CA rows at all, so its three 2001 one-day falls at Rs 2.40-4.50 stay raw, crash rule); every bar sane OHLC. Bars:
+KENNAMET 4,171 daily 01-Oct-2002..16-Aug-2019; SPICEJET 4,382 daily + 128 pre-2002 weekly 26-Jul-1999..16-Aug-2019 (pre-dailyFrom = the
+first BSE session of each week: measured on RELIANCE Mar-2000, a stored pre-2002 bar is THAT day's OHLC, Monday or the week's first
+session). Dropped: 3 BSE dates our bin has no session for (16-Feb-2005, 30-Sep-2005, 01-Nov-2006 — 0 symbol-bars); SPICEJET's 102 dates
+of 2000-01 carrying two BSE rows (two settlement segments) keep the higher-volume row. Seams: KENNAMET NSE (WIDIA) 71.30 on 30-Sep-2002
+(WIDIA vs BSE closes Jan-Sep 2002 within +-2 %) -> BSE 71.10 on 01-Oct-2002; BSE 959.90 on 16-Aug-2019 -> NSE 942.50; SPICEJET stored 6.30
+on 19-Jul-1999 -> BSE 5.15 on 26-Jul-1999; BSE 143.50 -> NSE 146.40. Rescale = CA product after the anchor = 1 (none since 2019).
+**Dry run** (`dry_main.py` on the release, end 2026-10-06): control (origin/main code + ledgers) == the release (decompressed sha256
+equal); test vs control: only KENNAMET (+4,171) and SPICEJET (+4,510) differ — inserted bars == the ledger, every existing bar and all
+meta unchanged; a second `insert_sme_history` on the filled file inserts 0. **Effect:** ret12m on 31-Dec-2019 KENNAMET -6.7 % (BSE
+1,077.25 on 31-Dec-2018), SPICEJET +26.3 % (BSE 89.20); quantmac (their corrected_20261006 file): the 12 vs200 cells hold real 200-DMAs
+(KENNAMET 31-Dec-2019 -6.137 % from +94.78 %; theirs blank, NSE-only) -> RULE DIFFERENCE (BSE trading while NSE did not, by the user's
+decision); 14 d52 / d52low cells of the same two stocks Dec-2019..May-2020 that agreed now differ for the same rule (our 52-week window
+includes the BSE bars before 19-Aug-2019); nothing else moved. Both-valued 318,326 / 318,496; differing 195 = RULE DIFFERENCE 183,
+UNKNOWN 12, OUR ERROR 0. **Not in this fix (open, for the user):** SPICEJET's stored 1996-1999 fragment is not BSE's level (stored / BSE
+drifts 0.32 -> 1.06, volumes differ — the §179f penny phantom-split class); ESSARSHIP 29-Oct-2001 -> 11-Mar-2008 hole (old "Essar
+Shipping Ltd" fragment, no ISIN; NSE ESSARSHIP from 2008-03-11 — identity unproven; its ret12m Jan/Feb-2009 looks back to 2001).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
