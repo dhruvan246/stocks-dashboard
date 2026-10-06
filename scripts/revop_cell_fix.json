@@ -28173,6 +28173,51 @@
    "fixed": 30.47,
    "why": "§70 PAT mirror of the owners heal WABAG 20200331 c 31.15 -> 30.47 (runbook §214a, owners-rule reach).",
    "found": "second-reader audit triage 2026-09-28, owners-rule reach after F2 (runbook §214a)"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 934.67,
+   "fixed": 840.72,
+   "why": "Alok Industries' own Q2 FY20 results PDF https://nsearchives.nseindia.com/corporate/MCmeeting14112019OCR_14112019183819.zip (MCmeeting14112019OCR.pdf p5, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019', Rs in Crore), quarter-ended-30.09.2019 column: Revenue from Operations 840.72. The stored value came from the original consolidated XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50998_171597_15112019033634_WEB.xml, whose OneD contexts carry the YEAR-AGO (30.09.2018) column (revenue 934.67, net loss 1,402.90 = the PDF's 30.09.2018 column). SECOND check: the PDF's own half-year column 30.09.2019 (286.16 loss) = Q1 (120.94, our stored 2019-06 row) + Q2 (165.20); ALOKINDS (the current key) already stores -165.20.",
+   "found": "§220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "qe": "20190930",
+   "basis": "op_con",
+   "was": -81.74,
+   "fixed": -12.62,
+   "why": "Alok Industries' own Q2 FY20 results PDF https://nsearchives.nseindia.com/corporate/MCmeeting14112019OCR_14112019183819.zip (MCmeeting14112019OCR.pdf p5, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019', Rs in Crore), quarter-ended-30.09.2019 column: operating profit by the store's own arithmetic, revenue 840.72 - (total expenses 1,008.14 - finance costs 15.92 - depreciation 138.88) = -12.62 (the same arithmetic reproduces the stored -81.74 from the 30.09.2018 column and the stored standalone -6.58 from that filing's p4). The stored value came from the original consolidated XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50998_171597_15112019033634_WEB.xml, whose OneD contexts carry the YEAR-AGO (30.09.2018) column (revenue 934.67, net loss 1,402.90 = the PDF's 30.09.2018 column). SECOND check: the PDF's own half-year column 30.09.2019 (286.16 loss) = Q1 (120.94, our stored 2019-06 row) + Q2 (165.20); ALOKINDS (the current key) already stores -165.20.",
+   "found": "§220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "qe": "20190930",
+   "basis": "pat_con",
+   "was": -1402.9,
+   "fixed": -165.2,
+   "why": "Alok Industries' own Q2 FY20 results PDF https://nsearchives.nseindia.com/corporate/MCmeeting14112019OCR_14112019183819.zip (MCmeeting14112019OCR.pdf p5, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019', Rs in Crore), quarter-ended-30.09.2019 column: Net Profit/(Loss) for the period (165.20) — the PAT mirror of fund_cell_fix's entry. The stored value came from the original consolidated XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50998_171597_15112019033634_WEB.xml, whose OneD contexts carry the YEAR-AGO (30.09.2018) column (revenue 934.67, net loss 1,402.90 = the PDF's 30.09.2018 column). SECOND check: the PDF's own half-year column 30.09.2019 (286.16 loss) = Q1 (120.94, our stored 2019-06 row) + Q2 (165.20); ALOKINDS (the current key) already stores -165.20.",
+   "found": "§220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "qe": "20190930",
+   "basis": "ebit_con",
+   "was": -216.95,
+   "fixed": -151.5,
+   "why": "Alok Industries' own Q2 FY20 results PDF https://nsearchives.nseindia.com/corporate/MCmeeting14112019OCR_14112019183819.zip (MCmeeting14112019OCR.pdf p5, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019', Rs in Crore), quarter-ended-30.09.2019 column: EBIT = operating profit -12.62 - depreciation 138.88 = -151.50 (reproduces the stored -216.95 from the 30.09.2018 column and the stored standalone -142.45). The stored value came from the original consolidated XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50998_171597_15112019033634_WEB.xml, whose OneD contexts carry the YEAR-AGO (30.09.2018) column (revenue 934.67, net loss 1,402.90 = the PDF's 30.09.2018 column). SECOND check: the PDF's own half-year column 30.09.2019 (286.16 loss) = Q1 (120.94, our stored 2019-06 row) + Q2 (165.20); ALOKINDS (the current key) already stores -165.20.",
+   "found": "§220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "SUPPETRO",
+   "qe": "20070930",
+   "basis": "pat_std",
+   "was": 6.26,
+   "fixed": 6.06,
+   "why": "PAT mirror of fund_cell_fix SUPPETRO 20070930 std: NSE archived results https://nsearchives.nseindia.com/archives/financial_results/financial_res_SUPPETRO_49729.html, 'Net Profit for the period' 605.54 lakh (after the extraordinary item) = 6.06 cr.",
+   "found": "§220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
   }
  ],
  "retracted": [

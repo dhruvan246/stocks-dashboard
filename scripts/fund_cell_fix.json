@@ -5921,6 +5921,51 @@
    "fixed": 0.89,
    "why": "Results PDF https://nsearchives.nseindia.com/corporate/AMBANIORG_21052026174842_Finaloutcome_signed.pdf p10 'STATEMENT OF STANDALONE AUDITED FINANCIAL RESULTS FOR THE HALF YEAR AND YEAR ENDED ON 31st MARCH, 2026' (Amount in Lakhs), 6 months ended 31.03.2025: '10. Net Profit for the period (8+9)' 88.76 lakh = 0.89 cr (40.01 after tax + 48.75 extraordinary; our 31.03.2026 1.16 and 30.09.2025 0.20 rows are the same line). The stored 0.00 matched no line. SECOND document: the company's own FY2025 results https://nsearchives.nseindia.com/corporate/AMBANIORG_30052025175702_OutcomeofBMAmbani290520251.pdf p9, 6 Month ended 31.03.2025: Net Profit for the period 88.76.",
    "found": "\u00a7220c ipo_base_fills reader audit 2026-10-06 (user: \"yes to all 6\")"
+  },
+  {
+   "sym": "ALOKTEXT",
+   "qe": "20190930",
+   "basis": "con",
+   "was": -1402.9,
+   "fixed": -165.2,
+   "why": "Alok Industries' own Q2 FY20 results PDF https://nsearchives.nseindia.com/corporate/MCmeeting14112019OCR_14112019183819.zip (MCmeeting14112019OCR.pdf p5, 'Statement of Unaudited Consolidated Financial Results for the Quarter and Half Year Ended 30th September 2019', Rs in Crore), quarter-ended-30.09.2019 column: Net Profit/(Loss) for the period (165.20). The stored value came from the original consolidated XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_50998_171597_15112019033634_WEB.xml, whose OneD contexts carry the YEAR-AGO (30.09.2018) column (revenue 934.67, net loss 1,402.90 = the PDF's 30.09.2018 column). SECOND check: the PDF's own half-year column 30.09.2019 (286.16 loss) = Q1 (120.94, our stored 2019-06 row) + Q2 (165.20); ALOKINDS (the current key) already stores -165.20.",
+   "found": "\u00a7220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "HINDMOTORS",
+   "qe": "20100630",
+   "basis": "std",
+   "was": -19.37,
+   "fixed": -19.73,
+   "why": "NSE archived results https://nsearchives.nseindia.com/archives/financial_results/financial_res_HINDMOTOR_77004.html (Hindustan Motors, Non-Consolidated, Period Ended 30-Jun-2010, Amount Rs in lakhs): 'Net Profit (+) / Loss (-) for the period' -1973.00 = -19.73 cr (19.37 is a transposition). SECOND: the same page's 'from Ordinary Activities after tax' -1973.00; the old key HINDMOTOR already stores -19.73 (its revenue 148.47 = Net Sales 14847.00).",
+   "found": "\u00a7220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "MANDHANA",
+   "qe": "20190630",
+   "basis": "std",
+   "was": 0.36,
+   "fixed": -6.26,
+   "why": "NSE XBRL https://nsearchives.nseindia.com/corporate/xbrl/INDAS_47787_131786_14082019125906_WEB.xml (Standalone, 2019-04-01..2019-06-30, broadcast 14-Aug-2019): ProfitLossForPeriod OneD -62,611,000 = -6.26 cr. SECOND: the current key GBGLOBAL already stores -6.26 with revenue 83.37 = the same XBRL's RevenueFromOperations 833,682,000. The stored 0.36 matches no line of that filing.",
+   "found": "\u00a7220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "SUPPETRO",
+   "qe": "20070930",
+   "basis": "std",
+   "was": 6.26,
+   "fixed": 6.06,
+   "why": "NSE archived results https://nsearchives.nseindia.com/archives/financial_results/financial_res_SUPPETRO_49729.html (Supreme Petrochem, Non-Consolidated, Period Ended 30-Sep-2007, Rs in lakhs): 'Net Profit (+) / Loss (-) for the period' 605.54 = 6.06 cr \u2014 the bottom line, after the extraordinary item; 6.26 is the line above, 'Net Profit from Ordinary Activities after tax' 625.79 (the store's PAT is after extraordinary items: XBRL ProfitLossAfterTaxAndExtraordinaryItems). SECOND: the current key SPLPETRO already stores 6.06.",
+   "found": "\u00a7220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
+  },
+  {
+   "sym": "SPLPETRO",
+   "qe": "20180331",
+   "basis": "std",
+   "was": 64.52,
+   "fixed": 41.16,
+   "why": "Supreme Petrochem's own Q4 FY18 results, NSE https://nsearchives.nseindia.com/corporate/010317005114_24042018183620.zip (010317005114.pdf p3 'Statement of Standalone Financial Results for the Quarter and Year Ended March 31, 2018', Rs in Lakhs), quarter ended March 31, 2018: 'Profit after tax (3-4)' 4,115.61 = 41.16 cr. The stored 64.52 is the same column's 'Profit before tax (1-2)' 6,452.34. SECOND: the old key SUPPETRO stores 41.16 with revenue 887.61 = the same column's Total Income from Operations (Net) 88,761.16; the page's Dec-2017 / Mar-2017 quarters (2,797.77 / 6,988.91) equal both keys' stored 27.98 / 69.89.",
+   "found": "\u00a7220d renamed-pair disagreement check 2026-10-06 (user: \"check all\")"
   }
  ],
  "retracted": [
