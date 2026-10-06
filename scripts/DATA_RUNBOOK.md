@@ -21667,6 +21667,27 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Open (measured, not yet fixed): the within-symbol-outlier date pass touched 230 ledger cells; 43 sit in quarters BSE keeps only as
     a revision and others carry a late 'New' stamp (AMTEKAUTO Mar-2017 2021-12-06, ARSHIYA Sep-2024 2026-03-17) - each needs the §164b
     test before its date stays (list: ~/stocks-cache/shp/audit_all/wso_rows.json).
+    **Batch 30 part 35 (label "§164r batch 30 part 35"; 19 cells + 1 date + 3 new quarters + 1 shp_sub_dates entry).**
+    CORRECTION of part 34: DISHTV Mar-2018 'Nomura Singapore Limited' 19,421,874 IS institution-documented (141 Institutions
+    (Foreign) listings vs 8 company-type; the company's 2022 form is silent) -> back in fii (12.15). Part 34 had looked the name up
+    with a spaced pattern; shp_foreign_holder_evidence.json keys are mostly NORMALISED ('NOMURASINGAPORELIMITED') - always match on
+    the normalised key AND v['name'], or use _shp_dii_rowfix.inst_listed / inst_documented.
+    Our errors: GEOMETRIC / GRAPHITE Jun-2015 'Others' rows (rule B; GRAPHITE's 9-holder row = directors 5 / 14,083 + FPI 4 - the old
+    by-holders match to New India Assurance was a coincidence, it sits in 'Insurance Companies'); GTLINFRA Jun / Sep-2015 HYPNOS FUND
+    85,900,322 inside BSE's merged 10-holder 'Others' row (its own >1 % table; FPI-corp row in Mar-2015); FMGOETZE Mar / Jun-2017 the
+    company's 'Foreign Institutional Investors' B1i category sat in dii; FORTIS Dec-15 / Mar-16 / Jun-16 the block's second 'Foreign
+    Corporate Bodies' holder 3,737,449 + foreign nationals 12,000 out (IFC stays by option A; 'Foreign Collaborators' 670,194 kept -
+    open user question; Sep-2016 on, rest 4.41M, held with it); ACLGATI Mar-2016 Kintetsu (company label FCB) out; missing quarters
+    added: GESHIP Mar-2016 (Table III, (A+B)), GUJALKALI Dec-2015 (Table III; notice 2016-01-21 in shp_sub_dates - a measured date
+    equal to QE+21 must go there, the builder ignores a shp_lag_fix days_later 0 on a convention date), IDFC Jun-2010 (page 'FDI' row =
+    the FII holders). Date: FLEXITUFF Dec-2015 filed twice (2016-01-23, 2016-03-18) - BSE shows the later; the first's figures cannot be
+    read -> 2016-03-18 (§164b / batch 6f). Precision: GEOMETRIC Mar / Sep-15, GRAPHITE Mar / Sep-15, GTLINFRA Mar-15, FMGOETZE Dec-16,
+    FLEXITUFF Dec-15, IL&FSTRANS Mar-15. Not changed (verdicts recorded): IL&FSTRANS Mar-2015 keeps 2015-04-17 - the 2015-09-09 notice is
+    an update, and Quantmac's own 21-Sep workbook served the same FII row (5.82) from Apr-2015 (§164b test); GSPL Sep-2024 = BSE's
+    2024-10-19 filing exactly (Quantmac dates it from a 2025-02-28 NSE revision); IDFCFIRSTB 06-Apr-2021 QIP event - seven named buyers
+    with no institution listing anywhere stay out (option A). OPEN: named, documented holders inside company-labelled page-era rows
+    (GTLINFRA's 'Foreign Corporate Bodies': Morgan Stanley Asia (Singapore) 184 listings, Goldman Sachs Investments (Mauritius) I 7) -
+    the §160c chain-consistency class.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
