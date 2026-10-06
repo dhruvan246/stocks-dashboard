@@ -424,6 +424,9 @@ def main():
     # detail gaps). Quarters of every former symbol that resolves (rename chain) to this one are now merged in
     # FILL-ONLY — own data always wins. Guard: a former key that filed ANY quarter this symbol also filed was a
     # concurrently listed company (merger partner, not a rename) and is never merged.
+    # §220c: ... unless every shared quarter carries the SAME numbers — the same company's filing stored under both keys
+    # (HEXT holds 23 of HEXAWARE's 2015-20 quarters, identical or rounded: 120.0 vs 119.63; CURAA 2 of CURATECH's), so
+    # the old guard kept their other 57 / 11 quarters off the page. Two companies filing the same quarter disagree.
     def _chain(s0):
         seen_ = set()
         while s0 in aliases and s0 not in seen_ and aliases[s0] != s0:
@@ -435,10 +438,26 @@ def main():
         if new_ != old_:
             formers.setdefault(new_, []).append(old_)
     fq = lambda s0: {r[0] for r in (fund.get(s0) or [])}
+
+    def _agree(a, b):          # one company's figure stored twice (or rounded to 1 decimal) — 1%, floor Rs 0.05 cr
+        return abs(a - b) <= max(0.01 * max(abs(a), abs(b)), 0.05)
+
+    def _same_filings(o, n):   # every shared quarter that both keys valued on a common basis agrees (§220c)
+        ro = {r[0]: r for r in (fund.get(o) or [])}; rn = {r[0]: r for r in (fund.get(n) or [])}
+        seen_any = False
+        for q in set(ro) & set(rn):
+            for i in (1, 3):
+                a = ro[q][i] if len(ro[q]) > i else None; b = rn[q][i] if len(rn[q]) > i else None
+                if a is not None and b is not None:
+                    seen_any = True
+                    if not _agree(a, b):
+                        return False
+        return seen_any
+
     ok_formers = {}
     for new_, olds in formers.items():
         mine = fq(new_)
-        ok_formers[new_] = sorted(o for o in olds if not (fq(o) & mine))
+        ok_formers[new_] = sorted(o for o in olds if not (fq(o) & mine) or _same_filings(o, new_))
 
     def merged(src, sym, kind):
         base = resolve(src, sym)

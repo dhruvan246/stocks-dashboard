@@ -840,7 +840,10 @@ def main():
         return set(best["symbols"]) if best else set()
     def _derive(name, fn, basis):
         # Official archived CSVs are ground truth — pin them exact; derive only between.
-        offd = {d: sorted({canon(x) for x in v}) for d, v in OFFICIAL.get(name, {}).items()}
+        # §220c: pinned through emit() — canon() AND era_key(), like every other snapshot — so a roster name maps to the
+        # ticker whose tape trades on that date. canon() alone put HEXT / SWANDEF (no bars until 2025 / 2024) into the
+        # 2018-19 official Smallcap 250 / MidSmallcap 400 lists in place of HEXAWARE / RNAVAL, which traded then.
+        offd = {d: sorted({emit(x, d) for x in v}) for d, v in OFFICIAL.get(name, {}).items()}
         dates = sorted({s["effectiveDate"] for bi in basis for s in H.get(bi, [])} | set(offd))
         out = []
         for d in dates:
