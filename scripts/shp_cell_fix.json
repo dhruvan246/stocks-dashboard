@@ -10762,23 +10762,45 @@
     "cell": [
      0.1,
      0.63,
-     28.63,
+     27.0189,
      0.0,
      7.42,
      "2021-10-21",
      112043
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      0.1,
-     0.63,
-     28.63,
-     0.0,
-     7.42,
-     "2024-04-12",
+     0.6278,
+     28.6285,
+     0.0011,
+     7.419,
+     "2021-10-21",
      112043
     ],
-    "why": "BULK STAMP: 7 quarters of this symbol all carry the single submission date 2024-04-12, which is 925 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "src": "bsexbrl:500102_1242024223851_SHP.xml",
+    "why": "\u00a7164s part 32 (2026-10-07; gap found by the FII session's part-47 read): this filing (BSE's only version, uploaded 2024-04-12) names DEUTSCHE BANK A.G. 20,839,168 sh under 'DetailsOfSharesHeldByBanks' inside Institutions (Domestic) 370,289,361; a foreign-owned bank is not a domestic institution (user 2026-10-06 'Not DII'; part 29 covered Sep-17..Jun-21). dii 28.6300 -> 27.0189 (20,839,168 / 1,293,455,756 = 1.6111). Dec-2021 onward the filings no longer name it.",
+    "superseded": {
+     "cell": [
+      0.1,
+      0.63,
+      28.63,
+      0.0,
+      7.42,
+      "2021-10-21",
+      112043
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      0.1,
+      0.63,
+      28.63,
+      0.0,
+      7.42,
+      "2024-04-12",
+      112043
+     ],
+     "why": "BULK STAMP: 7 quarters of this symbol all carry the single submission date 2024-04-12, which is 925 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    }
    },
    "2021-12-31": {
     "cell": [
