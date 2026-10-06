@@ -206,12 +206,25 @@ def _tv(w):
     t = _numtok(w)
     if t is None: return None
     neg = t.startswith("(") or t.startswith("-")
-    t = t.replace(",", "").replace("(", "").replace(")", "").lstrip("-")
+    t = t.replace("(", "").replace(")", "").lstrip("-")
+    # §220c: a text layer that prints the decimal POINT as a comma ("173,49") — no Western or Indian digit grouping
+    # ends in a 2-digit group, so a final ",dd" with no "." is a decimal comma (PRITIKA's Mar-2025 column read 17,349).
+    if "." not in t and re.search(r",\d{2}$", t): t = t[:-3].replace(",", "") + "." + t[-2:]
+    else: t = t.replace(",", "")
     try:
         v = float(t)
         return -v if neg else v
     except Exception:
         return None
+
+_DECTOK = re.compile(r"[.,]\d{1,2}\)?$")
+
+def _keep_decimals(ws):
+    """§220c: in a row printed to 2 decimals, a whole-number cell is a figure whose decimal point the text layer LOST
+    (VMSTMT's Mar-2025 PAT "361.71" read as 36171, a 100x error that passed the anchor). Drop such cells rather than
+    guess where the point was; a row printed as whole numbers throughout keeps every cell."""
+    dec = [bool(_DECTOK.search(_numtok(w[4]) or "")) for w in ws]
+    return [w for w, d in zip(ws, dec) if d] if sum(dec) >= 2 else ws
 
 def _lines(words):
     ws = sorted(words, key=lambda w: (round(w[1]), w[0]))
@@ -257,13 +270,13 @@ def _metric_rows(lines, all_words):
         elif (_PAT_ROW.search(label) or _OWN.search(label)) and not _BAD_ROW.search(label):
             kind = "pat"
         if not kind: continue
-        cells = [( (w[0]+w[2])/2, _tv(w[4]) ) for w in ln if _numtok(w[4])]
+        cells = [( (w[0]+w[2])/2, _tv(w[4]) ) for w in _keep_decimals([w for w in ln if _numtok(w[4])])]
         cells = [(x, v) for x, v in cells if v is not None]
         if len(cells) < 2:      # figures on a nearby baseline — band-merge
             ly = sum(w[1] for w in ln) / len(ln)
             lx = max((w[2] for w in ln if not _numtok(w[4])), default=ln[0][0])
             band = [w for w in numw if abs((w[1] + w[3]) / 2 - ly) <= 8 and w[0] > lx - 2]
-            cells = [((w[0]+w[2])/2, _tv(w[4])) for w in sorted(band, key=lambda w: w[0])]
+            cells = [((w[0]+w[2])/2, _tv(w[4])) for w in _keep_decimals(sorted(band, key=lambda w: w[0]))]
             cells = [(x, v) for x, v in cells if v is not None]
         if len(cells) >= 2:
             out.append((kind, bool(_OWN.search(label)), cells))
@@ -319,7 +332,10 @@ def parse_pdf_text(pdf, ident_tokens):
     return pages
 
 def _close(a, b, tol_pct=0.03, tol_abs=2.0):
-    return a is not None and b is not None and abs(a - b) <= max(abs(b) * tol_pct, tol_abs)
+    # §220c: the absolute allowance is capped at a quarter of the stored value (floor Rs 0.01 cr, the rounding of a
+    # 2-decimal crore figure). Uncapped, Rs 2 cr let a small filer's LAKH figure pass as crore (CURAA -1.38 "cr" vs the
+    # stored -0.01) and a quarter column anchor on a stored half-year (PRITIKA 1.36 vs 3.03).
+    return a is not None and b is not None and abs(a - b) <= max(abs(b) * tol_pct, min(tol_abs, abs(b) * 0.25), 0.01)
 
 def columns_for(page, qe):
     """Column-index map {'cur': i, 'prec': i|None, 'yago': i|None} by FIRST-occurrence of each header
@@ -356,11 +372,14 @@ def extract_anchored(pages, qe, want_con, cur_pat, prec_pat, cur_rev):
             m = _map_columns(page["dates"], cells)
             if not m or cols["cur"] not in m: continue
             raw_cur = m[cols["cur"]]
+            fits = []                                   # §220c: every scale that anchors, best fit first
             for div in DIVS:
                 if not _close(raw_cur / div, cur_pat): continue
                 if prec_pat is not None and cols["prec"] is not None and cols["prec"] in m \
                         and not _close(m[cols["prec"]] / div, prec_pat):
                     continue
+                fits.append((abs(raw_cur / div - cur_pat), div))
+            for _err, div in sorted(fits)[:1]:
                 out = {"pat": {}, "rev": {}, "div": div}
                 for k in ("prec", "yago"):
                     ci = cols[k]
