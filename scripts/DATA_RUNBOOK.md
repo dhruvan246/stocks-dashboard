@@ -23332,6 +23332,14 @@ cells reproduce within 0.05 points -> RULE DIFFERENCE (theirs value-based, ours 
 0.051-0.065 -> their exact Carnation input is not BSE's printed close -> still UNKNOWN. WIPRO 2013 (8): Wipro Enterprises never listed; no
 proxy reproduces 0.892246 (BSE ex-day VWAP / prev 0.891586, NSE (H+L+C)/3 0.892714; the promoter swap 1 WL : 1.65 WEL gives 0.8788) ->
 UNKNOWN, ask Quantmac for their WEL value. adopt-exact-prices.yml + branch exact-prices-base deleted after the live check (this commit).
+SUMMITSEC_BSE (4): identity PROVEN — NSE's own symbol-change file (symbolchange_20260927.csv): "Summit Securities Limited, KECINTL ->
+KECINFRA 21-Feb-2006; KECINFRA -> SUMMIT 21-Apr-2008"; BSE 504807 = Summit Securities Ltd (INE852A01016, delisted). BSE's own year of rows
+(`summit_bse_year.py`, 263 of 266 sessions; 3 BSE files unreadable) reproduces Quantmac EXACTLY: 30-Jan-2009 close 5.73, 52w high 34.00
+(07-Feb-2008), low 5.01 (02-Dec-2008) -> 83.147% / 14.371%; 27-Feb-2009 close 5.20, high 29.75, low 5.00 -> 82.521% / 4.000%. NSE's rows for
+the same company (SUMMIT) give 5.90 / 34.20 / 5.05 and 5.15 / 29.75 / 5.00 (ours). Their file prices everything else from NSE -> THEIR ERROR:
+BSE 504807's rows used for a company NSE traded as SUMMIT (their ticker 'SUMMITSEC_BSE'; today's NSE SUMMITSEC is another ISIN, INE519C01017).
+**Tally on the LIVE data (rev c1e4544027), 160 differing cells: RULE DIFFERENCE 144 (122 + GRASIM/CADILAHC value-based 22), THEIR ERROR 4
+(SUMMITSEC), UNKNOWN 12 (CADILAHC Jul-Nov-2009 4, WIPRO 2013 8), OUR ERROR 0.**
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
