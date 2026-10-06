@@ -14,7 +14,7 @@ using Claude if it happens again. Full rule: DATA_RUNBOOK §0, first rule. Appli
 
 Three kinds of actors write this repo, often at the same time:
 1. ~30 GitHub Actions workflows (cloud) committing generated data all day.
-2. Cloud Claude routines (bse-vision-fill 1×/day 00:15 IST all year until the user makes the one-time §222 edit that adds the season-guarded daytime slots — a session cannot edit UI-created routines; bse-fund-history 2×/day; the six KPI-insights shards 2×/day each) — each runs on a fresh cloud VM and lands via a `claude/*` branch + auto-merged PR. (The deep-fundamentals nightly is a GitHub cron since 2026-09-19 — runbook §50a. Any future LOCAL routine must own a private worktree under `~/stocks-wt/`, never this checkout.)
+2. Cloud Claude routines (bse-vision-fill 1×/day 00:15 IST all year until the user makes the one-time §222 edit in the routines UI — 4-slot cron + the season-guarded prompt in scripts/routine_prompts/; a session can neither edit a UI-created routine nor run the repo's code from a session-created one; bse-fund-history 2×/day; the six KPI-insights shards 2×/day each) — each runs on a fresh cloud VM and lands via a `claude/*` branch + auto-merged PR. (The deep-fundamentals nightly is a GitHub cron since 2026-09-19 — runbook §50a. Any future LOCAL routine must own a private worktree under `~/stocks-wt/`, never this checkout.)
 3. Interactive Claude sessions — often more than one at once — sharing THIS checkout.
 
 Rules that keep them from fighting (violated → the 2026-07-22 tangle, see DATA_RUNBOOK §38):

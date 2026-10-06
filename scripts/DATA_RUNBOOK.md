@@ -2081,11 +2081,11 @@ The `bse-vision-fill` reader — the thing that guarantees no declared result st
 parsed" — is a **Claude Code CLOUD routine** (claude.ai/code/routines, id
 `trig_01N3H7t8Dgn2XmLqwBg94j2r`), no longer a local desktop task. It runs on Anthropic's cloud on
 the user's plan: no API key, no laptop-awake dependency.
-- **Schedule: cron `45 18 * * *` UTC = 00:15 IST, once a day, ALL YEAR — until the user makes the one-time §222 edit**
+- **Schedule: `45 18 * * *` UTC = 00:15 IST, once a day, ALL YEAR — until the user makes the one-time §222 edit in the routines UI**
   (cron `45 7,10,15,18 * * *` + the prompt in `scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt`, whose step 0 runs
-  `python3 scripts/season_state.py --vision-slot`; off-season the three daytime slots then print SKIP and exit at once, so
-  only the 18:45 UTC slot works — 1×/day off-season, 4×/day in season, with nobody editing the cron again). A session
-  cannot make that edit (§222: the API refuses agent edits to UI-created routines). The 00:15 anchor is the 2026-09-27 measurement (the 22:30 IST feed top-up lands 23:31–23:38); 21:15
+  `python3 scripts/season_state.py --vision-slot`: off-season the three daytime slots print SKIP and exit at once, in season all four
+  do the full job — 1×/day off-season, 4×/day in season, nobody edits a cron again). A session cannot make that edit (the API refuses
+  agent edits to UI-created routines) and a session-created sibling cannot run the repo's code (auto mode: "Code from External") — §222. The 00:15 anchor is the 2026-09-27 measurement (the 22:30 IST feed top-up lands 23:31–23:38); 21:15
   follows refresh-bse's 20:10 grind (5–12 min); :45 so a slot sees the :30 fundamentals pass. History of the hand-dialled
   era, kept for the measurements: it ran `0 18 * * *` (23:30 IST) once a day from 2026-08-18, and `0 8,11,15,18 * * *` UTC
   (13:30 / 16:30 / 20:30 / 23:30 IST) through the Jun-2026 season; **cut to the single 23:30 slot on
@@ -2101,13 +2101,13 @@ the user's plan: no API key, no laptop-awake dependency.
   The contract is also STRUCTURAL, not just timing: `find_pending` (results_pending.py) subtracts
   everything the crons already filled, and the NSE-side vision overlay applies to EMPTY cells only,
   so real XBRL always supersedes.
-- **The two CI season schedules switch AUTOMATICALLY since 2026-10-06; the routine's switch is ready and waits on ONE
-  user edit — §222.** The Monday reminder routine `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`) is
-  still enabled (a session cannot disable it); when it pushes, make the §222 routine edit and then disable it. The pairing:
+- **The two CI season schedules switch AUTOMATICALLY since 2026-10-06; the routine's switch waits on ONE user edit in the
+  routines UI — §222.** The Monday reminder routine `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`) is still
+  enabled (a session cannot disable it); when it pushes, make the §222 routine edit and then disable it. The pairing:
 
   | | off-season | in season | switched by |
   |---|---|---|---|
-  | `bse-vision-fill` routine | 00:15 IST only (3 slots SKIP) | 13:15 / 16:15 / 21:15 / 00:15 IST | step-0 guard `season_state.py --vision-slot` — AFTER the user's one-time edit (§222) |
+  | `bse-vision-fill` routine | 00:15 IST only (3 slots SKIP) | 13:15 / 16:15 / 21:15 / 00:15 IST | step-0 guard `season_state.py --vision-slot` — AFTER the user's one-time UI edit (§222) |
   | `refresh-results-hourly.yml` | `0 3,7,11,15,17,19 * * *` | `0 3-19 * * *` | `dispatch-cron[off-season]` / `[in-season]` lines |
   | `refresh-fundamentals.yml` intraday | `0 4-14 * * *` | `0,30 4-14 * * *` | `dispatch-cron[off-season]` / `[in-season]` lines |
 
@@ -27030,7 +27030,7 @@ answers IN or OFF from measured data and everything reads it — nothing is edit
 |---|---|---|---|
 | `refresh-fundamentals.yml` intraday (XBRL numbers) | `0,30 4-14 * * *` = every 30 min 09:30–19:30 IST, 22 runs/day | `0 4-14 * * *` = hourly, 11 runs/day | moved off GitHub `schedule:` onto the dispatcher: `# dispatch-cron[in-season]:` / `[off-season]:` lines + `repository_dispatch: tick-refresh-fundamentals`. The two nightly GitHub crons (`45 15`, `45 17`) are untouched; a tick carries no `github.event.schedule`, so every existing gate treats it as a LIGHT run (no insurer / IPO-base / midnight-rule steps). |
 | `refresh-results-hourly.yml` (results feed + calendar) | `0 3-19 * * *` = hourly 08:30–00:30 IST, 17 runs/day | `0 3,7,11,15,17,19 * * *` = 6 runs/day | tagged `dispatch-cron` lines; 17 UTC (22:30 IST) stays in both sets (load-bearing for the 00:15 vision run) |
-| `bse-vision-fill` cloud routine (`trig_01N3H7t8Dgn2XmLqwBg94j2r`) | 4 slots: 13:15 / 16:15 / 21:15 / 00:15 IST | 1 slot: 00:15 IST | **NOT YET APPLIED — needs ONE edit by the user in the routines UI (see "The routine edit the user must make" below).** Target: FIXED cron `45 7,10,15,18 * * *` UTC all year + the prompt in `scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt`, whose STEP 0 runs `python3 -X utf8 scripts/season_state.py --vision-slot`: `SKIP …` on an off-season daytime slot = reply that one line and stop (no sync, no pip, no fetch — a ~1-minute session); `RUN …` otherwise; a missing or erroring script = RUN (fail open). Until that edit the routine stays at 1×/day 00:15 IST all year. |
+| `bse-vision-fill` cloud routine (`trig_01N3H7t8Dgn2XmLqwBg94j2r`, the user's, `45 18 * * *` = 00:15 IST) | 4 slots: 13:15 / 16:15 / 21:15 / 00:15 IST | 1 slot: 00:15 IST | **STILL 1×/day ALL YEAR — the only part not automatic yet; it needs ONE action in the routines UI by the user (below).** A session cannot edit this routine, and the sibling a session created (`bse-vision-fill-daytime`, `trig_01M7CxRAhg4tsXWDEZHbWxtH`) is DISABLED: a session-created routine carries no repository source, so its VM starts empty and the auto-mode classifier denies cloning + running the repo's own code ("Code from External"). The repo side is ready: `season_state.py --vision-slot` prints RUN/SKIP per slot; the two prompt files in `scripts/routine_prompts/` carry the step-0 guard. |
 
 **The state — `scripts/season_state.py`, one answer for every reader.** Stateless: the same inputs always give the same
 answer, so there is no memory to get stuck and the dispatcher (every 5 min), the routine (at its slot) and the coverage page
@@ -27065,26 +27065,39 @@ day before 0; feed newest 2026-10-06`); if season_state fails the IN-season slot
 `--list` prints the state and each workflow's active slots without API calls. `cron-dispatch.yml`'s sparse checkout gained
 `scripts/season_state.py` + `docs/results_feed.json`.
 
-**The routine edit the user must make (one time, then never again).** Measured 2026-10-06, in this order:
-1. `update_trigger` on `bse-vision-fill` and on the restore-check → refused by the API: *"this routine was created via
-   http_api, not by an agent. Agents can only update routines they created … The user can edit it themselves at
-   https://claude.ai/code/routines/<id>"*. Both routines were made in the web UI, so NO session can change their cron,
-   prompt or enabled state.
-2. `create_trigger` for a sibling `bse-vision-fill-daytime` (`45 7,10,15 * * *`, same environment, the daytime half with the
-   guard) → denied by the auto-mode permission classifier ("Merge Without Review"); the user can allow
-   `mcp__claude-code-remote__create_trigger` for a session, or create it in the UI.
-So the two CI schedules are automatic as of this commit, and the vision reader becomes automatic the moment the user does
-ONE of: (a) edit `bse-vision-fill`: cron `45 7,10,15,18 * * *` + paste `scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt`;
-or (b) add `bse-vision-fill-daytime`: cron `45 7,10,15 * * *`, env `env_01Pb6Vujaf9FQ9m1kZXYJN9c`, no connectors, paste
-`scripts/routine_prompts/bse-vision-fill-daytime.prompt.txt`. `scripts/routine_prompts/README.md` spells both out. Those files
-are PROPOSED text: once pasted, the trigger config is the source of truth again (§17b's porting rule).
+**The routine half: what was tried on 2026-10-06, measured, and the ONE user action that finishes it.**
+1. `update_trigger` on `bse-vision-fill` and on the restore-check → refused by the API: *"this routine was created via http_api, not by an
+   agent. Agents can only update routines they created … The user can edit it themselves at https://claude.ai/code/routines/<id>"*. Both
+   were made in the web UI, so NO session can change their cron, prompt or enabled state.
+2. `create_trigger` for a sibling `bse-vision-fill-daytime` (`45 7,10,15 * * *`, same environment) → first denied by the auto-mode
+   permission classifier; after the user's "u do it please. u hv my approval" the retry created it (`trig_01M7CxRAhg4tsXWDEZHbWxtH`;
+   `connectors` had to be omitted — "not available for this organization"). Its stored prompt is byte-identical to
+   `scripts/routine_prompts/bse-vision-fill-daytime.prompt.txt` (sha256 checked).
+3. First test fire: the VM was EMPTY — a routine created from a session has `session_request.config.sources: []`, no repository, unlike a
+   UI-created routine (`/home/user` empty, "not a git repository"). The session started a full-history clone of a 759 MB repo on its own
+   and was interrupted. Fix attempted: step 0 clones the public repo itself, sparse and blob-less (recipe proven from this session against
+   GitHub: 2 s / 2 MB for the two guard files; `git sparse-checkout disable` = 68 s / 745 MB for the whole tree).
+4. Second test fire with that prompt: the routine's own auto-mode classifier DENIED step 0 — first "classifier timed out", then
+   *"[Code from External]"* — because cloning a repo and executing its script inside a session that has no repository source is, to the
+   classifier, running external code. The run ended with nothing cloned or executed; the sibling 00:15 run was unaffected.
+   → The daytime routine is DISABLED (not deleted) so it does not fire three failing sessions a day; its name says why.
+**Therefore the vision reader stays 1×/day until the user does ONE of these in the routines UI (claude.ai/code/routines) — once,
+then never again:**
+- (recommended, one routine) edit `bse-vision-fill`: cron `45 7,10,15,18 * * *`, prompt = `scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt`.
+  The platform keeps cloning the repo for it, so no clone step; step 0 is just the guard.
+- (or, two routines) create `bse-vision-fill-daytime` in the UI WITH dhruvan246/stocks-dashboard attached as the repository, environment
+  `env_01Pb6Vujaf9FQ9m1kZXYJN9c`, cron `45 7,10,15 * * *`, prompt = `scripts/routine_prompts/bse-vision-fill-daytime.prompt.txt` (its
+  clone step is guarded by `[ -d .git ] ||`, so with a platform clone it is a no-op). Then delete the disabled session-created one.
+Also only the user can disable/delete `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`): still enabled, it will push
+"restore the three schedules" on Mondays once filings restart — two of the three are automatic now, so treat that push as the reminder
+to make the routine edit above, then disable it.
 
-**Why the routine keeps a fixed 4-slot cron and guards itself, instead of editing its own cron.** Routine sessions have no
-tool that edits a trigger: the restore-check routine's 2026-10-05 session init listed Bash/Read/github/Gmail/Drive tools but no
-Claude_Code_Remote tool (that MCP connection was `pending` at init), the vision routine has no MCP connection at all, and (1)
-above shows even an interactive session cannot edit a UI-created routine — so a self-adjusting cron would rest on nothing,
-and its failure mode would be the bad one (stuck at 1×/day in season). The guard costs three ~1-minute no-op sessions a day
-off-season and fails SAFE: if it ever breaks, the worst case is an extra read, never a missed one.
+**Why fixed crons + a guard, instead of a routine editing its own cron.** Routine sessions have no tool that edits a trigger: the
+restore-check routine's 2026-10-05 session init listed Bash/Read/github/Gmail/Drive tools but no Claude_Code_Remote tool (that MCP
+connection was `pending` at init), the vision routine has no MCP connection at all, and (1) above shows even an interactive session
+cannot edit a UI-created routine — so a self-adjusting cron would rest on nothing, and its failure mode would be the bad one (stuck
+at 1×/day in season). The guard costs three ~1-minute SKIP sessions a day off-season and fails SAFE: if it ever breaks, the worst
+case is an extra read, never a missed one.
 
 **Results coverage page.** `build_results_coverage.py` stamps `season` {state, reason, window, counts, vision_slots_ist,
 vision_runs_per_day} into `docs/results_coverage.json` (rebuilt by refresh-results-hourly 6–17×/day and by the vision run);
@@ -27093,8 +27106,8 @@ and the banner carries a chip — "off-season — vision 1×/day (00:15 IST)" / 
 
 **To retire — by the user.** `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`) could NOT be disabled from
 the session (same API refusal). It still fires Mondays in Oct + Nov and will push "restore the three schedules" once filings
-restart; two of the three are automatic now, so treat that push as the reminder to make the one routine edit above, then
-disable or delete the check in the routines UI.
+restart; the two CI schedules are automatic now, so when it pushes: make the one routine edit above, then disable the check.
+Also delete the disabled `bse-vision-fill-daytime` (`trig_01M7CxRAhg4tsXWDEZHbWxtH`) once the routine edit is made.
 
 **Verified 2026-10-06 (§39 gate):** py_compile + YAML parse of every touched file; `test_season_state.py` all checks
 (4-season replay, calendar, vision slots, VISION_CRON ↔ slot table, dispatcher tag selection, dispatcher.season() ==
