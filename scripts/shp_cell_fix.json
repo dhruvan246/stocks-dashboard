@@ -142263,7 +142263,7 @@
     "cell": [
      0.0,
      15.9148,
-     11.8612,
+     13.2727,
      5.825,
      0.0,
      "2016-10-20",
@@ -142271,17 +142271,26 @@
     ],
     "was": [
      0.0,
-     20.7248,
+     15.9148,
      11.8612,
      5.825,
      0.0,
      "2016-10-20",
      133443
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.72 -> 15.91. International Finance Corporation 3.44 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.37 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_19102016192932_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files HDFC BANK LTD 1.4115 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 11.8612 -> 13.2727; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      15.9148,
+      11.8612,
+      5.825,
+      0.0,
+      "2016-10-20",
+      133443
+     ],
+     "was": [
       0.0,
       20.7248,
       11.8612,
@@ -142290,21 +142299,12 @@
       "2016-10-20",
       133443
      ],
-     "was": [
-      0.0,
-      12.5248,
-      11.8612,
-      5.825,
-      0.0,
-      "2016-10-20",
-      133443
-     ],
-     "src": "bsexbrl:540065_19102016192932_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 12.52 -> 20.72 (+8.20 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.51 8.19 CDC Group PLC 4.28 stay(new-format:ForeignCompanies); International Finance Corporation 3.44 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.38 fii(inst-tag); Cartica Capital 2 Limited 3.06 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.73 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.38 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.86 stay(label); Galileo Investments Limited 1.61 stay(label); HDFC BANK LTD 1.41 stay(regex); Dvi Fund Mauritius Ltd 1.37 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.72 -> 15.91. International Finance Corporation 3.44 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.37 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       12.5248,
+       20.7248,
        11.8612,
        5.825,
        0.0,
@@ -142313,20 +142313,51 @@
       ],
       "was": [
        0.0,
-       8.6444,
-       15.7416,
+       12.5248,
+       11.8612,
        5.825,
        0.0,
        "2016-10-20",
        133443
       ],
       "src": "bsexbrl:540065_19102016192932_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.88pp, holders: Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.8612 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 12.52 -> 20.72 (+8.20 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.51 8.19 CDC Group PLC 4.28 stay(new-format:ForeignCompanies); International Finance Corporation 3.44 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.38 fii(inst-tag); Cartica Capital 2 Limited 3.06 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.73 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.38 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.86 stay(label); Galileo Investments Limited 1.61 stay(label); HDFC BANK LTD 1.41 stay(regex); Dvi Fund Mauritius Ltd 1.37 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        12.5248,
+        11.8612,
+        5.825,
+        0.0,
+        "2016-10-20",
+        133443
+       ],
+       "was": [
+        0.0,
+        8.6444,
+        15.7416,
+        5.825,
+        0.0,
+        "2016-10-20",
+        133443
+       ],
+       "src": "bsexbrl:540065_19102016192932_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.88pp, holders: Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.8612 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2016-12-31": {
     "cell": [
+     0.0,
+     13.9721,
+     12.479,
+     7.8707,
+     0.0,
+     "2017-01-19",
+     168463
+    ],
+    "was": [
      0.0,
      13.9721,
      11.08,
@@ -142335,19 +142366,19 @@
      "2017-01-19",
      168463
     ],
-    "was": [
-     0.0,
-     18.7421,
-     11.08,
-     7.8707,
-     0.0,
-     "2017-01-19",
-     168463
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 18.74 -> 13.97. International Finance Corporation 3.41 (non-institution row) FII -> public; DVI Fund Mauritius Ltd 1.36 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_181201719234_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files HDFC Bank Limited 1.3990 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 11.0800 -> 12.4790; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      13.9721,
+      11.08,
+      7.8707,
+      0.0,
+      "2017-01-19",
+      168463
+     ],
+     "was": [
       0.0,
       18.7421,
       11.08,
@@ -142356,21 +142387,12 @@
       "2017-01-19",
       168463
      ],
-     "was": [
-      0.0,
-      10.6021,
-      11.08,
-      7.8707,
-      0.0,
-      "2017-01-19",
-      168463
-     ],
-     "src": "bsexbrl:540065_181201719234_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 10.60 -> 18.74 (+8.14 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.25 8.12 CDC Group Plc 4.24 stay(new-format:ForeignCompanies); International Finance Corporation 3.41 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.35 fii(inst-tag); Cartica Capital 2 Limited 3.03 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.71 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.36 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.85 stay(label); Galileo Investments Limited 1.59 stay(label); HDFC Bank Limited 1.40 stay(regex); DVI Fund Mauritius Ltd 1.36 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 18.74 -> 13.97. International Finance Corporation 3.41 (non-institution row) FII -> public; DVI Fund Mauritius Ltd 1.36 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       10.6021,
+       18.7421,
        11.08,
        7.8707,
        0.0,
@@ -142379,20 +142401,51 @@
       ],
       "was": [
        0.0,
-       6.7563,
-       14.9258,
+       10.6021,
+       11.08,
        7.8707,
        0.0,
        "2017-01-19",
        168463
       ],
       "src": "bsexbrl:540065_181201719234_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.85pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.0800 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 10.60 -> 18.74 (+8.14 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.25 8.12 CDC Group Plc 4.24 stay(new-format:ForeignCompanies); International Finance Corporation 3.41 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.35 fii(inst-tag); Cartica Capital 2 Limited 3.03 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.71 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.36 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.85 stay(label); Galileo Investments Limited 1.59 stay(label); HDFC Bank Limited 1.40 stay(regex); DVI Fund Mauritius Ltd 1.36 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        10.6021,
+        11.08,
+        7.8707,
+        0.0,
+        "2017-01-19",
+        168463
+       ],
+       "was": [
+        0.0,
+        6.7563,
+        14.9258,
+        7.8707,
+        0.0,
+        "2017-01-19",
+        168463
+       ],
+       "src": "bsexbrl:540065_181201719234_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.85pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.0800 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2017-03-31": {
     "cell": [
+     0.0,
+     15.2009,
+     11.0971,
+     7.5106,
+     0.0,
+     "2017-04-19",
+     165802
+    ],
+    "was": [
      0.0,
      15.2009,
      9.7059,
@@ -142401,19 +142454,19 @@
      "2017-04-19",
      165802
     ],
-    "was": [
-     0.0,
-     19.9409,
-     9.7059,
-     7.5106,
-     0.0,
-     "2017-04-19",
-     165802
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.94 -> 15.20. International Finance Corporation 3.39 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.35 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_184201718436_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd 1.3912 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 9.7059 -> 11.0971; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      15.2009,
+      9.7059,
+      7.5106,
+      0.0,
+      "2017-04-19",
+      165802
+     ],
+     "was": [
       0.0,
       19.9409,
       9.7059,
@@ -142422,21 +142475,12 @@
       "2017-04-19",
       165802
      ],
-     "was": [
-      0.0,
-      11.8409,
-      9.7059,
-      7.5106,
-      0.0,
-      "2017-04-19",
-      165802
-     ],
-     "src": "bsexbrl:540065_184201718436_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.84 -> 19.94 (+8.10 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.09 8.08 CDC Group Plc 4.22 stay(new-format:ForeignCompanies); International Finance Corporation 3.39 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.34 fii(inst-tag); Cartica Capital 2 Limited 3.01 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.69 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.35 stay(new-format:BodiesCorporate); GPE (India) Ltd 1.84 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.94 -> 15.20. International Finance Corporation 3.39 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.35 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       11.8409,
+       19.9409,
        9.7059,
        7.5106,
        0.0,
@@ -142445,20 +142489,51 @@
       ],
       "was": [
        0.0,
-       8.0163,
-       13.5305,
+       11.8409,
+       9.7059,
        7.5106,
        0.0,
        "2017-04-19",
        165802
       ],
       "src": "bsexbrl:540065_184201718436_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.82pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 9.7059 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.84 -> 19.94 (+8.10 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 29.09 8.08 CDC Group Plc 4.22 stay(new-format:ForeignCompanies); International Finance Corporation 3.39 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.34 fii(inst-tag); Cartica Capital 2 Limited 3.01 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.69 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.35 stay(new-format:BodiesCorporate); GPE (India) Ltd 1.84 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        11.8409,
+        9.7059,
+        7.5106,
+        0.0,
+        "2017-04-19",
+        165802
+       ],
+       "was": [
+        0.0,
+        8.0163,
+        13.5305,
+        7.5106,
+        0.0,
+        "2017-04-19",
+        165802
+       ],
+       "src": "bsexbrl:540065_184201718436_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.82pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 9.7059 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2017-06-30": {
     "cell": [
+     0.0,
+     17.3468,
+     8.6739,
+     5.2347,
+     0.0,
+     "2017-07-19",
+     194152
+    ],
+    "was": [
      0.0,
      17.3468,
      7.2883,
@@ -142467,19 +142542,19 @@
      "2017-07-19",
      194152
     ],
-    "was": [
-     0.0,
-     22.0768,
-     7.2883,
-     5.2347,
-     0.0,
-     "2017-07-19",
-     194152
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 22.08 -> 17.35. International Finance Corporation 3.38 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.35 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_1872017221126_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd 1.3856 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 7.2883 -> 8.6739; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      17.3468,
+      7.2883,
+      5.2347,
+      0.0,
+      "2017-07-19",
+      194152
+     ],
+     "was": [
       0.0,
       22.0768,
       7.2883,
@@ -142488,21 +142563,12 @@
       "2017-07-19",
       194152
      ],
-     "was": [
-      0.0,
-      14.0068,
-      7.2883,
-      5.2347,
-      0.0,
-      "2017-07-19",
-      194152
-     ],
-     "src": "bsexbrl:540065_1872017221126_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 14.01 -> 22.08 (+8.07 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 28.97 8.05 Cdc Group Plc 4.20 stay(new-format:ForeignCompanies); International Finance Corporation 3.38 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.32 fii(inst-tag); Cartica Capital 2 Limited 3.00 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.68 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.34 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.83 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 22.08 -> 17.35. International Finance Corporation 3.38 (non-institution row) FII -> public; Dvi Fund Mauritius Ltd 1.35 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       14.0068,
+       22.0768,
        7.2883,
        5.2347,
        0.0,
@@ -142511,20 +142577,51 @@
       ],
       "was": [
        0.0,
-       10.1976,
-       11.0974,
+       14.0068,
+       7.2883,
        5.2347,
        0.0,
        "2017-07-19",
        194152
       ],
       "src": "bsexbrl:540065_1872017221126_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.81pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.2883 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 14.01 -> 22.08 (+8.07 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 28.97 8.05 Cdc Group Plc 4.20 stay(new-format:ForeignCompanies); International Finance Corporation 3.38 fii(curated); Norwest Venture Partners X Fii - Mauritius 3.32 fii(inst-tag); Cartica Capital 2 Limited 3.00 stay(label); Asia Capital Financial Opportunities Pte Ltd 2.68 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.34 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.83 stay(label); Galileo Investments Limited 1.58 stay(label); Hdfc Bank Ltd 1.39 stay(regex); Dvi Fund Mauritius Ltd 1.35 fii(curated); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        14.0068,
+        7.2883,
+        5.2347,
+        0.0,
+        "2017-07-19",
+        194152
+       ],
+       "was": [
+        0.0,
+        10.1976,
+        11.0974,
+        5.2347,
+        0.0,
+        "2017-07-19",
+        194152
+       ],
+       "src": "bsexbrl:540065_1872017221126_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.81pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 7.2883 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2017-09-30": {
     "cell": [
+     0.0,
+     19.0597,
+     9.7904,
+     7.3284,
+     0.2336,
+     "2017-10-13",
+     199669
+    ],
+    "was": [
      0.0,
      19.0597,
      8.5344,
@@ -142533,19 +142630,19 @@
      "2017-10-13",
      199669
     ],
-    "was": [
-     0.0,
-     22.0697,
-     8.5344,
-     7.3284,
-     0.2336,
-     "2017-10-13",
-     199669
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 22.07 -> 19.06. International Finance Corporation 3.01 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_12102017152541_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd 1.2560 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 8.5344 -> 9.7904; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      19.0597,
+      8.5344,
+      7.3284,
+      0.2336,
+      "2017-10-13",
+      199669
+     ],
+     "was": [
       0.0,
       22.0697,
       8.5344,
@@ -142554,21 +142651,12 @@
       "2017-10-13",
       199669
      ],
-     "was": [
-      0.0,
-      17.4797,
-      8.5344,
-      7.3284,
-      0.2336,
-      "2017-10-13",
-      199669
-     ],
-     "src": "bsexbrl:540065_12102017152541_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 17.48 -> 22.07 (+4.59 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 23.34 4.58 Cdc Group Plc 6.80 stay(new-format:ForeignCompanies); International Finance Corporation 3.01 fii(curated); Asia Capital Financial Opportunities Pte Ltd 2.43 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.12 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.66 stay(label); Norwest Venture Partners X Fii - Mauritius 1.57 fii(inst-tag); Galileo Investments Limited 1.43 stay(label); Hdfc Bank Ltd 1.26 stay(regex); R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 22.07 -> 19.06. International Finance Corporation 3.01 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       17.4797,
+       22.0697,
        8.5344,
        7.3284,
        0.2336,
@@ -142577,20 +142665,51 @@
       ],
       "was": [
        0.0,
-       14.0268,
-       11.9873,
+       17.4797,
+       8.5344,
        7.3284,
        0.2336,
        "2017-10-13",
        199669
       ],
       "src": "bsexbrl:540065_12102017152541_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.45pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.5344 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 17.48 -> 22.07 (+4.59 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 23.34 4.58 Cdc Group Plc 6.80 stay(new-format:ForeignCompanies); International Finance Corporation 3.01 fii(curated); Asia Capital Financial Opportunities Pte Ltd 2.43 stay(new-format:ForeignCompanies); Housing Development Finance Corporation Limited 2.12 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.66 stay(label); Norwest Venture Partners X Fii - Mauritius 1.57 fii(inst-tag); Galileo Investments Limited 1.43 stay(label); Hdfc Bank Ltd 1.26 stay(regex); R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        17.4797,
+        8.5344,
+        7.3284,
+        0.2336,
+        "2017-10-13",
+        199669
+       ],
+       "was": [
+        0.0,
+        14.0268,
+        11.9873,
+        7.3284,
+        0.2336,
+        "2017-10-13",
+        199669
+       ],
+       "src": "bsexbrl:540065_12102017152541_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.45pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 8.5344 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2017-12-31": {
     "cell": [
+     0.0,
+     18.0214,
+     13.9161,
+     11.0215,
+     0.3545,
+     "2018-01-17",
+     203579
+    ],
+    "was": [
      0.0,
      18.0214,
      12.6659,
@@ -142599,19 +142718,19 @@
      "2018-01-17",
      203579
     ],
-    "was": [
-     0.0,
-     20.1514,
-     12.6659,
-     11.0215,
-     0.3545,
-     "2018-01-17",
-     203579
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.15 -> 18.02. International Finance Corporation 2.13 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_1612018184236_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd 1.2502 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 12.6659 -> 13.9161; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      18.0214,
+      12.6659,
+      11.0215,
+      0.3545,
+      "2018-01-17",
+      203579
+     ],
+     "was": [
       0.0,
       20.1514,
       12.6659,
@@ -142620,21 +142739,12 @@
       "2018-01-17",
       203579
      ],
-     "was": [
-      0.0,
-      18.0014,
-      12.6659,
-      11.0215,
-      0.3545,
-      "2018-01-17",
-      203579
-     ],
-     "src": "bsexbrl:540065_1612018184236_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 18.00 -> 20.15 (+2.15 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 19.83 2.13 Cdc Group Plc 6.77 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.42 stay(new-format:ForeignCompanies); International Finance Corporation 2.13 fii(curated); Housing Development Finance Corporation Limited 2.11 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.65 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Bank Ltd 1.25 stay(regex); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 20.15 -> 18.02. International Finance Corporation 2.13 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       18.0014,
+       20.1514,
        12.6659,
        11.0215,
        0.3545,
@@ -142643,20 +142753,51 @@
       ],
       "was": [
        0.0,
-       14.5646,
-       16.1027,
+       18.0014,
+       12.6659,
        11.0215,
        0.3545,
        "2018-01-17",
        203579
       ],
       "src": "bsexbrl:540065_1612018184236_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.44pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.6659 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 18.00 -> 20.15 (+2.15 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Other Foreign Companies 19.83 2.13 Cdc Group Plc 6.77 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.42 stay(new-format:ForeignCompanies); International Finance Corporation 2.13 fii(curated); Housing Development Finance Corporation Limited 2.11 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.65 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Bank Ltd 1.25 stay(regex); R2FII-label Foreign Portfolio Investors (Category III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        18.0014,
+        12.6659,
+        11.0215,
+        0.3545,
+        "2018-01-17",
+        203579
+       ],
+       "was": [
+        0.0,
+        14.5646,
+        16.1027,
+        11.0215,
+        0.3545,
+        "2018-01-17",
+        203579
+       ],
+       "src": "bsexbrl:540065_1612018184236_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.44pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.6659 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2018-03-31": {
     "cell": [
+     0.0,
+     18.9444,
+     16.1352,
+     12.3233,
+     0.3813,
+     "2018-04-19",
+     193760
+    ],
+    "was": [
      0.0,
      18.9444,
      13.5447,
@@ -142665,19 +142806,19 @@
      "2018-04-19",
      193760
     ],
-    "was": [
-     0.0,
-     21.0644,
-     13.5447,
-     12.3233,
-     0.3813,
-     "2018-04-19",
-     193760
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 21.06 -> 18.94. International Finance Corporation 2.12 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_1842018192656_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Standard Life Insurance Company Limited & Oth 1.3466 + Hdfc Bank Ltd 1.2438 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (IRDAI-registered life insurer no. 101: HDFC Life Insurance Co Ltd (formerly HDFC Standard Life); HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 13.5447 -> 16.1352; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      18.9444,
+      13.5447,
+      12.3233,
+      0.3813,
+      "2018-04-19",
+      193760
+     ],
+     "was": [
       0.0,
       21.0644,
       13.5447,
@@ -142686,21 +142827,12 @@
       "2018-04-19",
       193760
      ],
-     "was": [
-      0.0,
-      18.9244,
-      13.5447,
-      12.3233,
-      0.3813,
-      "2018-04-19",
-      193760
-     ],
-     "src": "bsexbrl:540065_1842018192656_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 18.92 -> 21.06 (+2.14 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Companies 20.44 2.12 Cdc Group Plc 6.73 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.41 stay(new-format:ForeignCompanies); International Finance Corporation 2.12 fii(curated); Housing Development Finance Corporation Limited 2.10 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.64 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Standard Life Insurance Company Limited & Other 1.35 stay(regex); Hdfc Bank Ltd 1.24 stay(regex); R2FII-label Foreign Portfolio Investor (Category - III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 21.06 -> 18.94. International Finance Corporation 2.12 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       18.9244,
+       21.0644,
        13.5447,
        12.3233,
        0.3813,
@@ -142709,20 +142841,51 @@
       ],
       "was": [
        0.0,
-       15.505,
-       16.9641,
+       18.9244,
+       13.5447,
        12.3233,
        0.3813,
        "2018-04-19",
        193760
       ],
       "src": "bsexbrl:540065_1842018192656_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.42pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 13.5447 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 18.92 -> 21.06 (+2.14 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Companies 20.44 2.12 Cdc Group Plc 6.73 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.41 stay(new-format:ForeignCompanies); International Finance Corporation 2.12 fii(curated); Housing Development Finance Corporation Limited 2.10 stay(new-format:BodiesCorporate); Gpe (India) Ltd 1.64 stay(label); Galileo Investments Limited 1.42 stay(label); Hdfc Standard Life Insurance Company Limited & Other 1.35 stay(regex); Hdfc Bank Ltd 1.24 stay(regex); R2FII-label Foreign Portfolio Investor (Category - III) 0.02 0.02 FII-labelled row 0.02 -> fii. Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        18.9244,
+        13.5447,
+        12.3233,
+        0.3813,
+        "2018-04-19",
+        193760
+       ],
+       "was": [
+        0.0,
+        15.505,
+        16.9641,
+        12.3233,
+        0.3813,
+        "2018-04-19",
+        193760
+       ],
+       "src": "bsexbrl:540065_1842018192656_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.42pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 13.5447 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2018-06-30": {
     "cell": [
+     0.0,
+     17.8412,
+     20.224,
+     16.4393,
+     0.4585,
+     "2018-07-27",
+     179499
+    ],
+    "was": [
      0.0,
      17.8412,
      17.5393,
@@ -142731,28 +142894,10 @@
      "2018-07-27",
      179499
     ],
-    "was": [
-     0.0,
-     19.9512,
-     17.5393,
-     16.4393,
-     0.4585,
-     "2018-07-27",
-     179499
-    ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.95 -> 17.84. INTERNATIONAL FINANCE\nCORPORATION 2.11 (non-institution row) FII -> public",
+    "src": "bsexbrl:540065_2772018172256_SHP.xml",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Standard Life Insurance Company Limited 1.4446 + Hdfc Bank Ltd 1.2401 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (IRDAI-registered life insurer no. 101: HDFC Life Insurance Co Ltd (formerly HDFC Standard Life); HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 17.5393 -> 20.2240; fii untouched.",
     "superseded": {
      "cell": [
-      0.0,
-      19.9512,
-      17.5393,
-      16.4393,
-      0.4585,
-      "2018-07-27",
-      179499
-     ],
-     "was": [
       0.0,
       17.8412,
       17.5393,
@@ -142761,12 +142906,21 @@
       "2018-07-27",
       179499
      ],
-     "src": "bsexbrl:540065_2772018172256_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 17.84 -> 19.95 (+2.11 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Companies 22.77 2.11 Cdc Group Plc 6.71 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.40 stay(new-format:ForeignCompanies); INTERNATIONAL FINANCE\nCORPORATION 2.11 fii(curated); Housing Development Finance Corporation Limited 2.09 stay(new-format:BodiesCorporate); Hdfc Standard Life Insurance Company Limited 1.44 stay(memory~); Galileo Investments Limited 1.41 stay(label); Plenty Private Equity Fund I Limited 1.35 stay(label); Hdfc Bank Ltd 1.24 stay(regex); Gpe (India) Ltd 1.20 stay(label). Evidence: _shp_fii_rowfix_audit.json",
+     "was": [
+      0.0,
+      19.9512,
+      17.5393,
+      16.4393,
+      0.4585,
+      "2018-07-27",
+      179499
+     ],
+     "src": "ledger",
+     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 19.95 -> 17.84. INTERNATIONAL FINANCE\nCORPORATION 2.11 (non-institution row) FII -> public",
      "superseded": {
       "cell": [
        0.0,
-       17.8412,
+       19.9512,
        17.5393,
        16.4393,
        0.4585,
@@ -142775,20 +142929,51 @@
       ],
       "was": [
        0.0,
-       14.4321,
-       20.9484,
+       17.8412,
+       17.5393,
        16.4393,
        0.4585,
        "2018-07-27",
        179499
       ],
       "src": "bsexbrl:540065_2772018172256_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.41pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.5393 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 17.84 -> 19.95 (+2.11 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Companies 22.77 2.11 Cdc Group Plc 6.71 stay(new-format:ForeignCompanies); Asia Capital Financial Opportunities Pte Ltd 2.40 stay(new-format:ForeignCompanies); INTERNATIONAL FINANCE\nCORPORATION 2.11 fii(curated); Housing Development Finance Corporation Limited 2.09 stay(new-format:BodiesCorporate); Hdfc Standard Life Insurance Company Limited 1.44 stay(memory~); Galileo Investments Limited 1.41 stay(label); Plenty Private Equity Fund I Limited 1.35 stay(label); Hdfc Bank Ltd 1.24 stay(regex); Gpe (India) Ltd 1.20 stay(label). Evidence: _shp_fii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        17.8412,
+        17.5393,
+        16.4393,
+        0.4585,
+        "2018-07-27",
+        179499
+       ],
+       "was": [
+        0.0,
+        14.4321,
+        20.9484,
+        16.4393,
+        0.4585,
+        "2018-07-27",
+        179499
+       ],
+       "src": "bsexbrl:540065_2772018172256_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.41pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.5393 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
    "2018-09-30": {
     "cell": [
+     0.0,
+     17.5752,
+     23.5305,
+     19.6457,
+     0.4549,
+     "2018-10-12",
+     178385
+    ],
+    "was": [
      0.0,
      17.5752,
      20.6688,
@@ -142797,20 +142982,42 @@
      "2018-10-12",
      178385
     ],
-    "was": [
-     0.0,
-     14.1932,
-     24.0509,
-     19.6457,
-     0.4549,
-     "2018-10-12",
-     178385
-    ],
     "src": "bsexbrl:540065_11102018182856_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.38pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 20.6688 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Standard Life Insurance Company Limited 1.6315 + Hdfc Bank Ltd 1.2303 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (IRDAI-registered life insurer no. 101: HDFC Life Insurance Co Ltd (formerly HDFC Standard Life); HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 20.6688 -> 23.5305; fii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      17.5752,
+      20.6688,
+      19.6457,
+      0.4549,
+      "2018-10-12",
+      178385
+     ],
+     "was": [
+      0.0,
+      14.1932,
+      24.0509,
+      19.6457,
+      0.4549,
+      "2018-10-12",
+      178385
+     ],
+     "src": "bsexbrl:540065_11102018182856_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.38pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 20.6688 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2018-12-31": {
     "cell": [
+     0.0,
+     19.2904,
+     23.9597,
+     20.0327,
+     0.4537,
+     "2019-01-17",
+     175726
+    ],
+    "was": [
      0.0,
      19.2904,
      21.0729,
@@ -142819,23 +143026,36 @@
      "2019-01-17",
      175726
     ],
-    "was": [
-     0.0,
-     15.9174,
-     24.4459,
-     20.0327,
-     0.4537,
-     "2019-01-17",
-     175726
-    ],
     "src": "bsexbrl:540065_161201919559_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.37pp, holders: Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.0729 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Standard Life Insurance Company Limited 1.6599 + Hdfc Bank Ltd 1.2270 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (IRDAI-registered life insurer no. 101: HDFC Life Insurance Co Ltd (formerly HDFC Standard Life); HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 21.0729 -> 23.9597; fii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      19.2904,
+      21.0729,
+      20.0327,
+      0.4537,
+      "2019-01-17",
+      175726
+     ],
+     "was": [
+      0.0,
+      15.9174,
+      24.4459,
+      20.0327,
+      0.4537,
+      "2019-01-17",
+      175726
+     ],
+     "src": "bsexbrl:540065_161201919559_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.37pp, holders: Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.0729 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2019-03-31": {
     "cell": [
      0.0,
      22.1494,
-     23.0876,
+     24.3109,
      20.1693,
      2.2326,
      "2019-04-18",
@@ -142844,16 +143064,25 @@
     "was": [
      0.0,
      22.1494,
-     21.2721,
+     23.0876,
      20.1693,
-     0.4523,
+     2.2326,
      "2019-04-18",
      164007
     ],
     "src": "bsexbrl:540065_1742019201330_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 540065_1742019201330_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists NBFCs registered with RBI 0.0352; non-inst row 'Others': Hdfc Life Insurance Company Limited 1.7803 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 21.2721 -> 23.0876, insurance +1.7803 (Quantmac 23.0876).",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd 1.2233 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 23.0876 -> 24.3109; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      22.1494,
+      23.0876,
+      20.1693,
+      2.2326,
+      "2019-04-18",
+      164007
+     ],
+     "was": [
       0.0,
       22.1494,
       21.2721,
@@ -142862,24 +143091,37 @@
       "2019-04-18",
       164007
      ],
-     "was": [
-      0.0,
-      18.7865,
-      24.635,
-      20.1693,
-      0.4523,
-      "2019-04-18",
-      164007
-     ],
      "src": "bsexbrl:540065_1742019201330_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.36pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.2721 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 540065_1742019201330_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists NBFCs registered with RBI 0.0352; non-inst row 'Others': Hdfc Life Insurance Company Limited 1.7803 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 21.2721 -> 23.0876, insurance +1.7803 (Quantmac 23.0876).",
+     "superseded": {
+      "cell": [
+       0.0,
+       22.1494,
+       21.2721,
+       20.1693,
+       0.4523,
+       "2019-04-18",
+       164007
+      ],
+      "was": [
+       0.0,
+       18.7865,
+       24.635,
+       20.1693,
+       0.4523,
+       "2019-04-18",
+       164007
+      ],
+      "src": "bsexbrl:540065_1742019201330_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.36pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.2721 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2019-06-30": {
     "cell": [
      0.0,
      22.1219,
-     23.6362,
+     24.8566,
      20.5209,
      2.4375,
      "2019-07-19",
@@ -142888,16 +143130,25 @@
     "was": [
      0.0,
      22.1219,
-     21.6273,
+     23.6362,
      20.5209,
-     0.4514,
+     2.4375,
      "2019-07-19",
      170346
     ],
     "src": "bsexbrl:540065_1872019205747_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 540065_1872019205747_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists NBFCs registered with RBI 0.0228; non-inst row 'Others': Hdfc Life Insurance Company Limited 1.9861 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 21.6273 -> 23.6362, insurance +1.9861 (Quantmac 23.6362).",
+    "why": "\u00a7164s part 21 (2026-10-06, user: 'Register wins: count them'): the company files Hdfc Bank Ltd. 1.2204 on a non-institution row it labels 'Foreign Companies'/'Others'; each is an Indian institution on an official register (HDFC Bank Ltd - RBI scheduled commercial bank (Indian private sector)), so R2 counts it as DII - the company's grouping does not override the register (HDFC Ltd, an NHB housing-finance company not on our registers, stays out). dii 23.6362 -> 24.8566; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      22.1219,
+      23.6362,
+      20.5209,
+      2.4375,
+      "2019-07-19",
+      170346
+     ],
+     "was": [
       0.0,
       22.1219,
       21.6273,
@@ -142906,17 +143157,30 @@
       "2019-07-19",
       170346
      ],
-     "was": [
-      0.0,
-      18.7669,
-      24.9823,
-      20.5209,
-      0.4514,
-      "2019-07-19",
-      170346
-     ],
      "src": "bsexbrl:540065_1872019205747_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.35pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.6273 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 540065_1872019205747_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists NBFCs registered with RBI 0.0228; non-inst row 'Others': Hdfc Life Insurance Company Limited 1.9861 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 21.6273 -> 23.6362, insurance +1.9861 (Quantmac 23.6362).",
+     "superseded": {
+      "cell": [
+       0.0,
+       22.1219,
+       21.6273,
+       20.5209,
+       0.4514,
+       "2019-07-19",
+       170346
+      ],
+      "was": [
+       0.0,
+       18.7669,
+       24.9823,
+       20.5209,
+       0.4514,
+       "2019-07-19",
+       170346
+      ],
+      "src": "bsexbrl:540065_1872019205747_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.35pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 21.6273 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2019-09-30": {
