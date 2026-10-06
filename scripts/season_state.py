@@ -4,7 +4,8 @@
 One answer for every reader, so the whole cadence moves together without anyone flipping crons by hand:
   * scripts/cron_dispatch.py picks each workflow's `# dispatch-cron[in-season]:` / `[off-season]:` slots by it
     (refresh-fundamentals every 30 min vs hourly; refresh-results-hourly hourly vs 6×/day);
-  * the bse-vision-fill cloud routine runs `--vision-slot` first thing: off-season its three daytime slots exit at once;
+  * the bse-vision-fill cloud routine (once the user applies the §222 one-time edit: 4-slot cron + the prompt in
+    scripts/routine_prompts/) runs `--vision-slot` first thing: off-season its three daytime slots exit at once;
   * build_results_coverage.py stamps it into docs/results_coverage.json for the Results coverage page.
 
 Inputs (nothing over the network): docs/results_feed.json — {updated, rows}, row = [SYM, name, 'YYYY-MM-DD HH:MM:SS' (IST),
@@ -53,7 +54,7 @@ HOT_DAY = 30              # one day this busy is season, whatever the calendar s
 HOT_TWO_DAYS = 40         # yesterday + the day before
 STALE_DAYS = 3
 
-# The bse-vision-fill routine's FIXED cron (UTC): 13:15 / 16:15 / 21:15 / 00:15 IST. 00:15 is the anchor the 2026-09-27
+# The bse-vision-fill routine's target FIXED cron (UTC): 13:15 / 16:15 / 21:15 / 00:15 IST (applied by the user's one-time §222 edit). 00:15 is the anchor the 2026-09-27
 # measurement chose (the 22:30 IST feed top-up lands 23:31-23:38); 21:15 follows refresh-bse's 20:10 grind (5-12 min);
 # all at :45 so a slot sees the :30 fundamentals pass. Off-season only the 00:15 slot does work (--vision-slot).
 VISION_CRON = "45 7,10,15,18 * * *"

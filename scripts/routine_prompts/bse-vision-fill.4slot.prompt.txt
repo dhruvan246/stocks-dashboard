@@ -1,0 +1,102 @@
+BSE ACCESS RULE (user, 2026-09-26; measured 200 at 23:00 IST): BSE is accessible - never report BSE as 'blocked' or 'no access', and never park BSE work for that reason. Every BSE request uses scripts/bse_headers.py: Python `import bse_headers` (urllib auto-covered; requests: headers=dict(bse_headers.HEADERS)); curl: -A "stocks-dashboard-research/1.0" --compressed -H 'Accept: application/json, text/plain, */*' -H 'Accept-Language: en-US,en;q=0.9' -H 'Referer: https://www.bseindia.com/'. Honest identity only: NEVER send a Chrome/Mozilla User-Agent, sec-ch-ua*, Sec-Fetch-* or Origin to BSE (browser impersonation), and never put a URL in the UA (BSE 403s it). A 403 from BSE itself means OUR request is incomplete or too fast: fix the headers, slow to one request at a time ~1 s apart, retry - then report exactly what was measured. (A 403 with x-deny-reason: host_not_allowed is the SANDBOX allowlist, not BSE - report it as that.)
+
+Fill in EVERY missing quarterly result number (NSE and BSE-only) on the stocks-dashboard using vision. No cap — on heavy declaration days 150+ companies may be pending, and all of them must be filled. This runs unattended — be careful and NEVER invent a number; only report figures you can actually read from the filing image. If you cannot read a figure, use null; if you cannot read a company at all, mark it ok:false.
+
+You are running as a CLOUD ROUTINE: you get a fresh clone of dhruvan246/stocks-dashboard at the start of every run, on your own throwaway VM. Nothing persists between runs, and no other session shares this filesystem — so there is NO worktree to create, NO overlap lock to take, and `git reset --hard` is always safe here. Work in the repo root. Use $TMPDIR (or /tmp) for scratch files. Timestamps: this VM runs UTC, so ALWAYS use `TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST'` for commit messages (unlike the old local task, a real Linux box HAS a timezone database, so this is correct here).
+
+⚠️ SCHEDULE — SET AUTOMATICALLY BY THE RESULTS-SEASON STATE (runbook §222). This routine's cron is `45 7,10,15,18 * * *` UTC = 13:15 / 16:15 / 21:15 / 00:15 IST all year round, but STEP 0 below decides whether the slot that just fired does any work: `scripts/season_state.py` reads docs/results_feed.json (result filings per IST day, NSE + BSE) and the quarter calendar (SEBI deadlines 14-Aug / 14-Nov / 14-Feb / 30-May) and answers IN or OFF. IN results season all four slots run; OFF-season only the 00:15 IST slot runs and the other three exit immediately. Nobody flips this by hand any more — the same script drives the CI cadence (refresh-fundamentals every 30 min vs hourly, refresh-results-hourly hourly vs 6×/day) through scripts/cron_dispatch.py, so every reader moves with the season together. (History: 4×/day through the Jun-2026 season; cut to 1×/day by hand on 2026-08-18 when filings fell from ~750/day to ~8/day; automatic since 2026-10-06. The last slot moved from 23:30 to 00:15 IST on 2026-09-27: the 22:30 IST feed top-up was measured landing at 23:31-23:38 IST, after the 23:30 prep had read the feed.) The 00:15 slot is deliberate: by then the free CI readers have had their turn (refresh-bse 12:10 + 20:10 IST, refresh-fundamentals 09:30–19:30 IST hourly off-season / every 30 min in season plus the full nightly at 21:15, refresh-announcements 21:30, refresh-results-hourly through 00:30), honouring the standing contract that the free fetches fill first and vision only picks up what they missed — and ~99.5% of a trading day's filings have arrived by then, so that run sees the day complete. OFF-SEASON THE COST OF THE SINGLE SLOT IS: ANYTHING YOU LEAVE UNFILLED WAITS A FULL 24 HOURS — do not defer work to "the next run". In season the 13:15 / 16:15 / 21:15 slots exist to spread a 150+-company day; still fill everything pending at every slot. A run that finds nothing pending is the normal cheap outcome — report it and stop.
+
+STEPS:
+
+0. SEASON GUARD — run this FIRST, before any sync, pip install or network call:
+   python3 -X utf8 scripts/season_state.py --vision-slot
+   It prints ONE line that starts with RUN or SKIP, followed by the season state and the filing counts it measured. On SKIP: reply with exactly that line and STOP — do nothing else (this slot is an off-season daytime slot; the 00:15 IST run does the day's work). On RUN: continue with step 1 and quote the line in your final report. If the script is missing or errors, treat it as RUN — fail open: an extra read is cheaper than a missed one — and mention the error in your report.
+
+1. Sync: `git fetch origin -q && git reset --hard origin/main -q`
+   (The clone may be minutes old; another CI workflow may have pushed since.)
+   Install deps: `pip install -q pymupdf` — the prep script needs fitz. If a setup script already installed it, this is a fast no-op.
+
+2. Render ALL pending filings:
+   python -X utf8 scripts/bse_vision_prep.py --limit 250 --outdir /tmp/bse_pending
+   This writes /tmp/bse_pending/qe_fix_run.json (the quarter corrections prep resolved this run — step 5 re-applies them via `--qefix`; the file is written even when empty) and /tmp/bse_pending/manifest.json = a JSON array of {exch:"NSE"|"BSE", sym, scrip, name, mcap, pngs:[absolute png paths], qe, quarters:{cur, prev, yago}} for companies that filed a result for the current quarter but have no numbers yet. `qe` is that quarter's end date (YYYYMMDD) and `quarters` the three column headings to read, e.g. {"cur":"30 September 2026","prev":"30 June 2026","yago":"30 September 2025"}. Never type a quarter date yourself — always pass on what the manifest says. If the manifest is empty (0 companies), stop — report "no pending results". (This is the normal case off-season; the run should cost almost nothing.)
+
+2a. NETWORK: this sandbox filters outbound traffic. `api.bseindia.com`, `www.bseindia.com`, `nsearchives.nseindia.com`, `www.nseindia.com` and `stocksworld-quotes.dhruvan2510.workers.dev` must all be reachable. If you see HTTP 403 with `x-deny-reason: host_not_allowed`, that is the SANDBOX blocking you, NOT the exchange — do not misreport it as an NSE/BSE block. Stop and report that the routine's environment needs those domains added to its allowed-domains list.
+
+2b. NSE ERROR ⇒ USE THE CLOUDFLARE RELAY — never leave a name unfilled because NSE 403'd (user directive 2026-07-21). NSE's archive blocks every scripted IP we have; our CF worker passes. bse_vision_prep already tries transports in order NSE-direct → CF worker relay → BSE copy, so most blocks heal without your involvement — but CHECK ITS LOG: any line saying "UNFETCHED" or "fetch err" means all three failed for that name. For those, fetch the PDF yourself through the relay:
+   curl -s -o /tmp/<SYM>.pdf "https://stocksworld-quotes.dhruvan2510.workers.dev/?pdf=<bare filename from the feed row>"
+   (filename = 6th field of the company's row in docs/results_feed.json). If the first byte check shows %PDF, render its P&L pages (python: bse_vision_prep.render_pdf_pages) and include the company in the batches like any other. Only if the relay ALSO fails (non-PDF response) may the name be reported as waiting-for-XBRL — and say the relay failed in the report so the block is visible.
+   ⚠️ NOTE FOR THIS CLOUD ENVIRONMENT: Anthropic's egress proxy is a DIFFERENT source IP than the home connection this routine used to run from. BSE may rate-limit or block it. If BSE itself starts refusing (302 to error_Bse.html, or a 162-byte JSON stub — that is BSE's rate-limit signature, see runbook §0), report it clearly as a cloud-IP block so the user knows the port has a real problem, rather than silently filling nothing.
+
+3. BATCH THE WORK. Do NOT read the PNGs yourself — a heavy day is 150+ companies and 400+ images, which will not fit in one context. Instead:
+   - Read manifest.json and split the companies into batches of 8.
+   - Process the batches using the Agent tool (subagent_type "general-purpose"), at most 4 running concurrently, until every batch is done. The subagents only read local PNGs and write their own output file — they do no NSE/BSE fetching, so concurrency is safe here.
+   - Give each subagent its 8 companies (sym, exch, scrip, name, qe, quarters, and png paths) plus the EXTRACTION RULES below, copied verbatim — the subagent has none of your context.
+   - Tell each subagent to write its result array to /tmp/bse_vision_out_<batchN>.json and to reply with just a one-line count.
+   - If a subagent fails or returns nothing, retry that batch once; if it fails again, note the tickers as skipped and carry on. One bad batch must never sink the run.
+
+3b. NEVER CONCLUDE A COMPANY "DIDN'T FILE" OR "ONLY FILED THE PREVIOUS QUARTER". You are looking at whatever PDF our own renderer picked, and picking the wrong announcement is a known bug class (runbook §17, §17c). On 2026-07-17 this routine reported that NAM and GYANDEV had only filed Q4 — both had filed for June that morning; the renderer had matched on BSE's HEADLINE ("Please refer the attachment") and missed the real filing whose description was in NEWSSUB. The feed's declared quarter is derived from HEADLINE+NEWSSUB and is usually RIGHT, so **if the feed says a company declared for this quarter and the PDF looks like another quarter, distrust the PDF pick, not the feed.** bse_vision_prep prints "⚠ ... wrong announcement, trying next" and refuses to render an off-quarter filing; if a name still comes up empty, report it as unresolved and say WHY — never as "the company didn't report".
+   Likewise, a subagent reporting "the attachment is only the auditor's report, no P&L" is usually the RENDERER MISSING THE TABLE, not a filing without numbers. On 2026-07-23 VIRTUALG's P&L sat on pages 2 and 6 of a 13-page filing while six blank scanned pages outranked it. Treat that phrase as a red flag to investigate: re-render ALL pages of the attachment yourself and look, and check the scrip's other announcements via bse_render.announcements before concluding anything. Two legitimate outcomes DO exist — a company can file the board-meeting OUTCOME letter with the numbers in a separate attachment posted later (KRIFILIND), or genuinely postpone its board meeting (CONTAINER) — but only say so after reading the actual letter.
+
+EXTRACTION RULES (copy verbatim into every subagent prompt):
+   For EACH company, Read each of its PNG paths (this is VISION — OCR doesn't work on these scanned filings). Each company comes with `qe` and `quarters` = {cur, prev, yago}: the quarter-end dates of the three columns to read. From the Profit & Loss statement extract, in RUPEES CRORE, for THREE quarters when the columns are present — the quarter ended quarters.cur (the current quarter), the quarter ended quarters.prev (the "previous quarter" column), and the quarter ended quarters.yago (the year-ago column):
+   - rev = Revenue from Operations (for banks/NBFCs use "Total Income"; if only "Total Income"/"Total Revenue" is shown, use that)
+   - op = Operating Profit / EBITDA — ONLY if the statement prints such a line (e.g. "Operating Profit", "EBITDA", "Profit from operations"). If there is no explicit operating-profit line, set op to null. Do NOT compute or guess it.
+   - pat = Profit After Tax / "Profit for the period" (owners' share if consolidated)
+   Mind the unit note printed on the statement: "in Lakhs"/"in Lacs" ÷100; "in Millions" ÷10; "in Thousands" ÷10000; absolute rupees ÷10000000; "in Crores" keep as-is. The unit varies per statement — read the note every time, never assume crore. (1 crore = 10,000,000 rupees, so a thousands figure ÷10000. This line read ÷100000 until 2026-07-17 — 10x wrong, which silently understated every thousands-denominated filing; GYANDEV Q1FY27 PAT came out -0.0041 cr instead of -0.057 cr.)
+   CROSS-CHECK THE UNIT whenever the statement prints EPS and paid-up capital: PAT ÷ (paid-up capital ÷ face value) must equal the printed EPS. GYANDEV: 30,000 thousand capital ÷ ₹10 = 3,000,000 shares; -0.057 cr ÷ 3,000,000 = -0.19 = the printed EPS ✓. If your figure fails this by a power of ten, your unit divisor is wrong — fix it, don't report the number.
+   COLUMN ORDER IS NOT UNIFORM. Some filings print current / previous / year-ago, others print current / year-ago / previous (year-ago BEFORE previous-quarter), and some carry extra year-to-date or full-year columns whose end date can equal a quarter's. ALWAYS map each column by reading its printed header date and "3 months / quarter ended" heading, NEVER by position. If the statement's own current quarter is NOT quarters.cur (the filing is for a different quarter), set ok:false and say so in "note" — never re-date a column to fit.
+   Prefer CONSOLIDATED if both consolidated and standalone are shown — but only if the consolidated P&L TABLE is actually present; an attachment sometimes carries the consolidated auditor's report WITHOUT the consolidated numbers, in which case use standalone and set basis "S". A quarter column that isn't present → null that quarter's figures. Verify the company name in the image matches the one given — if it's a different company or the P&L isn't present, mark ok:false.
+   Output a JSON array, one object per company, carrying through exch, sym, scrip and qe exactly as given:
+   [{"exch":"BSE","sym":"BENARAS","scrip":"509438","qe":"20260930","ok":true,"basis":"S","cur":{"rev":35.2,"op":null,"pat":8.2},"prev":{"rev":30.0,"op":null,"pat":6.0},"yago":{"rev":26.8,"op":null,"pat":7.6}}, ...]
+   (cur = the quarters.cur column, prev = quarters.prev, yago = quarters.yago. The numbers above only illustrate the shape.)
+   basis is "C" for consolidated, "S" for standalone. Use null for any single figure you can't read; ok:false (with null figures) if you couldn't read the company. NEVER invent a number.
+
+4. Concatenate every batch file into one array:
+   python -X utf8 -c "import glob,json; out=[]; [out.extend(json.load(open(f,encoding='utf-8'))) for f in sorted(glob.glob('/tmp/bse_vision_out_*.json'))]; json.dump(out,open('/tmp/bse_vision_out.json','w')); print(len(out),'companies')"
+   Sanity-check that the count is close to the manifest count; if it is far short, some batch silently failed — say so in the report.
+
+5. Re-sync, then merge and rebuild. Vision reading takes a while and ~30 CI workflows push all day, so refresh first: `timeout 180 git fetch origin -q && git reset --hard origin/main -q` (safe — this VM is yours alone). ⚠️ `git fetch` is SLOW through this sandbox's proxy and may time out (observed 2026-07-23); the proxy itself is healthy, it is just slow. If fetch times out after two tries, carry on with the clone you already have — it was made at session start and is at most an hour stale, and step 6's PR merge resolves any drift. Do NOT let a slow fetch abort the run. The merge is idempotent, so re-merging is always safe:
+   python -X utf8 scripts/merge_bse_vision.py /tmp/bse_vision_out.json --qefix /tmp/bse_pending/qe_fix_run.json
+   python -X utf8 scripts/build_bse_results.py
+   python -X utf8 scripts/build_results_coverage.py
+   (merge_bse_vision files each read under the quarters its `qe` names and only FILLS empty figures — it never replaces or re-dates a stored number; it routes BSE reads into docs/bse_fundamentals.json and NSE reads into docs/vision_fills.json; build_bse_results regenerates docs/bse_results.json; build_results_coverage refreshes the Results coverage dashboard so it reflects this run immediately.)
+   **`--qefix` IS NOT OPTIONAL.** The re-sync above throws away the quarter corrections step 2 wrote into docs/feed_qe_fix.json, and re-running prep cannot regenerate them — the names it resolved are no longer pending, so nothing re-scans them and a mislabelled quarter stays phantom-pending until a human notices (2026-07-27 lost 4 that way: 59 → 55 entries; HMT and SGLRES kept pointing at the wrong quarter). Step 2 journals them outside the repo to /tmp/bse_pending/qe_fix_run.json and this flag re-applies them post-reset (idempotent). Check the merge log for a `qefix:` line — `⚠ qefix: ... unreadable` means the fixes did NOT land and step 2's `qe? SYM date -> QUARTER` log lines must be re-added by hand as `"SYM|YYYY-MM-DD": QUARTER` keys in docs/feed_qe_fix.json.
+
+6. Commit, then land the work via a PR (only if changed):
+   git add docs/bse_fundamentals.json docs/bse_results.json docs/vision_fills.json docs/feed_qe_fix.json docs/results_feed.json docs/results_coverage.json scripts/_bse_fund_done.json scripts/_bse_fund_fail.json
+   Stage ONLY those paths — never `git add -A`/`.`/`-u`. If `git diff --cached --quiet` shows no change, stop and report "nothing to fill".
+   git commit -m "Vision-fill results (routine) $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+
+   ⚠️ DIRECT PUSH TO main IS BLOCKED — do not attempt it. This routine's repo config lacks "Allow unrestricted
+   branch pushes", so `git push origin HEAD:main` returns **403** (confirmed 2026-07-23; that setting is not
+   exposed in the current web UI). Cloud sessions may only push to `claude/`-prefixed branches. So land the work
+   through a pull request instead:
+
+   BR="claude/vision-fill-$(TZ=Asia/Kolkata date +'%Y%m%d-%H%M')"
+   git push origin HEAD:refs/heads/$BR
+   gh pr create --base main --head $BR --title "Vision-fill results $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" --body "Automated vision-fill run. Files: bse_fundamentals / bse_results / vision_fills / results_coverage / _bse_fund ledgers."
+   gh pr merge --squash --delete-branch --admin
+
+   Notes on that sequence:
+   - A UNIQUE branch name per run (timestamped) avoids colliding with a previous run's leftover branch.
+   - `--admin` merges immediately without waiting for reviews. If it fails because admin merge isn't permitted,
+     retry once WITHOUT `--admin`; if that also fails, LEAVE THE PR OPEN and say so in the report — an open PR
+     with the data is a fine outcome, the user can merge it. Never delete the branch if the merge didn't land.
+   - If the merge reports a CONFLICT or GitHub says the PR is not mergeable (happened live 2026-07-28, PR #7):
+     your branch is simply STALE — CI crons push these same single-line JSON files every ~15 minutes, so any
+     delay between your step-5 sync and the merge can conflict. Recover deterministically — do NOT give up:
+     (1) wait ~30 s and retry `gh pr merge` once (GitHub's mergeability check can lag);
+     (2) if it still refuses: `git fetch origin -q && git reset --hard origin/main -q`, re-run step 5's THREE
+     merge/rebuild commands exactly as written (they are idempotent and your /tmp files still exist), re-commit,
+     then `git push -f origin HEAD:refs/heads/$BR` — force-push is safe ONLY on your own claude/* branch, NEVER
+     main — and retry the merge. Up to 2 recovery cycles; if it STILL won't merge, do a THIRD cycle rather than
+     giving up: at 1 run/day there is no later slot to re-fill these numbers, and an unmerged PR means the
+     dashboard shows "numbers being parsed" for another 24 hours. Only if the third cycle also fails may you
+     leave the PR open — and then say so LOUDLY at the top of your report, with the URL, flagged as needing a
+     human merge today.
+   - If `gh` is unauthenticated, report that plainly — the branch push alone still preserves the work.
+   Then publish: gh workflow run pages.yml   (if that fails, skip it and say so — the next CI push republishes anyway.)
+
+7. Report one line: how many companies were pending, how many filled, and any tickers skipped — plus whether the PR MERGED or is still open (with its URL), and if anything was blocked, WHICH layer blocked it (sandbox allowlist / BSE rate-limit / NSE 403 / branch protection / gh auth). Off-season this is the only run of the day, so ALSO state how many pending names are carrying over to the next run and why (not-yet-filed vs unreadable scan vs blocked transport) — a carry-over costs up to 24 h, so it needs to be visible.
+
+Reference: DATA_RUNBOOK.md §17 (BSE-only coverage), §17b (which readers actually work), §17c (page-picking bugs). Helper scripts (bse_vision_prep.py, merge_bse_vision.py, build_bse_results.py) already exist in the repo. NSE names whose real XBRL later lands are automatically superseded — the page applies the vision overlay only to empty cells, so you never overwrite authoritative data.
