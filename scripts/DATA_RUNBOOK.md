@@ -72,7 +72,8 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220** ★★★ A SAME-ISSUER SEAM PROVES THE LEGAL ENTITY, NOT THE EQUITY — DHFL's shares were extinguished in 2021 and PIRAMALFIN's went to PEL's holders 1:1 (NSE PREV_CLOSE 1124.20 = PEL's last close), so DHFL → PIRAMALFIN is gone from FUND_ALIAS / _rename_map / the seam verdicts and PEL → PIRAMALFIN exists only as the engines' SHP_ALIAS (**read before adding any alias, seam or rename-map entry across a scheme, relisting or IBC resolution**)
 - **§220b** ★★★ THE 9 LONG-GAP SEAMS ARE THE SAME EQUITY (kept) — and four live defects fixed: BSE Riddhi Display (RDEL) kept out of SWANDEF's shareholding fold, 5 tape-less predecessors pointed at the dead key holding their era's tape (74 F&O member-slots; `check_fund_alias.ERA_TAPE`), a 400-day results staleness cap (`RESULT_MAX_AGE_DAYS`), CURAA's lakh-as-crore IPO-base cells (**read before any seam price join — NSE's prevclose is never the factor — and before trusting a tiny filer's backfilled base**)
 - **§220c** ★★★ §220b's SIX OPEN ITEMS CLOSED (user: "yes to all 6, blank the first change after a gap") — every §197 BSE-collision ticker out of the shareholding fold (6 NSE stocks read another company's pattern: 3,788 bar days), an event-row holding change across an OVERDUE quarter is blank (`shpGapBefore`), 13 IPO-base cells read wrong from results PDFs healed via fund_cell_fix + the reader fixed (decimal comma, lost decimal point, capped ₹2 cr anchor), builders read a renamed company's old-ticker history like the engine (results season, stock pages, index lists), ROML's 17 missing BZ sessions (prefix ledger `bz_prefix_fill.json`), COMPUAGE → COMPINFO = same shares (**read before any shareholding fold, any change-metric across a listing gap, any PDF comparative-column fill, any BZ block that precedes a series' first bar**)
-- **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**)
+- **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**) — cause 2 fixed at the source in **§223**
+- **§223** ★★ THE REFINE LEDGER READ BSE'S NEWEST FILING — 817 of 20,429 `shp_refine_4dp.json.gz` XBRL entries were a later document than the stored row's own (71 cells / 131 numbers held the later figure, 5 cells ping-ponged); the builder now reads the quarter's ORIGINAL (oldest row, quarterly pattern, same holder count), 208 entries rebuilt / 579 removed, and in a cell `shp_cell_fix.json` defines the refine may only set the fix's own value (**read before building or applying any refine/precision ledger, or writing a cell_fix entry on a refined cell**)
 - **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
@@ -26972,7 +26973,7 @@ per symbol (as-on, broadcast clock). Store = origin 029139d75.
    carry GATED dates; on 09-23 §149 + `--regate` moved the stored rows to the filing day, so `cell` and the store differed in
    the date slot (dates compare exactly in `_cell_eq`). 9 of the 11 `cell`s held a gated day the store no longer had (UPL's
    store still held its gated day too).
-2. **`shp_refine_4dp.json.gz` holds BSE's NEWEST filing — the RE-FILING of a re-filed quarter** (`row_for` sorts by
+2. **`shp_refine_4dp.json.gz` held BSE's NEWEST filing — the RE-FILING of a re-filed quarter** (FIXED at the source in §223; `row_for` sorts by
    `revised_date_time`). Its per-field 0.02-pp merge pulls the §142k ORIGINAL row toward the re-filing, leaving a hybrid of
    two documents: BBTC Dec-17 dii 3.463 → 3.4821 and mf, UPL Jun-19 dii 9.5725 → 9.5838, RAMRAT Dec-25 fii/dii 4th dp,
    SANWARIA Mar-26 dii 0.0001 → 0.0002. It re-pulls on EVERY run (load_hist cell_fix → refine → final cell_fix), so an entry
@@ -27136,3 +27137,89 @@ dhruvan246.github.io is blocked by this environment's egress policy (curl `conne
 the §39 "re-verify LIVE" step for the chip + next-run text is still owed from a browser (or from an environment whose
 allowlist carries github.io).
 
+## §223 — THE REFINE LEDGER READ BSE'S NEWEST FILING: 817 entries were a later document than the stored row's own; 208 rebuilt from the row's own filing, 579 removed, and a cell_fix now outranks the refine (2026-10-07, user: "measure the class across the whole store … propose a source fix … show the A/B … then, if approved, land it and retire the now-unneeded `exact` ping-pong entries … only if the store keeps the same values"; approved "Land the full fix")
+
+**Defect (§221 cause 2, now measured across the store).** `fetch_shp_bse_hist.py --refine` (built 2026-08-16, unchanged
+since) read `row_for()`'s NEWEST BSE filing of each quarter. `apply_refine_ledger` merges every slot within 0.02 pp into the
+stored row, so a §142k ORIGINAL row took a re-filing's figures, and took them again on every run: a non-`exact` cell_fix
+within 0.01 of the pulled value reads "already applied" (the pull silently wins), one 0.01-0.02 away pulls-and-restores.
+
+**Measured** (evidence folder `~/stocks-cache/refine-orig/`: `lists/`, `xbrl/`, `verdicts.json`, `classA.json`,
+`evidence.tsv`, `dii_list.tsv`, `fii_list.tsv`; scripts `classify.py` → `analyze.py` → `analyze2.py` → `classA.py`).
+Fresh BSE `SHPQNewFormat` lists for all 1,727 scrip codes the 20,429 XBRL entries name (2026-10-06 22:57–23:39 IST,
+0 failures). Each entry matched to its list row by qtrid AND filing day — **qtrid is not a version number**: RAMRAT Dec-25
+New and Revised are both 128.0, SANWARIA Dec-25 New is 128.01 and Revised 128.0, BHARATFORG's May-2022 re-filings are
+"New" .01 rows. Every quarter with more than one row had all its XBRLs parsed (production `parse_shp` + `TypeOfReport` /
+`ShareholdingPatternFiledUnder`; 2,269 files, 112 fetched, the rest from earlier caches after an XML + ScripCode check).
+The 23,426 aspx entries (2002-15) cannot carry a re-filing: `fetch_shp_bse_aspx.py` always asks for `qtrid=%d.00`.
+
+| bucket | entries | meaning |
+|---|---|---|
+| the quarter has one BSE row (New) | 18,492 | the refine read the only document |
+| the stored row's own document (by date) | 1,105 | 1,099 of them a lone 'Revised' row dated on/before the stored day |
+| no stored row / two same-day rows with identical numbers (NH Dec-17) | 15 | — |
+| **A** — a LATER document than the stored row's own, which BSE lists | **238** | 236 re-filings + 2 event patterns (MBLINFRA Mar-26 Reg 31(1)(c); EPACKPEB Sep-25 pre-listing) |
+| **B** — BSE lists no document dated on/before the stored row (its earliest row is already 'Revised', or BSE's copy came later) | **579** | 486 of them 2019-20 |
+
+Class A by what the stored row holds ("far" = original and later differ by > 0.02, which the refine cannot move):
+- the row is its own original (or nothing contradicts it), 208 entries: **71 cells / 131 numbers in 29 symbols held the later
+  document's figure** (fii 42, dii 51, mf 29, ins 9 — persisted pulls); **5 more cells / 7 numbers were pulled and restored by
+  cell_fix on every run** (BBTC Dec-17 dii/mf, KOTHARIPRO Sep/Dec-24 prom, RAMRAT Dec-25 fii/dii, SANWARIA Mar-26 dii).
+  81 of the 131 differ only through the filer's base (same share count, the later filing's promoter reclassification moves
+  the base `parse_shp` infers from its largest category), 41 through different share counts.
+- the row holds the later document itself (its far slots are the later figures — not the refine's doing), 29 entries + ATLANTAA
+  Mar-25 (original unparseable; its active entry is a §142j "latest values" one): kept. BHARATFORG 2016-20 prom 46.25 = the
+  May-2022 re-filings (originals 45.75-46.75), BFUTILITIE 2017-20 = the Jul-2022 ones, S&SPOWER, SKIL, DELHIVERY.
+
+Class B: 2,665 slots equal that later document's figure — **pulled or identical is UNKNOWN**: the original is not on BSE's
+list, and NSE's per-symbol master (the shp_revisions audit's 58 cached symbols) had no record for 90 of the 109 as-ons
+checked. 38 of the 579 rows carry a different holder count from that document (the row came from another filing).
+
+**Fix.**
+1. `fetch_shp_bse_hist.py --refine`: `original_rows()` — the quarter's rows oldest first by the filing clock; an event pattern
+   is skipped (`report_pattern()`); nothing is read when the earliest row has no XBRL or is itself 'Revised'; the chosen
+   document is refused when filed > 7 days after the stored row's date or when its holder count differs from the stored row's
+   (the refine never moves holders, so they identify the row's document — KALYANI Sep-25: 471 vs BSE's 2,094); provenance is
+   `code:qtrid:file`. Replayed offline on all 1,937 examined entries: the stored row's own document in 230/238 of class A
+   (8 refused: holders differ ×4, original not listed ×3, unparseable ×1), 576/579 of class B refused (the other 3 read BSE's
+   copy of the original, NSE-first by 2-3 days, same holders, same numbers). Gap-fill mode keeps `row_for` (open item below).
+   ⚠️ The XBRL label is not proof of the pattern: SPMLINFRA's 11:47 file (the 10-Apr allotment pattern by the company's reason)
+   says Quarterly / 31(1)(b) — oldest-first is what picks the right one there.
+2. `shp_refine_4dp.json.gz` (`rebuild_class.py`): 208 class-A entries rebuilt from the stored row's own document (today's
+   `parse_shp`), 579 class-B entries removed, 30 kept; `_meta.s223`. Removing an entry changes no stored value by itself.
+3. `apply_refine_ledger`: in a cell `shp_cell_fix.json` defines, a slot may only take the entry's own value (`fixed`;
+   generalises the §164 skip — "apply_cell_fix outranks it" was true only beyond one 2dp step). Needed — A/B with the rebuilt
+   ledger and WITHOUT the rule: 21 adjudicated cells move (BBTC Dec-17 dii 3.4822 → 3.463 and UPL Jun-19 9.5838 → 9.5725 lose
+   their §158 R3 verdicts with 6-8 WARN lines; UPL 2017-19 fii shift 0.01; the four REVISION_RIGHT rows take the original's
+   4th dp). The rule alone on the old ledger changes 0 cells and stops the 5 ping-pongs.
+4. `shp_cell_fix.json`, dii slots (agreed row by row with the "DII data coverage analysis" session before writing): 26 A =
+   the original raw (lands through the rebuilt refine); 21 B = original + the 2015-form "NBFCs registered with RBI" row
+   (§158 R3) as `exact` entries superseding their §142k entries (`was` = the committed post-refine row): BBTC Sep-16, Dec-16,
+   Sep-17, Mar-18, Jun-19…Mar-20, BHARATFORG Dec-21, CAMLINFINE Mar/Jun-20, UNIVPHOTO Jun-22, UPL Sep-19…Jun-21 and Dec-21.
+   2022-form rows are A: NBFCs sit INSIDE Institutions (Domestic) there and parse_shp already reads the filed total, so R3
+   would double-count (ADFFOODS Mar-24: Authum 13,667,568 sh — raw 21.0818, "+R3" 33.5221). §221's `exact` entries: RAMRAT
+   2025-12-31 and SANWARIA 2026-03-31 RETIRED (the refine now equals their cell; store unchanged); BBTC 2017-12-31 KEPT — it
+   carries the R3 dii, and retiring it lets the refine take dii to the raw 3.463 (measured).
+
+**A/B** (copy of origin 476df99af; two consecutive `--apply-ledgers` each): baseline 0 WARN with 5 cells pulled-and-restored
+every run; fix 0 WARN, run 2 identical to run 1 (refine 0 cells). Store: **62 cells / 116 numbers move** (fii 39, dii 41,
+mf 27, ins 9), each to its own document (shares ÷ the filer's base recomputed independently: 0 mismatches); all 47 dii slots
+equal the DII session's verdicts (5 B rows don't move: the stored later figure already equalled original + R3); no prom /
+date / holder move, no other cell. Engine feed 24 symbols / 61 rows (values only), stock-page feed 1 row (WELINV Sep-25 dii
+0.1334 → 0.1338); `shp_revisions.json` / `shp_events.json` byte-identical; guard_shp_gate / definition / revisions / feed
+exit 0. The FII session checked the 39 fii keys: none feeds one of Quantmac's 4,484 disputed cells.
+
+**Open — measured, not changed.**
+- 9 pulled numbers stay: 7 in VGL Jun-25, ARVSMART Mar-24, NARMADA Dec-24, APTUS Jun-24, whose active cell_fix entries are
+  2026-08-09 "AMBIGUOUS cell adjudicated REVISION_RIGHT" verdicts (the ledger makes those rows the revision — §142k
+  superseded that rule; re-adjudicate); 2 in BBTC Jun-16 (fii 0.0001 / dii 5.475 vs the original's 0.0 / 5.4752): the §22i
+  swallowed-block guard refuses fii → 0.0 and its §142k entry cannot land inside the 0.01 tolerance (needs `exact`; dii →
+  DII session).
+- Class B: 2,665 numbers UNKNOWN until the originals are read on another route (NSE archive XBRL, BSE announcement attachment).
+- The 30 class-A rows that hold the later document themselves (§142k residue).
+- SANWARIA 2026-03-31 holders 139,953 are the re-filing's; the original files 141,437 — safe to re-base now that nothing
+  pulls the row (§221 had to keep it).
+- Gap-fill mode (`shp_fill_n500_gaps.json.gz`, `row_for` newest): 21 entries read a later filing than the quarter's first;
+  20 never applied (the store had the quarter), 1 is the stored row.
+
+**LIVE** — filled in after the push (below).
