@@ -22033,24 +22033,47 @@
    "2017-06-30": {
     "cell": [
      57.92,
-     7.16,
-     12.69,
-     6.44,
-     5.9,
+     7.2032,
+     12.6415,
+     6.4439,
+     5.895,
      "2017-07-21",
      147906
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      57.92,
-     7.16,
-     12.69,
-     6.44,
-     5.9,
-     "2018-01-31",
+     7.1556,
+     12.6878,
+     6.4439,
+     5.895,
+     "2017-07-21",
      147906
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 215d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "src": "bsexbrl:500085_3112018164023_SHP.xml",
+    "why": "\u00a7164r batch 30 part 41 (2026-10-06, verdict re-audit after the parts 38-40 re-compare): D1 (user 2026-09-25): the institutions Any-Other block 196,048 sh (7 holders, no named or labelled row) is the block's unnamed part -> FII; the D1 runner had skipped it under its 0.05-pp materiality floor (0.0471 pp), a run threshold, not part of the rule, and it sat in dii. fii = FPI 29,784,171 + 196,048; dii = MF 26,821,962 + FI/Banks 1,256,061 + Insurance 24,536,970 (no VCF / AIF / PF / NBFC rows), on 416,207,852 (also clears a 2-dp residue: FPI alone is 7.1561, not 7.1556). DII move reported to the DII session. [57.92, 7.1556, 12.6878, 6.4439, 5.895] -> [57.92, 7.2032, 12.6415, 6.4439, 5.895].",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      57.92,
+      7.16,
+      12.69,
+      6.44,
+      5.9,
+      "2017-07-21",
+      147906
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      57.92,
+      7.16,
+      12.69,
+      6.44,
+      5.9,
+      "2018-01-31",
+      147906
+     ],
+     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 215d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    }
    },
    "2017-09-30": {
     "cell": [
@@ -72386,22 +72409,43 @@
    "2015-12-31": {
     "cell": [
      52.1383,
-     17.2725,
+     17.2592,
      11.7088,
      4.471,
      4.2805,
      "2016-01-29"
     ],
     "was": [
-     52.01,
-     17.23,
-     11.68,
-     4.46,
-     4.27,
+     52.1383,
+     17.2725,
+     11.7088,
+     4.471,
+     4.2805,
      "2016-01-29"
     ],
-    "src": "bseapi:CorporatesSHPSecuritybeta:500111_88",
-    "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 16, user 2026-10-05 'work on every single cell'; reply4 d2_basis.json had it 'FULL share count' (its promoter + public add up to 99.36 because of a 1,600,000-share employee trust, so a sum-to-100 test misread it)): the company's own Dec-2015, Mar-2016 and Jun-2016 Table I print Promoter + Public (+ employee trust) = 100 with the shares underlying ADRs/GDRs (C1) OUTSIDE the 100, so this pre-2016 value moves onto that base: all slots x 1.002467 = (A+B+C1+C2) 252632800 / (A+B+C2) 252010991 shares in the company's own Table I; fii 17.23 -> 17.27."
+    "src": "bsetable3:500111:88+mc_archive:20160305",
+    "why": "\u00a7164r batch 30 part 41 (2026-10-06, verdict re-audit after the parts 38-40 re-compare): precision: batch 16's DR re-base multiplied a 2-dp value (17.23 x 1.002467); FPI 43,495,185 / (A+B+C2) 252,010,991 (company's Table I base, ADR shares outside) = 17.2592 - the same count in BSE's served 2016-12-27 version (Table III) and in the ORIGINAL archived by Moneycontrol on 2016-03-05 / 2016-05-07 (RC/88.00: 420 holders, 43,495,185), so the 2016-01-29 date is unchanged; 'Overseas Corporate Bodies' 6,326 is company-type (out). [52.1383, 17.2725, 11.7088, 4.471, 4.2805] -> [52.1383, 17.2592, 11.7088, 4.471, 4.2805].",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.1383,
+      17.2725,
+      11.7088,
+      4.471,
+      4.2805,
+      "2016-01-29"
+     ],
+     "was": [
+      52.01,
+      17.23,
+      11.68,
+      4.46,
+      4.27,
+      "2016-01-29"
+     ],
+     "src": "bseapi:CorporatesSHPSecuritybeta:500111_88",
+     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 16, user 2026-10-05 'work on every single cell'; reply4 d2_basis.json had it 'FULL share count' (its promoter + public add up to 99.36 because of a 1,600,000-share employee trust, so a sum-to-100 test misread it)): the company's own Dec-2015, Mar-2016 and Jun-2016 Table I print Promoter + Public (+ employee trust) = 100 with the shares underlying ADRs/GDRs (C1) OUTSIDE the 100, so this pre-2016 value moves onto that base: all slots x 1.002467 = (A+B+C1+C2) 252632800 / (A+B+C2) 252010991 shares in the company's own Table I; fii 17.23 -> 17.27."
+    }
    }
   },
   "RELIGARE": {

@@ -21789,6 +21789,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     '2016-03-18 earliest' is the error. JSWHL Dec-2015 keeps 2016-03-18 (no reading of its February version exists - probably the
     same re-publication, unproven). Trap: a second identical BSE notice months later is not by itself a revision - check for a
     contemporaneous reading before moving a date.
+    **Batch 30 part 41 (label "§164r batch 30 part 41"; 2 cells, 1 date) - verdict re-audit after the parts 38-40 re-compare.**
+    `audit_all/recompare.py` on the live feed listed 7 cells gone agree -> differ (NH Sep-17 'Clearing Members', SHK Dec-15 Blackstone
+    '...VI FDI Two', BLUESTARCO Mar-16 date - verdicts recorded, no change). A second pass then checked every differing cell whose value
+    moved after its verdict was written (676 cells; 47 moved >= 0.05 pp) and found verdicts that no longer explained the live gap:
+    PEL Jun-2019 (Quantmac PIRAMALFIN): the 6-Oct verdict 'no data difference' compared the quarter's value and missed that our row -
+    BSE's REVISED version (SHP list: Revised 2019-08-13) - was not yet visible at 2019-07-31, where we served the 2019-04-22 rights
+    event (30.71). The original was announced 2019-07-22T08:23:39 and Quantmac's reading inside [original, revision) (28.53, NSE
+    2019-07-22 XBRL) equals the revision's 28.5338 -> the row opens 2019-07-22 (the §164b test as used for AUBANK / CCAVENUE in part
+    37). RELCAPITAL Dec-2015: batch 16's DR re-base had multiplied a 2-dp value (17.23 x 1.002467 = 17.2725); FPI 43,495,185 on the
+    company's base A+B+C2 252,010,991 = 17.2592 (= Quantmac 17.26). BSE serves the 2016-12-27 version (Table I authorise), and
+    Moneycontrol archived 2016-03-05 / 05-07 shows the ORIGINAL with the same 43,495,185 (420 holders), so 2016-01-29 stands.
+    CHAMBLFERT Jun-2017: the institutions Any-Other block 196,048 sh (7 holders) names nobody -> FII by D1; the D1 runner had
+    skipped it under its 0.05-pp materiality floor (0.0471) and it sat in dii -> fii 7.2032 (= Quantmac), dii 12.6415 (MF + FI/Banks
+    + Insurance at share counts; reported to the DII session). DEN Sep-16..Mar-17 verdict text corrected (the gap includes Tara
+    India Holdings since part 20; Mar-17 Quantmac also drops the block's unnamed 550,464). Two CLASSES to measure next, both ours:
+    (1) D1 blocks under 0.05 pp left in dii / out of fii by the runner's floor; (2) batch-16/17 DR re-bases of 2-dp values. Lesson:
+    a verdict is a claim about the CURRENT served value at that month-end - re-run recompare.py after every part and re-read any
+    cell whose value moved after its verdict was written.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
