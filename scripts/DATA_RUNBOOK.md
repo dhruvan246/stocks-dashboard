@@ -21966,6 +21966,13 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
 - **Part 22 (869c53b39), register sweep.** `r3/reg_scan.py` covered N500, 2015-06..2022-06. 49 cells across 16 companies were written, only where stored dii = the six domestic lines exactly.
   - Holders: Bajaj Holdings (NBFC), insurers, NPS Trust and pure AIF rows filed on Bodies Corporate / Others rows.
   - 38 cells stay UNKNOWN (`r3/b22_unknown.json`): stored dii there is not the bare lines, so which rows it holds is unproven.
+- **Part 23 / 23b / 24 (ebe917805, 14ef93ee9, 74d98c8ad).** The 38 part-22 UNKNOWN cells, read one by one. Each cell's own ledger chain names the holders R2 had already counted ('R2-named …' / 'R2-label …').
+  - 30 quarter cells + HINDALCO Mar-22 '#rev' added a register holder that was never counted: Bajaj Holdings x18, HDFC Life solvency a/c x8, ICICI Pru Life, IDBI Federal x2, IndusInd (NAM-INDIA).
+  - 6 were already counted (the scan's subset match was wrong).
+  - ENGINERSIN stays out (mixed row).
+  - TRAP: `explain.items` may read the RE-FILING XBRL while the store row is the original. HINDALCO Mar-22's 2022-04-20 original names neither holder, so the fix moved to `#rev`. Check the file against SHPQNewFormat 'New' before writing a plain key.
+  - Event rows: the event path applies only the LATEST ledger entry, and only if its `was` equals the stored event row (no chain walk). Re-base on the stored row (RBLBANK 2017-08-09, part 21c a124bd554).
+  - SHRENUJ Mar-16: HSBC Private Bank (Suisse) SA inside the FI/Banks line leaves dii (5.39 → 0.1104). The FII session writes Dec-15; page quarters stay UNKNOWN until a named list is read.
 - **Also in this round.** FII session part 29 (SUNPHARMA 'UTI' rows back into dii) was checked against each filing. User decision: the unlabelled Foreign Bank + UTI block in Jun-16 / Jun-17 / Sep-17 stays whole in dii. All 321 dii moves by the FII session on 5-6 Oct were rebuilt from their filings (`r3/check_peer321.py`): one regression, VSTIND Dec-16, which the FII session fixes in its part 37.
 
 
