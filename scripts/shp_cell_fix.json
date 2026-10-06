@@ -39114,17 +39114,26 @@
     "src": "bsexbrl:500440_2832017135938_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 28.48 -> 28.48, dii 17.56 -> 18.96. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.4 BAJAJ ALLIANCE LIFE INSURANCE COMPANY 1.40(regex)"
    },
-   "2022-03-31": {
+   "2022-03-31#rev": {
+    "was": [
+     34.64,
+     32.5734,
+     19.216,
+     10.5359,
+     8.6636
+    ],
     "cell": [
      34.64,
-     28.8476,
+     32.5734,
      21.5078,
      10.5359,
-     8.6636,
-     "2022-04-20",
-     503729
+     8.6636
     ],
-    "was": [
+    "src": "bsexbrl:500440_762023185948_SHP.xml",
+    "why": "\u00a7164s part 23b (2026-10-06): HINDALCO Mar-2022 RE-FILING of 2023-06-07 (500440_762023185948_SHP.xml) names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORATE CG 1.1225 ('Trusts') and ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 ('Bodies Corporate') on non-institution rows - Indian institutions on official registers (NPS Trust; IRDAI life insurer no. 105), never counted (re-filing dii = its domestic lines 19.2006 + 0.0154). R2 + rule 4 (user 'Register wins'): dii 19.216 -> 21.5078. The ORIGINAL filing of 2022-04-20 (500440_2042022121242_SHP.xml) names neither holder, so the original row is left as it was (part 23's write onto it is withdrawn)."
+   },
+   "2022-03-31": {
+    "cell": [
      34.64,
      28.8476,
      19.216,
@@ -39133,8 +39142,39 @@
      "2022-04-20",
      503729
     ],
-    "src": "bsexbrl:500440_762023185948_SHP.xml",
-    "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORAT 1.1225 (''Trusts'') + ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the I; IRDAI-registered life insurer no. 105: ICICI Prudential Life Insurance). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 19.2006 + those, gap 0.0154), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 19.2160 -> 21.5078; fii untouched."
+    "was": [
+     34.64,
+     28.8476,
+     21.5078,
+     10.5359,
+     8.6636,
+     "2022-04-20",
+     503729
+    ],
+    "src": "bsexbrl:500440_2042022121242_SHP.xml",
+    "why": "\u00a7164s part 23b (2026-10-06): withdraws part 23 on the ORIGINAL Mar-2022 row - the original filing of 2022-04-20 (500440_2042022121242_SHP.xml) names neither NPS Trust nor ICICI Prudential Life; those two holders are named only in the 2023-06-07 re-filing, healed on its own '#rev' key. dii 21.5078 -> 19.216 (the value before part 23).",
+    "superseded": {
+     "cell": [
+      34.64,
+      28.8476,
+      21.5078,
+      10.5359,
+      8.6636,
+      "2022-04-20",
+      503729
+     ],
+     "was": [
+      34.64,
+      28.8476,
+      19.216,
+      10.5359,
+      8.6636,
+      "2022-04-20",
+      503729
+     ],
+     "src": "bsexbrl:500440_762023185948_SHP.xml",
+     "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names NPS TRUST - A/C LIC PENSION FUND SCHEME - CORPORAT 1.1225 (''Trusts'') + ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.1693 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the I; IRDAI-registered life insurer no. 105: ICICI Prudential Life Insurance). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 19.2006 + those, gap 0.0154), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 19.2160 -> 21.5078; fii untouched."
+    }
    }
   },
   "HINDMOTORS": {
