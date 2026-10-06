@@ -21856,6 +21856,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     QE+28 convention served it from 2020-04-28, a 15-day look-ahead -> BSE|20200331 removed from shp_undated.json + shp_lag_fix days_later
     20200421 -> 20200513. Every other BSE Ltd PDF was created before its QE+28 date (Mar-2017's June ModDate is a later edit; its
     CreationDate is 2017-04-21). Still UNKNOWN: Jun-2018 and Jun-2021 (no PDF in the archive or on the site; NSE serves neither).
+    **Batch 30 part 45 (label "§164r batch 30 part 45"; 23 cells) - FII side of the DII session's §164s part 27 (foreign holders filed
+    INSIDE domestic lines; dii already removed there).** NH Jun-16..Dec-17 + Jun-18 (8): the company filed its WHOLE FPI block under
+    'Financial Institutions / Banks' - no FPI line, 38-59 holders, named GMO Emerging Domestic Opportunities / Franklin Templeton Investment
+    Funds / ValueQuest India Moat / First State ICVC / Credit Suisse (Singapore) (19-495 Institutions (Foreign) listings each); its
+    correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 % -> the Banks line joins fii (+3.96 ..
+    +10.11; our fii had held only the FVCI / Any-Other parts). BATAINDIA Dec-17..Sep-20 (12): 'KOTAK FUNDS - INDIA MIDCAP FUND' (433
+    listings vs 13 domestic) in the MF line, +1.19..+2.34. BALLARPUR Jun / Sep-16: Citigroup Global Markets Mauritius (62 / 0) in the
+    Banks line, +1.55 / +1.34. CAMLINFINE Jun-16: India Capital Fund (151; the company files it under FPI from Dec-16), +3.79. Written
+    on top of the DII session's entries (apply the ledgers BEFORE building a part that stacks on another session's fresh entries -
+    write_b8 refuses when the committed store != the latest entry). Quantmac misses the NH block too (their NH 2016-17 = FVCI + JPMorgan
+    Mauritius); verdicts updated per cell.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
