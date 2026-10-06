@@ -62925,6 +62925,28 @@
     ],
     "src": "bsetable3:526299:89 + bseaspx:526299:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-21 16:22:30; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): 'ICICI PRUDENTIAL LIFE INSURANCE COMPANY' 1.42 under non-institutions -> dii (R2, documented:filing); 'BAJAJ ALLIANZ LIFE INSURANCE COMPANY LTD.' 1.88 under non-institutions -> dii (R2, curated). Date unchanged (shp_lag_fix carries the filing day). prom 60.47 -> 60.4729, fii 21.97 -> 21.9737, dii 9.89 -> 13.1909."
+   },
+   "2016-09-30": {
+    "cell": [
+     60.46,
+     20.9072,
+     13.5829,
+     6.424,
+     0.0,
+     "2016-10-18",
+     28058
+    ],
+    "was": [
+     60.46,
+     20.9072,
+     9.9285,
+     6.424,
+     0.0,
+     "2016-10-18",
+     28058
+    ],
+    "src": "bsexbrl:526299_17102016183022_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Allianz Life Ins Co Ltd 2.2431 (''Bodies Corporate'') + ICICI Prudential Life Ins Co Ltd 1.4113 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 116: Bajaj Life Insurance Ltd (formerly Bajaj ; IRDAI-registered life insurer no. 105: ICICI Prudential Life Insurance Co Ltd). Stored dii = the filing's six domestic lines exactly (9.9290), so the holder was never counted; R2 + rule 4 (registers) count it. dii 9.9285 -> 13.5829; fii untouched."
    }
   },
   "MRF": {
@@ -100423,6 +100445,28 @@
     ],
     "src": "bsexbrl:512573_19102016152419_SHP.xml",
     "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with a'): THAI UNION FROZEN PRODUCTS (11,410,210 shares = 25.1242% of 45,415,210) sat in dii by the old-format default for the institutional Any-Other row; it is a foreign company, not a domestic institution - the company itself labels it 'Foreign Corporate Bodies- Thai Union Frozen Products' on its Dec-2015 >1% holders table (BSE shpperent qtrid 88). Moved to public (documents-only rule); fii unchanged. dii 25.6865 -> 0.5623."
+   },
+   "2020-12-31": {
+    "cell": [
+     43.69,
+     17.2007,
+     3.7777,
+     3.3401,
+     0.0,
+     "2021-01-22",
+     104404
+    ],
+    "was": [
+     43.69,
+     17.2007,
+     3.7447,
+     3.3401,
+     0.0,
+     "2021-01-22",
+     104404
+    ],
+    "src": "bsexbrl:512573_2112021155210_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names IDBI FEDERAL LIFE INSURANCE COMPANY LIMITED-ULIF06 0.0330 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 135: Ageas Federal Life Insurance Co Ltd (form). Stored dii = the filing's six domestic lines exactly (3.7453), so the holder was never counted; R2 + rule 4 (registers) count it. dii 3.7447 -> 3.7777; fii untouched."
    }
   },
   "BANDHANBNK": {
@@ -146905,7 +146949,7 @@
     "cell": [
      58.34,
      1.8266,
-     26.1138,
+     26.1326,
      0.0016,
      0.0,
      "2019-10-18",
@@ -146913,15 +146957,37 @@
     ],
     "was": [
      58.34,
-     0.2689,
-     27.6731,
+     1.8266,
+     26.1138,
      0.0016,
      0.0,
      "2019-10-18",
      159281
     ],
     "src": "bsexbrl:532670_18102019175537_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (1.56pp, holders: Foreign Body Corporate/Foreign Bank; Standard Chartered Bank, UAE Branch; Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 26.1138 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names THE ORIENTAL INSURANCE COMPANY LIMITED 0.0188 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered general insurer: The Oriental Insurance Co Ltd). Stored dii = the filing's six domestic lines exactly (26.1164), so the holder was never counted; R2 + rule 4 (registers) count it. dii 26.1138 -> 26.1326; fii untouched.",
+    "superseded": {
+     "cell": [
+      58.34,
+      1.8266,
+      26.1138,
+      0.0016,
+      0.0,
+      "2019-10-18",
+      159281
+     ],
+     "was": [
+      58.34,
+      0.2689,
+      27.6731,
+      0.0016,
+      0.0,
+      "2019-10-18",
+      159281
+     ],
+     "src": "bsexbrl:532670_18102019175537_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (1.56pp, holders: Foreign Body Corporate/Foreign Bank; Standard Chartered Bank, UAE Branch; Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 26.1138 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -178772,6 +178838,402 @@
     ],
     "src": "bseaspx:500032_85",
     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 17): its own new-form filings (Dec-2015 / Mar-2016 Table I + III, Jun-2016 XBRL) show no ADR/GDR shares at all - its receipts ended before Dec-2015 - so with no company practice to follow it takes SEBI's own column, % of (A+B+C2), the shares underlying DRs OUTSIDE the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.000494 = total (A+B+C) 810241177 / (A+B) 809841177 shares on the same quarter's BSE page; fii 2.05 -> 2.05."
+   },
+   "2016-06-30": {
+    "cell": [
+     26.02,
+     3.2738,
+     47.9742,
+     0.0013,
+     3.8077,
+     "2016-07-19",
+     140407
+    ],
+    "was": [
+     26.02,
+     3.2738,
+     46.8213,
+     0.0013,
+     3.8077,
+     "2016-07-19",
+     140407
+    ],
+    "src": "bsexbrl:500032_187201618279_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (46.8244), so the holder was never counted; R2 + rule 4 (registers) count it. dii 46.8213 -> 47.9742; fii untouched."
+   },
+   "2016-09-30": {
+    "cell": [
+     26.02,
+     3.3013,
+     47.7668,
+     0.0013,
+     3.8077,
+     "2016-10-20",
+     139640
+    ],
+    "was": [
+     26.02,
+     3.3013,
+     46.6139,
+     0.0013,
+     3.8077,
+     "2016-10-20",
+     139640
+    ],
+    "src": "bsexbrl:500032_20102016115354_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (46.6170), so the holder was never counted; R2 + rule 4 (registers) count it. dii 46.6139 -> 47.7668; fii untouched."
+   },
+   "2016-12-31": {
+    "cell": [
+     26.02,
+     3.2565,
+     46.5986,
+     0.0004,
+     3.8077,
+     "2017-01-13",
+     140304
+    ],
+    "was": [
+     26.02,
+     3.2565,
+     45.4457,
+     0.0004,
+     3.8077,
+     "2017-01-13",
+     140304
+    ],
+    "src": "bsexbrl:500032_1212017163054_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (45.4487), so the holder was never counted; R2 + rule 4 (registers) count it. dii 45.4457 -> 46.5986; fii untouched."
+   },
+   "2017-03-31": {
+    "cell": [
+     26.02,
+     3.8576,
+     40.7988,
+     0.0004,
+     3.8077,
+     "2017-04-11",
+     145250
+    ],
+    "was": [
+     26.02,
+     3.8576,
+     39.6459,
+     0.0004,
+     3.8077,
+     "2017-04-11",
+     145250
+    ],
+    "src": "bsexbrl:500032_1142017123325_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (39.6485), so the holder was never counted; R2 + rule 4 (registers) count it. dii 39.6459 -> 40.7988; fii untouched."
+   },
+   "2017-06-30": {
+    "cell": [
+     26.02,
+     4.277,
+     40.4505,
+     0.0004,
+     3.8077,
+     "2017-07-14",
+     144547
+    ],
+    "was": [
+     26.02,
+     4.277,
+     39.2976,
+     0.0004,
+     3.8077,
+     "2017-07-14",
+     144547
+    ],
+    "src": "bsexbrl:500032_137201717316_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (39.3002), so the holder was never counted; R2 + rule 4 (registers) count it. dii 39.2976 -> 40.4505; fii untouched."
+   },
+   "2017-09-30": {
+    "cell": [
+     26.02,
+     4.3132,
+     37.9651,
+     0.0004,
+     3.8077,
+     "2017-10-19",
+     147412
+    ],
+    "was": [
+     26.02,
+     4.3132,
+     36.8122,
+     0.0004,
+     3.8077,
+     "2017-10-19",
+     147412
+    ],
+    "src": "bsexbrl:500032_18102017144323_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (36.8146), so the holder was never counted; R2 + rule 4 (registers) count it. dii 36.8122 -> 37.9651; fii untouched."
+   },
+   "2017-12-31": {
+    "cell": [
+     15.43,
+     4.495,
+     48.4419,
+     0.0002,
+     3.808,
+     "2018-01-12",
+     142663
+    ],
+    "was": [
+     15.43,
+     4.495,
+     47.289,
+     0.0002,
+     3.808,
+     "2018-01-12",
+     142663
+    ],
+    "src": "bsexbrl:500032_1112018181858_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (47.2889), so the holder was never counted; R2 + rule 4 (registers) count it. dii 47.2890 -> 48.4419; fii untouched."
+   },
+   "2018-03-31": {
+    "cell": [
+     15.43,
+     4.3052,
+     46.4224,
+     0.0002,
+     3.808,
+     "2018-04-11",
+     145954
+    ],
+    "was": [
+     15.43,
+     4.3052,
+     45.2695,
+     0.0002,
+     3.808,
+     "2018-04-11",
+     145954
+    ],
+    "src": "bsexbrl:500032_1042018185038_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (45.2694), so the holder was never counted; R2 + rule 4 (registers) count it. dii 45.2695 -> 46.4224; fii untouched."
+   },
+   "2019-09-30": {
+    "cell": [
+     15.43,
+     3.4797,
+     45.3511,
+     0.0002,
+     3.808,
+     "2019-10-11",
+     143980
+    ],
+    "was": [
+     15.43,
+     3.4797,
+     44.1982,
+     0.0002,
+     3.808,
+     "2019-10-11",
+     143980
+    ],
+    "src": "bsexbrl:500032_10102019182126_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (44.2039), so the holder was never counted; R2 + rule 4 (registers) count it. dii 44.1982 -> 45.3511; fii untouched."
+   },
+   "2019-12-31": {
+    "cell": [
+     15.43,
+     3.1064,
+     45.3372,
+     0.0002,
+     3.808,
+     "2020-01-17",
+     166723
+    ],
+    "was": [
+     15.43,
+     3.1064,
+     44.1843,
+     0.0002,
+     3.808,
+     "2020-01-17",
+     166723
+    ],
+    "src": "bsexbrl:500032_1612020141231_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (44.1853), so the holder was never counted; R2 + rule 4 (registers) count it. dii 44.1843 -> 45.3372; fii untouched."
+   },
+   "2020-03-31": {
+    "cell": [
+     15.43,
+     2.2494,
+     45.0861,
+     0.0002,
+     3.808,
+     "2020-05-08",
+     171542
+    ],
+    "was": [
+     15.43,
+     2.2494,
+     43.9332,
+     0.0002,
+     3.808,
+     "2020-05-08",
+     171542
+    ],
+    "src": "bsexbrl:500032_852020102337_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (43.9343), so the holder was never counted; R2 + rule 4 (registers) count it. dii 43.9332 -> 45.0861; fii untouched."
+   },
+   "2020-06-30": {
+    "cell": [
+     15.43,
+     1.7155,
+     44.3656,
+     0.0002,
+     3.808,
+     "2020-07-21",
+     201220
+    ],
+    "was": [
+     15.43,
+     1.7155,
+     43.2127,
+     0.0002,
+     3.808,
+     "2020-07-21",
+     201220
+    ],
+    "src": "bsexbrl:500032_2072020163928_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings And Investment Ltd 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (43.2133), so the holder was never counted; R2 + rule 4 (registers) count it. dii 43.2127 -> 44.3656; fii untouched."
+   },
+   "2020-09-30": {
+    "cell": [
+     15.43,
+     0.9515,
+     43.7525,
+     0.0002,
+     3.808,
+     "2020-10-20",
+     202852
+    ],
+    "was": [
+     15.43,
+     0.9515,
+     42.5996,
+     0.0002,
+     3.808,
+     "2020-10-20",
+     202852
+    ],
+    "src": "bsexbrl:500032_19102020162926_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd. 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (42.6001), so the holder was never counted; R2 + rule 4 (registers) count it. dii 42.5996 -> 43.7525; fii untouched."
+   },
+   "2020-12-31": {
+    "cell": [
+     15.43,
+     0.3575,
+     43.2008,
+     0.0002,
+     3.808,
+     "2021-01-17",
+     196748
+    ],
+    "was": [
+     15.43,
+     0.3575,
+     42.0479,
+     0.0002,
+     3.808,
+     "2021-01-17",
+     196748
+    ],
+    "src": "bsexbrl:500032_1712021155429_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (42.0484), so the holder was never counted; R2 + rule 4 (registers) count it. dii 42.0479 -> 43.2008; fii untouched."
+   },
+   "2021-03-31": {
+    "cell": [
+     15.43,
+     0.144,
+     41.0538,
+     0.0002,
+     3.808,
+     "2021-04-15",
+     203754
+    ],
+    "was": [
+     15.43,
+     0.144,
+     39.9009,
+     0.0002,
+     3.808,
+     "2021-04-15",
+     203754
+    ],
+    "src": "bsexbrl:500032_1542021144031_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings And Investment Ltd 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (39.9010), so the holder was never counted; R2 + rule 4 (registers) count it. dii 39.9009 -> 41.0538; fii untouched."
+   },
+   "2021-06-30": {
+    "cell": [
+     15.43,
+     0.4418,
+     38.3655,
+     0.0002,
+     3.808,
+     "2021-07-11",
+     256151
+    ],
+    "was": [
+     15.43,
+     0.4418,
+     37.2126,
+     0.0002,
+     3.808,
+     "2021-07-11",
+     256151
+    ],
+    "src": "bsexbrl:500032_117202118722_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd 1.1529 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (37.2140), so the holder was never counted; R2 + rule 4 (registers) count it. dii 37.2126 -> 38.3655; fii untouched."
+   },
+   "2021-09-30": {
+    "cell": [
+     24.95,
+     0.7505,
+     27.626,
+     0.0002,
+     3.3794,
+     "2021-10-18",
+     308410
+    ],
+    "was": [
+     24.95,
+     0.7505,
+     26.6029,
+     0.0002,
+     3.3794,
+     "2021-10-18",
+     308410
+    ],
+    "src": "bsexbrl:500032_121120211916_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings And Investment Ltd 1.0231 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (26.6023), so the holder was never counted; R2 + rule 4 (registers) count it. dii 26.6029 -> 27.6260; fii untouched."
+   },
+   "2021-12-31": {
+    "cell": [
+     24.95,
+     0.942,
+     27.5095,
+     0.0002,
+     3.3794,
+     "2022-01-11",
+     330090
+    ],
+    "was": [
+     24.95,
+     0.942,
+     26.4864,
+     0.0002,
+     3.3794,
+     "2022-01-11",
+     330090
+    ],
+    "src": "bsexbrl:500032_1112022103745_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Bajaj Holdings and Investment Ltd 1.0231 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (26.4858), so the holder was never counted; R2 + rule 4 (registers) count it. dii 26.4864 -> 27.5095; fii untouched."
    }
   },
   "PVRINOX": {
@@ -191721,6 +192183,28 @@
     ],
     "src": "bsexbrl:500355_177202015579_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 4.34 -> 4.34, dii 19.44 -> 20.21. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others QIB-Insurance Companies 0.77 . Evidence: _shp_164_audit.json"
+   },
+   "2019-09-30": {
+    "cell": [
+     50.09,
+     4.6658,
+     17.9918,
+     13.2564,
+     4.5309,
+     "2019-10-18",
+     59148
+    ],
+    "was": [
+     50.09,
+     4.6658,
+     17.949,
+     13.2564,
+     4.5309,
+     "2019-10-18",
+     59148
+    ],
+    "src": "bsexbrl:500355_17102019152442_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names QIB- Insurance Companies 0.0428 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 512: Life Insurance Corporation of India (name). Stored dii = the filing's six domestic lines exactly (17.9512), so the holder was never counted; R2 + rule 4 (registers) count it. dii 17.9490 -> 17.9918; fii untouched."
    }
   },
   "TCS": {
@@ -196829,6 +197313,28 @@
     ],
     "src": "bsexbrl:500520_11201811520_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 33.52 -> 33.52, dii 20.13 -> 23.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 2.87 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED along with its sub-account 2.87(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 0.12"
+   },
+   "2019-12-31": {
+    "cell": [
+     19.87,
+     33.9617,
+     25.2963,
+     9.508,
+     13.7796,
+     "2020-01-28",
+     407190
+    ],
+    "was": [
+     19.87,
+     33.9617,
+     24.2,
+     9.508,
+     13.7796,
+     "2020-01-28",
+     407190
+    ],
+    "src": "bsexbrl:500520_2112020115831_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names NPS TRUST - A/C SBI PENSION FUND SCHME-CENTRAL 1.0963 (''Trusts'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (24.1986), so the holder was never counted; R2 + rule 4 (registers) count it. dii 24.2000 -> 25.2963; fii untouched."
    }
   },
   "CASTEXTECH": {
@@ -251658,6 +252164,72 @@
     ],
     "src": "bsexbrl:540376_243201717411_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 2.70 -> 2.95, dii 2.32 -> 2.07. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.25; D1-unnamed-remainder-in-dii 0.25"
+   },
+   "2021-12-31": {
+    "cell": [
+     74.99,
+     9.4392,
+     6.7558,
+     6.2312,
+     0.4136,
+     "2022-01-10",
+     594561
+    ],
+    "was": [
+     74.99,
+     9.4392,
+     6.7398,
+     6.2312,
+     0.4136,
+     "2022-01-10",
+     594561
+    ],
+    "src": "bsexbrl:540376_712022191135_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Non Institution Any Other (NPS Trust) 0.0160 (''Others'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (6.7400), so the holder was never counted; R2 + rule 4 (registers) count it. dii 6.7398 -> 6.7558; fii untouched."
+   },
+   "2022-03-31": {
+    "cell": [
+     74.99,
+     8.8265,
+     6.858,
+     6.2499,
+     0.4461,
+     "2022-04-22",
+     742493
+    ],
+    "was": [
+     74.99,
+     8.8265,
+     6.7705,
+     6.2499,
+     0.4461,
+     "2022-04-22",
+     742493
+    ],
+    "src": "bsexbrl:540376_2142022173536_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Non Institution Any Other (NPS Trust) 0.0875 (''Others'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (6.7707), so the holder was never counted; R2 + rule 4 (registers) count it. dii 6.7705 -> 6.8580; fii untouched."
+   },
+   "2022-06-30": {
+    "cell": [
+     74.99,
+     8.5946,
+     6.9983,
+     6.3324,
+     0.4697,
+     "2022-07-14",
+     793537
+    ],
+    "was": [
+     74.99,
+     8.5946,
+     6.8774,
+     6.3324,
+     0.4697,
+     "2022-07-14",
+     793537
+    ],
+    "src": "bsexbrl:540376_1472022135433_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Non Institution Any Other (NPS Trust) 0.1209 (''Others'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (6.8776), so the holder was never counted; R2 + rule 4 (registers) count it. dii 6.8774 -> 6.9983; fii untouched."
    }
   },
   "TEAMGTY": {
@@ -282120,6 +282692,50 @@
     ],
     "src": "bsexbrl:500488_1372021194330_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 0.25 -> 1.05, dii 6.74 -> 5.94. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.8 | R1: R1-unresolved no typed rows 0.8. Evidence: _shp_164_audit.json"
+   },
+   "2019-12-31": {
+    "cell": [
+     74.99,
+     1.8173,
+     6.275,
+     4.9792,
+     0.1865,
+     "2020-01-13",
+     39417
+    ],
+    "was": [
+     74.99,
+     1.8173,
+     6.2619,
+     4.9792,
+     0.1865,
+     "2020-01-13",
+     39417
+    ],
+    "src": "bsexbrl:500488_1012020161615_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names PNB METLIFE INDIA INSURANCE COMPANY LIMITED 0.0131 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 117: PNB MetLife India Insurance Co Ltd). Stored dii = the filing's six domestic lines exactly (6.2616), so the holder was never counted; R2 + rule 4 (registers) count it. dii 6.2619 -> 6.2750; fii untouched."
+   },
+   "2020-03-31": {
+    "cell": [
+     74.99,
+     1.641,
+     6.1003,
+     4.7905,
+     0.1694,
+     "2020-04-10",
+     49254
+    ],
+    "was": [
+     74.99,
+     1.641,
+     6.0756,
+     4.7905,
+     0.1694,
+     "2020-04-10",
+     49254
+    ],
+    "src": "bsexbrl:500488_1042020143352_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names PNB METLIFE INDIA INSURANCE COMPANY LIMITED 0.0247 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 117: PNB MetLife India Insurance Co Ltd). Stored dii = the filing's six domestic lines exactly (6.0756), so the holder was never counted; R2 + rule 4 (registers) count it. dii 6.0756 -> 6.1003; fii untouched."
    }
   },
   "ABB": {
@@ -290973,6 +291589,28 @@
     ],
     "src": "bseaspx:531344_85",
     "why": "\u00a7164r batch 25 (2026-10-05, store-wide lower-bound check on each cell's own basis, round 2 of batch 23): the company's own BSE page (ShareholdingPattern.aspx 531344 qtrid 85) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 45,000 shares = 0.0231) - and the stored fii 26.2825 held only 'Foreign Institutional Investors' 26.2825. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign FI / foreign mutual fund counts wherever it sits) they are FII. % of the page's (A+B+C) total 194,974,191 shares. fii 26.2825 -> 26.3056, dii unchanged."
+   },
+   "2020-12-31": {
+    "cell": [
+     54.8,
+     23.2615,
+     17.3946,
+     8.3279,
+     8.142,
+     "2021-01-20",
+     134453
+    ],
+    "was": [
+     54.8,
+     23.2615,
+     16.5245,
+     8.3279,
+     8.142,
+     "2021-01-20",
+     134453
+    ],
+    "src": "bsexbrl:531344_201202111585_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names QIB-NPS TRUST 0.8701 (''Others'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (16.5241), so the holder was never counted; R2 + rule 4 (registers) count it. dii 16.5245 -> 17.3946; fii untouched."
    }
   },
   "CRISIL": {
@@ -329470,7 +330108,7 @@
     "cell": [
      0.0,
      42.8334,
-     25.8215,
+     27.5115,
      13.1548,
      0.0,
      "2018-04-13",
@@ -329479,17 +330117,48 @@
     "was": [
      0.0,
      42.8334,
-     23.9215,
+     25.8215,
      13.1548,
      0.0,
      "2018-04-13",
      46753
     ],
     "src": "bsexbrl:534804_1342018143626_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.83 -> 42.83, dii 23.92 -> 25.82. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 1.9. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.6900 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (25.8166), so the holder was never counted; R2 + rule 4 (registers) count it. dii 25.8215 -> 27.5115; fii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      42.8334,
+      25.8215,
+      13.1548,
+      0.0,
+      "2018-04-13",
+      46753
+     ],
+     "was": [
+      0.0,
+      42.8334,
+      23.9215,
+      13.1548,
+      0.0,
+      "2018-04-13",
+      46753
+     ],
+     "src": "bsexbrl:534804_1342018143626_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.83 -> 42.83, dii 23.92 -> 25.82. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 1.9. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
+     0.0,
+     42.905,
+     26.2568,
+     12.887,
+     0.0,
+     "2018-07-13",
+     47521
+    ],
+    "was": [
      0.0,
      42.905,
      24.5668,
@@ -329498,20 +330167,42 @@
      "2018-07-13",
      47521
     ],
-    "was": [
-     0.0,
-     42.905,
-     23.6668,
-     12.887,
-     0.0,
-     "2018-07-13",
-     47521
-    ],
     "src": "bsexbrl:534804_1372018142124_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.91 -> 42.91, dii 23.67 -> 24.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.9. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.6900 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (24.5686), so the holder was never counted; R2 + rule 4 (registers) count it. dii 24.5668 -> 26.2568; fii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      42.905,
+      24.5668,
+      12.887,
+      0.0,
+      "2018-07-13",
+      47521
+     ],
+     "was": [
+      0.0,
+      42.905,
+      23.6668,
+      12.887,
+      0.0,
+      "2018-07-13",
+      47521
+     ],
+     "src": "bsexbrl:534804_1372018142124_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.91 -> 42.91, dii 23.67 -> 24.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.9. Evidence: _shp_164_audit.json"
+    }
    },
    "2018-09-30": {
     "cell": [
+     0.0,
+     45.3681,
+     24.4654,
+     11.31,
+     0.0,
+     "2018-10-16",
+     45511
+    ],
+    "was": [
      0.0,
      45.3681,
      22.7754,
@@ -329520,19 +330211,19 @@
      "2018-10-16",
      45511
     ],
-    "was": [
-     0.0,
-     45.3681,
-     23.0474,
-     11.31,
-     0.0,
-     "2018-10-16",
-     45511
-    ],
     "src": "bsexbrl:534804_16102018121518_SHP.xml",
-    "why": "\u00a7164s part 10 (user 2026-10-05 'Count none of it'): the company files ONE row mixing an institution with NRIs / IEPF / non-institutions and no split - 'ALTERNATIVE INVESTMENT FUND and NON RESIDENT INDIA' 0.2720 (0.2720) - so none of it is DII. DII 23.0474 -> 22.7754.",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.6900 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (22.7755), so the holder was never counted; R2 + rule 4 (registers) count it. dii 22.7754 -> 24.4654; fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      45.3681,
+      22.7754,
+      11.31,
+      0.0,
+      "2018-10-16",
+      45511
+     ],
+     "was": [
       0.0,
       45.3681,
       23.0474,
@@ -329541,21 +330232,43 @@
       "2018-10-16",
       45511
      ],
-     "was": [
-      0.0,
-      45.3681,
-      22.1074,
-      11.31,
-      0.0,
-      "2018-10-16",
-      45511
-     ],
      "src": "bsexbrl:534804_16102018121518_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.37 -> 45.37, dii 22.11 -> 23.05. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others ALTERNATIVE INVESTMENT FUND and NON RESIDENT INDIAN NON REPATRIABLE 0.27 ; R3-nbfc NBFCsRegisteredWithRbi 0.67. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164s part 10 (user 2026-10-05 'Count none of it'): the company files ONE row mixing an institution with NRIs / IEPF / non-institutions and no split - 'ALTERNATIVE INVESTMENT FUND and NON RESIDENT INDIA' 0.2720 (0.2720) - so none of it is DII. DII 23.0474 -> 22.7754.",
+     "superseded": {
+      "cell": [
+       0.0,
+       45.3681,
+       23.0474,
+       11.31,
+       0.0,
+       "2018-10-16",
+       45511
+      ],
+      "was": [
+       0.0,
+       45.3681,
+       22.1074,
+       11.31,
+       0.0,
+       "2018-10-16",
+       45511
+      ],
+      "src": "bsexbrl:534804_16102018121518_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 45.37 -> 45.37, dii 22.11 -> 23.05. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others ALTERNATIVE INVESTMENT FUND and NON RESIDENT INDIAN NON REPATRIABLE 0.27 ; R3-nbfc NBFCsRegisteredWithRbi 0.67. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2018-12-31": {
     "cell": [
+     0.0,
+     42.7373,
+     26.6848,
+     14.0285,
+     0.0,
+     "2019-01-17",
+     48479
+    ],
+    "was": [
      0.0,
      42.7373,
      24.9948,
@@ -329564,20 +330277,42 @@
      "2019-01-17",
      48479
     ],
-    "was": [
-     0.0,
-     42.7373,
-     24.8048,
-     14.0285,
-     0.0,
-     "2019-01-17",
-     48479
-    ],
     "src": "bsexbrl:534804_1612019162648_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.74 -> 42.74, dii 24.80 -> 24.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.19. Evidence: _shp_164_audit.json"
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.6900 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (24.9922), so the holder was never counted; R2 + rule 4 (registers) count it. dii 24.9948 -> 26.6848; fii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      42.7373,
+      24.9948,
+      14.0285,
+      0.0,
+      "2019-01-17",
+      48479
+     ],
+     "was": [
+      0.0,
+      42.7373,
+      24.8048,
+      14.0285,
+      0.0,
+      "2019-01-17",
+      48479
+     ],
+     "src": "bsexbrl:534804_1612019162648_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.74 -> 42.74, dii 24.80 -> 24.99. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.19. Evidence: _shp_164_audit.json"
+    }
    },
    "2019-09-30": {
     "cell": [
+     0.0,
+     47.6169,
+     20.7143,
+     8.879,
+     0.0,
+     "2019-10-18",
+     47337
+    ],
+    "was": [
      0.0,
      47.6169,
      19.0243,
@@ -329586,22 +330321,13 @@
      "2019-10-18",
      47337
     ],
-    "was": [
-     0.0,
-     47.6169,
-     20.8471,
-     8.879,
-     0.0,
-     "2019-10-18",
-     47337
-    ],
     "src": "bsexbrl:534804_1710201916432_SHP.xml",
-    "why": "\u00a7164s part 10 (user 2026-10-05 'Count none of it'): the company files ONE row mixing an institution with NRIs / IEPF / non-institutions and no split - 'Quaified Institutional buyers and NON RESIDENT IND' 1.8228 (1.8228) - so none of it is DII. DII 20.8471 -> 19.0243.",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.6900 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (19.0274), so the holder was never counted; R2 + rule 4 (registers) count it. dii 19.0243 -> 20.7143; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
       47.6169,
-      20.8471,
+      19.0243,
       8.879,
       0.0,
       "2019-10-18",
@@ -329610,14 +330336,36 @@
      "was": [
       0.0,
       47.6169,
-      19.0071,
+      20.8471,
       8.879,
       0.0,
       "2019-10-18",
       47337
      ],
      "src": "bsexbrl:534804_1710201916432_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.62 -> 47.62, dii 19.01 -> 20.85. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others Quaified Institutional buyers and NON RESIDENT INDIAN NON REPATRIABLE 1.82 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164s part 10 (user 2026-10-05 'Count none of it'): the company files ONE row mixing an institution with NRIs / IEPF / non-institutions and no split - 'Quaified Institutional buyers and NON RESIDENT IND' 1.8228 (1.8228) - so none of it is DII. DII 20.8471 -> 19.0243.",
+     "superseded": {
+      "cell": [
+       0.0,
+       47.6169,
+       20.8471,
+       8.879,
+       0.0,
+       "2019-10-18",
+       47337
+      ],
+      "was": [
+       0.0,
+       47.6169,
+       19.0071,
+       8.879,
+       0.0,
+       "2019-10-18",
+       47337
+      ],
+      "src": "bsexbrl:534804_1710201916432_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.62 -> 47.62, dii 19.01 -> 20.85. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others Quaified Institutional buyers and NON RESIDENT INDIAN NON REPATRIABLE 1.82 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2019-12-31": {
@@ -331134,6 +331882,51 @@
     "src": "bsetable3:533309:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 3,136,339, VCF 0, AIF 0, FI/Banks 694,653, Insurance 197,330, PF 0, NBFC 12,480; total 88,793,303. dii 4.5367 -> 4.5508, ins 0.2222 -> 0.2222.",
     "exact": true
+   },
+   "2017-06-30": {
+    "cell": [
+     58.04,
+     13.8301,
+     7.5574,
+     6.309,
+     0.4837,
+     "2017-07-19",
+     19209
+    ],
+    "was": [
+     58.04,
+     13.8301,
+     7.5474,
+     6.309,
+     0.4837,
+     "2017-07-19",
+     19209
+    ],
+    "src": "bsexbrl:533309_1872017154121_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Alternate Investment Fund 0.0100 (''Other'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (7.5522), so the holder was never counted; R2 + rule 4 (registers) count it. dii 7.5474 -> 7.5574; fii untouched.",
+    "exact": true
+   },
+   "2017-12-31": {
+    "cell": [
+     58.04,
+     15.5985,
+     7.1192,
+     5.8537,
+     0.4863,
+     "2018-01-17",
+     25391
+    ],
+    "was": [
+     58.04,
+     15.5985,
+     7.0729,
+     5.8537,
+     0.4863,
+     "2018-01-17",
+     25391
+    ],
+    "src": "bsexbrl:533309_1712018122023_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Alternate Investment Fund 0.0463 (''Other'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (7.0777), so the holder was never counted; R2 + rule 4 (registers) count it. dii 7.0729 -> 7.1192; fii untouched."
    }
   },
   "DALMIASUG": {
@@ -331158,6 +331951,50 @@
     ],
     "src": "bsexbrl:500097_2110202021343_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.66 -> 0.66, dii 0.32 -> 1.82. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others QUALIFIED INSTITUTIONAL BUYERS 1.5 LIFE INSURANCE CORPORATION OF INDIA 1.50. Evidence: _shp_164_audit.json"
+   },
+   "2021-06-30": {
+    "cell": [
+     74.91,
+     1.0028,
+     0.0875,
+     0.0031,
+     0.0,
+     "2021-07-22",
+     25726
+    ],
+    "was": [
+     74.91,
+     1.0028,
+     0.0665,
+     0.0031,
+     0.0,
+     "2021-07-22",
+     25726
+    ],
+    "src": "bsexbrl:500097_2172021155031_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Alternate Investment Fund 0.0210 (''Others'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (0.0665), so the holder was never counted; R2 + rule 4 (registers) count it. dii 0.0665 -> 0.0875; fii untouched."
+   },
+   "2021-09-30": {
+    "cell": [
+     74.91,
+     0.9647,
+     0.0854,
+     0.0031,
+     0.0,
+     "2021-10-22",
+     35756
+    ],
+    "was": [
+     74.91,
+     0.9647,
+     0.0665,
+     0.0031,
+     0.0,
+     "2021-10-22",
+     35756
+    ],
+    "src": "bsexbrl:500097_21102021222414_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names Alternate Investment Fund 0.0189 (''Others'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (0.0665), so the holder was never counted; R2 + rule 4 (registers) count it. dii 0.0665 -> 0.0854; fii untouched."
    }
   },
   "DBCORP": {
@@ -344105,6 +344942,28 @@
     ],
     "src": "bsexbrl:517206_197202219627_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.24 -> 0.24, dii 0.30 -> 0.36. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-label Others ALTERNATIVE INVESTMENT FUND 0.06 . Evidence: _shp_164_audit.json"
+   },
+   "2021-09-30": {
+    "cell": [
+     75.0,
+     0.531,
+     0.41,
+     0.3559,
+     0.0,
+     "2021-10-14",
+     20384
+    ],
+    "was": [
+     75.0,
+     0.531,
+     0.3608,
+     0.3559,
+     0.0,
+     "2021-10-14",
+     20384
+    ],
+    "src": "bsexbrl:517206_13102021161835_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names ALTERNATE INVESTMENT FUND 0.0492 (''Others'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (0.3610), so the holder was never counted; R2 + rule 4 (registers) count it. dii 0.3608 -> 0.4100; fii untouched."
    }
   },
   "MAHSCOOTER": {
@@ -349704,6 +350563,28 @@
     ],
     "src": "bsexbrl:500338_9102018162150_SHP.xml",
     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 6.60 -> 6.60, dii 3.76 -> 3.81. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+   },
+   "2021-03-31": {
+    "cell": [
+     74.87,
+     2.963,
+     7.4435,
+     7.3898,
+     0.0,
+     "2021-04-08",
+     70424
+    ],
+    "was": [
+     74.87,
+     2.963,
+     7.3903,
+     7.3898,
+     0.0,
+     "2021-04-08",
+     70424
+    ],
+    "src": "bsexbrl:500338_8420211371_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names AVENDUS PHOENIX FUND, CANARA HSBC ORIENTAL BANK OF 0.0532 (''Others'') on its non-institution row; each is an Indian institution on an official register (IRDAI-registered life insurer no. 136: Canara HSBC Life Insurance Co Ltd (former). Stored dii = the filing's six domestic lines exactly (7.3920), so the holder was never counted; R2 + rule 4 (registers) count it. dii 7.3903 -> 7.4435; fii untouched."
    }
   },
   "PSPPROJECT": {
@@ -370384,7 +371265,7 @@
     "cell": [
      0.0,
      20.8878,
-     14.3464,
+     18.6585,
      5.2554,
      8.427,
      "2017-01-25",
@@ -370392,20 +371273,19 @@
     ],
     "was": [
      0.0,
-     20.8777,
+     20.8878,
      14.3464,
      5.2554,
      8.427,
      "2017-01-25",
      64980
     ],
-    "src": "bsetable3:539874:92",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2016-12-31 - BSE Table III (qtrid 92): FPI B1e 8,814,578 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 1,839,655 (D1) on (A+B+C2) 118,844,130 = 20.8878. Other named block holders public under documents-only (no foreign-institution listing): SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; CDC GROUP PLC 10,932,696; ALENA PRIVATE LIMITED 10,790,943; ELEVAR EQUITY MAURITIUS 2,860,058. fii 20.8777 -> 20.8878.",
-    "exact": true,
+    "src": "bsexbrl:539874_2512017125155_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 4.3121 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (14.3455), so the holder was never counted; R2 + rule 4 (registers) count it. dii 14.3464 -> 18.6585; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      20.8777,
+      20.8878,
       14.3464,
       5.2554,
       8.427,
@@ -370415,16 +371295,26 @@
      "was": [
       0.0,
       20.8777,
-      31.5664,
+      14.3464,
       5.2554,
       8.427,
       "2017-01-25",
       64980
      ],
-     "src": "bsexbrl:539874_2512017125155_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_2512017125155_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 2.41; ALENA PRIVATE LIMITED 9.08; CX PARTNERS FUND 1 LIMITED 2.19) leave DII (13.68) and count as neither; plus 3.54 of holders already documented foreign (placed by the existing rules). DII 31.5664 -> 14.3464; FII unchanged.",
+     "src": "bsetable3:539874:92",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2016-12-31 - BSE Table III (qtrid 92): FPI B1e 8,814,578 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 1,839,655 (D1) on (A+B+C2) 118,844,130 = 20.8878. Other named block holders public under documents-only (no foreign-institution listing): SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; CDC GROUP PLC 10,932,696; ALENA PRIVATE LIMITED 10,790,943; ELEVAR EQUITY MAURITIUS 2,860,058. fii 20.8777 -> 20.8878.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       20.8777,
+       14.3464,
+       5.2554,
+       8.427,
+       "2017-01-25",
+       64980
+      ],
+      "was": [
        0.0,
        20.8777,
        31.5664,
@@ -370433,21 +371323,12 @@
        "2017-01-25",
        64980
       ],
-      "was": [
-       0.0,
-       8.9577,
-       31.5664,
-       5.2554,
-       8.427,
-       "2017-01-25",
-       64980
-      ],
       "src": "bsexbrl:539874_2512017125155_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.9577 -> 20.8777 (+11.9200), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_2512017125155_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 2.41; ALENA PRIVATE LIMITED 9.08; CX PARTNERS FUND 1 LIMITED 2.19) leave DII (13.68) and count as neither; plus 3.54 of holders already documented foreign (placed by the existing rules). DII 31.5664 -> 14.3464; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        8.9577,
+        20.8777,
         31.5664,
         5.2554,
         8.427,
@@ -370456,7 +371337,7 @@
        ],
        "was": [
         0.0,
-        18.1569,
+        8.9577,
         31.5664,
         5.2554,
         8.427,
@@ -370464,11 +371345,11 @@
         64980
        ],
        "src": "bsexbrl:539874_2512017125155_SHP.xml",
-       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 9.20 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 18.1569 -> 8.9577 (share counts of 539874_2512017125155_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.9577 -> 20.8777 (+11.9200), dii unchanged.",
        "superseded": {
         "cell": [
          0.0,
-         18.1569,
+         8.9577,
          31.5664,
          5.2554,
          8.427,
@@ -370477,15 +371358,37 @@
         ],
         "was": [
          0.0,
-         7.4169,
-         54.2064,
+         18.1569,
+         31.5664,
          5.2554,
          8.427,
          "2017-01-25",
          64980
         ],
         "src": "bsexbrl:539874_2512017125155_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 7.42 -> 18.16, dii 54.21 -> 31.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.41 ELEVAR EQUITY MAURITIUS 2.41; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 2.41 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 9.08 ALENA PRIVATE LIMITED 9.08; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 9.08 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=9.20 CDC GROUP PLC 9.20 foreign->fii(curated); R1-named-unresolved-kept Other 2.19 CX PARTNERS FUND 1 LIMITED 2.19; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.19 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.91 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.91 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept "
+        "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 9.20 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 18.1569 -> 8.9577 (share counts of 539874_2512017125155_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+        "superseded": {
+         "cell": [
+          0.0,
+          18.1569,
+          31.5664,
+          5.2554,
+          8.427,
+          "2017-01-25",
+          64980
+         ],
+         "was": [
+          0.0,
+          7.4169,
+          54.2064,
+          5.2554,
+          8.427,
+          "2017-01-25",
+          64980
+         ],
+         "src": "bsexbrl:539874_2512017125155_SHP.xml",
+         "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 7.42 -> 18.16, dii 54.21 -> 31.57. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.41 ELEVAR EQUITY MAURITIUS 2.41; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 2.41 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 9.08 ALENA PRIVATE LIMITED 9.08; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 9.08 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=9.20 CDC GROUP PLC 9.20 foreign->fii(curated); R1-named-unresolved-kept Other 2.19 CX PARTNERS FUND 1 LIMITED 2.19; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.19 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.91 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.91 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept "
+        }
        }
       }
      }
@@ -370828,7 +371731,7 @@
     "cell": [
      0.0,
      22.2282,
-     15.6939,
+     18.2853,
      8.7296,
      4.4855,
      "2018-01-12",
@@ -370836,20 +371739,19 @@
     ],
     "was": [
      0.0,
-     22.2266,
+     22.2282,
      15.6939,
      8.7296,
      4.4855,
      "2018-01-12",
      79815
     ],
-    "src": "bsetable3:539874:96",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2017-12-31 - BSE Table III (qtrid 96): FPI B1e 11,722,193 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 917,162 (D1) on (A+B+C2) 120,608,348 = 22.2282. Other named block holders public under documents-only (no foreign-institution listing): ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; ELEVAR EQUITY MAURITIUS 2,013,368; CDC GROUP PLC 2,282,646. fii 22.2266 -> 22.2282.",
-    "exact": true,
+    "src": "bsexbrl:539874_1112018165657_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 2.5914 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (15.6890), so the holder was never counted; R2 + rule 4 (registers) count it. dii 15.6939 -> 18.2853; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      22.2266,
+      22.2282,
       15.6939,
       8.7296,
       4.4855,
@@ -370859,16 +371761,26 @@
      "was": [
       0.0,
       22.2266,
-      31.9539,
+      15.6939,
       8.7296,
       4.4855,
       "2018-01-12",
       79815
      ],
-     "src": "bsexbrl:539874_1112018165657_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1112018165657_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 1.67; CX PARTNERS FUND 1 LIMITED 2.16; ALENA PRIVATE LIMITED 8.95) leave DII (12.78) and count as neither; plus 3.48 of holders already documented foreign (placed by the existing rules). DII 31.9539 -> 15.6939; FII unchanged.",
+     "src": "bsetable3:539874:96",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2017-12-31 - BSE Table III (qtrid 96): FPI B1e 11,722,193 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 917,162 (D1) on (A+B+C2) 120,608,348 = 22.2282. Other named block holders public under documents-only (no foreign-institution listing): ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; ELEVAR EQUITY MAURITIUS 2,013,368; CDC GROUP PLC 2,282,646. fii 22.2266 -> 22.2282.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       22.2266,
+       15.6939,
+       8.7296,
+       4.4855,
+       "2018-01-12",
+       79815
+      ],
+      "was": [
        0.0,
        22.2266,
        31.9539,
@@ -370877,21 +371789,12 @@
        "2018-01-12",
        79815
       ],
-      "was": [
-       0.0,
-       10.4766,
-       31.9539,
-       8.7296,
-       4.4855,
-       "2018-01-12",
-       79815
-      ],
       "src": "bsexbrl:539874_1112018165657_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 10.4766 -> 22.2266 (+11.7500), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1112018165657_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 1.67; CX PARTNERS FUND 1 LIMITED 2.16; ALENA PRIVATE LIMITED 8.95) leave DII (12.78) and count as neither; plus 3.48 of holders already documented foreign (placed by the existing rules). DII 31.9539 -> 15.6939; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        10.4766,
+        22.2266,
         31.9539,
         8.7296,
         4.4855,
@@ -370900,7 +371803,7 @@
        ],
        "was": [
         0.0,
-        12.3692,
+        10.4766,
         31.9539,
         8.7296,
         4.4855,
@@ -370908,11 +371811,11 @@
         79815
        ],
        "src": "bsexbrl:539874_1112018165657_SHP.xml",
-       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 1.89 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.3692 -> 10.4766 (share counts of 539874_1112018165657_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 10.4766 -> 22.2266 (+11.7500), dii unchanged.",
        "superseded": {
         "cell": [
          0.0,
-         12.3692,
+         10.4766,
          31.9539,
          8.7296,
          4.4855,
@@ -370921,15 +371824,37 @@
         ],
         "was": [
          0.0,
-         9.7192,
-         46.3039,
+         12.3692,
+         31.9539,
          8.7296,
          4.4855,
          "2018-01-12",
          79815
         ],
         "src": "bsexbrl:539874_1112018165657_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 9.72 -> 12.37, dii 46.30 -> 31.95. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=1.89 CDC GROUP PLC 1.89 foreign->fii(curated); R1-named-unresolved-kept Other 1.67 ELEVAR EQUITY MAURITIUS 1.67; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.67 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 2.16 CX PARTNERS FUND 1 LIMITED 2.16; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.16 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.83 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.83 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.48 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48 ?->-(-) ke"
+        "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 1.89 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 12.3692 -> 10.4766 (share counts of 539874_1112018165657_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+        "superseded": {
+         "cell": [
+          0.0,
+          12.3692,
+          31.9539,
+          8.7296,
+          4.4855,
+          "2018-01-12",
+          79815
+         ],
+         "was": [
+          0.0,
+          9.7192,
+          46.3039,
+          8.7296,
+          4.4855,
+          "2018-01-12",
+          79815
+         ],
+         "src": "bsexbrl:539874_1112018165657_SHP.xml",
+         "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 9.72 -> 12.37, dii 46.30 -> 31.95. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=1.89 CDC GROUP PLC 1.89 foreign->fii(curated); R1-named-unresolved-kept Other 1.67 ELEVAR EQUITY MAURITIUS 1.67; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.67 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 2.16 CX PARTNERS FUND 1 LIMITED 2.16; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.16 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.83 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.83 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.48 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48 ?->-(-) ke"
+        }
        }
       }
      }
@@ -370939,7 +371864,7 @@
     "cell": [
      0.0,
      21.2438,
-     19.0018,
+     21.5877,
      9.4141,
      5.9088,
      "2018-04-10",
@@ -370947,20 +371872,19 @@
     ],
     "was": [
      0.0,
-     21.2399,
+     21.2438,
      19.0018,
      9.4141,
      5.9088,
      "2018-04-10",
      76832
     ],
-    "src": "bsetable3:539874:97",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-03-31 - BSE Table III (qtrid 97): FPI B1e 11,505,956 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 0 (D1) on (A+B+C2) 120,861,781 = 21.2438. Other named block holders public under documents-only (no foreign-institution listing): ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; ELEVAR EQUITY MAURITIUS 2,013,368. fii 21.2399 -> 21.2438.",
-    "exact": true,
+    "src": "bsexbrl:539874_942018162129_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 2.5859 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (19.0022), so the holder was never counted; R2 + rule 4 (registers) count it. dii 19.0018 -> 21.5877; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      21.2399,
+      21.2438,
       19.0018,
       9.4141,
       5.9088,
@@ -370970,16 +371894,26 @@
      "was": [
       0.0,
       21.2399,
-      35.2318,
+      19.0018,
       9.4141,
       5.9088,
       "2018-04-10",
       76832
      ],
-     "src": "bsexbrl:539874_942018162129_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_942018162129_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 1.67; CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.93) leave DII (12.75) and count as neither; plus 3.48 of holders already documented foreign (placed by the existing rules). DII 35.2318 -> 19.0018; FII unchanged.",
+     "src": "bsetable3:539874:97",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-03-31 - BSE Table III (qtrid 97): FPI B1e 11,505,956 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 0 (D1) on (A+B+C2) 120,861,781 = 21.2438. Other named block holders public under documents-only (no foreign-institution listing): ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; ELEVAR EQUITY MAURITIUS 2,013,368. fii 21.2399 -> 21.2438.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       21.2399,
+       19.0018,
+       9.4141,
+       5.9088,
+       "2018-04-10",
+       76832
+      ],
+      "was": [
        0.0,
        21.2399,
        35.2318,
@@ -370988,21 +371922,12 @@
        "2018-04-10",
        76832
       ],
-      "was": [
-       0.0,
-       9.5199,
-       35.2318,
-       9.4141,
-       5.9088,
-       "2018-04-10",
-       76832
-      ],
       "src": "bsexbrl:539874_942018162129_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 9.5199 -> 21.2399 (+11.7200), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_942018162129_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 1.67; CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.93) leave DII (12.75) and count as neither; plus 3.48 of holders already documented foreign (placed by the existing rules). DII 35.2318 -> 19.0018; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        9.5199,
+        21.2399,
         35.2318,
         9.4141,
         5.9088,
@@ -371012,14 +371937,36 @@
        "was": [
         0.0,
         9.5199,
-        46.9218,
+        35.2318,
         9.4141,
         5.9088,
         "2018-04-10",
         76832
        ],
        "src": "bsexbrl:539874_942018162129_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 9.52 -> 9.52, dii 46.92 -> 35.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.67 ELEVAR EQUITY MAURITIUS 1.67; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.67 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.48 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48 ?->-(-) keyword; R1-named-unresolved-kept Other 8.93 ALENA PRIVATE LIMITED 8.93; R1-unresolved Other 0"
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 9.5199 -> 21.2399 (+11.7200), dii unchanged.",
+       "superseded": {
+        "cell": [
+         0.0,
+         9.5199,
+         35.2318,
+         9.4141,
+         5.9088,
+         "2018-04-10",
+         76832
+        ],
+        "was": [
+         0.0,
+         9.5199,
+         46.9218,
+         9.4141,
+         5.9088,
+         "2018-04-10",
+         76832
+        ],
+        "src": "bsexbrl:539874_942018162129_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 9.52 -> 9.52, dii 46.92 -> 35.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 1.67 ELEVAR EQUITY MAURITIUS 1.67; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.67 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.48 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.48 ?->-(-) keyword; R1-named-unresolved-kept Other 8.93 ALENA PRIVATE LIMITED 8.93; R1-unresolved Other 0"
+       }
       }
      }
     }
@@ -371028,7 +371975,7 @@
     "cell": [
      0.0,
      20.5489,
-     21.2153,
+     23.7992,
      9.517,
      6.8401,
      "2018-07-11",
@@ -371036,20 +371983,19 @@
     ],
     "was": [
      0.0,
-     20.5436,
+     20.5489,
      21.2153,
      9.517,
      6.8401,
      "2018-07-11",
      73530
     ],
-    "src": "bsetable3:539874:98",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-06-30 - BSE Table III (qtrid 98): FPI B1e 10,684,628 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 500 (D1) on (A+B+C2) 120,954,793 = 20.5489. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 20.5436 -> 20.5489.",
-    "exact": true,
+    "src": "bsexbrl:539874_1072018153238_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 2.5839 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (21.2135), so the holder was never counted; R2 + rule 4 (registers) count it. dii 21.2153 -> 23.7992; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      20.5436,
+      20.5489,
       21.2153,
       9.517,
       6.8401,
@@ -371059,16 +372005,26 @@
      "was": [
       0.0,
       20.5436,
-      37.4153,
+      21.2153,
       9.517,
       6.8401,
       "2018-07-11",
       73530
      ],
-     "src": "bsexbrl:539874_1072018153238_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1072018153238_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.92; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.73) and count as neither; plus 3.47 of holders already documented foreign (placed by the existing rules). DII 37.4153 -> 21.2153; FII unchanged.",
+     "src": "bsetable3:539874:98",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-06-30 - BSE Table III (qtrid 98): FPI B1e 10,684,628 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 500 (D1) on (A+B+C2) 120,954,793 = 20.5489. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 20.5436 -> 20.5489.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       20.5436,
+       21.2153,
+       9.517,
+       6.8401,
+       "2018-07-11",
+       73530
+      ],
+      "was": [
        0.0,
        20.5436,
        37.4153,
@@ -371077,21 +372033,12 @@
        "2018-07-11",
        73530
       ],
-      "was": [
-       0.0,
-       8.8336,
-       37.4153,
-       9.517,
-       6.8401,
-       "2018-07-11",
-       73530
-      ],
       "src": "bsexbrl:539874_1072018153238_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.8336 -> 20.5436 (+11.7100), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1072018153238_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.92; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.73) and count as neither; plus 3.47 of holders already documented foreign (placed by the existing rules). DII 37.4153 -> 21.2153; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        8.8336,
+        20.5436,
         37.4153,
         9.517,
         6.8401,
@@ -371101,14 +372048,36 @@
        "was": [
         0.0,
         8.8336,
-        49.1253,
+        37.4153,
         9.517,
         6.8401,
         "2018-07-11",
         73530
        ],
        "src": "bsexbrl:539874_1072018153238_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 8.83 -> 8.83, dii 49.13 -> 37.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.47 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47 ?->-(-) keyword; R1-named-unresolved-kept Other 8.92 ALENA PRIVATE LIMITED 8.92; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.92 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.90 fii=0.00 INTERNATIONAL FINANCE CORPORATION 5.90 foreign->public(new-format:ForeignC"
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.8336 -> 20.5436 (+11.7100), dii unchanged.",
+       "superseded": {
+        "cell": [
+         0.0,
+         8.8336,
+         37.4153,
+         9.517,
+         6.8401,
+         "2018-07-11",
+         73530
+        ],
+        "was": [
+         0.0,
+         8.8336,
+         49.1253,
+         9.517,
+         6.8401,
+         "2018-07-11",
+         73530
+        ],
+        "src": "bsexbrl:539874_1072018153238_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 8.83 -> 8.83, dii 49.13 -> 37.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.47 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47 ?->-(-) keyword; R1-named-unresolved-kept Other 8.92 ALENA PRIVATE LIMITED 8.92; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.92 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.90 fii=0.00 INTERNATIONAL FINANCE CORPORATION 5.90 foreign->public(new-format:ForeignC"
+       }
       }
      }
     }
@@ -371117,7 +372086,7 @@
     "cell": [
      0.0,
      18.868,
-     22.8949,
+     25.4775,
      9.4805,
      7.0046,
      "2018-10-09",
@@ -371125,20 +372094,19 @@
     ],
     "was": [
      0.0,
-     18.8742,
+     18.868,
      22.8949,
      9.4805,
      7.0046,
      "2018-10-09",
      78655
     ],
-    "src": "bsetable3:539874:99",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-09-30 - BSE Table III (qtrid 99): FPI B1e 10,449,035 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 5,356,263 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 750 (D1) on (A+B+C2) 121,019,845 = 18.8680. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 18.8742 -> 18.8680.",
-    "exact": true,
+    "src": "bsexbrl:539874_910201815910_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 2.5826 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (22.8949), so the holder was never counted; R2 + rule 4 (registers) count it. dii 22.8949 -> 25.4775; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      18.8742,
+      18.868,
       22.8949,
       9.4805,
       7.0046,
@@ -371148,16 +372116,26 @@
      "was": [
       0.0,
       18.8742,
-      39.0949,
+      22.8949,
       9.4805,
       7.0046,
       "2018-10-09",
       78655
      ],
-     "src": "bsexbrl:539874_910201815910_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_910201815910_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.92; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.73) and count as neither; plus 3.47 of holders already documented foreign (placed by the existing rules). DII 39.0949 -> 22.8949; FII unchanged.",
+     "src": "bsetable3:539874:99",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2018-09-30 - BSE Table III (qtrid 99): FPI B1e 10,449,035 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 5,356,263 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 750 (D1) on (A+B+C2) 121,019,845 = 18.8680. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 18.8742 -> 18.8680.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       18.8742,
+       22.8949,
+       9.4805,
+       7.0046,
+       "2018-10-09",
+       78655
+      ],
+      "was": [
        0.0,
        18.8742,
        39.0949,
@@ -371166,21 +372144,12 @@
        "2018-10-09",
        78655
       ],
-      "was": [
-       0.0,
-       8.6342,
-       39.0949,
-       9.4805,
-       7.0046,
-       "2018-10-09",
-       78655
-      ],
       "src": "bsexbrl:539874_910201815910_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.6342 -> 18.8742 (+10.2400), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_910201815910_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.92; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.73) and count as neither; plus 3.47 of holders already documented foreign (placed by the existing rules). DII 39.0949 -> 22.8949; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        8.6342,
+        18.8742,
         39.0949,
         9.4805,
         7.0046,
@@ -371190,14 +372159,36 @@
        "was": [
         0.0,
         8.6342,
-        49.3249,
+        39.0949,
         9.4805,
         7.0046,
         "2018-10-09",
         78655
        ],
        "src": "bsexbrl:539874_910201815910_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 8.63 -> 8.63, dii 49.32 -> 39.09. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.47 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47 ?->-(-) keyword; R1-named-unresolved-kept Other 8.92 ALENA PRIVATE LIMITED 8.92; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.92 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=4.43 fii=0.00 INTERNATIONAL FINANCE CORPORATION 4.43 foreign->public(new-format:ForeignC"
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.6342 -> 18.8742 (+10.2400), dii unchanged.",
+       "superseded": {
+        "cell": [
+         0.0,
+         8.6342,
+         39.0949,
+         9.4805,
+         7.0046,
+         "2018-10-09",
+         78655
+        ],
+        "was": [
+         0.0,
+         8.6342,
+         49.3249,
+         9.4805,
+         7.0046,
+         "2018-10-09",
+         78655
+        ],
+        "src": "bsexbrl:539874_910201815910_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 8.63 -> 8.63, dii 49.32 -> 39.09. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.81 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.81 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 3.47 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47; R1-unresolved Other 0.0 SEQUOIA CAPITAL INDIA INVESTMENTS III 3.47 ?->-(-) keyword; R1-named-unresolved-kept Other 8.92 ALENA PRIVATE LIMITED 8.92; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.92 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=4.43 fii=0.00 INTERNATIONAL FINANCE CORPORATION 4.43 foreign->public(new-format:ForeignC"
+       }
       }
      }
     }
@@ -371384,7 +372375,7 @@
     "cell": [
      0.0,
      24.3005,
-     19.7682,
+     21.9782,
      8.3804,
      4.4418,
      "2019-07-15",
@@ -371392,20 +372383,19 @@
     ],
     "was": [
      0.0,
-     24.2962,
+     24.3005,
      19.7682,
      8.3804,
      4.4418,
      "2019-07-15",
      79041
     ],
-    "src": "bsetable3:539874:102",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2019-06-30 - BSE Table III (qtrid 102): FPI B1e 17,107,539 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 5,356,263 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 0 (D1) on (A+B+C2) 121,362,831 = 24.3005. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 24.2962 -> 24.3005.",
-    "exact": true,
+    "src": "bsexbrl:539874_1272019161024_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 2.2100 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (19.7692), so the holder was never counted; R2 + rule 4 (registers) count it. dii 19.7682 -> 21.9782; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      24.2962,
+      24.3005,
       19.7682,
       8.3804,
       4.4418,
@@ -371415,16 +372405,26 @@
      "was": [
       0.0,
       24.2962,
-      32.4682,
+      19.7682,
       8.3804,
       4.4418,
       "2019-07-15",
       79041
      ],
-     "src": "bsexbrl:539874_1272019161024_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1272019161024_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.89; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.70) and count as neither. DII 32.4682 -> 19.7682; FII unchanged.",
+     "src": "bsetable3:539874:102",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2019-06-30 - BSE Table III (qtrid 102): FPI B1e 17,107,539 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 5,356,263 + NEWQUEST ASIA INVESTMENTS II LIMITED 7,028,022 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 0 (D1) on (A+B+C2) 121,362,831 = 24.3005. Other named block holders public under documents-only (no foreign-institution listing): ELEVAR EQUITY MAURITIUS 2,013,368; ALENA PRIVATE LIMITED 10,790,943; CX PARTNERS FUND 1 LIMITED 2,604,342. fii 24.2962 -> 24.3005.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       24.2962,
+       19.7682,
+       8.3804,
+       4.4418,
+       "2019-07-15",
+       79041
+      ],
+      "was": [
        0.0,
        24.2962,
        32.4682,
@@ -371433,21 +372433,12 @@
        "2019-07-15",
        79041
       ],
-      "was": [
-       0.0,
-       14.0962,
-       32.4682,
-       8.3804,
-       4.4418,
-       "2019-07-15",
-       79041
-      ],
       "src": "bsexbrl:539874_1272019161024_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 14.0962 -> 24.2962 (+10.2000), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_1272019161024_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (CX PARTNERS FUND 1 LIMITED 2.15; ALENA PRIVATE LIMITED 8.89; ELEVAR EQUITY MAURITIUS 1.66) leave DII (12.70) and count as neither. DII 32.4682 -> 19.7682; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        14.0962,
+        24.2962,
         32.4682,
         8.3804,
         4.4418,
@@ -371457,14 +372448,36 @@
        "was": [
         0.0,
         14.0962,
-        42.6582,
+        32.4682,
         8.3804,
         4.4418,
         "2019-07-15",
         79041
        ],
        "src": "bsexbrl:539874_1272019161024_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 14.10 -> 14.10, dii 42.66 -> 32.47. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.79 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.79 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 8.89 ALENA PRIVATE LIMITED 8.89; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.89 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=4.41 fii=0.00 INTERNATIONAL FINANCE CORPORATION 4.41 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 1.66 ELEVAR EQUITY MAURITIUS 1.66; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.66 ?->-(name-only (name marker; no do"
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 14.0962 -> 24.2962 (+10.2000), dii unchanged.",
+       "superseded": {
+        "cell": [
+         0.0,
+         14.0962,
+         32.4682,
+         8.3804,
+         4.4418,
+         "2019-07-15",
+         79041
+        ],
+        "was": [
+         0.0,
+         14.0962,
+         42.6582,
+         8.3804,
+         4.4418,
+         "2019-07-15",
+         79041
+        ],
+        "src": "bsexbrl:539874_1272019161024_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 14.10 -> 14.10, dii 42.66 -> 32.47. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.15 CX PARTNERS FUND 1 LIMITED 2.15; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.15 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=5.79 fii=0.00 NEWQUEST ASIA INVESTMENTS II LIMITED 5.79 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 8.89 ALENA PRIVATE LIMITED 8.89; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 8.89 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=4.41 fii=0.00 INTERNATIONAL FINANCE CORPORATION 4.41 foreign->public(new-format:ForeignCompanies); R1-named-unresolved-kept Other 1.66 ELEVAR EQUITY MAURITIUS 1.66; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 1.66 ?->-(name-only (name marker; no do"
+       }
       }
      }
     }
@@ -372363,7 +373376,7 @@
     "cell": [
      0.0,
      21.6068,
-     16.5626,
+     20.8878,
      6.4604,
      9.7504,
      "2016-10-13",
@@ -372371,20 +373384,19 @@
     ],
     "was": [
      0.0,
-     21.6059,
+     21.6068,
      16.5626,
      6.4604,
      9.7504,
      "2016-10-13",
      52372
     ],
-    "src": "bsetable3:539874:91",
-    "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2016-09-30 - BSE Table III (qtrid 91): FPI B1e 9,126,867 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 8,199,522 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 1,132,882 (D1) on (A+B+C2) 118,485,500 = 21.6068. Other named block holders public under documents-only (no foreign-institution listing): SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; INDIA FINANCIAL INCLUSION FUND 1,754,386; CDC GROUP PLC 10,932,696; ALENA PRIVATE LIMITED 10,790,943; ELEVAR EQUITY MAURITIUS 2,860,058. fii 21.6059 -> 21.6068.",
-    "exact": true,
+    "src": "bsexbrl:539874_131020161330_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 4.3252 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 (and the i). Stored dii = the filing's six domestic lines exactly (16.5654), so the holder was never counted; R2 + rule 4 (registers) count it. dii 16.5626 -> 20.8878; fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      21.6059,
+      21.6068,
       16.5626,
       6.4604,
       9.7504,
@@ -372394,16 +373406,26 @@
      "was": [
       0.0,
       21.6059,
-      35.3126,
+      16.5626,
       6.4604,
       9.7504,
       "2016-10-13",
       52372
      ],
-     "src": "bsexbrl:539874_131020161330_SHP.xml",
-     "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_131020161330_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 2.41; ALENA PRIVATE LIMITED 9.11; INDIA FINANCIAL INCLUSION FUND 1.48; CX PARTNERS FUND 1 LIMITED 2.20) leave DII (15.20) and count as neither; plus 3.55 of holders already documented foreign (placed by the existing rules). DII 35.3126 -> 16.5626; FII unchanged.",
+     "src": "bsetable3:539874:91",
+     "why": "\u00a7164r batch 30 (2026-10-05, UJJIVAN re-read cell by cell, share-count precision): 2016-09-30 - BSE Table III (qtrid 91): FPI B1e 9,126,867 + FVCI B1d 0 + INTERNATIONAL FINANCE CORPORATION 7,141,684 + NEWQUEST ASIA INVESTMENTS II LIMITED 8,199,522 (the company's own FDI line 2023-09..2024-03: Option A) + the institutions Any-Other block's unnamed rest 1,132,882 (D1) on (A+B+C2) 118,485,500 = 21.6068. Other named block holders public under documents-only (no foreign-institution listing): SEQUOIA CAPITAL INDIA INVESTME 4,201,276; CX PARTNERS FUND 1 LIMITED 2,604,342; INDIA FINANCIAL INCLUSION FUND 1,754,386; CDC GROUP PLC 10,932,696; ALENA PRIVATE LIMITED 10,790,943; ELEVAR EQUITY MAURITIUS 2,860,058. fii 21.6059 -> 21.6068.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       21.6059,
+       16.5626,
+       6.4604,
+       9.7504,
+       "2016-10-13",
+       52372
+      ],
+      "was": [
        0.0,
        21.6059,
        35.3126,
@@ -372412,21 +373434,12 @@
        "2016-10-13",
        52372
       ],
-      "was": [
-       0.0,
-       8.6559,
-       35.3126,
-       6.4604,
-       9.7504,
-       "2016-10-13",
-       52372
-      ],
       "src": "bsexbrl:539874_131020161330_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.6559 -> 21.6059 (+12.9500), dii unchanged.",
+      "why": "\u00a7164s part 7 (user 2026-10-05 'Take them out': DII counts only holders shown to be Indian). Cell re-read from 539874_131020161330_SHP.xml: named holders in the institutions 'Any Other' row with no document showing them Indian (ELEVAR EQUITY MAURITIUS 2.41; ALENA PRIVATE LIMITED 9.11; INDIA FINANCIAL INCLUSION FUND 1.48; CX PARTNERS FUND 1 LIMITED 2.20) leave DII (15.20) and count as neither; plus 3.55 of holders already documented foreign (placed by the existing rules). DII 35.3126 -> 16.5626; FII unchanged.",
       "superseded": {
        "cell": [
         0.0,
-        8.6559,
+        21.6059,
         35.3126,
         6.4604,
         9.7504,
@@ -372435,7 +373448,7 @@
        ],
        "was": [
         0.0,
-        17.8829,
+        8.6559,
         35.3126,
         6.4604,
         9.7504,
@@ -372443,11 +373456,11 @@
         52372
        ],
        "src": "bsexbrl:539874_131020161330_SHP.xml",
-       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 9.23 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.8829 -> 8.6559 (share counts of 539874_131020161330_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): INTERNATIONAL FINANCE CORPORATION (FDI line 2023-09-30..2024-03-31); NEWQUEST ASIA INVESTMENTS II LIMITED (FDI line 2023-09-30..2024-03-31) - fii 8.6559 -> 21.6059 (+12.9500), dii unchanged.",
        "superseded": {
         "cell": [
          0.0,
-         17.8829,
+         8.6559,
          35.3126,
          6.4604,
          9.7504,
@@ -372456,15 +373469,37 @@
         ],
         "was": [
          0.0,
-         7.7029,
-         58.4326,
+         17.8829,
+         35.3126,
          6.4604,
          9.7504,
          "2016-10-13",
          52372
         ],
         "src": "bsexbrl:539874_131020161330_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 7.70 -> 17.88, dii 58.43 -> 35.31. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.41 ELEVAR EQUITY MAURITIUS 2.41; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 2.41 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 9.11 ALENA PRIVATE LIMITED 9.11; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 9.11 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=9.23 CDC GROUP PLC 9.23 foreign->fii(curated); R1-named-unresolved-kept Other 1.48 INDIA FINANCIAL INCLUSION FUND 1.48; R1-unresolved Other 0.0 INDIA FINANCIAL INCLUSION FUND 1.48 ?->-(-) keyword; R1-named-unresolved-kept Other 2.2 CX PARTNERS FUND 1 LIMITED 2.20; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.20 ?->-(-) keyword; R1-foreign-hol"
+        "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 9.23 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.8829 -> 8.6559 (share counts of 539874_131020161330_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+        "superseded": {
+         "cell": [
+          0.0,
+          17.8829,
+          35.3126,
+          6.4604,
+          9.7504,
+          "2016-10-13",
+          52372
+         ],
+         "was": [
+          0.0,
+          7.7029,
+          58.4326,
+          6.4604,
+          9.7504,
+          "2016-10-13",
+          52372
+         ],
+         "src": "bsexbrl:539874_131020161330_SHP.xml",
+         "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164o: former members re-read with the XBRLs that were never cached (lists restored); FORMER Nifty 500 member): fii 7.70 -> 17.88, dii 58.43 -> 35.31. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-named-unresolved-kept Other 2.41 ELEVAR EQUITY MAURITIUS 2.41; R1-unresolved Other 0.0 ELEVAR EQUITY MAURITIUS 2.41 ?->-(name-only (name marker; no document)) keyword; R1-named-unresolved-kept Other 9.11 ALENA PRIVATE LIMITED 9.11; R1-unresolved Other 0.0 ALENA PRIVATE LIMITED 9.11 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=9.23 CDC GROUP PLC 9.23 foreign->fii(curated); R1-named-unresolved-kept Other 1.48 INDIA FINANCIAL INCLUSION FUND 1.48; R1-unresolved Other 0.0 INDIA FINANCIAL INCLUSION FUND 1.48 ?->-(-) keyword; R1-named-unresolved-kept Other 2.2 CX PARTNERS FUND 1 LIMITED 2.20; R1-unresolved Other 0.0 CX PARTNERS FUND 1 LIMITED 2.20 ?->-(-) keyword; R1-foreign-hol"
+        }
        }
       }
      }
@@ -387358,6 +388393,50 @@
     "src": "bsetable3:500405:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 43,652, VCF 0, AIF 0, FI/Banks 100,607, Insurance 0, PF 0, NBFC 46,667; total 96,501,958. dii 0.1495 -> 0.1978, ins 0.0 -> 0.0.",
     "exact": true
+   },
+   "2019-03-31": {
+    "cell": [
+     62.31,
+     0.7647,
+     2.1874,
+     2.0183,
+     0.0,
+     "2019-04-20",
+     39249
+    ],
+    "was": [
+     62.31,
+     0.7647,
+     2.1741,
+     2.0183,
+     0.0,
+     "2019-04-20",
+     39249
+    ],
+    "src": "bsexbrl:500405_204201917727_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names ALTERNATE INVESTMENT FUND 0.0133 (''Others'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (2.1761), so the holder was never counted; R2 + rule 4 (registers) count it. dii 2.1741 -> 2.1874; fii untouched."
+   },
+   "2019-06-30": {
+    "cell": [
+     62.31,
+     0.757,
+     2.2473,
+     2.0347,
+     0.0,
+     "2019-07-20",
+     38696
+    ],
+    "was": [
+     62.31,
+     0.757,
+     2.234,
+     2.0347,
+     0.0,
+     "2019-07-20",
+     38696
+    ],
+    "src": "bsexbrl:500405_197201918250_SHP.xml",
+    "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names ALTERNATE INVESTMENT FUND 0.0133 (''Others'') on its non-institution row; each is an Indian institution on an official register (row/holder labelled Alternative Investment Fund (SEBI AIF category)). Stored dii = the filing's six domestic lines exactly (2.2371), so the holder was never counted; R2 + rule 4 (registers) count it. dii 2.2340 -> 2.2473; fii untouched."
    }
   },
   "ZODIACLOTH": {
