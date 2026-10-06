@@ -100,7 +100,7 @@
     </div>
 
     <p class="text-[11px] text-slate-400 mt-6">
-      <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (once a day, late evening IST; more often in results season).
+      <b>Pending</b> = the filing has an attachment, so the vision routine will read it on its next run (00:15 IST off-season; 4×/day in results season — the switch is automatic, from the filing counts).
       <b>No PDF</b> = the filing carried no attachment to read; these can only be filled when the exchange posts the XBRL.
       Vision-read figures for NSE names are an overlay applied only to empty cells — real XBRL always supersedes them.
       Counts come from the same module the routine uses to pick its work (<code>scripts/results_pending.py</code>), so this page and the routine can never disagree.
@@ -120,12 +120,32 @@
   }
   var LBL = { pending:'Pending', no_pdf:'No PDF', filled:'Filled', bse_dup:'Via BSE' };
 
-  // Next scheduled vision-routine run (fires ≈3 PM and ≈11 PM IST; crons drift ~45 min late).
-  // The bse-vision-fill routine runs once a day at 00:15 IST (18:45 UTC) off-season; in results season it
-  // also runs at 13:30 / 16:30 / 20:30 IST (runbook §194 / §17b). This shows the off-season slot.
+  // Next scheduled vision-routine run. The bse-vision-fill routine's slots follow the AUTOMATIC results-season
+  // state (runbook §222): off-season 00:15 IST only; in season 13:15 / 16:15 / 21:15 / 00:15 IST. The state and
+  // the slot list arrive with the coverage feed (d.season, stamped by build_results_coverage.py from
+  // scripts/season_state.py), so this page can never disagree with what the routine will actually do.
+  var SEASON = null;
   function nextRun(){
-    var n = new Date(), h = (n.getUTCHours() + n.getUTCMinutes()/60 + 5.5) % 24;
-    return h < 0.25 ? 'in a few minutes (≈12:15 AM IST)' : 'tonight ≈12:15 AM IST';
+    var slots = (SEASON && SEASON.vision_slots_ist && SEASON.vision_slots_ist.length) ? SEASON.vision_slots_ist : ['00:15'];
+    var mins = slots.map(function(s){ var p = String(s).split(':'); return (+p[0])*60 + (+p[1] || 0); })
+                    .filter(function(m){ return m >= 0 && m < 1440; }).sort(function(a,b){ return a-b; });
+    if (!mins.length) mins = [15];
+    var n = new Date(), ist = (n.getUTCHours()*60 + n.getUTCMinutes() + 330) % 1440;
+    var nxt = null;
+    for (var i = 0; i < mins.length; i++) { if (mins[i] > ist) { nxt = mins[i]; break; } }
+    // wrapped past midnight: an overnight slot (00:15) is "tonight" in plain speech, a daytime one is "tomorrow"
+    var day = nxt === null ? (mins[0] < 360 ? 'tonight' : 'tomorrow') : 'today';
+    if (nxt === null) nxt = mins[0];
+    var hh = Math.floor(nxt/60), mm = nxt % 60, h12 = hh % 12 || 12;
+    var t = h12 + ':' + (mm < 10 ? '0' : '') + mm + (hh >= 12 ? ' PM' : ' AM') + ' IST';
+    var gap = ((nxt - ist) + 1440) % 1440;
+    return gap <= 15 ? 'in a few minutes (≈' + t + ')' : day + ' ≈' + t;
+  }
+  function seasonChip(se){
+    if (!se || !se.state) return '';
+    if (se.state === 'in')  return '<span class="text-slate-300">·</span><b class="text-emerald-700">results season</b> — vision ' + (se.vision_runs_per_day || 4) + '×/day';
+    if (se.state === 'off') return '<span class="text-slate-300">·</span>off-season — vision 1×/day (00:15 IST)';
+    return '<span class="text-slate-300">·</span>season state unknown';
   }
   // Why a row has no numbers yet, and when it should get them.
   function reason(status, exch){
@@ -162,6 +182,7 @@
     });
 
   function render(d) {
+    SEASON = d.season || null;
     var s = d.stat, total = s.declared || 1;
     document.getElementById('qlabel').textContent = '· ' + d.qlabel;
     document.getElementById('banner').className = 'card p-3 mb-5 text-xs text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1';
@@ -169,6 +190,7 @@
       '<b class="text-slate-700">' + esc(d.qlabel) + '</b><span class="text-slate-300">·</span>' +
       'quarter ending ' + esc(String(d.qe).replace(/(\d{4})(\d{2})(\d{2})/, '$3-$2-$1')) +
       '<span class="text-slate-300">·</span>rebuilt hourly with the results feed' +
+      seasonChip(d.season) +
       '<span class="text-slate-300">·</span>updated ' + esc(d.updated);
     document.getElementById('body').classList.remove('hidden');
 

@@ -7,6 +7,9 @@ name: Cron dispatcher (starts scheduled jobs on time)
 # every 5 minutes (same PAT/mechanism as refresh.yml's "scheduled-refresh" job).
 # The */5 GitHub cron below is only a backup; a late tick is harmless (the script looks at
 # the last 3 h of slots and at what has already run, so nothing starts twice).
+# Slots tagged `dispatch-cron[in-season]` / `[off-season]` are picked by the results-season state
+# that scripts/season_state.py measures from docs/results_feed.json + the quarter calendar on
+# every tick (runbook §222) — that is why those two files are in the sparse checkout.
 
 on:
   repository_dispatch:
@@ -35,6 +38,8 @@ jobs:
           sparse-checkout: |
             .github/workflows
             scripts/cron_dispatch.py
+            scripts/season_state.py
+            docs/results_feed.json
           sparse-checkout-cone-mode: false
       - name: Start due workflows
         env:

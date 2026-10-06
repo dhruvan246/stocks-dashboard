@@ -16,6 +16,16 @@ tick is caught by the next one; a slot older than 3 h is dropped rather than run
 Workflows that read github.event.schedule to pick a slot-specific branch must also read
 github.event.client_payload.schedule (refresh-shareholding does).
 
+RESULTS-SEASON CADENCE (runbook §222). A slot line may carry a tag:
+
+    # dispatch-cron[in-season]: "0,30 4-14 * * *"
+    # dispatch-cron[off-season]: "0 4-14 * * *"
+
+Untagged lines apply always; tagged lines only while scripts/season_state.py reads that state from the filing counts in
+docs/results_feed.json + the quarter calendar (both are in this job's sparse checkout). The state is re-measured on every
+tick, so the whole cadence moves with the season and nobody edits crons by hand. If season_state fails, the IN-season
+slots are used — an idle run is cheaper than a missed result. `--list` prints the active slots for the current state.
+
 Usage: python3 scripts/cron_dispatch.py [--dry-run] [--now 2026-09-29T03:42:00Z]
 Needs GITHUB_TOKEN (actions: read, contents: write — repository_dispatch) and GITHUB_REPOSITORY.
 """
@@ -31,7 +41,7 @@ import urllib.request
 
 WINDOW_MIN = 180   # a slot older than this is skipped, not run hours late
 GRACE_MIN = 2      # leave a just-passed slot to any external trigger aimed at the same minute
-CRON_RE = re.compile(r'^\s*#\s*dispatch-cron:\s*"([^"]+)"', re.M)
+CRON_RE = re.compile(r'^\s*#\s*dispatch-cron(?:\[(in-season|off-season)\])?:\s*"([^"]+)"', re.M)
 
 
 # ---- minimal 5-field cron matcher (numbers, *, ranges, lists, steps; DOM/DOW OR-ed like POSIX cron) ----
@@ -108,24 +118,46 @@ def recent_runs(repo, since):
     return runs
 
 
-def load_schedules():
+def load_schedules(state='in'):
+    """{workflow: [Cron]} — untagged slots always; `[in-season]` / `[off-season]` slots only in that state."""
     out = {}
     for f in sorted(glob.glob('.github/workflows/*.yml')):
-        crons = CRON_RE.findall(open(f, encoding='utf-8').read())
+        crons = [c for tag, c in CRON_RE.findall(open(f, encoding='utf-8').read())
+                 if not tag or tag == state + '-season']
         if crons:
             out[f] = [Cron(c) for c in crons]
     return out
+
+
+def season(now):
+    """('in'|'off', one-line summary) from scripts/season_state.py (runbook §222). If that fails, the dense in-season
+    slots are the safe failure — a missed result costs more than an idle run."""
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import season_state
+        st = season_state.evaluate(now)
+        return st['state'], st['summary']
+    except Exception as e:
+        print('::warning::season_state failed (%s) — using the in-season slots' % e)
+        return 'in', 'IN (fallback: season_state failed: %s)' % e
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--now', help='pretend time (ISO UTC) for testing')
+    ap.add_argument('--list', action='store_true', help='print the season state and each workflow\'s active slots; no API calls')
     a = ap.parse_args()
     now = (dt.datetime.fromisoformat(a.now.replace('Z', '+00:00')) if a.now
            else dt.datetime.now(dt.timezone.utc))
     repo = os.environ.get('GITHUB_REPOSITORY', 'dhruvan246/stocks-dashboard')
-    sched = load_schedules()
+    state, season_line = season(now)
+    print('%s UTC: season %s' % (now.strftime('%Y-%m-%d %H:%M'), season_line))
+    sched = load_schedules(state)
+    if a.list:
+        for f, crons in sched.items():
+            print('  %-34s %s' % (os.path.basename(f)[:-4], ' | '.join(c.expr for c in crons)))
+        return
     lo, hi = now - dt.timedelta(minutes=WINDOW_MIN), now - dt.timedelta(minutes=GRACE_MIN)
 
     due = {}
@@ -137,8 +169,8 @@ def main():
                 best = (s, c.expr)
         if best:
             due[f] = best
-    print('%s UTC: %d workflows carry dispatch-cron lines, %d have a slot in the last %d min'
-          % (now.strftime('%Y-%m-%d %H:%M'), len(sched), len(due), WINDOW_MIN))
+    print('%d workflows carry dispatch-cron lines for this state, %d have a slot in the last %d min'
+          % (len(sched), len(due), WINDOW_MIN))
     if not due:
         return
 

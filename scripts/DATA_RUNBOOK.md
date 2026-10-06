@@ -25,7 +25,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§15** QUARTERLY RESULTS DASHBOARD
 - **§16** DISCOVERY BUCKETS
 - **§17** BSE-ONLY STOCK COVERAGE
-- **§17b** VISION-FILL = CLOUD ROUTINE 1×/day 23:30 IST (was 4×/day in season)
+- **§17b** VISION-FILL = CLOUD ROUTINE — 00:15 IST off-season, 4×/day in season, switched AUTOMATICALLY (§222)
 - **§18** DATA HEALTH MONITORING + COMMIT GUARDS
 - **§19** SITE FEATURES ON SUPABASE
 - **§20** RESULTS COVERAGE DASHBOARD
@@ -73,6 +73,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220b** ★★★ THE 9 LONG-GAP SEAMS ARE THE SAME EQUITY (kept) — and four live defects fixed: BSE Riddhi Display (RDEL) kept out of SWANDEF's shareholding fold, 5 tape-less predecessors pointed at the dead key holding their era's tape (74 F&O member-slots; `check_fund_alias.ERA_TAPE`), a 400-day results staleness cap (`RESULT_MAX_AGE_DAYS`), CURAA's lakh-as-crore IPO-base cells (**read before any seam price join — NSE's prevclose is never the factor — and before trusting a tiny filer's backfilled base**)
 - **§220c** ★★★ §220b's SIX OPEN ITEMS CLOSED (user: "yes to all 6, blank the first change after a gap") — every §197 BSE-collision ticker out of the shareholding fold (6 NSE stocks read another company's pattern: 3,788 bar days), an event-row holding change across an OVERDUE quarter is blank (`shpGapBefore`), 13 IPO-base cells read wrong from results PDFs healed via fund_cell_fix + the reader fixed (decimal comma, lost decimal point, capped ₹2 cr anchor), builders read a renamed company's old-ticker history like the engine (results season, stock pages, index lists), ROML's 17 missing BZ sessions (prefix ledger `bz_prefix_fill.json`), COMPUAGE → COMPINFO = same shares (**read before any shareholding fold, any change-metric across a listing gap, any PDF comparative-column fill, any BZ block that precedes a series' first bar**)
 - **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**)
+- **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
@@ -2074,13 +2075,18 @@ pages. The cloud routine picks all of this up with no prompt change — `--qelim
 
 ---
 
-### 17b. VISION-FILL = CLOUD ROUTINE, 1×/day 23:30 IST  (ported off the desktop 2026-07-28; cut from 4×/day 2026-08-18)
+### 17b. VISION-FILL = CLOUD ROUTINE — 00:15 IST off-season, 4×/day in season, AUTOMATIC since 2026-10-06 (§222; ported off the desktop 2026-07-28)
 
 The `bse-vision-fill` reader — the thing that guarantees no declared result stays "numbers being
 parsed" — is a **Claude Code CLOUD routine** (claude.ai/code/routines, id
 `trig_01N3H7t8Dgn2XmLqwBg94j2r`), no longer a local desktop task. It runs on Anthropic's cloud on
 the user's plan: no API key, no laptop-awake dependency.
-- **Schedule: cron `0 18 * * *` UTC = 23:30 IST, ONCE a day.** It ran `0 8,11,15,18 * * *` UTC
+- **Schedule (2026-10-06, §222): cron `45 7,10,15,18 * * *` UTC = 13:15 / 16:15 / 21:15 / 00:15 IST ALL YEAR; step 0 of the
+  prompt runs `python3 scripts/season_state.py --vision-slot`, and off-season the three daytime slots print SKIP and exit at
+  once, so only the 18:45 UTC (00:15 IST) slot works — effectively 1×/day off-season, 4×/day in season, with nobody
+  editing the cron.** The 00:15 anchor is the 2026-09-27 measurement (the 22:30 IST feed top-up lands 23:31–23:38); 21:15
+  follows refresh-bse's 20:10 grind (5–12 min); :45 so a slot sees the :30 fundamentals pass. History of the hand-dialled
+  era, kept for the measurements: it ran `0 18 * * *` (23:30 IST) once a day from 2026-08-18, and `0 8,11,15,18 * * *` UTC
   (13:30 / 16:30 / 20:30 / 23:30 IST) through the Jun-2026 season; **cut to the single 23:30 slot on
   2026-08-18** after measuring that new filings had collapsed from 756/day on 14-Aug (the SEBI 45-day
   deadline) to 8/day, and that 23:30 was the only slot still landing work (17-Aug: it filled 18 of 48
@@ -2094,23 +2100,18 @@ the user's plan: no API key, no laptop-awake dependency.
   The contract is also STRUCTURAL, not just timing: `find_pending` (results_pending.py) subtracts
   everything the crons already filled, and the NSE-side vision overlay applies to EMPTY cells only,
   so real XBRL always supersedes.
-- **THREE schedules were cut for the off-season on 2026-08-18, and a routine guards the restore.**
-  `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`, cron `0 4 * 10,11 1` UTC =
-  every **Monday in Oct + Nov, 09:30 IST**) reads `docs/results_feed.json` from its own clone, counts
-  filings/day, and pushes ONLY when the season has measurably restarted (trailing-7 ≥ 100, or any one
-  day ≥ 30; the off-season baseline measured 2026-08-18 was ~30 per 7 days). A quiet week sends
-  nothing, so it cannot nag. It is STRICTLY READ-ONLY — restoring stays a human decision — and its
-  notification spells out all three:
+- **The three season schedules switch AUTOMATICALLY since 2026-10-06 — §222.** The hand-cut of 2026-08-18 and the
+  Monday reminder routine `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`) that told a human when to
+  restore are history: that routine is DISABLED (not deleted) and has nothing left to remind about. The pairing it guarded:
 
-  | | off-season (now) | restore in season |
-  |---|---|---|
-  | `bse-vision-fill` routine | `0 18 * * *` UTC | `0 8,11,15,18 * * *` UTC |
-  | `refresh-results-hourly.yml` | `0 3,7,11,15,17,19 * * *` | `0 3-19 * * *` |
-  | `refresh-fundamentals.yml` (1st cron only) | `0 4-14 * * *` | `0,30 4-14 * * *` |
+  | | off-season | in season | switched by |
+  |---|---|---|---|
+  | `bse-vision-fill` routine | 00:15 IST only (3 slots SKIP) | 13:15 / 16:15 / 21:15 / 00:15 IST | step-0 guard `season_state.py --vision-slot` |
+  | `refresh-results-hourly.yml` | `0 3,7,11,15,17,19 * * *` | `0 3-19 * * *` | `dispatch-cron[off-season]` / `[in-season]` lines |
+  | `refresh-fundamentals.yml` intraday | `0 4-14 * * *` | `0,30 4-14 * * *` | `dispatch-cron[off-season]` / `[in-season]` lines |
 
-  ⚠️ In refresh-results-hourly the **17-UTC (22:30 IST) slot is load-bearing** — `find_pending` reads
-  `results_feed.json`, so the feed must be topped up just BEFORE the 23:30 run, not after.
-  **Delete the check once all three are restored**, or it fires every Monday until end-Nov.
+  ⚠️ In refresh-results-hourly the **17-UTC (22:30 IST) slot is load-bearing** in BOTH sets — `find_pending` reads
+  `results_feed.json`, so the feed must be topped up just BEFORE the 00:15 run, not after.
 - **Landing path — direct push to main is 403-blocked for cloud sessions.** The routine pushes a
   `claude/vision-fill-<timestamp>` branch → `gh pr create` → `gh pr merge --squash --delete-branch
   --admin` (merges within seconds; PRs #4/#5/#6 were the first three). A conflicted merge used to be
@@ -27018,3 +27019,72 @@ healed cells (`shp`, and the originals nested in `shpH`; UPL dated 2019-07-19).
   re-filing values in a slot within 0.02 pp.
 - UPL 2019-06-30's re-filing row carries fii 51.2079, i.e. WITH the 8.2693 Overseas Depositories line (the 2022-form re-filing
   parses to 42.9386 under §151): the sidecar was never re-based for §151, so the stock page's history shows 51.21 for Jun-2019.
+## §222 — RESULTS-SEASON CADENCE IS AUTOMATIC: filing counts + the quarter calendar decide IN/OFF and every reader follows (2026-10-06, user: "u decide the frequency according to results counts and dates every quarter and automatically change it without my intervention")
+
+**Before.** Three schedules were dialled by hand at each season edge: cut on 2026-08-18 (ad6ca316, "123 → 101 scheduled
+runs/day"), with a read-only Monday routine whose only job was to tell the user when to put them back. **Now** one script
+answers IN or OFF from measured data and everything reads it — nothing is edited at a season edge any more.
+
+| reader | in season | off-season | how it follows the state |
+|---|---|---|---|
+| `refresh-fundamentals.yml` intraday (XBRL numbers) | `0,30 4-14 * * *` = every 30 min 09:30–19:30 IST, 22 runs/day | `0 4-14 * * *` = hourly, 11 runs/day | moved off GitHub `schedule:` onto the dispatcher: `# dispatch-cron[in-season]:` / `[off-season]:` lines + `repository_dispatch: tick-refresh-fundamentals`. The two nightly GitHub crons (`45 15`, `45 17`) are untouched; a tick carries no `github.event.schedule`, so every existing gate treats it as a LIGHT run (no insurer / IPO-base / midnight-rule steps). |
+| `refresh-results-hourly.yml` (results feed + calendar) | `0 3-19 * * *` = hourly 08:30–00:30 IST, 17 runs/day | `0 3,7,11,15,17,19 * * *` = 6 runs/day | tagged `dispatch-cron` lines; 17 UTC (22:30 IST) stays in both sets (load-bearing for the 00:15 vision run) |
+| `bse-vision-fill` cloud routine (`trig_01N3H7t8Dgn2XmLqwBg94j2r`) | 4 slots: 13:15 / 16:15 / 21:15 / 00:15 IST | 1 slot: 00:15 IST | FIXED cron `45 7,10,15,18 * * *` UTC all year. STEP 0 of the prompt runs `python3 -X utf8 scripts/season_state.py --vision-slot`: `SKIP …` on an off-season daytime slot = reply that one line and stop (no sync, no pip, no fetch — a ~1-minute session); `RUN …` otherwise. A missing or erroring script = RUN (fail open). |
+
+**The state — `scripts/season_state.py`, one answer for every reader.** Stateless: the same inputs always give the same
+answer, so there is no memory to get stuck and the dispatcher (every 5 min), the routine (at its slot) and the coverage page
+agree. Inputs: `docs/results_feed.json` (result filings per IST day, NSE + BSE merged — the rolling 31-day feed) and the clock.
+- quarter = the latest quarter end before today; deadline = quarter end + 45 days (SEBI LODR 33), + 60 for the audited March
+  quarter → 14 Aug / 14 Nov / 14 Feb / 30 May; **window = [quarter end + 9 days, deadline + 3 days]**.
+- **IN** when (today in the window AND filings since the window opened ≥ 40) OR (yesterday + the day before ≥ 40) OR (any of
+  today / yesterday / the day before ≥ 30). **OFF** otherwise. Today's count is included, so a state can only move OFF→IN
+  during a day; IN→OFF happens at midnight IST.
+- The ignition count starts at the window's OPENING day, not the quarter end: the previous quarter's late filers trickle in at
+  3–7/day all off-season (Oct 1–6 2026: 20 feed rows), and that trickle must not open a season (first draft counted from the
+  quarter end and would have read IN on 9-Oct from the trickle alone — caught by running it on the live feed).
+- A stale feed (newest row > 3 days old) is reported; inside the window it still reads IN — an extra read is cheaper than a
+  missed one. Outside the window a dead feed reads OFF.
+- **Calibration — measured, not assumed** (`scripts/test_season_state.py` replays four seasons from the stored announcement
+  dates, sf_fundamentals + bse_fundamentals, trimmed to the feed's 31-day retention; the live feed counts MORE — every filing,
+  revisions too — so live ignition can only come sooner): first filers land on day 9–14 after the quarter end; the first
+  WORKING day after the deadline floods once more (17-Aug-2026: 242; 1-Jun-2026: 196; 16-Feb-2026: 93; 17-Nov-2025: 236) and the
+  day after collapses to single digits. Replay verdicts: IN on QE+14 / QE+14 / QE+13 / QE+13 (end of day); IN every day through
+  deadline+3 in both the morning and end-of-day views (no flap across weekends or the Oct-2025 Diwali lull, 1–17/day); IN on
+  the morning of the post-deadline Monday before its filings land; OFF on D+6 / D+5 / D+5 / D+6. The 2026-08-18 hand decision
+  was D+4 — made live, watching 756 → 8. A late BSE burst (25–27 Nov 2025: 32 / 49 / 21 in a day) turns IN for those days
+  and back OFF — intended: counts drive it.
+- Read it: `python3 scripts/season_state.py` (JSON: state, reason, window, counts, vision slots), `--state`, `--vision-slot`,
+  `--now … --feed …` for replays. `--force in|off` exists for tests only — there is deliberately NO production override knob;
+  if the rule misjudges a season, change the thresholds at the top of season_state.py (one place) and re-run the replay test.
+
+**Dispatcher (`scripts/cron_dispatch.py`, §217).** `CRON_RE` accepts `dispatch-cron[in-season]:` / `[off-season]:`;
+`load_schedules(state)` keeps untagged lines always and tagged ones only in that state; `season(now)` is measured on every tick
+and printed as the run's first line (`season OFF — outside the 2026-10-09 to 2026-11-17 window; filings today 5 / yesterday 7 /
+day before 0; feed newest 2026-10-06`); if season_state fails the IN-season slots are used with a `::warning::`.
+`--list` prints the state and each workflow's active slots without API calls. `cron-dispatch.yml`'s sparse checkout gained
+`scripts/season_state.py` + `docs/results_feed.json`.
+
+**Why the routine keeps a fixed 4-slot cron and guards itself, instead of editing its own cron.** Routine sessions have no
+tool that edits a trigger: the restore-check routine's 2026-10-05 session init listed Bash/Read/github/Gmail/Drive tools but no
+Claude_Code_Remote tool (that MCP connection was `pending` at init), and the vision routine has no MCP connection at all — so
+a self-adjusting cron would rest on something not evidenced, and its failure mode would be the bad one (stuck at 1×/day in
+season). The guard costs three ~1-minute no-op sessions a day off-season and fails SAFE: if it ever breaks, the worst case is
+an extra read, never a missed one. Only an interactive session (which has `update_trigger`) can change the cron; none needs to.
+
+**Results coverage page.** `build_results_coverage.py` stamps `season` {state, reason, window, counts, vision_slots_ist,
+vision_runs_per_day} into `docs/results_coverage.json` (rebuilt by refresh-results-hourly 6–17×/day and by the vision run);
+`results-coverage.html`'s "Next vision run" text picks the next slot from that list (fallback 00:15 when the block is missing)
+and the banner carries a chip — "off-season — vision 1×/day (00:15 IST)" / "results season — vision 4×/day". sw.js v242.
+
+**Retired.** `vision-fill-season-restore-check` (`trig_013w3xTyqPckt82NxGHFQWDS`) DISABLED 2026-10-06, not deleted: it existed
+to tell a human to restore by hand; there is nothing to restore by hand. Delete it when convenient.
+
+**Verified 2026-10-06 (§39 gate):** py_compile + YAML parse of every touched file; `test_season_state.py` all checks
+(4-season replay, calendar, vision slots, VISION_CRON ↔ slot table, dispatcher tag selection, dispatcher.season() ==
+season_state); `cron_dispatch.py --list` on the live feed = OFF with the off-season slots; Chromium (Playwright) on
+results-coverage.html — non-owner curtain, owner live (off chip + "12:15 AM IST" eta), in-season mock at 375 px dark (4×/day
+chip, next-slot eta), old JSON without a season block (fallback, no chip), unknown state, light 375 px: zero page errors and
+zero console errors in every scenario (sw-sync.js stubbed and non-local hosts blocked in the test tab, so no synced key could
+reach Supabase). Live after the push: the dispatcher's next run log opens with the season line; Pages deploy; the trigger's
+cron + prompt read back and diffed against the file written here.
+

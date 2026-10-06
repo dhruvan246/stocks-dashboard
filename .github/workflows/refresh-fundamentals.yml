@@ -1,35 +1,31 @@
 name: Daily fundamentals refresh
 
 on:
+  # INTRADAY SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub
+  # cron, which runs 4-7 h late in this repo (runbook §217). The dispatcher reads the "dispatch-cron"
+  # lines below (UTC) and picks the set tagged for the CURRENT RESULTS-SEASON STATE, which
+  # scripts/season_state.py measures on every tick from the filing counts in docs/results_feed.json +
+  # the quarter calendar (runbook §222). Nobody edits these by hand any more:
+  #   in season : every 30 min 09:30–19:30 IST (22 runs/day) — filings cluster 15:00–20:00 IST
+  #   off-season: hourly        09:30–19:30 IST (11 runs/day) — the 2026-08-18 measurement: after the
+  #               Jun-2026 season closed (756/day -> ~8/day) the second slot each hour bought nothing
+  #               but git churn on single-line JSONs the bse-vision-fill routine has to merge past
+  # EVERY day (weekend board meetings exist). The 19:30 IST last slot is covered by refresh-bse 20:10
+  # and the 21:15 IST nightly below. A dispatcher start is a LIGHT run: the nightly steps recognise
+  # the nightly only by github.event.schedule == '45 15 * * *', and a tick carries no schedule.
+  #
+  # ⚠️ NEVER MAKE EITHER SET DENSER THAN :00/:30. This was "*/15" until 2026-07-22, on the theory
+  # that firing 4×/h makes a dropped slot cheap. Measuring the actual run history killed that
+  # theory: over 07-19→07-22 the gaps between consecutive SCHEDULED runs were 102, 63, 56, 94, 65,
+  # 79, 123, 205, 134, 134, 95, 51, 129, 164, 127, 94, 131, 116, 114, 163 min — median ~115 min,
+  # NOT ONE under 51. "*/15" delivered ~8% of the requested runs: GitHub throttles dense cron on
+  # free public repos. That was the GitHub-cron era; the dispatcher path holds its cadence, but the
+  # density lesson stands. Idle runs are ~40 s (the updater skips iXBRL for quarters already stored)
+  # and the 1.8 MB Quarterly Results baker stays GATED on docs/.fund_updated, so this costs ~nothing
+  # and does NOT bloat git history. Actions minutes are free (public repo).
+  # dispatch-cron[in-season]: "0,30 4-14 * * *"  # :00/:30, 04–14 UTC = 09:30–19:30 IST
+  # dispatch-cron[off-season]: "0 4-14 * * *"  # :00, 04–14 UTC = 09:30–19:30 IST
   schedule:
-    # Hourly at :00, 04:00–14:00 UTC = 09:30–19:30 IST, EVERY day (weekend board meetings
-    # exist). Span covers the results-filing window (filings cluster 15:00–20:00 IST).
-    #
-    # 2026-08-18 — HALVED from twice-hourly (":00/:30", 22 runs) to hourly (":00", 11 runs) for the
-    # off-season. The Jun-2026 season closed 14-Aug and new filings fell 756/day -> ~8/day, so the
-    # second slot each hour bought nothing but git churn on single-line JSONs — the same files the
-    # bse-vision-fill routine has to merge past. This is a REDUCTION and does NOT contradict the
-    # throttling note below, which warns only against making the cron DENSER. The 19:30 IST last
-    # slot (was 20:00) is covered by refresh-bse 20:10 and the 21:15 IST nightly below.
-    # RESTORE "0,30 4-14 * * *" when the next season opens ~mid-Oct 2026.
-    #
-    # ⚠️ THE REQUESTED CADENCE IS NOT THE DELIVERED CADENCE. This was "*/15" until
-    # 2026-07-22, on the theory that firing 4×/h makes a dropped slot cheap. Measuring the
-    # actual run history killed that theory: over 07-19→07-22 the gaps between consecutive
-    # SCHEDULED runs were 102, 63, 56, 94, 65, 79, 123, 205, 134, 134, 95, 51, 129, 164,
-    # 127, 94, 131, 116, 114, 163 min — median ~115 min, and NOT ONE gap under 51 min.
-    # "*/15" was delivering ~8% of the requested runs. GitHub throttles high-frequency cron
-    # on free public repos, and asking for more appears to get you dropped harder, so the
-    # dense schedule was buying nothing. ":00/:30" states an honest intent; if delivery
-    # still measures ~2 h, the fault is GitHub's queue, not this line — do NOT "fix" it by
-    # making the cron denser again. That was already tried.
-    #
-    # For cadence that actually holds, use the repository_dispatch path below (external
-    # scheduler = guaranteed delivery). GitHub cron is the FALLBACK, not the primary.
-    # Idle runs are ~40 s (the updater skips iXBRL for quarters already stored) and the
-    # 1.8 MB Quarterly Results baker stays GATED on docs/.fund_updated, so this costs
-    # ~nothing and does NOT bloat git history. Actions minutes are free (public repo).
-    - cron: "0 4-14 * * *"
     # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
     # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). The steps below
     # recognise it by github.event.schedule == '45 15 * * *' — NOT the wall-clock hour: GitHub
@@ -47,7 +43,7 @@ on:
   # manual dispatch — NOT on fundamentals-refresh — so an hourly fundamentals trigger doesn't
   # re-fetch/re-vision the 11 insurers every hour.
   repository_dispatch:
-    types: [fundamentals-refresh, insurer-refresh]
+    types: [fundamentals-refresh, insurer-refresh, tick-refresh-fundamentals]
   workflow_dispatch:
     inputs:
       insurer_verify_quarter:
@@ -124,8 +120,8 @@ jobs:
             python3 -X utf8 scripts/fetch_insurers.py --verify "$VQ"; exit 0
           fi
           # Run insurers only on: manual dispatch, the daily cron-job.org "insurer-refresh" trigger, or
-          # the 21:15 IST nightly schedule. Skip on every other trigger (the 15-min schedule,
-          # fundamentals-refresh) so we don't re-fetch/re-parse 11 insurers four times an hour.
+          # the 21:15 IST nightly schedule. Skip on every other trigger (the intraday dispatcher ticks,
+          # fundamentals-refresh) so we don't re-fetch/re-parse 11 insurers twice an hour.
           # ⚠️ Hour 15 OR 16 UTC both count as nightly: the "45 15" cron can DRIFT past the hour
           # boundary (GitHub fired a :45 cron at :02–:29 past on 2026-07-17), and an exact
           # "=15" test would then silently skip the nightly for that whole day. Only the one

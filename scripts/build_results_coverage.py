@@ -86,6 +86,15 @@ def main():
         "rows": out_rows,
         "late": late,
     }
+    # Results-season state (runbook §222): the page shows the vision routine's next slot from it, so the page and
+    # the routine can never disagree. Never let the state block the coverage build.
+    try:
+        from season_state import evaluate as _season
+        _s = _season()
+        doc["season"] = {"state": _s["state"], "reason": _s["reason"], "window": _s["window"], "counts": _s["counts"],
+                         "vision_slots_ist": _s["vision"]["slots_ist"], "vision_runs_per_day": _s["vision"]["runs_per_day"]}
+    except Exception as _ex:
+        doc["season"] = {"state": "unknown", "error": str(_ex)[:160], "vision_slots_ist": ["00:15"], "vision_runs_per_day": 1}
     json.dump(doc, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print("WROTE %s: %s — %d declared, %d filled, %d open (%d pending, %d no-pdf), %d of the filled came from vision"
           % (os.path.normpath(OUT), doc["qlabel"], stat["declared"], stat["filled"],

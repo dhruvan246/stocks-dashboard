@@ -1,8 +1,8 @@
 name: Hourly results feed + calendar
 
 # Light top-up for the Quarterly Results page during filing hours (08:30–00:30 IST, every
-# day — results land all day and past midnight in season). Hourly IN SEASON; 6×/day off-season
-# (cut 2026-08-18, see the cron block).
+# day — results land all day and past midnight in season). Hourly IN SEASON; 6×/day off-season —
+# switched AUTOMATICALLY by the results-season state (see the cron block; runbook §222).
 # Commits ONLY the two small side-files (results_feed.json ~100 KB, results_calendar.json
 # ~40 KB) — the big announcements.json stays on its own 4×/day cadence to avoid
 # bloating git history with 4.7 MB hourly snapshots.
@@ -10,20 +10,20 @@ name: Hourly results feed + calendar
 on:
   # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
   # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
-  # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
-  # 6×/day IST: 08:30, 12:30, 16:30, 20:30, 22:30, 00:30 — CUT from hourly (17/day) on
-  # 2026-08-18, when the Jun-2026 season ended. Measured that day: new filings had fallen from
-  # 756/day (14-Aug, the SEBI 45-day deadline) to ~8/day, and 4 of the last 9 hourly commits had
-  # changed NOTHING but the `updated` timestamp — 44% pure churn on docs/results_feed.json, one of
-  # the single-line JSONs the bse-vision-fill routine must merge past every night.
+  # "dispatch-cron" lines below (UTC) and picks the set tagged for the CURRENT RESULTS-SEASON STATE,
+  # which scripts/season_state.py measures on every tick from the filing counts in docs/results_feed.json
+  # + the quarter calendar (runbook §222). Nobody flips this by hand any more:
+  #   in season : hourly 08:30–00:30 IST (17 runs/day) — results land all day and past midnight
+  #   off-season: 6×/day 08:30, 12:30, 16:30, 20:30, 22:30, 00:30 IST — the 2026-08-18 measurement:
+  #               filings had fallen from 756/day (14-Aug, the SEBI deadline) to ~8/day and 4 of the
+  #               last 9 hourly commits changed NOTHING but the `updated` timestamp (44% churn on a
+  #               single-line JSON the bse-vision-fill routine must merge past).
   #
-  # ⚠️ THE 22:30 SLOT IS LOAD-BEARING. bse-vision-fill runs at 23:30 IST and its find_pending reads
-  # this feed, so the feed has to be topped up shortly BEFORE it — not after. Do not drop 17 UTC.
-  # 00:30 keeps the late-evening catch.
-  #
-  # RESTORE "0 3-19 * * *" (hourly) when the next season opens ~mid-Oct 2026 — the
-  # vision-fill-season-restore-check routine (Mondays in Oct+Nov) measures and says when.
-  # dispatch-cron: "0 3,7,11,15,17,19 * * *"  # 03/07/11/15/17/19 UTC = 08:30/12:30/16:30/20:30/22:30/00:30 IST
+  # ⚠️ THE 22:30 IST SLOT (17 UTC) IS LOAD-BEARING in both sets: the bse-vision-fill routine's 00:15 IST
+  # run reads this feed through find_pending, so the feed has to be topped up shortly BEFORE it — not
+  # after. 00:30 keeps the late-evening catch.
+  # dispatch-cron[in-season]: "0 3-19 * * *"  # hourly 03–19 UTC = 08:30–00:30 IST
+  # dispatch-cron[off-season]: "0 3,7,11,15,17,19 * * *"  # 03/07/11/15/17/19 UTC = 08:30/12:30/16:30/20:30/22:30/00:30 IST
   repository_dispatch:
     types: [results-hourly, tick-refresh-results-hourly]
   workflow_dispatch: {}
