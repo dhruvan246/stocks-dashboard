@@ -72,6 +72,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220** ★★★ A SAME-ISSUER SEAM PROVES THE LEGAL ENTITY, NOT THE EQUITY — DHFL's shares were extinguished in 2021 and PIRAMALFIN's went to PEL's holders 1:1 (NSE PREV_CLOSE 1124.20 = PEL's last close), so DHFL → PIRAMALFIN is gone from FUND_ALIAS / _rename_map / the seam verdicts and PEL → PIRAMALFIN exists only as the engines' SHP_ALIAS (**read before adding any alias, seam or rename-map entry across a scheme, relisting or IBC resolution**)
 - **§220b** ★★★ THE 9 LONG-GAP SEAMS ARE THE SAME EQUITY (kept) — and four live defects fixed: BSE Riddhi Display (RDEL) kept out of SWANDEF's shareholding fold, 5 tape-less predecessors pointed at the dead key holding their era's tape (74 F&O member-slots; `check_fund_alias.ERA_TAPE`), a 400-day results staleness cap (`RESULT_MAX_AGE_DAYS`), CURAA's lakh-as-crore IPO-base cells (**read before any seam price join — NSE's prevclose is never the factor — and before trusting a tiny filer's backfilled base**)
 - **§220c** ★★★ §220b's SIX OPEN ITEMS CLOSED (user: "yes to all 6, blank the first change after a gap") — every §197 BSE-collision ticker out of the shareholding fold (6 NSE stocks read another company's pattern: 3,788 bar days), an event-row holding change across an OVERDUE quarter is blank (`shpGapBefore`), 13 IPO-base cells read wrong from results PDFs healed via fund_cell_fix + the reader fixed (decimal comma, lost decimal point, capped ₹2 cr anchor), builders read a renamed company's old-ticker history like the engine (results season, stock pages, index lists), ROML's 17 missing BZ sessions (prefix ledger `bz_prefix_fill.json`), COMPUAGE → COMPINFO = same shares (**read before any shareholding fold, any change-metric across a listing gap, any PDF comparative-column fill, any BZ block that precedes a series' first bar**)
+- **§220d** ★★ "CHECK ALL" — §220c's open items read from the filings, then SCOPED TO POINT-IN-TIME NIFTY 500 (user, 2026-10-07: "work only on survivorship free nifty 500 members"): the renamed pairs' 5 disputed quarters healed (live 3e3228319; HINDMOTORS 2010-06 and SPLPETRO 2018-03 are N500 cells); all 290 IPO-base PDF cells read by eye — the only N500 company (GUJENERGY) read right, the 29 errors found are all never-N500 companies and the 792 missing 2018-19 BZ bars all non-member days, so both are PARKED in ~/stocks-cache/check-all-220d/parked-non-n500/ (README) (**read before reviving any non-N500 heal, any IPO-base reader change, or a BZ re-scan**)
 - **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**) — cause 2 fixed at the source in **§223**
 - **§223** ★★ THE REFINE LEDGER READ BSE'S NEWEST FILING — 817 of 20,429 `shp_refine_4dp.json.gz` XBRL entries were a later document than the stored row's own (71 cells / 131 numbers held the later figure, 5 cells ping-ponged); the builder now reads the quarter's ORIGINAL (oldest row, quarterly pattern, same holder count), 208 entries rebuilt / 579 removed, and in a cell `shp_cell_fix.json` defines the refine may only set the fix's own value (**read before building or applying any refine/precision ledger, or writing a cell_fix entry on a refined cell**)
 - **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
@@ -26984,6 +26985,56 @@ Each is a fund_cell_fix.json entry with page, column, unit and a SECOND check �
 4. 259 text cells read identically under both readers but were not read by eye (UNKNOWN by the strict rule); the 6 Gemini-vision cells were not re-checked.
 5. Other BZ blocks that precede a series' first bar, or whose scale includes a rights TERP, may be missing for the same two reasons as ROML's (unmeasured).
 6. COMPUAGE (2010-15) and COMPINFO (2016-) remain separate price keys across the 525-day NSE gap; joining them is a separate SEAM_MERGES decision (seam 1.0 by ISIN + BSE close).
+
+## §220d — "CHECK ALL": §220c's OPEN ITEMS, EACH READ FROM THE FILINGS, THEN SCOPED TO POINT-IN-TIME NIFTY 500 (2026-10-06/07, user: "check all"; mid-pass: "work only on survivorship free nifty 500 members")
+
+Worktree `~/stocks-wt/check-all-220d`. Scope rule applied at the end (it is the standing rule of 2026-09-05, restated): a cell is in scope
+only if its company was a Nifty 500 member on that date — `scripts/indices_history.json` 'Nifty 500', last snapshot at or before the
+date (the engine's `membersAsOf`), renamed tickers included. Harness: `parked-non-n500/n500.py`.
+
+**1. The four renamed pairs (§220c open 1) — LIVE in 3e3228319.** Each disputed quarter read from its own filing: ALOKTEXT 2019-09 con
+−1,402.9 → −165.2 (the XBRL carried the year-ago column in the current contexts; PDF p5 loss 165.20), HINDMOTORS 2010-06 std −19.37 →
+−19.73 (archive −1,973 lakh), MANDHANA 2019-06 std 0.36 → −6.26 (XBRL −62,611,000), SUPPETRO 2007-09 std 6.26 → 6.06 (after the
+extraordinary item), SPLPETRO 2018-03 std 64.52 → 41.16 (PAT 4,115.61 lakh; 64.52 was PBT) — fund_cell_fix + revop mirrors; engine
+115 month-end cells, all strategies identical; live verified. In scope (N500 at the quarter): HINDMOTORS 2010-06, SPLPETRO 2018-03.
+Same commit: ROML's 17 prefix BZ bars moved from the §220c duplicate (`bz_prefix_fill.json` + `insert_bz_prefix`, removed) into
+`mainboard_prepend.json` — §169's existing mechanism; equivalence tested on two stores.
+
+**2. ORCHPHARMA 03-Nov..28-Dec-2020 (§220c open 2).** Traced: BSE 524372 bars from the §171 BSE-era prepend (volumes 78/16/110 vs NSE's
+own BZ rows 734/98; closes identical). ORCHPHARMA was not a Nifty 500 member then → out of scope, unchanged.
+
+**3. SME half-years in unproven slots (§220c open 3).** Measured on the month-end capture: the engine serves BLANK for these rows
+(fund_months length unknown), never a wrong growth figure. All non-N500 → out of scope.
+
+**4. Every IPO-base PDF cell read by eye (§220c open 4).** 290 cells of `scripts/ipo_base_fills.json` (259 text + 6 Gemini + earlier
+fixes): five reading agents on rendered pages (blind to the stored value), then every non-match, every agent caveat and every
+"matches the total / a year column / a TCI line" case re-read by me. 258 MATCH, **29 OUR ERROR** (18 ledger cells + 11 XBRL-sourced
+partner rows of the same companies), 3 UNKNOWN (RNBDENIMS prints no owners' profit — only the TCI split). Error kinds: the TCI line
+taken; a full-year column in a quarter slot (GAUDIUMIVF 19.18 for 6.45: its growth read −56% for +30%); the before-NCI total for the
+owners' share — several SME filers' NONINDAS XBRL tag `ProfitLossOfMinorityInterest` 0 while the PDF prints the split (ENSER, QMSMEDI
+up to 25% overstated), an Ind AS owners tag holding TCI-owners (CHEMBONDCH Dec-25) or 0 with a real NCI (JKIPL → our fallback took
+the total); a decimal-less OCR text layer fit at the wrong scale (IPSL 0.00 for 4.09); the row before the JV share (RAJOOENG); a
+consolidated-notes page's STANDALONE revenue in the consolidated slot (WEWORK). **In scope: only GUJENERGY** (Gujarat Gas, renamed
+from GUJGASLTD, same ISIN) — 4 cells / 7 figures, all read right → marked `via: text-verified`. **None of the 29 corrected companies
+was ever a Nifty 500 member** (engine: 88 month-end cells over 12 symbols, 0 N500; all 52 strategy groups identical) → **PARKED, not
+pushed**, with the reader fixes they motivated (anchor allowance 25% → 5%, the page's printed unit line binds the scale, dot-grouped
+numbers, "after tax, minority interest" owners lines, OCR "minoritv"/"oeriod" — 0 regressions on the 284 PDF-text cells) and the two
+builder guards that keep a fixed SME profit's row proof (`build_row_periods.as_filed`, fill_sme_halfyear_pnl). Everything to revive
+them — documents, pages, second checks, patches, harnesses — is in `~/stocks-cache/check-all-220d/parked-non-n500/` (README).
+
+**5. Other missing BZ blocks (§220c open 5).** NSE daily files re-scanned 2018-01-01..2026-10-06 — the scan cache now covers every bin
+session 2002–2026 (copied to `~/stocks-cache/check-all-220d/_bz_scan`). Against the live bin: 0 prefix blocks, 0 rights-scaled; 524
+blocks / 792 bars over 73 symbols on 40 sessions of 2018–2019 whose daily file the 2026-08-10 scan never fetched (transient failures,
+reported, never re-run), every block entry-anchored on the day's own row and 521 exit-proven by PREV_CLOSE; 20 blocks refused by the
+builder's controls; 8 BZ symbols have no series at all (SPENTEX 714 bars, INDOSOLAR 699, BINANIIND 95 …). **0 of the 792 bars fall on a
+day the symbol was a Nifty 500 member** → PARKED (merged ledger tested on the live bin: 792 inserted, 0 skipped, phantom-date audit
+clean, second run a no-op). Lesson: before `--build`, check that every bin session in the scan range has a scan file.
+
+**6. COMPUAGE → COMPINFO (§220c open 6).** 525-day gap > §105's 120-day seam rule → stays split; never a member → out of scope.
+
+**Open, in scope (measured nowhere yet):** the owners shapes found here — an XBRL owners tag holding TCI-owners, or owners 0 beside a
+real NCI — sit OUTSIDE §116's screen (it looked for con cells holding the TOTAL); a PIT-N500 screen for them (stored con == the owners
+tag, owners + NCI == TCI ≠ PAT; owners 0 with NCI ≠ 0) has not been run.
 
 ## §221 — THE 11 shp_cell_fix ENTRIES apply_cell_fix SKIPPED, RE-ADJUDICATED FROM EACH FILING: 6 re-based, 5 retired; OILCOUNTUB's Jun-2026 row was a capital-restructuring pattern (2026-10-06, user: "read that filing's exchange record … decide which date and values are right … re-base … or retire"; OILCOUNTUB: "Fix both ledgers")
 
