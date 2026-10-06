@@ -27347,7 +27347,7 @@
     "cell": [
      53.06,
      1.5734,
-     5.1664,
+     0.5394,
      0.0003,
      0.3087,
      "2021-10-05",
@@ -27356,14 +27356,36 @@
     "was": [
      53.06,
      1.5734,
-     4.9464,
+     5.1664,
      0.0003,
      0.3087,
      "2021-10-05",
      143314
     ],
     "src": "bsexbrl:500645_4102021204213_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.95 -> 5.17, fii 1.57 -> 1.57. R2-label Others ALTERNATIVE INVESTMENT FUND 0.22 . Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 30 (2026-10-06, user: 'work on the 56 foreign holder cells'): the company files INTERNATIONAL FINANCE CORPORATION 5,004,235 sh inside its 'Financial Institutions/Banks' line - a World Bank group institution, not a domestic one. Line-move test: Banks/FIs is 0.011 in Jun-21, 4.637 here and 0.165 in Dec-21 (when the FPI line jumps 1.57 -> 11.95), so its shares are counted in that line. dii 5.1664 -> 0.5394 (5,004,235 / 108,153,919); fii is the FII session's call.",
+    "superseded": {
+     "cell": [
+      53.06,
+      1.5734,
+      5.1664,
+      0.0003,
+      0.3087,
+      "2021-10-05",
+      143314
+     ],
+     "was": [
+      53.06,
+      1.5734,
+      4.9464,
+      0.0003,
+      0.3087,
+      "2021-10-05",
+      143314
+     ],
+     "src": "bsexbrl:500645_4102021204213_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.95 -> 5.17, fii 1.57 -> 1.57. R2-label Others ALTERNATIVE INVESTMENT FUND 0.22 . Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-12-31": {
     "cell": [
