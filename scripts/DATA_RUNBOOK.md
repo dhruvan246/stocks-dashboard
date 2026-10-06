@@ -21927,6 +21927,10 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     rule as written. Found for the DII session: BALLARPUR Sep-21 (Deutsche still in the Banks line and in dii), the two RENUKA event
     rows (bank in dii), BRFL Jun-22 (OtherInstitutionsDomestic label in dii). dii copied unchanged from origin; write_b8's committed-store
     `was` check passed (0 WARN on a fresh tree, 40 / 40 in the local feed).
+    **Part 47b (00:55 IST):** at the DII session's request the three rows nobody had dii-fixed carry its §164s part 32 verdict in
+    the same entry (one writer per key): RENUKA events 2018-03-08 dii 4.1868 -> 2.4481 and 2018-03-09 27.6154 -> 25.2249, BRFL
+    2022-06-30 53.8139 -> 51.8824. write_b8 fixed again: a superseding entry whose prior is pushed but not yet applied by CI now stacks
+    on the prior's `was` (the committed store) instead of refusing - 0 WARN on a fresh tree, 40 / 40 in the local feed.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
