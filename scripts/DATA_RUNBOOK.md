@@ -23628,6 +23628,16 @@ LLOYDSME 1.0; AIIL 0.2 = the x0.2 action of 13-Jan-2026 — the old text quoted 
 **Tally (live rev c1e4544027): both-valued 318,334 / 318,494 agree; 187 differing = 160 two-sided + 27 one-sided -> RULE DIFFERENCE 157,
 THEIR ERROR 6, UNKNOWN 12 (WIPRO 8, CADILAHC 4), OUR ERROR 12 (open); 982 cells blank in both; fixed since reply #4: 4,474 (4,469 exact
 prices, 2 RASOYPR, 3 VIVIDHA).** Rule for every later reply: count and judge the one-sided cells too.
+**§179f — QUANTMAC FILE corrected_20261006 COMPARED 2026-10-06 ~23:50 IST** (same source release 2026-10-05 07:50 IST). Field by field
+vs their 20261005c file only 2 rows changed: SUMMITSEC_BSE 30-Jan / 27-Feb-2009 replaced by SUMMIT rows from NSE (82.7485 / 16.8317 /
+-53.2080 and 82.6891 / 3.0000 / -53.6725 = ours exactly; their overview 2009 200DMA 5,989 -> 5,991). Ours re-dumped on LIVE rev 4a97148f49
+(end 2026-10-06) with today's origin/main engine (`~/stocks-cache/dry/engine_dump_r6.js` = node stub + origin engine + dumper block;
+FUND_ALIAS changed since 5-Oct for DHFL / DEWANHOUS / PIPAVAVDOC / PIPAVAVYD / RDEL / ORCHIDCHEM / SOFTPRO — no join moved; `qm_cells.py`
+now takes env ENGINE for the alias table). History changed since the morning only by whole-series rescales (BLSE x0.5, VERANDA x0.1335),
+ROML +17 bars and 2 new symbols — every one of the 106,502 rows x 3 indicators is identical to reply #5's to 1e-6 except SUMMIT's 6.
+**Result: both-valued 318,340 / 318,496 (99.95%); differing 181 = reply #5's 187 minus the 6 SUMMIT cells (now agree), nothing new:
+RULE DIFFERENCE 157, UNKNOWN 12 (their answers on WIPRO / CADILAHC not in this file), OUR ERROR 12 (KENNAMET/SPICEJET hole, fix A/B/C
+awaiting the user), THEIR ERROR 0.** Each of the 181 keeps its own reply-#5 verdict (same cell, both values unchanged).
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
