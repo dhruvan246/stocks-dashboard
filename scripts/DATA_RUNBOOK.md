@@ -23293,6 +23293,46 @@ self-heal at the split. LIVE: all 5,266 symbols == the dry run; quantmac 318,331
 2013-11-29 189.884 vs 189.888); verdict4 OUR ERROR 3 (VIVIDHA 31-Mar-2016 only, its 2016-20 level — the user's); favourites 0 changes;
 stock.html?sym=RASOYPR 0 console errors, slice holds 272.33 (= Rs 2.7233 on 2012-10-01). DVL / DTIL in the same file are still 2 decimals.
 
+**§179f — USER DECISIONS + PENNY-STOCK TAPE RESTORE, LIVE 2026-10-06 ~12:58 IST (user: "Work on all"; commit b74002c7f, sf rev
+c1e4544027).** **Decisions (user, 2026-10-06):** (1) BSE prices before a stock's NSE listing: KEEP, like Screener — asked "what are others
+doing?" first; measured: Screener's chart API starts VALIANTORG 2016-10-14 / LLOYDSME 2005 / AIIL 2015 (BSE history); Yahoo (.NS),
+Moneycontrol (techCharts) and Groww keep NSE and BSE as separate charts whose NSE side starts at the NSE listing; NSE's 52-week file and
+Quantmac are NSE-only. The 10 cells stay RULE DIFFERENCE by decision. (2) ALOKINDS: KEEP SPLIT at the 19-Feb-2020 relisting (as NSE's own
+52-week file; new ISIN INE270A01029) — 5 cells RULE DIFFERENCE by decision. **Penny restore — the §161j `penny_eroded_needs_tape_restore`
+class, now built:** 32 stocks (ANTGRAPHIC, ATNINTER, BIRLACOT, BIRLAPOWER, BLUECHIP, DHANUS, ESSENTIA, ESSEN-RE, FARMAXIND, FCSSOFT, GATECHDVR,
+JFL-RE, JIKIND, KGL, LCCINFOTEC, MVL, NAKODA, NOESISIND, PARASPETRO, RAJRAYON, RASOYPR, RMMIL, SOUISPAT, SPCENET, SRGINFOTEC, SRPL-RE, UVSL,
+VISESHINFO, VISUINTL, VIVIDHA, VKSPL, WINSOME) carried ×¾ / ×½ / ×⅔ / ×2 "splits" inferred long ago from ONE-TICK moves at Rs 0.05-0.25
+(VIVIDHA's six of Oct-2019..Apr-2020 multiply to 0.02374 = the whole unexplained 1/42 level). Evidence per cluster
+(`~/stocks-cache/qm-recon-tools/penny_share_witness.py`, `penny_witness2.py`): the company's own BSE shareholding filings, total shares
+before vs after every cluster — FLAT on 23 stocks (VIVIDHA 292,700,534 Sep-19 -> Jun-20); where filings stop (MVL, KGL, FARMAXIND, VKSPL,
+BIRLAPOWER, ANTGRAPHIC; SPCENET has no BSE code) NSE's ISIN unchanged across every step + every step one tick at <= Rs 0.25 + no BSE
+corporate action within +-120 days; rights entitlements (-RE) cannot split. Real actions found and KEPT: RMMIL 2012-06 consolidation 10:1
+(BSE "Consolidation of Shares" 14-Jun-2012; shares 1,988,746,440 -> 198,874,644; RESURGERE -> RMMIL), GATECHDVR 2024-07-16 rights (BSE "Right
+Issue of Equity Shares"; kept at its stored step). Kept as stored (no evidence either way): RMMIL 2010-09-15 raw 65.35 -> 2.65, BIRLAPOWER's
+2002->2007 ticker seam. Every official split/bonus of the 32 agrees with the tape (0.75 <= raw ratio / official <= 1.30), incl. two the
+store had wrong: BIRLAPOWER 2009-04-24 1:10 (tape 17.25 -> 1.95; stored 0.74) and SOUISPAT 2014-09-22 1:10 (tape 2.65 -> 0.30; never
+applied). Build (`build_penny_restore.py`): every NSE-traded day = raw OHLC x the genuine actions after it (official incl. the pipeline's
+own MANUAL_RIGHTS — ESSENTIA 2022/2024 — in the pipeline's measure, + the kept real/unknown steps), anchor raw on the last bar, NSE no-trade
+open/high/low 0 -> close, non-NSE days x their neighbours' median correction; RASOYPR's bar_inserts days left to the nightly re-insert.
+Results: 22,939 NSE days that showed close 0.00 now carry the traded price (VISESHINFO 3,939, BLUECHIP 3,446, ANTGRAPHIC 3,304 ...); after
+the build only official + kept steps remain; examples VIVIDHA 2016-03-30 0.32 -> 13.45 (= NSE), DHANUS 2011-05-13 0.005 -> 4.6765 (15.90 x
+0.2941 official), BIRLAPOWER 2009-04-23 0.049 -> 1.725, ESSENTIA 2019-11-25 -> 0.039349 (= raw x official product). Pre-2002 weekly stretches
+of ANTGRAPHIC / BLUECHIP / PARASPETRO / VISESHINFO were already 0.00 with no NSE row -> left 0.00. Ledgers: 157 proven dates added to
+`phantom_crashes.json` (format kept: indent=0, sorted); DTIL's 2,862 repair-file bars to 4 decimals (NSE x 0.666667 before the 2021-08-05
+1:2 bonus; old close == round2(NSE x factor) on all, TOTTRDQTY == v); DVL's bars equal NSE raw (no adjustment) -> already exact, untouched.
+Built on the RELEASE file (my first build used a parts-merged copy that lacks the release's `dailyFrom` key — never adopt a parts merge);
+nightly updater dry run byte-identical; adopted via adopt-exact-prices.yml (data-sha guard passed) -> refresh run 37428508196. LIVE: all
+5,266 symbols == the built file; quantmac 318,334 / 318,494 (+3: VIVIDHA 31-Mar-2016 d52 88.061 / d52low 5.026 / vs200 -71.300 all match);
+verdict4 OUR ERROR 0; favourites 0 changed picks (two final values moved by whole-share rounding: VIVIDHA held in 2015 now Rs 4.91, not 0.12).
+**Unknown cells (38) worked 2026-10-06:** GRASIM 2010 (12) + CADILAHC 2008 (14): Quantmac's demerger factor is VALUE-BASED — 1 - (the new
+company's value per parent share at the last cum close) / the parent's cum close: GRASIM 0.772177 ~ 1 - 4/7 x UltraTech NSE close 924.65
+(Samruddhi's 4:7 swap) / Grasim 2319.00 = 0.772155; CADILAHC 0.925962 ~ 1 - 4/15 x Carnation BSE close 75.85 / Cadila BSE close 273.35 =
+0.926005 (NSE/BSE ex-day prices, VWAP, Yahoo adjclose all ruled out — Yahoo applies no demerger factor). With those factors 22 of the 26
+cells reproduce within 0.05 points -> RULE DIFFERENCE (theirs value-based, ours Methodology C); CADILAHC Jul..Nov-2009 d52low (4) miss by
+0.051-0.065 -> their exact Carnation input is not BSE's printed close -> still UNKNOWN. WIPRO 2013 (8): Wipro Enterprises never listed; no
+proxy reproduces 0.892246 (BSE ex-day VWAP / prev 0.891586, NSE (H+L+C)/3 0.892714; the promoter swap 1 WL : 1.65 WEL gives 0.8788) ->
+UNKNOWN, ask Quantmac for their WEL value. adopt-exact-prices.yml + branch exact-prices-base deleted after the live check (this commit).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
