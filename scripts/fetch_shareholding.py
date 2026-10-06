@@ -350,7 +350,7 @@ def apply_refine_ledger(h, path=None):
             fills = json.load(fh).get("fills", {})
     except Exception as e:
         print("%s unreadable (%s) — skipped" % (os.path.basename(path), e)); return 0
-    n = skip = 0
+    n = skip = held = 0
     bad = []
     # §164: a §164 cell (the (A+B) depository re-base, or a row-level read) must not be "refined" back toward the share-count
     # values this ledger was built on (within 0.02 pp it would silently undo the move slot by slot)
@@ -358,8 +358,19 @@ def apply_refine_ledger(h, path=None):
         _cf = json.load(open(os.path.join(HERE, "shp_cell_fix.json"), encoding="utf-8")).get("fix") or {}
         rebased = {(s_, q_) for s_, qs_ in _cf.items() for q_, e_ in qs_.items()
                    if "\u00a7164" in str(e_.get("why", ""))}   # every §164 row-level cell (a small slot move is still the read)
+        # §223: a cell the cell_fix ledger defines is ADJUDICATED. apply_cell_fix runs after this pass and is meant to
+        # outrank it, but its one-2dp-step tolerance (_cell_eq) let a refine move <= 0.01 stand as "already applied" and
+        # turned a 0.01-0.02 move into a pull-and-restore on every run (BBTC Dec-2017, RAMRAT Dec-2025, SANWARIA
+        # Mar-2026, KOTHARIPRO Sep/Dec-2024 — §221 cause 2). In such a cell the refine may set a slot only to the value
+        # the fix itself states; every other slot keeps the stored value.
+        fixed = {(s_, q_): e_["cell"] for s_, qs_ in _cf.items() for q_, e_ in qs_.items()
+                 if isinstance(e_.get("cell"), list) and q_[5:] in ("03-31", "06-30", "09-30", "12-31")}
     except (OSError, ValueError):
-        rebased = set()
+        rebased, fixed = set(), {}
+    def _same_slot(w, y):
+        if w is None or y is None: return w is None and y is None
+        try: return abs(float(w) - float(y)) <= 1e-9
+        except (TypeError, ValueError): return False
     for sym, qs in fills.items():
         dest = h.get(sym)
         if not isinstance(dest, dict): continue      # refine never CREATES a cell
@@ -403,10 +414,13 @@ def apply_refine_ledger(h, path=None):
             # independently sourced from the same document, so take the ones that agree and KEEP
             # the stored value for any that does not. A conflicting field is never imported.
             merged5, refused = [], []
+            want = fixed.get((sym, qe))
             for i, nm in enumerate(("prom", "fii", "dii", "mf", "ins")):
                 x, y = cur[i], new[i]
                 if nm in force_keep:                               # §22i: ambiguous in this doc
                     refused.append(nm + "(22i)"); merged5.append(x); continue
+                if want is not None and i < len(want) and not _same_slot(want[i], y):
+                    held += 1; merged5.append(x); continue         # §223: adjudicated slot, the fix decides
                 if isinstance(x, (int, float)) and isinstance(y, (int, float)):
                     if abs(float(x) - float(y)) <= 0.0200001: merged5.append(y); continue
                     refused.append(nm); merged5.append(x)          # keep stored, refuse the field
@@ -423,8 +437,9 @@ def apply_refine_ledger(h, path=None):
             if merged == cur: continue               # already applied — keeps the run idempotent
             dest[qe] = merged
             n += 1
-    if n or skip:
-        print("shp_refine_4dp applied: %d cells refined, %d disagreements held back" % (n, skip))
+    if n or skip or held:
+        print("shp_refine_4dp applied: %d cells refined, %d disagreements held back, %d slots left to their cell_fix value"
+              % (n, skip, held))
     if bad:
         json.dump(bad, open(REFINE_REPORT, "w", encoding="utf-8"), indent=1)
         print("  -> %s (%d rows) — adjudicate, do NOT bulk-apply" % (os.path.basename(REFINE_REPORT), len(bad)))

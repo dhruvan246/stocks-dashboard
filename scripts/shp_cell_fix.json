@@ -13378,88 +13378,134 @@
     "cell": [
      65.91,
      0.0056,
-     5.6742,
+     5.6749,
      4.4973,
      0.968,
      "2016-10-19",
      17928
     ],
     "was": [
-     74.02,
+     65.91,
      0.0057,
      5.6747,
      4.4971,
      0.968,
      "2016-10-19",
-     17247
+     17928
     ],
     "src": "bsexbrl:501425_1810201616184_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_1810201616184_SHP.xml (BSE New, 2016-10-18T17:40:16); shp_refine_4dp had held the later document 501425_512024162112_SHP.xml (2024-01-05) and pulled dii to 5.6747. dii = the original's Institutions 3,958,911 sh + 'NBFCs registered with RBI' 500 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 3,959,411 / 69,770,513 (parse_shp's base) = 5.6749 (raw parse without R3: 5.6742). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.91,
+      0.0056,
+      5.6742,
+      4.4973,
+      0.968,
+      "2016-10-19",
+      17928
+     ],
+     "was": [
       74.02,
-      0.01,
-      5.67,
-      4.5,
-      0.97,
+      0.0057,
+      5.6747,
+      4.4971,
+      0.968,
       "2016-10-19",
       17247
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-     "was": [
-      74.02,
-      0.01,
-      5.67,
-      4.5,
-      0.97,
-      "2024-01-05",
-      17247
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2653d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_1810201616184_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.02,
+       0.01,
+       5.67,
+       4.5,
+       0.97,
+       "2016-10-19",
+       17247
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.02,
+       0.01,
+       5.67,
+       4.5,
+       0.97,
+       "2024-01-05",
+       17247
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2653d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2016-12-31": {
     "cell": [
      65.91,
      0.0021,
-     5.6363,
+     5.6371,
      4.5126,
      0.9599,
      "2017-01-20",
      19174
     ],
     "was": [
-     74.02,
+     65.91,
      0.0023,
      5.6368,
-     4.4816,
+     4.5126,
      0.9598,
      "2017-01-20",
-     18494
+     19174
     ],
     "src": "bsexbrl:501425_191201718209_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_191201718209_SHP.xml (BSE New, 2017-01-19T18:27:28); shp_refine_4dp had held the later document 501425_512024192436_SHP.xml (2024-01-05) and pulled dii to 5.6368. dii = the original's Institutions 3,932,506 sh + 'NBFCs registered with RBI' 500 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 3,933,006 / 69,770,513 (parse_shp's base) = 5.6371 (raw parse without R3: 5.6363). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.91,
+      0.0021,
+      5.6363,
+      4.5126,
+      0.9599,
+      "2017-01-20",
+      19174
+     ],
+     "was": [
       74.02,
-      0.0,
-      5.64,
-      4.48,
-      0.96,
+      0.0023,
+      5.6368,
+      4.4816,
+      0.9598,
       "2017-01-20",
       18494
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-     "was": [
-      74.02,
-      0.0,
-      5.64,
-      4.48,
-      0.96,
-      "2024-01-05",
-      18494
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2561d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_191201718209_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.02,
+       0.0,
+       5.64,
+       4.48,
+       0.96,
+       "2017-01-20",
+       18494
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.02,
+       0.0,
+       5.64,
+       4.48,
+       0.96,
+       "2024-01-05",
+       18494
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2561d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2017-03-31": {
@@ -13554,44 +13600,67 @@
     "cell": [
      65.91,
      3.1637,
-     4.6906,
+     4.7007,
      3.8605,
      0.6579,
      "2017-10-18",
      18553
     ],
     "was": [
-     74.02,
+     65.91,
      3.1637,
      4.7005,
      3.8604,
      0.6579,
      "2017-10-18",
-     17875
+     18553
     ],
     "src": "bsexbrl:501425_1710201717730_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_1710201717730_SHP.xml (BSE New, 2017-10-17T17:26:18); shp_refine_4dp had held the later document 501425_412024171237_SHP.xml (2024-01-04) and pulled dii to 4.7005. dii = the original's Institutions 3,272,659 sh + 'NBFCs registered with RBI' 7,027 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 3,279,686 / 69,770,513 (parse_shp's base) = 4.7007 (raw parse without R3: 4.6906). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.91,
+      3.1637,
+      4.6906,
+      3.8605,
+      0.6579,
+      "2017-10-18",
+      18553
+     ],
+     "was": [
       74.02,
-      3.16,
-      4.7,
-      3.86,
-      0.66,
+      3.1637,
+      4.7005,
+      3.8604,
+      0.6579,
       "2017-10-18",
       17875
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-     "was": [
-      74.02,
-      3.16,
-      4.7,
-      3.86,
-      0.66,
-      "2024-01-04",
-      17875
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2287d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_1710201717730_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.02,
+       3.16,
+       4.7,
+       3.86,
+       0.66,
+       "2017-10-18",
+       17875
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.02,
+       3.16,
+       4.7,
+       3.86,
+       0.66,
+       "2024-01-04",
+       17875
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2287d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2017-12-31": {
@@ -13665,44 +13734,67 @@
     "cell": [
      65.91,
      4.844,
-     2.429,
+     2.4328,
      1.7533,
      0.4926,
      "2018-04-23",
      23418
     ],
     "was": [
-     74.02,
+     65.91,
      4.844,
      2.4327,
      1.7532,
-     0.0,
+     0.4926,
      "2018-04-23",
      23418
     ],
     "src": "bsexbrl:501425_204201818447_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_204201818447_SHP.xml (BSE New, 2018-04-20T18:19:26); shp_refine_4dp had held the later document 501425_312024181015_SHP.xml (2024-01-03) and pulled dii to 2.4327. dii = the original's Institutions 1,694,728 sh + 'NBFCs registered with RBI' 2,655 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 1,697,383 / 69,770,513 (parse_shp's base) = 2.4328 (raw parse without R3: 2.429). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
+      65.91,
+      4.844,
+      2.429,
+      1.7533,
+      0.4926,
+      "2018-04-23",
+      23418
+     ],
+     "was": [
       74.02,
-      4.84,
-      2.43,
-      1.75,
+      4.844,
+      2.4327,
+      1.7532,
       0.0,
       "2018-04-23",
       23418
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-     "was": [
-      74.02,
-      4.84,
-      2.43,
-      1.75,
-      0.0,
-      "2024-01-03",
-      23418
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2104d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_204201818447_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.02,
+       4.84,
+       2.43,
+       1.75,
+       0.0,
+       "2018-04-23",
+       23418
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.02,
+       4.84,
+       2.43,
+       1.75,
+       0.0,
+       "2024-01-03",
+       23418
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 2104d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2018-06-30": {
@@ -13973,176 +14065,268 @@
     "cell": [
      65.93,
      5.5291,
-     1.4976,
+     1.5067,
      0.7897,
      0.4496,
      "2019-07-22",
      30363
     ],
     "was": [
-     74.04,
+     65.93,
      5.529,
      1.5066,
-     0.3597,
+     0.7897,
      0.4496,
      "2019-07-22",
      30363
     ],
     "src": "bsexbrl:501425_2072019172859_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_2072019172859_SHP.xml (BSE New, 2019-07-20T17:39:12); shp_refine_4dp had held the later document 501425_51202416433_SHP.xml (2024-01-05) and pulled dii to 1.5066. dii = the original's Institutions 1,044,896 sh + 'NBFCs registered with RBI' 6,320 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 1,051,216 / 69,769,976 (parse_shp's base) = 1.5067 (raw parse without R3: 1.4976). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      74.04,
-      5.53,
-      1.51,
-      0.36,
-      0.45,
+      65.93,
+      5.5291,
+      1.4976,
+      0.7897,
+      0.4496,
       "2019-07-22",
       30363
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       74.04,
-      5.53,
-      1.51,
-      0.36,
-      0.45,
-      "2024-01-05",
+      5.529,
+      1.5066,
+      0.3597,
+      0.4496,
+      "2019-07-22",
       30363
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1650d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_2072019172859_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.04,
+       5.53,
+       1.51,
+       0.36,
+       0.45,
+       "2019-07-22",
+       30363
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.04,
+       5.53,
+       1.51,
+       0.36,
+       0.45,
+       "2024-01-05",
+       30363
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1650d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2019-09-30": {
     "cell": [
      65.72,
      6.3138,
-     1.2549,
+     1.2557,
      0.5661,
      0.4496,
      "2019-11-26",
      29761
     ],
     "was": [
-     73.83,
+     65.72,
      6.3136,
      1.2557,
-     0.0576,
+     0.5661,
      0.4496,
      "2019-11-26",
      29761
     ],
     "src": "bsexbrl:501425_18102019182132_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_18102019182132_SHP.xml (BSE New, 2019-11-26T12:34:19); shp_refine_4dp had held the later document 501425_51202416540_SHP.xml (2024-01-05) and pulled dii to 1.2557. dii = the original's Institutions 875,551 sh + 'NBFCs registered with RBI' 575 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 876,126 / 69,769,773 (parse_shp's base) = 1.2557 (raw parse without R3: 1.2549). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      73.83,
-      6.31,
-      1.26,
-      0.06,
-      0.45,
+      65.72,
+      6.3138,
+      1.2549,
+      0.5661,
+      0.4496,
       "2019-11-26",
       29761
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       73.83,
-      6.31,
-      1.26,
-      0.06,
-      0.45,
-      "2024-01-05",
+      6.3136,
+      1.2557,
+      0.0576,
+      0.4496,
+      "2019-11-26",
       29761
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1558d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_18102019182132_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       73.83,
+       6.31,
+       1.26,
+       0.06,
+       0.45,
+       "2019-11-26",
+       29761
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       73.83,
+       6.31,
+       1.26,
+       0.06,
+       0.45,
+       "2024-01-05",
+       29761
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1558d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2019-12-31": {
     "cell": [
      65.93,
      6.2438,
-     1.1728,
+     1.1739,
      0.5153,
      0.4496,
      "2020-01-22",
      31521
     ],
     "was": [
-     74.04,
+     65.93,
      6.2436,
      1.1738,
-     0.0068,
+     0.5153,
      0.4496,
      "2020-01-22",
      31521
     ],
     "src": "bsexbrl:501425_2112020171924_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_2112020171924_SHP.xml (BSE New, 2020-01-22T12:24:36); shp_refine_4dp had held the later document 501425_51202416559_SHP.xml (2024-01-05) and pulled dii to 1.1738. dii = the original's Institutions 818,261 sh + 'NBFCs registered with RBI' 770 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 819,031 / 69,769,976 (parse_shp's base) = 1.1739 (raw parse without R3: 1.1728). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      74.04,
-      6.24,
-      1.17,
-      0.01,
-      0.45,
+      65.93,
+      6.2438,
+      1.1728,
+      0.5153,
+      0.4496,
       "2020-01-22",
       31521
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       74.04,
-      6.24,
-      1.17,
-      0.01,
-      0.45,
-      "2024-01-05",
+      6.2436,
+      1.1738,
+      0.0068,
+      0.4496,
+      "2020-01-22",
       31521
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1466d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_2112020171924_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.04,
+       6.24,
+       1.17,
+       0.01,
+       0.45,
+       "2020-01-22",
+       31521
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.04,
+       6.24,
+       1.17,
+       0.01,
+       0.45,
+       "2024-01-05",
+       31521
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1466d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2020-03-31": {
     "cell": [
      65.93,
      6.7707,
-     1.2004,
+     1.201,
      0.5946,
      0.4496,
      "2020-05-12",
      30955
     ],
     "was": [
-     74.05,
+     65.93,
      6.7715,
      1.2011,
-     0.0102,
+     0.5946,
      0.4496,
      "2020-05-12",
      30955
     ],
     "src": "bsexbrl:501425_1152020163051_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 501425_1152020163051_SHP.xml (BSE New, 2020-05-11T16:41:40); shp_refine_4dp had held the later document 501425_312024131557_SHP.xml (2024-01-03) and pulled dii to 1.2011. dii = the original's Institutions 837,560 sh + 'NBFCs registered with RBI' 450 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 838,010 / 69,774,526 (parse_shp's base) = 1.201 (raw parse without R3: 1.2004). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      74.05,
-      6.77,
-      1.2,
-      0.01,
-      0.45,
+      65.93,
+      6.7707,
+      1.2004,
+      0.5946,
+      0.4496,
       "2020-05-12",
       30955
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       74.05,
-      6.77,
-      1.2,
-      0.01,
-      0.45,
-      "2024-01-03",
+      6.7715,
+      1.2011,
+      0.0102,
+      0.4496,
+      "2020-05-12",
       30955
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1373d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:501425_1152020163051_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.05,
+       6.77,
+       1.2,
+       0.01,
+       0.45,
+       "2020-05-12",
+       30955
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       74.05,
+       6.77,
+       1.2,
+       0.01,
+       0.45,
+       "2024-01-03",
+       30955
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1373d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2020-06-30": {
@@ -16677,14 +16861,14 @@
     "cell": [
      44.76,
      23.3607,
-     20.0254,
+     20.0264,
      14.3237,
      5.4724,
      "2022-01-19",
      151059
     ],
     "was": [
-     45.25,
+     44.76,
      23.361,
      20.0257,
      14.3239,
@@ -16693,28 +16877,51 @@
      151059
     ],
     "src": "bsexbrl:500493_191202211170_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 500493_191202211170_SHP.xml (BSE New, 2022-01-19T11:35:46); shp_refine_4dp had held the later document 500493_2552022103632_SHP.xml (2022-05-25) and pulled dii to 20.0257. dii = the original's Institutions 93,232,585 sh + 'NBFCs registered with RBI' 4,900 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 93,237,485 / 465,572,035 (parse_shp's base) = 20.0264 (raw parse without R3: 20.0254). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      45.25,
-      23.36,
-      20.02,
-      14.32,
-      5.47,
-      "2022-01-19",
-      151059
-     ],
-     "src": "bse:500493_23520221724_SHP.xml",
-     "was": [
       44.76,
-      23.36,
-      20.02,
-      14.32,
-      5.47,
+      23.3607,
+      20.0254,
+      14.3237,
+      5.4724,
       "2022-01-19",
       151059
      ],
-     "why": "BSE revision 2022-05-23 supersedes stored (sub 2022-01-19); diffs {'prom': [44.76, 45.25]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+     "was": [
+      45.25,
+      23.361,
+      20.0257,
+      14.3239,
+      5.4724,
+      "2022-01-19",
+      151059
+     ],
+     "src": "bsexbrl:500493_191202211170_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       45.25,
+       23.36,
+       20.02,
+       14.32,
+       5.47,
+       "2022-01-19",
+       151059
+      ],
+      "src": "bse:500493_23520221724_SHP.xml",
+      "was": [
+       44.76,
+       23.36,
+       20.02,
+       14.32,
+       5.47,
+       "2022-01-19",
+       151059
+      ],
+      "why": "BSE revision 2022-05-23 supersedes stored (sub 2022-01-19); diffs {'prom': [44.76, 45.25]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+     }
     }
    },
    "2015-03-31": {
@@ -20143,14 +20350,14 @@
     "cell": [
      22.74,
      1.2196,
-     21.0497,
+     21.0547,
      17.7835,
      1.7923,
      "2020-04-08",
      41630
     ],
     "was": [
-     22.85,
+     22.74,
      1.2197,
      21.0552,
      17.7839,
@@ -20159,42 +20366,65 @@
      41630
     ],
     "src": "bsexbrl:532834_8420209414_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 532834_8420209414_SHP.xml (BSE New, 2020-04-08T09:52:02); shp_refine_4dp had held the later document 532834_842024111952_SHP.xml (2024-04-08) and pulled dii to 21.0552. dii = the original's Institutions 25,524,392 sh + 'NBFCs registered with RBI' 6,000 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 25,530,392 / 121,257,494 (parse_shp's base) = 21.0547 (raw parse without R3: 21.0497). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      22.85,
-      1.22,
-      21.06,
-      17.78,
-      1.79,
+      22.74,
+      1.2196,
+      21.0497,
+      17.7835,
+      1.7923,
       "2020-04-08",
       41630
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       22.85,
-      1.22,
-      21.06,
-      17.78,
-      1.79,
-      "2024-04-08",
+      1.2197,
+      21.0552,
+      17.7839,
+      1.7923,
+      "2020-04-08",
       41630
      ],
-     "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2024-04-08, which is 1469 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:532834_8420209414_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       22.85,
+       1.22,
+       21.06,
+       17.78,
+       1.79,
+       "2020-04-08",
+       41630
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       22.85,
+       1.22,
+       21.06,
+       17.78,
+       1.79,
+       "2024-04-08",
+       41630
+      ],
+      "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2024-04-08, which is 1469 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-06-30": {
     "cell": [
      22.74,
      1.1582,
-     18.9611,
+     18.966,
      17.4913,
      0.0,
      "2020-07-08",
      43139
     ],
     "was": [
-     22.85,
+     22.74,
      1.1582,
      18.9665,
      17.4918,
@@ -20203,28 +20433,51 @@
      43139
     ],
     "src": "bsexbrl:532834_77202018943_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 532834_77202018943_SHP.xml (BSE New, 2020-07-07T18:27:55); shp_refine_4dp had held the later document 532834_84202411019_SHP.xml (2024-04-08) and pulled dii to 18.9665. dii = the original's Institutions 22,991,709 sh + 'NBFCs registered with RBI' 6,000 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 22,997,709 / 121,257,494 (parse_shp's base) = 18.966 (raw parse without R3: 18.9611). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      22.85,
-      1.16,
-      18.97,
-      17.49,
+      22.74,
+      1.1582,
+      18.9611,
+      17.4913,
       0.0,
       "2020-07-08",
       43139
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       22.85,
-      1.16,
-      18.97,
-      17.49,
+      1.1582,
+      18.9665,
+      17.4918,
       0.0,
-      "2024-04-08",
+      "2020-07-08",
       43139
      ],
-     "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2024-04-08, which is 1378 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:532834_77202018943_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       22.85,
+       1.16,
+       18.97,
+       17.49,
+       0.0,
+       "2020-07-08",
+       43139
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       22.85,
+       1.16,
+       18.97,
+       17.49,
+       0.0,
+       "2024-04-08",
+       43139
+      ],
+      "why": "BULK STAMP: 6 quarters of this symbol all carry the single submission date 2024-04-08, which is 1378 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-09-30": {
@@ -71154,75 +71407,6 @@
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 531500 qtrid 65) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 128,622 shares = 0.0500) - and the stored fii 4.4531 held only 'Foreign Institutional Investors' 4.4531. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 257,336,909 shares. fii 4.4531 -> 4.5031, dii unchanged (it holds only the page's domestic rows)."
    }
   },
-  "RAMRAT": {
-   "2025-12-31": {
-    "cell": [
-     68.54,
-     0.0929,
-     0.4164,
-     0.0,
-     0.0,
-     "2026-01-16",
-     20231
-    ],
-    "was": [
-     68.54,
-     0.093,
-     0.4165,
-     0.0,
-     0.0,
-     "2026-01-16",
-     20231
-    ],
-    "src": "bsexbrl:522281_1612026183257_SHP.xml",
-    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-01-16 18:32:58, NSE broadcast 16-Jan-2026 18:32:41 -> 2026-01-16 (midnight rule; the superseded entry's 2026-01-19 was the retired 15:30 gate). parse_shp of that document: prom 68.54, fii 0.0929, dii 0.4164, 20,231 holders. The stored fii 0.093 / dii 0.4165 are the 2026-06-01 re-filing's (522281_162026173642, prom 69.30) pulled in by shp_refine_4dp, which re-pulls them every run (`exact` re-applies). The re-filing itself is in shp_revisions.json from its own date.",
-    "exact": true,
-    "superseded": {
-     "cell": [
-      68.54,
-      0.0929,
-      0.4164,
-      0.0,
-      0.0,
-      "2026-01-19",
-      20231
-     ],
-     "was": [
-      69.3,
-      0.093,
-      0.4165,
-      0.0,
-      0.0,
-      "2026-01-19",
-      20231
-     ],
-     "src": "bsexbrl:522281_1612026183257_SHP.xml",
-     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
-     "superseded": {
-      "cell": [
-       69.3,
-       0.09,
-       0.42,
-       0.0,
-       0.0,
-       "2026-01-19",
-       20231
-      ],
-      "src": "bse:522281_162026173642_SHP.xml",
-      "was": [
-       68.54,
-       0.09,
-       0.42,
-       0.0,
-       0.0,
-       "2026-01-16",
-       20231
-      ],
-      "why": "Company REVISED its filing (BSE revised_date_time=2026-06-01); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '68.54->69.3'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
-     }
-    }
-   }
-  },
   "RAMSARUP": {
    "2020-09-30": {
     "cell": [
@@ -78862,51 +79046,6 @@
       141893
      ],
      "why": "Company REVISED its filing (BSE revised_date_time=2026-01-30); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141893->140382'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
-    }
-   },
-   "2026-03-31": {
-    "cell": [
-     12.42,
-     0.0,
-     0.0001,
-     0.0,
-     0.0,
-     "2026-04-21",
-     139953
-    ],
-    "was": [
-     12.42,
-     0.0,
-     0.0002,
-     0.0,
-     0.0,
-     "2026-04-21",
-     139953
-    ],
-    "src": "bsexbrl:519260_2142026204535_SHP.xml",
-    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-04-21 20:45:37, NSE broadcast 21-Apr-2026 20:49:27 -> 2026-04-21 (midnight rule). Banks 862 sh / 736,100,000 = dii 0.0001. The stored 0.0002 is the 2026-05-08 15:43 re-filing's (519260_852026154243, 'clerical mistake in figures': Banks 1,257 sh) - a later document's value under the original's date; it belongs in shp_revisions.json dated 2026-05-08 (no such row exists yet). The holder count stays at the stored 139,953 (the re-filing's; the original files 141,437): shp_refine_4dp holds the re-filing and re-pulls dii to 0.0002 every run, and `exact` can re-apply 0.0001 only while the post-refine row equals `was` exactly - a different holder count here would leave dii at 0.0002 for good. dii value = the DII session's verdict (2026-10-06).",
-    "exact": true,
-    "superseded": {
-     "cell": [
-      12.42,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      "2026-04-22",
-      139953
-     ],
-     "src": "bse:519260_852026154243_SHP.xml",
-     "was": [
-      12.42,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      "2026-04-21",
-      141437
-     ],
-     "why": "Company REVISED its filing (BSE revised_date_time=2026-05-08); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141437->139953'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
     }
    },
    "2025-09-30": {
@@ -88495,44 +88634,67 @@
     "cell": [
      74.55,
      0.0,
-     0.0008,
+     0.001,
      0.0003,
      0.0,
      "2022-07-15",
      29837
     ],
     "was": [
-     74.37,
+     74.55,
      0.0,
      0.001,
      0.0003,
      0.0,
      "2022-07-15",
-     29838
+     29837
     ],
     "src": "bsexbrl:542933_1572022131712_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 542933_1572022131712_SHP.xml (BSE New, 2022-07-15T13:17:13); shp_refine_4dp had held the later document 542933_1832023161324_SHP.xml (2023-03-18) and pulled dii to 0.001. dii = the original's Institutions 88 sh + 'NBFCs registered with RBI' 17 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 105 / 10,946,038 (parse_shp's base) = 0.001 (raw parse without R3: 0.0008). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      74.37,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      "2022-07-15",
-      29838
-     ],
-     "src": "bse:542933_1832023161324_SHP.xml",
-     "was": [
       74.55,
       0.0,
-      0.0,
-      0.0,
+      0.0008,
+      0.0003,
       0.0,
       "2022-07-15",
       29837
      ],
-     "why": "BSE revision 2023-03-18 supersedes stored (sub 2022-07-15); diffs {'prom': [74.55, 74.37]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+     "was": [
+      74.37,
+      0.0,
+      0.001,
+      0.0003,
+      0.0,
+      "2022-07-15",
+      29838
+     ],
+     "src": "bsexbrl:542933_1572022131712_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       74.37,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       "2022-07-15",
+       29838
+      ],
+      "src": "bse:542933_1832023161324_SHP.xml",
+      "was": [
+       74.55,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       "2022-07-15",
+       29837
+      ],
+      "why": "BSE revision 2023-03-18 supersedes stored (sub 2022-07-15); diffs {'prom': [74.55, 74.37]}; corroboration=NO_SITE_WINDOW (revision sweep 2026-08-09)"
+     }
     }
    }
   },
@@ -89135,7 +89297,7 @@
     "cell": [
      27.89,
      43.852,
-     10.6268,
+     10.6273,
      4.309,
      1.0159,
      "2019-10-17",
@@ -89143,7 +89305,7 @@
     ],
     "was": [
      27.89,
-     52.1212,
+     43.852,
      10.6273,
      4.309,
      1.0159,
@@ -89151,35 +89313,58 @@
      93464
     ],
     "src": "bsexbrl:512070_1610201918442_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_1610201918442_SHP.xml (BSE New, 2019-10-16T18:25:53); shp_refine_4dp had held the later document 512070_2632024164057_SHP.xml (2024-03-26) and pulled dii to 10.6273. dii = the original's Institutions 81,162,852 sh + 'NBFCs registered with RBI' 3,982 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 81,166,834 / 763,755,046 (parse_shp's base) = 10.6273 (raw parse without R3: 10.6268). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.89,
-      52.12,
-      10.63,
-      4.31,
-      1.02,
+      43.852,
+      10.6268,
+      4.309,
+      1.0159,
       "2019-10-17",
       93464
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.89,
-      52.12,
-      10.63,
-      4.31,
-      1.02,
-      "2024-03-26",
+      52.1212,
+      10.6273,
+      4.309,
+      1.0159,
+      "2019-10-17",
       93464
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1639 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_1610201918442_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.89,
+       52.12,
+       10.63,
+       4.31,
+       1.02,
+       "2019-10-17",
+       93464
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.89,
+       52.12,
+       10.63,
+       4.31,
+       1.02,
+       "2024-03-26",
+       93464
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1639 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2019-12-31": {
     "cell": [
      27.89,
      43.4978,
-     11.1378,
+     11.1383,
      4.0962,
      1.0375,
      "2020-01-21",
@@ -89187,7 +89372,7 @@
     ],
     "was": [
      27.89,
-     51.7666,
+     43.4978,
      11.1383,
      4.0962,
      1.0375,
@@ -89195,35 +89380,58 @@
      96104
     ],
     "src": "bsexbrl:512070_211202015847_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_211202015847_SHP.xml (BSE New, 2020-01-21T15:14:34); shp_refine_4dp had held the later document 512070_2632024164149_SHP.xml (2024-03-26) and pulled dii to 11.1383. dii = the original's Institutions 85,068,785 sh + 'NBFCs registered with RBI' 3,975 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 85,072,760 / 763,786,249 (parse_shp's base) = 11.1383 (raw parse without R3: 11.1378). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.89,
-      51.77,
-      11.14,
-      4.1,
-      1.04,
+      43.4978,
+      11.1378,
+      4.0962,
+      1.0375,
       "2020-01-21",
       96104
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.89,
-      51.77,
-      11.14,
-      4.1,
-      1.04,
-      "2024-03-26",
+      51.7666,
+      11.1383,
+      4.0962,
+      1.0375,
+      "2020-01-21",
       96104
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1547 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_211202015847_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.89,
+       51.77,
+       11.14,
+       4.1,
+       1.04,
+       "2020-01-21",
+       96104
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.89,
+       51.77,
+       11.14,
+       4.1,
+       1.04,
+       "2024-03-26",
+       96104
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1547 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-03-31": {
     "cell": [
      27.89,
      41.9105,
-     12.274,
+     12.2745,
      4.1454,
      1.8036,
      "2020-04-29",
@@ -89231,7 +89439,7 @@
     ],
     "was": [
      27.89,
-     50.1793,
+     41.9105,
      12.2746,
      4.1454,
      1.8036,
@@ -89239,35 +89447,58 @@
      117424
     ],
     "src": "bsexbrl:512070_2842020155425_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_2842020155425_SHP.xml (BSE New, 2020-04-28T16:32:59); shp_refine_4dp had held the later document 512070_2632024164311_SHP.xml (2024-03-26) and pulled dii to 12.2746. dii = the original's Institutions 93,747,349 sh + 'NBFCs registered with RBI' 3,975 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 93,751,324 / 763,786,249 (parse_shp's base) = 12.2745 (raw parse without R3: 12.274). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.89,
-      50.18,
-      12.27,
-      4.15,
-      1.8,
+      41.9105,
+      12.274,
+      4.1454,
+      1.8036,
       "2020-04-29",
       117424
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.89,
-      50.18,
-      12.27,
-      4.15,
-      1.8,
-      "2024-03-26",
+      50.1793,
+      12.2746,
+      4.1454,
+      1.8036,
+      "2020-04-29",
       117424
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1456 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_2842020155425_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.89,
+       50.18,
+       12.27,
+       4.15,
+       1.8,
+       "2020-04-29",
+       117424
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.89,
+       50.18,
+       12.27,
+       4.15,
+       1.8,
+       "2024-03-26",
+       117424
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1456 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-06-30": {
     "cell": [
      27.88,
      40.5556,
-     12.8593,
+     12.8598,
      4.5364,
      7.8226,
      "2020-07-21",
@@ -89275,7 +89506,7 @@
     ],
     "was": [
      27.88,
-     48.8217,
+     40.5556,
      12.8598,
      4.5364,
      7.8226,
@@ -89283,35 +89514,58 @@
      160252
     ],
     "src": "bsexbrl:512070_2072020204136_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_2072020204136_SHP.xml (BSE New, 2020-07-20T21:31:01); shp_refine_4dp had held the later document 512070_2632024164413_SHP.xml (2024-03-26) and pulled dii to 12.8598. dii = the original's Institutions 98,249,964 sh + 'NBFCs registered with RBI' 3,975 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 98,253,939 / 764,038,331 (parse_shp's base) = 12.8598 (raw parse without R3: 12.8593). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.88,
-      48.82,
-      12.86,
-      4.54,
-      7.82,
+      40.5556,
+      12.8593,
+      4.5364,
+      7.8226,
       "2020-07-21",
       160252
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.88,
-      48.82,
-      12.86,
-      4.54,
-      7.82,
-      "2024-03-26",
+      48.8217,
+      12.8598,
+      4.5364,
+      7.8226,
+      "2020-07-21",
       160252
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1365 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_2072020204136_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.88,
+       48.82,
+       12.86,
+       4.54,
+       7.82,
+       "2020-07-21",
+       160252
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.88,
+       48.82,
+       12.86,
+       4.54,
+       7.82,
+       "2024-03-26",
+       160252
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1365 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-09-30": {
     "cell": [
      27.88,
      37.15,
-     15.9286,
+     15.9293,
      5.1999,
      10.2026,
      "2020-10-20",
@@ -89319,7 +89573,7 @@
     ],
     "was": [
      27.88,
-     45.4161,
+     37.15,
      15.9293,
      5.1999,
      10.2026,
@@ -89327,43 +89581,66 @@
      163629
     ],
     "src": "bsexbrl:512070_20102020121358_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_20102020121358_SHP.xml (BSE New, 2020-10-20T12:52:51); shp_refine_4dp had held the later document 512070_263202418493_SHP.xml (2024-03-26) and pulled dii to 15.9293. dii = the original's Institutions 121,700,821 sh + 'NBFCs registered with RBI' 5,085 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 121,705,906 / 764,038,331 (parse_shp's base) = 15.9293 (raw parse without R3: 15.9286). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.88,
-      45.42,
-      15.93,
-      5.2,
-      10.2,
+      37.15,
+      15.9286,
+      5.1999,
+      10.2026,
       "2020-10-20",
       163629
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.88,
-      45.42,
-      15.93,
-      5.2,
-      10.2,
-      "2024-03-26",
+      45.4161,
+      15.9293,
+      5.1999,
+      10.2026,
+      "2020-10-20",
       163629
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1273 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_20102020121358_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.88,
+       45.42,
+       15.93,
+       5.2,
+       10.2,
+       "2020-10-20",
+       163629
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.88,
+       45.42,
+       15.93,
+       5.2,
+       10.2,
+       "2024-03-26",
+       163629
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1273 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2020-12-31": {
     "cell": [
      27.85,
      35.3463,
-     16.3459,
+     16.3472,
      4.5786,
      10.8732,
      "2021-01-21",
      245797
     ],
     "was": [
-     28.02,
-     43.6099,
+     27.85,
+     35.3463,
      16.3461,
      4.5783,
      10.8725,
@@ -89371,35 +89648,58 @@
      245797
     ],
     "src": "bsexbrl:512070_2012021161639_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_2012021161639_SHP.xml (BSE New, 2021-01-20T16:33:37); shp_refine_4dp had held the later document 512070_3172024162637_SHP.xml (2024-07-31) and pulled dii to 16.3461. dii = the original's Institutions 124,884,042 sh + 'NBFCs registered with RBI' 9,510 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 124,893,552 / 764,008,015 (parse_shp's base) = 16.3472 (raw parse without R3: 16.3459). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      28.02,
-      43.61,
-      16.35,
-      4.58,
-      10.87,
+      27.85,
+      35.3463,
+      16.3459,
+      4.5786,
+      10.8732,
       "2021-01-21",
       245797
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       28.02,
-      43.61,
-      16.35,
-      4.58,
-      10.87,
-      "2024-07-31",
+      43.6099,
+      16.3461,
+      4.5783,
+      10.8725,
+      "2021-01-21",
       245797
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1308d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:512070_2012021161639_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       28.02,
+       43.61,
+       16.35,
+       4.58,
+       10.87,
+       "2021-01-21",
+       245797
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       28.02,
+       43.61,
+       16.35,
+       4.58,
+       10.87,
+       "2024-07-31",
+       245797
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1308d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2021-03-31": {
     "cell": [
      27.96,
      37.8132,
-     15.8467,
+     15.8473,
      4.3361,
      10.6561,
      "2021-04-20",
@@ -89407,7 +89707,7 @@
     ],
     "was": [
      27.96,
-     45.9781,
+     37.8132,
      15.8485,
      4.3364,
      10.6569,
@@ -89415,43 +89715,66 @@
      175437
     ],
     "src": "bsexbrl:512070_2042021111159_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_2042021111159_SHP.xml (BSE New, 2021-04-20T11:24:46); shp_refine_4dp had held the later document 512070_3172024164649_SHP.xml (2024-07-31) and pulled dii to 15.8485. dii = the original's Institutions 121,079,739 sh + 'NBFCs registered with RBI' 4,785 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 121,084,524 / 764,068,272 (parse_shp's base) = 15.8473 (raw parse without R3: 15.8467). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
       27.96,
-      45.98,
-      15.85,
-      4.34,
-      10.66,
+      37.8132,
+      15.8467,
+      4.3361,
+      10.6561,
       "2021-04-20",
       175437
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       27.96,
-      45.98,
-      15.85,
-      4.34,
-      10.66,
-      "2024-03-26",
+      45.9781,
+      15.8485,
+      4.3364,
+      10.6569,
+      "2021-04-20",
       175437
      ],
-     "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1091 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     "src": "bsexbrl:512070_2042021111159_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       27.96,
+       45.98,
+       15.85,
+       4.34,
+       10.66,
+       "2021-04-20",
+       175437
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       27.96,
+       45.98,
+       15.85,
+       4.34,
+       10.66,
+       "2024-03-26",
+       175437
+      ],
+      "why": "BULK STAMP: 15 quarters of this symbol all carry the single submission date 2024-03-26, which is 1091 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+     }
     }
    },
    "2021-06-30": {
     "cell": [
      27.96,
      37.8616,
-     16.1769,
+     16.178,
      4.822,
      10.6653,
      "2021-07-20",
      193760
     ],
     "was": [
-     28.12,
-     46.0271,
+     27.96,
+     37.8616,
      16.1794,
      4.8224,
      10.6662,
@@ -89459,43 +89782,66 @@
      193760
     ],
     "src": "bsexbrl:512070_2072021133652_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_2072021133652_SHP.xml (BSE New, 2021-07-20T14:16:21); shp_refine_4dp had held the later document 512070_3172024164036_SHP.xml (2024-07-31) and pulled dii to 16.1794. dii = the original's Institutions 123,602,868 sh + 'NBFCs registered with RBI' 7,905 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 123,610,773 / 764,068,272 (parse_shp's base) = 16.178 (raw parse without R3: 16.1769). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      28.12,
-      46.03,
-      16.18,
-      4.82,
-      10.67,
+      27.96,
+      37.8616,
+      16.1769,
+      4.822,
+      10.6653,
       "2021-07-20",
       193760
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       28.12,
-      46.03,
-      16.18,
-      4.82,
-      10.67,
-      "2024-07-31",
+      46.0271,
+      16.1794,
+      4.8224,
+      10.6662,
+      "2021-07-20",
       193760
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1127d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:512070_2072021133652_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       28.12,
+       46.03,
+       16.18,
+       4.82,
+       10.67,
+       "2021-07-20",
+       193760
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       28.12,
+       46.03,
+       16.18,
+       4.82,
+       10.67,
+       "2024-07-31",
+       193760
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1127d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2021-12-31": {
     "cell": [
      28.24,
      34.2646,
-     18.6583,
+     18.6597,
      6.3409,
      11.7117,
      "2022-01-19",
      245135
     ],
     "was": [
-     28.41,
-     42.2018,
+     28.24,
+     34.2646,
      18.6591,
      6.3407,
      11.7112,
@@ -89503,28 +89849,51 @@
      245135
     ],
     "src": "bsexbrl:512070_19120221264_SHP.xml",
-    "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+    "why": "2026-10-07 runbook \u00a7223 (refine read the stored row's own document): the store row is the ORIGINAL 512070_19120221264_SHP.xml (BSE New, 2022-01-19T12:25:22); shp_refine_4dp had held the later document 512070_3172024163531_SHP.xml (2024-07-31) and pulled dii to 18.6591. dii = the original's Institutions 142,555,102 sh + 'NBFCs registered with RBI' 10,605 sh (2015 form, Non-institutions B3b; runbook \u00a7158 R3) = 142,565,707 / 764,028,976 (parse_shp's base) = 18.6597 (raw parse without R3: 18.6583). Verdict B (original + R3) from the 'DII data coverage analysis' session, 2026-10-06. Other slots = the original's parse_shp values (unchanged vs the superseded \u00a7142k entry). `exact` lands the sub-0.01 move once.",
+    "exact": true,
     "superseded": {
      "cell": [
-      28.41,
-      42.2,
-      18.66,
-      6.34,
-      11.71,
+      28.24,
+      34.2646,
+      18.6583,
+      6.3409,
+      11.7117,
       "2022-01-19",
       245135
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       28.41,
-      42.2,
-      18.66,
-      6.34,
-      11.71,
-      "2024-07-31",
+      42.2018,
+      18.6591,
+      6.3407,
+      11.7112,
+      "2022-01-19",
       245135
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 943d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:512070_19120221264_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       28.41,
+       42.2,
+       18.66,
+       6.34,
+       11.71,
+       "2022-01-19",
+       245135
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       28.41,
+       42.2,
+       18.66,
+       6.34,
+       11.71,
+       "2024-07-31",
+       245135
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 943d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2026-06-30": {
@@ -395977,6 +396346,124 @@
      "why": "Company REVISED its filing (BSE revised_date_time=2026-05-27); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '47.32->46.95'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
     },
     "retired": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): store already right - [47.32, 3.0218, 5.9933, 0.0, 0.0, 2026-04-21, 7907] = the ORIGINAL 532904_2142026184717 (BSE New 2026-04-21 18:47:18; NSE broadcast 21-Apr-2026 21:36:29) -> filing day 2026-04-21 (midnight rule; the entry's 2026-04-22 was the retired 15:30 gate). The 2026-05-27 re-filing (prom 46.95) is in shp_revisions.json."
+   }
+  },
+  "RAMRAT": {
+   "2025-12-31": {
+    "cell": [
+     68.54,
+     0.0929,
+     0.4164,
+     0.0,
+     0.0,
+     "2026-01-16",
+     20231
+    ],
+    "was": [
+     68.54,
+     0.093,
+     0.4165,
+     0.0,
+     0.0,
+     "2026-01-16",
+     20231
+    ],
+    "src": "bsexbrl:522281_1612026183257_SHP.xml",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-01-16 18:32:58, NSE broadcast 16-Jan-2026 18:32:41 -> 2026-01-16 (midnight rule; the superseded entry's 2026-01-19 was the retired 15:30 gate). parse_shp of that document: prom 68.54, fii 0.0929, dii 0.4164, 20,231 holders. The stored fii 0.093 / dii 0.4165 are the 2026-06-01 re-filing's (522281_162026173642, prom 69.30) pulled in by shp_refine_4dp, which re-pulls them every run (`exact` re-applies). The re-filing itself is in shp_revisions.json from its own date.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      68.54,
+      0.0929,
+      0.4164,
+      0.0,
+      0.0,
+      "2026-01-19",
+      20231
+     ],
+     "was": [
+      69.3,
+      0.093,
+      0.4165,
+      0.0,
+      0.0,
+      "2026-01-19",
+      20231
+     ],
+     "src": "bsexbrl:522281_1612026183257_SHP.xml",
+     "why": "\u00a7142k 2026-09-22 option C: the store row is the ORIGINAL filing; the stored values were a later re-filing's (now kept beside it in shp_revisions.json with its own date). Date unchanged.",
+     "superseded": {
+      "cell": [
+       69.3,
+       0.09,
+       0.42,
+       0.0,
+       0.0,
+       "2026-01-19",
+       20231
+      ],
+      "src": "bse:522281_162026173642_SHP.xml",
+      "was": [
+       68.54,
+       0.09,
+       0.42,
+       0.0,
+       0.0,
+       "2026-01-16",
+       20231
+      ],
+      "why": "Company REVISED its filing (BSE revised_date_time=2026-06-01); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge,tickertape). Diffs: {'prom': '68.54->69.3'}. Rule-6b quorum: revised exchange filing + 3 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+     }
+    },
+    "retired": "2026-10-07 runbook \u00a7223: shp_refine_4dp now holds this row's OWN document (the original 522281_1612026183257, parse_shp 68.54 / 0.0929 / 0.4164) instead of the 2026-06-01 re-filing, so nothing pulls the row any more; this `exact` entry only existed to undo that pull every run (\u00a7221 cause 2). Store after retirement = the entry's cell exactly (A/B: two --apply-ledgers runs, 0 WARN). The re-filing stays in shp_revisions.json."
+   }
+  },
+  "SANWARIA": {
+   "2026-03-31": {
+    "cell": [
+     12.42,
+     0.0,
+     0.0001,
+     0.0,
+     0.0,
+     "2026-04-21",
+     139953
+    ],
+    "was": [
+     12.42,
+     0.0,
+     0.0002,
+     0.0,
+     0.0,
+     "2026-04-21",
+     139953
+    ],
+    "src": "bsexbrl:519260_2142026204535_SHP.xml",
+    "why": "2026-10-06 re-adjudication (the 11 entries apply_cell_fix skipped with 'neither the fix nor the recorded bad value'): the store row is the ORIGINAL filing (runbook \u00a7142k option C): BSE New 2026-04-21 20:45:37, NSE broadcast 21-Apr-2026 20:49:27 -> 2026-04-21 (midnight rule). Banks 862 sh / 736,100,000 = dii 0.0001. The stored 0.0002 is the 2026-05-08 15:43 re-filing's (519260_852026154243, 'clerical mistake in figures': Banks 1,257 sh) - a later document's value under the original's date; it belongs in shp_revisions.json dated 2026-05-08 (no such row exists yet). The holder count stays at the stored 139,953 (the re-filing's; the original files 141,437): shp_refine_4dp holds the re-filing and re-pulls dii to 0.0002 every run, and `exact` can re-apply 0.0001 only while the post-refine row equals `was` exactly - a different holder count here would leave dii at 0.0002 for good. dii value = the DII session's verdict (2026-10-06).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-04-22",
+      139953
+     ],
+     "src": "bse:519260_852026154243_SHP.xml",
+     "was": [
+      12.42,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      "2026-04-21",
+      141437
+     ],
+     "why": "Company REVISED its filing (BSE revised_date_time=2026-05-08); NSE's master kept serving the original, which is what we stored. BSE's revised copy parses clean and matches the independent sites (screener,stockedge). Diffs: {'nsh': '141437->139953'}. Rule-6b quorum: revised exchange filing + 2 sites. Found 2026-08-09 after the user challenged unanimous site-vs-us cells."
+    },
+    "retired": "2026-10-07 runbook \u00a7223: shp_refine_4dp now holds this row's OWN document (the original 519260_2142026204535: Banks 862 sh -> dii 0.0001) instead of the 2026-05-08 re-filing (Banks 1,257 -> 0.0002), so nothing pulls the row any more; this `exact` entry only existed to undo that pull every run (\u00a7221 cause 2). Store after retirement = the entry's cell exactly (A/B: two --apply-ledgers runs, 0 WARN). Holder count stays 139,953 as before (the original files 141,437 - see \u00a7223 open items)."
    }
   }
  },

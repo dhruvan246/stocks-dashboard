@@ -18,7 +18,7 @@ applied fill-only by fetch_shareholding.apply_bse_hist_ledger().
 Resumable: re-running skips everything already in the ledger and every (sym,qe) proven absent.
 """
 import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
-import os, sys, json, gzip, time, argparse, threading, collections
+import os, sys, json, gzip, time, argparse, threading, collections, datetime
 import urllib.request, urllib.error
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -210,12 +210,47 @@ def qe_of(qtr):
 
 
 def row_for(rows, qe):
-    """Newest real filing for that quarter-end. ⚠ XbrlFile, not xbrlurl (§22f)."""
+    """Newest real filing for that quarter-end. ⚠ XbrlFile, not xbrlurl (§22f). GAP-FILL mode only: the --refine
+    pass reads original_rows() instead (runbook §223)."""
     cand = [r for r in rows if qe_of(r.get("qtr")) == qe and (r.get("XbrlFile") or "").strip()]
     if not cand:
         return None
     cand.sort(key=lambda r: (r.get("revised_date_time") or r.get("filing_date_time") or ""))
     return cand[-1]
+
+
+def original_rows(rows, qe):
+    """The --refine candidates for a quarter, OLDEST first (runbook §223). The refine re-reads the STORED row's own
+    document, and the stored row is the quarter's ORIGINAL filing (§142k option C) - never BSE's newest. row_for's
+    newest pick read the RE-FILING, and the 0.02-pp merge then put a later document's values into the original's row
+    (BBTC Dec-2017 dii 3.4822 -> 3.4821 from the 2024-01-03 re-filing; RAMRAT Dec-2025, SANWARIA Mar-2026). The caller
+    takes the first candidate whose XBRL is the quarterly pattern (an event pattern BSE lists under the quarter is
+    skipped, OILCOUNTUB Jun-2026). `qtrid` is NOT a version number (RAMRAT Dec-2025: New and Revised both 128.0;
+    SANWARIA Dec-2025: New 128.01, Revised 128.0), so the order is the filing clock. Returns [] when the earliest row
+    has no XBRL or is itself a 'Revised' row (BSE then lists only re-filings - 579 such entries were removed in §223):
+    the original is not readable on BSE, and refining from a re-filing would mix two documents."""
+    rq = sorted((r for r in rows if qe_of(r.get("qtr")) == qe),
+                key=lambda r: (r.get("filing_date_time") or r.get("revised_date_time") or ""))
+    if not rq or not (rq[0].get("XbrlFile") or "").strip() or str(rq[0].get("status") or "").strip() == "Revised":
+        return []
+    return [r for r in rq if (r.get("XbrlFile") or "").strip()]
+
+
+def report_pattern(root):
+    """'Q' = the quarterly pattern (TypeOfReport Quarterly / Regulation 31 (1) (b)), 'E' = an event pattern
+    (31 (1) (a) pre-listing, 31 (1) (c) capital restructuring), '?' = the file states neither (older XBRLs)."""
+    t = u = ""
+    for el in root.iter():
+        tag = el.tag.split("}")[-1]
+        if tag == "TypeOfReport" and not t:
+            t = (el.text or "").strip().lower()
+        elif tag == "ShareholdingPatternFiledUnder" and not u:
+            u = (el.text or "").replace(" ", "").lower()
+    if t == "quarterly" or "31(1)(b)" in u:
+        return "Q"
+    if t or u:
+        return "E"
+    return "?"
 
 
 def iso_day(s):
@@ -233,7 +268,8 @@ def main():
     # §22j PRECISION REFRESH: the opposite selection to a gap fill — target cells that ALREADY
     # EXIST but were parsed off the filer's 2dp percentage, and re-read them from the same BSE
     # XBRL so parse_shp recomputes them from share counts. Its own ledger + absent list so a
-    # refine run can never be mistaken for, or pollute, the gap-fill ledger.
+    # refine run can never be mistaken for, or pollute, the gap-fill ledger. "The same XBRL" is
+    # the quarter's ORIGINAL quarterly filing (original_rows, runbook §223), never BSE's newest.
     ap.add_argument("--refine", action="store_true",
                     help="re-read cells that exist but are 2dp-only, into shp_refine_4dp.json.gz")
     a = ap.parse_args()
@@ -327,24 +363,59 @@ def main():
             rows = quarter_list(code)
         except Exception as e:
             return sym, qe, code, ("ERR", "qlist %r" % e)
-        r = row_for(rows, qe)
+        if a.refine:
+            cands = original_rows(rows, qe)          # §223: the ORIGINAL document, never the newest
+            if not cands:
+                return sym, qe, code, ("ABSENT", "original not readable on BSE")
+        else:
+            r = row_for(rows, qe)
+            if r is None:
+                return sym, qe, code, ("ABSENT", "no filing on BSE")
+            cands = [r]
+        r = root = None
+        for c in cands:
+            try:
+                root = ET.fromstring(get(xbrl_url(c)))
+            except Exception as e:
+                # A listed row whose file 404s is a BSE stub, not a transport failure — it 404s on every
+                # path and every retry (KARURVYSYA/SUNDARMFIN 2016-18, the whole 590xxx series). Bank it
+                # as absent so resume stops re-fetching it.
+                if "404" in repr(e):
+                    return sym, qe, code, ("ABSENT", "row listed but file 404s")
+                return sym, qe, code, ("ERR", repr(e)[:120])
+            if a.refine and report_pattern(root) == "E":
+                root = None
+                continue                              # an event pattern listed under the quarter, not its original
+            r = c
+            break
         if r is None:
-            return sym, qe, code, ("ABSENT", "no filing on BSE")
+            return sym, qe, code, ("ABSENT", "no quarterly-pattern XBRL")
+        if a.refine:
+            # A document BSE published more than a week after the stored row's own date cannot be that row's
+            # document (the original is missing from BSE's list and this is a later re-filing).
+            st = str((have.get(sym, {}).get(qe) or [None] * 6)[5] or "")
+            dday = iso_day(r.get("filing_date_time") or r.get("revised_date_time"))
+            if len(st) == 10 and dday and dday > (datetime.date.fromisoformat(st) + datetime.timedelta(days=7)).isoformat():
+                return sym, qe, code, ("ABSENT", "earliest BSE XBRL %s is later than the stored row (%s)" % (dday, st))
         try:
-            root = ET.fromstring(get(xbrl_url(r)))
             res = FS.parse_shp(root, qe)
         except Exception as e:
-            # A listed row whose file 404s is a BSE stub, not a transport failure — it 404s on every
-            # path and every retry (KARURVYSYA/SUNDARMFIN 2016-18, the whole 590xxx series). Bank it
-            # as absent so resume stops re-fetching it.
-            if "404" in repr(e):
-                return sym, qe, code, ("ABSENT", "row listed but file 404s")
             return sym, qe, code, ("ERR", repr(e)[:120])
         if not isinstance(res, dict):
             return sym, qe, code, ("SKIP", "no-anchor/old-format")
+        if a.refine:
+            # The refine never moves the holder count, so it identifies the stored row's document: a document
+            # with another count is not the one the row was read from (KALYANI Sep-2025: 471 vs BSE's 2,094).
+            st_nsh = (have.get(sym, {}).get(qe) or [None] * 7)
+            st_nsh = st_nsh[6] if len(st_nsh) > 6 else None
+            if st_nsh and res.get("nsh") and int(st_nsh) != int(res["nsh"]):
+                return sym, qe, code, ("ABSENT", "holder count %s != stored row's %s" % (res["nsh"], st_nsh))
         sub = iso_day(r.get("revised_date_time") or r.get("filing_date_time"))
+        # provenance names the FILE: qtrid alone does not identify a version (see original_rows)
+        prov = ("%d:%s:%s" % (code, r.get("qtrid"), (r.get("XbrlFile") or "").strip()) if a.refine
+                else "%d:%s" % (code, r.get("qtrid")))
         cell = [res["prom"], res["fii"], res["dii"], res["mf"], res["ins"],
-                sub or (qe[:8] + "21"), res.get("nsh"), "%d:%s" % (code, r.get("qtrid"))]
+                sub or (qe[:8] + "21"), res.get("nsh"), prov]
         return sym, qe, code, cell
 
     t0 = time.time()
