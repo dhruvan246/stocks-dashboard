@@ -26616,8 +26616,8 @@
    "2018-03-31": {
     "cell": [
      51.07,
-     6.7166,
-     9.0063,
+     6.7464,
+     8.9765,
      2.6958,
      5.4532,
      "2018-04-13",
@@ -26626,14 +26626,37 @@
     "was": [
      51.07,
      6.7166,
-     4.6363,
+     9.0063,
      2.6958,
-     1.1032,
+     5.4532,
      "2018-04-13",
      95887
     ],
     "src": "bsexbrl:500645_124201818208_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.64 -> 9.01, fii 6.72 -> 6.72. R1-unresolved no typed rows 0.03; R2-named Bodies Corporate 4.35 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.35(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 26,266 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 4.6289 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 6.7166 -> 6.7464, dii 9.0063 -> 8.9765 on 88,204,943 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      51.07,
+      6.7166,
+      9.0063,
+      2.6958,
+      5.4532,
+      "2018-04-13",
+      95887
+     ],
+     "was": [
+      51.07,
+      6.7166,
+      4.6363,
+      2.6958,
+      1.1032,
+      "2018-04-13",
+      95887
+     ],
+     "src": "bsexbrl:500645_124201818208_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.64 -> 9.01, fii 6.72 -> 6.72. R1-unresolved no typed rows 0.03; R2-named Bodies Corporate 4.35 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.35(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2018-06-30": {
     "cell": [
@@ -34609,7 +34632,7 @@
    "2017-03-31": {
     "cell": [
      52.3,
-     34.551,
+     34.501,
      0.3131,
      0.0586,
      0.0,
@@ -34618,7 +34641,7 @@
     ],
     "was": [
      52.3,
-     34.501,
+     34.551,
      0.3131,
      0.0586,
      0.0,
@@ -34626,11 +34649,12 @@
      110901
     ],
     "src": "bsexbrl:532843_642017172540_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1cur) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 34.50 -> 34.55, dii 0.31 -> 0.31. Rows: R1-unresolved 0.13; R3-nbfc 0.05; D1-unnamed-remainder-in-dii 0.05",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.0500 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - FORTIS's Jun-2018 filing (532843_672018123217_SHP.xml) labels the same block (670,194 sh) 'Overseas Corporate Bodies' - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 34.551 -> 34.501 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       52.3,
-      34.501,
+      34.551,
       0.3131,
       0.0586,
       0.0,
@@ -34639,7 +34663,7 @@
      ],
      "was": [
       52.3,
-      34.631,
+      34.501,
       0.3131,
       0.0586,
       0.0,
@@ -34647,11 +34671,11 @@
       110901
      ],
      "src": "bsexbrl:532843_642017172540_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 0.13 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2018-06-30 filing 532843_672018123217_SHP.xml labels a 0.13 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 34.63 -> 34.50.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1cur) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 34.50 -> 34.55, dii 0.31 -> 0.31. Rows: R1-unresolved 0.13; R3-nbfc 0.05; D1-unnamed-remainder-in-dii 0.05",
      "superseded": {
       "cell": [
        52.3,
-       34.631,
+       34.501,
        0.3131,
        0.0586,
        0.0,
@@ -34660,15 +34684,37 @@
       ],
       "was": [
        52.3,
-       34.501,
-       0.3931,
+       34.631,
+       0.3131,
        0.0586,
        0.0,
        "2017-07-10",
        110901
       ],
       "src": "bsexbrl:532843_642017172540_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 34.50 -> 34.63, dii 0.39 -> 0.31. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.13 | R1: R1-unresolved no typed rows 0.13; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 0.13 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2018-06-30 filing 532843_672018123217_SHP.xml labels a 0.13 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 34.63 -> 34.50.",
+      "superseded": {
+       "cell": [
+        52.3,
+        34.631,
+        0.3131,
+        0.0586,
+        0.0,
+        "2017-07-10",
+        110901
+       ],
+       "was": [
+        52.3,
+        34.501,
+        0.3931,
+        0.0586,
+        0.0,
+        "2017-07-10",
+        110901
+       ],
+       "src": "bsexbrl:532843_642017172540_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 34.50 -> 34.63, dii 0.39 -> 0.31. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.13 | R1: R1-unresolved no typed rows 0.13; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
@@ -106714,8 +106760,8 @@
    "2018-12-31": {
     "cell": [
      50.66,
-     16.2785,
-     13.0856,
+     16.2952,
+     13.0689,
      5.792,
      6.5782,
      "2019-02-25",
@@ -106724,14 +106770,37 @@
     "was": [
      50.66,
      16.2785,
-     12.9356,
+     13.0856,
      5.792,
      6.5782,
      "2019-02-25",
      127087
     ],
     "src": "bsexbrl:500825_2322019124450_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.94 -> 13.09, fii 16.28 -> 16.28. R1-unresolved no typed rows 0.02; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 40,240 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 13.0713 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 16.2785 -> 16.2952, dii 13.0856 -> 13.0689 on 240,318,294 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.66,
+      16.2785,
+      13.0856,
+      5.792,
+      6.5782,
+      "2019-02-25",
+      127087
+     ],
+     "was": [
+      50.66,
+      16.2785,
+      12.9356,
+      5.792,
+      6.5782,
+      "2019-02-25",
+      127087
+     ],
+     "src": "bsexbrl:500825_2322019124450_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.94 -> 13.09, fii 16.28 -> 16.28. R1-unresolved no typed rows 0.02; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-03-31": {
     "cell": [
@@ -106826,8 +106895,8 @@
    "2019-09-30": {
     "cell": [
      50.66,
-     15.2233,
-     14.788,
+     15.2331,
+     14.7782,
      5.2041,
      7.8247,
      "2019-10-18",
@@ -106836,17 +106905,49 @@
     "was": [
      50.66,
      15.2233,
-     13.568,
+     14.788,
      5.2041,
      7.8247,
      "2019-10-18",
      162347
     ],
     "src": "bsexbrl:500825_1810201922344_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.57 -> 14.79, fii 15.22 -> 15.22. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.22 . Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 23,457 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 13.5620 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 15.2233 -> 15.2331, dii 14.788 -> 14.7782 on 240,318,294 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.66,
+      15.2233,
+      14.788,
+      5.2041,
+      7.8247,
+      "2019-10-18",
+      162347
+     ],
+     "was": [
+      50.66,
+      15.2233,
+      13.568,
+      5.2041,
+      7.8247,
+      "2019-10-18",
+      162347
+     ],
+     "src": "bsexbrl:500825_1810201922344_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.57 -> 14.79, fii 15.22 -> 15.22. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.22 . Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
+     50.63,
+     15.7998,
+     14.5926,
+     4.9485,
+     8.0618,
+     "2020-01-20",
+     162256
+    ],
+    "was": [
      50.63,
      15.7905,
      14.6019,
@@ -106855,20 +106956,43 @@
      "2020-01-20",
      162256
     ],
-    "was": [
-     50.63,
-     15.7905,
-     13.5619,
-     4.9485,
-     8.0618,
-     "2020-01-20",
-     162256
-    ],
     "src": "bsexbrl:500825_2012020214228_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.56 -> 14.60, fii 15.79 -> 15.79. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.04 . Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 22,405 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 13.5562 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 15.7905 -> 15.7998, dii 14.6019 -> 14.5926 on 240,468,296 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.63,
+      15.7905,
+      14.6019,
+      4.9485,
+      8.0618,
+      "2020-01-20",
+      162256
+     ],
+     "was": [
+      50.63,
+      15.7905,
+      13.5619,
+      4.9485,
+      8.0618,
+      "2020-01-20",
+      162256
+     ],
+     "src": "bsexbrl:500825_2012020214228_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.56 -> 14.60, fii 15.79 -> 15.79. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.04 . Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2020-03-31": {
     "cell": [
+     50.63,
+     14.7184,
+     15.284,
+     4.9918,
+     7.7521,
+     "2020-04-15",
+     183396
+    ],
+    "was": [
      50.63,
      14.7091,
      15.2933,
@@ -106877,17 +107001,31 @@
      "2020-04-15",
      183396
     ],
-    "was": [
-     50.63,
-     14.7091,
-     13.3833,
-     4.9918,
-     7.7521,
-     "2020-04-15",
-     183396
-    ],
     "src": "bsexbrl:500825_1542020132534_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.38 -> 15.29, fii 14.71 -> 14.71. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.89 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 22,421 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 13.3961 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 14.7091 -> 14.7184, dii 15.2933 -> 15.284 on 240,468,296 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.63,
+      14.7091,
+      15.2933,
+      4.9918,
+      7.7521,
+      "2020-04-15",
+      183396
+     ],
+     "was": [
+      50.63,
+      14.7091,
+      13.3833,
+      4.9918,
+      7.7521,
+      "2020-04-15",
+      183396
+     ],
+     "src": "bsexbrl:500825_1542020132534_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.38 -> 15.29, fii 14.71 -> 14.71. R1-unresolved no typed rows 0.01; R2-label Others Qualified Institutional Buyer 1.89 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2020-06-30": {
     "cell": [
@@ -276270,8 +276408,8 @@
    "2019-03-31": {
     "cell": [
      45.99,
-     9.9272,
-     26.2277,
+     9.9508,
+     26.2041,
      18.1216,
      7.1088,
      "2019-04-11",
@@ -276280,20 +276418,43 @@
     "was": [
      45.99,
      9.9272,
-     23.8477,
+     26.2277,
      18.1216,
-     4.7288,
+     7.1088,
      "2019-04-11",
      149444
     ],
     "src": "bsexbrl:500086_1142019123136_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 23.85 -> 26.23, fii 9.93 -> 9.93. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.31 HDFC LIFE INSURANCE COMPANY LIMITED- SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.31(regex); R2-named Bodies Corporate 1.07 ICICI Prudential Life Insurance Company Limited 1.07(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 200,368 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 23.8221 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 9.9272 -> 9.9508, dii 26.2277 -> 26.2041 on 850,000,000 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      45.99,
+      9.9272,
+      26.2277,
+      18.1216,
+      7.1088,
+      "2019-04-11",
+      149444
+     ],
+     "was": [
+      45.99,
+      9.9272,
+      23.8477,
+      18.1216,
+      4.7288,
+      "2019-04-11",
+      149444
+     ],
+     "src": "bsexbrl:500086_1142019123136_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 23.85 -> 26.23, fii 9.93 -> 9.93. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.31 HDFC LIFE INSURANCE COMPANY LIMITED- SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.31(regex); R2-named Bodies Corporate 1.07 ICICI Prudential Life Insurance Company Limited 1.07(new-format:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-06-30": {
     "cell": [
      45.99,
-     8.8926,
-     26.2085,
+     8.9119,
+     26.1892,
      17.6439,
      7.5891,
      "2019-07-22",
@@ -276302,20 +276463,43 @@
     "was": [
      45.99,
      8.8926,
-     24.7385,
+     26.2085,
      17.6439,
-     6.1191,
+     7.5891,
      "2019-07-22",
      162859
     ],
     "src": "bsexbrl:500086_2172019151824_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.74 -> 26.21, fii 8.89 -> 8.89. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.47 HDFC LIFE INSURANCE COMPANY LIMITED- SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.47(regex). Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 163,840 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 24.7171 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 8.8926 -> 8.9119, dii 26.2085 -> 26.1892 on 850,000,000 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      45.99,
+      8.8926,
+      26.2085,
+      17.6439,
+      7.5891,
+      "2019-07-22",
+      162859
+     ],
+     "was": [
+      45.99,
+      8.8926,
+      24.7385,
+      17.6439,
+      6.1191,
+      "2019-07-22",
+      162859
+     ],
+     "src": "bsexbrl:500086_2172019151824_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.74 -> 26.21, fii 8.89 -> 8.89. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.47 HDFC LIFE INSURANCE COMPANY LIMITED- SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.47(regex). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-09-30": {
     "cell": [
      45.99,
-     9.0967,
-     25.9108,
+     9.116,
+     25.8915,
      17.0902,
      7.8359,
      "2019-10-18",
@@ -276324,14 +276508,37 @@
     "was": [
      45.99,
      9.0967,
-     24.2208,
+     25.9108,
      17.0902,
-     6.1459,
+     7.8359,
      "2019-10-18",
      174299
     ],
     "src": "bsexbrl:500086_1810201994010_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.22 -> 25.91, fii 9.10 -> 9.10. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.69 HDFC LIFE INSURANCE COMPANYLIMITED -SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.69(regex). Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 163,840 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 24.1994 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 9.0967 -> 9.116, dii 25.9108 -> 25.8915 on 850,000,000 sh.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      45.99,
+      9.0967,
+      25.9108,
+      17.0902,
+      7.8359,
+      "2019-10-18",
+      174299
+     ],
+     "was": [
+      45.99,
+      9.0967,
+      24.2208,
+      17.0902,
+      6.1459,
+      "2019-10-18",
+      174299
+     ],
+     "src": "bsexbrl:500086_1810201994010_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.22 -> 25.91, fii 9.10 -> 9.10. R1-unresolved no typed rows 0.02; R2-named Bodies Corporate 1.69 HDFC LIFE INSURANCE COMPANYLIMITED -SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 1.69(regex). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -352297,7 +352504,7 @@
    "2019-09-30": {
     "cell": [
      38.74,
-     1.2762,
+     0.3862,
      14.3495,
      10.7751,
      0.0,
@@ -352306,7 +352513,7 @@
     ],
     "was": [
      38.74,
-     0.3862,
+     1.2762,
      14.3495,
      10.7751,
      0.0,
@@ -352314,11 +352521,12 @@
      54875
     ],
     "src": "bsexbrl:502420_1210201912422_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.39 -> 1.28, dii 14.35 -> 14.35. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.89",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.8900 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - ORIENTPPR files the same 3,813,748 sh as 'Foreign Companies' in its 2022 form (Sep-2022 .. Mar-2023, ForeignCompaniesI) and as an 'Overseas Corporate Bodies' row in between - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 1.2762 -> 0.3862 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       38.74,
-      0.3862,
+      1.2762,
       14.3495,
       10.7751,
       0.0,
@@ -352327,7 +352535,7 @@
      ],
      "was": [
       38.74,
-      2.1862,
+      0.3862,
       14.3495,
       10.7751,
       0.0,
@@ -352335,11 +352543,11 @@
       54875
      ],
      "src": "bsexbrl:502420_1210201912422_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-03-31 filing 502420_64202115305_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.19 -> 0.39.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.39 -> 1.28, dii 14.35 -> 14.35. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.89",
      "superseded": {
       "cell": [
        38.74,
-       2.1862,
+       0.3862,
        14.3495,
        10.7751,
        0.0,
@@ -352348,15 +352556,37 @@
       ],
       "was": [
        38.74,
-       0.3862,
-       15.2595,
+       2.1862,
+       14.3495,
        10.7751,
        0.0,
        "2019-10-12",
        54875
       ],
       "src": "bsexbrl:502420_1210201912422_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.39 -> 2.19, dii 15.26 -> 14.35. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.89 . Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-03-31 filing 502420_64202115305_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.19 -> 0.39.",
+      "superseded": {
+       "cell": [
+        38.74,
+        2.1862,
+        14.3495,
+        10.7751,
+        0.0,
+        "2019-10-12",
+        54875
+       ],
+       "was": [
+        38.74,
+        0.3862,
+        15.2595,
+        10.7751,
+        0.0,
+        "2019-10-12",
+        54875
+       ],
+       "src": "bsexbrl:502420_1210201912422_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.39 -> 2.19, dii 15.26 -> 14.35. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.89 . Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
@@ -352407,7 +352637,7 @@
    "2020-03-31": {
     "cell": [
      38.74,
-     0.6331,
+     0.1031,
      14.0869,
      10.8175,
      0.0,
@@ -352416,7 +352646,7 @@
     ],
     "was": [
      38.74,
-     0.1031,
+     0.6331,
      14.0869,
      10.8175,
      0.0,
@@ -352424,11 +352654,12 @@
      55543
     ],
     "src": "bsexbrl:502420_194202012380_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.10 -> 0.63, dii 14.09 -> 14.09. Rows: R1-unresolved 1.8; R2-label ; R3-nbfc 0.02; D1-unnamed-remainder-in-dii 0.53",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.5300 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - ORIENTPPR files the same 3,813,748 sh as 'Foreign Companies' in its 2022 form (Sep-2022 .. Mar-2023, ForeignCompaniesI) and as an 'Overseas Corporate Bodies' row in between - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 0.6331 -> 0.1031 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       38.74,
-      0.1031,
+      0.6331,
       14.0869,
       10.8175,
       0.0,
@@ -352437,7 +352668,7 @@
      ],
      "was": [
       38.74,
-      1.9031,
+      0.1031,
       14.0869,
       10.8175,
       0.0,
@@ -352445,11 +352676,11 @@
       55543
      ],
      "src": "bsexbrl:502420_194202012380_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-03-31 filing 502420_64202115305_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 1.90 -> 0.10.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.10 -> 0.63, dii 14.09 -> 14.09. Rows: R1-unresolved 1.8; R2-label ; R3-nbfc 0.02; D1-unnamed-remainder-in-dii 0.53",
      "superseded": {
       "cell": [
        38.74,
-       1.9031,
+       0.1031,
        14.0869,
        10.8175,
        0.0,
@@ -352458,15 +352689,37 @@
       ],
       "was": [
        38.74,
-       0.1031,
-       15.3569,
+       1.9031,
+       14.0869,
        10.8175,
        0.0,
        "2020-04-19",
        55543
       ],
       "src": "bsexbrl:502420_194202012380_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.10 -> 1.90, dii 15.36 -> 14.09. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.51 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-03-31 filing 502420_64202115305_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 1.90 -> 0.10.",
+      "superseded": {
+       "cell": [
+        38.74,
+        1.9031,
+        14.0869,
+        10.8175,
+        0.0,
+        "2020-04-19",
+        55543
+       ],
+       "was": [
+        38.74,
+        0.1031,
+        15.3569,
+        10.8175,
+        0.0,
+        "2020-04-19",
+        55543
+       ],
+       "src": "bsexbrl:502420_194202012380_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.10 -> 1.90, dii 15.36 -> 14.09. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.51 ; R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
@@ -352649,7 +352902,7 @@
    "2021-12-31": {
     "cell": [
      38.74,
-     0.8034,
+     0.5634,
      9.0172,
      8.7104,
      0.0,
@@ -352658,7 +352911,7 @@
     ],
     "was": [
      38.74,
-     0.5634,
+     0.8034,
      9.0172,
      8.7104,
      0.0,
@@ -352666,9 +352919,19 @@
      71279
     ],
     "src": "bsexbrl:502420_1812022122732_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.56 -> 0.80, dii 9.02 -> 9.02. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.2400 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - ORIENTPPR files the same 3,813,748 sh as 'Foreign Companies' in its 2022 form (Sep-2022 .. Mar-2023, ForeignCompaniesI) and as an 'Overseas Corporate Bodies' row in between - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 0.8034 -> 0.5634 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
+      38.74,
+      0.8034,
+      9.0172,
+      8.7104,
+      0.0,
+      "2022-01-18",
+      71279
+     ],
+     "was": [
       38.74,
       0.5634,
       9.0172,
@@ -352677,19 +352940,19 @@
       "2022-01-18",
       71279
      ],
-     "was": [
-      38.74,
-      2.3634,
-      9.0172,
-      8.7104,
-      0.0,
-      "2022-01-18",
-      71279
-     ],
      "src": "bsexbrl:502420_1812022122732_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.36 -> 0.56.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.56 -> 0.80, dii 9.02 -> 9.02. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
      "superseded": {
       "cell": [
+       38.74,
+       0.5634,
+       9.0172,
+       8.7104,
+       0.0,
+       "2022-01-18",
+       71279
+      ],
+      "was": [
        38.74,
        2.3634,
        9.0172,
@@ -352698,31 +352961,35 @@
        "2022-01-18",
        71279
       ],
-      "was": [
-       38.74,
-       0.5634,
-       10.5772,
-       8.7104,
-       0.0,
-       "2022-01-18",
-       71279
-      ],
       "src": "bsexbrl:502420_1812022122732_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.56 -> 2.36, dii 10.58 -> 9.02. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others NATIONAL INSURANCE COMPANY LIMITED 0.24 . Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.36 -> 0.56.",
+      "superseded": {
+       "cell": [
+        38.74,
+        2.3634,
+        9.0172,
+        8.7104,
+        0.0,
+        "2022-01-18",
+        71279
+       ],
+       "was": [
+        38.74,
+        0.5634,
+        10.5772,
+        8.7104,
+        0.0,
+        "2022-01-18",
+        71279
+       ],
+       "src": "bsexbrl:502420_1812022122732_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.56 -> 2.36, dii 10.58 -> 9.02. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others NATIONAL INSURANCE COMPANY LIMITED 0.24 . Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
    "2022-03-31": {
     "cell": [
-     38.74,
-     1.0326,
-     9.0172,
-     8.7104,
-     0.0,
-     "2022-04-14",
-     70532
-    ],
-    "was": [
      38.74,
      0.7926,
      9.0172,
@@ -352731,10 +352998,29 @@
      "2022-04-14",
      70532
     ],
+    "was": [
+     38.74,
+     1.0326,
+     9.0172,
+     8.7104,
+     0.0,
+     "2022-04-14",
+     70532
+    ],
     "src": "bsexbrl:502420_1252022121816_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.79 -> 1.03, dii 9.02 -> 9.02. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.2400 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - ORIENTPPR files the same 3,813,748 sh as 'Foreign Companies' in its 2022 form (Sep-2022 .. Mar-2023, ForeignCompaniesI) and as an 'Overseas Corporate Bodies' row in between - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 1.0326 -> 0.7926 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
+      38.74,
+      1.0326,
+      9.0172,
+      8.7104,
+      0.0,
+      "2022-04-14",
+      70532
+     ],
+     "was": [
       38.74,
       0.7926,
       9.0172,
@@ -352743,21 +353029,12 @@
       "2022-04-14",
       70532
      ],
-     "was": [
-      38.74,
-      2.5926,
-      9.0172,
-      8.7104,
-      0.0,
-      "2022-04-14",
-      70532
-     ],
      "src": "bsexbrl:502420_1252022121816_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.59 -> 0.79.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.79 -> 1.03, dii 9.02 -> 9.02. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
      "superseded": {
       "cell": [
        38.74,
-       2.5926,
+       0.7926,
        9.0172,
        8.7104,
        0.0,
@@ -352766,29 +353043,42 @@
       ],
       "was": [
        38.74,
-       0.7926,
-       10.5772,
+       2.5926,
+       9.0172,
        8.7104,
        0.0,
        "2022-04-14",
        70532
       ],
       "src": "bsexbrl:502420_1252022121816_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.79 -> 2.59, dii 10.58 -> 9.02. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others Qualified Instituional Buyer 0.24 . Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.59 -> 0.79.",
+      "superseded": {
+       "cell": [
+        38.74,
+        2.5926,
+        9.0172,
+        8.7104,
+        0.0,
+        "2022-04-14",
+        70532
+       ],
+       "was": [
+        38.74,
+        0.7926,
+        10.5772,
+        8.7104,
+        0.0,
+        "2022-04-14",
+        70532
+       ],
+       "src": "bsexbrl:502420_1252022121816_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.79 -> 2.59, dii 10.58 -> 9.02. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others Qualified Instituional Buyer 0.24 . Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
    "2022-06-30": {
     "cell": [
-     38.74,
-     1.1044,
-     7.8384,
-     7.5316,
-     0.0,
-     "2022-07-18",
-     71578
-    ],
-    "was": [
      38.74,
      0.8644,
      7.8384,
@@ -352797,12 +353087,22 @@
      "2022-07-18",
      71578
     ],
+    "was": [
+     38.74,
+     1.1044,
+     7.8384,
+     7.5316,
+     0.0,
+     "2022-07-18",
+     71578
+    ],
     "src": "bsexbrl:502420_157202217532_SHP.xml",
-    "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.86 -> 1.10, dii 7.84 -> 7.84. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): REVERT of batch 20 (OUR ERROR, 2026-10-05): batch 20 re-ran the D1 reader and put 0.2400 of the unnamed institutions Any-Other block back into fii, but batch 7 ('follow the later label', user 2026-09-29) had already set that block to PUBLIC by the company's own label for the same shares - ORIENTPPR files the same 3,813,748 sh as 'Foreign Companies' in its 2022 form (Sep-2022 .. Mar-2023, ForeignCompaniesI) and as an 'Overseas Corporate Bodies' row in between - a company-type label (batch 11: never FII). The D1 runner's label search reads only labelled rows inside the institutions block, so it missed a 2022-form top-level category. fii 1.1044 -> 0.8644 (= the FPI line); dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       38.74,
-      0.8644,
+      1.1044,
       7.8384,
       7.5316,
       0.0,
@@ -352811,7 +353111,7 @@
      ],
      "was": [
       38.74,
-      2.6644,
+      0.8644,
       7.8384,
       7.5316,
       0.0,
@@ -352819,11 +353119,11 @@
       71578
      ],
      "src": "bsexbrl:502420_157202217532_SHP.xml",
-     "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.66 -> 0.86.",
+     "why": "\u00a7164r batch 20 (2026-10-05, user 'work on every single cell'): a store-wide re-run of the current row-level reader (audit_all/wide6, pass d1ex) re-reads this filing under the existing rules (documents-only holders, the company's own 2022-form placement, >= 90% of >= 5 institution listings, D1) and the stored cell predated them: fii 0.86 -> 1.10, dii 7.84 -> 7.84. Rows: R1-unresolved 1.8; R2-label ; D1-unnamed-remainder-in-dii 0.24",
      "superseded": {
       "cell": [
        38.74,
-       2.6644,
+       0.8644,
        7.8384,
        7.5316,
        0.0,
@@ -352832,15 +353132,37 @@
       ],
       "was": [
        38.74,
-       0.8644,
-       9.3984,
+       2.6644,
+       7.8384,
        7.5316,
        0.0,
        "2022-07-18",
        71578
       ],
       "src": "bsexbrl:502420_157202217532_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.86 -> 2.66, dii 9.40 -> 7.84. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.24 . Evidence: _shp_164_audit.json"
+      "why": "\u00a7164r batch 7 \u2014 the unnamed institutional Any-Other block follows the company's own label (user 2026-09-29 'Follow the later label', measured and approved): the 1.80 block the D1 rule had put in FII is, by size, the block the company labels in a neighbouring filing: 2021-06-30 filing 502420_1272021145821_SHP.xml labels a 1.80 block 'Overseas Corporate Bodies' -> public (a company-type / foreign-national / DR label, not an institution). fii 2.66 -> 0.86.",
+      "superseded": {
+       "cell": [
+        38.74,
+        2.6644,
+        7.8384,
+        7.5316,
+        0.0,
+        "2022-07-18",
+        71578
+       ],
+       "was": [
+        38.74,
+        0.8644,
+        9.3984,
+        7.5316,
+        0.0,
+        "2022-07-18",
+        71578
+       ],
+       "src": "bsexbrl:502420_157202217532_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 0.86 -> 2.66, dii 9.40 -> 7.84. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.8 | R1: R1-unresolved no typed rows 1.8; R2-label Others QUALIFIED INSTITUTIONAL BUYER 0.24 . Evidence: _shp_164_audit.json"
+      }
      }
     }
    }
@@ -359002,6 +359324,52 @@
     ],
     "src": "bseaspx:532531_79",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 532531 qtrid 79) labels these rows foreign institutions - 'Qualified Foreign Investor' (Institutions, 5,000 shares = 0.0085); 'Qualified Foreign Investor' (Non-Institutions, 20,020 shares = 0.0338) - and the stored fii 53.4224 held only 'Foreign Institutional Investors' 53.4224. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 59,161,371 shares. fii 53.4224 -> 53.4647, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2019-09-30": {
+    "cell": [
+     31.28,
+     25.2954,
+     21.1549,
+     17.2367,
+     0.0,
+     "2019-10-19",
+     79427
+    ],
+    "was": [
+     31.28,
+     25.2719,
+     21.1784,
+     17.2367,
+     0.0,
+     "2019-10-19",
+     79427
+    ],
+    "src": "bsexbrl:532531_18102019194141_SHP.xml",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 21,000 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 21.1559 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 25.2719 -> 25.2954, dii 21.1784 -> 21.1549 on 89,549,476 sh.",
+    "exact": true
+   },
+   "2019-12-31": {
+    "cell": [
+     31.28,
+     27.1839,
+     20.0527,
+     16.2885,
+     0.0,
+     "2020-01-21",
+     76465
+    ],
+    "was": [
+     31.28,
+     27.1605,
+     20.0761,
+     16.2885,
+     0.0,
+     "2020-01-21",
+     76465
+    ],
+    "src": "bsexbrl:532531_2112020123731_SHP.xml",
+    "why": "\u00a7164r batch 30 part 43 (2026-10-06): D1 block under the runner's 0.05-pp floor, read by hand: the institutions Any-Other block 21,000 sh names nobody and carries no label -> FII by D1 (user 2026-09-25). Stored dii = the domestic lines 20.0539 + the R2 rows already counted (QIB / registered insurers) + this block; stored fii = the FPI line. fii 27.1605 -> 27.1839, dii 20.0761 -> 20.0527 on 89,552,826 sh.",
+    "exact": true
    }
   },
   "SUBROS": {

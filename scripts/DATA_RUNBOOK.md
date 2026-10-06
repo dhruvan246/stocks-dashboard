@@ -21822,6 +21822,24 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     The runner's other 2026-10-06 proposals (ex-member R1-R3 dii moves: BAJAJHIND, CARERATING ...) are stale against the DII session's
     §164s register decisions and were not used. Trap: a run threshold is not part of a rule - re-run a rule's runner without its
     floor before saying a class is done.
+    **Batch 30 part 43 (label "§164r batch 30 part 43"; 16 cells).** (A) Six REVERTS of my own batch 20 (5-Oct): batch 20 re-ran
+    the D1 reader and put part of an unnamed institutions block back into fii where batch 7 ('follow the later label', user
+    2026-09-29) had already made it PUBLIC by the company's own label for the same shares - ORIENTPPR Sep-19 +0.89, Mar-20 +0.53,
+    Dec-21 / Mar-22 / Jun-22 +0.24 (the same 3,813,748 sh are 'Foreign Companies' in its 2022 form and an 'Overseas Corporate Bodies'
+    row in between) and FORTIS Mar-17 +0.05 (Jun-18 labels 670,194 'Overseas Corporate Bodies'); fii back to the FPI line, dii
+    untouched. Cause: the runner's label search reads only labelled rows INSIDE the institutions block and misses a 2022-form
+    top-level category (ForeignCompaniesI). The other 30 batch-20 raises are documented foreign holders (Ashoka Investment Holdings,
+    Acacia Partners, Swedbank Robur ...), not D1 - checked one by one (`reply7/d1_floor/b20_labels.py`). (B) Ten D1 blocks from the
+    44 set aside in part 42, read by hand: BRITANNIA Dec-18, Sep-19, Dec-19, Mar-20 (beside 'Qualified Institutional Buyer' rows),
+    DEEPAKFERT Mar-18 (beside ICICI Pru Life), EXIDEIND Mar / Jun / Sep-19 (beside HDFC Life / ICICI Pru Life; 'GOVERNMENT PENSION FUND
+    GLOBAL' on the same filings is Norway's fund, not dii), STAR Sep / Dec-19 - fii + block, dii - block; DII session agreed (4
+    recomputed). No change, each read: ABBOTINDIA x4, IEX, SHOPERSTOP, SUNPHARMA x6, BHARATFORG, EXIDEIND Dec-18, TECHNO Jun-18,
+    ADANIPORTS Mar-18 (block already in fii or decided); SONATSOFTW Dec-16 / DEEPAKFERT Jun-18 (the block is a Category row
+    'BENEFICIAL HOLDINGS UNDER MGT-4' - labelled, not D1). Handed to the DII session (dii not explained by the lines): UPL Sep-16,
+    CHOLAHLDNG Dec-16, NAVINFLUOR Jun / Sep-18, RCOM Dec-17..Dec-18, TIMKEN Mar-19. KEI Jun-22 'THE BOEING COMPANY EMPLOYEE
+    RETIREMENT PLANS' 29,674: the DII session took it out of dii (§164s part 26); fii vs public waits on the user's name-match
+    question (AFFLE Sep-22 lists '...PLANS MASTE[R TRUST]' under Institutions (Foreign); KEI's Dec-21 / Mar-22 name the Master Trust
+    and those are fii; the evidence file had no Boeing key at all - a gap, not proof).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
