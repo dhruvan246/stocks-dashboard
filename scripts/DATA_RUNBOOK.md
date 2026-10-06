@@ -21618,6 +21618,22 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     SWEEP (not yet applied): `~/stocks-cache/shp/audit_all/fiilabel/sweep_xbrl.py` - 357 XBRL-era cells (72 symbols, all < 0.12 pp, most
     < 0.01) where an institutions Any-Other row the company labels 'Foreign Institutional Investors' / 'FII' sits in dii under the §158/§159
     0.05 pp floor; 708 cells already count such rows. Fix = fii + / dii - per cell after checking the stored dii holds the row.
+    **Batch 30 part 32 (label "§164r batch 30 part 32"; 18 cells + 1 date + 4 new quarters; per-company review continued).**
+    RADICO Dec-15..Sep-17 (8): FPI + ACACIA PARTNERS LP (450 Institutions (Foreign) listings) only - the block's other holders are the
+    company's 'FOREIGN CORPORATE BODIES' (Dec-15 / Mar-16 category row; batch 7 at block level later) -> public; Mar-16 had left Acacia out.
+    MUTHOOTFIN Jun-15 / Sep-15: the 2-holder 'Others' 8,209,913 is BARING INDIA PRIVATE EQUITY FUND III LTD 5,167,891 + a foreign company
+    3,042,022 (Dec-15 'Foreign Companies' names Baring) - not Government of Singapore (8,073,048, inside the FII / FPI rows) that §160
+    size-matched -> public (= Quantmac). RAMCOSYS Dec-15 / Mar-16: 'BT FUNDS MANAGEMENT ... BT ASIAN SHARE FUND' has no institution listing
+    -> public. Precision (2-dp sums -> share counts): BHARATFORG / BOMDYEING / MARICO Jun-15 (+ MARICO Sep-15), OMAXE / JBFIND / KARURVYSYA.
+    Date: BHARATFORG Sep-17 served from 2017-11-09 - the 2017-10-04 original is not readable and the first readable document carrying the
+    served FII is the 2017-11-09 revision (look-ahead rule); the stored promoter is a 2022 re-upload's.
+    New quarters: DCHL Sep-10 / Dec-10 (the page's 66 / 68-holder 'Insurance Companies' row is the FII row mislabelled - the only such row
+    2008-12, FIIs on the >1% list have no other row, LIC sits in FI / Banks), RAMCOSYS Dec-09 (no FII row -> 0), RCOM Mar-16 (Table III on
+    Table I's (A+B+C2), dated by the 2016-04-18 notice). Not filled: BALLARPUR Sep-18..Jun-19 (out of the Nifty 500 from 2018-09-28).
+    OPEN (asked the user): a 2022-form filing that files 'Foreign Portfolio Investor (Category - III)' on a NON-institutions row (HEG
+    Dec-23..Jun-24 20,500 sh; Quantmac counts it) - label vs the company's own 2022-form placement (§159 / §180c). Sweep
+    `fiilabel/sweep_noninst.py`: ~1,460 cells store-wide carry an FPI-labelled non-institution row we leave out (old form: mostly §180c's
+    deliberate 2022-form test for non-N500 names and §159's 0.05 pp floor; new form: 456 cells, this open question).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
