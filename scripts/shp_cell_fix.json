@@ -215470,7 +215470,7 @@
     "cell": [
      56.89,
      13.74,
-     1.6828,
+     0.3858,
      0.0952,
      0.0,
      "2016-07-16",
@@ -215478,19 +215478,19 @@
     ],
     "was": [
      56.89,
-     21.52,
+     13.74,
      1.6828,
      0.0952,
      0.0,
      "2016-07-16",
      12920
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.7819) sits on the company's own company-type sub-row 'Foreign Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 21.5200 -> 13.7400, dii unchanged.",
+    "src": "bsexbrl:530549_1672016115523_SHP.xml",
+    "why": "\u00a7164s part 31 (2026-10-06, cell-by-cell re-read of the reply-3 rebuild): the filing names Citi Bank N.A on a non-institution 'Other' row and the stored dii counted it (dii = domestic lines + 1.297); Citibank N.A. is a foreign bank (evidence file; user 2026-10-06 foreign banks 'Not DII'). dii 1.6828 -> 0.3858 (1,000,000 sh / 77,101,904); fii untouched.",
     "superseded": {
      "cell": [
       56.89,
-      21.52,
+      13.74,
       1.6828,
       0.0952,
       0.0,
@@ -215500,16 +215500,25 @@
      "was": [
       56.89,
       21.52,
-      7.3528,
+      1.6828,
       0.0952,
       0.0,
       "2016-07-16",
       12920
      ],
      "src": "ledger",
-     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.67 (named: Pivotl Securities Private Limited 4.18) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 21.5200 -> 21.5200, dii 7.3528 -> 1.6828.",
+     "why": "\u00a7164r batch 13 (user 2026-10-04 'yes fix all three'): settles SHILPAMED's Baring holding one way in every row. 'BARING INDIA PRIVATE EQUITY FUND III LIMITED' (6,000,000 shares, 7.7819) sits on the company's own company-type sub-row 'Foreign Corporate Bodies' in its institutions Any-Other block, and no filing anywhere lists that legal name under Institutions (evidence: 0 institution, 2 company-type listings), so under option A (\u00a7164r batch 8) it is public, neither FII nor DII - as Quantmac and Trendlyne also count it. It had reached FII through a loose name match (holder memory / the short form 'BARING INDIA PRIVATE EQUITY FUND III', whose 12 institution listings are other companies' FPI rows; \u00a7164r batch 13 reads the company's short form as its own full name). Baring's separate FPI vehicle 'Baring India Private Equity Fund III Listed Investments Limited' stays FII. Value = the rules engine's own target. fii 21.5200 -> 13.7400, dii unchanged.",
      "superseded": {
       "cell": [
+       56.89,
+       21.52,
+       1.6828,
+       0.0952,
+       0.0,
+       "2016-07-16",
+       12920
+      ],
+      "was": [
        56.89,
        21.52,
        7.3528,
@@ -215518,19 +215527,19 @@
        "2016-07-16",
        12920
       ],
-      "was": [
-       56.89,
-       23.01,
-       5.8628,
-       0.0952,
-       0.0,
-       "2016-07-16",
-       12920
-      ],
-      "src": "bsexbrl:530549_1672016115523_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
+      "src": "ledger",
+      "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporates' 5.67 (named: Pivotl Securities Private Limited 4.18) inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in DII (this cell's Baring India PE Fund line on the company's 'Foreign Corporate Bodies' row is a separate question and is not changed here). fii 21.5200 -> 21.5200, dii 7.3528 -> 1.6828.",
       "superseded": {
        "cell": [
+        56.89,
+        21.52,
+        7.3528,
+        0.0952,
+        0.0,
+        "2016-07-16",
+        12920
+       ],
+       "was": [
         56.89,
         23.01,
         5.8628,
@@ -215539,19 +215548,19 @@
         "2016-07-16",
         12920
        ],
-       "was": [
-        56.89,
-        13.74,
-        13.5828,
-        0.0952,
-        0.0,
-        "2016-07-16",
-        12920
-       ],
        "src": "bsexbrl:530549_1672016115523_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+       "why": "\u00a7164 row-level remainder rule \u2014 D1 corroboration gate (\u00a7164r batch 5, user 2026-09-28 'Option A ... do this'): the unnamed Other-Institutions remainder D1 had moved to FII (1.49 pp) goes back to DII: neither of the company's neighbouring filings shows a foreign holding that size (2016-03-31 FII 14.71, 2016-09-30 FII 15.19 vs 22.27 needed (moved level 23.01)). Only the D1 amount moves; fii 23.01 -> 21.52, dii 5.86 -> 7.35.",
        "superseded": {
         "cell": [
+         56.89,
+         23.01,
+         5.8628,
+         0.0952,
+         0.0,
+         "2016-07-16",
+         12920
+        ],
+        "was": [
          56.89,
          13.74,
          13.5828,
@@ -215560,17 +215569,30 @@
          "2016-07-16",
          12920
         ],
-        "was": [
-         56.89,
-         21.5219,
-         5.8009,
-         0.0952,
-         0.0,
-         "2016-07-16",
-         12920
-        ],
         "src": "bsexbrl:530549_1672016115523_SHP.xml",
-        "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+        "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 13.74 -> 23.01, dii 13.58 -> 5.86. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 1.49 ['named holders of unknown class left as stored', 4.18] | R1: R1-unresolved Other Bodies Corporates 5.67 Pivotl Securities Private Limited 4.18 ?->-(-) keyword; R1-public-label Other Foreign Corporate Bodies 7.78 public=0.00 fii=7.78 Baring India Private Equity Fund III Limited 7.78 foreign->fii(memory~) keyword; R2-named Clearing Members 1.3 Citi Bank N.A 1.30(regex); R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_164_audit.json",
+        "superseded": {
+         "cell": [
+          56.89,
+          13.74,
+          13.5828,
+          0.0952,
+          0.0,
+          "2016-07-16",
+          12920
+         ],
+         "was": [
+          56.89,
+          21.5219,
+          5.8009,
+          0.0952,
+          0.0,
+          "2016-07-16",
+          12920
+         ],
+         "src": "bsexbrl:530549_1672016115523_SHP.xml",
+         "why": "\u00a7157 (2026-09-24): \u00a7156 move REVERTED \u2014 the institutional Any-Other row of this filing holds company/individual-type labels (Foreign/Overseas Corporate Bodies, Foreign Companies, Foreign Nationals) or curated funds nested under such a label; the 2022 form places those under Non-Institutions (UTIAMC: T. Rowe Price = Foreign Companies 22.97 in Sep-2022) or, filer by filer, under FDI (IDFCFIRSTB). Returned to the pre-heal reading (block in dii) for the row-level 2022-placement pass to settle per holder. Superseded: SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Cor"
+        }
        }
       }
      }
@@ -304775,7 +304797,7 @@
     "cell": [
      0.0,
      9.8699,
-     17.6586,
+     14.9796,
      6.6955,
      2.65,
      "2018-01-19",
@@ -304783,7 +304805,7 @@
     ],
     "was": [
      0.0,
-     15.5312,
+     9.8699,
      17.6586,
      6.6955,
      2.65,
@@ -304791,12 +304813,11 @@
      130542
     ],
     "src": "bsexbrl:540750_1912018134420_SHP.xml",
-    "why": "\u00a7164r batch 30 part 21 (2026-10-06, store-wide check for undocumented holders kept by \u00a7164n's stored split): IEX's unlabelled institutions Any-Other block (6,946,343 sh, fully named) - only RIMCO (MAURITIUS) LIMITED (1,363,575 sh, 13 Institutions (Foreign) listings) is FII; AFHOLDINGS (0 institution / 6 company listings), SIGULER GUFF NJDM, SG BRIC III, MADISON INDIA OPPORTUNITIES III, WESTBRIDGE CROSSOVER, LIGHTSPEED VIII (no institution listing) and India Business Excellence Fund IIA (domestic AIF) are not - as every IEX cell from Mar-2018 on reads them. FII = FPI 1,629,823 + Rimco on 30,328,624. fii 15.5312 -> 9.8699.",
-    "exact": true,
+    "why": "\u00a7164s part 31 (2026-10-06, cell-by-cell re-read of the reply-3 rebuild): the institutions Any-Other row names INDIA BUSINESS EXCELLENCE FUND - IIA; the user's 2026-10-05 decision 'Follow IEX's own label' takes this fund out of dii in every IEX row (IEX itself labels it 'Overseas Corporate Bodies' from 2019); parts 10 / 15 missed this quarter (stored dii = domestic lines + this fund + SBI Life). dii 17.6586 -> 14.9796 (812,500 sh / 30,328,624); fii untouched.",
     "superseded": {
      "cell": [
       0.0,
-      15.5312,
+      9.8699,
       17.6586,
       6.6955,
       2.65,
@@ -304805,7 +304826,7 @@
      ],
      "was": [
       0.0,
-      25.594,
+      15.5312,
       17.6586,
       6.6955,
       2.65,
@@ -304813,11 +304834,12 @@
       130542
      ],
      "src": "bsexbrl:540750_1912018134420_SHP.xml",
-     "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): WESTBRIDGE CROSSOVER FUND, LLC 4.75; LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00; AFHOLDINGS 2.31; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; IEX itself files these holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed it FII by its name or residency alone). fii 25.5940 -> 15.5312 (share counts of 540750_1912018134420_SHP.xml), dii unchanged.",
+     "why": "\u00a7164r batch 30 part 21 (2026-10-06, store-wide check for undocumented holders kept by \u00a7164n's stored split): IEX's unlabelled institutions Any-Other block (6,946,343 sh, fully named) - only RIMCO (MAURITIUS) LIMITED (1,363,575 sh, 13 Institutions (Foreign) listings) is FII; AFHOLDINGS (0 institution / 6 company listings), SIGULER GUFF NJDM, SG BRIC III, MADISON INDIA OPPORTUNITIES III, WESTBRIDGE CROSSOVER, LIGHTSPEED VIII (no institution listing) and India Business Excellence Fund IIA (domestic AIF) are not - as every IEX cell from Mar-2018 on reads them. FII = FPI 1,629,823 + Rimco on 30,328,624. fii 15.5312 -> 9.8699.",
+     "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       25.594,
+       15.5312,
        17.6586,
        6.6955,
        2.65,
@@ -304826,17 +304848,26 @@
       ],
       "was": [
        0.0,
-       28.274,
-       14.9786,
+       25.594,
+       17.6586,
        6.6955,
        2.65,
        "2018-01-19",
        130542
       ],
       "src": "bsexbrl:540750_1912018134420_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 14.98 -> 17.66, fii 28.27 -> 25.59. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(documented:gleif); R1-named-unresolved-kept Other 1.61 SG BRIC III TRADING LLC 1.61; R1-unresolved Other 0.0 SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document)) keyword; R1-named-unre. Evidence: _shp_dii_rowfix_audit.json",
+      "why": "\u00a7164r batch 10 - name-pattern / residency leftovers (user 2026-10-04 'fix the open items'): WESTBRIDGE CROSSOVER FUND, LLC 4.75; LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00; AFHOLDINGS 2.31; the company lists it inside its Institutions block on a row it does not label; no other filing (33,899 BSE XBRLs) lists the same legal name under Institutions (Foreign) and it is not on SEBI's register of Foreign Venture Capital Investors, so under option A it is public; IEX itself files these holders under 'Overseas Corporate Bodies' from Mar-2018 (the earlier run placed it FII by its name or residency alone). fii 25.5940 -> 15.5312 (share counts of 540750_1912018134420_SHP.xml), dii unchanged.",
       "superseded": {
        "cell": [
+        0.0,
+        25.594,
+        17.6586,
+        6.6955,
+        2.65,
+        "2018-01-19",
+        130542
+       ],
+       "was": [
         0.0,
         28.274,
         14.9786,
@@ -304845,19 +304876,19 @@
         "2018-01-19",
         130542
        ],
-       "was": [
-        0.0,
-        19.234,
-        24.0186,
-        6.6955,
-        2.65,
-        "2018-01-19",
-        130542
-       ],
        "src": "bsexbrl:540750_1912018134420_SHP.xml",
-       "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 24.02 -> 14.98, fii 19.23 -> 28.27. R1-rest-follows-foreign-holders 9.04; R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json",
+       "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 14.98 -> 17.66, fii 28.27 -> 25.59. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(documented:gleif); R1-domestic-holders Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 domestic->-(documented:filing); R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(documented:gleif); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(documented:filing); R1-named-unresolved-kept Other 1.03 MADISON INDIA OPPORTUNITIES III 1.03; R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=2.31 AFHOLDINGS 2.31 foreign->fii(documented:gleif); R1-named-unresolved-kept Other 1.61 SG BRIC III TRADING LLC 1.61; R1-unresolved Other 0.0 SG BRIC III TRADING LLC 1.61 ?->-(name-only (name marker; no document)) keyword; R1-named-unre. Evidence: _shp_dii_rowfix_audit.json",
        "superseded": {
         "cell": [
+         0.0,
+         28.274,
+         14.9786,
+         6.6955,
+         2.65,
+         "2018-01-19",
+         130542
+        ],
+        "was": [
          0.0,
          19.234,
          24.0186,
@@ -304866,17 +304897,30 @@
          "2018-01-19",
          130542
         ],
-        "was": [
-         0.0,
-         5.374,
-         35.0186,
-         6.6955,
-         0.0,
-         "2018-01-19",
-         130542
-        ],
         "src": "bsexbrl:540750_1912018134420_SHP.xml",
-        "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 35.02 -> 24.02, fii 5.37 -> 19.23. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R1-uncovered-remainder 9.04; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json"
+        "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 24.02 -> 14.98, fii 19.23 -> 28.27. R1-rest-follows-foreign-holders 9.04; R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json",
+        "superseded": {
+         "cell": [
+          0.0,
+          19.234,
+          24.0186,
+          6.6955,
+          2.65,
+          "2018-01-19",
+          130542
+         ],
+         "was": [
+          0.0,
+          5.374,
+          35.0186,
+          6.6955,
+          0.0,
+          "2018-01-19",
+          130542
+         ],
+         "src": "bsexbrl:540750_1912018134420_SHP.xml",
+         "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 35.02 -> 24.02, fii 5.37 -> 19.23. R1-foreign-holders Other 0.0 public=0.00 fii=4.75 WESTBRIDGE CROSSOVER FUND, LLC 4.75 foreign->fii(regex); R1-unresolved Other 0.0 INDIA BUSINESS EXCELLENCE FUND - IIA 2.68 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=3.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.00 foreign->fii(regex); R1-foreign-holders Other 0.0 public=0.00 fii=4.50 RIMCO (MAURITIUS) LIMITED 4.50 foreign->fii(regex); R1-unresolved Other 0.0 MADISON INDIA OPPORTUNITIES III 1.03 ?->-(-) keyword; R1-unresolved Other 0.0 AFHOLDINGS 2.31 ?->-(-) keyword; R1-foreign-holders Other 0.0 public=0.00 fii=1.61 SG BRIC III TRADING LLC 1.61 foreign->fii(regex); R1-unresolved Other 0.0 SIGULER GUFF NJDM INVESTMENT HOLDINGS LTD 3.02 ?->-(-) keyword; R1-uncovered-remainder 9.04; R2-named Bodies Corporate 2.65 SBI LIFE INSURANCE CO. LTD 2.65(curated); R3-nbfc NBFCsRegisteredWithRbi 0.21. Evidence: _shp_dii_rowfix_audit.json"
+        }
        }
       }
      }
@@ -305656,7 +305700,7 @@
     "cell": [
      0.0,
      31.0258,
-     17.0492,
+     19.1347,
      7.1202,
      2.09,
      "2019-10-16",
@@ -305665,16 +305709,25 @@
     "was": [
      0.0,
      31.0258,
-     19.7615,
+     17.0492,
      7.1202,
      2.09,
      "2019-10-16",
      79886
     ],
     "src": "bsexbrl:540750_15102019154347_SHP.xml",
-    "why": "\u00a7164s part 10 (user 2026-10-05 'Follow IEX's own label'): IEX files 'India Business Excellence Fund IIA' (2.7123) under its own 'Overseas Corporate Bodies' label inside the Institutions block; only another company's AIF listing called it domestic, and the company's own label for its own holder decides - it leaves DII (neither). DII 19.7615 -> 17.0492.",
+    "why": "\u00a7164s part 31 (2026-10-06, cell-by-cell re-read of the reply-3 rebuild): the filing names SBI LIFE INSURANCE CO. LTD on its non-institution 'Bodies Corporate' row, separate from the 'Qualified Institutional Buyers' row we already count; an IRDAI-registered life insurer, so R2 + rule 4 count it (user 'Register wins'; earlier and later quarters already include it). dii 17.0492 -> 19.1347 (6,247,118 sh / 299,556,511); fii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      31.0258,
+      17.0492,
+      7.1202,
+      2.09,
+      "2019-10-16",
+      79886
+     ],
+     "was": [
       0.0,
       31.0258,
       19.7615,
@@ -305683,28 +305736,10 @@
       "2019-10-16",
       79886
      ],
-     "was": [
-      0.0,
-      26.4758,
-      19.7615,
-      7.1202,
-      2.09,
-      "2019-10-16",
-      79886
-     ],
-     "src": "ledger",
-     "why": "\u00a7164r batch 8 scope (user 2026-10-04, option A): the strict >= 90 percent-of->= 5 proof is for holders the company lists among ordinary shareholders; a holder the company itself lists inside its Institutions block needs only one other filing calling it an institution. RIMCO (MAURITIUS) LIMITED 4.55 - FII again: fii 26.48 -> 31.03.",
+     "src": "bsexbrl:540750_15102019154347_SHP.xml",
+     "why": "\u00a7164s part 10 (user 2026-10-05 'Follow IEX's own label'): IEX files 'India Business Excellence Fund IIA' (2.7123) under its own 'Overseas Corporate Bodies' label inside the Institutions block; only another company's AIF listing called it domestic, and the company's own label for its own holder decides - it leaves DII (neither). DII 19.7615 -> 17.0492.",
      "superseded": {
       "cell": [
-       0.0,
-       26.4758,
-       19.7615,
-       7.1202,
-       2.09,
-       "2019-10-16",
-       79886
-      ],
-      "was": [
        0.0,
        31.0258,
        19.7615,
@@ -305713,19 +305748,19 @@
        "2019-10-16",
        79886
       ],
+      "was": [
+       0.0,
+       26.4758,
+       19.7615,
+       7.1202,
+       2.09,
+       "2019-10-16",
+       79886
+      ],
       "src": "ledger",
-      "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 31.03 -> 26.48. RIMCO (MAURITIUS) LIMITED 4.55 (company-type sub-row) FII -> public",
+      "why": "\u00a7164r batch 8 scope (user 2026-10-04, option A): the strict >= 90 percent-of->= 5 proof is for holders the company lists among ordinary shareholders; a holder the company itself lists inside its Institutions block needs only one other filing calling it an institution. RIMCO (MAURITIUS) LIMITED 4.55 - FII again: fii 26.48 -> 31.03.",
       "superseded": {
        "cell": [
-        0.0,
-        31.0258,
-        19.7615,
-        7.1202,
-        2.09,
-        "2019-10-16",
-        79886
-       ],
-       "was": [
         0.0,
         26.4758,
         19.7615,
@@ -305734,12 +305769,21 @@
         "2019-10-16",
         79886
        ],
-       "src": "bsexbrl:540750_15102019154347_SHP.xml",
-       "why": "\u00a7164r batch 7 \u2014 documents-only holder test (user 2026-09-29, Quantmac v5 reply #6 build: a holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark \u2014 its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row \u2014 or, where the company is silent, another company's filing listing the same legal name under Institutions (Foreign); the curated list, residency or a name pattern alone never count): fii 26.48 -> 31.03. RIMCO (MAURITIUS) LIMITED 4.55 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') public -> fii: listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
+       "was": [
+        0.0,
+        31.0258,
+        19.7615,
+        7.1202,
+        2.09,
+        "2019-10-16",
+        79886
+       ],
+       "src": "ledger",
+       "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 31.03 -> 26.48. RIMCO (MAURITIUS) LIMITED 4.55 (company-type sub-row) FII -> public",
        "superseded": {
         "cell": [
          0.0,
-         26.4758,
+         31.0258,
          19.7615,
          7.1202,
          2.09,
@@ -305748,26 +305792,17 @@
         ],
         "was": [
          0.0,
-         29.1858,
-         17.0515,
+         26.4758,
+         19.7615,
          7.1202,
          2.09,
          "2019-10-16",
          79886
         ],
         "src": "bsexbrl:540750_15102019154347_SHP.xml",
-        "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 17.05 -> 19.76, fii 29.19 -> 26.48. R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing) keyword; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json",
+        "why": "\u00a7164r batch 7 \u2014 documents-only holder test (user 2026-09-29, Quantmac v5 reply #6 build: a holder filed among non-institutions or on a company-type sub-row is FII only on the company's own mark \u2014 its first 2022-form row, an (FPI)/FII/FDI tag, its FDI row \u2014 or, where the company is silent, another company's filing listing the same legal name under Institutions (Foreign); the curated list, residency or a name pattern alone never count): fii 26.48 -> 31.03. RIMCO (MAURITIUS) LIMITED 4.55 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') public -> fii: listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
         "superseded": {
          "cell": [
-          0.0,
-          29.1858,
-          17.0515,
-          7.1202,
-          2.09,
-          "2019-10-16",
-          79886
-         ],
-         "was": [
           0.0,
           26.4758,
           19.7615,
@@ -305776,13 +305811,22 @@
           "2019-10-16",
           79886
          ],
+         "was": [
+          0.0,
+          29.1858,
+          17.0515,
+          7.1202,
+          2.09,
+          "2019-10-16",
+          79886
+         ],
          "src": "bsexbrl:540750_15102019154347_SHP.xml",
-         "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 19.76 -> 17.05, fii 26.48 -> 29.19. R1-rest-follows-foreign-holders 2.71; R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex) keyword; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json",
+         "why": "\u00a7158 row-level DII heal (2026-09-27, DII = Institutions(Domestic) in every format): dii 17.05 -> 19.76, fii 29.19 -> 26.48. R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing) keyword; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json",
          "superseded": {
           "cell": [
            0.0,
-           26.4758,
-           19.7615,
+           29.1858,
+           17.0515,
            7.1202,
            2.09,
            "2019-10-16",
@@ -305791,14 +305835,36 @@
           "was": [
            0.0,
            26.4758,
-           29.2415,
+           19.7615,
            7.1202,
-           0.0,
+           2.09,
            "2019-10-16",
            79886
           ],
           "src": "bsexbrl:540750_15102019154347_SHP.xml",
-          "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.24 -> 19.76, fii 26.48 -> 26.48. R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex) keyword; R1-uncovered-remainder 2.71; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json"
+          "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 19.76 -> 17.05, fii 26.48 -> 29.19. R1-rest-follows-foreign-holders 2.71; R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex) keyword; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json",
+          "superseded": {
+           "cell": [
+            0.0,
+            26.4758,
+            19.7615,
+            7.1202,
+            2.09,
+            "2019-10-16",
+            79886
+           ],
+           "was": [
+            0.0,
+            26.4758,
+            29.2415,
+            7.1202,
+            0.0,
+            "2019-10-16",
+            79886
+           ],
+           "src": "bsexbrl:540750_15102019154347_SHP.xml",
+           "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 29.24 -> 19.76, fii 26.48 -> 26.48. R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 ?->-(-) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(regex) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(regex) keyword; R1-uncovered-remainder 2.71; R2-label Others Qualified Institutional Buyers 2.79 SBI LIFE INSURANCE CO. LTD 2.09; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json"
+          }
          }
         }
        }
