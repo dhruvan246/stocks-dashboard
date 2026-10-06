@@ -22072,6 +22072,18 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
   - BSE's XBRL file name is the upload second, 3-55 minutes before the notice. A full 3,700-second filename sweep before BODALCHEM's 2021-07-08 notice found nothing, so replaced originals are not served.
   - Verdict: UNKNOWN for all 38. They keep the date of the filing we hold (never earlier than evidenced numbers).
   - FII-session lesson (§164r part 40): a second, identical notice is not by itself a revision. It does not apply here: these are true replacements whose originals are unread.
+- **Parts 27-30 (bb863d74d, 251067d0a, db26f3b4f, 76a8d1b4c): foreign holders filed INSIDE domestic lines (user: 'work on the 56 foreign holder cells').** Scan: `r3/domfor_scan.py`.
+  - TRAP: post-Jun-2018 XBRLs name contexts `D_<Member>_Context<n>`; the first pattern (`D_<Member><n>`) silently missed them all.
+  - Proof test per holder = line-move across neighbouring filings: when the holder enters, leaves or is re-tagged, does the domestic line or the FPI line move by its size? A holder also listed under FPI, with smooth lines, is a name mis-tag only: RAMCOCEM, POLARIS, HINDALCO, FEDERALBNK. No change there.
+  - OUR ERROR, fixed (dii only; fii side by the FII session's part 45 and later):
+    - BATAINDIA Kotak Funds India Midcap (Luxembourg) x12.
+    - BALLARPUR Citigroup GM Mauritius x2.
+    - CAMLINFINE India Capital Fund.
+    - NH x8: the whole FPI block tagged as Banks/FIs (38-59 holders vs 3).
+    - DEEPAKFERT Sep-21 IFC.
+  - User decision 6-Oct, PRAKASH 'Evidence: not DII': a 21-27% B3b 'NBFC' block of brokers, trading cos and FPIs, with no Bodies Corporate row and relabelled Bodies Corporate the next year, is a mislabelled bodies-corporate block, so R3 does not apply. 9 quarters.
+  - User decision 6-Oct, foreign banks 'Not DII': a foreign-owned bank is not a domestic institution, even through its RBI-licensed Indian branch or subsidiary. DBS / StanChart / Deutsche lenders: BALLARPUR x12, PATELENG x5, RENUKA x4, BRFL x3, GAMMONIND x12.
+  - UNKNOWN: MFSL GPFG, KKCL Malabar, DALMIABHA GS India Fund, NCC Beacon, PENIND/RICOAUTO Ashmore India Opportunities Fund (filed as AIF; no document).
 - **Also in this round.** FII session part 29 (SUNPHARMA 'UTI' rows back into dii) was checked against each filing. User decision: the unlabelled Foreign Bank + UTI block in Jun-16 / Jun-17 / Sep-17 stays whole in dii. All 321 dii moves by the FII session on 5-6 Oct were rebuilt from their filings (`r3/check_peer321.py`): one regression, VSTIND Dec-16, which the FII session fixes in its part 37.
 
 
