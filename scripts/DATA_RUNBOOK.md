@@ -21868,6 +21868,19 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     on top of the DII session's entries (apply the ledgers BEFORE building a part that stacks on another session's fresh entries -
     write_b8 refuses when the committed store != the latest entry). Quantmac misses the NH block too (their NH 2016-17 = FVCI + JPMorgan
     Mauritius); verdicts updated per cell.
+    **Part 45 correction (2026-10-06 18:05 IST): the 23 entries never applied on origin. The bracketed advice above was WRONG.**
+    `--apply-ledgers` on a fresh tree applied the DII session's part-27 entries (pushed 5 min earlier, never yet applied by CI) to the
+    LOCAL store only; write_b8 then recorded `was` = that local value (the DII entry's cell) and kept the DII entry under `superseded`.
+    apply_cell_fix reads only the NEWEST entry per cell, and origin's committed store still held the DII entry's `was` -> CI logged
+    'stored cell is neither the fix nor the recorded bad value' for all 23 and applied NEITHER session's change (verify_live 0 / 23
+    after two refreshes, 37457953823 and 37460290739). Fix: each entry's `was` re-based to `superseded.was` (= origin's store, checked
+    exact for all 23); cells unchanged (this fii + the DII session's dii). **Rule: a superseding entry's `was` must be the value
+    origin's COMMITTED store holds (`git show origin/main:scripts/shp_history.json`), never a locally ledger-applied value.**
+    write_b8 (~/stocks-cache/shp/reply7) now reads the committed store and sets `was` = prior.was when the prior entry is not yet
+    applied on origin (replayed on bb863d74d: 23 / 23 correct). Pre-push check for any stacked part: on a FRESH origin tree with only
+    the new ledger, run `fetch_shareholding.py --apply-ledgers` and grep `WARN cell_fix` for the new keys - it must print none.
+    Second trap, same afternoon: a workflow_dispatch run checks out the commit main had when it was DISPATCHED, so a push made while
+    it sat queued is not in it - read `gh run view <id> --json headSha` and re-dispatch after the last push.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
