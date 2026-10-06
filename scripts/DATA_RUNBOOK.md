@@ -70,6 +70,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§197** ★★★ A BSE-ONLY TICKER CAN BE A FORMER NSE TICKER OF ANOTHER COMPANY — `_rename_map`/FUND_ALIAS are NSE facts; the site never applies them to a ticker in `docs/bse_alias_collisions.json` (WORTH = Worth Investment, not WORTHPERI; 12 found) (**read before any alias/rename consumer that serves a page, and before merging an SME fragment**)
 - **§203** ★★★ ONE TICKER, TWO COMPANIES — an NSE (SME) symbol that is also another company's BSE scrip_id: the BSE fold, BSE detail, NSE-twin filings and the sector map now need ISIN proof of the PAGE's company (`bse_resolve.page_company`, `bse_blocked_under`, `nse_blocked_under`); ZEAL/GSTL/KEL/DRL/INNOVATIVE/BRIGHT healed, VIVIANA/QMSMEDI cells from the PDFs (**read before keying any filing by a bare ticker**)
 - **§220** ★★★ A SAME-ISSUER SEAM PROVES THE LEGAL ENTITY, NOT THE EQUITY — DHFL's shares were extinguished in 2021 and PIRAMALFIN's went to PEL's holders 1:1 (NSE PREV_CLOSE 1124.20 = PEL's last close), so DHFL → PIRAMALFIN is gone from FUND_ALIAS / _rename_map / the seam verdicts and PEL → PIRAMALFIN exists only as the engines' SHP_ALIAS (**read before adding any alias, seam or rename-map entry across a scheme, relisting or IBC resolution**)
+- **§220b** ★★★ THE 9 LONG-GAP SEAMS ARE THE SAME EQUITY (kept) — and four live defects fixed: BSE Riddhi Display (RDEL) kept out of SWANDEF's shareholding fold, 5 tape-less predecessors pointed at the dead key holding their era's tape (74 F&O member-slots; `check_fund_alias.ERA_TAPE`), a 400-day results staleness cap (`RESULT_MAX_AGE_DAYS`), CURAA's lakh-as-crore IPO-base cells (**read before any seam price join — NSE's prevclose is never the factor — and before trusting a tiny filer's backfilled base**)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
 - **§198** ★★ TTM = EXACTLY THE LATEST 12 MONTHS (Screener's rule) — stock.html TTM cards, per-row YoY and BOTH engines tile 12 months from rows of PROVEN length (slice `pd`/`pp`, docs/fund_months.json); a quarter is split off a half only on a proven quarter; profit on a half counts only when it equals its filing's (**read before touching renderFunds TTM, profitMetrics TTM/YoY, or build_row_periods.py**)
 - **§59** ★★ STANDALONE-SLOT-HOLDS-CONSOLIDATED AUDIT — the screen is not a defect count (**read before acting on any std/con equality screen**)
@@ -26790,3 +26791,65 @@ Result: **179 of 393 cells filled (231 basis values)**; payload rebuilt (only ta
 - **Roster:** the dispatched refresh-membership run (eb36c45ac) changed exactly one snapshot — Nifty MidSmallcap 400 2019-02-01, PIRAMALFIN → DHFL — in indices_history.json + stock_data.bin. The engine reads `dash_slim.bin`, which refresh.yml rebuilds (next scheduled after the close); not forced mid-session (§1b).
 - **Results season, live 12:33 IST** (refresh-fundamentals a4a5eafcd): the CI-built file equals the local before/after measurement — the same 9 indices / quarters gain DHFL as a reporter; live Nifty 500 reads 501 for Mar-2019..Mar-2020.
 - **The 12 v6 Quantmac cells** that compared Quantmac's PIRAMALFIN with DHFL's rows (v6 "Cell answers": 2015-07/08/09, 2016-10/11/12, 2017-04/05/06/07, 2019-04, 2019-07): with the corrected `fund_alias.json`, ourfii.py serves PEL's rows and **11 of 12 equal Quantmac to 2 dp** (27.48, 27.33, 27.58, 27.60, 26.86) — OUR ERROR in the comparison key (the v6 sheet's StockWorld column held DHFL's 32.98 / 29.47 / 25.32 / 25.03 / 17.65 / 11.26). The 12th, 2019-07-31 (Quantmac 28.53), is a separate date question: today's feed dates PEL's Jun-2019 pattern 2019-08-13, so that day serves the 2019-04-22 event pattern (30.7119) — UNKNOWN until that filing's date is read. The §164r ledgers were not touched; re-scoring these cells is for the §164r owner.
+
+## §220b — THE 9 LONG-GAP ISIN SEAMS ARE THE SAME EQUITY; FOUR LIVE DEFECTS THE AUDIT FOUND ARE FIXED (2026-10-06, user: "yes to 1-5, keep CHEMPLASTS linked with a staleness cap")
+
+**The audit (§220 open item 4, measure-and-report first).** Each of the 9 CONFIRMED seams with a gap over a year and no clean NSE price carry was read from the companies' own filings (NSE/BSE announcements, NSE XBRL shareholding, SEBI-filed prospectuses). In every case the old holders received shares of the new listing, so all 9 links are KEPT. None is DHFL-like (§220).
+
+| seam | what happened to the old holders (the filing) | old holders afterwards |
+|---|---|---|
+| CHEMPLAST → CHEMPLASTS | 2012 voluntary delisting at ₹15. The 18-Nov-2013 ₹1 → ₹5,00,000 consolidation pooled the residual holders' fractions in a "Shareholders Benefit Trust", which sold them to Sanmar at ₹15 per old share. Prospectus 13-Aug-2021 p.77/p.81/p.84: pre-IPO public **0**. Same shares, no public holder carried. | 0% public |
+| PONDYOXIDE → POCL | Jan-2015 demerger: 1 of every 2 shares cancelled, plus 1 POCL Enterprises share per 2 (NSE 01-Jan-2015). The same shares traded on BSE 532626 throughout. NSE's 06-Mar-2023 PREV_CLOSE 343.55 = BSE's 03-Mar-2023 close. | all shares, halved |
+| CURATECH → CURAA | IBC (NCLT Hyderabad 14-Sep-2023): promoter shares extinguished, public kept 5% (record 31-Jan-2024; NSE XBRL 68,05,960 → 3,40,298). Then 16,09,702 new shares, and 72,00,000 to Catalog IT's holders (Feb-2025). | 3.7% |
+| HEXAWARE → HEXT | 2020 voluntary delisting. ₹2→₹1 split in 2024, no reduction. RHP p.244: 41,098 public holders, 4.95%. | 4.95% (public) |
+| DOLPHINOFF → DOLPHIN | IBC (NCLT Mumbai 29-Sep-2022): promoter shares extinguished, public 1 for 80 (record 24-Feb-2023). | public 1,58,458 of 31,58,458 |
+| RAJOIL → ROML | IBC (NCLT 19-Apr-2018): all holders 20:1 (7,49,43,438 → 37,47,171); the new promoters took 75%. | 25% |
+| CIMCOBIRLA → CIMMCO | BIFR scheme 11-Mar-2010 para 10.1: all holders 5:1 (1,42,60,887 → 28,52,177). | 14.2% |
+| RNAVAL → SWANDEF | IBC (NCLT Ahmedabad 23-Dec-2022): all shares cancelled and 1 fresh share issued per 275 to the same holders (73,75,91,263 → 26,82,150); Hazel Infra took 5 crore. | 5.09% |
+| ORCHIDPHAR → ORCHPHARMA | IBC (NCLT Chennai 27-Jun-2019): all holders ≈218:1 (8,89,64,327 → 4,08,164); Dhanuka took 98%. | 1.000% |
+
+**NSE's first PREV_CLOSE is never the economic factor across these seams.** ROML (07-Oct-2020, 1.70) and ORCHPHARMA (03-Nov-2020, 5.45) carried the old close UNADJUSTED across 20:1 and ≈218:1 reductions. DOLPHIN and SWANDEF opened at a nominal 10.00. Any future SEAM_MERGES must use the filing's ratio, never prevclose/close. `_isin_seam_verdicts.json` records the bin's first bar for those two (03-Nov-2020 / 29-Dec-2020), not NSE's first session. The live bin still lacks ROML's 17 BZ sessions, 07–30 Oct 2020.
+
+**What the 9 links drive (measured removal A/B, identical inputs).**
+- Stock pages: 13 of 6,680 slices.
+- results_season: 51 cells, all HEXAWARE (looked up one hop as HEXT, whose own revop lacks Mar-18/Mar-19/Jun-19).
+- Membership: 14 snapshots. Wrong today: HEXT/SWANDEF emitted into the 2018-19 official-pinned Smallcap-250/MidSmallcap-400 lists through `_derive`'s canon(), with no era check. Right today: ORCHIDPHAR held in LargeMidcap 250 2005-09..2009-03, which NSE's register supports with "Orchid Pharma Ltd." excluded 2009-03-27.
+- Engine: old keys never change; new keys gain the company's own pre-relisting filings.
+
+**Fixes (both engine twins, ENGINE_VER e22, sw v240).**
+1. **`SHP_FOLD_SKIP = new Set(['RDEL'])` in loadShp.**
+   - shp_engine.json's RDEL key is BSE 544640 *Riddhi Display Equipments* (ISIN INE1DKT01011, §197). Its Mar-2026 pattern (promoter 71.43, sub 2026-04-20) had become SWANDEF's "re-filing".
+   - Effect before the fix: SWANDEF was screened on Riddhi's levels for 61 sessions (2026-04-20..07-16), and its Jun-2026 change was measured against them for 55 more (promoter +18.47 pp instead of 0).
+   - Measured fix: exactly those 116 sessions move.
+   - `docs/bse_alias_collisions.json` already named RDEL, but neither twin reads it. The other 11 collision tickers are NOT measured yet.
+2. **Era-tape predecessors in FUND_ALIAS:** ORCHIDCHEM → ORCHIDPHAR, RDEL/PIPAVAVDOC/PIPAVAVYD → RNAVAL, SOFTPRO → CURATECH (were the chain ends ORCHPHARMA / SWANDEF / CURAA).
+   - membersAsOf folds a tape-less roster name through FUND_ALIAS. The chain end had no bars in the era, so Orchid was missing from 69 F&O month-ends (2005-05..2012-08) and Reliance Defence from 5 (2017-03..07).
+   - Measured: exactly those 74 F&O snapshots move. No fundamentals or shareholding cell moves (the five hold no FUND rows; RDEL's one SHP row is fix 1's).
+   - `check_fund_alias.py` gained an explicit `ERA_TAPE` exception. It applies only while the tape-holding key is still present in META; once a seam is stitched it falls back to the chain end on its own. Written with the checker's serializer: 630 entries, both copies byte-identical, `expected 573 | missing 0 | conflicts 0`. RDEL is alive in META (Riddhi), so the checker never manages it; it was set by hand with `_fmt`. `~/stocks-cache/shp/quantmac/fund_alias.json` was regenerated to match loadShp exactly (5 entries; old copy `fund_alias.pre_220b_20261006.json`).
+3. **`RESULT_MAX_AGE_DAYS = 400`** (the §154 twin) in profitAt, profitMetrics and lastResultDate. A result whose quarter-end is more than 400 days before the screen is not current; a stale con falls through to std.
+   - Boundary: 400 d served, 401 d null, in all three functions.
+   - Blast radius over 1,031,314 month-end cells (every screenable symbol, 2001-01..2026-10, both bases): 30,613 profitMetrics + 39,193 lastResultDate cells move, across 803 symbols (mostly 2010-2017 small caps); 2,712 of them are Nifty 500 member cells.
+   - 29,933 cells go from a value to null. The other 680 change value: a 13-14-month-old annual con giving way to a fresh std quarter (HAVELLS 2010-05-31: Mar-2009 con YoY −310% → Mar-2010 std +32%).
+   - CHEMPLASTS: its 46 sessions on CHEMPLAST's Mar-2012 result (YoY −500%) are now null; the link stays.
+   - Strategies (52 saved groups, identical cached data): 43 identical, 9 changed. ⭐ favourites: 1 of 8 — DII bottom-3 std (profitYoyPct > 25): CAGR 44.48 → 45.88, maxDD unchanged, 1 of 269 baskets. 2004-07-31 had GAEL picked on its Mar-2003 result (487 days old; our store holds no GAEL quarter after Mar-2003); ABAN takes the slot.
+4. **CURAA Sep-2024 / Dec-2024 PAT were lakh figures stored as crore** (−1.78 / −24.64 → −0.02 / −0.25).
+   - Evidence: both source PDFs (the Sep-2025 and Dec-2025 results) print "(Rs. in Lakhs)", and so does Cura's own Dec-2024 statement (−24.64 lakh, EPS −1.263 on ₹195 lakh capital). XBRL PBT Dec-2024 −0.25 cr is a second reader. CURATECH's rows held the right values.
+   - Owner: `scripts/ipo_base_fills.json`. scale_fix.json cannot reach it, because it is keyed on XBRL cache filenames.
+   - Corrected in the ledger: `via: "text-unitfix"` + `was` + `fix`, so `--audit` (which re-reads only `via == "text"`) cannot re-read them. Also corrected in both fundamentals twins and both revop twins (PAT mirror).
+   - Proof: in a sandbox, blanked → `--reapply` → −0.02 / −0.25 back. `verify_fills_live.py` exit 0. build_stock_fin from clean origin/main vs this tree, identical other inputs: exactly 1 slice differs (CURAA.json).
+
+**Verified before the push.**
+- node --check: engine, the twin's inline script, sw.js.
+- Twin parity on real data in the browser: SWANDEF 2026-05-29 own pattern; CHEMPLASTS 2021-08-24 null; HAVELLS 2010-05-31 std +32.0%; F&O 2006 has ORCHIDPHAR, 2017 has RNAVAL; PIRAMALFIN §220 values unchanged.
+- Zero console errors on stock-backtest, saved-strategies, all-picks, strategy-backtest (the changed favourite), strategy-mixer, quarterly-results and terminal (Zerodha not connected). stock.html?sym=CURAA renders −0.3 / −0; its one 404 is the local preview's `stk/` path (that slice lives on sf-data). No UI change, so no theme/mobile pass.
+
+**Open — measured, not changed (each needs the user's call).**
+1. **backfill_ipo_bases anchor.** `_close` accepts max(3%, ₹2 cr), so for a tiny filer the CRORE scale passes on a lakh PDF (−1.38 read vs −0.01 stored). Same-shape candidates, UNKNOWN until each filing is read: VMSTMT 20250331 patStd 361.71 (107× its own median), PRITIKA 20250331 patCon 173.49 (60×).
+2. The other 11 §197 collision tickers (ARL, AZTEC, BCCL, COLORCHIPS, CREATIVE, DPL, HSIL, MIL, MUDRA, SHREE, WORTH) in the shareholding fold.
+3. Builder lookups that mishandle a same-company pair:
+   - results_season: one-hop map (HEXAWARE 51 cells);
+   - build_stock_fin: any shared quarter is read as a merger partner (CURA, HEXT never merge);
+   - membership `_derive`: pinned lists go through canon() without era_key.
+4. The seam file's ROML/ORCHPHARMA first-session rows; ROML's 17 missing BZ bars.
+5. Shareholding change across a multi-year listing gap (HEXT's listing pattern vs HEXAWARE's Sep-2020) — a policy question.
+6. COMPUAGE → COMPINFO meets the same screen strictly (gap 525 d, 143.50 → 144.30) — not examined.

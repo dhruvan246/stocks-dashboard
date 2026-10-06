@@ -32,6 +32,17 @@ miss-guarded, and they are counted but never flagged or removed. Only two things
 MISSING expected entries, and CONFLICTS where a baked entry points at a different target than
 the rename map does.
 
+ERA-TAPE EXCEPTION (runbook §220b, 2026-10-06, user-approved): rule 1's chain END is wrong for a
+TAPE-LESS predecessor whose chain crosses an ISIN seam the price store never stitched (a relisting
+after an IBC / BIFR capital reduction — §95g / §106b — keeps the two tapes split). The engine's
+membersAsOf folds a roster name that has no series of its own through FUND_ALIAS, so pointing it at
+the chain end (a tape that starts years later) silently drops a real member: ORCHIDCHEM -> ORCHPHARMA
+lost Orchid from 69 F&O month-ends 2005-05..2012-08, RDEL -> SWANDEF lost Reliance Defence from 5 in
+2017. Such an old name is EXPECTED to point at the dead key that HOLDS ITS ERA'S TAPE (ERA_TAPE below)
+— but only while that key is still PRESENT in META: once a seam is stitched, its old key leaves the
+bin and the entry falls back to rule 1 on its own. The list is explicit on purpose: widening it is a
+measured, per-name decision (§220b), never a sweep.
+
 Run:
     python3 scripts/check_fund_alias.py            # report; exit 1 on drift
     python3 scripts/check_fund_alias.py --write    # apply (union, never removes) + node --check
@@ -121,10 +132,40 @@ def resolve(old, rmap):
     return target
 
 
-def expected_alias(rmap, alive):
+# §220b ERA-TAPE EXCEPTION (see the module docstring): tape-less predecessor -> the dead key holding its era's tape.
+# Each pair was measured on the live engine (roster resolution over all 2,164 index + F&O snapshots) before it was
+# added; the chain end each replaces is in brackets.
+ERA_TAPE = {
+    "ORCHIDCHEM": "ORCHIDPHAR",   # [ORCHPHARMA] Orchid Chemicals: F&O 2005-05..2012-08; the tape stops 2019-07-24 (IBC)
+    "RDEL": "RNAVAL",             # [SWANDEF]    Reliance Defence: F&O 2017-03..07; RNAVAL's tape stops 2023-07-13 (IBC)
+    "PIPAVAVDOC": "RNAVAL",       # [SWANDEF]    Pipavav Defence era of the same tape
+    "PIPAVAVYD": "RNAVAL",        # [SWANDEF]    Pipavav Shipyard era of the same tape
+    "SOFTPRO": "CURATECH",        # [CURAA]      Cura's pre-2010 name; CURATECH's tape stops 2021-04-12 (delisted 2022, IBC)
+}
+
+
+def meta_present():
+    """-> every symbol META carries, alive or dead (the same source load_meta reads). The era-tape exception needs
+    'still holds a tape', which the alive set cannot answer; kept separate so load_meta's 4-tuple (used by
+    isin_seam_land.py) never changes."""
+    binpath = os.environ.get("SF_BIN")
+    if binpath:
+        sys.path.insert(0, HERE)
+        from build_search_index import _scan_top_level
+        return set(_scan_top_level(binpath, ["meta"])["meta"])
+    with open(INDEX, encoding="utf-8") as fh:
+        return {r[0] for r in json.load(fh)["s"]}
+
+
+def expected_alias(rmap, alive, present=None):
     out = {}
     for old in rmap:
         target = resolve(old, rmap)
+        era = ERA_TAPE.get(old)
+        if era and present is not None and era in present and era != old:
+            if old not in alive:              # rule 2 still holds: a live symbol is never aliased
+                out[old] = era
+            continue
         if target != old and old not in alive and target in alive:
             out[old] = target
     return out
@@ -236,7 +277,7 @@ def audit():
         return rep
 
     cur = baked[0][1]
-    exp = expected_alias(rmap, alive)
+    exp = expected_alias(rmap, alive, meta_present())
     rep["baked"] = len(cur)
     rep["expected"] = len(exp)
     rep["missing"] = {o: t for o, t in exp.items() if o not in cur}
@@ -298,7 +339,8 @@ def main():
     for old, target in sorted(rep["missing"].items()):
         print("  MISSING   %s -> %s" % (old, target))
     for old, (b, e) in sorted(rep["conflicts"].items()):
-        print("  CONFLICT  %s -> baked %s, rename map says %s" % (old, b, e))
+        print("  CONFLICT  %s -> baked %s, %s says %s" % (old, b, "the §220b era-tape exception" if old in ERA_TAPE
+                                                           else "rename map", e))
     if rep["ok"]:
         print("FUND_ALIAS is in step with _rename_map.json (both copies byte-identical)")
         return 0
