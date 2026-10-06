@@ -21634,6 +21634,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Dec-23..Jun-24 20,500 sh; Quantmac counts it) - label vs the company's own 2022-form placement (§159 / §180c). Sweep
     `fiilabel/sweep_noninst.py`: ~1,460 cells store-wide carry an FPI-labelled non-institution row we leave out (old form: mostly §180c's
     deliberate 2022-form test for non-N500 names and §159's 0.05 pp floor; new form: 456 cells, this open question).
+    **Batch 30 part 33 (label "§164r batch 30 part 33"; 15 cells + 1 date; per-company review continued).** Our errors: BHARATFIN
+    (Quantmac SKSMICRO) Dec-15 / Mar-16 counted KISMET SKS II and SANDSTONE (no institution listing; every later quarter already left them
+    out) -> FPI + Tree Line; EMBDL (IBREALEST) Jun-15 + KEC Jun-15: the institutions / non-institutions 'Others' rows are the company's FPI
+    and 'Foreign Bank' rows of the neighbouring quarters (rule B); SYMPHONY Jun-17 'Financial Institutional Investors' = its shrinking
+    legacy FII block (20 -> 15 -> 8 -> 6 holders) -> fii + / dii -; CYIENT Dec-15 / Mar-16 'Foreign Nationals' out (individuals; 'Foreign
+    Collaborators' kept - open user question). Precision (2-dp -> share counts): SUPREMEIND, REDINGTON Mar-16, GODREJIND / MARKSANS /
+    SAMMAANCAP (A+B) Dec-15, FSL Mar-18. Date: RELCAPITAL Jun-16 served from 2016-12-27 - BSE keeps only the 2016-12-27 revisions of
+    Mar / Jun / Sep-2016 (the first two already served from that day); the old within-symbol-outlier pass had put Jun-16 on QE+21.
+    Quantmac-side readings found: insurers' blocks (CHEMPLASTS, MEDPLUS, ABSLAMC, IOC, CUB, HDFCBANK, CARERATING, GODREJPROP) - the
+    company's own Sep-2022 form files the unnamed rest under Insurance Companies / PF / domestic SWF; QIP 'Qualified Institutional Buyer'
+    event rows (BHARTIARTL, GODREJPROP); misspelt fund names left out (SAMMAANCAP 'Smallcap World Find', GODREJIND 'JP Morgan Slcav',
+    MARKSANS CalPERS); REDINGTON Mar-16 page 'Any Others' includes a domestic AIF (Table III B1c).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
