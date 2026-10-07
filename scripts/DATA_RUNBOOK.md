@@ -23781,6 +23781,28 @@ dma) and 26 to differ (group B 24 = BALKRISIND 9 + WELCORP 8 + MARICO 7; group C
 of group D) and 3 to differ (D2). Group A today 80/82: the 2 ADANIENT d52 cells agree under §179h alone and differ only by the kept print.
 122 cells listed (B 30, C 27, D2 3, E 16, F 8, G 26, H 4, U1 7, U2 1) = RULE DIFFERENCE 114 + UNKNOWN 8; OUR ERROR 0, THEIR ERROR 0.
 
+**§179j — REPLY #6 TO QUANTMAC (2026-10-07 19:49 IST; user: "send me reply file for quantmac. also mention all that we chanegd and this difference table also with
+differences").** ~/stocks-cache/qm-recon-tools/build_ind_reply_r6.py -> out/StockWorld_indicators_reply6_to_Quantmac_20261007.xlsx (Note = the letter;
+Summary; Differences = all 122 cells, each with its group, verdict, rows + arithmetic, its reply-#5 verdict and value; What we changed; Cells moved = the
+530 cells whose status or value moved since reply #5, by step; Demerger factors = all 54 pre-Oct-2015 demergers, old / new factor, theirs where proven;
+Demerger days = the 33 restored prints; BSE gap fill; All cells 106,502; Tickers) and dry/cells_page_r10.json (artifact FiSuhJ27r1Po3hejYKEzvj v5, same
+verdicts in the owner's voice). Their corrected_20261006 vs live ba75e78741: 318,399 / 318,496; 122 differing (97 two-sided + 25 one-sided) = RULE
+DIFFERENCE 115 (B 30, C 28, D2 3, E 16, F 8, G 26, H 4) + UNKNOWN 7 (U1 WIPRO); OUR ERROR 0, THEIR ERROR 0. Reply #5's 187 cells today: 105 agree or
+fixed by them (17 ex-day print, 80 VWAP, 1 open, 1 WIPRO, 6 SUMMIT), 82 still differ; 40 new (G 14 by §179g, B 24 + C 2 by §179h).
+**New: Quantmac's own factor for every demerger behind a differing cell, proven from THEIR cells** (qm_hyp_factor_probe.py: exact rebuild of every
+Quantmac cell in reach, NSE raw x unrounded factors, scanning one trial factor; qm_r6_exact.py): FRL 17-Apr-2013 / MARICO / WELCORP / BALKRISIND =
+ex-day open / previous close (0.900000 / 0.984666 / 0.988290 / 0.991386; every cell within 0.0002); GRASIM 2010 = 1 - 4/7 x UltraTech NSE close
+924.65 / Grasim NSE close 2,319.00 = 0.772155 (25 cells); CADILAHC 2008 = 1 - 4/15 x Carnation BSE close 75.85 / Cadila NSE close 272.60 =
+0.925801 (22 cells exact; reply #5 used BSE's 273.35 as the denominator -> the U2 cell is a C rule difference now); WIPRO 2013 = 0.891892 (21 cells
+exact) but no NSE / BSE price of the day gives it (NSE VWAP/prev 0.894370, BSE 0.891586, (H+L+C)/3 0.892714) and it is not their chart step
+0.892246 -> U1 7 stays UNKNOWN, asked; ADANIENT 2015 / FRL Jun-2013 = VWAP / prev as ours, the D2 cells differ only by the stale first print.
+Their CHART STEPS ARE NOT THEIR INDICATOR FACTORS (BAJAJHLDNG chart 0.368863 while its cells agree with VWAP 0.4042; WIPRO, CADILAHC, ADANIENT
+differ too): prove a counterparty's factor from its cells, never from its chart. Quantmac keeps the traded print on BAJAJHLDNG 14-Mar-2008, GRASIM
+26-May-2010, IBREALEST 21-Apr-2011 / 07-Dec-2011 but leaves out the first print at the old -10% limit on ADANIENT 03-Jun-2015 / FRL 21-Jun-2013
+(= §179i option 3, not chosen). Page fix: FRL 2014-02-28 d52 needs BOTH their April open factor AND the June stale print left out (r9 named the
+factor only). Questions in the Note: (1) WIPRO 0.891892 source; (2) the stale-print rule; (3) is the open intended for the 4 B demergers; (4) REI Agro
+halt rule. OPEN for the owner: the group-B open-price choice (unanswered since §179h); the owner sends reply #6 to Quantmac.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
