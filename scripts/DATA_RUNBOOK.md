@@ -21954,6 +21954,14 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     shareholding notice for the scrip (140 rows, none), so the rows carry the quarter-end+21 convention date and are served un-dated
     (§164e, engine QE+28) via `shp_fill_seam_aspx.json.gz` (fill-only), exactly like part 32's DCHL / RAMCOSYS rows. Local: +9 cells,
     0 WARN, guards OK. These quarters are not in Quantmac's FII dispute list (v6_now has no PIPAVAV cell before Jun-2013).
+    **Batch 30 part 49 (2026-10-07 08:40 IST, FII side of the DII session's §164s part 33: two 2-dp aggregator fills re-read from
+    BSE's Table III service - the XBRL path 404s for 59xxxx scrips).** KARURVYSYA Jun-2018 (590003 qtrid 98): B1e FPI 142,961,654
+    (Olympus India Holdings, ADIA, Acacia Partners LLP, SAIF India IV FII Holdings named) + B1i institutions 'Any Other' 255,032 with no
+    named holder and no label (rule D1, no write floor) = 143,216,686 / 726,619,616 -> fii 19.67 (the FPI line's 2-dp print) -> 19.7100.
+    SUNDARMFIN Dec-2021 (590071 qtrid 112): B1e FPI 13,811,813 (Nalanda India Equity Fund, Pari Washington named); no institutions
+    Any-Other row; 'Foreign Nationals' 18,720 are individuals (public) -> 12.43 -> 12.4306 (precision). Both stacked on the DII
+    session's part-33 entries (pushed, not yet applied by CI; write_b8 set `was` = the committed store), dii carried. Neither is a
+    Quantmac dispute cell. 0 WARN on a fresh tree; local feed OK.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
