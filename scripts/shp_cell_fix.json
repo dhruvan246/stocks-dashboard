@@ -53508,6 +53508,26 @@
     ],
     "src": "bseaspx:590003_83",
     "why": "\u00a7164r batch 23 (2026-10-05, store-wide lower-bound check, user 'work on every single cell'): the company's own BSE page for this quarter (ShareholdingPattern.aspx 590003 qtrid 83) labels these rows foreign institutions - 'Foreign Financial Institutions / Banks' (Institutions, 140 shares = 0.0001); 'Foreign Portolio Investor ( Corporate)' (Institutions, 46,207 shares = 0.0382) - and the stored fii 28.4341 held only 'Foreign Institutional Investors' 28.4341. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign fund counts wherever it sits) and the \u00a7164r batch-7 no-floor rule they are FII; the page-era runs wrote only moves >= 0.05 pp and never re-read \u00a7164 cells, so they stayed out. % of the page's (A+B+C) total 120,862,609 shares. fii 28.4341 -> 28.4724, dii unchanged (it holds only the page's domestic rows)."
+   },
+   "2018-06-30": {
+    "cell": [
+     2.08,
+     19.67,
+     20.3894,
+     14.91,
+     4.6,
+     "2018-08-13"
+    ],
+    "was": [
+     2.08,
+     19.67,
+     19.66,
+     14.91,
+     4.6,
+     "2018-08-13"
+    ],
+    "src": "bsetable3:590003:98",
+    "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 19.66 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 148,153,425 sh + NBFC row 0 sh on 726,619,616 = 20.3894 (= Quantmac's figure to 0.001). dii 19.6600 -> 20.3894; fii is the FII session's to check (the same row may share the fill's error)."
    }
   },
   "KEC": {
@@ -189094,6 +189114,26 @@
     ],
     "src": "bsetable3:590071:96 + bseaspx:590071:96",
     "why": "\u00a7164t third-party ledger re-read (user 2026-10-04 '26 wrong + 38 safe'): this quarter's stored cell was a THIRD-PARTY fill (shp_fill_thirdparty: Trendlyne's category rows + our old-format formula) and equals the company's rows, but our standing row rules had never been applied to it. Replaced by the company's own filing as BSE serves it (Table III api, authorised 2018-01-23 13:02:38; ShareholdingPattern.aspx qtrid 96: share total + promoter row), read with our rules (t3_compute): NBFC row 0.02 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 35.95 -> 35.9525, fii 5.78 -> 5.7811, dii 11.74 -> 11.7931."
+   },
+   "2021-12-31": {
+    "cell": [
+     35.89,
+     12.43,
+     11.7536,
+     7.63,
+     3.8,
+     "2022-01-13"
+    ],
+    "was": [
+     35.89,
+     12.43,
+     11.43,
+     7.63,
+     3.8,
+     "2022-01-13"
+    ],
+    "src": "bsetable3:590071:112",
+    "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 11.43 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 13,059,598 sh + NBFC row 0 sh on 111,111,656 = 11.7536 (= Quantmac's figure to 0.001). dii 11.4300 -> 11.7536; fii is the FII session's to check (the same row may share the fill's error)."
    }
   },
   "BALMLAWRIE": {
