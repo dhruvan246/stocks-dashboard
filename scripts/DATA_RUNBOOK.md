@@ -74,6 +74,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220c** ★★★ §220b's SIX OPEN ITEMS CLOSED (user: "yes to all 6, blank the first change after a gap") — every §197 BSE-collision ticker out of the shareholding fold (6 NSE stocks read another company's pattern: 3,788 bar days), an event-row holding change across an OVERDUE quarter is blank (`shpGapBefore`), 13 IPO-base cells read wrong from results PDFs healed via fund_cell_fix + the reader fixed (decimal comma, lost decimal point, capped ₹2 cr anchor), builders read a renamed company's old-ticker history like the engine (results season, stock pages, index lists), ROML's 17 missing BZ sessions (prefix ledger `bz_prefix_fill.json`), COMPUAGE → COMPINFO = same shares (**read before any shareholding fold, any change-metric across a listing gap, any PDF comparative-column fill, any BZ block that precedes a series' first bar**)
 - **§220d** ★★ "CHECK ALL" — §220c's open items read from the filings, then SCOPED TO POINT-IN-TIME NIFTY 500 (user, 2026-10-07: "work only on survivorship free nifty 500 members"): the renamed pairs' 5 disputed quarters healed (live 3e3228319; HINDMOTORS 2010-06 and SPLPETRO 2018-03 are N500 cells); all 290 IPO-base PDF cells read by eye — the only N500 company (GUJENERGY) read right, the 29 errors found are all never-N500 companies and the 792 missing 2018-19 BZ bars all non-member days, so both are PARKED in ~/stocks-cache/check-all-220d/parked-non-n500/ (README) (**read before reviving any non-N500 heal, any IPO-base reader change, or a BZ re-scan**)
 - **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**) — cause 2 fixed at the source in **§223**
+- **§225** ★★★ OWNERS' PROFIT, POINT-IN-TIME NIFTY 500 — two XBRL shapes §116 never screened: the owners tag holds the TOTAL-COMPREHENSIVE-INCOME split (store took TCI-owners), and owners 0 + NCI 0 tags beside a real minority (store took the before-minority total). 643 suspects in 104,538 cached XBRLs; every one read by eye from the company's own filing: 255 OUR ERROR (129 companies, 14 > Rs 10 cr) healed via owners_basis_heals.json, 315 right, 73 open (owners_n500_unresolved_225.json) (**read before any owners/NCI screen, any XBRL owners-tag fallback, or any consolidated-PAT heal**)
 - **§223** ★★ THE REFINE LEDGER READ BSE'S NEWEST FILING — 817 of 20,429 `shp_refine_4dp.json.gz` XBRL entries were a later document than the stored row's own (71 cells / 131 numbers held the later figure, 5 cells ping-ponged); the builder now reads the quarter's ORIGINAL (oldest row, quarterly pattern, same holder count), 208 entries rebuilt / 579 removed, and in a cell `shp_cell_fix.json` defines the refine may only set the fix's own value (**read before building or applying any refine/precision ledger, or writing a cell_fix entry on a refined cell**)
 - **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
@@ -27423,3 +27424,44 @@ quarterly is the sidecar row; §221 OILCOUNTUB class); the 23 class-4 quarters' 
 the store original). 146 rows whose share capital differs >2% from the original (screen only, mostly omitted allotments);
 PICCADIL Jun-25 (one NSE file 404). AFFLE Sep-19: BSE lists only the revision, so the store row is dated by it
 (shp_sub_dates fallback, served 2019-11-02); its re-filing now lands on that same day and is served as a same-day correction.
+
+## §225 — OWNERS' PROFIT ON POINT-IN-TIME NIFTY 500: 255 consolidated quarters held the TCI split or the before-minority total; every suspect read from the company's own filing (2026-10-07, user: "yes run the nifty 500 check", scope "work only on survivorship free nifty 500 members")
+
+**Why §116 missed these.** §116d screened con cells holding the TOTAL against an owners tag whose identity owners + NCI == total
+closes. Two XBRL shapes pass straight through it (found in §220d on non-N500 filers, then measured here on N500):
+- **A — the owners tag holds the TOTAL-COMPREHENSIVE-INCOME split.** owners + NCI == TCI != profit; the store took the owners tag, so
+  it served TCI-owners (CHEMBOND Dec-25 shape; on N500: TORNTPOWER, NMDC, OBEROIRLTY, BAJFINANCE Jun-24 3,955.28 = TCI for profit
+  3,911.98 ...). §116d counted these as "stored == OWNERS, correct".
+- **B — owners 0 and NCI 0 tags** while the company has a real minority (seen in its other filings), so the pipeline's owners==0
+  fallback took the total (§116d's "7,975 owners=0 AND NCI=0 — stored total is right" ASSUMED no minority). **B'** = owners 0 beside
+  a non-zero NCI tag.
+
+**Screen** (`~/stocks-cache/n500-owners-screen/screen.py`, read-only): the 38,783 cached consolidated XBRLs with an owners tag, quarters
+only, joined to every con cell, kept when the company was a Nifty 500 member at the quarter end or in the 15 months the engine uses the
+quarter (`indices_history` 'Nifty 500', `membersAsOf`, renamed tickers included): **643 suspects** (A 180, B 450, B' 13).
+
+**Every suspect read from its own filing.** The program (verify2.py: BSE result PDFs, text layer + Apple Vision OCR, gate = owners +
+NCI ties to the printed profit AND the profit equals the XBRL's own ProfitLossForPeriod) read 368; then EVERY one of the 643 was read
+by eye by blind page readers (eyeanswers*.json, consolidated current-quarter column: profit, owners, NCI, TCI, TCI-owners, unit, page),
+and the 10 largest corrections were read again by me. The program's "no split printed = right" calls were NOT trusted: a 20-cell
+random sample found COFORGE Sep-23 (owners 181.0 for a stored total 187.9), so all 180 were read. Adjudication (adjudicate.py): OUR
+ERROR only when the printed owners line (or, with no minority printed and no minority in the XBRL or balance sheet, the profit) differs
+from the stored value AND the column/unit is pinned (printed profit == the XBRL total, or owners == it, or for shape A the printed
+TCI-owners == the stored value) AND owners + NCI ties to profit (either NCI sign — CGPOWER prints it reversed).
+
+**Result (643):** **255 OUR ERROR** in 129 companies (A 163, B 87, B' 5; 14 differ by > Rs 10 cr, 70 by > Rs 1 cr; largest: SWANCORP
+Dec-23 219.99 -> 115.11 owners, BAJFINANCE Jun-24 3,955.28 -> 3,911.98, NMDC Mar-23 2,313.96 -> 2,271.53, ADANIPORTS Mar-19 1,314.19 ->
+1,285.38, GLENMARK Mar-23 -403.14 -> -428.30, IFCI Dec-23 39.32 -> 17.91, TRENT Dec-22 154.81 -> 167.00, SAIL Sep-24 881.85 -> 897.15);
+**315 right as stored**; **73 open** — `scripts/owners_n500_unresolved_225.json` (27 print only the TCI split while a minority exists,
+~35 whose fetched filing holds no statement, 7 print no split while the XBRL or balance sheet shows a minority, 3 whose printed split
+does not tie: IFCI Sep-23, ITDC Mar-20, MINDACORP Dec-19 extract-only). Left unchanged.
+
+**Route:** `scripts/owners_basis_heals.json` (588 -> 843; the §116 ledger apply_owners_full applies nightly AHEAD of the `_reattr_owners`
+cache, so a cache holding the TCI-owners figure cannot pre-empt it); `scripts/fundamentals.json` twin synced (248; 6 rows absent there).
+Each entry: the company's own PDF URL, page, unit, the printed owners/NCI/profit and the XBRL shape. Verified: exactly the 255 cells moved,
+nothing else.
+
+**Lessons.** (1) An owners tag can hold the TCI split; an identity check on owners + NCI must test TCI as well as profit before calling
+the tag "owners". (2) owners 0 + NCI 0 is NOT "no minority" — test the company's other filings and the balance sheet. (3) A results PDF
+fetch keyed on the announcement month misses COVID-delayed Q4FY20 results (announced June-July 2020); key on the subject line too.
+(4) A page reader's "no attribution printed" verdict missed a split printed lower on the page — read every "no split" call by eye.
