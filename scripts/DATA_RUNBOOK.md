@@ -23772,6 +23772,14 @@ idempotent; close / t / v / vw untouched. Dry run (release = live 6624c54461): e
 adjustment), nothing else; second run 0, sha identical. Quantmac (their 6-Oct file) on the dry-run data: 318,399 / 318,496 (+18: all group-D
 cells — BAJAJHLDNG 2, GRASIM 6, IBREALEST 10; -3: ADANIENT 2016-04-29 / 2016-05-31 d52 and FRL 2014-03-31 d52, whose 52w high is now the
 stale ex-day print Quantmac leaves out).
+**§179i LIVE VERIFIED (2026-10-07 16:37 IST).** Auto refresh run 37609833491: "restored to the traded print on 33 bar(s)", split rev ba75e78741 ==
+the dry-run split rev. A browser fetch of sf-data/sf_deep_1.bin (the file the backtest engine loads): ADANIENT 2015-06-03 o/h 347.1106,
+l 64.3907, c 66.4493 (= raw 573.30 / 106.35 x 66.4493/109.75); FEL 2013-06-21 o/h 17.3875, l 11.0397, c 12.9585 (= raw 132.30 / 84.00 x
+12.9585/98.60). stock.html + strategy-backtest.html console clean. Favourites: 0 changed picks across §179g/h/i. Quantmac, cell by cell
+(qm_cells_179g/h/i): §179h moved 84 cells to agree (81 of the 82 group-A cells + FRL 2014-01-31 dma + FRL 2014-03-31 d52 + WIPRO 2013-12-31
+dma) and 26 to differ (group B 24 = BALKRISIND 9 + WELCORP 8 + MARICO 7; group C 2 = GRASIM 1 + CADILAHC 1); §179i moved 18 to agree (all
+of group D) and 3 to differ (D2). Group A today 80/82: the 2 ADANIENT d52 cells agree under §179h alone and differ only by the kept print.
+122 cells listed (B 30, C 27, D2 3, E 16, F 8, G 26, H 4, U1 7, U2 1) = RULE DIFFERENCE 114 + UNKNOWN 8; OUR ERROR 0, THEIR ERROR 0.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
