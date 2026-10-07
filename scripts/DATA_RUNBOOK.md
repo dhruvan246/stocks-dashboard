@@ -21932,6 +21932,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     the same entry (one writer per key): RENUKA events 2018-03-08 dii 4.1868 -> 2.4481 and 2018-03-09 27.6154 -> 25.2249, BRFL
     2022-06-30 53.8139 -> 51.8824. write_b8 fixed again: a superseding entry whose prior is pushed but not yet applied by CI now stacks
     on the prior's `was` (the committed store) instead of refusing - 0 WARN on a fresh tree, 40 / 40 in the local feed.
+    **Batch 30 part 48 (2026-10-07 02:50 IST, the DII session's request: Quantmac carries PIPAVAVYD / PIPAVAVDOC Dec-2010..Dec-2012,
+    25 cells of its reply, and our RNAVAL store started Mar-2013).** Scope measured first: the point-in-time Nifty 500 roster
+    (`_n500_member_bin.membership`, rename-normed PIPAVAVYD -> RNAVAL -> SWANDEF) holds it from the 2011-03-31 snapshot through 2013, so
+    all nine quarters serve a member (Dec-2010 is the row in force when it joins). Each quarter read from BSE's own page
+    (`ShareholdingPattern.aspx?scripcd=533107&qtrid=68..76`): fii = FII row + FVCI row (page-era foreign side; 'Foreign Corporate
+    Bodies' 17.5m / 42.9m / 33.9m sh and 'Foreign Nationals' public, company-type labels), dii = MF + FI/Banks + Insurance (the DII
+    session read the same figures to the share), base (A)+(B) = (A)+(B)+(C): Dec-10 11.3118 / 9.1865, Mar-11 10.5200 / 8.9314, Jun-11
+    11.3448 / 8.7643, Sep-11 10.3940 / 8.6467, Dec-11 8.7844 / 9.1436, Mar-12 9.1200 / 9.4982, Jun-12 7.8035 / 14.5364, Sep-12 5.7946 /
+    14.4835, Dec-12 4.6399 / 14.4942 (Mar-13 stored 4.3048 / 15.0887 - continuous). BSE's 2011-13 announcement stream carries no
+    shareholding notice for the scrip (140 rows, none), so the rows carry the quarter-end+21 convention date and are served un-dated
+    (§164e, engine QE+28) via `shp_fill_seam_aspx.json.gz` (fill-only), exactly like part 32's DCHL / RAMCOSYS rows. Local: +9 cells,
+    0 WARN, guards OK. These quarters are not in Quantmac's FII dispute list (v6_now has no PIPAVAV cell before Jun-2013).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
