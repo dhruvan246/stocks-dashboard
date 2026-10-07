@@ -23693,6 +23693,14 @@ includes the BSE bars before 19-Aug-2019); nothing else moved. Both-valued 318,3
 UNKNOWN 12, OUR ERROR 0. **Not in this fix (open, for the user):** SPICEJET's stored 1996-1999 fragment is not BSE's level (stored / BSE
 drifts 0.32 -> 1.06, volumes differ — the §179f penny phantom-split class); ESSARSHIP 29-Oct-2001 -> 11-Mar-2008 hole (old "Essar
 Shipping Ltd" fragment, no ISIN; NSE ESSARSHIP from 2008-03-11 — identity unproven; its ret12m Jan/Feb-2009 looks back to 2001).
+**§179g LIVE VERIFIED 2026-10-07 ~05:30 IST.** Push 6413c9e5f -> dispatched refresh-backtest-data run 37548479908 (success): its log
+prints the same two lines as the dry run ("SME-BACKFILL KENNAMET->KENNAMET: 4171 bars filled the hole 20020930 -> 20190819", SPICEJET
+4510), phantom-date audit clean; live sf rev b5c67aee9c == the rev split_sf_data.py prints for the dry-run output (rev hashes the
+uncompressed payload, so live content == the tested file on all 5,268 symbols; the control file split to the previous live rev
+4a97148f49). Client check: stock.html?sym=KENNAMET loads 5,828 bars 1996-01-02..2026-10-06 (252 in 2010, 246 in 2018; 31-Dec-2018
+Rs 1,077.25 = BSE), Max chart continuous 2002 -> 2026, 0 console errors. SPICEJET's page reads the BSE-store slice (BSE-only since NSE
+stopped printing it after 2023-04-28; starts 2020) — the backtest store holds the fill. Favourites (ab_precision.js, today's engine,
+8 favourites x 2 windows): 0 changed picks, identical totals / CAGR / drawdown / trades in all 16 runs.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
