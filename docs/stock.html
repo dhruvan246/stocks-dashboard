@@ -9,6 +9,24 @@
 <script src="./theme.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
+  /* theme.css makes <body> a flex column and main's mx-auto cancels the flex stretch, so <main> was sized
+     SHRINK-TO-FIT: a no-wrap table's minimum width (12-quarter shareholding 1,007px on KENNAMET, 1,101px on
+     RELIANCE; Insights 1,278px) widened the whole page past a 1024px viewport even though each table sits in an
+     overflow-x-auto holder, and the price chart's autoSize then held that width (measured 2026-10-07). The theme
+     clamps this only at ≤760px. width:100% (still capped by max-w-screen-xl) pins main to the body at every
+     width, so wide tables scroll INSIDE their holders — the index-chart.html fix (runbook §39). */
+  main{width:100%;min-width:0}
+  /* Those holders now scroll above 640px too, and the two that open on their NEWEST column (Insights, shareholding)
+     would scroll their row names out of view — RELIANCE Insights at 1024px opened 319px in, every metric name
+     off-screen. Pin the label column the way theme.css does on phones, with the same resolved backgrounds. */
+  @media (min-width:641px){
+    html[data-theme] #shp table thead th:first-child, html[data-theme] #shp table tbody td:first-child,
+    html[data-theme] #kpiBody table thead th:first-child, html[data-theme] #kpiBody table tbody td:first-child{
+      position:sticky; left:0; z-index:2; box-shadow:1px 0 0 var(--border);
+    }
+    html[data-theme] #shp table thead th:first-child, html[data-theme] #kpiBody table thead th:first-child{ background:var(--sw-pin-head,var(--surface)); }
+    html[data-theme] #shp table tbody td:first-child, html[data-theme] #kpiBody table tbody td:first-child{ background:var(--sw-pin-body,var(--surface)); }
+  }
   .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
   .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
   .lbl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
@@ -208,6 +226,7 @@
     </div>
     <div id="shpChart" class="mb-3" style="display:none"></div>
     <div id="shp" class="sw-scrollx overflow-x-auto text-sm"><span class="text-slate-400">Loading shareholding pattern…</span></div>
+    <div id="shpNote"></div>
   </div>
 
   <!-- company activity -->
@@ -1419,6 +1438,29 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
   draw();
 }
 
+/* Insights and shareholding put their NEWEST column on the right. When the columns don't fit (phones, narrow
+   laptops) the holder opens scrolled to it and keeps following the right edge while the layout settles: the page
+   scrollbar that appears as later cards render takes 10px off the holder, which left the newest Insights column
+   11px clipped at every width from 768px up (measured 2026-10-07). It stops following once the reader scrolls
+   away, and follows again when they scroll back to the end. */
+const NEWEST=new WeakMap();
+function openOnNewest(h){
+  if(!h) return;
+  let s=NEWEST.get(h);
+  if(!s){
+    s={follow:true, at:NaN};
+    s.end=()=>{ if(h.scrollWidth>h.clientWidth) h.scrollLeft=h.scrollWidth; s.at=h.scrollLeft; };
+    h.addEventListener('scroll',()=>{
+      if(Math.abs(h.scrollLeft-s.at)<=1) return;     // where we put it: our own scroll, or the layout moving under it
+      s.at=NaN; s.follow=h.scrollLeft>=h.scrollWidth-h.clientWidth-2;
+    },{passive:true});
+    if('ResizeObserver' in window) s.ro=new ResizeObserver(()=>{ if(s.follow) s.end(); });
+    NEWEST.set(h,s);
+  }
+  s.follow=true; s.end();
+  if(s.ro){ s.ro.disconnect(); s.ro.observe(h); const t=h.querySelector('table'); if(t) s.ro.observe(t); }   // the holder narrowing, or its table widening
+}
+
 /* ---------- Insights: operating KPIs from the company's OWN filings (runbook §137) ----------
    docs/fin/<SLUG>.json → kpi = {fy, m:[{n,u,k,y,q,src}], docs:{att:{d,t,k,u?}}}. Rows are the
    business metrics the company itself reports in its investor presentations / press releases
@@ -1465,8 +1507,7 @@ function renderKPI(K){
       cols.map(k=>{ const x=c[k]; if(!x) return '<td class="text-right px-2"></td>';
         return `<td class="text-right px-2 whitespace-nowrap">${fmt(x.v,x.s)}${x.s?` <button class="kpi-i text-slate-400 hover:text-slate-600 align-middle" data-r="${ri}" data-k="${k}" title="${esc(srcTitle(x.s))}" aria-label="Source of this number">${KPI_I}</button>`:''}</td>`; }).join('')+`</tr>`).join('')+
     `</tbody></table>`;
-  // phones: the holder scrolls sideways (sw-scrollx) and opens on the OLDEST column — start on the newest
-  if(body.scrollWidth>body.clientWidth) body.scrollLeft=body.scrollWidth;
+  openOnNewest(body);   // a sideways-scrolling holder opens on the OLDEST column; start on the newest
   body.querySelectorAll('.kpi-i').forEach(b=>b.onclick=()=>{
     const r=rows[+b.dataset.r], x=r&&r.c[b.dataset.k]; if(!x||!x.s) return;
     const d=docs[x.s[0]]||{}, url=d.u||('https://www.bseindia.com/stockinfo/AnnPdfOpen.aspx?Pname='+encodeURIComponent(x.s[0]));
@@ -1486,7 +1527,8 @@ function renderKPI(K){
 const SHP_MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const shpQ=iso=>SHP_MONS[+iso.slice(5,7)-1]+' '+iso.slice(0,4);
 function renderSHP(quarters,cells){
-  const el=$('shp');
+  const el=$('shp'), note=$('shpNote');
+  note.innerHTML='';   // the source line sits OUTSIDE the sideways-scrolling holder, so opening on the newest quarter can't cut it off
   if(!quarters||!quarters.length||!cells||!cells.length){
     el.innerHTML=FIN_STATE==='pending'
       ? '<span class="text-slate-400">Loading shareholding pattern…</span>'
@@ -1520,12 +1562,14 @@ function renderSHP(quarters,cells){
       h+=tr('No. of shareholders',i=>{ const n=v(i,6); return n==null?null:(+n).toLocaleString('en-IN'); },'text-slate-500',true);
     h+='</tbody></table>';
     let sub=null; for(let k=idx.length-1;k>=0&&!sub;k--){ const c=cells[idx[k]]; if(c&&c[5]) sub=c[5]; }
-    el.innerHTML=h+'<div class="text-[11px] text-slate-400 mt-2">'+(sub?('Latest filing submitted '+sub+' · '):'')+
+    el.innerHTML=h;
+    note.innerHTML='<div class="text-[11px] text-slate-400 mt-2">'+(sub?('Latest filing submitted '+sub+' · '):'')+
       'Source: NSE quarterly shareholding-pattern (SHP) XBRL. FII = foreign institutions (FPI, FDI); DII = domestic institutions (MF, insurance, banks, PF, AIF); '+(hasGov?'Government = Central/State/President of India holding (as filed); ':'')+'Public &amp; others = balance incl. employee trusts. <a class="text-indigo-500 hover:underline" href="./fii-dii.html">Daily FII/DII flows →</a></div>';
+    openOnNewest(el);   // newest quarter first, as Insights does
     const tg=$('diiTg');
     if(tg) tg.onclick=()=>{ const open=tg.textContent.trim()==='−'; tg.textContent=open?'+':'−';
       el.querySelectorAll('.shp-sub').forEach(r=>r.classList.toggle('hidden',open)); };
-  }catch(e){ el.innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; }
+  }catch(e){ el.innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; note.innerHTML=''; }
 }
 async function loadSHP(){
   try{
@@ -1534,7 +1578,7 @@ async function loadSHP(){
     const alias=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS&&FUND_ALIAS[SYM])||null;
     const row=rows.find(r=>r[0]===SYM)||(alias?rows.find(r=>r[0]===alias):null);
     renderSHP(j.quarters||[], row?(row[4]||[]):null);
-  }catch(e){ $('shp').innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; }
+  }catch(e){ $('shp').innerHTML='<span class="text-slate-400">Shareholding data unavailable right now.</span>'; $('shpNote').innerHTML=''; }
 }
 
 /* ---------- deep shareholding history (fin slice shpH — back to 2019) -------------------------
@@ -1558,6 +1602,7 @@ function renderSHPdeep(){
   const view=shpHistView();
   if(!view.length){
     $('shp').innerHTML='<span class="text-slate-400">No shareholding-pattern filing had been submitted by this date.</span>';
+    $('shpNote').innerHTML='';
     $('shpChart').style.display='none';
     $('shpAll').style.display='none';
     return;

@@ -6,7 +6,7 @@
  *     requests (the sf-data repo, Supabase, the live-quote Worker) — those stay network-only
  *     so data is always fresh and the cache never bloats.
  * Bump CACHE when the shell asset list changes. */
-const CACHE = 'sw-shell-v242';  // v242: §222 — Results coverage page: next vision run + season chip follow the automatic results-season state (4×/day in season, 1×/day off)
+const CACHE = 'sw-shell-v243';  // v243: stock.html — no sideways page scroll at 761–1300px (main pinned to the body); Insights + shareholding open on the newest column with the label column pinned
 const SHELL = [
   './', './index.html', './nse-bse-dashboard.html', './stock-backtest.html', './saved-strategies.html',
   './backtest-history.html', './strategy-backtest.html', './options-backtest.html', './fo-engine.js', './all-picks.html', './strategy-mixer.html', './mutual-funds.html', './fii-dii.html',

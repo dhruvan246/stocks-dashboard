@@ -4286,6 +4286,15 @@ outrank it — the same precedence that saved NUCLEUS in §71c.
   at desktop width after the table renders, `document.documentElement.scrollWidth ===
   document.documentElement.clientWidth` and the holder's `overflowX === 'auto'`. The fix pattern is in
   index-chart.html (§141): page-scoped `.sw-scrollx` rules at all widths + `main.wrap{width:100%}`.
+  - **★ "Desktop width" means 1024px, not just a wide screen** (added 2026-10-07, stock.html). An
+    `overflow-x-auto` holder does NOT stop it: its table's min-content still sizes a shrink-to-fit `<main>`.
+    theme.css clamps `body > *` only at ≤760px, and main's 1280px cap hides the bug on screens wider than
+    ~1300px, so it lives exactly in the 761–1300px band (laptops, tablets in landscape). stock.html shipped it
+    on every stock with a 12-quarter shareholding or Insights table: KENNAMET 1073 vs 1014, RELIANCE 1280 vs
+    1014 at 1024px. Measure 375, 768 and 1024 as well as a wide desktop. Fixing it with `main{width:100%}`
+    makes those holders scroll above 640px too, so check what that exposes: a holder that opens on its NEWEST
+    column must pin its label column at every width, and nothing else inside it may scroll (stock.html moved
+    the shareholding source note out of `#shp`; it was opening cut off at the left).
 
 **2. Blast radius — everything else that uses what you touched.**
 - `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).
