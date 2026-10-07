@@ -23751,6 +23751,16 @@ second run 0 heals, decompressed sha256 identical. **Quantmac (their 6-Oct file)
 +84 cells now agree (SMARTLINK 26, IBREALEST 24, JINDALSAW 12, ALSTOMT&D 8, FRL 4, SKUMARSYNF 3, D-LINK 3, ADANIENT 2, JUBILANT 1, WIPRO 1),
 -26 now differ — MARICO 2013 (7), WELCORP 2014 (8), BALKRISIND 2015 (9): Quantmac's factor there is the ex-day OPEN (our old §170 Case-A
 value), plus CADILAHC 2009-04 d52 and GRASIM 2010-10 d52 (their value-based factor); rule differences by the user's choice.
+**§179h LIVE VERIFIED 2026-10-07 ~16:05 IST.** Push 644a8772e -> dispatched refresh-backtest-data run 37606750419 (success); live sf rev
+6624c54461 == the rev split_sf_data.py prints for the dry-run output (content identical); origin's demerger_adj.json still holds the new
+factors after the run (no §170c revert race). Client: stock.html?sym=ADANIENT step at 2015-06-03 = 0.9111 = raw 0.1723 / factor 0.1891, 0
+console errors. Favourites (ab_precision.js, same engine both runs, 8 x 2 windows): 0 changed picks; values move only where a held stock's
+pre-ex prices were re-scaled (largest: one 2010-window CAGR 60.17% -> 60.13%). Quantmac cell by cell on the live data (artifact
+https://claude.ai/artifact/FiSuhJ27r1Po3hejYKEzvj v3; `build_cells_page_r8.py` + `qm_vwap_hyp_179h.py`, which adds OLD / OLD_RAW = the §170
+factor): 137 differing = RULE DIFFERENCE 129 (B 30 = FRL 6 + MARICO 7 + WELCORP 8 + BALKRISIND 9, Quantmac's factor the ex-day open, its own
+chart step; C 27 value-based GRASIM/CADILAHC; D 18 ex-day print; E 16; F 8; G 26; H 4) + UNKNOWN 8 (WIPRO 7, CADILAHC 1). Group A (Quantmac =
+ex-day VWAP): 81 of 82 now agree; the 82nd (IBREALEST 2012-03-30 d52) has the same factor and differs only by the 21-Apr-2011 ex-day print
+(their 52w high = traded high 150.90 x 0.8501 = 128.28 -> 50.226%, exactly theirs) -> D. Tally 318,384 / 318,496.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
