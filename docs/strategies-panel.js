@@ -976,6 +976,54 @@ function cashPlanHTML(list){
   if (P.warn && P.warn.length) h += '<div class="khelp">⚠ ' + esc(P.warn.join(' · ')) + '</div>';
   return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps). The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
 }
+/* SWAP CHECK (user 2026-10-07): per strategy, what it sells (held as MTF or cash in Zerodha) and what the cash plan buys
+   (MTF or cash), and its book value now vs after the plan, both at live prices — gross, before the MTF loan. MTF → cash
+   shrinks the book (the loan is repaid), cash → MTF grows it (a new loan); what you own changes only by the charges.
+   Reads the plan as worked out (holdQ) and today's demat buckets (Z.hraw); a mixed holding sells its MTF shares first. */
+function swapCheckHTML(list){
+  const P = cpDoc(); if (!P) return '';
+  const H = Z.hraw || {}, LV = P.lev || {};
+  const px = (s, o) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : (H[s] && H[s].ltp) ? +H[s].ltp : (o && o.px && o.px[s]) || 0; };
+  const holdKind = s => { const z = H[s]; if (!z) return { k: '?', t: 'not in Zerodha' };
+    const m = (z.mq || 0), c = (z.cq || 0);
+    return m && !c ? { k: 'MTF', t: 'all MTF' } : c && !m ? { k: 'cash', t: 'all cash' }
+      : { k: 'MTF', t: 'mixed: ' + m.toLocaleString('en-IN') + ' MTF + ' + c.toLocaleString('en-IN') + ' cash · MTF sells first' }; };
+  const kindOf = ks => { const u = [...new Set(ks)]; return !u.length ? '' : u.length === 1 ? u[0] : 'MTF + cash'; };
+  let tNow = 0, tAft = 0, tSell = 0, tBuy = 0; const grp = { mm: [], mc: [], cm: [], cc: [] };
+  const rowsH = list.map(it => { const o = P.S[it.id], h = heldFor(it.cfg); if (!o || !h) return '';
+    const n = o.num || favNumOf(it.cfg), rows = h.rows.filter(r => r.qty > 0), stays = new Set(o.stays || []);
+    const exits = rows.filter(r => o.fx && o.fx[r.sym] != null);
+    const buys = (o.picks || []).filter(s => (o.buyQ || {})[s] > 0);
+    const now = rows.reduce((a, r) => a + r.qty * px(r.sym, o), 0);
+    const aft = rows.filter(r => stays.has(r.sym)).reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.picks || []).reduce((a, s) => a + (o.holdQ[s] || 0) * px(s, o), 0);
+    const sellV = exits.reduce((a, r) => a + r.qty * px(r.sym, o), 0), buyV = buys.reduce((a, s) => a + o.buyQ[s] * px(s, o), 0);
+    tNow += now; tAft += aft; tSell += sellV; tBuy += buyV;
+    const d = aft - now, sk = exits.map(r => holdKind(r.sym)), bk = buys.map(s => LV[s] != null && LV[s] > 1.05 ? 'MTF' : 'cash');
+    const kind = exits.length || buys.length ? kindOf(sk.map(x => x.k)) + ' → ' + kindOf(bk) : '';
+    if (exits.length || buys.length){ const se = sk.map(x => x.k), sc = se.includes('cash'), sm = se.includes('MTF'), bc = bk.includes('cash'), bm = bk.includes('MTF');
+      if (sm && bm && !bc) grp.mm.push('#' + n);
+      if (sm && bc) grp.mc.push((bm || sc ? 'part of #' : '#') + n);
+      if (sc && bm) grp.cm.push((bc || sm ? 'part of #' : '#') + n);
+      if (sc && bc && !bm && !sm) grp.cc.push('#' + n);
+      if (!exits.length && bm) grp.mm.push('#' + n); }
+    const sells = exits.map((r, i) => '<b>' + esc(r.sym) + '</b> <span class="sym">' + esc(sk[i].t) + '</span>').join('<br>') || '<span class="sym">none</span>';
+    const bys = buys.map((s, i) => '<b>' + esc(s) + '</b> <span class="sym">' + bk[i] + '</span>').join('<br>') || '<span class="sym">none</span>';
+    const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
+      : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
+    return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
+      '<td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + '</td><td>' + zinr(aft) + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
+  if (!rowsH) return '';
+  const td = tAft - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
+  return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub">sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th>After</th><th>Change</th></tr></thead><tbody>' + rowsH +
+    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
+    '<div class="khelp"><b>Three kinds of swap:</b><br>' +
+    '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same.<br>' +
+    '• <b>MTF → cash-only</b> (' + none(grp.mc) + '): the value shrinks — the sale repays Zerodha’s loan and the new pick is bought with cash only.' + (grp.mc.length && td < 0 ? ' This is the ' + zinr(-td) + ' drop.' : '') + '<br>' +
+    '• <b>Cash → MTF</b> (' + none(grp.cm) + '): the value grows — a new MTF loan.' +
+    (grp.cc.length ? '<br>• <b>Cash → cash</b> (' + grp.cc.join(', ') + '): the value stays about the same.' : '') +
+    '<br>What you own (value minus the loan) changes only by the charges.</div></div>';
+}
 /* ================= FILLS & SLIPPAGE (user 2026-09-24, world-class #3) =================
    Cloud baskets (kite-relay v2.1) follow every sent order to its fill and remember the arrival price
    the limit was pegged to, so each basket reports filled vs sent, value, slippage vs arrival (bps and
@@ -1033,7 +1081,7 @@ function fillsHTML(){
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
-  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
+  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + swapCheckHTML(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + fillsHTML(); wireResidGo(); wireReenter(); fillsKick(); return; }
@@ -1043,7 +1091,7 @@ function renderBuyAll(list){
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
+  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
     '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
