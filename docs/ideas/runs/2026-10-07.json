@@ -1,0 +1,372 @@
+{
+ "date": "2026-10-07",
+ "run_started": "2026-10-07 19:46 IST",
+ "run_finished": "2026-10-07 20:26 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1192,
+ "candidates": 15,
+ "filings_status": "BSE's api answered 200 from this sandbox on the setup probe (ComHeadernew, scrip 500002), so lane three ran live. universe.py rebuilt from the BSE scrip master: 1,192 names in the Rs 200-2,000 cr band (765 B, 126 X, 113 T, 77 M, 60 XT, 46 MT, 3 A, 1 MS, 1 P; 831 with an NSE symbol; 124 SME). scan.py --days 65 read 1,159 announcements against BSE's own ROWCNT of 1,196 for the day: announcements_capped is TRUE, short by 37 rows, because a page came back short of the stated count - so 1,159 is a FLOOR, not the day's filings, and the 37 unread rows are the earliest of the day. announcements_source 'bse' (no NSE fallback needed), announcements_blocked FALSE, read at 19:55 IST. 53 of the 1,159 mapped into the universe, 154 rows carried a signal, 15 scored >= 4. The read at 19:55 IST is late enough to catch the post-close flood; both of the day's strongest triggers (Swastika Infra 09:44/09:54 IST, IZMO 09:42 IST) were morning filings. This run's scan supersedes the GitHub Actions scan of ~19:01 IST.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), so govt.py exited 0 and left docs/ideas/govt.json untouched, exactly as runbook 144e designs it. This is NOT a data gap for today: GitHub Actions reached PIB at 18:56 IST today and feeds_status.json records allRel.aspx at 200 with govt step rc=0. That build scanned 52 English releases and KEPT NOTHING: dropped 40 with no decision verb, 5 noise, 3 backgrounders, 4 below the Rs 1,000 cr floor, 0 for having no mapped theme. unmapped_releases is also empty, so there was no big decision in an unmapped sector to chase and no theme_map.json addition to make. Zero kept is the correct and most common answer - of the 42 releases on 2026-09-22, 30 were not decisions, 7 ceremonial and 5 below the floor. The government lane produced nothing today and nothing was manufactured from it.",
+ "commodity_status": "All commodity builders ran; from this sandbox only BSE is reachable, so most sources kept their previous rows and the live numbers are the ones GitHub Actions wrote at 18:56-19:01 IST (feeds_status.json, steps_failed []). spot.py: every source failed (westmetall.com and markets.businessinsider.com both 403 at CONNECT) - spot.json and spot_series.json LEFT UNCHANGED, so the global panel is Actions' 2026-10-07 18:56 IST build. minsteel.py: steel.gov.in 403 at CONNECT, no report listed, committed file left as it was. india_spot.py: metalbook, ibja, rubber, sugar, fuel and te all FAILED (403 at CONNECT) with previous rows kept; nmdc ok 2 rows and minsteel ok 3 rows (both read through api.bseindia.com / the committed file). 0 history rows appended, and india_history.json.gz WAS rebuilt - 143 series, 77,835 dated points (not 'NOT rebuilt'). wpi.py: eaindustry.nic.in 403, wpi.json.gz LEFT UNCHANGED. trade.py --latest: tradestat.commerce.gov.in 403, docs/ideas/trade/** LEFT UNCHANGED. signals.py always works and ranked 44 groups off the committed panels. STAMP AGE, as required: spot_date 2026-10-07 18:56 IST and india_built 2026-10-07 19:49 IST are same-day and fine; wpi_month is 2026-04 and trade_month 2026-07, i.e. SIX and THREE months old respectively - that is the ministries' publication lag, not a failure, but it means the WPI and trade evidence behind the high-strength groups has not changed in weeks and is not news today. NOTE ON WHAT WAS COMMITTED, and why four files were deliberately NOT: this run commits only the scan, the run log, universe.json, ideas.json, latest.json and track.json. docs/ideas/spot.json, spot_series.json, spot_history.csv, wpi.json.gz, minsteel_mumbai.json and trade/** were LEFT UNCHANGED by their own builders (every source refused at the proxy), so they stay at the version GitHub Actions wrote at 18:56-19:01 IST. docs/ideas/india_spot.json, signals.json, nmdc_history.json and india_history.json.gz WERE rewritten by this run's builders but are NOT committed, and the reason is measured: their data rows are identical to Actions' version (india_history.json.gz series compared key by key - 143 series, 77,835 points, EQUAL; only the build stamp moved), while the only real change was the per-source STATUS string, which this sandbox would have degraded from Actions' accurate 'metalbook: ok, 42 rows / ibja: ok, 7 rows / rubber: ok, 8 rows / fuel: ok, 8 rows / te: ok, 65 rows' to proxy-403 'FAILED ... previous rows kept' for five reads that genuinely SUCCEEDED today. Committing them would have made ideas.html's staleness guard report today's live commodity panel as failed. They are left dirty in this throwaway VM and the page keeps Actions' true status - the same call the 2026-10-06 run made for the same reason. The scan file IS this run's, because it is strictly better than Actions': 1,159 announcements read against its earlier pass, and it caught both of the day's researched morning filings.",
+ "candidates_considered": [
+  {
+   "ticker": "SWASTIKAIN",
+   "scrip": "544949",
+   "score": 9,
+   "signals": "ORDER x2, DISCLOSE",
+   "verdict": "RESEARCHED and PUBLISHED - Rs 615.76 cr MSEDCL LOA, 1.22x FY26 revenue, on a Rs 717 cr market cap six trading days after listing."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "score": 8,
+   "signals": "ORDER x2",
+   "verdict": "Skipped. Both filings opened via the scan's own headline text, which carries the values: Rs 3.03 cr from Rajiv Gandhi National Institute of Youth Development and Rs 1.05 cr from the Indian Army / Dept of Military Affairs. On a Rs 217 cr SME the pair is about Rs 4.08 cr of order intake - too small against a year of sales to clear the size-against-sales test the study found predictive, and the stock is down 15.9% over 20 days on 0.9x volume. Not an idea."
+  },
+  {
+   "ticker": "BLUECLOUDS",
+   "scrip": "539607",
+   "score": 7,
+   "signals": "ORDER, DISCLOSE, VOL",
+   "verdict": "RESEARCHED, NOT published - see researched[]."
+  },
+  {
+   "ticker": "NIBE",
+   "scrip": "535136",
+   "score": 5,
+   "signals": "RATING, VOL",
+   "verdict": "Filing opened, not researched further. Infomerics ASSIGNED (not upgraded) IVR BBB-/Stable on long-term and IVR A3 on short-term bank facilities by letter dated 06-Oct-2026. A first-time assignment at the lowest investment grade is not the rating-upgrade trigger the triage ranks, and pages 2-7 of the attached rating letter are IMAGE-ONLY with no extractable text, so no revenue expectation could be read - per the hard rules, not invented. Stock is 21.3% below its 65-day high on 6.7x volume."
+  },
+  {
+   "ticker": "IZMO",
+   "scrip": "532341",
+   "score": 5,
+   "signals": "CAPEX, DISCLOSE",
+   "verdict": "RESEARCHED, NOT published - see researched[]."
+  },
+  {
+   "ticker": "SILVERTUC",
+   "scrip": "543525",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "RESEARCHED, NOT published - see researched[]."
+  },
+  {
+   "ticker": "ARFIN",
+   "scrip": "539151",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed, not researched. Volume 21.2x the 60-day median at the window high with NO filing of any kind in the scan - the playbook's explicit skip ('pure price moves with no filing are watch-listed, not researched'), and the study's own finding that a volume explosion is an alarm bell rather than evidence. Aluminium wire-rod maker; the aluminium group's strength is only 2.53 and rests on WPI Aluminium ingot for 2026-04."
+  },
+  {
+   "ticker": "MANIKA",
+   "scrip": "544929",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed. 18.3x volume, +14.6% on the day, no filing. Same skip rule."
+  },
+  {
+   "ticker": "AVADHSUGAR",
+   "scrip": "540649",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Checked against the commodity lane and REJECTED on the evidence, not skipped - see signals_considered, sugar."
+  },
+  {
+   "ticker": "HTEL",
+   "scrip": "544891",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed. +19.6% on 4.6x volume, no filing. Same skip rule."
+  },
+  {
+   "ticker": "BHAGYANGR",
+   "scrip": "512296",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Skipped as already published (2026-09-23, price lane) with no new hard trigger today - the playbook re-examines a published name only on a new trigger. Also note the copper business demerges into Tieramet Ltd under the scheme NCLT approved 07-Sep-2026."
+  },
+  {
+   "ticker": "MITSU",
+   "scrip": "540078",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed. 4.0x volume, no filing. A polymer converter, so the polyethylene/polypropylene group (strength 6.00, up) is an input-cost RED FLAG for it, not a benefit - logged under watch, no short idea."
+  },
+  {
+   "ticker": "RAKSAN",
+   "scrip": "544924",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed. 3.2x volume on Rs 435 lakh turnover, no filing. Same skip rule."
+  },
+  {
+   "ticker": "RAMBHAJO",
+   "scrip": "544803",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "Watch-listed. +9.5% on 3.1x volume, no filing. Same skip rule."
+  },
+  {
+   "ticker": "TINNARUBR",
+   "scrip": "530475",
+   "score": 4,
+   "signals": "DEAL x2",
+   "verdict": "Skipped. The two filings are an initial investment in a wholly-owned Chilean subsidiary and a second tranche of a loan to a South African joint venture - neither carries an order, capex or revenue number, so the trigger has no figure to work with. Tyre-rubber recycler; the natural-rubber group's strength is 2.60 and the Kottayam RSS4 print moved only +0.5% in a week."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "No idea. The strength is driven by WPI Crude Petroleum 3m +85.6% for the 2026-04 month - six-month-old evidence that has not changed in weeks. Daily spot disagrees with the direction: Brent Rs/bbl equivalent US$101.66, -1.7% on the week, at the 43rd percentile of its 52-week range. No small cap in the Rs 200-2,000 cr universe is mapped to the group (ONGC, Oil India, HINDOILEXP and SELAN are all outside it or unmapped into it)."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "No new idea. MODISONLTD (Rs 1,578 cr, silver electrical contacts) is the mapped small cap and was PUBLISHED on 2026-09-22 on exactly this signal; no new hard trigger today. The fresh IBJA print for 2026-10-07 is silver 999 at Rs 2,20,866/kg, +0.2% on the week and MINUS 4.7% on the month - the 12-month WPI number is not today's direction."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "No idea. Rests on an export unit price for HS 284180 sodium tungstate, smoothed-yoy +606.5% on US$21.2mn a month, for trade month 2026-07 - three months old and a tiny trade line. No small cap in the universe is mapped to the group."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "strength": 7.62,
+   "direction": "up",
+   "verdict": "No idea. Containerized Freight Index 1y +228.6%; no mapped name in the Rs 200-2,000 cr universe."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "strength": 6.97,
+   "direction": "up",
+   "verdict": "No idea. WPI Sulphuric Acid 1m +20.9% for the 2026-04 month; no mapped small cap in the universe."
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "strength": 6.03,
+   "direction": "up",
+   "verdict": "No idea. WPI Alkyl Benzene 1m +18.1% for 2026-04; no mapped small cap in the universe."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "strength": 6.0,
+   "direction": "up",
+   "verdict": "No idea, and treated as a SUFFERER signal. Import unit price for HS 3902 polypropylene 1m +241.4% on US$262.8mn a month for trade month 2026-07. No mapped small-cap producer in the universe; a 241% one-month jump in a unit price is also exactly the kind of lone trade print the playbook says to treat as noise. Logged as an input-cost red flag against polymer converters (MITSU in today's candidates)."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "strength": 5.59,
+   "direction": "up",
+   "verdict": "No idea. The headline is the import unit price of HS 2713 petroleum bitumen 3m +83.9% - a proxy for needle-coke feedstock, not graphite electrodes themselves, and for trade month 2026-07. No mapped small cap in the universe."
+  },
+  {
+   "group": "Copper",
+   "strength": 5.25,
+   "direction": "up",
+   "verdict": "No new idea. The strength comes from the HS 7407 import unit price smoothed-yoy +157.5% for trade month 2026-07; the FRESH Indian print disagrees - MetalBook Mumbai copper CC rods 8mm Rs 1,464/kg on 2026-10-06, MINUS 0.3% on the week. The two mapped small caps are BHAGYANGR (published 2026-09-23 on this signal; demerging the copper business into Tieramet) and PARMESHWAR (Rs 472 cr). No new trigger on either today."
+  },
+  {
+   "group": "Natural gas",
+   "strength": 4.93,
+   "direction": "up",
+   "verdict": "No idea. WPI Natural Gas 1m +14.8% for 2026-04; no mapped small cap in the universe."
+  },
+  {
+   "group": "Lithium carbonate and battery materials",
+   "strength": 4.4,
+   "direction": "up",
+   "verdict": "No idea. HS 2825 import unit price 3m +66.0% for trade month 2026-07, on a broad 'other inorganic bases, metal oxides' basket of 10 codes - too impure a read to attribute to lithium. No mapped small cap in the universe."
+  },
+  {
+   "group": "Zinc and lead",
+   "strength": 4.39,
+   "direction": "up",
+   "verdict": "No idea. WPI Zinc Concentrate 12m +65.8% for 2026-04, while the fresh MetalBook prints fall: Mumbai SHG zinc ingots Rs 426/kg -2.1% on the week, Delhi Rs 435.5/kg -0.3%. Mapped small cap NILE (Rs 378 cr, lead smelter) had no filing today."
+  },
+  {
+   "group": "Paper and pulp",
+   "strength": 4.31,
+   "direction": "up",
+   "verdict": "No idea today. Import unit price for HS 4707 waste paper 1m +43.1% on US$100.0mn a month, trade month 2026-07. Mapped small caps ANDHRAPAP (Rs 1,395 cr) and SESHAPAPER (Rs 1,463 cr) are producers, for whom rising waste-paper prices are an INPUT cost, not a benefit - the map's 'benefit' tag is doing the wrong work here for a recovered-fibre input. Neither had a filing today. Flagged for the owner rather than acted on, since scripts and maps are his to change."
+  },
+  {
+   "group": "Urea, DAP, potash",
+   "strength": 3.54,
+   "direction": "up",
+   "verdict": "No idea. HS 310210 import unit price smoothed-yoy +106.2%, trade month 2026-07; Indian urea and DAP are administered-price products, so an import unit price does not pass to a domestic producer's realisation. No mapped small cap in the universe."
+  },
+  {
+   "group": "Caustic soda and chlor-alkali",
+   "strength": 3.2,
+   "direction": "up",
+   "verdict": "No idea today. WPI Caustic soda 1m +9.6% for the 2026-04 month. Five mapped small caps (LORDSCHLO, PUNJABCHEM, DCW, DENORA, TGVSL) and none filed anything today; the evidence is six months old, so there is nothing new to act on."
+  },
+  {
+   "group": "Gold",
+   "strength": 3.2,
+   "direction": "up",
+   "verdict": "No idea. WPI Gold 12m +48.0% for 2026-04; the fresh IBJA print for 2026-10-07 is gold 999 at Rs 1,47,767 per 10g, -0.1% on the week and -3.2% on the month. No mapped small cap in the universe."
+  },
+  {
+   "group": "Tea",
+   "strength": 3.1,
+   "direction": "up",
+   "verdict": "No idea today. WPI Tea 1m +9.3% for 2026-04. Four mapped small caps (MCLEODRUSS, GOODRICKE, JAYSREETEA, ANDREWYU); none filed anything today and the evidence is six months old."
+  },
+  {
+   "group": "Natural rubber",
+   "strength": 2.6,
+   "direction": "up",
+   "verdict": "No new idea. HARRMALAYA was PUBLISHED on 2026-10-05 on this signal, with the measured caveat that transmission is unproven. Today's fresh Rubber Board print (2026-10-07) is Kottayam and Kochi RSS4 at Rs 28,150 per 100kg, +0.5% on the week and +3.5% on the month - a continuation, not a new move, and no new trigger on the name."
+  },
+  {
+   "group": "Sugar (and ethanol)",
+   "strength": 2.22,
+   "direction": "up",
+   "verdict": "REJECTED ON THE EVIDENCE, and this is the day's one real commodity near-miss. The signal is a GLOBAL move - ICE sugar +11.1% on the week, Trading Economics sugar 20.4 USd/lb +12.69% on the month - and AVADHSUGAR appeared independently in today's scan on 6.2x volume at the window high, which is the kind of confluence this lane exists to catch. But the playbook requires the INDIAN print where one exists, and every Chinimandi ex-mill M/30 print (to 2026-10-01) goes the other way: Delhi Rs 4,777.5/qtl 1w 0.0% and 1m MINUS 15.7%; Kanpur Rs 4,798.5 1w 0.0% / 1m -13.8%; Kolhapur Rs 4,567.5 1w -1.6% / 1m -7.4%; Kolkata Rs 4,714.5 1w -1.5% / 1m -9.3%; Chennai Rs 5,113.5 1w -0.6% / 1m -15.3%; Bengaluru Rs 4,882.5 1w +1.1% / 1m -14.7%. All six series are 'deep' (488-989 readings since 2023-03-06), so the verdict is not withheld for thinness. Indian ex-mill sugar is set by domestic MSP, release quotas and ethanol diversion, not by ICE - so the global move does NOT reach an Indian mill's realisation, and AVADHSUGAR's volume with no filing behind it is the study's alarm bell. No idea published, and specifically no idea published on the global print."
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "strength": 2.07,
+   "direction": "up",
+   "verdict": "No idea. The freshest Indian prints (MetalBook, 2026-10-06) move by 1% or less: Mumbai TMT 12-32mm Fe500 Rs 53.6/kg +1.1%, Delhi TMT Rs 53.1/kg -0.6%, Mumbai channel Rs 55.3/kg +1.1%; the largest weekly move in the group, Hyderabad wire rod +2.6%, sits on a series of only 4 readings and is NOT marked deep, so no verdict is taken on it. The Ministry of Steel monthly series is quoted nowhere in this run because minsteel.py could not list a new report and the committed file's latest month is unchanged."
+  },
+  {
+   "group": "Aluminium",
+   "strength": 2.53,
+   "direction": "up",
+   "verdict": "No idea. WPI Aluminium ingot 1m +7.6% for the 2026-04 month; no mapped small cap in the universe. ARFIN (aluminium wire rods, Rs 1,739 cr) appeared in the scan on 21.2x volume but with no filing, so it stays watch-listed."
+  }
+ ],
+ "govt_considered": [],
+ "researched": [
+  {
+   "ticker": "SWASTIKAIN",
+   "scrip": "544949",
+   "name": "Swastika Infra Ltd",
+   "lane": "filing",
+   "mcap_at_call": 716.9,
+   "call_close": 210.1,
+   "published": true,
+   "confidence": "medium",
+   "reason": "Reg 30 LOA from MSEDCL, Rs 615.76 cr including taxes, Bhandup Zone Maharashtra, 24 months, not a related party. Against a trailing year of sales - the one order ratio the 1,245-filing study found predictive - this is 1.22x FY26 revenue from operations of Rs 503.57 cr, or 1.04x after an assumed 18% GST; against market cap it is 0.86x, the ratio the study found predicts nothing. Read the 460-page RHP dated 17-Sep-2026 on BSE for the base business: revenue Rs 209.58 -> 350.76 -> 503.57 cr over FY24-26, PAT Rs 13.98 -> 27.45 -> 41.43 cr, EBITDA margin 11.31 -> 14.07%, order book Rs 391.39 -> 650.23 -> 687.44 cr, 96.87% of FY26 revenue from state DISCOMs. The board's own CA-certified FY27 working-capital projection (resolution 24-Aug-2026) inverts to an FY27 revenue assumption of about Rs 718 cr, +42.6%, with five line items agreeing - that is management guidance recovered by arithmetic, not an estimate of mine. Post-issue trailing PE 17.3x on 3,41,20,187 shares, FY27E 12.1x against Vikran 14.25x and Rajesh Power 9.62x. Three measured things hold it to medium: the 'first order filing' rarity the study rewards is an artifact of a six-day listing history (the RHP's own top-five table shows five large DISCOM wins between Oct-2023 and Jul-2026, which is the serial-bidder side of the study); working capital absorbed 2.54x EBITDA in FY25 and 99.7% in FY26, and the FY27 plan consumes the whole Rs 90 cr of IPO money earmarked for it; and contingent liabilities are Rs 272.68 cr of bank guarantees, about 7x PAT."
+  },
+  {
+   "ticker": "IZMO",
+   "scrip": "532341",
+   "name": "IZMO Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1335.0,
+   "call_close": 891.2,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "NOT PUBLISHED - the headline number is money IZMO PAYS, not revenue it receives. Opened the 07-Oct-2026 press release in full. The Rs 99.94 cr is the TOTAL OUTLAY of a five-year MeitY-sanctioned research programme (CPPICS Phase II / SPECTRA) at IIT Madras, of which MeitY contributes Rs 97.54 cr and izmo Microsystems Pvt Ltd commits Rs 2.40 cr 'cash and in-kind'. The instrument is a Memorandum of Understanding with IIT Madras for a packaging and industrialisation role - there is no order, no contract value and no revenue to IZMO anywhere in the document. Against that, the BSE detailed results show FY26 revenue of Rs 41.67 cr and FY26 PAT of Rs 0.13 cr, with FY25's Rs 24.43 cr PAT almost entirely other income (Rs 32.20 cr for the year, Rs 30.80 cr of it in a single quarter). So a Rs 1,335 cr market cap sits on Rs 41.67 cr of revenue (32x sales) and essentially no earnings - BSE's own header shows EPS -0.06 and PE -14,853. Nothing here clears the bar, and the Rs 99.94 cr must not be reported as an order."
+  },
+  {
+   "ticker": "SILVERTUC",
+   "scrip": "543525",
+   "name": "Silver Touch Technologies Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1713.8,
+   "call_close": 135.15,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "NOT PUBLISHED - a real order, but in the weakest bucket the study measured, from a frequent announcer, on a rich multiple. Opened the filing: purchase order from ITI Ltd (Network Systems Unit, Bengaluru, a DoT PSU) for 80 high-performance enterprise servers with a 3-year warranty for an Indian Army deployment, Rs 35,63,18,292.20 inclusive of GST, supply in up to 3 lots within 6 months, won through a two-bid tender plus reverse auction. A separate 8-year AMC of Rs 14,04,07,208.04 is envisaged 'at a later date upon successful completion of the warranty period, if required' - a contingent future award, not part of today's order, so the 'Rs 49.67 cr aggregate over 11 years' the filing quotes should not be counted as intake. Against FY26 revenue of Rs 315.13 cr the Rs 35.63 cr gross is 11.3%, and about 9.6% after an assumed 18% GST - i.e. the under-10%-of-sales bucket, which reached 2x within two years only 21.4% of the time against 35.7% for the 25-50% bucket. On rarity it is the wrong side too: this is its THIRD order announcement in 15 days (22-Sep Gujarat Energy Ltd, 26-Sep Space Applications Centre/ISRO, 07-Oct ITI), three in the 240-day window read (announcements_status complete; the full two-year count is unmeasurable because BSE refuses date ranges over 12 months). And it is not cheap - BSE header PE 39.29 on EPS 3.44, PB 14.75 - while the stock is already down 28.0% in three months. Size, rarity and price all point the same way."
+  },
+  {
+   "ticker": "BLUECLOUDS",
+   "scrip": "539607",
+   "name": "Blue Cloud Softech Solutions Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1875.7,
+   "call_close": 20.32,
+   "published": false,
+   "confidence": "n/a",
+   "reason": "NOT PUBLISHED - today's filing is not new information, and the announcement pattern is the playbook's explicit skip. Opened the filing: it is a follow-up to a disclosure dated 25-Sep-2026, reporting that Global Impx Inc, USA - a wholly owned subsidiary - has COMMENCED DELIVERY of an AI-infrastructure engagement for IBM Cloud Inc at a fixed fee of US$15,500,000 (about Rs 147 cr), with work 'under way on requirement gathering and infrastructure assessment, the first phases of a 13-phase implementation plan'. The order was already announced twelve days earlier, so there is no new order today; what is new is that phase 1 of 13 has begun. Against FY26 revenue of Rs 637.02 cr the Rs 147 cr is 23.1% of a year's sales, just under the study's best bucket - but 79 announcements in 240 days (status complete) read as a press-release engine rather than an order book: a 'STRATEGIC PLAN TO INVEST UP TO US$1 BILLION IN NEXT-GENERATION AI-POWERED DATA CENTER BUSINESS' (09-Feb-2026), an LOI for a national ISP licence (18-Feb), MoUs with GCIB for Africa (28-Apr, 20-Aug) and Afro Mobile SARL, a five-year master services agreement (13-Jul) and multiple Hyderabad City Police work orders. There is also a structure worth understanding before anything is published: the company ACQUIRED Global Impx Inc - the entity receiving the IBM fee - from ConnectM Technology Solutions Inc (board approval 23-Feb-2026, press release 06-Apr-2026), and ConnectM Technology Solutions then appears as a Reg 29(1) acquirer of Blue Cloud shares on 24-Jun-2026, with AstraBridge Inc on 23-Jun-2026. The acquisition consideration was NOT read this run (those filings were not opened), so no figure for it is asserted. Promoter holding is only 38.44%, BSE header PE 36.29 on PB 18.64, and the stock is down 23.5% over a year despite the announcement flow. The trigger is a press release about a previously announced order; skipped."
+  }
+ ],
+ "published": [
+  "2026-10-07-SWASTIKAIN"
+ ],
+ "x_checked": [
+  {
+   "name": "Swastika Infra (544949)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com, three queries run ~20:05 IST 2026-10-07: 'Swastika Infra MSEDCL order 615 crore', 'Swastika Infra Limited IPO SWASTIKAIN', '$SWASTIKAIN Swastika Infra order book MSEDCL'.",
+   "posts_found": "ONE on-topic post in total: @ipo_space (Mar-2025) listing companies that had filed a DRHP, Swastika Infra among them as a mainboard issue. Nothing at all on the MSEDCL order, the IPO pricing or the listing. Most results were name collisions - Swastika Castal (an unrelated BSE SME aluminium caster), Swastika Investmart (a broker), and the historical symbol - which the RHP itself flags as a risk (risk factor 54).",
+   "new_verified": "One point only, and a trivial one: that the company filed for a mainboard IPO, confirmed by the RHP dated 17-Sep-2026 and the BSE new-listing notice effective 30-Sep-2026. No number from X entered the note.",
+   "blocked": "cdn.syndication.twimg.com is BLOCKED by this sandbox's egress proxy (curl: CONNECT tunnel failed, 403; fetch tool: EGRESS_BLOCKED), so NO post text could be read by id - the gist recorded is from the search-result title only, and no post is quoted. Also: the order was filed at 09:44 and 09:54 IST today and search indexing lags a day or two, so a same-day post may exist and not have surfaced. 'Nothing found' here means nothing surfaced in these three searches, not that X is silent."
+  },
+  {
+   "name": "IZMO (532341)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'IZMO izmo Microsystems silicon photonics IIT Madras CPPICS', run ~20:06 IST 2026-10-07.",
+   "posts_found": "Several, all about the programme rather than the company's economics: @iitmadras on CoE-CPPICS launching two indigenous silicon-photonics products with the MeitY Secretary, @iitmadras on a Rs 1 cr QRNG licence to Indrarka Quantum Technologies, @GoI_MeitY and @PIB_India on the same launches, the centre's own handle @IitSilicon, and @REDBOXINDIA reporting IZMO entering a partnership with CCRAFT and Alcyon Photonics for silicon-photonics solutions.",
+   "new_verified": "The X material CORROBORATED the no-publish verdict rather than adding to a thesis: it confirms CPPICS is an IIT Madras MeitY-funded centre of excellence (established 01-Jan-2021 with roughly US$4.5mn of seed funding per the search summary) in which izmo Microsystems is a packaging partner credited on the FAU attachment tool and the QRNG engineering - exactly the partner role the 07-Oct-2026 filing describes, with no order value to IZMO. Nothing from X was added to a published note, because nothing was published.",
+   "blocked": "cdn.syndication.twimg.com blocked as above - no post text read by id. The @REDBOXINDIA claim of a CCRAFT / Alcyon Photonics partnership was NOT matched to any filing read this run, so it stays unverified."
+  },
+  {
+   "name": "Silver Touch Technologies (543525)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'Silver Touch Technologies SILVERTUC ITI Limited order servers', run ~20:08 IST 2026-10-07.",
+   "posts_found": "No substantive third-party post. Results were company-operated handles (@silvertouchind, @SilverTouchTec2, @SilverTouchUSA_) and one unrelated market news-bulletin account. A reference to an Indian Navy mandate appeared in the search summary but in no post this run could read.",
+   "new_verified": "None. No number from X entered any note.",
+   "blocked": "cdn.syndication.twimg.com blocked as above. Today's order was filed in the evening and indexing lags, so absence is not evidence of silence."
+  },
+  {
+   "name": "Blue Cloud Softech (539607)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'Blue Cloud Softech BLUECLOUDS IBM Cloud order Global Impx', run ~20:08 IST 2026-10-07.",
+   "posts_found": "The company's own handle @BCSS_bluecloud, a Moneycontrol markets post, and @BSNL_TN announcing that BSNL signed a 5G FWA service agreement with Blue Cloud Softech Solutions in Tamil Nadu. Nothing from an independent analyst on the IBM engagement.",
+   "new_verified": "None entered a note - nothing was published on this name.",
+   "blocked": "cdn.syndication.twimg.com blocked as above. IMPORTANT unverified lead to record: the search summary states Global Impx was acquired for Rs 373 cr in April 2026. That figure was NOT matched to any primary filing read this run (the 23-Feb and 06-Apr-2026 acquisition filings were not opened), so it is recorded here as an UNVERIFIED claim and no consideration figure is asserted anywhere in this run. If true it would matter a great deal - Rs 373 cr paid for the subsidiary now receiving a Rs 147 cr order - and it is the first thing to check before this name is ever revisited."
+  }
+ ],
+ "vp_checked": [
+  {
+   "name": "all four researched names (SWASTIKAIN, IZMO, SILVERTUC, BLUECLOUDS)",
+   "result": "NOT MEASURED - forum.valuepickr.com is BLOCKED by this sandbox's network egress proxy. Measured twice, two ways, at ~20:02 IST 2026-10-07: curl -A 'stocks-dashboard-research/1.0' https://forum.valuepickr.com/ returned 'curl: (56) CONNECT tunnel failed, response 403' with an HTTP/1.1 403 Forbidden from the proxy itself, and the fetch tool on forum.valuepickr.com/search.json?q=Swastika%20Infra returned EGRESS_BLOCKED. So no search.json query, no thread and no raw post could be read for any of the four names. This is 'could not check', NOT 'nothing found', and the two must not be conflated: whether a dedicated thread exists for any of these companies is unknown this run. vp_threads is empty on the published idea for this reason, and the idea's valuepickr field says so explicitly rather than claiming an empty forum."
+  }
+ ],
+ "watch": [
+  {
+   "item": "MITSU and other polymer converters",
+   "note": "The polyethylene/polypropylene group is up with strength 6.00 on a 2026-07 import unit price. For a converter without pass-through this is an input-cost red flag; logged as a watch line, no short idea, per the playbook."
+  },
+  {
+   "item": "ARFIN, MANIKA, HTEL, RAKSAN, RAMBHAJO, AVADHSUGAR",
+   "note": "Volume breakouts of 3.1x to 21.2x the 60-day median with NO filing to explain them. Watch-listed by rule, not researched. Re-examine any of them only if a filing with a number follows."
+  },
+  {
+   "item": "Swastika Infra - Q2 FY27 results, due by mid-November 2026",
+   "note": "The first results the company will ever file. The board's own FY27 projection implies about Rs 180 cr a quarter against FY26's Rs 126 cr average; the half-year will show whether the Rs 718 cr trajectory is live. Also watch for the IPO anchor lock-in expiry on the 12.74% institutional block."
+  },
+  {
+   "item": "Swastika Infra - ADB funding claim",
+   "note": "The press release says the Bhandup project is ADB-funded; the Reg 30 annexure does not mention ADB. adb.org was not reachable from this sandbox, so the claim is unverified and is recorded as such in the idea's 'verify' section."
+  },
+  {
+   "item": "Blue Cloud Softech - Global Impx acquisition consideration",
+   "note": "An unverified X-search figure of Rs 373 cr (April 2026) for the subsidiary now receiving the Rs 147 cr IBM engagement. Open the 23-Feb-2026 board-outcome and 06-Apr-2026 press-release filings before this name is revisited."
+  },
+  {
+   "item": "Paper and pulp map tag",
+   "note": "The commodity map lists ANDHRAPAP and SESHAPAPER under 'benefit' for a group whose fresh evidence is a rising waste-paper IMPORT unit price, which for a recovered-fibre mill is a cost. Flagged for the owner; scripts and maps are his to change, so nothing was edited."
+  }
+ ],
+ "map_changes": "None. theme_map.json and commodity_map.json were NOT edited. govt.json kept zero releases and zero unmapped_releases, so there was no unmapped government decision to build a basket for; and no strong commodity group lacked a mapped small cap in a way that a document read this run could have justified adding a name to. The one map observation worth the owner's attention - the paper-and-pulp 'benefit' tag described above - is recorded under watch rather than acted on.",
+ "data_problems": [
+  "SANDBOX EGRESS, not source failures: pib.gov.in, westmetall.com, markets.businessinsider.com, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, tradingeconomics.com, eaindustry.nic.in and tradestat.commerce.gov.in ALL returned 403 Forbidden at the proxy's CONNECT from this sandbox. GitHub Actions reached every one of them except westmetall.com (302) and tradestat.commerce.gov.in (302, builder still worked) at 18:56-19:01 IST today with steps_failed empty, so today's commodity and government data is present and fresh - it was written by Actions, not by this run. Reported as sandbox-blocked, which is what it is.",
+  "api.bseindia.com and www.bseindia.com both answered 200 from this sandbox with the honest headers from scripts/bse_headers.py, so BSE was fully usable: the scan, four dossiers, the 460-page RHP, the shareholding XBRL and every trigger PDF were read live. One BSE endpoint did rate-limit: Corpfinancialresult for scrip 544949 returned a 302 to error_Bse.html on one call (no results exist for that newly listed scrip anyway).",
+  "cdn.syndication.twimg.com is BLOCKED (403 at CONNECT, and EGRESS_BLOCKED via the fetch tool), so no X post could be read by id for any of the four researched names. WebSearch itself works, so posts could be FOUND; their full text could not be read, and the gists recorded come from search-result titles only. No post is quoted anywhere in this run.",
+  "forum.valuepickr.com is BLOCKED (curl CONNECT 403; fetch tool EGRESS_BLOCKED), so the ValuePickr sweep could not run for any name. Recorded as 'could not check', never as 'nothing found'.",
+  "STALE STAMPS, as the prompt requires me to say: signals.json carries wpi_month 2026-04 and trade_month 2026-07 - six and three months behind today. Those are the publication lags of eaindustry.nic.in and the commerce ministry, not failures, but they mean the WPI and trade evidence behind nine of the ten highest-strength groups has not changed in weeks and is not news today. spot_date 2026-10-07 18:56 IST and india_built 2026-10-07 19:49 IST are same-day. The Ministry of Steel series is quoted nowhere in this run because minsteel.py could list no new report from this sandbox.",
+  "A UNIT DEFECT IN THE GLOBAL SPOT PANEL, found while reading the sugar group and reported rather than fixed (the owner owns the scripts): docs/ideas/spot.json records sugar at last 0.2 'USc per lb.' for 2026-10-07, while the Trading Economics row for the same date in the same group gives 20.4 USd/Lbs - a 100x difference, so the spot sugar LEVEL is wrong by two orders of magnitude. Percentage changes off that series (the +11.1% 1w driving the sugar strength) remain valid if the scaling is consistently wrong across the series, but the absolute level must not be quoted, and it was not quoted in this run. Source: scripts/ideas/spot.py's insider parser; n=11 readings on that series.",
+  "scan.py's announcement read was CAPPED: 1,159 rows read against BSE's reported 1,196 for 2026-10-07, short by 37. The counts in the scan file are a FLOOR. The 37 unread rows are the earliest of the day, so a filing made very early on 07-Oct-2026 by a universe company could have been missed. Both of today's researched morning filings were captured.",
+  "NIBE's Infomerics rating letter (pages 2-7 of the 07-Oct-2026 attachment) is IMAGE-ONLY with no extractable text, so no rating rationale or revenue expectation could be read. Per the hard rules, nothing was inferred from it; the verdict rests only on the intimation's own text (IVR BBB-/Stable and IVR A3, action 'Rating Assigned').",
+  "Swastika Infra's FY26 'emphasis of matter' is referenced in RHP risk factor 54 but its text was not located in the pages read, so its subject is UNKNOWN and is recorded as such in the idea's unknowns and verify sections. Its IPO issue price was likewise not read this run: the RHP carries a blank price band and the final prospectus was not opened.",
+  "Swastika Infra's order-filing history before 30-Sep-2026 is unmeasurable: BSE carries announcements only from the listing date and refuses date ranges over 12 months, so the two-year prior-filing count behind the study's rarity test cannot be computed. The RHP's top-five order table was used instead and is explicitly a top-five list, not a complete history - which is why the rarity signal is reported as an artifact rather than as the 30.4% bucket."
+ ],
+ "note": "Three lanes worked, one idea published. GOVERNMENT produced nothing and that is the correct answer: 52 PIB releases scanned by GitHub Actions at 18:56 IST, 0 kept, 0 unmapped, no theme added, nothing manufactured. COMMODITY produced nothing either, and the reason is worth recording because it was a close call: the strongest-strength groups are all driven by WPI for 2026-04 and trade for 2026-07 - evidence months old that has not moved in weeks - while the one genuinely fresh daily mover, ICE sugar at +11.1% on the week, dies at the Indian border: every Chinimandi ex-mill M/30 print is flat to MINUS 15.7% on the month, on deep series, because Indian sugar is set by MSP, release quotas and ethanol diversion rather than by ICE. AVADHSUGAR had shown up independently in the scan on 6.2x volume at the window high, which is exactly the confluence this lane hunts, and it was rejected on the Indian print rather than published on the global one. No Indian print anywhere in the panel moved more than 2.6% on the week, and that one sits on four readings and is not marked deep. FILINGS carried the day: 15 candidates, four names researched from their own primary documents, one published. The published idea - Swastika Infra, a Rs 615.76 cr MSEDCL LOA worth 1.22x a trailing year's sales on a Rs 717 cr market cap six trading days after listing - rests on a 460-page RHP read from BSE, and the single most useful thing in it was not a disclosure but an arithmetic recovery: the board's CA-certified FY27 working-capital projection, expressed in days of revenue, inverts to management's own FY27 revenue assumption of about Rs 718 cr (+42.6%), with five independent line items agreeing to within 2.6%. It is held to medium confidence, and the reason is the kind of honesty this page is for: the 'first order filing in two years' rarity that the 1,245-filing study rewards most is, here, an artifact of a six-day listing history - the RHP's own top-five table shows five large DISCOM wins between October 2023 and July 2026, which is the serial-bidder side of the study, not the rare-filer side. The three names NOT published are as much of the day's output as the one that was, and one of them is a number that should never reach a reader as an order: IZMO's 'Rs 99.94 crore MeitY programme' is a five-year research outlay of which MeitY pays Rs 97.54 cr and izmo Microsystems commits Rs 2.40 cr in cash and in kind - IZMO is a net PAYER under an MoU, on a Rs 1,335 cr market cap carrying Rs 41.67 cr of FY26 revenue and Rs 0.13 cr of FY26 PAT."
+}
