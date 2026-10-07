@@ -512,6 +512,11 @@ except Exception as _e:
 # so left alone they would sit in the 52-week high/low for a year. Convention: set them to the day's close. Touches only
 # the ex-day bar of events flagged flatten_exday AND present in the demerger ledger; the close, turnover, volume and vw
 # are never changed. Idempotent: a converged bar already reads o=h=l=c and is skipped.
+# §179i (user 2026-10-07, "option 2"): every demerger day keeps its TRADED open/high/low (Quantmac's "demerger prints remain
+# raw"; the §179h average-price factor already counts every trade of the day). The 33 days §170 flattened carry
+# restore_exday instead of flatten_exday: their bar's open/high/low are rebuilt from NSE's raw prints stored on the event
+# (open/high/low/close of the era symbol), scaled by the bar's own adjustment (stored close / raw close). Same guards, same
+# idempotence (a restored bar already holds those values); the close, turnover, volume and vw are never changed.
 DEMERGER_CATCHUP = os.path.join(HERE, "demerger_catchup.json")
 
 def flatten_demerger_exdays(data):
@@ -521,7 +526,8 @@ def flatten_demerger_exdays(data):
         print("  (demerger_catchup.json not loaded: %s)" % e); return 0
     n = 0
     for x in events:
-        if not x.get("flatten_exday"): continue
+        restore = bool(x.get("restore_exday"))
+        if not x.get("flatten_exday") and not restore: continue
         sym, ex = x["sym"], int(x["ex"])
         if (sym, ex) not in MANUAL_DEMERGERS:
             print("::warning::§170 flatten: %s %d has no demerger_adj.json row — ex-day bar left as traded" % (sym, ex)); continue
@@ -531,9 +537,18 @@ def flatten_demerger_exdays(data):
         if j is None or ds[j] != ex:
             print("::warning::§170 flatten: %s has no bar on its ex-day %d — nothing flattened" % (sym, ex)); continue
         c = e["c"][j]; changed = False
-        for key in ("op", "h", "l"):
-            if key in e and e[key][j] != c:
-                e[key][j] = c; changed = True
+        if restore:
+            rc = float(x.get("close") or 0)
+            if rc <= 0: continue
+            s = c / rc                                   # the bar's own adjustment for the actions after it
+            for key, rk in (("op", "open"), ("h", "high"), ("l", "low")):
+                v = _pxr(float(x[rk]) * s)
+                if key in e and e[key][j] != v:
+                    e[key][j] = v; changed = True
+        else:
+            for key in ("op", "h", "l"):
+                if key in e and e[key][j] != c:
+                    e[key][j] = c; changed = True
         n += changed
     return n
 
@@ -1965,7 +1980,7 @@ def main():
     healed = self_heal(data, CA_OFF, NOADJ, int(D["end"].replace("-", "")), j)
     if healed: print("Self-heal corrected %d corporate action(s)." % healed)
     fx = flatten_demerger_exdays(data)   # §170: close-priced demerger ex-days -> o/h/l = close
-    if fx: print("Demerger ex-days (§170): set open/high/low to the close on %d bar(s)." % fx)
+    if fx: print("Demerger ex-days (§170/§179i): open/high/low set to the close or restored to the traded print on %d bar(s)." % fx)
     # §161 queue upkeep: an UNCONFIRMED move is resolved once an official record covers its ex-date
     # (split/bonus -> reconciled by self_heal above; demerger/scheme -> the raw drop is already the
     # right treatment) or it is a verified crash in phantom_crashes / LEGACY_FALSE_CA. The rest stay

@@ -23761,6 +23761,17 @@ factor): 137 differing = RULE DIFFERENCE 129 (B 30 = FRL 6 + MARICO 7 + WELCORP 
 chart step; C 27 value-based GRASIM/CADILAHC; D 18 ex-day print; E 16; F 8; G 26; H 4) + UNKNOWN 8 (WIPRO 7, CADILAHC 1). Group A (Quantmac =
 ex-day VWAP): 81 of 82 now agree; the 82nd (IBREALEST 2012-03-30 d52) has the same factor and differs only by the 21-Apr-2011 ex-day print
 (their 52w high = traded high 150.90 x 0.8501 = 128.28 -> 50.226%, exactly theirs) -> D. Tally 318,384 / 318,496.
+**§179i — EVERY DEMERGER DAY KEEPS ITS TRADED PRINT (user 2026-10-07, "option 2").** The §170 convention set the open/high/low of 33
+close-priced ex-days (all before 2015) to the close; with the §179h average-price factor the user chose to keep the traded open/high/low on
+every demerger day (Quantmac's own stated rule: "Demerger prints remain raw"). Options put first (measured on the 154 quantmac cells near the 33
+days): (1) keep flattening 117/154; (2) keep every print 132/154 — the stale old-price prints stay (ADANIENT 2015-06-03 traded 573.30 at the
+old -10% limit, closed 109.75) and 3 matching cells break; (3) flatten only stale prints 135/154. User: option 2. Since flatten_demerger_exdays
+could only flatten, it gained a RESTORE mode: demerger_catchup.json's 33 events carry restore_exday (flatten_exday_170 keeps the old flag) and
+the bar's open/high/low are rebuilt from the raw prints stored on the event x the bar's own adjustment (stored close / raw close), _pxr-rounded;
+idempotent; close / t / v / vw untouched. Dry run (release = live 6624c54461): exactly 33 ex-day bars changed (98 o/h/l values, each = raw x
+adjustment), nothing else; second run 0, sha identical. Quantmac (their 6-Oct file) on the dry-run data: 318,399 / 318,496 (+18: all group-D
+cells — BAJAJHLDNG 2, GRASIM 6, IBREALEST 10; -3: ADANIENT 2016-04-29 / 2016-05-31 d52 and FRL 2014-03-31 d52, whose 52w high is now the
+stale ex-day print Quantmac leaves out).
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
