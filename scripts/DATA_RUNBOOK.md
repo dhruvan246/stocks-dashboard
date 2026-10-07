@@ -23733,6 +23733,25 @@ Rs 1,077.25 = BSE), Max chart continuous 2002 -> 2026, 0 console errors. SPICEJE
 stopped printing it after 2023-04-28; starts 2020) — the backtest store holds the fill. Favourites (ab_precision.js, today's engine,
 8 favourites x 2 windows): 0 changed picks, identical totals / CAGR / drawdown / trades in all 16 runs.
 
+**§179h — PRE-OCT-2015 DEMERGERS PRICED BY THE EX-DAY AVERAGE PRICE (user 2026-10-07: "u also take ex day average price before 2015 for all
+companies").** Rule now: every demerger ex-date BEFORE 2015-10-01 (NSE's special pre-open call auction on restructuring ex-dates starts that
+day, NSE/CMTR/57270) -> factor = ex-day AVERAGE traded price (NSE bhavcopy TOTTRDVAL / TOTTRDQTY, era symbol) / previous close (OUR previous
+bar's raw NSE close, §170), capped at 1.0 (§170d: a spin-off cannot add value). From 2015-10-01 the auction-open rule is unchanged; §170's
+ex-day flattening (flatten_exday) is unchanged. Scope: the 53 demerger rows before 2015-10-01 in demerger_adj.json (47 §170 catch-up events
++ ZUARIIND 2012, WIPRO 2013, POLARIS 2014, GREENPLY 2014, ASAHISONG 2015, SFCL 2015 — each a demerger on NSE's own CA feed, nse_ca cache);
+UNIONBANK 2009 / APTECHT 2014 are §170e large-dividend rows and are NOT touched; RELMEDIA 2009 (not_adjusted) stays unadjusted (VWAP 342.64 >=
+prev 338.95). Every VWAP lies inside its day's low-high. 47 rows re-priced (old factor kept as factor_170 / rule_170 in demerger_catchup.json,
+rule 'vwap', provenance added for the 6 non-catch-up rows), e.g. ADANIENT 2015-06-03 0.1723 -> 0.1891, BAJAJHLDNG 2008-03-14 0.3705 ->
+0.4042, GRASIM 2010-05-26 0.7929 -> 0.8149, WIPRO 2013-04-09 0.9069 -> 0.8944; 6 unchanged (single-price days or capped: UNITDSPR, MANINDS,
+OCL, RSWM, ZUARIIND, GREENPLY); PGIL 2014 0.7087 -> 0.7085 sits inside self_heal's rounding band and does not move the bars. Applied by
+self_heal (no code change). Tool: `~/stocks-cache/qm-recon-tools/reprice_demergers_vwap_179h.py` (input dry/vwap_rule_179h.json).
+**Dry run** (`dry_main.py`, release base = live b5c67aee9c): exactly 46 "SELF-HEAL ... demerger f=" lines; 44 symbols changed and each equals
+the base with self_heal's own correction re-derived bar for bar (45 checked incl. PGIL, 0 mismatches); meta / dates / t / v / dv unchanged;
+second run 0 heals, decompressed sha256 identical. **Quantmac (their 6-Oct file) on the dry-run data:** 318,384 / 318,496 (was 318,326):
++84 cells now agree (SMARTLINK 26, IBREALEST 24, JINDALSAW 12, ALSTOMT&D 8, FRL 4, SKUMARSYNF 3, D-LINK 3, ADANIENT 2, JUBILANT 1, WIPRO 1),
+-26 now differ — MARICO 2013 (7), WELCORP 2014 (8), BALKRISIND 2015 (9): Quantmac's factor there is the ex-day OPEN (our old §170 Case-A
+value), plus CADILAHC 2009-04 d52 and GRASIM 2010-10 d52 (their value-based factor); rule differences by the user's choice.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
