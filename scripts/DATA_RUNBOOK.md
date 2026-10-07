@@ -23720,8 +23720,9 @@ meta unchanged; a second `insert_sme_history` on the filled file inserts 0. **Ef
 (KENNAMET 31-Dec-2019 -6.137 % from +94.78 %; theirs blank, NSE-only) -> RULE DIFFERENCE (BSE trading while NSE did not, by the user's
 decision); 14 d52 / d52low cells of the same two stocks Dec-2019..May-2020 that agreed now differ for the same rule (our 52-week window
 includes the BSE bars before 19-Aug-2019); nothing else moved. Both-valued 318,326 / 318,496; differing 195 = RULE DIFFERENCE 183,
-UNKNOWN 12, OUR ERROR 0. **Not in this fix (open, for the user):** SPICEJET's stored 1996-1999 fragment is not BSE's level (stored / BSE
-drifts 0.32 -> 1.06, volumes differ — the §179f penny phantom-split class); ESSARSHIP 29-Oct-2001 -> 11-Mar-2008 hole (old "Essar
+UNKNOWN 12, OUR ERROR 0. **Not in this fix:** SPICEJET's stored 1996-1999 fragment is not BSE's level (stored / BSE drifts 0.32 -> 1.06, volumes
+differ) — DROPPED 2026-10-07, out of scope (user asked why we check it; SPICEJET was no Nifty 500 member then and those bars feed
+no N500-era number: its first N500 month-end is Dec-2019, whose look-backs reach 2018). Open: ESSARSHIP 29-Oct-2001 -> 11-Mar-2008 hole (old "Essar
 Shipping Ltd" fragment, no ISIN; NSE ESSARSHIP from 2008-03-11 — identity unproven; its ret12m Jan/Feb-2009 looks back to 2001).
 **§179g LIVE VERIFIED 2026-10-07 ~05:30 IST.** Push 6413c9e5f -> dispatched refresh-backtest-data run 37548479908 (success): its log
 prints the same two lines as the dry run ("SME-BACKFILL KENNAMET->KENNAMET: 4171 bars filled the hole 20020930 -> 20190819", SPICEJET
