@@ -23922,6 +23922,11 @@ VWAP for the index), not an auction. HELD on VWAP pending the owner: FRL 17-Apr-
 -10% limit; ADANIENT 0.9000 vs close 109.75 / 637). Tool reprice_demergers_auction_179m.py. Dry run (release base = live 021db7c330 by split rev):
 exactly 14 SELF-HEAL lines, only those 14 symbols changed, pre-ex arrays one constant ratio each, post-ex identical; 2nd run 0 heals, identical; split rev
 2aa82cb4f7. Quantmac 8-Oct file on it: 318,427 / 318,496 (+24: all group B; -1 WIPRO, now auction open 0.9069 vs their 33/37).
+**§179m LIVE VERIFIED (2026-10-08 09:26 IST).** Push 0fa5e9b95 -> dispatched 'Daily backtest data refresh' run 37723992342 (success): the 14 SELF-HEAL
+lines above (+ POLICYBZR / LATE, routine), split rev 2aa82cb4f7 == the dry-run split rev; browser fetch of sf_deep: MARICO 2013-10-31 c 104.3579,
+BALKRISIND 2015-03-23 305.0073, WIPRO 2013-04-08 76.3181 (= dry run); strategy-backtest.html console clean. Favourites: 0 changed picks in 16 runs
+(one long-window CAGR -0.03). Quantmac 8-Oct file on live: 318,427 / 318,496; 94 differing (C 28, W 8, D2 4, E 16, F 8, G 26 = RULE DIFFERENCE 90;
+H 4 REIAGROLTD = OUR ERROR, fix awaits the owner). Page v8 (cells_page_r13.json).
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
