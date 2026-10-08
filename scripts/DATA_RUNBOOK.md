@@ -23815,6 +23815,16 @@ differ too): prove a counterparty's factor from its cells, never from its chart.
 factor only). Questions in the Note: (1) WIPRO 0.891892 source; (2) the stale-print rule; (3) is the open intended for the 4 B demergers; (4) REI Agro
 halt rule. OPEN for the owner: the group-B open-price choice (unanswered since §179h); the owner sends reply #6 to Quantmac.
 
+**§179k — QUANTMAC corrected_20261008 compared (2026-10-08 07:49 IST).** Parsed with parse_qm_corrected.py -> nse_bhav/qm_ind_r8.json. Their changes vs
+6-Oct (cell by cell): FRL 7 cells (17-Apr-2013 factor open 0.9000 -> ex-day VWAP / prev = ours; that open Rs 144.00 = 90% of Rs 160.00, the old
+limit) and CASTROLIND 81 cells (52w-high levels, e.g. 360.10 -> 360.00; all agreed before and after, worst gap to ours 0.0026 -> 0.0001); nothing
+else. Ours: live 021db7c330 (end 2026-10-07) vs out_179i.bin (= ba75e78741) bar by bar to 2026-10-06 (cmp_live_vs_179i.py): 5,267 identical,
+ARIHANTACA one constant x0.5 scale (corporate action; ratios unchanged), 3 new listings (GREENASIA, INSURADD, PAPADMALJI); none of the 4 in their
+file -> yesterday's dump stands. qm_cells.py (QIND qm_ind_r8, DUMP qmdump_179i, ENGINE origin) -> dry/qm_cells_r8.json: 318,404 / 318,496;
+status moves only 5 FRL differ -> agree (2013-11/12 d52 + vs200, 2014-01 d52). FRL 2014-02-28 d52: theirs now 36.868 = our factors with FRL's
+2013 demerger days set to close (36.8680) -> B -> D2. 117 differing = B 24 (MARICO 7, WELCORP 8, BALKRISIND 9), C 28, D2 4, E 16, F 8, G 26,
+H 4 (RULE DIFFERENCE 110) + U1 WIPRO 7 (UNKNOWN). Page v6 (cells_page_r11.json, scratchpad page_r11.py). Reply #7 not built (not asked).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
