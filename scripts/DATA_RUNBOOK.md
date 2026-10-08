@@ -121,6 +121,11 @@ loads every session. (README.md is just a short pointer here — this file is th
      GESHIPPING), renamed holders (Thai Union Frozen Products = Thai Union Group), and the right company's code (HEXT 532129, not
      544362).
   5. Before telling the user or the outside party "ours stands", count ONLY cells verified this way and state how many are not.
+  6. CONSENSUS (user, 2026-10-08: "not just screener check on money control as well as cont mac if everyone agrees then we should
+     agree"): compare Screener, Moneycontrol AND Quantmac. Where all three have a figure, agree with each other and differ from us, move
+     to their figure - computed from the filing (e.g. the sum of its rounded sub-rows), never typed in from a site. Where a source has no
+     figure, ask the user with one example. Measured 8-Oct: Screener adds the foreign sub-rows after rounding each to 2 dp; Quantmac and
+     Moneycontrol's current page use the filing's printed Institutions (Foreign) total. Tools and method: §164r batch 30 parts 52-54.
   Evidence: one day of real cell-by-cell reading (2026-10-05, §164r batches 15-20) found 1,570 of OUR cells wrong that earlier replies
   had defended - the DR-basis mislabels, 84 CHOLAHLDNG cells called "checked, ours stands" by a check that read the wrong ticker, 38
   DR companies never tested, HEXT answered "please name your rows" when our base was wrong, the AVANTIFEED holder rename, and the

@@ -9,6 +9,8 @@ session: OUR ERROR (fix via ledger) / THEIR ERROR (name the row) / RULE DIFFEREN
 file or a memory note — those have been wrong (1,570 of our cells found wrong in one day of real cell-by-cell reading). Check
 renamed tickers (both ways) and renamed holders first. The user asked for this many times over three months and said they will stop
 using Claude if it happens again. Full rule: DATA_RUNBOOK §0, first rule. Applies to every session and every model.
+Consensus (user, 2026-10-08): if Screener, Moneycontrol and Quantmac all agree with each other and differ from us, we move to their
+figure (computed from the filing, never typed from a site); if one has no figure, ask the user. DATA_RUNBOOK §0 first rule, point 6.
 
 ## Concurrency contract — multiple writers share this repo, READ FIRST
 
