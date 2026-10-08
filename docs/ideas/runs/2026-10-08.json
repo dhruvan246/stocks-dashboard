@@ -1,0 +1,278 @@
+{
+ "date": "2026-10-08",
+ "run_started": "2026-10-08 19:44 IST",
+ "run_finished": "2026-10-08 20:07 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1201,
+ "candidates": 10,
+ "filings_status": "BSE answered 200 from this sandbox on the setup probe (ComHeadernew, scrip 500002) with the honest headers from scripts/bse_headers.py, so lane three ran live: the scan, four dossiers and every trigger PDF were read from api.bseindia.com / www.bseindia.com directly. universe.py rebuilt from the BSE scrip master: 1,201 names in the Rs 200-2,000 cr band (772 B, 128 X, 114 T, 77 M, 57 XT, 48 MT, 3 A, 1 MS, 1 P; 837 with an NSE symbol; 126 SME) - byte-identical to the file GitHub Actions wrote at 18:59 IST, so universe.json needed no commit. scan.py --days 65 read 1,035 announcements against BSE's own ROWCNT of 1,035 for the day: announcements_capped FALSE, so 1,035 is the day's full count and not a floor; announcements_source 'bse', announcements_blocked FALSE, read at 19:50 IST. 51 of the 1,035 mapped into the universe, 100 rows carried a signal, 10 scored >= 4. This run's scan SUPERSEDES the GitHub Actions scan of 18:58 IST (945 announcements, 8 candidates): the extra 90 rows are the post-close flood, and they carried both of the day's late filings - Onix Solar's Q2 results at 18:59 IST and the BSE clarification notice on Kwick Forensic at 19:04 IST.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), so govt.py exited 0 and left docs/ideas/govt.json untouched, exactly as runbook 144e designs it. NOT a data gap for today: GitHub Actions reached PIB at 18:56 IST and feeds_status.json records allRel.aspx at 200 with the govt step rc=0. That build scanned 45 English releases, opened 3 and KEPT NOTHING: 38 dropped for carrying no decision verb, 4 noise, 3 below the Rs 1,000 cr floor, 0 for having no mapped theme. unmapped_releases is EMPTY too, so there was no big decision in an unmapped sector to chase and no theme_map.json addition to make. Zero kept is the correct and most common answer, and nothing was manufactured from it.",
+ "commodity_status": "All six builders ran from this sandbox and all but one source refused at the proxy, so the live numbers are the ones GitHub Actions wrote at 18:56-19:01 IST (feeds_status.json, steps_failed []). spot.py: every source failed (westmetall.com and markets.businessinsider.com, 403 at CONNECT) - spot.json and spot_series.json LEFT UNCHANGED. minsteel.py: steel.gov.in 403 at CONNECT, no report listed, committed file left as it was (latest Ministry of Steel report is still June 2026). india_spot.py: metalbook, ibja, rubber, sugar, fuel and te all FAILED (403 at CONNECT) with previous rows kept; nmdc ok 2 rows and minsteel ok 3 rows, both read through api.bseindia.com / the committed file. 0 history rows appended, and india_history.json.gz WAS rebuilt - 143 series, 77,922 dated points (not 'NOT rebuilt'). wpi.py: eaindustry.nic.in 403, wpi.json.gz LEFT UNCHANGED. trade.py --latest: tradestat.commerce.gov.in 403, docs/ideas/trade/** LEFT UNCHANGED. signals.py read the committed panels and ranked 44 groups. STAMP AGE, as required: spot_date 2026-10-08 18:56 IST and india_built the same day are fresh; wpi_month is 2026-04 and trade_month 2026-07, SIX and THREE months old - the ministries' publication lag, not a failure, but it means the WPI and trade evidence carrying today's high-strength groups has not changed in weeks and is not news today. ONE REAL GAP TODAY, at Actions and not at this sandbox: the Chinimandi sugar read FAILED there too ('chinimandi parsed too few rows'), so every Indian ex-mill sugar print is a previous row, not a 2026-10-08 reading. WHAT WAS AND WAS NOT COMMITTED, measured: docs/ideas/india_spot.json, signals.json, nmdc_history.json and india_history.json.gz were rewritten by this run's builders but are NOT committed. Their data rows are identical to Actions' version - india_spot.json compared source by source (every price row equal; the only difference inside the nmdc and minsteel blocks is the 'fetched' stamp), signals.json's 'groups' array byte-identical, nmdc_history.json's rows identical, india_history.json.gz 143 series / 77,922 points equal key by key - while the only real change is the per-source STATUS string, which this sandbox would have degraded from Actions' accurate 'metalbook: ok, 42 rows / ibja: ok, 7 rows / rubber: ok, 8 rows / fuel: ok, 8 rows / te: ok, 65 rows' to proxy-403 'FAILED ... previous rows kept' for five reads that genuinely SUCCEEDED today. Committing them would make ideas.html report today's live commodity panel as failed. Same call as the 2026-10-06 and 2026-10-07 runs, for the same measured reason.",
+ "candidates_considered": [
+  {
+   "ticker": "PHCAP",
+   "scrip": "500143",
+   "score": 5,
+   "signals": "DEAL, CORPACT, RESULT",
+   "verdict": "Skipped, and the headline number is an artefact. The three filings are the allotment of BONUS equity shares, the incorporation of subsidiaries and a board-meeting outcome - all three are the playbook's explicit skips (corporate action, no stated number). The scan's ret_5d of -90.2% and ret_20d of -88.1% are the bonus adjustment working through an unadjusted close, not a price move: window high Rs 1,355.00 against today's Rs 125.75. Not an idea."
+  },
+  {
+   "ticker": "ARFIN",
+   "scrip": "539151",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "WATCH, not researched - the playbook researches a volume breakout only when a filing explains it. Volume 18.0x the 60-day median, closing AT the 65-day high (Rs 107.29), +20.6% in five sessions, +23.5% over the window, on Rs 25.4 lakh median turnover. Checked BSE's announcement feed for the scrip from 2026-09-01 to today: the only filings are an interim dividend with its record date, an AGM outcome and two trading-window closures. No order, no capex, no result, no rating. Aluminium is the natural commodity link and it does not support an idea either: the aluminium group's strength is 2.53 and its headline is WPI Aluminium ingot 1m +7.6% for the 2026-04 month, while the daily Trading Economics aluminium print is 3,065.28 USD/T, MINUS 8.83% on the month. A volume explosion is an alarm bell, not evidence (81% of 5x runs had one and so did 78% of the stocks that went nowhere)."
+  },
+  {
+   "ticker": "HTEL",
+   "scrip": "544891",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "WATCH, not researched. Volume 8.2x the 60-day median at the window high, +34.1% in five sessions, Rs 286.3 lakh median turnover - but only 26 trading sessions of history (listed September 2026), so the '65-day window high' is the whole life of the quote, and no filing in the scan explains the move. Price-only move, watch-listed per the playbook."
+  },
+  {
+   "ticker": "MITSU",
+   "scrip": "540078",
+   "score": 4,
+   "signals": "VOL, BREAKOUT",
+   "verdict": "WATCH, not researched, and the commodity read is a NEGATIVE one. Volume 7.6x at the window high, +46.8% over the window on a Rs 277 cr market cap, with no filing to explain it. Mitsu Chem Plast is a polymer CONVERTER (moulded plastics), so it sits on the suffer side of the polyolefins group, whose strength is 6.00 up (import unit price 1m +241.4% on HS 3902 polypropylene for the 2026-07 month, WPI Polyethylene 3m +16.9%). A rising input price without documented pass-through is a red flag on such a name, not a reason to research it, and the playbook forbids publishing short ideas."
+  },
+  {
+   "ticker": "SHREEREF",
+   "scrip": "544458",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "RESEARCHED, NOT PUBLISHED - a real Indian Navy order, but the smallest size bucket the study measured, from a frequent announcer, on a PE of 62. See researched[]."
+  },
+  {
+   "ticker": "EMSLIMITED",
+   "scrip": "543983",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "RESEARCHED, NOT PUBLISHED - Rs 129.80 cr Jodhpur sewerage LoA is the largest order of the day, but it lands on a business whose revenue has fallen 35% and whose order filings run at one every fortnight. See researched[]."
+  },
+  {
+   "ticker": "JDCABLES",
+   "scrip": "544524",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "RESEARCHED, NOT PUBLISHED - the most interesting business of the four and the weakest trigger: the order is 7.1% of a year's sales and it is the company's eighth order filing in two years. See researched[]."
+  },
+  {
+   "ticker": "MOL",
+   "scrip": "543331",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "Skipped - the ORDER tag is a mis-classification by the scan's keyword pass. The filing is 'receipt of NCLT order' for a Scheme of Arrangement (filed 18:33 IST), i.e. a corporate action, not a work order. No number for an order book, and schemes of arrangement are an explicit skip."
+  },
+  {
+   "ticker": "KWICK",
+   "scrip": "544895",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "Skipped - also a mis-classified ORDER. The filing (19:04 IST) is BSE SEEKING CLARIFICATION from the company on significant price movement. 'Clarifications on price movement' are the playbook's named skip, and the move itself is the evidence of nothing: +40.8% in 20 sessions on 0.5x volume with 24 sessions of listed history."
+  },
+  {
+   "ticker": "ONIXSOLAR",
+   "scrip": "513119",
+   "score": 4,
+   "signals": "RESULT x2",
+   "verdict": "RESEARCHED, NOT PUBLISHED - the fresh Q2 FY27 numbers (18:59 IST) are a revenue COLLAPSE, not growth. See researched[]."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "No idea. The whole strength is WPI Crude Petroleum 3m +85.6% and 12m +88.1% for the 2026-04 month - evidence six months old that has not moved in weeks. The group's mapped beneficiaries (ONGC, Oil India, Hindustan Oil Exploration, Selan Exploration) are either outside the Rs 200-2,000 cr universe or unmapped into it, so there is no small cap to research even if the signal were fresh."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "No new idea, and the fresh print disagrees with the signal. The headline is WPI Silver 12m +152.4% (2026-04 month); the dated Indian print is IBJA silver 999 at Rs 2,17,106/kg, MINUS 1.7% on the week and MINUS 7.2% on the month on a deep series of 95 readings, and Trading Economics silver is -12.21% on the month. The mapped small cap, MODISONLTD, was published on 2026-09-22 on exactly this signal and filed no new hard trigger today."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "No idea. Strength comes entirely from trade unit prices for the 2026-07 month, and the series contradicts itself inside the same group: export unit price 'sy' +606.5% on HS 284180 sits beside export unit price 1m -43.4% and 3m -36.8% on HS 8101. US$21.2mn and US$7.6mn a month are small enough that one shipment moves the unit price, which is the caveat the page itself carries. No fresh Indian print exists for tungsten."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "strength": 7.62,
+   "direction": "up",
+   "verdict": "No idea. The only evidence is a global Containerized Freight Index, 1y +228.6% but just +2.0% on the month, and the group's own note records that no free daily index is wired yet (Baltic indices are paid). The mapped names (SCI, Great Eastern, Seamec) are all outside the Rs 200-2,000 cr universe."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "strength": 6.97,
+   "direction": "up",
+   "verdict": "No idea today, and worth re-reading when the WPI month turns. The evidence is strong but stale-stamped (WPI Sulphuric Acid 1m +20.9% and 12m +91.4% for 2026-04; import unit price 3m +95.2% for 2026-07), and the one genuinely daily series in the group, Trading Economics sulfur, is MINUS 10.43% on the month even though it is +181.7% on the year. Tanfac Industries is the mapped purest exposure and it is outside the universe band; no small cap is mapped to it. No name added on a hunch."
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "strength": 6.03,
+   "direction": "up",
+   "verdict": "No idea. WPI Alkyl Benzene 1m +18.1% is 2026-04 evidence; the fresh daily prints are Chinese (styrene 11,520 CNY/MT, +15.04% on the month) and the mapped beneficiaries are Reliance and Indian Oil - neither is a small cap, and no Indian rupee print for the chain exists in india_spot."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "strength": 6.0,
+   "direction": "up",
+   "verdict": "Used as a RED FLAG, not an idea. Import unit price 1m +241.4% on HS 3902 (2026-07 month, US$262.8mn/month) with WPI Polyethylene 3m +16.9%; the daily TE prints are Chinese and mixed (polyethylene +1.65% 1m, polypropylene -1.90% 1m). India has no listed polyolefin producer in the Rs 200-2,000 cr band, so the only use of this group today was to mark MITSU, a polymer converter that appeared in the scan on 7.6x volume, as a sufferer rather than a beneficiary."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "strength": 5.59,
+   "direction": "up",
+   "verdict": "No idea. The headline is import unit price 3m +83.9% on HS 2713 - which is petroleum BITUMEN, the needle-coke proxy code, i.e. the INPUT whose rise squeezes an electrode maker, and the group's own history note says so. The mapped names, HEG and Graphite India, are both far outside the universe band."
+  },
+  {
+   "group": "Copper",
+   "strength": 5.25,
+   "direction": "up",
+   "verdict": "No idea today. The strength is smoothed-year trade unit prices for 2026-07 (HS 7407 +157.5%, HS 7404 +64.2%); the dated Indian prints are flat - MetalBook Mumbai CC rods Rs 1,464/kg and Delhi Rs 1,450/kg, both dated 2026-10-06, -0.27% and 0.0% against their previous reading - and TE copper is -3.52% on the month. The recyclers mapped here (Sunlite, Parmeshwar, Baheti, KSH, Bhagyanagar) need a RISING copper price for the inventory-gain leg of the thesis, and the Indian print is not giving one."
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "strength": 2.05,
+   "direction": "up",
+   "verdict": "No idea. The only Indian series with depth is the Ministry of Steel's, and it is the JUNE 2026 month (Mumbai TMT 10 mm Rs 57,950/t, -6.74% on May; HR coil 2.50 mm Rs 68,170/t, -1.19%; CR coil 0.63 mm Rs 78,020/t, -0.13%) - three to four months old and FALLING. MetalBook's city prints for 2026-10-06 move by 0.0-2.6% against their previous reading. The strength is carried by a global proxy (HRC Steel 1y +61.5%), and 'their steel' on Trading Economics is Shanghai rebar in yuan (3,063 CNY/T, -1.03% on the year), not Mumbai HRC."
+  },
+  {
+   "group": "ALL India prints, screened",
+   "strength": null,
+   "direction": null,
+   "verdict": "Screened every one of the 60 dated Indian rows across all 44 groups for a move of 4% or more on the week or the month: NOT ONE qualifies in either direction on a fresh date. The largest monthly moves are all DOWN and all in sugar (Muzaffarnagar M/30 -15.9%, Delhi -15.7%, Chennai -15.3%, on deep 989-, 989- and 621-reading series), then IBJA silver 999 -7.2% and the June-2026 Ministry of Steel rebar print -6.7%. The only Indian rows UP on the month are Rubber Board RSS4 at Kottayam and Kochi, Rs 28,200/100kg, +3.7% on the month and +0.7% on the week - below the threshold and below the bar for an idea. So the commodity lane produced nothing today, and the reason is measurable rather than a judgement: the high-strength groups rest on WPI for 2026-04 and trade for 2026-07, while every price with a date in the last ten days is either flat or falling."
+  }
+ ],
+ "govt_considered": [],
+ "researched": [
+  {
+   "ticker": "JDCABLES",
+   "scrip": "544524",
+   "name": "JD Cables Ltd",
+   "lane": "filing",
+   "mcap_at_call": 408.1,
+   "call_close": 180.95,
+   "published": false,
+   "confidence": "n/a - not published",
+   "reason": "NOT PUBLISHED - the best business of the four names and the weakest possible trigger, and one audited number that has to clear first. Opened the filing: a work order for 'Manufacturing, Testing, Supply & Delivery of Cables & Conductors for approx. Rs. 30.43 Crores including GST', awarded by - verbatim - 'Reputed Government & Private Entity'. The counterparty is not named anywhere in the letter or its Annexure A, so there is nothing to verify on a tender portal. Against the one order ratio the 1,245-filing study found predictive: Rs 30.43 cr incl GST is about Rs 25.8 cr ex-GST on FY26 revenue of Rs 364.59 cr (audited, from the company's own June-2026 presentation and the BSE results feed) = 7.1% of a trailing year's sales, i.e. the under-10% bucket that reached 2x 21.4% of the time, not the 25-50% band that reached it 35.7%. Rarity, measured rather than guessed: counted every 'Award of Order / Receipt of Order' filing by scrip 544524 from 2026-10-09 back two years in 90-day windows - 2025-09-26, 2025-12-23, 2025-12-27, 2026-01-12, 2026-01-19, 2026-07-23, 2026-09-15 and today = EIGHT in two years. The study's serial-announcer bucket (8+ prior filings) reached 2x only 17.3% of the time and 5x NEVER. Weakest size bucket plus serial-announcer bucket is the exact combination the study says not to buy an order filing on. What IS real, all from documents read this run: Q1 FY27 revenue Rs 81.81 cr vs Rs 48.78 cr, +68% YoY (business update filed 2026-07-22); order book ~Rs 515 cr at March 2026 = 1.41x FY26 revenue, with Rs 1,000 cr+ of tenders bid (June-2026 presentation and the 04-Jun-2026 earnings call transcript); management guidance in that transcript of 50-60% revenue growth in FY27 and again in FY28 at similar 12-13% EBITDA margins, with EPC revenue going from Rs 30 cr in FY26 to 'minimum Rs 200 crores' in FY27; the new Dankuni unit (~1.18 lakh sq ft) more than doubling installed capacity - conductor division commercial production commenced 07-Jul-2026 and the cable division on 14-Sep-2026, both filed under Reg 30; credit rating upgraded by Infomerics from IVR BBB-/Stable to IVR BBB/Stable on 01-Jul-2026 with rated bank facilities raised from Rs 71.70 cr to Rs 83.00 cr; FY26 EBITDA Rs 48.11 cr (13.17%), PAT Rs 31.72 cr (8.69%), EPS Rs 14.07, ROE 21.70%, D/E 0.39, promoter 70.0% with no pledge disclosed; BSE header PE 12.86 at today's Rs 180.95, against the only same-industry peer in the site index, Systematic Industries at PE 29.68. The stock is down 25.6% in three months. The number that stops it: the FY26 annual report's audited cash flow statement shows cash USED IN operating activities of Rs 73.51 cr (FY25: Rs 18.21 cr used) against PAT of Rs 31.72 cr - working capital absorbed Rs 107.58 cr (receivables +Rs 34.71 cr, inventories +Rs 42.81 cr, short-term loans and advances +Rs 21.61 cr, payables -Rs 9.48 cr). It was funded by Rs 84.46 cr of share issue proceeds plus net borrowings; closing cash and cash equivalents at 31-Mar-2026 were Rs 0.54 LAKH. AOC-2 shows a net Rs 9.14 cr loan from the Managing Director during the year (promoter remuneration Rs 21.60 lakh, which is modest against PAT). The auditor's report is unmodified, with no qualification or adverse remark, and no going-concern matter. So every rupee of reported profit currently sits in working capital, the IPO money that plugged the gap is spent, and the stated plan is to scale EPC - the most working-capital-hungry business the company has - almost sevenfold. Verdict: researched in full and not published. It goes on the watch list with a specific, dated test rather than a view: the H1 FY27 results due in November 2026 (SME half-yearly filer) and the FY27 annual report's cash flow statement. If operating cash flow turns positive while the capacity and order book hold, the trigger that was missing today exists then."
+  },
+  {
+   "ticker": "EMSLIMITED",
+   "scrip": "543983",
+   "name": "EMS Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1786.2,
+   "call_close": 321.65,
+   "published": false,
+   "confidence": "n/a - not published",
+   "reason": "NOT PUBLISHED - the day's largest order, landing on the day's fastest-shrinking revenue line, from the most prolific order announcer in the scan. Opened the filing and its Annexure A: Letter of Award from Municipal Corporation Jodhpur for 'Laying of New Sewer Line in Left out Area and redesigning and rejuvenation of old and damaged sewer line and lateral Sewerage System in Jodhpur City including 1 Year defect Liability with 10 Years O&M under Amrut 2.0', estimated order value Rs 12,980.13 lakh = Rs 129.80 cr INCLUDING GST and EXCLUDING O&M, 24 months, domestic entity, and it is a continuation of the L-1 status already disclosed on 17-Aug-2026 - so the only new fact today is that L-1 converted to an LoA. Size against sales, the predictive ratio: ex-GST the order is about Rs 110 cr. Trailing twelve months of revenue from the BSE results feed is Rs 522.54 cr (Q2 FY26 144.41 + Q3 168.75 + Q4 83.66 + Q1 FY27 125.72), so the order is 21.0% of a trailing year's sales - BELOW the 25-50% band that reached 2x 35.7% of the time. Rarity: the opposite of rare. The dossier's 240-day announcement list carries SIX 'Award of Order / Receipt of Order' filings in the last 85 days alone - 15-Jul-2026 (UP Jal Nigam LOA), 31-Jul-2026 (Delhi Jal Board LOI), 20-Aug-2026 (UP Jal Nigam Varanasi LOA), 29-Aug-2026 (NHAI LOA), 09-Sep-2026 (NHAI LOA) and today. That is the study's 8+-prior-filings bucket: 2x 17.3% of the time, 5x never. And the business is going backwards while the order filings pile up. From the BSE results feed: FY26 revenue Rs 608.10 cr and PAT Rs 88.47 cr against FY25 Rs 940.62 cr and Rs 182.27 cr - revenue -35.4%, PAT -51.5%. Q1 FY27 revenue Rs 125.72 cr against Rs 211.32 cr a year earlier, -40.5%, with PAT Rs 15.03 cr against Rs 37.38 cr. BSE header PE 27.01 and PB 2.05 on earnings that have halved; the stock is -41.6% over a year and -23.4% in three months. Promoter holding steady at 69.7%. Verdict: an order that is 21% of a shrinking year's sales, disclosed for the second time, from a company filing one such order a fortnight, at 27x. Nothing here clears the bar."
+  },
+  {
+   "ticker": "SHREEREF",
+   "scrip": "544458",
+   "name": "Shree Refrigerations Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1334.0,
+   "call_close": 372.65,
+   "published": false,
+   "confidence": "n/a - not published",
+   "reason": "NOT PUBLISHED - a genuine Indian Navy order, in the smallest size bucket the study measured, from a frequent announcer, at 62x earnings. Opened all four pages of the filing. Order of Rs 7.86 crore EXCLUDING GST from the Controller Procurement Material Organisation, Mumbai (Indian Navy), for the supply of two Magnetic Bearing Compressor based AC Plants, delivery timeline 05-Oct-2027; Annexure A confirms it is a domestic award, not a related-party transaction and with no promoter-group interest in the awarding entity. Annexure B is a press note headlined 'secures fresh Indian Navy orders worth Rs. 14 crore' - read carefully, that Rs 14 cr is an AGGREGATE of 'multiple fresh defence orders... over the past one-and-a-half months', of which today's is Rs 8.25 cr including GST and the rest are spares, defect rectification and further MBC plants. The disclosed single order is Rs 7.86 cr, and that is the number used here. Size against sales: FY26 revenue Rs 153.55 cr with PAT Rs 21.40 cr (audited, BSE results feed), so Rs 7.86 cr is 5.1% of a trailing year's sales - the under-10% bucket (2x 21.4% of the time), and even the aggregated Rs 14 cr press-note figure would only be 9.1%. Rarity: the dossier's 240-day list shows SIX order filings - 18-Mar, 17-Apr, 14-May, 04-Jun, 29-Aug-2026 and today - so this is a routine disclosure cadence for a defence supplier, not a first-in-two-years event. Valuation leaves no room for a 5% order either: BSE header EPS Rs 6.01 and PE 62.00 at today's Rs 372.65 on a Rs 1,334 cr market cap, after +90.7% in six months, with promoter holding 44.6% (September-2026 shareholding not yet filed; the latest on file is March 2026). Verdict: the order is real and the Navy relationship is real; the filing is still 5% of a year's sales on 62x, which is not an idea. Watch instead for the H1 FY27 results - the FY26 print of Rs 153.55 cr already beat the Rs 140-150 cr the company guided to in February 2026."
+  },
+  {
+   "ticker": "ONIXSOLAR",
+   "scrip": "513119",
+   "name": "Onix Solar Energy Ltd",
+   "lane": "filing",
+   "mcap_at_call": 1371.3,
+   "call_close": 371.95,
+   "published": false,
+   "confidence": "n/a - not published",
+   "reason": "NOT PUBLISHED - the scan flagged this on two RESULT filings; the results themselves are a revenue collapse, and the balance sheet does not describe a manufacturer. Opened the 11-page results PDF filed at 18:59 IST (standalone and consolidated, with limited review). Q2 FY27 (quarter ended 30-Sep-2026) revenue from operations Rs 3,187.60 lakh = Rs 31.88 cr, against Rs 4,336.63 lakh = Rs 43.37 cr in the same quarter last year: MINUS 26.5% YoY. Sequentially it is worse - Q1 FY27 was Rs 9,373.56 lakh, so revenue fell 66.0% quarter on quarter. PAT of Rs 191.54 lakh (Rs 1.92 cr) against a loss of Rs 75.54 lakh a year earlier reads like a turnaround only until you see Q1's Rs 2,083.13 lakh. H1 FY27 revenue Rs 125.61 cr is +42.0% on H1 FY26's Rs 88.47 cr, entirely on Q1. The scan's own RESULT trigger therefore fails the playbook's test, which asks for revenue growth of 30%+ YoY WITH PAT growth. What the filed statements show about the business: cost of material consumed is NIL in every column and depreciation is NIL for the quarter on property, plant and equipment of Rs 707.26 lakh; the entire cost line is 'Purchase of Stock-in-Trade' of Rs 2,817.80 lakh. The note says the company deals in only one segment, 'Renewable Energy Sector Solar Module Products' - so on these numbers it buys and resells rather than manufactures. Of Rs 888.10 cr of total assets, Rs 631.64 cr are non-current INVESTMENTS and Rs 24.84 cr are loans and advances, against Rs 170.09 cr of trade receivables - and those receivables nearly doubled from Rs 90.39 cr at 31-Mar-2026 while half-yearly sales were Rs 125.61 cr. Cash and cash equivalents are Rs 4.12 lakh. Equity was raised in the half year: share capital went from Rs 2,507.02 lakh to Rs 3,686.79 lakh, i.e. 1,17,97,736 new shares of Rs 10, with reserves up Rs 71.12 cr against H1 PAT of Rs 22.75 cr - so about Rs 48.4 cr of share premium, Rs 41 per share, implying an issue price of Rs 51. An X post describing a rights issue of 1,17,97,736 shares at Rs 51 (8:17, record date 15-May-2026) matches the filed capital and premium arithmetic exactly, which is how that claim was verified; it is also 86% below today's Rs 371.95 close. Verdict: revenue down 26.5% YoY and 66% sequentially, receivables doubling on falling sales, no raw material and no depreciation under a 'solar module products' label, and a Rs 1,371 cr market cap on it. Not an idea, and the kind of RESULT trigger the scan is expected to surface and the research is expected to reject."
+  }
+ ],
+ "published": [],
+ "x_checked": [
+  {
+   "name": "JD Cables (544524)",
+   "searched": "WebSearch restricted to x.com / twitter.com, query 'JD Cables Limited order cables conductors', run ~19:58 IST. Post bodies could NOT be read: cdn.syndication.twimg.com is blocked at this sandbox's egress proxy (403 at CONNECT via curl, EGRESS_BLOCKED via WebFetch), so only the text the search index itself returned was available.",
+   "posts_found": "TWO on-topic posts. @nid_rockz (undated in the result) summarising management guidance: 'FY27 guidance: 50-60% revenue growth YoY vs FY26 with similar EBITDA margins', 'EPC scale up 200cr rev in FY27', 'New capacity: Dankuni facility 1.18 lakh sqft', 'Conductor division to start immediat...'. @RajStockWatch (2025) on the SME IPO: '~95% of the production is Aluminium ACSR conductor', '2 manufacturing units near Kolkata with combined capacity of 28,000kM per year (80% utilization)', 'Rs.250Cr Sales in Fy25 and a Rs.294Cr orderbook as of Aug 2025'.",
+   "new_verified": "The @nid_rockz guidance claims are CONFIRMED by primary documents read this run: the 04-Jun-2026 earnings call transcript has the MD saying 'We are expecting 50% to 60% revenue growth in this financial year and even in the next financial year', 'similar level of margins', and EPC 'In '26, we have booked around INR30 crores and for '27, we are expecting minimum INR200 crores'; the Dankuni facility of ~1.18 lakh sq ft is in the June-2026 investor presentation. So the post is an accurate summary of a filed transcript, not new information.",
+   "not_verified": "@RajStockWatch's 'Rs 250 cr sales in FY25' CONTRADICTS the company's own filed presentation, which shows FY25 revenue of Rs 25,052.58 lakh = Rs 250.53 cr - actually a match, but its '95% of production is ACSR conductor' contradicts the same presentation's FY26 product mix of 76% cables and wires / 24% aluminium conductors (Rs 25,256.32 lakh vs Rs 8,152.35 lakh). The 'Rs 294 cr orderbook as of Aug 2025' could not be matched to any filing read this run and is not used. Nothing on today's Rs 30.43 cr order surfaced at all - search indexing lags a day or two, so a same-day post may exist and not be findable."
+  },
+  {
+   "name": "Shree Refrigerations (544458)",
+   "searched": "WebSearch restricted to x.com / twitter.com, query 'Shree Refrigerations Navy order defence HVAC', ~20:00 IST. Post bodies not readable (cdn.syndication.twimg.com blocked, as above).",
+   "posts_found": "Company handle @shree_ref exists. @SaurabhJ1999 (2025): 'Shree refrigeration ltd got 106 Cr order from hindustan shipyard ltd'. @Ashishkafunda (Dec-2024) on the DRHP: industry described as 'chillers, refrigeration, air conditioning appliances, and parts of the HVAC'. A valve maker's FY26-27 call summary lists Shree Refrigerations among new customers.",
+   "new_verified": "NONE. The Rs 106 cr Hindustan Shipyard claim is dated 2025 and was not matched to any filing read in this run (the dossier's 240-day window starts 2026-02-20), so it stays unverified and unused. Today's Rs 7.86 cr order did not surface on X.",
+   "not_verified": "'Rs 106 cr order from Hindustan Shipyard' (@SaurabhJ1999, 2025) - outside the window of filings read this run. The valve maker's customer-list mention is a third party's claim about its own customer, not a Shree Refrigerations disclosure."
+  },
+  {
+   "name": "EMS Ltd (543983)",
+   "searched": "WebSearch restricted to x.com / twitter.com, two queries ('EMS Limited EMSLIMITED order book revenue decline Q1 FY27'), ~20:01 IST. Post bodies not readable (as above).",
+   "posts_found": "Nothing current. Only @stockaajorkal (Feb-2025) 'EMS : WINS RS 278 CR ORDER' and @vijay118 (2024) on why sewage-network work carries '>28%' EBITDA margins ('Sewage network works on Gravity flow whereas in water supply network water is pumped'). Most results were name collisions with electronics-manufacturing-services companies, which is the standing hazard for this ticker.",
+   "new_verified": "NONE. No post found on today's Jodhpur LoA, on Q1 FY27 or on the 35% revenue decline - the single most important fact about this company this year is absent from X as indexed.",
+   "not_verified": "The Feb-2025 'Rs 278 cr order' and the 2024 margin explanation were not matched to filings read in this run and are not used."
+  },
+  {
+   "name": "Onix Solar Energy (513119)",
+   "searched": "WebSearch restricted to x.com / twitter.com, query '\"Onix Solar\" Energy Limited results module 513119', ~20:02 IST. Post bodies not readable (as above).",
+   "posts_found": "Three on-topic: @wegro_app on a rights issue 'of up to Rs 65 Cr... 1,17,97,736 equity shares at Rs 51 each, on a 8:17 ratio basis. The record date is May 15, 2026'; @IndiaIncFilings (2025) on an open offer by Onix Renewable Ltd for 16,27,698 shares (6.44%) at Rs 264.00; @_Investor_Feed_ (2025) on the stake shift and open offer.",
+   "new_verified": "ONE, and it is the most useful thing X produced today: the rights-issue post's share count is confirmed by the company's own filed balance sheet. Share capital rose from Rs 2,507.02 lakh to Rs 3,686.79 lakh in H1 FY27 = 1,17,97,736 shares of Rs 10 exactly, and reserves rose Rs 71.12 cr against H1 PAT of Rs 22.75 cr, leaving ~Rs 48.4 cr of premium = Rs 41 per share, i.e. an issue price of Rs 51. The post therefore matches the primary document to the rupee, and the Rs 51 issue price five months ago sits against today's Rs 371.95 close.",
+   "not_verified": "The 2025 open-offer price of Rs 264.00 and the 73.20% preferential allotment to Onix Renewable Limited were not matched to any filing read this run (outside the dossier window) and are not relied on."
+  }
+ ],
+ "vp_checked": [
+  {
+   "name": "JD Cables (544524)",
+   "searched": "forum.valuepickr.com is BLOCKED at this sandbox's egress proxy - search.json answered 403 at CONNECT via curl and EGRESS_BLOCKED via WebFetch - so the forum could not be read directly. Fell back to WebSearch restricted to forum.valuepickr.com, two queries including an extended-mode one ('JD Cables JDCABLES order book conductor ACSR', '\"JD Cables\" OR JDCABLES ValuePickr smallcap thread discussion').",
+   "threads_found": "NONE. No dedicated thread and no substantive mention surfaced in either search; the hits were other cable companies (Dynamic Cables, Cords Cable) and generic smallcap threads. Because the forum's own search API was unreachable, this is 'not found by web search', NOT 'no thread exists'.",
+   "new_verified": "None.",
+   "not_verified": "None."
+  },
+  {
+   "name": "Shree Refrigerations (544458)",
+   "searched": "Same block (403 at CONNECT / EGRESS_BLOCKED). WebSearch restricted to forum.valuepickr.com, query 'Shree Refrigerations ValuePickr thread'.",
+   "threads_found": "ONE dedicated thread: 'Shree Refrigerations - SME' in SME Stocks, https://forum.valuepickr.com/t/shree-refrigerations-sme/206635, opened September 2025 just after the BSE SME listing, about 21 replies and ~6.3k views, latest activity visible in the snippets around June 2026 - a lightly active thread. Only search-result excerpts were readable, not the thread itself.",
+   "new_verified": "ONE check, and it goes the company's way: a February-2026 post citing a company presentation records FY26 revenue guidance of Rs 140-150 cr with a 40-50% growth target, and the audited FY26 print read this run from the BSE results feed is Rs 153.55 cr - guidance met and slightly beaten. The bear point members raise about cash conversion ('weak cash conversion cycle and long inventory') is a theme the filings read this run neither confirm nor refute for this name - no cash flow statement was read for Shree Refrigerations in this run, so it is listed as unverified rather than used.",
+   "not_verified": "The Smardt data-centre chiller tie-up as a growth driver, the complaint about promoter pay, the 117-employee R&D criticism drawn from a 2024 annual report, and the 'rebranding foreign partners' technology' argument - none were matched to a primary document read this run."
+  },
+  {
+   "name": "EMS Ltd (543983)",
+   "searched": "Same block. WebSearch restricted to forum.valuepickr.com, query 'EMS Limited sewerage water EPC ValuePickr'.",
+   "threads_found": "ONE dedicated thread: 'EMS Limited - Tapping in the growth in the water management space' in Stock Opportunities, https://forum.valuepickr.com/t/ems-limited-tapping-in-the-growth-in-the-water-management-space/157945. The readable excerpts are 2024-vintage. Thread not readable in full (forum blocked).",
+   "new_verified": "NONE as a number, but one forum claim is consistent with what the filings show and is worth recording as a flag rather than a fact: members note that cash flow from operations has been negative for four years, attributed to retention money and long payment cycles. No EMS cash flow statement was read this run, so it stays unverified. The thread's 2024 figures - Rs 1,800 cr+ unexecuted order book, Rs 4,000 cr+ pipeline, 24-26% EBITDA margin, 12% bid-win rate - are all two years old and were not matched to anything read today.",
+   "not_verified": "The order-book and pipeline figures above; the GST investigation and the blacklisting by two agencies after five labourer deaths (a governance claim members raise - not matched to any filing read this run, and not used in the verdict, which rests on the filed revenue decline)."
+  },
+  {
+   "name": "Onix Solar Energy (513119)",
+   "searched": "Same block. WebSearch restricted to forum.valuepickr.com, query '\"Onix Solar\" OR \"Onix Renewable\" ValuePickr'.",
+   "threads_found": "NONE. No thread or mention surfaced; hits were other solar names (Solex, Oriana, Premier Energies). Again 'not found by web search', not 'does not exist'.",
+   "new_verified": "None.",
+   "not_verified": "None."
+  }
+ ],
+ "watch": [
+  "ARFIN (539151, Rs 1,810 cr): 18.0x median volume, closing at the 65-day high, +20.6% in five sessions, and NO filing between 2026-09-01 and today except an interim dividend and the AGM outcome (checked directly against BSE's announcement feed). Watch for an order, capex or H1 result that explains the move; the aluminium signal does not (WPI ingot +7.6% is the 2026-04 month, TE aluminium is -8.8% on the month).",
+  "HTEL (544891, Rs 918 cr): 8.2x volume at the window high, +34.1% in five sessions, 26 sessions of listed history, no filing. Watch for its first results as a listed company.",
+  "MITSU (540078, Rs 277 cr): 7.6x volume at the window high, +46.8% over the window, no filing; a polymer converter facing a rising polyolefin input (group strength 6.00 up), so the commodity read is a red flag rather than a thesis. Watch for a filing that documents pass-through.",
+  "JDCABLES (544524): the one name researched today with a dated test rather than a view - H1 FY27 results due November 2026 and the FY27 cash flow statement. Operating cash was MINUS Rs 73.51 cr in FY26 against PAT of Rs 31.72 cr; if that turns while the Rs 515 cr order book and the new Dankuni capacity hold, the missing trigger exists."
+ ],
+ "map_changes": [
+  "NONE. theme_map.json unchanged (govt.json kept 0 releases and listed 0 unmapped ones, so there was no decision to map). commodity_map.json unchanged: no strong group lacked a mapped small cap in a way that a document read this run could fix - the groups with no small-cap name (crude, tungsten, freight, sulphuric acid, benzene/PTA, polyolefins, graphite electrodes) have none because India has no listed producer of those in the Rs 200-2,000 cr band, not because the map is missing one. No name was added on a hunch."
+ ],
+ "data_problems": [
+  "SANDBOX EGRESS, not source failures: pib.gov.in, westmetall.com, markets.businessinsider.com, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, tradingeconomics.com, eaindustry.nic.in and tradestat.commerce.gov.in ALL returned 403 Forbidden at the proxy's CONNECT from this sandbox. GitHub Actions reached every one of them except westmetall.com (302) and tradestat.commerce.gov.in (302) at 18:56-19:01 IST today with steps_failed empty and landing.refused empty (15 files landed), so today's commodity and government data is present and fresh - written by Actions, not by this run.",
+  "api.bseindia.com and www.bseindia.com both answered 200 from this sandbox with the honest headers from scripts/bse_headers.py, so BSE was fully usable: the scan (1,035 announcements, uncapped), four dossiers, every trigger PDF, the JD Cables annual report and the two-year order-filing count all came from BSE directly. Three older attachments 404'd on the AttachLive path and were fetched from AttachHis instead (the Q1 FY27 business update, the Infomerics rating letter and the 07-Jul-2026 conductor-production filing) - worth remembering: a 404 on AttachLive for a filing more than ~3 months old is a path issue, not a missing document.",
+  "X SWEEP DEGRADED, and exactly how: cdn.syndication.twimg.com is blocked at this sandbox's egress proxy - 403 at CONNECT for curl and EGRESS_BLOCKED for WebFetch - so NO post could be read by id this run. Every X finding above comes from the text WebSearch's index returned for the post, which is a snippet and may be truncated; the 15-word quoting limit was respected and nothing was quoted beyond what the index gave. WebSearch itself worked. Search indexing also lags a day or two, so a same-day post about today's filings may exist and be unfindable - 'nothing found' above never means 'nothing on X'.",
+  "VALUEPICKR SWEEP DEGRADED, same cause: forum.valuepickr.com is blocked at this sandbox's egress proxy (search.json 403 at CONNECT via curl, EGRESS_BLOCKED via WebFetch), so the documented recipe (search.json -> t/<id>.json -> raw/<id>?page=N at ~1 request/second) could not be run and no thread was read in full. The two threads reported above (Shree Refrigerations t/206635, EMS t/157945) were found through WebSearch restricted to the domain and summarised from search-result excerpts only. For JD Cables and Onix Solar the correct statement is 'not found by web search', NOT 'no thread exists'.",
+  "ONE GENUINE SOURCE GAP, at Actions rather than at this sandbox: india_spot's sugar read FAILED in the 18:57 IST Actions build with 'chinimandi parsed too few rows' even though chinimandi.com answered 200, so every Indian ex-mill sugar print in today's panel is a carried-forward previous row, not a 2026-10-08 reading. The sugar group's -13% to -16% monthly moves are therefore real but not current-dated; they were used only as a reason NOT to act on the global sugar proxy.",
+  "STAMP AGE, stated because the prompt requires it: wpi_month is 2026-04 (six months old) and trade_month is 2026-07 (three months old). Both are the ministries' own publication lag and both exceed three trading days by a wide margin, so every high-strength commodity group today rests on evidence that has not changed in weeks. The Ministry of Steel series is the June 2026 month. spot_date (2026-10-08 18:56 IST) and india_built are same-day.",
+  "pymupdf and xlrd were installed but not importable: pip resolves to Python 3.13's dist-packages while python3 on this VM is 3.11.17. Installed into the 3.11 interpreter explicitly (/usr/local/bin/python3 -m pip install pymupdf xlrd) and both import. minsteel.py and india_spot.py print a deprecation warning for the 'fitz' alias; harmless, and no builder was edited."
+ ],
+ "note": "Three lanes worked, nothing published, and the reasons are all measurements rather than judgements. GOVERNMENT produced nothing: GitHub Actions read the Press Information Bureau at 18:56 IST, scanned 45 English releases, opened 3 and kept ZERO - 38 carried no decision verb, 4 were noise, 3 fell below the Rs 1,000 cr floor, and nothing landed in an unmapped sector either. No theme was added, nothing was manufactured. COMMODITY produced nothing, and this is the clearest statement of why in a fortnight of these runs: every one of the 60 dated Indian prints across the 44 groups was screened for a 4%-or-more move on the week or the month, and NOT ONE qualifies in either direction. The biggest monthly moves are all falls - sugar -13% to -16% across eight cities on 989-reading series, IBJA silver 999 -7.2%, the June-2026 Mumbai rebar print -6.7% - while the only Indian rows up on the month are Rubber Board RSS4 at +3.7%. The ten groups with strength above 4 are carried entirely by WPI for 2026-04 and trade unit prices for 2026-07, six and three months stale, and where a group has a daily print it often points the other way (sulphur +181.7% on the year but -10.4% on the month; copper's Mumbai CC-rod print -0.27%; TE aluminium -8.8%). A signal whose only evidence is six months old is not news today. FILINGS carried the day's work and still came up empty, which is the discipline this page is for. Four names were researched from their own documents: three order filings and one results filing. All three orders fail the two ratios the 1,245-filing study measured - EMS's Rs 129.80 cr Jodhpur sewerage LoA is 21.0% of a TRAILING-TWELVE-MONTH revenue that has fallen 35% in a year, and it is that company's sixth order filing in 85 days; Shree Refrigerations' Rs 7.86 cr Navy order is 5.1% of a year's sales on a PE of 62, its sixth order filing in 240 days, and the press note's 'Rs 14 crore' is an aggregate of six weeks of orders rather than today's award; JD Cables' Rs 30.43 cr order is 7.1% of FY26 sales from a counterparty the filing declines to name, and the two-year count came back at EIGHT order announcements - the serial-announcer bucket that reached 2x 17.3% of the time and 5x never. Onix Solar's fresh Q2 is a 26.5% YoY revenue fall and a 66% sequential one, on a balance sheet with no material consumed, no depreciation and Rs 631.6 cr of investments out of Rs 888.1 cr of assets. The one name worth remembering is JD CABLES, and it is on the watch list with a date rather than a view: a 1.41x-sales order book, Q1 FY27 revenue +68%, a Dankuni unit that more than doubles capacity with both divisions now in commercial production, a July rating upgrade to IVR BBB with bank limits raised to Rs 83 cr, 12.9x trailing earnings - against an audited FY26 cash flow that shows Rs 73.51 cr CONSUMED by operations versus Rs 31.72 cr of PAT, closing cash of Rs 0.54 lakh, a Rs 9.14 cr net loan from the Managing Director, and a plan to take the most working-capital-hungry segment it has from Rs 30 cr to Rs 200 cr. Publishing on today's weak order would have been manufacturing an idea; the H1 FY27 results in November test the only thing that actually matters here. Two of the day's ten candidates were scan mis-classifications worth logging for the owner: Meghmani Organics' ORDER tag is an NCLT order for a scheme of arrangement, and Kwick Forensic's is BSE seeking clarification on price movement. Three more were volume-only breakouts with no filing (ARFIN at 18.0x median volume, HTEL at 8.2x, MITSU at 7.6x) and are watch-listed, not researched, exactly as the playbook directs - a volume explosion preceded 81% of 5x runs and 78% of the stocks that went nowhere. Both social sweeps ran but DEGRADED, and the degradation is named rather than hidden: cdn.syndication.twimg.com and forum.valuepickr.com are both blocked at this sandbox's egress proxy, so no X post was read by id and no ValuePickr thread was read in full; everything reported comes from WebSearch's own index text. They still earned their keep twice - the X claim of a 1,17,97,736-share rights issue at Rs 51 for Onix Solar was confirmed to the rupee against the filed balance sheet (share capital +Rs 1,179.77 lakh, premium ~Rs 48.4 cr = Rs 41 per share), and a February-2026 ValuePickr post's record of Shree Refrigerations guiding to Rs 140-150 cr for FY26 checks out against the audited Rs 153.55 cr."
+}
