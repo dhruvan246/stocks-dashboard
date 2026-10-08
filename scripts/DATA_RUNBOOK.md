@@ -23937,6 +23937,15 @@ bars x0.5200, c/h/l/op/vw; post-ex identical; join step now 0.9723); 2nd run 0, 
 unchanged. Quantmac 8-Oct file: 318,423 / 318,496; the 4 REIAGROLTD d52 cells 2009-05..08 now differ (they apply no factor) and the 4 vs200 values
 (theirs blank) are now on one basis -> 8 RULE DIFFERENCE; 98 differing, OUR ERROR 0. Known residual: share VOLUME before 25-Nov-2008 stays in old-share
 units (the 5:3 consolidation is not applied to v).
+**§179n LIVE VERIFIED (2026-10-08 10:04 IST).** Push 9f6212fbc -> dispatched run 37726700748 (success): 'SELF-HEAL REIAGROLTD ex 20081125: f=1.0000 -> 0.5200
+(983 pre-ex points)' (+ routine POLICYBZR / LATE), split rev 2163e14db3 == dry run; browser sf_deep: REIAGROLTD 2008-09-19 c 32.3653 -> 2008-11-25 31.4690.
+**§179o — REPLY #7 + OUR VALUES FILE (user: "mention every thing in your reply to quantmac. also create our prices files").**
+~/stocks-cache/qm-recon-tools/build_ind_reply_r7.py -> out/StockWorld_indicators_reply7_to_Quantmac_20261008.xlsx (Note, Summary, Differences 98,
+Your answers checked, Demerger days 55 with auction proof, All cells) + out/StockWorld_MonthEnd_Indicators_2009_2026_20261008.xlsx (our d52 / above-low /
+vs200 / 52w high / low / 200DMA / close for all 106,502 stock-dates in their layout, per-year sheets; levels on our adjusted basis). Built on dry/
+qm_cells_179n.json = live 2163e14db3. Their 8-Oct file vs live: 318,423 / 318,496; 98 differing = RULE DIFFERENCE 98 (C 28, W 8, D2 4, E 16, F 8, G 26,
+H 8); OUR ERROR 0. Evidence text in their voice via an exact phrase map from page r13 + guards; REI Agro texts asserted against the bars. Sent to the
+owner (the owner forwards). Page v9 (cells_page_r14.json).
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
