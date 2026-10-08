@@ -21974,6 +21974,23 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     229,782,558 was never on the FDI line - public). Measured: of the 43 batch-14 companies only GROWW had a row filed after 4-Oct; the
     other 42 file Sep-2026 by ~21-Oct and need the registry applied in the daily run (proposed to the user: a CI step that runs the
     `fdi22` logic over each run's new rows and writes the cell_fix entries).
+    **Batch 30 part 51 (2026-10-08 10:30 IST, user: "check screener ours old fii and publc data was wrong not sep quarters data" ->
+    "follow the filings own line"): OPTION A (§164r batch 14, user 4-Oct) IS RETIRED.** FII follows the line the company files a holder
+    on, quarter by quarter; a holder's FDI-line history in ANOTHER filing no longer moves it (what Screener, Trendlyne and the SEBI form
+    do; GROWW Dec-25..Sep-26 now 3.1363 / 2.5130 / 6.8931 / 10.9011 = Screener). 472 cells back to the filed line, each from its own
+    ledger chain: 429 to the batch-14 entry's own pre-batch value (incl. DELHIVERY x4 whose batch-30 layer was Option A on the revised
+    filings, and SPANDANA x5 under DII-only layers); JSWSTEEL 2011-12 x6 = pre-batch value x the batch-17 DR re-base factor; UJJIVAN x23
+    = store fii minus the batch-14 delta (share-count precision kept); STARHEALTH x4 = FPI / T (the block is the company's own 'Bodies
+    Corporate' category row); REDINGTON Mar-16 = FPI + the 'FOREIGN INSTITUTIONAL INVESTORS' block (SYNNEX back on its public line);
+    JSWSTEEL Jun/Sep-16 = FPI + the unnamed D1 rest (JFE back where the §158 placement had it); GROWW Sep-26 (part 50) reverted;
+    IDFCFIRSTB event 2021-04-06 (batch 24 re-read with fdi_line active: CLOVERDELL 471,733,265 sh on 'Overseas Corporate Bodies') back
+    to public. All moves down, -1.24 to -66.22 pp, mean -15.12; dii untouched. Code: `_shp_dii_rowfix.fdi_line()` now always None
+    (`FDI_LINE_RULE=False`; `shp_fdi_holders.json` kept as a record) so no runner re-applies it. Re-filings whose OWN document files the
+    block on the FDI line keep their sidecar value as filed, adjudicated by `#rev` entries for guard_shp_revisions: DELHIVERY Sep/Dec-22
+    (Feb-2023 revisions, FDI line 66.22 / 59.93), KALYANKJIL Dec-22 (Highdell 26.36), SHRIRAMFIN Dec-22 (TPG 2.65), UJJIVAN Jun-23
+    (NewQuest + IFC 9.57), MARKSANS Dec-25 (NSE re-filing 2026-05-19, OrbiMed Asia IV on the FDI line) - two versions per quarter, each by
+    its own line (§142k). Still open with the user: the other rules that move a holder off its filed line (the documents / tag /
+    institution-listing / later-label rules, §158 placement) - asked with one example.
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE

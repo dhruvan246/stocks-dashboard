@@ -315,8 +315,12 @@ def _load_fdi_reg():
     try: return json.load(open(os.path.join(REPO,"scripts","shp_fdi_holders.json"),encoding="utf-8")).get("holders") or {}
     except (OSError,ValueError): return {}
 FDI_REG=_load_fdi_reg()
+# §164r batch 30 part 51 (user 2026-10-08 "follow the filings own line"): Option A (§164r batch 14) is RETIRED - a holder's
+# FDI-line history no longer moves it off the line the company files it on. fdi_line() answers None; the registry stays as a record.
+FDI_LINE_RULE=False
 def fdi_line(sym, hn):
-    """The registry entry when the company itself files `hn` on its FDI line in some 2022-form filing, else None."""
+    """RETIRED 2026-10-08 (always None): the registry entry when the company itself filed `hn` on its FDI line in some 2022-form filing."""
+    if not FDI_LINE_RULE: return None
     regs=FDI_REG.get(sym)
     if not regs or not hn: return None
     hb=_bare_name(own_name(sym,hn))
