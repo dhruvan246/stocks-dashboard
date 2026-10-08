@@ -22249,6 +22249,11 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
 - **Also in this round.** FII session part 29 (SUNPHARMA 'UTI' rows back into dii) was checked against each filing. User decision: the unlabelled Foreign Bank + UTI block in Jun-16 / Jun-17 / Sep-17 stays whole in dii. All 321 dii moves by the FII session on 5-6 Oct were rebuilt from their filings (`r3/check_peer321.py`): one regression, VSTIND Dec-16, which the FII session fixes in its part 37.
 
 
+- **Part 34 + reply rebuild after §226 (2026-10-08).** After §226 went live (6e4a40652) the reply workbook was rebuilt from the live feed: 424 rows' "Our DII %" moved in the 3rd-4th decimal, 0 verdicts changed. Two defects found and fixed:
+  - OUR ERROR: SUNDARMFIN Jun-2019 (740aef762, label 164s-part34). Part 31's re-base rescaled dii/ins from the reader's inferred base, not share counts. Exact from 600001_2472019171951_SHP.xml: 13,957,940 / 111,103,860 = dii 12.5630 (was 12.5676), ins 3.3584 (was 3.3588). Quantmac's 10.9873 = domestic lines + NBFC on the same base, so the 3 cells go UNKNOWN -> RULE DIFFERENCE (HDFC Standard Life in Bodies Corporate).
+  - 340 reason texts still quoted our pre-§226 number. New step `r4/fix_ours_numbers.py` in `make_reply.sh` rewrites an "ours X" quote to the live value when they differ by <= 0.01 pp.
+  - Result: 5,750 cells = RULE 5,130 / THEIR 378 / UNKNOWN 242; 0 blank; 0 stale "ours" quotes.
+  - Ledger trap: a props `was`/`cell` must carry all 7 slots incl. nsh, or `_cell_eq` length-fails and write_b8 prints "skip (store moved)".
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
