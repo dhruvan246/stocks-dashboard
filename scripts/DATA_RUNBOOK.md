@@ -23843,6 +23843,21 @@ status moves only 5 FRL differ -> agree (2013-11/12 d52 + vs200, 2014-01 d52). F
 2013 demerger days set to close (36.8680) -> B -> D2. 117 differing = B 24 (MARICO 7, WELCORP 8, BALKRISIND 9), C 28, D2 4, E 16, F 8, G 26,
 H 4 (RULE DIFFERENCE 110) + U1 WIPRO 7 (UNKNOWN). Page v6 (cells_page_r11.json, scratchpad page_r11.py). Reply #7 not built (not asked).
 
+**§179l — QUANTMAC'S ANSWERS TO REPLY #6, each checked (2026-10-08 08:38 IST; their file + the 3 NSE circulars kept in ~/stocks-cache/qm-evidence-20261008).**
+(1) WIPRO 0.891892 = 33/37 = 1/(1 + 0.2/1.65): Wipro 6-K exhibit 99.1 (SEC 0001193125-12-446811, read in the browser; scripted SEC fetches need a
+declared UA) states 1 WEL share per 5 Wipro and 1 Wipro share per 1.65 WEL in the promoter exchange -> U1 7 = RULE DIFFERENCE (theirs: filed exchange
+ratio first) -> page group W. (2) Stale first print: their rule = an open at the old limit is a pre-demerger price, scaled by the factor; consistent
+with all 4 D2 cells. (3) NSE/SURV/24810 (24-Oct-2013), 25839 (12-Feb-2014), 29151 (17-Mar-2015), read from nsearchives: MARICO / WELCORP /
+BALKRISIND traded T2T (BE) from the ex-date and were in the PRE-OPEN CALL AUCTION (SEBI CIR/MRD/DP/02/2012) -> their open is an exchange auction
+price; all 15 / 13 / 16 of their cells fit the open. 12 more pre-Oct-2015 demerger ex-days were BE series after 20-Jan-2012 (ZUARIIND, INFOMEDIA,
+NRBBEARING, ORIENTPPR, JINDALPOLY, CENTURYPLY, PGIL, POLARIS, GREENPLY, ASAHISONG, SFCL, MASTEK; none has Quantmac cells; circulars NOT read). The
+§179h premise 'no auction before Oct-2015' is false for these: decision for the owner (auction open where NSE ran a call auction, else VWAP).
+(4) REI Agro: CSE notice 19-Sep-2008 (record 29-Sep-2008): retail demerged into REI Six Ten (9 per 20) + capital reduction (Rs 4 cancelled, 5 x Rs 6 ->
+3 x Rs 10). OUR SERIES APPLIES NO FACTOR at the 25-Nov-2008 join (stored close ratio 0.5056 = raw 480.65 / 950.65; no ledger row; NSE CA feed has no
+row) -> OUR ERROR. Our VWAP rule gives 0.520046 (NSE 25-Nov-2008 VWAP 494.3818 / 950.65; the 5:3 consolidation cancels in the composite). The 4 H
+cells -> OUR ERROR (200-DMA mixes bases). Fix measured, NOT applied (awaits the owner): it would also make 4 agreeing d52 cells (2009-05..08) differ
+(Quantmac applies no factor). (5) G agreed. Tally on their 8-Oct file: 117 = RULE DIFFERENCE 113 + OUR ERROR 4; UNKNOWN 0. Page v7.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
