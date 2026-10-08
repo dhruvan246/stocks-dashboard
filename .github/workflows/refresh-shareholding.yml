@@ -16,7 +16,7 @@ on:
 
 permissions:
   contents: write
-  actions: write   # dispatch pages.yml after a change so the data publishes itself
+  actions: write   # dispatch pages.yml + refresh-stock-fin.yml after a change so the data publishes itself
 
 concurrency:
   group: refresh-shareholding
@@ -119,6 +119,11 @@ jobs:
             if git push origin HEAD:main; then
               echo "Pushed on attempt #$attempt"
               gh workflow run pages.yml || echo "(pages deploy dispatch failed — will publish on next push)"
+              # The stock page reads docs/fin/<SYM>.json, whose shareholding history (shpH) is built from
+              # scripts/shp_history.json. A GITHUB_TOKEN push cannot fire refresh-stock-fin.yml's own `push:`
+              # trigger, so dispatch it here, as shp-allstocks-update.yml does (2026-10-08: GROWW's stock page
+              # kept the pre-heal FII for hours after this feed and shareholding.html carried the heal).
+              gh workflow run refresh-stock-fin.yml || echo "(fin-slice rebuild dispatch failed — the next results commit will rebuild)"
               exit 0
             fi
             echo "Push attempt #$attempt rejected; resetting and retrying"
