@@ -194129,26 +194129,35 @@
     "cell": [
      36.3774,
      7.8828,
+     12.563,
+     9.0978,
+     3.3584,
+     "2019-07-24",
+     26347
+    ],
+    "was": [
+     36.3774,
+     7.8828,
      12.5676,
      9.0978,
      3.3588,
      "2019-07-24",
      26347
     ],
-    "was": [
-     36.69,
-     7.9522,
-     12.6782,
-     9.1778,
-     3.3884,
-     "2019-07-24",
-     26347
-    ],
-    "src": "bsetable3:590071:102",
-    "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): base. The company's 960,960-share employee trust is filed under C2 'Employee Benefit Trust' in every neighbouring filing (Sep-2018..Mar-2019 960,960, Mar-2020 941,710) but under C1 'Custodian / DR holder' at 0.00 % in this one, so the filing's percentages - and the stored cell - sat on A+B 110,142,900; Sundaram has no depository receipts, so the (A+B) DR basis (\u00a7164a) does not apply: promoter 40,416,695, FPI 8,758,103, MF 10,107,962 on the full 111,103,860 (BSE Table I STABC), dii / ins rescaled from the reader's inferred base 110134340. prom 36.69 -> 36.3774, fii 7.9522 -> 7.8828, dii 12.6782 -> 12.5676, mf 9.1778 -> 9.0978, ins 3.3884 -> 3.3588.",
+    "src": "bsexbrl:600001_2472019171951_SHP.xml",
+    "why": "\u00a7164s part 34 (2026-10-08, found re-checking the Quantmac DII reply after \u00a7226): part 31 re-based this row to the full 111,103,860 shares but rescaled dii/ins from the reader's inferred base 110,134,340, leaving dii 0.0046 and ins 0.0004 high. Exact share counts from the filing XBRL: domestic institution lines MF 10,107,962 + AIF 104,008 + FI/Banks 8,291 + Insurance 1,980,652 + NBFC row 6,331 + HDFC Standard Life Insurance Company Ltd (Bodies Corporate, 1,750,696; register-proven Indian insurer) = 13,957,940 / 111,103,860 = 12.5630; ins = 1,980,652 + 1,750,696 = 3,731,348 = 3.3584. prom/fii/mf already exact (36.3774/7.8828/9.0978). dii 12.5676 -> 12.5630, ins 3.3588 -> 3.3584.",
     "exact": true,
     "superseded": {
      "cell": [
+      36.3774,
+      7.8828,
+      12.5676,
+      9.0978,
+      3.3588,
+      "2019-07-24",
+      26347
+     ],
+     "was": [
       36.69,
       7.9522,
       12.6782,
@@ -194157,17 +194166,31 @@
       "2019-07-24",
       26347
      ],
-     "was": [
-      36.69,
-      7.9522,
-      11.0782,
-      9.1778,
-      1.7984,
-      "2019-07-24",
-      26347
-     ],
-     "src": "bsexbrl:600001_2472019171951_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.08 -> 12.68, fii 7.95 -> 7.95. R2-named Bodies Corporate 1.59 HDFC Standard Life Insurance Company Ltd 1.59(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     "src": "bsetable3:590071:102",
+     "why": "\u00a7164r batch 30 part 31 (2026-10-06, per-company review): base. The company's 960,960-share employee trust is filed under C2 'Employee Benefit Trust' in every neighbouring filing (Sep-2018..Mar-2019 960,960, Mar-2020 941,710) but under C1 'Custodian / DR holder' at 0.00 % in this one, so the filing's percentages - and the stored cell - sat on A+B 110,142,900; Sundaram has no depository receipts, so the (A+B) DR basis (\u00a7164a) does not apply: promoter 40,416,695, FPI 8,758,103, MF 10,107,962 on the full 111,103,860 (BSE Table I STABC), dii / ins rescaled from the reader's inferred base 110134340. prom 36.69 -> 36.3774, fii 7.9522 -> 7.8828, dii 12.6782 -> 12.5676, mf 9.1778 -> 9.0978, ins 3.3884 -> 3.3588.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       36.69,
+       7.9522,
+       12.6782,
+       9.1778,
+       3.3884,
+       "2019-07-24",
+       26347
+      ],
+      "was": [
+       36.69,
+       7.9522,
+       11.0782,
+       9.1778,
+       1.7984,
+       "2019-07-24",
+       26347
+      ],
+      "src": "bsexbrl:600001_2472019171951_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 11.08 -> 12.68, fii 7.95 -> 7.95. R2-named Bodies Corporate 1.59 HDFC Standard Life Insurance Company Ltd 1.59(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2016-09-30": {
