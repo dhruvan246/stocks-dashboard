@@ -22018,6 +22018,17 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     35 cells written (label "§164r batch 30 part 52"). Moneycontrol (live quote page = last 5 periods only; `mc_live/mc_fetch.py`) and
     Quantmac (v6 = 30-Sep; per-cell values only for its 4,484 listed cells) are compared per the user's consensus rule in the report.
 
+    **Batch 30 part 53 (2026-10-08, user: "if everyone agrees then we should agree"):** MARKSANS Dec-2025 - Screener 8.13 and Moneycontrol
+    8.12 both show the company's BSE filings (original 13-Jan-2026 and its 10-Feb-2026 demat-count revision, both: ORBIMED ASIA IV
+    MAURITIUS FVCI LIMITED 39,050,881 sh under 'Foreign Companies', Institutions (Foreign) 36,815,134 / 453,163,746 = 8.1240); Quantmac
+    has no figure (outside its Nifty 500 then). The NSE-only re-filing of 19-May-2026 (OrbiMed on the FDI line, 16.7427) is dropped via
+    `shp_rev_fix.json` (class `outside-consensus`); the quarter serves the filed 8.1246 throughout. Only fii differs between the two
+    versions (promoter / dii / mf / holders identical), so no DII move. Four-way method (verify-only, nothing stored from the sites):
+    Moneycontrol = its quote page's last-5-period trend (live) or a Wayback snapshot of that page for older quarters; Quantmac = its v6
+    30-Sep value where listed, else its 21-Sep panel number where that agrees with our 29-Sep value (their 30-Sep "agree"). Measured:
+    Quantmac and Moneycontrol's CURRENT page use the filing's printed total (= ours) on the second-decimal cells; Screener and
+    Moneycontrol's 2023-25 pages add the rounded sub-rows - so the rounding cells have no unanimous outside figure and stay as filed.
+
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
 feed with the exact engine port (`~/stocks-cache/shp/quantmac/ourfii.py`, field 2 = dii, 400-day cap): 85,434 agree, 14,253 value
