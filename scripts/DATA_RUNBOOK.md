@@ -23894,6 +23894,21 @@ row) -> OUR ERROR. Our VWAP rule gives 0.520046 (NSE 25-Nov-2008 VWAP 494.3818 /
 cells -> OUR ERROR (200-DMA mixes bases). Fix measured, NOT applied (awaits the owner): it would also make 4 agreeing d52 cells (2009-05..08) differ
 (Quantmac applies no factor). (5) G agreed. Tally on their 8-Oct file: 117 = RULE DIFFERENCE 113 + OUR ERROR 4; UNKNOWN 0. Page v7.
 
+**§179m — AUCTION PRICE FIRST, ALSO BEFORE OCT-2015 (2026-10-08 09:09 IST; user: "we should always consider auction price ... also pre 2015 ... if there are no
+auction prices then the average of the day rule").** Each of the 54 pre-2015-10-01 demerger ex-days read for an NSE pre-open call auction (NSE circular API
+nseindia.com/api/circulars, 21 days before each ex-date; PDFs from nsearchives; copies in ~/stocks-cache/qm-evidence-20261008/nse_circulars): SEBI
+CIR/MRD/DP/21/2010 + NSE/cmtr/15981 = call auction from 18-Oct-2010 for Nifty / Sensex members only; SEBI CIR/MRD/DP/01-02/2012 = IPO + re-listed incl.
+scheme T2T days (each NSE/SURV circular 2012-2015 says "will be part of (call auction in) pre-open session"); SEBI CIR/MRD/DP/6/2013 + NSE/CMTR/23062 =
+ALL non-illiquid securities from 01-Apr-2013. AUCTION (16, factor = auction open / previous close, capped at 1; rule 'auction', auction_circular):
+ZUARIIND 2012 (=VWAP, unchanged), INFOMEDIA, NRBBEARING, ORIENTPPR, WIPRO 2013 (CMTR/23062), JINDALPOLY, CENTURYPLY, MARICO, WELCORP, PGIL, POLARIS,
+GREENPLY (unchanged), ASAHISONG, BALKRISIND, SFCL (Star Ferro, SURV/29471), MASTEK. NO AUCTION (keep §179h VWAP): 2006-2010 days; 2010-11 T2T days
+(DALMIACEM, TCI, JUBILANT, MID-DAY, VTL, ALEMBIC: SEBI/Cir/ISD/1/2010, price band open, no auction); 2011 EMBDL x2 / TRIVENI / JINDALSAW / AREVAT&D
+(never Nifty 50 per IndexInclExcl; not in Wikipedia's Sensex history); RELIANCE 2006 = special one-hour CONTINUOUS session (NSE/cmtr/7014; NSE used its
+VWAP for the index), not an auction. HELD on VWAP pending the owner: FRL 17-Apr-2013, FRL 21-Jun-2013, ADANIENT 03-Jun-2015 (auction open pinned at the
+-10% limit; ADANIENT 0.9000 vs close 109.75 / 637). Tool reprice_demergers_auction_179m.py. Dry run (release base = live 021db7c330 by split rev):
+exactly 14 SELF-HEAL lines, only those 14 symbols changed, pre-ex arrays one constant ratio each, post-ex identical; 2nd run 0 heals, identical; split rev
+2aa82cb4f7. Quantmac 8-Oct file on it: 318,427 / 318,496 (+24: all group B; -1 WIPRO, now auction open 0.9069 vs their 33/37).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
