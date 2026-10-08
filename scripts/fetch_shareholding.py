@@ -93,6 +93,9 @@ MEMBERS = {
     "MutualFundsOrUTIMember": "mf",
     "InsuranceCompaniesMember": "ins",
     "ShareholdingPatternMember": "total",
+    # §226: C1 = shares underlying depositary receipts (Table IV custodian). SEBI percentages are of (A+B+C2) =
+    # total - C1, so parse_shp needs it for the filer's exact base. Share count only; never a holding slot.
+    "CustodianOrDRHolderMember": "c1",
     # old-format members (collected when present; combined in parse_shp)
     "InstitutionsMember": "o_inst",
     "InstitutionsForeignPortfolioInvestorMember": "o_fpi",
@@ -133,6 +136,11 @@ def _third(vals):
 # Calibrated 2026-07-17 on the format-boundary seam (Jun-2022 old vs Sep-2022 new, all stocks).
 OLD_OTHER_TO_DII = True
 
+# §226 (2026-10-08): divide share counts by the filer's OWN base (Table I total minus depositary-receipt shares) when the
+# filing's printed percentages confirm it, instead of the base estimated from one rounded percentage. Off = the pre-§226
+# estimate (kept so the re-base builder can read a document both ways and change only cells that were that exact read).
+EXACT_BASE = True
+
 def iso_date(s):
     """'15-JUL-2026' / '15-Jul-2026 15:04:38' -> '2026-07-15' (None if unparseable)."""
     m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})", str(s or ""))
@@ -161,7 +169,52 @@ def load_hist():
         except Exception as e:
             print("WARN history unreadable (%s) — starting empty" % e)
     apply_cell_fix(h)   # §22g corrections reach EVERY reader (feed, engine feed), not just the fetch
+    apply_rebase226(h)  # §226 exact-base re-base — AFTER cell_fix, so a heal's own slots are never touched
     return h
+
+# §226 EXACT-BASE RE-BASE LEDGER (2026-10-08, user: "fix it everywhere"). Cells parsed before §226 were divided by a base
+# ESTIMATED from one rounded percentage (parse_shp's EXACT_BASE note). This ledger carries, per re-based slot,
+# [the pre-§226 read, the exact-base read] of the cell's OWN document (built by ~/stocks-cache/shp/rebase: same holder count,
+# the stored slot equal to that pre-§226 read to 4 dp). Applied AFTER apply_cell_fix, slot by slot, ONLY while the stored
+# slot still holds that recorded read - a slot a heal changed (D1, a holder moved, a DII verdict), or a cell the store has
+# since moved, is left alone. Idempotent: once applied the slot holds the exact read and the entry is a no-op. Moves are
+# below 0.005 pp, inside _cell_eq's tolerance, so cell_fix reads the re-based cell as "already applied" and never restores.
+REBASE226 = os.path.join(HERE, "shp_rebase226.json.gz")
+_REBASE226 = None
+_R226_SLOT = {"fii": 1, "dii": 2, "mf": 3, "ins": 4}
+def load_rebase226():
+    global _REBASE226
+    if _REBASE226 is None:
+        try:
+            with gzip.open(REBASE226, "rt", encoding="utf-8") as fh:
+                _REBASE226 = json.load(fh)
+        except FileNotFoundError:
+            _REBASE226 = {}
+        except Exception as e:
+            print("::warning::shp_rebase226.json.gz unreadable (%s) — §226 re-base not applied" % e); _REBASE226 = {}
+    return _REBASE226
+
+def apply_rebase226(h, led=None, section="cells"):
+    """section: "cells" = shp_history quarter-end cells, "revs" = §142k re-filing rows (shp_revisions.json),
+    "events" = mid-quarter event rows (shp_events.json). Same rule in all three."""
+    led = load_rebase226() if led is None else led
+    n = 0
+    for sym, qs in (led.get(section) or {}).items():
+        dest = h.get(sym)
+        if not isinstance(dest, dict): continue
+        for qe, slots in qs.items():
+            cur = dest.get(qe)
+            if not isinstance(cur, list): continue
+            hit = False
+            for k, pair in slots.items():
+                i = _R226_SLOT.get(k)
+                if i is None or i >= len(cur) or not isinstance(cur[i], (int, float)) or isinstance(cur[i], bool): continue
+                old, new = pair
+                if abs(float(cur[i]) - float(old)) <= 0.000051 and abs(float(cur[i]) - float(new)) > 1e-12:
+                    cur[i] = new; hit = True
+            if hit: n += 1
+    if n: print("shp_rebase226 (§226 exact base): %d %s re-based" % (n, {"cells": "cells", "revs": "re-filing rows", "events": "event rows"}.get(section, section)))
+    return n
 
 def cells_of(h):
     return sum(len(v) for k, v in h.items() if not k.startswith("_") and isinstance(v, dict))
@@ -946,13 +999,30 @@ def parse_shp(txt, qe_iso):
     # part in 200 — negligible against the sub-0.005% rows this pass exists to recover.
     tot_sh = None
     _cand = [(shares[s], (vals.get(s) or 0.0) * scale) for s in shares
-             if s != "total" and shares.get(s) and (vals.get(s) or 0.0) * scale >= 1.0]
+             if s not in ("total", "c1") and shares.get(s) and (vals.get(s) or 0.0) * scale >= 1.0]
     if _cand:
         n_big, p_big = max(_cand)
         b = n_big / (p_big / 100.0)
         whole = shares.get("total")
         # sane only if it lands at or below the full base and within a plausible DR/partly-paid gap
         if not whole or 0.70 * whole <= b <= 1.02 * whole: tot_sh = b
+        # §226 EXACT BASE (2026-10-08, user: "fix it everywhere"). `b` above is only an ESTIMATE: p_big is the filer's
+        # percentage ROUNDED to 2 dp, so the inferred base is off by up to ±0.005/p_big and every slot computed on it
+        # carries a third/fourth-decimal slip that, near a rounding line, flips the second decimal the page shows
+        # (SPANDANA Dec-2023: 13,555,850 / 71,177,169 = 19.0452, filed 19.05, inferred-base read 19.0445 -> 19.04).
+        # The filer's OWN base is in the file: SEBI percentages are "as a % of (A+B+C2)" = the Table I total minus C1,
+        # the shares underlying depositary receipts (CustodianOrDRHolderMember): HDFCBANK Dec-2022 5,576,755,396 -
+        # 1,028,118,586 = 4,548,636,810, on which promoter 1,164,625,834 = 25.604 (filed 25.6). Take a candidate ONLY
+        # when that same printed percentage agrees with it to within one 2dp step - a filing whose base is something
+        # else keeps the estimate exactly as before, so this can only sharpen a read, never change which base is used.
+        if tot_sh and whole and EXACT_BASE:
+            lo = n_big / ((p_big + 0.01) / 100.0)
+            hi = n_big / (max(p_big - 0.01, 1e-9) / 100.0)
+            c1 = shares.get("c1") or 0
+            for cand in ((whole - c1) if c1 else None, whole):
+                if cand and lo <= cand <= hi:
+                    tot_sh = float(cand)
+                    break
     if tot_sh:
         def _sum(slots):
             """Sum those slots from share counts — None unless EVERY contributor that reported a
@@ -992,7 +1062,18 @@ def parse_shp(txt, qe_iso):
         pub_noninst = 100.0 - out.get("prom", 0.0) - out.get("fii", 0.0) - out.get("dii", 0.0)
         if gov_raw <= pub_noninst + 0.5:
             out["gov"] = gov_raw
-    out = {k: round(v, 4) for k, v in out.items()}
+    # §226: share-count slots keep 6 decimals. At 4 a ratio such as 10.364979 is stored as 10.3650, which the page's
+    # toFixed(2) shows as 10.37 while the filing prints 10.36 (a tie the 4-dp rounding itself creates). Measured on 26,535
+    # cached BSE filings: most of the displays the exact base would otherwise have broken were this tie.
+    def _r6(v):
+        """6 decimals that still show, at the page's 2, the way the exact ratio rounds: a ratio a hair below a half
+        (INS 5,766,591 / 499,272,164 = 1.1549995) must not be stored ON the half (1.155000 shows 1.16; filed 1.15)."""
+        r = round(v, 6)
+        if "%.2f" % r != "%.2f" % v:
+            r = round(r - 1e-6 if r > v else r + 1e-6, 6)
+        return r
+    out = {k: (_r6(v) if (EXACT_BASE and tot_sh and k in ("fii", "dii", "mf", "ins", "od", "gov")) else round(v, 4))
+           for k, v in out.items()}
     # nsh is OPTIONAL, so an implausible one gets dropped rather than published: the grand total
     # can never be below the public-shareholder count. BSE Ltd Sep-2024 files 248 against 539,914
     # public holders (its own grand total is broken, like its 6.9 "total %"), which would have
@@ -1231,6 +1312,7 @@ def refresh_quarters(qes, reparse=False, only=None, fill_shares=False):
         print("ABORT: history would shrink %d -> %d — not writing" % (before, after))
         sys.exit(1)
     apply_cell_fix(hist, cellfix)
+    apply_rebase226(hist)         # §226: after cell_fix, never on a slot a heal changed
     save_hist(hist)
     tmp = GOV_OUT + ".tmp"
     json.dump(gov, open(tmp, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
@@ -1300,6 +1382,7 @@ def load_events():
         return {}
     apply_event_fills(ev)
     apply_event_redate(ev)
+    apply_rebase226(ev, section="events")   # §226 exact base; moves sit inside cell_fix's tolerance, so no ordering fight
     return ev
 
 REVS = os.path.join(HERE, "shp_revisions.json")
@@ -1314,6 +1397,7 @@ def load_revs():
             r = json.load(open(REVS, encoding="utf-8"))
             apply_rev_fix(r)                       # §164s part 11: #rev ledger entries, like load_hist applies cell_fix
             apply_rev_ledger(r)                    # §224: re-filing dates / rows proven wrong, re-asserted on every load
+            apply_rebase226(r, section="revs")     # §226: exact base, after the #rev adjudications
             return r
         except Exception as e: print("WARN shp_revisions.json unreadable (%s) — starting empty" % e)
     return {}
@@ -1838,6 +1922,7 @@ if __name__ == "__main__":
         apply_mf_heal_ledger(h)
         apply_ins_fill_ledger(h)
         apply_cell_fix(h)             # §22g per-cell corrections (load_hist applied them too)
+        apply_rebase226(h)            # §226 exact-base re-base, after cell_fix (load_hist applied it too)
         after = cells_of(h)
         if after < before:
             print("ABORT: history would shrink %d -> %d" % (before, after)); sys.exit(1)
@@ -1847,7 +1932,8 @@ if __name__ == "__main__":
         if apply_ledger_revisions(_revs): save_revs(_revs)   # §180c fill-ledger re-filings, fill-only
         save_revs(_revs)                                     # §164s part 11: persist #rev ledger rows (load_revs applied them)
         ev = load_events()
-        if apply_cell_fix_events(ev): save_events(ev)     # §142e: event rows take cell_fix too
+        apply_cell_fix_events(ev)                         # §142e: event rows take cell_fix too
+        save_events(ev)                                   # §226: persist the exact-base event rows load_events applied
         build_feed()
         build_engine_feed()
     elif "--events" in args:
