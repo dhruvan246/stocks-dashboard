@@ -21993,6 +21993,31 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     its own line (§142k). Still open with the user: the other rules that move a holder off its filed line (the documents / tag /
     institution-listing / later-label rules, §158 placement) - asked with one example.
 
+    **Batch 30 part 52 (2026-10-08, user: "check whether all of this company matches the screener", then "not just screener check on
+    money control as well as cont mac if everyone agrees then we should agree").** The 36 part-51 companies vs Screener on the LIVE feed:
+    407 quarters (Screener shows the last 12), 274 identical at Screener's 2 decimals, 131 one or two hundredths apart, 2 apart by more.
+    Every one of the 133 read from its own filing (NSE XBRL, BSE Table III where NSE has no link; evidence per cell in
+    `~/stocks-cache/shp/audit_all/screener_cells/judged.json`):
+    - **120 RULE DIFFERENCE (rounding):** our 2-dp value = the filing's OWN printed Institutions (Foreign) total row = the exact share
+      count; Screener's figure = the filing's foreign sub-rows (FPI I, FPI II, FDI ...) each rounded to 2 dp and then added
+      (GROWW Dec-25: total row 3.14 = ours 3.1364; FPI I 2.98 + FPI II 0.15 = Screener 3.13). FIVESTAR Mar-26 read on BSE (NSE record
+      has no XBRL link): B2 143,079,526 / 295,175,278 = 48.47 = its printed B2; FDI 15.25 + FPI I 31.49 + FPI II 1.74 = Screener 48.48.
+    - **11 OUR ERROR (precision), fixed here:** parse_shp divides by a base INFERRED from the largest category's printed percentage
+      (built to keep DR shares out of the base); its rounding moved these cells across the second decimal. Now the exact share count,
+      which equals the printed total row and Screener: 360ONE Mar-25 / Jun-26, ADVENZYMES Sep-25, ARVINDFASN Dec-25, ASTERDM Jun-24,
+      FIVESTAR Mar-25, GOCOLORS Mar-25, MARKSANS Mar-26, POLICYBZR Mar-24, PPLPHARMA Sep-24, SPANDANA Dec-23 (19.0445 -> 19.0452, prints
+      19.05). The same inferred base touches every NSE-parsed cell at the 3rd-4th decimal (dii/mf/ins too) - a store-wide re-base is
+      an open proposal, not done.
+    - **MARKSANS Dec-25 RULE DIFFERENCE (§142k):** NSE record submitted 13-Jan-2026, revised 19-May-2026; the revision carries the
+      original's FPI shares (33,385,971 + 3,429,163 = the BSE original's 8.124) plus OrbiMed Asia IV 39,050,881 on the FDI line ->
+      16.74. Screener keeps the original (8.13); we show it until 19-May-2026, the revision after.
+    - **UJJIVAN Mar-22 RULE DIFFERENCE (D1):** its own Table III: Any-Other block 13,569,858 - named IFC 5,356,263 / NewQuest 6,286,535
+      / Alena 1,276,602 = unnamed rest 650,458 -> fii under D1; Screener counts FPI 34,337,317 only (28.22) and puts the block in DII.
+    - **24 UJJIVAN cells OUR ERROR (precision, part 51's own slip):** part 51 took store minus batch 14's older delta; recomputed from each
+      quarter's own BSE Table III (FPI + FVCI + D1 rest) / Grand Total (moves -0.0049..+0.0068).
+    35 cells written (label "§164r batch 30 part 52"). Moneycontrol (live quote page = last 5 periods only; `mc_live/mc_fetch.py`) and
+    Quantmac (v6 = 30-Sep; per-cell values only for its 4,484 listed cells) are compared per the user's consensus rule in the report.
+
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
 feed with the exact engine port (`~/stocks-cache/shp/quantmac/ourfii.py`, field 2 = dii, 400-day cap): 85,434 agree, 14,253 value
