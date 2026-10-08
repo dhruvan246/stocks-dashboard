@@ -75,6 +75,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§220d** ★★ "CHECK ALL" — §220c's open items read from the filings, then SCOPED TO POINT-IN-TIME NIFTY 500 (user, 2026-10-07: "work only on survivorship free nifty 500 members"): the renamed pairs' 5 disputed quarters healed (live 3e3228319; HINDMOTORS 2010-06 and SPLPETRO 2018-03 are N500 cells); all 290 IPO-base PDF cells read by eye — the only N500 company (GUJENERGY) read right, the 29 errors found are all never-N500 companies and the 792 missing 2018-19 BZ bars all non-member days, so both are PARKED in ~/stocks-cache/check-all-220d/parked-non-n500/ (README) (**read before reviving any non-N500 heal, any IPO-base reader change, or a BZ re-scan**)
 - **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**) — cause 2 fixed at the source in **§223**
 - **§225** ★★★ OWNERS' PROFIT, POINT-IN-TIME NIFTY 500 — two XBRL shapes §116 never screened: the owners tag holds the TOTAL-COMPREHENSIVE-INCOME split (store took TCI-owners), and owners 0 + NCI 0 tags beside a real minority (store took the before-minority total). 643 suspects in 104,538 cached XBRLs; every one read by eye from the company's own filing: 255 OUR ERROR (129 companies, 14 > Rs 10 cr) healed via owners_basis_heals.json, 315 right, 73 open (owners_n500_unresolved_225.json) (**read before any owners/NCI screen, any XBRL owners-tag fallback, or any consolidated-PAT heal**)
+- **§226** ★★★ SHP EXACT BASE — parse_shp divided share counts by a base ESTIMATED from one rounded printed % (±0.005/p), so ~1 quarter in 20 showed the wrong 2nd decimal vs the filing's own total. Now the filer's own base (Table I total − CustodianOrDRHolderMember C1) when the printed % confirms it; share-count slots stored to 6 dp with no false half-ties. Historical PIT-N500 cells re-based by `shp_rebase226.json.gz` (slot = [pre-§226 read, exact read] of the cell's own document, applied after cell_fix, only while the slot still holds that read) (**read before touching parse_shp's base, CELL_TOL, the refine ledger, or any SHP precision question**)
 - **§223** ★★ THE REFINE LEDGER READ BSE'S NEWEST FILING — 817 of 20,429 `shp_refine_4dp.json.gz` XBRL entries were a later document than the stored row's own (71 cells / 131 numbers held the later figure, 5 cells ping-ponged); the builder now reads the quarter's ORIGINAL (oldest row, quarterly pattern, same holder count), 208 entries rebuilt / 579 removed, and in a cell `shp_cell_fix.json` defines the refine may only set the fix's own value (**read before building or applying any refine/precision ledger, or writing a cell_fix entry on a refined cell**)
 - **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
@@ -27688,3 +27689,34 @@ nothing else.
 the tag "owners". (2) owners 0 + NCI 0 is NOT "no minority" — test the company's other filings and the balance sheet. (3) A results PDF
 fetch keyed on the announcement month misses COVID-delayed Q4FY20 results (announced June-July 2020); key on the subject line too.
 (4) A page reader's "no attribution printed" verdict missed a split printed lower on the page — read every "no split" call by eye.
+
+## §226 — SHP EXACT BASE: the filer's own share base, not one estimated from a rounded percentage (2026-10-08, user: "fix it everywhere")
+**Defect.** parse_shp's precision pass divided share counts by `n_big / (p_big/100)` - a base inferred from the largest
+category's PRINTED percentage, which is rounded to 2 dp, so every fii/dii/mf/ins carried a slip of up to ±0.005/p_big relative.
+Invisible at 4 dp, but near a rounding line it flipped the 2nd decimal the page shows (SPANDANA Dec-2023 19.0445 -> 19.04 while
+13,555,850 / 71,177,169 = 19.0452 and the filing prints 19.05). In the 36-company Screener/Moneycontrol/Quantmac check (§164r batch 30
+parts 52-54) 19 of 407 quarters showed the wrong 2nd decimal for this reason.
+**Fix (code, every future parse, all stocks).** SEBI percentages are of (A+B+C2) = Table I total minus C1, the shares underlying
+DRs (`CustodianOrDRHolderMember`, new MEMBERS slot `c1`): HDFCBANK Dec-2022 5,576,755,396 - 1,028,118,586 = 4,548,636,810, promoter
+25.604 (filed 25.6). parse_shp takes `total - c1` (or `total`) ONLY when the same printed percentage confirms it to one 2dp step;
+otherwise the old estimate stands (`EXACT_BASE` flag; False = pre-§226 read). Share-count slots are stored to 6 dp through `_r6`,
+which never lands a value on a 2dp half the true ratio is not on (1.1549995 stored 1.154999, not 1.155000 which shows 1.16).
+Measured on 43,179 cached filings: display = filing's printed category % gained FII 630 / DII 678 / MF 973 / INS 302, lost 0;
+max slot move 0.005; 2 filings stay off by their own rounding (533282 Mar-24 DII 0.436746 printed 0.43; 540750 Mar-18 MF member mix).
+**Historical cells (point-in-time Nifty 500 from Dec-2015).** `scripts/shp_rebase226.json.gz` {cells|revs|events: {SYM: {date:
+{slot: [pre-§226 read, exact read]}}}} built by `~/stocks-cache/shp/rebase/rebase_build2.py` + `rebase_build_rev_ev.py` (documents:
+58,435 cached XBRLs + 475 NSE downloads + re-filing / event downloads). ONE rule for every row: a slot moves only when the stored
+value equals the pre-§226 read of that row's OWN document (same holder count, 4 dp) - and in a cell_fix-adjudicated cell only when
+the fix's own value for that slot is that read too (UPL Dec-16, CIPLA, AXISBANK...: a fix asking fii +0.01 that never applied must
+not be moved off its `was`). Re-filing rows with a `#rev` adjudication are excluded (apply_rev_fix compares exactly). Applied by
+`apply_rebase226` after apply_cell_fix in load_hist, refresh_quarters and --apply-ledgers, and inside load_revs / load_events;
+idempotent; moves <= 0.0039 sit inside CELL_TOL so no ledger ever restores the old value. The refine ledger's matching slots
+(29,594) were moved to the same exact read so it never pulls back.
+Counts: 21,554 in-scope cells -> 20,033 re-based (FII slot 18,125, DII 15,283, MF 19,783, INS 14,309; 2nd decimal changes FII 878,
+DII 734, MF 615, INS 224), 1,351 without a matching document left as stored; re-filing rows 92 (12 #rev excluded); event rows 361
+(496 without an NSE record, 6 not their document's read). Local apply: 0 WARN (baseline 0), guards green, second run byte-identical;
+all 137 quarters read from their filings on 8-Oct still show the filing's own total. DII session told row by row before writing
+(`~/stocks-cache/shp/rebase/rebase226_dii_moves.csv`, 15,283 rows) - no objection.
+**Not done:** cells outside point-in-time Nifty 500 (scope rule) keep the estimate until re-read; 1,351 in-scope cells whose
+document is not on hand.
+
