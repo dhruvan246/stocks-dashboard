@@ -22029,6 +22029,15 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Quantmac and Moneycontrol's CURRENT page use the filing's printed total (= ours) on the second-decimal cells; Screener and
     Moneycontrol's 2023-25 pages add the rounded sub-rows - so the rounding cells have no unanimous outside figure and stay as filed.
 
+    **Batch 30 part 54 (2026-10-08):** 8 more cells where the PAGE showed a second decimal other than the filing's own printed
+    Institutions (Foreign) total, found where Moneycontrol / Quantmac differed while Screener matched us: ARE&M Mar-24, FIVESTAR Dec-25,
+    JMFINANCIL Dec-24, JSWSTEEL Jun-25, LTF Mar-26, PARAGMILK Dec-25, SWANCORP Sep-23 and Dec-24 - each read from its own NSE XBRL
+    (`screener_cells/judged2.json`); the exact share count agrees with the printed total every time. Stored to 6 decimals: a 4-dp
+    value can display the other way (9.2550 shows 9.26 although the ratio is 9.254965 and the filing prints 9.25; 10.825 shows 10.82
+    although the ratio is 10.825451 and the filing prints 10.83) - the page rounds the stored double with toFixed(2). Check display
+    with '%.2f' % value, never round(x + 1e-9, 2). Same cause as part 52's 11 (parse_shp's inferred base); a store-wide re-base is
+    still only a proposal.
+
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
 feed with the exact engine port (`~/stocks-cache/shp/quantmac/ourfii.py`, field 2 = dii, 400-day cap): 85,434 agree, 14,253 value
