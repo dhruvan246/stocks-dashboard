@@ -21962,6 +21962,18 @@ Rebuilt feed moves exactly these 154 rows; guards green.
     Any-Other row; 'Foreign Nationals' 18,720 are individuals (public) -> 12.43 -> 12.4306 (precision). Both stacked on the DII
     session's part-33 entries (pushed, not yet applied by CI; write_b8 set `was` = the committed store), dii carried. Neither is a
     Quantmac dispute cell. 0 WARN on a fresh tree; local feed OK.
+    **Batch 30 part 50 (2026-10-08 08:30 IST, user: "shareholding.html shows wrong data for groww").** The Sep-2026 row (filed 7-Oct
+    14:30, fetched the same day) held Institutions (Foreign) only, 10.9011, after Dec-25 / Mar-26 / Jun-26 at 52.0 / 52.1 / 47.6: batch 14
+    (Option A, user 4-Oct) is a ONE-OFF pass - the daily fetch does not apply the FDI registry (`shp_fdi_holders.json`) to new rows, so
+    every batch-14 company gets this cliff when its next filing lands. Groww's listing-day filing (544603_12112025185148, 11-Nov-2025)
+    files Peak XV, YC Holdings II, Ribbit Capital V, Internet Fund VI, Viggo, Iconiq VI-B / VI, Sequoia GGF III, ISP VII-B, Propel, YCCG21
+    on its FDI line (53.15 %); from Dec-2025 the company lists them under the non-institution 'Foreign Companies' line. Sep-2026 fix by
+    the batch-14 method, share counts from 544603_7102026143025: FPI lines 683,875,377 + the eight FDI-line holders still filed
+    (Peak XV 892,271,077, YC 466,652,946, Ribbit Capital V 290,640,854, Internet Fund VI 204,907,428, Sequoia GGF III 82,999,358, ISP
+    VII-B 79,939,615, YCCG21 73,508,408, Viggo 67,376,200 = 2,158,295,886) on 6,273,596,631 -> 45.3037 ('Ribbit Cayman GW Holdings V'
+    229,782,558 was never on the FDI line - public). Measured: of the 43 batch-14 companies only GROWW had a row filed after 4-Oct; the
+    other 42 file Sep-2026 by ~21-Oct and need the registry applied in the daily run (proposed to the user: a CI step that runs the
+    `fdi22` logic over each run's new rows and writes the cell_fix entries).
 
 ### 164s. Quantmac DII workbook (4-Oct): first our-side DII fixes — 16 rows (2026-10-04, user: "go ahead with a, b and c")
 **Input.** `~/Downloads/nifty500_pit_dii_2009_2026.xlsx` (Quantmac, month-end PIT DII 2009-2026, 106,038 cells). Compared to the LIVE
