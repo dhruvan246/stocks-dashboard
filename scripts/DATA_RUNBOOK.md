@@ -23928,6 +23928,16 @@ BALKRISIND 2015-03-23 305.0073, WIPRO 2013-04-08 76.3181 (= dry run); strategy-b
 (one long-window CAGR -0.03). Quantmac 8-Oct file on live: 318,427 / 318,496; 94 differing (C 28, W 8, D2 4, E 16, F 8, G 26 = RULE DIFFERENCE 90;
 H 4 REIAGROLTD = OUR ERROR, fix awaits the owner). Page v8 (cells_page_r13.json).
 
+**§179n — REI AGRO 2008 RESTRUCTURING ADDED (2026-10-08 09:46 IST; user: "fix it").** CSE notice 19-Sep-2008 (record 29-Sep-2008): retail undertaking demerged
+into REI Six Ten Retail (9 per 20) + capital reduction (Rs 4 cancelled per Rs 10 share; 5 x Rs 6 -> 3 x Rs 10). NSE: REIAGRO last 19-Sep-2008, REIAGROLTD
+first 25-Nov-2008 (PREVCLOSE 950.65, unadjusted); our join had no factor (stored step 0.5056 = raw 480.65/950.65). No auction in 2008 -> average-price
+rule: NSE VWAP 62,710,355.05 / 126,846 = 494.3818 / 950.65 = 0.5200 (the composite already holds the 5:3 consolidation). demerger_adj row
+['REIAGROLTD', 20081125, 0.52, 0.5056] + catchup provenance event. Dry run (base = live 2aa82cb4f7): one SELF-HEAL, only REIAGROLTD changed (983 pre-ex
+bars x0.5200, c/h/l/op/vw; post-ex identical; join step now 0.9723); 2nd run 0, identical; split rev 2163e14db3. Favourites 0 changed picks, returns
+unchanged. Quantmac 8-Oct file: 318,423 / 318,496; the 4 REIAGROLTD d52 cells 2009-05..08 now differ (they apply no factor) and the 4 vs200 values
+(theirs blank) are now on one basis -> 8 RULE DIFFERENCE; 98 differing, OUR ERROR 0. Known residual: share VOLUME before 25-Nov-2008 stays in old-share
+units (the 5:3 consolidation is not applied to v).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
