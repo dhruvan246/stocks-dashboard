@@ -105,6 +105,26 @@
     .isec[open] > summary::after { content: '−'; }
     .isec > summary:hover { background: var(--surface); }
     .isec > .note { padding: 0 18px 14px; }
+    .guid { font-size: 13px; line-height: 1.5; padding: 8px 12px; border-radius: 10px; margin-top: 8px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--warn, #ca8a04); }
+    .guid .lbl, .trig .lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); display: block; margin-bottom: 2px; }
+    .guid.none { border-left-color: var(--border); color: var(--text-muted); }
+    .upd-mark { font-weight: 600; color: var(--accent); }
+    .upd-mark .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 3px; vertical-align: 1px; }
+    .dot.good, .tl.good::before { background: var(--pos, #16a34a); } .dot.bad, .tl.bad::before { background: var(--neg, #dc2626); } .dot.neutral, .tl.neutral::before { background: var(--text-muted); }
+    .tl { position: relative; padding: 8px 12px 8px 22px; margin: 6px 0; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); font-size: 13.5px; line-height: 1.55; }
+    .tl::before { content: ''; position: absolute; left: 8px; top: 14px; width: 7px; height: 7px; border-radius: 50%; }
+    .tl.good { background: color-mix(in srgb, var(--pos, #16a34a) 9%, var(--surface)); border-color: color-mix(in srgb, var(--pos, #16a34a) 35%, var(--border)); }
+    .tl.bad { background: color-mix(in srgb, var(--neg, #dc2626) 9%, var(--surface)); border-color: color-mix(in srgb, var(--neg, #dc2626) 35%, var(--border)); }
+    .tl .th { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin-bottom: 2px; }
+    .tl .td { font-variant-numeric: tabular-nums; font-weight: 600; }
+    .tl .tk { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-muted); }
+    .tl.good .tk { color: var(--pos, #16a34a); border-color: currentColor; } .tl.bad .tk { color: var(--neg, #dc2626); border-color: currentColor; }
+    .tl .tt { font-weight: 600; }
+    .tl .tb p { margin: 4px 0; } .tl .tb a { color: var(--accent); }
+    .tl .ts { font-size: 11.5px; color: var(--text-muted); }
+    .isec.flags > summary { color: var(--neg, #dc2626); }
+    .isec.updates > summary .n { font-weight: 400; color: var(--text-muted); margin-left: 6px; }
+    .mk { white-space: nowrap; }
     .ifoot { border-top: 1px solid var(--border); padding: 10px 18px; font-size: 12px; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
     .conf { font-weight: 600; text-transform: capitalize; }
     .conf.high { color: var(--pos, #16a34a); } .conf.medium { color: var(--warn, #ca8a04); } .conf.low { color: var(--neg, #dc2626); }
@@ -481,6 +501,22 @@
     const trig = String(it.trigger || '').replace(/^\s*(sme|deep|price|filing|govt|earnings?|commodity)\s*:\s*/i, '');
     const sec = (key, label) => it[key] ? `<details class="isec"><summary>${label}</summary><div class="note">${md(it[key])}</div></details>` : '';
     const kpi = (k, v, d) => `<div><div class="k">${k}</div><div class="v">${v}</div>${d ? `<div class="d">${d}</div>` : ''}</div>`;
+    // Guidance line: management's own revenue/growth guidance, always shown at the top of the card (user rule 2026-10-09).
+    // An idea without the field says so explicitly, so "not on file" and "management gives none" stay distinct.
+    const guid = String(it.guidance || '').trim();
+    const guidLine = guid
+      ? `<div class="guid"><span class="lbl">Revenue guidance</span><div class="tx">${inl(guid)}</div></div>`
+      : `<div class="guid none"><span class="lbl">Revenue guidance</span><div class="tx">Not on file for this card yet — the next update sweep reads the latest call / presentation for it.</div></div>`;
+    // Updates timeline: filings and news since the card was written, newest first; tone colours good / bad news.
+    const ups = (it.updates || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    const toneOf = (u) => /^(good|bad|neutral)$/.test(String(u.tone || '')) ? u.tone : 'neutral';
+    const KIND = { results: 'Results', order: 'Order', filing: 'Filing', news: 'News', corp: 'Corporate action', social: 'On X', forum: 'ValuePickr', price: 'Price', guidance: 'Guidance' };
+    const updHtml = ups.map(u => `<div class="tl ${toneOf(u)}"><div class="th"><span class="td">${esc(u.date || '')}</span><span class="tk">${esc(KIND[u.kind] || u.kind || 'Update')}</span>${u.title ? `<span class="tt">${inl(u.title)}</span>` : ''}</div><div class="tb">${md(u.body || '')}</div>${u.url ? `<div class="ts"><a href="${esc(u.url)}" target="_blank" rel="noopener">Source</a></div>` : ''}</div>`).join('');
+    const nGood = ups.filter(u => toneOf(u) === 'good').length, nBad = ups.filter(u => toneOf(u) === 'bad').length;
+    const updMark = ups.length
+      ? `<span class="upd-mark mk" title="Filings and news added after the card was written; green = good news, red = a red flag">↻ ${ups.length} update${ups.length === 1 ? '' : 's'} · ${esc(ups[0].date)}${nGood ? `<span class="dot good" title="${nGood} good"></span>` : ''}${nBad ? `<span class="dot bad" title="${nBad} red flag${nBad === 1 ? '' : 's'}"></span>` : ''}</span>`
+      : (it.updates_checked ? `<span class="mk" title="No new filings since the card was written">↻ checked ${esc(it.updates_checked)}</span>` : '');
+    const mcapNow = priced && it.call_close ? it.mcap * t.last_close / it.call_close : null;
     const el = document.createElement('article');
     el.className = 'card idea';
     el.id = 'idea-' + it.id;
@@ -490,7 +526,7 @@
           <div class="flex justify-between items-start gap-3">
             <div class="min-w-0">
               <h3>${esc(it.name)}<span class="tick">${esc(it.ticker || it.scrip || '')}</span>${it.sme && lane !== 'sme' ? '<span class="tag">SME</span>' : ''}</h3>
-              <div class="imeta"><span>Published ${esc(it.date)}</span><span>Mcap ₹${fmt(it.mcap, 0)} cr</span>${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}${it.social ? `<span title="This note includes what X (Twitter) posts say, checked against the filings">𝕏 ${(it.x_posts || []).length ? (it.x_posts || []).length + ' post' + ((it.x_posts || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}${it.valuepickr ? `<span title="This note includes what ValuePickr forum members say, checked against the filings">VP ${(it.vp_threads || []).length ? (it.vp_threads || []).length + ' thread' + ((it.vp_threads || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}</div>
+              <div class="imeta"><span>Published ${esc(it.date)}</span><span title="At the call price${mcapNow ? '; the first figure is at the latest close' : ''}">Mcap ${mcapNow ? `₹${fmt(mcapNow, 0)} cr <span class="muted">(₹${fmt(it.mcap, 0)} cr at call)</span>` : `₹${fmt(it.mcap, 0)} cr`}</span>${updMark}${it.industry ? `<span>${esc(it.industry)}</span>` : ''}${it.nse ? `<span>NSE ${esc(it.nse)}</span>` : ''}${/^\d+$/.test(String(it.scrip || '')) ? `<span>BSE ${esc(it.scrip)}</span>` : ''}${it.social ? `<span title="This note includes what X (Twitter) posts say, checked against the filings">𝕏 ${(it.x_posts || []).length ? (it.x_posts || []).length + ' post' + ((it.x_posts || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}${it.valuepickr ? `<span title="This note includes what ValuePickr forum members say, checked against the filings">VP ${(it.vp_threads || []).length ? (it.vp_threads || []).length + ' thread' + ((it.vp_threads || []).length === 1 ? '' : 's') : 'checked'}</span>` : ''}</div>
             </div>
             <span class="lane ${lane}">${esc(LANE_LABEL[lane])}</span>
           </div>
@@ -502,13 +538,15 @@
           ${priced ? kpi('Best close', pct(t.peak_pct), '₹' + fmt(t.peak_close, 2) + ' · ' + esc(t.peak_date)) : kpi('Best close', '—', '')}
         </div>
         <div class="ibody" style="padding-bottom:12px">
-          <div class="trig"><span class="muted text-xs font-semibold" style="text-transform:uppercase;letter-spacing:.05em">Trigger</span><div class="tx">${inl(trig)}</div></div>
+          <div class="trig"><span class="lbl">Trigger</span><div class="tx">${inl(trig)}</div></div>
+          ${guidLine}
           <div class="chev"><span class="lbl">Read the full research</span>${CHEV}</div>
         </div>
       </div>
       <div class="ifull">
         <div class="ibody" style="padding-top:0"><div class="note thesis">${md(it.thesis)}</div></div>
-        ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${sec('red_flags', 'Red flags and risks')}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}${sec('valuepickr', 'On ValuePickr' + ((it.vp_threads || []).length ? ` · ${(it.vp_threads || []).length} thread${(it.vp_threads || []).length === 1 ? '' : 's'}` : ''))}${sec('social', 'On X (Twitter)' + ((it.x_posts || []).length ? ` · ${(it.x_posts || []).length} post${(it.x_posts || []).length === 1 ? '' : 's'}` : ''))}
+        ${ups.length ? `<details class="isec updates" open><summary>Updates since the call<span class="n">${ups.length} · newest ${esc(ups[0].date)}</span></summary><div class="note">${updHtml}</div></details>` : ''}
+        ${sec('model', 'Model')}${sec('valuation', 'Valuation')}${it.red_flags ? `<details class="isec flags"><summary>Red flags and risks</summary><div class="note">${md(it.red_flags)}</div></details>` : ''}${sec('verify', 'Still to verify')}${sec('unknowns', 'Unknowns')}${sec('valuepickr', 'On ValuePickr' + ((it.vp_threads || []).length ? ` · ${(it.vp_threads || []).length} thread${(it.vp_threads || []).length === 1 ? '' : 's'}` : ''))}${sec('social', 'On X (Twitter)' + ((it.x_posts || []).length ? ` · ${(it.x_posts || []).length} post${(it.x_posts || []).length === 1 ? '' : 's'}` : ''))}
         <details class="isec"><summary>Sources (${(it.sources || []).length})</summary><div class="note"><ol class="srcl">${(it.sources || []).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></li>`).join('')}</ol></div></details>
         <div class="ifoot">${confLevel ? `<span>Confidence <span class="conf ${confLevel}">${confLevel}</span></span>` : ''}${confText ? `<span>${esc(confText)}</span>` : ''}</div>
         <button type="button" class="collapse-btn">Collapse ↑</button>

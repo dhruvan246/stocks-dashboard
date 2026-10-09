@@ -218,6 +218,44 @@ ValuePickr (forum.valuepickr.com) is a Discourse forum readable without login (h
    `[{"title","url","posts","first","last","kind"}]`. The page renders it as the card's "On ValuePickr" section.
    No thread found → still write `valuepickr` saying what was searched.
 
+## Revenue guidance line — every card, at the top (user rule, 2026-10-09)
+
+Every idea carries `"guidance"`: one or two sentences of **management's own** revenue / growth / margin guidance, with the
+period and the document it comes from (`"FY27 revenue ₹1,500 cr, ~₹3,000 cr by FY29 — Q1 FY27 call, 10-Aug-2026"`). Only
+guidance the company stated in a filing, call transcript, presentation or press release; never an analyst's or a forum's
+number. If management gives none, write `"No revenue guidance given by management (checked <date>, <documents read>)"`
+so the page can tell "none given" from "not looked for". The page shows it under the trigger on every card, open or closed.
+When later guidance replaces it, rewrite the field AND log the change as an update of kind `guidance`.
+
+## Updates sweep — keep every published card current (user rule, 2026-10-09)
+
+A card is not finished when it is published: the user wants each idea to carry what the company filed or announced
+afterwards, the way a company page on a research site keeps a dated log. Every routine run:
+
+1. `python3 scripts/ideas/updates.py` → `docs/ideas/updates_queue.json`: for every idea, the BSE and NSE filings since its
+   `updates_checked` date (else its `date`), with `routine: true` on housekeeping filings (trading-window closures, Reg 74
+   certificates, newspaper copies, investor-complaint statements). A queue `status` that is not `complete` means the read
+   stopped short — say so; never treat it as "nothing filed".
+2. For each idea, open every non-routine filing (the `pdf`) and write ONE update per filing that changes anything a reader
+   of the card would want to know — results, orders, capex, fund-raises, management or auditor changes, regulatory
+   notices, related-party approvals, rating actions, promoter buying or pledges. Skip pure housekeeping. Append to the
+   idea's `"updates"` list:
+   `{"date": "YYYY-MM-DD", "kind": "results|order|filing|news|corp|social|forum|price|guidance", "tone": "good|bad|neutral",
+     "title": "<one line>", "body": "<markdown, numbers from the document, YoY and vs-the-card comparisons>", "url": "<filing>"}`
+   - `tone` is the user's red/green rule: `good` for clearly good news (a results beat, an order worth a meaningful share of
+     a year's sales, debt repaid, a rating upgrade), `bad` for a red flag (a miss, a resignation, a regulatory notice, a
+     pledge, a related-party transaction, a delay), `neutral` otherwise. Decide from the document, not the headline.
+   - RESULTS get a measured verdict in the title, like `Results H1 FY27 — GOOD`: GOOD = sales and profit both up ≥15% YoY;
+     AVERAGE = both up but under 15%, or one up and one down with the other within ±10%; WEAK = sales or profit down
+     ≥10% YoY. State the actual YoY numbers in the body and compare them with the card's model. A quarter that lands
+     on the card's model is `neutral`, a beat `good`, a miss `bad`.
+   - Also log, as kind `social` / `forum`, any X post or ValuePickr post since the last check that carries NEW
+     filing-verified data (PLAYBOOK sweeps above); and as kind `price` a move of ±20% from the call price with its date.
+3. Re-read the guidance line: if a new call or presentation changed it, rewrite `"guidance"` and add a `guidance` update.
+4. Set the idea's `"updates_checked"` to today. Add any document read to `"sources"` (dedupe by URL).
+5. Never rewrite an older update or the card's original research; the card is a dated record. Fix an error in an
+   update by appending a correction update that says what was wrong.
+
 ## The conversion constants the style relies on (use only when the dossier gives the inputs)
 
 - Solar module maker: 1 crore imported cells ≈ ₹190-220 cr of module sales; 1 MW of modules ≈ ₹2 cr (DCR) or ₹1.3 cr (non-DCR).
@@ -236,6 +274,7 @@ These are working constants, not facts about any particular company; always pref
  "industry": "Medical Equipment & Supplies", "mcap": 855, "sme": true, "call_date": "2026-09-21", "call_close": 285.6,
  "trigger": "…", "thesis": "markdown", "model": "markdown", "valuation": "markdown", "red_flags": "markdown",
  "verify": "markdown", "unknowns": "markdown", "confidence": "medium: …",
+ "guidance": "FY27 revenue ₹1,500 cr — Q1 FY27 call, 10-Aug-2026", "updates": [], "updates_checked": "2026-10-09",
  "sources": [{"title": "…", "url": "https://…"}]}
 ```
 `call_date` is the scan date; `call_close` is that day's BSE close from the scan file. The scorecard measures from there.
