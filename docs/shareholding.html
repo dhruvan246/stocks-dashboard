@@ -63,6 +63,12 @@
       <div class="flex flex-wrap items-center gap-2" id="chips"></div>
       <div class="flex flex-wrap items-center gap-2 mt-2.5">
         <input id="q" type="search" placeholder="Search stock…" class="border border-slate-200 rounded-lg px-3 py-1.5 text-sm w-44 bg-white" />
+        <select id="qsel" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white" title="Show each company's holding for this quarter (default: its latest filed quarter)"><option value="">Latest quarter</option></select>
+        <span class="inline-flex items-center gap-1" title="Show only the filings submitted on this date">
+          <label for="fdate" class="text-xs text-slate-500">Filed on</label>
+          <input id="fdate" type="date" class="border border-slate-200 rounded-lg px-2 py-1 text-xs bg-white" />
+          <button id="fdclr" class="chip hidden" title="Clear the date" aria-label="Clear the date">✕</button>
+        </span>
         <select id="minmove" class="border border-slate-200 rounded-lg px-2 py-1.5 text-xs bg-white">
           <option value="0">Any move</option><option value="0.25">≥ 0.25 pp</option>
           <option value="0.5">≥ 0.5 pp</option><option value="1">≥ 1 pp</option><option value="2">≥ 2 pp</option>
@@ -105,7 +111,7 @@
     </div>
 
     <p class="text-[11px] text-slate-500 mt-5" id="foot">
-      Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. The <b>index</b> filter uses each NSE index's <b>current</b> member list (not membership as of the quarter shown). The <b>FII streak</b> filter (🔥 badge) counts consecutive quarters — counting back from the latest filing — in which FII stake rose by at least 0.05 pp; a missed or non-consecutive quarter ends the streak. <span id="qnote"></span> Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
+      Source: NSE shareholding-pattern XBRL filings (SEBI format). <b>FII</b> = Institutions (Foreign): FPI category I+II, foreign direct investment &amp; other foreign institutions. <b>DII</b> = Institutions (Domestic): mutual funds, insurance, banks, pension/provident, AIFs etc. <b>MF</b> = mutual funds alone (a subset of DII). Δ columns are the change in <b>percentage points (pp)</b> vs the company's previous filed quarter. The <b>quarter</b> picker shows every company's holding for that quarter (default: each company's latest); <b>Filed on</b> shows only filings submitted on that date. The <b>index</b> filter uses each NSE index's <b>current</b> member list (not membership as of the quarter shown). The <b>FII streak</b> filter (🔥 badge) counts consecutive quarters — counting back from the quarter shown — in which FII stake rose by at least 0.05 pp; a missed or non-consecutive quarter ends the streak. <span id="qnote"></span> Holdings are disclosed <b>quarterly</b> (within 21 days of quarter end) — companies file on different days, so new rows appear here every day during filing season; this page refreshes twice daily. Educational only — not investment advice.
     </p>
   </div>
 </main>
@@ -116,7 +122,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const MONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-let QUARTERS=[], ROWS=[], VIEW=[], shown=0;
+let QUARTERS=[], ROWS=[], BYQ=[], VIEW=[], shown=0;
 const IDX=new Map();   // index name -> Set of current member symbols (from indices.json)
 const PAGE=300;
 let mode='all', sortK='sub', sortDir=-1;
@@ -141,29 +147,35 @@ function load(){
     QUARTERS = j.quarters||[];
     $('updated').textContent = j.updated ? 'Updated '+j.updated+'.' : '';
     const today = new Date(); today.setHours(0,0,0,0);
-    ROWS = (j.rows||[]).map(r=>{
+    // one entry per (company, filed quarter); ROWS = each company's latest, BYQ[qi] = everyone's quarter qi
+    BYQ = QUARTERS.map(()=>[]); ROWS=[];
+    (j.rows||[]).forEach(r=>{
       const cells = r[4]||[];
-      let li=-1, pi=-1;
-      for(let i=0;i<cells.length;i++){ if(cells[i]){ if(li<0) li=i; else { pi=i; break; } } }
-      if(li<0) return null;
-      const c=cells[li], p=pi>=0?cells[pi]:null;
-      const sub=c[5]||'';
-      const ageDays = sub ? Math.round((today - new Date(sub+'T00:00:00'))/864e5) : 999;
-      // FII raising streak: consecutive CALENDAR quarters (from the latest cell) with ΔFII >= +0.05pp
-      let streak=0;
-      for(let i=li;i+1<cells.length;i++){
-        if(!cells[i]||!cells[i+1]) break;
-        if(!adjQ(QUARTERS[i+1],QUARTERS[i])) break;
-        if(cells[i][1]-cells[i+1][1] >= 0.05) streak++; else break;
+      let first=true;
+      for(let li=0;li<cells.length;li++){
+        if(!cells[li]) continue;
+        let pi=-1; for(let i=li+1;i<cells.length;i++) if(cells[i]){ pi=i; break; }
+        const c=cells[li], p=pi>=0?cells[pi]:null;
+        const sub=c[5]||'';
+        const ageDays = sub ? Math.round((today - new Date(sub+'T00:00:00'))/864e5) : 999;
+        // FII raising streak: consecutive CALENDAR quarters (from the quarter shown) with ΔFII >= +0.05pp
+        let streak=0;
+        for(let i=li;i+1<cells.length;i++){
+          if(!cells[i]||!cells[i+1]) break;
+          if(!adjQ(QUARTERS[i+1],QUARTERS[i])) break;
+          if(cells[i][1]-cells[i+1][1] >= 0.05) streak++; else break;
+        }
+        const e={ s:r[0], n:r[1], m:r[2]||0, sec:r[3]||'', cells, streak,
+          qi:li, q:QUARTERS[li], pq:pi>=0?QUARTERS[pi]:null, sub, ageDays,
+          prom:c[0], fii:c[1], dii:c[2], mf:c[3], ins:c[4],
+          dprom:p?+(c[0]-p[0]).toFixed(2):null, dfii:p?+(c[1]-p[1]).toFixed(2):null,
+          ddii:p?+(c[2]-p[2]).toFixed(2):null, dmf:p?+(c[3]-p[3]).toFixed(2):null };
+        BYQ[li].push(e);
+        if(first){ ROWS.push(e); first=false; }
       }
-      return { s:r[0], n:r[1], m:r[2]||0, sec:r[3]||'', cells, streak,
-        qi:li, q:QUARTERS[li], pq:pi>=0?QUARTERS[pi]:null, sub, ageDays,
-        prom:c[0], fii:c[1], dii:c[2], mf:c[3], ins:c[4],
-        dprom:p?+(c[0]-p[0]).toFixed(2):null, dfii:p?+(c[1]-p[1]).toFixed(2):null,
-        ddii:p?+(c[2]-p[2]).toFixed(2):null, dmf:p?+(c[3]-p[3]).toFixed(2):null };
-    }).filter(Boolean);
+    });
 
-    buildCards(); buildChips(); buildSectors(); buildStreaks(); apply();
+    buildCards(); buildChips(); buildSectors(); buildStreaks(); buildQuarterDate(); apply();
     $('status').classList.add('hidden'); $('content').classList.remove('hidden');
     loadIndexes();
   }).catch(()=>{ $('status').textContent='Could not load shareholding data — try again in a minute.'; });
@@ -209,6 +221,20 @@ function loadIndexes(){
       if(hit){ $('index').value=hit; apply(); }
     }
   }).catch(()=>{});
+}
+
+// Quarter picker + "filed on" date. Picking a date with "Latest quarter" searches every quarter's
+// filings submitted that day (a late filer's older quarter included).
+function buildQuarterDate(){
+  $('qsel').innerHTML='<option value="">Latest quarter</option>'+QUARTERS.map((q,i)=>
+    '<option value="'+i+'">'+qLabel(q)+' quarter · '+BYQ[i].length.toLocaleString('en-IN')+' filed</option>').join('');
+  let lo='', hi='';
+  BYQ.forEach(a=>a.forEach(e=>{ if(e.sub){ if(!lo||e.sub<lo) lo=e.sub; if(e.sub>hi) hi=e.sub; } }));
+  if(lo){ $('fdate').min=lo; $('fdate').max=hi; }
+  const u=new URLSearchParams(location.search);
+  const wq=u.get('qtr'), wd=u.get('date');
+  if(wq){ const i=QUARTERS.indexOf(wq); if(i>=0) $('qsel').value=String(i); }
+  if(wd && /^\d{4}-\d{2}-\d{2}$/.test(wd)) $('fdate').value=wd;
 }
 
 // Streak options are capped by how many quarters the feed actually ships (8 → at most 7 rises).
@@ -262,7 +288,11 @@ function apply(){
   const q=($('q').value||'').trim().toUpperCase();
   const mm=+$('minmove').value, mc=+$('minmcap').value, sec=$('sector').value;
   const idx=$('index').value, idxSet=idx?IDX.get(idx):null, st=+$('streak').value||0;
-  VIEW = ROWS.filter(r=>{
+  const qv=$('qsel').value, fd=$('fdate').value||'';
+  $('fdclr').classList.toggle('hidden', !fd);
+  const base = qv!=='' ? (BYQ[+qv]||[]) : fd ? BYQ.flat() : ROWS;
+  VIEW = base.filter(r=>{
+    if(fd && r.sub!==fd) return false;
     if(q && r.s.indexOf(q)<0 && r.n.toUpperCase().indexOf(q)<0) return false;
     if(mc && r.m<mc) return false;
     if(sec && r.sec!==sec) return false;
@@ -291,7 +321,9 @@ function apply(){
     return (y-x)*(-dir) || (b.m-a.m);
   });
   shown=0; $('tbody').innerHTML=''; renderMore();
-  $('count').textContent = VIEW.length.toLocaleString('en-IN')+' stocks';
+  $('count').textContent = VIEW.length.toLocaleString('en-IN')+' stocks'+(fd?' filed '+dLabel(fd)+' '+fd.slice(0,4):'');
+  if(!VIEW.length) $('tbody').innerHTML='<tr><td colspan="10" class="text-center text-slate-400 py-6 text-sm">'+
+    (fd?'No shareholding filings on '+esc(dLabel(fd))+' '+fd.slice(0,4)+(qv!==''?' for the '+esc(qLabel(QUARTERS[+qv]))+' quarter':'')+'.':'No stocks match these filters.')+'</td></tr>';
 }
 
 function sparkSvg(r, idx){
@@ -355,8 +387,9 @@ document.addEventListener('mousemove', e=>{
 });
 
 // ---- controls ----
-['q','minmove','minmcap','sector','index','streak'].forEach(id=>{ $(id).addEventListener('input', apply); });
+['q','minmove','minmcap','sector','index','streak','qsel','fdate'].forEach(id=>{ $(id).addEventListener('input', apply); });
 $('more').onclick=renderMore;
+$('fdclr').onclick=()=>{ $('fdate').value=''; apply(); };
 document.querySelectorAll('th.sortable').forEach(th=>{
   th.onclick=()=>{
     const k=th.dataset.k;
