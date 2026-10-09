@@ -58,7 +58,18 @@ def bse_items(scrip, d_from, d_to, problems):
 
 
 _jar = None
+NSE_CALLS = {'ok': 0, 'fail': 0}
 def nse_get(url):
+    try:
+        r = _nse_get(url)
+        NSE_CALLS['ok'] += 1
+        return r
+    except Exception:
+        NSE_CALLS['fail'] += 1
+        raise
+
+
+def _nse_get(url):
     global _jar
     if _jar is None:
         _jar = http.cookiejar.CookieJar()
@@ -381,6 +392,12 @@ def main():
             bad += not ok
         if bad:
             sys.exit(2)
+    if NSE_CALLS['ok'] == 0 and NSE_CALLS['fail'] > 0:
+        # NSE unreachable from this host (the research sandbox has blocked it before): a queue built without NSE would
+        # silently drop every NSE-only filing. Keep the committed queue (ideas-feeds.yml builds it from Actions).
+        print(f"NSE UNREACHABLE: {NSE_CALLS['fail']} NSE requests failed, none answered - docs/ideas/updates_queue.json "
+              "LEFT UNCHANGED. Use the committed queue and check its `built` stamp is today.")
+        sys.exit(3)
     json.dump(dict(built=ist.stamp(), second_reader_days=a.xcheck_days, second_reader_misses=misses,
                    second_reader_problems=(xprob if a.xcheck_days > 0 else []), ideas=out),
               open(os.path.join(DOCS, 'updates_queue.json'), 'w'), indent=1, ensure_ascii=False)

@@ -125,6 +125,13 @@ jobs:
       - name: Scorecard
         run: rc=0; python3 -X utf8 scripts/ideas/score.py || rc=$?; echo "score=$rc" >> /tmp/ideas/steps.txt
 
+      # Every BSE + NSE filing by every published idea since its card date (all NSE feeds incl. board meetings,
+      # SAST, insider trades, shareholding, results; BSE's full list) + a 7-day whole-market second reader.
+      # Built HERE because Actions reaches NSE; the research routine's sandbox has not always (runbook 144c).
+      # --selftest exits 2 if a known filing is not found; the step is non-fatal and its code lands in feeds_status.
+      - name: Filings queue for every idea (no filing may be missed)
+        run: rc=0; python3 -X utf8 scripts/ideas/updates.py --selftest --xcheck-days 7 || rc=$?; echo "updates=$rc" >> /tmp/ideas/steps.txt
+
       # feeds_status.json: which host answered what and which builder exited how, stamped. Then the
       # same parse guard the routine runs: a file this job cannot parse is not committed by this job.
       - name: Record status and guard every output
@@ -154,7 +161,7 @@ jobs:
           bad = 0
           for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
-                    'ideas.json', 'latest.json']:
+                    'ideas.json', 'latest.json', 'updates_queue.json']:
               try:
                   json.load(open('docs/ideas/' + f))
               except Exception as e:
@@ -194,7 +201,8 @@ jobs:
           FILES="docs/ideas/govt.json docs/ideas/spot.json docs/ideas/spot_series.json docs/ideas/spot_history.csv \
                  docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json \
                  docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
-                 docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json"
+                 docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
+                 docs/ideas/updates_queue.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read
