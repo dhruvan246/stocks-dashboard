@@ -1,0 +1,185 @@
+{
+ "date": "2026-10-09",
+ "run_started": "2026-10-09 19:50 IST",
+ "run_finished": "2026-10-09 21:05 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1206,
+ "candidates": 7,
+ "filings_status": "BSE answered 200 from this sandbox on the setup probe (ComHeadernew, scrip 500002) with the honest headers from scripts/bse_headers.py, so lane three ran live: the scan, four dossiers, every trigger PDF and every updates-sweep filing were read from api.bseindia.com / www.bseindia.com directly, one request at a time. universe.py rebuilt from the BSE scrip master: 1,206 names in the Rs 200-2,000 cr band (772 B, 128 X, 113 T, 79 M, 60 XT, 49 MT, 3 A, 1 MS, 1 P; 836 with an NSE symbol; 129 SME), against the 1,201 GitHub Actions wrote at ~18:57 IST - five names moved into the band, so universe.json IS committed. scan.py --days 65 read 1,025 announcements against BSE's own ROWCNT of 1,025: announcements_capped FALSE, announcements_blocked FALSE, announcements_source 'bse', read at 19:57 IST, so 1,025 is the day's full count and not a floor. 60 of the 1,025 mapped into the universe, 150 rows carried a signal, 7 scored >= 4. This run's scan SUPERSEDES the GitHub Actions scan of 18:58 IST, which read 949 of a reported 950 and was therefore CAPPED; the candidate list is the same 7 either way.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), so govt.py exited 0 and left docs/ideas/govt.json untouched, exactly as runbook 144e designs it. NOT a data gap for today: GitHub Actions reached PIB and feeds_status.json (built 19:03 IST) records allRel.aspx at 200 with the govt step rc=0 and landing.refused empty. That build, stamped 2026-10-09 18:56 IST, scanned 38 English releases and KEPT NOTHING: 31 dropped for carrying no decision verb, 3 noise, 3 below the Rs 1,000 cr floor, 1 duplicate, 0 backgrounders, 0 for having no mapped theme. unmapped_releases is EMPTY, so there was no big decision in an unmapped sector to chase and no theme_map.json addition to make. Zero kept is the correct and most common answer and nothing was manufactured from it; theme_map.json and commodity_map.json are unchanged.",
+ "commodity_status": "All six builders ran from this sandbox and every network source but BSE refused at the proxy, so the live numbers are the ones GitHub Actions wrote at 18:56-19:03 IST (feeds_status.json, steps_failed []). spot.py: all nine westmetall.com series plus markets.businessinsider.com failed (403 at CONNECT) - spot.json and spot_series.json LEFT UNCHANGED. minsteel.py: steel.gov.in 403 at CONNECT, listing page 0 failed, no report listed, committed file left as it was (latest Ministry of Steel report is still June 2026, a 3-month lag). india_spot.py: metalbook, ibja, rubber, sugar, fuel and te all FAILED (403 at CONNECT) with 'previous rows kept'; nmdc ok 2 rows and minsteel ok 3 rows, both read through api.bseindia.com / the committed file. 0 history rows appended, and india_history.json.gz WAS rebuilt - 140 series, 75,918 dated points (not 'NOT rebuilt'). The nmdc source re-read its window and added nothing: 85 revisions since 2019-01-03, latest still w.e.f. 2026-09-09, 49 unread for the reasons runbook 144a-iii records. wpi.py: eaindustry.nic.in 403, wpi.json.gz LEFT UNCHANGED. trade.py --latest: tradestat.commerce.gov.in 403, docs/ideas/trade/** LEFT UNCHANGED. signals.py read the committed panels and ranked 44 groups. STAMP AGE, as required: spot_date 2026-10-09 18:56 IST and india_built 2026-10-09 are fresh; MetalBook's own latest print is dated 2026-10-06 by its source (3 days); wpi_month is 2026-04 and trade_month 2026-07 - SIX and THREE months old. That is the ministries' publication lag, not a failure, but it is the decisive fact about this lane today: the WPI and customs evidence carrying every high-strength group has not changed in weeks, so NO commodity signal is news on 2026-10-09. WHAT WAS AND WAS NOT COMMITTED, measured: docs/ideas/india_spot.json, signals.json, nmdc_history.json and india_history.json.gz were rewritten by this run's builders but are NOT committed, for the same measured reason as the 2026-10-06/07/08 runs - their price rows are identical to Actions' version and the only real change is the per-source STATUS string, which this sandbox would degrade from Actions' accurate 'metalbook: ok, 42 rows / ibja: ok, 7 rows / rubber: ok, 8 rows / sugar: ok, 5 rows / fuel: ok, 8 rows / te: ok, 65 rows' to proxy-403 'FAILED ... previous rows kept' for six reads that genuinely SUCCEEDED today. Committing them would make ideas.html report today's live commodity panel as failed.",
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "Not researched. Evidence is all WPI (Crude Petroleum 3m +85.6%, 12m +88.1%; Petrol 1m +24.5%) at wpi_month 2026-04, six months old, plus Brent US$103.11 and TE crude 1y +64.4%. All four mapped beneficiaries - ONGC, Oil India, Hindustan Oil Exploration, Selan Exploration - sit outside the Rs 200-2,000 cr universe, and the playbook forbids publishing a large cap. No small-cap producer added: a crude producer cannot be manufactured out of the universe list."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "Not re-researched. The only mapped small cap, Modison Ltd (506261, Rs 1,518 cr), is ALREADY a published card (2026-09-22-MODISONLTD) and the playbook re-examines a published name only on a new hard trigger. Modison filed one today and it was a board-meeting date notice for the 16-Oct result, logged as an update rather than a new idea. IBJA silver 999 Rs 221,109/kg, 1m -6.0%, 1w +0.2%, highest since 2026-10-06 over 96 readings since 2026-05-22 - a span too short to call anything but a recent high, and falling over a month."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "Not researched: the group's benefit list is EMPTY and there is no Indian print - sources.india and sources.te are both null, so the whole signal rests on customs unit values for 2026-07 (HS 284180 export +606.5% since-year, HS 8101 scrap import +280.4%) with the 1m and 3m legs NEGATIVE (-43.4%, -36.8%). A direction that has reversed on the most recent two legs of a three-month-stale panel is not a basis for adding a name, and nothing was added on a hunch."
+  },
+  {
+   "group": "Copper",
+   "strength": 5.25,
+   "direction": "up",
+   "verdict": "RESEARCHED through Parmeshwar Metal (544330) - see researched[]. Exposure documented and total; not published, on governance. The signal itself is not new: evidence is 2026-07 customs unit values plus WPI Copper wire 12m +20.3%, and the Indian print (MetalBook Mumbai CC rods Rs 1,464/kg, 1y +42.1%) is 'highest since 2026-09-29', i.e. ten days, not a new high. Bhagyanagar India, the other small cap in this group, is a published card whose copper business demerged out of the scrip on 08-Oct-2026 - update logged."
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "strength": 2.05,
+   "direction": "up",
+   "verdict": "Not researched. All four mapped beneficiaries (Tata Steel, JSW Steel, SAIL, Jindal Steel) are far outside the universe. The Indian prints are the honest part and they do not support a producer idea today: Ministry of Steel Mumbai HR coil Rs 68,170/t and TMT Rs 57,950/t are the JUNE 2026 report, a 3-month lag, and TMT is -3.3% over a year; MetalBook's Mumbai HRC Rs 63.7/kg is 1y +31.3% but dated 2026-10-06 by its source. Noted only as the input-cost context for SEPC's SAIL work below."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "strength": 7.19,
+   "direction": "up",
+   "verdict": "Not researched. The whole signal is one Trading Economics series (Containerized Freight Index 3,664.11, 1y +215.8%, 1m +2.1%), there is no Indian print, and all three mapped names (Shipping Corporation of India, Great Eastern Shipping, Seamec) are outside the Rs 200-2,000 cr universe."
+  },
+  {
+   "group": "Sulphuric acid and sulphur / Benzene, PTA and MEG / Polyethylene and polypropylene / Graphite electrodes and needle coke",
+   "strength": 6.97,
+   "direction": "up",
+   "verdict": "Not researched, same reason in each case: the mapped beneficiaries are large caps (Tanfac, Hindustan Zinc, Hindalco; Reliance, Indian Oil; HEG, Graphite India) outside the universe, the India source is null for all four, and the WPI and customs legs carrying them are 2026-04 and 2026-07 data that have not moved since the 2026-10-06 run. No new name added without a document."
+  },
+  {
+   "group": "Caustic soda and chlor-alkali",
+   "strength": 3.2,
+   "direction": "up",
+   "verdict": "Not researched today, noted as the best-populated small-cap group for a future run: Lords Chloro Alkali, De Nora India, DCW and TGV Sraac are all in or near the band. Strength 3.2 ranks it 17th and its evidence is WPI-only at 2026-04, so lane three's documented, dated triggers outranked it. No work was done on these names, so nothing is claimed about them."
+  }
+ ],
+ "govt_considered": [],
+ "candidates_considered": [
+  {
+   "ticker": "SEPC",
+   "scrip": "532945",
+   "score": 7,
+   "signals": "ORDER, DISCLOSE, VOL (x5.2 on Rs 48.4 lakh median turnover)",
+   "verdict": "RESEARCHED, NOT PUBLISHED - today's filing re-announces an order the company already disclosed in August. Read: the 09-Oct press release, the 05-Aug LoA intimation, the full 240-day announcement list (69 rows, read status complete) and the BSE detailed results. The 09-Oct filing is the signing of the Contract Agreement for SAIL-ISP Burnpur Pellet Plant Package-2 at Rs 854.57 cr - and it says in its own words that the signing 'follows the Letter of Acceptance received by the Company from SAIL-ISP in August 2026'. That LoA was filed on 05-Aug-2026 as an Award of Order at the identical Rs 854.57 cr (net of ITC) and press-released on 06-Aug. So the order is two months old and the number is unchanged; the new facts are a signing ceremony and a consolidated order book 'crosses Rs 10,000 crore'. Against sales the order is large - 156% of FY26 standalone revenue of Rs 547.75 cr - but on rarity SEPC is the opposite of the profile the 1,245-filing study rewards: at least five order/LoA announcements in the 240 days read alone (05-Aug SAIL Rs 854.57 cr, 12-Jun SAIL LoA press-released 15-Jun at Rs 673 cr, 23-Feb) and the bucket with eight or more prior filings reached 2x 17.3% of the time and 5x never. Three further measured reasons not to publish: (1) TWO orders were CANCELLED inside the same window - a TCIL order (update filed 07-Aug) and an EPC sub-contract of the SEPC-Furlong joint operation (11-Jul, following a 14-May intimation); (2) promoter holding has collapsed from 27.35% (Sep-2025 filing) to 27.15%, 18.67% and 11.67% (Jun-2026 filing) while the company allotted up to 153 crore equity shares preferentially to acquire 90% of UAE-based Avenir; (3) the P&L has turned - Q1 FY27 revenue Rs 118.85 cr with a PAT LOSS of Rs 18.17 cr, FY26 revenue Rs 547.75 cr DOWN from Rs 597.65 cr, BSE header EPS -0.02, PE -264.50, ROE -0.29. Add the Madras High Court matter the 01-Oct and 05-Oct filings describe (attachment lifted on Rs 154 cr of trade receivables). A re-announced order from a loss-making serial bidder diluting 60% of promoter stake is not an idea."
+  },
+  {
+   "ticker": "INNOVISION",
+   "scrip": "544732",
+   "score": 4,
+   "signals": "ORDER x2",
+   "verdict": "RESEARCHED, NOT PUBLISHED - both orders are rounding errors and the company is the most extreme serial filer the scan has produced. Read: both 09-Oct Reg 30 intimations including Annexure A, and the 240-day announcement list (94 rows, read status complete). The Army drone order is REAL and specific - subsidiary Aerodrone Robotics Private Limited, 225 units of 7-inch FPV drones for the Indian Army through 15 Field Regiment Dehradun, GeM bid GEM/2025/B/69077547, granted 26-Sep and received 08-Oct, six-month execution - but its stated size is Rs 1,97,48,450.25, i.e. Rs 1.97 cr, about Rs 87,771 a drone. That is 0.20% of FY26 revenue of Rs 979.40 cr. The second order, security manpower for the Health and Family Welfare Department of Chhattisgarh under GeM bid GEM/2026/B/7732887, is Rs 2.40 cr over one year: 0.25% of sales. The study's worst bucket is orders under 10% of sales (21.4% two-year 2x rate) and these are two orders of a fiftieth of that. On rarity the name is at the other extreme: 31 order filings in the 240 days read, almost all NHAI toll-plaza user-fee collection awards - the 8+-prior-filings bucket reached 5x NEVER. Two more measured reasons: Q1 FY27 was a LOSS of Rs 9.86 cr on Rs 263.79 cr of revenue against FY26 PAT of Rs 39.05 cr, and median 60-day turnover is Rs 4.7 lakh, below the Rs 25 lakh liquidity floor the playbook sets, with today's volume 0.2x the 60-day median. A defence drone order is the right kind of news; Rs 1.97 cr of it is not an idea."
+  },
+  {
+   "ticker": "PPARIVAH",
+   "scrip": "544383",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "RESEARCHED AND PUBLISHED as 2026-10-09-PPARIVAH, lane 'filing', confidence low-to-medium. The 09-Oct Reg 30 filing's Annexure A quantifies the JSW Cement road-transport contract itself: approximately Rs 30 cr incremental annual revenue and around Rs 2.5 cr annual PAT, two years from 01-Nov-2026 to 31-Oct-2028, cement/GGBS/GBS out of Raigad, Maharashtra, alongside a proposed acquisition of 100 bulkers. Published with the order stated against sales, as the method requires: Rs 30 cr is 7.8% of FY26 standalone revenue of Rs 386.31 cr and 7.1% of the Rs 422 cr consolidated figure - the under-10% bucket, whose measured two-year 2x rate is 21.4%, said so on the card. Rarity cuts the other way: it is the ONLY order-type filing in the 41 announcements BSE served for the 240 days to 09-Oct (read status complete). The financials are real and were read from the FY26 annual report: revenue +15.0%, EBITDA Rs 53.99 cr +24.8%, PAT Rs 30.79 cr +27.4%, net margin 7.97%, ROE 21.66%, ROCE 21.27%, debt/equity 0.42, no promoter pledge (31-Mar-2026 shareholding filing answers No to pledge, NDU and any other encumbrance), MD salary 3.1% of PAT. Four auditor Emphasis of Matter paragraphs, Rs 75.9 cr of loans and advances, an unexplained four-subsidiary cash acquisition of 20-Aug-2025 and Rs 4.07 cr of money against share warrants are all on the card as red flags. Market cap Rs 481 cr sits inside the Rs 300-7,500 cr band where the 5x study found every run; the stock is already +99.5% over a year and within 0.7% of its 52-week high, which is said plainly. Today's volume was 0.1x the 60-day median, so there was no volume event to misread."
+  },
+  {
+   "ticker": "SUBEXLTD",
+   "scrip": "532348",
+   "score": 4,
+   "signals": "ORDER",
+   "verdict": "Skipped on a measured number from the filing itself. Annexure A to the 09-Oct Reg 30 intimation states the deal value as USD 0.7 million over a contract spanning three years - a HyperSense Fraud Management deployment for 'another new-logo with a leading African mobile operator'. At roughly Rs 88/USD that is about Rs 6.2 cr in total, or Rs 2 cr a year, against Subex revenue of the order of Rs 250 cr+: well under 1% of a trailing year's sales, the bucket the order study measured at 21.4%. The stock rose 4.2% on 1.7x median volume, which is a reaction to a sub-1% order, not evidence. No dossier was built and nothing is claimed about Subex's business beyond this filing."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "score": 6,
+   "signals": "DEAL, FUNDRAISE, VOL (x3.9 on Rs 44.6 lakh median turnover)",
+   "verdict": "Skipped: a borrowing by an NBFC, which the playbook excludes as a fund raise with no stated use beyond ordinary course. Read the 09-Oct allotment filing and its Annexure-I in full: the Allotment Committee allotted 65,000 listed, secured, rated, redeemable NCDs of Rs 10,000 face value, Rs 65.00 cr in total, at a 12.00% coupon on private placement for an 18-month tenor, allotted 09-Oct-2026 and redeeming 09-Apr-2028, to four allottees - Manba Finance Limited, Sunrise Gilts and Securities Private Limited, LC Capital India Private Limited and Aspero Markets Private Limited - secured against identified MSME secured loan receivables. A 12% cost of funds for 18 months is a fact about the liability side, not an operational trigger. The accompanying SAST Reg 29(1) disclosure for Regency Digitrade Investments Pvt Ltd is an IMAGE-ONLY PDF (2 pages, 0 characters of text layer) and could not be read in this run, so what it discloses is UNKNOWN and nothing is inferred from it."
+  },
+  {
+   "ticker": "MOL",
+   "scrip": "543331",
+   "score": 4,
+   "signals": "ORDER (mis-classified)",
+   "verdict": "Skipped: the ORDER tag is the classifier reading the word 'order' in a court order. Read the 37-page filing: it is the certified true copy of the NCLT Ahmedabad Bench order approving the Scheme of Amalgamation of Kilburn Chemicals Limited and Meghmani Crop Nutrition Limited - BOTH already wholly owned subsidiaries - into Meghmani Organics, effective on filing with the RoC Ahmedabad. Merging two wholly owned subsidiaries upwards changes the legal structure, not consolidated revenue or profit, and there is no number in the filing to model. Not an operational trigger."
+  },
+  {
+   "ticker": "SUNITATOOL",
+   "scrip": "544001",
+   "score": 4,
+   "signals": "VOL (x3.5), BREAKOUT (closing at the 65-day window high)",
+   "verdict": "WATCH-LISTED, not researched, exactly as the playbook directs for a pure price move: the scan found ZERO announcements for this scrip on 2026-10-09, so there is no filing to explain a 4.7% day at 3.5x median volume with the close of Rs 1,232.25 equal to the window high, after +11.3% in five days, +25.4% in twenty and +53.7% over the window. Liquidity is adequate (Rs 98.3 lakh median turnover). The 2026-09-22 study measured that a volume explosion accompanied 81% of 5x runs AND 78% of the stocks that went nowhere, so it is an alarm bell and not evidence. Carried forward: if a filing arrives that explains the move, it becomes a candidate then."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "PPARIVAH",
+   "scrip": "544383",
+   "lane": "filing",
+   "published": true,
+   "reason": "JSW Cement two-year road-transport contract with the company's own Rs 30 cr revenue / Rs 2.5 cr PAT estimate, on a profitable, lightly levered, unpledged SME at 15.6x trailing earnings; order only 7.8% of sales and the stock already +99.5% in a year, both said on the card.",
+   "documents": [
+    "09-Oct-2026 Reg 30 contract intimation + Annexure A",
+    "FY26 annual report (04-08-2026): Board's Report, MD&A, standalone + consolidated accounts, auditor's report, AGM notice",
+    "22-05-2026 audited FY26 results",
+    "16-Jun-2026 EIM/UltraTech EV press release",
+    "14-May-2026 LEAPS press release",
+    "31-Mar-2026 shareholding pattern",
+    "23-Apr-2026 SAST Reg 29(2)"
+   ]
+  },
+  {
+   "ticker": "SEPC",
+   "scrip": "532945",
+   "lane": "filing",
+   "published": false,
+   "reason": "Order already disclosed as an LoA on 05-Aug-2026 at the identical Rs 854.57 cr; serial bidder with 5+ order filings in 240 days and two cancellations; Q1 FY27 PAT loss Rs 18.17 cr; promoter holding 27.35% to 11.67% in nine months."
+  },
+  {
+   "ticker": "INNOVISION",
+   "scrip": "544732",
+   "lane": "filing",
+   "published": false,
+   "reason": "Army FPV-drone order is Rs 1.97 cr (0.20% of FY26 sales) and the Chhattisgarh manpower order Rs 2.40 cr (0.25%); 31 order filings in 240 days; Q1 FY27 loss Rs 9.86 cr; Rs 4.7 lakh median turnover, below the liquidity floor."
+  },
+  {
+   "ticker": "PARMESHWAR",
+   "scrip": "544330",
+   "lane": "price",
+   "published": false,
+   "reason": "Copper exposure is documented and total - the FY26 Board's Report states the business is 'manufacturing and trading of copper wire and copper wire rods by recycling of copper scrap' - but NOT published on governance. The FY26 AGM notice seeks omnibus approval for related-party transactions with NINE related parties, eight of them enterprises over which KMP/directors/promoters and their relatives exercise significant influence, at per-annum limits of Rs 25,000 L + 20,000 L + 12,500 L + 7,500 L + 5,000 L + 5,000 L + 500 L + 500 L + 500 L = Rs 76,500 lakh (Rs 765 cr), i.e. 38.8% of FY26 revenue of Rs 1,972.94 cr, for 'Sale / Purchase / Job Work / ... other financial transactions'. Alongside that: THREE separate orders of the Gujarat GST authority intimated in FY26-27 (26-Mar, 15-Apr, 15-Jun-2026); a BSE clarification sought on 25-Aug-2026 for significant price movement; PAT of only Rs 32.49 cr on Rs 1,972.94 cr of revenue (1.65%) with power and fuel of just Rs 9.78 cr, so most of the turnover is trading rather than conversion; and the stock already +362.7% over a year and +121.4% over six months. There is also no fresher data than 31-Mar-2026 - an SME filer, H1 FY27 not yet due - so the 2026 copper move cannot be seen in any reported number. Documented exposure plus Rs 765 cr of related-party headroom is not an idea; it is a reason to wait for H1 FY27 and the RPT disclosures."
+  }
+ ],
+ "published": [
+  "2026-10-09-PPARIVAH"
+ ],
+ "x_checked": [
+  {
+   "ticker": "PPARIVAH",
+   "result": "Searched x.com and twitter.com via WebSearch for 'Paradeep Parivahan PPARIVAH JSW Cement bulkers'. ONE post about the company surfaced: @BSEIndia's March-2025 listing-bell post (566th company on the BSE SME platform) - verified against the FY26 annual report's Corporate Governance Report, which states the shares are listed on the BSE SME platform. NOTHING on today's contract surfaced. No new filing-verified data point came from X. Written into the card's 'social' field with both caveats stated: X search indexing lags a day or two, AND reading any post by id was impossible (see data_problems)."
+  },
+  {
+   "ticker": "SEPC",
+   "result": "Searched x.com/twitter.com twice ('SEPC Limited SAIL IISCO order book', '$SEPC SEPC Ltd order 854 crore'). Posts found but NOT the Rs 854.57 cr order: @stocknewslatest on a Rs 442.8 crore Bihar lift-irrigation work allocation order, @thebigbulldeals on a Rs 650 crore 133 MW solar EPC contract from Parmeshi Urja (10-Jun-2025), @stockaajorkal and @AvinashGoraksha on an AED 35 mn (~Rs 85 cr) UAE order via SEPC FZE, @marketalertsz on the rights-issue first-and-final call of Rs 5 per partly paid share, @wegro_app on a Madras High Court common order of 30-Sep-2026 settling disputes with award holders. TWO of these were CONFIRMED against primary filings read in this run: the Madras High Court settlement (SEPC's own 01-Oct-2026 'Update On High Court Order, Settlement Of Disputes, And Removal Of Financial Attachments' and the 05-Oct-2026 press release 'Major relief for SEPC as Madras High Court lifts attachement on Rs. 154 crores trade receivables'), and the rights-issue call (SEPC's 09-May-2026 filing converting 2,42,36,652 partly paid shares to fully paid and the 13-Apr-2026 first-and-final reminder cum forfeiture notice). The three order posts are consistent with the serial-bidder finding but their values were NOT matched to filings, because those orders predate the 240-day window read, so they are leads only and no number from them was used. The Rs 147 cr demand-draft figure in @wegro_app's post is NOT verified - the 01-Oct filing was not opened in this run."
+  },
+  {
+   "ticker": "INNOVISION",
+   "result": "Searched x.com/twitter.com for 'Innovision Limited INNOVISION Aerodrone Robotics drone order'. No post on today's order surfaced. Two accounts were found that bear on the structure: @AerodroneR (Aerodrone Robotics, Gurugram, describing itself as indigenous defence drones, DGCA-approved training, UAV components, drone-as-a-service) and a post of theirs about a drone surveillance deployment at a JK Cement site in Rajasthan tagging '@Innovision_Ltd'; and @innosecure, an Innovision Limited account describing a manpower-sourcing firm established 2007 in Gurgaon. The subsidiary relationship is verified from the primary filing - the 09-Oct intimation names Aerodrone Robotics Private Limited as a subsidiary of Innovision Limited - but whether the two X handles are the same companies was NOT verified and nothing from those posts entered the verdict. The JK Cement deployment is an unverified claim."
+  },
+  {
+   "ticker": "PARMESHWAR",
+   "result": "Searched x.com/twitter.com for 'Parmeshwar Metal copper recycling capacity expansion'. One post about the company: @sharemarket_ipo on its SME IPO listing at Rs 84.50 against a Rs 61 offer price (+38.52%). One sector lead: @LnprCapital quoting an Ashika Institutional Equities thematic of 23-Jul-2026 ('Recycling: The New Ore') initiating on three listed non-ferrous recyclers and putting plain copper recycling at roughly Rs 35,000-40,000 EBITDA per tonne - the post does NOT say whether Parmeshwar is one of the three, and the number is a brokerage estimate matched to no filing, so it is listed as unverified and was not used. Nothing on X about the related-party limits, the GST orders or any capacity number. No new verified data point."
+  }
+ ],
+ "note": "Three lanes, one publication. LANE ONE produced nothing and that is the correct answer: PIB put out 38 English releases on 2026-10-09 and the gate kept none - 31 carried no decision verb, 3 were noise, 3 were below the Rs 1,000 cr outlay floor, 1 was a duplicate, and unmapped_releases was empty, so there was no decision in an unmapped sector to chase either. LANE TWO produced no NEW signal, for a reason worth stating plainly: the two panels that carry almost every high-strength group are the WPI (2026-04) and the customs trade panel (2026-07), six and three months old because the ministries have not published since, so the 44 ranked groups are the same 44 as the 2026-10-06, -07 and -08 runs. The one strong group with a documented small-cap pure-play, copper, was researched properly through Parmeshwar Metal and withheld on Rs 765 cr of related-party headroom; its Indian print (MetalBook Mumbai CC rods, highest since ten days ago) is not news either. LANE THREE did the work. Of the day's 1,025 BSE announcements - a complete read against BSE's own count, not a floor - 7 scored >= 4 and all 7 were adjudicated from their own filings: three skipped on a number read out of the filing (Subex USD 0.7 mn over three years, Regency a 12% NCD borrowing, Meghmani a court order mis-tagged as an order), one watch-listed because it had no filing at all (Sunita Tools), and three researched in depth. Two of those three failed on exactly what the 1,245-filing order study measures: SEPC's Rs 854.57 cr is a re-announcement of its own 05-Aug LoA from a serial bidder with two cancellations and a Q1 loss, and Innovision's Army drone order, though a genuine defence contract for 225 FPV drones, is Rs 1.97 cr - two tenths of one per cent of sales - from a company that has filed 31 order intimations in 240 days. Paradeep Parivahan was published because its filing does what the others' do not: it states the money. Rs 30 cr of incremental annual revenue and Rs 2.5 cr of PAT, management's own numbers, on a two-year JSW Cement contract starting 01-Nov-2026, at a company earning 21.7% on equity with debt/equity 0.42 and no promoter pledge, trading at 15.6x. The card does not oversell it: Rs 30 cr is 7.8% of sales, the worst bucket in the study; there is no tonnage, rate or order book in any document the company has ever filed, so the model rests on management's estimate plus an explicitly assumed 15% base growth; the auditor's report carries four Emphasis of Matter paragraphs; and the stock is already +99.5% over a year and within 0.7% of its high. Confidence low-to-medium, stated as such. The updates sweep passed both selftests, found 0 second-reader misses, and surfaced 18 new non-routine filings across 7 published cards, of which 5 became updates and 2 were Reg 74(5) depository certificates left as housekeeping. The sweep's most important finding was not a company event at all: score.py has mis-read Bhagyanagar India's 08-Oct demerger ex-date as an 11:1 split and is reporting that card at +7.4% when the return is not measurable until Tieramet lists - see data_problems.",
+ "data_problems": [
+  "LOUD, for the owner: score.py is MIS-SCORING a published card. BHAGYANGR's copper business demerged into Tieramet Limited with record date 08-Oct-2026, and the BSE close went Rs 453.95 (07-Oct) -> Rs 41.40 (08-Oct), a 10.96x one-day gap, measured from scripts/ideas/_cache/bhav_20261007.csv and bhav_20261008.csv in this run. score.py's unrecorded-corporate-action rule snapped that gap to a SPLIT FACTOR OF 11 (track.json -> adj_events: ['2026-10-08 x11 unrecorded gap x10.96']) and divided the pre-08-Oct history by 11, restating the card's call close from the true Rs 444.90 of 23-Sep-2026 to Rs 40.45 and reporting ret_pct +7.4%. A demerger is not a split: value left the company, it was not subdivided. The honest position of a holder from the call is one BIL share at Rs 43.45 PLUS one Tieramet share of Rs 2 face value that has not begun trading, so the return is NOT MEASURABLE until Tieramet lists. ideas.json's own call_close of Rs 444.90 is unchanged and correct - only the scorecard row is wrong. This routine is not permitted to edit scripts/ideas/*.py, so the defect is reported, not fixed, and a full update has been written onto the BHAGYANGR card so a reader of the page sees the warning beside the +7.4%. The same rule will mis-handle any future demerger ex-date.",
+  "forum.valuepickr.com is BLOCKED at this sandbox's egress proxy: 403 Forbidden at CONNECT, organisation policy, measured on search.json. Neither search.json, nor t/<id>.json, nor raw/<id> could be fetched for ANY of the four researched names. The ValuePickr sweep therefore did NOT run as the playbook specifies. Fallback: WebSearch with allowed_domains ['forum.valuepickr.com'] was run twice; no thread for Paradeep Parivahan, SEPC, Innovision or Parmeshwar Metal surfaced, and the general logistics / SME threads it did return could not be opened to check for mentions. 'Not read' is recorded on the published card's valuepickr field - NOT 'nothing found'.",
+  "cdn.syndication.twimg.com is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), as is threadreaderapp.com. So the X sweep could FIND posts (WebSearch works, and did, for all four names) but could NOT read any post by id to confirm its full text, author handle or created_at. Every X finding in x_checked and in the published card's social field therefore rests on the search result's own rendering of the post, and the 15-word quoting limit was respected. Post ids are recorded so the owner can re-read them from a network that reaches the host.",
+  "updates.py second_reader_problems: ['BSE daily list 2026-10-09 incomplete']. The second reader's whole-market re-read of 2026-10-09 got 1,035 rows against BSE's reported 1,036 for that range and a page came back short, so it was not cached. second_reader_misses is 0 - the per-company reads missed nothing the second reader found - and every one of the 33 per-idea queue rows came back status 'complete'. The one-row shortfall is in the day's EARLIEST filings. SELFTEST PASS on both known cases (Viviana's 06-Oct board-meeting intimation from the NSE board-meetings feed, and Om Power's two separate BSE order letters of 06-Oct kept as two filings).",
+  "pib.gov.in, westmetall.com, markets.businessinsider.com, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, tradingeconomics.com, eaindustry.nic.in and tradestat.commerce.gov.in ALL returned 403 Forbidden at the egress proxy's CONNECT from this sandbox. GitHub Actions reached every one of them except westmetall.com and tradestat.commerce.gov.in (302 at the root, and both builders worked) at 18:56-19:03 IST, so no commodity or government data is missing for today - but every builder in this run printed a FAILED/UNCHANGED status, which is why india_spot.json, signals.json, nmdc_history.json and india_history.json.gz are deliberately NOT committed. api.bseindia.com and www.bseindia.com answered 200 throughout, from both Actions and this sandbox.",
+  "wpi_month is 2026-04 and trade_month is 2026-07: the WPI and customs panels are six and three months stale because eaindustry.nic.in and tradestat.commerce.gov.in have published nothing newer, not because of a failure. Every signals.json group with strength above 3 is carried by one or both of them, so no commodity signal on this page is NEWS on 2026-10-09. Stated in commodity_status and in the lane-two verdicts rather than left for a reader to infer.",
+  "Regency Fincorp's SAST Reg 29(1) disclosure of 09-Oct-2026 (Regency Digitrade Investments Pvt Ltd) is an IMAGE-ONLY PDF: 2 pages, 0 characters of text layer, no OCR attempted. Its contents are UNKNOWN and nothing was inferred from it.",
+  "Paradeep Parivahan's June-2026 shareholding pattern was NOT served by BSE in this run: the latest the shareholding list returned for scrip 544383 is March 2026 (filed 21-04-2026, promoter 65.96%). Promoter holding on the published card is therefore stated as at 31-Mar-2026 and any change since is listed under unknowns. The pledge answer (no pledge, no NDU, no other encumbrance) is read from that same 31-Mar-2026 filing.",
+  "No investor presentation, concall transcript or credit-rating report exists for Paradeep Parivahan in the 240-day announcement window read, and as a BSE SME filer it reports half-yearly, so the published card's newest operating numbers are those of the year ended 31-Mar-2026, over six months old. The next data point is the H1 FY27 result due by mid-November 2026. This is stated on the card itself, not only here."
+ ]
+}
