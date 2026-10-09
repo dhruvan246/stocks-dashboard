@@ -226,6 +226,9 @@ guidance the company stated in a filing, call transcript, presentation or press 
 number. If management gives none, write `"No revenue guidance given by management (checked <date>, <documents read>)"`
 so the page can tell "none given" from "not looked for". The page shows it under the trigger on every card, open or closed.
 When later guidance replaces it, rewrite the field AND log the change as an update of kind `guidance`.
+Add management's **track record** where the documents allow it: last year's guided growth against the actual
+(`"FY26 guidance 50-60% growth, actual +81% — beat"`), and say when guidance was cut or raised between calls. A
+company that keeps missing its own guidance is a red flag the reader should see in the first line.
 
 ## Updates sweep — keep every published card current (user rule, 2026-10-09)
 
@@ -236,7 +239,20 @@ afterwards, the way a company page on a research site keeps a dated log. Every r
    `updates_checked` date (else its `date`), with `routine: true` on housekeeping filings (trading-window closures, Reg 74
    certificates, newspaper copies, investor-complaint statements). A queue `status` that is not `complete` means the read
    stopped short — say so; never treat it as "nothing filed".
-2. For each idea, open every non-routine filing (the `pdf`) and write ONE update per filing that changes anything a reader
+   The queue lists every filing since the card date (the company page's Filings tab shows it); the sweep's work list is
+   the items with `new: true` (filed on or after the idea's `updates_checked`).
+   **No filing may be missed (user rule, 2026-10-09 — after Viviana's 06-Oct board-meeting notice was missed because
+   NSE files board-meeting intimations only in a separate feed).** updates.py therefore reads, per company: BSE's full
+   announcement list (every category, 90-day windows, every page, checked against BSE's own count) and BSE bonus/split
+   actions; and on NSE the announcement feed PLUS the separate feeds for board meetings, corporate actions, SAST Reg 29,
+   insider trading (PIT), shareholding patterns, integrated results, annual reports and credit ratings. Then a SECOND
+   READER re-reads the last 7 days of whole-market feeds (NSE announcements and board meetings on both boards, BSE's full
+   day list) and matches every row to our companies by ISIN, symbol, BSE code or company name; anything it finds that the
+   per-company reads did not is added with `found_by: daily-feed` and turns that idea's `status` to SUSPECT, naming the
+   filing. Run it with `--selftest`: it must print `SELFTEST PASS` (the Viviana case) or the run reports a failure.
+   Report `second_reader_misses` and `second_reader_problems` from the queue file every run; a non-zero miss count means
+   a feed we do not read per company exists — find it and add it to updates.py, never just log it.
+2. For each idea, open every non-routine `new` filing (the `pdf`) and write ONE update per filing that changes anything a reader
    of the card would want to know — results, orders, capex, fund-raises, management or auditor changes, regulatory
    notices, related-party approvals, rating actions, promoter buying or pledges. Skip pure housekeeping. Append to the
    idea's `"updates"` list:
