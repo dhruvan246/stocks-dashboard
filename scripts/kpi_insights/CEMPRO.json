@@ -1003,25 +1003,12 @@
    "kind": "flow",
    "y": {
     "20230331": 41.95,
-    "20240331": 45.55
-   },
-   "q": {
+    "20240331": 45.55,
     "20250331": 49.69,
-    "20260331": 40.88
+    "20260331": 40.56
    },
+   "q": {},
    "src": {
-    "q:20260331": [
-     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
-     282,
-     "Revenue from top five customers",
-     "40.88"
-    ],
-    "q:20250331": [
-     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
-     282,
-     "Revenue from top five customers",
-     "49.69"
-    ],
     "y:20240331": [
      "1a14f390-e429-4e9d-a3b6-40bb17bb34f2.pdf",
      264,
@@ -1033,8 +1020,54 @@
      264,
      "Revenue from top five customers, % of Revenue (Consolidated)",
      "41.95"
+    ],
+    "y:20250331": [
+     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
+     373,
+     "Revenue from top five customers, % of Revenue, Year ended March 31, 2025 (Consolidated)",
+     "49.69"
+    ],
+    "y:20260331": [
+     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
+     373,
+     "Revenue from top five customers, % of Revenue, Year ended March 31, 2026 (Consolidated)",
+     "40.56"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     49.69,
+     null,
+     "drop_q",
+     "page 282 (Standalone notes, 'contract revenues generated from the top customer and top 5 customers'): columns 'Year ended March 31, 2026 | Year ended March 31, ",
+     "2026-10-10"
+    ],
+    [
+     "y:20250331",
+     null,
+     49.69,
+     "set_y",
+     "page 282 (Standalone notes, 'contract revenues generated from the top customer and top 5 customers'): columns 'Year ended March 31, 2026 | Year ended March 31, ",
+     "2026-10-10"
+    ],
+    [
+     "q:20260331",
+     40.88,
+     null,
+     "drop_q",
+     "page 282 (Standalone notes): 'Revenue from top five customers 4,081.03 40.88%' under 'Year ended March 31, 2026'. 40.88 is the FY26 STANDALONE full-year share. ",
+     "2026-10-10"
+    ],
+    [
+     "y:20260331",
+     null,
+     40.56,
+     "set_y",
+     "page 282 (Standalone notes): 'Revenue from top five customers 4,081.03 40.88%' under 'Year ended March 31, 2026'. 40.88 is the FY26 STANDALONE full-year share. ",
+     "2026-10-10"
+    ]
+   ]
   },
   {
    "name": "Total Employees",
@@ -1323,25 +1356,59 @@
    "name": "Revenue from Top Customer (share of revenue)",
    "unit": "%",
    "kind": "flow",
-   "y": {},
-   "q": {
+   "y": {
     "20250331": 21.09,
-    "20260331": 14.0
+    "20260331": 13.9
    },
+   "q": {},
    "src": {
-    "q:20260331": [
+    "y:20250331": [
      "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
-     282,
-     "Revenue from top customer",
-     "14.00"
-    ],
-    "q:20250331": [
-     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
-     282,
-     "Revenue from top customer",
+     373,
+     "Revenue from top customer, % of Revenue, Year ended March 31, 2025 (Consolidated)",
      "21.09"
+    ],
+    "y:20260331": [
+     "e2ac4962-4c75-4092-9c6b-52635c6c3d3f.pdf",
+     373,
+     "Revenue from top customer, % of Revenue, Year ended March 31, 2026 (Consolidated)",
+     "13.90"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     21.09,
+     null,
+     "drop_q",
+     "page 282 (Standalone notes): 'Revenue from top customer 1,398.05 14.00% | 1,950.45 21.09%' under 'Year ended March 31, 2026 | Year ended March 31, 2025'. 21.09 ",
+     "2026-10-10"
+    ],
+    [
+     "y:20250331",
+     null,
+     21.09,
+     "set_y",
+     "page 282 (Standalone notes): 'Revenue from top customer 1,398.05 14.00% | 1,950.45 21.09%' under 'Year ended March 31, 2026 | Year ended March 31, 2025'. 21.09 ",
+     "2026-10-10"
+    ],
+    [
+     "q:20260331",
+     14.0,
+     null,
+     "drop_q",
+     "page 282 (Standalone notes): 'Revenue from top customer 1,398.05 14.00%' under 'Year ended March 31, 2026' = FY26 STANDALONE full-year share. Year slot empty; C",
+     "2026-10-10"
+    ],
+    [
+     "y:20260331",
+     null,
+     13.9,
+     "set_y",
+     "page 282 (Standalone notes): 'Revenue from top customer 1,398.05 14.00%' under 'Year ended March 31, 2026' = FY26 STANDALONE full-year share. Year slot empty; C",
+     "2026-10-10"
+    ]
+   ]
   },
   {
    "name": "Revenue from Top Five Customers (% of Revenue)",
@@ -2673,5 +2740,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-18"
+ "updated": "2026-10-10"
 }

@@ -1380,7 +1380,7 @@
     "20250630": 3.95,
     "20250930": 3.85,
     "20251231": 3.86,
-    "20260331": 3.9,
+    "20260331": 3.91,
     "20260630": 3.79
    },
    "src": {
@@ -1409,10 +1409,10 @@
      "4.00"
     ],
     "q:20260331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM %",
-     "3.90"
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     9,
+     "(Quarterly) NIM %, Mar`26",
+     "3.91"
     ],
     "q:20260630": [
      "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
@@ -1486,7 +1486,17 @@
      "NIM %",
      "3.86"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     3.9,
+     3.91,
+     "set_q",
+     "page 17 (3ffac817): 'NIM %' chart, point 'Mar`26' = 3.90 on a page whose companion charts are full-year (NII Mar`26 136.64 Bn vs 'Jun`26 (3M)' 37.70). Q4 FY26 d",
+     "2026-10-10"
+    ]
+   ]
   },
   {
    "name": "Retail Sector Advances",
@@ -2447,9 +2457,9 @@
     "20240331": 1.5
    },
    "q": {
-    "20220331": 0.55,
-    "20230331": 1.1,
-    "20240331": 1.5,
+    "20220331": 0.65,
+    "20230331": 1.32,
+    "20240331": 1.73,
     "20250331": 1.75,
     "20250630": 1.8,
     "20250930": 1.82,
@@ -2471,22 +2481,22 @@
      "1.80"
     ],
     "q:20220331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "Return on Assets (%)",
-     "0.55"
+     "89e6ccfa-f5b7-4d2c-87b2-0b124e530737.pdf",
+     3,
+     "Return on Assets (ROA) improved to 0.65 % for Q4FY22",
+     "0.65"
     ],
     "q:20230331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "Return on Assets (%)",
-     "1.10"
+     "c8e0be3d-90c3-4d99-8651-0fbda83d5619.pdf",
+     21,
+     "Quarterly, Return on Assets (%), Mar`23",
+     "1.32"
     ],
     "q:20240331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "Return on Assets (%)",
-     "1.50"
+     "25f521c2-f168-4735-af5f-7be875c66f23.pdf",
+     20,
+     "Quarterly, Return on Assets (%), Mar`24",
+     "1.73"
     ],
     "q:20250331": [
      "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
@@ -2530,7 +2540,33 @@
      "ROA %",
      "1.5"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20220331",
+     0.55,
+     0.65,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`22' = 0.55; Q4 FY26 deck ecc7972d page 18 prints the same series under '(Year Ended) Return",
+     "2026-10-10"
+    ],
+    [
+     "q:20230331",
+     1.1,
+     1.32,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`23' = 1.10; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`23 1.1",
+     "2026-10-10"
+    ],
+    [
+     "q:20240331",
+     1.5,
+     1.73,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`24' = 1.50; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`24 1.5",
+     "2026-10-10"
+    ]
+   ]
   },
   {
    "name": "Term Deposits",
@@ -4206,5 +4242,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-11"
+ "updated": "2026-10-10"
 }

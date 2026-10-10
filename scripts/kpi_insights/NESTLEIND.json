@@ -272,70 +272,6 @@
    }
   },
   {
-   "name": "Purchases from Top 10 Trading Houses (Share of Trading House Purchases)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 96.0,
-    "20250331": 99.6
-   },
-   "q": {
-    "20240331": 96.0
-   },
-   "src": {
-    "y:20250331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Purchases from top 10 trading houses as % of total purchases from trading houses",
-     "99.6"
-    ],
-    "q:20240331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Purchases from top 10 trading houses as % of total purchases from trading houses",
-     "96"
-    ],
-    "y:20240331": [
-     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
-     217,
-     "Purchases from top 10 trading houses as % of total purchases from trading houses",
-     "96"
-    ]
-   }
-  },
-  {
-   "name": "Purchases from Trading Houses (Share of Total Purchases)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 15.0,
-    "20250331": 2.0
-   },
-   "q": {
-    "20240331": 15.0
-   },
-   "src": {
-    "y:20250331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Purchases from trading houses as % of total purchases",
-     "2"
-    ],
-    "q:20240331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Purchases from trading houses as % of total purchases",
-     "15"
-    ],
-    "y:20240331": [
-     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
-     217,
-     "Purchases from trading houses as % of total purchases",
-     "15"
-    ]
-   }
-  },
-  {
    "name": "Retail ONE Kiosk Count",
    "unit": "count",
    "kind": "level",
@@ -364,70 +300,6 @@
      10,
      "Expanded presence with Nestlé Retail One Kiosks to 940+ across colleges, hospita",
      "940"
-    ]
-   }
-  },
-  {
-   "name": "Sales to Dealers/Distributors (Share of Total Sales)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 100.0,
-    "20250331": 97.8
-   },
-   "q": {
-    "20240331": 100.0
-   },
-   "src": {
-    "y:20250331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Sales to dealers/ distributors as % of total sales",
-     "97.8"
-    ],
-    "q:20240331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Sales to dealers/ distributors as % of total sales",
-     "100"
-    ],
-    "y:20240331": [
-     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
-     217,
-     "Sales to dealers/distributors as % of total sales",
-     "100"
-    ]
-   }
-  },
-  {
-   "name": "Sales to Top 10 Distributors (Share of Distributor Sales)",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 15.0,
-    "20250331": 16.1
-   },
-   "q": {
-    "20240331": 15.0
-   },
-   "src": {
-    "y:20250331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Sales to top 10 dealers/distributors as % of total sales to dealers/distributors",
-     "16.1"
-    ],
-    "q:20240331": [
-     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
-     247,
-     "Sales to top 10 dealers/distributors as % of total sales to dealers/distributors",
-     "15"
-    ],
-    "y:20240331": [
-     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
-     217,
-     "Sales to top 10 dealers/distributors as % of total sales to dealers/distributors",
-     "15"
     ]
    }
   },
@@ -546,6 +418,74 @@
    }
   },
   {
+   "name": "Purchases from Top 10 Trading Houses (Share of Trading House Purchases)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 96.0,
+    "20250331": 99.6
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
+     247,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "99.6"
+    ],
+    "y:20240331": [
+     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
+     217,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "96"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     96.0,
+     null,
+     "drop_q",
+     "page 247 (AR 2024-25, BRSR P1 Q9 'Open-ness of business'): row 'c. Purchases from top 10 trading houses as % of total purchases from trading houses', column '15",
+     "2026-10-10"
+    ]
+   ]
+  },
+  {
+   "name": "Purchases from Trading Houses (Share of Total Purchases)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 15.0,
+    "20250331": 2.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
+     247,
+     "Purchases from trading houses as % of total purchases",
+     "2"
+    ],
+    "y:20240331": [
+     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
+     217,
+     "Purchases from trading houses as % of total purchases",
+     "15"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     15.0,
+     null,
+     "drop_q",
+     "page 247 (AR 2024-25, BRSR P1 Q9 'Open-ness of business'): row 'a. Purchases from trading houses as % of total purchases', column '15 Months FY ended 31st March",
+     "2026-10-10"
+    ]
+   ]
+  },
+  {
    "name": "RUrban Distribution Touchpoints",
    "unit": "count",
    "kind": "level",
@@ -617,6 +557,74 @@
      "705"
     ]
    }
+  },
+  {
+   "name": "Sales to Dealers/Distributors (Share of Total Sales)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 100.0,
+    "20250331": 97.8
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
+     247,
+     "Sales to dealers/ distributors as % of total sales",
+     "97.8"
+    ],
+    "y:20240331": [
+     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
+     217,
+     "Sales to dealers/distributors as % of total sales",
+     "100"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     100.0,
+     null,
+     "drop_q",
+     "page 247 (AR 2024-25, BRSR P1 Q9 'Open-ness of business'): row 'a. Sales to dealers/ distributors as % of total sales', column '15 Months FY ended 31st March 20",
+     "2026-10-10"
+    ]
+   ]
+  },
+  {
+   "name": "Sales to Top 10 Distributors (Share of Distributor Sales)",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 15.0,
+    "20250331": 16.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "59015a26-9458-4fa2-8449-4c186092ace8.pdf",
+     247,
+     "Sales to top 10 dealers/distributors as % of total sales to dealers/distributors",
+     "16.1"
+    ],
+    "y:20240331": [
+     "7ab5cca7-0e34-4609-889d-cdf46182d6a4.pdf",
+     217,
+     "Sales to top 10 dealers/distributors as % of total sales to dealers/distributors",
+     "15"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     15.0,
+     null,
+     "drop_q",
+     "page 247 (AR 2024-25, BRSR P1 Q9 'Open-ness of business'): row 'c. Sales to top 10 dealers /distributors as % of total sales to dealers/ distributors', column '",
+     "2026-10-10"
+    ]
+   ]
   },
   {
    "name": "Export Volume (Equivalent Consumer Units)",
@@ -1176,5 +1184,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-13"
+ "updated": "2026-10-10"
 }
