@@ -183,6 +183,16 @@ def parse_period(label, fy_end_month=3):
     m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?(?:fy\s*'?\s*)?(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 / Q1 2026-27 → FY27
     if m:
         return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{2})\s*-\s*(\d{2})\b", low)   # "Q3, FY 20-21" / "Q1 FY26-27" → FY of the SECOND year (was read a year early, 2026-10-10)
+    if m:
+        return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\b([1-4])(?:st|nd|rd|th)\s*quarter\b\W*(?:of\s*)?(?:fy\s*'?\s*)?(\d{4})\s*-\s*(\d{2,4})\b", low)   # "1st Quarter (2021-22)" (BEML)
+    if m:
+        e = m.group(3)
+        return "q", _q_end(_yy(e) if len(e) == 2 else int(e), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\b(\d{4})\s*-\s*(\d{2})\s*[-\s]\s*q\s*([1-4])\b", low)   # "2021-22-Q1" (BEML)
+    if m:
+        return "q", _q_end(_yy(m.group(2)), int(m.group(3)), fy_end_month).strftime("%Y%m%d")
     m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?fy\s*'?\s*(\d{4}|\d{2})\b", low) or \
         re.search(r"\b([1-4])\s*q" + SEP + r"fy\s*'?\s*(\d{4}|\d{2})\b", low)
     if m:
@@ -190,7 +200,7 @@ def parse_period(label, fy_end_month=3):
     m = re.search(r"\bq\s*([1-4])\s*'?\s*(\d{4}|\d{2})\b", low)        # "Q1'27", "Q4 2026"
     if m:
         return "q", _q_end(_yy(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
-    if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm)\b", low):
+    if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
         return None, None
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
     if m:
@@ -213,13 +223,25 @@ def parse_period(label, fy_end_month=3):
             if d == end and (mo - fy_end_month) % 3 == 0:
                 return "q", dt.date(y, mo, d).strftime("%Y%m%d")
             return None, None
+    m = re.search(r"\b(\d{1,2})[./-](\d{1,2})[./-](\d{2})\b", low)        # two-digit year: "31.03.20", "30.9.21" (BEML, IREDA)
+    if m:
+        d, mo, y = int(m.group(1)), int(m.group(2)), _yy(m.group(3))
+        if 1 <= mo <= 12:
+            end = calendar.monthrange(y, mo)[1]
+            if d == end and (mo - fy_end_month) % 3 == 0:
+                return "q", dt.date(y, mo, d).strftime("%Y%m%d")
+            return None, None
     # "30th June, 2025" / "31st Mar, 2026" / "June 30, 2026" / "Jun-26" / "Mar’26"
-    m = re.search(r"\b\d{1,2}(?:st|nd|rd|th)?[-\s]*([a-z]{3})[a-z]*\.?[-\s',]*(\d{4}|\d{2})\b", low) or \
-        re.search(r"\b([a-z]{3})[a-z]*\.?[-\s',]*(?:\d{1,2}(?:st|nd|rd|th)?[-\s',]+)?(\d{4}|\d{2})\b", low)
-    if m and m.group(1) in MON:
-        mo, y = MON[m.group(1)], _yy(m.group(2))
+    m1 = re.search(r"\b(\d{1,2})(?:st|nd|rd|th)?[-\s]*([a-z]{3})[a-z]*\.?[-\s',]*(\d{4}|\d{2})\b", low)
+    m2 = None if m1 else re.search(r"\b([a-z]{3})[a-z]*\.?[-\s',]*(?:(\d{1,2})(?:st|nd|rd|th)?[-\s',]+)?(\d{4}|\d{2})\b", low)
+    day, mon, yr = (m1.group(1), m1.group(2), m1.group(3)) if m1 else (m2.group(2), m2.group(1), m2.group(3)) if m2 else (None, None, None)
+    if mon in MON:
+        mo, y = MON[mon], _yy(yr)
+        last = calendar.monthrange(y, mo)[1]
+        if day and int(day) != last:
+            return None, None                  # "01 Dec 2021" is a day inside the quarter, not its end (BDL)
         if (mo - fy_end_month) % 3 == 0:
-            return "q", dt.date(y, mo, calendar.monthrange(y, mo)[1]).strftime("%Y%m%d")
+            return "q", dt.date(y, mo, last).strftime("%Y%m%d")
         return None, None
     m = re.search(r"\bcy\s*'?(\d{4}|\d{2})\b", low)
     if m and fy_end_month == 12:
