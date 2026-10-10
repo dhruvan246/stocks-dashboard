@@ -42,7 +42,10 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install deps
-        run: pip install pypdf
+        # pypdf PINNED (runbook §227): 6.20.0 (2026-10) reads NSE's revocation tables differently and dropped real rows
+        # (ind_prs19032024: Smallcap 100 'BSE Exclusion', Microcap 250 'VGUARD Inclusion revoked'). 6.19.0 reads them as
+        # printed. Bump only after build_changelog.py output is byte-identical on the new version.
+        run: pip install pypdf==6.19.0
 
       # NSE_INDCLOSE_CACHE: a temp dir — the level is fetched from 7 days before the last stored session.
       - name: Fetch the official level, member list, renames and new press releases

@@ -27759,3 +27759,8 @@ indices. (c) `DUMMYHEG` sits in 36 Nifty 500 snapshots back to 1998-08-01 and in
 snapshots (pre-existing, measured 2026-10-10; no price, so it screens nothing — but counts read 501/251/401). (d) Trap: the local `~/stocks-cache/nse_ind_close/_miss.txt` had 28-Sep-2026 marked missing although NSE
 serves it — removed; a memo entry is not proof a file does not exist.
 
+**(e) pypdf pin (2026-10-10).** The membership rebuild my push triggered ran on pypdf 6.20.0 (new release) and changed
+14 changelog events in 2024 revocation tables (e.g. lost ind_prs19032024 "Nifty Smallcap 100 · BSE · Exclusion" and
+"Nifty Microcap 250 · VGUARD · Inclusion revoked") → Nifty Smallcap 100 history moved (commit ee4b117e9). Reproduced
+locally: pypdf 6.20.0 gives CI's bytes, 6.19.0 the previous bytes, which match the notice. Both workflows that parse
+NSE notices now pin `pypdf==6.19.0`; membership re-run to restore.
