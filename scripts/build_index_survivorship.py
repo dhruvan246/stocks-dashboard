@@ -283,6 +283,11 @@ def build_index(slug, D, slim, rmap, sect, log=print):
             raw = json.load(f).get(name, [])
     else:
         raw = slim.get("indicesHistory", {}).get(name, [])
+        if not raw:
+            # dash_slim.bin copies scripts/indices_history.json only when refresh.yml rebuilds it, so a newly added
+            # index (§227: Nifty Microcap 250) is in the source a few hours before it is in the copy — read the source.
+            with open(os.path.join(HERE, "indices_history.json"), encoding="utf-8") as f:
+                raw = json.load(f).get(name, [])
     if not raw:
         raise SystemExit("no membership snapshots for %r in %s" % (name, SLIM))
     data, meta = D["data"], D.get("meta", {})
