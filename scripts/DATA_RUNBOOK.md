@@ -27755,8 +27755,16 @@ index_monthly.json; 25-May-2021 and 18-Jun-2021 have no Microcap row in NSE's ow
 **Open.** (a) Membership starts 2021-09-30 (first parsed event); 11-May → 29-Sep-2021 is known from the archived list but not
 emitted — backtests before 30-Sep-2021 screen nothing (empty set, by design). (b) Earlier temporary spin-off members
 (e.g. DUMMYALCAR 12-Nov-2025 → Allcargo Global excluded 22-Jul-2026, ind_prs20072026) are not modelled — same as the other 27
-indices. (c) `DUMMYHEG` sits in 36 Nifty 500 snapshots back to 1998-08-01 and in the latest Smallcap 250 / MidSmallcap 400
-snapshots (pre-existing, measured 2026-10-10; no price, so it screens nothing — but counts read 501/251/401). (d) Trap: the local `~/stocks-cache/nse_ind_close/_miss.txt` had 28-Sep-2026 marked missing although NSE
+indices. (c) ~~`DUMMYHEG` sat in 36 Nifty 500 snapshots back to 1998-08-01~~ — FIXED 2026-10-10: ind_prs03092026 (HEG Graphite,
+dummy DUMMYHEG, "effective from September 07, 2026") added as MANUAL_CHANGELOG_EVENTS for Nifty 500 / Smallcap 250 /
+MidSmallcap 400 (the 3 tracked of its 11). Now from 2026-09-07 only; every earlier snapshot = old minus DUMMYHEG, other 25
+indices byte-identical; NSE's archived Smallcap 250 pins (09-04 without, 09-08 with) bracket the date.
+(c2) OPEN — other placeholders dated BEFORE their notice (measured 2026-10-10; they enter through archived-list pins
+(`_wb_n500_snaps.json`, `_idx_official_snaps.json`) that `reanchor_segments` copies back to the previous event, and the
+derived Smallcap 250 / MidSmallcap 400 inherit Nifty 500's): DUMMYREL (eff 20-Jul-2023, ind_prs17072023) from 2019 in
+Nifty 100/200/LargeMidcap 250; DUMMYSIEMS (7-Apr-2025, ind_prs02042025), DUMMYRAYMN (14-May-2025, ind_prs09052025),
+DUMMYABFRL (22-May-2025, ind_prs19052025) from 2024-03-28; DUMMYHDLVR (5-Dec-2025, ind_prs28112025) from 2025-09-23;
+DUMMYVEDL1-4 (30-Apr-2026, ind_prs23042026) from 2026-03-30. Not yet fixed — awaiting the user's go-ahead. (d) Trap: the local `~/stocks-cache/nse_ind_close/_miss.txt` had 28-Sep-2026 marked missing although NSE
 serves it — removed; a memo entry is not proof a file does not exist.
 
 **(e) pypdf pin (2026-10-10).** The membership rebuild my push triggered ran on pypdf 6.20.0 (new release) and changed

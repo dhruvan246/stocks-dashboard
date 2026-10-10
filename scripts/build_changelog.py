@@ -391,6 +391,13 @@ MANUAL_CHANGELOG_EVENTS += [
     ("Nifty Microcap 250", "2026-09-02", [], ["DUMMYINGL1", "DUMMYINGL2"], "26082026_1",
      "India Glycols demerger: Ennature Bio Pharma / IGL Spirits (DUMMYINGL1/2) included w.e.f. 2-Sep-2026, ind_prs26082026_1"),
 ]
+#  - HEG demerger placeholder (2026-10-10): ind_prs03092026 "Corporate Action Adjustment for HEG Ltd. in Nifty indices" —
+#    HEG Graphite Ltd. "with dummy Symbol DUMMYHEG shall be included at zero price without divisor adjustment ...
+#    effective from September 07, 2026 (close of September 04, 2026)". Of its 11-index table we track three. Without these
+#    the walk carried DUMMYHEG back to 1998 (Nifty 500 read 501 names on 36 snapshots).
+for _idx in ("Nifty 500", "Nifty Smallcap 250", "Nifty MidSmallcap 400"):
+    MANUAL_CHANGELOG_EVENTS.append((_idx, "2026-09-07", [], ["DUMMYHEG"], "03092026",
+                                    "HEG demerger: HEG Graphite (DUMMYHEG) included w.e.f. 7-Sep-2026, ind_prs03092026"))
 
 def apply_revocations(changelog, revs, src):
     for idx, eff, act, sym in revs:
