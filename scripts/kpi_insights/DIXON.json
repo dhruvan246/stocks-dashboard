@@ -113,9 +113,154 @@
    "title": "Annual Report 2022-23",
    "read": "2026-09-16",
    "by": "claude-routine"
+  },
+  "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf": {
+   "kind": "ip",
+   "date": "2021-10-29",
+   "title": "Q2 & H1 FY22 Earnings Presentation",
+   "read": "2026-10-10",
+   "by": "claude-session"
+  },
+  "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf": {
+   "kind": "ip",
+   "date": "2021-02-02",
+   "title": "Q3 & 9M FY21 Earnings Presentation",
+   "read": "2026-10-10",
+   "by": "claude-session"
+  },
+  "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf": {
+   "kind": "ip",
+   "date": "2020-08-04",
+   "title": "Q1 FY21 Earnings Presentation",
+   "read": "2026-10-10",
+   "by": "claude-session"
+  },
+  "cf354349-d89d-484d-9f55-b471f8eec64a.pdf": {
+   "kind": "ip",
+   "date": "2020-06-11",
+   "title": "Q4 & FY20 Audited Results + Investor Presentation",
+   "read": "2026-10-10",
+   "by": "claude-session"
   }
  },
  "metrics": [
+  {
+   "name": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20190331": 9.0,
+    "20200331": 6.0
+   },
+   "q": {
+    "20200930": 3.0,
+    "20210930": 4.0
+   },
+   "src": {
+    "q:20200930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     5,
+     "ODM (Consumer Electronics slide)",
+     "3"
+    ],
+    "q:20210930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     5,
+     "ODM (Consumer Electronics slide)",
+     "4"
+    ],
+    "y:20200331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Consumer Electronics",
+     "6"
+    ],
+    "y:20190331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Consumer Electronics",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20190331": 100.0,
+    "20200331": 100.0
+   },
+   "q": {
+    "20200930": 100.0,
+    "20210930": 100.0
+   },
+   "src": {
+    "q:20200930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     7,
+     "ODM (Home Appliances slide)",
+     "100"
+    ],
+    "q:20210930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     7,
+     "ODM (Home Appliances slide)",
+     "100"
+    ],
+    "y:20200331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Home Appliances",
+     "100"
+    ],
+    "y:20190331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Home Appliances",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20190331": 71.0,
+    "20200331": 87.0
+   },
+   "q": {
+    "20200930": 90.0,
+    "20210930": 93.0
+   },
+   "src": {
+    "q:20200930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     6,
+     "ODM (Lighting Products slide)",
+     "90"
+    ],
+    "q:20210930": [
+     "755b30c6-5dbf-4e67-85d5-aa8697c2ba8d.pdf",
+     6,
+     "ODM (Lighting Products slide)",
+     "93"
+    ],
+    "y:20200331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Lighting Products",
+     "87"
+    ],
+    "y:20190331": [
+     "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+     23,
+     "ODM Revenue Share (%) - Lighting Products",
+     "71"
+    ]
+   }
+  },
   {
    "name": "Total Permanent Employees",
    "unit": "count",
@@ -863,7 +1008,206 @@
    }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q3, FY 20-21",
+   "value": 6.0,
+   "as_printed": "6",
+   "page": 7,
+   "label": "ODM Revenue (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20191231 model 20201231 for 'Q3, FY 20-21'"
+  },
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q3, FY 19-20",
+   "value": 3.0,
+   "as_printed": "3",
+   "page": 7,
+   "label": "ODM Revenue (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20181231 model 20191231 for 'Q3, FY 19-20'"
+  },
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q3, FY 20-21",
+   "value": 91.0,
+   "as_printed": "91",
+   "page": 7,
+   "label": "ODM Revenue (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20191231 model 20201231 for 'Q3, FY 20-21'"
+  },
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q3, FY 19-20",
+   "value": 89.0,
+   "as_printed": "89",
+   "page": 7,
+   "label": "ODM Revenue (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20181231 model 20191231 for 'Q3, FY 19-20'"
+  },
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q3, FY 20-21",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 7,
+   "label": "ODM Revenue (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20191231 model 20201231 for 'Q3, FY 20-21'"
+  },
+  {
+   "doc": "4bcac5f1-1fc7-425d-a995-b94715ce3286.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q3, FY 19-20",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 7,
+   "label": "ODM Revenue (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20181231 model 20191231 for 'Q3, FY 19-20'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q1, FY 20-21",
+   "value": 3.0,
+   "as_printed": "3",
+   "page": 7,
+   "label": "ODM Revenue (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20190630 model 20200630 for 'Q1, FY 20-21'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q1, FY 19-20",
+   "value": 8.0,
+   "as_printed": "8",
+   "page": 7,
+   "label": "ODM Revenue (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20180630 model 20190630 for 'Q1, FY 19-20'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q1, FY 20-21",
+   "value": 90.0,
+   "as_printed": "90",
+   "page": 7,
+   "label": "ODM Revenue (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20190630 model 20200630 for 'Q1, FY 20-21'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q1, FY 19-20",
+   "value": 83.0,
+   "as_printed": "83",
+   "page": 7,
+   "label": "ODM Revenue (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20180630 model 20190630 for 'Q1, FY 19-20'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q1, FY 20-21",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 7,
+   "label": "ODM Revenue (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20190630 model 20200630 for 'Q1, FY 20-21'"
+  },
+  {
+   "doc": "f71b87f1-b7b3-487a-a201-bef3e44a4632.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q1, FY 19-20",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 7,
+   "label": "ODM Revenue (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20180630 model 20190630 for 'Q1, FY 19-20'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q4, FY 19-20",
+   "value": 2.0,
+   "as_printed": "2",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20190331 model 20200331 for 'Q4, FY 19-20'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Consumer Electronics",
+   "unit": "%",
+   "period": "Q4, FY 18-19",
+   "value": 5.0,
+   "as_printed": "5",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Consumer Electronics",
+   "why": "period_end disagrees: ours 20180331 model 20190331 for 'Q4, FY 18-19'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q4, FY 19-20",
+   "value": 94.0,
+   "as_printed": "94",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20190331 model 20200331 for 'Q4, FY 19-20'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Lighting Products",
+   "unit": "%",
+   "period": "Q4, FY 18-19",
+   "value": 89.0,
+   "as_printed": "89",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Lighting Products",
+   "why": "period_end disagrees: ours 20180331 model 20190331 for 'Q4, FY 18-19'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q4, FY 19-20",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20190331 model 20200331 for 'Q4, FY 19-20'"
+  },
+  {
+   "doc": "cf354349-d89d-484d-9f55-b471f8eec64a.pdf",
+   "metric": "ODM Revenue Share - Home Appliances",
+   "unit": "%",
+   "period": "Q4, FY 18-19",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 23,
+   "label": "ODM Revenue Share (%) - Home Appliances",
+   "why": "period_end disagrees: ours 20180331 model 20190331 for 'Q4, FY 18-19'"
+  }
+ ],
  "catalog": [
   {
    "kind": "ar",
@@ -1211,5 +1555,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-16"
+ "updated": "2026-10-10"
 }
