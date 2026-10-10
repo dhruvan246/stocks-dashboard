@@ -111,7 +111,8 @@ def main():
     try:
         ih = jload(os.path.join(HERE, "indices_history.json"))
         for name, bit in (("Nifty 50", 1), ("Nifty 100", 2), ("Nifty 500", 4),
-                          ("Nifty Midcap 150", 8), ("Nifty Smallcap 250", 16)):
+                          ("Nifty Midcap 150", 8), ("Nifty Smallcap 250", 16),
+                          ("Nifty Microcap 250", 64)):     # §227 (32 = F&O below)
             snaps = ih.get(name) or []
             if snaps: tag(snaps[-1]["symbols"], bit)
     except Exception as ex:

@@ -117,6 +117,7 @@
           <span class="vbtn on" data-u="all">All</span>
           <span class="vbtn" data-u="fno">F&amp;O</span>
           <span class="vbtn" data-u="n500">Nifty 500</span>
+          <span class="vbtn" data-u="mc250" title="Nifty Microcap 250 — the 250 companies ranked just below the Nifty 500 (NSE's list, point-in-time history)">Nifty Microcap 250</span>
           <span class="vbtn" data-u="sme" title="SME platform listings — NSE Emerge + BSE SME">SME</span>
           <span class="vbtn" data-u="smeipo" title="BSE SME IPO index — BSE's official constituent list (listed on BSE SME in about the last year)">BSE SME IPO</span>
           <span class="vbtn" data-u="smeemerge" title="Nifty SME Emerge index — NSE's official constituent list (NSE Emerge stocks that trade often enough)">Nifty SME Emerge</span>
@@ -208,7 +209,7 @@ let STALE_1D = 0;    // EOD 1D rows whose own last bar is older than LAST_BAR (e
 let LIVE = null;     // {date:'YYYY-MM-DD', time:'HH:MM', data:{SYM:[ltp, prevClose, pchange]}} — NSE whole-market live feed
 let BLIVE = null;    // {date, time, data:{scripCode:[ltp, prevClose, pchange, scripId]}, idToCode} — BSE whole-market live feed
 let LIVE_SKIP = { bse: 0, untraded: 0, bseSnap: 0 };
-let FNO = new Set(), N500 = new Set();
+let FNO = new Set(), N500 = new Set(), MC250 = new Set();   // MC250: Nifty Microcap 250 (§227), same source as N500
 let FULL_LOADED = false, FULL_LOADING = null;
 // BSE SME platform names (.BO keys) — BSE groups M / MT in bse_universe.json; the whole BSE SME IPO index sits in
 // these groups (measured 2026-09-27: 160/160). Loaded only when the SME universe is first picked.
@@ -305,6 +306,7 @@ function compute(){
     const base = tkr.endsWith('.NS') ? tkr.slice(0, -3) : tkr;
     if (UNIV === 'fno'  && !FNO.has(base)) continue;
     if (UNIV === 'n500' && !N500.has(base)) continue;
+    if (UNIV === 'mc250' && !MC250.has(base)) continue;
     if (UNIV === 'sme'  && !isSme(tkr)) continue;  // NSE SME (meta.sme, runbook §145) + BSE SME (groups M/MT)
     if (UNIV === 'smeipo' && !SMEIPO.has(tkr)) continue;
     if (UNIV === 'smeemerge' && !SMEEM.has(tkr)) continue;
@@ -635,6 +637,8 @@ async function init(){
     FNO = new Set(D.fnoToday || []);
     const ih = D.indicesHistory && D.indicesHistory['Nifty 500'];
     if (ih && ih.length) N500 = new Set(ih[ih.length - 1].symbols);
+    const ihm = D.indicesHistory && D.indicesHistory['Nifty Microcap 250'];
+    if (ihm && ihm.length) MC250 = new Set(ihm[ihm.length - 1].symbols);
 
     // sector dropdown
     const secs = new Set();

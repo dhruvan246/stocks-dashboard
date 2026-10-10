@@ -61,6 +61,7 @@ _CANON_LIST = [   # (display name, [normalised heading aliases]) — ALL 27 trac
     ("Nifty Oil & Gas", ["niftyoilgas"]),
     ("Nifty PSU Bank", ["niftypsubank", "cnxpsubank"]),
     ("Nifty MNC", ["niftymnc", "cnxmnc"]),
+    ("Nifty Microcap 250", ["niftymicrocap250"]),   # 2026-10-10 (§227): user asked for the microcap index
 ]
 CANON = {}
 for _disp, _keys in _CANON_LIST:
@@ -339,6 +340,12 @@ MANUAL_CHANGELOG_FIXES = [
     #    Yes Bank, included ITC) bleed into the Nifty Bank block — ITC as a pre-2020 Nifty Bank member.
     #    The Nifty Bank swap is exactly YESBANK out / BANDHANBNK in (NSE register, same date). 2026-09-21.
     ("Nifty Bank", "2020-03-19", set(), set(), {"ITC"}, set()),
+    #  - ind_prs17032025 section 4 "Revocation of replacement of stocks in Nifty Microcap 250 index": Raymond
+    #    Lifestyle entered the Nifty 500 on 2025-03-21, so its Microcap 250 inclusion of 2025-03-28 (ind_prs21022025)
+    #    "is revoked and accordingly exclusion of Thirumalai Chemicals Ltd. ... is revoked". Table rows: RAYMONDLSL
+    #    "Inclusion revoked", TIRUMALCHM "Exclusion revoked". Both reappear in the 2025-09-30 review (22082025:
+    #    RAYMONDLSL in, TIRUMALCHM out), which un-patched read as an impossible double swap. 2026-10-10, §227.
+    ("Nifty Microcap 250", "2025-03-28", {"TIRUMALCHM"}, set(), {"RAYMONDLSL"}, set()),
     #  (the other nine indices in ind_prs25092024's table are applied by parse_revocations(), which reads
     #   that table and ind_prs19032024's generically — runbook §141d)
 ]
@@ -370,6 +377,20 @@ for _idx in ("Nifty 50", "Nifty 100", "Nifty 200", "Nifty 500", "Nifty Energy", 
                                     "Reliance demerger: spun-off entity in the index from 20-Jul-2023 (ind_prs17072023), listed 21-Aug-2023"))
     MANUAL_CHANGELOG_EVENTS.append((_idx, "2023-09-07", ["JIOFIN"], [], "05092023",
                                     "JIOFIN excluded w.e.f. 7-Sep-2023, ind_prs05092023"))
+
+#  - Nifty Microcap 250 demerger placeholders in today's official list (2026-10-10, §227). NSE adds a demerged entity
+#    "at zero price without divisor adjustment" on the effective date; the notice is a corporate-action table that
+#    parse_pdf does not read, so without these events the backward walk carries the placeholders back to 2021 (the list
+#    read 254 names on every date; with them the pre-2021-09-30 walk equals NSE's archived 12-Jun-2021 list, 250 names).
+#    TRIVENIPT = the renamed DUMMYTRVN; not trading on NSE as of 2026-10-09 (absent from EQUITY_L and the CM bhavcopy).
+MANUAL_CHANGELOG_EVENTS += [
+    ("Nifty Microcap 250", "2026-07-22", [], ["TRIVENIPT"], "17072026",
+     "Triveni Engineering demerger: Triveni Power Transmission (DUMMYTRVN) included w.e.f. 22-Jul-2026, ind_prs17072026"),
+    ("Nifty Microcap 250", "2026-07-31", [], ["DUMMYINXGN"], "28072026_1",
+     "Inox Green demerger: Inox Renewable Solutions (DUMMYINXGN) included w.e.f. 31-Jul-2026, ind_prs28072026_1"),
+    ("Nifty Microcap 250", "2026-09-02", [], ["DUMMYINGL1", "DUMMYINGL2"], "26082026_1",
+     "India Glycols demerger: Ennature Bio Pharma / IGL Spirits (DUMMYINGL1/2) included w.e.f. 2-Sep-2026, ind_prs26082026_1"),
+]
 
 def apply_revocations(changelog, revs, src):
     for idx, eff, act, sym in revs:
@@ -492,7 +513,8 @@ def main():
     # MidSmallcap 400 and Realty. The August lists stand for every other index.
     SUPERSEDED = [("23082021", "15092021", {"Nifty 500", "Nifty Midcap 150", "Nifty Smallcap 250",
                    "Nifty Smallcap 50", "Nifty Smallcap 100", "Nifty LargeMidcap 250",
-                   "Nifty MidSmallcap 400", "Nifty Realty"})]
+                   "Nifty MidSmallcap 400", "Nifty Realty",
+                   "Nifty Microcap 250"})]   # §227: the notice names NIFTY Microcap 250 in the same sentence
     for old_src, new_src, idxs in SUPERSEDED:
         for idx in idxs:
             evs = changelog.get(idx, [])

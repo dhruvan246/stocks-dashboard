@@ -23,6 +23,7 @@ INDEX_URLS = {
     "Nifty Smallcap 250":    "niftysmallcap250",
     "Nifty LargeMidcap 250": "niftylargemidcap250",
     "Nifty MidSmallcap 400": "niftymidsmallcap400",
+    "Nifty Microcap 250":    "niftymicrocap250_",   # file is ind_niftymicrocap250_list.csv (§227)
     # Sectoral
     "Nifty Bank":              "niftybank",
     "Nifty IT":                "niftyit",

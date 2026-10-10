@@ -312,7 +312,7 @@ function toggleFav(k) {
 function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
 function uniText(k) { return universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
-const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty SME Emerge', '__FNO__'];
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty Microcap 250', 'Nifty SME Emerge', '__FNO__'];
 function uniRank(k) {
   const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
   if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;

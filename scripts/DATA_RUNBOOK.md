@@ -76,6 +76,7 @@ loads every session. (README.md is just a short pointer here — this file is th
 - **§221** ★★ A cell_fix ENTRY ON A RE-FILED QUARTER — `shp_refine_4dp.json.gz` holds BSE's NEWEST filing and re-pulls the §142k original toward it every run (use `exact` with `was` = the post-refine row; never move date/holders in such an entry); dates are the filing day (§149), never the old gated day; a BSE "New"/"Revised" pair can be two DIFFERENT patterns (Reg 31(1)(c) event vs quarterly — read TypeOfReport/revised_reson); OILCOUNTUB/SPMLINFRA/MANAKCOAT/MBLINFRA (**read before writing or re-basing any shp_cell_fix entry**) — cause 2 fixed at the source in **§223**
 - **§225** ★★★ OWNERS' PROFIT, POINT-IN-TIME NIFTY 500 — two XBRL shapes §116 never screened: the owners tag holds the TOTAL-COMPREHENSIVE-INCOME split (store took TCI-owners), and owners 0 + NCI 0 tags beside a real minority (store took the before-minority total). 643 suspects in 104,538 cached XBRLs; every one read by eye from the company's own filing: 255 OUR ERROR (129 companies, 14 > Rs 10 cr) healed via owners_basis_heals.json, 315 right, 73 open (owners_n500_unresolved_225.json) (**read before any owners/NCI screen, any XBRL owners-tag fallback, or any consolidated-PAT heal**)
 - **§226** ★★★ SHP EXACT BASE — parse_shp divided share counts by a base ESTIMATED from one rounded printed % (±0.005/p), so ~1 quarter in 20 showed the wrong 2nd decimal vs the filing's own total. Now the filer's own base (Table I total − CustodianOrDRHolderMember C1) when the printed % confirms it; share-count slots stored to 6 dp with no false half-ties. Historical PIT-N500 cells re-based by `shp_rebase226.json.gz` (slot = [pre-§226 read, exact read] of the cell's own document, applied after cell_fix, only while the slot still holds that read) (**read before touching parse_shp's base, CELL_TOL, the refine ledger, or any SHP precision question**)
+- **§227** NIFTY MICROCAP 250 — the 28th index in `indices_history.json` (CANON + SLUGS; list file `ind_niftymicrocap250_list.csv`), level `docs/nifty_microcap250.json` from NSE's daily file, chart `?ix=microcap`, every-member table, movers / quarterly-results / backtest universes. Corporate-action demerger placeholders are NOT parsed — add them as MANUAL_CHANGELOG_EVENTS (**read before adding any index to the shared pipeline**)
 - **§223** ★★ THE REFINE LEDGER READ BSE'S NEWEST FILING — 817 of 20,429 `shp_refine_4dp.json.gz` XBRL entries were a later document than the stored row's own (71 cells / 131 numbers held the later figure, 5 cells ping-ponged); the builder now reads the quarter's ORIGINAL (oldest row, quarterly pattern, same holder count), 208 entries rebuilt / 579 removed, and in a cell `shp_cell_fix.json` defines the refine may only set the fix's own value (**read before building or applying any refine/precision ledger, or writing a cell_fix entry on a refined cell**)
 - **§222** ★★ RESULTS-SEASON CADENCE IS AUTOMATIC — scripts/season_state.py reads filing counts + the quarter calendar and answers IN/OFF; the dispatcher's tagged `dispatch-cron[in-season]/[off-season]` slots (refresh-fundamentals 30-min vs hourly, refresh-results-hourly hourly vs 6×/day) and the bse-vision-fill routine's slot guard (4 vs 1 run/day) all follow it; nothing is flipped by hand (2026-10-06)
 - **§200** ★★ FIVE MORE §145 SME FRAGMENTS MERGED (GODHA, KEERTI, SONAMCLOCK, URAVI, WFL) — a merge needs the SM→EQ PREVCLOSE proof, the successor factors after the SME end == its stored/raw level at the join, AND the ledger create→prepend in the same push (**read before merging any SME fragment**)
@@ -27724,4 +27725,37 @@ all 137 quarters read from their filings on 8-Oct still show the filing's own to
 (`~/stocks-cache/shp/rebase/rebase226_dii_moves.csv`, 15,283 rows) - no objection.
 **Not done:** cells outside point-in-time Nifty 500 (scope rule) keep the estimate until re-read; 1,351 in-scope cells whose
 document is not on hand.
+
+## §227 — NIFTY MICROCAP 250 added to the shared index pipeline (2026-10-10, user: "for now also add microcap index")
+
+**What is live.** Nifty Microcap 250 (NSE ranks 501–750) is the 28th index in `scripts/indices_history.json` — the
+same pipeline as the other 27 (`build_changelog.py` `_CANON_LIST` + `build_membership_v2.py` `SLUGS`; NSE's list file is
+`ind_niftymicrocap250_list.csv`, note the underscore). Level: `scripts/fetch_nifty_microcap250.py` → `docs/nifty_microcap250.json`
+(NSE `ind_close_all_DDMMYYYY.csv` row "Nifty Microcap 250", first carried 11-May-2021; reuses
+`fetch_nse_sme_emerge.level_row(day, index)`; runs in `refresh-nse-sme-emerge.yml`). Pages: home card (grid now 4×2 full),
+`index-chart.html?ix=microcap` (`key` = indices.json "NIFTY MICROCAP250", new `mkey` = index_monthly.json "NIFTY MICROCAP 250"
+→ month-ends from Apr-2005), `survivorship/niftymicrocap250.json` (DEFAULT list), movers button `mc250`, quarterly-results
+`mc250` = bitmask 64, backtest universe in stock-backtest / strategy-backtest / saved-strategies / all-picks. Automatic once
+`indices_history.json` carries it: stock chips, sectors, shareholding (indices.json members), Season Trends.
+
+**Membership checks (measured).** Before: the walk read 254 names on EVERY date 2021→2026. Three causes, each fixed from
+the notice itself:
+1. ind_prs15092021 says the 23-Aug-2021 list "stands replaced" for NIFTY Microcap 250 too — added to `SUPERSEDED`.
+2. ind_prs17032025 §4 revoked the 2025-03-28 swap (RAYMONDLSL inclusion / TIRUMALCHM exclusion: Raymond Lifestyle entered the
+   Nifty 500 instead) — `MANUAL_CHANGELOG_FIXES`.
+3. Demerger placeholders in today's list (TRIVENIPT = renamed DUMMYTRVN w.e.f. 22-Jul-2026, ind_prs17072026; DUMMYINXGN
+   31-Jul-2026, ind_prs28072026_1; DUMMYINGL1/2 2-Sep-2026, ind_prs26082026_1) — corporate-action notices that `parse_pdf` does
+   not read, so they walked back to 2021 — `MANUAL_CHANGELOG_EVENTS`. TRIVENIPT was not trading on 2026-10-09 (absent from
+   EQUITY_L and the CM bhavcopy).
+After: 250 on every date to 2026-07-17, then 251/252/254 as NSE's own list; 0 walk conflicts; the pre-2021-09-30 state
+equals NSE's archived list of 12-Jun-2021 (Wayback, 250 of 250). The other 27 indices: `_changelog.json` and
+`indices_history.json` byte-identical to before. Level: 1,343 sessions; all 65 overlapping month-ends equal
+index_monthly.json; 25-May-2021 and 18-Jun-2021 have no Microcap row in NSE's own file (left blank).
+
+**Open.** (a) Membership starts 2021-09-30 (first parsed event); 11-May → 29-Sep-2021 is known from the archived list but not
+emitted — backtests before 30-Sep-2021 screen nothing (empty set, by design). (b) Earlier temporary spin-off members
+(e.g. DUMMYALCAR 12-Nov-2025 → Allcargo Global excluded 22-Jul-2026, ind_prs20072026) are not modelled — same as the other 27
+indices. (c) `DUMMYHEG` sits in 36 Nifty 500 snapshots back to 1998-08-01 and in the latest Smallcap 250 / MidSmallcap 400
+snapshots (pre-existing, measured 2026-10-10; no price, so it screens nothing — but counts read 501/251/401). (d) Trap: the local `~/stocks-cache/nse_ind_close/_miss.txt` had 28-Sep-2026 marked missing although NSE
+serves it — removed; a memo entry is not proof a file does not exist.
 

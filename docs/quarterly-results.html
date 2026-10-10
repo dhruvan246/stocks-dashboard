@@ -123,6 +123,7 @@
           <option value="n500">Nifty 500</option>
           <option value="m150">Nifty Midcap 150</option>
           <option value="s250">Nifty Smallcap 250</option>
+          <option value="mc250">Nifty Microcap 250</option>
           <option value="fno">F&amp;O stocks</option>
           <option value="nse">NSE-listed only</option>
           <option value="bse">BSE-listed only</option>
@@ -506,7 +507,7 @@ function recsFor(qi){
 }
 
 /* ---------- filters ---------- */
-const UNIBIT={n50:1,n100:2,n500:4,m150:8,s250:16,fno:32};
+const UNIBIT={n50:1,n100:2,n500:4,m150:8,s250:16,fno:32,mc250:64};   // mc250: Nifty Microcap 250 (§227)
 // BSE SME IPO (runbook §195): the index's CURRENT constituents from BSE's official list (bse_sme_ipo/members.json), as the
 // bare BSE ids this page keys BSE-only companies by. Loaded on first use.
 let SMEIPO_SET=null, SMEIPO_P=null;
@@ -579,7 +580,7 @@ function renderSectorSel(){
    mcap sub-filter, YoY mode) we READ the exact median out of the SAME results_season.json Season
    Trends shows → guaranteed identical. Sector/mcap sub-filters (which Season Trends doesn't offer)
    keep the live per-reporter median. */
-const OV2RS={ n50:'Nifty 50', n100:'Nifty 100', n500:'Nifty 500', m150:'Nifty Midcap 150', s250:'Nifty Smallcap 250' };
+const OV2RS={ n50:'Nifty 50', n100:'Nifty 100', n500:'Nifty 500', m150:'Nifty Midcap 150', s250:'Nifty Smallcap 250', mc250:'Nifty Microcap 250' };
 function ensureRS(cb,force){                      // loads results_season.json ONCE, data only (no UI)
   if(RS_STATE===2&&!force){ cb&&cb(); return; }
   if(RS_STATE===1) return;                        // in-flight; the .then re-renders the active tab
@@ -1228,7 +1229,7 @@ function rsCnt(m){ return m?(RS_MODE==='median'?m.n:m.tn):null; }    // company 
    bitmask; every other index (sectoral, Nifty 200, Midcap 50 …) filters by its CURRENT member
    list shipped in results_season.json. Quarters older than the main window stay tooltip-only. */
 const RS2UNI={ 'liquid':'all','Nifty 50':'n50','Nifty 100':'n100','Nifty 500':'n500',
-               'Nifty Midcap 150':'m150','Nifty Smallcap 250':'s250' };
+               'Nifty Midcap 150':'m150','Nifty Smallcap 250':'s250','Nifty Microcap 250':'mc250' };
 function rsClickable(qe){
   const qi=QTRS.indexOf(qe);
   return ((RS_CUR.key in RS2UNI)||(RS_CUR.members&&RS_CUR.members.length)) &&
@@ -1570,7 +1571,7 @@ async function load(){
     // Deep link: ?tab=results&qe=20260630&uni=n500 pre-selects that quarter + universe
     // (what the Season Trends quarter click-through writes to the URL, so it's shareable).
     const uq=p.get('uni');
-    if(uq&&['all','n50','n100','n500','m150','s250','fno','nse','bse','watch','smeipo','smeemerge'].includes(uq)) ST.uni=uq;
+    if(uq&&['all','n50','n100','n500','m150','s250','mc250','fno','nse','bse','watch','smeipo','smeemerge'].includes(uq)) ST.uni=uq;
     if(ST.uni==='smeipo'){ try{ await loadSmeIpo(); }catch(e){ ST.uni='all'; } }
     if(ST.uni==='smeemerge'){ try{ await loadSmeEmerge(); }catch(e){ ST.uni='all'; } }
     const dqi=QTRS.indexOf(+(p.get('qe')||0));

@@ -21,6 +21,7 @@ on:
       - "scripts/fetch_nse_sme_emerge.py"
       - "scripts/nse_sme_emerge_prs.py"
       - "scripts/build_nse_sme_emerge_pit.py"
+      - "scripts/fetch_nifty_microcap250.py"
       - ".github/workflows/refresh-nse-sme-emerge.yml"
 
 permissions:
@@ -49,6 +50,13 @@ jobs:
           NSE_INDCLOSE_CACHE: /tmp/nse_ind_close
         run: python3 -X utf8 scripts/fetch_nse_sme_emerge.py
 
+      # Nifty Microcap 250 level (runbook §227) — the same NSE all-indices file, already in the cache dir above.
+      # Its members live in scripts/indices_history.json (refresh-membership.yml), not here.
+      - name: Fetch the Nifty Microcap 250 official level
+        env:
+          NSE_INDCLOSE_CACHE: /tmp/nse_ind_close
+        run: python3 -X utf8 scripts/fetch_nifty_microcap250.py
+
       - name: Rebuild point-in-time membership
         run: python3 -X utf8 scripts/build_nse_sme_emerge_pit.py
 
@@ -67,13 +75,13 @@ jobs:
           # list, undated, so a captured one can never be fetched again and must not wait on an unrelated conflict
           # (runbook §212).
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
-          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty_sme_emerge.json docs/nse_sme_emerge/ scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty_sme_emerge.json docs/nifty_microcap250.json docs/nse_sme_emerge/ scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
           cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --single docs/nse_sme_emerge/snapshots/
-            git add docs/nifty_sme_emerge.json docs/nse_sme_emerge scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --single 'docs/nse_sme_emerge/snapshots/ docs/nifty_microcap250.json'
+            git add docs/nifty_sme_emerge.json docs/nifty_microcap250.json docs/nse_sme_emerge scripts/nse_sme_emerge_events.json scripts/nse_sme_emerge_renames.json
             if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
             git commit -m "Nifty SME Emerge index refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
             if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi

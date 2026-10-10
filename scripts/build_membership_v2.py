@@ -33,6 +33,7 @@ SLUGS = {  # index display name -> NSE current-list slug — ALL 27 tracked inde
     "Nifty FMCG": "niftyfmcg", "Nifty Metal": "niftymetal", "Nifty Energy": "niftyenergy", "Nifty Realty": "niftyrealty",
     "Nifty Media": "niftymedia", "Nifty Healthcare": "niftyhealthcare", "Nifty Consumer Durables": "niftyconsumerdurables",
     "Nifty Oil & Gas": "niftyoilgas", "Nifty PSU Bank": "niftypsubank", "Nifty MNC": "niftymnc",
+    "Nifty Microcap 250": "niftymicrocap250_",   # list file is ind_niftymicrocap250_list.csv (§227)
 }
 
 # ---------- renames (old -> new, with the date the NEW symbol started) ----------

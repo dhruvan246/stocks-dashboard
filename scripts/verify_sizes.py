@@ -12,7 +12,8 @@ ih = json.load(open(os.path.join(HERE, "indices_history.json"), encoding="utf-8"
 SIZE = {"Nifty 50": 50, "Nifty Next 50": 50, "Nifty 100": 100, "Nifty 200": 200, "Nifty 500": 500,
         "Nifty Midcap 50": 50, "Nifty Midcap 100": 100, "Nifty Midcap 150": 150,
         "Nifty Smallcap 50": 50, "Nifty Smallcap 100": 100, "Nifty Smallcap 250": 250,
-        "Nifty LargeMidcap 250": 250, "Nifty MidSmallcap 400": 400}
+        "Nifty LargeMidcap 250": 250, "Nifty MidSmallcap 400": 400,
+        "Nifty Microcap 250": 250}   # §227: NSE's own list reads 251-254 from Jul-2026 (demerger placeholders)
 SECTORAL = ["Nifty Bank", "Nifty IT", "Nifty Pharma", "Nifty Auto", "Nifty FMCG", "Nifty Metal",
             "Nifty Energy", "Nifty Realty", "Nifty Media", "Nifty Healthcare",
             "Nifty Consumer Durables", "Nifty Oil & Gas", "Nifty PSU Bank", "Nifty MNC"]

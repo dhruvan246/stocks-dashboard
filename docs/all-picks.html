@@ -319,7 +319,7 @@ function numBadge(r) {
     : 'Not a favourite — numbered after your ⭐ strategies'}">#${r.num}</span>`; }
 const mixChipsAP = r => (r.mix || []).map(m => ` <span class="mixchip" title="In your saved mix “${esc(m.label)}”">${esc(m.label)}</span>`).join('');
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
-const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty SME Emerge', '__FNO__'];
+const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty Microcap 250', 'Nifty SME Emerge', '__FNO__'];
 function uniRank(k) {
   const i = UNI_ORDER.indexOf(k); if (i >= 0) return i;
   if (k.slice(0, 5) === 'mcap:') return 100 + (+k.slice(5) || 0) / 1e9;

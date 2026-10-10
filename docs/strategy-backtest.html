@@ -113,7 +113,7 @@ function backtestsFor(savedVars, sidSet) {
 
 // Universe dropdown options — index constituents + daily-turnover buckets + F&O (mirrors the builder).
 function uniOptionsHTML() {
-  const indices = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty SME Emerge'];
+  const indices = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty Microcap 250', 'Nifty SME Emerge'];
   let h = `<option value="">All stocks</option>`;
   h += `<optgroup label="Index constituents">` + indices.map(k => `<option value="${k}">${k}</option>`).join('') + `</optgroup>`;
   h += `<optgroup label="Min daily turnover">` + (typeof TURN_OPTS !== 'undefined' ? TURN_OPTS : [['500', '≥₹5 Cr']]).map(([v, l]) => `<option value="mcap:${v}">${l}</option>`).join('') + `</optgroup>`;

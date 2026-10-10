@@ -333,7 +333,13 @@ var REG = {
   // Nifty SME Emerge: NSE's official end-of-day closes (scripts/fetch_nse_sme_emerge.py, runbook §210). No Yahoo
   // symbol → no live poll; `key` pulls its P/E · P/B · yield row from indices.json.
   smeemerge: { src:'nifty_sme_emerge.json', ysym:null, key:'NIFTY SME EMERGE', name:'NIFTY SME EMERGE', kind:'index', surv:'niftysmeemerge', nseEod:true,
-               sub:'SME companies listed on NSE’s Emerge platform that trade often enough — reviewed every quarter, weighted by free-float market cap.' }
+               sub:'SME companies listed on NSE’s Emerge platform that trade often enough — reviewed every quarter, weighted by free-float market cap.' },
+  // Nifty Microcap 250: NSE's official end-of-day closes (scripts/fetch_nifty_microcap250.py, runbook §227). No Yahoo
+  // symbol → no live poll. `key` = its indices.json row (spelt "MICROCAP250"); `mkey` = its index_monthly.json row
+  // (spelt "MICROCAP 250", month-ends back to Apr-2005). Members: indices_history.json via survivorship/niftymicrocap250.
+  microcap:  { src:'nifty_microcap250.json', ysym:null, key:'NIFTY MICROCAP250', mkey:'NIFTY MICROCAP 250', name:'NIFTY MICROCAP 250', kind:'index',
+               surv:'niftymicrocap250', nseEod:true, eodFrom:'the first NSE daily file that carries it', memNote:'refreshed weekly',
+               sub:'The 250 companies ranked just below the Nifty 500 by market cap (ranks 501–750) — reviewed every six months.' }
 };
 var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
               'nifty 500':'nifty500', n500:'nifty500', crsldx:'nifty500',
@@ -341,8 +347,9 @@ var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
               indiavix:'vix', 'india vix':'vix', 'india_vix':'vix',
               bsesmeipo:'smeipo', 'bse sme ipo':'smeipo', 'sme ipo':'smeipo', bse_sme_ipo:'smeipo',
               niftysmeemerge:'smeemerge', 'nifty sme emerge':'smeemerge', 'sme emerge':'smeemerge', nifty_sme_emerge:'smeemerge',
-              emerge:'smeemerge' };
-var ORDER = ['nifty','nifty500','banknifty','vix','smeipo','smeemerge'];
+              emerge:'smeemerge',
+              niftymicrocap250:'microcap', 'nifty microcap 250':'microcap', microcap250:'microcap', nifty_microcap250:'microcap' };
+var ORDER = ['nifty','nifty500','banknifty','vix','smeipo','smeemerge','microcap'];
 
 var $ = function (id) { return document.getElementById(id); };
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); };
@@ -1215,8 +1222,10 @@ function renderLinks() {
     ? 'Daily closes: BSE’s official end-of-day index values (from the base date ' + prettyDate(D[0]) + ' = 100, refreshed every evening). ' +
       'No live intraday feed — the level shown is the latest close. Members: BSE’s official constituent list, captured daily.'
     : CFG.nseEod
-    ? 'Daily closes: NSE’s official end-of-day index values (from the launch ' + prettyDate(D[0]) + '; base 1 Dec 2016 = 1,000; refreshed every evening). ' +
-      'No live intraday feed — the level shown is the latest close. Members: NSE’s official constituent list, captured daily; past members from NSE Indices’ press releases.'
+    ? 'Daily closes: NSE’s official end-of-day index values (' + (CFG.eodFrom ? 'from ' + prettyDate(D[0]) + ', ' + CFG.eodFrom
+        : 'from the launch ' + prettyDate(D[0]) + '; base 1 Dec 2016 = 1,000') + '; refreshed every evening). ' +
+      (MC.length && MSRC ? 'Month-end history: ' + MSRC + '. ' : '') +
+      'No live intraday feed — the level shown is the latest close. Members: NSE’s official constituent list, ' + (CFG.memNote || 'captured daily') + '; past members from NSE Indices’ press releases.'
     : 'Daily closes: NSE end-of-day (from ' + prettyDate(D[0]) + ', refreshed every evening). ' +
     (MC.length && MSRC ? 'Month-end history: ' + MSRC + '. ' : '') +
     'Live price: Yahoo via our Cloudflare Worker, ~15 minutes delayed, polled during market hours.';
@@ -1456,7 +1465,7 @@ function boot() {
       // ---- lazy, additive: month-end history back to the 1990s
       if (CFG.key) {
         fetch('./index_monthly.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j2) {
-          var rec = (j2.indices || []).filter(function (x) { return x.key === CFG.key; })[0];
+          var rec = (j2.indices || []).filter(function (x) { return x.key === (CFG.mkey || CFG.key); })[0];
           if (!rec) return;
           var m = monthlyFromFile(rec);
           if (m.length > MC.length) { MC = m; MSRC = 'NSE month-end closes from ' + m[0].ym.slice(0, 4); }

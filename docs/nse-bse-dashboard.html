@@ -364,7 +364,7 @@ async function loadAndInit() {
     const PREFERRED = ['Nifty 50','Nifty Next 50','Nifty 100','Nifty 200','Nifty 500',
                        'Nifty Midcap 50','Nifty Midcap 100','Nifty Midcap 150',
                        'Nifty Smallcap 50','Nifty Smallcap 100','Nifty Smallcap 250',
-                       'Nifty LargeMidcap 250','Nifty MidSmallcap 400','Nifty SME Emerge','BSE SME IPO'];
+                       'Nifty LargeMidcap 250','Nifty MidSmallcap 400','Nifty Microcap 250','Nifty SME Emerge','BSE SME IPO'];
     const inPref = PREFERRED.filter(x => indexCounts[x]);
     const rest   = Object.keys(indexCounts).filter(x => !PREFERRED.includes(x)).sort();
     for (const ix of inPref.concat(rest)) {

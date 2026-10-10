@@ -109,8 +109,9 @@ INDEXES = {
     "niftypsubank":          ("Nifty PSU Bank",         None, "NIFTY PSU BANK"),
     "niftymnc":              ("Nifty MNC",              None, "NIFTY MNC"),
     "niftysmeemerge":        ("Nifty SME Emerge",       "nifty_sme_emerge.json", None),
+    "niftymicrocap250":      ("Nifty Microcap 250",     "nifty_microcap250.json", "NIFTY MICROCAP 250"),   # §227
 }
-DEFAULT = ["nifty500", "nifty50", "niftybank", "niftysmeemerge"]     # the member-bearing indices index-chart.html serves
+DEFAULT = ["nifty500", "nifty50", "niftybank", "niftysmeemerge", "niftymicrocap250"]     # the member-bearing indices index-chart.html serves
 # Indices whose point-in-time membership is NOT in indicesHistory (built from their own source, never merged into
 # scripts/indices_history.json whose ~30 builders expect the main-board universe): slug -> (docs/ path, member note)
 OWN_HISTORY = {

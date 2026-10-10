@@ -442,7 +442,7 @@ function uniOptionsHTML(mode){
   const caps = sf?TURN_OPTS:[['500','₹500 Cr+'],['2000','₹2,000 Cr+'],['5000','₹5,000 Cr+'],['20000','₹20,000 Cr+'],['100000','₹1,00,000 Cr+']];
   const def = 'Nifty 500';   // default universe
   // membership loads lazily at Run; an own-file index whose history then fails to load screens NOTHING (membersAsOf)
-  const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250'].concat(Object.keys(OWN_INDEX));
+  const indices=['Nifty 50','Nifty 100','Nifty 200','Nifty 500','Nifty Midcap 150','Nifty Smallcap 250','Nifty Microcap 250'].concat(Object.keys(OWN_INDEX));
   let h=`<option value="">All stocks</option>`;
   h+=`<optgroup label="Index constituents">`+indices.map(k=>`<option value="${k}"${k===def?' selected':''}>${k}</option>`).join('')+`</optgroup>`;
   h+=`<optgroup label="${sf?'Min daily turnover':'Min market cap (point-in-time)'}">`+

@@ -99,8 +99,9 @@ def _misses():
     return _MISS
 
 
-def level_row(day):
-    """(close, pe, pb, dy) for `day` from NSE's all-indices file, None when there is no session / no row."""
+def level_row(day, index="NIFTY SME EMERGE"):
+    """(close, pe, pb, dy) for `day` from NSE's all-indices file, None when there is no session / no row.
+    `index` = the file's Index Name, upper-cased (fetch_nifty_microcap250.py reads "NIFTY MICROCAP 250", §227)."""
     s = day.strftime("%d%m%Y")
     fn = os.path.join(CACHE, "ind_close_all_%s.csv" % s)
     b = None
@@ -121,7 +122,7 @@ def level_row(day):
     if not b:
         return None
     for r in csv.reader(io.StringIO(b.decode("utf-8", "replace"))):
-        if r and r[0].strip().upper() == "NIFTY SME EMERGE":
+        if r and r[0].strip().upper() == index:
             inside = set()                     # three Apr-2023 files print MM-DD-YYYY (04-06-2023 = 6 Apr)
             for fmt in ("%d-%m-%Y", "%m-%d-%Y", "%d-%b-%Y"):
                 try:
