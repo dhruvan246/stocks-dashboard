@@ -28,6 +28,16 @@
     .lane.sme { border-color: #db277766; color: #db2777; } .lane.deep { border-color: #4f46e566; color: #4f46e5; }
     .lane.orderbook { border-color: #0d948866; color: #0d9488; }
     .obq { font-size: 12px; color: var(--text-muted); white-space: normal; max-width: 520px; }
+    #ob-table td { vertical-align: middle; }
+    #ob-table th, #ob-table td { padding: 6px 6px; }
+    #ob-table th:first-child, #ob-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
+    #ob-table .obtag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; white-space: nowrap; }
+    #ob-table .obtag.ok { background: color-mix(in srgb, #16a34a 14%, transparent); color: #15803d; }
+    #ob-table .obtag.fix { background: color-mix(in srgb, #d97706 16%, transparent); color: #b45309; }
+    #ob-table .oblinks a { display: block; font-size: 12px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+    #ob-table tr.obdet td { white-space: normal; background: var(--surface); padding: 10px 14px; }
+    #ob-table tr.obdet .obq { max-width: none; margin-bottom: 6px; }
+    #ob-table button.obmore { font-size: 12px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; white-space: nowrap; }
     .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
     .stale { font-size: 12px; border: 1px solid #ca8a0466; border-left: 3px solid #ca8a04; background: #ca8a040f; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
     .stale b { color: #ca8a04; }
@@ -255,7 +265,7 @@
     <p id="ob-meta" class="muted text-xs mb-3"></p>
     <div class="chips" id="ob-chips"></div>
     <div class="card" style="overflow-x:auto;padding:0"><table class="sw sortable" id="ob-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="now">Order book now ₹cr</th><th data-k="nowd">As on</th><th class="n" data-k="ago">A year earlier ₹cr</th><th data-k="agod">As on</th><th class="n" data-k="yoy">Change (script)</th><th class="n" data-k="tyoy">Checked change</th><th>Checked against the filings</th><th>Read from</th>
+      <th data-k="name">Company</th><th class="n" data-k="now" title="Order book now, ₹ crore">Now ₹cr</th><th data-k="nowd">As on</th><th class="n" data-k="ago" title="Order book about a year earlier, ₹ crore">Year ago ₹cr</th><th data-k="agod">As on</th><th class="n" data-k="yoy" title="Change as read by the script">Script</th><th class="n" data-k="tyoy" title="Change after checking the filings">Checked</th><th>Check</th><th>Filings</th><th></th>
     </tr></thead><tbody></tbody></table></div>
   </section>
 
@@ -653,6 +663,7 @@
     { k: 'nohist', label: 'No year-ago figure yet', test: r => r.yoy == null },
   ];
   const obQuote = (x) => x ? `<div class="obq">“${esc(x.quote.slice(0, 220))}…” <a class="src" href="${esc(x.doc)}" target="_blank" rel="noopener">${esc((x.doc_title || 'filing').slice(0, 60))} · ${dmy(x.filed)}</a></div>` : '';
+  const obLink = (x, lab) => x ? `<a class="src" href="${esc(x.doc)}" target="_blank" rel="noopener" title="${esc(x.doc_title || 'filing')}">${lab}: ${esc((x.doc_title || 'filing').slice(0, 28))} · ${dmy(x.filed)}</a>` : '';
   const drawOB = () => {
     const rows = (OB.rows || []).map(r => ({ r, name: r.name || r.nse || r.scrip, now: r.latest && r.latest.value_cr, nowd: r.latest && r.latest.as_on_eff,
       ago: r.year_ago && r.year_ago.value_cr, agod: r.year_ago && r.year_ago.as_on_eff, yoy: r.yoy_pct ?? null, check: !!r.check,
@@ -661,13 +672,15 @@
     const chip = OBCHIPS.find(c => c.k === OBCHIP) || OBCHIPS[0];
     const shown = rows.filter(chip.test).sort((a, b) => { const x = a[OBK], y = b[OBK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OBD; });
     document.querySelectorAll('#ob-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OBK && OBD > 0); th.classList.toggle('desc', th.dataset.k === OBK && OBD < 0); });
-    $('#ob-table tbody').innerHTML = shown.map(x => {
+    $('#ob-table tbody').innerHTML = shown.map((x, i) => {
       const idea = all.find(it => (it.nse && it.nse === x.r.nse) || (it.scrip && String(it.scrip) === String(x.r.scrip)));
       return `<tr><td>${idea ? `<a class="src" href="./ideas.html?idea=${encodeURIComponent(idea.id)}" data-open="${esc(idea.id)}">${esc(x.name)}</a>` : esc(x.name)}${x.check ? ' <span class="pill">check</span>' : ''}<div class="muted text-xs">${esc(x.r.nse || '')}${x.r.scrip && !String(x.r.scrip).startsWith('NSE:') ? ' · BSE ' + esc(x.r.scrip) : ''}</div></td>
         <td class="n">${fmt(x.now, 0)}</td><td>${dmy(x.nowd)}</td><td class="n">${fmt(x.ago, 0)}</td><td>${x.agod ? dmy(x.agod) : '—'}</td><td class="n">${x.yoy == null ? '—' : pct(x.yoy)}</td>
         <td class="n">${x.tyoy == null ? (x.v ? '<span class="muted">unknown</span>' : '—') : pct(x.tyoy)}</td>
-        <td style="white-space:normal">${x.v ? `<div class="obq"><b>${/WRONG|DATE/.test((x.v.latest_verdict || '') + (x.v.year_ago_verdict || '')) ? 'Corrected' : '✓ Confirmed'}</b> · now ${esc(x.v.latest_verdict || '')}${x.v.latest_correct_value_cr ? ' ₹' + fmt(x.v.latest_correct_value_cr, 0) + ' cr' : ''}${x.v.latest_as_on ? ' (' + esc(x.v.latest_as_on) + ')' : ''} · year ago ${esc(x.v.year_ago_verdict || '')}${x.v.year_ago_correct_value_cr ? ' ₹' + fmt(x.v.year_ago_correct_value_cr, 0) + ' cr' : ''}${x.v.book_to_ttm_sales ? ' · book ' + esc(x.v.book_to_ttm_sales) + '× sales' : ''}${x.v.notes ? '<br>' + esc(String(x.v.notes).slice(0, 260)) : ''}</div>` : '<span class="muted text-xs">not checked yet</span>'}</td>
-        <td style="white-space:normal">${obQuote(x.r.latest)}${x.r.year_ago ? '<div class="mt-1"></div>' + obQuote(x.r.year_ago) : ''}</td></tr>`;
+        <td>${x.v ? (/WRONG|DATE/.test((x.v.latest_verdict || '') + (x.v.year_ago_verdict || '')) ? '<span class="obtag fix">Corrected</span>' : '<span class="obtag ok">✓ Confirmed</span>') : '<span class="muted text-xs">not checked</span>'}</td>
+        <td class="oblinks">${obLink(x.r.latest, 'Now')}${obLink(x.r.year_ago, 'Year ago')}</td>
+        <td><button type="button" class="obmore" data-det="${i}" aria-expanded="false">More ▸</button></td></tr>
+        <tr class="obdet" data-det-row="${i}" hidden><td colspan="9">${x.v ? `<div class="obq"><b>${/WRONG|DATE/.test((x.v.latest_verdict || '') + (x.v.year_ago_verdict || '')) ? 'Corrected' : '✓ Confirmed'}</b> · now ${esc(x.v.latest_verdict || '')}${x.v.latest_correct_value_cr ? ' ₹' + fmt(x.v.latest_correct_value_cr, 0) + ' cr' : ''}${x.v.latest_as_on ? ' (' + esc(x.v.latest_as_on) + ')' : ''} · year ago ${esc(x.v.year_ago_verdict || '')}${x.v.year_ago_correct_value_cr ? ' ₹' + fmt(x.v.year_ago_correct_value_cr, 0) + ' cr' : ''}${x.v.book_to_ttm_sales ? ' · book ' + esc(x.v.book_to_ttm_sales) + '× sales' : ''}${x.v.notes ? '<br>' + esc(String(x.v.notes)) : ''}</div>` : '<div class="obq">Not checked against the filings yet.</div>'}${obQuote(x.r.latest)}${x.r.year_ago ? obQuote(x.r.year_ago) : ''}</td></tr>`;
     }).join('') || '<tr><td colspan="9" class="muted">Nothing in this filter.</td></tr>';
   };
   let obLoading = null;
@@ -681,7 +694,7 @@
   };
   $('#ob-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OB) return; if (OBK === th.dataset.k) OBD = -OBD; else { OBK = th.dataset.k; OBD = th.dataset.k === 'name' ? 1 : -1; } drawOB(); });
   $('#ob-chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b && OB) { OBCHIP = b.dataset.k; drawOB(); } });
-  $('#ob-table tbody').addEventListener('click', (e) => { const a = e.target.closest('[data-open]'); if (a) { e.preventDefault(); openCompany(a.dataset.open, true); } });
+  $('#ob-table tbody').addEventListener('click', (e) => { const d = e.target.closest('[data-det]'); if (d) { const r = $(`#ob-table tr[data-det-row="${d.dataset.det}"]`); if (r) { r.hidden = !r.hidden; d.setAttribute('aria-expanded', String(!r.hidden)); d.textContent = r.hidden ? 'More ▸' : 'Hide ▾'; } return; } const a = e.target.closest('[data-open]'); if (a) { e.preventDefault(); openCompany(a.dataset.open, true); } });
 
   // ---- summary strip -------------------------------------------------------------------
   const ts = track && track.summary || {};
