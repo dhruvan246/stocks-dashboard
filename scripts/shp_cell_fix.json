@@ -76753,7 +76753,7 @@
    "2016-12-31": {
     "cell": [
      80.0,
-     0.704242,
+     0.703064,
      6.81556,
      0.003408,
      6.371849,
@@ -76762,7 +76762,7 @@
     ],
     "was": [
      80.0,
-     0.703064,
+     0.704242,
      6.81556,
      0.003408,
      6.371849,
@@ -76770,8 +76770,31 @@
      93666
     ],
     "src": "bsexbrl:524230_612017112549_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other Unit Trust India 2,400 on base 551,688,100. fii 0.703064 -> 0.704242; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 2,400 sh).",
-    "exact": true
+    "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts the UTI row outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 0.703064.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      80.0,
+      0.704242,
+      6.81556,
+      0.003408,
+      6.371849,
+      "2017-01-06",
+      93666
+     ],
+     "was": [
+      80.0,
+      0.703064,
+      6.81556,
+      0.003408,
+      6.371849,
+      "2017-01-06",
+      93666
+     ],
+     "src": "bsexbrl:524230_612017112549_SHP.xml",
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other Unit Trust India 2,400 on base 551,688,100. fii 0.703064 -> 0.704242; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 2,400 sh).",
+     "exact": true
+    }
    }
   },
   "RCOM": {
@@ -147053,7 +147076,7 @@
    "2018-03-31": {
     "cell": [
      63.85,
-     24.34922,
+     22.215345,
      4.4164,
      4.303834,
      0.0,
@@ -147062,7 +147085,7 @@
     ],
     "was": [
      63.85,
-     18.5968,
+     24.34922,
      4.4164,
      4.303834,
      0.0,
@@ -147070,32 +147093,33 @@
      34123
     ],
     "src": "bsexbrl:539551_64201816166_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): CDC GROUP PLC 11,765,046 on base 204,360,804. fii 18.5968 -> 24.34922; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is -9,815 sh).",
+    "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-holder-own-cat-other(out):CDC INDIA OPPORTUNITIES LIMITED 4,360,804 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 22.215345.",
+    "exact": true,
     "superseded": {
      "cell": [
       63.85,
-      18.5968,
+      24.34922,
       4.4164,
-      4.3038,
+      4.303834,
       0.0,
       "2018-04-09",
       34123
      ],
      "was": [
       63.85,
-      24.3538,
+      18.5968,
       4.4164,
-      4.3038,
+      4.303834,
       0.0,
       "2018-04-09",
       34123
      ],
      "src": "bsexbrl:539551_64201816166_SHP.xml",
-     "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 24.3538 -> 18.5968 (share counts of 539551_64201816166_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): CDC GROUP PLC 11,765,046 on base 204,360,804. fii 18.5968 -> 24.34922; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is -9,815 sh).",
      "superseded": {
       "cell": [
        63.85,
-       24.3538,
+       18.5968,
        4.4164,
        4.3038,
        0.0,
@@ -147104,17 +147128,26 @@
       ],
       "was": [
        63.85,
-       20.5108,
-       8.2594,
+       24.3538,
+       4.4164,
        4.3038,
        0.0,
        "2018-04-09",
        34123
       ],
       "src": "bsexbrl:539551_64201816166_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 8.26 -> 4.42, fii 20.51 -> 24.35. R1-rest-follows-foreign-holders 3.84; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-unresolved Bodies Corporate 0.0 CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+      "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 24.3538 -> 18.5968 (share counts of 539551_64201816166_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
       "superseded": {
        "cell": [
+        63.85,
+        24.3538,
+        4.4164,
+        4.3038,
+        0.0,
+        "2018-04-09",
+        34123
+       ],
+       "was": [
         63.85,
         20.5108,
         8.2594,
@@ -147123,17 +147156,30 @@
         "2018-04-09",
         34123
        ],
-       "was": [
-        63.85,
-        14.7538,
-        14.0164,
-        4.3038,
-        0.0,
-        "2018-04-09",
-        34123
-       ],
        "src": "bsexbrl:539551_64201816166_SHP.xml",
-       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (CDC GROUP PLC 5.76) \u2014 moved dii -> fii (5.7570 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+       "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 8.26 -> 4.42, fii 20.51 -> 24.35. R1-rest-follows-foreign-holders 3.84; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-unresolved Bodies Corporate 0.0 CDC INDIA OPPORTUNITIES LIMITED 2.13 ?->-(-) keyword. Evidence: _shp_dii_rowfix_audit.json",
+       "superseded": {
+        "cell": [
+         63.85,
+         20.5108,
+         8.2594,
+         4.3038,
+         0.0,
+         "2018-04-09",
+         34123
+        ],
+        "was": [
+         63.85,
+         14.7538,
+         14.0164,
+         4.3038,
+         0.0,
+         "2018-04-09",
+         34123
+        ],
+        "src": "bsexbrl:539551_64201816166_SHP.xml",
+        "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (CDC GROUP PLC 5.76) \u2014 moved dii -> fii (5.7570 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+       }
       }
      }
     }
@@ -363492,7 +363538,7 @@
    "2021-09-30": {
     "cell": [
      55.63,
-     6.25178,
+     3.809179,
      9.4154,
      3.5651,
      5.57743,
@@ -363501,7 +363547,7 @@
     ],
     "was": [
      55.63,
-     3.809179,
+     6.25178,
      9.4154,
      3.5651,
      5.57743,
@@ -363509,28 +363555,51 @@
      186523
     ],
     "src": "bsexbrl:501455_13102021184517_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): LIFE INSURANCE CORPORATION OF INDIA 5,647,460 on base 231,206,795. fii 3.809179 -> 6.25178; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 498,209 sh).",
+    "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-holder-registered-indian(out):LIFE INSURANCE CORPORATION OF INDIA 5,647,460 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 3.809179.",
+    "exact": true,
     "superseded": {
      "cell": [
       55.63,
-      3.8093,
+      6.25178,
       9.4154,
-      3.5652,
-      5.5777,
+      3.5651,
+      5.57743,
       "2021-10-14",
       186523
      ],
      "was": [
       55.63,
-      3.8093,
-      9.3654,
-      3.5652,
-      5.5777,
+      3.809179,
+      9.4154,
+      3.5651,
+      5.57743,
       "2021-10-14",
       186523
      ],
      "src": "bsexbrl:501455_13102021184517_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.81 -> 3.81, dii 9.37 -> 9.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-domestic-holders Other 0.0 LIFE INSURANCE CORPORATION OF INDIA 2.44 domestic->-(curated); R1-overflow 2.44 0.17; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): LIFE INSURANCE CORPORATION OF INDIA 5,647,460 on base 231,206,795. fii 3.809179 -> 6.25178; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 498,209 sh).",
+     "superseded": {
+      "cell": [
+       55.63,
+       3.8093,
+       9.4154,
+       3.5652,
+       5.5777,
+       "2021-10-14",
+       186523
+      ],
+      "was": [
+       55.63,
+       3.8093,
+       9.3654,
+       3.5652,
+       5.5777,
+       "2021-10-14",
+       186523
+      ],
+      "src": "bsexbrl:501455_13102021184517_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.81 -> 3.81, dii 9.37 -> 9.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-domestic-holders Other 0.0 LIFE INSURANCE CORPORATION OF INDIA 2.44 domestic->-(curated); R1-overflow 2.44 0.17; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2021-12-31": {
@@ -363783,7 +363852,7 @@
    "2018-06-30": {
     "cell": [
      37.84,
-     16.387601,
+     16.387563,
      15.527183,
      5.782503,
      0.0,
@@ -363792,7 +363861,7 @@
     ],
     "was": [
      37.84,
-     16.386434,
+     16.387601,
      15.527183,
      5.782503,
      0.0,
@@ -363800,8 +363869,31 @@
      133214
     ],
     "src": "bsexbrl:500690_77201811569_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other CITIBANK N A JOINTLY WITH VAKHARIA 150 on base 398,477,530. fii 16.386434 -> 16.387601; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 151 sh).",
-    "exact": true
+    "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-cat-indian-or-person(out):Other CITIBANK N A JOINTLY WITH VAKHARIA 150 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 16.387563.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      37.84,
+      16.387601,
+      15.527183,
+      5.782503,
+      0.0,
+      "2018-07-07",
+      133214
+     ],
+     "was": [
+      37.84,
+      16.386434,
+      15.527183,
+      5.782503,
+      0.0,
+      "2018-07-07",
+      133214
+     ],
+     "src": "bsexbrl:500690_77201811569_SHP.xml",
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other CITIBANK N A JOINTLY WITH VAKHARIA 150 on base 398,477,530. fii 16.386434 -> 16.387601; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 151 sh).",
+     "exact": true
+    }
    }
   },
   "GTL": {
@@ -381089,7 +381181,7 @@
    "2020-03-31": {
     "cell": [
      31.27,
-     30.540049,
+     28.798271,
      19.0323,
      15.077315,
      0.0,
@@ -381098,7 +381190,7 @@
     ],
     "was": [
      31.27,
-     28.798271,
+     30.540049,
      19.0323,
      15.077315,
      0.0,
@@ -381106,28 +381198,51 @@
      73265
     ],
     "src": "bsexbrl:532531_2042020194911_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): SATPAL KHATTAR 1,560,032 on base 89,565,464. fii 28.798271 -> 30.540049; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 156,139 sh).",
+    "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-holder-person-or-joint(out):SATPAL KHATTAR 1,560,032 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 28.798271.",
+    "exact": true,
     "superseded": {
      "cell": [
       31.27,
-      28.7997,
+      30.540049,
       19.0323,
-      15.078,
+      15.077315,
       0.0,
       "2020-04-21",
       73265
      ],
      "was": [
       31.27,
-      28.7997,
-      18.8823,
-      15.078,
+      28.798271,
+      19.0323,
+      15.077315,
       0.0,
       "2020-04-21",
       73265
      ],
      "src": "bsexbrl:532531_2042020194911_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 28.80 -> 28.80, dii 18.88 -> 19.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=1.74 fii=0.00 SATPAL KHATTAR 1.74 foreign->public(new-format:NonResidentIndians); R1-overflow 1.74 0.02; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): SATPAL KHATTAR 1,560,032 on base 89,565,464. fii 28.798271 -> 30.540049; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 156,139 sh).",
+     "superseded": {
+      "cell": [
+       31.27,
+       28.7997,
+       19.0323,
+       15.078,
+       0.0,
+       "2020-04-21",
+       73265
+      ],
+      "was": [
+       31.27,
+       28.7997,
+       18.8823,
+       15.078,
+       0.0,
+       "2020-04-21",
+       73265
+      ],
+      "src": "bsexbrl:532531_2042020194911_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 28.80 -> 28.80, dii 18.88 -> 19.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-foreign-holders Other 0.0 public=1.74 fii=0.00 SATPAL KHATTAR 1.74 foreign->public(new-format:NonResidentIndians); R1-overflow 1.74 0.02; R3-nbfc NBFCsRegisteredWithRbi 0.15. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2020-06-30": {

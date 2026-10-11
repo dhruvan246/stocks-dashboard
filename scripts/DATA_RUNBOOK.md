@@ -27822,4 +27822,9 @@ label are read by it (company-type -> out; '- FDI' -> FII; depository banks -> D
 holders in 246 PIT N500 cells and left them out of 291. Written: the 148 cells where DII holds none of the shares (JSWSTEEL 2016-17
 JFE 20.12 -> 35.12, SHREECEM FLT, AVANTIFEED Thai Union, UJJIVAN's investors, CYIENT, MANPASAND, RAMCOSYS ...); fii only, guards green,
 fii+dii <= public in all 148. Held: 42 cells where DII may already hold them (DII session first) and 101 cells with a second gap.
+**Part 57C (same day, correction of 57B, 5 cells):** the named-holder rule covers foreign-looking investors only by default - a
+holder whose OWN category text on that line is company-type / domestic (NH Mar-2018 'CDC INDIA OPPORTUNITIES LIMITED' filed as
+'Bodies Corporate' -> 22.2153), an official Indian register entry (GREAVESCOT Sep-2021 LIC, IRDAI 512; RCF UTI), or a person / joint
+account (STAR Satpal Khattar; GSFC 'Citibank N A jointly with Vakharia') stays out of FII (user's 6-Oct 'register wins' ruling).
+The 42 held cells are mostly Indian insurers named on the line (NATCOPHARM LIC + Tata AIA, RAILTEL HDFC Life) - correctly DII.
 
