@@ -338,6 +338,12 @@ def find_metric(L, name, unit):
     return None
 
 
+def _decimals(asp):
+    """Number of decimal places in a printed token ('3,889.2' → 1, '81' → 0, '' → 0)."""
+    s = re.sub(r"[^0-9.]", "", str(asp or ""))
+    return len(s.split(".", 1)[1]) if "." in s else 0
+
+
 def to_float(v):
     try:
         f = float(str(v).replace(",", ""))
@@ -431,6 +437,25 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             if old_doc and old_src[0] != att and pend in cell:
                 src_date = old_doc.get("date", "")
                 newest_print = max(src_date, (m.get("latest") or {}).get(srckey, ""))
+                # Rounding is not a restatement (user rule 2026-10-11: keep the precise figure). If the two
+                # prints differ only within half a unit of the LESS precise one's last digit, the more
+                # precise value stays whatever the dates; the other filing just confirms it.
+                nd_new, nd_cur = _decimals(asp), _decimals(old_src[3] if len(old_src) > 3 else "")
+                if cell[pend] != val and nd_new != nd_cur:
+                    nd = min(nd_new, nd_cur)
+                    if abs(cell[pend] - val) <= 0.5 * 10 ** (-nd) + 1e-9:
+                        if nd_new < nd_cur:            # incoming is the rounded one: keep ours, note the confirmation
+                            if doc["date"] > newest_print:
+                                m.setdefault("latest", {})[srckey] = doc["date"]
+                            continue
+                        # incoming is the precise one: take it, keep the newest print date
+                        keep_latest = max(newest_print, doc["date"])
+                        cell[pend] = val
+                        m["src"][srckey] = [att, page, label, asp]
+                        if keep_latest > doc["date"]:
+                            m.setdefault("latest", {})[srckey] = keep_latest
+                        written += 1
+                        continue
                 if cell[pend] == val:
                     if doc["date"] > newest_print:
                         m.setdefault("latest", {})[srckey] = doc["date"]   # newest confirmation so far
