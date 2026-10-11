@@ -27815,3 +27815,11 @@ RESPONIND's Dec-2025 re-filings keep their own document's value. Open after 57A:
 cross-filing moves, 300 lower-than-own cells (foreign-labelled rows never counted; DII overlap check first), and 228 cells where a
 NAMED holder sits in an UNLABELLED institutions block (the filing gives no nationality) - put to the user.
 
+**§164r batch 30 part 57B (2026-10-11, user: "count it as foreign investment").** RULE: a holder a filing NAMES on its institutions
+'Any Other' line with no label (or a category row on that line labelled only by a name / an unclassified label such as CYIENT's
+'Foreign Collaborators' / 'Other Foreign Categories') is FII, like the unnamed rest of the same line (D1). Holder cells that carry a
+label are read by it (company-type -> out; '- FDI' -> FII; depository banks -> DR, never FII). Before this the store counted such
+holders in 246 PIT N500 cells and left them out of 291. Written: the 148 cells where DII holds none of the shares (JSWSTEEL 2016-17
+JFE 20.12 -> 35.12, SHREECEM FLT, AVANTIFEED Thai Union, UJJIVAN's investors, CYIENT, MANPASAND, RAMCOSYS ...); fii only, guards green,
+fii+dii <= public in all 148. Held: 42 cells where DII may already hold them (DII session first) and 101 cells with a second gap.
+
