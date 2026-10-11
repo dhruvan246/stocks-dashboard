@@ -293,6 +293,28 @@ def pick_book(readings, target):
     return dict(r, n_same=cnt[v], n_near=len(near))
 
 
+def company_names():
+    """BSE code -> company name, for rows whose ledger entry has no name (the whole-market backfill stored only
+    the code). From the newest BSE bhavcopy in the last 10 days, BSE's own name for that code. The BSE symbol is
+    NOT used: it can be another company's NSE symbol (runbook §197). Empty dict if no bhavcopy is readable."""
+    out = {}
+    try:
+        import bse
+        d = datetime.date.today()
+        for _ in range(10):
+            rows = bse.bhavcopy(d)
+            if rows:
+                break
+            d -= datetime.timedelta(days=1)
+        for r in rows or []:
+            nm = (r.get('name') or '').strip()
+            if nm:
+                out[str(r['scrip'])] = nm.title().replace(' Ltd.', ' Ltd').replace(' Limited', ' Ltd')
+    except Exception:
+        pass
+    return out
+
+
 def build_signals(ledger):
     rev = {}
     try:
@@ -301,6 +323,7 @@ def build_signals(ledger):
     except Exception:
         pass
     sig = []
+    NAMES = company_names() if any(not c.get('name') for c in ledger['companies'].values()) else {}
     for scrip, c in ledger['companies'].items():
         R = [r for r in c.get('readings', []) if r.get('value_cr')]
         if not R:
@@ -309,7 +332,10 @@ def build_signals(ledger):
         now = pick_book(R, latest_d)
         older = [r for r in R if 300 <= (latest_d - datetime.date.fromisoformat(r['as_on_eff'])).days <= 430]
         prev = pick_book(older, latest_d - datetime.timedelta(days=365)) if older else None
-        row = dict(scrip=scrip, name=c.get('name'), nse=c.get('nse'), latest=now, year_ago=prev)
+        name, nse = c.get('name'), c.get('nse')
+        if not name and scrip in NAMES:
+            name = NAMES[scrip]
+        row = dict(scrip=scrip, name=name, nse=nse, latest=now, year_ago=prev)
         if prev and prev['value_cr']:
             row['yoy_pct'] = round((now['value_cr'] / prev['value_cr'] - 1) * 100, 1)
             # a jump this large is more often a misread (a segment, a multi-year figure) than a fact: read the quotes
