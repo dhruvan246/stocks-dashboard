@@ -27801,3 +27801,17 @@ Quantmac, who treat a revision-only quarter as unpublished until the revision). 
 read `revised_reson` on BSE's SHPQNewFormat row - it is the cell's own evidence of what changed. JKCEMENT Dec-18 (allotment-day
 pattern we never held) is the next item.
 
+**§164r batch 30 part 57A (2026-10-11, user: option 1 - "follow the filings own line": no holder is moved because of how ANOTHER
+filing lists it; extends part 51 from the FDI registry to every cross-filing rule).** New reader `~/stocks-cache/shp/ownline/
+ownline.py` (2015-22 XBRL form, PIT N500 cells): FII = FPI + FVCI + institutions 'Any Other' rows whose own label is foreign-
+institutional + the unlabelled rest of that block (D1) + Non-Institutions rows whose own label is FPI / FII, on the §226 base; a
+holder name that carries a label ('- FDI', 'Foreign Bodies Corporate- X', a depository bank) is read by it; no name guesses. 12,821
+cells read; 1,088 differ by >= 0.01. This part writes the 344 where we were HIGHER and the whole gap is the FII that cross-filing
+entries had added (sum of those entries' fii moves = store - own within 0.011): §159 'the filer's 2022 form lists under B2' (ITC
+2016-22 Tobacco Manufacturers on 'Bodies Corporate' -30.03; PAYTM Antfin / ETERNAL Alipay on 'Foreign Companies' -66.15 / -32.36),
+batch 7 documents rule, batch 8 institution-listing / own-tag, §142e / §158 2022-form placement, part 47 lender banks, SW-2
+curated blocks. fii -> the filing's own-line value; dii untouched (shares go back to the line they are filed on). Re-filing rows:
+RESPONIND's Dec-2025 re-filings keep their own document's value. Open after 57A: 110 higher-than-own cells whose gap is not only
+cross-filing moves, 300 lower-than-own cells (foreign-labelled rows never counted; DII overlap check first), and 228 cells where a
+NAMED holder sits in an UNLABELLED institutions block (the filing gives no nationality) - put to the user.
+
