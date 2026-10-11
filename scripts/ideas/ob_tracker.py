@@ -119,5 +119,49 @@ def main():
     return 0
 
 
+OW_LEDGER = os.environ.get('OW_VERIFIED') or os.path.join(DOCS, 'orderwins_verified.json')
+OW_OUT = os.environ.get('OW_TRACKER') or os.path.join(DOCS, 'orderwins_tracker.json')
+
+
+def main_orderwins():
+    """Order wins adding up (orderwins_verified.json, letter-checked): close on the flag date (the filing that took the
+    confirmed running total to 0.5x the last stated book) -> latest close, best close since. Same pricing and stale
+    rules as the jumps table."""
+    if not os.path.exists(OW_LEDGER):
+        print('no orderwins_verified.json yet - nothing to track')
+        return 0
+    led = json.load(open(OW_LEDGER))
+    try:
+        prev = {r['key']: r for r in json.load(open(OW_OUT)).get('rows', [])}
+    except Exception:
+        prev = {}
+    rows, failed = [], []
+    for r in led.get('rows', []):
+        if r.get('verdict', '').startswith('NOT') or not r.get('cross_date') or (r.get('confirmed_ratio') or 0) < 0.5:
+            continue
+        out = {k: v for k, v in r.items() if k != 'wins_checked'}
+        out['wins'] = r.get('wins_checked', [])
+        try:
+            out.update(track(dict(r, trigger_filed=r['cross_date'])))
+        except Exception as ex:
+            p = prev.get(r['key'])
+            keep = {k: p[k] for k in ('entry_date', 'entry_close', 'last_date', 'last_close', 'ret_pct', 'peak_pct',
+                                      'peak_date', 'low_pct', 'days', 'adj_events', 'price_source') if p and k in p}
+            out.update(keep, stale=True, price_error=str(ex)[:160])
+            failed.append(r['key'])
+        rows.append(out)
+        if str(r['key']).isdigit():
+            time.sleep(1.0)
+    rows.sort(key=lambda x: x.get('cross_date') or '', reverse=True)
+    json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'),
+                   rule='Order-win letters added up since the last stated order book, each letter checked; flagged on the '
+                        'filing that took the confirmed total to 0.5x that book. Entry = close on that filing day (next '
+                        'trading day if a holiday). Returns use bonus/split-adjusted closes.',
+                   n=len(rows), stale=failed, rows=rows), open(OW_OUT, 'w'), ensure_ascii=False, indent=1)
+    print(f'order wins: {len(rows)} tracked, {len(failed)} carried forward stale: {failed}')
+    return 0
+
+
 if __name__ == '__main__':
-    sys.exit(main())
+    rc = main()
+    sys.exit(rc or main_orderwins())

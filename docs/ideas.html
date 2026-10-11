@@ -30,6 +30,7 @@
     .obq { font-size: 12px; color: var(--text-muted); white-space: normal; max-width: 520px; }
     #ob-table td, #obt-table td { vertical-align: middle; }
     #obt-table th, #obt-table td, #ow-table th, #ow-table td { padding: 6px 6px; }
+    #ow-table th:first-child, #ow-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table td { vertical-align: middle; } #ow-table tr.obdet td { white-space: normal; background: var(--surface); padding: 10px 14px; } #ow-table tr.obdet .obq { max-width: none; margin-bottom: 4px; }
     #ow-table button.obmore { font-size: 12px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; white-space: nowrap; }
     #obt-table th:first-child, #obt-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
@@ -291,11 +292,11 @@
     </div>
     <div id="ow-sec" hidden>
     <h3 class="text-base font-semibold mb-1">Order wins adding up</h3>
-    <p class="muted text-sm mb-2">Order-win letters filed since the company last stated its order book, added up. A company is flagged when they reach <b>half of that order book within 6 months</b>, even if no single order was big (Welspun Corp, Aug-2024 → Mar-2025: no order above 0.2× its ₹8,508 cr book, ₹20,000 cr book seven months later). Values are read from each letter by a script; a letter with no stated value adds nothing, so the total is a floor. Check the letters before acting.</p>
+    <p class="muted text-sm mb-2">Order-win letters filed since the company last stated its order book, <b>each letter checked</b> and counted once (a lowest-bidder notice, the award letter and the press release for the same order count once), added up. Flagged on the filing that took the total to <b>half of that order book</b>, even if no single order was big (Welspun Corp, Aug-2024 → Mar-2025: no order above 0.2× its ₹8,508 cr book, ₹20,000 cr book seven months later). The start price is that day’s close; prices refresh every evening and new companies join after their letters are checked.</p>
     <p id="ow-meta" class="muted text-xs mb-2"></p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable" id="ow-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="n">Wins since</th><th class="n" data-k="sum" title="Order wins filed since, added up, ₹ crore">Added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th class="n" data-k="big" title="Largest single order ÷ last book">Largest</th><th data-k="cross" title="Date the running total reached half the book">Crossed ½ on</th><th></th>
-    </tr></thead><tbody><tr><td colspan="8" class="muted">Loading…</td></tr></tbody></table></div>
+      <th data-k="name">Company</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="sum" title="Order wins filed since, each letter checked, added up, ₹ crore">Orders added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th data-k="cross" title="Filing that took the total to half the book">Flagged on</th><th class="n">Close that day</th><th class="n">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th></th>
+    </tr></thead><tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody></table></div>
     </div>
     <h3 class="text-base font-semibold mb-1">Every stated order book (read by the script)</h3>
     <p id="ob-meta" class="muted text-xs mb-3"></p>
@@ -757,19 +758,25 @@
         <tr class="obdet" data-det-row="${i}" hidden><td colspan="9">${x.v ? `<div class="obq"><b>${/WRONG|DATE/.test((x.v.latest_verdict || '') + (x.v.year_ago_verdict || '')) ? 'Corrected' : '✓ Confirmed'}</b> · now ${esc(x.v.latest_verdict || '')}${x.v.latest_correct_value_cr ? ' ₹' + fmt(x.v.latest_correct_value_cr, 0) + ' cr' : ''}${x.v.latest_as_on ? ' (' + esc(x.v.latest_as_on) + ')' : ''} · year ago ${esc(x.v.year_ago_verdict || '')}${x.v.year_ago_correct_value_cr ? ' ₹' + fmt(x.v.year_ago_correct_value_cr, 0) + ' cr' : ''}${x.v.book_to_ttm_sales ? ' · book ' + esc(x.v.book_to_ttm_sales) + '× sales' : ''}${x.v.notes ? '<br>' + esc(String(x.v.notes)) : ''}</div>` : '<div class="obq">Not checked against the filings yet.</div>'}${obQuote(x.r.latest)}${x.r.year_ago ? obQuote(x.r.year_ago) : ''}</td></tr>`;
     }).join('') || '<tr><td colspan="9" class="muted">Nothing in this filter.</td></tr>';
   };
-  let OW = null, OWK = 'ratio', OWD = -1;
+  let OW = null, OWK = 'cross', OWD = -1;
   const drawOW = () => {
-    const R = ((OW && OW.rows) || []).filter(r => r.flagged).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, n: r.n_wins, sum: r.sum_cr, ratio: r.ratio, big: r.largest_ratio, cross: r.cross_date }));
+    const R = ((OW && OW.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, sum: r.confirmed_sum_cr, ratio: r.confirmed_ratio, big: r.largest_ratio, cross: r.cross_date, ret: r.ret_pct, peak: r.peak_pct }));
     const shown = R.sort((a, b) => { const x = a[OWK], y = b[OWK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OWD; });
     document.querySelectorAll('#ow-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OWK && OWD > 0); th.classList.toggle('desc', th.dataset.k === OWK && OWD < 0); });
-    $('#ow-meta').textContent = OW ? `${R.length} flagged of ${(OW.rows || []).length} companies with order wins since their last stated book · built ${OW.built || ''}` : 'orderwins_signals.json not published yet.';
+    const rets = R.map(x => x.ret).filter(v => v != null).sort((a, b) => a - b);
+    const med = rets.length ? (rets.length % 2 ? rets[(rets.length - 1) / 2] : (rets[rets.length / 2 - 1] + rets[rets.length / 2]) / 2) : null;
+    $('#ow-meta').innerHTML = OW ? `${R.length} compan${R.length === 1 ? 'y' : 'ies'} · ${rets.filter(v => v > 0).length} up, ${rets.filter(v => v <= 0).length} flat or down · median return ${med == null ? '—' : pct(med)} · built ${esc(OW.built || '')}${(OW.stale || []).length ? ` · <b style="color:#ca8a04">${OW.stale.length} not re-priced today</b>` : ''}` : '';
     $('#ow-table tbody').innerHTML = shown.map((x, i) => { const r = x.r;
-      return `<tr><td>${esc(x.name)}<div class="muted text-xs">${esc(r.nse || '')}</div></td>
-        <td class="n">${fmt(x.base, 0)}<div class="muted text-xs">${r.base_doc ? `<a class="src" href="${esc(r.base_doc)}" target="_blank" rel="noopener">${dmy(r.base_as_on)}</a>` : dmy(r.base_as_on)}</div></td>
-        <td class="n">${x.n}${r.n_no_value ? `<div class="muted text-xs">${r.n_no_value} no value</div>` : ''}</td><td class="n">${fmt(x.sum, 0)}</td>
-        <td class="n"><b>${x.ratio == null ? '—' : x.ratio.toFixed(2) + '×'}</b></td><td class="n">${x.big == null ? '—' : x.big.toFixed(2) + '×'}</td><td>${dmy(x.cross)}</td>
+      return `<tr><td title="${esc(r.note || '')}">${esc(x.name)}<div class="muted text-xs">${esc(r.nse || '')}${r.bse ? ' · BSE ' + esc(r.bse) : ''}</div></td>
+        <td class="n">${fmt(x.base, 0)}<div class="muted text-xs">${r.base_doc ? `<a class="src" href="${esc(r.base_doc)}" target="_blank" rel="noopener">${dmy(r.base_as_on || r.base_filed)}</a>` : dmy(r.base_as_on)}</div></td>
+        <td class="n">${fmt(x.sum, 0)}<div class="muted text-xs">${r.n_wins} order${r.n_wins === 1 ? '' : 's'}</div></td>
+        <td class="n"><b>${x.ratio == null ? '—' : x.ratio.toFixed(2) + '×'}</b><div class="muted text-xs">largest ${x.big == null ? '—' : x.big.toFixed(2) + '×'}</div></td>
+        <td>${dmy(x.cross)}<div class="muted text-xs" style="white-space:normal;max-width:120px">${r.next_book_cr ? `next book ${r.next_book_doc ? `<a class="src" href="${esc(r.next_book_doc)}" target="_blank" rel="noopener">₹${fmt(r.next_book_cr, 0)} cr</a>` : '₹' + fmt(r.next_book_cr, 0) + ' cr'} ${r.next_book_confirms ? '✓' : '✗'}` : 'no newer book yet'}</div></td>
+        <td class="n">${r.entry_close == null ? '—' : '₹' + fmt(r.entry_close, 2)}<div class="muted text-xs">${dmy(r.entry_date)}</div></td>
+        <td class="n">${r.last_close == null ? '—' : '₹' + fmt(r.last_close, 2)}${r.stale ? ' <span class="pill">stale</span>' : ''}</td>
+        <td class="n"><b>${pct(x.ret)}</b></td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td>
         <td><button type="button" class="obmore" data-owdet="${i}" aria-expanded="false">More ▸</button></td></tr>
-        <tr class="obdet" data-owdet-row="${i}" hidden><td colspan="8">${(r.wins || []).map(w => `<div class="obq">${dmy(w.filed)} · <b>${w.value_cr == null ? 'no value read' : '₹' + fmt(w.value_cr, w.value_cr < 10 ? 2 : 0) + ' cr'}</b>${w.display && w.currency !== 'INR' ? ' (' + esc(w.display) + (w.fx ? ', ' + esc(w.fx) : '') + ')' : ''} · <a class="src" href="${esc(w.doc)}" target="_blank" rel="noopener">${esc(w.src)} letter</a> <span class="muted">${esc((w.subject || '').slice(0, 140))}</span></div>`).join('')}</td></tr>`; }).join('') || '<tr><td colspan="8" class="muted">No company has crossed half its order book yet.</td></tr>';
+        <tr class="obdet" data-owdet-row="${i}" hidden><td colspan="10">${(r.wins || []).map(w => `<div class="obq">${dmy(w.filed)} · <b>${w.value_cr == null ? 'no value' : '₹' + fmt(w.value_cr, w.value_cr < 10 ? 2 : 0) + ' cr'}</b> · ${w.doc ? `<a class="src" href="${esc(w.doc)}" target="_blank" rel="noopener">letter</a>` : ''} <span class="muted">${esc((w.note || '').slice(0, 160))}</span></div>`).join('')}${r.note ? `<div class="obq">${esc(r.note)}</div>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed flags yet.</td></tr>';
   };
   $('#ow-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OW) return; if (OWK === th.dataset.k) OWD = -OWD; else { OWK = th.dataset.k; OWD = th.dataset.k === 'name' ? 1 : -1; } drawOW(); });
   $('#ow-table tbody').addEventListener('click', (e) => { const d = e.target.closest('[data-owdet]'); if (!d) return; const r = $(`#ow-table tr[data-owdet-row="${d.dataset.owdet}"]`); if (r) { r.hidden = !r.hidden; d.setAttribute('aria-expanded', String(!r.hidden)); d.textContent = r.hidden ? 'More ▸' : 'Hide ▾'; } });
@@ -796,7 +803,7 @@
   const loadOB = () => {
     if (OB || obLoading) return;
     grab('./ideas/orderbook_tracker.json').then(j => { OBT = j; $('#obt-sec').hidden = !(j && (j.rows || []).length); drawOBT(); });
-    grab('./ideas/orderwins_signals.json').then(j => { OW = j; $('#ow-sec').hidden = !j; drawOW(); });
+    grab('./ideas/orderwins_tracker.json').then(j => { OW = j; $('#ow-sec').hidden = !(j && (j.rows || []).length); drawOW(); });
     obLoading = grab('./ideas/orderbook_signals.json').then(j => {
       OB = j || { rows: [] };
       $('#ob-meta').textContent = j ? `${(j.rows || []).length} companies with a stated order book · built ${j.built || ''} · ${j.rule || ''}` : 'orderbook_signals.json not published yet.';
