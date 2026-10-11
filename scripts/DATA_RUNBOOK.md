@@ -27846,4 +27846,16 @@ filing's own domestic rows. Reader rules now: domestic only for real category wo
 never for words inside a name ('Government Pension Fund Global' is a name -> FII, MHRIL). LESSON: the only acceptance test is the
 filing's own rows re-read by the corrected reader; a ledger entry's label says what it did, not whether it was cross-filing. Held:
 22 written cells whose correction touches DII (CANFINHOME x11 0.0015, RAJESHEXPO x2, NILKAMAL x4, RAYMOND x2, LMW, BALLARPUR, ANURAS).
+**Part 60 (same day, 56 cells):** the rest of the HIGHER-than-own cells whose gap is a cross-filing addition, each read on the corrected
+reader: IEX 2018-21 (Rimco / IBEF on 'Overseas Corporate Bodies'), POLYCAB 2019-21 (IFC on 'Bodies Corporate' / OCB), IDFCFIRSTB Sep-19..
+Mar-20 (Cloverdell), NH Sep-18..Dec-19 (CDC Group on OCB, CDC India on 'Bodies Corporate'), BERGEPAINT (Nalanda on 'Bodies Corporate'),
+FEDERALBNK 2016-17 (IFC on 'Foreign Body Corporate'), EDELWEISS 2020-22 (BIH SA), RKFORGE (IFC), DIXON (GMO on 'FOREIGN BODIES'),
+360ONE, LMW, DHANUKA, RUCHISOYA, BHARATFIN, GMRAIRPORT (Dunearn on OCB), RENUKA Mar-18 (StanChart on a Non-Institutions line).
+RENUKA Jun-20 raised back: a MIXED label ('Foreign Body Corporate/Foreign Bank') on the institutions line is unclassified -> FII.
+HELD - (a) DII-coupled: blocks on domestic-sounding lines moved to FII by other quarters' labels (SYMPHONY / SCI 'Financial Institutional
+Investors', NH 2017-18 FPI block on 'Financial Institutions/Banks', JINDALSAW Mar-16 / RENUKA Jun-Sep-17 funds on the Banks line);
+(b) NAME-TOKEN question for the user: does an FPI / FII / FDI word inside the holder's NAME count as the company's mark (batch 7/8
+practice) or does the row label win (the older 'a holder's FDI NAME never splits a row' rule)? SHRIRAMCIT 2016-19 Dynasty Acquisition
+(FPI) Ltd +20.35, SPANDANA Valiant Mauritius Partners FDI Ltd, ZENSARTECH Marina Holdco (FPI), NAM-INDIA / RNAVAL Valiant FDI, APLAPOLLO
+'Emblem FII', AXISBANK 2021-22 Bain 'BC ASIA ... - FDI'.
 
