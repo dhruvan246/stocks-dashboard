@@ -142,6 +142,21 @@
     .box.grow { border-left: 4px solid var(--pos, #16a34a); }
     .box.grow > .h { color: var(--pos, #16a34a); }
     .box .note { font-size: 13.5px; }
+    .box.obh { border-left: 4px solid #2a78d6; }
+    .box.obh.none { border-left-color: var(--border); }
+    .box.obh .obk { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 4px 0 8px; }
+    .box.obh .obk > div { background: var(--surface); border-radius: 8px; padding: 8px 10px; }
+    .box.obh .obk .k { font-size: 11.5px; color: var(--text-muted); }
+    .box.obh .obk .v { font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .box.obh .obk .d { font-size: 11.5px; color: var(--text-muted); }
+    .box.obh .obk .up .v { color: #16a34a; } .box.obh .obk .down .v { color: #dc2626; }
+    .box.obh .obchart { width: 100%; height: auto; display: block; margin: 4px 0; }
+    .box.obh .obchart text { font-size: 11px; fill: var(--text-muted); }
+    .box.obh .obchart .g { stroke: var(--border); stroke-width: 1; }
+    .box.obh .obchart .ln { fill: none; stroke: #2a78d6; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+    .box.obh .obchart .pt { fill: #2a78d6; stroke: var(--surface-2); stroke-width: 2; }
+    .box.obh .obbasis { font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px; }
+    .box.obh table.obht td.oblink { white-space: normal; min-width: 180px; }
     .buckets { display: flex; flex-wrap: wrap; gap: 6px; }
     .nav2 { display: flex; justify-content: space-between; gap: 10px; margin: 18px 0 6px; font-size: 13px; }
     .nav2 a { color: var(--accent); font-weight: 600; }
@@ -398,10 +413,10 @@
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [latest, ideas, track] = await Promise.all([grab('./ideas/latest.json'), grab('./ideas/ideas.json'), grab('./ideas/track.json')]);
   const relIdeas = (f) => './ideas/' + String(f).replace(/^(\.\/)?(docs\/)?ideas\//, '');
-  const [scan, run, govt, signals, queue] = await Promise.all([
+  const [scan, run, govt, signals, queue, obHist] = await Promise.all([
     latest && latest.scan_file ? grab(relIdeas(latest.scan_file)) : null,
     latest && latest.run_file ? grab(relIdeas(latest.run_file)) : null,
-    grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json')]);
+    grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json'), grab('./ideas/order_book_history.json')]);
   const queueBy = {};
   ((queue && queue.ideas) || []).forEach(q => { queueBy[q.id] = q; });
   const trackBy = {};
@@ -560,6 +575,43 @@
     if (f.confLevel) b.push(`Confidence ${f.confLevel}`);
     return b;
   };
+  // ---- order-book history box (order_book_history.json: every order book the company itself stated, by date) ----
+  const OBH = (obHist && obHist.ideas) || {};
+  const obHistHtml = (it) => {
+    const h = OBH[it.id];
+    if (!h || !(h.points || []).length) return laneOf(it) === 'orderbook' ? `<div class="box obh none"><div class="h">Order book</div><div class="note muted">The year-by-year order-book history for this company is being read from its filings.</div></div>` : '';
+    const P = h.points.filter(p => p.value_cr != null && p.as_on).slice().sort((a, b) => a.as_on.localeCompare(b.as_on));
+    if (!P.length) return '';
+    const day = (d) => Date.parse(d + 'T00:00:00Z') / 864e5;
+    const last = P[P.length - 1];
+    let ago = null;
+    P.forEach(p => { const g = day(last.as_on) - day(p.as_on); if (g >= 300 && g <= 430 && (!ago || Math.abs(g - 365) < Math.abs(day(last.as_on) - day(ago.as_on) - 365))) ago = p; });
+    const chg = ago && ago.value_cr ? (last.value_cr / ago.value_cr - 1) * 100 : null;
+    const kp = (k, v, d, cls) => `<div class="${cls || ''}"><div class="k">${k}</div><div class="v">${v}</div><div class="d">${d || ''}</div></div>`;
+    const cr = (v) => '₹' + fmt(v, v < 100 ? 1 : 0) + ' cr';
+    // inline SVG line chart (no library); x by date, y from 0
+    const W = 640, H = 170, L = 46, R = 10, T = 10, B = 24;
+    const x0 = day(P[0].as_on), x1 = day(last.as_on), span = Math.max(1, x1 - x0);
+    const ymax = Math.max(...P.map(p => p.value_cr)) * 1.1 || 1;
+    const X = (p) => P.length === 1 ? (L + W - R) / 2 : L + (day(p.as_on) - x0) / span * (W - L - R);
+    const Y = (v) => T + (1 - v / ymax) * (H - T - B);
+    const ticks = [0, .25, .5, .75, 1].map(f => ymax / 1.1 * f);
+    const years = []; for (let y = +P[0].as_on.slice(0, 4) + 1; y <= +last.as_on.slice(0, 4); y++) years.push(y);
+    const svg = `<svg class="obchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Order book by date, ${esc(P[0].as_on)} to ${esc(last.as_on)}">
+      ${ticks.map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="g"/><text x="${L - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${fmt(v, 0)}</text>`).join('')}
+      ${years.map(y => { const xv = L + (day(y + '-01-01') - x0) / span * (W - L - R); return xv > L && xv < W - R ? `<text x="${xv.toFixed(1)}" y="${H - 6}" text-anchor="middle">${y}</text>` : ''; }).join('')}
+      <polyline points="${P.map(p => X(p).toFixed(1) + ',' + Y(p.value_cr).toFixed(1)).join(' ')}" class="ln"/>
+      ${P.map(p => `<circle cx="${X(p).toFixed(1)}" cy="${Y(p.value_cr).toFixed(1)}" r="3.5" class="pt"><title>${dmy(p.as_on)}: ${cr(p.value_cr)}</title></circle>`).join('')}
+    </svg>`;
+    const rows = P.map((p, i) => { const pr = P[i - 1]; const c = pr && pr.value_cr ? (p.value_cr / pr.value_cr - 1) * 100 : null;
+      return `<tr><td>${dmy(p.as_on)}</td><td class="n"><b>${cr(p.value_cr)}</b></td><td class="n">${c == null ? '—' : pct(c)}</td><td class="oblink">${p.url ? `<a class="src" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.doc_title || 'filing')}">${esc(p.doc_title || 'filing')}${p.filed ? ' · ' + dmy(p.filed) : ''}</a>` : esc(p.doc_title || '')}${p.note ? `<div class="muted text-xs">${inl(p.note)}</div>` : ''}</td></tr>`; }).reverse().join('');
+    return `<div class="box obh"><div class="h"><span>Order book</span><span class="muted" style="text-transform:none;letter-spacing:0;font-weight:500">${P.length} figure${P.length === 1 ? '' : 's'} stated by the company · newest first below</span></div>
+      <div class="obk">${kp('Latest · ' + dmy(last.as_on), cr(last.value_cr))}${ago ? kp('A year earlier · ' + dmy(ago.as_on), cr(ago.value_cr)) : kp('A year earlier', '—', 'no figure 10–14 months before')}${chg != null ? kp('Change in a year', pct(chg), '', chg >= 0 ? 'up' : 'down') : ''}${h.ttm_sales_cr ? kp('Book ÷ sales', (last.value_cr / h.ttm_sales_cr).toFixed(2) + '×', h.ttm_period ? 'sales ' + esc(h.ttm_period) + ' ' + cr(h.ttm_sales_cr) : '') : ''}</div>
+      ${P.length > 1 ? svg : ''}
+      ${h.summary ? `<div class="note" style="margin:6px 0">${inl(h.summary)}</div>` : ''}
+      ${h.basis_note ? `<div class="note obbasis">${inl(h.basis_note)}</div>` : ''}
+      <div style="overflow-x:auto"><table class="sw obht"><thead><tr><th>As on</th><th class="n">Order book</th><th class="n">vs previous</th><th>Filing</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  };
   const companyHtml = (it) => {
     const f = F[it.id];
     const t = f.t;
@@ -598,6 +650,7 @@
         <button data-p="src">Sources<span class="cnt">${nSrc}</span></button>
       </div>
       <div class="pane" data-p="over">
+        ${obHistHtml(it)}
         <div class="box guid ${f.guid ? '' : 'none'}"><div class="h">Revenue guidance</div><div class="note">${f.guid ? inl(f.guid) : 'Not on file for this card yet — the next update sweep reads the latest call / presentation for it.'}</div></div>
         <div class="box trig"><div class="h">Why it was picked</div><div class="note">${inl(f.trig)}</div></div>
         <div class="box grow"><div class="h">Key growth triggers</div><div class="note">${it.triggers ? md(it.triggers) : md(it.thesis)}</div></div>
