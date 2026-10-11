@@ -134,6 +134,17 @@ jobs:
       - name: Order-book ledger refresh
         run: rc=0; python3 -X utf8 scripts/ideas/orderbook.py --refresh --days-back 4 || rc=$?; echo "orderbook=$rc" >> /tmp/ideas/steps.txt
 
+      # Confirmed order-book jumps (orderbook_jumps.json, filing-checked): close on the first filing that showed the
+      # 50%+ jump -> latest close, best close since. Rebuilt every run; a row whose prices cannot be read keeps the
+      # previous numbers, marked stale.
+      # Order wins that ADD UP: every order-win letter of the last few days (BSE + NSE whole-market lists), value read
+      # from the letter, summed since each company's last stated order book; flagged at 0.5x within 183 days.
+      - name: Order wins adding up
+        run: rc=0; python3 -X utf8 scripts/ideas/order_wins.py --days-back 4 || rc=$?; echo "order_wins=$rc" >> /tmp/ideas/steps.txt
+
+      - name: Order-book jumps tracker (returns since the jump filing)
+        run: rc=0; python3 -X utf8 scripts/ideas/ob_tracker.py || rc=$?; echo "ob_tracker=$rc" >> /tmp/ideas/steps.txt
+
       - name: Filings queue for every idea (no filing may be missed)
         run: rc=0; python3 -X utf8 scripts/ideas/updates.py --selftest --xcheck-days 7 || rc=$?; echo "updates=$rc" >> /tmp/ideas/steps.txt
 
@@ -166,7 +177,8 @@ jobs:
           bad = 0
           for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
-                    'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json']:
+                    'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json',
+                    'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json']:
               try:
                   json.load(open('docs/ideas/' + f))
               except Exception as e:
@@ -207,7 +219,8 @@ jobs:
                  docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json \
                  docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
-                 docs/ideas/updates_queue.json docs/ideas/order_book.json docs/ideas/orderbook_signals.json"
+                 docs/ideas/updates_queue.json docs/ideas/order_book.json docs/ideas/orderbook_signals.json docs/ideas/orderbook_tracker.json \
+                 docs/ideas/order_wins.json docs/ideas/orderwins_signals.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read

@@ -243,6 +243,33 @@ the company gives. Only a confirmed jump becomes an idea: `"lane": "orderbook"`,
 `"orderbook: <book now> as on <date> vs <book a year earlier> (+X%), <ratio>x trailing sales"`. A row whose quote
 turns out to be wrong is reported in the run log's `data_problems` with the correct figure.
 
+### Order wins adding up (user rule, 2026-10-11)
+
+A quarterly order-book comparison misses a company that wins many mid-sized orders: Welspun Corp, Aug-2024 -> Mar-2025,
+book Rs 8,508 cr, no single order above 0.2x of it, book Rs 20,000 cr seven months later (stock Rs 805 on 9-Dec-2024 ->
+Rs 2,645 on 9-Oct-2026). `scripts/ideas/order_wins.py` reads every order-win letter (BSE + NSE whole-market day lists,
+daily in ideas-feeds.yml), takes the value from the letter, and adds up the wins filed after each company's last stated
+order book (`order_book.json`). Flag: running total >= 0.5x that book within 183 days (`orderwins_signals.json`). The
+routine (step 4a-iii) confirms every flagged sum against the letters (`orderwins_verified.json`) before a card.
+Traps: the same order as a letter + press release or on both exchanges (deduped: same value within 3 days); L1/LoI later
+re-announced as the contract; GST-inclusive values; a JV/consortium order counted at 100%; "Rs. 1, 030 Crores" split
+numbers (closed before reading); USD converted at that day's USD/INR (docs/macro.json).
+
+### Confirmed-jumps table (user rule, 2026-10-11)
+
+The Order book tab's first table lists only order-book jumps **checked against the company's own filings**, with the
+share price since the market first saw the jump. It is not a list of ideas: no card is published from it.
+
+- **Ledger:** `docs/ideas/orderbook_jumps.json` -> `rows`. One row per company checked (misreads too, `qualifies:false`,
+  so they are not checked again). Fields: the latest and year-earlier stated order books with their documents, the
+  true YoY on comparable definitions, and the **trigger** — the exchange filing date and document of the FIRST filing
+  whose stated order book was 50%+ above the figure stated about a year earlier.
+- **Daily:** every new signals row with `yoy_pct >= 50` is checked the same day (routine step 4a-ii); the ideas-feeds
+  Action runs `scripts/ideas/ob_tracker.py`, which rebuilds `docs/ideas/orderbook_tracker.json`: close on the trigger
+  filing day (next trading day if a holiday) -> latest close, best close since, days. BSE codes use bonus/split-adjusted
+  BSE history (bhavcopy fallback); NSE-only names use NSE bhavcopies. A row that cannot be priced keeps the previous
+  numbers, marked stale.
+
 ## Revenue guidance line — every card, at the top (user rule, 2026-10-09)
 
 Every idea carries `"guidance"`: one or two sentences of **management's own** revenue / growth / margin guidance, with the
