@@ -490,12 +490,32 @@ def norm_num_text(t):
 
 
 # ------------------------------------------------------------------ backends
-GEMINI = {"dead": False, "calls": 0, "prompt_tokens": 0, "last": 0.0}
+GEMINI = {"dead": False, "calls": 0, "prompt_tokens": 0, "last": 0.0, "deadline": None, "used": None,
+          # free-tier quota is per MODEL per project (Google rate-limits doc; measured 2026-10-11: 20 requests/day
+          # for gemini-3.6-flash, mostly spent by the fundamentals job). GEMINI_MODELS = comma list tried in order;
+          # a model's PerDay 429 (or 404 = retired) moves to the next instead of ending the run.
+          "models": [m.strip() for m in (os.environ.get("GEMINI_MODELS") or os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")).split(",") if m.strip()],
+          "idx": 0}
 GEMINI_MIN_GAP = float(os.environ.get("GEMINI_MIN_GAP", "6"))
 
 
 def quota_dead():
+    if GEMINI["deadline"] and time.time() > GEMINI["deadline"]:
+        if not GEMINI["dead"]:
+            print("    time budget reached — no more reads this run (answers so far are kept)")
+        GEMINI["dead"] = True
     return GEMINI["dead"]
+
+
+def _next_model(why):
+    """Move to the next free model in GEMINI_MODELS; mark the run dead when none is left."""
+    GEMINI["idx"] += 1
+    if GEMINI["idx"] >= len(GEMINI["models"]):
+        GEMINI["dead"] = True
+        print("    gemini: %s — no free model left, no more reads this run" % why)
+        return False
+    print("    gemini: %s — switching to %s" % (why, GEMINI["models"][GEMINI["idx"]]))
+    return True
 
 
 def gemini_answer(prompt):
@@ -507,10 +527,8 @@ def gemini_answer(prompt):
     import urllib.request
     import urllib.error
     key = os.environ.get("GEMINI_API_KEY")
-    if not key or GEMINI["dead"]:
+    if not key or quota_dead():
         return None
-    model = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
-    url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s" % (model, key)
     schema = {"type": "OBJECT", "properties": {
         "company_matches": {"type": "BOOLEAN"}, "doc_title": {"type": "STRING"}, "note": {"type": "STRING"},
         "metrics": {"type": "ARRAY", "items": {"type": "OBJECT", "properties": {
@@ -525,7 +543,11 @@ def gemini_answer(prompt):
     body = json.dumps({"contents": [{"role": "user", "parts": [{"text": prompt}]}],
                        "generationConfig": {"temperature": 0, "response_mime_type": "application/json",
                                             "response_schema": schema}}).encode()
-    for attempt in range(6):
+    attempt = 0
+    while attempt < 6 and not quota_dead():
+        model = GEMINI["models"][GEMINI["idx"]]
+        url = "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s" % (model, key)
+        attempt += 1
         gap = GEMINI_MIN_GAP - (time.time() - GEMINI["last"])
         if gap > 0:
             time.sleep(gap)
@@ -537,8 +559,10 @@ def gemini_answer(prompt):
             um = resp.get("usageMetadata") or {}
             GEMINI["prompt_tokens"] += int(um.get("promptTokenCount") or 0)
             txt = resp["candidates"][0]["content"]["parts"][0]["text"]
-            print("    gemini ok: %s prompt tokens (run total %s over %d calls)" % (um.get("promptTokenCount"), GEMINI["prompt_tokens"], GEMINI["calls"]))
-            return json.loads(txt)
+            print("    gemini ok [%s]: %s prompt tokens (run total %s over %d calls)" % (model, um.get("promptTokenCount"), GEMINI["prompt_tokens"], GEMINI["calls"]))
+            out = json.loads(txt)
+            GEMINI["used"] = model
+            return out
         except urllib.error.HTTPError as ex:
             try:
                 body_txt = ex.read().decode("utf-8", "replace")
@@ -548,21 +572,27 @@ def gemini_answer(prompt):
             if ex.code == 429:
                 m = re.search(r'"retryDelay":\s*"(\d+)s"', body_txt)
                 delay = min(int(m.group(1)) + 3, 120) if m else 45
-                print("    gemini 429 attempt %d/6 — wait %ds — %s" % (attempt + 1, delay, flat[:500]))
-                if re.search(r"PerDay|per_day|daily", flat, re.I):
-                    GEMINI["dead"] = True
-                    print("    gemini DAILY quota exhausted — no more reads this run")
-                    return None
+                print("    gemini 429 [%s] attempt %d/6 — wait %ds — %s" % (model, attempt, delay, flat[:500]))
+                if re.search(r"PerDay|per_day|daily|retry in \d+h", flat, re.I):
+                    if not _next_model("%s DAILY quota exhausted" % model):
+                        return None
+                    attempt = 0
+                    continue
                 time.sleep(delay)
                 continue
             if ex.code in (500, 502, 503, 504):
-                print("    gemini HTTP %d attempt %d/6 — %s" % (ex.code, attempt + 1, flat[:200]))
-                time.sleep(20 * (attempt + 1))
+                print("    gemini HTTP %d [%s] attempt %d/6 — %s" % (ex.code, model, attempt, flat[:200]))
+                time.sleep(20 * attempt)
                 continue
-            print("    gemini HTTP %d — %s" % (ex.code, flat[:300]))
+            print("    gemini HTTP %d [%s] — %s" % (ex.code, model, flat[:300]))
+            if ex.code == 404:               # model retired / not offered — try the next one
+                if not _next_model("%s not available" % model):
+                    return None
+                attempt = 0
+                continue
             return None
         except Exception as ex:
-            print("    gemini err attempt %d/6: %s" % (attempt + 1, str(ex)[:160]))
+            print("    gemini err [%s] attempt %d/6: %s" % (model, attempt, str(ex)[:160]))
             time.sleep(15)
     return None
 
@@ -728,6 +758,7 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             if not os.environ.get("GEMINI_API_KEY"):
                 print("  %s: GEMINI_API_KEY missing" % sym); break
             print("  %s %s: model returned nothing after retries — skipped (unread, retried next run)" % (sym, doc["att"])); continue
+        doc_by = ("gemini:" + GEMINI["used"]) if (str(by).startswith("gemini:") and GEMINI["used"]) else by   # the model that actually answered
         if SAVE_ANSWERS_DIR:
             # persist the raw answer so the commit step can re-ingest it onto origin (§137 clobber fix)
             os.makedirs(SAVE_ANSWERS_DIR, exist_ok=True)
@@ -735,8 +766,8 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             with open(stem + ".answer.json", "w", encoding="utf-8") as fh:
                 json.dump(ans, fh, ensure_ascii=False)
             with open(stem + ".meta.json", "w", encoding="utf-8") as fh:
-                json.dump({"sym": sym, "doc": doc, "pages": [pp for pp, _ in sel], "path": path, "by": by}, fh)
-        w, h, r = ingest(sym, doc, ans, sel, by=by)
+                json.dump({"sym": sym, "doc": doc, "pages": [pp for pp, _ in sel], "path": path, "by": doc_by}, fh)
+        w, h, r = ingest(sym, doc, ans, sel, by=doc_by)
         print("  %s %s %s: written %d, held %d, rejected %d" % (sym, doc["kind"], doc["date"], w, h, r))
         done += 1
     return done
@@ -790,6 +821,7 @@ def main():
     ap.add_argument("--max-docs", type=int, default=500)
     ap.add_argument("--max-syms", type=int, default=200)
     ap.add_argument("--per-sym", type=int, default=4)
+    ap.add_argument("--max-minutes", type=float, default=None, help="gemini: stop starting new reads after this many minutes (leaves time to commit)")
     ap.add_argument("--recheck-days", type=int, default=2)
     ap.add_argument("--ingest", nargs=3, metavar=("SYM", "ATT8", "ANSWER_JSON"))
     ap.add_argument("--show", metavar="SYM")
@@ -870,7 +902,9 @@ def main():
         return
     if a.save_answers:
         globals()["SAVE_ANSWERS_DIR"] = a.save_answers
-    by = a.by or ("gemini:" + os.environ.get("GEMINI_MODEL", "gemini-3.6-flash") if a.backend == "gemini" else "claude-session")
+    if a.max_minutes:
+        GEMINI["deadline"] = time.time() + 60 * a.max_minutes
+    by = a.by or ("gemini:" + GEMINI["models"][0] if a.backend == "gemini" else "claude-session")
     if a.walk:
         walk(a, by); return
     run.force = a.force
