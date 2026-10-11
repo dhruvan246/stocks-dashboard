@@ -627,11 +627,11 @@
     const rows = P.map((p, i) => { const pr = P[i - 1]; const c = pr && pr.value_cr ? (p.value_cr / pr.value_cr - 1) * 100 : null;
       return `<tr><td>${dmy(p.as_on)}</td><td class="n"><b>${cr(p.value_cr)}</b></td><td class="n">${c == null ? '—' : pct(c)}</td><td class="oblink">${p.url ? `<a class="src" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.doc_title || 'filing')}">${esc(p.doc_title || 'filing')}${p.filed ? ' · ' + dmy(p.filed) : ''}</a>` : esc(p.doc_title || '')}${p.note ? `<div class="muted text-xs">${inl(p.note)}</div>` : ''}</td></tr>`; }).reverse().join('');
     return `<div class="box obh"><div class="h"><span>Order book</span><span class="muted" style="text-transform:none;letter-spacing:0;font-weight:500">${P.length} figure${P.length === 1 ? '' : 's'} stated by the company · newest first below</span></div>
-      <div class="obk">${kp('Latest · ' + dmy(last.as_on), cr(last.value_cr))}${ago ? kp('A year earlier · ' + dmy(ago.as_on), cr(ago.value_cr)) : kp('A year earlier', '—', 'no figure 10–14 months before')}${chg != null ? kp('Change in a year', pct(chg), '', chg >= 0 ? 'up' : 'down') : ''}${h.ttm_sales_cr ? kp('Book ÷ sales', (last.value_cr / h.ttm_sales_cr).toFixed(2) + '×', h.ttm_period ? 'sales ' + esc(h.ttm_period) + ' ' + cr(h.ttm_sales_cr) : '') : ''}</div>
+      <div class="obk">${kp('Latest · ' + dmy(last.as_on), cr(last.value_cr))}${ago ? kp('A year earlier · ' + dmy(ago.as_on), cr(ago.value_cr)) : kp('A year earlier', '—', 'no figure 10–14 months before')}${chg != null ? kp('Change in a year', pct(chg), '', chg >= 0 ? 'up' : 'down') : ''}${h.ttm_sales_cr ? kp('Book ÷ sales', (last.value_cr / h.ttm_sales_cr).toFixed(2) + '×', 'sales ' + cr(h.ttm_sales_cr) + ', last 12 months') : ''}</div>
       ${P.length > 1 ? svg : ''}
       ${h.summary ? `<div class="note" style="margin:6px 0">${inl(h.summary)}</div>` : ''}
       ${h.basis_note ? `<div class="note obbasis">${inl(h.basis_note)}</div>` : ''}
-      <div style="overflow-x:auto"><table class="sw obht"><thead><tr><th>As on</th><th class="n">Order book</th><th class="n">vs previous</th><th>Filing</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+      <div style="overflow-x:auto"><table class="sw obht"><thead><tr><th>As on</th><th class="n">Order book</th><th class="n">vs previous</th><th>Filing</th></tr></thead><tbody>${rows}</tbody></table></div>${h.ttm_period ? `<div class="muted text-xs" style="margin-top:6px">Sales used: ${inl(h.ttm_period)}</div>` : ''}</div>`;
   };
   const companyHtml = (it) => {
     const f = F[it.id];
