@@ -27827,4 +27827,14 @@ holder whose OWN category text on that line is company-type / domestic (NH Mar-2
 'Bodies Corporate' -> 22.2153), an official Indian register entry (GREAVESCOT Sep-2021 LIC, IRDAI 512; RCF UTI), or a person / joint
 account (STAR Satpal Khattar; GSFC 'Citibank N A jointly with Vakharia') stays out of FII (user's 6-Oct 'register wins' ruling).
 The 42 held cells are mostly Indian insurers named on the line (NATCOPHARM LIC + Tata AIA, RAILTEL HDFC Life) - correctly DII.
+**Part 58 (same day, 177 cells):** the reverse direction - FII left out rows the filing ITSELF labels foreign ('Foreign Bank', 'Foreign
+Institutional Investors' incl. misspellings 'Inst.', 'Instutional', 'Intitutional', 'Insitutional'; Non-Institutions 'Foreign
+Portfolio Investor (Category I/II)', 'FII', 'FII-DR' = FIIs' ordinary shares as ICICIBANK), the unnamed rest of the institutions 'Any
+Other' line (D1; BEML Sep-2017 +5.69 - the 28-Sep 'D1 corroboration gate' read neighbouring filings, retired with option 1) and
+named holders on that line (57B rule) - written ONLY where the stored dii equals the filing's own domestic rows (MF+AIF+VCF+Banks+Ins+
+PF+NBFC+domestic-labelled Any-Other rows), i.e. the shares were counted nowhere. Includes 11 corrections of part 57A, whose first
+reader missed a misspelt label (PHOENIXLTD x5, ASTRAL x2, SECURKLOUD) or read 'NA' / '4 Shareholders' as a label (MHRIL x2, ESSDEE).
+Held: RAMCOCEM Jun-2016 (Amrit Petroleums Pvt Ltd may be an Indian company - no company-register lookup yet); 157 cells where DII holds
+the shares (DII session); 98 cells where DII is not explained; 159 cells where we are still HIGHER than the filing's own lines. Reader
+bug found and fixed: 'FDI' inside a legal name ('Valiant Mauritius Partners FDI Limited') is not a label (NAM-INDIA kept as 57A).
 
