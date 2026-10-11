@@ -782,65 +782,6 @@
    }
   },
   {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 4000.0,
-    "20240630": 4000.0,
-    "20241231": 3000.0,
-    "20250331": 3000.0,
-    "20250630": 3000.0,
-    "20251231": 3600.0,
-    "20260630": 2239.0
-   },
-   "src": {
-    "q:20260630": [
-     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
-     20,
-     "Well-being health assessments for 2,239 workforce (doc period)",
-     "2,239"
-    ],
-    "q:20251231": [
-     "14ad8123-66e3-409b-a1ac-bb082f8ce394.pdf",
-     4,
-     "3600+ Employee Base (doc period)",
-     "3600"
-    ],
-    "q:20250630": [
-     "ae6ba797-6b97-44f1-96d9-972e10546943.pdf",
-     23,
-     "3000+ Employee Base (doc period)",
-     "3000"
-    ],
-    "q:20240331": [
-     "d682b4f1-097d-4063-a9b4-9acb52ea6dff.pdf",
-     4,
-     "4000+ Employee Base (doc period)",
-     "4000"
-    ],
-    "q:20240630": [
-     "7ccc47c8-aaa5-4dd1-bceb-03b8d8ee3412.pdf",
-     4,
-     "4000+ Employee Base (doc period)",
-     "4000"
-    ],
-    "q:20241231": [
-     "fb515904-e559-4896-8c3f-0074163d2803.pdf",
-     7,
-     "3000+ Employee Base (doc period)",
-     "3000"
-    ],
-    "q:20250331": [
-     "adf2ac6b-b9a6-490d-b18b-31c022632f47.pdf",
-     7,
-     "3000+ Employee Base (doc period)",
-     "3000"
-    ]
-   }
-  },
-  {
    "name": "Devices Sold (Standalone)",
    "unit": "Cr units",
    "kind": "flow",
@@ -1157,6 +1098,68 @@
      "36"
     ]
    }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 4000.0,
+    "20240630": 4000.0,
+    "20241231": 3000.0,
+    "20250331": 3000.0,
+    "20250630": 3000.0,
+    "20251231": 3600.0
+   },
+   "src": {
+    "q:20251231": [
+     "14ad8123-66e3-409b-a1ac-bb082f8ce394.pdf",
+     4,
+     "3600+ Employee Base (doc period)",
+     "3600"
+    ],
+    "q:20250630": [
+     "ae6ba797-6b97-44f1-96d9-972e10546943.pdf",
+     23,
+     "3000+ Employee Base (doc period)",
+     "3000"
+    ],
+    "q:20240331": [
+     "d682b4f1-097d-4063-a9b4-9acb52ea6dff.pdf",
+     4,
+     "4000+ Employee Base (doc period)",
+     "4000"
+    ],
+    "q:20240630": [
+     "7ccc47c8-aaa5-4dd1-bceb-03b8d8ee3412.pdf",
+     4,
+     "4000+ Employee Base (doc period)",
+     "4000"
+    ],
+    "q:20241231": [
+     "fb515904-e559-4896-8c3f-0074163d2803.pdf",
+     7,
+     "3000+ Employee Base (doc period)",
+     "3000"
+    ],
+    "q:20250331": [
+     "adf2ac6b-b9a6-490d-b18b-31c022632f47.pdf",
+     7,
+     "3000+ Employee Base (doc period)",
+     "3000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     2239.0,
+     null,
+     "drop_q",
+     "3d2b03da p20 (Sustainable Development slide): 'Well-being health assessments for 2,239 workforce' under EMPLOYEE WELLBEING (also 'Annual Health check-up of 28 e",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "New Products Launched (FY)",

@@ -169,28 +169,28 @@
     "20220630": 6.0,
     "20240930": 7.0,
     "20241231": 7.0,
-    "20250630": 5.0,
-    "20251231": 5.0,
-    "20260630": 5.0
+    "20250630": 7,
+    "20251231": 7,
+    "20260630": 7
    },
    "src": {
     "q:20260630": [
      "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
      3,
-     "Facilities at 5 strategic locations (doc period)",
-     "5"
+     "Modern Manufacturing Facilities at 5 strategic locations",
+     "7"
     ],
     "q:20251231": [
      "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
      3,
-     "Facilities at 5 strategic locations (doc period)",
-     "5"
+     "Modern Manufacturing Facilities at 5 strategic locations",
+     "7"
     ],
     "q:20250630": [
      "1384b3c5-2bdc-4a78-9fa9-84d3bdc6c3e5.pdf",
      3,
-     "Facilities at 5 strategic locations (doc period)",
-     "5"
+     "Modern Manufacturing Facilities at 5 strategic locations",
+     "7"
     ],
     "q:20241231": [
      "d83ba30e-410f-4d16-a022-b124a84c4bc9.pdf",
@@ -216,7 +216,33 @@
      "6 Modern Manufacturing Facilities (doc period)",
      "6"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     5.0,
+     7,
+     "set_q",
+     "1384b3c5 p3 (rendered PNG): box '7' over label 'Modern Manufacturing Facilities at 5 strategic locations'; the 5 is the count of LOCATIONS, not facilities. Stor",
+     "2026-10-11"
+    ],
+    [
+     "q:20251231",
+     5.0,
+     7,
+     "set_q",
+     "22a637d0 p3 (rendered PNG): box '7' over label 'Modern Manufacturing Facilities at 5 strategic locations'; the 5 is the count of LOCATIONS, not facilities. Stor",
+     "2026-10-11"
+    ],
+    [
+     "q:20260630",
+     5.0,
+     7,
+     "set_q",
+     "44bf51f8 p3 (rendered PNG): box '7' over label 'Modern Manufacturing Facilities at 5 strategic locations'; the 5 is the count of LOCATIONS, not facilities. Stor",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Phenol Plant Utilisation",
@@ -342,21 +368,21 @@
     "20220630": 30.0,
     "20240930": 32.0,
     "20241231": 32.0,
-    "20251231": 7.0,
-    "20260630": 7.0
+    "20251231": 34,
+    "20260630": 36
    },
    "src": {
     "q:20260630": [
      "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
      3,
-     "Products (doc period)",
-     "7"
+     "Products",
+     "36"
     ],
     "q:20251231": [
      "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
      3,
-     "Products (doc period)",
-     "7"
+     "Products",
+     "34"
     ],
     "q:20241231": [
      "d83ba30e-410f-4d16-a022-b124a84c4bc9.pdf",
@@ -382,7 +408,25 @@
      "30+ Products (doc period)",
      "30"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     7.0,
+     34,
+     "set_q",
+     "22a637d0 p3 (PNG): '34+' over 'Products'; stored 7 is the facilities box value read one box over.",
+     "2026-10-11"
+    ],
+    [
+     "q:20260630",
+     7.0,
+     36,
+     "set_q",
+     "44bf51f8 p3 (PNG): '36+' over 'Products'; stored 7 is the facilities box value read one box over.",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Customer Count",
@@ -561,23 +605,41 @@
    "kind": "level",
    "y": {},
    "q": {
-    "20251231": 34.0,
-    "20260630": 36.0
+    "20251231": 56,
+    "20260630": 56
    },
    "src": {
     "q:20260630": [
      "44bf51f8-1dc4-46da-a35b-d397a5aea85c.pdf",
      3,
-     "Applications (doc period)",
-     "36"
+     "Applications",
+     "56"
     ],
     "q:20251231": [
      "22a637d0-d675-4ac9-a67d-63946a010146.pdf",
      3,
-     "Applications (doc period)",
-     "34"
+     "Applications",
+     "56"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     34.0,
+     56,
+     "set_q",
+     "22a637d0 p3 (PNG): '56+' over 'Applications'; stored 34 is the Products box ('34+'). NB this metric duplicates 'Product Applications Count' (same box, 56 in eve",
+     "2026-10-11"
+    ],
+    [
+     "q:20260630",
+     36.0,
+     56,
+     "set_q",
+     "44bf51f8 p3 (PNG): '56+' over 'Applications'; stored 36 is the Products box ('36+'). NB duplicate of 'Product Applications Count'.",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "High-Value Product Count",

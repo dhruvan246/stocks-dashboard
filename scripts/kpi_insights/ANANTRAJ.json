@@ -668,42 +668,11 @@
    }
   },
   {
-   "name": "Affordable Housing Portfolio Total Units",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 1848.0,
-    "20260331": 4511.0
-   },
-   "q": {
-    "20230930": 4511.0
-   },
-   "src": {
-    "y:20260331": [
-     "443e6268-09d2-4ba3-a3a9-4c478098b164.pdf",
-     10,
-     "4,511 units, Affordable homes portfolio (doc period)",
-     "4,511"
-    ],
-    "y:20240331": [
-     "8bf6dcbb-f722-4625-a066-66563b63e047.pdf",
-     139,
-     "1,848 affordable homes (Anant Raj Aashray II, Tirupati) (doc period)",
-     "1,848"
-    ],
-    "q:20230930": [
-     "ffe0aa57-d320-4865-9029-e399f7b51a38.pdf",
-     8,
-     "4,511 Affordable Homes (completed and ongoing) (doc period)",
-     "4,511"
-    ]
-   }
-  },
-  {
    "name": "Affordable Housing Units Ongoing",
    "unit": "count",
    "kind": "level",
    "y": {
+    "20240331": 1848,
     "20260331": 1848.0
    },
    "q": {
@@ -721,8 +690,59 @@
      8,
      "Anant Raj Ashray II, Tirupati: 1,848 units (doc period)",
      "1,848"
+    ],
+    "y:20240331": [
+     "8bf6dcbb-f722-4625-a066-66563b63e047.pdf",
+     139,
+     "Anant Raj Aashray II, Tirupati - construction of 1,848 affordable homes (ongoing)",
+     "1,848"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     null,
+     1848,
+     "set_y",
+     "Right home for the 1,848 dropped from 'Affordable Housing Portfolio Total Units' y:20240331 (cell currently empty). 8bf6dcbb p139: 'The project involves constru",
+     "2026-10-11"
+    ]
+   ]
+  },
+  {
+   "name": "Affordable Housing Portfolio Total Units",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 4511.0
+   },
+   "q": {
+    "20230930": 4511.0
+   },
+   "src": {
+    "y:20260331": [
+     "443e6268-09d2-4ba3-a3a9-4c478098b164.pdf",
+     10,
+     "4,511 units, Affordable homes portfolio (doc period)",
+     "4,511"
+    ],
+    "q:20230930": [
+     "ffe0aa57-d320-4865-9029-e399f7b51a38.pdf",
+     8,
+     "4,511 Affordable Homes (completed and ongoing) (doc period)",
+     "4,511"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     1848.0,
+     null,
+     "drop_y",
+     "8bf6dcbb p139 (FY24 AR 'Project Updates - Affordable / low cost housing'): 'Anant Raj Aashray II, Tirupati - The project involves construction of 1,848 affordab",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Anant Raj Estate Cumulative Delivered Area",

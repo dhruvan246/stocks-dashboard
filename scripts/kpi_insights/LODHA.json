@@ -431,9 +431,9 @@
    },
    "q": {
     "20210630": 0.9,
-    "20210930": 2.1,
+    "20210930": 1.1,
     "20220630": 2.7,
-    "20220930": 1.9,
+    "20220930": 1.7,
     "20221231": 2.3,
     "20230331": 3.7,
     "20230630": 1.8,
@@ -572,16 +572,16 @@
      "2.7"
     ],
     "q:20210930": [
-     "7314f262-5e37-4bb4-ad4b-9c4f8c9211b6.pdf",
-     8,
-     "Launches",
-     "2.1"
+     "0e7ddaa9-1d49-49bb-ad06-7f578d00cb92.pdf",
+     17,
+     "2Q FY22: Launched 1.1 msf area across MMR and Pune",
+     "1.1"
     ],
     "q:20220930": [
      "7314f262-5e37-4bb4-ad4b-9c4f8c9211b6.pdf",
-     8,
-     "Launches",
-     "1.9"
+     7,
+     "Launches - 1.7 msf Launches across MMR and Pune",
+     "1.7"
     ],
     "q:20210630": [
      "8634ffff-a50c-4877-b372-16754d29e992.pdf",
@@ -589,7 +589,25 @@
      "Already launched during FY22 - Total Area (all rows launched 1QFY22)",
      "0.9"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20210930",
+     2.1,
+     1.1,
+     "set_q",
+     "7314f262 p8 (Q2 FY23 deck, slide 7 'Operational Performance'): no Launches row on the page; '2.1 msf' is the area oval inside the 2Q FY23 Pre-Sales bar (2Q FY22",
+     "2026-10-11"
+    ],
+    [
+     "q:20220930",
+     1.9,
+     1.7,
+     "set_q",
+     "NOT IN SUSPECTS - same misread as q:20210930 on the same page. 7314f262 p8: '1.9 msf' is the area oval in the 2Q FY22 Pre-Sales bar (no Launches row). 7314f262 ",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Pre-Sales",
@@ -790,34 +808,22 @@
     "20210331": 5.1,
     "20220331": 8.0,
     "20230331": 9.4,
-    "20240331": 11.1
+    "20240331": 11.1,
+    "20250331": 9.5,
+    "20260331": 11.4
    },
    "q": {
-    "20200331": 6.2,
+    "20200331": 1.2,
     "20200630": 0.6,
     "20200930": 1.1,
-    "20210331": 5.1,
+    "20210331": 1.8,
     "20210630": 0.7,
     "20210930": 1.8,
     "20220331": 3.0,
     "20230331": 2.5,
-    "20240331": 3.3,
-    "20250331": 9.5,
-    "20260331": 11.4
+    "20240331": 3.3
    },
    "src": {
-    "q:20260331": [
-     "53001054-7340-45ce-8d4b-de2746e0e7e0.pdf",
-     65,
-     "Pre-sales (Developable Area)",
-     "11.4"
-    ],
-    "q:20250331": [
-     "21dc2516-398b-47e6-93b7-c8802abce2e9.pdf",
-     81,
-     "Pre-sales (Developable Area)",
-     "9.5"
-    ],
     "q:20240331": [
      "2147c9de-c4a6-487c-a96b-f251e53a13b9.pdf",
      24,
@@ -861,16 +867,16 @@
      "8.0"
     ],
     "q:20200331": [
-     "76cbb3d2-bc69-417c-b6ee-b9243544e8b1.pdf",
-     11,
-     "Sales (Developable Area)",
-     "6.2"
+     "df9d2054-8008-4603-b5a5-707ac275f294.pdf",
+     18,
+     "Pre-Sales 4Q FY20 (1.2 msf)",
+     "1.2"
     ],
     "q:20210331": [
-     "76cbb3d2-bc69-417c-b6ee-b9243544e8b1.pdf",
-     11,
-     "Sales (Developable Area)",
-     "5.1"
+     "df9d2054-8008-4603-b5a5-707ac275f294.pdf",
+     18,
+     "Pre-Sales 4Q FY21 (1.8 msf)",
+     "1.8"
     ],
     "y:20200331": [
      "df9d2054-8008-4603-b5a5-707ac275f294.pdf",
@@ -901,6 +907,18 @@
      21,
      "Pre-Sales area 1.8 msf (2Q FY22 bar)",
      "1.8"
+    ],
+    "y:20250331": [
+     "21dc2516-398b-47e6-93b7-c8802abce2e9.pdf",
+     81,
+     "Pre-sales (Developable Area)",
+     "9.5"
+    ],
+    "y:20260331": [
+     "53001054-7340-45ce-8d4b-de2746e0e7e0.pdf",
+     65,
+     "Pre-sales (Developable Area)",
+     "11.4"
     ]
    },
    "fixed": [
@@ -927,22 +945,38 @@
      "set_q",
      "21dc2516 page 81 (FY2024-25 annual report, Directors' Report 'Operating Results' table, columns 'Year ended March 31, 2025' | 'Year ended March 31, 2024'): 'Pre",
      "2026-10-10"
-    ]
-   ],
-   "restated": [
-    [
-     "q:20210331",
-     "df9d2054-8008-4603-b5a5-707ac275f294.pdf",
-     1.8,
-     "76cbb3d2-bc69-417c-b6ee-b9243544e8b1.pdf",
-     5.1
     ],
     [
      "q:20200331",
-     "df9d2054-8008-4603-b5a5-707ac275f294.pdf",
+     6.2,
      1.2,
-     "76cbb3d2-bc69-417c-b6ee-b9243544e8b1.pdf",
-     6.2
+     "set_q",
+     "NOT IN SUSPECTS. Stored q 6.2 from 76cbb3d2 p11 (FY21 AR Directors' Report, 'Year ended March 31, 2020 ... Sales (Developable Area) 6.2') = full-year FY20; y:20",
+     "2026-10-11"
+    ],
+    [
+     "q:20210331",
+     5.1,
+     1.8,
+     "set_q",
+     "NOT IN SUSPECTS. Stored q 5.1 from 76cbb3d2 p11 ('Year ended March 31, 2021 ... Sales (Developable Area) 5.1') = full-year FY21; y:20210331 already 5.1. df9d205",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     9.5,
+     null,
+     "moved to y:20250331",
+     "NOT IN SUSPECTS. 21dc2516 p81 (FY25 AR Directors' Report, columns 'Year ended March 31, 2025' | 'Year ended March 31, 2024'): 'Pre-sales (Developable Area) Mn S",
+     "2026-10-11"
+    ],
+    [
+     "q:20260331",
+     11.4,
+     null,
+     "moved to y:20260331",
+     "NOT IN SUSPECTS. 53001054 p65 (FY26 AR Board's Report, columns 'Year ended March 31, 2026' | 'Year ended March 31, 2025'): 'Pre-sales (Developable Area) Mn Sq f",
+     "2026-10-11"
     ]
    ]
   },

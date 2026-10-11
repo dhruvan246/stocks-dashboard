@@ -659,7 +659,7 @@
    "kind": "level",
    "y": {
     "20240331": 28000.0,
-    "20250331": 7200.0,
+    "20250331": 30000,
     "20260331": 37000.0
    },
    "q": {},
@@ -672,9 +672,9 @@
     ],
     "y:20250331": [
      "0f308951-ede2-47e2-a259-2695355d2ef4.pdf",
-     44,
-     "NGeT per-minute ticket booking capacity increased to 7200 tickets (doc period)",
-     "7200"
+     45,
+     "The NGeT System has now capacity to book over 30,000 tickets per minute",
+     "30,000"
     ],
     "y:20240331": [
      "fdc59c22-152c-4d71-9bfb-65166a8dbe5b.pdf",
@@ -682,7 +682,17 @@
      "book more than 28,000 tickets per minute (doc period)",
      "28,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     7200.0,
+     30000,
+     "set_y",
+     "0f308951 p44: 'NGeT ... increased progressively in per-minute ticket booking capacity from 2000 to 7200 tickets' = boilerplate history (FY24 AR fdc59c22 p47 pri",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Aadhaar-authenticated Tatkal Booking Share",
@@ -1547,5 +1557,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-10"
+ "updated": "2026-10-11"
 }

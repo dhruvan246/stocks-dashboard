@@ -170,7 +170,7 @@
    "q": {
     "20201231": 53080.0,
     "20221231": 62102.0,
-    "20230930": 68000.0,
+    "20230930": 68498,
     "20231231": 72500.0,
     "20240630": 75667.0,
     "20240930": 80952.0,
@@ -248,10 +248,10 @@
      "72,500"
     ],
     "q:20230930": [
-     "27d6a0cc-a0f8-4065-9adb-8a0628c40426.pdf",
-     25,
-     "Total area under cultivation is ~68,000 ha (doc period)",
-     "68,000"
+     "e1041f91-1b3b-4e7f-99f1-bfb150640614.pdf",
+     12,
+     "Total area under plantation is now 68,498 ha",
+     "68,498"
     ],
     "q:20201231": [
      "33bc30d4-1867-4203-969d-668aec12a9ae.pdf",
@@ -265,7 +265,17 @@
      "Area Utilized (doc period)",
      "62,102"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     68000.0,
+     68498,
+     "set_q",
+     "27d6a0cc p25 (Dec-2023 deck): 'Total area under cultivation is ~ 68,000 ha' (rounded, undated). e1041f91 p12 (Q2FY24 deck): 'More than 4,500 Ha of plantations d",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Export Revenue",
@@ -434,7 +444,6 @@
    "q": {
     "20201231": 37053.0,
     "20221231": 44026.0,
-    "20230930": 150000.0,
     "20250630": 66000.0,
     "20250930": 77160.0,
     "20251231": 78429.0
@@ -476,12 +485,6 @@
      "benefitting over 50,000 farmers (doc period)",
      "50,000"
     ],
-    "q:20230930": [
-     "27d6a0cc-a0f8-4065-9adb-8a0628c40426.pdf",
-     30,
-     "Relationship with 150,000 farmers across 12 states (doc period)",
-     "150,000"
-    ],
     "q:20201231": [
      "b2152b7c-131e-45e5-8bd8-e09e7624a3e9.pdf",
      12,
@@ -494,7 +497,17 @@
      "44,026 farmer beneficiaries across 11 states (doc period)",
      "44,026"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     150000.0,
+     null,
+     "drop_q",
+     "27d6a0cc p30 (PNG): ESG 'Social' bullet 'Relationship with 150,000 farmers across 12 states and 150 Farmer Producer Organizations (FPO)' - company-wide farmer r",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Oil Palm Nurseries",
@@ -1228,7 +1241,7 @@
     "20240331": 190.0
    },
    "q": {
-    "20230930": 150.0,
+    "20230930": 75,
     "20231231": 110.0
    },
    "src": {
@@ -1245,12 +1258,22 @@
      "110"
     ],
     "q:20230930": [
-     "27d6a0cc-a0f8-4065-9adb-8a0628c40426.pdf",
-     30,
-     "150 Farmer Producer Organizations (FPO) (doc period)",
-     "150"
+     "e1041f91-1b3b-4e7f-99f1-bfb150640614.pdf",
+     13,
+     "Farmer Producer Organizations (FPOs) have been incorporated till date",
+     "75"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     150.0,
+     75,
+     "set_q",
+     "27d6a0cc p30: '150 Farmer Producer Organizations (FPO)' (relationship, Dec-2023, not incorporated count). e1041f91 p13 (Q2FY24 deck): '75 Farmer Producer Organi",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Number of Trading Houses (Purchase Concentration Disclosure)",

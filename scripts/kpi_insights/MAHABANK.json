@@ -96,6 +96,238 @@
  },
  "metrics": [
   {
+   "name": "NIM",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20220331": 3.15,
+    "20230331": 3.56,
+    "20240331": 3.92,
+    "20250331": 4.0,
+    "20260331": 3.9
+   },
+   "q": {
+    "20220331": 3.17,
+    "20221231": 3.6,
+    "20230331": 3.78,
+    "20230630": 3.86,
+    "20230930": 3.89,
+    "20231231": 3.95,
+    "20240331": 3.97,
+    "20240630": 3.97,
+    "20240930": 3.98,
+    "20241231": 3.98,
+    "20250331": 4.01,
+    "20250630": 3.95,
+    "20250930": 3.85,
+    "20251231": 3.86,
+    "20260331": 3.91,
+    "20260630": 3.79
+   },
+   "src": {
+    "q:20260331": [
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     9,
+     "(Quarterly) NIM %, Mar`26",
+     "3.91"
+    ],
+    "q:20260630": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "NIM % (Annualized)",
+     "3.79"
+    ],
+    "y:20260331": [
+     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
+     8,
+     "Net interest Margin (NIM) (doc period)",
+     "3.90"
+    ],
+    "q:20231231": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.95"
+    ],
+    "q:20240630": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.97"
+    ],
+    "q:20240930": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.98"
+    ],
+    "q:20241231": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.98"
+    ],
+    "q:20250630": [
+     "c96b2dfa-9f72-44c7-93d5-76d7b9f51c88.pdf",
+     9,
+     "NIM %",
+     "3.95"
+    ],
+    "q:20250930": [
+     "c96b2dfa-9f72-44c7-93d5-76d7b9f51c88.pdf",
+     9,
+     "NIM %",
+     "3.85"
+    ],
+    "q:20251231": [
+     "c1d9b977-9e02-4efc-aa59-bdaf8f37aaf9.pdf",
+     9,
+     "NIM %",
+     "3.86"
+    ],
+    "q:20230930": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.89"
+    ],
+    "q:20221231": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.60"
+    ],
+    "q:20230630": [
+     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
+     10,
+     "NIM %",
+     "3.86"
+    ],
+    "y:20220331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "NIM %",
+     "3.15"
+    ],
+    "q:20220331": [
+     "89e6ccfa-f5b7-4d2c-87b2-0b124e530737.pdf",
+     11,
+     "NIM % (Last 8 Quarters) | Q4 FY`22",
+     "3.17"
+    ],
+    "y:20230331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "NIM %",
+     "3.56"
+    ],
+    "q:20230331": [
+     "c8e0be3d-90c3-4d99-8651-0fbda83d5619.pdf",
+     11,
+     "NIM % (Quarterly) | Mar`23",
+     "3.78"
+    ],
+    "y:20240331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "NIM %",
+     "3.92"
+    ],
+    "q:20240331": [
+     "25f521c2-f168-4735-af5f-7be875c66f23.pdf",
+     12,
+     "NIM % (Quarterly) | Mar`24",
+     "3.97"
+    ],
+    "y:20250331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "NIM %",
+     "4.00"
+    ],
+    "q:20250331": [
+     "ca77a862-7665-4c5e-b8d9-c31cd3f2f83a.pdf",
+     11,
+     "NIM % (Quarterly) | Mar`25",
+     "4.01"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     3.9,
+     3.91,
+     "set_q",
+     "page 17 (3ffac817): 'NIM %' chart, point 'Mar`26' = 3.90 on a page whose companion charts are full-year (NII Mar`26 136.64 Bn vs 'Jun`26 (3M)' 37.70). Q4 FY26 d",
+     "2026-10-10"
+    ],
+    [
+     "q:20220331",
+     3.15,
+     null,
+     "moved to y:20220331",
+     "src 3ffac817 p17 NIM % chart Mar`22..Mar`26 = yearly (NII 60.44 bn = FY22); ecc7972d p9 '(Year Ended) NIM %' Mar`22 3.15; own Q4 FY22 filing 89e6ccfa p11 'NIM %",
+     "2026-10-11"
+    ],
+    [
+     "q:20220331",
+     null,
+     3.17,
+     "set_q",
+     "src 3ffac817 p17 NIM % chart Mar`22..Mar`26 = yearly (NII 60.44 bn = FY22); ecc7972d p9 '(Year Ended) NIM %' Mar`22 3.15; own Q4 FY22 filing 89e6ccfa p11 'NIM %",
+     "2026-10-11"
+    ],
+    [
+     "q:20230331",
+     3.56,
+     null,
+     "moved to y:20230331",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`23 3.56; own Q4 FY23 deck c8e0be3d p11 'NIM % (Quarterly)' Mar`23 3.78 vs '(Yearly)' Mar`23 3.56 (25f521c2 p12 and c",
+     "2026-10-11"
+    ],
+    [
+     "q:20230331",
+     null,
+     3.78,
+     "set_q",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`23 3.56; own Q4 FY23 deck c8e0be3d p11 'NIM % (Quarterly)' Mar`23 3.78 vs '(Yearly)' Mar`23 3.56 (25f521c2 p12 and c",
+     "2026-10-11"
+    ],
+    [
+     "q:20240331",
+     3.92,
+     null,
+     "moved to y:20240331",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`24 3.92; own Q4 FY24 deck 25f521c2 p12 'NIM % (Quarterly)' Mar`24 3.97 vs '(Yearly)' Mar`24 3.92 (ca77a862 p11, ecc7",
+     "2026-10-11"
+    ],
+    [
+     "q:20240331",
+     null,
+     3.97,
+     "set_q",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`24 3.92; own Q4 FY24 deck 25f521c2 p12 'NIM % (Quarterly)' Mar`24 3.97 vs '(Yearly)' Mar`24 3.92 (ca77a862 p11, ecc7",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     4.0,
+     null,
+     "moved to y:20250331",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`25 4.00; own Q4 FY25 deck ca77a862 p11 'NIM % (Quarterly)' Mar`25 4.01 vs '(Yearly)' Mar`25 4.00 (ecc7972d p9 and 2b",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     null,
+     4.01,
+     "set_q",
+     "3ffac817 p17 / ecc7972d p9 (Year Ended) Mar`25 4.00; own Q4 FY25 deck ca77a862 p11 'NIM % (Quarterly)' Mar`25 4.01 vs '(Yearly)' Mar`25 4.00 (ecc7972d p9 and 2b",
+     "2026-10-11"
+    ]
+   ]
+  },
+  {
    "name": "Gross NPA",
    "unit": "%",
    "kind": "level",
@@ -1359,146 +1591,6 @@
    }
   },
   {
-   "name": "NIM",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 3.9
-   },
-   "q": {
-    "20220331": 3.15,
-    "20221231": 3.6,
-    "20230331": 3.56,
-    "20230630": 3.86,
-    "20230930": 3.89,
-    "20231231": 3.95,
-    "20240331": 3.92,
-    "20240630": 3.97,
-    "20240930": 3.98,
-    "20241231": 3.98,
-    "20250331": 4.0,
-    "20250630": 3.95,
-    "20250930": 3.85,
-    "20251231": 3.86,
-    "20260331": 3.91,
-    "20260630": 3.79
-   },
-   "src": {
-    "q:20220331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM %",
-     "3.15"
-    ],
-    "q:20230331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM %",
-     "3.56"
-    ],
-    "q:20240331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM %",
-     "3.92"
-    ],
-    "q:20250331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM %",
-     "4.00"
-    ],
-    "q:20260331": [
-     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
-     9,
-     "(Quarterly) NIM %, Mar`26",
-     "3.91"
-    ],
-    "q:20260630": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "NIM % (Annualized)",
-     "3.79"
-    ],
-    "y:20260331": [
-     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
-     8,
-     "Net interest Margin (NIM) (doc period)",
-     "3.90"
-    ],
-    "q:20231231": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.95"
-    ],
-    "q:20240630": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.97"
-    ],
-    "q:20240930": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.98"
-    ],
-    "q:20241231": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.98"
-    ],
-    "q:20250630": [
-     "c96b2dfa-9f72-44c7-93d5-76d7b9f51c88.pdf",
-     9,
-     "NIM %",
-     "3.95"
-    ],
-    "q:20250930": [
-     "c96b2dfa-9f72-44c7-93d5-76d7b9f51c88.pdf",
-     9,
-     "NIM %",
-     "3.85"
-    ],
-    "q:20251231": [
-     "c1d9b977-9e02-4efc-aa59-bdaf8f37aaf9.pdf",
-     9,
-     "NIM %",
-     "3.86"
-    ],
-    "q:20230930": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.89"
-    ],
-    "q:20221231": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.60"
-    ],
-    "q:20230630": [
-     "e881565e-7401-4149-92e0-2d3fb5eb5330.pdf",
-     10,
-     "NIM %",
-     "3.86"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260331",
-     3.9,
-     3.91,
-     "set_q",
-     "page 17 (3ffac817): 'NIM %' chart, point 'Mar`26' = 3.90 on a page whose companion charts are full-year (NII Mar`26 136.64 Bn vs 'Jun`26 (3M)' 37.70). Q4 FY26 d",
-     "2026-10-10"
-    ]
-   ]
-  },
-  {
    "name": "Retail Sector Advances",
    "unit": "₹ Cr",
    "kind": "level",
@@ -2258,6 +2350,173 @@
    }
   },
   {
+   "name": "Return on Assets",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20220331": 0.55,
+    "20230331": 1.1,
+    "20240331": 1.5,
+    "20250331": 1.75,
+    "20260331": 1.86
+   },
+   "q": {
+    "20220331": 0.65,
+    "20230331": 1.32,
+    "20240331": 1.73,
+    "20250331": 1.78,
+    "20250630": 1.8,
+    "20250930": 1.82,
+    "20251231": 1.86,
+    "20260331": 1.97,
+    "20260630": 1.9
+   },
+   "src": {
+    "q:20260630": [
+     "2ba64711-ab74-4c9f-83fb-c7c49582e932.pdf",
+     5,
+     "Return on Assets",
+     "1.90"
+    ],
+    "q:20250630": [
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     28,
+     "Return on Assets (%)",
+     "1.80"
+    ],
+    "q:20220331": [
+     "89e6ccfa-f5b7-4d2c-87b2-0b124e530737.pdf",
+     3,
+     "Return on Assets (ROA) improved to 0.65 % for Q4FY22",
+     "0.65"
+    ],
+    "q:20230331": [
+     "c8e0be3d-90c3-4d99-8651-0fbda83d5619.pdf",
+     21,
+     "Quarterly, Return on Assets (%), Mar`23",
+     "1.32"
+    ],
+    "q:20240331": [
+     "25f521c2-f168-4735-af5f-7be875c66f23.pdf",
+     20,
+     "Quarterly, Return on Assets (%), Mar`24",
+     "1.73"
+    ],
+    "q:20250930": [
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     28,
+     "Return on Assets (%)",
+     "1.82"
+    ],
+    "q:20251231": [
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     28,
+     "Return on Assets (%)",
+     "1.86"
+    ],
+    "y:20220331": [
+     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
+     31,
+     "ROA %",
+     "0.55"
+    ],
+    "y:20230331": [
+     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
+     31,
+     "ROA %",
+     "1.1"
+    ],
+    "y:20240331": [
+     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
+     31,
+     "ROA %",
+     "1.5"
+    ],
+    "y:20250331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "Return on Assets (%)",
+     "1.75"
+    ],
+    "q:20250331": [
+     "ca77a862-7665-4c5e-b8d9-c31cd3f2f83a.pdf",
+     21,
+     "Return on Assets (%) (Quarterly) | Mar`25",
+     "1.78"
+    ],
+    "y:20260331": [
+     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
+     17,
+     "Return on Assets (%)",
+     "1.86"
+    ],
+    "q:20260331": [
+     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
+     18,
+     "Return on Assets (%) (Quarterly) | Mar`26",
+     "1.97"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20220331",
+     0.55,
+     0.65,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`22' = 0.55; Q4 FY26 deck ecc7972d page 18 prints the same series under '(Year Ended) Return",
+     "2026-10-10"
+    ],
+    [
+     "q:20230331",
+     1.1,
+     1.32,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`23' = 1.10; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`23 1.1",
+     "2026-10-10"
+    ],
+    [
+     "q:20240331",
+     1.5,
+     1.73,
+     "set_q",
+     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`24' = 1.50; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`24 1.5",
+     "2026-10-10"
+    ],
+    [
+     "q:20250331",
+     1.75,
+     null,
+     "moved to y:20250331",
+     "src 3ffac817 p17 ROA chart Mar`25 1.75 = year (ecc7972d p18 '(Year Ended)' Mar`25 1.75; ca77a862 p21 '(Yearly)' Mar`25 1.75). Own Q4 FY25 deck ca77a862 p21 '(Qu",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     null,
+     1.78,
+     "set_q",
+     "src 3ffac817 p17 ROA chart Mar`25 1.75 = year (ecc7972d p18 '(Year Ended)' Mar`25 1.75; ca77a862 p21 '(Yearly)' Mar`25 1.75). Own Q4 FY25 deck ca77a862 p21 '(Qu",
+     "2026-10-11"
+    ],
+    [
+     "q:20260331",
+     1.86,
+     null,
+     "moved to y:20260331",
+     "src 3ffac817 p17 ROA Mar`26 1.86 = year (ecc7972d p18 '(Year Ended)' Mar`26 1.86). Own Q4 FY26 deck ecc7972d p18 '(Quarterly)' Return on Assets Mar`26 1.97 (2ba",
+     "2026-10-11"
+    ],
+    [
+     "q:20260331",
+     null,
+     1.97,
+     "set_q",
+     "src 3ffac817 p17 ROA Mar`26 1.86 = year (ecc7972d p18 '(Year Ended)' Mar`26 1.86). Own Q4 FY26 deck ecc7972d p18 '(Quarterly)' Return on Assets Mar`26 1.97 (2ba",
+     "2026-10-11"
+    ]
+   ]
+  },
+  {
    "name": "CASA",
    "unit": "₹ Cr",
    "kind": "level",
@@ -2446,127 +2705,6 @@
      "2,17,504"
     ]
    }
-  },
-  {
-   "name": "Return on Assets",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20220331": 0.55,
-    "20230331": 1.1,
-    "20240331": 1.5
-   },
-   "q": {
-    "20220331": 0.65,
-    "20230331": 1.32,
-    "20240331": 1.73,
-    "20250331": 1.75,
-    "20250630": 1.8,
-    "20250930": 1.82,
-    "20251231": 1.86,
-    "20260331": 1.86,
-    "20260630": 1.9
-   },
-   "src": {
-    "q:20260630": [
-     "2ba64711-ab74-4c9f-83fb-c7c49582e932.pdf",
-     5,
-     "Return on Assets",
-     "1.90"
-    ],
-    "q:20250630": [
-     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
-     28,
-     "Return on Assets (%)",
-     "1.80"
-    ],
-    "q:20220331": [
-     "89e6ccfa-f5b7-4d2c-87b2-0b124e530737.pdf",
-     3,
-     "Return on Assets (ROA) improved to 0.65 % for Q4FY22",
-     "0.65"
-    ],
-    "q:20230331": [
-     "c8e0be3d-90c3-4d99-8651-0fbda83d5619.pdf",
-     21,
-     "Quarterly, Return on Assets (%), Mar`23",
-     "1.32"
-    ],
-    "q:20240331": [
-     "25f521c2-f168-4735-af5f-7be875c66f23.pdf",
-     20,
-     "Quarterly, Return on Assets (%), Mar`24",
-     "1.73"
-    ],
-    "q:20250331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "Return on Assets (%)",
-     "1.75"
-    ],
-    "q:20260331": [
-     "3ffac817-5c76-4fee-86d6-c288e7b875c6.pdf",
-     17,
-     "Return on Assets (%)",
-     "1.86"
-    ],
-    "q:20250930": [
-     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
-     28,
-     "Return on Assets (%)",
-     "1.82"
-    ],
-    "q:20251231": [
-     "ecc7972d-6824-4610-a34c-8d88ef14c90f.pdf",
-     28,
-     "Return on Assets (%)",
-     "1.86"
-    ],
-    "y:20220331": [
-     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
-     31,
-     "ROA %",
-     "0.55"
-    ],
-    "y:20230331": [
-     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
-     31,
-     "ROA %",
-     "1.1"
-    ],
-    "y:20240331": [
-     "64e29deb-0cbb-40d4-8b6f-8faec063462e.pdf",
-     31,
-     "ROA %",
-     "1.5"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20220331",
-     0.55,
-     0.65,
-     "set_q",
-     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`22' = 0.55; Q4 FY26 deck ecc7972d page 18 prints the same series under '(Year Ended) Return",
-     "2026-10-10"
-    ],
-    [
-     "q:20230331",
-     1.1,
-     1.32,
-     "set_q",
-     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`23' = 1.10; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`23 1.1",
-     "2026-10-10"
-    ],
-    [
-     "q:20240331",
-     1.5,
-     1.73,
-     "set_q",
-     "page 17 (3ffac817): 'ROE / ROA %' chart, Return on Assets point 'Mar`24' = 1.50; ecc7972d page 18 prints it under '(Year Ended) Return on Assets (%)' Mar`24 1.5",
-     "2026-10-10"
-    ]
-   ]
   },
   {
    "name": "Term Deposits",
@@ -4242,5 +4380,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-10"
+ "updated": "2026-10-11"
 }

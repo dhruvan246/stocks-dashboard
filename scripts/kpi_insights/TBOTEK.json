@@ -536,7 +536,7 @@
     "20240331": 4.9,
     "20240630": 5.3,
     "20240930": 5.7,
-    "20241231": 5.4,
+    "20241231": 5.9,
     "20250331": 5.7,
     "20251231": 6.0,
     "20260331": 6.0
@@ -567,10 +567,10 @@
      "5.64"
     ],
     "q:20241231": [
-     "2d1c19f6-3d6d-4523-8c29-434f8f272619.pdf",
-     7,
-     "Net Revenue (Take Rate) - TBO (Jan-Dec'24)",
-     "5.4"
+     "6b5a1de9-b8b6-41b5-80e1-222a74d96f0a.pdf",
+     23,
+     "Take Rate (%) – Product - Total (Quarter ended Dec 31, 2024)",
+     "5.9"
     ],
     "y:20240331": [
      "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
@@ -620,7 +620,17 @@
      "Take Rate (%) – Product - Total",
      "5.8"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     5.4,
+     5.9,
+     "set_q",
+     "2d1c19f6 p7 'Classic Vacations – P&L Structure' table, columns 'Classic Vacations (Jan-Dec'24)' and 'TBO (Jan-Dec'24)': TBO column, row 'Net Revenue (Take Rate)",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "GTV - India",
@@ -628,56 +638,56 @@
    "kind": "flow",
    "y": {
     "20230331": 13407.95,
-    "20240331": 11692.0,
-    "20250331": 16681.0
+    "20240331": 14843,
+    "20250331": 14151
    },
    "q": {
     "20230630": 4238.0,
     "20230930": 3679.6,
     "20231231": 3101.0,
-    "20240331": 3686.0,
-    "20240630": 3984.0,
+    "20240331": 3825,
+    "20240630": 3956,
     "20240930": 3556.7,
     "20241231": 3247.2,
-    "20250331": 4396.0,
-    "20250630": 4527.0
+    "20250331": 3391,
+    "20250630": 3592
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "GTV (India)",
-     "3,984"
+     "GTV (INR Cr) India (Q1 FY'25*, dark-blue segment)",
+     "3,956"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "GTV (India)",
-     "4,527"
+     "GTV (INR Cr) India (Q1 FY'26, dark-blue segment)",
+     "3,592"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "GTV (India)",
-     "11,692"
+     "GTV (INR Cr) India (FY'24*, dark-blue segment)",
+     "14,843"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "GTV (India)",
-     "16,681"
+     "GTV (INR Cr) India (FY'25, dark-blue segment)",
+     "14,151"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "GTV (India)",
-     "3,686"
+     "GTV (INR Cr) India (Q4 FY'24, dark-blue segment)",
+     "3,825"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "GTV (India)",
-     "4,396"
+     "GTV (INR Cr) India (Q4 FY'25, dark-blue segment)",
+     "3,391"
     ],
     "y:20230331": [
      "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
@@ -715,7 +725,57 @@
      "GTV (₹ Cr.) - Source Market - India",
      "3,101.0"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     3686.0,
+     3825,
+     "set_q",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'24 column, dark-blue (legend India) segment = 3,825; stored 3,686 is the GTV panel International segment (same column) on",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     11692.0,
+     14843,
+     "set_y",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'24 column, dark-blue (legend India) segment = 3,825; stored 3,686 is the GTV panel International segment (same column) on",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     4396.0,
+     3391,
+     "set_q",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'25 column, dark-blue (legend India) segment = 3,391; stored 4,396 is the GTV panel International segment (same column) on",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     16681.0,
+     14151,
+     "set_y",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'25 column, dark-blue (legend India) segment = 3,391; stored 4,396 is the GTV panel International segment (same column) on",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     3984.0,
+     3956,
+     "set_q",
+     "17aa74a1 p19 [q slot]: GTV panel, Q1 FY'25* column, dark-blue (legend India) segment = 3,956; stored 3,984 is the GTV panel International segment (same column) ",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     4527.0,
+     3592,
+     "set_q",
+     "17aa74a1 p19 [q slot]: GTV panel, Q1 FY'26 column, dark-blue (legend India) segment = 3,592; stored 4,527 is the GTV panel International segment (same column) o",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "GTV - International",
@@ -723,56 +783,56 @@
    "kind": "flow",
    "y": {
     "20230331": 8915.61,
-    "20240331": 14843.0,
-    "20250331": 14151.0
+    "20240331": 11692,
+    "20250331": 16681
    },
    "q": {
     "20230630": 2709.8,
     "20230930": 2719.5,
     "20231231": 2576.8,
-    "20240331": 3825.0,
-    "20240630": 3956.0,
+    "20240331": 3686,
+    "20240630": 3984,
     "20240930": 4380.7,
     "20241231": 3919.0,
-    "20250331": 3391.0,
-    "20250630": 3592.0
+    "20250331": 4396,
+    "20250630": 4527
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "GTV (International)",
-     "3,956"
+     "GTV (INR Cr) International (Q1 FY'25*, orange segment)",
+     "3,984"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "GTV (International)",
-     "3,592"
+     "GTV (INR Cr) International (Q1 FY'26, orange segment)",
+     "4,527"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "GTV (International)",
-     "14,843"
+     "GTV (INR Cr) International (FY'24*, orange segment)",
+     "11,692"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "GTV (International)",
-     "14,151"
+     "GTV (INR Cr) International (FY'25, orange segment)",
+     "16,681"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "GTV (International)",
-     "3,825"
+     "GTV (INR Cr) International (Q4 FY'24, orange segment)",
+     "3,686"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "GTV (International)",
-     "3,391"
+     "GTV (INR Cr) International (Q4 FY'25, orange segment)",
+     "4,396"
     ],
     "y:20230331": [
      "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
@@ -810,7 +870,57 @@
      "GTV (₹ Cr.) - Source Market - International",
      "2,576.8"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     3825.0,
+     3686,
+     "set_q",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'24 column, orange (legend International) segment = 3,686; stored 3,825 is the GTV panel India segment (same column) on th",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     14843.0,
+     11692,
+     "set_y",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'24 column, orange (legend International) segment = 3,686; stored 3,825 is the GTV panel India segment (same column) on th",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     3391.0,
+     4396,
+     "set_q",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'25 column, orange (legend International) segment = 4,396; stored 3,391 is the GTV panel India segment (same column) on th",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     14151.0,
+     16681,
+     "set_y",
+     "9a5ab777 p8 [q slot]: GTV panel, Q4 FY'25 column, orange (legend International) segment = 4,396; stored 3,391 is the GTV panel India segment (same column) on th",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     3956.0,
+     3984,
+     "set_q",
+     "17aa74a1 p19 [q slot]: GTV panel, Q1 FY'25* column, orange (legend International) segment = 3,984; stored 3,956 is the GTV panel India segment (same column) on ",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     3592.0,
+     4527,
+     "set_q",
+     "17aa74a1 p19 [q slot]: GTV panel, Q1 FY'26 column, orange (legend International) segment = 4,527; stored 3,592 is the GTV panel India segment (same column) on t",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Monthly Transacting Buyers - India",
@@ -1507,53 +1617,53 @@
    "unit": "count",
    "kind": "flow",
    "y": {
-    "20240331": 28767.0,
-    "20250331": 34788.0
+    "20240331": 29797,
+    "20250331": 31079
    },
    "q": {
     "20231231": 22815.0,
-    "20240331": 19085.0,
-    "20240630": 12318.0,
+    "20240331": 22795,
+    "20240630": 23271,
     "20241231": 23493.0,
-    "20250331": 22569.0,
-    "20250630": 15473.0
+    "20250331": 23283,
+    "20250630": 23557
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Agent (India)",
-     "12,318"
+     "Active Agents India (Q1 FY'25*, dark-blue segment)",
+     "23,271"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Agent (India)",
-     "15,473"
+     "Active Agents India (Q1 FY'26, dark-blue segment)",
+     "23,557"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Agent (India)",
-     "28,767"
+     "Active Agents India (FY'24*, dark-blue segment)",
+     "29,797"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Agent (India)",
-     "34,788"
+     "Active Agents India (FY'25, dark-blue segment)",
+     "31,079"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Agent (India)",
-     "19,085"
+     "Active Agents India (Q4 FY'24, dark-blue segment)",
+     "22,795"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Agent (India)",
-     "22,569"
+     "Active Agents India (Q4 FY'25, dark-blue segment)",
+     "23,283"
     ],
     "q:20231231": [
      "6b5a1de9-b8b6-41b5-80e1-222a74d96f0a.pdf",
@@ -1567,60 +1677,110 @@
      "Active Agent** - India (blue segment)",
      "23,493"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     19085.0,
+     22795,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'24 column, dark-blue (legend India) segment = 22,795; stored 19,085 is the Active Bookers** panel Inter",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     28767.0,
+     29797,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'24 column, dark-blue (legend India) segment = 22,795; stored 19,085 is the Active Bookers** panel Inter",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     22569.0,
+     23283,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'25 column, dark-blue (legend India) segment = 23,283; stored 22,569 is the Active Bookers** panel Inter",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     34788.0,
+     31079,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'25 column, dark-blue (legend India) segment = 23,283; stored 22,569 is the Active Bookers** panel Inter",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     12318.0,
+     23271,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Agent** panel (left), Q1 FY'25* column, dark-blue (legend India) segment = 23,271; stored 12,318 is the Active Agent** panel Inter",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     15473.0,
+     23557,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Agent** panel (left), Q1 FY'26 column, dark-blue (legend India) segment = 23,557; stored 15,473 is the Active Agent** panel Intern",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Active Agents - International",
    "unit": "count",
    "kind": "flow",
    "y": {
-    "20240331": 31419.0,
-    "20250331": 32749.0
+    "20240331": 15232,
+    "20250331": 17907
    },
    "q": {
     "20231231": 10887.0,
-    "20240331": 23407.0,
-    "20240630": 23271.0,
+    "20240331": 11132,
+    "20240630": 12318,
     "20241231": 13465.0,
-    "20250331": 24220.0,
-    "20250630": 23557.0
+    "20250331": 13166,
+    "20250630": 15473
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Agent (International)",
-     "23,271"
+     "Active Agents International (Q1 FY'25*, orange segment)",
+     "12,318"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Agent (International)",
-     "23,557"
+     "Active Agents International (Q1 FY'26, orange segment)",
+     "15,473"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Agent (International)",
-     "31,419"
+     "Active Agents International (FY'24*, orange segment)",
+     "15,232"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Agent (International)",
-     "32,749"
+     "Active Agents International (FY'25, orange segment)",
+     "17,907"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Agent (International)",
-     "23,407"
+     "Active Agents International (Q4 FY'24, orange segment)",
+     "11,132"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Agent (International)",
-     "24,220"
+     "Active Agents International (Q4 FY'25, orange segment)",
+     "13,166"
     ],
     "q:20231231": [
      "6b5a1de9-b8b6-41b5-80e1-222a74d96f0a.pdf",
@@ -1634,60 +1794,110 @@
      "Active Agent** - International (orange segment)",
      "13,465"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     23407.0,
+     11132,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'24 column, orange (legend International) segment = 11,132; stored 23,407 is the Active Bookers** panel ",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     31419.0,
+     15232,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'24 column, orange (legend International) segment = 11,132; stored 23,407 is the Active Bookers** panel ",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     24220.0,
+     13166,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'25 column, orange (legend International) segment = 13,166; stored 24,220 is the Active Bookers** panel ",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     32749.0,
+     17907,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Agent** panel (left), Q4 FY'25 column, orange (legend International) segment = 13,166; stored 24,220 is the Active Bookers** panel ",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     23271.0,
+     12318,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Agent** panel (left), Q1 FY'25* column, orange (legend International) segment = 12,318; stored 23,271 is the Active Agent** panel ",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     23557.0,
+     15473,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Agent** panel (left), Q1 FY'26 column, orange (legend International) segment = 15,473; stored 23,557 is the Active Agent** panel I",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Active Bookers - India",
    "unit": "count",
    "kind": "flow",
    "y": {
-    "20240331": 15232.0,
-    "20250331": 17907.0
+    "20240331": 31419,
+    "20250331": 32749
    },
    "q": {
     "20231231": 23555.0,
-    "20240331": 11132.0,
-    "20240630": 21032.0,
+    "20240331": 23407,
+    "20240630": 23947,
     "20241231": 24321.0,
-    "20250331": 13166.0,
-    "20250630": 25809.0
+    "20250331": 24220,
+    "20250630": 24560
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Bookers (India)",
-     "21,032"
+     "Active Bookers India (Q1 FY'25*, dark-blue segment)",
+     "23,947"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Bookers (India)",
-     "25,809"
+     "Active Bookers India (Q1 FY'26, dark-blue segment)",
+     "24,560"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Bookers (India)",
-     "15,232"
+     "Active Bookers India (FY'24*, dark-blue segment)",
+     "31,419"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Bookers (India)",
-     "17,907"
+     "Active Bookers India (FY'25, dark-blue segment)",
+     "32,749"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Bookers (India)",
-     "11,132"
+     "Active Bookers India (Q4 FY'24, dark-blue segment)",
+     "23,407"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Bookers (India)",
-     "13,166"
+     "Active Bookers India (Q4 FY'25, dark-blue segment)",
+     "24,220"
     ],
     "q:20231231": [
      "6b5a1de9-b8b6-41b5-80e1-222a74d96f0a.pdf",
@@ -1701,60 +1911,110 @@
      "Active Bookers** - India (blue segment)",
      "24,321"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     11132.0,
+     23407,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'24 column, dark-blue (legend India) segment = 23,407; stored 11,132 is the Active Agent** panel Inte",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     15232.0,
+     31419,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'24 column, dark-blue (legend India) segment = 23,407; stored 11,132 is the Active Agent** panel Inte",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     13166.0,
+     24220,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'25 column, dark-blue (legend India) segment = 24,220; stored 13,166 is the Active Agent** panel Inte",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     17907.0,
+     32749,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'25 column, dark-blue (legend India) segment = 24,220; stored 13,166 is the Active Agent** panel Inte",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     21032.0,
+     23947,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Bookers** panel (right), Q1 FY'25* column, dark-blue (legend India) segment = 23,947; stored 21,032 is the Active Bookers** panel ",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     25809.0,
+     24560,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Bookers** panel (right), Q1 FY'26 column, dark-blue (legend India) segment = 24,560; stored 25,809 is the Active Bookers** panel I",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Active Bookers - International",
    "unit": "count",
    "kind": "flow",
    "y": {
-    "20240331": 29797.0,
-    "20250331": 31079.0
+    "20240331": 28767,
+    "20250331": 34788
    },
    "q": {
     "20231231": 18118.0,
-    "20240331": 22795.0,
-    "20240630": 23947.0,
+    "20240331": 19085,
+    "20240630": 21032,
     "20241231": 22900.0,
-    "20250331": 23283.0,
-    "20250630": 24560.0
+    "20250331": 22569,
+    "20250630": 25809
    },
    "src": {
     "q:20240630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Bookers (International)",
-     "23,947"
+     "Active Bookers International (Q1 FY'25*, orange segment)",
+     "21,032"
     ],
     "q:20250630": [
      "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
      19,
-     "Active Bookers (International)",
-     "24,560"
+     "Active Bookers International (Q1 FY'26, orange segment)",
+     "25,809"
     ],
     "y:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Bookers (International)",
-     "29,797"
+     "Active Bookers International (FY'24*, orange segment)",
+     "28,767"
     ],
     "y:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      9,
-     "Active Bookers (International)",
-     "31,079"
+     "Active Bookers International (FY'25, orange segment)",
+     "34,788"
     ],
     "q:20240331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Bookers (International)",
-     "22,795"
+     "Active Bookers International (Q4 FY'24, orange segment)",
+     "19,085"
     ],
     "q:20250331": [
      "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
      8,
-     "Active Bookers (International)",
-     "23,283"
+     "Active Bookers International (Q4 FY'25, orange segment)",
+     "22,569"
     ],
     "q:20231231": [
      "6b5a1de9-b8b6-41b5-80e1-222a74d96f0a.pdf",
@@ -1768,7 +2028,57 @@
      "Active Bookers** - International (orange segment)",
      "22,900"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     22795.0,
+     19085,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'24 column, orange (legend International) segment = 19,085; stored 22,795 is the Active Agent** panel",
+     "2026-10-11"
+    ],
+    [
+     "y:20240331",
+     29797.0,
+     28767,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'24 column, orange (legend International) segment = 19,085; stored 22,795 is the Active Agent** panel",
+     "2026-10-11"
+    ],
+    [
+     "q:20250331",
+     23283.0,
+     22569,
+     "set_q",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'25 column, orange (legend International) segment = 22,569; stored 23,283 is the Active Agent** panel",
+     "2026-10-11"
+    ],
+    [
+     "y:20250331",
+     31079.0,
+     34788,
+     "set_y",
+     "9a5ab777 p8 [q slot]: Active Bookers** panel (right), Q4 FY'25 column, orange (legend International) segment = 22,569; stored 23,283 is the Active Agent** panel",
+     "2026-10-11"
+    ],
+    [
+     "q:20240630",
+     23947.0,
+     21032,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Bookers** panel (right), Q1 FY'25* column, orange (legend International) segment = 21,032; stored 23,947 is the Active Bookers** p",
+     "2026-10-11"
+    ],
+    [
+     "q:20250630",
+     24560.0,
+     25809,
+     "set_q",
+     "17aa74a1 p19 [q slot]: Active Bookers** panel (right), Q1 FY'26 column, orange (legend International) segment = 25,809; stored 24,560 is the Active Bookers** pa",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "Active Agents",
@@ -2010,6 +2320,70 @@
      "6,638"
     ]
    }
+  },
+  {
+   "name": "GTV - India (Hotels+Ancillary)",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {
+    "20230331": 1653.0,
+    "20240331": 2042.0,
+    "20250331": 2213.0
+   },
+   "q": {
+    "20241231": 559,
+    "20251231": 573
+   },
+   "src": {
+    "y:20230331": [
+     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
+     13,
+     "India GTV (Hotels+Ancillary)",
+     "1,653"
+    ],
+    "y:20240331": [
+     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
+     13,
+     "India GTV (Hotels+Ancillary)",
+     "2,042"
+    ],
+    "y:20250331": [
+     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
+     13,
+     "India GTV (Hotels+Ancillary)",
+     "2,213"
+    ],
+    "q:20241231": [
+     "84457fc6-e234-4a63-a828-deee0520a345.pdf",
+     33,
+     "GTV (₹ Cr) India, Q3'FY25 (Notes: Fig. include Hotels & Ancillary products)",
+     "559"
+    ],
+    "q:20251231": [
+     "84457fc6-e234-4a63-a828-deee0520a345.pdf",
+     33,
+     "GTV (₹ Cr) India, Q3'FY26 (Notes: Fig. include Hotels & Ancillary products)",
+     "573"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     null,
+     559,
+     "set_q",
+     "Empty cell; its value was filed under 'GTV - India Airlines'. 84457fc6 p33: India GTV (₹ Cr) bar Q3'FY25 = 559, footnote 'Fig. include Hotels & Ancillary produc",
+     "2026-10-11"
+    ],
+    [
+     "q:20251231",
+     null,
+     573,
+     "set_q",
+     "Empty cell; its value was filed under 'GTV - India Airlines'. 84457fc6 p33: India GTV (₹ Cr) bar Q3'FY26 = 573, footnote 'Fig. include Hotels & Ancillary produc",
+     "2026-10-11"
+    ]
+   ]
   },
   {
    "name": "GTV - MEA",
@@ -2359,37 +2733,6 @@
    }
   },
   {
-   "name": "GTV - India (Hotels+Ancillary)",
-   "unit": "₹ Cr",
-   "kind": "flow",
-   "y": {
-    "20230331": 1653.0,
-    "20240331": 2042.0,
-    "20250331": 2213.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
-     13,
-     "India GTV (Hotels+Ancillary)",
-     "1,653"
-    ],
-    "y:20240331": [
-     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
-     13,
-     "India GTV (Hotels+Ancillary)",
-     "2,042"
-    ],
-    "y:20250331": [
-     "9a5ab777-5488-47ae-a6a8-a34a4329078c.pdf",
-     13,
-     "India GTV (Hotels+Ancillary)",
-     "2,213"
-    ]
-   }
-  },
-  {
    "name": "GTV Mix - India (Source Market)",
    "unit": "%",
    "kind": "flow",
@@ -2417,30 +2760,6 @@
      23,
      "GTV Mix (%) – Source Market - India",
      "43.5"
-    ]
-   }
-  },
-  {
-   "name": "GTV - India Airlines",
-   "unit": "₹ Cr",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 559.0,
-    "20251231": 573.0
-   },
-   "src": {
-    "q:20251231": [
-     "84457fc6-e234-4a63-a828-deee0520a345.pdf",
-     33,
-     "GTV (₹ Cr) - India Airline business",
-     "573"
-    ],
-    "q:20241231": [
-     "84457fc6-e234-4a63-a828-deee0520a345.pdf",
-     33,
-     "GTV (₹ Cr) - India Airline business",
-     "559"
     ]
    }
   },
@@ -2558,40 +2877,6 @@
    }
   },
   {
-   "name": "Classic Vacations - Gross Bookings (GTV)",
-   "unit": "$ Mn",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 475.71
-   },
-   "src": {
-    "q:20241231": [
-     "2d1c19f6-3d6d-4523-8c29-434f8f272619.pdf",
-     7,
-     "Gross Bookings (GTV) - Classic Vacations (Jan-Dec'24)",
-     "475.71"
-    ]
-   }
-  },
-  {
-   "name": "Classic Vacations - Take Rate",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 23.3
-   },
-   "src": {
-    "q:20241231": [
-     "2d1c19f6-3d6d-4523-8c29-434f8f272619.pdf",
-     7,
-     "Net Revenue (Take Rate) - Classic Vacations (Jan-Dec'24)",
-     "23.3"
-    ]
-   }
-  },
-  {
    "name": "Commercial Team Nationalities",
    "unit": "count",
    "kind": "level",
@@ -2656,23 +2941,6 @@
      4,
      "1 Million+ Hotels (doc period)",
      "1"
-    ]
-   }
-  },
-  {
-   "name": "Gross Transaction Value (GTV)",
-   "unit": "$ Mn",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 3595.94
-   },
-   "src": {
-    "q:20241231": [
-     "2d1c19f6-3d6d-4523-8c29-434f8f272619.pdf",
-     7,
-     "Gross Bookings (GTV) - TBO (Jan-Dec'24)",
-     "3,595.94"
     ]
    }
   },
