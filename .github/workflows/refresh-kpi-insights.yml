@@ -67,7 +67,8 @@ jobs:
           # Free-tier quota is per MODEL (20 requests/day measured). gemini-3.6-flash is NEVER used here (user,
           # 2026-10-11): it belongs to the fundamentals and BSE jobs, which run until 20:10 IST. The reader moves
           # down this list as each model's daily quota runs out.
-          GEMINI_MODELS: gemini-3.8-flash,gemini-3-flash-preview,gemini-2.5-flash
+          # (gemini-2.5-flash dropped: HTTP 404 "no longer available to new users", measured 2026-10-11)
+          GEMINI_MODELS: gemini-3.8-flash,gemini-3-flash-preview
           GEMINI_MODEL: gemini-3.8-flash
           KPI_DOC_CACHE: /tmp/kpi_docs
         run: |

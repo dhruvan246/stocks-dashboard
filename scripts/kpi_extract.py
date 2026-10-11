@@ -542,6 +542,9 @@ def gemini_answer(prompt):
         "required": ["company_matches", "doc_title", "note", "metrics"]}
     body = json.dumps({"contents": [{"role": "user", "parts": [{"text": prompt}]}],
                        "generationConfig": {"temperature": 0, "response_mime_type": "application/json",
+                                            # 2026-10-11: gemini-3-flash-preview cut its JSON off at ~7 KB without
+                                            # this (truncated answer = a wasted free request, 6× per filing)
+                                            "maxOutputTokens": 65536,
                                             "response_schema": schema}}).encode()
     attempt = 0
     while attempt < 6 and not quota_dead():
@@ -554,7 +557,7 @@ def gemini_answer(prompt):
         GEMINI["last"] = time.time()
         req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
         try:
-            resp = json.loads(urllib.request.urlopen(req, timeout=240).read())
+            resp = json.loads(urllib.request.urlopen(req, timeout=600).read())   # a client timeout still spends the request
             GEMINI["calls"] += 1
             um = resp.get("usageMetadata") or {}
             GEMINI["prompt_tokens"] += int(um.get("promptTokenCount") or 0)
@@ -593,6 +596,10 @@ def gemini_answer(prompt):
             return None
         except Exception as ex:
             print("    gemini err [%s] attempt %d/6: %s" % (model, attempt, str(ex)[:160]))
+            if isinstance(ex, ValueError):   # broken JSON: temperature 0 gives the same answer again — one retry only
+                GEMINI["bad_json"] = GEMINI.get("bad_json", 0) + 1
+                if attempt >= 2:
+                    return None
             time.sleep(15)
     return None
 
