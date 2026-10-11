@@ -422,21 +422,34 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             old_src = m["src"].get(srckey)
             old_doc = L["docs"].get(old_src[0]) if old_src else None
             # Same value re-printed → keep the EARLIEST filing as the source (rewind then shows the
-            # cell from the day the market first saw it). Different value → the NEWEST filing wins
-            # (a restatement) and `restated` records what the older filing said.
+            # cell from the day the market first saw it) and remember the LATEST filing that printed
+            # it (`latest`, per slot; absent = the source itself). Different value → it wins only if
+            # its filing is newer than EVERY filing that printed the current value (a restatement);
+            # `restated` records what was replaced. Until 2026-10-11 "newer" was judged against the
+            # earliest source alone, so after a re-source to an old filing a mid-dated filing could
+            # overwrite a value the newest filing had printed (ADANIENT airport cargo Q1/Q3 FY24).
             if old_doc and old_src[0] != att and pend in cell:
-                older = old_doc.get("date", "") < doc["date"]
+                src_date = old_doc.get("date", "")
+                newest_print = max(src_date, (m.get("latest") or {}).get(srckey, ""))
                 if cell[pend] == val:
-                    if older:
+                    if doc["date"] > newest_print:
+                        m.setdefault("latest", {})[srckey] = doc["date"]   # newest confirmation so far
+                    if src_date < doc["date"]:
                         continue                       # already sourced from an earlier filing
+                    if newest_print > doc["date"]:
+                        m.setdefault("latest", {})[srckey] = newest_print  # keep the newest print date through the re-source
                     m["src"][srckey] = [att, page, label, asp]   # this filing is earlier: re-source
                     written += 1
                     continue
-                if not older:
+                if doc["date"] <= newest_print:
                     if verbose:
                         print("   keep newer %s %s=%s (older doc says %s)" % (name, pend, cell[pend], val))
                     continue
                 m.setdefault("restated", []).append([srckey, old_src[0], cell[pend], att, val])
+                if m.get("latest"):
+                    m["latest"].pop(srckey, None)      # fresh value, fresh confirmation history
+                    if not m["latest"]:
+                        m.pop("latest")
             cell[pend] = val
             m["src"][srckey] = [att, page, label, asp]
             written += 1
