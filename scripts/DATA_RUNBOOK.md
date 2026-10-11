@@ -27863,4 +27863,11 @@ hold them): NH Jun-16..Jun-17 (CDC Group PLC + JPMorgan Mauritius Holdings IV na
 rest), FORTIS Jun-16 (IFC named there), CAPLIPOINT / AEGISLOG / NESCO / JISLJALEQS (Non-Institutions FPI rows), RELCAPITAL / SONATSOFTW
 ('Foreign Institutional Investors' rows), JKIL (unnamed rest). Held: SHILPAMED Mar-17 and RAMCOCEM Jun-16 (a named 'Private Limited'
 holder may be Indian - no company-register lookup), and every cell where the stored DII is ABOVE the filing's own domestic rows (DII session).
+**Part 62 (2026-10-12, user: "option 1 count the word in the name", 100 cells).** RULE: an FPI / FII / FDI word ANYWHERE in a holder's
+NAME (even when it is part of the legal name) is the company's own mark in that filing -> FII, whatever row the holder sits on; a
+category LABEL that starts with company-type words ('Foreign Corp Bodies (including FDI)') is a label, not a name, and stays out.
+Moves: SHRIRAMCIT 2016-22 Dynasty Acquisition (FPI) +20.1..20.4, SHK 2016-20 Blackstone Capital Partners (Singapore) ... FDI +10..21.5,
+SPANDANA / RNAVAL / NAM-INDIA / RBA Valiant Mauritius Partners FDI, APLAPOLLO Emblem FII, AXISBANK 2020-22 Bain 'BC ASIA ... - FDI' /
+'INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI', APARINDS Templeton '- FDI (Foreign Company)'; plus a few Non-Institutions FPI rows. DII:
+untouched - it holds Indian institutions only (SPANDANA's DII surplus = Edelweiss AIF trust 1.25 + ICICI Pru Life 4.74, checked).
 
