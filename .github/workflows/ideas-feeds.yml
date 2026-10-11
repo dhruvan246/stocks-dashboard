@@ -129,6 +129,11 @@ jobs:
       # SAST, insider trades, shareholding, results; BSE's full list) + a 7-day whole-market second reader.
       # Built HERE because Actions reaches NSE; the research routine's sandbox has not always (runbook 144c).
       # --selftest exits 2 if a known filing is not found; the step is non-fatal and its code lands in feeds_status.
+      # Order books stated in the companies' own filings (decks, transcripts, press releases, order letters):
+      # new filings since each company's last read + companies that filed an order win in the last 30 days.
+      - name: Order-book ledger refresh
+        run: rc=0; python3 -X utf8 scripts/ideas/orderbook.py --refresh --days-back 4 || rc=$?; echo "orderbook=$rc" >> /tmp/ideas/steps.txt
+
       - name: Filings queue for every idea (no filing may be missed)
         run: rc=0; python3 -X utf8 scripts/ideas/updates.py --selftest --xcheck-days 7 || rc=$?; echo "updates=$rc" >> /tmp/ideas/steps.txt
 
@@ -161,7 +166,7 @@ jobs:
           bad = 0
           for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
-                    'ideas.json', 'latest.json', 'updates_queue.json']:
+                    'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json']:
               try:
                   json.load(open('docs/ideas/' + f))
               except Exception as e:
@@ -202,7 +207,7 @@ jobs:
                  docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json \
                  docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
-                 docs/ideas/updates_queue.json"
+                 docs/ideas/updates_queue.json docs/ideas/order_book.json docs/ideas/orderbook_signals.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read

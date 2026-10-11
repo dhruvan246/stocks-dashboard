@@ -26,6 +26,8 @@
     .lane.govt { border-color: #7c3aed66; color: #7c3aed; } .lane.price { border-color: #0891b266; color: #0891b2; }
     .lane.filing { border-color: #ca8a0466; color: #ca8a04; } .lane.earnings { border-color: #16a34a66; color: #16a34a; }
     .lane.sme { border-color: #db277766; color: #db2777; } .lane.deep { border-color: #4f46e566; color: #4f46e5; }
+    .lane.orderbook { border-color: #0d948866; color: #0d9488; }
+    .obq { font-size: 12px; color: var(--text-muted); white-space: normal; max-width: 520px; }
     .disc { font-size: 12px; color: var(--text-muted); border-left: 3px solid var(--border); padding-left: 10px; }
     .stale { font-size: 12px; border: 1px solid #ca8a0466; border-left: 3px solid #ca8a04; background: #ca8a040f; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
     .stale b { color: #ca8a04; }
@@ -199,6 +201,7 @@
     <button data-view="ideas" class="on">Ideas</button>
     <button data-view="govt">Government</button>
     <button data-view="commodity">Commodities</button>
+    <button data-view="ob">Order book jumps</button>
     <button data-view="track">Scorecard</button>
     <button data-view="run">Run &amp; scan</button>
     <button data-view="method">Method</button>
@@ -243,6 +246,17 @@
     <div class="sechead"><h2 class="text-lg font-semibold">Commodities on the move</h2><span class="muted text-xs"><a class="hover:underline" style="color:var(--accent)" href="./commodities.html">open Commodity Watch →</a></span></div>
     <p id="commodity-meta" class="muted text-sm mb-3"></p>
     <div id="commodity-list" class="grid gap-3 md:grid-cols-2"></div>
+  </section>
+
+  <!-- ===== ORDER BOOK JUMPS ===== -->
+  <section id="view-ob" class="view" hidden>
+    <h2 class="text-lg font-semibold mb-1">Order book jumps</h2>
+    <p class="muted text-sm mb-2">The order book each company <b>states in its own filings</b> (investor decks, call transcripts, press releases, order letters), its latest figure against the one stated about a year earlier. Read by a script from the documents: every row carries the sentence and the filing, so check the quote. The daily research run opens the documents behind the biggest jumps and turns the confirmed ones into ideas (lane “Order book”).</p>
+    <p id="ob-meta" class="muted text-xs mb-3"></p>
+    <div class="chips" id="ob-chips"></div>
+    <div class="card" style="overflow-x:auto;padding:0"><table class="sw sortable" id="ob-table"><thead><tr>
+      <th data-k="name">Company</th><th class="n" data-k="now">Order book now ₹cr</th><th data-k="nowd">As on</th><th class="n" data-k="ago">A year earlier ₹cr</th><th data-k="agod">As on</th><th class="n" data-k="yoy">Change (script)</th><th class="n" data-k="tyoy">Checked change</th><th>Checked against the filings</th><th>Read from</th>
+    </tr></thead><tbody></tbody></table></div>
   </section>
 
   <!-- ===== SCORECARD ===== -->
@@ -403,13 +417,14 @@
   const laneOf = (it) => {
     if (String(it.lane || '').toLowerCase() === 'sme') return 'sme';
     if (String(it.lane || '').toLowerCase() === 'deep') return 'deep';
+    if (String(it.lane || '').toLowerCase() === 'orderbook' || /^orderbook\s*:/i.test(String(it.trigger || ''))) return 'orderbook';
     const t = String(it.scope === 'govt' ? 'govt' : (it.lane || it.trigger || '')).toLowerCase();
     if (/^(govt|government|scheme|cabinet|news \(govt)/.test(t)) return 'govt';
     if (/^(price|commodity)/.test(t)) return 'price';
     if (/^(earn)/.test(t)) return 'earnings';
     return 'filing';
   };
-  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings', sme: 'SME deep-dive', deep: 'Deep-dive' };
+  const LANE_LABEL = { govt: 'Government', price: 'Commodity', filing: 'Filing', earnings: 'Earnings', sme: 'SME deep-dive', deep: 'Deep-dive', orderbook: 'Order book' };
   const KIND = { results: 'Results', order: 'Order', filing: 'Filing', news: 'News', corp: 'Corporate action', social: 'On X', forum: 'ValuePickr', price: 'Price', guidance: 'Guidance' };
   const toneOf = (u) => /^(good|bad|neutral)$/.test(String(u.tone || '')) ? u.tone : 'neutral';
   const today = (() => { const d = new Date(); return d.toISOString().slice(0, 10); })();
@@ -437,11 +452,12 @@
   };
 
   // ---- top-level views ---------------------------------------------------------------
-  const VIEWS = ['ideas', 'govt', 'commodity', 'track', 'run', 'method'];
+  const VIEWS = ['ideas', 'govt', 'commodity', 'ob', 'track', 'run', 'method'];
   let VIEW = 'ideas';
   const setView = (v, push) => {
     if (!VIEWS.includes(v)) v = 'ideas';
     VIEW = v;
+    if (v === 'ob') loadOB();
     VIEWS.forEach(x => { $('#view-' + x).hidden = x !== v; });
     document.querySelectorAll('#topnav button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
     try { const u = new URL(location.href); if (v === 'ideas') u.searchParams.delete('view'); else { u.searchParams.set('view', v); u.searchParams.delete('idea'); u.searchParams.delete('tab'); } if (push !== false) history.replaceState(null, '', u); } catch (e) {}
@@ -461,6 +477,7 @@
     { k: 'govt', label: 'Government', test: (f) => f.lane === 'govt' },
     { k: 'price', label: 'Commodity', test: (f) => f.lane === 'price' },
     { k: 'filing', label: 'Filing', test: (f) => f.lane === 'filing' || f.lane === 'earnings' },
+    { k: 'orderbook', label: 'Order book', test: (f) => f.lane === 'orderbook' },
     { k: 'deep', label: 'Deep-dive', test: (f) => f.lane === 'deep' || f.lane === 'sme' },
   ];
   let CHIP = 'all', Q = '', SORT = 'new';
@@ -623,6 +640,48 @@
     });
     if (scroll) window.scrollTo({ top: 0 });
   };
+
+  // ---- order book jumps (orderbook_signals.json, loaded on first open) ---------------------
+  let OB = null, OBK = 'tyoy', OBD = -1, OBCHIP = 'ver';
+  const OBCHIPS = [
+    { k: 'ver', label: '✓ Verified jumps (+50% or more)', cls: 'good', test: r => r.tyoy != null && r.tyoy >= 50 },
+    { k: 'jump', label: 'Up 50%+ (script)', test: r => r.yoy >= 50 },
+    { k: 'mis', label: 'Misread by the script', cls: 'bad', test: r => r.v && /WRONG/.test((r.v.latest_verdict || '') + (r.v.year_ago_verdict || '')) },
+    { k: 'all', label: 'All with a year-ago figure', test: r => r.yoy != null },
+    { k: 'down', label: 'Fell', test: r => r.yoy != null && r.yoy < 0 },
+    { k: 'check', label: 'Check the quote (jump over 400% or fall over 60%)', test: r => r.check },
+    { k: 'nohist', label: 'No year-ago figure yet', test: r => r.yoy == null },
+  ];
+  const obQuote = (x) => x ? `<div class="obq">“${esc(x.quote.slice(0, 220))}…” <a class="src" href="${esc(x.doc)}" target="_blank" rel="noopener">${esc((x.doc_title || 'filing').slice(0, 60))} · ${dmy(x.filed)}</a></div>` : '';
+  const drawOB = () => {
+    const rows = (OB.rows || []).map(r => ({ r, name: r.name || r.nse || r.scrip, now: r.latest && r.latest.value_cr, nowd: r.latest && r.latest.as_on_eff,
+      ago: r.year_ago && r.year_ago.value_cr, agod: r.year_ago && r.year_ago.as_on_eff, yoy: r.yoy_pct ?? null, check: !!r.check,
+      v: r.verified || null, tyoy: r.verified && r.verified.true_yoy_pct != null && !isNaN(Number(r.verified.true_yoy_pct)) ? Number(r.verified.true_yoy_pct) : null }));
+    $('#ob-chips').innerHTML = OBCHIPS.map(c => `<button type="button" class="chip ${c.cls || ''} ${OBCHIP === c.k ? 'on' : ''}" data-k="${c.k}">${esc(c.label)}<span class="cnt">${rows.filter(c.test).length}</span></button>`).join('');
+    const chip = OBCHIPS.find(c => c.k === OBCHIP) || OBCHIPS[0];
+    const shown = rows.filter(chip.test).sort((a, b) => { const x = a[OBK], y = b[OBK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OBD; });
+    document.querySelectorAll('#ob-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OBK && OBD > 0); th.classList.toggle('desc', th.dataset.k === OBK && OBD < 0); });
+    $('#ob-table tbody').innerHTML = shown.map(x => {
+      const idea = all.find(it => (it.nse && it.nse === x.r.nse) || (it.scrip && String(it.scrip) === String(x.r.scrip)));
+      return `<tr><td>${idea ? `<a class="src" href="./ideas.html?idea=${encodeURIComponent(idea.id)}" data-open="${esc(idea.id)}">${esc(x.name)}</a>` : esc(x.name)}${x.check ? ' <span class="pill">check</span>' : ''}<div class="muted text-xs">${esc(x.r.nse || '')}${x.r.scrip && !String(x.r.scrip).startsWith('NSE:') ? ' · BSE ' + esc(x.r.scrip) : ''}</div></td>
+        <td class="n">${fmt(x.now, 0)}</td><td>${dmy(x.nowd)}</td><td class="n">${fmt(x.ago, 0)}</td><td>${x.agod ? dmy(x.agod) : '—'}</td><td class="n">${x.yoy == null ? '—' : pct(x.yoy)}</td>
+        <td class="n">${x.tyoy == null ? (x.v ? '<span class="muted">unknown</span>' : '—') : pct(x.tyoy)}</td>
+        <td style="white-space:normal">${x.v ? `<div class="obq"><b>${/WRONG|DATE/.test((x.v.latest_verdict || '') + (x.v.year_ago_verdict || '')) ? 'Corrected' : '✓ Confirmed'}</b> · now ${esc(x.v.latest_verdict || '')}${x.v.latest_correct_value_cr ? ' ₹' + fmt(x.v.latest_correct_value_cr, 0) + ' cr' : ''}${x.v.latest_as_on ? ' (' + esc(x.v.latest_as_on) + ')' : ''} · year ago ${esc(x.v.year_ago_verdict || '')}${x.v.year_ago_correct_value_cr ? ' ₹' + fmt(x.v.year_ago_correct_value_cr, 0) + ' cr' : ''}${x.v.book_to_ttm_sales ? ' · book ' + esc(x.v.book_to_ttm_sales) + '× sales' : ''}${x.v.notes ? '<br>' + esc(String(x.v.notes).slice(0, 260)) : ''}</div>` : '<span class="muted text-xs">not checked yet</span>'}</td>
+        <td style="white-space:normal">${obQuote(x.r.latest)}${x.r.year_ago ? '<div class="mt-1"></div>' + obQuote(x.r.year_ago) : ''}</td></tr>`;
+    }).join('') || '<tr><td colspan="9" class="muted">Nothing in this filter.</td></tr>';
+  };
+  let obLoading = null;
+  const loadOB = () => {
+    if (OB || obLoading) return;
+    obLoading = grab('./ideas/orderbook_signals.json').then(j => {
+      OB = j || { rows: [] };
+      $('#ob-meta').textContent = j ? `${(j.rows || []).length} companies with a stated order book · built ${j.built || ''} · ${j.rule || ''}` : 'orderbook_signals.json not published yet.';
+      drawOB();
+    });
+  };
+  $('#ob-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OB) return; if (OBK === th.dataset.k) OBD = -OBD; else { OBK = th.dataset.k; OBD = th.dataset.k === 'name' ? 1 : -1; } drawOB(); });
+  $('#ob-chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b && OB) { OBCHIP = b.dataset.k; drawOB(); } });
+  $('#ob-table tbody').addEventListener('click', (e) => { const a = e.target.closest('[data-open]'); if (a) { e.preventDefault(); openCompany(a.dataset.open, true); } });
 
   // ---- summary strip -------------------------------------------------------------------
   const ts = track && track.summary || {};

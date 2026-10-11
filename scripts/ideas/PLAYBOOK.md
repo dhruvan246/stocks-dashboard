@@ -218,6 +218,31 @@ ValuePickr (forum.valuepickr.com) is a Discourse forum readable without login (h
    `[{"title","url","posts","first","last","kind"}]`. The page renders it as the card's "On ValuePickr" section.
    No thread found → still write `valuepickr` saying what was searched.
 
+## Order-book lane — big year-on-year jumps in the order book (user rule, 2026-10-11)
+
+The user wants ideas like Marine Electricals (order book ₹524 cr Mar-25 → ₹1,255 cr Mar-26 → ₹2,073 cr Jun-26, against
+₹877 cr of FY26 revenue). Order books are in no structured feed, so `scripts/ideas/orderbook.py` READS them:
+- Ledger `docs/ideas/order_book.json`: for every company that filed an order win on NSE in the last two years (plus BSE
+  names in the band), every order-book figure the company itself stated — decks, transcripts, press releases, order
+  letters, annual reports — with the filing, the filing date, the "as on" date and the sentence. An amount counts only
+  when it follows "order book / backlog / orders in hand" with nothing but linking words between, or sits right before
+  it; income, PAT, losses, contracts won, targets and pipelines in between are rejected. Per document the largest
+  figure for a date is kept (the total, not a segment); across documents the value most of them state wins.
+- Signals `docs/ideas/orderbook_signals.json`: latest stated book vs the one stated 240-480 days earlier, `yoy_pct`,
+  and `check: true` when the jump is over +400% or a fall over 60% (usually a misread: a scanned ₹ read as "3", an
+  analyst's question in a transcript, a multi-year contract total).
+- It is a SCREEN, not a source of record. Measured on the 17-company pilot (2026-10-11): most rows right, but scanned
+  PDFs and transcripts still produce misreads. So every row is checked against its quotes before use.
+
+**Each run:** `python3 scripts/ideas/orderbook.py --refresh` (new filings only, plus new order filers) is built by the
+ideas-feeds Action; read `orderbook_signals.json`. Take the rows with `yoy_pct >= 50` and `check` false, in the
+₹200-7,500 cr band, not already published. For the top one or two: OPEN the documents behind BOTH the latest and the
+year-ago figure, confirm each number, its date and that it is the company-wide total (not a segment, not inclusive of
+L1 positions unless the company says so). Also state order book ÷ trailing-year revenue and the execution period
+the company gives. Only a confirmed jump becomes an idea: `"lane": "orderbook"`, trigger
+`"orderbook: <book now> as on <date> vs <book a year earlier> (+X%), <ratio>x trailing sales"`. A row whose quote
+turns out to be wrong is reported in the run log's `data_problems` with the correct figure.
+
 ## Revenue guidance line — every card, at the top (user rule, 2026-10-09)
 
 Every idea carries `"guidance"`: one or two sentences of **management's own** revenue / growth / margin guidance, with the
