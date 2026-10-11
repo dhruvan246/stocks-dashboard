@@ -88,13 +88,21 @@ def main():
                                      'year_ago_doc', 'year_ago_doc_title', 'latest_value_cr', 'latest_as_on',
                                      'latest_doc', 'latest_doc_title', 'true_yoy_pct', 'trigger_filed', 'trigger_doc',
                                      'trigger_doc_title', 'trigger_as_on', 'trigger_book_cr', 'trigger_prev_cr',
-                                     'trigger_prev_as_on', 'trigger_yoy_pct', 'verdict', 'note', 'checked_on')}
+                                     'trigger_prev_as_on', 'trigger_yoy_pct', 'verdict', 'note', 'checked_on', 'faded',
+                                     'first_trigger_filed', 'first_trigger_doc', 'first_trigger_doc_title', 'first_trigger_as_on',
+                                     'first_trigger_book_cr', 'first_trigger_prev_cr', 'first_trigger_yoy_pct')}
         try:
             out.update(track(r))
+            # an earlier 50%+ jump that later faded: its return is shown as a second line (user, 2026-10-11 "show both")
+            if r.get('first_trigger_filed') and r['first_trigger_filed'] != r['trigger_filed']:
+                f = track(dict(r, trigger_filed=r['first_trigger_filed']))
+                out.update(first_entry_date=f['entry_date'], first_entry_close=f['entry_close'], first_ret_pct=f['ret_pct'],
+                           first_peak_pct=f['peak_pct'])
         except Exception as ex:
             p = prev.get(r['key'])
             keep = {k: p[k] for k in ('entry_date', 'entry_close', 'last_date', 'last_close', 'ret_pct', 'peak_pct',
-                                      'peak_date', 'low_pct', 'days', 'adj_events', 'price_source') if p and k in p}
+                                      'peak_date', 'low_pct', 'days', 'adj_events', 'price_source', 'first_entry_date',
+                                      'first_entry_close', 'first_ret_pct', 'first_peak_pct') if p and k in p}
             out.update(keep, stale=True, price_error=str(ex)[:160])
             failed.append(r['key'])
         rows.append(out)

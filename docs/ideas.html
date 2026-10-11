@@ -785,11 +785,11 @@
     $('#obt-table tbody').innerHTML = shown.map((x, i) => { const r = x.r;
       return `<tr><td title="${esc(r.note || '')}">${esc(x.name)}<div class="muted text-xs">${esc(r.nse || '')}${r.bse ? ' · BSE ' + esc(r.bse) : ''}</div></td>
         <td class="n">${fmt(x.ago, 0)}<div class="muted text-xs">${dmy(r.year_ago_as_on)}</div></td><td class="n">${fmt(x.now, 0)}<div class="muted text-xs">${dmy(r.latest_as_on)}</div></td>
-        <td class="n">${pct(x.yoy)}</td>
+        <td class="n">${pct(x.yoy)}${r.faded ? '<div><span class="pill" title="Was up 50%+ at the jump filing; up less than 50% on the latest stated book">faded</span></div>' : ''}</td>
         <td>${r.trigger_doc ? `<a class="src" href="${esc(r.trigger_doc)}" target="_blank" rel="noopener" title="${esc(r.trigger_doc_title || 'filing')}">${dmy(x.filed)}</a>` : dmy(x.filed)}<div class="muted text-xs">${r.trigger_prev_cr != null ? '₹' + fmt(r.trigger_prev_cr, 0) + ' → ₹' + fmt(r.trigger_book_cr, 0) + ' cr' : ''}</div></td>
         <td class="n">${x.entry == null ? '—' : '₹' + fmt(x.entry, 2)}<div class="muted text-xs">${dmy(r.entry_date)}</div></td>
         <td class="n">${x.last == null ? '—' : '₹' + fmt(x.last, 2)}${r.stale ? ' <span class="pill" title="' + esc(r.price_error || '') + '">stale</span>' : ''}</td>
-        <td class="n"><b>${pct(x.ret)}</b></td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed jumps yet.</td></tr>';
+        <td class="n"><b>${pct(x.ret)}</b>${r.first_ret_pct != null ? `<div class="muted text-xs" title="Return since an earlier 50%+ jump filed ${dmy(r.first_trigger_filed)} (${esc(r.first_trigger_doc_title || '')}) that faded before this one" style="white-space:normal">earlier jump<br>${pct(r.first_ret_pct)}</div>` : ''}</td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed jumps yet.</td></tr>';
   };
   $('#obt-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OBT) return; if (OBTK === th.dataset.k) OBTD = -OBTD; else { OBTK = th.dataset.k; OBTD = th.dataset.k === 'name' ? 1 : -1; } drawOBT(); });
   let obLoading = null;
