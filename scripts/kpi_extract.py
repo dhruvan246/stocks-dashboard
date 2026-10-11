@@ -179,7 +179,7 @@ def parse_period(label, fy_end_month=3):
     low = s.lower()
     low = re.sub(r"(?<![a-z])f\s?'?(\d{2})\b", r"fy\1", low)   # Mahindra's "F27" / "Q1 F27" / "Q1F25" = FY27
     low = re.sub(r"\bq\s*([1-4])\s*(\d{2})-(\d{2})\b", r"q\1 fy\3", low)   # Coal India's "Q1 26-27" = Q1 FY27
-    SEP = r"[\s,\-–/]*"                      # "Q2, FY 26", "Q1-FY27", "Q4/FY26" all mean the same
+    SEP = r"[\s,\-–/']*"                     # "Q2, FY 26", "Q1-FY27", "Q4/FY26", "Q1'FY25" all mean the same
     m = re.search(r"\bq\s*([1-4])" + SEP + r"(?:of\s*)?(?:fy\s*'?\s*)?(\d{4})\s*-\s*(\d{2,4})\b", low)   # Q1 FY 2026-27 / Q1 2026-27 → FY27
     if m:
         return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
@@ -197,9 +197,15 @@ def parse_period(label, fy_end_month=3):
         re.search(r"\b([1-4])\s*q" + SEP + r"fy\s*'?\s*(\d{4}|\d{2})\b", low)
     if m:
         return "q", _q_end(_yy(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
-    m = re.search(r"\bq\s*([1-4])\s*'?\s*(\d{4}|\d{2})\b", low)        # "Q1'27", "Q4 2026"
+    m = re.search(r"\bfy\s*'?\s*(\d{4}|\d{2})" + SEP + r"q\s*([1-4])\b", low)   # year first: "FY25 Q1", "FY 21 Q1", "F23 Q2" (was read as the whole year, 2026-10-11)
+    if m:
+        return "q", _q_end(_yy(m.group(1)), int(m.group(2)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\bq\s*([1-4])\s*['\-/]?\s*(\d{4}|\d{2})\b", low)    # "Q1'27", "Q4 2026", "Q1-24" (Adani), "Q2/26" (DMart)
     if m:
         return "q", _q_end(_yy(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\b([1-4])\s*q\s*['\-/]?\s*(\d{4})\b", low)          # quarter first, calendar year: "3Q 2023" (Castrol)
+    if m:
+        return "q", _q_end(int(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
     if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
         return None, None
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
@@ -243,6 +249,9 @@ def parse_period(label, fy_end_month=3):
         if (mo - fy_end_month) % 3 == 0:
             return "q", dt.date(y, mo, last).strftime("%Y%m%d")
         return None, None
+    m = re.fullmatch(r"\s*(\d{4})\s*", low)                              # a bare year is the year only for a calendar-year company
+    if m and fy_end_month == 12:
+        return "y", _fy_end(int(m.group(1)), 12).strftime("%Y%m%d")
     m = re.search(r"\bcy\s*'?(\d{4}|\d{2})\b", low)
     if m and fy_end_month == 12:
         return "y", _fy_end(_yy(m.group(1)), 12).strftime("%Y%m%d")
