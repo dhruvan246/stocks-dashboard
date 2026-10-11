@@ -53654,21 +53654,41 @@
     "cell": [
      63.6027,
      7.1,
-     4.7,
+     4.6996,
      3.7491,
      0.5594,
-     "2015-04-16"
+     "2015-04-21"
     ],
     "was": [
      63.6027,
-     5.5277,
+     7.1,
      4.6996,
      3.7491,
      0.5594,
      "2015-04-16"
     ],
-    "src": "bseaspx:532627_85",
-    "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.53 -> 7.10, dii 4.70 -> 4.70. inst-sub-fii Foreign Bank 0.72; noninst-fii Foreign Port Folio Investor Corporate 0.85. Evidence: _shp_aspx_rowfix_audit.json"
+    "src": "bseaspx:532627_85.00 + BSE notice 32ba7283-9903-47e0-83e4-2b7fb86ae213",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532627&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated April 21, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-04-21T17:17:57 (id 32ba7283-9903-47e0-83e4-2b7fb86ae213), not with the first notice 2015-04-16T12:23:38 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-16 -> 2015-04-21; values unchanged.",
+    "superseded": {
+     "cell": [
+      63.6027,
+      7.1,
+      4.7,
+      3.7491,
+      0.5594,
+      "2015-04-16"
+     ],
+     "was": [
+      63.6027,
+      5.5277,
+      4.6996,
+      3.7491,
+      0.5594,
+      "2015-04-16"
+     ],
+     "src": "bseaspx:532627_85",
+     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 5.53 -> 7.10, dii 4.70 -> 4.70. inst-sub-fii Foreign Bank 0.72; noninst-fii Foreign Port Folio Investor Corporate 0.85. Evidence: _shp_aspx_rowfix_audit.json"
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -59971,6 +59991,26 @@
     "src": "bsetable3:500253:89",
     "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): FIL INVESTMENTS(MAURITIUS)LTD 5,291,828 sh on a non-institution line (188/0/0 institution listings); the company files it in its Institutions block from Jun-2016 (FPI from Sep-2016). fii 27.5299 -> 28.5785.",
     "exact": true
+   },
+   "2014-09-30": {
+    "cell": [
+     40.3125,
+     38.3867,
+     6.7195,
+     4.6974,
+     1.8317,
+     "2014-10-13"
+    ],
+    "was": [
+     40.3125,
+     38.3867,
+     6.7195,
+     4.6974,
+     1.8317,
+     "2014-10-08"
+    ],
+    "src": "bseaspx:500253_83.00 + BSE notice ba91c3ff-4b5c-4290-b991-49425e1c80b3",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500253&qtrid=83.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated October 09, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For September 30, 2014' 2014-10-13T13:19:49 (id ba91c3ff-4b5c-4290-b991-49425e1c80b3), not with the first notice 2014-10-08T11:05:26 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-10-08 -> 2014-10-13; values unchanged."
    }
   },
   "LMW": {
@@ -105419,6 +105459,26 @@
     "src": "bsexbrl:532830_1542022183041_SHP.xml",
     "why": "\u00a7164r batch 30 part 42 (2026-10-06, D1 blocks the runner's 0.05-pp floor skipped): the institutions Any-Other block 19,600 sh names nobody and carries no label (no same-size label in the 2 quarters either side) - its unnamed part is FII by D1 (user 2026-09-25); the D1 runner computed it but wrote nothing under its 0.05-pp floor, so it stayed in dii. Proof in this filing: stored dii 12.6996 = the domestic lines 12.6903 (MF+VCF+AIF+FI/Banks+Ins+PF+NBFC) + the block 0.0098; stored fii 17.7877 = the FPI line. fii 17.7877 -> 17.7975, dii 12.6996 -> 12.6898 on 200,920,181 sh.",
     "exact": true
+   },
+   "2014-12-31": {
+    "cell": [
+     60.589,
+     12.6876,
+     7.5273,
+     7.521,
+     0.0,
+     "2015-01-14"
+    ],
+    "was": [
+     60.589,
+     12.6876,
+     7.5273,
+     7.521,
+     0.0,
+     "2015-01-06"
+    ],
+    "src": "bseaspx:532830_84.00 + BSE notice 3bc9ac96-813e-45fe-87a3-da1685efa6db",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532830&qtrid=84.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated January 13, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For December 31, 2014' 2015-01-14T17:08:31 (id 3bc9ac96-813e-45fe-87a3-da1685efa6db), not with the first notice 2015-01-06T12:08:48 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-01-06 -> 2015-01-14; values unchanged."
    }
   },
   "AVANTIFEED": {
@@ -139089,6 +139149,26 @@
     "src": "bsetable3:532654:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 15,192,796, VCF 0, AIF 0, FI/Banks 1,377,492, Insurance 1,605,000, PF 0, NBFC 111,707; total 109,455,735. dii 16.6051 -> 16.7072, ins 1.4663 -> 1.4663.",
     "exact": true
+   },
+   "2015-03-31": {
+    "cell": [
+     45.7427,
+     26.205,
+     14.6987,
+     12.174,
+     2.2525,
+     "2015-04-23"
+    ],
+    "was": [
+     45.7427,
+     26.205,
+     14.6987,
+     12.174,
+     2.2525,
+     "2015-04-08"
+    ],
+    "src": "bseaspx:532654_85.00 + BSE notice 99f2d062-c8bb-4db9-8e1f-74d3fe8e1ff9",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532654&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated April 16, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-04-23T11:15:12 (id 99f2d062-c8bb-4db9-8e1f-74d3fe8e1ff9), not with the first notice 2015-04-08T11:42:59 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-08 -> 2015-04-23; values unchanged."
    }
   },
   "MCX": {
@@ -185110,6 +185190,26 @@
     ],
     "src": "bsexbrl:532926_137201811518_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 16.22 -> 16.22, dii 6.24 -> 11.35. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 5.09 Icici Prudential Life Insurance Company Limited 5.09(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02"
+   },
+   "2015-09-30": {
+    "cell": [
+     66.7436,
+     15.8733,
+     8.2547,
+     4.8956,
+     3.353,
+     "2015-10-20"
+    ],
+    "was": [
+     66.7436,
+     15.8733,
+     8.2547,
+     4.8956,
+     3.353,
+     "2015-10-18"
+    ],
+    "src": "bseaspx:532926_87.00 + BSE notice 24caccee-9156-4b25-b873-0254e11e8878",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532926&qtrid=87.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated October 19, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For September 30, 2015' 2015-10-20T15:36:49 (id 24caccee-9156-4b25-b873-0254e11e8878), not with the first notice 2015-10-18T12:35:27 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-10-18 -> 2015-10-20; values unchanged."
    }
   },
   "LT": {
@@ -195013,23 +195113,22 @@
      4.7478,
      4.3416,
      0.3232,
-     "2014-10-22"
+     "2015-02-11"
     ],
     "was": [
      44.0564,
-     35.82,
+     35.823,
      4.7478,
      4.3416,
      0.3232,
      "2014-10-22"
     ],
-    "src": "bsepage:500877:83",
-    "why": "\u00a7164r batch 30 (2026-10-05, APOLLOTYRE share-count precision): 2014-09-30 - BSE page institutions rows 'Foreign Institutional Investors' 173,998,723 + 'Any Other' 8,349,336 = 182,348,059 sh on (A+B+C) 509,024,770 = 35.8230 (\u00a7160 classes: the institutions 'Any Other' / 'Others' sub-rows hold FPI-listed holders - Merrill Lynch Capital Markets Espana, Copthall Mauritius, Morgan Stanley Asia, Credit Suisse Singapore per BSE's >1% holder pages; the Jun-2015 'Non Resident Individuals / Foreign Individuals' row stays public by its own label). The stored value was a 2-decimal sum. fii 35.8200 -> 35.8230.",
-    "exact": true,
+    "src": "bseaspx:500877_83.00 + BSE notice b3a85902-da2b-488a-bb28-d868a9cda935",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500877&qtrid=83.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated February 09, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For September 30, 2014' 2015-02-11T14:55:37 (id b3a85902-da2b-488a-bb28-d868a9cda935), not with the first notice 2014-10-22T11:41:42 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-10-22 -> 2015-02-11; values unchanged.",
     "superseded": {
      "cell": [
       44.0564,
-      35.82,
+      35.823,
       4.7478,
       4.3416,
       0.3232,
@@ -195037,18 +195136,19 @@
      ],
      "was": [
       44.0564,
-      34.1828,
+      35.82,
       4.7478,
       4.3416,
       0.3232,
       "2014-10-22"
      ],
-     "src": "bseaspx:500877_83",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 34.18 -> 35.82, dii 4.75 -> 4.75. generic-row-by-holders Any Other 1.64 fii [exact]: Credit Suisse (Singapore) Ltd 1.65 (2015-form XBRL row); inst-sub-fii Any Other 1.64. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+     "src": "bsepage:500877:83",
+     "why": "\u00a7164r batch 30 (2026-10-05, APOLLOTYRE share-count precision): 2014-09-30 - BSE page institutions rows 'Foreign Institutional Investors' 173,998,723 + 'Any Other' 8,349,336 = 182,348,059 sh on (A+B+C) 509,024,770 = 35.8230 (\u00a7160 classes: the institutions 'Any Other' / 'Others' sub-rows hold FPI-listed holders - Merrill Lynch Capital Markets Espana, Copthall Mauritius, Morgan Stanley Asia, Credit Suisse Singapore per BSE's >1% holder pages; the Jun-2015 'Non Resident Individuals / Foreign Individuals' row stays public by its own label). The stored value was a 2-decimal sum. fii 35.8200 -> 35.8230.",
+     "exact": true,
      "superseded": {
       "cell": [
        44.0564,
-       34.1828,
+       35.82,
        4.7478,
        4.3416,
        0.3232,
@@ -195057,13 +195157,33 @@
       "was": [
        44.0564,
        34.1828,
-       6.3881,
+       4.7478,
        4.3416,
        0.3232,
        "2014-10-22"
       ],
-      "src": "bseaspx:500877:qtrid83",
-      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.64pp) folded in by a minority route. Healed to the page's own domestic rows (4.7478). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+      "src": "bseaspx:500877_83",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 34.18 -> 35.82, dii 4.75 -> 4.75. generic-row-by-holders Any Other 1.64 fii [exact]: Credit Suisse (Singapore) Ltd 1.65 (2015-form XBRL row); inst-sub-fii Any Other 1.64. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160b)",
+      "superseded": {
+       "cell": [
+        44.0564,
+        34.1828,
+        4.7478,
+        4.3416,
+        0.3232,
+        "2014-10-22"
+       ],
+       "was": [
+        44.0564,
+        34.1828,
+        6.3881,
+        4.3416,
+        0.3232,
+        "2014-10-22"
+       ],
+       "src": "bseaspx:500877:qtrid83",
+       "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.64pp) folded in by a minority route. Healed to the page's own domestic rows (4.7478). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+      }
      }
     }
    },
@@ -218427,6 +218547,26 @@
     ],
     "src": "bsetable3:500730:89 + bseaspx:500730:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-14 16:02:57; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): unnamed institutions 'Any Other' block 0.31 -> FII (D1); NBFC row 0.09 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 37.61 -> 37.6146, fii 0.67 -> 0.6770, dii 1.72 -> 1.8059."
+   },
+   "2014-09-30": {
+    "cell": [
+     37.0035,
+     0.7042,
+     2.5974,
+     0.0287,
+     2.1216,
+     "2014-10-10"
+    ],
+    "was": [
+     37.0035,
+     0.7042,
+     2.5974,
+     0.0287,
+     2.1216,
+     "2014-10-08"
+    ],
+    "src": "bseaspx:500730_83.00 + BSE notice 6b414949-69ba-4d7a-a025-9412a069ef14",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500730&qtrid=83.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated October 09, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern for September 30, 2014' 2014-10-10T11:25:44 (id 6b414949-69ba-4d7a-a025-9412a069ef14), not with the first notice 2014-10-08T11:41:09 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-10-08 -> 2014-10-10; values unchanged."
    }
   },
   "REIAGROLTD": {
@@ -248081,6 +248221,26 @@
     ],
     "src": "bsetable3:506395:89 + bseaspx:506395:89",
     "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 6.27 -> 4.63, dii 7.82 -> 13.61. Rows: B1i-named GROUPE CHIMIQUE TUNISIEN 1.65 foreign/public new-format:ForeignCompanies; B1i-unnamed-rest D1 0.01 fii; B3b-NBFC R3 0.60 dii; B3e-named ICICI PRUDENTIAL LIFE INSURANCE COMPANY  5.19 dii (R2, curated)"
+   },
+   "2015-06-30": {
+    "cell": [
+     62.116,
+     6.6725,
+     7.3716,
+     6.0044,
+     1.3216,
+     "2015-07-23"
+    ],
+    "was": [
+     62.116,
+     6.6725,
+     7.3716,
+     6.0044,
+     1.3216,
+     "2015-07-22"
+    ],
+    "src": "bseaspx:506395_86.00 + BSE notice c5bdf431-42f8-45d1-8d95-775c8b6c808a",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=506395&qtrid=86.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated July 23, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For June 30, 2015' 2015-07-23T19:02:26 (id c5bdf431-42f8-45d1-8d95-775c8b6c808a), not with the first notice 2015-07-22T11:21:32 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-07-22 -> 2015-07-23; values unchanged."
    }
   },
   "JKIL": {
@@ -252695,18 +252855,38 @@
      1.2092,
      1.0653,
      0.0439,
-     "2015-07-16"
+     "2015-07-18"
     ],
     "was": [
      67.1281,
-     6.0799,
+     6.28,
      1.2092,
      1.0653,
      0.0439,
      "2015-07-16"
     ],
-    "src": "bseaspx:532872_86",
-    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 6.08 -> 6.28, dii 1.21 -> 1.21. generic-row-B Others 0.2 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.20; next 'Foreign Portfolio Investors' 9 holders 0.24; generic-row-B Others 0.03 pub: next 'Directors & their Relatives & Frie' 2 holders 0.03; noninst-fii Others 0.2. Evidence: _shp_164_audit.json"
+    "src": "bseaspx:532872_86.00 + BSE notice 887d8364-4bb2-4a85-bfe7-1c34b6c1e9c0",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532872&qtrid=86.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated July 16, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For June 30, 2015' 2015-07-18T14:03:57 (id 887d8364-4bb2-4a85-bfe7-1c34b6c1e9c0), not with the first notice 2015-07-15T20:21:59 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-07-16 -> 2015-07-18; values unchanged.",
+    "superseded": {
+     "cell": [
+      67.1281,
+      6.28,
+      1.2092,
+      1.0653,
+      0.0439,
+      "2015-07-16"
+     ],
+     "was": [
+      67.1281,
+      6.0799,
+      1.2092,
+      1.0653,
+      0.0439,
+      "2015-07-16"
+     ],
+     "src": "bseaspx:532872_86",
+     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; a row the earlier page-era runs never resolved - below their 0.5 pp generic-row floor, or in a cell they skipped - now placed by the same rules: the company's own label on the same row in its neighbouring filing, or its documented holders): fii 6.08 -> 6.28, dii 1.21 -> 1.21. generic-row-B Others 0.2 fii: prev 'Foreign Port Folio Investor Corpor' 6 holders 0.20; next 'Foreign Portfolio Investors' 9 holders 0.24; generic-row-B Others 0.03 pub: next 'Directors & their Relatives & Frie' 2 holders 0.03; noninst-fii Others 0.2. Evidence: _shp_164_audit.json"
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -290315,18 +290495,38 @@
      15.6627,
      4.3547,
      11.2815,
-     "2014-04-10"
+     "2014-05-08"
     ],
     "was": [
-     39.8861,
-     9.1512,
-     15.4523,
-     4.2962,
-     11.1299,
+     40.4292,
+     9.2758,
+     15.6627,
+     4.3547,
+     11.2815,
      "2014-04-10"
     ],
-    "src": "bseaspx:500330_81",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.013617 = total (A+B+C) 61380854 shares / (A+B) 60556242 shares on the same quarter's BSE page; fii 9.15 -> 9.28, dii 15.45 -> 15.66."
+    "src": "bseaspx:500330_81.00 + BSE notice 3f66ac80-3647-4888-810a-a951a18fdfbc",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500330&qtrid=81.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated May 06, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2014' 2014-05-08T08:50:35 (id 3f66ac80-3647-4888-810a-a951a18fdfbc), not with the first notice 2014-04-10T13:08:56 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-04-10 -> 2014-05-08; values unchanged.",
+    "superseded": {
+     "cell": [
+      40.4292,
+      9.2758,
+      15.6627,
+      4.3547,
+      11.2815,
+      "2014-04-10"
+     ],
+     "was": [
+      39.8861,
+      9.1512,
+      15.4523,
+      4.2962,
+      11.1299,
+      "2014-04-10"
+     ],
+     "src": "bseaspx:500330_81",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.013617 = total (A+B+C) 61380854 shares / (A+B) 60556242 shares on the same quarter's BSE page; fii 9.15 -> 9.28, dii 15.45 -> 15.66."
+    }
    },
    "2014-06-30": {
     "cell": [
@@ -294319,6 +294519,26 @@
     "src": "bsetable3:511431:89",
     "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): 'WELLINGTON TRUST COMPANY, NATIONAL ASSOCIATION MULTIPLE COMMON TRUST FUNDS TRUST' 8,238,505 sh on its own non-institution line (29/0/0; FPI from Jun-2016); institutions Any-Other 35,989,316 (D1) on 529,196,170. fii 6.81 -> 8.3575.",
     "exact": true
+   },
+   "2014-03-31": {
+    "cell": [
+     38.7653,
+     1.7079,
+     5.834,
+     0.0,
+     0.0,
+     "2014-06-26"
+    ],
+    "was": [
+     38.7653,
+     1.7079,
+     5.834,
+     0.0,
+     0.0,
+     "2014-04-12"
+    ],
+    "src": "bseaspx:511431_81.00 + BSE notice 868df56a-197a-46f0-b67b-ab40084062d2",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=511431&qtrid=81.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated June 26, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2014' 2014-06-26T19:36:02 (id 868df56a-197a-46f0-b67b-ab40084062d2), not with the first notice 2014-04-12T11:35:44 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-04-12 -> 2014-06-26; values unchanged."
    }
   },
   "WELCORP": {
@@ -306342,6 +306562,26 @@
     ],
     "src": "bsetable3:532488:89 + bseaspx:532488:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-14 11:02:55; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): 'RELIANCE LIFE INSURANCE COMPANY LIMITED' 1.01 under non-institutions -> dii (R2, regex); 'HDFC STANDARD LIFE INSURANCE COMPANY LIMITED' 1.55 under non-institutions -> dii (R2, documented:filing). Date unchanged (shp_lag_fix carries the filing day). prom 52.08 -> 52.0820, fii 19.57 -> 19.5709, dii 14.01 -> 16.5733."
+   },
+   "2014-06-30": {
+    "cell": [
+     52.082,
+     18.9725,
+     11.7511,
+     11.6373,
+     0.0,
+     "2014-07-16"
+    ],
+    "was": [
+     52.082,
+     18.9725,
+     11.7511,
+     11.6373,
+     0.0,
+     "2014-07-11"
+    ],
+    "src": "bseaspx:532488_82.00 + BSE notice 1c17d880-6e86-4f5a-b48c-f748f2a6bc56",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532488&qtrid=82.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated July 14, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For June 30, 2014' 2014-07-16T13:33:48 (id 1c17d880-6e86-4f5a-b48c-f748f2a6bc56), not with the first notice 2014-07-11T12:27:35 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-07-11 -> 2014-07-16; values unchanged."
    }
   },
   "ELECON": {
@@ -306741,6 +306981,26 @@
     "src": "bsetable3:500495:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 3,850,595, VCF 0, AIF 0, FI/Banks 13,062, Insurance 475,779, PF 0, NBFC 53,472; total 122,576,878. dii 3.54 -> 3.5838, ins 0.39 -> 0.3881.",
     "exact": true
+   },
+   "2015-03-31": {
+    "cell": [
+     41.9694,
+     9.3135,
+     3.8144,
+     3.0089,
+     0.7961,
+     "2015-06-15"
+    ],
+    "was": [
+     41.9694,
+     9.3135,
+     3.8144,
+     3.0089,
+     0.7961,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:500495_85.00 + BSE notice f764f6c8-e183-4ffd-98aa-375cd1381a87",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500495&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated May 26, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-06-15T17:38:09 (id f764f6c8-e183-4ffd-98aa-375cd1381a87), not with the first notice 2015-04-07T10:46:11 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-07 -> 2015-06-15; values unchanged."
    }
   },
   "FEDERALBNK": {
@@ -334044,6 +334304,26 @@
     "src": "bsetable3:532221:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 3,010,451, VCF 0, AIF 0, FI/Banks 33,824, Insurance 0, PF 0, NBFC 21,485; total 105,159,306. dii 2.89 -> 2.9153, ins 0.0 -> 0.0.",
     "exact": true
+   },
+   "2015-03-31": {
+    "cell": [
+     31.25,
+     8.2019,
+     0.2628,
+     0.204,
+     0.0,
+     "2015-05-20"
+    ],
+    "was": [
+     31.25,
+     8.2019,
+     0.2628,
+     0.204,
+     0.0,
+     "2015-04-07"
+    ],
+    "src": "bseaspx:532221_85.00 + BSE notice 3a0c78ed-1591-4af8-adc1-e4f7b807dcea",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532221&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated May 20, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-05-20T18:46:31 (id 3a0c78ed-1591-4af8-adc1-e4f7b807dcea), not with the first notice 2015-04-07T12:11:23 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-07 -> 2015-05-20; values unchanged."
    }
   },
   "SRF": {
@@ -336760,6 +337040,26 @@
     ],
     "src": "bsexbrl:500575_1772017173224_SHP.xml",
     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 27.58 -> 28.76, fii 19.19 -> 19.19. R2-named Bodies Corporate 1.18 HDFC Standard Life Insurance Company Limited 1.18(new-format~:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json"
+   },
+   "2015-06-30": {
+    "cell": [
+     30.2986,
+     23.3403,
+     25.5262,
+     12.4817,
+     12.8636,
+     "2015-07-22"
+    ],
+    "was": [
+     30.2986,
+     23.3403,
+     25.5262,
+     12.4817,
+     12.8636,
+     "2015-07-17"
+    ],
+    "src": "bseaspx:500575_86.00 + BSE notice f6c72c60-3ce1-4607-acb8-8801a70ac942",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=500575&qtrid=86.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated July 20, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For June 30, 2015' 2015-07-22T13:15:46 (id f6c72c60-3ce1-4607-acb8-8801a70ac942), not with the first notice 2015-07-17T11:35:36 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-07-17 -> 2015-07-22; values unchanged."
    }
   },
   "APOLLOHOSP": {
@@ -347763,6 +348063,26 @@
     ],
     "src": "bsetable3:533151:89 + bseaspx:533151:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-05-02 13:52:12; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): 'ICICI PRUDENTIAL LIFE INSURANCE COMPANY LTD' 1.18 under non-institutions -> dii (R2, curated). Date unchanged (shp_lag_fix carries the filing day). prom 69.93 -> 69.9305, fii 18.48 -> 18.4783, dii 7.51 -> 8.6952."
+   },
+   "2015-06-30": {
+    "cell": [
+     69.9499,
+     18.4922,
+     7.7768,
+     7.7761,
+     0.0,
+     "2015-10-23"
+    ],
+    "was": [
+     69.9499,
+     18.4922,
+     7.7768,
+     7.7761,
+     0.0,
+     "2015-07-11"
+    ],
+    "src": "bseaspx:533151_86.00 + BSE notice ce66882d-57b7-4139-be85-ed5aac0821c1",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=533151&qtrid=86.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated October 19, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For June 30, 2015' 2015-10-23T15:53:49 (id ce66882d-57b7-4139-be85-ed5aac0821c1), not with the first notice 2015-07-11T11:00:45 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-07-11 -> 2015-10-23; values unchanged."
    }
   },
   "DBL": {
@@ -348031,6 +348351,26 @@
     ],
     "src": "bsexbrl:532848_2452017122025_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 6.43 -> 6.43, dii 10.09 -> 11.17. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.08 BIRLA SUN LIFE INSURANCE COMPANY LIMITED 1.08(regex)"
+   },
+   "2014-03-31": {
+    "cell": [
+     41.581,
+     13.7666,
+     0.229,
+     0.0011,
+     0.0,
+     "2014-05-02"
+    ],
+    "was": [
+     41.581,
+     13.7666,
+     0.229,
+     0.0011,
+     0.0,
+     "2014-04-17"
+    ],
+    "src": "bseaspx:532848_81.00 + BSE notice 6cab7319-b726-4a22-9799-219593c9910b",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532848&qtrid=81.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated May 02, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2014' 2014-05-02T17:49:33 (id 6cab7319-b726-4a22-9799-219593c9910b), not with the first notice 2014-04-17T13:15:42 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-04-17 -> 2014-05-02; values unchanged."
    }
   },
   "DREDGECORP": {
@@ -354832,6 +355172,26 @@
     ],
     "src": "bsetable3:532309:89 + bseaspx:532309:89",
     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-04-15 11:04:21; ShareholdingPattern.aspx qtrid 89: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): 'BIRLA SUN LIFE INSURANCE COMPANY LIMITED' 2.04 under non-institutions -> dii (R2, new-format~:InsuranceCompanies). Date unchanged (shp_lag_fix carries the filing day). prom 68.58 -> 68.5763, fii 2.78 -> 2.7823, dii 14.48 -> 16.5233."
+   },
+   "2015-03-31": {
+    "cell": [
+     68.5557,
+     1.9584,
+     14.644,
+     12.752,
+     1.5505,
+     "2015-04-20"
+    ],
+    "was": [
+     68.5557,
+     1.9584,
+     14.644,
+     12.752,
+     1.5505,
+     "2015-04-08"
+    ],
+    "src": "bseaspx:532309_85.00 + BSE notice fa746ff8-67ef-4b0b-a563-012a3bbfafb9",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532309&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated April 15, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-04-20T12:45:29 (id fa746ff8-67ef-4b0b-a563-012a3bbfafb9), not with the first notice 2015-04-08T10:56:09 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-08 -> 2015-04-20; values unchanged."
    }
   },
   "HAPPSTMNDS": {
@@ -375512,6 +375872,26 @@
     "src": "bsetable3:533540:89",
     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 297, VCF 1,024,937, AIF 0, FI/Banks 0, Insurance 0, PF 0, NBFC 0; 'Bajaj Holdings And Investment Limited' 2,430,882 (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N); total 42,310,724. dii 2.42 -> 8.1684, ins 0.0 -> 0.0.",
     "exact": true
+   },
+   "2014-03-31": {
+    "cell": [
+     31.2015,
+     6.6924,
+     8.0201,
+     4.2089,
+     0.0,
+     "2014-04-21"
+    ],
+    "was": [
+     31.2015,
+     6.6924,
+     8.0201,
+     4.2089,
+     0.0,
+     "2014-04-18"
+    ],
+    "src": "bseaspx:533540_81.00 + BSE notice b70b4a59-2861-4cec-9355-e3fcd9f8258d",
+    "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=533540&qtrid=81.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated April 21, 2014', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2014' 2014-04-21T16:35:15 (id b70b4a59-2861-4cec-9355-e3fcd9f8258d), not with the first notice 2014-04-18T12:39:54 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2014-04-18 -> 2014-04-21; values unchanged."
    }
   },
   "TTKPRESTIG": {

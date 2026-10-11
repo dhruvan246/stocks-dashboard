@@ -27772,3 +27772,17 @@ serves it — removed; a memo entry is not proof a file does not exist.
 "Nifty Microcap 250 · VGUARD · Inclusion revoked") → Nifty Smallcap 100 history moved (commit ee4b117e9). Reproduced
 locally: pypdf 6.20.0 gives CI's bytes, 6.19.0 the previous bytes, which match the notice. Both workflows that parse
 NSE notices now pin `pypdf==6.19.0`; membership re-run to restore.
+
+**§164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014): a BSE page-era .00 page CAN be the
+revision.** The 6-Oct finding "no .01 row = the .00 page is the original, public from the first notice" is WRONG for pages that
+say otherwise: 27 of the 116 stored revscan pages print 'Revised Shareholding Pattern for the Quarter ended ... vide its letter
+dated <D>' (`~/stocks-cache/shp/audit_all/revscan/selfrevised27.json`). Where <D> is later than the first notice, the page's
+figures became public with BSE's 'Revised Shareholding Pattern' notice, not the first one, and the original's figures are not
+held. 19 point-in-time Nifty 500 rows re-dated to the revision notice (shp_cell_fix date-only entries + shp_sub_dates `sub` moved,
+first notice kept as `sub_first_notice`; JPPOWER / TREEHOUSE needed the sub_dates move because their revision day equals the
+qe+21 convention the re-assert treats as stale): APOLLOTYRE Sep-14 -> 2015-02-11, DBCORP Jun-15 -> 2015-10-23, ESCORTS Mar-15 ->
+2015-06-15, VAKRANGEE Mar-14 -> 2014-06-26, RAYMOND Mar-14 -> 2014-05-08, SONATSOFTW Mar-15 -> 2015-05-20, DELTACORP Mar-14 ->
+2014-05-02 (these cross a month-end) and 12 shifts of 1-15 days. Not changed: letter on/before the first notice (ASTRAL Sep-14,
+RTNPOWER Jun-14, HDIL Jun-15), already at the revision (TUBEINVEST, IFBIND), TMPV Mar-15 (both versions held a day apart),
+MARKSANS Sep-14 / TAKE Dec-14 (not N500 then). Rule: read the page's own header text before calling a .00 page the original.
+
