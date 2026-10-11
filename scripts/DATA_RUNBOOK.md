@@ -27837,4 +27837,13 @@ reader missed a misspelt label (PHOENIXLTD x5, ASTRAL x2, SECURKLOUD) or read 'N
 Held: RAMCOCEM Jun-2016 (Amrit Petroleums Pvt Ltd may be an Indian company - no company-register lookup yet); 157 cells where DII holds
 the shares (DII session); 98 cells where DII is not explained; 159 cells where we are still HIGHER than the filing's own lines. Reader
 bug found and fixed: 'FDI' inside a legal name ('Valiant Mauritius Partners FDI Limited') is not a label (NAM-INDIA kept as 57A).
+**Part 59 (same day, 67 cells) - correcting part 57A again.** 57A's acceptance test (store - own = the FII moved by 'cross-filing' ledger
+entries) was too weak: several §158 / SW-2 entries it counted as cross-filing had moved rows by the filing's OWN foreign label, which the
+first reader did not recognise - 'Foreign Mutual Fund' (OFSS, IPCALAB, CUMMINSIND, MONSANTO, BSOFT, GHCL, ELGIEQUIP, BLUESTARCO 'FORIGN'),
+'Foreign Financial Institution(s)' (RAYMOND, PGHH, MANAPPURAM, DCAL, LMW, ASHIANA), 'Bank Foreign' (JPPOWER), 'Foreign Bank', and
+name-only labels (UNICHEMLAB City of New York Group Trust, HSBC). Restored to the filing's full own-line FII where DII equals the
+filing's own domestic rows. Reader rules now: domestic only for real category words (Banks, Insurance Companies, Mutual Funds, QIB ...),
+never for words inside a name ('Government Pension Fund Global' is a name -> FII, MHRIL). LESSON: the only acceptance test is the
+filing's own rows re-read by the corrected reader; a ledger entry's label says what it did, not whether it was cross-filing. Held:
+22 written cells whose correction touches DII (CANFINHOME x11 0.0015, RAJESHEXPO x2, NILKAMAL x4, RAYMOND x2, LMW, BALLARPUR, ANURAS).
 
