@@ -41855,6 +41855,27 @@
      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 1,183,120, VCF 0, AIF 0, FI/Banks 37,204, Insurance 9,456,001, PF 0, NBFC 0; 'HDFC Standard Life Insurance Company Ltd' 5,375,126 (IRDAI-registered life insurer no. 101: HDFC Life Insurance C); total 335,988,807. dii 3.17 -> 4.7774, ins 2.81 -> 4.4142.",
      "exact": true
     }
+   },
+   "2016-03-31": {
+    "cell": [
+     74.81,
+     14.241082,
+     3.18,
+     0.36,
+     2.81,
+     "2016-05-02"
+    ],
+    "was": [
+     74.81,
+     14.25,
+     3.18,
+     0.36,
+     2.81,
+     "2016-05-02"
+    ],
+    "src": "bseaspx:500164:89 + bsetable3:500164:89",
+    "why": "\u00a7164r batch 30 part 56 (2026-10-11, Quantmac v8 'please check your side', read cell by cell): fii 14.25 was the 2-decimal seam page fill; BSE page + Table III qtrid 89: institutions 'Any Others' (117 holders) 47,848,443 / 335,988,807 = 14.241082. Date unchanged (shp_lag_fix carries the 2016-04-20 notice).",
+    "exact": true
    }
   },
   "GOLDENTOBC": {
@@ -148370,22 +148391,42 @@
    "2015-12-31": {
     "cell": [
      51.72,
+     20.455189,
+     11.5654,
+     11.56,
+     0.0,
+     "2016-03-23"
+    ],
+    "was": [
+     51.72,
      20.46,
      11.5654,
      11.56,
      0.0,
      "2016-01-21"
     ],
-    "was": [
-     51.72,
-     20.46,
-     13.1,
-     11.56,
-     0.0,
-     "2016-01-21"
-    ],
-    "src": "bseaspx:523642:qtrid88",
-    "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.53pp) folded in by a minority route. Healed to the page's own domestic rows (11.5654). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    "src": "bsetable3:523642:88 + BSE notices 1f904b72 / aff9370f",
+    "why": "\u00a7164r batch 30 part 56 (2026-10-11, Quantmac v8 'please check your side', read cell by cell): fii 20.46 was a Trendlyne-rows fill; BSE Table III qtrid 88 (authorised 2016-03-23 13:43:13 = BSE's second notice aff9370f): FPI 28,049,633 / 137,127,222 = 20.455189 (ROWANHILL INVESTMENTS 2,095,426 on the institutions 'Foreign Corporate Bodies' row is a company-type label, not FII). Two notices, 2016-01-20 and 2016-03-23; the only archived reading between them (Moneycontrol 2016-03-04) has an empty table, so the January figures are unproven -> the figures date from 2016-03-23 (part-40 rule, as JSWHL).",
+    "superseded": {
+     "cell": [
+      51.72,
+      20.46,
+      11.5654,
+      11.56,
+      0.0,
+      "2016-01-21"
+     ],
+     "was": [
+      51.72,
+      20.46,
+      13.1,
+      11.56,
+      0.0,
+      "2016-01-21"
+     ],
+     "src": "bseaspx:523642:qtrid88",
+     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (1.53pp) folded in by a minority route. Healed to the page's own domestic rows (11.5654). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+    }
    },
    "2018-09-30": {
     "cell": [
@@ -334271,18 +334312,38 @@
      2.8385,
      1.5014,
      0.0,
-     "2016-02-02"
+     "2016-03-18"
     ],
     "was": [
-     31.52,
-     12.01,
-     2.49,
-     1.5,
+     31.5238,
+     12.0069,
+     2.8385,
+     1.5014,
      0.0,
      "2016-02-02"
     ],
-    "src": "bsetable3:532221:88 + bseaspx:532221:88",
-    "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-03-18 11:08:58; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): NBFC row 0.34 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 31.52 -> 31.5238, fii 12.01 -> 12.0069, dii 2.49 -> 2.8385."
+    "src": "bsetable3:532221:88 + BSE notices 11a558e4 / 00650996",
+    "why": "\u00a7164r batch 30 part 56 (2026-10-11, Quantmac v8 'please check your side', read cell by cell): values unchanged (Table III qtrid 88 = 12.0069). The table is authorised 2016-03-18 11:08:58 = BSE's second notice 00650996; first notice 2016-02-02. Archived readings exist only 2016-01-20 (before it) and 2016-03-21 (after the re-publication), so the February figures are unproven -> the figures date from 2016-03-18 (part-40 rule).",
+    "superseded": {
+     "cell": [
+      31.5238,
+      12.0069,
+      2.8385,
+      1.5014,
+      0.0,
+      "2016-02-02"
+     ],
+     "was": [
+      31.52,
+      12.01,
+      2.49,
+      1.5,
+      0.0,
+      "2016-02-02"
+     ],
+     "src": "bsetable3:532221:88 + bseaspx:532221:88",
+     "why": "\u00a7164t part 2 seam re-read (user 2026-10-04 'Yes, write the 120'): this quarter's stored cell was an archived-Moneycontrol value (shp_fill_hist_2010_2016, Wayback capture; Moneycontrol's own FII / DII split). Replaced by the company's own filing as BSE serves it (Table III api, authorised 2016-03-18 11:08:58; ShareholdingPattern.aspx qtrid 88: share total + promoter row), read with our rules (t3_compute + the reader corrections of \u00a7164t part 2): NBFC row 0.34 -> DII (R3). Date unchanged (shp_lag_fix carries the filing day). prom 31.52 -> 31.5238, fii 12.01 -> 12.0069, dii 2.49 -> 2.8385."
+    }
    },
    "2016-03-31": {
     "cell": [

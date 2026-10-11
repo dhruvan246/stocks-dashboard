@@ -27786,3 +27786,18 @@ qe+21 convention the re-assert treats as stale): APOLLOTYRE Sep-14 -> 2015-02-11
 RTNPOWER Jun-14, HDIL Jun-15), already at the revision (TUBEINVEST, IFBIND), TMPV Mar-15 (both versions held a day apart),
 MARKSANS Sep-14 / TAKE Dec-14 (not N500 then). Rule: read the page's own header text before calling a .00 page the original.
 
+**§164r batch 30 part 56 (2026-10-11, Quantmac v8 'please check your side', the OUR ERROR cells; label "§164r part 56").** PIIND
+Dec-15: fii 20.46 (Trendlyne-rows fill) -> 20.455189 (Table III qtrid 88: FPI 28,049,633 / 137,127,222; ROWANHILL on the 'Foreign
+Corporate Bodies' row is a company-type label) and dated 2016-03-23 (second notice; the only reading in between, Moneycontrol
+2016-03-04, has an empty table - part-40 rule). SONATSOFTW Dec-15: dated 2016-03-18 (second notice; readings only before the
+first notice and after the re-publication). Both: shp_sub_dates `sub` moved, first notice kept as `sub_first_notice`. GODREJIND
+Mar-16: fii 14.25 -> 14.241082 (institutions Any Others 47,848,443 / 335,988,807). RENUKA Jun-18: the shp_lag_fix entry that
+served BSE's only copy (the 'Revised' 2018-11-14 XML, no stated reason) from the ORIGINAL's 2018-07-17 notice is neutralised
+(`sub` = 20181114, old entry under `prev`): no copy or reading of the July original exists on our side and Quantmac's own window
+values disagree with each other (1.2564 at Jul-31, 2.53 at Aug-31). **Not changed - JISLJALEQS Jun-16:** BSE's SHP list gives
+the 2021-01-04 re-upload's own reason, 'to reflect the correct status of Individual for ordinary equity shares', which confines
+the change to the Individual rows, so the FII row is the original's and the 2016-07-18 date stands (rule difference with
+Quantmac, who treat a revision-only quarter as unpublished until the revision). Lesson: before re-dating a revision-only quarter,
+read `revised_reson` on BSE's SHPQNewFormat row - it is the cell's own evidence of what changed. JKCEMENT Dec-18 (allotment-day
+pattern we never held) is the next item.
+
