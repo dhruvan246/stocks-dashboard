@@ -25384,29 +25384,28 @@
    "2016-09-30": {
     "cell": [
      69.09,
-     4.5028,
+     4.80358,
      0.1009,
-     0.0752,
+     0.075175,
      0.0,
      "2016-10-12",
      17869
     ],
     "was": [
      69.09,
-     4.8039,
+     4.502455,
      0.1009,
-     0.0752,
+     0.075175,
      0.0,
      "2016-10-12",
      17869
     ],
     "src": "bsexbrl:524742_12102016145251_SHP.xml",
-    "why": "\u00a7164r batch 30 part 25 (2026-10-06, batch-7 label at block level): the unnamed institutions Any-Other block (1 holder, 45,500 sh) is labelled 'FOREIGN BODY CORPORATES' by the company in Dec-2016 (same size) - public. fii 4.8039 -> 4.5028.",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 680,321; inst-rest D1 (unnamed) 45,500 on base 15,110,000 = 4.80358; the stored 4.502455 left them out. DII (0.1009) is below the filing's own domestic rows (0.145632), so it holds none of these shares. fii -> 4.80358; dii untouched.",
     "superseded": {
      "cell": [
       69.09,
-      4.8039,
+      4.5028,
       0.1009,
       0.0752,
       0.0,
@@ -25415,15 +25414,38 @@
      ],
      "was": [
       69.09,
-      4.5028,
-      0.402,
+      4.8039,
+      0.1009,
       0.0752,
       0.0,
       "2016-10-12",
       17869
      ],
      "src": "bsexbrl:524742_12102016145251_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.30pp, holders: ) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.1009 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164r batch 30 part 25 (2026-10-06, batch-7 label at block level): the unnamed institutions Any-Other block (1 holder, 45,500 sh) is labelled 'FOREIGN BODY CORPORATES' by the company in Dec-2016 (same size) - public. fii 4.8039 -> 4.5028.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       69.09,
+       4.8039,
+       0.1009,
+       0.0752,
+       0.0,
+       "2016-10-12",
+       17869
+      ],
+      "was": [
+       69.09,
+       4.5028,
+       0.402,
+       0.0752,
+       0.0,
+       "2016-10-12",
+       17869
+      ],
+      "src": "bsexbrl:524742_12102016145251_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.30pp, holders: ) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.1009 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2016-12-31": {
@@ -25710,6 +25732,182 @@
     ],
     "src": "bsexbrl:524742_61202015227_SHP.xml",
     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,619,876; noninst:Foreign Portfolio Investor (Category - I 31,480 on base 75,642,750 = 7.471114. The stored 7.429497 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 7.471114; dii untouched."
+   },
+   "2017-12-31": {
+    "cell": [
+     69.06,
+     5.85935,
+     0.145255,
+     0.110656,
+     0.0,
+     "2018-01-11",
+     26364
+    ],
+    "was": [
+     69.06,
+     5.829264,
+     0.145255,
+     0.110656,
+     0.0,
+     "2018-01-11",
+     26364
+    ],
+    "src": "bsexbrl:524742_1012018183849_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 4,405,568; noninst:Foreign Portfolio Investors (Category II 22,738 on base 75,576,750 = 5.85935; the stored 5.829264 left them out. DII (0.145255) is below the filing's own domestic rows (0.177119), so it holds none of these shares. fii -> 5.85935; dii untouched."
+   },
+   "2018-03-31": {
+    "cell": [
+     69.04,
+     6.219352,
+     0.095645,
+     0.059455,
+     0.0,
+     "2018-04-14",
+     24512
+    ],
+    "was": [
+     69.04,
+     6.206805,
+     0.095645,
+     0.059455,
+     0.0,
+     "2018-04-14",
+     24512
+    ],
+    "src": "bsexbrl:524742_134201817554_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 4,692,562; noninst:Foreign Portfolio Investor (Category - I 9,486 on base 75,603,500 = 6.219352; the stored 6.206805 left them out. DII (0.095645) is below the filing's own domestic rows (0.127829), so it holds none of these shares. fii -> 6.219352; dii untouched."
+   },
+   "2018-06-30": {
+    "cell": [
+     69.05,
+     6.916927,
+     0.020994,
+     3.6e-05,
+     0.0,
+     "2018-07-11",
+     24747
+    ],
+    "was": [
+     69.05,
+     6.90311,
+     0.020994,
+     3.6e-05,
+     0.0,
+     "2018-07-11",
+     24747
+    ],
+    "src": "bsexbrl:524742_1072018161159_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,218,993; noninst:Foreign Portfolio Investor (Category - I 10,446 on base 75,603,500 = 6.916927; the stored 6.90311 left them out. DII (0.020994) is below the filing's own domestic rows (0.055115), so it holds none of these shares. fii -> 6.916927; dii untouched."
+   },
+   "2018-09-30": {
+    "cell": [
+     69.05,
+     7.097361,
+     0.026689,
+     1.9e-05,
+     0.0,
+     "2018-10-19",
+     25186
+    ],
+    "was": [
+     69.05,
+     7.083544,
+     0.026689,
+     1.9e-05,
+     0.0,
+     "2018-10-19",
+     25186
+    ],
+    "src": "bsexbrl:524742_18102018154956_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,355,407; noninst:Foreign Portfolio Investor (Category - I 10,446 on base 75,603,500 = 7.097361; the stored 7.083544 left them out. DII (0.026689) is below the filing's own domestic rows (0.060592), so it holds none of these shares. fii -> 7.097361; dii untouched."
+   },
+   "2018-12-31": {
+    "cell": [
+     69.05,
+     7.100893,
+     0.025433,
+     1.9e-05,
+     0.0,
+     "2019-01-19",
+     26062
+    ],
+    "was": [
+     69.05,
+     7.079828,
+     0.025433,
+     1.9e-05,
+     0.0,
+     "2019-01-19",
+     26062
+    ],
+    "src": "bsexbrl:524742_1912019141614_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,352,598; noninst:Foreign Portfolio Investor (Category - I 15,926 on base 75,603,500 = 7.100893; the stored 7.079828 left them out. DII (0.025433) is below the filing's own domestic rows (0.061743), so it holds none of these shares. fii -> 7.100893; dii untouched."
+   },
+   "2019-03-31": {
+    "cell": [
+     69.04,
+     7.337031,
+     0.018264,
+     1.9e-05,
+     0.0,
+     "2019-05-07",
+     26143
+    ],
+    "was": [
+     69.04,
+     7.315749,
+     0.018264,
+     1.9e-05,
+     0.0,
+     "2019-05-07",
+     26143
+    ],
+    "src": "bsexbrl:524742_75201912459_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,532,919; noninst:Foreign Portfolio Investor (Category - I 16,096 on base 75,630,250 = 7.337031; the stored 7.315749 left them out. DII (0.018264) is below the filing's own domestic rows (0.050278), so it holds none of these shares. fii -> 7.337031; dii untouched."
+   },
+   "2019-06-30": {
+    "cell": [
+     69.03,
+     7.590335,
+     0.029902,
+     6.5e-05,
+     0.0,
+     "2019-07-18",
+     25557
+    ],
+    "was": [
+     69.03,
+     7.569861,
+     0.029902,
+     6.5e-05,
+     0.0,
+     "2019-07-18",
+     25557
+    ],
+    "src": "bsexbrl:524742_177201915364_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,726,051; noninst:Foreign Portfolio Investor (Category - I 15,487 on base 75,642,750 = 7.590335; the stored 7.569861 left them out. DII (0.029902) is below the filing's own domestic rows (0.061944), so it holds none of these shares. fii -> 7.590335; dii untouched."
+   },
+   "2019-09-30": {
+    "cell": [
+     69.03,
+     7.805225,
+     0.042436,
+     0.001368,
+     0.0,
+     "2019-10-16",
+     25366
+    ],
+    "was": [
+     69.03,
+     7.777536,
+     0.042436,
+     0.001368,
+     0.0,
+     "2019-10-16",
+     25366
+    ],
+    "src": "bsexbrl:524742_15102019141618_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 5,883,142; noninst:Foreign Portfolio Investor (Category - I 20,945 on base 75,642,750 = 7.805225; the stored 7.777536 left them out. DII (0.042436) is below the filing's own domestic rows (0.074266), so it holds none of these shares. fii -> 7.805225; dii untouched."
    }
   },
   "CCAVENUE": {
@@ -38294,7 +38492,7 @@
    "2016-06-30": {
     "cell": [
      71.27,
-     17.8717,
+     18.681216,
      0.2117,
      0.0341,
      0.0,
@@ -38303,20 +38501,19 @@
     ],
     "was": [
      71.27,
-     18.6804,
+     17.8717,
      0.2117,
-     0.0341,
+     0.034085,
      0.0,
      "2016-07-12",
      106394
     ],
     "src": "bsexbrl:532843_1272016115034_SHP.xml",
-    "why": "\u00a7164r batch 30 part 35 (2026-10-06, per-company review): the institutions Any-Other block = INTERNATIONAL FINANCE CORPORATION 19,245,462 (institution-listed, inside the block - option A -> fii) + a rest of exactly 4,419,643 sh, which the company labels in Dec-2015: a second 'Foreign Corporate Bodies' holder 3,737,449 (no institution document; no FDI line in the company's 2022 form) and 'Foreign Nationals' 12,000 -> public (batch 7: the block follows the company's own labels), 'Foreign Collaborators' 670,194 kept as stored (open user question). FII = FPI 62,866,287 + IFC + 670,194 on 463,199,994. fii 18.6804 -> 17.8717.",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 62,866,287; inst-rest D1 (unnamed) 4,419,643; named on the unlabelled institutions line: INTERNATIONAL FINANCE CORPORATION 19,245,462 on base 463,199,994 = 18.681216; the stored 17.8717 left them out. DII (0.2117) is below the filing's own domestic rows (0.249091), so it holds none of these shares. fii -> 18.681216; dii untouched.",
     "superseded": {
      "cell": [
       71.27,
-      18.6804,
+      17.8717,
       0.2117,
       0.0341,
       0.0,
@@ -38325,15 +38522,38 @@
      ],
      "was": [
       71.27,
-      13.5714,
-      5.3205,
+      18.6804,
+      0.2117,
       0.0341,
       0.0,
       "2016-07-12",
       106394
      ],
      "src": "bsexbrl:532843_1272016115034_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (5.11pp, holders: INTERNATIONAL FINANCE CORPORATION; The Amount for FCB listed on Singapore Exchange) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.2117 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164r batch 30 part 35 (2026-10-06, per-company review): the institutions Any-Other block = INTERNATIONAL FINANCE CORPORATION 19,245,462 (institution-listed, inside the block - option A -> fii) + a rest of exactly 4,419,643 sh, which the company labels in Dec-2015: a second 'Foreign Corporate Bodies' holder 3,737,449 (no institution document; no FDI line in the company's 2022 form) and 'Foreign Nationals' 12,000 -> public (batch 7: the block follows the company's own labels), 'Foreign Collaborators' 670,194 kept as stored (open user question). FII = FPI 62,866,287 + IFC + 670,194 on 463,199,994. fii 18.6804 -> 17.8717.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       71.27,
+       18.6804,
+       0.2117,
+       0.0341,
+       0.0,
+       "2016-07-12",
+       106394
+      ],
+      "was": [
+       71.27,
+       13.5714,
+       5.3205,
+       0.0341,
+       0.0,
+       "2016-07-12",
+       106394
+      ],
+      "src": "bsexbrl:532843_1272016115034_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (5.11pp, holders: INTERNATIONAL FINANCE CORPORATION; The Amount for FCB listed on Singapore Exchange) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 0.2117 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2016-09-30": {
@@ -53799,24 +54019,46 @@
    "2019-09-30": {
     "cell": [
      28.64,
-     26.83,
-     0.13,
-     0.0,
+     26.859425,
+     0.1367,
+     0.0036,
      0.0,
      "2019-10-21",
      210545
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
     "was": [
      28.64,
-     26.83,
-     0.13,
+     26.8309,
+     0.1367,
+     0.0036,
      0.0,
-     0.0,
-     "2020-11-10",
+     "2019-10-21",
      210545
     ],
-    "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 407d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    "src": "bsexbrl:500219_412021174851_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 133,184,620; inst:Other Foreign Bank 1,000; noninst:Foreign Portfolio Investor (Category - I 134,710 on base 496,363,303 = 26.859425; the stored 26.8309 left them out. DII (0.1367) is below the filing's own domestic rows (0.169462), so it holds none of these shares. fii -> 26.859425; dii untouched.",
+    "superseded": {
+     "cell": [
+      28.64,
+      26.83,
+      0.13,
+      0.0,
+      0.0,
+      "2019-10-21",
+      210545
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      28.64,
+      26.83,
+      0.13,
+      0.0,
+      0.0,
+      "2020-11-10",
+      210545
+     ],
+     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 407d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -78814,7 +79056,7 @@
    "2016-06-30": {
     "cell": [
      52.13,
-     16.2445,
+     16.267504,
      9.3733,
      4.9443,
      4.2821,
@@ -78824,16 +79066,25 @@
     "was": [
      52.13,
      16.2445,
-     12.1441,
-     4.9443,
-     4.2821,
+     9.3733,
+     4.94418,
+     4.282009,
      "2016-07-21",
      997795
     ],
     "src": "bsexbrl:500111_23122016183336_SHP.xml",
-    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 12.1441 as printed). dii 12.1441 -> 9.3733; fii is the FII session's call.",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 16,484,656; inst:Other Foreign Institutional Investors 24,514,851 on base 252,033,169 = 16.267504; the stored 16.2445 left them out. DII (9.3733) is below the filing's own domestic rows (12.172974), so it holds none of these shares. fii -> 16.267504; dii untouched.",
     "superseded": {
      "cell": [
+      52.13,
+      16.2445,
+      9.3733,
+      4.9443,
+      4.2821,
+      "2016-07-21",
+      997795
+     ],
+     "was": [
       52.13,
       16.2445,
       12.1441,
@@ -78842,23 +79093,36 @@
       "2016-07-21",
       997795
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
-     "was": [
-      52.13,
-      6.5408,
-      21.9002,
-      4.9443,
-      4.2821,
-      "2016-07-21",
-      997795
-     ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+     "src": "bsexbrl:500111_23122016183336_SHP.xml",
+     "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 12.1441 as printed). dii 12.1441 -> 9.3733; fii is the FII session's call.",
+     "superseded": {
+      "cell": [
+       52.13,
+       16.2445,
+       12.1441,
+       4.9443,
+       4.2821,
+       "2016-07-21",
+       997795
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
+      "was": [
+       52.13,
+       6.5408,
+       21.9002,
+       4.9443,
+       4.2821,
+       "2016-07-21",
+       997795
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2016-09-30": {
     "cell": [
      52.13,
-     19.0788,
+     19.097186,
      7.7786,
      3.3283,
      4.306,
@@ -78868,16 +79132,25 @@
     "was": [
      52.13,
      19.0788,
-     10.5494,
-     3.3283,
-     4.306,
+     7.7786,
+     3.328411,
+     4.306116,
      "2016-12-27",
      969442
     ],
     "src": "bsexbrl:500111_23122016183413_SHP.xml",
-    "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 10.5494 as printed). dii 10.5494 -> 7.7786; fii is the FII session's call.",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 29,308,024; inst:Other Foreign Institutional Investors 18,820,967 on base 252,021,378 = 19.097186; the stored 19.0788 left them out. DII (7.7786) is below the filing's own domestic rows (10.574978), so it holds none of these shares. fii -> 19.097186; dii untouched.",
     "superseded": {
      "cell": [
+      52.13,
+      19.0788,
+      7.7786,
+      3.3283,
+      4.306,
+      "2016-12-27",
+      969442
+     ],
+     "was": [
       52.13,
       19.0788,
       10.5494,
@@ -78886,17 +79159,30 @@
       "2016-12-27",
       969442
      ],
-     "was": [
-      52.13,
-      11.6289,
-      18.0425,
-      3.3283,
-      4.306,
-      "2016-12-27",
-      969442
-     ],
      "src": "bsexbrl:500111_23122016183413_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.45pp, holders: Foreign Institutional Investors; Morgan Stanley Mauritius Company Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.5494 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 10.5494 as printed). dii 10.5494 -> 7.7786; fii is the FII session's call.",
+     "superseded": {
+      "cell": [
+       52.13,
+       19.0788,
+       10.5494,
+       3.3283,
+       4.306,
+       "2016-12-27",
+       969442
+      ],
+      "was": [
+       52.13,
+       11.6289,
+       18.0425,
+       3.3283,
+       4.306,
+       "2016-12-27",
+       969442
+      ],
+      "src": "bsexbrl:500111_23122016183413_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (7.45pp, holders: Foreign Institutional Investors; Morgan Stanley Mauritius Company Limited) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.5494 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2016-12-31": {
@@ -148632,7 +148918,7 @@
    "2016-09-30": {
     "cell": [
      64.85,
-     12.8725,
+     19.341655,
      7.0263,
      7.0241,
      0.0,
@@ -148641,20 +148927,19 @@
     ],
     "was": [
      64.85,
-     8.9115,
-     10.9873,
-     7.0241,
+     12.8725,
+     7.0263,
+     7.024216,
      0.0,
      "2016-10-07",
      29889
     ],
     "src": "bsexbrl:539551_7102016123246_SHP.xml",
-    "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (8,094,713 sh, 42 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 3.9610 is added. fii 8.9115 -> 12.8725; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FVCI 17,447,576; inst-rest D1 (unnamed) 764,263; named on the unlabelled institutions line: CDC GROUP PLC 11,765,046; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 9,549,876 on base 204,360,804 = 19.341655; the stored 12.8725 left them out. DII (7.0263) is below the filing's own domestic rows (10.989935), so it holds none of these shares. fii -> 19.341655; dii untouched.",
     "superseded": {
      "cell": [
       64.85,
-      8.9115,
+      12.8725,
       7.0263,
       7.0241,
       0.0,
@@ -148671,9 +148956,19 @@
       29889
      ],
      "src": "bsexbrl:539551_7102016123246_SHP.xml",
-     "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (3.9610, 42 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 10.9873 -> 7.0263; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
+     "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (8,094,713 sh, 42 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 3.9610 is added. fii 8.9115 -> 12.8725; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
+     "exact": true,
      "superseded": {
       "cell": [
+       64.85,
+       8.9115,
+       7.0263,
+       7.0241,
+       0.0,
+       "2016-10-07",
+       29889
+      ],
+      "was": [
        64.85,
        8.9115,
        10.9873,
@@ -148682,21 +148977,12 @@
        "2016-10-07",
        29889
       ],
-      "was": [
-       64.85,
-       19.3415,
-       10.9873,
-       7.0241,
-       0.0,
-       "2016-10-07",
-       29889
-      ],
       "src": "bsexbrl:539551_7102016123246_SHP.xml",
-      "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 19.3415 -> 8.9115 (share counts of 539551_7102016123246_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+      "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (3.9610, 42 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 10.9873 -> 7.0263; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
       "superseded": {
        "cell": [
         64.85,
-        19.3415,
+        8.9115,
         10.9873,
         7.0241,
         0.0,
@@ -148705,15 +148991,37 @@
        ],
        "was": [
         64.85,
-        8.5375,
-        21.7911,
+        19.3415,
+        10.9873,
         7.0241,
         0.0,
         "2016-10-07",
         29889
        ],
        "src": "bsexbrl:539551_7102016123246_SHP.xml",
-       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.80pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.9873 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 19.3415 -> 8.9115 (share counts of 539551_7102016123246_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "superseded": {
+        "cell": [
+         64.85,
+         19.3415,
+         10.9873,
+         7.0241,
+         0.0,
+         "2016-10-07",
+         29889
+        ],
+        "was": [
+         64.85,
+         8.5375,
+         21.7911,
+         7.0241,
+         0.0,
+         "2016-10-07",
+         29889
+        ],
+        "src": "bsexbrl:539551_7102016123246_SHP.xml",
+        "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.80pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 10.9873 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       }
       }
      }
     }
@@ -148721,7 +149029,7 @@
    "2016-12-31": {
     "cell": [
      64.85,
-     13.482,
+     18.741651,
      6.4562,
      6.4542,
      0.0,
@@ -148730,20 +149038,19 @@
     ],
     "was": [
      64.85,
-     8.3116,
-     11.6266,
-     6.4542,
+     13.482,
+     6.4562,
+     6.454309,
      0.0,
      "2017-01-11",
      28642
     ],
     "src": "bsexbrl:539551_71201716491_SHP.xml",
-    "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (10,566,204 sh, 54 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 5.1704 is added. fii 8.3116 -> 13.482; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FVCI 16,547,576; inst-rest D1 (unnamed) 438,090; named on the unlabelled institutions line: CDC GROUP PLC 11,765,046; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 9,549,876 on base 204,360,804 = 18.741651; the stored 13.482 left them out. DII (6.4562) is below the filing's own domestic rows (11.63202), so it holds none of these shares. fii -> 18.741651; dii untouched.",
     "superseded": {
      "cell": [
       64.85,
-      8.3116,
+      13.482,
       6.4562,
       6.4542,
       0.0,
@@ -148760,9 +149067,19 @@
       28642
      ],
      "src": "bsexbrl:539551_71201716491_SHP.xml",
-     "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (5.1704, 54 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 11.6266 -> 6.4562; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
+     "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (10,566,204 sh, 54 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 5.1704 is added. fii 8.3116 -> 13.482; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
+     "exact": true,
      "superseded": {
       "cell": [
+       64.85,
+       8.3116,
+       6.4562,
+       6.4542,
+       0.0,
+       "2017-01-11",
+       28642
+      ],
+      "was": [
        64.85,
        8.3116,
        11.6266,
@@ -148771,21 +149088,12 @@
        "2017-01-11",
        28642
       ],
-      "was": [
-       64.85,
-       18.7416,
-       11.6266,
-       6.4542,
-       0.0,
-       "2017-01-11",
-       28642
-      ],
       "src": "bsexbrl:539551_71201716491_SHP.xml",
-      "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 18.7416 -> 8.3116 (share counts of 539551_71201716491_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+      "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (5.1704, 54 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 11.6266 -> 6.4562; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
       "superseded": {
        "cell": [
         64.85,
-        18.7416,
+        8.3116,
         11.6266,
         6.4542,
         0.0,
@@ -148794,15 +149102,37 @@
        ],
        "was": [
         64.85,
-        8.0972,
-        22.2708,
+        18.7416,
+        11.6266,
         6.4542,
         0.0,
         "2017-01-11",
         28642
        ],
        "src": "bsexbrl:539551_71201716491_SHP.xml",
-       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.64pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.6266 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 18.7416 -> 8.3116 (share counts of 539551_71201716491_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "superseded": {
+        "cell": [
+         64.85,
+         18.7416,
+         11.6266,
+         6.4542,
+         0.0,
+         "2017-01-11",
+         28642
+        ],
+        "was": [
+         64.85,
+         8.0972,
+         22.2708,
+         6.4542,
+         0.0,
+         "2017-01-11",
+         28642
+        ],
+        "src": "bsexbrl:539551_71201716491_SHP.xml",
+        "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (10.64pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 11.6266 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       }
       }
      }
     }
@@ -148810,7 +149140,7 @@
    "2017-03-31": {
     "cell": [
      63.85,
-     14.0722,
+     17.750227,
      6.3359,
      6.3318,
      0.0,
@@ -148819,20 +149149,19 @@
     ],
     "was": [
      63.85,
-     8.0869,
-     12.3212,
-     6.3318,
+     14.0722,
+     6.3359,
+     6.331831,
      0.0,
      "2017-04-10",
      29560
     ],
     "src": "bsexbrl:539551_742017165721_SHP.xml",
-    "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (12,231,673 sh, 51 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 5.9853 is added. fii 8.0869 -> 14.0722; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FVCI 15,922,736; inst-rest D1 (unnamed) 604,009; named on the unlabelled institutions line: CDC GROUP PLC 11,765,046; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 7,982,716 on base 204,360,804 = 17.750227; the stored 14.0722 left them out. DII (6.3359) is below the filing's own domestic rows (12.323884), so it holds none of these shares. fii -> 17.750227; dii untouched.",
     "superseded": {
      "cell": [
       63.85,
-      8.0869,
+      14.0722,
       6.3359,
       6.3318,
       0.0,
@@ -148849,9 +149178,19 @@
       29560
      ],
      "src": "bsexbrl:539551_742017165721_SHP.xml",
-     "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (5.9853, 51 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 12.3212 -> 6.3359; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
+     "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (12,231,673 sh, 51 holders; named: none above 1 %) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 5.9853 is added. fii 8.0869 -> 14.0722; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
+     "exact": true,
      "superseded": {
       "cell": [
+       63.85,
+       8.0869,
+       6.3359,
+       6.3318,
+       0.0,
+       "2017-04-10",
+       29560
+      ],
+      "was": [
        63.85,
        8.0869,
        12.3212,
@@ -148860,21 +149199,12 @@
        "2017-04-10",
        29560
       ],
-      "was": [
-       63.85,
-       17.7501,
-       12.3212,
-       6.3318,
-       0.0,
-       "2017-04-10",
-       29560
-      ],
       "src": "bsexbrl:539551_742017165721_SHP.xml",
-      "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 3.91 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.7501 -> 8.0869 (share counts of 539551_742017165721_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+      "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (5.9853, 51 holders; named in it: nobody). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 12.3212 -> 6.3359; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
       "superseded": {
        "cell": [
         63.85,
-        17.7501,
+        8.0869,
         12.3212,
         6.3318,
         0.0,
@@ -148883,15 +149213,37 @@
        ],
        "was": [
         63.85,
-        7.7914,
-        22.2797,
+        17.7501,
+        12.3212,
         6.3318,
         0.0,
         "2017-04-10",
         29560
        ],
        "src": "bsexbrl:539551_742017165721_SHP.xml",
-       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.96pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.3212 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 3.91 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 17.7501 -> 8.0869 (share counts of 539551_742017165721_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "superseded": {
+        "cell": [
+         63.85,
+         17.7501,
+         12.3212,
+         6.3318,
+         0.0,
+         "2017-04-10",
+         29560
+        ],
+        "was": [
+         63.85,
+         7.7914,
+         22.2797,
+         6.3318,
+         0.0,
+         "2017-04-10",
+         29560
+        ],
+        "src": "bsexbrl:539551_742017165721_SHP.xml",
+        "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.96pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.3212 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       }
       }
      }
     }
@@ -148899,7 +149251,7 @@
    "2017-06-30": {
     "cell": [
      63.85,
-     14.404,
+     16.883659,
      6.2987,
      6.2953,
      0.0,
@@ -148908,20 +149260,19 @@
     ],
     "was": [
      63.85,
-     8.0028,
-     12.6999,
-     6.2953,
+     14.404,
+     6.2987,
+     6.295351,
      0.0,
      "2017-07-07",
      33783
     ],
     "src": "bsexbrl:539551_77201712747_SHP.xml",
-    "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (13,081,585 sh, 53 holders; named: Franklin Templeton Investment Funds) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 6.4012 is added. fii 8.0028 -> 14.404; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FVCI 15,212,782; inst-rest D1 (unnamed) 1,141,952; named on the unlabelled institutions line: CDC GROUP PLC 11,765,046; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 6,383,801 on base 204,360,804 = 16.883659; the stored 14.404 left them out. DII (6.2987) is below the filing's own domestic rows (12.702528), so it holds none of these shares. fii -> 16.883659; dii untouched.",
     "superseded": {
      "cell": [
       63.85,
-      8.0028,
+      14.404,
       6.2987,
       6.2953,
       0.0,
@@ -148938,9 +149289,19 @@
       33783
      ],
      "src": "bsexbrl:539551_77201712747_SHP.xml",
-     "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (6.4012, 53 holders; named in it: Franklin Templeton Investment Funds). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 12.6999 -> 6.2987; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
+     "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (13,081,585 sh, 53 holders; named: Franklin Templeton Investment Funds) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 6.4012 is added. fii 8.0028 -> 14.404; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
+     "exact": true,
      "superseded": {
       "cell": [
+       63.85,
+       8.0028,
+       6.2987,
+       6.2953,
+       0.0,
+       "2017-07-07",
+       33783
+      ],
+      "was": [
        63.85,
        8.0028,
        12.6999,
@@ -148949,21 +149310,12 @@
        "2017-07-07",
        33783
       ],
-      "was": [
-       63.85,
-       16.8836,
-       12.6999,
-       6.2953,
-       0.0,
-       "2017-07-07",
-       33783
-      ],
       "src": "bsexbrl:539551_77201712747_SHP.xml",
-      "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 3.12 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 16.8836 -> 8.0028 (share counts of 539551_77201712747_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+      "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (6.4012, 53 holders; named in it: Franklin Templeton Investment Funds). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 12.6999 -> 6.2987; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
       "superseded": {
        "cell": [
         63.85,
-        16.8836,
+        8.0028,
         12.6999,
         6.2953,
         0.0,
@@ -148972,15 +149324,37 @@
        ],
        "was": [
         63.85,
-        7.444,
-        22.1392,
+        16.8836,
+        12.6999,
         6.2953,
         0.0,
         "2017-07-07",
         33783
        ],
        "src": "bsexbrl:539551_77201712747_SHP.xml",
-       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.44pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.6999 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JP MORGAN MAURITIUS HOLDINGS IV LIMITED 3.12 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 16.8836 -> 8.0028 (share counts of 539551_77201712747_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "superseded": {
+        "cell": [
+         63.85,
+         16.8836,
+         12.6999,
+         6.2953,
+         0.0,
+         "2017-07-07",
+         33783
+        ],
+        "was": [
+         63.85,
+         7.444,
+         22.1392,
+         6.2953,
+         0.0,
+         "2017-07-07",
+         33783
+        ],
+        "src": "bsexbrl:539551_77201712747_SHP.xml",
+        "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (9.44pp, holders: CDC GROUP PLC; JP MORGAN MAURITIUS HOLDINGS IV LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.6999 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+       }
       }
      }
     }
@@ -150027,7 +150401,7 @@
    "2016-06-30": {
     "cell": [
      64.85,
-     13.4681,
+     19.848473,
      6.1406,
      6.1344,
      0.0,
@@ -150036,20 +150410,19 @@
     ],
     "was": [
      64.85,
-     9.4184,
-     10.1903,
+     13.4681,
+     6.1406,
      6.1344,
      0.0,
      "2016-08-02",
      31088
     ],
     "src": "bsexbrl:539551_282016124552_SHP.xml",
-    "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (8,276,066 sh, 38 holders; named: GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 4.0497 is added. fii 9.4184 -> 13.4681; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
-    "exact": true,
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FVCI 19,247,576; named on the unlabelled institutions line: CDC GROUP PLC 11,765,046; JPMORGAN MAURITIUS HOLDINGS IV LIMITED 9,549,876 on base 204,360,804 = 19.848473; the stored 13.4681 left them out. DII (6.1406) is below the filing's own domestic rows (10.603159), so it holds none of these shares. fii -> 19.848473; dii untouched.",
     "superseded": {
      "cell": [
       64.85,
-      9.4184,
+      13.4681,
       6.1406,
       6.1344,
       0.0,
@@ -150066,9 +150439,19 @@
       31088
      ],
      "src": "bsexbrl:539551_282016124552_SHP.xml",
-     "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (4.0497, 38 holders; named in it: GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 10.1903 -> 6.1406; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
+     "why": "\u00a7164r batch 30 part 45 (2026-10-06, foreign holders filed inside domestic lines - FII side of the DII session's \u00a7164s part 27): NH filed its whole FPI block under 'Financial Institutions / Banks' (8,276,066 sh, 38 holders; named: GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES) - no FPI line in this filing; the company's correctly tagged filings (Mar-18, Sep-18 on) show FPI 42-60 holders and Banks 3 holders / 0.01 %, and every named holder has Institutions (Foreign) listings -> FII (the documents rule). Our fii held only the FVCI / Any-Other parts; the Banks line 4.0497 is added. fii 9.4184 -> 13.4681; dii as written by the DII session. [2026-10-06 18:05 IST: `was` re-based to the store value on origin (= the superseded \u00a7164s part 27 entry's `was`) - that entry was superseded before any CI run applied it, so the store never held its cell and apply_cell_fix skipped this entry; the cell is unchanged: this fii plus the DII session's dii.]",
+     "exact": true,
      "superseded": {
       "cell": [
+       64.85,
+       9.4184,
+       6.1406,
+       6.1344,
+       0.0,
+       "2016-08-02",
+       31088
+      ],
+      "was": [
        64.85,
        9.4184,
        10.1903,
@@ -150077,22 +150460,12 @@
        "2016-08-02",
        31088
       ],
-      "was": [
-       64.85,
-       9.8383,
-       10.1903,
-       6.1344,
-       0.0,
-       "2016-08-02",
-       31088
-      ],
       "src": "bsexbrl:539551_282016124552_SHP.xml",
-      "why": "\u00a7164r batch 30 part 22 (2026-10-06, per-company review): the institutions 'Any Other' block's Category rows 'CLEARING MEMBERS' 10,456 + 'BODIES CORPORATES' 834,708 are company-type labels (never FII) and had been counted in fii; CDC Group plc and JPMorgan Mauritius Holdings IV are public (batch 9). FII = FVCI 19,247,576 / 204,360,804. fii 9.8383 -> 9.4184.",
-      "exact": true,
+      "why": "\u00a7164s part 27 (2026-10-06, user: 'work on the 56 foreign holder cells'): this filing has NO Foreign Portfolio Investor line; the company tagged its whole FPI block under 'Financial Institutions/Banks' (4.0497, 38 holders; named in it: GMO EMERGING DOMESTIC OPPORTUNITIES FUND, A SERIES). The company's correctly-tagged filings either side (Mar-18, Sep-18 on) show Banks/FIs 0.01-0.02 and FPI 9.5-10.4, so this line is the FPI block, not banks - it leaves dii whole (38-59 holders here vs 3 bank holders, ~0.015, when tagged correctly; that small real-bank part cannot be separated from this filing). dii 10.1903 -> 6.1406; fii is the FII session's call (the FPI block is not in the stored fii, which is the CDC block).",
       "superseded": {
        "cell": [
         64.85,
-        9.8383,
+        9.4184,
         10.1903,
         6.1344,
         0.0,
@@ -150101,7 +150474,7 @@
        ],
        "was": [
         64.85,
-        20.2683,
+        9.8383,
         10.1903,
         6.1344,
         0.0,
@@ -150109,11 +150482,12 @@
         31088
        ],
        "src": "bsexbrl:539551_282016124552_SHP.xml",
-       "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 20.2683 -> 9.8383 (share counts of 539551_282016124552_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
+       "why": "\u00a7164r batch 30 part 22 (2026-10-06, per-company review): the institutions 'Any Other' block's Category rows 'CLEARING MEMBERS' 10,456 + 'BODIES CORPORATES' 834,708 are company-type labels (never FII) and had been counted in fii; CDC Group plc and JPMorgan Mauritius Holdings IV are public (batch 9). FII = FVCI 19,247,576 / 204,360,804. fii 9.8383 -> 9.4184.",
+       "exact": true,
        "superseded": {
         "cell": [
          64.85,
-         20.2683,
+         9.8383,
          10.1903,
          6.1344,
          0.0,
@@ -150122,17 +150496,26 @@
         ],
         "was": [
          64.85,
-         19.8483,
-         10.6103,
+         20.2683,
+         10.1903,
          6.1344,
          0.0,
          "2016-08-02",
          31088
         ],
         "src": "bsexbrl:539551_282016124552_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.85 -> 20.27, dii 10.61 -> 10.19. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.42 | R1: R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_164_audit.json",
+        "why": "\u00a7164r batch 9 - curated-list leftovers (user 2026-10-04 'fix them under today's rules'): the company lists CDC GROUP PLC 5.76; JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 inside its Institutions block; under option A (user 2026-10-04) such a holder is FII only with at least one other filing listing it under Institutions (Foreign) - none does (CDC Group plc 0 institution vs 64 company-type listings; JP Morgan Mauritius Holdings IV none, no GLEIF / NSDL / FVCI record; Arcee Holdings Ltd 0 vs 1 and its own name says OCB; DEG 0 vs 8). The old curated list had made it FII. fii 20.2683 -> 9.8383 (share counts of 539551_282016124552_SHP.xml), dii unchanged; IFC and CDC India Opportunities (institution-listed) and the unnamed rest (D1) keep their places.",
         "superseded": {
          "cell": [
+          64.85,
+          20.2683,
+          10.1903,
+          6.1344,
+          0.0,
+          "2016-08-02",
+          31088
+         ],
+         "was": [
           64.85,
           19.8483,
           10.6103,
@@ -150141,17 +150524,30 @@
           "2016-08-02",
           31088
          ],
-         "was": [
-          64.85,
-          9.4183,
-          21.0303,
-          6.1344,
-          0.0,
-          "2016-08-02",
-          31088
-         ],
          "src": "bsexbrl:539551_282016124552_SHP.xml",
-         "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.03 -> 10.61, fii 9.42 -> 19.85. R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_dii_rowfix_audit.json"
+         "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.85 -> 20.27, dii 10.61 -> 10.19. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.42 | R1: R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_164_audit.json",
+         "superseded": {
+          "cell": [
+           64.85,
+           19.8483,
+           10.6103,
+           6.1344,
+           0.0,
+           "2016-08-02",
+           31088
+          ],
+          "was": [
+           64.85,
+           9.4183,
+           21.0303,
+           6.1344,
+           0.0,
+           "2016-08-02",
+           31088
+          ],
+          "src": "bsexbrl:539551_282016124552_SHP.xml",
+          "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 21.03 -> 10.61, fii 9.42 -> 19.85. R1-unresolved Other CLEARING MEMBERS 0.01  keyword; R1-unresolved Other BODIES CORPORATES 0.41  keyword; R1-foreign-holders Other 0.0 public=0.00 fii=5.76 CDC GROUP PLC 5.76 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=4.67 JPMORGAN MAURITIUS HOLDINGS IV LIMITED 4.67 foreign->fii(regex). Evidence: _shp_dii_rowfix_audit.json"
+         }
         }
        }
       }
@@ -260387,6 +260783,28 @@
     ],
     "src": "bsexbrl:532940_27102018154626_SHP.xml",
     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 18,615,369; inst-rest D1 (unnamed) 8,957 on base 75,665,506 = 24.614024. The stored 24.602187 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 24.614024; dii untouched."
+   },
+   "2017-09-30": {
+    "cell": [
+     43.94,
+     25.102047,
+     10.589412,
+     9.694487,
+     0.0,
+     "2017-10-12",
+     24789
+    ],
+    "was": [
+     43.94,
+     25.091063,
+     10.589412,
+     9.694487,
+     0.0,
+     "2017-10-12",
+     24789
+    ],
+    "src": "bsexbrl:532940_11102017163749_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 18,985,280; inst-rest D1 (unnamed) 8,311 on base 75,665,506 = 25.102047; the stored 25.091063 left them out. DII (10.589412) is below the filing's own domestic rows (10.6251), so it holds none of these shares. fii -> 25.102047; dii untouched."
    }
   },
   "THERMAX": {
@@ -296515,6 +296933,94 @@
     ],
     "src": "bsetable3:500003:89 + bseaspx:500003:89",
     "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 5.33 -> 7.11, dii 13.63 -> 2.79. Rows: B1i-label Trust 0.06 pub; B1i-label Domestic Companies 2.73 pub; B1i-label Non Domestic Companies 0.00 pub; B1i-label Foreign Bodies 6.35 pub; B1i-label Foreign Institutional Investors 1.77 fii; B3b-NBFC R3 0.08 dii"
+   },
+   "2021-03-31": {
+    "cell": [
+     57.74,
+     14.791375,
+     2.316792,
+     1.698095,
+     0.009145,
+     "2021-04-19",
+     48994
+    ],
+    "was": [
+     57.74,
+     14.777558,
+     2.316792,
+     1.698095,
+     0.009145,
+     "2021-04-19",
+     48994
+    ],
+    "src": "bsexbrl:500003_164202119346_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 51,869,228; noninst:Foreign Portfolio Investor (Category - I 48,500 on base 351,000,000 = 14.791375; the stored 14.777558 left them out. DII (2.316792) is below the filing's own domestic rows (2.347562), so it holds none of these shares. fii -> 14.791375; dii untouched."
+   },
+   "2021-06-30": {
+    "cell": [
+     57.74,
+     14.971397,
+     1.91567,
+     1.439973,
+     0.000285,
+     "2021-07-22",
+     55662
+    ],
+    "was": [
+     57.74,
+     14.958434,
+     1.91567,
+     1.439973,
+     0.000285,
+     "2021-07-22",
+     55662
+    ],
+    "src": "bsexbrl:500003_2072021153730_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 52,504,103; noninst:Foreign Portfolio Investor (Category - I 45,500 on base 351,000,000 = 14.971397; the stored 14.958434 left them out. DII (1.91567) is below the filing's own domestic rows (1.946439), so it holds none of these shares. fii -> 14.971397; dii untouched."
+   },
+   "2021-09-30": {
+    "cell": [
+     58.07,
+     16.1306,
+     1.105137,
+     0.963734,
+     0.000285,
+     "2021-10-21",
+     69071
+    ],
+    "was": [
+     58.07,
+     16.117358,
+     1.105137,
+     0.963734,
+     0.000285,
+     "2021-10-21",
+     69071
+    ],
+    "src": "bsexbrl:500003_201020212121_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 56,571,927; noninst:Foreign Portfolio Investor (Category - I 46,478 on base 351,000,000 = 16.1306; the stored 16.117358 left them out. DII (1.105137) is below the filing's own domestic rows (1.135935), so it holds none of these shares. fii -> 16.1306; dii untouched."
+   },
+   "2021-12-31": {
+    "cell": [
+     58.07,
+     15.538327,
+     0.937975,
+     0.853373,
+     0.001595,
+     "2022-01-14",
+     79344
+    ],
+    "was": [
+     58.07,
+     15.52499,
+     0.937975,
+     0.853373,
+     0.001595,
+     "2022-01-14",
+     79344
+    ],
+    "src": "bsexbrl:500003_131202218457_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 54,492,715; noninst:Foreign Portfolio Investor (Category - I 46,812 on base 351,000,000 = 15.538327; the stored 15.52499 left them out. DII (0.937975) is below the filing's own domestic rows (0.967172), so it holds none of these shares. fii -> 15.538327; dii untouched."
    }
   },
   "CUMMINSIND": {
@@ -349110,6 +349616,28 @@
     ],
     "src": "bseaspx:532221_85.00 + BSE notice 3a0c78ed-1591-4af8-adc1-e4f7b807dcea",
     "why": "\u00a7164r batch 30 part 55 (2026-10-11, Quantmac v8 'please check your side' APOLLOTYRE Sep-2014, then every stored page of the same kind): BSE ShareholdingPattern.aspx?scripcd=532221&qtrid=85.00 - the page our row is read from - states 'Revised Shareholding Pattern ... vide its letter dated May 20, 2015', so its figures are the revision's, public with BSE's notice 'Revised Shareholding Pattern For March 31, 2015' 2015-05-20T18:46:31 (id 3a0c78ed-1591-4af8-adc1-e4f7b807dcea), not with the first notice 2015-04-07T12:11:23 (id per shp_sub_dates). The original's figures are not held anywhere. Row re-dated 2015-04-07 -> 2015-05-20; values unchanged."
+   },
+   "2017-06-30": {
+    "cell": [
+     30.95,
+     12.956352,
+     2.155632,
+     1.986754,
+     0.0,
+     "2017-07-14",
+     39673
+    ],
+    "was": [
+     30.95,
+     12.927775,
+     2.155632,
+     1.986754,
+     0.0,
+     "2017-07-14",
+     39673
+    ],
+    "src": "bsexbrl:532221_1372017182056_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 13,594,758; inst:Other FOREIGN INSTITUTIONAL INVESTORS 30,052 on base 105,159,306 = 12.956352; the stored 12.927775 left them out. DII (2.155632) is below the filing's own domestic rows (2.179142), so it holds none of these shares. fii -> 12.956352; dii untouched."
    }
   },
   "SRF": {
@@ -378321,6 +378849,72 @@
     ],
     "src": "bsexbrl:505355_1842018123216_SHP.xml",
     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 1,576,485; noninst:Foreign Portfolio Investor (Category - I 10,280 on base 70,459,960 = 2.25201. The stored 2.2374 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 2.25201; dii untouched."
+   },
+   "2018-06-30": {
+    "cell": [
+     68.18,
+     2.300939,
+     5.586334,
+     4.799045,
+     0.720405,
+     "2018-07-18",
+     22737
+    ],
+    "was": [
+     68.18,
+     2.28635,
+     5.586334,
+     4.799045,
+     0.720405,
+     "2018-07-18",
+     22737
+    ],
+    "src": "bsexbrl:505355_1872018104251_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 1,610,961; noninst:Foreign Portfolio Investor (Category - I 10,280 on base 70,459,960 = 2.300939; the stored 2.28635 left them out. DII (5.586334) is below the filing's own domestic rows (5.619238), so it holds none of these shares. fii -> 2.300939; dii untouched."
+   },
+   "2018-09-30": {
+    "cell": [
+     68.18,
+     2.250044,
+     5.577534,
+     4.781087,
+     0.720405,
+     "2018-10-16",
+     23451
+    ],
+    "was": [
+     68.18,
+     2.235454,
+     5.577534,
+     4.781087,
+     0.720405,
+     "2018-10-16",
+     23451
+    ],
+    "src": "bsexbrl:505355_16102018134934_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 1,575,100; noninst:Foreign Portfolio Investor (Category - I 10,280 on base 70,459,960 = 2.250044; the stored 2.235454 left them out. DII (5.577534) is below the filing's own domestic rows (5.614055), so it holds none of these shares. fii -> 2.250044; dii untouched."
+   },
+   "2018-12-31": {
+    "cell": [
+     68.2,
+     2.264708,
+     5.615274,
+     4.398487,
+     0.720405,
+     "2019-01-07",
+     23490
+    ],
+    "was": [
+     68.2,
+     2.253095,
+     5.615274,
+     4.398487,
+     0.720405,
+     "2019-01-07",
+     23490
+    ],
+    "src": "bsexbrl:505355_412019162540_SHP.xml",
+    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 1,587,530; noninst:Foreign Portfolio Investor (Category - I 8,182 on base 70,459,960 = 2.264708; the stored 2.253095 left them out. DII (5.615274) is below the filing's own domestic rows (5.635357), so it holds none of these shares. fii -> 2.264708; dii untouched."
    }
   },
   "NETWORK18": {

@@ -27858,4 +27858,9 @@ Investors', NH 2017-18 FPI block on 'Financial Institutions/Banks', JINDALSAW Ma
 practice) or does the row label win (the older 'a holder's FDI NAME never splits a row' rule)? SHRIRAMCIT 2016-19 Dynasty Acquisition
 (FPI) Ltd +20.35, SPANDANA Valiant Mauritius Partners FDI Ltd, ZENSARTECH Marina Holdco (FPI), NAM-INDIA / RNAVAL Valiant FDI, APLAPOLLO
 'Emblem FII', AXISBANK 2021-22 Bain 'BC ASIA ... - FDI'.
+**Part 61 (same day, 27 cells):** FII-missing own foreign rows where the stored DII is BELOW the filing's own domestic rows (so DII cannot
+hold them): NH Jun-16..Jun-17 (CDC Group PLC + JPMorgan Mauritius Holdings IV named on the unlabelled institutions line, + the unnamed
+rest), FORTIS Jun-16 (IFC named there), CAPLIPOINT / AEGISLOG / NESCO / JISLJALEQS (Non-Institutions FPI rows), RELCAPITAL / SONATSOFTW
+('Foreign Institutional Investors' rows), JKIL (unnamed rest). Held: SHILPAMED Mar-17 and RAMCOCEM Jun-16 (a named 'Private Limited'
+holder may be Indian - no company-register lookup), and every cell where the stored DII is ABOVE the filing's own domestic rows (DII session).
 
