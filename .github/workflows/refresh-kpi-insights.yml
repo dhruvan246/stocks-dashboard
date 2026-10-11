@@ -20,7 +20,7 @@ on:
   # which runs 4-7 h late in this repo (measured 2026-09-29, runbook §217). The dispatcher reads the
   # "dispatch-cron" lines below (UTC, standard cron syntax); edit them to change the time.
   # dispatch-cron: "20 0 * * *"  # 05:50 IST — just after the Gemini free quota resets (00:00 UTC, measured from the
-  #   429 "retry in" times on 2026-10-09 and 2026-10-11); this run uses the free models no other job uses
+  #   429 "retry in" times on 2026-10-09 and 2026-10-11)
   # dispatch-cron: "30 8 * * *"  # 14:00 IST — second daily pass while the 2020→date backfill runs
   repository_dispatch:
     types: [tick-refresh-kpi-insights]   # sent by scripts/cron_dispatch.py
@@ -64,16 +64,14 @@ jobs:
       - name: Read filings
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: gemini-3.6-flash     # gemini-2.0-flash retired (404) — measured 2026-09-05
-          # Free-tier quota is per MODEL (20 requests/day measured for 3.6-flash, which the fundamentals job
-          # mostly spends). The reader moves down this list as each model's daily quota runs out. The 00:20 UTC
-          # run leaves 3.6-flash to fundamentals; the 08:30 UTC run also takes whatever 3.6-flash is left.
-          GEMINI_MODELS_EARLY: gemini-3.8-flash,gemini-3-flash-preview,gemini-2.5-flash
-          GEMINI_MODELS_LATE: gemini-3.8-flash,gemini-3-flash-preview,gemini-2.5-flash,gemini-3.6-flash
+          # Free-tier quota is per MODEL (20 requests/day measured). gemini-3.6-flash is NEVER used here (user,
+          # 2026-10-11): it belongs to the fundamentals and BSE jobs, which run until 20:10 IST. The reader moves
+          # down this list as each model's daily quota runs out.
+          GEMINI_MODELS: gemini-3.8-flash,gemini-3-flash-preview,gemini-2.5-flash
+          GEMINI_MODEL: gemini-3.8-flash
           KPI_DOC_CACHE: /tmp/kpi_docs
         run: |
           set -e
-          if [ "$(date -u +%H)" -lt 4 ]; then export GEMINI_MODELS="$GEMINI_MODELS_EARLY"; else export GEMINI_MODELS="$GEMINI_MODELS_LATE"; fi
           echo "free models this run: $GEMINI_MODELS"
           if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY secret missing — nothing can be read"; exit 1; fi
           rm -rf /tmp/kpi_answers && mkdir -p /tmp/kpi_answers   # each read's answer is saved here so the
