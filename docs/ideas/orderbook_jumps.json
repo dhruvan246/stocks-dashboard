@@ -1,6 +1,6 @@
 {
  "built": "2026-10-12 20:45 IST",
- "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked.",
+ "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
    "key": "500780",
@@ -307,11 +307,11 @@
    "faded": false
   },
   {
-   "key": "NSE:JASH",
+   "key": "544402",
    "name": "Jash Engineering Ltd",
    "nse": "JASH",
    "bse": "544402",
-   "isin": "INE039O01011",
+   "isin": "INE039O01029",
    "latest_value_cr": 932,
    "latest_as_on": "2026-08-01",
    "latest_doc": "https://nsearchives.nseindia.com/corporate/JASH_11082026174225_JASHQ1PRESENTATION11082026.pdf",
@@ -333,7 +333,11 @@
    "verdict": "NOT A JUMP",
    "note": "Script compared the consolidated Rs 932 cr with Jash standalone Rs 512 cr (1-Sep-2025) - a segment-vs-total misread. Consolidated (combined, after inter-company) books read: 1-Aug-24 939; 1-Sep-24 946; 1-Nov-24 873; 1-Feb-25 933; 1-May-25 838; 1-Aug-25 875; 1-Sep-25 863; 1-Nov-25 890; 1-Feb-26 923; 1-May-26 899; 1-Aug-26 932; 1-Sep-26 937 (AGM deck 296+641). Every year-on-year change is below +10%; never >=50%. BSE scrip code 544402 appears on the company's 2026 letters (e.g. 3-Jul-2026 newsletter filing).",
    "checked_on": "2026-10-11",
-   "faded": false
+   "faded": false,
+   "isin_as_recorded": "INE039O01011",
+   "alt_keys": [
+    "NSE:JASH"
+   ]
   },
   {
    "key": "531209",
@@ -536,7 +540,10 @@
    "verdict": "CORRECTED",
    "note": "Script year-ago 1,400 cr was only the irrigation order book (call remark); the whole book was 8,305 cr at Jun-25. Deck series (Rs Mn): Jun-24 49,215, Sep-24 44,060, Dec-24 38,884, Mar-25 50,518, Jun-25 83,050 (+68.7% YoY, first >=50%), Sep-25 82,159 (+86%), Dec-25 88,488 (+128%), Mar-26 86,725 (+72%), Jun-26 86,674 (+4.4%). The jump came from a new mining contract (Rs 35,524 Mn, ~41-43% of the book) first counted at Jun-25; the latest YoY is only +4.4% because Jun-25 already held it. Latest excludes 2 recently won HAM projects and a mining project not yet added. Identity: current ISIN INE634I01029 per BSE scrip master (NSE announcement feed still tags the older INE634I01011).",
    "checked_on": "2026-10-11",
-   "faded": true
+   "faded": true,
+   "alt_keys": [
+    "NSE:KNRCON"
+   ]
   },
   {
    "key": "544410",
@@ -836,7 +843,7 @@
    "faded": false
   },
   {
-   "key": "NSE:GOLDIAM",
+   "key": "526729",
    "name": "Goldiam International Ltd",
    "nse": "GOLDIAM",
    "bse": "526729",
@@ -862,7 +869,10 @@
    "verdict": "CONFIRMED",
    "note": "Quarterly 'order book position' from results releases (Rs mn): Jun-24 1500, Sep-24 2700, Dec-24 1750, Mar-25 1400, Jun-25 1400, Sep-25 2000 (-26% YoY), Dec-25 1800 (+3%), Mar-26 2000 (+43%), Jun-26 2250 (+60.7%, first >=50%). Caveat: this is a short-cycle export order book the company says is executed in 3-4 months, so it swings by season (Sep-24 was 2700). Identity: BSE 526729; current ISIN INE025B01025 per BSE scrip master (NSE announcement feed still tags INE025B01017).",
    "checked_on": "2026-10-11",
-   "faded": false
+   "faded": false,
+   "alt_keys": [
+    "NSE:GOLDIAM"
+   ]
   },
   {
    "key": "543364",
@@ -958,93 +968,6 @@
    "key": "544332",
    "trigger_yoy_pct": 169.5,
    "qualifies": true
-  },
-  {
-   "key": "NSE:KNRCON",
-   "name": "KNR Constructions Limited",
-   "nse": "KNRCON",
-   "bse": "532942",
-   "isin": "INE634I01029",
-   "latest_value_cr": 8667.0,
-   "latest_as_on": "2026-06-30",
-   "latest_doc": "https://nsearchives.nseindia.com/corporate/KNRCON_20082026150313_TranscriptSE14082026.pdf",
-   "latest_doc_title": "Q1 FY27 earnings call transcript (call 14-Aug-2026, filed 20-Aug-2026): 'As on 30th June 2026, the company total order book stands at INR8,667 crores. This order book does not include the recently won 2 HAM project and mining project. Including the HAM project and the mining project, the company's total order book stands at INR15,234 crores.'",
-   "year_ago_value_cr": 8305.0,
-   "year_ago_as_on": "2025-06-30",
-   "year_ago_doc": "https://nsearchives.nseindia.com/corporate/KNRCON_20082025143043_TranscriptQ1.pdf",
-   "year_ago_doc_title": "Q1 FY26 earnings call transcript (filed 20-Aug-2025): 'As of June 30, 2025, the company's total order book stands at INR8,305 crores'",
-   "true_yoy_pct": 4.4,
-   "qualifies": false,
-   "trigger_filed": null,
-   "trigger_doc": null,
-   "trigger_doc_title": null,
-   "trigger_as_on": null,
-   "trigger_book_cr": null,
-   "trigger_prev_cr": null,
-   "trigger_prev_as_on": null,
-   "trigger_yoy_pct": null,
-   "verdict": "NOT A JUMP",
-   "note": "Both transcripts re-read this run. On the company's own like-for-like 30-June totals the book went Rs 8,305 cr -> Rs 8,667 cr, +4.4%. The signal's +519% came from a year-ago quote of Rs 1,400 cr that is the IRRIGATION SEGMENT alone ('we have almost INR1,400 crores order book is there of irrigation'), not the company total. The Rs 15,234 cr figure in the 2026 call is as of the 14-Aug-2026 call date and includes two HAM projects and a mining project won after the quarter closed, so it is not comparable with a 30-June figure either; on that basis the change would be +83%, but across different as-on dates and definitions. Market cap is far above the Rs 7,500 cr band in any case.",
-   "checked_on": "2026-10-12",
-   "faded": false
-  },
-  {
-   "key": "544402",
-   "name": "Jash Engineering Ltd",
-   "nse": null,
-   "bse": "544402",
-   "isin": "INE05AN01025",
-   "latest_value_cr": 932.0,
-   "latest_as_on": "2026-08-14",
-   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/9439449a-05cb-4592-aff1-e4961dcacb95.pdf",
-   "latest_doc_title": "Q1 FY27 earnings call transcript (filed 18-Aug-2026): 'As far as our consolidated order book condition is concerned, our current order book stands at Rs.932 crore, of which India has Rs.293 crore and outside India the order book is Rs.639 crore'",
-   "year_ago_value_cr": 863.0,
-   "year_ago_as_on": "2025-09-01",
-   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/f314c318-fd0d-41fa-ac14-d7bac12b2a38.pdf",
-   "year_ago_doc_title": "AGM investor presentation (filed 18-Sep-2025): 'Consolidated Order Book as on 1st September 2025 ... Combined order book stood at Rs 863 Cr' (Jash Engineering Rs 512 cr + Jash USA/Rodney Hunt Rs 343 cr + Waterfront Rs 8 cr; within India Rs 292 cr + outside India Rs 571 cr)",
-   "true_yoy_pct": 8.0,
-   "qualifies": false,
-   "trigger_filed": null,
-   "trigger_doc": null,
-   "trigger_doc_title": null,
-   "trigger_as_on": null,
-   "trigger_book_cr": null,
-   "trigger_prev_cr": null,
-   "trigger_prev_as_on": null,
-   "trigger_yoy_pct": null,
-   "verdict": "NOT A JUMP",
-   "note": "Both documents re-read this run. Consolidated book Rs 863 cr (1-Sep-2025) -> Rs 932 cr (call of 14-Aug-2026), +8.0% over about 11.5 months. The signal's +82% used Rs 512 cr as the year-ago figure, which is the Jash Engineering Ltd STANDALONE line inside the same consolidated table whose own total reads Rs 863 cr. The 2026 transcript's entity split (Jash Engineering Rs 559 cr, Rodney Hunt Rs 369 cr, Waterfront Rs 34 cr, Jash Processing Equipment Rs 29 cr) sums to Rs 991 cr before inter-company elimination, consistent with the Rs 932 cr consolidated total the company states.",
-   "checked_on": "2026-10-12",
-   "faded": false
-  },
-  {
-   "key": "526729",
-   "name": "Goldiam International Ltd",
-   "nse": "GOLDIAM",
-   "bse": "526729",
-   "isin": "INE025B01025",
-   "latest_value_cr": 225.0,
-   "latest_as_on": "2026-06-30",
-   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/27b9caac-7356-4442-b13a-2992a3397cdd.pdf",
-   "latest_doc_title": "Q1 FY27 investor presentation / press release (filed 7-Aug-2026): 'Order Book Status: Goldiam's order book position as on June 30, 2026 was at about Rs 2250 million. This order book is expected to be executed in next three-four months. E-commerce sales ... are not part of the order book.'",
-   "year_ago_value_cr": 140.0,
-   "year_ago_as_on": "2025-06-30",
-   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/e8fb8bb8-8661-4163-8a6d-64bbb640308e.pdf",
-   "year_ago_doc_title": "Q1 FY26 investor presentation (filed 11-Aug-2025): 'Goldiam's order book position as on June 30, 2025 was at about Rs 1400 million' (including an Rs 800 mn lab-grown-diamond export order)",
-   "true_yoy_pct": 60.7,
-   "qualifies": true,
-   "trigger_filed": "2026-08-07",
-   "trigger_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/27b9caac-7356-4442-b13a-2992a3397cdd.pdf",
-   "trigger_doc_title": "Q1 FY27 investor presentation / press release, 7-Aug-2026 - the first filing whose stated order book was 50%+ above the figure the company stated about a year earlier",
-   "trigger_as_on": "2026-06-30",
-   "trigger_book_cr": 225.0,
-   "trigger_prev_cr": 140.0,
-   "trigger_prev_as_on": "2025-06-30",
-   "trigger_yoy_pct": 60.7,
-   "verdict": "CONFIRMED",
-   "note": "Both figures are the company's own 'order book position as on June 30', same wording, same exclusion of e-commerce sales, read from both presentations this run: Rs 1,400 mn -> Rs 2,250 mn, +60.71%. Trigger dated by walking the whole stated series back, each figure read from its own filing: Rs 150 cr (30-Jun-2024, filed 9-Aug-2024), Rs 270 cr (30-Sep-2024, filed 7-Nov-2024), Rs 175 cr (31-Dec-2024, filed 7-Feb-2025), Rs 140 cr (31-Mar-2025, filed 26-May-2025), Rs 140 cr (30-Jun-2025), Rs 200 cr (30-Sep-2025, filed 12-Nov-2025), Rs 180 cr (31-Dec-2025, filed 7-Feb-2026), Rs 200 cr (31-Mar-2026, filed 27-May-2026), Rs 225 cr (30-Jun-2026). Year-on-year by quarter: Jun-25 -6.7%, Sep-25 -25.9%, Dec-25 +2.9%, Mar-26 +42.9%, Jun-26 +60.7% - so 7-Aug-2026 is the first filing to cross +50%. READ THIS WITH THE EXECUTION PERIOD: the company says the book runs out in three to four months, and consolidated Q1 FY27 revenue alone was Rs 363.7 cr, so Rs 225 cr is under one quarter of sales and the series has swung between Rs 140 cr and Rs 270 cr across nine quarters. Market cap Rs 4,634 cr (BSE master, 12-Oct-2026).",
-   "checked_on": "2026-10-12",
-   "faded": false
   }
  ]
 }

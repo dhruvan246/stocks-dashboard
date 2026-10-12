@@ -1,7 +1,7 @@
 {
- "built": "2026-10-12 20:45 IST",
+ "built": "2026-10-13 00:18 IST",
  "rule": "Order book checked against the company's own filings; tracked from the first filing that showed it 50%+ above the figure stated about a year earlier. Entry = close on that filing day (next trading day if a holiday). Returns use bonus/split-adjusted closes.",
- "n": 25,
+ "n": 24,
  "stale": [],
  "rows": [
   {
@@ -49,7 +49,8 @@
    "days": 7,
    "adj_events": 0,
    "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 382
   },
   {
    "key": "NSE:MARINE",
@@ -96,7 +97,8 @@
    "days": 56,
    "adj_events": 0,
    "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 6503
   },
   {
    "key": "543214",
@@ -143,10 +145,11 @@
    "days": 63,
    "adj_events": 2,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 1621
   },
   {
-   "key": "NSE:GOLDIAM",
+   "key": "526729",
    "name": "Goldiam International Ltd",
    "nse": "GOLDIAM",
    "bse": "526729",
@@ -180,53 +183,6 @@
    "first_trigger_prev_cr": null,
    "first_trigger_yoy_pct": null,
    "entry_date": "2026-08-07",
-   "entry_close": 372.9,
-   "last_date": "2026-10-12",
-   "last_close": 307.65,
-   "ret_pct": -17.5,
-   "peak_pct": 3.0,
-   "peak_date": "2026-08-11",
-   "low_pct": -18.0,
-   "days": 66,
-   "adj_events": 0,
-   "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
-   "stale": false
-  },
-  {
-   "key": "526729",
-   "name": "Goldiam International Ltd",
-   "nse": "GOLDIAM",
-   "bse": "526729",
-   "isin": "INE025B01025",
-   "year_ago_value_cr": 140.0,
-   "year_ago_as_on": "2025-06-30",
-   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/e8fb8bb8-8661-4163-8a6d-64bbb640308e.pdf",
-   "year_ago_doc_title": "Q1 FY26 investor presentation (filed 11-Aug-2025): 'Goldiam's order book position as on June 30, 2025 was at about Rs 1400 million' (including an Rs 800 mn lab-grown-diamond export order)",
-   "latest_value_cr": 225.0,
-   "latest_as_on": "2026-06-30",
-   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/27b9caac-7356-4442-b13a-2992a3397cdd.pdf",
-   "latest_doc_title": "Q1 FY27 investor presentation / press release (filed 7-Aug-2026): 'Order Book Status: Goldiam's order book position as on June 30, 2026 was at about Rs 2250 million. This order book is expected to be executed in next three-four months. E-commerce sales ... are not part of the order book.'",
-   "true_yoy_pct": 60.7,
-   "trigger_filed": "2026-08-07",
-   "trigger_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/27b9caac-7356-4442-b13a-2992a3397cdd.pdf",
-   "trigger_doc_title": "Q1 FY27 investor presentation / press release, 7-Aug-2026 - the first filing whose stated order book was 50%+ above the figure the company stated about a year earlier",
-   "trigger_as_on": "2026-06-30",
-   "trigger_book_cr": 225.0,
-   "trigger_prev_cr": 140.0,
-   "trigger_prev_as_on": "2025-06-30",
-   "trigger_yoy_pct": 60.7,
-   "verdict": "CONFIRMED",
-   "note": "Both figures are the company's own 'order book position as on June 30', same wording, same exclusion of e-commerce sales, read from both presentations this run: Rs 1,400 mn -> Rs 2,250 mn, +60.71%. Trigger dated by walking the whole stated series back, each figure read from its own filing: Rs 150 cr (30-Jun-2024, filed 9-Aug-2024), Rs 270 cr (30-Sep-2024, filed 7-Nov-2024), Rs 175 cr (31-Dec-2024, filed 7-Feb-2025), Rs 140 cr (31-Mar-2025, filed 26-May-2025), Rs 140 cr (30-Jun-2025), Rs 200 cr (30-Sep-2025, filed 12-Nov-2025), Rs 180 cr (31-Dec-2025, filed 7-Feb-2026), Rs 200 cr (31-Mar-2026, filed 27-May-2026), Rs 225 cr (30-Jun-2026). Year-on-year by quarter: Jun-25 -6.7%, Sep-25 -25.9%, Dec-25 +2.9%, Mar-26 +42.9%, Jun-26 +60.7% - so 7-Aug-2026 is the first filing to cross +50%. READ THIS WITH THE EXECUTION PERIOD: the company says the book runs out in three to four months, and consolidated Q1 FY27 revenue alone was Rs 363.7 cr, so Rs 225 cr is under one quarter of sales and the series has swung between Rs 140 cr and Rs 270 cr across nine quarters. Market cap Rs 4,634 cr (BSE master, 12-Oct-2026).",
-   "checked_on": "2026-10-12",
-   "faded": false,
-   "first_trigger_filed": null,
-   "first_trigger_doc": null,
-   "first_trigger_doc_title": null,
-   "first_trigger_as_on": null,
-   "first_trigger_book_cr": null,
-   "first_trigger_prev_cr": null,
-   "first_trigger_yoy_pct": null,
-   "entry_date": "2026-08-07",
    "entry_close": 372.55,
    "last_date": "2026-10-12",
    "last_close": 307.8,
@@ -237,7 +193,8 @@
    "days": 66,
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 4634
   },
   {
    "key": "509496",
@@ -284,7 +241,8 @@
    "days": 76,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 19955
   },
   {
    "key": "531209",
@@ -331,7 +289,8 @@
    "days": 139,
    "adj_events": 2,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 1674
   },
   {
    "key": "544410",
@@ -378,7 +337,8 @@
    "days": 140,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 757
   },
   {
    "key": "540879",
@@ -425,7 +385,8 @@
    "days": 144,
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 14920
   },
   {
    "key": "544167",
@@ -472,7 +433,8 @@
    "days": 145,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 2412
   },
   {
    "key": "544332",
@@ -519,7 +481,8 @@
    "days": 153,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": null
   },
   {
    "key": "544223",
@@ -566,7 +529,8 @@
    "days": 158,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 6402
   },
   {
    "key": "539992",
@@ -617,7 +581,8 @@
    "first_entry_date": "2025-02-13",
    "first_entry_close": 70.68,
    "first_ret_pct": 30.3,
-   "first_peak_pct": 44.5
+   "first_peak_pct": 44.5,
+   "mcap_cr": 14259
   },
   {
    "key": "500183",
@@ -668,7 +633,8 @@
    "first_entry_date": "2025-07-25",
    "first_entry_close": 75.92,
    "first_ret_pct": 250.3,
-   "first_peak_pct": 257.4
+   "first_peak_pct": 257.4,
+   "mcap_cr": 40706
   },
   {
    "key": "544290",
@@ -715,7 +681,8 @@
    "days": 179,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 3145
   },
   {
    "key": "544198",
@@ -766,7 +733,8 @@
    "first_entry_date": "2025-03-10",
    "first_entry_close": 219.65,
    "first_ret_pct": 180.3,
-   "first_peak_pct": 238.5
+   "first_peak_pct": 238.5,
+   "mcap_cr": 4632
   },
   {
    "key": "543986",
@@ -813,7 +781,8 @@
    "days": 217,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 564
   },
   {
    "key": "543364",
@@ -860,7 +829,8 @@
    "days": 221,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 388
   },
   {
    "key": "544322",
@@ -907,7 +877,8 @@
    "days": 242,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 9152
   },
   {
    "key": "540047",
@@ -954,7 +925,8 @@
    "days": 244,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 6388
   },
   {
    "key": "544367",
@@ -1001,7 +973,8 @@
    "days": 250,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 11711
   },
   {
    "key": "532683",
@@ -1048,7 +1021,8 @@
    "days": 255,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 34971
   },
   {
    "key": "544527",
@@ -1095,7 +1069,8 @@
    "days": 335,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 14186
   },
   {
    "key": "532942",
@@ -1142,7 +1117,8 @@
    "days": 427,
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 3160
   },
   {
    "key": "NSE:SUPREMEPWR",
@@ -1189,7 +1165,8 @@
    "days": 566,
    "adj_events": 0,
    "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
-   "stale": false
+   "stale": false,
+   "mcap_cr": 685
   }
  ]
 }

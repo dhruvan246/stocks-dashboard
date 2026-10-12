@@ -157,12 +157,14 @@ def main():
     appended, skipped = append_today(meta, data)
     last_day = int((appended or meta['end']).replace('-', ''))
     near, broke = scan(data, last_day)
-    try:
-        names = {r[0]: r[1] for r in json.load(open(os.path.join(HERE, '..', '..', 'docs', 'search_index.json')))['s']}
+    try:   # name and market cap (Rs crore) from the site's daily search index
+        si = {r[0]: r for r in json.load(open(os.path.join(HERE, '..', '..', 'docs', 'search_index.json')))['s']}
     except Exception:
-        names = {}
+        si = {}
     for r in near + broke:
-        r['name'] = names.get(r['sym'], r['sym'])
+        e = si.get(r['sym'])
+        r['name'] = e[1] if e else r['sym']
+        r['mcap_cr'] = e[3] if e and isinstance(e[3], (int, float)) else None
     json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'), prices_to=ymd(last_day), sf_end=meta['end'],
                    today_appended_from_bhavcopy=appended, skipped_on_big_move=skipped[:50],
                    rule=f'Bonus/split-adjusted NSE closes (sf-data). Rose >= {RISE_X:g}x to a peak (an all-time high on '

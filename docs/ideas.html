@@ -29,7 +29,9 @@
     .lane.orderbook { border-color: #0d948866; color: #0d9488; }
     .obq { font-size: 12px; color: var(--text-muted); white-space: normal; max-width: 520px; }
     #ob-table td, #obt-table td { vertical-align: middle; }
-    #obt-table th, #obt-table td, #ow-table th, #ow-table td { padding: 6px 6px; }
+    #obt-table th, #obt-table td, #ow-table th, #ow-table td { padding: 6px 4px; }
+    #obt-table th:first-child, #obt-table td:first-child, #ow-table th:first-child, #ow-table td:first-child { max-width: 135px !important; }
+    #ow-table td .muted, #obt-table td .muted { white-space: normal; max-width: 120px; line-height: 1.25; }
     .bo-t th, .bo-t td { padding: 6px 6px; vertical-align: middle; } .bo-t td .muted { white-space: normal; max-width: 140px; line-height: 1.25; } .bo-t th:first-child, .bo-t td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table th:first-child, #ow-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table td { vertical-align: middle; } #ow-table tr.obdet td { white-space: normal; background: var(--surface); padding: 10px 14px; } #ow-table tr.obdet .obq { max-width: none; margin-bottom: 4px; }
@@ -289,12 +291,12 @@
     <h3 class="text-base font-semibold mb-1">Broke out recently</h3>
     <p class="muted text-sm mb-2">Closed above the old peak within the last 60 sessions, after the rise and the fall. Newest first.</p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-broke"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="rise_x" title="Old peak ÷ lowest close in the ~2 years before it">The rise</th><th class="n" data-k="fall_pct" title="Fall from the old peak to the lowest close after it">The fall</th><th data-k="breakout_date">Broke out</th><th class="n" data-k="breakout_close">Close that day</th><th class="n" data-k="last">Latest</th><th class="n" data-k="ret_since_pct">Since breakout</th><th class="n" data-k="best_since_pct">Best since</th><th class="n" data-k="med_turn_cr" title="Median daily turnover, last 60 sessions">₹cr/day</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x" title="Old peak ÷ lowest close in the ~2 years before it">The rise</th><th class="n" data-k="fall_pct" title="Fall from the old peak to the lowest close after it">The fall</th><th data-k="breakout_date">Broke out</th><th class="n" data-k="breakout_close">Close that day</th><th class="n" data-k="last">Latest</th><th class="n" data-k="ret_since_pct">Since breakout</th><th class="n" data-k="best_since_pct">Best since</th><th class="n" data-k="med_turn_cr" title="Median daily turnover, last 60 sessions">₹cr/day</th>
     </tr></thead><tbody><tr><td colspan="9" class="muted">Loading…</td></tr></tbody></table></div>
     <h3 class="text-base font-semibold mb-1">Near breakout</h3>
     <p class="muted text-sm mb-2">Never closed above the old peak since the fall, and now within 15% of it. Closest first.</p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-near"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="rise_x">The rise</th><th class="n" data-k="fall_pct">The fall</th><th class="n" data-k="last">Latest</th><th class="n" data-k="below_peak_pct" title="Latest close vs the old peak">vs old peak</th><th class="n" data-k="from_low_pct" title="Latest close vs the low after the peak">Up from low</th><th class="n" data-k="med_turn_cr">₹cr/day</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x">The rise</th><th class="n" data-k="fall_pct">The fall</th><th class="n" data-k="last">Latest</th><th class="n" data-k="below_peak_pct" title="Latest close vs the old peak">vs old peak</th><th class="n" data-k="from_low_pct" title="Latest close vs the low after the peak">Up from low</th><th class="n" data-k="med_turn_cr">₹cr/day</th>
     </tr></thead><tbody><tr><td colspan="7" class="muted">Loading…</td></tr></tbody></table></div>
   </section>
 
@@ -306,7 +308,7 @@
     <p class="muted text-sm mb-2">Only companies whose order book was <b>checked against their own filings</b> and is up 50% or more on the figure stated about a year earlier. The start date is the first exchange filing that showed the jump; the start price is that day's close. Prices and returns refresh every evening; new companies join after their filings are checked.</p>
     <p id="obt-meta" class="muted text-xs mb-2"></p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable" id="obt-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="ago" title="Order book about a year earlier, ₹ crore">Year ago ₹cr</th><th class="n" data-k="now" title="Latest stated order book, ₹ crore">Now ₹cr</th><th class="n" data-k="yoy">Change</th><th data-k="filed" title="First exchange filing that showed the order book 50%+ up">Jump filed</th><th class="n" data-k="entry">Close that day</th><th class="n" data-k="last">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th class="n" data-k="days">Days</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="ago" title="Order book about a year earlier, ₹ crore">Year ago ₹cr</th><th class="n" data-k="now" title="Latest stated order book, ₹ crore">Now ₹cr</th><th class="n" data-k="yoy">Change</th><th data-k="filed" title="First exchange filing that showed the order book 50%+ up">Jump filed</th><th class="n" data-k="entry">Close that day</th><th class="n" data-k="last">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th class="n" data-k="days">Days</th>
     </tr></thead><tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody></table></div>
     </div>
     <div id="ow-sec" hidden>
@@ -314,7 +316,7 @@
     <p class="muted text-sm mb-2">Order-win letters filed since the company last stated its order book, <b>each letter checked</b> and counted once (a lowest-bidder notice, the award letter and the press release for the same order count once), added up. Flagged on the filing that took the total to <b>half of that order book</b>, even if no single order was big (Welspun Corp, Aug-2024 → Mar-2025: no order above 0.2× its ₹8,508 cr book, ₹20,000 cr book seven months later). The start price is that day’s close; prices refresh every evening and new companies join after their letters are checked.</p>
     <p id="ow-meta" class="muted text-xs mb-2"></p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable" id="ow-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="sum" title="Order wins filed since, each letter checked, added up, ₹ crore">Orders added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th data-k="cross" title="Filing that took the total to half the book">Flagged on</th><th class="n">Close that day</th><th class="n">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th></th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="sum" title="Order wins filed since, each letter checked, added up, ₹ crore">Orders added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th data-k="cross" title="Filing that took the total to half the book">Flagged on</th><th class="n">Close that day</th><th class="n">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th></th>
     </tr></thead><tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody></table></div>
     </div>
     <h3 class="text-base font-semibold mb-1">Every stated order book (read by the script)</h3>
@@ -780,7 +782,7 @@
   };
   let OW = null, OWK = 'cross', OWD = -1;
   const drawOW = () => {
-    const R = ((OW && OW.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, sum: r.confirmed_sum_cr, ratio: r.confirmed_ratio, big: r.largest_ratio, cross: r.cross_date, ret: r.ret_pct, peak: r.peak_pct }));
+    const R = ((OW && OW.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, sum: r.confirmed_sum_cr, ratio: r.confirmed_ratio, big: r.largest_ratio, cross: r.cross_date, ret: r.ret_pct, peak: r.peak_pct, mcap: r.mcap_cr }));
     const shown = R.sort((a, b) => { const x = a[OWK], y = b[OWK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OWD; });
     document.querySelectorAll('#ow-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OWK && OWD > 0); th.classList.toggle('desc', th.dataset.k === OWK && OWD < 0); });
     const rets = R.map(x => x.ret).filter(v => v != null).sort((a, b) => a - b);
@@ -788,7 +790,7 @@
     $('#ow-meta').innerHTML = OW ? `${R.length} compan${R.length === 1 ? 'y' : 'ies'} · ${rets.filter(v => v > 0).length} up, ${rets.filter(v => v <= 0).length} flat or down · median return ${med == null ? '—' : pct(med)} · built ${esc(OW.built || '')}${(OW.stale || []).length ? ` · <b style="color:#ca8a04">${OW.stale.length} not re-priced today</b>` : ''}` : '';
     $('#ow-table tbody').innerHTML = shown.map((x, i) => { const r = x.r;
       return `<tr><td title="${esc(r.note || '')}">${esc(x.name)}<div class="muted text-xs">${esc(r.nse || '')}${r.bse ? ' · BSE ' + esc(r.bse) : ''}</div></td>
-        <td class="n">${fmt(x.base, 0)}<div class="muted text-xs">${r.base_doc ? `<a class="src" href="${esc(r.base_doc)}" target="_blank" rel="noopener">${dmy(r.base_as_on || r.base_filed)}</a>` : dmy(r.base_as_on)}</div></td>
+        <td class="n">${x.mcap == null ? '—' : fmt(x.mcap, 0)}</td><td class="n">${fmt(x.base, 0)}<div class="muted text-xs">${r.base_doc ? `<a class="src" href="${esc(r.base_doc)}" target="_blank" rel="noopener">${dmy(r.base_as_on || r.base_filed)}</a>` : dmy(r.base_as_on)}</div></td>
         <td class="n">${fmt(x.sum, 0)}<div class="muted text-xs">${r.n_wins} order${r.n_wins === 1 ? '' : 's'}</div></td>
         <td class="n"><b>${x.ratio == null ? '—' : x.ratio.toFixed(2) + '×'}</b><div class="muted text-xs">largest ${x.big == null ? '—' : x.big.toFixed(2) + '×'}</div></td>
         <td>${dmy(x.cross)}<div class="muted text-xs" style="white-space:normal;max-width:120px">${r.next_book_cr ? `next book ${r.next_book_doc ? `<a class="src" href="${esc(r.next_book_doc)}" target="_blank" rel="noopener">₹${fmt(r.next_book_cr, 0)} cr</a>` : '₹' + fmt(r.next_book_cr, 0) + ' cr'} ${r.next_book_confirms ? '✓' : '✗'}` : 'no newer book yet'}</div></td>
@@ -796,14 +798,14 @@
         <td class="n">${r.last_close == null ? '—' : '₹' + fmt(r.last_close, 2)}${r.stale ? ' <span class="pill">stale</span>' : ''}</td>
         <td class="n"><b>${pct(x.ret)}</b></td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td>
         <td><button type="button" class="obmore" data-owdet="${i}" aria-expanded="false">More ▸</button></td></tr>
-        <tr class="obdet" data-owdet-row="${i}" hidden><td colspan="10">${(r.wins || []).map(w => `<div class="obq">${dmy(w.filed)} · <b>${w.value_cr == null ? 'no value' : '₹' + fmt(w.value_cr, w.value_cr < 10 ? 2 : 0) + ' cr'}</b> · ${w.doc ? `<a class="src" href="${esc(w.doc)}" target="_blank" rel="noopener">letter</a>` : ''} <span class="muted">${esc((w.note || '').slice(0, 160))}</span></div>`).join('')}${r.note ? `<div class="obq">${esc(r.note)}</div>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed flags yet.</td></tr>';
+        <tr class="obdet" data-owdet-row="${i}" hidden><td colspan="11">${(r.wins || []).map(w => `<div class="obq">${dmy(w.filed)} · <b>${w.value_cr == null ? 'no value' : '₹' + fmt(w.value_cr, w.value_cr < 10 ? 2 : 0) + ' cr'}</b> · ${w.doc ? `<a class="src" href="${esc(w.doc)}" target="_blank" rel="noopener">letter</a>` : ''} <span class="muted">${esc((w.note || '').slice(0, 160))}</span></div>`).join('')}${r.note ? `<div class="obq">${esc(r.note)}</div>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="11" class="muted">No confirmed flags yet.</td></tr>';
   };
   $('#ow-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OW) return; if (OWK === th.dataset.k) OWD = -OWD; else { OWK = th.dataset.k; OWD = th.dataset.k === 'name' ? 1 : -1; } drawOW(); });
   $('#ow-table tbody').addEventListener('click', (e) => { const d = e.target.closest('[data-owdet]'); if (!d) return; const r = $(`#ow-table tr[data-owdet-row="${d.dataset.owdet}"]`); if (r) { r.hidden = !r.hidden; d.setAttribute('aria-expanded', String(!r.hidden)); d.textContent = r.hidden ? 'More ▸' : 'Hide ▾'; } });
   let OBT = null, OBTK = 'filed', OBTD = -1;
   const drawOBT = () => {
     const R = ((OBT && OBT.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, ago: r.year_ago_value_cr, now: r.latest_value_cr, yoy: r.true_yoy_pct, filed: r.trigger_filed,
-      entry: r.entry_close, last: r.last_close, ret: r.ret_pct, peak: r.peak_pct, days: r.days }));
+      entry: r.entry_close, last: r.last_close, ret: r.ret_pct, peak: r.peak_pct, days: r.days, mcap: r.mcap_cr }));
     const shown = R.sort((a, b) => { const x = a[OBTK], y = b[OBTK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OBTD; });
     document.querySelectorAll('#obt-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OBTK && OBTD > 0); th.classList.toggle('desc', th.dataset.k === OBTK && OBTD < 0); });
     const rets = R.map(x => x.ret).filter(v => v != null).sort((a, b) => a - b);
@@ -811,12 +813,12 @@
     $('#obt-meta').innerHTML = OBT ? `${R.length} compan${R.length === 1 ? 'y' : 'ies'} · ${rets.filter(v => v > 0).length} up, ${rets.filter(v => v <= 0).length} flat or down · median return ${med == null ? '—' : pct(med)} · prices to ${dmy((R.find(x => x.r.last_date) || {r: {}}).r.last_date)} · built ${esc(OBT.built || '')}${(OBT.stale || []).length ? ` · <b style="color:#ca8a04">${OBT.stale.length} not re-priced today</b>` : ''}` : 'orderbook_tracker.json not published yet.';
     $('#obt-table tbody').innerHTML = shown.map((x, i) => { const r = x.r;
       return `<tr><td title="${esc(r.note || '')}">${esc(x.name)}<div class="muted text-xs">${esc(r.nse || '')}${r.bse ? ' · BSE ' + esc(r.bse) : ''}</div></td>
-        <td class="n">${fmt(x.ago, 0)}<div class="muted text-xs">${dmy(r.year_ago_as_on)}</div></td><td class="n">${fmt(x.now, 0)}<div class="muted text-xs">${dmy(r.latest_as_on)}</div></td>
+        <td class="n">${x.mcap == null ? '—' : fmt(x.mcap, 0)}</td><td class="n">${fmt(x.ago, 0)}<div class="muted text-xs">${dmy(r.year_ago_as_on)}</div></td><td class="n">${fmt(x.now, 0)}<div class="muted text-xs">${dmy(r.latest_as_on)}</div></td>
         <td class="n">${pct(x.yoy)}${r.faded ? '<div><span class="pill" title="Was up 50%+ at the jump filing; up less than 50% on the latest stated book">faded</span></div>' : ''}</td>
         <td>${r.trigger_doc ? `<a class="src" href="${esc(r.trigger_doc)}" target="_blank" rel="noopener" title="${esc(r.trigger_doc_title || 'filing')}">${dmy(x.filed)}</a>` : dmy(x.filed)}<div class="muted text-xs">${r.trigger_prev_cr != null ? '₹' + fmt(r.trigger_prev_cr, 0) + ' → ₹' + fmt(r.trigger_book_cr, 0) + ' cr' : ''}</div></td>
         <td class="n">${x.entry == null ? '—' : '₹' + fmt(x.entry, 2)}<div class="muted text-xs">${dmy(r.entry_date)}</div></td>
         <td class="n">${x.last == null ? '—' : '₹' + fmt(x.last, 2)}${r.stale ? ' <span class="pill" title="' + esc(r.price_error || '') + '">stale</span>' : ''}</td>
-        <td class="n"><b>${pct(x.ret)}</b>${r.first_ret_pct != null ? `<div class="muted text-xs" title="Return since an earlier 50%+ jump filed ${dmy(r.first_trigger_filed)} (${esc(r.first_trigger_doc_title || '')}) that faded before this one" style="white-space:normal">earlier jump<br>${pct(r.first_ret_pct)}</div>` : ''}</td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed jumps yet.</td></tr>';
+        <td class="n"><b>${pct(x.ret)}</b>${r.first_ret_pct != null ? `<div class="muted text-xs" title="Return since an earlier 50%+ jump filed ${dmy(r.first_trigger_filed)} (${esc(r.first_trigger_doc_title || '')}) that faded before this one" style="white-space:normal">earlier jump<br>${pct(r.first_ret_pct)}</div>` : ''}</td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="11" class="muted">No confirmed jumps yet.</td></tr>';
   };
   $('#obt-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OBT) return; if (OBTK === th.dataset.k) OBTD = -OBTD; else { OBTK = th.dataset.k; OBTD = th.dataset.k === 'name' ? 1 : -1; } drawOBT(); });
   // ---- breakout watch (breakout_watch.json, loaded on first open) ----------------------------
@@ -829,11 +831,11 @@
     if (!BO) return;
     const sortRows = (rows, st) => rows.slice().sort((a, b) => { const x = st.k === 'name' ? (a.name || a.sym) : a[st.k], y = st.k === 'name' ? (b.name || b.sym) : b[st.k]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * st.d; });
     ['broke', 'near'].forEach(w => document.querySelectorAll(`#bo-${w} th[data-k]`).forEach(th => { th.classList.toggle('asc', th.dataset.k === BOS[w].k && BOS[w].d > 0); th.classList.toggle('desc', th.dataset.k === BOS[w].k && BOS[w].d < 0); }));
-    $('#bo-broke tbody').innerHTML = sortRows(BO.broke || [], BOS.broke).map(r => `<tr><td>${boName(r)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
+    $('#bo-broke tbody').innerHTML = sortRows(BO.broke || [], BOS.broke).map(r => `<tr><td>${boName(r)}</td><td class="n">${r.mcap_cr == null ? '—' : fmt(r.mcap_cr, 0)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
       <td>${dmy(r.breakout_date)}<div class="muted text-xs">${r.days_since === 0 ? 'today' : r.days_since + ' session' + (r.days_since === 1 ? '' : 's') + ' ago'} · old peak ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}</div></td>
-      <td class="n">₹${fmt(r.breakout_close, 2)}</td><td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.ret_since_pct)}</b></td><td class="n">${pct(r.best_since_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="9" class="muted">None in the last 60 sessions.</td></tr>';
-    $('#bo-near tbody').innerHTML = sortRows(BO.near || [], BOS.near).map(r => `<tr><td>${boName(r)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
-      <td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.below_peak_pct)}</b></td><td class="n">${pct(r.from_low_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">None right now.</td></tr>';
+      <td class="n">₹${fmt(r.breakout_close, 2)}</td><td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.ret_since_pct)}</b></td><td class="n">${pct(r.best_since_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="10" class="muted">None in the last 60 sessions.</td></tr>';
+    $('#bo-near tbody').innerHTML = sortRows(BO.near || [], BOS.near).map(r => `<tr><td>${boName(r)}</td><td class="n">${r.mcap_cr == null ? '—' : fmt(r.mcap_cr, 0)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
+      <td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.below_peak_pct)}</b></td><td class="n">${pct(r.from_low_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="8" class="muted">None right now.</td></tr>';
   };
   const loadBO = () => {
     if (BO || boLoading) return;

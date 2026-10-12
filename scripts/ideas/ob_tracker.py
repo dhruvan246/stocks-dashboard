@@ -71,6 +71,15 @@ def track(row):
                 adj_events=len(ev or []), price_source=src, stale=False)
 
 
+def mcaps():
+    """NSE symbol -> market cap (Rs crore) from docs/search_index.json (rebuilt daily by the site)."""
+    try:
+        return {r[0]: r[3] for r in json.load(open(os.path.join(DOCS, '..', 'search_index.json')))['s']
+                if isinstance(r[3], (int, float))}
+    except Exception:
+        return {}
+
+
 def main():
     if not os.path.exists(LEDGER):
         print('no orderbook_jumps.json yet - nothing to track')
@@ -108,6 +117,9 @@ def main():
         rows.append(out)
         if str(r['key']).isdigit():
             time.sleep(1.0)  # BSE per-scrip API: stay slow
+    mc = mcaps()
+    for x in rows:
+        x['mcap_cr'] = mc.get((x.get('nse') or '').upper())
     rows.sort(key=lambda x: x.get('trigger_filed') or '', reverse=True)
     json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'),
                    rule='Order book checked against the company\'s own filings; tracked from the first filing that '
@@ -152,6 +164,9 @@ def main_orderwins():
         rows.append(out)
         if str(r['key']).isdigit():
             time.sleep(1.0)
+    mc = mcaps()
+    for x in rows:
+        x['mcap_cr'] = mc.get((x.get('nse') or '').upper())
     rows.sort(key=lambda x: x.get('cross_date') or '', reverse=True)
     json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'),
                    rule='Order-win letters added up since the last stated order book, each letter checked; flagged on the '

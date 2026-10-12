@@ -315,6 +315,57 @@ def company_names():
     return out
 
 
+def isin_of_keys():
+    """Ledger key -> ISIN: BSE codes from the newest BSE bhavcopy, 'NSE:SYM' from the newest NSE bhavcopy (last 10 days).
+    The ledger holds some companies twice - once by BSE code, once as NSE:SYM (whole-market passes on each exchange) -
+    and the ISIN is what ties them (2026-10-12: KNR, Goldiam and Jash were checked twice under the two keys)."""
+    out = {}
+    try:
+        import bse
+        for fn, keyf in ((bse.bhavcopy, lambda r: str(r['scrip'])), (bse.nse_bhavcopy, lambda r: 'NSE:' + str(r['symbol']).upper())):
+            d = datetime.date.today()
+            for _ in range(10):
+                rows = fn(d)
+                if rows:
+                    for r in rows:
+                        if r.get('isin'):
+                            out.setdefault(keyf(r), r['isin'])
+                    break
+                d -= datetime.timedelta(days=1)
+    except Exception:
+        pass
+    return out
+
+
+def dedupe_by_isin(rows, key='scrip'):
+    """One row per company: rows whose keys share an ISIN collapse to the one with the newest latest reading (ties -> the
+    BSE-code row); its key becomes the BSE code when the company has one, and the other keys go to `alt_keys`."""
+    isin = isin_of_keys()
+    groups, out = {}, []
+    for r in rows:
+        i = isin.get(str(r[key]))
+        if not i:
+            out.append(r)
+            continue
+        groups.setdefault(i, []).append(r)
+    for i, g in groups.items():
+        g.sort(key=lambda r: ((r.get('latest') or {}).get('as_on_eff') or '', str(r[key]).isdigit()), reverse=True)
+        keep = dict(g[0])
+        keys = [str(r[key]) for r in g]
+        bse_key = next((k for k in keys if k.isdigit()), None)
+        if bse_key and keep[key] != bse_key:
+            keep[key] = bse_key
+        for f in ('nse', 'name'):
+            if not keep.get(f):
+                keep[f] = next((r.get(f) for r in g if r.get(f)), None)
+        if not keep.get('nse'):
+            keep['nse'] = next((k[4:] for k in keys if k.startswith('NSE:')), None)
+        keep['alt_keys'] = [k for k in keys if k != keep[key]]
+        keep['isin'] = i
+        out.append(keep)
+    return out
+
+
 def build_signals(ledger):
     rev = {}
     try:
@@ -341,12 +392,13 @@ def build_signals(ledger):
             # a jump this large is more often a misread (a segment, a multi-year figure) than a fact: read the quotes
             row['check'] = bool(row['yoy_pct'] > 400 or row['yoy_pct'] < -60)
         sig.append(row)
+    sig = dedupe_by_isin(sig)
     try:
         ver = {v['key']: v for v in json.load(open(os.path.join(DOCS, 'orderbook_verified.json')))['rows']}
     except Exception:
         ver = {}
     for row in sig:
-        v = ver.get(row['scrip'])
+        v = next((ver[k] for k in [row['scrip']] + row.get('alt_keys', []) if k in ver), None)
         if v:
             row['verified'] = {k: v.get(k) for k in ('latest_verdict', 'latest_correct_value_cr', 'latest_as_on', 'year_ago_verdict',
                                                      'year_ago_correct_value_cr', 'year_ago_as_on', 'true_yoy_pct', 'book_to_ttm_sales', 'notes', 'checked')}
