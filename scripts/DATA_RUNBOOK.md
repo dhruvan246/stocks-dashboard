@@ -27909,4 +27909,12 @@ Moves: SHRIRAMCIT 2016-22 Dynasty Acquisition (FPI) +20.1..20.4, SHK 2016-20 Bla
 SPANDANA / RNAVAL / NAM-INDIA / RBA Valiant Mauritius Partners FDI, APLAPOLLO Emblem FII, AXISBANK 2020-22 Bain 'BC ASIA ... - FDI' /
 'INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI', APARINDS Templeton '- FDI (Foreign Company)'; plus a few Non-Institutions FPI rows. DII:
 untouched - it holds Indian institutions only (SPANDANA's DII surplus = Edelweiss AIF trust 1.25 + ICICI Pru Life 4.74, checked).
+**Parts 63-64 (2026-10-12) - a revision-only quarter is dated from the ORIGINAL's notice when a reading made BEFORE the revision shows the
+same figures** (Moneycontrol company-facts page via the Wayback Machine; `~/stocks-cache/shp/quantmac/v8/mcarch.py` / `datecheck.py`;
+compare Moneycontrol's SECOND column, which is on our basis). CHAMBLFERT Sep-2017 (reading 2017-12-07 = revision's FPI 7.72 / promoter 58.35
+/ MF 6.36) 2018-01-31 -> 2017-10-18 (shp_lag_fix). Part 55's 19 self-revised pages re-checked: DBCORP Jun-2015 (readings 2015-08-15..10-01)
+and SONATSOFTW Mar-2015 (2015-04-20, 05-13) carry the revision's figures -> back to their first notices (part 55 corrected); the other 17
+have no reading before the revision and stay at it. NOT a fix: JUSTDIAL Mar-2016 - the 2016-04-23 reading (FPI 39.06) differs from the
+revision (FPI 5.08), so the original is missing (OUR ERROR, open until its document is read); AUBANK Jun-2018 - no reading (UNKNOWN).
+OPEN: the same test for every other revision-only quarter (§164b batch 6f entries, src 'bse-revision').
 
