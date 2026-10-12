@@ -912,7 +912,8 @@ def apply(fills_path):
         qe, basis = f["qe"], f["basis"]
         pat = f["pat_c"] if basis == "C" else f["pat_s"]
         rev = f["rev_c"] if basis == "C" else f["rev_s"]
-        if f["kind"] == "bse":
+        op = f.get("op_c") if basis == "C" else f.get("op_s")   # §228c: the filing's operating profit rides along (BSE-only
+        if f["kind"] == "bse":                                    # cards showed Op. profit "—" although the XBRL had it)
             cur = px.setdefault(str(f["code"]), {})
             old = cur.get(str(qe))
             if (pat is not None or rev is not None) and (old is None or old.get("prov") or (old.get("basis") == "S" and basis == "C"
@@ -920,6 +921,7 @@ def apply(fills_path):
                 if old is None or old.get("src") == "bse-xbrl":   # consolidated outranks standalone within this route only
                     rec = {"pat": pat, "ann": f["ann"] or 0, "basis": basis, "src": "bse-xbrl"}
                     if rev is not None: rec["rev"] = rev
+                    if op is not None: rec["op"] = op
                     if f["half"]:
                         rec["h"] = 1
                         if f.get("pf"): rec["pf"] = f["pf"]        # the arithmetic that proved it (§194)
@@ -931,6 +933,10 @@ def apply(fills_path):
                 # HIIL Jun-2026 showed Net profit beside a blank Sales). Fill ONLY the empty revenue, and only when the
                 # filing's own profit agrees with the stored one (same filing, same basis); nothing stored is changed.
                 old["rev"] = rev; C["bse rev filled"] = C.get("bse rev filled", 0) + 1
+            elif (old is not None and op is not None and old.get("op") is None and old.get("src") == "bse-xbrl"
+                  and old.get("basis", basis) == basis and pat is not None and old.get("pat") is not None
+                  and abs(old["pat"] - pat) <= 0.015):
+                old["op"] = op; C["bse op filled"] = C.get("bse op filled", 0) + 1   # same filing, same basis: op only
         else:
             sym = f["sym"]; ann = f["ann"] or None
             if bse_resolve.nse_blocked_under(sym, f.get("isin")):

@@ -12,6 +12,14 @@ Sources (both bulk, no per-scrip loop for the base list):
 Sector is enriched per-scrip from BSE `ComHeadernew` (Industry), newest/biggest first, budgeted so a run
 stays quick; already-known sectors are cached in scripts/_bse_sectors.json and reused.
 
+SUSPENDED scrips that still report (2026-10-12, user: "add suspended scrips like alstone to the bse universe"): BSE
+`ListofScripData … status=Suspended` (1,094 scrips on 12-Oct-2026) joins the universe when the scrip is BSE-only AND its
+result archive (`Result_Arch_ng`, the §178 listing) shows a financial result FILED within SUS_DAYS (400) of today —
+ALSTONE 539277 (XT, filed Sep-26 on 7-Oct-2026) yes, Futuristic Offshore 500154 (last filing Jun-17) no. The per-scrip
+check is cached in scripts/_bse_suspended.json {code: {"chk": checked, "last": latest filing YYYYMMDD, "q": label}} and
+re-done after SUS_RECHECK (60) days, SUS_BUDGET checks per run (--suspended-budget N); until checked a scrip stays out.
+The row shape is unchanged (8 columns); the file carries the qualifying codes under a top-level "suspended" list.
+
 Output: {"updated","count", "rows":[[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector], …]}
         sorted by market cap desc. Guard: refuses to overwrite a good file with a tiny/failed fetch.
 
@@ -74,6 +82,58 @@ def sector_of(op, code, cache):
 
 SEEN = os.path.join(HERE, "bse_seen_scrips.json")
 SEEN_DAYS = 120
+SUS_CACHE = os.path.join(HERE, "_bse_suspended.json")
+SUS_DAYS, SUS_RECHECK, SUS_BUDGET = 400, 60, 200
+RESULT_LIST = "https://api.bseindia.com/BseIndiaAPI/api/Result_Arch_ng/w?scrip_cd=%s"
+
+
+def bse_suspended_equity(op):
+    r = B.get(op, "https://api.bseindia.com/BseIndiaAPI/api/ListofScripData/w"
+                  "?Group=&Scripcode=&industry=&segment=Equity&status=Suspended")
+    return json.loads(r if isinstance(r, str) else r.decode("utf8", "ignore"))
+
+
+def latest_result_filing(op, code):
+    """YYYYMMDD of the newest result filing in the scrip's BSE result archive (0 = none), and its quarter label."""
+    r = B.get(op, RESULT_LIST % code)
+    rows = (json.loads(r if isinstance(r, str) else r.decode("utf8", "ignore")) or {}).get("Table") or []
+    best, lab = 0, ""
+    for x in rows:
+        fd = (x.get("Filing_Date_Time") or "")[:10].replace("-", "")
+        if fd.isdigit() and int(fd) > best:
+            best, lab = int(fd), x.get("Quarter") or ""
+    return best, lab
+
+
+def suspended_extra(op, allsus, have, nse, cache, budget, today=None):
+    """API-shaped rows for Suspended BSE-only scrips that filed a result within SUS_DAYS — checked against the result
+    archive, `budget` fresh checks per run, the rest from the cache. Same exclusions as seen_extra (ISIN on NSE, its issuer,
+    a ticker the NSE tape already owns)."""
+    today = today or datetime.date.today()
+    tday = int(today.strftime("%Y%m%d"))
+    floor = int((today - datetime.timedelta(days=SUS_DAYS)).strftime("%Y%m%d"))
+    stale = int((today - datetime.timedelta(days=SUS_RECHECK)).strftime("%Y%m%d"))
+    tape_keys, tape_isin = nse_tape_meta()
+    nse = set(nse) | tape_isin
+    nse_iss = {i[:7] for i in nse if i.startswith("INE") and i[7:9] == "01"}
+    out, checked = [], 0
+    for x in sorted(allsus, key=mcap, reverse=True):            # biggest first, so a budget cut lands on the tail
+        code = str(x.get("SCRIP_CD")); isin = (x.get("ISIN_NUMBER") or "").strip(); tk = (x.get("scrip_id") or "").strip()
+        if not isin or code in have or isin in nse or isin[:7] in nse_iss or tk.upper() in tape_keys:
+            continue
+        c = cache.get(code)
+        if (not c or int(c.get("chk") or 0) < stale) and checked < budget:
+            try:
+                last, lab = latest_result_filing(op, code)
+                cache[code] = {"chk": tday, "last": last, "q": lab}; c = cache[code]; checked += 1
+                time.sleep(0.6)
+            except Exception as ex:
+                print("  suspended %s: listing failed (%s)" % (code, str(ex)[:60]))
+        if c and int(c.get("last") or 0) >= floor:
+            out.append(dict(x, _sus=1))
+    print("suspended: %d on BSE's list, %d checked this run, %d qualify (result filed within %d days)"
+          % (len(allsus), checked, len(out), SUS_DAYS))
+    return out
 
 
 def nse_tape_meta():
@@ -124,6 +184,9 @@ def main():
     budget = 400
     if "--sector-budget" in sys.argv:
         budget = int(sys.argv[sys.argv.index("--sector-budget") + 1])
+    sus_budget = SUS_BUDGET
+    if "--suspended-budget" in sys.argv:
+        sus_budget = int(sys.argv[sys.argv.index("--suspended-budget") + 1])
     op = B.session(); time.sleep(1)
     nse = nse_isin_set()
     allbse = bse_active_equity(op)
@@ -131,8 +194,17 @@ def main():
                 (x.get("ISIN_NUMBER") or "").strip() not in nse]
     extra = seen_extra(allbse, nse)
     bse_only += extra
+    sus_cache = json.load(open(SUS_CACHE)) if os.path.exists(SUS_CACHE) else {}
+    try:
+        allsus = bse_suspended_equity(op)
+    except Exception as ex:
+        allsus = []; print("suspended list fetch failed (%s) — none added this run" % str(ex)[:60])
+    sus = suspended_extra(op, allsus, {str(x.get("SCRIP_CD")) for x in bse_only}, nse, sus_cache, sus_budget)
+    json.dump(sus_cache, open(SUS_CACHE, "w"), separators=(",", ":"), sort_keys=True)
+    bse_only += sus
     bse_only.sort(key=mcap, reverse=True)
-    print("BSE active equity %d; BSE-only %d (incl. %d traded but not on the Active list)" % (len(allbse), len(bse_only), len(extra)))
+    print("BSE active equity %d; BSE-only %d (incl. %d traded but not on the Active list, %d suspended still reporting)"
+          % (len(allbse), len(bse_only), len(extra), len(sus)))
 
     cache = json.load(open(SEC_CACHE)) if os.path.exists(SEC_CACHE) else {}
     spent = 0
@@ -140,7 +212,7 @@ def main():
     for x in bse_only:
         code = x["SCRIP_CD"]
         sec = cache.get(str(code), "")
-        if not sec and spent < budget and (mcap(x) > 0 or x.get("_seen")):   # enrich biggest-first within budget
+        if not sec and spent < budget and (mcap(x) > 0 or x.get("_seen") or x.get("_sus")):   # enrich biggest-first within budget
             sec = sector_of(op, code, cache); spent += 1
             if spent % 50 == 0:
                 json.dump(cache, open(SEC_CACHE, "w")); time.sleep(0.2)
@@ -156,7 +228,8 @@ def main():
 
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "count": len(rows),
-           "sectors_known": sum(1 for r in rows if r[7]), "rows": rows}
+           "sectors_known": sum(1 for r in rows if r[7]), "rows": rows,
+           "suspended": sorted(int(x["SCRIP_CD"]) for x in sus)}      # still-reporting suspended scrips among the rows
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print("WROTE %s: %d BSE-only stocks (%d with sector; +%d sectors this run)"
           % (os.path.normpath(OUT), len(rows), out["sectors_known"], spent))

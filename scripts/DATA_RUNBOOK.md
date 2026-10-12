@@ -28119,6 +28119,32 @@ lakhs; previous quarter revenue -, other income 16.73, PAT 6.49; corresponding q
 rupee, and the stored Jun-26 / Sep-25 cells match the table. Nothing changed. Open: ALSTONE (539277, suspended, group XT) is not
 in docs/bse_universe.json, so its card stays on the vision orphan path (no op, no market cap) even after the feed-declared XBRL
 fetch lands in bse_fundamentals.
+
+### §228c — suspended scrips that still report join the BSE universe (2026-10-12 night, user: "add suspended scrips like alstone to the bse universe")
+
+**Rule (scripts/build_bse_universe.py).** BSE `ListofScripData … status=Suspended` (1,094 scrips) is scanned after the Active
+list and the traded-recently extras: a suspended scrip joins when it is BSE-only (ISIN not on NSE, not an NSE issuer, ticker not an
+NSE tape key — the seen_extra exclusions) AND its BSE result archive (`Result_Arch_ng`) shows a financial result FILED within
+SUS_DAYS = 400 days. The per-scrip check is cached in scripts/_bse_suspended.json {code: {chk, last filing YYYYMMDD, q label}},
+re-done after 60 days, SUS_BUDGET = 200 checks per run (`--suspended-budget N`); an unchecked scrip stays out. Row shape unchanged
+(8 columns); the file carries the qualifying codes under a top-level `"suspended"` list; the workflow force-adds the cache.
+Measured on the first full pass (21:45 IST): 1,094 on the list, 673 eligible and checked, 289 with any result filing, **106 filed
+within 400 days → added** (groups Z 54, XT 17, X 9, P 8, MT 8, M 3, Y 2, T 2, ZP 2, IP 1; 95 with a market cap; 103 sectors
+fetched). Universe 2,755 → 2,861. ALSTONE 539277 (XT, mcap 100.40 cr, 'Distributors') is row one of the question; Ballarpur
+500102 (Z, still filing) is excluded as an NSE tape key; Futuristic Offshore 500154 (last filing Jun-17) is out.
+
+**Numbers for them.** The 09:50 XBRL job's BSE-only loop now lists each new scrip's missing quarters (≤ 27 since 2020-03-31) within
+its budget over the next days; 8 of the 106 already had numbers. ALSTONE was pulled at once with `--extra` (27 quarters, all
+standalone, every one its own BSE XBRL: rev 0.0 in 20 of them, Jun-22..Jun-23 and Jun-24 small sales, Sep-26 784.88 / -78.54 /
+-106.72). `apply()` now also stores the filing's **operating profit** on BSE-only records (`"op"`, and fills it on an existing
+bse-xbrl record of the same basis whose PAT matches the file) — BSE cards had shown Op. profit "—" although the XBRL carried it;
+build_bse_results already read `rec["op"]`. Verified locally: ALSTONE's Just Declared card = BSE badge, ₹100 cr, Sales 785 / 0.00 /
+0.00, Op. profit -78.5 (YoY vs -0.72), Net profit -107, OPM -10.0%; zero console errors; 2,302 BSE-only companies with numbers.
+
+**Open.** scripts/bse_scrips.json (by_id / by_isin) is a static map without the suspended scrips, so their XBRL fills carry no
+financial DETAIL (xbrl_extra is keyed by that ticker) — the stock page's detail block stays empty for them until the map is rebuilt
+to include the universe's suspended rows. Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap
+drift) stay sparse by nature.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
 or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been
