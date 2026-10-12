@@ -129,8 +129,19 @@ def main():
     write_results_feed(allrows)
 
 # --- Results feed (docs/results_feed.json) — the tiny slice the Quarterly Results page polls ---
-RESULT_CAP_RE = re.compile(r"financial\s+results?\s+for\s+the\s+(?:period|quarter|year)|"
-                           r"submitted.{0,40}financial\s+results?", re.I)
+# Caption test for "Outcome of Board Meeting" rows (the result PDF often rides ONLY on that row — no "Financial Results"
+# category twin). Four phrasings, each measured on real captions (runbook §228, 2026-10-12): the Jul-14..Aug-14-2026 season
+# window had 1,931 outcome captions the old two-branch test caught and 75 it MISSED — GRASIM, LUPIN, DLF, ASIANPAINT, AMBUJACEM,
+# COALINDIA, IDEA, VBL, BANDHANBNK, M&MFIN… — because they say "results OF THE COMPANY, for the quarter", "for the SECOND
+# quarter", "considered and approved the Unaudited … Financial Results", or "submitted … [60 chars] … financial results".
+# Every one of the 75 (and the 4 of Sep-12..Oct-12) was read and is a genuine result; 0 old matches lost. The page's live
+# top-up (docs/quarterly-results.html FEED_CAP_RE) carries the SAME four branches — change both together.
+RESULT_CAP_RE = re.compile(
+    r"financial\s+results?[^.;:]{0,60}?\bfor\s+the\s+(?:\w+[\s,]+){0,3}(?:period|quarter|half|year|nine|six|three)\b"   # "…results [of the Bank,] for the [second] quarter"
+    r"|submitted[^.;]{0,80}?financial\s+results?"                                                                      # "has submitted to the Exchange [regarding the Outcome …] Financial Results"
+    r"|(?:approv|adopt|taken\s+on\s+record|took\s+on\s+record)\w*[^.;]{0,100}?financial\s+results?"                   # "considered and approved the Unaudited … Financial Results"
+    r"|financial\s+results?[^.;]{0,80}?\b(?:quarter|half[- ]?year|period|year|nine\s+months|q[1-4])\b[^.;]{0,40}?\bend(?:ed|ing)\b",  # "…results … quarter … ended 30 June"
+    re.I)
 RESULT_CAT_RE = re.compile(r"^(?:financial\s+result|integrated\s+filing\s*[-–]?\s*financial)", re.I)   # NSE's "Integrated Filing- Financial" (TEMPSENS, NAGAFERT)
 # ⚠️ A results filing in Jul/Aug/Sep is often a LATE March (Q4/annual) result, not the current June
 # quarter — so read the reporting period per filing and ANCHOR on an "ended" clause (never assume the

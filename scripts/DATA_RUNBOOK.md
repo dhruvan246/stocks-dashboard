@@ -27436,6 +27436,8 @@ healed cells (`shp`, and the originals nested in `shpH`; UPL dated 2019-07-19).
   parses to 42.9386 under §151): the sidecar was never re-based for §151, so the stock page's history shows 51.21 for Jun-2019.
 ## §222 — RESULTS-SEASON CADENCE IS AUTOMATIC: filing counts + the quarter calendar decide IN/OFF and every reader follows (2026-10-06, user: "u decide the frequency according to results counts and dates every quarter and automatically change it without my intervention")
 
+> **2026-10-12 (§228):** a third IN rule — ≥10 result board meetings CONFIRMED for today in docs/results_calendar.json (inside the window) — and IGNITE_CUM 40 → 20. On Mon 12-Oct the counts alone (37 since 9-Oct) kept a 20-company results day on the 4-hourly cadence.
+
 **Before.** Three schedules were dialled by hand at each season edge: cut on 2026-08-18 (ad6ca316, "123 → 101 scheduled
 runs/day"), with a read-only Monday routine whose only job was to tell the user when to put them back. **Now** one script
 answers IN or OFF from measured data and everything reads it — nothing is edited at a season edge any more.
@@ -27931,6 +27933,7 @@ held exactly Institutions (Foreign); 366 move (mostly < 0.01 pp; 15 >= 0.01); 26
 rebase ledger (cur within 0.000051 of its `old`) and left as they are; 4 cells that fit neither shape held. NOTE: fetch_shareholding's
 daily NSE parse must also count these rows going forward (open).
 
+<<<<<<< HEAD
 **Parts 67-76 (2026-10-12) - the rest of the Quantmac v8 cells, one by one, on each filing's own lines.** 67: JUBLPHARMA Sep-14,
 ELGIEQUIP Jun-15, WABAG Jun-15 page rows. 68: Dec-15/Mar-16 seam (`ownline/seamown.py`, base = Table I STABC - STC1). 69: CHOLAFIN /
 DEN / PVRINOX Mar-16 named institutions holders. 70: ADANIENT Mar-16, BHARATFIN Dec-15/Mar-16. 71: event (mid-quarter) filings
@@ -27951,3 +27954,52 @@ the files' grand-total element is mis-tagged - base = B + C), KARURVYSYA 2018-08
 date, the later 109.02 on 6,198,953,515 shares). UNKNOWN: Jun/Sep-2015 pages whose bare 'Others' row is labelled only by the company's
 PDF (404): INDIACEM, JBFIND, GRAPHITE, DISHMAN, MAHLIFE, MARICO. Identity trap: our cached BSE list for SUNDARMFIN (and KARURVYSYA)
 is scrip 600001; the real list is SHPQNewFormat scripcode=590071 (saved ~/stocks-cache/shp/quantmac/v8/wb/bse_list_590071.json).
+=======
+
+## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
+
+**What the user saw.** Mon 12-Oct-2026 ~16:40 IST: the Just Declared tab showed nothing for the day. Measured, not assumed:
+NSE (both boards) and BSE together had ~10 companies with a result filed by 16:44 IST (Adroit, Agri-Tech, Alkali, Gammon ×9 old
+quarters, Swaraj Engines, Abhishek Integrations, Typhoon, Neil, Rudra, Kallam; RBL Bank at 16:39); HCLTECH / ICICIAMC / GSFC /
+SWANDEF / PLASTIBLEN were on the day's calendar but had NOT filed. Our feed file held all 19 rows. Four reasons it read "none":
+1. a card needs parsed numbers; the micro-caps filed 14:27–16:32 had none yet (9-Oct lag measured from payload history:
+   ANANDRATHI filed 17:44 → numbers in the 18:35 build; CANFINHOME 19:37 → 21:19); a visitor sees cards only, the owner sees
+   "Numbers pending · 17";
+2. the feed file refreshed only at 12:30 and 16:35 IST: `season_state` read OFF (37 filings since 9-Oct vs IGNITE_CUM 40) while
+   20 companies were CONFIRMED for the day on the exchange calendar — a results day on the 4-hourly cadence;
+3. two real results slipped the caption filter: Swaraj Engines "approved the Unaudited Financial Results **of the Company for
+   the second quarter** and half year ended 30th September, 2026" and RBL Bank "financial results **of the Bank, for the**
+   quarter…" — the filter wanted "financial results for the (period|quarter|year)"; both reached the feed only via BSE, Swaraj
+   with headline "Please find enclosed file" → qe 0 → card impossible although its Sep-26 numbers (PAT 60.57 cr) were stored;
+4. the page's live relay parsed only "ended September 30, 2026" (month first) — "ended 30th September, 2026" = no quarter.
+
+**Measured before changing (cell by cell, §0):** against docs/announcements.json (Sep-12..Oct-12, 418 outcome rows) the new
+four-branch filter adds 4 rows (SWARAJENG, CRAMC, CANFINHOME, ANANDRATHI — all genuine), loses 0. Against the Jul-14..Aug-14-2026
+in-season snapshot (git 8daf70e98, 2,779 outcome rows): old filter 1,931 matches, NEW adds **75**, loses 0; 74 of the 75 had NO
+"Financial Results"-category twin that day — GRASIM, LUPIN, DLF, ASIANPAINT, AMBUJACEM, COALINDIA, IDEA, VBL, BANDHANBNK, M&MFIN,
+INDUSTOWER, TORNTPHARM, KANSAINER… — every caption read (the 14 truncated ones in full), every one a genuine result filing.
+Confirmed result board meetings per calendar day (results_calendar.json snapshots): off-season 1-7 (16-23 Sep: 2-4; Fri 9 Oct: 7;
+Sat 10 Oct: 3), first real day of a season 13-20 (Tue 14 Jul: 13; Mon 12 Oct: 20), then 27-576.
+
+**Changes (all LIVE — commit SHA_PLACEHOLDER):**
+- `scripts/fetch_announcements.py` RESULT_CAP_RE = four branches: "results [of the Bank,] for the [second] quarter" ·
+  "submitted …≤80 chars… financial results" · "approv/adopt/taken on record …≤100… financial results" · "results … quarter/half
+  year/period/year/Q1-4 … ended/ending". `docs/quarterly-results.html` FEED_CAT_RE (now also "Integrated Filing- Financial") and
+  FEED_CAP_RE carry the SAME branches — **change both together**.
+- Page `feedItem`: a row whose caption names no quarter (qe 0) takes the quarter whose numbers were ANNOUNCED on the filing day
+  (q row [6] = ann YYYYMMDD) — the filing's own numbers by date; no numbers announced that day = still pending. Never the calendar.
+- Page `feedCaptionQE` (live relay): day-first, "ending", numeric dd.mm.yyyy dates; quarter day = the month's last day.
+- Page `renderFeed`: ONE card per company + filing day + quarter (BSE+NSE copies, Outcome+Results rows); newest row wins; the
+  owner's filings count still counts every row, visitor counts key off cards. Gammon's nine quarters stay nine cards.
+- `scripts/season_state.py`: new trigger — in the window AND ≥ CAL_DAY (10) result board meetings confirmed for TODAY in
+  docs/results_calendar.json → IN. Window guard kept; a missing/unreadable calendar counts as none; `--calendar PATH` for tests.
+  IGNITE_CUM 40 → **20** (user). Replays of the four seasons unchanged (IN on QE+11..13, OFF D+5..6, trickle never ignites);
+  7 new checks in `scripts/test_season_state.py`. Live at 17:00 IST: IN by both rules → refresh-results-hourly hourly, fundamentals
+  half-hourly, all four vision slots.
+- `docs/sw.js` shell v256.
+
+**If it happens again:** `python3 scripts/season_state.py` (reason line names which rule fired); compare the day's NSE
+`corporate-announcements` (index=equities AND sme) + BSE `AnnSubCategoryGetData strCat=Result` with docs/results_feed.json for the
+day; for any outcome caption not in the feed, test it against RESULT_CAP_RE before touching the filter, and add the phrasing as a
+measured branch (re-run the Aug snapshot count: new/lost).
+>>>>>>> 3da3b7f72 (§228 Just Declared on a results day: wider result-caption filter (script + live relay), no-quarter fallback, one card per filing, calendar trigger + IGNITE_CUM 20 in season_state)

@@ -151,6 +151,21 @@ def main():
           "empty feed inside the window -> IN (fail open)")
     check(S.evaluate(dt.datetime(2026, 9, 20, 6, 0, tzinfo=dt.timezone.utc), rows=[])["state"] == "off",
           "empty feed outside the window -> OFF")
+    # calendar trigger (§228): a results day the filing counts have not proved yet. Feed = 3 filings today (fresh, not stale,
+    # far below IGNITE_CUM); calendar = N confirmed result meetings today.
+    t12 = dt.datetime(2026, 10, 12, 6, 0, tzinfo=dt.timezone.utc)          # Mon 12-Oct-2026 11:30 IST, inside the Sep-26 window
+    feed3 = [["A%d" % i, "Co %d" % i, "2026-10-12 10:0%d:00" % i, 20260930, "results", "x.pdf"] for i in range(3)]
+    cal = lambda n, day: [["M%d" % i, "Meet %d" % i, day, "Financial Results"] for i in range(n)]
+    check(S.evaluate(t12, rows=feed3, cal_rows=[])["state"] == "off", "3 filings, no calendar -> OFF (baseline)")
+    check(S.evaluate(t12, rows=feed3, cal_rows=cal(7, "2026-10-12"))["state"] == "off", "7 confirmed meetings today -> still OFF (off-season days run 1-7)")
+    st = S.evaluate(t12, rows=feed3, cal_rows=cal(20, "2026-10-12"))
+    check(st["state"] == "in" and st["counts"]["meetings_today"] == 20, "20 confirmed result meetings today inside the window -> IN")
+    check(S.evaluate(t12, rows=feed3, cal_rows=cal(20, "2026-10-13"))["state"] == "off", "20 meetings TOMORROW do not open today")
+    check(S.evaluate(t12, rows=feed3, cal_rows=[["M", "Meet", "2026-10-12", "Dividend"]] * 20)["state"] == "off", "20 meetings today for a non-result purpose -> OFF")
+    t920 = dt.datetime(2026, 9, 20, 6, 0, tzinfo=dt.timezone.utc)
+    check(S.evaluate(t920, rows=[["A", "Co", "2026-09-20 10:00:00", 20260630, "r", "x.pdf"]], cal_rows=cal(25, "2026-09-20"))["state"] == "off",
+          "25 meetings on a day OUTSIDE the window -> OFF (window guard)")
+    check(S.evaluate(t12, rows=feed3, cal_path="/nonexistent/results_calendar.json")["state"] == "off", "missing calendar file -> counted as none, no error")
     # calendar
     for d, qe, dl in ((dt.date(2026, 10, 6), "2026-09-30", "2026-11-14"), (dt.date(2026, 1, 5), "2025-12-31", "2026-02-14"),
                       (dt.date(2026, 4, 2), "2026-03-31", "2026-05-30"), (dt.date(2026, 12, 31), "2026-09-30", "2026-11-14"),

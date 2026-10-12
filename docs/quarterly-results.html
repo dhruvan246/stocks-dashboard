@@ -891,8 +891,25 @@ function renderResults(){
 
 /* ---------- render: feed ---------- */
 let FEEDROWS=[];   // [sym,co,dt,qe,caption,file]
-const FEED_CAT_RE=/^financial\s+result/i, FEED_CAP_RE=/financial\s+results?\s+for\s+the\s+(period|quarter|year)|submitted.{0,40}financial\s+results?/i;
-const FEED_QE_RE=/(period|quarter|year)\s+ended\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),?\s+(\d{4})/i;
+/* Live top-up filter = fetch_announcements.py RESULT_CAT_RE / RESULT_CAP_RE, kept IDENTICAL (runbook §228): the result PDF often
+   rides only on an "Outcome of Board Meeting" row, worded "results of the Company, for the second quarter" / "considered and
+   approved the Unaudited … Financial Results" / "submitted … [long] … financial results" — 75 such filings (GRASIM, LUPIN, DLF,
+   COALINDIA…) slipped the old two-branch test in one season window; every one read, all genuine results. */
+const FEED_CAT_RE=/^(?:financial\s+result|integrated\s+filing\s*[-–]?\s*financial)/i,
+      FEED_CAP_RE=/financial\s+results?[^.;:]{0,60}?\bfor\s+the\s+(?:\w+[\s,]+){0,3}(?:period|quarter|half|year|nine|six|three)\b|submitted[^.;]{0,80}?financial\s+results?|(?:approv|adopt|taken\s+on\s+record|took\s+on\s+record)\w*[^.;]{0,100}?financial\s+results?|financial\s+results?[^.;]{0,80}?\b(?:quarter|half[- ]?year|period|year|nine\s+months|q[1-4])\b[^.;]{0,40}?\bend(?:ed|ing)\b/i;
+/* Quarter named in a live caption: "quarter ended September 30, 2026" | "half year ended 30th September, 2026" | "quarter ending
+   30.09.2026" (fetch_announcements.parse_qe reads the same forms when the file is built; day-first dates used to parse as no
+   quarter and the row sat in "numbers pending" even with numbers stored — Swaraj Engines 12-Oct-2026, runbook §228). */
+const FEED_QE_RE=/(period|quarter|half[- ]?year|year|nine\s+months)\s+end(?:ed|ing)\s+(?:on\s+)?(?:(\d{1,2})(?:st|nd|rd|th)?[\s,.\-]+([A-Za-z]{3})[a-z]*\.?[\s,.\-]+(\d{4})|([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})|(\d{1,2})[.\/\-](\d{1,2})[.\/\-](\d{4}))/i;
+function feedCaptionQE(cap){
+  const m=FEED_QE_RE.exec(cap||''); if(!m) return 0;
+  let mo=0,y=0;
+  if(m[3]){ mo=MONTHS.findIndex(x=>x.toLowerCase()===m[3].toLowerCase()); y=+m[4]; }          // 30th September, 2026
+  else if(m[5]){ mo=MONTHS.findIndex(x=>x.toLowerCase()===m[5].toLowerCase()); y=+m[7]; }     // September 30, 2026
+  else if(m[8]){ mo=+m[9]; y=+m[10]; }                                                          // 30.09.2026
+  if(!(mo>=1&&mo<=12&&y>2000&&y<2100)) return 0;
+  return y*10000+mo*100+new Date(Date.UTC(y,mo,0)).getUTCDate();                               // quarter = that month's last day
+}
 let feedDays='7', feedSort='latest', feedDay='all', feedTurn=false, feedShown=24;
 const feedPdf = f => f.indexOf('http')===0 ? f : PDF_PREFIX+f;
 /* "Numbers pending" (filings we've seen but haven't parsed yet) is the owner's coverage tool, not a
@@ -902,7 +919,15 @@ const FEED_OWNER = (()=>{ try{ return !!localStorage.getItem('bt_owner_key'); }c
 /* A feed row earns a CARD when its company + quarter have parsed numbers; else it's "numbers pending". */
 function feedItem(r){
   const c=CO[r[0]]; if(!c) return null;
-  const qi=r[3]?QTRS.indexOf(qe2qe(r[3])):-1;
+  let qi=r[3]?QTRS.indexOf(qe2qe(r[3])):-1;
+  if(qi<0&&!r[3]){
+    /* No quarter in the caption ("Please find enclosed file" — Swaraj Engines 12-Oct-2026, numbers parsed, card impossible):
+       take the quarter whose numbers were ANNOUNCED on the filing day (q row [6] = ann YYYYMMDD). Same company + same day =
+       this filing's own numbers; no numbers announced that day = still "numbers pending". Never the calendar, never a guess —
+       only the stored announcement date (runbook §228). */
+    const d=+r[2].slice(0,10).replace(/-/g,'');
+    qi=c.q.findIndex(q=>q&&q[6]!=null&&+q[6]===d);
+  }
   if(qi<0||!c.q[qi]) return null;
   if(pick(c.q[qi],'rev')[0]==null && pick(c.q[qi],'pat')[0]==null) return null;
   return {r,c,qi, ry:growth(c.q,qi,'rev',4), oy:growth(c.q,qi,'op',4), gy:growth(c.q,qi,'pat',4), rx:c.q[qi][7]};
@@ -987,7 +1012,13 @@ function renderFeed(){
   let all=FEEDROWS.filter(r=>r[2].slice(0,10)>=cut && (coPass(r[0])||!CO[r[0]]&&ST.uni==='all'&&ST.sector==='all'&&ST.mcap==='all'))
                   .filter(r=>!ST.search||normSearch(r[0]).indexOf(normSearch(ST.search))>=0||normSearch(r[1]).indexOf(normSearch(ST.search))>=0);
   const items=new Map(); all.forEach(r=>items.set(r,feedItem(r)));
-  if(!FEED_OWNER) all=all.filter(r=>items.get(r));
+  // One card per company, filing day and quarter: the same filing arrives as a BSE row AND an NSE row, or as an "Outcome" row
+  // plus a "Financial Results" row (Swaraj Engines, Adroit 12-Oct-2026). `all` is newest-first, so the newest row keeps the
+  // card; the older twin is a duplicate ROW — the owner still counts it as a filing, a visitor never sees it (visitor counts
+  // key off cards). Gammon's nine quarters in one day are nine quarters → nine cards (runbook §228).
+  const seenCard=new Set(), dupRow=new Set();
+  all.forEach(r=>{ const it=items.get(r); if(!it) return; const k=r[0]+'|'+r[2].slice(0,10)+'|'+it.qi; if(seenCard.has(k)) dupRow.add(r); else seenCard.add(k); });
+  if(!FEED_OWNER) all=all.filter(r=>items.get(r)&&!dupRow.has(r));
   /* Screener-style date strip: jump to a single declaration day */
   const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
   const days=Object.keys(dayC).sort().reverse();
@@ -998,7 +1029,7 @@ function renderFeed(){
   $('feedDates').querySelectorAll('[data-dd]').forEach(b=>b.onclick=()=>{ feedDay=b.getAttribute('data-dd'); feedShown=24; renderFeed(); });
   const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
   const cards=[], pend=[];
-  rows.forEach(r=>{ const it=items.get(r); if(it) cards.push(it); else pend.push(r); });
+  rows.forEach(r=>{ const it=items.get(r); if(!it) pend.push(r); else if(!dupRow.has(r)) cards.push(it); });
   let list=feedTurn? cards.filter(it=>patFlag(it.gy)==='LP') : cards;
   $('feedCount').textContent= FEED_OWNER
     ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
@@ -1191,9 +1222,7 @@ async function liveTopUp(){
       if(!(FEED_CAT_RE.test(cat)||(cat==='Outcome of Board Meeting'&&FEED_CAP_RE.test(cap)))) continue;
       const k=feedKey(a); if(liveKeys.has(k)) continue;
       liveKeys.add(k);
-      let qe=0; const m=FEED_QE_RE.exec(cap);
-      if(m){ const mo=MONTHS.findIndex(x=>x.toLowerCase()===m[2].toLowerCase().slice(0,3)); if(mo>0) qe=+m[4]*10000+mo*100+(+m[3]); }
-      FEEDROWS.push([a[0],a[1],a[2],qe,cap,a[5]]); added++;
+      FEEDROWS.push([a[0],a[1],a[2],feedCaptionQE(cap),cap,a[5]]); added++;
     }
     if(added){ FEEDROWS.sort((x,y)=>y[2].localeCompare(x[2])||x[0].localeCompare(y[0])); if(ST.tab==='feed') renderFeed(); }
     const el=$('feedLive');

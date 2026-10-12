@@ -9,7 +9,7 @@ One answer for every reader, so the whole cadence moves together without anyone 
   * build_results_coverage.py stamps it into docs/results_coverage.json for the Results coverage page.
 
 Inputs (nothing over the network): docs/results_feed.json — {updated, rows}, row = [SYM, name, 'YYYY-MM-DD HH:MM:SS' (IST),
-qe, headline, pdf] — and the clock. Counts are result filings per IST calendar day, NSE + BSE merged.
+qe, headline, pdf] — docs/results_calendar.json (confirmed board meetings; missing/unreadable = counted as none) — and the clock. Counts are result filings per IST calendar day, NSE + BSE merged.
 
 Rule (STATELESS — the same inputs always give the same answer; no memory, nothing to get stuck):
   quarter  = the latest quarter end before today (31 Mar / 30 Jun / 30 Sep / 31 Dec)
@@ -19,12 +19,20 @@ Rule (STATELESS — the same inputs always give the same answer; no memory, noth
              (Mon 17-Aug-2026: 236 NSE names; Mon 17-Nov-2025: 222) and the day after collapses (2 and 7). +3 reaches that
              Monday for a Fri/Sat/Sun deadline.
   IN  when (today in window AND filings since the window opened >= IGNITE_CUM) calendar + the season has measurably begun
+        OR (today in window AND result board meetings CONFIRMED for today >= CAL_DAY)  the exchange calendar (§228, below)
         OR (yesterday + the day before >= HOT_TWO_DAYS)                        counts alone: the post-deadline tail, any flood
         OR (any of today / yesterday / the day before >= HOT_DAY)
   OFF otherwise.
+  Calendar trigger (runbook §228, 2026-10-12): docs/results_calendar.json — row = [SYM, name, 'YYYY-MM-DD', purpose] — lists
+  the board meetings the exchange has CONFIRMED. Counting only purposes naming results: off-season days carry 1-7 (16-23 Sep
+  2026: 2-4/day; Fri 9 Oct: 7; Sat 10 Oct: 3), the first real day of a season 13-20 (Tue 14 Jul 2026: 13; Mon 12 Oct 2026: 20),
+  then 27-576. CAL_DAY = 10 sits between. Why it is needed: on Mon 12-Oct-2026 the filing counts said OFF all day (37 since
+  the window opened vs IGNITE_CUM 40) while 20 companies — HCLTECH, ICICIAMC, RBLBANK, GSFC… — were confirmed for that day,
+  so the feed refreshed 4-hourly on a results day. The window guard stays: a count outside the window never opens a season.
   The ignition count starts at the window's opening day, not the quarter end: the previous quarter's late filers trickle
   in at 3-7/day all off-season (Oct 1-6 2026: 20 rows), and that trickle alone must not open a season — at 3-5/day it
-  takes ~10 days of window to reach IGNITE_CUM, by which time the calendar alone is right. Inside the window the count
+  takes 4-7 days of window to reach IGNITE_CUM (20 since 2026-10-12, user's call; 40 before), by which time the calendar
+  trigger below has long since opened it on the first real day. Inside the window the count
   is monotone through the day and the season, so weekends and holiday lulls cannot flip the state back.
 Replayed on the Jun-2026, Mar-2026, Dec-2025 and Sep-2025 seasons (scripts/test_season_state.py): IN within a day or two of
 the first real filing day, OFF 1-2 days after the collapse; weekend dips inside the window cannot flip it. Today's count is
@@ -35,7 +43,7 @@ than a missed one.
 CLI:  python3 scripts/season_state.py                 # JSON report
       python3 scripts/season_state.py --state         # prints "in" or "off"
       python3 scripts/season_state.py --vision-slot   # "RUN ..." or "SKIP ..." for the bse-vision-fill slot that just fired
-      --now 2026-08-17T04:00:00Z   --feed PATH   --force in|off      (tests and replays only)
+      --now 2026-08-17T04:00:00Z   --feed PATH   --calendar PATH   --force in|off      (tests and replays only)
 """
 import argparse
 import datetime as dt
@@ -45,13 +53,15 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FEED = os.path.join(HERE, "..", "docs", "results_feed.json")
+CAL = os.path.join(HERE, "..", "docs", "results_calendar.json")
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 
 WINDOW_OPEN_DAYS = 9      # first filers land on day 9-14 after the quarter end
 WINDOW_CLOSE_DAYS = 3     # the first working day after the deadline still floods; the day after collapses
-IGNITE_CUM = 40           # filings since the window opened that mark the season as begun (inside the window)
+IGNITE_CUM = 20           # filings since the window opened that mark the season as begun (inside the window); 40 until 2026-10-12 (user: "make it 20 from 40")
 HOT_DAY = 30              # one day this busy is season, whatever the calendar says (off-season days run 0-7)
 HOT_TWO_DAYS = 40         # yesterday + the day before
+CAL_DAY = 10              # result board meetings confirmed for today on the exchange calendar (off-season 1-7, season 13+)
 STALE_DAYS = 3
 
 # The vision reader's target slot set (UTC) = 13:15 / 16:15 / 21:15 / 00:15 IST — the cron the user's §222 edit gives the
@@ -82,6 +92,25 @@ def load_feed(path=None):
     return d.get("rows") or [], d.get("updated")
 
 
+def load_calendar(path=None):
+    """Confirmed board-meeting rows from docs/results_calendar.json; [] when the file is missing or unreadable (never raises —
+    the calendar is a second signal, not a dependency)."""
+    try:
+        d = json.load(open(path or CAL, encoding="utf-8"))
+        return d.get("rows") or []
+    except Exception:
+        return []
+
+
+def meeting_counts(cal_rows):
+    """{'YYYY-MM-DD': confirmed board meetings whose stated purpose names results} (row field 2 = date, 3 = purpose)."""
+    by = {}
+    for r in cal_rows:
+        if isinstance(r, (list, tuple)) and len(r) > 3 and isinstance(r[2], str) and "result" in str(r[3] or "").lower():
+            by[r[2][:10]] = by.get(r[2][:10], 0) + 1
+    return by
+
+
 def daily_counts(rows):
     """{'YYYY-MM-DD': filings} by the IST filing day (row field 2)."""
     by = {}
@@ -97,7 +126,7 @@ def _ist_slot(h, m):
     return "%02d:%02d" % (t // 60, t % 60)
 
 
-def evaluate(now_utc=None, feed_path=None, rows=None, force=None):
+def evaluate(now_utc=None, feed_path=None, rows=None, force=None, cal_path=None, cal_rows=None):
     now = now_utc or dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
         now = now.replace(tzinfo=dt.timezone.utc)
@@ -107,6 +136,7 @@ def evaluate(now_utc=None, feed_path=None, rows=None, force=None):
     if rows is None:
         rows, updated = load_feed(feed_path)
     by = daily_counts(rows)
+    meetings = meeting_counts(cal_rows if cal_rows is not None else load_calendar(cal_path))
     key = lambda d: d.isoformat()
     d1, d2 = today - dt.timedelta(days=1), today - dt.timedelta(days=2)
     c0, c1, c2 = by.get(key(today), 0), by.get(key(d1), 0), by.get(key(d2), 0)
@@ -118,6 +148,9 @@ def evaluate(now_utc=None, feed_path=None, rows=None, force=None):
     why = []
     if in_window and cum >= IGNITE_CUM:
         why.append("calendar window and %d filings since it opened on %s" % (cum, cal["open"]))
+    m0 = meetings.get(key(today), 0)
+    if in_window and m0 >= CAL_DAY:
+        why.append("%d companies' result board meetings confirmed for today on the exchange calendar" % m0)
     if in_window and stale:
         why.append("calendar window, feed stale (newest row %s) — fail open" % newest)
     if c1 + c2 >= HOT_TWO_DAYS:
@@ -133,15 +166,15 @@ def evaluate(now_utc=None, feed_path=None, rows=None, force=None):
         state = force
         why.insert(0, "FORCED --force %s" % force)
     reason = "; ".join(why)
-    counts = {"today": c0, "yesterday": c1, "day_before": c2, "since_window_open": cum}
-    summary = "%s — %s; filings today %d / yesterday %d / day before %d; feed newest %s%s" % (
-        state.upper(), reason, c0, c1, c2, newest, " (STALE)" if stale else "")
+    counts = {"today": c0, "yesterday": c1, "day_before": c2, "since_window_open": cum, "meetings_today": m0}
+    summary = "%s — %s; filings today %d / yesterday %d / day before %d; meetings confirmed today %d; feed newest %s%s" % (
+        state.upper(), reason, c0, c1, c2, m0, newest, " (STALE)" if stale else "")
     return {
         "state": state, "reason": reason, "summary": summary,
         "today_ist": key(today), "qe": key(cal["qe"]), "deadline": key(cal["deadline"]),
         "window": [key(cal["open"]), key(cal["close"])], "in_window": in_window,
         "counts": counts, "feed_updated": updated, "feed_newest_day": newest, "feed_stale": stale,
-        "thresholds": {"ignite_cum": IGNITE_CUM, "hot_day": HOT_DAY, "hot_two_days": HOT_TWO_DAYS},
+        "thresholds": {"ignite_cum": IGNITE_CUM, "hot_day": HOT_DAY, "hot_two_days": HOT_TWO_DAYS, "cal_day": CAL_DAY},
         "vision": {"cron_utc": VISION_CRON,
                    "slots_ist": [_ist_slot(h, m) for h, m in VISION_SLOTS_UTC[state]],
                    "slots_utc": ["%02d:%02d" % s for s in VISION_SLOTS_UTC[state]],
@@ -172,13 +205,14 @@ def main():
     ap = argparse.ArgumentParser(description="results-season state (runbook §222)")
     ap.add_argument("--now", help="pretend time, ISO UTC (tests)")
     ap.add_argument("--feed", help="alternative results_feed.json (tests)")
+    ap.add_argument("--calendar", help="alternative results_calendar.json (tests)")
     ap.add_argument("--force", choices=["in", "off"], help="override the verdict (tests)")
     ap.add_argument("--state", action="store_true", help='print just "in" or "off"')
     ap.add_argument("--vision-slot", action="store_true", help="RUN/SKIP for the vision-fill slot that just fired")
     a = ap.parse_args()
     now = parse_now(a.now)
     try:
-        st = evaluate(now, a.feed, force=a.force)
+        st = evaluate(now, a.feed, force=a.force, cal_path=a.calendar)
     except Exception as ex:
         if a.vision_slot:
             print("RUN — season_state could not evaluate (%s): failing open" % ex)
