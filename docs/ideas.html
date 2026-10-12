@@ -30,6 +30,7 @@
     .obq { font-size: 12px; color: var(--text-muted); white-space: normal; max-width: 520px; }
     #ob-table td, #obt-table td { vertical-align: middle; }
     #obt-table th, #obt-table td, #ow-table th, #ow-table td { padding: 6px 6px; }
+    .bo-t th, .bo-t td { padding: 6px 6px; vertical-align: middle; } .bo-t td .muted { white-space: normal; max-width: 140px; line-height: 1.25; } .bo-t th:first-child, .bo-t td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table th:first-child, #ow-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table td { vertical-align: middle; } #ow-table tr.obdet td { white-space: normal; background: var(--surface); padding: 10px 14px; } #ow-table tr.obdet .obq { max-width: none; margin-bottom: 4px; }
     #ow-table button.obmore { font-size: 12px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; white-space: nowrap; }
@@ -232,6 +233,7 @@
     <button data-view="govt">Government</button>
     <button data-view="commodity">Commodities</button>
     <button data-view="ob">Order book jumps</button>
+    <button data-view="bo">Breakout watch</button>
     <button data-view="track">Scorecard</button>
     <button data-view="run">Run &amp; scan</button>
     <button data-view="method">Method</button>
@@ -279,6 +281,23 @@
   </section>
 
   <!-- ===== ORDER BOOK JUMPS ===== -->
+  <!-- ===== BREAKOUT WATCH ===== -->
+  <section id="view-bo" class="view" hidden>
+    <h2 class="text-lg font-semibold mb-1">Breakout watch</h2>
+    <p class="muted text-sm mb-2">Stocks that <b>rose a lot, fell a lot, and are back at their old peak</b> — the Cupid pattern (₹2.40 → ₹27.39 in 2023-24, −58% to ₹11.52 by Apr-2025, through the old high on 18-Jul-2025, then 12.5×). Every NSE stock, bonus/split-adjusted closes, rebuilt every evening. <b>Price patterns only</b>: nothing here says why a stock moved — open the stock page and its filings before acting.</p>
+    <p id="bo-meta" class="muted text-xs mb-3"></p>
+    <h3 class="text-base font-semibold mb-1">Broke out recently</h3>
+    <p class="muted text-sm mb-2">Closed above the old peak within the last 60 sessions, after the rise and the fall. Newest first.</p>
+    <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-broke"><thead><tr>
+      <th data-k="name">Company</th><th class="n" data-k="rise_x" title="Old peak ÷ lowest close in the ~2 years before it">The rise</th><th class="n" data-k="fall_pct" title="Fall from the old peak to the lowest close after it">The fall</th><th data-k="breakout_date">Broke out</th><th class="n" data-k="breakout_close">Close that day</th><th class="n" data-k="last">Latest</th><th class="n" data-k="ret_since_pct">Since breakout</th><th class="n" data-k="best_since_pct">Best since</th><th class="n" data-k="med_turn_cr" title="Median daily turnover, last 60 sessions">₹cr/day</th>
+    </tr></thead><tbody><tr><td colspan="9" class="muted">Loading…</td></tr></tbody></table></div>
+    <h3 class="text-base font-semibold mb-1">Near breakout</h3>
+    <p class="muted text-sm mb-2">Never closed above the old peak since the fall, and now within 15% of it. Closest first.</p>
+    <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-near"><thead><tr>
+      <th data-k="name">Company</th><th class="n" data-k="rise_x">The rise</th><th class="n" data-k="fall_pct">The fall</th><th class="n" data-k="last">Latest</th><th class="n" data-k="below_peak_pct" title="Latest close vs the old peak">vs old peak</th><th class="n" data-k="from_low_pct" title="Latest close vs the low after the peak">Up from low</th><th class="n" data-k="med_turn_cr">₹cr/day</th>
+    </tr></thead><tbody><tr><td colspan="7" class="muted">Loading…</td></tr></tbody></table></div>
+  </section>
+
   <section id="view-ob" class="view" hidden>
     <h2 class="text-lg font-semibold mb-1">Order book jumps</h2>
     <p class="muted text-sm mb-2">The order book each company <b>states in its own filings</b> (investor decks, call transcripts, press releases, order letters), its latest figure against the one stated about a year earlier. Read by a script from the documents: every row carries the sentence and the filing, so check the quote. The daily research run opens the documents behind the biggest jumps and turns the confirmed ones into ideas (lane “Order book”).</p>
@@ -499,12 +518,13 @@
   };
 
   // ---- top-level views ---------------------------------------------------------------
-  const VIEWS = ['ideas', 'govt', 'commodity', 'ob', 'track', 'run', 'method'];
+  const VIEWS = ['ideas', 'govt', 'commodity', 'ob', 'bo', 'track', 'run', 'method'];
   let VIEW = 'ideas';
   const setView = (v, push) => {
     if (!VIEWS.includes(v)) v = 'ideas';
     VIEW = v;
     if (v === 'ob') loadOB();
+    if (v === 'bo') loadBO();
     VIEWS.forEach(x => { $('#view-' + x).hidden = x !== v; });
     document.querySelectorAll('#topnav button').forEach(b => b.classList.toggle('on', b.dataset.view === v));
     try { const u = new URL(location.href); if (v === 'ideas') u.searchParams.delete('view'); else { u.searchParams.set('view', v); u.searchParams.delete('idea'); u.searchParams.delete('tab'); } if (push !== false) history.replaceState(null, '', u); } catch (e) {}
@@ -799,6 +819,31 @@
         <td class="n"><b>${pct(x.ret)}</b>${r.first_ret_pct != null ? `<div class="muted text-xs" title="Return since an earlier 50%+ jump filed ${dmy(r.first_trigger_filed)} (${esc(r.first_trigger_doc_title || '')}) that faded before this one" style="white-space:normal">earlier jump<br>${pct(r.first_ret_pct)}</div>` : ''}</td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="10" class="muted">No confirmed jumps yet.</td></tr>';
   };
   $('#obt-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OBT) return; if (OBTK === th.dataset.k) OBTD = -OBTD; else { OBTK = th.dataset.k; OBTD = th.dataset.k === 'name' ? 1 : -1; } drawOBT(); });
+  // ---- breakout watch (breakout_watch.json, loaded on first open) ----------------------------
+  let BO = null, boLoading = null;
+  const BOS = { broke: { k: 'breakout_date', d: -1 }, near: { k: 'below_peak_pct', d: -1 } };
+  const boName = (r) => `<a class="src" href="./stock.html?sym=${encodeURIComponent(r.sym)}">${esc(r.name || r.sym)}</a><div class="muted text-xs">${esc(r.sym)}</div>`;
+  const boRise = (r) => `${r.rise_x}×<div class="muted text-xs">₹${fmt(r.low_before, r.low_before < 100 ? 2 : 0)} → ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}, ${dmy(r.peak_date)}</div>`;
+  const boFall = (r) => `${pct(r.fall_pct)}<div class="muted text-xs">to ₹${fmt(r.trough, r.trough < 100 ? 2 : 0)}, ${dmy(r.trough_date)}</div>`;
+  const drawBO = () => {
+    if (!BO) return;
+    const sortRows = (rows, st) => rows.slice().sort((a, b) => { const x = st.k === 'name' ? (a.name || a.sym) : a[st.k], y = st.k === 'name' ? (b.name || b.sym) : b[st.k]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * st.d; });
+    ['broke', 'near'].forEach(w => document.querySelectorAll(`#bo-${w} th[data-k]`).forEach(th => { th.classList.toggle('asc', th.dataset.k === BOS[w].k && BOS[w].d > 0); th.classList.toggle('desc', th.dataset.k === BOS[w].k && BOS[w].d < 0); }));
+    $('#bo-broke tbody').innerHTML = sortRows(BO.broke || [], BOS.broke).map(r => `<tr><td>${boName(r)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
+      <td>${dmy(r.breakout_date)}<div class="muted text-xs">${r.days_since === 0 ? 'today' : r.days_since + ' session' + (r.days_since === 1 ? '' : 's') + ' ago'} · old peak ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}</div></td>
+      <td class="n">₹${fmt(r.breakout_close, 2)}</td><td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.ret_since_pct)}</b></td><td class="n">${pct(r.best_since_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="9" class="muted">None in the last 60 sessions.</td></tr>';
+    $('#bo-near tbody').innerHTML = sortRows(BO.near || [], BOS.near).map(r => `<tr><td>${boName(r)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
+      <td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.below_peak_pct)}</b></td><td class="n">${pct(r.from_low_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="7" class="muted">None right now.</td></tr>';
+  };
+  const loadBO = () => {
+    if (BO || boLoading) return;
+    boLoading = grab('./ideas/breakout_watch.json').then(j => {
+      BO = j;
+      $('#bo-meta').textContent = j ? `Prices to ${j.prices_to} · ${(j.broke || []).length} broke out in the last 60 sessions · ${(j.near || []).length} near · built ${j.built || ''} · ${j.rule || ''}` : 'breakout_watch.json not published yet.';
+      drawBO();
+    });
+  };
+  ['broke', 'near'].forEach(w => $(`#bo-${w} thead`).addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !BO) return; const st = BOS[w]; if (st.k === th.dataset.k) st.d = -st.d; else { st.k = th.dataset.k; st.d = th.dataset.k === 'name' ? 1 : -1; } drawBO(); }));
   let obLoading = null;
   const loadOB = () => {
     if (OB || obLoading) return;

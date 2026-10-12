@@ -246,6 +246,16 @@ the company gives. Only a confirmed jump becomes an idea: `"lane": "orderbook"`,
 `"orderbook: <book now> as on <date> vs <book a year earlier> (+X%), <ratio>x trailing sales"`. A row whose quote
 turns out to be wrong is reported in the run log's `data_problems` with the correct figure.
 
+### Breakout watch (user, 2026-10-12)
+
+"More such stocks which rose a lot then fell a lot and now are near breakout level" (Cupid: Rs 2.40 -> 27.39 in
+2023-24, -58% to 11.52 by Apr-2025, through the old high 18-Jul-2025, then 12.5x). `scripts/ideas/breakout.py`
+scans every NSE stock on the live adjusted sf-data closes (+ that evening's NSE bhavcopy): rose >= 3x to an
+all-time-high peak (since 2019) from the lowest close in the ~2 years before, fell >= 50%, and is now within 15%
+below that peak (near) or closed above it in the last 60 sessions (broke). Median turnover >= Rs 50 lakh/day.
+Ideas page tab "Breakout watch" (docs/ideas/breakout_watch.json, rebuilt by ideas-feeds.yml). Price patterns
+only - a candidate for research, never a reason by itself. Not covered yet: BSE-only stocks.
+
 ### Trade-protection filings and generic headings (user, 2026-10-12)
 
 OCCL's 29-Sep-2026 filing (DGTR raised the anti-dumping duty on Chinese insoluble sulphur from USD 307 to USD 485/MT,

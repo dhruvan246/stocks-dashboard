@@ -142,6 +142,11 @@ jobs:
       # previous numbers, marked stale.
       # Order wins that ADD UP: every order-win letter of the last few days (BSE + NSE whole-market lists), value read
       # from the letter, summed since each company's last stated order book; flagged at 0.5x within 183 days.
+      # Breakout watch (user, 2026-10-12, after Cupid): every NSE stock that rose >= 3x, fell >= 50% and is back within
+      # 15% of its old peak - or broke through it in the last 60 sessions. Live sf-data + today's NSE bhavcopy.
+      - name: Breakout watch
+        run: rc=0; python3 -X utf8 scripts/ideas/breakout.py || rc=$?; echo "breakout=$rc" >> /tmp/ideas/steps.txt
+
       - name: Order wins adding up
         run: rc=0; python3 -X utf8 scripts/ideas/order_wins.py --days-back 4 || rc=$?; echo "order_wins=$rc" >> /tmp/ideas/steps.txt
 
@@ -181,7 +186,7 @@ jobs:
           for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'moil_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
                     'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json',
-                    'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json', 'orderwins_tracker.json']:
+                    'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json', 'orderwins_tracker.json', 'breakout_watch.json']:
               try:
                   json.load(open('docs/ideas/' + f))
               except Exception as e:
@@ -223,7 +228,8 @@ jobs:
                  docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
                  docs/ideas/updates_queue.json docs/ideas/order_book.json docs/ideas/orderbook_signals.json docs/ideas/orderbook_tracker.json \
-                 docs/ideas/order_wins.json docs/ideas/orderwins_signals.json docs/ideas/orderwins_tracker.json"
+                 docs/ideas/order_wins.json docs/ideas/orderwins_signals.json docs/ideas/orderwins_tracker.json \
+                 docs/ideas/breakout_watch.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read
