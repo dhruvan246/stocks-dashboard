@@ -28044,6 +28044,27 @@ Sat 10 Oct: 3), first real day of a season 13-20 (Tue 14 Jul: 13; Mon 12 Oct: 20
 `corporate-announcements` (index=equities AND sme) + BSE `AnnSubCategoryGetData strCat=Result` with docs/results_feed.json for the
 day; for any outcome caption not in the feed, test it against RESULT_CAP_RE before touching the filter, and add the phrasing as a
 measured branch (re-run the Aug snapshot count: new/lost).
+
+### §228a — the QUARTER chip applies to Just Declared (2026-10-12 evening, user: "i selected sep 26 above, still june results are seen below")
+
+**What the user saw.** Just Declared under the Sep'26 chip showed TRIVENIPT and ADROITIND Jun'26 cards and a GAMMONIND Jun'25 card
+beside the Sep'26 ones. Measured in docs/results_feed.json (19:37 build): 74 rows in the 7-day window — 43 Sep'26, 17 Jun'26, 14
+older quarters (Gammon's nine back-quarters among them). `renderFeed` applied the day window, universe, sector, market-cap and
+search filters but never `ST.qi` — the chip only re-rendered the feed unchanged.
+
+**Change (docs/quarterly-results.html `renderFeed`, sw shell v257).** A card is kept only when its numbers' quarter (`it.qi`, the
+caption's quarter or the §228 announced-that-day fallback) is the selected quarter. The owner's "numbers pending" rows follow their
+caption quarter; a row whose caption names no quarter (qe 0) cannot be placed and stays under every quarter. Cards hidden this way
+are counted per quarter on an "Other quarters declared in this window" line above the day groups — a chip per quarter the picker
+offers (click = switch the quarter, same as the picker), a plain count for quarters older than the picker (open the company for
+those). The count line and the empty state name the quarter; a day chip picked under another quarter resets to "All days" when
+that day has no rows under the new quarter.
+
+**Verified (localhost, visitor + owner copy, zero console errors):** Sep'26 → 30 results (24 shown + Load more), other line
+"Jun'26 · 16 · Jun'25 · 1 · Mar'25 · 1"; click Jun'26 on that line → picker chip and header move to Jun'26, 16 Jun'26 cards, other
+line "Sep'26 · 30 …"; Dec'24 → "No Dec'24 results declared in this window." with the other line; Turnarounds (4) and Profit-growth
+sort stay inside the quarter; owner: "44 filings · 30 with numbers · Sep'26", pending list keeps GAMMONIND's Sep'26 row and drops
+its other quarters, ADROITIND's no-quarter row stays; 375 px: no sideways scroll, the line wraps.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
 or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been

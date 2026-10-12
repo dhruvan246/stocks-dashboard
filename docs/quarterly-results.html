@@ -1018,10 +1018,20 @@ function renderFeed(){
   // key off cards). Gammon's nine quarters in one day are nine quarters → nine cards (runbook §228).
   const seenCard=new Set(), dupRow=new Set();
   all.forEach(r=>{ const it=items.get(r); if(!it) return; const k=r[0]+'|'+r[2].slice(0,10)+'|'+it.qi; if(seenCard.has(k)) dupRow.add(r); else seenCard.add(k); });
+  /* The QUARTER chip applies to this tab too (user 12-Oct-2026: "I selected Sep'26 above, still June results are seen
+     below"): a card shows only when its numbers are the selected quarter's — a late Jun'26 filing on a Sep'26 results day sits
+     under the Jun'26 chip. The owner's "numbers pending" rows follow their caption quarter; a row whose caption names no
+     quarter (qe 0) cannot be placed and stays. Cards hidden this way are counted per quarter for the "other quarters" line
+     below the chips, so no filing is silently invisible (runbook §228a). */
+  const qeSel=QTRS[ST.qi], otherQ={};
+  all=all.filter(r=>{ const it=items.get(r);
+    if(it){ if(it.qi===ST.qi) return true; if(!dupRow.has(r)) otherQ[it.qi]=(otherQ[it.qi]||0)+1; return false; }
+    return !r[3]||r[3]===qeSel; });
   if(!FEED_OWNER) all=all.filter(r=>items.get(r)&&!dupRow.has(r));
   /* Screener-style date strip: jump to a single declaration day */
   const dayC={}; all.forEach(r=>{ const d=r[2].slice(0,10); dayC[d]=(dayC[d]||0)+1; });
   const days=Object.keys(dayC).sort().reverse();
+  if(feedDay!=='all'&&!dayC[feedDay]) feedDay='all';          // the day picked under another quarter has no rows here
   $('feedDates').innerHTML= days.length>1
     ? '<button class="chip dchip'+(feedDay==='all'?' on':'')+'" data-dd="all">All days</button>'+
       days.map(d=>'<button class="chip dchip'+(feedDay===d?' on':'')+'" data-dd="'+d+'">'+isoNice(d)+' · '+dayC[d]+'</button>').join('')
@@ -1031,9 +1041,18 @@ function renderFeed(){
   const cards=[], pend=[];
   rows.forEach(r=>{ const it=items.get(r); if(!it) pend.push(r); else if(!dupRow.has(r)) cards.push(it); });
   let list=feedTurn? cards.filter(it=>patFlag(it.gy)==='LP') : cards;
-  $('feedCount').textContent= FEED_OWNER
+  $('feedCount').textContent= (FEED_OWNER
     ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
-    : list.length+(feedTurn?' turnarounds':' results');
+    : list.length+(feedTurn?' turnarounds':' results'))+' · '+qlabel(QTRS[ST.qi],false);
+  /* Results filed in this window for OTHER quarters: a chip per quarter the picker offers (click = switch the quarter),
+     a plain count for quarters older than the picker (Gammon's 2024 back-filings, 12-Oct-2026 — open the company for those). */
+  const oqs=Object.keys(otherQ).map(Number).sort((a,b)=>a-b), nChip=Math.min(8,QTRS.length-4);
+  const otherHtml=!oqs.length?'':'<div class="flex flex-wrap items-center gap-1.5 mb-2.5 text-[11px] text-slate-500">'+
+    '<span>Other quarters declared in this window:</span>'+
+    oqs.map(i=>i<nChip
+      ? '<button class="chip dchip" data-oq="'+i+'" title="Show '+qlabel(QTRS[i],true)+'">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</button>'
+      : '<span class="chip dchip" style="cursor:default;opacity:.65" title="Older than the quarter picker — open the company to see these">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</span>').join('')+
+    '</div>';
   const pv=g=>g&&g.pct!=null?g.pct:-1e9;
   if(feedSort==='sales')       list=list.slice().sort((a,b)=>pv(b.ry)-pv(a.ry));
   else if(feedSort==='profit') list=list.slice().sort((a,b)=>pv(b.gy)-pv(a.gy));
@@ -1059,9 +1078,10 @@ function renderFeed(){
     html='<div class="fgrid">'+take.map(feedCard).join('')+'</div>'+
       (pend.length&&!feedTurn&&FEED_OWNER?'<div class="text-[11px] text-slate-400 mt-3">'+pend.length+' filings without parsed numbers are hidden under this sort — switch to <b>Latest</b> to see them.</div>':'');
   }
-  $('feedList').innerHTML=html||'<div class="card p-8 text-center text-slate-400 text-sm">No results '+(feedTurn?'with a loss→profit turnaround ':'')+'in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>';
+  $('feedList').innerHTML=otherHtml+(html||'<div class="card p-8 text-center text-slate-400 text-sm">No '+qlabel(QTRS[ST.qi],false)+' results '+(feedTurn?'with a loss→profit turnaround ':'')+'declared in this window'+(ST.uni!=='all'||ST.sector!=='all'||ST.mcap!=='all'?' under these filters':'')+'.</div>');
   $('fMore').classList.toggle('hidden', used>=list.length);
   $('fMore').onclick=()=>{ feedShown+=48; renderFeed(); };
+  $('feedList').querySelectorAll('[data-oq]').forEach(b=>b.onclick=()=>{ ST.qi=+b.getAttribute('data-oq'); ST.shown=100; feedShown=24; render(); });
   $('feedList').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openModal(el.getAttribute('data-open')));
 }
 function qe2qe(v){ return +v; }
