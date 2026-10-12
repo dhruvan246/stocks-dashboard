@@ -1,5 +1,5 @@
 {
- "checked": "2026-10-09",
+ "checked": "2026-10-12",
  "pairs": [
   {
    "old": "SANGINITA",
@@ -11,18 +11,6 @@
    "newFirst": 20260925,
    "oldIsin": "INE753W01010",
    "newIsin": "INE753W01010"
-  },
-  {
-   "old": "ASHIKA",
-   "new": "ASHIKAG",
-   "via": "symbolchange.csv",
-   "oldName": "ASHIKA",
-   "newName": "Ashika Global Securities Limited",
-   "oldLast": 20260724,
-   "newFirst": 20260727,
-   "oldIsin": "",
-   "newIsin": "INE094B01013",
-   "note": "ASHIKAG holds 850 bar(s) before the 20260727 change date \u2014 another tape was prepended (newFirst is only the first bar on/after the change date and may be from that tape too): find ASHIKAG's first OWN NSE session in the bhavcopy and drop the earlier bars in the merge (MANUAL_MERGE new_from, \u00a7199)"
   },
   {
    "old": "MANBRO",
@@ -46,6 +34,17 @@
    "newFirst": 20260817,
    "oldIsin": "INE860T01019",
    "newIsin": "INE137M01017"
+  },
+  {
+   "old": "NATCOPHARM",
+   "new": "NATCO-RE",
+   "via": "name-match",
+   "oldName": "Natco Pharma Ltd",
+   "newName": "Natco Pharma Limited-RE",
+   "oldLast": 20261012,
+   "newFirst": 20261012,
+   "oldIsin": "INE987B01026",
+   "newIsin": "INE987B20018"
   }
  ]
 }
