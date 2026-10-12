@@ -380,7 +380,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 #pfMenu .ck,#stMenu .ck{color:var(--accent); font-weight:800; width:14px; text-align:right}
 .snum2{font-size:9.5px; font-weight:800; background:var(--surface-2); border:1px solid var(--border); border-radius:4px; padding:1px 4px; color:var(--text-3); flex:0 0 auto}
 #tblToday td:first-child{white-space:normal;min-width:250px;line-height:1.45}
-@media (max-width:639px){#tblToday td:first-child{min-width:0}#tblToday td,#tblToday th{padding-left:6px;padding-right:6px}}   /* phones: the Month % column (2026-10-12) fits without sideways scroll */
+@media (max-width:639px){#tblToday td:first-child{min-width:0}#tblToday td,#tblToday th{padding-left:4px;padding-right:4px}#tblToday td{font-size:12px}}   /* phones: the Month % column (2026-10-12) fits without sideways scroll */
 .legend span{display:inline-flex;align-items:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .legend .ll{font-style:normal;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:5px}
 .legend b{flex:none}
@@ -1437,7 +1437,7 @@ function renderToday(rows){
     const pfi=(DOC.portfolios||[]).findIndex(p=>p.name===name);
     const pf=(DOC.portfolios||[])[pfi]||{};
     return {name, sw:SLOT[(pfi<0?0:pfi)%8], cfg:pf.cfgName||'', acct:pf.account?acctName(pf.account):'—', n:rs.length,
-            day:a.day, pct:base>0? a.day/base*100 : null, value:a.value, mon:monthAgg(rs)};
+            day:a.day, pct:base>0? a.day/base*100 : null, value:a.value, mon:monthAgg(rs), buy:a.cost>0? a.pnl/a.cost*100 : null};
   }).sort((x,y)=>(y.pct==null?-1e9:y.pct)-(x.pct==null?-1e9:x.pct));
   $('todayH').textContent=dayWord()+', by strategy';
   $('todaySub').innerHTML='Each strategy\u2019s move '+(sessionIsToday()?'today':'in the last session'+dayWhen())+', biggest first \u2014 tap a name for its stocks'+
@@ -1445,16 +1445,19 @@ function renderToday(rows){
   /* On a phone the whole point is seeing today's move without scrolling sideways,
      so the secondary columns are dropped rather than pushed off-screen. */
   const narrow = innerWidth < 640;
-  const ncols = narrow ? 4 : 7;
+  const ncols = narrow ? 5 : 8;
+  /* Since buy % (user 2026-10-12): unrealised gain on the user's own average buy price — a separate column so it never mixes
+     with Month %, which is measured from the month-end close */
+  const buyCell = v => '<td class="'+cls(v)+'" title="unrealised, from your average buy price"><b>'+pct(v)+'</b></td>';
   let h='<thead><tr><th>Strategy</th>'+(narrow?'':'<th>Account</th><th>Holdings</th><th>Value</th>')+
-        '<th>'+dayWord()+'</th><th>'+dayWord()+' %</th><th title="since the '+esc(shortDate(monthBaseISO()))+' close">Month %</th></tr></thead><tbody>';
+        '<th>'+dayWord()+'</th><th>'+dayWord()+' %</th><th title="since the '+esc(shortDate(monthBaseISO()))+' close">'+(narrow?'Mo %':'Month %')+'</th><th title="unrealised, from your average buy price">'+(narrow?'Buy %':'Since buy %')+'</th></tr></thead><tbody>';
   list.forEach((r,gi)=>{
     const open=TODAY_OPEN.has(r.name);
     h+='<tr class="todayRow" data-pf="'+esc(r.name)+'" style="cursor:pointer">'+
        '<td title="'+esc(r.cfg||'')+'"><span class="sw2" style="background:'+r.sw+'"></span><b>'+(open?'\u25be ':'\u25b8 ')+esc(r.name)+'</b>'+(narrow?'<br><span class="sym">'+esc(r.acct)+'</span>':'')+'</td>'+
        (narrow?'':'<td><span class="sym">'+esc(r.acct)+'</span></td><td>'+r.n+'</td><td class="secret">'+inr(r.value)+'</td>')+
        '<td class="'+cls(r.day)+' secret">'+inrSigned(r.day)+'</td>'+
-       '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td>'+monthCell(r.mon)+'</tr>';
+       '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td>'+monthCell(r.mon)+buyCell(r.buy)+'</tr>';
     if(open){
       const stocks=(groups.get(r.name)||[]).slice().sort((a,b)=>(b.dayPct==null?-1e9:b.dayPct)-(a.dayPct==null?-1e9:a.dayPct));
       /* A nested <table> here forced 3 rigid columns wider than a phone screen —
@@ -1472,7 +1475,8 @@ function renderToday(rows){
            '<span style="white-space:nowrap;flex-shrink:0">'+
              '<span class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</span>'+
              '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b>'+
-             (function(m){ return '<span class="'+cls(m.pct)+'" style="margin-left:10px" title="month: '+esc(m.pct==null?'no price history':'since the '+shortDate(monthBaseISO())+' close')+'">'+(m.pct==null?'\u2014':pct(m.pct))+' <span class="sym">mo</span></span>'; })(monthAgg([s]))+'</span>'+
+             (function(m){ return '<span class="'+cls(m.pct)+'" style="margin-left:10px" title="month: '+esc(m.pct==null?'no price history':'since the '+shortDate(monthBaseISO())+' close')+'">'+(m.pct==null?'\u2014':pct(m.pct))+' <span class="sym">mo</span></span>'; })(monthAgg([s]))+
+             '<span class="'+cls(s.pnlPct)+'" style="margin-left:10px" title="unrealised, from your buy price">'+pct(s.pnlPct)+' <span class="sym">buy</span></span>'+'</span>'+
            '</div>';
       });
       h+='</td></tr>';
@@ -1481,7 +1485,7 @@ function renderToday(rows){
   h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td>'+
      (narrow?'':'<td></td><td>'+rows.length+'</td><td class="secret">'+inr(t.value)+'</td>')+
      '<td class="'+cls(t.day)+' secret">'+inrSigned(t.day)+'</td>'+
-     '<td class="'+cls(t.dayPct)+'"><b>'+pct(t.dayPct)+'</b></td>'+monthCell(monthAgg(rows))+'</tr></tfoot>';
+     '<td class="'+cls(t.dayPct)+'"><b>'+pct(t.dayPct)+'</b></td>'+monthCell(monthAgg(rows))+buyCell(t.cost>0? t.pnl/t.cost*100 : null)+'</tr></tfoot>';
   $('tblToday').innerHTML=h;
   $('tblToday').querySelectorAll('tr.todayRow').forEach(tr=>tr.addEventListener('click',()=>{
     const name=tr.dataset.pf;
