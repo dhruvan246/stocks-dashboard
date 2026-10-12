@@ -23993,6 +23993,19 @@ qm_cells_179n.json = live 2163e14db3. Their 8-Oct file vs live: 318,423 / 318,49
 H 8); OUR ERROR 0. Evidence text in their voice via an exact phrase map from page r13 + guards; REI Agro texts asserted against the bars. Sent to the
 owner (the owner forwards). Page v9 (cells_page_r14.json).
 
+**§179p — QUANTMAC corrected_20261012b compared (2026-10-12 18:37 IST).** Parsed -> nse_bhav/qm_ind_r12.json. Ours: live f45443bfd6 (= release, split rev) via
+engine_dump_r6.js -> dry/qmdump_r12.json; our values moved 0 cells since 8-Oct. Their changes: 110 cells / 16 stocks. Now AGREE (47): they adopted our REI
+Agro factor (8), BSE gap years for KENNAMET 11 / SPICEJET 15, BSE pre-listing for AIIL 1 / LLOYDSME 6 / VALIANTORG 2. NEW differences, each rebuilt from
+BSE's own rows (StockPriceCSVDownload; tool qm-recon-tools/verify_bse_prelist_r12.py): Quantmac now carries BSE history before the NSE listing for
+ORISSAMINE 8 (BSE 590086, NSE from 2010-09-29), CAMLINFINE 6 (532834, 2015-01-20), SEQUENT/VIYASH 8 (512529, 2016-03-10; BSE split 10->2 on
+2016-02-25 applied), ITDC 5 (532189, 2016-12-30), WESTLIFE 15 (505533, 2019-08-19), AREVAT&D/GVT&D 1 (522275, 2008-06-30): all 43 reproduce EXACTLY
+with BSE rows at BSE's own level x later corporate actions (no NSE/BSE close ratio). Our series start at the NSE listing -> OUR ERROR under the owner's
+6-Oct rule (keep BSE before the NSE listing); fix NOT applied (awaits the owner: scope / start date / scan of all PIT-N500 listings). VALIANTORG 7 =
+RULE DIFFERENCE in the JOIN: our SME builder scales BSE by NSE/BSE close on the listing day (0.99760 = 2948.50/2955.60, exact on every d52low cell);
+Quantmac and our own main-board builder keep BSE's level. INEABS 2009-02-27 vs200 (their 200DMA 123.024 -> 122.918; also Jan 129.692 -> 129.605) =
+UNKNOWN: not one changed session, not NSE+BSE-only days, not BSE-only. Tally 318,437 / 318,518; 99 differing = RULE DIFFERENCE 55 (C 28, W 8, D2 4,
+VALIANTORG 7, F 8) + OUR ERROR 43 + UNKNOWN 1.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
