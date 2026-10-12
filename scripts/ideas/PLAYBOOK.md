@@ -243,6 +243,20 @@ the company gives. Only a confirmed jump becomes an idea: `"lane": "orderbook"`,
 `"orderbook: <book now> as on <date> vs <book a year earlier> (+X%), <ratio>x trailing sales"`. A row whose quote
 turns out to be wrong is reported in the run log's `data_problems` with the correct figure.
 
+### Trade-protection filings and generic headings (user, 2026-10-12)
+
+OCCL's 29-Sep-2026 filing (DGTR raised the anti-dumping duty on Chinese insoluble sulphur from USD 307 to USD 485/MT,
+retrospective) and its 8-Oct countervailing-duty investigation were MISSED: the scan had no category for trade
+remedies, and the first filing's subject was the generic "Disclosure under Regulation 30". The stock rose 43% in
+three weeks while the scan showed it only as a volume spike (score 1). Fixed in `scan.py`: category TRADE
+(anti-dumping, countervailing, safeguard, DGTR, minimum import price, import/export duty or ban, quality control
+order; weight 8, so even a thinly traded name becomes a candidate); a filing with a generic heading is classified
+from its PDF text (only TRADE and plainly-worded order wins may be added from text - every category on body text gave
+7 false candidates on 30-Sep); insider-trading, takeover and charter filings are never opened. `scan.py` runs a
+SELFTEST on the OCCL filings at start - it must print PASS. Research rule: for a TRADE candidate, read the DGTR
+finding itself (product, duty per tonne, countries, applicant = the domestic industry, retrospective date) and
+whether the Finance Ministry has notified it yet.
+
 ### Order wins adding up (user rule, 2026-10-11)
 
 A quarterly order-book comparison misses a company that wins many mid-sized orders: Welspun Corp, Aug-2024 -> Mar-2025,

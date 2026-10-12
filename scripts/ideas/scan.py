@@ -66,10 +66,15 @@ CATS = [
     ('FUNDRAISE', re.compile(r'\b(preferential|qip|qualified institutions?|rights issue|warrants|fund ?raising|raise (of )?funds|private placement)\b', re.I)),
     ('CORPACT', re.compile(r'\b(bonus|stock split|sub-?division|buy ?back|dividend)\b', re.I)),
     ('DISCLOSE', re.compile(r'\b(investor presentation|presentation|earnings call|concall|conference call|transcript|audio recording|press release|media release|analyst|investor meet)\b', re.I)),
+    # trade protection for the company's product (user, 2026-10-12: OCCL's anti-dumping duty raise of 29-Sep and the
+    # countervailing-duty investigation of 8-Oct were missed - no category matched and the subject was generic)
+    ('TRADE', re.compile(r'\b(anti[- ]?dumping|countervailing|safeguard duty|safeguard measure|dgtr|directorate general of trade remedies|'
+                         r'trade remed\w*|anti[- ]?absorption|sunset review|minimum import price|import duty|customs duty|basic customs duty|'
+                         r'export duty|export ban|ban on (the )?export|import restriction|quality control order)\b', re.I)),
     ('DEAL', re.compile(r'\b(acquisition|acquire|joint venture|jv|mou|memorandum of understanding|incorporation of (a )?(wholly owned )?subsidiary|stake)\b', re.I)),
 ]
 NOISE = re.compile(r'\b(closure of trading window|trading window|agm|egm|postal ballot|book closure|record date|change in directorate|resignation|appointment of|esop|espp|allotment of esop|compliance certificate|reg\.? ?74|regulation 74|newspaper (publication|advertisement)|loss of share certificate|duplicate share|investor complaints|reconciliation of share capital|scrutinizer|voting results|clarification on price|spurt in volume|change in management|cessation|kmp|senior management)\b', re.I)
-WEIGHT = dict(ORDER=4, CAPEX=4, RATING=3, RESULT=2, FUNDRAISE=2, DEAL=2, DISCLOSE=1, CORPACT=1, VOL=2, BREAKOUT=2)
+WEIGHT = dict(TRADE=8, ORDER=4, CAPEX=4, RATING=3, RESULT=2, FUNDRAISE=2, DEAL=2, DISCLOSE=1, CORPACT=1, VOL=2, BREAKOUT=2)
 
 
 STRONG_SUB = re.compile(r'credit rating|investor presentation|press release|outcome of board meeting|financial results|earnings call|transcript', re.I)
@@ -87,7 +92,42 @@ def classify(row, company=''):
         text = re.sub(re.escape(company), ' ', text, flags=re.I)
     if NOISE.search(text) and not STRONG_SUB.search(row.get('SUBCATNAME') or ''):
         return []
-    return [c for c, rx in CATS if rx.search(text)]
+    cats = [c for c, rx in CATS if rx.search(text)]
+    # a generic heading ("Disclosure under Regulation 30", "General Updates", "Intimation") says nothing: the news is
+    # in the PDF. Read the start of the document and classify on that (OCCL 30-Sep-2026: "Disclosure Under Regulation
+    # 30 ... - F" held the anti-dumping duty raise). A document that cannot be read keeps the subject's verdict.
+    if (not cats or cats == ['DISCLOSE']) and GENERIC.search(subj) and not PIT_SAST.search(subj) and (row.get('_pdf') or row.get('ATTACHMENTNAME')):
+        try:
+            body = pdf_head(row.get('_pdf') or bse.attachment_url(row))
+        except Exception:
+            body = ''
+        if body:
+            if company:
+                body = re.sub(re.escape(company), ' ', body, flags=re.I)
+            cats = sorted(set(cats) | {c for c, rx in BODY_CATS if rx.search(body)}, key=[c for c, _ in CATS].index)
+    return cats
+
+
+# What a document's TEXT may add (its subject was generic). Only high-precision phrases: the full category words
+# fire on boilerplate - insider-trading forms say "order", takeover forms "acquisition" (measured on the
+# 30-Sep-2026 scan: 7 false candidates when every category was allowed).
+BODY_CATS = [
+    ('TRADE', [rx for c, rx in CATS if c == 'TRADE'][0]),
+    ('ORDER', re.compile(r'\b(received|bagged|secured|been awarded|won|receipt of)\b.{0,60}\b(orders?|contracts?|work orders?|purchase orders?|'
+                         r'letters? of (award|acceptance|intent)|LoA|LoI)\b', re.I)),
+]
+PIT_SAST = re.compile(r'prohibition of insider trading|insider trading|regulation 7\s*\(2\)|reg\.? ?7\s*\(2\)|substantial acquisition|'
+                      r'regulation 29\s*\(|reg\.? ?29\s*\(|regulation 31\s*\(|trading plan|memorandum (and|&) articles|'
+                      r'encumbrance|pledge', re.I)
+GENERIC = re.compile(r'regulation 30|reg\.? ?30|\blodr\b|general updates?|intimation|disclosure|announcement under|\bothers?\b|press release|update', re.I)
+
+
+def pdf_head(url, n=6000):
+    """First n characters of a filing's text (cached by orderbook.pdf_text in the ideas cache)."""
+    if not url:
+        return ''
+    import orderbook
+    return re.sub(r'\s+', ' ', orderbook.pdf_text(url) or '')[:n]
 
 
 def features(scrip, series):
@@ -216,11 +256,40 @@ def run(date, days):
     return out
 
 
+_B = 'https://www.bseindia.com/xml-data/corpfiling/AttachLive/'
+SELFTEST = [   # real filings: the classification each must get (a miss here = a missed idea, runbook / PLAYBOOK)
+    ('OCCL 30-Sep-2026 anti-dumping duty raise, generic subject', 'OCCL Ltd', 'TRADE',
+     dict(NEWSSUB='OCCL Ltd - 544278 - Disclosure Under Regulation 30 Of SEBI (Listing Obligations And Disclosure Requirements) Regulations, 2015 - F',
+          _pdf=_B + '9372b776-4ba2-45ba-ad24-1d507d6b9644.pdf')),
+    ('OCCL 08-Oct-2026 countervailing duty investigation', 'OCCL Ltd', 'TRADE',
+     dict(NEWSSUB='OCCL Ltd - 544278 - Intimation Of Initiation Of Countervailing Duty Investigation Concerning Imports Of "Insoluble Sulphur" Origin',
+          _pdf=_B + '79d46155-8da4-4fda-8a92-a18c8e58663f.pdf')),
+    ('DMCC 07-Oct-2026 reply on volume (noise)', 'DMCC Speciality Chemicals', None,
+     dict(NEWSSUB='DMCC SPECIALITY CHEMICALS LIMITED - 506405 - Reply To Clarification On Significant Increase In The Volume Of Security',
+          _pdf=_B + '806b0568-6667-4ecd-a81f-0858310213ba.pdf')),
+]
+
+
+def selftest():
+    """Classify known filings; prints SELFTEST PASS/FAIL. Never fatal: an unreadable PDF is reported as such."""
+    bad = []
+    for name, co, want, row in SELFTEST:
+        try:
+            got = classify(dict(HEADLINE='', SUBCATNAME='', CATEGORYNAME='Company Update', **row), co)
+        except Exception as e:
+            got = [f'error {str(e)[:60]}']
+        if (want and want not in got) or (not want and got):
+            bad.append(f'{name}: got {got}')
+    print('scan SELFTEST ' + ('PASS' if not bad else 'FAIL - ' + '; '.join(bad)))
+    return not bad
+
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--date', default=None)
     ap.add_argument('--days', type=int, default=65)
     a = ap.parse_args()
     d = datetime.date.fromisoformat(a.date) if a.date else ist.today()
+    selftest()
     heal_names()   # first, so a scan that cannot run (no bhavcopy) still leaves the earlier files clean
     run(d, a.days)
