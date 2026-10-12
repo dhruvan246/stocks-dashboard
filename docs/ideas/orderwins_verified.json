@@ -1,6 +1,6 @@
 {
- "built": "2026-10-11 19:10 IST",
- "how": "Order-win letters added up since the company's last stated order book, each letter opened and counted once (L1/LoA/press-release repeats not double-counted); flag = first filing date the confirmed total reached 0.5x that book. Research agent 2026-10-11; the daily routine adds new rows (step 4a-iii).",
+ "built": "2026-10-12 20:45 IST",
+ "how": "Order-win letters added up since the company's last stated order book, each letter opened and counted once (L1/LoA/press-release repeats not double-counted); flag = first filing date the confirmed total reached 0.5x that book. Research agent 2026-10-11; the daily routine adds new rows (step 4a-iii). Routine 2026-10-12 added 12 rows (step 4a-iii).",
  "rows": [
   {
    "key": "NSE:MARINE",
@@ -485,6 +485,478 @@
    "verdict": "CONFIRMED",
    "note": "Contrast case: ONE order was 0.69x the book (would fire a single-order trigger too).",
    "checked_on": "2026-10-11"
+  },
+  {
+   "key": "500411",
+   "isin": "INE152A01029",
+   "name": "Thermax Limited",
+   "nse": "THERMAX",
+   "bse": "500411",
+   "base_filed": "2026-02-02",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a6b4bef6-a71c-48a6-9514-a6b9b2617210.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 1600.0,
+   "script_ratio": 13.694,
+   "script_cross_date": "2026-03-27",
+   "checked_on": "2026-10-12",
+   "base_cr": 12641.0,
+   "base_as_on": "2025-12-31",
+   "confirmed_sum_cr": 1600.0,
+   "confirmed_ratio": 0.127,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-03-27",
+     "value_cr": 1600.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/THERMAXNSE_27032026222028_SEIntimationOrderwin.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 1,600 cr order win, read from the NSE Reg-30 intimation"
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base misread. The Q3 FY26 presentation (filed 2-Feb-2026) states an order BALANCE of INR 12,641 cr for the group; Rs 116.84 cr is not an order-book figure anywhere in that deck. One Rs 1,600 cr win against a Rs 12,641 cr book is 0.127x, not 13.7x. Market cap Rs 39,435 cr (BSE master, 12-Oct-2026) is outside the Rs 200-7,500 cr band in any case."
+  },
+  {
+   "key": "532714",
+   "isin": "INE389H01022",
+   "name": "KEC International Ltd",
+   "nse": null,
+   "bse": "532714",
+   "base_filed": "2026-08-10",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/053d96c6-1df8-4bc1-9006-f7c92d56441f.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 1014.0,
+   "script_ratio": 6.76,
+   "script_cross_date": "2026-10-10",
+   "checked_on": "2026-10-12",
+   "base_cr": 40000.0,
+   "base_as_on": "2026-06-30",
+   "confirmed_sum_cr": 1014.0,
+   "confirmed_ratio": 0.025,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-10-10",
+     "value_cr": 1014.0,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9ada1aad-db7b-433a-8da0-1245e7ee7b52.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 1,014 cr of orders, as the intimation states"
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base misread. The Q1 FY27 press release (filed 10-Aug-2026, the base document) says 'Healthy Order Book + L1 of over Rs. 40,000 crore'; Rs 150 cr is not the company's order book. Rs 1,014 cr against Rs 40,000 cr is 0.025x. Market cap Rs 9,655 cr, outside the band."
+  },
+  {
+   "key": "538562",
+   "isin": "INE439E01022",
+   "name": "Skipper Ltd",
+   "nse": "SKIPPER",
+   "bse": "538562",
+   "base_filed": "2026-02-04",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4829328c-9ffa-4c87-ab60-1fbcda870730.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 1265.0,
+   "script_ratio": 1.406,
+   "script_cross_date": "2026-05-15",
+   "checked_on": "2026-10-12",
+   "base_cr": 9009.0,
+   "base_as_on": "2025-12-31",
+   "confirmed_sum_cr": 1265.0,
+   "confirmed_ratio": 0.14,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-05-15",
+     "value_cr": 1265.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/skipper_15052026140626_Intimationforreceiptoforder.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 1,265 cr order, as filed"
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base misread: the Q3 FY26 call transcript (the base document) says 'As of December 25, our closing order book stood at an all-time high level of approximately USD1 billion or INR9,009 crores'. Rs 900 cr is a truncation of 9,009. True ratio 1,265/9,009 = 0.14x."
+  },
+  {
+   "key": "544487",
+   "isin": "INE0R8B01010",
+   "name": "Patel Retail Ltd",
+   "nse": "PATELRMART",
+   "bse": "544487",
+   "base_filed": "2025-11-21",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/80835b5b-a196-4327-9007-896c47df894b.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 25.0,
+   "script_ratio": 0.5,
+   "script_cross_date": "2026-01-20",
+   "checked_on": "2026-10-12",
+   "base_cr": 50.0,
+   "base_as_on": "2025-09-30",
+   "confirmed_sum_cr": 25.0,
+   "confirmed_ratio": 0.5,
+   "cross_date": "2026-01-20",
+   "wins_checked": [
+    {
+     "filed": "2026-01-20",
+     "value_cr": 25.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/PATEL_20012026152014_PRLPress_releaseorder_book.pdf",
+     "verdict": "COUNTED",
+     "note": "export order-book press release"
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "The Rs 50 cr base is the EXPORT order book only, not the company-wide book: the Q2 FY26 transcript says 'we secured new international orders worth INR22 crores taking our total export order book to around INR50 crores'. Patel Retail is a retail chain whose store business carries no order book, so the ratio compares an export sub-book with an export order and means nothing about the company."
+  },
+  {
+   "key": "533339",
+   "isin": "INE251B01027",
+   "name": "Zen Technologies Limited",
+   "nse": "ZENTEC",
+   "bse": "533339",
+   "base_filed": "2026-07-31",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/18f85d0f-0dc1-46fa-afab-316fab4fc70e.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 295.0,
+   "script_ratio": 0.927,
+   "script_cross_date": "2026-08-10",
+   "checked_on": "2026-10-12",
+   "base_cr": 1239.0,
+   "base_as_on": "2026-06-30",
+   "confirmed_sum_cr": 295.0,
+   "confirmed_ratio": 0.238,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-08-10",
+     "value_cr": 295.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/ZENTEC_10082026200818_Receipt_of_Order_Signed.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 295 cr order, as filed"
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base misread. The Q1 FY27 call transcript (28-Jul-2026) states 'The consolidated order book stood at Rs.1239 Crores as of June 30, 2026, comprising an equipment order book of Rs.920.6 Crores and an AMC order book' - Rs 318.4 cr is the AMC component (1,239 - 920.6), not the total. True ratio 295/1,239 = 0.24x. Market cap Rs 14,543 cr, outside the band."
+  },
+  {
+   "key": "NSE:DIGIKORE",
+   "isin": "INE0QJ901011",
+   "name": "DIGIKORE",
+   "nse": "DIGIKORE",
+   "bse": null,
+   "base_filed": "2025-11-07",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/DIGIKORE_07112025111105_Digikore_H1FY26_Transcript.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 83.0,
+   "script_ratio": 4.15,
+   "script_cross_date": "2025-12-01",
+   "checked_on": "2026-10-12",
+   "base_cr": 20.0,
+   "base_as_on": "2025-09-30",
+   "confirmed_sum_cr": 83.0,
+   "confirmed_ratio": 4.15,
+   "cross_date": "2025-12-01",
+   "wins_checked": [
+    {
+     "filed": "2025-12-01",
+     "value_cr": 83.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/DIGIKORE_01122025221024_Digikore_NSE_Intimation_WinsMega_Rs83croreorder.pdf",
+     "verdict": "COUNTED",
+     "note": "US$9.3 mn (about Rs 83 crore) for 60 episodes of an AI-produced series for Angels Studios LLC, USA, over the next two years"
+    }
+   ],
+   "verdict": "CONFIRMED",
+   "note": "Both sides read. Base: the H1 FY26 call transcript (call 3-Nov-2025, filed 7-Nov-2025) says 'We are today sitting in an order book of over INR20 crores' - an approximate figure stated by management, which the signal rounds to 20. Win: one order, US$9.3 mn = about Rs 83 cr, confirmed from the letter. Caveats for any use: the order executes over TWO years, so it is not 4.15x of a year's work; the base is 'over 20', i.e. a floor; and the cross date is 1-Dec-2025, over ten months old. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN."
+  },
+  {
+   "key": "NSE:ABHAPOWER",
+   "isin": "INE0UYG01015",
+   "name": "ABHAPOWER",
+   "nse": "ABHAPOWER",
+   "bse": null,
+   "base_filed": "2026-07-10",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/ABHA_10072026124444_ABHA_POWER_PRESS_RELEASE.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 19.0,
+   "script_ratio": 1.056,
+   "script_cross_date": "2026-10-11",
+   "checked_on": "2026-10-12",
+   "base_cr": 18.0,
+   "base_as_on": "2026-07-10",
+   "confirmed_sum_cr": 1.27,
+   "confirmed_ratio": 0.071,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-10-11",
+     "value_cr": 1.27,
+     "doc": "https://nsearchives.nseindia.com/corporate/ABHA_11102026180722_ABHA_PRESS_RELEASE_SIGNED.pdf",
+     "verdict": "CORRECTED",
+     "note": "The new order is Rs 1.27 cr from a railway OEM. The Rs 19 cr the script counted is the sentence that follows: \"As on 10th October, 2026, the Company's order book stands at approximately Rs 19 Crores\" - the order BOOK, not the win."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base correct (press release 10-Jul-2026: 'As on 10th July, 2026, the Company's order book stands at approximately Rs 18.00 Crores'). The win was the order-book restatement, not an order: Rs 1.27 cr of new work = 0.07x. The two press releases together are in fact evidence of a book that moved Rs 18 cr -> Rs 19 cr in three months."
+  },
+  {
+   "key": "NSE:K2INFRA",
+   "isin": "INE0DEZ01013",
+   "name": "K2INFRA",
+   "nse": "K2INFRA",
+   "bse": null,
+   "base_filed": "2026-05-27",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_27052026135330_InvestorPresentationMay2026signed.pdf",
+   "n_wins": 3,
+   "script_sum_cr": 3708.07,
+   "script_ratio": 8.745,
+   "script_cross_date": "2026-06-13",
+   "checked_on": "2026-10-12",
+   "base_cr": 424.0,
+   "base_as_on": "2026-03-31",
+   "confirmed_sum_cr": 549.49,
+   "confirmed_ratio": 1.296,
+   "cross_date": "2026-06-16",
+   "wins_checked": [
+    {
+     "filed": "2026-06-13",
+     "value_cr": 158.58,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_13062026131817_BaggingofOrderDisclosureReg30KonkanRailwayRs158Cr.pdf",
+     "verdict": "CORRECTED",
+     "note": "The letter reads \"amounting to approximately Rs 158.58 Crores (Rupees One Hundred Fifty-Eight Crore Fifty-Eight Lakhs...)\" - the rupee glyph rendered as a 3, so the parser read 3158.58. The words in the filing settle it at Rs 158.58 cr. Konkan Railway electrification LOA."
+    },
+    {
+     "filed": "2026-06-15",
+     "value_cr": 158.58,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_15062026112538_PressReleaseKonkanRailway158CrOrder.pdf",
+     "verdict": "NOT COUNTED - DUPLICATE",
+     "note": "The media release for the SAME Konkan Railway Rs 158.58 cr order, filed two days after the Reg-30 intimation. The 3-day dedupe missed it because the two values differed (3158.58 vs 158.58)."
+    },
+    {
+     "filed": "2026-06-16",
+     "value_cr": 390.91,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_16062026150401_BaggingofOrderDisclosureReg30390CrOrderGovtofBihar.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 390.91 cr PRED roads work order, value confirmed in words in the letter"
+    }
+   ],
+   "verdict": "CORRECTED",
+   "note": "Base confirmed: the May-2026 investor presentation (filed 27-May-2026) states 'Order book - 4,240 Million' and 'Unexecuted: INR 4,240 Million, Data as of 31st March 2026' = Rs 424 cr. Two distinct wins confirmed, Rs 158.58 cr + Rs 390.91 cr = Rs 549.49 cr = 1.296x the base, crossing 0.5x on 16-Jun-2026 - not the 8.75x the script showed. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN."
+  },
+  {
+   "key": "NSE:RAPPID",
+   "isin": "INE0MVO01012",
+   "name": "RAPPID",
+   "nse": "RAPPID",
+   "bse": null,
+   "base_filed": "2026-06-01",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/RAPPID_01062026141424_Exchange_PresentationSigned.pdf",
+   "n_wins": 4,
+   "script_sum_cr": 83.81,
+   "script_ratio": 2.54,
+   "script_cross_date": "2026-06-15",
+   "checked_on": "2026-10-12",
+   "base_cr": 33.0,
+   "base_as_on": "2026-05-31",
+   "confirmed_sum_cr": 31.86,
+   "confirmed_ratio": 0.966,
+   "cross_date": "2026-06-15",
+   "wins_checked": [
+    {
+     "filed": "2026-06-08",
+     "value_cr": 8.55,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_08062026151443_Work_Order_Shree_.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 8.55 cr from Shree Refrigerators, valves"
+    },
+    {
+     "filed": "2026-06-15",
+     "value_cr": 18.0576,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_15062026102327_Work_Order.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 18,05,76,000 from BHEL, excluding taxes"
+    },
+    {
+     "filed": "2026-08-13",
+     "value_cr": 2.84,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_13082026191053_Workorder.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 2.84 cr from Larsen & Toubro, general valves"
+    },
+    {
+     "filed": "2026-09-21",
+     "value_cr": 2.4131,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_21092026153828_Work_Order.pdf",
+     "verdict": "CORRECTED",
+     "note": "Two orders in one letter: Rs 85.31 lakh (Hindustan Shipyard) + Rs 1.56 cr (Solas Marine) = Rs 2.41 cr. The Rs 54.36 cr the script counted is the closing line of the same letter - \"The Company's order book, as on date, stands at approximately Rupees 54.36 Crores\" - the order BOOK, not a win."
+    }
+   ],
+   "verdict": "CORRECTED",
+   "note": "Base read from the document, with a date correction: the investor presentation filed 1-Jun-2026 says 'Order Book Rs 33 cr as on May'26', not as on 31-Mar-2026 as the signal row has it. Confirmed wins Rs 31.86 cr = 0.966x the base (not 2.54x), crossing 0.5x on 15-Jun-2026 with the BHEL order. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN."
+  },
+  {
+   "key": "NSE:SSEGL",
+   "isin": "INE0RFP01011",
+   "name": "SSEGL",
+   "nse": "SSEGL",
+   "bse": null,
+   "base_filed": "2026-08-05",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/SATHLOKHAR_05082026172149_Investor_Presentation_Letter_to_NSE.pdf",
+   "n_wins": 3,
+   "script_sum_cr": 3479.69,
+   "script_ratio": 8.265,
+   "script_cross_date": "2026-08-11",
+   "checked_on": "2026-10-12",
+   "base_cr": 1015.18,
+   "base_as_on": "2026-06-30",
+   "confirmed_sum_cr": null,
+   "confirmed_ratio": null,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-08-11",
+     "value_cr": null,
+     "doc": "https://nsearchives.nseindia.com/corporate/SATHLOKHAR_11082026191510_IntimationunderRegulation30.pdf",
+     "verdict": "CORRECTED",
+     "note": "Rs 1,101.59 cr is the company's CUMULATIVE confirmed order book (\"As of 11th August 2026, the Company has confirmed orders aggregating to Rs 1,101.59 crores\"), not this letter's wins. The individual orders listed in it are Rs 94.11 cr and Rs 7.86 cr, both including GST."
+    },
+    {
+     "filed": "2026-09-07",
+     "value_cr": null,
+     "doc": "https://nsearchives.nseindia.com/corporate/SATHLOKHAR_07092026071739_IntimationunderRegulation30.pdf",
+     "verdict": "CORRECTED",
+     "note": "Rs 1,139.10 cr is again the cumulative confirmed order book as on date; the order in this letter is Rs 44.26 cr including GST."
+    },
+    {
+     "filed": "2026-10-01",
+     "value_cr": null,
+     "doc": "https://nsearchives.nseindia.com/corporate/SATHLOKHAR_01102026200419_IntimationunderRegulation30.pdf",
+     "verdict": "CORRECTED",
+     "note": "Rs 1,239 cr is again the cumulative confirmed order book; the orders in this letter are Rs 101.19 cr, Rs 9.34 cr and Rs 7.08 cr, all including GST."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Both sides misread. Base: the document the signal used (investor presentation letter filed 5-Aug-2026) says 'Our last total order book including orders secured during quarter 1 FY26-27 stood at INR1015.18 crores', not Rs 421 cr. The three 'wins' are the same running order-book total restated in each Reg-30 letter, so adding them triple-counts the book itself. What the letters DO show, read as order-book readings rather than wins, is a book of Rs 1,101.59 cr (11-Aug) -> Rs 1,139.10 cr (7-Sep) -> Rs 1,239 cr (1-Oct-2026); the company's own FY26 revenue reference in the same letters is about Rs 823 cr excluding GST. That belongs in order_book.json, not here. A confirmed wins total was not computed: each letter lists several orders and some may repeat across letters, which needs a full read."
+  },
+  {
+   "key": "544419",
+   "isin": "INE0H9P01028",
+   "name": "ArisInfra Solutions Ltd",
+   "nse": "ARIS",
+   "bse": "544419",
+   "base_filed": "2025-11-13",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/53c173e9-3ec5-462a-8700-50d2f6323786.pdf",
+   "n_wins": 6,
+   "script_sum_cr": 1321.9,
+   "script_ratio": 1.555,
+   "script_cross_date": "2026-04-13",
+   "checked_on": "2026-10-12",
+   "base_cr": 850.0,
+   "base_as_on": "2025-09-30",
+   "confirmed_sum_cr": 121.9,
+   "confirmed_ratio": 0.143,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2025-12-23",
+     "value_cr": 35.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_23122025154852_PressR.pdf",
+     "verdict": "COUNTED",
+     "note": "asphalt order about Rs 35 cr through subsidiary Buildmex Infra"
+    },
+    {
+     "filed": "2026-01-22",
+     "value_cr": 63.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_22012026214800_ASLOrdersd.pdf",
+     "verdict": "COUNTED",
+     "note": "ready-mix concrete supply order Rs 63 cr"
+    },
+    {
+     "filed": "2026-04-13",
+     "value_cr": 800.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_13042026161446_Exchange_Intimation_Order.pdf",
+     "verdict": "NOT COUNTED - FRAMEWORK MoU",
+     "note": "A memorandum of understanding with Capacite Infraprojects for material procurement of \"a minimum aggregate value of Rs 800 crore\" whose own Annexure A gives the execution period as \"Tenure of five (5) years (equivalent to sixty months)\". A five-year framework minimum is not an order won inside the 183-day window the flag measures."
+    },
+    {
+     "filed": "2026-04-18",
+     "value_cr": 5.45,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_18042026164631_Exchange_Intimation_Order_BIPL_final.pdf",
+     "verdict": "COUNTED",
+     "note": "aggregates supply Rs 5.45 cr"
+    },
+    {
+     "filed": "2026-04-18",
+     "value_cr": 18.45,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_18042026164441_Exchange_Intimation_Order_ASL.pdf",
+     "verdict": "COUNTED",
+     "note": "aggregates for the Chennai Peripheral Ring Road, Rs 18.45 cr"
+    },
+    {
+     "filed": "2026-05-06",
+     "value_cr": null,
+     "doc": "https://nsearchives.nseindia.com/corporate/ARISINFRA2024_06052026204239_ORDER_AUPL_F.pdf",
+     "verdict": "CORRECTED",
+     "note": "Not an Rs 400 cr order. A Developer-as-a-Service order from the Wadhwa Group whose Annexure A states the consideration as \"Agreed Monthly fixed fees and % on the Gross Development Value (GDV) of the approximately potential of Rs. 650 Crores with plans to release additional inventory worth Rs. 400 crores\", for eight months from 1-May-2026. ArisInfra's own revenue from it is not stated in the filing: UNKNOWN."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Base confirmed from the Q2 FY26 call transcript: 'With these wins, ArisInfra's integrated order book stands at nearly INR850 crores', and the same call clarifies the book is 'only of the integrated Supply and Service' business. Confirmed, dated, valued orders add to Rs 121.90 cr = 0.143x that book. The flag came entirely from a five-year Rs 800 cr procurement MoU plus a Rs 400 cr gross-development-value figure that is not an order value. Market cap Rs 1,139 cr - in the band, but the flag does not survive the documents."
+  },
+  {
+   "key": "544477",
+   "isin": "INE00RL01028",
+   "name": "Highway Infrastructure Ltd",
+   "nse": "HILINFRA",
+   "bse": "544477",
+   "base_filed": "2026-08-24",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/10d99850-d494-4814-bd42-3b5eb6a6100b.pdf",
+   "n_wins": 5,
+   "script_sum_cr": 595.32,
+   "script_ratio": 0.525,
+   "script_cross_date": "2026-09-30",
+   "checked_on": "2026-10-12",
+   "base_cr": 1133.0,
+   "base_as_on": "2026-03-31",
+   "confirmed_sum_cr": 245.12,
+   "confirmed_ratio": 0.216,
+   "cross_date": null,
+   "wins_checked": [
+    {
+     "filed": "2026-09-16",
+     "value_cr": 220.66,
+     "doc": "https://nsearchives.nseindia.com/corporate/HIGHWAY123_16092026174613_HIL_Reg30-Gorakhpur_16092026.pdf",
+     "verdict": "COUNTED",
+     "note": "The Gorakhpur Link Expressway toll-collection and plaza-operation order. The letter states BOTH the first-year amount, Rs 105,07,77,xxx, and \"an escalation of 10% per annum, resulting in a total value of Rs. 220,66,33,332\". The script took the first-year figure; the order is Rs 220.66 cr over two years."
+    },
+    {
+     "filed": "2026-09-18",
+     "value_cr": 220.66,
+     "doc": "https://nsearchives.nseindia.com/corporate/HIGHWAY123_18092026101738_HIL_PressRelease_18092026.pdf",
+     "verdict": "NOT COUNTED - DUPLICATE",
+     "note": "Press release for the same Gorakhpur order: \"Secures Rs. 220.66 Crore Toll Operations Contract of 2 years for Gorakhpur Link Expressway.\""
+    },
+    {
+     "filed": "2026-09-30",
+     "value_cr": 24.46,
+     "doc": "https://nsearchives.nseindia.com/corporate/HIGHWAY123_30092026211828_HIL_Reg30_Vellanchettiyur_30092026.pdf",
+     "verdict": "COUNTED",
+     "note": "Vellanchettiyur order, Rs 24,45,99,9xx"
+    },
+    {
+     "filed": "2026-09-30",
+     "value_cr": 220.66,
+     "doc": "https://nsearchives.nseindia.com/corporate/HIGHWAY123_30092026174527_Reg_30_WorkOrder_Gorakhpur.pdf",
+     "verdict": "NOT COUNTED - DUPLICATE",
+     "note": "The work order for the same Gorakhpur contract, filed 14 days after the LOA intimation - outside the 3-day dedupe window."
+    },
+    {
+     "filed": "2026-10-08",
+     "value_cr": 24.46,
+     "doc": "https://nsearchives.nseindia.com/corporate/HIGHWAY123_08102026192351_WO_Reg30_Vellanchettiyur.pdf",
+     "verdict": "NOT COUNTED - DUPLICATE",
+     "note": "The work order for the same Vellanchettiyur contract already counted on 30-Sep-2026."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Two orders filed five times between them. Confirmed distinct wins Rs 220.66 cr + Rs 24.46 cr = Rs 245.12 cr = 0.216x the base. Base confirmed but re-dated: the FY26 annual report states 'a consolidated order book of Rs 1,133 crore as of March 2026' and 'Our order book closed at Rs 1,133 crore, crossing the Rs 1,000 crore mark for the first time' - as on 31-Mar-2026, not 30-Jun-2026 as the signal row has it. Market cap Rs 371 cr, in the band; the flag does not survive."
   }
  ]
 }
