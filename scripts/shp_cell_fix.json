@@ -110359,7 +110359,7 @@
    "2016-03-31": {
     "cell": [
      75.0,
-     15.7706,
+     10.6669,
      3.1406,
      0.5019,
      0.0,
@@ -110367,19 +110367,18 @@
     ],
     "was": [
      75.0,
-     17.6662,
+     15.7706,
      3.1406,
      0.5019,
      0.0,
      "2016-04-16"
     ],
-    "src": "bsetable3:512599:89",
-    "why": "\u00a7164r batch 30 (2026-10-05, ADANIENT re-read with BSE Table III's own holder placement): 2016-03-31 - Table III (qtrid 89) institutions B1i 'Foreign Institutional Investors' 77 holders 117,315,641 sh (names HSBC Bank Mauritius 12,336,417, Elara 27,288,157, Emerging India Focus 31,219,800 inside it) + the two funds the company lists inside its non-institution 'Overseas corporate bodies' lump (66 holders 76,979,180): Cresta Fund 37,925,354 and Albula Investment Fund 18,206,131 - FII under the documents-only rule (the company's own Jun-2016 filing lists both under Foreign Portfolio Investors) = 173,447,126 sh on 1,099,810,083 = 15.7706. The lump's other 64 holders (20,847,695 sh) carry no FPI/FII/FDI mark - public (company-type row). The \u00a7160f entry had read the lump as Emerging India Focus + Elara + Albula + 265,092 (a sum that matches the lump but contradicts the company's own placement of Elara and Emerging India Focus in the FII lump) and counted all of it. fii 17.6662 -> 15.7706.",
-    "exact": true,
+    "src": "bsetable3:2016-03-31",
+    "why": "\u00a7164r batch 30 part 70 (2026-10-12, Quantmac v8 cell by cell, own line, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): FII = the institutions 'Any Other' row the filing labels 'Foreign Institutional Investors' 117,315,641 (FPI row empty). CRESTA FUND and ALBULA INVESTMENT FUND sit inside the Non-Institutions 'Overseas corporate bodies' block (company-type) - we had added them from other filings. Quantmac 12.33 counts Albula (rule difference). Total 117,315,641 on (A+B+C2) 1,099,810,083 = 10.6669. fii 15.7706 -> 10.6669; dii untouched (= the filing's domestic rows).",
     "superseded": {
      "cell": [
       75.0,
-      17.6662,
+      15.7706,
       3.1406,
       0.5019,
       0.0,
@@ -110387,14 +110386,35 @@
      ],
      "was": [
       75.0,
-      10.6669,
+      17.6662,
       3.1406,
       0.5019,
       0.0,
       "2016-04-16"
      ],
-     "src": "bseaspx:512599_89 shpperent",
-     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.67 -> 17.67, dii 3.14 -> 3.14. filer-document Mar-16: the filer's 'Overseas corporate bodies' lump 76,979,180 (= annual report FY2015-16 'Foreign Bodies' 76,979,180) = Emerging India Focus 31,219,800 + Elara 27,288,157 + Albula 18,206,131 (76,714,088) + 265,092; Cresta sits in the FII lump; the same funds are foreign institutions in the filer's Jun-2016 XBRL -> fii (series 18.31 Jun-15 -> 17.67 -> 18.25 Jun-16). Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     "src": "bsetable3:512599:89",
+     "why": "\u00a7164r batch 30 (2026-10-05, ADANIENT re-read with BSE Table III's own holder placement): 2016-03-31 - Table III (qtrid 89) institutions B1i 'Foreign Institutional Investors' 77 holders 117,315,641 sh (names HSBC Bank Mauritius 12,336,417, Elara 27,288,157, Emerging India Focus 31,219,800 inside it) + the two funds the company lists inside its non-institution 'Overseas corporate bodies' lump (66 holders 76,979,180): Cresta Fund 37,925,354 and Albula Investment Fund 18,206,131 - FII under the documents-only rule (the company's own Jun-2016 filing lists both under Foreign Portfolio Investors) = 173,447,126 sh on 1,099,810,083 = 15.7706. The lump's other 64 holders (20,847,695 sh) carry no FPI/FII/FDI mark - public (company-type row). The \u00a7160f entry had read the lump as Emerging India Focus + Elara + Albula + 265,092 (a sum that matches the lump but contradicts the company's own placement of Elara and Emerging India Focus in the FII lump) and counted all of it. fii 17.6662 -> 15.7706.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       75.0,
+       17.6662,
+       3.1406,
+       0.5019,
+       0.0,
+       "2016-04-16"
+      ],
+      "was": [
+       75.0,
+       10.6669,
+       3.1406,
+       0.5019,
+       0.0,
+       "2016-04-16"
+      ],
+      "src": "bseaspx:512599_89 shpperent",
+      "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 10.67 -> 17.67, dii 3.14 -> 3.14. filer-document Mar-16: the filer's 'Overseas corporate bodies' lump 76,979,180 (= annual report FY2015-16 'Foreign Bodies' 76,979,180) = Emerging India Focus 31,219,800 + Elara 27,288,157 + Albula 18,206,131 (76,714,088) + 265,092; Cresta sits in the FII lump; the same funds are foreign institutions in the filer's Jun-2016 XBRL -> fii (series 18.31 Jun-15 -> 17.67 -> 18.25 Jun-16). Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     }
     }
    },
    "2015-12-31": {
@@ -226311,7 +226331,7 @@
    "2015-12-31": {
     "cell": [
      2.66,
-     53.5237,
+     59.520143,
      17.11,
      15.89,
      0.0,
@@ -226319,20 +226339,40 @@
     ],
     "was": [
      2.66,
-     59.52,
+     53.5237,
      17.11,
      15.89,
      0.0,
      "2016-02-05"
     ],
-    "src": "bsetable3:533228:88",
-    "why": "\u00a7164r batch 30 part 33 (2026-10-06, per-company review): the institutions Any-Other block's KISMET SKS II and SANDSTONE INVESTMENT PARTNERS I have no Institutions (Foreign) listing (Kismet: GLEIF residency only) -> public, as in every quarter from Jun-2016 (the company labels them 'Overseas Corporate Bodies' in Mar-Dec 2018); TREE LINE ASIA MASTER FUND 1,492,924 stays fii (74 listings). FII = FPI 66,532,403 + Tree Line on 127,093,793. fii 59.52 -> 53.5237.",
-    "exact": true
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 70 (2026-10-12, Quantmac v8 cell by cell, own line, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): (Quantmac SKSMICRO = our BHARATFIN) FII = FPI + the institutions 'Any Other' line: Tree Line Asia 1,492,924 + Kismet SKS II 2,461,578 + Sandstone Investment Partners I 5,159,502 (named, no label - FII, user 11-Oct). We had counted Tree Line only; Quantmac counts Tree Line + Kismet (rule difference on Sandstone). Total 75,646,407 on (A+B+C2) 127,093,793 = 59.520143. fii 53.5237 -> 59.520143; dii untouched (= the filing's domestic rows).",
+    "superseded": {
+     "cell": [
+      2.66,
+      53.5237,
+      17.11,
+      15.89,
+      0.0,
+      "2016-02-05"
+     ],
+     "was": [
+      2.66,
+      59.52,
+      17.11,
+      15.89,
+      0.0,
+      "2016-02-05"
+     ],
+     "src": "bsetable3:533228:88",
+     "why": "\u00a7164r batch 30 part 33 (2026-10-06, per-company review): the institutions Any-Other block's KISMET SKS II and SANDSTONE INVESTMENT PARTNERS I have no Institutions (Foreign) listing (Kismet: GLEIF residency only) -> public, as in every quarter from Jun-2016 (the company labels them 'Overseas Corporate Bodies' in Mar-Dec 2018); TREE LINE ASIA MASTER FUND 1,492,924 stays fii (74 listings). FII = FPI 66,532,403 + Tree Line on 127,093,793. fii 59.52 -> 53.5237.",
+     "exact": true
+    }
    },
    "2016-03-31": {
     "cell": [
      2.65,
-     57.8489,
+     63.835057,
      13.21,
      11.99,
      0.0,
@@ -226340,15 +226380,35 @@
     ],
     "was": [
      2.65,
-     63.84,
+     57.8489,
      13.21,
      11.99,
      0.0,
      "2016-04-18"
     ],
-    "src": "bsetable3:533228:89",
-    "why": "\u00a7164r batch 30 part 33 (2026-10-06, per-company review): the institutions Any-Other block's KISMET SKS II and SANDSTONE INVESTMENT PARTNERS I have no Institutions (Foreign) listing (Kismet: GLEIF residency only) -> public, as in every quarter from Jun-2016 (the company labels them 'Overseas Corporate Bodies' in Mar-Dec 2018); TREE LINE ASIA MASTER FUND 1,492,924 stays fii (74 listings). FII = FPI 72,155,113 + Tree Line on 127,311,106. fii 63.84 -> 57.8489.",
-    "exact": true
+    "src": "bsetable3:2016-03-31",
+    "why": "\u00a7164r batch 30 part 70 (2026-10-12, Quantmac v8 cell by cell, own line, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): (our BHARATFIN) as Dec-2015: the institutions 'Any Other' line's named holders are FII. Total 81,269,117 on (A+B+C2) 127,311,106 = 63.835057. fii 57.8489 -> 63.835057; dii untouched (= the filing's domestic rows).",
+    "superseded": {
+     "cell": [
+      2.65,
+      57.8489,
+      13.21,
+      11.99,
+      0.0,
+      "2016-04-18"
+     ],
+     "was": [
+      2.65,
+      63.84,
+      13.21,
+      11.99,
+      0.0,
+      "2016-04-18"
+     ],
+     "src": "bsetable3:533228:89",
+     "why": "\u00a7164r batch 30 part 33 (2026-10-06, per-company review): the institutions Any-Other block's KISMET SKS II and SANDSTONE INVESTMENT PARTNERS I have no Institutions (Foreign) listing (Kismet: GLEIF residency only) -> public, as in every quarter from Jun-2016 (the company labels them 'Overseas Corporate Bodies' in Mar-Dec 2018); TREE LINE ASIA MASTER FUND 1,492,924 stays fii (74 listings). FII = FPI 72,155,113 + Tree Line on 127,311,106. fii 63.84 -> 57.8489.",
+     "exact": true
+    }
    }
   },
   "HAL": {
