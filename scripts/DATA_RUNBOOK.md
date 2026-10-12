@@ -27980,7 +27980,7 @@ INDUSTOWER, TORNTPHARM, KANSAINER… — every caption read (the 14 truncated on
 Confirmed result board meetings per calendar day (results_calendar.json snapshots): off-season 1-7 (16-23 Sep: 2-4; Fri 9 Oct: 7;
 Sat 10 Oct: 3), first real day of a season 13-20 (Tue 14 Jul: 13; Mon 12 Oct: 20), then 27-576.
 
-**Changes (all LIVE — commit SHA_PLACEHOLDER):**
+**Changes (all LIVE — commit c4bb1816b, runbook marker clean-up c3cb8ecf6):**
 - `scripts/fetch_announcements.py` RESULT_CAP_RE = four branches: "results [of the Bank,] for the [second] quarter" ·
   "submitted …≤80 chars… financial results" · "approv/adopt/taken on record …≤100… financial results" · "results … quarter/half
   year/period/year/Q1-4 … ended/ending". `docs/quarterly-results.html` FEED_CAT_RE (now also "Integrated Filing- Financial") and
