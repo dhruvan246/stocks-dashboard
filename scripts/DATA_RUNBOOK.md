@@ -24006,6 +24006,22 @@ Quantmac and our own main-board builder keep BSE's level. INEABS 2009-02-27 vs20
 UNKNOWN: not one changed session, not NSE+BSE-only days, not BSE-only. Tally 318,437 / 318,518; 99 differing = RULE DIFFERENCE 55 (C 28, W 8, D2 4,
 VALIANTORG 7, F 8) + OUR ERROR 43 + UNKNOWN 1.
 
+**§179q — BSE HISTORY BEFORE A LATER NSE LISTING, all PIT-N500 stocks (2026-10-12 19:45 IST; user: "fix it, scan all N500 stocks too").** Scan
+(qm-recon-tools/scan_bse_prelist_n500.py): 425 ever-N500 symbols whose N500 months start within 450 d of (or before) the series' first bar F; BSE per-scrip
+history [F-730 d, F+20 d], one request at a time. 58 had BSE sessions before F; classify_prelist_r12.py + NSE's own tape (raw_merged) + EQUITY_L DATE OF
+LISTING: A 24 = later NSE listing (listing date == F, BSE trades up to F); B 8 = NSE traded it before F under another symbol (TMPV/TELCO, LT/L&T,
+PENINLAND/MORARJESPG, GESHIP/GESHIPPING, JKTYRE/JKINDUSTRY, ALOKINDS (kept split by decision), DIGJAMLMTD, GVT&D/GECALSTHOM) - NOT BSE prepends; C 15 =
+listing date not == F (renamed/delisted symbols, or existing 2020 prepends GANESHBE/AMBALALSA/MAFATIND) - unproven, left; D 11 = BSE stops 18-134 d
+before the NSE listing (INDORAMA, UPL, JSWSTEEL, CONSOFINVT, PRIMESECU, VHL, RAMANEWS, INFOMEDIA, SHYAMTEL, CEATLTD, DALBHARAT) - left. FIXED 26 = A 24 +
+WESTLIFE (NSE first row 19-Aug-2019, ISIN absent from NSE's 60 prior sessions) + GVT&D (NSE hole 2002-09-30 -> 2008-06-30, BSE throughout).
+Builder qm-recon-tools/build_bse_prelist_fill.py (run in a worktree's scripts/): BSE rows [max(F-730 d, after the last BSE rights/scheme), F-1], BSE
+splits/bonuses applied, pre-2002 one bar a week, an unexplained >30% move truncates; level = BSE's own x every adjustment our series carries after F,
+MEASURED as stored close / NSE raw close on F (anchor raw = NSE raw close; Quantmac's join); gate median NSE-stored/BSE within 3% of it. 26 blocks into
+bse_sme_prepend.json.gz (465 blocks). Dry run (base = live f45443bfd6): 26 symbols changed, each only by bars before F, existing bars identical; meta
+gained ISIN for SWANCORP/VIYASH/WELSPUNLIV; 2nd run identical; split rev 1978d25524. Quantmac 12-Oct file: 318,480 / 318,533; all 43 OUR ERROR cells
+agree; 56 differing = RULE DIFFERENCE 55 (C 28, W 8, D2 4, F 8, VALIANTORG join 7) + UNKNOWN 1 (INEABS). Favourites: 1 changed pick in 16 runs (DII
+holding % bottom-3 saved window 2005-08-31 FIRSTLEASE -> PATELENG; CAGR 40.84 -> 41.21).
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
