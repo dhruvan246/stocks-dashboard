@@ -24060,6 +24060,12 @@ warning lists identical to the base run; split rev c5112dd611. N500 cells (the l
 starts 2009). Favourites: 16 runs identical (data + alias, alias alone). Page load (local, e24): stock-backtest runs, saved-strategies loads, console
 clean. Open, not touched: LT's relisting day 2004-06-23 printed L 150 / H 745 (raw), which holds LT's 52w low at 16.67 adjusted until 2005-06 —
 a first-day print question for the owner.
+**§179t LIVE VERIFIED (2026-10-12 22:30 IST).** Push 3701123ea -> data run 38278243175 (success); live sf_meta rev c5112dd611 == the dry run's split
+rev; Pages: ENGINE_VER e24, FUND_ALIAS CEAT->CEATLTD, sw v258 served. Browser (live stock-backtest, engine-loaded SERIES): TMPV/LT/GESHIP/CEATLTD first
+bar 1996-01-01; joins 2003-12-24 49.9947 -> 50.8822, 2004-05-21 69.7455 -> 70.6612, 2006-11-07 233.3574 -> 222.80, 2007-12-24 181.9061 -> 2008-02-01
+181.00; TATAMOTORS / L&T / GESHIPPING / CEAT keys gone; console clean. Reply #9 (qm-recon-tools/build_ind_reply_r9.py, LIVE_REV=c5112dd611):
+out/StockWorld_indicators_reply9_to_Quantmac_20261012.xlsx (cell IDs Q01-Q49, YOUR DECISION A/B/C/D + YOUR ROWS / REASON columns, every cell in the
+Note) + out/StockWorld_MonthEnd_Indicators_2009_2026_20261012b.xlsx; replaces reply #8.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
