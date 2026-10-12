@@ -28165,10 +28165,23 @@ bse-xbrl record of the same basis whose PAT matches the file) — BSE cards had 
 build_bse_results already read `rec["op"]`. Verified locally: ALSTONE's Just Declared card = BSE badge, ₹100 cr, Sales 785 / 0.00 /
 0.00, Op. profit -78.5 (YoY vs -0.72), Net profit -107, OPM -10.0%; zero console errors; 2,302 BSE-only companies with numbers.
 
-**Open.** scripts/bse_scrips.json (by_id / by_isin) is a static map without the suspended scrips, so their XBRL fills carry no
-financial DETAIL (xbrl_extra is keyed by that ticker) — the stock page's detail block stays empty for them until the map is rebuilt
-to include the universe's suspended rows. Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap
-drift) stay sparse by nature.
+**Scrip map (same night, user: "rebuild the bse scrip map too so suspended scrips get detail").** scripts/bse_scrips.json
+(by_id / by_isin) was a static copy of the Active master: 312 universe rows were outside it (102 of them the suspended scrips), so
+their XBRL fills carried no financial DETAIL (xbrl_extra and the §178 route's code2tk key on that ticker). `build_bse_universe.
+extend_scrip_map()` now runs after every universe write, ADD-ONLY: a universe row the map lacks gets by_id[TICKER] and
+by_isin[ISIN]; an existing ticker or ISIN is never re-pointed; a ticker the NSE tape owns, a ticker in the §203 conflict ledger,
+or a row without a 12-char IN… ISIN is skipped and printed. First run: **+297 entries** (by_id 4,975 → 5,264; by_isin 4,969 →
+5,256), 274 rows skipped (NSE tape keys such as TANFACIND / SPICEJET / HSIL, KALYANI in the conflict ledger, 3 rows with ISIN
+"NA"). The workflow commits scripts/bse_scrips.json. ALSTONE re-read from the cached files: 27 quarters of detail (770 fields)
+into xbrl_extra.json.gz; docs/fin/ALSTONE.json rebuilt with `x` for all 27 (Sep-26: finance cost 28.18 = the PDF's 2,818.34
+lakhs, EPS -0.17, inventories 921.55, total assets 1,005.89). The 09:50 job's detail-missing rule now lists every newly mapped
+ticker's quarters with numbers but no detail, so the other mapped rows fill over the next days.
+**Trap found:** a stale uncompressed scripts/xbrl_extra.json (6-Sep, ignored, local only) outranks the .gz in build_stock_fin —
+it hid every detail landed since; moved to ~/stocks-backups/xbrl_extra-stale-2026-10-12/ (CI never had it).
+**Stock page:** docs/stock.html needs the PRICE slice (sf-data/stk/<TICKER>.json) before it loads fin/; ALSTONE has none yet
+(build_bse_slices: <20 bars — its bhavcopy history starts collecting now that it is a universe row), so the page says "not found"
+until the daily refresh-bse run has ≥20 bars and pushes the slice. AVI (suspended, slice present) renders Financials today.
+Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap drift) stay sparse by nature.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
 or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been

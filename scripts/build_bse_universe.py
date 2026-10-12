@@ -20,6 +20,13 @@ check is cached in scripts/_bse_suspended.json {code: {"chk": checked, "last": l
 re-done after SUS_RECHECK (60) days, SUS_BUDGET checks per run (--suspended-budget N); until checked a scrip stays out.
 The row shape is unchanged (8 columns); the file carries the qualifying codes under a top-level "suspended" list.
 
+SCRIP MAP (2026-10-12, user: "rebuild the bse scrip map too so suspended scrips get detail"): scripts/bse_scrips.json
+{by_id: {TICKER: code}, by_isin: {ISIN: code}} is the key every XBRL detail is filed under (xbrl_extra, the §178 route's
+code2tk). It was a static copy of the Active master, so a universe row outside it (312 on 12-Oct-2026, 102 of them the
+suspended scrips above) could get numbers but never detail. extend_scrip_map() now adds every universe row the map lacks,
+ADD-ONLY: an existing ticker or ISIN is never re-pointed; a ticker the NSE tape owns, a ticker in the §203 conflict
+ledger, or a row without a real ISIN is skipped (printed). The map is written only when something was added.
+
 Output: {"updated","count", "rows":[[scrip_cd, ticker, name, isin, group, faceval, mcap_cr, sector], …]}
         sorted by market cap desc. Guard: refuses to overwrite a good file with a tiny/failed fetch.
 
@@ -180,6 +187,34 @@ def mcap(x):
     try: return round(float(x.get("Mktcap") or 0), 2)
     except Exception: return 0.0
 
+
+SCRIPS = os.path.join(HERE, "bse_scrips.json")
+
+
+def extend_scrip_map(rows, path=SCRIPS):
+    """Add-only: map every universe row (code, ticker, name, isin, …) the scrip map lacks. Returns (added, skipped)."""
+    import bse_resolve
+    d = json.load(open(path, encoding="utf-8")); by_id = d.setdefault("by_id", {}); by_isin = d.setdefault("by_isin", {})
+    tape_keys, _ = nse_tape_meta(); conf = bse_resolve.conflicts()
+    added, skipped = 0, []
+    for r in rows:
+        code, tk, isin = int(r[0]), str(r[1] or "").upper(), str(r[3] or "").upper()
+        if not tk or len(isin) != 12 or not isin.startswith("IN"):
+            skipped.append((tk or code, "no ISIN")); continue
+        if tk in tape_keys or tk in conf:
+            skipped.append((tk, "NSE tape key" if tk in tape_keys else "conflict ledger")); continue
+        if tk not in by_id and isin not in by_isin:
+            by_id[tk] = code; by_isin[isin] = code; added += 1
+        elif tk not in by_id and int(by_isin[isin]) == code:
+            by_id[tk] = code; added += 1
+        elif isin not in by_isin and int(by_id[tk]) == code:
+            by_isin[isin] = code; added += 1
+    if added:
+        json.dump(d, open(path, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+    print("scrip map: +%d entries (by_id %d, by_isin %d); skipped %d%s"
+          % (added, len(by_id), len(by_isin), len(skipped), (": " + ", ".join("%s (%s)" % x for x in skipped[:12])) if skipped else ""))
+    return added, skipped
+
 def main():
     budget = 400
     if "--sector-budget" in sys.argv:
@@ -233,6 +268,10 @@ def main():
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print("WROTE %s: %d BSE-only stocks (%d with sector; +%d sectors this run)"
           % (os.path.normpath(OUT), len(rows), out["sectors_known"], spent))
+    try:
+        extend_scrip_map(rows)
+    except Exception as ex:
+        print("scrip map not extended (%s)" % str(ex)[:80])
 
 if __name__ == "__main__":
     main()
