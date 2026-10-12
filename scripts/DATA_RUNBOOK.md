@@ -27933,7 +27933,6 @@ held exactly Institutions (Foreign); 366 move (mostly < 0.01 pp; 15 >= 0.01); 26
 rebase ledger (cur within 0.000051 of its `old`) and left as they are; 4 cells that fit neither shape held. NOTE: fetch_shareholding's
 daily NSE parse must also count these rows going forward (open).
 
-<<<<<<< HEAD
 **Parts 67-76 (2026-10-12) - the rest of the Quantmac v8 cells, one by one, on each filing's own lines.** 67: JUBLPHARMA Sep-14,
 ELGIEQUIP Jun-15, WABAG Jun-15 page rows. 68: Dec-15/Mar-16 seam (`ownline/seamown.py`, base = Table I STABC - STC1). 69: CHOLAFIN /
 DEN / PVRINOX Mar-16 named institutions holders. 70: ADANIENT Mar-16, BHARATFIN Dec-15/Mar-16. 71: event (mid-quarter) filings
@@ -27954,7 +27953,7 @@ the files' grand-total element is mis-tagged - base = B + C), KARURVYSYA 2018-08
 date, the later 109.02 on 6,198,953,515 shares). UNKNOWN: Jun/Sep-2015 pages whose bare 'Others' row is labelled only by the company's
 PDF (404): INDIACEM, JBFIND, GRAPHITE, DISHMAN, MAHLIFE, MARICO. Identity trap: our cached BSE list for SUNDARMFIN (and KARURVYSYA)
 is scrip 600001; the real list is SHPQNewFormat scripcode=590071 (saved ~/stocks-cache/shp/quantmac/v8/wb/bse_list_590071.json).
-=======
+
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
@@ -28002,4 +28001,3 @@ Sat 10 Oct: 3), first real day of a season 13-20 (Tue 14 Jul: 13; Mon 12 Oct: 20
 `corporate-announcements` (index=equities AND sme) + BSE `AnnSubCategoryGetData strCat=Result` with docs/results_feed.json for the
 day; for any outcome caption not in the feed, test it against RESULT_CAP_RE before touching the filter, and add the phrasing as a
 measured branch (re-run the Aug snapshot count: new/lost).
->>>>>>> 3da3b7f72 (§228 Just Declared on a results day: wider result-caption filter (script + live relay), no-quarter fallback, one card per filing, calendar trigger + IGNITE_CUM 20 in season_state)
