@@ -298216,7 +298216,7 @@
    "2020-08-11": {
     "cell": [
      14.75,
-     48.4721,
+     52.71839,
      25.362,
      19.0344,
      2.4687,
@@ -298226,14 +298226,36 @@
     "was": [
      14.75,
      48.4721,
-     23.942,
+     25.362,
      19.0344,
      2.4687,
      "2020-08-11",
      714613
     ],
-    "src": "bsexbrl:532215_1182020125620_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 48.47 -> 48.47, dii 23.94 -> 25.36. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 2.1 public=0.00 fii=0.00 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.36 domestic->-(curated) keyword; R2-named Trusts 1.41 NPS TRUST- A/C SBI PENSION FUND SCHEME - CENTRAL G 1.41(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 71 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): as 2019-09-26: the Bain '- FDI' holders are FII (user 12-Oct). FII = FPI 1,454,654,496; noninst-holder-own-tag-fii:INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI 31,900,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS III LIMITED - FDI 40,000,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS VII LIMITED - FDI 55,600,000 on base 3,001,143,439 = 52.71839 = Quantmac's figure. fii 48.4721 -> 52.71839; dii untouched.",
+    "superseded": {
+     "cell": [
+      14.75,
+      48.4721,
+      25.362,
+      19.0344,
+      2.4687,
+      "2020-08-11",
+      714613
+     ],
+     "was": [
+      14.75,
+      48.4721,
+      23.942,
+      19.0344,
+      2.4687,
+      "2020-08-11",
+      714613
+     ],
+     "src": "bsexbrl:532215_1182020125620_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 48.47 -> 48.47, dii 23.94 -> 25.36. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 2.1 public=0.00 fii=0.00 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.36 domestic->-(curated) keyword; R2-named Trusts 1.41 NPS TRUST- A/C SBI PENSION FUND SCHEME - CENTRAL G 1.41(regex); R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    }
    },
    "2021-03-31": {
     "cell": [
@@ -298344,6 +298366,28 @@
     ],
     "src": "bsexbrl:532215_104202223351_SHP.xml",
     "why": "\u00a7164r batch 30 part 62 (2026-10-12, user: 'option 1 count the word in the name' - an FPI / FII / FDI word anywhere in a holder's name is the company's own mark, in this filing): this filing's own foreign lines = FPI 1,410,140,718; noninst-holder-own-tag-fii:INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI 31,900,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS III LIMITED - FDI 40,000,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS VII LIMITED - FDI 55,600,000 on base 3,004,642,921 = 51.175489; stored 46.932057. fii -> 51.175489; dii untouched (DII holds Indian institutions only; these holders are foreign-marked)."
+   },
+   "2019-09-26": {
+    "cell": [
+     16.61,
+     52.194626,
+     23.4113,
+     18.7949,
+     2.1065,
+     "2019-09-26",
+     398700
+    ],
+    "was": [
+     16.61,
+     47.5621,
+     23.4113,
+     18.7949,
+     2.1065,
+     "2019-09-26",
+     398700
+    ],
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 71 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): the Non-Institutions holders INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI, BC ASIA INVESTMENTS III / VII LIMITED - FDI carry an FDI word in the name (user 12-Oct) - FII. FII = FPI 1,309,149,114; noninst-holder-own-tag-fii:INTEGRAL INVESTMENTS SOUTH ASIA IV - FDI 31,900,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS III LIMITED - FDI 40,000,000; noninst-holder-own-tag-fii:BC ASIA INVESTMENTS VII LIMITED - FDI 55,600,000 on base 2,752,484,723 = 52.194626 = Quantmac's figure. fii 47.5621 -> 52.194626; dii untouched."
    }
   },
   "SIL": {
@@ -315230,7 +315274,7 @@
    "2021-04-16": {
     "cell": [
      16.56,
-     9.8874,
+     7.617571,
      12.8791,
      0.0211,
      1.3786,
@@ -315239,20 +315283,19 @@
     ],
     "was": [
      16.56,
-     7.6177,
+     9.8874,
      12.8791,
      0.0211,
      1.3786,
      "2021-04-23",
      1117929
     ],
-    "src": "bsexbrl:532667_234202113112_SHP.xml",
-    "why": "\u00a7164r batch 30 part 29 (2026-10-06, per-company review): TOR ASIA CREDIT MASTER FUND LP 200,200,000 sh sits inside the company's Institutions block ('Overseas Corporate Bodies' sub-row) and the company's own 14-Jul-2020 event pattern (532667_2172020201752) lists the same legal name under Institutions (Foreign) - Foreign Portfolio Investors (304,398,677 sh) -> fii by batch 8 option A (\u00a7158 had read the sub-row's company-type label as public); Belgrave Investment Fund stays public (its 2022-form row is Foreign Companies). fii 7.6177 -> 9.8874.",
-    "exact": true,
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 71 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): Tor Asia Credit Master Fund LP sits on the company's own 'Overseas Corporate Bodies' row (company-type) - out. FII = FPI 671,916,500 on base 8,820,613,005 = 7.617571 = Quantmac's figure. fii 9.8874 -> 7.617571; dii untouched.",
     "superseded": {
      "cell": [
       16.56,
-      7.6177,
+      9.8874,
       12.8791,
       0.0211,
       1.3786,
@@ -315262,14 +315305,37 @@
      "was": [
       16.56,
       7.6177,
-      15.9491,
+      12.8791,
       0.0211,
       1.3786,
       "2021-04-23",
       1117929
      ],
      "src": "bsexbrl:532667_234202113112_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 7.62 -> 7.62, dii 15.95 -> 12.88. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 3.08 public=0.81 fii=0.00 TOR ASIA CREDIT MASTER FUND LP 2.27 ?->-(name-only (name marker; no document)) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     "why": "\u00a7164r batch 30 part 29 (2026-10-06, per-company review): TOR ASIA CREDIT MASTER FUND LP 200,200,000 sh sits inside the company's Institutions block ('Overseas Corporate Bodies' sub-row) and the company's own 14-Jul-2020 event pattern (532667_2172020201752) lists the same legal name under Institutions (Foreign) - Foreign Portfolio Investors (304,398,677 sh) -> fii by batch 8 option A (\u00a7158 had read the sub-row's company-type label as public); Belgrave Investment Fund stays public (its 2022-form row is Foreign Companies). fii 7.6177 -> 9.8874.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       16.56,
+       7.6177,
+       12.8791,
+       0.0211,
+       1.3786,
+       "2021-04-23",
+       1117929
+      ],
+      "was": [
+       16.56,
+       7.6177,
+       15.9491,
+       0.0211,
+       1.3786,
+       "2021-04-23",
+       1117929
+      ],
+      "src": "bsexbrl:532667_234202113112_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 7.62 -> 7.62, dii 15.95 -> 12.88. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 3.08 public=0.81 fii=0.00 TOR ASIA CREDIT MASTER FUND LP 2.27 ?->-(name-only (name marker; no document)) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+     }
     }
    },
    "2021-12-26": {
@@ -339112,7 +339178,7 @@
    "2019-04-11": {
     "cell": [
      0.0,
-     23.5583,
+     19.00754,
      18.6209,
      9.5188,
      2.25,
@@ -339122,16 +339188,25 @@
     "was": [
      0.0,
      23.5583,
-     21.3332,
+     18.6209,
      9.5188,
      2.25,
      "2019-05-20",
      74989
     ],
-    "src": "bsexbrl:540750_2052019173127_SHP.xml",
-    "why": "\u00a7164s part 15 (user 2026-10-05 'Follow IEX's own label', applied to the event filing too): IEX files 'India Business Excellence Fund IIA' (2.7123) under its own 'Overseas Corporate Bodies' label inside the Institutions block; only another company's AIF listing called it domestic - it leaves DII. dii 21.3332 -> 18.6209.",
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 71 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): Westbridge Crossover, India Business Excellence Fund, Lightspeed ... carry the own category text 'Overseas Corporate Bodies' (company-type) - out. FII = FPI 56,792,942; inst-rest D1 (unnamed) 145,383 on base 299,556,511 = 19.00754 = Quantmac's figure. fii 23.5583 -> 19.00754; dii untouched.",
     "superseded": {
      "cell": [
+      0.0,
+      23.5583,
+      18.6209,
+      9.5188,
+      2.25,
+      "2019-05-20",
+      74989
+     ],
+     "was": [
       0.0,
       23.5583,
       21.3332,
@@ -339140,28 +339215,10 @@
       "2019-05-20",
       74989
      ],
-     "was": [
-      0.0,
-      19.0083,
-      21.3332,
-      9.5188,
-      2.25,
-      "2019-05-20",
-      74989
-     ],
-     "src": "ledger",
-     "why": "\u00a7164r batch 8 scope (user 2026-10-04, option A): the strict >= 90 percent-of->= 5 proof is for holders the company lists among ordinary shareholders; a holder the company itself lists inside its Institutions block needs only one other filing calling it an institution. RIMCO (MAURITIUS) LIMITED 4.55 - FII again: fii 19.01 -> 23.56.",
+     "src": "bsexbrl:540750_2052019173127_SHP.xml",
+     "why": "\u00a7164s part 15 (user 2026-10-05 'Follow IEX's own label', applied to the event filing too): IEX files 'India Business Excellence Fund IIA' (2.7123) under its own 'Overseas Corporate Bodies' label inside the Institutions block; only another company's AIF listing called it domestic - it leaves DII. dii 21.3332 -> 18.6209.",
      "superseded": {
       "cell": [
-       0.0,
-       19.0083,
-       21.3332,
-       9.5188,
-       2.25,
-       "2019-05-20",
-       74989
-      ],
-      "was": [
        0.0,
        23.5583,
        21.3332,
@@ -339170,19 +339227,19 @@
        "2019-05-20",
        74989
       ],
+      "was": [
+       0.0,
+       19.0083,
+       21.3332,
+       9.5188,
+       2.25,
+       "2019-05-20",
+       74989
+      ],
       "src": "ledger",
-      "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 23.56 -> 19.01. RIMCO (MAURITIUS) LIMITED 4.55 (company-type sub-row) FII -> public",
+      "why": "\u00a7164r batch 8 scope (user 2026-10-04, option A): the strict >= 90 percent-of->= 5 proof is for holders the company lists among ordinary shareholders; a holder the company itself lists inside its Institutions block needs only one other filing calling it an institution. RIMCO (MAURITIUS) LIMITED 4.55 - FII again: fii 19.01 -> 23.56.",
       "superseded": {
        "cell": [
-        0.0,
-        23.5583,
-        21.3332,
-        9.5188,
-        2.25,
-        "2019-05-20",
-        74989
-       ],
-       "was": [
         0.0,
         19.0083,
         21.3332,
@@ -339191,12 +339248,21 @@
         "2019-05-20",
         74989
        ],
-       "src": "event row",
-       "why": "\u00a7164r batch 7 \u2014 documents-only holder test, EVENT row (mid-quarter filing; the quarter rows of this company were written the same way): fii 19.01 -> 23.56. RIMCO (MAURITIUS) LIMITED 4.55 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') public -> fii: listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
+       "was": [
+        0.0,
+        23.5583,
+        21.3332,
+        9.5188,
+        2.25,
+        "2019-05-20",
+        74989
+       ],
+       "src": "ledger",
+       "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 23.56 -> 19.01. RIMCO (MAURITIUS) LIMITED 4.55 (company-type sub-row) FII -> public",
        "superseded": {
         "cell": [
          0.0,
-         19.0083,
+         23.5583,
          21.3332,
          9.5188,
          2.25,
@@ -339205,15 +339271,37 @@
         ],
         "was": [
          0.0,
-         18.9583,
-         33.7732,
+         19.0083,
+         21.3332,
          9.5188,
-         0.0,
+         2.25,
          "2019-05-20",
          74989
         ],
-        "src": "bsexbrl:540750_2052019173127_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.96 -> 19.01, dii 33.77 -> 21.33. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=2.34 fii=0.00 AFHOLDINGS 2.34 foreign->public(document"
+        "src": "event row",
+        "why": "\u00a7164r batch 7 \u2014 documents-only holder test, EVENT row (mid-quarter filing; the quarter rows of this company were written the same way): fii 19.01 -> 23.56. RIMCO (MAURITIUS) LIMITED 4.55 (institutional Any-Other, company-type row 'Overseas Corporate Bodies') public -> fii: listed under Institutions (Foreign) in 13 cached BSE filing(s) (company-type rows: 36), e.g. 542772_19102023155431_SHP.xml ForeignDirectInvestment",
+        "superseded": {
+         "cell": [
+          0.0,
+          19.0083,
+          21.3332,
+          9.5188,
+          2.25,
+          "2019-05-20",
+          74989
+         ],
+         "was": [
+          0.0,
+          18.9583,
+          33.7732,
+          9.5188,
+          0.0,
+          "2019-05-20",
+          74989
+         ],
+         "src": "bsexbrl:540750_2052019173127_SHP.xml",
+         "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 18.96 -> 19.01, dii 33.77 -> 21.33. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=4.78 fii=0.00 WESTBRIDGE CROSSOVER FUND, LLC 4.78 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=0.00 fii=0.00 INDIA BUSINESS EXCELLENCE FUND IIA 2.71 domestic->-(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.04 fii=0.00 LIGHTSPEED VENTURE PARTNERS VIII MAURITIUS 3.04 foreign->public(documented:gleif) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.55 fii=0.00 RIMCO (MAURITIUS) LIMITED 4.55 foreign->public(documented:filing) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=2.34 fii=0.00 AFHOLDINGS 2.34 foreign->public(document"
+        }
        }
       }
      }
@@ -394869,24 +394957,46 @@
    "2022-02-16": {
     "cell": [
      40.96,
-     31.7296,
+     33.084168,
      6.5829,
-     3.9296,
-     2.521,
+     3.929786,
+     2.521149,
      "2022-02-19",
      289959
     ],
     "was": [
      40.96,
-     31.7296,
-     6.4529,
-     3.9296,
-     2.521,
+     31.731182,
+     6.5829,
+     3.929786,
+     2.521149,
      "2022-02-19",
      289959
     ],
-    "src": "bsexbrl:543248_182202220739_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 31.73 -> 31.73, dii 6.45 -> 6.58. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.13"
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 71 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): the Non-Institutions holder Valiant Mauritius Partners FDI Limited carries an FDI word in the name (user 12-Oct) - FII. FII = FPI 156,351,427; noninst-holder-own-tag-fii:Valiant Mauritius Partners Fdi Limited 6,666,666 on base 492,737,478 = 33.084168 = Quantmac's figure. fii 31.731182 -> 33.084168; dii untouched.",
+    "superseded": {
+     "cell": [
+      40.96,
+      31.7296,
+      6.5829,
+      3.9296,
+      2.521,
+      "2022-02-19",
+      289959
+     ],
+     "was": [
+      40.96,
+      31.7296,
+      6.4529,
+      3.9296,
+      2.521,
+      "2022-02-19",
+      289959
+     ],
+     "src": "bsexbrl:543248_182202220739_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 31.73 -> 31.73, dii 6.45 -> 6.58. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.13"
+    }
    },
    "2020-12-31": {
     "cell": [
