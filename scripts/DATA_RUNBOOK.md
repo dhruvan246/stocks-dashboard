@@ -28178,9 +28178,25 @@ lakhs, EPS -0.17, inventories 921.55, total assets 1,005.89). The 09:50 job's de
 ticker's quarters with numbers but no detail, so the other mapped rows fill over the next days.
 **Trap found:** a stale uncompressed scripts/xbrl_extra.json (6-Sep, ignored, local only) outranks the .gz in build_stock_fin —
 it hid every detail landed since; moved to ~/stocks-backups/xbrl_extra-stale-2026-10-12/ (CI never had it).
-**Stock page:** docs/stock.html needs the PRICE slice (sf-data/stk/<TICKER>.json) before it loads fin/; ALSTONE has none yet
-(build_bse_slices: <20 bars — its bhavcopy history starts collecting now that it is a universe row), so the page says "not found"
-until the daily refresh-bse run has ≥20 bars and pushes the slice. AVI (suspended, slice present) renders Financials today.
+**Stock page:** docs/stock.html needs the PRICE slice (sf-data/stk/<TICKER>.json) before it loads fin/. AVI (suspended, slice
+present) rendered Financials; ALSTONE had no slice (<20 bars: its bhavcopy history was never collected while it sat outside the
+universe, and the daily catch-up only looks back 180 days).
+**Price backfill (user: "backfill alstone's bse price history so the stock page works").** From the §149 bhavcopy cache
+(~/stocks-cache/bse_bhav: 2020-01 → 2024-06 as EQ_ISINCODE zips, 2024-07 → 2026-09 as UDiFF .csv files — a reader must take
+BOTH) every new suspended universe code was read into docs/bse_prices.bin (closes + volumes exactly as BSE printed them, dv = 0 =
+unavailable, `catchup` stamped so the daily walk does not rescan): 1,671 day files, 68 codes with bars, 34,948 bars, 63 codes
+with ≥ 20 bars. ALSTONE: 919 bars 2022-08-24 → 2026-05-25 (₹1.20 on 1-Jan-2024, ₹0.16 on 25-May-2026 — its last BSE print,
+= bse_seen_scrips). build_bse_slices wrote its slice (end 2026-05-25, alive 1); the scratch dir must be EMPTY first — an existing
+<SLUG>.json in --out counts as a slug collision and the slice is silently skipped. The slice reaches the live page via
+refresh-backtest-data.yml's sf-data force-push (daily 20:45 IST, or workflow_dispatch). Verified on localhost with the slice
+staged under docs/stk/: header ₹0.16 as of 2026-05-25, chart axis in rupees (350 → 50), Quarters 28 rows, Financials 13 rows,
+zero console errors.
+**Seen, NOT changed — the BSE-only price pipeline has no corporate-action step (every BSE-only chart is the raw tape).** ALSTONE
+13-Dec-2022 close 169.85 → 14-Dec-2022 1.75 (bhavcopy PREVCLOSE 169.85, unadjusted). BSE's CorporateAction list: Bonus 9:1,
+ex-date 14-Dec-2022; the company's own XBRL share capital 12.75 cr (Sep-22) → 127.48 cr (Mar-23) = ×10 shares, so ÷10 is the
+confirmed action and the remaining ÷9.7 that day is the market (no split in BSE's list; the §149 crash-vs-CA rule: never divide
+out more than the announced action). A split/bonus-adjusted BSE-only series would need an adjustment layer in
+fetch_bse_bhav/build_bse_slices (NSE names get it from the engine); until then the chart shows the cliff.
 Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap drift) stay sparse by nature.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
