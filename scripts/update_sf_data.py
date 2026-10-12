@@ -1201,6 +1201,20 @@ def insert_sme_history(data, meta, cal=None):
             bars = [b for b in bars if b[0] not in bad]
         return bars
     created = cbars = prepended = pbars = skipped = 0
+    def _realign(sym, tgt, e, bars, anc, a0):
+        """§179r REALIGN (opt-in per block, "realign": true): an ALREADY-applied block whose anchor `raw` was later corrected
+        (VALIANTORG 2026-10-12: its BSE SME bars joined at NSE's own raw close on the listing day, not BSE's close that day).
+        The bars in front of the anchor are rescaled once onto the level the block now asks for (stored anchor close / raw),
+        measured on the block's earliest bar the bin still holds; idempotent - once aligned the ratio is 1 and nothing moves."""
+        if a0 not in e["d"] or float(anc.get("raw") or 0) <= 0: return
+        ia = e["d"].index(a0); bmap = {b_[0]: b_[1] for b_ in bars}
+        d0 = next((d_ for d_ in e["d"][:ia] if d_ in bmap and bmap[d_] > 0), None)
+        if d0 is None: return
+        want = e["c"][ia] / float(anc["raw"]); have = e["c"][e["d"].index(d0)] / bmap[d0]; r_ = want / have
+        if abs(r_ - 1) <= 2e-4: return
+        for k in ("c", "h", "l", "op", "vw"):
+            if k in e: e[k][:ia] = [_pxr(x * r_) for x in e[k][:ia]]
+        print("  SME-BACKFILL REALIGN %s->%s: %d bars before %d rescaled x%.6f (level %.6f -> %.6f)" % (sym, tgt, ia, a0, r_, have, want))
     for sym, spec in sorted((led.get("create") or {}).items()):
         bars = clean(sym, spec.get("bars") or [])
         if not bars: continue
@@ -1230,8 +1244,12 @@ def insert_sme_history(data, meta, cal=None):
             # anchor (nothing stored inside the block window); once filled the block's first bar is present -> no-op.
             pos = bisect.bisect_left(e["d"], bars[0][0])
             if pos >= len(e["d"]) or e["d"][pos] != a0:
+                if spec.get("realign"): _realign(sym, tgt, e, bars, anc, a0)
                 continue                                 # already applied (or covered) — zero-cost steady state
         elif e["d"][0] != a0:
+            if spec.get("realign"):
+                _realign(sym, tgt, e, bars, anc, a0)
+                skipped += 1; continue
             print("  SME-BACKFILL %s->%s: bin now starts %d, anchor was %s — not applied (verify by hand)"
                   % (sym, tgt, e["d"][0], anc.get("ymd"))); skipped += 1; continue
         if bars[-1][0] >= e["d"][pos]:

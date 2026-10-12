@@ -24026,6 +24026,16 @@ rev 7d05693c5b). Live release vs the dry run bar by bar to 2026-10-09: 5,248 + t
 AGOL, TRIVENIPT). Browser sf_deep: CAMLINFINE first 2013-01-21, 2015-01-19 c 77.7728; GVT&D first 2006-07-03, 2008-06-27 c 192.3272; WESTLIFE first
 2017-08-21; console clean. Page v10 (cells_page_r15.json): 56 cells vs their 12-Oct file.
 
+**§179r — VALIANTORG BSE SME JOIN ALIGNED + opt-in REALIGN (2026-10-12 20:28 IST; user: "align valiantorg too").** Its §149 SME block (BSE 540145, 187 bars
+2020-01-01..2020-10-01) was joined by BSE's close on the NSE listing day (anchor raw 2955.60 -> rescale 0.4988); every other pre-listing block (main
+board §171, §179g, §179q) and Quantmac keep BSE's own level x the series' later adjustments. NSE's own PREVCLOSE on 05-Oct-2020 = 2876.00 = BSE's
+last close 01-Oct. Block anchor raw -> NSE raw close 2948.50 (raw_was kept) + "realign": true. update_sf_data.insert_sme_history gained _realign():
+for an ALREADY-applied block flagged realign, rescale the bars before the anchor once onto stored anchor close / raw (measured on the block's earliest
+bar the bin holds; tol 2e-4; idempotent). Opt-in only (VALIANTORG). Dry run (base = live 7d05693c5b): 'REALIGN VALIANTORG: 187 bars before 20201005
+rescaled x1.002406', only VALIANTORG changed, post-join identical, 2nd run 0 / identical; split rev 37a8c3ed66; 2020-10-01 close now 1438.0012
+(= NSE PREVCLOSE 2876 x 0.5). Quantmac 12-Oct: 318,487 / 318,533; VALIANTORG 7 agree; 49 differing = RULE DIFFERENCE 48 (C 28, W 8, D2 4, F 8) +
+UNKNOWN 1 (INEABS). Favourites 0 changed picks.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
