@@ -28109,10 +28109,16 @@ and Dec-24 con PAT 490.85 beside 9-cr revenue (BSE XBRL Jun-25 con: 15.16 / 2.90
 **ALSTONE (the second question, "y is sales 0 for past year").** BSE-only 539277 (group XT, suspended), not in bse_universe —
 its card is the vision orphan path. Its own standalone XBRL says RevenueFromOperations = 0 (decimals -5, an entered nil) in
 Jun-25, Sep-25, Dec-25, Mar-26 and Jun-26, PAT from other income (Jun-26: other income ₹16.73 L, PAT ₹6.49 L = 0.06 cr as
-stored). So Sales 0.00 is the filing's figure and the YoY dash (nil base) is right. Sep-26 XBRL: LevelOfRounding "Lakhs" but
-RevenueFromOperations 7,848,842,000 (= 784.88 cr as rupees) and PAT -1,067,225,000 — either a real jump or the filer's ×100
-slip; the PDF's results pages are scanned images (no text layer), so the unit is UNKNOWN until that page is read (user's call —
-vision reads need permission). Screener prints the same XBRL-derived op (-79). Not applied anywhere beyond the vision read.
+stored). So Sales 0.00 is the filing's figure and the YoY dash (nil base) is right. Sep-26 XBRL: LevelOfRounding "Lakhs" but RevenueFromOperations 7,848,842,000 (= 784.88 cr as
+rupees) and PAT -1,067,225,000. **Read with the user's permission (page 4 of the PDF, "₹ IN LAKHS", 2026-10-12 21:10):** current
+quarter 01.07.2026-30.09.2026 revenue from operations **78,488.42** lakhs, other income -, purchase of stock-in-trade 169,501.14,
+change in inventories (91,007.00), finance costs 2,818.34, other expenses 7,844.21, profit/(loss) for the period **(10,672.25)**
+lakhs; previous quarter revenue -, other income 16.73, PAT 6.49; corresponding quarter Sep-25 revenue -, other income 222.14, PAT
+150.40; balance sheet (page 3, lakhs) inventories 92,155.03, total assets 100,589.29, equity share capital 92,748.00. Verdict:
+**NO SCALE ERROR** — 784.88 cr revenue and -106.72 cr PAT are the filing's own figures (lakhs ÷ 100), the XBRL agrees to the
+rupee, and the stored Jun-26 / Sep-25 cells match the table. Nothing changed. Open: ALSTONE (539277, suspended, group XT) is not
+in docs/bse_universe.json, so its card stays on the vision orphan path (no op, no market cap) even after the feed-declared XBRL
+fetch lands in bse_fundamentals.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
 or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been
