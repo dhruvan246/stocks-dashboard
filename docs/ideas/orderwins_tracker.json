@@ -1,7 +1,7 @@
 {
- "built": "2026-10-12 19:21 IST",
+ "built": "2026-10-12 20:47 IST",
  "rule": "Order-win letters added up since the last stated order book, each letter checked; flagged on the filing that took the confirmed total to 0.5x that book. Entry = close on that filing day (next trading day if a holiday). Returns use bonus/split-adjusted closes.",
- "n": 10,
+ "n": 13,
  "stale": [],
  "rows": [
   {
@@ -148,6 +148,125 @@
    "days": 84,
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
+   "stale": false
+  },
+  {
+   "key": "NSE:K2INFRA",
+   "isin": "INE0DEZ01013",
+   "name": "K2INFRA",
+   "nse": "K2INFRA",
+   "bse": null,
+   "base_filed": "2026-05-27",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_27052026135330_InvestorPresentationMay2026signed.pdf",
+   "n_wins": 3,
+   "script_sum_cr": 3708.07,
+   "script_ratio": 8.745,
+   "script_cross_date": "2026-06-13",
+   "checked_on": "2026-10-12",
+   "base_cr": 424.0,
+   "base_as_on": "2026-03-31",
+   "confirmed_sum_cr": 549.49,
+   "confirmed_ratio": 1.296,
+   "cross_date": "2026-06-16",
+   "verdict": "CORRECTED",
+   "note": "Base confirmed: the May-2026 investor presentation (filed 27-May-2026) states 'Order book - 4,240 Million' and 'Unexecuted: INR 4,240 Million, Data as of 31st March 2026' = Rs 424 cr. Two distinct wins confirmed, Rs 158.58 cr + Rs 390.91 cr = Rs 549.49 cr = 1.296x the base, crossing 0.5x on 16-Jun-2026 - not the 8.75x the script showed. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN.",
+   "wins": [
+    {
+     "filed": "2026-06-13",
+     "value_cr": 158.58,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_13062026131817_BaggingofOrderDisclosureReg30KonkanRailwayRs158Cr.pdf",
+     "verdict": "CORRECTED",
+     "note": "The letter reads \"amounting to approximately Rs 158.58 Crores (Rupees One Hundred Fifty-Eight Crore Fifty-Eight Lakhs...)\" - the rupee glyph rendered as a 3, so the parser read 3158.58. The words in the filing settle it at Rs 158.58 cr. Konkan Railway electrification LOA."
+    },
+    {
+     "filed": "2026-06-15",
+     "value_cr": 158.58,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_15062026112538_PressReleaseKonkanRailway158CrOrder.pdf",
+     "verdict": "NOT COUNTED - DUPLICATE",
+     "note": "The media release for the SAME Konkan Railway Rs 158.58 cr order, filed two days after the Reg-30 intimation. The 3-day dedupe missed it because the two values differed (3158.58 vs 158.58)."
+    },
+    {
+     "filed": "2026-06-16",
+     "value_cr": 390.91,
+     "doc": "https://nsearchives.nseindia.com/corporate/K2INFRA_16062026150401_BaggingofOrderDisclosureReg30390CrOrderGovtofBihar.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 390.91 cr PRED roads work order, value confirmed in words in the letter"
+    }
+   ],
+   "entry_date": "2026-06-16",
+   "entry_close": 68.85,
+   "last_date": "2026-10-12",
+   "last_close": 39.8,
+   "ret_pct": -42.2,
+   "peak_pct": 13.7,
+   "peak_date": "2026-06-17",
+   "low_pct": -43.2,
+   "days": 118,
+   "adj_events": 0,
+   "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
+   "stale": false
+  },
+  {
+   "key": "NSE:RAPPID",
+   "isin": "INE0MVO01012",
+   "name": "RAPPID",
+   "nse": "RAPPID",
+   "bse": null,
+   "base_filed": "2026-06-01",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/RAPPID_01062026141424_Exchange_PresentationSigned.pdf",
+   "n_wins": 4,
+   "script_sum_cr": 83.81,
+   "script_ratio": 2.54,
+   "script_cross_date": "2026-06-15",
+   "checked_on": "2026-10-12",
+   "base_cr": 33.0,
+   "base_as_on": "2026-05-31",
+   "confirmed_sum_cr": 31.86,
+   "confirmed_ratio": 0.966,
+   "cross_date": "2026-06-15",
+   "verdict": "CORRECTED",
+   "note": "Base read from the document, with a date correction: the investor presentation filed 1-Jun-2026 says 'Order Book Rs 33 cr as on May'26', not as on 31-Mar-2026 as the signal row has it. Confirmed wins Rs 31.86 cr = 0.966x the base (not 2.54x), crossing 0.5x on 15-Jun-2026 with the BHEL order. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN.",
+   "wins": [
+    {
+     "filed": "2026-06-08",
+     "value_cr": 8.55,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_08062026151443_Work_Order_Shree_.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 8.55 cr from Shree Refrigerators, valves"
+    },
+    {
+     "filed": "2026-06-15",
+     "value_cr": 18.0576,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_15062026102327_Work_Order.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 18,05,76,000 from BHEL, excluding taxes"
+    },
+    {
+     "filed": "2026-08-13",
+     "value_cr": 2.84,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_13082026191053_Workorder.pdf",
+     "verdict": "COUNTED",
+     "note": "Rs 2.84 cr from Larsen & Toubro, general valves"
+    },
+    {
+     "filed": "2026-09-21",
+     "value_cr": 2.4131,
+     "doc": "https://nsearchives.nseindia.com/corporate/RAPPID_21092026153828_Work_Order.pdf",
+     "verdict": "CORRECTED",
+     "note": "Two orders in one letter: Rs 85.31 lakh (Hindustan Shipyard) + Rs 1.56 cr (Solas Marine) = Rs 2.41 cr. The Rs 54.36 cr the script counted is the closing line of the same letter - \"The Company's order book, as on date, stands at approximately Rupees 54.36 Crores\" - the order BOOK, not a win."
+    }
+   ],
+   "entry_date": "2026-06-15",
+   "entry_close": 260.0,
+   "last_date": "2026-10-12",
+   "last_close": 331.0,
+   "ret_pct": 27.3,
+   "peak_pct": 43.4,
+   "peak_date": "2026-07-20",
+   "low_pct": -4.2,
+   "days": 119,
+   "adj_events": 0,
+   "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
    "stale": false
   },
   {
@@ -604,6 +723,48 @@
    "peak_date": "2026-01-01",
    "low_pct": -41.0,
    "days": 293,
+   "adj_events": 0,
+   "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
+   "stale": false
+  },
+  {
+   "key": "NSE:DIGIKORE",
+   "isin": "INE0QJ901011",
+   "name": "DIGIKORE",
+   "nse": "DIGIKORE",
+   "bse": null,
+   "base_filed": "2025-11-07",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/DIGIKORE_07112025111105_Digikore_H1FY26_Transcript.pdf",
+   "n_wins": 1,
+   "script_sum_cr": 83.0,
+   "script_ratio": 4.15,
+   "script_cross_date": "2025-12-01",
+   "checked_on": "2026-10-12",
+   "base_cr": 20.0,
+   "base_as_on": "2025-09-30",
+   "confirmed_sum_cr": 83.0,
+   "confirmed_ratio": 4.15,
+   "cross_date": "2025-12-01",
+   "verdict": "CONFIRMED",
+   "note": "Both sides read. Base: the H1 FY26 call transcript (call 3-Nov-2025, filed 7-Nov-2025) says 'We are today sitting in an order book of over INR20 crores' - an approximate figure stated by management, which the signal rounds to 20. Win: one order, US$9.3 mn = about Rs 83 cr, confirmed from the letter. Caveats for any use: the order executes over TWO years, so it is not 4.15x of a year's work; the base is 'over 20', i.e. a floor; and the cross date is 1-Dec-2025, over ten months old. NSE Emerge, no BSE scrip, so market cap could not be measured from the BSE master this run - band test UNKNOWN.",
+   "wins": [
+    {
+     "filed": "2025-12-01",
+     "value_cr": 83.0,
+     "doc": "https://nsearchives.nseindia.com/corporate/DIGIKORE_01122025221024_Digikore_NSE_Intimation_WinsMega_Rs83croreorder.pdf",
+     "verdict": "COUNTED",
+     "note": "US$9.3 mn (about Rs 83 crore) for 60 episodes of an AI-produced series for Angels Studios LLC, USA, over the next two years"
+    }
+   ],
+   "entry_date": "2025-12-01",
+   "entry_close": 73.75,
+   "last_date": "2026-10-12",
+   "last_close": 35.4,
+   "ret_pct": -52.0,
+   "peak_pct": 19.8,
+   "peak_date": "2026-03-06",
+   "low_pct": -53.4,
+   "days": 315,
    "adj_events": 0,
    "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
    "stale": false
