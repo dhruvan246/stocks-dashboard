@@ -24021,6 +24021,10 @@ bse_sme_prepend.json.gz (465 blocks). Dry run (base = live f45443bfd6): 26 symbo
 gained ISIN for SWANCORP/VIYASH/WELSPUNLIV; 2nd run identical; split rev 1978d25524. Quantmac 12-Oct file: 318,480 / 318,533; all 43 OUR ERROR cells
 agree; 56 differing = RULE DIFFERENCE 55 (C 28, W 8, D2 4, F 8, VALIANTORG join 7) + UNKNOWN 1 (INEABS). Favourites: 1 changed pick in 16 runs (DII
 holding % bottom-3 saved window 2005-08-31 FIRSTLEASE -> PATELENG; CAGR 40.84 -> 41.21).
+**§179q LIVE VERIFIED (2026-10-12 20:02 IST).** Push 27331941c -> dispatched run 38261618465 (success; also added 12-Oct prices: end 2026-10-12,
+rev 7d05693c5b). Live release vs the dry run bar by bar to 2026-10-09: 5,248 + the 26 fixed symbols identical, 5 new listings (BELDING, RKFAL, NATCO-RE,
+AGOL, TRIVENIPT). Browser sf_deep: CAMLINFINE first 2013-01-21, 2015-01-19 c 77.7728; GVT&D first 2006-07-03, 2008-06-27 c 192.3272; WESTLIFE first
+2017-08-21; console clean. Page v10 (cells_page_r15.json): 56 cells vs their 12-Oct file.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
