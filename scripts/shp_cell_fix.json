@@ -52244,6 +52244,25 @@
     "src": "bsexbrl:500850_1912023164057_SHP.xml",
     "why": "\u00a7164r batch 30 part 66 (2026-10-12, own line): this 2022-form filing also files 322,741 sh on a Non-Institutions row it labels 'Foreign Portfolio Investor (Category - III)' - an FPI / foreign-bank label is FII wherever the row sits (our rule; Quantmac counts FPI Cat III too). Institutions (Foreign) 269,934,655 + that row on base 1,420,400,342 = 19.026847. fii 19.004125 -> 19.026847; dii untouched.",
     "exact": true
+   },
+   "2021-12-31#rev": {
+    "was": [
+     41.05,
+     15.193636,
+     25.154631,
+     18.081957,
+     6.598101
+    ],
+    "cell": [
+     41.05,
+     15.229644,
+     25.154631,
+     18.081957,
+     6.598101
+    ],
+    "src": "bsexbrl:500850_2112022154450_SHP.xml",
+    "why": "\u00a7164r batch 30 part 80 (2026-10-12, Quantmac v8 follow-up - the stock page serves this quarter's RE-FILING; read on its own lines): FPI 200,767,147 + the unnamed institutions 'Any Other' rest 5,850 (D1) + the Non-Institutions row the filing labels 'Foreign Portfolio Investor (Category - III)' 469,948 on 1,321,389,702 = 15.229644 (the re-filing's raw 15.193636 left out the Non-Institutions FPI row; same reading as the original, part 66). DII holds none of it. fii 15.193636 -> 15.229644.",
+    "exact": true
    }
   },
   "INDIANHUME": {
@@ -91837,14 +91856,33 @@
     ],
     "cell": [
      25.29,
-     45.5564,
+     45.556477,
      11.1358,
      5.6688,
      5.2392
     ],
     "src": "bsexbrl:511218_252023202744_SHP.xml bse-revision",
+    "why": "\u00a7164r batch 30 part 80 (2026-10-12, Quantmac v8 follow-up - the stock page serves this quarter's RE-FILING; read on its own lines): Institutions (Foreign) 170,575,355 + the Non-Institutions 'Foreign Portfolio Investor (Category - III)' row 519 on 374,427,276 = 45.556477 (stored 45.5564). fii 45.5564 -> 45.556477. | kept: \u00a7164r batch 30 part 51 (2026-10-08, 'follow the filings own line'): the re-filing's OWN line decides - this revised document files the holders on its Foreign Direct Investment line (Institutions (Foreign)), so its row stands as filed; the ORIGINAL filing of the same quarter lists them on a public line and reads lower (part 51). Adjudicated for guard_shp_revisions: 511218_252023202744_SHP.xml (2023-05-02, bse-revision): Institutions (Foreign) 45.5563 incl. FDI line 2.6489 (TPG India Investments II); the original reads 42.9074 with the same holder on a public line",
     "exact": true,
-    "why": "\u00a7164r batch 30 part 51 (2026-10-08, 'follow the filings own line'): the re-filing's OWN line decides - this revised document files the holders on its Foreign Direct Investment line (Institutions (Foreign)), so its row stands as filed; the ORIGINAL filing of the same quarter lists them on a public line and reads lower (part 51). Adjudicated for guard_shp_revisions: 511218_252023202744_SHP.xml (2023-05-02, bse-revision): Institutions (Foreign) 45.5563 incl. FDI line 2.6489 (TPG India Investments II); the original reads 42.9074 with the same holder on a public line"
+    "superseded": {
+     "was": [
+      25.29,
+      45.5564,
+      11.1358,
+      5.6688,
+      5.2392
+     ],
+     "cell": [
+      25.29,
+      45.5564,
+      11.1358,
+      5.6688,
+      5.2392
+     ],
+     "src": "bsexbrl:511218_252023202744_SHP.xml bse-revision",
+     "exact": true,
+     "why": "\u00a7164r batch 30 part 51 (2026-10-08, 'follow the filings own line'): the re-filing's OWN line decides - this revised document files the holders on its Foreign Direct Investment line (Institutions (Foreign)), so its row stands as filed; the ORIGINAL filing of the same quarter lists them on a public line and reads lower (part 51). Adjudicated for guard_shp_revisions: 511218_252023202744_SHP.xml (2023-05-02, bse-revision): Institutions (Foreign) 45.5563 incl. FDI line 2.6489 (TPG India Investments II); the original reads 42.9074 with the same holder on a public line"
+    }
    },
    "2022-09-30": {
     "cell": [
@@ -249940,13 +249978,32 @@
     ],
     "cell": [
      65.33,
-     1.5305,
+     4.526895,
      14.8402,
      3.0617,
      0.0
     ],
     "src": "bsexbrl:538962_13122016175837_SHP.xml",
-    "why": "\u00a7164r batch 30 (2026-10-05, re-filing ledger \u00a7164s part 11): MINDACORP Mar-2016 re-filing of 2016-12-14 (538962_13122016175837_SHP.xml), share counts on 209,311,640: fii = FPI 174,844 + Government Pension Fund Global 2,983,800 (institutions Any-Other, FPI-listed everywhere) + the block's unnamed rest 44,855 (D1) = 3,203,499 = 1.5305; KOTAK INDIA PRIVATE EQUITY FUND 6,271,820 public (batch 10); dii = MF 6,408,548 + VCF 24,648,100 + FI/Banks 5,388 = 14.8402; mf 3.0617. The re-filing row served its raw parse (fii 0.0835, dii 19.2844 with the whole Any-Other block in dii)."
+    "why": "\u00a7164r batch 30 part 80 (2026-10-12, Quantmac v8 follow-up - the stock page serves this quarter's RE-FILING; read on its own lines): FPI 174,844 + the unnamed institutions 'Any Other' rest 44,855 + GOVERNMENT PENSION FUND GLOBAL 2,983,800 and KOTAK INDIA PRIVATE EQUITY FUND 6,271,820 named on that unlabelled line (user 11-Oct) on 209,311,640 = 4.526895 (= the original's reading). DII (14.8402 = the filing's domestic rows 14.84009) holds none of them. fii 1.5305 -> 4.526895.",
+    "exact": true,
+    "superseded": {
+     "was": [
+      65.33,
+      0.0835,
+      19.2844,
+      3.0619,
+      0.0
+     ],
+     "cell": [
+      65.33,
+      1.5305,
+      14.8402,
+      3.0617,
+      0.0
+     ],
+     "src": "bsexbrl:538962_13122016175837_SHP.xml",
+     "why": "\u00a7164r batch 30 (2026-10-05, re-filing ledger \u00a7164s part 11): MINDACORP Mar-2016 re-filing of 2016-12-14 (538962_13122016175837_SHP.xml), share counts on 209,311,640: fii = FPI 174,844 + Government Pension Fund Global 2,983,800 (institutions Any-Other, FPI-listed everywhere) + the block's unnamed rest 44,855 (D1) = 3,203,499 = 1.5305; KOTAK INDIA PRIVATE EQUITY FUND 6,271,820 public (batch 10); dii = MF 6,408,548 + VCF 24,648,100 + FI/Banks 5,388 = 14.8402; mf 3.0617. The re-filing row served its raw parse (fii 0.0835, dii 19.2844 with the whole Any-Other block in dii)."
+    }
    }
   },
   "GCSL": {
