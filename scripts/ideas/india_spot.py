@@ -18,7 +18,15 @@ Sources (each isolated: a failure is reported and the previous rows for that sou
               page's summary line: value, unit, date, day / month / year change. Their series are futures and CFD
               proxies (their 'steel' is Shanghai rebar in CNY), so they show direction, not the Mumbai print.
 
-Usage: python3 scripts/ideas/india_spot.py [--te-only | --no-te]
+  guidechem   Guidechem GuideTrends: ~80 Chinese domestic chemical quotes in CNY/t (H-acid, vinyl sulphone, phenol,
+              acetone, caustic soda, sulphuric acid, aniline, R134a, TiO2, carbon black...). An aggregator of supplier and
+              market quotes: direction data, each row dated by the page's own 'Updated' and named by the row it is from.
+  cai         Cotton Association of India daily spot rates by growth and grade (Rs per candy of 356 kg).
+  spices      Spices Board: small-cardamom e-auction averages, large cardamom, Kochi pepper (Rs/kg), each dated.
+  moil        MOIL's monthly manganese-ore price letters filed with BSE: an index chained from the stated % revisions
+              (ferro grades Mn>=44% and <44%) and the EMD basic price (Rs/t); history in docs/ideas/moil_history.json.
+
+Usage: python3 scripts/ideas/india_spot.py [--te-only | --no-te | --only guidechem,cai]
 Writes docs/ideas/india_spot.json and appends docs/ideas/india_spot_history.csv (one row per series per day, so
 weekly and monthly changes accumulate for the sources that publish no history).
 """
@@ -110,7 +118,12 @@ TE_SLUGS = ['hrc-steel', 'steel', 'scrap-steel', 'iron-ore', 'coking-coal', 'coa
             'polyvinyl', 'naphtha', 'ethanol', 'bitumen', 'kraft-pulp', 'rubber', 'synthetic-rubber',
             'brent-crude-oil', 'crude-oil', 'natural-gas', 'eu-natural-gas', 'liquefied-natural-gas-japan-korea', 'propane',
             'cotton', 'sugar', 'coffee', 'cocoa', 'tea', 'wheat', 'rice', 'corn', 'soybeans', 'palm-oil', 'rapeseed-oil',
-            'sunflower-oil', 'milk', 'wool', 'containerized-freight-index', 'solar', 'carbon']
+            'sunflower-oil', 'milk', 'wool', 'containerized-freight-index', 'solar', 'carbon',
+            # added 2026-10-12 (each measured parsing on that day): minor metals, secondary aluminium, CNY iron ore,
+            # refined products and Urals (India's main crude grade), and the farm series TE carries that we lacked
+            'cobalt-hydroxide', 'gallium', 'germanium', 'indium', 'tellurium', 'scrap-aluminum', 'aluminum-alloy',
+            'iron-ore-cny', 'gasoline', 'heating-oil', 'urals-oil', 'uk-natural-gas', 'canola', 'barley', 'oat',
+            'orange-juice', 'cheese', 'butter']
 
 
 def get(url, timeout=45, ctx=None, binary=False, retries=2):
@@ -572,6 +585,351 @@ def src_minsteel():
                 url='https://steel.gov.in/monthly-summary', date=rows[0]['date'], rows=rows)
 
 
+# ---------------------------------------------------------------- Guidechem: Chinese domestic chemical quotes
+# Guidechem's "GuideTrends" pages (guidechem.com/price/en/<CAS>.html, server-rendered, no login, robots.txt allows
+# them) print a headline price per chemical with its own "Updated" date, the day-on-day change, a 3-month average
+# and the market row the headline comes from (data-brand = region/producer, data-spec = grade). It is an
+# AGGREGATOR of supplier and market quotes inside China, in CNY: direction data, labelled as such - never the
+# Indian price and never a benchmark assessment. The headline's row identity is part of the series name, so if
+# Guidechem switches the headline to another region or grade that is a new series, not a fake jump.
+# Measured 2026-10-12: the dye intermediates (H-acid, vinyl sulphone, beta naphthol, J acid) are 'Locally Made'
+# supplier quotes. Guidechem's H-acid (41,000 CNY/t, flat 38-41k since August) does NOT show the Aug-Sep 2026
+# spike the industry assessors reported in the news (SCI99 95 CNY/kg on 28-Aug; Baiinfo ~150,000 CNY/t on 1-Sep):
+# SCI99 (price page shows '请登录' in every cell) and Baiinfo (slider captcha) are login-walled, 100ppi/SunSirs
+# answer a JavaScript bot check and echemi an Aliyun WAF - none of them is read here. So the H-acid row carries
+# a caveat that the page shows; treat it as one supplier-quote series that disagrees with the assessors.
+GC_URL = 'https://www.guidechem.com/price/en/%s.html'
+GC_ITEMS = [   # (CAS, our name, caveat or '') - every CAS here was fetched and parsed on 2026-10-12
+    # dye intermediates
+    ('90-20-0', 'H-acid', 'Guidechem supplier quote; it shows no rise while SCI99 (95 CNY/kg, 28-Aug-2026) and Baiinfo '
+                          '(~150,000 CNY/t, 1-Sep-2026) reported a spike in the news - unconfirmed, read for direction only'),
+    ('2494-89-5', 'Vinyl sulphone (para base ester)', ''), ('135-19-3', 'Beta naphthol', ''), ('87-02-5', 'J acid', ''),
+    ('130-13-2', 'Sodium naphthionate', ''), ('91-20-3', 'Naphthalene', ''), ('108-45-2', 'm-Phenylenediamine', ''),
+    ('123-30-8', 'Para-aminophenol', ''),
+    # benzene chain: nitro/chloro aromatics, aniline
+    ('71-43-2', 'Benzene', ''), ('108-88-3', 'Toluene', ''), ('62-53-3', 'Aniline', ''), ('98-95-3', 'Nitrobenzene', ''),
+    ('108-90-7', 'Chlorobenzene', ''), ('100-00-5', 'Para-nitrochlorobenzene', ''), ('88-73-3', 'Ortho-nitrochlorobenzene', ''),
+    ('106-46-7', 'Para-dichlorobenzene', ''), ('95-50-1', 'Ortho-dichlorobenzene', ''), ('106-47-8', 'Para-chloroaniline', ''),
+    ('88-74-4', 'Ortho-nitroaniline', ''), ('95-80-7', '2,4-Diaminotoluene', ''),
+    # phenol, acetone, epoxy, PU
+    ('108-95-2', 'Phenol', ''), ('67-64-1', 'Acetone', ''), ('80-05-7', 'Bisphenol A', ''), ('106-89-8', 'Epichlorohydrin', ''),
+    ('101-68-8', 'MDI', ''), ('78-93-3', 'MEK', ''), ('67-63-0', 'Isopropyl alcohol', ''),
+    # chlor-alkali and acids
+    ('1310-73-2', 'Caustic soda', ''), ('7647-01-0', 'Hydrochloric acid', ''), ('7681-52-9', 'Sodium hypochlorite', ''),
+    ('75-09-2', 'Methylene chloride', ''), ('67-66-3', 'Chloroform', ''), ('7664-93-9', 'Sulphuric acid', ''),
+    ('7704-34-9', 'Sulphur', ''), ('7722-84-1', 'Hydrogen peroxide', ''), ('497-19-8', 'Soda ash', ''),
+    ('7757-82-6', 'Sodium sulphate', ''),
+    # fluorochemicals
+    ('7789-75-5', 'Fluorspar', ''), ('7664-39-3', 'Hydrofluoric acid', ''), ('811-97-2', 'R134a', ''), ('75-45-6', 'R22', ''),
+    ('9002-84-0', 'PTFE', ''),
+    # fertiliser and phosphorus chain
+    ('57-13-6', 'Urea', ''), ('6484-52-2', 'Ammonium nitrate', ''), ('7783-20-2', 'Ammonium sulphate', ''),
+    ('7722-76-1', 'Monoammonium phosphate', ''), ('7783-28-0', 'Diammonium phosphate', ''), ('7447-40-7', 'Potassium chloride', ''),
+    ('7778-80-5', 'Potassium sulphate', ''), ('7757-79-1', 'Potassium nitrate', ''), ('12185-10-3', 'Yellow phosphorus', ''),
+    ('7758-29-4', 'Sodium tripolyphosphate', ''),
+    # solvents, oxo, plasticisers, intermediates, polymers
+    ('67-56-1', 'Methanol', ''), ('64-19-7', 'Acetic acid', ''), ('141-78-6', 'Ethyl acetate', ''), ('71-36-3', 'n-Butanol', ''),
+    ('104-76-7', '2-Ethylhexanol', ''), ('117-81-7', 'DOP', ''), ('85-44-9', 'Phthalic anhydride', ''),
+    ('108-31-6', 'Maleic anhydride', ''), ('124-04-9', 'Adipic acid', ''), ('68-12-2', 'DMF', ''), ('110-86-1', 'Pyridine', ''),
+    ('107-13-1', 'Acrylonitrile', ''), ('105-60-2', 'Caprolactam', ''), ('100-42-5', 'Styrene', ''), ('107-21-1', 'MEG', ''),
+    ('100-21-0', 'PTA', ''), ('25038-59-9', 'PET (filament grade)', ''), ('9002-86-2', 'PVC', ''), ('108-78-1', 'Melamine', ''),
+    # pigments, rubber chemicals, agro, pharma, battery and silicon
+    ('13463-67-7', 'Titanium dioxide', ''), ('1333-86-4', 'Carbon black', ''), ('1071-83-6', 'Glyphosate', ''),
+    ('138261-41-3', 'Imidacloprid', ''), ('1912-24-9', 'Atrazine', ''), ('551-16-6', '6-APA', ''),
+    ('554-13-2', 'Lithium carbonate', ''), ('1310-66-3', 'Lithium hydroxide', ''), ('7440-48-4', 'Cobalt', ''),
+    ('7440-21-3', 'Silicon metal', ''),
+]
+
+
+def gc_one(cas):
+    """One Guidechem price page -> the headline quote with its own date and row identity."""
+    s = get(GC_URL % cas, timeout=40, retries=2)
+    hd = re.search(r'class="i_rd_x1[^"]*">\s*<span[^>]*><em>([\d.,]+)</em>([^<]+)</span>\s*<i[^>]*>Updated:\s*(\d{4}-\d{2}-\d{2})</i>', s)
+    if not hd:
+        raise RuntimeError('no headline price on the page')
+    h1 = re.search(r'<h1[^>]*>(.*?)</h1>', s, re.S)
+    dod = re.search(r'Price change \(DoD\):\s*([-+]?[\d.,]+)', s)
+    avg = re.search(r'Average price \(3M\):\s*([\d.,]+)', s)
+    lvl = re.search(r'Price Level\(1Y\):\s*<i[^>]*>([^<]*)</i>', s)
+    row = re.search(r'class="gzs_drf2[^"]*"[^>]*data-brand="([^"]*)"\s+data-spec="([^"]*)"', s)
+    unit = re.sub(r'\s+', '', hd.group(2)).replace('TON', 't').replace('KG', 'kg')
+    price = num(hd.group(1))
+    if not price or unit not in ('CNY/t', 'CNY/kg'):
+        raise RuntimeError(f'unexpected headline {hd.group(1)} {hd.group(2)}')
+    if unit == 'CNY/kg':                    # one unit across the source; a CNY/kg headline is the same price x1000
+        price, unit = round(price * 1000, 2), 'CNY/t'
+    d1 = num(dod.group(1)) if dod else None
+    prev = price - d1 * (1000 if hd.group(2).strip().endswith('KG') else 1) if d1 else None
+    brand = html.unescape(row.group(1)).strip() if row else ''
+    spec = re.sub(r'\s+', ' ', html.unescape(row.group(2))).strip()[:90] if row else ''
+    return dict(cas=cas, source_name=html.unescape(h1.group(1)).strip() if h1 else None, price=price, unit=unit,
+                date=hd.group(3), market=brand or None, grade=spec or None,
+                chg_1d=round(100 * (price / prev - 1), 2) if prev else (0.0 if d1 == 0 else None),
+                avg_3m=num(avg.group(1)) if avg else None, level_1y=lvl.group(1).strip() if lvl else None,
+                url=GC_URL % cas)
+
+
+def src_guidechem(items=None):
+    rows, errs = [], []
+    items = items or GC_ITEMS
+    with cf.ThreadPoolExecutor(4) as ex:
+        for (cas, name, caveat), fut in [(it, ex.submit(gc_one, it[0])) for it in items]:
+            try:
+                r = fut.result()
+                r['name'] = name
+                if caveat:
+                    r['caveat'] = caveat
+                rows.append(r)
+            except Exception as e:
+                errs.append(f'{name} ({cas}): {str(e)[:70]}')
+    if len(rows) < max(3, len(items) // 2):
+        raise RuntimeError(f'guidechem parsed only {len(rows)} of {len(items)} ({errs[:3]})')
+    return dict(source='Guidechem GuideTrends (guidechem.com) - Chinese domestic quotes, CNY, aggregator',
+                url='https://www.guidechem.com/price/', rows=rows, errors=errs)
+
+
+# ---------------------------------------------------------------- CAI: Indian cotton spot rates
+# The Cotton Association of India fixes and registers daily spot rates by growth area and grade (Rs per candy of
+# 356 kg, ex-gin, excluding tax). The page loads them from a JSON endpoint that takes the date as a form field;
+# no rates are published on Sundays and holidays, so the latest published day within a week is read. Each row
+# carries both the current and the previous cotton season; the season label is part of the series name.
+CAI_URL = 'https://caionline.in/details/cai/spot-rates/by/date'
+
+
+def _post_form(url, fields, timeout=40):
+    bnd = '----stocksdash' + str(int(time.time() * 1000))
+    body = ''.join(f'--{bnd}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n' for k, v in fields.items()) + f'--{bnd}--\r\n'
+    req = urllib.request.Request(url, data=body.encode(), headers=dict(HDR, **{'Content-Type': f'multipart/form-data; boundary={bnd}',
+                                                                              'X-Requested-With': 'XMLHttpRequest'}))
+    with urllib.request.urlopen(req, timeout=timeout) as f:
+        return f.read().decode('utf-8', 'ignore')
+
+
+def src_cai():
+    day, j = ist.today(), None
+    for _ in range(8):
+        j = json.loads(_post_form(CAI_URL, {'date': day.strftime('%d-%m-%Y')}))
+        if j.get('list'):
+            break
+        day -= datetime.timedelta(days=1)
+    if not j or not j.get('list'):
+        raise RuntimeError('CAI published no spot rates in the last 8 days')
+    pub = (j.get('master') or {}).get('published_date') or day.isoformat()
+    rows = []
+    for r in j['list']:
+        base = f"{r.get('grade_standard', '')} {r.get('staple', '')}".strip()
+        for fld, season in (('per_candy', j.get('current_season')), ('p_per_candy', j.get('previous_season'))):
+            v = num(r.get(fld))
+            if v:
+                rows.append(dict(market=r.get('growth'), name=f'Cotton {base}', grade=f'season {season}', price=v,
+                                 unit='Rs/candy (356 kg)', date=pub, micronaire=r.get('micronaire'),
+                                 strength_gpt=r.get('strength_gpt')))
+    if len(rows) < 3:
+        raise RuntimeError(f'CAI list had {len(j["list"])} rows but only {len(rows)} priced')
+    return dict(source='Cotton Association of India (caionline.in) daily spot rates', url='https://caionline.in/details/cai/spot-rates',
+                date=pub, rows=rows, title_date=j.get('title_date'))
+
+
+# ---------------------------------------------------------------- Spices Board: cardamom auctions, pepper
+# The Spices Board page prints (a) the latest small-cardamom e-auctions with the auctioneer, quantity sold and
+# max/average Rs/kg, (b) large-cardamom market prices, and (c) a 'Current Market Price of Key Spices' table
+# (pepper at Kochi, garbled and ungarbled, Rs/kg). Each item states its own date.
+SPICES_URL = 'https://www.indianspices.com/marketing/price/domestic/current-market-price.html'
+
+
+def src_spices():
+    h = get(SPICES_URL, ctx=LAX, timeout=60)
+    p = plain(h)
+    rows, seen = [], set()
+    for d, auc, sold, mx, avg in re.findall(r'Spice:\s*Small Cardamom\s*,\s*Date of Auction:\s*(\d{2}-\w{3}-\d{4}),\s*Auctioneer:\s*([^,]+(?:,[^,]*?Ltd)?)\s*,'
+                                            r'\s*No\.of lots:\s*[\d.]+,\s*Qty Arrived \(Kgs\):\s*[\d.]+,\s*Qty Sold \(Kgs\):\s*([\d.]+),'
+                                            r'\s*Max Price \(Rs\./Kg\):\s*([\d.]+),\s*Avg\. Price \(Rs\./Kg\):\s*([\d.]+)', p):
+        k = ('sc', d, auc.strip())
+        if k in seen:
+            continue
+        seen.add(k)
+        rows.append(dict(market=auc.strip().title(), name='Small cardamom (e-auction avg)', price=num(avg), max_price=num(mx),
+                         qty_sold_kg=num(sold), unit='Rs/kg', date=d))
+    for d, mkt, typ, pr in re.findall(r'Spice:\s*Large Cardamom\s*,\s*Date:\s*(\d{2}-\w{3}-\d{4}),\s*Market:\s*([^,]+),\s*Type:\s*([^,]+),\s*Price \(Rs\./Kg\):\s*([\d.]+)', p):
+        k = ('lc', d, mkt.strip(), typ.strip())
+        if k in seen:
+            continue
+        seen.add(k)
+        rows.append(dict(market=mkt.strip(), name='Large cardamom', grade=typ.strip(), price=num(pr), unit='Rs/kg', date=d))
+    i = h.find('Current Market Price of Key Spices')
+    if i > 0:
+        t = h[i:]; t = t[:t.find('</table>')]
+        for tr in re.findall(r'<tr[^>]*>(.*?)</tr>', t, re.S):
+            c = [re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', '', x))).strip() for x in re.findall(r'<td[^>]*>(.*?)</td>', tr, re.S)]
+            if len(c) >= 9 and re.match(r'\d{2}-\w{3}-\d{4}$', c[0]) and num(c[8]):
+                rows.append(dict(market=c[2].title(), name=c[1], grade=c[4], price=num(c[8]), unit='Rs/kg', date=c[0], via=c[5]))
+    if len(rows) < 2:
+        raise RuntimeError(f'spices board parsed only {len(rows)} rows')
+    return dict(source='Spices Board India (indianspices.com) auction and market prices', url=SPICES_URL, rows=rows)
+
+
+# ---------------------------------------------------------------- MOIL manganese ore (from its own BSE filings)
+# MOIL fixes Indian manganese-ore prices monthly and files each revision with BSE ("Information relating to fixation
+# of price of different grades of Manganese Ore ... w.e.f. 01.10.2026"). Unlike NMDC the letters state the CHANGE
+# ("increased by 5% on the prices prevailing since 01.09.2026"), not the rupee price, except for EMD (electrolytic
+# manganese dioxide, Rs per tonne). So the ore series here is an INDEX chained from MOIL's own stated monthly %
+# changes: 100 = the prices prevailing before the first letter of the unbroken monthly run, and the chain stops at
+# any month whose letter is missing or unreadable rather than bridging it. Read back to 2023 into
+# docs/ideas/moil_history.json; only letters not yet read are fetched.
+MOIL_SCRIP = '533286'
+MOIL_HIST = os.path.join(DOCS, 'moil_history.json')
+MOIL_ANN = ('https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w?pageno=%d&strCat=-1&strPrevDate=%s'
+            '&strScrip=' + MOIL_SCRIP + '&strSearch=P&strToDate=%s&strType=C&subcategory=-1')
+# 'Fixation Of Different Grades Of Manganese Ore' (Oct-2025) drops the word 'price', so match on 'fixation'
+MOIL_PAT = re.compile(r'(?:price|fixation)\s+of\s+(?:price\s+of\s+)?(?:different\s+grades\s+of\s+)?manganese\s+ore|price\s+fixation\s+of\s+manganese', re.I)
+MOIL_PARSER = 3   # 3 = month from the items' 'midnight of a/b' dates; subject and 'effective from' both carried typos
+
+
+def moil_parse(text, subject, filed):
+    t = re.sub(r'\s+', ' ', text or '')
+    def move(rx):
+        m = re.search(rx + r'.{0,160}?have been (increased|decreased|continued)(?: by ([\d.]+)\s*%)?', t, re.I)
+        if not m:
+            return None
+        if m.group(1).lower() == 'continued':
+            return 0.0
+        v = num(m.group(2))
+        return None if v is None else (v if m.group(1).lower() == 'increased' else -v)
+    hi = move(r'Ferro grades of manganese ore with Manganese content of Mn-?\s*44% and above')
+    lo = move(r'other Ferro grades of manganese ore with Manganese content below Mn-?\s*44%')
+    # 'basic price Rs.1,80,000/- PMT of EMD' / 'basic price of EMD of Rs.1,80,000/- PMT' / 'basic price of Rs.205000/- PMT of EMO'
+    emd = re.search(r'basic price (?:of (?:EMD of )?)?Rs\.?\s*([\d,]{5,})\s*/-\s*PMT', t, re.I)
+    # The month a letter prices: the body's 'effective from' date when it states one (a subject has carried the
+    # previous month by mistake), else any w.e.f. date; among candidates the first-of-month nearest the filing.
+    f0 = datetime.date.fromisoformat(filed)
+    def cands(rx, txt):
+        out = []
+        for d, m, y in re.findall(rx, txt, re.I):
+            try:
+                c = datetime.date(int(y), int(m), int(d))
+            except ValueError:
+                continue
+            if c.day == 1 and abs((c - f0).days) <= 45:
+                out.append(c)
+        return out
+    # Each item repeats 'w.e.f. midnight of 31.07.2025/01.08.2025', so the most frequent second date is the vote;
+    # the subject and the 'effective from' line have each carried the previous month by mistake (1-May-2025 subject,
+    # 1-Aug-2025 body), so they are only fallbacks.
+    mid = cands(r'midnight\s+of\s*\d{2}\.\d{2}\.\d{4}\s*/\s*(\d{2})\.(\d{2})\.(\d{4})', t)
+    if mid:
+        wef = max(set(mid), key=mid.count).isoformat()
+    else:
+        pool = cands(r'effective\s+from\s*(\d{2})\.(\d{2})\.(\d{4})', t) or cands(r'w\.e\.f\.?\s*(\d{2})\.(\d{2})\.(\d{4})', subject + ' ' + t)
+        wef = min(pool, key=lambda c: abs((c - f0).days)).isoformat() if pool else None
+    return dict(wef=wef, ferro_44_up=hi, ferro_below_44=lo, emd=num(emd.group(1)) if emd else None,
+                revised=bool(re.search(r'\brevised\b', subject + ' ' + t[:600], re.I)))
+
+
+def src_moil(days=200, since=None):
+    import bse
+    hist = {}
+    if os.path.exists(MOIL_HIST):
+        try:
+            hist = {r['key']: r for r in (json.load(open(MOIL_HIST)).get('letters') or [])}
+        except Exception:
+            hist = {}
+    d_to = ist.today()
+    d = since or (d_to - datetime.timedelta(days=days))
+    found, win_err, wins = {}, 0, 0
+    while d < d_to:
+        nxt = min(d + datetime.timedelta(days=90), d_to)
+        wins += 1
+        try:
+            for page in (1, 2):
+                rows = json.loads(bse._get(MOIL_ANN % (page, d.strftime('%Y%m%d'), nxt.strftime('%Y%m%d')), sleep=0.4)).get('Table') or []
+                for r in rows:
+                    s = re.sub(r'\s+', ' ', (r.get('NEWSSUB') or '') + ' ' + (r.get('HEADLINE') or ''))
+                    att = (r.get('ATTACHMENTNAME') or '').strip()
+                    if MOIL_PAT.search(s) and att:
+                        found[att] = dict(key=att, date=r['NEWS_DT'][:10], att=att, subject=s.strip()[:300])
+                if len(rows) < 50:
+                    break
+        except Exception as e:
+            win_err += 1
+            print(f'moil: window {d}..{nxt} failed ({str(e)[:70]})')
+        d = nxt + datetime.timedelta(days=1)
+    if wins and win_err == wins and not hist:
+        raise RuntimeError(f'every BSE window failed ({win_err})')
+    import fitz
+    for att, f in sorted(found.items(), key=lambda kv: kv[1]['date']):
+        if att in hist and hist[att].get('parser') == MOIL_PARSER:
+            continue
+        try:
+            b = bse.get_attachment('https://www.bseindia.com/xml-data/corpfiling/AttachLive/' + att, timeout=90)
+            doc = fitz.open(stream=b, filetype='pdf')
+            txt = '\n'.join(doc[i].get_text() for i in range(min(3, len(doc))))
+            rec = dict(f, **moil_parse(txt, f['subject'], f['date']), parser=MOIL_PARSER)
+        except Exception as e:
+            rec = dict(f, wef=None, ferro_44_up=None, ferro_below_44=None, emd=None, error=str(e)[:110], parser=MOIL_PARSER)
+        hist[att] = rec
+    letters = sorted(hist.values(), key=lambda r: (r.get('wef') or '', r['date']))
+    # one letter per month: a later filing for the same w.e.f. (a 'Revised' letter, or a re-filing) supersedes
+    by_wef = {}
+    for r in letters:
+        if r.get('wef'):
+            by_wef[r['wef']] = r
+    months = sorted(by_wef)
+    json.dump(dict(built=ist.stamp(), source='MOIL Limited price letters filed with BSE (scrip %s)' % MOIL_SCRIP,
+                   note='Letters state % changes on the prices prevailing the month before; EMD is stated in Rs/PMT.',
+                   letters=letters), open(MOIL_HIST, 'w'), indent=1, ensure_ascii=False)
+    if not months:
+        raise RuntimeError('no MOIL price letter could be read')
+
+    def chain(field):
+        """The latest unbroken monthly run of stated % moves, as an index; [] when the latest month is unreadable."""
+        run = []
+        for w in reversed(months):
+            v = by_wef[w].get(field)
+            if v is None:
+                break
+            if run:
+                a, b = datetime.date.fromisoformat(w), datetime.date.fromisoformat(run[-1][0])
+                if (b.year * 12 + b.month) - (a.year * 12 + a.month) != 1:
+                    break
+            run.append((w, v))
+        run.reverse()
+        if not run:
+            return [], None
+        pts, idx = [], 100.0
+        first = datetime.date.fromisoformat(run[0][0])
+        base = (first.replace(day=1) - datetime.timedelta(days=1)).replace(day=1).isoformat()
+        pts.append([base, 100.0])
+        for w, v in run:
+            idx = idx * (1 + v / 100)
+            pts.append([w, round(idx, 2)])
+        return pts, base
+    rows = []
+    for field, name in (('ferro_44_up', 'Manganese ore, ferro grades Mn 44% and above'),
+                        ('ferro_below_44', 'Manganese ore, ferro grades below Mn 44%')):
+        pts, base = chain(field)
+        if len(pts) < 2:
+            continue
+        last = by_wef[pts[-1][0]]
+        rows.append(dict(market='MOIL (administered)', name=name + ' (index)', price=pts[-1][1], step=True,
+                         unit=f'index, 100 = prices prevailing in {base[:7]}', wef=pts[-1][0], filed=last['date'],
+                         chg_rev=last.get(field), history=pts, history_via='MOIL price letter'))
+    emd = [[w, by_wef[w]['emd']] for w in months if by_wef[w].get('emd')]
+    if emd:
+        last = by_wef[emd[-1][0]]
+        prev = emd[-2][1] if len(emd) > 1 else None
+        rows.append(dict(market='MOIL (administered)', name='EMD (electrolytic manganese dioxide), basic price', price=emd[-1][1],
+                         unit='Rs/tonne', step=True, wef=emd[-1][0], filed=last['date'],
+                         chg_rev=round(100 * (emd[-1][1] / prev - 1), 2) if prev else None, history=emd,
+                         history_via='MOIL price letter'))
+    if not rows:
+        raise RuntimeError(f'{len(months)} MOIL letters read but none yields a series')
+    degraded = (f'BSE unreachable, all {win_err} window(s) failed - committed letters re-published') if wins and win_err == wins else None
+    return dict(source='MOIL Limited price letters filed with BSE (scrip %s)' % MOIL_SCRIP,
+                url='https://www.bseindia.com/stock-share-price/moil-ltd/moil/%s/corp-announcements/' % MOIL_SCRIP,
+                date='w.e.f. ' + months[-1], rows=rows, degraded=degraded, letters=len(letters), months=len(months),
+                unread=sum(1 for r in letters if not r.get('wef')))
+
+
 # ---------------------------------------------------------------- history for click-to-chart
 def build_history(sources):
     """One dated series per Indian print (and per Trading Economics proxy), written to india_history.json.gz.
@@ -622,6 +980,9 @@ def main():
     ap.add_argument('--te-only', action='store_true')
     ap.add_argument('--nmdc-days', type=int, default=200, help='how far back to look for unread NMDC price filings')
     ap.add_argument('--nmdc-since', default='', help='YYYY-MM-DD: sweep NMDC filings from here (one-off backfill)')
+    ap.add_argument('--moil-days', type=int, default=200, help='how far back to look for unread MOIL price letters')
+    ap.add_argument('--moil-since', default='', help='YYYY-MM-DD: sweep MOIL letters from here (one-off backfill)')
+    ap.add_argument('--only', default='', help='comma list of sources to fetch this run (the rest are kept from the previous file)')
     a = ap.parse_args()
     old = {}
     if os.path.exists(OUT):
@@ -630,12 +991,17 @@ def main():
         except Exception:
             old = {}
     since = datetime.date.fromisoformat(a.nmdc_since) if a.nmdc_since else None
+    msince = datetime.date.fromisoformat(a.moil_since) if a.moil_since else None
     plan = [] if a.te_only else [('metalbook', src_metalbook), ('ibja', src_ibja), ('rubber', src_rubber),
                                  ('sugar', src_sugar), ('fuel', src_fuel),
                                  ('nmdc', lambda: src_nmdc(days=a.nmdc_days, since=since)),
-                                 ('minsteel', src_minsteel)]
+                                 ('minsteel', src_minsteel), ('guidechem', src_guidechem), ('cai', src_cai),
+                                 ('spices', src_spices), ('moil', lambda: src_moil(days=a.moil_days, since=msince))]
     if not a.no_te:
         plan.append(('te', lambda: src_te(TE_SLUGS)))
+    if a.only:
+        want = {x.strip() for x in a.only.split(',') if x.strip()}
+        plan = [(k, f) for k, f in plan if k in want]
     sources, status = dict(old), {}
     for key in old:                                   # rows carried over from the previous file, not refetched this run
         if key not in [k for k, _ in plan]:

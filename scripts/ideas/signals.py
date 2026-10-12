@@ -200,7 +200,8 @@ def main():
                                id='te|' + (r.get('key') or f"{r['name']} | {slug}")))
         if te:
             sig['sources']['te'] = te
-        # Indian domestic prints (MetalBook city prices, IBJA, Rubber Board, sugar spot, PPAC fuel)
+        # Indian domestic prints (MetalBook, IBJA, Rubber Board, sugar, PPAC, NMDC, MOIL, CAI, Spices Board) and the
+        # Chinese domestic chemical quotes from Guidechem (an aggregator: direction data, CNY)
         india = []
         for src, rx in g.get('india', []):
             for r in ind_src.get(src, []):
@@ -213,7 +214,7 @@ def main():
                 series = r.get('history') or ihist.get((src, key)) or []
                 row = dict(source=src, name=label, last=r['price'], unit=r.get('unit'), chg_1d=r.get('chg_1d'),
                            chg_prev=r.get('chg_prev'), date=r.get('date'), id=f'{src}|{key}')
-                for k in ('wef', 'basis', 'chg_rev', 'filed'):
+                for k in ('wef', 'basis', 'chg_rev', 'filed', 'caveat'):
                     if r.get(k) is not None:
                         row[k] = r[k]
                 st = hist_stats([tuple(x) for x in series], step=bool(r.get('step')))

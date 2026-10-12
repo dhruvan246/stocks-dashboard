@@ -483,7 +483,8 @@
         <thead><tr><th>Date</th><th class="num">Price</th><th class="num">vs previous</th><th>Read from</th></tr></thead>
         <tbody>${rowsT.map(t => `<tr><td>${esc(t.d)}</td><td class="num">${fmt(t.v, 2)}</td><td class="num">${pct(t.ch == null ? null : Math.round(t.ch * 10) / 10)}</td><td class="muted text-xs">${esc(viaLabel(t.via))}</td></tr>`).join('')}</tbody>
       </table></div>${rowsAll.length > SHOW ? `<p class="muted text-xs mt-1">The table lists the latest ${SHOW} of ${rowsAll.length} readings; the chart holds all of them.</p>` : ''}
-      <p class="muted text-xs mt-2">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}${row.history ? 'Every change here is measured on the readings listed. A window with no reading near its start shows a dash rather than borrowing the nearest older one.' : `Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.`}</p>
+      ${row.caveat ? `<p class="text-sm mt-2" style="color:var(--warn,#b45309)"><b>Caution:</b> ${esc(row.caveat)}</p>` : ''}
+      <p class="muted text-xs mt-2">${src === 'te' ? 'A futures or CFD proxy for the global benchmark, not the Indian price: read it for direction. ' : ''}${src === 'guidechem' ? 'A Chinese domestic quote collected by an aggregator (Guidechem) from suppliers and markets, in CNY: read it for direction, not as an assessed benchmark or the Indian price. The series is named by the market row the headline came from. ' : ''}${src === 'moil' && /index/i.test(row.name) ? 'MOIL states each month only the % change on the previous month, so this is an index chained from those stated changes; it starts after the last month whose letter is missing. ' : ''}${row.history ? 'Every change here is measured on the readings listed. A window with no reading near its start shows a dash rather than borrowing the nearest older one.' : `Figures marked "stated by source" are the source's own. The rest are measured on the readings listed, which this site has taken daily since ${esc((h && h.recorded_from) || '2026-09-22')}${archived ? ', plus older prints read from archived copies of the source page' : ''}; they fill in as the record grows.`}</p>
       <div class="mt-3">${gs.length ? gs.map(g => `<div class="mb-2"><b>${esc(g.name)}</b>${chipsFull(g)}</div>`).join('') : '<span class="muted text-sm">No listed names mapped to this price yet.</span>'}</div></div>`);
     const render = () => {
       const last = pts.length ? pts[pts.length - 1][0] : '';
@@ -553,7 +554,8 @@
       groups.filter(g => hit(g.name)).forEach(g => out.push({ k: 'GROUP', id: g.id, label: g.name, sub: 'beneficiary map' }));
       if (india && india.sources) {
         ((india.sources.te || {}).rows || []).filter(r => r.key && hit(r.name)).forEach(r => out.push({ k: 'GLOBAL', id: 'te|' + r.key, label: `${r.name} ${fmt(r.price, 2)} ${r.unit}`, sub: `Trading Economics · 1m ${r.chg_1m == null ? '—' : r.chg_1m + '%'}` }));
-        [['metalbook', 'MetalBook'], ['ibja', 'IBJA'], ['rubber', 'Rubber Board'], ['sugar', 'Chinimandi'], ['fuel', 'PPAC']].forEach(([src, lab]) =>
+        [['metalbook', 'MetalBook'], ['ibja', 'IBJA'], ['rubber', 'Rubber Board'], ['sugar', 'Chinimandi'], ['fuel', 'PPAC'],
+         ['guidechem', 'Guidechem (China, CNY)'], ['cai', 'Cotton Association of India'], ['spices', 'Spices Board'], ['moil', 'MOIL administered']].forEach(([src, lab]) =>
           (((india.sources[src] || {}).rows) || []).filter(r => r.key && hit(r.key)).slice(0, 12).forEach(r => out.push({ k: 'INDIA', id: src + '|' + r.key, label: `${r.key.replace(/ \| /g, ' ')} ${fmt(r.price, 2)} ${r.unit || ''}`, sub: lab })));
         (((india.sources.nmdc || {}).rows) || []).filter(r => hit('nmdc ' + r.name)).forEach(r => out.push({ k: 'NMDC', id: /lump/i.test(r.name) ? 'lump' : 'fines', label: `${r.name} ₹${fmt(r.price, 0)}/t`, sub: 'NMDC administered · w.e.f. ' + (r.wef || '') }));
       }
@@ -697,6 +699,18 @@
     block('Iron ore — NMDC administered price', S.nmdc, [['Grade', r => esc(r.name)], ['₹/tonne', r => fmt(r.price, 0), 1],
       ['w.e.f.', r => esc(r.wef || '')], ['vs prev revision', r => pct(r.chg_rev), 1], ['Highest since', r => sinceCell(r)]],
       (S.nmdc && S.nmdc.rows) || [], nmdcNote, r => `class="row" data-nmdc="${/lump/i.test(r.name) ? 'lump' : 'fines'}"`);
+    // MOIL: like NMDC, an administered price filed with BSE each month; its ore letters state % changes, so the ore rows are indices
+    block('Manganese ore — MOIL administered (monthly letters)', S.moil, [['Series', r => esc(r.name)], ['Value', r => fmt(r.price, r.price > 1000 ? 0 : 2), 1], ['Unit', r => `<span class="muted text-xs">${esc(r.unit)}</span>`],
+      ['w.e.f.', r => esc(r.wef || '')], ['Last revision', r => pct(r.chg_rev), 1]],
+      (S.moil && S.moil.rows) || [], 'MOIL files a price letter with BSE every month. For ore it states only the % change on the previous month, so the ore rows are an index chained from those stated changes (100 = the month before the unbroken run of letters starts); EMD is stated in rupees. Click a row for every revision.', ih('moil'));
+    block('Cotton spot — Cotton Association of India', S.cai, [['Growth', r => esc(r.market)], ['Grade', r => esc(r.name.replace(/^Cotton /, ''))], ['Season', r => esc((r.grade || '').replace('season ', ''))], ['₹/candy', r => fmt(r.price, 0), 1]],
+      (S.cai && S.cai.rows) || [], 'CAI official spot rates, ₹ per candy of 356 kg, ex-gin, excluding tax, by growth area and grade; both the current and the previous cotton season are quoted.', ih('cai'));
+    block('Spices — Spices Board (cardamom auctions, pepper)', S.spices, [['Spice', r => esc(r.name)], ['Market / auctioneer', r => esc(r.market || '')], ['Grade', r => esc(r.grade || '')], ['₹/kg', r => fmt(r.price, 2), 1], ['Date', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`]],
+      (S.spices && S.spices.rows) || [], 'Small cardamom: average price of each e-auction. Each row carries the date the Spices Board states.', ih('spices'));
+    block('Chemicals — China domestic quotes (Guidechem, CNY/t)', S.guidechem, [['Chemical', r => `${esc(r.name)}${r.caveat ? ' <span title="' + esc(r.caveat) + '" style="color:var(--warn,#b45309)">⚠</span>' : ''}`], ['CNY/t', r => fmt(r.price, 0), 1], ['1d', r => pct(r.chg_1d), 1],
+      ['3M avg', r => fmt(r.avg_3m, 0), 1], ['Updated', r => `<span class="muted text-xs">${esc(r.date || '')}</span>`], ['Quote row', r => `<span class="muted text-xs">${esc([r.market, r.grade].filter(Boolean).join(' · ').slice(0, 60))}</span>`]],
+      ((S.guidechem && S.guidechem.rows) || []).slice().sort((a, b) => a.name.localeCompare(b.name)),
+      'Supplier and market quotes inside China collected by Guidechem, an aggregator: direction data, not an assessed benchmark and not the Indian price. Each row is dated by Guidechem\'s own "Updated" (some are weeks or months old). ⚠ = a caution on that row (hover or click it). Click a chemical for its history.', ih('guidechem'));
     blocks.addEventListener('click', (e) => {
       if (e.target.closest('a')) return;
       const n = e.target.closest('tr[data-nmdc]'); if (n) { openNMDC(n.dataset.nmdc); return; }

@@ -17927,6 +17927,45 @@ highest since 2026-07-10 in 83 lump revisions back to 2019. For FINISHED steel t
 series — WPI flat products (monthly, to 2026-04) and the HS 7208 customs unit value (monthly, to 2026-07)
 are the only long ones, and both lag the newspaper by months.
 
+### 144a-viii. ★★★ MORE COMMODITY PRINTS: GUIDECHEM CHINA CHEMICALS (H-ACID…), MOIL, CAI COTTON, SPICES BOARD, +18 TE SLUGS (2026-10-12)
+
+**Trigger:** user: "Track H-acid in Commodities … and also add as many commodities u can which we dont have". Every source
+below was PROBED on 2026-10-12 and its parser run on that day's live page.
+- **H-acid: the assessors are closed.** SCI99/卓创 price centre (`prices.sci99.com/cn/product.aspx?ppid=12764`) renders the
+  H酸 85% Zhejiang row with `请登录` in every cell; its daily report pages need registration. Baiinfo/百川盈孚 serves a slider
+  captcha (`/verify/`). 100ppi/生意社 and SunSirs return a 660-byte `HW_CHECK` JavaScript bot check; echemi an Aliyun WAF;
+  ChemAnalyst 403. None is bypassed (bot checks/captchas are never solved). **Guidechem** (`guidechem.com/price/en/<CAS>.html`,
+  plain 200, robots allows `/price/`) is the one readable source: H-acid 41,000 CNY/t "Locally Made", Updated 2026-10-10,
+  monthly ranges 35-41k (Aug), 38-41k (Sep, Oct). That CONTRADICTS the news datapoints (SCI99 95 CNY/kg 28-Aug-2026, Baiinfo
+  ~150,000 CNY/t 1-Sep-2026), so the H-acid row carries a `caveat` shown on the page. Treat Guidechem as one supplier-quote
+  series; never as the assessed price.
+- **Guidechem = ~80 chemicals** (list `GC_ITEMS` in india_spot.py, CAS-keyed). Headline price + own `Updated` date + DoD +
+  3-month average + the headline's row identity (`data-brand`/`data-spec` → `market`/`grade`, part of the series key, so a
+  headline that moves to another region/grade becomes a NEW series, never a fake jump). Some quotes are stale (glyphosate,
+  imidacloprid, atrazine last updated May-Jun 2026; ONCB Jul) — the row date says so. Dropped: 3-nitroaniline (headline
+  "85000 CNY/KG", an obvious unit error); 404s: gamma acid, R32, R125, TDI, nitric acid (no headline), paracetamol, 2,4-D.
+- **MOIL** (BSE 533286) files a monthly letter, but states only "% on the prices prevailing since …" for ore (EMD in Rs/PMT).
+  `src_moil` chains an INDEX from those stated %s over the latest unbroken monthly run (Sep-2025 and Nov-2025 letters are not on
+  BSE, so the run starts Dec-2025; base 100 = Nov-2025 prices). Letter typos found: the 1-May-2025 subject says w.e.f.
+  01.04.2025 and the 1-Aug-2025 body says "effective from 01.07.2025" — the month is taken from the items' repeated "midnight of
+  a/b" dates instead (MOIL_PARSER 3). The 1-Mar-2026 filing's PDF is the February letter; the revised March letter is 5-Mar.
+  History back to 2023 in `docs/ideas/moil_history.json` (seeded with `--moil-since 2023-01-01`).
+- **CAI cotton** (`caionline.in/details/cai/spot-rates/by/date`, multipart POST `date=dd-mm-YYYY`, JSON): Rs per candy of 356 kg
+  by growth/grade, current AND previous season (season in the series key); walks back ≤8 days for the last published day.
+- **Spices Board** current-market-price page: small-cardamom e-auction averages (per auctioneer), large cardamom (Singtam,
+  Siliguri), Kochi pepper — each with the Board's own date.
+- **TE +18 slugs** (all parsed): cobalt-hydroxide, gallium, germanium, indium, tellurium, scrap-aluminum, aluminum-alloy,
+  iron-ore-cny, gasoline, heating-oil, urals-oil, uk-natural-gas, canola, barley (INR/t), oat, orange-juice, cheese, butter.
+  Not on TE (page carries no quote): soybean-oil, polysilicon, ammonia, potash, PTA, MEG, caustic-soda, TiO2, glyphosate,
+  graphite, tungsten, ferrochrome, robusta. `lumber` exists but its unit ("USD/1000 board feet") does not parse — not added.
+- **Map:** new groups `dye_intermediates` (H-acid makers verified from each FY26 annual report: Bodal — H-acid 15.63% of
+  turnover; Kiri — H-acid 7,200 TPA; Bhageria — 500 t/month; AksharChem — 1,200 t; Shree Pushkar — named, no share),
+  `nitro_chloro_aromatics`, `epoxy_pu`, `carbon_black`, `phosphorus_chain`, `agrochem_technicals`, `pharma_ksm`, `solvents_oxo`,
+  `minor_metals` (company lists empty until verified). Existing groups gained `india` regexes (sulphuric acid now has a Chinese
+  spot print: Guidechem 98% acid + Shandong sulphur). India rows are evidence in signals.json, not strength inputs.
+- **Page:** four new blocks in India spot (MOIL, CAI, Spices Board, Guidechem), search entries, a Caution line in the detail panel
+  for rows with a `caveat`. sw v255. Workflow probes the three new hosts and commits `moil_history.json`.
+
 ### 144a-vii. ★★★ OLDER INDIAN PRICES RECOVERED: `scripts/ideas/india_backfill.py` (2026-09-23)
 
 One-off, re-runnable, idempotent steps that fill `docs/ideas/india_backfill.csv.gz` (date, source, series, price,

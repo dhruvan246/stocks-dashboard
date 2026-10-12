@@ -1,5 +1,5 @@
 {
- "_readme": "Curated map from a commodity or product price to the listed Indian companies whose earnings move with it. 'benefit' = sells the product, owns the resource, or carries inventory that revalues up (pass-through with inventory gains); 'suffer' = buys it as a raw material without full pass-through. Every entry is a starting hypothesis for the research run to VERIFY from the company's own filings (share of revenue, pricing terms) before publishing. 'spot' keys refer to docs/ideas/spot.json rows; 'hs' are HS-code prefixes aggregated from docs/ideas/trade/panel.json (imports and exports, unit price = value/quantity). 'history' records past episodes the user pointed to as the pattern to catch. 'wpi' lists case-insensitive substrings matched against WPI item names in docs/ideas/wpi.json. 'spot' names are lower-case keys of docs/ideas/spot.json. 'te' lists Trading Economics commodity slugs; 'india' lists (source, name-regex) pairs into docs/ideas/india_spot.json (metalbook / ibja / rubber / sugar / fuel).",
+ "_readme": "Curated map from a commodity or product price to the listed Indian companies whose earnings move with it. 'benefit' = sells the product, owns the resource, or carries inventory that revalues up (pass-through with inventory gains); 'suffer' = buys it as a raw material without full pass-through. Every entry is a starting hypothesis for the research run to VERIFY from the company's own filings (share of revenue, pricing terms) before publishing. 'spot' keys refer to docs/ideas/spot.json rows; 'hs' are HS-code prefixes aggregated from docs/ideas/trade/panel.json (imports and exports, unit price = value/quantity). 'history' records past episodes the user pointed to as the pattern to catch. 'wpi' lists case-insensitive substrings matched against WPI item names in docs/ideas/wpi.json. 'spot' names are lower-case keys of docs/ideas/spot.json. 'te' lists Trading Economics commodity slugs; 'india' lists (source, name-regex) pairs into docs/ideas/india_spot.json (metalbook / ibja / rubber / sugar / fuel / nmdc / minsteel / guidechem / cai / spices / moil). 'guidechem' rows are Chinese domestic quotes in CNY/t from an aggregator (direction data, never the Indian price); 'moil' ore rows are an index chained from MOIL's own stated monthly % revisions.",
  "groups": [
   {
    "id": "copper",
@@ -129,7 +129,9 @@
     "aluminium shapes"
    ],
    "te": [
-    "aluminum"
+    "aluminum",
+    "scrap-aluminum",
+    "aluminum-alloy"
    ],
    "india": [
     [
@@ -399,7 +401,10 @@
    ],
    "te": [
     "brent-crude-oil",
-    "crude-oil"
+    "crude-oil",
+    "urals-oil",
+    "gasoline",
+    "heating-oil"
    ],
    "india": [
     [
@@ -457,7 +462,8 @@
    ],
    "te": [
     "natural-gas",
-    "liquefied-natural-gas-japan-korea"
+    "liquefied-natural-gas-japan-korea",
+    "uk-natural-gas"
    ],
    "india": []
   },
@@ -618,7 +624,8 @@
     "pig iron"
    ],
    "te": [
-    "iron-ore"
+    "iron-ore",
+    "iron-ore-cny"
    ],
    "india": [
     [
@@ -661,7 +668,12 @@
    "te": [
     "manganese"
    ],
-   "india": []
+   "india": [
+    [
+     "moil",
+     "^(Manganese ore|EMD)"
+    ]
+   ]
   },
   {
    "id": "graphite_electrodes",
@@ -723,7 +735,12 @@
    "history": "2020-21: phenol spread widened and Deepak Nitrite re-rated several-fold.",
    "wpi": [],
    "te": [],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Phenol|Acetone|Bisphenol A|Isopropyl alcohol|MEK)$"
+    ]
+   ]
   },
   {
    "id": "sulphuric_acid",
@@ -783,7 +800,12 @@
    "te": [
     "sulfur"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Sulphuric acid|Sulphur)$"
+    ]
+   ]
   },
   {
    "id": "caustic_soda",
@@ -853,7 +875,12 @@
     "liquid chlorine"
    ],
    "te": [],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Caustic soda|Hydrochloric acid|Sodium hypochlorite|Methylene chloride|Chloroform)$"
+    ]
+   ]
   },
   {
    "id": "soda_ash",
@@ -897,7 +924,12 @@
    "te": [
     "soda-ash"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^Soda ash$"
+    ]
+   ]
   },
   {
    "id": "refrigerant_gases",
@@ -951,7 +983,12 @@
    "history": "2024-25: US refrigerant prices rose 2-3x on HFC quota cuts; SRF/Navin re-rated; he called Stallion on the import data.",
    "wpi": [],
    "te": [],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(R134a|R22|Hydrofluoric acid|Fluorspar|PTFE)$"
+    ]
+   ]
   },
   {
    "id": "tio2",
@@ -985,7 +1022,12 @@
    "te": [
     "titanium"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^Titanium dioxide$"
+    ]
+   ]
   },
   {
    "id": "pvc",
@@ -1041,7 +1083,12 @@
    "te": [
     "polyvinyl"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^PVC$"
+    ]
+   ]
   },
   {
    "id": "polyolefins",
@@ -1124,7 +1171,12 @@
    "te": [
     "methanol"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Methanol|Acetic acid|Ethyl acetate)$"
+    ]
+   ]
   },
   {
    "id": "benzene_pta",
@@ -1174,7 +1226,12 @@
     "styrene",
     "naphtha"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Benzene|Toluene|Styrene|PTA|MEG|PET \\(filament grade\\))$"
+    ]
+   ]
   },
   {
    "id": "fertiliser",
@@ -1230,7 +1287,12 @@
     "di-ammonium",
     "phosphorus"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Urea|Monoammonium phosphate|Diammonium phosphate|Potassium chloride|Potassium sulphate|Ammonium sulphate)$"
+    ]
+   ]
   },
   {
    "id": "cotton",
@@ -1283,7 +1345,12 @@
    "te": [
     "cotton"
    ],
-   "india": []
+   "india": [
+    [
+     "cai",
+     "^Cotton"
+    ]
+   ]
   },
   {
    "id": "sugar",
@@ -1550,7 +1617,8 @@
    "te": [
     "palm-oil",
     "rapeseed-oil",
-    "sunflower-oil"
+    "sunflower-oil",
+    "canola"
    ],
    "india": []
   },
@@ -1638,7 +1706,8 @@
    ],
    "te": [
     "wheat",
-    "rice"
+    "rice",
+    "barley"
    ],
    "india": []
   },
@@ -1688,7 +1757,9 @@
     "butter"
    ],
    "te": [
-    "milk"
+    "milk",
+    "butter",
+    "cheese"
    ],
    "india": []
   },
@@ -1817,9 +1888,15 @@
    ],
    "te": [
     "lithium",
-    "cobalt"
+    "cobalt",
+    "cobalt-hydroxide"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^(Lithium carbonate|Lithium hydroxide|Cobalt)$"
+    ]
+   ]
   },
   {
    "id": "tungsten",
@@ -1951,7 +2028,12 @@
    "te": [
     "silicon"
    ],
-   "india": []
+   "india": [
+    [
+     "guidechem",
+     "^Silicon metal$"
+    ]
+   ]
   },
   {
    "id": "spices",
@@ -1985,7 +2067,12 @@
     "cumin"
    ],
    "te": [],
-   "india": []
+   "india": [
+    [
+     "spices",
+     "cardamom|Pepper"
+    ]
+   ]
   },
   {
    "id": "gherkins",
@@ -2067,6 +2154,237 @@
     }
    ],
    "history": "Sep-2026: newspaper cites imported coking coal +22% in a month to US$283/t; Trading Economics shows US$263, +12% in a month, +35% in a year.",
+   "india": []
+  },
+  {
+   "id": "dye_intermediates",
+   "name": "Dye intermediates (H-acid, vinyl sulphone, naphthol acids)",
+   "spot": [],
+   "hs": [
+    "29222160",
+    "29041040",
+    "29071520",
+    "29222150",
+    "29222140"
+   ],
+   "benefit": [
+    {
+     "symbol": "BODALCHEM",
+     "name": "Bodal Chemicals",
+     "why": "H-acid 15.63% and vinyl sulphone 11.20% of FY26 turnover (AR 2025-26, BRSR products table, PDF p.77); dye-intermediate capacity 38,400 TPA (p.11)"
+    },
+    {
+     "symbol": "KIRIINDUS",
+     "name": "Kiri Industries",
+     "why": "H-acid 7,200 TPA and vinyl sulphone 18,000 TPA at Vadodara (AR 2025-26, PDF p.15); dye intermediates 48% of turnover (BRSR, p.164)"
+    },
+    {
+     "symbol": "BHAGERIA",
+     "name": "Bhageria Industries",
+     "why": "H-acid is its largest-volume product; capacity raised from 400 to 500 t/month in FY26 (AR 2025-26, PDF pp.9, 12); share of revenue not stated"
+    },
+    {
+     "symbol": "AKSHARCHEM",
+     "name": "AksharChem (India)",
+     "why": "H-acid 1,200 t capacity (FY26 output 785 t) and vinyl sulphone 7,800 t (AR 2025-26, PDF pp.5, 9); H-acid partly captive (backward integration, p.4); share not stated"
+    },
+    {
+     "symbol": "SHREEPUSHK",
+     "name": "Shree Pushkar Chemicals & Fertilisers",
+     "why": "makes H-acid, vinyl sulphone, sulpho para base, K acid, gamma acid (AR 2025-26 BRSR, PDF p.98); chemicals, dyes and intermediates 54.45% of turnover (p.97); H-acid share and capacity not stated"
+    }
+   ],
+   "suffer": [],
+   "note": "H-acid price: only Guidechem (supplier quotes, CNY/t) is readable without login; SCI99/Baiinfo/100ppi/SunSirs are login-, captcha- or bot-gated. Guidechem showed no Aug-Sep 2026 spike that SCI99/Baiinfo reported in the news - read the row with its caveat. Reactive-dye makers that BUY H-acid are not listed as sufferers until verified.",
+   "wpi": [
+    "dyes",
+    "dye intermediates"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(H-acid|Vinyl sulphone|Beta naphthol|J acid|Sodium naphthionate|Naphthalene|m-Phenylenediamine)"
+    ]
+   ]
+  },
+  {
+   "id": "nitro_chloro_aromatics",
+   "name": "Aniline, nitro- and chloro-benzenes",
+   "spot": [],
+   "hs": [
+    "29214110",
+    "29042010",
+    "29049950",
+    "29049940"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: prices wired, companies not yet verified from filings",
+   "wpi": [
+    "aniline",
+    "nitrobenzene",
+    "chlorobenzene"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(Aniline|Nitrobenzene|Chlorobenzene|Para-nitrochlorobenzene|Ortho-nitrochlorobenzene|Para-dichlorobenzene|Ortho-dichlorobenzene|Para-chloroaniline|Ortho-nitroaniline|2,4-Diaminotoluene)$"
+    ]
+   ]
+  },
+  {
+   "id": "epoxy_pu",
+   "name": "Epichlorohydrin, BPA and MDI (epoxy and polyurethane chain)",
+   "spot": [],
+   "hs": [
+    "29103000",
+    "29072300",
+    "29291090"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: prices wired, companies not yet verified from filings",
+   "wpi": [
+    "epoxy",
+    "polyurethane"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(Epichlorohydrin|Bisphenol A|MDI)$"
+    ]
+   ]
+  },
+  {
+   "id": "carbon_black",
+   "name": "Carbon black",
+   "spot": [],
+   "hs": [
+    "28030010"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: Chinese N220 quote wired, companies not yet verified from filings",
+   "wpi": [
+    "carbon black"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^Carbon black$"
+    ]
+   ]
+  },
+  {
+   "id": "phosphorus_chain",
+   "name": "Yellow phosphorus and phosphates",
+   "spot": [],
+   "hs": [
+    "28047030"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: prices wired, companies not yet verified from filings",
+   "wpi": [
+    "phosphorus"
+   ],
+   "te": [
+    "phosphorus"
+   ],
+   "india": [
+    [
+     "guidechem",
+     "^(Yellow phosphorus|Sodium tripolyphosphate)$"
+    ]
+   ]
+  },
+  {
+   "id": "agrochem_technicals",
+   "name": "Agrochemical technicals (glyphosate, imidacloprid, atrazine)",
+   "spot": [],
+   "hs": [
+    "29314930"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: Guidechem quotes for these were last updated in May-June 2026 - check the date on each row",
+   "wpi": [
+    "pesticide",
+    "insecticide",
+    "herbicide"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(Glyphosate|Imidacloprid|Atrazine)$"
+    ]
+   ]
+  },
+  {
+   "id": "pharma_ksm",
+   "name": "Pharma starting materials (6-APA, para-aminophenol)",
+   "spot": [],
+   "hs": [
+    "29222913",
+    "29242980"
+   ],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: prices wired, companies not yet verified from filings",
+   "wpi": [
+    "paracetamol",
+    "antibiotics"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(6-APA|Para-aminophenol)$"
+    ]
+   ]
+  },
+  {
+   "id": "solvents_oxo",
+   "name": "Solvents, oxo-alcohols and plasticisers",
+   "spot": [],
+   "hs": [],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: prices wired, companies not yet verified from filings",
+   "wpi": [
+    "butanol",
+    "octanol",
+    "phthalic",
+    "plasticiser"
+   ],
+   "te": [],
+   "india": [
+    [
+     "guidechem",
+     "^(n-Butanol|2-Ethylhexanol|DOP|Phthalic anhydride|Maleic anhydride|Adipic acid|DMF|Pyridine|Acrylonitrile|Caprolactam|Melamine)$"
+    ]
+   ]
+  },
+  {
+   "id": "minor_metals",
+   "name": "Gallium, germanium, indium, tellurium",
+   "spot": [],
+   "hs": [],
+   "benefit": [],
+   "suffer": [],
+   "note": "new 2026-10-12: Trading Economics series wired, companies not yet verified from filings",
+   "wpi": [],
+   "te": [
+    "gallium",
+    "germanium",
+    "indium",
+    "tellurium"
+   ],
    "india": []
   }
  ]

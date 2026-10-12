@@ -28,7 +28,10 @@ valid answer; nothing is investment advice.
   2a. Government announcements: `python3 scripts/ideas/govt.py` → `docs/ideas/govt.json` (see "Government-driven ideas")
   2b. Commodity panels (the price-driven half of the method, see "Price-driven ideas" below):
       `python3 scripts/ideas/spot.py` (daily global spot) · `python3 scripts/ideas/india_spot.py` (daily INDIAN prints: MetalBook
-      steel & metals by city, IBJA bullion, Rubber Board, sugar spot, PPAC fuel; plus ~60 Trading Economics proxies) ·
+      steel & metals by city, IBJA bullion, Rubber Board, sugar spot, PPAC fuel, NMDC iron ore, MOIL manganese-ore letters,
+      CAI cotton spot, Spices Board cardamom/pepper; ~80 Chinese domestic chemical quotes from Guidechem in CNY/t — H-acid,
+      vinyl sulphone, phenol, caustic, sulphuric acid, aniline, R134a, TiO2... — an AGGREGATOR, direction only, read each
+      row's own date and any `caveat`; plus ~83 Trading Economics proxies) ·
       `python3 scripts/ideas/wpi.py` (WPI items, monthly) ·
       `python3 scripts/ideas/trade.py --latest` (HS trade panel; no-op unless the ministry published a new month) ·
       `python3 scripts/ideas/signals.py` → `docs/ideas/signals.json` (commodity groups ranked by strength, each with
