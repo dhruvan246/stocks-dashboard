@@ -1786,6 +1786,20 @@ def main():
         # rights adjustment already baked into REIAGROLTD's early bars (textbook TERP of "Rights 2:1 @ Premium Rs.18.50",
         # FV 1, cum 40.45 = 0.6547; non-CA_OFF, so the loop would not apply it). Join then reads NSE's raw -49.4% move.
         "REIAGROLTD": {"old": "REIAGRO", "seam": 0.654635},
+        # §179t (user 2026-10-12 "fix TMPV, LT, GESHIP and CEATLTD"): four N500 companies whose NSE tape before a rename / scheme sat
+        # under a dead key, so their 52w / 200-DMA windows restarted at the new symbol. seam = scheme factor x the new key's measured
+        # level on its first bar (stored close / NSE raw close) / the CA_OFF factors the loop applies. Scheme factor per the owner's
+        # rule (§179m: auction open first; none on these days, pre-2010) = first-day VWAP (turnover / volume) / last close, the cap at 1
+        # tested on the consolidation-adjusted close (L&T 2 old -> 1 new: NSE/CML/5175 lists 12,44,01,796 shares vs 24.87 cr old capital
+        # at Rs 10; GES 5 -> 4: NSE/CML/8128 152,273,924 shares; CEAT 100 -> 75: NSE/CML/10165 34,242,759 shares) — never binding here.
+        #   TATAMOTORS (TELCO tape) 20031224 -> TMPV 20031226: pure rename, NSE PREVCLOSE 430.95 == last close; level 50.8822/438.6, CA 0.2
+        #   L&T 20040521 C 501.85 -> LT 20040623 VWAP 16943.7 lakh / 2,699,293 = 627.7088 (prevclose printed 2.0 = nominal); CA 1/9
+        #   GESHIPPING 20061107 C 336.6 -> GESHIP 20061127 VWAP 13332.3 lakh / 5,713,256 = 233.3573 (Great Offshore 1 per 5 spun off)
+        #   CEAT 20071224 C 208.7 -> CEATLTD 20080201 VWAP 387.9 lakh / 213,242 = 181.906 (CHI Investments 25 per 100 spun off)
+        "TMPV": {"old": "TATAMOTORS", "seam": 0.580052},
+        "LT": {"old": "L&T", "seam": 1.25079},
+        "GESHIP": {"old": "GESHIPPING", "seam": 0.693278},
+        "CEATLTD": {"old": "CEAT", "seam": 0.871615},
     }
     MANUAL_MERGE.update(SEAM_MERGES)
     merged = 0

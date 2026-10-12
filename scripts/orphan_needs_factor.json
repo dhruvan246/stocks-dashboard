@@ -58,14 +58,6 @@
    "gap_days": 1
   },
   {
-   "old": "CEAT",
-   "new": "CEATLTD",
-   "evidence": "name_match",
-   "ca_adj": 1.0,
-   "drift": 0.8673,
-   "gap_days": 39
-  },
-  {
    "old": "COREEMBLG",
    "new": "AUSOMENT",
    "evidence": "rename_map",
@@ -194,14 +186,6 @@
    "gap_days": 15
   },
   {
-   "old": "TATAMOTORS",
-   "new": "TMPV",
-   "evidence": "rename_map",
-   "ca_adj": 1.0,
-   "drift": 0.1168,
-   "gap_days": 2
-  },
-  {
    "old": "USHAMARTIN",
    "new": "USHAMART",
    "evidence": "name_match",
@@ -251,5 +235,9 @@
  "special": {
   "MUNJALAUTO": "2006 court scheme: 2 shares -> 1 new + 1 Shivam Autotech; do NOT stitch (86d)",
   "EICHER": "Eicher Ltd absorbed into EICHERMOT (parallel listing 1996+); not stitchable"
+ },
+ "resolved": {
+  "CEAT->CEATLTD": "§179t 2026-10-12: SEAM_MERGES seam 0.871615 (CEAT scheme 100 -> 75 + 25 CHI Investments; first-day VWAP / last close; NSE/CML/10165 34,242,759 shares)",
+  "TATAMOTORS->TMPV": "§179t 2026-10-12: SEAM_MERGES seam 0.580052 (TELCO -> TATAMOTORS rename 2003-12-26, NSE PREVCLOSE 430.95 = last close; level x later rights/demerger)"
  }
 }
