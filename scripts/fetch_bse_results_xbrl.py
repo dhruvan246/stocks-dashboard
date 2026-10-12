@@ -24,13 +24,19 @@ OneD IS that half; a Sep filing that reports a separate Jul-Sep quarter makes th
 HELD (printed, never stored) until the year closes — the §181d rule for NSE SME half-years.
 
 TARGETS
+  • docs/results_feed.json — EVERY quarter the exchange feed shows DECLARED whose profit or revenue is not yet stored,
+    NSE-listed companies included (§228b, 2026-10-12): NSE serves some filings late or never (ONIXSOLAR Sep-26: both
+    bases on BSE 8-Oct 19:06, nothing stored by 12-Oct) and the vision read that bridges the gap carries one basis and
+    no op, so the card's Sales YoY dashed. Both bases of the filing land together; a fresh quarter is re-listed daily.
+    The BSE code comes from bse_scrips.json by_id (the BSE scrip id, usually the NSE symbol) or bse_seen_scrips.json.
+  • --extra FILE  [{"code","sym","q":[qe…]}] — a one-off list (e.g. the past quarters whose YoY lacked a same-basis pair).
   • scripts/bse_xbrl_nse_targets.json {NSE_SYM: {"code": scrip, "q": [qe…]}} — NSE main-board point-in-time quarters NSE
     never listed (built by the §175 coverage tool; ISIN-joined to the BSE scrip).
   • every BSE-only scrip in docs/bse_universe.json: quarters 2020-03-31 → latest due missing from bse_fundamentals.
 State: scripts/_bse_xbrl_state.json {code: last YYYYMMDD listed} — a scrip is re-listed at most every 20 days.
 
 Two stages so an unattended CI push can never clobber a concurrent writer (the minified-JSON rule):
-  --fetch [--budget N] [--out FILLS] [--codes C1,C2]   list + download + parse → FILLS json (touches no store)
+  --fetch [--budget N] [--out FILLS] [--codes C1,C2] [--extra FILE]   list + download + parse → FILLS json (touches no store)
   --apply FILLS                        fill-only merge into docs/bse_fundamentals.json, docs/sf_fundamentals.json,
                                        docs/sf_revop.json, scripts/revop_fundamentals.json, scripts/xbrl_extra.json.gz
   --from-dir DIR                       offline test: treat DIR's *.xml as downloaded files (listing dates from DIR's
@@ -508,22 +514,84 @@ def load_detail_keys():
     return xl, tape
 
 
-def targets(today):
-    """[(code, target_sym or None, kind, sme, [missing qe])] — NSE targets first, then BSE-only by mcap."""
+def _stored(sf, rvp, sym, qe):
+    """True when sym's quarter qe already has a profit (either basis) AND a revenue (either basis) in the NSE stores."""
+    pat = any(r[0] == qe and (r[1] is not None or r[3] is not None) for r in sf.get(sym, []))
+    rr = (rvp.get(sym) or {}).get(str(qe))
+    return pat and bool(rr and (rr[0] is not None or rr[1] is not None))
+
+
+def feed_declared(sf, rvp, sme_codes_, extra=None):
+    """§228b: [(code, sym or None, kind, sme, [qe])] for every quarter docs/results_feed.json shows DECLARED whose numbers are
+    not stored — NSE-listed companies too (kind "nse" when the feed symbol is an NSE store key, else "bse"). A feed symbol
+    with no BSE code (bse_scrips by_id, then bse_seen_scrips) is skipped. `extra` = the --extra list, same shape."""
+    bs = bse_resolve.by_id()                                 # the ISIN-guarded scrip-id map (§203), never the raw json
+    try:
+        seen = json.load(open(os.path.join(HERE, "bse_seen_scrips.json")))
+        sid2code = {str(v[0]).upper(): str(k) for k, v in seen.items() if v and v[0]}
+    except (OSError, ValueError):
+        sid2code = {}
+    try:
+        rows = json.load(open(os.path.join(DOCS, "results_feed.json"), encoding="utf-8")).get("rows") or []
+    except (OSError, ValueError):
+        rows = []
+    want = {}
+    for r in rows:
+        try:
+            sym, qe, fd = str(r[0]).upper(), int(r[3] or 0), int(str(r[2])[:10].replace("-", ""))
+        except (TypeError, ValueError, IndexError):
+            continue
+        if not qe or qe % 10000 not in (331, 630, 930, 1231) or fd <= qe or qe < FLOOR:
+            continue
+        want.setdefault(sym, set()).add(qe)
+    forced = {}                                              # --extra quarters are fetched even when a basis is stored:
+    for e in extra or []:                                    # the point is the OTHER basis of a stored quarter
+        qs_ = {int(q) for q in e.get("q") or []}
+        want.setdefault(str(e["sym"]).upper(), set()).update(qs_)
+        forced.setdefault(str(e["sym"]).upper(), set()).update(qs_)
+    codes_extra = {str(e["sym"]).upper(): str(e["code"]) for e in extra or [] if e.get("code")}
+    out = []
+    for sym, qs in sorted(want.items()):
+        nse = sym in sf or sym in rvp
+        miss = sorted(q for q in qs if q in forced.get(sym, ()) or not (nse and _stored(sf, rvp, sym, q)))
+        if not miss:
+            continue
+        code = codes_extra.get(sym) or bs.get(sym) or sid2code.get(sym)
+        if not code:
+            continue
+        code = str(code)
+        out.append((code, sym if nse else None, "nse" if nse else "bse", (not nse) and code in sme_codes_, miss))
+    return out
+
+
+def _merge(out, t):
+    """Add target t to out, or union its quarters into the entry that already names its scrip."""
+    for i, o in enumerate(out):
+        if o[0] == t[0]:
+            out[i] = (o[0], o[1] or t[1], o[2] if o[1] else t[2], o[3], sorted(set(o[4]) | set(t[4])))
+            return
+    out.append(t)
+
+
+def targets(today, extra=None):
+    """[(code, target_sym or None, kind, sme, [missing qe])] — feed-declared + NSE targets first, then BSE-only by mcap."""
     bf_out = os.path.join(DOCS, "bse_fundamentals.json")    # (no fetch_bse_fund import: it pulls in PyMuPDF)
     out = []
     xl, tape = load_detail_keys()
+    sf = json.load(open(os.path.join(DOCS, "sf_fundamentals.json"))); rvp = json.load(open(os.path.join(DOCS, "sf_revop.json")))
+    for t in feed_declared(sf, rvp, sme_codes(), extra):      # §228b: declared on the exchange, not yet stored — first in line
+        _merge(out, t)
     if os.path.exists(NSE_T):
         # NSE targets shrink as they fill (2026-09-27): a listed quarter stays only while the NSE symbol still lacks its
         # profit, revenue or detail — the static list alone re-listed all 1,107 names every run after the §181c state change.
-        sf = json.load(open(os.path.join(DOCS, "sf_fundamentals.json"))); rvp = json.load(open(os.path.join(DOCS, "sf_revop.json")))
         for sym, t in sorted(json.load(open(NSE_T)).items()):
             pat = {r[0] for r in sf.get(sym, []) if r[1] is not None or r[3] is not None}
             rev = {int(q) for q, r in (rvp.get(sym) or {}).items() if r[0] is not None or r[1] is not None}
             det = {int(q) for q in (xl.get(sym) or {}) if str(q).isdigit()}
             q = sorted(int(x) for x in t["q"] if not (int(x) in pat and int(x) in rev and int(x) in det))
             if q:
-                out.append((str(t["code"]), sym, "nse", False, q))
+                _merge(out, (str(t["code"]), sym, "nse", False, q))
+    out.sort(key=lambda t: t[2] != "nse")                    # NSE-kind targets lead; the BSE loop below only appends
     univ = json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]
     univ.sort(key=lambda r: r[6] or 0, reverse=True)
     # BSE SME IPO members first (runbook §195): the smallest caps, so by mcap they came last in every 300-scrip cycle
@@ -555,9 +623,14 @@ def targets(today):
         ef = sorted(filed.get(bse_resolve.bse_key(r[1]), ()))
         miss = [q for q in due + ef if q not in have and not (sme and q % 10000 in (630, 1231))]
         if miss:
-            (early if any(q in miss for q in ef) else out).append((code, None, "bse", sme, miss))
-    # early filers go ahead of the mcap queue so the 300-scrip budget never pushes a fresh filing back a day
-    return out[:sum(1 for t in out if t[2] == "nse")] + early + out[sum(1 for t in out if t[2] == "nse"):]
+            if any(o[0] == code for o in out):                 # already a feed / NSE target: union the quarters
+                _merge(out, (code, None, "bse", sme, miss))
+            else:
+                (early if any(q in miss for q in ef) else out).append((code, None, "bse", sme, miss))
+    # feed-declared + NSE targets, then early filers, then the mcap queue — so the 300-scrip budget never pushes a
+    # fresh filing back a day
+    head = sum(1 for t in out if t[2] == "nse")             # the leading NSE-kind block (feed-declared + NSE list)
+    return out[:head] + early + out[head:]
 
 
 def early_filed(due, within_days=None, today=None):
@@ -582,7 +655,7 @@ def early_filed(due, within_days=None, today=None):
     return out
 
 
-def fetch(budget, fills_path, from_dir=None, codes=None):
+def fetch(budget, fills_path, from_dir=None, codes=None, extra=None):
     import xbrl_symbol
     today = (datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)).date()   # IST day (runners are UTC)
     state = json.load(open(STATE)) if os.path.exists(STATE) else {}
@@ -594,11 +667,12 @@ def fetch(budget, fills_path, from_dir=None, codes=None):
         px_all = json.load(open(os.path.join(DOCS, "bse_fundamentals.json"), encoding="utf-8")).get("px", {})
     except (OSError, ValueError):
         px_all = {}
-    tlist = targets(today)
+    tlist = targets(today, extra)
     last_due = max(due_quarters(today) or [0])
     recent = early_filed([], within_days=7, today=today)     # {feed key: {qe}} filed in the last 7 days, any quarter
     if codes:                                                # --codes: only these scrips (a manual / test run)
         tlist = [t for t in tlist if t[0] in codes]
+    forced = {str(e.get("code")) for e in (extra or []) if e.get("code")}   # --extra scrips ignore the 20-day re-list wait
     print("targets: %d scrips (%d NSE-quarter targets, %d BSE-only)" %
           (len(tlist), sum(1 for t in tlist if t[2] == "nse"), sum(1 for t in tlist if t[2] == "bse")))
     listed = files_ok = 0
@@ -627,7 +701,8 @@ def fetch(budget, fills_path, from_dir=None, codes=None):
         # want detail quarters it was never asked for, so it is listed again)
         fkey = (sym or bse_resolve.bse_key(code2tk.get(code) or "")).upper()
         fresh_q = {q for q in miss if q > last_due or q in recent.get(fkey, ())}
-        if last and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS \
+        if last and code not in forced \
+                and (today - datetime.date(last // 10000, last // 100 % 100, last % 100)).days < RELIST_DAYS \
                 and asked is not None and set(miss) <= asked and not (fresh_q and last < ymd(today)):
             continue                                         # listed recently for these same quarters — nothing new
             # (§218b: a freshly filed quarter is re-listed once a day until its XBRL lands, whatever the state says)
@@ -724,6 +799,10 @@ def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
         if want is not None and qe not in want:
             continue
         tgt = sym or xbrl_symbol.resolve("NOTLISTED", xml)   # an NSE listing of the same ISIN owns the page
+        if sym:                                              # §228b: a feed/--extra target is joined by scrip id — the
+            own = xbrl_symbol.resolve("NOTLISTED", xml)      # file's own ISIN must name the same NSE symbol (one ticker
+            if own and own.upper() != str(sym).upper():      # can be two companies, §203/§207); an unmapped ISIN cannot
+                print("  %s: file ISIN names %s, not %s — skipped" % (code, own, sym)); continue   # contradict it
         kind = "nse" if tgt else "bse"
         vals = parse_values(xml, basis, fname)
         rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_from_name(fname, qe, fdt), "file": fname,
@@ -1005,8 +1084,9 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     arg = lambda k, d=None: a[a.index(k) + 1] if k in a else d
     if "--fetch" in a:
+        extra = json.load(open(arg("--extra"))) if arg("--extra") else None
         fetch(int(arg("--budget", 300)), arg("--out", os.path.join(os.environ.get("RUNNER_TEMP") or "/tmp", "bse_xbrl_fills.json")),
-              arg("--from-dir"), set((arg("--codes") or "").split(",")) - {""} or None)
+              arg("--from-dir"), set((arg("--codes") or "").split(",")) - {""} or None, extra)
     elif "--apply" in a:
         apply(arg("--apply"))
     elif "--heal-sme" in a:

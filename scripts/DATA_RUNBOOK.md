@@ -28072,6 +28072,47 @@ that day has no rows under the new quarter.
 line "Sep'26 · 30 …"; Dec'24 → "No Dec'24 results declared in this window." with the other line; Turnarounds (4) and Profit-growth
 sort stay inside the quarter; owner: "44 filings · 30 with numbers · Sep'26", pending list keeps GAMMONIND's Sep'26 row and drops
 its other quarters, ADROITIND's no-quarter row stays; 375 px: no sideways scroll, the line wraps.
+
+### §228b — a YoY dash beside two printed figures = a missing BASIS, healed from the exchange, never from a page rule (2026-10-12 evening, user: "y is sales empty in latest quarterly results" → "resolve this bug for all future and past results")
+
+**What the user saw.** ONIXSOLAR's Just Declared card: Sales Sep'26 32.4 and Sep'25 43.4 printed, YoY "—"; Op. profit Sep'26 "—".
+Cause, measured: the stored Sep'26 row was empty (NSE had served nothing by 12-Oct; the card's numbers were the vision read —
+consolidated only, no op), the stored Sep'25 row was standalone-only (+ a con PAT copy), and `growth()` compares like with like,
+so Sales had no same-basis pair while PAT did. Across the whole payload: 41 cells with both figures printed and a dash (rev 17,
+op 12, pat 12), plus 445 whose year-ago figure is exactly 0 (a nil base — the dash is right, see ALSTONE below).
+
+**Filings read.** ONIXSOLAR Sep'26 PDF (Rs in lakhs) and BSE XBRL 513119: standalone 3,187.60 / 191.54 L = 31.88 / 1.92 cr,
+consolidated 3,242.09 / 148.87 L = 32.42 / 1.49 cr, op con 2.24 cr; Sep'25 on BSE has a STANDALONE XBRL only (43.37 / -0.60 /
+-0.76), the consolidated statement started later — so the vision numbers were right and the gap was the missing standalone of
+Sep'26. A page-side cross-basis fallback was rejected: BENGALASM Jun'26 con 657.95 vs Jun'25 std 140.45 would print +368% for a
+holding company whose Jun'25 consolidated figure merely was not parsed. Same-basis stays; the data is completed instead.
+
+**Fix (scripts/fetch_bse_results_xbrl.py, the 09:50 IST job).** `targets()` now starts with `feed_declared()`: every quarter
+docs/results_feed.json shows DECLARED whose profit or revenue is not stored — NSE-listed companies included (kind "nse" when the
+feed symbol is an NSE store key) — joined to its BSE code by the ISIN-guarded scrip-id map, then bse_seen_scrips; a fresh
+quarter is re-listed daily until its XBRL lands (§218b). Both bases of the filing land together (fill-only, as before), so the
+vision read is superseded the next morning and the card gets its same-basis pair. `--extra FILE` [{code, sym, q}] targets any
+past quarter (its scrips skip the 20-day re-list wait); `handle()` skips a file whose ISIN resolves to a different NSE symbol
+than the target. Today's feed population: 57 (symbol, quarter) pairs over 52 companies; 11 feed symbols have no BSE code join.
+
+**Past cells healed (--extra over the 41 dash cells, 17 companies, 44 quarters; names checked on both exchanges):** fills from
+the companies' own BSE XBRL for ALFREDHE, BNALTD, DJML, GUJRAFFIA, HBESD, HINDADH, MADHAVIPL, MERCANTILE, MLKFOOD, NEXTMEDIA,
+ONIXSOLAR, RIR, SEIL, TOYAMSL (58 fills, stores + revop_fundamentals.json + xbrl_extra). Dash cells left: 21 — BENGALASM / BLIL
+(`/XBRLFILES/NBFCUploadDocument/Integrated_Finance_NBFC_…` files: downloaded, parser reads no OneD context), GICRE (insurance
+format, no XBRL links), GUJRAFFIA (Mar/Jun-25 standalone only on BSE), DHTL / RKEC / TRUST / WOMANCART (no BSE code join).
+NEXTMEDIA's std rev is 0.0 in its own XBRL every quarter (a nil base, not a bug).
+
+**Seen while healing, NOT changed (§184 power-of-ten / identity class, read each before touching):** SEIL Jun-25 con PAT 562.26
+and Dec-24 con PAT 490.85 beside 9-cr revenue (BSE XBRL Jun-25 con: 15.16 / 2.90); MADHAVIPL Dec-24 std rev 1,507.62 (BSE XBRL:
+128.79) and its PAT slots swapped vs the BSE file (std 3.84 / con 2.69 in the file; stored 2.63 / 3.84).
+
+**ALSTONE (the second question, "y is sales 0 for past year").** BSE-only 539277 (group XT, suspended), not in bse_universe —
+its card is the vision orphan path. Its own standalone XBRL says RevenueFromOperations = 0 (decimals -5, an entered nil) in
+Jun-25, Sep-25, Dec-25, Mar-26 and Jun-26, PAT from other income (Jun-26: other income ₹16.73 L, PAT ₹6.49 L = 0.06 cr as
+stored). So Sales 0.00 is the filing's figure and the YoY dash (nil base) is right. Sep-26 XBRL: LevelOfRounding "Lakhs" but
+RevenueFromOperations 7,848,842,000 (= 784.88 cr as rupees) and PAT -1,067,225,000 — either a real jump or the filer's ×100
+slip; the PDF's results pages are scanned images (no text layer), so the unit is UNKNOWN until that page is read (user's call —
+vision reads need permission). Screener prints the same XBRL-derived op (-79). Not applied anywhere beyond the vision read.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
 or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been
