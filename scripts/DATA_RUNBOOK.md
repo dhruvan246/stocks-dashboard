@@ -24035,6 +24035,13 @@ bar the bin holds; tol 2e-4; idempotent). Opt-in only (VALIANTORG). Dry run (bas
 rescaled x1.002406', only VALIANTORG changed, post-join identical, 2nd run 0 / identical; split rev 37a8c3ed66; 2020-10-01 close now 1438.0012
 (= NSE PREVCLOSE 2876 x 0.5). Quantmac 12-Oct: 318,487 / 318,533; VALIANTORG 7 agree; 49 differing = RULE DIFFERENCE 48 (C 28, W 8, D2 4, F 8) +
 UNKNOWN 1 (INEABS). Favourites 0 changed picks.
+**§179r LIVE VERIFIED (2026-10-12 20:54 IST).** Push 3d15cbd53 -> dispatched run 38266882950 (success); split rev 37a8c3ed66 == the dry run; browser
+sf_recent: VALIANTORG 2020-01-01 c 650.00 (= BSE 1300 x 0.5), 2020-10-01 1438.0012, 2020-10-05 1474.25.
+**§179s — REPLY #8 + values file (user: "ask quantmac about ineabs").** qm-recon-tools/build_ind_reply_r8.py (LIVE_REV=37a8c3ed66) ->
+out/StockWorld_indicators_reply8_to_Quantmac_20261012.xlsx (Note with the INEABS question + today's changes, Differences 49, BSE history added 26,
+All cells) + out/StockWorld_MonthEnd_Indicators_2009_2026_20261012.xlsx; sent to the owner, who forwards. INEABS question: their 8-Oct -> 12-Oct
+file changed only the 200DMA + vs200 of 2009-01-30 (129.692 -> 129.605) and 2009-02-27 (123.024 -> 122.918); ours = their 8-Oct values. Page v11
+(cells_page_r16.json): 318,487 / 318,533; 49 differing = RULE DIFFERENCE 48 + UNKNOWN 1.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
