@@ -419989,7 +419989,7 @@
    "2009-12-31": {
     "cell": [
      25.5536,
-     51.1714,
+     47.933526,
      3.1837,
      3.1417,
      0.0,
@@ -419997,17 +419997,24 @@
     ],
     "was": [
      25.5536,
-     51.1721,
+     51.1714,
      3.1837,
      3.1417,
      0.0,
      "2010-01-21"
     ],
-    "src": "bseaspx:532544:64 + bseshpperent:532544:64",
-    "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 141,369,414 + the documented holders of the company's 'Other Foreign entities' row - CITIGROUP GLOBAL MARKETS MAURITIUS PVT LTD 6,173,462 and COPTHALL MAURITIUS INVESTMENT LTD 3,376,080 (both institution-listed, this quarter's >1 % table) - on (A+B) 294,928,051 (\u00a7164a; the stored 51.1721 was the 2-dp sum x 1.050725). Farallon / Sloane Robinson / Frontpoint (no institution document) stay public. fii 51.1721 -> 51.1714.",
-    "exact": true,
+    "src": "bsepage:532544 Dec-2009 (Indiabulls Financial Services Ltd)",
+    "why": "\u00a7164r batch 30 part 74 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1 'follow the filing's own line'): the BSE page's own rows - Institutions 'Foreign Institutional Investors' 141,369,414 on (A+B) 294,928,051 (\u00a7164a, custodian 14,960,249 outside) = 47.933526 = Quantmac's figure. The Non-Institutions row 'Other Foreign entities' 24,288,437 is not a foreign-institution label (part 36 had added two of its holders from the over-1-percent holder table - a holder list, not the row's own label). fii 51.1714 -> 47.933526; dii untouched.",
     "superseded": {
      "cell": [
+      25.5536,
+      51.1714,
+      3.1837,
+      3.1417,
+      0.0,
+      "2010-01-21"
+     ],
+     "was": [
       25.5536,
       51.1721,
       3.1837,
@@ -420015,18 +420022,19 @@
       0.0,
       "2010-01-21"
      ],
-     "was": [
-      24.32,
-      48.7017,
-      3.03,
-      2.99,
-      0.0,
-      "2010-01-21"
-     ],
-     "src": "bseaspx:532544_64",
-     "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): it never filed the 2015 form, so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.050725 = total (A+B+C) 309888300 / (A+B) 294928051 shares on the same quarter's BSE page; fii 48.70 -> 51.17.",
+     "src": "bseaspx:532544:64 + bseshpperent:532544:64",
+     "why": "\u00a7164r batch 30 part 36 (2026-10-06, per-company review): precision: 'Foreign Institutional Investor' 141,369,414 + the documented holders of the company's 'Other Foreign entities' row - CITIGROUP GLOBAL MARKETS MAURITIUS PVT LTD 6,173,462 and COPTHALL MAURITIUS INVESTMENT LTD 3,376,080 (both institution-listed, this quarter's >1 % table) - on (A+B) 294,928,051 (\u00a7164a; the stored 51.1721 was the 2-dp sum x 1.050725). Farallon / Sloane Robinson / Frontpoint (no institution document) stay public. fii 51.1721 -> 51.1714.",
+     "exact": true,
      "superseded": {
       "cell": [
+       25.5536,
+       51.1721,
+       3.1837,
+       3.1417,
+       0.0,
+       "2010-01-21"
+      ],
+      "was": [
        24.32,
        48.7017,
        3.03,
@@ -420034,16 +420042,28 @@
        0.0,
        "2010-01-21"
       ],
-      "was": [
-       24.32,
-       45.62,
-       3.03,
-       2.99,
-       0.0,
-       "2010-01-21"
-      ],
       "src": "bseaspx:532544_64",
-      "why": "\u00a7164n page-era re-read (first read: no BSE code at \u00a7164g) of a former Nifty 500 member (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 45.62 -> 48.70, dii 3.03 -> 3.03. generic-row-A Other Foreign entities 7.84 fii 3.08 / dii 0.00 / rest 4.76: Farallon Capital Institutional Partners  1.19 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.25 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.02 (unplaced); Citigroup Global Markets Mauritius Pvt L 1.99 (documented:filing); Copthall Mauritius Investment Ltd 1.09 (documented:filing); Frontpoint Financial Services Fund LP 1.28 (filer's own page label); noninst-fii Other Foreign entities [fii part] 3.0817. Evidence: _shp_164_audit.json"
+      "why": "\u00a7164a depository-receipt basis (\u00a7164r batch 18; the company was outside the DR rule's list until a scan of every old BSE page found its (C) custodian shares): it never filed the 2015 form, so it takes SEBI's own column, % of (A+B+C2), DR shares outside the 100, as 51 of the 76 companies that still had DR shares at their first new-form filing did (user 2026-10-05 'go ahead'), so this pre-2016 value moves onto that base: all slots x 1.050725 = total (A+B+C) 309888300 / (A+B) 294928051 shares on the same quarter's BSE page; fii 48.70 -> 51.17.",
+      "superseded": {
+       "cell": [
+        24.32,
+        48.7017,
+        3.03,
+        2.99,
+        0.0,
+        "2010-01-21"
+       ],
+       "was": [
+        24.32,
+        45.62,
+        3.03,
+        2.99,
+        0.0,
+        "2010-01-21"
+       ],
+       "src": "bseaspx:532544_64",
+       "why": "\u00a7164n page-era re-read (first read: no BSE code at \u00a7164g) of a former Nifty 500 member (2026-09-27; \u00a7160 rules \u2014 DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 45.62 -> 48.70, dii 3.03 -> 3.03. generic-row-A Other Foreign entities 7.84 fii 3.08 / dii 0.00 / rest 4.76: Farallon Capital Institutional Partners  1.19 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.25 (unplaced); Sloane Robinson LLP A/C Sr Global Maurit 1.02 (unplaced); Citigroup Global Markets Mauritius Pvt L 1.99 (documented:filing); Copthall Mauritius Investment Ltd 1.09 (documented:filing); Frontpoint Financial Services Fund LP 1.28 (filer's own page label); noninst-fii Other Foreign entities [fii part] 3.0817. Evidence: _shp_164_audit.json"
+      }
      }
     }
    },
