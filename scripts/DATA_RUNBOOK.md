@@ -28047,3 +28047,15 @@ column). This supersedes §164a's company-level selection for the page era. XBRL
 CESC 2017 x3 were row errors (Sep-17 'Foreign Bank' row left out; Jun-17 had borrowed the Sep-17 label - option 1). Known seam left by
 design: INFY / WIPRO Sep-15 page (A+B) -> Dec-15 XBRL (DRs inside public). KARURVYSYA / SUNDARMFIN cached lists are scrip 600001 -
 their XBRL-era C1 check needs the real lists (590003 / 590071).
+**Part 81 (2026-10-12, user: "fix the daily parser for non-institutions FPI rows") - the production parser now counts them.**
+`fetch_shareholding.parse_shp` adds to FII every Non-Institutions CATEGORY row the filing itself labels a foreign portfolio investor,
+FII, QFI or foreign bank (`_noninst_foreign`, flag `NONINST_FOREIGN`), in both the 2015-22 and the 2022+ form, in the percentage path
+and the exact share-count path (a company with no Institutions (Foreign) line starts from zero). The label test is part 66's
+(ownline.lab_class + _shp_dii_rowfix LAB_FII / LAB_PUB, misspellings included, 'Others' prefix ignored, a mixed foreign + company-type
+label not added); holder rows under a category are never added. Gate (`~/stocks-cache/shp/ownbase/parser81/test_parser.py`, 56,575
+cached BSE filings, rule off vs on): 50,735 bit-for-bit unchanged, 2,788 changed - every one by exactly its labelled rows on its own
+base, no other slot moved, no filing newly accepted or refused; second reader (part 66's) agrees on every row; 3 rows of 4 / 8 shares
+sit below the 6th decimal. The 72 PIT-N500 filings with such rows in the nightly window re-parse to the stored (ledger-healed) value
+(55 to 1e-6, 17 within 0.00003). Live NSE run (--quarters 2026-06-30,2026-03-31 --reparse, 6 companies): only KRBL moved (7.28 ->
+7.41, 7.76 -> 7.89 - no ledger had covered it). guard_shp_definition now carries a HEG Mar-2024 fixture (6.912116; fails with the flag
+off). Older quarters change only when re-parsed; the nightly top-up re-reads the last 3 quarter-ends.

@@ -141,6 +141,63 @@ OLD_OTHER_TO_DII = True
 # estimate (kept so the re-base builder can read a document both ways and change only cells that were that exact read).
 EXACT_BASE = True
 
+# §164r part 81 (2026-10-12, user: "fix the daily parser for non-institutions FPI rows"; rule of part 66 / user option 1
+# "follow the filing's own line"): a Non-Institutions CATEGORY row the filing itself labels a foreign portfolio investor,
+# FII or foreign bank ('Foreign Portfolio Investor (Category - III)', 'Others FPI (Individual)', 'Others Foreign Bank' ...)
+# is FII. The parser read only Institutions (Foreign), so these rows fell into public (HEG / KRBL / INDHOTEL; 392 PIT-N500
+# cells healed by ledger in part 66, while every new quarter kept missing them). Holder rows under a category are never
+# added (they are part of it); company-type labels (overseas corporate bodies, foreign nationals / companies, NRIs) stay out.
+NONINST_FOREIGN = True
+# The label test is the one part 66 used (ownline.lab_class = its own patterns + _shp_dii_rowfix LAB_FII / LAB_PUB), copied
+# here so the nightly parser and the ledger reader classify a label identically: an 'Others' prefix is ignored; a label with
+# BOTH a foreign-institution word and a company-type word ('Foreign Body Corporate/Foreign Bank') is unclassified -> not added.
+_NI_FOR = r"(?:foreig|forieg|forign|foregin|forein|forigin|foerign|foregn|foreigh)"; _NI_PFO = r"port\s*-?\s*f?olio"
+_NI_FII = re.compile(r"(?i)\bf\.?\s*i\.?\s*i'?s?\b|\bfpis?\b|^\s*fdi\b|[-–(]\s*fdi\s*\)?\s*$|^\s*foreign\s+direct\s+invest|"
+                     r"for\w*\s+(?:inst\w*|insitu\w*|intitu\w*|instu\w*)|for\w*\s+por\w*folio|for\w*\s+bank|external\s+portfolio|"
+                     r"\bbanks?\s+foreign|for\w*\s+financial\s+inst|for\w*\s+mutual\s+fund|for\w*\s+venture|qualified\s+for|"
+                     r"\bqfi\b|" + _NI_FOR + r"\w*\s+" + _NI_PFO + r"|" + _NI_FOR + r"\w*\s+instit|" + _NI_FOR + r"\w*\s+bank|"
+                     + _NI_FOR + r"\w*\s+venture|qualified\s+(?:" + _NI_FOR + r"|fore\b)|sovereign")
+_NI_PUB = re.compile(r"(?i)overseas\s+(?:corporate|bod)|foreign\s*-?\s*nationals?|foreign\s+(?:bod|corp|compan)|\bocb\b|non.?resident|\bnris?\b|"
+                     r"overseas corporate|" + _NI_FOR + r"\w* compan|" + _NI_FOR + r"\w* (corporate )?bod|corporate bodies|"
+                     + _NI_FOR + r"\w* nat\w*nals?|" + _NI_FOR + r"\w* individual")
+def _noninst_foreign(root):
+    """-> (shares or None, percentage) summed over the Non-Institutions category rows the filing labels FPI / FII /
+    foreign bank. shares is None when any such row has a percentage but no share count (the caller then keeps the
+    percentage-derived figure rather than undercount)."""
+    strip = lambda t: t.split("}", 1)[-1]
+    rowctx = {}
+    for c in root.iter():
+        if strip(c.tag) != "context": continue
+        for m in c.iter():
+            if strip(m.tag) == "typedMember" and "OtherNonInstitutions" in (m.get("dimension") or ""):
+                rowctx[c.get("id")] = "".join((x.text or "") for x in m.iter() if x is not m).strip()
+    if not rowctx: return 0, 0.0
+    R = {}
+    for f in root.iter():
+        cr = f.get("contextRef")
+        if cr not in rowctx: continue
+        t = strip(f.tag); r = R.setdefault(rowctx[cr], {})
+        if t == "NumberOfShares":
+            try: r["sh"] = int(float(str(f.text).strip()))
+            except (TypeError, ValueError): pass
+        elif t == "ShareholdingAsAPercentageOfTotalNumberOfShares":
+            try: r["pct"] = float(str(f.text).strip())
+            except (TypeError, ValueError): pass
+        elif t.startswith("CategoryOf"): r["cat"] = (f.text or "").strip()
+        elif t.startswith("NameOf"): r["name"] = (f.text or "").strip()
+        elif t.startswith("WhetherACategory"): r["kind"] = (f.text or "").strip()
+    sh, pct, complete = 0, 0.0, True
+    for r in R.values():
+        kind, name = r.get("kind", ""), r.get("name", "")
+        if not (kind.lower().startswith("categ") or (not kind and not name)): continue     # a holder row, not a category
+        lab = re.sub(r"\s+", " ", (r.get("cat", "") + " " + name)).strip()
+        lab = re.sub(r"(?i)^\s*(?:(?:any\s+)?others?\s*[:\-]?\s*)+", "", lab).strip()
+        if not lab or not _NI_FII.search(lab) or _NI_PUB.search(lab): continue
+        pct += r.get("pct") or 0.0
+        if "sh" in r: sh += r["sh"]
+        elif r.get("pct"): complete = False
+    return (sh if complete else None), pct
+
 def iso_date(s):
     """'15-JUL-2026' / '15-Jul-2026 15:04:38' -> '2026-07-15' (None if unparseable)."""
     m = re.match(r"\s*(\d{1,2})-([A-Za-z]{3})-(\d{4})", str(s or ""))
@@ -968,6 +1025,9 @@ def parse_shp(txt, qe_iso):
         # old bucket must reconcile: fii+dii ≈ total Institutions (± rounding)
         if abs((fii + dii) - g("o_inst")) > 0.35: return None
         out.update({"fii": fii, "dii": dii, "mf": g("o_mf"), "ins": g("ins")})
+    # §164r part 81: Non-Institutions category rows the filing labels FPI / FII / foreign bank are FII (both formats).
+    ni_sh, ni_pct = _noninst_foreign(root) if NONINST_FOREIGN else (0, 0.0)
+    if ni_pct: out["fii"] += ni_pct * scale
     if out["fii"] + out["dii"] > out["pub"] + 2.0: return None      # institutions can't exceed public
     # partition sanity: promoter + public + non-promoter-non-public ≈ 100. The third bucket
     # (ESOP trusts / DR custodians) can be large for no-promoter companies (ETERNAL 4.73%).
@@ -1042,6 +1102,9 @@ def parse_shp(txt, qe_iso):
             groups = {"fii": f_slots, "dii": d_slots, "mf": ["o_mf"], "ins": ["ins"]}
         for key, slots in groups.items():
             n = _sum(slots)
+            # §164r part 81: a filing with NO foreign-institution line but a labelled Non-Institutions FPI row (BSE 526133:
+            # 20 shares) - start from zero; never when a contributor printed a percentage without a count
+            if n is None and key == "fii" and ni_sh and not any(vals.get(s) and s not in shares for s in slots): n = 0
             if n is None: continue
             if key == "fii" and is_new and vals.get("od"):
                 # §151: the share-count path must drop the same DR-custodian block. A percentage
@@ -1049,6 +1112,9 @@ def parse_shp(txt, qe_iso):
                 if "od" not in shares: continue
                 n -= shares["od"]
                 out["od"] = shares["od"] / tot_sh * 100.0
+            if key == "fii" and (ni_pct or ni_sh):    # ni_sh alone: a row below 0.005 % prints as 0.00 (SHRIRAMFIN 519 sh)
+                if ni_sh is None: continue        # a labelled row without a share count -> keep the percentage path
+                n += ni_sh
             out[key] = n / tot_sh * 100.0
     # Government row (public sub-category) for the sidecar — share-count precision where available,
     # else the filer's own 2dp percentage. Present only when the filing carried the member AND the

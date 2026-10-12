@@ -35,7 +35,12 @@ if not new.get("od") or not (9.9 <= new["od"] <= 10.3):
     fails.append("new-format fixture did not expose od≈10.08 (got %s)" % new.get("od"))
 if f_old is None or not (25.75 <= f_old <= 26.00):
     fails.append("old-format fixture fii=%s, expected 25.87 (old format must be untouched)" % f_old)
+# §164r part 81 (2026-10-12): a Non-Institutions category row the filing labels FPI is FII. HEG Mar-2024 (BSE 509631):
+# Institutions (Foreign) 2,647,266 + 'Foreign Portfolio Investor (Category - III)' 20,500 = 6.912116 (without the row 6.859001).
+heg = parse("shp_fixture_HEG_2024-03-31.xml.gz", "2024-03-31") or {}
+if heg.get("fii") is None or not (6.9115 <= heg["fii"] <= 6.9127):
+    fails.append("HEG Mar-2024 fixture fii=%s, expected 6.912116 (Non-Institutions FPI Category-III row counted, part 81)" % heg.get("fii"))
 if fails:
     for f in fails: print("GUARD FAIL:", f)
     sys.exit(1)
-print("guard_shp_definition OK: new-format fii=%.4f (od %.4f removed), old-format fii=%.4f" % (f_new, new["od"], f_old))
+print("guard_shp_definition OK: new-format fii=%.4f (od %.4f removed), old-format fii=%.4f, HEG non-inst FPI fii=%.4f" % (f_new, new["od"], f_old, heg["fii"]))
