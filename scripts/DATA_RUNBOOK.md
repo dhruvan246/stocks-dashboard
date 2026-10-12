@@ -27931,3 +27931,23 @@ held exactly Institutions (Foreign); 366 move (mostly < 0.01 pp; 15 >= 0.01); 26
 rebase ledger (cur within 0.000051 of its `old`) and left as they are; 4 cells that fit neither shape held. NOTE: fetch_shareholding's
 daily NSE parse must also count these rows going forward (open).
 
+**Parts 67-76 (2026-10-12) - the rest of the Quantmac v8 cells, one by one, on each filing's own lines.** 67: JUBLPHARMA Sep-14,
+ELGIEQUIP Jun-15, WABAG Jun-15 page rows. 68: Dec-15/Mar-16 seam (`ownline/seamown.py`, base = Table I STABC - STC1). 69: CHOLAFIN /
+DEN / PVRINOX Mar-16 named institutions holders. 70: ADANIENT Mar-16, BHARATFIN Dec-15/Mar-16. 71: event (mid-quarter) filings
+read with `ownline.py` - IEX Apr-19 and SUZLON Apr-21 drop holders on the filing's own 'Overseas Corporate Bodies' row; AXISBANK
+Sep-19/Aug-20 and RBA Feb-22 add holders whose names carry '- FDI' (user 12-Oct). 72: PVRINOX Oct-20/Feb-21 - Berry Creek, Multiples,
+Plenty named under a bare 'Other' institutions label = FII (in Apr-18/Sep-19 the same holders carry 'Bodies Corporate'/'Overseas
+Corporate Bodies' and stay out - option 1); PVRINOX Apr-18 and KEI Jan-20 exact. 73: HEXAWARE Jun-16 and SUNDARMFIN Mar-16 exact counts.
+74: INDIABULLS (Indiabulls Financial, BSE 532544) Dec-09 - the page's FII row; 'Other Foreign entities' is not a foreign-institution
+label. 75: ADANIPOWER Jun/Sep-15 and MFSL Dec-08/Mar-09 - the page's own FII row (= Quantmac); the stored values were cross-filing
+reconstructions (3i placed from other quarters; Parkville from another filing's FDI row). ADANIPOWER Jun/Sep-15 were on part 65's held
+list (BSE dropped the 'Others' label); written anyway because neither the held value nor any reading of the label gives it - the page's
+own labelled rows do. 76: BALMLAWRIE Sep-15 exact.
+NOT written, by evidence: SUNDARMFIN Jun-19 - Quantmac 7.9516 divides by total minus a C1 row of 960,960, but those shares are the
+employee trust (C2 in every other filing, no DRs; part 31) - OPEN for the user: does option 1 also govern the base? POONAWALLA Sep-15 -
+the bare 'Others' 73,150,677 is 'Foreign Bodies Corporate' in the company's own PDF (company-type, out). Held for the DII session
+(DII counts the same shares): BSE Ltd Jun-18/Jun-21 (institutions bare-'Other' line incl. Deutsche Boerse; NSE copies from Quantmac;
+the files' grand-total element is mis-tagged - base = B + C), KARURVYSYA 2018-08-20, IDFCFIRSTB 2021-04-06 (two filings as on that
+date, the later 109.02 on 6,198,953,515 shares). UNKNOWN: Jun/Sep-2015 pages whose bare 'Others' row is labelled only by the company's
+PDF (404): INDIACEM, JBFIND, GRAPHITE, DISHMAN, MAHLIFE, MARICO. Identity trap: our cached BSE list for SUNDARMFIN (and KARURVYSYA)
+is scrip 600001; the real list is SHPQNewFormat scripcode=590071 (saved ~/stocks-cache/shp/quantmac/v8/wb/bse_list_590071.json).
