@@ -3174,7 +3174,7 @@
    "2015-12-31": {
     "cell": [
      58.13,
-     21.4532,
+     18.955487,
      2.87,
      0.47,
      0.0,
@@ -3182,17 +3182,24 @@
     ],
     "was": [
      58.13,
-     22.567,
+     21.4532,
      2.87,
      0.47,
      0.0,
      "2016-01-27"
     ],
-    "src": "bsetable3:533096:88",
-    "why": "\u00a7164r batch 30 (2026-10-05, ADANIPOWER re-read with BSE's >1% public holder pages): 2015-12-31 - Table III FPI B1e 556,502,578 (the funds named in it); B1i 'Foreign Corporate Bodies' 8 holders 319,263,782 names Opal 213,236,910 and 3i 73,329,272 (+ 32,697,600). Under \u00a7160f's classes (3i Power Investments A1 fii, Opal public, the funds fii, the block's other holders public: no FPI/FII/FDI mark - documents-only) fii = (556,502,578 + 3i 73,329,272) / 2,935,838,941 = 21.4532. The \u00a7160f entry had subtracted Opal from the FII row (premise 'Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773', a coincidence) and added the whole block, so it held 3i + the block's other holders. fii 22.5670 -> 21.4532.",
-    "exact": true,
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): Opal / 3i Power sit in the institutions 'Foreign Corporate Bodies' block (company-type) - out. FII = FPI 556,502,578 on (A+B+C2) 2,935,838,941 = 18.955487 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 21.4532 -> 18.955487; dii untouched.",
     "superseded": {
      "cell": [
+      58.13,
+      21.4532,
+      2.87,
+      0.47,
+      0.0,
+      "2016-01-27"
+     ],
+     "was": [
       58.13,
       22.567,
       2.87,
@@ -3200,22 +3207,35 @@
       0.0,
       "2016-01-27"
      ],
-     "was": [
-      58.13,
-      29.88,
-      2.87,
-      0.47,
-      0.0,
-      "2016-01-27"
-     ],
-     "src": "bseaspx:533096_88 shpperent",
-     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 29.88 -> 22.57, dii 2.87 -> 2.87. filer-document 2015-12: foreign-institution row - Opal + the funds lump 'Foreign Corporate Bodies' 319,263,782. Adani Power, one class per holder across the page era as its own later filings place them: Opal Investment Pvt Ltd -> public (first 2022-form filing: Foreign Companies; Jun-2016 XBRL 'Other FORIEGN CORPORATE BODIES'), in the FII row Mar-15..Mar-16 (Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773), in the 'Foreign Corporate Bodies' row Dec-12..Dec-14; 3i Power Investments A1 -> fii (the filer's Dec-2015 / Mar-2016 new-format filings place it in the foreign-institution row: the institutional Any-Others lump is exactly the funds + Foreign Nationals), in the 'Foreign Corporate Bodies' row Dec-09..Mar-15 (row = 3i + a constant 32.5M / 35.4M residue [+ Opal]); Elara India Opportunities / Emerging India Focus / Cresta / Albula -> fii (Foreign Portfolio Investors in the Jun-201. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     "src": "bsetable3:533096:88",
+     "why": "\u00a7164r batch 30 (2026-10-05, ADANIPOWER re-read with BSE's >1% public holder pages): 2015-12-31 - Table III FPI B1e 556,502,578 (the funds named in it); B1i 'Foreign Corporate Bodies' 8 holders 319,263,782 names Opal 213,236,910 and 3i 73,329,272 (+ 32,697,600). Under \u00a7160f's classes (3i Power Investments A1 fii, Opal public, the funds fii, the block's other holders public: no FPI/FII/FDI mark - documents-only) fii = (556,502,578 + 3i 73,329,272) / 2,935,838,941 = 21.4532. The \u00a7160f entry had subtracted Opal from the FII row (premise 'Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773', a coincidence) and added the whole block, so it held 3i + the block's other holders. fii 22.5670 -> 21.4532.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       58.13,
+       22.567,
+       2.87,
+       0.47,
+       0.0,
+       "2016-01-27"
+      ],
+      "was": [
+       58.13,
+       29.88,
+       2.87,
+       0.47,
+       0.0,
+       "2016-01-27"
+      ],
+      "src": "bseaspx:533096_88 shpperent",
+      "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 29.88 -> 22.57, dii 2.87 -> 2.87. filer-document 2015-12: foreign-institution row - Opal + the funds lump 'Foreign Corporate Bodies' 319,263,782. Adani Power, one class per holder across the page era as its own later filings place them: Opal Investment Pvt Ltd -> public (first 2022-form filing: Foreign Companies; Jun-2016 XBRL 'Other FORIEGN CORPORATE BODIES'), in the FII row Mar-15..Mar-16 (Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773), in the 'Foreign Corporate Bodies' row Dec-12..Dec-14; 3i Power Investments A1 -> fii (the filer's Dec-2015 / Mar-2016 new-format filings place it in the foreign-institution row: the institutional Any-Others lump is exactly the funds + Foreign Nationals), in the 'Foreign Corporate Bodies' row Dec-09..Mar-15 (row = 3i + a constant 32.5M / 35.4M residue [+ Opal]); Elara India Opportunities / Emerging India Focus / Cresta / Albula -> fii (Foreign Portfolio Investors in the Jun-201. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     }
     }
    },
    "2016-03-31": {
     "cell": [
      63.1285,
-     18.8486,
+     16.649089,
      2.5642,
      0.4545,
      0.0,
@@ -3223,19 +3243,18 @@
     ],
     "was": [
      63.1285,
-     19.8293,
+     18.8486,
      2.5642,
      0.4545,
      0.0,
      "2016-06-29"
     ],
-    "src": "bsetable3:533096:89",
-    "why": "\u00a7164r batch 30 (2026-10-05, ADANIPOWER re-read with BSE's >1% public holder pages): 2016-03-31 - Table III FPI B1e 555,070,446 (the funds named in it); B1i 'Foreign Corporate Bodies' 319,263,782 names Opal and 3i (+ 32,697,600). Under \u00a7160f's classes (3i Power Investments A1 fii, Opal public, the funds fii, the block's other holders public: no FPI/FII/FDI mark - documents-only) fii = (555,070,446 + 3i 73,329,272) / 3,333,938,941 = 18.8486. The \u00a7160f entry had subtracted Opal from the FII row (premise 'Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773', a coincidence) and added the whole block, so it held 3i + the block's other holders. fii 19.8293 -> 18.8486.",
-    "exact": true,
+    "src": "bsetable3:2016-03-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): Opal / 3i Power sit in the institutions 'Foreign Corporate Bodies' block (company-type) - out. FII = FPI 555,070,446 on (A+B+C2) 3,333,938,941 = 16.649089 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 18.8486 -> 16.649089; dii untouched.",
     "superseded": {
      "cell": [
       63.1285,
-      19.8293,
+      18.8486,
       2.5642,
       0.4545,
       0.0,
@@ -3243,14 +3262,35 @@
      ],
      "was": [
       63.1285,
-      16.6491,
-      12.1804,
+      19.8293,
+      2.5642,
       0.4545,
       0.0,
       "2016-06-29"
      ],
-     "src": "bseaspx:533096_89 shpperent",
-     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.65 -> 19.83, dii 12.18 -> 2.56. filer-document 2016-03: foreign-institution row - Opal + the funds lump 'Foreign Corporate Bodies' 319,263,782; the stored DII held the whole institutional Any-Others block (funds + Foreign Nationals) -> leaves DII. Adani Power, one class per holder across the page era as its own later filings place them: Opal Investment Pvt Ltd -> public (first 2022-form filing: Foreign Companies; Jun-2016 XBRL 'Other FORIEGN CORPORATE BODIES'), in the FII row Mar-15..Mar-16 (Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773), in the 'Foreign Corporate Bodies' row Dec-12..Dec-14; 3i Power Investments A1 -> fii (the filer's Dec-2015 / Mar-2016 new-format filings place it in the foreign-institution row: the institutional Any-Others lump is exactly the funds + Foreign Nationals), in the 'Foreign Corporate Bodies' row Dec-09..Mar-15 (row = 3i + a constant 32.5M / 35.4M residue [+ Opal]); Elara India O. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     "src": "bsetable3:533096:89",
+     "why": "\u00a7164r batch 30 (2026-10-05, ADANIPOWER re-read with BSE's >1% public holder pages): 2016-03-31 - Table III FPI B1e 555,070,446 (the funds named in it); B1i 'Foreign Corporate Bodies' 319,263,782 names Opal and 3i (+ 32,697,600). Under \u00a7160f's classes (3i Power Investments A1 fii, Opal public, the funds fii, the block's other holders public: no FPI/FII/FDI mark - documents-only) fii = (555,070,446 + 3i 73,329,272) / 3,333,938,941 = 18.8486. The \u00a7160f entry had subtracted Opal from the FII row (premise 'Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773', a coincidence) and added the whole block, so it held 3i + the block's other holders. fii 19.8293 -> 18.8486.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       63.1285,
+       19.8293,
+       2.5642,
+       0.4545,
+       0.0,
+       "2016-06-29"
+      ],
+      "was": [
+       63.1285,
+       16.6491,
+       12.1804,
+       0.4545,
+       0.0,
+       "2016-06-29"
+      ],
+      "src": "bseaspx:533096_89 shpperent",
+      "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 16.65 -> 19.83, dii 12.18 -> 2.56. filer-document 2016-03: foreign-institution row - Opal + the funds lump 'Foreign Corporate Bodies' 319,263,782; the stored DII held the whole institutional Any-Others block (funds + Foreign Nationals) -> leaves DII. Adani Power, one class per holder across the page era as its own later filings place them: Opal Investment Pvt Ltd -> public (first 2022-form filing: Foreign Companies; Jun-2016 XBRL 'Other FORIEGN CORPORATE BODIES'), in the FII row Mar-15..Mar-16 (Mar-15 FII row 213,380,683 = Opal 213,236,910 + 143,773), in the 'Foreign Corporate Bodies' row Dec-12..Dec-14; 3i Power Investments A1 -> fii (the filer's Dec-2015 / Mar-2016 new-format filings place it in the foreign-institution row: the institutional Any-Others lump is exactly the funds + Foreign Nationals), in the 'Foreign Corporate Bodies' row Dec-09..Mar-15 (row = 3i + a constant 32.5M / 35.4M residue [+ Opal]); Elara India O. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160f)"
+     }
     }
    },
    "2017-02-16": {
@@ -40729,7 +40769,7 @@
    "2015-12-31": {
     "cell": [
      71.29,
-     15.0927,
+     10.857636,
      0.1852,
      0.0,
      0.0,
@@ -40737,19 +40777,18 @@
     ],
     "was": [
      71.29,
-     15.9,
+     15.0927,
      0.1852,
      0.0,
      0.0,
      "2016-01-27"
     ],
-    "src": "bsetable3:532843:88",
-    "why": "\u00a7164r batch 30 part 35 (2026-10-06, per-company review): the institutions Any-Other block = INTERNATIONAL FINANCE CORPORATION 19,613,529 (institution-listed, inside the block - option A -> fii) + a rest of exactly 4,419,643 sh, which the company labels in Dec-2015: a second 'Foreign Corporate Bodies' holder 3,737,449 (no institution document; no FDI line in the company's 2022 form) and 'Foreign Nationals' 12,000 -> public (batch 7: the block follows the company's own labels), 'Foreign Collaborators' 670,194 kept as stored (open user question). FII = FPI 49,614,102 + IFC + 670,194 on 463,123,794. fii 15.9 -> 15.0927.",
-    "exact": true,
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): IFC sits inside the 'Foreign Corporate Bodies' block (company-type) - out; 'Foreign Collaborators' 670,194 is an unclassified label on the institutions line - FII (user 11-Oct). FII = FPI 49,614,102; inst-rest+named (FII, D1 / user 11-Oct) 670,194 on (A+B+C2) 463,123,794 = 10.857636 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 15.0927 -> 10.857636; dii untouched.",
     "superseded": {
      "cell": [
       71.29,
-      15.9,
+      15.0927,
       0.1852,
       0.0,
       0.0,
@@ -40758,14 +40797,35 @@
      "was": [
       71.29,
       15.9,
-      0.14,
+      0.1852,
       0.0,
       0.0,
       "2016-01-27"
      ],
      "src": "bsetable3:532843:88",
-     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 1,977, VCF 0, AIF 0, FI/Banks 645,387, Insurance 0, PF 0, NBFC 210,219; total 463,123,794. dii 0.14 -> 0.1852, ins 0.0 -> 0.0.",
-     "exact": true
+     "why": "\u00a7164r batch 30 part 35 (2026-10-06, per-company review): the institutions Any-Other block = INTERNATIONAL FINANCE CORPORATION 19,613,529 (institution-listed, inside the block - option A -> fii) + a rest of exactly 4,419,643 sh, which the company labels in Dec-2015: a second 'Foreign Corporate Bodies' holder 3,737,449 (no institution document; no FDI line in the company's 2022 form) and 'Foreign Nationals' 12,000 -> public (batch 7: the block follows the company's own labels), 'Foreign Collaborators' 670,194 kept as stored (open user question). FII = FPI 49,614,102 + IFC + 670,194 on 463,123,794. fii 15.9 -> 15.0927.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       71.29,
+       15.9,
+       0.1852,
+       0.0,
+       0.0,
+       "2016-01-27"
+      ],
+      "was": [
+       71.29,
+       15.9,
+       0.14,
+       0.0,
+       0.0,
+       "2016-01-27"
+      ],
+      "src": "bsetable3:532843:88",
+      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 1,977, VCF 0, AIF 0, FI/Banks 645,387, Insurance 0, PF 0, NBFC 210,219; total 463,123,794. dii 0.14 -> 0.1852, ins 0.0 -> 0.0.",
+      "exact": true
+     }
     }
    },
    "2016-03-31": {
@@ -86837,7 +86897,7 @@
    "2015-12-31": {
     "cell": [
      37.48,
-     5.6064,
+     3.37874,
      10.1912,
      0.0,
      7.9415,
@@ -86845,19 +86905,18 @@
     ],
     "was": [
      37.48,
-     46.42,
+     5.6064,
      10.1912,
      0.0,
      7.9415,
      "2016-02-08"
     ],
-    "src": "bsetable3:533107:88",
-    "why": "\u00a7164r batch 30 part 37 (2026-10-06, per-company review): the stored 46.42 counted the whole institutions Any-Other block 339,821,894 (1,704 holders), which is four company category rows: 'FOREIGN INSTITUTIONAL INVESTOR' 22,970,521 (20 holders, incl. VALIANT MAURTTIUS PARTNERS LIMITED 8,502,116 and VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED 9,321,300) -> fii by its label; 'FOREIGN BODIES' 33,900,000 = VALIANT MAURITIUS PARTNERS FDI LIMITED 16,400,000 (the FDI tag in its own name and 6 Institutions (Foreign) listings elsewhere - batch 7/8 option A; the company's 2022 form does not list it) -> fii, and SEMBCORP MARINE LTD 17,500,000 (no institution listing) -> public; 'BODIES CORPORATES' 271,589,769 (incl. RELIANCE DEFENCE SYSTEMS 138,712,427, IL AND FS MARITIME 53,423,871, IL AND FS FINANCIAL SERVICES 21,766,560, RELIGARE FINVEST 16,236,413) and 'CLEARING MEMBERS' 11,361,604 -> public. FII = FPI 1,903,975 + 22,970,521 + 16,400,000 on 736,206,269 (Quantmac 3.3802 leaves Valiant FDI out). fii 46.42 -> 5.6064.",
-    "exact": true,
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): (our key RNAVAL - Pipavav Defence, renamed Reliance Naval) the 'FOREIGN BODIES' row (company-type) - out. FII = FPI 1,903,975; inst-cat-fii:FOREIGN INSTITUTIONAL INVESTOR 22,970,521 on (A+B+C2) 736,206,269 = 3.37874 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 5.6064 -> 3.37874; dii untouched.",
     "superseded": {
      "cell": [
       37.48,
-      46.42,
+      5.6064,
       10.1912,
       0.0,
       7.9415,
@@ -86866,14 +86925,35 @@
      "was": [
       37.48,
       46.42,
-      9.93,
+      10.1912,
       0.0,
-      7.94,
+      7.9415,
       "2016-02-08"
      ],
      "src": "bsetable3:533107:88",
-     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 4,667, VCF 0, AIF 0, FI/Banks 14,663,290, Insurance 58,465,899, PF 0, NBFC 1,894,411; total 736,206,269. dii 9.93 -> 10.1912, ins 7.94 -> 7.9415.",
-     "exact": true
+     "why": "\u00a7164r batch 30 part 37 (2026-10-06, per-company review): the stored 46.42 counted the whole institutions Any-Other block 339,821,894 (1,704 holders), which is four company category rows: 'FOREIGN INSTITUTIONAL INVESTOR' 22,970,521 (20 holders, incl. VALIANT MAURTTIUS PARTNERS LIMITED 8,502,116 and VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED 9,321,300) -> fii by its label; 'FOREIGN BODIES' 33,900,000 = VALIANT MAURITIUS PARTNERS FDI LIMITED 16,400,000 (the FDI tag in its own name and 6 Institutions (Foreign) listings elsewhere - batch 7/8 option A; the company's 2022 form does not list it) -> fii, and SEMBCORP MARINE LTD 17,500,000 (no institution listing) -> public; 'BODIES CORPORATES' 271,589,769 (incl. RELIANCE DEFENCE SYSTEMS 138,712,427, IL AND FS MARITIME 53,423,871, IL AND FS FINANCIAL SERVICES 21,766,560, RELIGARE FINVEST 16,236,413) and 'CLEARING MEMBERS' 11,361,604 -> public. FII = FPI 1,903,975 + 22,970,521 + 16,400,000 on 736,206,269 (Quantmac 3.3802 leaves Valiant FDI out). fii 46.42 -> 5.6064.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       37.48,
+       46.42,
+       10.1912,
+       0.0,
+       7.9415,
+       "2016-02-08"
+      ],
+      "was": [
+       37.48,
+       46.42,
+       9.93,
+       0.0,
+       7.94,
+       "2016-02-08"
+      ],
+      "src": "bsetable3:533107:88",
+      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 4,667, VCF 0, AIF 0, FI/Banks 14,663,290, Insurance 58,465,899, PF 0, NBFC 1,894,411; total 736,206,269. dii 9.93 -> 10.1912, ins 7.94 -> 7.9415.",
+      "exact": true
+     }
     }
    },
    "2016-03-31": {
@@ -162177,7 +162257,7 @@
    "2015-12-31": {
     "cell": [
      40.46,
-     23.1617,
+     22.159922,
      13.9925,
      13.57,
      0.0,
@@ -162185,19 +162265,18 @@
     ],
     "was": [
      40.46,
-     23.99,
+     23.1617,
      13.9925,
      13.57,
      0.0,
      "2016-02-04"
     ],
-    "src": "bsetable3:532497:88",
-    "why": "\u00a7164r batch 30 part 32 (2026-10-06, per-company review): FII = FPI 29,481,287 + ACACIA PARTNERS LP 1,332,800 (450 Institutions (Foreign) listings, 0 domestic - fii inside the institutions block, batch 8 option A) on 133,038,765; the block's 2 other holders 1,092,000 are the company's 'FOREIGN CORPORATE BODIES' (its category row of Dec-2015 / Mar-2016, 3 holders 2,424,800 with Acacia) -> public (the stored 2-dp value had counted the whole block). fii 23.99 -> 23.1617.",
-    "exact": true,
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): Acacia Partners LP sits inside the 'FOREIGN CORPORATE BODIES' block (company-type) - out. FII = FPI 29,481,287 on (A+B+C2) 133,038,765 = 22.159922 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 23.1617 -> 22.159922; dii untouched.",
     "superseded": {
      "cell": [
       40.46,
-      23.99,
+      23.1617,
       13.9925,
       13.57,
       0.0,
@@ -162206,14 +162285,35 @@
      "was": [
       40.46,
       23.99,
-      13.74,
+      13.9925,
       13.57,
       0.0,
       "2016-02-04"
      ],
      "src": "bsetable3:532497:88",
-     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 18,055,056, VCF 0, AIF 0, FI/Banks 224,410, Insurance 0, PF 0, NBFC 336,039; total 133,038,765. dii 13.74 -> 13.9925, ins 0.0 -> 0.0.",
-     "exact": true
+     "why": "\u00a7164r batch 30 part 32 (2026-10-06, per-company review): FII = FPI 29,481,287 + ACACIA PARTNERS LP 1,332,800 (450 Institutions (Foreign) listings, 0 domestic - fii inside the institutions block, batch 8 option A) on 133,038,765; the block's 2 other holders 1,092,000 are the company's 'FOREIGN CORPORATE BODIES' (its category row of Dec-2015 / Mar-2016, 3 holders 2,424,800 with Acacia) -> public (the stored 2-dp value had counted the whole block). fii 23.99 -> 23.1617.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       40.46,
+       23.99,
+       13.9925,
+       13.57,
+       0.0,
+       "2016-02-04"
+      ],
+      "was": [
+       40.46,
+       23.99,
+       13.74,
+       13.57,
+       0.0,
+       "2016-02-04"
+      ],
+      "src": "bsetable3:532497:88",
+      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 18,055,056, VCF 0, AIF 0, FI/Banks 224,410, Insurance 0, PF 0, NBFC 336,039; total 133,038,765. dii 13.74 -> 13.9925, ins 0.0 -> 0.0.",
+      "exact": true
+     }
     }
    }
   },
@@ -259192,7 +259292,7 @@
    "2016-03-31": {
     "cell": [
      38.8168,
-     25.5126,
+     19.08559,
      9.8926,
      4.0219,
      1.2705,
@@ -259200,19 +259300,18 @@
     ],
     "was": [
      38.8168,
-     19.0825,
+     25.5126,
      9.8926,
      4.0219,
      1.2705,
      "2016-04-16"
     ],
-    "src": "bsetable3:500477:89",
-    "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): four named non-institution lines outside every category row (block 674,576,974 = categories 491,584,065 + 182,992,909): AMANSA HOLDINGS PRIVATE LIMITED 33,000,000 (639/0/18 institution listings), GOVERNMENT PENSION FUND GLOBAL 65,035,392 (the company's own 2022-form FPI row), KUWAIT INVESTMENT AUTHORITY (Under various sub accounts) 34,033,725 and ABU DHABI INVESTMENT AUTHORITY (Under various sub-accounts) 50,923,792 (the company files both under Institutions - FPI from Mar/Jun-2017; Dec-2015 and Jun-2016 hold all four inside its 'Foreign Institutional Investors' row). FII = FPI 180,710,605 + 'FOREIGN INSTITUTIONAL INVESTORS' 357,217,540 + 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 + the four on the full count 2,845,876,634 (part 16 had stopped at 19.0825). fii 19.0825 -> 25.5126.",
-    "exact": true,
+    "src": "bsetable3:2016-03-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): the four named Non-Institutions holders outside every category row (Amansa ...) carry no foreign-investor label - out; the FII / FPI-labelled Non-Institutions rows count. FII = FPI 180,710,605; noninst-fii:FOREIGN PORTFOLIO INVESTOR - CORPORATE 3 5,135,701; noninst-fii:FOREIGN INSTITUTIONAL INVESTORS-DR 88,500; noninst-fii:FOREIGN INSTITUTIONAL INVESTORS 357,217,540 on (A+B+C2) 2,845,876,634 = 19.08559 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 25.5126 -> 19.08559; dii untouched.",
     "superseded": {
      "cell": [
       38.8168,
-      19.0825,
+      25.5126,
       9.8926,
       4.0219,
       1.2705,
@@ -259220,17 +259319,25 @@
      ],
      "was": [
       38.8168,
-      18.9048,
+      19.0825,
       9.8926,
       4.0219,
       1.2705,
       "2016-04-16"
      ],
      "src": "bsetable3:500477:89",
-     "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 had been left out; 'FOREIGN INSTITUTIONAL INVESTORS-DR' 88,500 is depository-receipt stock - out of FII (user rule) - and had been counted. = Quantmac 19.0825. Base = Table I's full count (the \u00a7164p re-base). FII = FPI 180,710,605 + FVCI 0 + the company's FII/FPI-labelled rows ('FOREIGN INSTITUTIONAL INVESTORS' 357,217,540; 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701) on 2,845,876,634 sh. fii 18.9048 -> 19.0825.",
+     "why": "\u00a7164r batch 30 part 24 (2026-10-06, Dec-2015/Mar-2016 reader gap, held cells): four named non-institution lines outside every category row (block 674,576,974 = categories 491,584,065 + 182,992,909): AMANSA HOLDINGS PRIVATE LIMITED 33,000,000 (639/0/18 institution listings), GOVERNMENT PENSION FUND GLOBAL 65,035,392 (the company's own 2022-form FPI row), KUWAIT INVESTMENT AUTHORITY (Under various sub accounts) 34,033,725 and ABU DHABI INVESTMENT AUTHORITY (Under various sub-accounts) 50,923,792 (the company files both under Institutions - FPI from Mar/Jun-2017; Dec-2015 and Jun-2016 hold all four inside its 'Foreign Institutional Investors' row). FII = FPI 180,710,605 + 'FOREIGN INSTITUTIONAL INVESTORS' 357,217,540 + 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 + the four on the full count 2,845,876,634 (part 16 had stopped at 19.0825). fii 19.0825 -> 25.5126.",
      "exact": true,
      "superseded": {
       "cell": [
+       38.8168,
+       19.0825,
+       9.8926,
+       4.0219,
+       1.2705,
+       "2016-04-16"
+      ],
+      "was": [
        38.8168,
        18.9048,
        9.8926,
@@ -259238,18 +259345,19 @@
        1.2705,
        "2016-04-16"
       ],
-      "was": [
-       44.3,
-       21.5752,
-       11.29,
-       4.59,
-       1.45,
-       "2016-04-16"
-      ],
-      "src": "bseaspx:500477:89+nseresults:1008206",
-      "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+      "src": "bsetable3:500477:89",
+      "why": "\u00a7164r batch 30 part 16 (2026-10-06, FII-side seam check): the non-institutions sub-row 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701 had been left out; 'FOREIGN INSTITUTIONAL INVESTORS-DR' 88,500 is depository-receipt stock - out of FII (user rule) - and had been counted. = Quantmac 19.0825. Base = Table I's full count (the \u00a7164p re-base). FII = FPI 180,710,605 + FVCI 0 + the company's FII/FPI-labelled rows ('FOREIGN INSTITUTIONAL INVESTORS' 357,217,540; 'FOREIGN PORTFOLIO INVESTOR - CORPORATE 3' 5,135,701) on 2,845,876,634 sh. fii 18.9048 -> 19.0825.",
+      "exact": true,
       "superseded": {
        "cell": [
+        38.8168,
+        18.9048,
+        9.8926,
+        4.0219,
+        1.2705,
+        "2016-04-16"
+       ],
+       "was": [
         44.3,
         21.5752,
         11.29,
@@ -259257,16 +259365,28 @@
         1.45,
         "2016-04-16"
        ],
-       "was": [
-        44.3,
-        7.25,
-        11.29,
-        4.59,
-        1.45,
-        "2016-04-16"
-       ],
-       "src": "bseaspx:500477_89 shpperent",
-       "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+       "src": "bseaspx:500477:89+nseresults:1008206",
+       "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 2,493,630,994 shares \u2014 it leaves out 352,245,640 shares that the Sep-2015 page (2,845,876,634, block C 352,245,640) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002962 paid-up 28458.8, 2016-03-31 #1008206 paid-up 28458.8, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,845,876,634 (\u00b1 10,000 shares, the filings' rounding): x 0.876226.",
+       "superseded": {
+        "cell": [
+         44.3,
+         21.5752,
+         11.29,
+         4.59,
+         1.45,
+         "2016-04-16"
+        ],
+        "was": [
+         44.3,
+         7.25,
+         11.29,
+         4.59,
+         1.45,
+         "2016-04-16"
+        ],
+        "src": "bseaspx:500477_89 shpperent",
+        "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 7.25 -> 21.58, dii 11.29 -> 11.29. seam-fii-reconstruction base 7.25 14.3252; lump-fii FOREIGN INSTITUTIONAL INVESTORS 14.3252. Evidence: _shp_aspx_rowfix_audit.json"
+       }
       }
      }
     }
@@ -329927,7 +330047,7 @@
    "2015-12-31": {
     "cell": [
      0,
-     40.4986,
+     38.250241,
      30.67,
      26.22,
      1.87,
@@ -329935,17 +330055,24 @@
     ],
     "was": [
      0,
-     38.2502,
+     40.4986,
      30.67,
      26.22,
      1.87,
      "2016-01-28"
     ],
-    "src": "bsetable3:500469:88 + bsetable3:500469:89",
-    "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): IFC 37,926,414 sh inside the 'Foreign Body Corporate' row (2 holders, 37,932,414 = IFC + 6,000; the Dec-2016 row has the same total with IFC named); IFC is fii by the company's first 2022-form row (Institutions (Foreign), FPI Category I); base = Table I A+B+C2 1,686,838,392. fii 38.2502 -> 40.4986.",
-    "exact": true,
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): IFC sits in the 'Foreign Body Corporate' row (company-type) - out. FII = FPI 141,790,359; noninst-fii:Foreign Institutional Institution 503,429,392 on (A+B+C2) 1,686,838,392 = 38.250241 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 40.4986 -> 38.250241; dii untouched.",
     "superseded": {
      "cell": [
+      0,
+      40.4986,
+      30.67,
+      26.22,
+      1.87,
+      "2016-01-28"
+     ],
+     "was": [
       0,
       38.2502,
       30.67,
@@ -329953,20 +330080,13 @@
       1.87,
       "2016-01-28"
      ],
-     "was": [
-      0,
-      37.5472,
-      30.67,
-      26.22,
-      1.87,
-      "2016-01-28"
-     ],
-     "src": "bsetable3:500469:88",
-     "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): FEDERALBNK 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500469 qtrid 88) A 0 + B 1,686,838,392 + C2 0 = 1,686,838,392 shares (C1 31,511,952 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 141,790,359; 'Foreign Institutional Institution' 503,429,392 = 645,219,751 shares. fii 37.5472 -> 38.2502.",
+     "src": "bsetable3:500469:88 + bsetable3:500469:89",
+     "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): IFC 37,926,414 sh inside the 'Foreign Body Corporate' row (2 holders, 37,932,414 = IFC + 6,000; the Dec-2016 row has the same total with IFC named); IFC is fii by the company's first 2022-form row (Institutions (Foreign), FPI Category I); base = Table I A+B+C2 1,686,838,392. fii 38.2502 -> 40.4986.",
+     "exact": true,
      "superseded": {
       "cell": [
        0,
-       37.5472,
+       38.2502,
        30.67,
        26.22,
        1.87,
@@ -329974,21 +330094,41 @@
       ],
       "was": [
        0,
-       8.41,
+       37.5472,
        30.67,
        26.22,
        1.87,
        "2016-01-28"
       ],
-      "src": "bseaspx:500469_88 shpperent",
-      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.41 -> 37.55, dii 30.67 -> 30.67. seam-fii-reconstruction base 8.25 29.2972; lump-fii Foreign Institutional Institution 29.2972. Evidence: _shp_aspx_rowfix_audit.json"
+      "src": "bsetable3:500469:88",
+      "why": "\u00a7164r batch 29 (2026-10-05, seam cells on the company's own Table I base): FEDERALBNK 2015-12-31 - Table I (CorporatesSHPSecuritybeta 500469 qtrid 88) A 0 + B 1,686,838,392 + C2 0 = 1,686,838,392 shares (C1 31,511,952 outside the 100). FII = the company's foreign-institution rows in Table III: FPI 141,790,359; 'Foreign Institutional Institution' 503,429,392 = 645,219,751 shares. fii 37.5472 -> 38.2502.",
+      "superseded": {
+       "cell": [
+        0,
+        37.5472,
+        30.67,
+        26.22,
+        1.87,
+        "2016-01-28"
+       ],
+       "was": [
+        0,
+        8.41,
+        30.67,
+        26.22,
+        1.87,
+        "2016-01-28"
+       ],
+       "src": "bseaspx:500469_88 shpperent",
+       "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 8.41 -> 37.55, dii 30.67 -> 30.67. seam-fii-reconstruction base 8.25 29.2972; lump-fii Foreign Institutional Institution 29.2972. Evidence: _shp_aspx_rowfix_audit.json"
+      }
      }
     }
    },
    "2016-03-31": {
     "cell": [
      0,
-     41.226,
+     38.983025,
      30.41,
      25.91,
      1.86,
@@ -329996,19 +330136,18 @@
     ],
     "was": [
      0,
-     38.9799,
+     41.226,
      30.41,
      25.91,
      1.86,
      "2016-04-29"
     ],
-    "src": "bsetable3:500469:89",
-    "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): IFC named 37,926,414 sh, inside 'Foreign Body Corporate' (3 holders 38,672,612 = IFC + 703,664 + 42,534), never counted; IFC is fii by the company's first 2022-form row. Also read at share precision: FPI 197,888,247 + 'Foreign Institutional Investors' 455,258,367 + 'Foreign Portfolio Investors' 6,016,135 on Table I's A+B+C2 1,690,896,876 (was 11.70 + 27.2799 at 2dp). fii 38.9799 -> 41.226.",
-    "exact": true,
+    "src": "bsetable3:2016-03-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): IFC sits in the 'Foreign Body Corporate' row (company-type) - out. FII = FPI 197,888,247; noninst-fii:Foreign Portfolio Investors 6,016,135; noninst-fii:Foreign Institutional Investors 455,258,367 on (A+B+C2) 1,690,896,876 = 38.983025 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 41.226 -> 38.983025; dii untouched.",
     "superseded": {
      "cell": [
       0,
-      38.9799,
+      41.226,
       30.41,
       25.91,
       1.86,
@@ -330016,14 +330155,35 @@
      ],
      "was": [
       0,
-      11.7,
+      38.9799,
       30.41,
       25.91,
       1.86,
       "2016-04-29"
      ],
-     "src": "bseaspx:500469_89 shpperent",
-     "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.70 -> 38.98, dii 30.41 -> 30.41. seam-fii-reconstruction base 11.70 27.2799; lump-fii Foreign Institutional Investors 26.9241; lump-fii Foreign Portfolio Investors 0.3558. Evidence: _shp_aspx_rowfix_audit.json"
+     "src": "bsetable3:500469:89",
+     "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): IFC named 37,926,414 sh, inside 'Foreign Body Corporate' (3 holders 38,672,612 = IFC + 703,664 + 42,534), never counted; IFC is fii by the company's first 2022-form row. Also read at share precision: FPI 197,888,247 + 'Foreign Institutional Investors' 455,258,367 + 'Foreign Portfolio Investors' 6,016,135 on Table I's A+B+C2 1,690,896,876 (was 11.70 + 27.2799 at 2dp). fii 38.9799 -> 41.226.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       0,
+       38.9799,
+       30.41,
+       25.91,
+       1.86,
+       "2016-04-29"
+      ],
+      "was": [
+       0,
+       11.7,
+       30.41,
+       25.91,
+       1.86,
+       "2016-04-29"
+      ],
+      "src": "bseaspx:500469_89 shpperent",
+      "why": "\u00a7160 page-era row-level heal (2026-09-24, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 11.70 -> 38.98, dii 30.41 -> 30.41. seam-fii-reconstruction base 11.70 27.2799; lump-fii Foreign Institutional Investors 26.9241; lump-fii Foreign Portfolio Investors 0.3558. Evidence: _shp_aspx_rowfix_audit.json"
+     }
     }
    },
    "2015-06-30": {
@@ -423205,6 +423365,26 @@
     "src": "bsetable3:532191:89",
     "why": "\u00a7164r batch 30 part 23 (2026-10-06, Dec-2015/Mar-2016 reader gap): EDGBASTON ASIAN EQUITY TRUST 1,161,308 sh (27/0/0 institution listings; fii from Jun-2016, batch 20) inside the non-institution Any-Other block; FPI 205,062 on 71,104,167. fii 0.28 -> 1.9216.",
     "exact": true
+   },
+   "2015-12-31": {
+    "cell": [
+     79.0893,
+     0.890745,
+     2.0228,
+     1.0093,
+     0.1167,
+     "2016-03-18"
+    ],
+    "was": [
+     79.0893,
+     2.4655,
+     2.0228,
+     1.0093,
+     0.1167,
+     "2016-03-18"
+    ],
+    "src": "bsetable3:2015-12-31",
+    "why": "\u00a7164r batch 30 part 68 (2026-10-12, Quantmac v8 cell by cell, own line - user option 1, Dec-2015 / Mar-2016 seam, BSE Table III + Table I): FII = FPI + the Non-Institutions 'Foreign Institutional Investors' row; the stored value came from outside the filing. FII = FPI 4,230; noninst-fii:Foreign Institutional Institution 629,127 on (A+B+C2) 71,104,167 = 0.890745 (Quantmac's figure is the same within 0.01, except FORTIS where it leaves 'Foreign Collaborators' out). fii 2.4655 -> 0.890745; dii untouched."
    }
   },
   "SHIRPUR-G": {
