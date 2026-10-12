@@ -28100,3 +28100,16 @@ institutions line -, SPTL x3, SOMANYCERA x2, WELCORP), 2 other decisions left as
 re-assert window (the 4-dp print they replaced already held the rows; §226's exact read did not): their shp_rebase226 fii `new` now =
 the part 82 value. Non-N500 (outside scope, parked): 279 + 5 event cells read without the rows, 4 missing, 10 other; 380 cached filings
 of 76 companies with no cached BSE list - all non-N500.
+**Part 83 (2026-10-12, user: "look into the SINTEX Sep-2016 event row").** SINTEX 2016-09-26 served 30.75: a 27-Sep §164q event entry
+had moved Government Of Singapore (10,943,673, on the filing's own 'Foreign Companies' category) into FII by the company's 2022-form
+placement (§159, retired by option 1) -> 28.660423 (FPI + the institutions row labelled 'Foreign Institutional Investors' + the
+Non-Institutions FPI Category III row). A scan of every PIT-N500 event-row entry carrying the 2022-form / R2-FII reasoning (184 rows;
+127 differ from their own line, all but 11 by printed precision < 0.01 pp) found the same class in 11 more, now on their own lines:
+ETERNAL 2022-08-10 46.56 -> 17.26 ('Foreign Companies' 2.50 bn sh), IDFCFIRSTB 2020-06-12 19.96 -> 11.64 (Cloverdell, OCB),
+BANDHANBNK 2020-08-03 35.12 -> 27.33 (Caladium, OCB category inside the institutions block), APLAPOLLO 2019-10-28 3.28 -> 0 (every foreign
+holder on its own OCB line, no institutions foreign line), AUBANK 2022-06-12 / 08-09 (Camas, 'Foreign Companies'), BHARTIARTL 2021-10-27
+(Government of Singapore, 'Foreign Bodies Corporates'), JMFINANCIL 2018-02-06 / 2020-06-12 (Vikram Shankar Pandit, NRI). INDUSINDBK
+2020-09-02 / 04: AIA Company Limited is NAMED under the filing's own 'Foreign Portfolio Investor (Category - III)' label with no category
+total row - the parser (part 81) now also counts such a holder row when no category row of that label exists (20 rows in 56,575 cached
+filings; gate re-run: 2,802 changed, all = their rows; 3 rows of 4 / 8 shares below the 6th decimal). DII gaps passed to the DII session:
+BANDHANBNK 2020-08-03, JMFINANCIL x2, INDUSINDBK 2020-09-02. Out of scope (non-N500, parked): QUICKHEAL, HUBTOWN holder-only rows.

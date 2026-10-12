@@ -186,13 +186,22 @@ def _noninst_foreign(root):
         elif t.startswith("CategoryOf"): r["cat"] = (f.text or "").strip()
         elif t.startswith("NameOf"): r["name"] = (f.text or "").strip()
         elif t.startswith("WhetherACategory"): r["kind"] = (f.text or "").strip()
+    def _lab(t):
+        t = re.sub(r"\s+", " ", t or "").strip()
+        return re.sub(r"(?i)^\s*(?:(?:any\s+)?others?\s*[:\-]?\s*)+", "", t).strip()
+    def _is_fii(lab): return bool(lab) and bool(_NI_FII.search(lab)) and not _NI_PUB.search(lab)
+    is_cat = lambda r: r.get("kind", "").lower().startswith("categ") or (not r.get("kind") and not r.get("name"))
+    cat_labels = {_lab(r.get("cat", "")).lower() for r in R.values() if is_cat(r)}
     sh, pct, complete = 0, 0.0, True
     for r in R.values():
-        kind, name = r.get("kind", ""), r.get("name", "")
-        if not (kind.lower().startswith("categ") or (not kind and not name)): continue     # a holder row, not a category
-        lab = re.sub(r"\s+", " ", (r.get("cat", "") + " " + name)).strip()
-        lab = re.sub(r"(?i)^\s*(?:(?:any\s+)?others?\s*[:\-]?\s*)+", "", lab).strip()
-        if not lab or not _NI_FII.search(lab) or _NI_PUB.search(lab): continue
+        if is_cat(r):
+            if not _is_fii(_lab(r.get("cat", "") + " " + r.get("name", ""))): continue
+        else:
+            # a named holder row counts only when its OWN category label is foreign-portfolio and the filing has no category
+            # row of that label (INDUSINDBK Sep-2020: AIA Company Limited under 'Foreign Portfolio Investor (Category - III)'
+            # with no category total - 20 such rows in 56,575 cached filings); otherwise it is part of its category row
+            c = _lab(r.get("cat", ""))
+            if not _is_fii(c) or c.lower() in cat_labels: continue
         pct += r.get("pct") or 0.0
         if "sh" in r: sh += r["sh"]
         elif r.get("pct"): complete = False

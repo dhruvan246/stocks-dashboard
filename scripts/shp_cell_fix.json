@@ -9497,7 +9497,7 @@
    "2019-10-28": {
     "cell": [
      38.44,
-     3.28,
+     0.0,
      15.5311,
      12.4557,
      0.0,
@@ -9506,7 +9506,7 @@
     ],
     "was": [
      38.44,
-     0.0,
+     3.28,
      15.5311,
      12.4557,
      0.0,
@@ -9514,7 +9514,29 @@
      23737
     ],
     "src": "bsexbrl:533758_5112019103236_SHP.xml",
-    "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 533758_5112019103236_SHP.xml with the current reader: fii 0.0000 -> 3.2800, dii 15.5311 -> 15.5311. Rows: R2FII-holders Overseas Corporate Bodies 24.03 3.28 KITARA PIIN 1001 12.12 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.44 stay(new-format~:ForeignCompa"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): this filing has no institutions foreign line at all; Kitara PIIN 1001 / 1101, Goldman Sachs India and Mobius Investment Trust are filed under its own 'Overseas Corporate Bodies' category (company-type) -> FII 0 (the 3.28 before came from the company's other filings' FPI placement). fii 3.28 -> 0.0; dii untouched.",
+    "superseded": {
+     "cell": [
+      38.44,
+      3.28,
+      15.5311,
+      12.4557,
+      0.0,
+      "2020-01-06",
+      23737
+     ],
+     "was": [
+      38.44,
+      0.0,
+      15.5311,
+      12.4557,
+      0.0,
+      "2020-01-06",
+      23737
+     ],
+     "src": "bsexbrl:533758_5112019103236_SHP.xml",
+     "why": "\u00a7164r batch 24 (2026-10-05): this mid-quarter EVENT row (\u00a7164q) predates the current row rules the company's quarter cells already follow (batch 7 documents-only, batch 8/9 option A, batch 11 company-type labels inside the institutions block never FII, batch 14 FDI line); re-read of its own filing 533758_5112019103236_SHP.xml with the current reader: fii 0.0000 -> 3.2800, dii 15.5311 -> 15.5311. Rows: R2FII-holders Overseas Corporate Bodies 24.03 3.28 KITARA PIIN 1001 12.12 stay(new-format:ForeignCompanies); KITARA PIIN 1101 3.44 stay(new-format~:ForeignCompa"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -14346,46 +14368,90 @@
    "2022-06-12": {
     "cell": [
      28.21,
-     38.0174,
-     18.6641,
-     10.992,
-     3.7223,
+     34.80563,
+     18.663173,
+     10.991427,
+     3.722064,
      "2022-06-13",
      170471
     ],
     "was": [
      28.21,
-     34.8074,
-     18.6641,
-     10.992,
-     3.7223,
+     38.0174,
+     18.663173,
+     10.991427,
+     3.722064,
      "2022-06-13",
      170471
     ],
     "src": "bsexbrl:540611_1362022144429_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 34.81 -> 38.02, dii 18.66 -> 18.66. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-holders Others Foreign Companies 3.21 3.21 Camas Investments Pte. Ltd. 3.21 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 219,340,368 on 630,186,466 = 34.805630; Camas Investments Pte. Ltd. 20,208,728 is on this filing's own 'Foreign Companies' row - out. fii 38.0174 -> 34.80563; dii untouched.",
+    "superseded": {
+     "cell": [
+      28.21,
+      38.0174,
+      18.6641,
+      10.992,
+      3.7223,
+      "2022-06-13",
+      170471
+     ],
+     "was": [
+      28.21,
+      34.8074,
+      18.6641,
+      10.992,
+      3.7223,
+      "2022-06-13",
+      170471
+     ],
+     "src": "bsexbrl:540611_1362022144429_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 34.81 -> 38.02, dii 18.66 -> 18.66. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-holders Others Foreign Companies 3.21 3.21 Camas Investments Pte. Ltd. 3.21 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    }
    },
    "2022-08-09": {
     "cell": [
      26.75,
-     38.9837,
-     19.8253,
-     11.8291,
-     4.1517,
+     35.943749,
+     19.825291,
+     11.829114,
+     4.151669,
      "2022-08-09",
      186469
     ],
     "was": [
      26.75,
-     35.9437,
-     19.8253,
-     11.8291,
-     4.1517,
+     38.9837,
+     19.825291,
+     11.829114,
+     4.151669,
      "2022-08-09",
      186469
     ],
     "src": "bsexbrl:540611_982022195250_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.94 -> 38.98, dii 19.83 -> 19.83. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-holders Others Foreign Companies 3.04 3.04 Camas Investments Pte. Ltd. 3.04 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 238,907,039 on 664,669,224 = 35.943749; Camas Investments Pte. Ltd. 20,208,728 on the own 'Foreign Companies' row - out. fii 38.9837 -> 35.943749; dii untouched.",
+    "superseded": {
+     "cell": [
+      26.75,
+      38.9837,
+      19.8253,
+      11.8291,
+      4.1517,
+      "2022-08-09",
+      186469
+     ],
+     "was": [
+      26.75,
+      35.9437,
+      19.8253,
+      11.8291,
+      4.1517,
+      "2022-08-09",
+      186469
+     ],
+     "src": "bsexbrl:540611_982022195250_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.94 -> 38.98, dii 19.83 -> 19.83. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-holders Others Foreign Companies 3.04 3.04 Camas Investments Pte. Ltd. 3.04 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    }
    }
   },
   "AURUM": {
@@ -23745,24 +23811,46 @@
    "2021-10-27": {
     "cell": [
      55.93,
-     20.8505,
+     19.441301,
      19.4398,
-     11.6707,
-     2.1234,
+     11.671166,
+     2.123483,
      "2021-11-08",
      701306
     ],
     "was": [
      55.93,
-     19.4405,
-     19.4098,
-     11.6707,
-     2.1234,
+     20.8505,
+     19.4398,
+     11.671166,
+     2.123483,
      "2021-11-08",
      701306
     ],
     "src": "bsexbrl:532454_711202104914_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 19.44 -> 20.85, dii 19.41 -> 19.44. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 1.63 public=0.00 fii=0.00  keyword; R1-domestic-label Other LICI MARKET PLUS NON UNIT FUND 3.84 public=0.00 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03; R2FII-holders Others FOREIGN BODIES CORPORATES 2.52 1.41 GOVERNMENT OF SINGAPORE 1.41 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 1,143,987,364 on 5,884,314,930 = 19.441301; GOVERNMENT OF SINGAPORE 82,860,188 is on this filing's own 'FOREIGN BODIES CORPORATES' row - out. fii 20.8505 -> 19.441301; dii untouched.",
+    "superseded": {
+     "cell": [
+      55.93,
+      20.8505,
+      19.4398,
+      11.6707,
+      2.1234,
+      "2021-11-08",
+      701306
+     ],
+     "was": [
+      55.93,
+      19.4405,
+      19.4098,
+      11.6707,
+      2.1234,
+      "2021-11-08",
+      701306
+     ],
+     "src": "bsexbrl:532454_711202104914_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 19.44 -> 20.85, dii 19.41 -> 19.44. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-domestic-label Other Qualified Institutional Buyer 1.63 public=0.00 fii=0.00  keyword; R1-domestic-label Other LICI MARKET PLUS NON UNIT FUND 3.84 public=0.00 fii=0.00  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.03; R2FII-holders Others FOREIGN BODIES CORPORATES 2.52 1.41 GOVERNMENT OF SINGAPORE 1.41 fii(new-format:InstitutionsForeignPortfolioInvestorOne)"
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -121308,7 +121396,7 @@
    "2020-08-03": {
     "cell": [
      40.0,
-     35.1197,
+     27.329685,
      6.1099,
      4.1929,
      0.0,
@@ -121317,15 +121405,37 @@
     ],
     "was": [
      40.0,
-     27.3297,
-     13.3199,
+     35.1197,
+     6.1099,
      4.1929,
      0.0,
      "2020-08-06",
      368127
     ],
     "src": "bsexbrl:541153_68202016421_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 27.33 -> 35.12, dii 13.32 -> 6.11. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 8.44 public=0.65 fii=7.79 CALADIUM INVESTMENT PTE LTD 7.79 foreign->fii(new-format:ForeignDirectInvestment) keyword; R2-label Others Qualified Institutional Buyer 1.23 "
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 440,087,086 on 1,610,289,642 = 27.329685; CALADIUM INVESTMENT PTE LTD 125,444,201 sits in the institutions block under this filing's own category 'Overseas Corporate Bodies' (company-type) - out. (DII 6.1099 vs the filing's domestic rows 4.8768: a separate R1 question, passed to the DII session.) fii 35.1197 -> 27.329685; dii untouched.",
+    "superseded": {
+     "cell": [
+      40.0,
+      35.1197,
+      6.1099,
+      4.1929,
+      0.0,
+      "2020-08-06",
+      368127
+     ],
+     "was": [
+      40.0,
+      27.3297,
+      13.3199,
+      4.1929,
+      0.0,
+      "2020-08-06",
+      368127
+     ],
+     "src": "bsexbrl:541153_68202016421_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 27.33 -> 35.12, dii 13.32 -> 6.11. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 8.44 public=0.65 fii=7.79 CALADIUM INVESTMENT PTE LTD 7.79 foreign->fii(new-format:ForeignDirectInvestment) keyword; R2-label Others Qualified Institutional Buyer 1.23 "
+    }
    },
    "2019-10-21": {
     "cell": [
@@ -319909,7 +320019,7 @@
    "2020-06-12": {
     "cell": [
      40.0,
-     19.9583,
+     11.63875,
      11.1067,
      2.711,
      8.1933,
@@ -319918,15 +320028,37 @@
     ],
     "was": [
      40.0,
-     11.3683,
-     11.3667,
+     19.9583,
+     11.1067,
      2.711,
      8.1933,
      "2020-06-16",
      948169
     ],
     "src": "bsexbrl:539437_1662020133625_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 11.37 -> 19.96, dii 11.37 -> 11.11. R2-FII (\u00a7159 rules), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.27; R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Overseas Corporate Bodies 8.32 8.32 CLOVERDELL INVESTMENT LTD 8.32 fii(new-format~:ForeignDirectInvestment); D1-unnamed-remainder-in-dii 0.27"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 644,846,626 + the unnamed institutions 'Any Other' rest 15,343,307 (D1) on 5,672,343,720 = 11.638750; CLOVERDELL INVESTMENT LTD 471,733,265 is on this filing's own 'Overseas Corporate Bodies' line - out. fii 19.9583 -> 11.63875; dii untouched.",
+    "superseded": {
+     "cell": [
+      40.0,
+      19.9583,
+      11.1067,
+      2.711,
+      8.1933,
+      "2020-06-16",
+      948169
+     ],
+     "was": [
+      40.0,
+      11.3683,
+      11.3667,
+      2.711,
+      8.1933,
+      "2020-06-16",
+      948169
+     ],
+     "src": "bsexbrl:539437_1662020133625_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 11.37 -> 19.96, dii 11.37 -> 11.11. R2-FII (\u00a7159 rules), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.27; R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Overseas Corporate Bodies 8.32 8.32 CLOVERDELL INVESTMENT LTD 8.32 fii(new-format~:ForeignDirectInvestment); D1-unnamed-remainder-in-dii 0.27"
+    }
    },
    "2021-04-06": {
     "cell": [
@@ -361638,7 +361770,7 @@
    "2020-09-02": {
     "cell": [
      13.62,
-     53.3465,
+     53.339479,
      20.0344,
      12.3811,
      5.2019,
@@ -361647,20 +361779,43 @@
     ],
     "was": [
      13.62,
-     52.1865,
-     17.8444,
+     53.3465,
+     20.0344,
      12.3811,
      5.2019,
      "2020-09-07",
      371887
     ],
     "src": "bsexbrl:532187_79202017149_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 52.19 -> 53.35, dii 17.84 -> 20.03. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.34 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.34(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.85; R2FII-holders Bodies Corporate 4.16 1.16 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.34 stay(new-format:ProvidentFundsOrPensionFunds); Aia Company Limited 1.16 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 353,659,146 + 'Foreign Bank' 42 + AIA Company Limited 7,830,152 - named under this filing's own 'Foreign Portfolio Investor (Category - III)' label (no category total row; part 81 parser rule) = 361,489,340 on 677,714,342 = 53.339479 (exact count replaces 53.3465). (DII 20.0344 vs domestic rows 18.6901: DII session.) fii 53.3465 -> 53.339479; dii untouched.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      13.62,
+      53.3465,
+      20.0344,
+      12.3811,
+      5.2019,
+      "2020-09-07",
+      371887
+     ],
+     "was": [
+      13.62,
+      52.1865,
+      17.8444,
+      12.3811,
+      5.2019,
+      "2020-09-07",
+      371887
+     ],
+     "src": "bsexbrl:532187_79202017149_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 52.19 -> 53.35, dii 17.84 -> 20.03. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.34 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.34(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.85; R2FII-holders Bodies Corporate 4.16 1.16 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.34 stay(new-format:ProvidentFundsOrPensionFunds); Aia Company Limited 1.16 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    }
    },
    "2020-09-04": {
     "cell": [
      14.69,
-     53.3478,
+     53.350743,
      17.3752,
      11.3922,
      5.0399,
@@ -361669,15 +361824,38 @@
     ],
     "was": [
      14.69,
-     52.2178,
-     16.5452,
+     53.3478,
+     17.3752,
      11.3922,
      5.0399,
      "2020-09-09",
      403208
     ],
     "src": "bsexbrl:532187_99202018148_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 52.22 -> 53.35, dii 16.55 -> 17.38. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.83; R2FII-holders Bodies Corporate 3.67 1.13 AIA Company Limited 1.13 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 361,800,772 + 'Foreign Bank' 42 + AIA Company Limited 7,830,152 (own 'Foreign Portfolio Investor (Category - III)' label) on 692,831,819 = 53.350743 (exact count replaces 53.3478). fii 53.3478 -> 53.350743; dii untouched.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      14.69,
+      53.3478,
+      17.3752,
+      11.3922,
+      5.0399,
+      "2020-09-09",
+      403208
+     ],
+     "was": [
+      14.69,
+      52.2178,
+      16.5452,
+      11.3922,
+      5.0399,
+      "2020-09-09",
+      403208
+     ],
+     "src": "bsexbrl:532187_99202018148_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 52.22 -> 53.35, dii 16.55 -> 17.38. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.83; R2FII-holders Bodies Corporate 3.67 1.13 AIA Company Limited 1.13 fii(new-format:InstitutionsForeignPortfolioInvestorTwo)"
+    }
    },
    "2021-02-18": {
     "cell": [
@@ -365055,7 +365233,7 @@
    "2018-02-06": {
     "cell": [
      61.96,
-     16.8749,
+     15.485618,
      4.4807,
      3.987,
      0.1031,
@@ -365064,20 +365242,42 @@
     ],
     "was": [
      61.96,
-     15.4849,
-     4.1807,
+     16.8749,
+     4.4807,
      3.987,
      0.1031,
      "2018-02-07",
      53614
     ],
     "src": "bsexbrl:523405_622018201920_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.48 -> 16.87, dii 4.18 -> 4.48. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Other Systematically Important NBFC 0.22 ; R3-nbfc NBFCsRegisteredWithRbi 0.08; R2FII-holders NRI 1.76 1.39 Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 129,738,073 on 837,797,173 = 15.485618; Vikram Shankar Pandit 11,646,939 is a person on this filing's own 'NRI' row - out. (DII 4.4807 vs domestic rows 4.2570: DII session.) fii 16.8749 -> 15.485618; dii untouched.",
+    "superseded": {
+     "cell": [
+      61.96,
+      16.8749,
+      4.4807,
+      3.987,
+      0.1031,
+      "2018-02-07",
+      53614
+     ],
+     "was": [
+      61.96,
+      15.4849,
+      4.1807,
+      3.987,
+      0.1031,
+      "2018-02-07",
+      53614
+     ],
+     "src": "bsexbrl:523405_622018201920_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.48 -> 16.87, dii 4.18 -> 4.48. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Other Systematically Important NBFC 0.22 ; R3-nbfc NBFCsRegisteredWithRbi 0.08; R2FII-holders NRI 1.76 1.39 Vikram Shankar Pandit 1.39 fii(new-format:ForeignDirectInvestment)"
+    }
    },
    "2020-06-12": {
     "cell": [
      54.88,
-     26.8151,
+     25.593956,
      8.4056,
      7.9,
      0.3154,
@@ -365086,15 +365286,37 @@
     ],
     "was": [
      54.88,
-     25.5951,
-     8.3456,
+     26.8151,
+     8.4056,
      7.9,
      0.3154,
      "2020-06-13",
      58437
     ],
     "src": "bsexbrl:523405_1262020222921_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 25.60 -> 26.82, dii 8.35 -> 8.41. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others ROYAL SUNDARAM GENERAL INSURANCE CO. LIMITED 0.05 ; R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Non-Resident Indian (NRI) 1.44 1.22 Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 243,456,017 on 951,224,647 = 25.593956; Vikram Shankar Pandit 11,646,939 on the own 'Non-Resident Indian (NRI)' row - out. (DII 8.4056 vs 8.3559: DII session.) fii 26.8151 -> 25.593956; dii untouched.",
+    "superseded": {
+     "cell": [
+      54.88,
+      26.8151,
+      8.4056,
+      7.9,
+      0.3154,
+      "2020-06-13",
+      58437
+     ],
+     "was": [
+      54.88,
+      25.5951,
+      8.3456,
+      7.9,
+      0.3154,
+      "2020-06-13",
+      58437
+     ],
+     "src": "bsexbrl:523405_1262020222921_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 25.60 -> 26.82, dii 8.35 -> 8.41. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others ROYAL SUNDARAM GENERAL INSURANCE CO. LIMITED 0.05 ; R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Non-Resident Indian (NRI) 1.44 1.22 Vikram Shankar Pandit 1.22 fii(new-format:ForeignDirectInvestment)"
+    }
    },
    "2015-12-31": {
     "cell": [
@@ -385813,24 +386035,46 @@
    "2022-08-10": {
     "cell": [
      0.0,
-     46.5566,
+     17.257315,
      5.9792,
-     4.3483,
-     1.2212,
+     4.348449,
+     1.221232,
      "2022-08-11",
      1761017
     ],
     "was": [
      0.0,
-     17.2566,
-     5.9692,
-     4.3483,
-     1.2212,
+     46.5566,
+     5.9792,
+     4.348449,
+     1.221232,
      "2022-08-11",
      1761017
     ],
     "src": "bsexbrl:543320_11820220355_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.26 -> 46.56, dii 5.97 -> 5.98. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Others Foreign Companies 37.44 22.76 Antfin Singapore Holding Pte Ltd 6.44 fii(new-format:ForeignDirectInvestment); Sci Growth Investments II 4.20 fii(new-format:ForeignDirectInvestment); Svf Growth (Singapore) Pte. Ltd 3.36 stay(new-format:OtherNonInstitutions); Macritchie Investments Pte Ltd 2.86 fii(new-format:ForeignDirectInvestment); Internet Fund VI Pte. Ltd. 2.14 stay(new-format~:OtherNonInstitutions); Dunearn Investments (Mauritius) Pte Ltd 2.00 fii(new-format:ForeignDirectInvestment); Kora Investments I LLC 1.98 fii(new-format:ForeignDirectInvestment); Vy Investments Mauritius Limited 1.96 fii(new-format:ForeignDirectInvestment); Ko"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row' - same class: a 27-Sep \u00a7164q event-row entry that placed a holder where the company's 2022 form lists it (\u00a7158 R1 / \u00a7159 R2-FII, retired by option 1 'follow the filing's own line'): FPI 1,475,270,128 + FVCI 12,200 on 8,548,736,288 = 17.257315; the 2,504,718,609 shares added before sit inside this filing's own 'Foreign Companies' row 3,200,437,489 (company-type) - out. fii 46.5566 -> 17.257315; dii untouched.",
+    "superseded": {
+     "cell": [
+      0.0,
+      46.5566,
+      5.9792,
+      4.3483,
+      1.2212,
+      "2022-08-11",
+      1761017
+     ],
+     "was": [
+      0.0,
+      17.2566,
+      5.9692,
+      4.3483,
+      1.2212,
+      "2022-08-11",
+      1761017
+     ],
+     "src": "bsexbrl:543320_11820220355_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 17.26 -> 46.56, dii 5.97 -> 5.98. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R3-nbfc NBFCsRegisteredWithRbi 0.01; R2FII-holders Others Foreign Companies 37.44 22.76 Antfin Singapore Holding Pte Ltd 6.44 fii(new-format:ForeignDirectInvestment); Sci Growth Investments II 4.20 fii(new-format:ForeignDirectInvestment); Svf Growth (Singapore) Pte. Ltd 3.36 stay(new-format:OtherNonInstitutions); Macritchie Investments Pte Ltd 2.86 fii(new-format:ForeignDirectInvestment); Internet Fund VI Pte. Ltd. 2.14 stay(new-format~:OtherNonInstitutions); Dunearn Investments (Mauritius) Pte Ltd 2.00 fii(new-format:ForeignDirectInvestment); Kora Investments I LLC 1.98 fii(new-format:ForeignDirectInvestment); Vy Investments Mauritius Limited 1.96 fii(new-format:ForeignDirectInvestment); Ko"
+    }
    },
    "2023-03-31": {
     "cell": [
@@ -436973,7 +437217,7 @@
    "2016-09-26": {
     "cell": [
      32.47,
-     30.7524,
+     28.660423,
      2.8049,
      1.0522,
      1.6795,
@@ -436982,15 +437226,37 @@
     ],
     "was": [
      32.47,
-     15.3824,
-     16.0749,
+     30.7524,
+     2.8049,
      1.0522,
      1.6795,
      "2016-10-05",
      226248
     ],
     "src": "bsexbrl:502742_5102016165556_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.38 -> 30.75, dii 16.07 -> 2.80. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Institutional Investors 13.27 public=0.00 fii=13.27 BARCLAYS MERCHANT BANK (SINGAPORE) LTD. 4.56 foreign->fii(documented:filing); MORGAN STANLEY ASIA (SINGAPORE) PTE. 1.66 foreign->fii(curated) keyword; R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii; R2FII-holders Other Foreign Companies 2.97 2.09 Government Of Singapore 2.09 fii(curated)"
+    "why": "\u00a7164r batch 30 part 83 (2026-10-12, user: 'look into the SINTEX Sep-2016 event row'; option 1 'follow the filing's own line'): 502742_5102016165556_SHP.xml (as on 2016-09-26): FPI 80,520,348 + the institutions row the filing labels 'Foreign Institutional Investors' 69,473,956 (Barclays Merchant Bank Singapore / Morgan Stanley Asia named under it) + the Non-Institutions 'Foreign Portfolio Investors (Category III)' row 35,165 = 150,029,469 on 523,472,621 = 28.660423. Government Of Singapore 10,943,673 sits under the filing's own 'Foreign Companies' category (company-type) - the 27-Sep entry had moved it in by the company's 2022-form placement (\u00a7159, retired). fii 30.7524 -> 28.660423; dii untouched.",
+    "superseded": {
+     "cell": [
+      32.47,
+      30.7524,
+      2.8049,
+      1.0522,
+      1.6795,
+      "2016-10-05",
+      226248
+     ],
+     "was": [
+      32.47,
+      15.3824,
+      16.0749,
+      1.0522,
+      1.6795,
+      "2016-10-05",
+      226248
+     ],
+     "src": "bsexbrl:502742_5102016165556_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 15.38 -> 30.75, dii 16.07 -> 2.80. R1-R3 (\u00a7158 rules, first read), R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-fii-label Other Foreign Institutional Investors 13.27 public=0.00 fii=13.27 BARCLAYS MERCHANT BANK (SINGAPORE) LTD. 4.56 foreign->fii(documented:filing); MORGAN STANLEY ASIA (SINGAPORE) PTE. 1.66 foreign->fii(curated) keyword; R2FII-label Foreign Portfolio Investors (Category III) 0.01 0.01 FII-labelled row 0.01 -> fii; R2FII-holders Other Foreign Companies 2.97 2.09 Government Of Singapore 2.09 fii(curated)"
+    }
    },
    "2015-06-30": {
     "cell": [
