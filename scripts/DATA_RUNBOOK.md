@@ -28001,3 +28001,16 @@ Sat 10 Oct: 3), first real day of a season 13-20 (Tue 14 Jul: 13; Mon 12 Oct: 20
 `corporate-announcements` (index=equities AND sme) + BSE `AnnSubCategoryGetData strCat=Result` with docs/results_feed.json for the
 day; for any outcome caption not in the feed, test it against RESULT_CAP_RE before touching the filter, and add the phrasing as a
 measured branch (re-run the Aug snapshot count: new/lost).
+**Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
+filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL
+or neighbouring quarters). Page era: a page whose own row (C) 'Shares held by Custodians and against which Depository Receipts have been
+issued' holds shares -> (A+B). Measured (`~/stocks-cache/shp/ownbase/measure_page.py` over the 187 companies of
+audit_all/dr_codes_from_pages.json): 2,521 PIT-N500 cells already on (A+B), 275 indistinguishable, 764 still on (A+B+C) - the §164a
+'INSIDE' / 'keep as printed' companies (INFY, WIPRO, DRREDDY, TMPV, HINDALCO, GRASIM, ULTRACEMCO, TATAPOWER, APOLLOHOSP, ASHOKLEY,
+VIDEOIND, KESORAMIND, JSL, ESSAROIL, LICHSGFIN, APTECHT, INDORAMA, INDSWFTLAB, TATASTEEL, KOTAKBANK, COX&KINGS, GTOFFSHORE, AFTEK, VEDL,
+VAIBHAVGBL, RASOYPR) -> all five slots x total(A+B+C)/(A+B) of the same page (INFY Mar-10 prom 16.05 -> 19.72 = the page's (A+B)
+column). This supersedes §164a's company-level selection for the page era. XBRL era (`measure_xbrl.py`, PIT-N500 filings with C1 > 0):
+1,000 already on total - C1, 260 indistinguishable; SUNDARMFIN Jun-19 (part 31's employee-trust re-class undone), GFLLIMITED Sep-18;
+CESC 2017 x3 were row errors (Sep-17 'Foreign Bank' row left out; Jun-17 had borrowed the Sep-17 label - option 1). Known seam left by
+design: INFY / WIPRO Sep-15 page (A+B) -> Dec-15 XBRL (DRs inside public). KARURVYSYA / SUNDARMFIN cached lists are scrip 600001 -
+their XBRL-era C1 check needs the real lists (590003 / 590071).
