@@ -214751,7 +214751,7 @@
    "2015-06-30": {
     "cell": [
      59.6708,
-     29.2728,
+     25.013878,
      4.2072,
      2.007,
      2.1793,
@@ -214759,19 +214759,18 @@
     ],
     "was": [
      59.6708,
-     29.27,
+     29.2728,
      4.2072,
      2.007,
      2.1793,
      "2015-07-21"
     ],
-    "src": "bseaspx:531642:86",
-    "why": "\u00a7164r batch 30 part 32 (2026-10-06, per-company review): precision only: 'Foreign Institutional Investors' 161,360,872 + 'Foreign Venture Capital Investors' 4,770,649 + the institutions 'Others' row 22,702,894 (the company's FPI Corporate category of Mar-2015, rule B) on 645,085,399. fii 29.27 -> 29.2728.",
-    "exact": true,
+    "src": "bsepage:531642 Jun-2015",
+    "why": "\u00a7164r batch 30 part 78 (2026-10-12, user: 'move marico to 25.01' - consensus rule: Moneycontrol 25.01 (captures 13-Sep..21-Nov-2015) = Quantmac 25.01, Screener has no 2015 figure, user decided): computed from the filing - BSE page Jun-2015 'Foreign Institutional Investors' 161,360,872 / (A+B) 645,085,399 = 25.013878. The 'Foreign Venture Capital Investors' 4,770,649 and institutions 'Others' 22,702,894 rows are no longer counted in this cell. fii 29.2728 -> 25.013878; dii untouched (holds neither row).",
     "superseded": {
      "cell": [
       59.6708,
-      29.27,
+      29.2728,
       4.2072,
       2.007,
       2.1793,
@@ -214779,18 +214778,19 @@
      ],
      "was": [
       59.6708,
-      25.7534,
+      29.27,
       4.2072,
       2.007,
       2.1793,
       "2015-07-21"
      ],
-     "src": "bseaspx:531642_86",
-     "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 25.75 -> 29.27, dii 4.21 -> 4.21. generic-row-B Others 3.52 fii: prev 'Foreign Portolio Investor ( Corpor' 34 holders 1.92; inst-sub-fii Others 3.52. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
+     "src": "bseaspx:531642:86",
+     "why": "\u00a7164r batch 30 part 32 (2026-10-06, per-company review): precision only: 'Foreign Institutional Investors' 161,360,872 + 'Foreign Venture Capital Investors' 4,770,649 + the institutions 'Others' row 22,702,894 (the company's FPI Corporate category of Mar-2015, rule B) on 645,085,399. fii 29.27 -> 29.2728.",
+     "exact": true,
      "superseded": {
       "cell": [
        59.6708,
-       25.7534,
+       29.27,
        4.2072,
        2.007,
        2.1793,
@@ -214798,17 +214798,18 @@
       ],
       "was": [
        59.6708,
-       25.0139,
+       25.7534,
        4.2072,
        2.007,
        2.1793,
        "2015-07-21"
       ],
-      "src": "bseaspx:531642:86:New",
+      "src": "bseaspx:531642_86",
+      "why": "\u00a7160 page-era row-level heal (2026-09-25, DII = Institutions(Domestic), FII = Institutions(Foreign) in every format): fii 25.75 -> 29.27, dii 4.21 -> 4.21. generic-row-B Others 3.52 fii: prev 'Foreign Portolio Investor ( Corpor' 34 holders 1.92; inst-sub-fii Others 3.52. Evidence: _shp_aspx_rowfix_audit.json (\u00a7160c)",
       "superseded": {
        "cell": [
         59.6708,
-        25.0139,
+        25.7534,
         4.2072,
         2.007,
         2.1793,
@@ -214817,15 +214818,34 @@
        "was": [
         59.6708,
         25.0139,
-        7.7266,
+        4.2072,
         2.007,
         2.1793,
         "2015-07-21"
        ],
-       "src": "bseaspx:531642:qtrid86",
-       "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.52pp) folded in by a minority route. Healed to the page's own domestic rows (4.2072). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
-      },
-      "why": "quantmac FII reconciliation 2026-09-22, class sweep (runbook \u00a7142e): stored fii is the page's FII row alone (25.01); the same Clause-35 page prints FPI 0.00 / FVCI 0.74. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept. Supersedes the bseaspx:531642:qtrid86 entry (dii left as that entry set it; its cell is this entry's `was`)."
+       "src": "bseaspx:531642:86:New",
+       "superseded": {
+        "cell": [
+         59.6708,
+         25.0139,
+         4.2072,
+         2.007,
+         2.1793,
+         "2015-07-21"
+        ],
+        "was": [
+         59.6708,
+         25.0139,
+         7.7266,
+         2.007,
+         2.1793,
+         "2015-07-21"
+        ],
+        "src": "bseaspx:531642:qtrid86",
+        "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (3.52pp) folded in by a minority route. Healed to the page's own domestic rows (4.2072). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+       },
+       "why": "quantmac FII reconciliation 2026-09-22, class sweep (runbook \u00a7142e): stored fii is the page's FII row alone (25.01); the same Clause-35 page prints FPI 0.00 / FVCI 0.74. Re-derived by today's reader (fetch_shp_bse_aspx._attempt: FII+FPI+FVCI, dii=mf+banks+ins[+recon Any-Others]); sub date kept. Supersedes the bseaspx:531642:qtrid86 entry (dii left as that entry set it; its cell is this entry's `was`)."
+      }
      }
     }
    },
