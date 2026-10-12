@@ -28090,3 +28090,13 @@ sit below the 6th decimal. The 72 PIT-N500 filings with such rows in the nightly
 (55 to 1e-6, 17 within 0.00003). Live NSE run (--quarters 2026-06-30,2026-03-31 --reparse, 6 companies): only KRBL moved (7.28 ->
 7.41, 7.76 -> 7.89 - no ledger had covered it). guard_shp_definition now carries a HEG Mar-2024 fixture (6.912116; fails with the flag
 off). Older quarters change only when re-parsed; the nightly top-up re-reads the last 3 quarter-ends.
+**Part 82 (2026-10-12, user: "reparse the older quarters too") - older quarters on the part 81 rule, through the ledger.** A blind
+`--reparse` of old quarters would replace raw values that hundreds of cell_fix entries guard by `was`, silently dropping their heals, so
+each stored cell was compared with ITS OWN filing read both ways (`~/stocks-cache/shp/ownbase/reparse82/`): of the PIT-N500 cells whose
+filing has such rows, 903 + 12 event already = the new read, 329 include the rows at printed precision, 585 + 14 event = the old read
+(rows missing), 13 = a ledger reading minus the rows (RBLBANK x7 - its FPI Cat-III row, distinct from Asian Development Bank on the
+institutions line -, SPTL x3, SOMANYCERA x2, WELCORP), 2 other decisions left as they are (RELIANCE Jun-17 rows 0.000015 pp; SINTEX
+2016-09-26 event, stored 30.75 vs own line 28.66 - open). Written 598 (moves < 0.0001 pp skipped). 17 of them sat inside §226's
+re-assert window (the 4-dp print they replaced already held the rows; §226's exact read did not): their shp_rebase226 fii `new` now =
+the part 82 value. Non-N500 (outside scope, parked): 279 + 5 event cells read without the rows, 4 missing, 10 other; 380 cached filings
+of 76 companies with no cached BSE list - all non-N500.
