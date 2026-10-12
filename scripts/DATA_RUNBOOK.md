@@ -27917,4 +27917,12 @@ and SONATSOFTW Mar-2015 (2015-04-20, 05-13) carry the revision's figures -> back
 have no reading before the revision and stay at it. NOT a fix: JUSTDIAL Mar-2016 - the 2016-04-23 reading (FPI 39.06) differs from the
 revision (FPI 5.08), so the original is missing (OUR ERROR, open until its document is read); AUBANK Jun-2018 - no reading (UNKNOWN).
 OPEN: the same test for every other revision-only quarter (§164b batch 6f entries, src 'bse-revision').
+**Part 65 (2026-10-12) - option 1 in the PAGE era (65 cells).** `~/stocks-cache/shp/ownline/pageown.py` reads BSE's
+ShareholdingPattern.aspx page: FII = 'Foreign Institutional Investors' / 'Foreign Venture Capital' / 'Qualified Foreign Investor' / FPI
+rows + institutions 'Any Others' sub-rows the page labels foreign + unlabelled / name-only institutions sub-rows (user 11-Oct) +
+Non-Institutions rows labelled FII / FPI / 'Foreign Investors' / 'Foreign Bank(s)'; company-type lines (Foreign Corporate Bodies, OCB,
+Foreign Nationals) out; base (A+B). Of 280 PIT-N500 page cells carrying cross-filing ledger moves: 153 already = the page's own lines,
+65 written (ITC 2006-15 x36 - Tobacco Manufacturers / BAT on 'Foreign Corporate Bodies', gap = that row exactly; ADANIPOWER 2010-15 x19 -
+3i Power / Opal on 'Foreign Corporate Bodies' / 'Others'; MFSL 2008-11 x9 - Parkville on 'Foreign Corporate Bodies'; VINDHYATEL Sep-07),
+62 held: Jun/Sep-2015 pages where BSE dropped the row labels ('Others') - each needs the company's own document of that quarter.
 
