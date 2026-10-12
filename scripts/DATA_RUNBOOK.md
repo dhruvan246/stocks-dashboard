@@ -27925,4 +27925,9 @@ Foreign Nationals) out; base (A+B). Of 280 PIT-N500 page cells carrying cross-fi
 65 written (ITC 2006-15 x36 - Tobacco Manufacturers / BAT on 'Foreign Corporate Bodies', gap = that row exactly; ADANIPOWER 2010-15 x19 -
 3i Power / Opal on 'Foreign Corporate Bodies' / 'Others'; MFSL 2008-11 x9 - Parkville on 'Foreign Corporate Bodies'; VINDHYATEL Sep-07),
 62 held: Jun/Sep-2015 pages where BSE dropped the row labels ('Others') - each needs the company's own document of that quarter.
+**Part 66 (2026-10-12) - 2022+ form, Non-Institutions rows the filing labels FPI (Category III / Individual) or Foreign Bank: 392 PIT-N500
+cells.** Our new-form parser read only Institutions (Foreign); found from Quantmac v8 HEG / KRBL (Quantmac counts FPI Cat III). 394 cells
+held exactly Institutions (Foreign); 366 move (mostly < 0.01 pp; 15 >= 0.01); 26 moves below 0.0002 pp are re-asserted back by the §226
+rebase ledger (cur within 0.000051 of its `old`) and left as they are; 4 cells that fit neither shape held. NOTE: fetch_shareholding's
+daily NSE parse must also count these rows going forward (open).
 
