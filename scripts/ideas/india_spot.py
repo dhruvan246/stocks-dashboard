@@ -603,7 +603,7 @@ GC_ITEMS = [   # (CAS, our name, caveat or '') - every CAS here was fetched and 
     # dye intermediates
     ('90-20-0', 'H-acid', 'Guidechem supplier quote; it shows no rise while SCI99 (95 CNY/kg, 28-Aug-2026) and Baiinfo '
                           '(~150,000 CNY/t, 1-Sep-2026) reported a spike in the news - unconfirmed, read for direction only'),
-    ('2494-89-5', 'Vinyl sulphone (para base ester)', ''), ('135-19-3', 'Beta naphthol', ''), ('87-02-5', 'J acid', ''),
+    ('2494-89-5', 'Vinyl sulphone (para base ester)', ''), ('135-19-3', 'Beta naphthol', 'Guidechem supplier quote of ~115,000 CNY/t (2026-10-10) is unusually high next to its H-acid quote and has not been checked against a second source - read for direction only'), ('87-02-5', 'J acid', ''),
     ('130-13-2', 'Sodium naphthionate', ''), ('91-20-3', 'Naphthalene', ''), ('108-45-2', 'm-Phenylenediamine', ''),
     ('123-30-8', 'Para-aminophenol', ''),
     # benzene chain: nitro/chloro aromatics, aniline
