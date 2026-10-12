@@ -28120,3 +28120,12 @@ holder on its own OCB line, no institutions foreign line), AUBANK 2022-06-12 / 0
 total row - the parser (part 81) now also counts such a holder row when no category row of that label exists (20 rows in 56,575 cached
 filings; gate re-run: 2,802 changed, all = their rows; 3 rows of 4 / 8 shares below the 6th decimal). DII gaps passed to the DII session:
 BANDHANBNK 2020-08-03, JMFINANCIL x2, INDUSINDBK 2020-09-02. Out of scope (non-N500, parked): QUICKHEAL, HUBTOWN holder-only rows.
+**Part 84 (2026-10-12, user: "fix the non-N500 cells too") - part 82's method for every company outside the PIT Nifty 500.** Cells whose
+own filing carries Non-Institutions FPI / FII / QFI / foreign-bank category rows (or an FPI-labelled holder row with no category total):
+430 + 14 event cells = the read without the rows -> the new read; 57 + 4 event cells = a ledger reading minus the rows -> rows added;
+178 include them at printed precision; moves < 0.0001 pp skipped (47). Two decided by reading the filing: KIMS Sep-2021 -> 27.329754 (its
+own 'Foreign Portfolio Investor (Category - III)' category 13,952,049 with General Atlantic under it - part 51 had put the holder on a
+public line; part 58 already read Dec-21..Jun-22 this way) and ETERNAL Sep-2021 42.74 -> 10.2729 (§159 2022-form placement, retired).
+JISLJALEQS Jun-2025 re-filing row 5.1918 -> 6.123802 (#rev; its own 'Qualified Fore. Investor-Corporate' 6,658,233). Trap found and
+closed: part 82's comparison kept only the FIRST filing it met per quarter; re-checking every version of multi-filing quarters found 3
+more (JISLJALEQS Jun-2025 original 5.5226 -> 6.513811; UPL Dec-21 / Jun-22 +0.0007 / +0.0004, PIT-N500) - written as 84b. 507 + 3 + 1 cells.
