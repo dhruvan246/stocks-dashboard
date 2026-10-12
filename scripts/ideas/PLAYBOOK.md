@@ -254,7 +254,11 @@ scans every NSE stock on the live adjusted sf-data closes (+ that evening's NSE 
 all-time-high peak (since 2019) from the lowest close in the ~2 years before, fell >= 50%, and is now within 15%
 below that peak (near) or closed above it in the last 60 sessions (broke). Median turnover >= Rs 50 lakh/day.
 Ideas page tab "Breakout watch" (docs/ideas/breakout_watch.json, rebuilt by ideas-feeds.yml). Price patterns
-only - a candidate for research, never a reason by itself. Not covered yet: BSE-only stocks.
+only - a candidate for research, never a reason by itself. BSE-only stocks (user, 2026-10-13) come from
+docs/bse_prices.bin, which keeps BSE's raw closes: a 30%+ one-day fall is adjusted only where BSE's own
+corporate-action list announces a bonus/split within 5 days with a matching factor (cached in
+docs/ideas/bse_ca_breakout.json, re-read every 30 days); an unannounced cliff is kept as a real fall and the row
+is marked 'cliff'. Rows say NSE or 'BSE only'.
 
 ### Trade-protection filings and generic headings (user, 2026-10-12)
 

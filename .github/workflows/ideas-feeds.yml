@@ -186,7 +186,7 @@ jobs:
           for f in ['govt.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'moil_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
                     'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json',
-                    'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json', 'orderwins_tracker.json', 'breakout_watch.json']:
+                    'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json', 'orderwins_tracker.json', 'breakout_watch.json', 'bse_ca_breakout.json']:
               try:
                   json.load(open('docs/ideas/' + f))
               except Exception as e:
@@ -229,7 +229,7 @@ jobs:
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
                  docs/ideas/updates_queue.json docs/ideas/order_book.json docs/ideas/orderbook_signals.json docs/ideas/orderbook_tracker.json \
                  docs/ideas/order_wins.json docs/ideas/orderwins_signals.json docs/ideas/orderwins_tracker.json \
-                 docs/ideas/breakout_watch.json"
+                 docs/ideas/breakout_watch.json docs/ideas/bse_ca_breakout.json"
           DIRS="docs/ideas/trade docs/ideas/scan"
 
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: this is the tree every builder read

@@ -286,7 +286,7 @@
   <!-- ===== BREAKOUT WATCH ===== -->
   <section id="view-bo" class="view" hidden>
     <h2 class="text-lg font-semibold mb-1">Breakout watch</h2>
-    <p class="muted text-sm mb-2">Stocks that <b>rose a lot, fell a lot, and are back at their old peak</b> — the Cupid pattern (₹2.40 → ₹27.39 in 2023-24, −58% to ₹11.52 by Apr-2025, through the old high on 18-Jul-2025, then 12.5×). Every NSE stock, bonus/split-adjusted closes, rebuilt every evening. <b>Price patterns only</b>: nothing here says why a stock moved — open the stock page and its filings before acting.</p>
+    <p class="muted text-sm mb-2">Stocks that <b>rose a lot, fell a lot, and are back at their old peak</b> — the Cupid pattern (₹2.40 → ₹27.39 in 2023-24, −58% to ₹11.52 by Apr-2025, through the old high on 18-Jul-2025, then 12.5×). Every NSE stock and every BSE-only stock, bonus/split-adjusted closes, rebuilt every evening. <b>Price patterns only</b>: nothing here says why a stock moved — open the stock page and its filings before acting.</p>
     <p id="bo-meta" class="muted text-xs mb-3"></p>
     <h3 class="text-base font-semibold mb-1">Broke out recently</h3>
     <p class="muted text-sm mb-2">Closed above the old peak within the last 60 sessions, after the rise and the fall. Newest first.</p>
@@ -824,7 +824,7 @@
   // ---- breakout watch (breakout_watch.json, loaded on first open) ----------------------------
   let BO = null, boLoading = null;
   const BOS = { broke: { k: 'breakout_date', d: -1 }, near: { k: 'below_peak_pct', d: -1 } };
-  const boName = (r) => `<a class="src" href="./stock.html?sym=${encodeURIComponent(r.sym)}">${esc(r.name || r.sym)}</a><div class="muted text-xs">${esc(r.sym)}</div>`;
+  const boName = (r) => `<a class="src" href="./stock.html?sym=${encodeURIComponent(r.sym)}">${esc(r.name || r.sym)}</a><div class="muted text-xs">${esc(r.sym)}${r.exchange === 'BSE' ? ` · <span class="pill" title="Listed on BSE only (code ${esc(r.bse || '')})">BSE only</span>` : ''}${r.unannounced_cliff ? ' <span class="pill" style="color:#b45309" title="Its price history has a one-day fall of 30%+ with no bonus or split announced on BSE near that date - kept as a real fall; check before trusting the pattern">⚠ cliff</span>' : ''}</div>`;
   const boRise = (r) => `${r.rise_x}×<div class="muted text-xs">₹${fmt(r.low_before, r.low_before < 100 ? 2 : 0)} → ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}, ${dmy(r.peak_date)}</div>`;
   const boFall = (r) => `${pct(r.fall_pct)}<div class="muted text-xs">to ₹${fmt(r.trough, r.trough < 100 ? 2 : 0)}, ${dmy(r.trough_date)}</div>`;
   const drawBO = () => {
@@ -841,7 +841,7 @@
     if (BO || boLoading) return;
     boLoading = grab('./ideas/breakout_watch.json').then(j => {
       BO = j;
-      $('#bo-meta').textContent = j ? `Prices to ${j.prices_to} · ${(j.broke || []).length} broke out in the last 60 sessions · ${(j.near || []).length} near · built ${j.built || ''} · ${j.rule || ''}` : 'breakout_watch.json not published yet.';
+      $('#bo-meta').textContent = j ? `Prices to ${j.prices_to}${j.bse_only && j.bse_only.series ? ` (BSE-only: ${j.bse_only.series} stocks, prices to ${j.bse_only.prices_to})` : ''} · ${(j.broke || []).length} broke out in the last 60 sessions · ${(j.near || []).length} near · built ${j.built || ''} · ${j.rule || ''}` : 'breakout_watch.json not published yet.';
       drawBO();
     });
   };
