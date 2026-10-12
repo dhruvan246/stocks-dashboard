@@ -28176,3 +28176,7 @@ public line; part 58 already read Dec-21..Jun-22 this way) and ETERNAL Sep-2021 
 JISLJALEQS Jun-2025 re-filing row 5.1918 -> 6.123802 (#rev; its own 'Qualified Fore. Investor-Corporate' 6,658,233). Trap found and
 closed: part 82's comparison kept only the FIRST filing it met per quarter; re-checking every version of multi-filing quarters found 3
 more (JISLJALEQS Jun-2025 original 5.5226 -> 6.513811; UPL Dec-21 / Jun-22 +0.0007 / +0.0004, PIT-N500) - written as 84b. 507 + 3 + 1 cells.
+**Part 85 (2026-10-12) - two re-filing rows the live check caught.** TMPV Mar-2015 re-filing (.01 page, part 46) was still on (A+B+C):
+its own page has (C) custodian 614,310,010 -> base (A+B) 2,272,893,592, all slots x 1.270277 (fii 25.9064 -> 32.908294, promoter = the
+page's 43.63). BARODARY Dec-2022 re-filing 0.0124 -> 0.014251 (own FPI Cat-III 435 sh). Lesson: a base / row rule must also be run over
+shp_revisions.json re-filing rows - part 77 / 84 measured quarter and event cells; verify_live's stock-page pass is what surfaced these.
