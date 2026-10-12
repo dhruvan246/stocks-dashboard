@@ -146837,7 +146837,7 @@
    "2020-01-28": {
     "cell": [
      40.5,
-     14.5857,
+     14.589544,
      24.1491,
      19.2169,
      0.0,
@@ -146846,15 +146846,38 @@
     ],
     "was": [
      40.5,
-     14.4957,
-     24.2391,
+     14.5857,
+     24.1491,
      19.2169,
      0.0,
      "2020-02-05",
      50179
     ],
-    "src": "bsexbrl:517569_422020182439_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.50 -> 14.59, dii 24.24 -> 24.15. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.09; D1-unnamed-remainder-in-dii 0.09"
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 72 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): the institutions 'Any Other' line 83,827 names no holder - FII (D1). FII = FPI 12,974,462; inst-rest D1 (unnamed) 83,827 on base 89,504,438 = 14.589544. fii 14.5857 -> 14.589544; dii untouched.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.5,
+      14.5857,
+      24.1491,
+      19.2169,
+      0.0,
+      "2020-02-05",
+      50179
+     ],
+     "was": [
+      40.5,
+      14.4957,
+      24.2391,
+      19.2169,
+      0.0,
+      "2020-02-05",
+      50179
+     ],
+     "src": "bsexbrl:517569_422020182439_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.50 -> 14.59, dii 24.24 -> 24.15. D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-unresolved no typed rows 0.09; D1-unnamed-remainder-in-dii 0.09"
+    }
    },
    "2022-06-30": {
     "cell": [
@@ -206815,7 +206838,7 @@
    "2018-04-13": {
     "cell": [
      20.25,
-     43.8525,
+     43.863993,
      10.1883,
      10.1536,
      0.0,
@@ -206824,15 +206847,37 @@
     ],
     "was": [
      20.25,
-     43.5625,
-     26.1383,
+     43.8525,
+     10.1883,
      10.1536,
      0.0,
      "2018-04-27",
      33826
     ],
-    "src": "bsexbrl:532689_174201893349_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 43.56 -> 43.85, dii 26.14 -> 10.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITYFUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-rest-follows-foreign-holders 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 72 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): the named institutions 'Any Other' holders carry the own category text 'Bodies Corporate'/'Overseas Corporate Bodies' (company-type, out); the unnamed rest 141,340 of that line is FII (D1 - its named holders are not domestic). FII = FPI 20,360,071; inst-holder-own-cat-company(out):BERRY CREEK INVESTMENT LTD 3,582,585; inst-holder-own-cat-company(out):MULTIPLES PRIVATE EQUITY FUND I LIMITED 1,771,598; inst-holder-own-cat-company(out):PLENTY PRIVATE EQUITYFUND I LIMITED 1,965,507; inst-rest D1 (unnamed) 141,340 on base 46,738,588 = 43.863993. fii 43.8525 -> 43.863993; dii untouched.",
+    "superseded": {
+     "cell": [
+      20.25,
+      43.8525,
+      10.1883,
+      10.1536,
+      0.0,
+      "2018-04-27",
+      33826
+     ],
+     "was": [
+      20.25,
+      43.5625,
+      26.1383,
+      10.1536,
+      0.0,
+      "2018-04-27",
+      33826
+     ],
+     "src": "bsexbrl:532689_174201893349_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 43.56 -> 43.85, dii 26.14 -> 10.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-public-label Overseas Corporate Bodies 0.0 public=7.67 fii=0.00 BERRY CREEK INVESTMENT LTD 7.67 foreign->public(new-format:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=3.79 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 3.79 foreign->public(new-format~:ForeignCompanies) keyword; R1-public-label Overseas Corporate Bodies 0.0 public=4.21 fii=0.00 PLENTY PRIVATE EQUITYFUND I LIMITED 4.21 foreign->public(new-format:ForeignCompanies) keyword; R1-rest-follows-foreign-holders 0.29; R3-nbfc NBFCsRegisteredWithRbi 0.01"
+    }
    },
    "2019-09-03": {
     "cell": [
@@ -207040,7 +207085,7 @@
    "2020-10-09": {
     "cell": [
      18.79,
-     35.395,
+     49.484292,
      17.3172,
      15.1167,
      2.2,
@@ -207049,18 +207094,26 @@
     ],
     "was": [
      18.79,
-     35.1144,
+     35.395,
      17.3172,
      15.1167,
      2.2,
      "2020-10-10",
      161509
     ],
-    "src": "bsexbrl:532689_1010202018461_SHP.xml",
-    "why": "\u00a7164r batch 30 part 6 (2026-10-05, corrects part 3): 2020-10-09 - 532689_1010202018461_SHP.xml: FPI 19,373,701 + the institutions Any-Other block's uncovered remainder 154,788 (block 7,928,276 minus its named holder rows; no Category row) / total 55,173,017 = 35.3950 - D1. fii 35.1144 -> 35.3950.",
-    "exact": true,
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 72 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): BERRY CREEK INVESTMENT LTD 3,849,373, MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1,771,598 and PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517 are NAMED on the institutions 'Any Other' line under the bare label 'Other' (user 11-Oct: count it as foreign investment) - FII; DII holds none of them. FII = FPI 19,373,701; inst-rest D1 (unnamed) 154,788; named BERRY CREEK INVESTMENT LTD 3,849,373; MULTIPLIES PRIVATE EQUITY FUND I LIMITED 1,771,598; PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517 on base 55,173,017 = 49.484292. fii 35.395 -> 49.484292; dii untouched.",
     "superseded": {
      "cell": [
+      18.79,
+      35.395,
+      17.3172,
+      15.1167,
+      2.2,
+      "2020-10-10",
+      161509
+     ],
+     "was": [
       18.79,
       35.1144,
       17.3172,
@@ -207069,22 +207122,13 @@
       "2020-10-10",
       161509
      ],
-     "was": [
-      18.79,
-      35.3954,
-      17.3172,
-      15.1167,
-      2.2,
-      "2020-10-10",
-      161509
-     ],
      "src": "bsexbrl:532689_1010202018461_SHP.xml",
-     "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2020-10-09 - 532689_1010202018461_SHP.xml: FII rows 19,373,701 sh / total 55,173,017 = 35.1144; the block's unnamed rest follows its company-type rows -> public. fii 35.3954 -> 35.1144.",
+     "why": "\u00a7164r batch 30 part 6 (2026-10-05, corrects part 3): 2020-10-09 - 532689_1010202018461_SHP.xml: FPI 19,373,701 + the institutions Any-Other block's uncovered remainder 154,788 (block 7,928,276 minus its named holder rows; no Category row) / total 55,173,017 = 35.3950 - D1. fii 35.1144 -> 35.3950.",
      "exact": true,
      "superseded": {
       "cell": [
        18.79,
-       35.3954,
+       35.1144,
        17.3172,
        15.1167,
        2.2,
@@ -207093,22 +207137,45 @@
       ],
       "was": [
        18.79,
-       35.1154,
-       29.4872,
+       35.3954,
+       17.3172,
        15.1167,
-       0.0,
+       2.2,
        "2020-10-10",
        161509
       ],
       "src": "bsexbrl:532689_1010202018461_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.12 -> 35.40, dii 29.49 -> 17.32. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.21 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28; R2-named Others 2.2 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.20(new-format:InsuranceCompanies)"
+      "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2020-10-09 - 532689_1010202018461_SHP.xml: FII rows 19,373,701 sh / total 55,173,017 = 35.1144; the block's unnamed rest follows its company-type rows -> public. fii 35.3954 -> 35.1144.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        18.79,
+        35.3954,
+        17.3172,
+        15.1167,
+        2.2,
+        "2020-10-10",
+        161509
+       ],
+       "was": [
+        18.79,
+        35.1154,
+        29.4872,
+        15.1167,
+        0.0,
+        "2020-10-10",
+        161509
+       ],
+       "src": "bsexbrl:532689_1010202018461_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 35.12 -> 35.40, dii 29.49 -> 17.32. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.98 fii=0.00 BERRY CREEK INVESTMENT LTD 6.98 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.21 fii=0.00 MULTIPLIES PRIVATE EQUITY FUND I LIMITED 3.21 foreign->public(memory~); R1-foreign-holders Other 0.0 public=3.90 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.90 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.28; R2-named Others 2.2 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.20(new-format:InsuranceCompanies)"
+      }
      }
     }
    },
    "2021-02-01": {
     "cell": [
      17.07,
-     41.0234,
+     52.352616,
      17.1216,
      15.8589,
      1.2579,
@@ -207117,20 +207184,19 @@
     ],
     "was": [
      17.07,
-     40.7685,
+     41.0234,
      17.1216,
      15.8589,
      1.2579,
      "2021-02-02",
      142027
     ],
-    "src": "bsexbrl:532689_222021133257_SHP.xml",
-    "why": "\u00a7164r batch 30 part 6 (2026-10-05, corrects part 3): 2021-02-01 - 532689_222021133257_SHP.xml: FPI 24,758,157 + the institutions Any-Other block's uncovered remainder 154,796 (block 7,034,839 minus its named holder rows; no Category row) / total 60,728,572 = 41.0234 - D1. fii 40.7685 -> 41.0234.",
-    "exact": true,
+    "src": "bsexbrl event",
+    "why": "\u00a7164r batch 30 part 72 (2026-10-12, Quantmac v8 cell by cell, own line - mid-quarter event pattern): BERRY CREEK 3,849,373, MULTIPLES PRIVATE EQUITY FUND I 878,153 and PLENTY PRIVATE EQUITY FUND I 2,152,517 are NAMED on the institutions 'Any Other' line under the bare label 'Other' (user 11-Oct) - FII; DII holds none of them. FII = FPI 24,758,157; inst-rest D1 (unnamed) 154,796; named BERRY CREEK INVESTMENT LTD 3,849,373; MULTIPLES PRIVATE EQUITY FUND I LIMITED 878,153; PLENTY PRIVATE EQUITY FUND I LIMITED 2,152,517 on base 60,728,572 = 52.352616. fii 41.0234 -> 52.352616; dii untouched.",
     "superseded": {
      "cell": [
       17.07,
-      40.7685,
+      41.0234,
       17.1216,
       15.8589,
       1.2579,
@@ -207139,7 +207205,7 @@
      ],
      "was": [
       17.07,
-      41.0201,
+      40.7685,
       17.1216,
       15.8589,
       1.2579,
@@ -207147,12 +207213,12 @@
       142027
      ],
      "src": "bsexbrl:532689_222021133257_SHP.xml",
-     "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2021-02-01 - 532689_222021133257_SHP.xml: FII rows 24,758,157 sh / total 60,728,572 = 40.7685; the block's unnamed rest follows its company-type rows -> public. fii 41.0201 -> 40.7685.",
+     "why": "\u00a7164r batch 30 part 6 (2026-10-05, corrects part 3): 2021-02-01 - 532689_222021133257_SHP.xml: FPI 24,758,157 + the institutions Any-Other block's uncovered remainder 154,796 (block 7,034,839 minus its named holder rows; no Category row) / total 60,728,572 = 41.0234 - D1. fii 40.7685 -> 41.0234.",
      "exact": true,
      "superseded": {
       "cell": [
        17.07,
-       41.0201,
+       40.7685,
        17.1216,
        15.8589,
        1.2579,
@@ -207161,15 +207227,38 @@
       ],
       "was": [
        17.07,
-       40.7701,
-       28.7016,
+       41.0201,
+       17.1216,
        15.8589,
        1.2579,
        "2021-02-02",
        142027
       ],
       "src": "bsexbrl:532689_222021133257_SHP.xml",
-      "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 40.77 -> 41.02, dii 28.70 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.34 fii=0.00 BERRY CREEK INVESTMENT LTD 6.34 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 1.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.25"
+      "why": "\u00a7164r batch 30 (2026-10-05, PVRINOX event filings re-read): 2021-02-01 - 532689_222021133257_SHP.xml: FII rows 24,758,157 sh / total 60,728,572 = 40.7685; the block's unnamed rest follows its company-type rows -> public. fii 41.0201 -> 40.7685.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        17.07,
+        41.0201,
+        17.1216,
+        15.8589,
+        1.2579,
+        "2021-02-02",
+        142027
+       ],
+       "was": [
+        17.07,
+        40.7701,
+        28.7016,
+        15.8589,
+        1.2579,
+        "2021-02-02",
+        142027
+       ],
+       "src": "bsexbrl:532689_222021133257_SHP.xml",
+       "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 40.77 -> 41.02, dii 28.70 -> 17.12. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=6.34 fii=0.00 BERRY CREEK INVESTMENT LTD 6.34 foreign->public(new-format:ForeignCompanies); R1-foreign-holders Other 0.0 public=1.45 fii=0.00 MULTIPLES PRIVATE EQUITY FUND I LIMITED 1.45 foreign->public(new-format~:ForeignCompanies); R1-foreign-holders Other 0.0 public=3.54 fii=0.00 PLENTY PRIVATE EQUITY FUND I LIMITED 3.54 foreign->public(new-format:ForeignCompanies); R1-rest-follows-foreign-holders 0.25"
+      }
      }
     }
    }
