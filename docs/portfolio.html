@@ -1471,7 +1471,8 @@ function renderToday(rows){
              '<span class="sym secret">'+esc(s.sym)+'</span></span>'+
            '<span style="white-space:nowrap;flex-shrink:0">'+
              '<span class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</span>'+
-             '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b></span>'+
+             '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b>'+
+             (function(m){ return '<span class="'+cls(m.pct)+'" style="margin-left:10px" title="month: '+esc(m.pct==null?'no price history':'since the '+shortDate(monthBaseISO())+' close')+'">'+(m.pct==null?'\u2014':pct(m.pct))+' <span class="sym">mo</span></span>'; })(monthAgg([s]))+'</span>'+
            '</div>';
       });
       h+='</td></tr>';
