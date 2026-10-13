@@ -22340,6 +22340,38 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
   - THEIR ERROR: CUB Jun-14 and ASTRAL Sep-14. BSE keeps an .00 original page and an .01 re-filing page; Quantmac reads only .00 and dates it to the re-filing's notice.
   - UNKNOWN: BSE Ltd Jun-24 / Dec-24 / Mar-25. NSE posted no XBRL and no announcement, and the company has no BSE listing, so our 11.6 / 12.07 / 12.33 are 2-decimal values with no source. The user is to decide whether to keep them.
   - Tools: `r5/nsecopy.py` (NSE copy by symbol and as-on; the old-quarter window only reaches about 40 filings per window) and `r5/qb_read.py`.
+- **Parts 37-40 + reply 5 (2026-10-14, every differing cell of Quantmac's reply 4 checked one by one).**
+  - Fixes, each read from its own filing:
+    - Part 37 (9f49961c7, fill-only): 8 missing event filings from Quantmac-supplied NSE copies, in shp_event_fills.json; 5 missing page quarters in shp_fill_bse_aspx (CHETTINAD/DWARKESH/JAYSREETEA Jun-09, BALMLAWRIE Dec-11/Jun-12).
+    - Part 38 (86afb5e0d, 34 cells): SEBI-registered AIFs, from a 2026-10-14 search of the SEBI register (exact names only: Multiples PE Fund, Multiples PE Fund II LLP, PI Opportunities Fund-I, True North Fund V LLP, White Oak India Equity Fund, Abakkus Growth Fund, Pioneer Investment Fund); the 'Systematically Important NBFC' row (JMFINANCIL); event rows JUSTDIAL / SRF / NCC / PVRINOX.
+    - Part 39 (b1a3efe42): FEDERALBNK / HINDALCO / INFY Dec-15 and Mar-16 from BSE Table III .00 originals.
+    - Part 40 (4e21dfc17): SHRENUJ Dec-15.
+    - Written by the FII session as joint entries: BALLARPUR, JINDALSAW Dec-15/Mar-16, RELCAPITAL Dec-15, the originals-vs-re-filings (PFIZER Jun-21, KARURVYSYA Sep-18, JINDALSAW Jun-18, JSWSTEEL Dec-21, LUXIND Dec-21), and BSE Ltd Jun-18 / Jun-21.
+  - New tools in r5/:
+    - t3dii.py: Table III DII reader, reading the .00 original. A named Any-Other row can be a category or a holder, so a sum that doesn't match the block is marked 'amb' and not used.
+    - build_reply5.py: per-cell verdicts; the gap is matched to signed rows plus x-rows (excluded) and h-rows (named inside a counted row), with date checks against the previous and next quarters.
+    - ovr5.py: hand-written verdicts after reading each document.
+    - write_reply5.py.
+  - Reader traps fixed:
+    - 'Foreign Mutual Fund' was read as an Indian MF.
+    - 'Body Corporate (other than ICICI Pru...)' was read as ICICI Pru.
+    - QIB misspellings 'Qaulified', 'Quaified' and 'INTITUTIONAL'.
+    - 'Alternative Unvestment Fund'.
+    - Missing register entries: SBI associate banks, Aegon Life, 'Nps Trusts'.
+    - Holders larger than their own block are not added.
+    - Placement goes by exact size first, then by the room left in each row.
+  - Reply 5: ~/Downloads/StockWorld_DII_Reconciliation_Reply5_20261014.xlsx.
+    - 5,094 cells equal.
+    - 557 rule differences, each naming its rows or dates.
+    - 7 Quantmac errors: CUB and ASTRAL page versions, and IDEA's NSE base.
+    - 22 of ours pending documents Quantmac holds: CDSL 2018-19 and SUNDARMFIN Jun-18 third-party fills, JUSTDIAL Mar-19 and ESCORTS Mar-20 NSE originals.
+    - 12 asking for event documents.
+    - 32 'date rule under review'.
+    - 19 unknown.
+  - Open for the user:
+    - When only a re-filing is held, should the row be dated to the original notice or to the re-filing? (INTELLECT Dec-18 plus 32 reply cells.)
+    - RAMCOCEM Mar-16 AIF line (37.8M with no FPI line).
+    - Third-party fills with no filing: BSE Ltd 2017-19, CDSL 2018-19, SITINET Mar-16, BSE Ltd 2024-25.
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
