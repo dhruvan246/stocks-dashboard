@@ -28366,3 +28366,11 @@ exactly the DII session's unnamed-rest shares. Held (sent to the DII session wit
 Fund and Sundaram Mid Cap Fund but NOT Tata Indian Opportunities Fund, Sundaram India Midcap Fund or Kotak India Private Equity Fund;
 BAJFINANCE Mar-22 - the misspelt QIB row 8,115,429 is in neither slot. NH Sep-16..Jun-18: CDC Group / JPMorgan Mauritius named on the
 unlabelled institutions line stay FII (11-Oct rule); the FPI block on the FI/Banks line goes to DII.
+**Part 87 (2026-10-13) - joint follow-ups with the DII session.** ICICIBANK events 2017-06-24 / 2020-08-15: a category labelled 'FIIs-DR'
+is a row of B (the DR custodian block C is already outside the base) and stays FII - a DR exclusion tried in part 86's reader was wrong
+(it would also have removed CIPLA's combined 'Foreign Institutional Investors / FII - DR' row of up to 63.5 M shares) and is withdrawn.
+IDFCFIRSTB 2021-04-06 (15.574381 / 13.156347), MINDACORP Jun-16 and Mar-16 #rev, BAJFINANCE Mar-22 (DII with the misspelt QIB row),
+COROMANDEL Dec-19, UNIONBANK Sep-21, MEDPLUS Dec-21 (unnamed rest -> FII, DII = own domestic rows; DII session read = this reader).
+Register test for 'stays DII': AMFI NAVAll scheme list (saved ~/stocks-cache/shp/registers/amfi_navall.txt) - a fund-house name in a
+holder name is not proof. QIB pattern now tolerant of 'Qaulified' / 'Quaified' / 'Instituional'. Open with the DII session: CARERATING
+Sep/Dec-20 (their DII still holds the unnamed rest), ~23 non-N500 cells where DII holds the rest, CHOLAHLDNG Mar-22 (DII session writes).
