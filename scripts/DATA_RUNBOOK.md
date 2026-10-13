@@ -28395,3 +28395,11 @@ COROMANDEL Dec-19, UNIONBANK Sep-21, MEDPLUS Dec-21 (unnamed rest -> FII, DII = 
 Register test for 'stays DII': AMFI NAVAll scheme list (saved ~/stocks-cache/shp/registers/amfi_navall.txt) - a fund-house name in a
 holder name is not proof. QIB pattern now tolerant of 'Qaulified' / 'Quaified' / 'Instituional'. Open with the DII session: CARERATING
 Sep/Dec-20 (their DII still holds the unnamed rest), ~23 non-N500 cells where DII holds the rest, CHOLAHLDNG Mar-22 (DII session writes).
+**Part 89 (2026-10-13).** §164p seam-quarter base class (DII session asked after THERMAX): each Dec-15 / Mar-16 cell whose entry ever used
+the §164p base, checked against ITS OWN Table I (grand total minus C1) - HINDALCO/ESSAROIL etc. print C1 = 0 (DR shares inside A/B),
+so their own base is the full count; fii / mf / dii were already on it; only the PROMOTER slot was still on the borrowed base: ASHOKLEY
+Dec-15/Mar-16 38.82 -> 50.38 (= its Jun-16 50.38), GRASIM 25.51/25.98 -> 30.73/31.13, VAIBHAVGBL 56.22 -> 68.37, JSL, HINDALCO, ULTRACEMCO,
+VEDL, BOMDYEING, ESSAROIL 31.54 -> 97.14 (own Table I A 1,409,120,749 of 1,450,668,359). 8 more already on the own base (ADVANTA,
+AKSHOPTFBR, DCW, DRREDDY, KESORAMIND, PAISALO, TUBEINVEST, VIDEOIND). CARERATING Sep/Dec-20: unnamed rest -> FII (in neither slot).
+PARKED for the user: ~23 non-N500 cells where DII still holds the unnamed rest (CHEMPLASTS, SHRIRAMPPS, PUNJLLOYD x7, CARERATING x6,
+JAICORPLTD, MTARTECH x2, RADIOCITY, EQUITASBNK x3) - the DII session holds DII to PIT-N500 scope; an FII-only write would double-count.
