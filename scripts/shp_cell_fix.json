@@ -162366,37 +162366,27 @@
    },
    "2021-12-31": {
     "cell": [
-     44.71,
-     11.2135,
-     8.8433,
-     2.3966,
+     44.712921,
+     11.212986,
+     8.478375,
+     2.396417,
      0.0,
      "2022-01-14",
      679906
     ],
     "was": [
      44.71,
-     26.2135,
+     11.212986,
      8.8433,
      2.3966,
      0.0,
      "2022-01-14",
      679906
     ],
-    "src": "bsexbrl:500228_232022135011_SHP.xml",
-    "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30). fii 26.2135 -> 11.2135; dii untouched.",
-    "exact": true,
+    "src": "nse:SHP_164589_588068_14012022044106_WEB.xml",
+    "why": "\u00a7164r batch 30 part 93 (2026-10-14, original vs later copy \u00a7142k, joint FII + DII entry agreed with the DII session): the store row held the BSE re-filing's DII under the original's date. The ORIGINAL (NSE submissionDate 14-JAN-2022, file fetched from nsearchives; NSE later flagged the record Revised but it still links this upload): promoter 44.712921, FII = FPI 271,042,596 = 11.212986, DII = MF 57,926,683 + FI/Banks 144,464,600 + NBFC 2,549,721 = 204,941,004 = 8.478375 on 2,417,220,440. BSE's only listed copy 500228_232022135011 ('Revised' 2022-03-02) adds non-institutions 'Others' AIF 191,906 + QIB 8,402,328 (DII 8.833917, promoter 44.72211, FII unchanged) and sits beside it in shp_revisions.json from 2022-03-02.",
     "superseded": {
      "cell": [
-      44.71,
-      26.2135,
-      8.8433,
-      2.3966,
-      0.0,
-      "2022-01-14",
-      679906
-     ],
-     "was": [
       44.71,
       11.2135,
       8.8433,
@@ -162405,12 +162395,22 @@
       "2022-01-14",
       679906
      ],
+     "was": [
+      44.71,
+      26.2135,
+      8.8433,
+      2.3966,
+      0.0,
+      "2022-01-14",
+      679906
+     ],
      "src": "bsexbrl:500228_232022135011_SHP.xml",
-     "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 11.2135 -> 26.2135 (+15.0000), dii unchanged.",
+     "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30). fii 26.2135 -> 11.2135; dii untouched.",
+     "exact": true,
      "superseded": {
       "cell": [
        44.71,
-       11.2135,
+       26.2135,
        8.8433,
        2.3966,
        0.0,
@@ -162419,15 +162419,37 @@
       ],
       "was": [
        44.71,
-       11.2136,
-       8.3734,
+       11.2135,
+       8.8433,
        2.3966,
        0.0,
        "2022-01-14",
        679906
       ],
       "src": "bsexbrl:500228_232022135011_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.37 -> 8.84, fii 11.21 -> 11.21. R2-label Others ALTERNATIVE INVESTMENT FUND 0.01 ; R2-label Others Qualified Institutional Buyer 0.35 ; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_dii_rowfix_audit.json"
+      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): JFE STEEL INTERNATIONAL EUROPE B.V. (FDI line 2022-12-31..2026-06-30) - fii 11.2135 -> 26.2135 (+15.0000), dii unchanged.",
+      "superseded": {
+       "cell": [
+        44.71,
+        11.2135,
+        8.8433,
+        2.3966,
+        0.0,
+        "2022-01-14",
+        679906
+       ],
+       "was": [
+        44.71,
+        11.2136,
+        8.3734,
+        2.3966,
+        0.0,
+        "2022-01-14",
+        679906
+       ],
+       "src": "bsexbrl:500228_232022135011_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.37 -> 8.84, fii 11.21 -> 11.21. R2-label Others ALTERNATIVE INVESTMENT FUND 0.01 ; R2-label Others Qualified Institutional Buyer 0.35 ; R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
@@ -163685,6 +163707,25 @@
     ],
     "src": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1483663_15072025080353_WEB.xml",
     "why": "\u00a7164r batch 30 part 54 (2026-10-08, user: 'not just screener check on money control as well as cont mac'): precision - our share-count path divides by a base inferred from the largest category's printed percentage, so the site showed 25.42 while the quarter's own NSE filing prints 25.43 on its Institutions (Foreign) total row: 621,794,025 sh on Table I total 2,445,453,966 = 25.426527 (rows: FPI Category I 216,784,374 (8.86%); FPI Category II 38,017,862 (1.55%); Foreign Direct Investment 366,818,095 (15.0%); Any Other (institutions, foreign) 173,694 (0.01%)). Stored to 6 decimals so the page shows the filed second decimal. Outside figures: Screener 25.42; Moneycontrol 25.43; Quantmac 25.43. fii 25.4243 -> 25.426527; dii untouched.",
+    "exact": true
+   },
+   "2021-12-31#rev": {
+    "cell": [
+     44.72211,
+     11.212986,
+     8.833917,
+     2.396417,
+     0.0
+    ],
+    "was": [
+     44.72211,
+     11.212986,
+     8.833917,
+     2.396417,
+     0.0
+    ],
+    "src": "bsexbrl:500228_232022135011_SHP.xml",
+    "why": "\u00a7164r batch 30 part 93 (2026-10-14, original vs later copy \u00a7142k, joint FII + DII entry agreed with the DII session): this RE-FILING's own document (BSE 'Revised' 2022-03-02): promoter 44.72211, FII 11.212986, DII 8.833917 (own lines + non-institutions 'Others' rows labelled Alternative Investment Fund 191,906 and Qualified Institutional Buyer 8,402,328).",
     "exact": true
    }
   },

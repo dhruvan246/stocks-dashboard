@@ -28428,3 +28428,6 @@ DII-only (HSBC Private Bank (Suisse) on FI/Banks was never in FII; FII keeps its
 line; 37,837,462 on the 'Alternate Investment Funds' line) is with the user. Parts 38/39 (DII session) re-checked: no holder they add
 to DII is inside FII (PVRINOX's Indian AIF 'Multiples Private Equity Fund' is a different holder from 'Multiples Private Equity Fund I
 Limited' on the institutions line).
+**Part 93 (2026-10-14) - JSWSTEEL Dec-21 original vs later copy (DII session handover).** Quarter row = NSE original
+SHP_164589_588068_14012022044106 (14-Jan-2022): DII 8.478375 (= Quantmac), promoter 44.712921, FII 11.212986; BSE's only listed copy
+500228_232022135011 ('Revised' 2022-03-02, adds non-institutions AIF/QIB 'Others' rows -> DII 8.833917) as its sidecar row + #rev.
