@@ -22294,6 +22294,31 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
   - 340 reason texts still quoted our pre-§226 number. New step `r4/fix_ours_numbers.py` in `make_reply.sh` rewrites an "ours X" quote to the live value when they differ by <= 0.01 pp.
   - Result: 5,750 cells = RULE 5,130 / THEIR 378 / UNKNOWN 242; 0 blank; 0 stale "ours" quotes.
   - Ledger trap: a props `was`/`cell` must carry all 7 slots incl. nsh, or `_cell_eq` length-fails and write_b8 prints "skip (store moved)".
+- **Parts 35-35f: DII follows each filing's own line (2026-10-13, after Quantmac's reply 4).** User rulings 13-Oct, answering three questions:
+  1. A foreign holder the company files on a DOMESTIC line stays DII (NH FPI block on FI/Banks, RENUKA StanChart, BATAINDIA Kotak Luxembourg). This replaces the 6-Oct "foreign banks not DII" ruling for such lines and retires R6 / line-move removals and the §159 / §164q / §158 R1 2022-form placements in DII.
+  2. The unnamed institutions Any-Other rest is FII, even beside Indian named holders. This retires batch-7 R5 for DII. Register-proven named holders stay DII.
+  3. Shares underlying depository receipts (column VI) are not DII (ASHOKLEY FI/Banks 22,957,000 GDR shares).
+  - Unchanged: register wins (R4), the NBFC row (R3), QIB rows (R1).
+  - Reader: `~/stocks-cache/shp/dii_qm/r5/ownline_dii.py`. It covers the 2015-22 XBRL form and, with NEWFORM=1, the 2022 form. `pagedii.py` covers the page era, `events2.py` event rows and `revs_dii.py` re-filings.
+  - How holders are placed: each named holder goes into the ONE row that can hold it. Order: exact-size match first, then largest first, then rows with the same category text that still have room; a fallback goes only to a row already counted.
+  - Spelling traps the reader handles: 'QUALIFIED INTITUTIONAL / INSITUTIONAL / QUALFIED', 'Nps Trusts', 'Aegon Religare Life', 'KOTAK FUNDS - INDIA MIDCAP FUND' (a Luxembourg SICAV, not an Indian MF), and an Any-Other block total missed under the key 'OtherInstitutions' instead of 'OtherInstitutionsMember'.
+  - Calibration: on 4,527 Quantmac reply cells the reader matches Quantmac in 4,135 against 3,718 for the old store. The 15 cells where store = Quantmac but the reader differs are all ruling 1 or 2 (NH, NATCOPHARM) or 0.01 (ZENSARTECH Aegon).
+  - Pushed:
+    - 35 (be23aa978): 1,464 quarters; live check 1,463/1,464.
+    - 35b (2e2ed4053): 10 quarters whose only filing is the New one.
+    - 35c (7fde287e1): 10 event rows, incl. ALOKINDS 2020-09-10 JM Financial ARC out, ZYDUSWELL and NATIONALUM.
+    - 35d (5cdda642f): AFFLE Sep-19 #rev; write_b8 now writes '#rev' keys.
+    - 35e (d472a2786): 28 2022-form quarters where register wins (CUMMINSIND SBI Life, QUESS ICICI Pru, NAM-INDIA IndusInd Bank, YESBANK Kotak Bank).
+    - 35f (f3ead3b71): 28 event rows.
+    - FII was unchanged in all of these: each cell was checked against the FII own-line read, and none of them moves shares between DII and FII.
+  - Handed to the FII session as one-entry-both-slots cells: `r5/joint_for_fii_session.json` (213 cells). These are the D1-exception unnamed rests (HDFCBANK Jun-22, IOC Jun/Jul-22, NATCOPHARM, SYNGENE...), the domestic-line blocks FII still held (NH Sep-16..Jun-18, SCHAEFFLER), PVRINOX 2019-10-30, RENUKA 2018-03-08/09, CHENNPETRO Mar-11..Mar-12, DCHL Sep/Dec-10, LTF Mar-15, the #rev rows and its own held list.
+  - Not written:
+    - NCC Sep-21 and 2022-07-01: the filing is internally inconsistent.
+    - FORTIS Sep-23, JINDALSAW Dec-24 and VIJAYA Jun-26: §142k original-vs-re-filing rows.
+    - 33 quarters where only a later Revised filing is listed and the store row is the original.
+    - 3 ambiguous placements.
+    - Page era: 47 differences, 40 of them precision-only (≤0.02) and left alone.
+    - 4,947 2022-form quarters whose XBRL was not cached; being fetched.
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
