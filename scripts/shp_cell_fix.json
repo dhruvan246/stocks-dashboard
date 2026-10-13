@@ -22487,28 +22487,29 @@
     "cell": [
      46.25,
      19.3623,
-     13.9488,
-     7.0714,
+     12.835514,
+     7.070778,
      2.7098,
-     "2019-04-21",
+     "2019-05-03",
      142062
     ],
     "was": [
      46.25,
-     19.2723,
-     14.0388,
-     7.0714,
+     19.3623,
+     13.9488,
+     7.070778,
      2.7098,
      "2019-04-21",
      142062
     ],
-    "src": "bsexbrl:500493_305202215543_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.27 -> 19.36, dii 14.04 -> 13.95. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.09 | R1: R1-unresolved no typed rows 0.09; R2-named Bodies Corporate 1.11 HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.11(new-format~:InsuranceCompanies). Evidence: _shp_164_audit.json",
+    "src": "bsexbrl:500493_352019101010_SHP.xml",
+    "why": "\u00a7164s part 36 (2026-10-13, Quantmac reply-4 question-back cells, read from the filing): the stored values came from 500493_305202215543_SHP.xml, a re-upload BSE stamps 30-May-2022 (it names HDFC Standard Life on a non-institutions row); the version public in 2019 is 500493_352019101010_SHP.xml (BSE revised_date_time 2019-05-03 11:46:47; BSE's 16-Apr-2019 notice precedes it, but we hold only the 3-May numbers, so the row is dated 2019-05-03 under the latest-evidenced-date rule). This filing's own DII rows line:MutualFundsOrUti 32,919,436; line:AlternativeInvestmentFunds 956,229; line:FinancialInstitutionOrBanks 18,435,077; line:InsuranceCompanies 7,447,588 = 59,758,330 sh on base 465,570,232 = 12.835514; stored 13.948800.",
+    "exact": true,
     "superseded": {
      "cell": [
       46.25,
-      19.2723,
-      14.0388,
+      19.3623,
+      13.9488,
       7.0714,
       2.7098,
       "2019-04-21",
@@ -22517,35 +22518,57 @@
      "was": [
       46.25,
       19.2723,
-      12.9288,
+      14.0388,
       7.0714,
-      1.5998,
+      2.7098,
       "2019-04-21",
       142062
      ],
      "src": "bsexbrl:500493_305202215543_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.93 -> 14.04, fii 19.27 -> 19.27. R1-unresolved no typed rows 0.09; R2-named Bodies Corporate 1.11 HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.11(new-format~:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 19.27 -> 19.36, dii 14.04 -> 13.95. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.09 | R1: R1-unresolved no typed rows 0.09; R2-named Bodies Corporate 1.11 HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.11(new-format~:InsuranceCompanies). Evidence: _shp_164_audit.json",
      "superseded": {
       "cell": [
        46.25,
-       19.27,
-       12.93,
-       7.07,
-       1.6,
+       19.2723,
+       14.0388,
+       7.0714,
+       2.7098,
        "2019-04-21",
        142062
       ],
-      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
       "was": [
        46.25,
-       19.27,
-       12.93,
-       7.07,
-       1.6,
-       "2022-05-30",
+       19.2723,
+       12.9288,
+       7.0714,
+       1.5998,
+       "2019-04-21",
        142062
       ],
-      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1156d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+      "src": "bsexbrl:500493_305202215543_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 12.93 -> 14.04, fii 19.27 -> 19.27. R1-unresolved no typed rows 0.09; R2-named Bodies Corporate 1.11 HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.11(new-format~:InsuranceCompanies). Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        46.25,
+        19.27,
+        12.93,
+        7.07,
+        1.6,
+        "2019-04-21",
+        142062
+       ],
+       "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+       "was": [
+        46.25,
+        19.27,
+        12.93,
+        7.07,
+        1.6,
+        "2022-05-30",
+        142062
+       ],
+       "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1156d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+      }
      }
     }
    },
@@ -79958,24 +79981,47 @@
    "2019-09-30": {
     "cell": [
      52.22,
-     28.7765,
-     16.6291,
-     7.8214,
+     28.777129,
+     13.681746,
+     7.821631,
      7.2738,
      "2019-10-14",
      55841
     ],
     "was": [
      52.22,
-     28.7765,
-     13.6791,
-     7.8214,
-     4.3238,
+     28.777129,
+     16.6291,
+     7.821631,
+     7.2738,
      "2019-10-14",
      55841
     ],
     "src": "bsexbrl:526299_4112019112020_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.68 -> 16.63, fii 28.78 -> 28.78. R2-named Bodies Corporate 1.42 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LTD 1.42(curated); R2-named Bodies Corporate 1.53 HDFC STANDARD LIFE INSURANCE (Various Group consolidated based on PAN) 1.53(regex). Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 36 (2026-10-13, Quantmac reply-4 question-back cells, read from the filing): the named ICICI Prudential Life (2,637,649) and HDFC Standard Life (2,847,380) rows together exceed the filing's non-institutions Any-Other block (1,439,801), so they sit in no sub-total and are not added (they are almost certainly the Insurance Companies line's own holders). Quantmac's question was right. This filing's own DII rows line:MutualFundsOrUti 14,576,140; line:AlternativeInvestmentFunds 77,627; line:FinancialInstitutionOrBanks 2,780,740; line:InsuranceCompanies 8,057,941; NBFC row 4,414; noninst register holder larger than its whole block (not added):ICICI PRUDENTIAL 0; noninst register holder larger than its whole block (not added):HDFC STANDARD LI 0 = 25,496,862 sh on base 186,356,779 = 13.681746; stored 16.629100.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      52.22,
+      28.7765,
+      16.6291,
+      7.8214,
+      7.2738,
+      "2019-10-14",
+      55841
+     ],
+     "was": [
+      52.22,
+      28.7765,
+      13.6791,
+      7.8214,
+      4.3238,
+      "2019-10-14",
+      55841
+     ],
+     "src": "bsexbrl:526299_4112019112020_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 13.68 -> 16.63, fii 28.78 -> 28.78. R2-named Bodies Corporate 1.42 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LTD 1.42(curated); R2-named Bodies Corporate 1.53 HDFC STANDARD LIFE INSURANCE (Various Group consolidated based on PAN) 1.53(regex). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2020-06-30": {
     "cell": [
@@ -258370,7 +258416,7 @@
     "cell": [
      60.77,
      8.501149,
-     8.532757,
+     6.970589,
      3.973281,
      1.74373,
      "2022-04-22",
@@ -258379,15 +258425,38 @@
     "was": [
      60.77,
      8.501149,
-     6.970271,
+     8.532757,
      3.973281,
      1.74373,
      "2022-04-22",
      243853
     ],
     "src": "bsexbrl:532978_2142022204120_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,322,978; line:AlternativeInvestmentFunds 539,198; line:FinancialInstitutionOrBanks 72,823; line:InsuranceCompanies 2,774,928; NBFC row 506; inst-cat QIB label:Other QUALIFIED INSTITUTIONAL BUYERS 1,382,384; inst-holder register (no row):LICI ASM NON PAR 2,485,995 = 13,578,812 sh on base 159,137,444 = 8.532757; stored 6.970271 (rows the store had left out or double counted).",
-    "exact": true
+    "why": "\u00a7164s part 36 (2026-10-13, Quantmac reply-4 question-back cells, read from the filing): 'LICI ASM NON PAR' (2,485,995 sh) is named under the institutions 'Other' block (1,382,384 sh, the QIB row); it fits only the Insurance Companies line (2,774,928) and is already counted there. This filing's own DII rows line:MutualFundsOrUti 6,322,978; line:AlternativeInvestmentFunds 539,198; line:FinancialInstitutionOrBanks 72,823; line:InsuranceCompanies 2,774,928; NBFC row 506; inst-cat QIB label:Other QUALIFIED INSTITUTIONAL BUYERS 1,382,384; inst holder larger than the whole institutions Any-Other block (not added):LICI  0 = 11,092,817 sh on base 159,137,444 = 6.970589; stored 8.532757.",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      60.77,
+      8.501149,
+      8.532757,
+      3.973281,
+      1.74373,
+      "2022-04-22",
+      243853
+     ],
+     "was": [
+      60.77,
+      8.501149,
+      6.970271,
+      3.973281,
+      1.74373,
+      "2022-04-22",
+      243853
+     ],
+     "src": "bsexbrl:532978_2142022204120_SHP.xml",
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,322,978; line:AlternativeInvestmentFunds 539,198; line:FinancialInstitutionOrBanks 72,823; line:InsuranceCompanies 2,774,928; NBFC row 506; inst-cat QIB label:Other QUALIFIED INSTITUTIONAL BUYERS 1,382,384; inst-holder register (no row):LICI ASM NON PAR 2,485,995 = 13,578,812 sh on base 159,137,444 = 8.532757; stored 6.970271 (rows the store had left out or double counted).",
+     "exact": true
+    }
    }
   },
   "CDSL": {
@@ -436336,7 +436405,7 @@
     "cell": [
      55.63,
      3.809179,
-     11.691239,
+     9.248638,
      3.5651,
      5.57743,
      "2021-10-14",
@@ -436345,17 +436414,26 @@
     "was": [
      55.63,
      3.809179,
-     9.4154,
+     11.691239,
      3.5651,
      5.57743,
      "2021-10-14",
      186523
     ],
     "src": "bsexbrl:501455_13102021184517_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 8,242,753; line:AlternativeInvestmentFunds 99,761; line:FinancialInstitutionOrBanks 32,925; line:InsuranceCompanies 12,895,396; NBFC row 112,644; inst-holder register (no row):LIFE INSURANCE CORPORATION OF INDIA 5,647,460 = 27,030,939 sh on base 231,206,795 = 11.691239; stored 9.415400 (shares this filing files on a domestic line that the store had taken out).",
+    "why": "\u00a7164s part 36 (2026-10-13, Quantmac reply-4 question-back cells, read from the filing): LIC (5,647,460 sh) is named under the institutions 'Other' block, which totals only 381,586 sh; it fits only the Insurance Companies line (12,895,396) and is already counted there - part 35 had added it a second time. This filing's own DII rows line:MutualFundsOrUti 8,242,753; line:AlternativeInvestmentFunds 99,761; line:FinancialInstitutionOrBanks 32,925; line:InsuranceCompanies 12,895,396; NBFC row 112,644; inst holder larger than the whole institutions Any-Other block (not added):LIFE  0 = 21,383,479 sh on base 231,206,795 = 9.248638; stored 11.691239.",
     "exact": true,
     "superseded": {
      "cell": [
+      55.63,
+      3.809179,
+      11.691239,
+      3.5651,
+      5.57743,
+      "2021-10-14",
+      186523
+     ],
+     "was": [
       55.63,
       3.809179,
       9.4154,
@@ -436364,29 +436442,11 @@
       "2021-10-14",
       186523
      ],
-     "was": [
-      55.63,
-      6.25178,
-      9.4154,
-      3.5651,
-      5.57743,
-      "2021-10-14",
-      186523
-     ],
      "src": "bsexbrl:501455_13102021184517_SHP.xml",
-     "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-holder-registered-indian(out):LIFE INSURANCE CORPORATION OF INDIA 5,647,460 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 3.809179.",
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 8,242,753; line:AlternativeInvestmentFunds 99,761; line:FinancialInstitutionOrBanks 32,925; line:InsuranceCompanies 12,895,396; NBFC row 112,644; inst-holder register (no row):LIFE INSURANCE CORPORATION OF INDIA 5,647,460 = 27,030,939 sh on base 231,206,795 = 11.691239; stored 9.415400 (shares this filing files on a domestic line that the store had taken out).",
      "exact": true,
      "superseded": {
       "cell": [
-       55.63,
-       6.25178,
-       9.4154,
-       3.5651,
-       5.57743,
-       "2021-10-14",
-       186523
-      ],
-      "was": [
        55.63,
        3.809179,
        9.4154,
@@ -436395,29 +436455,61 @@
        "2021-10-14",
        186523
       ],
+      "was": [
+       55.63,
+       6.25178,
+       9.4154,
+       3.5651,
+       5.57743,
+       "2021-10-14",
+       186523
+      ],
       "src": "bsexbrl:501455_13102021184517_SHP.xml",
-      "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): LIFE INSURANCE CORPORATION OF INDIA 5,647,460 on base 231,206,795. fii 3.809179 -> 6.25178; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 498,209 sh).",
+      "why": "\u00a7164r batch 30 part 57C (2026-10-11): correction of part 57B on this cell - the filing's own text puts inst-holder-registered-indian(out):LIFE INSURANCE CORPORATION OF INDIA 5,647,460 outside FII (a holder whose own category text is company-type / domestic, an official Indian register entry (IRDAI / UTI), or a person / joint account is not a foreign institution). fii -> 3.809179.",
+      "exact": true,
       "superseded": {
        "cell": [
         55.63,
-        3.8093,
+        6.25178,
         9.4154,
-        3.5652,
-        5.5777,
+        3.5651,
+        5.57743,
         "2021-10-14",
         186523
        ],
        "was": [
         55.63,
-        3.8093,
-        9.3654,
-        3.5652,
-        5.5777,
+        3.809179,
+        9.4154,
+        3.5651,
+        5.57743,
         "2021-10-14",
         186523
        ],
        "src": "bsexbrl:501455_13102021184517_SHP.xml",
-       "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.81 -> 3.81, dii 9.37 -> 9.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-domestic-holders Other 0.0 LIFE INSURANCE CORPORATION OF INDIA 2.44 domestic->-(curated); R1-overflow 2.44 0.17; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+       "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): LIFE INSURANCE CORPORATION OF INDIA 5,647,460 on base 231,206,795. fii 3.809179 -> 6.25178; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 498,209 sh).",
+       "superseded": {
+        "cell": [
+         55.63,
+         3.8093,
+         9.4154,
+         3.5652,
+         5.5777,
+         "2021-10-14",
+         186523
+        ],
+        "was": [
+         55.63,
+         3.8093,
+         9.3654,
+         3.5652,
+         5.5777,
+         "2021-10-14",
+         186523
+        ],
+        "src": "bsexbrl:501455_13102021184517_SHP.xml",
+        "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 3.81 -> 3.81, dii 9.37 -> 9.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R1-domestic-holders Other 0.0 LIFE INSURANCE CORPORATION OF INDIA 2.44 domestic->-(curated); R1-overflow 2.44 0.17; R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_164_audit.json"
+       }
       }
      }
     }
@@ -436838,7 +436930,7 @@
     "cell": [
      37.84,
      17.453001,
-     33.8065,
+     14.205596,
      4.408111,
      19.6,
      "2017-04-07",
@@ -436846,7 +436938,7 @@
     ],
     "was": [
      37.84,
-     17.451746,
+     17.453001,
      33.8065,
      4.408111,
      19.6,
@@ -436854,29 +436946,52 @@
      107741
     ],
     "src": "bsexbrl:500690_64201716230_SHP.xml",
-    "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.001255 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 17.453001. fii 17.451746 -> 17.453001; other slots untouched.",
+    "why": "\u00a7164s part 36 (2026-10-13, Quantmac reply-4 question-back cells, read from the filing): the named 'Sbi Life Insurance Co. Ltd' row (78,112,155 sh) is larger than the whole non-institutions Any-Other block it is filed in (54,258,731) and the pattern sums to 100% without it, so it sits in no sub-total; our earlier \u00a7158 read added it (pattern 119.6%). Quantmac's question was right. This filing's own DII rows line:MutualFundsOrUti 17,565,331; line:FinancialInstitutionOrBanks 39,040,778; noninst register holder larger than its whole block (not added):Sbi Life Insuran 0 = 56,606,109 sh on base 398,477,530 = 14.205596; stored 33.806500.",
     "exact": true,
     "superseded": {
      "cell": [
       37.84,
-      17.4529,
+      17.453001,
       33.8065,
-      4.4084,
+      4.408111,
       19.6,
       "2017-04-07",
       107741
      ],
      "was": [
       37.84,
-      17.4529,
-      14.2065,
-      4.4084,
-      0.0,
+      17.451746,
+      33.8065,
+      4.408111,
+      19.6,
       "2017-04-07",
       107741
      ],
      "src": "bsexbrl:500690_64201716230_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.45 -> 17.45, dii 14.21 -> 33.81. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 19.6 Sbi Life Insurance Co. Ltd 19.60(curated). Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.001255 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 17.453001. fii 17.451746 -> 17.453001; other slots untouched.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       37.84,
+       17.4529,
+       33.8065,
+       4.4084,
+       19.6,
+       "2017-04-07",
+       107741
+      ],
+      "was": [
+       37.84,
+       17.4529,
+       14.2065,
+       4.4084,
+       0.0,
+       "2017-04-07",
+       107741
+      ],
+      "src": "bsexbrl:500690_64201716230_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.45 -> 17.45, dii 14.21 -> 33.81. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 19.6 Sbi Life Insurance Co. Ltd 19.60(curated). Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2017-06-30": {
