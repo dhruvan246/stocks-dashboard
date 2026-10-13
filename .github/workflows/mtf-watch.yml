@@ -1,0 +1,39 @@
+# MTF WATCH (user 2026-10-13) — scripts/mtf_watch.mjs. Every trading day at 10:00 IST: asks Zerodha (through the user's kite
+# worker, on the day's login) which stocks it funds on MTF, for every stock held in cash, held on MTF, or in the strategies'
+# current picks; alerts the user's ntfy topic when that changes (e.g. a cash holding became MTF-eligible: switching frees cash).
+# No Kite login that day → one "not checked today" alert. PUBLIC repo: the log prints counts only; secrets as the auto-pilot.
+name: MTF watch
+
+on:
+  # dispatch-cron: "30 4 * * 1-5"   # 10:00 IST weekdays (the script skips NSE holidays)
+  repository_dispatch:
+    types: [tick-mtf-watch]   # sent by scripts/cron_dispatch.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mtf-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PF_HOLDINGS_TOKEN: ${{ secrets.PF_HOLDINGS_TOKEN }}
+      PF_KITE_WORKER: ${{ secrets.PF_KITE_WORKER }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/mtf_watch.mjs
+            docs/nse_holidays.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check MTF eligibility
+        run: node scripts/mtf_watch.mjs
