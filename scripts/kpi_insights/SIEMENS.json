@@ -78,6 +78,27 @@
    "title": "Financial Results - Q1 FY 2024 (quarter ended 31 December 2023)",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "1ca0d5d3-d0e5-4090-a6d8-658e70948113.pdf": {
+   "kind": "res",
+   "date": "2023-05-11",
+   "title": "Board Meeting Outcome for Revised Outcome Of Board Meeting - 11Th May 2023",
+   "read": "2026-10-13",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "30add785-b025-459a-86f9-1d9c044bccc2.pdf": {
+   "kind": "res",
+   "date": "2023-08-08",
+   "title": "Un-Audited Financial Results For The Third Quarter / Nine Months Ended 30Th June, 2023",
+   "read": "2026-10-13",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf": {
+   "kind": "res",
+   "date": "2023-11-28",
+   "title": "Audited Financial Results (Standalone And Consolidated) For The Year Ended 30Th September, 2023",
+   "read": "2026-10-13",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -196,6 +217,37 @@
      25,
      "New Orders, DI, Q4 FY24",
      "7.6"
+    ]
+   }
+  },
+  {
+   "name": "Order Backlog",
+   "unit": "INR crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 45518.0,
+    "20250630": 42845.0,
+    "20250930": 42253.0
+   },
+   "src": {
+    "q:20250930": [
+     "9bdb7dcd-8d09-4353-87c1-cf994071de8d.pdf",
+     16,
+     "Order Backlog grew 6% at INR 42,253 crore",
+     "42,253"
+    ],
+    "q:20250630": [
+     "f11d3de9-e54a-4623-99b2-d0362c1d28f6.pdf",
+     12,
+     "Order Backlog (doc period)",
+     "42,845"
+    ],
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     24,
+     "Order backlog",
+     "45,518"
     ]
    }
   },
@@ -320,30 +372,6 @@
    }
   },
   {
-   "name": "Order Backlog",
-   "unit": "INR crore",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 42845.0,
-    "20250930": 42253.0
-   },
-   "src": {
-    "q:20250930": [
-     "9bdb7dcd-8d09-4353-87c1-cf994071de8d.pdf",
-     16,
-     "Order Backlog grew 6% at INR 42,253 crore",
-     "42,253"
-    ],
-    "q:20250630": [
-     "f11d3de9-e54a-4623-99b2-d0362c1d28f6.pdf",
-     12,
-     "Order Backlog (doc period)",
-     "42,845"
-    ]
-   }
-  },
-  {
    "name": "Order Book (Unexecuted Order Value)",
    "unit": "billion INR",
    "kind": "level",
@@ -416,6 +444,30 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 8871.0,
+    "20240930": 9848.0
+   },
+   "src": {
+    "q:20240930": [
+     "3021b5f7-74a7-4f0f-9e7f-47ec2a0d9b36.pdf",
+     103,
+     "permanent employees (including 414 fixed term contract employees) on the rolls, ",
+     "9,848"
+    ],
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     25,
+     "employees",
+     "8,871"
+    ]
+   }
+  },
+  {
    "name": "Digital Industries New Orders",
    "unit": "₹ million",
    "kind": "flow",
@@ -446,6 +498,23 @@
      39,
      "Energy Business New Orders, financial year 2024",
      "87,997"
+    ]
+   }
+  },
+  {
+   "name": "Factory Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 31.0
+   },
+   "src": {
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     25,
+     "factories (doc period)",
+     "31"
     ]
    }
   },
@@ -484,19 +553,70 @@
    }
   },
   {
-   "name": "Total Employees",
-   "unit": "count",
+   "name": "Power Transformers Capacity",
+   "unit": "MVA",
    "kind": "level",
    "y": {},
    "q": {
-    "20240930": 9848.0
+    "20230930": 15000.0
    },
    "src": {
-    "q:20240930": [
-     "3021b5f7-74a7-4f0f-9e7f-47ec2a0d9b36.pdf",
-     103,
-     "permanent employees (including 414 fixed term contract employees) on the rolls, ",
-     "9,848"
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     5,
+     "existing capacity (doc period)",
+     "15,000"
+    ]
+   }
+  },
+  {
+   "name": "Power Transformers Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 100.0
+   },
+   "src": {
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     5,
+     "existing capacity utilization (doc period)",
+     "100"
+    ]
+   }
+  },
+  {
+   "name": "Vacuum Interrupters Capacity",
+   "unit": "VI Tubes",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 40000.0
+   },
+   "src": {
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     5,
+     "existing capacity (doc period)",
+     "40,000"
+    ]
+   }
+  },
+  {
+   "name": "Vacuum Interrupters Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 95.0
+   },
+   "src": {
+    "q:20230930": [
+     "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+     5,
+     "existing capacity utilization (doc period)",
+     "95"
     ]
    }
   }
@@ -512,6 +632,50 @@
    "page": 179,
    "label": "Transaction price allocated to the remaining performance obligation as at 30 Sep",
    "why": "period_end disagrees: ours 20240331 model 20240930 for 'FY 2024 (12 months)'"
+  },
+  {
+   "doc": "1ca0d5d3-d0e5-4090-a6d8-658e70948113.pdf",
+   "metric": "New Orders",
+   "unit": "INR crore",
+   "period": "Q2 FY 2023",
+   "value": 31151.0,
+   "as_printed": "31,151",
+   "page": 19,
+   "label": "New Orders",
+   "why": "period_end disagrees: ours 20220930 model 20230331 for 'Q2 FY 2023'"
+  },
+  {
+   "doc": "1ca0d5d3-d0e5-4090-a6d8-658e70948113.pdf",
+   "metric": "New Orders (9000 HP locomotive project)",
+   "unit": "INR crore",
+   "period": "Q2 FY 2023",
+   "value": 25455.0,
+   "as_printed": "25,455",
+   "page": 19,
+   "label": "large order of Rs. 25,455 crore for the 9000 HP locomotives",
+   "why": "period_end disagrees: ours 20220930 model 20230331 for 'Q2 FY 2023'"
+  },
+  {
+   "doc": "30add785-b025-459a-86f9-1d9c044bccc2.pdf",
+   "metric": "New Orders",
+   "unit": "INR crore",
+   "period": "Q3 FY 2023",
+   "value": 5288.0,
+   "as_printed": "5,288",
+   "page": 11,
+   "label": "New Orders",
+   "why": "period_end disagrees: ours 20221231 model 20230630 for 'Q3 FY 2023'"
+  },
+  {
+   "doc": "94d8851d-128f-4218-9d7e-f43ec1818a44.pdf",
+   "metric": "New Orders",
+   "unit": "INR crore",
+   "period": "Q4 FY 2023",
+   "value": 4498.0,
+   "as_printed": "4,498",
+   "page": 24,
+   "label": "New Orders",
+   "why": "period_end disagrees: ours 20230331 model 20230930 for 'Q4 FY 2023'"
   }
  ],
  "catalog": [
@@ -834,5 +998,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-10-13"
 }
