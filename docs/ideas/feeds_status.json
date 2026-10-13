@@ -1,7 +1,7 @@
 {
- "built": "2026-10-12 19:25 IST",
+ "built": "2026-10-13 19:11 IST",
  "where": "GitHub Actions (ideas-feeds.yml)",
- "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/38255607507",
+ "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/38404858657",
  "hosts": {
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1": 200,
   "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=": 200,
@@ -15,7 +15,7 @@
   "https://tradingeconomics.com/commodity/copper": 200,
   "https://www.guidechem.com/price/en/90-20-0.html": 200,
   "https://caionline.in/details/cai/spot-rates": 200,
-  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html": 0,
+  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html": 200,
   "https://www.westmetall.com/": 302,
   "https://markets.businessinsider.com/": 200,
   "https://eaindustry.nic.in/": 200,
@@ -33,6 +33,7 @@
   "signals": 0,
   "score": 0,
   "orderbook": 0,
+  "breakout": 0,
   "order_wins": 0,
   "ob_tracker": 0,
   "updates": 0
@@ -50,21 +51,21 @@
   "https://www.bseindia.com/",
   "https://www.chinimandi.com/",
   "https://www.guidechem.com/price/en/90-20-0.html",
+  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html",
   "https://www.metalbook.com/",
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1"
  ],
  "hosts_blocked": [
   "https://tradestat.commerce.gov.in/",
-  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html",
   "https://www.westmetall.com/"
  ],
  "steps_failed": [],
  "note": "A step that exited non-zero left its file exactly as it was (every builder keeps-previous, runbook 144e). A host not in hosts_ok is the reason its builder changed nothing.",
  "landing": {
-  "base": "80eb9f1f9",
-  "onto": "155a75f0c",
+  "base": "af706365f",
+  "onto": "fda6af490",
   "moved_on_origin": [],
-  "landed": 23,
+  "landed": 25,
   "identical": 0,
   "refused": [],
   "rebuilt": []
