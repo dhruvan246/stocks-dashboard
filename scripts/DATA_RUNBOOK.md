@@ -28421,3 +28421,10 @@ revisions guard flags a sidecar equal to a healed `was` unless its own #rev read
 exists or write_b8 skips it). Quantmac-supplied NSE copies were checked byte-identical against nsearchives before use. NSE's
 corporate-share-holdings-master returns only the latest ~20 filings (a silent cap; from_date/to_date returns 0 for 2018), so CYIENT
 Sep-18's original SHP_131465 (17-Oct-2018) stays UNKNOWN - no full filename.
+**Part 92 (2026-10-14) - ruling 1 on BSE Table III originals (DII session r5/joint_t3.json), joint.** JINDALSAW Dec-15 / Mar-16:
+Cresta, Dimensional and KIA filed on 'Financial Institutions / Banks' -> DII; FII = FPI line only 0.138648 / 0.118759, DII 23.484928 /
+22.396793. RELCAPITAL Dec-15: Sumitomo Mitsui Trust Bank on FI/Banks -> DII 11.715242; FII 17.259241 (precision only). SHRENUJ Dec-15:
+DII-only (HSBC Private Bank (Suisse) on FI/Banks was never in FII; FII keeps its batch-7 documents-rule reading). RAMCOCEM Mar-16 (no FPI
+line; 37,837,462 on the 'Alternate Investment Funds' line) is with the user. Parts 38/39 (DII session) re-checked: no holder they add
+to DII is inside FII (PVRINOX's Indian AIF 'Multiples Private Equity Fund' is a different holder from 'Multiples Private Equity Fund I
+Limited' on the institutions line).
