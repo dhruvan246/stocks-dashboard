@@ -28197,6 +28197,35 @@ ex-date 14-Dec-2022; the company's own XBRL share capital 12.75 cr (Sep-22) → 
 confirmed action and the remaining ÷9.7 that day is the market (no split in BSE's list; the §149 crash-vs-CA rule: never divide
 out more than the announced action). A split/bonus-adjusted BSE-only series would need an adjustment layer in
 fetch_bse_bhav/build_bse_slices (NSE names get it from the engine); until then the chart shows the cliff.
+
+### §228d — BONUS / SPLIT ADJUSTMENT LAYER FOR BSE-ONLY CHARTS (2026-10-13, user: "add the bonus/split adjustment layer for bse-only charts too")
+
+**Source — `scripts/fetch_bse_ca.py` → `scripts/bse_ca.json`.** BSE `CorporateAction/w?scripcode=<code>`, **Table2** rows:
+purpose_code `BN` "Bonus issue A:B" → factor (A+B)/B; `SS` "Stock Split From Rs.X/- to Rs.Y/-" → X/Y; Ex_date "dd Mon yyyy".
+Table1 lists bonuses only (ALSTONE's split sat in Table2 alone) so it is ignored. Dividends (`DP`, §174), rights (`ET`, §206
+manual ledger), buybacks (`BGM`) and meetings are not price actions here. Store {code: {chk, acts: [[ex, type, F, text]]}};
+re-listed after 30 days, `--budget 300` per run (refresh-bse.yml, right after the universe step; the file is committed),
+`--codes` forces scrips. First full pass 13-Oct-2026 00:05–00:45 IST: **3,025 scrips, 807 actions (410 bonus, 397 split) on
+582 scrips**; two transient read errors (539314, 512437) stay unchecked and come back next run.
+
+**Apply — `build_bse_slices.adjust_series()`.** The store stays raw; the slice is adjusted. Same-day actions multiply
+(ALSTONE 14-Dec-2022 bonus 9:1 × split 10→1 = ÷100 — my §228c "the rest is market" was wrong: Table2 carried the split).
+An action is applied only when the tape confirms it: r = close of the first bar on/after ex ÷ close of the bar before, must be
+≤ sqrt(1/F) (a fall of at least half the expected move on the log scale) and ≥ (1/F)/50; else HELD and printed. Bars before
+the ex-date are divided by F (closes to 4 dp, volumes × F); the last bar and `raw` are never touched; applied factors go into
+the slice as `ca: [[ex, F]]`. Probe set (7 scrips, 12 actions: GEL, SUPHA, A1L, ASGARD, 540519, 523586, ALSTONE): every
+tape gap matched its announced factor, every series continuous after adjustment (SUPHA raw 4,188.75 → 1,570.15 across a 9:5
+bonus became 37.40 → 39.25). Full build: **2,423 slices, 413 actions applied, 17 held.** The held 17, bars read ±3 around the
+ex-date: 12 small bonuses (×1.0067–×1.2: JONJUA ×2, ANTARIKSH, ROBU, ACCEDERE, JOHNPHARMA, BIOGEN, IFL, PULSRIN, YUG, MLINDLTD,
+FILTRA ×1.33) whose ex-day move is inside normal noise; CONTAINER (×2, next print 18 months later at r 0.79), PALMJEWELS
+(×4.6, r 0.80), WAAREE (×1.4, next print 3 months later), VIVIDM (×3.6, r 0.77), TIAANC (×6.9, tape ÷1.85 only). Unadjusted on
+purpose — a factor the tape does not show is not divided out (§149); a reader who proves one (share capital × F in the
+company's own XBRL `sc`, or BSE's own adjusted base) can add it as a ledger later.
+
+**Verified.** Local stock page with the adjusted ALSTONE slice staged under docs/stk/: axis 0 → 3.50, peak ₹3.31 (= 331.20 ÷
+100), first bars 0.1575…, header ₹0.16 as of 2026-05-25, zero console errors. Published via refresh-backtest-data.yml
+(workflow_dispatch); live check below in the memory/commit trail. Not changed: build_bse_results `rx` (1-day result reaction)
+still reads raw closes — a reaction straddling an ex-date is wrong there (rare; the same `ca` store can fix it).
 Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap drift) stay sparse by nature.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL

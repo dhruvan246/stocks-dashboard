@@ -74,17 +74,62 @@ def owner_takeovers(tape_syms, prices, code2sym, min_days, tape_isin=None):
     return out
 
 
+def adjust_series(d, c, v, acts):
+    """Bonus/split-adjusted closes for one BSE-only series (runbook §228d, 2026-10-13).
+    d, c, v: raw bars as BSE printed them (dates asc, closes 2 dp, volumes). acts: [[ex, type, factor, text], …] from
+    scripts/bse_ca.json. Same-day actions multiply (ALSTONE 14-Dec-2022: bonus 9:1 × split 10→1 = ÷100). An action is
+    APPLIED only when the tape confirms it: r = close on the first bar on/after ex ÷ close on the bar before must be at most
+    sqrt(1/F) — a fall of at least half the expected move (log scale) — and at least (1/F)/50; else it is HELD (returned, not
+    applied: §149 crash-vs-CA rule — never divide out a move the tape does not show). Ex-dates outside the series do nothing.
+    Returns (adjusted closes 4 dp, adjusted volumes, applied [[ex, F, r]], held [[ex, F, r or None]])."""
+    byex = {}
+    for ex, _t, f, _txt in acts or []:
+        try:
+            f = float(f)
+        except (TypeError, ValueError):
+            continue
+        if f > 1:
+            byex[int(ex)] = byex.get(int(ex), 1.0) * f
+    if not byex or len(d) < 2:
+        return list(c), list(v), [], []
+    applied, held = [], []
+    mult = [1.0] * len(d)
+    for ex in sorted(byex):
+        F = byex[ex]
+        i = next((k for k, dd in enumerate(d) if dd >= ex), None)
+        if i is None or i == 0 or ex > d[-1]:
+            continue                                   # before the first bar or after the last: no effect on this series
+        prev, cur = c[i - 1], c[i]
+        r = (cur / prev) if prev and cur else None
+        e = 1.0 / F
+        if r is not None and (e / 50.0) <= r <= e ** 0.5:
+            for k in range(i):
+                mult[k] /= F
+            applied.append([ex, round(F, 6), round(r, 4)])
+        else:
+            held.append([ex, round(F, 6), None if r is None else round(r, 4)])
+    c2 = [round(x * m, 4) for x, m in zip(c, mult)]
+    v2 = [int(round(x / m)) if m else x for x, m in zip(v, mult)] if v and len(v) == len(d) else list(v)
+    return c2, v2, applied, held
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(HERE, "_sfsplit", "stk"),
                     help="stk/ dir (default: build_stock_slices staging; use docs/stk to test locally)")
     ap.add_argument("--only", default="", help="comma-separated BSE symbols (debugging)")
+    ap.add_argument("--ca", default=os.path.join(HERE, "bse_ca.json"), help="announced bonus/split actions (fetch_bse_ca.py)")
     ap.add_argument("--limit", type=int, default=0, help="cap number of slices (0 = all)")
     ap.add_argument("--min-days", type=int, default=20, help="skip scrips with fewer price days")
     args = ap.parse_args()
     only = {s.strip().upper() for s in args.only.split(",") if s.strip()}
 
     prices = json.loads(gzip.decompress(open(os.path.join(DOCS, "bse_prices.bin"), "rb").read()))["px"]
+    try:
+        CA = json.load(open(args.ca, encoding="utf-8")).get("co") or {}
+    except (OSError, ValueError):
+        CA = {}; print("WARN: no corporate-action store at %s — BSE-only slices stay unadjusted" % args.ca)
+    ca_applied = ca_held = 0; held_log = []
     univ = {str(r[0]): r for r in json.load(open(os.path.join(DOCS, "bse_universe.json")))["rows"]}
     by_id = json.load(open(os.path.join(HERE, "bse_scrips.json")))["by_id"]      # SYM -> scripcode
     code2sym = {str(v): k for k, v in by_id.items()}
@@ -121,6 +166,13 @@ def main():
         c = s.get("c") or []
         v = s.get("v") or []
         dv = s.get("dv") or []
+        last_raw = c[-1] if c else None
+        acts = (CA.get(str(code)) or {}).get("acts") or []
+        applied = []
+        if acts:
+            c, v, applied, held = adjust_series(d, c, v, acts)
+            ca_applied += len(applied); ca_held += len(held)
+            held_log += [(sym, h[0], h[1], h[2]) for h in held]
         # build_slice reads o["d"]/["c"]/["v"]/["dv"]; dv passed x10 (client divides by 10)
         o = {"d": d, "c": c}
         if v and len(v) == len(d):
@@ -131,7 +183,7 @@ def main():
         name = row[2] if len(row) > 2 and row[2] else sym
         sector = row[7] if len(row) > 7 and row[7] else ""
         mcap = row[6] if len(row) > 6 and isinstance(row[6], (int, float)) else None
-        last = c[-1] if c else None
+        last = last_raw                             # the last bar is never adjusted; "raw" = BSE's own last print
         m = {"name": name, "ind": sector, "alive": True, "raw": last}
         core = {}
         if mcap:
@@ -139,6 +191,8 @@ def main():
 
         out = bss.build_slice(sym, o, m, iso(d[-1]), TS, None, False, core)
         out["bse"] = 1                              # marks a BSE-only slice (informational)
+        if applied:
+            out["ca"] = [[ex, F] for ex, F, _r in applied]   # bonus/split factors divided out of the bars before each ex-date
         with open(dst, "w", encoding="utf-8") as fh:
             json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
         written += 1
@@ -147,6 +201,8 @@ def main():
 
     print("BSE stk slices: wrote %d → %s  (skipped: %d on NSE, %d slug-collision, %d <%d days)"
           % (written, args.out, skipped_nse, skipped_collide, skipped_thin, args.min_days))
+    print("  corporate actions (bse_ca.json): %d applied, %d held (announced, not shown by the tape on the ex-date)%s"
+          % (ca_applied, ca_held, (": " + ", ".join("%s %d x%g r=%s" % h for h in held_log[:25])) if held_log else ""))
     other = sorted(k for k, v in take.items() if v[1] is False)
     print("  §207 page owner: %d BSE companies' pages took their own BSE series over the tape's slice of the same "
           "ticker (%d replaced here; the tape series is another company's for %d: %s; same issuer %d, unproven %d)"
