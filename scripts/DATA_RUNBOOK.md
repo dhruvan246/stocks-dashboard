@@ -28403,3 +28403,10 @@ VEDL, BOMDYEING, ESSAROIL 31.54 -> 97.14 (own Table I A 1,409,120,749 of 1,450,6
 AKSHOPTFBR, DCW, DRREDDY, KESORAMIND, PAISALO, TUBEINVEST, VIDEOIND). CARERATING Sep/Dec-20: unnamed rest -> FII (in neither slot).
 PARKED for the user: ~23 non-N500 cells where DII still holds the unnamed rest (CHEMPLASTS, SHRIRAMPPS, PUNJLLOYD x7, CARERATING x6,
 JAICORPLTD, MTARTECH x2, RADIOCITY, EQUITASBNK x3) - the DII session holds DII to PIT-N500 scope; an FII-only write would double-count.
+**Part 90 (2026-10-14) - the 5 held OUR-ERROR cells, joint with the DII session (each read from its own filing).** BALLARPUR
+Dec-15/Mar-16 (Table III qtrid 88/89): Samena / Platinum Asia / Premier / Citigroup GM Mauritius are filed on 'Financial Institutions /
+Banks' -> DII (ruling 1); FII = FPI + 'Foreign Financial Institutions' 3,676,010 = 1.106629 / 1.051212, DII 28.686209 / 25.087452.
+WABAG Dec-15: institutions 'Others' block 1,153,287 -> FII 29.529481, DII unchanged. DIXON Mar-18: OtherInstitutions 700,064 (Steadview,
+GMO, unnamed rest) -> FII 15.10077; DII = own domestic rows + ICICI Pru Life 124,538 (register) = 18.164675 (stored 18.1706 did not
+trace). KARURVYSYA 2018-08-20 event: 'Other' 280,534 -> FII 18.700031, DII 20.842448. Event-row `was` must carry the 8th
+(provenance) element or write_b8 skips it as 'store moved'. Still open: JUSTDIAL Mar-16 (original filing missing).
