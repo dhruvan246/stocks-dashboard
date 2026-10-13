@@ -32,7 +32,7 @@
     #obt-table th, #obt-table td, #ow-table th, #ow-table td { padding: 6px 4px; }
     #obt-table th:first-child, #obt-table td:first-child, #ow-table th:first-child, #ow-table td:first-child { max-width: 135px !important; }
     #ow-table td .muted, #obt-table td .muted { white-space: normal; max-width: 120px; line-height: 1.25; }
-    .bo-t th, .bo-t td { padding: 6px 6px; vertical-align: middle; } .bo-t td .muted { white-space: normal; max-width: 140px; line-height: 1.25; } .bo-t th:first-child, .bo-t td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 170px; overflow: hidden; text-overflow: ellipsis; }
+    .bo-t th, .bo-t td { padding: 6px 4px; vertical-align: middle; } .bo-t td .muted { white-space: normal; max-width: 170px; line-height: 1.25; } .bo-t th:first-child, .bo-t td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table th:first-child, #ow-table td:first-child { position: sticky; left: 0; background: var(--surface-2); z-index: 1; max-width: 165px; overflow: hidden; text-overflow: ellipsis; }
     #ow-table td { vertical-align: middle; } #ow-table tr.obdet td { white-space: normal; background: var(--surface); padding: 10px 14px; } #ow-table tr.obdet .obq { max-width: none; margin-bottom: 4px; }
     #ow-table button.obmore { font-size: 12px; padding: 2px 8px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: inherit; cursor: pointer; white-space: nowrap; }
@@ -291,12 +291,12 @@
     <h3 class="text-base font-semibold mb-1">Broke out recently</h3>
     <p class="muted text-sm mb-2">Closed above the old peak within the last 60 sessions, after the rise and the fall. Newest first.</p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-broke"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x" title="Old peak ÷ lowest close in the ~2 years before it">The rise</th><th class="n" data-k="fall_pct" title="Fall from the old peak to the lowest close after it">The fall</th><th data-k="breakout_date">Broke out</th><th class="n" data-k="breakout_close">Close that day</th><th class="n" data-k="last">Latest</th><th class="n" data-k="ret_since_pct">Since breakout</th><th class="n" data-k="best_since_pct">Best since</th><th class="n" data-k="med_turn_cr" title="Median daily turnover, last 60 sessions">₹cr/day</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x" title="Old peak ÷ lowest close in the ~2 years before it">The rise</th><th class="n" data-k="fall_pct" title="Fall from the old peak to the lowest close after it">The fall</th><th data-k="breakout_date">Broke out</th><th class="n" data-k="last">Latest</th><th class="n" data-k="today" title="Today: price and % change vs the previous close, refreshed every minute in market hours. Real time from your Zerodha (Kite) account on a device where the portfolio is connected (NSE and BSE); otherwise NSE via Yahoo (~15-min delay) and BSE-only rows show the last close.">Today</th><th class="n" data-k="ret_since_pct">Since breakout</th><th class="n" data-k="best_since_pct">Best since</th><th class="n" data-k="med_turn_cr" title="Median daily turnover, last 60 sessions">₹cr/day</th>
     </tr></thead><tbody><tr><td colspan="9" class="muted">Loading…</td></tr></tbody></table></div>
     <h3 class="text-base font-semibold mb-1">Near breakout</h3>
     <p class="muted text-sm mb-2">Never closed above the old peak since the fall, and now within 15% of it. Closest first.</p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-near"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x">The rise</th><th class="n" data-k="fall_pct">The fall</th><th class="n" data-k="last">Latest</th><th class="n" data-k="below_peak_pct" title="Latest close vs the old peak">vs old peak</th><th class="n" data-k="from_low_pct" title="Latest close vs the low after the peak">Up from low</th><th class="n" data-k="med_turn_cr">₹cr/day</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap_cr" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="rise_x">The rise</th><th class="n" data-k="fall_pct">The fall</th><th class="n" data-k="last">Latest</th><th class="n" data-k="today" title="Today: price and % change vs the previous close, refreshed every minute in market hours. Real time from your Zerodha (Kite) account on a device where the portfolio is connected (NSE and BSE); otherwise NSE via Yahoo (~15-min delay) and BSE-only rows show the last close.">Today</th><th class="n" data-k="below_peak_pct" title="Latest close vs the old peak">vs old peak</th><th class="n" data-k="from_low_pct" title="Latest close vs the low after the peak">Up from low</th><th class="n" data-k="med_turn_cr">₹cr/day</th>
     </tr></thead><tbody><tr><td colspan="7" class="muted">Loading…</td></tr></tbody></table></div>
   </section>
 
@@ -827,15 +827,71 @@
   const boName = (r) => `<a class="src" href="./stock.html?sym=${encodeURIComponent(r.sym)}">${esc(r.name || r.sym)}</a><div class="muted text-xs">${esc(r.sym)}${r.exchange === 'BSE' ? ` · <span class="pill" title="Listed on BSE only (code ${esc(r.bse || '')})">BSE only</span>` : ''}${r.unannounced_cliff ? ' <span class="pill" style="color:#b45309" title="Its price history has a one-day fall of 30%+ with no bonus or split announced on BSE near that date - kept as a real fall; check before trusting the pattern">⚠ cliff</span>' : ''}</div>`;
   const boRise = (r) => `${r.rise_x}×<div class="muted text-xs">₹${fmt(r.low_before, r.low_before < 100 ? 2 : 0)} → ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}, ${dmy(r.peak_date)}</div>`;
   const boFall = (r) => `${pct(r.fall_pct)}<div class="muted text-xs">to ₹${fmt(r.trough, r.trough < 100 ? 2 : 0)}, ${dmy(r.trough_date)}</div>`;
+  // live "Today" column: NSE rows from the site's quotes worker (Yahoo NSE, ~15-min delay); BSE-only rows show the
+  // last close's day move (no live BSE source the browser may call - BSE's API refuses other sites)
+  const QW = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+  let BOLIVE = {}, BOLIVE_AT = null;
+  // previous session's close for the % change: the job's latest close, unless that close is already today's
+  const boTodayIST = () => new Date(Date.now() + 330 * 60000).toISOString().slice(0, 10);
+  const boPrev = (r) => (r.last_date === boTodayIST() ? r.prev_close : r.last);
+  const boLiveKey = (r) => (r.exchange === 'BSE' ? 'BSE:' : '') + r.sym;
+  const boLivePct = (r) => { const v = BOLIVE[boLiveKey(r)], pv = v && (v.prevClose || boPrev(r)); return v && v.ltp != null && pv > 0 ? (v.ltp / pv - 1) * 100 : null; };
+  const boToday = (r) => {
+    const v = BOLIVE[boLiveKey(r)];
+    if (v && v.ltp != null) { const ch = boLivePct(r), kite = v.src === 'kite'; return `<td class="n" title="${kite ? 'Real-time, your Zerodha (Kite) price' : 'NSE via Yahoo, ~15-min delay'}${BOLIVE_AT ? ' · fetched ' + BOLIVE_AT : ''}">₹${fmt(v.ltp, 2)}<div>${ch == null ? '' : pct(Math.round(ch * 100) / 100)} <span class="muted text-xs">${kite ? 'live' : '~15m'}</span></div></td>`; }
+    return `<td class="n" title="Close of ${esc(r.last_date || '')} vs the previous close${r.exchange === 'BSE' ? ' - no live BSE price available' : ' - live price not loaded'}">₹${fmt(r.last, 2)}<div>${r.day_chg_pct == null ? '—' : pct(r.day_chg_pct)} <span class="muted text-xs">close</span></div></td>`;
+  };
+  const boMarketOpen = () => { const n = new Date(Date.now() + 330 * 60000), d = n.getUTCDay(), h = n.getUTCHours() + n.getUTCMinutes() / 60; return d >= 1 && d <= 5 && h >= 9 && h <= 15.75; };
+  // 1) real time from your Zerodha account, the way terminal.html prices its slices: the Kite worker's /margincalc
+  //    prices a 1-share CNC MARKET buy at the live LTP (the free 'Personal' app refuses /quote); NSE and BSE alike.
+  //    Needs this device's pf_kite_worker + pf_token (set up on the portfolio page). A price 20%+ from the last close
+  //    is distrusted (same guard as the terminal).
+  // 2) fallback: the site's quotes worker (Yahoo NSE, ~15-min delay) for NSE rows; BSE-only rows keep the close.
+  const boKite = async (rows) => {
+    let w = '', tok = '';
+    try { w = (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); tok = localStorage.getItem('pf_token') || ''; } catch (e) {}
+    if (!w || !tok || !rows.length) return 0;
+    let got = 0;
+    for (let i = 0; i < rows.length; i += 40) {
+      const part = rows.slice(i, i + 40);
+      const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: r.sym, transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
+      try {
+        const res = await fetch(w + '/margincalc', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-PF-Token': tok }, body: JSON.stringify(body) });
+        if (res.status !== 200) return got;
+        const j = await res.json(), data = (j && j.data) || [];
+        part.forEach((r, k) => {
+          const d = data[k], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
+          if (d && d.tradingsymbol && d.tradingsymbol !== r.sym) return;      // answer out of order: do not misplace it
+          if (v > 0 && !(r.last > 0 && Math.abs(v / r.last - 1) > 0.2)) { BOLIVE[boLiveKey(r)] = { ltp: v, src: 'kite' }; got++; }
+        });
+      } catch (e) { return got; }
+    }
+    return got;
+  };
+  const boFetchLive = async () => {
+    if (!BO) return;
+    const rows = [...(BO.broke || []), ...(BO.near || [])];
+    await boKite(rows);
+    const need = [...new Set(rows.filter(r => r.exchange !== 'BSE' && !(BOLIVE[boLiveKey(r)] && BOLIVE[boLiveKey(r)].src === 'kite')).map(r => r.sym))];
+    try {
+      for (let i = 0; i < need.length; i += 30) {
+        const d = await (await fetch(QW + '/?symbols=' + encodeURIComponent(need.slice(i, i + 30).join(',')), { cache: 'no-store' })).json();
+        Object.entries((d && d.data) || {}).forEach(([k, v]) => { BOLIVE[k] = Object.assign({ src: 'yahoo' }, v); });
+      }
+    } catch (e) { /* keep what we have */ }
+    BOLIVE_AT = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    drawBO();
+  };
+  setInterval(() => { if (!document.hidden && VIEW === 'bo' && boMarketOpen()) boFetchLive(); }, 60000);
   const drawBO = () => {
     if (!BO) return;
-    const sortRows = (rows, st) => rows.slice().sort((a, b) => { const x = st.k === 'name' ? (a.name || a.sym) : a[st.k], y = st.k === 'name' ? (b.name || b.sym) : b[st.k]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * st.d; });
+    const val = (r, k) => k === 'name' ? (r.name || r.sym) : k === 'today' ? (boLivePct(r) ?? r.day_chg_pct) : r[k];
+    const sortRows = (rows, st) => rows.slice().sort((a, b) => { const x = val(a, st.k), y = val(b, st.k); if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * st.d; });
     ['broke', 'near'].forEach(w => document.querySelectorAll(`#bo-${w} th[data-k]`).forEach(th => { th.classList.toggle('asc', th.dataset.k === BOS[w].k && BOS[w].d > 0); th.classList.toggle('desc', th.dataset.k === BOS[w].k && BOS[w].d < 0); }));
     $('#bo-broke tbody').innerHTML = sortRows(BO.broke || [], BOS.broke).map(r => `<tr><td>${boName(r)}</td><td class="n">${r.mcap_cr == null ? '—' : fmt(r.mcap_cr, 0)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
-      <td>${dmy(r.breakout_date)}<div class="muted text-xs">${r.days_since === 0 ? 'today' : r.days_since + ' session' + (r.days_since === 1 ? '' : 's') + ' ago'} · old peak ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}</div></td>
-      <td class="n">₹${fmt(r.breakout_close, 2)}</td><td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.ret_since_pct)}</b></td><td class="n">${pct(r.best_since_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="10" class="muted">None in the last 60 sessions.</td></tr>';
+      <td>${dmy(r.breakout_date)} · <b>₹${fmt(r.breakout_close, 2)}</b><div class="muted text-xs">${r.days_since === 0 ? 'today' : r.days_since + ' session' + (r.days_since === 1 ? '' : 's') + ' ago'} · old peak ₹${fmt(r.peak, r.peak < 100 ? 2 : 0)}</div></td><td class="n">₹${fmt(r.last, 2)}<div class="muted text-xs">${dmy(r.last_date)}</div></td>${boToday(r)}<td class="n"><b>${pct(r.ret_since_pct)}</b></td><td class="n">${pct(r.best_since_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="10" class="muted">None in the last 60 sessions.</td></tr>';
     $('#bo-near tbody').innerHTML = sortRows(BO.near || [], BOS.near).map(r => `<tr><td>${boName(r)}</td><td class="n">${r.mcap_cr == null ? '—' : fmt(r.mcap_cr, 0)}</td><td class="n">${boRise(r)}</td><td class="n">${boFall(r)}</td>
-      <td class="n">₹${fmt(r.last, 2)}</td><td class="n"><b>${pct(r.below_peak_pct)}</b></td><td class="n">${pct(r.from_low_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="8" class="muted">None right now.</td></tr>';
+      <td class="n">₹${fmt(r.last, 2)}<div class="muted text-xs">${dmy(r.last_date)}</div></td>${boToday(r)}<td class="n"><b>${pct(r.below_peak_pct)}</b></td><td class="n">${pct(r.from_low_pct)}</td><td class="n">${fmt(r.med_turn_cr, 1)}</td></tr>`).join('') || '<tr><td colspan="9" class="muted">None right now.</td></tr>';
   };
   const loadBO = () => {
     if (BO || boLoading) return;
@@ -843,6 +899,7 @@
       BO = j;
       $('#bo-meta').textContent = j ? `Prices to ${j.prices_to}${j.bse_only && j.bse_only.series ? ` (BSE-only: ${j.bse_only.series} stocks, prices to ${j.bse_only.prices_to})` : ''} · ${(j.broke || []).length} broke out in the last 60 sessions · ${(j.near || []).length} near · built ${j.built || ''} · ${j.rule || ''}` : 'breakout_watch.json not published yet.';
       drawBO();
+      boFetchLive();
     });
   };
   ['broke', 'near'].forEach(w => $(`#bo-${w} thead`).addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !BO) return; const st = BOS[w]; if (st.k === th.dataset.k) st.d = -st.d; else { st.k = th.dataset.k; st.d = th.dataset.k === 'name' ? 1 : -1; } drawBO(); }));

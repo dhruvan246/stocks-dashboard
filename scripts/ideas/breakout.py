@@ -149,7 +149,8 @@ def scan_one(sym, d, c, t):
                 continue
             row = dict(sym=sym, low_before=round(lo, 2), rise_x=round(P / lo, 1), peak_date=ymd(d[i]), peak=round(P, 2),
                        trough_date=ymd(d[Tj]), trough=round(T, 2), fall_pct=round((T / P - 1) * 100, 1),
-                       last=round(c[-1], 2), last_date=ymd(d[-1]), med_turn_cr=round(medt / 100, 2))
+                       last=round(c[-1], 2), last_date=ymd(d[-1]), med_turn_cr=round(medt / 100, 2),
+                       prev_close=round(c[-2], 2), day_chg_pct=round((c[-1] / c[-2] - 1) * 100, 2) if c[-2] else None)
             if j >= n:                                    # never closed above the peak again
                 if c[-1] >= (1 - NEAR) * P:
                     best = ('near', dict(row, below_peak_pct=round((c[-1] / P - 1) * 100, 1),
