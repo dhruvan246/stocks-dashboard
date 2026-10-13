@@ -1,0 +1,310 @@
+{
+ "date": "2026-10-13",
+ "run_started": "2026-10-13 19:48 IST",
+ "run_finished": "2026-10-13 22:05 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1202,
+ "candidates": 16,
+ "filings_status": "BSE answered 200 from this sandbox on the setup probe (ComHeadernew, scrip 500002) with the honest headers from scripts/bse_headers.py, so lane three ran live here: universe.py rebuilt 1,202 names (783 group B, 133 X, 104 T, 81 M, 51 XT, 45 MT, 3 A, 1 MS, 1 P; 839 with an NSE symbol, 127 SME) and produced a file BYTE-IDENTICAL to the Action's, scan.py printed SELFTEST PASS, and two dossiers were read live (544204 Vraj, 544516 Airfloa). THIS RUN'S SCAN SUPERSEDES THE ACTION'S AND IS COMMITTED. The ideas-feeds Action read at 18:59 IST and saw 917 announcements against BSE's reported 917 (capped false, 49 in universe, 139 signal rows, 15 candidates). This run re-read at 19:54 IST and saw 1,002 against a reported 1,002 (capped false, 59 in universe, 145 signal rows, 16 candidates): 85 further filings were lodged in that hour. The re-read mattered - it added six signal rows (500213, 506480, 511754, 532173, 543328, 544253), upgraded Shivam Autotech from score 1.0 to 2.0 on a rights-issue letter of offer, and produced a SIXTEENTH CANDIDATE, GTPL Hathway at score 4.0, whose three filings are timestamped 19:19 to 19:29 IST - all after the Action's read. CAVEAT the page should carry: even the 19:54 read is taken on the day itself, so anything filed later in the evening is still not in it, and the counts are a floor for the day rather than its total.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy (403 Forbidden at CONNECT), so govt.py exited without writing and left docs/ideas/govt.json exactly as the ideas-feeds Action built it at 18:56 IST today - which is TODAY's read, not a stale one, so lane one is not a data gap. feeds_status.json records pib.gov.in answering 200 from Actions and the govt step exiting 0.",
+ "commodity_status": "All six builders were re-run from this sandbox and every commodity host except BSE refused at the proxy, so the live numbers are the ones GitHub Actions wrote at 18:56-19:11 IST today (feeds_status.json: steps_failed empty, 25 files landed, landing.refused empty). Blocked from THIS sandbox: westmetall.com and markets.businessinsider.com (so spot.py fetched 0 and left spot.json/spot_series.json untouched), steel.gov.in (minsteel.py listed no report and kept the committed file), metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, guidechem.com, caionline.in, indianspices.com and tradingeconomics.com (india_spot.py kept previous rows for each, printing 'previous rows kept'), eaindustry.nic.in (wpi.py left wpi.json.gz unchanged) and tradestat.commerce.gov.in (trade.py left trade/** unchanged). What DID run live from here, all via BSE: nmdc ok 2 rows, minsteel ok 3 rows (read from the committed file), moil ok 3 rows. india_spot.py rebuilt docs/ideas/india_history.json.gz - 278 series, 75,831 dated points, so it was rebuilt, not skipped. signals.py then rebuilt 53 groups at 19:52 IST. Note for the record: from GitHub Actions only two hosts were blocked today - tradestat.commerce.gov.in and westmetall.com - so the WPI and HS-trade panels are genuinely stale everywhere, not just here.",
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "Not researched. Every line of evidence is WPI at wpi_month 2026-04 - five months old at the time of this run and stale from GitHub Actions too, since eaindustry.nic.in is blocked there as well. A 3-month change of +85.6% measured to April 2026 says nothing about a price today. No fresh Indian daily print backs it."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "Not researched. Driven by WPI Silver 12m +152.4%, again at 2026-04. IBJA bullion, the daily Indian print that would corroborate it, was blocked from this sandbox and its rows are the Action's. No small-cap primary silver producer is mapped; the exposure would be a jeweller, where a rising metal price is working capital, not margin."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "Not researched as a commodity card, but it is the business of one name this run DID read: Innomet Advanced Materials makes tungsten heavy alloys and its FY26 call named a ~Rs 15 cr Scope Metals (Israel) export order. Evidence is an export unit price smoothed-y/y of +606.5% on HS 284180 sodium tungstate at only US$21.2 mn/month and trade_month 2026-07 - a thin, two-code series at a 2.5-month lag. Innomet was checked for the order-wins ledger, not published; see researched[]."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "strength": 7.19,
+   "direction": "up",
+   "verdict": "Not researched. The only evidence is a Trading Economics containerised-freight index 1y +215.8%, a global proxy with no Indian print behind it, and the mapped names are shipping companies above the band."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "strength": 6.97,
+   "direction": "up",
+   "verdict": "Not researched. Headline is WPI Sulphuric Acid 1m +20.9% at 2026-04. The two fresh rows are Guidechem CHINESE domestic quotes (2026-10-13) with n=2 and n=3 readings from 2026-10-11, so stats.deep is false and the panel withholds a verdict by design. Direction only, and an aggregator at that."
+  },
+  {
+   "group": "Benzene, PTA and MEG",
+   "strength": 6.03,
+   "direction": "up",
+   "verdict": "Not researched. Same shape: WPI Alkyl Benzene 1m +18.1% at 2026-04, plus six Guidechem Chinese rows dated 2026-10-12/13 with 2-3 readings each, all stats.deep false."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "strength": 6.0,
+   "direction": "up",
+   "verdict": "Not researched. Rests on an import unit price 1m +241.4% on HS 3902 polypropylene - a one-month customs unit-value jump at trade_month 2026-07, which the playbook treats as noise unless the 3-month move agrees. It is exactly the 'small code jumps on one shipment' caveat the panel carries."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "strength": 5.59,
+   "direction": "up",
+   "verdict": "Not researched despite being the precedent the user named (HEG ~30x, Graphite India ~10x in 2017-18). The evidence is an import unit price 3m +83.9% on HS 2713 - which is PETROLEUM BITUMEN and coke, not needle coke specifically - at trade_month 2026-07. No daily print, and the HS prefix is too coarse to call a needle-coke move from. Worth a better HS mapping in the map rather than a card today."
+  },
+  {
+   "group": "Copper",
+   "strength": 5.25,
+   "direction": "up",
+   "verdict": "Not researched today. This one DOES have deep Indian prints: MetalBook Mumbai copper wire rod (CCR 8mm) Rs 1,464/kg and Delhi Rs 1,450/kg on 2026-10-06, 1y +42.1% and +44.3%, 19-20 readings since 2025-07-08, highest since 2026-09-29. A real move, but the mapped small-cap recyclers (Sunlite, Parmeshwar) were called on this basis in earlier runs and the pass-through/inventory story is already on the page; nothing new was filed to re-trigger it, and the steel setup below was both fresher and had no small-cap name mapped at all, which is the gap the playbook says to close first."
+  },
+  {
+   "group": "Steel (HRC, rebar)",
+   "strength": 2.06,
+   "direction": "up",
+   "verdict": "RESEARCHED AND PUBLISHED, as 2026-10-13-VRAJ. The group's strength is only 2.06 because its WPI and HS legs are stale, but its INDIAN prints are the freshest and deepest on the panel and they are what the card is built on. Ministry of Steel's own September-2026 Mumbai retail report: TMT 10mm Rs 65,750/t (+15.5% in one month, +21.0% y/y, highest since 2026-04-30 in 51 readings back to 2021-11-30), HR coil 2.50mm Rs 76,900/t (+10.8% m/m, +29.2% y/y, HIGHEST SINCE 2022-05-31 in 50 readings), CR coil 0.63mm Rs 89,670/t (+14.0% m/m, +31.6% y/y, highest since 2022-05-31 in 49 readings). MetalBook's Raipur long-product prints on 2026-10-06, 27 readings since 2025-06-18: billet Rs 45.7/kg +26.4% y/y, TMT Fe500 Rs 52.1/kg +21.7%, ingot Rs 45.1/kg +25.8%, wire rod Rs 49.6/kg +24.9%. The map listed only Tata Steel, JSW, SAIL and Jindal as beneficiaries - all far above the Rs 25,000 cr ceiling where no 5x happened in three years - so per PLAYBOOK step 5 the universe was searched for a producer and Vraj Iron and Steel was read from its own documents."
+  },
+  {
+   "group": "Iron ore and pellets",
+   "strength": 1.9,
+   "direction": "up",
+   "verdict": "Researched as the INPUT side of the steel card, and it is the reason the card exists. NMDC's administered price, 83 lump revisions since 2019-01-03: lump Rs 5,400/t at 1m +2.9% and 3m -5.3%, fines Rs 4,500/t at 1m 0.0% and 3m -7.2%. The 1-year figures (-11.5% lump, -14.3% fines) carry stats.basis_break on chg_1y - the year-ago end INCLUDES royalty, DMF and NMET and today's EXCLUDES them after NMDC's 2026-01-09 flip - so those are definition changes, not price moves, and were not used. The group's own +1.9 'up' reading comes from WPI Iron Ore at 2026-04 and an HS 2601 pellet export unit price, both stale; the administered print, which is current, is flat to down. Output up a fifth, input not: that is the spread the card is about."
+  },
+  {
+   "group": "Manganese ore and alloys",
+   "strength": 3.18,
+   "direction": "up",
+   "verdict": "Not researched. MOIL's administered letters did run live from this sandbox (3 rows) and show ferro-grade ore 1m +5.0%, 3m +0.8% and -0.3%, EMD flat at Rs 180,000/t with 1y -12.2%. A +5% month on an administered ore price with the alloy evidence sitting in WPI at 2026-04 is not enough, and the deeper rows carry no date in the panel."
+  },
+  {
+   "group": "Cotton",
+   "strength": 1.57,
+   "direction": "up",
+   "verdict": "Not researched. CAI's spot rates came through the Action with 27 fresh rows dated 2026-10-13, but every one has n=3 readings from 2026-10-09, so stats.deep is false and no verdict is available yet. In three weeks this becomes usable."
+  }
+ ],
+ "govt_considered": [],
+ "candidates_considered": [
+  {
+   "ticker": "ACCORDTS",
+   "scrip": "544710",
+   "score": 8,
+   "signals": "ORDER, VOL x9.5, BREAKOUT at window high (ret_20d +58.7%, ret_window +88.0%, Rs 38.7 lakh median turnover, SME)",
+   "verdict": "NOT RESEARCHED. The highest-scoring candidate of the day and the trigger is immaterial: the filing's own headline reads 'Purchase Order Received for an amount Seventy Lakhs from October 07, 2026'. Rs 0.70 cr against a Rs 221 cr market cap is not a number a thesis can be built on, and the playbook's rule is that an order is sized against a trailing year of sales. The 9.5x volume and the 88% window move are exactly the 'volume explosion is an alarm bell, not evidence' case - 81% of 5x runs had one and so did 78% of the stocks that went nowhere. Watch-listed."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "score": 6,
+   "signals": "RESULT, VOL x9.7, BREAKOUT at window high (Rs 48.0 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. The filing classified as RESULT is a board-meeting outcome 'for issuance of Listed Rated Secured Non Convertible Debentures' - a fund raise with no stated use of proceeds, which the triage rules skip explicitly. An NBFC raising debt is business as usual, not a trigger."
+  },
+  {
+   "ticker": "EIMCOELECO",
+   "scrip": "523708",
+   "score": 6,
+   "signals": "RESULT x2, DISCLOSE x2 (H1 FY27 results + investor presentation + press release all filed 13-Oct)",
+   "verdict": "NOT RESEARCHED, and the best of the filing lane's near-misses - a genuine same-day results-plus-presentation trigger on a Rs 1,297 cr mining-equipment maker. Left for the next run only because the commodity lane outranks an ordinary filing and the order-wins backlog (seven flags carried over from yesterday's data_problems) had to be cleared first. Worth a dossier tomorrow: ret_window +25.6% but ret_5d -5.1% and not at the window high, so nothing is running away."
+  },
+  {
+   "ticker": "NATFIT",
+   "scrip": "531289",
+   "score": 6,
+   "signals": "CAPEX, DEAL (ret_20d +31.9%, ret_window +116.6%, vol x0.5)",
+   "verdict": "NOT RESEARCHED. An MoU to acquire about 4.5 acres adjacent to leased premises for a new manufacturing facility - real capex intent, but the filing states no investment amount, no capacity and no commissioning date, so there is no number to model. The stock has already doubled over the window on falling volume. Watch for the capex value."
+  },
+  {
+   "ticker": "AIRFLOA",
+   "scrip": "544516",
+   "score": 5,
+   "signals": "ORDER, DISCLOSE (LOA as lead member of a consortium, Rs 442.1 lakh median turnover, SME)",
+   "verdict": "RESEARCHED, NOT PUBLISHED. Dossier read live. The filing is real and specific: a contract from Integral Coach Factory, Chennai, for interior design of the Vande Bharat sleeper trainset, Rs 34.85 crore INCLUSIVE OF GST (interior design Rs 30.93 cr + associated development Rs 3.93 cr), 12 months, as lead member of a consortium with Italy-based BLUE Engineering S.r.l. Three things stopped it. (1) Size: Rs 34.85 cr against FY26 revenue of Rs 319.60 cr is 10.9% of a trailing year's sales - the bucket the 1,245-filing study found reached 2x only 21.4% of the time, against 35.7% for 25-50%. (2) Airfloa's own share of the consortium is NOT disclosed anywhere in the filing or the press release, so its real revenue is below even that 10.9%, by an unstated amount. (3) The price has already moved: +75.2% in three months, +42.7% in a year, Rs 552.65 against a 52-week high of Rs 584.20, on a trailing PE of 33.84. A first-of-its-kind design mandate is a credential, and the card would have had to say the number does not support it."
+  },
+  {
+   "ticker": "AMAL",
+   "scrip": "506597",
+   "score": 4,
+   "signals": "VOL x16.9, BREAKOUT at window high, no announcement",
+   "verdict": "NOT RESEARCHED. Zero filings in the window to explain a 16.9x volume day and a +48.8% window move. The triage rule is explicit: pure price moves with no filing are watch-listed, not researched. Already a published card (2026-10-12-AMAL) and swept for updates today - no new filing."
+  },
+  {
+   "ticker": "UTTAMSUGAR",
+   "scrip": "532729",
+   "score": 4,
+   "signals": "VOL x11.4, BREAKOUT at window high, no announcement (ret_1d +10.5%)",
+   "verdict": "NOT RESEARCHED. No filing. Checked against the commodity panel for a sugar explanation and there is none available: the Chinimandi sugar spot source was blocked from this sandbox and its group does not clear the 1.5 threshold on the Action's rows either. A +10.5% day on 11.4x volume with nothing filed and no price signal is a watch-list row."
+  },
+  {
+   "ticker": "MODISONLTD",
+   "scrip": "506261",
+   "score": 4,
+   "signals": "VOL x5.4, BREAKOUT at window high, no announcement",
+   "verdict": "NOT RESEARCHED. No filing. Already a published card (2026-09-22-MODISONLTD), swept for updates today with 9 filings read and none new since the last sweep."
+  },
+  {
+   "ticker": "ARFININDIA",
+   "scrip": "539151",
+   "score": 4,
+   "signals": "VOL/BREAKOUT, no hard filing",
+   "verdict": "NOT RESEARCHED. No filing with a number. An aluminium-wire maker, so it is a CONVERTER on the aluminium group (strength 2.53 up, all WPI at 2026-04) - a rising input without demonstrated pass-through is a red flag, not an idea, and the playbook forbids publishing the short side."
+  },
+  {
+   "ticker": "MITSUCHEM",
+   "scrip": "540078",
+   "score": 4,
+   "signals": "VOL/BREAKOUT",
+   "verdict": "NOT RESEARCHED. No filing with a number; Rs 314 cr plastics processor, a polymer converter (polyethylene/polypropylene group is up on a one-month customs unit-value spike, i.e. an input cost risk, not a benefit)."
+  },
+  {
+   "ticker": "APTUSPHARMA",
+   "scrip": "544529",
+   "score": 4,
+   "signals": "VOL/BREAKOUT",
+   "verdict": "NOT RESEARCHED. No filing with a number."
+  },
+  {
+   "ticker": "GRETEX",
+   "scrip": "543324",
+   "score": 4,
+   "signals": "VOL/BREAKOUT",
+   "verdict": "NOT RESEARCHED. Merchant banker; no filing with a number and no physical driver the method can model."
+  },
+  {
+   "ticker": "RESONANCE",
+   "scrip": "524218",
+   "score": 4,
+   "signals": "VOL x3.1, BREAKOUT (ret_1d +9.1%, Rs 25.5 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. No filing. Rs 226 cr specialty chemicals; a pure price-and-volume row."
+  },
+  {
+   "ticker": "ANUHPHR",
+   "scrip": "506260",
+   "score": 4,
+   "signals": "CAPEX x2 (vol x0.8)",
+   "verdict": "NOT RESEARCHED. Two CAPEX-classified filings but no volume or price confirmation and, on the headlines, no stated investment amount. Rs 822 cr API maker. Second-tier behind Eimco for the next run."
+  },
+  {
+   "ticker": "EVEXIA",
+   "scrip": "524444",
+   "score": 4,
+   "signals": "RESULT, BREAKOUT (Rs 91.2 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. Rs 492 cr; the RESULT classification is on a filing with no revenue-growth number in its headline, and the name has a history of unrelated business pivots. Nothing to model."
+  },
+  {
+   "ticker": "GTPL",
+   "scrip": "540602",
+   "score": 4.0,
+   "signals": "DEAL, RESULT x2, VOL x3.3 (Rs 1.8 lakh median turnover, scan flags liquid FALSE)",
+   "verdict": "NOT RESEARCHED - and it is in the candidate list at all only because this run re-scanned at 19:54 IST; all three of its filings are timestamped 19:19-19:29 IST, after the Action's 18:59 read. Opened the acquisition filing: the board approved buying the balance 74% of DL GTPL Cabnet Private Limited (88,800 shares of Rs 10) from its existing shareholders for cash of Rs 937.50 per share, aggregating Rs 8,32,50,000 - Rs 8.33 cr, or 1.3% of the Rs 660 cr market cap - taking an EXISTING subsidiary to wholly owned 'for consolidation of business operations', completion expected by 31-Oct-2026. It is a minority buyout of a business already consolidated, so it adds no revenue, and the filing's own figures show that business SHRINKING: DL GTPL's turnover was Rs 70.59 cr in FY24, Rs 69.97 cr in FY25 and Rs 63.71 cr in FY26, down 9.7% over two years. The filing also states all six transferors are related parties of DL GTPL, on an arm's length basis, with no promoter-group interest. Against that, median daily turnover is Rs 1.8 lakh and the scan marks the row liquid FALSE, and the price is going nowhere (ret_window -3.2%, ret_20d -2.1%, not at the window high). Its H1 FY27 results were filed the same evening and were NOT opened this run - that is the one loose end on this name, and the reason to look again rather than to research it tonight."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "VRAJ",
+   "scrip": "544204",
+   "lane": "price",
+   "published": true,
+   "reason": "Indian finished-steel prices at a four-year high on the Ministry of Steel's own September-2026 Mumbai report (HR coil Rs 76,900/t and CR coil Rs 89,670/t, both highest since May 2022 in 49-50 readings since Nov 2021; TMT 10mm Rs 65,750/t +15.5% in one month, +21.0% y/y) and MetalBook's Raipur long-product prints +21.7% to +26.4% y/y, while NMDC's administered iron ore is +2.9% over a month and -5.3% over three. The steel map had NO small-cap producer, so the universe was searched and Vraj's exposure read from its own documents: an integrated sponge iron (235,500 MTPA, 81.30% utilised), MS billet (210,600 MTPA, 23.20% utilised) and TMT (54,000 MTPA, 67.09%) maker in Chhattisgarh. The 23.20% billet utilisation is the idea's volume half - the 153,000 MTPA Bilaspur billet plant commenced commercial production on 27-Mar-2026, four days before FY26 ended, so FY27 is its first year. Q1 FY27 revenue Rs 193.83 cr is +40.1% YoY with PAT Rs 9.73 cr (+32.7%), and the EBITDA margin was FLAT at 10.98% against 10.87% - which is the timing, not a contradiction: Q1 is April-June and the September price jump is in no filed number yet. At Rs 120.0 the market cap is Rs 395.8 cr on PE 12.40 and PB 1.08 with debt/equity 0.103, the cheapest and highest-ROE of seven listed long-product peers read today. Published with the liquidity problem stated first in the red flags: median 60-day turnover is Rs 2.1 lakh a day."
+  },
+  {
+   "ticker": "AIRFLOA",
+   "scrip": "544516",
+   "lane": "filing",
+   "published": false,
+   "reason": "Rs 34.85 cr ICF Vande Bharat sleeper interior-design contract, inclusive of GST, is 10.9% of FY26 revenue of Rs 319.60 cr - the weak bucket of the order study (2x 21.4% of the time vs 35.7% at 25-50% of sales) - and Airfloa's share of the consortium with BLUE Engineering S.r.l. is not disclosed, so its own revenue is lower still. Price already +75.2% in three months at PE 33.84."
+  },
+  {
+   "ticker": "HECPROJECT",
+   "scrip": "",
+   "nse": "HECPROJECT",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified for the ledger (step 4a-iii), not published. Rs 317.61 cr of confirmed order wins is real and large against a stated order book of Rs 326.08 cr in hand / Rs 202.78 cr unexecuted, but the flag's premise is broken: the script dated the base 2025-12-31 when the Q3 FY26 deck says 'Order Book Snapshot As On 31st March 2025', so the wins run 11-16 months after the base, not within 183 days. One win was also misread, Rs 89.0 cr for Rs 11.89 cr (OCR of 'Rs.ll.89 crores'). Recorded CORRECTED. No market cap for the Rs 200-7,500 cr band test could be established this run - it is not in the BSE 200-2,000 cr universe and is an NSE name - so the band test is UNKNOWN and that alone blocks a card."
+  },
+  {
+   "ticker": "INNOMET",
+   "scrip": "",
+   "nse": "INNOMET",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified, not published. Confirmed floor of Rs 42.10 cr of wins against a base order book of Rs 35.99 cr that management stated on the FY26 call (1.170x). Tungsten heavy alloys and metal powders, AS9100D aerospace certification in FY26, exports ~77% of the order book. Not published because the 13-Oct export order's value is UNREADABLE in the filing as filed ('USD 29,592,26'), the band test is unknown as for HEC, and the absolute numbers are small. Interesting enough to carry forward."
+  },
+  {
+   "ticker": "TROM",
+   "scrip": "",
+   "nse": "TROM",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified, not published. Two script errors corrected: a figure the company itself RETRACTED was counted (Rs 14.90 cr for the Rs 2.857 cr it was corrected to) and the Rs 25.79 cr Vimal Electronics solar EPC order was counted twice (intimation 08-Jan + press release 12-Jan, 4 days apart so the 3-day dedupe missed it). Sum Rs 76.11 cr -> Rs 38.28 cr, still 1.276x a Rs 30 cr order book. Not published: 7 of 9 counted letters are GST-inclusive and the base order book is Rs 30 cr - too small to model."
+  },
+  {
+   "ticker": "SAATVIKGL",
+   "scrip": "544526",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified and REJECTED. All 11 order letters confirm exactly (Rs 1,354.05 cr) but the base is not an order book: the Q3 FY26 deck says 'Order Book 5.05 GW As on Dec-25', and the Rs 963 crore the script used is that quarter's INTAKE ('we secured repeat domestic orders aggregating Rs 963 crore'). Recorded NOT A FLAG."
+  },
+  {
+   "ticker": "CEIGALL",
+   "scrip": "544223",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified and REJECTED (already a published card from 2026-10-11, so no new card either way). The Lakadia transmission project was counted THREE times and its headline figure is an annual tariff for 35 years, not an order; the Nawada mining lease twice; three of four road LOAs are consortium awards at 100% with Ceigall's share unstated. Rs 9,928.38 cr (0.535x) -> at most Rs 8,867.92 cr = 0.478x, below the flag. Today's acquisition filing confirms the reading: Ceigall bought the project SPV for Rs 18.40 cr cash."
+  },
+  {
+   "ticker": "GREENLEAF",
+   "scrip": "",
+   "nse": "GREENLEAF",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified as CONFIRMED - all six letters exact, Rs 75.89 cr, 0.799x the Rs 95 cr order book management stated on the 13-Jun-2026 call, cross date 2026-08-11. Not published: Rs 55.18 cr of the Rs 75.89 cr is stated inclusive of GST, the Rs 23.61 cr Malvika order is explicitly a back-to-back sub-contract, and the band test is unknown (NSE name, not in the BSE universe)."
+  },
+  {
+   "ticker": "ENVIRO",
+   "scrip": "",
+   "nse": "ENVIRO",
+   "lane": "orderbook",
+   "published": false,
+   "reason": "Order-wins flag verified, corrected UPWARD: the one letter the script could not value is readable (FS Compressors, Rs 1,06,19,000), so Rs 10.62 cr -> Rs 11.68 cr, 0.506x -> 0.556x of a Rs 21 cr book. Not published: the largest single win is Rs 2.94 cr and the base was not independently re-read this run."
+  }
+ ],
+ "published": [
+  "2026-10-13-VRAJ"
+ ],
+ "x_checked": [
+  {
+   "ticker": "VRAJ",
+   "result": "WebSearch over x.com and twitter.com ran and worked; reading post BODIES did NOT. Two searches ('Vraj Iron and Steel VRAJ order book results sponge iron billet', and Vraj/VRAJ with Bastar, greenfield, steel plant and Chhattisgarh, including threadreaderapp.com) returned exactly ONE post about this company: an ET NOW post from June 2024 about the IPO allotment. Nothing on the September-2026 steel prices, the Bilaspur billet ramp, Q1 FY27 or the Rs 450 cr Bastar project; the Bastar searches surfaced NMDC Nagarnar, JSW and SAIL instead. cdn.syndication.twimg.com - the no-login endpoint the playbook specifies for reading a post by id - is REFUSED at this sandbox's egress proxy (HTTP 000, connect_rejected), so not even that one post's body could be read and the finding rests on search titles only. No number from X entered the card. ValuePickr: forum.valuepickr.com is also REFUSED at the proxy (connect_rejected, HTTP 000), so the sweep could not run at all - recorded on the card as 'not checked', explicitly not as 'nothing found'. 0 new verified points from either source."
+  },
+  {
+   "ticker": "AIRFLOA",
+   "result": "NOT SWEPT. The name was researched from its filings and dossier and rejected on the order's size against sales before the social step was reached; with forum.valuepickr.com and cdn.syndication.twimg.com both refused at the proxy, an X/ValuePickr sweep could not have added a verified point to a decision already settled by the company's own numbers. Recorded as a gap, not as 'nothing found'."
+  },
+  {
+   "ticker": "HECPROJECT / INNOMET / TROM / SAATVIKGL / CEIGALL / GREENLEAF / ENVIRO",
+   "result": "NOT SWEPT. These seven were read for the order-wins ledger (step 4a-iii) against their own order letters and base documents, which is what that step asks for; none became a published card. Both sweep hosts were refused at this sandbox's proxy in any case (forum.valuepickr.com and cdn.syndication.twimg.com, connect_rejected). Recorded as a gap, not as 'nothing found'."
+  }
+ ],
+ "note": "Three lanes plus the two order-book lanes; one card published, and the day's heaviest work was verification rather than new research. LANE ONE produced nothing and that is the correct answer: PIB published 44 English releases, govt.py opened 3 and kept 0 (36 carried no decision verb, 4 noise, 3 below the Rs 1,000 cr floor, 1 a backgrounder), with no unmapped releases either. LANE TWO produced the card: the Ministry of Steel's September-2026 Mumbai report puts HR and CR coil at their highest print in four years and four months on a 50-reading series back to November 2021, MetalBook's Raipur long products are up 21.7-26.4% over a year, and NMDC's administered iron ore - the input - is +2.9% over a month and -5.3% over three. The steel map listed only Tata Steel, JSW, SAIL and Jindal, every one of them above the Rs 25,000 cr ceiling where the three-year study found no 5x at all, so the universe was searched for a producer as PLAYBOOK step 5 requires and Vraj Iron and Steel was read from its own annual report and Q1 filing. LANE THREE produced 15 candidates and no card: the top-scoring one was an order of Rs 70 lakh, the second a debenture issue with no stated use, and the best of them - Airfloa's Rs 34.85 cr Vande Bharat interior-design contract - fails on the measure that matters, 10.9% of a trailing year's sales with the consortium share undisclosed. THE ORDER-BOOK LANES were the backlog yesterday's run named in its own data_problems, and all seven outstanding order-wins flags were cleared: two REJECTED outright because the base was not an order book at all (Saatvik's Rs 963 cr is one quarter's intake against a book the company states in gigawatts; Ceigall's sum triple-counted one transmission project whose headline number is a 35-year annual tariff), four CORRECTED and one CONFIRMED. Four of the seven carried a real script error, including a retracted figure counted at face value and an OCR'd 'Rs.ll.89 crores' read as Rs 89 cr. The confirmed-jumps table needed no new work: all 32 order-book signals rows with yoy_pct >= 50 are already in orderbook_jumps.json, and the six whose stated book moved are restatements of the same figure (2,850 vs 2,849.09; 944 vs 932; 70 vs 70), not new order books. The updates sweep read all 48 cards with SELFTEST PASS on both cases and second_reader_misses 0; of 31 new substantive filings, 5 proved to be 12-Oct items yesterday's sweep had already logged, and 2 genuinely new updates were written - Shanti Gold's promoter holding down 4.54 points to 70.35% and Ceigall's completion certificate on the Delhi-Saharanpur six-lane package. No guidance line changed: no new call or presentation was filed for any card.",
+ "data_problems": [
+  "THE BHAGYANGR SCORECARD ROW IS STILL WRONG AND THE ERROR IS STILL GROWING - NOW +18.3%. score.py snapped the 08-Oct-2026 DEMERGER ex-date gap (BSE close Rs 453.95 -> Rs 41.40, a ratio of 10.96x) to a SPLIT FACTOR OF 11 and divided the pre-08-Oct history by 11, restating that card's call close from the true Rs 444.90 to Rs 40.45. The row records the cause in its own adj_events field: '2026-10-08 x11 unrecorded gap x10.96'. A demerger is NOT a split: value left the scrip into Tieramet Limited, which allotted 3,34,96,434 shares 1:1 to BIL holders of record 08-Oct-2026 and HAS NOT YET LISTED, so this card's return is NOT MEASURABLE until it does, and no single adjustment factor can make it so. The misstatement is compounding as the stock moves: +7.4% on 09-Oct, +12.7% on 12-Oct, +18.3% today. Measured against the final scorecard, it is the SIXTH-highest return of 49 rows (behind KORE +35.5%, AMAL +23.2%, UTSSAV +23.1%, SHTL +20.6% and RIYAASAT +20.3%), so it does not sit inside the 5 rows counted as hit_20 - but it is a fabricated number inside a 49-row book whose median return is +1.3%, which is distortion enough. The fix needs a change to scripts/ideas/score.py, which this routine is explicitly forbidden to edit, so it has now been carried in three consecutive run logs without being fixed and will keep drifting until the owner changes the script. The specific change needed: treat an unrecorded gap as a split ONLY when no demerger/scheme-of-arrangement corporate action sits within a few days of it, and otherwise mark the row unmeasurable rather than snapping to the nearest standard factor.",
+  "VALUEPICKR CANNOT BE REACHED FROM THIS SANDBOX. forum.valuepickr.com is refused at the egress proxy (connect_rejected, HTTP 000 at the client) for search.json and every other path. Step 4c could not run for ANY name this run. The published card says so in its valuepickr field in those words; it must not be read as 'no thread exists'. This blocks a standing user rule every run until the host is allowed or the sweep is moved to the ideas-feeds Action, which has open egress - that is the fix worth making, since the Action already reaches PIB and every commodity host this sandbox cannot.",
+  "X POST BODIES CANNOT BE READ FROM THIS SANDBOX. cdn.syndication.twimg.com is refused at the egress proxy (connect_rejected, HTTP 000), so the playbook's no-login route to a post's text by id does not work here. WebSearch over x.com/twitter.com DOES work, so posts can be FOUND but not READ, and no claim from X can be matched to a filing. Same fix as above.",
+  "WPI IS FIVE MONTHS STALE AND THE HS TRADE PANEL TWO AND A HALF, EVERYWHERE - NOT JUST HERE. signals.json carries wpi_month 2026-04 and trade_month 2026-07 against a run date of 2026-10-13. eaindustry.nic.in and tradestat.commerce.gov.in are both blocked from this sandbox, and feeds_status.json shows tradestat blocked from GitHub Actions too (302 at the probe). This matters for the lane's verdicts, not just its freshness: 9 of the 13 strongest groups today, including the four at the very top (Crude oil 10.70, Silver 10.16, Tungsten 10.00, Sulphuric acid 6.97), are scored entirely or mostly on these two stale panels, so the ranking at the top of the commodity lane is measuring April and July, not October. The fresh Indian prints that ought to dominate it sit in groups scored 1.57 to 2.06.",
+  "THE GUIDECHEM CHINESE CHEMICAL ROWS ARE TOO YOUNG TO USE AND WILL BE FOR ABOUT THREE MORE WEEKS. Roughly 80 rows across the sulphuric acid, benzene/PTA/MEG, aniline, urea/DAP, solvents, methanol, caustic, epoxy, phenol, TiO2 and pharma-starting-material groups are dated 2026-10-09 to 2026-10-13 with n=2 or n=3 readings and a first reading of 2026-10-09 to 2026-10-12, so stats.deep is false and the panel withholds high_since by design (runbook 144a-iii). Six groups in today's >=1.5 list rest mainly on them. Not a defect - the deep gate is working - but it means those strengths cannot yet be acted on, and the run report should keep saying so until the series pass 60 days and 6 readings around 2026-11-08.",
+  "BSE'S OWN DAY LIST CAME BACK TWO ROWS SHORT FOR THE SECOND READER. updates.py reports second_reader_problems ['BSE daily list 2026-10-13 incomplete'] and printed 'announcements 2026-10-13..2026-10-13: read 1019 rows but BSE reports 1021 for this range (a page came back short of that count); these are the NEWEST rows, not the whole range - NOT caching this read'. second_reader_misses is 0 and all 48 ideas returned status complete, so nothing is known to have been missed, but 2 of 1,021 rows for today were not seen by the whole-market reader and the script correctly refused to cache the read. It self-heals on the next sweep; flagged because 'complete' on the per-idea reads and an incomplete whole-market list are not the same claim.",
+  "THE ACTION'S SCAN FOR TODAY WAS AN HOUR TOO EARLY AND MISSED A CANDIDATE. feeds_status.json shows the ideas-feeds Action's scan step exiting 0 at 18:59 IST having read 917 of BSE's reported 917 - a COMPLETE read of what existed at that moment, not a capped one - but 85 more announcements were filed between 18:59 and this run's 19:54 re-read, among them GTPL Hathway's H1 FY27 results (19:25 IST) and its acquisition approval (19:29 IST), which make it the day's sixteenth candidate. The same thing happened on 2026-10-12, when the Action's capped 19:01 read missed RAJESH - the name that run went on to publish. This is a repeated pattern, not a one-off: the Action runs at 18:50 IST and Indian boards file results well past 19:00, so the routine's own re-scan is doing real work and must keep being run and committed. Moving ideas-feeds.yml's scan step later, or adding a second scan-only run around 21:00 IST, would catch these at source.",
+  "THE SCAN'S ANNOUNCEMENT COUNT FOR TODAY IS A FLOOR, NOT THE DAY'S TOTAL. scan/2026-10-13.json carries announcements_read_at 2026-10-13 18:59 IST with announcements_total 917 and announcements_capped false. The read was complete against BSE's count AT THAT MOMENT, but it was taken at 18:59 and filings continued after it - Eimco Elecon's investor presentation is timestamped 15:23 and is in, but anything filed after 19:00 is not. Candidates are therefore a floor for the day. Structural, stated every run.",
+  "SHANTI GOLD'S PROMOTER STAKE FELL 4.54 POINTS AND THE CAUSE IS NOT ESTABLISHED. The 30-Sep-2026 XBRL gives promoter and promoter group 70.35% of 5,39,89,200 shares with 26.75% locked in, against 74.89% on the card. Whether that is a promoter sale or dilution from a fresh issue cannot be separated without the previous quarter's share count, which was not read this run. The update is written and flagged red with the uncertainty stated. FIRST JOB for the next run on this card: read the June-2026 shareholding pattern's share count and settle it.",
+  "HEC PROJECTS, INNOMET, TROM, GREENLEAF AND ENVIRO HAVE NO MEASURED MARKET CAP, SO THE Rs 200-7,500 CR BAND TEST IS UNKNOWN FOR ALL FIVE. None is in docs/ideas/universe.json, which covers BSE equities between Rs 200 and 2,000 cr, and no NSE market-cap feed was read this run. Four of them are CONFIRMED or CORRECTED order-wins flags with ratios of 0.556x to 1.566x - i.e. they clear the lane's substantive test and are blocked only by a missing number. Getting a market cap for NSE-only and NSE-SME names is the single change that would most improve the order-book lane, and HEC Projects (Rs 317.61 cr of confirmed wins, substation and transmission EPC, Powergrid and BPCL among the counterparties) is the name it would unblock first.",
+  "INNOMET'S 13-OCT EXPORT ORDER IS UNREADABLE AS FILED AND THE LEDGER EXCLUDES IT. The filing states the value once - 'Total Order/Contract Value including Packing/forwarding and other charges USD 29,592,26.' - with no amount in words, no quantity x rate and no annexure figure. order_wins.py read it as US$ 2,959,226 = Rs 28.34 cr at USD/INR 95.76, which would be about twice the company's entire stated order book of Rs 35.99 cr and six times its largest-ever single export order (US$ 1.49 mn), so that reading is not supportable; the plausible readings are US$ 29,592.26 and US$ 295,922.6, a 10x range. Recorded as UNKNOWN and excluded, making Innomet's confirmed sum of Rs 42.10 cr a floor. No guess was written. Worth a parser rule: reject a USD amount whose comma grouping is invalid rather than stripping the commas.",
+  "VRAJ IRON AND STEEL IS PUBLISHED WITH A LIQUIDITY PROBLEM, STATED FIRST IN ITS RED FLAGS. Median 60-day daily turnover is Rs 2.1 lakh - about a twelfth of the Rs 25 lakh floor the playbook applies even to a volume signal. The research stands on the company's own documents, but no position of size can be built or exited at that volume, and the card says so before anything else. Also unresolved on that card and listed in its unknowns: revenue is split only into manufactured and traded goods in note 29, so the share of revenue exposed to each price quoted is not disclosed; there is no free dated Indian sponge-iron print to compute the sponge-to-billet conversion spread; and the consideration paid to the promoter for the Bastar greenfield land is not stated in the 14-Jul-2026 filing.",
+  "EIMCO ELECON WAS THE BEST UNWORKED FILING TRIGGER OF THE DAY. H1 FY27 results, an investor presentation and a press release all filed 13-Oct on a Rs 1,297 cr mining-equipment maker, with Rs 30.6 lakh median turnover and the stock NOT at its window high. It was left because the commodity lane outranks an ordinary filing and the seven-flag order-wins backlog came first. First dossier for the next run, with ANUHPHR's two CAPEX filings second.",
+  "VRAJ WAS ADDED TO THE STEEL GROUP'S BENEFICIARY MAP; THE OTHER CANDIDATES WERE NOT, DELIBERATELY. docs/ideas/commodity_map.json group 'steel' listed only TATASTEEL, JSWSTEEL, SAIL and JINDALSTEL as beneficiaries, every one of them above the Rs 25,000 cr ceiling where the three-year study found no 5x, so the lane had no name it could actually research. VRAJ (BSE 544204) has now been added with the document its exposure was read in - the installed-capacity and capacity-utilisation statements of its FY2025-26 annual report - per PLAYBOOK step 5. The universe search also surfaced five other Chhattisgarh/Odisha long-product producers in the band - Scan Steels 511672, Supershakti Metaliks 541701, Steel Exchange India 534748, MSP Steel & Power 532650 and Mahamaya Steel 513554 - and NONE of them was added, because the map's own rule is to add only a name whose exposure was read in a document and only their names were matched this run, not their filings. Reading those five and adding the ones that qualify is a contained job for a later run."
+ ]
+}
