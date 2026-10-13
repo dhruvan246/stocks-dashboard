@@ -28353,3 +28353,16 @@ custom-window row), employees (hoisted search), announcements (symbol box), save
 discovery (bucket pills), bull-runs (view cards, window cards). Any new control bar should use the same classes
 rather than a page-local media query. Verified at 375px light + dark and at 1280px (unchanged) before shipping;
 sw CACHE v268.
+**Part 86 (2026-10-13, user rulings 13-Oct, joint with the DII session's §164s part 35) - one entry per cell carrying BOTH fii and dii.**
+Rulings: (1) DII follows the filing's own line (a holder the company files on a domestic line stays DII; replaces the 6-Oct "foreign
+banks not DII"; cross-filing placements retired both ways); (2) the unnamed rest of an institutions 'Any Other' line is FII even beside
+named Indian holders - the own-line reader's "D1 exception" is removed; named holders proven Indian by a REGISTER (IRDAI, AMFI-listed MF
+scheme, LIC, UTI, RBI) stay DII; (3) DR-underlying shares out of DII (and, as before, out of FII: a category labelled 'FIIs-DR' is not FII).
+Reader fixes found on the way: QIB labels are misspelt by filers ('Qualified Instituional Buyer' ICICIGI, 'Qaulified' BAJFINANCE) and were
+read as unknown -> FII; QIBX now tolerant (domestic). Written 186 quarter + 15 event cells + 9 #rev rows; FII from each filing's own lines
+(2015-22 reader / 2022-form parser / page reader), DII = the DII session's own-line read; 156 of 159 'transfer-down' cells move FII up by
+exactly the DII session's unnamed-rest shares. Held (sent to the DII session with evidence): IDFCFIRSTB 2021-04-06 and MINDACORP Mar-16
+#rev - their 'SEBI MF' test is a name pattern; AMFI's scheme list (portal.amfiindia.com NAVAll, closed schemes included) proves Tata Quant
+Fund and Sundaram Mid Cap Fund but NOT Tata Indian Opportunities Fund, Sundaram India Midcap Fund or Kotak India Private Equity Fund;
+BAJFINANCE Mar-22 - the misspelt QIB row 8,115,429 is in neither slot. NH Sep-16..Jun-18: CDC Group / JPMorgan Mauritius named on the
+unlabelled institutions line stay FII (11-Oct rule); the FPI block on the FI/Banks line goes to DII.
