@@ -849,8 +849,10 @@
   //    is distrusted (same guard as the terminal).
   // 2) fallback: the site's quotes worker (Yahoo NSE, ~15-min delay) for NSE rows; BSE-only rows keep the close.
   let BOKITE = { state: 'none' }, BOKERR = {};
+  // Zerodha's name: NSE trade-for-trade (BE) and SME (SM) stocks trade as SYMBOL-BE / SYMBOL-SM; the plain name is refused
+  const boKiteSym = (r) => r.exchange !== 'BSE' && r.nse_series && r.nse_series !== 'EQ' ? r.sym + '-' + r.nse_series : r.sym;
   const boKiteBatch = async (w, tok, part) => {
-    const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: r.sym, transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
+    const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: boKiteSym(r), transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
     const res = await fetch(w + '/margincalc', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-PF-Token': tok }, body: JSON.stringify(body) });
     let j = null; try { j = await res.json(); } catch (e) {}
     return { st: res.status, data: (j && j.data) || [], msg: (j && (j.message || j.error)) || '' };
@@ -863,7 +865,7 @@
     let got = 0, lastSt = 0, lastMsg = '';
     const take = (part, data) => part.forEach((r, k) => {
       const d = data[k], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
-      if (d && d.tradingsymbol && d.tradingsymbol !== r.sym) return;      // answer out of order: do not misplace it
+      if (d && d.tradingsymbol && d.tradingsymbol !== boKiteSym(r)) return;      // answer out of order: do not misplace it
       if (v > 0 && !(r.last > 0 && Math.abs(v / r.last - 1) > 0.2)) { BOLIVE[boLiveKey(r)] = { ltp: v, src: 'kite' }; got++; }
     });
     for (let i = 0; i < rows.length; i += 40) {
@@ -903,7 +905,7 @@
     BOLIVE_AT = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
     const k = BOKITE, el = $('#bo-live');
     if (el) el.innerHTML = k.state === 'ok'
-      ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}${(k.miss || []).length ? `<div class="muted text-xs mt-1">No Zerodha price for: ${k.miss.map(r => `<b>${esc(r.sym)}</b>${r.exchange === 'BSE' ? ' (BSE)' : ''} — ${esc(BOKERR[boLiveKey(r)] || '')}`).join('; ')}</div>` : ''}`
+      ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}${(k.miss || []).length ? `<div class="muted text-xs mt-1">No Zerodha price for: ${k.miss.map(r => `<b>${esc(boKiteSym(r))}</b>${r.exchange === 'BSE' ? ' (BSE)' : ''} — ${esc(BOKERR[boLiveKey(r)] || '')}`).join('; ')}</div>` : ''}`
       : k.state === 'none'
         ? `<span style="color:#ca8a04">●</span> Zerodha is not connected on this device, so prices are Yahoo (~15 min delay) and BSE-only rows show the last close. Connect it once on the <a class="src" href="./portfolio.html">Portfolio</a> page (the same link the terminal uses) and this tab switches to live Zerodha prices.`
         : `<span style="color:#dc2626">●</span> Zerodha refused the price request${k.st ? ' (HTTP ' + k.st + ')' : ''}${k.msg ? ': ' + esc(k.msg) : ''}. ${k.st === 401 || k.st === 403 ? 'The daily Kite login has probably expired: log in again on the <a class="src" href="./portfolio.html">Portfolio</a> page.' : ''} Showing Yahoo (~15 min) meanwhile.`;

@@ -259,6 +259,26 @@ def main():
     except Exception as ex:
         bse_note = dict(error=str(ex)[:200])
         print('bse-only pass failed:', ex)
+    # NSE trading series for Zerodha's symbol: a stock moved to trade-for-trade (BE) or listed on SME (SM) is
+    # traded on Kite as SYMBOL-BE / SYMBOL-SM, the plain name is refused (terminal.html, HFCL-BE 2026-09-28)
+    try:
+        dd = datetime.date.fromisoformat(ymd(last_day))
+        brows = None
+        for _ in range(7):
+            brows = bse.nse_bhavcopy(dd)
+            if brows:
+                break
+            dd -= datetime.timedelta(days=1)
+        series = {}
+        for x in brows or []:
+            series.setdefault(str(x['symbol']).upper(), set()).add(x.get('series'))
+        for r in near + broke:
+            if r.get('exchange') == 'BSE':
+                continue
+            sr = series.get(r['sym'].upper()) or set()
+            r['nse_series'] = 'EQ' if 'EQ' in sr else (sorted(sr)[0] if sr else None)
+    except Exception as ex:
+        print('nse series lookup failed:', ex)
     near.sort(key=lambda r: -r['below_peak_pct'])
     broke.sort(key=lambda r: r['days_since'])
     try:   # name and market cap (Rs crore) from the site's daily search index
