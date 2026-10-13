@@ -28441,3 +28441,8 @@ REDINGTON x3); 9 unnamed rests (ACC, TANLA, NCC Mar-17, GLENMARK, NAM-INDIA x2, 
 the 2022 form - retired). Kept (store right, reader wrong): QIB labels misspelt 'Insitutional' (NATCOPHARM, CCL x3, HEXAWARE), AXISBANK
 2018 x4 (OCB label beats the '- FDI' name tag), SHILPAMED (category rows 'FOREIGN BODY CORPORATES' / 'INDIAN BODY CORPORATE'), NCC
 Jun-17 ('FOREIGN BOADIES DR'). With the user: RAMCOCEM Jun-16 (Indian Pvt Ltd companies named on the unlabelled line), RENUKA.
+**Part 95 (2026-10-14) - LUXIND Dec-21 original vs later copy.** Quarter row = NSE original SHP_163616 (07-Jan-2022): promoter
+73.613161, DII 11.398871; BSE 539542_32202218346 ('Revised' 2022-02-04, promoter-group gift transferees re-categorised) as sidecar +
+#rev. Slot 4 (insurance) keeps LIC on its non-institutions row (4.743057). IGL Sep-19 kept at 2019-10-16: BSE revised_reson names the
+only change (a 'Foreign Nationals' row moved from Institutions Any-Other to Non-Institutions), which moves no slot. BSE Table III .00
+for a revision-only quarter returns the REVISION (INTELLECT Dec-18, IGL Sep-19 checked), not the original.
