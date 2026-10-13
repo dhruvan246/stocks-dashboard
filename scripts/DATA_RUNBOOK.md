@@ -22319,6 +22319,27 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
     - 3 ambiguous placements.
     - Page era: 47 differences, 40 of them precision-only (≤0.02) and left alone.
     - 4,947 2022-form quarters whose XBRL was not cached; being fetched.
+- **Part 36 / 36b: Quantmac reply-4 "question back" cells (2026-10-13; 94 cells + 6 "send the document/registration").** All 33 groups were read from their filings. Verdicts are in `~/stocks-cache/shp/dii_qm/r5/qb_verdicts.json`: 60 rule difference, 19 our error (fixed or being fixed), 9 agree, 6 their error, 6 unknown.
+  - OUR ERROR, fixed (bd7627ae2, 533f5027b):
+    - GSFC Mar-17: SBI Life 78,112,155 is larger than its whole non-institutions block (54,258,731); 33.81 -> 14.21.
+    - MPHASIS Sep-19: ICICI Pru + HDFC Life are larger than their block; 16.63 -> 13.68.
+    - GREAVESCOT Sep-21 and BAJAJFINSV Mar-22: LIC was named under a small institutions 'Other' block but fits only the Insurance line, so part 35 had counted it twice.
+    - BHARATFORG Mar-19: values came from a 30-May-2022 re-upload; now the 2019-05-03 version, 12.8355, dated 2019-05-03.
+    - THERMAX Mar-16: the filing's own base is 112,614,860 because it prints C2 = 0; part 12 had borrowed the trust from other quarters. All slots rescaled.
+  - Reader rules added:
+    - A named holder larger than the whole block it is filed in sits in no sub-total and is not added.
+    - The Indian-MF test is register-only: a '... MUTUAL FUND' trust, a 'TRUSTEE ... A/C' account, or an AMFI NAVAll scheme (`r5/amfi_navall.txt`, saved 2026-10-13). The FII session showed that a fund-house name plus 'fund' is not proof (Sundaram India Midcap, Tata Indian Opportunities and Kotak India PE are offshore).
+    - New spellings: 'Qaulified', 'Quaified', 'Alternative Unvestment Fund'.
+  - Handed to the FII session as joint cells:
+    - BSE Ltd Jun-18: 10.562054 on 52,129,072 (file from Quantmac's documents_for_stockworld).
+    - BSE Ltd Jun-21: 2.554515 on 45,024,297; the NSE grand-total element is mis-tagged.
+    - MINDACORP Jun-16 (14.764021) and Mar-16 #rev (14.840090).
+    - IDFCFIRSTB 2021-04-06 (13.156347).
+    - BAJFINANCE Mar-22 (11.227573).
+    - CHOLAHLDNG Mar-22 (27.237216).
+  - THEIR ERROR: CUB Jun-14 and ASTRAL Sep-14. BSE keeps an .00 original page and an .01 re-filing page; Quantmac reads only .00 and dates it to the re-filing's notice.
+  - UNKNOWN: BSE Ltd Jun-24 / Dec-24 / Mar-25. NSE posted no XBRL and no announcement, and the company has no BSE listing, so our 11.6 / 12.07 / 12.33 are 2-decimal values with no source. The user is to decide whether to keep them.
+  - Tools: `r5/nsecopy.py` (NSE copy by symbol and as-on; the old-quarter window only reaches about 40 filings per window) and `r5/qb_read.py`.
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
