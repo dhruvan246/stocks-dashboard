@@ -15,7 +15,7 @@ open question for the user (runbook §187), not yet changed. Both closes must li
 
 Output (compact):
 {"updated","asof","quarters":[QE ints newest-first ×13],
- "co":{SYM:{"n":name,"s":sector,"i":industry,"m":mcap_cr,"f":0|1 bank/nbfc,"x":index bitmask,
+ "co":{SYM:{"n":name,"s":sector,"i":industry,"m":mcap_cr,"p":last close (absent if stale),"f":0|1 bank/nbfc,"x":index bitmask,
             "e":"YYYY-MM-DD"|0 predicted next result date,
             "q":[null | [revS,opS,patS,revC,opC,patC,ann,rx,sr] ×13 aligned to quarters]}}}
 x bits: 1=Nifty50 2=Nifty100 4=Nifty500 8=Midcap150 16=Smallcap250 32=F&O.
@@ -287,6 +287,17 @@ def main():
         out_co[sym] = {"n": sme.get("name") or meta.get("name") or sym, "s": sector,
                        "i": industry, "m": round(float(sme.get("mcap") or 0), 1),
                        "f": fin, "x": bits.get(sym, 0), "e": e, "q": rows}
+        # "p": last close for the Just Declared card's Price · MCap · PE line (2026-10-13) — only when the
+        # series reaches within 10 days of the store's end, so a suspended name shows no stale price.
+        if c and d and asof_int and c[-1]:
+            try:
+                ld = d[-1]
+                gap = (datetime.date(asof_int // 10000, (asof_int // 100) % 100, asof_int % 100)
+                       - datetime.date(ld // 10000, (ld // 100) % 100, ld % 100)).days
+                if 0 <= gap <= 10:
+                    out_co[sym]["p"] = round(float(c[-1]), 2)
+            except (ValueError, TypeError):
+                pass
 
     ist = datetime.datetime.utcnow() + datetime.timedelta(hours=5, minutes=30)
     out = {"updated": ist.strftime("%Y-%m-%d %H:%M IST"), "asof": asof,

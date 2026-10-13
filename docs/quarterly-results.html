@@ -69,7 +69,19 @@
           font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:800}
   .daybox .daycnt{font-weight:700;opacity:.72;text-transform:none;letter-spacing:0}
   .dayhead .dline{flex:1;height:1px;background:var(--border,#e2e8f0)}
-  @media (max-width:640px){ .tabbtn{padding:7px 11px;font-size:12.5px} .fgrid{grid-template-columns:1fr} }
+  @media (max-width:640px){
+    .tabbtn{padding:7px 11px;font-size:12.5px} .fgrid{grid-template-columns:1fr}
+    /* Phone (2026-10-13): the control card used to fill the whole first screen — eight quarter chips over
+       three rows, two toggles, three stacked dropdowns, a search box. Now: search + a Filters button on one
+       line, the quarter chips on one scrolling line under it, the count on a third; the toggles and
+       dropdowns open under Filters (theme.css .sw-filters / .sw-strip). */
+    #controlsCard{display:flex;flex-direction:column;gap:8px;padding:10px}
+    #filterRow{order:-1;margin-top:0}
+    #qchips .chip{padding:5px 11px}
+    /* Season Trends period group: five buttons on one line (the text used to wrap inside each button) */
+    #tab-season [role="group"]{max-width:100%;overflow-x:auto;scrollbar-width:none}
+    #tab-season [role="group"] button{white-space:nowrap;padding-left:9px;padding-right:9px}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -88,9 +100,9 @@
   <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
     <div>
       <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Quarterly Results <span id="hQuarter" class="text-indigo-600"></span></h1>
-      <p class="text-sm text-slate-500 mt-1">Season scoreboard · live declared feed · upcoming calendar · every company's numbers with the market's verdict. <span class="hidden sm:inline">PAT is owners-attributable, consolidated preferred.</span></p>
+      <p class="hidden sm:block text-sm text-slate-500 mt-1">Season scoreboard · live declared feed · upcoming calendar · every company's numbers with the market's verdict. <span class="hidden sm:inline">PAT is owners-attributable, consolidated preferred.</span></p>
     </div>
-    <div id="updatedBox" class="text-[11px] text-slate-500 text-right"></div>
+    <div id="updatedBox" class="text-[11px] text-slate-500 sm:text-right"></div>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-14 text-center">Loading results data…</div>
@@ -98,7 +110,7 @@
   <div id="app" style="display:none">
 
     <!-- Tab bar -->
-    <div class="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1" id="tabs">
+    <div class="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1 sw-strip" id="tabs">
       <button class="tabbtn" data-tab="overview"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Season Overview</button>
       <button class="tabbtn" data-tab="results"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> All Results</button>
       <button class="tabbtn" data-tab="feed"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Just Declared</button>
@@ -108,8 +120,8 @@
 
     <!-- Controls -->
     <div class="card p-3 mb-4" id="controlsCard">
-      <div class="flex flex-wrap items-center gap-x-2 gap-y-2" id="qchips"></div>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2.5" id="filterRow">
+      <div class="flex flex-wrap items-center gap-x-2 gap-y-2 sw-strip" id="qchips"></div>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2.5 sw-filters" id="filterRow">
         <span class="seg" id="segMode">
           <button data-v="yoy" class="on">YoY</button><button data-v="qoq">QoQ</button>
         </span>
@@ -140,9 +152,9 @@
         <select id="selSector" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 max-w-[180px]">
           <option value="all">All sectors</option>
         </select>
-        <input id="inSearch" type="text" placeholder="Search symbol / company…" autocomplete="off" spellcheck="false"
+        <input id="inSearch" type="text" placeholder="Search symbol / company…" autocomplete="off" spellcheck="false" data-keep="search"
                class="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold w-48 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <span id="fCount" class="text-[11px] font-semibold text-slate-500 ml-auto"></span>
+        <span id="fCount" class="text-[11px] font-semibold text-slate-500 ml-auto" data-keep="line"></span>
       </div>
     </div>
 
@@ -192,7 +204,7 @@
 
     <!-- ============ RESULTS TABLE ============ -->
     <section id="tab-results" style="display:none">
-      <div class="flex flex-wrap items-center gap-1.5 mb-3" id="screenChips"></div>
+      <div class="flex flex-wrap items-center gap-1.5 mb-3 sw-strip" id="screenChips"></div>
       <div class="card p-0 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm min-w-[1150px]">
@@ -225,8 +237,8 @@
 
     <!-- ============ FEED ============ -->
     <section id="tab-feed" style="display:none">
-      <div class="flex flex-wrap items-center gap-1.5 mb-2" id="feedChips"></div>
-      <div class="dstrip" id="feedDates"></div>
+      <div class="flex flex-wrap items-center gap-1.5 mb-2 sw-strip" id="feedChips"></div>
+      <div class="dstrip sw-strip" id="feedDates"></div>
       <div id="feedList"></div>
       <div class="text-center mt-4"><button id="fMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
       <p class="text-[11px] text-slate-500 mt-3">₹ crore · YoY vs the same quarter last year, computed on the same reporting basis both periods (consolidated preferred) · when the year-ago quarter was a <b>loss</b>, growth is measured against its absolute value · the same growth figure the backtest uses · banks/NBFCs show total income &amp; PAT only · cards appear once a filing's numbers are parsed (NSE names sync nightly ~21:30 IST) · every NSE + BSE result filing, refreshes ~4×/day plus a live top-up (~every minute) when our relay is up · <span id="feedUpd"></span></p>
@@ -562,7 +574,7 @@ function renderQChips(){
     h+='<button class="chip'+(i===ST.qi?' on':'')+'" data-qi="'+i+'">'+qlabel(QTRS[i],false)+
        (i===0?' <span class="opacity-70 text-[10px]">live</span>':'')+'</button>';
   }
-  $('qchips').innerHTML='<span class="text-[10px] uppercase tracking-wide text-slate-500 font-bold mr-1">Quarter</span>'+h;
+  $('qchips').innerHTML='<span class="hidden sm:inline text-[10px] uppercase tracking-wide text-slate-500 font-bold mr-1">Quarter</span>'+h;
   $('qchips').querySelectorAll('[data-qi]').forEach(b=>b.onclick=()=>{ ST.qi=+b.getAttribute('data-qi'); ST.shown=100; render(); });
   $('hQuarter').textContent='· '+qlabel(QTRS[ST.qi],true);
 }
@@ -941,6 +953,28 @@ function fYoyTd(g,isPat){
   return '<td class="'+pctCls(g.pct)+' font-bold"'+tip+'>'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
 }
 const fValTd = v => '<td class="'+(v!=null&&v<0?'neg font-semibold':'text-slate-800')+'">'+fmtCr(v)+'</td>';
+/* Price · market cap · PE under the company name on every Just Declared card (user, 13-Oct-2026).
+   PE = market cap ÷ owners' PAT of the FOUR quarters ending at the card's quarter, all four on ONE basis
+   (the Auto/Consol./Standalone toggle's order) — the trailing-twelve-month PE the other sites quote,
+   computed from the filings this page already holds. No PE when one of the four quarters is missing;
+   "—" when the trailing profit is a loss. Price = last close from the price store (`p`, published by
+   build_quarterly_results.py / build_bse_results.py when the close is within 10 days of the store's end). */
+function ttmPat(c,qi){
+  for(const b of basisOrder()){
+    let s=0, ok=true;
+    for(let k=qi;k<qi+4;k++){ const r=k<QTRS.length?c.q[k]:null; const v=r?r[IDX.pat[b]]:null; if(v==null){ ok=false; break; } s+=v; }
+    if(ok) return s;
+  }
+  return null;
+}
+function fmtPx(v){ return (+v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fStats(c,qi){
+  const t=c.m?ttmPat(c,qi):null, parts=[];
+  if(c.p!=null) parts.push('<span><span class="text-slate-400">Price</span> <b class="text-slate-700">₹'+fmtPx(c.p)+'</b></span>');
+  if(c.m) parts.push('<span><span class="text-slate-400">MCap</span> <b class="text-slate-700">₹'+fmtMcap(c.m)+'</b></span>');
+  if(t!=null) parts.push('<span title="Market cap ÷ owners\' profit of the four quarters ending '+qlabel(QTRS[qi],false)+(t>0?'':' (trailing loss)')+'"><span class="text-slate-400">PE</span> <b class="text-slate-700">'+(t>0?(c.m/t).toFixed(1):'—')+'</b></span>');
+  return parts.length?'<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] mt-1 whitespace-nowrap">'+parts.join('')+'</div>':'';
+}
 function feedCard(it){
   const [sym,co,dt,qe,cap,file]=it.r, c=it.c, qi=it.qi;
   const i1=qi+1<QTRS.length?qi+1:-1, i4=qi+4<QTRS.length?qi+4:-1;
@@ -975,7 +1009,8 @@ function feedCard(it){
           (fl==='PL'?'<span class="badge neg" style="background:transparent;border:1px solid currentColor">Into loss</span>':'')+
           (c.bse?'<span class="badge" title="Listed on BSE only">BSE</span>':'')+(c.f?'<span class="badge">🏦</span>':'')+
         '</div>'+
-        '<div class="text-[11px] text-slate-500 truncate mt-0.5">'+esc(c.n||co)+(c.m?' · ₹'+fmtMcap(c.m):'')+'</div>'+
+        '<div class="text-[11px] text-slate-500 truncate mt-0.5">'+esc(c.n||co)+'</div>'+
+        fStats(c,qi)+
       '</div>'+
       (file?'<a class="docbtn shrink-0" target="_blank" rel="noopener" href="'+esc(feedPdf(file))+'" onclick="event.stopPropagation()">PDF ↗</a>':'')+
     '</div>'+
@@ -1047,8 +1082,8 @@ function renderFeed(){
   /* Results filed in this window for OTHER quarters: a chip per quarter the picker offers (click = switch the quarter),
      a plain count for quarters older than the picker (Gammon's 2024 back-filings, 12-Oct-2026 — open the company for those). */
   const oqs=Object.keys(otherQ).map(Number).sort((a,b)=>a-b), nChip=Math.min(8,QTRS.length-4);
-  const otherHtml=!oqs.length?'':'<div class="flex flex-wrap items-center gap-1.5 mb-2.5 text-[11px] text-slate-500">'+
-    '<span>Other quarters declared in this window:</span>'+
+  const otherHtml=!oqs.length?'':'<div class="flex flex-wrap items-center gap-1.5 mb-2.5 text-[11px] text-slate-500 sw-strip">'+
+    '<span><span class="sm:hidden">Other quarters:</span><span class="hidden sm:inline">Other quarters declared in this window:</span></span>'+
     oqs.map(i=>i<nChip
       ? '<button class="chip dchip" data-oq="'+i+'" title="Show '+qlabel(QTRS[i],true)+'">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</button>'
       : '<span class="chip dchip" style="cursor:default;opacity:.65" title="Older than the quarter picker — open the company to see these">'+qlabel(QTRS[i],false)+' · '+otherQ[i]+'</span>').join('')+
@@ -1612,7 +1647,7 @@ async function load(){
           c.q[qi]=r; c.vfill=1;
         } } }
     liveKeys=new Set(FEEDROWS.map(feedKey));
-    $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<br>Prices as of '+esc(qr.asof);
+    $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<span class="sm:hidden"> · </span><br class="hidden sm:block">Prices as of '+esc(qr.asof);
     if(feed) $('feedUpd').textContent='feed updated '+feed.updated;
     if(cal) $('calUpd').textContent='calendar updated '+cal.updated;
     const p=new URLSearchParams(location.search);

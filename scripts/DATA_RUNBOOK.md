@@ -28293,3 +28293,38 @@ more (JISLJALEQS Jun-2025 original 5.5226 -> 6.513811; UPL Dec-21 / Jun-22 +0.00
 its own page has (C) custodian 614,310,010 -> base (A+B) 2,272,893,592, all slots x 1.270277 (fii 25.9064 -> 32.908294, promoter = the
 page's 43.63). BARODARY Dec-2022 re-filing 0.0124 -> 0.014251 (own FPI Cat-III 435 sh). Lesson: a base / row rule must also be run over
 shp_revisions.json re-filing rows - part 77 / 84 measured quarter and event cells; verify_live's stock-page pass is what surfaced these.
+
+## §229 — PHONE CONTROL BARS: search + a Filters button, one-line chip strips, two-line intros (2026-10-13, user: "quarterly results page on mobile occupies entire screen with dropdown n all … pathetic ui" → "solve this in all pages across site" → "we are not copying screener. we want design to be better than them keeping user experience in mind")
+
+**What was wrong.** On a 375px phone the control card of `quarterly-results.html` filled the whole first
+screen — eight quarter chips over three rows, two toggles, three stacked dropdowns, a search box — and the
+first result card began ~1,000px down. A sweep of all 53 pages at 375px (first content element's top, counted
+dropdowns/buttons above it, sideways overflow) found the same shape on `nse-bse-dashboard` (969px), `bull-runs`
+(1,157), `saved-strategies` (894), `mutual-funds` (874), and milder cases on `employees`, `discovery`,
+`announcements`; `strategy-mixer` scrolled sideways (its single phone grid column sized itself to the longest
+nowrap strategy name — fixed with `grid-cols-1`, i.e. `minmax(0,1fr)`).
+
+**The shared fix (theme.css + theme.js, phones only, desktop untouched):**
+- `.sw-strip` on any chip/tab row → one line that scrolls sideways, no scrollbar, a fade on the edge that has
+  more, the active `.on` chip scrolled into view once per change of the active chip.
+- `.sw-filters` on a filter bar → only the element marked `data-keep="search"` (or `data-keep="main"` for a
+  primary button such as Load Data) and an injected **Filters** button show; the rest opens under the button;
+  the button carries a count of controls off their default (a `<select>` past its first option, a `.seg` whose
+  `.on` is not first, a changed checkbox; a page may set `data-active="N"` instead). Works on flat flex rows and
+  on labelled grids (wrappers go two per line; the kept field's label is dropped). A sibling marked
+  `data-filters-extra` opens/closes with the bar; a nested search box is hoisted to the bar on phones and put
+  back at desktop widths. `data-keep="line"` keeps a result-count line visible under the search row.
+- `.sw-clamp` (added by theme.js `swIntro`) → the intro `<p>` under the page `<h1>` is clamped to two lines
+  with a "more ▾" toggle when it is longer than ~170 characters.
+- Just Declared cards show **Price · MCap · PE** under the company name. PE = market cap ÷ owners' PAT of the
+  four quarters ending at the card's quarter, all four on ONE basis (Auto/Consol./Standalone order), "—" when
+  the trailing profit is a loss, absent when a quarter of the four is missing. Price = `p` (last close) that
+  `build_quarterly_results.py` / `build_bse_results.py` now publish when the series reaches within 10 days of
+  the price store's end (suspended names show no stale price).
+
+**Opted-in pages:** quarterly-results (tabs, quarter chips, filter row, screen chips, feed chips, date strip,
+"other quarters" row), nse-bse-dashboard (filter grid + Load Data, period chips, My screens), mutual-funds (grid +
+custom-window row), employees (hoisted search), announcements (symbol box), saved-strategies (tab strip, wave row),
+discovery (bucket pills), bull-runs (view cards, window cards). Any new control bar should use the same classes
+rather than a page-local media query. Verified at 375px light + dark and at 1280px (unchanged) before shipping;
+sw CACHE v268.

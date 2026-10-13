@@ -65,8 +65,9 @@
 
       <!-- Toolbar -->
       <div class="card p-3 mb-3">
-        <div class="flex flex-wrap items-end gap-2.5">
-          <div>
+        <!-- Phone (2026-10-13): symbol box + a Filters button; the date range, Apply and Reset open under it. -->
+        <div class="flex flex-wrap items-end gap-2.5 sw-filters">
+          <div data-keep="search">
             <label class="block text-[10px] uppercase tracking-wide text-slate-500 mb-1" for="fSym">Symbol / company</label>
             <input id="fSym" type="text" placeholder="e.g. RELIANCE" autocomplete="off" spellcheck="false"
                    class="w-40 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm font-semibold uppercase placeholder:normal-case placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-blue-500" />

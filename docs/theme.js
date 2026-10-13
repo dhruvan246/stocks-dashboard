@@ -1451,11 +1451,111 @@
     } catch (e) {}
   }
 
+  // =========================================================================
+  // PHONE CONTROL BARS (2026-10-13) — companions to theme.css .sw-strip / .sw-filters.
+  // A control card that wrapped eight quarter chips, two toggles, three <select>s and
+  // a search box filled the whole first screen of quarterly-results.html on a phone.
+  // =========================================================================
+  function stripEdges(s) {
+    var max = s.scrollWidth - s.clientWidth;
+    s.classList.toggle('sw-fit', max <= 2);
+    s.classList.toggle('sw-end', max > 2 && s.scrollLeft >= max - 2);
+    s.classList.toggle('sw-mid', max > 2 && s.scrollLeft > 2 && s.scrollLeft < max - 2);
+  }
+  function swStrips() {
+    if (window.innerWidth > 640) return;
+    var strips = document.querySelectorAll('.sw-strip');
+    for (var i = 0; i < strips.length; i++) (function (s) {
+      if (!s._swStrip) { s._swStrip = 1; s.addEventListener('scroll', function () { stripEdges(s); }, { passive: true }); }
+      // scroll the active chip into view — once per change of WHICH chip is active, so a feed
+      // re-render never yanks a strip the reader has scrolled away from
+      var on = s.querySelector('.on, .active, [aria-selected="true"], [aria-current]');
+      var key = on ? (on.getAttribute('data-tab') || on.getAttribute('data-qi') || on.textContent || '') : '';
+      if (on && key !== s._swOn) {
+        var sr = s.getBoundingClientRect(), r = on.getBoundingClientRect();
+        if (r.left < sr.left + 4 || r.right > sr.right - 4) s.scrollLeft += (r.left - sr.left) - 12;
+      }
+      s._swOn = key;
+      stripEdges(s);
+    })(strips[i]);
+  }
+  // how many controls in the bar sit off their default: a <select> past its first option, a
+  // .seg / role=group whose .on button is not the first, a checkbox away from its default. A
+  // page that knows better sets data-active="N" on the bar.
+  function filtCount(bar) {
+    if (bar.hasAttribute('data-active')) return parseInt(bar.getAttribute('data-active'), 10) || 0;
+    var n = 0, i;
+    var sels = bar.querySelectorAll('select');
+    for (i = 0; i < sels.length; i++) if (sels[i].selectedIndex > 0) n++;
+    var segs = bar.querySelectorAll('.seg, [role="group"]');
+    for (i = 0; i < segs.length; i++) { var on = segs[i].querySelector('.on'); if (on && on !== segs[i].firstElementChild) n++; }
+    var cbs = bar.querySelectorAll('input[type="checkbox"]');
+    for (i = 0; i < cbs.length; i++) if (cbs[i].checked !== cbs[i].defaultChecked) n++;
+    return n;
+  }
+  function swFilters() {
+    var bars = document.querySelectorAll('.sw-filters');
+    for (var i = 0; i < bars.length; i++) (function (bar) {
+      var phone = window.innerWidth <= 640;
+      // a search box nested inside a wrapper row is hoisted to the bar on phones (employees.html keeps
+      // its box inside a left-hand group), and put back where it came from at desktop widths
+      var keep = bar.querySelector('[data-keep="search"], [data-keep="main"]');
+      if (keep && keep.parentElement !== bar && phone) {
+        if (!keep._swHome) keep._swHome = { parent: keep.parentElement, next: keep.nextSibling };
+        bar.insertBefore(keep, bar.firstChild);
+      } else if (keep && keep._swHome && !phone && keep.parentElement === bar) {
+        var home = keep._swHome;
+        if (home.parent && (!home.next || home.next.parentNode === home.parent)) home.parent.insertBefore(keep, home.next);
+      }
+      var btn = bar.querySelector(':scope > .sw-filt-btn');
+      if (!btn) {
+        btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sw-filt-btn'; btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">' +
+          '<line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/>' +
+          '<circle cx="9" cy="7" r="2.2" fill="var(--surface)"/><circle cx="15" cy="12" r="2.2" fill="var(--surface)"/><circle cx="10" cy="17" r="2.2" fill="var(--surface)"/></svg>' +
+          '<span>Filters</span><span class="sw-filt-n"></span>';
+        btn.addEventListener('click', function () { var o = bar.classList.toggle('sw-open'); btn.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+        var k0 = bar.querySelector(':scope > [data-keep="search"], :scope > [data-keep="main"]');
+        bar.insertBefore(btn, k0 ? k0.nextSibling : bar.firstChild);
+        var re = function () { setTimeout(swFilters, 0); };
+        bar.addEventListener('change', re); bar.addEventListener('click', re);
+      }
+      var n = filtCount(bar);
+      btn.setAttribute('data-n', String(n));
+      btn.querySelector('.sw-filt-n').textContent = String(n);
+      btn.title = n ? n + ' filter' + (n > 1 ? 's' : '') + ' active' : 'Show filters';
+    })(bars[i]);
+  }
+  // The intro paragraph under the page's <h1> runs to 4–8 lines on a phone (announcements, bull-runs,
+  // employees…) and pushes the first number off the first screen. Clamp it to two lines with a "more"
+  // toggle; the paragraph itself is also tappable. Desktop never sees the clamp (theme.css).
+  function swIntro() {
+    if (window.innerWidth > 640) return;
+    var hs = document.querySelectorAll('main h1, section h1, body > div h1, h1'), h = null;
+    for (var i = 0; i < hs.length; i++) { if (hs[i].getClientRects().length) { h = hs[i]; break; } }
+    if (!h) return;
+    var p = h.nextElementSibling;
+    if (!p || p.tagName !== 'P') { var par = h.parentElement; p = par ? par.nextElementSibling : null; }
+    if (!p || p.tagName !== 'P' || p._swIntro) return;
+    if (getComputedStyle(p).display === 'none') return;                      // already hidden on phones
+    if ((p.textContent || '').replace(/\s+/g, ' ').trim().length < 170) return;
+    p._swIntro = 1; p.classList.add('sw-clamp');
+    var more = document.createElement('button'); more.type = 'button'; more.className = 'sw-clamp-more'; more.textContent = 'more ▾';
+    more.setAttribute('aria-expanded', 'false');
+    p.insertAdjacentElement('afterend', more);
+    var tog = function (e) {
+      if (e && e.target && e.target.closest && e.target.closest('a')) return;   // a link inside the paragraph still navigates
+      var o = p.classList.toggle('sw-open'); more.textContent = o ? 'less ▴' : 'more ▾'; more.setAttribute('aria-expanded', o ? 'true' : 'false');
+    };
+    more.addEventListener('click', tog); p.addEventListener('click', tog);
+  }
+  function swControls() { try { swFilters(); swStrips(); swIntro(); } catch (e) {} }
+
   function watchTables() {
-    responsifyAll(); fitViewport();
+    responsifyAll(); fitViewport(); swControls();
     if (!('MutationObserver' in window)) return;
     var timer = null, wantCards = false;
-    var settle = function () { if (wantCards) { responsifyAll(); wantCards = false; } fitViewport(); };
+    var settle = function () { if (wantCards) { responsifyAll(); wantCards = false; } fitViewport(); swControls(); };
     new MutationObserver(function (muts) {
       var any = false;
       for (var i = 0; i < muts.length; i++) {
@@ -1472,7 +1572,7 @@
     }).observe(document.body, { childList: true, subtree: true });
     var rz = null;
     window.addEventListener('resize', function () {        // rotate / desktop→phone width
-      if (rz) clearTimeout(rz); rz = setTimeout(fitViewport, 150);
+      if (rz) clearTimeout(rz); rz = setTimeout(function () { fitViewport(); swControls(); }, 150);
     }, { passive: true });
     window.addEventListener('load', fitViewport);          // late images / async renders
   }

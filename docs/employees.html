@@ -57,9 +57,11 @@
   <div id="content" class="hidden">
     <!-- coverage + controls -->
     <div class="card p-3 mb-4">
-      <div class="flex flex-wrap items-center gap-2 justify-between">
+      <!-- Phone (2026-10-13): the search box is hoisted next to a Filters button; sector, membership, metric and
+           sort open under it (theme.css .sw-filters). -->
+      <div class="flex flex-wrap items-center gap-2 justify-between sw-filters">
         <div class="flex flex-wrap items-center gap-2">
-          <input id="q" type="text" placeholder="Search company…" autocomplete="off" class="w-44" />
+          <input id="q" type="text" placeholder="Search company…" autocomplete="off" class="w-44" data-keep="search" />
           <select id="fSector"><option value="">All sectors</option></select>
           <select id="fMember">
             <option value="all">All (survivorship-free)</option>

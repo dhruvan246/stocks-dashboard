@@ -78,7 +78,7 @@ def main():
 
     univ = {str(r[0]): r for r in json.load(open(UNIV, encoding="utf-8"))["rows"]}   # scrip -> row
     fund = json.load(open(FUND, encoding="utf-8"))["px"] if os.path.exists(FUND) else {}
-    prices = load_prices()["px"]
+    _pr = load_prices(); prices = _pr["px"]; px_end = int(_pr.get("end") or 0)
     # §228d: adjust every series for its announced + tape-confirmed bonuses/splits BEFORE pricing a reaction or a
     # since-drift — a split after a result date made `sr` read as a fall of 90%, and a reaction bar on an ex-date read
     # the corporate action as the market's verdict. Same function, same store as the stock page's price slice.
@@ -144,6 +144,14 @@ def main():
         co[tkr] = {"n": name, "s": sec or "Other", "i": sec or "Other",
                    "m": mc, "f": f, "x": 0, "e": "", "bse": 1,
                    "cd": int(scrip), "q": q}
+        # "p": last close for the card's Price · MCap · PE line (2026-10-13); only when the series reaches
+        # within 10 days of the store's end, so a suspended scrip shows no stale price.
+        if series and series.get("d") and series.get("c") and px_end and series["c"][-1]:
+            try:
+                if 0 <= (_day(px_end) - _day(int(series["d"][-1]))).days <= 10:
+                    co[tkr]["p"] = round(float(series["c"][-1]), 2)
+            except (ValueError, TypeError):
+                pass
 
     # "PDF only": BSE tickers that FILED a result but resisted OCR ≥ PDF_ONLY_MIN times — their number
     # isn't merely queued (scanned/odd-layout PDF), so the page labels them honestly instead of "coming".
