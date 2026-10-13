@@ -14435,7 +14435,7 @@
     "cell": [
      30.99,
      26.745447,
-     15.545458,
+     15.556983,
      11.689933,
      3.356726,
      "2020-01-18",
@@ -14443,7 +14443,7 @@
     ],
     "was": [
      30.99,
-     30.0762,
+     26.745447,
      15.545458,
      11.689933,
      3.356726,
@@ -14451,32 +14451,33 @@
      77601
     ],
     "src": "bsexbrl:540611_1812020164650_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 81,222,629 on base 303,687,685 = 26.745447. The stored 30.0762 added holders the filing files on a non-foreign line, by a rule that reads another filing (2 entries: \u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or com | \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 26.75 -> 31.61 (+4.86 from Non-institutions Any-Other). fii 30.0762 -> 26.745447; dii untouched.",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 35,500,887; line:AlternativeInvestmentFunds 1,462,975; line:FinancialInstitutionOrBanks 51,816; line:InsuranceCompanies 10,193,964; NBFC row 35,000 = 47,244,642 sh on base 303,687,685 = 15.556983; stored 15.545458 (rows the store had left out or double counted).",
+    "exact": true,
     "superseded": {
      "cell": [
       30.99,
-      30.0762,
-      15.5459,
-      11.6902,
-      3.3568,
+      26.745447,
+      15.545458,
+      11.689933,
+      3.356726,
       "2020-01-18",
       77601
      ],
      "was": [
       30.99,
-      31.6062,
-      15.5459,
-      11.6902,
-      3.3568,
+      30.0762,
+      15.545458,
+      11.689933,
+      3.356726,
       "2020-01-18",
       77601
      ],
-     "src": "ledger",
-     "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 31.61 -> 30.08. International Finance Corporation 1.53 (non-institution row) FII -> public",
+     "src": "bsexbrl:540611_1812020164650_SHP.xml",
+     "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 81,222,629 on base 303,687,685 = 26.745447. The stored 30.0762 added holders the filing files on a non-foreign line, by a rule that reads another filing (2 entries: \u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or com | \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 26.75 -> 31.61 (+4.86 from Non-institutions Any-Other). fii 30.0762 -> 26.745447; dii untouched.",
      "superseded": {
       "cell": [
        30.99,
-       31.6062,
+       30.0762,
        15.5459,
        11.6902,
        3.3568,
@@ -14485,15 +14486,37 @@
       ],
       "was": [
        30.99,
-       26.7462,
+       31.6062,
        15.5459,
        11.6902,
        3.3568,
        "2020-01-18",
        77601
       ],
-      "src": "bsexbrl:540611_1812020164650_SHP.xml",
-      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 26.75 -> 31.61 (+4.86 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Company 14.99 4.86 Redwood Investment Ltd. 6.91 stay(label); Camas Investments Pte. Ltd. 3.33 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Labh Investments Limited 1.68 stay(label); Ourea Holdings Limited 1.56 stay(label); International Finance Corporation 1.53 fii(curated). Evidence: _shp_fii_rowfix_audit.json"
+      "src": "ledger",
+      "why": "\u00a7164r batch 8 \u2014 Rule 3 evidence standard (user 2026-10-04, Quantmac v6): without the company's own mark a holder on a non-institution or company-type row needs >= 90 percent of >= 5 classified BSE listings under Institutions (Foreign), or a registry document; the evidence for these holders falls short (IFC 50 institution vs 151 company listings; APMS 138 vs 21; Rimco 13 vs 36; Caladium 26 vs 58; Tree Line 74 vs 15; DVI 36 vs 5): fii 31.61 -> 30.08. International Finance Corporation 1.53 (non-institution row) FII -> public",
+      "superseded": {
+       "cell": [
+        30.99,
+        31.6062,
+        15.5459,
+        11.6902,
+        3.3568,
+        "2020-01-18",
+        77601
+       ],
+       "was": [
+        30.99,
+        26.7462,
+        15.5459,
+        11.6902,
+        3.3568,
+        "2020-01-18",
+        77601
+       ],
+       "src": "bsexbrl:540611_1812020164650_SHP.xml",
+       "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 26.75 -> 31.61 (+4.86 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Others Foreign Company 14.99 4.86 Redwood Investment Ltd. 6.91 stay(label); Camas Investments Pte. Ltd. 3.33 fii(new-format:InstitutionsForeignPortfolioInvestorTwo); Labh Investments Limited 1.68 stay(label); Ourea Holdings Limited 1.56 stay(label); International Finance Corporation 1.53 fii(curated). Evidence: _shp_fii_rowfix_audit.json"
+      }
      }
     }
    },
@@ -118380,6 +118403,29 @@
     "src": "bsexbrl:532648_1772019133158_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 152,717,206; line:AlternativeInvestmentFunds 875,898; line:FinancialInstitutionOrBanks 7,401,437; line:InsuranceCompanies 233,541,519; NBFC row 565,178 = 395,101,238 sh on base 2,317,631,788 = 17.047628; stored 17.023698 (rows the store had left out or double counted).",
     "exact": true
+   },
+   "2019-12-31": {
+    "cell": [
+     8.33,
+     15.166913,
+     14.225504,
+     5.094306,
+     8.239451,
+     "2020-01-08",
+     1663710
+    ],
+    "was": [
+     8.33,
+     15.166913,
+     14.20988,
+     5.094306,
+     8.239451,
+     "2020-01-08",
+     1663710
+    ],
+    "src": "bsexbrl:532648_812020205553_SHP.xml",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 129,928,861; line:AlternativeInvestmentFunds 1,583,454; line:FinancialInstitutionOrBanks 10,778,905; line:InsuranceCompanies 210,144,899; NBFC row 398,475; inst-cat QIB label:Other QUALIFIED INSTITUTIONAL BUYER 9,982,934 = 362,817,528 sh on base 2,550,472,231 = 14.225504; stored 14.209880 (rows the store had left out or double counted).",
+    "exact": true
    }
   },
   "ZENITHSTL": {
@@ -137025,23 +137071,46 @@
     "cell": [
      36.68,
      24.208,
-     17.5662,
-     13.236,
-     3.7894,
+     17.582143,
+     13.235111,
+     3.789092,
      "2019-10-24",
      221424
     ],
     "was": [
      36.68,
-     23.6342,
-     18.1548,
-     13.236,
-     3.7894,
+     24.208,
+     17.5662,
+     13.235111,
+     3.789092,
      "2019-10-24",
      221424
     ],
     "src": "bsexbrl:500087_19102019193732_SHP.xml",
-    "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.57pp, holders: Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.5662 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 106,606,060; line:AlternativeInvestmentFunds 1,328,933; line:FinancialInstitutionOrBanks 3,142,021; line:InsuranceCompanies 30,520,350; NBFC row 23,130 = 141,620,494 sh on base 805,479,157 = 17.582143; stored 17.566200 (rows the store had left out or double counted).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      36.68,
+      24.208,
+      17.5662,
+      13.236,
+      3.7894,
+      "2019-10-24",
+      221424
+     ],
+     "was": [
+      36.68,
+      23.6342,
+      18.1548,
+      13.236,
+      3.7894,
+      "2019-10-24",
+      221424
+     ],
+     "src": "bsexbrl:500087_19102019193732_SHP.xml",
+     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (0.57pp, holders: Foreign Institutional Investors) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 17.5662 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -164851,25 +164920,35 @@
     "cell": [
      40.93,
      39.1491,
-     2.9309,
-     1.2236,
+     2.91685,
+     1.223643,
      1.0,
      "2019-10-24",
      33971
     ],
     "was": [
      40.93,
-     39.1539,
-     1.9164,
-     1.2236,
-     0.0,
+     39.1491,
+     2.9309,
+     1.223643,
+     1.0,
      "2019-10-24",
      33971
     ],
     "src": "bsexbrl:539981_16102019115512_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 39.15 -> 39.15, dii 1.92 -> 2.93. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=3.07 International Finance Corporation 3.07 foreign->fii(curated); R2-named Bodies Corporate 1.0 HDFC LIFE INSURANCE COMPANY LIMITED 1.00(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 3,287,507; line:AlternativeInvestmentFunds 1,673,746; line:FinancialInstitutionOrBanks 187,471; NBFC row 13,700; noninst register:Bodies Corporate HDFC LIFE INSURANCE COMPANY LIMITED 2,674,146 = 7,836,570 sh on base 268,665,548 = 2.916850; stored 2.930900 (rows the store had left out or double counted).",
+    "exact": true,
     "superseded": {
      "cell": [
+      40.93,
+      39.1491,
+      2.9309,
+      1.2236,
+      1.0,
+      "2019-10-24",
+      33971
+     ],
+     "was": [
       40.93,
       39.1539,
       1.9164,
@@ -164878,17 +164957,30 @@
       "2019-10-24",
       33971
      ],
-     "was": [
-      40.93,
-      36.0791,
-      4.9909,
-      1.2236,
-      0.0,
-      "2019-10-24",
-      33971
-     ],
      "src": "bsexbrl:539981_16102019115512_SHP.xml",
-     "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.07pp, holders: International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.9164 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     "why": "\u00a7164 row-level remainder rule (2026-09-27 \u00a7164n: named holders of unknown class are never swept into fii; documented holders take their class; FORMER Nifty 500 member): fii 39.15 -> 39.15, dii 1.92 -> 2.93. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R1-foreign-holders Other 0.0 public=0.00 fii=3.07 International Finance Corporation 3.07 foreign->fii(curated); R2-named Bodies Corporate 1.0 HDFC LIFE INSURANCE COMPANY LIMITED 1.00(curated); R3-nbfc NBFCsRegisteredWithRbi 0.01",
+     "superseded": {
+      "cell": [
+       40.93,
+       39.1539,
+       1.9164,
+       1.2236,
+       0.0,
+       "2019-10-24",
+       33971
+      ],
+      "was": [
+       40.93,
+       36.0791,
+       4.9909,
+       1.2236,
+       0.0,
+       "2019-10-24",
+       33971
+      ],
+      "src": "bsexbrl:539981_16102019115512_SHP.xml",
+      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.07pp, holders: International Finance Corporation) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 1.9164 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+     }
     }
    },
    "2019-12-31": {
@@ -287690,6 +287782,29 @@
     "src": "bsexbrl:500125_2072021184749_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,234,679; line:AlternativeInvestmentFunds 67,000; line:FinancialInstitutionOrBanks 27,937; line:InsuranceCompanies 499,839; NBFC row 33,538; inst-cat QIB label:Other Qualified Institutional Buyer 51,385 = 6,914,378 sh on base 177,031,991 = 3.905722; stored 3.887000 (rows the store had left out or double counted).",
     "exact": true
+   },
+   "2021-09-30": {
+    "cell": [
+     44.68,
+     7.806122,
+     4.425464,
+     3.930875,
+     0.282041,
+     "2021-10-20",
+     72531
+    ],
+    "was": [
+     44.68,
+     7.806122,
+     4.40654,
+     3.930875,
+     0.282041,
+     "2021-10-20",
+     72531
+    ],
+    "src": "bsexbrl:500125_12112021145720_SHP.xml",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,966,374; line:AlternativeInvestmentFunds 251,783; line:FinancialInstitutionOrBanks 27,937; line:InsuranceCompanies 499,839; NBFC row 33,538; inst-cat QIB label:Other Qualified Institutional Buyer 63,423 = 7,842,894 sh on base 177,221,964 = 4.425464; stored 4.406540 (rows the store had left out or double counted).",
+    "exact": true
    }
   },
   "KWIL": {
@@ -309561,7 +309676,7 @@
     "cell": [
      56.81,
      20.336663,
-     10.075319,
+     10.126434,
      7.729468,
      0.517887,
      "2020-01-20",
@@ -309569,7 +309684,7 @@
     ],
     "was": [
      56.81,
-     20.335391,
+     20.336663,
      10.075319,
      7.729468,
      0.517887,
@@ -309577,41 +309692,32 @@
      48352
     ],
     "src": "bsexbrl:539524_1712020162139_SHP.xml",
-    "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.001272 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 20.336663. fii 20.335391 -> 20.336663; other slots untouched.",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,441,863; line:AlternativeInvestmentFunds 1,513,679; line:FinancialInstitutionOrBanks 9,776; line:InsuranceCompanies 431,615; NBFC row 42,600 = 8,439,533 sh on base 83,341,610 = 10.126434; stored 10.075319 (rows the store had left out or double counted).",
     "exact": true,
     "superseded": {
      "cell": [
       56.81,
-      20.3366,
-      10.0759,
-      7.7299,
-      0.5179,
+      20.336663,
+      10.075319,
+      7.729468,
+      0.517887,
       "2020-01-20",
       48352
      ],
      "was": [
       56.81,
-      25.1866,
-      10.0759,
-      7.7299,
-      0.5179,
+      20.335391,
+      10.075319,
+      7.729468,
+      0.517887,
       "2020-01-20",
       48352
      ],
      "src": "bsexbrl:539524_1712020162139_SHP.xml",
-     "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: Westbridge Crossover Fund, Llc (FDI line 2022-12-31..2023-03-31). fii 25.1866 -> 20.3366; dii untouched.",
+     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.001272 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 20.336663. fii 20.335391 -> 20.336663; other slots untouched.",
      "exact": true,
      "superseded": {
       "cell": [
-       56.81,
-       25.1866,
-       10.0759,
-       7.7299,
-       0.5179,
-       "2020-01-20",
-       48352
-      ],
-      "was": [
        56.81,
        20.3366,
        10.0759,
@@ -309620,8 +309726,40 @@
        "2020-01-20",
        48352
       ],
+      "was": [
+       56.81,
+       25.1866,
+       10.0759,
+       7.7299,
+       0.5179,
+       "2020-01-20",
+       48352
+      ],
       "src": "bsexbrl:539524_1712020162139_SHP.xml",
-      "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): Westbridge Crossover Fund, Llc (FDI line 2022-12-31..2023-03-31) - fii 20.3366 -> 25.1866 (+4.8500), dii unchanged."
+      "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: Westbridge Crossover Fund, Llc (FDI line 2022-12-31..2023-03-31). fii 25.1866 -> 20.3366; dii untouched.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        56.81,
+        25.1866,
+        10.0759,
+        7.7299,
+        0.5179,
+        "2020-01-20",
+        48352
+       ],
+       "was": [
+        56.81,
+        20.3366,
+        10.0759,
+        7.7299,
+        0.5179,
+        "2020-01-20",
+        48352
+       ],
+       "src": "bsexbrl:539524_1712020162139_SHP.xml",
+       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): Westbridge Crossover Fund, Llc (FDI line 2022-12-31..2023-03-31) - fii 20.3366 -> 25.1866 (+4.8500), dii unchanged."
+      }
      }
     }
    },
@@ -357479,24 +357617,47 @@
    "2021-06-30": {
     "cell": [
      50.01,
-     11.7098,
-     11.2102,
-     4.3875,
-     0.1035,
+     11.709911,
+     9.891986,
+     4.387559,
+     0.103468,
      "2021-07-19",
      100828
     ],
     "was": [
      50.01,
-     11.7098,
-     8.0202,
-     4.3875,
-     0.1035,
+     11.709911,
+     11.2102,
+     4.387559,
+     0.103468,
      "2021-07-19",
      100828
     ],
     "src": "bsexbrl:532144_2872021172442_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.02 -> 11.21, fii 11.71 -> 11.71. R2-named Bodies Corporate 1.32 Authum Investment And Infrastructure Limited 1.32(new-format:NBFCsRegisteredWithRbi); R3-nbfc NBFCsRegisteredWithRbi 1.87. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 11,449,309; line:AlternativeInvestmentFunds 100,000; line:FinancialInstitutionOrBanks 9,109,446; line:InsuranceCompanies 270,000; NBFC row 4,884,323 = 25,813,078 sh on base 260,949,395 = 9.891986; stored 11.210200 (shares the store counted in DII that this filing does not file on a domestic-institution line).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.01,
+      11.7098,
+      11.2102,
+      4.3875,
+      0.1035,
+      "2021-07-19",
+      100828
+     ],
+     "was": [
+      50.01,
+      11.7098,
+      8.0202,
+      4.3875,
+      0.1035,
+      "2021-07-19",
+      100828
+     ],
+     "src": "bsexbrl:532144_2872021172442_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 8.02 -> 11.21, fii 11.71 -> 11.71. R2-named Bodies Corporate 1.32 Authum Investment And Infrastructure Limited 1.32(new-format:NBFCsRegisteredWithRbi); R3-nbfc NBFCsRegisteredWithRbi 1.87. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-09-30": {
     "cell": [
@@ -364295,6 +364456,29 @@
     ],
     "src": "bsexbrl:500038_204202118527_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 26,472,854; line:AlternativeInvestmentFunds 1,259,273; line:FinancialInstitutionOrBanks 5,754; NBFC row 85,713; inst-cat QIB label:Other Qualified Institutional Buyer 3,883,681 = 31,707,275 sh on base 210,000,000 = 15.098702; stored 15.057887 (rows the store had left out or double counted).",
+    "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     41.1,
+     26.392337,
+     10.350984,
+     6.598888,
+     0.869889,
+     "2019-10-24",
+     77679
+    ],
+    "was": [
+     41.1,
+     26.392337,
+     10.331017,
+     6.598888,
+     0.869889,
+     "2019-10-24",
+     77679
+    ],
+    "src": "bsexbrl:500038_1810201916720_SHP.xml",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 14,517,553; line:AlternativeInvestmentFunds 6,137,000; line:FinancialInstitutionOrBanks 159,929; line:InsuranceCompanies 1,913,755; NBFC row 43,928 = 22,772,165 sh on base 220,000,000 = 10.350984; stored 10.331017 (rows the store had left out or double counted).",
     "exact": true
    }
   },
@@ -411333,6 +411517,29 @@
     ],
     "src": "bsexbrl:540762_1011201715120_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 11.98 -> 11.98, dii 15.84 -> 16.40. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Other Alternative Investment Fund 0.27 ; R3-nbfc NBFCsRegisteredWithRbi 0.29"
+   },
+   "2021-03-31": {
+    "cell": [
+     46.66,
+     25.4463,
+     14.973763,
+     13.4795,
+     0.0,
+     "2021-04-20",
+     31435
+    ],
+    "was": [
+     46.66,
+     25.4463,
+     15.0202,
+     13.4795,
+     0.0,
+     "2021-04-20",
+     31435
+    ],
+    "src": "bsexbrl:540762_45202118365_SHP.xml",
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 25,988,728; line:AlternativeInvestmentFunds 1,604,614; line:FinancialInstitutionOrBanks 884,940; NBFC row 12,200; inst-cat QIB label:Other Qualified Institutional Buyer 380,067 = 28,870,549 sh on base 192,807,571 = 14.973763; stored 15.020200 (rows the store had left out or double counted).",
+    "exact": true
    }
   },
   "TORNTPHARM": {
@@ -435987,7 +436194,7 @@
     "cell": [
      37.84,
      19.433841,
-     7.856253,
+     7.876041,
      0.047095,
      6.192847,
      "2021-10-08",
@@ -435995,7 +436202,7 @@
     ],
     "was": [
      37.84,
-     19.430503,
+     19.433841,
      7.856253,
      0.047095,
      6.192847,
@@ -436003,8 +436210,31 @@
      156503
     ],
     "src": "bsexbrl:500690_111020211363_SHP.xml",
-    "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.003338 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 19.433841. fii 19.430503 -> 19.433841; other slots untouched.",
-    "exact": true
+    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 187,664; line:AlternativeInvestmentFunds 3,446,590; line:FinancialInstitutionOrBanks 2,993,895; line:InsuranceCompanies 24,677,105; NBFC row 79,000 = 31,384,254 sh on base 398,477,530 = 7.876041; stored 7.856253 (rows the store had left out or double counted).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      37.84,
+      19.433841,
+      7.856253,
+      0.047095,
+      6.192847,
+      "2021-10-08",
+      156503
+     ],
+     "was": [
+      37.84,
+      19.430503,
+      7.856253,
+      0.047095,
+      6.192847,
+      "2021-10-08",
+      156503
+     ],
+     "src": "bsexbrl:500690_111020211363_SHP.xml",
+     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.003338 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 19.433841. fii 19.430503 -> 19.433841; other slots untouched.",
+     "exact": true
+    }
    },
    "2021-12-31": {
     "cell": [
