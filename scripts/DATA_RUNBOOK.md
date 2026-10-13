@@ -28410,3 +28410,14 @@ WABAG Dec-15: institutions 'Others' block 1,153,287 -> FII 29.529481, DII unchan
 GMO, unnamed rest) -> FII 15.10077; DII = own domestic rows + ICICI Pru Life 124,538 (register) = 18.164675 (stored 18.1706 did not
 trace). KARURVYSYA 2018-08-20 event: 'Other' 280,534 -> FII 18.700031, DII 20.842448. Event-row `was` must carry the 8th
 (provenance) element or write_b8 skips it as 'store moved'. Still open: JUSTDIAL Mar-16 (original filing missing).
+**Part 91 (2026-10-14) - original vs later copy (§142k), handed over by the DII session; joint FII + DII.** PFIZER Jun-21: BSE's
+'June 2021' XBRL 500680_1410202116305 (2021-10-19) is the Sep-2021 pattern mislabelled (every row equals 500680_18102021103820; only
+DateOfReport differs) -> §224 drop; the quarter is the NSE original SHP_159246 (2021-07-14): FII 3.505573 (= Quantmac), DII 13.400916;
+the part-36 lag floor at 2021-10-19 is retired (shp_lag_fix days_earlier entry, prior kept under `superseded`). KARURVYSYA Sep-18: NSE
+original (11-Oct) and BSE copy (06-Nov) identical -> one version dated 2018-10-11, FII 17.944178 ('Foreign Financial Institutions' +
+'Foreign Banks' rows were in DII), DII 21.046235. JINDALSAW Jun-18: the row held the 2023 re-filing's promoter/DII under a QE+21 date;
+now the 18-Jul-2018 original (53.589084 / 11.071304 / 4.009613) with the 2023 re-filing as its sidecar row + a `#rev` entry (the
+revisions guard flags a sidecar equal to a healed `was` unless its own #rev reading is recorded; write the #rev AFTER the sidecar row
+exists or write_b8 skips it). Quantmac-supplied NSE copies were checked byte-identical against nsearchives before use. NSE's
+corporate-share-holdings-master returns only the latest ~20 filings (a silent cap; from_date/to_date returns 0 for 2018), so CYIENT
+Sep-18's original SHP_131465 (17-Oct-2018) stays UNKNOWN - no full filename.

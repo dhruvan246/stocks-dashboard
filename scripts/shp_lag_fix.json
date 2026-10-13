@@ -308605,6 +308605,13 @@
 "rule": "midnight-2026-09-23"
 },
 "KARURVYSYA|20180930": {
+"days_earlier": 26,
+"src": "nse-original",
+"sub": 20181011,
+"was": 20181106,
+"rule": "midnight-2026-09-23",
+"prov": "nse:SHP_129749_47450_11102018070405_WEB.xml (upload stamp 11-Oct-2018; figures identical to BSE 600001_611201817525 of 2018-11-06) - the earliest exchange publication of this quarter's figures - \u00a7164r batch 30 part 91 2026-10-14 (original vs later copy)",
+"superseded": {
 "days_later": 0,
 "gated_1530": true,
 "src": "new",
@@ -308614,6 +308621,7 @@
 "prov": "bse:SHPQNewFormat filing_date_time 15:30 gate (same filing, visibility rule) \u2014 item-2 sweep 2026-09-21, runbook \u00a7142c",
 "sub_1530": 20181107,
 "rule": "midnight-2026-09-23"
+}
 },
 "KARURVYSYA|20181231": {
 "days_later": 0,
@@ -367799,12 +367807,20 @@
 "rule": "midnight-2026-09-23"
 },
 "JINDALSAW|20180630": {
+"days_earlier": 3,
+"src": "nse-original",
+"sub": 20180718,
+"was": 20180721,
+"rule": "midnight-2026-09-23",
+"prov": "nse:SHP_128526_26026_18072018054701_WEB.xml, NSE master submissionDate 18-JUL-2018 - the original filing; the stored 2018-07-21 was a QE+21 convention date - \u00a7164r batch 30 part 91 2026-10-14 (original vs later copy)",
+"superseded": {
 "days_later": 2,
 "gated_1530": true,
 "src": "new",
 "sub": 20180723,
 "was": 20180721,
 "prov": "served visibility date is not a trading day (weekend/holiday) -> next trading day in gate_calendar.json; item-2 sweep 2026-09-21, runbook \u00a7142c"
+}
 },
 "JINDALSAW|20180930": {
 "days_later": 1,
@@ -396231,6 +396247,14 @@
 "rule": "midnight-2026-09-23"
 },
 "PFIZER|20210630": {
+"days_earlier": 97,
+"src": "nse-original",
+"sub": 20210714,
+"ts": "2021-07-14T13:44:37",
+"was": 20211019,
+"rule": "midnight-2026-09-23",
+"prov": "nse:SHP_159246_482930_14072021013801_WEB.xml, announced 2021-07-14T13:44:37 (NEWSID 06e989a6-9bb2-4a77-8ae3-640c6fb3d05d) - the quarter's only Jun-2021 document; BSE's 'June 2021' XBRL 500680_1410202116305 (2021-10-19) is the Sep-2021 pattern mislabelled (rows identical to 500680_18102021103820), so the part-36 floor at its date is retired - \u00a7164r batch 30 part 91 2026-10-14 (original vs later copy)",
+"superseded": {
 "days_later": 97,
 "gated_1530": false,
 "prov": "bse:SHPQNewFormat filing_date_time of the only BSE version of the Jun-2021 SHP (500680_1410202116305_SHP.xml, 'New' 2021-10-19T11:09:22, filed after Sep-2021's) - the stored figures are its (22j adjudication); the original was announced 2021-07-14T13:44:37 (NEWSID 06e989a6-9bb2-4a77-8ae3-640c6fb3d05d) with different figures (the cell's pre-22j fii 1.95 / ins 4.67), so the later submission's date is the floor (\u00a7164b / batch 6f). CALENDAR day (midnight rule \u00a7149); \u00a7164r batch 30 part 36 2026-10-06.",
@@ -396239,6 +396263,7 @@
 "ts": "2021-10-19T11:09:22",
 "was": 20210714,
 "rule": "midnight-2026-09-23"
+}
 },
 "POLYCAB|20200930": {
 "days_earlier": 12,

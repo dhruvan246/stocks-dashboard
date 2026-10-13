@@ -60025,25 +60025,47 @@
    },
    "2018-06-30": {
     "cell": [
+     53.589084,
+     11.071304,
+     4.009613,
+     1.422921,
+     2.201859,
+     "2018-07-18",
+     58370
+    ],
+    "was": [
      63.01,
-     11.07,
-     3.81,
-     1.42,
-     2.2,
+     11.0715,
+     3.8074,
+     1.4229,
+     2.2019,
      "2018-07-21",
      58370
     ],
-    "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-    "was": [
-     63.01,
-     11.07,
-     3.81,
-     1.42,
-     2.2,
-     "2023-02-28",
-     58370
-    ],
-    "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2023-02-28, which is 1704 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    "src": "nse:SHP_128526_26026_18072018054701_WEB.xml",
+    "why": "\u00a7164r batch 30 part 91 (2026-10-14, original vs later copy, \u00a7142k - joint FII + DII entry agreed with the DII session): the store row held the 2023-02-28 re-filing's promoter / DII under a QE+21 convention date (bulk-stamp heal). The ORIGINAL (NSE submissionDate 18-JUL-2018; BSE's 29-Jan-2019 revision 500378_291201918332 repeats it in every slot) reads promoter 53.589084, FII = FPI 35,392,951 + inst rest 8,000 = 11.071304, DII = MF 4,549,847 + FI/Banks 583,817 + Insurance 7,040,536 + NBFC 646,702 = 4.009613 on 319,754,117. The 2023 re-filing 500378_282202317917 is kept beside it in shp_revisions.json with its own date (promoter 63.008822, FII 11.071304, DII 3.807363).",
+    "superseded": {
+     "cell": [
+      63.01,
+      11.07,
+      3.81,
+      1.42,
+      2.2,
+      "2018-07-21",
+      58370
+     ],
+     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+     "was": [
+      63.01,
+      11.07,
+      3.81,
+      1.42,
+      2.2,
+      "2023-02-28",
+      58370
+     ],
+     "why": "BULK STAMP: 8 quarters of this symbol all carry the single submission date 2023-02-28, which is 1704 days after this quarter ended. The DATA is real and per-quarter (the fii/dii values differ quarter to quarter) \u2014 only the DATE is a scrape date written into the filing slot. Replaced with the QE+21d convention already used by the MC/Wayback ledgers, and the modal lag of our own clean rows (36.8% of 87,977 dated rows sit at exactly +21d; median +19d)."
+    }
    },
    "2018-09-30": {
     "cell": [
@@ -60474,6 +60496,25 @@
     "src": "bsexbrl:500378_282202317844_SHP.xml",
     "exact": true,
     "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session) - this RE-FILING's own document: FII 12.796269 (2022-form own lines (Institutions (Foreign) + Non-Institutions FPI/foreign-bank rows, part 81)); DII = the DII session's own-line read 4.261312 (line:InstitutionsDomestic 13,625,719). fii 12.794 -> 12.796269, dii 4.5239 -> 4.261312."
+   },
+   "2018-06-30#rev": {
+    "cell": [
+     63.008822,
+     11.071304,
+     3.807363,
+     1.422921,
+     2.201859
+    ],
+    "was": [
+     63.008822,
+     11.071304,
+     3.807363,
+     1.422921,
+     2.201859
+    ],
+    "src": "bsexbrl:500378_282202317917_SHP.xml",
+    "why": "\u00a7164r batch 30 part 91 (2026-10-14, joint FII + DII entry agreed with the DII session) - this RE-FILING's own document (2023-02-28): promoter 63.008822, FII 11.071304 (2022-form Institutions (Foreign)), DII 3.807363 (line:InstitutionsDomestic 12,174,200) on 319,754,117. The quarter row is the 2018-07-18 original (part 91); this row is the later version beside it.",
+    "exact": true
    }
   },
   "JINDCOT": {
@@ -66890,6 +66931,28 @@
     ],
     "src": "nse:SHP_129306_36215_20082018121827_WEB.xml",
     "why": "\u00a7164r batch 30 part 90 (2026-10-14, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): institutions category row labelled only 'Other' 280,534 is FII (ruling 2): FPI 149,189,430 + 280,534 = 149,469,964 / 799,303,308 = 18.700031. DII = MF 122,512,019 + AIF 6,420,790 + FI/Banks 793,857 + Insurance 36,867,709 = 166,594,375 = 20.842448 (institutions total 316,064,339 = DII + FII exactly)."
+   },
+   "2018-09-30": {
+    "cell": [
+     2.096529,
+     17.944178,
+     21.046235,
+     15.510179,
+     4.613419,
+     "2018-10-11",
+     145516
+    ],
+    "was": [
+     2.1,
+     17.9085,
+     21.0805,
+     15.5096,
+     4.6133,
+     "2018-11-06",
+     145516
+    ],
+    "src": "nse:SHP_129749_47450_11102018070405_WEB.xml",
+    "why": "\u00a7164r batch 30 part 91 (2026-10-14, original vs later copy, \u00a7142k - joint FII + DII entry agreed with the DII session): NSE original (upload stamp 11-Oct-2018, byte-identical to nsearchives) and BSE 600001_611201817525 (2018-11-06) carry identical figures - one version, public from 2018-10-11. Own lines: FII = FPI 143,148,471 + 'Foreign Financial Institutions' 279,164 + 'Foreign Banks' 770 (labelled foreign, FII) = 17.944178; DII = MF 123,973,372 + AIF 6,420,790 + FI/Banks 953,879 + Insurance 36,875,209 = 21.046235 (stored 17.9085 / 21.0805 had the two foreign rows in DII); promoter 2.096529; base 799,303,308."
    }
   },
   "KEC": {
@@ -85491,6 +85554,15 @@
   "PFIZER": {
    "2021-06-30": {
     "cell": [
+     63.922386,
+     3.505573,
+     13.400916,
+     8.697089,
+     4.669359,
+     "2021-07-14",
+     131308
+    ],
+    "was": [
      63.92,
      2.0731,
      15.1431,
@@ -85499,16 +85571,29 @@
      "2021-07-14",
      131308
     ],
-    "was": [
-     63.92,
-     1.95,
-     14.96,
-     8.7,
-     4.67,
-     "2021-07-14",
-     131308
-    ],
-    "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii,dii,mf,ins"
+    "src": "nse:SHP_159246_482930_14072021013801_WEB.xml",
+    "why": "\u00a7164r batch 30 part 91 (2026-10-14, original vs later copy, \u00a7142k - joint FII + DII entry agreed with the DII session): the quarter's only Jun-2021 document is the NSE original (announced 2021-07-14, byte-identical to nsearchives). BSE's 'June 2021' XBRL 500680_1410202116305 (2021-10-19) is the Sep-2021 pattern uploaded under Jun-2021 (every row and top member equal to 500680_18102021103820; only DateOfReport differs), so it is not a re-filing (\u00a7224 drop). Own lines: FII = FPI 893,233 + unnamed institutions Any-Other rest 710,487 = 3.505573; DII 13.400916; MF 8.697089; insurance 4.669359; base 45,747,732. Replaces the 22j adjudication that served the Sep-21 figures.",
+    "superseded": {
+     "cell": [
+      63.92,
+      2.0731,
+      15.1431,
+      8.4764,
+      0.49,
+      "2021-07-14",
+      131308
+     ],
+     "was": [
+      63.92,
+      1.95,
+      14.96,
+      8.7,
+      4.67,
+      "2021-07-14",
+      131308
+     ],
+     "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: fii,dii,mf,ins"
+    }
    },
    "2016-06-30": {
     "cell": [
