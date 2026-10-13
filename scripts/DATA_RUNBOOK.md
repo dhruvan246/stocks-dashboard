@@ -28431,3 +28431,13 @@ Limited' on the institutions line).
 **Part 93 (2026-10-14) - JSWSTEEL Dec-21 original vs later copy (DII session handover).** Quarter row = NSE original
 SHP_164589_588068_14012022044106 (14-Jan-2022): DII 8.478375 (= Quantmac), promoter 44.712921, FII 11.212986; BSE's only listed copy
 500228_232022135011 ('Revised' 2022-03-02, adds non-institutions AIF/QIB 'Others' rows -> DII 8.833917) as its sidecar row + #rev.
+**Part 94 (2026-10-14) - store-wide own-line re-read.** ownline.py over all 12,821 PIT-N500 2015-22 XBRL cells vs the stored FII:
+10,471 exact, 2,287 within 0.01, 63 differ. 46 written (FII-only; no stored DII holds the moved shares): 17 holders NAMED on an
+unlabelled institutions Any-Other line left out by retired rules that read another filing (IEX Dec-17 9.87 -> 28.28, DIXON Dec-17,
+PVRINOX Jun-21, BANDHANBNK Sep-19, WABAG Jun/Sep-16, CYIENT x9 'Foreign Collaborators' / Tele Atlas, ANURAS 'Malabar Select Fund',
+CHOLAFIN, AXISBANK Dec-17 - its 2018 rows are filed under 'Overseas Corporate Bodies' and stay out); 19 rows the filing LABELS foreign
+(part 57 kept only the FPI line in error: LMW, RAYMOND x2, RAJESHEXPO, TIMKEN, PETRONET, UPL x2, RELINFRA, TECHM, CIPLA x5, AMTEKAUTO,
+REDINGTON x3); 9 unnamed rests (ACC, TANLA, NCC Mar-17, GLENMARK, NAM-INDIA x2, CESC, WABAG Mar-18); DEN Dec-17 (a §159 holder moved by
+the 2022 form - retired). Kept (store right, reader wrong): QIB labels misspelt 'Insitutional' (NATCOPHARM, CCL x3, HEXAWARE), AXISBANK
+2018 x4 (OCB label beats the '- FDI' name tag), SHILPAMED (category rows 'FOREIGN BODY CORPORATES' / 'INDIAN BODY CORPORATE'), NCC
+Jun-17 ('FOREIGN BOADIES DR'). With the user: RAMCOCEM Jun-16 (Indian Pvt Ltd companies named on the unlabelled line), RENUKA.
