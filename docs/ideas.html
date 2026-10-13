@@ -848,7 +848,7 @@
   //    Needs this device's pf_kite_worker + pf_token (set up on the portfolio page). A price 20%+ from the last close
   //    is distrusted (same guard as the terminal).
   // 2) fallback: the site's quotes worker (Yahoo NSE, ~15-min delay) for NSE rows; BSE-only rows keep the close.
-  let BOKITE = { state: 'none' };
+  let BOKITE = { state: 'none' }, BOKERR = {};
   const boKiteBatch = async (w, tok, part) => {
     const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: r.sym, transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
     const res = await fetch(w + '/margincalc', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-PF-Token': tok }, body: JSON.stringify(body) });
@@ -859,6 +859,7 @@
     let w = '', tok = '';
     try { w = (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); tok = localStorage.getItem('pf_token') || ''; } catch (e) {}
     if (!w || !tok) { BOKITE = { state: 'none' }; return 0; }
+    BOKERR = {};
     let got = 0, lastSt = 0, lastMsg = '';
     const take = (part, data) => part.forEach((r, k) => {
       const d = data[k], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
@@ -875,11 +876,17 @@
         for (let k = 0; k < part.length; k += 10) {                       // a big basket refused: try smaller ones
           const sub = part.slice(k, k + 10);
           r = await boKiteBatch(w, tok, sub);
-          if (r.st === 200) take(sub, r.data); else { lastSt = r.st; lastMsg = r.msg; }
+          if (r.st === 200) { take(sub, r.data); continue; }
+          for (const one of sub) {                                        // still refused: one at a time, so a single
+            const r1 = await boKiteBatch(w, tok, [one]);                  // symbol Kite rejects cannot sink the rest
+            if (r1.st === 200) take([one], r1.data);
+            else { lastSt = r1.st; lastMsg = r1.msg; BOKERR[boLiveKey(one)] = (r1.st ? 'HTTP ' + r1.st : '') + (r1.msg ? ': ' + r1.msg : ''); }
+          }
         }
       } catch (e) { lastSt = 0; lastMsg = String(e).slice(0, 80); break; }
     }
-    BOKITE = got ? { state: 'ok', n: got, total: rows.length } : { state: 'fail', st: lastSt, msg: lastMsg };
+    rows.forEach(r => { const k = boLiveKey(r); if (!(BOLIVE[k] && BOLIVE[k].src === 'kite') && !BOKERR[k]) BOKERR[k] = 'no price in Kite\'s answer, or 20%+ away from the last close'; });
+    BOKITE = got ? { state: 'ok', n: got, total: rows.length, miss: rows.filter(r => !(BOLIVE[boLiveKey(r)] && BOLIVE[boLiveKey(r)].src === 'kite')) } : { state: 'fail', st: lastSt, msg: lastMsg };
     return got;
   };
   const boFetchLive = async () => {
@@ -896,7 +903,7 @@
     BOLIVE_AT = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
     const k = BOKITE, el = $('#bo-live');
     if (el) el.innerHTML = k.state === 'ok'
-      ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}`
+      ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}${(k.miss || []).length ? `<div class="muted text-xs mt-1">No Zerodha price for: ${k.miss.map(r => `<b>${esc(r.sym)}</b>${r.exchange === 'BSE' ? ' (BSE)' : ''} — ${esc(BOKERR[boLiveKey(r)] || '')}`).join('; ')}</div>` : ''}`
       : k.state === 'none'
         ? `<span style="color:#ca8a04">●</span> Zerodha is not connected on this device, so prices are Yahoo (~15 min delay) and BSE-only rows show the last close. Connect it once on the <a class="src" href="./portfolio.html">Portfolio</a> page (the same link the terminal uses) and this tab switches to live Zerodha prices.`
         : `<span style="color:#dc2626">●</span> Zerodha refused the price request${k.st ? ' (HTTP ' + k.st + ')' : ''}${k.msg ? ': ' + esc(k.msg) : ''}. ${k.st === 401 || k.st === 403 ? 'The daily Kite login has probably expired: log in again on the <a class="src" href="./portfolio.html">Portfolio</a> page.' : ''} Showing Yahoo (~15 min) meanwhile.`;
