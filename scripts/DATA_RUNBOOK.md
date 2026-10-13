@@ -28224,8 +28224,13 @@ company's own XBRL `sc`, or BSE's own adjusted base) can add it as a ledger late
 
 **Verified.** Local stock page with the adjusted ALSTONE slice staged under docs/stk/: axis 0 → 3.50, peak ₹3.31 (= 331.20 ÷
 100), first bars 0.1575…, header ₹0.16 as of 2026-05-25, zero console errors. Published via refresh-backtest-data.yml
-(workflow_dispatch); live check below in the memory/commit trail. Not changed: build_bse_results `rx` (1-day result reaction)
-still reads raw closes — a reaction straddling an ex-date is wrong there (rare; the same `ca` store can fix it).
+(workflow_dispatch). Live 13-Oct 11:00 IST: sf-data/stk/ALSTONE.json carries `ca [[20221214, 100]]`, max adjusted 3.312.
+**Reactions too (same day, user: "fix the result-day reaction to use adjusted closes too").** The adjustment moved into
+`scripts/bse_ca_adjust.py` (load_ca + adjust_series — ONE function; build_bse_slices imports it, output byte-identical) and
+build_bse_results now adjusts every series from bse_ca.json before `reaction()` prices rx (result-day move) and sr (drift to
+the latest close): 347 scrips adjusted, 433 actions applied, 17 held. Cells moved: **sr 330** (every since-drift that crossed a
+later bonus/split — SUPHA Mar-24 result → bonus 3:1 in Jul-24 had read the ÷4 as a fall), **rx 8** (±0.01 rounding from
+4-dp adjusted closes; no reaction bar sat on an ex-date in the current 13-quarter window). The store stays raw.
 Suspended scrips trade rarely (surveillance sessions), so price-derived fields (rx, mcap drift) stay sparse by nature.
 **Part 77 (2026-10-12, user: "yes follow the filing's own line for the base too") - the BASE is each filing's own line.** Base = the
 filing's own total minus its OWN custodian / depository-receipt row - never re-classed by another filing (e.g. the company's later XBRL

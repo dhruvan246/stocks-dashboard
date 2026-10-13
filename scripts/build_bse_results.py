@@ -5,7 +5,8 @@
 Joins three BSE side-files (all produced separately):
   - docs/bse_universe.json     — name, sector, mcap per BSE-only scrip
   - docs/bse_fundamentals.json — quarterly {rev,pat,ann,basis} per scrip (OCR of the co's own filing)
-  - docs/bse_prices.bin        — daily closes per scrip (BSE bhavcopy) → result-day reaction + since-drift
+  - docs/bse_prices.bin        — daily closes per scrip (BSE bhavcopy) → result-day reaction + since-drift,
+                                 bonus/split-adjusted from scripts/bse_ca.json first (bse_ca_adjust, §228d)
 
 Quarters list is READ FROM quarterly_results.json so the q-array indices line up exactly. Each emitted
 co record mirrors the NSE payload:  {n,s,i,m,f,x,e, bse:1, q:[[revS,opS,patS,revC,opC,patC,ann,rx,sr]|null,…]}
@@ -17,6 +18,7 @@ Run: python -X utf8 scripts/build_bse_results.py
 import os as _o, sys as _s; _s.path.insert(0, _o.path.dirname(_o.path.abspath(__file__))); import bse_headers as BH  # §181 BSE headers
 import os, sys, json, gzip, datetime
 import reaction_timing as RT
+from bse_ca_adjust import load_ca, adjust_series   # §228d: the same adjustment the price slice uses
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
 QR = os.path.join(D, "quarterly_results.json")
@@ -77,6 +79,18 @@ def main():
     univ = {str(r[0]): r for r in json.load(open(UNIV, encoding="utf-8"))["rows"]}   # scrip -> row
     fund = json.load(open(FUND, encoding="utf-8"))["px"] if os.path.exists(FUND) else {}
     prices = load_prices()["px"]
+    # §228d: adjust every series for its announced + tape-confirmed bonuses/splits BEFORE pricing a reaction or a
+    # since-drift — a split after a result date made `sr` read as a fall of 90%, and a reaction bar on an ex-date read
+    # the corporate action as the market's verdict. Same function, same store as the stock page's price slice.
+    CA = load_ca(); n_adj = n_app = n_held = 0
+    for code, acts in CA.items():
+        s_ = prices.get(code)
+        if not acts or not s_ or not s_.get("d"): continue
+        c2, v2, applied, held = adjust_series(s_["d"], s_["c"], s_.get("v") or [], acts)
+        if applied:
+            prices[code] = dict(s_, c=c2, v=v2); n_adj += 1
+        n_app += len(applied); n_held += len(held)
+    print("corporate actions: %d scrips adjusted (%d actions applied, %d held) before reactions" % (n_adj, n_app, n_held))
 
     import bse_resolve
     co, overlay = {}, {}

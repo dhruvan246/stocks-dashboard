@@ -33,6 +33,7 @@ import argparse, gzip, json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_stock_slices as bss   # reuse build_slice(), _days(), SCHEMA, TAIL — one source of truth
 import bse_resolve as BR           # page_company(): whose page a ticker is (§203)
+from bse_ca_adjust import adjust_series   # §228d: the one bonus/split adjustment, shared with build_bse_results
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -72,45 +73,6 @@ def owner_takeovers(tape_syms, prices, code2sym, min_days, tape_isin=None):
         nis = {BR.issuer(i) for i in I["nse"].get(S, ()) if BR.issuer(i)}
         out[S] = (str(code), (bool(nis & bis) if (nis and bis) else None))
     return out
-
-
-def adjust_series(d, c, v, acts):
-    """Bonus/split-adjusted closes for one BSE-only series (runbook §228d, 2026-10-13).
-    d, c, v: raw bars as BSE printed them (dates asc, closes 2 dp, volumes). acts: [[ex, type, factor, text], …] from
-    scripts/bse_ca.json. Same-day actions multiply (ALSTONE 14-Dec-2022: bonus 9:1 × split 10→1 = ÷100). An action is
-    APPLIED only when the tape confirms it: r = close on the first bar on/after ex ÷ close on the bar before must be at most
-    sqrt(1/F) — a fall of at least half the expected move (log scale) — and at least (1/F)/50; else it is HELD (returned, not
-    applied: §149 crash-vs-CA rule — never divide out a move the tape does not show). Ex-dates outside the series do nothing.
-    Returns (adjusted closes 4 dp, adjusted volumes, applied [[ex, F, r]], held [[ex, F, r or None]])."""
-    byex = {}
-    for ex, _t, f, _txt in acts or []:
-        try:
-            f = float(f)
-        except (TypeError, ValueError):
-            continue
-        if f > 1:
-            byex[int(ex)] = byex.get(int(ex), 1.0) * f
-    if not byex or len(d) < 2:
-        return list(c), list(v), [], []
-    applied, held = [], []
-    mult = [1.0] * len(d)
-    for ex in sorted(byex):
-        F = byex[ex]
-        i = next((k for k, dd in enumerate(d) if dd >= ex), None)
-        if i is None or i == 0 or ex > d[-1]:
-            continue                                   # before the first bar or after the last: no effect on this series
-        prev, cur = c[i - 1], c[i]
-        r = (cur / prev) if prev and cur else None
-        e = 1.0 / F
-        if r is not None and (e / 50.0) <= r <= e ** 0.5:
-            for k in range(i):
-                mult[k] /= F
-            applied.append([ex, round(F, 6), round(r, 4)])
-        else:
-            held.append([ex, round(F, 6), None if r is None else round(r, 4)])
-    c2 = [round(x * m, 4) for x, m in zip(c, mult)]
-    v2 = [int(round(x / m)) if m else x for x, m in zip(v, mult)] if v and len(v) == len(d) else list(v)
-    return c2, v2, applied, held
 
 
 def main():
