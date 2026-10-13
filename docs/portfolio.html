@@ -538,6 +538,7 @@ tbody tr:hover{background:color-mix(in srgb,var(--accent) 7%,transparent)}
 <button id="toTop" title="Back to top">↑</button>
 <div class="tip" id="tip"></div>
 
+<script src="https://dhruvan246.github.io/stocks-dashboard/kite-live.js"></script>
 <script>
 'use strict';
 /* ============================================================================
@@ -743,6 +744,24 @@ async function refreshQuotes(){
     const j=await r.json();
     if(j&&j.data){ QUOTES=j.data; QASOF=j.asOf||Date.now(); }
   }catch(e){ console.warn('quote refresh failed, keeping previous prices:',e.message); }
+  await kiteOverlay(syms);
+}
+/* Zerodha's own live price over Yahoo's (~15 min) for every holding (user 2026-10-13: "zerodha live prices on portfolio
+   page too"). kite-live.js on the site: Kite margin calculator through this device's kite worker (pf_kite_worker +
+   pf_token, as the account views use); .NS -> NSE (BE/SM stocks as SYMBOL-BE/-SM), .BO -> BSE (a code is turned into
+   BSE's symbol). Yahoo's previous close stays the base for the day's move. A price 20%+ from Yahoo's is distrusted. */
+let QKITE={n:0,total:0};
+async function kiteOverlay(syms){
+  QKITE={n:0,total:0};
+  if(!window.swKite||!swKite.connected()) return;
+  const items=syms.filter(y=>/\.(NS|BO)$/i.test(y)).map(y=>({id:y, ex:/\.BO$/i.test(y)?'BSE':'NSE', sym:y.replace(/\.(NS|BO)$/i,'')}));
+  const ref={}; items.forEach(it=>{ const q=QUOTES[it.id]; if(q&&q.ltp!=null) ref[it.id]=q.ltp; });
+  try{
+    const k=await swKite.prices(items,{ref});
+    Object.keys(k.prices).forEach(id=>{ const q=QUOTES[id]||{}; QUOTES[id]=Object.assign({},q,{ltp:k.prices[id], src:'kite'}); });
+    QKITE={n:k.n,total:k.total,miss:k.miss,state:k.state,st:k.st};
+    if(k.n) QASOF=Date.now();
+  }catch(e){ console.warn('zerodha prices failed:',e.message); }
 }
 
 /* ---------------- per-holding model ---------------- */
@@ -1715,7 +1734,8 @@ function updateBadge(){
   if(open){
     const age=QASOF?Math.round((Date.now()-QASOF)/1000):null;
     $('clock').textContent='LIVE · '+p.hour+':'+p.minute+' IST'+
-      (age!=null?' · prices '+(age<90?'just now':Math.round(age/60)+' min old'):'');
+      (age!=null?' · prices '+(age<90?'just now':Math.round(age/60)+' min old'):'')+
+      (QKITE.n?' · Zerodha live '+QKITE.n+'/'+QKITE.total:(QKITE.state==='fail'?' · Zerodha refused'+(QKITE.st?' (HTTP '+QKITE.st+')':'')+' — Yahoo ~15 min':''));
   } else {
     // Closed: the fetch may be seconds old but the DATA is last session's close — say which session,
     // not "just now" (which read as live even on a Sunday).
