@@ -401,9 +401,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
 </div>
 
 <div class="foot">
-  <b style="color:var(--text-2)">Private terminal</b> — owner-only (noindex, gated by the same <code>pf_token</code> as your portfolio). Positions, funds and orders are your live Zerodha account through your own Kite worker, shown only on a device holding your token. Index strip from <code>niftyindices.com</code>; slice pricing from your quote worker (Yahoo NSE, ~15&nbsp;min delayed). Not investment advice.
+  <b style="color:var(--text-2)">Private terminal</b> — owner-only (noindex, gated by the same <code>pf_token</code> as your portfolio). Positions, funds and orders are your live Zerodha account through your own Kite worker, shown only on a device holding your token. Index strip from <code>niftyindices.com</code>; market-watch prices live from your Zerodha account (Kite) when connected, else your quote worker (Yahoo NSE, ~15&nbsp;min delayed); the intraday chart is Yahoo. Not investment advice.
 </div>
 
+<script src="./kite-live.js"></script>
 <script>
 (function(){
   "use strict";
@@ -506,6 +507,19 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       '</div>';
     }).join('');
   }
+  /* Zerodha's own live price over the Yahoo (~15 min) one, for every market-watch row (user 2026-10-13: "zerodha live
+     prices on terminal too"). docs/kite-live.js: Kite margin calculator via the owner's kite worker; BE/SM stocks asked as
+     SYMBOL-BE/-SM. Prev close stays Yahoo's (Kite's free app has no quote endpoint). */
+  function kiteOverlay(){
+    if(!window.swKite||!swKite.connected()) return;
+    var ref={}; WATCH.forEach(function(w){ var q=QUOTES[w[0]]; if(q&&q.ltp!=null) ref[w[0]]=q.ltp; });
+    return swKite.prices(WATCH.map(function(w){ return {id:w[0], ex:'NSE', sym:w[0]}; }),{ref:ref}).then(function(k){
+      Object.keys(k.prices).forEach(function(sy){ var q=QUOTES[sy]||{}; QUOTES[sy]={ltp:k.prices[sy], prevClose:q.prevClose, src:'kite'}; });
+      if(k.n){ setLive('on','Zerodha live · '+istTime()+(k.n<k.total?' ('+k.n+'/'+k.total+')':'')); document.getElementById('asOf').textContent=istTime(); }
+      else if(k.state==='fail' && (k.st===401||k.st===403)) setLive('err','Zerodha login expired — Yahoo ~15 min');
+      renderMW(); updateFocusHeaderFromQuote();
+    }).catch(function(){});
+  }
   function fetchQuotes(){
     var syms=WATCH.map(function(w){return w[0];});
     return fetch(workerUrl()+'/?symbols='+encodeURIComponent(syms.join(',')),{cache:'no-store'})
@@ -517,7 +531,8 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         else setLive('err','Feed empty');
         renderMW(); updateFocusHeaderFromQuote();
       })
-      .catch(function(){ setLive('err','Worker offline'); renderMW(); });
+      .catch(function(){ setLive('err','Worker offline'); renderMW(); })
+      .then(kiteOverlay);
   }
 
   /* ---------------- focus (worker ?chart=SYM.NS) ---------------- */
@@ -546,7 +561,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         FOCUS={ sym:sym, name:m.longName||NAME[sym]||sym, ltp:m.regularMarketPrice, prevClose:(m.chartPreviousClose!=null?m.chartPreviousClose:m.previousClose),
           open:open, high:m.regularMarketDayHigh, low:m.regularMarketDayLow, vol:m.regularMarketVolume,
           hi52:m.fiftyTwoWeekHigh, lo52:m.fiftyTwoWeekLow, ts:T, close:C, gmt:(m.gmtoffset||19800) };
-        if(SEL===sym){ QUOTES[sym]={ltp:FOCUS.ltp,prevClose:FOCUS.prevClose}; renderFocus(); renderTicket(); }
+        if(SEL===sym){ var kq=QUOTES[sym]; if(kq&&kq.src==='kite'){ FOCUS.ltp=kq.ltp; } else { QUOTES[sym]={ltp:FOCUS.ltp,prevClose:FOCUS.prevClose}; } renderFocus(); renderTicket(); }
       })
       .catch(function(){ var el=document.getElementById('chLoad'); if(el)el.textContent='Couldn\'t load — the worker may be waking up. Retrying…'; setTimeout(function(){ if(SEL===sym) loadFocus(sym); },4000); });
   }

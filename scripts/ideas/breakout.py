@@ -272,6 +272,13 @@ def main():
         series = {}
         for x in brows or []:
             series.setdefault(str(x['symbol']).upper(), set()).add(x.get('series'))
+        # every NSE stock with no EQ line today, for the owner pages' Zerodha prices (docs/kite-live.js)
+        odd = {sym: sorted(x for x in v if x in ('BE', 'BZ', 'SM', 'ST'))[0] for sym, v in series.items()
+               if v and 'EQ' not in v and v & {'BE', 'BZ', 'SM', 'ST'}}   # equity series only (not bonds)
+        if len(series) > 1000:
+            json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'), day=dd.isoformat(),
+                           note='NSE symbols with no EQ series that day: Zerodha trades them as SYMBOL-<series>', s=odd),
+                      open(os.path.join(HERE, '..', '..', 'docs', 'nse_series.json'), 'w'), separators=(',', ':'), sort_keys=True)
         for r in near + broke:
             if r.get('exchange') == 'BSE':
                 continue
