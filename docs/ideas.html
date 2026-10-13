@@ -287,7 +287,8 @@
   <section id="view-bo" class="view" hidden>
     <h2 class="text-lg font-semibold mb-1">Breakout watch</h2>
     <p class="muted text-sm mb-2">Stocks that <b>rose a lot, fell a lot, and are back at their old peak</b> — the Cupid pattern (₹2.40 → ₹27.39 in 2023-24, −58% to ₹11.52 by Apr-2025, through the old high on 18-Jul-2025, then 12.5×). Every NSE stock and every BSE-only stock, bonus/split-adjusted closes, rebuilt every evening. <b>Price patterns only</b>: nothing here says why a stock moved — open the stock page and its filings before acting.</p>
-    <p id="bo-meta" class="muted text-xs mb-3"></p>
+    <p id="bo-meta" class="muted text-xs mb-1"></p>
+    <p id="bo-live" class="text-sm mb-3"></p>
     <h3 class="text-base font-semibold mb-1">Broke out recently</h3>
     <p class="muted text-sm mb-2">Closed above the old peak within the last 60 sessions, after the rise and the fall. Newest first.</p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable bo-t" id="bo-broke"><thead><tr>
@@ -847,25 +848,38 @@
   //    Needs this device's pf_kite_worker + pf_token (set up on the portfolio page). A price 20%+ from the last close
   //    is distrusted (same guard as the terminal).
   // 2) fallback: the site's quotes worker (Yahoo NSE, ~15-min delay) for NSE rows; BSE-only rows keep the close.
+  let BOKITE = { state: 'none' };
+  const boKiteBatch = async (w, tok, part) => {
+    const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: r.sym, transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
+    const res = await fetch(w + '/margincalc', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-PF-Token': tok }, body: JSON.stringify(body) });
+    let j = null; try { j = await res.json(); } catch (e) {}
+    return { st: res.status, data: (j && j.data) || [], msg: (j && (j.message || j.error)) || '' };
+  };
   const boKite = async (rows) => {
     let w = '', tok = '';
     try { w = (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); tok = localStorage.getItem('pf_token') || ''; } catch (e) {}
-    if (!w || !tok || !rows.length) return 0;
-    let got = 0;
+    if (!w || !tok) { BOKITE = { state: 'none' }; return 0; }
+    let got = 0, lastSt = 0, lastMsg = '';
+    const take = (part, data) => part.forEach((r, k) => {
+      const d = data[k], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
+      if (d && d.tradingsymbol && d.tradingsymbol !== r.sym) return;      // answer out of order: do not misplace it
+      if (v > 0 && !(r.last > 0 && Math.abs(v / r.last - 1) > 0.2)) { BOLIVE[boLiveKey(r)] = { ltp: v, src: 'kite' }; got++; }
+    });
     for (let i = 0; i < rows.length; i += 40) {
       const part = rows.slice(i, i + 40);
-      const body = part.map(r => ({ exchange: r.exchange === 'BSE' ? 'BSE' : 'NSE', tradingsymbol: r.sym, transaction_type: 'BUY', variety: 'regular', product: 'CNC', order_type: 'MARKET', quantity: 1 }));
       try {
-        const res = await fetch(w + '/margincalc', { method: 'POST', cache: 'no-store', headers: { 'Content-Type': 'application/json', 'X-PF-Token': tok }, body: JSON.stringify(body) });
-        if (res.status !== 200) return got;
-        const j = await res.json(), data = (j && j.data) || [];
-        part.forEach((r, k) => {
-          const d = data[k], v = d ? Math.round((+d.var || +d.total || 0) * 100) / 100 : 0;
-          if (d && d.tradingsymbol && d.tradingsymbol !== r.sym) return;      // answer out of order: do not misplace it
-          if (v > 0 && !(r.last > 0 && Math.abs(v / r.last - 1) > 0.2)) { BOLIVE[boLiveKey(r)] = { ltp: v, src: 'kite' }; got++; }
-        });
-      } catch (e) { return got; }
+        let r = await boKiteBatch(w, tok, part);
+        if (r.st === 200) { take(part, r.data); continue; }
+        lastSt = r.st; lastMsg = r.msg;
+        if (r.st === 401 || r.st === 403) break;                          // token or Kite session: retrying will not help
+        for (let k = 0; k < part.length; k += 10) {                       // a big basket refused: try smaller ones
+          const sub = part.slice(k, k + 10);
+          r = await boKiteBatch(w, tok, sub);
+          if (r.st === 200) take(sub, r.data); else { lastSt = r.st; lastMsg = r.msg; }
+        }
+      } catch (e) { lastSt = 0; lastMsg = String(e).slice(0, 80); break; }
     }
+    BOKITE = got ? { state: 'ok', n: got, total: rows.length } : { state: 'fail', st: lastSt, msg: lastMsg };
     return got;
   };
   const boFetchLive = async () => {
@@ -880,6 +894,12 @@
       }
     } catch (e) { /* keep what we have */ }
     BOLIVE_AT = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    const k = BOKITE, el = $('#bo-live');
+    if (el) el.innerHTML = k.state === 'ok'
+      ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}`
+      : k.state === 'none'
+        ? `<span style="color:#ca8a04">●</span> Zerodha is not connected on this device, so prices are Yahoo (~15 min delay) and BSE-only rows show the last close. Connect it once on the <a class="src" href="./portfolio.html">Portfolio</a> page (the same link the terminal uses) and this tab switches to live Zerodha prices.`
+        : `<span style="color:#dc2626">●</span> Zerodha refused the price request${k.st ? ' (HTTP ' + k.st + ')' : ''}${k.msg ? ': ' + esc(k.msg) : ''}. ${k.st === 401 || k.st === 403 ? 'The daily Kite login has probably expired: log in again on the <a class="src" href="./portfolio.html">Portfolio</a> page.' : ''} Showing Yahoo (~15 min) meanwhile.`;
     drawBO();
   };
   setInterval(() => { if (!document.hidden && VIEW === 'bo' && boMarketOpen()) boFetchLive(); }, 60000);
