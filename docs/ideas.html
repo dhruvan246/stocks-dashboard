@@ -304,12 +304,13 @@
   <section id="view-ob" class="view" hidden>
     <h2 class="text-lg font-semibold mb-1">Order book jumps</h2>
     <p class="muted text-sm mb-2">The order book each company <b>states in its own filings</b> (investor decks, call transcripts, press releases, order letters), its latest figure against the one stated about a year earlier. Read by a script from the documents: every row carries the sentence and the filing, so check the quote. The daily research run opens the documents behind the biggest jumps and turns the confirmed ones into ideas (lane “Order book”).</p>
+    <p id="ob-live" class="text-sm mb-2"></p>
     <div id="obt-sec" hidden>
     <h3 class="text-base font-semibold mt-3 mb-1">Confirmed jumps — how the share price moved since</h3>
     <p class="muted text-sm mb-2">Only companies whose order book was <b>checked against their own filings</b> and is up 50% or more on the figure stated about a year earlier. The start date is the first exchange filing that showed the jump; the start price is that day's close. Prices and returns refresh every evening; new companies join after their filings are checked.</p>
     <p id="obt-meta" class="muted text-xs mb-2"></p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable" id="obt-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="ago" title="Order book about a year earlier, ₹ crore">Year ago ₹cr</th><th class="n" data-k="now" title="Latest stated order book, ₹ crore">Now ₹cr</th><th class="n" data-k="yoy">Change</th><th data-k="filed" title="First exchange filing that showed the order book 50%+ up">Jump filed</th><th class="n" data-k="entry">Close that day</th><th class="n" data-k="last">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th class="n" data-k="days">Days</th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="ago" title="Order book about a year earlier, ₹ crore">Year ago ₹cr</th><th class="n" data-k="now" title="Latest stated order book, ₹ crore">Now ₹cr</th><th class="n" data-k="yoy">Change</th><th data-k="filed" title="First exchange filing that showed the order book 50%+ up">Jump filed</th><th class="n" data-k="entry">Close that day</th><th class="n" data-k="today" title="Live price and % change vs the previous close: your Zerodha (Kite) price where the portfolio is connected on this device, else Yahoo (~15 min) or the last close">Today</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th class="n" data-k="days">Days</th>
     </tr></thead><tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody></table></div>
     </div>
     <div id="ow-sec" hidden>
@@ -317,7 +318,7 @@
     <p class="muted text-sm mb-2">Order-win letters filed since the company last stated its order book, <b>each letter checked</b> and counted once (a lowest-bidder notice, the award letter and the press release for the same order count once), added up. Flagged on the filing that took the total to <b>half of that order book</b>, even if no single order was big (Welspun Corp, Aug-2024 → Mar-2025: no order above 0.2× its ₹8,508 cr book, ₹20,000 cr book seven months later). The start price is that day’s close; prices refresh every evening and new companies join after their letters are checked.</p>
     <p id="ow-meta" class="muted text-xs mb-2"></p>
     <div class="card" style="overflow-x:auto;padding:0;margin-bottom:22px"><table class="sw sortable" id="ow-table"><thead><tr>
-      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="sum" title="Order wins filed since, each letter checked, added up, ₹ crore">Orders added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th data-k="cross" title="Filing that took the total to half the book">Flagged on</th><th class="n">Close that day</th><th class="n">Latest close</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th></th>
+      <th data-k="name">Company</th><th class="n" data-k="mcap" title="Market cap, ₹ crore (site search index, daily)">Mcap ₹cr</th><th class="n" data-k="base" title="Last order book the company stated, ₹ crore">Last book ₹cr</th><th class="n" data-k="sum" title="Order wins filed since, each letter checked, added up, ₹ crore">Orders added ₹cr</th><th class="n" data-k="ratio" title="Added up ÷ last book">÷ book</th><th data-k="cross" title="Filing that took the total to half the book">Flagged on</th><th class="n">Close that day</th><th class="n" data-k="today" title="Live price and % change vs the previous close: your Zerodha (Kite) price where the portfolio is connected on this device, else Yahoo (~15 min) or the last close">Today</th><th class="n" data-k="ret">Return</th><th class="n" data-k="peak">Best since</th><th></th>
     </tr></thead><tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody></table></div>
     </div>
     <h3 class="text-base font-semibold mb-1">Every stated order book (read by the script)</h3>
@@ -783,7 +784,7 @@
   };
   let OW = null, OWK = 'cross', OWD = -1;
   const drawOW = () => {
-    const R = ((OW && OW.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, sum: r.confirmed_sum_cr, ratio: r.confirmed_ratio, big: r.largest_ratio, cross: r.cross_date, ret: r.ret_pct, peak: r.peak_pct, mcap: r.mcap_cr }));
+    const R = ((OW && OW.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, base: r.base_cr, sum: r.confirmed_sum_cr, ratio: r.confirmed_ratio, big: r.largest_ratio, cross: r.cross_date, ret: r.ret_pct, peak: r.peak_pct, mcap: r.mcap_cr, today: (boLivePct(obLiveRow(r)) ?? obLiveRow(r).day_chg_pct) }));
     const shown = R.sort((a, b) => { const x = a[OWK], y = b[OWK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OWD; });
     document.querySelectorAll('#ow-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OWK && OWD > 0); th.classList.toggle('desc', th.dataset.k === OWK && OWD < 0); });
     const rets = R.map(x => x.ret).filter(v => v != null).sort((a, b) => a - b);
@@ -796,17 +797,28 @@
         <td class="n"><b>${x.ratio == null ? '—' : x.ratio.toFixed(2) + '×'}</b><div class="muted text-xs">largest ${x.big == null ? '—' : x.big.toFixed(2) + '×'}</div></td>
         <td>${dmy(x.cross)}<div class="muted text-xs" style="white-space:normal;max-width:120px">${r.next_book_cr ? `next book ${r.next_book_doc ? `<a class="src" href="${esc(r.next_book_doc)}" target="_blank" rel="noopener">₹${fmt(r.next_book_cr, 0)} cr</a>` : '₹' + fmt(r.next_book_cr, 0) + ' cr'} ${r.next_book_confirms ? '✓' : '✗'}` : 'no newer book yet'}</div></td>
         <td class="n">${r.entry_close == null ? '—' : '₹' + fmt(r.entry_close, 2)}<div class="muted text-xs">${dmy(r.entry_date)}</div></td>
-        <td class="n">${r.last_close == null ? '—' : '₹' + fmt(r.last_close, 2)}${r.stale ? ' <span class="pill">stale</span>' : ''}</td>
+        ${obToday(r)}
         <td class="n"><b>${pct(x.ret)}</b></td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td>
         <td><button type="button" class="obmore" data-owdet="${i}" aria-expanded="false">More ▸</button></td></tr>
         <tr class="obdet" data-owdet-row="${i}" hidden><td colspan="11">${(r.wins || []).map(w => `<div class="obq">${dmy(w.filed)} · <b>${w.value_cr == null ? 'no value' : '₹' + fmt(w.value_cr, w.value_cr < 10 ? 2 : 0) + ' cr'}</b> · ${w.doc ? `<a class="src" href="${esc(w.doc)}" target="_blank" rel="noopener">letter</a>` : ''} <span class="muted">${esc((w.note || '').slice(0, 160))}</span></div>`).join('')}${r.note ? `<div class="obq">${esc(r.note)}</div>` : ''}</td></tr>`; }).join('') || '<tr><td colspan="11" class="muted">No confirmed flags yet.</td></tr>';
   };
   $('#ow-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OW) return; if (OWK === th.dataset.k) OWD = -OWD; else { OWK = th.dataset.k; OWD = th.dataset.k === 'name' ? 1 : -1; } drawOW(); });
   $('#ow-table tbody').addEventListener('click', (e) => { const d = e.target.closest('[data-owdet]'); if (!d) return; const r = $(`#ow-table tr[data-owdet-row="${d.dataset.owdet}"]`); if (r) { r.hidden = !r.hidden; d.setAttribute('aria-expanded', String(!r.hidden)); d.textContent = r.hidden ? 'More ▸' : 'Hide ▾'; } });
+  // a tracker row (orderbook_tracker / orderwins_tracker) in the shape the live-price code reads
+  const obLiveRow = (r) => ({ exchange: r.nse ? 'NSE' : 'BSE', sym: r.nse || r.bse_sym || String(r.key || ''), nse_series: r.nse_series,
+    last: r.last_close, last_date: r.last_date, prev_close: r.prev_close, day_chg_pct: r.prev_close ? Math.round((r.last_close / r.prev_close - 1) * 10000) / 100 : null });
+  const obToday = (r) => boToday(obLiveRow(r));
+  const obFetchLive = async () => {
+    const rows = [...((OBT && OBT.rows) || []), ...((OW && OW.rows) || [])].map(obLiveRow).filter(r => r.sym && r.last);
+    if (!rows.length) return;
+    await liveFetch(rows, '#ob-live');
+    drawOBT(); drawOW();
+  };
+  setInterval(() => { if (!document.hidden && VIEW === 'ob' && boMarketOpen()) obFetchLive(); }, 60000);
   let OBT = null, OBTK = 'filed', OBTD = -1;
   const drawOBT = () => {
     const R = ((OBT && OBT.rows) || []).map(r => ({ r, name: r.name || r.nse || r.key, ago: r.year_ago_value_cr, now: r.latest_value_cr, yoy: r.true_yoy_pct, filed: r.trigger_filed,
-      entry: r.entry_close, last: r.last_close, ret: r.ret_pct, peak: r.peak_pct, days: r.days, mcap: r.mcap_cr }));
+      entry: r.entry_close, last: r.last_close, ret: r.ret_pct, peak: r.peak_pct, days: r.days, mcap: r.mcap_cr, today: (boLivePct(obLiveRow(r)) ?? obLiveRow(r).day_chg_pct) }));
     const shown = R.sort((a, b) => { const x = a[OBTK], y = b[OBTK]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1; return (typeof x === 'string' ? x.localeCompare(y) : x - y) * OBTD; });
     document.querySelectorAll('#obt-table th[data-k]').forEach(th => { th.classList.toggle('asc', th.dataset.k === OBTK && OBTD > 0); th.classList.toggle('desc', th.dataset.k === OBTK && OBTD < 0); });
     const rets = R.map(x => x.ret).filter(v => v != null).sort((a, b) => a - b);
@@ -818,7 +830,7 @@
         <td class="n">${pct(x.yoy)}${r.faded ? '<div><span class="pill" title="Was up 50%+ at the jump filing; up less than 50% on the latest stated book">faded</span></div>' : ''}</td>
         <td>${r.trigger_doc ? `<a class="src" href="${esc(r.trigger_doc)}" target="_blank" rel="noopener" title="${esc(r.trigger_doc_title || 'filing')}">${dmy(x.filed)}</a>` : dmy(x.filed)}<div class="muted text-xs">${r.trigger_prev_cr != null ? '₹' + fmt(r.trigger_prev_cr, 0) + ' → ₹' + fmt(r.trigger_book_cr, 0) + ' cr' : ''}</div></td>
         <td class="n">${x.entry == null ? '—' : '₹' + fmt(x.entry, 2)}<div class="muted text-xs">${dmy(r.entry_date)}</div></td>
-        <td class="n">${x.last == null ? '—' : '₹' + fmt(x.last, 2)}${r.stale ? ' <span class="pill" title="' + esc(r.price_error || '') + '">stale</span>' : ''}</td>
+        ${obToday(r)}
         <td class="n"><b>${pct(x.ret)}</b>${r.first_ret_pct != null ? `<div class="muted text-xs" title="Return since an earlier 50%+ jump filed ${dmy(r.first_trigger_filed)} (${esc(r.first_trigger_doc_title || '')}) that faded before this one" style="white-space:normal">earlier jump<br>${pct(r.first_ret_pct)}</div>` : ''}</td><td class="n">${pct(x.peak)}<div class="muted text-xs">${dmy(r.peak_date)}</div></td><td class="n">${x.days ?? '—'}</td></tr>`; }).join('') || '<tr><td colspan="11" class="muted">No confirmed jumps yet.</td></tr>';
   };
   $('#obt-table thead').addEventListener('click', (e) => { const th = e.target.closest('th[data-k]'); if (!th || !OBT) return; if (OBTK === th.dataset.k) OBTD = -OBTD; else { OBTK = th.dataset.k; OBTD = th.dataset.k === 'name' ? 1 : -1; } drawOBT(); });
@@ -857,7 +869,8 @@
     let j = null; try { j = await res.json(); } catch (e) {}
     return { st: res.status, data: (j && j.data) || [], msg: (j && (j.message || j.error)) || '' };
   };
-  const boKite = async (rows) => {
+  const boKite = async (rows0) => {
+    const seen = new Set(), rows = rows0.filter(r => { const k = boLiveKey(r); if (seen.has(k)) return false; seen.add(k); return true; });
     let w = '', tok = '';
     try { w = (localStorage.getItem('pf_kite_worker') || '').replace(/\/+$/, ''); tok = localStorage.getItem('pf_token') || ''; } catch (e) {}
     if (!w || !tok) { BOKITE = { state: 'none' }; return 0; }
@@ -891,24 +904,28 @@
     BOKITE = got ? { state: 'ok', n: got, total: rows.length, miss: rows.filter(r => !(BOLIVE[boLiveKey(r)] && BOLIVE[boLiveKey(r)].src === 'kite')) } : { state: 'fail', st: lastSt, msg: lastMsg };
     return got;
   };
-  const boFetchLive = async () => {
-    if (!BO) return;
-    const rows = [...(BO.broke || []), ...(BO.near || [])];
+  // one live-price pass for any list of rows shaped like breakout rows ({exchange, sym, nse_series, last, ...}):
+  // Zerodha first, then Yahoo for NSE rows still without a price; writes the status line into `statusSel`
+  const liveFetch = async (rows, statusSel) => {
     await boKite(rows);
     const need = [...new Set(rows.filter(r => r.exchange !== 'BSE' && !(BOLIVE[boLiveKey(r)] && BOLIVE[boLiveKey(r)].src === 'kite')).map(r => r.sym))];
     try {
       for (let i = 0; i < need.length; i += 30) {
         const d = await (await fetch(QW + '/?symbols=' + encodeURIComponent(need.slice(i, i + 30).join(',')), { cache: 'no-store' })).json();
-        Object.entries((d && d.data) || {}).forEach(([k, v]) => { BOLIVE[k] = Object.assign({ src: 'yahoo' }, v); });
+        Object.entries((d && d.data) || {}).forEach(([k, v]) => { if (!(BOLIVE[k] && BOLIVE[k].src === 'kite')) BOLIVE[k] = Object.assign({ src: 'yahoo' }, v); });
       }
     } catch (e) { /* keep what we have */ }
     BOLIVE_AT = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-    const k = BOKITE, el = $('#bo-live');
+    const k = BOKITE, el = $(statusSel);
     if (el) el.innerHTML = k.state === 'ok'
       ? `<span style="color:#16a34a">●</span> Prices: <b>Zerodha live</b> for ${k.n} of ${k.total} rows · ${BOLIVE_AT}${k.n < k.total ? ' · the rest Yahoo (~15 min) or the last close' : ''}${(k.miss || []).length ? `<div class="muted text-xs mt-1">No Zerodha price for: ${k.miss.map(r => `<b>${esc(boKiteSym(r))}</b>${r.exchange === 'BSE' ? ' (BSE)' : ''} — ${esc(BOKERR[boLiveKey(r)] || '')}`).join('; ')}</div>` : ''}`
       : k.state === 'none'
         ? `<span style="color:#ca8a04">●</span> Zerodha is not connected on this device, so prices are Yahoo (~15 min delay) and BSE-only rows show the last close. Connect it once on the <a class="src" href="./portfolio.html">Portfolio</a> page (the same link the terminal uses) and this tab switches to live Zerodha prices.`
         : `<span style="color:#dc2626">●</span> Zerodha refused the price request${k.st ? ' (HTTP ' + k.st + ')' : ''}${k.msg ? ': ' + esc(k.msg) : ''}. ${k.st === 401 || k.st === 403 ? 'The daily Kite login has probably expired: log in again on the <a class="src" href="./portfolio.html">Portfolio</a> page.' : ''} Showing Yahoo (~15 min) meanwhile.`;
+  };
+  const boFetchLive = async () => {
+    if (!BO) return;
+    await liveFetch([...(BO.broke || []), ...(BO.near || [])], '#bo-live');
     drawBO();
   };
   setInterval(() => { if (!document.hidden && VIEW === 'bo' && boMarketOpen()) boFetchLive(); }, 60000);
@@ -935,8 +952,9 @@
   let obLoading = null;
   const loadOB = () => {
     if (OB || obLoading) return;
-    grab('./ideas/orderbook_tracker.json').then(j => { OBT = j; $('#obt-sec').hidden = !(j && (j.rows || []).length); drawOBT(); });
-    grab('./ideas/orderwins_tracker.json').then(j => { OW = j; $('#ow-sec').hidden = !(j && (j.rows || []).length); drawOW(); });
+    const obtP = grab('./ideas/orderbook_tracker.json').then(j => { OBT = j; $('#obt-sec').hidden = !(j && (j.rows || []).length); drawOBT(); });
+    const owP = grab('./ideas/orderwins_tracker.json').then(j => { OW = j; $('#ow-sec').hidden = !(j && (j.rows || []).length); drawOW(); });
+    Promise.all([obtP, owP]).then(obFetchLive);
     obLoading = grab('./ideas/orderbook_signals.json').then(j => {
       OB = j || { rows: [] };
       $('#ob-meta').textContent = j ? `${(j.rows || []).length} companies with a stated order book · built ${j.built || ''} · ${j.rule || ''}` : 'orderbook_signals.json not published yet.';

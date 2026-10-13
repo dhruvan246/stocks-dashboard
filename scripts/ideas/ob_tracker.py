@@ -67,8 +67,40 @@ def track(row):
                 ret_pct=round((last['close'] / e['close'] - 1) * 100, 1),
                 peak_pct=round((pk['close'] / e['close'] - 1) * 100, 1), peak_date=str(pk['date'])[:10],
                 low_pct=round((lo['close'] / e['close'] - 1) * 100, 1),
+                prev_close=round(h[-2]['close'], 2) if len(h) > 1 else None,
                 days=(D(str(last['date'])[:10]) - D(str(e['date'])[:10])).days,
                 adj_events=len(ev or []), price_source=src, stale=False)
+
+
+def live_ids():
+    """For the page's live 'Today' column (Zerodha via the owner's kite worker): NSE symbol -> its NSE series today
+    (BE / SM stocks trade on Kite as SYMBOL-BE / SYMBOL-SM) and BSE code -> BSE trading symbol (BSE-only names)."""
+    series, bsym = {}, {}
+    try:
+        d = ist.today()
+        for _ in range(7):
+            rows = bse.nse_bhavcopy(d)
+            if rows:
+                for x in rows:
+                    series.setdefault(str(x['symbol']).upper(), set()).add(x.get('series'))
+                break
+            d -= datetime.timedelta(days=1)
+    except Exception:
+        pass
+    try:
+        bsym = {str(r[0]): r[1] for r in json.load(open(os.path.join(DOCS, '..', 'bse_universe.json')))['rows']}
+    except Exception:
+        pass
+    return {k: ('EQ' if 'EQ' in v else sorted(x for x in v if x)[0]) for k, v in series.items() if v}, bsym
+
+
+def tag_live(rows):
+    ser, bsym = live_ids()
+    for x in rows:
+        n = (x.get('nse') or '').upper()
+        x['nse_series'] = ser.get(n) if n else None
+        code = str(x.get('bse') or (x.get('key') if str(x.get('key') or '').isdigit() else '') or '')
+        x['bse_sym'] = bsym.get(code) if code else None
 
 
 def mcaps():
@@ -120,6 +152,7 @@ def main():
     mc = mcaps()
     for x in rows:
         x['mcap_cr'] = mc.get((x.get('nse') or '').upper())
+    tag_live(rows)
     rows.sort(key=lambda x: x.get('trigger_filed') or '', reverse=True)
     json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'),
                    rule='Order book checked against the company\'s own filings; tracked from the first filing that '
@@ -167,6 +200,7 @@ def main_orderwins():
     mc = mcaps()
     for x in rows:
         x['mcap_cr'] = mc.get((x.get('nse') or '').upper())
+    tag_live(rows)
     rows.sort(key=lambda x: x.get('cross_date') or '', reverse=True)
     json.dump(dict(built=ist.now().strftime('%Y-%m-%d %H:%M IST'),
                    rule='Order-win letters added up since the last stated order book, each letter checked; flagged on the '
