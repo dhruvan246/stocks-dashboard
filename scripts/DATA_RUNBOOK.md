@@ -22377,6 +22377,36 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
   - Evidence per quarter: the NSE original, read by its ndsId through `/api/corporate-share-holdings-equities?ndsId=<id>&index=summary|public-shareholder` (works for old filings that the master list no longer shows), has the same total and every line as BSE's upload. BSE's AnnSubCategoryGetData gives the first notice to the second. NSE record ids sort by upload day, which brackets the NSE date. Tools: r5/nse_orig.py, cmp_orig.py, ann_orig.py.
   - Fix: `shp_lag_fix.json` days_earlier entries with `sub` = the first notice's calendar day; any older entry is kept under `replaced`. Feed diff: exactly 10 rows, dates only. LIVE-verified; the 13 reply cells now agree, and reply 5 was rebuilt (5,107 equal).
   - Before 2020 the open question is the other way round: we date to the first notice and Quantmac to the re-filing. Those 30 cells are still 'date rule under review'.
+- **USER RULE 2026-10-14 (answers part 41's open question): first-notice dating, uniform.** "use the first notice date for the pre-2020 ones too", then "rule should be uniform for all years for all stocks". Every SHP quarter, for every stock and every year, is public from the FIRST notice of its filing, even when the exchange now keeps only a later re-upload. FII follows automatically, because a date belongs to the whole row. The §164r v4 guard "revision-only moves only on Quantmac's equal reading" is retired. Quantmac's re-filing-date cells are RULE DIFFERENCE, theirs. Memory: feedback-shp-first-notice-date-uniform.
+- **Part 42 (15ac749cb, LIVE): the sweep covers all PIT-N500 rows 2014+ (26,428 rows); 886 rows move, dates only.**
+  - First notice = the earliest of three sources:
+    - BSE AnnSubCategoryGetData 'Company Update / Shareholding' notices (r5/sweep_all_fetch.py: one 1-year window per company per year; windows longer than 365 days return 0 rows silently). BSE stopped posting SHP announcements in 2023: all 2023-26 windows are empty.
+    - BSE SHPQNewFormat filing_date_time.
+    - NSE master submissionDate (r5/sweep_nse_master.py). submissionDate is kept on revision; broadcastDate is not usable, since NSE re-broadcast many filings in Jan-2022.
+  - Decision tool: r5/sweep_all_decide.py, judged on the ORIGINAL feed row of each quarter.
+  - Result: 866 shp_lag_fix days_earlier entries; 3 un-dated rows dated (BHARATFORG / KWALITY Mar-16, UBL Sep-18). UBL needed a lag entry, not a sub_dates entry: an existing days_later weekend-shift lag entry outranks shp_sub_dates in `_reassert_sub`.
+  - The 12 symbols with no cached BSE code were looked up in bse_scrip_master.json. BSE Ltd and CDSL are NSE-only.
+  - BSE Ltd Jun-17..Jun-21 (16 quarters) are dated from its original NSE filings:
+    - Found by content: r5/nse_idpass.py scanned ndsIds 112000-160500 for promoter 0 plus BSE Ltd's named holders, and CDSL (total 104,500,000, promoter BSE Limited). 39 hits; the quarter is matched on the DII lines.
+    - 4 exact stamps (NSE archive files Quantmac named: SHP_127312 / 135940 / 138482 / 159741, all HTTP 200). 12 approximate: the median submissionDate of the next 3 higher ndsIds. ndsIds are issued at creation, so neighbours bound creation, not submission.
+    - These rows leave shp_undated.json.
+  - Feed diff verified: 886 rows, dates only, 0 figures changed. LIVE feed == pushed feed.
+- **Part 43 (611e365ab): RELCAPITAL Jun-16 own-line DII 9.3733 -> 12.172974.** Sumitomo Mitsui Trust Bank's 7,000,000 shares sit on the domestic Banks line. The cell was missed by part 35 (classified NODOC then) and exposed once part 42 served Jun-16 from 2016-07-15.
+- **Part 44 (a49a7e073): exact DII from NSE-only filings.**
+  - CDSL Jun-18..Jun-21: the 2018-19 cells were third-party figures 0.5-1.0 pt low (they missed the AIF and NBFC rows). Quantmac's NSE values now equal ours. The institutions Any-Other 'Other' line naming Standard Chartered Bank 7.5M is not DII.
+  - BSE Ltd Jun-24 / Dec-24 / Mar-25: NSE records 190541 / 195745 / 197851 have no XBRL link, but the ndsId API serves the documents.
+  - FII slots are untouched (FII session told).
+- **Part 45 (b4064f693): event filings found by content.**
+  - r5/nse_evscan.py scanned the ndsId bracket of each lodging date for docs whose own lines equal Quantmac's quoted value, then confirmed by promoter names. Found MOTHERSON 2018-11-01 (132260), CENTRALBK 2019-02-28 (135085), MAXHEALTH 2021-03-10 (155679) and CENTRALBK 2021-05-29 (158374). BHARATRAS 2021-04-27 / 2021-06-09 come from Quantmac's ids 158296 / 158413.
+  - Added as shp_event_fills rows, each dated to the latest day NSE record order proves. MOTHERSON (<= 2019-01-04) and CENTRALBK 2019 (<= 2019-04-06) land after Quantmac's month-ends, so we ask Quantmac for the XBRL file names (they carry the upload stamp).
+  - UCOBANK 2019-04-23 was not found (the closest content match was 4.0847, not Quantmac's 4.0994).
+  - BHARATRAS Mar-21 is now exact (0.915707). CDSL Jun-18..Jun-19 are dated from their NSE filings (approximate); they were un-dated before.
+- **Reply 5 verdicts after parts 42-45.**
+  - INDOSTAR 2020-05-22: register-proven AIF on the Trusts row (SEBI IN/AIF2/17-18/0502).
+  - SITINET Mar-16: BSE Table III qtrid 89 read = our 6.3896; THEIR ERROR (they hold none).
+  - BSE Ltd 2024-25: THEIR ERROR. They serve the previous quarter because they hold no filing.
+  - RELCAPITAL / JAGRAN 2016: date RULE DIFFERENCE under the first-notice rule.
+  - The 561 rule-difference table was sent as HTML + xlsx (~/Downloads/DII_rule_differences_561_20261015.xlsx).
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
