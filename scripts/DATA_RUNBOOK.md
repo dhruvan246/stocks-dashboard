@@ -27598,7 +27598,7 @@ answers IN or OFF from measured data and everything reads it — nothing is edit
 |---|---|---|---|
 | `refresh-fundamentals.yml` intraday (XBRL numbers) | `0,30 4-14 * * *` = every 30 min 09:30–19:30 IST, 22 runs/day | `0 4-14 * * *` = hourly, 11 runs/day | moved off GitHub `schedule:` onto the dispatcher: `# dispatch-cron[in-season]:` / `[off-season]:` lines + `repository_dispatch: tick-refresh-fundamentals`. The two nightly GitHub crons (`45 15`, `45 17`) are untouched; a tick carries no `github.event.schedule`, so every existing gate treats it as a LIGHT run (no insurer / IPO-base / midnight-rule steps). |
 | `refresh-results-hourly.yml` (results feed + calendar) | `0 3-19 * * *` = hourly 08:30–00:30 IST, 17 runs/day | `0 3,7,11,15,17,19 * * *` = 6 runs/day | tagged `dispatch-cron` lines; 17 UTC (22:30 IST) stays in both sets (load-bearing for the 00:15 vision run) |
-| `bse-vision-fill` cloud routine (`trig_01N3H7t8Dgn2XmLqwBg94j2r`, the user's, `45 18 * * *` = 00:15 IST) | 4 slots: 13:15 / 16:15 / 21:15 / 00:15 IST | 1 slot: 00:15 IST | **STILL 1×/day ALL YEAR — the only part not automatic yet; it needs ONE action in the routines UI by the user (below).** A session cannot edit this routine, and the sibling a session created (`bse-vision-fill-daytime`, `trig_01M7CxRAhg4tsXWDEZHbWxtH`) is DISABLED: a session-created routine carries no repository source, so its VM starts empty and the auto-mode classifier denies cloning + running the repo's own code ("Code from External"). The repo side is ready: `season_state.py --vision-slot` prints RUN/SKIP per slot; the two prompt files in `scripts/routine_prompts/` carry the step-0 guard. |
+| `bse-vision-fill` cloud routine (`trig_01N3H7t8Dgn2XmLqwBg94j2r`, the user's; cron `45 7,10,15,18 * * *` since 2026-10-14 11:53 IST, §222a) | 4 slots: 13:15 / 16:15 / 21:15 / 00:15 IST | 1 slot: 00:15 IST (the other three print SKIP at step 0 and exit) | **DONE 2026-10-14 (§222a): the API accepted the session's edit after all — the 2026-10-06 refusal did not reproduce.** Historical note on what was tried on 06-Oct follows below. A session cannot edit this routine, and the sibling a session created (`bse-vision-fill-daytime`, `trig_01M7CxRAhg4tsXWDEZHbWxtH`) is DISABLED: a session-created routine carries no repository source, so its VM starts empty and the auto-mode classifier denies cloning + running the repo's own code ("Code from External"). The repo side is ready: `season_state.py --vision-slot` prints RUN/SKIP per slot; the two prompt files in `scripts/routine_prompts/` carry the step-0 guard. |
 
 **The state — `scripts/season_state.py`, one answer for every reader.** Stateless: the same inputs always give the same
 answer, so there is no memory to get stuck and the dispatcher (every 5 min), the routine (at its slot) and the coverage page
@@ -27693,6 +27693,43 @@ set is the one in force, measured live. NOT verified from this session: the serv
 dhruvan246.github.io is blocked by this environment's egress policy (curl `connect_rejected`, WebFetch `EGRESS_BLOCKED`), so
 the §39 "re-verify LIVE" step for the chip + next-run text is still owed from a browser (or from an environment whose
 allowlist carries github.io).
+
+## §222a — THE VISION ROUTINE IS ON THE FOUR-SLOT CRON: the API accepted a session edit of the UI-created routine (2026-10-14, user: "why. only once? is it not dynamic?" → "try it")
+
+**Measured before the edit (11:49 IST).** `GET /v1/code/triggers/trig_01N3H7t8Dgn2XmLqwBg94j2r`: cron `45 18 * * *`, enabled, created_via
+http_api, stored prompt 19,028 bytes WITHOUT the step-0 season guard; vision PRs had landed once a day at 00:26–00:32 IST on 9–14 Oct
+(#514/516/517/518/520/522). `season_state.py --vision-slot` on the synced checkout (HEAD 23d7dcf21) printed RUN (IN — 70 filings
+since 2026-10-09, 28 board meetings confirmed today). The restore-check routine (`trig_013w3xTyqPckt82NxGHFQWDS`) was still enabled,
+next fire Mon 2026-10-19 09:40 IST, with the pre-§222 "restore the three schedules by hand" prompt.
+
+**The edit (11:53 IST).** `POST /v1/code/triggers/trig_01N3H7t8Dgn2XmLqwBg94j2r` with `{cron_expression: "45 7,10,15,18 * * *",
+prompt: <scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt>}` → **HTTP 200**. The 2026-10-06 refusal ("this routine was
+created via http_api, not by an agent — agents can only update routines they created") did NOT reproduce; nothing on our side changed,
+so the platform rule must have. Re-read after the edit: cron `45 7,10,15,18 * * *`, enabled, `next_run_at 2026-10-14T07:45:00Z`
+(13:15 IST), `updated_at 2026-10-14T06:23:22Z`; the prompt stored in session_request.events[0], job_config.ccr.events[0] and
+derived_state is byte-identical to the file (sha256 241324b4e53f22d8…); repository source, environment `env_01Pb6Vujaf9FQ9m1kZXYJN9c`
+and the 8 allowed tools unchanged. The routine therefore fires 13:15 / 16:15 / 21:15 / 00:15 IST all year and step 0 decides per slot
+(SKIP off-season for the three daytime slots, RUN in season) — the dynamic rule now reaches the vision reader too.
+
+**Restore-check disabled (11:54 IST).** `POST …/trig_013w3xTyqPckt82NxGHFQWDS {enabled:false}` → HTTP 200, enabled false. Its only job
+was to tell a human to restore the three schedules; all three are automatic now. Still to do by the user in the UI (no delete endpoint
+from a session): delete it and the disabled sibling `bse-vision-fill-daytime` (`trig_01M7CxRAhg4tsXWDEZHbWxtH`).
+
+**First four-slot fire:** 13:15 IST 2026-10-14 — result to be recorded here by the session's 13:19 check (RUN line quoted, run session id, outcome).
+
+**Found while counting runs for the user (11–13 Oct), NOT fixed — each awaits the user's OK:**
+1. **refresh-fundamentals never drops to hourly off-season.** All 22 intraday runs/day on Sat 11-Oct (season OFF all day) carry
+   `ACTION="fundamentals-refresh"` — the cron-job.org job (§217, "keep their native crons") that was left running when §222 moved the
+   schedule onto the dispatcher. The dispatcher yields every slot: `refresh-fundamentals slot 04:00 (0 4-14 * * *) — already ran
+   (repository_dispatch, 04:01)`. Fix options: (a) pause/delete that cron-job.org job (user's account; the dispatcher already carries
+   both cadences), or (b) a guard in refresh-fundamentals.yml that exits a `fundamentals-refresh` run at :30 UTC when season_state says OFF.
+2. **The cloud dispatcher cannot see docs/results_calendar.json.** `cron-dispatch.yml`'s sparse checkout lists only
+   `docs/results_feed.json`, so the §228 calendar rule (≥10 confirmed board meetings today) reads 0 on every tick ("meetings confirmed
+   today 0" on 12–14 Oct) while the checkout reads 28 today. The counts carried the state on 12–14 Oct; the rule only bites on a season's
+   first big results day. Fix = add `docs/results_calendar.json` to the sparse-checkout list (one line).
+Run counts measured for those days (GitHub run list, IST days): results-hourly 6 / 12 / 17 (OFF → flip at the 17:15 IST tick on 12-Oct
+after c4bb1816b lowered IGNITE_CUM to 20 → IN); fundamentals 24 / 25 / 25 every day (22 external + 2 nightly GitHub crons landing 4–8 h
+late + a weekday 21:15 IST external run).
 
 ## §223 — THE REFINE LEDGER READ BSE'S NEWEST FILING: 817 entries were a later document than the stored row's own; 208 rebuilt from the row's own filing, 579 removed, and a cell_fix now outranks the refine (2026-10-07, user: "measure the class across the whole store … propose a source fix … show the A/B … then, if approved, land it and retire the now-unneeded `exact` ping-pong entries … only if the store keeps the same values"; approved "Land the full fix")
 

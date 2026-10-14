@@ -1,3 +1,5 @@
+**STATUS 2026-10-14 (runbook §222a): DONE from a session — the API accepted `update` on the UI-created `bse-vision-fill` (HTTP 200; the 06-Oct refusal did not reproduce). It now runs `45 7,10,15,18 * * *` with `bse-vision-fill.4slot.prompt.txt` (sha256 241324b4…), and `vision-fill-season-restore-check` is disabled. Left for the UI: delete that check and the disabled `bse-vision-fill-daytime`. The text below is the 06-Oct state, kept for history; the trigger config is the source of truth.**
+
 # Routine prompts prepared by a session — PROPOSED text for the routines UI (runbook §222)
 
 The cloud routines' prompts live in the trigger config, not in this repo. These files exist because a session cannot finish the
