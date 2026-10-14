@@ -92030,15 +92030,15 @@
     "cell": [
      52.13,
      16.267504,
-     9.3733,
-     4.9443,
-     4.2821,
+     12.172974,
+     4.94418,
+     4.282009,
      "2016-07-21",
      997795
     ],
     "was": [
      52.13,
-     16.2445,
+     16.267504,
      9.3733,
      4.94418,
      4.282009,
@@ -92046,11 +92046,12 @@
      997795
     ],
     "src": "bsexbrl:500111_23122016183336_SHP.xml",
-    "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 16,484,656; inst:Other Foreign Institutional Investors 24,514,851 on base 252,033,169 = 16.267504; the stored 16.2445 left them out. DII (9.3733) is below the filing's own domestic rows (12.172974), so it holds none of these shares. fii -> 16.267504; dii untouched.",
+    "why": "\u00a7164s part 43 (2026-10-15): own-line DII (user ruling 13-Oct) on this filing's own lines: MF 12,460,973 + FI/Banks 7,426,878 (incl. Sumitomo Mitsui Trust Bank 7,000,000 filed on the domestic Banks line - stays DII) + Insurance 10,792,082 = 30,679,933 / base 252,033,169 (total 252,632,800 - C1 599,631) = 12.172974. Was 9.3733 (the retired R6 removal of Sumitomo). Missed by part 35 (classified NODOC then); exposed when part 42 dated Jun-16 to its first notice 2016-07-15. FII unchanged (FPI 16,484,656 + Other Foreign Institutional Investors 24,514,851).",
+    "exact": true,
     "superseded": {
      "cell": [
       52.13,
-      16.2445,
+      16.267504,
       9.3733,
       4.9443,
       4.2821,
@@ -92060,16 +92061,25 @@
      "was": [
       52.13,
       16.2445,
-      12.1441,
-      4.9443,
-      4.2821,
+      9.3733,
+      4.94418,
+      4.282009,
       "2016-07-21",
       997795
      ],
      "src": "bsexbrl:500111_23122016183336_SHP.xml",
-     "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 12.1441 as printed). dii 12.1441 -> 9.3733; fii is the FII session's call.",
+     "why": "\u00a7164r batch 30 part 61 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 16,484,656; inst:Other Foreign Institutional Investors 24,514,851 on base 252,033,169 = 16.267504; the stored 16.2445 left them out. DII (9.3733) is below the filing's own domestic rows (12.172974), so it holds none of these shares. fii -> 16.267504; dii untouched.",
      "superseded": {
       "cell": [
+       52.13,
+       16.2445,
+       9.3733,
+       4.9443,
+       4.2821,
+       "2016-07-21",
+       997795
+      ],
+      "was": [
        52.13,
        16.2445,
        12.1441,
@@ -92078,17 +92088,30 @@
        "2016-07-21",
        997795
       ],
-      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
-      "was": [
-       52.13,
-       6.5408,
-       21.9002,
-       4.9443,
-       4.2821,
-       "2016-07-21",
-       997795
-      ],
-      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+      "src": "bsexbrl:500111_23122016183336_SHP.xml",
+      "why": "\u00a7164s part 25 (2026-10-06; found re-reading the FII session's part 41 RELCAPITAL note): this filing names 'Sumitomo Mitsui Trust Bank' 7,000,000 sh INSIDE the company's 'Financial Institutions/Banks' line - a Japanese bank, not a domestic institution (same treatment as SHRENUJ's HSBC Private Bank (Suisse), BALLARPUR's Samena, Deutsche Bank AG). It leaves dii: 2.7708 = 7,000,000 / 252,632,800 (the basis the stored cell is on: six lines 12.1441 as printed). dii 12.1441 -> 9.3733; fii is the FII session's call.",
+      "superseded": {
+       "cell": [
+        52.13,
+        16.2445,
+        12.1441,
+        4.9443,
+        4.2821,
+        "2016-07-21",
+        997795
+       ],
+       "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline) | bsexbrl:500111_23122016183336_SHP.xml",
+       "was": [
+        52.13,
+        6.5408,
+        21.9002,
+        4.9443,
+        4.2821,
+        "2016-07-21",
+        997795
+       ],
+       "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 180d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp. | SW-2 other-institutions sweep re-asserted 2026-09-24 (\u00a7152): filing's Any-Other institutions block (9.70pp, holders: Foreign Institutional Investors; MORGAN STANLEY MAURITIUS COMPANY LIMITED; VALIANT MAURITIUS PARTNERS OFFSHORE LIMITED; VALIANT MAURITIUS PARTNERS LIMITED) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 12.1441, fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
