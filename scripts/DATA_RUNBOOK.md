@@ -27715,7 +27715,14 @@ and the 8 allowed tools unchanged. The routine therefore fires 13:15 / 16:15 / 2
 was to tell a human to restore the three schedules; all three are automatic now. Still to do by the user in the UI (no delete endpoint
 from a session): delete it and the disabled sibling `bse-vision-fill-daytime` (`trig_01M7CxRAhg4tsXWDEZHbWxtH`).
 
-**First four-slot fire:** 13:15 IST 2026-10-14 — result to be recorded here by the session's 13:19 check (RUN line quoted, run session id, outcome).
+**First four-slot fire — measured 13:18 IST.** The 07:45 UTC slot created run session `cse_01HgZzV8mVgZYJaxzoyUL6P2` at
+07:46:16 UTC (13:16 IST); the platform fetched dhruvan246/stocks-dashboard itself (07:46:20–44, no clone step needed — the
+UI-created routine keeps its repository source), Claude Code started 07:46:47, and its first tool call was step 0:
+`python3 -X utf8 scripts/season_state.py --vision-slot` → `RUN slot 07:45 UTC (13:15 IST) — season IN — calendar window and 72
+filings since it opened on 2026-10-09; 28 companies' result board meetings confirmed for today on the exchange calendar; …
+meetings confirmed today 28; feed newest 2026-10-14`. It then went on to sync + pip + bse_vision_prep (07:47:00, still running when
+read). So the daytime slot fires, the guard reads the live state and says RUN in season; the SKIP branch will show on the first
+off-season daytime slot.
 
 **Found while counting runs for the user (11–13 Oct), NOT fixed — each awaits the user's OK:**
 1. **refresh-fundamentals never drops to hourly off-season.** All 22 intraday runs/day on Sat 11-Oct (season OFF all day) carry
