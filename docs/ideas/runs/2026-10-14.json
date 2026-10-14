@@ -1,0 +1,220 @@
+{
+ "date": "2026-10-14",
+ "run_started": "2026-10-14 19:45 IST",
+ "run_finished": "2026-10-14 20:40 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1204,
+ "candidates": 10,
+ "filings_status": "BSE answered 200 from this sandbox on the setup probe (ComHeadernew, scrip 500002) with the honest headers from scripts/bse_headers.py, so lane three ran live here. ONE SETUP DEFECT FOUND AND WORKED AROUND: the routine's `pip install pymupdf / xlrd` installed into python3.13's dist-packages while `python3` on this VM is 3.11.17, so `import fitz` failed and minsteel.py died with ModuleNotFoundError on its first run. Re-installed with `python3 -m pip install pymupdf xlrd` and every PDF reader worked after that. universe.py rebuilt 1,204 names (782 group B, 134 X, 104 T, 81 M, 53 XT, 45 MT, 3 A, 1 MS, 1 P; 836 with an NSE symbol, 127 SME). scan.py printed SELFTEST PASS and read 962 announcements against BSE's own reported count of 962 (not capped) at 19:52 IST, 68 of them classified in the universe, giving 10 candidates. THE ACTION'S OWN SCAN WAS TRUNCATED AND THIS RUN'S READ FIXES IT, measured by diffing the two versions of scan/2026-10-14.json: the Action read at 18:59 IST saw 873 announcements against 877 reported with announcements_capped TRUE and 61 in the universe; this run read 962 against 962 reported, capped FALSE, 68 in the universe, 159 signal rows against 154. So this run's scan supersedes the Action's, is committed, and removes a capped read - exactly the 2,000-row-cap failure mode runbook 144f warns about, in its smaller daily form. CAVEAT: the read is taken on the day itself, so anything lodged later in the evening is not in it - the counts are a floor for the day, not its total.",
+ "govt_status": "pib.gov.in is BLOCKED at this sandbox's egress proxy - govt.py failed with 'Tunnel connection failed: 403 Forbidden' at CONNECT and exited WITHOUT writing, leaving docs/ideas/govt.json exactly as the ideas-feeds Action built it at 18:56 IST TODAY. WebFetch on pib.gov.in also failed (getaddrinfo ENOTFOUND), so no release body could be read from here at all. feeds_status.json (built 19:14 IST, run 38571685213) records https://www.pib.gov.in/allRel.aspx at 200 with steps_failed [] and landing.refused empty, so lane one is today's read taken from a host this sandbox cannot reach - not a data gap. That build KEPT ONE release and listed TWO unmapped ones. All three were judged on their titles and on the gate's own recorded evidence (outlay, verb, mandate), because the bodies are unreadable from here; each verdict is recorded in govt_considered and each turns on what the money IS, not on how big it is. Nothing was published from lane one and theme_map.json is UNCHANGED - no release described procurement or an order book, so there was no honest basis for adding a company to any basket.",
+ "commodity_status": "All six builders were re-run from this sandbox. Every commodity host except BSE refused at the proxy, so the live prices are the ones GitHub Actions wrote at 18:56-19:14 IST today (feeds_status.json: steps_failed [], 26 files landed, landing.refused empty, hosts_blocked only tradestat.commerce.gov.in and westmetall.com). FROM THIS SANDBOX: spot.py - all westmetall.com series plus markets.businessinsider.com failed, spot.json and spot_series.json LEFT UNCHANGED. minsteel.py - steel.gov.in refused, no report listed, committed file left as it was. india_spot.py - metalbook, ibja, rubber, sugar, fuel, guidechem, cai, spices and te all FAILED with 'previous rows kept'; nmdc ok 2 rows, minsteel ok 3 rows, moil ok 3 rows, all three through api.bseindia.com or the committed file. 0 history rows appended; india_history.json.gz WAS rebuilt (270 series, 76,001 dated points - NOT 'NOT rebuilt'). wpi.py - eaindustry.nic.in refused, wpi.json.gz LEFT UNCHANGED. trade.py --latest - tradestat refused, trade/** LEFT UNCHANGED. signals.py ranked 53 groups, 40 strong by the prompt's test. STAMP AGE, as the prompt requires: spot_date 2026-10-14 18:57 IST and india_built 2026-10-14 19:51 IST are both fresh, but wpi_month is 2026-04 and trade_month 2026-07 - SIX and THREE months old, and both panels are stale from GitHub Actions too (tradestat is in hosts_blocked there; eaindustry answered 200 yet the WPI month did not advance). That is the decisive fact about today's RANKING: the four strongest groups (Crude oil 10.70, Silver 10.16, Tungsten 10.00, Freight 7.19) are scored on those two stale panels, and Tungsten - at strength 10.00 - has NO mapped beneficiary at all. The freshest Indian evidence with real depth is the Ministry of Steel's September-2026 Mumbai retail series (see signals_considered). NOTHING FROM THE COMMODITY LANE WAS PUBLISHED TODAY, because the one fresh, deep, documented Indian move - domestic finished steel - was published yesterday as Vraj Iron and Steel on the same data, and re-publishing the same signal under a second name would be manufacturing an idea. WHAT WAS AND WAS NOT COMMITTED: india_spot.json, nmdc_history.json, moil_history.json, india_history.json.gz and signals.json were rewritten by this run's builders and NONE of the price panels is committed. Measured with git diff: the only changes are build timestamps and per-source STATUS strings - every price row is byte-identical to Actions' version - so committing them would replace Actions' accurate 'metalbook: ok / ibja: ok / cai: ok' with this sandbox's proxy-403 'FAILED ... previous rows kept' for reads that genuinely SUCCEEDED today, and would put those false statuses on ideas.html and commodities.html by the back door. Same decision as the 2026-10-06/07/08/09/12/13 runs.",
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "NOT RESEARCHED. Top of the board and scored almost entirely on the STALE WPI panel: WPI Crude Petroleum 3m +85.6%, 12m +88.1%, WPI Petrol 1m +24.5% - all from wpi_month 2026-04, six months old. The only fresh India rows in the group are PPAC metro pump prices, whose 1-month change is 0.0% (deep, 3,396 readings). Mapped beneficiaries are ONGC, Oil India, HOEC and Selan Exploration - the first two are far outside the band and none is a Rs 200-2,000 cr name. Nothing to research."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "NOT RESEARCHED. WPI Silver 12m +152.4% (Apr-2026 panel) plus import unit prices since-year +85.1% and +66.2% on HS 710691/710692 (trade_month 2026-07). The one fresh deep India row, IBJA silver, is 1m -6.5% - the DOMESTIC price is FALLING while the stale panels say it soared. Mapped names are Hindustan Zinc (far above band) and Modison, which the page already published on 2026-09-22. No new idea."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "NOT RESEARCHED, and the reason is a gap worth naming: export unit price since-year +606.5% on HS 284180 and import +280.4% on HS 8101 scrap, but `benefit` is an EMPTY LIST - commodity_map.json maps no company to this group. Per PLAYBOOK step 5 a name may be added only when its exposure is read in a document; searching the universe for a tungsten producer was not attempted within this run's time, so nothing was added rather than guessed. Also note the 1-month export unit price is -43.4%, i.e. the move is reversing, and all of it rests on a trade panel three months old. Flagged for a future run."
+  },
+  {
+   "group": "Freight rates (dry bulk, tankers)",
+   "strength": 7.19,
+   "direction": "up",
+   "verdict": "NOT RESEARCHED. Driven by one Trading Economics proxy (Containerized Freight Index 1y +215.8%) whose 1-month change is +0.1% - the move is a year old and flat now. No India source in the group. Mapped names (SCI, Great Eastern, Seamec) are all outside the band."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "strength": 6.97,
+   "direction": "up",
+   "verdict": "NOT RESEARCHED today. The best-mapped small-cap group on the board (Tanfac, Amal, DMCC Speciality Chemicals in or near the band) but the evidence is WPI Sulphuric Acid 1m +20.9% / 12m +91.4% from the six-month-old panel plus HS 280700 import unit price 3m +95.2% from July. Its two fresh India rows are Guidechem CNY/t quotes dated 2026-10-14 with stats.deep FALSE (n=3 and n=4 readings) - below the 60-day / 6-reading floor, so the PLAYBOOK withholds a verdict on them by design and no high_since may be quoted. Amal was already published on 2026-10-12. Worth returning to when the WPI panel advances."
+  },
+  {
+   "group": "Domestic finished steel (Ministry of Steel, Mumbai retail)",
+   "strength": "see steel group",
+   "direction": "up",
+   "verdict": "THE DAY'S STRONGEST FRESH INDIAN EVIDENCE, AND DELIBERATELY NOT PUBLISHED AGAIN. The Ministry of Steel's September-2026 monthly report gives Mumbai retail prices for 30-Sep-2026: TMT 10mm Rs 65,750/t (+15.51% on Aug-2026's Rs 56,920), HR coil 2.50mm Rs 76,900/t (+10.79% on Rs 69,410) and CR coil 0.63mm Rs 89,670/t (+13.97% on Rs 78,680). All three are the highest in the eight months of the series read, and the month quoted is SEPTEMBER 2026 - the latest report, about two weeks' lag, better than the 2-3 months the prompt warns of. This is exactly the signal that produced yesterday's Vraj Iron and Steel card; the data has not changed since, so publishing a second steel name on the same unchanged prints would be manufacturing an idea rather than finding one. Recorded so the evidence is on the record for whoever reads the lane next."
+  },
+  {
+   "group": "Copper / Zinc and lead",
+   "strength": "5.25 / 4.39",
+   "direction": "up",
+   "verdict": "NOT RESEARCHED. These carry the only DEEP fresh India rows on the board (MetalBook Rs/kg prints, stats.deep true, n=19-25 readings) but their latest date is 2026-10-06 - six trading days old, which this run reports as required. high_since is 2026-09-29/2026-10-01, i.e. the price is at a one-to-two-week high, not a multi-month one. The copper group's evidence is otherwise HS 7407 import unit price since-year +157.5% from the July trade panel. Nothing here clears the bar for a new name."
+  },
+  {
+   "group": "Guidechem Chinese chemical quotes (carbon black, lithium carbonate, aniline, urea/DAP, methanol, caustic, solvents)",
+   "strength": "3.2-4.4",
+   "direction": "up",
+   "verdict": "NOT RESEARCHED. These are the groups whose India rows carry TODAY's date (2026-10-13/14), but every one has stats.deep FALSE with n=2 to 4 readings. The PLAYBOOK and the prompt both withhold the verdict below 60 days or 6 readings, and Guidechem is an aggregator of Chinese domestic quotes in CNY/t - direction only, never a price of record for an Indian producer. No high_since quoted for any of them, as required."
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "Cabinet approves Productivity Linked Bonus (PLB) for 78 days to Railway Employees",
+   "prid": "2323256",
+   "ministry": "Cabinet",
+   "outlay_cr": 2009.6,
+   "theme": "railways (mapped)",
+   "verdict": "KEPT BY THE GATE, REJECTED ON READING. Rs 2,009.61 crore is a real outlay and the gate was right to surface it, but the money is a BONUS PAID TO RAILWAY EMPLOYEES - it lands in 11-12 lakh pay packets, not in anybody's order book. The 144c table exists to settle exactly this question: money that becomes somebody's order book paid (defence 17.4x, shipbuilding 16.2x, RDSS smart meters 12.0x), and a household transfer did not - PM Surya Ghar, the one pure subsidy in the table, returned 1.8x against the market's 2.0x and made no 5x at all. A staff bonus is weaker still than Surya Ghar, which at least bought rooftop panels from somebody. The gate's own evidence record shows mandate=false, i.e. no procurement obligation. No wagon, no track, no Kavach set is bought with this. NOT AN IDEA. Note the limit on this verdict honestly: pib.gov.in is unreachable from this sandbox, so the release BODY was not read - the judgement rests on the title, the ministry and the gate's recorded outlay and mandate flag, all of which are unambiguous about what the payment is."
+  },
+  {
+   "release": "Cabinet approves continuation of the National Social Assistance Programme for five years from 2026-27 to 2030-31",
+   "prid": "2323264",
+   "ministry": "Cabinet",
+   "outlay_cr": null,
+   "theme": "UNMAPPED",
+   "verdict": "NOT CHASED, and no theme_map addition. NSAP is India's old-age, widow and disability pension scheme - a direct benefit transfer to households. It is the PM Surya Ghar category in its purest form: there is no procurement leg, no equipment, no EPC contract and therefore no listed supplier whose order book it enters. Adding a basket for it would mean inventing beneficiaries, which the first rule of the lane forbids. The gate recorded no outlay figure for it, and the body is unreadable from this sandbox, so the amount is UNKNOWN here; it does not change the verdict, because the question the lane asks is whose order book the money lands in, and the answer is nobody's."
+  },
+  {
+   "release": "Government Approves Strategic Restructuring of IDBI Bank Ltd.",
+   "prid": "2323468",
+   "ministry": "Cabinet",
+   "outlay_cr": null,
+   "theme": "UNMAPPED",
+   "verdict": "NOT CHASED, and no theme_map addition. This is a change of ownership of a bank, not a spending decision: no outlay was recorded by the gate, and a bank privatisation creates no procurement and no supplier order book. IDBI Bank itself is far outside the Rs 200-2,000 cr universe, and no small-cap supplier lane exists for it. Nothing to map, nothing to research."
+  }
+ ],
+ "candidates_considered": [
+  {
+   "ticker": "RAJESH",
+   "scrip": "544291",
+   "score": 9,
+   "signals": "ORDER x2, DISCLOSE (1d +3.4%, vol x2.6, Rs 210.0 lakh median turnover)",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA - already published (card 2026-10-12-RAJESH, lane filing). The trigger was opened and verified anyway: Rs 69 crore including taxes from UGVCL for turnkey shifting of the electrical network in the Sabarmati and Mehsana circles with GIS/Geo Urja mapping and asset tagging under the ND scheme, 12 months, filed 13:07 on 14-Oct-2026 and described by the company as 'in the normal course of business'. Written up as an UPDATE on the existing card, which is what the triage rule requires for a name already published."
+  },
+  {
+   "ticker": "UTTAMSUGAR",
+   "scrip": "532729",
+   "score": 8,
+   "signals": "ORDER, VOL x10.3, BREAKOUT (1d +1.6%, Rs 28.6 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. The second-highest score of the day and the only announcement in the scan row is 'Clarification sought from Uttam Sugar Mills Ltd' - an exchange query, with no company filing behind it in today's list. The triage rules skip clarifications on price movement explicitly, and a volume spike with nothing filed to explain it is watch-listed, not researched (the 2026-09-22 study: 81% of 5x runs had a volume explosion and so did 78% of the stocks that went nowhere). Turnover of Rs 28.6 lakh/day is barely above the Rs 25 lakh floor. WATCH, not research."
+  },
+  {
+   "ticker": "BAJAJHCARE",
+   "scrip": "539872",
+   "score": 7,
+   "signals": "ORDER, DEAL, DISCLOSE (1d -0.9%, vol x1.6, Rs 27.7 lakh median turnover)",
+   "verdict": "RESEARCHED, NOT PUBLISHED - see researched[]."
+  },
+  {
+   "ticker": "AEROENTER",
+   "scrip": "511076",
+   "score": 4,
+   "signals": "CAPEX (1d +0.4%, vol x2.8, Rs 53.4 lakh median turnover)",
+   "verdict": "RESEARCHED AND PUBLISHED - see researched[]. Note it scored only 4, below three names that were rejected: the scan's score measures the signal count, not the quality of the number inside the filing, and this was the only candidate of the day whose filing carried a capacity figure, a rupee figure and a management revenue figure."
+  },
+  {
+   "ticker": "SOUTHWEST",
+   "scrip": "543986",
+   "score": 4,
+   "signals": "DEAL, VOL x7.4 (1d +5.5%, Rs 30.9 lakh median turnover)",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA - already published (card 2026-10-11-SOUTHWEST, lane orderbook). The filing was opened: 12 copper-gold prospect areas identified and an airborne geophysical survey completed at Block 22B in Oman through the Al Hadeetha Mining JV. Exploration-stage, no resource, grade, tonnage or rupee figure - logged as a neutral UPDATE. The 30-Sep-2026 shareholding pattern was also checked share-count by share-count after its promoter percentage dropped 7.15pp; see data_problems and the card update - it is dilution, not promoter selling."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "score": 4,
+   "signals": "VOL x10.1, BREAKOUT (1d +18.9%, Rs 48.2 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. +18.9% in a day on 10.1x volume at the window high with NO filing in the scan row at all. This is the pure price move the triage rules send to the watch list, and the 2026-09-22 volume study says a volume explosion on its own carries no edge. Nothing to open."
+  },
+  {
+   "ticker": "EIMCOELECO",
+   "scrip": "523708",
+   "score": 4,
+   "signals": "VOL x6.0, BREAKOUT (1d +9.1%, Rs 30.6 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. Volume and breakout only, no filing in the row to explain either. Watch-listed."
+  },
+  {
+   "ticker": "ACCORDTS",
+   "scrip": "544710",
+   "score": 4,
+   "signals": "VOL x3.4, BREAKOUT (1d +4.8%, Rs 38.7 lakh median turnover, mcap Rs 232 cr)",
+   "verdict": "NOT RESEARCHED. Price and volume only, no filing today. The same name scored 8 yesterday on an order filing the 2026-10-13 run examined and rejected as immaterial; nothing new has been filed since, so there is no fresh trigger and the triage rule for an already-examined name is not met."
+  },
+  {
+   "ticker": "DHAMPURSUG",
+   "scrip": "500119",
+   "score": 4,
+   "signals": "VOL x3.3, BREAKOUT (1d +2.6%, Rs 80.6 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. No filing in the row. Two sugar names breaking out on the same day (with Uttam Sugar) is a sector move worth noting, but the sugar signal group is not among today's strong groups and Chinimandi's spot print could not be refreshed from this sandbox, so there is no price evidence on which to build a commodity-lane idea. Watch-listed."
+  },
+  {
+   "ticker": "SONA",
+   "scrip": "544938",
+   "score": 4,
+   "signals": "RESULT x2 (1d +1.8%, vol x0.5, Rs 37.3 lakh median turnover, mcap Rs 570 cr)",
+   "verdict": "NOT RESEARCHED. Unaudited results for the quarter ended 30-June-2026 filed on 14-OCTOBER-2026, together with the board outcome - a Q1 result published three and a half months after the quarter ended, by a company listed only this year. Volume at 0.5x its own median says the market did not react. A first set of results from a new listing, filed this late, gives no year-ago comparable to measure growth against and no trigger with a forward number. Skipped."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "AEROENTER",
+   "scrip": "511076",
+   "lane": "filing",
+   "published": true,
+   "reason": "Aeroflex Enterprises Ltd, market cap Rs 1,527.2 cr, close Rs 134.95. Its own Reg 30 filing of 14-Oct-2026 reports that Aeroflex Industries Ltd - its 65.47%-owned, separately listed subsidiary - approved Rs 202 cr of capacity expansion: SS hose and braiding from 20 to 30 million metres p.a. plus a new assemblies plant to convert 70-75% of hoses into assemblies (Rs 124 cr), and liquid-cooling SFN skid assemblies from 15,000 to 30,000 pieces p.a. (Rs 78 cr), phased to March 2028, funded by equity, bridge loan and internal accruals. The subsidiary's own press release the same day states the expanded capacity should generate INCREMENTAL REVENUE OF Rs 500-550 CR at peak utilisation - that is +121% to +133% of its FY26 revenue of Rs 412.47 cr, an implied incremental asset turn of 2.5-2.7x. What made this publishable rather than another press release is that the physical driver is disclosed quarter by quarter in the subsidiary's own filings: skid capacity 2,000 pieces p.a. (Dec-2025) to 6,000 (01-Apr-2026, with 571 units sold in Q4 FY26) to 9,000 (01-Jul-2026, with 1,040 units sold in Q1 FY27) to 12,000 complete now, and the units sold almost doubled quarter on quarter at about 46% utilisation. The subsidiary's results corroborate it: Q1 FY27 revenue Rs 139.01 cr (+75.5% YoY) and PAT Rs 19.06 cr (+150.1%). Exposure for the holding company is documented twice over - its own filing calls Aeroflex Industries its material subsidiary, and the subsidiary's June-2026 shareholding pattern shows promoter holding of 65.47%. Look-through, from market caps read out of this run's BSE scrip master: 65.47% of Rs 7,528.3 cr plus 55.50% of Aeroflex Neu's Rs 179.9 cr is Rs 5,027.6 cr of listed value against the holdco's own Rs 1,527.2 cr - it trades at 30.4%, a 69.6% discount. Promoter holding in the holdco is RISING (51.59% Mar-2026, 52.30% Jun-2026, 52.45% Sep-2026) with repeated SAST Reg 29(2) filings by A Flex Invest. Published at CONFIDENCE LOW, and the reason is stated on the card: the operating subsidiary is already at 112.9x trailing earnings after a +235.9% year, so the expansion is largely in its price, and no document read this run names any catalyst - demerger, buyback, open offer, dividend - that would narrow the holdco discount. Holdco EPS could not be modelled because the equity portion of the Rs 202 cr is unquantified. The order study was not invoked: this is a capex, not an order."
+  },
+  {
+   "ticker": "BAJAJHCARE",
+   "scrip": "539872",
+   "lane": "filing",
+   "published": false,
+   "reason": "Bajaj Healthcare Ltd, market cap Rs 1,116 cr, the day's third-highest candidate. The trigger filing was opened in full, including its Form A annexure: the NCLT Mumbai Bench, by order dated 13-Oct-2026, APPROVED the acquisition of Genrx Pharmaceuticals Private Limited (in Liquidation) on a going-concern basis, making Genrx a wholly owned subsidiary. NOT PUBLISHED, on three measured grounds. First, the filing carries NO financial number at all - item 7, 'expected financial implications', says only that Genrx will become a wholly owned subsidiary. Second, the deal's size was found by going back to the original disclosure of 05-Apr-2025, which states a cash consideration of Rs 10,85,00,000 for 100% control: Rs 10.85 cr is 0.97% of market cap, and the triage rules skip triggers with no material number. Third, and decisive, that same 2025 annexure answers 'history of last 3 years turnover' with 'Company was in liquidation since 2020' - Genrx has NO revenue history. So what was acquired is pharmaceutical formulation manufacturing FACILITIES, with no disclosed capacity, no stated revenue potential and no management guidance attached, and today's filing is the judicial completion of an 18-month-old deal rather than a new operational trigger. Nothing here supports a physical revenue model, which is what this page publishes."
+  },
+  {
+   "ticker": "OMPOWER",
+   "scrip": "544750",
+   "lane": "orderbook (step 4a-iii verification)",
+   "published": false,
+   "reason": "Om Power Transmission Ltd - the only NEW flagged row in orderwins_signals.json. Not published as a card because it is ALREADY published (2026-10-06-OMPOWER), exactly as step 4a-iii directs; the work went into verification and an update instead. All six order letters behind the flagged sum were opened and each confirmed on value, awarder, project, date and GST basis: Rs 12.78 cr (GETCO, 66 kV UG cable, 27-Aug), Rs 40.70 cr excluding GST (Hild Projects, 220 kV AIS switchyard for a 600 MW NTPC solar plant at Bhuj, 17-Sep), Rs 60.48 cr (GETCO, Kotda-Sanghani substation, 06-Oct), Rs 69.19 cr (GETCO, Prantij-Jantral line package 2, 06-Oct - a genuinely different project from the other 06-Oct letter, so both correctly counted), Rs 78.84 cr (GETCO, Chorania-Salejda line, 07-Oct) and Rs 101.56 cr (UGVCL, underground-cable conversion at Ambaji, 14-Oct). Total Rs 363.55 cr, six distinct projects, no cross-exchange duplicate, no L1/LoI re-announcement, no JV share, no USD conversion. THE SCREEN'S BASE FIGURE WAS WRONG and is corrected in orderwins_verified.json: it used 'Rs 621 cr as on 2026-06-30', but the base document - the Q1 FY27 presentation filed 12-Aug-2026 - states the walk explicitly, Rs 621.28 cr as at 31-MARCH-2026 plus Rs 67.82 cr intake minus Rs 121.63 cr executed = Rs 567.47 cr as at 30-JUNE-2026. On the correct base the ratio is 0.641x, HIGHER than the screened 0.585x, and the cross date is unchanged at 14-Oct-2026. De-grossing the five GST-inclusive letters at 18% gives Rs 314.30 cr, 0.554x - the flag clears 0.5x on either basis. Gross book about Rs 931 cr, 2.07x FY26 revenue of Rs 449 cr. Concentration flagged: GETCO alone is Rs 221.29 cr of the Rs 363.55 cr, Gujarat state utilities Rs 322.85 cr."
+  }
+ ],
+ "published": [
+  "2026-10-14-AEROENTER"
+ ],
+ "x_checked": [
+  {
+   "ticker": "AEROENTER / AEROFLEX",
+   "result": "WebSearch over x.com and twitter.com RAN AND WORKED; reading post BODIES DID NOT. cdn.syndication.twimg.com is blocked at this sandbox's egress proxy - 403 Forbidden at CONNECT, i.e. the sandbox allowlist, not Twitter - so every gist on the card comes from search-result snippets and no post's exact wording, author or date could be confirmed one by one; the card says so and marks every date 'not confirmed'. Two searches were run (the subsidiary with 'liquid cooling capex 202 crore', and the holding company with 'AEROENTER holding company discount'). SIX relevant posts found, all about the SUBSIDIARY - the holding company itself has essentially no X presence, and the holdco search returned unrelated firms (AeroFlexx packaging, Aeroflex Mattresses, Aero Entertainment). THREE CLAIMS MATCHED TO PRIMARY DOCUMENTS and recorded as verified: that a board meeting approved capex for liquid-cooling skid capacity (confirmed by the 14-Oct-2026 board outcome and capacity filings), that the group acquired Portugal's ABP Impex through M.R. Organisation (confirmed by the 27-Apr-2026 announcement), and that the liquid-cooling customer is a large listed US corporation (confirmed by the Q1 FY27 presentation's 'market cap of c. USD 141 billion'). FOUR CLAIMS LEFT UNVERIFIED, including the most-repeated one - that the customer is Vertiv. No filing read this run names any customer, and the card says so. ONE DISAGREEMENT RECORDED: a CNBC-TV18 post is summarised as management putting the expansion's contribution at about Rs 250 cr of topline, against the Rs 500-550 cr in the company's own 14-Oct press release; the card uses the filing's figure and flags the discrepancy."
+  },
+  {
+   "ticker": "BAJAJHCARE",
+   "result": "WebSearch over x.com and twitter.com ran. Posts found on the Genrx deal, including the company's own account. ONE CLAIM MATCHED TO A PRIMARY DOCUMENT: the Rs 10.85 cr consideration, which is exactly the Rs 10,85,00,000 in the 05-Apr-2025 Reg 30 annexure read this run - a useful confirmation that the number in circulation is the filed one. NOT VERIFIED: the description of Genrx as a WHO-GMP certified Nashik firm making tablets, capsules, cosmetics and sprays - the filing says only 'pharmaceutical formulation manufacturing facilities', incorporated 24-12-2009, present in India. No post mentioned the NCLT order at all, which is consistent with it being yesterday's development and with the indexing lag. Post bodies unreadable (same proxy block)."
+  },
+  {
+   "ticker": "OMPOWER",
+   "result": "WebSearch over x.com and twitter.com ran. Posts found cover the IPO (SEBI approval, 1 crore shares for capex, debt repayment and working capital) and describe the business as an HV/EHV transmission, substation and underground-cabling EPC - consistent with the filings. NO post named GETCO or UGVCL, so none of today's six orders appears in the X conversation yet. ONE CONTRADICTION LOGGED: a post cites an order book of about Rs 744.6 cr across 58 projects as at Dec-2025. That is not verifiable from anything read this run and it sits above the company's own stated FY26 close of Rs 621.28 cr (31-Mar-2026) and Rs 567.47 cr (30-Jun-2026); it is NOT used anywhere. Post bodies unreadable (same proxy block)."
+  },
+  {
+   "ticker": "AEROENTER / AEROFLEX - ValuePickr",
+   "result": "forum.valuepickr.com is BLOCKED at this sandbox's egress proxy - 403 Forbidden at CONNECT on search.json - so the forum could NOT be read directly for any name this run, and no thread was read in full. A domain-restricted WebSearch was used instead and did establish that a dedicated thread exists for the operating subsidiary, 'Aeroflex Industries Ltd - The future of flexible engineering?' (topic 192743), with recent discussion centred on the data-centre liquid-cooling push and on tariffs and customer order delays as the bear points. No thread was found for Aeroflex Enterprises, the holding company. Post counts, dates and the bull/bear split could not be read, and the card's ValuePickr tables are deliberately left thin rather than filled in from search snippets. ONE forum claim matched to a document (that a long-term liquid-cooling agreement with a US corporation exists - Q1 FY27 presentation); no contradiction could be established either way because the thread was not readable."
+  },
+  {
+   "ticker": "BAJAJHCARE / OMPOWER - ValuePickr",
+   "result": "Same proxy block. Domain-restricted WebSearch found a dedicated Bajaj Healthcare thread ('Bajaj Healthcare - API and FDF Manufacturer', topic 62013) running to at least three pages, whose snippets discuss opium alkaloid processing under a government tender, export-led growth, a planned Phase III anti-seizure trial, and - worth noting for any future card - a member flagging PAST OVER-GUIDANCE by management. None of that is verified against a document and none is used. NO ValuePickr thread was found for Om Power Transmission, which is consistent with an April-2026 listing."
+  }
+ ],
+ "note": "Three lanes plus the two order-book lanes. ONE CARD PUBLISHED: Aeroflex Enterprises (lane filing), on the Rs 202 cr capacity expansion approved at its 65.47%-owned listed subsidiary Aeroflex Industries, where the physical driver - liquid-cooling skid pieces per annum and units sold per quarter - is disclosed in the subsidiary's own Reg 30 filings, and management states Rs 500-550 cr of incremental revenue at peak. Published at confidence LOW with the reason named: the subsidiary is at 112.9x trailing earnings after a +235.9% year and nothing in the documents would narrow the holdco's 69.6% discount. LANE ONE produced nothing publishable, correctly: the gate kept one release, a Rs 2,009.61 cr Productivity Linked Bonus for railway employees, and a staff bonus enters no order book - the 144c table's own lesson is that money which becomes somebody's order book paid and a household transfer did not. The two unmapped releases (NSAP pensions, IDBI Bank restructuring) are a transfer payment and a change of bank ownership; neither has a procurement leg, so theme_map.json is unchanged rather than padded. LANE TWO published nothing, also deliberately: the four strongest groups are scored on a WPI panel six months old and a trade panel three months old, the strongest FRESH Indian evidence is the Ministry of Steel's September Mumbai series (TMT +15.5%, HRC +10.8%, CRC +14.0% month on month, all eight-month highs), and that is the same unchanged data on which yesterday's run published Vraj Iron and Steel - a second steel name today would be manufacturing an idea. Tungsten at strength 10.00 has no mapped beneficiary at all, which is logged as a gap for a future run rather than filled by guesswork. THE HEAVIEST WORK WAS VERIFICATION, and it found two real errors. In the order-wins lane, Om Power Transmission's flag is CONFIRMED but the screen's base order book was misdated: the company's own Q1 FY27 deck states Rs 621.28 cr as at 31-March-2026 and Rs 567.47 cr as at 30-June-2026, and the screen attached the March figure to the June date - on the correct base the ratio is 0.641x, higher than the screened 0.585x, and it survives de-grossing GST at 0.554x. All six letters were read. In the updates sweep, South West Pinnacle's promoter holding appeared to have fallen 7.15pp to 61.70%; reading the share counts out of the filings themselves shows the promoters' holding ROSE by 8,12,392 shares while the denominator grew by the 28,21,411 shares listed on 06-Oct-2026 - dilution against which promoters subscribed, not promoter selling, and a red flag avoided by checking rather than assuming. THE CONFIRMED-JUMPS TABLE needed no work today and that was measured, not assumed: all 32 rows in orderbook_signals.json with yoy_pct >= 50 are already in orderbook_jumps.json, and every one of their latest source filings is dated before the ledger's 2026-10-11 check, so no company has filed a newer order book and the re-check rule is not triggered. The apparent differences between the signals file and the ledger for Lloyds Engineering, Sansera, Astra Microwave, Jash, Cemindia and Zuari are the CORRECTIONS the 11/12-Oct checker already recorded, not new figures. UPDATES SWEEP: all 51 cards swept, 34 new non-routine filings read, 14 updates written. BLOCKED FROM THIS SANDBOX AND NAMED HERE RATHER THAN GLOSSED: pib.gov.in, every commodity host except BSE, cdn.syndication.twimg.com (so no X post body could be read) and forum.valuepickr.com (so no forum thread could be read). BSE and NSE both answered 200.",
+ "data_problems": [
+  "ORDER-WINS SCREEN, WRONG BASE DATE (found and corrected this run). orderwins_signals.json row 544750 (Om Power Transmission) states base_cr 621.0 'as on 2026-06-30'. The base document it cites - the Q1 FY27 investor presentation filed 12-Aug-2026 - states on its 'Order Book Status as of Q1FY27' page: order book Rs 621.28 cr as at 31-MARCH-2026, + Rs 67.82 cr new intake in Q1 FY27, - Rs 121.63 cr executed, = Rs 567.47 cr as at 30-JUNE-2026. The script's 'largest figure per document wins' rule picked the March number and attached the June date to it. CORRECT base: Rs 567.47 cr as on 2026-06-30. Effect: the true ratio is 0.641x, not 0.585x - the flag is STRONGER, and the cross date 2026-10-14 is unaffected - so nothing downstream was wrong in direction, but the figure on the page would have been. Recorded in orderwins_verified.json with verdict CORRECTED. scripts/ideas/order_wins.py is the owner's to change; this routine may not edit it.",
+  "UPDATES QUEUE MISLABELS A GOVERNANCE FILING AS RESULTS. docs/ideas/updates_queue.json shows, for 2026-10-12-BIRLACABLE, an item dated 2026-10-14 titled 'Results 30-SEP-2026: None None (New)' with pdf 'https://nsearchives.nseindia.com/corporate/null'. Reading the document behind it shows type 'Integrated Filing- Governance' - the half-yearly corporate-governance and investor-grievance report, not financial results. Birla Cable had filed NO results as of 14-Oct-2026: BSE's announcement list for scrip 500060 returns ROWCNT 0 for both 13 and 14 October (checked live), and the newest financial filing on NSE's integrated-results endpoint is still the Q1 FY27 pair of 02-Aug-2026. The risk is specific and serious: the queue's own wording invites a GOOD/AVERAGE/WEAK verdict on a filing that contains no financials, and the values offered are 'None None'. updates.py reads the integrated-filing endpoint without filtering on the `type` field. Logged as an update on the card so no future reader mistakes it. scripts/ideas/updates.py is the owner's to change.",
+  "SECOND-READER MISS, 1 FILING (not a footnote - the feed is named). updates_queue.json second_reader_misses = 1, second_reader_problems = []. The miss is South West Pinnacle's NSE 'Updates' item of 14-Oct-2026 (SOUTHWEST_14102026105506_Announcement_-Signed.pdf, the Oman copper-gold disclosure), which the per-company NSE read did not return and the whole-market second reader did, turning that idea's status to SUSPECT. The same disclosure WAS present in BSE's per-company list, so nothing was actually lost from the sweep - but the per-company NSE announcement read missed a plain 'Updates' category item filed at 10:55, which is the feed updates.py already reads, so this looks like a pagination or date-window edge rather than a missing feed. It needs the owner's eye on scripts/ideas/updates.py; this routine may not edit it.",
+  "BHAGYANGR SCORECARD ROW STILL WRONG - FOURTH CONSECUTIVE RUN. score.py reads the 08-Oct-2026 Bhagyanagar India DEMERGER ex-date gap (BSE close Rs 453.95 -> Rs 41.40, ratio 10.96x) as an unrecorded SPLIT and snaps it to a factor of 11, dividing the pre-08-Oct history by 11 and restating the card's call close from the true Rs 444.90 to Rs 40.45. A demerger is not a split: value left the scrip into Tieramet Limited, which allotted 3,34,96,434 shares 1:1 to holders of record 08-Oct-2026 and has NOT yet listed, so this card's return is not measurable until it does. The error compounds as the stock moves and has now been carried in four run logs: +7.4% on 09-Oct, +12.7% on 12-Oct, +18.3% on 13-Oct and +24.1% TODAY, on a restated call close of Rs 40.45 against the true Rs 444.90 (score.py's own adj_events for the row reads '2026-10-08 x11 unrecorded gap x10.96'). Today's filing - Tieramet's board approving the draft Information Memorandum for Rule 19(2)(b) relaxation, logged as an update - is a step toward the listing that would make the row measurable, but does not fix it. The fix needs a change to scripts/ideas/score.py, which this routine is forbidden to edit.",
+  "ROUTINE SETUP BUG: pip TARGETS THE WRONG PYTHON ON THIS VM. The routine's step 0 runs `python3 -c 'import fitz' || pip install --quiet pymupdf`. On this VM `pip` installs into /usr/local/lib/python3.13/dist-packages while `python3` is 3.11.17, so the guard kept 'succeeding' while the import kept failing, and minsteel.py died with ModuleNotFoundError: No module named 'fitz' on its first run - a PDF-reading failure that would have looked like a blocked source. Worked around with `python3 -m pip install pymupdf xlrd`. The prompt's step 0 would be more robust as `python3 -m pip install`. Flagged for the owner.",
+  "STALE COMMODITY PANELS, UNCHANGED FROM YESTERDAY AND REPORTED AS THE PROMPT REQUIRES. signals.json carries wpi_month 2026-04 and trade_month 2026-07 - six and three months old - against spot_date and india_built both from today. eaindustry.nic.in answered 200 for the Actions run yet the WPI month did not advance, so the staleness is at the source, not in our read; tradestat.commerce.gov.in is in hosts_blocked for Actions as well. 9 of the 13 strongest groups, including all four at the top, are scored on these two panels. This is a ranking distortion the lane has carried for days.",
+  "TUNGSTEN SIGNAL HAS NO MAPPED BENEFICIARY. The group ranks third at strength 10.00 (export unit price since-year +606.5% on HS 284180, import +280.4% on HS 8101) and commodity_map.json lists an EMPTY benefit array for it, so the strongest trade-panel move on the board maps to no company at all. PLAYBOOK step 5 allows adding a name only when its exposure is read in a document; no universe search for a tungsten producer was completed within this run, so nothing was added rather than guessed. Carried forward as work for a future run.",
+  "X POST BODIES AND VALUEPICKR UNREADABLE FROM THIS SANDBOX. cdn.syndication.twimg.com returns 403 Forbidden at the proxy CONNECT (the sandbox allowlist, not Twitter - x.com's own 402 behaviour was never reached), so no post could be read by id and every X gist on today's card rests on search-result snippets, with dates marked 'not confirmed'. forum.valuepickr.com returns 403 at CONNECT on search.json, so no forum thread could be read in full for any name; a domain-restricted WebSearch was used to establish which threads exist. WebSearch itself worked. Neither block is reported as 'nothing found'.",
+  "SCAN READ IS A FLOOR, NOT A TOTAL. scan.py read 962 announcements against BSE's reported 962 at 19:52 IST, so nothing was truncated - but the read is taken on the evening of the day itself, and yesterday's run measured 85 further filings arriving in the hour after the Action's read. Anything lodged after 19:52 IST today is not in this scan."
+ ],
+ "track_status": "Re-priced 2026-10-14 by score.py: 51 of 51 published ideas priced live, 0 via the bhavcopy fallback, 0 carried forward stale. Median return since call +1.8%, mean +3.9%, 35 of 51 up, median peak since call +4.5%, 6 rows above +20% and none above +50%. Today's new card (Aeroflex Enterprises) is priced at its own call close of Rs 134.95, so it contributes 0.0% over 0 days and does not move the median. ONE ROW REMAINS KNOWN WRONG AND MUST NOT BE READ AT FACE VALUE: BHAGYANGR shows +24.1% because score.py treats the 08-Oct-2026 demerger ex-date gap as an x11 split - see data_problems."
+}
