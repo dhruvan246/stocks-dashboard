@@ -1,5 +1,9 @@
 # stocks-dashboard — session rules
 
+## Reply language (user, 2026-10-14)
+
+When the user asks a question in Hindi (Devanagari or romanised), reply in **English**.
+
 ## ★★★★ FIRST RULE — comparisons with outside sources are judged CELL BY CELL (user, 2026-10-05)
 
 Every cell where our data differs from Quantmac / StockView / Trendlyne / Screener / Moneycontrol / any other source gets its
