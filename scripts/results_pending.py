@@ -136,6 +136,48 @@ def find_unknown_qe(limit=12):
     return un[:limit]
 
 
+FIN_SECTORS = {"Finance", "Banks", "Bank", "Financial Services", "NBFC"}   # same set as build_bse_results
+
+def find_op_missing(limit):
+    """(qe, nse, bse) — the current quarter's VISION-filled cells that carry revenue/profit but NO operating
+    profit, for a one-time re-read (§229a, user 2026-10-14: "yes re-read those 17 tonight"). Until 14-Oct the
+    vision rule recorded op only when the statement printed an "Operating profit" line (never, for non-banks),
+    so every fresh filing's card showed "—" for Op. profit until XBRL landed. Skipped: cells whose XBRL has
+    since landed (the overlay is superseded), financial companies (the card shows no op for them), and cells
+    marked op_na by merge_bse_vision (a re-read that still found no op — never retried forever)."""
+    import bse_resolve
+    qr = _load("quarterly_results.json") or {}
+    qe = qr["quarters"][0]; CO = qr["co"]
+    univ = {bse_resolve.bse_key(r[1]): r for r in (_load("bse_universe.json") or {"rows": []})["rows"]}
+    bf = (_load("bse_fundamentals.json") or {}).get("px", {})
+    sf = _load("sf_fundamentals.json") or {}
+    vf = _load("vision_fills.json") or {}
+    nse_have = set(s for s, qs in sf.items()
+                   if any(isinstance(r, list) and r and int(r[0]) == qe
+                          and (r[1] is not None or (len(r) > 3 and r[3] is not None))
+                          for r in rows_of(qs)))
+    _, rows = classify(qe, unknown=False)
+    nse, bse = [], []
+    for e in rows:
+        if e["status"] != "filled": continue
+        if e["exch"] == "BSE":
+            cell = (bf.get(e["scrip"]) or {}).get(str(qe))
+            sec = (univ.get(e["sym"]) or [None] * 8)[7]
+            if not cell or cell.get("src") != "vision" or cell.get("op") is not None or cell.get("op_na"): continue
+            if sec in FIN_SECTORS: continue
+            bse.append((e["scrip"], (e["sym"], e["name"], e["mcap"], e["pdf"])))
+        else:
+            if e["sym"] in nse_have and e["sym"] in CO: continue      # real XBRL landed AND the page shows it (an orphan
+                                                                      # with no price row — TALWALKARS — still shows the overlay)
+            cell = (vf.get(e["sym"]) or {}).get(str(qe))
+            if not cell or cell.get("op") is not None or cell.get("op_na"): continue
+            if (CO.get(e["sym"]) or {}).get("f"): continue             # bank/NBFC: the card shows no op
+            if not e["pdf"]: continue
+            nse.append((e["sym"], e["name"], e["mcap"], e["pdf"], e["ann"]))
+    nse.sort(key=lambda x: -(x[2] or 0)); bse.sort(key=lambda kv: -(kv[1][2] or 0))
+    return qe, nse[:limit], bse[:limit]
+
+
 def _split(rows, limit):
     nse = [(e["sym"], e["name"], e["mcap"], e["pdf"], e["ann"])
            for e in rows if e["status"] == "pending" and e["exch"] == "NSE"]

@@ -140,10 +140,15 @@ def main():
         # so real XBRL always supersedes this vision estimate once it lands. BSE-only → bse_fundamentals.
         if str(it.get("exch", "")).upper() == "NSE" or not str(it.get("scrip") or "").strip():
             e = vfills.setdefault(sym, {})
+            pre = e.get(cq); had = bool(pre) and (pre.get("rev") is not None or pre.get("pat") is not None)
             added = 0
             for qe, q in qs:
                 if fill(e, qe, q, basis):                    # overlay cells carry no date and no nulls
                     added += 1; e[qe] = {k: v for k, v in e[qe].items() if k != "ann" and v is not None}
+            # §229a: a SECOND read of an already-filled cell that STILL finds no operating profit marks the cell so
+            # prep's op-missing pass does not queue it again every slot (unreadable line / no such rows)
+            if had and cur.get("op") is None and e.get(cq) and e[cq].get("op") is None:
+                e[cq]["op_na"] = 1
             if not e: vfills.pop(sym, None)
             nn += 1
             print("  ✓ NSE %-11s %s rev=%s pat=%s op=%s (overlay, %d quarter(s) filled)"
@@ -153,7 +158,10 @@ def main():
             # real filing date → reaction computes; only when the feed's newest filing IS this quarter's
             ann = fann.get((sym, int(cq)), 0)     # the day THIS quarter was declared (0 = not in the feed window)
             cells = px.setdefault(scrip, {})
+            pre = cells.get(cq); had = bool(pre) and (pre.get("rev") is not None or pre.get("pat") is not None)
             added = sum(fill(cells, qe, q, basis, ann=(ann if qe == cq else 0)) for qe, q in qs)
+            if had and cur.get("op") is None and cells.get(cq) and cells[cq].get("op") is None:
+                cells[cq]["op_na"] = 1                       # §229a — see the NSE branch
             if not cells: px.pop(scrip, None)
             if added:                                   # a rejected read (other basis / nothing new) must not
                 fails.pop(scrip, None); done.add(scrip)  # clear the fail count or mark the scrip handled

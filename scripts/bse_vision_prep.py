@@ -23,7 +23,7 @@ import fitz, bse_render
 import bse_fetch as B
 import qe_util as QU
 import fetch_announcements as FA
-from results_pending import find_pending, find_pending_ahead, find_pending_late, find_unknown_qe   # shared with build_results_coverage.py
+from results_pending import find_pending, find_pending_ahead, find_pending_late, find_unknown_qe, find_op_missing   # shared with build_results_coverage.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D = os.path.join(HERE, "..", "docs")
@@ -387,9 +387,13 @@ def main():
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else 25
     outdir = sys.argv[sys.argv.index("--outdir") + 1] if "--outdir" in sys.argv else os.path.join(os.environ.get("TEMP", "/tmp"), "bse_pending")
     os.makedirs(outdir, exist_ok=True)
+    op_only = "--op-only" in sys.argv                 # §229a: ONLY the operating-profit re-read pass (targeted run)
     if "--enrich" in sys.argv:                       # re-render already-covered names missing year-ago
         qe = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))["quarters"][0]
         nse, bse = [], enrich_scrips(limit, qe)
+    elif op_only:
+        qe = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))["quarters"][0]
+        nse, bse = [], []
     else:
         qe, nse, bse = find_pending(limit)
     print("target quarter %d — pending: %d NSE, %d BSE-only" % (qe, len(nse), len(bse)))
@@ -403,7 +407,7 @@ def main():
     # the numbers fill in THIS run. Before 2026-07-21 these rows were invisible to every counter and
     # to this routine (YESBANK filed Sat 2026-07-18 13:41, sat unclassified for 3 days).
     qelimit = int(sys.argv[sys.argv.index("--qelimit") + 1]) if "--qelimit" in sys.argv else 40
-    unknown, qeatt = pick_unknown(qelimit)
+    unknown, qeatt = ([], qe_attempts()) if (op_only or "--enrich" in sys.argv) else pick_unknown(qelimit)
     if unknown:
         import build_fundamentals as NBu
         import bse_resolve
@@ -488,11 +492,23 @@ def main():
 
     _render_bse(bse, qe, outdir, manifest)
 
+    # ---- OPERATING-PROFIT RE-READ (§229a): current-quarter cells the vision pass filled WITHOUT op (the old
+    # rule recorded op only when the statement printed an "Operating profit" line — never, for non-banks).
+    # Re-rendered so the reader computes op; merge_bse_vision fills ONLY the empty op slot and marks a cell
+    # op_na when the re-read still finds none, so nothing is retried forever. Off with --no-op-pass.
+    if "--enrich" not in sys.argv and "--no-op-pass" not in sys.argv:
+        oqe, onse, obse = find_op_missing(limit)
+        print("op-missing re-read, quarter %d: %d NSE, %d BSE-only" % (oqe, len(onse), len(obse)))
+        start = len(manifest)
+        _render_nse(onse, oqe, outdir, manifest, qfix)
+        _render_bse(obse, oqe, outdir, manifest)
+        for m in manifest[start:]: m["qe"] = str(oqe); m["op_reread"] = 1
+
     # ---- LATE FILERS for the two quarters before the current one (never on --enrich): when the newest
     # quarter flips (Jun -> Sep) every still-unread Jun filing used to drop off this list for good.
     # ---- EARLY FILERS for quarters AFTER the current one (§218): the current quarter only advances once
     # some company's numbers are stored, so a season's first filings (HIIL Sep-2026) were never read.
-    if "--enrich" not in sys.argv:
+    if "--enrich" not in sys.argv and not op_only:
         for lq, lnse, lbse in find_pending_ahead(limit) + find_pending_late(limit):
             print("%s filers, quarter %d — pending: %d NSE, %d BSE-only"
                   % ("early" if lq > qe else "late", lq, len(lnse), len(lbse)))

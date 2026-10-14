@@ -28585,3 +28585,22 @@ the exceptional-items add-back when only PBT is printed, a worked example, the b
 profit) and null only when a line is unreadable. The cloud routine's prompt was updated through RemoteTrigger the same
 hour. Cells vision-filled before this (the 17 above) keep "—" until their XBRL lands — the overlay fills only empty slots and
 the XBRL supersedes the whole cell, so no re-read was spent on them (vision reads need the user's go-ahead, §39/memory).
+
+**§229a addendum — the re-read and the standing safety net (2026-10-14 evening, user: "yes re-read those 17 tonight").**
+Of the 17 NSE cells named at 16:44 IST, 10 had real XBRL by then (their cards already showed op from it) and
+TALWALKARS had XBRL too but no price row, so the page still showed its vision card. The same gap sat in 17 BSE-only
+vision cells. Re-read list = 21: GROWW, ELECON, CORDELIA, TALWALKARS + BPAGRI, ITHL, MAPROIN, INDBNK, NEWTRAC, HAWAENG,
+TIAANC, NEIL, MUKTA, HATHWAYB, IGCIL, UNIVARTS, GOLKONDA, DHARTI, MUDRA, VERONICAPRO, INANISEC. Every op was checked
+against its four printed lines (PBET + FC + Dep − OI); every current-quarter rev/pat agreed with the stored figure except
+MUKTA (stored rev 0.16 = Total income; Revenue from operations prints blank — left as stored, raised with the user).
+TIAANC ₹828 cr and GOLKONDA ₹1,399 cr revenue looked like unit misreads but are exactly what their filings print in
+lakh (both balance sheets move by the same amounts). MAPROIN's render had picked its board-meeting intimation; read
+from page 3 of the results PDF's text layer.
+- **NBFC rule corrected.** The first version of the op rule told the reader to leave op null for NBFCs/broking; the site's
+  own build_revop NBFC branch uses the SAME four-line formula, so the prompt now says so (insurers: PBT − other income;
+  banks: printed pre-provision line). INDBNK, NEIL, MUDRA and GROWW were computed that way.
+- **Safety net, every run.** results_pending.find_op_missing lists current-quarter vision cells that hold rev/pat but no
+  op (skipping cells whose XBRL the page shows, financial-sector BSE names whose card has no op row, and cells marked
+  op_na). bse_vision_prep re-renders them on every run (entries carry "op_reread": 1; `--op-only` runs just this pass,
+  `--no-op-pass` turns it off). merge_bse_vision fills only the empty op slot and marks `op_na` when a second read of an
+  already-filled cell still finds none, so nothing is queued forever.
