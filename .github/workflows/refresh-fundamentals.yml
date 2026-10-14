@@ -25,6 +25,10 @@ on:
   # and does NOT bloat git history. Actions minutes are free (public repo).
   # dispatch-cron[in-season]: "0,30 4-14 * * *"  # :00/:30, 04–14 UTC = 09:30–19:30 IST
   # dispatch-cron[off-season]: "0 4-14 * * *"  # :00, 04–14 UTC = 09:30–19:30 IST
+  # ⚠️ The cron-job.org "fundamentals-refresh" job ALSO fires :00 and :30 04–14 UTC all year (measured
+  # 2026-10-11, a season-OFF Saturday: 22 intraday runs, every one ACTION=fundamentals-refresh, the
+  # dispatcher yielding "already ran"). So the off-season line above only takes effect through the
+  # season-guard job below, which skips the external :30 fire while the season is OFF (runbook §222b).
   schedule:
     # 15:45 UTC (21:15 IST) — the FULL nightly run: insurer vision fill + IPO-base fill +
     # an UNGATED baker rebuild (so reactions/drift track the 20:45 IST prices). The steps below
@@ -59,7 +63,45 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # §222b — the external cron-job.org trigger fires :00 AND :30 every hour all year, but the off-season
+  # cadence is hourly. This job answers RUN/SKIP from scripts/season_state.py (the same state the
+  # dispatcher reads) and the main job is gated on it. ONLY the external fundamentals-refresh fire in the
+  # :15–:44 window of an OFF-season hour is skipped; dispatcher ticks, GitHub schedules, manual runs,
+  # insurer-refresh and every in-season run pass. Fail-open: if the script errors the run proceeds.
+  season-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.guard.outputs.run }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            scripts/season_state.py
+            docs/results_feed.json
+            docs/results_calendar.json
+          sparse-checkout-cone-mode: false
+      - name: "Season guard (off-season = skip the external :30 fire)"
+        id: guard
+        shell: bash
+        run: |
+          EV="${{ github.event_name }}"; ACTION="${{ github.event.action }}"; RUN=1
+          if [ "$EV" = "repository_dispatch" ] && [ "$ACTION" = "fundamentals-refresh" ]; then
+            MIN=$((10#$(date -u +%M)))
+            STATE=$(python3 -X utf8 scripts/season_state.py --state 2>/dev/null) || STATE="in (season_state failed — fail-open)"
+            if [ "$STATE" = "off" ] && [ "$MIN" -ge 15 ] && [ "$MIN" -lt 45 ]; then RUN=0; fi
+            if [ "$RUN" = "1" ]; then VERDICT="RUN"; else VERDICT="SKIP (off-season second slot of the hour; the off-season cadence is hourly, runbook §222b)"; fi
+            echo "season $STATE; fired at :$(printf %02d "$MIN") UTC by $EV/$ACTION -> $VERDICT"
+          else
+            echo "trigger $EV/$ACTION -> RUN (the guard applies only to the external fundamentals-refresh fire)"
+          fi
+          echo "run=$RUN" >> "$GITHUB_OUTPUT"
+
   refresh-fundamentals:
+    needs: season-guard
+    if: ${{ needs.season-guard.outputs.run == '1' }}
     runs-on: ubuntu-latest
     # ⚠️ 20 was too tight for the NIGHTLY run: insurer vision (~11m) + IPO-base backfill (~9m) alone
     # hit 20m, so the job was CANCELLED before "Rebuild Quarterly Results payload" + commit ever ran —

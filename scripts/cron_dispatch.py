@@ -22,7 +22,7 @@ RESULTS-SEASON CADENCE (runbook §222). A slot line may carry a tag:
     # dispatch-cron[off-season]: "0 4-14 * * *"
 
 Untagged lines apply always; tagged lines only while scripts/season_state.py reads that state from the filing counts in
-docs/results_feed.json + the quarter calendar (both are in this job's sparse checkout). The state is re-measured on every
+docs/results_feed.json + docs/results_calendar.json + the quarter calendar (all in this job's sparse checkout — §222b). The state is re-measured on every
 tick, so the whole cadence moves with the season and nobody edits crons by hand. If season_state fails, the IN-season
 slots are used — an idle run is cheaper than a missed result. `--list` prints the active slots for the current state.
 
