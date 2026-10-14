@@ -22372,6 +22372,11 @@ filings are on the company's BSE list under their date label ('15 Jan 2020'); BS
     - When only a re-filing is held, should the row be dated to the original notice or to the re-filing? (INTELLECT Dec-18 plus 32 reply cells.)
     - RAMCOCEM Mar-16 AIF line (37.8M with no FPI line).
     - Third-party fills with no filing: BSE Ltd 2017-19, CDSL 2018-19, SITINET Mar-16, BSE Ltd 2024-25.
+- **Part 41 (fc27badfd, 2026-10-14, user "check the NSE filings and fix the dates"): 10 post-2020 quarters dated to the first notice.**
+  - TATASTLBSL / ASIANPAINT Mar-20, BAJAJFINSV / EMBDL Jun-20, ADANIPORTS Sep-20, LAURUSLABS Dec-20, CARBORUNIV / DHANUKA / UFLEX / VGUARD Mar-21 were served from BSE's later upload (a re-filing, or for the four Mar-21 names a late 'New' copy), weeks after the first notice. Reply 5 had wrongly called these 13 cells RULE DIFFERENCE.
+  - Evidence per quarter: the NSE original, read by its ndsId through `/api/corporate-share-holdings-equities?ndsId=<id>&index=summary|public-shareholder` (works for old filings that the master list no longer shows), has the same total and every line as BSE's upload. BSE's AnnSubCategoryGetData gives the first notice to the second. NSE record ids sort by upload day, which brackets the NSE date. Tools: r5/nse_orig.py, cmp_orig.py, ann_orig.py.
+  - Fix: `shp_lag_fix.json` days_earlier entries with `sub` = the first notice's calendar day; any older entry is kept under `replaced`. Feed diff: exactly 10 rows, dates only. LIVE-verified; the 13 reply cells now agree, and reply 5 was rebuilt (5,107 equal).
+  - Before 2020 the open question is the other way round: we date to the first notice and Quantmac to the re-filing. Those 30 cells are still 'date rule under review'.
 ### 164t. The third-party SHP ledger re-read from the companies' own BSE filings — 58 cells (2026-10-04, user: "26 wrong + 38 safe")
 **Why.** `scripts/shp_fill_thirdparty.json.gz` is FIRST in `BSE_HIST_LEDGERS`, so its cells win over every other fill ledger, and its
 `_meta` says it is only for filings with NO primary file to parse. §164r batch 13 found that premise false for STAR Sep-2016 (BSE's
