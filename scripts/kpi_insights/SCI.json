@@ -113,6 +113,34 @@
    "title": "Financial Results for the quarter and financial year ended on 31.03.2024",
    "read": "2026-10-13",
    "by": "gemini:gemini-3-flash-preview"
+  },
+  "3e6e9dd0-d8d3-4ccd-8ed3-d147cd615491.pdf": {
+   "kind": "res",
+   "date": "2023-05-09",
+   "title": "Audited Financial Results for Quarter and Year Ended March 31, 2023",
+   "read": "2026-10-14",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf": {
+   "kind": "ar",
+   "date": "2023-08-18",
+   "title": "Notice of 73rd AGM and Annual Report for FY 2022-23",
+   "read": "2026-10-14",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "ba2677bf-ca2c-43ea-b0e9-33cb78252572.pdf": {
+   "kind": "res",
+   "date": "2023-08-04",
+   "title": "Outcome Of Board Meeting And Compliance Of Regulations 30 And 33 Of The SEBI (LODR) Regulations, 2015",
+   "read": "2026-10-14",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "df0aa2f4-ed3c-4934-8a7a-891f0531b577.pdf": {
+   "kind": "res",
+   "date": "2023-11-03",
+   "title": "Outcome Of Board Meeting And Compliance Of Regulation 30 And 33 Of SEBI (LODR) Regulations, 2015",
+   "read": "2026-10-14",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -121,6 +149,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20220331": 2591.0,
     "20230331": 2327.0,
     "20240331": 2425.0,
     "20250331": 2495.0
@@ -140,14 +169,21 @@
      "2425"
     ],
     "y:20230331": [
-     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
-     99,
-     "Total Employees (Floating Staff)",
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Floating Staff) - Total",
      "2327"
+    ],
+    "y:20220331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Floating Staff) - Total",
+     "2591"
     ]
    },
    "latest": {
-    "y:20240331": "2025-08-21"
+    "y:20240331": "2025-08-21",
+    "y:20230331": "2024-09-16"
    }
   },
   {
@@ -155,6 +191,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20220331": 578.0,
     "20230331": 566.0,
     "20240331": 519.0,
     "20250331": 506.0
@@ -174,14 +211,21 @@
      "519"
     ],
     "y:20230331": [
-     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
-     99,
-     "Total Employees (Shore Staff)",
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Shore Staff) - Total",
      "566"
+    ],
+    "y:20220331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Shore Staff) - Total",
+     "578"
     ]
    },
    "latest": {
-    "y:20240331": "2025-08-21"
+    "y:20240331": "2025-08-21",
+    "y:20230331": "2024-09-16"
    }
   },
   {
@@ -229,6 +273,55 @@
      5,
      "Average Age of Owned Vessels (doc period)",
      "15.50"
+    ]
+   }
+  },
+  {
+   "name": "Dry Bulk Fleet Average Age",
+   "unit": "years",
+   "kind": "level",
+   "y": {
+    "20250331": 13.1
+   },
+   "q": {
+    "20230331": 11.05
+   },
+   "src": {
+    "y:20250331": [
+     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
+     55,
+     "dry bulk carrier fleet ... average age of about 13.1 (doc period)",
+     "13.1"
+    ],
+    "q:20230331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     47,
+     "average age of about",
+     "11.05"
+    ]
+   }
+  },
+  {
+   "name": "Export Revenue Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 29.65,
+    "20240331": 30.62
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
+     67,
+     "export earnings as a percentage of Revenue from Operations",
+     "30.62"
+    ],
+    "y:20230331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     66,
+     "export earnings as a percentage of Revenue from Operations",
+     "29.65"
     ]
    }
   },
@@ -453,6 +546,30 @@
    }
   },
   {
+   "name": "Ship Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20230331": 92.35,
+    "20240331": 94.29
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
+     67,
+     "Ship Availability as a percentage of Total Ships",
+     "94.29"
+    ],
+    "y:20230331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     66,
+     "Ship Availability as a percentage of Total Ships",
+     "92.35"
+    ]
+   }
+  },
+  {
    "name": "Total Fleet Gross Tonnage",
    "unit": "G.T.",
    "kind": "level",
@@ -525,40 +642,6 @@
    }
   },
   {
-   "name": "Dry Bulk Fleet Average Age",
-   "unit": "years",
-   "kind": "level",
-   "y": {
-    "20250331": 13.1
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
-     55,
-     "dry bulk carrier fleet ... average age of about 13.1 (doc period)",
-     "13.1"
-    ]
-   }
-  },
-  {
-   "name": "Export Revenue Share",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 30.62
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
-     67,
-     "export earnings as a percentage of Revenue from Operations",
-     "30.62"
-    ]
-   }
-  },
-  {
    "name": "Number of Offices (International)",
    "unit": "count",
    "kind": "level",
@@ -589,23 +672,6 @@
      81,
      "National (doc period)",
      "6"
-    ]
-   }
-  },
-  {
-   "name": "Ship Availability",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20240331": 94.29
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
-     67,
-     "Ship Availability as a percentage of Total Ships",
-     "94.29"
     ]
    }
   },
@@ -1046,6 +1112,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-13",
+ "updated": "2026-10-14",
  "checked": "2026-09-07"
 }

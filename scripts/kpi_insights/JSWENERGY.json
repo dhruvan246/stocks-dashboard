@@ -302,6 +302,13 @@
    "title": "Outcome of the Board Meeting held on 4th February, 2020",
    "read": "2026-10-14",
    "by": "gemini:gemini-3-flash-preview"
+  },
+  "5331480319.pdf": {
+   "kind": "ar",
+   "date": "2019-03-31",
+   "title": "Annual Report FY19",
+   "read": "2026-10-14",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -3202,7 +3209,10 @@
    "name": "Receivable Days",
    "unit": "days",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20180331": 57.0,
+    "20190331": 37.0
+   },
    "q": {
     "20200630": 130.0,
     "20200930": 107.0,
@@ -3345,6 +3355,18 @@
      49,
      "Receivable Days",
      "107"
+    ],
+    "y:20180331": [
+     "5331480319.pdf",
+     83,
+     "Debtors Turnover (number of days) *",
+     "57"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     83,
+     "Debtors Turnover (number of days) *",
+     "37"
     ]
    },
    "fixed": [
@@ -3721,9 +3743,9 @@
      "4,531"
     ],
     "y:20190331": [
-     "46c66a70-2044-4729-a78a-d2b74838a42c.pdf",
-     5,
-     "Capacity chart (MW)",
+     "5331480319.pdf",
+     33,
+     "operational generation capacity (doc period)",
      "4,541"
     ],
     "y:20200331": [
@@ -3800,7 +3822,8 @@
     ]
    },
    "latest": {
-    "y:20220331": "2023-05-23"
+    "y:20220331": "2023-05-23",
+    "y:20190331": "2023-05-23"
    }
   },
   {
@@ -4032,9 +4055,9 @@
      "3,796"
     ],
     "y:20190331": [
-     "5331480320.pdf",
-     57,
-     "Total Net Generation (MUs)",
+     "5331480319.pdf",
+     28,
+     "consolidated net power generation across our plants",
      "22,088"
     ],
     "y:20200331": [
@@ -4190,6 +4213,104 @@
    }
   },
   {
+   "name": "Thermal Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20190331": 3140.0,
+    "20220331": 3158.0,
+    "20230331": 3158.0,
+    "20240331": 3508.0,
+    "20250331": 5658.0,
+    "20260331": 5658.0
+   },
+   "q": {
+    "20201231": 3158.0,
+    "20211231": 3158.0,
+    "20220930": 3158.0,
+    "20230930": 3158.0,
+    "20240331": 3508.0,
+    "20260630": 5658.0
+   },
+   "src": {
+    "q:20260630": [
+     "b7fd9d75-281d-4a7f-a249-2b913419230b.pdf",
+     40,
+     "Thermal Capacity - Installed (doc period)",
+     "5,658"
+    ],
+    "y:20260331": [
+     "187219a3-2624-416b-aec5-9bc164690787.pdf",
+     117,
+     "Total Thermal",
+     "5,658"
+    ],
+    "y:20250331": [
+     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
+     176,
+     "Thermal",
+     "5,658"
+    ],
+    "q:20240331": [
+     "6c7b8f9c-236b-4f72-901d-de943d162e79.pdf",
+     177,
+     "Thermal Installed Capacity",
+     "3,508"
+    ],
+    "y:20240331": [
+     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
+     176,
+     "Thermal",
+     "3,508"
+    ],
+    "q:20220930": [
+     "93e7d356-7d8c-4cbe-bf5e-ca357265c90f.pdf",
+     16,
+     "Installed (MW) - Thermal (doc period)",
+     "3,158"
+    ],
+    "q:20230930": [
+     "2c2cc767-c848-45aa-84aa-69f973dca650.pdf",
+     44,
+     "Installed - Thermal (doc period)",
+     "3,158"
+    ],
+    "y:20230331": [
+     "50a681c3-48c8-417d-8589-018dc2552769.pdf",
+     111,
+     "Capacity in FY 2023 Thermal",
+     "3,158"
+    ],
+    "y:20220331": [
+     "73005533148.pdf",
+     100,
+     "Capacity in FY 2022 Thermal Power",
+     "3,158"
+    ],
+    "q:20211231": [
+     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
+     21,
+     "Thermal (doc period)",
+     "3158"
+    ],
+    "q:20201231": [
+     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
+     21,
+     "Thermal (doc period)",
+     "3158"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     33,
+     "thermal power (doc period)",
+     "3,140"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2022-05-23"
+   }
+  },
+  {
    "name": "Renewable Net Generation (incl. Hydro, FY)",
    "unit": "MUs",
    "kind": "flow",
@@ -4278,90 +4399,167 @@
    }
   },
   {
-   "name": "Thermal Installed Capacity",
+   "name": "Hydro Installed Capacity",
    "unit": "MW",
    "kind": "level",
    "y": {
-    "20220331": 3158.0,
-    "20230331": 3158.0,
-    "20240331": 3508.0,
-    "20250331": 5658.0,
-    "20260331": 5658.0
+    "20190331": 1391.0,
+    "20220331": 1391.0,
+    "20230331": 1391.0,
+    "20240331": 1391.0,
+    "20250331": 1391.0,
+    "20260331": 1631.0
    },
    "q": {
-    "20201231": 3158.0,
-    "20211231": 3158.0,
-    "20220930": 3158.0,
-    "20230930": 3158.0,
-    "20240331": 3508.0,
-    "20260630": 5658.0
+    "20201231": 1345.0,
+    "20211231": 1345.0,
+    "20220930": 1391.0,
+    "20240331": 1391.0
    },
    "src": {
-    "q:20260630": [
-     "b7fd9d75-281d-4a7f-a249-2b913419230b.pdf",
-     40,
-     "Thermal Capacity - Installed (doc period)",
-     "5,658"
-    ],
     "y:20260331": [
      "187219a3-2624-416b-aec5-9bc164690787.pdf",
      117,
-     "Total Thermal",
-     "5,658"
+     "Total Hydro",
+     "1,631"
     ],
     "y:20250331": [
      "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
      176,
-     "Thermal",
-     "5,658"
+     "Hydro",
+     "1,391"
     ],
     "q:20240331": [
      "6c7b8f9c-236b-4f72-901d-de943d162e79.pdf",
      177,
-     "Thermal Installed Capacity",
-     "3,508"
+     "Hydro Installed Capacity",
+     "1,391"
     ],
     "y:20240331": [
      "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
      176,
-     "Thermal",
-     "3,508"
+     "Hydro",
+     "1,391"
     ],
     "q:20220930": [
      "93e7d356-7d8c-4cbe-bf5e-ca357265c90f.pdf",
      16,
-     "Installed (MW) - Thermal (doc period)",
-     "3,158"
-    ],
-    "q:20230930": [
-     "2c2cc767-c848-45aa-84aa-69f973dca650.pdf",
-     44,
-     "Installed - Thermal (doc period)",
-     "3,158"
+     "Installed (MW) - Hydro (doc period)",
+     "1,391"
     ],
     "y:20230331": [
      "50a681c3-48c8-417d-8589-018dc2552769.pdf",
      111,
-     "Capacity in FY 2023 Thermal",
-     "3,158"
+     "Capacity in FY 2023 Hydro",
+     "1,391"
     ],
     "y:20220331": [
      "73005533148.pdf",
      100,
-     "Capacity in FY 2022 Thermal Power",
-     "3,158"
+     "Capacity in FY 2022 Hydro Power",
+     "1,391"
     ],
     "q:20211231": [
      "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
      21,
-     "Thermal (doc period)",
-     "3158"
+     "Operational Hydro capacity",
+     "1345"
     ],
     "q:20201231": [
      "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
+     37,
+     "Hydro (1,345 MW)*",
+     "1345"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     33,
+     "hydro power (including 91 MW capacity in approval phase) (doc period)",
+     "1,391"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2022-05-23"
+   }
+  },
+  {
+   "name": "Solar Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20190331": 10.0,
+    "20220331": 10.0,
+    "20230331": 657.0,
+    "20240331": 675.0,
+    "20250331": 680.0,
+    "20260331": 2058.0
+   },
+   "q": {
+    "20201231": 9.0,
+    "20211231": 9.0,
+    "20230930": 675.0,
+    "20240331": 675.0
+   },
+   "src": {
+    "y:20260331": [
+     "187219a3-2624-416b-aec5-9bc164690787.pdf",
+     117,
+     "Total Solar",
+     "2,058"
+    ],
+    "y:20250331": [
+     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
+     176,
+     "Solar",
+     "680"
+    ],
+    "q:20240331": [
+     "6c7b8f9c-236b-4f72-901d-de943d162e79.pdf",
+     177,
+     "Solar Installed Capacity",
+     "675"
+    ],
+    "y:20240331": [
+     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
+     176,
+     "Solar",
+     "675"
+    ],
+    "q:20230930": [
+     "2c2cc767-c848-45aa-84aa-69f973dca650.pdf",
+     44,
+     "Installed - Solar (doc period)",
+     "675"
+    ],
+    "y:20230331": [
+     "50a681c3-48c8-417d-8589-018dc2552769.pdf",
+     154,
+     "Installed Capacity: Solar (doc period)",
+     "657"
+    ],
+    "y:20220331": [
+     "73005533148.pdf",
+     100,
+     "Capacity in FY 2022 Solar Power and Wind Power",
+     "10"
+    ],
+    "q:20211231": [
+     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
      21,
-     "Thermal (doc period)",
-     "3158"
+     "Solar (doc period)",
+     "9"
+    ],
+    "q:20201231": [
+     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
+     37,
+     "Solar (9 MW)",
+     "9"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     33,
+     "solar power capacities (doc period)",
+     "10"
     ]
    },
    "latest": {
@@ -4531,160 +4729,6 @@
    }
   },
   {
-   "name": "Hydro Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20220331": 1391.0,
-    "20230331": 1391.0,
-    "20240331": 1391.0,
-    "20250331": 1391.0,
-    "20260331": 1631.0
-   },
-   "q": {
-    "20201231": 1345.0,
-    "20211231": 1345.0,
-    "20220930": 1391.0,
-    "20240331": 1391.0
-   },
-   "src": {
-    "y:20260331": [
-     "187219a3-2624-416b-aec5-9bc164690787.pdf",
-     117,
-     "Total Hydro",
-     "1,631"
-    ],
-    "y:20250331": [
-     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
-     176,
-     "Hydro",
-     "1,391"
-    ],
-    "q:20240331": [
-     "6c7b8f9c-236b-4f72-901d-de943d162e79.pdf",
-     177,
-     "Hydro Installed Capacity",
-     "1,391"
-    ],
-    "y:20240331": [
-     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
-     176,
-     "Hydro",
-     "1,391"
-    ],
-    "q:20220930": [
-     "93e7d356-7d8c-4cbe-bf5e-ca357265c90f.pdf",
-     16,
-     "Installed (MW) - Hydro (doc period)",
-     "1,391"
-    ],
-    "y:20230331": [
-     "50a681c3-48c8-417d-8589-018dc2552769.pdf",
-     111,
-     "Capacity in FY 2023 Hydro",
-     "1,391"
-    ],
-    "y:20220331": [
-     "73005533148.pdf",
-     100,
-     "Capacity in FY 2022 Hydro Power",
-     "1,391"
-    ],
-    "q:20211231": [
-     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
-     21,
-     "Operational Hydro capacity",
-     "1345"
-    ],
-    "q:20201231": [
-     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
-     37,
-     "Hydro (1,345 MW)*",
-     "1345"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2022-05-23"
-   }
-  },
-  {
-   "name": "Solar Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20220331": 10.0,
-    "20230331": 657.0,
-    "20240331": 675.0,
-    "20250331": 680.0,
-    "20260331": 2058.0
-   },
-   "q": {
-    "20201231": 9.0,
-    "20211231": 9.0,
-    "20230930": 675.0,
-    "20240331": 675.0
-   },
-   "src": {
-    "y:20260331": [
-     "187219a3-2624-416b-aec5-9bc164690787.pdf",
-     117,
-     "Total Solar",
-     "2,058"
-    ],
-    "y:20250331": [
-     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
-     176,
-     "Solar",
-     "680"
-    ],
-    "q:20240331": [
-     "6c7b8f9c-236b-4f72-901d-de943d162e79.pdf",
-     177,
-     "Solar Installed Capacity",
-     "675"
-    ],
-    "y:20240331": [
-     "f5c96e53-7a16-4307-a496-fefee60f2b73.pdf",
-     176,
-     "Solar",
-     "675"
-    ],
-    "q:20230930": [
-     "2c2cc767-c848-45aa-84aa-69f973dca650.pdf",
-     44,
-     "Installed - Solar (doc period)",
-     "675"
-    ],
-    "y:20230331": [
-     "50a681c3-48c8-417d-8589-018dc2552769.pdf",
-     154,
-     "Installed Capacity: Solar (doc period)",
-     "657"
-    ],
-    "y:20220331": [
-     "73005533148.pdf",
-     100,
-     "Capacity in FY 2022 Solar Power and Wind Power",
-     "10"
-    ],
-    "q:20211231": [
-     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
-     21,
-     "Solar (doc period)",
-     "9"
-    ],
-    "q:20201231": [
-     "5419c79d-3286-4370-be60-a38ba497f4c8.pdf",
-     37,
-     "Solar (9 MW)",
-     "9"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2022-05-23"
-   }
-  },
-  {
    "name": "Installed Capacity",
    "unit": "MW",
    "kind": "level",
@@ -4762,6 +4806,7 @@
    "unit": "%",
    "kind": "level",
    "y": {
+    "20190331": 45.3,
     "20200331": 52.9,
     "20210331": 49.79,
     "20220331": 46.91,
@@ -4813,6 +4858,12 @@
      117,
      "Karcham Wangtoo PLF",
      "52.90"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     83,
+     "PLF",
+     "45.30"
     ]
    },
    "latest": {
@@ -5157,21 +5208,21 @@
    "q": {},
    "src": {
     "y:20170331": [
-     "771dd4df-f89b-48de-bb55-46c42de067f8.pdf",
-     56,
-     "O&M Expenses (`Lakh/MW)",
+     "5331480319.pdf",
+     28,
+     "O&M Expenses (I Lakh/MW)",
      "19.4"
     ],
     "y:20180331": [
-     "771dd4df-f89b-48de-bb55-46c42de067f8.pdf",
-     56,
-     "O&M Expenses (`Lakh/MW)",
+     "5331480319.pdf",
+     28,
+     "O&M Expenses (I Lakh/MW)",
      "19.3"
     ],
     "y:20190331": [
-     "771dd4df-f89b-48de-bb55-46c42de067f8.pdf",
-     56,
-     "O&M Expenses (`Lakh/MW)",
+     "5331480319.pdf",
+     28,
+     "O&M Expenses (I Lakh/MW)",
      "18.7"
     ],
     "y:20200331": [
@@ -5186,6 +5237,11 @@
      "O&M Expenses (`Lakh/MW)",
      "16.1"
     ]
+   },
+   "latest": {
+    "y:20170331": "2021-06-25",
+    "y:20180331": "2021-06-25",
+    "y:20190331": "2021-06-25"
    }
   },
   {
@@ -5770,6 +5826,68 @@
      179,
      "Karcham Wangtoo - Total net power generated after auxillary consumption",
      "3,762"
+    ]
+   }
+  },
+  {
+   "name": "Long Term PPA Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20170331": 2866.0,
+    "20180331": 3328.0,
+    "20190331": 3578.5
+   },
+   "q": {},
+   "src": {
+    "y:20170331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "2,866"
+    ],
+    "y:20180331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "3,328"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "3,578.5"
+    ]
+   }
+  },
+  {
+   "name": "Long Term PPA Proportion",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20170331": 64.5,
+    "20180331": 75.0,
+    "20190331": 80.4
+   },
+   "q": {},
+   "src": {
+    "y:20170331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "64.5"
+    ],
+    "y:20180331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "75.0"
+    ],
+    "y:20190331": [
+     "5331480319.pdf",
+     28,
+     "Improving LT PPA mix",
+     "80.4"
     ]
    }
   },
@@ -6575,6 +6693,23 @@
    }
   },
   {
+   "name": "Baspa Plant PLF",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20190331": 48.54
+   },
+   "src": {
+    "q:20190331": [
+     "5331480319.pdf",
+     92,
+     "Plant Load Factor",
+     "48.54"
+    ]
+   }
+  },
+  {
    "name": "Hybrid Installed Capacity",
    "unit": "MW",
    "kind": "level",
@@ -6690,6 +6825,40 @@
      117,
      "Total under-construction",
      "14,048"
+    ]
+   }
+  },
+  {
+   "name": "Transmission Availability",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20190331": 99.67
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5331480319.pdf",
+     91,
+     "availability of the transmission system",
+     "99.67"
+    ]
+   }
+  },
+  {
+   "name": "Voluntary Attrition Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20190331": 2.4
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5331480319.pdf",
+     40,
+     "voluntary attrition rate",
+     "2.4"
     ]
    }
   }
