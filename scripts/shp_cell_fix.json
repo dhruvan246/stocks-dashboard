@@ -263138,24 +263138,53 @@
     "cell": [
      24.0,
      8.78,
-     39.42,
+     39.983089,
      3.94,
      0.0,
      "2018-07-21"
     ],
     "was": [
      24.0,
-     1.6,
-     46.6,
+     8.78,
+     39.42,
      3.94,
      0.0,
      "2018-07-21"
     ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:126737",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 126737 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 4,119,545 + Venture Capital Funds 0 + Alternate Investment Funds 497,862 + Financial Institutions/ Banks 37,072,928 + Insurance Companies 0 + Provident Funds/ Pension Funds 0 + NBFC row 91,993 = 41,782,328 / 104,500,000 = 39.983089. Was 39.42 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      8.78,
+      39.42,
+      3.94,
+      0.0,
+      "2018-07-21"
+     ],
+     "was": [
+      24.0,
+      1.6,
+      46.6,
+      3.94,
+      0.0,
+      "2018-07-21"
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2018-09-30": {
     "cell": [
+     24.0,
+     8.74,
+     37.789375,
+     4.02,
+     0.0,
+     "2018-10-21"
+    ],
+    "was": [
      24.0,
      8.74,
      36.78,
@@ -263163,19 +263192,40 @@
      0.0,
      "2018-10-21"
     ],
-    "was": [
-     24.0,
-     1.56,
-     43.96,
-     4.02,
-     0.0,
-     "2018-10-21"
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:130716",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 130716 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 4,202,192 + Venture Capital Funds 0 + Alternate Investment Funds 971,333 + Financial Institutions/ Banks 34,229,969 + Insurance Companies 0 + Provident Funds/ Pension Funds 0 + NBFC row 86,403 = 39,489,897 / 104,500,000 = 37.789375. Was 36.78 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      8.74,
+      36.78,
+      4.02,
+      0.0,
+      "2018-10-21"
+     ],
+     "was": [
+      24.0,
+      1.56,
+      43.96,
+      4.02,
+      0.0,
+      "2018-10-21"
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2018-12-31": {
     "cell": [
+     24.0,
+     9.47,
+     35.027432,
+     6.46,
+     0.0,
+     "2019-01-21"
+    ],
+    "was": [
      24.0,
      9.47,
      34.21,
@@ -263183,19 +263233,40 @@
      0.0,
      "2019-01-21"
     ],
-    "was": [
-     24.0,
-     2.29,
-     41.39,
-     6.46,
-     0.0,
-     "2019-01-21"
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:132539",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 132539 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 6,745,567 + Venture Capital Funds 0 + Alternate Investment Funds 776,768 + Financial Institutions/ Banks 29,003,273 + Insurance Companies 0 + Provident Funds/ Pension Funds 0 + NBFC row 78,058 = 36,603,666 / 104,500,000 = 35.027432. Was 34.21 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      9.47,
+      34.21,
+      6.46,
+      0.0,
+      "2019-01-21"
+     ],
+     "was": [
+      24.0,
+      2.29,
+      41.39,
+      6.46,
+      0.0,
+      "2019-01-21"
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2019-03-31": {
     "cell": [
+     24.0,
+     10.29,
+     35.313767,
+     7.44,
+     0.0,
+     "2019-04-21"
+    ],
+    "was": [
      24.0,
      10.29,
      34.5,
@@ -263203,19 +263274,40 @@
      0.0,
      "2019-04-21"
     ],
-    "was": [
-     24.0,
-     3.11,
-     41.68,
-     7.44,
-     0.0,
-     "2019-04-21"
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:135746",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 135746 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 7,778,123 + Venture Capital Funds 0 + Alternate Investment Funds 776,768 + Financial Institutions/ Banks 28,279,298 + Insurance Companies 0 + Provident Funds/ Pension Funds 0 + NBFC row 68,698 = 36,902,887 / 104,500,000 = 35.313767. Was 34.5 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      10.29,
+      34.5,
+      7.44,
+      0.0,
+      "2019-04-21"
+     ],
+     "was": [
+      24.0,
+      3.11,
+      41.68,
+      7.44,
+      0.0,
+      "2019-04-21"
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2019-06-30": {
     "cell": [
+     24.0,
+     9.89,
+     35.35446,
+     9.58,
+     0.0,
+     "2019-07-21"
+    ],
+    "was": [
      24.0,
      9.89,
      34.56,
@@ -263223,19 +263315,41 @@
      0.0,
      "2019-07-21"
     ],
-    "was": [
-     24.0,
-     2.71,
-     41.74,
-     9.58,
-     0.0,
-     "2019-07-21"
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:138223",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 138223 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 10,012,658 + Venture Capital Funds 0 + Alternate Investment Funds 755,189 + Financial Institutions/ Banks 26,107,147 + Insurance Companies 0 + Provident Funds/ Pension Funds 0 + NBFC row 70,417 = 36,945,411 / 104,500,000 = 35.354460. Was 34.56 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      9.89,
+      34.56,
+      9.58,
+      0.0,
+      "2019-07-21"
+     ],
+     "was": [
+      24.0,
+      2.71,
+      41.74,
+      9.58,
+      0.0,
+      "2019-07-21"
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2019-09-30": {
     "cell": [
+     24.0,
+     8.96,
+     34.987471,
+     9.54,
+     2.34,
+     "2019-10-12",
+     136353
+    ],
+    "was": [
      24.0,
      8.96,
      34.97,
@@ -263244,20 +263358,43 @@
      "2019-10-12",
      136353
     ],
-    "was": [
-     24.0,
-     1.78,
-     42.15,
-     9.54,
-     2.34,
-     "2019-10-12",
-     136353
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:141381",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 141381 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 9,966,978 + Venture Capital Funds 0 + Alternate Investment Funds 702,061 + Financial Institutions/ Banks 23,426,913 + Insurance Companies 2,444,714 + Provident Funds/ Pension Funds 0 + NBFC row 21,241 = 36,561,907 / 104,500,000 = 34.987471. Was 34.97 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      24.0,
+      8.96,
+      34.97,
+      9.54,
+      2.34,
+      "2019-10-12",
+      136353
+     ],
+     "was": [
+      24.0,
+      1.78,
+      42.15,
+      9.54,
+      2.34,
+      "2019-10-12",
+      136353
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2019-12-31": {
     "cell": [
+     20.0,
+     9.41,
+     34.045867,
+     10.72,
+     2.0,
+     "2020-01-07",
+     138955
+    ],
+    "was": [
      20.0,
      9.41,
      34.02,
@@ -263266,20 +263403,43 @@
      "2020-01-07",
      138955
     ],
-    "was": [
-     20.0,
-     2.23,
-     41.2,
-     10.72,
-     2.0,
-     "2020-01-07",
-     138955
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:143735",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 143735 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 11,200,387 + Venture Capital Funds 0 + Alternate Investment Funds 713,160 + Financial Institutions/ Banks 21,545,270 + Insurance Companies 2,094,714 + Provident Funds/ Pension Funds 0 + NBFC row 24,400 = 35,577,931 / 104,500,000 = 34.045867. Was 34.02 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      9.41,
+      34.02,
+      10.72,
+      2.0,
+      "2020-01-07",
+      138955
+     ],
+     "was": [
+      20.0,
+      2.23,
+      41.2,
+      10.72,
+      2.0,
+      "2020-01-07",
+      138955
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2020-03-31": {
     "cell": [
+     20.0,
+     8.96,
+     34.764443,
+     12.87,
+     1.93,
+     "2020-04-15",
+     144902
+    ],
+    "was": [
      20.0,
      8.96,
      34.76,
@@ -263288,20 +263448,43 @@
      "2020-04-15",
      144902
     ],
-    "was": [
-     20.0,
-     1.78,
-     41.94,
-     12.87,
-     1.93,
-     "2020-04-15",
-     144902
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:146331",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 146331 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 13,445,525 + Venture Capital Funds 0 + Alternate Investment Funds 174,337 + Financial Institutions/ Banks 20,679,852 + Insurance Companies 2,016,729 + Provident Funds/ Pension Funds 0 + NBFC row 12,400 = 36,328,843 / 104,500,000 = 34.764443. Was 34.76 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      8.96,
+      34.76,
+      12.87,
+      1.93,
+      "2020-04-15",
+      144902
+     ],
+     "was": [
+      20.0,
+      1.78,
+      41.94,
+      12.87,
+      1.93,
+      "2020-04-15",
+      144902
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2020-06-30": {
     "cell": [
+     20.0,
+     8.69,
+     35.473045,
+     13.34,
+     2.22,
+     "2020-07-15",
+     145699
+    ],
+    "was": [
      20.0,
      8.69,
      35.46,
@@ -263310,20 +263493,43 @@
      "2020-07-15",
      145699
     ],
-    "was": [
-     20.0,
-     1.51,
-     42.64,
-     13.34,
-     2.22,
-     "2020-07-15",
-     145699
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:149359",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 149359 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 13,942,107 + Venture Capital Funds 0 + Alternate Investment Funds 162,337 + Financial Institutions/ Banks 20,633,511 + Insurance Companies 2,318,977 + Provident Funds/ Pension Funds 0 + NBFC row 12,400 = 37,069,332 / 104,500,000 = 35.473045. Was 35.46 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      8.69,
+      35.46,
+      13.34,
+      2.22,
+      "2020-07-15",
+      145699
+     ],
+     "was": [
+      20.0,
+      1.51,
+      42.64,
+      13.34,
+      2.22,
+      "2020-07-15",
+      145699
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2020-09-30": {
     "cell": [
+     20.0,
+     10.03,
+     31.847143,
+     10.98,
+     6.85,
+     "2020-10-20",
+     147784
+    ],
+    "was": [
      20.0,
      10.03,
      31.83,
@@ -263332,20 +263538,43 @@
      "2020-10-20",
      147784
     ],
-    "was": [
-     20.0,
-     2.85,
-     39.01,
-     10.98,
-     6.85,
-     "2020-10-20",
-     147784
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:152827",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 152827 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 11,476,700 + Venture Capital Funds 0 + Alternate Investment Funds 274,868 + Financial Institutions/ Banks 14,363,401 + Insurance Companies 7,160,695 + Provident Funds/ Pension Funds 0 + NBFC row 4,600 = 33,280,264 / 104,500,000 = 31.847143. Was 31.83 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      10.03,
+      31.83,
+      10.98,
+      6.85,
+      "2020-10-20",
+      147784
+     ],
+     "was": [
+      20.0,
+      2.85,
+      39.01,
+      10.98,
+      6.85,
+      "2020-10-20",
+      147784
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2020-12-31": {
     "cell": [
+     20.0,
+     13.31,
+     29.432912,
+     8.09,
+     7.56,
+     "2021-01-15",
+     156679
+    ],
+    "was": [
      20.0,
      13.31,
      29.42,
@@ -263354,20 +263583,43 @@
      "2021-01-15",
      156679
     ],
-    "was": [
-     20.0,
-     6.13,
-     36.6,
-     8.09,
-     7.56,
-     "2021-01-15",
-     156679
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:154495",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 154495 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 8,458,728 + Venture Capital Funds 0 + Alternate Investment Funds 306,697 + Financial Institutions/ Banks 14,090,232 + Insurance Companies 7,897,636 + Provident Funds/ Pension Funds 0 + NBFC row 4,100 = 30,757,393 / 104,500,000 = 29.432912. Was 29.42 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      13.31,
+      29.42,
+      8.09,
+      7.56,
+      "2021-01-15",
+      156679
+     ],
+     "was": [
+      20.0,
+      6.13,
+      36.6,
+      8.09,
+      7.56,
+      "2021-01-15",
+      156679
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2021-03-31": {
     "cell": [
+     20.0,
+     15.2,
+     26.772959,
+     6.69,
+     7.9,
+     "2021-04-09",
+     177148
+    ],
+    "was": [
      20.0,
      15.2,
      26.76,
@@ -263376,20 +263628,43 @@
      "2021-04-09",
      177148
     ],
-    "was": [
-     20.0,
-     8.02,
-     33.94,
-     6.69,
-     7.9,
-     "2021-04-09",
-     177148
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:156424",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 156424 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 6,995,767 + Venture Capital Funds 0 + Alternate Investment Funds 504,141 + Financial Institutions/ Banks 12,217,638 + Insurance Companies 8,256,096 + Provident Funds/ Pension Funds 0 + NBFC row 4,100 = 27,977,742 / 104,500,000 = 26.772959. Was 26.76 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      15.2,
+      26.76,
+      6.69,
+      7.9,
+      "2021-04-09",
+      177148
+     ],
+     "was": [
+      20.0,
+      8.02,
+      33.94,
+      6.69,
+      7.9,
+      "2021-04-09",
+      177148
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2021-06-30": {
     "cell": [
+     20.0,
+     15.49,
+     25.864614,
+     7.96,
+     8.03,
+     "2021-07-13",
+     273628
+    ],
+    "was": [
      20.0,
      15.49,
      25.86,
@@ -263398,17 +263673,31 @@
      "2021-07-13",
      273628
     ],
-    "was": [
-     20.0,
-     8.31,
-     33.04,
-     7.96,
-     8.03,
-     "2021-07-13",
-     273628
-    ],
-    "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
-    "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    "src": "nse-ndsid:159104",
+    "why": "\u00a7164s part 44 (2026-10-15): CDSL is listed on NSE only; its original NSE filing for this quarter is ndsId 159104 (found by content: total 104,500,000, promoter BSE Limited; /api/corporate-share-holdings-equities). Own-line DII = Mutual Funds/ 8,317,224 + Venture Capital Funds 0 + Alternate Investment Funds 680,963 + Financial Institutions/ Banks 9,637,625 + Insurance Companies 8,388,460 + Provident Funds/ Pension Funds 0 + NBFC row 4,250 = 27,028,522 / 104,500,000 = 25.864614. Was 25.86 (a third-party figure with no filing behind it). Rules: domestic institution lines + the NBFC row (R3); the institutions Any-Other 'Other' line naming Standard Chartered Bank 7,500,000 is not DII (unlabelled institutions line, 13-Oct/11-Oct own-line rules).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      20.0,
+      15.49,
+      25.86,
+      7.96,
+      8.03,
+      "2021-07-13",
+      273628
+     ],
+     "was": [
+      20.0,
+      8.31,
+      33.04,
+      7.96,
+      8.03,
+      "2021-07-13",
+      273628
+     ],
+     "src": "nsexbrl:CDSL:2021-09..2023-03 + quantmac r5 FII file",
+     "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): CDSL (NSE-only) carries ONE institutional holder of 7,500,000 shares (7.18%) under institutions Any-Others in every old-format filing; from Sep-2022 the filer reports the same block under Institutions(Foreign)/Other (7.18 in Sep-22, Dec-22, Mar-23 NSE XBRLs) -> foreign. block not read for this quarter: same 7,500,000-share holder proven in the Sep-2021..Jun-2022 NSE filings and quantmac's independent read of this quarter carries exactly our FPI + 7.18. fii += 7.180, dii -= same."
+    }
    },
    "2021-09-30": {
     "cell": [
@@ -512938,6 +513227,69 @@
     ],
     "src": "nsexbrl:SHP_159741_489640_19072021035353_WEB.xml",
     "why": "\u00a7164r batch 30 part 88 (2026-10-13, user rulings 13-Oct, joint FII + DII entry with the DII session; held since part 72 because DII held the 'Other' line): base = public + C = 45,024,297 (the file's grand-total element is mis-tagged); FII = FPI 4,563,665 + ACACIA BANYAN PARTNERS 785,417 (bare 'Other' institutions line) = 11.880434; DII = MF + AIF + FI/Banks + Insurance + NBFC rows = 1,150,155 shares (DII session) = 2.554521 - the stored values were 2-decimal fills. fii 10.14 -> 11.880434, dii 3.43 -> 2.554521."
+   },
+   "2024-06-30": {
+    "cell": [
+     0.0,
+     11.12,
+     11.606467,
+     null,
+     null,
+     "2024-07-19"
+    ],
+    "was": [
+     0.0,
+     11.12,
+     11.6,
+     null,
+     null,
+     "2024-07-19"
+    ],
+    "src": "nse-ndsid:190541",
+    "why": "\u00a7164s part 44 (2026-10-15): BSE Ltd is listed on NSE only; NSE's record 190541 for this quarter has no XBRL link, but the document itself is served by /api/corporate-share-holdings-equities?ndsId=190541. Institutions (Domestic) lines (2022 form) = Mutual Funds 11,884,604 + Alternate Investment Funds 1,609,458 + Banks 6,404 + Insurance  Companies 2,155,408 + NBFCs registered with RBI 56,539 = 15,712,413 / 135,376,359 = 11.606467. Was 11.6 (2-decimal third-party figure, now proven by the filing to the share).",
+    "exact": true
+   },
+   "2024-12-31": {
+    "cell": [
+     0.0,
+     16.03,
+     12.074393,
+     null,
+     null,
+     "2025-01-20"
+    ],
+    "was": [
+     0.0,
+     16.03,
+     12.07,
+     null,
+     null,
+     "2025-01-20"
+    ],
+    "src": "nse-ndsid:195745",
+    "why": "\u00a7164s part 44 (2026-10-15): BSE Ltd is listed on NSE only; NSE's record 195745 for this quarter has no XBRL link, but the document itself is served by /api/corporate-share-holdings-equities?ndsId=195745. Institutions (Domestic) lines (2022 form) = Mutual Funds 13,133,745 + Alternate Investment Funds 1,115,032 + Banks 4,004 + Insurance  Companies 2,055,673 + NBFCs registered with RBI 37,420 = 16,345,874 / 135,376,359 = 12.074393. Was 12.07 (2-decimal third-party figure, now proven by the filing to the share).",
+    "exact": true
+   },
+   "2025-03-31": {
+    "cell": [
+     0.0,
+     16.78,
+     12.325077,
+     null,
+     null,
+     "2025-04-21"
+    ],
+    "was": [
+     0.0,
+     16.78,
+     12.33,
+     null,
+     null,
+     "2025-04-21"
+    ],
+    "src": "nse-ndsid:197851",
+    "why": "\u00a7164s part 44 (2026-10-15): BSE Ltd is listed on NSE only; NSE's record 197851 for this quarter has no XBRL link, but the document itself is served by /api/corporate-share-holdings-equities?ndsId=197851. Institutions (Domestic) lines (2022 form) = Mutual Funds 13,780,492 + Alternate Investment Funds 631,759 + Banks 988 + Insurance  Companies 2,245,031 + NBFCs registered with RBI 26,970 = 16,685,240 / 135,376,359 = 12.325077. Was 12.33 (2-decimal third-party figure, now proven by the filing to the share).",
+    "exact": true
    }
   },
   "UCOBANK": {
