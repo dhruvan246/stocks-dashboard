@@ -1,9 +1,89 @@
 {
- "built": "2026-10-14 19:09 IST",
+ "built": "2026-10-14 20:31 IST",
  "rule": "Order-win letters added up since the last stated order book, each letter checked; flagged on the filing that took the confirmed total to 0.5x that book. Entry = close on that filing day (next trading day if a holiday). Returns use bonus/split-adjusted closes.",
- "n": 18,
+ "n": 19,
  "stale": [],
  "rows": [
+  {
+   "key": "544750",
+   "isin": "INE25E901019",
+   "name": "Om Power Transmission Ltd",
+   "nse": "OMPOWER",
+   "bse": "544750",
+   "base_cr": 567.47,
+   "base_as_on": "2026-06-30",
+   "base_filed": "2026-08-12",
+   "base_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/f24a7958-88b2-4422-aa5b-00f04d7691f6.pdf",
+   "confirmed_sum_cr": 363.55,
+   "confirmed_ratio": 0.641,
+   "largest_ratio": 0.179,
+   "all_single_below_half": true,
+   "cross_date": "2026-10-14",
+   "n_wins": 6,
+   "verdict": "CORRECTED",
+   "note": "Flag CONFIRMED but the BASE FIGURE in orderwins_signals.json is wrong. The screen used Rs 621 cr 'as on 2026-06-30'. The base document - Om Power's Q1 FY27 investor presentation, filed 12-Aug-2026 - states the walk explicitly on its 'Order Book Status as of Q1FY27' page: order book Rs 621.28 cr as at 31-MARCH-2026, plus Rs 67.82 cr new intake in Q1 FY27, minus Rs 121.63 cr executed, = Rs 567.47 cr as at 30-JUNE-2026. The screen attached the FY26-closing figure to the June date (its rule keeps the largest figure per document). On the correct Rs 567.47 cr base the ratio is 0.641x, HIGHER than the screened 0.585x, and the cross date is unchanged at 2026-10-14. All six order letters were opened and each confirmed on value, awarder, project and date; six distinct projects, no duplicate across BSE/NSE, no L1/LoI re-announcement, no JV or consortium share, no USD conversion. GST caveat: five of the six letters state values INCLUDING GST and one (Hild Projects) excludes it; de-grossing the five at 18% gives Rs 314.30 cr, a ratio of 0.554x - so the flag clears 0.5x on either basis. Customer concentration: GETCO alone is Rs 221.29 cr of the Rs 363.55 cr and Gujarat state utilities (GETCO + UGVCL) are Rs 322.85 cr. Gross book after the wins, before Q2 execution, is about Rs 931 cr against FY26 revenue of Rs 449 cr (2.07x). OMPOWER is already published (card 2026-10-06-OMPOWER, lane filing), so under step 4a-iii it is NOT a new card; the confirmed run is logged as an update on that card instead.",
+   "checked_on": "2026-10-14",
+   "wins": [
+    {
+     "filed": "2026-08-27",
+     "value_cr": 12.78,
+     "doc": "https://nsearchives.nseindia.com/corporate/OMPOWER_27082026214518_V0_Intimation_receipt_of_order.pdf",
+     "verdict": "COUNTED",
+     "note": "GETCO, 66 kV underground cable various lines; Rs 12,78,40,976.17 including GST; 24 months"
+    },
+    {
+     "filed": "2026-09-17",
+     "value_cr": 40.7,
+     "doc": "https://nsearchives.nseindia.com/corporate/OMPOWER_17092026145157_Intimation_receipt_of_order.pdf",
+     "verdict": "COUNTED",
+     "note": "Hild Projects Pvt Ltd (private), 220 kV AIS switchyard for 600 MW NTPC solar plant at Bhuj; Rs 40,69,90,000 EXCLUDING GST; 10 months"
+    },
+    {
+     "filed": "2026-10-06",
+     "value_cr": 60.48,
+     "doc": "https://nsearchives.nseindia.com/corporate/OMPOWER_06102026194414_V0_Intimation_receipt_of_order.pdf",
+     "verdict": "COUNTED",
+     "note": "GETCO, 220 kV & 66 kV equipment incl civil works for 220 kV Kotda-Sanghani AIS substation; Rs 60,48,51,594.19 including GST; 18 months"
+    },
+    {
+     "filed": "2026-10-06",
+     "value_cr": 69.19,
+     "doc": "https://nsearchives.nseindia.com/corporate/OMPOWER_06102026170500_V0_Intimation_receipt_of_order.pdf",
+     "verdict": "COUNTED",
+     "note": "GETCO, 220 kV D/C Prantij-Jantral Line Package 2 turnkey; Rs 69,18,77,476.78 including GST; 24 months. A DIFFERENT project from the other 06-Oct letter - both counted, correctly"
+    },
+    {
+     "filed": "2026-10-07",
+     "value_cr": 78.84,
+     "doc": "https://nsearchives.nseindia.com/corporate/OMPOWER_07102026192335_V0_Intimation_receipt_of_order.pdf",
+     "verdict": "COUNTED",
+     "note": "GETCO, 220 kV D/C Chorania-Salejda transmission line turnkey; Rs 78,84,08,034.94 including GST; 24 months"
+    },
+    {
+     "filed": "2026-10-14",
+     "value_cr": 101.56,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/18bf8e8f-f8c1-4635-a204-fd4277faaa42.pdf",
+     "verdict": "COUNTED",
+     "note": "UGVCL, LoA for conversion of overhead network to underground cable at Ambaji; Rs 101,56,47,911.35 including GST; 12 months after 45-day commencement. The letter that takes the running total past 0.5x"
+    }
+   ],
+   "entry_date": "2026-10-14",
+   "entry_close": 164.35,
+   "last_date": "2026-10-14",
+   "last_close": 164.35,
+   "ret_pct": 0.0,
+   "peak_pct": 0.0,
+   "peak_date": "2026-10-14",
+   "low_pct": 0.0,
+   "prev_close": 160.85,
+   "days": 0,
+   "adj_events": 0,
+   "price_source": "BSE, bonus/split adjusted",
+   "stale": false,
+   "mcap_cr": 551,
+   "nse_series": "EQ",
+   "bse_sym": null
+  },
   {
    "key": "NSE:MARINE",
    "isin": "INE01JE01028",
