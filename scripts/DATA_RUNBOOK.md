@@ -28604,6 +28604,13 @@ Jun-17 ('FOREIGN BOADIES DR'). With the user: RAMCOCEM Jun-16 (Indian Pvt Ltd co
 #rev. Slot 4 (insurance) keeps LIC on its non-institutions row (4.743057). IGL Sep-19 kept at 2019-10-16: BSE revised_reson names the
 only change (a 'Foreign Nationals' row moved from Institutions Any-Other to Non-Institutions), which moves no slot. BSE Table III .00
 for a revision-only quarter returns the REVISION (INTELLECT Dec-18, IGL Sep-19 checked), not the original.
+**Part 96 (2026-10-15) - exact FII from NSE ndsId documents (after the DII session's §164s parts 44/45).** CDSL Jun-18..Jun-21 x13
+(FPI + institutions Any-Other 'Other' = Standard Chartered Bank 7,500,000 named on the unlabelled line + Non-Inst FPI Cat-III 140; each
+ndsId confirmed by its promoter + own-line DII reproducing the stored row), BSE Ltd Jun-24/Dec-24/Mar-25 ((B)(2) on 135,376,359),
+BHARATRAS Mar-21 (0.251110). Precision only, from the stored 2-decimal third-party figures. The 6 event fills of §164s part 45
+(MOTHERSON, CENTRALBK x2, MAXHEALTH, BHARATRAS x2) checked = own-line FII ('Foreign Nationals' rows out). Fetch route:
+nseindia.com/api/corporate-share-holdings-equities?ndsId=<id>&index=summary|public-shareholder (build_fundamentals.nse_jar cookies);
+reader ~/stocks-cache/shp/v4work/refile90/ndsread.py.
 
 ### §229a — VISION READS NOW CARRY OPERATING PROFIT (2026-10-14, user: "y is no op profit for them" · "this shud never happen in future")
 
