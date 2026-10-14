@@ -28569,3 +28569,19 @@ Jun-17 ('FOREIGN BOADIES DR'). With the user: RAMCOCEM Jun-16 (Indian Pvt Ltd co
 #rev. Slot 4 (insurance) keeps LIC on its non-institutions row (4.743057). IGL Sep-19 kept at 2019-10-16: BSE revised_reson names the
 only change (a 'Foreign Nationals' row moved from Institutions Any-Other to Non-Institutions), which moves no slot. BSE Table III .00
 for a revision-only quarter returns the REVISION (INTELLECT Dec-18, IGL Sep-19 checked), not the original.
+
+### §229a — VISION READS NOW CARRY OPERATING PROFIT (2026-10-14, user: "y is no op profit for them" · "this shud never happen in future")
+
+ELECON and GROWW's Sep-26 cards (filed 14-Oct, numbers from the vision read because the XBRL had not landed) showed "—" for
+Op. profit beside a filled Sales and Net profit. Cause: the vision routine's extraction rule said *op = Operating Profit /
+EBITDA — ONLY if the statement prints such a line … do NOT compute it*. The SEBI results format prints no such line for
+non-banks, so the field was null on nearly every read: 17 of the 19 Sep-26 vision cells live at 15:55 IST had no op. The
+page already applies `op` from vision_fills.json (the §219 overlay) — only the read was missing it.
+
+Fix: both routine prompts (scripts/routine_prompts/bse-vision-fill.4slot.prompt.txt, the live routine, and the disabled
+-daytime copy) now compute op from the four printed lines with the site's own formula (build_revop.metrics_for, Trendlyne-
+matched): **op = Profit before exceptional items and tax + Finance costs + Depreciation and amortisation − Other income**, with
+the exceptional-items add-back when only PBT is printed, a worked example, the bank rule (printed pre-provision operating
+profit) and null only when a line is unreadable. The cloud routine's prompt was updated through RemoteTrigger the same
+hour. Cells vision-filled before this (the 17 above) keep "—" until their XBRL lands — the overlay fills only empty slots and
+the XBRL supersedes the whole cell, so no re-read was spent on them (vision reads need the user's go-ahead, §39/memory).
