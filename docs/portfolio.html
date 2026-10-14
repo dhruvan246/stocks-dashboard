@@ -1479,26 +1479,18 @@ function renderToday(rows){
        '<td class="'+cls(r.pct)+'"><b>'+pct(r.pct)+'</b></td>'+monthCell(r.mon)+buyCell(r.buy)+'</tr>';
     if(open){
       const stocks=(groups.get(r.name)||[]).slice().sort((a,b)=>(b.dayPct==null?-1e9:b.dayPct)-(a.dayPct==null?-1e9:a.dayPct));
-      /* A nested <table> here forced 3 rigid columns wider than a phone screen —
-         the wrapper's own overflow-x hid the overflow instead of preventing it, so
-         the numbers scrolled out of view, defeating the point of the narrow layout.
-         flex + flex-wrap instead: name and numbers share a row when they fit, and
-         the numbers drop to their own line when they don't — no explicit breakpoint. */
-      h+='<tr class="todayDetail"><td colspan="'+ncols+'" style="padding:0;border-bottom:1px solid var(--grid)">';
+      /* Each stock is a row of the SAME table (2026-10-14: the month / since-buy figures sat in one right-aligned run, not
+         under their headings). The name cell wraps like the strategy name above, so the phone layout still fits. */
       stocks.forEach(s=>{
-        h+='<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 12px;'+
-           'padding:6px 9px 6px 28px;background:var(--surface-2);border-bottom:1px solid var(--grid);font-size:12.5px">'+
-           '<span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%">'+
-             '<span class="secret">'+esc((s.cname||s.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span> '+
-             '<span class="sym secret">'+esc(s.sym)+'</span></span>'+
-           '<span style="white-space:nowrap;flex-shrink:0">'+
-             '<span class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</span>'+
-             '<b class="'+cls(s.dayPct)+'" style="margin-left:10px">'+pct(s.dayPct)+'</b>'+
-             (function(m){ return '<span class="'+cls(m.pct)+'" style="margin-left:10px" title="month: '+esc(m.pct==null?'no price history':'since the '+shortDate(monthBaseISO())+' close')+'">'+(m.pct==null?'\u2014':pct(m.pct))+' <span class="sym">mo</span></span>'; })(monthAgg([s]))+
-             '<span class="'+cls(s.pnlPct)+'" style="margin-left:10px" title="unrealised, from your buy price">'+pct(s.pnlPct)+' <span class="sym">buy</span></span>'+'</span>'+
-           '</div>';
+        const m=monthAgg([s]), bg='background:var(--surface-2)';
+        h+='<tr class="todayStock" style="'+bg+'"><td style="padding-left:'+(narrow?'10':'28')+'px;font-size:12.5px;overflow-wrap:anywhere"><span class="secret">'+esc((s.cname||s.sym).replace(/ (Ltd|Limited)\.?$/,''))+'</span>'+(narrow?'<br>':' ')+
+             '<span class="sym secret">'+esc(s.sym)+'</span></td>'+
+           (narrow?'':'<td></td><td class="secret">'+(s.qty!=null?Number(s.qty).toLocaleString('en-IN'):'')+'</td><td class="secret">'+(s.value==null?'\u2014':inr(s.value))+'</td>')+
+           '<td class="'+cls(s.day)+' secret">'+(s.day==null?'\u2014':inrSigned(s.day))+'</td>'+
+           '<td class="'+cls(s.dayPct)+'">'+pct(s.dayPct)+'</td>'+
+           '<td class="'+cls(m.pct)+'" title="'+esc(m.pct==null?'no price history':'since the '+shortDate(monthBaseISO())+' close')+'">'+(m.pct==null?'\u2014':pct(m.pct))+'</td>'+
+           '<td class="'+cls(s.pnlPct)+'" title="unrealised, from your buy price">'+pct(s.pnlPct)+'</td></tr>';
       });
-      h+='</td></tr>';
     }
   });
   h+='</tbody><tfoot><tr class="pfhead"><td>All strategies</td>'+
