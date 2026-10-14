@@ -27720,9 +27720,20 @@ from a session): delete it and the disabled sibling `bse-vision-fill-daytime` (`
 UI-created routine keeps its repository source), Claude Code started 07:46:47, and its first tool call was step 0:
 `python3 -X utf8 scripts/season_state.py --vision-slot` → `RUN slot 07:45 UTC (13:15 IST) — season IN — calendar window and 72
 filings since it opened on 2026-10-09; 28 companies' result board meetings confirmed for today on the exchange calendar; …
-meetings confirmed today 28; feed newest 2026-10-14`. It then went on to sync + pip + bse_vision_prep (07:47:00, still running when
-read). So the daytime slot fires, the guard reads the live state and says RUN in season; the SKIP branch will show on the first
-off-season daytime slot.
+meetings confirmed today 28; feed newest 2026-10-14`. It then went on to sync + pip + bse_vision_prep (07:47:00). So the daytime slot fires, the guard reads the live state and says RUN
+in season; the SKIP branch will show on the first off-season daytime slot.
+**Outcome of that run (read 14:48 IST from its log + origin + the live site):** 11 names pending, 1 filled — CANBK Sep-2026 (filed
+12:07:56 IST that day, consolidated, three quarters) — PR #523 merged 13:33 IST (a89ca9985); the run's `gh workflow run pages.yml`
+and branch delete both got HTTP 403 (GitHub GraphQL is blocked in cloud sessions), the next data push deployed Pages at 14:07 IST and
+the LIVE vision_fills.json carries the CANBK block. **Verified against the filing** (the NSE PDF through the CF relay, 20.6 MB — a
+first 60-s download was cut at 8.9 MB and opened with 0 pages, so size-check relay PDFs; page 4 consolidated table, read from the
+PDF text layer by word positions): Total income 40,938.80 / 39,695.71 / 42,013.74, Operating profit 8,767.60 / 8,646.94 / 8,704.56,
+Net profit after minority interest 5,381.59 / 5,180.71 / 4,850.03 for Sep-26 / Jun-26 / Sep-25 — all nine equal to the vision read; the
+Jun-26 and Sep-25 consolidated PAT also equal the XBRL-stored sf_fundamentals rows (5180.71, 4850.03). BSE had no Sep-26 XBRL for
+532483 yet at 14:50 IST (newest listing Jun-26), so the PDF was the only independent source. The 10 carried over: RENTOMOJO (renderer
+picked the Q1 investor presentation — §17c class, retried next slot), ACCENTMIC / SHAIVAL / AILIMITED (half-year filers, no 3-month
+columns), UTKAL / MADHURKNIT / CRAZY / NATURO ×2 / ASTONEALAB (older quarters: auditor's report or annual pages only on the rendered
+pages — not every page read, so "no quarterly numbers" is NOT established for them).
 
 **Found while counting runs for the user (11–13 Oct), NOT fixed — each awaits the user's OK:**
 1. **refresh-fundamentals never drops to hourly off-season.** All 22 intraday runs/day on Sat 11-Oct (season OFF all day) carry
