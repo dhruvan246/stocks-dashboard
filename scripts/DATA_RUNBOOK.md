@@ -27731,6 +27731,42 @@ Run counts measured for those days (GitHub run list, IST days): results-hourly 6
 after c4bb1816b lowered IGNITE_CUM to 20 → IN); fundamentals 24 / 25 / 25 every day (22 external + 2 nightly GitHub crons landing 4–8 h
 late + a weekday 21:15 IST external run).
 
+## §222b — THE TWO CADENCE GAPS §222a FOUND, FIXED: a season guard on the external fundamentals-refresh fire, and the dispatcher can now see the results calendar (2026-10-14, user: "fix both gaps")
+
+**Gap 1 — refresh-fundamentals ran 22×/day all year.** Measured on the run list for 11–13 Oct (IST days): 24 / 25 / 25 runs every
+day although Sat 11-Oct was season OFF all day (the dispatcher's own ticks: `season OFF — window open but only 17 filings`). Every
+intraday run's log shows `EV="repository_dispatch"; ACTION="fundamentals-refresh"` — the cron-job.org job (§217 "keep their native
+crons": refresh-fundamentals) fires :00 and :30 04–14 UTC plus 15:45 UTC on weekdays, and §222 moved only the GitHub `schedule:` onto
+the dispatcher, so the dispatcher stood aside at every slot (`refresh-fundamentals slot 04:00 (0 4-14 * * *) — already ran
+(repository_dispatch, 04:01)`). A session cannot pause a cron-job.org job (the user's account), so the fix is in the workflow:
+- `refresh-fundamentals.yml` gained a first job `season-guard` (sparse checkout of season_state.py + results_feed.json +
+  results_calendar.json, ~10 s). It answers RUN/SKIP and the main job carries `needs: season-guard` +
+  `if: needs.season-guard.outputs.run == '1'`.
+- SKIP only when ALL of: event `repository_dispatch` with action `fundamentals-refresh` (the external fire), `season_state.py --state`
+  = off, and the UTC minute is in [15, 45) — i.e. the :30 fire of an off-season hour. Dispatcher ticks, GitHub schedules, manual runs,
+  insurer-refresh, the :00 fire and every in-season run pass. If the script errors the guard prints "season in (season_state failed —
+  fail-open)" and runs. The exact step script was executed locally in 8 cases (off/:31 → SKIP, off/:01 → RUN, in/:31 → RUN,
+  tick/:31/off → RUN, schedule → RUN, script failure → RUN, off/:08 → RUN, off/:44 → SKIP): all pass.
+- Effect: off-season 11 intraday runs/day as §222 intended (the 11 skipped fires cost one ~10 s guard job each); in season unchanged.
+  If the user later pauses the cron-job.org job, the dispatcher's tagged slots take over and the guard is a no-op.
+
+**Gap 2 — the cloud dispatcher read the calendar as empty.** `cron-dispatch.yml`'s sparse checkout listed `docs/results_feed.json`
+but not `docs/results_calendar.json` (added by §228 on 12-Oct, which only widened `season_state.py`), so every cloud tick printed
+`meetings confirmed today 0` while the checkout printed 28 for the same minute (tick 05:31 UTC vs `season_state.py` at 11:03 IST on
+HEAD 23d7dcf21). The ≥10-meetings rule was therefore dead in production; 12–14 Oct read IN from the filing counts alone. Fix: the one
+missing line in the sparse-checkout list (+ the header comment, + the docstring in cron_dispatch.py).
+
+**Pushed c11d3639b 12:17 IST.** Verification (§39): YAML parse of both workflows, py_compile of cron_dispatch.py, the 8-case
+simulation above, `cron_dispatch.py --list` locally = IN with 28 meetings. LIVE:
+- Dispatcher tick run 38528824619 (07:31 UTC, 13:01 IST): `season IN — calendar window and 72 filings since it opened on 2026-10-09;
+  28 companies' result board meetings confirmed for today on the exchange calendar; … meetings confirmed today 28` — the calendar
+  rule is live in the cloud (every earlier tick that day printed 0).
+- refresh-fundamentals runs 38525676719 (07:01 UTC, sha c11d3639b) and 38528817090 (07:30 UTC): both carry the new `season-guard`
+  job (3 s, success) printing `season in; fired at :01 UTC by repository_dispatch/fundamentals-refresh -> RUN` / `… :30 … -> RUN`,
+  and the main job ran as before. The SKIP path cannot fire live until the season reads OFF (the simulation covers it); the first
+  off-season day to check is the one after the dispatcher prints `season OFF` — expect 11 intraday runs with the main job skipped
+  on the :30 fires.
+
 ## §223 — THE REFINE LEDGER READ BSE'S NEWEST FILING: 817 entries were a later document than the stored row's own; 208 rebuilt from the row's own filing, 579 removed, and a cell_fix now outranks the refine (2026-10-07, user: "measure the class across the whole store … propose a source fix … show the A/B … then, if approved, land it and retire the now-unneeded `exact` ping-pong entries … only if the store keeps the same values"; approved "Land the full fix")
 
 **Defect (§221 cause 2, now measured across the store).** `fetch_shp_bse_hist.py --refine` (built 2026-08-16, unchanged
