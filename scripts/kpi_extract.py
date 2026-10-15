@@ -177,6 +177,10 @@ def parse_period(label, fy_end_month=3):
     """Printed period label → ('q'|'y'|None, 'YYYYMMDD'|None). None = not a quarter/FY we store."""
     s = str(label or "").strip().replace("’", "'").replace("–", "-")
     low = s.lower()
+    # year-to-date / half-year / trailing labels are never one quarter or one FY — checked FIRST, because
+    # "Upto Q2 22" was matched as Q2 by the quarter rules below (IRFC disbursements, 2026-10-15)
+    if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
+        return None, None
     low = re.sub(r"(?<![a-z])f\s?'?(\d{2})\b", r"fy\1", low)   # Mahindra's "F27" / "Q1 F27" / "Q1F25" = FY27
     low = re.sub(r"\bq\s*([1-4])\s*(\d{2})-(\d{2})\b", r"q\1 fy\3", low)   # Coal India's "Q1 26-27" = Q1 FY27
     SEP = r"[\s,\-–/']*"                     # "Q2, FY 26", "Q1-FY27", "Q4/FY26", "Q1'FY25" all mean the same
@@ -221,8 +225,6 @@ def parse_period(label, fy_end_month=3):
             return "q", end
         if span == 12 and m2 == fy_end_month:
             return "y", end
-        return None, None
-    if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
         return None, None
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
     if m:
@@ -401,6 +403,12 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
                 m2 = {"name": name[:80], "unit": unit[:24], "kind": kind, "y": {}, "q": {}, "src": {}}
                 L["metrics"].append(m2)
             m = m2
+        # a bare-month series that also holds a non-quarter-end month ("Apr-21", "May-21") is MONTHLY — its "Jun-21"
+        # point is that month alone, not the quarter (POONAWALLA collection-efficiency trend, 2026-10-15)
+        _bare = re.compile(r"^\s*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*[\s\-',.]*(\d{2}|\d{4})\s*$", re.I)
+        _mons = [_bare.match(str(v.get("period") or "")) for v in met.get("values") or []]
+        _qe = {"mar", "jun", "sep", "dec"}
+        monthly = any(x and x.group(1).lower() not in _qe for x in _mons)
         for v in met.get("values") or []:
             val = to_float(v.get("value"))
             page = v.get("page")
@@ -415,6 +423,8 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
                 why = "no value"
             elif ptype is None:
                 why = "period not q/y: %r" % per
+            elif monthly and _bare.match(per):
+                why = "monthly series, a single month is not the quarter: %r" % per
             else:
                 # model's own period_end must agree with our parse (both derived from the printed label)
                 me = str(v.get("period_end") or "").replace("-", "")
