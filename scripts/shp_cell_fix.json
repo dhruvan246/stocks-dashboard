@@ -238847,6 +238847,27 @@
      "src": "bsetable3:590071:112",
      "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 11.43 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 13,059,598 sh + NBFC row 0 sh on 111,111,656 = 11.7536 (= Quantmac's figure to 0.001). dii 11.4300 -> 11.7536; fii is the FII session's to check (the same row may share the fill's error)."
     }
+   },
+   "2018-06-30": {
+    "cell": [
+     36.695976,
+     6.11,
+     11.522033,
+     9.437443,
+     1.782746,
+     "2018-07-21"
+    ],
+    "was": [
+     35.78,
+     6.11,
+     11.26,
+     9.44,
+     1.78,
+     "2018-07-21"
+    ],
+    "src": "nse-ndsid:126838",
+    "why": "\u00a7164s part 47 (2026-10-15): Sundaram Finance's Jun-2018 NSE filing SHP_126838 (ndsId 126838; total 111,103,860, promoter 40,770,646) - BSE's XBRL for the quarter returns 'not found'. Own-line DII = MF 10,485,363 + AIF 287,054 + FI/Banks 32,053 + Insurance 1,980,700 + NBFC 16,253 = 12,801,423 = 11.522033 (Quantmac 11.5219). Was 11.26 (third-party 2-decimal figure); promoter 35.78 -> 36.695976 (A / total), mf/ins exact. FII slot left to the FII session.",
+    "exact": true
    }
   },
   "BALMLAWRIE": {
@@ -379994,24 +380015,47 @@
    "2020-03-31": {
     "cell": [
      40.25,
-     19.2817,
-     12.8514,
-     9.9438,
+     19.283242,
+     10.989627,
+     9.944572,
      1.0306,
      "2020-07-15",
      112209
     ],
     "was": [
      40.25,
-     19.2817,
-     9.9714,
-     9.9438,
-     0.0206,
+     19.283242,
+     12.8514,
+     9.944572,
+     1.0306,
      "2020-07-15",
      112209
     ],
-    "src": "bsexbrl:500495_2562020183437_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.97 -> 12.85, fii 19.28 -> 19.28. R2-label Others ALTERNATIVE INVESTMENT FUND 0.99 ; R2-label Others Qualified Institutional Buyer 1.88 SBI LIFE INSURANCE CO. LTD 1.01; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+    "src": "nse-ndsid:146743",
+    "why": "\u00a7164s part 47 (2026-10-15): the quarter row is the ORIGINAL NSE filing (ndsId 146743, found by its total 122,576,878; NSE record order 21-22 Apr 2020): MF 12,189,746 + FI/Banks 8,565 + Insurance 25,300 + NBFC 6,475 + SBI Life Insurance 1,240,656 (registered insurer named on an unlabelled 'Others' row) = 13,470,742 = 10.989627 (= Quantmac 10.9896). Its two 'Others' rows (1,211,952 / 2,300,328) carry no label. Was 12.8514 = BSE's copy of 26-Jun-2020, which labels those rows ALTERNATIVE INVESTMENT FUND / Qualified Institutional Buyer; that copy now rides as a re-filing row from its own date (shp_fill_bse_aspx revisions).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.25,
+      19.2817,
+      12.8514,
+      9.9438,
+      1.0306,
+      "2020-07-15",
+      112209
+     ],
+     "was": [
+      40.25,
+      19.2817,
+      9.9714,
+      9.9438,
+      0.0206,
+      "2020-07-15",
+      112209
+     ],
+     "src": "bsexbrl:500495_2562020183437_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.97 -> 12.85, fii 19.28 -> 19.28. R2-label Others ALTERNATIVE INVESTMENT FUND 0.99 ; R2-label Others Qualified Institutional Buyer 1.88 SBI LIFE INSURANCE CO. LTD 1.01; R3-nbfc NBFCsRegisteredWithRbi 0.01. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2020-06-30": {
     "cell": [
@@ -380546,6 +380590,25 @@
     ],
     "src": "bsexbrl:500495_2072019175540_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 6,546,960; line:FinancialInstitutionOrBanks 160,932; line:InsuranceCompanies 86,029; NBFC row 16,092 = 6,810,013 sh on base 122,576,878 = 5.555708; stored 5.542580 (rows the store had left out or double counted).",
+    "exact": true
+   },
+   "2020-03-31#rev": {
+    "cell": [
+     40.25,
+     19.283242,
+     12.842851,
+     9.944572,
+     1.0306
+    ],
+    "was": [
+     40.25,
+     19.283242,
+     12.842851,
+     9.944572,
+     1.0306
+    ],
+    "src": "bsexbrl:500495_2562020183437_SHP.xml",
+    "why": "\u00a7164s part 47 (2026-10-15): the ESCORTS Mar-2020 re-filing row is BSE's copy of 2020-06-26, read on its own lines: own-line DII 12.842851 (its two Others rows are labelled ALTERNATIVE INVESTMENT FUND 1,211,952 / Qualified Institutional Buyer 2,300,328). The quarter row is now the NSE original (10.989627); this entry records the re-filing's own adjudication (\u00a7224 / part 11 '#rev').",
     "exact": true
    }
   },
