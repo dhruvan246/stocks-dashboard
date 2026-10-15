@@ -206,6 +206,22 @@ def parse_period(label, fy_end_month=3):
     m = re.search(r"\b([1-4])\s*q\s*['\-/]?\s*(\d{4})\b", low)          # quarter first, calendar year: "3Q 2023" (Castrol)
     if m:
         return "q", _q_end(int(m.group(2)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    # explicit month range: "October 2023 to December 2023", "Apr-Jun 2024", "Oct'23 - Dec'23" (Coal India, 2026-10-15)
+    # → a quarter only if it spans exactly 3 months ending on a quarter end; a year only if exactly the 12 FY months
+    MRNG = r"(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?"
+    m = re.search(r"\b" + MRNG + r"(?:[\s,']*(\d{4}|\d{2}))?\s*(?:to|-)\s*" + MRNG + r"[\s,']*(\d{4}|\d{2})\b", low)
+    if m:
+        mons = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+        m1, m2 = mons.index(m.group(1)) + 1, mons.index(m.group(3)) + 1
+        y2 = _yy(m.group(4))
+        y1 = _yy(m.group(2)) if m.group(2) else (y2 if m1 <= m2 else y2 - 1)
+        span = (y2 * 12 + m2) - (y1 * 12 + m1) + 1
+        end = dt.date(y2, m2, calendar.monthrange(y2, m2)[1]).strftime("%Y%m%d")
+        if span == 3 and (m2 - fy_end_month) % 3 == 0:
+            return "q", end
+        if span == 12 and m2 == fy_end_month:
+            return "y", end
+        return None, None
     if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
         return None, None
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
