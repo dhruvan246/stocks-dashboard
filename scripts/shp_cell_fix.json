@@ -266788,25 +266788,26 @@
     "cell": [
      0.0,
      54.735559,
-     24.644,
+     24.694569,
      8.448,
      15.7575,
      "2008-07-21"
     ],
     "was": [
      0.0,
-     54.8522,
+     54.735559,
      24.644,
      8.448,
      15.7575,
      "2008-07-21"
     ],
     "src": "bseaspx:532174:2008-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-06-30: ('Foreign Institutional Investors' 432,431,591 + 'Foreign Bank' 0) / ((A+B) 791,658,927 - 'FIIs-DR' 1,621,154) = 54.735559 (was 54.8522 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,621,154 shares) is depository-receipt shares, so DII moves to the same base as FII: 24.644000 x 791,658,927 / (791,658,927 - 1,621,154) = 24.694569. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      54.8522,
+      54.735559,
       24.644,
       8.448,
       15.7575,
@@ -266814,19 +266815,18 @@
      ],
      "was": [
       0.0,
-      54.8344,
+      54.8522,
       24.644,
       8.448,
       15.7575,
       "2008-07-21"
      ],
-     "src": "bsepage:532174:58",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2008-06-30 - BSE page qtrid 58 rows 'Foreign Institutional Investors' 432,431,591 + 'Foreign Financial Institutions / Banks' 189,826 + 'FIIs-DR' 1,621,154 = 434,242,571 sh on (A+B) 791,658,927 sh (\u00a7164a basis) = 54.8522. Stored 54.8344 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. The 'Foreign Financial Institutions / Banks' row (8 holders 189,826 sh) had been left out (\u00a7142e added FIIs-DR only). fii 54.8344 -> 54.8522.",
-     "exact": true,
+     "src": "bseaspx:532174:2008-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-06-30: ('Foreign Institutional Investors' 432,431,591 + 'Foreign Bank' 0) / ((A+B) 791,658,927 - 'FIIs-DR' 1,621,154) = 54.735559 (was 54.8522 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       54.8344,
+       54.8522,
        24.644,
        8.448,
        15.7575,
@@ -266834,16 +266834,25 @@
       ],
       "was": [
        0.0,
-       38.9996,
-       17.5274,
-       6.0084,
-       11.2071,
+       54.8344,
+       24.644,
+       8.448,
+       15.7575,
        "2008-07-21"
       ],
-      "src": "bseaspx:532174_58",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.406025 = total (A+B+C) 1113092261 shares / (A+B) 791658927 shares on the same quarter's BSE page; fii 39.00 -> 54.83, dii 17.53 -> 24.64.",
+      "src": "bsepage:532174:58",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2008-06-30 - BSE page qtrid 58 rows 'Foreign Institutional Investors' 432,431,591 + 'Foreign Financial Institutions / Banks' 189,826 + 'FIIs-DR' 1,621,154 = 434,242,571 sh on (A+B) 791,658,927 sh (\u00a7164a basis) = 54.8522. Stored 54.8344 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. The 'Foreign Financial Institutions / Banks' row (8 holders 189,826 sh) had been left out (\u00a7142e added FIIs-DR only). fii 54.8344 -> 54.8522.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        54.8344,
+        24.644,
+        8.448,
+        15.7575,
+        "2008-07-21"
+       ],
+       "was": [
         0.0,
         38.9996,
         17.5274,
@@ -266851,16 +266860,28 @@
         11.2071,
         "2008-07-21"
        ],
-       "was": [
-        0.0,
-        38.8496,
-        17.5274,
-        6.0084,
-        11.2071,
-        "2008-07-21"
-       ],
-       "src": "bseaspx:532174:58:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.15)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+       "src": "bseaspx:532174_58",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.406025 = total (A+B+C) 1113092261 shares / (A+B) 791658927 shares on the same quarter's BSE page; fii 39.00 -> 54.83, dii 17.53 -> 24.64.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.9996,
+         17.5274,
+         6.0084,
+         11.2071,
+         "2008-07-21"
+        ],
+        "was": [
+         0.0,
+         38.8496,
+         17.5274,
+         6.0084,
+         11.2071,
+         "2008-07-21"
+        ],
+        "src": "bseaspx:532174:58:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.15)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+       }
       }
      }
     }
@@ -266869,25 +266890,26 @@
     "cell": [
      0.0,
      51.05022,
-     27.3047,
+     27.353692,
      10.8127,
      16.0738,
      "2008-10-21"
     ],
     "was": [
      0.0,
-     51.1379,
+     51.05022,
      27.3047,
      10.8127,
      16.0738,
      "2008-10-21"
     ],
     "src": "bseaspx:532174:2008-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-09-30: ('Foreign Institutional Investors' 405,655,170 + 'Foreign Bank' 194,801) / ((A+B) 796,427,872 - 'FIIs-DR' 1,426,452) = 51.050220 (was 51.1379 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,426,452 shares) is depository-receipt shares, so DII moves to the same base as FII: 27.304700 x 796,427,872 / (796,427,872 - 1,426,452) = 27.353692. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.1379,
+      51.05022,
       27.3047,
       10.8127,
       16.0738,
@@ -266895,18 +266917,18 @@
      ],
      "was": [
       0.0,
-      50.9623,
+      51.1379,
       27.3047,
       10.8127,
       16.0738,
       "2008-10-21"
      ],
-     "src": "bseaspx:532174_59",
-     "why": "\u00a7164r batch 25 (2026-10-05, cell by cell vs Quantmac ICICIBANK): every ICICI page-era cell from Jun-2008 to Mar-2015 counts the company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares, inside (A+B), not the (C) custodian block) with 'Foreign Bank' (\u00a7142e); this quarter's cell had left 'FIIs-DR' out. ICICI page qtrid 59, % of (A+B) 796,427,872 shares (\u00a7164a re-base): 'Foreign Institutional Investors' 405,655,170 shares; 'FIIs-DR' 1,426,452 shares; 'Foreign Bank' 194,801 shares. fii 50.9623 -> 51.1379, dii unchanged. Quantmac drops 'FIIs-DR' from numerator and denominator (their FII 50.3612 = FII shares / ((A+B) - FIIs-DR)): a rule difference, row named.",
+     "src": "bseaspx:532174:2008-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-09-30: ('Foreign Institutional Investors' 405,655,170 + 'Foreign Bank' 194,801) / ((A+B) 796,427,872 - 'FIIs-DR' 1,426,452) = 51.050220 (was 51.1379 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       50.9623,
+       51.1379,
        27.3047,
        10.8127,
        16.0738,
@@ -266914,16 +266936,24 @@
       ],
       "was": [
        0.0,
-       36.4589,
-       19.534,
-       7.7355,
-       11.4993,
+       50.9623,
+       27.3047,
+       10.8127,
+       16.0738,
        "2008-10-21"
       ],
       "src": "bseaspx:532174_59",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.397803 = total (A+B+C) 1113249042 shares / (A+B) 796427872 shares on the same quarter's BSE page; fii 36.46 -> 50.96, dii 19.53 -> 27.30.",
+      "why": "\u00a7164r batch 25 (2026-10-05, cell by cell vs Quantmac ICICIBANK): every ICICI page-era cell from Jun-2008 to Mar-2015 counts the company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares, inside (A+B), not the (C) custodian block) with 'Foreign Bank' (\u00a7142e); this quarter's cell had left 'FIIs-DR' out. ICICI page qtrid 59, % of (A+B) 796,427,872 shares (\u00a7164a re-base): 'Foreign Institutional Investors' 405,655,170 shares; 'FIIs-DR' 1,426,452 shares; 'Foreign Bank' 194,801 shares. fii 50.9623 -> 51.1379, dii unchanged. Quantmac drops 'FIIs-DR' from numerator and denominator (their FII 50.3612 = FII shares / ((A+B) - FIIs-DR)): a rule difference, row named.",
       "superseded": {
        "cell": [
+        0.0,
+        50.9623,
+        27.3047,
+        10.8127,
+        16.0738,
+        "2008-10-21"
+       ],
+       "was": [
         0.0,
         36.4589,
         19.534,
@@ -266931,16 +266961,28 @@
         11.4993,
         "2008-10-21"
        ],
-       "was": [
-        0.0,
-        36.4389,
-        19.534,
-        7.7355,
-        11.4993,
-        "2008-10-21"
-       ],
-       "src": "bseaspx:532174:59:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+       "src": "bseaspx:532174_59",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.397803 = total (A+B+C) 1113249042 shares / (A+B) 796427872 shares on the same quarter's BSE page; fii 36.46 -> 50.96, dii 19.53 -> 27.30.",
+       "superseded": {
+        "cell": [
+         0.0,
+         36.4589,
+         19.534,
+         7.7355,
+         11.4993,
+         "2008-10-21"
+        ],
+        "was": [
+         0.0,
+         36.4389,
+         19.534,
+         7.7355,
+         11.4993,
+         "2008-10-21"
+        ],
+        "src": "bseaspx:532174:59:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+       }
       }
      }
     }
@@ -266949,25 +266991,26 @@
     "cell": [
      0.0,
      50.38534,
-     30.3663,
+     30.460147,
      10.851,
      19.0523,
      "2009-01-21"
     ],
     "was": [
      0.0,
-     50.5382,
+     50.38534,
      30.3663,
      10.851,
      19.0523,
      "2009-01-21"
     ],
     "src": "bseaspx:532174:2008-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-12-31: ('Foreign Institutional Investors' 407,479,393 + 'Foreign Bank' 195,570) / ((A+B) 811,614,816 - 'FIIs-DR' 2,500,569) = 50.385340 (was 50.5382 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (2,500,569 shares) is depository-receipt shares, so DII moves to the same base as FII: 30.366300 x 811,614,816 / (811,614,816 - 2,500,569) = 30.460147. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      50.5382,
+      50.38534,
       30.3663,
       10.851,
       19.0523,
@@ -266975,18 +267018,18 @@
      ],
      "was": [
       0.0,
-      50.2335,
+      50.5382,
       30.3663,
       10.851,
       19.0523,
       "2009-01-21"
      ],
-     "src": "bseaspx:532174_60",
-     "why": "\u00a7164r batch 25 (2026-10-05, cell by cell vs Quantmac ICICIBANK): every ICICI page-era cell from Jun-2008 to Mar-2015 counts the company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares, inside (A+B), not the (C) custodian block) with 'Foreign Bank' (\u00a7142e); this quarter's cell had left 'FIIs-DR' out. ICICI page qtrid 60, % of (A+B) 811,614,816 shares (\u00a7164a re-base): 'Foreign Institutional Investors' 407,479,393 shares; 'FIIs-DR' 2,500,569 shares; 'Foreign Bank' 195,570 shares. fii 50.2335 -> 50.5382, dii unchanged. Quantmac drops 'FIIs-DR' from numerator and denominator (their FII 50.3612 = FII shares / ((A+B) - FIIs-DR)): a rule difference, row named.",
+     "src": "bseaspx:532174:2008-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2008-12-31: ('Foreign Institutional Investors' 407,479,393 + 'Foreign Bank' 195,570) / ((A+B) 811,614,816 - 'FIIs-DR' 2,500,569) = 50.385340 (was 50.5382 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       50.2335,
+       50.5382,
        30.3663,
        10.851,
        19.0523,
@@ -266994,16 +267037,24 @@
       ],
       "was": [
        0.0,
-       36.6227,
-       22.1385,
-       7.9109,
-       13.8901,
+       50.2335,
+       30.3663,
+       10.851,
+       19.0523,
        "2009-01-21"
       ],
       "src": "bseaspx:532174_60",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.371649 = total (A+B+C) 1113250642 shares / (A+B) 811614816 shares on the same quarter's BSE page; fii 36.62 -> 50.23, dii 22.14 -> 30.37.",
+      "why": "\u00a7164r batch 25 (2026-10-05, cell by cell vs Quantmac ICICIBANK): every ICICI page-era cell from Jun-2008 to Mar-2015 counts the company's institutions sub-row 'FIIs-DR' (FIIs' ordinary shares, inside (A+B), not the (C) custodian block) with 'Foreign Bank' (\u00a7142e); this quarter's cell had left 'FIIs-DR' out. ICICI page qtrid 60, % of (A+B) 811,614,816 shares (\u00a7164a re-base): 'Foreign Institutional Investors' 407,479,393 shares; 'FIIs-DR' 2,500,569 shares; 'Foreign Bank' 195,570 shares. fii 50.2335 -> 50.5382, dii unchanged. Quantmac drops 'FIIs-DR' from numerator and denominator (their FII 50.3612 = FII shares / ((A+B) - FIIs-DR)): a rule difference, row named.",
       "superseded": {
        "cell": [
+        0.0,
+        50.2335,
+        30.3663,
+        10.851,
+        19.0523,
+        "2009-01-21"
+       ],
+       "was": [
         0.0,
         36.6227,
         22.1385,
@@ -267011,16 +267062,28 @@
         13.8901,
         "2009-01-21"
        ],
-       "was": [
-        0.0,
-        36.6027,
-        22.1385,
-        7.9109,
-        13.8901,
-        "2009-01-21"
-       ],
-       "src": "bseaspx:532174:60:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+       "src": "bseaspx:532174_60",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.371649 = total (A+B+C) 1113250642 shares / (A+B) 811614816 shares on the same quarter's BSE page; fii 36.62 -> 50.23, dii 22.14 -> 30.37.",
+       "superseded": {
+        "cell": [
+         0.0,
+         36.6227,
+         22.1385,
+         7.9109,
+         13.8901,
+         "2009-01-21"
+        ],
+        "was": [
+         0.0,
+         36.6027,
+         22.1385,
+         7.9109,
+         13.8901,
+         "2009-01-21"
+        ],
+        "src": "bseaspx:532174:60:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.02."
+       }
       }
      }
     }
@@ -267029,25 +267092,26 @@
     "cell": [
      0.0,
      48.747904,
-     30.8496,
+     30.883476,
      9.3825,
      20.9818,
      "2009-04-21"
     ],
     "was": [
      0.0,
-     48.8041,
+     48.747904,
      30.8496,
      9.3825,
      20.9818,
      "2009-04-21"
     ],
     "src": "bseaspx:532174:2009-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-03-31: ('Foreign Institutional Investors' 394,874,889 + 'Foreign Bank' 195,570) / ((A+B) 811,325,734 - 'FIIs-DR' 889,954) = 48.747904 (was 48.8041 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (889,954 shares) is depository-receipt shares, so DII moves to the same base as FII: 30.849600 x 811,325,734 / (811,325,734 - 889,954) = 30.883476. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      48.8041,
+      48.747904,
       30.8496,
       9.3825,
       20.9818,
@@ -267055,19 +267119,18 @@
      ],
      "was": [
       0.0,
-      48.8075,
+      48.8041,
       30.8496,
       9.3825,
       20.9818,
       "2009-04-21"
      ],
-     "src": "bsepage:532174:61",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-03-31 - BSE page qtrid 61 rows 'Foreign Institutional Investors' 394,874,889 + 'FIIs-DR' 889,954 + 'Foreign Bank' 195,570 = 395,960,413 sh on (A+B) 811,325,734 sh (\u00a7164a basis) = 48.8041. Stored 48.8075 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 48.8075 -> 48.8041.",
-     "exact": true,
+     "src": "bseaspx:532174:2009-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-03-31: ('Foreign Institutional Investors' 394,874,889 + 'Foreign Bank' 195,570) / ((A+B) 811,325,734 - 'FIIs-DR' 889,954) = 48.747904 (was 48.8041 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       48.8075,
+       48.8041,
        30.8496,
        9.3825,
        20.9818,
@@ -267075,16 +267138,25 @@
       ],
       "was": [
        0.0,
-       35.5704,
-       22.4829,
-       6.8379,
-       15.2913,
+       48.8075,
+       30.8496,
+       9.3825,
+       20.9818,
        "2009-04-21"
       ],
-      "src": "bseaspx:532174_61",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.372138 = total (A+B+C) 1113250642 shares / (A+B) 811325734 shares on the same quarter's BSE page; fii 35.57 -> 48.81, dii 22.48 -> 30.85.",
+      "src": "bsepage:532174:61",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-03-31 - BSE page qtrid 61 rows 'Foreign Institutional Investors' 394,874,889 + 'FIIs-DR' 889,954 + 'Foreign Bank' 195,570 = 395,960,413 sh on (A+B) 811,325,734 sh (\u00a7164a basis) = 48.8041. Stored 48.8075 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 48.8075 -> 48.8041.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        48.8075,
+        30.8496,
+        9.3825,
+        20.9818,
+        "2009-04-21"
+       ],
+       "was": [
         0.0,
         35.5704,
         22.4829,
@@ -267092,16 +267164,28 @@
         15.2913,
         "2009-04-21"
        ],
-       "was": [
-        0.0,
-        35.4704,
-        22.4829,
-        6.8379,
-        15.2913,
-        "2009-04-21"
-       ],
-       "src": "bseaspx:532174:61:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.10."
+       "src": "bseaspx:532174_61",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.372138 = total (A+B+C) 1113250642 shares / (A+B) 811325734 shares on the same quarter's BSE page; fii 35.57 -> 48.81, dii 22.48 -> 30.85.",
+       "superseded": {
+        "cell": [
+         0.0,
+         35.5704,
+         22.4829,
+         6.8379,
+         15.2913,
+         "2009-04-21"
+        ],
+        "was": [
+         0.0,
+         35.4704,
+         22.4829,
+         6.8379,
+         15.2913,
+         "2009-04-21"
+        ],
+        "src": "bseaspx:532174:61:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.10."
+       }
       }
      }
     }
@@ -267110,25 +267194,26 @@
     "cell": [
      0.0,
      51.151351,
-     33.0585,
+     33.131695,
      9.6561,
      22.895,
      "2009-07-21"
     ],
     "was": [
      0.0,
-     51.2593,
+     51.151351,
      33.0585,
      9.6561,
      22.895,
      "2009-07-21"
     ],
     "src": "bseaspx:532174:2009-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-06-30: ('Foreign Institutional Investors' 402,827,683 + 'Foreign Bank' 200,165) / ((A+B) 789,656,955 - 'FIIs-DR' 1,744,532) = 51.151351 (was 51.2593 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,744,532 shares) is depository-receipt shares, so DII moves to the same base as FII: 33.058500 x 789,656,955 / (789,656,955 - 1,744,532) = 33.131695. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.2593,
+      51.151351,
       33.0585,
       9.6561,
       22.895,
@@ -267136,19 +267221,18 @@
      ],
      "was": [
       0.0,
-      51.2667,
+      51.2593,
       33.0585,
       9.6561,
       22.895,
       "2009-07-21"
      ],
-     "src": "bsepage:532174:62",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-06-30 - BSE page qtrid 62 rows 'Foreign Institutional Investors' 402,827,683 + 'FIIs-DR' 1,744,532 + 'Foreign Bank' 200,165 = 404,772,380 sh on (A+B) 789,656,955 sh (\u00a7164a basis) = 51.2593. Stored 51.2667 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.2667 -> 51.2593.",
-     "exact": true,
+     "src": "bseaspx:532174:2009-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-06-30: ('Foreign Institutional Investors' 402,827,683 + 'Foreign Bank' 200,165) / ((A+B) 789,656,955 - 'FIIs-DR' 1,744,532) = 51.151351 (was 51.2593 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       51.2667,
+       51.2593,
        33.0585,
        9.6561,
        22.895,
@@ -267156,16 +267240,25 @@
       ],
       "was": [
        0.0,
-       36.3624,
-       23.4477,
-       6.8489,
-       16.2389,
+       51.2667,
+       33.0585,
+       9.6561,
+       22.895,
        "2009-07-21"
       ],
-      "src": "bseaspx:532174_62",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409883 = total (A+B+C) 1113324087 shares / (A+B) 789656955 shares on the same quarter's BSE page; fii 36.36 -> 51.27, dii 23.45 -> 33.06.",
+      "src": "bsepage:532174:62",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-06-30 - BSE page qtrid 62 rows 'Foreign Institutional Investors' 402,827,683 + 'FIIs-DR' 1,744,532 + 'Foreign Bank' 200,165 = 404,772,380 sh on (A+B) 789,656,955 sh (\u00a7164a basis) = 51.2593. Stored 51.2667 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.2667 -> 51.2593.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        51.2667,
+        33.0585,
+        9.6561,
+        22.895,
+        "2009-07-21"
+       ],
+       "was": [
         0.0,
         36.3624,
         23.4477,
@@ -267173,16 +267266,28 @@
         16.2389,
         "2009-07-21"
        ],
-       "was": [
-        0.0,
-        36.1824,
-        23.4477,
-        6.8489,
-        16.2389,
-        "2009-07-21"
-       ],
-       "src": "bseaspx:532174:62:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+       "src": "bseaspx:532174_62",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409883 = total (A+B+C) 1113324087 shares / (A+B) 789656955 shares on the same quarter's BSE page; fii 36.36 -> 51.27, dii 23.45 -> 33.06.",
+       "superseded": {
+        "cell": [
+         0.0,
+         36.3624,
+         23.4477,
+         6.8489,
+         16.2389,
+         "2009-07-21"
+        ],
+        "was": [
+         0.0,
+         36.1824,
+         23.4477,
+         6.8489,
+         16.2389,
+         "2009-07-21"
+        ],
+        "src": "bseaspx:532174:62:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+       }
       }
      }
     }
@@ -267191,25 +267296,26 @@
     "cell": [
      0.0,
      50.398278,
-     34.8662,
+     34.92455,
      10.0838,
      24.349,
      "2009-10-21"
     ],
     "was": [
      0.0,
-     50.4811,
+     50.398278,
      34.8662,
      10.0838,
      24.349,
      "2009-10-21"
     ],
     "src": "bseaspx:532174:2009-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-09-30: ('Foreign Institutional Investors' 392,599,123 + 'Foreign Bank' 206,003) / ((A+B) 780,706,233 - 'FIIs-DR' 1,304,353) = 50.398278 (was 50.4811 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,304,353 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.866200 x 780,706,233 / (780,706,233 - 1,304,353) = 34.924550. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      50.4811,
+      50.398278,
       34.8662,
       10.0838,
       24.349,
@@ -267217,19 +267323,18 @@
      ],
      "was": [
       0.0,
-      50.4874,
+      50.4811,
       34.8662,
       10.0838,
       24.349,
       "2009-10-21"
      ],
-     "src": "bsepage:532174:63",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-09-30 - BSE page qtrid 63 rows 'Foreign Institutional Investors' 392,599,123 + 'FIIs-DR' 1,304,353 + 'Foreign Bank' 206,003 = 394,109,479 sh on (A+B) 780,706,233 sh (\u00a7164a basis) = 50.4811. Stored 50.4874 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 50.4874 -> 50.4811.",
-     "exact": true,
+     "src": "bseaspx:532174:2009-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-09-30: ('Foreign Institutional Investors' 392,599,123 + 'Foreign Bank' 206,003) / ((A+B) 780,706,233 - 'FIIs-DR' 1,304,353) = 50.398278 (was 50.4811 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       50.4874,
+       50.4811,
        34.8662,
        10.0838,
        24.349,
@@ -267237,16 +267342,25 @@
       ],
       "was": [
        0.0,
-       35.3961,
-       24.4443,
-       7.0696,
-       17.0708,
+       50.4874,
+       34.8662,
+       10.0838,
+       24.349,
        "2009-10-21"
       ],
-      "src": "bseaspx:532174_63",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.426355 = total (A+B+C) 1113564145 shares / (A+B) 780706233 shares on the same quarter's BSE page; fii 35.40 -> 50.49, dii 24.44 -> 34.87.",
+      "src": "bsepage:532174:63",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-09-30 - BSE page qtrid 63 rows 'Foreign Institutional Investors' 392,599,123 + 'FIIs-DR' 1,304,353 + 'Foreign Bank' 206,003 = 394,109,479 sh on (A+B) 780,706,233 sh (\u00a7164a basis) = 50.4811. Stored 50.4874 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 50.4874 -> 50.4811.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        50.4874,
+        34.8662,
+        10.0838,
+        24.349,
+        "2009-10-21"
+       ],
+       "was": [
         0.0,
         35.3961,
         24.4443,
@@ -267254,16 +267368,28 @@
         17.0708,
         "2009-10-21"
        ],
-       "was": [
-        0.0,
-        35.2561,
-        24.4443,
-        7.0696,
-        17.0708,
-        "2009-10-21"
-       ],
-       "src": "bseaspx:532174:63:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+       "src": "bseaspx:532174_63",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.426355 = total (A+B+C) 1113564145 shares / (A+B) 780706233 shares on the same quarter's BSE page; fii 35.40 -> 50.49, dii 24.44 -> 34.87.",
+       "superseded": {
+        "cell": [
+         0.0,
+         35.3961,
+         24.4443,
+         7.0696,
+         17.0708,
+         "2009-10-21"
+        ],
+        "was": [
+         0.0,
+         35.2561,
+         24.4443,
+         7.0696,
+         17.0708,
+         "2009-10-21"
+        ],
+        "src": "bseaspx:532174:63:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+       }
       }
      }
     }
@@ -267272,25 +267398,26 @@
     "cell": [
      0.0,
      51.114033,
-     34.8481,
+     34.913856,
      10.0199,
      24.4866,
      "2010-01-21"
     ],
     "was": [
      0.0,
-     51.2061,
+     51.114033,
      34.8481,
      10.0199,
      24.4866,
      "2010-01-21"
     ],
     "src": "bseaspx:532174:2009-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-12-31: ('Foreign Institutional Investors' 403,695,062 + 'Foreign Bank' 209,428) / ((A+B) 791,693,816 - 'FIIs-DR' 1,491,069) = 51.114033 (was 51.2061 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,491,069 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.848100 x 791,693,816 / (791,693,816 - 1,491,069) = 34.913856. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.2061,
+      51.114033,
       34.8481,
       10.0199,
       24.4866,
@@ -267298,19 +267425,18 @@
      ],
      "was": [
       0.0,
-      51.2023,
+      51.2061,
       34.8481,
       10.0199,
       24.4866,
       "2010-01-21"
      ],
-     "src": "bsepage:532174:64",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-12-31 - BSE page qtrid 64 rows 'Foreign Institutional Investors' 403,695,062 + 'FIIs-DR' 1,491,069 + 'Foreign Bank' 209,428 = 405,395,559 sh on (A+B) 791,693,816 sh (\u00a7164a basis) = 51.2061. Stored 51.2023 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.2023 -> 51.2061.",
-     "exact": true,
+     "src": "bseaspx:532174:2009-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2009-12-31: ('Foreign Institutional Investors' 403,695,062 + 'Foreign Bank' 209,428) / ((A+B) 791,693,816 - 'FIIs-DR' 1,491,069) = 51.114033 (was 51.2061 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       51.2023,
+       51.2061,
        34.8481,
        10.0199,
        24.4866,
@@ -267318,16 +267444,25 @@
       ],
       "was": [
        0.0,
-       36.384,
-       24.7628,
-       7.1201,
-       17.4,
+       51.2023,
+       34.8481,
+       10.0199,
+       24.4866,
        "2010-01-21"
       ],
-      "src": "bseaspx:532174_64",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.407276 = total (A+B+C) 1114131968 shares / (A+B) 791693816 shares on the same quarter's BSE page; fii 36.38 -> 51.20, dii 24.76 -> 34.85.",
+      "src": "bsepage:532174:64",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2009-12-31 - BSE page qtrid 64 rows 'Foreign Institutional Investors' 403,695,062 + 'FIIs-DR' 1,491,069 + 'Foreign Bank' 209,428 = 405,395,559 sh on (A+B) 791,693,816 sh (\u00a7164a basis) = 51.2061. Stored 51.2023 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.2023 -> 51.2061.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        51.2023,
+        34.8481,
+        10.0199,
+        24.4866,
+        "2010-01-21"
+       ],
+       "was": [
         0.0,
         36.384,
         24.7628,
@@ -267335,16 +267470,28 @@
         17.4,
         "2010-01-21"
        ],
-       "was": [
-        0.0,
-        36.234,
-        24.7628,
-        7.1201,
-        17.4,
-        "2010-01-21"
-       ],
-       "src": "bseaspx:532174:64:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.13), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+       "src": "bseaspx:532174_64",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.407276 = total (A+B+C) 1114131968 shares / (A+B) 791693816 shares on the same quarter's BSE page; fii 36.38 -> 51.20, dii 24.76 -> 34.85.",
+       "superseded": {
+        "cell": [
+         0.0,
+         36.384,
+         24.7628,
+         7.1201,
+         17.4,
+         "2010-01-21"
+        ],
+        "was": [
+         0.0,
+         36.234,
+         24.7628,
+         7.1201,
+         17.4,
+         "2010-01-21"
+        ],
+        "src": "bseaspx:532174:64:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.13), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.15."
+       }
       }
      }
     }
@@ -267353,25 +267500,26 @@
     "cell": [
      0.0,
      51.765147,
-     34.8787,
+     34.9611,
      10.3927,
      24.3166,
      "2010-04-21"
     ],
     "was": [
      0.0,
-     51.8788,
+     51.765147,
      34.8787,
      10.3927,
      24.3166,
      "2010-04-21"
     ],
     "src": "bseaspx:532174:2010-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-03-31: ('Foreign Institutional Investors' 412,705,013 + 'Foreign Bank' 207,778) / ((A+B) 799,550,106 - 'FIIs-DR' 1,884,460) = 51.765147 (was 51.8788 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,884,460 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.878700 x 799,550,106 / (799,550,106 - 1,884,460) = 34.961100. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.8788,
+      51.765147,
       34.8787,
       10.3927,
       24.3166,
@@ -267379,19 +267527,18 @@
      ],
      "was": [
       0.0,
-      51.882,
+      51.8788,
       34.8787,
       10.3927,
       24.3166,
       "2010-04-21"
      ],
-     "src": "bsepage:532174:65",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-03-31 - BSE page qtrid 65 rows 'Foreign Institutional Investors' 412,705,013 + 'FIIs-DR' 1,884,460 + 'Foreign Bank' 207,778 = 414,797,251 sh on (A+B) 799,550,106 sh (\u00a7164a basis) = 51.8788. Stored 51.8820 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.8820 -> 51.8788.",
-     "exact": true,
+     "src": "bseaspx:532174:2010-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-03-31: ('Foreign Institutional Investors' 412,705,013 + 'Foreign Bank' 207,778) / ((A+B) 799,550,106 - 'FIIs-DR' 1,884,460) = 51.765147 (was 51.8788 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       51.882,
+       51.8788,
        34.8787,
        10.3927,
        24.3166,
@@ -267399,16 +267546,25 @@
       ],
       "was": [
        0.0,
-       37.209,
-       25.0145,
-       7.4535,
-       17.4395,
+       51.882,
+       34.8787,
+       10.3927,
+       24.3166,
        "2010-04-21"
       ],
-      "src": "bseaspx:532174_65",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.394341 = total (A+B+C) 1114845314 shares / (A+B) 799550106 shares on the same quarter's BSE page; fii 37.21 -> 51.88, dii 25.01 -> 34.88.",
+      "src": "bsepage:532174:65",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-03-31 - BSE page qtrid 65 rows 'Foreign Institutional Investors' 412,705,013 + 'FIIs-DR' 1,884,460 + 'Foreign Bank' 207,778 = 414,797,251 sh on (A+B) 799,550,106 sh (\u00a7164a basis) = 51.8788. Stored 51.8820 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.8820 -> 51.8788.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        51.882,
+        34.8787,
+        10.3927,
+        24.3166,
+        "2010-04-21"
+       ],
+       "was": [
         0.0,
         37.209,
         25.0145,
@@ -267416,16 +267572,28 @@
         17.4395,
         "2010-04-21"
        ],
-       "was": [
-        0.0,
-        37.019,
-        25.0145,
-        7.4535,
-        17.4395,
-        "2010-04-21"
-       ],
-       "src": "bseaspx:532174:65:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.17), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.19."
+       "src": "bseaspx:532174_65",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.394341 = total (A+B+C) 1114845314 shares / (A+B) 799550106 shares on the same quarter's BSE page; fii 37.21 -> 51.88, dii 25.01 -> 34.88.",
+       "superseded": {
+        "cell": [
+         0.0,
+         37.209,
+         25.0145,
+         7.4535,
+         17.4395,
+         "2010-04-21"
+        ],
+        "was": [
+         0.0,
+         37.019,
+         25.0145,
+         7.4535,
+         17.4395,
+         "2010-04-21"
+        ],
+        "src": "bseaspx:532174:65:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.17), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.19."
+       }
       }
      }
     }
@@ -267434,25 +267602,26 @@
     "cell": [
      0.0,
      53.182574,
-     33.3985,
+     33.472787,
      8.7875,
      24.3683,
      "2010-07-21"
     ],
     "was": [
      0.0,
-     53.2865,
+     53.182574,
      33.3985,
      8.7875,
      24.3683,
      "2010-07-21"
     ],
     "src": "bseaspx:532174:2010-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-06-30: ('Foreign Institutional Investors' 420,492,928 + 'Foreign Bank' 208,043) / ((A+B) 792,809,911 - 'FIIs-DR' 1,759,495) = 53.182574 (was 53.2865 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,759,495 shares) is depository-receipt shares, so DII moves to the same base as FII: 33.398500 x 792,809,911 / (792,809,911 - 1,759,495) = 33.472787. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      53.2865,
+      53.182574,
       33.3985,
       8.7875,
       24.3683,
@@ -267460,19 +267629,18 @@
      ],
      "was": [
       0.0,
-      53.2916,
+      53.2865,
       33.3985,
       8.7875,
       24.3683,
       "2010-07-21"
      ],
-     "src": "bsepage:532174:66",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-06-30 - BSE page qtrid 66 rows 'Foreign Institutional Investors' 420,492,928 + 'FIIs-DR' 1,759,495 + 'Foreign Bank' 208,043 = 422,460,466 sh on (A+B) 792,809,911 sh (\u00a7164a basis) = 53.2865. Stored 53.2916 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.2916 -> 53.2865.",
-     "exact": true,
+     "src": "bseaspx:532174:2010-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-06-30: ('Foreign Institutional Investors' 420,492,928 + 'Foreign Bank' 208,043) / ((A+B) 792,809,911 - 'FIIs-DR' 1,759,495) = 53.182574 (was 53.2865 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       53.2916,
+       53.2865,
        33.3985,
        8.7875,
        24.3683,
@@ -267480,16 +267648,25 @@
       ],
       "was": [
        0.0,
-       37.8769,
-       23.7379,
-       6.2457,
-       17.3197,
+       53.2916,
+       33.3985,
+       8.7875,
+       24.3683,
        "2010-07-21"
       ],
-      "src": "bseaspx:532174_66",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.406969 = total (A+B+C) 1115458683 shares / (A+B) 792809911 shares on the same quarter's BSE page; fii 37.88 -> 53.29, dii 23.74 -> 33.40.",
+      "src": "bsepage:532174:66",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-06-30 - BSE page qtrid 66 rows 'Foreign Institutional Investors' 420,492,928 + 'FIIs-DR' 1,759,495 + 'Foreign Bank' 208,043 = 422,460,466 sh on (A+B) 792,809,911 sh (\u00a7164a basis) = 53.2865. Stored 53.2916 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.2916 -> 53.2865.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        53.2916,
+        33.3985,
+        8.7875,
+        24.3683,
+        "2010-07-21"
+       ],
+       "was": [
         0.0,
         37.8769,
         23.7379,
@@ -267497,16 +267674,28 @@
         17.3197,
         "2010-07-21"
        ],
-       "was": [
-        0.0,
-        37.6969,
-        23.7379,
-        6.2457,
-        17.3197,
-        "2010-07-21"
-       ],
-       "src": "bseaspx:532174:66:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+       "src": "bseaspx:532174_66",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.406969 = total (A+B+C) 1115458683 shares / (A+B) 792809911 shares on the same quarter's BSE page; fii 37.88 -> 53.29, dii 23.74 -> 33.40.",
+       "superseded": {
+        "cell": [
+         0.0,
+         37.8769,
+         23.7379,
+         6.2457,
+         17.3197,
+         "2010-07-21"
+        ],
+        "was": [
+         0.0,
+         37.6969,
+         23.7379,
+         6.2457,
+         17.3197,
+         "2010-07-21"
+        ],
+        "src": "bseaspx:532174:66:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.16), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.18."
+       }
       }
      }
     }
@@ -267515,25 +267704,26 @@
     "cell": [
      0.0,
      54.120719,
-     31.5736,
+     31.621253,
      8.6557,
      22.776,
      "2010-10-21"
     ],
     "was": [
      0.0,
-     54.1899,
+     54.120719,
      31.5736,
      8.6557,
      22.776,
      "2010-10-21"
     ],
     "src": "bseaspx:532174:2010-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-09-30: ('Foreign Institutional Investors' 450,833,577 + 'Foreign Bank' 208,043) / ((A+B) 834,656,995 - 'FIIs-DR' 1,257,831) = 54.120719 (was 54.1899 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,257,831 shares) is depository-receipt shares, so DII moves to the same base as FII: 31.573600 x 834,656,995 / (834,656,995 - 1,257,831) = 31.621253. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      54.1899,
+      54.120719,
       31.5736,
       8.6557,
       22.776,
@@ -267541,19 +267731,18 @@
      ],
      "was": [
       0.0,
-      54.1931,
+      54.1899,
       31.5736,
       8.6557,
       22.776,
       "2010-10-21"
      ],
-     "src": "bsepage:532174:67",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-09-30 - BSE page qtrid 67 rows 'Foreign Institutional Investors' 450,833,577 + 'FIIs-DR' 1,257,831 + 'Foreign Bank' 208,043 = 452,299,451 sh on (A+B) 834,656,995 sh (\u00a7164a basis) = 54.1899. Stored 54.1931 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.1931 -> 54.1899.",
-     "exact": true,
+     "src": "bseaspx:532174:2010-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-09-30: ('Foreign Institutional Investors' 450,833,577 + 'Foreign Bank' 208,043) / ((A+B) 834,656,995 - 'FIIs-DR' 1,257,831) = 54.120719 (was 54.1899 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       54.1931,
+       54.1899,
        31.5736,
        8.6557,
        22.776,
@@ -267561,16 +267750,25 @@
       ],
       "was": [
        0.0,
-       39.404,
-       22.9573,
-       6.2936,
-       16.5605,
+       54.1931,
+       31.5736,
+       8.6557,
+       22.776,
        "2010-10-21"
       ],
-      "src": "bseaspx:532174_67",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.375319 = total (A+B+C) 1147919537 shares / (A+B) 834656995 shares on the same quarter's BSE page; fii 39.40 -> 54.19, dii 22.96 -> 31.57.",
+      "src": "bsepage:532174:67",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-09-30 - BSE page qtrid 67 rows 'Foreign Institutional Investors' 450,833,577 + 'FIIs-DR' 1,257,831 + 'Foreign Bank' 208,043 = 452,299,451 sh on (A+B) 834,656,995 sh (\u00a7164a basis) = 54.1899. Stored 54.1931 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.1931 -> 54.1899.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        54.1931,
+        31.5736,
+        8.6557,
+        22.776,
+        "2010-10-21"
+       ],
+       "was": [
         0.0,
         39.404,
         22.9573,
@@ -267578,16 +267776,28 @@
         16.5605,
         "2010-10-21"
        ],
-       "was": [
-        0.0,
-        39.274,
-        22.9573,
-        6.2936,
-        16.5605,
-        "2010-10-21"
-       ],
-       "src": "bseaspx:532174:67:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_67",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.375319 = total (A+B+C) 1147919537 shares / (A+B) 834656995 shares on the same quarter's BSE page; fii 39.40 -> 54.19, dii 22.96 -> 31.57.",
+       "superseded": {
+        "cell": [
+         0.0,
+         39.404,
+         22.9573,
+         6.2936,
+         16.5605,
+         "2010-10-21"
+        ],
+        "was": [
+         0.0,
+         39.274,
+         22.9573,
+         6.2936,
+         16.5605,
+         "2010-10-21"
+        ],
+        "src": "bseaspx:532174:67:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -267596,25 +267806,26 @@
     "cell": [
      0.0,
      54.009474,
-     32.0252,
+     32.073364,
      9.3623,
      22.5475,
      "2011-01-21"
     ],
     "was": [
      0.0,
-     54.0785,
+     54.009474,
      32.0252,
      9.3623,
      22.5475,
      "2011-01-21"
     ],
     "src": "bseaspx:532174:2010-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-12-31: ('Foreign Institutional Investors' 451,680,100 + 'Foreign Bank' 208,043) / ((A+B) 837,941,433 - 'FIIs-DR' 1,258,331) = 54.009474 (was 54.0785 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,258,331 shares) is depository-receipt shares, so DII moves to the same base as FII: 32.025200 x 837,941,433 / (837,941,433 - 1,258,331) = 32.073364. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      54.0785,
+      54.009474,
       32.0252,
       9.3623,
       22.5475,
@@ -267622,19 +267833,18 @@
      ],
      "was": [
       0.0,
-      54.0822,
+      54.0785,
       32.0252,
       9.3623,
       22.5475,
       "2011-01-21"
      ],
-     "src": "bsepage:532174:68",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-12-31 - BSE page qtrid 68 rows 'Foreign Institutional Investors' 451,680,100 + 'FIIs-DR' 1,258,331 + 'Foreign Bank' 208,043 = 453,146,474 sh on (A+B) 837,941,433 sh (\u00a7164a basis) = 54.0785. Stored 54.0822 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.0822 -> 54.0785.",
-     "exact": true,
+     "src": "bseaspx:532174:2010-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2010-12-31: ('Foreign Institutional Investors' 451,680,100 + 'Foreign Bank' 208,043) / ((A+B) 837,941,433 - 'FIIs-DR' 1,258,331) = 54.009474 (was 54.0785 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       54.0822,
+       54.0785,
        32.0252,
        9.3623,
        22.5475,
@@ -267642,16 +267852,25 @@
       ],
       "was": [
        0.0,
-       39.358,
-       23.3062,
-       6.8134,
-       16.4088,
+       54.0822,
+       32.0252,
+       9.3623,
+       22.5475,
        "2011-01-21"
       ],
-      "src": "bseaspx:532174_68",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.374108 = total (A+B+C) 1151422189 shares / (A+B) 837941433 shares on the same quarter's BSE page; fii 39.36 -> 54.08, dii 23.31 -> 32.03.",
+      "src": "bsepage:532174:68",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2010-12-31 - BSE page qtrid 68 rows 'Foreign Institutional Investors' 451,680,100 + 'FIIs-DR' 1,258,331 + 'Foreign Bank' 208,043 = 453,146,474 sh on (A+B) 837,941,433 sh (\u00a7164a basis) = 54.0785. Stored 54.0822 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.0822 -> 54.0785.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        54.0822,
+        32.0252,
+        9.3623,
+        22.5475,
+        "2011-01-21"
+       ],
+       "was": [
         0.0,
         39.358,
         23.3062,
@@ -267659,16 +267878,28 @@
         16.4088,
         "2011-01-21"
        ],
-       "was": [
-        0.0,
-        39.228,
-        23.3062,
-        6.8134,
-        16.4088,
-        "2011-01-21"
-       ],
-       "src": "bseaspx:532174:68:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_68",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.374108 = total (A+B+C) 1151422189 shares / (A+B) 837941433 shares on the same quarter's BSE page; fii 39.36 -> 54.08, dii 23.31 -> 32.03.",
+       "superseded": {
+        "cell": [
+         0.0,
+         39.358,
+         23.3062,
+         6.8134,
+         16.4088,
+         "2011-01-21"
+        ],
+        "was": [
+         0.0,
+         39.228,
+         23.3062,
+         6.8134,
+         16.4088,
+         "2011-01-21"
+        ],
+        "src": "bseaspx:532174:68:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -267677,25 +267908,26 @@
     "cell": [
      0.0,
      53.011531,
-     32.929,
+     32.984672,
      10.0268,
      22.7923,
      "2011-04-21"
     ],
     "was": [
      0.0,
-     53.0908,
+     53.011531,
      32.929,
      10.0268,
      22.7923,
      "2011-04-21"
     ],
     "src": "bseaspx:532174:2011-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-03-31: ('Foreign Institutional Investors' 444,817,791 + 'Foreign Bank' 220,908) / ((A+B) 840,932,340 - 'FIIs-DR' 1,419,331) = 53.011531 (was 53.0908 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,419,331 shares) is depository-receipt shares, so DII moves to the same base as FII: 32.929000 x 840,932,340 / (840,932,340 - 1,419,331) = 32.984672. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      53.0908,
+      53.011531,
       32.929,
       10.0268,
       22.7923,
@@ -267703,19 +267935,18 @@
      ],
      "was": [
       0.0,
-      53.0876,
+      53.0908,
       32.929,
       10.0268,
       22.7923,
       "2011-04-21"
      ],
-     "src": "bsepage:532174:69",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-03-31 - BSE page qtrid 69 rows 'Foreign Institutional Investors' 444,817,791 + 'FIIs-DR' 1,419,331 + 'Foreign Bank' 220,908 = 446,458,030 sh on (A+B) 840,932,340 sh (\u00a7164a basis) = 53.0908. Stored 53.0876 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.0876 -> 53.0908.",
-     "exact": true,
+     "src": "bseaspx:532174:2011-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-03-31: ('Foreign Institutional Investors' 444,817,791 + 'Foreign Bank' 220,908) / ((A+B) 840,932,340 - 'FIIs-DR' 1,419,331) = 53.011531 (was 53.0908 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       53.0876,
+       53.0908,
        32.929,
        10.0268,
        22.7923,
@@ -267723,16 +267954,25 @@
       ],
       "was": [
        0.0,
-       38.7603,
-       24.0421,
-       7.3208,
-       16.6411,
+       53.0876,
+       32.929,
+       10.0268,
+       22.7923,
        "2011-04-21"
       ],
-      "src": "bseaspx:532174_69",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.369637 = total (A+B+C) 1151772372 shares / (A+B) 840932340 shares on the same quarter's BSE page; fii 38.76 -> 53.09, dii 24.04 -> 32.93.",
+      "src": "bsepage:532174:69",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-03-31 - BSE page qtrid 69 rows 'Foreign Institutional Investors' 444,817,791 + 'FIIs-DR' 1,419,331 + 'Foreign Bank' 220,908 = 446,458,030 sh on (A+B) 840,932,340 sh (\u00a7164a basis) = 53.0908. Stored 53.0876 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.0876 -> 53.0908.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        53.0876,
+        32.929,
+        10.0268,
+        22.7923,
+        "2011-04-21"
+       ],
+       "was": [
         0.0,
         38.7603,
         24.0421,
@@ -267740,16 +267980,28 @@
         16.6411,
         "2011-04-21"
        ],
-       "was": [
-        0.0,
-        38.6203,
-        24.0421,
-        7.3208,
-        16.6411,
-        "2011-04-21"
-       ],
-       "src": "bseaspx:532174:69:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+       "src": "bseaspx:532174_69",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.369637 = total (A+B+C) 1151772372 shares / (A+B) 840932340 shares on the same quarter's BSE page; fii 38.76 -> 53.09, dii 24.04 -> 32.93.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.7603,
+         24.0421,
+         7.3208,
+         16.6411,
+         "2011-04-21"
+        ],
+        "was": [
+         0.0,
+         38.6203,
+         24.0421,
+         7.3208,
+         16.6411,
+         "2011-04-21"
+        ],
+        "src": "bseaspx:532174:69:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.12), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.14."
+       }
       }
      }
     }
@@ -267758,25 +268010,26 @@
     "cell": [
      0.0,
      52.405212,
-     33.7373,
+     33.825313,
      10.7984,
      22.8021,
      "2011-07-21"
     ],
     "was": [
      0.0,
-     52.5291,
+     52.405212,
      33.7373,
      10.7984,
      22.8021,
      "2011-07-21"
     ],
     "src": "bseaspx:532174:2011-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-06-30: ('Foreign Institutional Investors' 444,817,940 + 'Foreign Bank' 220,908) / ((A+B) 851,441,753 - 'FIIs-DR' 2,215,444) = 52.405212 (was 52.5291 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (2,215,444 shares) is depository-receipt shares, so DII moves to the same base as FII: 33.737300 x 851,441,753 / (851,441,753 - 2,215,444) = 33.825313. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      52.5291,
+      52.405212,
       33.7373,
       10.7984,
       22.8021,
@@ -267784,19 +268037,18 @@
      ],
      "was": [
       0.0,
-      52.527,
+      52.5291,
       33.7373,
       10.7984,
       22.8021,
       "2011-07-21"
      ],
-     "src": "bsepage:532174:70",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-06-30 - BSE page qtrid 70 rows 'Foreign Institutional Investors' 444,817,940 + 'FIIs-DR' 2,215,444 + 'Foreign Bank' 220,908 = 447,254,292 sh on (A+B) 851,441,753 sh (\u00a7164a basis) = 52.5291. Stored 52.5270 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 52.5270 -> 52.5291.",
-     "exact": true,
+     "src": "bseaspx:532174:2011-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-06-30: ('Foreign Institutional Investors' 444,817,940 + 'Foreign Bank' 220,908) / ((A+B) 851,441,753 - 'FIIs-DR' 2,215,444) = 52.405212 (was 52.5291 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       52.527,
+       52.5291,
        33.7373,
        10.7984,
        22.8021,
@@ -267804,16 +268056,25 @@
       ],
       "was": [
        0.0,
-       38.8183,
-       24.9324,
-       7.9802,
-       16.8511,
+       52.527,
+       33.7373,
+       10.7984,
+       22.8021,
        "2011-07-21"
       ],
-      "src": "bseaspx:532174_70",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.353151 = total (A+B+C) 1152129421 shares / (A+B) 851441753 shares on the same quarter's BSE page; fii 38.82 -> 52.53, dii 24.93 -> 33.74.",
+      "src": "bsepage:532174:70",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-06-30 - BSE page qtrid 70 rows 'Foreign Institutional Investors' 444,817,940 + 'FIIs-DR' 2,215,444 + 'Foreign Bank' 220,908 = 447,254,292 sh on (A+B) 851,441,753 sh (\u00a7164a basis) = 52.5291. Stored 52.5270 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 52.5270 -> 52.5291.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        52.527,
+        33.7373,
+        10.7984,
+        22.8021,
+        "2011-07-21"
+       ],
+       "was": [
         0.0,
         38.8183,
         24.9324,
@@ -267821,16 +268082,28 @@
         16.8511,
         "2011-07-21"
        ],
-       "was": [
-        0.0,
-        38.6083,
-        24.9324,
-        7.9802,
-        16.8511,
-        "2011-07-21"
-       ],
-       "src": "bseaspx:532174:70:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.19), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.21."
+       "src": "bseaspx:532174_70",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.353151 = total (A+B+C) 1152129421 shares / (A+B) 851441753 shares on the same quarter's BSE page; fii 38.82 -> 52.53, dii 24.93 -> 33.74.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.8183,
+         24.9324,
+         7.9802,
+         16.8511,
+         "2011-07-21"
+        ],
+        "was": [
+         0.0,
+         38.6083,
+         24.9324,
+         7.9802,
+         16.8511,
+         "2011-07-21"
+        ],
+        "src": "bseaspx:532174:70:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.19), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.21."
+       }
       }
      }
     }
@@ -267839,25 +268112,26 @@
     "cell": [
      0.0,
      51.852781,
-     34.0504,
+     34.100867,
      10.3937,
      23.4633,
      "2011-10-21"
     ],
     "was": [
      0.0,
-     51.924,
+     51.852781,
      34.0504,
      10.3937,
      23.4633,
      "2011-10-21"
     ],
     "src": "bseaspx:532174:2011-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-09-30: ('Foreign Institutional Investors' 439,833,589 + 'Foreign Bank' 220,908) / ((A+B) 849,919,161 - 'FIIs-DR' 1,257,831) = 51.852781 (was 51.924 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,257,831 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.050400 x 849,919,161 / (849,919,161 - 1,257,831) = 34.100867. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.924,
+      51.852781,
       34.0504,
       10.3937,
       23.4633,
@@ -267865,19 +268139,18 @@
      ],
      "was": [
       0.0,
-      51.9263,
+      51.924,
       34.0504,
       10.3937,
       23.4633,
       "2011-10-21"
      ],
-     "src": "bsepage:532174:71",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-09-30 - BSE page qtrid 71 rows 'Foreign Institutional Investors' 439,833,589 + 'FIIs-DR' 1,257,831 + 'Foreign Bank' 220,908 = 441,312,328 sh on (A+B) 849,919,161 sh (\u00a7164a basis) = 51.9240. Stored 51.9263 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.9263 -> 51.9240.",
-     "exact": true,
+     "src": "bseaspx:532174:2011-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-09-30: ('Foreign Institutional Investors' 439,833,589 + 'Foreign Bank' 220,908) / ((A+B) 849,919,161 - 'FIIs-DR' 1,257,831) = 51.852781 (was 51.924 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       51.9263,
+       51.924,
        34.0504,
        10.3937,
        23.4633,
@@ -267885,16 +268158,25 @@
       ],
       "was": [
        0.0,
-       38.2963,
-       25.1126,
-       7.6655,
-       17.3045,
+       51.9263,
+       34.0504,
+       10.3937,
+       23.4633,
        "2011-10-21"
       ],
-      "src": "bseaspx:532174_71",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.355908 = total (A+B+C) 1152412079 shares / (A+B) 849919161 shares on the same quarter's BSE page; fii 38.30 -> 51.93, dii 25.11 -> 34.05.",
+      "src": "bsepage:532174:71",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-09-30 - BSE page qtrid 71 rows 'Foreign Institutional Investors' 439,833,589 + 'FIIs-DR' 1,257,831 + 'Foreign Bank' 220,908 = 441,312,328 sh on (A+B) 849,919,161 sh (\u00a7164a basis) = 51.9240. Stored 51.9263 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.9263 -> 51.9240.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        51.9263,
+        34.0504,
+        10.3937,
+        23.4633,
+        "2011-10-21"
+       ],
+       "was": [
         0.0,
         38.2963,
         25.1126,
@@ -267902,16 +268184,28 @@
         17.3045,
         "2011-10-21"
        ],
-       "was": [
-        0.0,
-        38.1663,
-        25.1126,
-        7.6655,
-        17.3045,
-        "2011-10-21"
-       ],
-       "src": "bseaspx:532174:71:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_71",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.355908 = total (A+B+C) 1152412079 shares / (A+B) 849919161 shares on the same quarter's BSE page; fii 38.30 -> 51.93, dii 25.11 -> 34.05.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.2963,
+         25.1126,
+         7.6655,
+         17.3045,
+         "2011-10-21"
+        ],
+        "was": [
+         0.0,
+         38.1663,
+         25.1126,
+         7.6655,
+         17.3045,
+         "2011-10-21"
+        ],
+        "src": "bseaspx:532174:71:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -267920,25 +268214,26 @@
     "cell": [
      0.0,
      47.363517,
-     37.8423,
+     37.893801,
      12.1561,
      25.4893,
      "2012-01-21"
     ],
     "was": [
      0.0,
-     47.4351,
+     47.363517,
      37.8423,
      12.1561,
      25.4893,
      "2012-01-21"
     ],
     "src": "bseaspx:532174:2011-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-12-31: ('Foreign Institutional Investors' 400,367,603 + 'Foreign Bank' 220,908) / ((A+B) 846,925,463 - 'FIIs-DR' 1,151,049) = 47.363517 (was 47.4351 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,151,049 shares) is depository-receipt shares, so DII moves to the same base as FII: 37.842300 x 846,925,463 / (846,925,463 - 1,151,049) = 37.893801. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      47.4351,
+      47.363517,
       37.8423,
       12.1561,
       25.4893,
@@ -267946,19 +268241,18 @@
      ],
      "was": [
       0.0,
-      47.4364,
+      47.4351,
       37.8423,
       12.1561,
       25.4893,
       "2012-01-21"
      ],
-     "src": "bsepage:532174:72",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-12-31 - BSE page qtrid 72 rows 'Foreign Institutional Investors' 400,367,603 + 'FIIs-DR' 1,151,049 + 'Foreign Bank' 220,908 = 401,739,560 sh on (A+B) 846,925,463 sh (\u00a7164a basis) = 47.4351. Stored 47.4364 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 47.4364 -> 47.4351.",
-     "exact": true,
+     "src": "bseaspx:532174:2011-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2011-12-31: ('Foreign Institutional Investors' 400,367,603 + 'Foreign Bank' 220,908) / ((A+B) 846,925,463 - 'FIIs-DR' 1,151,049) = 47.363517 (was 47.4351 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       47.4364,
+       47.4351,
        37.8423,
        12.1561,
        25.4893,
@@ -267966,16 +268260,25 @@
       ],
       "was": [
        0.0,
-       34.8571,
-       27.8072,
-       8.9325,
-       18.73,
+       47.4364,
+       37.8423,
+       12.1561,
+       25.4893,
        "2012-01-21"
       ],
-      "src": "bseaspx:532174_72",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.360881 = total (A+B+C) 1152564657 shares / (A+B) 846925463 shares on the same quarter's BSE page; fii 34.86 -> 47.44, dii 27.81 -> 37.84.",
+      "src": "bsepage:532174:72",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2011-12-31 - BSE page qtrid 72 rows 'Foreign Institutional Investors' 400,367,603 + 'FIIs-DR' 1,151,049 + 'Foreign Bank' 220,908 = 401,739,560 sh on (A+B) 846,925,463 sh (\u00a7164a basis) = 47.4351. Stored 47.4364 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 47.4364 -> 47.4351.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        47.4364,
+        37.8423,
+        12.1561,
+        25.4893,
+        "2012-01-21"
+       ],
+       "was": [
         0.0,
         34.8571,
         27.8072,
@@ -267983,16 +268286,28 @@
         18.73,
         "2012-01-21"
        ],
-       "was": [
-        0.0,
-        34.7371,
-        27.8072,
-        8.9325,
-        18.73,
-        "2012-01-21"
-       ],
-       "src": "bseaspx:532174:72:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       "src": "bseaspx:532174_72",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.360881 = total (A+B+C) 1152564657 shares / (A+B) 846925463 shares on the same quarter's BSE page; fii 34.86 -> 47.44, dii 27.81 -> 37.84.",
+       "superseded": {
+        "cell": [
+         0.0,
+         34.8571,
+         27.8072,
+         8.9325,
+         18.73,
+         "2012-01-21"
+        ],
+        "was": [
+         0.0,
+         34.7371,
+         27.8072,
+         8.9325,
+         18.73,
+         "2012-01-21"
+        ],
+        "src": "bseaspx:532174:72:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       }
       }
      }
     }
@@ -268001,25 +268316,26 @@
     "cell": [
      0.0,
      49.024975,
-     36.4166,
+     36.470813,
      12.0935,
      24.1607,
      "2012-04-21"
     ],
     "was": [
      0.0,
-     49.1007,
+     49.024975,
      36.4166,
      12.0935,
      24.1607,
      "2012-04-21"
     ],
     "src": "bseaspx:532174:2012-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-03-31: ('Foreign Institutional Investors' 412,542,807 + 'Foreign Bank' 221,033) / ((A+B) 843,199,448 - 'FIIs-DR' 1,253,393) = 49.024975 (was 49.1007 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,253,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 36.416600 x 843,199,448 / (843,199,448 - 1,253,393) = 36.470813. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      49.1007,
+      49.024975,
       36.4166,
       12.0935,
       24.1607,
@@ -268027,19 +268343,18 @@
      ],
      "was": [
       0.0,
-      49.1036,
+      49.1007,
       36.4166,
       12.0935,
       24.1607,
       "2012-04-21"
      ],
-     "src": "bsepage:532174:73",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-03-31 - BSE page qtrid 73 rows 'Foreign Institutional Investors' 412,542,807 + 'FIIs-DR' 1,253,393 + 'Foreign Bank' 221,033 = 414,017,233 sh on (A+B) 843,199,448 sh (\u00a7164a basis) = 49.1007. Stored 49.1036 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 49.1036 -> 49.1007.",
-     "exact": true,
+     "src": "bseaspx:532174:2012-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-03-31: ('Foreign Institutional Investors' 412,542,807 + 'Foreign Bank' 221,033) / ((A+B) 843,199,448 - 'FIIs-DR' 1,253,393) = 49.024975 (was 49.1007 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       49.1036,
+       49.1007,
        36.4166,
        12.0935,
        24.1607,
@@ -268047,16 +268362,25 @@
       ],
       "was": [
        0.0,
-       35.9188,
-       26.6384,
-       8.8463,
-       17.6733,
+       49.1036,
+       36.4166,
+       12.0935,
+       24.1607,
        "2012-04-21"
       ],
-      "src": "bseaspx:532174_73",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.367072 = total (A+B+C) 1152714442 shares / (A+B) 843199448 shares on the same quarter's BSE page; fii 35.92 -> 49.10, dii 26.64 -> 36.42.",
+      "src": "bsepage:532174:73",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-03-31 - BSE page qtrid 73 rows 'Foreign Institutional Investors' 412,542,807 + 'FIIs-DR' 1,253,393 + 'Foreign Bank' 221,033 = 414,017,233 sh on (A+B) 843,199,448 sh (\u00a7164a basis) = 49.1007. Stored 49.1036 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 49.1036 -> 49.1007.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        49.1036,
+        36.4166,
+        12.0935,
+        24.1607,
+        "2012-04-21"
+       ],
+       "was": [
         0.0,
         35.9188,
         26.6384,
@@ -268064,16 +268388,28 @@
         17.6733,
         "2012-04-21"
        ],
-       "was": [
-        0.0,
-        35.7888,
-        26.6384,
-        8.8463,
-        17.6733,
-        "2012-04-21"
-       ],
-       "src": "bseaspx:532174:73:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_73",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.367072 = total (A+B+C) 1152714442 shares / (A+B) 843199448 shares on the same quarter's BSE page; fii 35.92 -> 49.10, dii 26.64 -> 36.42.",
+       "superseded": {
+        "cell": [
+         0.0,
+         35.9188,
+         26.6384,
+         8.8463,
+         17.6733,
+         "2012-04-21"
+        ],
+        "was": [
+         0.0,
+         35.7888,
+         26.6384,
+         8.8463,
+         17.6733,
+         "2012-04-21"
+        ],
+        "src": "bseaspx:532174:73:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268082,25 +268418,26 @@
     "cell": [
      0.0,
      48.062156,
-     38.1236,
+     38.180129,
      13.2444,
      24.5466,
      "2012-07-21"
     ],
     "was": [
      0.0,
-     48.1391,
+     48.062156,
      38.1236,
      13.2444,
      24.5466,
      "2012-07-21"
     ],
     "src": "bseaspx:532174:2012-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-06-30: ('Foreign Institutional Investors' 401,506,221 + 'Foreign Bank' 221,033) / ((A+B) 837,088,812 - 'FIIs-DR' 1,239,393) = 48.062156 (was 48.1391 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,239,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 38.123600 x 837,088,812 / (837,088,812 - 1,239,393) = 38.180129. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      48.1391,
+      48.062156,
       38.1236,
       13.2444,
       24.5466,
@@ -268108,19 +268445,18 @@
      ],
      "was": [
       0.0,
-      48.1436,
+      48.1391,
       38.1236,
       13.2444,
       24.5466,
       "2012-07-21"
      ],
-     "src": "bsepage:532174:74",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-06-30 - BSE page qtrid 74 rows 'Foreign Institutional Investors' 401,506,221 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 402,966,647 sh on (A+B) 837,088,812 sh (\u00a7164a basis) = 48.1391. Stored 48.1436 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 48.1436 -> 48.1391.",
-     "exact": true,
+     "src": "bseaspx:532174:2012-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-06-30: ('Foreign Institutional Investors' 401,506,221 + 'Foreign Bank' 221,033) / ((A+B) 837,088,812 - 'FIIs-DR' 1,239,393) = 48.062156 (was 48.1391 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       48.1436,
+       48.1391,
        38.1236,
        13.2444,
        24.5466,
@@ -268128,16 +268464,25 @@
       ],
       "was": [
        0.0,
-       34.9565,
-       27.6811,
-       9.6166,
-       17.823,
+       48.1436,
+       38.1236,
+       13.2444,
+       24.5466,
        "2012-07-21"
       ],
-      "src": "bseaspx:532174_74",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.377243 = total (A+B+C) 1152874294 shares / (A+B) 837088812 shares on the same quarter's BSE page; fii 34.96 -> 48.14, dii 27.68 -> 38.12.",
+      "src": "bsepage:532174:74",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-06-30 - BSE page qtrid 74 rows 'Foreign Institutional Investors' 401,506,221 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 402,966,647 sh on (A+B) 837,088,812 sh (\u00a7164a basis) = 48.1391. Stored 48.1436 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 48.1436 -> 48.1391.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        48.1436,
+        38.1236,
+        13.2444,
+        24.5466,
+        "2012-07-21"
+       ],
+       "was": [
         0.0,
         34.9565,
         27.6811,
@@ -268145,16 +268490,28 @@
         17.823,
         "2012-07-21"
        ],
-       "was": [
-        0.0,
-        34.8265,
-        27.6811,
-        9.6166,
-        17.823,
-        "2012-07-21"
-       ],
-       "src": "bseaspx:532174:74:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_74",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.377243 = total (A+B+C) 1152874294 shares / (A+B) 837088812 shares on the same quarter's BSE page; fii 34.96 -> 48.14, dii 27.68 -> 38.12.",
+       "superseded": {
+        "cell": [
+         0.0,
+         34.9565,
+         27.6811,
+         9.6166,
+         17.823,
+         "2012-07-21"
+        ],
+        "was": [
+         0.0,
+         34.8265,
+         27.6811,
+         9.6166,
+         17.823,
+         "2012-07-21"
+        ],
+        "src": "bseaspx:532174:74:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268163,25 +268520,26 @@
     "cell": [
      0.0,
      51.293756,
-     35.5603,
+     35.614171,
      12.2097,
      23.2518,
      "2012-10-21"
     ],
     "was": [
      0.0,
-     51.3674,
+     51.293756,
      35.5603,
      12.2097,
      23.2518,
      "2012-10-21"
     ],
     "src": "bseaspx:532174:2012-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-09-30: ('Foreign Institutional Investors' 419,425,647 + 'Foreign Bank' 222,033) / ((A+B) 819,365,642 - 'FIIs-DR' 1,239,393) = 51.293756 (was 51.3674 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,239,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 35.560300 x 819,365,642 / (819,365,642 - 1,239,393) = 35.614171. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      51.3674,
+      51.293756,
       35.5603,
       12.2097,
       23.2518,
@@ -268189,19 +268547,18 @@
      ],
      "was": [
       0.0,
-      51.372,
+      51.3674,
       35.5603,
       12.2097,
       23.2518,
       "2012-10-21"
      ],
-     "src": "bsepage:532174:75",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-09-30 - BSE page qtrid 75 rows 'Foreign Institutional Investors' 419,425,647 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 222,033 = 420,887,073 sh on (A+B) 819,365,642 sh (\u00a7164a basis) = 51.3674. Stored 51.3720 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.3720 -> 51.3674.",
-     "exact": true,
+     "src": "bseaspx:532174:2012-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-09-30: ('Foreign Institutional Investors' 419,425,647 + 'Foreign Bank' 222,033) / ((A+B) 819,365,642 - 'FIIs-DR' 1,239,393) = 51.293756 (was 51.3674 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       51.372,
+       51.3674,
        35.5603,
        12.2097,
        23.2518,
@@ -268209,16 +268566,25 @@
       ],
       "was": [
        0.0,
-       36.506,
-       25.2699,
-       8.6765,
-       16.5232,
+       51.372,
+       35.5603,
+       12.2097,
+       23.2518,
        "2012-10-21"
       ],
-      "src": "bseaspx:532174_75",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.407220 = total (A+B+C) 1153027642 shares / (A+B) 819365642 shares on the same quarter's BSE page; fii 36.51 -> 51.37, dii 25.27 -> 35.56.",
+      "src": "bsepage:532174:75",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-09-30 - BSE page qtrid 75 rows 'Foreign Institutional Investors' 419,425,647 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 222,033 = 420,887,073 sh on (A+B) 819,365,642 sh (\u00a7164a basis) = 51.3674. Stored 51.3720 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 51.3720 -> 51.3674.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        51.372,
+        35.5603,
+        12.2097,
+        23.2518,
+        "2012-10-21"
+       ],
+       "was": [
         0.0,
         36.506,
         25.2699,
@@ -268226,16 +268592,28 @@
         16.5232,
         "2012-10-21"
        ],
-       "was": [
-        0.0,
-        36.376,
-        25.2699,
-        8.6765,
-        16.5232,
-        "2012-10-21"
-       ],
-       "src": "bseaspx:532174:75:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_75",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.407220 = total (A+B+C) 1153027642 shares / (A+B) 819365642 shares on the same quarter's BSE page; fii 36.51 -> 51.37, dii 25.27 -> 35.56.",
+       "superseded": {
+        "cell": [
+         0.0,
+         36.506,
+         25.2699,
+         8.6765,
+         16.5232,
+         "2012-10-21"
+        ],
+        "was": [
+         0.0,
+         36.376,
+         25.2699,
+         8.6765,
+         16.5232,
+         "2012-10-21"
+        ],
+        "src": "bseaspx:532174:75:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268244,25 +268622,26 @@
     "cell": [
      0.0,
      52.3635,
-     34.9542,
+     35.007233,
      12.6301,
      22.2541,
      "2013-01-21"
     ],
     "was": [
      0.0,
-     52.4357,
+     52.3635,
      34.9542,
      12.6301,
      22.2541,
      "2013-01-21"
     ],
     "src": "bseaspx:532174:2012-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-12-31: ('Foreign Institutional Investors' 427,525,864 + 'Foreign Bank' 221,033) / ((A+B) 818,119,270 - 'FIIs-DR' 1,239,393) = 52.363500 (was 52.4357 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,239,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.954200 x 818,119,270 / (818,119,270 - 1,239,393) = 35.007233. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      52.4357,
+      52.3635,
       34.9542,
       12.6301,
       22.2541,
@@ -268270,19 +268649,18 @@
      ],
      "was": [
       0.0,
-      52.4404,
+      52.4357,
       34.9542,
       12.6301,
       22.2541,
       "2013-01-21"
      ],
-     "src": "bsepage:532174:76",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-12-31 - BSE page qtrid 76 rows 'Foreign Institutional Investors' 427,525,864 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 428,986,290 sh on (A+B) 818,119,270 sh (\u00a7164a basis) = 52.4357. Stored 52.4404 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 52.4404 -> 52.4357.",
-     "exact": true,
+     "src": "bseaspx:532174:2012-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2012-12-31: ('Foreign Institutional Investors' 427,525,864 + 'Foreign Bank' 221,033) / ((A+B) 818,119,270 - 'FIIs-DR' 1,239,393) = 52.363500 (was 52.4357 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       52.4404,
+       52.4357,
        34.9542,
        12.6301,
        22.2541,
@@ -268290,16 +268668,25 @@
       ],
       "was": [
        0.0,
-       37.1997,
-       24.7955,
-       8.9594,
-       15.7864,
+       52.4404,
+       34.9542,
+       12.6301,
+       22.2541,
        "2013-01-21"
       ],
-      "src": "bseaspx:532174_76",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409700 = total (A+B+C) 1153303032 shares / (A+B) 818119270 shares on the same quarter's BSE page; fii 37.20 -> 52.44, dii 24.80 -> 34.95.",
+      "src": "bsepage:532174:76",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2012-12-31 - BSE page qtrid 76 rows 'Foreign Institutional Investors' 427,525,864 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 428,986,290 sh on (A+B) 818,119,270 sh (\u00a7164a basis) = 52.4357. Stored 52.4404 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 52.4404 -> 52.4357.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        52.4404,
+        34.9542,
+        12.6301,
+        22.2541,
+        "2013-01-21"
+       ],
+       "was": [
         0.0,
         37.1997,
         24.7955,
@@ -268307,16 +268694,28 @@
         15.7864,
         "2013-01-21"
        ],
-       "was": [
-        0.0,
-        37.0697,
-        24.7955,
-        8.9594,
-        15.7864,
-        "2013-01-21"
-       ],
-       "src": "bseaspx:532174:76:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_76",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409700 = total (A+B+C) 1153303032 shares / (A+B) 818119270 shares on the same quarter's BSE page; fii 37.20 -> 52.44, dii 24.80 -> 34.95.",
+       "superseded": {
+        "cell": [
+         0.0,
+         37.1997,
+         24.7955,
+         8.9594,
+         15.7864,
+         "2013-01-21"
+        ],
+        "was": [
+         0.0,
+         37.0697,
+         24.7955,
+         8.9594,
+         15.7864,
+         "2013-01-21"
+        ],
+        "src": "bseaspx:532174:76:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268325,25 +268724,26 @@
     "cell": [
      0.0,
      53.647122,
-     33.9205,
+     33.972036,
      12.3306,
      21.4531,
      "2013-04-21"
     ],
     "was": [
      0.0,
-     53.7174,
+     53.647122,
      33.9205,
      12.3306,
      21.4531,
      "2013-04-21"
     ],
     "src": "bseaspx:532174:2013-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-03-31: ('Foreign Institutional Investors' 437,407,809 + 'Foreign Bank' 221,033) / ((A+B) 816,993,953 - 'FIIs-DR' 1,239,393) = 53.647122 (was 53.7174 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,239,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 33.920500 x 816,993,953 / (816,993,953 - 1,239,393) = 33.972036. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      53.7174,
+      53.647122,
       33.9205,
       12.3306,
       21.4531,
@@ -268351,19 +268751,18 @@
      ],
      "was": [
       0.0,
-      53.7223,
+      53.7174,
       33.9205,
       12.3306,
       21.4531,
       "2013-04-21"
      ],
-     "src": "bsepage:532174:77",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-03-31 - BSE page qtrid 77 rows 'Foreign Institutional Investors' 437,407,809 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 438,868,235 sh on (A+B) 816,993,953 sh (\u00a7164a basis) = 53.7174. Stored 53.7223 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.7223 -> 53.7174.",
-     "exact": true,
+     "src": "bseaspx:532174:2013-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-03-31: ('Foreign Institutional Investors' 437,407,809 + 'Foreign Bank' 221,033) / ((A+B) 816,993,953 - 'FIIs-DR' 1,239,393) = 53.647122 (was 53.7174 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       53.7223,
+       53.7174,
        33.9205,
        12.3306,
        21.4531,
@@ -268371,16 +268770,25 @@
       ],
       "was": [
        0.0,
-       38.0474,
-       24.0233,
-       8.7328,
-       15.1936,
+       53.7223,
+       33.9205,
+       12.3306,
+       21.4531,
        "2013-04-21"
       ],
-      "src": "bseaspx:532174_77",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411983 = total (A+B+C) 1153581715 shares / (A+B) 816993953 shares on the same quarter's BSE page; fii 38.05 -> 53.72, dii 24.02 -> 33.92.",
+      "src": "bsepage:532174:77",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-03-31 - BSE page qtrid 77 rows 'Foreign Institutional Investors' 437,407,809 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 438,868,235 sh on (A+B) 816,993,953 sh (\u00a7164a basis) = 53.7174. Stored 53.7223 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.7223 -> 53.7174.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        53.7223,
+        33.9205,
+        12.3306,
+        21.4531,
+        "2013-04-21"
+       ],
+       "was": [
         0.0,
         38.0474,
         24.0233,
@@ -268388,16 +268796,28 @@
         15.1936,
         "2013-04-21"
        ],
-       "was": [
-        0.0,
-        37.9174,
-        24.0233,
-        8.7328,
-        15.1936,
-        "2013-04-21"
-       ],
-       "src": "bseaspx:532174:77:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_77",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411983 = total (A+B+C) 1153581715 shares / (A+B) 816993953 shares on the same quarter's BSE page; fii 38.05 -> 53.72, dii 24.02 -> 33.92.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.0474,
+         24.0233,
+         8.7328,
+         15.1936,
+         "2013-04-21"
+        ],
+        "was": [
+         0.0,
+         37.9174,
+         24.0233,
+         8.7328,
+         15.1936,
+         "2013-04-21"
+        ],
+        "src": "bseaspx:532174:77:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268406,25 +268826,26 @@
     "cell": [
      0.0,
      55.484288,
-     32.2707,
+     32.319701,
      11.2478,
      20.9027,
      "2013-07-21"
     ],
     "was": [
      0.0,
-     55.5518,
+     55.484288,
      32.2707,
      11.2478,
      20.9027,
      "2013-07-21"
     ],
     "src": "bseaspx:532174:2013-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-06-30: ('Foreign Institutional Investors' 452,657,029 + 'Foreign Bank' 221,033) / ((A+B) 817,466,975 - 'FIIs-DR' 1,239,393) = 55.484288 (was 55.5518 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,239,393 shares) is depository-receipt shares, so DII moves to the same base as FII: 32.270700 x 817,466,975 / (817,466,975 - 1,239,393) = 32.319701. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      55.5518,
+      55.484288,
       32.2707,
       11.2478,
       20.9027,
@@ -268432,19 +268853,18 @@
      ],
      "was": [
       0.0,
-      55.5567,
+      55.5518,
       32.2707,
       11.2478,
       20.9027,
       "2013-07-21"
      ],
-     "src": "bsepage:532174:78",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-06-30 - BSE page qtrid 78 rows 'Foreign Institutional Investors' 452,657,029 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 454,117,455 sh on (A+B) 817,466,975 sh (\u00a7164a basis) = 55.5518. Stored 55.5567 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 55.5567 -> 55.5518.",
-     "exact": true,
+     "src": "bseaspx:532174:2013-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-06-30: ('Foreign Institutional Investors' 452,657,029 + 'Foreign Bank' 221,033) / ((A+B) 817,466,975 - 'FIIs-DR' 1,239,393) = 55.484288 (was 55.5518 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       55.5567,
+       55.5518,
        32.2707,
        11.2478,
        20.9027,
@@ -268452,16 +268872,25 @@
       ],
       "was": [
        0.0,
-       39.3532,
-       22.8587,
-       7.9673,
-       14.8063,
+       55.5567,
+       32.2707,
+       11.2478,
+       20.9027,
        "2013-07-21"
       ],
-      "src": "bseaspx:532174_78",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411745 = total (A+B+C) 1154054737 shares / (A+B) 817466975 shares on the same quarter's BSE page; fii 39.35 -> 55.56, dii 22.86 -> 32.27.",
+      "src": "bsepage:532174:78",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-06-30 - BSE page qtrid 78 rows 'Foreign Institutional Investors' 452,657,029 + 'FIIs-DR' 1,239,393 + 'Foreign Bank' 221,033 = 454,117,455 sh on (A+B) 817,466,975 sh (\u00a7164a basis) = 55.5518. Stored 55.5567 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 55.5567 -> 55.5518.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        55.5567,
+        32.2707,
+        11.2478,
+        20.9027,
+        "2013-07-21"
+       ],
+       "was": [
         0.0,
         39.3532,
         22.8587,
@@ -268469,16 +268898,28 @@
         14.8063,
         "2013-07-21"
        ],
-       "was": [
-        0.0,
-        39.2232,
-        22.8587,
-        7.9673,
-        14.8063,
-        "2013-07-21"
-       ],
-       "src": "bseaspx:532174:78:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       "src": "bseaspx:532174_78",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411745 = total (A+B+C) 1154054737 shares / (A+B) 817466975 shares on the same quarter's BSE page; fii 39.35 -> 55.56, dii 22.86 -> 32.27.",
+       "superseded": {
+        "cell": [
+         0.0,
+         39.3532,
+         22.8587,
+         7.9673,
+         14.8063,
+         "2013-07-21"
+        ],
+        "was": [
+         0.0,
+         39.2232,
+         22.8587,
+         7.9673,
+         14.8063,
+         "2013-07-21"
+        ],
+        "src": "bseaspx:532174:78:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.11), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.13."
+       }
       }
      }
     }
@@ -268487,25 +268928,26 @@
     "cell": [
      0.0,
      53.093049,
-     35.1857,
+     35.23435,
      10.0738,
      24.9939,
      "2013-10-21"
     ],
     "was": [
      0.0,
-     53.1578,
+     53.093049,
      35.1857,
      10.0738,
      24.9939,
      "2013-10-21"
     ],
     "src": "bseaspx:532174:2013-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-09-30: ('Foreign Institutional Investors' 433,375,196 + 'Foreign Bank' 221,033) / ((A+B) 817,801,501 - 'FIIs-DR' 1,129,193) = 53.093049 (was 53.1578 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,129,193 shares) is depository-receipt shares, so DII moves to the same base as FII: 35.185700 x 817,801,501 / (817,801,501 - 1,129,193) = 35.234350. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      53.1578,
+      53.093049,
       35.1857,
       10.0738,
       24.9939,
@@ -268513,19 +268955,18 @@
      ],
      "was": [
       0.0,
-      53.1621,
+      53.1578,
       35.1857,
       10.0738,
       24.9939,
       "2013-10-21"
      ],
-     "src": "bsepage:532174:79",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-09-30 - BSE page qtrid 79 rows 'Foreign Institutional Investors' 433,375,196 + 'FIIs-DR' 1,129,193 + 'Foreign Bank' 221,033 = 434,725,422 sh on (A+B) 817,801,501 sh (\u00a7164a basis) = 53.1578. Stored 53.1621 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.1621 -> 53.1578.",
-     "exact": true,
+     "src": "bseaspx:532174:2013-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-09-30: ('Foreign Institutional Investors' 433,375,196 + 'Foreign Bank' 221,033) / ((A+B) 817,801,501 - 'FIIs-DR' 1,129,193) = 53.093049 (was 53.1578 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       53.1621,
+       53.1578,
        35.1857,
        10.0738,
        24.9939,
@@ -268533,16 +268974,25 @@
       ],
       "was": [
        0.0,
-       37.6613,
-       24.9264,
-       7.1365,
-       17.7063,
+       53.1621,
+       35.1857,
+       10.0738,
+       24.9939,
        "2013-10-21"
       ],
-      "src": "bseaspx:532174_79",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411583 = total (A+B+C) 1154394745 shares / (A+B) 817801501 shares on the same quarter's BSE page; fii 37.66 -> 53.16, dii 24.93 -> 35.19.",
+      "src": "bsepage:532174:79",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-09-30 - BSE page qtrid 79 rows 'Foreign Institutional Investors' 433,375,196 + 'FIIs-DR' 1,129,193 + 'Foreign Bank' 221,033 = 434,725,422 sh on (A+B) 817,801,501 sh (\u00a7164a basis) = 53.1578. Stored 53.1621 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 53.1621 -> 53.1578.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        53.1621,
+        35.1857,
+        10.0738,
+        24.9939,
+        "2013-10-21"
+       ],
+       "was": [
         0.0,
         37.6613,
         24.9264,
@@ -268550,16 +269000,28 @@
         17.7063,
         "2013-10-21"
        ],
-       "was": [
-        0.0,
-        37.5413,
-        24.9264,
-        7.1365,
-        17.7063,
-        "2013-10-21"
-       ],
-       "src": "bseaspx:532174:79:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       "src": "bseaspx:532174_79",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411583 = total (A+B+C) 1154394745 shares / (A+B) 817801501 shares on the same quarter's BSE page; fii 37.66 -> 53.16, dii 24.93 -> 35.19.",
+       "superseded": {
+        "cell": [
+         0.0,
+         37.6613,
+         24.9264,
+         7.1365,
+         17.7063,
+         "2013-10-21"
+        ],
+        "was": [
+         0.0,
+         37.5413,
+         24.9264,
+         7.1365,
+         17.7063,
+         "2013-10-21"
+        ],
+        "src": "bseaspx:532174:79:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       }
       }
      }
     }
@@ -268568,25 +269030,26 @@
     "cell": [
      0.0,
      54.291726,
-     34.5905,
+     34.638326,
      10.9545,
      23.5956,
      "2014-01-21"
     ],
     "was": [
      0.0,
-     54.3548,
+     54.291726,
      34.5905,
      10.9545,
      23.5956,
      "2014-01-21"
     ],
     "src": "bseaspx:532174:2013-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-12-31: ('Foreign Institutional Investors' 443,181,249 + 'Foreign Bank' 221,033) / ((A+B) 817,832,429 - 'FIIs-DR' 1,129,193) = 54.291726 (was 54.3548 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,129,193 shares) is depository-receipt shares, so DII moves to the same base as FII: 34.590500 x 817,832,429 / (817,832,429 - 1,129,193) = 34.638326. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      54.3548,
+      54.291726,
       34.5905,
       10.9545,
       23.5956,
@@ -268594,19 +269057,18 @@
      ],
      "was": [
       0.0,
-      54.3591,
+      54.3548,
       34.5905,
       10.9545,
       23.5956,
       "2014-01-21"
      ],
-     "src": "bsepage:532174:80",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-12-31 - BSE page qtrid 80 rows 'Foreign Institutional Investors' 443,181,249 + 'FIIs-DR' 1,129,193 + 'Foreign Bank' 221,033 = 444,531,475 sh on (A+B) 817,832,429 sh (\u00a7164a basis) = 54.3548. Stored 54.3591 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.3591 -> 54.3548.",
-     "exact": true,
+     "src": "bseaspx:532174:2013-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2013-12-31: ('Foreign Institutional Investors' 443,181,249 + 'Foreign Bank' 221,033) / ((A+B) 817,832,429 - 'FIIs-DR' 1,129,193) = 54.291726 (was 54.3548 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       54.3591,
+       54.3548,
        34.5905,
        10.9545,
        23.5956,
@@ -268614,16 +269076,25 @@
       ],
       "was": [
        0.0,
-       38.5061,
-       24.5027,
-       7.7598,
-       16.7143,
+       54.3591,
+       34.5905,
+       10.9545,
+       23.5956,
        "2014-01-21"
       ],
-      "src": "bseaspx:532174_80",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411702 = total (A+B+C) 1154535873 shares / (A+B) 817832429 shares on the same quarter's BSE page; fii 38.51 -> 54.36, dii 24.50 -> 34.59.",
+      "src": "bsepage:532174:80",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2013-12-31 - BSE page qtrid 80 rows 'Foreign Institutional Investors' 443,181,249 + 'FIIs-DR' 1,129,193 + 'Foreign Bank' 221,033 = 444,531,475 sh on (A+B) 817,832,429 sh (\u00a7164a basis) = 54.3548. Stored 54.3591 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 54.3591 -> 54.3548.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        54.3591,
+        34.5905,
+        10.9545,
+        23.5956,
+        "2014-01-21"
+       ],
+       "was": [
         0.0,
         38.5061,
         24.5027,
@@ -268631,16 +269102,28 @@
         16.7143,
         "2014-01-21"
        ],
-       "was": [
-        0.0,
-        38.3861,
-        24.5027,
-        7.7598,
-        16.7143,
-        "2014-01-21"
-       ],
-       "src": "bseaspx:532174:80:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       "src": "bseaspx:532174_80",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411702 = total (A+B+C) 1154535873 shares / (A+B) 817832429 shares on the same quarter's BSE page; fii 38.51 -> 54.36, dii 24.50 -> 34.59.",
+       "superseded": {
+        "cell": [
+         0.0,
+         38.5061,
+         24.5027,
+         7.7598,
+         16.7143,
+         "2014-01-21"
+        ],
+        "was": [
+         0.0,
+         38.3861,
+         24.5027,
+         7.7598,
+         16.7143,
+         "2014-01-21"
+        ],
+        "src": "bseaspx:532174:80:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       }
       }
      }
     }
@@ -268649,25 +269132,26 @@
     "cell": [
      0.0,
      56.353477,
-     32.5769,
+     32.621537,
      10.6897,
      21.8622,
      "2014-04-12"
     ],
     "was": [
      0.0,
-     56.4132,
+     56.353477,
      32.5769,
      10.6897,
      21.8622,
      "2014-04-12"
     ],
     "src": "bseaspx:532174:2014-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-03-31: ('Foreign Institutional Investors' 460,180,998 + 'Foreign Bank' 226,987) / ((A+B) 818,119,599 - 'FIIs-DR' 1,119,466) = 56.353477 (was 56.4132 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,119,466 shares) is depository-receipt shares, so DII moves to the same base as FII: 32.576900 x 818,119,599 / (818,119,599 - 1,119,466) = 32.621537. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      56.4132,
+      56.353477,
       32.5769,
       10.6897,
       21.8622,
@@ -268675,19 +269159,18 @@
      ],
      "was": [
       0.0,
-      56.418,
+      56.4132,
       32.5769,
       10.6897,
       21.8622,
       "2014-04-12"
      ],
-     "src": "bsepage:532174:81",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-03-31 - BSE page qtrid 81 rows 'Foreign Institutional Investors' 460,180,998 + 'FIIs-DR' 1,119,466 + 'Foreign Bank' 226,987 = 461,527,451 sh on (A+B) 818,119,599 sh (\u00a7164a basis) = 56.4132. Stored 56.4180 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 56.4180 -> 56.4132.",
-     "exact": true,
+     "src": "bseaspx:532174:2014-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-03-31: ('Foreign Institutional Investors' 460,180,998 + 'Foreign Bank' 226,987) / ((A+B) 818,119,599 - 'FIIs-DR' 1,119,466) = 56.353477 (was 56.4132 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       56.418,
+       56.4132,
        32.5769,
        10.6897,
        21.8622,
@@ -268695,16 +269178,25 @@
       ],
       "was": [
        0.0,
-       39.9683,
-       23.0785,
-       7.5729,
-       15.4879,
+       56.418,
+       32.5769,
+       10.6897,
+       21.8622,
        "2014-04-12"
       ],
-      "src": "bseaspx:532174_81",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411570 = total (A+B+C) 1154832769 shares / (A+B) 818119599 shares on the same quarter's BSE page; fii 39.97 -> 56.42, dii 23.08 -> 32.58.",
+      "src": "bsepage:532174:81",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-03-31 - BSE page qtrid 81 rows 'Foreign Institutional Investors' 460,180,998 + 'FIIs-DR' 1,119,466 + 'Foreign Bank' 226,987 = 461,527,451 sh on (A+B) 818,119,599 sh (\u00a7164a basis) = 56.4132. Stored 56.4180 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 56.4180 -> 56.4132.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        56.418,
+        32.5769,
+        10.6897,
+        21.8622,
+        "2014-04-12"
+       ],
+       "was": [
         0.0,
         39.9683,
         23.0785,
@@ -268712,16 +269204,28 @@
         15.4879,
         "2014-04-12"
        ],
-       "was": [
-        0.0,
-        39.8483,
-        23.0785,
-        7.5729,
-        15.4879,
-        "2014-04-12"
-       ],
-       "src": "bseaspx:532174:81:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       "src": "bseaspx:532174_81",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.411570 = total (A+B+C) 1154832769 shares / (A+B) 818119599 shares on the same quarter's BSE page; fii 39.97 -> 56.42, dii 23.08 -> 32.58.",
+       "superseded": {
+        "cell": [
+         0.0,
+         39.9683,
+         23.0785,
+         7.5729,
+         15.4879,
+         "2014-04-12"
+        ],
+        "was": [
+         0.0,
+         39.8483,
+         23.0785,
+         7.5729,
+         15.4879,
+         "2014-04-12"
+        ],
+        "src": "bseaspx:532174:81:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       }
       }
      }
     }
@@ -268730,25 +269234,26 @@
     "cell": [
      0.0,
      56.581728,
-     32.6452,
+     32.689842,
      11.5301,
      21.0181,
      "2014-07-12"
     ],
     "was": [
      0.0,
-     56.641,
+     56.581728,
      32.6452,
      11.5301,
      21.0181,
      "2014-07-12"
     ],
     "src": "bseaspx:532174:2014-06-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-06-30: ('Foreign Institutional Investors' 462,719,288 + 'Foreign Bank' 220,933) / ((A+B) 819,298,559 - 'FIIs-DR' 1,118,846) = 56.581728 (was 56.641 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,118,846 shares) is depository-receipt shares, so DII moves to the same base as FII: 32.645200 x 819,298,559 / (819,298,559 - 1,118,846) = 32.689842. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      56.641,
+      56.581728,
       32.6452,
       11.5301,
       21.0181,
@@ -268756,19 +269261,18 @@
      ],
      "was": [
       0.0,
-      56.6468,
+      56.641,
       32.6452,
       11.5301,
       21.0181,
       "2014-07-12"
      ],
-     "src": "bsepage:532174:82",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-06-30 - BSE page qtrid 82 rows 'Foreign Institutional Investors' 462,719,288 + 'FIIs-DR' 1,118,846 + 'Foreign Bank' 220,933 = 464,059,067 sh on (A+B) 819,298,559 sh (\u00a7164a basis) = 56.6410. Stored 56.6468 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 56.6468 -> 56.6410.",
-     "exact": true,
+     "src": "bseaspx:532174:2014-06-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-06-30: ('Foreign Institutional Investors' 462,719,288 + 'Foreign Bank' 220,933) / ((A+B) 819,298,559 - 'FIIs-DR' 1,118,846) = 56.581728 (was 56.641 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       56.6468,
+       56.641,
        32.6452,
        11.5301,
        21.0181,
@@ -268776,16 +269280,25 @@
       ],
       "was": [
        0.0,
-       40.1472,
-       23.1366,
-       8.1717,
-       14.8961,
+       56.6468,
+       32.6452,
+       11.5301,
+       21.0181,
        "2014-07-12"
       ],
-      "src": "bseaspx:532174_82",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.410977 = total (A+B+C) 1156011729 shares / (A+B) 819298559 shares on the same quarter's BSE page; fii 40.15 -> 56.65, dii 23.14 -> 32.65.",
+      "src": "bsepage:532174:82",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-06-30 - BSE page qtrid 82 rows 'Foreign Institutional Investors' 462,719,288 + 'FIIs-DR' 1,118,846 + 'Foreign Bank' 220,933 = 464,059,067 sh on (A+B) 819,298,559 sh (\u00a7164a basis) = 56.6410. Stored 56.6468 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 56.6468 -> 56.6410.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        56.6468,
+        32.6452,
+        11.5301,
+        21.0181,
+        "2014-07-12"
+       ],
+       "was": [
         0.0,
         40.1472,
         23.1366,
@@ -268793,16 +269306,28 @@
         14.8961,
         "2014-07-12"
        ],
-       "was": [
-        0.0,
-        40.0272,
-        23.1366,
-        8.1717,
-        14.8961,
-        "2014-07-12"
-       ],
-       "src": "bseaspx:532174:82:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       "src": "bseaspx:532174_82",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.410977 = total (A+B+C) 1156011729 shares / (A+B) 819298559 shares on the same quarter's BSE page; fii 40.15 -> 56.65, dii 23.14 -> 32.65.",
+       "superseded": {
+        "cell": [
+         0.0,
+         40.1472,
+         23.1366,
+         8.1717,
+         14.8961,
+         "2014-07-12"
+        ],
+        "was": [
+         0.0,
+         40.0272,
+         23.1366,
+         8.1717,
+         14.8961,
+         "2014-07-12"
+        ],
+        "src": "bseaspx:532174:82:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.1), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.12."
+       }
       }
      }
     }
@@ -268811,25 +269336,26 @@
     "cell": [
      0.0,
      58.046313,
-     31.3003,
+     31.341827,
      11.0516,
      20.2012,
      "2014-10-16"
     ],
     "was": [
      0.0,
-     58.1019,
+     58.046313,
      31.3003,
      11.0516,
      20.2012,
      "2014-10-16"
     ],
     "src": "bseaspx:532174:2014-09-30",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-09-30: ('Foreign Institutional Investors' 475,422,081 + 'Foreign Bank' 220,933) / ((A+B) 820,506,993 - 'FIIs-DR' 1,087,143) = 58.046313 (was 58.1019 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (1,087,143 shares) is depository-receipt shares, so DII moves to the same base as FII: 31.300300 x 820,506,993 / (820,506,993 - 1,087,143) = 31.341827. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      58.1019,
+      58.046313,
       31.3003,
       11.0516,
       20.2012,
@@ -268837,19 +269363,18 @@
      ],
      "was": [
       0.0,
-      58.0977,
+      58.1019,
       31.3003,
       11.0516,
       20.2012,
       "2014-10-16"
      ],
-     "src": "bsepage:532174:83",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-09-30 - BSE page qtrid 83 rows 'Foreign Institutional Investors' 475,422,081 + 'FIIs-DR' 1,087,143 + 'Foreign Bank' 220,933 = 476,730,157 sh on (A+B) 820,506,993 sh (\u00a7164a basis) = 58.1019. Stored 58.0977 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 58.0977 -> 58.1019.",
-     "exact": true,
+     "src": "bseaspx:532174:2014-09-30",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-09-30: ('Foreign Institutional Investors' 475,422,081 + 'Foreign Bank' 220,933) / ((A+B) 820,506,993 - 'FIIs-DR' 1,087,143) = 58.046313 (was 58.1019 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       58.0977,
+       58.1019,
        31.3003,
        11.0516,
        20.2012,
@@ -268857,16 +269382,25 @@
       ],
       "was": [
        0.0,
-       41.192,
-       22.1923,
-       7.8357,
-       14.3229,
+       58.0977,
+       31.3003,
+       11.0516,
+       20.2012,
        "2014-10-16"
       ],
-      "src": "bseaspx:532174_83",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.410411 = total (A+B+C) 1157252235 shares / (A+B) 820506993 shares on the same quarter's BSE page; fii 41.19 -> 58.10, dii 22.19 -> 31.30.",
+      "src": "bsepage:532174:83",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-09-30 - BSE page qtrid 83 rows 'Foreign Institutional Investors' 475,422,081 + 'FIIs-DR' 1,087,143 + 'Foreign Bank' 220,933 = 476,730,157 sh on (A+B) 820,506,993 sh (\u00a7164a basis) = 58.1019. Stored 58.0977 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 58.0977 -> 58.1019.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        58.0977,
+        31.3003,
+        11.0516,
+        20.2012,
+        "2014-10-16"
+       ],
+       "was": [
         0.0,
         41.192,
         22.1923,
@@ -268874,16 +269408,28 @@
         14.3229,
         "2014-10-16"
        ],
-       "was": [
-        0.0,
-        41.082,
-        22.1923,
-        7.8357,
-        14.3229,
-        "2014-10-16"
-       ],
-       "src": "bseaspx:532174:83:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       "src": "bseaspx:532174_83",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.410411 = total (A+B+C) 1157252235 shares / (A+B) 820506993 shares on the same quarter's BSE page; fii 41.19 -> 58.10, dii 22.19 -> 31.30.",
+       "superseded": {
+        "cell": [
+         0.0,
+         41.192,
+         22.1923,
+         7.8357,
+         14.3229,
+         "2014-10-16"
+        ],
+        "was": [
+         0.0,
+         41.082,
+         22.1923,
+         7.8357,
+         14.3229,
+         "2014-10-16"
+        ],
+        "src": "bseaspx:532174:83:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       }
       }
      }
     }
@@ -268892,25 +269438,26 @@
     "cell": [
      0.0,
      58.923137,
-     30.1435,
+     30.181068,
      10.803,
      19.3009,
      "2015-01-13"
     ],
     "was": [
      0.0,
-     58.9743,
+     58.923137,
      30.1435,
      10.803,
      19.3009,
      "2015-01-13"
     ],
     "src": "bseaspx:532174:2014-12-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-12-31: ('Foreign Institutional Investors' 2,416,135,326 + 'Foreign Bank' 1,104,665) / ((A+B) 4,107,474,156 - 'FIIs-DR' 5,112,825) = 58.923137 (was 58.9743 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (5,112,825 shares) is depository-receipt shares, so DII moves to the same base as FII: 30.143500 x 4,107,474,156 / (4,107,474,156 - 5,112,825) = 30.181068. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      58.9743,
+      58.923137,
       30.1435,
       10.803,
       19.3009,
@@ -268918,19 +269465,18 @@
      ],
      "was": [
       0.0,
-      58.978,
+      58.9743,
       30.1435,
       10.803,
       19.3009,
       "2015-01-13"
      ],
-     "src": "bsepage:532174:84",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-12-31 - BSE page qtrid 84 rows 'Foreign Institutional Investors' 2,416,135,326 + 'FIIs-DR' 5,112,825 + 'Foreign Bank' 1,104,665 = 2,422,352,816 sh on (A+B) 4,107,474,156 sh (\u00a7164a basis) = 58.9743. Stored 58.9780 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 58.9780 -> 58.9743.",
-     "exact": true,
+     "src": "bseaspx:532174:2014-12-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2014-12-31: ('Foreign Institutional Investors' 2,416,135,326 + 'Foreign Bank' 1,104,665) / ((A+B) 4,107,474,156 - 'FIIs-DR' 5,112,825) = 58.923137 (was 58.9743 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       58.978,
+       58.9743,
        30.1435,
        10.803,
        19.3009,
@@ -268938,16 +269484,25 @@
       ],
       "was": [
        0.0,
-       41.8285,
-       21.3784,
-       7.6617,
-       13.6886,
+       58.978,
+       30.1435,
+       10.803,
+       19.3009,
        "2015-01-13"
       ],
-      "src": "bseaspx:532174_84",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409996 = total (A+B+C) 5791523320 shares / (A+B) 4107474156 shares on the same quarter's BSE page; fii 41.83 -> 58.98, dii 21.38 -> 30.14.",
+      "src": "bsepage:532174:84",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2014-12-31 - BSE page qtrid 84 rows 'Foreign Institutional Investors' 2,416,135,326 + 'FIIs-DR' 5,112,825 + 'Foreign Bank' 1,104,665 = 2,422,352,816 sh on (A+B) 4,107,474,156 sh (\u00a7164a basis) = 58.9743. Stored 58.9780 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 58.9780 -> 58.9743.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        58.978,
+        30.1435,
+        10.803,
+        19.3009,
+        "2015-01-13"
+       ],
+       "was": [
         0.0,
         41.8285,
         21.3784,
@@ -268955,16 +269510,28 @@
         13.6886,
         "2015-01-13"
        ],
-       "was": [
-        0.0,
-        41.7185,
-        21.3784,
-        7.6617,
-        13.6886,
-        "2015-01-13"
-       ],
-       "src": "bseaspx:532174:84:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       "src": "bseaspx:532174_84",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409996 = total (A+B+C) 5791523320 shares / (A+B) 4107474156 shares on the same quarter's BSE page; fii 41.83 -> 58.98, dii 21.38 -> 30.14.",
+       "superseded": {
+        "cell": [
+         0.0,
+         41.8285,
+         21.3784,
+         7.6617,
+         13.6886,
+         "2015-01-13"
+        ],
+        "was": [
+         0.0,
+         41.7185,
+         21.3784,
+         7.6617,
+         13.6886,
+         "2015-01-13"
+        ],
+        "src": "bseaspx:532174:84:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.09), ('Foreign Bank', 0.02)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       }
       }
      }
     }
@@ -268973,25 +269540,26 @@
     "cell": [
      0.0,
      57.876593,
-     30.4837,
+     30.517907,
      11.6226,
      18.7757,
      "2015-04-14"
     ],
     "was": [
      0.0,
-     57.9238,
+     57.876593,
      30.4837,
      11.6226,
      18.7757,
      "2015-04-14"
     ],
     "src": "bseaspx:532174:2015-03-31",
-    "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2015-03-31: ('Foreign Institutional Investors' 2,375,625,940 + 'Foreign Bank' 1,991,665) / ((A+B) 4,112,691,285 - 'FIIs-DR' 4,609,825) = 57.876593 (was 57.9238 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
+    "why": "\u00a7164s part 50 (2026-10-15, USER: 'Yes, same base' for DII after the 'follow quantmac' FIIs-DR ruling): ICICI Bank's page-era 'FIIs-DR' row (4,609,825 shares) is depository-receipt shares, so DII moves to the same base as FII: 30.483700 x 4,112,691,285 / (4,112,691,285 - 4,609,825) = 30.517907. DII shares unchanged; promoter/MF/ins slots untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      57.9238,
+      57.876593,
       30.4837,
       11.6226,
       18.7757,
@@ -268999,19 +269567,18 @@
      ],
      "was": [
       0.0,
-      57.9183,
+      57.9238,
       30.4837,
       11.6226,
       18.7757,
       "2015-04-14"
      ],
-     "src": "bsepage:532174:85",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2015-03-31 - BSE page qtrid 85 rows 'Foreign Institutional Investors' 2,375,625,940 + 'FIIs-DR' 4,609,825 + 'Foreign Bank' 1,991,665 = 2,382,227,430 sh on (A+B) 4,112,691,285 sh (\u00a7164a basis) = 57.9238. Stored 57.9183 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 57.9183 -> 57.9238.",
-     "exact": true,
+     "src": "bseaspx:532174:2015-03-31",
+     "why": "\u00a7164r batch 30 part 100 (2026-10-15, USER RULING: 'follow quantmac' on ICICI Bank's 'FIIs-DR' row - the row is treated as depository-receipt shares, out of FII AND out of the base): BSE page 2015-03-31: ('Foreign Institutional Investors' 2,375,625,940 + 'Foreign Bank' 1,991,665) / ((A+B) 4,112,691,285 - 'FIIs-DR' 4,609,825) = 57.876593 (was 57.9238 with the FIIs-DR row counted as FII on (A+B)). Computed from the filing's rows; promoter / DII / MF slots stay on (A+B).",
      "superseded": {
       "cell": [
        0.0,
-       57.9183,
+       57.9238,
        30.4837,
        11.6226,
        18.7757,
@@ -269019,16 +269586,25 @@
       ],
       "was": [
        0.0,
-       41.0885,
-       21.6258,
-       8.2453,
-       13.3199,
+       57.9183,
+       30.4837,
+       11.6226,
+       18.7757,
        "2015-04-14"
       ],
-      "src": "bseaspx:532174_85",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409599 = total (A+B+C) 5797244645 shares / (A+B) 4112691285 shares on the same quarter's BSE page; fii 41.09 -> 57.92, dii 21.63 -> 30.48.",
+      "src": "bsepage:532174:85",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2015-03-31 - BSE page qtrid 85 rows 'Foreign Institutional Investors' 2,375,625,940 + 'FIIs-DR' 4,609,825 + 'Foreign Bank' 1,991,665 = 2,382,227,430 sh on (A+B) 4,112,691,285 sh (\u00a7164a basis) = 57.9238. Stored 57.9183 came from adding the page's 2-decimal (A+B+C) percentages (\u00a7142e) and re-basing them (\u00a7164a), not from share counts. fii 57.9183 -> 57.9238.",
+      "exact": true,
       "superseded": {
        "cell": [
+        0.0,
+        57.9183,
+        30.4837,
+        11.6226,
+        18.7757,
+        "2015-04-14"
+       ],
+       "was": [
         0.0,
         41.0885,
         21.6258,
@@ -269036,16 +269612,28 @@
         13.3199,
         "2015-04-14"
        ],
-       "was": [
-        0.0,
-        40.9785,
-        21.6258,
-        8.2453,
-        13.3199,
-        "2015-04-14"
-       ],
-       "src": "bseaspx:532174:85:New",
-       "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.03)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       "src": "bseaspx:532174_85",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.409599 = total (A+B+C) 5797244645 shares / (A+B) 4112691285 shares on the same quarter's BSE page; fii 41.09 -> 57.92, dii 21.63 -> 30.48.",
+       "superseded": {
+        "cell": [
+         0.0,
+         41.0885,
+         21.6258,
+         8.2453,
+         13.3199,
+         "2015-04-14"
+        ],
+        "was": [
+         0.0,
+         40.9785,
+         21.6258,
+         8.2453,
+         13.3199,
+         "2015-04-14"
+        ],
+        "src": "bseaspx:532174:85:New",
+        "why": "quantmac FII reconciliation 2026-09-22 (runbook \u00a7142e): institutions Any-Others sub-rows the filer labels foreign ([('FIIs-DR', 0.08), ('Foreign Bank', 0.03)]) were left out of fii (never folded into dii either: recon gate did not need them). fii += 0.11."
+       }
       }
      }
     }
