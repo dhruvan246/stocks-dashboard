@@ -66544,25 +66544,35 @@
     "cell": [
      2.16,
      23.1443,
+     20.283058,
+     14.953645,
+     4.153931,
+     "2016-04-21",
+     79930
+    ],
+    "was": [
+     2.16,
+     23.1443,
      20.8585,
      15.68,
      4.03,
      "2016-04-21",
      78625
     ],
-    "was": [
-     2.16,
-     21.7243,
-     22.2785,
-     15.68,
-     4.03,
-     "2016-04-21",
-     78625
-    ],
-    "src": "bsexbrl:590003_982016181911_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 22.28 -> 20.86, fii 21.72 -> 23.14. R1-rest-follows-foreign-holders 1.42; R1-foreign-holders Other 0.0 public=0.00 fii=4.35 WARHOL LIMITED (FII) 4.35 foreign->fii(memory~); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 SAIF ADVISORS MAURITIUS LIMITED A/C SAIF INDIA IV (FII) 2.34 foreign->fii(memory~). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "nse-ndsid:108111",
+    "why": "\u00a7164s part 49 (2026-10-15): KVB's ORIGINAL Mar-2016 filing is NSE ndsId 108111 (found by total 121,864,454; NSE records 108021 and 108368 around it are dated 18-Apr-2016). Own-line DII = MF 18,223,178 + VCF 1,287,553 + FI/Banks 144,942 + Insurance 5,062,165 = 24,717,838 = 20.283058; holders 79,930. Was 20.8585 / 78,625 holders = the Jun-2016 holdings: BSE's 'Mar-2016' XBRL (filed 2016-08-09 with Jun-2016's) and Table III qtrid 89 carry the Jun-2016 pattern (NSE ndsId 110112 = 20.861668). FII slot left to the FII session (FPI 13,291,511 + B1i rows labelled (FII)).",
+    "exact": true,
     "superseded": {
      "cell": [
+      2.16,
+      23.1443,
+      20.8585,
+      15.68,
+      4.03,
+      "2016-04-21",
+      78625
+     ],
+     "was": [
       2.16,
       21.7243,
       22.2785,
@@ -66571,19 +66581,19 @@
       "2016-04-21",
       78625
      ],
-     "was": [
-      2.16,
-      15.03,
-      28.98,
-      15.68,
-      4.03,
-      "2016-04-21",
-      78625
-     ],
      "src": "bsexbrl:590003_982016181911_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.98 -> 22.28, fii 15.03 -> 21.72. R1-foreign-holders Other 0.0 public=0.00 fii=4.35 WARHOL LIMITED (FII) 4.35 foreign->fii(memory~); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 SAIF ADVISORS MAURITIUS LIMITED A/C SAIF INDIA IV (FII) 2.34 foreign->fii(memory~); R1-uncovered-remainder 1.42. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158a, DII = Institutions(Domestic) in every format): dii 22.28 -> 20.86, fii 21.72 -> 23.14. R1-rest-follows-foreign-holders 1.42; R1-foreign-holders Other 0.0 public=0.00 fii=4.35 WARHOL LIMITED (FII) 4.35 foreign->fii(memory~); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 SAIF ADVISORS MAURITIUS LIMITED A/C SAIF INDIA IV (FII) 2.34 foreign->fii(memory~). Evidence: _shp_dii_rowfix_audit.json",
      "superseded": {
       "cell": [
+       2.16,
+       21.7243,
+       22.2785,
+       15.68,
+       4.03,
+       "2016-04-21",
+       78625
+      ],
+      "was": [
        2.16,
        15.03,
        28.98,
@@ -66592,17 +66602,30 @@
        "2016-04-21",
        78625
       ],
-      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
-      "was": [
-       2.16,
-       15.03,
-       28.98,
-       15.68,
-       4.03,
-       "2016-08-09",
-       78625
-      ],
-      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 131d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+      "src": "bsexbrl:590003_982016181911_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 28.98 -> 22.28, fii 15.03 -> 21.72. R1-foreign-holders Other 0.0 public=0.00 fii=4.35 WARHOL LIMITED (FII) 4.35 foreign->fii(memory~); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 SAIF ADVISORS MAURITIUS LIMITED A/C SAIF INDIA IV (FII) 2.34 foreign->fii(memory~); R1-uncovered-remainder 1.42. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        2.16,
+        15.03,
+        28.98,
+        15.68,
+        4.03,
+        "2016-04-21",
+        78625
+       ],
+       "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+       "was": [
+        2.16,
+        15.03,
+        28.98,
+        15.68,
+        4.03,
+        "2016-08-09",
+        78625
+       ],
+       "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 131d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+      }
      }
     }
    },
