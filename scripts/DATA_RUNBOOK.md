@@ -28619,6 +28619,12 @@ the filing's own Table I base (seamown's pct-derived base is too coarse for exac
 0.0; SUNDARMFIN Dec-19 FPIs filed on the FVCI line 9,503,115 -> 8.636237; the rest precision). HELD for a joint DII entry: KVB
 Dec-18..Sep-19 ('Foreign Financial Institutions' / 'Foreign Banks' rows sit in the stored DII). OPEN: KVB Mar-16 - BSE's Mar-16 and
 Jun-16 XBRLs (both 'New' 2016-08-09) carry identical holdings; no independent Mar-16 copy (NSE id-pass starts 2017).
+**Parts 99-101 (2026-10-15).** 99: EQUITASBNK 2022-02-19 event - unnamed institutions rest is FII (ruling 2; the retired 'D1
+exception' had left it in DII), joint DII 16.746816 as the 21-Feb row. 100 - USER RULING 'follow quantmac' on ICICI Bank's
+'FIIs-DR' row (page era): the row is depository-receipt shares, out of FII AND out of the base: FII = (FII row + Foreign Bank) /
+((A+B) - FIIs-DR) - all 28 quarters that carry the row (Jun-08..Dec-14 + Mar-15; reproduces Quantmac's 25 published values to 4 dp);
+promoter / DII / MF slots stay on (A+B). OPEN with the user: the two 2015-22 XBRL ICICIBANK events (2017-06-24, 2020-08-15) whose
+'FIIs-DR' category part 87 kept as FII. 101: KVB Dec-18..Sep-19 joint (foreign-labelled B1i rows FII, DII = domestic lines).
 
 ### §229a — VISION READS NOW CARRY OPERATING PROFIT (2026-10-14, user: "y is no op profit for them" · "this shud never happen in future")
 
