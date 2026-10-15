@@ -66729,26 +66729,36 @@
    "2016-06-30": {
     "cell": [
      2.16,
-     23.1443,
+     23.139671,
      20.8585,
-     15.6788,
-     4.0319,
+     15.678314,
+     4.031742,
      "2016-08-10",
      78625
     ],
     "was": [
      2.16,
-     21.7229,
-     22.2799,
-     15.6788,
-     4.0319,
+     23.1443,
+     20.8585,
+     15.678314,
+     4.031742,
      "2016-08-10",
      78625
     ],
-    "src": "bsexbrl:590003_982016172216_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 22.28 -> 20.86, fii 21.72 -> 23.14. R1-rest-follows-foreign-holders 1.42; R1-foreign-holders Other 0.0 public=0.00 fii=4.35 Warhol Ltd (FII) 4.35 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34 foreign->fii(curated). Evidence: _shp_dii_rowfix_audit.json",
+    "src": "bsetable3:590003:2016-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): exact value on the filing's own base (stored figure was off by -0.0046). Own lines: FPI 18,320,843, Saif Advisors Mauritius Ltd A/C Saif Ind 2,850,309, Warhol Ltd (FII) 5,300,687, institutions Any-Other rest 1,727,195 = 28,199,034 on 121,864,454 = 23.139671 (stored 23.1443).",
+    "exact": true,
     "superseded": {
      "cell": [
+      2.16,
+      23.1443,
+      20.8585,
+      15.6788,
+      4.0319,
+      "2016-08-10",
+      78625
+     ],
+     "was": [
       2.16,
       21.7229,
       22.2799,
@@ -66757,23 +66767,36 @@
       "2016-08-10",
       78625
      ],
-     "was": [
-      2.16,
-      15.0343,
-      28.9685,
-      15.6788,
-      4.0319,
-      "2016-08-10",
-      78625
-     ],
      "src": "bsexbrl:590003_982016172216_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Warhol Ltd (FII) 4.35; Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34) \u2014 moved dii -> fii (6.6886 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+     "why": "\u00a7158 row-level DII heal (2026-09-25 \u00a7158b, DII = Institutions(Domestic) in every format): dii 22.28 -> 20.86, fii 21.72 -> 23.14. R1-rest-follows-foreign-holders 1.42; R1-foreign-holders Other 0.0 public=0.00 fii=4.35 Warhol Ltd (FII) 4.35 foreign->fii(curated); R1-foreign-holders Other 0.0 public=0.00 fii=2.34 Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34 foreign->fii(curated). Evidence: _shp_dii_rowfix_audit.json",
+     "superseded": {
+      "cell": [
+       2.16,
+       21.7229,
+       22.2799,
+       15.6788,
+       4.0319,
+       "2016-08-10",
+       78625
+      ],
+      "was": [
+       2.16,
+       15.0343,
+       28.9685,
+       15.6788,
+       4.0319,
+       "2016-08-10",
+       78625
+      ],
+      "src": "bsexbrl:590003_982016172216_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Warhol Ltd (FII) 4.35; Saif Advisors Mauritius Ltd A/C Saif India IV (FII) 2.34) \u2014 moved dii -> fii (6.6886 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was names-insufficient."
+     }
     }
    },
    "2015-12-31": {
     "cell": [
      2.16,
-     22.99,
+     22.992191,
      21.81,
      16.26,
      4.34,
@@ -66782,18 +66805,39 @@
     "was": [
      2.16,
      22.99,
-     20.75,
+     21.81,
      16.26,
      4.34,
      "2016-02-03"
     ],
-    "src": "bseaspx:590003_88",
-    "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 22.99 -> 22.99, dii 20.75 -> 21.81. std-vcf Venture Capital Funds row 1.06. Evidence: _shp_164_audit.json"
+    "src": "bsetable3:590003:2015-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 7,979,754, institutions Any-Other rest 20,039,554 = 28,019,308 on 121,864,454 = 22.992191 (stored 22.99).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      2.16,
+      22.99,
+      21.81,
+      16.26,
+      4.34,
+      "2016-02-03"
+     ],
+     "was": [
+      2.16,
+      22.99,
+      20.75,
+      16.26,
+      4.34,
+      "2016-02-03"
+     ],
+     "src": "bseaspx:590003_88",
+     "why": "\u00a7164r batch 7 page-era re-read (Quantmac v5 reply #6 build; \u00a7160 rules - DII = Institutions(Domestic), FII = Institutions(Foreign) in every format; BSE code corrected from the 600001 placeholder to 590003 - this company's page-era filings had never been read): fii 22.99 -> 22.99, dii 20.75 -> 21.81. std-vcf Venture Capital Funds row 1.06. Evidence: _shp_164_audit.json"
+    }
    },
    "2016-09-30": {
     "cell": [
      2.07,
-     23.67,
+     23.663368,
      19.49,
      14.27,
      4.06,
@@ -66801,14 +66845,35 @@
     ],
     "was": [
      2.07,
-     15.41,
-     27.75,
+     23.67,
+     19.49,
      14.27,
      4.06,
      "2016-11-04"
     ],
-    "src": "bset3:590003:91",
-    "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with c'): value was an aggregator (Trendlyne) row read with the old-format formula; BSE's own Table III for this filing (api Corp_shpSec_SHPPubShold_ng SCRIPCODE=590003 QtrCode=91) shows B1 = MF 14.27 + VCF 1.06 + Banks 0.10 + Insurance 4.06 (dii 19.49) + FPI 15.41 + Any Other (specify) 8.26. That Any-Other row is the legacy foreign-institution block: the same row in Jun-2016 (n=40) names Saif Advisors Mauritius / Warhol Ltd (FII) and in Dec-2016 WARHOL LIMITED (FFI) - the company's own FII labels - and Jun-2016 is already served with it in fii (\u00a7158b). fii 15.41 -> 23.67, dii 27.75 -> 19.49."
+    "src": "bsetable3:590003:2016-09-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): exact value on the filing's own base (stored figure was off by -0.0066). Own lines: FPI 18,773,784, institutions Any-Other rest 10,063,450 = 28,837,234 on 121,864,454 = 23.663368 (stored 23.67).",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      2.07,
+      23.67,
+      19.49,
+      14.27,
+      4.06,
+      "2016-11-04"
+     ],
+     "was": [
+      2.07,
+      15.41,
+      27.75,
+      14.27,
+      4.06,
+      "2016-11-04"
+     ],
+     "src": "bset3:590003:91",
+     "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with c'): value was an aggregator (Trendlyne) row read with the old-format formula; BSE's own Table III for this filing (api Corp_shpSec_SHPPubShold_ng SCRIPCODE=590003 QtrCode=91) shows B1 = MF 14.27 + VCF 1.06 + Banks 0.10 + Insurance 4.06 (dii 19.49) + FPI 15.41 + Any Other (specify) 8.26. That Any-Other row is the legacy foreign-institution block: the same row in Jun-2016 (n=40) names Saif Advisors Mauritius / Warhol Ltd (FII) and in Dec-2016 WARHOL LIMITED (FFI) - the company's own FII labels - and Jun-2016 is already served with it in fii (\u00a7158b). fii 15.41 -> 23.67, dii 27.75 -> 19.49."
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -66974,7 +67039,7 @@
    "2018-06-30": {
     "cell": [
      2.08,
-     19.71,
+     19.709445,
      20.3894,
      14.91,
      4.6,
@@ -66982,19 +67047,19 @@
     ],
     "was": [
      2.08,
-     19.67,
-     19.66,
+     19.71,
+     20.3894,
      14.91,
      4.6,
      "2018-08-13"
     ],
-    "src": "bsetable3:590003:98",
-    "why": "\u00a7164r batch 30 part 49 (2026-10-07, FII side of the DII session's \u00a7164s part 33 - 2-dp aggregator fills re-read from BSE's Table III service, bsetable3): B1e Foreign Portfolio Investors 142,961,654 sh (named: Olympus India Holdings 21,207,062, Abu Dhabi Investment Authority 10,000,000, Acacia Partners LLP 7,293,071, SAIF India IV FII Holdings 16,832,481) + B1i institutions 'Any Other (specify)' 255,032 sh with no named holder and no category label -> FII by rule D1 (no write floor, part 42) = 143,216,686 / 726,619,616 = 19.7101. The stored 19.67 was the FPI line's 2-dp print; the DII session's dii (20.3894) is carried; fii 19.67 -> 19.71",
+    "src": "bsetable3:590003:2018-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 142,961,654, institutions Any-Other rest 255,032 = 143,216,686 on 726,639,871 = 19.709445 (stored 19.71).",
     "exact": true,
     "superseded": {
      "cell": [
       2.08,
-      19.67,
+      19.71,
       20.3894,
       14.91,
       4.6,
@@ -67009,7 +67074,28 @@
       "2018-08-13"
      ],
      "src": "bsetable3:590003:98",
-     "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 19.66 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 148,153,425 sh + NBFC row 0 sh on 726,619,616 = 20.3894 (= Quantmac's figure to 0.001). dii 19.6600 -> 20.3894; fii is the FII session's to check (the same row may share the fill's error)."
+     "why": "\u00a7164r batch 30 part 49 (2026-10-07, FII side of the DII session's \u00a7164s part 33 - 2-dp aggregator fills re-read from BSE's Table III service, bsetable3): B1e Foreign Portfolio Investors 142,961,654 sh (named: Olympus India Holdings 21,207,062, Abu Dhabi Investment Authority 10,000,000, Acacia Partners LLP 7,293,071, SAIF India IV FII Holdings 16,832,481) + B1i institutions 'Any Other (specify)' 255,032 sh with no named holder and no category label -> FII by rule D1 (no write floor, part 42) = 143,216,686 / 726,619,616 = 19.7101. The stored 19.67 was the FPI line's 2-dp print; the DII session's dii (20.3894) is carried; fii 19.67 -> 19.71",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       2.08,
+       19.67,
+       20.3894,
+       14.91,
+       4.6,
+       "2018-08-13"
+      ],
+      "was": [
+       2.08,
+       19.67,
+       19.66,
+       14.91,
+       4.6,
+       "2018-08-13"
+      ],
+      "src": "bsetable3:590003:98",
+      "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 19.66 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 148,153,425 sh + NBFC row 0 sh on 726,619,616 = 20.3894 (= Quantmac's figure to 0.001). dii 19.6600 -> 20.3894; fii is the FII session's to check (the same row may share the fill's error)."
+     }
     }
    },
    "2018-08-20": {
@@ -67057,6 +67143,167 @@
     ],
     "src": "nse:SHP_129749_47450_11102018070405_WEB.xml",
     "why": "\u00a7164r batch 30 part 91 (2026-10-14, original vs later copy, \u00a7142k - joint FII + DII entry agreed with the DII session): NSE original (upload stamp 11-Oct-2018, byte-identical to nsearchives) and BSE 600001_611201817525 (2018-11-06) carry identical figures - one version, public from 2018-10-11. Own lines: FII = FPI 143,148,471 + 'Foreign Financial Institutions' 279,164 + 'Foreign Banks' 770 (labelled foreign, FII) = 17.944178; DII = MF 123,973,372 + AIF 6,420,790 + FI/Banks 953,879 + Insurance 36,875,209 = 21.046235 (stored 17.9085 / 21.0805 had the two foreign rows in DII); promoter 2.096529; base 799,303,308."
+   },
+   "2019-12-31": {
+    "cell": [
+     2.1,
+     20.752647,
+     23.62,
+     18.11,
+     4.42,
+     "2020-01-10",
+     139385
+    ],
+    "was": [
+     2.1,
+     20.75,
+     23.62,
+     18.11,
+     4.42,
+     "2020-01-10",
+     139385
+    ],
+    "src": "bsetable3:590003:2019-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 165,880,146, Foreign Financial Institutions 60 = 165,880,206 on 799,320,719 = 20.752647 (stored 20.75).",
+    "exact": true
+   },
+   "2020-03-31": {
+    "cell": [
+     2.11,
+     21.585873,
+     22.8,
+     17.34,
+     4.35,
+     "2020-04-20",
+     143455
+    ],
+    "was": [
+     2.11,
+     21.59,
+     22.8,
+     17.34,
+     4.35,
+     "2020-04-20",
+     143455
+    ],
+    "src": "bsetable3:590003:2020-03-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 172,540,292, institutions Any-Other rest 60 = 172,540,352 on 799,320,719 = 21.585873 (stored 21.59).",
+    "exact": true
+   },
+   "2020-06-30": {
+    "cell": [
+     2.11,
+     21.112196,
+     22.11,
+     16.92,
+     4.16,
+     "2020-07-16",
+     155830
+    ],
+    "was": [
+     2.11,
+     21.11,
+     22.11,
+     16.92,
+     4.16,
+     "2020-07-16",
+     155830
+    ],
+    "src": "bsetable3:590003:2020-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 168,754,094, institutions Any-Other rest 60 = 168,754,154 on 799,320,719 = 21.112196 (stored 21.11).",
+    "exact": true
+   },
+   "2020-09-30": {
+    "cell": [
+     2.11,
+     20.847377,
+     20.8,
+     16.55,
+     3.25,
+     "2020-10-14",
+     181360
+    ],
+    "was": [
+     2.11,
+     20.85,
+     20.8,
+     16.55,
+     3.25,
+     "2020-10-14",
+     181360
+    ],
+    "src": "bsetable3:590003:2020-09-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 166,637,343, institutions Any-Other rest 60 = 166,637,403 on 799,320,719 = 20.847377 (stored 20.85).",
+    "exact": true
+   },
+   "2020-12-31": {
+    "cell": [
+     2.13,
+     21.399377,
+     20.88,
+     17.31,
+     3.21,
+     "2021-01-13",
+     175577
+    ],
+    "was": [
+     2.13,
+     21.4,
+     20.88,
+     17.31,
+     3.21,
+     "2021-01-13",
+     175577
+    ],
+    "src": "bsetable3:590003:2020-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 171,049,593, Foreign Financial Institutions 60 = 171,049,653 on 799,320,719 = 21.399377 (stored 21.4).",
+    "exact": true
+   },
+   "2021-06-30": {
+    "cell": [
+     2.12,
+     21.114298,
+     20.07,
+     17.18,
+     2.74,
+     "2021-09-13",
+     184878
+    ],
+    "was": [
+     2.12,
+     21.11,
+     20.07,
+     17.18,
+     2.74,
+     "2021-09-13",
+     184878
+    ],
+    "src": "bsetable3:590003:2021-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 168,771,104, institutions Any-Other rest 60 = 168,771,164 on 799,321,708 = 21.114298 (stored 21.11).",
+    "exact": true
+   },
+   "2022-03-31": {
+    "cell": [
+     2.28,
+     15.350127,
+     21.887209,
+     19.790139,
+     1.509151,
+     "2022-04-21",
+     202252
+    ],
+    "was": [
+     2.28,
+     15.352777,
+     21.887209,
+     19.790139,
+     1.509151,
+     "2022-04-21",
+     202252
+    ],
+    "src": "bsetable3:590003:2022-03-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): exact value on the filing's own base (stored figure was off by -0.0026). Own lines: FPI 122,801,974, institutions Any-Other rest 830 = 122,802,804 on 800,011,672 = 15.350127 (stored 15.352777).",
+    "exact": true
    }
   },
   "KEC": {
@@ -238810,7 +239057,7 @@
    "2021-12-31": {
     "cell": [
      35.89,
-     12.4306,
+     12.431443,
      11.7536,
      7.63,
      3.8,
@@ -238818,19 +239065,19 @@
     ],
     "was": [
      35.89,
-     12.43,
-     11.43,
+     12.4306,
+     11.7536,
      7.63,
      3.8,
      "2022-01-13"
     ],
-    "src": "bsetable3:590071:112",
-    "why": "\u00a7164r batch 30 part 49 (2026-10-07, FII side of the DII session's \u00a7164s part 33 - 2-dp aggregator fills re-read from BSE's Table III service, bsetable3): B1e Foreign Portfolio Investors 13,811,813 sh (named: Nalanda India Equity Fund 4,197,714, Pari Washington Company A/c 1,208,622); no institutions Any-Other row; the non-institution 'Foreign Nationals' 18,720 sh are individuals (public) and Bright Star Investments / India Motor Parts & Accessories are Indian companies -> fii = 13,811,813 / 111,111,656 = 12.4306 (the stored 12.43 was the 2-dp print); the DII session's dii (11.7536) is carried; fii 12.43 -> 12.4306",
+    "src": "bsetable3:590071:2021-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): exact value on the filing's own base (stored figure was off by 0.0008). Own lines: FPI 13,811,813 = 13,811,813 on 111,103,860 = 12.431443 (stored 12.4306).",
     "exact": true,
     "superseded": {
      "cell": [
       35.89,
-      12.43,
+      12.4306,
       11.7536,
       7.63,
       3.8,
@@ -238845,7 +239092,28 @@
       "2022-01-13"
      ],
      "src": "bsetable3:590071:112",
-     "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 11.43 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 13,059,598 sh + NBFC row 0 sh on 111,111,656 = 11.7536 (= Quantmac's figure to 0.001). dii 11.4300 -> 11.7536; fii is the FII session's to check (the same row may share the fill's error)."
+     "why": "\u00a7164r batch 30 part 49 (2026-10-07, FII side of the DII session's \u00a7164s part 33 - 2-dp aggregator fills re-read from BSE's Table III service, bsetable3): B1e Foreign Portfolio Investors 13,811,813 sh (named: Nalanda India Equity Fund 4,197,714, Pari Washington Company A/c 1,208,622); no institutions Any-Other row; the non-institution 'Foreign Nationals' 18,720 sh are individuals (public) and Bright Star Investments / India Motor Parts & Accessories are Indian companies -> fii = 13,811,813 / 111,111,656 = 12.4306 (the stored 12.43 was the 2-dp print); the DII session's dii (11.7536) is carried; fii 12.43 -> 12.4306",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       35.89,
+       12.43,
+       11.7536,
+       7.63,
+       3.8,
+       "2022-01-13"
+      ],
+      "was": [
+       35.89,
+       12.43,
+       11.43,
+       7.63,
+       3.8,
+       "2022-01-13"
+      ],
+      "src": "bsetable3:590071:112",
+      "why": "\u00a7164s part 33 (2026-10-07; one of the 24 'filing not retrievable' cells, read through BSE's Table III service): the stored dii 11.43 was a 2-decimal aggregator fill (no filing behind it). BSE's own Table III for this quarter gives the domestic institution lines (MF + AIF + VCF + FI/Banks + Insurance + PF) 13,059,598 sh + NBFC row 0 sh on 111,111,656 = 11.7536 (= Quantmac's figure to 0.001). dii 11.4300 -> 11.7536; fii is the FII session's to check (the same row may share the fill's error)."
+     }
     }
    },
    "2018-06-30": {
@@ -238889,6 +239157,227 @@
      "why": "\u00a7164s part 47 (2026-10-15): Sundaram Finance's Jun-2018 NSE filing SHP_126838 (ndsId 126838; total 111,103,860, promoter 40,770,646) - BSE's XBRL for the quarter returns 'not found'. Own-line DII = MF 10,485,363 + AIF 287,054 + FI/Banks 32,053 + Insurance 1,980,700 + NBFC 16,253 = 12,801,423 = 11.522033 (Quantmac 11.5219). Was 11.26 (third-party 2-decimal figure); promoter 35.78 -> 36.695976 (A / total), mf/ins exact. FII slot left to the FII session.",
      "exact": true
     }
+   },
+   "2016-12-31": {
+    "cell": [
+     36.08,
+     5.436928,
+     11.13,
+     9.19,
+     1.91,
+     "2017-01-25"
+    ],
+    "was": [
+     36.08,
+     5.44,
+     11.13,
+     9.19,
+     1.91,
+     "2017-01-25"
+    ],
+    "src": "bsetable3:590071:2016-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 6,040,637 = 6,040,637 on 111,103,860 = 5.436928 (stored 5.44).",
+    "exact": true
+   },
+   "2017-03-31": {
+    "cell": [
+     36.05,
+     5.619484,
+     11.29,
+     9.4,
+     1.87,
+     "2017-05-02"
+    ],
+    "was": [
+     36.05,
+     5.62,
+     11.29,
+     9.4,
+     1.87,
+     "2017-05-02"
+    ],
+    "src": "bsetable3:590071:2017-03-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 6,243,464 = 6,243,464 on 111,103,860 = 5.619484 (stored 5.62).",
+    "exact": true
+   },
+   "2017-06-30": {
+    "cell": [
+     35.95,
+     5.853863,
+     11.32,
+     9.46,
+     1.84,
+     "2017-07-24"
+    ],
+    "was": [
+     35.95,
+     5.85,
+     11.32,
+     9.46,
+     1.84,
+     "2017-07-24"
+    ],
+    "src": "bsetable3:590071:2017-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 6,503,868 = 6,503,868 on 111,103,860 = 5.853863 (stored 5.85).",
+    "exact": true
+   },
+   "2017-09-30": {
+    "cell": [
+     35.95,
+     6.112519,
+     11.21,
+     9.36,
+     1.83,
+     "2017-11-07"
+    ],
+    "was": [
+     35.95,
+     6.11,
+     11.21,
+     9.36,
+     1.83,
+     "2017-11-07"
+    ],
+    "src": "bsetable3:590071:2017-09-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 6,791,245 = 6,791,245 on 111,103,860 = 6.112519 (stored 6.11).",
+    "exact": true
+   },
+   "2019-12-31": {
+    "cell": [
+     35.95,
+     8.636237,
+     12.47,
+     8.47,
+     3.9,
+     "2020-01-13",
+     27547
+    ],
+    "was": [
+     35.95,
+     8.55,
+     12.47,
+     8.47,
+     3.9,
+     "2020-01-13",
+     27547
+    ],
+    "src": "bsetable3:590071:2019-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): OUR ERROR: the filing puts 9,503,115 (Pari Washington India Master Fund named) on the Foreign Venture Capital Investors line B1d and 10,749 on FPI B1e - both foreign lines are FII; base = total 111,103,860 minus the filing's own C1 941,710 (user 12-Oct 'base too'). Stored 8.55 was a 2-decimal figure that matches neither. Own lines: FVCI 9,503,115, FPI 10,749 = 9,513,864 on 110,162,150 = 8.636237 (stored 8.55)."
+   },
+   "2020-03-31": {
+    "cell": [
+     35.93,
+     8.391901,
+     12.51,
+     8.43,
+     3.97,
+     "2020-04-11",
+     27302
+    ],
+    "was": [
+     35.93,
+     8.39,
+     12.51,
+     8.43,
+     3.97,
+     "2020-04-11",
+     27302
+    ],
+    "src": "bsetable3:590071:2020-03-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 9,323,726 = 9,323,726 on 111,103,860 = 8.391901 (stored 8.39).",
+    "exact": true
+   },
+   "2020-06-30": {
+    "cell": [
+     35.93,
+     11.102501,
+     10.96,
+     6.55,
+     4.27,
+     "2020-07-19",
+     25224
+    ],
+    "was": [
+     35.93,
+     11.1,
+     10.96,
+     6.55,
+     4.27,
+     "2020-07-19",
+     25224
+    ],
+    "src": "bsetable3:590071:2020-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 12,335,307 = 12,335,307 on 111,103,860 = 11.102501 (stored 11.1).",
+    "exact": true
+   },
+   "2020-09-30": {
+    "cell": [
+     35.93,
+     11.422165,
+     10.86,
+     6.71,
+     3.92,
+     "2020-10-11",
+     25591
+    ],
+    "was": [
+     35.93,
+     11.42,
+     10.86,
+     6.71,
+     3.92,
+     "2020-10-11",
+     25591
+    ],
+    "src": "bsetable3:590071:2020-09-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 12,690,466 = 12,690,466 on 111,103,860 = 11.422165 (stored 11.42).",
+    "exact": true
+   },
+   "2020-12-31": {
+    "cell": [
+     35.91,
+     12.863813,
+     10.39,
+     6.26,
+     3.87,
+     "2021-01-09",
+     24087
+    ],
+    "was": [
+     35.91,
+     12.86,
+     10.39,
+     6.26,
+     3.87,
+     "2021-01-09",
+     24087
+    ],
+    "src": "bsetable3:590071:2020-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 14,292,193 = 14,292,193 on 111,103,860 = 12.863813 (stored 12.86).",
+    "exact": true
+   },
+   "2021-06-30": {
+    "cell": [
+     35.9,
+     13.206856,
+     10.9,
+     6.84,
+     3.73,
+     "2021-07-16",
+     22888
+    ],
+    "was": [
+     35.9,
+     13.21,
+     10.9,
+     6.84,
+     3.73,
+     "2021-07-16",
+     22888
+    ],
+    "src": "bsetable3:590071:2021-06-30",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: FPI 14,673,327 = 14,673,327 on 111,103,860 = 13.206856 (stored 13.21).",
+    "exact": true
    }
   },
   "BALMLAWRIE": {
@@ -526378,6 +526867,50 @@
       "exact": true
      }
     }
+   }
+  },
+  "WHEELS": {
+   "2015-12-31": {
+    "cell": [
+     75.0,
+     0.008311,
+     7.29,
+     5.82,
+     1.46,
+     "2016-02-09"
+    ],
+    "was": [
+     75.0,
+     0.01,
+     7.29,
+     5.82,
+     1.46,
+     "2016-02-09"
+    ],
+    "src": "bsetable3:590073:2015-12-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): precision only - the stored 2-decimal figure rounds from this exact value (rounding is not a restatement). Own lines: Foreign Institutional Investors 1,000 = 1,000 on 12,032,279 = 0.008311 (stored 0.01).",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     75.0,
+     0.008311,
+     7.4,
+     5.91,
+     1.46,
+     "2016-05-12"
+    ],
+    "was": [
+     75.0,
+     0.0,
+     7.4,
+     5.91,
+     1.46,
+     "2016-05-12"
+    ],
+    "src": "bsetable3:590073:2016-03-31",
+    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): OUR ERROR: FPI line 1,000 shares stored as 0.0. Own lines: FPI 1,000 = 1,000 on 12,032,279 = 0.008311 (stored 0.0).",
+    "exact": true
    }
   }
  },

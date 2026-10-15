@@ -28611,6 +28611,14 @@ BHARATRAS Mar-21 (0.251110). Precision only, from the stored 2-decimal third-par
 (MOTHERSON, CENTRALBK x2, MAXHEALTH, BHARATRAS x2) checked = own-line FII ('Foreign Nationals' rows out). Fetch route:
 nseindia.com/api/corporate-share-holdings-equities?ndsId=<id>&index=summary|public-shareholder (build_fundamentals.nse_jar cookies);
 reader ~/stocks-cache/shp/v4work/refile90/ndsread.py.
+**Part 97-98 (2026-10-15).** 97: SUNDARMFIN Jun-18 FII 6.109821 (NSE ndsId 126838); ESCORTS Mar-20 FII 19.283242 checked in both
+versions. 98: the LOCAL tool code map (~/stocks-cache/shp/{dii_session,fii_session/pe_work}/aspx_codes.json -> audit_all/show.code_of)
+held BSE's placeholder 600001 for KARURVYSYA / SUNDARMFIN / WHEELS (repo scripts/bse_scrips.json is right: 590003 / 590071 / 590073;
+stored data all cites the real codes). show.code_of now has a REAL_CODE override; bse_all lists replaced. Re-read on BSE Table III with
+the filing's own Table I base (seamown's pct-derived base is too coarse for exact writes): 24 written (WHEELS Mar-16 FPI 1,000 stored
+0.0; SUNDARMFIN Dec-19 FPIs filed on the FVCI line 9,503,115 -> 8.636237; the rest precision). HELD for a joint DII entry: KVB
+Dec-18..Sep-19 ('Foreign Financial Institutions' / 'Foreign Banks' rows sit in the stored DII). OPEN: KVB Mar-16 - BSE's Mar-16 and
+Jun-16 XBRLs (both 'New' 2016-08-09) carry identical holdings; no independent Mar-16 copy (NSE id-pass starts 2017).
 
 ### §229a — VISION READS NOW CARRY OPERATING PROFIT (2026-10-14, user: "y is no op profit for them" · "this shud never happen in future")
 
