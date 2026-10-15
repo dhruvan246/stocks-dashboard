@@ -617,7 +617,7 @@
     "20210331": 60.0,
     "20220331": 90.0,
     "20230331": 121.0,
-    "20240331": 145.0,
+    "20240331": 145.2,
     "20250331": 176.3,
     "20260331": 205.3
    },
@@ -629,7 +629,6 @@
     "20230630": 33.5,
     "20230930": 35.3,
     "20231231": 34.1,
-    "20240331": 145.2,
     "20240630": 40.3,
     "20240930": 42.9,
     "20241231": 45.1,
@@ -660,10 +659,10 @@
      "121"
     ],
     "y:20240331": [
-     "2147c9de-c4a6-487c-a96b-f251e53a13b9.pdf",
-     5,
-     "Pre-sales",
-     "145"
+     "21dc2516-398b-47e6-93b7-c8802abce2e9.pdf",
+     81,
+     "Pre-sales value",
+     "145.2"
     ],
     "q:20250331": [
      "5507ade6-3a04-468e-830f-d8735a8980d2.pdf",
@@ -718,12 +717,6 @@
      30,
      "Total (Pre-Sales row)",
      "44.5"
-    ],
-    "q:20240331": [
-     "21dc2516-398b-47e6-93b7-c8802abce2e9.pdf",
-     81,
-     "Pre-sales value",
-     "145.2"
     ],
     "q:20240930": [
      "7910d3d9-d474-42c1-90f7-fdc30ca5cfbd.pdf",
@@ -796,6 +789,22 @@
      "set_q",
      "53001054 page 65 (FY2025-26 annual report, Directors' Report table, columns 'Year ended March 31, 2026' | 'Year ended March 31, 2025'): 'Pre-sales value In H Bn",
      "2026-10-10"
+    ],
+    [
+     "q:20240331",
+     145.2,
+     null,
+     "drop_q",
+     "21dc2516 (AR FY25) p81 'Year ended March 31, 2024' Pre-sales value 145.2 = FY24, not Q4; precise print replaces deck's rounded 145",
+     "2026-10-15"
+    ],
+    [
+     "y:20240331",
+     145.0,
+     145.2,
+     "set_y",
+     "21dc2516 (AR FY25) p81 'Year ended March 31, 2024' Pre-sales value 145.2 = FY24, not Q4; precise print replaces deck's rounded 145",
+     "2026-10-15"
     ]
    ]
   },
@@ -2652,63 +2661,6 @@
    }
   },
   {
-   "name": "Construction Completed Area",
-   "unit": "Million square feet",
-   "kind": "flow",
-   "y": {
-    "20210331": 2.7,
-    "20220331": 5.3
-   },
-   "q": {
-    "20200331": 15.7,
-    "20210331": 2.7
-   },
-   "src": {
-    "y:20210331": [
-     "73372543287.pdf",
-     83,
-     "Completed Developable Area",
-     "2.7"
-    ],
-    "y:20220331": [
-     "73372543287.pdf",
-     83,
-     "Completed Developable Area",
-     "5.3"
-    ],
-    "q:20210331": [
-     "69330543287.pdf",
-     11,
-     "Completed Developable Area",
-     "2.7"
-    ],
-    "q:20200331": [
-     "69330543287.pdf",
-     11,
-     "Completed Developable Area",
-     "15.7"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20210331",
-     2.7,
-     null,
-     "moved to y:20210331",
-     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Completed Developa",
-     "2026-10-10"
-    ],
-    [
-     "q:20220331",
-     5.3,
-     null,
-     "moved to y:20220331",
-     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Completed Developa",
-     "2026-10-10"
-    ]
-   ]
-  },
-  {
    "name": "Construction Completed Area [msf]",
    "unit": "msf",
    "kind": "flow",
@@ -2746,63 +2698,6 @@
      "5.3"
     ]
    }
-  },
-  {
-   "name": "Pre Sales Volume",
-   "unit": "Number of units",
-   "kind": "flow",
-   "y": {
-    "20210331": 5053.0,
-    "20220331": 7237.0
-   },
-   "q": {
-    "20200331": 5912.0,
-    "20210331": 5053.0
-   },
-   "src": {
-    "y:20210331": [
-     "73372543287.pdf",
-     83,
-     "Pre Sales",
-     "5,053"
-    ],
-    "y:20220331": [
-     "73372543287.pdf",
-     83,
-     "Pre Sales",
-     "7,237"
-    ],
-    "q:20210331": [
-     "69330543287.pdf",
-     11,
-     "Sales",
-     "5,053"
-    ],
-    "q:20200331": [
-     "69330543287.pdf",
-     11,
-     "Sales",
-     "5,912"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20210331",
-     5053.0,
-     null,
-     "moved to y:20210331",
-     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Pre Sales Number o",
-     "2026-10-10"
-    ],
-    [
-     "q:20220331",
-     7237.0,
-     null,
-     "moved to y:20220331",
-     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Pre Sales Number o",
-     "2026-10-10"
-    ]
-   ]
   },
   {
    "name": "Pre-Sales [INR Cr]",
@@ -2907,6 +2802,71 @@
    }
   },
   {
+   "name": "Construction Completed Area",
+   "unit": "Million square feet",
+   "kind": "flow",
+   "y": {
+    "20200331": 15.7,
+    "20210331": 2.7,
+    "20220331": 5.3
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "73372543287.pdf",
+     83,
+     "Completed Developable Area",
+     "2.7"
+    ],
+    "y:20220331": [
+     "73372543287.pdf",
+     83,
+     "Completed Developable Area",
+     "5.3"
+    ],
+    "y:20200331": [
+     "69330543287.pdf",
+     11,
+     "Completed Developable Area",
+     "15.7"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20210331",
+     2.7,
+     null,
+     "moved to y:20210331",
+     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Completed Developa",
+     "2026-10-10"
+    ],
+    [
+     "q:20220331",
+     5.3,
+     null,
+     "moved to y:20220331",
+     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Completed Developa",
+     "2026-10-10"
+    ],
+    [
+     "q:20210331",
+     2.7,
+     null,
+     "drop_q",
+     "69330543 (AR FY21) p11 'Year ended March 31, 2021' = FY, not Q4; y already holds it",
+     "2026-10-15"
+    ],
+    [
+     "q:20200331",
+     15.7,
+     null,
+     "moved to y:20200331",
+     "69330543 p11 'Year ended March 31, 2020' = FY20",
+     "2026-10-15"
+    ]
+   ]
+  },
+  {
    "name": "Ongoing Unsold Inventory",
    "unit": "INR Cr",
    "kind": "level",
@@ -2936,6 +2896,71 @@
      "16,764"
     ]
    }
+  },
+  {
+   "name": "Pre Sales Volume",
+   "unit": "Number of units",
+   "kind": "flow",
+   "y": {
+    "20200331": 5912.0,
+    "20210331": 5053.0,
+    "20220331": 7237.0
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "73372543287.pdf",
+     83,
+     "Pre Sales",
+     "5,053"
+    ],
+    "y:20220331": [
+     "73372543287.pdf",
+     83,
+     "Pre Sales",
+     "7,237"
+    ],
+    "y:20200331": [
+     "69330543287.pdf",
+     11,
+     "Sales",
+     "5,912"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20210331",
+     5053.0,
+     null,
+     "moved to y:20210331",
+     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Pre Sales Number o",
+     "2026-10-10"
+    ],
+    [
+     "q:20220331",
+     7237.0,
+     null,
+     "moved to y:20220331",
+     "73372543287 page 83 (FY2021-22 annual report, 'Operating Results' table, columns 'Year ended March 31, 2022' | 'Year ended March 31, 2021'): 'Pre Sales Number o",
+     "2026-10-10"
+    ],
+    [
+     "q:20210331",
+     5053.0,
+     null,
+     "drop_q",
+     "69330543 p11 'Year ended March 31, 2021' = FY; y already holds it",
+     "2026-10-15"
+    ],
+    [
+     "q:20200331",
+     5912.0,
+     null,
+     "moved to y:20200331",
+     "69330543 p11 'Year ended March 31, 2020' = FY20",
+     "2026-10-15"
+    ]
+   ]
   },
   {
    "name": "Total Customer Base",
@@ -3075,25 +3100,43 @@
    "name": "Completed Units",
    "unit": "Number of units",
    "kind": "flow",
-   "y": {},
-   "q": {
+   "y": {
     "20200331": 12228.0,
     "20210331": 2865.0
    },
+   "q": {},
    "src": {
-    "q:20210331": [
+    "y:20210331": [
      "69330543287.pdf",
      11,
      "Completed units",
      "2,865"
     ],
-    "q:20200331": [
+    "y:20200331": [
      "69330543287.pdf",
      11,
      "Completed units",
      "12,228"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20210331",
+     2865.0,
+     null,
+     "moved to y:20210331",
+     "69330543 p11 'Year ended March 31, 2021' = FY21",
+     "2026-10-15"
+    ],
+    [
+     "q:20200331",
+     12228.0,
+     null,
+     "moved to y:20200331",
+     "69330543 p11 'Year ended March 31, 2020' = FY20",
+     "2026-10-15"
+    ]
+   ]
   },
   {
    "name": "For-Sale Ongoing Unsold Inventory",
