@@ -114,12 +114,15 @@ def _list(sym):
     if not os.path.exists(p): return None
     t = json.load(open(p)); return t.get("Table") if isinstance(t, dict) else t
 def _code(rows):
-    for r in rows or []:
-        f = (r.get("XbrlFile") or "").strip()
-        if f: return f.split("_")[0]
+    # §164s part 48 (2026-10-15): the page link is BSE's own scrip code; the XbrlFile prefix is whatever the filer typed and
+    # can be another company's code or a placeholder (SUNDARMFIN files '600001_...' and once '590073_...' = WHEELS; WHEELS
+    # and KARURVYSYA file '600001_...'), which sent the first-notice sweep to the wrong announcement stream.
     for r in rows or []:
         m = re.search(r"/(\d{6})/", str(r.get("navigateurl", "")))
         if m: return m.group(1)
+    for r in rows or []:
+        f = (r.get("XbrlFile") or "").strip()
+        if f: return f.split("_")[0]
 def _late(max_lag=21):
     """(sym, qe, served date, lag): the SERVED visibility date (docs/shp_engine.json, after the lag / sub-date ledgers are
     re-asserted; the original row when a quarter also carries a re-filing row) — not the store's raw sub."""
