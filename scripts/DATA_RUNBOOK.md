@@ -28626,6 +28626,18 @@ exception' had left it in DII), joint DII 16.746816 as the 21-Feb row. 100 - USE
 promoter / DII / MF slots stay on (A+B). OPEN with the user: the two 2015-22 XBRL ICICIBANK events (2017-06-24, 2020-08-15) whose
 'FIIs-DR' category part 87 kept as FII. 101: KVB Dec-18..Sep-19 joint (foreign-labelled B1i rows FII, DII = domestic lines).
 
+**Part 103 (2026-10-15) - BSE Ltd Mar-22..Sep-24 at share-count precision (FII/DII/MF/Ins).** NSE's shareholding master for
+BSE (`/api/corporate-share-holdings-master?index=equities&symbol=BSE`, 22 records) lists ONE filing per quarter, none revised,
+and its XBRL links are the files in ~/stocks-cache/shp/nse_bse/. Nine quarters still held 2-decimal figures (Mar-22, Jun-22,
+Dec-22, Mar-23, Jun-23, Sep-23, Dec-23, Mar-24, Sep-24) plus the 24-Mar-2022 'Revised' event row; each is re-read from its own
+share counts on the filing's own total (B + C; promoter 0, C1 0): 2022 form FII = FPI Cat I + II + Other Institutions (Foreign)
+(+FVCI/SWF/FDI, all 0), DII = Institutions (Domestic) sub-total; 2015-22 form FII = FPI, DII = Institutions - FPI. Reader checked
+first on cells already exact (Sep-22 14.296739 / 0.816665, Dec-25 17.451597 / 23.737148). All values are roundings of the stored
+ones EXCEPT two DII cells where the stored figure was the filer's printed percentage, which its own counts do not support:
+Mar-23 0.65 -> 0.643007 (871,036 / 135,462,891) and the 2022-03-24 event 1.25 -> 1.243750 (printed 13.58 - 12.33). Dates
+unchanged: the engine feed already serves NSE's submission dates; shp_history's own date slot is one day later for Jun-22,
+Dec-22, Mar-23, Jun-23 (raised with the DII session, first-notice owner). Ledger: shp_cell_fix fix.BSE.<qe> src nse-xbrl:<file>.
+
 ### §229a — VISION READS NOW CARRY OPERATING PROFIT (2026-10-14, user: "y is no op profit for them" · "this shud never happen in future")
 
 ELECON and GROWW's Sep-26 cards (filed 14-Oct, numbers from the vision read because the XBRL had not landed) showed "—" for
