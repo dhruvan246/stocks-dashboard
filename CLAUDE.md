@@ -94,6 +94,18 @@ Standing rule from the user (2026-08-10), applying to data, code, UI, and answer
 Go measure it. Can't measure it? Say "unknown" — a plausible guess presented as fact is worse
 than an admitted gap. (Top golden rule in DATA_RUNBOOK §0; every campaign doc carries the same line.)
 
+## After a compaction — the summary is a hint, not evidence (user, 2026-10-15)
+
+Sessions auto-compact at 300k tokens (`autoCompactWindow` in `~/.claude/settings.json`). The
+summary is written by the model in one pass and can drop details; this file and memory are
+re-loaded from disk, the conversation is not. After a compaction:
+1. Before relying on any "verified", "fixed", "live" or number from the summary, re-read its
+   source (filing, file, origin/main, live site) this session — only what the next step
+   depends on, not everything in the summary.
+2. During long work keep a running record on disk (verdicts, evidence, pending items) so
+   nothing lives only in chat; re-read it after a compaction before continuing.
+3. If something the summary mentions can't be found on disk, say so and ask — never fill
+   the gap from memory.
 
 ## Data work
 
