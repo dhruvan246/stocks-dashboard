@@ -71,6 +71,7 @@ SHP_J   = os.path.join(DOCS, "shareholding.json")
 SHPH_J  = os.path.join(HERE, "shp_history.json")
 GOV_J   = os.path.join(DOCS, "shp_gov.json")   # Government holding sidecar {SYM:{QE:[gov%,sub]}}
 REVS_J  = os.path.join(HERE, "shp_revisions.json")   # §142k re-filings {SYM:{QE:[prom,fii,dii,mf,ins,revDate,nsh,src]}}
+ENG_J   = os.path.join(DOCS, "shp_engine.json")    # the engines' SHP feed: each quarter's SERVED visibility date
 XTRA_J  = os.path.join(HERE, "xbrl_extra.json")      # local build output…
 XTRA_GZ = XTRA_J + ".gz"                             # …the committed copy CI reads
 RENAME  = os.path.join(HERE, "_rename_map.json")
@@ -133,6 +134,25 @@ def main():
     shph  = load(SHPH_J,  "shareholding history")
     govj  = load(GOV_J,   "government holding")
     revs  = load(REVS_J,  "shareholding re-filings")
+    # §164s part 52: each quarter's date on the page = the date the engines serve. build_engine_feed re-asserts the
+    # date ledgers (shp_lag_fix.json / shp_sub_dates.json, first-notice rule) at serve time; shp_history keeps the
+    # stored date. Reading the feed reuses that one implementation. A quarter's original row is its earliest one
+    # (a §142k re-filing rides as a later second row). Un-dated rows (99999999) keep the stored placeholder.
+    eng = load(ENG_J, "served SHP dates (shpH keeps the stored dates)")
+    served = {}
+    for sym, rows in eng.items():
+        if sym.startswith("_") or not isinstance(rows, list):
+            continue
+        m = {}
+        for r in rows:
+            try:
+                qi, sub = int(r[0]), int(r[3])
+            except (TypeError, ValueError, IndexError):
+                continue
+            if qi not in m or sub < m[qi]:
+                m[qi] = sub
+        served[sym] = m
+    n_redated = 0
     # {SYM: {QE: gov%}} — the sidecar stores [gov%, sub]; the page only needs the percentage
     gov_rows = {}
     for sym, qmap in (govj or {}).items():
@@ -156,6 +176,16 @@ def main():
         if sym.startswith("_") or not isinstance(qmap, dict):
             continue
         rows = [[qe] + list((qmap[qe] or [])[:7]) for qe in sorted(qmap)]
+        sv = served.get(sym) or {}
+        for r in rows:
+            try:
+                sub = sv.get(int(r[0].replace("-", "")))
+            except (AttributeError, ValueError):
+                continue
+            if sub and sub < 99999999 and len(r) > 6:
+                d = "%d-%02d-%02d" % (sub // 10000, sub // 100 % 100, sub % 100)
+                if r[6] != d:
+                    r[6] = d; n_redated += 1
         # §142k: the page shows a quarter's LATEST re-filing — the same overlay docs/shareholding.json applies
         # (re-filing's five percentages, the original's date and holder count). The row also carries
         # [8] the re-filing's date and [9] the original five, so a Rewind before that date shows the original.
@@ -176,6 +206,8 @@ def main():
             r[8:] = [str(rc[5])[:10], orig]
         if rows:
             hist_rows[sym] = rows
+
+    print("shpH: %d quarter dates set to the engines' served date (§164s part 52)" % n_redated)
 
     # deep XBRL detail — prefer the local build output, fall back to the committed .gz (CI path)
     xtra = {}
