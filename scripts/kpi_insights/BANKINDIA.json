@@ -269,11 +269,11 @@
     "20200630": 2.48,
     "20200930": 2.66,
     "20201231": 2.58,
-    "20210331": 2.48,
+    "20210331": 2.01,
     "20210630": 2.16,
     "20210930": 2.42,
     "20211231": 2.27,
-    "20220331": 2.36,
+    "20220331": 2.58,
     "20220630": 2.54,
     "20220930": 3.04,
     "20221231": 3.28,
@@ -368,16 +368,16 @@
      "2.66"
     ],
     "q:20210331": [
-     "b2f03973-f797-4a11-907e-5bc044611cb0.pdf",
-     6,
-     "NIM %",
-     "2.48"
+     "e240a44b-6872-4d89-8559-241f8b855f2c.pdf",
+     7,
+     "Net Interest Margin Global Q4FY21",
+     "2.01"
     ],
     "q:20220331": [
-     "b2f03973-f797-4a11-907e-5bc044611cb0.pdf",
-     6,
-     "NIM %",
-     "2.36"
+     "a440a2a7-c0b4-4222-9295-0bd099e06fe3.pdf",
+     3,
+     "NIM (Global) for Q4FY22",
+     "2.58"
     ],
     "y:20220331": [
      "a440a2a7-c0b4-4222-9295-0bd099e06fe3.pdf",
@@ -502,13 +502,6 @@
      2.54
     ],
     [
-     "q:20220331",
-     "a440a2a7-c0b4-4222-9295-0bd099e06fe3.pdf",
-     2.58,
-     "b0c9cf1a-8b7c-4fd7-ab90-755f1eca973d.pdf",
-     2.36
-    ],
-    [
      "q:20230331",
      "92e2cf66-8193-4e5b-a92a-7aa7dae39de8.pdf",
      3.15,
@@ -516,18 +509,29 @@
      3.01
     ],
     [
-     "q:20210331",
-     "faad7e6f-dccc-40e9-98ce-8a5575a367cb.pdf",
-     2.01,
-     "b2f03973-f797-4a11-907e-5bc044611cb0.pdf",
-     2.48
-    ],
-    [
      "q:20230331",
      "b2f03973-f797-4a11-907e-5bc044611cb0.pdf",
      3.01,
      "f7ed6858-c5cf-4918-bd5b-50944808dce0.pdf",
      3.15
+    ]
+   ],
+   "fixed": [
+    [
+     "q:20210331",
+     2.48,
+     2.01,
+     "set_q",
+     "stored q 2.48 from b2f03973 p6 'NIM % Mar-2021' = FY21 full-year NIM (faad7e6f p38 FY 31.03.2021 Global 2.48). Quarter Q4FY21 global NIM: e240a44b p7 Q4FY21 2.0",
+     "2026-10-15"
+    ],
+    [
+     "q:20220331",
+     2.36,
+     2.58,
+     "set_q",
+     "stored q 2.36 from b2f03973 p6 'NIM % Mar-2022' = FY22 full-year NIM (a440a2a7 p4 'NIM (Global) stood at 2.36% ... in FY22'). Q4FY22 quarter: a440a2a7 p3 'NIM (",
+     "2026-10-15"
     ]
    ]
   },
@@ -778,8 +782,8 @@
    "y": {
     "20170331": 4.68,
     "20180331": 4.56,
-    "20190331": 5.21,
-    "20200331": 5.1,
+    "20190331": 4.5,
+    "20200331": 4.57,
     "20220331": 3.69,
     "20230331": 3.67,
     "20240331": 4.51,
@@ -876,16 +880,16 @@
      "4.85"
     ],
     "y:20190331": [
-     "11e8a518-ecaf-478c-b04b-36d362c48ce8.pdf",
-     4,
-     "domestic cost of deposit",
-     "5.21"
+     "6e036934-cf1c-4b74-a9d6-58efca5b4e31.pdf",
+     16,
+     "Cost of Deposits 2018-19",
+     "4.50"
     ],
     "y:20200331": [
-     "11e8a518-ecaf-478c-b04b-36d362c48ce8.pdf",
-     4,
-     "domestic cost of deposit",
-     "5.10"
+     "6e036934-cf1c-4b74-a9d6-58efca5b4e31.pdf",
+     16,
+     "Cost of Deposits 2019-20",
+     "4.57"
     ],
     "q:20190630": [
      "2f8513e1-0b70-4847-8ddf-df09f50613b3.pdf",
@@ -991,7 +995,25 @@
     "q:20230331": "2024-05-10",
     "q:20240331": "2024-08-03",
     "y:20230331": "2024-05-10"
-   }
+   },
+   "fixed": [
+    [
+     "y:20190331",
+     5.21,
+     4.5,
+     "set_y",
+     "stored 5.21 = DOMESTIC cost of deposit (11e8a518 p4); the series is global (quarters labelled 'Cost of Deposits (global)', FY18 4.56 global). Global FY19 printe",
+     "2026-10-15"
+    ],
+    [
+     "y:20200331",
+     5.1,
+     4.57,
+     "set_y",
+     "stored y 5.10 = DOMESTIC (11e8a518 p4; faad7e6f p38 31.03.2020 Domestic 5.10 / Global 4.57); series is global. FY20 AR 6e036934 p16 prints 2019-20 Cost of Depos",
+     "2026-10-15"
+    ]
+   ]
   },
   {
    "name": "Deposits (Global)",
@@ -5552,73 +5574,6 @@
    }
   },
   {
-   "name": "Internet Banking Users (thousand)",
-   "unit": "'000",
-   "kind": "level",
-   "y": {
-    "20170331": 4180.0,
-    "20180331": 5299.0,
-    "20190331": 5887.0
-   },
-   "q": {
-    "20200331": 6570.0,
-    "20200630": 6570.0,
-    "20201231": 7421.0,
-    "20210331": 7421.0,
-    "20210630": 7598.0
-   },
-   "src": {
-    "y:20170331": [
-     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
-     10,
-     "Internet Banking Users",
-     "4,180"
-    ],
-    "y:20180331": [
-     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
-     10,
-     "Internet Banking Users",
-     "5,299"
-    ],
-    "y:20190331": [
-     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
-     10,
-     "Internet Banking Users",
-     "5,887"
-    ],
-    "q:20200630": [
-     "dc17af96-73c2-4d92-a7c0-54a37eb24e23.pdf",
-     50,
-     "Internet Banking Users (in Thousand)",
-     "6,570"
-    ],
-    "q:20210331": [
-     "dc17af96-73c2-4d92-a7c0-54a37eb24e23.pdf",
-     50,
-     "Internet Banking Users (in Thousand)",
-     "7,421"
-    ],
-    "q:20210630": [
-     "dc17af96-73c2-4d92-a7c0-54a37eb24e23.pdf",
-     50,
-     "Internet Banking Users (in Thousand)",
-     "7,598"
-    ],
-    "q:20200331": [
-     "faad7e6f-dccc-40e9-98ce-8a5575a367cb.pdf",
-     41,
-     "Internet Banking Users (in Thousands)",
-     "6,570"
-    ],
-    "q:20201231": [
-     "faad7e6f-dccc-40e9-98ce-8a5575a367cb.pdf",
-     41,
-     "Internet Banking Users (in Thousands)",
-     "7,421"
-    ]
-   }
-  },
-  {
    "name": "RAM Advances Share of Domestic Advances",
    "unit": "%",
    "kind": "level",
@@ -5938,6 +5893,85 @@
      "3,93,681"
     ]
    }
+  },
+  {
+   "name": "Internet Banking Users (thousand)",
+   "unit": "'000",
+   "kind": "level",
+   "y": {
+    "20170331": 4180.0,
+    "20180331": 5299.0,
+    "20190331": 5887.0
+   },
+   "q": {
+    "20200331": 6570.0,
+    "20201231": 7421.0,
+    "20210331": 7598
+   },
+   "src": {
+    "y:20170331": [
+     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
+     10,
+     "Internet Banking Users",
+     "4,180"
+    ],
+    "y:20180331": [
+     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
+     10,
+     "Internet Banking Users",
+     "5,299"
+    ],
+    "y:20190331": [
+     "8f55b449-718f-48c5-968c-ff1679f07767.pdf",
+     10,
+     "Internet Banking Users",
+     "5,887"
+    ],
+    "q:20210331": [
+     "e240a44b-6872-4d89-8559-241f8b855f2c.pdf",
+     41,
+     "Internet Banking Users (in Thousands) Q4 FY21",
+     "7,598"
+    ],
+    "q:20200331": [
+     "faad7e6f-dccc-40e9-98ce-8a5575a367cb.pdf",
+     41,
+     "Internet Banking Users (in Thousands)",
+     "6,570"
+    ],
+    "q:20201231": [
+     "faad7e6f-dccc-40e9-98ce-8a5575a367cb.pdf",
+     41,
+     "Internet Banking Users (in Thousands)",
+     "7,421"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20200630",
+     6570.0,
+     null,
+     "drop_q",
+     "src dc17af96 p50 (Q1FY22 deck) labels 6,570/7,421/7,598 as Q1FY21/Q4FY21/Q1FY22, but the identical triple (and identical mobile 2,987/3,729/4,338) is printed in",
+     "2026-10-15"
+    ],
+    [
+     "q:20210331",
+     7421.0,
+     7598,
+     "set_q",
+     "stored 7,421 from mislabelled dc17af96 p50; FY21 deck e240a44b p41 prints Q4 FY21 7,598 (7,421 = Q3 FY21, already stored at 20201231)",
+     "2026-10-15"
+    ],
+    [
+     "q:20210630",
+     7598.0,
+     null,
+     "drop_q",
+     "stored 7,598 from mislabelled dc17af96 p50; 7,598 is Q4FY21 per e240a44b p41 (dated 2021-06-04, before Jun-21 quarter end). No genuine Q1FY22 figure printed -> ",
+     "2026-10-15"
+    ]
+   ]
   },
   {
    "name": "Mobile Banking Users (thousand)",

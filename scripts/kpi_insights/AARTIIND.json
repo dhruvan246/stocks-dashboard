@@ -1916,6 +1916,8 @@
     "20240331": 60.0
    },
    "q": {
+    "20220930": 60,
+    "20230930": 60,
     "20231231": 60.0,
     "20240630": 60.0,
     "20240930": 60.0,
@@ -1958,8 +1960,38 @@
      6,
      "Exporting countries (doc period)",
      "60"
+    ],
+    "q:20220930": [
+     "14b2871c-36c6-46d6-8923-22d9c3fc3f77.pdf",
+     5,
+     "Exporting countries",
+     "60"
+    ],
+    "q:20230930": [
+     "86c2d678-c299-465f-b731-ab353635c56b.pdf",
+     6,
+     "Exporting countries",
+     "60"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20220930",
+     null,
+     60,
+     "set_q",
+     "14b2871c p5 prints '60 Exporting countries' for this period; cell currently sits under duplicate name 'Exporting Countries' (dropped there)",
+     "2026-10-15"
+    ],
+    [
+     "q:20230930",
+     null,
+     60,
+     "set_q",
+     "86c2d678 p6 prints '60 Exporting countries' for this period; cell currently sits under duplicate name 'Exporting Countries' (dropped there)",
+     "2026-10-15"
+    ]
+   ]
   },
   {
    "name": "MMA Capacity",
@@ -2805,30 +2837,6 @@
      6,
      "State-of-the-art R&D centres (doc period)",
      "2"
-    ]
-   }
-  },
-  {
-   "name": "Exporting Countries",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220930": 60.0,
-    "20230930": 60.0
-   },
-   "src": {
-    "q:20220930": [
-     "14b2871c-36c6-46d6-8923-22d9c3fc3f77.pdf",
-     5,
-     "Exporting countries (doc period)",
-     "60"
-    ],
-    "q:20230930": [
-     "86c2d678-c299-465f-b731-ab353635c56b.pdf",
-     6,
-     "Exporting countries (doc period)",
-     "60"
     ]
    }
   },

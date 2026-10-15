@@ -226,6 +226,23 @@ def parse_period(label, fy_end_month=3):
         if span == 12 and m2 == fy_end_month:
             return "y", end
         return None, None
+    # named-month quarter: "December Quarter of FY 2022-23" = the quarter ending Dec-2022, not FY23 (J&K Bank,
+    # 2026-10-15); "Dec quarter FY23" likewise; "December quarter 2022" (no FY) = Dec-2022 as printed
+    m = re.search(r"\b" + MRNG + r"\s*quarter\b\W*(?:of\s*)?(?:the\s*)?(fy|financial\s*year)?\s*'?\s*(\d{4}|\d{2})(?:\s*-\s*(\d{2,4}))?\b", low)
+    if m:
+        mons = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
+        mo = mons.index(m.group(1)) + 1
+        if (mo - fy_end_month) % 3:
+            return None, None
+        if m.group(4) or m.group(2):                       # a financial year: place the month inside it
+            e = m.group(4) or m.group(3)
+            fy = _yy(e) if len(e) == 2 else int(e)
+            y = fy if mo <= fy_end_month else fy - 1
+        elif len(m.group(3)) == 4:                          # plain calendar year
+            y = int(m.group(3))
+        else:
+            return None, None
+        return "q", dt.date(y, mo, calendar.monthrange(y, mo)[1]).strftime("%Y%m%d")
     m = re.search(r"\bfy\s*'?\s*(\d{4})\s*-\s*(\d{2,4})\b", low)           # FY2025-26 → FY26
     if m:
         return "y", _fy_end(_yy(m.group(2)) if len(m.group(2)) == 2 else int(m.group(2)), fy_end_month).strftime("%Y%m%d")
