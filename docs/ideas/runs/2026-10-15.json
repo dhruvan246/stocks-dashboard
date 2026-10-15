@@ -1,0 +1,198 @@
+{
+ "date": "2026-10-15",
+ "run_started": "2026-10-15 19:44 IST",
+ "run_finished": "2026-10-15 21:05 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1211,
+ "candidates": 9,
+ "filings_status": "LANE THREE RAN LIVE FROM THIS SANDBOX. The setup probe to api.bseindia.com (ComHeadernew, scrip 500002) with the honest headers of scripts/bse_headers.py returned 200, and both api and www answered throughout, so the scan, the dossiers, every BSE filing PDF and the order-book work were read live here. NSE: www.nseindia.com returns 403 to this sandbox, but nsearchives.nseindia.com (the PDF archive) returns 200, and updates.py reached the NSE feeds it needs and printed SELFTEST PASS twice - so the updates sweep ran live too, it did not fall back to the committed queue. ONE CAVEAT ON THE SCAN'S OWN READ: the day's announcement list came back CAPPED - 957 rows read against the 958 BSE reported for the range (a page came back short of the count), so the classified counts are a floor. The file records announcements_capped: true, which is what the page renders as such. An earlier read in the same run at 19:48 IST got 956 of 956 complete, but filings kept landing; the committed file is the later, fuller read of 957 rows.",
+ "govt_status": "BLOCKED FROM THIS SANDBOX, RAN FROM ACTIONS - and the distinction matters. govt.py failed at CONNECT ('Tunnel connection failed: 403 Forbidden' to pib.gov.in), exited 0 and left docs/ideas/govt.json untouched, exactly as runbook 144e requires. The committed file is TODAY'S, built 2026-10-15 18:56 IST by the ideas-feeds Action, which did reach pib.gov.in. Its measurement of today: 53 English releases scanned, 5 opened, 0 kept, 0 unmapped - 38 with no decision verb, 9 noise, 5 under the Rs 1,000 cr floor, 1 duplicate. So the lane genuinely ran today and genuinely kept nothing.",
+ "commodity_status": "Every builder was re-run from this sandbox and almost every commodity host refused at the egress proxy, so the live prices on the page are the ones the ideas-feeds Action wrote at 18:56-19:20 IST today (feeds_status.json: steps_failed [], landing refused [], 26 files landed, hosts_blocked only tradestat.commerce.gov.in and westmetall.com). What the sandbox measured, host by host: spot.py - ALL sources failed (westmetall.com and markets.businessinsider.com both 403 at the proxy), spot.json and spot_series.json LEFT UNCHANGED. minsteel.py - steel.gov.in 403 at the proxy; committed file left as it was (and the Ministry of Steel series lags anyway: the panel's Mumbai TMT/HRC/CRC rows are monthly, not today's). india_spot.py - metalbook, ibja, rubber, sugar, cai, spices, guidechem and tradingeconomics all FAILED at the proxy with 'previous rows kept'; the three sources that read from BSE WORKED (nmdc ok 2 rows, moil ok 3 rows, minsteel ok 3 rows from the committed file); 0 history rows appended and india_history.json.gz rebuilt to 271 series / 77,177 dated points. wpi.py - eaindustry.nic.in 403; file LEFT UNCHANGED. trade.py --latest - tradestat 403; trade/** LEFT UNCHANGED. signals.py - always works, reads the committed panels, 53 groups. THEN THE RE-RUNS WERE REVERTED ON PURPOSE. india_spot.json, signals.json, nmdc_history.json, moil_history.json and india_history.json.gz came back byte-identical in their DATA but with their status blocks rewritten from the Action's 'ok, 42 rows' / 'ok, 83 rows' to this sandbox's 'FAILED ... previous rows kept'. Publishing that would have told the page that nine sources failed today when they had in fact been read successfully 50 minutes earlier. Verified field by field that nothing but the build stamps and status strings differed, then restored all five files to the Action's versions with a file-scoped git checkout. The sandbox's own measurements are recorded here instead. STALENESS, STATED PLAINLY: spot_date 2026-10-15 18:57 IST is today, but wpi_month is 2026-04 - about six months old - and trade_month is 2026-07, about three. Most of the strongest groups on the board are scored off those two panels, so their rank should be read as 'what the last published official data says', not as today's move.",
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "headline": "WPI Crude Petroleum 3m +85.6%",
+   "verdict": "NOT RESEARCHED. Highest strength on the board (10.70) but built on the WPI panel, whose latest month is 2026-04 - about six months old (wpi.py could not refresh: eaindustry.nic.in refused at this sandbox's proxy, and the Actions run of 18:56 IST reached the host and still found no newer month). Evidence lines are WPI Crude Petroleum 3m +85.6%, 12m +88.1%, Petrol 1m +24.5%. The fresh India rows under this group are PPAC metro pump prices, which are administered, not market, prices: Delhi petrol Rs 102.12, unchanged 1w/1m/3m, +7.8% over 6m and 1y. Mapped beneficiaries are ONGC, Oil India, Hindustan Oil Exploration and Selan - none in the Rs 200-2,000 cr universe except Selan and HINDOILEXP, and no company document was read this run, so no exposure is verified."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "headline": "WPI Silver 12m +152.4%",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA. Strength 10.16, driven by WPI Silver 12m +152.4% plus import unit prices on HS 710691/710692. The only small-cap beneficiary mapped is MODISONLTD, which is already published (2026-09-22) - the playbook says re-examine a published name only on a new hard trigger, and its only new filing was the 30-Sep-2026 shareholding pattern (promoters 52.23%, unchanged). HINDZINC is far above the band."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "headline": "export unit price sy +606.5% · HS 284180 sodium tungstate (2 codes, US$21.2mn/month)",
+   "verdict": "NOT RESEARCHED, AND THE MAP HAS NO NAME FOR IT. Strength 10.00 on trade data alone: export unit price smoothed-yoy +606.5% on HS 284180 sodium tungstate (US$21.2mn/month) and import unit price +280.4% on HS 8101 tungsten waste and scrap. commodity_map.json lists NO beneficiary for this group, so the playbook's step-5 duty applies - search the universe for a producer and add it with the document that shows the exposure. NOT DONE this run: the trade panel's latest month is 2026-07 (tradestat.commerce.gov.in is blocked from this sandbox AND was one of the two hosts Actions could not reach either), the 1m and 3m legs of the same series are NEGATIVE (-43.4% and -36.8% on exports), and adding a name to the map without reading its filings is exactly what the rule forbids. Carried forward as the clearest map gap: the PLAYBOOK itself cites tungsten (Diffusion) as one of the user's past instances."
+  },
+  {
+   "group": "Sulphuric acid and sulphur",
+   "strength": 6.97,
+   "direction": "up",
+   "headline": "WPI Sulphuric Acid 1m +20.9%",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA. Strength 6.97 - WPI Sulphuric Acid 1m +20.9% / 12m +91.4%, import unit price 3m +95.2% on HS 280700, global sulphur 1y +141.8%. The two fresh India rows are Guidechem Chinese domestic quotes (an aggregator, direction only, dated 2026-10-15). The best-exposed small cap mapped here, AMAL Ltd, is ALREADY PUBLISHED (2026-10-12) and filed nothing new (updates.py: 0 filings since the card). AMAL did reappear on today's scan at score 4.0 on VOL x3.4 + BREAKOUT at the window high (close Rs 940.50, +51.6% over the window) with no filing to explain it - a pure price move, which the playbook watch-lists rather than researches. TANFACIND and DMCC were not researched: no document of theirs was read this run."
+  },
+  {
+   "group": "Copper",
+   "strength": 5.25,
+   "direction": "up",
+   "headline": "import unit price sy +157.5% · HS 7407 electrolytic copper rods or black copp (13 codes, US$18.1mn/month)",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA. Strength 5.25 on import unit price smoothed-yoy +157.5% (HS 7407). The purest small-cap name mapped, BHAGYANGR, is published (2026-09-23); its only new filing was the 14-Oct Tieramet board intimation, logged as an update. SUNLITE, PARMESHWAR, BAHETI, KSHINTL and PRECWIRE are unpublished but no filing of theirs was opened this run, so their exposure is unverified - the playbook forbids publishing on the group name alone."
+  },
+  {
+   "group": "Zinc and lead",
+   "strength": 4.39,
+   "direction": "up",
+   "headline": "WPI Zinc Concentrate 12m +65.8%",
+   "verdict": "NOT RESEARCHED. Strength 4.39 (WPI Zinc Concentrate 12m +65.8%). GRAVITA, POCL and NILE are the small-cap names mapped; none filed anything that reached today's scan and no document of theirs was read."
+  },
+  {
+   "group": "Paper and pulp",
+   "strength": 4.31,
+   "direction": "up",
+   "headline": "import unit price 1m +43.1% · HS 4707 othr incl unsorted waste and scrap (4 codes, US$100.0mn/month)",
+   "verdict": "NOT RESEARCHED. Strength 4.31 on a one-month import unit price jump of +43.1% on HS 4707 waste paper (4 codes, US$100.0mn/month) - a single month on a July-2026 panel, which the playbook treats as noise unless a second source agrees. The WPI legs do not corroborate it."
+  },
+  {
+   "group": "Manganese ore and alloys",
+   "strength": 3.18,
+   "direction": "up",
+   "headline": "import unit price sy +95.5% · HS 7202 ferro-silico-manganese (11 codes, US$23.1mn/month)",
+   "verdict": "NOT RESEARCHED. Strength 3.18 on HS 7202 ferro-silico-manganese import unit price smoothed-yoy +95.5%. MOIL's own price letters DID refresh from BSE this run (moil source: ok, 3 rows), so this group has a live domestic anchor, but SANDUMA and MAITHANALL sit above or at the top of the band and no document was read."
+  },
+  {
+   "group": "Graphite electrodes and needle coke",
+   "strength": 5.59,
+   "direction": "up",
+   "headline": "import unit price 3m +83.9% · HS 2713 petroleum bitumen (6 codes, US$246.5mn/month)",
+   "verdict": "NOT RESEARCHED. Strength 5.59, but read the evidence: the top line is the INPUT (HS 2713 petroleum bitumen/needle coke import unit price 3m +83.9%), and the group's own history note says a needle-coke rise SQUEEZES the electrode makers. Both mapped names, HEG and GRAPHITE, are far above the band. If anything this is a sufferer signal, and the playbook says log it as a watch line and never publish a short."
+  }
+ ],
+ "govt_considered": [
+  {
+   "release": "(none kept)",
+   "verdict": "ZERO releases cleared the bar and ZERO were left unmapped - and that is a measurement, not a blank. govt.py could not run from this sandbox (pib.gov.in refused at the egress proxy with 'Tunnel connection failed: 403 Forbidden' at CONNECT; the builder exited 0 and left docs/ideas/govt.json untouched, as designed). The committed file is TODAY'S: built 2026-10-15 18:56 IST by the ideas-feeds Action, which reached pib.gov.in (feeds_status.json hosts_ok). Its read of today: 53 English releases scanned, 5 opened, 0 kept, 0 unmapped. Drop reasons: 38 carried no decision verb, 9 noise, 5 below the Rs 1,000 cr floor, 1 duplicate, 0 backgrounders. So the government lane produced nothing today, which the PLAYBOOK says is the correct answer on a normal day. The file records only the counts, not the titles of the 5 releases it opened and dropped, so those five cannot be named from the committed data."
+  }
+ ],
+ "candidates_considered": [
+  {
+   "ticker": "ALLCARGO",
+   "scrip": "532749",
+   "score": 8.0,
+   "signals": "DEAL x2, ORDER (mcap Rs 1,583.2 cr, close Rs 10.57, vol x0.2, Rs 65.2 lakh median turnover)",
+   "verdict": "NOT RESEARCHED - THE SCAN MISREAD IT. Top of the board at score 8, but both filings are the same promoter-trust matter, not an order win: 'Intimation regarding SEBI Order granting exemption to Shashi Kiran Shetty Family Trust under SEBI (SAST) Regulations, 2011' and the Reg 11(5) letter on an amendment to the trust deed. The ORDER category fired on the word 'Order' in 'SEBI Order'. The playbook's skip list covers this exactly (promoter or director changes; no number). Logged under data_problems as a classifier false positive."
+  },
+  {
+   "ticker": "SWASTIKAIN",
+   "scrip": "544949",
+   "score": 7.0,
+   "signals": "RATING, VOL x4.1, BREAKOUT at window high (mcap Rs 762.8 cr, close Rs 223.55, Rs 103.7 lakh median turnover)",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA - already published (2026-10-07-SWASTIKAIN). The RATING filing was opened anyway for the updates sweep: CRISIL reaffirmed BBB+/Stable and A2 on Rs 450 cr of bank facilities (letter 13-Oct-2026). Written up as an update, not a new card."
+  },
+  {
+   "ticker": "TLL",
+   "scrip": "543616",
+   "score": 6.0,
+   "signals": "FUNDRAISE, DEAL, BREAKOUT at window high (mcap Rs 493.7 cr, SME, +61.6% over the window, Rs 85.1 lakh median turnover)",
+   "verdict": "NOT RESEARCHED. The trigger is a private placement of equity shares by subsidiary Trident Mediquip Limited to other shareholders - a fund raise with no use of proceeds stated in the headline, which is on the playbook's explicit skip list ('fund raises without a stated use'). The price has already run 61.6% over the window, so there is no cheap option on finding out later."
+  },
+  {
+   "ticker": "ADMACH",
+   "scrip": "544669",
+   "score": 4.5,
+   "signals": "ORDER x2, DISCLOSE (mcap Rs 352.2 cr, SME, close Rs 520.0, at window high, +45.4% over the window, Rs 19.4 lakh median turnover)",
+   "verdict": "RESEARCHED - NOT PUBLISHED. See researched[]."
+  },
+  {
+   "ticker": "ARMEE",
+   "scrip": "544951",
+   "score": 4.0,
+   "signals": "RESULT x2 (mcap Rs 815.7 cr, close Rs 257.05, Rs 178.1 lakh median turnover)",
+   "verdict": "RESEARCHED - NOT PUBLISHED. See researched[]."
+  },
+  {
+   "ticker": "AMAL",
+   "scrip": "506597",
+   "score": 4.0,
+   "signals": "VOL x3.4, BREAKOUT at window high (mcap Rs 1,162.7 cr, close Rs 940.50, +51.6% over the window, Rs 43.2 lakh median turnover)",
+   "verdict": "NOT RESEARCHED AS A NEW IDEA - already published (2026-10-12-AMAL) and updates.py found 0 filings since the card date, so there is no new hard trigger. The move is price and volume only, which the playbook watch-lists. Its commodity group (sulphuric acid and sulphur) is the 5th strongest on the board at 6.97, so the name stays on the watch list for a filing."
+  },
+  {
+   "ticker": "GARUDA",
+   "scrip": "544271",
+   "score": 4.0,
+   "signals": "CORPACT x2, RESULT (mcap Rs 1,535.2 cr, close Rs 165.0, below window high)",
+   "verdict": "NOT RESEARCHED. Both CORPACT filings are the same event: the board declared an interim dividend of Rs 0.03 per equity share on 15-Oct-2026. On a Rs 165.00 share that is a 0.02% payout - not a hard operational trigger under any reading. No number in the results headline to work from."
+  },
+  {
+   "ticker": "ITCONS",
+   "scrip": "543806",
+   "score": 4.0,
+   "signals": "ORDER (mcap Rs 215.3 cr, SME, close Rs 239.05, -13.0% over the window)",
+   "verdict": "NOT RESEARCHED. The order is real and the filing states its value: a contract from the I&B Main Secretariat, Ministry of Information & Broadcasting, of Rs 18,94,647.99 - that is Rs 0.19 cr. Far too small to move a Rs 215 cr company; the order study measures orders against a year of sales and this one is a rounding error against any plausible revenue base."
+  },
+  {
+   "ticker": "REGENCY",
+   "scrip": "540175",
+   "score": 4.0,
+   "signals": "VOL x9.3, BREAKOUT at window high (mcap Rs 585.9 cr, close Rs 68.10, +49.5% in 20 days, +63.5% over the window, Rs 48.2 lakh median turnover)",
+   "verdict": "NOT RESEARCHED - WATCH-LISTED. The biggest volume explosion on the board (9.3x the 60-day median) closing at the window high, but the scan found NO filing to explain it. The playbook is explicit: pure price moves with no filing are watch-listed, not researched, and the 2026-09-22 study found 78% of the stocks that went nowhere also had a volume explosion."
+  }
+ ],
+ "researched": [
+  {
+   "ticker": "ADMACH",
+   "scrip": "544669",
+   "lane": "filing",
+   "published": false,
+   "reason": "Admach Systems Ltd (BSE SME 544669), market cap Rs 352.2 cr, close Rs 520.0 on 15-Oct-2026. Two filings today, both opened: (a) a Reg 30 intimation of a purchase order of Rs 791.80 lakh INCLUDING GST from 'a renowned listed domestic company in the steel industry' for processing and NDT equipment for steel bars, 26 weeks to execute, paid 20% against an advance bank guarantee / 70% against inspection / 10% after commissioning against a 12-month performance bank guarantee, no promoter interest and not a related-party transaction; and (b) a press release stating 'current order book stands at Rs 76.25 crore, including GST'. THREE MEASURED REASONS NOT TO PUBLISH, each from a document read this run. 1. THE ORDER BOOK HAS NOT GROWN. The company publishes a 'Total Order Book' press release with almost every order, and the series it has itself stated is: Rs 76.25 cr on 08-Jun-2026 -> Rs 68.37 cr on 18-Aug-2026 -> Rs 69.04 cr on 30-Sep-2026 -> Rs 76.25 cr on 15-Oct-2026. Today's headline reads like growth; the book is EXACTLY the figure of four months ago, and was lower in between. Execution is consuming the book about as fast as new orders arrive. 2. IT IS A SERIAL ORDER FILER, THE WORST BUCKET IN THE STUDY. Order-receipt announcements since listing: 11-Mar, 06-Jun, 24-Jun, 06-Jul, 15-Jul, 14-Aug, 30-Sep and 15-Oct-2026 - EIGHT in about seven months, each with its own order-book press release. The 2026-09-22 study of 1,245 order filings (runbook 144c) found a company with eight or more prior order filings reached 2x only 17.3% of the time and 5x NEVER, against 30.4% / 3.5% for a first-in-two-years filer. 3. THE ORDER IS TOO SMALL AGAINST SALES, WHICH IS THE RATIO THAT PREDICTS. FY26 audited revenue Rs 68.91 cr, PAT Rs 10.01 cr (BSE detailed results). Rs 7.918 cr including GST is about 11.5% of a year's sales - the under-25% bucket, which reached 2x 21.4% of the time against 35.7% for the 25-50% bucket. The whole order book is only 1.1x FY26 revenue. Two further facts for the record: median daily turnover is Rs 19.4 lakh, BELOW the playbook's Rs 25 lakh liquidity floor; and BSE's header puts the stock on PE 35.18 (EPS 14.78) after +149.5% in six months, so the re-rating has largely happened. Also noted, not researched further: the CFO resigned on 16-May-2026, and on 29-Sep-2026 the company filed a clarification about its own earlier 'Change in Management' disclosure.",
+   "docs": [
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/52021e60-827c-4265-83dc-713ba6ac7897.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a1a04544-1ec0-4ce0-9c81-031a879e18c1.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/70c951c8-94b6-4453-9ce9-8a56e0906083.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachHis/c817d0a7-ac85-4ee3-9299-34e982121756.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachHis/fc8fe571-7ca6-45ef-8ab5-2368bc668b17.pdf"
+   ]
+  },
+  {
+   "ticker": "ARMEE",
+   "scrip": "544951",
+   "lane": "filing",
+   "published": false,
+   "reason": "ArMee Infotech Ltd (BSE 544951 / NSE ARMEE), market cap Rs 815.7 cr, close Rs 257.05. Scan trigger was RESULT x2 - the board approved, on 15-Oct-2026, the unaudited results for the quarter ended 30-JUNE-2026, i.e. Q1 FY27 reported three and a half months late (the company listed in 2026 after a Rs 300 cr fresh issue at Rs 375 a share). Read from the filed statement (standalone, Rs lakh): revenue from operations 27,326.70 for the quarter to 30-Jun-2026 against 27,028.90 for the quarter to 30-Jun-2025 - **+1.1% YoY**; PAT 276.85 against 95.27 - +190% YoY but off a Rs 0.95 cr base; FY26 (audited) revenue 1,45,583.33 (Rs 1,455.8 cr) and PAT 5,126.74 (Rs 51.3 cr), EPS 21.60. NOT PUBLISHED. The playbook's results trigger needs revenue growth of 30% or more YoY with PAT growth; +1.1% fails it outright. The profit jump is not evidence of a turn either: the business is heavily back-ended - the quarter to 31-Mar-2026 alone did revenue of 89,329.52 lakh (Rs 893.3 cr) of the Rs 1,455.8 cr year and PAT of Rs 50.2 cr - so a Q1 at Rs 273 cr and Rs 2.8 cr says little about FY27. The same board outcome also discloses a proposal to raise up to Rs 450 cr through secured listed NCDs on private placement, 'still under consideration', with due diligence pending and no use of proceeds stated: Rs 450 cr of debt against a Rs 816 cr market capitalisation, which is the kind of unspecified fund raise the playbook says to skip rather than model.",
+   "docs": [
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4c7e6bf6-dc92-4810-9cc3-fbd3e0f96cf2.pdf"
+   ]
+  }
+ ],
+ "published": [],
+ "x_checked": [
+  {
+   "ticker": "ADMACH",
+   "result": "WebSearch over x.com / twitter.com / threadreaderapp.com RAN (two queries: company name + order book + NDT; '\"Admach Systems\" IPO SME Pune 544669'). RESULT: NOTHING SUBSTANTIVE ON X. The only on-topic hit was a ~25-Dec-2025 IPO snapshot quoting a grey-market premium, i.e. ten months old and about the issue, not the business; every other hit was an unrelated foreign NDT supplier or a limit-order-book explainer. No claim needed verifying because no claim was made. READING post bodies was NOT possible: cdn.syndication.twimg.com is blocked at this sandbox's egress proxy (connect_rejected), so even a post found could not have been read in full - search snippets only. ValuePickr: forum.valuepickr.com is also blocked at the proxy (connect_rejected) and WebFetch could not resolve it either (ENOTFOUND); a WebSearch restricted to the domain found no Admach thread. So: nothing on X and no ValuePickr thread found, with the caveat that search indexing lags a day or two and a same-day post would not surface."
+  },
+  {
+   "ticker": "ARMEE",
+   "result": "WebSearch over x.com / twitter.com / threadreaderapp.com RAN. Posts exist (the IPO and the BSE listing-bell post). TWO CLAIMS FOUND, NEITHER VERIFIED AGAINST A PRIMARY DOCUMENT THIS RUN, so neither is used anywhere: (a) an order book of Rs 3,287.37 cr, said to be about 2.4x FY26 revenue, and more than 275 projects in three years - these would have to be matched to the RHP or a company filing, and the Q1 FY27 statement read this run states no order book; (b) early-October posts alleging a legal case against the promoter in Jaipur - an unverified allegation on a social platform, recorded here only so the next run knows to check the RHP's litigation section rather than treat it as fact. SEBI approval for the Rs 300 cr fresh issue in the week to 06-Feb-2026 is consistent with the results filing's own note that the IPO was 80,00,000 shares at Rs 375. Post bodies could not be read (cdn.syndication.twimg.com blocked at the proxy). ValuePickr: host blocked as above; no ArMee thread surfaced in a domain-restricted WebSearch."
+  }
+ ],
+ "orderbook_lane": "4a - ORDER-BOOK SIGNALS: 423 rows in orderbook_signals.json (built 19:09 IST today), 33 with yoy_pct >= 50. Exactly ONE of those was not already in orderbook_jumps.json: NSE:PARTH, and it is there because the company filed a NEW order book TODAY. CHECKED AGAINST THE FILINGS AND CONFIRMED (one row checked this run, nothing found wrong in it; appended to orderbook_verified.json as a fresh check, latest_verdict CORRECT / year_ago_verdict CORRECT). Parth Electricals' Reg 30 letter of 15-Oct-2026 states 'Total Executable Order Book: Approximately Rs 471 Crore as of 15th October 2026' in the same letter that announces ~Rs 85 cr of new RMU orders excluding GST; the year-earlier figure, Rs 137.36 cr as on 30-Sep-2025, is from the deck filed 10-Nov-2025 and is corroborated by the 18-Nov-2025 call transcript ('order book position as on 30th September ... INR137 crores'). True YoY +242.9% on a 12.5-month gap - a proper year-apart pair, unlike the 2026-10-11 check which could only use a 9-month gap. Book is 2.34x FY26 audited TOTAL revenue of Rs 200.95 cr (19-May-2026 deck). 4a-ii - CONFIRMED-JUMPS TABLE: one new row written (NSE:PARTH, verdict CONFIRMED, qualifies true), taking orderbook_jumps.json to 33 rows; NOTHING PENDING. Trigger recorded as the 19-May-2026 deck: Rs 271.59 cr 'as on date' against Rs 125.00 cr stated as on 15-Aug-2025 (deck filed 26-Aug-2025), 277 days earlier and so inside the 240-480 day window, +117.3%. No earlier pair can exist - the company listed on NSE SME in Aug-2025 and filed no order-book figure before 26-Aug-2025. ob_tracker.py then priced it: entry Rs 385.35 on the trigger day 19-May-2026 -> Rs 560.35 on 15-Oct-2026, +45.4%, peak +49.1% on 14-Oct-2026, 149 days, from NSE bhavcopies; 25 rows tracked, 0 carried forward stale. SIX existing rows showed a newer stated book than the one recorded, and all six were examined: Astra Microwave (2,850 vs 2,849.09), Apollo Micro (1,700 vs 1,704), AIA Engineering (977 vs 977.0), Cemindia (31,000 vs 31,307) and NSE:TECHD (70 vs 70) differ only in rounding or in whether the 'as on' date is the filing date or the quarter end - the same book, not a new one, so under the rule ('re-checked only when the company files a newer order book') none needed re-checking. JASH is the one real newer figure, Rs 944 cr as on 01-Oct-2026 (filed 09-Oct) against the recorded Rs 932 cr as on 01-Aug-2026, a +1.3% move that cannot change its verdict or its trigger; left as it stands. 4a-iii - ORDER WINS ADDING UP: 124 rows in orderwins_signals.json (built 19:10 IST today), 21 flagged at ratio >= 0.5. ALL 21 ARE ALREADY IN orderwins_verified.json (30 rows) - ZERO new flags to confirm, so no candidate arises from this lane today. For the record the verified file holds 11 CONFIRMED, 6 CORRECTED and 13 NOT A FLAG verdicts; the most recent CONFIRMED-and-crossed rows (Marine Electricals 0.653x crossing 05-Oct-2026, Om Power 0.641x crossing 14-Oct-2026) are both already published cards.",
+ "updates_sweep": "RAN LIVE FROM THIS SANDBOX - updates.py --selftest printed SELFTEST PASS twice (the Viviana 06-Oct board-meeting case and the Om Power two-order-letters case) and rewrote docs/ideas/updates_queue.json at 20:06 IST for all 51 ideas. 28 ideas had new filings since the last sweep; 63 non-routine new items; every one of them was read or accounted for. 18 UPDATES WRITTEN across 17 cards, and updates_checked set to 2026-10-15 on all 51. GOOD (8): Parth Electricals - Rs 85 cr of new RMU orders and a stated Rs 471 cr executable book, +242.9% on the year, 2.34x FY26 sales. Enviro Infra - Rs 228 cr wind-EPC LOI to step-down subsidiary Suyog Urja from ARIE Energy LLP for the 100 MW Ajani project, by 31-Jul-2027, its second wind award in two months after the Rs 224.19 cr TPREL LOI. Rajesh Power - Rs 69.004 cr LoA from UGVCL, taking its week's Gujarat discom awards to Rs 540.924 cr including taxes, about a third of FY26's Rs 1,627 cr. Om Power - Rs 101.56 cr LOA from UGVCL for Ambaji underground cabling. DEE Development - Rs 46 cr of module and off-skid piping contracts from an unnamed US EPC customer, delivery July 2027. Vraj Iron & Steel - a fresh MoEF&CC Standard Terms of Reference for the greenfield Raipur plant, with the full configuration now on record (0.9 Mtpa pellets, 4x350 tpd DRI, 5x25 T induction, 3,92,700 tpa rolling, 1.2 Mtpa washery, 2x9 MVA SEAF). Morepen Laboratories - the Himachal Pradesh High Court quashed the Rs 117.94 cr GST show-cause notice (order 12-Oct, received 14-Oct). Viviana Power - the board decided NOT to proceed with the preferential warrant issue, so that dilution is off the table. Aeroflex Enterprises - the Rs 202 cr Aeroflex Industries capacity approval read in full, two of its four items already COMPLETE. BAD (0). NEUTRAL (10): Aeroflex Neu buying 51.01% of Stilonn Valves for Rs 16.0 cr with no financials disclosed; Prostarm allotting 28.99 lakh warrants at Rs 147 for Rs 42.61 cr - a 10.7% PREMIUM to the Rs 132.85 close, so NOT the below-market red flag, but only 25% is paid up; Swastika Infra's CRISIL reaffirmation (BBB+/Stable, A2, Rs 450 cr facilities) plus the 21-Oct board meeting that will approve TWO quarters at once; Jyoti Structures' CFO change (relinquished by the Whole-time Director, successor appointed the same day, no disagreement cited); South West Pinnacle's Oman JV update (12 copper-gold prospects, 6,132 line-km flown, peak rock chip 2.27% Cu, 'no prospect has yet been ranked' - surface samples, not a resource) and its shareholding confirming promoters unchanged at 61.70%; GP Eco's shareholding (promoters 59.42%, pledge down from 55.5% to 53.22% of their holding but still over half); Parag Milk's shareholding (promoters 40.49%, no pledge); Shree Refrigerations incorporating the wholly owned subsidiary Aquilon Limited for chillers and HVAC; Bhagyanagar's Tieramet board approving the draft Information Memorandum for its Rule 19(2)(b) application; Trishakti's 22-Oct board meeting for Q2/H1 results. SKIPPED AS HOUSEKEEPING, WITH THE REASON: Modison, Dilip Buildcon and Ceigall shareholding patterns were read in full from the XBRL and are UNCHANGED against the figures already on their cards (52.23%; 63.14% with 1,45,26,727 shares pledged = 14.16% of the promoter holding; 82.06% with no pledge) - checked, nothing to report. Reg 74 depository certificates (Marine, Om Power, Birla Cable), newspaper-publication copies, trading-window closures, an analyst-meet intimation (PSP Projects) and an earnings-call invite (Supreme Power) carry no new fact. Swastika's AGM proceedings were opened: ordinary business only (accounts adopted, one director retiring by rotation re-appointed) and the chairman recorded that the statutory and secretarial audit reports carry 'no qualifications, observations or adverse remarks'. GUIDANCE LINES: re-checked on every swept card and NONE CHANGED - no new call transcript, presentation or guidance statement arrived in the window. Parth's new filing gives order-book visibility of '12-14 months', which is visibility, not revenue guidance, so its guidance line stands. QUEUE STATUS: 50 of 51 ideas complete. ONE SUSPECT: South West Pinnacle, because the second reader found an NSE filing of 14-Oct-2026 ('Updates') that the per-company NSE read missed. second_reader_misses 1, second_reader_problems ['BSE daily list 2026-10-15 incomplete']. Both are carried into data_problems - the miss is a feed defect to fix in updates.py, not a footnote, and it is logged there because this run is not allowed to edit scripts/ideas/*.py.",
+ "note": "Three lanes plus the two order-book lanes, all run. ZERO IDEAS PUBLISHED - a valid day, written honestly, and the reasons are measured rather than asserted. The government lane kept nothing out of 53 PIB releases (the Action's read; PIB is blocked from this sandbox). The commodity board is topped by groups whose evidence sits on a WPI panel six months old and a trade panel three months old, and every strong group's best small-cap name is either already published (Modison on silver, Amal on sulphuric acid, Bhagyanagar on copper) or has no document of its own read this run; tungsten, the third-strongest group, still has NO mapped beneficiary at all, and this run deliberately did not invent one. The filings lane gave nine candidates, of which the two worth deep work were researched and both failed on measurement: Admach Systems publishes an order-book press release with nearly every order, but the book it states is Rs 76.25 cr today against Rs 76.25 cr on 08-Jun-2026 - unchanged in four months - and it is an eight-filings-in-seven-months serial filer, the bucket that has never produced a 5x; ArMee Infotech's late Q1 FY27 shows revenue +1.1% YoY, nowhere near the 30% the trigger needs. Where today's real news landed was on names already on the page, so it went into the sweep: 18 updates across 17 cards, eight of them good news including Parth's Rs 471 cr order book, Enviro Infra's Rs 228 cr wind LOI, Rajesh Power's Rs 541 cr week and the High Court quashing Morepen's Rs 117.94 cr GST notice. The order-book lane added one confirmed row (Parth, +242.9% on comparable definitions) and found nothing pending in either the jumps table or the order-wins screen.",
+ "data_problems": [
+  "SCAN SELFTEST FAILED, AND IT IS NOT A SETUP ARTEFACT. scan.py printed 'scan SELFTEST FAIL - OCCL 30-Sep-2026 anti-dumping duty raise, generic subject: got []' on BOTH runs this evening - the second AFTER pymupdf was installed and importable, so the obvious explanation (the TRADE classifier needs fitz to read a generic-subject filing's PDF text) is ruled out by measurement. Per runbook 144 the selftest 'must print PASS', so the TRADE category's ability to catch a trade-remedy filing behind a generic 'Disclosure under Regulation 30' heading is UNVERIFIED tonight, which is exactly the defect the OCCL case was added to prevent. NOT FIXED HERE: this run is instructed not to edit scripts/ideas/*.py. Needs the owner.",
+  "PYTHON / PIP MISMATCH ON THIS SANDBOX IMAGE - worth fixing in the routine's setup step. 'pip install pymupdf xlrd' installs into /usr/local/lib/python3.13/dist-packages while 'python3' on PATH is /usr/local/bin/python3 = Python 3.11.17, which reads /usr/local/lib/python3.11/dist-packages. So the prompt's own setup line reports success and the modules are still missing: minsteel.py died with ModuleNotFoundError: fitz, india_spot.py's PPAC fuel source failed with the same error ('FAILED (No module named 'fitz') - previous rows kept'), and scan.py ran its first pass without PDF text extraction. Worked around with 'python3 -m pip install pymupdf xlrd'; the setup step should use that form.",
+  "SCAN CLASSIFIER FALSE POSITIVE, TOP OF TODAY'S BOARD. Allcargo Logistics scored 8.0 - the day's highest - on an ORDER signal taken from 'Intimation regarding SEBI Order granting exemption to Shashi Kiran Shetty Family Trust under SEBI (SAST) Regulations, 2011'. A SEBI exemption order for a promoter family trust is not an order win; the word 'Order' in the subject fired the category. The second filing is the matching Reg 11(5) trust-deed letter, counted as DEAL. Both are promoter-structure filings on the playbook's skip list.",
+  "UPDATES QUEUE: SECOND READER FOUND A FILING THE PER-COMPANY NSE READ MISSED. South West Pinnacle Exploration's status is 'SUSPECT - daily-feed second reader found NSE filing 2026-10-14 Updates that the per-company read missed' (SOUTHWEST_14102026105506_Announcement_-Signed.pdf, the Oman JV exploration update). No content was lost this run - the identical disclosure was picked up from BSE per-company and has been written up as an update - but the gap is real: the whole-market NSE feed carried a filing that the per-company NSE announcement read for this symbol did not. Under the playbook a miss is a defect to fix in updates.py, not a footnote; NOT FIXED HERE (scripts are owner-only this run). second_reader_misses: 1.",
+  "BSE DAY LISTS CAME BACK SHORT TWICE, IN TWO DIFFERENT READERS. updates.py reports second_reader_problems ['BSE daily list 2026-10-15 incomplete'] (965 rows read against 966 reported), and scan.py's own read ended at 957 of the 958 BSE reported, flagged announcements_capped: true. Both are one row short of the source's stated count on a day whose filings were still landing at 20:00 IST, so both counts are floors. Recorded rather than papered over, per runbook 144f.",
+  "NSE'S INTEGRATED-FILING ROWS ARE MISLABELLED AS RESULTS IN THE QUEUE. Two queue items read 'Results 30-SEP-2026: None None (New)' with a headline of 'Integrated Filing- Governance': Utssav CZ Gold Jewels (iXBRL opened and read this run - it is the half-yearly governance and investor-grievance filing, with no financial statement in it) and Birla Cable, whose pdf URL is literally 'https://nsearchives.nseindia.com/corporate/null'. BSE's per-scrip list for Birla Cable over 13-15 Oct holds only a Reg 74 certificate, so no results statement exists to open. Neither is a missed result; the queue's results feed is labelling governance filings as Results with null values and a null URL.",
+  "WPI AND TRADE PANELS ARE MONTHS OLD, WHICH SHOULD TEMPER THE WHOLE COMMODITY BOARD. signals.json carries wpi_month 2026-04 and trade_month 2026-07 against spot_date 2026-10-15. Both builders were blocked from this sandbox, but the ideas-feeds Action DID reach eaindustry.nic.in (hosts_ok) and still found no newer WPI month, so the ~6-month gap is the source's, not ours - worth the owner's eye nonetheless, because six of today's ten strongest groups are ranked on those two panels alone.",
+  "COMMODITY MAP GAP, UNRESOLVED ON PURPOSE. 'Tungsten (APT, tungsten carbide)' ranks third at strength 10.00 with an EMPTY beneficiary list, so the playbook's step 5 (find a producer in the universe, read its filings, add it with the document) is outstanding. Not done this run: the only evidence is a trade panel from July whose 1m and 3m legs are negative, and adding a name without reading its documents is forbidden. Three more strong groups have no mapped name either: carbon black (4.43), aniline and nitro-benzenes (4.03), and gallium/germanium/indium/tellurium (3.60)."
+ ],
+ "track_status": "Re-priced 2026-10-15 20:15 IST by score.py: 51 of 51 published ideas priced LIVE from BSE/NSE, 0 via the bhavcopy fallback, 0 carried forward stale. Median return since call +1.3%, mean +3.5%, 26 of 51 up, median peak since call +5.0%; 7 ideas have touched +20% at some point, 0 have touched +50%. No idea was published today, so the count is unchanged from yesterday's 51 and the whole move in the medians is market, not new entries."
+}
