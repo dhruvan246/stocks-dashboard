@@ -64,6 +64,13 @@
    "title": "Financial Results Q3 FY 2024-25 (Standalone/Consolidated)",
    "read": "2026-09-08",
    "by": "claude-routine"
+  },
+  "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf": {
+   "kind": "res",
+   "date": "2024-08-08",
+   "title": "Results For The Quarter Ended June 30, 2024",
+   "read": "2026-10-17",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -77,6 +84,7 @@
     "20260331": 3589.98
    },
    "q": {
+    "20240630": 4303.64,
     "20240930": 4099.55,
     "20241231": 4058.47,
     "20250630": 3698.74,
@@ -145,6 +153,12 @@
      4,
      "Gross NPAs (Rs. Crore)",
      "4,099.55"
+    ],
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Gross NPAs",
+     "4,303.64"
     ]
    }
   },
@@ -158,6 +172,7 @@
     "20260331": 95.79
    },
    "q": {
+    "20240630": 96.08,
     "20240930": 96.21,
     "20241231": 96.3,
     "20250630": 96.05,
@@ -226,6 +241,12 @@
      4,
      "Gross NPA %",
      "96.22"
+    ],
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Gross NPA %",
+     "96.08"
     ]
    }
   },
@@ -239,6 +260,7 @@
     "20260331": 78.44
    },
    "q": {
+    "20240630": 83.87,
     "20241231": 82.67,
     "20250630": 79.78,
     "20250930": 80.8,
@@ -293,6 +315,12 @@
      9,
      "Net credit impaired Assets Ratio",
      "82.67"
+    ],
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     9,
+     "Net credit impaired Assets Ratio",
+     "83.87"
     ]
    }
   },
@@ -425,6 +453,142 @@
      91,
      "Total Employees",
      "139"
+    ]
+   }
+  },
+  {
+   "name": "Aggregate Outstanding of Stressed Loans Transferred",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 90.01
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Aggregate outstanding of accounts sold to SC/ RC (doc period)",
+     "90.01"
+    ]
+   }
+  },
+  {
+   "name": "Debt-Equity ratio",
+   "unit": "times",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 4.89
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     9,
+     "Debt-Equity ratio",
+     "4.89"
+    ]
+   }
+  },
+  {
+   "name": "LGD percentage",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 67.12
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "LCD percentage",
+     "67.12"
+    ]
+   }
+  },
+  {
+   "name": "Principal Outstanding of Loans Acquired",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 13.72
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Aggregate principal outstanding of loans acquired (doc period)",
+     "13.72"
+    ]
+   }
+  },
+  {
+   "name": "Security Cover Ratio",
+   "unit": "ratio",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 1.09
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     8,
+     "cover on Book Value (doc period)",
+     "1.09"
+    ]
+   }
+  },
+  {
+   "name": "Stressed Loan Accounts Transferred",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240630": 1.0
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Number of Accounts (To ARCs) (doc period)",
+     "1"
+    ]
+   }
+  },
+  {
+   "name": "Total Debts to Total Assets",
+   "unit": "times",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 0.64
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     9,
+     "Total Debts to Total Assets",
+     "0.64"
+    ]
+   }
+  },
+  {
+   "name": "Weighted Average Residual Tenor of Loans Acquired",
+   "unit": "years",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 3.38
+   },
+   "src": {
+    "q:20240630": [
+     "44d0e3bc-74b2-46e5-a7ec-03b707c1c5f3.pdf",
+     4,
+     "Weighted average residual tenor of loans acquired (doc period)",
+     "3.38"
     ]
    }
   }
@@ -786,5 +950,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-08"
+ "updated": "2026-10-17"
 }
