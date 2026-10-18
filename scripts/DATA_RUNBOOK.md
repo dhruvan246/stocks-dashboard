@@ -24194,6 +24194,19 @@ bar 1996-01-01; joins 2003-12-24 49.9947 -> 50.8822, 2004-05-21 69.7455 -> 70.66
 out/StockWorld_indicators_reply9_to_Quantmac_20261012.xlsx (cell IDs Q01-Q49, YOUR DECISION A/B/C/D + YOUR ROWS / REASON columns, every cell in the
 Note) + out/StockWorld_MonthEnd_Indicators_2009_2026_20261012b.xlsx; replaces reply #8.
 
+### §179u — Quantmac's answers to reply #9 + their corrected_20261013 file, judged cell by cell (2026-10-18)
+Their 13-Oct file changed only INEABS (2 vs200 cells): THEIR ERROR (a BSE close filled into the NSE symbol-change days 21/22-Jul-2008), fixed by them
+-> agrees. Live release bin (end 2026-10-16, engine e24) vs their file: 318,488 / 318,533; 48 differ, none of our values moved since 12-Oct. All 48
+answered "B" with rows; every one REBUILT EXACTLY from our bars with their stated rule (qm_r6_exact.py + direct rebuilds; record
+~/stocks-cache/qm-evidence-20261018/verdicts_r13.md). Their stated demerger order: filed factor -> value of the listed distribution on the cum day
+-> auction -> ex-day average. Evidence read: Zydus press note 4-Jul-2008 (Carnation 4 for 15 Cadila), Carnation BSE 531335 close 75.85 / Cadila NSE
+272.60 (26-Dec-2008); UltraTech 4 for 7 Samruddhi, closes 924.65 / 2319.00 (25-May-2010; Samruddhi itself first traded NSE 29-Jun-2010); Wipro 6-K
+ex-99.1 (SEC 0001193125-12-446811: 1 WEL per 5 Wipro, 1 Wipro per 1.65 WEL -> 33/37); ADANIENT 3-Jun-2015 / FRL 21-Jun-2013 opens = 0.9 x cum close;
+ALOKINDS BSE 521070 same code across the 2020 reduction but ISIN INE270A01011 -> INE270A01029.
+**USER DECISIONS 2026-10-18: keep ours on all three** — (1) no value-of-listed-distribution factor (C, CADILAHC 15 + GRASIM 13); (2) WIPRO 2013 keeps
+the auction open, not the filed 33/37 (W, 8); (3) old-limit demerger-day opens stay as traded (D2, ADANIENT 2 + FRL 2). ALOKINDS split stands (6-Oct
+decision, F 8). All 48 = RULE DIFFERENCE by decision; do not re-ask. Still open: LT 23-Jun-2004 relisting-day low 150 (raw) — owner's call.
+
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
 (21-Sep), refresh-announcements 13/26 (21-Sep), refresh-results-hourly 9/20 (23-Sep), refresh-fundamentals 7/60 (24-Sep),
