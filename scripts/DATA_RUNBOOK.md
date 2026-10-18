@@ -24206,6 +24206,15 @@ ALOKINDS BSE 521070 same code across the 2020 reduction but ISIN INE270A01011 ->
 **USER DECISIONS 2026-10-18: keep ours on all three** — (1) no value-of-listed-distribution factor (C, CADILAHC 15 + GRASIM 13); (2) WIPRO 2013 keeps
 the auction open, not the filed 33/37 (W, 8); (3) old-limit demerger-day opens stay as traded (D2, ADANIENT 2 + FRL 2). ALOKINDS split stands (6-Oct
 decision, F 8). All 48 = RULE DIFFERENCE by decision; do not re-ask. Still open: LT 23-Jun-2004 relisting-day low 150 (raw) — owner's call.
+**Re-check on the owner's "don't assume" (18-Oct):** both factors recomputed from the raw NSE rows (Cadila 26,18,371.40 / 10,143 = 258.1457 / 272.60 =
+0.946976; Grasim 1,39,85,30,733.95 / 7,40,086 = 1,889.6868 / 2,319.00 = 0.814871 = the stored 0.9470 / 0.8149); all 28 live cells rebuild from NSE raw x these
+factors; NSE's call auction began 18-Oct-2010 (cmtr/15981, Nifty/Sensex only), so neither day could use an auction. MEASURED for reply #10: on the 10 other
+no-auction (VWAP-rule) demergers in the comparison, every factor-sensitive Quantmac cell (98: SKUMARSYNF 3, REIAGROLTD 4, SMARTLINK 30, JUBLPHARMA 1,
+EMBDL 14 + 11, JINDALSAW 13, GVT&D 8, FEL 6 + 8; sensitive = the 52w extreme or a 200-DMA bar lies before the ex-day) equals our average-price factor;
+CADILAHC / GRASIM are the only two where their factor differs. Samruddhi first traded NSE 29-Jun-2010 (not listed on the cum day); Carnation 17 trades /
+11,402 shares on 26-Dec-2008. **Reply #10 built + sent (build_ind_reply_r10.py, LIVE_REV=ff048afa49 = split rev of the release bin, end 2026-10-16):**
+out/StockWorld_indicators_reply10_to_Quantmac_20261018.xlsx (their 13-Oct answer + our read + verdict per cell; Q01-Q28 OPEN with empty A/B columns
+asking them to apply their own no-auction rule; Q29-Q48 CLOSED) + out/StockWorld_MonthEnd_Indicators_2009_2026_20261018.xlsx. Next: their answer on Q01-Q28.
 
 ## §181 — EVERY BSE JOB WAS DARK 20→26 SEP: the requests lacked standard headers, not access (2026-09-26, user: "find a way")
 **Measured (every run log since 20-Sep, times UTC):** refresh-bse 12/13 runs refused (first 20-Sep 11:47), refresh 52/55
