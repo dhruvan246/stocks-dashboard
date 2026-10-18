@@ -354063,28 +354063,29 @@
    "2020-09-30": {
     "cell": [
      34.56,
-     27.1536,
+     47.40023,
      4.9245,
-     4.2548,
-     0.0195,
+     4.254521,
+     0.019542,
      "2020-10-22",
      13108
     ],
     "was": [
      34.56,
-     27.4436,
+     27.1536,
      4.9245,
-     4.2548,
-     0.0195,
+     4.254521,
+     0.019542,
      "2020-10-22",
      13108
     ],
-    "src": "ledger",
-    "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 10.10 (named: PIRAMAL ENTERPRISES LIMITED 9.97); 'Clearing Member' 0.11; 'LIMITED LIABLITY PARTNERSHIP/ CORPORATE BODY - LLP' 0.03; 'Trust' 0.15 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 27.4436 -> 27.1536, dii 4.9245 -> 4.9245.",
+    "src": "bsetable3:532498:107",
+    "why": "\u00a7164r batch 30 part 108 (2026-10-18, Quantmac v9 every-cell check, cell read this session): BSE Table III qtrid 107 read 18-Oct: FPI B1e 17,855,152 + on the institutions 'Any Other' block the holder 'DYNASTY ACQUISITION (FPI) LTD' 13,421,889 (FPI in its own name = FII, user 12-Oct rule 3; the same shares appear under the company-type label 'CORPORATE BODY-FOREIGN BODY', counted once) + 'FOREIGN INSTITUTIONAL INVESTORS' 8,216 + 'FOREIGN PORTFOLIO INVESTOR - CATEGORY 3' 280 = 31,285,537 on Table I grand total 66,002,922 (C1 0) = 47.400230. Batch 11 had left Dynasty out; our Jun-20 (47.141611) and Dec-20 (48.302954) already count it; Screener Sep-2020 47.40. fii 27.1536 -> 47.40023; dii untouched.",
+    "exact": true,
     "superseded": {
      "cell": [
       34.56,
-      27.4436,
+      27.1536,
       4.9245,
       4.2548,
       0.0195,
@@ -354093,17 +354094,26 @@
      ],
      "was": [
       34.56,
-      47.4013,
-      15.5368,
+      27.4436,
+      4.9245,
       4.2548,
       0.0195,
       "2020-10-22",
       13108
      ],
-     "src": "bsexbrl:532498_2110202016519_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.40 -> 27.44, dii 15.54 -> 4.92. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.38 | R1: R1-public-label Other CORPORATE BODY-FOREIGN BODY 20.34 public=20.34 fii=0.00 DYNASTY ACQUISITION (FPI) LTD 20.34 foreign->public(new-format:ForeignCompanies) keyword; R1-unresolved Clearing Member 0.11  keyword; R1-foreign-holders Bodies Corporate 10.1 public=10.10 fii=0.00 PIRAMAL ENTERPRISES LIMITED 9.97 foreign->public(new-format:BodiesCorporate); R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.01 public=0.00 fii=0.01  keyword; R1-unreso. Evidence: _shp_164_audit.json",
+     "src": "ledger",
+     "why": "\u00a7164r batch 11 - label fix (user 2026-10-04 'yes fix the label bug'): the company's own sub-row label 'Bodies Corporate' 10.10 (named: PIRAMAL ENTERPRISES LIMITED 9.97); 'Clearing Member' 0.11; 'LIMITED LIABLITY PARTNERSHIP/ CORPORATE BODY - LLP' 0.03; 'Trust' 0.15 inside its institutions 'Any Other' block is a non-institution category (company / government / IEPF / trust / clearing member), so it is neither FII nor DII. Our label reader had not recognised it and read the row as unlabelled, which had left it in FII. fii 27.4436 -> 27.1536, dii 4.9245 -> 4.9245.",
      "superseded": {
       "cell": [
+       34.56,
+       27.4436,
+       4.9245,
+       4.2548,
+       0.0195,
+       "2020-10-22",
+       13108
+      ],
+      "was": [
        34.56,
        47.4013,
        15.5368,
@@ -354112,17 +354122,30 @@
        "2020-10-22",
        13108
       ],
-      "was": [
-       34.56,
-       27.0536,
-       35.8845,
-       4.2548,
-       0.0195,
-       "2020-10-22",
-       13108
-      ],
       "src": "bsexbrl:532498_2110202016519_SHP.xml",
-      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.01; DYNASTY ACQUISITION (FPI) LTD 20.34) \u2014 moved dii -> fii (20.3477 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 47.40 -> 27.44, dii 15.54 -> 4.92. R1-R3 (\u00a7158 rules, first read), D1 unnamed remainder -> FII. \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). D1-unnamed-remainder-in-dii 0.38 | R1: R1-public-label Other CORPORATE BODY-FOREIGN BODY 20.34 public=20.34 fii=0.00 DYNASTY ACQUISITION (FPI) LTD 20.34 foreign->public(new-format:ForeignCompanies) keyword; R1-unresolved Clearing Member 0.11  keyword; R1-foreign-holders Bodies Corporate 10.1 public=10.10 fii=0.00 PIRAMAL ENTERPRISES LIMITED 9.97 foreign->public(new-format:BodiesCorporate); R1-fii-label Other FOREIGN INSTITUTIONAL INVESTORS 0.01 public=0.00 fii=0.01  keyword; R1-unreso. Evidence: _shp_164_audit.json",
+      "superseded": {
+       "cell": [
+        34.56,
+        47.4013,
+        15.5368,
+        4.2548,
+        0.0195,
+        "2020-10-22",
+        13108
+       ],
+       "was": [
+        34.56,
+        27.0536,
+        35.8845,
+        4.2548,
+        0.0195,
+        "2020-10-22",
+        13108
+       ],
+       "src": "bsexbrl:532498_2110202016519_SHP.xml",
+       "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (FOREIGN INSTITUTIONAL INVESTORS 0.01; DYNASTY ACQUISITION (FPI) LTD 20.34) \u2014 moved dii -> fii (20.3477 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was name-unknown."
+      }
      }
     }
    },
