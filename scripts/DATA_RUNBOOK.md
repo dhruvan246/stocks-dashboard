@@ -28534,6 +28534,26 @@ all 30 (out-quarters = FPI + unnamed remainder 141,340 to Jun-20 / 154,788 from 
 (`Corp_shpSec_SHPPubShold_ng`) shows only 'Any Other (specify)' + name — it HIDES the holder's own category text; judge rule-2 cells
 from the XBRL tag, never from Table III. Record `~/stocks-cache/shp/quantmac/v9/pvrinox_2017_22_verdicts.json`.
 
+**§164r part 110 (2026-10-18, user: "work like the DII session on every cell", "no assumptions whatsoever") — Quantmac v9 (17-Oct)
+FII reply: all 269 differing cell groups judged one by one from each cell's own filing read this session.** Verdicts (record
+`~/stocks-cache/shp/quantmac/v9/r10/verd10.json`, summary `VERDICTS10.md`): RULE DIFFERENCE 192, RULE DIFFERENCE + OUR ERROR
+(precision) 21, OUR ERROR 2, THEIR ERROR 32, UNKNOWN 22. **Fixed (24 values via shp_cell_fix, each `was` = the stored row, FII slot
+only, earlier entries kept under `superseded`):** ARE&M Sep-20..Jun-22 ×8 (store omitted the tiny inst Any-Other 1,500 / non-inst
+'Foreign Portfolio Investor (Category-I)' 300-661 rows), COROMANDEL Sep-21..Jun-22 ×4, DHANI Jun-21..Jun-22 ×5 (stored figures were
+not the filing's arithmetic), LAKSHVILAS Jun/Sep-15 (printed 2-dp → share counts), MFSL Jun/Sep-16, OMAXE Mar-16, JSWSTEEL Dec-15
+(31.99 → 16.971002: FOREIGN BODIES CORPORATES 36,304,873 incl. JFE Steel is a company-type row, out by part 22), CHAMBLFERT Sep-17
+(7.7209 → 7.721382). **Date (shp_lag_fix):** TUBEINVEST (= CHOLAHLDNG) Mar-2015 was dated to its 05-May-2015 revision; BSE's
+all-category stream holds the original notice 2015-04-21 11:50:30 (NEWSID 4eee8473…) → first-notice rule, entry replaced
+(`replaced` keeps the old one). **THEIR ERROR examples:** NAM-INDIA Jun-19 (Valiant Mauritius Partners FDI 10,796,700 counted twice
+— the filing lists it as an 'Others' category row AND as a >1% Bodies Corporate holder; block total adds it once); BSE Jun-17 (the
+non-inst row is labelled 'Foreign Institutional Investor' 1,292,297 in BSE Ltd's own PDF — their '58,441' is wrong, the rest is
+63,832); 13 missing event filings (ABIRLANUVO, ADANIPOWER, BAJAJHIND, HEXT, IDFC, KEMROCK, KOTAKBANK, PATNI, POONAWALLA, TATACOMM …).
+**RULE DIFFERENCE examples:** RELIGARE 26-Jul-18 (unnamed institutions rest 195,936 is not labelled OCB in this filing; they carry the
+label from another copy), MARICO Jun-15 (FVCI row 4,770,649 — open user question), D1 unnamed rest (PVRINOX, APOLLOTYRE, DHANI),
+15:30 cut, bare-NSE-date, undated 2015 quarters. **UNKNOWN:** NSE upload days before 2021 cannot be read (Dec-15 ×13, ICICIBANK
+Jun-17, EDELWEISS Nov-17 …); IDFCFIRSTB 06-Apr-21 (their 18.67 cannot be rebuilt from either filing of the day; ours = FPI + named
+'Other' holders less 4 Indian ones = 15.5744). Applied on a copy of the store: 0 was-mismatch.
+
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
 **What the user saw.** Mon 12-Oct-2026 ~16:40 IST: the Just Declared tab showed nothing for the day. Measured, not assumed:
