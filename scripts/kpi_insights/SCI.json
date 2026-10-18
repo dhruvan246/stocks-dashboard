@@ -218,9 +218,129 @@
    "title": "Unaudited Financial Results for the Quarter and Nine Months Ended December 31, 2021",
    "read": "2026-10-17",
    "by": "gemini:gemini-3.8-flash"
+  },
+  "69285523598.pdf": {
+   "kind": "ar",
+   "date": "2021-03-31",
+   "title": "Annual Report FY21",
+   "read": "2026-10-18",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "7c3b3db1-4eab-4fba-9501-54dbf71b023e.pdf": {
+   "kind": "res",
+   "date": "2021-08-03",
+   "title": "Unaudited Standalone and Consolidated Financial Results for Quarter Ended 30.06.2021",
+   "read": "2026-10-18",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "8145344f-b6c1-46e0-a0a0-3cc402bd16e1.pdf": {
+   "kind": "res",
+   "date": "2021-11-01",
+   "title": "Financial Results for the Quarter and Half Year ended September 30, 2021",
+   "read": "2026-10-18",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "f94d6d71-a597-434c-801e-1da18598e150.pdf": {
+   "kind": "res",
+   "date": "2021-05-13",
+   "title": "Audited Standalone and Consolidated Financial Results for the Quarter and Year Ended March 31, 2021",
+   "read": "2026-10-18",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
+  {
+   "name": "Total Employees (Shore)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 578.0,
+    "20230331": 566.0,
+    "20240331": 519.0,
+    "20250331": 506.0
+   },
+   "q": {
+    "20210331": 596.0
+   },
+   "src": {
+    "y:20250331": [
+     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
+     116,
+     "Employees (Shore) Total Employees",
+     "506"
+    ],
+    "y:20240331": [
+     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
+     99,
+     "Total Employees (Shore Staff)",
+     "519"
+    ],
+    "y:20230331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Shore Staff) - Total",
+     "566"
+    ],
+    "y:20220331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     95,
+     "Employees (Shore Staff) - Total",
+     "578"
+    ],
+    "q:20210331": [
+     "69285523598.pdf",
+     56,
+     "The total Manpower as on 31.03.2021 is 596 (excluding Board Level members)",
+     "596"
+    ]
+   },
+   "latest": {
+    "y:20240331": "2025-08-21",
+    "y:20230331": "2024-09-16"
+   }
+  },
+  {
+   "name": "Dry Bulk Fleet Average Age",
+   "unit": "years",
+   "kind": "level",
+   "y": {
+    "20250331": 13.1
+   },
+   "q": {
+    "20210331": 9.2,
+    "20220331": 10.2,
+    "20230331": 11.05
+   },
+   "src": {
+    "y:20250331": [
+     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
+     55,
+     "dry bulk carrier fleet ... average age of about 13.1 (doc period)",
+     "13.1"
+    ],
+    "q:20230331": [
+     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
+     47,
+     "average age of about",
+     "11.05"
+    ],
+    "q:20220331": [
+     "75442523598.pdf",
+     56,
+     "The bulk carriers fleet is relatively young with an average age of about",
+     "10.2"
+    ],
+    "q:20210331": [
+     "69285523598.pdf",
+     42,
+     "The bulk carriers fleet is young with an average age of about",
+     "9.2"
+    ]
+   },
+   "latest": {
+    "q:20220331": "2022-09-06"
+   }
+  },
   {
    "name": "Total Employees (Fleet)",
    "unit": "count",
@@ -264,48 +384,6 @@
    }
   },
   {
-   "name": "Total Employees (Shore)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20220331": 578.0,
-    "20230331": 566.0,
-    "20240331": 519.0,
-    "20250331": 506.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
-     116,
-     "Employees (Shore) Total Employees",
-     "506"
-    ],
-    "y:20240331": [
-     "cfe7cb9f-500c-451e-838b-a19d8ceb3138.pdf",
-     99,
-     "Total Employees (Shore Staff)",
-     "519"
-    ],
-    "y:20230331": [
-     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
-     95,
-     "Employees (Shore Staff) - Total",
-     "566"
-    ],
-    "y:20220331": [
-     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
-     95,
-     "Employees (Shore Staff) - Total",
-     "578"
-    ]
-   },
-   "latest": {
-    "y:20240331": "2025-08-21",
-    "y:20230331": "2024-09-16"
-   }
-  },
-  {
    "name": "Average Age of Owned Vessels",
    "unit": "Yrs",
    "kind": "level",
@@ -335,41 +413,6 @@
      "average age from 18 years in 2007 to about 13.28 years presently (w.r.t. B&T Fle",
      "13.28"
     ]
-   }
-  },
-  {
-   "name": "Dry Bulk Fleet Average Age",
-   "unit": "years",
-   "kind": "level",
-   "y": {
-    "20250331": 13.1
-   },
-   "q": {
-    "20220331": 10.2,
-    "20230331": 11.05
-   },
-   "src": {
-    "y:20250331": [
-     "4428d289-4bcf-4450-8b0f-fb9bb41957ea.pdf",
-     55,
-     "dry bulk carrier fleet ... average age of about 13.1 (doc period)",
-     "13.1"
-    ],
-    "q:20230331": [
-     "b1007dbb-ad2f-4658-ada8-3563d19eeae8.pdf",
-     47,
-     "average age of about",
-     "11.05"
-    ],
-    "q:20220331": [
-     "75442523598.pdf",
-     56,
-     "The bulk carriers fleet is relatively young with an average age of about",
-     "10.2"
-    ]
-   },
-   "latest": {
-    "q:20220331": "2022-09-06"
    }
   },
   {
@@ -700,6 +743,33 @@
    }
   },
   {
+   "name": "Solar Power Plant Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20210331": 0.5,
+    "20220331": 0.5
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "75442523598.pdf",
+     72,
+     "solar power plant of (doc period)",
+     "0.5"
+    ],
+    "y:20210331": [
+     "69285523598.pdf",
+     56,
+     "solar power plant of 0.5 MW capacity (doc period)",
+     "0.5"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2022-09-06"
+   }
+  },
+  {
    "name": "Total Fleet Gross Tonnage",
    "unit": "G.T.",
    "kind": "level",
@@ -896,26 +966,6 @@
    },
    "latest": {
     "q:20211231": "2022-09-06"
-   }
-  },
-  {
-   "name": "Solar Power Plant Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20220331": 0.5
-   },
-   "q": {},
-   "src": {
-    "y:20220331": [
-     "75442523598.pdf",
-     72,
-     "solar power plant of (doc period)",
-     "0.5"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2022-09-06"
    }
   },
   {
@@ -1415,6 +1465,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-17",
+ "updated": "2026-10-18",
  "checked": "2026-09-07"
 }
