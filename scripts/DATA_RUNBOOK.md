@@ -28283,6 +28283,27 @@ its NSE upload stamp 2019-01-23 instead of BSE 2019-03-16 (cell_fix on the event
 the event_fills / part 42 practice (a JKCEMENT memory note says stamps are never dates - conflict raised with the user). OPEN: ICICIBANK
 Apr/May-2017 'Other' block = Foreign Banks 950,580 + FII-DR 4,224,966 (user choice asked); pre-2021 NSE upload days (Dec-2015 list, etc.)
 UNKNOWN; two classes worth a sweep: NSE-only Cat III labels 2016-22, and BSE page-era xx.01/.02 event pages absent from the store.
+**§164s part 53 (2026-10-18, Quantmac DII reply 5 of 17-Oct; each differing cell read from its own filing this session; running record
+`~/stocks-cache/shp/dii_qm/r7/VERDICTS.md`, apply script `r7/apply6.py`).** LIVE ledger fixes (22 quarter cells, 4 event rows, 9 dates,
+3 revision rows): (1) DII values: BSE Ltd Jun/Sep/Dec-17 (Bajaj Holdings & Investment = RBI NBFC on Bodies Corporate, register wins:
+10.170855 / 9.703312 / 9.347489), M&M Dec-19 28.903 (QIB row + NPS Trust), BSOFT Mar-18 6.227595 ('Foreign Mutual Fund' row is foreign),
+HDFC Sep-19 16.468504 (OCB is foreign), LUXIND Jun-20 6.0512 (Abakkus AIF), NCC Sep-17 26.856021 / Sep-21 19.7636, PGHL Sep-18 9.4609,
+RADICO Mar-21 17.1614, SRF Dec-18 11.3695, SPARC Jun-16 1.4394, SYMPHONY Jun-17 5.360004, M&M Dec-15 21.880047 / Mar-16 21.310156 and
+INDUSINDBK Dec-15 15.300796 (life insurers inside Bodies Corporate), PRAKASH Dec-15 22.615863 (NBFC row), REDINGTON Dec-15 21.016747 (AIF line).
+CENTRALBK Jun-18: full row from NSE ndsId 127837 on base 2,618,155,755 (BSE's copy lists LIC 262,883,360 twice; fii slot = FPI line 0.294558,
+FII session to confirm). (2) Original vs revision: CYIENT Sep-18 quarter row = NSE original 22.682495 (17-10-2018) + BSE revision row
+22.7821 (2018-11-01); JUSTDIAL Mar-19 = NSE original 10.062178 (18-04-2019) + revision row 10.2206 (2019-08-13); COROMANDEL Jun-21 revision
+row 21.713467 (2021-07-29); '#rev' cell_fix entries record each revision's own reading (guard_shp_revisions). (3) Events: ASTRAL 83.01 and
+TMPV 85.01 were EVENT pages held as re-filings -> shp_rev_fix drops + event fills ASTRAL 2014-12-10 (vis 2014-12-16), TMPV 2015-05-13 (vis
+2015-05-22); missing NSE events added: CENTRALBK 2019-03-28 (SHP_135151, vis 2019-03-30) and UCOBANK 2019-04-23 (SHP_137781, vis 2019-05-06).
+(4) Dates (shp_lag_fix days_earlier, first notice): KARURVYSYA Mar-18 2018-04-20, JSLHISAR Mar-19 2019-04-16, INDUSINDBK event 2019-07-06
+-> 2019-07-08, INDIAMART event 2021-02-22 -> 2021-02-23, MOTHERSON event 2018-11-01 -> 2018-11-02, CENTRALBK event 2019-02-28 -> 2019-03-05
+(NSE file-name upload stamps, as part 42 / event_fills; same open stamp question as part 104), APLAPOLLO event 2019-10-28 -> 2019-11-05 and
+PVRINOX event 2019-10-30 -> 2019-10-30 (BSE notices), JUSTDIAL Mar-19 -> 2019-04-18. READER BUGS found (fixed here by ledger only; reader
+re-run = follow-up): ownline_dii regexes miss misspelt AIF/QIB labels ('ALTERNATE INVSTMENT', 'Investments', 'Investmetnt', 'Insititional')
+and its 'Other;' label branch never asks the register (UTI: SPARC; AMBUJACEM/CUMMINSIND/WELSPUNLIV < 0.01pp, not yet fixed); t3dii's
+"B3 Any-Other rows sum > block -> skip" rule wrongly skips every named register holder listed under a category (Dec-15/Mar-16 band).
+Side finding (follow-up): 33 event rows are served after a BSE notice naming their period (r7/g/evsweep.json).
 **§164r batch 30 part 105 (2026-10-18, user: "count foreign banks as FII and take the ADR shares out of the base (46.98%)").** ICICIBANK
 2017-03-31 (cells Apr/May-2017): the institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (AR FY2016-17 p72).
 FII = (FPI 2,041,052,291 + 950,580) / ((A+B+C2) 4,351,171,801 - 4,224,966) = 46.9756 (was 47.0271; Quantmac 46.9300 keeps the full base).
