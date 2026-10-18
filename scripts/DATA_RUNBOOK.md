@@ -28464,6 +28464,23 @@ TATAPOWER 2014-04-26 written with its institutions 'Foreign Depository Receipts'
 rare: 3 of 3,315 fractional rows across all fetched lists are pre-2010 day-dated). SATYAMCOMP 500376, STER 500900, INDIABULLS 532544,
 NAGARFERT 500075 were resolved (code confirmed by BSE's own name): 0 event rows.
 
+**§164r batch 30 part 107 (2026-10-18, user: "Apply ICICI FII-DR rule to other 2015-22 filings" — the part 105 rule on every
+other ICICIBANK 2015-22 filing).** Rule: FII = (FPI B1e + 'Foreign Banks') / ((A+B+C2) − the FII-DR / FPI-DR sub-row); the DR
+sub-row is depository-receipt shares, out of FII and out of the base. Promoter / DII / MF / insurance slots stay on (A+B+C2) as in
+parts 100 and 105. Every filing qtrid 88..116 + events 93.01 / 106.01 read from BSE Table III (Corp_shpSec_SHPPubShold_ng) and
+Table I (CorporatesSHPSecuritybeta), cache `~/stocks-cache/shp/icici_dr/` (tab.json, part107_cells.json). Cell-by-cell, 31 filings:
+- **20 written (OUR ERROR under the user's ruling)**: 18 quarters Dec-15, Mar-18..Jun-21 (13), Dec-21, Mar-22, Jun-22 + events
+  2017-06-24 and 2020-08-15 (these two supersede part 87, which had kept 'FIIs-DR' as FII). Moves −0.0001..−0.0486 pp (Dec-15:
+  FIIs-DR 4,340,075 → 53.6339 → 53.585347). Each row's own sub-rows, base and arithmetic are in its ledger `why`.
+- **1 already done**: Mar-17 (part 105, AR FY17 p72).
+- **3 no DR row, unchanged**: Sep-21 (Foreign Banks only); Sep-22, Dec-22 (2022 form, no DR sub-row).
+- **7 UNKNOWN**: Mar-16, Jun-16, Sep-16, Dec-16, Jun-17, Sep-17, Dec-17 — the B1i block (6,398,271 / 6,548,271 ×3 / 1,494,316 ×2 /
+  1,492,476) has no sub-rows on BSE (API + XBRL) nor on the NSE copy (ids 108897, 110253, 111948, 114704, 117539/118839, 120611,
+  123306); the split needs another source (AR FY16 for Mar-16; nothing found yet for the others). Not inferred from neighbours.
+Trap found: an `exact` small-move entry must carry the stored row's FULL length (7th field = holder count) or `_small_move_due`
+never matches and the rebuild prints "neither the fix nor the recorded bad value". Open: part 50 moved page-era DII to the
+DR-excluded base, parts 100/105/107 keep DII on (A+B+C2) for 2015-22 — asked the user.
+
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
