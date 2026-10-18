@@ -28443,6 +28443,27 @@ FOLLOW-UPS (cells the fixes did not move, so not judged here)
 FII = (FPI 2,041,052,291 + 950,580) / ((A+B+C2) 4,351,171,801 - 4,224,966) = 46.9756 (was 47.0271; Quantmac 46.9300 keeps the full base).
 Same shape as part 100: other slots stay on (A+B+C2). Other 2015-22 ICICIBANK filings carrying an FII-DR sub-row are NOT yet re-read.
 
+**§164r batch 30 part 106 (2026-10-18, BSE page-era EVENT filings missing from the store; every page read this session; tools
+`~/stocks-cache/shp/evsweep/tools/` (parse_events.py, newform_ev.py, build_fills.py), record `evsweep/fills_report.json`).** Scope: PIT-N500
+members, BSE SHPQNewFormat rows with a fractional qtrid whose `qtr` is a DAY date, as-on 2006-2016, with no row in shp_events /
+shp_event_fills: 322 events (183 companies; earliest found 2010-08-27). Reader = pageown.py's own-line rules (user 11-Oct option 1 + rule 2,
+12-Oct base (A)+(B)); DII = domestic institution rows (no Central/State Govt, no company-type Any-Others), mf, ins, holders = Total (A)+(B)+(C).
+**Validation:** the same reader on the quarter page before each event reproduces our stored quarter row in 305/306 FII (CHOLAFIN Jun-15, a
+pre-rule-2 row-level heal) and 306/306 DII/prom/mf. The 16 events from Dec-2015 on (qtrid 88/89) show only totals on the page, so they
+were read from BSE's labelled API (Corp_shpSec_SHPPubShold_ng + CorporatesSHPSecuritybeta, QtrCode=<event qtrid>): FII = FVCI + FPI +
+B1i rows labelled foreign + B1i unlabelled rest; DII adds NBFC (B3b) and named Indian banks/insurers filed under B3 (13/16 quarter checks
+match the stored row, the 3 others differ only because that QUARTER's B1i lists names without a label). **Dates:** 123 of the 322 events (104 of the 230 written) = first BSE
+notice whose subject names the as-on date (sub = notice calendar day); 199 (mostly 2010-13) have NO such notice in AnnSubCategoryGetData
+[as-on-3d, as-on+75d] -> undated convention as-on+28 (as part 104 RELINFRA). **Written:** 230 event fills (those that change >=1 month-end
+FII cell by >=0.0002 pp): feed diff = 342 month-end FII cells in 142 symbols, every changed cell served by one of the new rows (incl. alias
+merges HEXAWARE->HEXT, 3IINFOTECH->3IINFOLTD, RNAVAL->SWANDEF), no other cell moved. **Not written:** 91 events that change no month-end FII
+cell (a later row is already public); CHOLAFIN 2015-09-02 HELD (institutions 'Others' 20,999,375 incl. 'Dynasty Acquisition (FPI)' is FII
+under rules 2/3, but our stored Sep-15 quarter still keeps the same line out of FII - the quarter and the event need one decision together);
+TATAPOWER 2014-04-26 written with its institutions 'Foreign Depository Receipts' 22,760 kept out (DR shares). **Unread / UNKNOWN:** 26 of the
+30 index symbols with no BSE code (TV-18, MICRO, CAROLINFO have data into 2010-11; the other 23 stop by 2009, when day-dated event rows are
+rare: 3 of 3,315 fractional rows across all fetched lists are pre-2010 day-dated). SATYAMCOMP 500376, STER 500900, INDIABULLS 532544,
+NAGARFERT 500075 were resolved (code confirmed by BSE's own name): 0 event rows.
+
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
