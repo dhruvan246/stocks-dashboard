@@ -38169,7 +38169,7 @@
     "cell": [
      50.31,
      24.8777,
-     16.392,
+     16.395777,
      15.0514,
      1.32,
      "2018-03-28",
@@ -38178,14 +38178,37 @@
     "was": [
      50.31,
      24.8777,
-     15.072,
+     16.392,
      15.0514,
-     0.0,
+     1.32,
      "2018-03-28",
      31702
     ],
-    "src": "bsexbrl:532927_2832018172144_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 24.88 -> 24.88, dii 15.07 -> 16.39. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.32 TATA AIA LIFE INSURANCE CO LTD- LIFE EQUITY FUND-ULIF 001 04/02/04 TEL 110 1.32(regex)"
+    "src": "bsexbrl:532927_2832018172144",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored event 16.392 (3 dp) is not this filing's read (-1,459 sh). MF 5,813,886 + FI/Banks 7,960 + NBFC 545 + Tata AIA Life (IRDAI 110, under Bodies Corporate) 511,147 = 6,333,538 / 38,629,082",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.31,
+      24.8777,
+      16.392,
+      15.0514,
+      1.32,
+      "2018-03-28",
+      31702
+     ],
+     "was": [
+      50.31,
+      24.8777,
+      15.072,
+      15.0514,
+      0.0,
+      "2018-03-28",
+      31702
+     ],
+     "src": "bsexbrl:532927_2832018172144_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 24.88 -> 24.88, dii 15.07 -> 16.39. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 1.32 TATA AIA LIFE INSURANCE CO LTD- LIFE EQUITY FUND-ULIF 001 04/02/04 TEL 110 1.32(regex)"
+    }
    },
    "2020-07-29": {
     "cell": [
@@ -76289,21 +76312,42 @@
     "cell": [
      50.8812,
      25.8542,
-     1.5298,
-     1.4891,
+     1.529817,
+     1.4875,
      0.0006,
      "2015-07-21"
     ],
     "was": [
-     50.8256,
-     25.826,
+     50.8812,
+     25.8542,
      1.5281,
      1.4875,
      0.0006,
      "2015-07-21"
     ],
-    "src": "bseaspx:532313_86",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001094 = total (A+B+C) 41015000 shares / (A+B) 40970190 shares on the same quarter's BSE page; fii 25.83 -> 25.85, dii 1.53 -> 1.53."
+    "src": "bsepage:532313:86",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 1.5281 = the page's printed % of (A+B+C) re-scaled onto (A+B) (\u00a7164a / part 77), not exact counts: Mutual Funds / UTI 610,099 + Financial Institutions / Banks 16,420 + Insurance Companies 250 = 626,769 / (A+B) 40,970,190",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      50.8812,
+      25.8542,
+      1.5298,
+      1.4891,
+      0.0006,
+      "2015-07-21"
+     ],
+     "was": [
+      50.8256,
+      25.826,
+      1.5281,
+      1.4875,
+      0.0006,
+      "2015-07-21"
+     ],
+     "src": "bseaspx:532313_86",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.001094 = total (A+B+C) 41015000 shares / (A+B) 40970190 shares on the same quarter's BSE page; fii 25.83 -> 25.85, dii 1.53 -> 1.53."
+    }
    },
    "2016-03-31": {
     "cell": [
@@ -85962,6 +86006,29 @@
     ],
     "src": "bsexbrl:513683_194201919635_SHP.xml",
     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.006751 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 0.39699. fii 0.390239 -> 0.39699; other slots untouched.",
+    "exact": true
+   },
+   "2018-09-30": {
+    "cell": [
+     83.94,
+     0.253207,
+     9.032776,
+     5.159177,
+     0.590882,
+     "2018-10-19",
+     94777
+    ],
+    "was": [
+     83.94,
+     0.253207,
+     9.031683,
+     5.159177,
+     0.590882,
+     "2018-10-19",
+     94777
+    ],
+    "src": "bsexbrl:513683_19102018122011",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 9.031683 left out the NBFC row 16,704 (R3). MF 78,861,550 + FI/Banks 50,161,864 + Insurance 9,032,043 + NBFC 16,704 = 138,072,161 / 1,528,568,427",
     "exact": true
    }
   },
@@ -143870,7 +143937,7 @@
     "cell": [
      22.87,
      43.523711,
-     21.1941,
+     21.191196,
      19.80806,
      0.910642,
      "2020-04-30",
@@ -143878,38 +143945,48 @@
     ],
     "was": [
      22.87,
-     42.159717,
+     43.523711,
      21.1941,
      19.80806,
      0.910642,
      "2020-04-30",
      44011
     ],
-    "src": "bsexbrl:532175_3042020201920_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other FOREIGN COLLABORATORS 1,500,000 on base 109,971,221. fii 42.159717 -> 43.523711; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 510,269 sh).",
+    "src": "bsexbrl:532175_3042020201920",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 21.1941 is a 4-dp read on an estimated base (+3,193 sh, no row). MF 21,783,165 + FI/Banks 12,533 + Insurance 1,001,444 + NBFC 300 + non-inst 'Others: Alternative Investment Fund' 334,023 + 'Others: Qualified Institutional Buyer' 172,752 = 23,304,217 / 109,971,221",
+    "exact": true,
     "superseded": {
      "cell": [
       22.87,
-      42.1598,
+      43.523711,
       21.1941,
-      19.8081,
-      0.9106,
+      19.80806,
+      0.910642,
       "2020-04-30",
       44011
      ],
      "was": [
       22.87,
-      43.5238,
-      20.7301,
-      19.8081,
-      0.9106,
+      42.159717,
+      21.1941,
+      19.80806,
+      0.910642,
       "2020-04-30",
       44011
      ],
      "src": "bsexbrl:532175_3042020201920_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.73 -> 21.19, fii 43.52 -> 42.16. R1-fii-label Other FOREIGN COLLABORATORS 1.36 public=1.36 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.36 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.3 ; R2-label Others Qualified Institutional Buyer 0.16 . Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 30 part 57B (2026-10-11, user: 'count it as foreign investment' - a holder the filing names on its institutions 'Any Other' line with no label, or a category row on that line labelled only by a name / an unclassified label, is FII like the unnamed rest of the same line): label=Other FOREIGN COLLABORATORS 1,500,000 on base 109,971,221. fii 42.159717 -> 43.523711; dii untouched (DII holds none of these shares: its excess over the filing's domestic rows is 510,269 sh).",
      "superseded": {
       "cell": [
+       22.87,
+       42.1598,
+       21.1941,
+       19.8081,
+       0.9106,
+       "2020-04-30",
+       44011
+      ],
+      "was": [
        22.87,
        43.5238,
        20.7301,
@@ -143918,17 +143995,30 @@
        "2020-04-30",
        44011
       ],
-      "was": [
-       22.87,
-       42.1598,
-       22.0941,
-       19.8081,
-       0.9106,
-       "2020-04-30",
-       44011
-      ],
       "src": "bsexbrl:532175_3042020201920_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (1.36pp, holders: FOREIGN COLLABORATORS; TELE ATLAS DATA 'S HERTOGENBOSCH B V) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 20.7301 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.73 -> 21.19, fii 43.52 -> 42.16. R1-fii-label Other FOREIGN COLLABORATORS 1.36 public=1.36 fii=0.00 TELE ATLAS DATA 'S HERTOGENBOSCH B V 1.36 foreign->public(new-format:ForeignCompanies) keyword; R2-label Others ALTERNATIVE INVESTMENT FUND 0.3 ; R2-label Others Qualified Institutional Buyer 0.16 . Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        22.87,
+        43.5238,
+        20.7301,
+        19.8081,
+        0.9106,
+        "2020-04-30",
+        44011
+       ],
+       "was": [
+        22.87,
+        42.1598,
+        22.0941,
+        19.8081,
+        0.9106,
+        "2020-04-30",
+        44011
+       ],
+       "src": "bsexbrl:532175_3042020201920_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (1.36pp, holders: FOREIGN COLLABORATORS; TELE ATLAS DATA 'S HERTOGENBOSCH B V) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 20.7301 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
@@ -223086,24 +223176,47 @@
     "cell": [
      69.87,
      14.9778,
-     6.351,
-     2.7196,
-     0.3539,
+     6.349665,
+     2.719566,
+     0.353888,
      "2022-03-31",
      111066
     ],
     "was": [
      69.87,
-     14.9753,
-     6.351,
-     2.7196,
-     0.3539,
+     14.9778,
+     6.350931,
+     2.719566,
+     0.353888,
      "2022-03-31",
      111066
     ],
-    "src": "bsexbrl:532508_313202219040_SHP.xml",
-    "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 78,694,122 + the unnamed, unlabelled institutions Any-Other block 13,520 (D1) on 525,495,468; the DR line 869,350 stays out (\u00a7151). fii 14.9753 -> 14.9778.",
-    "exact": true
+    "src": "bsexbrl:532508_313202219040",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored event 6.350931 is not reproducible from this filing (+6,653 sh, no row of that size). MF 14,291,195 + AIF 17,185,276 + FI/Banks 24,200 + Insurance 1,859,665 + NBFC 6,865 = 33,367,201 / 525,495,468",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      69.87,
+      14.9778,
+      6.351,
+      2.7196,
+      0.3539,
+      "2022-03-31",
+      111066
+     ],
+     "was": [
+      69.87,
+      14.9753,
+      6.351,
+      2.7196,
+      0.3539,
+      "2022-03-31",
+      111066
+     ],
+     "src": "bsexbrl:532508_313202219040_SHP.xml",
+     "why": "\u00a7164r batch 30 part 39 (2026-10-06, per-company review): FPI 78,694,122 + the unnamed, unlabelled institutions Any-Other block 13,520 (D1) on 525,495,468; the DR line 869,350 stays out (\u00a7151). fii 14.9753 -> 14.9778.",
+     "exact": true
+    }
    },
    "2016-06-30": {
     "cell": [
@@ -238153,6 +238266,29 @@
     ],
     "src": "bseaspx:532885_86",
     "why": "\u00a7164r batch 25 (2026-10-05, store-wide lower-bound check on each cell's own basis, round 2 of batch 23): the company's own BSE page (ShareholdingPattern.aspx 532885 qtrid 86) labels these rows foreign institutions - 'Foreign Portfolio Investors' (Non-Institutions, 345,003 shares = 0.0208) - and the stored fii 0.3345 held only 'Foreign Institutional Investors' 0.3345. Under \u00a7160 (FII = Institutions (Foreign) in every format; a row the company labels FII / FPI / QFI / FVCI / foreign bank / foreign FI / foreign mutual fund counts wherever it sits) they are FII. % of the page's (A+B+C) total 1,658,273,181 shares. fii 0.3345 -> 0.3553, dii unchanged."
+   },
+   "2018-09-30": {
+    "cell": [
+     86.4,
+     0.346429,
+     10.329505,
+     0.00046,
+     0.249484,
+     "2018-10-11",
+     132713
+    ],
+    "was": [
+     86.4,
+     0.346429,
+     10.324562,
+     0.00046,
+     0.249484,
+     "2018-10-11",
+     132713
+    ],
+    "src": "bsexbrl:532885_10102018141855",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 10.324562 left out the filing's NBFC row 129,415 (R3; gap = exactly that row). MF 12,054 + FI/Banks 263,769,179 + Insurance 6,531,875 + NBFC 129,415 = 270,442,523 / 2,618,155,755",
+    "exact": true
    }
   },
   "BLUESTARCO": {
@@ -239615,7 +239751,7 @@
     "cell": [
      15.04,
      23.654,
-     20.6992,
+     20.699142,
      15.4663,
      2.6739,
      "2017-04-29",
@@ -239623,15 +239759,38 @@
     ],
     "was": [
      15.04,
-     23.524,
+     23.654,
      20.6992,
      15.4663,
      2.6739,
      "2017-04-29",
      184425
     ],
-    "src": "bsexbrl:532772_2942017144924_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 23.52 -> 23.65, dii 20.70 -> 20.70. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-label Foreign Portfolio Investors (Category III) 0.13 0.13 FII-labelled row 0.13 -> fii"
+    "src": "bsexbrl:532772_2942017144924",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored event 20.6992 is a 4-dp slot that does not round from this filing (20.69914). MF 47,509,563 + AIF 5,747,125 + FI/Banks 2,113,457 + Insurance 8,213,843 = 63,583,988 / 307,181,753",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      15.04,
+      23.654,
+      20.6992,
+      15.4663,
+      2.6739,
+      "2017-04-29",
+      184425
+     ],
+     "was": [
+      15.04,
+      23.524,
+      20.6992,
+      15.4663,
+      2.6739,
+      "2017-04-29",
+      184425
+     ],
+     "src": "bsexbrl:532772_2942017144924_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 23.52 -> 23.65, dii 20.70 -> 20.70. R2-FII (\u00a7159 rules). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2FII-label Foreign Portfolio Investors (Category III) 0.13 0.13 FII-labelled row 0.13 -> fii"
+    }
    },
    "2016-12-31": {
     "cell": [
@@ -251710,21 +251869,42 @@
     "cell": [
      40.984173,
      26.625529,
-     21.349511,
+     21.349573,
      5.888685,
      15.265293,
      "2015-10-17"
     ],
     "was": [
-     33.0125,
-     21.4467,
-     17.1969,
-     4.7433,
-     12.2961,
+     40.984173,
+     26.625529,
+     21.349511,
+     5.888685,
+     15.265293,
      "2015-10-17"
     ],
-    "src": "bseaspx:500570_87",
-    "why": "\u00a7164r batch 30 part 77 (2026-10-12, user: 'follow the filing's own line for the base too'): this quarter's own BSE page puts 561,578,820 shares in row (C) 'Shares held by Custodians and against which Depository Receipts have been issued', so the filing's own line takes them out of the base: all slots x 1.241474 = total (A+B+C) 2,887,203,602 / (A+B) 2,325,624,782 shares on the same page (the earlier basis followed the company's 2016 XBRL, another filing). fii 21.4467 -> 26.625529."
+    "src": "bsepage:500570:87",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 21.349511 = the page's printed % of (A+B+C) re-scaled onto (A+B) (\u00a7164a / part 77), not exact counts: Mutual Funds / UTI 136,948,977 + Financial Institutions / Banks 4,547,673 + Insurance Companies 355,014,309 = 496,510,959 / (A+B) 2,325,624,782",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.984173,
+      26.625529,
+      21.349511,
+      5.888685,
+      15.265293,
+      "2015-10-17"
+     ],
+     "was": [
+      33.0125,
+      21.4467,
+      17.1969,
+      4.7433,
+      12.2961,
+      "2015-10-17"
+     ],
+     "src": "bseaspx:500570_87",
+     "why": "\u00a7164r batch 30 part 77 (2026-10-12, user: 'follow the filing's own line for the base too'): this quarter's own BSE page puts 561,578,820 shares in row (C) 'Shares held by Custodians and against which Depository Receipts have been issued', so the filing's own line takes them out of the base: all slots x 1.241474 = total (A+B+C) 2,887,203,602 / (A+B) 2,325,624,782 shares on the same page (the earlier basis followed the company's 2016 XBRL, another filing). fii 21.4467 -> 26.625529."
+    }
    },
    "2017-09-30": {
     "cell": [
@@ -313610,6 +313790,75 @@
     "src": "bsexbrl:500411_1842022174453_SHP.xml",
     "why": "\u00a7164s part 57 (2026-10-18, Quantmac DII reply-5 cells judged one by one, cell read this session): exact own-line read: stored value left out the NBFC row 300",
     "exact": true
+   },
+   "2021-03-31": {
+    "cell": [
+     61.98,
+     12.45279,
+     14.593911,
+     11.050375,
+     1.747454,
+     "2021-04-15",
+     31546
+    ],
+    "was": [
+     61.98,
+     12.45279,
+     14.593743,
+     11.050375,
+     1.747454,
+     "2021-04-15",
+     31546
+    ],
+    "src": "bsexbrl:500411_144202117361",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 14.593743 = rows - NBFC 300 + institutions 'Overseas Corporate Bodies' 100 (a company label, not DII). MF 13,167,218 + AIF 30,096 + FI/Banks 681 + Insurance 2,082,202 + NBFC 300 + QIB row 2,109,067 = 17,389,564 / 119,156,300",
+    "exact": true
+   },
+   "2021-12-31": {
+    "cell": [
+     61.98,
+     12.275374,
+     15.021366,
+     12.716199,
+     0.0,
+     "2022-01-12",
+     34088
+    ],
+    "was": [
+     61.98,
+     12.275374,
+     15.021114,
+     12.716199,
+     0.0,
+     "2022-01-12",
+     34088
+    ],
+    "src": "bsexbrl:500411_1112022171043",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 15.021114 left out the NBFC row 300. MF 15,152,152 + AIF 10,945 + FI/Banks 370 + NBFC 300 + QIB row 2,735,137 = 17,898,904 / 119,156,300",
+    "exact": true
+   },
+   "2022-06-30": {
+    "cell": [
+     61.98,
+     11.934854,
+     15.765994,
+     13.213195,
+     0.0,
+     "2022-07-19",
+     36255
+    ],
+    "was": [
+     61.98,
+     11.934854,
+     15.765742,
+     13.213195,
+     0.0,
+     "2022-07-19",
+     36255
+    ],
+    "src": "bsexbrl:500411_187202217323",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 15.765742 left out the NBFC row 300 (both copies 18-Jul and 03-Aug-2022 read the same). MF 15,744,354 + AIF 107,292 + FI/Banks 370 + NBFC 300 + QIB row 2,933,859 = 18,786,175 / 119,156,300",
+    "exact": true
    }
   },
   "TRACXN": {
@@ -331219,21 +331468,42 @@
     "cell": [
      51.3298,
      30.2307,
-     10.5188,
+     10.518864,
      1.2397,
      8.4267,
      "2015-07-21"
     ],
     "was": [
-     50.2809,
-     29.613,
-     10.3039,
-     1.2144,
-     8.2545,
+     51.3298,
+     30.2307,
+     10.5188,
+     1.2397,
+     8.4267,
      "2015-07-21"
     ],
-    "src": "bseaspx:500425_86",
-    "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.020860 = total (A+B+C) 1551897421 shares / (A+B) 1520186308 shares on the same quarter's BSE page; fii 29.61 -> 30.23, dii 10.30 -> 10.52."
+    "src": "bsepage:500425:86",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 10.5188 = the page's printed % of (A+B+C) re-scaled onto (A+B) (\u00a7164a / part 77), not exact counts: Mutual Funds / UTI 18,845,774 + Financial Institutions / Banks 12,958,562 + Insurance Companies 128,101,996 = 159,906,332 / (A+B) 1,520,186,308",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      51.3298,
+      30.2307,
+      10.5188,
+      1.2397,
+      8.4267,
+      "2015-07-21"
+     ],
+     "was": [
+      50.2809,
+      29.613,
+      10.3039,
+      1.2144,
+      8.2545,
+      "2015-07-21"
+     ],
+     "src": "bseaspx:500425_86",
+     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.020860 = total (A+B+C) 1551897421 shares / (A+B) 1520186308 shares on the same quarter's BSE page; fii 29.61 -> 30.23, dii 10.30 -> 10.52."
+    }
    },
    "2015-09-30": {
     "cell": [
@@ -459161,7 +459431,7 @@
     "cell": [
      60.85,
      14.6175,
-     18.1945,
+     18.186027,
      11.6272,
      6.55,
      "2017-04-29",
@@ -459170,14 +459440,37 @@
     "was": [
      60.85,
      14.6175,
-     11.6445,
+     18.1945,
      11.6272,
-     0.0,
+     6.55,
      "2017-04-29",
      32023
     ],
-    "src": "bsexbrl:532705_2842017173552_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.62 -> 14.62, dii 11.64 -> 18.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 6.55 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.56(curated); HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.99(regex)"
+    "src": "bsexbrl:532705_2842017173552",
+    "why": "\u00a7164s part 58b (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored event 18.1945 mixed a 2-dp insurance slot (6.55) into a 4-dp sum (+26,386 sh vs the rows). MF 36,206,066 + FI/Banks 45,291 + NBFC 12,189 + HDFC Standard Life 6,183,210 + ICICI Prudential Life 14,186,683 (IRDAI 101/105, under Bodies Corporate) = 56,633,439 / 311,411,829",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      60.85,
+      14.6175,
+      18.1945,
+      11.6272,
+      6.55,
+      "2017-04-29",
+      32023
+     ],
+     "was": [
+      60.85,
+      14.6175,
+      11.6445,
+      11.6272,
+      0.0,
+      "2017-04-29",
+      32023
+     ],
+     "src": "bsexbrl:532705_2842017173552_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 14.62 -> 14.62, dii 11.64 -> 18.19. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-named Bodies Corporate 6.55 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.56(curated); HDFC STANDARD LIFE INSURANCE COMPANY LIMITED 1.99(regex)"
+    }
    },
    "2018-07-28": {
     "cell": [
