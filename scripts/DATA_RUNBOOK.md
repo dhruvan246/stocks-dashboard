@@ -28304,6 +28304,23 @@ re-run = follow-up): ownline_dii regexes miss misspelt AIF/QIB labels ('ALTERNAT
 and its 'Other;' label branch never asks the register (UTI: SPARC; AMBUJACEM/CUMMINSIND/WELSPUNLIV < 0.01pp, not yet fixed); t3dii's
 "B3 Any-Other rows sum > block -> skip" rule wrongly skips every named register holder listed under a category (Dec-15/Mar-16 band).
 Side finding (follow-up): 33 event rows are served after a BSE notice naming their period (r7/g/evsweep.json).
+
+**§164s part 53a (2026-10-18, the part-53 side finding: 33 event rows served after a BSE notice naming their period; one verdict per
+row from its own notice, read this session; record `~/stocks-cache/shp/dii_qm/r7/evs/VERDICTS_evsweep.md`, notices `r7/evs/*.json`,
+apply `r7/evs_tools/apply_evs.py`).** BSE AnnSubCategoryGetData (strCat -1, the scrip, window event date -> served date, honest
+bse_headers, 1 req/s): every row has exactly ONE notice 'Shareholding for the Period Ended <event date>' and no revision notice in the
+window; NSE master adds nothing earlier (ABSLAMC / ERIS same day, ESCORTS / METROBRAND a day later, rest not listed). Verdicts:
+(1) OUR ERROR, fixed (shp_lag_fix days_earlier, sub = notice calendar day, old entry kept under `superseded`; feed diff = these 13
+rows, date only): AJANTPHARM 2017-07-11 -> 2017-07-19, BAJFINANCE 2017-09-12 -> 2017-09-14 and 2019-11-07 -> 2019-11-08, ERIS
+2017-06-28 -> 2017-07-06 (was 2022-03-29, BSE's re-upload), ESCORTS 2021-12-27 -> 2022-01-05, FCONSUMER 2017-10-26 -> 2017-10-27,
+IDFCFIRSTB 2018-01-15 -> 2018-01-19, INFY 2017-12-27 -> 2018-01-09, RELIANCE 2020-06-11 -> 2020-06-11, ROSSARI 2021-04-21 ->
+2021-04-23, SBIN 2018-03-27 -> 2018-04-05, ULTRACEMCO 2019-10-16 -> 2019-10-17, UNOMINDA 2018-07-27 -> 2018-08-16 (BSE holds only a
+'Revised' copy; dated to the first notice, user's uniform rule of 14-Oct). APLAPOLLO / PVRINOX were already fixed in part 53.
+(2) RULE DIFFERENCE, 12 rows: notice on a Saturday/Sunday, served on the next trading day by the §142c non-trading-day shift (no screen
+can fall in between; batch 2 of 2026-09-28 leaves this class alone): ALBK, ANDHRABANK, BRFL, DENABANK, DHANI x2, INOXLEISUR x2,
+MONSANTO, PEL, TATASTLBSL, TATASTLLP. (3) OUR ERROR but PARKED, 6 rows: never a point-in-time Nifty 500 member in the late window
+(scope rule 2026-10-07), no ledger entry: ABSLAMC 2021-10-19, ADVENZYMES 2016-08-02, HDFCAMC 2018-08-10, IOLCP 2020-06-23, METROBRAND
+2022-01-03, RELIGARE 2019-10-25 (notice days). UNKNOWN 0.
 **§164r batch 30 part 105 (2026-10-18, user: "count foreign banks as FII and take the ADR shares out of the base (46.98%)").** ICICIBANK
 2017-03-31 (cells Apr/May-2017): the institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (AR FY2016-17 p72).
 FII = (FPI 2,041,052,291 + 950,580) / ((A+B+C2) 4,351,171,801 - 4,224,966) = 46.9756 (was 47.0271; Quantmac 46.9300 keeps the full base).
