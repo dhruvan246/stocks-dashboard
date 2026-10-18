@@ -28274,6 +28274,10 @@ its NSE upload stamp 2019-01-23 instead of BSE 2019-03-16 (cell_fix on the event
 the event_fills / part 42 practice (a JKCEMENT memory note says stamps are never dates - conflict raised with the user). OPEN: ICICIBANK
 Apr/May-2017 'Other' block = Foreign Banks 950,580 + FII-DR 4,224,966 (user choice asked); pre-2021 NSE upload days (Dec-2015 list, etc.)
 UNKNOWN; two classes worth a sweep: NSE-only Cat III labels 2016-22, and BSE page-era xx.01/.02 event pages absent from the store.
+**§164r batch 30 part 105 (2026-10-18, user: "count foreign banks as FII and take the ADR shares out of the base (46.98%)").** ICICIBANK
+2017-03-31 (cells Apr/May-2017): the institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (AR FY2016-17 p72).
+FII = (FPI 2,041,052,291 + 950,580) / ((A+B+C2) 4,351,171,801 - 4,224,966) = 46.9756 (was 47.0271; Quantmac 46.9300 keeps the full base).
+Same shape as part 100: other slots stay on (A+B+C2). Other 2015-22 ICICIBANK filings carrying an FII-DR sub-row are NOT yet re-read.
 
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")

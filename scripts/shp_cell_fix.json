@@ -270708,46 +270708,36 @@
    "2017-03-31": {
     "cell": [
      0.0,
-     47.0271,
+     46.975566,
      41.3416,
-     20.0357,
-     20.3834,
+     20.035702,
+     20.38344,
      "2017-04-15",
      938826
     ],
     "was": [
      0.0,
-     47.0281,
+     47.0271,
      41.3416,
-     20.0357,
-     20.3834,
+     20.035702,
+     20.38344,
      "2017-04-15",
      938826
     ],
-    "src": "bsetable3:532174:93",
-    "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93) FPI B1e 2,041,052,291 + FVCI B1d 0 + institutions Any-Other block B1i 5,175,546 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,351,171,801 sh (Table I) = 47.0271. fii 47.0281 -> 47.0271.",
+    "src": "bsexbrl:532174_144201720254_SHP.xml + ICICI Bank Annual Report FY2016-17 p72",
+    "why": "\u00a7164r batch 30 part 105 (2026-10-18, user: 'count foreign banks as FII and take the ADR shares out of the base (46.98%)'): the filing's institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (company AR FY2016-17 shareholding table, p72). FII-DR = depository-receipt shares, out of FII and out of the base, same shape as part 100 (page-era 'FIIs-DR' rows): FII = FPI 2,041,052,291 + Foreign Banks 950,580 = 2,042,002,871 / ((A+B+C2) 4,351,171,801 - 4,224,966 = 4,346,946,835). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in part 100.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      47.0281,
+      47.0271,
       41.3416,
       20.0357,
       20.3834,
       "2017-04-15",
       938826
      ],
-     "was": [
-      0.0,
-      46.9081,
-      41.4316,
-      20.0357,
-      20.3834,
-      "2017-04-15",
-      938826
-     ],
-     "src": "bsexbrl:532174_144201720254_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; current Nifty 500 members): fii 46.91 -> 47.03, dii 41.43 -> 41.34. D1 unnamed remainder -> FII. D1 = in the Dec-2015..Jun-2022 form the UNNAMED part of the institutional Any-Other block is FII (Quantmac's rule), except when every named holder of the block is domestic (the rest follows them); named holders keep their R1 placement. D1-unnamed-remainder-in-dii 0.12 | R1: R1-unresolved no typed rows 0.12; R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93) FPI B1e 2,041,052,291 + FVCI B1d 0 + institutions Any-Other block B1i 5,175,546 sh (the company's own sub-rows 'Forei"
     }
    },
    "2016-03-31": {
