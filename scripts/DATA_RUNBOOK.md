@@ -28321,6 +28321,123 @@ can fall in between; batch 2 of 2026-09-28 leaves this class alone): ALBK, ANDHR
 MONSANTO, PEL, TATASTLBSL, TATASTLLP. (3) OUR ERROR but PARKED, 6 rows: never a point-in-time Nifty 500 member in the late window
 (scope rule 2026-10-07), no ledger entry: ABSLAMC 2021-10-19, ADVENZYMES 2016-08-02, HDFCAMC 2018-08-10, IOLCP 2020-06-23, METROBRAND
 2022-01-03, RELIGARE 2019-10-25 (notice days). UNKNOWN 0.
+**§164s part 54 (2026-10-18): the three DII reader bugs found in part 53 are fixed, and both readers were re-run over every PIT-N500 quarter from 2015-12 to 2022-06.** Every moved cell was read from its own filing.
+- The readers are committed as `scripts/dii_readers/ownline_dii.py` and `t3dii.py`. They are local tools that need `~/stocks-cache/shp` (show.py, ownline.py, the BSE page cache).
+- The rows and arithmetic for each cell are in `scripts/dii_readers/PART54_VERDICTS.md`.
+- The working directory is `~/stocks-cache/shp/dii_qm/r8`: rd_old holds the unmodified readers, plus mkverdicts.py and apply7.py.
+
+READER FIXES
+(a) ownline_dii:
+- AIF label regex `alternat\w*\s+\w*v\w*t\w*\s*funds?` now matches INVSTMENT, Investments, Investmetnt, Unvestment and INVETMENT.
+- QIB regex `qualified\s*ins\w*` now matches Insititional.
+- The 'Other;' / unknown institutions branch now asks the register (this catches UTI).
+- reg() now knows IFCI (TIMKEN 2022, 475 shares; the store was already right).
+- reg() now reads 'Pvt Equity' as 'Private Equity' (ARVIND Dec-15).
+
+(b) t3dii, non-institutions Any-Other:
+- A named holder sits INSIDE a category when the category rows alone add up to the block.
+- The test is an exact subset split, and only holders that every exact split agrees on are taken.
+- A register name with several folios is still one holder (BEML Max Life, k=11).
+- A register row left over by a unique split with k>1 is a category (SPANDANA's 5-insurer row).
+- Such a holder counts by the register only if it fits a category row we do not already count. It is never added twice inside a counted QIB, AIF or insurer row.
+- MPHASIS Sep-19 insurers are bigger than every category row, so they stay ambiguous.
+
+(c) t3dii, institutions Any-Other:
+- Named Indian holders listed beside the QIB row that holds them are not added again.
+- Example, YESBANK Dec-21: block 1,679,167,699 = QIB 1,678,940,301 + OCB 227,398, so LIC and HDFC Life sit inside the QIB row.
+- The old reader double-counted 10 cells this way; the store was right on 8 of them.
+
+RE-RUN
+- Read: 12,837 XBRL cells and 1,600 Table III cells.
+- 145 cells moved (old reader ≠ new reader).
+- 10 of them are part-53 cells and were NOT moved again:
+  - NCC, PGHL, RADICO, SPARC, SRF and M&M Dec-19 equal the new reader exactly.
+  - INDUSINDBK Dec-15, M&M Dec-15 and M&M Mar-16 differ only by the t3 base.
+  - JUSTDIAL Mar-19 is original vs revision.
+- 63 already equal the store, among them TIMKEN 2022 and BEML / CARERATING / GSPL / IGL / MPHASIS / WABAG Dec-15.
+- 72 were judged one by one: 70 healed and 2 not healed.
+- Each heal is a shp_cell_fix entry on the dii slot only, with was = the committed store and the `exact` flag.
+
+OUR ERROR, healed (old -> new)
+(1) Foreign bank counted in DII ('Other FOREIGN BANK' 9,250 taken out):
+- AMBUJACEM 2017-03 10.774486->10.774016, 2017-06 11.565286->11.564816, 2017-09 12.210861->12.210392, 2017-12 11.992426->11.991957, 2018-03 12.947119->12.94665.
+
+(2) NBFC row missing. In each cell the store equals our own lines minus the NBFC row, to the share. AMBUJACEM also has its foreign bank 9,250 taken out.
+- AMBUJACEM 2018-06 12.788525->12.789617, 2018-09 11.801824->11.803833, 2018-12 11.722699->11.723588, 2019-03 10.923197->10.924024, 2019-06 11.236068->11.237031, 2019-09 12.652149->12.652773, 2020-03 14.160387->14.160699.
+- CROMPTON 2021-06 43.674193->43.675039.
+- CUMMINSIND 2019-09 29.840692->29.840728, 2019-12 31.537454->31.53758, 2020-03 30.094405->30.094442, 2020-06 27.592154->27.59219.
+- IDFCFIRSTB 2020-06 11.250742->11.261672, 2020-09 11.110408->11.121382, 2020-12 11.335096->11.346008.
+- JAGRAN 2019-09 24.076607->24.077467.
+- M&M 2021-06 26.115542->26.116145.
+- PIIND 2019-09 19.921677->19.921981.
+- RAILTEL 2021-12 4.73613->4.743091.
+- SHRIRAMFIN 2016-12 3.346092->3.347791.
+- TORNTPHARM 2019-09 13.134151->13.138131, 2019-12 12.326631->12.330611.
+
+(3) UTI row missing (UTI is DII):
+- CUMMINSIND 2016-09 19.617117->19.623494 (UTI 17,675).
+- SCHAEFFLER 2015-12 30.6367->30.641513 (UTI 800; block 666,822 = FII 662,662 + FFI 3,360 + UTI 800).
+- TECHM 2018-12 12.790352->12.79052, 2019-03 11.672875->11.673042, 2019-06 11.873641->11.873811, 2019-09 14.218207->14.218377, 2020-06 13.028787->13.028957 (UTI 1,644).
+
+(4) TECHM, several rows:
+- 2019-12 12.955384->12.957698, 2020-03 13.208137->13.208044, 2020-09 14.23969->14.23896, 2020-12 13.546997->13.541712: NBFC row added; 'Other Foreign Bank' 10,256 and 'Other Foreign Institutional Investors' (~0.1M) taken out.
+- 2021-09 18.2175->18.216654: UTI added, foreign bank taken out; the rest is rounding.
+
+(5) Register holder inside a category:
+- ARVIND 2015-12 16.6261->17.68466 and 2016-03 16.3874->17.445459: 'Multiples Private Equity Fund' 2,732,400, SEBI AIF IN/AIF2/13-14/0089. Jun-16 onward already counted the same shares.
+- PVRINOX 2015-12 15.6094->17.752242: the same AIF, 997,825 shares. Rows 4,969,023 - block 3,472,734 = Multiples 997,825 + Max Life 498,464.
+- SUNDARMFIN 2019-12 12.47->14.958012: HDFC Standard Life 2,630,434 sits inside Bodies Corporate 8,365,774. Rows 19,425,312 - block 13,941,278 = HDFC Std Life + India Motor Parts 2,853,600. The stored 12.47 matched no reading.
+
+(6) PFC 2019-03 18.7486->18.753896:
+- Added the non-institutions row 'Others ALTERNATIVE INVETMENT FUND' 294,990.
+- Used the exact NBFC row instead of the printed 0.05.
+
+(7) NATCOPHARM 2021-12 18.1093->18.082984:
+- The store counted the whole institutions Any-Other block, including the 'Foreign Instituional Investors' row 48,175, which is already counted as FII.
+
+(8) SPANDANA 2019-09 17.1198->17.11658, set by hand because the reader leaves two holders ambiguous:
+- AIF 4,588,683 + FI 524,623 + the 5-insurer category row 4,414,300 + Edelweiss Alternative Investment Opportunities Trust 756,386 + Bajaj Holdings & Investment 700,927 (part 23) = 10,984,919 / 64,177,068.
+- Those two holders cannot sit in the insurers row: its room after ICICI Pru 3,054,560 + Bajaj Allianz 969,629 is 390,111.
+
+(9) Precision. The store is a §158/§164 composite of printed 2-dp row percentages that already counts the same holders; each gap is ≤ 0.009 pp.
+- APOLLOTYRE 2019-09 19.5373->19.534676.
+- CERA 2020-12 12.8598->12.85646.
+- COFFEEDAY 2019-09 7.9671->7.969832.
+- CUMMINSIND 2016-06 19.3563->19.355227, 2019-03 27.9862->27.988655, 2020-12 27.9084->27.912158, 2021-09 26.7848->26.782782.
+- DBCORP 2019-09 6.2324->6.230975.
+- DISHTV 2021-06 8.1973->8.202271.
+- GODREJIND 2019-12 6.5717->6.57475, 2020-09 5.9696->5.9714.
+- GRASIM 2019-09 23.441->23.444069.
+- KPITTECH 2019-09 12.8535->12.862273.
+- LICHSGFIN 2020-09 12.6487->12.649071.
+- LMW 2018-12 17.1556->17.155181.
+- RBLBANK 2019-09 25.7477->25.746338.
+- SCHAEFFLER 2017-06 30.1708->30.176088 (UTI 800 added).
+- TEAMLEASE 2019-12 12.0831->12.082119.
+- TECHM 2021-03 15.6955->15.687469, 2021-06 17.8177->17.817438, 2021-12 18.5585->18.557179, 2022-03 19.4233->19.424503, 2022-06 22.126->22.126905.
+- YESBANK 2021-12 47.3208->47.317015: MF 141,716,446 + AIF 4,967,461 + FI 9,587,677,444 + NBFC 61,931,861 + QIB 1,678,940,301 + Kotak Mahindra Bank 380,000,000 = 11,855,233,513 / 25,054,905,981 (Quantmac 47.3170).
+
+NOT HEALED (RULE)
+- PFIZER 2021-06: the quarter row is the NSE original (part 91), and BSE's June Table III is the Sep-2021 pattern.
+- COROMANDEL 2021-06: the quarter row is the original; Table III serves the 2021-07-29 revision, which is already its own revision row (part 53).
+
+LEDGER SIDE FIX
+- Dropped the shp_rebase226 pair AMBUJACEM 2019-03 dii [10.924, 10.923197], noted in its `_meta.dropped_pairs`.
+- Why: the healed 10.924024 fell inside the pair's 0.000051 window and was re-based back.
+
+RECIPE NOTE
+- `apply_ledger_revisions()` returns a COUNT, so run `r = load_revs(); apply_ledger_revisions(r); save_revs(r)`.
+- `save_revs(apply_ledger_revisions(load_revs()))` writes `0` into shp_revisions.json. It was caught here: guard_shp_revisions failed and the engine feed showed 0 re-filing rows.
+
+CHECKS
+- The 3 guards exit 0.
+- `--apply-ledgers` gives 0 WARN.
+- The engine-feed diff covers only the 31 healed symbols.
+
+FOLLOW-UPS (cells the fixes did not move, so not judged here)
+- The store and the fixed reader still differ on some unmoved cells, e.g. AMBUJACEM 2016-06 / 2016-12 / 2020-06 / 2020-09 (foreign bank 9,250 in DII, NBFC row). The next sweep is a store-wide census of the fixed reader against the store.
+- 4,164 XBRL cells have no filing list and 1,100 have no file, so they are outside the readers' reach.
+
 **§164r batch 30 part 105 (2026-10-18, user: "count foreign banks as FII and take the ADR shares out of the base (46.98%)").** ICICIBANK
 2017-03-31 (cells Apr/May-2017): the institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (AR FY2016-17 p72).
 FII = (FPI 2,041,052,291 + 950,580) / ((A+B+C2) 4,351,171,801 - 4,224,966) = 46.9756 (was 47.0271; Quantmac 46.9300 keeps the full base).

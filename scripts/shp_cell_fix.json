@@ -32210,24 +32210,47 @@
    "2019-09-30": {
     "cell": [
      25.35,
-     5.9518,
-     7.9671,
-     2.6516,
+     5.952171,
+     7.969832,
+     2.651811,
      0.0,
      "2019-10-24",
      62122
     ],
     "was": [
      25.35,
-     5.9518,
-     3.7371,
-     2.6516,
+     5.952171,
+     7.9671,
+     2.651811,
      0.0,
      "2019-10-24",
      62122
     ],
-    "src": "bsexbrl:539436_17102019111618_SHP.xml",
-    "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names Indusind Bank Ltd. 4.2300 [IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 3.7371 -> 7.9671."
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 5,601,997 + line:Financial  Institutions/ Banks 2,293,300 + NBFC row 5,110 + noninst register (inside a category; category rows sum to the block):I 8,936,000 = 16,836,407 / 211,251,719 = 7.969832 (store 7.9671, gap -5,771 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      25.35,
+      5.9518,
+      7.9671,
+      2.6516,
+      0.0,
+      "2019-10-24",
+      62122
+     ],
+     "was": [
+      25.35,
+      5.9518,
+      3.7371,
+      2.6516,
+      0.0,
+      "2019-10-24",
+      62122
+     ],
+     "src": "bsexbrl:539436_17102019111618_SHP.xml",
+     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names Indusind Bank Ltd. 4.2300 [IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 3.7371 -> 7.9671."
+    }
    },
    "2019-06-30": {
     "cell": [
@@ -32738,6 +32761,29 @@
     ],
     "src": "bsexbrl:539876_1942021203716_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 175,153,739; line:AlternativeInvestmentFunds 10,609,056; line:FinancialInstitutionOrBanks 1,772,554; NBFC row 138,313; inst-cat QIB label:Other Qualified Institutional Buyer 55,354,918 = 243,028,580 sh on base 627,691,353 = 38.717847; stored 38.695812 (rows the store had left out or double counted).",
+    "exact": true
+   },
+   "2021-06-30": {
+    "cell": [
+     5.99,
+     40.144597,
+     43.675039,
+     31.476873,
+     0.0,
+     "2021-07-17",
+     130065
+    ],
+    "was": [
+     5.99,
+     40.144597,
+     43.674193,
+     31.476873,
+     0.0,
+     "2021-07-17",
+     130065
+    ],
+    "src": "bsetable3:110:2021-06-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 197,616,414 + line:Alternate Investment Funds 10,323,212 + line:Financial  Institutions/ Banks 1,511,304 + NBFC row 5,313 + inst-cat QIB label:Qualified Institutional Buyer 64,742,044 = 274,198,287 / 627,814,630 = 43.675039 (store 43.674193, gap -5,314 shares)",
     "exact": true
    }
   },
@@ -49313,7 +49359,7 @@
     "cell": [
      61.39,
      11.9867,
-     6.5717,
+     6.57475,
      0.3915,
      5.6314,
      "2020-02-07",
@@ -49322,14 +49368,37 @@
     "was": [
      61.39,
      11.9867,
-     4.6417,
+     6.5717,
      0.3915,
-     3.7014,
+     5.6314,
      "2020-02-07",
      81176
     ],
-    "src": "bsexbrl:500164_3012020115219_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.64 -> 6.57, fii 11.99 -> 11.99. R2-named Bodies Corporate 1.93 HDFC Life Insurance Company Limited 1.93(curated). Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:104:2019-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 1,317,295 + line:Financial  Institutions/ Banks 1,846,225 + line:Insurance  Companies 12,453,728 + noninst register (inside a category; category rows sum to the block):H 6,504,552 = 22,121,800 / 336,466,016 = 6.57475 (store 6.5717, gap -10,263 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      61.39,
+      11.9867,
+      6.5717,
+      0.3915,
+      5.6314,
+      "2020-02-07",
+      81176
+     ],
+     "was": [
+      61.39,
+      11.9867,
+      4.6417,
+      0.3915,
+      3.7014,
+      "2020-02-07",
+      81176
+     ],
+     "src": "bsexbrl:500164_3012020115219_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.64 -> 6.57, fii 11.99 -> 11.99. R2-named Bodies Corporate 1.93 HDFC Life Insurance Company Limited 1.93(curated). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2020-03-31": {
     "cell": [
@@ -49379,7 +49448,7 @@
     "cell": [
      64.96,
      9.0643,
-     5.9696,
+     5.9714,
      0.281,
      5.15,
      "2020-12-14",
@@ -49388,14 +49457,37 @@
     "was": [
      64.96,
      9.0643,
-     4.6896,
+     5.9696,
      0.281,
-     3.87,
+     5.15,
      "2020-12-14",
      88224
     ],
-    "src": "bsexbrl:500164_27112020132044_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.69 -> 5.97, fii 9.06 -> 9.06. R2-named Bodies Corporate 1.28 HDFC Life Insurance Company Limited 1.28(curated). Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:107:2020-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 945,571 + line:Financial  Institutions/ Banks 1,812,773 + line:Insurance  Companies 13,023,574 + noninst register (inside a category; category rows sum to the block):H 4,313,040 = 20,094,958 / 336,520,067 = 5.9714 (store 5.9696, gap -6,056 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      64.96,
+      9.0643,
+      5.9696,
+      0.281,
+      5.15,
+      "2020-12-14",
+      88224
+     ],
+     "was": [
+      64.96,
+      9.0643,
+      4.6896,
+      0.281,
+      3.87,
+      "2020-12-14",
+      88224
+     ],
+     "src": "bsexbrl:500164_27112020132044_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 4.69 -> 5.97, fii 9.06 -> 9.06. R2-named Bodies Corporate 1.28 HDFC Life Insurance Company Limited 1.28(curated). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-01-14": {
     "cell": [
@@ -71555,7 +71647,7 @@
     "cell": [
      40.31,
      34.437783,
-     12.6487,
+     12.649071,
      4.48982,
      5.04094,
      "2020-12-02",
@@ -71563,42 +71655,43 @@
     ],
     "was": [
      40.31,
-     34.435306,
+     34.437783,
      12.6487,
      4.48982,
      5.04094,
      "2020-12-02",
      296740
     ],
-    "src": "bsexbrl:500253_191120201114_SHP.xml",
-    "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.002477 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 34.437783. fii 34.435306 -> 34.437783; other slots untouched.",
+    "src": "bsetable3:107:2020-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 22,658,459 + line:Alternate Investment Funds 1,160,810 + line:Financial  Institutions/ Banks 3,317,978 + line:Insurance  Companies 25,439,757 + NBFC row 9,501 + noninst register (inside a category; category rows sum to the block):N 11,248,675 = 63,835,180 / 504,663,000 = 12.649071 (store 12.6487, gap -1,871 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       40.31,
-      34.4368,
+      34.437783,
       12.6487,
-      4.49,
-      5.0412,
+      4.48982,
+      5.04094,
       "2020-12-02",
       296740
      ],
      "was": [
       40.31,
-      34.4368,
-      10.4187,
-      4.49,
-      5.0412,
+      34.435306,
+      12.6487,
+      4.48982,
+      5.04094,
       "2020-12-02",
       296740
      ],
      "src": "bsexbrl:500253_191120201114_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 10.42 -> 12.65, fii 34.44 -> 34.44. R2-named Trusts 2.23 NPS TRUST- A/C UTI RETIREMENT SOLUT 2.23(regex). Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.002477 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 34.437783. fii 34.435306 -> 34.437783; other slots untouched.",
+     "exact": true,
      "superseded": {
       "cell": [
        40.31,
        34.4368,
-       10.4187,
+       12.6487,
        4.49,
        5.0412,
        "2020-12-02",
@@ -71607,13 +71700,35 @@
       "was": [
        40.31,
        34.4368,
-       12.65,
-       6.72,
+       10.4187,
+       4.49,
        5.0412,
        "2020-12-02",
        296740
       ],
-      "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii,mf"
+      "src": "bsexbrl:500253_191120201114_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 10.42 -> 12.65, fii 34.44 -> 34.44. R2-named Trusts 2.23 NPS TRUST- A/C UTI RETIREMENT SOLUT 2.23(regex). Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        40.31,
+        34.4368,
+        10.4187,
+        4.49,
+        5.0412,
+        "2020-12-02",
+        296740
+       ],
+       "was": [
+        40.31,
+        34.4368,
+        12.65,
+        6.72,
+        5.0412,
+        "2020-12-02",
+        296740
+       ],
+       "why": "22j field adjudication: BSE document internally CONSISTENT (share counts reproduce its own printed pct, partition closes to 100) and the symbol own series does not contradict it. fields: dii,mf"
+      }
      }
     }
    },
@@ -74008,45 +74123,68 @@
    "2018-12-31": {
     "cell": [
      30.83,
-     5.0949,
-     17.1556,
-     3.3697,
+     5.09459,
+     17.155181,
+     3.369437,
      13.0751,
      "2019-01-21",
      36022
     ],
     "was": [
      30.83,
-     5.0949,
-     15.3756,
-     3.3697,
-     11.2951,
+     5.09459,
+     17.1556,
+     3.369437,
+     13.0751,
      "2019-01-21",
      36022
     ],
-    "src": "bsexbrl:500252_912019124320_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 5.09 -> 5.09, dii 15.38 -> 17.16. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 1.78 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.78(curated). Evidence: _shp_164_audit.json",
+    "src": "bsetable3:100:2018-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 359,957 + line:Financial  Institutions/ Banks 75,636 + line:Insurance  Companies 1,206,577 + noninst register (inside a category; category rows sum to the block):I 190,518 = 1,832,688 / 10,683,000 = 17.155181 (store 17.1556, gap 45 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       30.83,
-      5.09,
-      15.37,
-      3.37,
-      11.29,
+      5.0949,
+      17.1556,
+      3.3697,
+      13.0751,
       "2019-01-21",
       36022
      ],
-     "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
      "was": [
       30.83,
-      5.09,
-      15.37,
-      3.37,
-      11.29,
-      "2021-12-06",
+      5.0949,
+      15.3756,
+      3.3697,
+      11.2951,
+      "2019-01-21",
       36022
      ],
-     "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1071d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     "src": "bsexbrl:500252_912019124320_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 5.09 -> 5.09, dii 15.38 -> 17.16. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 1.78 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.78(curated). Evidence: _shp_164_audit.json",
+     "superseded": {
+      "cell": [
+       30.83,
+       5.09,
+       15.37,
+       3.37,
+       11.29,
+       "2019-01-21",
+       36022
+      ],
+      "src": "shp filing-date convention QE+21d (SEBI Reg 31 deadline)",
+      "was": [
+       30.83,
+       5.09,
+       15.37,
+       3.37,
+       11.29,
+       "2021-12-06",
+       36022
+      ],
+      "why": "WITHIN-SYMBOL OUTLIER: this symbol's own median filing lag is inside the 21-day window, yet this row is 1071d late. An otherwise-compliant filer does not file one quarter months late and resume on time. Corrected only because the stamp signature is present as well \u2014 the date is shared with another quarter of the same symbol, or the lag exceeds a year. Rows 120-365d late carrying a LONE date are left alone: there a single genuinely-delayed filing cannot be told from a stamp."
+     }
     }
    },
    "2015-06-30": {
@@ -101554,23 +101692,46 @@
     "cell": [
      26.08,
      51.7155,
-     3.3461,
-     2.9475,
+     3.347791,
+     2.947492,
      0.0,
      "2017-01-16",
      53928
     ],
     "was": [
      26.08,
-     37.2755,
-     3.3461,
-     2.9475,
+     51.7155,
+     3.346092,
+     2.947492,
      0.0,
      "2017-01-16",
      53928
     ],
     "src": "bsexbrl:511218_161201715727_SHP.xml",
-    "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 37.28 -> 51.72 (+14.44 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Foreign Portfolio Investors (Category III) 1.14 1.14 FII-labelled row 1.14 -> fii; R2FII-label Other FOREIGN INSTITUTIONAL INVESTOR 13.3 13.3 FII-labelled row 13.30 -> fii; PIRAMAL ENTERPRISES LIMITED 9.96 in-row(-); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND 1.24 in-row(curated). Evidence: _shp_fii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 6,687,351 + line:FinancialInstitutionOrBanks 902,704 + NBFC row 3,855 + inst-cat named Indian institution:Other Unit Trust of India 1,650 = 7,595,560 / 226,882,736 = 3.347791 (store 3.346092, gap -3,855 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      26.08,
+      51.7155,
+      3.3461,
+      2.9475,
+      0.0,
+      "2017-01-16",
+      53928
+     ],
+     "was": [
+      26.08,
+      37.2755,
+      3.3461,
+      2.9475,
+      0.0,
+      "2017-01-16",
+      53928
+     ],
+     "src": "bsexbrl:511218_161201715727_SHP.xml",
+     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 37.28 -> 51.72 (+14.44 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-label Foreign Portfolio Investors (Category III) 1.14 1.14 FII-labelled row 1.14 -> fii; R2FII-label Other FOREIGN INSTITUTIONAL INVESTOR 13.3 13.3 FII-labelled row 13.30 -> fii; PIRAMAL ENTERPRISES LIMITED 9.96 in-row(-); VANGUARD EMERGING MARKETS STOCK INDEX FUND, ASERIES OF VANGUARD INTERNATIONAL EQUITY INDE X FUND 1.24 in-row(curated). Evidence: _shp_fii_rowfix_audit.json"
+    }
    },
    "2017-03-31": {
     "cell": [
@@ -107709,24 +107870,47 @@
    "2019-12-31": {
     "cell": [
      40.03,
-     42.9015,
-     12.0831,
-     8.2415,
+     42.901416,
+     12.082119,
+     8.24144,
      2.68,
      "2020-01-08",
      7916
     ],
     "was": [
      40.03,
-     42.9015,
-     9.2931,
-     8.2415,
-     0.0,
+     42.901416,
+     12.0831,
+     8.24144,
+     2.68,
      "2020-01-08",
      7916
     ],
-    "src": "bsexbrl:539658_322020175945_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.90 -> 42.90, dii 9.29 -> 12.08. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.68 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.59(new-format:InsuranceCompanies); CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE COMPANY LTD 1.09(curated); R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json"
+    "src": "bsetable3:104:2019-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 1,409,020 + line:Alternate Investment Funds 176,000 + line:Financial  Institutions/ Banks 3,800 + NBFC row 18,096 + noninst register (inside a category; category rows sum to the block):C 186,136 + noninst register (inside a category; category rows sum to the block):I 272,600 = 2,065,652 / 17,096,769 = 12.082119 (store 12.0831, gap 168 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.03,
+      42.9015,
+      12.0831,
+      8.2415,
+      2.68,
+      "2020-01-08",
+      7916
+     ],
+     "was": [
+      40.03,
+      42.9015,
+      9.2931,
+      8.2415,
+      0.0,
+      "2020-01-08",
+      7916
+     ],
+     "src": "bsexbrl:539658_322020175945_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 42.90 -> 42.90, dii 9.29 -> 12.08. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.68 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.59(new-format:InsuranceCompanies); CANARA HSBC ORIENTAL BANK OF COMMERCE LIFE INSURANCE COMPANY LTD 1.09(curated); R3-nbfc NBFCsRegisteredWithRbi 0.11. Evidence: _shp_164_audit.json"
+    }
    },
    "2020-09-30": {
     "cell": [
@@ -120617,29 +120801,30 @@
    "2021-12-31": {
     "cell": [
      0.0,
-     8.1688,
-     47.3208,
-     0.5656,
+     8.168752,
+     47.317015,
+     0.565624,
      0.0,
      "2022-01-13",
      4194149
     ],
     "was": [
      0.0,
-     8.1688,
-     45.8041,
-     0.5656,
+     8.168752,
+     47.3208,
+     0.565624,
      0.0,
      "2022-01-13",
      4194149
     ],
-    "src": "bsexbrl:532648_1822022153814_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 532648_1822022153814_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists non-inst row 'Bodies Corporate': KOTAK MAHINDRA BANK LTD 1.5167 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 45.8041 -> 47.3208 (Quantmac 47.3170).",
+    "src": "bsetable3:112:2021-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 141,716,446 + line:Alternate Investment Funds 4,967,461 + line:Financial  Institutions/ Banks 9,587,677,444 + NBFC row 61,931,861 + inst-cat QIB label:QUALIFIED INSTITUTIONAL BUYER 1,678,940,301 + noninst register (inside a category; category rows sum to the block):K 380,000,000 = 11,855,233,513 / 25,054,905,981 = 47.317015 (store 47.3208, gap 948,436 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
       8.1688,
-      45.8041,
+      47.3208,
       0.5656,
       0.0,
       "2022-01-13",
@@ -120648,14 +120833,36 @@
      "was": [
       0.0,
       8.1688,
-      45.5541,
+      45.8041,
       0.5656,
       0.0,
       "2022-01-13",
       4194149
      ],
      "src": "bsexbrl:532648_1822022153814_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.55 -> 45.80, fii 8.17 -> 8.17. R1-domestic-label Other QUALIFIED INSTITUTIONAL BUYER 6.7 public=0.00 fii=0.00 LIFE INSURANCE CORPORATION OF INDIA - ULIF00220091 4.99 domestic->-(curated); HDFC LIFE INSURANCE COMPANY LIMITED 1.33 domestic->-(curated) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 532648_1822022153814_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists non-inst row 'Bodies Corporate': KOTAK MAHINDRA BANK LTD 1.5167 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 45.8041 -> 47.3208 (Quantmac 47.3170).",
+     "superseded": {
+      "cell": [
+       0.0,
+       8.1688,
+       45.8041,
+       0.5656,
+       0.0,
+       "2022-01-13",
+       4194149
+      ],
+      "was": [
+       0.0,
+       8.1688,
+       45.5541,
+       0.5656,
+       0.0,
+       "2022-01-13",
+       4194149
+      ],
+      "src": "bsexbrl:532648_1822022153814_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.55 -> 45.80, fii 8.17 -> 8.17. R1-domestic-label Other QUALIFIED INSTITUTIONAL BUYER 6.7 public=0.00 fii=0.00 LIFE INSURANCE CORPORATION OF INDIA - ULIF00220091 4.99 domestic->-(curated); HDFC LIFE INSURANCE COMPANY LIMITED 1.33 domestic->-(curated) keyword; R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2022-03-31": {
@@ -153336,24 +153543,47 @@
    "2019-09-30": {
     "cell": [
      40.15,
-     16.9719,
-     23.441,
-     9.0912,
+     16.972799,
+     23.444069,
+     9.091728,
      14.1692,
      "2019-10-24",
      230956
     ],
     "was": [
      40.15,
-     16.9719,
-     22.131,
-     9.0912,
-     12.8592,
+     16.972799,
+     23.441,
+     9.091728,
+     14.1692,
      "2019-10-24",
      230956
     ],
-    "src": "bsexbrl:500300_19102019173926_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.13 -> 23.44, fii 16.97 -> 16.97. R2-named Bodies Corporate 1.31 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.31(curated). Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 59,793,815 + line:Alternate Investment Funds 122,440 + line:Financial  Institutions/ Banks 1,064,941 + line:Insurance  Companies 84,576,167 + NBFC row 14,362 + noninst register (inside a category; category rows sum to the block):I 8,613,524 = 154,185,249 / 657,672,734 = 23.444069 (store 23.441, gap -20,183 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.15,
+      16.9719,
+      23.441,
+      9.0912,
+      14.1692,
+      "2019-10-24",
+      230956
+     ],
+     "was": [
+      40.15,
+      16.9719,
+      22.131,
+      9.0912,
+      12.8592,
+      "2019-10-24",
+      230956
+     ],
+     "src": "bsexbrl:500300_19102019173926_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.13 -> 23.44, fii 16.97 -> 16.97. R2-named Bodies Corporate 1.31 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.31(curated). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -173680,24 +173910,47 @@
     "cell": [
      48.86,
      12.2611,
-     18.1093,
-     9.0679,
+     18.082984,
+     9.067892,
      0.0,
      "2022-01-12",
      88421
     ],
     "was": [
      48.86,
-     12.2347,
+     12.2611,
      18.1093,
-     9.0679,
+     9.067892,
      0.0,
      "2022-01-12",
      88421
     ],
-    "src": "bsetable3:524816:112",
-    "why": "\u00a7164r batch 30 (2026-10-05, NATCOPHARM re-read cell by cell): 2021-12-31 - BSE Table III (qtrid 112): FPI B1e 22,311,850 + FVCI B1d 0 + the company's own 'FOREIGN INSTITUTIONAL INVESTORS' Category row 48,175 (the rest of the block is its 'Qualified Institutional Buyers' Category - domestic label) on (A+B+C2) 182,365,165 = 12.2611. fii 12.2347 -> 12.2611.",
-    "exact": true
+    "src": "bsetable3:112:2021-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store counted the whole institutions Any-Other block 14,343,699, which includes the 'Foreign Instituional Investors' category row 48,175 (FII; batch 30 already counts it there) - block 14,343,699 = QIB 14,295,524 + FII 48,175. Rows: line:Mutual Funds/ 16,536,677 + line:Alternate Investment Funds 1,844,862 + line:Financial  Institutions/ Banks 300,000 + inst-cat QIB label:Qualified Institutional Buyes 14,295,524 = 32,977,063 / 182,365,165 = 18.082984 (store 18.1093, gap 47,992 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      48.86,
+      12.2611,
+      18.1093,
+      9.0679,
+      0.0,
+      "2022-01-12",
+      88421
+     ],
+     "was": [
+      48.86,
+      12.2347,
+      18.1093,
+      9.0679,
+      0.0,
+      "2022-01-12",
+      88421
+     ],
+     "src": "bsetable3:524816:112",
+     "why": "\u00a7164r batch 30 (2026-10-05, NATCOPHARM re-read cell by cell): 2021-12-31 - BSE Table III (qtrid 112): FPI B1e 22,311,850 + FVCI B1d 0 + the company's own 'FOREIGN INSTITUTIONAL INVESTORS' Category row 48,175 (the rest of the block is its 'Qualified Institutional Buyers' Category - domestic label) on (A+B+C2) 182,365,165 = 12.2611. fii 12.2347 -> 12.2611.",
+     "exact": true
+    }
    },
    "2022-03-31": {
     "cell": [
@@ -182271,6 +182524,29 @@
     "src": "bsetable3:523642:89",
     "why": "\u00a7164r batch 30 part 28 (2026-10-06, SW-2 survivors): ROWANHILL INVESTMENTS LTD. 2,095,426 sh (the institutions block's only holder) is the company's 'Foreign Corporate Bodies' holder (Dec-2015 label) with no institution document -> public; FII = FPI 28,230,977 on 137,127,222 (= Quantmac 20.59). fii 22.11 -> 20.5874.",
     "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     51.38,
+     14.694164,
+     19.921981,
+     16.829682,
+     0.0,
+     "2020-01-20",
+     45810
+    ],
+    "was": [
+     51.38,
+     14.694164,
+     19.921677,
+     16.829682,
+     0.0,
+     "2020-01-20",
+     45810
+    ],
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 23,230,120 + line:Alternate Investment Funds 809,994 + line:Financial  Institutions/ Banks 25,469 + NBFC row 420 + inst-cat QIB label:Qualified Institutional Buyer 3,432,437 = 27,498,440 / 138,030,651 = 19.921981 (store 19.921677, gap -420 shares)",
+    "exact": true
    }
   },
   "POLYCAB": {
@@ -185495,7 +185771,7 @@
     "cell": [
      0.0,
      21.925002,
-     25.7477,
+     25.746338,
      20.458055,
      3.4434,
      "2019-10-17",
@@ -185503,38 +185779,48 @@
     ],
     "was": [
      0.0,
-     21.9041,
+     21.925002,
      25.7477,
      20.458055,
      3.4434,
      "2019-10-17",
      191881
     ],
-    "src": "bsexbrl:540065_411201911221_SHP.xml",
-    "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.020902 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 21.925002. fii 21.9041 -> 21.925002; other slots untouched.",
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 88,090,077 + line:Alternate Investment Funds 1,677,480 + line:Financial  Institutions/ Banks 921,524 + line:Insurance  Companies 4,923,363 + NBFC row 114,651 + noninst register (inside a category; category rows sum to the block):H 9,913,646 + noninst register (inside a category; category rows sum to the block):H 5,220,085 = 110,860,826 / 430,588,710 = 25.746338 (store 25.7477, gap 5,863 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      21.9041,
+      21.925002,
       25.7477,
-      20.4581,
+      20.458055,
       3.4434,
       "2019-10-17",
       191881
      ],
      "was": [
       0.0,
-      21.9067,
-      22.2051,
-      20.4581,
-      1.1434,
+      21.9041,
+      25.7477,
+      20.458055,
+      3.4434,
       "2019-10-17",
       191881
      ],
      "src": "bsexbrl:540065_411201911221_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.21 -> 25.75, fii 21.91 -> 21.90. R1-fii-label Other Foreign Bank 3.33 public=0.00 fii=3.33 Asian Development Bank 3.33 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2-named Clearing Members 1.21 HDFC Bank Ltd 1.21(regex); R2-named Bodies Corporate 2.3 Hdfc Life Insurance Company Limited 2.30(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json",
+     "why": "\u00a7164r batch 30 part 82 (2026-10-12, user: 'reparse the older quarters too'): this filing's own Non-Institutions category row(s) labelled a foreign portfolio investor / FII / QFI / foreign bank are FII (part 81 parser rule); rows +0.020902 pp on the filing's own base. the stored value was this filing's read WITHOUT those rows; the re-parse with the part 81 parser gives 21.925002. fii 21.9041 -> 21.925002; other slots untouched.",
      "superseded": {
       "cell": [
+       0.0,
+       21.9041,
+       25.7477,
+       20.4581,
+       3.4434,
+       "2019-10-17",
+       191881
+      ],
+      "was": [
        0.0,
        21.9067,
        22.2051,
@@ -185543,17 +185829,30 @@
        "2019-10-17",
        191881
       ],
-      "was": [
-       0.0,
-       18.5741,
-       25.5377,
-       20.4581,
-       1.1434,
-       "2019-10-17",
-       191881
-      ],
       "src": "bsexbrl:540065_411201911221_SHP.xml",
-      "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.33pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 22.2051 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 22.21 -> 25.75, fii 21.91 -> 21.90. R1-fii-label Other Foreign Bank 3.33 public=0.00 fii=3.33 Asian Development Bank 3.33 foreign->fii(new-format:OtherInstitutionsForeign) keyword; R2-named Clearing Members 1.21 HDFC Bank Ltd 1.21(regex); R2-named Bodies Corporate 2.3 Hdfc Life Insurance Company Limited 2.30(curated); R3-nbfc NBFCsRegisteredWithRbi 0.03. Evidence: _shp_dii_rowfix_audit.json",
+      "superseded": {
+       "cell": [
+        0.0,
+        21.9067,
+        22.2051,
+        20.4581,
+        1.1434,
+        "2019-10-17",
+        191881
+       ],
+       "was": [
+        0.0,
+        18.5741,
+        25.5377,
+        20.4581,
+        1.1434,
+        "2019-10-17",
+        191881
+       ],
+       "src": "bsexbrl:540065_411201911221_SHP.xml",
+       "why": "SW-2 other-institutions sweep 2026-08-30: filing's Any-Other institutions block (3.33pp, holders: Foreign Bank; Asian Development Bank) is FOREIGN \u2014 belongs in fii, not dii. dii -> domestic-only 22.2051 (MF+AIF+VCF+Banks+Ins+PF from the filing's own share counts), fii += the block. Evidence: _shp_other_inst_audit.json"
+      }
      }
     }
    },
@@ -201523,7 +201822,7 @@
     "cell": [
      35.94,
      38.5396,
-     12.790352,
+     12.79052,
      9.232453,
      3.091421,
      "2019-01-21",
@@ -201532,40 +201831,72 @@
     "was": [
      35.94,
      38.5396,
-     12.7764,
+     12.790352,
      9.232453,
      3.091421,
      "2019-01-21",
      443735
     ],
     "src": "bsexbrl:532755_181201918447_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 90,593,425; line:AlternativeInvestmentFunds 2,042,321; line:FinancialInstitutionOrBanks 2,399,834; line:InsuranceCompanies 30,334,566; NBFC row 135,164 = 125,505,310 sh on base 981,249,832 = 12.790352; stored 12.776400 (rows the store had left out or double counted).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 90,593,425 + line:AlternativeInvestmentFunds 2,042,321 + line:FinancialInstitutionOrBanks 2,399,834 + line:InsuranceCompanies 30,334,566 + NBFC row 135,164 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 125,506,954 / 981,249,832 = 12.79052 (store 12.790352, gap -1,646 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       35.94,
       38.5396,
-      12.7764,
-      9.2322,
-      3.0914,
+      12.790352,
+      9.232453,
+      3.091421,
       "2019-01-21",
       443735
      ],
      "was": [
       35.94,
-      37.8886,
-      13.4274,
-      9.2322,
-      3.0914,
+      38.5396,
+      12.7764,
+      9.232453,
+      3.091421,
       "2019-01-21",
       443735
      ],
      "src": "bsexbrl:532755_181201918447_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.65) \u2014 moved dii -> fii (0.6510 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 90,593,425; line:AlternativeInvestmentFunds 2,042,321; line:FinancialInstitutionOrBanks 2,399,834; line:InsuranceCompanies 30,334,566; NBFC row 135,164 = 125,505,310 sh on base 981,249,832 = 12.790352; stored 12.776400 (rows the store had left out or double counted).",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       35.94,
+       38.5396,
+       12.7764,
+       9.2322,
+       3.0914,
+       "2019-01-21",
+       443735
+      ],
+      "was": [
+       35.94,
+       37.8886,
+       13.4274,
+       9.2322,
+       3.0914,
+       "2019-01-21",
+       443735
+      ],
+      "src": "bsexbrl:532755_181201918447_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.65) \u2014 moved dii -> fii (0.6510 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     }
     }
    },
    "2019-03-31": {
     "cell": [
+     35.87,
+     38.8087,
+     11.673042,
+     8.532936,
+     2.736006,
+     "2019-04-20",
+     483774
+    ],
+    "was": [
      35.87,
      38.8087,
      11.672875,
@@ -201574,43 +201905,66 @@
      "2019-04-20",
      483774
     ],
-    "was": [
-     35.87,
-     38.8087,
-     11.6578,
-     8.532936,
-     2.736006,
-     "2019-04-20",
-     483774
-    ],
     "src": "bsexbrl:532755_19420191932_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 83,909,693; line:AlternativeInvestmentFunds 2,164,432; line:FinancialInstitutionOrBanks 1,666,358; line:InsuranceCompanies 26,904,852; NBFC row 141,337 = 114,786,672 sh on base 983,362,470 = 11.672875; stored 11.657800 (rows the store had left out or double counted).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 83,909,693 + line:AlternativeInvestmentFunds 2,164,432 + line:FinancialInstitutionOrBanks 1,666,358 + line:InsuranceCompanies 26,904,852 + NBFC row 141,337 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 114,788,316 / 983,362,470 = 11.673042 (store 11.672875, gap -1,644 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       35.87,
       38.8087,
-      11.6578,
-      8.5324,
-      2.7358,
+      11.672875,
+      8.532936,
+      2.736006,
       "2019-04-20",
       483774
      ],
      "was": [
       35.87,
-      38.1031,
-      12.3634,
-      8.5324,
-      2.7358,
+      38.8087,
+      11.6578,
+      8.532936,
+      2.736006,
       "2019-04-20",
       483774
      ],
      "src": "bsexbrl:532755_19420191932_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.70) \u2014 moved dii -> fii (0.7056 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 83,909,693; line:AlternativeInvestmentFunds 2,164,432; line:FinancialInstitutionOrBanks 1,666,358; line:InsuranceCompanies 26,904,852; NBFC row 141,337 = 114,786,672 sh on base 983,362,470 = 11.672875; stored 11.657800 (rows the store had left out or double counted).",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       35.87,
+       38.8087,
+       11.6578,
+       8.5324,
+       2.7358,
+       "2019-04-20",
+       483774
+      ],
+      "was": [
+       35.87,
+       38.1031,
+       12.3634,
+       8.5324,
+       2.7358,
+       "2019-04-20",
+       483774
+      ],
+      "src": "bsexbrl:532755_19420191932_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.70) \u2014 moved dii -> fii (0.7056 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     }
     }
    },
    "2019-06-30": {
     "cell": [
+     35.9,
+     38.9387,
+     11.873811,
+     8.667246,
+     2.646078,
+     "2019-07-22",
+     471348
+    ],
+    "was": [
      35.9,
      38.9387,
      11.873641,
@@ -201619,43 +201973,66 @@
      "2019-07-22",
      471348
     ],
-    "was": [
-     35.9,
-     38.9387,
-     11.8603,
-     8.667246,
-     2.646078,
-     "2019-07-22",
-     471348
-    ],
     "src": "bsexbrl:532755_197201918429_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 83,582,789; line:AlternativeInvestmentFunds 2,387,385; line:FinancialInstitutionOrBanks 2,882,490; line:InsuranceCompanies 25,517,517; NBFC row 133,549 = 114,503,730 sh on base 964,352,304 = 11.873641; stored 11.860300 (rows the store had left out or double counted).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 83,582,789 + line:AlternativeInvestmentFunds 2,387,385 + line:FinancialInstitutionOrBanks 2,882,490 + line:InsuranceCompanies 25,517,517 + NBFC row 133,549 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 114,505,374 / 964,352,304 = 11.873811 (store 11.873641, gap -1,643 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       35.9,
       38.9387,
-      11.8603,
-      8.6675,
-      2.6462,
+      11.873641,
+      8.667246,
+      2.646078,
       "2019-07-22",
       471348
      ],
      "was": [
       35.9,
-      38.3677,
-      12.4313,
-      8.6675,
-      2.6462,
+      38.9387,
+      11.8603,
+      8.667246,
+      2.646078,
       "2019-07-22",
       471348
      ],
      "src": "bsexbrl:532755_197201918429_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.57) \u2014 moved dii -> fii (0.5710 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 83,582,789; line:AlternativeInvestmentFunds 2,387,385; line:FinancialInstitutionOrBanks 2,882,490; line:InsuranceCompanies 25,517,517; NBFC row 133,549 = 114,503,730 sh on base 964,352,304 = 11.873641; stored 11.860300 (rows the store had left out or double counted).",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       35.9,
+       38.9387,
+       11.8603,
+       8.6675,
+       2.6462,
+       "2019-07-22",
+       471348
+      ],
+      "was": [
+       35.9,
+       38.3677,
+       12.4313,
+       8.6675,
+       2.6462,
+       "2019-07-22",
+       471348
+      ],
+      "src": "bsexbrl:532755_197201918429_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.57) \u2014 moved dii -> fii (0.5710 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     }
     }
    },
    "2019-09-30": {
     "cell": [
+     35.88,
+     37.7565,
+     14.218377,
+     9.865744,
+     3.812241,
+     "2019-11-13",
+     473434
+    ],
+    "was": [
      35.88,
      37.7565,
      14.218207,
@@ -201664,47 +202041,61 @@
      "2019-11-13",
      473434
     ],
-    "was": [
-     35.88,
-     37.7565,
-     14.2041,
-     9.865744,
-     3.812241,
-     "2019-11-13",
-     473434
-    ],
     "src": "bsexbrl:532755_111120191562_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 95,186,707; line:AlternativeInvestmentFunds 3,046,351; line:FinancialInstitutionOrBanks 2,019,818; line:InsuranceCompanies 36,781,277; NBFC row 145,997 = 137,180,150 sh on base 964,820,325 = 14.218207; stored 14.204100 (rows the store had left out or double counted).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 95,186,707 + line:AlternativeInvestmentFunds 3,046,351 + line:FinancialInstitutionOrBanks 2,019,818 + line:InsuranceCompanies 36,781,277 + NBFC row 145,997 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 137,181,794 / 964,820,325 = 14.218377 (store 14.218207, gap -1,643 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       35.88,
       37.7565,
-      14.2041,
-      9.8663,
-      3.8125,
+      14.218207,
+      9.865744,
+      3.812241,
       "2019-11-13",
       473434
      ],
      "was": [
       35.88,
-      37.311,
-      14.6496,
-      9.8663,
-      3.8125,
+      37.7565,
+      14.2041,
+      9.865744,
+      3.812241,
       "2019-11-13",
       473434
      ],
      "src": "bsexbrl:532755_111120191562_SHP.xml",
-     "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.44) \u2014 moved dii -> fii (0.4455 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 95,186,707; line:AlternativeInvestmentFunds 3,046,351; line:FinancialInstitutionOrBanks 2,019,818; line:InsuranceCompanies 36,781,277; NBFC row 145,997 = 137,180,150 sh on base 964,820,325 = 14.218207; stored 14.204100 (rows the store had left out or double counted).",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       35.88,
+       37.7565,
+       14.2041,
+       9.8663,
+       3.8125,
+       "2019-11-13",
+       473434
+      ],
+      "was": [
+       35.88,
+       37.311,
+       14.6496,
+       9.8663,
+       3.8125,
+       "2019-11-13",
+       473434
+      ],
+      "src": "bsexbrl:532755_111120191562_SHP.xml",
+      "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Bank; Foreign Institutional Investors 0.44) \u2014 moved dii -> fii (0.4455 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+     }
     }
    },
    "2021-03-31": {
     "cell": [
      35.76,
-     38.3259,
-     15.6955,
-     8.7233,
+     38.3159,
+     15.687469,
+     8.722687,
      6.3854,
      "2021-04-22",
      530921
@@ -201712,17 +202103,49 @@
     "was": [
      35.76,
      38.3159,
-     14.3955,
-     8.7233,
-     5.3654,
+     15.6955,
+     8.722687,
+     6.3854,
      "2021-04-22",
      530921
     ],
     "src": "bsexbrl:532755_2142021172152_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 14.40 -> 15.70, fii 38.32 -> 38.33. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.02 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.02(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 84,458,299 + line:AlternativeInvestmentFunds 1,439,726 + line:FinancialInstitutionOrBanks 1,421,298 + line:InsuranceCompanies 51,948,055 + NBFC row 2,790,424 + inst-cat named Indian institution:Other Unit Trust of India 1,644 + noninst register:Others NPS Trust A/C - LIC Pension Fund Scheme 9,836,053 = 151,895,499 / 968,260,067 = 15.687469 (store 15.6955, gap 77,760 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.76,
+      38.3259,
+      15.6955,
+      8.7233,
+      6.3854,
+      "2021-04-22",
+      530921
+     ],
+     "was": [
+      35.76,
+      38.3159,
+      14.3955,
+      8.7233,
+      5.3654,
+      "2021-04-22",
+      530921
+     ],
+     "src": "bsexbrl:532755_2142021172152_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 14.40 -> 15.70, fii 38.32 -> 38.33. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.02 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.02(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-06-30": {
     "cell": [
+     35.73,
+     36.154903,
+     17.817438,
+     9.47933,
+     7.5668,
+     "2021-07-22",
+     545613
+    ],
+    "was": [
      35.73,
      36.154903,
      17.8177,
@@ -201731,23 +202154,15 @@
      "2021-07-22",
      545613
     ],
-    "was": [
-     35.73,
-     36.143,
-     17.8177,
-     9.47933,
-     7.5668,
-     "2021-07-22",
-     545613
-    ],
     "src": "bsexbrl:532755_207202119264_SHP.xml",
-    "why": "\u00a7164r batch 30 part 94 (2026-10-14, store-wide own-line re-read of every PIT-N500 2015-22 XBRL cell against the stored FII; user rulings 11-Oct (FII = the filing's own line; a holder named on an unlabelled institutions Any-Other line, or a category row there labelled only by a name / unclassified label, is FII) and 13-Oct (2: the unnamed rest of that line is FII; rows labelled foreign are FII)): the stored value left out institutions Any-Other rows the filing itself labels foreign (FII / Foreign Bank / Foreign Financial Institution / Foreign Mutual Fund; part 57 kept only the FPI line in error) - own lines: FPI 350,239,089, Other Foreign Bank 10,256, Other Foreign Institutional Investors 87,581 on base 968,988,701 = 36.154903. fii 36.143 -> 36.154903; dii untouched (stored DII holds none of these shares: own-line DII 17.817269 vs stored 17.8177).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 91,853,633 + line:AlternativeInvestmentFunds 1,808,749 + line:FinancialInstitutionOrBanks 2,859,798 + line:InsuranceCompanies 63,344,129 + NBFC row 2,784,424 + inst-cat named Indian institution:Other Unit Trust of India 1,644 + noninst register:Others NPS Trust A/C - LIC Pension Fund Scheme 9,996,587 = 172,648,964 / 968,988,701 = 17.817438 (store 17.8177, gap 2,536 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       35.73,
-      36.153,
+      36.154903,
       17.8177,
-      9.4788,
+      9.47933,
       7.5668,
       "2021-07-22",
       545613
@@ -201755,103 +202170,217 @@
      "was": [
       35.73,
       36.143,
-      16.5077,
-      9.4788,
-      6.5368,
+      17.8177,
+      9.47933,
+      7.5668,
       "2021-07-22",
       545613
      ],
      "src": "bsexbrl:532755_207202119264_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 16.51 -> 17.82, fii 36.14 -> 36.15. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.03 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.03(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164r batch 30 part 94 (2026-10-14, store-wide own-line re-read of every PIT-N500 2015-22 XBRL cell against the stored FII; user rulings 11-Oct (FII = the filing's own line; a holder named on an unlabelled institutions Any-Other line, or a category row there labelled only by a name / unclassified label, is FII) and 13-Oct (2: the unnamed rest of that line is FII; rows labelled foreign are FII)): the stored value left out institutions Any-Other rows the filing itself labels foreign (FII / Foreign Bank / Foreign Financial Institution / Foreign Mutual Fund; part 57 kept only the FPI line in error) - own lines: FPI 350,239,089, Other Foreign Bank 10,256, Other Foreign Institutional Investors 87,581 on base 968,988,701 = 36.154903. fii 36.143 -> 36.154903; dii untouched (stored DII holds none of these shares: own-line DII 17.817269 vs stored 17.8177).",
+     "superseded": {
+      "cell": [
+       35.73,
+       36.153,
+       17.8177,
+       9.4788,
+       7.5668,
+       "2021-07-22",
+       545613
+      ],
+      "was": [
+       35.73,
+       36.143,
+       16.5077,
+       9.4788,
+       6.5368,
+       "2021-07-22",
+       545613
+      ],
+      "src": "bsexbrl:532755_207202119264_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 16.51 -> 17.82, fii 36.14 -> 36.15. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.03 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.03(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2021-09-30": {
     "cell": [
      35.7,
      35.5466,
-     18.2175,
-     9.8108,
+     18.216654,
+     9.810812,
      7.7923,
      "2021-10-19",
      590450
     ],
     "was": [
      35.7,
-     35.5366,
-     16.9175,
-     9.8108,
-     6.7723,
+     35.5466,
+     18.2175,
+     9.810812,
+     7.7923,
      "2021-10-19",
      590450
     ],
     "src": "bsexbrl:532755_19102021125440_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 16.92 -> 18.22, fii 35.54 -> 35.55. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.02 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.02(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: \u00a7158 composite of printed 2-dp rows: it lacked UTI 1,644 and held 'Other Foreign Bank' 10,256; the rest is rounding of the printed percentages. Rows: line:MutualFundsOrUti 95,136,855 + line:AlternativeInvestmentFunds 915,053 + line:FinancialInstitutionOrBanks 2,237,941 + line:InsuranceCompanies 65,672,258 + NBFC row 2,783,989 + inst-cat named Indian institution:Other Unit Trust of India 1,644 + noninst register:Others NPS Trust A/C - LIC Pension Fund Scheme 9,901,767 = 176,649,507 / 969,714,371 = 18.216654 (store 18.2175, gap 8,209 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.7,
+      35.5466,
+      18.2175,
+      9.8108,
+      7.7923,
+      "2021-10-19",
+      590450
+     ],
+     "was": [
+      35.7,
+      35.5366,
+      16.9175,
+      9.8108,
+      6.7723,
+      "2021-10-19",
+      590450
+     ],
+     "src": "bsexbrl:532755_19102021125440_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 16.92 -> 18.22, fii 35.54 -> 35.55. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.02 NPS Trust A/C - LIC Pension Fund Scheme  - State Govt 1.02(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-12-31": {
     "cell": [
      35.67,
      35.3556,
-     18.5585,
-     9.5975,
-     7.3798,
+     18.557179,
+     9.597866,
+     7.380026,
      "2022-01-14",
      609640
     ],
     "was": [
      35.67,
-     35.3456,
-     17.2285,
-     9.5975,
-     7.3798,
+     35.3556,
+     18.5585,
+     9.597866,
+     7.380026,
      "2022-01-14",
      609640
     ],
     "src": "bsexbrl:532755_1312022195942_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.23 -> 18.56, fii 35.35 -> 35.36. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.05 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.05(regex); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 93,155,925 + line:AlternativeInvestmentFunds 1,128,892 + line:FinancialInstitutionOrBanks 1,231,370 + line:InsuranceCompanies 71,629,795 + NBFC row 2,784,301 + inst-cat named Indian institution:Other Unit Trust of India 822 + noninst register:Others Nps Trust- A/C Uti Retirement Solutions 10,183,007 = 180,114,112 / 970,589,953 = 18.557179 (store 18.5585, gap 12,824 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.67,
+      35.3556,
+      18.5585,
+      9.5975,
+      7.3798,
+      "2022-01-14",
+      609640
+     ],
+     "was": [
+      35.67,
+      35.3456,
+      17.2285,
+      9.5975,
+      7.3798,
+      "2022-01-14",
+      609640
+     ],
+     "src": "bsexbrl:532755_1312022195942_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.23 -> 18.56, fii 35.35 -> 35.36. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.05 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.05(regex); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2022-03-31": {
     "cell": [
      35.26,
      34.2712,
-     19.4233,
-     10.5957,
-     7.1491,
+     19.424503,
+     10.59516,
+     7.148797,
      "2022-04-20",
      731453
     ],
     "was": [
      35.26,
-     34.2612,
-     18.0633,
-     10.5957,
-     7.1491,
+     34.2712,
+     19.4233,
+     10.59516,
+     7.148797,
      "2022-04-20",
      731453
     ],
     "src": "bsexbrl:532755_194202220057_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.06 -> 19.42, fii 34.26 -> 34.27. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.08 NPS Trust- A/C UTI Retirement Solutions Pension Fund Scheme - State Govt 1.08(regex); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 102,967,315 + line:AlternativeInvestmentFunds 888,144 + line:FinancialInstitutionOrBanks 2,129,076 + line:InsuranceCompanies 69,474,399 + NBFC row 2,784,131 + inst-cat named Indian institution:Other Unit Trust of India 822 + noninst register:Others NPS Trust- A/C UTI Retirement Solutions 10,529,936 = 188,773,823 / 971,833,479 = 19.424503 (store 19.4233, gap -11,691 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.26,
+      34.2712,
+      19.4233,
+      10.5957,
+      7.1491,
+      "2022-04-20",
+      731453
+     ],
+     "was": [
+      35.26,
+      34.2612,
+      18.0633,
+      10.5957,
+      7.1491,
+      "2022-04-20",
+      731453
+     ],
+     "src": "bsexbrl:532755_194202220057_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.06 -> 19.42, fii 34.26 -> 34.27. R1-fii-label Other Foreign Institutional Investors 0.01 public=0.00 fii=0.01  keyword; R2-named Trusts 1.08 NPS Trust- A/C UTI Retirement Solutions Pension Fund Scheme - State Govt 1.08(regex); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2022-06-30": {
     "cell": [
      35.24,
-     30.4251,
-     22.126,
-     12.7998,
+     30.426593,
+     22.126905,
+     12.80041,
      8.7547,
      "2022-07-20",
      889606
     ],
     "was": [
      35.24,
-     30.4251,
-     20.736,
-     12.7998,
-     7.6547,
+     30.426593,
+     22.126,
+     12.80041,
+     8.7547,
      "2022-07-20",
      889606
     ],
     "src": "bsexbrl:532755_1972022164756_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.74 -> 22.13, fii 30.43 -> 30.43. R2-named Trusts 1.1 NPS Trust- A/C Lic Pension Fund Scheme - State Govt 1.10(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 124,491,855 + line:AlternativeInvestmentFunds 1,022,806 + line:FinancialInstitutionOrBanks 1,701,603 + line:InsuranceCompanies 74,450,711 + NBFC row 2,784,246 + inst-cat named Indian institution:Other Unit Trust of India 822 + noninst register:Others NPS Trust- A/C Lic Pension Fund Scheme - 10,745,710 = 215,197,753 / 972,561,468 = 22.126905 (store 22.126, gap -8,803 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.24,
+      30.4251,
+      22.126,
+      12.7998,
+      8.7547,
+      "2022-07-20",
+      889606
+     ],
+     "was": [
+      35.24,
+      30.4251,
+      20.736,
+      12.7998,
+      7.6547,
+      "2022-07-20",
+      889606
+     ],
+     "src": "bsexbrl:532755_1972022164756_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 20.74 -> 22.13, fii 30.43 -> 30.43. R2-named Trusts 1.1 NPS Trust- A/C Lic Pension Fund Scheme - State Govt 1.10(new-format:ProvidentFundsOrPensionFunds); R3-nbfc NBFCsRegisteredWithRbi 0.29. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2014-12-31": {
     "cell": [
@@ -201917,7 +202446,7 @@
     "cell": [
      35.87,
      39.75119,
-     12.955384,
+     12.957698,
      8.551035,
      3.93715,
      "2020-01-13",
@@ -201925,7 +202454,7 @@
     ],
     "was": [
      35.87,
-     39.738391,
+     39.75119,
      12.955384,
      8.551035,
      3.93715,
@@ -201933,10 +202462,42 @@
      455032
     ],
     "src": "bsexbrl:532755_1012020172433_SHP.xml",
-    "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 383,599,714; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 113,293 on base 965,312,635 = 39.75119. The stored 39.738391 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.75119; dii untouched."
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the NBFC row and held institutions Any-Other 'Other Foreign Bank' 10,256 and 'Other Foreign Institutional Investors' (labelled foreign -> not DII). Rows: line:MutualFundsOrUti 82,544,219 + line:AlternativeInvestmentFunds 2,779,653 + line:FinancialInstitutionOrBanks 1,605,087 + line:InsuranceCompanies 38,005,802 + NBFC row 145,895 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 125,082,300 / 965,312,635 = 12.957698 (store 12.955384, gap -22,341 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.87,
+      39.75119,
+      12.955384,
+      8.551035,
+      3.93715,
+      "2020-01-13",
+      455032
+     ],
+     "was": [
+      35.87,
+      39.738391,
+      12.955384,
+      8.551035,
+      3.93715,
+      "2020-01-13",
+      455032
+     ],
+     "src": "bsexbrl:532755_1012020172433_SHP.xml",
+     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 383,599,714; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 113,293 on base 965,312,635 = 39.75119. The stored 39.738391 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.75119; dii untouched."
+    }
    },
    "2020-03-31": {
     "cell": [
+     35.85,
+     39.670608,
+     13.208044,
+     8.391103,
+     4.360579,
+     "2020-04-22",
+     455664
+    ],
+    "was": [
      35.85,
      39.670608,
      13.208137,
@@ -201945,20 +202506,43 @@
      "2020-04-22",
      455664
     ],
-    "was": [
-     35.85,
-     39.657801,
-     13.208137,
-     8.391103,
-     4.360579,
-     "2020-04-22",
-     455664
-    ],
     "src": "bsexbrl:532755_214202023530_SHP.xml",
-    "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 383,035,804; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 113,443 on base 965,852,364 = 39.670608. The stored 39.657801 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.670608; dii untouched."
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the NBFC row and held institutions Any-Other 'Other Foreign Bank' 10,256 and 'Other Foreign Institutional Investors' (labelled foreign -> not DII). Rows: line:MutualFundsOrUti 81,045,667 + line:AlternativeInvestmentFunds 2,523,816 + line:FinancialInstitutionOrBanks 1,759,522 + line:InsuranceCompanies 42,116,752 + NBFC row 122,803 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 127,570,204 / 965,852,364 = 13.208044 (store 13.208137, gap 899 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.85,
+      39.670608,
+      13.208137,
+      8.391103,
+      4.360579,
+      "2020-04-22",
+      455664
+     ],
+     "was": [
+      35.85,
+      39.657801,
+      13.208137,
+      8.391103,
+      4.360579,
+      "2020-04-22",
+      455664
+     ],
+     "src": "bsexbrl:532755_214202023530_SHP.xml",
+     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 383,035,804; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 113,443 on base 965,852,364 = 39.670608. The stored 39.657801 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.670608; dii untouched."
+    }
    },
    "2020-09-30": {
     "cell": [
+     35.82,
+     37.958694,
+     14.23896,
+     8.963825,
+     4.926935,
+     "2020-10-21",
+     508734
+    ],
+    "was": [
      35.82,
      37.958694,
      14.23969,
@@ -201967,20 +202551,43 @@
      "2020-10-21",
      508734
     ],
-    "was": [
-     35.82,
-     37.947534,
-     14.23969,
-     8.963825,
-     4.926935,
-     "2020-10-21",
-     508734
-    ],
     "src": "bsexbrl:532755_20102020193126_SHP.xml",
-    "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 366,800,456; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 97,624 on base 966,598,935 = 37.958694. The stored 37.947534 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 37.958694; dii untouched."
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the NBFC row and held institutions Any-Other 'Other Foreign Bank' 10,256 and 'Other Foreign Institutional Investors' (labelled foreign -> not DII). Rows: line:MutualFundsOrUti 86,644,238 + line:AlternativeInvestmentFunds 1,928,221 + line:FinancialInstitutionOrBanks 1,335,013 + line:InsuranceCompanies 47,623,697 + NBFC row 100,818 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 137,633,631 / 966,598,935 = 14.23896 (store 14.23969, gap 7,061 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.82,
+      37.958694,
+      14.23969,
+      8.963825,
+      4.926935,
+      "2020-10-21",
+      508734
+     ],
+     "was": [
+      35.82,
+      37.947534,
+      14.23969,
+      8.963825,
+      4.926935,
+      "2020-10-21",
+      508734
+     ],
+     "src": "bsexbrl:532755_20102020193126_SHP.xml",
+     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 366,800,456; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 97,624 on base 966,598,935 = 37.958694. The stored 37.947534 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 37.958694; dii untouched."
+    }
    },
    "2020-12-31": {
     "cell": [
+     35.79,
+     39.053246,
+     13.541712,
+     8.385429,
+     4.872254,
+     "2021-01-21",
+     504568
+    ],
+    "was": [
      35.79,
      39.053246,
      13.546997,
@@ -201989,20 +202596,43 @@
      "2021-01-21",
      504568
     ],
-    "was": [
-     35.79,
-     39.040372,
-     13.546997,
-     8.385429,
-     4.872254,
-     "2021-01-21",
-     504568
-    ],
     "src": "bsexbrl:532755_201202117434_SHP.xml",
-    "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 377,685,610; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 114,289 on base 967,423,190 = 39.053246. The stored 39.040372 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.053246; dii untouched."
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the NBFC row and held institutions Any-Other 'Other Foreign Bank' 10,256 and 'Other Foreign Institutional Investors' (labelled foreign -> not DII). Rows: line:MutualFundsOrUti 81,122,584 + line:AlternativeInvestmentFunds 1,622,785 + line:FinancialInstitutionOrBanks 1,049,923 + line:InsuranceCompanies 47,135,313 + NBFC row 73,418 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 131,005,667 / 967,423,190 = 13.541712 (store 13.546997, gap 51,124 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.79,
+      39.053246,
+      13.546997,
+      8.385429,
+      4.872254,
+      "2021-01-21",
+      504568
+     ],
+     "was": [
+      35.79,
+      39.040372,
+      13.546997,
+      8.385429,
+      4.872254,
+      "2021-01-21",
+      504568
+     ],
+     "src": "bsexbrl:532755_201202117434_SHP.xml",
+     "why": "\u00a7164r batch 30 part 58 (2026-10-11, own line, user options 1 + 'count it as foreign investment'): this filing's own foreign lines = FPI 377,685,610; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 114,289 on base 967,423,190 = 39.053246. The stored 39.040372 left out rows the filing itself labels foreign (or the unnamed / named rest of its institutions 'Any Other' line), and DII does not hold them (stored dii = the filing's own domestic rows). fii -> 39.053246; dii untouched."
+    }
    },
    "2020-06-30": {
     "cell": [
+     35.83,
+     39.627003,
+     13.028957,
+     8.09909,
+     4.440874,
+     "2020-07-22",
+     502261
+    ],
+    "was": [
      35.83,
      39.627003,
      13.028787,
@@ -202011,17 +202641,31 @@
      "2020-07-22",
      502261
     ],
-    "was": [
-     35.83,
-     39.593448,
-     13.054888,
-     8.09909,
-     4.440874,
-     "2020-07-22",
-     502261
-    ],
     "src": "bsexbrl:532755_217202016954_SHP.xml",
-    "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 382,543,048; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 313,947) = 39.627003; DII = the DII session's own-line read 13.028787 (line:MutualFundsOrUti 78,251,599; line:AlternativeInvestmentFunds 2,379,127; line:FinancialInstitutionOrBanks 2,270,108; line:InsuranceCompanies 42,906,733; NBFC row 73,663). fii 39.593448 -> 39.627003, dii 13.054888 -> 13.028787."
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 78,251,599 + line:AlternativeInvestmentFunds 2,379,127 + line:FinancialInstitutionOrBanks 2,270,108 + line:InsuranceCompanies 42,906,733 + NBFC row 73,663 + inst-cat named Indian institution:Other Unit Trust of India 1,644 = 125,882,874 / 966,177,667 = 13.028957 (store 13.028787, gap -1,644 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.83,
+      39.627003,
+      13.028787,
+      8.09909,
+      4.440874,
+      "2020-07-22",
+      502261
+     ],
+     "was": [
+      35.83,
+      39.593448,
+      13.054888,
+      8.09909,
+      4.440874,
+      "2020-07-22",
+      502261
+     ],
+     "src": "bsexbrl:532755_217202016954_SHP.xml",
+     "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 382,543,048; inst:Other Foreign Bank 10,256; inst:Other Foreign Institutional Investors 313,947) = 39.627003; DII = the DII session's own-line read 13.028787 (line:MutualFundsOrUti 78,251,599; line:AlternativeInvestmentFunds 2,379,127; line:FinancialInstitutionOrBanks 2,270,108; line:InsuranceCompanies 42,906,733; NBFC row 73,663). fii 39.593448 -> 39.627003, dii 13.054888 -> 13.028787."
+    }
    }
   },
   "TIMKEN": {
@@ -218125,7 +218769,7 @@
     "cell": [
      51.33,
      4.87,
-     30.6367,
+     30.641513,
      25.65,
      4.9696,
      "2016-03-16"
@@ -218133,16 +218777,24 @@
     "was": [
      51.33,
      4.87,
-     26.7172,
+     30.6367,
      25.65,
-     1.05,
+     4.9696,
      "2016-03-16"
     ],
-    "src": "bsetable3:505790:88",
-    "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 4,262,277, VCF 0, AIF 0, FI/Banks 2,890, Insurance 174,494, PF 0, NBFC 0; 'ICICI Prudential Life Insurance Company Ltd' 256,203 (IRDAI-registered life insurer no. 105: ICICI Prudential Life); 'HDFC Standard Life Insurance Company Ltd' 395,119 (IRDAI-registered life insurer no. 101: HDFC Life Insurance C); total 16,617,270. dii 26.7172 -> 30.6367, ins 1.05 -> 4.9696.",
+    "src": "bsetable3:88:2015-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:Mutual Funds/ 4,262,277 + line:Financial  Institutions/ Banks 2,890 + line:Insurance  Companies 174,494 + inst-cat domestic label:UTI 800 + noninst register (inside a category; category rows sum to the block):I 256,203 + noninst register (inside a category; category rows sum to the block):H 395,119 = 5,091,783 / 16,617,270 = 30.641513 (store 30.6367, gap -800 shares)",
     "exact": true,
     "superseded": {
      "cell": [
+      51.33,
+      4.87,
+      30.6367,
+      25.65,
+      4.9696,
+      "2016-03-16"
+     ],
+     "was": [
       51.33,
       4.87,
       26.7172,
@@ -218150,16 +218802,29 @@
       1.05,
       "2016-03-16"
      ],
-     "was": [
-      51.33,
-      4.87,
-      30.73,
-      25.65,
-      1.05,
-      "2016-03-16"
-     ],
-     "src": "bseaspx:505790:qtrid88",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.01pp) folded in by a minority route. Healed to the page's own domestic rows (26.7172). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bsetable3:505790:88",
+     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 4,262,277, VCF 0, AIF 0, FI/Banks 2,890, Insurance 174,494, PF 0, NBFC 0; 'ICICI Prudential Life Insurance Company Ltd' 256,203 (IRDAI-registered life insurer no. 105: ICICI Prudential Life); 'HDFC Standard Life Insurance Company Ltd' 395,119 (IRDAI-registered life insurer no. 101: HDFC Life Insurance C); total 16,617,270. dii 26.7172 -> 30.6367, ins 1.05 -> 4.9696.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       51.33,
+       4.87,
+       26.7172,
+       25.65,
+       1.05,
+       "2016-03-16"
+      ],
+      "was": [
+       51.33,
+       4.87,
+       30.73,
+       25.65,
+       1.05,
+       "2016-03-16"
+      ],
+      "src": "bseaspx:505790:qtrid88",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (4.01pp) folded in by a minority route. Healed to the page's own domestic rows (26.7172). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    },
    "2016-06-30": {
@@ -218369,29 +219034,29 @@
     "cell": [
      51.33,
      5.475,
-     30.1708,
-     25.7456,
+     30.176088,
+     25.744199,
      4.4201,
      "2017-07-21",
      10459
     ],
     "was": [
      51.33,
-     5.4548,
-     30.191,
-     25.7456,
+     5.475,
+     30.1708,
+     25.744199,
      4.4201,
      "2017-07-21",
      10459
     ],
     "src": "bsexbrl:505790_207201719028_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 505790_207201719028_SHP.xml): the institutions 'Any Other' row(s) labelled 'Foreign Financial Institution' 0.0202 (0.0202) name FOREIGN institutions - an old \u00a7158 heal read them as a domestic label (before the FORWORD fix); they leave DII for FII on the filer's own foreign-institution label. Both slots in one entry (agreed with the FII session).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 4,277,983 + line:FinancialInstitutionOrBanks 1,707 + line:InsuranceCompanies 174,494 + inst-cat named Indian institution:Other Unit Trust of India 800 + noninst register:Bodies Corporate Hdfc Standard Life Insurance Company 375,701 + noninst register:Bodies Corporate Kotak Mahindra Old Mutual Life Insur 183,757 = 5,014,442 / 16,617,270 = 30.176088 (store 30.1708, gap -879 shares)",
     "exact": true,
     "superseded": {
      "cell": [
       51.33,
-      5.4548,
-      30.191,
+      5.475,
+      30.1708,
       25.7456,
       4.4201,
       "2017-07-21",
@@ -218400,14 +219065,37 @@
      "was": [
       51.33,
       5.4548,
-      26.831,
+      30.191,
       25.7456,
-      1.0501,
+      4.4201,
       "2017-07-21",
       10459
      ],
      "src": "bsexbrl:505790_207201719028_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.83 -> 30.19, fii 5.45 -> 5.45. R1-domestic-label Other Foreign Financial Institution 0.02 public=0.00 fii=0.00  keyword; R2-named Bodies Corporate 3.37 Hdfc Standard Life Insurance Company Limited 2.26(memory~); Kotak Mahindra Old Mutual Life Insurance Limited 1.11(regex). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 505790_207201719028_SHP.xml): the institutions 'Any Other' row(s) labelled 'Foreign Financial Institution' 0.0202 (0.0202) name FOREIGN institutions - an old \u00a7158 heal read them as a domestic label (before the FORWORD fix); they leave DII for FII on the filer's own foreign-institution label. Both slots in one entry (agreed with the FII session).",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       51.33,
+       5.4548,
+       30.191,
+       25.7456,
+       4.4201,
+       "2017-07-21",
+       10459
+      ],
+      "was": [
+       51.33,
+       5.4548,
+       26.831,
+       25.7456,
+       1.0501,
+       "2017-07-21",
+       10459
+      ],
+      "src": "bsexbrl:505790_207201719028_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.83 -> 30.19, fii 5.45 -> 5.45. R1-domestic-label Other Foreign Financial Institution 0.02 public=0.00 fii=0.00  keyword; R2-named Bodies Corporate 3.37 Hdfc Standard Life Insurance Company Limited 2.26(memory~); Kotak Mahindra Old Mutual Life Insurance Limited 1.11(regex). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2017-09-30": {
@@ -233025,7 +233713,7 @@
     "cell": [
      26.03,
      24.76,
-     15.6094,
+     17.752242,
      14.51,
      1.0705,
      "2016-01-20"
@@ -233033,16 +233721,24 @@
     "was": [
      26.03,
      24.76,
-     14.5314,
+     15.6094,
      14.51,
-     0.0,
+     1.0705,
      "2016-01-20"
     ],
-    "src": "bsetable3:532689:88",
-    "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 6,755,491, VCF 0, AIF 0, FI/Banks 11,082, Insurance 0, PF 0, NBFC 3,503; 'Max Life Insurance Company' 498,464 (IRDAI-registered life insurer no. 104: Axis Max Life Insuran); total 46,565,188. dii 14.5314 -> 15.6094, ins 0.0 -> 1.0705.",
+    "src": "bsetable3:88:2015-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the filing names 'Multiples Private Equity Fund' (SEBI AIF IN/AIF2/13-14/0089; Dec-15 ARVIND spells it 'Multiples Pvt Equity Fund') among non-institutions Any-Other; the block's category rows alone sum to the block, so it sits inside a category -> register wins (ARVIND Jun-16 onward already counts the same 2,732,400 shares). Rows: line:Mutual Funds/ 6,755,491 + line:Financial  Institutions/ Banks 11,082 + NBFC row 3,503 + noninst register (inside a category; category rows sum to the block):M 997,825 + noninst register (inside a category; category rows sum to the block):M 498,464 = 8,266,365 / 46,565,188 = 17.752242 (store 15.6094, gap -997,819 shares)",
     "exact": true,
     "superseded": {
      "cell": [
+      26.03,
+      24.76,
+      15.6094,
+      14.51,
+      1.0705,
+      "2016-01-20"
+     ],
+     "was": [
       26.03,
       24.76,
       14.5314,
@@ -233050,16 +233746,29 @@
       0.0,
       "2016-01-20"
      ],
-     "was": [
-      26.03,
-      24.76,
-      34.5,
-      14.51,
-      0.0,
-      "2016-01-20"
-     ],
-     "src": "bseaspx:532689:qtrid88",
-     "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (19.97pp) folded in by a minority route. Healed to the page's own domestic rows (14.5314). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     "src": "bsetable3:532689:88",
+     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 6,755,491, VCF 0, AIF 0, FI/Banks 11,082, Insurance 0, PF 0, NBFC 3,503; 'Max Life Insurance Company' 498,464 (IRDAI-registered life insurer no. 104: Axis Max Life Insuran); total 46,565,188. dii 14.5314 -> 15.6094, ins 0.0 -> 1.0705.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       26.03,
+       24.76,
+       14.5314,
+       14.51,
+       0.0,
+       "2016-01-20"
+      ],
+      "was": [
+       26.03,
+       24.76,
+       34.5,
+       14.51,
+       0.0,
+       "2016-01-20"
+      ],
+      "src": "bseaspx:532689:qtrid88",
+      "why": "SW-2 phase-2 2026-08-30: pre-2016 family convention is dii = mf+banks+ins(+vcf); this cell's dii equals that PLUS the institutions Any-Other row (19.97pp) folded in by a minority route. Healed to the page's own domestic rows (14.5314). fii left as authored (block nationality not adjudicated here). Census: _shp_oth_p2_census.jsonl"
+     }
     }
    },
    "2016-03-31": {
@@ -239666,7 +240375,7 @@
     "cell": [
      35.95,
      8.636237,
-     12.47,
+     14.958012,
      8.47,
      3.9,
      "2020-01-13",
@@ -239674,15 +240383,38 @@
     ],
     "was": [
      35.95,
-     8.55,
+     8.636237,
      12.47,
      8.47,
      3.9,
      "2020-01-13",
      27547
     ],
-    "src": "bsetable3:590071:2019-12-31",
-    "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): OUR ERROR: the filing puts 9,503,115 (Pari Washington India Master Fund named) on the Foreign Venture Capital Investors line B1d and 10,749 on FPI B1e - both foreign lines are FII; base = total 111,103,860 minus the filing's own C1 941,710 (user 12-Oct 'base too'). Stored 8.55 was a 2-decimal figure that matches neither. Own lines: FVCI 9,503,115, FPI 10,749 = 9,513,864 on 110,162,150 = 8.636237 (stored 8.55)."
+    "src": "bsetable3:104:2019-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the filing names 'HDFC Standard Life Insurance Company Ltd' 2,630,434 (IRDAI 101) among non-institutions Any-Other; block 13,941,278 = the rows minus it and India Motor Parts 2,853,600, so it sits inside Bodies Corporate 8,365,774 -> register wins; stored 12.47 matched no reading (own lines without it = 12.570229). Rows: line:Mutual Funds/ 9,414,199 + line:Alternate Investment Funds 100,952 + line:Insurance  Companies 4,332,292 + NBFC row 191 + noninst register (inside a category; category rows sum to the block):H 2,630,434 = 16,478,068 / 110,162,150 = 14.958012 (store 12.47, gap -2,740,848 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      35.95,
+      8.636237,
+      12.47,
+      8.47,
+      3.9,
+      "2020-01-13",
+      27547
+     ],
+     "was": [
+      35.95,
+      8.55,
+      12.47,
+      8.47,
+      3.9,
+      "2020-01-13",
+      27547
+     ],
+     "src": "bsetable3:590071:2019-12-31",
+     "why": "\u00a7164r batch 30 part 98 (2026-10-15, KARURVYSYA / SUNDARMFIN / WHEELS re-read after the local tool code map was found holding BSE's placeholder 600001 - stored data used the real codes 590003 / 590071 / 590073; BSE Table III (Corp_shpSec_SHPPubShold_ng) on each filing's own Table I base, total minus C1): OUR ERROR: the filing puts 9,503,115 (Pari Washington India Master Fund named) on the Foreign Venture Capital Investors line B1d and 10,749 on FPI B1e - both foreign lines are FII; base = total 111,103,860 minus the filing's own C1 941,710 (user 12-Oct 'base too'). Stored 8.55 was a 2-decimal figure that matches neither. Own lines: FVCI 9,503,115, FPI 10,749 = 9,513,864 on 110,162,150 = 8.636237 (stored 8.55)."
+    }
    },
    "2020-03-31": {
     "cell": [
@@ -241114,24 +241846,47 @@
    "2019-09-30": {
     "cell": [
      40.9,
-     23.8674,
-     19.5373,
-     15.965,
+     23.865923,
+     19.534676,
+     15.964015,
      1.31,
      "2019-10-24",
      172976
     ],
     "was": [
      40.9,
-     23.8674,
-     17.1673,
-     15.965,
-     0.0,
+     23.865923,
+     19.5373,
+     15.964015,
+     1.31,
      "2019-10-24",
      172976
     ],
-    "src": "bsexbrl:500877_4112019103324_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.17 -> 19.54, fii 23.87 -> 23.87. R2-named Trusts 1.06 NPS Trust-A/C UTI retirement Solutions Pension Fund Scheme-State Govt 1.06(regex); R2-named Bodies Corporate 1.31 HDFC Life Insurance Company Limited 1.31(curated). Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 91,322,142 + line:Financial  Institutions/ Banks 6,877,376 + noninst register (inside a category; category rows sum to the block):N 6,063,195 + noninst register (inside a category; category rows sum to the block):H 7,485,399 = 111,748,112 / 572,049,980 = 19.534676 (store 19.5373, gap 15,009 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      40.9,
+      23.8674,
+      19.5373,
+      15.965,
+      1.31,
+      "2019-10-24",
+      172976
+     ],
+     "was": [
+      40.9,
+      23.8674,
+      17.1673,
+      15.965,
+      0.0,
+      "2019-10-24",
+      172976
+     ],
+     "src": "bsexbrl:500877_4112019103324_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 17.17 -> 19.54, fii 23.87 -> 23.87. R2-named Trusts 1.06 NPS Trust-A/C UTI retirement Solutions Pension Fund Scheme-State Govt 1.06(regex); R2-named Bodies Corporate 1.31 HDFC Life Insurance Company Limited 1.31(curated). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -257780,6 +258535,29 @@
      "src": "bsexbrl:500520_2112020115831_SHP.xml",
      "why": "\u00a7164s part 22 (2026-10-06, register sweep after the user's 'Register wins: count them'): the filing names NPS TRUST - A/C SBI PENSION FUND SCHME-CENTRAL 1.0963 (''Trusts'') on its non-institution row; each is an Indian institution on an official register (NPS Trust - National Pension System Trust, set up by PFRDA under the Indian Trus). Stored dii = the filing's six domestic lines exactly (24.1986), so the holder was never counted; R2 + rule 4 (registers) count it. dii 24.2000 -> 25.2963; fii untouched."
     }
+   },
+   "2021-06-30": {
+    "cell": [
+     19.46,
+     40.051919,
+     26.116145,
+     9.846104,
+     10.418658,
+     "2021-07-20",
+     531369
+    ],
+    "was": [
+     19.46,
+     40.051919,
+     26.115542,
+     9.846104,
+     10.418658,
+     "2021-07-20",
+     531369
+    ],
+    "src": "bsetable3:110:2021-06-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 118,809,948 + line:Alternate Investment Funds 1,932,320 + line:Financial  Institutions/ Banks 3,217,836 + line:Insurance  Companies 125,718,785 + NBFC row 7,285 + inst-cat QIB label:QUALIFIED INSTITUTIONAL BUYERS 65,449,418 = 315,135,592 / 1,206,669,624 = 26.116145 (store 26.115542, gap -7,280 shares)",
+    "exact": true
    }
   },
   "CASTEXTECH": {
@@ -291509,7 +292287,7 @@
     "cell": [
      43.78,
      23.09,
-     16.6261,
+     17.68466,
      11.82,
      4.78,
      "2016-01-21"
@@ -291517,13 +292295,34 @@
     "was": [
      43.78,
      23.09,
-     29.25,
+     16.6261,
      11.82,
      4.78,
      "2016-01-21"
     ],
-    "src": "bseaspx:500101:88 + shpperent",
-    "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with b'): value came from an aggregator (Trendlyne) row read with our old-format formula, which added the institutional Any-Other block to dii although the aggregator's fii already held it: BSE's seam table lists 'Foreign Institutional Investors' 32,600,327 shares = 12.6239% of 258,243,069. fii (already 23.09, in line with the neighbouring quarters) unchanged; the double-counted block leaves dii: 29.2500 -> 16.6261."
+    "src": "bsetable3:88:2015-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the filing names 'Multiples Private Equity Fund' (SEBI AIF IN/AIF2/13-14/0089; Dec-15 ARVIND spells it 'Multiples Pvt Equity Fund') among non-institutions Any-Other; the block's category rows alone sum to the block, so it sits inside a category -> register wins (ARVIND Jun-16 onward already counts the same 2,732,400 shares). Rows: line:Mutual Funds/ 30,514,954 + line:Financial  Institutions/ Banks 89,609 + line:Insurance  Companies 12,332,446 + noninst register (inside a category; category rows sum to the block):M 2,732,400 = 45,669,409 / 258,243,069 = 17.68466 (store 16.6261, gap -2,733,658 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      43.78,
+      23.09,
+      16.6261,
+      11.82,
+      4.78,
+      "2016-01-21"
+     ],
+     "was": [
+      43.78,
+      23.09,
+      29.25,
+      11.82,
+      4.78,
+      "2016-01-21"
+     ],
+     "src": "bseaspx:500101:88 + shpperent",
+     "why": "\u00a7164s Quantmac DII round (user 2026-10-04 'go ahead with b'): value came from an aggregator (Trendlyne) row read with our old-format formula, which added the institutional Any-Other block to dii although the aggregator's fii already held it: BSE's seam table lists 'Foreign Institutional Investors' 32,600,327 shares = 12.6239% of 258,243,069. fii (already 23.09, in line with the neighbouring quarters) unchanged; the double-counted block leaves dii: 29.2500 -> 16.6261."
+    }
    },
    "2006-09-30": {
     "cell": [
@@ -292344,6 +293143,27 @@
     ],
     "src": "bsexbrl:500101_1012017115721_SHP.xml",
     "why": "\u00a7164s part 38 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4; DII follows the filing's own line + register rule; SEBI AIF register searched 2026-10-14): BSE XBRL 500101_1012017115721_SHP.xml own DII rows line:MutualFundsOrUti 31,308,137; line:FinancialInstitutionOrBanks 11,117,488; noninst register:Bodies Corporate Multiples Private Equity Fund 2,732,400 = 45,158,025 sh on base 258,359,069 = 17.478785; stored 16.421187. Registers: SEBI-registered AIF: Multiples Private Equity Fund, IN/AIF2/",
+    "exact": true
+   },
+   "2016-03-31": {
+    "cell": [
+     43.7837,
+     22.5877,
+     17.445459,
+     11.5962,
+     4.7354,
+     "2016-04-21"
+    ],
+    "was": [
+     43.7837,
+     22.5877,
+     16.3874,
+     11.5962,
+     4.7354,
+     "2016-04-21"
+    ],
+    "src": "bsetable3:89:2016-03-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the filing names 'Multiples Private Equity Fund' (SEBI AIF IN/AIF2/13-14/0089; Dec-15 ARVIND spells it 'Multiples Pvt Equity Fund') among non-institutions Any-Other; the block's category rows alone sum to the block, so it sits inside a category -> register wins (ARVIND Jun-16 onward already counts the same 2,732,400 shares). Rows: line:Mutual Funds/ 29,946,308 + line:Financial  Institutions/ Banks 144,142 + line:Insurance  Companies 12,228,839 + noninst register (inside a category; category rows sum to the block):M 2,732,400 = 45,051,689 / 258,243,069 = 17.445459 (store 16.3874, gap -2,732,364 shares)",
     "exact": true
    }
   },
@@ -297351,7 +298171,7 @@
     "cell": [
      62.71,
      14.253897,
-     17.1198,
+     17.11658,
      0.0,
      6.27,
      "2019-10-09",
@@ -297359,19 +298179,20 @@
     ],
     "was": [
      62.71,
-     8.2568,
+     14.253897,
      17.1198,
      0.0,
      6.27,
      "2019-10-09",
      5973
     ],
-    "src": "bsexbrl:542759_1112019191348_SHP.xml",
-    "why": "\u00a7164r batch 30 part 62 (2026-10-12, user: 'option 1 count the word in the name' - an FPI / FII / FDI word anywhere in a holder's name is the company's own mark, in this filing): this filing's own foreign lines = FPI 5,298,910; noninst-holder-own-tag-fii:VALIANT MAURITIUS PARTNERS FDI LIMITED 3,848,823 on base 64,177,068 = 14.253897; stored 8.2568. fii -> 14.253897; dii untouched (DII holds Indian institutions only; these holders are foreign-marked).",
+    "src": "bsetable3:542759:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): AIF line 4,588,683 + FI/Banks 524,623 + non-inst category 'HDFC LIFE INSURANCE COMPANY LIMITED ,ICICI PRUDENT...' 4,414,300 (k=5 insurers, a category) + 'EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRUST' 756,386 (SEBI AIF) + 'BAJAJ HOLDINGS AND INVESTMENT LTD' 700,927 (RBI NBFC, part 23 register) = 10,984,919 / 64,177,068. Block 12,614,281 = rows 22,596,910 minus holders 9,982,629 (Valiant 3,848,823 + Helion 652,304 in OCB 5,108,568; ICICI Pru Life 3,054,560 + Bajaj Allianz 969,629 in the insurers row; Edelweiss; Bajaj Holdings). Edelweiss and Bajaj Holdings cannot sit in the insurers row: its room after ICICI + Bajaj Allianz is 390,111. Stored 17.1198 = 16.0276 (7.9676 + printed 6.88 + 1.18) + 1.0922: rounding. The reader left these two holders ambiguous, so the value is set by hand",
+    "exact": true,
     "superseded": {
      "cell": [
       62.71,
-      8.2568,
+      14.253897,
       17.1198,
       0.0,
       6.27,
@@ -297380,7 +298201,7 @@
      ],
      "was": [
       62.71,
-      14.2568,
+      8.2568,
       17.1198,
       0.0,
       6.27,
@@ -297388,12 +298209,11 @@
       5973
      ],
      "src": "bsexbrl:542759_1112019191348_SHP.xml",
-     "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: VALIANT MAURITIUS PARTNERS FDI LIMITED (FDI line 2022-12-31..2026-06-30). fii 14.2568 -> 8.2568; dii untouched.",
-     "exact": true,
+     "why": "\u00a7164r batch 30 part 62 (2026-10-12, user: 'option 1 count the word in the name' - an FPI / FII / FDI word anywhere in a holder's name is the company's own mark, in this filing): this filing's own foreign lines = FPI 5,298,910; noninst-holder-own-tag-fii:VALIANT MAURITIUS PARTNERS FDI LIMITED 3,848,823 on base 64,177,068 = 14.253897; stored 8.2568. fii -> 14.253897; dii untouched (DII holds Indian institutions only; these holders are foreign-marked).",
      "superseded": {
       "cell": [
        62.71,
-       14.2568,
+       8.2568,
        17.1198,
        0.0,
        6.27,
@@ -297403,16 +298223,26 @@
       "was": [
        62.71,
        14.2568,
-       16.0276,
+       17.1198,
        0.0,
        6.27,
        "2019-10-09",
        5973
       ],
       "src": "bsexbrl:542759_1112019191348_SHP.xml",
-      "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.0922 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 ). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 7.9675 + those, gap 8.0601), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 16.0276 -> 17.1198; fii untouched.",
+      "why": "\u00a7164r batch 30 part 51 (2026-10-08, user: 'follow the filings own line' - Option A / batch 14 retired: a holder's FDI-line history in another filing no longer moves it off the line the company filed it on): the batch-14 entry's own pre-batch value; back on the line the company filed: VALIANT MAURITIUS PARTNERS FDI LIMITED (FDI line 2022-12-31..2026-06-30). fii 14.2568 -> 8.2568; dii untouched.",
+      "exact": true,
       "superseded": {
        "cell": [
+        62.71,
+        14.2568,
+        17.1198,
+        0.0,
+        6.27,
+        "2019-10-09",
+        5973
+       ],
+       "was": [
         62.71,
         14.2568,
         16.0276,
@@ -297421,21 +298251,12 @@
         "2019-10-09",
         5973
        ],
-       "was": [
-        62.71,
-        8.2568,
-        16.0276,
-        0.0,
-        6.27,
-        "2019-10-09",
-        5973
-       ],
        "src": "bsexbrl:542759_1112019191348_SHP.xml",
-       "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): VALIANT MAURITIUS PARTNERS FDI LIMITED (FDI line 2022-12-31..2026-06-30) - fii 8.2568 -> 14.2568 (+6.0000), dii unchanged.",
+       "why": "\u00a7164s part 23 (2026-10-06, the 38 register cells left UNKNOWN by part 22, read one by one): the filing names BAJAJ HOLDINGS AND INVESTMENT LTD 1.0922 (''Bodies Corporate'') on its non-institution row; each is an Indian institution on an official register (Bajaj Holdings & Investment Ltd - RBI-registered NBFC, CoR N-13.01952 ). The cell's own ledger chain names the holders R2 already counted (stored dii = the filing's domestic lines 7.9675 + those, gap 8.0601), and this one is not among them - so R2 + rule 4 add it (user 2026-10-06 'Register wins'). dii 16.0276 -> 17.1198; fii untouched.",
        "superseded": {
         "cell": [
          62.71,
-         8.2568,
+         14.2568,
          16.0276,
          0.0,
          6.27,
@@ -297445,14 +298266,36 @@
         "was": [
          62.71,
          8.2568,
-         7.9676,
+         16.0276,
          0.0,
-         0.0,
+         6.27,
          "2019-10-09",
          5973
         ],
         "src": "bsexbrl:542759_1112019191348_SHP.xml",
-        "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.26 -> 8.26, dii 7.97 -> 16.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Trusts 1.18 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 1.18(regex); R2-label Others HDFC LIFE INSURANCE COMPANY LIMITED ,ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED,ADITYA BIRLA SUN LIFE INSURANCE COMPANY LIMITED,BAJAJ ALLIANZ LIFE INSURANCE COMPANY LTD.,STAR UNION DAI-ICHI LIFE INSURANCE COMPANY LIMITED 6.88 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.76; BAJAJ ALLIANZ LIFE INSURANCE COMPANY LTD. 1.51. Evidence: _shp_164_audit.json"
+        "why": "\u00a7164r batch 14 (user 2026-10-04 'yes go with A'): a holder the company itself files on its 'Foreign Direct Investment' line (2022 form, Institutions (Foreign)) in ANY of its filings is FII in every quarter where the company lists it on a public line (registry scripts/shp_fdi_holders.json). 2015-22 XBRL row read with the \u00a7158 / D1 / \u00a7159 rules (new code minus original code on the same data): VALIANT MAURITIUS PARTNERS FDI LIMITED (FDI line 2022-12-31..2026-06-30) - fii 8.2568 -> 14.2568 (+6.0000), dii unchanged.",
+        "superseded": {
+         "cell": [
+          62.71,
+          8.2568,
+          16.0276,
+          0.0,
+          6.27,
+          "2019-10-09",
+          5973
+         ],
+         "was": [
+          62.71,
+          8.2568,
+          7.9676,
+          0.0,
+          0.0,
+          "2019-10-09",
+          5973
+         ],
+         "src": "bsexbrl:542759_1112019191348_SHP.xml",
+         "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 8.26 -> 8.26, dii 7.97 -> 16.03. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Trusts 1.18 EDELWEISS ALTERNATIVE INVESTMENT OPPORTUNITIES TRU 1.18(regex); R2-label Others HDFC LIFE INSURANCE COMPANY LIMITED ,ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED,ADITYA BIRLA SUN LIFE INSURANCE COMPANY LIMITED,BAJAJ ALLIANZ LIFE INSURANCE COMPANY LTD.,STAR UNION DAI-ICHI LIFE INSURANCE COMPANY LIMITED 6.88 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 4.76; BAJAJ ALLIANZ LIFE INSURANCE COMPANY LTD. 1.51. Evidence: _shp_164_audit.json"
+        }
        }
       }
      }
@@ -306019,24 +306862,47 @@
    "2019-09-30": {
     "cell": [
      41.6,
-     23.6701,
-     12.8535,
-     7.713,
+     23.670147,
+     12.862273,
+     7.713007,
      1.16,
      "2019-12-16",
      56761
     ],
     "was": [
      41.6,
-     23.6701,
-     9.8735,
-     7.713,
-     0.0,
+     23.670147,
+     12.8535,
+     7.713007,
+     1.16,
      "2019-12-16",
      56761
     ],
-    "src": "bsexbrl:542651_4112019125129_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.87 -> 12.85, fii 23.67 -> 23.67. R2-named Bodies Corporate 1.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.16(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 1.82. Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 21,144,732 + line:Alternate Investment Funds 5,792,782 + line:Financial  Institutions/ Banks 130,264 + NBFC row 5,000,600 + noninst register (inside a category; category rows sum to the block):I 3,192,748 = 35,261,126 / 274,143,808 = 12.862273 (store 12.8535, gap -24,052 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      41.6,
+      23.6701,
+      12.8535,
+      7.713,
+      1.16,
+      "2019-12-16",
+      56761
+     ],
+     "was": [
+      41.6,
+      23.6701,
+      9.8735,
+      7.713,
+      0.0,
+      "2019-12-16",
+      56761
+     ],
+     "src": "bsexbrl:542651_4112019125129_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 9.87 -> 12.85, fii 23.67 -> 23.67. R2-named Bodies Corporate 1.16 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 1.16(new-format:InsuranceCompanies); R3-nbfc NBFCsRegisteredWithRbi 1.82. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -326435,29 +327301,30 @@
    "2021-06-30": {
     "cell": [
      5.93,
-     10.1906,
-     8.1973,
-     1.6321,
+     10.190728,
+     8.202271,
+     1.632137,
      0.0,
      "2021-07-19",
      251369
     ],
     "was": [
      5.93,
-     10.1906,
-     4.4167,
-     1.6321,
+     10.190728,
+     8.1973,
+     1.632137,
      0.0,
      "2021-07-19",
      251369
     ],
-    "src": "bsexbrl:532839_2872021161513_SHP.xml",
-    "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names Indusind Bank Ltd. 3.7806 [IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 4.4167 -> 8.1973.",
+    "src": "bsetable3:110:2021-06-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 30,051,817 + line:Alternate Investment Funds 2,617,528 + line:Financial  Institutions/ Banks 10,909,059 + NBFC row 37,835,282 + noninst register (inside a category; category rows sum to the block):I 69,611,125 = 151,024,811 / 1,841,256,154 = 8.202271 (store 8.1973, gap -91,520 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       5.93,
       10.1906,
-      4.4167,
+      8.1973,
       1.6321,
       0.0,
       "2021-07-19",
@@ -326466,14 +327333,36 @@
      "was": [
       5.93,
       10.1906,
-      2.3667,
+      4.4167,
       1.6321,
       0.0,
       "2021-07-19",
       251369
      ],
      "src": "bsexbrl:532839_2872021161513_SHP.xml",
-     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.19 -> 10.19, dii 2.37 -> 4.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 2.05. Evidence: _shp_164_audit.json"
+     "why": "\u00a7164s part 9 (2026-10-05; rule 4, official registers): the filing names Indusind Bank Ltd. 3.7806 [IndusInd Bank Ltd - RBI scheduled commercial bank (Indian private sect] - an Indian institution proven by its regulator's register, which our reader had read as foreign because the company's 2022-form filing lists it among non-institutions; DII 4.4167 -> 8.1973.",
+     "superseded": {
+      "cell": [
+       5.93,
+       10.1906,
+       4.4167,
+       1.6321,
+       0.0,
+       "2021-07-19",
+       251369
+      ],
+      "was": [
+       5.93,
+       10.1906,
+       2.3667,
+       1.6321,
+       0.0,
+       "2021-07-19",
+       251369
+      ],
+      "src": "bsexbrl:532839_2872021161513_SHP.xml",
+      "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 10.19 -> 10.19, dii 2.37 -> 4.42. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R3-nbfc NBFCsRegisteredWithRbi 2.05. Evidence: _shp_164_audit.json"
+     }
     }
    },
    "2021-09-30": {
@@ -328156,6 +329045,282 @@
     ],
     "src": "bseaspx:500425_89",
     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.015191 = total (A+B+C) 1551897421 shares / (A+B) 1528675271 shares on the same quarter's BSE page; fii 23.72 -> 24.08, dii 16.64 -> 16.89."
+   },
+   "2017-03-31": {
+    "cell": [
+     63.62,
+     18.350457,
+     10.774016,
+     1.992056,
+     0.0,
+     "2017-04-10",
+     179684
+    ],
+    "was": [
+     63.62,
+     18.350457,
+     10.774486,
+     1.992056,
+     0.0,
+     "2017-04-10",
+     179684
+    ],
+    "src": "bsexbrl:500425_104201712228_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store held the institutions Any-Other row 'Other FOREIGN BANK' 9,250 in DII; a foreign bank is not DII (user rule). Rows: line:MutualFundsOrUti 39,240,872 + line:FinancialInstitutionOrBanks 172,971,997 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 212,233,869 / 1,969,867,738 = 10.774016 (store 10.774486, gap 9,255 shares)",
+    "exact": true
+   },
+   "2017-06-30": {
+    "cell": [
+     63.6,
+     16.874572,
+     11.564816,
+     2.699584,
+     0.0,
+     "2017-07-07",
+     179911
+    ],
+    "was": [
+     63.6,
+     16.874572,
+     11.565286,
+     2.699584,
+     0.0,
+     "2017-07-07",
+     179911
+    ],
+    "src": "bsexbrl:500425_772017143538_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store held the institutions Any-Other row 'Other FOREIGN BANK' 9,250 in DII; a foreign bank is not DII (user rule). Rows: line:MutualFundsOrUti 53,191,497 + line:FinancialInstitutionOrBanks 174,655,889 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 227,868,386 / 1,970,358,894 = 11.564816 (store 11.565286, gap 9,255 shares)",
+    "exact": true
+   },
+   "2017-09-30": {
+    "cell": [
+     63.59,
+     16.598584,
+     12.210392,
+     3.487474,
+     0.0,
+     "2017-10-09",
+     170565
+    ],
+    "was": [
+     63.59,
+     16.598584,
+     12.210861,
+     3.487474,
+     0.0,
+     "2017-10-09",
+     170565
+    ],
+    "src": "bsexbrl:500425_6102017155741_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store held the institutions Any-Other row 'Other FOREIGN BANK' 9,250 in DII; a foreign bank is not DII (user rule). Rows: line:MutualFundsOrUti 68,729,954 + line:FinancialInstitutionOrBanks 171,887,269 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 240,638,223 / 1,970,765,793 = 12.210392 (store 12.210861, gap 9,249 shares)",
+    "exact": true
+   },
+   "2017-12-31": {
+    "cell": [
+     63.56,
+     17.219226,
+     11.991957,
+     3.817821,
+     0.0,
+     "2018-04-11",
+     161911
+    ],
+    "was": [
+     63.56,
+     17.219226,
+     11.992426,
+     3.817821,
+     0.0,
+     "2018-04-11",
+     161911
+    ],
+    "src": "bsexbrl:500425_114201816915_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store held the institutions Any-Other row 'Other FOREIGN BANK' 9,250 in DII; a foreign bank is not DII (user rule). Rows: line:MutualFundsOrUti 75,273,612 + line:FinancialInstitutionOrBanks 161,143,366 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 236,437,978 / 1,971,637,996 = 11.991957 (store 11.992426, gap 9,250 shares)",
+    "exact": true
+   },
+   "2018-03-31": {
+    "cell": [
+     63.55,
+     16.448268,
+     12.94665,
+     4.84172,
+     0.0,
+     "2018-04-10",
+     167494
+    ],
+    "was": [
+     63.55,
+     16.448268,
+     12.947119,
+     4.84172,
+     0.0,
+     "2018-04-10",
+     167494
+    ],
+    "src": "bsexbrl:500425_1042018133846_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store held the institutions Any-Other row 'Other FOREIGN BANK' 9,250 in DII; a foreign bank is not DII (user rule). Rows: line:MutualFundsOrUti 95,477,940 + line:FinancialInstitutionOrBanks 159,806,891 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 255,305,831 / 1,971,983,749 = 12.94665 (store 12.947119, gap 9,252 shares)",
+    "exact": true
+   },
+   "2018-06-30": {
+    "cell": [
+     63.55,
+     16.510575,
+     12.789617,
+     5.169407,
+     0.0,
+     "2018-07-10",
+     174782
+    ],
+    "was": [
+     63.55,
+     16.510575,
+     12.788525,
+     5.169407,
+     0.0,
+     "2018-07-10",
+     174782
+    ],
+    "src": "bsexbrl:500425_972018101858_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 101,930,096 + line:AlternativeInvestmentFunds 5,347 + line:FinancialInstitutionOrBanks 150,197,755 + NBFC row 30,792 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 252,184,990 / 1,971,794,649 = 12.789617 (store 12.788525, gap -21,538 shares)",
+    "exact": true
+   },
+   "2018-09-30": {
+    "cell": [
+     63.48,
+     17.326658,
+     11.803833,
+     5.187627,
+     0.0,
+     "2018-10-05",
+     170159
+    ],
+    "was": [
+     63.48,
+     17.326658,
+     11.801824,
+     5.187627,
+     0.0,
+     "2018-10-05",
+     170159
+    ],
+    "src": "bsexbrl:500425_5102018104339_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 102,404,137 + line:FinancialInstitutionOrBanks 130,534,455 + NBFC row 48,907 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 233,008,499 / 1,974,007,156 = 11.803833 (store 11.801824, gap -39,649 shares)",
+    "exact": true
+   },
+   "2018-12-31": {
+    "cell": [
+     63.46,
+     17.049403,
+     11.723588,
+     5.071461,
+     0.0,
+     "2019-01-29",
+     172146
+    ],
+    "was": [
+     63.46,
+     17.049403,
+     11.722699,
+     5.071461,
+     0.0,
+     "2019-01-29",
+     172146
+    ],
+    "src": "bsexbrl:500425_2912019165724_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 100,151,022 + line:FinancialInstitutionOrBanks 131,318,148 + NBFC row 26,779 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 + noninst domestic-institution row:Others QIB 35 = 231,516,984 / 1,974,796,301 = 11.723588 (store 11.722699, gap -17,558 shares)",
+    "exact": true
+   },
+   "2019-03-31": {
+    "cell": [
+     63.45,
+     17.905165,
+     10.924024,
+     4.277716,
+     5e-06,
+     "2019-07-11",
+     168983
+    ],
+    "was": [
+     63.45,
+     17.905165,
+     10.923197,
+     4.277716,
+     5e-06,
+     "2019-07-11",
+     168983
+    ],
+    "src": "bsexbrl:500425_117201914196_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 84,492,317 + line:FinancialInstitutionOrBanks 131,229,435 + line:InsuranceCompanies 91 + NBFC row 25,579 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 215,768,422 / 1,975,173,523 = 10.924024 (store 10.923197, gap -16,327 shares)",
+    "exact": true
+   },
+   "2019-06-30": {
+    "cell": [
+     63.45,
+     17.66955,
+     11.237031,
+     4.548431,
+     6e-05,
+     "2019-07-11",
+     169672
+    ],
+    "was": [
+     63.45,
+     17.66955,
+     11.236068,
+     4.548431,
+     6e-05,
+     "2019-07-11",
+     169672
+    ],
+    "src": "bsexbrl:500425_872019162351_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 89,833,048 + line:FinancialInstitutionOrBanks 132,051,638 + line:InsuranceCompanies 1,176 + NBFC row 28,280 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 221,935,142 / 1,975,033,625 = 11.237031 (store 11.236068, gap -19,021 shares)",
+    "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     63.42,
+     17.044797,
+     12.652773,
+     4.766017,
+     2.025872,
+     "2019-10-11",
+     171088
+    ],
+    "was": [
+     63.42,
+     17.044797,
+     12.652149,
+     4.766017,
+     2.025872,
+     "2019-10-11",
+     171088
+    ],
+    "src": "bsexbrl:500425_1010201916550_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 94,168,289 + line:AlternativeInvestmentFunds 216,939 + line:FinancialInstitutionOrBanks 115,541,465 + line:InsuranceCompanies 40,027,751 + NBFC row 21,590 + inst-cat named Indian institution:Other UNIT TRUST OF INDIA 21,000 = 249,997,034 / 1,975,827,995 = 12.652773 (store 12.652149, gap -12,332 shares)",
+    "exact": true
+   },
+   "2020-03-31": {
+    "cell": [
+     63.28,
+     15.655913,
+     14.160699,
+     7.043887,
+     2.197705,
+     "2020-04-24",
+     179094
+    ],
+    "was": [
+     63.28,
+     15.655913,
+     14.160387,
+     7.043887,
+     2.197705,
+     "2020-04-24",
+     179094
+    ],
+    "src": "bsexbrl:500425_2442020121257_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (DII) and held 'Other FOREIGN BANK' 9,250 (not DII). Rows: line:MutualFundsOrUti 139,496,954 + line:AlternativeInvestmentFunds 1,917,500 + line:FinancialInstitutionOrBanks 95,463,946 + line:InsuranceCompanies 43,523,295 + NBFC row 15,440 + inst-cat named Indian institution:Other UNIT TRUST  OF INDIA 21,000 = 280,438,135 / 1,980,397,489 = 14.160699 (store 14.160387, gap -6,186 shares)",
+    "exact": true
    }
   },
   "ATULAUTO": {
@@ -348975,7 +350140,7 @@
     "cell": [
      40.0,
      11.312683,
-     11.250742,
+     11.261672,
      2.609054,
      0.591138,
      "2020-07-22",
@@ -348983,7 +350148,7 @@
     ],
     "was": [
      40.0,
-     19.6327,
+     11.312683,
      11.250742,
      2.609054,
      0.591138,
@@ -348991,32 +350156,64 @@
      962333
     ],
     "src": "bsexbrl:539437_217202021158_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 641,694,253 on base 5,672,343,720 = 11.312683. The stored 19.6327 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.31 -> 19.63 (+8.32 from Non-institutions Any-Other). fii 19.6327 -> 11.312683; dii untouched.",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 147,994,505 + line:AlternativeInvestmentFunds 8,890 + line:FinancialInstitutionOrBanks 10,082,804 + line:InsuranceCompanies 33,531,357 + NBFC row 620,004 + inst-cat domestic label:Insurance Companies 86,244,070 + inst-cat domestic label:Insurance Companies 258,732,212 + inst-cat domestic label:Insurance Companies 99,777,070 + inst-cat domestic label:Insurance Companies 505,000 + inst-cat domestic label:Insurance Companies 1,004,853 + inst-cat named Indian institution:Other ECGC LIMITED 300,000 = 638,800,765 / 5,672,343,720 = 11.261672 (store 11.250742, gap -620,008 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       40.0,
-      19.6327,
-      11.2507,
-      2.6091,
-      0.5911,
+      11.312683,
+      11.250742,
+      2.609054,
+      0.591138,
       "2020-07-22",
       962333
      ],
      "was": [
       40.0,
-      11.3127,
-      11.2507,
-      2.6091,
-      0.5911,
+      19.6327,
+      11.250742,
+      2.609054,
+      0.591138,
       "2020-07-22",
       962333
      ],
      "src": "bsexbrl:539437_217202021158_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.31 -> 19.63 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 641,694,253 on base 5,672,343,720 = 11.312683. The stored 19.6327 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.31 -> 19.63 (+8.32 from Non-institutions Any-Other). fii 19.6327 -> 11.312683; dii untouched.",
+     "superseded": {
+      "cell": [
+       40.0,
+       19.6327,
+       11.2507,
+       2.6091,
+       0.5911,
+       "2020-07-22",
+       962333
+      ],
+      "was": [
+       40.0,
+       11.3127,
+       11.2507,
+       2.6091,
+       0.5911,
+       "2020-07-22",
+       962333
+      ],
+      "src": "bsexbrl:539437_217202021158_SHP.xml",
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.31 -> 19.63 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     }
     }
    },
    "2020-09-30": {
     "cell": [
+     40.0,
+     11.228485,
+     11.121382,
+     2.669462,
+     0.591138,
+     "2020-10-22",
+     1037051
+    ],
+    "was": [
      40.0,
      11.228485,
      11.110408,
@@ -349025,42 +350222,65 @@
      "2020-10-22",
      1037051
     ],
-    "was": [
-     40.0,
-     19.5485,
-     11.110408,
-     2.669462,
-     0.591138,
-     "2020-10-22",
-     1037051
-    ],
     "src": "bsexbrl:539437_21102020193312_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 636,918,291 on base 5,672,343,720 = 11.228485. The stored 19.5485 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.23 -> 19.55 (+8.32 from Non-institutions Any-Other). fii 19.5485 -> 11.228485; dii untouched.",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 151,421,036 + line:FinancialInstitutionOrBanks 1,444,590 + line:InsuranceCompanies 33,531,357 + NBFC row 622,504 + inst-cat domestic label:Insurance Companies 86,560,527 + inst-cat domestic label:Insurance Companies 258,732,212 + inst-cat domestic label:Insurance Companies 88,865,461 + inst-cat domestic label:Insurance Companies 1,015,091 + inst-cat domestic label:Insurance Companies 605,000 + inst-cat domestic label:Pension Fund 5,655,624 + inst-cat domestic label:Insurance Companies 290,086 + inst-cat domestic label:Insurance Companies 230,000 + inst-cat domestic label:Insurance Companies 1,569,524 + inst-cat named Indian institution:Other ECGC LIMITED 300,000 = 630,843,012 / 5,672,343,720 = 11.121382 (store 11.110408, gap -622,482 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       40.0,
-      19.5485,
-      11.1104,
-      2.6695,
-      0.5911,
+      11.228485,
+      11.110408,
+      2.669462,
+      0.591138,
       "2020-10-22",
       1037051
      ],
      "was": [
       40.0,
-      11.2285,
-      11.1104,
-      2.6695,
-      0.5911,
+      19.5485,
+      11.110408,
+      2.669462,
+      0.591138,
       "2020-10-22",
       1037051
      ],
      "src": "bsexbrl:539437_21102020193312_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.23 -> 19.55 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 636,918,291 on base 5,672,343,720 = 11.228485. The stored 19.5485 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.23 -> 19.55 (+8.32 from Non-institutions Any-Other). fii 19.5485 -> 11.228485; dii untouched.",
+     "superseded": {
+      "cell": [
+       40.0,
+       19.5485,
+       11.1104,
+       2.6695,
+       0.5911,
+       "2020-10-22",
+       1037051
+      ],
+      "was": [
+       40.0,
+       11.2285,
+       11.1104,
+       2.6695,
+       0.5911,
+       "2020-10-22",
+       1037051
+      ],
+      "src": "bsexbrl:539437_21102020193312_SHP.xml",
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.23 -> 19.55 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 Cloverdell Investment Ltd 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     }
     }
    },
    "2020-12-31": {
     "cell": [
+     40.0,
+     11.567935,
+     11.346008,
+     2.845007,
+     0.542614,
+     "2021-01-22",
+     1028876
+    ],
+    "was": [
      40.0,
      11.567935,
      11.335096,
@@ -349069,38 +350289,52 @@
      "2021-01-22",
      1028876
     ],
-    "was": [
-     40.0,
-     19.8878,
-     11.335096,
-     2.845007,
-     0.542614,
-     "2021-01-22",
-     1028876
-    ],
     "src": "bsexbrl:539437_21120212110_SHP.xml",
-    "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 656,180,651 on base 5,672,409,600 = 11.567935. The stored 19.8878 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.57 -> 19.89 (+8.32 from Non-institutions Any-Other). fii 19.8878 -> 11.567935; dii untouched.",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 161,380,437 + line:FinancialInstitutionOrBanks 1,405,340 + line:InsuranceCompanies 30,779,270 + NBFC row 619,003 + inst-cat domestic label:Insurance Companies 86,668,813 + inst-cat domestic label:Insurance Companies 258,732,212 + inst-cat domestic label:Insurance Companies 94,865,461 + inst-cat domestic label:Insurance Companies 1,557,234 + inst-cat domestic label:Insurance Companies 605,000 + inst-cat domestic label:Pension Fund 5,655,624 + inst-cat domestic label:Insurance Companies 176,000 + inst-cat domestic label:Insurance Companies 220,047 + inst-cat domestic label:Insurance Companies 262,620 + inst-cat domestic label:Insurance Companies 135,000 + inst-cat domestic label:Insurance Companies 230,000 + inst-cat named Indian institution:Other ECGC LIMITED 300,000 = 643,592,061 / 5,672,409,600 = 11.346008 (store 11.335096, gap -618,987 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       40.0,
-      19.8878,
-      11.335,
-      2.845,
-      0.5426,
+      11.567935,
+      11.335096,
+      2.845007,
+      0.542614,
       "2021-01-22",
       1028876
      ],
      "was": [
       40.0,
-      11.5678,
-      11.335,
-      2.845,
-      0.5426,
+      19.8878,
+      11.335096,
+      2.845007,
+      0.542614,
       "2021-01-22",
       1028876
      ],
      "src": "bsexbrl:539437_21120212110_SHP.xml",
-     "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.57 -> 19.89 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 CLOVERDELL INVESTMENT LTD 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 656,180,651 on base 5,672,409,600 = 11.567935. The stored 19.8878 added holders the filing files on a non-foreign line, by a rule that reads another filing (1 entry: \u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.57 -> 19.89 (+8.32 from Non-institutions Any-Other). fii 19.8878 -> 11.567935; dii untouched.",
+     "superseded": {
+      "cell": [
+       40.0,
+       19.8878,
+       11.335,
+       2.845,
+       0.5426,
+       "2021-01-22",
+       1028876
+      ],
+      "was": [
+       40.0,
+       11.5678,
+       11.335,
+       2.845,
+       0.5426,
+       "2021-01-22",
+       1028876
+      ],
+      "src": "bsexbrl:539437_21120212110_SHP.xml",
+      "why": "\u00a7159 row-level FII heal (2026-09-24, FII = Institutions(Foreign) in every format): fii 11.57 -> 19.89 (+8.32 from Non-institutions Any-Other rows the filer's 2022 form lists under B2). R2FII-holders Overseas Corporate Bodies 8.32 8.32 CLOVERDELL INVESTMENT LTD 8.32 fii(new-format~:ForeignDirectInvestment). Evidence: _shp_fii_rowfix_audit.json"
+     }
     }
    },
    "2021-03-31": {
@@ -354169,7 +355403,7 @@
     "cell": [
      51.0,
      16.32119,
-     19.3563,
+     19.355227,
      13.277766,
      5.947926,
      "2016-07-18",
@@ -354177,7 +355411,7 @@
     ],
     "was": [
      51.0,
-     15.419996,
+     16.32119,
      19.3563,
      13.277766,
      5.947926,
@@ -354185,11 +355419,12 @@
      59251
     ],
     "src": "bsexbrl:500480_1872016135142_SHP.xml",
-    "why": "\u00a7164r batch 30 part 59 (2026-10-11): correction of part 57A on this cell - the filing's own foreign rows include inst:Other Foreign Mutual Fund 2,498,109, which the first own-line reader did not recognise ('Foreign Mutual Fund' / 'Foreign Financial Institution(s)' / 'Foreign Bank' and misspellings are foreign-institution labels; a row labelled only by a name is FII, user 11-Oct). FII = all the filing's own foreign rows on base 277,200,000 = 16.32119; dii untouched (it equals the filing's own domestic rows).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 36,805,967 + line:FinancialInstitutionOrBanks 341,395 + line:InsuranceCompanies 16,487,652 + inst-cat named Indian institution:Other Unit Trust of India 17,675 = 53,652,689 / 277,200,000 = 19.355227 (store 19.3563, gap 2,975 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
       51.0,
-      15.419996,
+      16.32119,
       19.3563,
       13.277766,
       5.947926,
@@ -354198,7 +355433,7 @@
      ],
      "was": [
       51.0,
-      16.3199,
+      15.419996,
       19.3563,
       13.277766,
       5.947926,
@@ -354206,30 +355441,39 @@
       59251
      ],
      "src": "bsexbrl:500480_1872016135142_SHP.xml",
-     "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 42,744,230 on base 277,200,000 = 15.419996. The stored 16.3199 added holders the filing files on a non-foreign line, by a rule that reads another filing (3 entries: \u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.26 -> 19.36, fii 15.42 -> 16.32. R1-fii-label Oth | \u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.36 -> 20.26, fii 16.32 -> 15.42. R1-domestic-labe). fii 16.3199 -> 15.419996; dii untouched.",
+     "why": "\u00a7164r batch 30 part 59 (2026-10-11): correction of part 57A on this cell - the filing's own foreign rows include inst:Other Foreign Mutual Fund 2,498,109, which the first own-line reader did not recognise ('Foreign Mutual Fund' / 'Foreign Financial Institution(s)' / 'Foreign Bank' and misspellings are foreign-institution labels; a row labelled only by a name is FII, user 11-Oct). FII = all the filing's own foreign rows on base 277,200,000 = 16.32119; dii untouched (it equals the filing's own domestic rows).",
      "superseded": {
       "cell": [
        51.0,
-       16.3199,
+       15.419996,
        19.3563,
-       13.2777,
-       5.9479,
+       13.277766,
+       5.947926,
        "2016-07-18",
        59251
       ],
       "was": [
        51.0,
-       15.4199,
-       20.2563,
-       13.2777,
-       5.9479,
+       16.3199,
+       19.3563,
+       13.277766,
+       5.947926,
        "2016-07-18",
        59251
       ],
       "src": "bsexbrl:500480_1872016135142_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.26 -> 19.36, fii 15.42 -> 16.32. R1-fii-label Other Foreign Mutual Fund 0.9 public=0.00 fii=0.90  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+      "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 42,744,230 on base 277,200,000 = 15.419996. The stored 16.3199 added holders the filing files on a non-foreign line, by a rule that reads another filing (3 entries: \u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.26 -> 19.36, fii 15.42 -> 16.32. R1-fii-label Oth | \u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.36 -> 20.26, fii 16.32 -> 15.42. R1-domestic-labe). fii 16.3199 -> 15.419996; dii untouched.",
       "superseded": {
        "cell": [
+        51.0,
+        16.3199,
+        19.3563,
+        13.2777,
+        5.9479,
+        "2016-07-18",
+        59251
+       ],
+       "was": [
         51.0,
         15.4199,
         20.2563,
@@ -354238,28 +355482,10 @@
         "2016-07-18",
         59251
        ],
-       "was": [
-        51.0,
-        16.3211,
-        19.3551,
-        13.2777,
-        5.9479,
-        "2016-07-18",
-        59251
-       ],
        "src": "bsexbrl:500480_1872016135142_SHP.xml",
-       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.36 -> 20.26, fii 16.32 -> 15.42. R1-domestic-label Other Foreign Mutual Fund 0.9 public=0.00 fii=0.00  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+       "why": "\u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.26 -> 19.36, fii 15.42 -> 16.32. R1-fii-label Other Foreign Mutual Fund 0.9 public=0.00 fii=0.90  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
        "superseded": {
         "cell": [
-         51.0,
-         16.3211,
-         19.3551,
-         13.2777,
-         5.9479,
-         "2016-07-18",
-         59251
-        ],
-        "was": [
          51.0,
          15.4199,
          20.2563,
@@ -354268,8 +355494,39 @@
          "2016-07-18",
          59251
         ],
+        "was": [
+         51.0,
+         16.3211,
+         19.3551,
+         13.2777,
+         5.9479,
+         "2016-07-18",
+         59251
+        ],
         "src": "bsexbrl:500480_1872016135142_SHP.xml",
-        "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Mutual Fund 0.90) \u2014 moved dii -> fii (0.9012 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+        "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.36 -> 20.26, fii 16.32 -> 15.42. R1-domestic-label Other Foreign Mutual Fund 0.9 public=0.00 fii=0.00  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+        "superseded": {
+         "cell": [
+          51.0,
+          16.3211,
+          19.3551,
+          13.2777,
+          5.9479,
+          "2016-07-18",
+          59251
+         ],
+         "was": [
+          51.0,
+          15.4199,
+          20.2563,
+          13.2777,
+          5.9479,
+          "2016-07-18",
+          59251
+         ],
+         "src": "bsexbrl:500480_1872016135142_SHP.xml",
+         "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Mutual Fund 0.90) \u2014 moved dii -> fii (0.9012 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+        }
        }
       }
      }
@@ -354279,7 +355536,7 @@
     "cell": [
      51.0,
      16.147957,
-     19.617117,
+     19.623494,
      13.061898,
      6.493537,
      "2016-10-10",
@@ -354288,17 +355545,26 @@
     "was": [
      51.0,
      16.147957,
-     19.6301,
+     19.617117,
      13.061898,
      6.493537,
      "2016-10-10",
      58152
     ],
     "src": "bsexbrl:500480_10102016111733_SHP.xml",
-    "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 36,207,582; line:FinancialInstitutionOrBanks 170,983; line:InsuranceCompanies 18,000,084 = 54,378,649 sh on base 277,200,000 = 19.617117; stored 19.630100 (shares the store counted in DII that this filing does not file on a domestic-institution line).",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the institutions Any-Other 'Unit Trust of India' / 'UTI' row (UTI is DII, part 53 SPARC); the old reader skipped the 'Other;' label. Rows: line:MutualFundsOrUti 36,207,582 + line:FinancialInstitutionOrBanks 170,983 + line:InsuranceCompanies 18,000,084 + inst-cat named Indian institution:Other Unit Trust of India 17,675 = 54,396,324 / 277,200,000 = 19.623494 (store 19.617117, gap -17,676 shares)",
     "exact": true,
     "superseded": {
      "cell": [
+      51.0,
+      16.147957,
+      19.617117,
+      13.061898,
+      6.493537,
+      "2016-10-10",
+      58152
+     ],
+     "was": [
       51.0,
       16.147957,
       19.6301,
@@ -354307,21 +355573,13 @@
       "2016-10-10",
       58152
      ],
-     "was": [
-      51.0,
-      15.481297,
-      19.6301,
-      13.061898,
-      6.493537,
-      "2016-10-10",
-      58152
-     ],
      "src": "bsexbrl:500480_10102016111733_SHP.xml",
-     "why": "\u00a7164r batch 30 part 59 (2026-10-11): correction of part 57A on this cell - the filing's own foreign rows include inst:Other Foreign Mutual Fund 1,847,982, which the first own-line reader did not recognise ('Foreign Mutual Fund' / 'Foreign Financial Institution(s)' / 'Foreign Bank' and misspellings are foreign-institution labels; a row labelled only by a name is FII, user 11-Oct). FII = all the filing's own foreign rows on base 277,200,000 = 16.147957; dii untouched (it equals the filing's own domestic rows).",
+     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 36,207,582; line:FinancialInstitutionOrBanks 170,983; line:InsuranceCompanies 18,000,084 = 54,378,649 sh on base 277,200,000 = 19.617117; stored 19.630100 (shares the store counted in DII that this filing does not file on a domestic-institution line).",
+     "exact": true,
      "superseded": {
       "cell": [
        51.0,
-       15.481297,
+       16.147957,
        19.6301,
        13.061898,
        6.493537,
@@ -354330,7 +355588,7 @@
       ],
       "was": [
        51.0,
-       16.1512,
+       15.481297,
        19.6301,
        13.061898,
        6.493537,
@@ -354338,33 +355596,33 @@
        58152
       ],
       "src": "bsexbrl:500480_10102016111733_SHP.xml",
-      "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 42,914,154 on base 277,200,000 = 15.481297. The stored 16.1512 added holders the filing files on a non-foreign line, by a rule that reads another filing (3 entries: \u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.29 -> 19.63, fii 15.48 -> 16.15. R1-fii-label Oth | \u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.62 -> 20.30, fii 16.15 -> 15.48. R1-domestic-labe). fii 16.1512 -> 15.481297; dii untouched.",
+      "why": "\u00a7164r batch 30 part 59 (2026-10-11): correction of part 57A on this cell - the filing's own foreign rows include inst:Other Foreign Mutual Fund 1,847,982, which the first own-line reader did not recognise ('Foreign Mutual Fund' / 'Foreign Financial Institution(s)' / 'Foreign Bank' and misspellings are foreign-institution labels; a row labelled only by a name is FII, user 11-Oct). FII = all the filing's own foreign rows on base 277,200,000 = 16.147957; dii untouched (it equals the filing's own domestic rows).",
       "superseded": {
        "cell": [
         51.0,
-        16.1512,
+        15.481297,
         19.6301,
-        13.0618,
-        6.4935,
+        13.061898,
+        6.493537,
         "2016-10-10",
         58152
        ],
        "was": [
         51.0,
-        15.4812,
-        20.2901,
-        13.0618,
-        6.4935,
+        16.1512,
+        19.6301,
+        13.061898,
+        6.493537,
         "2016-10-10",
         58152
        ],
        "src": "bsexbrl:500480_10102016111733_SHP.xml",
-       "why": "\u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.29 -> 19.63, fii 15.48 -> 16.15. R1-fii-label Other Foreign Mutual Fund 0.67 public=0.00 fii=0.67  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+       "why": "\u00a7164r batch 30 part 57 (2026-10-11, user: option 1 'follow the filings own line' - no holder is moved because of how ANOTHER filing lists it): this filing's own foreign-institution lines = FPI 42,914,154 on base 277,200,000 = 15.481297. The stored 16.1512 added holders the filing files on a non-foreign line, by a rule that reads another filing (3 entries: \u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.29 -> 19.63, fii 15.48 -> 16.15. R1-fii-label Oth | \u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.62 -> 20.30, fii 16.15 -> 15.48. R1-domestic-labe). fii 16.1512 -> 15.481297; dii untouched.",
        "superseded": {
         "cell": [
          51.0,
-         15.4812,
-         20.3001,
+         16.1512,
+         19.6301,
          13.0618,
          6.4935,
          "2016-10-10",
@@ -354372,17 +355630,26 @@
         ],
         "was": [
          51.0,
-         16.1479,
-         19.6234,
+         15.4812,
+         20.2901,
          13.0618,
          6.4935,
          "2016-10-10",
          58152
         ],
         "src": "bsexbrl:500480_10102016111733_SHP.xml",
-        "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.62 -> 20.30, fii 16.15 -> 15.48. R1-domestic-label Other Foreign Mutual Fund 0.67 public=0.00 fii=0.00  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+        "why": "\u00a7158 row-level DII heal (2026-09-26, DII = Institutions(Domestic) in every format): dii 20.29 -> 19.63, fii 15.48 -> 16.15. R1-fii-label Other Foreign Mutual Fund 0.67 public=0.00 fii=0.67  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
         "superseded": {
          "cell": [
+          51.0,
+          15.4812,
+          20.3001,
+          13.0618,
+          6.4935,
+          "2016-10-10",
+          58152
+         ],
+         "was": [
           51.0,
           16.1479,
           19.6234,
@@ -354391,17 +355658,30 @@
           "2016-10-10",
           58152
          ],
-         "was": [
-          51.0,
-          15.4812,
-          20.2901,
-          13.0618,
-          6.4935,
-          "2016-10-10",
-          58152
-         ],
          "src": "bsexbrl:500480_10102016111733_SHP.xml",
-         "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Mutual Fund 0.67) \u2014 moved dii -> fii (0.6667 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+         "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 19.62 -> 20.30, fii 16.15 -> 15.48. R1-domestic-label Other Foreign Mutual Fund 0.67 public=0.00 fii=0.00  keyword; R1-domestic-label Other Unit Trust of India 0.01 public=0.00 fii=0.00  label-as-holder:curated. Evidence: _shp_dii_rowfix_audit.json",
+         "superseded": {
+          "cell": [
+           51.0,
+           16.1479,
+           19.6234,
+           13.0618,
+           6.4935,
+           "2016-10-10",
+           58152
+          ],
+          "was": [
+           51.0,
+           15.4812,
+           20.2901,
+           13.0618,
+           6.4935,
+           "2016-10-10",
+           58152
+          ],
+          "src": "bsexbrl:500480_10102016111733_SHP.xml",
+          "why": "SW-2 other-institutions sweep re-read 2026-09-24 (\u00a7156): the filing's Any-Other institutions row holds holders LABELLED foreign (Foreign Mutual Fund 0.67) \u2014 moved dii -> fii (0.6667 pp, share counts on the filer's base; unlabelled holders in the same row left in dii). Audit verdict was mixed-foreign-domestic."
+         }
         }
        }
       }
@@ -355093,24 +356373,47 @@
    "2019-03-31": {
     "cell": [
      51.0,
-     9.1446,
-     27.9862,
-     20.3736,
+     9.144653,
+     27.988655,
+     20.373672,
      7.2465,
      "2019-04-18",
      74113
     ],
     "was": [
      51.0,
-     9.1446,
-     26.9062,
-     20.3736,
-     6.1865,
+     9.144653,
+     27.9862,
+     20.373672,
+     7.2465,
      "2019-04-18",
      74113
     ],
     "src": "bsexbrl:500480_1642019194344_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.91 -> 27.99, fii 9.14 -> 9.14. R2-named Bodies Corporate 1.06 HDFC Life Insurance Company Limited 1.06(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:MutualFundsOrUti 56,475,820 + line:AlternativeInvestmentFunds 426,038 + line:FinancialInstitutionOrBanks 528,185 + line:InsuranceCompanies 17,148,992 + NBFC row 49,380 + inst-cat named Indian institution:Other Unit Trust of India 5,375 + noninst register:Bodies Corporate HDFC Life Insurance Company Limited 2,950,761 = 77,584,551 / 277,200,000 = 27.988655 (store 27.9862, gap -6,805 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      51.0,
+      9.1446,
+      27.9862,
+      20.3736,
+      7.2465,
+      "2019-04-18",
+      74113
+     ],
+     "was": [
+      51.0,
+      9.1446,
+      26.9062,
+      20.3736,
+      6.1865,
+      "2019-04-18",
+      74113
+     ],
+     "src": "bsexbrl:500480_1642019194344_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.91 -> 27.99, fii 9.14 -> 9.14. R2-named Bodies Corporate 1.06 HDFC Life Insurance Company Limited 1.06(curated); R3-nbfc NBFCsRegisteredWithRbi 0.02. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-06-30": {
     "cell": [
@@ -355137,24 +356440,47 @@
    "2020-12-31": {
     "cell": [
      51.0,
-     8.9693,
-     27.9084,
-     17.1191,
-     8.9441,
+     8.969381,
+     27.912158,
+     17.119215,
+     8.944149,
      "2021-01-11",
      90068
     ],
     "was": [
      51.0,
-     8.9693,
-     26.2384,
-     17.1191,
-     8.9441,
+     8.969381,
+     27.9084,
+     17.119215,
+     8.944149,
      "2021-01-11",
      90068
     ],
-    "src": "bsexbrl:500480_281202120117_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.24 -> 27.91, fii 8.97 -> 8.97. R2-named Trusts 1.67 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.67(new-format:ProvidentFundsOrPensionFunds). Evidence: _shp_dii_rowfix_audit.json"
+    "src": "bsetable3:108:2020-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 47,454,465 + line:Alternate Investment Funds 154,155 + line:Financial  Institutions/ Banks 325,879 + line:Insurance  Companies 24,793,181 + NBFC row 400 + inst-cat domestic label:UTI 5,375 + noninst register (inside a category; category rows sum to the block):N 4,639,048 = 77,372,503 / 277,200,000 = 27.912158 (store 27.9084, gap -10,418 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      51.0,
+      8.9693,
+      27.9084,
+      17.1191,
+      8.9441,
+      "2021-01-11",
+      90068
+     ],
+     "was": [
+      51.0,
+      8.9693,
+      26.2384,
+      17.1191,
+      8.9441,
+      "2021-01-11",
+      90068
+     ],
+     "src": "bsexbrl:500480_281202120117_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 26.24 -> 27.91, fii 8.97 -> 8.97. R2-named Trusts 1.67 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.67(new-format:ProvidentFundsOrPensionFunds). Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2021-03-31": {
     "cell": [
@@ -355203,26 +356529,36 @@
    "2021-09-30": {
     "cell": [
      51.0,
-     11.9715,
-     26.7848,
-     16.2485,
+     11.971593,
+     26.782782,
+     16.248605,
      9.2592,
      "2021-10-12",
      90794
     ],
     "was": [
      51.0,
-     11.9715,
-     25.4842,
-     16.2485,
-     7.9586,
+     11.971593,
+     26.7848,
+     16.248605,
+     9.2592,
      "2021-10-12",
      90794
     ],
-    "src": "bsexbrl:500480_11112021181627_SHP.xml",
-    "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 500480_11112021181627_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists non-inst row 'Bodies Corporate': Sbi Life Insurance Co. Ltd 1.3006 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 25.4842 -> 26.7848, insurance +1.3006 (Quantmac 26.7847).",
+    "src": "bsetable3:111:2021-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 45,041,134 + line:Alternate Investment Funds 501,318 + line:Financial  Institutions/ Banks 39,655 + line:Insurance  Companies 22,061,237 + NBFC row 400 + noninst register (inside a category; category rows sum to the block):S 3,605,200 + noninst register (inside a category; category rows sum to the block):N 2,992,927 = 74,241,871 / 277,200,000 = 26.782782 (store 26.7848, gap 5,595 shares)",
+    "exact": true,
     "superseded": {
      "cell": [
+      51.0,
+      11.9715,
+      26.7848,
+      16.2485,
+      9.2592,
+      "2021-10-12",
+      90794
+     ],
+     "was": [
       51.0,
       11.9715,
       25.4842,
@@ -355231,17 +356567,30 @@
       "2021-10-12",
       90794
      ],
-     "was": [
-      51.0,
-      11.9715,
-      24.4042,
-      16.2485,
-      7.9586,
-      "2021-10-12",
-      90794
-     ],
      "src": "bsexbrl:500480_11112021181627_SHP.xml",
-     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.40 -> 25.48, fii 11.97 -> 11.97. R2-named Trusts 1.08 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.08(new-format:ProvidentFundsOrPensionFunds). Evidence: _shp_dii_rowfix_audit.json"
+     "why": "\u00a7164s part 8 (2026-10-05, cell-by-cell re-read of 500480_11112021181627_SHP.xml; DATA_RUNBOOK \u00a70 first rule): the filing lists non-inst row 'Bodies Corporate': Sbi Life Insurance Co. Ltd 1.3006 - Indian institution(s) our own rule counts (rule 4: official register / NBFC row / QIB label) that the stored cell left out; DII 25.4842 -> 26.7848, insurance +1.3006 (Quantmac 26.7847).",
+     "superseded": {
+      "cell": [
+       51.0,
+       11.9715,
+       25.4842,
+       16.2485,
+       7.9586,
+       "2021-10-12",
+       90794
+      ],
+      "was": [
+       51.0,
+       11.9715,
+       24.4042,
+       16.2485,
+       7.9586,
+       "2021-10-12",
+       90794
+      ],
+      "src": "bsexbrl:500480_11112021181627_SHP.xml",
+      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 24.40 -> 25.48, fii 11.97 -> 11.97. R2-named Trusts 1.08 Nps Trust- A/C Uti Retirement Solutions Pension Fund Scheme - State Govt 1.08(new-format:ProvidentFundsOrPensionFunds). Evidence: _shp_dii_rowfix_audit.json"
+     }
     }
    },
    "2022-06-30": {
@@ -355489,6 +356838,98 @@
     ],
     "src": "bsexbrl:500480_1872023152141_SHP.xml",
     "why": "\u00a7164s part 35g (2026-10-13; 'Register wins' on the 2022-form quarters whose XBRL was fetched after part 35e): Institutions (Domestic) block plus the named holder an official register proves an Indian institution, filed on a non-institutions row (IRDAI-registered life insurer no. 111: SBI Life Insurance Co): line:InstitutionsDomestic 66,434,225; noninst register (2022 form):BodiesCorporate Sbi Life Insurance Co. Lt 3,257,442 = 69,691,667 sh on base 277,200,000 = 25.141294; stored 23.966171.",
+    "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     51.0,
+     8.27002,
+     29.840728,
+     21.52043,
+     7.97208,
+     "2019-10-18",
+     74625
+    ],
+    "was": [
+     51.0,
+     8.27002,
+     29.840692,
+     21.52043,
+     7.97208,
+     "2019-10-18",
+     74625
+    ],
+    "src": "bsexbrl:500480_17102019145528_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 59,654,631 + line:AlternativeInvestmentFunds 459,097 + line:FinancialInstitutionOrBanks 500,688 + line:InsuranceCompanies 22,098,607 + NBFC row 100 + inst-cat named Indian institution:Other Unit Trust of India 5,375 = 82,718,498 / 277,200,000 = 29.840728 (store 29.840692, gap -100 shares)",
+    "exact": true
+   },
+   "2019-12-31": {
+    "cell": [
+     51.0,
+     6.281686,
+     31.53758,
+     22.608321,
+     8.519044,
+     "2020-01-15",
+     78170
+    ],
+    "was": [
+     51.0,
+     6.281686,
+     31.537454,
+     22.608321,
+     8.519044,
+     "2020-01-15",
+     78170
+    ],
+    "src": "bsexbrl:500480_14120201895_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 62,670,266 + line:AlternativeInvestmentFunds 670,507 + line:FinancialInstitutionOrBanks 460,884 + line:InsuranceCompanies 23,614,790 + NBFC row 350 + inst-cat named Indian institution:Other Unit Trust of India 5,375 = 87,422,172 / 277,200,000 = 31.53758 (store 31.537454, gap -350 shares)",
+    "exact": true
+   },
+   "2020-03-31": {
+    "cell": [
+     51.0,
+     7.456736,
+     30.094442,
+     20.737262,
+     8.865402,
+     "2020-04-14",
+     82579
+    ],
+    "was": [
+     51.0,
+     7.456736,
+     30.094405,
+     20.737262,
+     8.865402,
+     "2020-04-14",
+     82579
+    ],
+    "src": "bsexbrl:500480_144202012307_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 57,483,689 + line:AlternativeInvestmentFunds 930,303 + line:FinancialInstitutionOrBanks 427,430 + line:InsuranceCompanies 24,574,895 + NBFC row 100 + inst-cat named Indian institution:Other Unit Trust of India 5,375 = 83,421,792 / 277,200,000 = 30.094442 (store 30.094405, gap -101 shares)",
+    "exact": true
+   },
+   "2020-06-30": {
+    "cell": [
+     51.0,
+     8.569554,
+     27.59219,
+     18.567097,
+     8.504549,
+     "2020-07-17",
+     100433
+    ],
+    "was": [
+     51.0,
+     8.569554,
+     27.592154,
+     18.567097,
+     8.504549,
+     "2020-07-17",
+     100433
+    ],
+    "src": "bsexbrl:500480_1672020164710_SHP.xml",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:MutualFundsOrUti 51,467,994 + line:AlternativeInvestmentFunds 924,382 + line:FinancialInstitutionOrBanks 513,090 + line:InsuranceCompanies 23,574,609 + NBFC row 100 + inst-cat named Indian institution:Other Unit Trust of India 5,375 = 76,485,550 / 277,200,000 = 27.59219 (store 27.592154, gap -99 shares)",
     "exact": true
    }
   },
@@ -413980,24 +415421,47 @@
    "2019-03-31": {
     "cell": [
      59.05,
-     16.6305,
-     18.7486,
-     11.7901,
-     6.2057,
+     16.629633,
+     18.753896,
+     11.789519,
+     6.205385,
      "2019-04-18",
      245025
     ],
     "was": [
      59.05,
-     16.6305,
-     18.6986,
-     11.7901,
-     6.2057,
+     16.629633,
+     18.7486,
+     11.789519,
+     6.205385,
      "2019-04-18",
      245025
     ],
     "src": "bsexbrl:532810_1642019154455_SHP.xml",
-    "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.70 -> 18.75, fii 16.63 -> 16.63. R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_dii_rowfix_audit.json"
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store (\u00a7158: 18.70 + printed NBFC 0.05) lacked the non-institutions row 'Others ALTERNATIVE INVETMENT FUND' 294,990 (misspelt AIF label, DII) and rounded the NBFC row. Rows: line:MutualFundsOrUti 311,252,890 + line:FinancialInstitutionOrBanks 18,554,335 + line:InsuranceCompanies 163,827,217 + NBFC row 1,188,678 + noninst domestic-institution row:Others ALTERNATIVE INVETMENT FUND 294,990 = 495,118,110 / 2,640,081,408 = 18.753896 (store 18.7486, gap -139,807 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      59.05,
+      16.6305,
+      18.7486,
+      11.7901,
+      6.2057,
+      "2019-04-18",
+      245025
+     ],
+     "was": [
+      59.05,
+      16.6305,
+      18.6986,
+      11.7901,
+      6.2057,
+      "2019-04-18",
+      245025
+     ],
+     "src": "bsexbrl:532810_1642019154455_SHP.xml",
+     "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 18.70 -> 18.75, fii 16.63 -> 16.63. R3-nbfc NBFCsRegisteredWithRbi 0.05. Evidence: _shp_dii_rowfix_audit.json"
+    }
    },
    "2019-06-30": {
     "cell": [
@@ -415859,6 +417323,29 @@
     ],
     "src": "bsexbrl:543265_3032021192955_SHP.xml",
     "why": "\u00a7164 row-level remainder rule \u2014 \u00a7164q event row (2026-09-27 \u00a7164q event rows; mid-quarter EVENT row, first row-level read): fii 3.43 -> 3.43, dii 6.10 -> 8.86. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic). | R2-label Others ALTERNATE INVESTMENT FUND 0.54 ; R2-label Others Qualified Institutional Buyer 2.22 HDFC LIFE INSURANCE COMPANY LIMITED 1.29"
+   },
+   "2021-12-31": {
+    "cell": [
+     72.84,
+     2.471674,
+     4.743091,
+     2.532138,
+     0.0,
+     "2022-01-18",
+     298618
+    ],
+    "was": [
+     72.84,
+     2.471674,
+     4.73613,
+     2.532138,
+     0.0,
+     "2022-01-18",
+     298618
+    ],
+    "src": "bsetable3:112:2021-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 8,126,603 + line:Financial  Institutions/ Banks 124,481 + NBFC row 22,341 + inst-cat QIB label:Qualified Institutional Buyer 6,948,976 = 15,222,401 / 320,938,407 = 4.743091 (store 4.73613, gap -22,341 shares)",
+    "exact": true
    }
   },
   "RECLTD": {
@@ -422861,6 +424348,52 @@
     ],
     "src": "bsexbrl:500420_1572016194047_SHP.xml",
     "why": "\u00a7164s part 35 (2026-10-13, user rulings 13-Oct after Quantmac reply 4: DII follows the filing's own line - a foreign holder filed on a domestic line stays; the unnamed institutions Any-Other rest is not DII; shares underlying depository receipts are not DII; no holder moved by another filing): this filing's own DII rows line:MutualFundsOrUti 12,124,725; line:FinancialInstitutionOrBanks 191,291; NBFC row 48,239 = 12,364,255 sh on base 169,222,720 = 7.306498; stored 7.277992 (rows the store had left out or double counted).",
+    "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     71.25,
+     7.660193,
+     13.138131,
+     10.100257,
+     0.0,
+     "2019-10-24",
+     36530
+    ],
+    "was": [
+     71.25,
+     7.660193,
+     13.134151,
+     10.100257,
+     0.0,
+     "2019-10-24",
+     36530
+    ],
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 17,091,929 + line:Alternate Investment Funds 1,297,192 + line:Financial  Institutions/ Banks 29,811 + NBFC row 6,736 + inst-cat QIB label:QUALIFIED INSTITUTIONAL BUYER 3,807,035 = 22,232,703 / 169,222,720 = 13.138131 (store 13.134151, gap -6,735 shares)",
+    "exact": true
+   },
+   "2019-12-31": {
+    "cell": [
+     71.25,
+     8.477847,
+     12.330611,
+     9.454184,
+     0.0,
+     "2020-01-20",
+     35824
+    ],
+    "was": [
+     71.25,
+     8.477847,
+     12.326631,
+     9.454184,
+     0.0,
+     "2020-01-20",
+     35824
+    ],
+    "src": "bsetable3:104:2019-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 15,998,628 + line:Alternate Investment Funds 1,266,250 + line:Financial  Institutions/ Banks 49,824 + NBFC row 6,736 + inst-cat QIB label:QUALIFIED INSTITUTIONAL BUYER 3,544,758 = 20,866,196 / 169,222,720 = 12.330611 (store 12.326631, gap -6,736 shares)",
     "exact": true
    }
   },
@@ -437314,7 +438847,7 @@
     "cell": [
      54.48,
      15.0353,
-     12.8598,
+     12.85646,
      10.783,
      2.0672,
      "2021-01-19",
@@ -437323,14 +438856,37 @@
     "was": [
      54.48,
      15.0353,
-     10.8098,
+     12.8598,
      10.783,
-     0.0172,
+     2.0672,
      "2021-01-19",
      16303
     ],
-    "src": "bsexbrl:532443_32202118200_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 15.04 -> 15.04, dii 10.81 -> 12.86. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.05 HDFC LIFE INSURANCE COMPANY LIMITED, HDFC LIFE INSURANCE COMPANY LIMITED - SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 2.05(regex). Evidence: _shp_164_audit.json"
+    "src": "bsetable3:108:2020-12-31",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 1,402,329 + line:Financial  Institutions/ Banks 1,253 + line:Insurance  Companies 2,238 + noninst register (inside a category; category rows sum to the block):H 266,275 = 1,672,095 / 13,005,874 = 12.85646 (store 12.8598, gap 434 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      54.48,
+      15.0353,
+      12.8598,
+      10.783,
+      2.0672,
+      "2021-01-19",
+      16303
+     ],
+     "was": [
+      54.48,
+      15.0353,
+      10.8098,
+      10.783,
+      0.0172,
+      "2021-01-19",
+      16303
+     ],
+     "src": "bsexbrl:532443_32202118200_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 15.04 -> 15.04, dii 10.81 -> 12.86. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.05 HDFC LIFE INSURANCE COMPANY LIMITED, HDFC LIFE INSURANCE COMPANY LIMITED - SHAREHOLDERS SOLVENCY MARGIN ACCOUNT 2.05(regex). Evidence: _shp_164_audit.json"
+    }
    },
    "2021-03-31": {
     "cell": [
@@ -439308,24 +440864,47 @@
    "2019-09-30": {
     "cell": [
      71.6,
-     17.5404,
-     6.2324,
-     3.867,
+     17.540412,
+     6.230975,
+     3.867013,
      2.34,
      "2019-12-11",
      21644
     ],
     "was": [
      71.6,
-     17.5404,
-     3.8924,
-     3.867,
-     0.0,
+     17.540412,
+     6.2324,
+     3.867013,
+     2.34,
      "2019-12-11",
      21644
     ],
-    "src": "bsexbrl:533151_1112019171623_SHP.xml",
-    "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.54 -> 17.54, dii 3.89 -> 6.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.34 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.34(curated). Evidence: _shp_164_audit.json"
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR (precision): the store is a \u00a7158/\u00a7164 composite that adds printed 2-dp (or 4-dp) row percentages; it already counts the same holders, and the gap (<= 0.009 pp) is the rounding of those printed percentages (plus UTI where listed below). The exact own-line count replaces it. Rows: line:Mutual Funds/ 6,765,069 + line:Financial  Institutions/ Banks 44,353 + NBFC row 325 + noninst register (inside a category; category rows sum to the block):I 4,090,909 = 10,900,656 / 174,943,030 = 6.230975 (store 6.2324, gap 2,493 shares)",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      71.6,
+      17.5404,
+      6.2324,
+      3.867,
+      2.34,
+      "2019-12-11",
+      21644
+     ],
+     "was": [
+      71.6,
+      17.5404,
+      3.8924,
+      3.867,
+      0.0,
+      "2019-12-11",
+      21644
+     ],
+     "src": "bsexbrl:533151_1112019171623_SHP.xml",
+     "why": "\u00a7164 row-level remainder rule (2026-09-25, user: \"adopt all three recommendations\"; FORMER Nifty 500 member, first row-level read): fii 17.54 -> 17.54, dii 3.89 -> 6.23. R1-R3 (\u00a7158 rules, first read). \u00a7158 rules (R1 institutional Any-Other holders placed as the filer's own 2022 form places them, R2 domestic institutions parked under non-institutions, R3 NBFC row) + \u00a7159 rule (non-institutional foreign holders the filer's 2022 form lists under Institutions (Foreign)) + D1 (unnamed rest of the institutional block = FII in the 2015-22 form unless every named holder is domestic).  | R1: R2-named Bodies Corporate 2.34 ICICI PRUDENTIAL LIFE INSURANCE COMPANY LIMITED 2.34(curated). Evidence: _shp_164_audit.json"
+    }
    },
    "2019-12-31": {
     "cell": [
@@ -454340,6 +455919,29 @@
     ],
     "src": "bsexbrl:532705_632020182541_SHP.xml",
     "why": "\u00a7164r batch 30 part 38 (2026-10-06, per-company review): precision: FPI 12,663,606 on 281,200,000; the institutions block is the company's 'QUALIFIED INSTITUTIONAL BUYER' row 7,036,054 (ICICI PRUDENTIAL LIFE INSURANCE 5,380,076 named inside it) - domestic (Rule 1). fii 4.5031 -> 4.5034.",
+    "exact": true
+   },
+   "2019-09-30": {
+    "cell": [
+     61.6,
+     4.763206,
+     24.077467,
+     16.531735,
+     0.0,
+     "2019-10-17",
+     44571
+    ],
+    "was": [
+     61.6,
+     4.763206,
+     24.076607,
+     16.531735,
+     0.0,
+     "2019-10-17",
+     44571
+    ],
+    "src": "bsetable3:103:2019-09-30",
+    "why": "\u00a7164s part 54 (2026-10-18, DII reader fixes re-run table-wide - misspelt AIF/QIB labels, 'Other;' asks the register, holders inside a non-institutions category, holders inside a counted QIB row; cell read this session): OUR ERROR: the store lacked the filing's 'NBFCs registered with RBI' row (the NBFC row is DII); store = these rows minus the NBFC row to the share. Rows: line:Mutual Funds/ 49,002,019 + line:Financial  Institutions/ Banks 67,282 + NBFC row 2,550 + inst-cat QIB label:QUALIFIED INSTITUTIONAL BUYERS 22,296,609 = 71,368,460 / 296,411,829 = 24.077467 (store 24.076607, gap -2,549 shares)",
     "exact": true
    }
   },
