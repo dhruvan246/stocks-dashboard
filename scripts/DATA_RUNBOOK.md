@@ -28258,6 +28258,22 @@ the files' grand-total element is mis-tagged - base = B + C), KARURVYSYA 2018-08
 date, the later 109.02 on 6,198,953,515 shares). UNKNOWN: Jun/Sep-2015 pages whose bare 'Others' row is labelled only by the company's
 PDF (404): INDIACEM, JBFIND, GRAPHITE, DISHMAN, MAHLIFE, MARICO. Identity trap: our cached BSE list for SUNDARMFIN (and KARURVYSYA)
 is scrip 600001; the real list is SHPQNewFormat scripcode=590071 (saved ~/stocks-cache/shp/quantmac/v8/wb/bse_list_590071.json).
+**§164r batch 30 part 104 (2026-10-18, Quantmac v9 reply to our reply #9; each cell read from its own filing this session; verdict file
+`~/stocks-cache/shp/quantmac/v9/verdicts_v9.json`).** LIVE ledger fixes: (1) Non-Institutions 'Foreign Portfolio Investors (Category III)'
+labelled ONLY in the NSE XBRL copy (BSE copy unlabelled, so part 66 missed it): ESCORTS Jun-19 (NSE SHP_140161, +912,429 -> 21.1254),
+FEDERALBNK Jun-18 (NSE SHP_128126, +23,627,828 -> 38.5739). (2) Jun-2015 'Others' rows labelled FPI in the company's filed PDF (byte-
+identical to BSE CorpAttachment/2015/7/...): BALMLAWRIE 3.4584, JBFIND 16.9629 (old 17.22 also held Directors 168,220 + Foreign Company
+200), DISHMAN 15.2271. (3) BSE page-era EVENT filings missing from the store (shp_event_fills, dated by their BSE notice): RCOM 2015-01-20
+(84.01), THOMASCOOK 2015-09-08 (86.03), EMBDL/IBREALEST 2015-07-22 (86.01), VAIBHAVGBL 2016-04-22 (89.01), RELINFRA 2011-01-07 (68.01 -
+no BSE notice and SHPQNewFormat filing_date_time empty; BSE's old searchresult.asp is retired and the Wayback copy is 2008, so the
+'17-Jan-2011' in Quantmac's saved page is unverified by us: served at as-on+28 = 2011-02-04 by the undated convention; the Jan-2011 cell
+stays UNKNOWN). (4) CUB: shp_revisions 2014-06-30 row from page 532210_82.01 was really the 25-Jul-2014 EVENT (26-Aug notice refers to
+'Shareholding Pattern For July 25, 2014 dated July 29, 2014') -> shp_rev_fix drop + event fill 2014-07-25 sub 2014-07-29 (v8 verdict
+'THEIR ERROR' was wrong). (5) IDBI: event 2018-12-28 added from NSE SHP_132344 (upload stamp 31-12-2018); event 2019-01-21 visible from
+its NSE upload stamp 2019-01-23 instead of BSE 2019-03-16 (cell_fix on the event row). NSE file-name stamps used as the upload day as in
+the event_fills / part 42 practice (a JKCEMENT memory note says stamps are never dates - conflict raised with the user). OPEN: ICICIBANK
+Apr/May-2017 'Other' block = Foreign Banks 950,580 + FII-DR 4,224,966 (user choice asked); pre-2021 NSE upload days (Dec-2015 list, etc.)
+UNKNOWN; two classes worth a sweep: NSE-only Cat III labels 2016-22, and BSE page-era xx.01/.02 event pages absent from the store.
 
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
