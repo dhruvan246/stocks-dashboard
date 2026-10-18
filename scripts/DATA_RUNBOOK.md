@@ -28561,6 +28561,23 @@ label from another copy), MARICO Jun-15 (FVCI row 4,770,649 — open user questi
 Jun-17, EDELWEISS Nov-17 …); IDFCFIRSTB 06-Apr-21 (their 18.67 cannot be rebuilt from either filing of the day; ours = FPI + named
 'Other' holders less 4 Indian ones = 15.5744). Applied on a copy of the store: 0 was-mismatch.
 
+**§164r part 111 (2026-10-19, FII session; asked by the DII session's part 59, NOT a user approval) — the 90 Dec-2015/Mar-2016
+cells whose page row (C) holds C2 employee trusts: FII base judged one by one.** For these quarters the §226 base is Table I
+STABC − STC1 (= A+B+C2), not the page's (A+B). Each cell re-read this session from BSE ng Table III (B1e FPI, B1d FVCI, B1i
+institutions Any Other with its named holders, B3e) + Table I t1api. Record: `~/stocks-cache/shp/quantmac/v9/r10/c2fii_verdicts.json`
+(rows `c2fii_m.json`). Result: FII was already on the Table I base in every cell except BHARTIARTL Mar-16 (16.79 = page (A+B);
+now 670,962,174 / 3,997,400,102 = 16.784964). RIGHT exact as stored 7; OUR ERROR precision 52 (stored the printed 2dp/4dp of
+the same row set on the right base → exact share-count value); OUR ERROR 26 — base 1, cells whose stored value no row set
+reproduces (SIEMENS ×2, PENINLAND Mar-16, DCMSHRIRAM Mar-16, ICRA/INDUSTOWER/JUBLPHARMA/MARICO/NAUKRI Dec-15, BSOFT Dec-15 …),
+row-set errors (GUJENERGY Mar-16 counted OCB 4,000; RPOWER Dec-15 batch-18 ×1.000213 rescale of a printed 4.46; TECHM ×2 UTI
+1,644 out; SYNGENE Mar-16 precision with Silver Leaf kept out per batch 10), and two cross-filing carries removed under the
+user's 11-Oct own-line rule (EDELWEISS Dec-15 30.1162→28.388724 and Mar-16 30.713→28.987828: the batch-30 add of BIH SA
+14,043,180 came from a Sep-2022 filing; same treatment as part 60). 78 shp_cell_fix entries (exact, `was` = stored row, old
+entries under `superseded`); FII slot only, DII untouched. UNKNOWN / held 5: SUNPHARMA Mar-16 (B1i 1,260,057 moved to DII by
+a carried UTI label — DII-coupled, passed to the DII session), JSWSTEEL Mar-16 (counts JFE; Dec-15 does not — category
+hidden, no XBRL), PIIND Mar-16 (Rowanhill out, same), SONATSOFTW Mar-16 (B1i 8,409 BENEFICIAL HOLDINGS UNDER MGT-4, hidden),
+WIPRO Mar-16 (own-line rule gives 11.616005 but 10.9339 is the user's own 4-Oct batch-13 approval — asked the user).
+
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
 **What the user saw.** Mon 12-Oct-2026 ~16:40 IST: the Just Declared tab showed nothing for the day. Measured, not assumed:
