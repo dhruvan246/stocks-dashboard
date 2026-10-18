@@ -28580,7 +28580,8 @@ hidden, no XBRL), PIIND Mar-16 (Rowanhill out, same), SONATSOFTW Mar-16 (B1i 8,4
 WIPRO Mar-16 (own-line rule gives 11.616005 but 10.9339 is the user's own 4-Oct batch-13 approval — asked the user).
 **Part 111b (2026-10-19, user: "Switch WIPRO Mar-16 FII to 11.62 under the own-line rule"):** WIPRO Mar-16 FII 10.9339 →
 (270,144,642 + 16,853,544) / 2,470,713,290 = 11.616005; the batch-13 label from later filings dropped. SUNPHARMA Mar-16 was fixed by
-the DII session (part 59b, FII 26.46002, checked here). Held now: JSWSTEEL, PIIND, SONATSOFTW Mar-16.
+the DII session (part 59b, FII 26.46002, checked here). Held now: JSWSTEEL, PIIND, SONATSOFTW Mar-16. **Part 111c:** after DII part 59c set their base, FINCABLES Mar-16 FII 5.0488 → FPI 7,411,323 / 146,917,795 = 5.044537
+and RPOWER Mar-16 4.2009 → (FPI 80,561,436 + B1i FII 37,239,588) / 2,804,529,770 = 4.200384 (OCB 31,652 out).
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
