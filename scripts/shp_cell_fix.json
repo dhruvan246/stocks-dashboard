@@ -270876,7 +270876,7 @@
     "cell": [
      0.0,
      45.277741,
-     44.0644,
+     44.06711,
      24.89789,
      17.827521,
      "2018-10-19",
@@ -270884,7 +270884,7 @@
     ],
     "was": [
      0.0,
-     45.2811,
+     45.277741,
      44.0644,
      24.89789,
      17.827521,
@@ -270892,34 +270892,34 @@
      850419
     ],
     "src": "bseapi:532174:99.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 99.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Banks' 1,045,546 + 'FII-DR' 297,370. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,187,850,315 + Foreign Banks 1,045,546 = 2,188,895,861 / ((A+B+C2) 4,834,672,514 (Table I) - 297,370 = 4,834,375,144) = 45.277741 (was 45.2811 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 297,370 sh is depository-receipt shares, so DII moves to the same base as FII: 44.064400 x 4,834,672,514 / (4,834,672,514 - 297,370 = 4,834,375,144) = 44.067110 (BSE Table I/III qtrid 99.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      45.2811,
+      45.277741,
       44.0644,
-      24.8979,
-      17.8275,
+      24.89789,
+      17.827521,
       "2018-10-19",
       850419
      ],
      "was": [
       0.0,
-      45.2833,
+      45.2811,
       44.0644,
-      24.8979,
-      17.8275,
+      24.89789,
+      17.827521,
       "2018-10-19",
       850419
      ],
-     "src": "bsetable3:532174:99",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 99) FPI B1e 2,187,850,315 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,834,672,514 sh (Table I) = 45.2811. fii 45.2833 -> 45.2811.",
+     "src": "bseapi:532174:99.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 99.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Banks' 1,045,546 + 'FII-DR' 297,370. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,187,850,315 + Foreign Banks 1,045,546 = 2,188,895,861 / ((A+B+C2) 4,834,672,514 (Table I) - 297,370 = 4,834,375,144) = 45.277741 (was 45.2811 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       45.2833,
+       45.2811,
        44.0644,
        24.8979,
        17.8275,
@@ -270928,20 +270928,52 @@
       ],
       "was": [
        0.0,
-       45.2533,
-       43.9944,
+       45.2833,
+       44.0644,
        24.8979,
        17.8275,
        "2018-10-19",
        850419
       ],
-      "src": "bsexbrl:532174_17102018182516_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.99 -> 44.06, fii 45.25 -> 45.28. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:99",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 99) FPI B1e 2,187,850,315 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,834,672,514 sh (Table I) = 45.2811. fii 45.2833 -> 45.2811.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        45.2833,
+        44.0644,
+        24.8979,
+        17.8275,
+        "2018-10-19",
+        850419
+       ],
+       "was": [
+        0.0,
+        45.2533,
+        43.9944,
+        24.8979,
+        17.8275,
+        "2018-10-19",
+        850419
+       ],
+       "src": "bsexbrl:532174_17102018182516_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.99 -> 44.06, fii 45.25 -> 45.28. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.1. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2018-12-31": {
     "cell": [
+     0.0,
+     42.706968,
+     46.19644,
+     26.697098,
+     17.987906,
+     "2019-01-21",
+     811957
+    ],
+    "was": [
      0.0,
      42.706968,
      46.1936,
@@ -270950,44 +270982,35 @@
      "2019-01-21",
      811957
     ],
-    "was": [
-     0.0,
-     42.7105,
-     46.1936,
-     26.697098,
-     17.987906,
-     "2019-01-21",
-     811957
-    ],
     "src": "bseapi:532174:100.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 100.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Bank' 1,045,546 + 'FII-DR' 297,370. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,064,263,148 + Foreign Bank 1,045,546 = 2,065,308,694 / ((A+B+C2) 4,836,296,733 (Table I) - 297,370 = 4,835,999,363) = 42.706968 (was 42.7105 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 297,370 sh is depository-receipt shares, so DII moves to the same base as FII: 46.193600 x 4,836,296,733 / (4,836,296,733 - 297,370 = 4,835,999,363) = 46.196440 (BSE Table I/III qtrid 100.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      42.7105,
+      42.706968,
       46.1936,
-      26.6971,
-      17.9879,
+      26.697098,
+      17.987906,
       "2019-01-21",
       811957
      ],
      "was": [
       0.0,
-      42.7127,
+      42.7105,
       46.1936,
-      26.6971,
-      17.9879,
+      26.697098,
+      17.987906,
       "2019-01-21",
       811957
      ],
-     "src": "bsetable3:532174:100",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 100) FPI B1e 2,064,263,148 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,296,733 sh (Table I) = 42.7105. fii 42.7127 -> 42.7105.",
+     "src": "bseapi:532174:100.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 100.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Bank' 1,045,546 + 'FII-DR' 297,370. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,064,263,148 + Foreign Bank 1,045,546 = 2,065,308,694 / ((A+B+C2) 4,836,296,733 (Table I) - 297,370 = 4,835,999,363) = 42.706968 (was 42.7105 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       42.7127,
+       42.7105,
        46.1936,
        26.6971,
        17.9879,
@@ -270996,20 +271019,52 @@
       ],
       "was": [
        0.0,
-       42.6827,
-       46.0836,
+       42.7127,
+       46.1936,
        26.6971,
        17.9879,
        "2019-01-21",
        811957
       ],
-      "src": "bsexbrl:532174_211201913356_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 46.08 -> 46.19, fii 42.68 -> 42.71. R1-fii-label Other Foreign Bank 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:100",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 100) FPI B1e 2,064,263,148 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,296,733 sh (Table I) = 42.7105. fii 42.7127 -> 42.7105.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        42.7127,
+        46.1936,
+        26.6971,
+        17.9879,
+        "2019-01-21",
+        811957
+       ],
+       "was": [
+        0.0,
+        42.6827,
+        46.0836,
+        26.6971,
+        17.9879,
+        "2019-01-21",
+        811957
+       ],
+       "src": "bsexbrl:532174_211201913356_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 46.08 -> 46.19, fii 42.68 -> 42.71. R1-fii-label Other Foreign Bank 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2019-03-31": {
     "cell": [
+     0.0,
+     43.041982,
+     45.550453,
+     27.92165,
+     15.950947,
+     "2019-04-22",
+     821548
+    ],
+    "was": [
      0.0,
      43.041982,
      45.5477,
@@ -271018,44 +271073,35 @@
      "2019-04-22",
      821548
     ],
-    "was": [
-     0.0,
-     43.0454,
-     45.5477,
-     27.92165,
-     15.950947,
-     "2019-04-22",
-     821548
-    ],
     "src": "bseapi:532174:101.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 101.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Bank' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,082,841,640 + Foreign Bank 1,045,546 = 2,083,887,186 / ((A+B+C2) 4,841,814,932 (Table I) - 292,600 = 4,841,522,332) = 43.041982 (was 43.0454 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 45.547700 x 4,841,814,932 / (4,841,814,932 - 292,600 = 4,841,522,332) = 45.550453 (BSE Table I/III qtrid 101.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      43.0454,
+      43.041982,
       45.5477,
-      27.9217,
-      15.9509,
+      27.92165,
+      15.950947,
       "2019-04-22",
       821548
      ],
      "was": [
       0.0,
-      43.0478,
+      43.0454,
       45.5477,
-      27.9217,
-      15.9509,
+      27.92165,
+      15.950947,
       "2019-04-22",
       821548
      ],
-     "src": "bsetable3:532174:101",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 101) FPI B1e 2,082,841,640 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,841,814,932 sh (Table I) = 43.0454. fii 43.0478 -> 43.0454.",
+     "src": "bseapi:532174:101.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 101.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Bank' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,082,841,640 + Foreign Bank 1,045,546 = 2,083,887,186 / ((A+B+C2) 4,841,814,932 (Table I) - 292,600 = 4,841,522,332) = 43.041982 (was 43.0454 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       43.0478,
+       43.0454,
        45.5477,
        27.9217,
        15.9509,
@@ -271064,20 +271110,52 @@
       ],
       "was": [
        0.0,
-       43.0178,
-       45.4377,
+       43.0478,
+       45.5477,
        27.9217,
        15.9509,
        "2019-04-22",
        821548
       ],
-      "src": "bsexbrl:532174_194201916426_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.44 -> 45.55, fii 43.02 -> 43.05. R1-fii-label Other Foreign Bank 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:101",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 101) FPI B1e 2,082,841,640 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,841,814,932 sh (Table I) = 43.0454. fii 43.0478 -> 43.0454.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        43.0478,
+        45.5477,
+        27.9217,
+        15.9509,
+        "2019-04-22",
+        821548
+       ],
+       "was": [
+        0.0,
+        43.0178,
+        45.4377,
+        27.9217,
+        15.9509,
+        "2019-04-22",
+        821548
+       ],
+       "src": "bsexbrl:532174_194201916426_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.44 -> 45.55, fii 43.02 -> 43.05. R1-fii-label Other Foreign Bank 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FII-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.14. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2021-03-31": {
     "cell": [
+     0.0,
+     47.79774,
+     41.987959,
+     26.073738,
+     12.845964,
+     "2021-04-19",
+     1378360
+    ],
+    "was": [
      0.0,
      47.79774,
      41.9857,
@@ -271086,44 +271164,35 @@
      "2021-04-19",
      1378360
     ],
-    "was": [
-     0.0,
-     47.8005,
-     41.9857,
-     26.073738,
-     12.845964,
-     "2021-04-19",
-     1378360
-    ],
     "src": "bseapi:532174:109.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 109.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,598,752,468 + Foreign Banks 1,045,546 = 2,599,798,014 / ((A+B+C2) 5,439,457,792 (Table I) - 292,600 = 5,439,165,192) = 47.797740 (was 47.8005 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 41.985700 x 5,439,457,792 / (5,439,457,792 - 292,600 = 5,439,165,192) = 41.987959 (BSE Table I/III qtrid 109.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      47.8005,
+      47.79774,
       41.9857,
-      26.0737,
-      12.846,
+      26.073738,
+      12.845964,
       "2021-04-19",
       1378360
      ],
      "was": [
       0.0,
-      47.8059,
+      47.8005,
       41.9857,
-      26.0737,
-      12.846,
+      26.073738,
+      12.845964,
       "2021-04-19",
       1378360
      ],
-     "src": "bsetable3:532174:109",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 109) FPI B1e 2,598,752,468 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,439,457,792 sh (Table I) = 47.8005. fii 47.8059 -> 47.8005.",
+     "src": "bseapi:532174:109.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 109.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,598,752,468 + Foreign Banks 1,045,546 = 2,599,798,014 / ((A+B+C2) 5,439,457,792 (Table I) - 292,600 = 5,439,165,192) = 47.797740 (was 47.8005 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       47.8059,
+       47.8005,
        41.9857,
        26.0737,
        12.846,
@@ -271132,20 +271201,52 @@
       ],
       "was": [
        0.0,
-       47.7759,
-       41.7357,
+       47.8059,
+       41.9857,
        26.0737,
        12.846,
        "2021-04-19",
        1378360
       ],
-      "src": "bsexbrl:532174_1942021145155_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.74 -> 41.99, fii 47.78 -> 47.81. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FIIs-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:109",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 109) FPI B1e 2,598,752,468 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,439,457,792 sh (Table I) = 47.8005. fii 47.8059 -> 47.8005.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        47.8059,
+        41.9857,
+        26.0737,
+        12.846,
+        "2021-04-19",
+        1378360
+       ],
+       "was": [
+        0.0,
+        47.7759,
+        41.7357,
+        26.0737,
+        12.846,
+        "2021-04-19",
+        1378360
+       ],
+       "src": "bsexbrl:532174_1942021145155_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.74 -> 41.99, fii 47.78 -> 47.81. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R1-fii-label Other FIIs-DR 0.01 public=0.00 fii=0.01  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2021-06-30": {
     "cell": [
+     0.0,
+     48.032328,
+     41.965011,
+     26.258136,
+     12.564116,
+     "2021-07-19",
+     1360832
+    ],
+    "was": [
      0.0,
      48.032328,
      41.9642,
@@ -271154,44 +271255,35 @@
      "2021-07-19",
      1360832
     ],
-    "was": [
-     0.0,
-     48.0333,
-     41.9642,
-     26.258136,
-     12.564116,
-     "2021-07-19",
-     1360832
-    ],
     "src": "bseapi:532174:110.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 110.00) institutions Any-Other block B1i 1,150,550 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 105,004. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,608,936,048 + Foreign Banks 1,045,546 = 2,609,981,594 / ((A+B+C2) 5,433,907,012 (Table I) - 105,004 = 5,433,802,008) = 48.032328 (was 48.0333 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 105,004 sh is depository-receipt shares, so DII moves to the same base as FII: 41.964200 x 5,433,907,012 / (5,433,907,012 - 105,004 = 5,433,802,008) = 41.965011 (BSE Table I/III qtrid 110.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      48.0333,
+      48.032328,
       41.9642,
-      26.2581,
-      12.5641,
+      26.258136,
+      12.564116,
       "2021-07-19",
       1360832
      ],
      "was": [
       0.0,
-      48.0122,
+      48.0333,
       41.9642,
-      26.2581,
-      12.5641,
+      26.258136,
+      12.564116,
       "2021-07-19",
       1360832
      ],
-     "src": "bsetable3:532174:110",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 110) FPI B1e 2,608,936,048 + FVCI B1d 0 + institutions Any-Other block B1i 1,150,550 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,433,907,012 sh (Table I) = 48.0333. fii 48.0122 -> 48.0333.",
+     "src": "bseapi:532174:110.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 110.00) institutions Any-Other block B1i 1,150,550 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 105,004. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,608,936,048 + Foreign Banks 1,045,546 = 2,609,981,594 / ((A+B+C2) 5,433,907,012 (Table I) - 105,004 = 5,433,802,008) = 48.032328 (was 48.0333 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       48.0122,
+       48.0333,
        41.9642,
        26.2581,
        12.5641,
@@ -271201,14 +271293,37 @@
       "was": [
        0.0,
        48.0122,
-       41.7142,
+       41.9642,
        26.2581,
        12.5641,
        "2021-07-19",
        1360832
       ],
-      "src": "bsexbrl:532174_1972021131117_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.71 -> 41.96, fii 48.01 -> 48.03. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count value (it re-derived the 0.02-pp label move after apply_cell_fix; was [48.0322, 41.9642])"
+      "src": "bsetable3:532174:110",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 110) FPI B1e 2,608,936,048 + FVCI B1d 0 + institutions Any-Other block B1i 1,150,550 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,433,907,012 sh (Table I) = 48.0333. fii 48.0122 -> 48.0333.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        48.0122,
+        41.9642,
+        26.2581,
+        12.5641,
+        "2021-07-19",
+        1360832
+       ],
+       "was": [
+        0.0,
+        48.0122,
+        41.7142,
+        26.2581,
+        12.5641,
+        "2021-07-19",
+        1360832
+       ],
+       "src": "bsexbrl:532174_1972021131117_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 41.71 -> 41.96, fii 48.01 -> 48.03. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json | 2026-09-24: cell aligned to shp_refine_4dp's share-count value (it re-derived the 0.02-pp label move after apply_cell_fix; was [48.0322, 41.9642])"
+      }
      }
     }
    },
@@ -271261,7 +271376,7 @@
     "cell": [
      0.0,
      45.294543,
-     44.0277,
+     44.027819,
      28.20016,
      12.664458,
      "2022-01-14",
@@ -271269,7 +271384,7 @@
     ],
     "was": [
      0.0,
-     45.2947,
+     45.294543,
      44.0277,
      28.20016,
      12.664458,
@@ -271277,34 +271392,34 @@
      1642131
     ],
     "src": "bseapi:532174:112.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 112.00) institutions Any-Other block B1i 1,060,548 = 'Foreign Banks' 1,045,546 + 'Foreign Portfolio Investor - DR' 15,002. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,513,940,864 + Foreign Banks 1,045,546 = 2,514,986,410 / ((A+B+C2) 5,552,530,260 (Table I) - 15,002 = 5,552,515,258) = 45.294543 (was 45.2947 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'Foreign Portfolio Investor - DR' 15,002 sh is depository-receipt shares, so DII moves to the same base as FII: 44.027700 x 5,552,530,260 / (5,552,530,260 - 15,002 = 5,552,515,258) = 44.027819 (BSE Table I/III qtrid 112.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      45.2947,
+      45.294543,
       44.0277,
-      28.2002,
-      12.6645,
+      28.20016,
+      12.664458,
       "2022-01-14",
       1642131
      ],
      "was": [
       0.0,
-      45.2956,
+      45.2947,
       44.0277,
-      28.2002,
-      12.6645,
+      28.20016,
+      12.664458,
       "2022-01-14",
       1642131
      ],
-     "src": "bsetable3:532174:112",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 112) FPI B1e 2,513,940,864 + FVCI B1d 0 + institutions Any-Other block B1i 1,060,548 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,552,530,260 sh (Table I) = 45.2947. fii 45.2956 -> 45.2947.",
+     "src": "bseapi:532174:112.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 112.00) institutions Any-Other block B1i 1,060,548 = 'Foreign Banks' 1,045,546 + 'Foreign Portfolio Investor - DR' 15,002. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,513,940,864 + Foreign Banks 1,045,546 = 2,514,986,410 / ((A+B+C2) 5,552,530,260 (Table I) - 15,002 = 5,552,515,258) = 45.294543 (was 45.2947 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       45.2956,
+       45.2947,
        44.0277,
        28.2002,
        12.6645,
@@ -271313,20 +271428,52 @@
       ],
       "was": [
        0.0,
-       45.2756,
-       43.7777,
+       45.2956,
+       44.0277,
        28.2002,
        12.6645,
        "2022-01-14",
        1642131
       ],
-      "src": "bsexbrl:532174_1312022185659_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.78 -> 44.03, fii 45.28 -> 45.30. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:112",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2021-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 112) FPI B1e 2,513,940,864 + FVCI B1d 0 + institutions Any-Other block B1i 1,060,548 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,552,530,260 sh (Table I) = 45.2947. fii 45.2956 -> 45.2947.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        45.2956,
+        44.0277,
+        28.2002,
+        12.6645,
+        "2022-01-14",
+        1642131
+       ],
+       "was": [
+        0.0,
+        45.2756,
+        43.7777,
+        28.2002,
+        12.6645,
+        "2022-01-14",
+        1642131
+       ],
+       "src": "bsexbrl:532174_1312022185659_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 43.78 -> 44.03, fii 45.28 -> 45.30. R1-fii-label Other Foreign Banks 0.02 public=0.00 fii=0.02  keyword; R3-nbfc NBFCsRegisteredWithRbi 0.27. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2022-03-31": {
     "cell": [
+     0.0,
+     43.954016,
+     44.842619,
+     28.845824,
+     12.78361,
+     "2022-04-18",
+     1879722
+    ],
+    "was": [
      0.0,
      43.954016,
      44.8425,
@@ -271335,44 +271482,35 @@
      "2022-04-18",
      1879722
     ],
-    "was": [
-     0.0,
-     43.9542,
-     44.8425,
-     28.845824,
-     12.78361,
-     "2022-04-18",
-     1879722
-    ],
     "src": "bseapi:532174:113.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 113.00) institutions Any-Other block B1i 235,546 = 'Foreign Banks' 220,546 + 'Foreign Portfolio Investor - DR' 15,000. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,474,479,616 + Foreign Banks 220,546 = 2,474,700,162 / ((A+B+C2) 5,630,217,682 (Table I) - 15,000 = 5,630,202,682) = 43.954016 (was 43.9542 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'Foreign Portfolio Investor - DR' 15,000 sh is depository-receipt shares, so DII moves to the same base as FII: 44.842500 x 5,630,217,682 / (5,630,217,682 - 15,000 = 5,630,202,682) = 44.842619 (BSE Table I/III qtrid 113.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      43.9542,
+      43.954016,
       44.8425,
-      28.8458,
-      12.7836,
+      28.845824,
+      12.78361,
       "2022-04-18",
       1879722
      ],
      "was": [
       0.0,
-      43.95,
+      43.9542,
       44.8425,
-      28.8458,
-      12.7836,
+      28.845824,
+      12.78361,
       "2022-04-18",
       1879722
      ],
-     "src": "bsetable3:532174:113",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2022-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 113) FPI B1e 2,474,479,616 + FVCI B1d 0 + institutions Any-Other block B1i 235,546 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,630,217,682 sh (Table I) = 43.9542. fii 43.9500 -> 43.9542.",
+     "src": "bseapi:532174:113.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 113.00) institutions Any-Other block B1i 235,546 = 'Foreign Banks' 220,546 + 'Foreign Portfolio Investor - DR' 15,000. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,474,479,616 + Foreign Banks 220,546 = 2,474,700,162 / ((A+B+C2) 5,630,217,682 (Table I) - 15,000 = 5,630,202,682) = 43.954016 (was 43.9542 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       43.95,
+       43.9542,
        44.8425,
        28.8458,
        12.7836,
@@ -271382,19 +271520,51 @@
       "was": [
        0.0,
        43.95,
-       44.5825,
+       44.8425,
        28.8458,
        12.7836,
        "2022-04-18",
        1879722
       ],
-      "src": "bsexbrl:532174_1442022153823_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 44.58 -> 44.84, fii 43.95 -> 43.95. R3-nbfc NBFCsRegisteredWithRbi 0.26. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:113",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2022-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 113) FPI B1e 2,474,479,616 + FVCI B1d 0 + institutions Any-Other block B1i 235,546 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,630,217,682 sh (Table I) = 43.9542. fii 43.9500 -> 43.9542.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        43.95,
+        44.8425,
+        28.8458,
+        12.7836,
+        "2022-04-18",
+        1879722
+       ],
+       "was": [
+        0.0,
+        43.95,
+        44.5825,
+        28.8458,
+        12.7836,
+        "2022-04-18",
+        1879722
+       ],
+       "src": "bsexbrl:532174_1442022153823_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 44.58 -> 44.84, fii 43.95 -> 43.95. R3-nbfc NBFCsRegisteredWithRbi 0.26. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
    "2022-06-30": {
     "cell": [
+     0.0,
+     43.54667,
+     45.580618,
+     29.186224,
+     13.070213,
+     "2022-07-18",
+     1928477
+    ],
+    "was": [
      0.0,
      43.54667,
      45.5805,
@@ -271403,44 +271573,35 @@
      "2022-07-18",
      1928477
     ],
-    "was": [
-     0.0,
-     43.5468,
-     45.5805,
-     29.186224,
-     13.070213,
-     "2022-07-18",
-     1928477
-    ],
     "src": "bseapi:532174:114.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 114.00) institutions Any-Other block B1i 235,546 = 'Foreign Banks' 220,546 + 'Foreign Portfolio Investor - DR' 15,000. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,523,641,169 + Foreign Banks 220,546 = 2,523,861,715 / ((A+B+C2) 5,795,777,789 (Table I) - 15,000 = 5,795,762,789) = 43.546670 (was 43.5468 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'Foreign Portfolio Investor - DR' 15,000 sh is depository-receipt shares, so DII moves to the same base as FII: 45.580500 x 5,795,777,789 / (5,795,777,789 - 15,000 = 5,795,762,789) = 45.580618 (BSE Table I/III qtrid 114.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      43.5468,
+      43.54667,
       45.5805,
-      29.1862,
-      13.0702,
+      29.186224,
+      13.070213,
       "2022-07-18",
       1928477
      ],
      "was": [
       0.0,
-      43.5428,
+      43.5468,
       45.5805,
-      29.1862,
-      13.0702,
+      29.186224,
+      13.070213,
       "2022-07-18",
       1928477
      ],
-     "src": "bsetable3:532174:114",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2022-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 114) FPI B1e 2,523,641,169 + FVCI B1d 0 + institutions Any-Other block B1i 235,546 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,795,777,789 sh (Table I) = 43.5468. fii 43.5428 -> 43.5468.",
+     "src": "bseapi:532174:114.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 114.00) institutions Any-Other block B1i 235,546 = 'Foreign Banks' 220,546 + 'Foreign Portfolio Investor - DR' 15,000. 'Foreign Portfolio Investor - DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,523,641,169 + Foreign Banks 220,546 = 2,523,861,715 / ((A+B+C2) 5,795,777,789 (Table I) - 15,000 = 5,795,762,789) = 43.546670 (was 43.5468 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       43.5428,
+       43.5468,
        45.5805,
        29.1862,
        13.0702,
@@ -271450,14 +271611,37 @@
       "was": [
        0.0,
        43.5428,
-       45.3305,
+       45.5805,
        29.1862,
        13.0702,
        "2022-07-18",
        1928477
       ],
-      "src": "bsexbrl:532174_167202216214_SHP.xml",
-      "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.33 -> 45.58, fii 43.54 -> 43.54. R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_dii_rowfix_audit.json"
+      "src": "bsetable3:532174:114",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2022-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 114) FPI B1e 2,523,641,169 + FVCI B1d 0 + institutions Any-Other block B1i 235,546 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,795,777,789 sh (Table I) = 43.5468. fii 43.5428 -> 43.5468.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        43.5428,
+        45.5805,
+        29.1862,
+        13.0702,
+        "2022-07-18",
+        1928477
+       ],
+       "was": [
+        0.0,
+        43.5428,
+        45.3305,
+        29.1862,
+        13.0702,
+        "2022-07-18",
+        1928477
+       ],
+       "src": "bsexbrl:532174_167202216214_SHP.xml",
+       "why": "\u00a7158 row-level DII heal (2026-09-24, DII = Institutions(Domestic) in every format): dii 45.33 -> 45.58, fii 43.54 -> 43.54. R3-nbfc NBFCsRegisteredWithRbi 0.25. Evidence: _shp_dii_rowfix_audit.json"
+      }
      }
     }
    },
@@ -271826,26 +272010,26 @@
     "cell": [
      0.0,
      53.585347,
-     34.0786,
+     34.114311,
      13.0929,
      20.4073,
      "2016-01-25"
     ],
     "was": [
      0.0,
-     53.6339,
+     53.585347,
      34.0786,
      13.0929,
      20.4073,
      "2016-01-25"
     ],
     "src": "bseapi:532174:88.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 88.00) institutions Any-Other block B1i 6,436,340 = 'Foreign Banks' 2,096,265 + 'FIIs-DR' 4,340,075. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,217,226,152 + Foreign Banks 2,096,265 = 2,219,322,417 / ((A+B+C2) 4,145,999,182 (Table I) - 4,340,075 = 4,141,659,107) = 53.585347 (was 53.6339 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 4,340,075 sh is depository-receipt shares, so DII moves to the same base as FII: 34.078600 x 4,145,999,182 / (4,145,999,182 - 4,340,075 = 4,141,659,107) = 34.114311 (BSE Table I/III qtrid 88.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      53.6339,
+      53.585347,
       34.0786,
       13.0929,
       20.4073,
@@ -271853,17 +272037,25 @@
      ],
      "was": [
       0.0,
-      54.0564,
-      33.6591,
-      13.0935,
-      20.4113,
+      53.6339,
+      34.0786,
+      13.0929,
+      20.4073,
       "2016-01-25"
      ],
-     "src": "bsetable3:532174:88",
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2015-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 88) FPI B1e 2,217,226,152 + FVCI B1d 0 + institutions Any-Other block B1i 6,436,340 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,145,999,182 sh (Table I) = 53.6339. Dec-2015 was read from BSE's old-style band page, whose 'Any Others' 0.58 merges Provident Funds/Pension Funds (B1h 17,559,740 sh, domestic) with the Any-Other block (B1i 6,436,340 sh): the PF/Pension shares sat in fii. fii 54.0564 -> 53.6339; dii 33.6591 -> 34.0786, mf 13.0935 -> 13.0929, ins 20.4113 -> 20.4073 (Table III share counts; PF/Pension B1h 17,559,740 sh back in DII).",
+     "src": "bseapi:532174:88.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 88.00) institutions Any-Other block B1i 6,436,340 = 'Foreign Banks' 2,096,265 + 'FIIs-DR' 4,340,075. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,217,226,152 + Foreign Banks 2,096,265 = 2,219,322,417 / ((A+B+C2) 4,145,999,182 (Table I) - 4,340,075 = 4,141,659,107) = 53.585347 (was 53.6339 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       53.6339,
+       34.0786,
+       13.0929,
+       20.4073,
+       "2016-01-25"
+      ],
+      "was": [
        0.0,
        54.0564,
        33.6591,
@@ -271871,16 +272063,29 @@
        20.4113,
        "2016-01-25"
       ],
-      "was": [
-       0.0,
-       38.56,
-       24.01,
-       9.34,
-       14.56,
-       "2016-01-25"
-      ],
-      "src": "bseaspx:532174_88",
-      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.401878 = total (A+B+C) 5812184730 shares / (A+B) 4145999182 shares on the same quarter's BSE page; fii 38.56 -> 54.06, dii 24.01 -> 33.66."
+      "src": "bsetable3:532174:88",
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2015-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 88) FPI B1e 2,217,226,152 + FVCI B1d 0 + institutions Any-Other block B1i 6,436,340 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,145,999,182 sh (Table I) = 53.6339. Dec-2015 was read from BSE's old-style band page, whose 'Any Others' 0.58 merges Provident Funds/Pension Funds (B1h 17,559,740 sh, domestic) with the Any-Other block (B1i 6,436,340 sh): the PF/Pension shares sat in fii. fii 54.0564 -> 53.6339; dii 33.6591 -> 34.0786, mf 13.0935 -> 13.0929, ins 20.4113 -> 20.4073 (Table III share counts; PF/Pension B1h 17,559,740 sh back in DII).",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        54.0564,
+        33.6591,
+        13.0935,
+        20.4113,
+        "2016-01-25"
+       ],
+       "was": [
+        0.0,
+        38.56,
+        24.01,
+        9.34,
+        14.56,
+        "2016-01-25"
+       ],
+       "src": "bseaspx:532174_88",
+       "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.401878 = total (A+B+C) 5812184730 shares / (A+B) 4145999182 shares on the same quarter's BSE page; fii 38.56 -> 54.06, dii 24.01 -> 33.66."
+      }
      }
     }
    },
@@ -272023,7 +272228,7 @@
     "cell": [
      0.0,
      46.975566,
-     41.3416,
+     41.381782,
      20.035702,
      20.38344,
      "2017-04-15",
@@ -272031,7 +272236,7 @@
     ],
     "was": [
      0.0,
-     47.0271,
+     46.975566,
      41.3416,
      20.035702,
      20.38344,
@@ -272039,19 +272244,42 @@
      938826
     ],
     "src": "bsexbrl:532174_144201720254_SHP.xml + ICICI Bank Annual Report FY2016-17 p72",
-    "why": "\u00a7164r batch 30 part 105 (2026-10-18, user: 'count foreign banks as FII and take the ADR shares out of the base (46.98%)'): the filing's institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (company AR FY2016-17 shareholding table, p72). FII-DR = depository-receipt shares, out of FII and out of the base, same shape as part 100 (page-era 'FIIs-DR' rows): FII = FPI 2,041,052,291 + Foreign Banks 950,580 = 2,042,002,871 / ((A+B+C2) 4,351,171,801 - 4,224,966 = 4,346,946,835). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in part 100.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 4,224,966 sh is depository-receipt shares, so DII moves to the same base as FII: 41.341600 x 4,351,171,801 / (4,351,171,801 - 4,224,966 = 4,346,946,835) = 41.381782 (base Table I qtrid 93.00; FII-DR from company AR FY2016-17 p72 (part 105)). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      47.0271,
+      46.975566,
       41.3416,
-      20.0357,
-      20.3834,
+      20.035702,
+      20.38344,
       "2017-04-15",
       938826
      ],
-     "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93) FPI B1e 2,041,052,291 + FVCI B1d 0 + institutions Any-Other block B1i 5,175,546 sh (the company's own sub-rows 'Forei"
+     "was": [
+      0.0,
+      47.0271,
+      41.3416,
+      20.035702,
+      20.38344,
+      "2017-04-15",
+      938826
+     ],
+     "src": "bsexbrl:532174_144201720254_SHP.xml + ICICI Bank Annual Report FY2016-17 p72",
+     "why": "\u00a7164r batch 30 part 105 (2026-10-18, user: 'count foreign banks as FII and take the ADR shares out of the base (46.98%)'): the filing's institutions Other block 5,175,546 = 'Foreign Banks' 950,580 + 'FII-DR' 4,224,966 (company AR FY2016-17 shareholding table, p72). FII-DR = depository-receipt shares, out of FII and out of the base, same shape as part 100 (page-era 'FIIs-DR' rows): FII = FPI 2,041,052,291 + Foreign Banks 950,580 = 2,042,002,871 / ((A+B+C2) 4,351,171,801 - 4,224,966 = 4,346,946,835). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in part 100.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       0.0,
+       47.0271,
+       41.3416,
+       20.0357,
+       20.3834,
+       "2017-04-15",
+       938826
+      ],
+      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2017-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93) FPI B1e 2,041,052,291 + FVCI B1d 0 + institutions Any-Other block B1i 5,175,546 sh (the company's own sub-rows 'Forei"
+     }
     }
    },
    "2016-03-31": {
@@ -272215,7 +272443,7 @@
     "cell": [
      0.0,
      48.093523,
-     41.5816,
+     41.584891,
      22.659007,
      17.72067,
      "2018-04-20",
@@ -272223,7 +272451,7 @@
     ],
     "was": [
      0.0,
-     48.0976,
+     48.093523,
      41.5816,
      22.659007,
      17.72067,
@@ -272231,31 +272459,41 @@
      855495
     ],
     "src": "bseapi:532174:97.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97.00) institutions Any-Other block B1i 1,431,246 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 385,700. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,342,979,176 + Foreign Banks 1,045,546 = 2,344,024,722 / ((A+B+C2) 4,874,274,281 (Table I) - 385,700 = 4,873,888,581) = 48.093523 (was 48.0976 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 385,700 sh is depository-receipt shares, so DII moves to the same base as FII: 41.581600 x 4,874,274,281 / (4,874,274,281 - 385,700 = 4,873,888,581) = 41.584891 (BSE Table I/III qtrid 97.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      48.0976,
+      48.093523,
       41.5816,
-      22.659,
-      17.7207,
+      22.659007,
+      17.72067,
       "2018-04-20",
       855495
      ],
      "was": [
       0.0,
       48.0976,
-      41.5621,
-      22.659,
-      17.7207,
+      41.5816,
+      22.659007,
+      17.72067,
       "2018-04-20",
       855495
      ],
-     "src": "bsexbrl:532174_2042018144317_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0195 (on the stored (A+B) base, DR factor 1.3188) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 41.5621 -> 41.5816.",
+     "src": "bseapi:532174:97.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97.00) institutions Any-Other block B1i 1,431,246 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 385,700. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,342,979,176 + Foreign Banks 1,045,546 = 2,344,024,722 / ((A+B+C2) 4,874,274,281 (Table I) - 385,700 = 4,873,888,581) = 48.093523 (was 48.0976 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       48.0976,
+       41.5816,
+       22.659,
+       17.7207,
+       "2018-04-20",
+       855495
+      ],
+      "was": [
        0.0,
        48.0976,
        41.5621,
@@ -272264,23 +272502,45 @@
        "2018-04-20",
        855495
       ],
-      "was": [
-       0.0,
-       48.0683,
-       41.5915,
-       22.659,
-       17.7207,
-       "2018-04-20",
-       855495
-      ],
-      "src": "bsetable3:532174:97",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97) FPI B1e 2,342,979,176 + FVCI B1d 0 + institutions Any-Other block B1i 1,431,246 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,874,274,281 sh (Table I) = 48.0976. fii 48.0683 -> 48.0976; dii 41.5915 -> 41.5621 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_2042018144317_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0195 (on the stored (A+B) base, DR factor 1.3188) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 41.5621 -> 41.5816.",
+      "superseded": {
+       "cell": [
+        0.0,
+        48.0976,
+        41.5621,
+        22.659,
+        17.7207,
+        "2018-04-20",
+        855495
+       ],
+       "was": [
+        0.0,
+        48.0683,
+        41.5915,
+        22.659,
+        17.7207,
+        "2018-04-20",
+        855495
+       ],
+       "src": "bsetable3:532174:97",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 97) FPI B1e 2,342,979,176 + FVCI B1d 0 + institutions Any-Other block B1i 1,431,246 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,874,274,281 sh (Table I) = 48.0976. fii 48.0683 -> 48.0976; dii 41.5915 -> 41.5621 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2018-06-30": {
     "cell": [
+     0.0,
+     46.890993,
+     42.257998,
+     23.218216,
+     17.74611,
+     "2018-07-19",
+     874970
+    ],
+    "was": [
      0.0,
      46.890993,
      42.2554,
@@ -272289,41 +272549,42 @@
      "2018-07-19",
      874970
     ],
-    "was": [
-     0.0,
-     46.8943,
-     42.2554,
-     23.218216,
-     17.74611,
-     "2018-07-19",
-     874970
-    ],
     "src": "bseapi:532174:98.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 297,370. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,266,749,060 + Foreign Banks 1,045,546 = 2,267,794,606 / ((A+B+C2) 4,836,609,081 (Table I) - 297,370 = 4,836,311,711) = 46.890993 (was 46.8943 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 297,370 sh is depository-receipt shares, so DII moves to the same base as FII: 42.255400 x 4,836,609,081 / (4,836,609,081 - 297,370 = 4,836,311,711) = 42.257998 (BSE Table I/III qtrid 98.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      46.8943,
+      46.890993,
       42.2554,
-      23.2182,
-      17.7461,
+      23.218216,
+      17.74611,
       "2018-07-19",
       874970
      ],
      "was": [
       0.0,
       46.8943,
-      42.2015,
-      23.2182,
-      17.7461,
+      42.2554,
+      23.218216,
+      17.74611,
       "2018-07-19",
       874970
      ],
-     "src": "bsexbrl:532174_1872018183541_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0539 (on the stored (A+B) base, DR factor 1.3298) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.2015 -> 42.2554.",
+     "src": "bseapi:532174:98.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98.00) institutions Any-Other block B1i 1,342,916 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 297,370. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,266,749,060 + Foreign Banks 1,045,546 = 2,267,794,606 / ((A+B+C2) 4,836,609,081 (Table I) - 297,370 = 4,836,311,711) = 46.890993 (was 46.8943 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       46.8943,
+       42.2554,
+       23.2182,
+       17.7461,
+       "2018-07-19",
+       874970
+      ],
+      "was": [
        0.0,
        46.8943,
        42.2015,
@@ -272332,23 +272593,45 @@
        "2018-07-19",
        874970
       ],
-      "was": [
-       0.0,
-       46.8665,
-       42.2293,
-       23.2182,
-       17.7461,
-       "2018-07-19",
-       874970
-      ],
-      "src": "bsetable3:532174:98",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98) FPI B1e 2,266,749,060 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,609,081 sh (Table I) = 46.8943. fii 46.8665 -> 46.8943; dii 42.2293 -> 42.2015 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_1872018183541_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0539 (on the stored (A+B) base, DR factor 1.3298) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.2015 -> 42.2554.",
+      "superseded": {
+       "cell": [
+        0.0,
+        46.8943,
+        42.2015,
+        23.2182,
+        17.7461,
+        "2018-07-19",
+        874970
+       ],
+       "was": [
+        0.0,
+        46.8665,
+        42.2293,
+        23.2182,
+        17.7461,
+        "2018-07-19",
+        874970
+       ],
+       "src": "bsetable3:532174:98",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2018-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 98) FPI B1e 2,266,749,060 + FVCI B1d 0 + institutions Any-Other block B1i 1,342,916 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,836,609,081 sh (Table I) = 46.8943. fii 46.8665 -> 46.8943; dii 42.2293 -> 42.2015 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2019-06-30": {
     "cell": [
+     0.0,
+     43.221011,
+     45.366504,
+     27.969876,
+     15.592411,
+     "2019-07-22",
+     820416
+    ],
+    "was": [
      0.0,
      43.221011,
      45.3638,
@@ -272357,41 +272640,42 @@
      "2019-07-22",
      820416
     ],
-    "was": [
-     0.0,
-     43.2244,
-     45.3638,
-     27.969876,
-     15.592411,
-     "2019-07-22",
-     820416
-    ],
     "src": "bseapi:532174:102.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,120,338,874 + Foreign Banks 1,045,546 = 2,121,384,420 / ((A+B+C2) 4,908,517,545 (Table I) - 292,600 = 4,908,224,945) = 43.221011 (was 43.2244 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 45.363800 x 4,908,517,545 / (4,908,517,545 - 292,600 = 4,908,224,945) = 45.366504 (BSE Table I/III qtrid 102.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      43.2244,
+      43.221011,
       45.3638,
-      27.9699,
-      15.5924,
+      27.969876,
+      15.592411,
       "2019-07-22",
       820416
      ],
      "was": [
       0.0,
       43.2244,
-      45.348,
-      27.9699,
-      15.5924,
+      45.3638,
+      27.969876,
+      15.592411,
       "2019-07-22",
       820416
      ],
-     "src": "bsexbrl:532174_197201918145_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0158 (on the stored (A+B) base, DR factor 1.3146) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.3480 -> 45.3638.",
+     "src": "bseapi:532174:102.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,120,338,874 + Foreign Banks 1,045,546 = 2,121,384,420 / ((A+B+C2) 4,908,517,545 (Table I) - 292,600 = 4,908,224,945) = 43.221011 (was 43.2244 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       43.2244,
+       45.3638,
+       27.9699,
+       15.5924,
+       "2019-07-22",
+       820416
+      ],
+      "was": [
        0.0,
        43.2244,
        45.348,
@@ -272400,23 +272684,45 @@
        "2019-07-22",
        820416
       ],
-      "was": [
-       0.0,
-       43.1971,
-       45.3753,
-       27.9699,
-       15.5924,
-       "2019-07-22",
-       820416
-      ],
-      "src": "bsetable3:532174:102",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102) FPI B1e 2,120,338,874 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,908,517,545 sh (Table I) = 43.2244. fii 43.1971 -> 43.2244; dii 45.3753 -> 45.3480 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_197201918145_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0158 (on the stored (A+B) base, DR factor 1.3146) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.3480 -> 45.3638.",
+      "superseded": {
+       "cell": [
+        0.0,
+        43.2244,
+        45.348,
+        27.9699,
+        15.5924,
+        "2019-07-22",
+        820416
+       ],
+       "was": [
+        0.0,
+        43.1971,
+        45.3753,
+        27.9699,
+        15.5924,
+        "2019-07-22",
+        820416
+       ],
+       "src": "bsetable3:532174:102",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 102) FPI B1e 2,120,338,874 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 4,908,517,545 sh (Table I) = 43.2244. fii 43.1971 -> 43.2244; dii 45.3753 -> 45.3480 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2019-09-30": {
     "cell": [
+     0.0,
+     40.813829,
+     47.709782,
+     29.663409,
+     16.042864,
+     "2019-10-18",
+     846122
+    ],
+    "was": [
      0.0,
      40.813829,
      47.707,
@@ -272425,41 +272731,42 @@
      "2019-10-18",
      846122
     ],
-    "was": [
-     0.0,
-     40.8173,
-     47.707,
-     29.663409,
-     16.042864,
-     "2019-10-18",
-     846122
-    ],
     "src": "bseapi:532174:103.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,047,179,933 + Foreign Banks 1,045,546 = 2,048,225,479 / ((A+B+C2) 5,018,752,127 (Table I) - 292,600 = 5,018,459,527) = 40.813829 (was 40.8173 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FII-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 47.707000 x 5,018,752,127 / (5,018,752,127 - 292,600 = 5,018,459,527) = 47.709782 (BSE Table I/III qtrid 103.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      40.8173,
+      40.813829,
       47.707,
-      29.6634,
-      16.0429,
+      29.663409,
+      16.042864,
       "2019-10-18",
       846122
      ],
      "was": [
       0.0,
       40.8173,
-      47.6926,
-      29.6634,
-      16.0429,
+      47.707,
+      29.663409,
+      16.042864,
       "2019-10-18",
       846122
      ],
-     "src": "bsexbrl:532174_18102019142043_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0144 (on the stored (A+B) base, DR factor 1.2871) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 47.6926 -> 47.7070.",
+     "src": "bseapi:532174:103.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FII-DR' 292,600. 'FII-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,047,179,933 + Foreign Banks 1,045,546 = 2,048,225,479 / ((A+B+C2) 5,018,752,127 (Table I) - 292,600 = 5,018,459,527) = 40.813829 (was 40.8173 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       40.8173,
+       47.707,
+       29.6634,
+       16.0429,
+       "2019-10-18",
+       846122
+      ],
+      "was": [
        0.0,
        40.8173,
        47.6926,
@@ -272468,23 +272775,45 @@
        "2019-10-18",
        846122
       ],
-      "was": [
-       0.0,
-       40.7906,
-       47.7193,
-       29.6634,
-       16.0429,
-       "2019-10-18",
-       846122
-      ],
-      "src": "bsetable3:532174:103",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103) FPI B1e 2,047,179,933 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,018,752,127 sh (Table I) = 40.8173. fii 40.7906 -> 40.8173; dii 47.7193 -> 47.6926 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_18102019142043_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0144 (on the stored (A+B) base, DR factor 1.2871) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 47.6926 -> 47.7070.",
+      "superseded": {
+       "cell": [
+        0.0,
+        40.8173,
+        47.6926,
+        29.6634,
+        16.0429,
+        "2019-10-18",
+        846122
+       ],
+       "was": [
+        0.0,
+        40.7906,
+        47.7193,
+        29.6634,
+        16.0429,
+        "2019-10-18",
+        846122
+       ],
+       "src": "bsetable3:532174:103",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 103) FPI B1e 2,047,179,933 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,018,752,127 sh (Table I) = 40.8173. fii 40.7906 -> 40.8173; dii 47.7193 -> 47.6926 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2019-12-31": {
     "cell": [
+     0.0,
+     45.811174,
+     43.143671,
+     25.977869,
+     15.144377,
+     "2020-01-21",
+     899608
+    ],
+    "was": [
      0.0,
      45.811174,
      43.1412,
@@ -272493,42 +272822,42 @@
      "2020-01-21",
      899608
     ],
-    "was": [
-     0.0,
-     45.8143,
-     43.1412,
-     25.977869,
-     15.144377,
-     "2020-01-21",
-     899608
-    ],
     "src": "bseapi:532174:104.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,338,981,805 + Foreign Banks 1,045,546 = 2,340,027,351 / ((A+B+C2) 5,108,276,445 (Table I) - 292,600 = 5,107,983,845) = 45.811174 (was 45.8143 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 43.141200 x 5,108,276,445 / (5,108,276,445 - 292,600 = 5,107,983,845) = 43.143671 (BSE Table I/III qtrid 104.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      45.8143,
+      45.811174,
       43.1412,
-      25.9779,
-      15.1444,
+      25.977869,
+      15.144377,
       "2020-01-21",
       899608
      ],
      "was": [
       0.0,
       45.8143,
-      43.1371,
-      25.9779,
-      15.1444,
+      43.1412,
+      25.977869,
+      15.144377,
       "2020-01-21",
       899608
      ],
-     "src": "bsexbrl:532174_201202016413_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0041 (on the stored (A+B) base, DR factor 1.2664) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.1371 -> 43.1412.",
+     "src": "bseapi:532174:104.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,338,981,805 + Foreign Banks 1,045,546 = 2,340,027,351 / ((A+B+C2) 5,108,276,445 (Table I) - 292,600 = 5,107,983,845) = 45.811174 (was 45.8143 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
      "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       45.8143,
+       43.1412,
+       25.9779,
+       15.1444,
+       "2020-01-21",
+       899608
+      ],
+      "was": [
        0.0,
        45.8143,
        43.1371,
@@ -272537,23 +272866,46 @@
        "2020-01-21",
        899608
       ],
-      "was": [
-       0.0,
-       45.7881,
-       43.1633,
-       25.9779,
-       15.1444,
-       "2020-01-21",
-       899608
-      ],
-      "src": "bsetable3:532174:104",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104) FPI B1e 2,338,981,805 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,108,276,445 sh (Table I) = 45.8143. fii 45.7881 -> 45.8143; dii 43.1633 -> 43.1371 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_201202016413_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0041 (on the stored (A+B) base, DR factor 1.2664) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.1371 -> 43.1412.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        0.0,
+        45.8143,
+        43.1371,
+        25.9779,
+        15.1444,
+        "2020-01-21",
+        899608
+       ],
+       "was": [
+        0.0,
+        45.7881,
+        43.1633,
+        25.9779,
+        15.1444,
+        "2020-01-21",
+        899608
+       ],
+       "src": "bsetable3:532174:104",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2019-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 104) FPI B1e 2,338,981,805 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,108,276,445 sh (Table I) = 45.8143. fii 45.7881 -> 45.8143; dii 43.1633 -> 43.1371 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2020-03-31": {
     "cell": [
+     0.0,
+     43.718142,
+     44.600194,
+     27.606251,
+     14.521235,
+     "2020-04-22",
+     1101300
+    ],
+    "was": [
      0.0,
      43.718142,
      44.5977,
@@ -272562,41 +272914,42 @@
      "2020-04-22",
      1101300
     ],
-    "was": [
-     0.0,
-     43.7213,
-     44.5977,
-     27.606251,
-     14.521235,
-     "2020-04-22",
-     1101300
-    ],
     "src": "bseapi:532174:105.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,286,827,687 + Foreign Banks 1,045,546 = 2,287,873,233 / ((A+B+C2) 5,233,527,872 (Table I) - 292,600 = 5,233,235,272) = 43.718142 (was 43.7213 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 44.597700 x 5,233,527,872 / (5,233,527,872 - 292,600 = 5,233,235,272) = 44.600194 (BSE Table I/III qtrid 105.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      43.7213,
+      43.718142,
       44.5977,
-      27.6063,
-      14.5212,
+      27.606251,
+      14.521235,
       "2020-04-22",
       1101300
      ],
      "was": [
       0.0,
       43.7213,
-      44.5841,
-      27.6063,
-      14.5212,
+      44.5977,
+      27.606251,
+      14.521235,
       "2020-04-22",
       1101300
      ],
-     "src": "bsexbrl:532174_2142020192128_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0136 (on the stored (A+B) base, DR factor 1.2368) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 44.5841 -> 44.5977.",
+     "src": "bseapi:532174:105.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,286,827,687 + Foreign Banks 1,045,546 = 2,287,873,233 / ((A+B+C2) 5,233,527,872 (Table I) - 292,600 = 5,233,235,272) = 43.718142 (was 43.7213 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       43.7213,
+       44.5977,
+       27.6063,
+       14.5212,
+       "2020-04-22",
+       1101300
+      ],
+      "was": [
        0.0,
        43.7213,
        44.5841,
@@ -272605,23 +272958,45 @@
        "2020-04-22",
        1101300
       ],
-      "was": [
-       0.0,
-       43.6957,
-       44.6097,
-       27.6063,
-       14.5212,
-       "2020-04-22",
-       1101300
-      ],
-      "src": "bsetable3:532174:105",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105) FPI B1e 2,286,827,687 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,233,527,872 sh (Table I) = 43.7213. fii 43.6957 -> 43.7213; dii 44.6097 -> 44.5841 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_2142020192128_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0136 (on the stored (A+B) base, DR factor 1.2368) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 44.5841 -> 44.5977.",
+      "superseded": {
+       "cell": [
+        0.0,
+        43.7213,
+        44.5841,
+        27.6063,
+        14.5212,
+        "2020-04-22",
+        1101300
+       ],
+       "was": [
+        0.0,
+        43.6957,
+        44.6097,
+        27.6063,
+        14.5212,
+        "2020-04-22",
+        1101300
+       ],
+       "src": "bsetable3:532174:105",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-03-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 105) FPI B1e 2,286,827,687 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,233,527,872 sh (Table I) = 43.7213. fii 43.6957 -> 43.7213; dii 44.6097 -> 44.5841 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2020-06-30": {
     "cell": [
+     0.0,
+     42.986575,
+     45.740227,
+     28.277487,
+     14.800395,
+     "2020-07-20",
+     1289712
+    ],
+    "was": [
      0.0,
      42.986575,
      45.7377,
@@ -272630,41 +273005,42 @@
      "2020-07-20",
      1289712
     ],
-    "was": [
-     0.0,
-     42.9897,
-     45.7377,
-     28.277487,
-     14.800395,
-     "2020-07-20",
-     1289712
-    ],
     "src": "bseapi:532174:106.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,275,164,204 + Foreign Banks 1,045,546 = 2,276,209,750 / ((A+B+C2) 5,295,456,839 (Table I) - 292,600 = 5,295,164,239) = 42.986575 (was 42.9897 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 45.737700 x 5,295,456,839 / (5,295,456,839 - 292,600 = 5,295,164,239) = 45.740227 (BSE Table I/III qtrid 106.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      42.9897,
+      42.986575,
       45.7377,
-      28.2775,
-      14.8004,
+      28.277487,
+      14.800395,
       "2020-07-20",
       1289712
      ],
      "was": [
       0.0,
       42.9897,
-      45.7253,
-      28.2775,
-      14.8004,
+      45.7377,
+      28.277487,
+      14.800395,
       "2020-07-20",
       1289712
      ],
-     "src": "bsexbrl:532174_1772020202056_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0124 (on the stored (A+B) base, DR factor 1.2229) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.7253 -> 45.7377.",
+     "src": "bseapi:532174:106.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,275,164,204 + Foreign Banks 1,045,546 = 2,276,209,750 / ((A+B+C2) 5,295,456,839 (Table I) - 292,600 = 5,295,164,239) = 42.986575 (was 42.9897 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       42.9897,
+       45.7377,
+       28.2775,
+       14.8004,
+       "2020-07-20",
+       1289712
+      ],
+      "was": [
        0.0,
        42.9897,
        45.7253,
@@ -272673,23 +273049,45 @@
        "2020-07-20",
        1289712
       ],
-      "was": [
-       0.0,
-       42.9645,
-       45.7506,
-       28.2775,
-       14.8004,
-       "2020-07-20",
-       1289712
-      ],
-      "src": "bsetable3:532174:106",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106) FPI B1e 2,275,164,204 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,295,456,839 sh (Table I) = 42.9897. fii 42.9645 -> 42.9897; dii 45.7506 -> 45.7253 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_1772020202056_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0124 (on the stored (A+B) base, DR factor 1.2229) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 45.7253 -> 45.7377.",
+      "superseded": {
+       "cell": [
+        0.0,
+        42.9897,
+        45.7253,
+        28.2775,
+        14.8004,
+        "2020-07-20",
+        1289712
+       ],
+       "was": [
+        0.0,
+        42.9645,
+        45.7506,
+        28.2775,
+        14.8004,
+        "2020-07-20",
+        1289712
+       ],
+       "src": "bsetable3:532174:106",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-06-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106) FPI B1e 2,275,164,204 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,295,456,839 sh (Table I) = 42.9897. fii 42.9645 -> 42.9897; dii 45.7506 -> 45.7253 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2020-09-30": {
     "cell": [
+     0.0,
+     45.682585,
+     43.778772,
+     27.067397,
+     13.924369,
+     "2020-10-20",
+     1421644
+    ],
+    "was": [
      0.0,
      45.682585,
      43.7765,
@@ -272698,41 +273096,42 @@
      "2020-10-20",
      1421644
     ],
-    "was": [
-     0.0,
-     45.6854,
-     43.7765,
-     27.067397,
-     13.924369,
-     "2020-10-20",
-     1421644
-    ],
     "src": "bseapi:532174:107.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,574,015,194 + Foreign Banks 1,045,546 = 2,575,060,740 / ((A+B+C2) 5,637,146,884 (Table I) - 292,600 = 5,636,854,284) = 45.682585 (was 45.6854 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 43.776500 x 5,637,146,884 / (5,637,146,884 - 292,600 = 5,636,854,284) = 43.778772 (BSE Table I/III qtrid 107.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      45.6854,
+      45.682585,
       43.7765,
-      27.0674,
-      13.9244,
+      27.067397,
+      13.924369,
       "2020-10-20",
       1421644
      ],
      "was": [
       0.0,
       45.6854,
-      43.7051,
-      27.0674,
-      13.9244,
+      43.7765,
+      27.067397,
+      13.924369,
       "2020-10-20",
       1421644
      ],
-     "src": "bsexbrl:532174_20102020131958_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0714 (on the stored (A+B) base, DR factor 1.2234) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.7051 -> 43.7765.",
+     "src": "bseapi:532174:107.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,574,015,194 + Foreign Banks 1,045,546 = 2,575,060,740 / ((A+B+C2) 5,637,146,884 (Table I) - 292,600 = 5,636,854,284) = 45.682585 (was 45.6854 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       45.6854,
+       43.7765,
+       27.0674,
+       13.9244,
+       "2020-10-20",
+       1421644
+      ],
+      "was": [
        0.0,
        45.6854,
        43.7051,
@@ -272741,23 +273140,45 @@
        "2020-10-20",
        1421644
       ],
-      "was": [
-       0.0,
-       45.6617,
-       43.7288,
-       27.0674,
-       13.9244,
-       "2020-10-20",
-       1421644
-      ],
-      "src": "bsetable3:532174:107",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107) FPI B1e 2,574,015,194 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,637,146,884 sh (Table I) = 45.6854. fii 45.6617 -> 45.6854; dii 43.7288 -> 43.7051 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_20102020131958_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0714 (on the stored (A+B) base, DR factor 1.2234) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 43.7051 -> 43.7765.",
+      "superseded": {
+       "cell": [
+        0.0,
+        45.6854,
+        43.7051,
+        27.0674,
+        13.9244,
+        "2020-10-20",
+        1421644
+       ],
+       "was": [
+        0.0,
+        45.6617,
+        43.7288,
+        27.0674,
+        13.9244,
+        "2020-10-20",
+        1421644
+       ],
+       "src": "bsetable3:532174:107",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-09-30 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 107) FPI B1e 2,574,015,194 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,637,146,884 sh (Table I) = 45.6854. fii 45.6617 -> 45.6854; dii 43.7288 -> 43.7051 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
    "2020-12-31": {
     "cell": [
+     0.0,
+     47.453881,
+     42.519954,
+     26.350934,
+     13.395203,
+     "2021-01-19",
+     1266791
+    ],
+    "was": [
      0.0,
      47.453881,
      42.5177,
@@ -272766,41 +273187,42 @@
      "2021-01-19",
      1266791
     ],
-    "was": [
-     0.0,
-     47.4567,
-     42.5177,
-     26.350934,
-     13.395203,
-     "2021-01-19",
-     1266791
-    ],
     "src": "bseapi:532174:108.00",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,617,642,087 + Foreign Banks 1,045,546 = 2,618,687,633 / ((A+B+C2) 5,518,677,142 (Table I) - 292,600 = 5,518,384,542) = 47.453881 (was 47.4567 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 42.517700 x 5,518,677,142 / (5,518,677,142 - 292,600 = 5,518,384,542) = 42.519954 (BSE Table I/III qtrid 108.00). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      47.4567,
+      47.453881,
       42.5177,
-      26.3509,
-      13.3952,
+      26.350934,
+      13.395203,
       "2021-01-19",
       1266791
      ],
      "was": [
       0.0,
       47.4567,
-      42.4598,
-      26.3509,
-      13.3952,
+      42.5177,
+      26.350934,
+      13.395203,
       "2021-01-19",
       1266791
      ],
-     "src": "bsexbrl:532174_1912021151424_SHP.xml",
-     "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0579 (on the stored (A+B) base, DR factor 1.2510) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.4598 -> 42.5177.",
+     "src": "bseapi:532174:108.00",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108.00) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,617,642,087 + Foreign Banks 1,045,546 = 2,618,687,633 / ((A+B+C2) 5,518,677,142 (Table I) - 292,600 = 5,518,384,542) = 47.453881 (was 47.4567 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
+       0.0,
+       47.4567,
+       42.5177,
+       26.3509,
+       13.3952,
+       "2021-01-19",
+       1266791
+      ],
+      "was": [
        0.0,
        47.4567,
        42.4598,
@@ -272809,18 +273231,31 @@
        "2021-01-19",
        1266791
       ],
-      "was": [
-       0.0,
-       47.4324,
-       42.484,
-       26.3509,
-       13.3952,
-       "2021-01-19",
-       1266791
-      ],
-      "src": "bsetable3:532174:108",
-      "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108) FPI B1e 2,617,642,087 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,518,677,142 sh (Table I) = 47.4567. fii 47.4324 -> 47.4567; dii 42.4840 -> 42.4598 (the block had been counted in DII).",
-      "exact": true
+      "src": "bsexbrl:532174_1912021151424_SHP.xml",
+      "why": "\u00a7164s part 20 (2026-10-06, cell-by-cell; raised by the FII session's lowered-dii re-test): the filing's 'NBFCs registered with RBI' row 0.0579 (on the stored (A+B) base, DR factor 1.2510) was never in dii - stored dii = the other domestic lines exactly. R3 counts the NBFC row (as this company's Sep-2018..Mar-2019 cells already do). dii 42.4598 -> 42.5177.",
+      "superseded": {
+       "cell": [
+        0.0,
+        47.4567,
+        42.4598,
+        26.3509,
+        13.3952,
+        "2021-01-19",
+        1266791
+       ],
+       "was": [
+        0.0,
+        47.4324,
+        42.484,
+        26.3509,
+        13.3952,
+        "2021-01-19",
+        1266791
+       ],
+       "src": "bsetable3:532174:108",
+       "why": "\u00a7164r batch 30 (2026-10-05, ICICIBANK at share-count precision, every quarter re-read from the company's own filing): 2020-12-31 - BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 108) FPI B1e 2,617,642,087 + FVCI B1d 0 + institutions Any-Other block B1i 1,338,146 sh (the company's own sub-rows 'Foreign Banks' + 'FII-DR', both FII under our rules - FIIs' ordinary shares inside the 100, not the C1 custodian; D1 / neighbour label where the XBRL leaves them unnamed) on (A+B+C2) 5,518,677,142 sh (Table I) = 47.4567. fii 47.4324 -> 47.4567; dii 42.4840 -> 42.4598 (the block had been counted in DII).",
+       "exact": true
+      }
      }
     }
    },
@@ -273173,7 +273608,7 @@
     "cell": [
      0.0,
      46.717545,
-     40.609204,
+     40.612998,
      20.7441,
      18.9222,
      "2017-07-10",
@@ -273181,7 +273616,7 @@
     ],
     "was": [
      0.0,
-     46.722522,
+     46.717545,
      40.609204,
      20.7441,
      18.9222,
@@ -273189,12 +273624,12 @@
      918718
     ],
     "src": "bseapi:532174:93.01",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93.01) institutions Any-Other block B1i 1,494,316 = 'FOREIGN BANKS' 1,045,636 + 'FIIs-DR' 448,680. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,242,749,011 + FOREIGN BANKS 1,045,636 = 2,243,794,647 / ((A+B+C2) 4,803,343,717 (Table I) - 448,680 = 4,802,895,037) = 46.717545 (was 46.722522 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 448,680 sh is depository-receipt shares, so DII moves to the same base as FII: 40.609204 x 4,803,343,717 / (4,803,343,717 - 448,680 = 4,802,895,037) = 40.612998 (BSE Table I/III qtrid 93.01). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      46.722522,
+      46.717545,
       40.609204,
       20.7441,
       18.9222,
@@ -273203,19 +273638,20 @@
      ],
      "was": [
       0.0,
-      46.6914,
-      40.6298,
+      46.722522,
+      40.609204,
       20.7441,
       18.9222,
       "2017-07-10",
       918718
      ],
-     "src": "bsexbrl",
-     "why": "\u00a7164r batch 30 part 87 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): the institutions category 'FIIs-DR' 448,680 is FII as before (it is a row of B; the DR custodian block C stays outside the base) - part 86 had dropped it in error. fii 46.6914 -> 46.722522, dii 40.6298 -> 40.609204 (DII session's part 86 read).",
+     "src": "bseapi:532174:93.01",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 93.01) institutions Any-Other block B1i 1,494,316 = 'FOREIGN BANKS' 1,045,636 + 'FIIs-DR' 448,680. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,242,749,011 + FOREIGN BANKS 1,045,636 = 2,243,794,647 / ((A+B+C2) 4,803,343,717 (Table I) - 448,680 = 4,802,895,037) = 46.717545 (was 46.722522 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       46.713181,
+       46.722522,
        40.609204,
        20.7441,
        18.9222,
@@ -273231,13 +273667,44 @@
        "2017-07-10",
        918718
       ],
-      "src": "bsexbrl:532174_107201713262_SHP.xml",
-      "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 2,242,749,011; inst:Other FOREIGN BANKS 1,045,636; inst-cat-DR(out, user rule: FII excludes DR sh 448,680) = 46.713181; DII = the DII session's own-line read 40.609204 (line:MutualFundsOrUti 996,411,653; line:AlternativeInvestmentFunds 584,654; line:FinancialInstitutionOrBanks 4,478,665; line:InsuranceCompanies 908,898,140; line:ProvidentFundsOrPensionFunds 39,720,080; NBFC row 506,448). fii 46.6914 -> 46.713181, dii 40.6298 -> 40.609204."
+      "src": "bsexbrl",
+      "why": "\u00a7164r batch 30 part 87 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): the institutions category 'FIIs-DR' 448,680 is FII as before (it is a row of B; the DR custodian block C stays outside the base) - part 86 had dropped it in error. fii 46.6914 -> 46.722522, dii 40.6298 -> 40.609204 (DII session's part 86 read).",
+      "superseded": {
+       "cell": [
+        0.0,
+        46.713181,
+        40.609204,
+        20.7441,
+        18.9222,
+        "2017-07-10",
+        918718
+       ],
+       "was": [
+        0.0,
+        46.6914,
+        40.6298,
+        20.7441,
+        18.9222,
+        "2017-07-10",
+        918718
+       ],
+       "src": "bsexbrl:532174_107201713262_SHP.xml",
+       "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 2,242,749,011; inst:Other FOREIGN BANKS 1,045,636; inst-cat-DR(out, user rule: FII excludes DR sh 448,680) = 46.713181; DII = the DII session's own-line read 40.609204 (line:MutualFundsOrUti 996,411,653; line:AlternativeInvestmentFunds 584,654; line:FinancialInstitutionOrBanks 4,478,665; line:InsuranceCompanies 908,898,140; line:ProvidentFundsOrPensionFunds 39,720,080; NBFC row 506,448). fii 46.6914 -> 46.713181, dii 40.6298 -> 40.609204."
+      }
      }
     }
    },
    "2020-08-15": {
     "cell": [
+     0.0,
+     44.912881,
+     44.428878,
+     27.4636,
+     14.1043,
+     "2020-08-21",
+     1391187
+    ],
+    "was": [
      0.0,
      44.912881,
      44.4266,
@@ -273246,22 +273713,13 @@
      "2020-08-21",
      1391187
     ],
-    "was": [
-     0.0,
-     44.915705,
-     44.4266,
-     27.4636,
-     14.1043,
-     "2020-08-21",
-     1391187
-    ],
     "src": "bseapi:532174:106.01",
-    "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106.01) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,562,432,788 + Foreign Banks 1,045,546 = 2,563,478,334 / ((A+B+C2) 5,707,961,060 (Table I) - 292,600 = 5,707,668,460) = 44.912881 (was 44.915705 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+    "why": "\u00a7164s part 55 (2026-10-18, USER: 'Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings' - the part 50 rule carried to the 2015-22 form after parts 105/107): 'FIIs-DR' 292,600 sh is depository-receipt shares, so DII moves to the same base as FII: 44.426600 x 5,707,961,060 / (5,707,961,060 - 292,600 = 5,707,668,460) = 44.428878 (BSE Table I/III qtrid 106.01). DII shares unchanged; promoter / FII / MF / insurance slots untouched.",
     "exact": true,
     "superseded": {
      "cell": [
       0.0,
-      44.915705,
+      44.912881,
       44.4266,
       27.4636,
       14.1043,
@@ -273270,19 +273728,20 @@
      ],
      "was": [
       0.0,
-      44.8923,
-      44.3776,
+      44.915705,
+      44.4266,
       27.4636,
       14.1043,
       "2020-08-21",
       1391187
      ],
-     "src": "bsexbrl",
-     "why": "\u00a7164r batch 30 part 87 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): 'FIIs-DR' 292,600 stays FII (part 86 had dropped it in error). fii 44.8923 -> 44.915705, dii 44.3776 -> 44.4266 (DII session's part 86 read).",
+     "src": "bseapi:532174:106.01",
+     "why": "\u00a7164r batch 30 part 107 (2026-10-18, user: 'Apply ICICI FII-DR rule to other 2015-22 filings' - the part 105 rule): BSE Table III (Corp_shpSec_SHPPubShold_ng qtrid 106.01) institutions Any-Other block B1i 1,338,146 = 'Foreign Banks' 1,045,546 + 'FIIs-DR' 292,600. 'FIIs-DR' = depository-receipt shares, out of FII and out of the base: FII = FPI B1e 2,562,432,788 + Foreign Banks 1,045,546 = 2,563,478,334 / ((A+B+C2) 5,707,961,060 (Table I) - 292,600 = 5,707,668,460) = 44.912881 (was 44.915705 with the DR row counted as FII on (A+B+C2)). Promoter / DII / MF / insurance slots stay on (A+B+C2), as in parts 100 and 105.",
+     "exact": true,
      "superseded": {
       "cell": [
        0.0,
-       44.910579,
+       44.915705,
        44.4266,
        27.4636,
        14.1043,
@@ -273298,8 +273757,30 @@
        "2020-08-21",
        1391187
       ],
-      "src": "bsexbrl:532174_2182020185323_SHP.xml",
-      "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 2,562,432,788; inst:Other Foreign Banks 1,045,546; inst-cat-DR(out, user rule: FII excludes DR sh 292,600) = 44.910579; DII = the DII session's own-line read 44.4266 (line:MutualFundsOrUti 1,567,611,773; line:AlternativeInvestmentFunds 43,115,991; line:FinancialInstitutionOrBanks 9,066,577; line:InsuranceCompanies 805,067,957; line:ProvidentFundsOrPensionFunds 106,853,051; NBFC row 4,137,659). fii 44.8923 -> 44.910579, dii 44.3776 -> 44.4266."
+      "src": "bsexbrl",
+      "why": "\u00a7164r batch 30 part 87 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): 'FIIs-DR' 292,600 stays FII (part 86 had dropped it in error). fii 44.8923 -> 44.915705, dii 44.3776 -> 44.4266 (DII session's part 86 read).",
+      "superseded": {
+       "cell": [
+        0.0,
+        44.910579,
+        44.4266,
+        27.4636,
+        14.1043,
+        "2020-08-21",
+        1391187
+       ],
+       "was": [
+        0.0,
+        44.8923,
+        44.3776,
+        27.4636,
+        14.1043,
+        "2020-08-21",
+        1391187
+       ],
+       "src": "bsexbrl:532174_2182020185323_SHP.xml",
+       "why": "\u00a7164r batch 30 part 86 (2026-10-13, user rulings 13-Oct, joint FII + DII entry agreed with the DII session): (1) DII follows the filing's own line - a holder on a domestic line stays DII; (2) the unnamed rest of an institutions 'Any Other' line is FII even beside named Indian holders (named register-proven Indian holders - IRDAI / AMFI-listed MF scheme / LIC / UTI / RBI - stay DII); (3) DR-underlying shares out. FII from this filing's own lines (FPI 2,562,432,788; inst:Other Foreign Banks 1,045,546; inst-cat-DR(out, user rule: FII excludes DR sh 292,600) = 44.910579; DII = the DII session's own-line read 44.4266 (line:MutualFundsOrUti 1,567,611,773; line:AlternativeInvestmentFunds 43,115,991; line:FinancialInstitutionOrBanks 9,066,577; line:InsuranceCompanies 805,067,957; line:ProvidentFundsOrPensionFunds 106,853,051; NBFC row 4,137,659). fii 44.8923 -> 44.910579, dii 44.3776 -> 44.4266."
+      }
      }
     }
    }

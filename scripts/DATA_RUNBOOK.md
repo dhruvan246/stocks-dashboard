@@ -28478,8 +28478,16 @@ Table I (CorporatesSHPSecuritybeta), cache `~/stocks-cache/shp/icici_dr/` (tab.j
   1,492,476) has no sub-rows on BSE (API + XBRL) nor on the NSE copy (ids 108897, 110253, 111948, 114704, 117539/118839, 120611,
   123306); the split needs another source (AR FY16 for Mar-16; nothing found yet for the others). Not inferred from neighbours.
 Trap found: an `exact` small-move entry must carry the stored row's FULL length (7th field = holder count) or `_small_move_due`
-never matches and the rebuild prints "neither the fix nor the recorded bad value". Open: part 50 moved page-era DII to the
-DR-excluded base, parts 100/105/107 keep DII on (A+B+C2) for 2015-22 — asked the user.
+never matches and the rebuild prints "neither the fix nor the recorded bad value". Part 50 moved page-era DII to the
+DR-excluded base; for 2015-22 the user chose the same (part 55 below).
+
+**§164s part 55 (2026-10-18, USER: "Yes, move 2016-22 ICICI DII to the same base (total minus FII-DR), like the older filings").**
+Closes the open item of part 107: the part 50 rule (page-era DII on (A+B) − FIIs-DR) now also covers the 2015-22 form. DII =
+stored DII × (A+B+C2) / ((A+B+C2) − the FII-DR / FPI-DR sub-row); DII shares unchanged; FII / promoter / MF / insurance untouched.
+21 cells, each with its own base and DR count in the ledger `why`: the 20 part-107 filings (18 quarters + events 2017-06-24,
+2020-08-15) + Mar-17 (FII-DR 4,224,966 from AR FY17 p72, part 105). Moves +0.0001..+0.0402 pp (Dec-15 34.0786 → 34.114311,
+Mar-17 41.3416 → 41.381782). The 7 part-107 UNKNOWN quarters stay unchanged (no DR split read). Cache
+`~/stocks-cache/shp/icici_dr/dii_cells.json`.
 
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
