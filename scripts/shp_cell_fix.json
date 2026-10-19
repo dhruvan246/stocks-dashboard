@@ -53668,6 +53668,14 @@
    },
    "2015-12-31": {
     "cell": [
+     40.037932,
+     20.2687,
+     21.58147,
+     2.497023,
+     17.368874,
+     "2016-01-28"
+    ],
+    "was": [
      37.692245,
      20.2687,
      19.937485,
@@ -53675,19 +53683,19 @@
      16.0468,
      "2016-01-28"
     ],
-    "was": [
-     37.692245,
-     20.2687,
-     18.6428,
-     2.3096,
-     16.0468,
-     "2016-01-28"
-    ],
-    "src": "bsetable3:500440:88",
-    "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500440, qtrid 88.00 - the original version) own DII rows line:Mutual Funds/ 47,635,308; line:Financial  Institutions/ Banks 5,828,393; line:Insurance  Companies 331,343,205; noninst register:Bajaj Alliance Life Insurance Company 26,899,328 = 411,706,234 sh on Table I base (STABC - C1) 2,064,985,760 = 19.937485; stored 18.642800.",
+    "src": "bsepage:500440 qtrid 88 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page total 1,907,683,909 (the page has no row (C); Table I's 2,064,985,760 also counts the GDR shares) instead of Table I 2,064,985,760. DII = the same own-line count 411,706,234 (Mutual Funds/ 47,635,308 + Financial  Institutions/ Banks 5,828,393 + Insurance  Companies 331,343,205 + Bajaj Life 26,899,328) / 1,907,683,909 = 21.58147; promoter = page 763,797,188 / 1,907,683,909 = 40.037932; MF = page 47,635,308 = 2.497023; insurance = page 331,343,205 = 17.368874",
     "exact": true,
     "superseded": {
      "cell": [
+      37.692245,
+      20.2687,
+      19.937485,
+      2.3096,
+      16.0468,
+      "2016-01-28"
+     ],
+     "was": [
       37.692245,
       20.2687,
       18.6428,
@@ -53695,19 +53703,12 @@
       16.0468,
       "2016-01-28"
      ],
-     "was": [
-      36.9899,
-      20.2687,
-      18.6428,
-      2.3096,
-      16.0468,
-      "2016-01-28"
-     ],
-     "src": "bseapi:Table I (qtrid 88)",
-     "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 778,339,497 of its own base 2,064,985,760 (grand total 2,064,985,760 minus C1 0) = 37.692245. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 36.9899 -> 37.692245; other slots untouched.",
+     "src": "bsetable3:500440:88",
+     "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500440, qtrid 88.00 - the original version) own DII rows line:Mutual Funds/ 47,635,308; line:Financial  Institutions/ Banks 5,828,393; line:Insurance  Companies 331,343,205; noninst register:Bajaj Alliance Life Insurance Company 26,899,328 = 411,706,234 sh on Table I base (STABC - C1) 2,064,985,760 = 19.937485; stored 18.642800.",
+     "exact": true,
      "superseded": {
       "cell": [
-       36.9899,
+       37.692245,
        20.2687,
        18.6428,
        2.3096,
@@ -53715,20 +53716,48 @@
        "2016-01-28"
       ],
       "was": [
-       40.04,
-       21.94,
-       20.18,
-       2.5,
-       17.37,
+       36.9899,
+       20.2687,
+       18.6428,
+       2.3096,
+       16.0468,
        "2016-01-28"
       ],
-      "src": "bseaspx:500440:88+nseresults:1005147",
-      "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 1,907,683,909 shares \u2014 it leaves out 157,301,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2015-12-31 #1005147 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923824."
+      "src": "bseapi:Table I (qtrid 88)",
+      "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 778,339,497 of its own base 2,064,985,760 (grand total 2,064,985,760 minus C1 0) = 37.692245. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 36.9899 -> 37.692245; other slots untouched.",
+      "superseded": {
+       "cell": [
+        36.9899,
+        20.2687,
+        18.6428,
+        2.3096,
+        16.0468,
+        "2016-01-28"
+       ],
+       "was": [
+        40.04,
+        21.94,
+        20.18,
+        2.5,
+        17.37,
+        "2016-01-28"
+       ],
+       "src": "bseaspx:500440:88+nseresults:1005147",
+       "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 1,907,683,909 shares \u2014 it leaves out 157,301,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2015-12-31 #1005147 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923824."
+      }
      }
     }
    },
    "2016-03-31": {
     "cell": [
+     40.039296,
+     19.5013,
+     21.870118,
+     2.635742,
+     17.615747,
+     "2016-05-10"
+    ],
+    "was": [
      37.692245,
      19.5013,
      20.203457,
@@ -53736,19 +53765,19 @@
      16.2772,
      "2016-05-10"
     ],
-    "was": [
-     37.692245,
-     19.5013,
-     18.9747,
-     2.4388,
-     16.2772,
-     "2016-05-10"
-    ],
-    "src": "bsetable3:500440:89",
-    "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500440, qtrid 89.00 - the original version) own DII rows line:Mutual Funds/ 50,279,910; line:Financial  Institutions/ Banks 5,312,730; line:Insurance  Companies 336,041,328; noninst register:Bajaj Alliance Life Insurance Co 25,564,532 = 417,198,500 sh on Table I base (STABC - C1) 2,064,985,760 = 20.203457; stored 18.974700.",
+    "src": "bsepage:500440 qtrid 89 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page total 1,907,618,909 (the page has no row (C); Table I's 2,064,985,760 also counts the GDR shares) instead of Table I 2,064,985,760. DII = the same own-line count 417,198,500 (Mutual Funds/ 50,279,910 + Financial  Institutions/ Banks 5,312,730 + Insurance  Companies 336,041,328 + Bajaj Life 25,564,532) / 1,907,618,909 = 21.870118; promoter = page 763,797,188 / 1,907,618,909 = 40.039296; MF = page 50,279,910 = 2.635742; insurance = page 336,041,328 = 17.615747",
     "exact": true,
     "superseded": {
      "cell": [
+      37.692245,
+      19.5013,
+      20.203457,
+      2.4388,
+      16.2772,
+      "2016-05-10"
+     ],
+     "was": [
       37.692245,
       19.5013,
       18.9747,
@@ -53756,19 +53785,12 @@
       16.2772,
       "2016-05-10"
      ],
-     "was": [
-      36.9887,
-      19.5013,
-      18.9747,
-      2.4388,
-      16.2772,
-      "2016-05-10"
-     ],
-     "src": "bseapi:Table I (qtrid 89)",
-     "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 778,339,497 of its own base 2,064,985,760 (grand total 2,064,985,760 minus C1 0) = 37.692245. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 36.9887 -> 37.692245; other slots untouched.",
+     "src": "bsetable3:500440:89",
+     "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500440, qtrid 89.00 - the original version) own DII rows line:Mutual Funds/ 50,279,910; line:Financial  Institutions/ Banks 5,312,730; line:Insurance  Companies 336,041,328; noninst register:Bajaj Alliance Life Insurance Co 25,564,532 = 417,198,500 sh on Table I base (STABC - C1) 2,064,985,760 = 20.203457; stored 18.974700.",
+     "exact": true,
      "superseded": {
       "cell": [
-       36.9887,
+       37.692245,
        19.5013,
        18.9747,
        2.4388,
@@ -53776,15 +53798,35 @@
        "2016-05-10"
       ],
       "was": [
-       40.04,
-       21.11,
-       20.54,
-       2.64,
-       17.62,
+       36.9887,
+       19.5013,
+       18.9747,
+       2.4388,
+       16.2772,
        "2016-05-10"
       ],
-      "src": "bseaspx:500440:89+nseresults:1009596",
-      "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 1,907,618,909 shares \u2014 it leaves out 157,366,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2016-03-31 #1009596 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923793."
+      "src": "bseapi:Table I (qtrid 89)",
+      "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 778,339,497 of its own base 2,064,985,760 (grand total 2,064,985,760 minus C1 0) = 37.692245. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 36.9887 -> 37.692245; other slots untouched.",
+      "superseded": {
+       "cell": [
+        36.9887,
+        19.5013,
+        18.9747,
+        2.4388,
+        16.2772,
+        "2016-05-10"
+       ],
+       "was": [
+        40.04,
+        21.11,
+        20.54,
+        2.64,
+        17.62,
+        "2016-05-10"
+       ],
+       "src": "bseaspx:500440:89+nseresults:1009596",
+       "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Mar-2016 page (qtrid 89) prints percentages of 1,907,618,909 shares \u2014 it leaves out 157,366,851 shares that the Sep-2015 page (2,064,985,760, block C 157,329,848) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1003613 paid-up 20652.0, 2016-03-31 #1009596 paid-up 20652.0, face value 1.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 2,064,985,760 (\u00b1 100,000 shares, the filings' rounding): x 0.923793."
+      }
      }
     }
    },
@@ -223919,6 +223961,14 @@
    },
    "2015-12-31": {
     "cell": [
+     63.999509,
+     18.7382,
+     0.10201,
+     0.000532,
+     0.0,
+     "2016-01-23"
+    ],
+    "was": [
      68.373876,
      18.7382,
      0.0896,
@@ -223926,19 +223976,12 @@
      0.0,
      "2016-01-23"
     ],
-    "was": [
-     56.2234,
-     18.7382,
-     0.0896,
-     0.0,
-     0.0,
-     "2016-01-23"
-    ],
-    "src": "bseapi:Table I (qtrid 88)",
-    "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 22,226,983 of its own base 32,508,005 (grand total 32,508,005 minus C1 0) = 68.373876. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 56.2234 -> 68.373876; other slots untouched.",
+    "src": "bsepage:532156 qtrid 88 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B)+(C) 28,558,005 (row (C) 16,074 = employee trust, stays in) instead of Table I 32,508,005. DII = the same own-line count 29,132 (Mutual Funds/ 152 + Financial  Institutions/ Banks 2,830 + NBFC row 26,150) / 28,558,005 = 0.10201; promoter = page 18,276,983 / 28,558,005 = 63.999509; MF = page 152 = 0.000532; insurance = page 0 = 0.0",
+    "exact": true,
     "superseded": {
      "cell": [
-      56.2234,
+      68.373876,
       18.7382,
       0.0896,
       0.0,
@@ -223948,16 +223991,23 @@
      "was": [
       56.2234,
       18.7382,
-      0.0088,
+      0.0896,
       0.0,
       0.0,
       "2016-01-23"
      ],
-     "src": "bsetable3:532156:88",
-     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 152, VCF 0, AIF 0, FI/Banks 2,830, Insurance 0, PF 0, NBFC 26,150; total 32,508,005. dii 0.0088 -> 0.0896, ins 0.0 -> 0.0.",
-     "exact": true,
+     "src": "bseapi:Table I (qtrid 88)",
+     "why": "\u00a7164r batch 30 part 89 (2026-10-13, base = the filing's own line, user 12-Oct): this filing's own Table I: promoter (A) 22,226,983 of its own base 32,508,005 (grand total 32,508,005 minus C1 0) = 68.373876. The stored promoter was still on the \u00a7164p seam-quarter base taken from the Sep-2015 page / paid-up capital (another document, retired); fii / mf / dii already sit on the own base. promoter 56.2234 -> 68.373876; other slots untouched.",
      "superseded": {
       "cell": [
+       56.2234,
+       18.7382,
+       0.0896,
+       0.0,
+       0.0,
+       "2016-01-23"
+      ],
+      "was": [
        56.2234,
        18.7382,
        0.0088,
@@ -223965,21 +224015,42 @@
        0.0,
        "2016-01-23"
       ],
-      "was": [
-       64.0,
-       21.33,
-       0.01,
-       0.0,
-       0.0,
-       "2016-01-23"
-      ],
-      "src": "bseaspx:532156:88+nseresults:1004341",
-      "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 28,558,005 shares \u2014 it leaves out 3,950,014 shares that the Sep-2015 page (32,477,919, block C 3,950,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002945 paid-up 3246.18, 2015-12-31 #1004341 paid-up 3249.19, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 32,508,019 (\u00b1 100 shares, the filings' rounding): x 0.878491."
+      "src": "bsetable3:532156:88",
+      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 152, VCF 0, AIF 0, FI/Banks 2,830, Insurance 0, PF 0, NBFC 26,150; total 32,508,005. dii 0.0088 -> 0.0896, ins 0.0 -> 0.0.",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        56.2234,
+        18.7382,
+        0.0088,
+        0.0,
+        0.0,
+        "2016-01-23"
+       ],
+       "was": [
+        64.0,
+        21.33,
+        0.01,
+        0.0,
+        0.0,
+        "2016-01-23"
+       ],
+       "src": "bseaspx:532156:88+nseresults:1004341",
+       "why": "\u00a7164p seam-quarter base (2026-09-27): BSE's Dec-2015 page (qtrid 88) prints percentages of 28,558,005 shares \u2014 it leaves out 3,950,014 shares that the Sep-2015 page (32,477,919, block C 3,950,000) and the company's paid-up capital still count (NSE original results filings: Sep-2015 #1002945 paid-up 3246.18, 2015-12-31 #1004341 paid-up 3249.19, face value 10.0). The company is on the FULL-count basis (D2 / \u00a7164a) and its stored Sep-2015 and Jun-2016 cells are on it, so every slot is re-expressed on the documented count 32,508,019 (\u00b1 100 shares, the filings' rounding): x 0.878491."
+      }
      }
     }
    },
    "2016-03-31": {
     "cell": [
+     63.983543,
+     18.9211,
+     0.113821,
+     0.000525,
+     0.0,
+     "2016-04-21"
+    ],
+    "was": [
      68.41,
      18.9211,
      0.1,
@@ -223987,19 +224058,19 @@
      0.0,
      "2016-04-21"
     ],
-    "was": [
-     68.41,
-     18.9201,
-     0.1,
-     0.0005,
-     0.0,
-     "2016-04-21"
-    ],
-    "src": "bsetable3:532156:89",
-    "why": "\u00a7164r batch 30 (2026-10-05, VAIBHAVGBL re-read cell by cell, share-count precision): 2016-03-31 - BSE Table III (qtrid 89): FPI B1e 689,623 + FVCI B1d 0 + institutions Any-Other B1i 5,462,596 (FOREIGN INSTITUIONAL INVESTORS 851,996; MATTEWS INDIA FUND 500,000; NALANDA INDIA FUND LIMITED 4,110,600 - FII-labelled rows / the company's own '(FII)' tag / FPI-listed elsewhere) on (A+B+C2) 32,515,131 = 18.9211. fii 18.9201 -> 18.9211.",
+    "src": "bsepage:532156 qtrid 89 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B)+(C) 28,565,131 (row (C) 16,074 = employee trust, stays in) instead of Table I 32,515,131. DII = the same own-line count 32,513 (Mutual Funds/ 150 + Financial  Institutions/ Banks 3,095 + NBFC row 29,268) / 28,565,131 = 0.113821; promoter = page 18,276,983 / 28,565,131 = 63.983543; MF = page 150 = 0.000525; insurance = page 0 = 0.0",
     "exact": true,
     "superseded": {
      "cell": [
+      68.41,
+      18.9211,
+      0.1,
+      0.0005,
+      0.0,
+      "2016-04-21"
+     ],
+     "was": [
       68.41,
       18.9201,
       0.1,
@@ -224007,16 +224078,29 @@
       0.0,
       "2016-04-21"
      ],
-     "was": [
-      68.24,
-      2.12,
-      16.81,
-      0.0,
-      0.0,
-      "2016-04-21"
-     ],
-     "src": "bsetable3:532156:89 + bseaspx:532156:89",
-     "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 2.12 -> 18.92, dii 16.81 -> 0.10. Rows: B1i-label FOREIGN INSTITUIONAL INVESTORS 2.62 fii; B1i-named MATTEWS INDIA FUND 1.54 foreign/fii curated; B1i-named NALANDA INDIA FUND LIMITED 12.64 foreign/fii new-format~:ForeignDirectInvestment; B3b-NBFC R3 0.09 dii"
+     "src": "bsetable3:532156:89",
+     "why": "\u00a7164r batch 30 (2026-10-05, VAIBHAVGBL re-read cell by cell, share-count precision): 2016-03-31 - BSE Table III (qtrid 89): FPI B1e 689,623 + FVCI B1d 0 + institutions Any-Other B1i 5,462,596 (FOREIGN INSTITUIONAL INVESTORS 851,996; MATTEWS INDIA FUND 500,000; NALANDA INDIA FUND LIMITED 4,110,600 - FII-labelled rows / the company's own '(FII)' tag / FPI-listed elsewhere) on (A+B+C2) 32,515,131 = 18.9211. fii 18.9201 -> 18.9211.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       68.41,
+       18.9201,
+       0.1,
+       0.0005,
+       0.0,
+       "2016-04-21"
+      ],
+      "was": [
+       68.24,
+       2.12,
+       16.81,
+       0.0,
+       0.0,
+       "2016-04-21"
+      ],
+      "src": "bsetable3:532156:89 + bseaspx:532156:89",
+      "why": "\u00a7164r batch 6 (Quantmac v5): read from BSE's own Table III of this filing (Corp_shpSec_SHPPubShold_ng, QtrCode 89) and the quarter's BSE page total, with the XBRL-era rules; the stored cell came from a third-party / page-seam fill. fii 2.12 -> 18.92, dii 16.81 -> 0.10. Rows: B1i-label FOREIGN INSTITUIONAL INVESTORS 2.62 fii; B1i-named MATTEWS INDIA FUND 1.54 foreign/fii curated; B1i-named NALANDA INDIA FUND LIMITED 12.64 foreign/fii new-format~:ForeignDirectInvestment; B3b-NBFC R3 0.09 dii"
+     }
     }
    },
    "2012-09-30": {
@@ -379398,6 +379482,14 @@
    },
    "2015-12-31": {
     "cell": [
+     31.063797,
+     42.1373,
+     16.411202,
+     10.78131,
+     5.500497,
+     "2016-01-27"
+    ],
+    "was": [
      31.0102,
      42.1373,
      16.3829,
@@ -379405,19 +379497,19 @@
      5.491,
      "2016-01-27"
     ],
-    "was": [
-     31.063,
-     42.0947,
-     16.4128,
-     10.7829,
-     5.5055,
-     "2016-01-27"
-    ],
-    "src": "bsetable3:532215:88",
-    "why": "\u00a7164r batch 30 part 19 (2026-10-06): rebuilt from BSE Table III on the company's printed convention - the FPI row's total 966,751,887 sh incl. its DR column (as the company prints 42.13 / 42.27, and as every AXISBANK XBRL-era cell, the INFY ruling and Screener / Trendlyne read it) + the institutions 'Any Other' sub-row 'Foreign Bank' 125,195 (\u00a7160); 'Foreign Bodies DR' (company-type, DR) and 'Foreign National' stay public. Base = Table I (A+B+C2) 2,294,585,725 (the custodian's 84,329,040 DR shares outside, \u00a7164a). The \u00a7164a re-base of the BSE page had given col IV over the page's (A+B) excluding the public's DR column. DII = MF + FI/Banks + Insurance + NBFC 74,317. prom 31.063 -> 31.0102, fii 42.0947 -> 42.1373, dii 16.4128 -> 16.3829.",
+    "src": "bsepage:532215 qtrid 88 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B) 2,290,626,536 (row (C) 84,329,040 DR custodian shares out) instead of Table I 2,294,585,725. DII = the same own-line count 375,919,337 (Mutual Funds/ 246,959,555 + Financial  Institutions/ Banks 2,889,616 + Insurance  Companies 125,995,849 + NBFC row 74,317) / 2,290,626,536 = 16.411202; promoter = page 711,555,570 / 2,290,626,536 = 31.063797; MF = page 246,959,555 = 10.78131; insurance = page 125,995,849 = 5.500497",
     "exact": true,
     "superseded": {
      "cell": [
+      31.0102,
+      42.1373,
+      16.3829,
+      10.7627,
+      5.491,
+      "2016-01-27"
+     ],
+     "was": [
       31.063,
       42.0947,
       16.4128,
@@ -379425,20 +379517,41 @@
       5.5055,
       "2016-01-27"
      ],
-     "was": [
-      29.96,
-      40.6,
-      15.83,
-      10.4,
-      5.31,
-      "2016-01-27"
-     ],
-     "src": "bseaspx:532215_88",
-     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.036815 = total (A+B+C) 2374955576 shares / (A+B) 2290626536 shares on the same quarter's BSE page; fii 40.60 -> 42.09, dii 15.83 -> 16.41."
+     "src": "bsetable3:532215:88",
+     "why": "\u00a7164r batch 30 part 19 (2026-10-06): rebuilt from BSE Table III on the company's printed convention - the FPI row's total 966,751,887 sh incl. its DR column (as the company prints 42.13 / 42.27, and as every AXISBANK XBRL-era cell, the INFY ruling and Screener / Trendlyne read it) + the institutions 'Any Other' sub-row 'Foreign Bank' 125,195 (\u00a7160); 'Foreign Bodies DR' (company-type, DR) and 'Foreign National' stay public. Base = Table I (A+B+C2) 2,294,585,725 (the custodian's 84,329,040 DR shares outside, \u00a7164a). The \u00a7164a re-base of the BSE page had given col IV over the page's (A+B) excluding the public's DR column. DII = MF + FI/Banks + Insurance + NBFC 74,317. prom 31.063 -> 31.0102, fii 42.0947 -> 42.1373, dii 16.4128 -> 16.3829.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       31.063,
+       42.0947,
+       16.4128,
+       10.7829,
+       5.5055,
+       "2016-01-27"
+      ],
+      "was": [
+       29.96,
+       40.6,
+       15.83,
+       10.4,
+       5.31,
+       "2016-01-27"
+      ],
+      "src": "bseaspx:532215_88",
+      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.036815 = total (A+B+C) 2374955576 shares / (A+B) 2290626536 shares on the same quarter's BSE page; fii 40.60 -> 42.09, dii 15.83 -> 16.41."
+     }
     }
    },
    "2016-03-31": {
     "cell": [
+     30.811116,
+     42.2798,
+     16.297901,
+     10.60134,
+     5.566421,
+     "2016-04-29"
+    ],
+    "was": [
      30.7618,
      42.2798,
      16.2718,
@@ -379446,19 +379559,19 @@
      5.5575,
      "2016-04-29"
     ],
-    "was": [
-     30.8156,
-     42.2499,
-     16.2977,
-     10.6065,
-     5.5671,
-     "2016-04-29"
-    ],
-    "src": "bsetable3:532215:89",
-    "why": "\u00a7164r batch 30 part 19 (2026-10-06): rebuilt from BSE Table III on the company's printed convention - the FPI row's total 973,524,319 sh incl. its DR column (as the company prints 42.13 / 42.27, and as every AXISBANK XBRL-era cell, the INFY ruling and Screener / Trendlyne read it) + the institutions 'Any Other' sub-row 'Foreign Bank' 125,195 (\u00a7160); 'Foreign Bodies DR' (company-type, DR) and 'Foreign National' stay public. Base = Table I (A+B+C2) 2,302,874,106 (the custodian's 79,957,720 DR shares outside, \u00a7164a). The \u00a7164a re-base of the BSE page had given col IV over the page's (A+B) excluding the public's DR column. DII = MF + FI/Banks + Insurance + NBFC 50,281. prom 30.8156 -> 30.7618, fii 42.2499 -> 42.2798, dii 16.2977 -> 16.2718.",
+    "src": "bsepage:532215 qtrid 89 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B) 2,299,185,555 (row (C) 79,957,720 DR custodian shares out) instead of Table I 2,302,874,106. DII = the same own-line count 374,718,980 (Mutual Funds/ 243,744,478 + Financial  Institutions/ Banks 2,941,869 + Insurance  Companies 127,982,352 + NBFC row 50,281) / 2,299,185,555 = 16.297901; promoter = page 708,404,734 / 2,299,185,555 = 30.811116; MF = page 243,744,478 = 10.60134; insurance = page 127,982,352 = 5.566421",
     "exact": true,
     "superseded": {
      "cell": [
+      30.7618,
+      42.2798,
+      16.2718,
+      10.5844,
+      5.5575,
+      "2016-04-29"
+     ],
+     "was": [
       30.8156,
       42.2499,
       16.2977,
@@ -379466,16 +379579,29 @@
       5.5671,
       "2016-04-29"
      ],
-     "was": [
-      29.78,
-      40.83,
-      15.75,
-      10.25,
-      5.38,
-      "2016-04-29"
-     ],
-     "src": "bseaspx:532215_89",
-     "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.034777 = total (A+B+C) 2379143275 shares / (A+B) 2299185555 shares on the same quarter's BSE page; fii 40.83 -> 42.25, dii 15.75 -> 16.30."
+     "src": "bsetable3:532215:89",
+     "why": "\u00a7164r batch 30 part 19 (2026-10-06): rebuilt from BSE Table III on the company's printed convention - the FPI row's total 973,524,319 sh incl. its DR column (as the company prints 42.13 / 42.27, and as every AXISBANK XBRL-era cell, the INFY ruling and Screener / Trendlyne read it) + the institutions 'Any Other' sub-row 'Foreign Bank' 125,195 (\u00a7160); 'Foreign Bodies DR' (company-type, DR) and 'Foreign National' stay public. Base = Table I (A+B+C2) 2,302,874,106 (the custodian's 79,957,720 DR shares outside, \u00a7164a). The \u00a7164a re-base of the BSE page had given col IV over the page's (A+B) excluding the public's DR column. DII = MF + FI/Banks + Insurance + NBFC 50,281. prom 30.8156 -> 30.7618, fii 42.2499 -> 42.2798, dii 16.2977 -> 16.2718.",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       30.8156,
+       42.2499,
+       16.2977,
+       10.6065,
+       5.5671,
+       "2016-04-29"
+      ],
+      "was": [
+       29.78,
+       40.83,
+       15.75,
+       10.25,
+       5.38,
+       "2016-04-29"
+      ],
+      "src": "bseaspx:532215_89",
+      "why": "\u00a7164a depository-receipt basis (2026-09-25, user: \"adopt all three recommendations\"): this company's own first XBRL prints Promoter + Public = 100 with the custodian (shares underlying ADRs/GDRs) OUTSIDE the 100, so its pre-2016 page values are moved from the page's % of (A+B+C) column onto (A+B): all slots x 1.034777 = total (A+B+C) 2379143275 shares / (A+B) 2299185555 shares on the same quarter's BSE page; fii 40.83 -> 42.25, dii 15.75 -> 16.30."
+     }
     }
    },
    "2017-12-18": {
@@ -436194,6 +436320,14 @@
    },
    "2015-12-31": {
     "cell": [
+     13.091101,
+     39.49,
+     17.639598,
+     6.766906,
+     10.771137,
+     "2016-01-22"
+    ],
+    "was": [
      13.09,
      39.49,
      17.61677,
@@ -436201,20 +436335,41 @@
      10.77,
      "2016-01-22"
     ],
-    "was": [
-     13.09,
-     39.49,
-     17.64,
-     6.77,
-     10.77,
-     "2016-01-22"
-    ],
-    "src": "bsetable3:500209:88",
-    "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500209, qtrid 88.00 - the original version) own DII rows line:Mutual Funds/ 155,230,926; line:Financial  Institutions/ Banks 2,257,349; line:Insurance  Companies 247,086,866; NBFC row 72,323 = 404,647,464 sh on Table I base (STABC - C1) 2,296,944,664 = 17.616770; stored 17.640000.",
-    "exact": true
+    "src": "bsepage:500209 qtrid 88 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B)+(C) 2,293,972,095 (row (C) 11,325,284 = employee trust, stays in) instead of Table I 2,296,944,664. DII = the same own-line count 404,647,464 (Mutual Funds/ 155,230,926 + Financial  Institutions/ Banks 2,257,349 + Insurance  Companies 247,086,866 + NBFC row 72,323) / 2,293,972,095 = 17.639598; promoter = page 300,306,199 / 2,293,972,095 = 13.091101; MF = page 155,230,926 = 6.766906; insurance = page 247,086,866 = 10.771137",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      13.09,
+      39.49,
+      17.61677,
+      6.77,
+      10.77,
+      "2016-01-22"
+     ],
+     "was": [
+      13.09,
+      39.49,
+      17.64,
+      6.77,
+      10.77,
+      "2016-01-22"
+     ],
+     "src": "bsetable3:500209:88",
+     "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500209, qtrid 88.00 - the original version) own DII rows line:Mutual Funds/ 155,230,926; line:Financial  Institutions/ Banks 2,257,349; line:Insurance  Companies 247,086,866; NBFC row 72,323 = 404,647,464 sh on Table I base (STABC - C1) 2,296,944,664 = 17.616770; stored 17.640000.",
+     "exact": true
+    }
    },
    "2016-03-31": {
     "cell": [
+     12.763589,
+     40.17,
+     17.477053,
+     6.641499,
+     10.785222,
+     "2016-04-20"
+    ],
+    "was": [
      12.76,
      40.17,
      17.455212,
@@ -436222,17 +436377,30 @@
      10.79,
      "2016-04-20"
     ],
-    "was": [
-     12.76,
-     40.17,
-     17.48,
-     6.64,
-     10.79,
-     "2016-04-20"
-    ],
-    "src": "bsetable3:500209:89",
-    "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500209, qtrid 89.00 - the original version) own DII rows line:Mutual Funds/ 152,360,913; line:Financial  Institutions/ Banks 1,088,363; line:Insurance  Companies 247,420,991; NBFC row 66,287 = 400,936,554 sh on Table I base (STABC - C1) 2,296,944,664 = 17.455212; stored 17.480000.",
-    "exact": true
+    "src": "bsepage:500209 qtrid 89 + Table III",
+    "why": "\u00a7164s part 59d (2026-10-19, user: 'For the 7 held cells, use the total the company printed on its own page (HINDALCO without the GDR shares)', cell read this session): base = page Total (A)+(B)+(C) 2,294,074,185 (row (C) 11,323,576 = employee trust, stays in) instead of Table I 2,296,944,664. DII = the same own-line count 400,936,554 (Mutual Funds/ 152,360,913 + Financial  Institutions/ Banks 1,088,363 + Insurance  Companies 247,420,991 + NBFC row 66,287) / 2,294,074,185 = 17.477053; promoter = page 292,806,199 / 2,294,074,185 = 12.763589; MF = page 152,360,913 = 6.641499; insurance = page 247,420,991 = 10.785222",
+    "exact": true,
+    "superseded": {
+     "cell": [
+      12.76,
+      40.17,
+      17.455212,
+      6.64,
+      10.79,
+      "2016-04-20"
+     ],
+     "was": [
+      12.76,
+      40.17,
+      17.48,
+      6.64,
+      10.79,
+      "2016-04-20"
+     ],
+     "src": "bsetable3:500209:89",
+     "why": "\u00a7164s part 39 (2026-10-14, cell-by-cell check of Quantmac's DII reply 4): BSE Table III (Corp_shpSec_SHPPubShold_ng, scrip 500209, qtrid 89.00 - the original version) own DII rows line:Mutual Funds/ 152,360,913; line:Financial  Institutions/ Banks 1,088,363; line:Insurance  Companies 247,420,991; NBFC row 66,287 = 400,936,554 sh on Table I base (STABC - C1) 2,296,944,664 = 17.455212; stored 17.480000.",
+     "exact": true
+    }
    }
   },
   "INTELLECT": {
