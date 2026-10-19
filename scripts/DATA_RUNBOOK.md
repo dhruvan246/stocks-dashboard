@@ -28583,6 +28583,11 @@ WIPRO Mar-16 (own-line rule gives 11.616005 but 10.9339 is the user's own 4-Oct 
 (270,144,642 + 16,853,544) / 2,470,713,290 = 11.616005; the batch-13 label from later filings dropped. SUNPHARMA Mar-16 was fixed by
 the DII session (part 59b, FII 26.46002, checked here). Held now: JSWSTEEL, PIIND, SONATSOFTW Mar-16. **Part 111c:** after DII part 59c set their base, FINCABLES Mar-16 FII 5.0488 → FPI 7,411,323 / 146,917,795 = 5.044537
 and RPOWER Mar-16 4.2009 → (FPI 80,561,436 + B1i FII 37,239,588) / 2,804,529,770 = 4.200384 (OCB 31,652 out).
+**Part 111d:** DII part 59d moved 8 cells to the page's own total (user's instruction); FII re-judged on it: HINDALCO Dec-15/Mar-16
+20.2687/19.5013 → 21.953542/21.1246 (FPI only, GDR shares out of the base), AXISBANK 42.1373/42.2798 → 42.210158/42.347583 (FPI
+total incl. DR column + Foreign Bank), INFY 39.49/40.17 → 39.6139/40.288355 (FPI total incl. DR column, as INFY's Jun-16/Sep-16
+cells; the stored had the fully-paid column only), VAIBHAVGBL 18.7382/18.9211 → 21.325457/21.537514 (FPI + FII line + Matthews +
+Nalanda; the stored were §164p seam re-bases).
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
