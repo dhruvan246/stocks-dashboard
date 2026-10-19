@@ -1,7 +1,7 @@
 {
 "_meta": {
-"built": "2026-09-27 20:06 IST",
-"cells": 268
+"built": "2026-10-19 21:04 IST",
+"cells": 293
 },
 "holds": {
 "1STCUS": {
@@ -48,6 +48,22 @@
 "nsh": 17577
 },
 "fmt": "old"
+}
+},
+"AARCON": {
+"2026-09-30": {
+"why": "nsh gate: 99 vs 2241 earlier",
+"src": "bsexbrl:532024_10102026165841_SHP.xml",
+"cell": {
+"prom": 79.78,
+"pub": 20.22,
+"fii": 0.0,
+"dii": 0.0,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 99
+},
+"fmt": "unknown"
 }
 },
 "ABHISHEK": {
@@ -512,6 +528,22 @@
 "shares": "share count 134171400 is >5x off every neighbour [13311050, 13311050]"
 }
 },
+"BAJGLOB": {
+"2026-09-30": {
+"why": "continuity: dii >10pp from every neighbour",
+"src": "bsexbrl:512261_16102026104416_SHP.xml",
+"cell": {
+"prom": 50.76,
+"pub": 49.24,
+"fii": 0.0,
+"dii": 20.215488,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 400
+},
+"fmt": "new"
+}
+},
 "BDR": {
 "2026-03-31": {
 "why": "identity: no ISIN on record for BDR and the file's own symbol does not vouch for INE766Q01014",
@@ -694,6 +726,11 @@
 "nsh": 5692
 },
 "fmt": "old"
+}
+},
+"BIZOTIC": {
+"2026-09-30": {
+"shares": "share count 57852000 is >5x off every neighbour [9378000, 9642000]"
 }
 },
 "BMBMUMG": {
@@ -942,6 +979,39 @@
 "fmt": "old"
 }
 },
+"CDG": {
+"2026-09-30": {
+"why": "identity: dashboard ticker CDG differs from bse_scrips ticker JUJHARLOGI for scrip 534796",
+"src": "bsexbrl:534796_16102026182235_SHP.xml",
+"cell": {
+"prom": 73.75,
+"pub": 26.25,
+"fii": 0.0,
+"dii": 0.701976,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 1629
+},
+"fmt": "new"
+}
+},
+"CELLECOR": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "nse:SHP_1735934_12102026011030_WEB.xml",
+"cell": {
+"prom": 43.08,
+"pub": 56.92,
+"fii": 17.048225,
+"dii": 0.0,
+"mf": 0.0,
+"ins": 0.0,
+"gov": 12.144377,
+"nsh": 3913
+},
+"fmt": "new"
+}
+},
 "CEMAINFRA": {
 "2020-03-31": {
 "why": "old-format row needing row-level placement: R1 institutional Any-Other 0.0100 []",
@@ -972,6 +1042,20 @@
 "nsh": 1596
 },
 "fmt": "unknown"
+},
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "bsexbrl:531099_1310202610575_SHP.xml",
+"cell": {
+"prom": 0.0,
+"pub": 100.0,
+"fii": 19.142896,
+"dii": 0.0,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 2401
+},
+"fmt": "new"
 }
 },
 "CHDCHEM": {
@@ -1128,6 +1212,9 @@
 },
 "2026-03-31": {
 "shares": "share count 22209295 is >5x off every neighbour [3611400, 4284856]"
+},
+"2026-09-30": {
+"shares": "share count 23393075 is >5x off every neighbour [3611400, 4284856]"
 }
 },
 "DAVANGERE": {
@@ -1201,6 +1288,9 @@
 },
 "DHARIWAL": {
 "2026-03-31": {
+"shares": "share count 94014000 is >5x off every neighbour [8951400, 8951400]"
+},
+"2026-09-30": {
 "shares": "share count 94014000 is >5x off every neighbour [8951400, 8951400]"
 }
 },
@@ -1350,6 +1440,22 @@
 "shares": "share count 159850000 is >5x off every neighbour [1210000, 1210000, 1598500000, 1598500000]"
 }
 },
+"EXPOEAPL": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "bsexbrl:526614_17102026115854_SHP.xml",
+"cell": {
+"prom": 55.72,
+"pub": 44.28,
+"fii": 12.797257,
+"dii": 4.997923,
+"mf": 0.001542,
+"ins": 0.0,
+"nsh": 8886
+},
+"fmt": "new"
+}
+},
 "FEDDERSHOL": {
 "2020-03-31": {
 "why": "identity: file ISIN INS417D01012 does not match scrip 511628 / FEDDERSHOL ISINs ['INE417D01020']",
@@ -1379,23 +1485,6 @@
 "GENUSPRIME": {
 "2026-06-30": {
 "shares": "share count 77977210 is >5x off every neighbour [14926440, 14926440]"
-}
-},
-"GLOBALLOG": {
-"2026-06-30": {
-"why": "continuity: fii >5pp from every neighbour",
-"src": "bsexbrl:544665_2172026183711_SHP.xml",
-"cell": {
-"prom": 59.86,
-"pub": 40.14,
-"fii": 7.6882,
-"dii": 2.8138,
-"mf": 0.0,
-"ins": 0.0,
-"gov": 0.0,
-"nsh": 213
-},
-"fmt": "new"
 }
 },
 "GLOBUSCON": {
@@ -1504,6 +1593,9 @@
 "GUJCOTEX": {
 "2026-06-30": {
 "shares": "share count 94933241 is >5x off every neighbour [14244000, 14244000]"
+},
+"2026-09-30": {
+"shares": "share count 94933241 is >5x off every neighbour [14244000, 14244000]"
 }
 },
 "HEXATRADEX": {
@@ -1520,6 +1612,22 @@
 "nsh": 17777
 },
 "fmt": "old"
+}
+},
+"HILIKS": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "bsexbrl:539697_14102026131730_SHP.xml",
+"cell": {
+"prom": 3.83,
+"pub": 96.17,
+"fii": 9.961686,
+"dii": 5.363985,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 2465
+},
+"fmt": "new"
 }
 },
 "HITTCO": {
@@ -1541,10 +1649,16 @@
 "IBINFO": {
 "2026-06-30": {
 "shares": "share count 12807210 is >5x off every neighbour [1280721, 1280721]"
+},
+"2026-09-30": {
+"shares": "share count 12807210 is >5x off every neighbour [1280721, 1280721]"
 }
 },
 "IDREAM": {
 "2026-06-30": {
+"shares": "share count 270553280 is >5x off every neighbour [150000, 150000]"
+},
+"2026-09-30": {
 "shares": "share count 270553280 is >5x off every neighbour [150000, 150000]"
 }
 },
@@ -2279,6 +2393,9 @@
 "META": {
 "2026-06-30": {
 "shares": "share count 1219909771 is >5x off every neighbour [116432311, 116432311]"
+},
+"2026-09-30": {
+"shares": "share count 1219909771 is >5x off every neighbour [116432311, 116432311]"
 }
 },
 "METROGLOBL": {
@@ -2440,6 +2557,23 @@
 "shares": "share count 67746410 is >5x off every neighbour [6961410, 6961410, 6961410]"
 }
 },
+"MTPL": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "bsexbrl:540254_610202620930_SHP.xml",
+"cell": {
+"prom": 29.28,
+"pub": 70.72,
+"fii": 9.671571,
+"dii": 6.402049,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 2583
+},
+"fmt": "new",
+"shares": "share count 78100000 is >5x off every neighbour [14200000, 14200000]"
+}
+},
 "NAKSH": {
 "2020-03-31": {
 "why": "old-format row needing row-level placement: R1 institutional Any-Other 6.9400 ['Other', 'Clearing Member', 'Other']",
@@ -2485,6 +2619,9 @@
 "shares": "share count 10331803 is >5x off every neighbour [75432679, 82125000, 82125000, 82125000]"
 },
 "2026-06-30": {
+"shares": "share count 492750000 is >5x off every neighbour [82125000, 82125000]"
+},
+"2026-09-30": {
 "shares": "share count 492750000 is >5x off every neighbour [82125000, 82125000]"
 }
 },
@@ -2619,6 +2756,14 @@
 "nsh": 9738
 },
 "fmt": "old"
+}
+},
+"PRABHATAM": {
+"2026-06-30": {
+"shares": "share count 19028500 is >5x off every neighbour [221538850]"
+},
+"2026-09-30": {
+"shares": "share count 221538850 is >5x off every neighbour [19028500]"
 }
 },
 "PRIMEFRESH": {
@@ -2850,6 +2995,22 @@
 "fmt": "old"
 }
 },
+"RULKA": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "nse:SHP_1738042_14102026062145_WEB.xml",
+"cell": {
+"prom": 60.05,
+"pub": 39.95,
+"fii": 8.149295,
+"dii": 0.0,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 1478
+},
+"fmt": "new"
+}
+},
 "SAMRATPH": {
 "2020-03-31": {
 "why": "old-format row needing row-level placement: R1 institutional Any-Other 3.2400 []",
@@ -2896,6 +3057,9 @@
 },
 "SANINFRA": {
 "2026-06-30": {
+"shares": "share count 15800750 is >5x off every neighbour [158007500, 158007500]"
+},
+"2026-09-30": {
 "shares": "share count 15800750 is >5x off every neighbour [158007500, 158007500]"
 }
 },
@@ -2978,6 +3142,22 @@
 "fmt": "unknown"
 }
 },
+"SOBME": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "bsexbrl:512014_1310202614143_SHP.xml",
+"cell": {
+"prom": 60.58,
+"pub": 39.42,
+"fii": 19.223002,
+"dii": 0.0,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 1419
+},
+"fmt": "new"
+}
+},
 "SPARKLEGR": {
 "2025-03-31": {
 "why": "identity: file ISIN INE61801010F does not match scrip 530037 / SPARKLEGR ISINs ['INE618F01010']",
@@ -3024,6 +3204,22 @@
 "SSWRL": {
 "2026-06-30": {
 "shares": "share count 528414 is >5x off every neighbour [3311490, 3311490]"
+}
+},
+"STRIDERS": {
+"2026-09-30": {
+"why": "continuity: fii >5pp from every neighbour",
+"src": "nse:SHP_1741628_19102026044941_WEB.xml",
+"cell": {
+"prom": 69.52,
+"pub": 30.48,
+"fii": 1.882163,
+"dii": 0.07259,
+"mf": 0.0,
+"ins": 0.0,
+"nsh": 339
+},
+"fmt": "new"
 }
 },
 "TAKE": {
@@ -3388,6 +3584,14 @@
 "shares": "share count 11200000 is >5x off every neighbour [98000000, 98000000]"
 }
 },
+"TRUSTWAVE": {
+"2026-06-30": {
+"shares": "share count 6537600 is >5x off every neighbour [326880]"
+},
+"2026-09-30": {
+"shares": "share count 326880 is >5x off every neighbour [6537600]"
+}
+},
 "TTKPRESTIG": {
 "2021-09-30": {
 "shares": "share count 13861402 is >5x off every neighbour [138614020, 138614020]"
@@ -3431,6 +3635,16 @@
 "VIKSHEN": {
 "2026-03-31": {
 "shares": "share count 12500 is >5x off every neighbour [249000, 249000, 250000]"
+}
+},
+"VMARCIND": {
+"2026-09-30": {
+"shares": "share count 146524176 is >5x off every neighbour [24420696, 24420696]"
+}
+},
+"VOLKAI": {
+"2026-09-30": {
+"shares": "share count 11829560 is >5x off every neighbour [1182956, 1182956]"
 }
 },
 "WHEELS": {
