@@ -1,5 +1,5 @@
 {
- "built": "2026-10-16",
+ "built": "2026-10-19 21:02 IST",
  "how": "each figure checked against the filing it came from (both the latest and the year-ago document opened); true_yoy_pct compares like with like ~12 months apart",
  "rows": [
   {
@@ -428,20 +428,22 @@
    "key": "544167",
    "name": "JNK India Ltd",
    "latest_verdict": "CORRECT",
-   "latest_correct_value_cr": 1801,
+   "latest_correct_value_cr": 1801.0,
    "latest_as_on": "2026-06-30",
-   "year_ago_verdict": "DATE WRONG",
-   "year_ago_correct_value_cr": 1081.9,
-   "year_ago_as_on": "2025-03-31",
-   "true_yoy_pct": null,
-   "book_to_ttm_sales": null,
-   "script_yoy_pct": 66.5,
-   "notes": "Latest stated 30-Jun-2026. Year-ago 10,819 Mn is 'as of March 31, 2025' (FY25 AR). No Jun-2025 figure read. vs Mar-2025: +66.5% over 15 months; ledger (not opened) shows Sep-2025 1,849.9 and Mar-2026 1,961.4, i.e. the book has been falling since Sep-2025 - true 12-month YoY unknown.",
+   "year_ago_verdict": "CORRECT",
+   "year_ago_correct_value_cr": 982.8,
+   "year_ago_as_on": "2025-06-30",
+   "true_yoy_pct": 83.3,
+   "book_to_ttm_sales": 2.15,
+   "script_yoy_pct": 75.6,
+   "notes": "CORRECTION to this row's own 2026-10-11 check, which read year_ago_verdict 'DATE WRONG' and left true_yoy_pct null on the ground that 'No Jun-2025 figure read'. A Jun-2025 figure DOES exist and was read in full on 2026-10-19: JNK's Q1 FY26 earnings press release (NSE, filed 07-Aug-2025) says 'As of June 30, 2025, the Company's order book was at Rs 9,828 million, comprising 79.4% from heating solutions, 12.8% from process plants, and 7.8% from flares, incinerators and other renewables. As on June 30, 2025, domestic projects contributed 90.9% of the total order book.' = Rs 982.8 cr, company-wide, with a segment split. LATEST re-read the same day from two documents: the Q1FY27 revised investor presentation (BSE 12-Aug-2026) states both 'Our order book as on June 30, 2026 is Rs 1,801 cr' and the chart '624 / 1,082 / 1,961 / 1,801; Mar-24 / Mar-25 / Mar-26 / Jun-26', and the Q1FY27 call transcript (filed 19-Aug-2026) repeats 'Our order book as on 30th of June 2026 stood at INR 1,801 crores'. Same definition at both ends => true YoY 1,801/982.8 - 1 = +83.3%. Cross-check that the two ends are the same series: the Jun-2025 press release's Q1 FY26 figures (total revenue Rs 102.97 cr, EBITDA Rs 7.17 cr at 7.0%, PAT Rs 1.13 cr at 1.1%) match the Q1FY26 column of the Q1FY27 deck (103.0 / 7.2 at 7.0% / 1.1) exactly. book_to_ttm_sales uses CONSOLIDATED FY26 total income of Rs 838.0 cr (Q1FY27 deck P&L); on standalone FY26 revenue of Rs 755.61 cr it is 2.38x. Execution period: no single figure given; management states H2 carries 60-70% of annual revenue and that BPCL Bina revenue falls in FY27 and FY28. CAUTION: the book has FALLEN from Rs 1,961 cr at 31-Mar-2026, and the 50%+ crossing was first filed 20-May-2026, five months before this check.",
    "docs": [
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/871da7e4-a6c9-40fc-b1e3-0418c3890b17.pdf",
+    "https://nsearchives.nseindia.com/corporate/JNKINDIA23_07082025201813_Q1FY26_earnings_press_release.pdf",
     "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8875b427-12d3-49d9-b993-2f10c7197fb5.pdf",
-    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/ef4640e8-78d4-4b5b-b83e-d9a556fa4e7d.pdf"
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0a10419a-11be-45d5-ad24-d3359c4b9a52.pdf"
    ],
-   "checked": "2026-10-11"
+   "checked": "2026-10-19"
   },
   {
    "key": "543230",
@@ -634,6 +636,24 @@
     "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a1a4c9b0-76e0-48f6-8552-1c7b5ffcee63.pdf"
    ],
    "checked": "2026-10-16"
+  },
+  {
+   "key": "500183",
+   "name": "HFCL Ltd",
+   "latest_verdict": "CORRECT",
+   "latest_correct_value_cr": 28911.0,
+   "latest_as_on": "2026-09-30",
+   "year_ago_verdict": "CORRECT",
+   "year_ago_correct_value_cr": 9981.0,
+   "year_ago_as_on": "2025-09-30",
+   "script_yoy_pct": 189.7,
+   "true_yoy_pct": 189.7,
+   "book_to_ttm_sales": null,
+   "notes": "Checked on 2026-10-19 because HFCL filed a NEWER order book that day - the only one of the 33 yoy>=50 signals rows with a filing later than its last check. Its Q2FY27 investor presentation (BSE 19-Oct-2026) states Rs 28,911 cr: cover slide '28,911 Cr CONFIRMED ORDER BOOK', MD letter 'Our order book exceeds Rs 28,900 crore', and the chart 'Total Order Book 21,206 / 26,665 / 28,911  Q4FY26 / Q1FY27 / Q2FY27'. It reconciles twice on the same slide: Networks 19,751 + O&M 4,090 + Products 5,070 = 28,911, and Government 10,105 + Private 18,806 = 28,911. 64% of the book is OFC/DCI, 57% export; a defence book of ~Rs 1,850 cr is stated separately and it is NOT stated whether the ~Rs 2,000 cr book of an entity 'proposed to be acquired' sits inside the 28,911. YEAR AGO: the company's own 'Order book: INR 9981 Crores (as of September 30, 2025)' from the Q2FY26 earnings-call transcript, the comparator already on file. Same total-order-book definition at both ends => +189.7%, so the screen's figure needs no correction. book_to_ttm_sales left unset deliberately: HFCL's market cap is Rs 41,127 cr (BSE scrip master, read this run), far above this page's Rs 200-7,500 cr band, so it is a confirmed-jumps table row only and no idea card follows from it.",
+   "docs": [
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/52bcff6e-34cb-4d4b-88ca-a59046342f27.pdf"
+   ],
+   "checked": "2026-10-19"
   }
  ]
 }
