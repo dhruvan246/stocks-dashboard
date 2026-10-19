@@ -857,7 +857,33 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     return '<button data-sort="'+col+'" data-for="'+which+'" class="'+(st.col===col?'on':'')+'">'+label+(st.col===col?(st.dir<0?' ↓':' ↑'):'')+'</button>';
   }
   /* compute row objects + totals once per fetch, then render (re-render on sort without refetch) */
+  /* Purchase lots for the per-lot MTF block: the portfolio's strategy books (the same token-gated holdings
+     row portfolio.html reads) — one book row = one buy at its own price. A stock with one row, or rows that
+     don't add up to Kite's MTF qty, falls back to Kite's averaged MTF price (one lot). Reloaded every 10 min;
+     until it arrives (or if it can't), every stock is one averaged lot — the old behaviour. */
+  var BOOK=null, BOOK_AT=0, BOOK_BUSY=false;
+  var SUPA_GET='https://nebjnsndgrhumnkuipqy.supabase.co/rest/v1/rpc/pf_feed_get', SUPA_ANON='sb_publishable_MDlQwiVc5deii91__UNeDg_z9r4Fk98';
+  function baseSym(s){ return String(s||'').replace(/\.(NS|BO)$/,'').replace(/-(BE|SM|ST|BZ)$/,''); }
+  function loadBook(){
+    var t=pfToken(); if(!t || BOOK_BUSY || Date.now()-BOOK_AT<600000) return;
+    BOOK_BUSY=true;
+    fetch(SUPA_GET+'?token='+encodeURIComponent(t)+'&apikey='+SUPA_ANON,{cache:'no-store'})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(row){ if(!row||!row.z) return null;
+        var bytes=Uint8Array.from(atob(row.z),function(c){return c.charCodeAt(0);});
+        return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).json(); })
+      .then(function(doc){ BOOK_BUSY=false; BOOK_AT=Date.now(); if(!doc||!doc.holdings) return;
+        var b={}; doc.holdings.forEach(function(h){ var k=baseSym(h.sym); if(+h.qty>0&&+h.avg>0) (b[k]=b[k]||[]).push([+h.qty,+h.avg]); });
+        BOOK=b; if(ACCT.lastD && !editingAcct()) drawAcct(ACCT.lastD); })
+      .catch(function(){ BOOK_BUSY=false; BOOK_AT=Date.now(); });
+  }
+  function mtfLots(sym,mq,mAvg){
+    var rs=(BOOK&&BOOK[baseSym(sym)])||[], sum=function(a){ return a.reduce(function(s,l){return s+l[0];},0); };
+    if(sum(rs)!==mq) rs=rs.filter(function(l){ return l[0]<=mq; });   // cash-bought rows mixed in (e.g. CPPLUS)
+    return (rs.length>1 && sum(rs)===mq) ? rs : [[mq,mAvg]];
+  }
   function drawAcct(D){
+    ACCT.lastD=D; loadBook();
     var eq=D.marg&&D.marg.equity, av=(eq&&eq.available)||null;
     ACCT.avail=eq?(av&&av.live_balance!=null?av.live_balance:(eq.net!=null?eq.net:(av&&av.cash))):null;
     ACCT.used=(eq&&eq.utilised)?eq.utilised.debits:null;
@@ -877,12 +903,16 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
          vs the ₹2.219 Cr Zerodha posted. So today's hit to cash = yesterday's block − today's block:
          a loser falling further → minus, a loser recovering → plus (up to its cost), a gainer staying
          above cost → 0, a gainer falling through cost → minus only for the part below cost.
-         MTF leg only (its own qty + avg) — delivery/pledged shares are paid for, no daily block. */
+         MTF leg only (its own qty + avg) — delivery/pledged shares are paid for, no daily block.
+         PER LOT (user 2026-10-19): Zerodha blocks each purchase lot on its own price, so a lot bought above
+         the close blocks its loss even when the averaged position is in profit. On 19-Oct the averaged sum
+         gave ₹117.9 L vs ₹133.6 L posted; per lot (mtfLots) = ₹133.58 L. */
       var mt=r.mtf||{}, mq=mt.quantity||0, mAvg=+mt.average_price||0,
           prev=(r.close_price!=null&&+r.close_price>0)?+r.close_price:(r.day_change!=null?ltp-r.day_change:null);
-      var blkNow=null,blkPrev=null,cashHit=null;
-      if(mq>0&&mAvg>0&&ltp>0){ blkNow=Math.max(0,(mAvg-ltp)*mq);
-        if(prev!=null&&prev>0){ blkPrev=Math.max(0,(mAvg-prev)*mq); cashHit=blkPrev-blkNow; } }
+      var blkNow=null,blkPrev=null,cashHit=null,lots=mtfLots(r.tradingsymbol,mq,mAvg);
+      function blkAt(px){ return lots.reduce(function(s,l){ return s+Math.max(0,(l[1]-px)*l[0]); },0); }
+      if(mq>0&&mAvg>0&&ltp>0){ blkNow=blkAt(ltp);
+        if(prev!=null&&prev>0){ blkPrev=blkAt(prev); cashHit=blkPrev-blkNow; } }
       return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,inv:avg*q,isMtf:mq>0,mq:mq,cq:r.collateral_quantity||0,
         mAvg:mAvg,blkNow:blkNow,blkPrev:blkPrev,cashHit:cashHit};
     });
