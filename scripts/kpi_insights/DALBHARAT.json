@@ -1953,10 +1953,9 @@
    "name": "Thermal Power Capacity",
    "unit": "MW",
    "kind": "level",
-   "y": {
-    "20240331": 212.0
-   },
+   "y": {},
    "q": {
+    "20241231": 212,
     "20251231": 212.0
    },
    "src": {
@@ -1966,16 +1965,34 @@
      "Thermal Power Capacity (as on 31st Dec 2025)",
      "212"
     ],
-    "y:20240331": [
+    "q:20241231": [
      "7f45ae25-acab-4e67-b98f-473f4682b218.pdf",
      29,
-     "Thermal Power Capacity (doc period)",
+     "212 MW of Thermal Power Capacity",
      "212"
     ]
    },
    "latest": {
     "y:20240331": "2025-04-03"
-   }
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     212.0,
+     null,
+     "drop_y",
+     "att8 7f45ae25 p29 (Investor Presentation Feb 2025): '464 MW of Power Capacity including 212 MW of Thermal Power Capacity', same block footnoted 'includes 46 MW ",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     null,
+     212,
+     "set_q",
+     "att8 7f45ae25 p29 (Feb 2025 deck, after Q3 FY25): '212 MW of Thermal Power Capacity'; block footnote ties it to Q3FY25 ('46 MW commissioned in Q3FY25')",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Cement Capacity Addition",
@@ -2583,5 +2600,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-19"
+ "updated": "2026-10-21"
 }

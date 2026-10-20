@@ -172,37 +172,6 @@
    }
   },
   {
-   "name": "R&D Centers",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20210331": 1.0,
-    "20250331": 1.0,
-    "20260331": 1.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "423ff711-c418-4037-a286-1d309c8360e5.pdf",
-     7,
-     "1 R&D Center (doc period)",
-     "1"
-    ],
-    "y:20250331": [
-     "80fbe3a0-abef-4273-93b0-587c619d9714.pdf",
-     7,
-     "1 R&D Center (doc period)",
-     "1"
-    ],
-    "y:20210331": [
-     "333c8031-57c7-4503-9ccb-264554dc9830.pdf",
-     6,
-     "R&D Center (March 31, 2021 data)",
-     "1"
-    ]
-   }
-  },
-  {
    "name": "Sales to Dealers/Distributors (% of Total Sales)",
    "unit": "%",
    "kind": "level",
@@ -274,11 +243,44 @@
    ]
   },
   {
+   "name": "R&D Centers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20210331": 1.0,
+    "20260331": 1.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "423ff711-c418-4037-a286-1d309c8360e5.pdf",
+     7,
+     "1 R&D Center (doc period)",
+     "1"
+    ],
+    "y:20210331": [
+     "333c8031-57c7-4503-9ccb-264554dc9830.pdf",
+     6,
+     "R&D Center (March 31, 2021 data)",
+     "1"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     1.0,
+     null,
+     "drop_y",
+     "80fbe3a0 p7 (Investor meeting 12 Mar 2026): '1 R&D Center / 2 Customer Technical Centers' undated; FY 2024-25 labels only sales (page also cites YTD Q3 FY2025-2",
+     "2026-10-21"
+    ]
+   ]
+  },
+  {
    "name": "Customer Technical Centers",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20250331": 2.0,
     "20260331": 2.0
    },
    "q": {},
@@ -288,14 +290,18 @@
      7,
      "2 Customer Technical Centers (doc period)",
      "2"
-    ],
-    "y:20250331": [
-     "80fbe3a0-abef-4273-93b0-587c619d9714.pdf",
-     7,
-     "2 Customer Technical Centers (doc period)",
-     "2"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     2.0,
+     null,
+     "drop_y",
+     "80fbe3a0 p7 (Investor meeting 12 Mar 2026): '1 R&D Center / 2 Customer Technical Centers' undated; FY 2024-25 labels only sales (page also cites YTD Q3 FY2025-2",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Customer Technical Centre Visitors",
@@ -724,5 +730,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-21"
 }
