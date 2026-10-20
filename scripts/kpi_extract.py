@@ -187,6 +187,22 @@ def parse_period(label, fy_end_month=3):
     if re.search(r"\b(nine|six|9|6)\s*months?\b|\bhalf[\s\-]*(year|yearly)\b|\b(first|second)\s*half\b|(?<![a-z])(h[12]|[12]h|9m)(?=fy|\d|'|\b)"
                  r"|\bcumulative\b|\btrailing\b|\b(last|latest)\s*(twelve|12)\s*months\b", low):
         return None, None
+    # calendar-year labels (2026-10-20, ABB/IGIL/VBL): "Q2 CY2026", "CY26 Q1", "Q1CY24" = that calendar quarter whatever
+    # the FY; "CY2023" / "Calendar Year 2023" / "Full year 2021" / "12M 2024" = the year ended 31 Dec — a year only for a
+    # Dec-FY company. "Q2 CY2026" used to fall through to the bare-CY rule and become the whole year.
+    m = re.search(r"\bq\s*([1-4])\s*['\-/]?\s*cy\s*'?(\d{4}|\d{2})\b", low)
+    mq = (m.group(1), m.group(2)) if m else None
+    if not mq:
+        m = re.search(r"\bcy\s*'?(\d{4}|\d{2})\s*['\-/]?\s*q\s*([1-4])\b", low)
+        mq = (m.group(2), m.group(1)) if m else None
+    if mq:
+        y, mo = _yy(mq[1]), 3 * int(mq[0])
+        if (mo - fy_end_month) % 3:
+            return None, None
+        return "q", dt.date(y, mo, calendar.monthrange(y, mo)[1]).strftime("%Y%m%d")
+    m = re.fullmatch(r"\s*(?:cy|calendar\s*year|full\s*year|12\s*m(?:onths)?)\s*'?\s*(\d{4}|\d{2})\s*", low)
+    if m:
+        return ("y", _fy_end(_yy(m.group(1)), 12).strftime("%Y%m%d")) if fy_end_month == 12 else (None, None)
     m = re.search(r"\b(?:financial\s*|fiscal\s*|full\s*)?(?:year|twelve\s*months|12\s*months)\s*(?:ended|ending|end)\b(.*)$", low)
     if m:
         t, e = parse_period(m.group(1), fy_end_month)
@@ -472,6 +488,21 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             label = str(v.get("label") or "")[:80]
             per = str(v.get("period") or "")
             ptype, pend = parse_period(per, fy_end_month)
+            # a label about a period in an EARLIER fiscal era (NESTLEIND's "CY2023" in an Apr-Mar deck, PGHL's June-year
+            # "F.Y. 2023-24" comparative) is read under the FY rule in force at that period's end — accepted only when
+            # that reading equals the reader's own period_end (2026-10-20)
+            _me = str(v.get("period_end") or "").replace("-", "")
+            if (ptype is None or (_me and _me != pend)) and re.fullmatch(r"\d{8}", _me):
+                _d = "%s-%s-%s" % (_me[:4], _me[4:6], _me[6:])
+                _nxt = (dt.date.fromisoformat(_d) + dt.timedelta(days=1)).isoformat()
+                # the era in force at that date, plus a new era starting the next day: a transition year
+                # (GILLETTE/PGHH "F.Y. 2024-25" = Jul-24..Mar-25, ending the day before the Apr-Mar era begins)
+                for _fe in {fy_month_at(L, _d)} | {int(e[0]) for e in (L.get("fy_eras") or []) if e[1] == _nxt}:
+                    if _fe != fy_end_month:
+                        _t, _e = parse_period(per, _fe)
+                        if _t and _e == _me:
+                            ptype, pend = _t, _e
+                            break
             why = None
             if re.search(r"target|guidance|projection|projected|outlook|ambition|aspiration|\bplan\b|planned|expected|estimate", (label + " " + name).lower()):
                 why = "target/guidance, not a reported figure (label %r)" % label[:40]   # CPPLUS p11 'Production Capacity Targets' slipped past the prompt
