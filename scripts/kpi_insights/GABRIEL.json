@@ -2147,6 +2147,7 @@
    "unit": "%",
    "kind": "flow",
    "y": {
+    "20180331": 40.0,
     "20190331": 65.0,
     "20200331": 80.0,
     "20210331": 78.0,
@@ -2156,9 +2157,7 @@
     "20250331": 91.0,
     "20260331": 98.0
    },
-   "q": {
-    "20180331": 40.0
-   },
+   "q": {},
    "src": {
     "y:20210331": [
      "ee684405-f273-4990-9033-ef8d5617aa0c.pdf",
@@ -2202,17 +2201,17 @@
      "Employees covered under training programmes (%)",
      "80"
     ],
-    "q:20180331": [
-     "b5edc0ae-36d4-45ac-9f27-1d82efdb573f.pdf",
-     25,
-     "Employees covered under training programmes (%)",
-     "40"
-    ],
     "y:20190331": [
      "ee684405-f273-4990-9033-ef8d5617aa0c.pdf",
      31,
      "Employees covered under training programmes (%)",
      "65"
+    ],
+    "y:20180331": [
+     "b5edc0ae-36d4-45ac-9f27-1d82efdb573f.pdf",
+     25,
+     "Employees covered under training programmes (%)",
+     "40"
     ]
    },
    "fixed": [
@@ -2278,6 +2277,14 @@
      null,
      "drop_q",
      "33d634eb p34 Key Metrics table Mar'21|Mar'20|Mar'19 is annual (revenue/employee, training spend per year); 78% = FY21 annual; y slot already holds 78",
+     "2026-10-20"
+    ],
+    [
+     "q:20180331",
+     40.0,
+     null,
+     "moved to y:20180331",
+     "b5edc0ae p25 'Key Metrics' table columns Mar'20/Mar'19/Mar'18 = 80%/65/40: annual FY18 figure stored in a q slot (y FY19=65, FY20=80 come from same kind of annu",
      "2026-10-20"
     ]
    ],
