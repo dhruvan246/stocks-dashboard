@@ -181,6 +181,20 @@ def parse_period(label, fy_end_month=3):
     # "Upto Q2 22" was matched as Q2 by the quarter rules below (IRFC disbursements, 2026-10-15)
     if re.search(r"\b(h[12]|1h|2h|9m|ytd|ttm|ltm|up\s*to|upto|till)\b", low):   # "2021-22 (Upto Sep 2021)" is part of a year, not the year
         return None, None
+    # spans written out ("nine months ended", "half year ended", "h1fy20 (sep-19)") are never one quarter; "year ended
+    # 31-Dec-2023" / "12 months ended 31.03.2022" is the YEAR when it ends on this company's FY end, else nothing —
+    # both were read as the quarter of their end date (2026-10-20: CY totals in RAIN's Dec quarter, FY totals in Q4)
+    if re.search(r"\b(nine|six|9|6)\s*months?\b|\bhalf[\s\-]*(year|yearly)\b|\b(first|second)\s*half\b|(?<![a-z])(h[12]|[12]h|9m)(?=fy|\d|'|\b)"
+                 r"|\bcumulative\b|\btrailing\b|\b(last|latest)\s*(twelve|12)\s*months\b", low):
+        return None, None
+    m = re.search(r"\b(?:financial\s*|fiscal\s*|full\s*)?(?:year|twelve\s*months|12\s*months)\s*(?:ended|ending|end)\b(.*)$", low)
+    if m:
+        t, e = parse_period(m.group(1), fy_end_month)
+        if t == "y":
+            return t, e
+        if t == "q" and int(e[4:6]) == fy_end_month:
+            return "y", e
+        return None, None
     low = re.sub(r"(?<![a-z])f\s?'?(\d{2})\b", r"fy\1", low)   # Mahindra's "F27" / "Q1 F27" / "Q1F25" = FY27
     low = re.sub(r"\bq\s*([1-4])\s*(\d{2})-(\d{2})\b", r"q\1 fy\3", low)   # Coal India's "Q1 26-27" = Q1 FY27
     SEP = r"[\s,\-–/']*"                     # "Q2, FY 26", "Q1-FY27", "Q4/FY26", "Q1'FY25" all mean the same
@@ -323,9 +337,31 @@ Return ONLY JSON of this shape:
 """
 
 
+def fy_month_at(L, date):
+    """FY-end month in force for a filing dated `date`. `fy_eras` = [[month, "YYYY-MM-DD" first filing date of that
+    era], ...] for companies that changed year-end (ACC/AMBUJACEM Dec→Mar 2023, GILLETTE/PGHH Jun→Mar 2025, from
+    each company's own XBRL DateOfStartOfFinancialYear); absent = one fy_end_month throughout."""
+    eras = sorted(L.get("fy_eras") or [], key=lambda e: e[1])
+    if not eras:
+        return int(L.get("fy_end_month") or 3)
+    fe = int(eras[0][0])                       # filings older than the first era start use the earliest known year-end
+    for mon, start in eras:
+        if str(date or "") >= start:
+            fe = int(mon)
+    return fe
+
+
 def build_prompt(sym, company, doc, pages, known, fy_end_month):
-    fy_note = ("This company's financial year ends in %s." % calendar.month_name[fy_end_month]) if fy_end_month != 3 \
-        else "Indian FY runs April–March: FY27 = Apr 2026–Mar 2027; Q1 FY27 ends 2026-06-30, Q4 FY26 ends 2026-03-31."
+    if fy_end_month == 3:
+        fy_note = "Indian FY runs April–March: FY27 = Apr 2026–Mar 2027; Q1 FY27 ends 2026-06-30, Q4 FY26 ends 2026-03-31."
+    else:   # non-March filers (RAIN/ABB/CASTROL Dec, KENNAMET Jun, SIEMENS Sep) — their year totals were slotted as quarters
+        fe = _fy_end(2025, fy_end_month)
+        fs = (fe.replace(day=1) - dt.timedelta(days=330)).replace(day=1)
+        fy_note = ("This company's financial year does NOT run April–March: it ends in %s. Its FY2025 (also printed as "
+                   "CY2025 or 2025 when it ends in December) = %s %d–%s %d; Q1 of that year ends %s, Q4 ends %s. A figure "
+                   "for the whole year is period_type \"FY\" with period_end %s — never a quarter." % (
+                       calendar.month_name[fy_end_month], calendar.month_abbr[fs.month], fs.year, calendar.month_abbr[fe.month],
+                       fe.year, _q_end(2025, 1, fy_end_month).isoformat(), fe.isoformat(), fe.isoformat()))
     known_txt = "\n".join("- %s [%s]" % (m["name"], m["unit"]) for m in known) or "- (none yet)"
     head = PROMPT.format(company=company, sym=sym, title=doc.get("title") or doc["kind"], date=doc["date"],
                          fy_note=fy_note, known=known_txt, max_metrics=MAX_METRICS)
@@ -393,7 +429,7 @@ def to_float(v):
 def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
     """Validate one document's answer and merge it. Returns (written, held, rejected) counts."""
     L = load_ledger(sym)
-    fy_end_month = int(L.get("fy_end_month") or 3)
+    fy_end_month = fy_month_at(L, doc.get("date"))
     att = doc["att"]
     page_map = {p: norm_num_text(t) for p, t in pages_text}
     L["docs"][att] = {"kind": doc["kind"], "date": doc["date"], "title": (answer.get("doc_title") or doc.get("title") or "")[:120],
@@ -788,7 +824,7 @@ def run(sym, docs, backend, by, limit=None, dry=False):
             L = load_ledger(sym); L["docs"][doc["att"]] = {"kind": doc["kind"], "date": doc["date"], "title": doc.get("title", "")[:120], "read": dt.date.today().isoformat(), "by": by, "note": "no text layer"}; save_ledger(L)
             continue
         L = load_ledger(sym)
-        prompt = build_prompt(sym, comp, doc, sel, known_metrics(L), fy_end_month)
+        prompt = build_prompt(sym, comp, doc, sel, known_metrics(L), fy_month_at(L, doc.get("date")))
         if backend == "packet":
             os.makedirs(PACKET_DIR, exist_ok=True)
             pk = os.path.join(PACKET_DIR, "%s__%s.prompt.txt" % (kpi_docs_slug(sym), doc["att"][:8]))
