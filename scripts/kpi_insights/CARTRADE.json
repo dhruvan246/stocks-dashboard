@@ -87,9 +87,9 @@
      "1.48"
     ],
     "y:20260331": [
-     "b3b9c275-bacb-4c59-99ae-b2b4e7ef878e.pdf",
-     26,
-     "~1.7 million auctions a year (doc period)",
+     "4ba9eea6-0854-48eb-b960-09eec60ea962.pdf",
+     37,
+     "auction listings in FY 2025-26",
      "1.7"
     ],
     "q:20251231": [
@@ -113,55 +113,14 @@
      "set_q",
      "att8 460e1ec0 p21: '~1.9 million auctions a year' is an undated status claim; the Q3 FY26 deck 4dbda6c2 p6 prints 'Q3 FY26 annualised auction listing for Remark",
      "2026-10-20"
-    ]
-   ]
-  },
-  {
-   "name": "Auction Volume (Remarketing)",
-   "unit": "lakhs",
-   "kind": "flow",
-   "y": {
-    "20260331": 3.0
-   },
-   "q": {
-    "20250930": 2.79,
-    "20251231": 2.68,
-    "20260630": 2.25
-   },
-   "src": {
-    "q:20260630": [
-     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
-     6,
-     "FY27 auction volume for Remarketing business is 2.25 lakhs",
-     "2.25"
     ],
-    "y:20260331": [
-     "b3b9c275-bacb-4c59-99ae-b2b4e7ef878e.pdf",
-     26,
-     "3.0 lakh+ vehicles transacted annually (doc period)",
-     "3.0"
-    ],
-    "q:20251231": [
-     "4dbda6c2-2a3f-4a15-aa1c-a9f5848b747e.pdf",
-     6,
-     "Q3 FY26 annualised auction volume for Remarketing business is 2.68 lakhs",
-     "2.68"
-    ],
-    "q:20250930": [
-     "9403265e-0b9a-4298-ab3c-f5eab3680e09.pdf",
-     5,
-     "Q2 FY26 annualised auction volume 2.79 lakhs",
-     "2.79"
-    ]
-   },
-   "fixed": [
     [
-     "q:20251231",
-     2.5,
-     2.68,
-     "set_q",
-     "att8 460e1ec0 p21: '2.5 lakh+ vehicles transacted annually' is an undated status claim; the Q3 FY26 deck 4dbda6c2 p6 prints 'Q3 FY26 annualised auction volume f",
-     "2026-10-20"
+     "y:20260331",
+     1.7,
+     1.7,
+     "set_y",
+     "4ba9eea6 (AR FY26) p37: 'processed 1.7 million auction listings in FY 2025-26' (dated print; replaces undated b3b9c275 p26 source)",
+     "2026-10-21"
     ]
    ]
   },
@@ -351,6 +310,55 @@
      "100"
     ]
    }
+  },
+  {
+   "name": "Auction Volume (Remarketing)",
+   "unit": "lakhs",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 2.79,
+    "20251231": 2.68,
+    "20260630": 2.25
+   },
+   "src": {
+    "q:20260630": [
+     "98d8c82b-f26d-491f-bff0-e4c2fa186958.pdf",
+     6,
+     "FY27 auction volume for Remarketing business is 2.25 lakhs",
+     "2.25"
+    ],
+    "q:20251231": [
+     "4dbda6c2-2a3f-4a15-aa1c-a9f5848b747e.pdf",
+     6,
+     "Q3 FY26 annualised auction volume for Remarketing business is 2.68 lakhs",
+     "2.68"
+    ],
+    "q:20250930": [
+     "9403265e-0b9a-4298-ab3c-f5eab3680e09.pdf",
+     5,
+     "Q2 FY26 annualised auction volume 2.79 lakhs",
+     "2.79"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     2.5,
+     2.68,
+     "set_q",
+     "att8 460e1ec0 p21: '2.5 lakh+ vehicles transacted annually' is an undated status claim; the Q3 FY26 deck 4dbda6c2 p6 prints 'Q3 FY26 annualised auction volume f",
+     "2026-10-20"
+    ],
+    [
+     "y:20260331",
+     3.0,
+     null,
+     "drop_y",
+     "b3b9c275 p26 '3.0 lakh+ vehicles transacted annually' is undated; AR FY26 p37 also undated ('more than 2.5 lakh vehicles annually'); no dated FY26 print found",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Lost Time Injury Frequency Rate",
@@ -934,6 +942,15 @@
    "sub": "Reg. 34 (1) Annual Report"
   },
   {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-09-03",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/543333/75169543333.pdf",
+   "att": "75169543333.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  },
+  {
    "kind": "ip",
    "date": "2022-07-29",
    "att": "0cad2586-7af2-49af-a153-b5c098f950fe.pdf",
@@ -950,15 +967,6 @@
    "size": 3815662,
    "cat": "Company Update",
    "sub": "Investor Presentation"
-  },
-  {
-   "kind": "ar",
-   "fy": 2022,
-   "date": "2022-03-31",
-   "url": "https://www.bseindia.com/bseplus/AnnualReport/543333/75169543333.pdf",
-   "att": "75169543333.pdf",
-   "title": "Annual Report FY22",
-   "size": 0
   },
   {
    "kind": "ip",
@@ -982,5 +990,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-20"
+ "updated": "2026-10-21"
 }

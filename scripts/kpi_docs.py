@@ -166,7 +166,7 @@ def list_docs(sym, since="2015-04-01", until=None, kinds=("ip", "pr", "res", "ar
 
 
 def annual_reports(sym):
-    """[{kind:'ar', date:'YYYY-03-31'-ish FY end, fy, url, att}] from AnnualReport_New (direct URLs)."""
+    """[{kind:'ar', date: BSE filing date (else 'YYYY-03-31'), fy, url, att}] from AnnualReport_New (direct URLs)."""
     code = scripcode(sym)
     if not code:
         return []
@@ -181,7 +181,12 @@ def annual_reports(sym):
         yr = str(t.get("Year") or "")
         if not url.lower().endswith(".pdf") or not re.match(r"^\d{4}$", yr):
             continue
-        out.append({"kind": "ar", "fy": int(yr), "date": "%s-03-31" % yr, "url": url,
+        # date = the day BSE received the report (Fld_AuthoriseDate), not "<Year>-03-31": a calendar-year
+        # company's CY2021 report was dated 2021-03-31 though filed in Mar-2022, so it sorted before the
+        # same year's quarterly decks (keep-newer, fy_month_at). Fallback only when BSE leaves it blank.
+        ad = str(t.get("Fld_AuthoriseDate") or "")[:10]
+        date = ad if re.match(r"^\d{4}-\d{2}-\d{2}$", ad) else "%s-03-31" % yr
+        out.append({"kind": "ar", "fy": int(yr), "date": date, "url": url,
                     "att": url.rsplit("/", 1)[-1], "title": "Annual Report FY%s" % yr[2:], "size": 0})
     return out
 

@@ -3388,11 +3388,11 @@
     "20200930": 90.0,
     "20210630": 93.0,
     "20210930": 89.0,
-    "20221231": 21.0,
-    "20230930": 21.0,
-    "20231231": 100.0,
-    "20240930": 100.0,
-    "20241231": 100.0
+    "20221231": 92,
+    "20230930": 91,
+    "20231231": 89,
+    "20240930": 91,
+    "20241231": 78
    },
    "src": {
     "y:20230331": [
@@ -3417,31 +3417,31 @@
      "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
      33,
      "Thermal (excl. Mundra) - Generation Availability",
-     "21"
+     "92"
     ],
     "q:20230930": [
      "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
      33,
      "Thermal (excl. Mundra) - Generation Availability",
-     "21"
+     "91"
     ],
     "q:20231231": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "100"
+     "Thermal (excl. Mundra) - Generation Availability",
+     "89"
     ],
     "q:20240930": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "100"
+     "Thermal (excl. Mundra) - Generation Availability",
+     "91"
     ],
     "q:20241231": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "100"
+     "Thermal (excl. Mundra) - Generation Availability",
+     "78"
     ],
     "q:20200930": [
      "13e17912-ef7c-4d07-a7af-f49dd1d89d6e.pdf",
@@ -3462,13 +3462,46 @@
      "93"
     ]
    },
-   "restated": [
+   "fixed": [
+    [
+     "q:20221231",
+     21.0,
+     92,
+     "set_q",
+     "76ceb9e7 p33: each period's group lists Thermal(excl. Mundra) first: PLF 75, Availability 92 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20230930",
+     21.0,
+     91,
+     "set_q",
+     "76ceb9e7 p33: each period's group lists Thermal(excl. Mundra) first: PLF 78, Availability 91 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
     [
      "q:20231231",
-     "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
-     21.0,
-     "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
-     100.0
+     100.0,
+     89,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 76, Availability 89 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20240930",
+     100.0,
+     91,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 75, Availability 91 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     100.0,
+     78,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 65, Availability 78 (21/100 are Solar's values)",
+     "2026-10-21"
     ]
    ]
   },
@@ -3485,11 +3518,11 @@
     "20200930": 65.0,
     "20210630": 70.0,
     "20210930": 76.0,
-    "20221231": 100.0,
-    "20230930": 100.0,
-    "20231231": 21.0,
-    "20240930": 20.0,
-    "20241231": 20.0
+    "20221231": 75,
+    "20230930": 78,
+    "20231231": 76,
+    "20240930": 75,
+    "20241231": 65
    },
    "src": {
     "y:20230331": [
@@ -3514,31 +3547,31 @@
      "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
      33,
      "Thermal (excl. Mundra) - Plant Load / Capacity Utilization Factor",
-     "100"
+     "75"
     ],
     "q:20230930": [
      "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
      33,
      "Thermal (excl. Mundra) - Plant Load / Capacity Utilization Factor",
-     "100"
+     "78"
     ],
     "q:20231231": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "21"
+     "Thermal (excl. Mundra) - Plant Load / Capacity Utilization Factor",
+     "76"
     ],
     "q:20240930": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "20"
+     "Thermal (excl. Mundra) - Plant Load / Capacity Utilization Factor",
+     "75"
     ],
     "q:20241231": [
      "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
      46,
-     "Thermal (excl. Mundra)",
-     "20"
+     "Thermal (excl. Mundra) - Plant Load / Capacity Utilization Factor",
+     "65"
     ],
     "q:20200930": [
      "13e17912-ef7c-4d07-a7af-f49dd1d89d6e.pdf",
@@ -3559,13 +3592,46 @@
      "70"
     ]
    },
-   "restated": [
+   "fixed": [
+    [
+     "q:20221231",
+     100.0,
+     75,
+     "set_q",
+     "76ceb9e7 p33: each period's group lists Thermal(excl. Mundra) first: PLF 75, Availability 92 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20230930",
+     100.0,
+     78,
+     "set_q",
+     "76ceb9e7 p33: each period's group lists Thermal(excl. Mundra) first: PLF 78, Availability 91 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
     [
      "q:20231231",
-     "76ceb9e7-9bd9-4798-9972-522367f67b26.pdf",
-     100.0,
-     "0e46f676-306a-40ba-9fc1-3aa4092a3914.pdf",
-     21.0
+     21.0,
+     76,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 76, Availability 89 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20240930",
+     20.0,
+     75,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 75, Availability 91 (21/100 are Solar's values)",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     20.0,
+     65,
+     "set_q",
+     "0e46f676 p46: each period's group lists Thermal(excl. Mundra) first: PLF 65, Availability 78 (21/100 are Solar's values)",
+     "2026-10-21"
     ]
    ]
   },
@@ -5670,6 +5736,15 @@
    "sub": "Reg. 34 (1) Annual Report"
   },
   {
+   "kind": "ar",
+   "fy": 2022,
+   "date": "2022-06-13",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/73199500400.pdf",
+   "att": "73199500400.pdf",
+   "title": "Annual Report FY22",
+   "size": 0
+  },
+  {
    "kind": "ip",
    "date": "2022-05-06",
    "att": "8153c982-d038-4939-ae6e-c5570827f527.pdf",
@@ -5686,15 +5761,6 @@
    "size": 979143,
    "cat": "Company Update",
    "sub": "Investor Presentation"
-  },
-  {
-   "kind": "ar",
-   "fy": 2022,
-   "date": "2022-03-31",
-   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/73199500400.pdf",
-   "att": "73199500400.pdf",
-   "title": "Annual Report FY22",
-   "size": 0
   },
   {
    "kind": "pr",
@@ -5733,6 +5799,15 @@
    "sub": "Press Release / Media Release"
   },
   {
+   "kind": "ar",
+   "fy": 2021,
+   "date": "2021-06-11",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/68559500400.pdf",
+   "att": "68559500400.pdf",
+   "title": "Annual Report FY21",
+   "size": 0
+  },
+  {
    "kind": "res",
    "date": "2021-06-10",
    "att": "d15dec44-1dd5-4793-8861-37217222e37a.pdf",
@@ -5758,15 +5833,6 @@
    "size": 0,
    "cat": "Company Update",
    "sub": "Press Release / Media Release"
-  },
-  {
-   "kind": "ar",
-   "fy": 2021,
-   "date": "2021-03-31",
-   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/68559500400.pdf",
-   "att": "68559500400.pdf",
-   "title": "Annual Report FY21",
-   "size": 0
   },
   {
    "kind": "pr",
@@ -5805,6 +5871,15 @@
    "sub": "Reg. 34 (1) Annual Report"
   },
   {
+   "kind": "ar",
+   "fy": 2020,
+   "date": "2020-07-07",
+   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/5004000320.pdf",
+   "att": "5004000320.pdf",
+   "title": "Annual Report FY20",
+   "size": 0
+  },
+  {
    "kind": "pr",
    "date": "2020-05-19",
    "att": "3bda720b-c939-41bc-8bf2-bbb559646131.pdf",
@@ -5823,15 +5898,6 @@
    "sub": "Press Release / Media Release"
   },
   {
-   "kind": "ar",
-   "fy": 2020,
-   "date": "2020-03-31",
-   "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/5004000320.pdf",
-   "att": "5004000320.pdf",
-   "title": "Annual Report FY20",
-   "size": 0
-  },
-  {
    "kind": "ip",
    "date": "2020-01-29",
    "att": "0d751c4f-7e4f-4781-97b5-3585fe5aabd5.pdf",
@@ -5843,7 +5909,7 @@
   {
    "kind": "ar",
    "fy": 2019,
-   "date": "2019-03-31",
+   "date": "2019-05-22",
    "url": "https://www.bseindia.com/bseplus/AnnualReport/500400/5004000319.pdf",
    "att": "5004000319.pdf",
    "title": "Annual Report FY19",
