@@ -6162,10 +6162,10 @@
    "kind": "level",
    "y": {
     "20200331": 45.2,
-    "20220331": 100.0,
     "20250331": 190.0
    },
    "q": {
+    "20211231": 100.0,
     "20230630": 150.0,
     "20231231": 152.0,
     "20260331": 470.0
@@ -6195,19 +6195,37 @@
      "Total Installed Capacity (till Q1-FY24) - 150 MW of solar and wind.",
      "150"
     ],
-    "y:20220331": [
-     "3c0e4420-08d9-4851-bd5e-2595dce5fe01.pdf",
-     13,
-     "Renewables installed capacity for FY22",
-     "100"
-    ],
     "y:20200331": [
      "64728500440_01_12_20.pdf",
      386,
      "cumulative installed renewable energy capacity",
      "45.2"
+    ],
+    "q:20211231": [
+     "3c0e4420-08d9-4851-bd5e-2595dce5fe01.pdf",
+     13,
+     "Hindalco has reached its 100 MW target of Renewables installed capacity for FY22",
+     "100"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20220331",
+     100.0,
+     null,
+     "drop_y",
+     "att8 3c0e4420 p13 (Q3FY22 results, 10-Feb-2022): 50 MW installed 'in Q3FY22' and 'With the above, Hindalco has reached its 100 MW target of Renewables installed",
+     "2026-10-21"
+    ],
+    [
+     "q:20211231",
+     null,
+     100.0,
+     "set_q",
+     "att8 3c0e4420 p13 (Q3FY22 results, 10-Feb-2022): 50 MW installed 'in Q3FY22' and 'With the above, Hindalco has reached its 100 MW target of Renewables installed",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Alumina Production",
@@ -8237,6 +8255,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-11",
+ "updated": "2026-10-21",
  "checked": "2026-09-05"
 }

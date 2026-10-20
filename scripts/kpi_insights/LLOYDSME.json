@@ -2425,30 +2425,6 @@
    }
   },
   {
-   "name": "Employee Attrition Rate",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20220331": 24.0,
-    "20240331": 8.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "1ec15ff1-9159-4c41-b114-c32fc4e62f0d.pdf",
-     28,
-     "Attrition rates fell to 8% in FY24",
-     "8"
-    ],
-    "y:20220331": [
-     "1ec15ff1-9159-4c41-b114-c32fc4e62f0d.pdf",
-     28,
-     "from 24% in FY22",
-     "24"
-    ]
-   }
-  },
-  {
    "name": "BHQ Reserves",
    "unit": "MT",
    "kind": "level",
@@ -2532,6 +2508,33 @@
      "479,690"
     ]
    }
+  },
+  {
+   "name": "Employee Attrition Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20220331": 24.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "1ec15ff1-9159-4c41-b114-c32fc4e62f0d.pdf",
+     28,
+     "from 24% in FY22",
+     "24"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     8.0,
+     null,
+     "drop_y",
+     "att8 1ec15ff1 p28 'Attrition rates fell to 8% in FY24'; doc = Q3/9M FY24 deck dated 22-Jan-2024 (p1), FY24 not yet ended - not a full-year FY24 figure; no ended",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Extractable Iron Ore Reserves",
@@ -3155,5 +3158,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-21"
 }

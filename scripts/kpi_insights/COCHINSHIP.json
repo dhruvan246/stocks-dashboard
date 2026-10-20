@@ -431,16 +431,9 @@
     "20230930": 1308.0,
     "20231231": 1260.0,
     "20240331": 1258.0,
-    "20240630": 1225.0,
-    "20260930": 1600.0
+    "20240630": 1225.0
    },
    "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Commercial - Domestic Order Value",
-     "1,600"
-    ],
     "q:20240630": [
      "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
      28,
@@ -471,7 +464,17 @@
      "Commercial – Domestic Total (doc period)",
      "1260"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     1600.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Order Book - Commercial Export",
@@ -483,16 +486,9 @@
     "20230930": 2316.0,
     "20231231": 2688.0,
     "20240331": 3480.0,
-    "20240630": 3277.0,
-    "20260930": 7200.0
+    "20240630": 3277.0
    },
    "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Commercial - Export Order Value",
-     "7,200"
-    ],
     "q:20240630": [
      "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
      28,
@@ -523,7 +519,17 @@
      "Commercial – Export Total (doc period)",
      "2688"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     7200.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Order Book - Defence",
@@ -535,16 +541,9 @@
     "20230930": 16685.0,
     "20231231": 16064.0,
     "20240331": 15225.0,
-    "20240630": 15028.0,
-    "20260930": 11900.0
+    "20240630": 15028.0
    },
    "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Defence Order Value",
-     "11,900"
-    ],
     "q:20240630": [
      "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
      28,
@@ -575,7 +574,17 @@
      "Defence Total (doc period)",
      "16064"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     11900.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Order Book - HCSL",
@@ -758,44 +767,6 @@
    }
   },
   {
-   "name": "Order Book Vessels - Total",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20210331": 50.0,
-    "20240331": 47.0,
-    "20240630": 47.0,
-    "20260930": 78.0
-   },
-   "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "TOTAL No. of Vessels",
-     "78"
-    ],
-    "q:20240630": [
-     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
-     28,
-     "TOTAL No. of Vessels",
-     "47"
-    ],
-    "q:20240331": [
-     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
-     30,
-     "TOTAL No. of Vessels",
-     "47"
-    ],
-    "q:20210331": [
-     "abde23d1-f57f-428f-8a28-963d1f4216ba.pdf",
-     19,
-     "Total No. of Vessels - Total",
-     "50"
-    ]
-   }
-  },
-  {
    "name": "Shipbuilding Order Book (Total)",
    "unit": "INR Cr",
    "kind": "level",
@@ -834,159 +805,45 @@
    }
   },
   {
-   "name": "Order Book - Ship Repair",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 1250.0,
-    "20240630": 1000.0,
-    "20260930": 1200.0
-   },
-   "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Ship Repair Orders (Approx.)",
-     "1,200"
-    ],
-    "q:20240630": [
-     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
-     28,
-     "Ship Repair Orders (Approx)",
-     "1,000"
-    ],
-    "q:20240331": [
-     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
-     30,
-     "Ship Repair Orders (Approx)",
-     "1,250"
-    ]
-   }
-  },
-  {
-   "name": "Order Book - Shipbuilding (Total)",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 19963.0,
-    "20240630": 19530.0,
-    "20260930": 20700.0
-   },
-   "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Order Book Execution Status TOTAL Order Value",
-     "20,700"
-    ],
-    "q:20240630": [
-     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
-     28,
-     "Order Book Position TOTAL Order Value",
-     "19,530"
-    ],
-    "q:20240331": [
-     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
-     30,
-     "Order Book Position TOTAL Order Value",
-     "19,963"
-    ]
-   }
-  },
-  {
-   "name": "Order Book Vessels - Commercial Domestic",
+   "name": "Order Book Vessels - Total",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20240331": 18.0,
-    "20240630": 18.0,
-    "20260930": 36.0
+    "20210331": 50.0,
+    "20240331": 47.0,
+    "20240630": 47.0
    },
    "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Commercial - Domestic No. of Vessels",
-     "36"
-    ],
     "q:20240630": [
      "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
      28,
-     "Commercial - Domestic No. of Vessels",
-     "18"
+     "TOTAL No. of Vessels",
+     "47"
     ],
     "q:20240331": [
      "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
      30,
-     "Commercial - Domestic No. of Vessels",
-     "18"
+     "TOTAL No. of Vessels",
+     "47"
+    ],
+    "q:20210331": [
+     "abde23d1-f57f-428f-8a28-963d1f4216ba.pdf",
+     19,
+     "Total No. of Vessels - Total",
+     "50"
     ]
-   }
-  },
-  {
-   "name": "Order Book Vessels - Commercial Export",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 14.0,
-    "20240630": 14.0,
-    "20260930": 31.0
    },
-   "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Commercial - Export No. of Vessels",
-     "31"
-    ],
-    "q:20240630": [
-     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
-     28,
-     "Commercial - Export No. of Vessels",
-     "14"
-    ],
-    "q:20240331": [
-     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
-     30,
-     "Commercial - Export No. of Vessels",
-     "14"
+   "fixed": [
+    [
+     "q:20260930",
+     78.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
     ]
-   }
-  },
-  {
-   "name": "Order Book Vessels - Defence",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 15.0,
-    "20240630": 15.0,
-    "20260930": 11.0
-   },
-   "src": {
-    "q:20260930": [
-     "9be93d07-be78-44fc-a440-d534f28b3325.pdf",
-     16,
-     "Defence No. of Vessels",
-     "11"
-    ],
-    "q:20240630": [
-     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
-     28,
-     "Defence No. of Vessels",
-     "15"
-    ],
-    "q:20240331": [
-     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
-     30,
-     "Defence No. of Vessels",
-     "15"
-    ]
-   }
+   ]
   },
   {
    "name": "Commercial Domestic Order Book",
@@ -1088,6 +945,74 @@
    }
   },
   {
+   "name": "Order Book - Ship Repair",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 1250.0,
+    "20240630": 1000.0
+   },
+   "src": {
+    "q:20240630": [
+     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
+     28,
+     "Ship Repair Orders (Approx)",
+     "1,000"
+    ],
+    "q:20240331": [
+     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
+     30,
+     "Ship Repair Orders (Approx)",
+     "1,250"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     1200.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
+  },
+  {
+   "name": "Order Book - Shipbuilding (Total)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 19963.0,
+    "20240630": 19530.0
+   },
+   "src": {
+    "q:20240630": [
+     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
+     28,
+     "Order Book Position TOTAL Order Value",
+     "19,530"
+    ],
+    "q:20240331": [
+     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
+     30,
+     "Order Book Position TOTAL Order Value",
+     "19,963"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     20700.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
+  },
+  {
    "name": "Order Book Vessel Count",
    "unit": "count",
    "kind": "level",
@@ -1111,6 +1036,108 @@
      "75"
     ]
    }
+  },
+  {
+   "name": "Order Book Vessels - Commercial Domestic",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 18.0,
+    "20240630": 18.0
+   },
+   "src": {
+    "q:20240630": [
+     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
+     28,
+     "Commercial - Domestic No. of Vessels",
+     "18"
+    ],
+    "q:20240331": [
+     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
+     30,
+     "Commercial - Domestic No. of Vessels",
+     "18"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     36.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
+  },
+  {
+   "name": "Order Book Vessels - Commercial Export",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 14.0,
+    "20240630": 14.0
+   },
+   "src": {
+    "q:20240630": [
+     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
+     28,
+     "Commercial - Export No. of Vessels",
+     "14"
+    ],
+    "q:20240331": [
+     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
+     30,
+     "Commercial - Export No. of Vessels",
+     "14"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     31.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
+  },
+  {
+   "name": "Order Book Vessels - Defence",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 15.0,
+    "20240630": 15.0
+   },
+   "src": {
+    "q:20240630": [
+     "7564567d-63cb-4f0e-99c1-47c919f02bef.pdf",
+     28,
+     "Defence No. of Vessels",
+     "15"
+    ],
+    "q:20240331": [
+     "52748ec0-3b90-45d8-991c-bf96525f22b2.pdf",
+     30,
+     "Defence No. of Vessels",
+     "15"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     11.0,
+     null,
+     "drop_q",
+     "att8 9be93d07 p16 'Order Book Position' table undated; doc dated 10-Sep-2026 (p1) business-update deck, p3 says info is 'as at the date of the presentation' - n",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Total Workforce (incl. Contract & Trainees)",
@@ -1787,5 +1814,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-21"
 }

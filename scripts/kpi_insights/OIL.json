@@ -946,30 +946,6 @@
    }
   },
   {
-   "name": "NRL Operational Capacity",
-   "unit": "MMT",
-   "kind": "level",
-   "y": {
-    "20250331": 3.0,
-    "20260331": 3.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "e49ffae2-17a5-438c-a1ae-3870a5e48549.pdf",
-     8,
-     "NRL Operational Capacity (MMT)",
-     "3"
-    ],
-    "y:20260331": [
-     "e49ffae2-17a5-438c-a1ae-3870a5e48549.pdf",
-     8,
-     "NRL Operational Capacity (MMT)",
-     "3"
-    ]
-   }
-  },
-  {
    "name": "Numaligarh-Siliguri Product Pipeline Throughput",
    "unit": "MMT",
    "kind": "flow",
@@ -1217,6 +1193,33 @@
      "3.113"
     ]
    }
+  },
+  {
+   "name": "NRL Operational Capacity",
+   "unit": "MMT",
+   "kind": "level",
+   "y": {
+    "20250331": 3.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "e49ffae2-17a5-438c-a1ae-3870a5e48549.pdf",
+     8,
+     "NRL Operational Capacity (MMT)",
+     "3"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     3.0,
+     null,
+     "drop_y",
+     "att8 e49ffae2 p8 (Avendus conference deck 18/19-Nov-2025, p1-p2): ramp-up chart FY25 3, FY26 3, FY27 4-4.5, FY28 7.5-8.5 - FY26 column is a plan, FY26 not ended",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "NRL Product Sales",
@@ -2064,5 +2067,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-13"
+ "updated": "2026-10-21"
 }

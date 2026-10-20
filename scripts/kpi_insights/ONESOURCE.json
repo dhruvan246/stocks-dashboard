@@ -50,26 +50,43 @@
    "name": "Cartridges Manufacturing Capacity",
    "unit": "Million units",
    "kind": "level",
-   "y": {
-    "20250331": 40.0
-   },
+   "y": {},
    "q": {
+    "20241231": 40.0,
     "20250930": 40.0
    },
    "src": {
-    "y:20250331": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     11,
-     "Cartridges (Million units)",
-     "40"
-    ],
     "q:20250930": [
      "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
      22,
      "Cartridges: 40 million (doc period)",
      "40"
+    ],
+    "q:20241231": [
+     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
+     9,
+     "40million cartridges",
+     "40"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     40.0,
+     null,
+     "drop_y",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     null,
+     40.0,
+     "set_q",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "DDC Device Platforms",
@@ -394,18 +411,36 @@
    "name": "DDC Capacity (Total)",
    "unit": "Million units",
    "kind": "level",
-   "y": {
-    "20250331": 78.0
+   "y": {},
+   "q": {
+    "20241231": 78.0
    },
-   "q": {},
    "src": {
-    "y:20250331": [
+    "q:20241231": [
      "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
      9,
      "Industry leading DDC capacity",
      "78"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     78.0,
+     null,
+     "drop_y",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     null,
+     78.0,
+     "set_q",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "DDC Projects Delivered",
@@ -530,18 +565,36 @@
    "name": "Pre-filled Syringe (PFS) Manufacturing Capacity",
    "unit": "Million units",
    "kind": "level",
-   "y": {
-    "20250331": 38.0
+   "y": {},
+   "q": {
+    "20241231": 38.0
    },
-   "q": {},
    "src": {
-    "y:20250331": [
+    "q:20241231": [
      "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     11,
-     "Pre-filled syringe (Million units)",
+     9,
+     "38 million PFS",
      "38"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     38.0,
+     null,
+     "drop_y",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     null,
+     38.0,
+     "set_q",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Regulatory & Customer Audits (trailing 2 years)",
@@ -706,5 +759,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-07"
+ "updated": "2026-10-21"
 }

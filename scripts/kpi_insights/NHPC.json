@@ -212,59 +212,6 @@
    }
   },
   {
-   "name": "Subansiri Lower Project Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20240331": 2000.0,
-    "20260331": 750.0
-   },
-   "q": {
-    "20210630": 2000.0,
-    "20210930": 2000.0,
-    "20211231": 2000.0,
-    "20260630": 1000.0
-   },
-   "src": {
-    "y:20260331": [
-     "42416df0-6d9e-42c6-a5b7-64ed770029f5.pdf",
-     11,
-     "commissioned 750 MW (3 out of 8 units) of 2000 MW Subansiri Lower Project during",
-     "750"
-    ],
-    "q:20260630": [
-     "42416df0-6d9e-42c6-a5b7-64ed770029f5.pdf",
-     12,
-     "total installed capacity of Subansiri Lower Project is now 1000 MW",
-     "1000"
-    ],
-    "y:20240331": [
-     "a7c62080-91c4-4165-beaf-3c95224f79e4.pdf",
-     49,
-     "SUBANSIRI LOWER HE PROJECT - 2,000 MW (doc period)",
-     "2,000"
-    ],
-    "q:20211231": [
-     "203fbc5a-57a6-4952-a786-ad9f90abf83e.pdf",
-     28,
-     "Subansiri Lower (8X250) Installed Capacity (doc period)",
-     "2000"
-    ],
-    "q:20210930": [
-     "88da4f63-50e0-4620-afef-501ebd6745fd.pdf",
-     29,
-     "Subansiri Lower (8X250) Installed Capacity (doc period)",
-     "2000"
-    ],
-    "q:20210630": [
-     "31544ada-0463-41d8-854f-67b212533296.pdf",
-     29,
-     "Subansiri Lower (8X250) Installed Capacity (doc period)",
-     "2000"
-    ]
-   }
-  },
-  {
    "name": "Loktak Power Station Installed Capacity",
    "unit": "MW",
    "kind": "level",
@@ -309,6 +256,62 @@
      "105"
     ]
    }
+  },
+  {
+   "name": "Subansiri Lower Project Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20240331": 2000.0,
+    "20260331": 750.0
+   },
+   "q": {
+    "20210630": 2000.0,
+    "20210930": 2000.0,
+    "20211231": 2000.0
+   },
+   "src": {
+    "y:20260331": [
+     "42416df0-6d9e-42c6-a5b7-64ed770029f5.pdf",
+     11,
+     "commissioned 750 MW (3 out of 8 units) of 2000 MW Subansiri Lower Project during",
+     "750"
+    ],
+    "y:20240331": [
+     "a7c62080-91c4-4165-beaf-3c95224f79e4.pdf",
+     49,
+     "SUBANSIRI LOWER HE PROJECT - 2,000 MW (doc period)",
+     "2,000"
+    ],
+    "q:20211231": [
+     "203fbc5a-57a6-4952-a786-ad9f90abf83e.pdf",
+     28,
+     "Subansiri Lower (8X250) Installed Capacity (doc period)",
+     "2000"
+    ],
+    "q:20210930": [
+     "88da4f63-50e0-4620-afef-501ebd6745fd.pdf",
+     29,
+     "Subansiri Lower (8X250) Installed Capacity (doc period)",
+     "2000"
+    ],
+    "q:20210630": [
+     "31544ada-0463-41d8-854f-67b212533296.pdf",
+     29,
+     "Subansiri Lower (8X250) Installed Capacity (doc period)",
+     "2000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     1000.0,
+     null,
+     "drop_q",
+     "att8 42416df0 p12 note 14: unit commissioned 'on May 8, 2026 ... Subansiri Lower Project is now 1000 MW'; FY26 results doc 21-May-2026 - as-at May-2026, not a 3",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Installed Capacity Under Construction",
@@ -1129,5 +1132,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-21"
 }

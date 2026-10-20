@@ -519,44 +519,6 @@
    }
   },
   {
-   "name": "ANDAs Filed (CSL)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200630": 19.0,
-    "20240930": 42.0,
-    "20250630": 48.0,
-    "20260630": 54.0
-   },
-   "src": {
-    "q:20260630": [
-     "5be39f24-4694-464b-98d7-8f932068b4a0.pdf",
-     2,
-     "CSL has developed and filed 54 ANDAs in USA on its own and with partners (doc pe",
-     "54"
-    ],
-    "q:20250630": [
-     "092234c5-96ac-4c3e-9830-5c8eab18723a.pdf",
-     2,
-     "ANDAs in USA on its own and with partners",
-     "48"
-    ],
-    "q:20240930": [
-     "92f67142-4783-421a-8d23-2c457ddc5d2d.pdf",
-     2,
-     "ANDAs in USA on its own and with partners",
-     "42"
-    ],
-    "q:20200630": [
-     "633e8dc4-f04c-4fdd-b636-aa0639ee4ec4.pdf",
-     21,
-     "filed 19 ANDAs on its own and through partners with the US FDA (doc period)",
-     "19"
-    ]
-   }
-  },
-  {
    "name": "Countries of Operation",
    "unit": "count",
    "kind": "level",
@@ -934,36 +896,44 @@
    }
   },
   {
-   "name": "COL Approved ANDAs",
+   "name": "ANDAs Filed (CSL)",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20260630": 5.0
+    "20200630": 19.0
    },
    "src": {
-    "q:20260630": [
-     "5be39f24-4694-464b-98d7-8f932068b4a0.pdf",
-     2,
-     "COL holds 5 approved ANDAs for Injectable products (doc period)",
-     "5"
+    "q:20200630": [
+     "633e8dc4-f04c-4fdd-b636-aa0639ee4ec4.pdf",
+     21,
+     "filed 19 ANDAs on its own and through partners with the US FDA (doc period)",
+     "19"
     ]
    },
    "fixed": [
     [
-     "q:20240930",
-     30.0,
+     "q:20260630",
+     54.0,
      null,
      "drop_q",
-     "92f67142 p2: 'Caplin Steriles Limited, has developed and filed 42 ANDAs ... with 30 approvals so far' = CSL, no COL figure",
+     "att8 5be39f24 p2 USFDA-approval press release dated 2026-05-14 (p1); 'CSL has developed and filed 54 ANDAs ... so far' is an undated running count with no repor",
      "2026-10-21"
     ],
     [
      "q:20250630",
-     38.0,
+     48.0,
      null,
      "drop_q",
-     "092234c5 p2: 'Caplin Steriles Limited, has developed and filed 48 ANDAs ... with 38 approvals so far' = CSL, no COL figure",
+     "att8 092234c5 p2 USFDA-approval press release dated 2025-05-14 (p1); 'filed 48 ANDAs ... so far' is an undated running count with no reporting period; slot q:20",
+     "2026-10-21"
+    ],
+    [
+     "q:20240930",
+     42.0,
+     null,
+     "drop_q",
+     "att8 92f67142 p2 USFDA-approval press release dated 2024-08-08 (p1); 'filed 42 ANDAs ... so far' is an undated running count with no reporting period; slot q:20",
      "2026-10-21"
     ]
    ]
