@@ -510,6 +510,10 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
                 why = "no value"
             elif ptype is None:
                 why = "period not q/y: %r" % per
+            elif pend > str(doc.get("date") or "9999").replace("-", ""):
+                # a filing cannot report a period that ends after it was filed — the 2026-10-21 pattern scan found
+                # undated "current status" figures parked at the NEXT quarter/year end (CYIENT, ANURAS, JSWINFRA)
+                why = "period ends %s, after the document date %s" % (pend, doc.get("date"))
             elif monthly and _bare.match(per):
                 why = "monthly series, a single month is not the quarter: %r" % per
             else:
@@ -529,7 +533,7 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             if why:
                 rec = {"doc": att, "metric": name, "unit": unit, "period": per, "value": val, "as_printed": asp,
                        "page": page, "label": label, "why": why}
-                if "scanned" in why or "period_end disagrees" in why:
+                if "scanned" in why or "period_end disagrees" in why or "after the document date" in why:
                     L["held"].append(rec); held += 1
                 else:
                     rejected += 1
