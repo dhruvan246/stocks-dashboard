@@ -785,8 +785,8 @@ function revopFor(sym){
    rows. 'std' is strict: parent-only figures, no consolidated ever mixed in.
    FB_EFF is the basis actually in force for the stock on screen (a stock with no standalone
    data at all can't honour a remembered 'std'), and the 🧾 Financial detail card reads it too. */
-let FBASIS='con', FB_EFF='con';
-try{ if(localStorage.getItem('sw_finBasis')==='std') FBASIS='std'; }catch(e){}
+let FBASIS='con', FB_EFF='con', FB_PICK=false;   // FB_PICK: the viewer chose a basis (clicked / remembered) — the 🧾 card then follows it
+try{ const v=localStorage.getItem('sw_finBasis'); if(v==='std') FBASIS='std'; if(v==='std'||v==='con') FB_PICK=true; }catch(e){}
 const qIdx=e=>{ const y=Math.floor(e/10000), m=Math.floor(e/100)%100; return y*4+Math.floor((m-1)/3); };  // quarter number, for contiguity checks
 const crFmt=v=>v==null?'—':v.toLocaleString('en-IN',{maximumFractionDigits:v!=null&&Math.abs(v)<100?1:0});
 const crBig=v=>v==null?'—':(Math.abs(v)>=100000?'₹'+(v/100000).toFixed(2)+' L cr':'₹'+Math.round(v).toLocaleString('en-IN')+' cr');
@@ -847,7 +847,7 @@ function renderFunds(){
         `<button data-b="${k}" class="px-2.5 py-1 rounded-lg text-xs font-semibold border shrink-0 ${k===B?'bg-slate-800 text-white border-slate-800':'text-slate-500 border-slate-200 hover:bg-slate-50'}">${l}</button>`).join('');
     bEl.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{
       if(b.dataset.b===FBASIS) return;
-      FBASIS=b.dataset.b; try{ localStorage.setItem('sw_finBasis',FBASIS); }catch(e){}
+      FBASIS=b.dataset.b; FB_PICK=true; try{ localStorage.setItem('sw_finBasis',FBASIS); }catch(e){}
       renderFunds();
     });
   }else bEl.style.display='none';
@@ -1184,7 +1184,9 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
   const cellIn=(e,b)=>{ const cc=FIN_X&&FIN_X[String(e)]; return cc?((b==='std'?cc.s:cc.c)||null):null; };
   const bscfCnt=b=>fyAll.reduce((n,fy)=>{ const e=yearEndE(fy); if(e==null) return n; const d=cellIn(e,b); return n+((d&&(d.assets!=null||d.eq!=null||d.cfo!=null))?1:0); },0);
   const pageB=FB_EFF==='std'?'std':'con', otherB=pageB==='std'?'con':'std';
-  const bcB=bscfCnt(otherB)>bscfCnt(pageB)?otherB:pageB;   // whichever basis carries MORE year-end BS/CF; page basis (consolidated) wins ties
+  // whichever basis carries MORE year-end BS/CF (page basis wins ties) — unless the viewer picked a basis with the
+  // switch: then that basis, whenever it carries any year (DHANUKA: consolidated FY20-25, FY26 filed standalone only)
+  const bcB=(FB_PICK&&bscfCnt(pageB)>0)?pageB:(bscfCnt(otherB)>bscfCnt(pageB)?otherB:pageB);
   const strictCell=e=>cellIn(e,bcB);
   const bsOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
   // a transition year's cash flow counts only when its tagged period spans that whole year: the filings
