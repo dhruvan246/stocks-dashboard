@@ -459,8 +459,8 @@
     "20190331": 122.0,
     "20200331": 110.0,
     "20210331": 110.0,
-    "20220331": 81.0,
-    "20230331": 89.0,
+    "20220331": 85.0,
+    "20230331": 102.0,
     "20240331": 101.0,
     "20250331": 79.0,
     "20260331": 94.0
@@ -476,11 +476,11 @@
     "20230630": 113.0,
     "20230930": 105.0,
     "20231231": 112.0,
-    "20240630": 102.0,
-    "20250630": 91.0,
-    "20250930": 97.0,
-    "20251231": 94.0,
-    "20260331": 78.0,
+    "20240630": 112.0,
+    "20250630": 93.0,
+    "20250930": 109.0,
+    "20251231": 110.0,
+    "20260331": 94.0,
     "20260630": 96.0,
     "20260930": 96.0
    },
@@ -512,44 +512,44 @@
     "q:20260331": [
      "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
      29,
-     "Inventory Days (Closing)",
-     "78"
+     "Inventory Days (Closing) Q4FY26",
+     "94"
     ],
     "q:20251231": [
-     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
-     29,
-     "Inventory Days (Closing)",
-     "94"
+     "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
+     18,
+     "Inventory Days (Closing) Q3FY26",
+     "110"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Inventory Days Closing",
-     "91"
+     "Inventory Days (Closing) Q1FY26",
+     "93"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Inventory Days Closing",
-     "97"
+     "Inventory Days (Closing) Q2FY26",
+     "109"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Inventory Days Closing",
-     "89"
-    ],
-    "q:20240630": [
-     "14dbaf25-6e16-4942-a0e2-2404d069a177.pdf",
-     18,
-     "Inventory Days (Closing)",
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Inventory Days (Closing) FY23",
      "102"
     ],
+    "q:20240630": [
+     "a500b1f4-fa28-4c5b-80c0-67f2b64c6f55.pdf",
+     18,
+     "Inventory Days (Closing) Q1 FY25",
+     "112"
+    ],
     "y:20220331": [
-     "e4f490ef-910a-4457-9bc7-ce987a2204c2.pdf",
-     19,
-     "Inventory Days (Closing)",
-     "81"
+     "0fa9f4e3-39a9-426a-9aee-0d08b6eb1163.pdf",
+     13,
+     "Inventory Days (Closing) FY22",
+     "85"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -673,6 +673,64 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      101.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20220331",
+     81.0,
+     85.0,
+     "set_y",
+     "Image 0fa9f4e3 p13: Closing block column FY22 Inventory Days = 85; stored 81.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e3",
+     "2026-10-20"
+    ],
+    [
+     "y:20230331",
+     89.0,
+     102.0,
+     "set_y",
+     "Image c3b678c2 p32: Closing block column FY23 Inventory Days = 102; stored 89.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20240630",
+     102.0,
+     112.0,
+     "set_q",
+     "Image a500b1f4 p18: Closing block column Q1 FY25 Inventory Days = 112; stored 102.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     91.0,
+     93.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q1FY26 Inventory Days = 93; stored 91.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     97.0,
+     109.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q2FY26 Inventory Days = 109; stored 97.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     94.0,
+     110.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q3FY26 Inventory Days = 110; stored 94.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20260331",
+     78.0,
+     94.0,
+     "set_q",
+     "Image 0f586954 p29: Closing block column Q4FY26 Inventory Days = 94; stored 78.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -683,8 +741,8 @@
     "20190331": 36.0,
     "20200331": 64.0,
     "20210331": 67.0,
-    "20220331": 54.0,
-    "20230331": 51.0,
+    "20220331": 61.0,
+    "20230331": 50.0,
     "20240331": 48.0,
     "20250331": 49.0,
     "20260331": 12.0
@@ -700,11 +758,11 @@
     "20230630": 74.0,
     "20230930": 65.0,
     "20231231": 60.0,
-    "20240630": 62.0,
-    "20250630": 43.0,
-    "20250930": 31.0,
-    "20251231": 51.0,
-    "20260331": 25.0,
+    "20240630": 64.0,
+    "20250630": 35.0,
+    "20250930": 33.0,
+    "20251231": 27.0,
+    "20260331": 11.0,
     "20260630": 3.0,
     "20260930": -2.0
    },
@@ -736,44 +794,44 @@
     "q:20260331": [
      "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
      29,
-     "Net Working Capital (Closing)",
-     "25"
+     "Net Working Capital (Closing) Q4FY26",
+     "11"
     ],
     "q:20251231": [
-     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
-     29,
-     "Net Working Capital (Closing)",
-     "51"
+     "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
+     18,
+     "Net Working Capital (Closing) Q3FY26",
+     "27"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Net Working Capital Closing",
-     "43"
+     "Net Working Capital (Closing) Q1FY26",
+     "35"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Net Working Capital Closing",
-     "31"
+     "Net Working Capital (Closing) Q2FY26",
+     "33"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Net Working Capital Closing",
-     "51"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Net Working Capital (Closing) FY23",
+     "50"
     ],
     "q:20240630": [
-     "14dbaf25-6e16-4942-a0e2-2404d069a177.pdf",
+     "a500b1f4-fa28-4c5b-80c0-67f2b64c6f55.pdf",
      18,
-     "Net Working Capital (Closing)",
-     "62"
+     "Net Working Capital (Closing) Q1 FY25",
+     "64"
     ],
     "y:20220331": [
-     "e4f490ef-910a-4457-9bc7-ce987a2204c2.pdf",
-     19,
-     "Net Working Capital (Closing)",
-     "54"
+     "0fa9f4e3-39a9-426a-9aee-0d08b6eb1163.pdf",
+     13,
+     "Net Working Capital (Closing) FY22",
+     "61"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -897,6 +955,64 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      48.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20220331",
+     54.0,
+     61.0,
+     "set_y",
+     "Image 0fa9f4e3 p13: Closing block column FY22 Net Working Capital = 61; stored 54.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa",
+     "2026-10-20"
+    ],
+    [
+     "y:20230331",
+     51.0,
+     50.0,
+     "set_y",
+     "Image c3b678c2 p32: Closing block column FY23 Net Working Capital = 50; stored 51.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa",
+     "2026-10-20"
+    ],
+    [
+     "q:20240630",
+     62.0,
+     64.0,
+     "set_q",
+     "Image a500b1f4 p18: Closing block column Q1 FY25 Net Working Capital = 64; stored 62.0 is the other (Average) block's value. Blocks confirmed consistent across ",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     43.0,
+     35.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q1FY26 Net Working Capital = 35; stored 43.0 is the other (Average) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     31.0,
+     33.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q2FY26 Net Working Capital = 33; stored 31.0 is the other (Average) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     51.0,
+     27.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q3FY26 Net Working Capital = 27; stored 51.0 is the other (Average) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ],
+    [
+     "q:20260331",
+     25.0,
+     11.0,
+     "set_q",
+     "Image 0f586954 p29: Closing block column Q4FY26 Net Working Capital = 11; stored 25.0 is the other (Average) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -907,8 +1023,8 @@
     "20190331": 148.0,
     "20200331": 105.0,
     "20210331": 102.0,
-    "20220331": 67.0,
-    "20230331": 71.0,
+    "20220331": 63.0,
+    "20230331": 85.0,
     "20240331": 94.0,
     "20250331": 72.0,
     "20260331": 130.0
@@ -924,11 +1040,11 @@
     "20230630": 70.0,
     "20230930": 70.0,
     "20231231": 85.0,
-    "20240630": 72.0,
-    "20250630": 83.0,
-    "20250930": 105.0,
-    "20251231": 77.0,
-    "20260331": 93.0,
+    "20240630": 86.0,
+    "20250630": 98.0,
+    "20250930": 118.0,
+    "20251231": 127.0,
+    "20260331": 130.0,
     "20260630": 132.0,
     "20260930": 134.0
    },
@@ -960,44 +1076,44 @@
     "q:20260331": [
      "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
      29,
-     "Payable Days (Closing)",
-     "93"
+     "Payable Days (Closing) Q4FY26",
+     "130"
     ],
     "q:20251231": [
-     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
-     29,
-     "Payable Days (Closing)",
-     "77"
+     "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
+     18,
+     "Payable Days (Closing) Q3FY26",
+     "127"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Payable Days Closing",
-     "83"
+     "Payable Days (Closing) Q1FY26",
+     "98"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Payable Days Closing",
-     "105"
+     "Payable Days (Closing) Q2FY26",
+     "118"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Payable Days Closing",
-     "71"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Payable Days (Closing) FY23",
+     "85"
     ],
     "q:20240630": [
-     "14dbaf25-6e16-4942-a0e2-2404d069a177.pdf",
+     "a500b1f4-fa28-4c5b-80c0-67f2b64c6f55.pdf",
      18,
-     "Payable Days (Closing)",
-     "72"
+     "Payable Days (Closing) Q1 FY25",
+     "86"
     ],
     "y:20220331": [
-     "e4f490ef-910a-4457-9bc7-ce987a2204c2.pdf",
-     19,
-     "Payable Days (Closing)",
-     "67"
+     "0fa9f4e3-39a9-426a-9aee-0d08b6eb1163.pdf",
+     13,
+     "Payable Days (Closing) FY22",
+     "63"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -1121,6 +1237,64 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      94.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20220331",
+     67.0,
+     63.0,
+     "set_y",
+     "Image 0fa9f4e3 p13: Closing block column FY22 Payable Days = 63; stored 67.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e3 p",
+     "2026-10-20"
+    ],
+    [
+     "y:20230331",
+     71.0,
+     85.0,
+     "set_y",
+     "Image c3b678c2 p32: Closing block column FY23 Payable Days = 85; stored 71.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e3 p",
+     "2026-10-20"
+    ],
+    [
+     "q:20240630",
+     72.0,
+     86.0,
+     "set_q",
+     "Image a500b1f4 p18: Closing block column Q1 FY25 Payable Days = 86; stored 72.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     83.0,
+     98.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q1FY26 Payable Days = 98; stored 83.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e3",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     105.0,
+     118.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q2FY26 Payable Days = 118; stored 105.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     77.0,
+     127.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q3FY26 Payable Days = 127; stored 77.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20260331",
+     93.0,
+     130.0,
+     "set_q",
+     "Image 0f586954 p29: Closing block column Q4FY26 Payable Days = 130; stored 93.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -1131,8 +1305,8 @@
     "20190331": 61.0,
     "20200331": 59.0,
     "20210331": 59.0,
-    "20220331": 41.0,
-    "20230331": 33.0,
+    "20220331": 39.0,
+    "20230331": 32.0,
     "20240331": 41.0,
     "20250331": 42.0,
     "20260331": 47.0
@@ -1148,11 +1322,11 @@
     "20230630": 31.0,
     "20230930": 30.0,
     "20231231": 33.0,
-    "20240630": 31.0,
-    "20250630": 35.0,
-    "20250930": 38.0,
-    "20251231": 34.0,
-    "20260331": 40.0,
+    "20240630": 38.0,
+    "20250630": 40.0,
+    "20250930": 42.0,
+    "20251231": 45.0,
+    "20260331": 47.0,
     "20260630": 39.0,
     "20260930": 36.0
    },
@@ -1184,44 +1358,44 @@
     "q:20260331": [
      "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
      29,
-     "Receivable Days (Closing)",
-     "40"
+     "Receivable Days (Closing) Q4FY26",
+     "47"
     ],
     "q:20251231": [
-     "0f586954-cf4c-4a5c-b179-8fb4a3cf55a9.pdf",
-     29,
-     "Receivable Days (Closing)",
-     "34"
+     "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
+     18,
+     "Receivable Days (Closing) Q3FY26",
+     "45"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Receivable Days Closing",
-     "35"
+     "Receivable Days (Closing) Q1FY26",
+     "40"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Receivable Days Closing",
-     "38"
+     "Receivable Days (Closing) Q2FY26",
+     "42"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Receivable Days Closing",
-     "33"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Receivable Days (Closing) FY23",
+     "32"
     ],
     "q:20240630": [
-     "14dbaf25-6e16-4942-a0e2-2404d069a177.pdf",
+     "a500b1f4-fa28-4c5b-80c0-67f2b64c6f55.pdf",
      18,
-     "Receivable Days (Closing)",
-     "31"
+     "Receivable Days (Closing) Q1 FY25",
+     "38"
     ],
     "y:20220331": [
-     "e4f490ef-910a-4457-9bc7-ce987a2204c2.pdf",
-     19,
-     "Receivable Days (Closing)",
-     "41"
+     "0fa9f4e3-39a9-426a-9aee-0d08b6eb1163.pdf",
+     13,
+     "Receivable Days (Closing) FY22",
+     "39"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -1345,6 +1519,64 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      41.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20220331",
+     41.0,
+     39.0,
+     "set_y",
+     "Image 0fa9f4e3 p13: Closing block column FY22 Receivable Days = 39; stored 41.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "y:20230331",
+     33.0,
+     32.0,
+     "set_y",
+     "Image c3b678c2 p32: Closing block column FY23 Receivable Days = 32; stored 33.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20240630",
+     31.0,
+     38.0,
+     "set_q",
+     "Image a500b1f4 p18: Closing block column Q1 FY25 Receivable Days = 38; stored 31.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     35.0,
+     40.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q1FY26 Receivable Days = 40; stored 35.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     38.0,
+     42.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q2FY26 Receivable Days = 42; stored 38.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     34.0,
+     45.0,
+     "set_q",
+     "Image 9b665a82 p18: Closing block column Q3FY26 Receivable Days = 45; stored 34.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20260331",
+     40.0,
+     47.0,
+     "set_q",
+     "Image 0f586954 p29: Closing block column Q4FY26 Receivable Days = 47; stored 40.0 is the other (Average) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -1356,7 +1588,7 @@
     "20200331": 112.0,
     "20210331": 108.0,
     "20220331": 81.0,
-    "20230331": 102.0,
+    "20230331": 89.0,
     "20240331": 91.0,
     "20250331": 80.0,
     "20260331": 78.0
@@ -1373,9 +1605,9 @@
     "20230930": 89.0,
     "20231231": 94.0,
     "20240630": 102.0,
-    "20250630": 93.0,
-    "20250930": 109.0,
-    "20251231": 110.0,
+    "20250630": 91.0,
+    "20250930": 97.0,
+    "20251231": 95.0,
     "20260630": 83.0,
     "20260930": 86.0
    },
@@ -1383,20 +1615,20 @@
     "q:20251231": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Inventory Days Average",
-     "110"
+     "Inventory Days (Average) Q3FY26",
+     "95"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Inventory Days Average",
-     "109"
+     "Inventory Days (Average) Q2FY26",
+     "97"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Inventory Days Average",
-     "93"
+     "Inventory Days (Average) Q1FY26",
+     "91"
     ],
     "y:20250331": [
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
@@ -1411,10 +1643,10 @@
      "91"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Inventory Days Average",
-     "102"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Inventory Days (Average) FY23",
+     "89"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -1549,6 +1781,40 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      91.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20230331",
+     102.0,
+     89.0,
+     "set_y",
+     "Image c3b678c2 p32: Average block column FY23 Inventory Days = 89; stored 102.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     93.0,
+     91.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q1FY26 Inventory Days = 91; stored 93.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     109.0,
+     97.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q2FY26 Inventory Days = 97; stored 109.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     110.0,
+     95.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q3FY26 Inventory Days = 95; stored 110.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -1560,7 +1826,7 @@
     "20200331": 48.0,
     "20210331": 65.0,
     "20220331": 54.0,
-    "20230331": 50.0,
+    "20230331": 51.0,
     "20240331": 44.0,
     "20250331": 44.0,
     "20260331": 25.0
@@ -1577,9 +1843,9 @@
     "20230930": 50.0,
     "20231231": 51.0,
     "20240630": 62.0,
-    "20250630": 35.0,
-    "20250930": 33.0,
-    "20251231": 27.0,
+    "20250630": 43.0,
+    "20250930": 31.0,
+    "20251231": 34.0,
     "20260630": 15.0,
     "20260930": 11.0
    },
@@ -1587,20 +1853,20 @@
     "q:20251231": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Net Working Capital Average",
-     "27"
+     "Net Working Capital (Average) Q3FY26",
+     "34"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Net Working Capital Average",
-     "33"
+     "Net Working Capital (Average) Q2FY26",
+     "31"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Net Working Capital Average",
-     "35"
+     "Net Working Capital (Average) Q1FY26",
+     "43"
     ],
     "y:20250331": [
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
@@ -1615,10 +1881,10 @@
      "44"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Net Working Capital Average",
-     "50"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Net Working Capital (Average) FY23",
+     "51"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -1753,6 +2019,40 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      44.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20230331",
+     50.0,
+     51.0,
+     "set_y",
+     "Image c3b678c2 p32: Average block column FY23 Net Working Capital = 51; stored 50.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     35.0,
+     43.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q1FY26 Net Working Capital = 43; stored 35.0 is the other (Closing) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     33.0,
+     31.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q2FY26 Net Working Capital = 31; stored 33.0 is the other (Closing) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     27.0,
+     34.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q3FY26 Net Working Capital = 34; stored 27.0 is the other (Closing) block's value. Blocks confirmed consistent across 0",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -1764,7 +2064,7 @@
     "20200331": 122.0,
     "20210331": 102.0,
     "20220331": 67.0,
-    "20230331": 85.0,
+    "20230331": 71.0,
     "20240331": 81.0,
     "20250331": 73.0,
     "20260331": 93.0
@@ -1781,9 +2081,9 @@
     "20230930": 65.0,
     "20231231": 70.0,
     "20240630": 72.0,
-    "20250630": 98.0,
-    "20250930": 118.0,
-    "20251231": 127.0,
+    "20250630": 83.0,
+    "20250930": 105.0,
+    "20251231": 99.0,
     "20260630": 103.0,
     "20260930": 108.0
    },
@@ -1791,20 +2091,20 @@
     "q:20251231": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Payable Days Average",
-     "127"
+     "Payable Days (Average) Q3FY26",
+     "99"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Payable Days Average",
-     "118"
+     "Payable Days (Average) Q2FY26",
+     "105"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Payable Days Average",
-     "98"
+     "Payable Days (Average) Q1FY26",
+     "83"
     ],
     "y:20250331": [
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
@@ -1819,10 +2119,10 @@
      "81"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Payable Days Average",
-     "85"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Payable Days (Average) FY23",
+     "71"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -1957,6 +2257,40 @@
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      81.0
     ]
+   ],
+   "fixed": [
+    [
+     "y:20230331",
+     85.0,
+     71.0,
+     "set_y",
+     "Image c3b678c2 p32: Average block column FY23 Payable Days = 71; stored 85.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4e3 p",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     98.0,
+     83.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q1FY26 Payable Days = 83; stored 98.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4e3",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     118.0,
+     105.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q2FY26 Payable Days = 105; stored 118.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     127.0,
+     99.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q3FY26 Payable Days = 99; stored 127.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ]
    ]
   },
   {
@@ -1968,7 +2302,7 @@
     "20200331": 57.0,
     "20210331": 59.0,
     "20220331": 41.0,
-    "20230331": 32.0,
+    "20230331": 33.0,
     "20240331": 33.0,
     "20250331": 38.0,
     "20260331": 40.0
@@ -1985,9 +2319,9 @@
     "20230930": 26.0,
     "20231231": 27.0,
     "20240630": 31.0,
-    "20250630": 40.0,
-    "20250930": 42.0,
-    "20251231": 45.0,
+    "20250630": 35.0,
+    "20250930": 38.0,
+    "20251231": 38.0,
     "20260630": 35.0,
     "20260930": 33.0
    },
@@ -1995,20 +2329,20 @@
     "q:20251231": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Receivable Days Average",
-     "45"
+     "Receivable Days (Average) Q3FY26",
+     "38"
     ],
     "q:20250930": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Receivable Days Average",
-     "42"
+     "Receivable Days (Average) Q2FY26",
+     "38"
     ],
     "q:20250630": [
      "9b665a82-e6f7-42aa-8d23-b4cc3572bac1.pdf",
      18,
-     "Receivable Days Average",
-     "40"
+     "Receivable Days (Average) Q1FY26",
+     "35"
     ],
     "y:20250331": [
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
@@ -2023,10 +2357,10 @@
      "33"
     ],
     "y:20230331": [
-     "fa70b8fd-18f7-41c1-a693-91318de87262.pdf",
-     20,
-     "Receivable Days Average",
-     "32"
+     "c3b678c2-c9a8-4a37-a2b8-8c99c2a3a59c.pdf",
+     32,
+     "Receivable Days (Average) FY23",
+     "33"
     ],
     "q:20191231": [
      "4edb4a71-2956-4e9a-83e8-00d3bd8d12a1.pdf",
@@ -2160,6 +2494,40 @@
      41.0,
      "a940f987-41db-4848-8f35-4b6c8a8f5b47.pdf",
      33.0
+    ]
+   ],
+   "fixed": [
+    [
+     "y:20230331",
+     32.0,
+     33.0,
+     "set_y",
+     "Image c3b678c2 p32: Average block column FY23 Receivable Days = 33; stored 32.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f4e",
+     "2026-10-20"
+    ],
+    [
+     "q:20250630",
+     40.0,
+     35.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q1FY26 Receivable Days = 35; stored 40.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20250930",
+     42.0,
+     38.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q2FY26 Receivable Days = 38; stored 42.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
+    ],
+    [
+     "q:20251231",
+     45.0,
+     38.0,
+     "set_q",
+     "Image 9b665a82 p18: Average block column Q3FY26 Receivable Days = 38; stored 45.0 is the other (Closing) block's value. Blocks confirmed consistent across 0fa9f",
+     "2026-10-20"
     ]
    ]
   },
@@ -3324,5 +3692,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-20"
 }
