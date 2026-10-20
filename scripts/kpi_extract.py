@@ -194,6 +194,9 @@ def parse_period(label, fy_end_month=3):
     if m:
         e = m.group(3)
         return "q", _q_end(_yy(e) if len(e) == 2 else int(e), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
+    m = re.search(r"\b([1-4])(?:st|nd|rd|th)\s*quarter\b\W*(?:of\s*)?(?:fy\s*)?'?\s*(\d{2})\s*'?\s*-\s*'?\s*(\d{2})\b", low)   # "2nd Quarter FY '23-'24" (IFB, 2026-10-20; was read as FY24)
+    if m:
+        return "q", _q_end(_yy(m.group(3)), int(m.group(1)), fy_end_month).strftime("%Y%m%d")
     m = re.search(r"\b(\d{4})\s*-\s*(\d{2})\s*[-\s]\s*q\s*([1-4])\b", low)   # "2021-22-Q1" (BEML)
     if m:
         return "q", _q_end(_yy(m.group(2)), int(m.group(3)), fy_end_month).strftime("%Y%m%d")
