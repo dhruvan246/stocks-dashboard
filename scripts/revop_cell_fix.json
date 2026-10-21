@@ -2759,10 +2759,10 @@
    "sym": "DLF",
    "qe": "20150630",
    "basis": "pat_std",
-   "was": -42.33,
-   "fixed": -101.3,
-   "why": "Runbook §108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20150816 (Non-Ind-AS, seq 1001813), Net Profit (sf_revop §70 mirror) -101.3 cr, and a RESTATEMENT filed 20160929 (Ind-AS, seq 1014200), Net Profit (sf_revop §70 mirror) -42.33 cr — the stored value. Our ann date for the cell is 20150814, 412 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims. PROVENANCE: vision_rev_fills records this cell as read from financial_res_..._1014200.html — the restatement page itself. BSE detres (as-filed by construction, §42) independently reads -101.88 cr.",
-   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)"
+   "was": -101.3,
+   "fixed": -101.88,
+   "why": "AMENDED 2026-10-21 (StockView cell-by-cell check, batch 4): Original filing read: Original DCF25368_A953_40F9_BAE7_7DD3208EF29B_193549.pdf (BSE 13-Aug-2015) p10 'Statement of Unaudited Standalone Financial Results for the quarter ended June 30, 2015', Rs crores, col 30.06.2015: row 11 'Net (Loss)/Profit before prior period item for the period (9-10)' (101.30); row 12 'Prior period expense (net)' 0.58; row 13 'Net (Loss)/Profit (11-12)' (101.88). Also p2 note 6 key standalone info: Net (loss)/profit (101.88).. Where theirs sits: Row 13 Net (Loss)/Profit (11-12) = (101.88) cr. Where ours sits: Row 11 before prior-period item = (101.30) cr (wrong line). || PRIOR ENTRY (was -42.33 -> -101.3, superseded by the original filing read): Runbook \u00a7108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20150816 (Non-Ind-AS, seq 1001813), Net Profit (sf_revop \u00a770 mirror) -101.3 cr, and a RESTATEMENT filed 20160929 (Ind-AS, seq 1014200), Net Profit (sf_revop \u00a770 mirror) -42.33 cr \u2014 the stored value. Our ann date for the cell is 20150814, 412 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims. PROVENANCE: vision_rev_fills records this cell as read from financial_res_..._1014200.html \u2014 the restatement page itself. BSE detres (as-filed by construction, \u00a742) independently reads -101.88 cr.",
+   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres) ; amended: StockView profit check 2026-10-21"
   },
   {
    "sym": "DLF",
@@ -5273,10 +5273,10 @@
    "sym": "JPPOWER",
    "qe": "20150630",
    "basis": "pat_std",
-   "was": 64.94,
-   "fixed": 66.96,
-   "why": "Runbook §108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20160930 (Ind-AS, seq 1014365), Net Profit (sf_revop §70 mirror) 66.96 cr, and a RESTATEMENT filed 20161221 (Non-Ind-AS, seq 1000776), Net Profit (sf_revop §70 mirror) 64.94 cr — the stored value. Our ann date for the cell is 20150806, 503 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims. PROVENANCE: vision_rev_fills records this cell as read from financial_res_..._1000776.html — the restatement page itself.",
-   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)"
+   "was": 66.96,
+   "fixed": 64.94,
+   "why": "AMENDED 2026-10-21 (StockView cell-by-cell check, batch 4): Original filing read: Original BSE 723D5380 (06-Aug-2015) p1 vision read (rotated), Standalone Unaudited, Rs lacs, col 30.06.2015: row 9 PBT 8,047, deferred tax charge/(credit) shown (1,553), row 11 and row 13 Net Profit for the period 6,494 = 64.94 cr = theirs (filing arithmetic 8,047-1,553=6,494). NSE Non-Ind-AS row (seq 1000776) also 64.94. Ours 66.96 = NSE Ind-AS re-filing 30-Sep-2016 (seq 1014365), a later vintage.. Where theirs sits: Original row 13 Net Profit/(Loss) for the period. Where ours sits: Ind-AS re-filing 30-Sep-2016 Net Profit for the period (later vintage). || PRIOR ENTRY (was 64.94 -> 66.96, superseded by the original filing read): Runbook \u00a7108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20160930 (Ind-AS, seq 1014365), Net Profit (sf_revop \u00a770 mirror) 66.96 cr, and a RESTATEMENT filed 20161221 (Non-Ind-AS, seq 1000776), Net Profit (sf_revop \u00a770 mirror) 64.94 cr \u2014 the stored value. Our ann date for the cell is 20150806, 503 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims. PROVENANCE: vision_rev_fills records this cell as read from financial_res_..._1000776.html \u2014 the restatement page itself.",
+   "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres) ; amended: StockView profit check 2026-10-21"
   },
   {
    "sym": "JSL",
@@ -30558,6 +30558,150 @@
    "fixed": 150.24,
    "why": "PAT mirror of fund_cell_fix WELSPUNLIV 20161231 con: NSE archived consolidated results https://nsearchives.nseindia.com/archives/financial_results/financial_res_WELSPUNLIV_1018315.html (broadcast 03-Feb-2017 17:56:12 = earliest = as-originally-filed, 34 days after quarter end): owners' row ('Net Profit after taxes, minority interest and share of associates' format) 150.24 cr; total Net Profit for the period 150.24, minority interest 0.0, share of associates 0.0. Equals StockView. Store column = owners' PAT as filed; stored 149.38 sits on no row of the as-filed page.",
    "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C2, NSE as-filed consolidated pages"
+  },
+  {
+   "sym": "AMBUJACEM",
+   "qe": "20161231",
+   "basis": "pat_std",
+   "was": 179.25,
+   "fixed": 175.88,
+   "why": "PAT mirror of fund_cell_fix AMBUJACEM 20161231 std: Original filing read: BSE CE3A16FE_0328_46B8_9688_ACCF2495AE3C_183...pdf (20-Feb-2017, first filing), vision read p2 'Statement of Standalone Audited Financial Results for the quarter and year ended 31/12/2016', Rs crore, col 3 months ended 31/12/2016: row 9 'Net Profit for the period' 175.88 (PBT 200.27 - tax 24.39). BSE detres 175.88 agrees.. Where theirs sits: row 9 Net Profit for the period 175.88 (original filing). Where ours sits: no row - 179.25 is not on the original standalone statement.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "CASTEXTECH",
+   "qe": "20101231",
+   "basis": "pat_std",
+   "was": 30.38,
+   "fixed": 24.82,
+   "why": "PAT mirror of fund_cell_fix CASTEXTECH 20101231 std: Original filing read: BSE Amtek_India_Ltd_140211_Rst.pdf (11-Feb-2011, first filing), vision read p2 'Unaudited Financial Results (Provisional) for the Quarter Ended 31st December 2010', Rs Lakhs, col Quarter ended 31.12.2010: row 11 'Net Profit for the Period (9+10)' 2,482 lakh (row 9 Net Profit from Ordinary Activities after Tax 3,038 + row 10 Extraordinary items (556)) = 24.82 cr. BSE detres np 24.82 agrees.. Where theirs sits: row 11 Net Profit for the Period 2,482 lakh. Where ours sits: row 9 Net Profit from Ordinary Activities after Tax 3,038 lakh (before the (556) extraordinary item) - wrong line.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "CASTEXTECH",
+   "qe": "20111231",
+   "basis": "pat_std",
+   "was": 42.34,
+   "fixed": 33.35,
+   "why": "PAT mirror of fund_cell_fix CASTEXTECH 20111231 std: Original filing read: BSE Amtek_India_Ltd_100112_Rst.pdf (10-Jan-2012, first filing), vision read p1 'Unaudited Financial Results (Provisional) for the Quarter Ended 31st December 2011', Rs Lakhs, col Quarter ended 31.12.2011: row 11 'Net Profit for the Period (9+10)' 3,335 lakh (row 9 4,234 + row 10 extraordinary (899)) = 33.35 cr. BSE detres np 33.35 agrees.. Where theirs sits: row 11 Net Profit for the Period 3,335 lakh. Where ours sits: row 9 Net Profit from Ordinary Activities after Tax 4,234 lakh (before the (899) extraordinary item) - wrong line.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "BHARATFIN",
+   "qe": "20180331",
+   "basis": "pat_std",
+   "was": 213.42,
+   "fixed": 210.51,
+   "why": "PAT mirror of fund_cell_fix BHARATFIN 20180331 std: Original filing read: 05af1020-03c8-4142-9369-7c59f2df745f.PDF (BSE 23-Apr-2018) p2 'Statement of Standalone Financial Results for the quarter and year ended March 31, 2018', Rs. in lakhs, col Quarter ended March 31, 2018, row 5 'Profit / (loss) after tax (III)-(IV)' 21,051.46 (PBT 20,981.51 - total tax (69.95)); no extraordinary/discontinued rows. = 210.5146 cr = theirs 210.515. Ours 213.42 matches the later Ind-AS restated Q4FY18 figure (Earnings update 173f1c65, BSE 26-Jul-2018: 'Q4FY18 is Rs. 213 Crs (Rs. 211 Crs GAAP)').. Where theirs sits: row 5 Profit/(loss) after tax 21,051.46 lakh (original filing). Where ours sits: later Ind-AS restated Q4FY18 PAT (~213 cr) from the Jul-2018 vintage, not the as-filed figure.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "BLUESTARCO",
+   "qe": "20160331",
+   "basis": "pat_std",
+   "was": 17.01,
+   "fixed": 71.72,
+   "why": "PAT mirror of fund_cell_fix BLUESTARCO 20160331 std: Original filing read: EF51C518_EFC0_4C48_AB82_F632A0D8CBC0_165344.pdf (BSE 30-May-2016), vision read p2: 'Audited Financial Results for the quarter and the year ended March 31, 2016', Rs in Lacs, STANDALONE col Quarter ended 31.3.16, row 13 'Net Profit for the Period (11+12)' 7,172 (PBT 8,250 - tax 1,078 = 7,172; row 11 also 7,172). = 71.72 cr = theirs. Ours 17.01 is on no row of the original filing (second reader shows it as a later NSE re-filing of 01-Oct-2016, not read here).. Where theirs sits: row 13 Net Profit for the Period 7,172 lakh (original standalone). Where ours sits: 17.01 cr, not on any row of the 30-May-2016 original (later-vintage value per second reader).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "BRIGADE",
+   "qe": "20160630",
+   "basis": "pat_std",
+   "was": 26.5,
+   "fixed": 26.37,
+   "why": "PAT mirror of fund_cell_fix BRIGADE 20160630 std: Original filing read: E40FDDE5_D1F6_45F3_98C7_1B7238759A31 (BSE 04-Aug-2016), vision read p5: 'Statement of Unaudited Standalone Financial Results for the quarter ended June 30, 2016', Rs. in lakhs, col Quarter ended 30.06.2016, row 13 'Net profit for the period (11+12)' 2,637 (PBT 4,028 - tax 1,391; extraordinary nil) = 26.37 cr = theirs. (p2 is the consolidated statement: row 16 2,019.) Ours 26.5 is on no row; nearest is row 15 Total Comprehensive Income 2,647 lakh (26.47), i.e. a wrong line and/or rounded.. Where theirs sits: standalone row 13 Net profit for the period 2,637 lakh. Where ours sits: 26.5 cr on no row (closest: row 15 Total Comprehensive Income 2,647 lakh).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "CGPOWER",
+   "qe": "20161231",
+   "basis": "pat_std",
+   "was": 72.3,
+   "fixed": 42.43,
+   "why": "PAT mirror of fund_cell_fix CGPOWER 20161231 std: Original filing read: 5F8B0FFC_DCAC_49DC_BB0A_CFE2CAC12BEE (BSE 10-Feb-2017), vision read p2: Crompton Greaves 'Statement of Standalone Unaudited Financial Results for the quarter and nine months ended 31st December 2016', Rs in crore, col Quarter ended 31.12.2016, row 17 'Net profit/(loss) for the period/year' 42.43 (= row 13 continuing 72.30 + row 16 discontinued (29.87)) = theirs. Ours 72.30 = row 11/13 profit from continuing operations only, excluding the discontinued-operations loss.. Where theirs sits: row 17 Net profit/(loss) for the period 42.43 cr. Where ours sits: row 13 Net profit from continuing operations 72.30 cr (wrong line: excludes discontinued ops).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "COX&KINGS",
+   "qe": "20150930",
+   "basis": "pat_std",
+   "was": 41.01,
+   "fixed": 40.2,
+   "why": "PAT mirror of fund_cell_fix COX&KINGS 20150930 std: Original filing read: 68CB4627_9155_48DB_BD40_15C28F... (BSE 31-Oct-2015), vision read p6 (rotated): 'Statement of Standalone Unaudited Financial Results for the Quarter and Half Year Ended September 30, 2015', Rs in Lacs, col Quarter Ended 30.09.2015, row 13 'Net Profit/(Loss) for the period (11-12)' 4,019.61 (PBT 5,919.83 - tax 1,900.22; extraordinary nil) = 40.1961 cr = theirs. Ours 41.01 sits on no row of this filing (p2 is the consolidated statement: row 16 11,824.03).. Where theirs sits: standalone row 13 Net Profit for the period 4,019.61 lakh. Where ours sits: 41.01 cr, on no row of the original filing.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "DREDGECORP",
+   "qe": "20150930",
+   "basis": "pat_std",
+   "was": 20.78,
+   "fixed": 17.31,
+   "why": "PAT mirror of fund_cell_fix DREDGECORP 20150930 std: Original filing read: Original 24C9245B_F756_4993_AB17_1D8EE3EC0645_130538.pdf (BSE 10-Nov-2015) p1, vision read: col '30-09-2015 (Q2 CY)', row 13 'Net Profit(+)/Loss(-) for the period (11-12)' 1731, Rs in lakhs (PBT 1803 - tax 72 = 1731). Heading said 'Consolidated' by mistake; BE206DAB_B095_4DB3_8E80_67424BA34812_141312.pdf (BSE 29-Dec-2015) p1 letter: company has no subsidiaries, heading corrected to 'Stand-alone'; its p2 (vision read) shows the same row 13 = 1731 lakh. Ours 20.78 is on no row of either filing.. Where theirs sits: Row 13 Net Profit for the period = 1731 lakh. Where ours sits: 20.78 cr - on no row of the original or the corrected re-filing.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "EDELWEISS",
+   "qe": "20180331",
+   "basis": "pat_std",
+   "was": 62.02,
+   "fixed": 60.94,
+   "why": "PAT mirror of fund_cell_fix EDELWEISS 20180331 std: Original filing read: Original ec366669-672e-4394-a210-de5bba774f9e.pdf (BSE 03-May-2018) p9, vision read: 'Standalone Financial Results for the quarter and year ended 31 March 2018', Rs in Crores, col 'March 31, 2018 (Unaudited)' quarter: row 7 'Net Profit after tax (5-6)' 60.94 (PBT 77.15 - tax 15.20 - 1.01 = 60.94). No exceptional/discontinued lines.. Where theirs sits: Row 7 Net Profit after tax = 60.94 cr. Where ours sits: 62.02 cr - on no row of the original (likely a later restated vintage).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "FMGOETZE",
+   "qe": "20091231",
+   "basis": "pat_std",
+   "was": 0.22,
+   "fixed": -3.25,
+   "why": "PAT mirror of fund_cell_fix FMGOETZE 20091231 std: Original filing read: Original Federal-Mogul_Goetze_(India)_Ltd_220310_Rst.pdf (BSE 22-Mar-2010; FY = calendar year) p1, vision read (rotated 90): 'Audited Financial Results for the Quarter/Year ended December 31, 2009', Rs in lacs, col 'Quarter ended December 31, 2009 (Unaudited)': row 11 'Profit/(loss) from ordinary activities after tax (9-10)' 26.11 (467.56 - 441.45); row 12 'Prior period item' 351.24; row 13 'Profit/(loss) from ordinary activities after tax and prior period items (11-12)' (325.13); row 16 'Net Profit/(Loss) attributable to the share holders' (325.13).. Where theirs sits: Row 13/16 net after prior-period item = (325.13) lacs. Where ours sits: 0.22 cr - on no row (nearest: row 11 before prior-period item 26.11 lacs = 0.26 cr).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "GLAXO",
+   "qe": "20111231",
+   "basis": "pat_std",
+   "was": 147.38,
+   "fixed": 136.74,
+   "why": "PAT mirror of fund_cell_fix GLAXO 20111231 std: Original filing read: Original GlaxoSmithKline_Pharmaceuticals_Ltd_160212.pdf (BSE 16-Feb-2012) p1, vision read: 'Audited Financial Results for the year ended 31st December, 2011', Rs lakhs, col '3 months ended 31.12.2011': 'Net Profit after Tax before Exceptional Items' 14738; 'Exceptional Items (net of tax)' (1064); 'Net Profit' 13674 (14738 - 1064 = 13674).. Where theirs sits: 'Net Profit' (after exceptional items) = 13674 lakhs. Where ours sits: 'Net Profit after Tax before Exceptional Items' 14738 lakhs (wrong line).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "HATHWAY",
+   "qe": "20150630",
+   "basis": "pat_std",
+   "was": -37.38,
+   "fixed": -43.91,
+   "why": "PAT mirror of fund_cell_fix HATHWAY 20150630 std: Original filing read: Original BSE 254580F7...174117.pdf (11-Aug-2015) p3 vision read: Unaudited Standalone, Rs lacs, col June 30 2015: row 7 (4,416.34), row 8b prior period (25.11), row 9 (4,391.23), tax nil, row 13 Net Profit for the Period (4,391.23) = -43.91 cr = theirs. Ours -37.38 = NSE Ind-AS re-filing 22-Sep-2016 (seq 1012828) -37.3752, a later vintage.. Where theirs sits: Original row 13 Net Profit/(Loss) for the Period. Where ours sits: Ind-AS re-filing 22-Sep-2016 Net Profit for the period (later vintage).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "IIFL",
+   "qe": "20170331",
+   "basis": "pat_std",
+   "was": 114.08,
+   "fixed": 113.44,
+   "why": "PAT mirror of fund_cell_fix IIFL 20170331 std: Original filing read: Original BSE b6484a44 (04-May-2017) p3 vision read, Statement of Standalone Financial Results, Rs lakhs, col Quarter Mar 31 2017: row 5 PBT 11,853.5, row 6 tax 445.1, row 7 PAT from continuing operations 11,408.4, row 10 discontinued (64.2), row 11 Profit/(Loss) after Tax (7+10) 11,344.2 = 113.442 cr = theirs (11,408.4-64.2=11,344.2). Ours 114.08 = row 7 continuing-only (wrong line; NSE 15-Jun-2017 page carried 114.084 as np).. Where theirs sits: row 11 Profit/(Loss) after Tax (7+10). Where ours sits: row 7 Profit after tax from Continuing Operation (excludes discontinued loss).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "JAGRAN",
+   "qe": "20130331",
+   "basis": "pat_std",
+   "was": 29.47,
+   "fixed": 38.49,
+   "why": "PAT mirror of fund_cell_fix JAGRAN 20130331 std: Original filing read: Original BSE Jagran_Prakashan_Ltd_280513_rst.pdf (28-May-2013) p1 vision read, Standalone, Rs lakhs, col Quarter 31.03.2013: row 9 PBT 3,806.52, row 10 tax (42.78), row 11 3,849.30, row 14 Net Profits 3,849.30 = 38.493 cr = theirs (3,806.52+42.78=3,849.30). Ours 29.47 is on no row.. Where theirs sits: Standalone row 14 Net Profits. Where ours sits: none (29.47 not on the statement).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "JKCEMENT",
+   "qe": "20160630",
+   "basis": "pat_std",
+   "was": 60.64,
+   "fixed": 60.85,
+   "why": "PAT mirror of fund_cell_fix JKCEMENT 20160630 std: Original filing read: Original BSE 1FBB24D0 (06-Aug-2016) p2 vision read, Extract of Standalone Unaudited Results, Rs lacs, col 30.06.2016: row 9 PBT 7,290.32, row 10 tax 1,205.09, row 11 6,085.23, row 13 Net Profit for the Period 6,085.23 = 60.852 cr = theirs (7,290.32-1,205.09=6,085.23); Ind-AS reconciliation note also ends 6,085.23. Ours 60.64 = NSE re-filing 28-Sep-2016 (seq 1013952) np 60.6366, a later vintage.. Where theirs sits: Original row 13 Net Profit for the Period. Where ours sits: NSE 28-Sep-2016 re-filing Net Profit for the period (later vintage).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
   }
  ],
  "retracted": [
