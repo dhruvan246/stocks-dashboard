@@ -92,6 +92,34 @@
    "title": "Q2 FY25 Financial Results (Standalone & Consolidated)",
    "read": "2026-09-12",
    "by": "claude-routine"
+  },
+  "2ae1eec0-c6a6-4449-a241-37261ffad3ac.pdf": {
+   "kind": "res",
+   "date": "2024-07-30",
+   "title": "Unaudited Financial Results for the Quarter Ended 30.06.2024",
+   "read": "2026-10-21",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "9b7d52f4-bac8-45fa-9747-e466db1aab29.pdf": {
+   "kind": "res",
+   "date": "2023-10-31",
+   "title": "Unaudited Financial Results for the Quarter and Half Year Ended September 30, 2023",
+   "read": "2026-10-21",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "b135d63c-9f8b-4cf3-bf4b-84cc1b347e63.pdf": {
+   "kind": "res",
+   "date": "2023-08-04",
+   "title": "Unaudited Financial Results for the quarter ended June 30, 2023",
+   "read": "2026-10-21",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf": {
+   "kind": "ar",
+   "date": "2023-09-08",
+   "title": "FY 2022-23 Annual Report",
+   "read": "2026-10-21",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -686,6 +714,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20230331": 59.0,
     "20240331": 62.0,
     "20250331": 65.0,
     "20260331": 75.0
@@ -731,6 +760,12 @@
      56,
      "Our exports have reached 65 countries during FY 2024-25",
      "65"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Countries of export presence (doc period)",
+     "59"
     ]
    }
   },
@@ -739,6 +774,7 @@
    "unit": "count",
    "kind": "level",
    "y": {
+    "20230331": 28283.0,
     "20240331": 25000.0,
     "20260331": 25000.0
    },
@@ -777,6 +813,12 @@
      5,
      "provide direct employment to around 25,000 people (doc period)",
      "25,000"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     7,
+     "Employees (doc period)",
+     "28,283"
     ]
    }
   },
@@ -785,6 +827,7 @@
    "unit": "Mn Spindles",
    "kind": "level",
    "y": {
+    "20230331": 1.23,
     "20240331": 1.23,
     "20250331": 1.23,
     "20260331": 1.25
@@ -816,6 +859,51 @@
      17,
      "Spindle Count (MN)",
      "1.23"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Spindle Count (doc period)",
+     "1.23"
+    ]
+   }
+  },
+  {
+   "name": "Processed Fabric Capacity",
+   "unit": "MM p.a.",
+   "kind": "level",
+   "y": {
+    "20230331": 180.0,
+    "20240331": 180.0,
+    "20260331": 222.0
+   },
+   "q": {
+    "20260630": 240.0
+   },
+   "src": {
+    "q:20260630": [
+     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
+     10,
+     "Processed Fabric Capacity (doc period)",
+     "240"
+    ],
+    "y:20260331": [
+     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
+     10,
+     "Processed Fabric Capacity (doc period)",
+     "222"
+    ],
+    "y:20240331": [
+     "28ef525a-ba4a-474a-92af-35694ae0904e.pdf",
+     5,
+     "Fabric Processing capacity (doc period)",
+     "180"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Fabric processing capacity (doc period)",
+     "180"
     ]
    }
   },
@@ -851,34 +939,34 @@
    }
   },
   {
-   "name": "Processed Fabric Capacity",
-   "unit": "MM p.a.",
+   "name": "Grey Fabric Loom Capacity",
+   "unit": "Looms",
    "kind": "level",
    "y": {
-    "20240331": 180.0,
-    "20260331": 222.0
+    "20230331": 1550.0,
+    "20260331": 1500.0
    },
    "q": {
-    "20260630": 240.0
+    "20260630": 1550.0
    },
    "src": {
     "q:20260630": [
      "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
      10,
-     "Processed Fabric Capacity (doc period)",
-     "240"
+     "Grey Fabric Capacity (doc period)",
+     "1,550"
     ],
     "y:20260331": [
      "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
      10,
-     "Processed Fabric Capacity (doc period)",
-     "222"
+     "Grey Fabric Capacity (doc period)",
+     "1,500"
     ],
-    "y:20240331": [
-     "28ef525a-ba4a-474a-92af-35694ae0904e.pdf",
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
      5,
-     "Fabric Processing capacity (doc period)",
-     "180"
+     "Looms (doc period)",
+     "1,550"
     ]
    }
   },
@@ -908,41 +996,23 @@
    }
   },
   {
-   "name": "Grey Fabric Loom Capacity",
-   "unit": "Looms",
-   "kind": "level",
-   "y": {
-    "20260331": 1500.0
-   },
-   "q": {
-    "20260630": 1550.0
-   },
-   "src": {
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     10,
-     "Grey Fabric Capacity (doc period)",
-     "1,550"
-    ],
-    "y:20260331": [
-     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
-     10,
-     "Grey Fabric Capacity (doc period)",
-     "1,500"
-    ]
-   }
-  },
-  {
    "name": "Manufacturing Facilities",
    "unit": "count",
    "kind": "level",
    "y": {
+    "20230331": 15.0,
     "20240331": 15.0
    },
    "q": {},
    "src": {
     "y:20240331": [
      "28ef525a-ba4a-474a-92af-35694ae0904e.pdf",
+     5,
+     "State-of-the-art manufacturing facilities (doc period)",
+     "15"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
      5,
      "State-of-the-art manufacturing facilities (doc period)",
      "15"
@@ -954,6 +1024,7 @@
    "unit": "million meters per annum",
    "kind": "level",
    "y": {
+    "20230331": 30.0,
     "20240331": 30.0
    },
    "q": {},
@@ -963,6 +1034,63 @@
      5,
      "Printing line capacity (doc period)",
      "30"
+    ],
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Printing line capacity (doc period)",
+     "30"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Energy Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20230331": 15.3
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     7,
+     "Renewable energy capacity (doc period)",
+     "15.3"
+    ]
+   }
+  },
+  {
+   "name": "Shirt Manufacturing Capacity",
+   "unit": "million",
+   "kind": "level",
+   "y": {
+    "20230331": 2.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     7,
+     "Shirt manufacturing capacity (million) (doc period)",
+     "2.0"
+    ]
+   }
+  },
+  {
+   "name": "Yarn Production Capacity",
+   "unit": "metric tonnes per day",
+   "kind": "level",
+   "y": {
+    "20230331": 750.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Yarn production capacity (doc period)",
+     "750"
     ]
    }
   }
@@ -1369,5 +1497,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-12"
+ "updated": "2026-10-21"
 }
