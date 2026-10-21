@@ -7451,6 +7451,276 @@
    "fixed": 123.61,
    "why": "BSE XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Banking_532505_58202218438.xml (filed 2022-08-08T12:52:00; ScripCode 532505, OneD context 20220630, 91 days, Standalone): ProfitLossForPeriod 123.61 cr (PBT 193.11, tax 69.5). SECOND: BSE detailed result scrip 532505 qtr 114.00 (period 01-Apr-22 to 30-Jun-22) Net Profit 123.61 cr = same. Stored 117.49 sits on no row of this filing; store = as-filed, PAT after all items.",
    "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\") - batch 2, 2018+ XBRL"
+  },
+  {
+   "sym": "KTKBANK",
+   "qe": "20180331",
+   "basis": "std",
+   "was": 11.39,
+   "fixed": 11.0,
+   "why": "Original filing read: Own result PDF e10a1506 (BSE 15-May-2018 15:18) and update e80c9700 (16-May, 'trivial changes under Segment') both return 404; press releases 036df8d2/af132a37 and analyst outcome 968f9622 also 404. Evidence: (1) BSE detres for Jan-Mar 2018 (Audited): PBT -664.2, Tax 774.2 (credit), 'Net Profit (+)/Loss (-) from Ordinary Activities' 110.0 Rs mn, EPS 0.39; (2) Jun-18 result 490b7bb4 (BSE 12-Jul-2018) p2, Rs in crore, column 31.03.2018 (Audited): Provisions 541.75, Tax Expense -77.42, 'Net Profit (+)/Loss (-) from Ordinary activities after Tax (10-11)' 11.00; segment PBT -66.42 - (-77.42) = 11.00. No row shows 11.39. FLAG: own PDF unreadable; verdict rests on detres + next-quarter comparative.. Where theirs sits: Net Profit from ordinary activities after tax 11.00 cr. Where ours sits: 11.39 on no row read (source unknown).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230630",
+   "basis": "std",
+   "was": 9634.98,
+   "fixed": 9543.71,
+   "why": "Original filing read: BSE ann d5335dfd-362f-427a-ad7b-0006e4c3eb6c.pdf (Board Meeting Outcome, 10-Aug-2023 18:08, the first filing): p7 \"Statement of Standalone Unaudited Financial Results for the Quarter ended June 30, 2023\" (Rs in Lakhs), column Three months ended June 30 2023: row 31 \"Profit after tax and Extraordinary Items\" 9,54,371.26 lakh (PBT 9,63,464.04 - tax 9,092.78 = 9,54,371.26). Where theirs sits: standalone p7 row 31 Profit after tax and Extraordinary Items, Jun-23 quarter column. Where ours sits: consolidated statement p18 (Statement of Unaudited Consolidated Financial Results, Jun-23 quarter) 9,63,498.31 lakh - not standalone.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230930",
+   "basis": "std",
+   "was": 8030.28,
+   "fixed": 7925.02,
+   "why": "Original filing read: BSE ann 5926efe3-0e0e-464b-873c-e38c48117d32.pdf (Financial Results, 10-Nov-2023 17:05): p8 \"Statement of Standalone Unaudited Financial Results for the quarter and six months ended September 30, 2023\" (Rs in Lakhs), first column three months ended Sep 30 2023: \"Profit after tax and Extraordinary Items\" 7,92,501.55 lakh. Where theirs sits: standalone p8 Profit after tax and Extraordinary Items, Sep-23 quarter column. Where ours sits: consolidated statement p21 Sep-23 quarter 8,03,028.48 lakh - not standalone.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250930",
+   "basis": "std",
+   "was": 10098.48,
+   "fixed": 10053.39,
+   "why": "Original filing read: BSE ann 73de7b97-7433-4a52-b4d4-2b024c5fa36f.pdf (Board Meeting Outcome - Financial Results, 6-Nov-2025 16:45): p5 \"Reviewed Standalone Financial Results for the quarter and six months ended September 30, 2025\" (Rs. in Crore), first column (3 months ended 30-Sep-2025): \"Profit after tax and Extraordinary Items\" 10,053.39 (PBT 10,146.97 - tax 93.58). Where theirs sits: standalone p5 Profit after tax and Extraordinary Items, Sep-25 quarter. Where ours sits: consolidated statement p17 (Reviewed Consolidated Financial Results) Sep-25 quarter 10,098.48 crore - not standalone.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "MAHABANK",
+   "qe": "20210930",
+   "basis": "std",
+   "was": 263.97,
+   "fixed": 263.67,
+   "why": "Original filing read: vision read p2 of BSE ann 55d3b9b2-6d8b-4d37-ba86-37cfb457ba9b.pdf (Financial Results of Bank for Half Year Ended 30.09.2021, 21-Oct-2021 12:12, first filing; scanned): \"Standalone Unaudited (Reviewed) Financial Results for Quarter / Half Year ended 30th September 2021\" (Rs. in lakh), column quarter 30.09.2021: row J \"Net Profit / Loss for the period (H-I)\" 26367 lakh (PBT 54509 - tax 28142 = 26367). Theirs 263.68 = BSE detres 2636.8 Rs mn, i.e. the same figure rounded (0.01 cr).. Where theirs sits: standalone p2 row J Net Profit for the period 26367 lakh (=263.67; theirs 263.68 is the BSE Rs-mn rounding of it). Where ours sits: consolidated statement p12 row J Net Profit for the period Sep-21 quarter 26397 lakh - not standalone.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "MARUTI",
+   "qe": "20160630",
+   "basis": "std",
+   "was": 1490.9,
+   "fixed": 1486.2,
+   "why": "Original filing read: vision read p3 of BSE ann 8B8CEC09_516C_4069_B48F_F63394D536E6_141838.pdf (Announces Q1 Results (Standalone), 26-Jul-2016 14:18, first filing; scanned): \"Statement of Unaudited Standalone Results for the Quarter ended 30th June 2016\" (Rs In Million), column 30th June 2016: row 13 \"Net Profit for the Period (11-12)\" 14,862 Rs mn (PBT 20,420 - tax 5,558 = 14,862; extraordinary nil). BSE detres Net Profit 14862 Rs mn agrees.. Where theirs sits: p3 row 13 Net Profit for the Period, Jun-16 column. Where ours sits: no row in the as-filed statement (Total Comprehensive Income is 14,916 = 1491.6, not 1490.9).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "MBLINFRA",
+   "qe": "20160331",
+   "basis": "std",
+   "was": 13.92,
+   "fixed": 14.06,
+   "why": "Original filing read: vision read p2 (rotated) of BSE ann 2115B8C0_9E84_4374_955F_6A766A*.pdf (Standalone & Consolidated Financial Results, 30-May-2016 23:31, first filing; scanned): \"AUDITED FINANCIAL RESULTS FOR THE QUARTER AND THE YEAR ENDED MARCH 31, 2016\" (Rs in Lakhs), STANDALONE quarter 31.03.2016: row 13 \"Net Profit for the period (11-12)\" 1,406 lakh (PBT 1,739 - tax 333 = 1,406). BSE detres Net Profit 140.6 Rs mn agrees.. Where theirs sits: standalone p2 row 13 Net Profit for the period, Q4 FY16 column. Where ours sits: no row (13.92 is not on the statement; consolidated Q4 = 1,476 lakh).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "MTNL",
+   "qe": "20180630",
+   "basis": "std",
+   "was": -0.0,
+   "fixed": -943.37,
+   "why": "Original filing read: The Jun-18 own result PDF (BSE ann ccf716de-5f03-458f-8c0a-f681956136ec.pdf, Outcome of Board Meeting 14-Aug-2018 17:10) returns HTTP 404 on all three BSE routes, so not read. Evidence used instead: (a) BSE detailed-results table for Apr-Jun 2018 (filed with that quarter): Net Profit -9433.7 Rs mn, PBT -9433.7, no tax; (b) BSE ann 3ca0bcd8-ca0b-...-440702a0260b.pdf (Sep-18 results, 14-Nov-2018) p2 STATEMENT OF STANDALONE UNAUDITED FINANCIAL RESULTS (Rs. In Crore), Preceding 3 months 30.06.2018 column: \"Profit/(Loss) for the period\" (943.38). NSE XBRL INDAS_39124_35767_16082018024322_WEB.xml = placeholder (ProfitLossForPeriod -1000 Rs). Ours -0.0 is that placeholder. Flag: as-filed PDF itself unread.. Where theirs sits: BSE detres Jun-18 Net Profit -9433.7 Rs mn (=-943.37 cr); Sep-18 comparative column -943.38. Where ours sits: NSE XBRL placeholder ProfitLossForPeriod -1000 Rs (all-zero/placeholder XBRL), no real row.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "NIACL",
+   "qe": "20240331",
+   "basis": "std",
+   "was": 353.31,
+   "fixed": 353.93,
+   "why": "Original filing read: BSE ann 04182966-a268-4aa0-b624-7c505902bdeb.pdf (Board Meeting Outcome, 22-May-2024 21:38, first filing; text layer; the 21:45 re-post 24a5e00c... is identical on this row): p7 \"Statement of Standalone Audited Results for the Quarter and Year Ended 31/03/2024\" (Rs in lakhs), column Quarter ended 31/03/2024: row 28 \"Profit / (loss) after tax (26-27)\" 35,393 lakh (PBT 51,999 - provision for tax 16,606; extraordinary nil). Insurer line used: Profit/(loss) after tax.. Where theirs sits: standalone p7 row 28 Profit/(loss) after tax, Q4 FY24 column. Where ours sits: no row (standalone 35,393; consolidated p27 PAT 30,778 lakh); 353.31 not found in the filing.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "NITINFIRE",
+   "qe": "20170630",
+   "basis": "std",
+   "was": -34.15,
+   "fixed": -34.2,
+   "why": "Original filing read: vision read p2 of BSE ann e193f737-b49a-417a-a1d3-114b917d283b.pdf (Financial Results For Quarter Ended June 30, 2017, 14-Sep-2017 15:23, first filing; scanned): \"Statement of Un-audited Standalone Results for the Quarter ended 30-Jun-2017\" (Rs in Lacs), column 30-Jun-2017: \"Loss after tax\" (3,420.32) lakh (values printed one line low; total income 1,171.89 - total expenses 4,592.21 = -3,420.32; tax nil). Exact -34.2032 cr.. Where theirs sits: p2 Loss after tax (3,420.32) lakh, Jun-17 column. Where ours sits: p2 Total comprehensive loss for the period (3,415.42) lakh = -34.15 cr (comprehensive income, wrong line).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "NLCINDIA",
+   "qe": "20170331",
+   "basis": "std",
+   "was": 2375.04,
+   "fixed": 1501.47,
+   "why": "Original filing read: vision read p3 (rotated scan) of BSE ann b3767f42-8178-4004-920f-4eb877*.pdf (\"31-03-2017\", 30-May-2017 18:34, first filing): \"STATEMENT OF STANDALONE AND CONSOLIDATED AUDITED FINANCIAL RESULTS\" (Rs. In Lakhs), STANDALONE Quarter ended March 31, 2017: row IX \"Profit/(loss) for the period before Net movement in regulatory deferral account balances (VII-VIII)\" 237,503; row X \"Net Movement in regulatory deferral account balances income/(expenses) net\" (87,356); row XI \"Profit/(loss) for the period (IX+X)\" 150,147 lakh. Theirs 1501.48 = BSE detres 15014.8 Rs mn (same figure, 0.01 rounding).. Where theirs sits: standalone p3 row XI Profit/(loss) for the period (IX+X) 150,147 lakh. Where ours sits: p3 row IX profit before net movement in regulatory deferral balances 237,503 lakh = 2375.03 (intermediate line, not the bottom profit).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "NLCINDIA",
+   "qe": "20170630",
+   "basis": "std",
+   "was": 511.23,
+   "fixed": 316.09,
+   "why": "Original filing read: vision read p3 (index 2, rotated scan) of BSE ann 2949b3b2-31ca-40d9-85e9-495626b914fc.pdf (12-Aug-2017 19:29, first results filing; 31-Jul and 2-Aug docs are board-meeting notices): \"Statement of Profit & Loss for the period ended June 30, 2017\" (Rs. in lakhs), Quarter ended June 30 2017 (UnAudited): VII PBT 65,172; tax current 6,852 + deferred 7,197; IX \"Profit/(loss) for the period before regulatory deferral account balances (VII-VIII)\" 51,123; X \"Net Movement in regulatory deferral account balances income/(expenses)\" (19,514); XI \"Profit/(loss) for the period (IX+X)\" 31,609 lakh (arithmetic checks).. Where theirs sits: standalone row XI Profit/(loss) for the period (IX+X) 31,609 lakh. Where ours sits: row IX profit before net movement in regulatory deferral balances 51,123 lakh (intermediate line).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "NLCINDIA",
+   "qe": "20170930",
+   "basis": "std",
+   "was": 509.22,
+   "fixed": 326.88,
+   "why": "Original filing read: vision read p3 (index 2) of BSE ann f6f97ff1-f8b0-4147-afef-2845c03f8e4f.pdf (14-Nov-2017 16:05, first results filing; 4-Nov doc is the board-meeting notice): \"Statement of Standalone Profit & Loss for the Quarter and Half Year...\" (Rs in lakhs), Quarter ended September 30 2017 (UnAudited): VII PBT 68,613; current tax 6,218 + deferred 11,473; IX \"Profit/(loss) for the period before regulatory deferral account balances (VII-VIII)\" 50,922; X \"Net Movement in regulatory deferral account balances\" (18,234); XI \"Profit/(loss) for the period (IX+X)\" 32,688 lakh. Theirs 326.87 = same figure (0.01 rounding).. Where theirs sits: standalone row XI Profit/(loss) for the period (IX+X) 32,688 lakh. Where ours sits: row IX profit before net movement in regulatory deferral balances 50,922 lakh (intermediate line).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20150331",
+   "basis": "std",
+   "was": 205.57,
+   "fixed": 2.91,
+   "why": "Original filing read: Standalone Q4 FY15 was not in the BSE filing (BSE ann 2529136F (29-May-2015) is \"Statement of Consolidated Audited Results\", Rs Millions, row 13 Net Profit for the period 2055.67 mn). First standalone filing = NSE results filing seq 1002049 (16-Sep-2015 15:59, Non-Consolidated, Audited, quarter to 31-Mar-2015; nse/d_RAJESHEXPO_20150331_1002049.html, Rs lakhs): Profit/(Loss) from ordinary activities before tax 7176.20; Tax expense 6885.70; \"Net Profit / (Loss) for the period\" 290.50 lakh = 2.905 cr.. Where theirs sits: NSE seq 1002049 Non-Consolidated Net Profit for the period 290.50 lakh. Where ours sits: ours 205.57 = consolidated Net Profit 2055.67 Rs mn (BSE 29-May-2015 consolidated statement row 13) - consolidated, not standalone.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20210331",
+   "basis": "std",
+   "was": 31.94,
+   "fixed": 31.59,
+   "why": "Original filing read: vision read p3 (index 2) of 24bfd68d 'Rel Stand Alone Results' BSE 30-Jun-2021 21:37, STATEMENT OF STAND ALONE AUDITED RESULTS, Rs in Millions, Quarter 31/03/2021 col: row 5 'Net Profit from ordinary activities after tax (3-4)' 315.93 (PBT 359.24 - tax 43.31 = 315.93); row 7 'Total comprehensive Profit/(Loss) for the period' 319.41 incl OCI 3.48. Earlier 17:22 doc 67238344 is consolidated.. Where theirs sits: row 5 net profit after tax 315.93 mn. Where ours sits: row 7 total comprehensive income 319.41 mn (includes OCI).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "RCF",
+   "qe": "20241231",
+   "basis": "std",
+   "was": 80.0,
+   "fixed": 79.65,
+   "why": "Original filing read: BSE ann b07a668e-a6eb-4409-947a-cb97dd*.pdf (12-Feb-2025 16:05, first filing), text p6: \"Statement of Unaudited Standalone Financial Results for the Quarter and Nine Months Ended 31ST DECEMBER 2024\" (Rs crore; revenue 4518.35), Quarter ended 31.12.2024 Unaudited: Profit/(Loss) before tax (3-4) 104.71; Total Tax 25.06 (current 22.95, deferred 1.98, earlier years 0.13); \"Profit / (Loss) after tax (5-6)\" 79.65 crore.. Where theirs sits: p6 Profit/(Loss) after tax (5-6) 79.65 cr. Where ours sits: ours 80.00 = mis-scaled XBRL (rounded), not the printed 79.65.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "RENUKA",
+   "qe": "20100930",
+   "basis": "std",
+   "was": 11.6,
+   "fixed": 11.4,
+   "why": "Original filing read: First filing: vision read p1 of Shree_Renuka_Sugars_Ltd_151110.pdf 'Announces Q4 & FY 10 results' BSE 15-Nov-2010, UNAUDITED STANDALONE FINANCIAL RESULTS FOR THE YEAR ENDED SEPTEMBER 30, 2010, Rs in Million, col QUARTER ENDED 30.09.2010: PBT (14); Provision for Taxation (130); NET PROFIT 116; Less Prior Period Adjustments 2; 'Profit after prior period adjustments' 114 (NSE 15-Nov-2010: 11.6 / extraordinary 0.2 / net 11.4 cr). Re-filing: vision read p2 of Shree_Renuka_Sugars_Ltd_110211.pdf 'Announces Audited FY 10 results' BSE 11-Feb-2011, AUDITED STANDALONE, quarter col: PBT (53); tax (136); NET PROFIT 83; prior period 2; profit after prior period adj 81 (= theirs 8.1; BSE detres Audited 81.0 Rs mn). Rule: first filing wins over the later audited re-filing. FLAG: ours 11.6 = NET PROFIT before prior-period adjustment; the first filing's bottom line is 114 mn = 11.40 cr, so ours should also move to 11.40.. Where theirs sits: audited re-filing 11-Feb-2011 'Profit after prior period adjustments' 81 mn. Where ours sits: first filing NET PROFIT 116 mn (before the 2 mn prior-period adjustment; bottom line 114).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "RUSTOMJEE",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 0.0,
+   "fixed": 71.84,
+   "why": "Original filing read: BSE ann e41f342b-ca9d-477b-a051-f5d15c*.pdf (22-May-2023 15:02, first filing; Keystone Realtors Ltd), text p18: \"Statement of standalone financial results for the year ended March 31, 2023\" (INR in Lakh), Quarter ended 31.03.2023: 5 Profit Before Tax 10,045; Total Tax Expense 2,861; 7 \"Profit for the period\" 7,184 lakh (10,045-2,861 = 7,184). (Consolidated p9 shows 7,404 - not used.). Where theirs sits: p18 standalone row 7 Profit for the period 7,184 lakh. Where ours sits: ours 0.00 = all-zero XBRL placeholder.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SBIN",
+   "qe": "20181231",
+   "basis": "std",
+   "was": 6618.73,
+   "fixed": 3954.81,
+   "why": "Original filing read: vision read p2 of d055d87a 'Financial Results For Quarter Ended 31.12.2018' BSE 1-Feb-2019 13:40, State Bank of India Corporate Centre UNAUDITED (standalone; rows 15-16 associates/minority shaded), Rs crore, col 31.12.2018: row 10 'PROFIT/(LOSS) FROM ORDINARY ACTIVITIES BEFORE TAX' 6,618.73; row 11 Tax expense 2,663.92; row 14 'NET PROFIT/(LOSS) FOR THE PERIOD (12)+(13)' 3,954.81 (6,618.73-2,663.92=3,954.81). BSE detres agrees 39,548.1 Rs mn.. Where theirs sits: row 14 net profit for the period 3,954.81 cr. Where ours sits: row 10 PBT 6,618.73 cr (XBRL tax 0).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SHILPAMED",
+   "qe": "20190930",
+   "basis": "std",
+   "was": 50.78,
+   "fixed": 53.1,
+   "why": "Original filing read: vision read p4 of 2e650962 'RESULTS FOR QUARTER AND HALF YEAR ENDED 30.09.2019' BSE 9-Nov-2019 14:59, 'STATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS', Rs In Lakhs, col 30.09.2019: row 5 PBT 6,332.15; row 6 Tax 1,022.26; row 7 'Profit for the Period (5)-(6)' 5,309.89 (6,332.15-1,022.26=5,309.89).. Where theirs sits: row 7 Profit for the Period 5,309.89 lakh. Where ours sits: 50.78 cr not on the standalone page (likely consolidated p2, not read).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SKFINDIA",
+   "qe": "20160331",
+   "basis": "std",
+   "was": 101.27,
+   "fixed": 51.18,
+   "why": "Original filing read: vision read p2 of 4D0B086F 'Announces Financial Results for the Quarter & Fifteen months' BSE 10-May-2016 17:29, SKF INDIA LIMITED, Rs. in Millions, col Quarter ended March 31, 2016 (Unaudited): row 9 PBT 805.0; row 10 Tax 293.2; row 13 'Net Profit for the period (11-12)' 511.8 (805.0-293.2=511.8). 15-months-ended col = 2,571.5. BSE detres agrees 511.8.. Where theirs sits: row 13 Net Profit for the period 511.8 mn. Where ours sits: 101.27 cr on no row (likely derived from the 15-month period).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SOBHA",
+   "qe": "20160630",
+   "basis": "std",
+   "was": 36.8,
+   "fixed": 36.7,
+   "why": "Original filing read: vision read p3 (rotated) of A4C19F33 'Announces Q1 Results (Standalone & Consolidated)' BSE 10-Sep-2016 17:32, 'Statement of unaudited standalone financial results for the quarter ended June 30, 2016', Rs in million, col 3 months ended 30.06.2016: row 9 PBT 584; row 10 Tax 217; row 13 'Net profit for the period (11-12)' 367 (584-217=367); row 15 Total Comprehensive Income 368. NSE 27-Sep-2016 and BSE detres both 36.7 cr.. Where theirs sits: row 13 Net profit for the period 367 mn. Where ours sits: row 15 Total Comprehensive Income 368 mn.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "STERLINBIO",
+   "qe": "20091231",
+   "basis": "std",
+   "was": 36.21,
+   "fixed": 106.15,
+   "why": "Original filing read: vision read p1 of Sterling_Biotech_Ltd_310310.pdf 'Announces Q4 & FY 09 results' BSE 31-Mar-2010 17:31 (fax stamp Mar 31 2010), AUDITED FINANCIAL RESULTS FOR THE YEAR ENDED 31ST DECEMBER 2009, Rs in Lacs, col 3 months ended 31/12/2009: row 7 PBT 5,561.00; row 8d Tax 1,940.00; row 9 'Net Profit from Ordinary Activities after tax (7-8)' 3,621.00; row 10 Extraordinary Items 6,993.62; row 11 'Net Profit (+)/Loss (-) for the period (9-10)' 10,614.62; row 12 Prior year adjustment 166.97; row 13 'Profit available for appropriation' 10,781.59. FLAG BOTH SIDES WRONG: ours 36.21 = row 9 (before extraordinary items); correct PAT per rule = row 11 = 106.15 cr.. Where theirs sits: row 13 'Profit available for appropriation' 10,781.59 lacs (includes prior-year adjustment below the Net Profit row). Where ours sits: row 9 Net Profit from Ordinary Activities after tax 3,621.00 lacs (before extraordinary).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "STERLINBIO",
+   "qe": "20111231",
+   "basis": "std",
+   "was": 10.16,
+   "fixed": -74.15,
+   "why": "Original filing read: vision read p1 of Sterling_Biotech_Ltd_140212_Rst.pdf 'Financial Results & Limited Review for Dec 31, 2011' BSE 14-Feb-2012 19:55, UNAUDITED FINANCIAL RESULTS (PROVISIONAL) FOR THE FOURTH QUARTER ENDED 31 DECEMBER 2011, Rs in Lacs, col Quarter ended 31/12/2011: row 7 PBT (3,025.59); row 8c Tax (3,806.04); row 9 780.45; row 10 Extraordinary (8,195.16); row 11 'Net Profit/(Loss) for the period (9+10)' (7,414.71). Later audited re-filing 29-Feb-2012 shows row 11 (7,423.18), row 13 (7,341.49). BSE detres -741.47 Rs mn. Ours 10.16 cr is on no row of either filing.. Where theirs sits: row 11 Net Profit/(Loss) for the period (7,414.71) lacs. Where ours sits: 10.16 cr on no row.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SUPREMEIND",
+   "qe": "20160630",
+   "basis": "std",
+   "was": 102.14,
+   "fixed": 101.54,
+   "why": "Original filing read: vision read pp4-5 (rotated) of 8326A4F4 'Announces Q1 (Standalone & Consolidated) results' BSE 28-Jul-2016 12:23, 'Statement of Unaudited Standalone Results for the Quarter Ended 30th June, 2016', Rs in lacs, col Quarter ended 30.06.2016: row 9 PBT 15493.57; row 10 Tax 5340.00; row 11 'Net Profit after tax (9-10)' 10153.57 (15493.57-5340.00=10153.57). Consolidated p2: 10155.44 / after associates 11523.21. BSE detres 1015.36 Rs mn. Ours 102.14 is on no row.. Where theirs sits: row 11 standalone Net Profit after tax 10153.57 lacs. Where ours sits: 102.14 cr on no row of the first filing.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "SUPREMEIND",
+   "qe": "20160930",
+   "basis": "std",
+   "was": 58.12,
+   "fixed": 57.52,
+   "why": "Original filing read: vision read pp2-3 (rotated) of 3D29D285 'Announces Q2 (Standalone & Consolidated) results' BSE 27-Oct-2016 12:44, 'Statement of Unaudited Standalone Financial Results for the Quarter and Half year Ended 30th September, 2016', Rs in Lacs, col Quarter ended 30.09.2016: row 9 PBT 8877.36; row 10 Tax 3125.00; row 11 'Net Profit after tax (9-10)' 5752.36 (8877.36-3125.00=5752.36). BSE detres 575.24 Rs mn. Ours 58.12 ~ NSE re-filing of 01-Nov-2017 (58.13 cr, PBT 89.69, tax 31.56), a year-later filing.. Where theirs sits: row 11 Net Profit after tax 5752.36 lacs. Where ours sits: NSE 01-Nov-2017 re-filing 58.13 cr (not the first filing).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "TEXRAIL",
+   "qe": "20160930",
+   "basis": "std",
+   "was": 18.22,
+   "fixed": 17.07,
+   "why": "Original filing read: BOTH SIDES DIFFER FROM THE FILING - ours 18.22 also needs fixing to 17.07. vision read p3 (index 2) of BSE ann FCB26EAA_D5D0_4E72_8D29_4F8A83*.pdf (27-Oct-2016 14:34, first filing): \"TEXMACO RAIL & ENGINEERING LIMITED Statement of standalone Unaudited Financial Results For the quarter and half year ended 30th September, 2016\" (Rs. in Lakhs), Quarter ended 30-Sep-2016: row 7 PBT 1,957.22; row 8 Tax 250.00; row 9 \"Net Profit for the period (7-8)\" 1,707.22; row 10 OCI (net of tax) (23.65); row 11 \"Total Income (including Other Comprehensive Income (after tax))\" 1,683.57 lakh. BSE detres: Net Profit from ordinary 170.72 mn, \"Extraordinary Items\" -2.37 mn (= the OCI), Net Profit 168.36 mn. NSE 18-Nov-2016 seq 1015156 shows 2947.98 (the half-year figure, mis-keyed).. Where theirs sits: row 11 Total Income incl. OCI 1,683.57 lakh (= BSE detres Net Profit 168.36 mn after OCI keyed as extraordinary) - comprehensive income, not PAT. Where ours sits: ours 18.22 is on no row of the first filing (filed PAT row 9 = 1,707.22 lakh) - also wrong.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "TITAN",
+   "qe": "20160630",
+   "basis": "std",
+   "was": 129.29,
+   "fixed": 126.69,
+   "why": "Original filing read: vision read p5 (index 4) of BSE ann A6F62F5B_34EF_402A_9ADF_1CBDB8*.pdf (3-Aug-2016 14:46, first filing, \"Announces Q1 (Standalone) results\"): \"UNAUDITED FINANCIAL RESULTS FOR THE PERIOD ENDED JUNE 30, 2016\" (Rs lakh), Part I \"Statement of Standalone Unaudited Results\", Quarter ended 30-06-2016: 8 Exceptional item 9,688; 9 Profit before taxes 17,376; 10 Tax current 5,056, deferred (349); 11 \"Profit after taxes\" 12,669 lakh (17,376-5,056+349 = 12,669); OCI -; total comprehensive 12,669.. Where theirs sits: p5 row 11 Profit after taxes 12,669 lakh. Where ours sits: ours 129.29 is on no row of the first filing (not PAT 12,669, not before exceptional 27,064-tax).",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "UBL",
+   "qe": "20170630",
+   "basis": "std",
+   "was": 162.14,
+   "fixed": 161.89,
+   "why": "Original filing read: vision read p3 (index 2) of BSE ann 1187463e-2233-4f5c-8913-15cb9a*.pdf (10-Aug-2017 20:02, first filing): \"Statement of standalone unaudited results for the quarter ended June 30, 2017\" (Rs. in Lakhs), Quarter ended June 30 2017 Unaudited: 3 Profit before tax 24,556; 4 total tax expenses 8,367 (current 9,140, deferred (773)); 5 \"Profit for the period/year\" 16,189 lakh (24,556-8,367 = 16,189).. Where theirs sits: p3 row 5 Profit for the period/year 16,189 lakh. Where ours sits: ours 162.14 is not the row-5 profit of the first filing (16,189 lakh); likely a later/other line, not identified.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "USHAMART",
+   "qe": "20150930",
+   "basis": "std",
+   "was": -77.76,
+   "fixed": -92.12,
+   "why": "Original filing read: vision read p2 (index 1) of BSE ann DA14B202_33A*.pdf (4-Nov-2015 14:21, first filing): \"Statement of Standalone Unaudited Financial Results for the Quarter and Six Months Ended 30th September, 2015\" (Rs. In Lakhs), Quarter ended 30th September 2015: 9 PBT (13418); 10 Tax Expense (4206); 11 (9212); 12 extraordinary -; 13 \"Net Profit / (Loss) for the period (11 +/- 12)\" (9212) lakh; EPS (3.02). BSE detres agrees -921.2 Rs mn.. Where theirs sits: p2 row 13 Net Profit/(Loss) for the period (9212) lakh. Where ours sits: ours -77.76 = NSE re-filing of 12-Dec-2016 (Ind-AS comparative: PBT -130.29 cr, tax -52.53 cr) - later re-filing, not the first filing.",
+   "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
   }
  ],
  "retracted": [
