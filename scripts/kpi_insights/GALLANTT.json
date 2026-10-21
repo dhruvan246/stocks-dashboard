@@ -956,8 +956,8 @@
    "kind": "flow",
    "y": {
     "20220331": 32559.0,
-    "20230331": 691138.706,
-    "20240331": 771715.58
+    "20230331": 80644,
+    "20240331": 87624
    },
    "q": {
     "20210930": 1783.0,
@@ -1012,16 +1012,16 @@
      "13,320"
     ],
     "y:20230331": [
-     "4830ce68-2eec-4df4-9082-cd5ff57d2657.pdf",
-     45,
-     "Production at a Glance - Sponge Iron (M.T.) - Sales",
-     "6,91,138.706"
+     "a7672889-23ff-470b-ba02-9612d551807a.pdf",
+     11,
+     "Sales volumes - DRI (Sponge Iron) - TOTAL FY23",
+     "80,644"
     ],
     "y:20240331": [
-     "4830ce68-2eec-4df4-9082-cd5ff57d2657.pdf",
-     45,
-     "Production at a Glance - Sponge Iron (M.T.) - Sales",
-     "7,71,715.580"
+     "118503e6-22f3-4488-b1b6-b65ce0a39576.pdf",
+     10,
+     "Sales volumes - DRI (Sponge Iron) FY24",
+     "87,624"
     ],
     "q:20221231": [
      "b0d5ee55-0703-4e44-8581-a81e6e3eaaab.pdf",
@@ -1072,22 +1072,6 @@
      "9,357"
     ]
    },
-   "restated": [
-    [
-     "y:20240331",
-     "118503e6-22f3-4488-b1b6-b65ce0a39576.pdf",
-     87624.0,
-     "4830ce68-2eec-4df4-9082-cd5ff57d2657.pdf",
-     771715.58
-    ],
-    [
-     "y:20230331",
-     "118503e6-22f3-4488-b1b6-b65ce0a39576.pdf",
-     80644.0,
-     "4830ce68-2eec-4df4-9082-cd5ff57d2657.pdf",
-     691138.706
-    ]
-   ],
    "latest": {
     "q:20230930": "2024-12-05",
     "q:20220930": "2023-11-03",
@@ -1095,7 +1079,25 @@
     "q:20230331": "2024-05-04",
     "q:20221231": "2024-01-18",
     "q:20231231": "2024-01-18"
-   }
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     691138.706,
+     80644,
+     "set_y",
+     "stored src 4830ce68 (AR FY24) p45 'Production at a Glance' prints Sponge Iron Sales* 2022-23 6,91,138.706 with footnote '* Sales include captive consumption als",
+     "2026-10-21"
+    ],
+    [
+     "y:20240331",
+     771715.58,
+     87624,
+     "set_y",
+     "118503e6 p10 (Q4FY24 & FY24 deck) 'Sales volumes' table DRI (Sponge Iron) FY24 = 87,624 (FY23 80,644 matches series); stored 7,71,715.580 is AR 4830ce68 p45 row",
+     "2026-10-21"
+    ]
+   ]
   },
   {
    "name": "Captive Power Consumed Share - Gorakhpur",
@@ -3258,5 +3260,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-21"
 }
