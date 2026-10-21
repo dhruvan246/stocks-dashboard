@@ -510,6 +510,10 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
                 why = "no value"
             elif ptype is None:
                 why = "period not q/y: %r" % per
+            elif kind == "flow" and ptype == "q" and str(v.get("period_type") or "").upper() in ("FY", "Y"):
+                # a bare FY-end date ("31.03.2023") parses as a quarter; a flow the reader calls a full year must not
+                # land in the Q4 slot (SUNPHARMA 676d73b7 FY23 R&D 23,676.3 over Q4 6,656.6, 2026-10-21)
+                why = "period_type FY but the label reads as a quarter: %r" % per
             elif pend > str(doc.get("date") or "9999").replace("-", ""):
                 # a filing cannot report a period that ends after it was filed — the 2026-10-21 pattern scan found
                 # undated "current status" figures parked at the NEXT quarter/year end (CYIENT, ANURAS, JSWINFRA)
@@ -533,7 +537,7 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
             if why:
                 rec = {"doc": att, "metric": name, "unit": unit, "period": per, "value": val, "as_printed": asp,
                        "page": page, "label": label, "why": why}
-                if "scanned" in why or "period_end disagrees" in why or "after the document date" in why:
+                if "scanned" in why or "period_end disagrees" in why or "after the document date" in why or "label reads as a quarter" in why:
                     L["held"].append(rec); held += 1
                 else:
                     rejected += 1
