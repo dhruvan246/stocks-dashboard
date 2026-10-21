@@ -8981,6 +8981,24 @@
    "fixed": 60.85,
    "why": "Original filing read: Original BSE 1FBB24D0 (06-Aug-2016) p2 vision read, Extract of Standalone Unaudited Results, Rs lacs, col 30.06.2016: row 9 PBT 7,290.32, row 10 tax 1,205.09, row 11 6,085.23, row 13 Net Profit for the Period 6,085.23 = 60.852 cr = theirs (7,290.32-1,205.09=6,085.23); Ind-AS reconciliation note also ends 6,085.23. Ours 60.64 = NSE re-filing 28-Sep-2016 (seq 1013952) np 60.6366, a later vintage.. Where theirs sits: Original row 13 Net Profit for the Period. Where ours sits: NSE 28-Sep-2016 re-filing Net Profit for the period (later vintage).",
    "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 4, result PDFs"
+  },
+  {
+   "sym": "EMAMILTD",
+   "qe": "20150930",
+   "basis": "con",
+   "was": 60.53,
+   "fixed": 61.34,
+   "why": "Original BSE consolidated results filed 29-Oct-2015 (Rs lacs, vision read): row 15 Net Profit 6,106, row 17 minority interest (28), row 18 'Net Profit after taxes, minority interest and share of associates' 6,134 = 61.34 cr. First NSE archived consolidated page https://nsearchives.nseindia.com/archives/financial_results/financial_res_EMAMILTD_1002529.html (broadcast 02-Nov-2015 13:01:29) owners row 61.3400 agrees. Stored 60.53 = the Ind-AS comparative of the later NSE re-filing (03-Nov-2016), not the original. StockView 61.06 = row 15 (before minority interest).",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"push the 2 fixes now\") - batch C3, original BSE result PDF + first NSE page"
+  },
+  {
+   "sym": "BIOCON",
+   "qe": "20101231",
+   "basis": "con",
+   "was": 100.76,
+   "fixed": 100.75,
+   "why": "Original BSE consolidated results filed 20-Jan-2011 (Rs lakhs, vision read): row 9 net profit after tax before minority interest 10,174, row 10 minority interest (99), row 11 Net Profit for the period 10,075 = 100.75 cr. First NSE archived consolidated page https://nsearchives.nseindia.com/archives/financial_results/financial_res_BIOCON_81548.html (broadcast 20-Jan-2011 10:08:07) 'Consolidated Net Profit' row 100.7500 agrees. StockView's owners column is blank; their group figure 101.74 = row 9.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"push the 2 fixes now\") - batch C3, original BSE result PDF + first NSE page"
   }
  ],
  "retracted": [
