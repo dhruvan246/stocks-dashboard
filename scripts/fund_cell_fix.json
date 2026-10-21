@@ -7721,6 +7721,393 @@
    "fixed": -92.12,
    "why": "Original filing read: vision read p2 (index 1) of BSE ann DA14B202_33A*.pdf (4-Nov-2015 14:21, first filing): \"Statement of Standalone Unaudited Financial Results for the Quarter and Six Months Ended 30th September, 2015\" (Rs. In Lakhs), Quarter ended 30th September 2015: 9 PBT (13418); 10 Tax Expense (4206); 11 (9212); 12 extraordinary -; 13 \"Net Profit / (Loss) for the period (11 +/- 12)\" (9212) lakh; EPS (3.02). BSE detres agrees -921.2 Rs mn.. Where theirs sits: p2 row 13 Net Profit/(Loss) for the period (9212) lakh. Where ours sits: ours -77.76 = NSE re-filing of 12-Dec-2016 (Ind-AS comparative: PBT -130.29 cr, tax -52.53 cr) - later re-filing, not the first filing.",
    "found": "StockView profit file n500_profit_stnd_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"continue with the fix\", \"yes do the vision reads for scanned ones\") - batch 3, result PDFs"
+  },
+  {
+   "sym": "AARTIIND",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 724.6,
+   "fixed": 772.49,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_524208_622022142651.xml (filed 2022-02-07T09:30:52, the earliest for the quarter; 1 file(s); OneD context 20211231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 772.49 cr (owners tag), non-controlling 0.05, ProfitLossForPeriod 772.54 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 724.6 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "ADANIENSOL",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 168.46,
+   "fixed": 185.99,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_539254_482022122540.xml (filed 2022-08-04T15:31:55, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 185.99 cr (owners tag), non-controlling -17.53, ProfitLossForPeriod 168.46 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 168.46 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "ADANIENT",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 468.95,
+   "fixed": 469.46,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_512599_582022164541.xml (filed 2022-08-08T12:14:33, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 469.46 cr (owners tag), non-controlling -0.72, ProfitLossForPeriod 468.74 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 468.95 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "ADANIPORTS",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 697.4,
+   "fixed": 690.74,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532921_782018121746.xml (filed 2018-08-07T13:41:11, the earliest for the quarter; 1 file(s); OneD context 20180630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 690.74 cr (owners tag), non-controlling 6.66, ProfitLossForPeriod 697.4 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 697.4 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "ADANIPORTS",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 1028.69,
+   "fixed": 1022.42,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532921_882019114215.xml (filed 2019-08-08T12:30:59, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 1022.42 cr (owners tag), non-controlling 6.27, ProfitLossForPeriod 1028.69 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 1028.69 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "AIAENG",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 104.81,
+   "fixed": 105.04,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532683_1082018112019.xml (filed 2018-08-10T12:43:48, the earliest for the quarter; 1 file(s); OneD context 20180630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 105.04 cr (owners tag), non-controlling -0.2315, ProfitLossForPeriod 104.8133 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 104.81 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "AMBUJACEM",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 754.85,
+   "fixed": 752.0,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500425_20720229392.xml (filed 2022-07-20T15:38:42, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 752.0 cr (owners tag), non-controlling 113.44, ProfitLossForPeriod 865.44 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 754.85 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "APLLTD",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 193.58,
+   "fixed": 176.42,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_533573_1022022183550.xml (filed 2022-02-10T19:07:14, the earliest for the quarter; 1 file(s); OneD context 20211231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 176.42 cr (owners tag), non-controlling -8.124, ProfitLossForPeriod 168.295 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 193.58 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "ASAHIINDIA",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 128.08,
+   "fixed": 106.9,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_515030_2972022181351.xml (filed 2022-07-30T11:51:18, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 106.9 cr (owners tag), non-controlling -0.67, ProfitLossForPeriod 106.23 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 128.08 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "BAJAJ-AUTO",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 3492.21,
+   "fixed": 3661.92,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/IFIndasUploadDocument/Integrated_Finance_Ind_As_532977_652026202256.xml (filed 2026-05-06T20:22:56.423, the earliest for the quarter; 2 file(s); OneD context 20260331, 90 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 3661.92 cr (owners tag), non-controlling -169.71, ProfitLossForPeriod 3492.21 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 3492.21 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "CHAMBLFERT",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 341.36,
+   "fixed": 341.82,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500085_38202218334.xml (filed 2022-08-04T10:12:54, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 341.82 cr (owners tag), non-controlling -0.11, ProfitLossForPeriod 341.71 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 341.36 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "CIPLA",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 711.06,
+   "fixed": 686.4,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500087_2972022193623.xml (filed 2022-07-30T12:45:10, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 686.4 cr (owners tag), non-controlling 19.74, ProfitLossForPeriod 706.14 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 711.06 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "COFORGE",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 89.8,
+   "fixed": 87.6,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532541_2472019152748.xml (filed 2019-07-24T16:04:54, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 87.6 cr (owners tag), non-controlling 2.2, ProfitLossForPeriod 89.8 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 89.8 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "COFORGE",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 296.7,
+   "fixed": 250.2,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/IFIndasUploadDocument/Integrated_Finance_Ind_As_532541_221202623459.xml (filed 2026-01-22T23:45:10.09, the earliest for the quarter; 2 file(s); OneD context 20251231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 250.2 cr (owners tag), non-controlling 46.5, ProfitLossForPeriod 296.7 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 296.7 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "DEEPAKFERT",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 10.7,
+   "fixed": 9.9,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500645_1482019195534.xml (filed 2019-08-14T20:26:56, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 9.9 cr (owners tag), non-controlling 0.8, ProfitLossForPeriod 10.7 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 10.7 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "EPL",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 40.03,
+   "fixed": 39.24,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500135_1382019194956.xml (filed 2019-08-14T19:47:44, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 39.24 cr (owners tag), non-controlling 0.79, ProfitLossForPeriod 40.03 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 40.03 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "GMRAIRPORT",
+   "qe": "20220630",
+   "basis": "con",
+   "was": -112.99,
+   "fixed": -136.98,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532754_297202220343.xml (filed 2022-07-30T12:48:48, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent -136.98 cr (owners tag), non-controlling 23.99, ProfitLossForPeriod -112.99 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored -112.99 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "GRINDWELL",
+   "qe": "20221231",
+   "basis": "con",
+   "was": 79.97,
+   "fixed": 80.19,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_506076_1422023121650.xml (filed 2023-02-14T12:50:36, the earliest for the quarter; 1 file(s); OneD context 20221231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 80.19 cr (owners tag), non-controlling -0.22, ProfitLossForPeriod 79.97 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 79.97 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "IDFC",
+   "qe": "20190930",
+   "basis": "con",
+   "was": -680.0,
+   "fixed": -407.78,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/NBFCUploadDocument/NBFC_532659_9112019112310.xml (filed 2019-12-03T15:26:21, the earliest for the quarter; 1 file(s); OneD context 20190930, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent -407.78 cr (owners tag), non-controlling 0.78, ProfitLossForPeriod -407.0 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored -680.0 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "IDFCFIRSTB",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 474.33,
+   "fixed": 485.01,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Banking_539437_3072022165442.xml (filed 2022-08-01T11:27:37, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 485.01 cr (bank after-minority tag), non-controlling None, ProfitLossForPeriod 485.01 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 474.33 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "JSL",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 47.62,
+   "fixed": 46.65,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532508_68201915758.xml (filed 2019-08-06T16:01:27, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 46.65 cr (owners tag), non-controlling 0.97, ProfitLossForPeriod 47.62 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 47.62 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "KEC",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 85.31,
+   "fixed": 86.84,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532714_382018164754.xml (filed 2018-08-03T17:25:27, the earliest for the quarter; 1 file(s); OneD context 20180630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 86.84 cr (owners tag), non-controlling 0.0, ProfitLossForPeriod 86.84 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 85.31 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "KEC",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 31.62,
+   "fixed": 31.02,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532714_48202211478.xml (filed 2022-08-04T15:21:26, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 31.02 cr (owners tag), non-controlling 0.0, ProfitLossForPeriod 31.02 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 31.62 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "LTF",
+   "qe": "20190331",
+   "basis": "con",
+   "was": 552.12,
+   "fixed": 547.58,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/NBFCUploadDocument/NBFC_533519_15520191482.xml (filed 2019-07-19T11:14:37, the earliest for the quarter; 2 file(s); OneD context 20190331, 90 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 547.58 cr (owners tag), non-controlling 4.54, ProfitLossForPeriod 552.12 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 552.12 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "LTF",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 567.4,
+   "fixed": 548.79,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/NBFCUploadDocument/NBFC_533519_197201919226.xml (filed None, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 548.79 cr (owners tag), non-controlling 0.63, ProfitLossForPeriod 549.42 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 567.4 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "MANAPPURAM",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 402.0,
+   "fixed": 404.11,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/NBFCUploadDocument/NBFC_531213_7112019122238.xml (filed 2019-12-03T14:49:37, the earliest for the quarter; 1 file(s); OneD context 20190930, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 404.11 cr (owners tag), non-controlling 3.54, ProfitLossForPeriod 407.65 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 402.0 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "MASFIN",
+   "qe": "20200630",
+   "basis": "con",
+   "was": 36.54,
+   "fixed": 36.16,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/NBFCUploadDocument/NBFC_540749_1282020191243.xml (filed None, the earliest for the quarter; 1 file(s); OneD context 20200630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 36.16 cr (owners tag), non-controlling 0.3835, ProfitLossForPeriod 36.5406 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 36.54 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "MASTEK",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 91.53,
+   "fixed": 77.16,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_523704_217202201419.xml (filed 2022-07-21T09:59:51, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 77.16 cr (owners tag), non-controlling 7.2, ProfitLossForPeriod 84.36 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 91.53 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "OFSS",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 481.74,
+   "fixed": 491.75,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532466_2172022113554.xml (filed 2022-07-21T12:48:32, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 491.75 cr (owners tag), non-controlling 0.0, ProfitLossForPeriod 491.755 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 481.74 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "PCBL",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 77.51,
+   "fixed": 77.37,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_506590_3010201917394.xml (filed 2019-10-30T18:33:34, the earliest for the quarter; 1 file(s); OneD context 20190930, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 77.37 cr (owners tag), non-controlling 0.14, ProfitLossForPeriod 77.51 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 77.51 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "PCBL",
+   "qe": "20191231",
+   "basis": "con",
+   "was": 70.2,
+   "fixed": 70.06,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_506590_1322020184537.xml (filed 2020-02-14T09:32:53, the earliest for the quarter; 1 file(s); OneD context 20191231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 70.06 cr (owners tag), non-controlling 0.14, ProfitLossForPeriod 70.2 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 70.2 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "PCBL",
+   "qe": "20200331",
+   "basis": "con",
+   "was": 72.97,
+   "fixed": 72.76,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_506590_2362020191143.xml (filed 2020-06-23T19:38:42, the earliest for the quarter; 2 file(s); OneD context 20200331, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 72.76 cr (owners tag), non-controlling 0.21, ProfitLossForPeriod 72.97 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 72.97 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "POLYPLEX",
+   "qe": "20221231",
+   "basis": "con",
+   "was": 147.51,
+   "fixed": 38.67,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_524051_142202313732.xml (filed 2023-02-14T15:08:55, the earliest for the quarter; 1 file(s); OneD context 20221231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 38.67 cr (owners tag), non-controlling 45.43, ProfitLossForPeriod 84.1 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 147.51 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "RATNAMANI",
+   "qe": "20221231",
+   "basis": "con",
+   "was": 134.09,
+   "fixed": 133.32,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_520111_1422023113936.xml (filed 2023-02-14T12:32:51, the earliest for the quarter; 1 file(s); OneD context 20221231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 133.32 cr (owners tag), non-controlling 0.7718, ProfitLossForPeriod 134.0913 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 134.09 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "RBLBANK",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 30.8,
+   "fixed": 9.72,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Banking_540065_29102021154736.xml (filed 2021-10-29T16:46:36, the earliest for the quarter; 1 file(s); OneD context 20210930, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 9.72 cr (bank after-minority tag), non-controlling None, ProfitLossForPeriod 9.72 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 30.8 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "SHARDACROP",
+   "qe": "20190331",
+   "basis": "con",
+   "was": 105.93,
+   "fixed": 105.63,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_538666_1452019181513.xml (filed 2019-05-15T11:21:03, the earliest for the quarter; 2 file(s); OneD context 20190331, 90 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 105.63 cr (owners tag), non-controlling 0.007, ProfitLossForPeriod 105.6361 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 105.93 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "SIEMENS",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 302.5,
+   "fixed": 300.7,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500550_28202222121.xml (filed 2022-08-03T10:25:09, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 300.7 cr (owners tag), non-controlling 0.0, ProfitLossForPeriod 300.7 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 302.5 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "STLTECH",
+   "qe": "20220630",
+   "basis": "con",
+   "was": -23.0,
+   "fixed": -20.0,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532374_2672022122615.xml (filed 2022-07-28T13:39:50, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent -20.0 cr (owners tag), non-controlling -3.0, ProfitLossForPeriod -23.0 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored -23.0 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "SUNTV",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 1308.71,
+   "fixed": 471.0,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532733_1022022174733.xml (filed 2022-02-10T18:48:04, the earliest for the quarter; 1 file(s); OneD context 20211231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 471.0 cr (owners tag), non-controlling 0.19, ProfitLossForPeriod 471.19 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 1308.71 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "TATAPOWER",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 883.54,
+   "fixed": 794.6,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_500400_267202216190.xml (filed 2022-07-27T09:51:00, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 794.6 cr (owners tag), non-controlling 88.94, ProfitLossForPeriod 883.54 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 883.54 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "VBL",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 404.99,
+   "fixed": 406.93,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_540180_182019152121.xml (filed 2019-08-01T17:22:36, the earliest for the quarter; 1 file(s); OneD context 20190630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 406.93 cr (owners tag), non-controlling -1.936, ProfitLossForPeriod 404.993 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 404.99 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "VIJAYA",
+   "qe": "20221231",
+   "basis": "con",
+   "was": 16.46,
+   "fixed": 16.36,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_543350_1422023122536.xml (filed 2023-02-14T14:12:14, the earliest for the quarter; 1 file(s); OneD context 20221231, 92 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 16.36 cr (owners tag), non-controlling 0.0925, ProfitLossForPeriod 16.4561 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 16.46 = the total profit (incl. minority), not the owners share.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
+  },
+  {
+   "sym": "WELCORP",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 4.0,
+   "fixed": 4.11,
+   "why": "BSE consolidated XBRL results filing https://www.bseindia.com/XBRLFILES/FourOneUploadDocument/Main_Ind_As_532144_482022174049.xml (filed 2022-08-05T10:28:27, the earliest for the quarter; 1 file(s); OneD context 20220630, 91 days, Consolidated): ProfitOrLossAttributableToOwnersOfParent 4.11 cr (owners tag), non-controlling -5.06, ProfitLossForPeriod -0.95 - owners + NCI = total closes. Store column = owners' PAT as originally filed; stored 4.0 sits on no row of this filing.",
+   "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"then start the consolidated cells\") - batch C1, 2018+ consolidated XBRL"
   }
  ],
  "retracted": [
