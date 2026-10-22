@@ -30861,6 +30861,15 @@
   "fixed": 375.36,
   "why": "Standalone audited results Q4 FY26, own BSE PDF 523610_ccb2374f-43e8-45db-a96c-b4919ec34117.pdf p39 (Rs lakh, scanned, read visually): row 9 'Profit/(Loss) for the period (7-8)' quarter 31-03-2026 = 37,536 (PBT 37,536, tax nil); EPS 3.90. Second check: XBRL ProfitLossForPeriod 375.36. Stored 435.91 matches neither.",
   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+ },
+ {
+  "sym": "ABB",
+  "qe": "20250331",
+  "basis": "con",
+  "was": 3139.68,
+  "fixed": 3159.56,
+  "why": "Wrong line in a derived quarter. ABB files no consolidated statement for Q1 CY2025; the consolidated Mar-2025 quarter is derived (conpat_filing_fills ABB|20250331|con-HEAL) from ABB's Q3CY25 CONSOLIDATED statement (BSE 500002_9a859709-29be-4d40-86d9-d3c50f2af53b.pdf, announced 2025-11-06, p7, Rs crore). The stored 3139.68 = 'Sales of products and services' sub-line (YTD Sep-25 9,569.53 - Jun-25 3,144.52 - Sep-25 3,285.33). The same arithmetic on 'Total revenue from operations' gives 9,645.72 - 3,175.44 - 3,310.72 = 3,159.56. SECOND check: Q4CY25 consolidated statement (announced 2026-02-19) full year CY2025 revenue 13,202.73 - Dec-25 3,557.01 - Sep-25 3,310.72 - Jun-25 3,175.44 = 3,159.56 (stored con_rev for those quarters per conpat_filing_fills). Not a scale issue; wrong-line pick.",
+  "found": "StockView cell-by-cell check 2026-10-22 (con==std copy sweep, ABB read by eye)"
  }
  ],
  "retracted": [
