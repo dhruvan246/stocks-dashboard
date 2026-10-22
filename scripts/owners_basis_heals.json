@@ -406,8 +406,8 @@
   "AIIL|20260630|patC": {
    "applied": "2026-09-05",
    "found_by": "Moneycontrol-vs-store PAT screen + row screen, 2026-09-05 (runbook \u00a7133)",
-   "note": "own integrated XBRL INTEGRATED_FILING_NBFC_INDAS_1697562_20072026083036: owners tag 2,593.58 is broken (> total), total 1,108.22 - NCI 2.29 = 1,105.93; EPS x shares = 1,108.21 (0.2%); std 1,114.81; Moneycontrol 1,110.51",
-   "owners": 1105.93,
+   "note": "own integrated XBRL INTEGRATED_FILING_NBFC_INDAS_1697562_20072026083036: owners tag 2,593.58 is broken (> total), total 1,108.22 - NCI 2.29 = 1,105.93; EPS x shares = 1,108.21 (0.2%); std 1,114.81; Moneycontrol 1,110.51 || CORRECTED 2026-10-22 (StockView cell-by-cell, own results PDF p10 read): the filing prints 'Profit for the period attributable to Owners of the company' 1,110.52 and NCI (2.29), total 1,108.22 -- owners = total + 2.29 (NCI is a LOSS), not total - NCI. 1,105.93 was a sign slip; Moneycontrol 1,110.51 agrees.",
+   "owners": 1110.52,
    "was": 2593.58
   },
   "ALOKINDS|20200930|patC": {
@@ -6513,6 +6513,20 @@
    "was": 50.07,
    "nci": -0.02,
    "note": "Company's own consolidated result PDF https://www.bseindia.com/xml-data/corpfiling/AttachHis/153e336e-fb60-4be5-b4c4-270a36349be0.pdf p5 (Rs. in Crores except per share data): printed owners 50.13 != stored 50.07. The stored 50.07 came from the company's XBRL tags the TOTAL-COMPREHENSIVE-INCOME split as the owners/NCI profit split, and the store took that owners tag. Read by eye from the filing page (agent read, cross-checked: owners + NCI ties to the printed profit, the column/unit pinned to the company's own XBRL ProfitLossForPeriod 50.11)."
+  },
+  "GRANULES|20250630|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con 2025-26 PIT-N500, own filing read)",
+   "note": "Consolidated unaudited results Q1 FY26, own BSE PDF e382986c p4 (Rs million): '9 Profit for the period/year (7-8)' 1,126.36; statement has no attributable-to split (no NCI), so owners = total. Basic EPS 4.64 x 242.64m shares = 1,126. Stored 110.39 came from the _reattr_owners XBRL cache and is not printed anywhere in the filing.",
+   "owners": 112.64,
+   "src": "own consolidated results PDF (BSE e382986c) p4",
+   "total_was": 110.39
+  },
+  "CEATLTD|20260930|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con 2025-26 PIT-N500, own filing read)",
+   "note": "Own Q2 FY27 consolidated results: 'Profit attributable to Owners of the Company' 112; 26 is the OCI-to-owners row.",
+   "owners": 112.0,
+   "src": "own consolidated results PDF (BSE) Q2 FY27",
+   "total_was": 26.0
   }
  },
  "generated": "2026-08-27 \u00a7116e-n500"

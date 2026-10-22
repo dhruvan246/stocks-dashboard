@@ -9851,6 +9851,15 @@
    "fixed": 519.5,
    "why": "NSE results PDF NSEBSEINTIMATION_17042024181007.pdf p3 'Statement of Audited Results for the Quarter and Year ended March 31, 2024' (Rs lakhs): row 25 Profit before tax 69,779; row 26 tax 17,829; row 27 'Profit / (Loss) after tax (PAT)' 51,950 lakh = 519.50 cr. Stored 519.59.",
    "found": "StockView PIT-N500 std value-diff check 2026-10-22 (own results PDF read)"
+  },
+  {
+   "sym": "GRANULES",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 110.39,
+   "fixed": 112.64,
+   "why": "Consolidated unaudited results Q1 FY26, own BSE PDF e382986c p4 (Rs million): '9 Profit for the period/year (7-8)' 1,126.36; statement has no attributable-to split (no NCI), so owners = total. Basic EPS 4.64 x 242.64m shares = 1,126. Stored 110.39 came from the _reattr_owners XBRL cache and is not printed anywhere in the filing.",
+   "found": "StockView cell-by-cell check 2026-10-22 (con 2025-26 PIT-N500, own filing read)"
   }
  ],
  "retracted": [
