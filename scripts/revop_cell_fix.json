@@ -30771,6 +30771,42 @@
   "fixed": 14.0,
   "why": "Own results PDF (NSE ALLCARGO_05082026203757_Seupload.pdf, 05-Aug-2026 20:40, Rs crore): standalone statement p5 row 11 'Profit/(Loss) for the period' Jun-26 column = 14; consolidated statement p10 row 11 = 14 (no owners/NCI split). The 05-Aug XBRL carried 150000000 (15 cr) for both bases; the company's revised XBRL of 16-Sep-2026 carries 140000000 (14 cr) for both, matching the PDF. Stored 15.0 = the superseded XBRL figure.",
   "found": "StockView cell-by-cell check 2026-10-22 (con==std copy sweep, NSE consolidated XBRL)"
+ },
+ {
+  "sym": "AFCONS",
+  "qe": "20260630",
+  "basis": "pat_con",
+  "was": 30.3,
+  "fixed": 30.6,
+  "why": "Consolidated results Q1 FY27, own BSE PDF 544280_41ebd965-39be-4504-bded-5f0fb769918f.pdf p14 (Rs crore): '10 Profit/(loss) for the period / year attributable to: - Ow' 30.6 + '- Non-controlling interest' -0.3 = '7 Profit / (Loss) after tax and exceptional items ' 30.3. Stored 30.3 is the group total (XBRL ProfitLossForPeriod), not owners. Second check: PDF text layer reads the same owners/NCI rows.",
+  "found": "StockView cell-by-cell check 2026-10-22 (vision read of the owners row + own verification)"
+ },
+ {
+  "sym": "BAJAJHLDNG",
+  "qe": "20260630",
+  "basis": "pat_con",
+  "was": 2708.08,
+  "fixed": 2706.45,
+  "why": "Consolidated results Q1 FY27, own BSE PDF 500490_3550ee56-2e70-4f81-9101-b89ddaa04b12.pdf p13 (Rs crore): '11 Profit attributable to: Owners of the company' 2706.45 + 'Non-controlling interests' 1.63 = '8 Profit after tax (6-7)' 2708.08. Stored 2708.08 is the group total (XBRL ProfitLossForPeriod), not owners. Second check: PDF text layer reads the same owners/NCI rows.",
+  "found": "StockView cell-by-cell check 2026-10-22 (vision read of the owners row + own verification)"
+ },
+ {
+  "sym": "COROMANDEL",
+  "qe": "20260630",
+  "basis": "pat_con",
+  "was": 381.56,
+  "fixed": 380.82,
+  "why": "Consolidated results Q1 FY27, own BSE PDF 506395_066e2c70-13d3-4c09-8df6-8da2c1ab34ff.pdf p3 (Rs crore): 'Attributable to (a) Owners of the Company' 380.82 + '(b) Non-controlling interests' 0.74 = '9 Net profit after tax (7-8)' 381.56. Stored 381.56 is the group total (XBRL ProfitLossForPeriod), not owners. Second check: PDF text layer reads the same owners/NCI rows.",
+  "found": "StockView cell-by-cell check 2026-10-22 (vision read of the owners row + own verification)"
+ },
+ {
+  "sym": "SUNTV",
+  "qe": "20260630",
+  "basis": "pat_con",
+  "was": 619.07,
+  "fixed": 618.82,
+  "why": "Consolidated results Q1 FY27, own BSE PDF 532733_4dfedb90-73be-4ae2-b9cc-019697a9b49e.pdf p4 (Rs crore): 'Profit for the period / year attributable to -Owners of the ' 618.82 + '-Non Controlling interest' 0.25 = '11 Profit After Tax (9 - 10)' 619.07. Stored 619.07 is the group total (XBRL ProfitLossForPeriod), not owners. Second check: scanned page; owners + NCI closes exactly to the XBRL group total 619.07.",
+  "found": "StockView cell-by-cell check 2026-10-22 (vision read of the owners row + own verification)"
  }
  ],
  "retracted": [
