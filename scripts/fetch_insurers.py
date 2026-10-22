@@ -141,6 +141,14 @@ def stdval(fund, sym, qe):
     return None
 
 
+def baseval(fund, sym, qe):
+    """The series this insurer's filings are anchored on: owners-consolidated for an insurer WITH
+    subsidiaries, STANDALONE for one without (its only filing is standalone). User ruling 2026-08-18,
+    re-confirmed for insurers 2026-10-22: a consolidated slot holds ONLY filing-backed values, so a no-sub
+    insurer's con slot stays empty and a std-only filing fills std only (no con=std copies)."""
+    return conval(fund, sym, qe) if INSURERS[sym]["sub"] else stdval(fund, sym, qe)
+
+
 def _tv(w):
     w = w.replace(",", "").replace("(", "-").replace(")", "")
     try:
@@ -491,13 +499,13 @@ def gemini_extract(pdf, cfg, docs, sym, qe):
     if not v or not (v.get("ok") and v.get("company_matches")):
         return None
     cur_con = v["cur"]["con"]; yago_con = v["yago"]["con"]
-    stored_yago = conval(docs, sym, qe - 10000)
+    stored_yago = baseval(docs, sym, qe - 10000)
     # The vision year-ago MUST match our stored year-ago con — else it's an unverified guess: skip.
     if not (anchored(yago_con, stored_yago) or stored_yago is None):
         return None
     out = {"cur_con": cur_con, "yago_con": yago_con, "cur_std": None, "via": "gemini"}
-    if not cfg["sub"]:
-        out["cur_std"] = cur_con
+    if not cfg["sub"]:                  # no subsidiaries -> the figure is standalone; con slot stays empty
+        out["cur_std"] = cur_con; out["cur_con"] = None
     elif v["cur"]["std"] is not None and anchored(v["yago"]["std"], stdval(docs, sym, qe - 10000)):
         out["cur_std"] = v["cur"]["std"]
     return out
@@ -536,33 +544,30 @@ def _con_tracks_std(docs, sym, qe):
 
 def extract(pdf, cfg, docs, sym, qe):
     """Return {cur_con, yago_con, cur_std, div} for quarter `qe` from a filing, or None if unanchored."""
-    cprev_con = conval(docs, sym, prevq(qe)); cyago_con = conval(docs, sym, qe - 10000)
+    cprev_con = baseval(docs, sym, prevq(qe)); cyago_con = baseval(docs, sym, qe - 10000)
     rows = rows_from_pdf(pdf, cfg["ident"], ocr=False)     # fast: text layer only
     if rows is None:
         return None
     # For insurers WITH subsidiaries, the owners-consolidated value differs from standalone — require a
     # consolidated-page row so a look-alike standalone number can't be filled as con.
-    a = anchor_series(rows, cprev_con, cyago_con, prefer_con=True, require_con=cfg["sub"])
+    a = anchor_series(rows, cprev_con, cyago_con, prefer_con=cfg["sub"], require_con=cfg["sub"])
     # NOTE: an OCR second pass was tried for the scanned/broken-text filings (ICICIGI/STARHEALTH/LIC) and
     # REVERTED — it added ~60s/insurer of CI OCR for no recovery. Those SCANNED filings are handled by the
     # anchor-verified free Gemini-vision fallback in process() (needs GEMINI_API_KEY). Keep this read fast.
     if not a:
-        # STANDALONE-ONLY FALLBACK: a with-sub insurer that filed ONLY standalone this quarter (e.g.
-        # ICICIPRULI Q1–Q3 — its consolidated results are published annually only). If the filing carries
-        # NO consolidated statement at all AND the standalone row double-anchors AND this insurer's con has
-        # historically tracked std tightly, fill con=std. Cannot fire when a real consolidated page exists
-        # (it would have anchored above, and _has_consolidated would be True), nor for insurers whose con
-        # genuinely diverges from std (_con_tracks_std excludes them).
-        if cfg["sub"] and _con_tracks_std(docs, sym, qe) and not _has_consolidated(pdf):
+        # STANDALONE-ONLY FILING of a with-sub insurer (e.g. ICICIPRULI Q1–Q3 — consolidated published
+        # annually only): fill the STANDALONE figure only; the con slot stays empty (user ruling 2026-08-18,
+        # confirmed for insurers 2026-10-22 — this used to copy con=std, added 2026-07-16).
+        if cfg["sub"] and not _has_consolidated(pdf):
             s = anchor_series(rows, stdval(docs, sym, prevq(qe)), stdval(docs, sym, qe - 10000), prefer_con=False)
             if s:
-                return {"cur_con": s["cur"], "yago_con": s["yago"], "div": s["div"],
+                return {"cur_con": None, "yago_con": s["yago"], "div": s["div"],
                         "cur_std": s["cur"], "via": "std-only"}
         return None
     out = {"cur_con": a["cur"], "yago_con": a["yago"], "div": a["div"], "cur_std": None}
     # std: no-sub -> std==con; with-sub -> only when it independently double-anchors on stored std.
-    if not cfg["sub"]:
-        out["cur_std"] = a["cur"]
+    if not cfg["sub"]:                  # no-sub: the anchored figure IS standalone; con stays empty
+        out["cur_std"] = a["cur"]; out["cur_con"] = None
     else:
         s = anchor_series(rows, stdval(docs, sym, prevq(qe)), stdval(docs, sym, qe - 10000), prefer_con=False)
         if s:
@@ -617,10 +622,11 @@ def process(sym, targets, o, docs, src, verify=False):
         annd, r = picked
         cur_con = r["cur_con"]; cur_std = r["cur_std"]
         lo_r, hi_r = cfg["range"]
-        range_ok = cur_con is not None and lo_r <= cur_con <= hi_r
+        val = cur_con if cur_con is not None else cur_std      # std-only filings / no-sub insurers
+        range_ok = val is not None and lo_r <= val <= hi_r
         accept = range_ok            # a double-anchored value that's also in-range
         rec = {"sym": sym, "qe": qe, "ann": annd, "cur_con": cur_con, "std_fill": (cur_std if accept else None),
-               "yago_con": r["yago_con"], "stored_yago": conval(docs, sym, qe - 10000),
+               "yago_con": r["yago_con"], "stored_yago": baseval(docs, sym, qe - 10000),
                "via": r.get("via", "text"), "range_ok": range_ok, "accept": bool(accept),
                "status": "OK" if accept else "out-of-range"}
         results.append(rec)
@@ -664,7 +670,7 @@ def main():
                     10: (y, 9, 30), 11: (y, 9, 30), 12: (y, 9, 30)}[m]
             recent_qes.append(qend[0] * 10000 + qend[1] * 100 + qend[2])
         recent_qes = sorted(set(recent_qes))
-        plan = {s: [q for q in recent_qes if conval(docs, s, q) is None] for s in syms}
+        plan = {s: [q for q in recent_qes if baseval(docs, s, q) is None or stdval(docs, s, q) is None] for s in syms}
         plan = {s: g for s, g in plan.items() if g}
 
     if not plan:
@@ -676,8 +682,8 @@ def main():
         all_res.extend(res)
         for r in res:
             if args.verify:
-                stored = conval(docs, r["sym"], r["qe"])
-                rc = r.get("cur_con")
+                stored = baseval(docs, r["sym"], r["qe"])
+                rc = r.get("cur_con") if r.get("cur_con") is not None else r.get("std_fill")
                 match = "match" if (rc is not None and stored is not None
                                     and abs(rc - stored) <= max(abs(stored) * 0.01, 1.0)) else "DIFF"
                 print("  %-11s %d  read_con=%-9s stored_con=%-9s  via=%-6s -> %s  [%s]"

@@ -652,6 +652,14 @@ in-step: pymupdf + curl_cffi + rapidocr-onnxruntime/onnxruntime/numpy. Validate:
    "consolidated" text at all AND the standalone row double-anchors AND the insurer's con has historically
    tracked std (median ≤1.5%, max ≤4% — `_con_tracks_std`; ONLY ICICIPRULI passes), fill con=std. Never fires
    when a real consolidated page exists (Q4) or for insurers whose con truly diverges (NIACL/HDFCLIFE/MFSL/LICI).
+   **RETIRED 2026-10-22 (user ruling 2026-08-18, re-confirmed for insurers 2026-10-22: a consolidated slot holds
+   only filing-backed values).** A std-only filing now fills STANDALONE only; no-sub insurers (SBILIFE, ICICIGI,
+   STARHEALTH, GODIGIT, NIVABUPA) anchor on and write the std slot only (`baseval()`), con stays empty;
+   `apply_insurer_inbox.py` writes a no-sub insurer's figure to std. The 87 existing con=std copies whose own
+   results PDF (std PAT found in its text, no consolidated heading) and/or NSE integrated index (Standalone only)
+   prove no consolidated filing were retracted via `con_nofile_retractions.json` (held). Still open: ~99 copies
+   with no proof yet (pre-listing quarters CANHLIFE 2015-25 / GODIGIT / NIVABUPA / STARHEALTH, scanned or
+   missing PDFs) — evidence in ~/stocks-cache/profit_qm/annsweep/ins_con.json. StockView cell-by-cell check.
 3. **SAFETY-NET monitor (code, done).** `scripts/check_season_coverage.py` runs in refresh-fundamentals.yml
    after build_results_season: for the live quarter it compares each index's DECLARED members (in
    results_feed.json) vs PARSED members (PAT in sf_fundamentals) and prints/writes `docs/_season_coverage.json`

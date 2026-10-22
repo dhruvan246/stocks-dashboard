@@ -55,30 +55,6 @@
   "evidence": "27 leading identity qtrs; first divergence None",
   "src": "no-sub-identity-bulk"
  },
- "ICICIGI|20190630": {
-  "ann": 20190719,
-  "applied": "2026-08-06 FILL-2020 pre-FY2020 con-PAT derivation",
-  "basis": "con=std",
-  "con": 309.81,
-  "evidence": "27 leading identity qtrs; first divergence None",
-  "src": "no-sub-identity-bulk"
- },
- "ICICIGI|20190930": {
-  "ann": 20191018,
-  "applied": "2026-08-06 FILL-2020 pre-FY2020 con-PAT derivation",
-  "basis": "con=std",
-  "con": 307.91,
-  "evidence": "27 leading identity qtrs; first divergence None",
-  "src": "no-sub-identity-bulk"
- },
- "ICICIGI|20191231": {
-  "ann": 20200117,
-  "applied": "2026-08-06 FILL-2020 Phase 4",
-  "basis": "con=std",
-  "con": 294.11,
-  "evidence": "no-sub-identity; con==std in all 26 stored qtrs, never diverges",
-  "src": "no-sub-identity"
- },
  "SPICEJET|20200630": {
   "ann": 20200915,
   "applied": "2026-08-06 FILL-2020 Phase 4",
@@ -151,5 +127,5 @@
   "evidence": "10 leading identity qtrs; first divergence 20180630",
   "src": "no-sub-identity-bulk"
  },
- "_retraction_note": "2026-08-18 01:13 IST: 144 entries removed by the con-copy retraction (scripts/PLAN_CON_COPY_RETRACTION.md). They asserted a consolidated value for quarters where the exchange stream reaches the period and shows no consolidated filing. Retracted cells are recorded in scripts/con_copy_retractions.json; do not re-apply."
+ "_retraction_note": "2026-08-18 01:13 IST: 144 entries removed by the con-copy retraction (scripts/PLAN_CON_COPY_RETRACTION.md). They asserted a consolidated value for quarters where the exchange stream reaches the period and shows no consolidated filing. Retracted cells are recorded in scripts/con_copy_retractions.json; do not re-apply. 2026-10-22: 3 more removed (ICICIGI 20190630/20190930/20191231) - their con=std copies were retracted via scripts/con_nofile_retractions.json (held) after each quarter's own BSE results PDF showed no consolidated statement (StockView cell-by-cell check)."
 }

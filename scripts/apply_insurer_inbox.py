@@ -106,15 +106,16 @@ def main():
         # ann as INT: the store holds announce dates as ints; a str here crashed fill_ann_dates.py
         # ("'<=' not supported between str and int", run 35648665228, 2026-09-22) and failed the job.
         sym, qe, con, ann, force = e["sym"], e["qe"], float(e["con"]), int(str(e["ann"])), bool(e.get("force"))
+        (_rng, sub) = INSURERS[sym]
+        slot = 3 if sub else 1      # no-sub insurers file standalone only -> std slot; con stays empty (ruling 2026-08-18)
         cur = next((r for r in docs.get(sym, []) if r[0] == qe), None)
-        if cur is not None and cur[3] is not None and not force:
-            e["rejected"] = "already filled (%.2f cr) — tick overwrite to correct" % cur[3]
+        if cur is not None and cur[slot] is not None and not force:
+            e["rejected"] = "already filled (%.2f cr) — tick overwrite to correct" % cur[slot]
             n_rejected += 1
             print("REJECT %s %s: already filled" % (sym, qe)); continue
-        (_rng, sub) = INSURERS[sym]
-        std = None if sub else con  # no-sub insurers store std == con (fetch_insurers convention)
-        ch1 = set_cell(docs, sym, qe, con, ann, std=std, force=force)
-        ch2 = set_cell(src,  sym, qe, con, ann, std=std, force=force)
+        c_, s_ = (con, None) if sub else (None, con)
+        ch1 = set_cell(docs, sym, qe, c_, ann, std=s_, std_ann=ann, force=force)
+        ch2 = set_cell(src,  sym, qe, c_, ann, std=s_, std_ann=ann, force=force)
         if ch1 or ch2:
             e["applied"] = today; n_applied += 1
             print("APPLY  %s %s con=%.2f ann=%s%s" % (sym, qe, con, ann, " (overwrite)" if force else ""))
