@@ -9959,6 +9959,33 @@
    "fixed": 0.88,
    "why": "Consolidated audited Q4 FY23 own BSE PDF f4faa378 p3 (Rs lacs): row 7 Net profit after tax 83, row 8 NCI (5), row 9 'Net Profit/(Loss) after Non-Controlling interest' 88 = 0.88 cr. Stored 0.0 came from the _reattr_owners XBRL cache (0.0) and is not printed.",
    "found": "StockView cell-by-cell check 2026-10-22 (con 2023 PIT-N500, own filing read)"
+  },
+  {
+   "sym": "TATAINVEST",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 89.74,
+   "fixed": 89.94,
+   "why": "Consolidated Q1 FY23 own BSE PDF 5ccf108a p4 (Rs crore), quarter ended 30-Jun-22: 'Profit After Tax (A)' 89.74; 'Profit attributable to: (i) Equity Holder of Company' 89.94, (ii) Non Controlling Interest (0.20). Stored 89.74 is total PAT, not owners.",
+   "found": "StockView cell-by-cell check 2026-10-22 (con 2022 PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20220331",
+   "basis": "con",
+   "was": 312.91,
+   "fixed": 312.51,
+   "why": "Audited Q4 FY22 own BSE PDF 834b8104 p3 (Rs lakh), 3 months ended 31-Mar-22: row 27 'Profit / (Loss) after tax (PAT)' 31,251 = 312.51 cr. The company files one (unconsolidated) statement, no NCI; std was already healed to 312.51. Stored con 312.91 sits on no row of this filing.",
+   "found": "StockView cell-by-cell check 2026-10-22 (con 2022 PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ZYDUSWELL",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 136.96,
+   "fixed": 137.01,
+   "why": "Q1 FY23 own BSE PDF afc5dda8 p3 (Rs lakh), CONSOLIDATED quarter ended 30-Jun-22: row 7 'Net Profit/ [Loss] [5-6]' 13,701 = 137.01 cr; no NCI printed (only 'Owners of the company' under row 10 TCI 13,696). Stored 136.96 is total comprehensive income, not profit.",
+   "found": "StockView cell-by-cell check 2026-10-22 (con 2022 PIT-N500, own filing read)"
   }
  ],
  "retracted": [
