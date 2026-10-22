@@ -30720,6 +30720,30 @@
    "fixed": 100.75,
    "why": "PAT mirror of fund_cell_fix BIOCON 20101231 con: Original BSE consolidated results filed 20-Jan-2011 (Rs lakhs, vision read): row 9 net profit after tax before minority interest 10,174, row 10 minority interest (99), row 11 Net Profit for the period 10,075 = 100.75 cr. First NSE archived consolidated page https://nsearchives.nseindia.com/archives/financial_results/financial_res_BIOCON_81548.html (broadcast 20-Jan-2011 10:08:07) 'Consolidated Net Profit' row 100.7500 agrees. StockView's owners column is blank; their group figure 101.74 = row 9.",
    "found": "StockView profit file n500_profit_cons_2009_2026_2026-10-21 cell-by-cell check 2026-10-21 (user: \"push the 2 fixes now\") - batch C3, original BSE result PDF + first NSE page"
+  },
+  {
+   "sym": "IGIL",
+   "qe": "20260630",
+   "basis": "pat_con",
+   "was": 165.7,
+   "fixed": 165.74,
+   "why": "PAT mirror of fund_cell_fix IGIL 20260630 con: Original BSE consolidated results Q1 FY27 (PDF 544311_5545041e p7, Rs million, vision read): profit for the period 1,657.36; attributable to owners 1,657.36; NCI nil -> 165.736 cr = 165.74 at 2dp (store had 1-dp 165.7). Second document: the filing's own XBRL (544311, 23-Jul-2026) ProfitLossForPeriod 16.5736 = the same digits mis-scaled by 10. StockView cell-by-cell check 2026-10-22."
+  },
+  {
+   "sym": "IIFL",
+   "qe": "20260630",
+   "basis": "pat_con",
+   "was": 675.05,
+   "fixed": 675.07,
+   "why": "PAT mirror of fund_cell_fix IIFL 20260630 con: Original BSE consolidated results Q1 FY27 (PDF 532636_2ae5b46d p5, Rs crore): profit for the period 713.13; owners of the company 675.07; non-controlling interest 38.06 (675.07+38.06=713.13 exactly). The XBRL owners tag 675.05 does NOT close (675.05+38.06=713.11). Cross-check in the same statement: total comprehensive income to owners 679.76 = 675.07 + owners' OCI 4.69 (OCI 11.85 less NCI OCI 45.22-38.06=7.16). StockView cell-by-cell check 2026-10-22."
+  },
+  {
+   "sym": "IGL",
+   "qe": "20260630",
+   "basis": "pat_con",
+   "was": 239.46,
+   "fixed": 240.41,
+   "why": "PAT mirror of fund_cell_fix IGL 20260630 con: Original BSE consolidated results Q1 FY27 (PDF 532514_1740a4bd p6, Rs crore, vision read): profit for the period 237.92; equity holders of the parent 240.41; NCI (2.49) (240.41-2.49=237.92). Store held 239.46 = TOTAL COMPREHENSIVE income attributable to equity holders (= 240.41 + OCI (0.95)); the XBRL owners tag carries that 239.46 and does NOT close (239.46-2.49=236.97 != 237.92). StockView cell-by-cell check 2026-10-22."
   }
  ],
  "retracted": [
