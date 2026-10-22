@@ -9086,6 +9086,69 @@
    "fixed": 618.82,
    "why": "Consolidated results Q1 FY27, own BSE PDF 532733_4dfedb90-73be-4ae2-b9cc-019697a9b49e.pdf p4 (Rs crore): 'Profit for the period / year attributable to -Owners of the ' 618.82 + '-Non Controlling interest' 0.25 = '11 Profit After Tax (9 - 10)' 619.07. Stored 619.07 is the group total (XBRL ProfitLossForPeriod), not owners. Second check: scanned page; owners + NCI closes exactly to the XBRL group total 619.07.",
    "found": "StockView cell-by-cell check 2026-10-22 (vision read of the owners row + own verification)"
+  },
+  {
+   "sym": "AFCONS",
+   "qe": "20260331",
+   "basis": "con",
+   "was": -88.55,
+   "fixed": -88.4,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 544280_967d9671-562f-470e-8f97-54ba6eea7c13.pdf p33 (Rs crore): 'Profit/ (Loss) for the period/ year attributable to : - Owners of the ' -88.4; '- Non-controlling interest' -0.15; 'Profit/ (Loss) after tax and exceptional items (5 - 6)' -88.55. Second check: PDF text layer reads the same owners/NCI rows.",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "HAL",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 4196.04,
+   "fixed": 4196.08,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 541154_aff3e355-7676-4a95-831b-bf8e308c1b46.pdf p7 (Rs lakhs): '12 Profit/(Loss) for the period attributable to- Owners of the Company' 4196.08; 'Non Controlling interest' -0.04; '9 Net Profit / (Loss) for the period (7-8)' 4196.04. Second check: PDF text layer reads the same owners/NCI rows (Rs lakh 4,19,608 / (4)).",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "KIRLOSENG",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 155.22,
+   "fixed": 158.6,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 533293_328a92b4-caf5-4c81-bcf9-50d4560ef0e3.pdf p11 (Rs crore): '14 Profit for the period attributable to: a) Owners of the Company ^' 158.6; 'b) Non-controlling interest' -3.38; '11 Net Profit/ (Loss) for the period (9 +10)' 155.22. Second check: PDF text layer reads the same owners/NCI rows.",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "TITAGARH",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 53.5,
+   "fixed": 53.96,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 532966_17495e6e-cdd5-4c1f-8562-36a00789ca57.pdf p16 (Rs crore): 'Attributable to: Shareholders of the Company' 53.96; 'Non-Controlling Interest' -0.46; '15 Profit for the Period / Year (11+14)' 53.5. Second check: text layer reads total 5,350 and NCI (0.46); owners = total - NCI.",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 23467.09,
+   "fixed": 23467.18,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 543526_bbbe1087-dae9-4ec0-a1d7-4d33ae9c59bf.pdf p17 (Rs crore): '(no attributable-to split in shareholders' account; owners = total)' 23467.18; '(none in shareholders' account)' 0; '31 Profit/ (loss) after tax and Extraordinary Items (Shareho' 23467.18. Second check: XBRL ProfitLossForPeriod 23467.18 and sf_revop pat_con already 23467.18; stored 23467.09 matches neither.",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "ITI",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 436.1,
+   "fixed": 375.14,
+   "why": "Consolidated results Q4 FY26, own BSE PDF 523610_ccb2374f-43e8-45db-a96c-b4919ec34117.pdf p2 (Rs lakhs): '(no attributable-to split; owners = total)' 375.14; '(none)' 0; '10 Profit / (Loss) for the period (8 - 9)' 375.14. Second check: XBRL ProfitLossForPeriod 375.14 (filed 29-May-2026).",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
+  },
+  {
+   "sym": "ITI",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 435.91,
+   "fixed": 375.36,
+   "why": "Standalone audited results Q4 FY26, own BSE PDF 523610_ccb2374f-43e8-45db-a96c-b4919ec34117.pdf p39 (Rs lakh, scanned, read visually): row 9 'Profit/(Loss) for the period (7-8)' quarter 31-03-2026 = 37,536 (PBT 37,536, tax nil); EPS 3.90. Second check: XBRL ProfitLossForPeriod 375.36. Stored 435.91 matches neither.",
+   "found": "StockView cell-by-cell check 2026-10-22 (vision read + own verification)"
   }
  ],
  "retracted": [
