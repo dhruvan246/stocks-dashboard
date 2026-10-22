@@ -355,7 +355,12 @@ def reconcile_recent(ledger, args):
                   "not recorded), rerun later"); break
         prv, nxt = q_neighbors(qe)
         ann, how = resolve(cands, qe, known.get((sym, prv)), known.get((sym, nxt)))
-        if ann and ann > qe and (qe_date(stored) - qe_date(ann)).days > 4:   # >4d: beyond the 15:30/weekend/holiday gate window (runbook 12) — smaller deltas are the GATED form of the same filing, not a lag
+        # Midnight rule (§149): the retired 15:30 gate's next-weekday form (1-4 d) is a lag too, so a filing that
+        # NAMES this quarter (exact / exact-fr) moves the cell back by any margin. Period-less matches (seq/solo)
+        # keep the >4 d floor: they can land on a non-result board outcome a few days early (ANANTRAJ Mar-26:
+        # a 27-Apr investment outcome vs the 11-May results). StockView date check 2026-10-22.
+        tol = 0 if str(how).startswith('exact') else 4
+        if ann and ann > qe and (qe_date(stored) - qe_date(ann)).days > tol:
             ledger["%s|%d" % (sym, qe)] = {"ann": ann, "src": "bse:recon:" + how, "override": True,
                                            "was": stored}
             corrected += 1
