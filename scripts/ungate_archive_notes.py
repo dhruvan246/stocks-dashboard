@@ -15,6 +15,8 @@ Anything else is reported and left alone. Scope: point-in-time Nifty 500 cells (
 
   python3 scripts/ungate_archive_notes.py            # dry run
   python3 scripts/ungate_archive_notes.py --apply    # then: backfill_ann_dates_bse.py --reapply
+  --min-qe 20220101   only quarters from that date (2026-10-22 run: 2022+, the 2009-2021 cells were then being
+                      swept by another campaign); env SKIP=<json [[sym, qe], ...]> leaves those cells alone too.
 """
 import bisect, collections, datetime, json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -43,7 +45,7 @@ def in_n500(sym, qe):
     return False
 
 
-def main(apply):
+def main(apply, min_qe=0, skip=frozenset()):
     p = os.path.join(HERE, "ann_date_fills.json")
     D = json.load(open(p, encoding="utf-8")); c = collections.Counter(); ex = collections.defaultdict(list)
     for k, e in D.items():
@@ -51,6 +53,7 @@ def main(apply):
         m = NOTE.search(str(e.get("src") or ""))
         if not m: continue
         sym, qe = k.split("|")[:2]; qe = int(qe)
+        if qe < min_qe or (sym, qe) in skip: c["held_back"] += 1; continue
         if not in_n500(sym, qe): c["out_of_scope"] += 1; continue
         raw = int(m.group(3)) * 10000 + MON[m.group(2)] * 100 + int(m.group(1)); mins = int(m.group(4)) * 60 + int(m.group(5))
         ann = e.get("ann")
@@ -71,4 +74,7 @@ def main(apply):
 
 
 if __name__ == "__main__":
-    main("--apply" in sys.argv)
+    a = sys.argv
+    mq = int(a[a.index("--min-qe") + 1]) if "--min-qe" in a else 0
+    sk = frozenset((x[0], int(x[1])) for x in json.load(open(os.environ["SKIP"]))) if os.environ.get("SKIP") else frozenset()
+    main("--apply" in a, mq, sk)

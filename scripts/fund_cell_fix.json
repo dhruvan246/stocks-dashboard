@@ -11048,6 +11048,276 @@
    "fixed": 199.07,
    "why": "Own filing 23bd8575 p8 Rs lakhs row 9 Owners of the Company 19907; ours 199.73 not printed; stored 199.73 not the owners figure.",
    "found": "StockView cell-by-cell check 2026-10-22 (con 2017-18 PIT-N500, own filing read)"
+  },
+  {
+   "sym": "CLEAN",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 70.08,
+   "fixed": 70.06,
+   "why": "Q1 FY26 own BSE results PDF, text CLEAN_20250630_0 p7 'STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER ENDED JUNE 30, 2025' (Rs million), quarter column: 'Profit for the period / year (A)' 700.63 = 70.06 cr; no owners/NCI split printed. Stored 70.08 = 'Total comprehensive income (A+B)' 700.83.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 421.0,
+   "fixed": 421.25,
+   "why": "Q1 FY26 own BSE results PDF, text OBEROIRLTY_20250630_0 p5 'Unaudited Consolidated Financial Results for the Quarter Ended June 30, 2025' (Rs lakh), 30/06/2025 column: row 9 'Net profit for the period (7-8)' 42,125 (= 50,696 - 8,825 + 254) = 421.25 cr; TCI row 11 42,100 'entirely attributable to shareholders of the parent'. Stored 421.00 = TCI.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "JPPOWER",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 278.14,
+   "fixed": 278.13,
+   "why": "Q1 FY26 own BSE results PDF, text JPPOWER_20250630_0 p2 'STATEMENT OF STANDALONE & CONSOLIDATED UNAUDITED FINANCIAL RESULTS FOR THE QUARTER ENDED 30th JUNE, 2025' (Rs lakh), consolidated quarter: 'Profit/(loss) attributable to: Owners of the parent' 27,813 = 278.13 cr. Stored 278.14 = 'Total Comprehensive income attributable to: Owners of the parent' 27,814.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "CPPLUS",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 32.65,
+   "fixed": 32.88,
+   "why": "Q1 FY26 own BSE results PDF, text CPPLUS_20250630_0 p5 'Statement of unaudited consolidated financial results for the quarter ended 30 June 2025' (Rs million): 'Profit after tax for the period/year (IX-XII)' 328.78 (= 440.58 - 111.80) = 32.88 cr; no owners/NCI split printed. Stored 32.65 = 'Total comprehensive income ... net of tax' 326.46.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250930",
+   "basis": "con",
+   "was": 295.84,
+   "fixed": 295.83,
+   "why": "Q2 FY26 own BSE results PDF, text ICICIPRULI_20250930_0 'Statement of Consolidated Unaudited Results for the quarter and half year ended September 30, 2025' (Rs lakh), quarter column: 'Profit/(loss) after tax and extraordinary items' 29,583 = 295.83 cr (the Dec-25 filing's comparative prints 29,583 too). Stored 295.84 = the same filing's Reg 52(4) disclosure page 'Net Profit After Tax' 29,584; the main P&L row is the authority.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 387.16,
+   "fixed": 387.15,
+   "why": "Q3 FY26 own BSE results PDF, text ICICIPRULI_20251231_0 'Statement of Consolidated Unaudited Results for the quarter and nine months ended December 31, 2025' (Rs lakh), quarter column: profit after tax 38,715 = 387.15 cr. Stored 387.16 = the Reg 52(4) consolidated disclosure page's 38,716; the main P&L row is the authority.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "AFCONS",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 96.81,
+   "fixed": 97.09,
+   "why": "Q3 FY26 own BSE results PDF, text AFCONS_20251231_0 p17 'Statement of Unaudited Consolidated Financial Results for the Quarter and Nine Months ended 31 December 2025' (Rs crore), quarter column: 'Profit for the period attributable to: Owners of the Company' 97.09; NCI (0.28). Stored 96.81 = 'Profit after tax and exceptional items (5-6)', the total including NCI.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20220930",
+   "basis": "con",
+   "was": 318.53,
+   "fixed": 318.62,
+   "why": "Q2 FY23 own BSE results PDF, text OBEROIRLTY_20220930_0 p5 'Unaudited Consolidated Financial Results for the Quarter and Half Year Ended September 30, 2022' (Rs lakh), quarter column: row 9 'Net profit for the period (7-8)' 31,862 (= 38,786 - 7,399 + 475) = 318.62 cr; TCI 31,853 footnoted 'entirely attributable to owner of the parent'. Stored 318.53 = TCI.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "KAYNES",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 63.51,
+   "fixed": 41.28,
+   "why": "Q4 FY23 own BSE results PDF, text KAYNES_20230331_0 p3 'STATEMENT OF AUDITED CONSOLIDATED FINANCIAL RESULTS FOR THE QUARTER & THE YEAR ENDED 31 MARCH 2023' (Rs million), 'Quarter ended 31 March 2023' column: 'Profit for the period / year (3-4)' 412.81 (= 537.26 - 142.86 + 18.41) = 41.28 cr; no owners/NCI split printed (first consolidated results, note 4). Stored 63.51 is on no row of this filing (the filing's XBRL tag carried 63.5053).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "MAPMYINDIA",
+   "qe": "20220930",
+   "basis": "con",
+   "was": 25.4,
+   "fixed": 25.41,
+   "why": "Q2 FY23 own BSE results PDF, text MAPMYINDIA_20220930_0 p6 'Statement of Unaudited Consolidated Financial Results for the quarter and half year ended September 30, 2022' (Rs lakh), quarter column: 'Profit (PAT) attributable to: Owners of the Company' 2,541 = 25.41 cr (PAT 2,537, NCI (4)). Stored 25.40 is rounded to 1 dp.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "BALKRISIND",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 319.74,
+   "fixed": 306.96,
+   "why": "Q1 FY23 own BSE results PDF, text BALKRISIND_20220630_0 p1-2 (Rs lakh), side-by-side STANDALONE | CONSOLIDATED statement, CONSOLIDATED 'QUARTER ENDED 30-06-2022' column: 'IX. Profit for the period (VII-VIII)' 30696 = 306.96 cr; no owners/NCI split printed. Stored 319.74 = the STANDALONE column's 31974 (standalone copied into con).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 584.4,
+   "fixed": 584.51,
+   "why": "Q1 FY25 own BSE results PDF, text OBEROIRLTY_20240630_0 p5 consolidated (Rs lakh): '9 Net profit for the period (7-8)' 58,451 (77,503-17,075-1,977) = 584.51 cr; no owners line printed for profit ('** Entirely attributable to owner of the parent' on TCI). Stored 584.40 = line 11 TCI 58,440.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 432.5,
+   "fixed": 433.17,
+   "why": "Q4 FY25 own BSE results PDF, text OBEROIRLTY_20250331_0 p7 consolidated (Rs lakh): 'Net profit for the period (7-8)' 43317 (57,710-14,874+481) = 433.17 cr; no owners line for profit ('Entirely attributable to shareholders of the parent'). Stored 432.50 = TCI.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "RHIM",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 72.86,
+   "fixed": 72.88,
+   "why": "Q1 FY25 own BSE results PDF, text RHIM_20240630_0 p6 consolidated (Rs lakh): 'Profit/(Loss) attributable to: Owners of the Company' 7,288.06 = 72.88 cr. Stored 72.86 = 'Total comprehensive income' 7,286.33.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "GALAXYSURF",
+   "qe": "20231231",
+   "basis": "con",
+   "was": 71.36,
+   "fixed": 71.37,
+   "why": "Q3 FY24 own BSE results PDF, text GALAXYSURF_20231231_0 p4 STATEMENT OF UNAUDITED CONSOLIDATED FINANCIAL RESULTS (Rs crore): 'VI. PROFIT AFTER TAX' 71.37; no owners/NCI split printed. Stored 71.36 = 'TOTAL COMPREHENSIVE INCOME FOR THE PERIOD'.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "CGPOWER",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 237.85,
+   "fixed": 240.53,
+   "why": "Q3 FY25 own BSE results PDF, text CGPOWER_20241231_0 p11 consolidated (Rs crore): 'Profit after tax attributable to: (a) Owners of the Company' 240.53; '(b) Non-controlling interests' 2.68 (a loss: 240.53-2.68=237.85). Stored 237.85 = '11 Profit after tax' total.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20240331",
+   "basis": "con",
+   "was": 41.62,
+   "fixed": 39.93,
+   "why": "Q4 FY24 own BSE results PDF, text TARIL_20240331_0 p14 consolidated (Rs lakh): 'Profit for the year attributable to: - Owners of the Company' 3,993 = 39.93 cr; NCI 169. Stored 41.62 = 'Profit for the period' total 4,162.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 20.83,
+   "fixed": 20.09,
+   "why": "Q1 FY25 own BSE results PDF, text TARIL_20240630_0 p7 consolidated (Rs lakh): '- Owners of the Company' 2,009 = 20.09 cr; NCI 74. Stored 20.83 = 'Profit for the period' total 2,083.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 132.27,
+   "fixed": 132.31,
+   "why": "Q4 FY23 own BSE results PDF (legible re-submission), text HINDCOPPER_20230331_1 p17 consolidated (Rs crore): 'Attributable to Owners of the Company' 132.31, 'Non Controlling Interest' (0.04); total 132.27 = 132.31-0.04. Stored 132.27 = total incl. NCI.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "SIGNATURE",
+   "qe": "20230930",
+   "basis": "con",
+   "was": 4.28,
+   "fixed": -19.94,
+   "why": "Q2 FY24 own BSE results PDF, text SIGNATURE_20230930_1 p3 Statement of Unaudited Consolidated Financial Results for the quarter and six months ended 30 Sep 2023 (Rs million): 'Loss after tax attributable to: Owners of the Holding Company' (199.36) = -19.94 cr; check: Jun-23 (72.21) + Sep-23 (199.36) = six-month (271.57). Stored 4.28 is on no row of the filing.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 301.0,
+   "fixed": 300.99,
+   "why": "Q1 FY26 own BSE results PDF, text ICICIPRULI_20250630_0 p35 main consolidated statement (Rs lakh): row '31 Profit/(loss) after tax and extraordinary items' 30,099 = 300.99 cr. Stored 301.00 = the Reg 52(4) disclosure page's 30,100.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "GSFC",
+   "qe": "20240930",
+   "basis": "std",
+   "was": 302.66,
+   "fixed": 302.67,
+   "why": "Q2 FY25 own BSE results PDF, text GSFC_20240930_0 p1 Statement of Unaudited Standalone and Consolidated Financial Results (Rs lakhs), Standalone quarter column: '7 Net Profit' 30,267 = 302.67 cr.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "LUXIND",
+   "qe": "20230930",
+   "basis": "std",
+   "was": 38.34,
+   "fixed": 38.33,
+   "why": "Q2 FY24 own BSE results PDF, text LUXIND_20230930_0 Statement of Unaudited Standalone Financial Results (Rs crores): '7 Net Profit for the Period (5-6)' 38.33.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "HINDCOPPER",
+   "qe": "20220331",
+   "basis": "con",
+   "was": 88.97,
+   "fixed": 88.99,
+   "why": "Q4 FY22 own BSE results PDF, text HINDCOPPER_20220331 p14 'Statement of Consolidated Audited Financial Results for the quarter and year ended 31st March 2022' (Rs crore), column '31st Mar 2022 (Audited)': row 13 'Net Profit/(Loss) ... & Share of profit/(Loss) of JV/Associate' 88.97; 'Attributable to Owners of the Company' 88.99; 'Non Controlling Interest' (0.02). Stored 88.97 = total incl. NCI (page image read).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "LLOYDSME",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 269.0,
+   "fixed": 269.04,
+   "why": "Q4 FY23 own BSE results PDF, text LLOYDSME_20230331_0 standalone statement (Rs crore), quarter ended 31-Mar-2023 column: row 7 net profit 269.04 (PBT 159.90 + deferred-tax credit 109.14). Stored 269.0 = rounded to 1 dp.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "LLOYDSME",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 269.0,
+   "fixed": 269.04,
+   "why": "Q4 FY23 own BSE results PDF, text LLOYDSME_20230331_0 p11 Audited Consolidated Financial Results (Rs crore), quarter ended 31-Mar-2023 column: profit attributable to 'Owners of the parent' 269.04; NCI nil. Stored 269.0 = rounded to 1 dp.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "MAHABANK",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 451.9,
+   "fixed": 452.95,
+   "why": "Q1 FY23 own BSE results PDF, text MAHABANK_20220630_0 p9 'Consolidated Unaudited (Reviewed) Financial Results for the Quarter ended 30th June 2022' (Rs lakh): row M 'Net Profit / (Loss) after minority interest (J+K-L)' 45295 = 452.95 cr (J 45220 + associates 75 - minority 0). Stored 451.90 = the standalone statement's 45190 (standalone copied into con).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "STARHEALTH",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 101.78,
+   "fixed": 101.79,
+   "why": "Q4 FY23 own BSE results PDF, text STARHEALTH_20230331_0 p6 IRDAI Annexure-I statement (Rs lakh), quarter ended 31-Mar-2023 column: row 27 'Profit/(Loss) After Tax (25-26)' 10,179 (13,605 - deferred tax 3,426) = 101.79 cr (page image read). Stored 101.78 = the Reg 52(4) ratio page's 'Net Profit after tax 10,178'.",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "BANKINDIA",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 561.49,
+   "fixed": 657.62,
+   "why": "Q1 FY23 own BSE results PDF, text BANKINDIA_20220630_0 p2 'Reviewed Financial Results for the Quarter ended June 30, 2022' Annexure A (Rs lakh), side-by-side Standalone | Consolidated, Consolidated quarter column: row 12 58,288, 'Less: Minority Interest' 117, 'Add: Share of earnings in Associates' 7,591, row 14 'Net Profit(+)/Loss(-) for the period' 65,762 = 657.62 cr. Stored 561.49 = the Standalone column's 56,149 (standalone copied into con).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
+  },
+  {
+   "sym": "INDIANB",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 1213.44,
+   "fixed": 1311.08,
+   "why": "Q1 FY23 own BSE results PDF, text INDIANB_20220630_0 p4 'Reviewed Consolidated Financial Results for the Quarter ended June 30, 2022' (Rs crore), quarter column: row 14 1,216.21 + row 15 share of associates 94.64 - row 16 minority interest (0.23) = row 17 'Net Profit for the period (after Minority Interest)' 1,311.08. Stored 1213.44 = the standalone net profit (standalone copied into con).",
+   "found": "\u00a7230 pipeline-bugs 2026-10-22 (PIT-N500 2022+, own filing read)"
   }
  ],
  "retracted": [

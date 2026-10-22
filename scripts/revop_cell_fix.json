@@ -14866,60 +14866,12 @@
    "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_622021135239.xml (BSE, filed 2021-02-06; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, consolidated) -> build_revop.xbrl_revop rev 216.8. Printed PDF 5b618fc1-2028-49b8-8578-5c7987ba39b2.pdf (current-quarter column, consolidated statement) prints revenue from operations 2168 mn = 216.8 cr. stored 193.3 is the STANDALONE revenue copied into the consolidated slot; the consolidated statement prints revenue from operations 2168 mn. Not a scale issue (scale_fix n/a).",
    "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
   },
-  {
-   "sym": "KENNAMET",
-   "qe": "20221231",
-   "basis": "op_con",
-   "was": -246.4,
-   "fixed": 37.7,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 37.7. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn = 37.7 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
-  {
-   "sym": "KENNAMET",
-   "qe": "20221231",
-   "basis": "ebit_con",
-   "was": -246.4,
-   "fixed": 28.4,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 28.4. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn (ebit = op - dep 284) = 28.4 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
-  {
-   "sym": "KENNAMET",
-   "qe": "20230331",
-   "basis": "op_con",
-   "was": -235.1,
-   "fixed": 30.5,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 30.5. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn = 30.5 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
-  {
-   "sym": "KENNAMET",
-   "qe": "20230331",
-   "basis": "ebit_con",
-   "was": -235.1,
-   "fixed": 20.6,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 20.6. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn (ebit = op - dep 206) = 20.6 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
-  {
-   "sym": "KENNAMET",
-   "qe": "20230630",
-   "basis": "op_con",
-   "was": 48.5,
-   "fixed": 36.5,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 36.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn = 36.5 cr. stored 48.5 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
-  {
-   "sym": "KENNAMET",
-   "qe": "20230630",
-   "basis": "ebit_con",
-   "was": 37.7,
-   "fixed": 25.7,
-   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 25.7. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn (ebit = op - dep 257) = 25.7 cr. stored 37.7 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
-   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/"
-  },
+  
+  
+  
+  
+  
+  
   {
    "sym": "KENNAMET",
    "qe": "20230930",
@@ -31152,6 +31104,66 @@
    "why": "Runbook §108 restated-comparative vintage. NSE's results archive holds two filings of this quarter: the ORIGINAL, filed 20160206 (Non-Ind-AS, seq 1004928), operating profit 84.9 cr, and a RESTATEMENT filed 20170210 (Ind-AS, seq 1019113), operating profit 86.9 cr — the stored value. Our ann date for the cell is 20160205, 371 days BEFORE that restatement was filed, so the stored figure was not public on the date the cell claims.",
    "found": "vintage108 sweep 2026-08-24 (NSE dual-vintage + provenance + detres)",
    "retracted_why": "RETRACTED 2026-09-05 by the op-slot heal (runbook §129g): the corrected value is the after-depreciation subtotal, not op; for this company the XBRL-era ebit does not match that convention, so it was placed in neither slot (kept as ebit_unplaced_value in op_slot_corrections.json) and opS was nulled and HELD."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "op_con",
+   "was": -246.4,
+   "fixed": 37.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 37.7. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn = 37.7 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20221231",
+   "basis": "ebit_con",
+   "was": -246.4,
+   "fixed": 28.4,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_1022023204850.xml (BSE, filed 2023-02-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 28.4. Printed PDF 4c212665-3ec4-4d03-be84-24ae2194311a.pdf (current-quarter column, standalone statement) prints PBET 296 + finance costs 0 + depreciation 93 - other income 12 = op 377 mn (ebit = op - dep 284) = 28.4 cr. stored -246.4 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "op_con",
+   "was": -235.1,
+   "fixed": 30.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 30.5. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn = 30.5 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230331",
+   "basis": "ebit_con",
+   "was": -235.1,
+   "fixed": 20.6,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_125202317557.xml (BSE, filed 2023-05-13; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 20.6. Printed PDF 0f84e812-047a-487b-8a89-c060a6dacc47.pdf (current-quarter column, standalone statement) prints PBET 220 + finance costs 0 + depreciation 99 - other income 14 = op 305 mn (ebit = op - dep 206) = 20.6 cr. stored -235.1 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "op_con",
+   "was": 48.5,
+   "fixed": 36.5,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop op 36.5. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn = 36.5 cr. stored 48.5 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
+  },
+  {
+   "sym": "KENNAMET",
+   "qe": "20230630",
+   "basis": "ebit_con",
+   "was": 37.7,
+   "fixed": 25.7,
+   "why": "Kennametal India prints in Rs MILLION (fiscal year Jul-Jun). XBRL Main_Ind_As_505890_118202318352.xml (BSE, filed 2023-08-11; OneD = the quarter, ScripCode 505890, ISIN INE717A01029, standalone) -> build_revop.xbrl_revop ebit 25.7. Printed PDF d17d5db1-905f-4762-bfef-e8c6f8966e99.pdf (previous-quarter column, standalone statement) prints PBET 269 + finance costs 2 + depreciation 108 - other income 14 = op 365 mn (ebit = op - dep 257) = 25.7 cr. stored 37.7 is a copy of the wrong standalone cell. No consolidated statement exists for this quarter: Kennametal's only subsidiary WITPL was amalgamated into the company (NCLT Bengaluru order 17-Oct-2022, received 16-Nov-2022; appointed date 1-Apr-2021 -- note in this filing), the filing has zero 'consolidat' mentions and BSE's results index lists no consolidated result after Sep-2022. The con slot therefore carries the standalone figure by identity -- the convention the store already applies to KENNAMET's npCon (§73b KENNAMET_DEC24). Not a scale issue (scale_fix n/a).",
+   "found": "KENNAMET negative-op audit 2026-09-27 (runbook §189): all 43 of the company's own BSE XBRL filings (Result_Arch_ng scrip 505890, every row Status New = as-filed) re-parsed with build_revop.xbrl_revop, second reader = the printed results PDFs (BSE announcement attachments); copies in ~/stocks-cache/kennamet-op/",
+   "retracted_why": "RETRACTED 2026-10-22 by §230 pipeline-bugs: this entry's own why says no consolidated statement exists for the quarter (Kennametal's only subsidiary WITPL amalgamated into the company), yet it wrote the standalone figure into the consolidated slot. User ruling (strip_con_nofile_covering_claims.py): 'a con slot may hold ONLY filing-backed values'. The con cell is now an absent, held retraction in con_nofile_retractions.json; the standalone op/ebit fixes stay."
   }
  ]
 }

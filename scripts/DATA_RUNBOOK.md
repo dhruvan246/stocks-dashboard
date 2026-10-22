@@ -29036,3 +29036,49 @@ from page 3 of the results PDF's text layer.
   op_na). bse_vision_prep re-renders them on every run (entries carry "op_reread": 1; `--op-only` runs just this pass,
   `--no-op-pass` turns it off). merge_bse_vision fills only the empty op slot and marks `op_na` when a second read of an
   already-filled cell still finds none, so nothing is queued forever.
+
+
+## §230 — PROFIT-PIPELINE BUG CLASSES: each writer that could store a wrong profit or date, its guard, and its screen (2026-10-22, user: "think more of such bugs and resolve them all so that our data stays best in the market. Perfect.")
+
+Scope PIT Nifty 500 (a member at qe, +120, +240, +360 or +450 days, rename aliases included — the §225 window).
+Screen counts measured on origin 3ca4b7460; heals applied on origin f32b41fc4. A screen hit is a CANDIDATE only; every heal below was made from
+that cell's own filing (§0 first rule), with the doc, page, row label, printed number and unit in the ledger entry.
+
+**Screens.**
+- CI, nightly: xcheck `fund_cell_shape` (scripts/xcheck/fund.py) — store-intrinsic: exact 0.00, con == std to the paisa
+  while a neighbouring quarter differs, same profit two quarters running. Shows on docs/data-checks.html.
+- Local (needs the 5.8 GB scripts/_xbrl_cache): `python3 scripts/screen_profit_xbrl.py index` then `... screen` →
+  ~/stocks-cache/profit-xbrl-screen/screen_out.json, counts per class. Classes below carry that script's names.
+
+| class | root cause (file) | fix | screen count (N500, all years) |
+|---|---|---|---|
+| tci_as_owners | filer tags its TCI split under ProfitOrLossAttributableToOwnersOfParent; `xbrl_profit` trusted the owners tag (build_fundamentals.py) and `_reattr_owners.json` (static since 2026-08-18, re-asserted nightly by apply_owners_full.py) holds the same value | `xbrl_profit` refuses an owners tag that equals the TCI owners (or TCI) and is not profit − NCI (REFUSED → con left empty, never total); apply_reattr_cache.py keeps a cache value only if the guarded reader reproduces it; apply_owners_full.py skips the 1,343 keys in scripts/reattr_quarantine.json | 89 |
+| total_not_owners | owners tag 0/absent beside a real NCI → total stored | `xbrl_profit`: owners = total − NCI, cross-checked against EPS × shares (refused if off by > 3 %) | 56 |
+| zero | all-zero placeholder XBRL (0 in every tag) or "not found" stored as 0 | `xbrl_profit`: a raw 0 PAT tag → None; apply_owners_full never writes an exact-0 cache value | 23 |
+| onedp_proven | filer's XBRL owners tag rounded to 0.1 cr (ESCORTS Jun-23 289.9) while the PDF prints 2 dp | heal per cell from the PDF; screen flags it | 111 |
+| con_eq_std_* | standalone copied into the con slot by the retired autofill (update_fundamentals, removed 2026-08-18) and the one-off apply_nosub_constd(2).py; the 08-18 retraction removed only cells before each company's first-con "floor", so the post-floor copies (CASTROLIND, CANFINHOME, TTML, TATAELXSI, ABB …) survived | no nightly writer copies std into con any more (update_fundamentals tombstone 2026-08-18, fetch_insurers 2026-10-22); survivors read per cell → con_nofile_retractions.json (held ⇒ verify_fills_live asserts absent). 2022+ N500 con==std = 285 cells: 120 kept (the company's own consolidated XBRL prints that same figure), the rest read | 104 cells retracted (+ their revC/opC/ebitC copies, 245 slots); 5 kept as filing-backed (RAILTEL Sep-23 single statement on the consolidated basis; ABB Sep-24→Jun-25 printed con comparatives, conpat_filing_fills.json) |
+| later_filing | first XBRL mis-scaled (×100 COROMANDEL Mar-26, AFCONS Dec-25; ×10 ASTRAZEN Jun-20), store already holds the corrected value | none needed — the store follows the printed figure | 15 |
+| nomatch_scale/sign/ytd | unit slip, sign flip, 6M/9M column | scale_fix / pinned heals already cover the hits; ytd: 0 hits | 1 / 4 / 0 |
+| ann 15:30 leftovers | rewrite_ledgers_midnight.py (§149) parsed only "2023-02-14T18:14 -> date" notes and skipped `override` entries, so ann_date_fills entries noted "filingDate 14-Feb-2023 18:14" kept the retired gate's next-day date, re-asserted nightly | scripts/ungate_archive_notes.py: rewrites an entry only when its ann is EXACTLY the retired gate's form of its own recorded timestamp; ann_1530 kept, rule midnight-2026-09-23. Run with `--min-qe 20220101` and SKIP=c_next (2009–2021 was being swept by the StockView ann campaign) | 1,011 entries in N500 all years; APPLIED 113 entries 2022+ → 192 cells one day earlier (0 later, 0 values). Pre-2022 (898 entries) handed to the StockView session |
+| ann_is_deadline | fill_ann_dates.py stamps qe+45/60 when no filing date is known | not changed: many companies really file on the deadline day (HINDALCO Jun-20, 14 Aug 2020); the local screen lists the 2020+ cells for reading | 7,859 (662 from 2020) |
+
+
+**Reads (2026-10-22, N500 2022+ only, each cell's own BSE results filing, text layer or a rendered page image):**
+304 cells — MATCH 102 · OUR_ERROR 28 · NO_CON_FILED 109 · UNKNOWN 65. Every OUR_ERROR was re-read by the
+lead session before healing; the `why` of each fund_cell_fix entry (found = "§230 pipeline-bugs 2026-10-22") names
+the text file, page, row label, printed number and unit. **Healed: 30 cells** (26 con, 4 std) — e.g. SIGNATURE Sep-23
+con 4.28 → −19.94 (owners line prints (199.36) Rs mn), BANKINDIA Jun-22 con 561.49 → 657.62 and INDIANB Jun-22 con
+1213.44 → 1311.08 (standalone copied into con; consolidated rows read), OBEROIRLTY ×4 (TCI stored), TARIL ×2 /
+CGPOWER / HINDCOPPER ×2 / AFCONS (total incl. NCI stored), ICICIPRULI ×3 + STARHEALTH std (Reg 52(4) ratio page
+instead of the main P&L), KAYNES Mar-23 (63.51 on no row; 41.28). Con heals are pinned in owners_basis_heals.json.
+**Retracted: 104 con cells** (con_nofile_retractions.json, held). revop_cell_fix.json: 6 KENNAMET op_con/ebit_con
+entries moved to `retracted` (their own why said no consolidated statement exists).
+**Not changed — user decision:** 3 OUR_ERRORs sit EXACTLY on a half and differ only by rounding direction
+(NAUKRI Dec-25 271.705, HOMEFIRST Sep-24 std 92.225, VAIBHAVGBL Mar-22 27.205); store-wide 764 cells sit on an exact
+half and were stored float-rounded DOWN (round(float(x)/1e7, 2)), 13 half-up. **UNKNOWN 65:** 29 are pre-listing
+quarters with no own filing (AADHARHFC, BHARTIHEXA, NIVABUPA, JIOFIN …), the rest wrong/missing file or illegible OCR.
+PIRAMALFIN 2020–25 is §220 territory, not touched.
+
+**Trap learned here:** a reader's NO_CON_FILED from the quarter's own PDF is not enough when another ledger holds a
+filing-backed con value from a LATER filing's comparative column or a consolidated-basis single statement —
+run verify_fills_live BEFORE commit; it caught 14 such slots (RAILTEL, ABB, KENNAMET) and they were dropped/handled.
