@@ -9158,6 +9158,33 @@
    "fixed": -233.85,
    "why": "Consolidated unaudited results Q1 FY26, own BSE results PDF d275cc29-c393-4860-8f89-ecd4cb32f0a9.pdf (broadcast 2025-09-05 16:47, Rs million, OCR) p11 'Statement of Unaudited Consolidated Financial Results for the quarter ended 30 June 2025': loss for the period (2,340.03), of which Owners of the Holding Company (2,338.49) = -233.85. Stored -235.08 = the standalone loss (p4: (2,350.84)). Second check: sf_revop patC -233.85 (consolidated XBRL owners).",
    "found": "StockView cell-by-cell check 2026-10-22 (held con==std cell read)"
+  },
+  {
+   "sym": "ORCHIDPHAR",
+   "qe": "20110930",
+   "basis": "std",
+   "was": -56.57,
+   "fixed": 23.43,
+   "why": "NSE results ARCHIVE page financial_res_ORCHIDPHAR_89756.html (as filed, Non-Consolidated, Non-cumulative, lakhs): 'Net Profit from Ordinary Activities after tax' -56.57, Extraordinary Items -80.0, 'Net Profit (+)/Loss(-) for the period' 23.43. Stored value = the ordinary-activities line, not the bottom line. EPS identity: Basic EPS after extraordinary 3.33 x 70.44cr / Rs10 = 23.46.",
+   "found": "StockView PIT-N500 std check 2026-10-22 (alias-held cell read against its NSE archive page)"
+  },
+  {
+   "sym": "PROVOGUE",
+   "qe": "20090331",
+   "basis": "std",
+   "was": 8.31,
+   "fixed": 8.35,
+   "why": "NSE results ARCHIVE page financial_res_PROVOGUE_64857.html (as filed, Non-Consolidated, Non-cumulative, lakhs): 'Net Profit from Ordinary Activities after tax' 8.31, Extraordinary Items see page, 'Net Profit (+)/Loss(-) for the period' 8.35. Stored value = the ordinary-activities line, not the bottom line. PBT 12.22 - tax 3.91 = 8.31; NP for the period 8.3493. EPS 0.72 x 23.28cr / Rs2 = 8.38.",
+   "found": "StockView PIT-N500 std check 2026-10-22 (alias-held cell read against its NSE archive page)"
+  },
+  {
+   "sym": "PROVOGUE",
+   "qe": "20091231",
+   "basis": "std",
+   "was": 8.85,
+   "fixed": 9.03,
+   "why": "NSE results ARCHIVE page financial_res_PROVOGUE_71554.html (as filed, Non-Consolidated, Non-cumulative, lakhs): 'Net Profit from Ordinary Activities after tax' 8.85, Extraordinary Items -0.18, 'Net Profit (+)/Loss(-) for the period' 9.03. Stored value = the ordinary-activities line, not the bottom line. EPS after extraordinary x 22.96cr / Rs2 consistent.",
+   "found": "StockView PIT-N500 std check 2026-10-22 (alias-held cell read against its NSE archive page)"
   }
  ],
  "retracted": [
