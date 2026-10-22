@@ -9,7 +9,7 @@ fund_pbt_tax      Reader A: stored PAT (sf_fundamentals). Reader B: the filing's
 fund_eps_shares   Reader A: stored PAT. Reader B: the company's own basic EPS × shares outstanding at quarter-end
                   (scripts/shares_history.json, the SHP filing's share count). EPS is computed by the company from
                   its weighted share count, so 5 % slack; a 10x/100x gap is a scale slip on one side."""
-import json, os
+import datetime, json, os
 from . import common as C
 
 BASES = (("s", 1, 0), ("c", 3, 1))          # (x key, sf_fundamentals PAT index, sf_revop revenue index)
@@ -132,3 +132,45 @@ class FundEpsShares(C.Check):
                     self.add("%s|%d|%s" % (sym, qe, bk), sym=sym, qe=C.iso(qe), basis=bk, pat=pat, eps=eps, shares=cnt,
                              implied=round(implied, 2), ratio=round(ratio, 4) if ratio else None,
                              weight=round(abs(pat - implied), 2))
+
+
+class FundCellShape(C.Check):
+    """§230. Store-intrinsic screen: no second document, the store's own rows are the second reader. Each kind is a
+    footprint a known writer bug left (runbook §230): an exact 0.00 (all-zero placeholder XBRL / 'not found' stored as 0),
+    consolidated == standalone to the paisa while the company files a different consolidated figure in a neighbouring
+    quarter (std copied into con), and the same profit two quarters running (a stale or wrong-quarter column).
+    (An announcement date equal to the SEBI deadline is NOT screened here: many companies really file on that day —
+    HINDALCO Jun-20 on 14 Aug 2020. The deadline stamp is screened locally against the XBRL's own timestamp,
+    scripts/screen_profit_xbrl.py.)"""
+    id = "fund_cell_shape"
+    title = "Quarterly profit cells with a writer-bug footprint"
+    max_listed = 2000
+    domain = "Quarterly results"
+    reader_a = "sf_fundamentals profit cell"
+    reader_b = "the same stock's neighbouring quarters"
+    scope = "Nifty 500 members at quarter-end"
+    tolerance = "exact (to the paisa / day)"
+
+    def run(self):
+        raw = C.jload(os.path.join(C.DOCS, "sf_fundamentals.json")); spans = {}
+        for sym, rows in raw.items():
+            if not isinstance(rows, list): continue
+            rows = sorted(rows, key=lambda r: r[0])
+            for i, r in enumerate(rows):
+                qe = r[0]
+                if not _in_scope(sym, qe, spans): continue
+                self.compared += 1; hit = False
+                for b, vi, ai in (("s", 1, 2), ("c", 3, 4)):
+                    v, ann = r[vi], r[ai]
+                    if v is not None and v == 0:
+                        hit = True; self.add("%s|%d|%s|zero" % (sym, qe, b), sym=sym, qe=C.iso(qe), basis=b, field="zero", a=v, b=None)
+                if r[1] is not None and r[3] is not None and r[1] == r[3] and r[1] != 0:
+                    near = [x for x in rows[max(0, i - 2):i + 3] if x is not r and x[1] is not None and x[3] is not None]
+                    if any(x[1] != x[3] for x in near):
+                        hit = True; self.add("%s|%d|c|con_eq_std" % (sym, qe), sym=sym, qe=C.iso(qe), basis="c", field="con_eq_std", a=r[3], b=r[1])
+                if i:
+                    p = rows[i - 1]
+                    for b, vi in (("s", 1), ("c", 3)):
+                        if r[vi] is not None and p[vi] is not None and r[vi] == p[vi] and abs(r[vi]) >= 1:
+                            hit = True; self.add("%s|%d|%s|dup" % (sym, qe, b), sym=sym, qe=C.iso(qe), basis=b, field="same_as_prev_quarter", a=r[vi], b=p[vi])
+                if not hit: self.agree += 1

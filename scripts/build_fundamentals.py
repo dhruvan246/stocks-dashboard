@@ -93,6 +93,8 @@ def _quarter_ctx(xml, cid):
         return True
 
 
+REFUSED = object()   # owners() sentinel: the filing's owners figure cannot be read safely (§230)
+
 def xbrl_profit(xml, basis_hint=None):
     """Return (np_standalone_cr, np_consolidated_cr) for the CURRENT QUARTER from one filing.
 
@@ -112,9 +114,11 @@ def xbrl_profit(xml, basis_hint=None):
         nat[m.group(1)] = m.group(2).strip().lower()
     hint = (basis_hint or "").lower()
     plp = {}
+    plp_raw = {}   # unrounded rupees: an EXACT 0 is a placeholder, not a result (zero guard below)
     for m in re.finditer(r'<in-(?:bse-fin|capmkt):ProfitLossFor(?:The)?Period contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         if m.group(1) not in plp:
             plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)   # rupees -> crore
+            plp_raw[m.group(1)] = float(m.group(2))
     # INSURERS (IRDAI integrated-filing LI/GI XBRL, 2025+) tag PAT differently — read it so the
     # daily updater fills insurer quarters automatically (verified vs Trendlyne: HDFCLIFE Q1FY27
     # con 611.19, std 611.42; ICICIGI std 403.17; ICICIPRULI std 386.18). Life insurers:
@@ -125,7 +129,7 @@ def xbrl_profit(xml, basis_hint=None):
         for t in ("ProfitLossAfterTaxAndExtraordinaryItems", "ProfitLossAfterTax"):
             for m in re.finditer(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
                 if m.group(1) not in plp:
-                    try: plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+                    try: plp[m.group(1)] = round(float(m.group(2)) / 1e7, 2); plp_raw[m.group(1)] = float(m.group(2))
                     except Exception: pass
             if plp:
                 break
@@ -167,9 +171,45 @@ def xbrl_profit(xml, basis_hint=None):
     try:
         if mp and mf and float(mf.group(1)) > 0: shares = float(mp.group(1)) / float(mf.group(1))
     except Exception: pass
+    # TOTAL-COMPREHENSIVE-INCOME tags (runbook §230 class A). Some filers put the TCI split under the
+    # owners' PROFIT tag: ZYDUSWELL Jun-22 tagged OwnersOfParent 136.96 = its TCI while the printed profit
+    # (no minority) was 137.01; IGL Jun-26 stored 239.46 = "TCI attributable to owners" for owners' profit
+    # 240.41. The store then served TCI as profit. Read the TCI tags so owners() can recognise that shape.
+    def _tags(t):
+        d = {}
+        for m in re.finditer(r'<in-(?:bse-fin|capmkt):' + t + r' contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
+            if m.group(1) not in d:
+                try: d[m.group(1)] = round(float(m.group(2)) / 1e7, 2)
+                except Exception: pass
+        return d
+    tci, tcio, tcin = (_tags("ComprehensiveIncomeForThePeriod"),
+                       _tags("ComprehensiveIncomeForThePeriodAttributableToOwnersOfParent"),
+                       _tags("ComprehensiveIncomeForThePeriodAttributableToNonControllingInterests"))
     def owners(ctx):
         a = attr.get(ctx)
         n, e = nci.get(ctx), eps.get(ctx)
+        p, t, to, tn = plp.get(ctx), tci.get(ctx), tcio.get(ctx), tcin.get(ctx)
+        near = lambda x, y, tol=0.005: x is not None and y is not None and abs(x - y) <= tol
+        # §230 A — the owners tag carries the TCI split: it equals the TCI-owners tag (or, with no such tag, the
+        # TCI itself) while TCI differs from profit, and owners + NCI does NOT close to profit. With no minority on
+        # either line the owners' profit IS the profit; with a minority the split is unknowable from this file ->
+        # REFUSED (the cell stays empty and is read from the PDF), never the TCI figure and never the total.
+        if (a is not None and p is not None and t is not None and abs(t - p) > 0.005
+                and (near(a, to) or (to is None and near(a, t)))
+                and not near(a + (n or 0.0), p, 0.011)):
+            if not n and not tn: return p
+            print("    owners tag = TCI split (ctx %s: owners %s, profit %s, TCI %s, NCI %s) -> REFUSED" % (ctx, a, p, t, n))
+            return REFUSED
+        # §230 B' — owners tag 0 / absent beside a NON-ZERO NCI tag: the filing's own split gives owners = profit - NCI
+        # (the old `owners() or ... or total` fallback stored the total INCLUDING the minority's share).
+        # EPS-anchored like the swap guard below: when the file carries EPS and a share count, profit - NCI must
+        # reproduce basic EPS x shares, else the NCI tag itself is not trustworthy -> REFUSED.
+        if (a is None or a == 0) and n and p is not None:
+            o = round(p - n, 2)
+            if shares and e is not None and abs(o * 1e7 / shares - e) > 3 * max(0.03, abs(e) * 0.03):
+                print("    owners tag 0, profit - NCI %s fails EPS %s (ctx %s) -> REFUSED" % (o, e, ctx))
+                return REFUSED
+            return o
         if a is None or n is None or not shares or e is None: return a
         tol = max(0.03, abs(e) * 0.03)
         ea, en = abs(a * 1e7 / shares - e), abs(n * 1e7 / shares - e)
@@ -187,15 +227,25 @@ def xbrl_profit(xml, basis_hint=None):
         one = None
     if four is not None and not _quarter_ctx(xml, "FourD"):
         four = None
+    # §230 ZERO GUARD — an EXACT zero profit is a placeholder XBRL (RUSTOMJEE / UFLEX Mar-23 filed all-zero
+    # facts; the store kept 0.0 for profits of 76.59 / 0.88 cr). A real result is never exactly 0 rupees, so
+    # treat it as "not found" and leave the slot empty for the PDF read.
+    if one is not None and plp_raw.get("OneD") == 0: one = None
+    if four is not None and plp_raw.get("FourD") == 0: four = None
     if one is not None:
         # consolidated -> attributable to owners, BUT fall back to the total ProfitLossForPeriod when
         # the owners tag is missing OR zero. Some filers (e.g. ELECON Q1FY27) tag
         # ProfitOrLossAttributableToOwnersOfParent=0 and put the real profit only in the total; a
         # plain .get(key, default) returns that 0.0 → con wrongly 0. `or one` treats 0 as absent.
-        if is_con_basis(one_nat): con = owners("OneD") or bank.get("OneD") or one
+        if is_con_basis(one_nat):
+            o = owners("OneD")
+            con = None if o is REFUSED else (o or bank.get("OneD") or one)
         else: std = one                                  # standalone or unlabelled
     if four is not None and four_nat != one_nat:         # combined filing: other basis, current Q
-        if is_con_basis(four_nat): con = con if con is not None else (owners("FourD") or bank.get("FourD") or four)
+        if is_con_basis(four_nat):
+            if con is None:
+                o = owners("FourD")
+                con = None if o is REFUSED else (o or bank.get("FourD") or four)
         else: std = std if std is not None else four
     return std, con
 

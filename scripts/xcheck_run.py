@@ -12,7 +12,7 @@ import datetime, json, os, sys, time, traceback
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from xcheck import common as C
 from xcheck.px_nse_yahoo import PxNseYahoo
-from xcheck.fund import FundVisionXbrl, FundPbtTax, FundEpsShares
+from xcheck.fund import FundVisionXbrl, FundPbtTax, FundEpsShares, FundCellShape
 from xcheck.market import IdxLevels, FlowsMonth, McapShares
 from xcheck.shp import ShpNeighbours
 
@@ -21,7 +21,7 @@ def ist(fmt="%Y-%m-%d %H:%M"):
     return (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=5, minutes=30)).strftime(fmt)
 
 
-CHECKS = [PxNseYahoo, FundVisionXbrl, FundPbtTax, FundEpsShares, McapShares, ShpNeighbours, IdxLevels, FlowsMonth]
+CHECKS = [PxNseYahoo, FundVisionXbrl, FundPbtTax, FundEpsShares, FundCellShape, McapShares, ShpNeighbours, IdxLevels, FlowsMonth]
 
 
 def main(argv):

@@ -41,6 +41,11 @@ def main():
         # tag owners=0 (artifact, no minority) and any mis-parse. Such quarters keep total PAT.
         if abs((attr + nci) - total) > max(1.0, abs(total) * 0.02):
             rejected += 1; continue
+        # §230: the closure above tolerates 2 % / Rs 1 cr, so a TCI split under the owners tag passes it (ZYDUSWELL Jun-22
+        # 136.96 = TCI for profit 137.01). Keep a value only when the guarded daily reader returns the same figure.
+        _s, _c = B.xbrl_profit(xml)
+        if _c is None or abs(_c - attr) > 0.005:
+            rejected += 1; continue
         qe = int(qm.group(1) + qm.group(2) + qm.group(3))
         best[(sm.group(1), qe)] = round(attr, 2); con += 1
     print("consolidated quarters with a clean owners' figure: %d  (rejected %d)" % (len(best), rejected), flush=True)

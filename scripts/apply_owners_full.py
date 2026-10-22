@@ -63,7 +63,12 @@ try:
             HEALS.setdefault("%s|%s"%(_f["sym"],_f["qe"]),_f["correct"])
 except Exception:
     pass
-src_own=src_bf=src_ren=src_heal=0
+# §230: cache keys the guarded reader (build_fundamentals.xbrl_profit) cannot reproduce from any filing of that quarter
+# (TCI split under the owners tag, owners 0 beside a real NCI, all-zero placeholders). Not re-asserted; the stored value
+# stands until a filing read heals it through the ledgers above.
+try: QUAR=set(json.load(open(os.path.join(HERE,"reattr_quarantine.json")))["keys"])
+except Exception: QUAR=set()
+src_own=src_bf=src_ren=src_heal=src_quar=0
 for sym,arr in live.items():
     for r in arr:
         if r[3] is None: continue
@@ -76,12 +81,19 @@ for sym,arr in live.items():
         if a is not None:
             if abs(a-r[3])>0.005: r[3]=a; src_bf+=1
             continue
-        a=OWN.get(k); ren=False
-        if a is None:                          # renamed: owners keyed by the OLD ticker
+        a=None if k in QUAR else OWN.get(k); ren=False
+        if a is None and k not in QUAR:        # renamed: owners keyed by the OLD ticker
             for _old in REV.get(sym,()):
-                a=OWN.get("%s|%d"%(_old,r[0]))
+                _ko="%s|%d"%(_old,r[0])
+                if _ko in QUAR: break
+                a=OWN.get(_ko)
                 if a is not None: ren=True; break
-        if a is None: continue
+        if a is None:
+            if k in QUAR: src_quar+=1
+            continue
+        # §230 ZERO GUARD: an exact 0 in the cache is an all-zero placeholder XBRL, never a result (RUSTOMJEE / UFLEX
+        # Mar-23 stored 0.0 for 76.59 / 0.88 cr). Never write it, whatever the stored value is.
+        if a==0: continue
         # XBRL owners=0 mis-tag guard: some filers tag ProfitOrLossAttributableToOwnersOfParent=0
         # with the real profit only in the total — and _reattr_owners.json (built from those same
         # XBRLs) carries the poisoned 0.0. NEVER let a ~0 cache value zero out a nonzero stored con
@@ -102,7 +114,7 @@ for sym,arr in live.items():
             r[3]=a
             if ren: src_ren+=1
             else: src_own+=1
-print("set npCon=owners: %d from _reattr_owners, %d via rename-alias (renamed stocks), %d from filing-backfill, %d from con_copy_heals"%(src_own,src_ren,src_bf,src_heal))
+print("set npCon=owners: %d from _reattr_owners, %d via rename-alias (renamed stocks), %d from filing-backfill, %d from con_copy_heals; %d quarantined cache keys skipped (§230)"%(src_own,src_ren,src_bf,src_heal,src_quar))
 if "--dry" in sys.argv:
     print("DRY RUN — not written"); sys.exit(0)
 tmp=F+".tmp"; json.dump(live,open(tmp,"w"),separators=(",",":")); os.replace(tmp,F)
