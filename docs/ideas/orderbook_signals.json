@@ -1,5 +1,5 @@
 {
- "built": "2026-10-22 20:32 IST",
+ "built": "2026-10-22 21:18 IST",
  "rule": "latest stated order book vs the one stated ~a year earlier (10-14 months before); readings come from the companies' own filings, each with its sentence and document",
  "rows": [
   {
@@ -280,7 +280,19 @@
    "alt_keys": [
     "NSE:TARIL"
    ],
-   "isin": "INE763I01026"
+   "isin": "INE763I01026",
+   "verified": {
+    "latest_verdict": "WRONG",
+    "latest_correct_value_cr": 7237.0,
+    "latest_as_on": "2026-09-30",
+    "year_ago_verdict": "CORRECT",
+    "year_ago_correct_value_cr": 5500.0,
+    "year_ago_as_on": "2025-09-30",
+    "true_yoy_pct": 31.6,
+    "book_to_ttm_sales": null,
+    "notes": "The screen's 'latest' figure of Rs 21,000 cr is a MISREAD of the 13-Oct-2026 Q2FY27 earnings-call transcript (filed on NSE 21-Oct-2026). The sentence it matched is CMD Satyen Mamtora answering a competition question: 'we have close to about 21,000 crores order in hand OR INQUIRIES that are being pending to be finalized' - an order book PLUS enquiry pipeline, not an order book. Management states the order book itself in its opening remarks on the SAME call, page 6: 'As of 30th September 2026, our unexecuted order book stood at 7,237 crore, up by 32% year-on-year ... executable over the next 18 to 24 months.' The year-ago figure the screen used, Rs 5,500 cr as on 30-Sep-2025, IS genuine: in the Q2FY26 transcript (BSE 17-Nov-2025) the analyst asks 'our order book as on 30th September is about INR5,500 crores, 30th September order book?' and Mamtora answers 'Yes.' So the true year-on-year change on comparable definitions is 7,237/5,500 = +31.6%, which independently matches management's own '+32% year-on-year'. Below the 50% bar, so NOT A JUMP and no trigger exists. Recorded with qualifies=false so the row is not re-checked unless TARIL files a newer order book. Size note: TARIL is far above this page's Rs 200-7,500 cr band, so no idea card would follow even if it had qualified.",
+    "checked": "2026-10-22"
+   }
   },
   {
    "scrip": "539992",
