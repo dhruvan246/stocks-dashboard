@@ -5871,11 +5871,11 @@
    "note": "Company's own consolidated result PDF https://www.bseindia.com/xml-data/corpfiling/AttachHis/d9e5886c-328c-48b1-8f77-acb10aa61572.pdf p6 (Rs. in lakhs, except per share data): printed owners -183.95 != stored -184.06. The stored -184.06 came from the company's XBRL tags owners 0 beside a non-zero NCI, so the pipeline fell back to the before-minority total. Read by eye from the filing page (agent read, cross-checked: owners + NCI ties to the printed profit, the column/unit pinned to the company's own XBRL ProfitLossForPeriod -184.06)."
   },
   "PRAJIND|20250331|patC": {
-   "found_by": "\u00a7225 N500 owners-tag screen 2026-10-07 (user: \"yes run the nifty 500 check\")",
-   "owners": 39.81,
-   "was": 40.16,
-   "nci": 0.0049,
-   "note": "Company's own consolidated result PDF https://www.bseindia.com/xml-data/corpfiling/AttachHis/14fdf48f-69e4-4f1b-962d-7c30c26b159d.pdf p12 (Rupees in million except per share data): printed owners 39.81 != stored 40.16. The stored 40.16 came from the company's XBRL tags the TOTAL-COMPREHENSIVE-INCOME split as the owners/NCI profit split, and the store took that owners tag. Read by eye from the filing page (agent read, cross-checked: owners + NCI ties to the printed profit, the column/unit pinned to the company's own XBRL ProfitLossForPeriod 39.82)."
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated audited results Q4 FY25, own PDF p12: 'Equity holders of parents' 401.571 Rs million = 40.16 cr. Stored 39.81 is not the owners line (an earlier pin carried it); corrected. (pin corrected from 39.81)",
+   "owners": 40.16,
+   "src": "own consolidated results PDF p12",
+   "total_was": 39.81
   },
   "OBEROIRLTY|20230630|patC": {
    "found_by": "\u00a7225 N500 owners-tag screen 2026-10-07 (user: \"yes run the nifty 500 check\")",
@@ -6527,6 +6527,48 @@
    "owners": 112.0,
    "src": "own consolidated results PDF (BSE) Q2 FY27",
    "total_was": 26.0
+  },
+  "LICI|20240331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Q4 FY24 stored con = standalone (p5) 13,762.64. Consolidated statement p17 row 29 profit attributable to owners after share of associates and minority = 13,781.59 cr.",
+   "owners": 13781.59,
+   "src": "own consolidated results PDF p17 row 29",
+   "total_was": 13762.64
+  },
+  "TARIL|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated Q4 FY25 own PDF p17: profit attributable to Owners 9,416 Rs lakh = 94.16 cr; stored 94.0 is rounded.",
+   "owners": 94.16,
+   "src": "own consolidated results PDF p17",
+   "total_was": 94.0
+  },
+  "ZYDUSLIFE|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated Q4 FY25 own PDF p18 row 13 owners 11,709 Rs million = 1,170.9 cr; stored 1171.0 (XBRL cache, rounded) is not printed.",
+   "owners": 1170.9,
+   "src": "own consolidated results PDF p18 row 13",
+   "total_was": 1171.0
+  },
+  "MMTC|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated Q4 FY25 own PDF p19 'Profit for the period' 2.23 cr, no NCI so owners = total; newspaper extract p11 also 2.23. Stored 2.33 came from the XBRL cache and is not printed.",
+   "owners": 2.23,
+   "src": "own consolidated results PDF p19 (extract p11 agrees)",
+   "total_was": 2.33
+  },
+  "AIIL|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated Q4 FY25 own NSE PDF p15 row 10 profit for the period 1,762.59 cr, no NCI so owners = total; stored 1763.0 is rounded.",
+   "owners": 1762.59,
+   "src": "own NSE results PDF (Authum 12-May-2025) p15 row 10",
+   "total_was": 1763.0
+  },
+  "PIRAMALFIN|20250630|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "note": "Consolidated unaudited Q1 FY26 (filed as Piramal Enterprises, PEL) own NSE PDF p14 'Profit / (loss) for the period' 276.37 cr; statement has no attributable-to split, so owners = total. Stored 276.0 is rounded.",
+   "owners": 276.37,
+   "src": "own NSE results PDF (PEL 29-Jul-2025) p14",
+   "total_was": 276.0
   }
  },
  "generated": "2026-08-27 \u00a7116e-n500"
