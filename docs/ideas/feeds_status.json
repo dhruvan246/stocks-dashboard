@@ -1,7 +1,7 @@
 {
- "built": "2026-10-22 21:29 IST",
+ "built": "2026-10-22 22:04 IST",
  "where": "GitHub Actions (ideas-feeds.yml)",
- "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/39804715712",
+ "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/39812514751",
  "hosts": {
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1": 200,
   "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=": 200,
@@ -15,7 +15,7 @@
   "https://tradingeconomics.com/commodity/copper": 200,
   "https://www.guidechem.com/price/en/90-20-0.html": 200,
   "https://caionline.in/details/cai/spot-rates": 200,
-  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html": 200,
+  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html": 0,
   "https://www.westmetall.com/": 302,
   "https://markets.businessinsider.com/": 200,
   "https://eaindustry.nic.in/": 200,
@@ -51,39 +51,23 @@
   "https://www.bseindia.com/",
   "https://www.chinimandi.com/",
   "https://www.guidechem.com/price/en/90-20-0.html",
-  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html",
   "https://www.metalbook.com/",
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1"
  ],
  "hosts_blocked": [
   "https://tradestat.commerce.gov.in/",
+  "https://www.indianspices.com/marketing/price/domestic/current-market-price.html",
   "https://www.westmetall.com/"
  ],
  "steps_failed": [],
  "note": "A step that exited non-zero left its file exactly as it was (every builder keeps-previous, runbook 144e). A host not in hosts_ok is the reason its builder changed nothing.",
  "landing": {
-  "base": "d6065297f",
-  "onto": "ebf8bb6e4",
-  "moved_on_origin": [
-   "docs/ideas/signals.json",
-   "docs/ideas/track.json"
-  ],
-  "landed": 20,
+  "base": "9e5748e20",
+  "onto": "c5ac20788",
+  "moved_on_origin": [],
+  "landed": 22,
   "identical": 0,
   "refused": [],
-  "rebuilt": [
-   {
-    "file": "docs/ideas/track.json",
-    "because": [
-     "docs/ideas/track.json"
-    ]
-   },
-   {
-    "file": "docs/ideas/signals.json",
-    "because": [
-     "docs/ideas/signals.json"
-    ]
-   }
-  ]
+  "rebuilt": []
  }
 }
