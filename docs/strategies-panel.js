@@ -707,7 +707,7 @@ function planCompute(inp){
     exits.forEach(r => { o.fx[r.sym] = freed(r.sym, r.qty); o.xv[r.sym] = r.qty * price(r.sym); });
     Object.keys(sFx).forEach(s => { o.fx[s] = (o.fx[s] || 0) + sFx[s]; o.xv[s] = (o.xv[s] || 0) + (sXv[s] || 0); });
     picks.forEach(s => { o.px[s] = +price(s).toFixed(2); });
-    if (!picks.length) continue;
+    if (!picks.length){ o.freed = Object.keys(o.fx).reduce((a, k) => a + o.fx[k], 0); o.left = o.freed; continue; }   // no new pick (empty screen, or every pick already held): the exits' money waits as cash — the engine's unfilled slots keep their cash share
     const sumV = m => Object.keys(m).reduce((a, k) => a + m[k], 0);
     const exitVal = sumV(o.xv), bookVal = rows.reduce((a, r) => a + r.qty * price(r.sym), 0) + sumV(sXv);
     const nv = reset ? bookVal / topN : exitVal / Math.max(1, topN - stays.length);
@@ -799,7 +799,7 @@ function cpDoc(){ const P = zbaDoc().plan; return (P && P.k === zbRebKey() && P.
 const cpSame = (a, b) => a.slice().sort().join() === b.slice().sort().join();
 function planFor(it){   // null unless the plan exists AND this strategy's current picks are the ones it was worked out on
   const P = cpDoc(); if (!P) return null; const o = P.S[it.id]; if (!o) return null;
-  const p = PICKS[it.id]; if (!p || !p.rows.length) return null;
+  const p = PICKS[it.id]; if (!p || !p.rows) return null;   // an empty screen is a real list: it matches a plan worked out on no picks
   return cpSame(p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym), P.picks[it.id] || []) ? o : null;
 }
 function planKeeps(it){   // a reset strategy's kept re-picks — still in today's screen (a dropped one sells as usual)
@@ -858,7 +858,7 @@ function planNeed(it, cp, sym, px){
 }
 const cpSellsStarted = () => zbSoldSet().size > 0;
 /* zba41: the picks are the FINAL list for this rebalance — rebalance mode, screened on the T close itself */
-function finalPicks(it){ const p = PICKS[it.id]; return !!(p && p.rows && p.rows.length && !p.live && p.asOf === rebalWindow().tIso); }
+function finalPicks(it){ const p = PICKS[it.id]; return !!(p && p.rows && !p.live && p.asOf === rebalWindow().tIso); }
 /* After the sells the plan is frozen — but the final list lands only at ~8:45 pm, after money has moved. A strategy
    whose final screen differs is re-planned on the SAME rules (user 2026-09-29: "the list shouldn't matter"): its
    rows net of what it sold at T, the cash those sells froze in the plan (soldFx), stragglers from today's demat,
@@ -888,7 +888,7 @@ async function cashPlanRun(auto){
   if (CPL.busy) return;
   const books = uniqStrategies().filter(it => { const h = heldFor(it.cfg); return h && h.rows.length; });
   if (!books.length){ say('No strategy books loaded yet'); return; }
-  const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows.length));
+  const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows));   // NOT LOADED only — a strategy whose screen passes no stock (#6, 23 Oct) plans as all exits → cash
   if (noPicks.length){ say('Load all picks first — ' + noPicks.length + ' strateg' + (noPicks.length === 1 ? 'y has' : 'ies have') + ' none'); return; }
   const P0 = cpDoc(), frozen = !!(P0 && cpSellsStarted());
   /* zba41: once the sells are out, re-plan ONLY on the final list (rebalance picks dated T). Live picks flip intraday and
