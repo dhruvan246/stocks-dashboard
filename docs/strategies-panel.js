@@ -702,19 +702,27 @@ function planCompute(inp){
     const stays = reset ? [] : rows.filter(r => pset.has(r.sym)).map(r => r.sym);
     const exits = rows.filter(r => reset ? !(r.sym in keep) : !pset.has(r.sym));
     const picks = reset ? pk : pk.filter(s => !held.has(s));
-    const o = S[st.id] = { num: st.num, rule: 'none', pct: 1, keep: keep, stays: stays, picks: picks, normal: {}, tgt: {}, px: {}, buyQ: {}, holdQ: {}, freed: 0, keptEq: 0, left: 0, fx: {}, xv: {} };
+    const carry = Math.max(0, +st.carry || 0);   // the strategy's own cash from its last rebalance (the engine's `cash`)
+    const o = S[st.id] = { num: st.num, rule: 'none', pct: 1, keep: keep, stays: stays, picks: picks, normal: {}, tgt: {}, px: {}, buyQ: {}, holdQ: {}, freed: 0, keptEq: 0, left: 0, fx: {}, xv: {}, trim: {}, carry: Math.round(carry), cashV: 0 };
     const sFx = st.soldFx || {}, sXv = st.soldXv || {};   // T+1 re-plan: what the T sells already freed / were worth (frozen in the plan)
+    const sumV = m => Object.keys(m).reduce((a, k) => a + m[k], 0);
     exits.forEach(r => { o.fx[r.sym] = freed(r.sym, r.qty); o.xv[r.sym] = r.qty * price(r.sym); });
+    /* BACKTEST RE-WEIGHT (user 2026-10-23): a reset strategy re-splits its WHOLE value (shares + its own cash) into
+       topN equal slots every rebalance — backtest-engine.js `per = base / N` — so a kept re-pick is topped up or trimmed
+       to that slot like any pick. A trim sells only the shares above the slot (tagged → the books close exactly those). */
+    const bookVal = rows.reduce((a, r) => a + r.qty * price(r.sym), 0) + sumV(sXv);
+    const base = reset ? bookVal + carry : 0;
+    if (reset) Object.keys(keep).forEach(s => { const p = price(s), kq = p > 0 ? Math.min(keep[s], Math.floor(base / topN / p)) : keep[s];
+      if (kq < keep[s]){ const t = keep[s] - kq; o.trim[s] = t; o.fx[s] = freed(s, t); o.xv[s] = t * p; keep[s] = kq; } });
     Object.keys(sFx).forEach(s => { o.fx[s] = (o.fx[s] || 0) + sFx[s]; o.xv[s] = (o.xv[s] || 0) + (sXv[s] || 0); });
     picks.forEach(s => { o.px[s] = +price(s).toFixed(2); });
-    if (!picks.length){ o.freed = Object.keys(o.fx).reduce((a, k) => a + o.fx[k], 0); o.left = o.freed; continue; }   // no new pick (empty screen, or every pick already held): the exits' money waits as cash — the engine's unfilled slots keep their cash share
-    const sumV = m => Object.keys(m).reduce((a, k) => a + m[k], 0);
-    const exitVal = sumV(o.xv), bookVal = rows.reduce((a, r) => a + r.qty * price(r.sym), 0) + sumV(sXv);
-    const nv = reset ? bookVal / topN : exitVal / Math.max(1, topN - stays.length);
-    picks.forEach(s => { o.normal[s] = nv; });
+    const avail = reset ? base : sumV(o.xv) + carry;   // hold: perSlot = (proceeds + cash) / openSlots
+    if (!picks.length){ o.freed = sumV(o.fx); o.left = o.freed + carry; o.avail = avail; o.cashV = Math.round(avail); continue; }   // no new pick (empty screen, or every pick already held): the money waits as the strategy's cash — the engine's unfilled slots keep their cash share
+    const nv = avail / (reset ? topN : Math.max(1, topN - stays.length));
+    picks.forEach(s => { o.normal[s] = nv; }); o.avail = avail;
     o.freed = sumV(o.fx);
     o.keptEq = Object.keys(keep).reduce((a, s) => a + keep[s] * eqPs(s), 0);
-    const budget = o.freed + o.keptEq;
+    const budget = o.freed + o.keptEq + carry;   // the carried cash is real money in the account (it sits in inp.free — spareOf takes it out there)
     const cost = (s, v) => { const kq = keep[s] || 0, rest = Math.max(0, v - kq * price(s));   // kept shares are never sold: their equity is always spent
       return kq * eqPs(s) + (mtfOk(s) ? rest / LV[s] + 0.0012 * rest : rest * 1.0012); };
     const costAll = vals => Object.keys(vals).reduce((a, s) => a + cost(s, vals[s]), 0);
@@ -732,7 +740,8 @@ function planCompute(inp){
     W[st.id] = { cost: cost, costAll: costAll, eqVals: eqVals, nv: nv, noMtf: noMtf };
   }
   /* the account: free cash + every strategy's leftover; still short → R1 growth trims first, then the R2 picks */
-  const spareOf = () => (inp.free || 0) + Object.keys(S).reduce((a, id) => a + S[id].left, 0);
+  const carryT = Object.keys(S).reduce((a, id) => a + (S[id].carry || 0), 0);   // already inside inp.free — each strategy's budget counts its own
+  const spareOf = () => (inp.free || 0) - carryT + Object.keys(S).reduce((a, id) => a + S[id].left, 0);
   let need = (inp.buf != null ? inp.buf : CP_BUF) - spareOf(); const trims = [];
   Object.keys(S).filter(id => S[id].rule === 'R1').sort((a, b) => S[b].pct - S[a].pct).forEach(id => {
     if (need <= 0) return; const o = S[id], w = W[id];
@@ -748,13 +757,14 @@ function planCompute(inp){
   let freedT = 0, keptT = 0;
   Object.keys(S).forEach(id => { const o = S[id]; freedT += o.freed; keptT += o.keptEq;
     o.picks.forEach(s => { const p = o.px[s], kq = o.keep[s] || 0;
-      /* zba42 (user 2026-09-30 "let the extra money come in cash"): a reset strategy's kept re-pick is never topped up —
-         what its equal-split target asked for above the kept shares stays as cash in the strategy's leftover. The ⚡
-         basket always left kept rows alone; "Buy all" bought the top-up (#4 CPPLUS +115) — now both skip it. */
-      if (kq > 0 && W[id] && o.tgt[s] > kq * p){ o.left += W[id].cost(s, o.tgt[s]) - W[id].cost(s, kq * p); o.tgt[s] = kq * p; }
+      /* zba51 (user 2026-10-23 "re-weight kept stocks exactly like the backtest"): the zba42 no-top-up rule is gone — a
+         kept re-pick below its slot buys the difference (the ⚡ basket buys it as a tagged top-up), one above was trimmed */
       const q = p > 0 ? Math.floor(o.tgt[s] / p) : 0;
       o.holdQ[s] = Math.max(kq, q); o.buyQ[s] = Math.max(0, q - kq); o.tgt[s] = Math.round(o.tgt[s]); o.normal[s] = Math.round(o.normal[s]); });
-    o.freed = Math.round(o.freed); o.keptEq = Math.round(o.keptEq); o.left = Math.round(o.left); o.pct = +o.pct.toFixed(4);
+    /* the strategy's cash after the rebalance, in book value (the engine's `cash = avail − slots filled`): unfilled slots +
+       the odd-lot remainder. Saved per rebalance (zba doc scash) and carried into the next one. */
+    if (o.picks.length) o.cashV = Math.max(0, Math.round((o.avail || 0) - o.picks.reduce((a, s) => a + (o.holdQ[s] || 0) * (o.px[s] || 0), 0)));
+    o.freed = Math.round(o.freed); o.keptEq = Math.round(o.keptEq); o.left = Math.round(o.left); o.pct = +o.pct.toFixed(4); if (o.avail != null) o.avail = Math.round(o.avail);
     Object.keys(o.fx).forEach(k => { o.fx[k] = Math.round(o.fx[k]); o.xv[k] = Math.round(o.xv[k] || 0); }); });
   /* NETTING (user 2026-10-05): a stock one strategy SELLS while another BUYS it fresh in the same rebalance moves between them
      instead — the seller keeps those shares for the buyer and only the difference trades (Sep-26: #2 sold 8,040 POLICYBZR on
@@ -768,7 +778,7 @@ function planCompute(inp){
   if (inp.net){
     const sellers = {}, ord = (a, b) => ((a.num || 99) - (b.num || 99)) || (a.id < b.id ? -1 : 1);
     inp.strats.forEach(st => { const o = S[st.id]; if (!o) return;
-      st.rows.forEach(r => { if (!(r.qty > 0) || o.fx[r.sym] == null || !pos(r.sym)) return;
+      st.rows.forEach(r => { if (!(r.qty > 0) || o.fx[r.sym] == null || !pos(r.sym) || o.trim[r.sym]) return;   // a trimmed kept re-pick just sells its extra
         (sellers[r.sym] = sellers[r.sym] || []).push({ id: st.id, num: o.num || 0, a: r.qty, left: r.qty, ad: r.date || '' }); }); });
     Object.keys(sellers).sort().forEach(sym => {
       const buyers = Object.keys(S).map(id => ({ id: id, num: S[id].num || 0, q: (S[id].buyQ || {})[sym] || 0 })).filter(b => b.q > 0).sort(ord);
@@ -795,6 +805,10 @@ function planFor(it){   // null unless the plan exists AND this strategy's curre
   const P = cpDoc(); if (!P) return null; const o = P.S[it.id]; if (!o) return null;
   const p = PICKS[it.id]; if (!p || !p.rows) return null;   // an empty screen is a real list: it matches a plan worked out on no picks
   return cpSame(p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym), P.picks[it.id] || []) ? o : null;
+}
+function planTrims(it){   // zba51: a reset strategy's kept re-pick above its backtest slot — sym → shares it KEEPS (the rest sells)
+  const P = cpDoc(), o = P && P.S[it.id], out = {}; if (!o || !o.trim) return out;
+  Object.keys(o.trim).forEach(s => { if (o.trim[s] > 0) out[s] = (o.keep || {})[s] || 0; }); return out;
 }
 function planKeeps(it){   // a reset strategy's kept re-picks — still in today's screen (a dropped one sells as usual)
   const P = cpDoc(), o = P && P.S[it.id]; if (!o || !o.keep) return new Set();
@@ -861,10 +875,10 @@ function replanInputs(P0, it){
   const h = heldFor(it.cfg), p = PICKS[it.id], o0 = P0.S[it.id]; if (!h || !p || !p.rows.length || !o0) return null;
   const PR = proceedsOf(it.id), sent = zbSentSyms('soldReb', it.id), soldFx = {}, soldXv = {};
   const rows = h.rows.map(r => { const sq = Math.min(r.qty, (PR && PR.filled && PR.filled[r.sym] != null) ? +PR.filled[r.sym] : (+sent[r.sym] || 0));
-    if (sq > 0 && o0.fx && o0.fx[r.sym] != null){ const f = sq / r.qty; soldFx[r.sym] = o0.fx[r.sym] * f; soldXv[r.sym] = (o0.xv[r.sym] || 0) * f; }
+    if (sq > 0 && o0.fx && o0.fx[r.sym] != null){ const f = Math.min(1, sq / ((o0.trim || {})[r.sym] || r.qty)); soldFx[r.sym] = o0.fx[r.sym] * f; soldXv[r.sym] = (o0.xv[r.sym] || 0) * f; }   // a trimmed keep sold only its trim
     return { sym: r.sym, qty: r.qty - sq, avg: r.avg }; }).filter(r => r.qty > 0);
   return { id: it.id, num: o0.num, method: h.method, topN: it.cfg.topN || h.topN || 3, rows: rows, picks: p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym),
-           soldFx: soldFx, soldXv: soldXv, soldCash: !!o0.cashExit };
+           soldFx: soldFx, soldXv: soldXv, soldCash: !!o0.cashExit, carry: o0.carry || 0 };
 }
 function replanMerge(P0, R, ins){   // fold a re-plan of the strategies in `ins` into the frozen plan
   const P = JSON.parse(JSON.stringify(P0)), ids = ins.map(x => x.id);
@@ -900,7 +914,7 @@ async function cashPlanRun(auto){
     }
     const px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
     const strats = frozen ? changed.map(it => replanInputs(P0, it)).filter(Boolean) : books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3;
-      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym) }; });
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym), carry: scashCarry(it.id, zbRebKey()) }; });
     books.forEach(it => { PICKS[it.id].rows.forEach(r => { px[r.sym] = pxOf(r.sym, +r.px); });
       heldFor(it.cfg).rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } }); });
     const lev = Object.assign({}, frozen ? P0.lev : {}), need = new Set();
@@ -916,7 +930,7 @@ async function cashPlanRun(auto){
     }
     let P;
     if (frozen){
-      const pool = (P0.acct.spare || 0) - strats.reduce((a, st) => a + ((P0.S[st.id] || {}).left || 0), 0);
+      const pool = (P0.acct.spare || 0) - strats.reduce((a, st) => a + ((P0.S[st.id] || {}).left || 0) - ((P0.S[st.id] || {}).carry || 0), 0);   // planCompute takes each strategy's carry back out of `free`
       const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: pool, buf: CP_BUF });
       P = replanMerge(P0, R, strats); P.lev = lev; P.warn = (P0.warn || []).concat(R.warn).slice(-6);
     } else {
@@ -928,7 +942,9 @@ async function cashPlanRun(auto){
       R.xf.forEach(x => { x.fpf = pfOf(x.from); x.tpf = pfOf(x.to); });
       P = { k: zbRebKey(), at: Date.now(), live: books.some(it => PICKS[it.id].live), picks: Object.fromEntries(strats.map(st => [st.id, st.picks])), lev: lev, S: R.S, acct: R.acct, warn: R.warn.slice(0, 6), xf: R.xf.filter(x => x.fpf && x.tpf) };
     }
-    const doc = zbaDoc(); doc.plan = P; doc.ts = Date.now(); try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){}
+    const doc = zbaDoc(); doc.plan = P; doc.ts = Date.now();
+    doc.scash = doc.scash || {}; Object.keys(P.S).forEach(id => { (doc.scash[id] = doc.scash[id] || {})[P.k] = P.S[id].cashV || 0; });   // zba51: next rebalance carries it
+    try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){}
     zbaPush(); CPL.at = Date.now();
     say(P.acct.short ? '⚠ Cash plan: short ' + zinr(P.acct.short) + ' even after the trims' : (frozen ? 'Re-planned on the final list' : 'Cash plan ready') + ' — spare ' + zinr(P.acct.spare));
     renderCards();
@@ -966,10 +982,10 @@ function cashPlanHTML(list){
     (o.stays || []).forEach(s => cells.push('<span class="sym">keeps ' + esc(s) + '</span>'));
     return '<tr><td><span class="snum' + (mixMarks(it.cfg, SM).length ? ' mixc' : '') + '">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + rule +
       (cur || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out — this strategy falls back to the normal sizing">picks changed</span>') +
-      '<div style="margin-top:3px;line-height:1.7">' + cells.join(' &nbsp;·&nbsp; ') + '</div></td><td>' + zinr(o.freed + o.keptEq) + '</td></tr>'; }).join('');
-  h += '<div class="twrap"><table><thead><tr><th>#</th><th>After the rebalance</th><th>Own cash</th></tr></thead><tbody>' + rowsH + '</tbody></table></div>';
+      '<div style="margin-top:3px;line-height:1.7">' + cells.join(' &nbsp;·&nbsp; ') + '</div></td><td>' + zinr(o.freed + o.keptEq + (o.carry || 0)) + '</td><td>' + zinr(o.cashV || 0) + '</td></tr>'; }).join('');
+  h += '<div class="twrap"><table><thead><tr><th>#</th><th>After the rebalance</th><th>Own cash</th><th>Stays cash</th></tr></thead><tbody>' + rowsH + '</tbody></table></div>';
   if (P.warn && P.warn.length) h += '<div class="khelp">⚠ ' + esc(P.warn.join(' · ')) + '</div>';
-  return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps). The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
+  return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps and the cash it carried from last rebalance). Stays cash = book value its unfilled slots keep as cash, as the backtest does — it is carried into the next rebalance. The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
 }
 /* SWAP CHECK (user 2026-10-07): per strategy, what it sells (held as MTF or cash in Zerodha) and what the cash plan buys
    (MTF or cash), and its book value now vs after the plan, both at live prices — gross, before the MTF loan. MTF → cash
@@ -984,16 +1000,16 @@ function swapCheckHTML(list){
     return m && !c ? { k: 'MTF', t: 'all MTF' } : c && !m ? { k: 'cash', t: 'all cash' }
       : { k: 'MTF', t: 'mixed: ' + m.toLocaleString('en-IN') + ' MTF + ' + c.toLocaleString('en-IN') + ' cash · MTF sells first' }; };
   const kindOf = ks => { const u = [...new Set(ks)]; return !u.length ? '' : u.length === 1 ? u[0] : 'MTF + cash'; };
-  let tNow = 0, tAft = 0, tSell = 0, tBuy = 0; const grp = { mm: [], mc: [], cm: [], cc: [] };
+  let tNow = 0, tAft = 0, tSell = 0, tBuy = 0, tCash = 0; const grp = { mm: [], mc: [], cm: [], cc: [] };
   const rowsH = list.map(it => { const o = P.S[it.id], h = heldFor(it.cfg); if (!o || !h) return '';
     const n = o.num || favNumOf(it.cfg), rows = h.rows.filter(r => r.qty > 0), stays = new Set(o.stays || []);
     const exits = rows.filter(r => o.fx && o.fx[r.sym] != null);
     const buys = (o.picks || []).filter(s => (o.buyQ || {})[s] > 0);
-    const now = rows.reduce((a, r) => a + r.qty * px(r.sym, o), 0);
+    const now = rows.reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.carry || 0), cashA = o.cashV || 0;   // its own cash counts in both
     const aft = rows.filter(r => stays.has(r.sym)).reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.picks || []).reduce((a, s) => a + (o.holdQ[s] || 0) * px(s, o), 0);
-    const sellV = exits.reduce((a, r) => a + r.qty * px(r.sym, o), 0), buyV = buys.reduce((a, s) => a + o.buyQ[s] * px(s, o), 0);
-    tNow += now; tAft += aft; tSell += sellV; tBuy += buyV;
-    const d = aft - now, sk = exits.map(r => holdKind(r.sym)), bk = buys.map(s => LV[s] != null && LV[s] > 1.05 ? 'MTF' : 'cash');
+    const sellV = exits.reduce((a, r) => a + ((o.trim || {})[r.sym] || r.qty) * px(r.sym, o), 0), buyV = buys.reduce((a, s) => a + o.buyQ[s] * px(s, o), 0);
+    tNow += now; tAft += aft; tSell += sellV; tBuy += buyV; tCash += cashA;
+    const d = aft + cashA - now, sk = exits.map(r => holdKind(r.sym)), bk = buys.map(s => LV[s] != null && LV[s] > 1.05 ? 'MTF' : 'cash');
     const kind = exits.length || buys.length ? kindOf(sk.map(x => x.k)) + ' → ' + kindOf(bk) : '';
     if (exits.length || buys.length){ const se = sk.map(x => x.k), sc = se.includes('cash'), sm = se.includes('MTF'), bc = bk.includes('cash'), bm = bk.includes('MTF');
       if (sm && bm && !bc) grp.mm.push('#' + n);
@@ -1001,22 +1017,23 @@ function swapCheckHTML(list){
       if (sc && bm) grp.cm.push((bc || sm ? 'part of #' : '#') + n);
       if (sc && bc && !bm && !sm) grp.cc.push('#' + n);
       if (!exits.length && bm) grp.mm.push('#' + n); }
-    const sells = exits.map((r, i) => '<b>' + esc(r.sym) + '</b> <span class="sym">' + esc(sk[i].t) + '</span>').join('<br>') || '<span class="sym">none</span>';
+    const sells = exits.map((r, i) => '<b>' + esc(r.sym) + '</b> <span class="sym">' + ((o.trim || {})[r.sym] ? (o.trim[r.sym]).toLocaleString('en-IN') + ' extra · ' : '') + esc(sk[i].t) + '</span>').join('<br>') || '<span class="sym">none</span>';
     const bys = buys.map((s, i) => '<b>' + esc(s) + '</b> <span class="sym">' + bk[i] + '</span>').join('<br>') || '<span class="sym">none</span>';
     const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
       : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
     return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
-      '<td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + '</td><td>' + zinr(aft) + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
+      '<td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
   if (!rowsH) return '';
-  const td = tAft - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
+  const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub">sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
-    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th>After</th><th>Change</th></tr></thead><tbody>' + rowsH +
-    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Book value its unfilled slots keep as cash (backtest: unfilled slots keep their share) — carried into the next rebalance">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
+    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
     '<div class="khelp"><b>Three kinds of swap:</b><br>' +
     '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same.<br>' +
     '• <b>MTF → cash-only</b> (' + none(grp.mc) + '): the value shrinks — the sale repays Zerodha’s loan and the new pick is bought with cash only.' + (grp.mc.length && td < 0 ? ' This is the ' + zinr(-td) + ' drop.' : '') + '<br>' +
     '• <b>Cash → MTF</b> (' + none(grp.cm) + '): the value grows — a new MTF loan.' +
     (grp.cc.length ? '<br>• <b>Cash → cash</b> (' + grp.cc.join(', ') + '): the value stays about the same.' : '') +
+    '<br><b>To cash</b> = what a strategy keeps as cash because a slot has no pick (or the odd shares left over) — the backtest does the same; Change counts it. It is carried into that strategy’s next rebalance.' +
     '<br>What you own (value minus the loan) changes only by the charges.</div></div>';
 }
 /* ================= FILLS & SLIPPAGE (user 2026-09-24, world-class #3) =================
@@ -1453,8 +1470,12 @@ function zBasketOpen(id){
     const cp = planFor(it);
     if (cp){   // the cash plan sized this strategy: its quantities; kept / staying rows unticked
       ZB.rows.forEach(r => {
-        if ((cp.keep || {})[r.sym] || (cp.stays || []).indexOf(r.sym) >= 0){ r.on = false; r.kept = true; return; }
+        const kq0 = (cp.keep || {})[r.sym];
+        if ((kq0 && !((cp.buyQ || {})[r.sym] > 0)) || (cp.stays || []).indexOf(r.sym) >= 0){ r.on = false; r.kept = true; return; }
         const N = planNeed(it, cp, r.sym, r.px); if (!N) return;
+        if (kq0){   // zba51 top-up of a kept re-pick: never past its planned holding (the books add the top-up to the old row)
+          const hq = held.rows.filter(h => h.sym === r.sym).reduce((a, h) => a + h.qty, 0);
+          N.need = Math.min(N.need, Math.max(0, (cp.holdQ[r.sym] || 0) - hq)); r.topup = true; }
         r.mvIn = N.mvIn; r.mvFrom = N.mvFrom; r.got = N.got;   // zba47: moved in from another strategy / already bought this rebalance — never bought twice
         r.planQ = N.need; r.on = r.planQ > 0; });
       $('zbAmt').value = Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0));
@@ -1566,7 +1587,12 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            soldReb:   zbMergeMarks(newer.soldReb, older.soldReb), boughtReb: zbMergeMarks(newer.boughtReb, older.boughtReb),
            proceeds:  zbMergeReb(newer.proceeds, older.proceeds),
            autos:     zbMergeAutos(newer.autos, older.autos),
-           plan:      zbMergeReb(newer.plan, older.plan) }; }
+           plan:      zbMergeReb(newer.plan, older.plan),
+           scash:     zbMergeCash(newer.scash, older.scash) }; }
+/* per-strategy cash book (zba51): { id: { rebKey: rupees } } — every rebalance's "stays cash"; the newer doc wins per key */
+function zbMergeCash(n, o){ const out = {}; [o || {}, n || {}].forEach(m => Object.keys(m).forEach(id => { out[id] = Object.assign(out[id] || {}, m[id]); })); return out; }
+/* the cash strategy `id` carries INTO rebalance `k`: what its latest earlier rebalance left as cash (0 before zba51) */
+function scashCarry(id, k){ const m = (zbaDoc().scash || {})[id] || {}, ks = Object.keys(m).filter(x => x < k).sort(); return ks.length ? (+m[ks[ks.length - 1]] || 0) : 0; }
 function zbMergeReb(n, o){ return (n && (!o || String(n.k) >= String(o.k))) ? n : o; }
 /* auto-pilot state, per rebalance: the arm switch follows its latest flip (armedAt); log lines from every device (the
    robot's and the user's) union by time — newest 60 kept */
@@ -1816,6 +1842,7 @@ function sellExits(it){
   const pickSet = (p && p.rows.length) ? new Set(p.rows.map(r => r.sym)) : null;
   const cols = pickCols(it.cfg), fmap = (held && held.rows.length) ? factorMap(it) : {};
   const sent = zbSentSyms('soldReb', it.id), cpKeep = isReset ? planKeeps(it) : null;   // cash plan: a reset strategy keeps a re-picked stock
+  const cpTrim = isReset ? planTrims(it) : {};   // …and sells only the shares above its backtest slot
   /* the screen each leg trusts: T = today's live picks (the T-close screen bakes only this evening);
      T+1.. = the OFFICIAL T-close screen (rebalance mode, dated exactly T) — stragglers are judged on it */
   let legOk = true, legMsg = '';
@@ -1825,7 +1852,9 @@ function sellExits(it){
      re-picks (5 Oct: on a buffer day #4's keeps were judged on the 1 Oct screen and its kept CPPLUS read as dropped) */
   if (p && RW.buyIn && (p.live || p.asOf !== RW.tIso)){ legOk = false;
     legMsg = p.live ? 'Switch to Rebalance picks \u2014 stragglers are judged on the official ' + RW.tlab + ' close screen' : 'Waiting for the ' + RW.tlab + ' close in the data (picks are as of ' + p.asOf + ') \u2014 refresh picks'; }
-  const rows = (held && held.rows.length) ? held.rows.map(h => {
+  const rows = (held && held.rows.length) ? held.rows.map(h0 => {
+      const fresh0 = !!(h0.date && h0.date >= RW.tIso), kp = (!fresh0 && cpKeep && cpKeep.has(h0.sym) && cpTrim[h0.sym] != null && cpTrim[h0.sym] < h0.qty) ? cpTrim[h0.sym] : 0;
+      const h = kp ? Object.assign({}, h0, { qty: h0.qty - kp }) : h0;   // a trimmed keep: only the extra is this row's sell
       const q = liveQ(h.sym), px = (q && q.ltp != null) ? +q.ltp : null;
       const zh = Z.connected ? Z.hold[h.sym] : null;
       const zt = zh ? (zh.mtf + zh.cnc + (zh.coll || 0)) : null;
@@ -1835,14 +1864,14 @@ function sellExits(it){
          the books update, a reset strategy's fresh buys read as exits and a buffer day offered to sell #4's new
          AEGISLOG + SYRMA (dry rehearsal, 5 Oct) */
       const fresh = !!(h.date && h.date >= RW.tIso);
-      const stays = fresh || (isReset ? !!(cpKeep && cpKeep.has(h.sym)) : !!(pickSet && pickSet.has(h.sym)));
+      const stays = fresh || (isReset ? !!(cpKeep && cpKeep.has(h.sym)) && !kp : !!(pickSet && pickSet.has(h.sym)));
       const fv = pickFV(fmap[h.sym], cols);
-      const keep = Z.connected ? keeperQty(h.sym, it) : null;
+      const keep = Z.connected ? keeperQty(h.sym, it) + kp : null;   // other strategies' shares + the part of this row it keeps
       const busy = Z.connected && !stays && (+sent[h.sym] || 0) > 0 && sellingElsewhere(h.sym, it);   // zba40: another basket is still selling it — nothing of ours to offer until it ends
       const mvL = stays ? [] : xfOut(it.id, h.sym), mv = xfSum(mvL);   // zba47 netting: shares that move to another strategy at the close — kept, never sold
       const remain = (Z.connected && !stays) ? (busy ? 0 : Math.max(0, Math.min(h.qty - mv, dematQty(h.sym) - keep - mv))) : null;   // shares still to sell
       const bd = (!isReset && p && p.live && RW.sellIn) ? heldBorder(it, p, h, stays, fv) : null;
-      return { h: h, px: px, mism: mism, stays: stays, val: px != null ? h.qty * px : null, fv: fv, keep: keep, remain: remain, sent: +sent[h.sym] || 0, bd: bd, mv: mv, mvTo: mvL.map(x => ({ to: x.to, q: x.q })) };
+      return { h: h, px: px, mism: mism, stays: stays, val: px != null ? h.qty * px : null, fv: fv, keep: keep, remain: remain, sent: +sent[h.sym] || 0, bd: bd, mv: mv, mvTo: mvL.map(x => ({ to: x.to, q: x.q })), kp: kp };
     }) : [];
   const exits = rows.filter(r => !r.stays);
   return { held, p, isReset, pickSet, cols, rows, exits, est: exits.reduce((s, r) => s + (r.px != null ? Math.max(0, r.h.qty - (r.mv || 0)) * r.px : 0), 0), known: !!(pickSet || isReset), legOk, legMsg, RW };
@@ -1857,7 +1886,7 @@ function renderSellAll(list){
 }
 function sellCardHTML(it, disp, favNum){
   const X = sellExits(it), RW = X.RW, held = X.held, p = X.p, isReset = X.isReset, pickSet = X.pickSet;
-  const kept = isReset ? X.rows.filter(r => r.stays).map(r => r.h.sym) : [];   // a reset strategy's re-picks the cash plan keeps
+  const kept = isReset ? X.rows.filter(r => r.stays || r.kp).map(r => r.h.sym) : [];   // a reset strategy's re-picks the cash plan keeps (a trimmed one keeps its slot)
   const isSold = zbSoldSet().has(it.id), PR = proceedsOf(it.id);
   let body = '', btn = '';
   if (!held) body = '<div class="khelp">No holdings feed in this browser yet (needs the pf token) \u2014 or this strategy has no live book.</div>';
@@ -1876,6 +1905,7 @@ function sellCardHTML(it, disp, favNum){
         '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' + pickColCells(X.cols, r, true) +
         '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 sold already, or bonus/split/rename? The sell quantity is capped at what the demat holds beyond the keeping strategies.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
         (r.mv > 0 ? '<span class="tag keep" title="Netting: these shares move to ' + esc(r.mvTo.map(m => xfNum(m.to)).join(' + ')) + ' at the official ' + esc(RW.tlab) + ' close instead of being sold and bought back \u2014 that strategy buys that many fewer; only the difference trades. The books record the move when they are updated.">\u2192 ' + r.mvTo.map(m => esc(xfNum(m.to)) + ' ' + m.q.toLocaleString('en-IN')).join(', ') + ' move</span> ' : '') +
+        (r.kp ? '<span class="tag keep" title="Backtest re-weight: this re-pick grew above its equal slot, so only the extra shares sell; ' + r.kp.toLocaleString('en-IN') + ' stay">keeps ' + r.kp.toLocaleString('en-IN') + ' \u00b7 sells extra</span> ' : '') +
         (r.stays ? '<span class="tag keep">stays \u2014 not sold</span>'
                 : (pickSet || isReset
                     ? (r.remain === 0 ? ((r.mv || 0) >= r.h.qty ? '' : '<span class="tag keep" title="Zerodha holds none of these beyond what the keeping strategies own (and the shares moving to another strategy)">sold \u2713</span>')
@@ -1883,7 +1913,7 @@ function sellCardHTML(it, disp, favNum){
                     : '<span class="badge">load picks</span>')) + '</td></tr>').join('') +
       '</tbody></table></div>' +
       '<div class="khelp">' + (isReset
-        ? (kept.length ? 'Reset strategy: sells its basket and re-enters fresh \u2014 except ' + kept.join(', ') + ', picked again: the cash plan keeps those shares (no sell-and-buy-back; the old MTF loan stays).' : 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again.') + ' Sells near the ' + RW.tlab + ' close; re-enters the morning of ' + RW.t1lab + '.' + rtTxt + mvTxt
+        ? (kept.length ? 'Reset strategy: sells its basket and re-enters fresh \u2014 except ' + kept.join(', ') + ', picked again: the cash plan keeps those shares (no sell-and-buy-back; the old MTF loan stays), then tops each up or trims it to an equal slot as the backtest does.' : 'Reset strategy: the whole basket sells every rebalance and re-enters fresh \u2014 even a stock picked again.') + ' Sells near the ' + RW.tlab + ' close; re-enters the morning of ' + RW.t1lab + '.' + rtTxt + mvTxt
         : (pickSet ? todo.length + ' ' + (RW.buyIn ? 'straggler' : 'exit') + (todo.length === 1 ? '' : 's') + ' to sell' + (est && !RW.buyIn ? ' \u2248 ' + zinr(est) : '') + rtTxt + mvTxt + ' \u00b7 greyed rows stay for next month and are never sold.'
                    : 'Load the picks (\ud83c\udfaf) first \u2014 without them the exits are unknown, so nothing can be sold.')) +
       (rows.some(r => r.bd) ? '<br>\u26a0 <b>borderline</b> = could still flip by the close (hover for the numbers) \u2014 sell the clear exits first, these last (~3:25 IST). A borderline stay you keep shows up on ' + RW.t1lab + ' as a straggler if it drops out.' : '') +
@@ -1921,7 +1951,7 @@ async function sellBasketStart(id, opts){
     const todo0 = X.exits.filter(r => r.remain == null ? (r.mv || 0) < r.h.qty : r.remain > 0);
     if (!todo0.length){ ktoast(X.exits.length ? (X.exits.every(r => (r.mv || 0) >= r.h.qty) ? 'Nothing to sell \u2014 every exit moves to another strategy at the close' : 'Nothing left to sell \u2014 Zerodha holds none of these exits beyond what the keeping strategies own') : 'Nothing to sell \u2014 every holding stays next month'); return; }
     btn.dataset.arm = '1';
-    const keptC = isReset ? X.rows.filter(r => r.stays).map(r => r.h.sym) : [];
+    const keptC = isReset ? X.rows.filter(r => r.stays || r.kp).map(r => r.h.sym) : [];
     btn.textContent = 'Confirm SELL ' + todo0.length + (isReset ? (keptC.length ? ' (keeps ' + keptC.join(', ') + ')' : ' (reset: all)') : ' exit' + (todo0.length === 1 ? '' : 's')) + ' ?';
     clearTimeout(sellBasketStart._t); sellBasketStart._t = setTimeout(() => { btn.dataset.arm = ''; renderCards(); }, 8000); return; }
   if (btn) btn.dataset.arm = '';
