@@ -106,6 +106,13 @@
    "title": "Annual Report FY2023-24",
    "read": "2026-09-14",
    "by": "claude-routine"
+  },
+  "081c7fdd-8742-454c-a094-1275e7b051cd.pdf": {
+   "kind": "ip",
+   "date": "2024-08-08",
+   "title": "Announcement under Regulation 30 (LODR)-Investor Presentation August 2024",
+   "read": "2026-10-23",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -522,6 +529,149 @@
    }
   },
   {
+   "name": "SS Bars Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20230331": 6869.0,
+    "20240331": 15903.0,
+    "20250331": 18860.0,
+    "20260331": 27245.0
+   },
+   "q": {
+    "20230630": 3022.0,
+    "20240331": 3610.0,
+    "20240630": 4738.0,
+    "20240930": 3927.0
+   },
+   "src": {
+    "y:20260331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "SS Bars",
+     "27,245"
+    ],
+    "y:20250331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "SS Bars",
+     "18,860"
+    ],
+    "y:20240331": [
+     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
+     124,
+     "SS Bars (Consolidated sales highlights)",
+     "15,903"
+    ],
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Bars (MT)",
+     "4,738"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     19,
+     "SS Bars (MT)",
+     "3,927"
+    ],
+    "y:20230331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Bars (MT)",
+     "6,869"
+    ],
+    "q:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Bars (MT)",
+     "3,610"
+    ],
+    "q:20230630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Bars (MT)",
+     "3,022"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-11-08",
+    "y:20230331": "2024-09-04"
+   }
+  },
+  {
+   "name": "SS Pipes Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20230331": 4059.0,
+    "20240331": 4785.0,
+    "20250331": 4807.0,
+    "20260331": 5236.0
+   },
+   "q": {
+    "20230630": 1275.0,
+    "20240331": 1118.0,
+    "20240630": 1139.0,
+    "20240930": 1298.0
+   },
+   "src": {
+    "y:20260331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "SS Pipes",
+     "5,236"
+    ],
+    "y:20250331": [
+     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
+     65,
+     "SS Pipes",
+     "4,807"
+    ],
+    "y:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Pipes (MT)",
+     "4,785"
+    ],
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Pipes (MT)",
+     "1,139"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     19,
+     "SS Pipes (MT)",
+     "1,298"
+    ],
+    "y:20230331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Pipes (MT)",
+     "4,059"
+    ],
+    "q:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Pipes (MT)",
+     "1,118"
+    ],
+    "q:20230630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SS Pipes (MT)",
+     "1,275"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-11-08",
+    "y:20240331": "2025-07-09",
+    "y:20230331": "2024-09-04"
+   }
+  },
+  {
    "name": "Sintex Distributors",
    "unit": "count",
    "kind": "level",
@@ -584,112 +734,6 @@
      21,
      "Distributor",
      "467"
-    ]
-   }
-  },
-  {
-   "name": "SS Bars Sales Volume",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20230331": 6869.0,
-    "20240331": 15903.0,
-    "20250331": 18860.0,
-    "20260331": 27245.0
-   },
-   "q": {
-    "20240630": 4738.0,
-    "20240930": 3927.0
-   },
-   "src": {
-    "y:20260331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "SS Bars",
-     "27,245"
-    ],
-    "y:20250331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "SS Bars",
-     "18,860"
-    ],
-    "y:20240331": [
-     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
-     124,
-     "SS Bars (Consolidated sales highlights)",
-     "15,903"
-    ],
-    "q:20240630": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     19,
-     "SS Bars (MT)",
-     "4,738"
-    ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     19,
-     "SS Bars (MT)",
-     "3,927"
-    ],
-    "y:20230331": [
-     "69838d0a-fec5-4975-9a87-aa0c51c1ca39.pdf",
-     134,
-     "SS Bars (Consolidated sales highlights)",
-     "6,869"
-    ]
-   }
-  },
-  {
-   "name": "SS Pipes Sales Volume",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20230331": 4059.0,
-    "20240331": 4785.0,
-    "20250331": 4807.0,
-    "20260331": 5236.0
-   },
-   "q": {
-    "20240630": 1139.0,
-    "20240930": 1298.0
-   },
-   "src": {
-    "y:20260331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "SS Pipes",
-     "5,236"
-    ],
-    "y:20250331": [
-     "48508a3e-46c9-4b90-a709-ff296d12d829.pdf",
-     65,
-     "SS Pipes",
-     "4,807"
-    ],
-    "y:20240331": [
-     "a2aeeb0a-2262-4067-8c23-565c76fffb85.pdf",
-     124,
-     "SS Pipes (Consolidated sales highlights)",
-     "4,785"
-    ],
-    "q:20240630": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     19,
-     "SS Pipes (MT)",
-     "1,139"
-    ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     19,
-     "SS Pipes (MT)",
-     "1,298"
-    ],
-    "y:20230331": [
-     "69838d0a-fec5-4975-9a87-aa0c51c1ca39.pdf",
-     134,
-     "SS Pipes (Consolidated sales highlights)",
-     "4,059"
     ]
    }
   },
@@ -798,6 +842,51 @@
    }
   },
   {
+   "name": "DI Pipes Order Book",
+   "unit": "KMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 300.0,
+    "20240930": 356.0,
+    "20241231": 336.0,
+    "20250331": 353.0,
+    "20250630": 307.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "307"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "353"
+    ],
+    "q:20241231": [
+     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "336"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "356"
+    ],
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     2,
+     "DI Pipes",
+     "300"
+    ]
+   }
+  },
+  {
    "name": "Global Order Book",
    "unit": "₹ Cr",
    "kind": "level",
@@ -840,6 +929,96 @@
      6,
      "Order Book (Total value ~Rs 15,000 Crore)",
      "15,000"
+    ]
+   }
+  },
+  {
+   "name": "Line Pipes Order Book",
+   "unit": "KMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 497.0,
+    "20240930": 704.0,
+    "20241231": 866.0,
+    "20250331": 1093.0,
+    "20250630": 1103.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "1,103"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "1,093"
+    ],
+    "q:20241231": [
+     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "866"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     6,
+     "Order Book - Line Pipes",
+     "704"
+    ],
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     2,
+     "Line Pipes (INDAS)",
+     "497"
+    ]
+   }
+  },
+  {
+   "name": "SS Bars & Pipes Order Book",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 6791.0,
+    "20240930": 5800.0,
+    "20241231": 4221.0,
+    "20250331": 9025.0,
+    "20250630": 9660.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - SS Bars & Pipes",
+     "9,660"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - SS Bars & Pipes",
+     "9,025"
+    ],
+    "q:20241231": [
+     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
+     6,
+     "Order Book - SS Bars & Pipes",
+     "4,221"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     6,
+     "Order Book - SS Bars and Pipes",
+     "5,800"
+    ],
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     2,
+     "SS Bars & Pipes (MT)",
+     "6,791"
     ]
    }
   },
@@ -934,40 +1113,140 @@
    }
   },
   {
-   "name": "DI Pipes Order Book",
-   "unit": "KMT",
-   "kind": "level",
-   "y": {},
+   "name": "Sintex Sales Volume",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20230331": 18475.0,
+    "20240331": 21461.0
+   },
    "q": {
-    "20240930": 356.0,
-    "20241231": 336.0,
-    "20250331": 353.0,
-    "20250630": 307.0
+    "20230630": 4962.0,
+    "20240331": 6204.0,
+    "20240630": 5534.0
    },
    "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "307"
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SINTEX (MT)",
+     "5,534"
     ],
-    "q:20250331": [
-     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "353"
+    "q:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SINTEX (MT)",
+     "6,204"
     ],
-    "q:20241231": [
-     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "336"
+    "q:20230630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SINTEX (MT)",
+     "4,962"
     ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "356"
+    "y:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SINTEX (MT)",
+     "21,461"
+    ],
+    "y:20230331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "SINTEX (MT)",
+     "18,475"
+    ]
+   }
+  },
+  {
+   "name": "Steel Pipes Sales Volume",
+   "unit": "KMT",
+   "kind": "flow",
+   "y": {
+    "20230331": 696.0,
+    "20240331": 1180.0
+   },
+   "q": {
+    "20230630": 212.0,
+    "20240331": 368.0,
+    "20240630": 229.0
+   },
+   "src": {
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "Steel Pipes (KMT)",
+     "229"
+    ],
+    "q:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "Steel Pipes (KMT)",
+     "368"
+    ],
+    "q:20230630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "Steel Pipes (KMT)",
+     "212"
+    ],
+    "y:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "Steel Pipes (KMT)",
+     "1,180"
+    ],
+    "y:20230331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "Steel Pipes (KMT)",
+     "696"
+    ]
+   }
+  },
+  {
+   "name": "TMT Bars Sales Volume",
+   "unit": "KMT",
+   "kind": "flow",
+   "y": {
+    "20230331": 18.0,
+    "20240331": 121.0
+   },
+   "q": {
+    "20230630": 21.0,
+    "20240331": 42.0,
+    "20240630": 57.0
+   },
+   "src": {
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "TMT Bars (KMT)",
+     "57"
+    ],
+    "q:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "TMT Bars (KMT)",
+     "42"
+    ],
+    "q:20230630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "TMT Bars (KMT)",
+     "21"
+    ],
+    "y:20240331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "TMT Bars (KMT)",
+     "121"
+    ],
+    "y:20230331": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     7,
+     "TMT Bars (KMT)",
+     "18"
     ]
    }
   },
@@ -1010,44 +1289,6 @@
    }
   },
   {
-   "name": "Line Pipes Order Book",
-   "unit": "KMT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 704.0,
-    "20241231": 866.0,
-    "20250331": 1093.0,
-    "20250630": 1103.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - Line Pipes",
-     "1,103"
-    ],
-    "q:20250331": [
-     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
-     6,
-     "Order Book - Line Pipes",
-     "1,093"
-    ],
-    "q:20241231": [
-     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
-     6,
-     "Order Book - Line Pipes",
-     "866"
-    ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     6,
-     "Order Book - Line Pipes",
-     "704"
-    ]
-   }
-  },
-  {
    "name": "MS Pipes Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -1082,44 +1323,6 @@
      134,
      "MS Pipes (Consolidated sales highlights)",
      "6,58,988"
-    ]
-   }
-  },
-  {
-   "name": "SS Bars & Pipes Order Book",
-   "unit": "MT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 5800.0,
-    "20241231": 4221.0,
-    "20250331": 9025.0,
-    "20250630": 9660.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - SS Bars & Pipes",
-     "9,660"
-    ],
-    "q:20250331": [
-     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
-     6,
-     "Order Book - SS Bars & Pipes",
-     "9,025"
-    ],
-    "q:20241231": [
-     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
-     6,
-     "Order Book - SS Bars & Pipes",
-     "4,221"
-    ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     6,
-     "Order Book - SS Bars and Pipes",
-     "5,800"
     ]
    }
   },
@@ -1299,6 +1502,40 @@
      7,
      "Stainless Steel Bars & Pipes",
      "6.3"
+    ]
+   }
+  },
+  {
+   "name": "CRISIL ESG Rating",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 59.0
+   },
+   "src": {
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     24,
+     "CRISIL (doc period)",
+     "59"
+    ]
+   }
+  },
+  {
+   "name": "DJSI ESG Rating",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 68.0
+   },
+   "src": {
+    "q:20240630": [
+     "081c7fdd-8742-454c-a094-1275e7b051cd.pdf",
+     24,
+     "DJSI (doc period)",
+     "68"
     ]
    }
   },
@@ -1748,5 +1985,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-14"
+ "updated": "2026-10-23"
 }
