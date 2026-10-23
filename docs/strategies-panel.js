@@ -722,18 +722,12 @@ function planCompute(inp){
     const noMtf = picks.filter(s => !mtfOk(s));
     const cashExit = exits.some(r => { const h = H[r.sym]; return h && !(h.mq > 0); }) || !!st.soldCash;
     o.cashExit = cashExit;
-    let vals;
-    if (!noMtf.length && !cashExit){ vals = Object.assign({}, o.normal); o.rule = 'normal'; }
-    else {
-      const eqV = solveUp(V => costAll(eqVals(V)), budget, Math.max(5e8, nv * 4));
-      if (cashExit && eqV >= nv){ vals = eqVals(eqV); o.rule = 'R1'; o.pct = nv ? eqV / nv : 1; }
-      else if (noMtf.length){
-        vals = {}; picks.forEach(s => { if (mtfOk(s)) vals[s] = nv; });
-        const rem = (budget - costAll(vals)) / noMtf.length;
-        noMtf.forEach(s => { vals[s] = solveUp(v => cost(s, v), rem, nv); });
-        o.rule = 'R2'; o.pct = nv ? Math.min.apply(null, noMtf.map(s => vals[s] / nv)) : 1;
-      } else { vals = eqVals(eqV); o.rule = 'short'; o.pct = nv ? eqV / nv : 1; }
-    }
+    /* BACKTEST SIZING (user 2026-10-23 "everything shud be according to backtest"): every pick gets exactly the engine's
+       slot — exit value ÷ open slots (backtest-engine.js runBacktest: perSlot = avail / openSlots), unfilled slots keep
+       their cash. No R1 growth (a sold cash holding used to lever ALL its money into the picks: #1 → ₹5.2 Cr in one
+       stock), no R2/short shrink — a strategy whose own cash can't pay for its slots draws on the account pool. */
+    const vals = Object.assign({}, o.normal);
+    o.rule = costAll(vals) > budget + 1 ? 'pool' : 'normal'; o.pct = 1;
     o.tgt = vals; o.left = budget - costAll(vals);
     W[st.id] = { cost: cost, costAll: costAll, eqVals: eqVals, nv: nv, noMtf: noMtf };
   }
@@ -963,6 +957,7 @@ function cashPlanHTML(list){
     const rule = o.rule === 'R1' ? '<span class="tag keep">grows ' + Math.round(o.pct * 100) + '%</span>'
       : o.rule === 'R2' ? '<span class="tag warn">no-MTF pick ' + Math.round(o.pct * 100) + '%</span>'
       : o.rule === 'short' ? '<span class="tag exit">short ' + Math.round(o.pct * 100) + '%</span>'
+      : o.rule === 'pool' ? '<span class="tag warn" title="Its own sells free less cash than its backtest slots cost — the account pool pays the rest">normal · uses pool ' + zinr(-o.left) + '</span>'
       : o.rule === 'normal' ? '<span class="tag off">normal</span>' : '<span class="tag off">no change</span>';
     const cells = o.picks.map(s => { const kq = (o.keep || {})[s] || 0, L = (P.lev || {})[s];
       const mi = (P.xf || []).filter(x => x.to === it.id && x.sym === s).reduce((a, x) => a + x.q, 0);   // zba47: arrives by a move
@@ -1463,7 +1458,7 @@ function zBasketOpen(id){
         r.mvIn = N.mvIn; r.mvFrom = N.mvFrom; r.got = N.got;   // zba47: moved in from another strategy / already bought this rebalance — never bought twice
         r.planQ = N.need; r.on = r.planQ > 0; });
       $('zbAmt').value = Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0));
-      $('zbSub').textContent += ' \u00b7 sized by the cash plan (' + (cp.rule === 'R1' ? 'grows ' + Math.round(cp.pct * 100) + '%' : cp.rule === 'R2' ? 'no-MTF pick at ' + Math.round(cp.pct * 100) + '%' : cp.rule) + ') \u2014 edit any quantity if needed.';
+      $('zbSub').textContent += ' \u00b7 sized by the cash plan (' + (cp.rule === 'R1' ? 'grows ' + Math.round(cp.pct * 100) + '%' : cp.rule === 'R2' ? 'no-MTF pick at ' + Math.round(cp.pct * 100) + '%' : cp.rule === 'pool' ? 'normal slots, account pool pays part' : cp.rule) + ') \u2014 edit any quantity if needed.';
       return;
     }
     const RW = rebalWindow(), PR = proceedsOf(id);
