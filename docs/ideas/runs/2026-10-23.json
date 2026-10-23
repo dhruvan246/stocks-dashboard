@@ -1,7 +1,7 @@
 {
  "date": "2026-10-23",
  "run_started": "2026-10-23 19:44 IST",
- "run_finished": "2026-10-23 21:05 IST",
+ "run_finished": "2026-10-23 20:45 IST",
  "mode": "scheduled cloud routine",
  "asof": "2026-10-23",
  "universe": 1209,
@@ -268,7 +268,7 @@
    "unverified": "An X claim of 'order book 1,029 crore as on 31st August 2025' and a forum claim of 'Rs 642 crore procured in December 2025'; a forum characterisation of the company as 'just a trader type of player'."
   }
  ],
- "note": "Three lanes, one government answer of nothing, one commodity card and one order-book card, and a filing-lane name researched and rejected on the measured order test. The strongest single fact of the day is outside any card: Brent at US$115.36 is 67% above the average of the financial year just gone (US$69.04) and 41% above the top of the US$60-82 range the published annual report describes as FY26's. The honest qualifier, and it is on the card: the quarter that reports on 26-Oct-2026 averaged US$91.58, BELOW the June quarter's US$96.94, so the price does not reach the printed accounts until the December quarter. Two screen misreads were corrected against the companies' own decks (Sterlite's year-ago figure was its subsidiary's book; Adani Energy's was the comparative figure printed under the headline in both decks), and the order-book screen itself produced no wrong quote today.",
+ "note": "Three lanes, one government answer of nothing, one commodity card and one order-book card, and a filing-lane name researched and rejected on the measured order test. The strongest single fact of the day is outside any card: Brent at US$115.36 is 67% above the average of the financial year just gone (US$69.04) and 41% above the top of the US$60-82 range the published annual report describes as FY26's. The honest qualifier, and it is on the card: the quarter that reports on 26-Oct-2026 averaged US$91.58, BELOW the June quarter's US$96.94, so the price does not reach the printed accounts until the December quarter. Two screen misreads were corrected against the companies' own decks (Sterlite's year-ago figure was its subsidiary's book; Adani Energy's was the comparative figure printed under the headline in both decks), and the order-book screen itself produced no wrong quote today. Correction to this file, appended after the first commit of the run: run_finished was written as 21:05 IST before the run actually ended; the real finish, measured with TZ=Asia/Kolkata date, was 20:45 IST. No other field changed.",
  "data_problems": [
   "PIB (pib.gov.in) answered 403 Forbidden at this sandbox's egress proxy, so govt.py left docs/ideas/govt.json unchanged at the ideas-feeds Action's 18:57 IST build, where PIB answered 200. The government lane DID run today - on the Action's runner, not here - and its kept count of zero is today's.",
   "spot.py: every source failed from this sandbox. westmetall.com (LME cash copper, aluminium, zinc, lead, nickel, tin, gold, silver) and markets.businessinsider.com both 403 at the proxy, so docs/ideas/spot.json and spot_series.json were left unchanged. Note the Action's own feeds_status.json records westmetall at 302 from the runner too, so the LME cash series is stale for EVERYONE today, not only for this sandbox - that is why the Copper group was rejected above on a trade-only signal.",
