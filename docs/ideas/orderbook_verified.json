@@ -1,5 +1,5 @@
 {
- "built": "2026-10-22 20:40 IST",
+ "built": "2026-10-23 20:40 IST",
  "how": "each figure checked against the filing it came from (both the latest and the year-ago document opened); true_yoy_pct compares like with like ~12 months apart",
  "rows": [
   {
@@ -673,6 +673,26 @@
     "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a2f2d370-4e62-422c-be4c-11906295012c.pdf"
    ],
    "checked": "2026-10-22"
+  },
+  {
+   "key": "531209",
+   "name": "Nucleus Software Exports Ltd",
+   "latest_verdict": "CORRECT",
+   "latest_correct_value_cr": 1244,
+   "latest_as_on": "2026-06-30",
+   "year_ago_verdict": "CORRECT",
+   "year_ago_correct_value_cr": 703.16,
+   "year_ago_as_on": "2025-06-30",
+   "true_yoy_pct": 76.9,
+   "book_to_ttm_sales": 1.56,
+   "script_yoy_pct": 76.9,
+   "notes": "Both ends re-read from the company's own earnings-call transcripts this run. Q1 FY27 transcript (filed BSE 3-Aug-2026): 'The order book position as on 30th June 2026, is INR 1,244 crore out of which 88% that is INR 1,096 crore is from products. On 31st March, 2026, the order book position was INR 1,044 crore, out of which 86%, that is INR 899 crore is from products.' Q1 FY26 transcript (filed BSE 5-Aug-2025): 'The order book position is Rs. 703.16 crore including Rs. 608.70 crore of products business and Rs. 94.46 crore of projects and services business. On March 31, 2025, the order book position was Rs. 612.40 crore.' Same definition on both sides (products + projects and services), company-wide, not a segment. book_to_ttm_sales uses the four quarters to Jun-2026 from BSE's detailed-results feed: 196.37 + 202.00 + 206.80 + 193.69 = Rs 798.86 cr. CAVEAT the reader needs: management confirmed on the same call that the book 'includes the AMC contracts also' and that contracts extend 'up to 5 years', so this is not an EPC-style backlog and 1.56x is not 1.56 years of revenue in hand. The figure is disclosed ONLY in call transcripts - the 21-May-2026 results filing and board outcome carry no order-book number. Published as an idea card this run (2026-10-23-NUCLEUS).",
+   "docs": [
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b3935f32-95d0-4604-94d5-273917151372.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/483b1b87-856a-4359-bcd8-b0704292a369.pdf",
+    "https://api.bseindia.com/BseIndiaAPI/api/Finresults/w?scripcode=531209"
+   ],
+   "checked": "2026-10-23"
   }
  ]
 }
