@@ -113,6 +113,20 @@
    "title": "Integrated Annual Report FY 2023-24",
    "read": "2026-09-15",
    "by": "claude-routine"
+  },
+  "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf": {
+   "kind": "ip",
+   "date": "2024-05-02",
+   "title": "Investor Communication Q4 FY24",
+   "read": "2026-10-24",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf": {
+   "kind": "ar",
+   "date": "2025-07-09",
+   "title": "Annual Report FY25",
+   "read": "2026-10-24",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -129,7 +143,7 @@
    "q": {},
    "src": {
     "y:20250331": [
-     "04ce6749-6009-4426-b31d-dca650071937.pdf",
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
      503,
      "Permanent Employees Total",
      "4,038"
@@ -152,6 +166,9 @@
      "Permanent Employees Total",
      "3,965"
     ]
+   },
+   "latest": {
+    "y:20240331": "2025-07-09"
    }
   },
   {
@@ -182,6 +199,38 @@
      31,
      "Total Reach (Mn Outlets) FY25",
      "8.4"
+    ]
+   }
+  },
+  {
+   "name": "International Business Revenue Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 24.8
+   },
+   "q": {
+    "20230331": 26.2,
+    "20240331": 26.0
+   },
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     9,
+     "contribution to overall sales (doc period)",
+     "24.8"
+    ],
+    "q:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     10,
+     "contribution to overall sales (doc period)",
+     "26"
+    ],
+    "q:20230331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     10,
+     "Q4 FY23",
+     "26.2"
     ]
    }
   },
@@ -217,6 +266,64 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 8640.0,
+    "20250331": 8833.0,
+    "20260331": 8711.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     512,
+     "total employees",
+     "8,833"
+    ],
+    "y:20260331": [
+     "581beb42-0cb3-4327-9dbb-d013bce25302.pdf",
+     583,
+     "Total Employees, FY 2025-26",
+     "8,711"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     512,
+     "total employees",
+     "8,640"
+    ]
+   },
+   "latest": {
+    "y:20250331": "2026-07-06"
+   }
+  },
+  {
+   "name": "Accounts Payable Days",
+   "unit": "days",
+   "kind": "flow",
+   "y": {
+    "20240331": 135.0,
+    "20250331": 133.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Number of days of accounts payables",
+     "133"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Number of days of accounts payables",
+     "135"
+    ]
+   }
+  },
+  {
    "name": "Dealers/Distributors Count",
    "unit": "count",
    "kind": "level",
@@ -227,16 +334,40 @@
    "q": {},
    "src": {
     "y:20250331": [
-     "04ce6749-6009-4426-b31d-dca650071937.pdf",
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
      494,
-     "Number of dealers/distributors to whom sales are made",
+     "Number of dealers / distributors to whom sales are made",
      "6,673"
     ],
     "y:20240331": [
-     "04ce6749-6009-4426-b31d-dca650071937.pdf",
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
      494,
-     "Number of dealers/distributors to whom sales are made",
+     "Number of dealers / distributors to whom sales are made",
      "7,214"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 1342.0,
+    "20250331": 1303.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     503,
+     "Permanent Workers Total",
+     "1,303"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     503,
+     "Permanent Workers Total",
+     "1,342"
     ]
    }
   },
@@ -265,26 +396,146 @@
    }
   },
   {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
+   "name": "Purchases from Trading Houses Share",
+   "unit": "%",
+   "kind": "flow",
    "y": {
-    "20250331": 8833.0,
-    "20260331": 8711.0
+    "20240331": 20.0,
+    "20250331": 15.0
    },
    "q": {},
    "src": {
     "y:20250331": [
-     "581beb42-0cb3-4327-9dbb-d013bce25302.pdf",
-     583,
-     "Total Employees, FY 2024-25",
-     "8,833"
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Purchases from trading houses as % of total purchases",
+     "15"
     ],
-    "y:20260331": [
-     "581beb42-0cb3-4327-9dbb-d013bce25302.pdf",
-     583,
-     "Total Employees, FY 2025-26",
-     "8,711"
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Purchases from trading houses as % of total purchases",
+     "20"
+    ]
+   }
+  },
+  {
+   "name": "Sales to Dealers/Distributors Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 68.0,
+    "20250331": 66.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Sales to dealers / distributors as % of total sales",
+     "66"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Sales to dealers / distributors as % of total sales",
+     "68"
+    ]
+   }
+  },
+  {
+   "name": "Top 10 Dealers/Distributors Sales Concentration",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 3.0,
+    "20250331": 3.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "3"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Sales to top 10 dealers / distributors as % of total sales to dealers / distribu",
+     "3"
+    ]
+   }
+  },
+  {
+   "name": "Top 10 Trading Houses Purchase Concentration",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 35.0,
+    "20250331": 37.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "37"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Purchases from top 10 trading houses as % of total purchases from trading houses",
+     "35"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 6204.0,
+    "20250331": 6066.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     512,
+     "total Workers",
+     "6,066"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     512,
+     "total Workers",
+     "6,204"
+    ]
+   }
+  },
+  {
+   "name": "Trading Houses Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 252.0,
+    "20250331": 312.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Number of trading houses where purchases are made from",
+     "312"
+    ],
+    "y:20240331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     494,
+     "Number of trading houses where purchases are made from",
+     "252"
     ]
    }
   },
@@ -306,6 +557,40 @@
    }
   },
   {
+   "name": "Area under cultivation of medicinal herbs",
+   "unit": "acres",
+   "kind": "level",
+   "y": {
+    "20240331": 10145.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     16,
+     "acres under cultivation of medicinal herbs in FY24",
+     "10,145"
+    ]
+   }
+  },
+  {
+   "name": "Bio Briquette Boiler Capacity (Indore)",
+   "unit": "TPH",
+   "kind": "level",
+   "y": {
+    "20250331": 12.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     58,
+     "Bio Briquette boilers 12 TPH Indore (doc period)",
+     "12"
+    ]
+   }
+  },
+  {
    "name": "Bleaches Market Share",
    "unit": "%",
    "kind": "level",
@@ -319,6 +604,23 @@
      26,
      "Bleaches Market Share (%) (doc period)",
      "31"
+    ]
+   }
+  },
+  {
+   "name": "CSR Project Beneficiaries",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20240331": 3.05
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     16,
+     "beneficiaries of CSR projects in FY24",
+     "3.05"
     ]
    }
   },
@@ -366,9 +668,9 @@
    "q": {},
    "src": {
     "y:20250331": [
-     "04ce6749-6009-4426-b31d-dca650071937.pdf",
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
      190,
-     "Presence in more than 120 countries worldwide (doc period)",
+     "presence in more than 120 countries (doc period)",
      "120"
     ]
    }
@@ -425,6 +727,40 @@
    }
   },
   {
+   "name": "Farmers Engaged in Herb Cultivation",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 10877.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     16,
+     "farmers engaged in herb cultivation (doc period)",
+     "10,877"
+    ]
+   }
+  },
+  {
+   "name": "Foods & Beverages Revenue Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 20.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     7,
+     "Foods & Beverages",
+     "20"
+    ]
+   }
+  },
+  {
    "name": "Glucose Powder Market Share",
    "unit": "%",
    "kind": "level",
@@ -455,6 +791,40 @@
      26,
      "Hair Oils Market Share (%) (doc period)",
      "19.1"
+    ]
+   }
+  },
+  {
+   "name": "Health Care Revenue Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 31.4
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     7,
+     "Health Care",
+     "31.4"
+    ]
+   }
+  },
+  {
+   "name": "Home & Personal Care Revenue Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20240331": 48.6
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "aa5e443f-b785-459e-ba2a-2d0efd7d8abd.pdf",
+     7,
+     "Home & Personal Care",
+     "48.6"
     ]
    }
   },
@@ -544,6 +914,23 @@
    }
   },
   {
+   "name": "Renewable Energy Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20250331": 61.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     58,
+     "share of renewable energy in its Scope 1 and 2 energy consumption",
+     "61"
+    ]
+   }
+  },
+  {
    "name": "Shampoo Market Share",
    "unit": "%",
    "kind": "level",
@@ -557,6 +944,40 @@
      26,
      "Shampoo Market Share (%) (doc period)",
      "7.8"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Plant Capacity (Baddi)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 1.2
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     58,
+     "New Captive Rooftop Solar power plant (Baddi) (doc period)",
+     "1.2"
+    ]
+   }
+  },
+  {
+   "name": "Solar Power Plant Capacity (Indore)",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 0.5
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "adf0f46e-1909-419e-8bae-c6925bc09ca3.pdf",
+     58,
+     "New Captive Rooftop Solar power plant (Indore) (doc period)",
+     "0.5"
     ]
    }
   },
@@ -1132,5 +1553,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-15"
+ "updated": "2026-10-24"
 }
