@@ -3484,15 +3484,6 @@
    "found": "vintage108 by-product sweep 2026-08-24"
   },
   {
-   "sym": "THOMASCOOK",
-   "qe": "20160630",
-   "basis": "con",
-   "was": 54.82,
-   "fixed": 62.02,
-   "why": "Runbook \u00a7109e by-product: the stored value matches NO vintage NSE holds for this quarter. NSE's earliest-filed page (20161004, Ind-AS, seq 1014233) reads Net Profit 62.016999999999996 cr; Moneycontrol consolidated (\u00a785-guarded) independently reads 62.02 cr; the store held 54.82. Class: the store matched no filed figure.",
-   "found": "vintage108 by-product sweep 2026-08-24"
-  },
-  {
    "sym": "UPL",
    "qe": "20160630",
    "basis": "con",
@@ -14141,6 +14132,16 @@
     "evidence": "Searched and not found, not assumed absent: the own Mar-2017 filing, the next quarter's and the next year's were all fetched and none carries the owners row in a usable text layer. The revert stands on the heal's evidence being disqualified (\u00a7112), not on a read. Open next rung: render the scanned consolidated statement and read the owners line by vision (\u00a7112d's contact-sheet method).",
     "route": "BSE announcement stream, \u00a759b rung 3. The quarter's own filing is a scan; it is the NEXT-QUARTER and NEXT-YEAR filings that carry it as a comparative column with a text layer. Attachments resolved via stockinfo/AnnPdfOpen.aspx (the CorpAttachment base \u2014 pre-Nov-2018 files 404 on AttachHis and AttachLive)."
    }
+  },
+  {
+   "sym": "THOMASCOOK",
+   "qe": "20160630",
+   "basis": "con",
+   "was": 54.82,
+   "fixed": 62.02,
+   "why": "Runbook \u00a7109e by-product: the stored value matches NO vintage NSE holds for this quarter. NSE's earliest-filed page (20161004, Ind-AS, seq 1014233) reads Net Profit 62.016999999999996 cr; Moneycontrol consolidated (\u00a785-guarded) independently reads 62.02 cr; the store held 54.82. Class: the store matched no filed figure.",
+   "found": "vintage108 by-product sweep 2026-08-24",
+   "retracted_why": "RETRACTED 2026-10-25: superseded by the later fixes entry (62.02 -> 54.82, StockView check 2026-10-23). Re-read this session: NSE zip NSEStandaloneconsolidatedFinancialResults30062016_04082016204401, PDF page 9 (rotated), 'Statement of Consolidated Unaudited Results for the Quarter Ended June 30, 2016', Rs in lakhs, col Quarter ended 30th June 2016: Net Profit for the period 6,201.7; attributable to Owners 5,481.7, Non-controlling interests 720.0 (5,481.7 + 720.0 = 6,201.7). Store column = owners' PAT -> 54.82 cr; 62.02 is the total incl. NCI. verify_fills_live flagged REVERTED only because this stale entry stayed live."
   }
  ]
 }
