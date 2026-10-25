@@ -29089,3 +29089,8 @@ statements (65 original-H1), 60 of 75 company-years close. Merged 137 (9 rows na
 unchanged (ABCOTS, AVPINFRA, DENTALKART, KRISHCA — not written); held-for-original 347 → 368. verify_fills_live MISSING 0 /
 RESURRECTED 0 (REVERTED 1 = THOMASCOOK 2016-06 con, pre-existing on origin, untouched here). b012–b035 NOT run (user stop).
 Landed batches' PDFs moved to ~/.Trash/nse_sme_pdf-<batch>-<stamp>/ only when no un-run batch lists them.
+**§210d round 3 (2026-10-25, user: "do 3 more batches").** b012–b014 read (~0.68M tokens): 138 statements (57 original-H1),
+59 of 75 company-years close; 129 merged (9 rows named no candidate filing). Apply: **+75 half-year cells (70 std + 5 con)**;
+new disagreement held, not written: INSPIRE Mar-26 std PAT read 2.12 vs held 2.10. verify_fills_live 0 / 0 / 0. Also this day:
+fund_cell_fix THOMASCOOK 2016-06 con 54.82→62.02 entry retired (superseded by the owners-basis entry; filing re-read: owners
+5,481.7 lakh) — it was the REVERTED 1 noted in round 2. b015–b035 NOT run (user stop after each 3).
