@@ -13127,6 +13127,330 @@
    "fixed": 163.89,
    "why": "Q1 FY18 results filing a3689820 (2017-08-05; twin 5e4150b0) p9 \"Unaudited consolidated financial results for the quarter ended 30-06-2017\" (Rs crore): row 9 profit for the period 199.58 = ours is BEFORE NCI; row 10 NCI 35.69; row 11 net profit after tax and NCI = 163.89.",
    "found": "StockView cell-by-cell check 2026-10-25 (con SV-blank shard 0, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ABAN",
+   "qe": "20141231",
+   "basis": "con",
+   "was": 129.98,
+   "fixed": 129.99,
+   "why": "BSE 28-Jan-2015 12:52 result PDF p6 Part I consolidated (Rs millions), Q 31.12.2014: row 16 'Net profit after minority interest and share of profit of associate' 1299.89 mn = 129.989 cr -> 129.99 half-up (ours 129.98 truncated). NSE page 129.989 agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ACC",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 326.23,
+   "fixed": 326.2,
+   "why": "BSE 17-Jul-2017 16:37 result PDF p10 consolidated (Rs cr) row 14 'Profit attributable to: Owners of the Company' 3m 30-06-2017 = 326.20 (NCI 0.03; Profit for the period 326.23 = ours = incl NCI). SV 323.12 = profit before share of associates 3.11 (NSE structured page 'Net Profit for the period') = also not owners",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ACLGATI",
+   "qe": "20121231",
+   "basis": "con",
+   "was": 5.05,
+   "fixed": 5.06,
+   "why": "BSE 14-Jan-2013 09:17 result PDF (Gati_Ltd_140113_Rst) p5 consolidated (Rs lakhs), Q 31.12.2012: 'Net profit for the period/year' (after minority interest (273)) 506 lakh = 5.06 cr (ours 5.05). NSE page 5.06 agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ADVANTA",
+   "qe": "20120630",
+   "basis": "con",
+   "was": 14.26,
+   "fixed": 14.27,
+   "why": "BSE 11-Aug-2012 10:52 result PDF p4 Statement of Consolidated results (Rs lacs), 3m 30/06/2012: row 16 'Net Profit after taxes & minority interest' 1,426.98 lacs = 14.2698 cr -> 14.27 half-up (ours 14.26 truncated). NSE page 14.2698 agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "APLLTD",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 63.38,
+   "fixed": 66.67,
+   "why": "BSE 20-Jul-2017 14:20 outcome PDF p2 consolidated (Rs Crores), Q 30.06.2017: row 10 'Profit after tax and share of associates, JV & minority interest' 66.67 (row 7 PAT 63.38 + assoc 3.29 - MI 0.01). Ours 63.38 = row 7 (before associates/MI). SV 66.66 = arithmetic, 0.01 off printed",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "APLLTD",
+   "qe": "20160630",
+   "basis": "con",
+   "was": 103.74,
+   "fixed": 103.75,
+   "why": "1E9DE8EB (BSE 29-Jul-2016) p2 consolidated, 30.06.2016: row 11 'Net Profit after tax and share of profit/(loss) of associates' = 103.75 Rs Crs; no owners/NCI split printed. Ours 103.74 = later NSE page (01-Oct-2016)/Jun-17 comparative",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "BLISSGVS",
+   "qe": "20160630",
+   "basis": "con",
+   "was": 20.66,
+   "fixed": 20.65,
+   "why": "F11E0F0D (BSE 27-Jul-2016) p3 consolidated quarter 30.06.2016: row 13 'Net Profit after tax & minority interest (11-12)' = 2065.49 Rs Lacs = 20.6549 cr -> 20.65 (2744.16-678.67). Ours 20.66 likely from NSE re-key 20.6553",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "BRIGADE",
+   "qe": "20161231",
+   "basis": "con",
+   "was": 30.4,
+   "fixed": 30.41,
+   "why": "4B185347 p5 consolidated 'Quarter ended 31.12.2016' col (Rs lakhs): row 16 'Net profit after taxes, Non-Controlling Interest and share of profit of Associate (13+14+15)' 3,041 = 30.41 cr = SV",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "BSE",
+   "qe": "20171231",
+   "basis": "con",
+   "was": 58.7,
+   "fixed": 58.67,
+   "why": "BSE Ltd has no BSE scrip; NSE filing 02-Feb-2018 (nsearchives BSE_02022018133133.zip -> BSE.pdf) p8 'Statement of Consolidated Unaudited Financial Results' quarter ended Dec 31, 2017 col (Rs lakh): row 19 'Net Profit attributable to the shareholders of the Company' 5,867 = 58.67 cr (NCI nil). Ours 58.70 off by rounding of a different source; SV 52.41 also wrong = NSE HTML re-key (on no printed row)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "COFFEEDAY",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 4.13,
+   "fixed": 15.21,
+   "why": "7c1260a8 (BSE 10-Aug-2017) p6 consolidated quarter 30 June 2017 (Rs in Million): row 7 'Attributable to owners of the company' = 152.13 = 15.213 cr -> 15.21. Ours 4.13 = NSE page (01-Sep-2017) mis-keyed 'Net Profit' 4.131",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "DBREALTY",
+   "qe": "20151231",
+   "basis": "con",
+   "was": -32.26,
+   "fixed": -32.25,
+   "why": "485C7443 p4 Consolidated quarter 31/12/2015 col (Rs lacs): row 17 'Net Profit (Loss) after Taxes, Minority Interest and Share of Profit (Loss) of Associates (14+15+16)' (3,225.13) [=-3725.40+506.38-6.11] = -32.2513 cr -> half-up -32.25; SV keeps 4 dp",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "DBREALTY",
+   "qe": "20150930",
+   "basis": "con",
+   "was": 13.56,
+   "fixed": 13.55,
+   "why": "FC55C746 p2 (rotated) Consolidated quarter 30/09/2015 col (Rs lacs): row 17 'Net Profit (Loss) of the Group (14+15+16)' 1,355.00 [1515.45-142.19-18.25] = 13.55 cr = SV",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "DBREALTY",
+   "qe": "20150331",
+   "basis": "con",
+   "was": -10.28,
+   "fixed": -10.29,
+   "why": "F6307E50 p2 (fax scan, rotated; filed 26-May-2015 though titled Standalone it carries CONSOLIDATED RESULTS) consolidated quarter 31/03/2015 col (Rs lacs): row 17 'Net Profit (Loss) of the Group (14+15+16)' (1,028.55) [=-1764.14+405.53+330.06] = -10.2855 cr = SV; half-up -10.29 (ours -10.28 truncated)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "DLF",
+   "qe": "20191231",
+   "basis": "con",
+   "was": 414.0,
+   "fixed": 414.01,
+   "why": "01b7275f p2 (BSE 05-Feb-2020) consolidated quarter 31.12.2019 col (Rs crore): row 12 'Net profit attributable to: Owners of the holding company' 414.01 = SV",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "EMAMILTD",
+   "qe": "20130331",
+   "basis": "con",
+   "was": 93.98,
+   "fixed": 93.99,
+   "why": "Emami_Ltd2_060513 p1 (BSE 06-May-2013) Consolidated 'Reviewed Quarter Ended 31.03.13' col (Rs lacs): row 17 'Net Profit/(Loss) after taxes, minority interest and share of profit/(loss) of associates (14-15-16)' 9,399 = 93.99 cr = SV (row 14 9,397, minority (2))",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "HEXT",
+   "qe": "20150930",
+   "basis": "con",
+   "was": 111.62,
+   "fixed": 111.61,
+   "why": "Identity: Hexaware Technologies old BSE 532129. Consolidated Audited (Rs lakhs) quarter 30 Sep 2015 Profit after tax = 11,161.43 lakh = 111.6143 -> 111.61 (no NCI/associate rows); ours 111.62",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "INDIANB",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 1126.1,
+   "fixed": 1126.11,
+   "why": "Reviewed Consolidated results (Rs lakhs) quarter 30.09.2021 row 17 Net Profit after Minority Interest (14+15-16) = 1,12,610.61 lakh = 1126.1061 cr, half-up 1126.11 (=109657.41+3003.63-50.43); ours 1126.10",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "INTELLECT",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 3.4,
+   "fixed": 3.39,
+   "why": "Unaudited Consolidated (Rs millions) quarter June 30 2019 row Profit attributable to Owners of the Company = 33.91 mn = 3.391 cr -> 3.39; ours 3.40 = Profit after tax incl NCI 34.02 mn",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "JAGRAN",
+   "qe": "20170930",
+   "basis": "con",
+   "was": 72.25,
+   "fixed": 69.51,
+   "why": "Consolidated Unaudited (Rs lakhs) quarter 30.09.2017 row 10 Profit after tax attributable to Owners of the Company = 6,950.56 = 69.5056 -> 69.51 (=SV); ours 72.25 = total incl NCI 7,223.01",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "JISLJALEQS",
+   "qe": "20161231",
+   "basis": "con",
+   "was": 6.16,
+   "fixed": 6.15,
+   "why": "BSE 14-Feb-2017 16:26 result PDF p2 'Statement of standalone and consolidated' (Rs lacs), Consolidated Quarter 31-Dec-16: row 16 'Net Profit after taxes minority interest and share of associate' 615 lacs = 6.15 cr (row 13 660 + assoc 34 - MI 79); ours 6.16. NSE page 6.15 agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "JMFINANCIL",
+   "qe": "20190331",
+   "basis": "con",
+   "was": 128.65,
+   "fixed": 128.64,
+   "why": "BSE 02-May-2019 17:24 outcome PDF p7 audited consolidated (Rs lakh), Q 31.03.2019: row 10 'Net Profit attributable to Owners of parent' 12,864.17 lakh = 128.6417 cr -> 128.64 (ours 128.65)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "MAHABANK",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 309.58,
+   "fixed": 309.57,
+   "why": "791cd94b (BSE 20-Jan-2022) p10 Consolidated, quarter 31.12.2021: row M 'Net Profit/Loss after Minority Interest (J+K-L)' = 30957 Rs lakh = 309.57 cr (=32485-1528-0)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "MARICO",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 231.97,
+   "fixed": 231.98,
+   "why": "073d8624 (BSE 01-Aug-2017) p4 'Statement of Consolidated Financial Results for the quarter ended June 30, 2017' row 14 'Net Profit attributable to - Owners' June 30, 2017 = 231.98 Rs crore (=235.94-3.96)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "NH",
+   "qe": "20170331",
+   "basis": "con",
+   "was": 24.06,
+   "fixed": 22.27,
+   "why": "23e2abd2 p12 (BSE 29-May-2017) consolidated quarter 31-Mar-17 col (Rs lacs): row 15 'Profit attributable to: Owners of the company' 2,226.86 = 22.2686 cr = SV; half-up 22.27. Ours 24.06 is on no printed row (total 2,225.16)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "NIACL",
+   "qe": "20200930",
+   "basis": "con",
+   "was": 565.15,
+   "fixed": 565.14,
+   "why": "Consolidated (Rs lakh) row 31 Profit carried to Balance Sheet Q 30/09/2020 = 56,514 (56,131 - 142 MI + 525 assoc) = 565.14 cr; SV agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "NIACL",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 279.59,
+   "fixed": 279.6,
+   "why": "Consolidated (Rs lakh) row 31 Profit carried to Balance Sheet Q 30/06/2019 = 27,960 = 279.60 cr (ours 279.59 = sum of rounded rows 29,108-310-839); SV agrees",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "RAYMOND",
+   "qe": "20180331",
+   "basis": "con",
+   "was": 53.1,
+   "fixed": 53.11,
+   "why": "Consolidated (Rs lakhs) Q 31.03.2018 row 12 Net profit attributable to Owners = 5311 = 53.11 (SV agrees); ours 53.10 wrong",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ROLTA",
+   "qe": "20160630",
+   "basis": "con",
+   "was": 23.15,
+   "fixed": 23.14,
+   "why": "37141046 p4 consolidated Q1 30.06.16 col, row 14 'Net Profit after tax, minority interest and share of associates' 23.14 Rs crore (row 11 also 23.14; NCI/assoc nil)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SHARDACROP",
+   "qe": "20171231",
+   "basis": "con",
+   "was": 9.9,
+   "fixed": 9.91,
+   "why": "Consolidated (INR lakhs) Q December 31, 2017 'Net profit attributable to Equity holders of the parent' = 991.09 = 9.9109 -> 9.91 (ours 9.90 wrong; SV 9.9102 = row 5 Net profit 991.02 incl NCI (0.07), also wrong)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SHK",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 26.8,
+   "fixed": 26.79,
+   "why": "b883cca3 p4 consolidated quarter 30.06.2017 col (Rs crore): row 9 'Profit after Non-controlling interests (7-8)' 26.79 (NCI nil) = SV",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SHK",
+   "qe": "20160930",
+   "basis": "con",
+   "was": 24.3,
+   "fixed": 24.29,
+   "why": "AAC96919 p2 consolidated 'Quarter Ended 30.9.2016' col (Rs crore): row 13 'Net Profit/(Loss) for the period (11+12)' 24.29 (no NCI/associate lines) = SV",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SPTL",
+   "qe": "20180630",
+   "basis": "con",
+   "was": 37.56,
+   "fixed": 37.57,
+   "why": "Consolidated (Rs cr) Q 30 Jun 18 row 15 Profit attributable to Owners of the Company = 37.57 (SV agrees); ours 37.56 not printed (row 12 total 37.53)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SRF",
+   "qe": "20150630",
+   "basis": "con",
+   "was": 113.42,
+   "fixed": 113.21,
+   "why": "44E4BD31 p2 (BSE 06-Aug-2015) Consolidated '3 Months ended 30th June 2015' col (Rs lakhs): row 14 'Net Profit for the Period (12-13)' 11321 = 113.21 cr (no NCI/associate lines) = SV. Ours 113.42 = later NSE consolidated page (lag 449d), not the original",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SUNDARMFIN",
+   "qe": "20200331",
+   "basis": "con",
+   "was": 195.64,
+   "fixed": 195.65,
+   "why": "Consolidated (Rs lakhs) Q 31.03.2020 row 'Profit for the year attributable to Owners of the Company' = 19564.63 lakh = 195.6463 cr -> half-up 195.65 (ours 195.64 truncated)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "TATAINVEST",
+   "qe": "20190630",
+   "basis": "con",
+   "was": 18.58,
+   "fixed": 18.57,
+   "why": "Consolidated (Rs cr) Q 30-Jun-19 'Profit attributable to (i) Equity Holder of Company' = 18.57 (SV agrees); ours 18.58 = Profit After Tax (A) incl NCI 0.01",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "VEDL",
+   "qe": "20171231",
+   "basis": "con",
+   "was": 2959.0,
+   "fixed": 2053.0,
+   "why": "Consolidated (Rs crore) Q 31.12.2017 row 13a Profit attributable to Owners of Vedanta Limited = 2,053; ours 2959 = row 10 Profit incl NCI 906 (wrong); SV 1994 is on no printed row (also wrong)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
   }
  ],
  "retracted": [
