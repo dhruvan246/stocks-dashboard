@@ -106,9 +106,70 @@
    "title": "Quarterly Financial Results (2023-11-04)",
    "read": "2026-09-15",
    "by": "claude-routine"
+  },
+  "ac6a2647-0f4d-4ccc-8659-4101c055586a.pdf": {
+   "kind": "res",
+   "date": "2026-10-15",
+   "title": "Standalone and Consolidated Financial Results for Q2 & H1 FY27",
+   "read": "2026-10-25",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf": {
+   "kind": "ar",
+   "date": "2026-08-17",
+   "title": "Annual Report FY26",
+   "read": "2026-10-25",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
+  {
+   "name": "Distribution Partners Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 78.0,
+    "20240331": 77.0,
+    "20250331": 306.0,
+    "20260331": 493.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     112,
+     "Number of dealers / distributors to whom sales are made",
+     "306"
+    ],
+    "y:20240331": [
+     "4d822591-2e09-405d-9633-3e974fd74971.pdf",
+     83,
+     "Number of dealers / distributions to whom sales are made",
+     "77"
+    ],
+    "y:20230331": [
+     "4d822591-2e09-405d-9633-3e974fd74971.pdf",
+     83,
+     "Number of dealers / distributions to whom sales are made (Previous Financial Yea",
+     "78"
+    ],
+    "y:20260331": [
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     112,
+     "Number of dealers / distributors to whom sales are made",
+     "493"
+    ]
+   },
+   "restated": [
+    [
+     "y:20250331",
+     "9911645c-4be2-4ed2-89ea-f15830dad487.pdf",
+     700.0,
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     306.0
+    ]
+   ]
+  },
   {
    "name": "Permanent Employees",
    "unit": "count",
@@ -116,22 +177,22 @@
    "y": {
     "20230331": 584.0,
     "20240331": 774.0,
-    "20250331": 1358.0,
+    "20250331": 1331.0,
     "20260331": 1334.0
    },
    "q": {},
    "src": {
     "y:20260331": [
-     "13c00792-7823-422a-ad67-b8f74983103d.pdf",
-     97,
-     "Permanent (D) - Employees",
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     117,
+     "Total Permanent Employees",
      "1334"
     ],
     "y:20250331": [
-     "9911645c-4be2-4ed2-89ea-f15830dad487.pdf",
-     36,
-     "There were 1358 permanent employees on the rolls of Company as on March 31, 2025",
-     "1358"
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     117,
+     "Total Permanent Employees",
+     "1331"
     ],
     "y:20240331": [
      "4d822591-2e09-405d-9633-3e974fd74971.pdf",
@@ -145,38 +206,16 @@
      "Total Permanent Employees (Previous Financial Year)",
      "584"
     ]
-   }
-  },
-  {
-   "name": "Distribution Partners Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 78.0,
-    "20240331": 77.0,
-    "20250331": 700.0
    },
-   "q": {},
-   "src": {
-    "y:20250331": [
+   "restated": [
+    [
+     "y:20250331",
      "9911645c-4be2-4ed2-89ea-f15830dad487.pdf",
-     34,
-     "supported by a network of more than 700 distribution partners (doc period)",
-     "700"
-    ],
-    "y:20240331": [
-     "4d822591-2e09-405d-9633-3e974fd74971.pdf",
-     83,
-     "Number of dealers / distributions to whom sales are made",
-     "77"
-    ],
-    "y:20230331": [
-     "4d822591-2e09-405d-9633-3e974fd74971.pdf",
-     83,
-     "Number of dealers / distributions to whom sales are made (Previous Financial Yea",
-     "78"
+     1358.0,
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     1331.0
     ]
-   }
+   ]
   },
   {
    "name": "Total Workers",
@@ -185,14 +224,15 @@
    "y": {
     "20230331": 1856.0,
     "20240331": 1577.0,
+    "20250331": 2247.0,
     "20260331": 2170.0
    },
    "q": {},
    "src": {
     "y:20260331": [
-     "13c00792-7823-422a-ad67-b8f74983103d.pdf",
-     97,
-     "Total workers (F + G)",
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     117,
+     "Workers - Total",
      "2170"
     ],
     "y:20240331": [
@@ -206,6 +246,12 @@
      88,
      "Total Permanent Workers (Previous Financial Year)",
      "1856"
+    ],
+    "y:20250331": [
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     117,
+     "Workers - Total",
+     "2247"
     ]
    }
   },
@@ -215,7 +261,9 @@
    "kind": "level",
    "y": {
     "20230331": 20.0,
-    "20240331": 22.0
+    "20240331": 22.0,
+    "20250331": 790.0,
+    "20260331": 738.0
    },
    "q": {},
    "src": {
@@ -230,6 +278,18 @@
      83,
      "Number of Trading houses where purchases are made from (Previous Financial Year)",
      "20"
+    ],
+    "y:20260331": [
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     112,
+     "Number of trading houses where purchases are made from",
+     "738"
+    ],
+    "y:20250331": [
+     "c4447dc9-9eb8-4a28-b7cb-e8cbc71f426e.pdf",
+     112,
+     "Number of trading houses where purchases are made from",
+     "790"
     ]
    }
   },
@@ -626,5 +686,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-15"
+ "updated": "2026-10-25"
 }
