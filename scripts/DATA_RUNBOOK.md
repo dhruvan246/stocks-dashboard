@@ -29082,3 +29082,10 @@ PIRAMALFIN 2020–25 is §220 territory, not touched.
 **Trap learned here:** a reader's NO_CON_FILED from the quarter's own PDF is not enough when another ledger holds a
 filing-backed con value from a LATER filing's comparative column or a consolidated-basis single statement —
 run verify_fills_live BEFORE commit; it caught 14 such slots (RAILTEL, ABB, KENNAMET) and they were dropped/handled.
+**§210d round 2 (2026-10-25, user via the StockView-profit session: "tell sme session to finish its pdf work"; then "stop after
+three batches so that usage is released").** b009–b011 read (same PROMPT.md, sonnet, ~0.56M tokens for the three): 146
+statements (65 original-H1), 60 of 75 company-years close. Merged 137 (9 rows named no candidate filing); a zip member written as
+`x.zip!y.pdf` was renamed to the cache's `x.zip__y.pdf`. Apply: **+75 half-year cells (65 std + 10 con), 24 companies**; disagreements
+unchanged (ABCOTS, AVPINFRA, DENTALKART, KRISHCA — not written); held-for-original 347 → 368. verify_fills_live MISSING 0 /
+RESURRECTED 0 (REVERTED 1 = THOMASCOOK 2016-06 con, pre-existing on origin, untouched here). b012–b035 NOT run (user stop).
+Landed batches' PDFs moved to ~/.Trash/nse_sme_pdf-<batch>-<stamp>/ only when no un-run batch lists them.
