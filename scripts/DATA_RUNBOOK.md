@@ -29094,3 +29094,7 @@ Landed batches' PDFs moved to ~/.Trash/nse_sme_pdf-<batch>-<stamp>/ only when no
 new disagreement held, not written: INSPIRE Mar-26 std PAT read 2.12 vs held 2.10. verify_fills_live 0 / 0 / 0. Also this day:
 fund_cell_fix THOMASCOOK 2016-06 con 54.82→62.02 entry retired (superseded by the owners-basis entry; filing re-read: owners
 5,481.7 lakh) — it was the REVERTED 1 noted in round 2. b015–b035 NOT run (user stop after each 3).
+**§210d round 4 (2026-10-26, user: "do 3 more sme batches").** b015–b017 read (~0.60M tokens): 136 statements (~52 original-H1),
+49 of 75 company-years close; 124 merged. LAXMICOT FY21 original-H1 (blurry zip page, reader said digits were "cross-checked by
+arithmetic") re-read by eye before landing: Sep-2020 revenue 46,01,10,926 and PAT (3,73,59,543) as recorded. Apply: **+57 half-year
+cells (53 std + 4 con)**; disagreements unchanged (5, not written). verify_fills_live 0 / 0 / 0. b018–b035 NOT run (user stop after each 3).
