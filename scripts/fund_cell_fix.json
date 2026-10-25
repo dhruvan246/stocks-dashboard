@@ -13451,6 +13451,96 @@
    "fixed": 2053.0,
    "why": "Consolidated (Rs crore) Q 31.12.2017 row 13a Profit attributable to Owners of Vedanta Limited = 2,053; ours 2959 = row 10 Profit incl NCI 906 (wrong); SV 1994 is on no printed row (also wrong)",
    "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2012-21, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SUNDARMFIN",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 269.0,
+   "fixed": 187.09,
+   "why": "Consolidated Q2FY20 owners of the Company 18708.77 lakh (NCI 1168.46, PAT 19877.21); ours 269.0 = standalone PAT 26899.70 lakh",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SYNDIBANK",
+   "qe": "20190630",
+   "basis": "con",
+   "was": -980.39,
+   "fixed": -957.37,
+   "why": "BSE ab4e78ab (2019-07-25; same statement in 4c6df7b9 2019-07-24) p2 Consolidated (Unaudited) quarter ended 30.06.2019 (Rs lakh): row 14 Net Profit for the period (98,039); row 16 Share in profit of associates 2,302; row 17 Consolidated Net Profit for the period (95,737) lakh = -957.37 cr; no minority interest. Ours -980.39 = row 14, before share of associates",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SAMMAANCAP",
+   "qe": "20180331",
+   "basis": "con",
+   "was": 1082.23,
+   "fixed": 1030.37,
+   "why": "BSE bfea1212 (2018-04-20) p2 Statement of Consolidated Financial Results (Rs crore), quarter ended 31.03.18: row 7 profit 1,024.47 + associate 5.90; row 11 attributable to Shareholders of the Company 1,030.37. Ours 1082.23 does not appear in this filing. Note: an NSE consolidated XBRL was broadcast 21-Jun-2018 but its file could not be read",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "STAR",
+   "qe": "20171231",
+   "basis": "con",
+   "was": 85.22,
+   "fixed": 82.59,
+   "why": "BSE 2018-02-09 Strides Shasun consolidated results, quarter 31-Dec-2017 (Rs lakh): p17 profit attributable to Owners 8,259, NCI 263, total 8,522. Ours 85.22 = total incl. NCI; owners = 82.59 cr.",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "STAR",
+   "qe": "20170930",
+   "basis": "con",
+   "was": 10.73,
+   "fixed": 7.59,
+   "why": "BSE 2017-10-31 Strides Shasun consolidated results, quarter 30-Sep-2017 (Rs lakh): p15 row XIV profit for the period 1,073; p16 attributable to Owners of the Company 759, NCI 314. Ours 10.73 = total incl. NCI; owners = 7.59 cr.",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "TATASTEEL",
+   "qe": "20170630",
+   "basis": "con",
+   "was": 905.03,
+   "fixed": 906.27,
+   "why": "BSE 2017-08-07 Tata Steel consolidated results, quarter 30-Jun-2017 (Rs cr, 5f32b6cf p3, scanned, read by render): row 18 owners continuing 918.40 + row 19 owners discontinued (12.13) = 906.27 (total row 17 921.09). Ours 905.03 is not in the filing.",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "STAR",
+   "qe": "20170331",
+   "basis": "con",
+   "was": 131.9,
+   "fixed": 112.32,
+   "why": "BSE 2017-05-18 Strides Shasun Statement of Consolidated Audited Results (f3411818, scanned, read by render), 3 months ended 31-Mar-2017 (Rs lakh): p8 row XIV profit for the period 13,190; p9 attributable to Owners of the Company 11,232, NCI 1,958. Ours 131.90 = total incl. NCI; owners = 112.32 cr.",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "TATASTEEL",
+   "qe": "20170331",
+   "basis": "con",
+   "was": -1170.78,
+   "fixed": -1176.41,
+   "why": "consolidated statement (scanned) quarter 31.03.2017: row 18 owners continuing (725.14) + row 19 owners discontinued (451.27) = -1176.41 crore; NCI 8.39; net (1,168.02) ties to press release reported PAT (1,168); ours -1170.78 not in filing",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SUNPHARMA",
+   "qe": "20120331",
+   "basis": "con",
+   "was": 820.0,
+   "fixed": 820.21,
+   "why": "Consolidated Financial Results quarter 31.03.12 (Rs lakh): Net Profit after taxes and minority interest 82,021 lakh = 820.21; ours 820.0 is the crore-rounded figure (precision fix only, 0.21 cr)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SUNPHARMA",
+   "qe": "20110331",
+   "basis": "con",
+   "was": 443.0,
+   "fixed": 442.75,
+   "why": "Consolidated Audited Results quarter 31.03.11 (scanned fax, Rs lakh): Net Profit after minority interest 44,275 lakh = 442.75 (50,394 - minority 6,119); ours 443.0 is the crore-rounded press-release figure (precision fix only)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shard 3, PIT-N500, own filing read)"
   }
  ],
  "retracted": [
