@@ -29107,3 +29107,8 @@ filing. b021–b035 NOT run (user stop after each 3).
 company-years close; 128 merged. Apply: **+35 half-year rows (29 std + 6 con)**; 9 held because a later filing reprints another
 figure; disagreements unchanged (5, not written). verify_fills_live 0 / 0 / 0. Source misprints seen by readers (held, not
 fitted): POWERFUL FY22, PRECISION FY23, PERFECT FY22 H2 PAT, QUESTLAB FY24 PAT (0.02). b024–b035 NOT run (user stop after each 3).
+**§210d round 7 (2026-10-27, user: "do rest of 12" — b024–b035 in sets of 3).** b024–b026 read: 140 statements, 59 of 74
+company-years close; 125 merged. Apply: **+61 half-year rows (55 std + 6 con)**; 11 held (a later filing reprints another
+figure); disagreements unchanged (5). verify_fills_live 0 / 0 / 0. Parent eye-checked SHERA orig-H1 faded revenue row
+(Results_01112023125156.PDF p4, 0-based) at 400 dpi = reader's values. Filer prints that do not close (held, not fitted):
+RELIABLE FY21, SHANTI FY20 std (con used), SCML FY26.
