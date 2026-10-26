@@ -29098,3 +29098,8 @@ fund_cell_fix THOMASCOOK 2016-06 con 54.82→62.02 entry retired (superseded by 
 49 of 75 company-years close; 124 merged. LAXMICOT FY21 original-H1 (blurry zip page, reader said digits were "cross-checked by
 arithmetic") re-read by eye before landing: Sep-2020 revenue 46,01,10,926 and PAT (3,73,59,543) as recorded. Apply: **+57 half-year
 cells (53 std + 4 con)**; disagreements unchanged (5, not written). verify_fills_live 0 / 0 / 0. b018–b035 NOT run (user stop after each 3).
+**§210d round 5 (2026-10-26, user: "do 3 more sme batches").** b018–b020 read (~0.54M tokens): 140 statements, 58 of 75
+company-years close; 127 merged. Apply: **+64 half-year cells (62 std + 2 con)**; disagreements unchanged (5, not written).
+verify_fills_live 0 / 0 / 0. Reader notes for a later pass: MOS FY26 closing filing MOS_25052026193824 is in pdf/ but not in
+its batch's candidate list; NIRMAN 2025 original-H1 (141124NAGLBMOutcomef_14112024124902 p3) unread because FY25 had no closing
+filing. b021–b035 NOT run (user stop after each 3).
