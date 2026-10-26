@@ -707,35 +707,34 @@ function planCompute(inp){
     const sFx = st.soldFx || {}, sXv = st.soldXv || {};   // T+1 re-plan: what the T sells already freed / were worth (frozen in the plan)
     const sumV = m => Object.keys(m).reduce((a, k) => a + m[k], 0);
     exits.forEach(r => { o.fx[r.sym] = freed(r.sym, r.qty); o.xv[r.sym] = r.qty * price(r.sym); });
-    /* BACKTEST RE-WEIGHT (user 2026-10-23): a reset strategy re-splits its WHOLE value (shares + its own cash) into
-       topN equal slots every rebalance — backtest-engine.js `per = base / N` — so a kept re-pick is topped up or trimmed
-       to that slot like any pick. A trim sells only the shares above the slot (tagged → the books close exactly those). */
-    const bookVal = rows.reduce((a, r) => a + r.qty * price(r.sym), 0) + sumV(sXv);
-    const base = reset ? bookVal + carry : 0;
-    if (reset) Object.keys(keep).forEach(s => { const p = price(s), kq = p > 0 ? Math.min(keep[s], Math.floor(base / topN / p)) : keep[s];
-      if (kq < keep[s]){ const t = keep[s] - kq; o.trim[s] = t; o.fx[s] = freed(s, t); o.xv[s] = t * p; keep[s] = kq; } });
+    /* OWN-MONEY SLOTS (user 2026-10-27, replaces zba50/51 book-value slots): every slot gets an EQUAL SHARE OF THE STRATEGY'S
+       OWN MONEY, and holds own money × that stock's Zerodha leverage (1x for a cash-only pick) — "3 stocks, ₹50 L of mine
+       each: all MTF 3x → ₹4.5 Cr; two cash + one MTF → ₹0.5 + 0.5 + 1.5 = ₹2.5 Cr". Own money = what the exits free after
+       Zerodha's loan (+ the MTF loss block back, − charges) + the cash carried from the last rebalance; a reset strategy
+       re-splits ALL of it (kept shares count at their equity) into topN slots, so a kept re-pick is topped up or trimmed
+       to its slot's own money; a hold strategy splits the freed money over its open slots. Unfilled slots keep their own
+       money as cash (saved as cashV, carried into the next plan). */
     Object.keys(sFx).forEach(s => { o.fx[s] = (o.fx[s] || 0) + sFx[s]; o.xv[s] = (o.xv[s] || 0) + (sXv[s] || 0); });
+    const ownAll = sumV(o.fx) + Object.keys(keep).reduce((a, s) => a + keep[s] * eqPs(s), 0) + carry;
+    const m0 = reset ? ownAll / topN : 0;
+    if (reset) Object.keys(keep).forEach(s => { const e = eqPs(s), kq = e > 0 ? Math.min(keep[s], Math.floor(m0 / e)) : keep[s];
+      if (kq < keep[s]){ const t = keep[s] - kq; o.trim[s] = t; o.fx[s] = freed(s, t); o.xv[s] = t * price(s); keep[s] = kq; } });
     picks.forEach(s => { o.px[s] = +price(s).toFixed(2); });
-    const avail = reset ? base : sumV(o.xv) + carry;   // hold: perSlot = (proceeds + cash) / openSlots
-    if (!picks.length){ o.freed = sumV(o.fx); o.left = o.freed + carry; o.avail = avail; o.cashV = Math.round(avail); continue; }   // no new pick (empty screen, or every pick already held): the money waits as the strategy's cash — the engine's unfilled slots keep their cash share
-    const nv = avail / (reset ? topN : Math.max(1, topN - stays.length));
-    picks.forEach(s => { o.normal[s] = nv; }); o.avail = avail;
     o.freed = sumV(o.fx);
     o.keptEq = Object.keys(keep).reduce((a, s) => a + keep[s] * eqPs(s), 0);
     const budget = o.freed + o.keptEq + carry;   // the carried cash is real money in the account (it sits in inp.free — spareOf takes it out there)
+    if (!picks.length){ o.left = budget; o.avail = budget; o.cashV = Math.round(budget); continue; }   // no new pick (empty screen, or every pick already held): the own money waits as the strategy's cash
+    const slots = reset ? topN : Math.max(1, topN - stays.length), m = budget / slots;   // own money per slot
     const cost = (s, v) => { const kq = keep[s] || 0, rest = Math.max(0, v - kq * price(s));   // kept shares are never sold: their equity is always spent
       return kq * eqPs(s) + (mtfOk(s) ? rest / LV[s] + 0.0012 * rest : rest * 1.0012); };
     const costAll = vals => Object.keys(vals).reduce((a, s) => a + cost(s, vals[s]), 0);
     const eqVals = V => { const v = {}; picks.forEach(s => { v[s] = V; }); return v; };
     const noMtf = picks.filter(s => !mtfOk(s));
     const cashExit = exits.some(r => { const h = H[r.sym]; return h && !(h.mq > 0); }) || !!st.soldCash;
-    o.cashExit = cashExit;
-    /* BACKTEST SIZING (user 2026-10-23 "everything shud be according to backtest"): every pick gets exactly the engine's
-       slot — exit value ÷ open slots (backtest-engine.js runBacktest: perSlot = avail / openSlots), unfilled slots keep
-       their cash. No R1 growth (a sold cash holding used to lever ALL its money into the picks: #1 → ₹5.2 Cr in one
-       stock), no R2/short shrink — a strategy whose own cash can't pay for its slots draws on the account pool. */
-    const vals = Object.assign({}, o.normal);
-    o.rule = costAll(vals) > budget + 1 ? 'pool' : 'normal'; o.pct = 1;
+    o.cashExit = cashExit; o.avail = budget; o.slotOwn = Math.round(m);
+    const vals = {}; picks.forEach(s => { vals[s] = solveUp(v => cost(s, v), m, m * 6 + (keep[s] || 0) * price(s)); o.normal[s] = vals[s]; });
+    const nv = m;
+    o.rule = 'own'; o.pct = 1;
     o.tgt = vals; o.left = budget - costAll(vals);
     W[st.id] = { cost: cost, costAll: costAll, eqVals: eqVals, nv: nv, noMtf: noMtf };
   }
@@ -763,7 +762,7 @@ function planCompute(inp){
       o.holdQ[s] = Math.max(kq, q); o.buyQ[s] = Math.max(0, q - kq); o.tgt[s] = Math.round(o.tgt[s]); o.normal[s] = Math.round(o.normal[s]); });
     /* the strategy's cash after the rebalance, in book value (the engine's `cash = avail − slots filled`): unfilled slots +
        the odd-lot remainder. Saved per rebalance (zba doc scash) and carried into the next one. */
-    if (o.picks.length) o.cashV = Math.max(0, Math.round((o.avail || 0) - o.picks.reduce((a, s) => a + (o.holdQ[s] || 0) * (o.px[s] || 0), 0)));
+    if (o.picks.length && W[id]) o.cashV = Math.max(0, Math.round((o.avail || 0) - o.picks.reduce((a, s) => a + W[id].cost(s, (o.holdQ[s] || 0) * (o.px[s] || 0)), 0)));   // own money the slots don't use (unfilled slots + odd lots)
     o.freed = Math.round(o.freed); o.keptEq = Math.round(o.keptEq); o.left = Math.round(o.left); o.pct = +o.pct.toFixed(4); if (o.avail != null) o.avail = Math.round(o.avail);
     Object.keys(o.fx).forEach(k => { o.fx[k] = Math.round(o.fx[k]); o.xv[k] = Math.round(o.xv[k] || 0); }); });
   /* NETTING (user 2026-10-05): a stock one strategy SELLS while another BUYS it fresh in the same rebalance moves between them
@@ -985,7 +984,7 @@ function cashPlanHTML(list){
       '<div style="margin-top:3px;line-height:1.7">' + cells.join(' &nbsp;·&nbsp; ') + '</div></td><td>' + zinr(o.freed + o.keptEq + (o.carry || 0)) + '</td><td>' + zinr(o.cashV || 0) + '</td></tr>'; }).join('');
   h += '<div class="twrap"><table><thead><tr><th>#</th><th>After the rebalance</th><th>Own cash</th><th>Stays cash</th></tr></thead><tbody>' + rowsH + '</tbody></table></div>';
   if (P.warn && P.warn.length) h += '<div class="khelp">⚠ ' + esc(P.warn.join(' · ')) + '</div>';
-  return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps and the cash it carried from last rebalance). Stays cash = book value its unfilled slots keep as cash, as the backtest does — it is carried into the next rebalance. The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
+  return h + '<div class="khelp">Own cash = what the strategy’s own sells free after Zerodha’s loan (plus the equity in shares it keeps and the cash it carried from last rebalance). Every slot gets an equal share of the strategy’s own money and buys own money × that stock’s MTF leverage (1x when Zerodha won’t fund it). Stays cash = own money its unfilled slots keep as cash — it is carried into the next rebalance. The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
 }
 /* SWAP CHECK (user 2026-10-07): per strategy, what it sells (held as MTF or cash in Zerodha) and what the cash plan buys
    (MTF or cash), and its book value now vs after the plan, both at live prices — gross, before the MTF loan. MTF → cash
@@ -1026,12 +1025,12 @@ function swapCheckHTML(list){
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub">sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
-    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Book value its unfilled slots keep as cash (backtest: unfilled slots keep their share) — carried into the next rebalance">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
+    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Own money its unfilled slots keep as cash — carried into the next rebalance">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
     '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
     '<div class="khelp"><b>Three kinds of swap:</b><br>' +
-    '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same.<br>' +
+    '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same — it moves only as much as the new picks’ leverage differs.<br>' +
     '• <b>MTF → cash-only</b> (' + none(grp.mc) + '): the value shrinks — the sale repays Zerodha’s loan and the new pick is bought with cash only.' + (grp.mc.length && td < 0 ? ' This is the ' + zinr(-td) + ' drop.' : '') + '<br>' +
-    '• <b>Cash → MTF</b> (' + none(grp.cm) + '): the value grows — a new MTF loan.' +
+    '• <b>Cash → MTF</b> (' + none(grp.cm) + '): the value grows — the same own money now buys with Zerodha’s loan.' +
     (grp.cc.length ? '<br>• <b>Cash → cash</b> (' + grp.cc.join(', ') + '): the value stays about the same.' : '') +
     '<br><b>To cash</b> = what a strategy keeps as cash because a slot has no pick (or the odd shares left over) — the backtest does the same; Change counts it. It is carried into that strategy’s next rebalance.' +
     '<br>What you own (value minus the loan) changes only by the charges.</div></div>';
