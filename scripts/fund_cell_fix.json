@@ -14018,6 +14018,69 @@
    "fixed": 587.46,
    "why": "user rule 26-Oct (year-only Q4 = FY consolidated minus 9M consolidated): 5315.46 (FY19 consolidated year ended 31-Mar-2019, BSE ac2f5af1 29-May-2019 p5 (Rs cr), 12a Profit for the year attributable to Owners of the company 5,315.46 (unchanged in erratum 7a5bd6f5; press release p22 5,315)) minus 4728.0 (9M FY19 consolidated: BSE 6b8f56a9 08-Feb-2019 (Q3 additional information) p11 Statement on Unaudited Consolidated Financial Results, Nine months ended 31 Dec 2018, Profit attributable to Owners of the Company (after exceptional and one-off items) 4,728 (Rs cr, printed rounded to whole crore)) = 587.46; 9M printed in whole crore, so +-0.5",
    "found": "StockView cell-by-cell check 2026-10-27 (user rule 26-Oct: year-only Q4 = FY minus 9M)"
+  },
+  {
+   "sym": "BHARATFIN",
+   "qe": "20180630",
+   "basis": "std",
+   "was": 142.11,
+   "fixed": 142.07,
+   "why": "BSE 533228 results 26-Jul-2018 13:56 (and re-upload 16:21 7b3eca3f same table), p2 Rs crore, row 5 'Profit/(loss) after tax (3-4)' Jun-30-2018 = 142.07 (vision read). PBT 182.93 - tax 40.85 = 142.08 by arithmetic (SV 142.08 = arithmetic, not printed). Ours 142.11 not printed.",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "CAIRN",
+   "qe": "20150331",
+   "basis": "std",
+   "was": -1044.0,
+   "fixed": -1044.13,
+   "why": "BSE 532792 results 23-Apr-2015, p18 Standalone Part-I, Rs crore, row 11 'Net Profit/(Loss) for the period (9-10)' Qtr 31-Mar-2015 = (1,044.13) (PBT -905.48 - tax 138.65 = -1,044.13) (vision read). Ours -1044.0 = rounded; theirs = printed.",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "SBBJ",
+   "qe": "20150331",
+   "basis": "std",
+   "was": 280.0,
+   "fixed": 280.25,
+   "why": "Audited Q4FY15 (Rs crores): row 14 Net Profit for the period 280.25 (row 12 also 280.25); ours 280.0 wrong",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "SHLAKSHMI",
+   "qe": "20120930",
+   "basis": "std",
+   "was": 24.17,
+   "fixed": 16.81,
+   "why": "BSE filing 12-Nov-2012 (Rs crores): row 9 Net Profit After Tax, column 30.09.2012 (Stand-alone) = 16.81 = SV; ours 24.17 = column 30.09.2012 (Consolidated). NSE archive 101602 (labelled Non-Consolidated, broadcast 16-Nov) carries 24.17 i.e. the consolidated figure mislabelled - our source",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "GVPIL",
+   "qe": "20160630",
+   "basis": "std",
+   "was": -63.07,
+   "fixed": -63.01,
+   "why": "Identity: rename GEPIL->GVPIL, BSE 532309 = GVPIL (ISIN INE878A01011); ours lives under GVPIL = -63.07. GE Power India standalone Q 30-Jun-2016: row 13 Net profit for the period -63,01 (row 11 also -63,01); TCI row 15 -63,20. Ours -63.07 not printed -> correct -63.01 under GVPIL",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "AAVAS",
+   "qe": "20220930",
+   "basis": "std",
+   "was": 106.64,
+   "fixed": 106.82,
+   "why": "Filing 20-Oct-2022 (INR lakh): p4 'Statement of standalone financial results' row VII Profit for the period, 30.09.2022 = 10,682.24 lakh = 106.82 cr. Ours 106.64 = p11 CONSOLIDATED row VII 10,664.39 (consolidated figure stored in the standalone slot). SV blank",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "PIRAMALFIN",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 39.0,
+   "fixed": 38.56,
+   "why": "First filing PEL (BSE 500302, NSE PEL) 2025-01-27 consolidated p6, quarter 31/12/2024: Profit for the period 38.56 cr (no NCI line). PFL 2026-01-23 consolidated comparative p7 also prints Owners of the Company 38.56, NCI nil. Ours 39.0 = rounded. SV blank.",
+   "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
   }
  ],
  "retracted": [
