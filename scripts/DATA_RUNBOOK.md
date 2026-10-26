@@ -29103,3 +29103,7 @@ company-years close; 127 merged. Apply: **+64 half-year cells (62 std + 2 con)**
 verify_fills_live 0 / 0 / 0. Reader notes for a later pass: MOS FY26 closing filing MOS_25052026193824 is in pdf/ but not in
 its batch's candidate list; NIRMAN 2025 original-H1 (141124NAGLBMOutcomef_14112024124902 p3) unread because FY25 had no closing
 filing. b021–b035 NOT run (user stop after each 3).
+**§210d round 6 (2026-10-26, user: "do 3 more sme batches").** b021–b023 read (~0.55M tokens): 137 statements, 54 of 75
+company-years close; 128 merged. Apply: **+35 half-year rows (29 std + 6 con)**; 9 held because a later filing reprints another
+figure; disagreements unchanged (5, not written). verify_fills_live 0 / 0 / 0. Source misprints seen by readers (held, not
+fitted): POWERFUL FY22, PRECISION FY23, PERFECT FY22 H2 PAT, QUESTLAB FY24 PAT (0.02). b024–b035 NOT run (user stop after each 3).
