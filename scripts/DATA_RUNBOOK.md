@@ -29112,3 +29112,8 @@ company-years close; 125 merged. Apply: **+61 half-year rows (55 std + 6 con)**;
 figure); disagreements unchanged (5). verify_fills_live 0 / 0 / 0. Parent eye-checked SHERA orig-H1 faded revenue row
 (Results_01112023125156.PDF p4, 0-based) at 400 dpi = reader's values. Filer prints that do not close (held, not fitted):
 RELIABLE FY21, SHANTI FY20 std (con used), SCML FY26.
+**§210d round 8 (2026-10-27, "do rest of 12", set 2).** b027–b029 read: 134 statements, 58 of 75 company-years close; 124
+merged. Apply: **+68 half-year rows (60 std + 8 con)**; 13 held (later filing reprints another figure). Disagreements 6 (not
+written): the 5 before + NEW SILVERTUC 20200930 s rev read 62.55 vs held 62.18 (REG30OUTCOME_12112021183311.PDF) — UNKNOWN,
+not yet re-read. verify_fills_live 0 / 0 / 0. Filer prints that do not close (held): SKSTEXTILE FY20 PAT (FY-only tax 341),
+SOFTTECH FY21 con (2 rupees; std closes). SRIRAM FY22: one orig_h1 file in pdf/ is an HTML error page (bad download).
