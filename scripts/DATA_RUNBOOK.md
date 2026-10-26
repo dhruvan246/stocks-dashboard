@@ -29128,3 +29128,24 @@ PAT read 7.51 vs held 7.28 (TIRUPATI_03112025211444_FINAL.pdf) — UNKNOWN, not 
 Parent REMOVED WEWIN FY21 std closing stmt (Financials21062021 p5) before merge: reader filled smeared standalone digits from the
 consolidated print. verify 0/0/0. Open for a later pass: the 8 disagreements (none re-read), WEWIN FY21 re-read, SRIRAM/URBAN
 orig_h1 files that are HTML error pages (bad downloads), MOS FY26 closing file not in its batch list.
+
+**§210d round 11 (2026-10-27, user: "check the 8 disagreements against their filings").** Each cell read by eye from its own
+NSE PDF this session (round 10's UWCSL line had held/read SWAPPED: held was 38.68/4.19, the read 25.88/-0.87). Verdicts:
+OUR ERROR x4, healed via fund_cell_fix (6 PAT cells) + revop_cell_fix (19 cells), verify 0/0/0 —
+ AVPINFRA 20260331 std+con: held = the H1 Sep-25 column copied into H2 (all 8 slots). PDF p3/p10 H2 rev 22,764.04 / con 24,571.36,
+  PAT 1,894.62 / owners 1,890.09; closes to FY. Company XBRL OneD carries H1. The 2026-09-27 §205 op entries (op_std/op_con)
+  had written the H1 op into H2 -> moved to `retracted` with retracted_why.
+ UWCSL 20260331 std: same H1-copy pattern (all slots). p18 H2 rev 2,588.33, PAT (86.76); closes to FY 6,456.26 / 332.27.
+  Its §205 op_std entry (4.65->5.25 = H1 op) likewise retracted.
+ KRISHCA 20260331 std PAT 3.06 -> 5.43 (p3; XBRL OneD used FY tax + phantom discontinued loss). con 5.35 = p8 534.63, correct.
+ TIRUPATI 20250331 std+con: held profit/op/EBIT used TOTAL COMPREHENSIVE income (adds OCI 23.46). p6 PAT 727.67, p15 726.58.
+  Not checked: TIRUPATI 20240930 held 7.11 looks like TCI 710.90 too (PAT 709.17 in this file's comparative) — UNKNOWN until
+  the Nov-2024 original is read.
+RULE DIFFERENCE x2 (held = Q4 QUARTER, read = H2 HALF; no row_periods entry, so the site shows a quarter): ABCOTS 20250331
+ (held 84.95/1.88 from the May-25 filing p14 — that page not yet seen by eye; read 144.20/5.96 = H2 from the Jul-25 re-filing p15),
+ DENTALKART 20250331 (pat 4.32 = Q4 431.86; read 8.30 = H2 830.38, p5).
+READER ERROR x1: SILVERTUC 20200930 held 62.55 = "Total Revenue from operation [1(a)+1(b)]" 6,255.28; reader took 1(a) 6,217.85.
+ASK USER x1: INSPIRE 20260331 std PAT — signed PDF p2 210.02 lakh (2.10) vs XBRL 2.117 (held 2.12); both close, differ only in
+ deferred tax (PDF 2.52 lakh, XBRL 0.83).
+Side note: apply_fund_cell_fix flips GSFC 20240930 std and LUXIND 20230930 std on every run (two contradicting ledger entries);
+ not touched here — needs its own adjudication.

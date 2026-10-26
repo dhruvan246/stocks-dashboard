@@ -14081,6 +14081,60 @@
    "fixed": 38.56,
    "why": "First filing PEL (BSE 500302, NSE PEL) 2025-01-27 consolidated p6, quarter 31/12/2024: Profit for the period 38.56 cr (no NCI line). PFL 2026-01-23 consolidated comparative p7 also prints Owners of the Company 38.56, NCI nil. Ours 39.0 = rounded. SV blank.",
    "found": "StockView cell-by-cell check 2026-10-27 (no-verdict batch, PIT-N500, own results PDF read)"
+  },
+  {
+   "sym": "AVPINFRA",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 23.17,
+   "fixed": 18.95,
+   "why": "AVP Infracon NSE outcome AVPIPO_18052026121528_AIL_Outcome_of_BM.pdf (BM 2026-05-18, Rs lakh). Standalone p3: H2 Mar-26 revenue 22,764.04, PBT 2,485.29, fin 992.73, dep 344.51, OI 288.75, PAT 1,894.62. Held values = the H1 Sep-25 column (19,311.37 / 2,317.40), copied into the H2 slot. Second check: H1 19,311.37 + H2 22,764.04 = FY 42,075.41 and 2,317.40 + 1,894.62 = FY 4,212.01 on the same page; company XBRL OneD carries H1 numbers (does not close).",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
+  },
+  {
+   "sym": "AVPINFRA",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 23.21,
+   "fixed": 18.9,
+   "why": "AVP Infracon NSE outcome AVPIPO_18052026121528_AIL_Outcome_of_BM.pdf (BM 2026-05-18, Rs lakh). Consolidated p10: H2 Mar-26 revenue 24,571.36, PBT 2,649.53, fin 1,192.49, dep 387.73, OI 59.94, owners profit 1,890.09 (PAT 1,915.53 less minority 25.44). Held = H1 Sep-25 column (19,572.75 / owners 2,320.53). Second check: 19,572.75 + 24,571.36 = FY 44,144.11; 2,320.53 + 1,890.09 = FY 4,210.60.",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
+  },
+  {
+   "sym": "KRISHCA",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 3.06,
+   "fixed": 5.43,
+   "why": "Krishca Strapping NSE outcome KSSLIPO_31052026012317_BMOUTCOMEMAY2026.pdf (BM 2026-05-30, Rs lakh) standalone p3: H2 Mar-26 PAT 542.56. Held 3.06 = company XBRL OneD, which applied the full-year tax and a phantom discontinued loss. Second check: H1 618.01 + H2 542.56 = FY 1,160.57 on the same page; EPS 3.73 x 145.47 lakh sh = 542.6.",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
+  },
+  {
+   "sym": "TIRUPATI",
+   "qe": "20250331",
+   "basis": "std",
+   "was": 7.51,
+   "fixed": 7.28,
+   "why": "Shree Tirupati Balajee FIBC NSE outcome TIRUPATI_22052025194453_SELETTEROUTCOMEOFBM.pdf (BM 2025-05-22, Rs lakh). Standalone p6: H2 Mar-25 PBT 1,002.60, fin 396.43, dep 145.60, OI 241.64, PAT 727.67, OCI 23.46, TCI 751.13. Held values used TCI (751.13) in place of profit, and op/EBIT carried the +23.46 OCI. Second check: EPS 7.18 x ~101.3 lakh sh = 727.7 (TCI would give 7.41).",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
+  },
+  {
+   "sym": "TIRUPATI",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 7.5,
+   "fixed": 7.27,
+   "why": "Shree Tirupati Balajee FIBC NSE outcome TIRUPATI_22052025194453_SELETTEROUTCOMEOFBM.pdf (BM 2025-05-22, Rs lakh). Consolidated p15: H2 Mar-25 PBT 1,001.76, fin 396.44, dep 145.88, OI 241.64, PAT 726.58, OCI 23.46, TCI 750.04. Held = TCI-based. Second check: EPS 7.17 matches 726.58, not 750.04.",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
+  },
+  {
+   "sym": "UWCSL",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 4.19,
+   "fixed": -0.87,
+   "why": "Ultra Wiring Connectivity NSE UWCSL_22052026160031_Financials.pdf (BM 2026-05-22, Rs lakh) p18: H2 Mar-26 revenue 2,588.33, PBT 23.48, fin 15.06, dep 73.44, OI 8.45, PAT (86.76). Held = the H1 Sep-25 column (3,867.93 / 419.03 / op 5.25 / EBIT 4.65) copied into H2. Second check: 3,867.93 + 2,588.33 = FY 6,456.26 and 419.03 - 86.76 = FY 332.27; EPS (1.67).",
+   "found": "SME disagreement check 2026-10-27 (vision re-read vs held, own NSE results PDF read by eye)"
   }
  ],
  "retracted": [
