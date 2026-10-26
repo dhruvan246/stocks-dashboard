@@ -113,9 +113,220 @@
    "title": "MRF Annual Report FY24 (Reg. 34(1))",
    "read": "2026-09-16",
    "by": "claude-routine"
+  },
+  "0c12f02f-fee7-4b91-87b6-4450e7f7914b.pdf": {
+   "kind": "res",
+   "date": "2023-02-09",
+   "title": "Unaudited Financial Results for the quarter and nine months ended 31st December, 2022",
+   "read": "2026-10-26",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "1bc0d87a-0d96-4a33-a372-5e4c354990ad.pdf": {
+   "kind": "res",
+   "date": "2023-08-03",
+   "title": "Unaudited Financial Results for the Quarter Ended 30th June, 2023",
+   "read": "2026-10-26",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "5a4e7d3b-7b02-4043-9910-81462782f679.pdf": {
+   "kind": "pr",
+   "date": "2023-05-03",
+   "title": "Press Release - Audited Financial Results for the year ended 31st March 2023",
+   "read": "2026-10-26",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf": {
+   "kind": "ar",
+   "date": "2023-07-03",
+   "title": "MRF Ltd 62nd Annual General Meeting Report 2022-23",
+   "read": "2026-10-26",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
- "metrics": [],
+ "metrics": [
+  {
+   "name": "Turnover rate for permanent employees",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20210331": 6.0,
+    "20220331": 13.0,
+    "20230331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Employees",
+     "16"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Employees",
+     "13"
+    ],
+    "y:20210331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Employees",
+     "6"
+    ]
+   }
+  },
+  {
+   "name": "Turnover rate for permanent workers",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20210331": 0.34,
+    "20220331": 1.0,
+    "20230331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Workers",
+     "4"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Workers",
+     "1"
+    ],
+    "y:20210331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent Workers",
+     "0.34"
+    ]
+   }
+  },
+  {
+   "name": "GHG Emission Intensity",
+   "unit": "Metric tonnes of CO2 equ",
+   "kind": "flow",
+   "y": {
+    "20220331": 61.08,
+    "20230331": 51.85
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 1 and Scope 2 emissions per rupee of turnover",
+     "51.85"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 1 and Scope 2 emissions per rupee of turnover",
+     "61.08"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 6641.0,
+    "20230331": 6804.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent (D)",
+     "6804"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     80,
+     "Total permanent Employees",
+     "6641"
+    ]
+   }
+  },
+  {
+   "name": "Permanent Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 12093.0,
+    "20230331": 12246.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     70,
+     "Permanent (F)",
+     "12246"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     80,
+     "Total permanent Workers",
+     "12093"
+    ]
+   }
+  },
+  {
+   "name": "Total Scope 1 emissions",
+   "unit": "Metric tonnes of CO2 equ",
+   "kind": "flow",
+   "y": {
+    "20220331": 526290.0,
+    "20230331": 567325.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 1 emissions",
+     "567325"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 1 emissions",
+     "526290"
+    ]
+   }
+  },
+  {
+   "name": "Total Scope 2 emissions",
+   "unit": "Metric tonnes of CO2 equ",
+   "kind": "flow",
+   "y": {
+    "20220331": 633588.0,
+    "20230331": 603254.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 2 emissions",
+     "603254"
+    ],
+    "y:20220331": [
+     "8cfa5007-26b2-40f3-aa14-6e4d908abc63.pdf",
+     89,
+     "Total Scope 2 emissions",
+     "633588"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [
   {
@@ -518,5 +729,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-16"
+ "updated": "2026-10-26"
 }
