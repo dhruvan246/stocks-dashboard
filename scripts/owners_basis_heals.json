@@ -5983,11 +5983,11 @@
    "note": "Company's own consolidated result PDF https://www.bseindia.com/xml-data/corpfiling/AttachHis/5518329e-2973-46f4-b636-2d84050e28e6.pdf p10 (\u20b9 in Lakhs): printed owners 96.18 != stored 97.09. The stored 97.09 came from the company's XBRL tags owners 0 and NCI 0, so the pipeline fell back to the before-minority total. Read by eye from the filing page (agent read, cross-checked: owners + NCI ties to the printed profit, the column/unit pinned to the company's own XBRL ProfitLossForPeriod 97.09)."
   },
   "SONACOMS|20230630|patC": {
-   "found_by": "\u00a7225 N500 owners-tag screen 2026-10-07 (user: \"yes run the nifty 500 check\")",
-   "owners": 112.03,
-   "was": 112.04,
-   "nci": null,
-   "note": "Company's own consolidated result PDF https://www.bseindia.com/xml-data/corpfiling/AttachHis/413183d1-7120-49c5-9a69-67098d62c88a.pdf p9 ((Figures in Million \u20b9, unless stated otherwise)): no minority printed; profit 112.03 != stored 112.04. The stored 112.04 came from the company's XBRL tags owners 0 and NCI 0, so the pipeline fell back to the before-minority total. Read by eye from the filing page (agent read, cross-checked: owners + NCI ties to the printed profit, the column/unit pinned to the company's own XBRL ProfitLossForPeriod 112.04)."
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 413183d1 (27-Jul-2023 15:54) p9 consolidated Rs million, Q 30.06.2023: Profit for the period 1,120.35 (no NCI split printed; NCI nil that quarter) = 112.035 crore -> 112.04 half-up. Ours 112.03 rounds down; SV 112.0352 rounds to 112.04",
+   "owners": 112.04,
+   "src": "own BSE results filing att 413183d1-7120-49c5-9a69-67098d62c88a p9",
+   "total_was": 112.03
   },
   "LAURUSLABS|20210331|patC": {
    "found_by": "\u00a7225 N500 owners-tag screen 2026-10-07 (user: \"yes run the nifty 500 check\")",
@@ -9768,6 +9768,48 @@
    "owners": -99.29,
    "src": "own BSE results filing att e1af1f5b p5",
    "total_was": -100.65
+  },
+  "ADANIENT|20241231|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 3801423e (30-Jan-2025 14:13) p8 (rotated) consolidated Rs crore, Q 31-12-2024 column: Profit for the period 228.64; Owners 57.83 (printed); NCI 170.81. Ours 57.84 = XBRL owners tag 57.835 rounded half-up; printed figure is 57.83 = SV (display rounding)",
+   "owners": 57.83,
+   "src": "own BSE results filing att 3801423e-05bb-4a12-8de8-f762246fc539 p8",
+   "total_was": 57.84
+  },
+  "GRASIM|20241231|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 5f14b227 (10-Feb-2025 19:38) p16-17 consolidated Rs crore, Q 31.12.2024 (image read): row13 Net Profit for the period (11+12) 1,844.29 incl. discontinued (0.01); 'Net Profit attributable to Owners of the Company' 898.96 (continuing-only owners line 898.97 = ours, = filer XBRL own tag). Correct owners total = 898.96 (off by 0.01). SV 820.12 matches no printed row (also wrong)",
+   "owners": 898.96,
+   "src": "own BSE results filing att 5f14b227-bb3c-4bf5-9e0d-bd3deffa1f9b p17",
+   "total_was": 898.97
+  },
+  "ICICIPRULI|20260331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 0b8a7a15 (14-Apr-2026 14:48) p18 Statement of Consolidated Results (Rs lakh), Q 31.03.2026 (image read at 250 dpi): row29/31 Profit after tax 62,391 = 623.91 (no NCI/owners rows); ours 623.90 is 0.01 off. SV 608.81 = standalone (std 608.81), also wrong",
+   "owners": 623.91,
+   "src": "own BSE results filing att 0b8a7a15-7218-418c-ae29-bba519d63a6a p18",
+   "total_was": 623.9
+  },
+  "ITI|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 0d7399ff (27-May-2025 19:06) p2 Statement of Consolidated Audited Financial Results (Rs lakh), Q 31.03.2025 (image read): row10 Profit/(Loss) for the period (438) = -4.38 = SV (no NCI/owners rows); ours -4.39 is 0.01 off",
+   "owners": -4.38,
+   "src": "own BSE results filing att 0d7399ff-2d2e-4626-839a-43fdb71117e2 p2",
+   "total_was": -4.39
+  },
+  "JINDALSAW|20240930|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att 2bfc9eae (18-Oct-2024 17:04) p11 consolidated Rs crore, Q 30.09.2024 (image read): VII Net profit after tax 475.31; Attributable to Owners of the Parent 499.61 = SV; NCI (24.30). Ours 482.41 matches no printed row; filer XBRL (06-Nov-2024) own tag also 499.61",
+   "owners": 499.61,
+   "src": "own BSE results filing att 2bfc9eae-412e-4aff-9a8b-60d2db02ce7b p11",
+   "total_was": 482.41
+  },
+  "PRESTIGE|20250331|patC": {
+   "found_by": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)",
+   "note": "BSE att d0583193 (29-May-2025 23:36) p16 consolidated Rs million (whole), Q 31.03.2025: row9 Net profit 431 = SV 43.1; row12 Owners of the parent 250 = 25.00; NCI 181. Ours 25.1 matches the later integrated XBRL (13-Jun-2025, owners 25.1/NCI 18.1, sums to 43.2 not 43.1), not the original printed 250. SV also wrong (used PAT incl. NCI)",
+   "owners": 25.0,
+   "src": "own BSE results filing att d0583193-f8d5-4fd9-a6ce-44dc369e09a2 p16",
+   "total_was": 25.1
   }
  },
  "generated": "2026-08-27 \u00a7116e-n500"

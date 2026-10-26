@@ -13703,6 +13703,69 @@
    "fixed": -99.29,
    "why": "BSE result 17-May-2019 16:05 (39pp), p5 'Statement of Consolidated Audited Results for the Quarter and Year ended 31 March 2019' (Rs lakh, page image), col quarter 31 March 2019: row 9 Net Profit/(Loss) (10065), attributable to Owners of the Company (9929), NCI (136). Owners = -99.29 cr; ours -100.65 = loss before NCI",
    "found": "StockView cell-by-cell check 2026-10-26 (con sv-blank shards 1-2, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ADANIENT",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 57.84,
+   "fixed": 57.83,
+   "why": "BSE att 3801423e (30-Jan-2025 14:13) p8 (rotated) consolidated Rs crore, Q 31-12-2024 column: Profit for the period 228.64; Owners 57.83 (printed); NCI 170.81. Ours 57.84 = XBRL owners tag 57.835 rounded half-up; printed figure is 57.83 = SV (display rounding)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "GRASIM",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 898.97,
+   "fixed": 898.96,
+   "why": "BSE att 5f14b227 (10-Feb-2025 19:38) p16-17 consolidated Rs crore, Q 31.12.2024 (image read): row13 Net Profit for the period (11+12) 1,844.29 incl. discontinued (0.01); 'Net Profit attributable to Owners of the Company' 898.96 (continuing-only owners line 898.97 = ours, = filer XBRL own tag). Correct owners total = 898.96 (off by 0.01). SV 820.12 matches no printed row (also wrong)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 623.9,
+   "fixed": 623.91,
+   "why": "BSE att 0b8a7a15 (14-Apr-2026 14:48) p18 Statement of Consolidated Results (Rs lakh), Q 31.03.2026 (image read at 250 dpi): row29/31 Profit after tax 62,391 = 623.91 (no NCI/owners rows); ours 623.90 is 0.01 off. SV 608.81 = standalone (std 608.81), also wrong",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "ITI",
+   "qe": "20250331",
+   "basis": "con",
+   "was": -4.39,
+   "fixed": -4.38,
+   "why": "BSE att 0d7399ff (27-May-2025 19:06) p2 Statement of Consolidated Audited Financial Results (Rs lakh), Q 31.03.2025 (image read): row10 Profit/(Loss) for the period (438) = -4.38 = SV (no NCI/owners rows); ours -4.39 is 0.01 off",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "JINDALSAW",
+   "qe": "20240930",
+   "basis": "con",
+   "was": 482.41,
+   "fixed": 499.61,
+   "why": "BSE att 2bfc9eae (18-Oct-2024 17:04) p11 consolidated Rs crore, Q 30.09.2024 (image read): VII Net profit after tax 475.31; Attributable to Owners of the Parent 499.61 = SV; NCI (24.30). Ours 482.41 matches no printed row; filer XBRL (06-Nov-2024) own tag also 499.61",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "PRESTIGE",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 25.1,
+   "fixed": 25.0,
+   "why": "BSE att d0583193 (29-May-2025 23:36) p16 consolidated Rs million (whole), Q 31.03.2025: row9 Net profit 431 = SV 43.1; row12 Owners of the parent 250 = 25.00; NCI 181. Ours 25.1 matches the later integrated XBRL (13-Jun-2025, owners 25.1/NCI 18.1, sums to 43.2 not 43.1), not the original printed 250. SV also wrong (used PAT incl. NCI)",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
+  },
+  {
+   "sym": "SONACOMS",
+   "qe": "20230630",
+   "basis": "con",
+   "was": 112.03,
+   "fixed": 112.04,
+   "why": "BSE att 413183d1 (27-Jul-2023 15:54) p9 consolidated Rs million, Q 30.06.2023: Profit for the period 1,120.35 (no NCI split printed; NCI nil that quarter) = 112.035 crore -> 112.04 half-up. Ours 112.03 rounds down; SV 112.0352 rounds to 112.04",
+   "found": "StockView cell-by-cell check 2026-10-26 (con value-diff 2022-26, PIT-N500, own filing read)"
   }
  ],
  "retracted": [
