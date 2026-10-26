@@ -29122,3 +29122,9 @@ merged. Apply: **+61 half-year rows (57 std + 4 con)**; 31 statements held on un
 TARACHAND Nov-22 file labelled "Amount in Rs" with lakh figures). Disagreements 7 (not written): + NEW TIRUPATI 20250331 s
 PAT read 7.51 vs held 7.28 (TIRUPATI_03112025211444_FINAL.pdf) — UNKNOWN, not re-read. Parent eye-checks: TARACHAND
 17052023 p9 rotated scan = reader; TRIDHYA BM_OUTCOME_240524 p5 Sep-23 PAT cell smeared → nulled before merge. verify 0/0/0.
+**§210d round 10 (2026-10-27, "do rest of 12", set 4 — LAST; b009–b035 all read).** b033–b035 read: 126 statements, 61 of
+74 company-years close; 117 merged. Apply: **+67 half-year rows (63 std + 4 con)**; 32 unit conflicts held. Disagreements 8
+(not written): + NEW UWCSL 20260331 s read 38.68/4.19 vs held 25.88/-0.87 (UWCSL_22052026160031_Financials.pdf) — UNKNOWN.
+Parent REMOVED WEWIN FY21 std closing stmt (Financials21062021 p5) before merge: reader filled smeared standalone digits from the
+consolidated print. verify 0/0/0. Open for a later pass: the 8 disagreements (none re-read), WEWIN FY21 re-read, SRIRAM/URBAN
+orig_h1 files that are HTML error pages (bad downloads), MOS FY26 closing file not in its batch list.
