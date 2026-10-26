@@ -1,5 +1,5 @@
 {
- "built": "2026-10-23 20:40 IST",
+ "built": "2026-10-26",
  "how": "each figure checked against the filing it came from (both the latest and the year-ago document opened); true_yoy_pct compares like with like ~12 months apart",
  "rows": [
   {
@@ -693,6 +693,24 @@
     "https://api.bseindia.com/BseIndiaAPI/api/Finresults/w?scripcode=531209"
    ],
    "checked": "2026-10-23"
+  },
+  {
+   "key": "NSE:SUPREMEPWR",
+   "name": "Supreme Power Equipment Ltd",
+   "latest_verdict": "CORRECT",
+   "latest_correct_value_cr": 565.8,
+   "latest_as_on": "2026-10-22",
+   "year_ago_verdict": "NOT RE-READ",
+   "year_ago_correct_value_cr": 235.0,
+   "year_ago_as_on": "2025-09-30",
+   "true_yoy_pct": 140.8,
+   "book_to_ttm_sales": 2.34,
+   "script_yoy_pct": 140.8,
+   "notes": "Re-checked because the screen picked up a NEWER stated order book than the ledger held. The latest end was READ IN FULL this run from the company's own H1 FY27 earnings-call transcript (call 22-Oct-2026, filed on NSE 26-Oct-2026): 'Our current order book stands at over INR565.80 crores'. It is the company-wide total, not a segment - the same call splits it into power transformers ~INR440 cr, distribution transformers under INR95 cr and inverter-duty transformers ~INR30 cr, which sums to the whole. The year-ago end (INR235 cr, from the H1 FY26 transcript filed 22-Nov-2025) was NOT re-read in this run and is carried from the screen's own quote, so it is marked NOT RE-READ rather than CORRECT. book_to_ttm_sales uses H1 FY27 income of INR135.57 cr plus H2 FY26 income, so it is approximate: trailing twelve months = FY26 INR181.6 cr (from this card's own guidance note, not re-read from a filing this run) minus a derived H1 FY26 of INR75.35 cr (135.57 / 1.7991, using the +79.91% YoY the company stated) plus H1 FY27 INR135.57 cr = INR241.8 cr, giving about 2.34x - CAVEAT: the H1 FY26 figure is derived from the +79.91% YoY the company stated, not read from a filing. What the reader should take from this row is the direction, not the decimal: the book is 4.1% BELOW the INR590.06 cr the company stated as on 13-Aug-2026, so it is flat-to-down over the quarter even though H1 inflows were INR209.24 cr across 11 orders. Management guides the book to INR600-800 cr by FY27-end.",
+   "docs": [
+    "https://nsearchives.nseindia.com/corporate/SPEL_26102026165150_SubmissionofTranscriptH1FY27.pdf"
+   ],
+   "checked": "2026-10-26"
   }
  ]
 }
