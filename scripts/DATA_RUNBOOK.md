@@ -29117,3 +29117,8 @@ merged. Apply: **+68 half-year rows (60 std + 8 con)**; 13 held (later filing re
 written): the 5 before + NEW SILVERTUC 20200930 s rev read 62.55 vs held 62.18 (REG30OUTCOME_12112021183311.PDF) — UNKNOWN,
 not yet re-read. verify_fills_live 0 / 0 / 0. Filer prints that do not close (held): SKSTEXTILE FY20 PAT (FY-only tax 341),
 SOFTTECH FY21 con (2 rupees; std closes). SRIRAM FY22: one orig_h1 file in pdf/ is an HTML error page (bad download).
+**§210d round 9 (2026-10-27, "do rest of 12", set 3).** b030–b032 read: 139 statements, 62 of 75 company-years close; 126
+merged. Apply: **+61 half-year rows (57 std + 4 con)**; 31 statements held on unit conflict (the unit gate working, e.g.
+TARACHAND Nov-22 file labelled "Amount in Rs" with lakh figures). Disagreements 7 (not written): + NEW TIRUPATI 20250331 s
+PAT read 7.51 vs held 7.28 (TIRUPATI_03112025211444_FINAL.pdf) — UNKNOWN, not re-read. Parent eye-checks: TARACHAND
+17052023 p9 rotated scan = reader; TRIDHYA BM_OUTCOME_240524 p5 Sep-23 PAT cell smeared → nulled before merge. verify 0/0/0.
