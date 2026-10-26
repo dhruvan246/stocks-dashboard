@@ -7798,7 +7798,6 @@
   "ann_basis": "bse-broadcast 2019-02-11T18:45:32.41 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20190212,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": -573.52,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 3 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -7842,13 +7841,14 @@
    "mc": "mc: 7 quarters 20180630..20191231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": -573.52,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: standalone-only own filing). Evidence: P: own filing 7adb130c (2019-02-11) 6pp text: no consolidated statement/figure for any period (word 'consolidat' absent in text layer); no other results filing in the BSE window; E: None; standalone-only filing"
  },
  "ANDHRABANK|20190331": {
   "ann_basis": "bse-broadcast 2019-05-14T11:40:58.213 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20190514,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": -1209.6,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 3 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -7892,7 +7892,9 @@
    "mc": "mc: 7 quarters 20180630..20191231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": -1209.6,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: consolidated printed for the full year only, no consolidated 9M/H1/Q in earlier filings (user rule 26-Oct: blank)). Evidence: P: e42f5eea p2 (rendered): CONSOLIDATED Year ended 31.03.2019 row L 'Consolidated Net Profit for the year attributable to the Group (J+K)' (274200) lacs; E: NOT PUBLISHED: Q1 b696e864, Q2 5d3d6626, Q3 7adb130c (BSE, text): standalone only; "
  },
  "ANSALAPI|20030630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -153175,7 +153177,6 @@
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20190515,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 61.39,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 27 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -153220,7 +153221,9 @@
    "mc": "mc: 33 quarters 20180630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 61.39,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: consolidated printed for the full year only, no consolidated 9M/H1/Q in earlier filings (user rule 26-Oct: blank)). Evidence: P: BSE c68d5767 (14-May-2019) p5 (Rs lakh) Consolidated Year ended 31.03.2019 row 12 'Profit attributable to Owners of the parent' 42,528; E: Q3 FY19 filing b6d4dcc6 (07-Feb-2019) p2 'STATEMENT OF STANDALONE FINANCIAL RESULTS FOR THE QUARTER AND NINE MONTH ENDED DECEMBER 31, 2018' - standalone only, 0 'consolidated'; None"
  },
  "PUNJABCHEM|19991231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -155652,7 +155655,6 @@
   "ann_basis": "bse-broadcast 2014-05-22T12:59:35 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20140522,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 1.84,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 38 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -155696,7 +155698,9 @@
    "mc": "mc: 42 quarters 20140331..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 1.84,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: consolidated printed for the full year only, no consolidated 9M/H1/Q in earlier filings (user rule 26-Oct: blank)). Evidence: P: BSE The_Ramco_Cements_Ltd_220514 p1 row 15: consolidated year ended 31-3-2014, net profit after tax and minority interest 11,455 lacs; E: Q3 FY14 results The_Ramco_Cements_Ltd1_120214 p1: single unlabelled set of figures equal to the standalone columns of the Q4 filing (Q3 PAT 2,559 lacs; 9M 11,271 lacs); no consolidated statement. A note says the subsidiary Ramco Windfarms was incorporated 26-1-2013; FLAG: ours 1.84 = consolidated FY 114.55 minus STANDALONE 9M 112.71 (mixed basis)."
  },
  "RAMCOIND|20010331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
