@@ -7696,7 +7696,6 @@
   "ann_basis": "bse-broadcast 2018-08-10T18:51:27.803 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20180813,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": -543.02,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 3 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -7740,13 +7739,14 @@
    "mc": "mc: 7 quarters 20180630..20191231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": -543.02,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: Re-checked the quarter's own filing: NSE results attachment ANDHRABANK_NA_03122018144530_1.zip (NSE row seq 1054222, filed 03-Dec-2018): the quarter's own results pack holds only the STANDALONE statement (read; no consolidated statement in it) and the NSE electronic results list has no consolidated row from this season. Ours -543.02 vs standalone -539.83. Other ledger scripts/agg_pat_cell_fills.json holds -543.02 (= ours -543.02; differs from standalone -539.83): it is an aggregator (Moneycontrol API) figure not printed in this quarter's own filing."
  },
  "ANDHRABANK|20180930": {
   "ann_basis": "bse-broadcast 2018-11-03T19:01:08.877 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20181105,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": -440.95,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 3 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -7790,7 +7790,9 @@
    "mc": "mc: 7 quarters 20180630..20191231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": -440.95,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: Re-checked the quarter's own filing: NSE results attachment ANDHRABANK_NA_19112018184703_1.zip (NSE row seq 1051708, filed 19-Nov-2018): the quarter's own results pack holds only the STANDALONE statement (read; no consolidated statement in it) and the NSE electronic results list has no consolidated row from this season. Ours -440.95 vs standalone -434.1. Other ledger scripts/agg_pat_cell_fills.json holds -440.95 (= ours -440.95; differs from standalone -434.1): it is an aggregator (Moneycontrol API) figure not printed in this quarter's own filing."
  },
  "ANDHRABANK|20181231": {
   "ann_basis": "bse-broadcast 2019-02-11T18:45:32.41 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
@@ -50166,7 +50168,6 @@
   "ann_basis": "bse-broadcast 2015-02-14T18:53:42 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20150216,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 7.28,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 2 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -50210,7 +50211,9 @@
    "mc": "mc: 6 quarters 20140630..20150930"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 7.28,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: figure printed only in a later filing). Evidence: Dredging_Corporation_of_India_Ltd_140215_Rst.pdf p1 standalone row 16 728 Rs lakh"
  },
  "DRREDDY|19991231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -66218,7 +66221,6 @@
   "ann_basis": "bse-broadcast 2012-07-31T17:30:45 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20120801,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 177.52,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 49 of our stored quarters with zero disagreements in the local window, worst anchor error 0.6000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -66262,13 +66264,14 @@
    "mc": "mc: 60 quarters 20050630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": 177.52,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: figure printed only in a later filing). Evidence: Ltd_170813_Rst p7 UNAUDITED CONSOLIDATED Q Jun-13 (Rs lakhs), p8 row 16 Net Profit after taxes, minority interest and share of profit of associate, column Corresponding 3 months 30/06/2012: 17752 lakh = 177.52 cr"
  },
  "GFLLIMITED|20120930": {
   "ann_basis": "bse-broadcast 2012-10-27T17:12:30 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20121029,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 139.07,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 49 of our stored quarters with zero disagreements in the local window, worst anchor error 0.6000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -66312,7 +66315,9 @@
    "mc": "mc: 60 quarters 20050630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": 139.07,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: figure printed only in a later filing). Evidence: Ltd_221013_Rst2 p1 UNAUDITED CONSOLIDATED Q&H Sep-13 (Rs lacs), p2 row 16 Net Profit after taxes, minority interest and share of profit of associate, column Corresponding 3 months 30/09/2012: 13907 lacs = 139.07 cr"
  },
  "GFLLIMITED|20121231": {
   "ann_basis": "bse-broadcast 2013-01-30T16:18:09 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
@@ -76751,7 +76756,6 @@
   "ann_basis": "bse-broadcast 2013-11-14T20:18:43 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20131118,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": -72.4,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 45 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0200; nearest anchor within 4 quarters",
   "field": "patC",
@@ -76794,7 +76798,9 @@
    "mc": "mc: 79 quarters 20050331..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": -72.4,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: figure printed only in a later filing). Evidence: HCL_Infosystems_Ltd_211014_Rst p3 Consolidated, col Three months ended 30.09.2013, row 16 Net Profit after taxes, minority & associates (7,240) Rs lakh"
  },
  "HCLTECH|19991231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -97473,7 +97479,6 @@
   "ann_basis": "bse-broadcast 2014-07-28T16:33:19 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20140730,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 4.58,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 33 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
   "field": "patC",
@@ -97515,7 +97520,9 @@
    "mc": "mc: 35 quarters 20140630..20221231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": 4.58,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: Q1 statement of unaudited results (Rs lakh) has no consolidated columns; ours 4.58 = standalone net profit 458 lakh"
  },
  "IOB|20000630": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -105696,7 +105703,6 @@
   "ann_basis": "bse-broadcast 2018-08-04T15:01:49.39 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20180804,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 15.67,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 26 of our stored quarters with zero disagreements in the local window, worst anchor error 0.4500; nearest anchor within 4 quarters",
   "field": "patC",
@@ -105741,7 +105747,9 @@
    "mc": "mc: 33 quarters 20180630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": 15.67,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 04-Aug-2018 p2 STATEMENT OF STANDALONE UNAUDITED FINANCIAL RESULTS; no consolidated in window"
  },
  "JSL|20031231": {
   "ann_basis": "REAL public date: BSE's own dissemination timestamp (NEWS_DT 2004-01-14) of the result-summary announcement that carries this figure; floored at the first traded bar (\u00a799)",
@@ -125815,7 +125823,6 @@
   "ann_basis": "bse-broadcast 2018-07-27T15:07:15.833 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20180727,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 315.91,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 29 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -125859,13 +125866,14 @@
    "mc": "mc: 77 quarters 20070630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 315.91,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 27-Jul-2018 p2 STATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS; no consolidated in window"
  },
  "M&MFIN|20180930": {
   "ann_basis": "bse-broadcast 2018-10-24T16:07:53.757 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20181025,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 425.91,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 29 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -125909,7 +125917,9 @@
    "mc": "mc: 77 quarters 20070630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 425.91,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 24-Oct-2018 p3 STATEMENT OF UNAUDITED STANDALONE FINANCIAL RESULTS (18pp, no consolidated mention); no consolidated quarter figure in window"
  },
  "M&M|19991231": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
@@ -153008,7 +153018,6 @@
   "ann_basis": "bse-broadcast 2018-08-07T18:38:12.32 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20180808,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 107.74,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 27 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -153053,13 +153062,14 @@
    "mc": "mc: 33 quarters 20180630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 107.74,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 07-Aug-2018 Standalone Unaudited Financial Results only"
  },
  "PTC|20180930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
   "ann_written": 20181114,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 180.54,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 27 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -153104,13 +153114,14 @@
    "mc": "mc: 33 quarters 20180630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 180.54,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 13-Nov-2018 Standalone Unaudited Financial Results only (4pp); no consolidated in window"
  },
  "PTC|20181231": {
   "ann_basis": "bse-broadcast 2019-02-07T14:12:58.577 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20190207,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 75.61,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 27 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -153155,7 +153166,9 @@
    "mc": "mc: 33 quarters 20180630..20260630"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 75.61,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: 07-Feb-2019 Standalone Unaudited Financial Results only (3pp); no consolidated in window"
  },
  "PTC|20190331": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752). Moneycontrol's feed carries no filing date.",
@@ -170867,7 +170880,6 @@
   "ann_basis": "bse-broadcast 2014-01-30T15:39:45 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20140131,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 133.56,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 24 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0100; nearest anchor within 4 quarters",
   "field": "patC",
@@ -170910,7 +170922,9 @@
    "mc": "mc: 31 quarters 20110331..20220930"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-ROUNDED"
+  "state": "FILLED-ROUNDED",
+  "con_withdrawn": 133.56,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: BSE 2014-01-30 results and 2014-02-06 corrected re-filing (both scanned, read by render): only a standalone Statement of Unaudited Financial Results of Shriram City Union Finance Ltd, quarter 31-Dec-2013 net profit 12,909 lakh; no consolidated statement. Ours 133.56 is not in the filing."
  },
  "SHRIRAMCIT|20140331": {
   "ann_basis": "bse-broadcast 2014-04-30T19:31:45 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
@@ -187874,7 +187888,6 @@
   "ann_basis": "bse-broadcast 2019-02-02T16:14:10.227 [result] (staleness campaign 2026-08-20 v3, was CONVENTION quarter-end+45d)",
   "ann_written": 20190204,
   "applied": "2026-08-13 aggregator pre-2015 std-PAT sweep",
-  "con": 171.68,
   "corroborated_by": [],
   "evidence": "gate A/A2 passed: that site's own patC series reproduces 2 of our stored quarters with zero disagreements in the local window, worst anchor error 0.0000; nearest anchor within 4 quarters",
   "field": "patC",
@@ -187918,7 +187931,9 @@
    "mc": "mc: 11 quarters 20090630..20191231"
   },
   "src": "moneycontrol quarterly-results API (runbook \u00a781)",
-  "state": "FILLED-EXACT"
+  "state": "FILLED-EXACT",
+  "con_withdrawn": 171.68,
+  "withdrawn": "2026-10-26 IST: consolidated slot held a value with no consolidated figure in the quarter's own results filing (user rule 2026-10-26: value came only from a fill record). Evidence: BSE result filings in window: 49437a2f 2019-01-07 1pp con-mentions 0; 2f7a6521 2019-02-02 6pp con-mentions 0; fa7b14e4 2019-02-27 1pp con-mentions 0; ceed8bcc 2019-02-28 6pp con-mentions 0. No consolidated statement in any result filing (text+OCR). Standalone quarter row p2: \"#OCR# 12 Net Profit (+) / Loss (-) from Ordinary Activities 10,799 (154,254) (86,977) (271,632) (102,772) (322\" (first figure /100 = 107.99 cr). Ours 171.68 is not the standalone figure."
  },
  "SYNGENE|20140930": {
   "ann_basis": "CONVENTION, not a filing date: quarter-end+45d, the default 20,818 of the 21,515 dated pre-2015 cells already carry (runbook \u00a752), FLOORED at the symbol's first traded bar so a pre-listing quarter cannot claim it was public before the company had a tape (\u00a799). Moneycontrol's feed carries no filing date.",
