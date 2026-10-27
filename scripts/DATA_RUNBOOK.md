@@ -28597,6 +28597,16 @@ total incl. DR column + Foreign Bank), INFY 39.49/40.17 → 39.6139/40.288355 (F
 cells; the stored had the fully-paid column only), VAIBHAVGBL 18.7382/18.9211 → 21.325457/21.537514 (FPI + FII line + Matthews +
 Nalanda; the stored were §164p seam re-bases).
 
+### §227 gap fill (2026-10-27, user: "calculate stocks to be filled" → "finish it")
+Ever-members Jun-2020..Jun-2026, each inside its own listing..last-bar window: 668/689 complete; 19 stocks / 37 quarters open.
+NSE listing had nothing for most → BSE results XBRL (`fetch_bse_results_xbrl.py --fetch --extra` → `--apply`, identity = XML ScripCode, fill-only).
+LANDED 21 quarters / 9 stocks: IONEXCHANG Jun-20..Sep-21 (6, S+C), CIGNITITEC Mar-21/Sep-22/Mar-23 (S+C), GOODYEAR Dec-23/Jun-24/Sep-24/Jun-25 (S),
+GRAUWEIL Mar-24/Sep-25 (S+C), BESTAGRO Jun-23/Sep-23 (S+C; con >> std is this filer's normal pattern, e.g. Sep-22 46.85 vs 129.81), GDL Dec-21 (S+C),
+DFMFOODS Jun-22, NOVARTIND Sep-25, TATAMETALI Jun-22 (S). Diff vs origin: only those 9 symbols changed; verify_fills_live 0/0/0.
+STILL OPEN (no BSE XBRL returned; filed/not-filed NOT yet established): ACLGATI Sep-25, DHANI Sep-25, E2E Jun-22, FRETAIL Mar/Jun/Sep-22,
+JMCPROJECT Dec-22, SANGHIIND Mar-26, TATAMETALI Dec-23, TINPLATE Dec-23, UJJIVAN Mar-24, CIGNITITEC Mar-26/Jun-26; MBAPL Jun/Sep-22 + TSFINV Jun-22 have no BSE code.
+Work files: ~/stocks-cache/microcap250/{fill_gaps_20261027,todo,extra,bse_fills}.json.
+
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
 **What the user saw.** Mon 12-Oct-2026 ~16:40 IST: the Just Declared tab showed nothing for the day. Measured, not assumed:
