@@ -29147,6 +29147,7 @@ RULE DIFFERENCE x2 (held = Q4 QUARTER, read = H2 HALF; no row_periods entry, so 
 READER ERROR x1: SILVERTUC 20200930 held 62.55 = "Total Revenue from operation [1(a)+1(b)]" 6,255.28; reader took 1(a) 6,217.85.
 ASK USER x1: INSPIRE 20260331 std PAT — signed PDF p2 210.02 lakh (2.10) vs XBRL 2.117 (held 2.12); both close, differ only in
  deferred tax (PDF 2.52 lakh, XBRL 0.83).
+ User ruling 2026-10-27: use the signed PDF -> INSPIRE 20260331 std PAT 2.12 -> 2.10 (fund_cell_fix + revop pat_std).
 Side note: apply_fund_cell_fix flips GSFC 20240930 std and LUXIND 20230930 std on every run (two contradicting ledger entries);
  not touched here — needs its own adjudication.
 
