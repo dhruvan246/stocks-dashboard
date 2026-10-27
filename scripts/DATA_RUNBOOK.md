@@ -29141,6 +29141,9 @@ OUR ERROR x4, healed via fund_cell_fix (6 PAT cells) + revop_cell_fix (19 cells)
  TIRUPATI 20250331 std+con: held profit/op/EBIT used TOTAL COMPREHENSIVE income (adds OCI 23.46). p6 PAT 727.67, p15 726.58.
   Not checked: TIRUPATI 20240930 held 7.11 looks like TCI 710.90 too (PAT 709.17 in this file's comparative) — UNKNOWN until
   the Nov-2024 original is read.
+  -> READ 2026-10-27 (user "check tirupati sep 2024 too"): OUR ERROR, same TCI fault. Nov-2024 original p6/p13: PAT 709.17 std /
+  707.91 con (TCI 710.90 / 709.63). Healed pat std+con, op std+con, EBIT std (7 cells). EBIT con
+  true 10.39 vs held 10.40 is within apply_revop_cell_fix TOL 0.01, so not ledgered (left 10.40).
 RULE DIFFERENCE x2 (held = Q4 QUARTER, read = H2 HALF; no row_periods entry, so the site shows a quarter): ABCOTS 20250331
  (held 84.95/1.88 from the May-25 filing p14 — that page not yet seen by eye; read 144.20/5.96 = H2 from the Jul-25 re-filing p15),
  DENTALKART 20250331 (pat 4.32 = Q4 431.86; read 8.30 = H2 830.38, p5).
