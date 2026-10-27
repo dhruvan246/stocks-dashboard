@@ -29153,6 +29153,14 @@ ASK USER x1: INSPIRE 20260331 std PAT — signed PDF p2 210.02 lakh (2.10) vs XB
  User ruling 2026-10-27: use the signed PDF -> INSPIRE 20260331 std PAT 2.12 -> 2.10 (fund_cell_fix + revop pat_std).
 Side note: apply_fund_cell_fix flips GSFC 20240930 std and LUXIND 20230930 std on every run (two contradicting ledger entries);
  not touched here — needs its own adjudication.
+**§210d round 12 (2026-10-27, user: "fill the missing tirupati halves too").** TIRUPATI had no row for Mar-21, Sep-22, Mar-23,
+Sep-23, Mar-24, Sep-25. Every page read by eye this session (std + con, EPS row too) → vision/out/b036_tirupati.json → --merge-vision
+→ apply. Filled std+con (lakh): Mar-21 6,835.76 / PAT 276.20 (con 276.19), Jun-2021 p4/p13; Sep-22 9,696.42 / 375.63 (375.56),
+Nov-2022 p3/p9; Mar-23 7,928.52 / 561.83 (561.65), May-2023 p5/p13; Mar-24 8,563.70 / 333.74 (333.42), May-2024 p5/p14. FY23 and
+the con chain had no held anchor; unit proven by EPS x shares. Held by the original-filing rule (§210c), ASK USER:
+ Sep-23 original Oct-2023 p3 7,647.98 / 1,092.25 (Indian GAAP) vs May-2024 Ind AS restated comparative 7,547.11 / 1,076.96;
+ Sep-25 original Nov-2025 p5 9,355.40 / 186.82 vs May-2026 p6 comparative 9,583.98 / 186.82 (other income reclassified into revenue).
+Proof ledger also gains AVPINFRA / UWCSL 20260331 (their stored H2 now equals the proven half after round 11). verify 0/0/0.
 
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
