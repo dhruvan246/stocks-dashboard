@@ -460,6 +460,9 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
         name, unit = (met.get("name") or "").strip(), (met.get("unit") or "").strip()
         if not name:
             continue
+        # stored names are cut to 80 chars, so cut before matching — else a long name never finds its own row and
+        # every filing opens a duplicate (KPIL toll series: 10 rows of one name, 2026-10-27)
+        name, unit = name[:80].strip(), unit[:24].strip()
         kind = "flow" if str(met.get("kind") or "").lower().startswith("f") else "level"
         m = find_metric(L, name, unit)
         if m is None:
