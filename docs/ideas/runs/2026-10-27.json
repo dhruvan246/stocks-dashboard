@@ -1,0 +1,215 @@
+{
+ "date": "2026-10-27",
+ "asof": "2026-10-27",
+ "run_started": "2026-10-27 20:10 IST",
+ "run_finished": "2026-10-27 21:05 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1208,
+ "filings_status": "BSE api and www both answered 200 all run. scan.py SELFTEST PASS. Announcements for 2026-10-27 were read TWICE: the first read at 20:19 IST got 1,149 rows of the 1,153 BSE then reported; a retry at 20:24 IST got 1,160 of 1,162 (BSE's own count rose between the reads as the evening's filings landed). BOTH READS ARE CAPPED - `announcements_capped: true` - so 1,160 is a FLOOR for the day, not the day's count, and the 175 classified in the universe is a floor too. The read is also same-evening, so filings made after 20:24 IST are not in it. announcements_blocked: false.",
+ "feeds_status": "★ THE ideas-feeds ACTION LANDED NOTHING TODAY, AND IT IS THE SECOND DAY RUNNING. Scheduled run 40511927903 (13:25-14:11 UTC) was CANCELLED on the job's 45-minute `timeout-minutes` while step 17, 'Order-book ledger refresh', was still running after 38 minutes; every step after it - breakout, order wins, ob_tracker, updates queue, 'Record status and guard every output' and 'Commit the feeds' - was SKIPPED, so nothing was committed. The 2026-10-26 run (40330468786) was cancelled the same way. This routine therefore started from feed files stamped 2026-10-26 and had to rebuild what it could itself. This run re-dispatched the workflow (run 40524884281, started 14:49 UTC) from the session; its first sixteen steps succeeded in eight minutes and it then entered the same order-book step at 14:56 UTC with the same 45-minute wall at 15:34 UTC. THE FIX IS THE OWNER'S: the order-book refresh needs its own job, its own longer timeout, or a step-level timeout that lets the commit step still run - as written, one slow builder discards the whole day's feeds, including the government lane and the commodity prints that the research sandbox cannot fetch for itself.",
+ "candidates_considered": [
+  {
+   "scrip": "544419",
+   "ticker": "ARIS",
+   "name": "ArisInfra Solutions Ltd",
+   "mcap": 1154.9,
+   "score": 9,
+   "verdict": "RESEARCHED, NOT PUBLISHED - the headline number is a project's gross development value, not an order value. Three ORDER filings today. (1) 'ARIS' Unitern Bags Third Transcon Mandate for Rs 250 Cr GDV Ramdev Plaza Phase II, Santacruz': the Reg-30 annexure's item 7, 'Broad consideration or size of the order(s)', does NOT give a consideration - it repeats that the project has 'an estimated GDV of Rs 250 Crores' and that the engagement runs 18 months. GDV is the developer's project value; ArisInfra's own revenue from a Developer-as-a-Service mandate is undisclosed. So the only published figure cannot be measured against sales at all. (2) The second order, through subsidiary JS Infra Core, from S.P. Adke's Construction for infra construction at Bhagur under GE Deolali, DOES carry a value: Rs 9.85 cr, 17 months. Against trailing twelve-month revenue of Rs 658.43 cr (Q2 FY26 160.96 + Q3 161.38 + Q4 207.36 + Q1 FY27 128.73, BSE detailed results) that is 1.50% of a year's sales - the study's 'under 10%' bucket, which reached 2x within two years 21.4% of the time against 35.7% for the 25-50% bucket. (3) Rarity counts against it: the dossier's 240-day read (93 filings) carries five order filings, three of them before today (15-Jul, 07-Sep, 29-Sep-2026), so this is a repeat filer, not a first-in-two-years one. The company is also loss-making as recently as FY25 (PAT -Rs 19.71 cr) and trades at 31.1x on BSE's header. Nothing here clears the bar."
+  },
+  {
+   "scrip": "544669",
+   "ticker": "ADMACH",
+   "name": "Admach Systems Ltd",
+   "mcap": 312.6,
+   "score": 8,
+   "verdict": "RESEARCHED and PUBLISHED (lane filing, confidence low-to-medium). H1 FY27 revenue Rs 42.20 cr +48.3%, EBITDA Rs 9.95 cr +47.6%, PAT Rs 6.53 cr +45.9%, operating cash flow +Rs 12.05 cr against -Rs 4.53 cr for all of FY26, receivable days 166 -> 65, net cash. Published WITH the three things that argue against it stated in the card: the order book has been flat in a Rs 68-84 cr band for eight months and at Rs 77.42 cr incl GST is 0.79x trailing sales; nine order or order-book press releases in eight months puts it in the study's serial-filer bucket, which reached 5x never; and no CFO has been disclosed on BSE since Shivdas Shinde resigned with immediate effect on 16-May-2026, five days before the FY26 audited results."
+  },
+  {
+   "scrip": "523229",
+   "ticker": "BHARATSE",
+   "name": "Bharat Seats Ltd",
+   "mcap": 1309.4,
+   "score": 6,
+   "verdict": "ALREADY PUBLISHED 2026-09-25 - handled as two UPDATES, not a new idea (playbook triage rule 3). Q2/H1 FY27 results plus a postal ballot to raise the cap on material related-party transactions with NDR Auto Components. The results PDF is an image with no text layer so revenue and PAT could not be read; EPS came from BSE's detailed-results feed (Q2 Rs 2.42 vs Rs 1.58, +53.2%). Stock +12.6% on 9.1x median volume."
+  },
+  {
+   "scrip": "540795",
+   "ticker": "DYCL",
+   "name": "Dynamic Cables Ltd",
+   "mcap": 1640.3,
+   "score": 6,
+   "verdict": "RESEARCHED and PUBLISHED (lane filing, confidence medium). Two hard triggers: a Reg-30 intimation of 26-Oct-2026 that plant and machinery are installed at the new Reengus facility and that management estimates installed capacity rises about 20%; and H1 FY27 revenue Rs 712.3 cr +31.0% with PAT Rs 47.1 cr +24.3%, order book Rs 829 cr. Trades at 17.5x trailing, the lowest multiple of every peer in its index bucket that has one, at its 65-session low after -25.8% in a month. Published with the central caveat up front: management's own Q1 call put volume growth at 5-6% with 'balance is large part of it' aluminium price, so the 31% is mostly a metal price, and this run could not measure where aluminium is going."
+  },
+  {
+   "scrip": "526775",
+   "ticker": "VALIANT",
+   "name": "Valiant Communications Ltd",
+   "mcap": 1869.6,
+   "score": 4,
+   "verdict": "ALREADY PUBLISHED 2026-09-29 - handled as an UPDATE. Orders worth Rs 14.76 cr incl taxes for grid communication and grid protection solutions from 'System Integrators (Private)', end-user critical infrastructure, execution by 31-Oct-2027. Stock +15.0% on 2.5x median volume. The order against a trailing year of sales could not be computed: the company reports half-yearly and the H1 FY27 results are not yet filed, so the update records the gap rather than substituting the order/market-cap ratio the study found predicts nothing."
+  },
+  {
+   "scrip": "532880",
+   "ticker": "OMAXE",
+   "name": "Omaxe Ltd",
+   "mcap": 1887.5,
+   "score": 4,
+   "verdict": "NOT RESEARCHED - deprioritised. Q2 FY27 results filed, but the only signal is RESULT x2 on 0.6x median volume and a +0.3% day, with the stock -13.0% over 20 sessions. A real-estate developer at the top of the band with no order, capex, rating or capacity number in the day's filings. Below the day's two published names on every triage test; not opened."
+  },
+  {
+   "scrip": "544332",
+   "ticker": "FABCLEAN",
+   "name": "Fabtech Cleanrooms Ltd",
+   "mcap": 511.2,
+   "score": 4,
+   "verdict": "ALREADY PUBLISHED 2026-10-16 - handled as an UPDATE. Board meets 30-Oct-2026 on the H1 results AND a fund raise; no instrument, size, price or use of proceeds stated."
+  },
+  {
+   "scrip": "544963",
+   "ticker": "SHAHINVEST",
+   "name": "Shah Investors Home Ltd",
+   "mcap": 286.7,
+   "score": 4,
+   "verdict": "NOT RESEARCHED - fails the liquidity and the trigger tests. 0.2x median volume, Rs 19.6 lakh median daily turnover, liquid: false, and -22.0% over the 65-session window. The filings are an approval to acquire equity of Ficus Food Lab Private Limited on a private-placement basis plus the financial result for the quarter ended 30-JUNE-2026 filed on 27-OCTOBER - a four-month-late quarterly. An acquisition with no stated consideration in the headline plus a late filing is not a trigger this page publishes on."
+  },
+  {
+   "scrip": "512097",
+   "ticker": "SPEEDEX",
+   "name": "Maharaja & Speedex India Ltd",
+   "mcap": 395.0,
+   "score": 4,
+   "verdict": "NOT RESEARCHED - appeared only in the 20:24 IST retry scan (DEAL x2), on 0.3x median volume and a +2.4% day. DEAL-only classification with no order, result or capex number; below the bar for the day's four research slots. Noted for tomorrow if a filing with a number follows."
+  }
+ ],
+ "signals_considered": "★ NO PRICE-LANE IDEA TODAY, AND THE REASON IS A MEASURED DATA OUTAGE, NOT A QUIET MARKET. signals.json rebuilt this run at 20:18 IST over 53 groups, but EVERY Indian price source was refused at this sandbox's egress proxy (connect_rejected / 403 Forbidden at the proxy, not by the site): metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, caionline.in, indianspices.com, guidechem.com and tradingeconomics.com. india_spot appended ZERO history rows. Only the three BSE-sourced series worked - nmdc 2 rows, minsteel 3 rows (from the committed file; steel.gov.in itself was blocked), moil 3 rows - and none added a new reading. spot.py fetched 0 of 35 commodities (westmetall.com and markets.businessinsider.com both 403 at the proxy) and left spot.json untouched. wpi.py could not reach eaindustry.nic.in; trade.py could not reach tradestat.commerce.gov.in. STAMPS, all more than three trading days old except the spot one: spot_date 2026-10-26 18:57 IST (1 day), trade_month 2026-08 (2 months), wpi_month 2026-04 (SIX MONTHS behind this run), india_built 2026-10-27 20:18 IST but with zero new rows. india_history.json.gz WAS rebuilt - 284 series, 80,294 dated points. So the top of the table (Crude oil +10.70 on WPI Crude Petroleum 3m +85.6%; Silver +10.16 on WPI Silver 12m +152.4%; Tungsten +10.00 on an export unit price; Sulphuric acid +7.01) rests on a WPI panel whose latest month is April 2026 and a trade panel whose latest month is August 2026 - the SAME evidence yesterday's run already weighed, with not one new domestic print to move it. Publishing a commodity idea today would mean republishing yesterday's data as today's signal. One group was used as EVIDENCE INSIDE a filing-lane card rather than as an idea: Aluminium, strength -5.01 'down', where the two sources contradict each other - HS 7604 import unit price -50.1% over one month on a US$24.8 mn/month line (mix-prone) against WPI Aluminium ingot +7.6% over one month - which is quoted in the Dynamic Cables card as the honest answer that aluminium's direction is UNKNOWN, since it is the main swing factor in that idea.",
+ "govt_considered": [
+  {
+   "release": "★ TODAY'S PIB RELEASES WERE NEVER READ - THE GOVERNMENT LANE DID NOT RUN",
+   "outlay_cr": null,
+   "theme": null,
+   "verdict": "govt.py exited 0 with 'PIB unreachable (GET failed https://www.pib.gov.in/allRel.aspx?reg=3&lang=1: <urlopen error Tunnel connection failed: 403 Forbidden>); docs/ideas/govt.json LEFT UNCHANGED at its 2026-10-26 18:56 IST build.' pib.gov.in is refused at this sandbox's egress proxy. Normally the ideas-feeds Action reads PIB for the routine - it did so successfully in step 7 of BOTH of today's runs - but both runs were cancelled on the job timeout before the commit step, so nothing landed. CONSEQUENCE, stated plainly: what the Government of India announced on 2026-10-27 is UNKNOWN to this run. It is not 'nothing cleared the bar'; it is 'not read'. The number of releases scanned, opened and kept today is unknown."
+  },
+  {
+   "release": "DAC clears capital acquisition proposals worth Rs 2.12 lakh crore for defence forces (Ministry of Defence, PRID 2328486)",
+   "outlay_cr": 212000.0,
+   "theme": "defence",
+   "verdict": "ALREADY CONSIDERED - this is the one kept release in the committed govt.json, and the file is YESTERDAY'S build (2026-10-26 18:56 IST). The 2026-10-26 run researched it (Premier Explosives) and did not publish, on three recorded grounds: an open offer by Apollo Micro Systems at Rs 705.65 already sets the price, the AoN item list could not be read because PIB is blocked, and Q1 FY27 earnings fell (revenue -27.9%, PAT -80.2% YoY) against a 74x trailing multiple. Nothing filed since changes that, and re-researching it today would be re-publishing yesterday's work. No action."
+  }
+ ],
+ "orderbook_lane": "NO NEW CANDIDATE, and the reason is measured rather than assumed. orderbook_signals.json carries a `built` stamp of 2026-10-26 19:25 IST, so per step 4a this run started `python3 scripts/ideas/orderbook.py --refresh` itself at 20:41 IST - and says so here. It ran for 21 minutes (20:41-21:02 IST) WITHOUT PRODUCING A SINGLE LINE OF OUTPUT and was then stopped so it could not leave order_book.json half-written; `git diff` confirms order_book.json and orderbook_signals.json are byte-unchanged in this commit (the same builder is what consumed 38 minutes and then the whole job on BOTH of today's Action runs), and this sandbox cannot reach NSE at all (www.nseindia.com answers 403, nsearchives.nseindia.com 404), which is the host the whole-market order-filing read depends on. So the ledger is UNREFRESHED and the committed signals are yesterday's. Worked against yesterday's build as the playbook's fallback allows: of 429 signal rows, 36 have yoy_pct >= 50, and ALL 36 ARE ALREADY IN orderbook_jumps.json - checked key by key, 0 unchecked. There is therefore no row in the band (Rs 200-7,500 cr, check false, not already published) left to open filings for. orderbook_verified.json is unchanged at 37 rows; no row's quote was found wrong today because no new row was read.",
+ "orderbook_jumps": "NOTHING NEW TO CHECK, measured not assumed. Every row of orderbook_signals.json with yoy_pct >= 50 (36 of 429, any size, check true or false) was matched against orderbook_jumps.json -> rows by key: 36 of 36 are already present, so none required a filing check this run. The ledger stays at 36 rows, last stamped '2026-10-26 (routine re-check)'. ob_tracker.py was NOT re-run because no qualifying row was added or changed, so orderbook_tracker.json (26 rows, 2026-10-26 20:39 IST) is unchanged and is not in this commit. PENDING FOR TOMORROW: the real gap is that the ledger behind these signals has not been refreshed for two days, so a jump a company filed on 26 or 27 October cannot yet appear as a signals row at all - that is the Action timeout, recorded in feeds_status above, and it is the owner's fix.",
+ "orderwins_lane": "NO NEW FLAG TO CONFIRM. orderwins_signals.json is yesterday's build (2026-10-26 19:26 IST; order_wins.py is step 19 of the Action and was SKIPPED on both cancelled runs). Of its 142 rows, 24 are flagged (running total of order-win letters >= 0.5x the last stated order book within 183 days) and ALL 24 ARE ALREADY IN orderwins_verified.json - checked key by key, 0 unverified. So there was no flagged row to open base documents and order letters for, and no new order-book-lane candidate from this route. orderwins_verified.json unchanged at 32 rows. Same caveat as above: with the builder unrefreshed for two days, letters filed on 26-27 October are not yet summed into any flag.",
+ "researched": [
+  {
+   "scrip": "544669",
+   "name": "Admach Systems Ltd",
+   "lane": "filing",
+   "verdict": "PUBLISHED",
+   "reason": "H1 FY27 revenue +48.3% and PAT +45.9% with positive operating cash flow and receivable days halved, at 25.9x trailing on a Rs 313 cr market cap, published at low-to-medium confidence because the order book is flat and under 1x sales, the company is a serial order-press-release filer, and no CFO has been disclosed since 16-May-2026.",
+   "docs_read": [
+    "order-book press release 27-Oct-2026",
+    "H1 FY27 results press release 27-Oct-2026",
+    "33-page investor presentation 27-Oct-2026",
+    "statutory unaudited results + limited review 26-Oct-2026",
+    "FY26 earnings-call transcript (call 28-May-2026) filed 01-Jun-2026",
+    "FY2025-26 annual report (related-party note 27, auditor's report, ratio page)",
+    "CFO resignation 16-May-2026",
+    "order-book press releases of 30-Sep-2026 and 15-Oct-2026",
+    "September 2026 shareholding pattern",
+    "order_book.json ledger readings, 2025-09-30 to 2026-10-15"
+   ]
+  },
+  {
+   "scrip": "540795",
+   "name": "Dynamic Cables Ltd",
+   "lane": "filing",
+   "verdict": "PUBLISHED",
+   "reason": "Two hard dated triggers - +20% installed capacity in a Reg-30 filing and H1 revenue +31.0% / PAT +24.3% - at 17.5x trailing with promoters at 68.18% unchanged across five shareholding patterns, published at medium confidence with the aluminium pass-through caveat as the leading risk.",
+   "docs_read": [
+    "Reg-30 new-facility intimation 26-Oct-2026",
+    "H1 FY27 results press release 27-Oct-2026",
+    "statutory unaudited results 27-Oct-2026",
+    "board meeting outcome 27-Oct-2026",
+    "Q1 FY27 earnings-call transcript (call 20-Jul-2026) filed 23-Jul-2026",
+    "board comments on the BSE fine 27-Oct-2026 (incl BSE's own two emails)",
+    "SEBI PIT code-of-conduct violation report 28-Sep-2026",
+    "SMP resignations 10-Sep and 23-Sep-2026",
+    "Q2 FY27 call audio-link letter 27-Oct-2026",
+    "September 2026 shareholding pattern",
+    "signals.json aluminium group, built 20:18 IST"
+   ]
+  },
+  {
+   "scrip": "544419",
+   "name": "ArisInfra Solutions Ltd",
+   "lane": "filing",
+   "verdict": "NOT PUBLISHED",
+   "reason": "The Rs 250 cr in the press-release headline is the project's gross development value, and the Reg-30 annexure gives NO consideration for the DaaS mandate; the only order with a value is Rs 9.85 cr = 1.50% of Rs 658.43 cr trailing revenue, in the study's weakest size bucket, from a repeat filer.",
+   "docs_read": [
+    "press release 'Third Transcon Mandate' 27-Oct-2026",
+    "Reg-30 order filing, Transcon Iconica DaaS 27-Oct-2026 (with Annexure A)",
+    "Reg-30 order filing, JS Infra Core / S.P. Adke's Construction 27-Oct-2026 (with Annexure A)",
+    "BSE detailed results, 8 quarters to Q1 FY27",
+    "September 2026 shareholding pattern (XBRL)",
+    "June 2026 shareholding pattern (XBRL)"
+   ]
+  }
+ ],
+ "published": [
+  "2026-10-27-ADMACH",
+  "2026-10-27-DYCL"
+ ],
+ "x_checked": [
+  {
+   "name": "Admach Systems Ltd",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com, two queries: 'Admach Systems order book NDT results' and '\"Admach Systems\" OR \"ADMACH\" 544669 stock'",
+   "posts_found": 0,
+   "new_verified_points": 0,
+   "note": "No post about the company surfaced. The first query returned eight accounts that merely use the NDT acronym (an NDT training academy, an equipment supplier, a physiotherapy association, a nephrology journal); the second returned one unrelated US promotional post. Recorded as 'nothing found by search', NOT as 'nothing on X': X indexing lags a day or two and the filings landed this afternoon."
+  },
+  {
+   "name": "Dynamic Cables Ltd",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'Dynamic Cables DYCL Q2 FY27 results order book'",
+   "posts_found": 2,
+   "new_verified_points": 2,
+   "note": "@SureshKBN argues the valuation should be worked with FY27 capacity and H2 going live - which matches the 26-Oct Reg-30 filing and the Q1 call's Rs 45 cr / 6-7x asset-turn figures, so the PREMISE is filing-verified. @_Investor_Feed_ posted Q1 FY27 'revenue Rs. 35,010.11 lakhs, EPS Rs. 5.15': the EPS matches the filing EXACTLY, the revenue figure does NOT (filings say Rs 349.10 cr of revenue from operations, Rs 350.28 cr of total income) and looks like a transposition of 34,910.11 - logged on the card under 'Where X disagrees with the filings'. Nothing posted today about the H1 results surfaced."
+  },
+  {
+   "name": "ArisInfra Solutions Ltd",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'ArisInfra Solutions ARIS order ArisUnitern DaaS'",
+   "posts_found": 2,
+   "new_verified_points": 1,
+   "note": "★ A CLAIM ON X CHECKED AGAINST THE FILINGS AND FOUND WRONG. @Tvaasu1 (CSTM) posted 'SMART MONEY FLOWS INTO ARISINFRA... Big Bull Mukul Agrawal Makes a New Entry'. Checked against both XBRL shareholding patterns on bseindia.com: Mukul Mahavir Agrawal held 13,00,000 shares (1.59%) at 30-Jun-2026 and 14,00,000 (1.71%) at 30-Sep-2026. So the HOLDING is verified from a primary document, but it is NOT a new entry - he was already a holder in June and added 1,00,000 shares in the September quarter. @alkeshthakkar separately reported a 06-May-2026 Wadhwa Group DaaS 'Catalyst' service order, consistent with the pattern of mandates in the company's own filings but not separately verified in this run."
+  },
+  {
+   "name": "ALL THREE NAMES - a sweep limitation that applies to every one",
+   "searched": "cdn.syndication.twimg.com/tweet-result?id=<ID>&token=a",
+   "posts_found": null,
+   "new_verified_points": null,
+   "note": "★ BLOCKED. The endpoint the playbook uses to read a post by id without logging in was refused at this sandbox's egress proxy (HTTP 000, connect_rejected). So NO post was read in full in this run - every gist above comes from the search result's own snippet and is treated as a lead only, and the 15-word quoting limit was applied to the snippets. forum.valuepickr.com was likewise unreachable (see valuepickr note), so the ValuePickr half of the sweep did not run for any name."
+  },
+  {
+   "name": "ALL THREE NAMES - ValuePickr",
+   "searched": "forum.valuepickr.com/search.json?q=<name> and a server-side fetch of the same URL",
+   "posts_found": null,
+   "new_verified_points": null,
+   "note": "★ BLOCKED, NOT ABSENT. curl returned HTTP 000 with the agent proxy reporting connect_rejected; a server-side fetch failed with getaddrinfo ENOTFOUND. Neither search.json nor raw/<id> was reachable, so whether Admach, Dynamic Cables or ArisInfra has a thread is UNKNOWN. Each published card's `valuepickr` field says exactly this rather than claiming no thread exists."
+  }
+ ],
+ "updates_sweep": "★ RUN BY HAND ON THE BSE SIDE ONLY, AND IT IS THEREFORE INCOMPLETE - SAID LOUDLY. updates.py could not be used: this sandbox cannot reach NSE (www.nseindia.com 403, nsearchives.nseindia.com 404), so it exits 3 by design and keeps the committed queue - and the committed updates_queue.json is stamped 2026-10-26 20:04 IST, NOT today, because the ideas-feeds Action that normally rebuilds it (step 21) was SKIPPED on both of today's cancelled runs. So neither route gave a queue for today. Instead this run imported updates.py's own `bse_items` reader and swept BSE directly for all 64 ideas from each card's updates_checked date to 2026-10-27: 44 filings found across 53 BSE-listed cards, 0 read problems, every page checked against BSE's own ROWCNT. WHAT IS MISSING, precisely: (a) every NSE-ONLY feed - board meetings, corporate actions, SAST Reg 29, insider trading (PIT), shareholding patterns, integrated results, annual reports and credit ratings - for all 64 cards; this is exactly the feed family that caused the Viviana miss the selftest exists to catch; (b) the SECOND READER's 7-day re-read of the whole-market feeds, so second_reader_misses and second_reader_problems are UNKNOWN today, not zero; (c) the BSE sweep itself was impossible for the 10 cards with no BSE scrip (PRESSTONIC, KORE, FONEBOX, UTSSAV, GPECO, VIVIANA, ORIANA, MARINE, PARTH, SUPREMEPWR) - they are NSE-only and were not swept at all. 19 updates were written across 17 ideas from 24 documents opened; 4 guidance lines rewritten (TRISHAKT, MOREPENLAB, PPEL, ANTELOPUS) and 7 re-read against new transcripts or presentations and confirmed unchanged (SWASTIKAIN, FAIRCHEMOR, VEEFIN, TINNARUBR, ORIRAIL, BHARATSE, AEROENTER). updates_checked set to 2026-10-27 on all 64. TONES of the 19: good 9 (SUGSLLOYD order, BHARATSE results, VALIANT order, JYOTISTRUC order, VEEGALAND launch, SWASTIKAIN transcript, MOREPENLAB results, PPEL guidance, ANTELOPUS results), bad 3 (BHARATSE related-party limit increase, AEROENTER object-clause widening, ORIRAIL wagon-production shortfall), neutral 7. KINDS: filing 7, order 4, results 3, corp 2, guidance 2, news 1. BIGGEST ITEM: Jyoti Structures' Rs 949.35 cr excluding GST PowerGrid +/-800 kV HVDC bipole award (TL01 + TL02, 38 months) - the government-lane thesis on that card arriving as a filing.",
+ "note": "Of the three lanes the page is built on, ONE ran on today's data. GOVERNMENT: did not run - PIB is refused at this sandbox's proxy and both ideas-feeds Action runs were cancelled on the job timeout before committing, so what the government announced today is unknown, not empty. COMMODITY: rebuilt but with zero new Indian prints - every domestic price host was refused at the proxy, the WPI panel's latest month is 2026-04 and the trade panel's 2026-08, so the strong signals are yesterday's evidence and publishing one today would have been republishing old data as news; the aluminium group was used as evidence INSIDE a filing card instead, where it honestly resolves to 'unknown'. FILINGS: ran on today's BSE data, twice, with a SELFTEST PASS, and produced both published ideas. Two names were researched and published, one researched and rejected on the documents, and six more candidates were triaged with a stated reason each. The order-book, order-wins and confirmed-jumps lanes had nothing new to check - verified key by key, not assumed - because their builders have not refreshed in two days. The single most useful thing in this run for the owner is probably not an idea at all: it is that the feeds workflow has silently landed nothing for two consecutive days, and the reason is one builder exceeding a 45-minute job timeout that also discards the commit step.",
+ "data_problems": [
+  "★ ideas-feeds Action cancelled on the 45-minute job timeout two days running (40511927903 today, 40330468786 on 2026-10-26), both times inside step 17 'Order-book ledger refresh', with every later step - including 'Record status and guard every output' and 'Commit the feeds' - SKIPPED. Nothing was committed either day. A third run was dispatched from this session (40524884281, started 14:49 UTC) and entered the same step at 14:56 UTC against the same 15:34 UTC wall. Fix needed from the owner: give the order-book refresh its own job or a step-level timeout so one slow builder cannot discard the government lane, the commodity prints, the order-wins builder, the jumps tracker and the updates queue along with it.",
+  "This sandbox's egress allowlist permits BSE ONLY. Measured host by host this run: api.bseindia.com 200, www.bseindia.com 200. Refused at the proxy (connect_rejected / 'Tunnel connection failed: 403 Forbidden' - the PROXY, not the site): www.pib.gov.in, westmetall.com, markets.businessinsider.com, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, caionline.in, www.indianspices.com, www.guidechem.com, tradingeconomics.com, eaindustry.nic.in, tradestat.commerce.gov.in, forum.valuepickr.com, cdn.syndication.twimg.com, threadreaderapp.com. NSE answers but refuses us: www.nseindia.com 403, nsearchives.nseindia.com 404. WebSearch (server-side) worked and was the only route to X.",
+  "★ PyMuPDF and xlrd were installed into the WRONG interpreter at setup and the run nearly went out with a broken scan - the same trap as 2026-10-22. `pip` on this VM is /usr/bin/pip (a different Python) while the interpreter is /usr/local/bin/python3 3.11.17, so `pip install --quiet pymupdf xlrd` reported success and `import fitz` still failed. Caught because minsteel.py raised ModuleNotFoundError. Reinstalled with `python3 -m pip`, DELETED the 1 empty file the fitz-less scan had written into scripts/ideas/_cache/ob_text, and re-ran scan.py from scratch to a SELFTEST PASS. Without that catch, scan.py's generic-heading TRADE classification would have been silently disabled for the day. Worth hardcoding `python3 -m pip` in the routine prompt's step 0.",
+  "Both of today's announcement reads are CAPPED: 1,149 of 1,153 at 20:19 IST and 1,160 of 1,162 at 20:24 IST. BSE's own reported count rose between the two reads, so some of today's filings were still arriving. 1,160 and the 175 classified in the universe are FLOORS. Filings made after 20:24 IST are not in the scan at all.",
+  "docs/ideas/updates_queue.json in this commit is stamped 2026-10-26 20:04 IST and is NOT today's - it is committed unchanged, and the sweep that was actually done is the hand-built BSE-only one described in updates_sweep. second_reader_misses and second_reader_problems are UNKNOWN for today, not zero, because the second reader never ran.",
+  "10 published cards have no BSE scrip (NSE Emerge / NSE-only) and so were not swept at all today: PRESSTONIC, KORE, FONEBOX, UTSSAV, GPECO, VIVIANA, ORIANA, MARINE, PARTH, SUPREMEPWR. Their updates_checked was still advanced to 2026-10-27 along with the rest, which OVERSTATES what was checked for those ten; the honest record is this line.",
+  "Bharat Seats' Q2/H1 FY27 results filing (d3b2bae2) is a 9-page scan with no text layer: revenue, EBITDA and PAT could not be read from it, so no figure was invented. The EPS in the update comes from BSE's Corp_detailedResult feed instead. The same feed returns EPS only - no revenue, PAT or total income - for Bharat Seats (523229) and for Jyoti Structures (513250), which is why the Rs 949.35 cr PowerGrid order could NOT be expressed against a trailing year of sales, the ratio the §144c study says matters.",
+  "Dynamic Cables' reply of 03-Sep-2026 to BSE's clarification on price movement 404s on BOTH AttachLive and AttachHis, so its content is unread. Recorded as an unknown on that card rather than passed over.",
+  "Dynamic Cables filed only the AUDIO LINK for its Q2 FY27 earnings call (27-Oct-2026); Tinna Rubber likewise filed only audio for its 26-Oct-2026 call. Audio cannot be read in this run, so both cards' guidance rests on the previous transcript and both say so.",
+  "india_spot.py reported the `fuel` source as \"FAILED (No module named 'fitz')\" rather than as a blocked host, because that source was reached in the same process that had already imported fitz successfully for other sources. ppac.gov.in is in any case refused at the proxy, so the row would have been kept either way - but the status string misattributes the cause, which a reader of india_spot.json would take at face value.",
+  "orderbook_tracker.json and breakout_watch.json are NOT in this commit and are unchanged from 2026-10-26: ob_tracker.py was not re-run because no qualifying jump row changed, and breakout.py is step 18 of the Action, skipped on both cancelled runs."
+ ],
+ "signals_strong_count": 37
+}
