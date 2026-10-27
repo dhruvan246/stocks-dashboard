@@ -28606,6 +28606,12 @@ DFMFOODS Jun-22, NOVARTIND Sep-25, TATAMETALI Jun-22 (S). Diff vs origin: only t
 STILL OPEN (no BSE XBRL returned; filed/not-filed NOT yet established): ACLGATI Sep-25, DHANI Sep-25, E2E Jun-22, FRETAIL Mar/Jun/Sep-22,
 JMCPROJECT Dec-22, SANGHIIND Mar-26, TATAMETALI Dec-23, TINPLATE Dec-23, UJJIVAN Mar-24, CIGNITITEC Mar-26/Jun-26; MBAPL Jun/Sep-22 + TSFINV Jun-22 have no BSE code.
 Work files: ~/stocks-cache/microcap250/{fill_gaps_20261027,todo,extra,bse_fills}.json.
+Follow-up same day (user "yes"): the "no BSE code" 4 DID file on NSE — the plain corporates-financial-results list silently skips them; a
+dated corporate-announcements query finds the PDFs. Read by eye (lakh → crore; op = PBT+FC+Dep−OI, ebit = PBT+FC−OI, same as stored neighbours):
+E2E Jun-22 S (BM outcome 25-Jul-22 p2), MBAPL Jun-22 + Sep-22 S (29-Jul-22 p5, 3-Nov-22 p5; H1 column = sum ✓), TSFINV Jun-22 S+C
+(NSE symbol SUNDARMHLD, 3-Aug-22 p2/p3; con PAT incl. associates 4,113.50 lakh). Ledger: ~/stocks-cache/microcap250/nse_pdf_fills.json.
+The other 12 open quarters: each scrip's BSE results archive ends BEFORE the quarter and its last price bar comes before the due date
+(delisted/merged) — treated as not filed; NSE announcements not individually re-checked.
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
