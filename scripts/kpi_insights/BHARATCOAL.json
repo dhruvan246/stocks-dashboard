@@ -1,14 +1,392 @@
 {
  "sym": "BHARATCOAL",
  "fy_end_month": 3,
- "docs": {},
- "metrics": [],
+ "docs": {
+  "b8f7af74-052c-499e-8bed-60037adb900b.pdf": {
+   "kind": "ip",
+   "date": "2026-02-03",
+   "title": "Q3 FY26 Results Presentation",
+   "read": "2026-10-27",
+   "by": "claude-session"
+  }
+ },
+ "metrics": [
+  {
+   "name": "Coal Production",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 40.5
+   },
+   "q": {
+    "20241231": 9.97,
+    "20251231": 8.9
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "PRODUCTION (In MT)",
+     "8.90"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "PRODUCTION (In MT)",
+     "9.97"
+    ],
+    "y:20250331": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     11,
+     "PRODUCTION",
+     "40.50"
+    ]
+   }
+  },
+  {
+   "name": "Coal Offtake",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 9.76,
+    "20251231": 8.78
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "OFFTAKE (In MT)",
+     "8.78"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "OFFTAKE (In MT)",
+     "9.76"
+    ]
+   }
+  },
+  {
+   "name": "Cost per Tonne (CPT, net)",
+   "unit": "₹/te",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3112.04,
+    "20251231": 3177.9
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     19,
+     "Cost per te (CPT) (in ₹/te) (net)",
+     "3177.90"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     19,
+     "Cost per te (CPT) (in ₹/te) (net)",
+     "3112.04"
+    ]
+   }
+  },
+  {
+   "name": "E-Auction Average Realisation",
+   "unit": "₹ Per Ton",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 5098.42,
+    "20251231": 4352.9
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "E-Auction Av. Real (₹ Per Ton)",
+     "4,352.90"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "E-Auction Av. Real (₹ Per Ton)",
+     "5,098.42"
+    ]
+   }
+  },
+  {
+   "name": "E-Auction Sales Quantity",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 0.25,
+    "20251231": 0.16
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "E-Auction Qty (MT)",
+     "0.16"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "E-Auction Qty (MT)",
+     "0.25"
+    ]
+   }
+  },
+  {
+   "name": "FSA Average Realisation",
+   "unit": "₹ Per Ton",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3319.93,
+    "20251231": 2721.68
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "FSA Av. Real (₹ Per Ton)",
+     "2,721.68"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "FSA Av. Real (₹ Per Ton)",
+     "3,319.93"
+    ]
+   }
+  },
+  {
+   "name": "FSA Sales Quantity",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 8.2,
+    "20251231": 7.13
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "FSA Qty (MT)",
+     "7.13"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "FSA Qty (MT)",
+     "8.20"
+    ]
+   }
+  },
+  {
+   "name": "Overburden Removal",
+   "unit": "MCuM",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 65.37,
+    "20251231": 39.4
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "OB REMOVAL (In MCuM)",
+     "39.40"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     18,
+     "OB REMOVAL (In MCuM)",
+     "65.37"
+    ]
+   }
+  },
+  {
+   "name": "Raw Coal Average Realisation",
+   "unit": "₹ Per Ton",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3373.18,
+    "20251231": 2756.38
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Raw Coal Av. Real (₹ Per Ton)",
+     "2,756.38"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Raw Coal Av. Real (₹ Per Ton)",
+     "3,373.18"
+    ]
+   }
+  },
+  {
+   "name": "Raw Coal Closing Stock",
+   "unit": "MT",
+   "kind": "level",
+   "y": {
+    "20250331": 6.85
+   },
+   "q": {
+    "20251231": 5.74
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     11,
+     "CLOSING STOCK (AS AT 31.12.2025)",
+     "5.74"
+    ],
+    "y:20250331": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     11,
+     "CLOSING STOCK (AS AT 31.03.2025)",
+     "6.85"
+    ]
+   }
+  },
+  {
+   "name": "Raw Coal Sales Quantity",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 8.45,
+    "20251231": 7.29
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Raw Coal Qty (MT)",
+     "7.29"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Raw Coal Qty (MT)",
+     "8.45"
+    ]
+   }
+  },
+  {
+   "name": "Sales per Tonne (SPT)",
+   "unit": "₹/te",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3544.21,
+    "20251231": 3047.0
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     19,
+     "Sales per te (SPT) (in ₹/te)",
+     "3047.00"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     19,
+     "Sales per te (SPT) (in ₹/te)",
+     "3544.21"
+    ]
+   }
+  },
+  {
+   "name": "Total Sales Quantity",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 9.78,
+    "20251231": 8.48
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Qty (MT)",
+     "8.48"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Qty (MT)",
+     "9.78"
+    ]
+   }
+  },
+  {
+   "name": "Washed Coal Average Realisation",
+   "unit": "₹ Per Ton",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 10142.93,
+    "20251231": 9692.14
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Washed Coal Av. Real (₹ Per Ton)",
+     "9,692.14"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Washed Coal Av. Real (₹ Per Ton)",
+     "10,142.93"
+    ]
+   }
+  },
+  {
+   "name": "Washed Coal Sales Quantity",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 0.38,
+    "20251231": 0.41
+   },
+   "src": {
+    "q:20251231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Washed Coal Qty (MT)",
+     "0.41"
+    ],
+    "q:20241231": [
+     "b8f7af74-052c-499e-8bed-60037adb900b.pdf",
+     20,
+     "Total Washed Coal Qty (MT)",
+     "0.38"
+    ]
+   }
+  }
+ ],
  "held": [],
  "catalog": [],
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-23",
  "catalog_ver": 5,
- "updated": "2026-09-23",
+ "updated": "2026-10-27",
  "checked": "2026-09-23",
  "note": "no presentations / press releases found on BSE since 2020-01-01"
 }
