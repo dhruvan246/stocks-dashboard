@@ -29149,3 +29149,32 @@ ASK USER x1: INSPIRE 20260331 std PAT — signed PDF p2 210.02 lakh (2.10) vs XB
  deferred tax (PDF 2.52 lakh, XBRL 0.83).
 Side note: apply_fund_cell_fix flips GSFC 20240930 std and LUXIND 20230930 std on every run (two contradicting ledger entries);
  not touched here — needs its own adjudication.
+
+## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
+
+StockView sent standalone net profit and consolidated owners' profit for every PIT-N500 quarter (CSV, 2026-10-21). Every
+differing cell was judged cell by cell from that company's own results filing (DATA_RUNBOOK §0 first rule). Working
+files, verdicts and the running record: `~/stocks-cache/profit_qm/` (`RECORD.md`, `annsweep/`, `tools/`).
+
+**User rulings for consolidated quarters (2026-10-26; memory `feedback-con-quarter-gap-rules-2026-10-26.md`):**
+1. Filing prints consolidated only for a longer period (full year / 9M / H1) → quarter = longer period minus the earlier
+   period published consolidated before it (Q4 = FY − 9M; Q2 = H1 − Q1).
+2. No earlier consolidated period exists (company consolidated only at year end, the FY19-and-earlier opt-out) → blank;
+   never FY consolidated minus 9M standalone.
+3. The quarter's figure appears only in a later filing (comparative column) → blank.
+4. The value rests only on a fill record (Moneycontrol, aggregator, later comparative) → blank and withdraw the record.
+5. A proforma consolidated quarter printed in the quarter's OWN filing (e.g. EQUITAS Dec-18, IGAAP proforma) → use it.
+
+**Mechanics.** Blanks: `tools/apply_rules26.py` → `con_nofile_retractions.json` + withdraws `mc_pat_fills` / `conpat_filing_fills` /
+`agg_pat_cell_fills` / `nosub_pat_fills` claims. Values: `fund_cell_fix.json` (+ `owners_basis_heals.json` pin for con).
+Fills of empty cells: `agg_pat_cell_fills.json` (std) / `conpat_filing_fills.json` (con), ann = the first filing's date.
+Every push: `verify_fills_live.py` MISSING 0 / RESURRECTED 0, then live check with `tools/live_json.py` ~20 min later.
+Trap: a "new" ticker key can be a stray of a renamed company — GARWAOFFS rows duplicate GLOBOFFS (the live key); always
+check the alias and the neighbouring key before inserting a row.
+
+**Result (live, data 4df6913c7c):** 2,953 corrections on our side (872 values, 1,881 blanks, 200 fills).
+Reply workbook `out/StockWorld_profit_reply_to_StockView_20261027.xlsx`: std 527 / con 4,225 cells still differ —
+their error 54 / 1,113, their blank 1 / 2,643, rule difference 56 / 394, ticker 412 / 65, under review 4 / 10.
+**Open:** PIRAMALFIN std Dec-24/Jun-25 (PFL restated vs PEL first filing — user decision), PIDILITIND/TECHM Mar-17,
+PVRINOX Dec-18, STLTECH Jun-15, GPPL Sep-18, JKTYRE Mar-13, BALLARPUR Jun-16, ASAHIINDIA Dec-10, FCONSUMER Sep-12
+(add under FUTUREVENT), MHRIL FY19 ×3 (ambiguous Ind AS 18 basis), MAHLIFE Dec-12/Mar-13 kept (within press-release rounding).
