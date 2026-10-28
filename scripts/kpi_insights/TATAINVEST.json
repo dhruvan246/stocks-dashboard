@@ -113,6 +113,27 @@
    "title": "Q3 & 9M FY24 Results",
    "read": "2026-09-18",
    "by": "claude-routine"
+  },
+  "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf": {
+   "kind": "res",
+   "date": "2023-05-05",
+   "title": "Audited Standalone and Consolidated Financial Results for the Year Ended 31st March 2023",
+   "read": "2026-10-28",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf": {
+   "kind": "res",
+   "date": "2023-11-08",
+   "title": "Unaudited Financial Results For The Quarter And Half Year Ended September 30, 2023",
+   "read": "2026-10-28",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "91f17960-3820-44d7-baa9-6a3b141242db.pdf": {
+   "kind": "res",
+   "date": "2023-08-04",
+   "title": "Unaudited Financial Results For The Quarter Ended June 30, 2023",
+   "read": "2026-10-28",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -125,8 +146,11 @@
     "20240331": 5869.0
    },
    "q": {
+    "20220331": 3861.0,
+    "20220930": 3986.0,
     "20221231": 3869.0,
     "20230331": 3835.0,
+    "20230630": 4373.0,
     "20230930": 4648.0,
     "20231231": 5477.0,
     "20240331": 5869.0,
@@ -206,23 +230,109 @@
      "6,366.00"
     ],
     "q:20230930": [
-     "98699194-7308-4bd4-b78e-81bce4f65d16.pdf",
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
      4,
      "Total Equity per share (post tax)",
-     "4,648"
+     "4,648.00"
     ],
     "q:20230331": [
-     "442179ff-81cf-4031-a2a7-82153387be37.pdf",
-     9,
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     6,
      "Total Equity per share (post tax)",
      "3,835"
     ],
     "q:20221231": [
-     "98699194-7308-4bd4-b78e-81bce4f65d16.pdf",
-     4,
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     6,
      "Total Equity per share (post tax)",
      "3,869"
+    ],
+    "q:20220331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     6,
+     "Total Equity per share (post tax)",
+     "3,861"
+    ],
+    "q:20230630": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     4,
+     "Total Equity per share (post tax)",
+     "4,373.00"
+    ],
+    "q:20220930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     4,
+     "Total Equity per share (post tax)",
+     "3,986.00"
     ]
+   },
+   "latest": {
+    "q:20230331": "2024-05-23",
+    "q:20221231": "2024-01-29",
+    "q:20230930": "2024-01-29"
+   }
+  },
+  {
+   "name": "Total Book Value of Investments",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20230331": 3227.92,
+    "20240331": 3750.31,
+    "20250331": 4121.61,
+    "20260331": 4656.33
+   },
+   "q": {
+    "20220331": 20780.28,
+    "20230331": 20472.02,
+    "20230930": 25220.13
+   },
+   "src": {
+    "y:20250331": [
+     "a6a5791d-f067-4231-905a-7b534d2e2faa.pdf",
+     22,
+     "TOTAL BOOK VALUE - Book value of all investments",
+     "4,121.61"
+    ],
+    "y:20260331": [
+     "a6a5791d-f067-4231-905a-7b534d2e2faa.pdf",
+     22,
+     "TOTAL BOOK VALUE - Book value of all investments",
+     "4,656.33"
+    ],
+    "y:20240331": [
+     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
+     24,
+     "Total Book Value - Net Book value of all investments",
+     "3,750.31"
+    ],
+    "y:20230331": [
+     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
+     24,
+     "Total Book Value - Net Book value of all investments",
+     "3,227.92"
+    ],
+    "q:20230331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     7,
+     "Investments",
+     "20,472.02"
+    ],
+    "q:20220331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     7,
+     "Investments",
+     "20,780.28"
+    ],
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     5,
+     "Investments",
+     "25,220.13"
+    ]
+   },
+   "latest": {
+    "q:20230331": "2023-11-08"
    }
   },
   {
@@ -298,44 +408,6 @@
      24,
      "Quoted Investments - Market value",
      "18,439.81"
-    ]
-   }
-  },
-  {
-   "name": "Total Book Value of Investments",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {
-    "20230331": 3227.92,
-    "20240331": 3750.31,
-    "20250331": 4121.61,
-    "20260331": 4656.33
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "a6a5791d-f067-4231-905a-7b534d2e2faa.pdf",
-     22,
-     "TOTAL BOOK VALUE - Book value of all investments",
-     "4,121.61"
-    ],
-    "y:20260331": [
-     "a6a5791d-f067-4231-905a-7b534d2e2faa.pdf",
-     22,
-     "TOTAL BOOK VALUE - Book value of all investments",
-     "4,656.33"
-    ],
-    "y:20240331": [
-     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
-     24,
-     "Total Book Value - Net Book value of all investments",
-     "3,750.31"
-    ],
-    "y:20230331": [
-     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
-     24,
-     "Total Book Value - Net Book value of all investments",
-     "3,227.92"
     ]
    }
   },
@@ -454,6 +526,120 @@
    }
   },
   {
+   "name": "Bank Deposits",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {
+    "20230331": 31.83
+   },
+   "q": {
+    "20220331": 3.01,
+    "20230331": 34.77
+   },
+   "src": {
+    "y:20230331": [
+     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
+     24,
+     "Bank Deposits",
+     "31.83"
+    ],
+    "q:20230331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     7,
+     "Bank balance other than cash and cash equivalents",
+     "34.77"
+    ],
+    "q:20220331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     7,
+     "Bank balance other than cash and cash equivalents",
+     "3.01"
+    ]
+   }
+  },
+  {
+   "name": "Total Book Value of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20220331": 20892.56,
+    "20230331": 21009.38,
+    "20230930": 25592.89
+   },
+   "src": {
+    "q:20230331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     16,
+     "Investments",
+     "21,009.38"
+    ],
+    "q:20220331": [
+     "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+     16,
+     "Investments",
+     "20,892.56"
+    ],
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     11,
+     "Investments",
+     "25,592.89"
+    ]
+   },
+   "latest": {
+    "q:20230331": "2023-11-08"
+   }
+  },
+  {
+   "name": "Purchase of Investments",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220930": 1410.21,
+    "20230930": 1760.08
+   },
+   "src": {
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     6,
+     "Purchase of investments",
+     "1,760.08"
+    ],
+    "q:20220930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     6,
+     "Purchase of investments",
+     "1,410.21"
+    ]
+   }
+  },
+  {
+   "name": "Purchase of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220930": 1555.5,
+    "20230930": 5457.61
+   },
+   "src": {
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     12,
+     "Purchase of investments",
+     "5,457.61"
+    ],
+    "q:20220930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     12,
+     "Purchase of investments",
+     "1,555.50"
+    ]
+   }
+  },
+  {
    "name": "Quoted Investee Companies",
    "unit": "count",
    "kind": "level",
@@ -474,6 +660,54 @@
      23,
      "57 are Quoted companies as on March 31, 2024",
      "57"
+    ]
+   }
+  },
+  {
+   "name": "Sale Proceeds of Investments",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220930": 1546.46,
+    "20230930": 1889.81
+   },
+   "src": {
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     6,
+     "Sale proceeds of investments",
+     "1,889.81"
+    ],
+    "q:20220930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     6,
+     "Sale proceeds of investments",
+     "1,546.46"
+    ]
+   }
+  },
+  {
+   "name": "Sale Proceeds of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220930": 1662.07,
+    "20230930": 5623.98
+   },
+   "src": {
+    "q:20230930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     12,
+     "Sale proceeds of investments",
+     "5,623.98"
+    ],
+    "q:20220930": [
+     "5dbca0fc-3efe-4aa7-aed5-e06833da15dd.pdf",
+     12,
+     "Sale proceeds of investments",
+     "1,662.07"
     ]
    }
   },
@@ -524,26 +758,98 @@
      "2,032.22"
     ]
    }
-  },
-  {
-   "name": "Bank Deposits",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {
-    "20230331": 31.83
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "ca1102fa-f23e-42d7-b1ff-4053e711a294.pdf",
-     24,
-     "Bank Deposits",
-     "31.83"
-    ]
-   }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Purchase of Investments",
+   "unit": "INR Cr",
+   "period": "31-Mar-23",
+   "value": 3017.12,
+   "as_printed": "3,017.12",
+   "page": 8,
+   "label": "Purchase of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-23'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Purchase of Investments",
+   "unit": "INR Cr",
+   "period": "31-Mar-22",
+   "value": 2432.22,
+   "as_printed": "2,432.22",
+   "page": 8,
+   "label": "Purchase of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-22'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Sale Proceeds of Investments",
+   "unit": "INR Cr",
+   "period": "31-Mar-23",
+   "value": 3261.56,
+   "as_printed": "3,261.56",
+   "page": 8,
+   "label": "Sale proceeds of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-23'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Sale Proceeds of Investments",
+   "unit": "INR Cr",
+   "period": "31-Mar-22",
+   "value": 2403.7,
+   "as_printed": "2,403.70",
+   "page": 8,
+   "label": "Sale proceeds of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-22'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Purchase of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "period": "31-Mar-23",
+   "value": 6293.88,
+   "as_printed": "6,293.88",
+   "page": 17,
+   "label": "Purchase of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-23'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Purchase of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "period": "31-Mar-22",
+   "value": 2819.73,
+   "as_printed": "2,819.73",
+   "page": 17,
+   "label": "Purchase of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-22'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Sale Proceeds of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "period": "31-Mar-23",
+   "value": 6136.96,
+   "as_printed": "6,136.96",
+   "page": 17,
+   "label": "Sale proceeds of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-23'"
+  },
+  {
+   "doc": "27c649bf-8902-42f3-98cb-a4f204f61b11.pdf",
+   "metric": "Sale Proceeds of Investments (Consolidated)",
+   "unit": "INR Cr",
+   "period": "31-Mar-22",
+   "value": 2812.44,
+   "as_printed": "2,812.44",
+   "page": 17,
+   "label": "Sale proceeds of investments",
+   "why": "period_type FY but the label reads as a quarter: '31-Mar-22'"
+  }
+ ],
  "catalog": [
   {
    "kind": "res",
@@ -918,5 +1224,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-18"
+ "updated": "2026-10-28"
 }

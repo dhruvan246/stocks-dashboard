@@ -78,6 +78,13 @@
    "title": "Q1 FY26 Results Presentation",
    "read": "2026-09-11",
    "by": "claude-routine"
+  },
+  "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf": {
+   "kind": "ip",
+   "date": "2026-10-27",
+   "title": "Q2 FY2027 Results Presentation",
+   "read": "2026-10-28",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -101,7 +108,8 @@
     "20250930": 3685.0,
     "20251231": 3655.0,
     "20260331": 3682.0,
-    "20260630": 3807.0
+    "20260630": 3807.0,
+    "20260930": 3749.0
    },
    "src": {
     "q:20250630": [
@@ -187,7 +195,17 @@
      19,
      "GGBS Realisation (Rs./MT)",
      "3,874"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     19,
+     "GGBS Realisation (1) (₹/MT)",
+     "3,749"
     ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27",
+    "q:20260630": "2026-10-27"
    }
   },
   {
@@ -209,7 +227,8 @@
     "20250930": 1.38,
     "20251231": 1.53,
     "20260331": 1.57,
-    "20260630": 1.33
+    "20260630": 1.33,
+    "20260930": 1.47
    },
    "src": {
     "q:20250630": [
@@ -289,7 +308,17 @@
      18,
      "GGBS Volume Sold (mn. MT)",
      "1.24"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     18,
+     "GGBS Volume Sold (mn. MT)",
+     "1.47"
     ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27",
+    "q:20260630": "2026-10-27"
    }
   },
   {
@@ -395,6 +424,105 @@
    }
   },
   {
+   "name": "Cement Volume Sold",
+   "unit": "mn MT",
+   "kind": "flow",
+   "y": {
+    "20250331": 7.09,
+    "20260331": 7.73
+   },
+   "q": {
+    "20240630": 1.68,
+    "20240930": 1.54,
+    "20241231": 1.77,
+    "20250331": 2.1,
+    "20250630": 1.85,
+    "20250930": 1.64,
+    "20251231": 1.89,
+    "20260331": 2.35,
+    "20260630": 2.34,
+    "20260930": 2.29
+   },
+   "src": {
+    "q:20250630": [
+     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
+     18,
+     "Cement Volume Sold (mn. MT)",
+     "1.85"
+    ],
+    "q:20260331": [
+     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
+     19,
+     "Cement Volume Sold (mn. MT)",
+     "2.35"
+    ],
+    "q:20260630": [
+     "68e46cd0-76e0-45ba-97f1-7ef52762e7e3.pdf",
+     19,
+     "Cement Volume Sold",
+     "2.34"
+    ],
+    "q:20250331": [
+     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
+     18,
+     "Cement Volume Sold (mn. MT)",
+     "2.10"
+    ],
+    "q:20251231": [
+     "45cf2e4a-da6a-448c-8a0d-0c1e8f0cf16e.pdf",
+     19,
+     "Cement Volume Sold (mn. MT)",
+     "1.89"
+    ],
+    "y:20250331": [
+     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
+     25,
+     "Cement Volume Sold (mn. MT)",
+     "7.09"
+    ],
+    "y:20260331": [
+     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
+     25,
+     "Cement Volume Sold (mn. MT)",
+     "7.73"
+    ],
+    "q:20241231": [
+     "45cf2e4a-da6a-448c-8a0d-0c1e8f0cf16e.pdf",
+     19,
+     "Cement Volume Sold (mn. MT)",
+     "1.77"
+    ],
+    "q:20250930": [
+     "a435c58a-3391-428f-af29-9e070ae9d3e2.pdf",
+     19,
+     "Cement Volume Sold (mn. MT)",
+     "1.64"
+    ],
+    "q:20240930": [
+     "a435c58a-3391-428f-af29-9e070ae9d3e2.pdf",
+     19,
+     "Cement Volume Sold (mn. MT)",
+     "1.54"
+    ],
+    "q:20240630": [
+     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
+     18,
+     "Cement Volume Sold (mn. MT)",
+     "1.68"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     18,
+     "Cement Volume Sold (mn. MT)",
+     "2.29"
+    ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27",
+    "q:20260630": "2026-10-27"
+   }
+  },
+  {
    "name": "Clinker Capacity Installed",
    "unit": "MTPA",
    "kind": "level",
@@ -490,94 +618,6 @@
    }
   },
   {
-   "name": "Cement Volume Sold",
-   "unit": "mn MT",
-   "kind": "flow",
-   "y": {
-    "20250331": 7.09,
-    "20260331": 7.73
-   },
-   "q": {
-    "20240630": 1.68,
-    "20240930": 1.54,
-    "20241231": 1.77,
-    "20250331": 2.1,
-    "20250630": 1.85,
-    "20250930": 1.64,
-    "20251231": 1.89,
-    "20260331": 2.35,
-    "20260630": 2.34
-   },
-   "src": {
-    "q:20250630": [
-     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
-     18,
-     "Cement Volume Sold (mn. MT)",
-     "1.85"
-    ],
-    "q:20260331": [
-     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
-     19,
-     "Cement Volume Sold (mn. MT)",
-     "2.35"
-    ],
-    "q:20260630": [
-     "68e46cd0-76e0-45ba-97f1-7ef52762e7e3.pdf",
-     19,
-     "Cement Volume Sold",
-     "2.34"
-    ],
-    "q:20250331": [
-     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
-     18,
-     "Cement Volume Sold (mn. MT)",
-     "2.10"
-    ],
-    "q:20251231": [
-     "45cf2e4a-da6a-448c-8a0d-0c1e8f0cf16e.pdf",
-     19,
-     "Cement Volume Sold (mn. MT)",
-     "1.89"
-    ],
-    "y:20250331": [
-     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
-     25,
-     "Cement Volume Sold (mn. MT)",
-     "7.09"
-    ],
-    "y:20260331": [
-     "cddd21f6-db5e-4270-a384-979fa03bb1ce.pdf",
-     25,
-     "Cement Volume Sold (mn. MT)",
-     "7.73"
-    ],
-    "q:20241231": [
-     "45cf2e4a-da6a-448c-8a0d-0c1e8f0cf16e.pdf",
-     19,
-     "Cement Volume Sold (mn. MT)",
-     "1.77"
-    ],
-    "q:20250930": [
-     "a435c58a-3391-428f-af29-9e070ae9d3e2.pdf",
-     19,
-     "Cement Volume Sold (mn. MT)",
-     "1.64"
-    ],
-    "q:20240930": [
-     "a435c58a-3391-428f-af29-9e070ae9d3e2.pdf",
-     19,
-     "Cement Volume Sold (mn. MT)",
-     "1.54"
-    ],
-    "q:20240630": [
-     "4d92aa14-1687-4de3-8f21-b2ca445be900.pdf",
-     18,
-     "Cement Volume Sold (mn. MT)",
-     "1.68"
-    ]
-   }
-  },
-  {
    "name": "Total Volume Sold",
    "unit": "mn MT",
    "kind": "flow",
@@ -594,7 +634,8 @@
     "20250930": 3.11,
     "20251231": 3.56,
     "20260331": 3.99,
-    "20260630": 3.81
+    "20260630": 3.81,
+    "20260930": 3.93
    },
    "src": {
     "q:20250630": [
@@ -662,7 +703,17 @@
      18,
      "Total Volume Sold (mn. MT)",
      "3.07"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     18,
+     "Total Volume Sold (1) (mn. MT)",
+     "3.93"
     ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27",
+    "q:20260630": "2026-10-27"
    }
   },
   {
@@ -679,7 +730,8 @@
     "20250930": 4638.0,
     "20251231": 4459.0,
     "20260331": 4673.0,
-    "20260630": 4951.0
+    "20260630": 4951.0,
+    "20260930": 4781.0
    },
    "src": {
     "q:20250630": [
@@ -735,7 +787,17 @@
      19,
      "Cement Realisation (Rs./MT)",
      "4,754"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     19,
+     "Cement Realisation (1) (₹/MT)",
+     "4,781"
     ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27",
+    "q:20260630": "2026-10-27"
    }
   },
   {
@@ -753,7 +815,8 @@
     "20250930": 50.0,
     "20251231": 52.0,
     "20260331": 51.0,
-    "20260630": 55.0
+    "20260630": 55.0,
+    "20260930": 58.0
    },
    "src": {
     "y:20260331": [
@@ -809,7 +872,19 @@
      28,
      "Clinker Factor %",
      "51"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Clinker Factor %",
+     "58"
     ]
+   },
+   "latest": {
+    "y:20230331": "2026-10-27",
+    "y:20240331": "2026-10-27",
+    "y:20250331": "2026-10-27",
+    "y:20260331": "2026-10-27"
    }
   },
   {
@@ -825,7 +900,9 @@
     "20250630": 283.0,
     "20250930": 283.0,
     "20251231": 273.0,
-    "20260331": 289.0
+    "20260331": 289.0,
+    "20260630": 285.0,
+    "20260930": 294.0
    },
    "src": {
     "q:20250331": [
@@ -875,7 +952,22 @@
      21,
      "Lead distance",
      "295"
+    ],
+    "q:20260630": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     21,
+     "Lead distance",
+     "285"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     21,
+     "Lead distance",
+     "294"
     ]
+   },
+   "latest": {
+    "q:20250930": "2026-10-27"
    }
   },
   {
@@ -980,6 +1072,144 @@
      18,
      "Blended cement ratio",
      "67"
+    ]
+   }
+  },
+  {
+   "name": "Specific Thermal Energy",
+   "unit": "Kcal/kg Clinker",
+   "kind": "level",
+   "y": {
+    "20230331": 749.0,
+    "20240331": 738.0,
+    "20250331": 740.0,
+    "20260331": 743.0
+   },
+   "q": {
+    "20260930": 753.0
+   },
+   "src": {
+    "y:20230331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Thermal Energy (Kcal/kg Clinker)",
+     "749"
+    ],
+    "y:20240331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Thermal Energy (Kcal/kg Clinker)",
+     "738"
+    ],
+    "y:20250331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Thermal Energy (Kcal/kg Clinker)",
+     "740"
+    ],
+    "y:20260331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Thermal Energy (Kcal/kg Clinker)",
+     "743"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Thermal Energy (Kcal/kg Clinker)",
+     "753"
+    ]
+   }
+  },
+  {
+   "name": "Specific Water Consumption",
+   "unit": "L/tcm",
+   "kind": "level",
+   "y": {
+    "20230331": 78.0,
+    "20240331": 76.0,
+    "20250331": 81.0,
+    "20260331": 80.0
+   },
+   "q": {
+    "20260930": 70.0
+   },
+   "src": {
+    "y:20230331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Water Consumption (L/tcm)",
+     "78"
+    ],
+    "y:20240331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Water Consumption (L/tcm)",
+     "76"
+    ],
+    "y:20250331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Water Consumption (L/tcm)",
+     "81"
+    ],
+    "y:20260331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Water Consumption (L/tcm)",
+     "80"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Specific Water Consumption (L/tcm)",
+     "70"
+    ]
+   }
+  },
+  {
+   "name": "Thermal Substitution Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20230331": 8.0,
+    "20240331": 10.0,
+    "20250331": 17.0,
+    "20260331": 13.0
+   },
+   "q": {
+    "20260930": 9.0
+   },
+   "src": {
+    "y:20230331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Thermal Substitution Rate (%)",
+     "8"
+    ],
+    "y:20240331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Thermal Substitution Rate (%)",
+     "10"
+    ],
+    "y:20250331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Thermal Substitution Rate (%)",
+     "17"
+    ],
+    "y:20260331": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Thermal Substitution Rate (%)",
+     "13"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     28,
+     "Thermal Substitution Rate (%)",
+     "9"
     ]
    }
   },
@@ -1392,6 +1622,33 @@
    }
   },
   {
+   "name": "North Region Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 55.0,
+    "20260930": 75.0
+   },
+   "src": {
+    "q:20260630": [
+     "68e46cd0-76e0-45ba-97f1-7ef52762e7e3.pdf",
+     19,
+     "Avg. utilization in Q1 FY27",
+     "55"
+    ],
+    "q:20260930": [
+     "7affadb2-f88f-4531-a46a-77184f1a43b5.pdf",
+     18,
+     "North Region Utilisation (%)",
+     "75"
+    ]
+   },
+   "latest": {
+    "q:20260630": "2026-10-27"
+   }
+  },
+  {
    "name": "Ready Mix Concrete Sales Volume",
    "unit": "Million Cu M",
    "kind": "flow",
@@ -1436,23 +1693,6 @@
      222,
      "Total Volume Sold",
      "12.64"
-    ]
-   }
-  },
-  {
-   "name": "North Region Utilization",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 55.0
-   },
-   "src": {
-    "q:20260630": [
-     "68e46cd0-76e0-45ba-97f1-7ef52762e7e3.pdf",
-     19,
-     "Avg. utilization in Q1 FY27",
-     "55"
     ]
    }
   }
@@ -1562,5 +1802,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-11"
+ "updated": "2026-10-28"
 }
