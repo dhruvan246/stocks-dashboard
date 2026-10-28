@@ -1,0 +1,233 @@
+{
+ "date": "2026-10-28",
+ "asof": "2026-10-28",
+ "run_started": "2026-10-28 19:38 IST",
+ "run_finished": "2026-10-28 21:04 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1202,
+ "filings_status": "BSE answered 200 all run (ComHeadernew probe on scrip 500002 returned real JSON for ABB, not a stub). scan.py SELFTEST PASS. Announcements for 2026-10-28 read at 19:49 IST: 1,399 rows of the 1,400 BSE reports for the range, so announcements_capped is TRUE - 1,399 is a FLOOR for the day, not the day's count, and the 228 classified in the universe is a floor too. The read is same-evening, so filings made after 19:49 IST are not in it. announcements_blocked false. bhav_20261028.csv (5,042 rows) confirms 28-Oct was a trading day. The scan ran cold (fresh clone, no Actions cache) and took about 20 minutes, 65 bhavcopies plus the generic-heading PDF classification.",
+ "feeds_status": "*** THE ideas-feeds ACTION LANDED NOTHING TODAY, AND IT IS THE THIRD CONSECUTIVE TRADING DAY. Run 40696320881 started 13:25:41Z and was CANCELLED at 14:11:06Z on the job's 45-minute timeout-minutes. The job log was read: steps 1-16 (host probe, PIB, spot, minsteel, india_spot, wpi, trade, universe, scan, signals, score) all succeeded inside ten minutes; step 17, 'Order-book ledger refresh' (orderbook.py --refresh --days-back 4), started 13:35:54Z, printed only the onnxruntime and fitz FutureWarning lines at 13:37:40Z, then produced NOTHING for 33 minutes until the cancel. Everything after it - breakout, order wins, ob_tracker, the updates queue, 'Record status and guard every output' and 'Commit the feeds' - was SKIPPED. Runs 40330468786 (26-Oct) and 40511927903 + 40524884281 (27-Oct) died identically in the same step. THE LAST SUCCESSFUL FEEDS BUILD WAS RUN 34 ON 2026-10-23. So govt.json is stamped 2026-10-26 18:56 IST, orderbook_signals.json 2026-10-26 19:25 IST, orderwins_signals.json 2026-10-26 19:26 IST and updates_queue.json 2026-10-26 20:04 IST, and feeds_status.json itself is 2026-10-26 19:41 IST. THE FIX IS THE OWNER'S AND IT IS THE SAME ONE YESTERDAY'S LOG ASKED FOR: give the order-book refresh its own job, a step-level timeout, or a smaller --days-back, so that one silent builder cannot discard the government lane, the commodity prints, the order-wins builder, the jumps tracker and the updates queue along with itself. The routine was NOT re-dispatched this run: yesterday's run did that and the third attempt hit the same wall, so repeating it would only have burned another 45 minutes.",
+ "candidates_considered": [
+  {
+   "scrip": "513250",
+   "ticker": "JYOTISTRUC",
+   "name": "Jyoti Structures Ltd",
+   "mcap": 1233.0,
+   "score": 11,
+   "verdict": "UPDATE TO AN EXISTING CARD, NOT A NEW IDEA (published 2026-10-01, govt lane; triage rule 3). The day's strongest signal by a distance. Both filings opened: the Reg-30 intimation (08:54) and the press release (10:49). Notification of Award from Power Grid for Package TL05 of the +/-800 kV HVDC Bipole Barmer-II and South Kalamb lines in Gujarat, Rs 648.91 cr excluding GST, 38 months. Against a trailing year of sales of Rs 845.38 cr (Q2 FY26 150.60 + Q3 208.96 + Q4 234.36 + Q1 FY27 251.46, BSE detailed results) that is 76.8% - above the 25-50% bucket the order study found best. The press release adds Packages TL01 and TL02 worth Rs 949.35 cr awarded on 26-Oct, so three awards in three days total Rs 1,598.26 cr = 189% of a trailing year. Counterweight from the same study, and stated on the update: this is a serial order filer (three on this project alone in three days), and serial bidders with 8+ prior filings reached 2x only 17.3% of the time and never 5x. Stock +14.7% at Rs 10.33 on 6.2x volume."
+  },
+  {
+   "scrip": "530803",
+   "ticker": "BHAGERIA",
+   "name": "Bhageria Industries Ltd",
+   "mcap": 1471.0,
+   "score": 4,
+   "verdict": "PUBLISHED. Scored only 4 (RESULT x2) because the scan cannot see inside a results PDF - the filing landed at 18:22 IST, after the close. Q2 FY27 standalone revenue Rs 453.01 cr (+121.3% YoY), PAT Rs 58.29 cr (+378.3%); H1 PAT Rs 94.23 cr is 1.87x the whole of FY26; EBITDA margin 11.4% -> 18.2%. The margin step-up lines up month-for-month with India's own customs export unit value for HS 29222160 'H-ACID', which jumped from US$5.62/kg in Mar-2026 to US$7.69 in Apr-2026 and was US$7.62 in Aug-2026 (+32.6% YoY). Exposure verified in the FY26 annual report: H-Acid is 'our largest-volume product', capacity 400 -> 500 MT/month, chemicals 96.4% of FY26 segment turnover. 12.2x trailing, under 9x the run-rate. Published at MEDIUM on the oleum-leak/MPCB and SEBI-order red flags."
+  },
+  {
+   "scrip": "544950",
+   "ticker": "ADROITIND",
+   "name": "Adroit Industries (India) Ltd",
+   "mcap": 753.0,
+   "score": 6,
+   "verdict": "RESEARCHED, NOT PUBLISHED - the press release reports only QoQ, and the YoY does not clear the bar. Listed on BSE on 30-Sep-2026 (new-listing notice), so 20 trading sessions of history and no 1m/3m/6m return at all. CONSOLIDATED, from the filing (Rs mn): Q2 FY27 revenue 426.73 vs Q2 FY26 360.08 = +18.5% YoY (the release headlines '+25%', which is QoQ against Q1's 341.14); PAT 85.47 vs 49.74 = +71.8%. H1 FY27 revenue 767.87 vs 692.31 = +10.9% only; PAT 160.36 vs 106.41 = +50.7%. FY26 1,399.43 / 261.58. STANDALONE tells a different story: Q2 revenue 126.13 vs 156.63 = MINUS 19.5%, H1 211.20 vs 268.64 = MINUS 21.4%, PAT flat - so the growth is all in subsidiaries and the listed entity's own operations shrank. Trailing twelve-month consolidated PAT Rs 31.55 cr on a Rs 753 cr market cap = 23.9x, no discount. And the gross margin (revenue less materials, purchases and inventory change) is 65.4% -> 69.7% for a forged-driveshaft maker, which the filing does not explain. Guidance exists - 'peak annual revenue of Rs 2,500 million' after full ramp-up by Q4 FY28, against Rs 143 cr trailing - but H1 revenue growth of 10.9% does not support paying 24x for it today. Revisit after Q3 and a concall."
+  },
+  {
+   "scrip": "544584",
+   "ticker": "SKM",
+   "name": "SK Minerals & Additives Ltd",
+   "mcap": 482.3,
+   "score": 4,
+   "verdict": "REJECTED ON THE FILING - the headline is large and the number is not. BSE's headline read 'Receipt of New Order from a well-established industrial conglomerate'. Annexure-1, item 7 'Broad consideration or size of the order(s)': Rs 59,89,680 - SIXTY LAKH, i.e. Rs 0.60 cr - for the food-additives segment. The customer is not named, only described. The execution period is 'as per the mutually agreed terms'. An order of that size cannot be material against any plausible year of sales for a Rs 482 cr company, so no trailing-sales ratio was computed. SME, median turnover Rs 47.5 lakh."
+  },
+  {
+   "scrip": "523888",
+   "ticker": "MEGAMONT",
+   "name": "Megamont Ltd",
+   "mcap": 536.8,
+   "score": 4.5,
+   "verdict": "REJECTED, AND THE SCAN MISCLASSIFIED IT. scan.py tagged it TRADE - the trade-remedy category created after the OCCL miss, weight 8. The filing is not a trade remedy: it is a PURCHASE. 'Megamont Limited Secures 250 MT of Crude Palm Oil Worth Approx. Rs 3.14 Crores' - a procurement of 250 MT of crude palm oil (edible grade, FFA 5% max) from Paras Agri Business Private Limited, Palanpur, ex-Kandla, lifting December 2026, Rs 3.14 cr including 5% GST, arranged through a broker. A commodity trading house buying one lot of palm oil, announced as a press release. Median daily turnover is Rs 1.4 lakh - far below the Rs 25 lakh liquidity floor - and the stock fell 5.0% on the day. Logged in data_problems."
+  },
+  {
+   "scrip": "543324",
+   "ticker": "GCSL",
+   "name": "Gretex Corporate Services Ltd",
+   "mcap": 1816.8,
+   "score": 8,
+   "verdict": "REJECTED, AND THE SCAN MISCLASSIFIED IT - in the opposite direction from a missed opportunity. Scored 8 partly on an ORDER tag taken from the PDF body of a filing titled only 'General Update'. The document is a SEBI ADJUDICATION ORDER: penalty of Rs 8,00,000 under section 15HB of the SEBI Act, order no. Order/JS/YK/2026-27/32792-32795 dated 27-Oct-2026, in the matter of Taurian MPS Limited, where Gretex was merchant banker and Noticee No. 4, held not to have exercised due diligence on an offer-document disclosure (the remaining allegations were held not established). That is a red flag for a merchant bank, not an order win. Its other filing is a board-meeting intimation for results on 05-Nov. Logged in data_problems with the exact regex that fired."
+  },
+  {
+   "scrip": "543709",
+   "ticker": "GARGI",
+   "name": "PNGS Gargi Fashion Jewellery Ltd",
+   "mcap": 539.2,
+   "score": 7,
+   "verdict": "REJECTED ON THE NUMBERS. Q2 FY27 results opened (Rs lakh): revenue 5,399.79 vs 4,644.82 = +16.3% YoY; PAT 1,071.96 vs 1,027.48 = +4.3%. H1 FY27 revenue 8,121.41 vs 7,375.92 = +10.1%; PAT 1,576.92 vs 1,558.78 = +1.2%. The triage bar is revenue growth of 30%+ with PAT growth; this is a tenth of that on revenue and flat on profit. The FUNDRAISE tag is a Regulation 32 statement of deviation on an earlier preferential issue, not a new raise. SME, stock -1.2% and 20-day return -12.2%."
+  },
+  {
+   "scrip": "543331",
+   "ticker": "MOL",
+   "name": "Meghmani Organics Ltd",
+   "mcap": 1381.9,
+   "score": 5,
+   "verdict": "REJECTED - a rating letter is not a rating rationale. The filing is India Ratings' letter of 28-Oct-2026 ASSIGNING 'IND A/Stable/IND A1' to Rs 11,000 mn of bank loan facilities. Rating action 'Assigned', not an upgrade, and the letter carries only the instrument table and Ind-Ra's standard disclaimers - no revenue expectation, no business commentary, nothing to model from. Results are not out: the other filing is a board-meeting intimation for 04-Nov-2026. Worth re-reading when the rationale and the quarter land, especially since caustic soda (group strength 3.20) and agrochem technicals are in the strong-signal list and Meghmani is mapped to them."
+  },
+  {
+   "scrip": "506528",
+   "ticker": "KELENRG",
+   "name": "KELTECH Energies Ltd",
+   "mcap": 1340.0,
+   "score": 4,
+   "verdict": "REJECTED - ORDER tag is a false positive. The filing is 'Proposed Inter-Se Transfer Of shares amongst Promoters and Promoters group'. A promoter reshuffle, which the triage rules skip outright."
+  },
+  {
+   "scrip": "544731",
+   "ticker": "RSL",
+   "name": "Rajputana Stainless Ltd",
+   "mcap": 1370.1,
+   "score": 4,
+   "verdict": "REJECTED - the four DEAL tags are all the same event: Regulation 10(5) disclosures for an inter-se transfer of shares BY WAY OF GIFT amongst the promoter group. No business trigger. Median turnover Rs 54.7 lakh but volume ratio 0.1x."
+  },
+  {
+   "scrip": "531859",
+   "ticker": "ORIRAIL",
+   "name": "Oriental Rail Infrastructure Ltd",
+   "mcap": 772.5,
+   "score": 4,
+   "verdict": "UPDATE TO AN EXISTING CARD (published 2026-10-21). Filing opened: the Railway Board raised the BOXNS wagon order on wholly owned subsidiary Oriental Foundry from 1,200 to 1,560 wagons (+360) on the same terms; amended total contract value Rs 630,61,39,008 including GST; the extra 360 to be delivered by 11-Jun-2027. The Rs 630.61 cr covers all 1,560 wagons including the 1,200 under execution since Dec-2023, so the increment is about Rs 145.5 cr incl GST at the implied Rs 40.42 lakh a wagon - about 91% of a trailing year's sales of Rs 159.33 cr, against a revenue line that has fallen four quarters running."
+  },
+  {
+   "scrip": "544913",
+   "ticker": "GLASSWALL",
+   "name": "Glass Wall Systems (India) Ltd",
+   "mcap": 1895.4,
+   "score": 5,
+   "verdict": "NOT RESEARCHED - nothing to read yet. Both filings are intimations: a board meeting on 03-Nov-2026 to approve results and an earnings call on 04-Nov-2026. No numbers exist. Flagged for 03-Nov: median turnover is Rs 1,648.9 lakh, the highest in today's candidate list by an order of magnitude, on a 20-day return of -20.3%."
+  },
+  {
+   "scrip": "530643",
+   "ticker": "ECORECO",
+   "name": "Eco Recycling Ltd",
+   "mcap": 769.9,
+   "score": 4,
+   "verdict": "NOT RESEARCHED - three DEAL tags, one event, no number. All three filings are the incorporation of a joint venture, ERI India Private Limited. No investment amount, partner shareholding or business plan in the headlines, and a JV incorporation without a number is not a trigger under the triage rules."
+  },
+  {
+   "scrip": "544812",
+   "ticker": "ATHARVA",
+   "name": "Atharva Poly-Plast Ltd",
+   "mcap": 222.3,
+   "score": 4,
+   "verdict": "NOT RESEARCHED - below the band and nothing filed. Market cap Rs 222 cr is under the Rs 300 cr floor where the 5x study found the odds, and the only filing is a board-meeting intimation for results on 02-Nov-2026. BREAKOUT tag with a 4.7% day."
+  },
+  {
+   "scrip": "530803",
+   "ticker": "OTHERS",
+   "name": "The remaining nine candidates",
+   "mcap": null,
+   "score": 4,
+   "verdict": "NOT RESEARCHED, each for a stated reason. ADROITIND, BHAGERIA, GARGI, MOL, GLASSWALL, MEGAMONT, ORGANICREC, ORIRAIL, FOSECOC, AWFIS, TOTEM, JISLJALEQS, ROBU, NITYAS, PREMIERPOL, RSL, SKM, KELENRG, ECORECO, ATHARVA, EMKAY, GCSL, JYOTISTRUC make up the 23. Of those not named above: FOSECOC, TOTEM, ROBU and NITYAS scored 4 on RESULT x2 alone with no filing opened because their quarter is not yet filed or their market cap/turnover profile did not reach the triage cut; AWFIS and JISLJALEQS are DISCLOSE + RESULT with no numbers yet; PREMIERPOL is three DEAL tags; EMKAY (4.5) is a results-date intimation plus a Regulation 32 deviation statement on a 7.1x volume day with median turnover of only Rs 5.8 lakh, far below the liquidity floor; ORGANICREC is an existing card and was handled in the updates sweep."
+  }
+ ],
+ "signals_considered": "NO PRICE-LANE IDEA TODAY, AND NO NEW PRICE DATA AT ALL - measured, not assumed. Every builder was re-run from this sandbox and every non-BSE host was refused at the egress proxy ('Tunnel connection failed: 403 Forbidden' / connect_rejected, which is the PROXY, not the site): spot.py fetched 0 of 35 commodities (westmetall.com, markets.businessinsider.com) and left spot.json untouched; minsteel.py could not list steel.gov.in and kept minsteel_mumbai.json; india_spot.py got only its three BSE-sourced sources (nmdc 2 rows, minsteel 3 rows from the committed file, moil 3 rows) and FAILED on metalbook, ibja, rubber, sugar, fuel (ppac), guidechem, cai, spices and te, all 'previous rows kept'; wpi.py could not reach eaindustry.nic.in; trade.py could not reach tradestat.commerce.gov.in. HISTORY ROWS APPENDED: ZERO. india_history.json.gz WAS rebuilt - 284 series, 80,294 dated points. Proof that nothing moved: `git diff` on india_spot.json, signals.json, nmdc_history.json and moil_history.json shows ONLY the `built`/`fetched` timestamps and one changed error string (ppac's reason went from a missing-fitz message to a proxy refusal, because PyMuPDF was installed this run). STAMPS: spot_date 2026-10-26 18:57 IST (2 trading days old), trade_month 2026-08 (two months), wpi_month 2026-04 (SIX MONTHS behind this run) - the last two are well over three trading days old and are stated as such. signals.py rebuilt 53 groups; 29 clear the bar (strength >= 1.5 up, or >= 2.0 down), led by Crude oil +10.70, Silver +10.16, Tungsten +10.00, Sulphuric acid +7.01, Natural gas +6.21 - all resting on a WPI panel whose latest month is April 2026 and a trade panel whose latest is August 2026. Publishing a price-lane card off that today would be republishing old evidence as news, so none was. WHAT THE COMMODITY DATA DID DO is sit inside today's filing card: the dye_intermediates group is only 1.1 up and would never have triggered a price-lane idea, but its HS 29222160 'H-ACID' export unit value - US$5.62/kg in Mar-2026 to US$7.69 in Apr-2026, US$7.62 in Aug-2026, +32.6% year on year on US$8.9 mn of monthly exports - is the measured reason Bhageria's EBITDA margin went from 11.4% to 18.2% in the same months, and it is quoted on that card as corroboration rather than as the trigger. The honest counterweight is on the card too: our only readable Chinese H-acid quote (Guidechem, a supplier quote with a standing caveat) reads 38,000 CNY/t on 2026-10-23, DOWN from 41,000, so it does NOT confirm the record-high Chinese prices claimed on X.",
+ "govt_considered": [
+  {
+   "release": "*** TODAY'S PIB RELEASES WERE NEVER READ - THE GOVERNMENT LANE DID NOT RUN",
+   "outlay_cr": null,
+   "theme": null,
+   "verdict": "govt.py exited 0 with 'PIB unreachable (GET failed https://www.pib.gov.in/allRel.aspx?reg=3&lang=1: <urlopen error Tunnel connection failed: 403 Forbidden>); docs/ideas/govt.json LEFT UNCHANGED at its 2026-10-26 18:56 IST build.' pib.gov.in is refused at this sandbox's egress proxy. The ideas-feeds Action normally reads PIB for the routine and DID read it successfully in step 7 of today's run - but the job was cancelled on its timeout before the commit step, so nothing landed. STATED PLAINLY: what the Government of India announced on 2026-10-28 is UNKNOWN to this run. That is not 'nothing cleared the bar'; it is 'not read'. Releases scanned, opened and kept today: unknown. This is the third consecutive trading day on which the government lane has had no data of its own."
+  },
+  {
+   "release": "DAC clears capital acquisition proposals worth Rs 2.12 lakh crore for defence forces (Ministry of Defence, PRID 2328486)",
+   "outlay_cr": 212000.0,
+   "theme": "defence",
+   "verdict": "ALREADY CONSIDERED AND STILL STALE - this is the one kept release in the committed govt.json, whose build is now two days old (2026-10-26 18:56 IST; 45 releases scanned, 4 opened, 1 kept, dropped: 30 no decision verb, 7 noise, 3 backgrounder, 4 too small). The 2026-10-26 run researched it through Premier Explosives and did not publish, on recorded grounds that have not changed: an open offer by Apollo Micro Systems at Rs 705.65 already sets the price, the AoN item list cannot be read while PIB is blocked, and Q1 FY27 earnings fell (revenue -27.9%, PAT -80.2% YoY). The mapped small caps in the band and their order-filing counts are unchanged: AVANTEL 17, LOKESHMACH 4, CENTUM 3, SHIVATEX 3, PREMEXPLN 2, CEIGALL 2, NIBE 2, RPPINFRA 1. Re-researching it on three-day-old data would add nothing. No new name was added to theme_map.json this run, because no new release was read to justify one."
+  }
+ ],
+ "orderbook_lane": "NO NEW CANDIDATE, verified key by key rather than assumed. orderbook_signals.json carries a `built` stamp of 2026-10-26 19:25 IST, so per step 4a the refresh was the routine's to run - and it was NOT run, deliberately: this is the exact builder that has now consumed the whole ideas-feeds job on four consecutive runs (33 minutes of silence in today's Action log), yesterday's routine already spent 21 minutes on it from this sandbox with no output before stopping it, and this sandbox cannot reach NSE at all, which is the host its whole-market order-filing read depends on. Spending 20-40 minutes to produce nothing again, at the risk of leaving order_book.json half-written, was not worth it; order_book.json and orderbook_signals.json are byte-unchanged and are not in this commit. Worked against the committed build as the playbook's fallback allows: of 429 rows, 36 have yoy_pct >= 50; 28 of those have check false. Cross-checked every one against orderbook_jumps.json by key - 36 of 36 are already there, 0 unchecked. Of the 28 with check false, 11 are already published cards and the other 17 were each triaged in an earlier run log (Lloyds, HFCL, AIA, Unimech, Quality Power, Apollo Micro, Atlanta, Cemindia, Goldiam, TECHD, Sansera, Transformers & Rectifiers, JASH, Gala Precision, Markolines). Markolines (543364, Rs 388 cr) is the only one inside the band that has never appeared in a run log, and it is correctly absent: the ledger records its true year-on-year change as +37.5%, not the signals row's 50.0%, because the script's Rs 600 cr 'Jun-26' figure came from an annual-report timeline line while the stated 30-Jun-2026 book is Rs 550+ cr. So there is no row in the band (Rs 200-7,500 cr, check false, not already published) with an unexamined confirmed jump. orderbook_verified.json is unchanged at 37 rows; no row's quote was found wrong today because no new row was read. THE REAL GAP, stated plainly: with the ledger unrefreshed since 26-Oct, an order book a company stated on 27 or 28 October cannot appear as a signals row at all - and Jyoti Structures' three Power Grid awards of 26-28 October are exactly the kind of thing that would move one.",
+ "orderbook_jumps": "NOTHING NEW TO CHECK, measured not assumed. Every row of orderbook_signals.json with yoy_pct >= 50 (36 of 429, any size, check true or false) was matched against orderbook_jumps.json -> rows by key: 36 of 36 are already present, so none required a filing check this run and none is pending. The ledger stays at 36 rows. ob_tracker.py was NOT re-run because no qualifying row was added or changed, so orderbook_tracker.json (26 rows, 2026-10-26 20:39 IST) is unchanged and is not in this commit. Same caveat as the lane above: the input ledger has not refreshed for three days, so the absence of new jumps is the absence of new DATA, not evidence that no company filed one.",
+ "orderwins_lane": "NO NEW FLAG TO CONFIRM. orderwins_signals.json is the 2026-10-26 19:26 IST build (order_wins.py is step 19 of the Action and was SKIPPED on all four cancelled runs). Of its 142 rows, 24 are flagged - the running total of order-win letters reaching 0.5x the last stated order book within 183 days - and all 24 were cross-checked key by key against orderwins_verified.json: 24 of 24 already verified, 0 outstanding. So there was no flagged row to open base documents and order letters for, and no new order-book-lane candidate from this route. orderwins_verified.json unchanged at 32 rows. Worth the owner's attention: the flagged list already includes Jyoti Structures (513250) at ratio 0.51 with a cross date of 2026-10-26 - the day the first two Power Grid packages were awarded - and today's third package of Rs 648.91 cr is NOT summed into it, because the builder has not run since. On a working feed this would be today's clearest order-wins signal.",
+ "researched": [
+  {
+   "scrip": "530803",
+   "name": "Bhageria Industries Ltd",
+   "lane": "filing",
+   "verdict": "PUBLISHED",
+   "reason": "Q2 FY27 revenue +121.3% and PAT +378.3% YoY with the EBITDA margin going 11.4% -> 18.2%, at 12.2x trailing and under 9x the current run-rate on a Rs 1,471 cr market cap, and - unusually for this page - the price that explains the margin is measurable: India's own customs export unit value for HS 29222160 'H-ACID' stepped up 37% in April 2026 and is +32.6% year on year, while the FY26 annual report independently establishes that H-Acid is the company's largest-volume product and chemicals were 96.4% of segment turnover. Published at MEDIUM, not high, because the H-Acid earnings come from one sulphonation section at Plot D-17 which the MPCB shut after the 2-March-2026 oleum leak and restarted only on undisclosed conditions, a SEBI adjudication order against the promoters is stayed pending SAT on 5-Jan-2027, and there is no concall or presentation anywhere in 240 days of filings.",
+   "docs_read": [
+    "Q2/H1 FY27 unaudited standalone and consolidated results + limited review, 28-Oct-2026",
+    "Board meeting outcome, 28-Oct-2026",
+    "FY2025-26 Integrated Annual Report: Chairman's letter, Business Overview, MD&A on dyes and dye intermediates, Directors' Report segment review, FY26 ratio page, notes 55-60",
+    "CARE Ratings revision letter, 07-Oct-2026 (limits Rs 91 cr -> Rs 141 cr)",
+    "SAT / SEBI adjudication-order update, 22-Oct-2026",
+    "Oleum incident - temporary disruption at Plot D-17 MIDC Tarapur, 03-Mar-2026",
+    "MPCB Conditional Restart Directions for the H-Acid sulphonation section, 19-Mar-2026",
+    "GST demand order Rs 1,05,22,565 + equal penalty, 31-Mar-2026",
+    "7 MW solar commissioning under MSKVY 2.0 (Rahuri Cleantech), 28-Mar-2026",
+    "Incorporation of WOS Bhageria Rare Earth Minerals Pvt Ltd, 14-May-2026",
+    "Clarification on volume movement, 22-Sep-2026",
+    "September 2026 shareholding pattern (promoter 71.85%)",
+    "BSE company header for the company and for Bodal, Kiri, AksharChem and Shree Pushkar, read 2026-10-28",
+    "dossier.py 530803 --days 240: 15 result periods, 55 announcements (announcements_status complete), 8 peers",
+    "docs/ideas/signals.json HS 29222160/29222140/29222150 trade series and the Guidechem H-acid row",
+    "docs/macro.json usdinr 95.105 (2026-10-27)"
+   ]
+  },
+  {
+   "scrip": "544950",
+   "name": "Adroit Industries (India) Ltd",
+   "lane": "filing",
+   "verdict": "RESEARCHED, NOT PUBLISHED",
+   "reason": "Consolidated H1 FY27 revenue grew only 10.9% YoY (Rs 76.79 cr vs Rs 69.23 cr) while standalone revenue FELL 21.4%, so the growth is entirely in subsidiaries; the Q2 press release reports every number QoQ and never YoY; trailing consolidated PAT of Rs 31.55 cr against a Rs 753 cr market cap is 23.9x with no discount; the gross margin of 65-70% for a forged-driveshaft manufacturer is unexplained in the filing; and the company listed on 30-Sep-2026, so there are 20 sessions of price history and no return series for the scorecard. The Rs 250 cr peak-revenue guidance after a Q4 FY28 ramp is real and filed, but 10.9% half-year growth does not support paying 24x for it now.",
+   "docs_read": [
+    "Q2/H1 FY27 unaudited standalone AND consolidated results + limited review (CA Avinash Bay, Indore), 28-Oct-2026",
+    "Q2 FY27 press release, 28-Oct-2026",
+    "Q2 FY27 investor presentation intimation, 28-Oct-2026",
+    "BSE new-listing notice, effective 30-Sep-2026",
+    "September 2026 shareholding pattern (promoter 71.86%)",
+    "dossier.py 544950 --days 240: 1 result period on the BSE API, 17 announcements, 8 peers"
+   ]
+  }
+ ],
+ "published": [
+  "2026-10-28-BHAGERIA"
+ ],
+ "x_checked": [
+  {
+   "name": "Bhageria Industries Ltd",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com, two queries: 'Bhageria Industries H-acid results Q2 FY27 chemicals' and '\"Bhageria Industries\" H-acid capacity Boisar order book'. ValuePickr via WebSearch restricted to forum.valuepickr.com. cdn.syndication.twimg.com and forum.valuepickr.com are BOTH refused at this sandbox's proxy, so no post or forum page could be opened - only the search engine's snippets.",
+   "posts_found": 2,
+   "new_verified_points": 3,
+   "note": "@IndiaIncFilings (~Oct-2025) on the H-acid capacity going 400 -> 500 MT/month at Boisar: the SUBSTANCE is confirmed by the FY26 annual report ('expansion of H-Acid manufacturing capacity from 400 to 500 metric tons per month'), but two details do not match and are logged as unverified - the post's 'approximately 5 Crores' of investment appears in no filing read, and its 'about 50 to 55' crore of incremental revenue is narrower than the company's own 'Rs 50-75 crore'. @JoshiEien (~Aug-2026) claims Chinese H-acid prices hit a never-before-seen high and that China turned net importer in September: this CONTRADICTS our only readable Chinese series (Guidechem 38,000 CNY/t on 2026-10-23, down from 41,000, one-year level 'Low-mid') and is logged on the card under 'Where X disagrees with our own data'; the card relies on India's customs export unit value instead. A third lead, an ANI report of an oleum gas leak at the Boisar site, was chased to primary sources and IS confirmed by the company's own filings of 03-Mar and 19-Mar-2026 - it is now the card's leading red flag. Nothing about today's results surfaced: they were filed at 18:22 IST and X indexing lags a day or two, so this is 'nothing found by search', not 'nothing on X'."
+  },
+  {
+   "name": "Adroit Industries (India) Ltd",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: '\"Adroit Industries\" ADROITIND IPO results propeller shaft'. No ValuePickr thread searched for separately - the host is blocked and the name is four weeks listed.",
+   "posts_found": 3,
+   "new_verified_points": 1,
+   "note": "All three posts are IPO-period: an anchor-investor list naming Abakkus Venture Opportunities Fund and Chhattisgarh Investments among others (@ipo_mantra), a Financial Express post that the IPO was subscribed 5.18x on day one at a 26% grey-market premium, and a business description (vertically integrated propeller-shaft maker, 5,000+ catalogue items, exports to 32+ countries in FY26). VERIFIED from a primary source: the listing itself - BSE's new-listing notice, equity shares effective 30-Sep-2026. NOT verified and so not used: the Rs 126-134 price band, the Rs 151 cr issue size, the 23-25 September window, the 5.18x subscription and the 26% GMP - none appears in any filing read this run, and GMP is an unofficial number in any case. Nothing posted about today's Q2 results surfaced."
+  },
+  {
+   "name": "Jyoti Structures Ltd (existing card - update, not new research)",
+   "searched": "WebSearch restricted to x.com / twitter.com / threadreaderapp.com: 'Jyoti Structures Power Grid HVDC order 648 crore'",
+   "posts_found": 0,
+   "new_verified_points": 0,
+   "note": "Today's Rs 648.91 cr award did not surface at all - expected, since it was filed at 08:54 IST this morning and search indexing lags. The results returned were older Jyoti posts about a Rs 741 cr Power Grid order and a Rs 290 cr Torrent order, plus a CG Power transformer order of Rs 641 cr that is a different company entirely and could be mistaken for this one. No post was used. Recorded as 'nothing found by search', not 'nothing on X'."
+  }
+ ],
+ "updates_sweep": "RUN BY HAND ON THE BSE SIDE ONLY, SO IT IS INCOMPLETE - SAID LOUDLY. updates.py could not be used: this sandbox cannot reach NSE (the host is refused at the proxy), so it exits 3 by design and keeps the committed queue - and the committed updates_queue.json is stamped 2026-10-26 20:04 IST, NOT today, because the ideas-feeds Action that rebuilds it (step 21) was SKIPPED on all four cancelled runs. Neither route gave a queue for today, and `--selftest` was therefore never able to print SELFTEST PASS. Instead this run imported updates.py's own `bse_items` reader and swept BSE directly for all 65 cards from each card's updates_checked date to 2026-10-28: 59 filings across the 54 BSE-listed cards, 0 read problems, every 90-day window checked against BSE's own ROWCNT. 17 of those are non-routine and dated 2026-10-28, across 14 cards. WHAT IS MISSING, precisely: (a) every NSE-ONLY feed - board meetings, corporate actions, SAST Reg 29, insider trading, shareholding patterns, integrated results, annual reports and credit ratings - for all 65 cards, which is exactly the feed family behind the Viviana miss the selftest exists to catch; (b) the SECOND READER's 7-day re-read of the whole-market feeds, so second_reader_misses and second_reader_problems are UNKNOWN today, not zero; (c) the 10 cards with no BSE scrip (PRESSTONIC, KORE, FONEBOX, UTSSAV, GPECO, VIVIANA, ORIANA, MARINE, PARTH, SUPREMEPWR) are NSE-only and could not be swept at all - their updates_checked has been deliberately LEFT at 2026-10-27 rather than stamped today, so the page does not claim a check that did not happen. 9 updates were written across 9 ideas from 9 documents opened: JYOTISTRUC order (good), ORIRAIL order (good), ZELIO capex (good), SHREEREF results H1 FY27 GOOD (good), ORGANICREC results H1 FY27 GOOD (good), VASCONEQ order (good), MODISONLTD new product (good), AEROENTER subsidiary amalgamation (neutral), VRAJ related-party disposal to its own promoter and holding company (bad). GUIDANCE: re-checked on all 9 and NOT ONE changed - no concall, presentation or guidance statement was filed today. Organic Recycling's own 'annualised EPS Rs 20.86' is explicitly labelled 'an indicative run-rate and not a forecast' by the company and was not treated as guidance, and its BPCL 'reported aggregate order-book range of approximately Rs 350-500 crore' is a self-described range, not a stated contract value, so it was not sized against sales. Board-meeting and investor-meet intimations for UML, OMPOWER, RAJESH and RATNAVEER were read and deliberately not written up: they carry dates, not facts.",
+ "note": "Of the three lanes the page is built on, ONE ran on today's data, and that is the third day in a row. GOVERNMENT: did not run - PIB is refused at this sandbox's proxy and the ideas-feeds Action was cancelled on its job timeout before committing, so what the government announced on 28 October is unknown, not empty. COMMODITY: every builder re-ran and not one price moved - `git diff` on the four touched panels is timestamps only, zero history rows were appended, and the strongest signals rest on a WPI panel six months stale and a trade panel two months stale; publishing off that would have been republishing old evidence as news. FILINGS: ran on today's BSE data with a SELFTEST PASS and carried the day. One idea published - Bhageria Industries, where the filing lane and the commodity lane actually meet: Q2 revenue +121% and PAT +378% with the EBITDA margin up seven points, and the reason sitting in India's own customs data as a 32.6% rise in the H-acid export unit value that began in April 2026, the first month of the financial year. Two names researched and one rejected on its own numbers (Adroit, where the headline growth is QoQ and the standalone revenue is down a fifth), four candidates rejected on the documents, and two scan misclassifications found and recorded. The biggest filing of the day was not a new idea at all: Jyoti Structures' Rs 648.91 cr Power Grid HVDC award, 77% of a trailing year's sales and the third package in three days for a combined 189%, which went onto the existing card as an update with the serial-bidder counterweight the order study demands. The single most useful thing in this run for the owner is still not an idea: it is that the feeds workflow has now landed nothing for three consecutive trading days, always in the same step, and that the order-book and order-wins lanes are consequently blind to anything filed since 26 October - including Jyoti's own awards, which would otherwise be today's clearest order-wins signal.",
+ "data_problems": [
+  "*** ideas-feeds Action cancelled on its 45-minute job timeout for a THIRD consecutive trading day (40696320881 today at 14:11:06Z, 40511927903 and 40524884281 on 27-Oct, 40330468786 on 26-Oct). The job log for today's run was read line by line: step 17 'Order-book ledger refresh' (orderbook.py --refresh --days-back 4) started 13:35:54Z, emitted only the onnxruntime and fitz FutureWarning lines at 13:37:40Z, then NOTHING for 33 minutes until the cancel - it is hanging silently, not merely running long. Steps 18-24, including 'Record status and guard every output' and 'Commit the feeds', never ran, so nothing landed on any of those days. LAST SUCCESSFUL FEEDS BUILD: run 34, 2026-10-23. OWNER'S FIX, unchanged from yesterday's log: give the order-book refresh its own job, or a step-level timeout, or a smaller --days-back, so one hanging builder cannot discard the government lane, the commodity prints, the order-wins builder, the jumps tracker and the updates queue with it. A step-level timeout alone would fix the committing; the hang itself still needs diagnosis.",
+  "This sandbox's egress allowlist permits BSE and GitHub ONLY. Measured host by host this run: api.bseindia.com 200 (real JSON, not a stub), www.bseindia.com 200. Refused at the PROXY, not by the site ('Tunnel connection failed: 403 Forbidden' / connect_rejected, confirmed against the proxy's own /__agentproxy/status): www.pib.gov.in, westmetall.com, markets.businessinsider.com, metalbook.com, ibjarates.com, rubberboard.gov.in, chinimandi.com, ppac.gov.in, steel.gov.in, caionline.in, www.indianspices.com, www.guidechem.com, tradingeconomics.com, eaindustry.nic.in, tradestat.commerce.gov.in, forum.valuepickr.com, cdn.syndication.twimg.com, threadreaderapp.com. NSE is unreachable too. WebSearch runs server-side and worked - it was the only route to X and to ValuePickr, and it returns search snippets only, never the post or the thread.",
+  "SCAN DEFECT 1, reproducible: the TRADE category fires on a commodity PURCHASE. Megamont Ltd (523888), filing 'Megamont Limited Secures 250 MT of Crude Palm Oil Worth Approx. Rs 3.14 Crores' of 28-Oct-2026, was classified DISCLOSE + TRADE and scored 4.5 on the weight-8 trade-remedy category created after the OCCL miss. It is a trading house buying one lot of crude palm oil from Paras Agri Business ex-Kandla, not an anti-dumping, countervailing, safeguard, MIP, import-ban or QCO action. Not fixed here - the routine may not edit scripts/ideas/*.py.",
+  "SCAN DEFECT 2, reproducible, with the exact cause: the body-text ORDER regex fires on SEBI enforcement filings. Gretex Corporate Services (543324) filed 'Disclosure under Regulation 30 - Adjudication Order passed by SEBI' under the generic heading 'General Update'; scan.py opened the PDF, tagged it ORDER from the body, and the name scored 8 - second highest of the day. The matching text is the SEBI Schedule-III annexure row 'Date of receipt of direction or order', which satisfies BODY_CATS' ORDER pattern (receipt of ... order within 60 characters). The filing is a Rs 8,00,000 penalty under section 15HB in the Taurian MPS IPO matter - a red flag, classified as an order win. A negative lookahead for 'adjudication|direction or order|show cause' would cover it. Not fixed here.",
+  "Bhageria's segment table could not be read, and no number from it is quoted. Pages 9 and 19 of the Q2 FY27 results PDF carry the standalone and consolidated segment revenue, results, assets and liabilities, but the text is drawn rotated 90 degrees with a broken glyph map - digits render as letters, so '4,958.75' extracts as \"SL'8S6'V\". Three extraction routes were tried (plain text, word-level reordering by column, and setting the page rotation) and none returns trustworthy digits. The main P&L on page 1 extracts cleanly and was independently cross-checked against BSE's detailed-results API, which matches to the paisa. So the H1 FY27 chemicals / solar / pharma split is recorded as UNKNOWN on the card, and only the FY26 split from the Directors' Report's clean text is quoted.",
+  "PyMuPDF and xlrd had to be installed by hand, and the obvious command does not work on this image: `pip` is Python 3.13's while `python3` is 3.11.17, so `pip install pymupdf xlrd` reports success and leaves `import fitz` failing. `python3 -m pip install pymupdf xlrd` is the working form. Yesterday's run lost the PPAC fuel source to exactly this ('FAILED (No module named fitz)'); with it installed today PPAC failed on the proxy instead, which is the honest reason. Worth putting the `python3 -m pip` form into the routine's step 0.",
+  "ValuePickr could not be read at all. The playbook's route (search.json then raw/<id>?page=N at about one request a second) needs forum.valuepickr.com, which is refused at the proxy. The Bhageria card's `valuepickr` section is therefore built from server-side search snippets and says so in its first line; not one forum post was read in full, and the three forum claims that no filing confirms - a 51% stake in Bhageria & Jajodia Pharmaceuticals, a SECI solar award, and a 'Q1 FY27' numbers reference the snippet could not be dated - are listed as unverified rather than used.",
+  "X posts could not be opened either. cdn.syndication.twimg.com is refused at the proxy, so the playbook's tweet-result route was unavailable and every X datapoint on the Bhageria and Adroit cards rests on a search snippet matched to a primary filing, or is listed as unverified. The 15-word quote limit was observed; no post text beyond what the search engine returned was available to quote.",
+  "orderbook.py --refresh was NOT run by this routine, by decision rather than by failure, and the ledger is therefore three days stale. Reasons, all measured: it is the builder that hung for 33 silent minutes in today's Action log and killed the whole job on four consecutive runs; yesterday's routine already gave it 21 minutes from this sandbox and got no output at all; and its whole-market order-filing read needs NSE, which this sandbox cannot reach. order_book.json and orderbook_signals.json are byte-unchanged and are not in this commit. The cost is stated under orderbook_lane: order books and order-win letters filed on 27 and 28 October cannot appear in any signal, Jyoti Structures' three Power Grid awards among them.",
+  "The day's announcement read is CAPPED and same-evening. BSE reported 1,400 announcements for 2026-10-28 and the read returned 1,399 at 19:49 IST, so both that count and the 228 classified in the universe are floors, and any filing made after 19:49 IST is absent. Per runbook 144b the scan file is a snapshot of the feed at run time and must not be refreshed by a later run."
+ ],
+ "signals_strong_count": 29
+}
