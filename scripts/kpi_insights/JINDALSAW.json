@@ -113,6 +113,27 @@
    "title": "Q2 FY24 Financial Results",
    "read": "2026-09-18",
    "by": "claude-routine"
+  },
+  "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf": {
+   "kind": "ar",
+   "date": "2023-05-26",
+   "title": "Annual Report 2022-23",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "43c8642a-422d-4ee6-81e2-557b8325886e.pdf": {
+   "kind": "res",
+   "date": "2026-10-16",
+   "title": "Results for the quarter ended 30th September, 2026",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "cee941a8-96c2-471d-b5d7-5efa0a64ee71.pdf": {
+   "kind": "res",
+   "date": "2023-08-11",
+   "title": "Unaudited Financial Results for the Quarter Ended June 30, 2023",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -373,6 +394,23 @@
    }
   },
   {
+   "name": "Bhilwara Plant Specific Mill Power Consumption",
+   "unit": "kwh/MT",
+   "kind": "flow",
+   "y": {
+    "20230331": 10.83
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf",
+     25,
+     "specific mill power",
+     "10.83"
+    ]
+   }
+  },
+  {
    "name": "Iron & Steel Pipes Order Book",
    "unit": "USD Mn",
    "kind": "level",
@@ -454,6 +492,74 @@
      13,
      "pellets for ~ $ 5 million",
      "5"
+    ]
+   }
+  },
+  {
+   "name": "Samagogha Plant Specific LPG Consumption",
+   "unit": "kg/MT",
+   "kind": "flow",
+   "y": {
+    "20230331": 37.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf",
+     26,
+     "specific consumption",
+     "37"
+    ]
+   }
+  },
+  {
+   "name": "Sathavahana Ispat Limited Coke Capacity",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 400000.0
+   },
+   "src": {
+    "q:20230331": [
+     "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf",
+     41,
+     "coke facilities (doc period)",
+     "4,00,000"
+    ]
+   }
+  },
+  {
+   "name": "Sathavahana Ispat Limited DI Pipe Capacity",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 210000.0
+   },
+   "src": {
+    "q:20230331": [
+     "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf",
+     41,
+     "DI Pipe (doc period)",
+     "2,10,000"
+    ]
+   }
+  },
+  {
+   "name": "Sathavahana Ispat Limited Mini Blast Furnace Capacity",
+   "unit": "MT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 250000.0
+   },
+   "src": {
+    "q:20230331": [
+     "211b70a4-2640-4bb8-aab6-9a0f9bc13bc3.pdf",
+     41,
+     "mini blast furnace (doc period)",
+     "2,50,000"
     ]
    }
   }
@@ -842,5 +948,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-18"
+ "updated": "2026-10-29"
 }
