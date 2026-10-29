@@ -139,6 +139,8 @@ async function leg() {
     const st = await page.evaluate(() => window.spAuto.status());
     say(`status: ${legName} leg · armed ${st.armed} · Kite ${st.connected ? 'connected' : 'NOT connected'} · cloud slicer ${st.cloud ? 'on' : 'off'} · strategies ${st.strategies}` +
         (st.blockers.length ? ' · open checks: ' + st.blockers.join(', ') : ''));
+    const cpl = o => o ? `${o.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only'} · plan for ${o.set || 'All strategies'} · cash ${o.pct}%` : 'none';
+    say(`cash plan controls (synced): ${cpl(st.cp)} · stored plan: ${cpl(st.planned)}`);   // zba54: the robot plans with the same settings as every device
     if (!st.strategies) { say('no strategy books loaded'); await page.evaluate(m => window.spAuto.log(m, 'bad'), 'Robot: no strategy books loaded — nothing done'); code = 1; }
     else if (!st.connected) { say('Kite not connected — nothing sent'); code = 0; }
     else {

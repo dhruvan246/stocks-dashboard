@@ -686,10 +686,27 @@ const CP_BUF = 10e5, CPL = { busy: false, at: 0 };
 function solveUp(f, y, hi){   // the largest x in [0, hi] with f(x) <= y, for f increasing
   if (f(hi) <= y) return hi; if (f(0) > y) return 0;
   let lo = 0; for (let i = 0; i < 70; i++){ const m = (lo + hi) / 2; if (f(m) > y) hi = m; else lo = m; } return lo; }
-/* the plan's controls (this device; the plan itself carries what it was worked out with and syncs) */
-function cpOpts(){ let o = {}; try { o = JSON.parse(localStorage.getItem('sw_cp_opts') || '{}') || {}; } catch (e){}
-  const pct = +o.pct; return { pct: (o.pct != null && o.pct !== '' && pct >= 0 && pct <= 90) ? pct : 10, mode: o.mode === 'all' ? 'all' : 'swap', set: String(o.set || '') }; }
-function cpSetOpts(ch){ const o = Object.assign(cpOpts(), ch); try { localStorage.setItem('sw_cp_opts', JSON.stringify(o)); } catch (e){} return o; }
+/* the plan's controls — zba54: they live in the SYNCED zba doc (doc.cpo), so every device and the robot's fresh page plan
+   with the same Cash % / Plan for / mode. zba53 kept them in this device's localStorage only: Re-plan on another device
+   (or the robot's blank context) silently went back to All strategies / Swap exits only and overwrote the synced plan.
+   The synced copy wins; localStorage is just the offline fallback (and mirrors the last synced value). */
+function cpNorm(o){ o = o || {}; const pct = +o.pct;
+  return { pct: (o.pct != null && o.pct !== '' && pct >= 0 && pct <= 90) ? pct : 10, mode: o.mode === 'all' ? 'all' : 'swap', set: String(o.set || '') }; }
+function cpOpts(){ let o = null;
+  try { const d = zbaDoc().cpo; if (d && typeof d === 'object' && (d.pct != null || d.mode || d.set != null)) o = d; } catch (e){}
+  if (!o) try { o = JSON.parse(localStorage.getItem('sw_cp_opts') || 'null'); } catch (e){}
+  return cpNorm(o); }
+function cpSetOpts(ch){ const o = cpNorm(Object.assign(cpOpts(), ch));
+  try { const d = zbaDoc(); d.cpo = Object.assign({}, o, { ts: Date.now() }); d.ts = Date.now(); localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch (e){}
+  try { localStorage.setItem('sw_cp_opts', JSON.stringify(o)); } catch (e){}
+  try { zbaPush(); } catch (e){}
+  return o; }
+/* the plan doc vs the controls now: '' when they agree, else what differs (shown in the Cash plan header) */
+function cpMismatch(P){ if (!P) return ''; const o = cpOpts(), d = [];
+  if (P.mode !== o.mode) d.push('mode now ' + (o.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ' (plan: ' + (P.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ')');
+  if (String(P.set || '') !== o.set) d.push('plan for now ' + (o.set || 'All strategies') + ' (plan: ' + (P.set || 'All strategies') + ')');
+  const pp = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10; if (pp !== o.pct) d.push('cash now ' + o.pct + '% (plan: ' + pp + '%)');
+  return d.join(' · '); }
 function cpExclIds(books, opt){   // strategies with a book that are OUTSIDE the chosen saved mix → sell all, buy nothing
   if (!opt.set) return []; const m = subMixes().find(x => x.label === opt.set); if (!m) return [];
   return books.filter(it => !mixMarks(it.cfg, [m]).length).map(it => it.id); }
@@ -954,7 +971,8 @@ function cashPlanHTML(list){
     cpControlsHTML(P, frozen) +
     '<span class="go"><button class="btn" id="cpGo"' + (frozen && !changed.length ? ' disabled title="Frozen: the sells have started and every strategy still matches its plan"' : '') + '>' + (P ? (frozen ? 'Re-plan changed' : 'Re-plan') : 'Plan cash') + '</button></span></div>';
   if (!P) return h + '<div class="khelp">Needs Zerodha connected and every strategy’s picks loaded. ' + cpRuleText() + '</div></div>';
-  const A = P.acct, N = A.net, XF = P.xf || [], pc = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10;
+  const A = P.acct, N = A.net, XF = P.xf || [], pc = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, mm = cpMismatch(P);
+  if (mm) h += '<div class="khelp" style="margin-top:0"><b class="down">\u26a0 Controls differ from the plan</b> \u2014 ' + esc(mm) + (frozen ? ' \u00b7 frozen: the plan keeps its own settings' : ' \u00b7 press Re-plan to redo the plan with the controls as set') + '</div>';
   h += '<div class="khelp" style="margin-top:0"><b>' + (P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only') + '</b>' + (P.set ? ' · plan for <b>' + esc(P.set) + '</b>' : '') +
     ' · own money <b>' + zinr(A.own || 0) + '</b> (sells free ' + zinr(A.freed) + ' + free cash ' + zinr(A.free) + (A.own - A.freed - A.free > 0 ? ' + kept re-picks' : '') + ') → <b>' + (A.slots || 0) + ' slots × ' + zinr(A.slotP || 0) + '</b> = ' + zinr(A.shares || 0) + ' in shares (Zerodha funds ' + zinr(A.loan || 0) + ')' +
     (N && N.d ? ' → moves ' + (N.d > 0 ? '+' : '−') + zinr(Math.abs(N.d)) : '') + ' → ' +
@@ -1581,7 +1599,8 @@ async function zbaPull(){ const row = zbaRow(); if (!row || typeof Decompression
     const bytes = Uint8Array.from(atob(j.z), c => c.charCodeAt(0));
     const st = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
     const rem = JSON.parse(await new Response(st).text());
-    if (rem && rem.amts) try { localStorage.setItem(ZBA_LS, JSON.stringify(zbaMerge(zbaDoc(), rem))); } catch (e){}
+    if (rem && rem.amts) try { const b4 = JSON.stringify(cpOpts()); localStorage.setItem(ZBA_LS, JSON.stringify(zbaMerge(zbaDoc(), rem)));
+      if (JSON.stringify(cpOpts()) !== b4 && typeof renderCards === 'function') renderCards(); } catch (e){}   // zba54: another device changed the plan's controls
   } catch (e){} }
 /* Merge two amount docs: the newer doc's values win where both name a strategy, but a strategy
    only ONE doc names always survives — so an edit made before this device ever pulled can never
@@ -1598,6 +1617,7 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            proceeds:  zbMergeReb(newer.proceeds, older.proceeds),
            autos:     zbMergeAutos(newer.autos, older.autos),
            plan:      zbMergeReb(newer.plan, older.plan),
+           cpo:       ((n, o) => (n && (!o || (+n.ts || 0) >= (+o.ts || 0))) ? n : o)(newer.cpo, older.cpo),   // zba54: the plan's controls follow their latest edit
            scash:     zbMergeCash(newer.scash, older.scash) }; }
 /* per-strategy cash book (zba51): { id: { rebKey: rupees } } — every rebalance's "stays cash"; the newer doc wins per key */
 function zbMergeCash(n, o){ const out = {}; [o || {}, n || {}].forEach(m => Object.keys(m).forEach(id => { out[id] = Object.assign(out[id] || {}, m[id]); })); return out; }
@@ -2490,7 +2510,8 @@ function autoStatus(){
   const a = autoDoc(), RW = rebalWindow();
   const steps = W ? W.steps.map(x => ({ k: x.k, st: x.st, act: x.act })) : [];   // keys + states only: labels carry amounts, the robot's logs are public
   return { v: 1, leg: W ? W.leg : 'off', k: a.k, armed: !!a.armed, armedAt: a.armedAt || 0, tIso: RW.tIso, t1Iso: RW.t1Iso, sellIn: RW.sellIn, buyIn: RW.buyIn,
-           connected: !!Z.connected, cloud: cloudOn(), strategies: autoList().length, steps: steps, blockers: steps.filter(x => x.st === 'bad').map(x => x.k) };
+           connected: !!Z.connected, cloud: cloudOn(), strategies: autoList().length, steps: steps, blockers: steps.filter(x => x.st === 'bad').map(x => x.k),
+           cp: cpOpts(), planned: (P => P ? { mode: P.mode, set: P.set || '', pct: Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, at: P.at } : null)(cpDoc()) };   // zba54: the synced controls + what the stored plan used
 }
 async function autoPrepare(leg, maxMs, opts){
   opts = opts || {};   // dry: a rehearsal saves nothing — no cash plan is worked out (it would be written to the synced row)
