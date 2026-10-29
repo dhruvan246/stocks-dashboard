@@ -113,9 +113,55 @@
    "title": "Investor Presentation, 14 Feb 2023",
    "read": "2026-09-19",
    "by": "claude-routine"
+  },
+  "4fa3c219-56be-479d-af87-635a2efcc277.pdf": {
+   "kind": "ar",
+   "date": "2022-09-03",
+   "title": "Annual Report 2021-22",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "85cae1e3-bc03-4cd4-951d-8d427148d962.pdf": {
+   "kind": "res",
+   "date": "2022-11-14",
+   "title": "Board Meeting Outcome for Revised Outcome",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "a43691ba-cce5-444e-bb91-cb574b002a72.pdf": {
+   "kind": "res",
+   "date": "2022-08-06",
+   "title": "Unaudited Financial Results for the Quarter ended June 30, 2022",
+   "read": "2026-10-29",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
+  {
+   "name": "Permanent Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 1720.0
+   },
+   "q": {
+    "20220331": 1663.0
+   },
+   "src": {
+    "y:20230331": [
+     "837ffb2d-ee43-495f-a01b-9716c2d81926.pdf",
+     59,
+     "The number of permanent employees on the rolls of Company",
+     "1,720"
+    ],
+    "q:20220331": [
+     "4fa3c219-56be-479d-af87-635a2efcc277.pdf",
+     52,
+     "The number of permanent employees on the rolls of Company",
+     "1,663"
+    ]
+   }
+  },
   {
    "name": "Revenue from Top Customer",
    "unit": "%",
@@ -163,26 +209,54 @@
      "18.95"
     ]
    }
-  },
-  {
-   "name": "Permanent Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 1720.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "837ffb2d-ee43-495f-a01b-9716c2d81926.pdf",
-     59,
-     "The number of permanent employees on the rolls of Company",
-     "1,720"
-    ]
-   }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "4fa3c219-56be-479d-af87-635a2efcc277.pdf",
+   "metric": "Revenue from Top Customer",
+   "unit": "%",
+   "period": "March 31, 2022",
+   "value": 5.62,
+   "as_printed": "5.62",
+   "page": 201,
+   "label": "Revenue from top customer",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2022'"
+  },
+  {
+   "doc": "4fa3c219-56be-479d-af87-635a2efcc277.pdf",
+   "metric": "Revenue from Top Customer",
+   "unit": "%",
+   "period": "March 31, 2021",
+   "value": 4.55,
+   "as_printed": "4.55",
+   "page": 201,
+   "label": "Revenue from top customer",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2021'"
+  },
+  {
+   "doc": "4fa3c219-56be-479d-af87-635a2efcc277.pdf",
+   "metric": "Revenue from Top Five Customers",
+   "unit": "%",
+   "period": "March 31, 2022",
+   "value": 18.95,
+   "as_printed": "18.95",
+   "page": 201,
+   "label": "Revenue from top five customers",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2022'"
+  },
+  {
+   "doc": "4fa3c219-56be-479d-af87-635a2efcc277.pdf",
+   "metric": "Revenue from Top Five Customers",
+   "unit": "%",
+   "period": "March 31, 2021",
+   "value": 18.13,
+   "as_printed": "18.13",
+   "page": 201,
+   "label": "Revenue from top five customers",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2021'"
+  }
+ ],
  "catalog": [
   {
    "kind": "ar",
@@ -521,5 +595,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-19"
+ "updated": "2026-10-29"
 }
