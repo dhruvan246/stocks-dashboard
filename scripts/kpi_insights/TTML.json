@@ -64,9 +64,120 @@
    "title": "Press Release (Aug 2021)",
    "read": "2026-09-20",
    "by": "claude-session"
+  },
+  "46f36e83-f1c7-4971-b39c-59e62fe530c7.pdf": {
+   "kind": "res",
+   "date": "2026-10-22",
+   "title": "Approval Of Audited Financial Results For The 2Nd Quarter And Half Year Ended September 30, 2026",
+   "read": "2026-10-30",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "6fa9b00d-459a-4677-a082-27eaa20cf72c.pdf": {
+   "kind": "res",
+   "date": "2024-10-24",
+   "title": "Outcome Of Meeting Of The Board Of Directors - Audited Financial Results Of The Company For The 2Nd Quarter And Half Yea",
+   "read": "2026-10-30",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "a7673d44-831e-4477-93af-282aab917d5d.pdf": {
+   "kind": "res",
+   "date": "2025-01-23",
+   "title": "Integrated Filing (Financial) for the quarter and nine months ended December 31, 2024",
+   "read": "2026-10-30",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf": {
+   "kind": "res",
+   "date": "2024-07-24",
+   "title": "Outcome Of Meeting Of The Board Of Directors - Unaudited Financial Results For The Quarter Ending June 30, 2024",
+   "read": "2026-10-30",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
+  {
+   "name": "Bad Debts to Account Receivable Ratio",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230630": 2.33,
+    "20231231": 1.45,
+    "20240630": 0.66,
+    "20240930": 0.56,
+    "20241231": 0.87
+   },
+   "src": {
+    "q:20241231": [
+     "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+     3,
+     "Bad debts to Account rKeivable ratio",
+     "0.87"
+    ],
+    "q:20240930": [
+     "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+     3,
+     "Bad debts to Account rKeivable ratio",
+     "0.56"
+    ],
+    "q:20231231": [
+     "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+     3,
+     "Bad debts to Account rKeivable ratio",
+     "1.45"
+    ],
+    "q:20240630": [
+     "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+     3,
+     "vii) Bad debts to Account receivable ratio (%)*",
+     "0.66"
+    ],
+    "q:20230630": [
+     "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+     3,
+     "vii) Bad debts to Account receivable ratio (%)*",
+     "2.33"
+    ]
+   }
+  },
+  {
+   "name": "Debtors Turnover",
+   "unit": "no. of days",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230630": 22.0,
+    "20240331": 25.0,
+    "20240630": 30.0,
+    "20240930": 33.0
+   },
+   "src": {
+    "q:20240930": [
+     "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+     3,
+     "Debtors turnover",
+     "33"
+    ],
+    "q:20240630": [
+     "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+     3,
+     "x) Debtors turnover (no. of days)",
+     "30"
+    ],
+    "q:20240331": [
+     "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+     3,
+     "x) Debtors turnover (no. of days)",
+     "25"
+    ],
+    "q:20230630": [
+     "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+     3,
+     "x) Debtors turnover (no. of days)",
+     "22"
+    ]
+   }
+  },
   {
    "name": "Dealer/Distributor Count",
    "unit": "count",
@@ -133,7 +244,52 @@
    }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+   "metric": "Bad Debts to Account Receivable Ratio",
+   "unit": "%",
+   "period": "March 31, 2024",
+   "value": 2.32,
+   "as_printed": "2.32",
+   "page": 3,
+   "label": "Bad debts to Account rKeivable ratio",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2024'"
+  },
+  {
+   "doc": "a7673d44-831e-4477-93af-282aab917d5d.pdf",
+   "metric": "Debtors Turnover",
+   "unit": "no. of days",
+   "period": "March 31, 2024",
+   "value": 22.0,
+   "as_printed": "22",
+   "page": 3,
+   "label": "Debtors turnover",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2024'"
+  },
+  {
+   "doc": "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+   "metric": "Bad Debts to Account Receivable Ratio",
+   "unit": "%",
+   "period": "March 31, 2024",
+   "value": 2.32,
+   "as_printed": "2.32",
+   "page": 3,
+   "label": "vii) Bad debts to Account receivable ratio (%)*",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2024'"
+  },
+  {
+   "doc": "f97b13d3-8294-49ea-b3a0-e86af8c527e0.pdf",
+   "metric": "Debtors Turnover",
+   "unit": "no. of days",
+   "period": "March 31, 2024",
+   "value": 22.0,
+   "as_printed": "22",
+   "page": 3,
+   "label": "x) Debtors turnover (no. of days)",
+   "why": "period_type FY but the label reads as a quarter: 'March 31, 2024'"
+  }
+ ],
  "catalog": [
   {
    "kind": "res",
@@ -490,5 +646,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-20"
+ "updated": "2026-10-30"
 }
