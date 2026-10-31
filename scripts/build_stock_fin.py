@@ -85,7 +85,7 @@ XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "m
              "assoc", "nci",
              "assets", "eq", "sc", "oeq", "borr", "blt", "bst", "cash", "invnt", "rec", "pay",
              "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop", "bio", "prodprop",
-             "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "seg",
+             "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "cf_m", "seg",
              "gnpa_pct", "nnpa_pct", "cet1", "car", "roa", "dep_amt", "adv", "int_exp",
              "aud", "qual",
              "pm"}   # 6 = the cell's P&L lines cover a PROVEN half-year (fill_sme_halfyear_pnl.py, runbook §213)
@@ -260,7 +260,7 @@ def main():
             # iuad: the page shows CWIP as cwip + iuad (Screener's convention) — without it every
             # PDF year's CWIP read low against the XBRL years beside it (BEL, AUROPHARMA, 2026-09-26)
             PDF_FIELDS = {"assets", "sc", "oeq", "borr", "blt", "bst", "ppe", "cwip", "iuad", "gw", "intg", "invprop",
-                          "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax"}
+                          "invst", "rec", "pay", "invnt", "cfo", "cfi", "cff", "capex", "cf_tax", "cf_d", "cf_m"}
             nfill = nover = 0
             for sym, qs in abscf.items():
                 if sym.startswith("_") or not isinstance(qs, dict): continue

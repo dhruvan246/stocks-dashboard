@@ -959,7 +959,7 @@ function renderFunds(){
     if(!isFin&&ebitT!=null&&fcT) extra.push(card('Interest cover',(ebitT/fcT).toFixed(1)+'×',sub('EBIT ÷ interest, TTM')));
     for(let i=ends.length-1;i>=0;i--){                     // CFO/PAT — cash conversion, latest 12-month cash flow
       const e=ends[i], x=xCell(e);
-      if(x&&x.cf_d>=300&&x.cfo!=null){
+      if(x&&x.cf_d>=300&&!x.cf_m&&x.cfo!=null){   // cf_m: a transition year's cfo is its whole 9/15/18 months, never pair it with four quarters
         // the flow covers the 12 months ENDING at e, whatever the year-end month — pair it with exactly those
         // four quarters (an Apr–Mar bucket paired ABB's Jan–Dec cash with Apr–Mar profit, §186)
         const qs=ends.filter(q=>q>e-10000&&q<=e);
@@ -1191,7 +1191,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
   const bsOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&(d.assets!=null||d.eq!=null))?{e,x:d}:null; };
   // a transition year's cash flow counts only when its tagged period spans that whole year: the filings
   // tag just their last 12 months (ACC/Ambuja Mar-2023 start 1-Apr-2022; IGIL/Siemens Mar-2026 1-Apr-2025)
-  const cfSpans=(fy,d)=>FY.months(fy)===12||(d.cf_d!=null&&Math.abs(d.cf_d-FY.months(fy)*30.44)<=20);
+  const cfSpans=(fy,d)=>FY.months(fy)===12||d.cf_m===FY.months(fy)||(d.cf_d!=null&&Math.abs(d.cf_d-FY.months(fy)*30.44)<=20);
   const cfOf=fy=>{ const e=yearEndE(fy); if(e==null) return null; const d=strictCell(e); return (d&&d.cfo!=null&&cfSpans(fy,d))?{e,x:d}:null; };
   // flows (sales, profit, EBIT) only over a year whose rows tile its 12 months — see tiles() above
   const fySum=(fy,get)=>{ if(!tiles(fy)) return null; let t=0; for(const e of byFy[fy]){ const v=get(e); if(v==null) return null; t+=v; } return t; };
@@ -1226,7 +1226,8 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
   const trTxt=fy=>{ const p=FY.prev(fy), m=FY.months(fy); if(p==null) return '';
     const from=MON[_mo(p)%12+1]+' '+(Math.floor(p/10000)+(_mo(p)===12?1:0));
     return m+'-month year, '+from+' – '+yL0(fy)+(_mo(p)!==_mo(fy)?': the company moved its year-end from '+MON[_mo(p)]+' to '+MON[_mo(fy)]:''); };
-  const yL=fy=>yL0(fy)+(FY.months(fy)===12?'':`<span class="normal-case font-normal"> · ${FY.months(fy)} mo</span>`);
+  const yLm=fy=>{ const d=cur==='cf'&&strictCell(yearEndE(fy)); return (d&&d.cf_m)||FY.months(fy); };   // cash-flow tab: the printed period (P&G Health's 18 months to Jun-2020; its P&L column is 12 months)
+  const yL=fy=>yL0(fy)+(yLm(fy)===12?'':`<span class="normal-case font-normal"> · ${yLm(fy)} mo</span>`);
   const trList=fys=>fys.map(fy=>'the '+FY.months(fy)+'-month transition year to '+yL0(fy)).join(' and ');
   // the year-end months a set of columns uses: "Apr–Mar", or "Apr–Mar from Mar 2026; Jul–Jun to Jun 2024"
   const spanTxt=fyDesc=>{ const g=[]; fyDesc.forEach(fy=>{ const m=_mo(fy), l=g[g.length-1]; if(l&&l.m===m) l.o=fy; else g.push({m,n:fy,o:fy}); });
@@ -1364,7 +1365,7 @@ function renderDeep(ends,patFn,revFn,opFn,isFin,FYS,rowConFn){
       const C=fy=>{ const c=cfOf(fy); return c?c.x:{}; };
       const net=fy=>{ const x=C(fy); return (x.cfo!=null&&x.cfi!=null&&x.cff!=null)?x.cfo+x.cfi+x.cff:null; };
       const fcf=fy=>{ const x=C(fy); return (x.cfo!=null&&x.capex!=null)?x.cfo-x.capex:null; };
-      const cfoOp=fy=>{ const x=C(fy),o=fyOp(fy); return (x.cfo!=null&&o)?x.cfo/o*100:null; };
+      const cfoOp=fy=>{ const x=C(fy),o=fyOp(fy); return (x.cfo!=null&&o&&!(x.cf_m&&x.cf_m!==12))?x.cfo/o*100:null; };
       const rows=[
         {label:'Cash from Operating', get:fy=>C(fy).cfo, fmt:crS, bold:true, neg:true, id:'cfo', sub:[
           // cf_tax is signed like the exchange data: + tax paid, − net refund received (runbook §168j) — so a
