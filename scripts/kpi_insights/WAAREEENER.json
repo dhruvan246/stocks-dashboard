@@ -1231,30 +1231,6 @@
    }
   },
   {
-   "name": "Retail Touch Points",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 387.0,
-    "20250930": 2800.0
-   },
-   "src": {
-    "q:20250930": [
-     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
-     23,
-     "Widest retail network with over 2,800 touch points (doc period)",
-     "2,800"
-    ],
-    "q:20241231": [
-     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
-     17,
-     "Franchisees (doc period)",
-     "387"
-    ]
-   }
-  },
-  {
    "name": "Transformer Manufacturing Capacity",
    "unit": "MVA",
    "kind": "level",
@@ -1637,6 +1613,33 @@
    }
   },
   {
+   "name": "Retail Touch Points",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 387.0
+   },
+   "src": {
+    "q:20241231": [
+     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
+     17,
+     "Franchisees (doc period)",
+     "387"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     2800.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Widest retail network with over 2,800 touch points (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Smart Meter Manufacturing Capacity",
    "unit": "lakhs PA",
    "kind": "level",
@@ -1701,23 +1704,6 @@
      32,
      "Total Manufacturing Plants (doc period)",
      "13"
-    ]
-   }
-  },
-  {
-   "name": "Total Workforce",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 11400.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "302383e8-d2d9-4085-8935-b8324f8b0753.pdf",
-     58,
-     "total workforce of ~11,400 workers (doc period)",
-     "11,400"
     ]
    }
   },
@@ -1937,5 +1923,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-28"
+ "updated": "2026-10-31"
 }

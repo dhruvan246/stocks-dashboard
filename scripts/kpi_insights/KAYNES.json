@@ -180,7 +180,6 @@
     "20200331": 3521.69,
     "20220331": 15166.34,
     "20220630": 22662.64,
-    "20221231": 25579.61,
     "20230331": 26482.0,
     "20230630": 30004.0,
     "20230930": 34618.0,
@@ -273,12 +272,6 @@
      "Strong order book (INR Mn)",
      "22,662.64"
     ],
-    "q:20221231": [
-     "dc874c0c-b14c-42e9-86d0-b562621b4f11.pdf",
-     2,
-     "Orderbook at an all-time high of over INR 25,579.61 mn",
-     "25,579.61"
-    ],
     "y:20220331": [
      "f987ee76-2be3-4796-96ad-0603c77c92fa.pdf",
      5,
@@ -330,7 +323,17 @@
     "q:20240331": "2024-10-29",
     "q:20240630": "2025-07-30",
     "q:20240930": "2025-11-04"
-   }
+   },
+   "fixed": [
+    [
+     "q:20221231",
+     25579.61,
+     null,
+     "drop_q",
+     "Qualified print in src label: Orderbook at an all-time high of over INR 25,579.61 mn",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Manufacturing Facilities",
@@ -417,94 +420,6 @@
      15,
      "Advanced manufacturing facilities (doc period)",
      "12"
-    ]
-   }
-  },
-  {
-   "name": "SMT Lines",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 11.0,
-    "20250331": 24.0,
-    "20260331": 25.0
-   },
-   "q": {
-    "20230630": 12.0,
-    "20230930": 18.0,
-    "20231231": 18.0,
-    "20240331": 18.0,
-    "20240630": 18.0,
-    "20240930": 21.0,
-    "20241231": 24.0,
-    "20260630": 26.0
-   },
-   "src": {
-    "q:20260630": [
-     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
-     10,
-     "26 SMT Lines (doc period)",
-     "26"
-    ],
-    "y:20260331": [
-     "0beae4b4-6370-4eee-b835-b0e83527beb0.pdf",
-     21,
-     "25+ SMT Lines (doc period)",
-     "25"
-    ],
-    "y:20250331": [
-     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
-     17,
-     "SMT Lines (doc period)",
-     "24"
-    ],
-    "q:20241231": [
-     "25305c01-72a4-4e1b-a553-cd17f6194585.pdf",
-     17,
-     "SMT Lines (doc period)",
-     "24"
-    ],
-    "y:20230331": [
-     "f987ee76-2be3-4796-96ad-0603c77c92fa.pdf",
-     23,
-     "SMT Lines (doc period)",
-     "11"
-    ],
-    "q:20230630": [
-     "0fb847eb-151b-4e81-afe2-b4204794ccd1.pdf",
-     16,
-     "12 SMT Lines (doc period)",
-     "12"
-    ],
-    "q:20230930": [
-     "ef45eb82-9fa9-44aa-9515-186053283b12.pdf",
-     16,
-     "18 SMT Lines (as of September 30, 2023)",
-     "18"
-    ],
-    "q:20231231": [
-     "b1034f06-f8ca-4d9a-b20c-bbf056214215.pdf",
-     16,
-     "SMT Lines (doc period)",
-     "18"
-    ],
-    "q:20240331": [
-     "2ba5d05a-7fc2-4c69-bb6a-06d6d8306fa6.pdf",
-     17,
-     "SMT Lines (doc period)",
-     "18"
-    ],
-    "q:20240630": [
-     "bad899a7-fd38-4d2b-9d6d-b0f21c57c3b4.pdf",
-     16,
-     "SMT Lines (doc period)",
-     "18"
-    ],
-    "q:20240930": [
-     "6ab6bd2f-d70f-48ad-97f9-fe6a79f1cb3e.pdf",
-     19,
-     "SMT Lines (doc period)",
-     "21"
     ]
    }
   },
@@ -750,6 +665,97 @@
      "15"
     ]
    }
+  },
+  {
+   "name": "SMT Lines",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 11.0,
+    "20250331": 24.0
+   },
+   "q": {
+    "20230630": 12.0,
+    "20230930": 18.0,
+    "20231231": 18.0,
+    "20240331": 18.0,
+    "20240630": 18.0,
+    "20240930": 21.0,
+    "20241231": 24.0,
+    "20260630": 26.0
+   },
+   "src": {
+    "q:20260630": [
+     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
+     10,
+     "26 SMT Lines (doc period)",
+     "26"
+    ],
+    "y:20250331": [
+     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
+     17,
+     "SMT Lines (doc period)",
+     "24"
+    ],
+    "q:20241231": [
+     "25305c01-72a4-4e1b-a553-cd17f6194585.pdf",
+     17,
+     "SMT Lines (doc period)",
+     "24"
+    ],
+    "y:20230331": [
+     "f987ee76-2be3-4796-96ad-0603c77c92fa.pdf",
+     23,
+     "SMT Lines (doc period)",
+     "11"
+    ],
+    "q:20230630": [
+     "0fb847eb-151b-4e81-afe2-b4204794ccd1.pdf",
+     16,
+     "12 SMT Lines (doc period)",
+     "12"
+    ],
+    "q:20230930": [
+     "ef45eb82-9fa9-44aa-9515-186053283b12.pdf",
+     16,
+     "18 SMT Lines (as of September 30, 2023)",
+     "18"
+    ],
+    "q:20231231": [
+     "b1034f06-f8ca-4d9a-b20c-bbf056214215.pdf",
+     16,
+     "SMT Lines (doc period)",
+     "18"
+    ],
+    "q:20240331": [
+     "2ba5d05a-7fc2-4c69-bb6a-06d6d8306fa6.pdf",
+     17,
+     "SMT Lines (doc period)",
+     "18"
+    ],
+    "q:20240630": [
+     "bad899a7-fd38-4d2b-9d6d-b0f21c57c3b4.pdf",
+     16,
+     "SMT Lines (doc period)",
+     "18"
+    ],
+    "q:20240930": [
+     "6ab6bd2f-d70f-48ad-97f9-fe6a79f1cb3e.pdf",
+     19,
+     "SMT Lines (doc period)",
+     "21"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     25.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 25+ SMT Lines (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "THD Lines",
@@ -1027,98 +1033,6 @@
    }
   },
   {
-   "name": "Customers Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 350.0,
-    "20250331": 500.0
-   },
-   "q": {
-    "20220630": 229.0,
-    "20241231": 370.0,
-    "20260630": 500.0
-   },
-   "src": {
-    "q:20260630": [
-     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
-     9,
-     "500+ Customers being Served (doc period)",
-     "500"
-    ],
-    "y:20250331": [
-     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
-     13,
-     "customers served (doc period)",
-     "500"
-    ],
-    "y:20240331": [
-     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
-     9,
-     "customers served (doc period)",
-     "350"
-    ],
-    "q:20241231": [
-     "25305c01-72a4-4e1b-a553-cd17f6194585.pdf",
-     13,
-     "Has served 370+ customers (doc period)",
-     "370"
-    ],
-    "q:20220630": [
-     "31fd49a7-af76-459e-9b4e-53d89f34c783.pdf",
-     6,
-     "Has served 229 customers (in 3 months ended June 30, 2022)",
-     "229"
-    ]
-   }
-  },
-  {
-   "name": "Nations Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 26.0,
-    "20250331": 30.0
-   },
-   "q": {
-    "20220630": 20.0,
-    "20241231": 28.0,
-    "20260630": 30.0
-   },
-   "src": {
-    "q:20260630": [
-     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
-     9,
-     "30+ Nations being catered (doc period)",
-     "30"
-    ],
-    "y:20250331": [
-     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
-     13,
-     "countries (doc period)",
-     "30"
-    ],
-    "y:20240331": [
-     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
-     9,
-     "countries (doc period)",
-     "26"
-    ],
-    "q:20241231": [
-     "25305c01-72a4-4e1b-a553-cd17f6194585.pdf",
-     13,
-     "in 28+ countries (doc period)",
-     "28"
-    ],
-    "q:20220630": [
-     "31fd49a7-af76-459e-9b4e-53d89f34c783.pdf",
-     6,
-     "customers in 20 countries (in 3 months ended June 30, 2022)",
-     "20"
-    ]
-   }
-  },
-  {
    "name": "Advanced Manufacturing Facilities Globally",
    "unit": "count",
    "kind": "level",
@@ -1156,6 +1070,106 @@
      "16"
     ]
    }
+  },
+  {
+   "name": "Customers Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 350.0,
+    "20250331": 500.0
+   },
+   "q": {
+    "20220630": 229.0
+   },
+   "src": {
+    "y:20250331": [
+     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
+     13,
+     "customers served (doc period)",
+     "500"
+    ],
+    "y:20240331": [
+     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
+     9,
+     "customers served (doc period)",
+     "350"
+    ],
+    "q:20220630": [
+     "31fd49a7-af76-459e-9b4e-53d89f34c783.pdf",
+     6,
+     "Has served 229 customers (in 3 months ended June 30, 2022)",
+     "229"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 500+ Customers being Served (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     370.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Has served 370+ customers (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Nations Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 26.0,
+    "20250331": 30.0
+   },
+   "q": {
+    "20220630": 20.0
+   },
+   "src": {
+    "y:20250331": [
+     "1f537fa9-0e9e-44c4-812c-97d4cce14eaf.pdf",
+     13,
+     "countries (doc period)",
+     "30"
+    ],
+    "y:20240331": [
+     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
+     9,
+     "countries (doc period)",
+     "26"
+    ],
+    "q:20220630": [
+     "31fd49a7-af76-459e-9b4e-53d89f34c783.pdf",
+     6,
+     "customers in 20 countries (in 3 months ended June 30, 2022)",
+     "20"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     30.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 30+ Nations being catered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     28.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: in 28+ countries (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Business Verticals",
@@ -1304,31 +1318,6 @@
    }
   },
   {
-   "name": "Shop Floor Area",
-   "unit": "Sft.",
-   "kind": "level",
-   "y": {
-    "20240331": 500000.0
-   },
-   "q": {
-    "20260630": 800000.0
-   },
-   "src": {
-    "q:20260630": [
-     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
-     9,
-     "800,000+ Sft. Shop Floor Area (doc period)",
-     "800,000"
-    ],
-    "y:20240331": [
-     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
-     9,
-     "Global Infrastructure (doc period)",
-     "500,000"
-    ]
-   }
-  },
-  {
    "name": "Verticals Served",
    "unit": "count",
    "kind": "level",
@@ -1387,38 +1376,31 @@
    }
   },
   {
-   "name": "Kavach Order Pipeline",
-   "unit": "Mn",
+   "name": "Shop Floor Area",
+   "unit": "Sft.",
    "kind": "level",
    "y": {
-    "20260331": 270.0
+    "20240331": 500000.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "7b3ec474-8dc9-46bc-bf3b-64d55d3b6c30.pdf",
-     7,
-     "current Kavach order pipeline stands at approximately ₹270 Mn (doc period)",
-     "270"
+    "y:20240331": [
+     "371bc508-0d39-44a6-9a12-6216bab594ab.pdf",
+     9,
+     "Global Infrastructure (doc period)",
+     "500,000"
     ]
-   }
-  },
-  {
-   "name": "Patents",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 50.0
    },
-   "src": {
-    "q:20260630": [
-     "516028d8-7580-4f5b-aed8-4a611fec0430.pdf",
-     10,
-     "50+ Patents (doc period)",
-     "50"
+   "fixed": [
+    [
+     "q:20260630",
+     800000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 800,000+ Sft. Shop Floor Area (doc period)",
+     "2026-10-31"
     ]
-   }
+   ]
   }
  ],
  "held": [],
@@ -1643,5 +1625,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

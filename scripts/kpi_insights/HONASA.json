@@ -122,7 +122,6 @@
     "20241231": 216814.0,
     "20250331": 236825.0,
     "20250630": 240113.0,
-    "20250930": 250000.0,
     "20251231": 270000.0
    },
    "src": {
@@ -131,12 +130,6 @@
      18,
      "reach in FMCG retail Outlet in India as on Dec'25",
      "2,70,000"
-    ],
-    "q:20250930": [
-     "d1816dd9-0c05-4265-bf6e-f135630407dc.pdf",
-     17,
-     "Reached to 2,50,000+ FMCG retail outlets in India as of Sep'25",
-     "2,50,000"
     ],
     "q:20250331": [
      "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
@@ -180,7 +173,17 @@
      "Reached to 2,07,639 FMCG retail outlets in India as of Sep'24",
      "2,07,639"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     250000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Reached to 2,50,000+ FMCG retail outlets in India as of Sep'25",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Super-Stockist Contribution",
@@ -243,59 +246,6 @@
    }
   },
   {
-   "name": "Modern Trade Outlet Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 10000.0,
-    "20260331": 10000.0
-   },
-   "q": {
-    "20231231": 8000.0,
-    "20240930": 10000.0,
-    "20250630": 9000.0,
-    "20251231": 9000.0
-   },
-   "src": {
-    "y:20260331": [
-     "effd8f4c-874e-4947-8969-6cb61c158098.pdf",
-     12,
-     "Number of MT outlets reached",
-     "10,000"
-    ],
-    "q:20251231": [
-     "18436761-f82a-46c2-b1f5-44d44defc5ed.pdf",
-     18,
-     "Outlet Reach as of Dec'25 (Modern Trade)",
-     "9,000"
-    ],
-    "y:20250331": [
-     "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
-     31,
-     "Stores across 30+ Modern Trade Chains",
-     "10,000"
-    ],
-    "q:20250630": [
-     "7c3ebbf7-1615-4b67-8596-426e9f1b7089.pdf",
-     12,
-     "Presence in 9,000+ stores (Modern Trade)",
-     "9,000"
-    ],
-    "q:20231231": [
-     "cf6fb06d-ee0d-4555-9120-1102568ad107.pdf",
-     19,
-     "Presence in 8,000+ Stores across 31 Modern Trade Chains (doc period)",
-     "8,000"
-    ],
-    "q:20240930": [
-     "18c40065-bc1e-4710-b4b0-3ddf45e6a013.pdf",
-     17,
-     "10,000+ Mamaearth's Presence in MT Stores (doc period)",
-     "10,000"
-    ]
-   }
-  },
-  {
    "name": "Direct Distributor Contribution",
    "unit": "%",
    "kind": "level",
@@ -348,8 +298,7 @@
    "y": {
     "20170331": 10.0,
     "20240331": 842.0,
-    "20250331": 923.0,
-    "20260331": 1000.0
+    "20250331": 923.0
    },
    "q": {},
    "src": {
@@ -358,12 +307,6 @@
      9,
      "10 people (The Start: FY17)",
      "10"
-    ],
-    "y:20260331": [
-     "313f2c45-437d-4b56-b2de-f0d727ce1086.pdf",
-     9,
-     "~1,000 EMPLOYEES (Today: FY26)",
-     "1,000"
     ],
     "y:20250331": [
      "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
@@ -377,46 +320,75 @@
      "Total Permanent employees",
      "842"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     1000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~1,000 EMPLOYEES (Today: FY26)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
-   "name": "Modern Trade Chain Count",
+   "name": "Modern Trade Outlet Count",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20250331": 30.0,
-    "20260331": 30.0
+    "20250331": 10000.0,
+    "20260331": 10000.0
    },
    "q": {
-    "20230930": 30.0,
-    "20231231": 31.0
+    "20251231": 9000.0
    },
    "src": {
     "y:20260331": [
-     "7fba52ba-0385-411a-a015-554d602cdb2c.pdf",
-     19,
-     "and 30+ chains (doc period)",
-     "30"
+     "effd8f4c-874e-4947-8969-6cb61c158098.pdf",
+     12,
+     "Number of MT outlets reached",
+     "10,000"
+    ],
+    "q:20251231": [
+     "18436761-f82a-46c2-b1f5-44d44defc5ed.pdf",
+     18,
+     "Outlet Reach as of Dec'25 (Modern Trade)",
+     "9,000"
     ],
     "y:20250331": [
      "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
      31,
      "Stores across 30+ Modern Trade Chains",
-     "30"
-    ],
-    "q:20230930": [
-     "1721387a-356e-41d8-9de2-054552beebda.pdf",
-     22,
-     "presence in 30+ MT accounts (doc period)",
-     "30"
-    ],
-    "q:20231231": [
-     "cf6fb06d-ee0d-4555-9120-1102568ad107.pdf",
-     19,
-     "31 Modern Trade Chains (doc period)",
-     "31"
+     "10,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     9000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Presence in 9,000+ stores (Modern Trade)",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     8000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Presence in 8,000+ Stores across 31 Modern Trade Chains (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     10000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 10,000+ Mamaearth's Presence in MT Stores (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Brand Count",
@@ -475,30 +447,6 @@
      "2026-10-11"
     ]
    ]
-  },
-  {
-   "name": "Direct GT Distribution Reach",
-   "unit": "Lakh outlets",
-   "kind": "level",
-   "y": {
-    "20250331": 1.0,
-    "20260331": 1.2
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "7fba52ba-0385-411a-a015-554d602cdb2c.pdf",
-     19,
-     "Outlets billed directly through distributors in FY 25-26 (~1.2 Lakh)",
-     "1.2"
-    ],
-    "y:20250331": [
-     "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
-     31,
-     "Direct Outlets Billed through Distributors in FY 24-25",
-     "1"
-    ]
-   }
   },
   {
    "name": "Exclusive Brand Outlets (EBOs) Count",
@@ -619,30 +567,6 @@
      9,
      "7 FOCUS CATEGORIES (Today: FY26)",
      "7"
-    ]
-   }
-  },
-  {
-   "name": "Focus Category Revenue Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 70.0,
-    "20250930": 75.0
-   },
-   "src": {
-    "q:20240930": [
-     "d1816dd9-0c05-4265-bf6e-f135630407dc.pdf",
-     13,
-     "up from ~70% from last year",
-     "70"
-    ],
-    "q:20250930": [
-     "d1816dd9-0c05-4265-bf6e-f135630407dc.pdf",
-     13,
-     "Focus Categories for Honasa contribute 75%+ to its revenues",
-     "75"
     ]
    }
   },
@@ -825,21 +749,31 @@
    }
   },
   {
-   "name": "Color Care Units Sold",
-   "unit": "lacs",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20231231": 10.0
+   "name": "Direct GT Distribution Reach",
+   "unit": "Lakh outlets",
+   "kind": "level",
+   "y": {
+    "20250331": 1.0
    },
+   "q": {},
    "src": {
-    "q:20231231": [
-     "cf6fb06d-ee0d-4555-9120-1102568ad107.pdf",
-     16,
-     "~10 lacs Color Care units sold in Q3FY24",
-     "10"
+    "y:20250331": [
+     "f7192a9f-5721-412b-b388-9c6e93caa50e.pdf",
+     31,
+     "Direct Outlets Billed through Distributors in FY 24-25",
+     "1"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     1.2,
+     null,
+     "drop_y",
+     "Qualified print in src label: Outlets billed directly through distributors in FY 25-26 (~1.2 Lakh)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Direct GT Distribution Reach",
@@ -893,21 +827,47 @@
    }
   },
   {
-   "name": "Modern Trade Distribution Reach (Store Universe)",
-   "unit": "%",
+   "name": "Modern Trade Chain Count",
+   "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20260630": 90.0
+    "20231231": 31.0
    },
    "src": {
-    "q:20260630": [
-     "f5a7e3bf-e14d-4ff0-a630-2766925b8da3.pdf",
-     18,
-     "Expanded Modern trade distribution reach to 90%+ store universe (doc period)",
-     "90"
+    "q:20231231": [
+     "cf6fb06d-ee0d-4555-9120-1102568ad107.pdf",
+     19,
+     "31 Modern Trade Chains (doc period)",
+     "31"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     30.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: and 30+ chains (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     30.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Stores across 30+ Modern Trade Chains",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     30.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: presence in 30+ MT accounts (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Partitions Yet to Enter (Whitespace)",
@@ -957,74 +917,6 @@
      31,
      "Pincode Coverage in FY 24-25",
      "97.6"
-    ]
-   }
-  },
-  {
-   "name": "The Derma Co GT Store Presence",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 2500.0
-   },
-   "src": {
-    "q:20240930": [
-     "18c40065-bc1e-4710-b4b0-3ddf45e6a013.pdf",
-     18,
-     "2,500+ GT stores (premium beauty / premium chemist counters) (doc period)",
-     "2,500"
-    ]
-   }
-  },
-  {
-   "name": "The Derma Co Modern Trade Store Presence",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 1600.0
-   },
-   "src": {
-    "q:20240930": [
-     "18c40065-bc1e-4710-b4b0-3ddf45e6a013.pdf",
-     18,
-     "presence in 1,600+ stores across key Modern Trade chains (doc period)",
-     "1,600"
-    ]
-   }
-  },
-  {
-   "name": "The Derma Co Outlet Presence",
-   "unit": "K outlets",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 50.0
-   },
-   "src": {
-    "q:20260630": [
-     "f5a7e3bf-e14d-4ff0-a630-2766925b8da3.pdf",
-     16,
-     "Expanding reach with presence in 50k+ outlets (doc period)",
-     "50"
-    ]
-   }
-  },
-  {
-   "name": "Total BPC Partitions Tracked",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 100.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "313f2c45-437d-4b56-b2de-f0d727ce1086.pdf",
-     11,
-     "translate into 100+ partitions (doc period)",
-     "100"
     ]
    }
   }
@@ -1179,5 +1071,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

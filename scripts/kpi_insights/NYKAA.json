@@ -6197,76 +6197,6 @@
    }
   },
   {
-   "name": "Superstore City Coverage",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20220331": 300.0,
-    "20230331": 650.0,
-    "20240331": 950.0,
-    "20250331": 1100.0
-   },
-   "q": {
-    "20211231": 88.0,
-    "20220331": 302.0,
-    "20220630": 516.0,
-    "20220930": 659.0
-   },
-   "src": {
-    "y:20220331": [
-     "3a2d9285-b340-49b1-8ea6-77691dbe3c19.pdf",
-     35,
-     "Expanding reach 300+ cities",
-     "300"
-    ],
-    "y:20230331": [
-     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
-     120,
-     "# Cities",
-     "650"
-    ],
-    "y:20240331": [
-     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
-     120,
-     "# Cities",
-     "950"
-    ],
-    "y:20250331": [
-     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
-     120,
-     "# Cities",
-     "1,100"
-    ],
-    "q:20211231": [
-     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
-     11,
-     "Cities (#)",
-     "88"
-    ],
-    "q:20220331": [
-     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
-     11,
-     "Cities (#)",
-     "302"
-    ],
-    "q:20220630": [
-     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
-     11,
-     "Cities (#)",
-     "516"
-    ],
-    "q:20220930": [
-     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
-     11,
-     "Cities (#)",
-     "659"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2025-06-26"
-   }
-  },
-  {
    "name": "Superstore GMV",
    "unit": "Rs Mn",
    "kind": "flow",
@@ -6475,6 +6405,79 @@
     "y:20240331": "2025-08-02",
     "y:20250331": "2025-08-02"
    }
+  },
+  {
+   "name": "Superstore City Coverage",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 650.0,
+    "20240331": 950.0,
+    "20250331": 1100.0
+   },
+   "q": {
+    "20211231": 88.0,
+    "20220331": 302.0,
+    "20220630": 516.0,
+    "20220930": 659.0
+   },
+   "src": {
+    "y:20230331": [
+     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
+     120,
+     "# Cities",
+     "650"
+    ],
+    "y:20240331": [
+     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
+     120,
+     "# Cities",
+     "950"
+    ],
+    "y:20250331": [
+     "f6925091-2162-498c-8c7f-d4a2cb4cbea7.pdf",
+     120,
+     "# Cities",
+     "1,100"
+    ],
+    "q:20211231": [
+     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
+     11,
+     "Cities (#)",
+     "88"
+    ],
+    "q:20220331": [
+     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
+     11,
+     "Cities (#)",
+     "302"
+    ],
+    "q:20220630": [
+     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
+     11,
+     "Cities (#)",
+     "516"
+    ],
+    "q:20220930": [
+     "ad57072b-87be-40c0-94cd-3f264cb5b0f5.pdf",
+     11,
+     "Cities (#)",
+     "659"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2025-06-26"
+   },
+   "fixed": [
+    [
+     "y:20220331",
+     300.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Expanding reach 300+ cities",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Superstore Transacting Retailers",
@@ -7244,38 +7247,6 @@
    }
   },
   {
-   "name": "Warehouse Space",
-   "unit": "lakh sq ft",
-   "kind": "level",
-   "y": {
-    "20210331": 5.8,
-    "20220331": 8.2
-   },
-   "q": {
-    "20210930": 6.65
-   },
-   "src": {
-    "q:20210930": [
-     "8295da56-b852-4430-9fe0-3fe3bb1e7875.pdf",
-     8,
-     "total warehouse space of more than 6.65 lakh square feet (as of September 30, 20",
-     "6.65"
-    ],
-    "y:20210331": [
-     "dd2458a1-6b8c-425a-a9ce-7d229b94baa3.pdf",
-     22,
-     "Capacity (Lacs sq. ft)",
-     "5.8"
-    ],
-    "y:20220331": [
-     "dd2458a1-6b8c-425a-a9ce-7d229b94baa3.pdf",
-     22,
-     "Capacity (Lacs sq. ft)",
-     "8.2"
-    ]
-   }
-  },
-  {
    "name": "Superstore Onboarded Retailers",
    "unit": "count",
    "kind": "level",
@@ -7322,6 +7293,40 @@
      "2.76"
     ]
    }
+  },
+  {
+   "name": "Warehouse Space",
+   "unit": "lakh sq ft",
+   "kind": "level",
+   "y": {
+    "20210331": 5.8,
+    "20220331": 8.2
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "dd2458a1-6b8c-425a-a9ce-7d229b94baa3.pdf",
+     22,
+     "Capacity (Lacs sq. ft)",
+     "5.8"
+    ],
+    "y:20220331": [
+     "dd2458a1-6b8c-425a-a9ce-7d229b94baa3.pdf",
+     22,
+     "Capacity (Lacs sq. ft)",
+     "8.2"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20210930",
+     6.65,
+     null,
+     "drop_q",
+     "Qualified print in src label: total warehouse space of more than 6.65 lakh square feet (as of September 30, 20",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Beauty Omnichannel Orders",
@@ -7775,5 +7780,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

@@ -113,30 +113,6 @@
    }
   },
   {
-   "name": "Global Customers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 60.0,
-    "20250930": 70.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "Global customers (doc period)",
-     "60"
-    ],
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     21,
-     "70+ Global Customers",
-     "70"
-    ]
-   }
-  },
-  {
    "name": "Non-permanent Workers (Total)",
    "unit": "count",
    "kind": "level",
@@ -282,30 +258,6 @@
    }
   },
   {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 1200.0,
-    "20250930": 1400.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     14,
-     "1,200+ employees (doc period)",
-     "1,200"
-    ],
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     21,
-     "1,400+ Workforce",
-     "1,400"
-    ]
-   }
-  },
-  {
    "name": "ANDAs Commercialized",
    "unit": "count",
    "kind": "level",
@@ -319,23 +271,6 @@
      15,
      "19 ANDAs commercialized (doc period)",
      "19"
-    ]
-   }
-  },
-  {
-   "name": "Approved ANDAs (Sterile Injectables & Soft Gelatin)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 35.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     16,
-     "35+ approved ANDAs for Sterile Injectables and soft gelatin capsules (doc period",
-     "35"
     ]
    }
   },
@@ -391,23 +326,6 @@
    }
   },
   {
-   "name": "DDC Batches Tech-Transferred (trailing 18 months)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 150.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "150+ DDC batches successfully tech transferred in last 18 months (doc period)",
-     "150"
-    ]
-   }
-  },
-  {
    "name": "DDC Capacity (Total)",
    "unit": "Million units",
    "kind": "level",
@@ -443,23 +361,6 @@
    ]
   },
   {
-   "name": "DDC Projects Delivered",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 20.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "20+ DDC projects (doc period)",
-     "20"
-    ]
-   }
-  },
-  {
    "name": "Export Revenue Share",
    "unit": "%",
    "kind": "level",
@@ -492,6 +393,33 @@
      "20"
     ]
    }
+  },
+  {
+   "name": "Global Customers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 60.0
+   },
+   "src": {
+    "q:20241231": [
+     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
+     9,
+     "Global customers (doc period)",
+     "60"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     70.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 70+ Global Customers",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "International Markets Served (Countries)",
@@ -614,40 +542,6 @@
    }
   },
   {
-   "name": "Scientists & Techno-commercial Leaders",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 100.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     14,
-     "100+ scientists and techno-commercial leaders (doc period)",
-     "100"
-    ]
-   }
-  },
-  {
-   "name": "Successful Audits (Cumulative)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 210.0
-   },
-   "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     21,
-     "210+ Successful Audits",
-     "210"
-    ]
-   }
-  },
-  {
    "name": "Total Suppliers Engaged",
    "unit": "count",
    "kind": "level",
@@ -759,5 +653,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

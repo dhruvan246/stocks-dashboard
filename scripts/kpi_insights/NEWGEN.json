@@ -418,37 +418,6 @@
    }
   },
   {
-   "name": "Personnel Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 4400.0,
-    "20250331": 4600.0,
-    "20260331": 4300.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "284d92d0-05b9-45e9-809c-4d31636d5704.pdf",
-     3,
-     "Personnel (doc period)",
-     "4,300"
-    ],
-    "y:20250331": [
-     "cbe90b17-50c7-469c-b909-6cde88b7c523.pdf",
-     3,
-     "~4,600 Personnel",
-     "4,600"
-    ],
-    "y:20240331": [
-     "c2fad84e-05cd-41ec-adf4-1c83cac0ee9e.pdf",
-     3,
-     "~4400 Personnel",
-     "4400"
-    ]
-   }
-  },
-  {
    "name": "Verticals Served",
    "unit": "count",
    "kind": "level",
@@ -521,21 +490,39 @@
    }
   },
   {
-   "name": "R&D Personnel Count",
+   "name": "Personnel Count",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20240331": 600.0
+    "20260331": 4300.0
    },
    "q": {},
    "src": {
-    "y:20240331": [
-     "c2fad84e-05cd-41ec-adf4-1c83cac0ee9e.pdf",
+    "y:20260331": [
+     "284d92d0-05b9-45e9-809c-4d31636d5704.pdf",
      3,
-     "~600 personnel in R&D",
-     "600"
+     "Personnel (doc period)",
+     "4,300"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     4600.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~4,600 Personnel",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     4400.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~4400 Personnel",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -913,5 +900,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-20"
+ "updated": "2026-10-31"
 }

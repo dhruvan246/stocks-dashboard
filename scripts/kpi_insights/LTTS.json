@@ -747,7 +747,6 @@
     "20240630": 1343.0,
     "20240930": 1394.0,
     "20241231": 1448.0,
-    "20250331": 1500.0,
     "20250630": 1550.0,
     "20250930": 1601.0,
     "20251231": 1655.0,
@@ -784,12 +783,6 @@
      12,
      "1,550 Patents ... as of Q1FY26",
      "1,550"
-    ],
-    "q:20250331": [
-     "811bf83f-ac5d-4761-8975-baf623f2ccb5.pdf",
-     154,
-     "As of Q4 FY25, LTTS boasted an impressive portfolio of over 1,500 patents filed",
-     "1,500"
     ],
     "q:20241231": [
      "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
@@ -875,7 +868,17 @@
      "PATENTS (doc period)",
      "719"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     1500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: As of Q4 FY25, LTTS boasted an impressive portfolio of over 1,500 patents filed",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Clients $1 Million+ (LTM revenue)",
@@ -3040,44 +3043,6 @@
    }
   },
   {
-   "name": "Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 23700.0,
-    "20241231": 23400.0,
-    "20250630": 23600.0,
-    "20260630": 23840.0
-   },
-   "src": {
-    "q:20260630": [
-     "2d6d4fc8-86c8-480a-86ea-5198ebf9ac22.pdf",
-     9,
-     "23,840+ Employees (Data as of Q1 FY27)",
-     "23,840"
-    ],
-    "q:20250630": [
-     "127b8405-02e6-4c9b-a4dc-1fd14a398ef9.pdf",
-     23,
-     "over 23,600 employees ... as of June 30, 2025",
-     "23,600"
-    ],
-    "q:20241231": [
-     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
-     17,
-     "over 23,400 employees ... as of December 31, 2024",
-     "23,400"
-    ],
-    "q:20240930": [
-     "6b22cf0c-221f-49c2-ac9a-203b4c7c6753.pdf",
-     3,
-     "over 23,700 employees ... as of September 30, 2024",
-     "23,700"
-    ]
-   }
-  },
-  {
    "name": "Global Sales Offices",
    "unit": "count",
    "kind": "level",
@@ -3147,37 +3112,6 @@
    }
   },
   {
-   "name": "Countries of Operation",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 25.0,
-    "20250630": 25.0,
-    "20260630": 25.0
-   },
-   "src": {
-    "q:20260630": [
-     "2d6d4fc8-86c8-480a-86ea-5198ebf9ac22.pdf",
-     9,
-     "25+ Countries (Data as of Q1 FY27)",
-     "25"
-    ],
-    "q:20250630": [
-     "127b8405-02e6-4c9b-a4dc-1fd14a398ef9.pdf",
-     6,
-     "25+ Countries (doc period)",
-     "25"
-    ],
-    "q:20241231": [
-     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
-     7,
-     "25+ Countries (doc period)",
-     "25"
-    ]
-   }
-  },
-  {
    "name": "Global 100 R&D Spenders as Clients",
    "unit": "count",
    "kind": "level",
@@ -3205,37 +3139,6 @@
      7,
      "Of Global 100 R&D Spenders as clients (doc period)",
      "57"
-    ]
-   }
-  },
-  {
-   "name": "Repeat Business",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 90.0,
-    "20250630": 90.0,
-    "20260630": 90.0
-   },
-   "src": {
-    "q:20260630": [
-     "2d6d4fc8-86c8-480a-86ea-5198ebf9ac22.pdf",
-     9,
-     "~90% Repeat Biz. (Data as of Q1 FY27)",
-     "90"
-    ],
-    "q:20250630": [
-     "127b8405-02e6-4c9b-a4dc-1fd14a398ef9.pdf",
-     6,
-     "Repeat Biz. (doc period)",
-     "90"
-    ],
-    "q:20241231": [
-     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
-     7,
-     "Repeat Biz. (doc period)",
-     "90"
     ]
    }
   },
@@ -3326,30 +3229,6 @@
    }
   },
   {
-   "name": "Global Clients (Revenue over $1M)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 378.0,
-    "20260630": 190.0
-   },
-   "src": {
-    "q:20260630": [
-     "2d6d4fc8-86c8-480a-86ea-5198ebf9ac22.pdf",
-     9,
-     "190+ Global Clients with revenue over $1M (Data as of Q1 FY27)",
-     "190"
-    ],
-    "q:20241231": [
-     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
-     7,
-     "Global Clients (doc period)",
-     "378"
-    ]
-   }
-  },
-  {
    "name": "New Employee Hires",
    "unit": "count",
    "kind": "flow",
@@ -3372,6 +3251,40 @@
      "6,499"
     ]
    }
+  },
+  {
+   "name": "Repeat Business",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 90.0,
+    "20250630": 90.0
+   },
+   "src": {
+    "q:20250630": [
+     "127b8405-02e6-4c9b-a4dc-1fd14a398ef9.pdf",
+     6,
+     "Repeat Biz. (doc period)",
+     "90"
+    ],
+    "q:20241231": [
+     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
+     7,
+     "Repeat Biz. (doc period)",
+     "90"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     90.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~90% Repeat Biz. (Data as of Q1 FY27)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Average Soft Skills Training per Employee",
@@ -3406,6 +3319,33 @@
      "24.8"
     ]
    }
+  },
+  {
+   "name": "Global Clients (Revenue over $1M)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 378.0
+   },
+   "src": {
+    "q:20241231": [
+     "2b7724f4-a86a-4621-86ac-774d6c61acb4.pdf",
+     7,
+     "Global Clients (doc period)",
+     "378"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     190.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 190+ Global Clients with revenue over $1M (Data as of Q1 FY27)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Large Deal Wins (>$10M)",
@@ -3871,5 +3811,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

@@ -252,59 +252,6 @@
    }
   },
   {
-   "name": "Total Keys (Group)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 13382.0,
-    "20260331": 14200.0
-   },
-   "q": {
-    "20250630": 13469.0,
-    "20250930": 13646.0,
-    "20251231": 14070.0,
-    "20260630": 14300.0
-   },
-   "src": {
-    "y:20260331": [
-     "73b3dd17-4d81-47fc-a046-295c7587092f.pdf",
-     55,
-     "155 operating hotels with over 14,200 keys",
-     "14,200"
-    ],
-    "q:20260630": [
-     "74e70ebc-f895-4f82-95aa-1fb9c6100574.pdf",
-     26,
-     "Current Footprint: 14,300+ Operational Keys",
-     "14,300"
-    ],
-    "q:20251231": [
-     "45b6e2d4-89a4-4ef3-9a07-80c5ddcb5804.pdf",
-     52,
-     "Total Operational Keys",
-     "14070"
-    ],
-    "q:20250930": [
-     "eccd2d1f-feca-42ca-9743-5d311ccd6bf4.pdf",
-     43,
-     "Total Operational Keys",
-     "13646"
-    ],
-    "q:20250630": [
-     "9f1d443f-1174-40c3-b671-dd2a07935125.pdf",
-     40,
-     "Total Operational Keys",
-     "13469"
-    ],
-    "y:20250331": [
-     "95c73d94-d3ff-47fc-a03e-c58f01a9bce4.pdf",
-     50,
-     "Total Operational Keys",
-     "13382"
-    ]
-   }
-  },
-  {
    "name": "Total Operating Hotels (Group)",
    "unit": "count",
    "kind": "level",
@@ -413,16 +360,9 @@
    "q": {
     "20250630": 5340.0,
     "20250930": 5889.0,
-    "20251231": 6152.0,
-    "20260630": 7200.0
+    "20251231": 6152.0
    },
    "src": {
-    "q:20260630": [
-     "74e70ebc-f895-4f82-95aa-1fb9c6100574.pdf",
-     12,
-     "Managed Pipeline reaches 74 hotels with over 7200 keys",
-     "7200"
-    ],
     "q:20251231": [
      "45b6e2d4-89a4-4ef3-9a07-80c5ddcb5804.pdf",
      52,
@@ -447,7 +387,74 @@
      "Total Pipeline Keys",
      "4522"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     7200.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Managed Pipeline reaches 74 hotels with over 7200 keys",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Total Keys (Group)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 13382.0
+   },
+   "q": {
+    "20250630": 13469.0,
+    "20250930": 13646.0,
+    "20251231": 14070.0
+   },
+   "src": {
+    "q:20251231": [
+     "45b6e2d4-89a4-4ef3-9a07-80c5ddcb5804.pdf",
+     52,
+     "Total Operational Keys",
+     "14070"
+    ],
+    "q:20250930": [
+     "eccd2d1f-feca-42ca-9743-5d311ccd6bf4.pdf",
+     43,
+     "Total Operational Keys",
+     "13646"
+    ],
+    "q:20250630": [
+     "9f1d443f-1174-40c3-b671-dd2a07935125.pdf",
+     40,
+     "Total Operational Keys",
+     "13469"
+    ],
+    "y:20250331": [
+     "95c73d94-d3ff-47fc-a03e-c58f01a9bce4.pdf",
+     50,
+     "Total Operational Keys",
+     "13382"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     14200.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 155 operating hotels with over 14,200 keys",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     14300.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Current Footprint: 14,300+ Operational Keys",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Q1 ARR",
@@ -639,31 +646,6 @@
      48,
      "The ‘WelcomHeritage’ brand ... comprising appx. rooms",
      "1,000"
-    ]
-   }
-  },
-  {
-   "name": "Managed Portfolio Keys",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 15000.0
-   },
-   "q": {
-    "20260630": 16000.0
-   },
-   "src": {
-    "q:20260630": [
-     "74e70ebc-f895-4f82-95aa-1fb9c6100574.pdf",
-     2,
-     "Managed Portfolio surpasses 200 Hotels with ~16,000 keys",
-     "16,000"
-    ],
-    "y:20260331": [
-     "e0e570e5-bd34-4359-bce0-5361071653e5.pdf",
-     13,
-     "Managed Portfolio reaches 15,000+ keys with highest ever signings in FY26",
-     "15,000"
     ]
    }
   },
@@ -1059,5 +1041,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-17"
+ "updated": "2026-10-31"
 }

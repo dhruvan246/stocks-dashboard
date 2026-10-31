@@ -245,119 +245,6 @@
    ]
   },
   {
-   "name": "Phenol Plant Utilisation",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20200331": 100.0,
-    "20240331": 150.0,
-    "20250331": 165.0
-   },
-   "q": {
-    "20191231": 100.0,
-    "20200930": 100.0,
-    "20201231": 115.0,
-    "20220630": 129.0
-   },
-   "src": {
-    "y:20250331": [
-     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
-     20,
-     "Phenol plant operated at an average utilisation rate exceeding 165%",
-     "165"
-    ],
-    "y:20240331": [
-     "c5ece091-ab73-49aa-9632-b0707bb1f68b.pdf",
-     66,
-     "capacity utilisation rate of 150%+ at our Phenol plant",
-     "150"
-    ],
-    "q:20220630": [
-     "c999f92c-c1c7-42c7-a88e-0436698f6cbf.pdf",
-     13,
-     "Phenolics: plant clocking average utilization of ~129% (doc period)",
-     "129"
-    ],
-    "q:20201231": [
-     "fbdec5e2-a863-4455-a284-36e9a504696c.pdf",
-     4,
-     "Phenolics (Q3 FY21): utilisation above 115% of stated capacity",
-     "115"
-    ],
-    "q:20200930": [
-     "cad5ee1c-15af-4d86-bcb3-4e38dfb45293.pdf",
-     1,
-     "Q2 FY21: DPL delivered sustainable production in excess of 100% of capacity",
-     "100"
-    ],
-    "y:20200331": [
-     "5dc90193-fa25-46cf-9ba1-a85be7e72f23.pdf",
-     3,
-     "DPL FY20: phenol production just short of 200,000 tons or 100% capacity utilisat",
-     "100"
-    ],
-    "q:20191231": [
-     "e17aea08-608c-4eea-89f1-7c8ae10d5d7e.pdf",
-     3,
-     "DPL reported capacity utilisation of over 100% during the quarter",
-     "100"
-    ]
-   }
-  },
-  {
-   "name": "Countries Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 30.0,
-    "20240331": 45.0,
-    "20260331": 50.0
-   },
-   "q": {
-    "20220630": 45.0,
-    "20240930": 45.0,
-    "20241231": 45.0
-   },
-   "src": {
-    "y:20260331": [
-     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
-     113,
-     "Countries served (doc period)",
-     "50"
-    ],
-    "q:20241231": [
-     "d83ba30e-410f-4d16-a022-b124a84c4bc9.pdf",
-     3,
-     "Countries receive our products (doc period)",
-     "45"
-    ],
-    "q:20240930": [
-     "9e2efd60-a208-4ea9-9fd5-4f4f4e9088b9.pdf",
-     3,
-     "Countries receive our products (doc period)",
-     "45"
-    ],
-    "y:20240331": [
-     "f592c00c-9a35-4641-a300-36ab711122d8.pdf",
-     2,
-     "Products exported to 45+ Countries (doc period)",
-     "45"
-    ],
-    "q:20220630": [
-     "c999f92c-c1c7-42c7-a88e-0436698f6cbf.pdf",
-     3,
-     "Products exported to 45+ Countries across 6 continents (doc period)",
-     "45"
-    ],
-    "y:20200331": [
-     "5dc90193-fa25-46cf-9ba1-a85be7e72f23.pdf",
-     1,
-     "multi-year relationships with leading global customers in over 30 countries (doc",
-     "30"
-    ]
-   }
-  },
-  {
    "name": "Product Count",
    "unit": "count",
    "kind": "level",
@@ -365,7 +252,6 @@
     "20240331": 32.0
    },
    "q": {
-    "20220630": 30.0,
     "20240930": 32.0,
     "20241231": 32.0,
     "20251231": 34,
@@ -401,12 +287,6 @@
      2,
      "Products (doc period)",
      "32"
-    ],
-    "q:20220630": [
-     "c999f92c-c1c7-42c7-a88e-0436698f6cbf.pdf",
-     3,
-     "30+ Products (doc period)",
-     "30"
     ]
    },
    "fixed": [
@@ -425,6 +305,14 @@
      "set_q",
      "44bf51f8 p3 (PNG): '36+' over 'Products'; stored 7 is the facilities box value read one box over.",
      "2026-10-11"
+    ],
+    [
+     "q:20220630",
+     30.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 30+ Products (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -437,7 +325,6 @@
     "20260331": 1500.0
    },
    "q": {
-    "20220630": 1000.0,
     "20240930": 1000.0,
     "20241231": 1000.0
    },
@@ -465,12 +352,6 @@
      94,
      "Customers",
      "1,500"
-    ],
-    "q:20220630": [
-     "c999f92c-c1c7-42c7-a88e-0436698f6cbf.pdf",
-     3,
-     "1,000+ Customers (doc period)",
-     "1,000"
     ]
    },
    "restated": [
@@ -480,6 +361,16 @@
      1000.0,
      "c5ece091-ab73-49aa-9632-b0707bb1f68b.pdf",
      1500.0
+    ]
+   ],
+   "fixed": [
+    [
+     "q:20220630",
+     1000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 1,000+ Customers (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -492,7 +383,6 @@
     "20260331": 56.0
    },
    "q": {
-    "20220630": 56.0,
     "20240930": 56.0,
     "20241231": 56.0
    },
@@ -520,14 +410,18 @@
      2,
      "Applications (doc period)",
      "56"
-    ],
-    "q:20220630": [
-     "c999f92c-c1c7-42c7-a88e-0436698f6cbf.pdf",
-     3,
-     "56+ Applications (doc period)",
-     "56"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20220630",
+     56.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 56+ Applications (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Permanent Employees",
@@ -566,6 +460,64 @@
      "1469"
     ]
    }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 50.0
+   },
+   "q": {
+    "20240930": 45.0,
+    "20241231": 45.0
+   },
+   "src": {
+    "y:20260331": [
+     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
+     113,
+     "Countries served (doc period)",
+     "50"
+    ],
+    "q:20241231": [
+     "d83ba30e-410f-4d16-a022-b124a84c4bc9.pdf",
+     3,
+     "Countries receive our products (doc period)",
+     "45"
+    ],
+    "q:20240930": [
+     "9e2efd60-a208-4ea9-9fd5-4f4f4e9088b9.pdf",
+     3,
+     "Countries receive our products (doc period)",
+     "45"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     45.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Products exported to 45+ Countries (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20220630",
+     45.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Products exported to 45+ Countries across 6 continents (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20200331",
+     30.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: multi-year relationships with leading global customers in over 30 countries (doc",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "IPA Plant Utilisation",
@@ -666,28 +618,71 @@
    }
   },
   {
-   "name": "Phenol Production Volume",
-   "unit": "tonnes",
-   "kind": "flow",
+   "name": "Phenol Plant Utilisation",
+   "unit": "%",
+   "kind": "level",
    "y": {
-    "20200331": 200000.0,
-    "20250331": 333000.0
+    "20200331": 100.0
    },
-   "q": {},
+   "q": {
+    "20201231": 115.0
+   },
    "src": {
-    "y:20250331": [
-     "b98232b9-c32a-4a66-9523-93930a6c919c.pdf",
-     20,
-     "record 3,33,000+ tonnes of Phenol during the year",
-     "3,33,000"
+    "q:20201231": [
+     "fbdec5e2-a863-4455-a284-36e9a504696c.pdf",
+     4,
+     "Phenolics (Q3 FY21): utilisation above 115% of stated capacity",
+     "115"
     ],
     "y:20200331": [
      "5dc90193-fa25-46cf-9ba1-a85be7e72f23.pdf",
      3,
-     "DPL ended FY20 with phenol production volumes just short of 200,000 tons",
-     "200,000"
+     "DPL FY20: phenol production just short of 200,000 tons or 100% capacity utilisat",
+     "100"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     165.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Phenol plant operated at an average utilisation rate exceeding 165%",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     150.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: capacity utilisation rate of 150%+ at our Phenol plant",
+     "2026-10-31"
+    ],
+    [
+     "q:20220630",
+     129.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Phenolics: plant clocking average utilization of ~129% (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20200930",
+     100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Q2 FY21: DPL delivered sustainable production in excess of 100% of capacity",
+     "2026-10-31"
+    ],
+    [
+     "q:20191231",
+     100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: DPL reported capacity utilisation of over 100% during the quarter",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "R&D Expenditure",
@@ -915,38 +910,31 @@
    }
   },
   {
-   "name": "Phenol & Cumene Plant Utilisation",
-   "unit": "%",
-   "kind": "level",
+   "name": "Phenol Production Volume",
+   "unit": "tonnes",
+   "kind": "flow",
    "y": {
-    "20260331": 175.0
+    "20200331": 200000.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "e9576f6d-6ec3-4f36-b0e0-2af594782e65.pdf",
-     20,
-     "Phenol and Cumene plants operating at over 175% utilisation",
-     "175"
+    "y:20200331": [
+     "5dc90193-fa25-46cf-9ba1-a85be7e72f23.pdf",
+     3,
+     "DPL ended FY20 with phenol production volumes just short of 200,000 tons",
+     "200,000"
     ]
-   }
-  },
-  {
-   "name": "Standalone Effective Capacity Utilisation",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200630": 65.0
    },
-   "src": {
-    "q:20200630": [
-     "6d595e4e-c836-4284-b34a-35f49b2b2d9d.pdf",
-     1,
-     "Standalone: effective capacity utilisation in the quarter was around 65%",
-     "65"
+   "fixed": [
+    [
+     "y:20250331",
+     333000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: record 3,33,000+ tonnes of Phenol during the year",
+     "2026-10-31"
     ]
-   }
+   ]
   }
  ],
  "held": [],
@@ -1315,5 +1303,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

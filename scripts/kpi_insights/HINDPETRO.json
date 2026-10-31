@@ -1114,38 +1114,6 @@
    }
   },
   {
-   "name": "Visakh Refinery Capacity Utilisation",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 104.7
-   },
-   "q": {
-    "20230630": 108.0,
-    "20230930": 116.7
-   },
-   "src": {
-    "y:20240331": [
-     "a7cdff95-e0a3-4935-abf4-eae8dcb0b3a9.pdf",
-     115,
-     "Capacity utilization (Visakh Refinery, doc period)",
-     "104.7"
-    ],
-    "q:20230930": [
-     "820f636b-b809-4121-ab93-be556c04b128.pdf",
-     2,
-     "116.7% of installed capacity (Visakh, Jul-Sep 2023)",
-     "116.7"
-    ],
-    "q:20230630": [
-     "5b03e4ea-1e90-4c30-b47b-e746abff0ea3.pdf",
-     2,
-     "~108% of installed capacity (Visakh, Apr-Jun 2023)",
-     "108"
-    ]
-   }
-  },
-  {
    "name": "Visakh Refinery Crude Throughput",
    "unit": "TMT",
    "kind": "flow",
@@ -1395,6 +1363,41 @@
      "9.7"
     ]
    }
+  },
+  {
+   "name": "Visakh Refinery Capacity Utilisation",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 104.7
+   },
+   "q": {
+    "20230930": 116.7
+   },
+   "src": {
+    "y:20240331": [
+     "a7cdff95-e0a3-4935-abf4-eae8dcb0b3a9.pdf",
+     115,
+     "Capacity utilization (Visakh Refinery, doc period)",
+     "104.7"
+    ],
+    "q:20230930": [
+     "820f636b-b809-4121-ab93-be556c04b128.pdf",
+     2,
+     "116.7% of installed capacity (Visakh, Jul-Sep 2023)",
+     "116.7"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     108.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~108% of installed capacity (Visakh, Apr-Jun 2023)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Aviation (ATF) Sales Volume",
@@ -1890,5 +1893,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

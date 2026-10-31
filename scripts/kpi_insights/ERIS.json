@@ -253,38 +253,6 @@
    }
   },
   {
-   "name": "Overall Insulins Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 10.0
-   },
-   "q": {
-    "20241231": 10.0,
-    "20260331": 16.0
-   },
-   "src": {
-    "q:20260331": [
-     "b0e36dff-c5fd-4895-8ee8-044acfcea60b.pdf",
-     5,
-     "to 16% in Mar-26",
-     "16"
-    ],
-    "q:20241231": [
-     "72908deb-fb0d-4e8f-8d34-bc1eea5aecab.pdf",
-     5,
-     "Largest Indian company in Insulins with a 10% market share",
-     "10"
-    ],
-    "y:20240331": [
-     "22a2491c-a188-41d3-9b38-cf59ea6d198b.pdf",
-     18,
-     "leadership in Insulins with a market share of over 10% (doc period)",
-     "10"
-    ]
-   }
-  },
-  {
    "name": "Prescription Products Installed Capacity - Tablets",
    "unit": "mn units p.a.",
    "kind": "level",
@@ -507,6 +475,40 @@
      "44"
     ]
    }
+  },
+  {
+   "name": "Overall Insulins Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 10.0,
+    "20260331": 16.0
+   },
+   "src": {
+    "q:20260331": [
+     "b0e36dff-c5fd-4895-8ee8-044acfcea60b.pdf",
+     5,
+     "to 16% in Mar-26",
+     "16"
+    ],
+    "q:20241231": [
+     "72908deb-fb0d-4e8f-8d34-bc1eea5aecab.pdf",
+     5,
+     "Largest Indian company in Insulins with a 10% market share",
+     "10"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     10.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: leadership in Insulins with a market share of over 10% (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Prescription Products Utilisation - Tablets",
@@ -1108,23 +1110,6 @@
    }
   },
   {
-   "name": "Sundae Pens In-house Manufacturing Capacity (Phase-I)",
-   "unit": "mn units p.a.",
-   "kind": "level",
-   "y": {
-    "20260331": 5.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "b0e36dff-c5fd-4895-8ee8-044acfcea60b.pdf",
-     9,
-     "In-sourcing of Sundae Pens manufacturing - Phase-I capacity ~ 5 mn units p.a. (d",
-     "5"
-    ]
-   }
-  },
-  {
    "name": "Sundae Vial Price",
    "unit": "₹/unit",
    "kind": "level",
@@ -1138,74 +1123,6 @@
      9,
      "Vials priced at Rs. 1,290/ unit (doc period)",
      "1,290"
-    ]
-   }
-  },
-  {
-   "name": "Swiss Parenterals Approved Dossiers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 1000.0
-   },
-   "src": {
-    "q:20250930": [
-     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
-     11,
-     "Large Dossier Bank - 1,000+ approved (doc period)",
-     "1,000"
-    ]
-   }
-  },
-  {
-   "name": "Swiss Parenterals Markets Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 80.0
-   },
-   "src": {
-    "q:20250930": [
-     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
-     11,
-     "well diversified across 80+ markets (doc period)",
-     "80"
-    ]
-   }
-  },
-  {
-   "name": "Swiss Parenterals Pipeline Dossiers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 1000.0
-   },
-   "src": {
-    "q:20250930": [
-     "bf3953dd-4192-4e75-bb18-ef12c6218972.pdf",
-     11,
-     "Large Dossier Bank - 1,000+ in pipeline (doc period)",
-     "1,000"
-    ]
-   }
-  },
-  {
-   "name": "Swiss Parenterals R&D Pipeline Projects",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 170.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "48d5ff7a-2fcc-4fb8-8145-41787223363b.pdf",
-     14,
-     "R&D pipeline augmented to ~ 170+ projects (doc period)",
-     "170"
     ]
    }
   }
@@ -1630,5 +1547,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

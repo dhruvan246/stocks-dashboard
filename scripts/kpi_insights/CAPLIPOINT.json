@@ -131,80 +131,6 @@
  },
  "metrics": [
   {
-   "name": "Products Registered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 4000.0,
-    "20260331": 4042.0
-   },
-   "q": {
-    "20200630": 4000.0,
-    "20230930": 4000.0,
-    "20241231": 4000.0,
-    "20250630": 4000.0,
-    "20250930": 5000.0,
-    "20251231": 5000.0,
-    "20260630": 5000.0
-   },
-   "src": {
-    "q:20260630": [
-     "4d134212-8757-4da4-9573-4f26e422f957.pdf",
-     13,
-     "5,000+ Products registered (doc period)",
-     "5,000"
-    ],
-    "q:20251231": [
-     "f761aa80-9ccc-4e05-9554-153ba6062c17.pdf",
-     20,
-     "5,000+ Products registered (doc period)",
-     "5,000"
-    ],
-    "q:20250930": [
-     "8f886ccc-f499-4e93-899f-4995a326fff3.pdf",
-     22,
-     "5,000+ Products registered (doc period)",
-     "5,000"
-    ],
-    "q:20250630": [
-     "e18ffab4-fe29-41aa-a4b8-a235793e22bf.pdf",
-     18,
-     "4,000+ Products registered (doc period)",
-     "4,000"
-    ],
-    "y:20260331": [
-     "d09ac7e9-0a81-4dcd-b5f8-ef6f4f4d4e44.pdf",
-     91,
-     "registered product licenses",
-     "4,042"
-    ],
-    "q:20241231": [
-     "0a36a095-8554-4c14-bde2-44c98430b9fd.pdf",
-     23,
-     "Products registered",
-     "4000"
-    ],
-    "y:20240331": [
-     "39847542-438c-4d28-b703-7fb4b0a1508e.pdf",
-     29,
-     "product registrations",
-     "4000"
-    ],
-    "q:20230930": [
-     "bf4912e5-1a2a-490b-8836-04176b419bb5.pdf",
-     29,
-     "4000+ Products registered (doc period)",
-     "4000"
-    ],
-    "q:20200630": [
-     "633e8dc4-f04c-4fdd-b636-aa0639ee4ec4.pdf",
-     12,
-     "4000+ Products registered (doc period)",
-     "4000"
-    ]
-   }
-  },
-  {
    "name": "Therapeutic Segments",
    "unit": "count",
    "kind": "level",
@@ -342,73 +268,6 @@
      21,
      "with 9 approvals till date (doc period)",
      "9"
-    ]
-   }
-  },
-  {
-   "name": "Pharmaceutical Formulations",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 650.0,
-    "20260331": 650.0
-   },
-   "q": {
-    "20200630": 650.0,
-    "20230930": 650.0,
-    "20250630": 650.0,
-    "20250930": 650.0,
-    "20251231": 650.0,
-    "20260630": 650.0
-   },
-   "src": {
-    "q:20260630": [
-     "4d134212-8757-4da4-9573-4f26e422f957.pdf",
-     13,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
-    ],
-    "q:20251231": [
-     "f761aa80-9ccc-4e05-9554-153ba6062c17.pdf",
-     20,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
-    ],
-    "q:20250930": [
-     "8f886ccc-f499-4e93-899f-4995a326fff3.pdf",
-     22,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
-    ],
-    "q:20250630": [
-     "e18ffab4-fe29-41aa-a4b8-a235793e22bf.pdf",
-     18,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
-    ],
-    "y:20260331": [
-     "d09ac7e9-0a81-4dcd-b5f8-ef6f4f4d4e44.pdf",
-     91,
-     "affordable generics",
-     "650"
-    ],
-    "y:20240331": [
-     "39847542-438c-4d28-b703-7fb4b0a1508e.pdf",
-     29,
-     "formulations",
-     "650"
-    ],
-    "q:20230930": [
-     "bf4912e5-1a2a-490b-8836-04176b419bb5.pdf",
-     29,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
-    ],
-    "q:20200630": [
-     "633e8dc4-f04c-4fdd-b636-aa0639ee4ec4.pdf",
-     12,
-     "650+ Pharmaceutical formulations (doc period)",
-     "650"
     ]
    }
   },
@@ -597,6 +456,88 @@
    }
   },
   {
+   "name": "Products Registered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 4000.0,
+    "20260331": 4042.0
+   },
+   "q": {
+    "20241231": 4000.0
+   },
+   "src": {
+    "y:20260331": [
+     "d09ac7e9-0a81-4dcd-b5f8-ef6f4f4d4e44.pdf",
+     91,
+     "registered product licenses",
+     "4,042"
+    ],
+    "q:20241231": [
+     "0a36a095-8554-4c14-bde2-44c98430b9fd.pdf",
+     23,
+     "Products registered",
+     "4000"
+    ],
+    "y:20240331": [
+     "39847542-438c-4d28-b703-7fb4b0a1508e.pdf",
+     29,
+     "product registrations",
+     "4000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     5000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 5,000+ Products registered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     5000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 5,000+ Products registered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     5000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 5,000+ Products registered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4,000+ Products registered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4000+ Products registered (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20200630",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4000+ Products registered (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "R&D Spend",
    "unit": "INR Cr",
    "kind": "flow",
@@ -701,31 +642,6 @@
    }
   },
   {
-   "name": "API Molecules Developed",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 90.0
-   },
-   "q": {
-    "20230930": 80.0
-   },
-   "src": {
-    "y:20250331": [
-     "500e1647-d2c9-44c8-8ed7-06ba0d8af9cf.pdf",
-     68,
-     "API R&D: 90+ molecules developed across General & Oncology segments",
-     "90"
-    ],
-    "q:20230930": [
-     "bf4912e5-1a2a-490b-8836-04176b419bb5.pdf",
-     30,
-     "Completed R&D for 80+ APIs (doc period)",
-     "80"
-    ]
-   }
-  },
-  {
    "name": "CSL Non-US Products Approved",
    "unit": "count",
    "kind": "level",
@@ -751,101 +667,78 @@
    }
   },
   {
-   "name": "CSL Non-US Products Filed",
+   "name": "Pharmaceutical Formulations",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 54.0
+    "20240331": 650.0,
+    "20260331": 650.0
    },
-   "q": {
-    "20260630": 110.0
-   },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "4d134212-8757-4da4-9573-4f26e422f957.pdf",
-     8,
-     "CSL has filed 110+ products in multiple Non-US markets (doc period)",
-     "110"
-    ],
     "y:20260331": [
      "d09ac7e9-0a81-4dcd-b5f8-ef6f4f4d4e44.pdf",
-     104,
-     "Filed products across multiple Non-US markets",
-     "54"
-    ]
-   }
-  },
-  {
-   "name": "Chile Product Licenses",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 125.0,
-    "20251231": 125.0
-   },
-   "src": {
-    "q:20251231": [
-     "f761aa80-9ccc-4e05-9554-153ba6062c17.pdf",
-     14,
-     "Caplin already holds 125+ product licenses in Chile (doc period)",
-     "125"
+     91,
+     "affordable generics",
+     "650"
     ],
-    "q:20250930": [
-     "8f886ccc-f499-4e93-899f-4995a326fff3.pdf",
-     16,
-     "Caplin already holds 125+ product licenses in Chile (doc period)",
-     "125"
+    "y:20240331": [
+     "39847542-438c-4d28-b703-7fb4b0a1508e.pdf",
+     29,
+     "formulations",
+     "650"
     ]
-   }
-  },
-  {
-   "name": "China Partnership ANDAs/MAs Access",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 130.0,
-    "20251231": 80.0
    },
-   "src": {
-    "q:20251231": [
-     "f761aa80-9ccc-4e05-9554-153ba6062c17.pdf",
-     14,
-     "granting access to 80+ approved ANDAs/MAs in the US and EU (doc period)",
-     "80"
+   "fixed": [
+    [
+     "q:20260630",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
     ],
-    "q:20250930": [
-     "8f886ccc-f499-4e93-899f-4995a326fff3.pdf",
-     16,
-     "granting access to 130+ approved ANDAs/MAs in the US and EU (doc period)",
-     "130"
-    ]
-   }
-  },
-  {
-   "name": "Mexico Products Filed",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 28.0,
-    "20250930": 35.0
-   },
-   "src": {
-    "q:20250930": [
-     "8f886ccc-f499-4e93-899f-4995a326fff3.pdf",
-     16,
-     "Company has filed 35+ products (doc period)",
-     "35"
+    [
+     "q:20251231",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
     ],
-    "q:20241231": [
-     "0a36a095-8554-4c14-bde2-44c98430b9fd.pdf",
-     11,
-     "Mexico Update - filed products",
-     "28"
+    [
+     "q:20250930",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20200630",
+     650.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 650+ Pharmaceutical formulations (doc period)",
+     "2026-10-31"
     ]
-   }
+   ]
   },
   {
    "name": "R&D Setups",
@@ -935,6 +828,33 @@
      "drop_q",
      "att8 92f67142 p2 USFDA-approval press release dated 2024-08-08 (p1); 'filed 42 ANDAs ... so far' is an undated running count with no reporting period; slot q:20",
      "2026-10-21"
+    ]
+   ]
+  },
+  {
+   "name": "CSL Non-US Products Filed",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 54.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "d09ac7e9-0a81-4dcd-b5f8-ef6f4f4d4e44.pdf",
+     104,
+     "Filed products across multiple Non-US markets",
+     "54"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     110.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: CSL has filed 110+ products in multiple Non-US markets (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -1039,6 +959,33 @@
      "4"
     ]
    }
+  },
+  {
+   "name": "Mexico Products Filed",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 28.0
+   },
+   "src": {
+    "q:20241231": [
+     "0a36a095-8554-4c14-bde2-44c98430b9fd.pdf",
+     11,
+     "Mexico Update - filed products",
+     "28"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     35.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Company has filed 35+ products (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "OSD Production Volume",
@@ -1509,5 +1456,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

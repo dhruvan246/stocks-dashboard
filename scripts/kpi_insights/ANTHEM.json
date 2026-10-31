@@ -160,52 +160,6 @@
    }
   },
   {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 2300.0
-   },
-   "q": {
-    "20250630": 2149.0,
-    "20250930": 2149.0,
-    "20251231": 2228.0,
-    "20260331": 2282.0
-   },
-   "src": {
-    "y:20260331": [
-     "aede0bcc-7adf-43c7-84c4-24a58b0167c9.pdf",
-     75,
-     "As of March 31, 2026, the Company employed approximately 2,300 professionals",
-     "2,300"
-    ],
-    "q:20260331": [
-     "b9fd18a1-0037-4310-b2c2-25e124964ed5.pdf",
-     7,
-     "2,282 / 1,117, # Employees / Scientific Staff",
-     "2,282"
-    ],
-    "q:20251231": [
-     "1bb2c5d7-de77-42f2-8db1-ba1ea7daa022.pdf",
-     8,
-     "2,228 / 1,097, # Employees / Scientific Staff",
-     "2,228"
-    ],
-    "q:20250930": [
-     "6b25f96c-2dc4-4879-94d3-42e991e95d82.pdf",
-     8,
-     "2,149 / 1,045, # Employees / Scientific Staff",
-     "2,149"
-    ],
-    "q:20250630": [
-     "3702497f-5880-4170-b1c1-c52828d3c96f.pdf",
-     6,
-     "# Employees",
-     "2,149"
-    ]
-   }
-  },
-  {
    "name": "Commercial Molecules",
    "unit": "count",
    "kind": "level",
@@ -281,6 +235,54 @@
      "1,045"
     ]
    }
+  },
+  {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 2149.0,
+    "20250930": 2149.0,
+    "20251231": 2228.0,
+    "20260331": 2282.0
+   },
+   "src": {
+    "q:20260331": [
+     "b9fd18a1-0037-4310-b2c2-25e124964ed5.pdf",
+     7,
+     "2,282 / 1,117, # Employees / Scientific Staff",
+     "2,282"
+    ],
+    "q:20251231": [
+     "1bb2c5d7-de77-42f2-8db1-ba1ea7daa022.pdf",
+     8,
+     "2,228 / 1,097, # Employees / Scientific Staff",
+     "2,228"
+    ],
+    "q:20250930": [
+     "6b25f96c-2dc4-4879-94d3-42e991e95d82.pdf",
+     8,
+     "2,149 / 1,045, # Employees / Scientific Staff",
+     "2,149"
+    ],
+    "q:20250630": [
+     "3702497f-5880-4170-b1c1-c52828d3c96f.pdf",
+     6,
+     "# Employees",
+     "2,149"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     2300.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: As of March 31, 2026, the Company employed approximately 2,300 professionals",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Attrition Rate",
@@ -398,40 +400,6 @@
      82,
      "Fermentation Capacity - Unit I: 2 KL",
      "2"
-    ]
-   }
-  },
-  {
-   "name": "Fermentation Capacity - Unit II",
-   "unit": "KL",
-   "kind": "level",
-   "y": {
-    "20260331": 140.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "aede0bcc-7adf-43c7-84c4-24a58b0167c9.pdf",
-     82,
-     "Fermentation Capacity - Unit II: ~140 KL (~50% utilisation)",
-     "140"
-    ]
-   }
-  },
-  {
-   "name": "Fermentation Capacity - Unit III",
-   "unit": "KL",
-   "kind": "level",
-   "y": {
-    "20260331": 40.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "aede0bcc-7adf-43c7-84c4-24a58b0167c9.pdf",
-     82,
-     "Fermentation Capacity - Unit III: ~40 KL (yet to be commissioned)",
-     "40"
     ]
    }
   },
@@ -574,5 +542,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-17"
+ "updated": "2026-10-31"
 }

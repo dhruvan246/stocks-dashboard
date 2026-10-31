@@ -1072,45 +1072,6 @@
    }
   },
   {
-   "name": "Transmission Lines (number)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 1260.0
-   },
-   "q": {
-    "20240630": 1507.0,
-    "20260331": 1584.0,
-    "20260630": 1595.0
-   },
-   "src": {
-    "q:20260630": [
-     "188c1f55-7aa7-4ca5-9677-0214d1cb674a.pdf",
-     5,
-     "nos. lines",
-     "1,595"
-    ],
-    "q:20260331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     6,
-     "nos. lines",
-     "1,584"
-    ],
-    "q:20240630": [
-     "f475f89f-fdf6-45a7-a85d-dbe153f80f45.pdf",
-     6,
-     "Transmission Lines nos.",
-     "1,507"
-    ],
-    "y:20200331": [
-     "9c03625d-4250-4932-bd39-c7a0cdbfd38f.pdf",
-     6,
-     "Transmission Lines >1260 nos.",
-     "1260"
-    ]
-   }
-  },
-  {
    "name": "Collection Efficiency",
    "unit": "%",
    "kind": "level",
@@ -1173,6 +1134,47 @@
    }
   },
   {
+   "name": "Transmission Lines (number)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 1507.0,
+    "20260331": 1584.0,
+    "20260630": 1595.0
+   },
+   "src": {
+    "q:20260630": [
+     "188c1f55-7aa7-4ca5-9677-0214d1cb674a.pdf",
+     5,
+     "nos. lines",
+     "1,595"
+    ],
+    "q:20260331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     6,
+     "nos. lines",
+     "1,584"
+    ],
+    "q:20240630": [
+     "f475f89f-fdf6-45a7-a85d-dbe153f80f45.pdf",
+     6,
+     "Transmission Lines nos.",
+     "1,507"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20200331",
+     1260.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Transmission Lines >1260 nos.",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Consultancy Orders Secured",
    "unit": "count",
    "kind": "flow",
@@ -1193,30 +1195,6 @@
      18,
      "31 new assignments in FY20 (Domestic)",
      "31"
-    ]
-   }
-  },
-  {
-   "name": "Consultancy Projects Ongoing",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 80.0,
-    "20260331": 62.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
-     28,
-     "Ongoing projects# (doc period)",
-     "62"
-    ],
-    "y:20200331": [
-     "9c03625d-4250-4932-bd39-c7a0cdbfd38f.pdf",
-     18,
-     ">80 ongoing assignments (end FY20, Domestic)",
-     "80"
     ]
    }
   },
@@ -1393,6 +1371,33 @@
      "07"
     ]
    }
+  },
+  {
+   "name": "Consultancy Projects Ongoing",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 62.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "139ed5ad-da21-4cee-8495-64c26452c2d7.pdf",
+     28,
+     "Ongoing projects# (doc period)",
+     "62"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20200331",
+     80.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: >80 ongoing assignments (end FY20, Domestic)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Inter-regional Power Transfer Capacity (Company)",
@@ -1888,5 +1893,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

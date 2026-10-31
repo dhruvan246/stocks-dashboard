@@ -2955,52 +2955,6 @@
    }
   },
   {
-   "name": "Distribution Location Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 300.0
-   },
-   "q": {
-    "20250930": 300.0,
-    "20251231": 310.0,
-    "20260331": 310.0,
-    "20260630": 310.0
-   },
-   "src": {
-    "q:20260630": [
-     "a194b8ab-094d-44a2-9b58-0d8b692ebe74.pdf",
-     4,
-     "Locations 310+",
-     "310"
-    ],
-    "y:20250331": [
-     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
-     57,
-     "Locations (doc period)",
-     "300"
-    ],
-    "q:20260331": [
-     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
-     4,
-     "Locations",
-     "310"
-    ],
-    "q:20251231": [
-     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
-     4,
-     "Locations (doc period)",
-     "310"
-    ],
-    "q:20250930": [
-     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
-     4,
-     "Locations (doc period)",
-     "300"
-    ]
-   }
-  },
-  {
    "name": "Equity AUM (Quarterly Average)",
    "unit": "INR Crore",
    "kind": "level",
@@ -3226,6 +3180,55 @@
    }
   },
   {
+   "name": "Distribution Location Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 300.0
+   },
+   "q": {
+    "20250930": 300.0,
+    "20251231": 310.0,
+    "20260331": 310.0
+   },
+   "src": {
+    "y:20250331": [
+     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
+     57,
+     "Locations (doc period)",
+     "300"
+    ],
+    "q:20260331": [
+     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
+     4,
+     "Locations",
+     "310"
+    ],
+    "q:20251231": [
+     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
+     4,
+     "Locations (doc period)",
+     "310"
+    ],
+    "q:20250930": [
+     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
+     4,
+     "Locations (doc period)",
+     "300"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     310.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Locations 310+",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Investor Folios",
    "unit": "count",
    "kind": "level",
@@ -3302,44 +3305,6 @@
    }
   },
   {
-   "name": "MF Distributor Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 92000.0,
-    "20251231": 93000.0,
-    "20260331": 93700.0,
-    "20260630": 95500.0
-   },
-   "src": {
-    "q:20260630": [
-     "a194b8ab-094d-44a2-9b58-0d8b692ebe74.pdf",
-     4,
-     "MF Distributors 95,500+",
-     "95,500"
-    ],
-    "q:20260331": [
-     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
-     4,
-     "MF Distributors",
-     "93,700"
-    ],
-    "q:20251231": [
-     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
-     4,
-     "MF Distributors (doc period)",
-     "93,000"
-    ],
-    "q:20250930": [
-     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
-     4,
-     "MF Distributors (doc period)",
-     "92,000"
-    ]
-   }
-  },
-  {
    "name": "SIP Contribution (Monthly, INR Crore)",
    "unit": "INR Crore",
    "kind": "flow",
@@ -3407,6 +3372,47 @@
      "35.8"
     ]
    }
+  },
+  {
+   "name": "MF Distributor Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 92000.0,
+    "20251231": 93000.0,
+    "20260331": 93700.0
+   },
+   "src": {
+    "q:20260331": [
+     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
+     4,
+     "MF Distributors",
+     "93,700"
+    ],
+    "q:20251231": [
+     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
+     4,
+     "MF Distributors (doc period)",
+     "93,000"
+    ],
+    "q:20250930": [
+     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
+     4,
+     "MF Distributors (doc period)",
+     "92,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     95500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: MF Distributors 95,500+",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Overall Average AUM (All Businesses)",
@@ -3599,74 +3605,6 @@
    }
   },
   {
-   "name": "B-30 Location Share (%)",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 80.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "ac7b3ae3-b884-4564-adfa-ecf7436e69c5.pdf",
-     38,
-     "with over 80% located in B-30 cities (doc period)",
-     "80"
-    ]
-   }
-  },
-  {
-   "name": "Digital Partner Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 130.0
-   },
-   "src": {
-    "q:20260630": [
-     "a194b8ab-094d-44a2-9b58-0d8b692ebe74.pdf",
-     4,
-     "Digital Partners 130+",
-     "130"
-    ]
-   }
-  },
-  {
-   "name": "Distribution Footprint (Pin Codes)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 19000.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "ac7b3ae3-b884-4564-adfa-ecf7436e69c5.pdf",
-     25,
-     "Our footprint now spans over 19,000 pin codes (doc period)",
-     "19,000"
-    ]
-   }
-  },
-  {
-   "name": "ESIC Mandate AUM (INR Crore)",
-   "unit": "INR Crore",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 28450.0
-   },
-   "src": {
-    "q:20260331": [
-     "ac7b3ae3-b884-4564-adfa-ecf7436e69c5.pdf",
-     24,
-     "ESIC mandate, accounting for approximately Rs 28,450 Crore as of quarter ended 3",
-     "28,450"
-    ]
-   }
-  },
-  {
    "name": "Mutual Fund AUM (Quarterly Average, Lakh Crore)",
    "unit": "Lakh Crore",
    "kind": "level",
@@ -3748,23 +3686,6 @@
      23,
      "we expanded our suite to 54 offerings across Equities, Fixed Income, Commodities",
      "54"
-    ]
-   }
-  },
-  {
-   "name": "SIP AUM as % of Total Equity AUM",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 45.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "ac7b3ae3-b884-4564-adfa-ecf7436e69c5.pdf",
-     22,
-     "our SIP AUM represents approximately 45% of our total equity AUM (doc period)",
-     "45"
     ]
    }
   },
@@ -4026,5 +3947,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

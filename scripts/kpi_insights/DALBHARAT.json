@@ -4592,31 +4592,6 @@
    }
   },
   {
-   "name": "Limestone Reserves",
-   "unit": "Bn Tonnes",
-   "kind": "level",
-   "y": {
-    "20260331": 2.7
-   },
-   "q": {
-    "20260630": 3.3
-   },
-   "src": {
-    "q:20260630": [
-     "7ea5b334-8a20-44f7-85dc-d329a8d4b89f.pdf",
-     12,
-     "3.3+ Bn Tonnes of Limestone Reserves",
-     "3.3"
-    ],
-    "y:20260331": [
-     "199656cb-4f9f-4498-ad91-a126447987fd.pdf",
-     12,
-     "Limestone Reserves (doc period)",
-     "2.7"
-    ]
-   }
-  },
-  {
    "name": "Cement Capacity Addition",
    "unit": "MTPA",
    "kind": "flow",
@@ -4632,6 +4607,33 @@
      "4.9"
     ]
    }
+  },
+  {
+   "name": "Limestone Reserves",
+   "unit": "Bn Tonnes",
+   "kind": "level",
+   "y": {
+    "20260331": 2.7
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "199656cb-4f9f-4498-ad91-a126447987fd.pdf",
+     12,
+     "Limestone Reserves (doc period)",
+     "2.7"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     3.3,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3.3+ Bn Tonnes of Limestone Reserves",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Sales Offices",
@@ -5205,5 +5207,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

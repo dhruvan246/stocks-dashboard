@@ -1378,52 +1378,6 @@
    }
   },
   {
-   "name": "GLP-1 Fill-and-Finish Capacity",
-   "unit": "million units/year",
-   "kind": "level",
-   "y": {
-    "20250331": 40.0,
-    "20260331": 40.0
-   },
-   "q": {
-    "20250630": 40.0,
-    "20250930": 40.0,
-    "20251231": 40.0
-   },
-   "src": {
-    "y:20260331": [
-     "fc85ba48-93f1-450b-9336-f0490e6172fa.pdf",
-     30,
-     "scaling our GLP-1 fill-and-finish capacity from 40 million to 140 million units ",
-     "40"
-    ],
-    "q:20251231": [
-     "bf4106eb-8744-48f5-b7e3-2fb0d09d8755.pdf",
-     12,
-     "Pen/cartridge capacity from ~40 million to 140 million units (current, doc perio",
-     "40"
-    ],
-    "q:20250930": [
-     "90359eb7-19e0-41c8-b0b9-e9c3541f0a24.pdf",
-     12,
-     "GLP-1/Pen/cartridge capacity from ~40 million to 140 million units (current, doc",
-     "40"
-    ],
-    "q:20250630": [
-     "d4e532e4-80dd-4d42-a96e-b9c7adccfe7a.pdf",
-     12,
-     "GLP-1/Pen/cartridge capacity from ~40 million to 140 million units (current, doc",
-     "40"
-    ],
-    "y:20250331": [
-     "d73d15ea-c7e4-49eb-9235-857aea24cf30.pdf",
-     12,
-     "current GLP-1/Pen/cartridge capacity of ~40 million to a total of 140 million un",
-     "40"
-    ]
-   }
-  },
-  {
    "name": "RTU Bags Approved (Cumulative)",
    "unit": "count",
    "kind": "level",
@@ -1466,45 +1420,6 @@
      12,
      "20 RTU products filed in the USA (14 approved) (doc period)",
      "14"
-    ]
-   }
-  },
-  {
-   "name": "Export Markets (Countries)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 65.0,
-    "20260331": 65.0
-   },
-   "q": {
-    "20210331": 60.0,
-    "20220331": 60.0
-   },
-   "src": {
-    "y:20260331": [
-     "fc85ba48-93f1-450b-9336-f0490e6172fa.pdf",
-     91,
-     "exports to almost 65 countries across 6 continents (doc period)",
-     "65"
-    ],
-    "y:20250331": [
-     "e2c13564-f778-4289-b41d-f77fa88c1c3b.pdf",
-     93,
-     "exports to almost 65 countries across 6 continents (doc period)",
-     "65"
-    ],
-    "q:20220331": [
-     "2a167e0d-db79-4120-8686-c1bd05579026.pdf",
-     14,
-     "Exports to Over 60 Countries (As of March 31, 2022)",
-     "60"
-    ],
-    "q:20210331": [
-     "3fe678c2-77dd-4f17-b612-c7cbc6faa301.pdf",
-     8,
-     "Operating in 60+ countries as of March 31, 2021",
-     "60"
     ]
    }
   },
@@ -1616,6 +1531,48 @@
      "2"
     ]
    }
+  },
+  {
+   "name": "Export Markets (Countries)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 65.0,
+    "20260331": 65.0
+   },
+   "q": {
+    "20220331": 60.0
+   },
+   "src": {
+    "y:20260331": [
+     "fc85ba48-93f1-450b-9336-f0490e6172fa.pdf",
+     91,
+     "exports to almost 65 countries across 6 continents (doc period)",
+     "65"
+    ],
+    "y:20250331": [
+     "e2c13564-f778-4289-b41d-f77fa88c1c3b.pdf",
+     93,
+     "exports to almost 65 countries across 6 continents (doc period)",
+     "65"
+    ],
+    "q:20220331": [
+     "2a167e0d-db79-4120-8686-c1bd05579026.pdf",
+     14,
+     "Exports to Over 60 Countries (As of March 31, 2022)",
+     "60"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20210331",
+     60.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Operating in 60+ countries as of March 31, 2021",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "New Molecule Launches (US, Annual)",
@@ -1805,6 +1762,57 @@
      "28"
     ]
    }
+  },
+  {
+   "name": "GLP-1 Fill-and-Finish Capacity",
+   "unit": "million units/year",
+   "kind": "level",
+   "y": {
+    "20260331": 40.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "fc85ba48-93f1-450b-9336-f0490e6172fa.pdf",
+     30,
+     "scaling our GLP-1 fill-and-finish capacity from 40 million to 140 million units ",
+     "40"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     40.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Pen/cartridge capacity from ~40 million to 140 million units (current, doc perio",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     40.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: GLP-1/Pen/cartridge capacity from ~40 million to 140 million units (current, doc",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     40.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: GLP-1/Pen/cartridge capacity from ~40 million to 140 million units (current, doc",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     40.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: current GLP-1/Pen/cartridge capacity of ~40 million to a total of 140 million un",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -2119,5 +2127,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

@@ -412,37 +412,6 @@
    }
   },
   {
-   "name": "Cumulative Platforms Built",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 790.0,
-    "20240930": 785.0,
-    "20251231": 800.0
-   },
-   "src": {
-    "q:20251231": [
-     "8bb06258-ae24-4bc2-9e11-554ec1f79dbb.pdf",
-     3,
-     "GRSE has built over 800 platforms (doc period)",
-     "800"
-    ],
-    "q:20240930": [
-     "e4885a2e-3e52-4fd3-b371-ed2924c6d3f3.pdf",
-     3,
-     "GRSE has built over 785 platforms (doc period)",
-     "785"
-    ],
-    "q:20240630": [
-     "58e34c96-10c6-4cee-9ea3-e023f9484e26.pdf",
-     3,
-     "GRSE has built over 790 platforms (doc period)",
-     "790"
-    ]
-   }
-  },
-  {
    "name": "Export Revenue (VoP)",
    "unit": "INR Crore",
    "kind": "flow",
@@ -670,30 +639,6 @@
    }
   },
   {
-   "name": "Procurement from Micro & Small Enterprises (%)",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 73.76,
-    "20260331": 69.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c7976186-75fd-4281-9279-fcc63ecea1b0.pdf",
-     10,
-     "over 69% of our procurement during the year was sourced from Micro and Small Ent",
-     "69"
-    ],
-    "y:20240331": [
-     "33a30dbe-0627-4dad-a6e0-0aeaa6425233.pdf",
-     49,
-     "procured items worth ₹987.50 crore from the MSEs, which is approx. 73.76% of the",
-     "73.76"
-    ]
-   }
-  },
-  {
    "name": "Solar Capacity Addition (Annual)",
    "unit": "kWp",
    "kind": "flow",
@@ -776,23 +721,6 @@
    }
   },
   {
-   "name": "Cumulative Steel Bridges Delivered",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 5900.0
-   },
-   "src": {
-    "q:20251231": [
-     "60d68aac-1543-4245-a6f2-002f23faf247.pdf",
-     2,
-     "having delivered over 5,900 of them to both domestic and international clients (",
-     "5,900"
-    ]
-   }
-  },
-  {
    "name": "Export Countries Served",
    "unit": "count",
    "kind": "level",
@@ -842,6 +770,33 @@
      "33,000"
     ]
    }
+  },
+  {
+   "name": "Procurement from Micro & Small Enterprises (%)",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 73.76
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "33a30dbe-0627-4dad-a6e0-0aeaa6425233.pdf",
+     49,
+     "procured items worth ₹987.50 crore from the MSEs, which is approx. 73.76% of the",
+     "73.76"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     69.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: over 69% of our procurement during the year was sourced from Micro and Small Ent",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -1156,5 +1111,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-24"
+ "updated": "2026-10-31"
 }

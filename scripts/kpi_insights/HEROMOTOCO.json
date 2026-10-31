@@ -574,7 +574,6 @@
    "unit": "INR Cr",
    "kind": "flow",
    "y": {
-    "20230331": 5000.0,
     "20250331": 5828.0,
     "20260331": 6147.0
    },
@@ -634,17 +633,21 @@
      3,
      "PAM Revenue",
      "1,426"
-    ],
-    "y:20230331": [
-     "137d16b8-d434-44a0-a2be-949585659f4b.pdf",
-     22,
-     "Parts, Accessories & Merchandise ~Rs.5,000Cr in FY23",
-     "5,000"
     ]
    },
    "latest": {
     "y:20230331": "2024-01-23"
-   }
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     5000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Parts, Accessories & Merchandise ~Rs.5,000Cr in FY23",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Vida Market Share",
@@ -808,78 +811,6 @@
    }
   },
   {
-   "name": "Financing % of Retail",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20200331": 47,
-    "20230331": 60.0
-   },
-   "q": {
-    "20231231": 64.8,
-    "20240930": 65.6,
-    "20241231": 65.2
-   },
-   "src": {
-    "q:20240930": [
-     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
-     3,
-     "Financing % of Retail",
-     "65.6"
-    ],
-    "q:20241231": [
-     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
-     3,
-     "Financing % of Retail",
-     "65.2"
-    ],
-    "q:20231231": [
-     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
-     3,
-     "Financing % of Retail",
-     "64.8"
-    ],
-    "y:20200331": [
-     "137d16b8-d434-44a0-a2be-949585659f4b.pdf",
-     16,
-     "Financing penetration FY20",
-     "47"
-    ],
-    "y:20230331": [
-     "137d16b8-d434-44a0-a2be-949585659f4b.pdf",
-     16,
-     "Financing penetration FY23 (~60%)",
-     "60"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20200331",
-     45.0,
-     47,
-     "set_y",
-     "stored src fee918ad p19 prints 'FY20 45%+' (lower bound, not a figure, so the newer print does not win); 137d16b8 p16 prints 'Financing penetration FY20: 47%'",
-     "2026-10-27"
-    ],
-    [
-     "y:20240331",
-     60.0,
-     null,
-     "drop_y",
-     "stored src fee918ad p19 prints 'FY24 60%+' - lower bound only, no exact FY24 print read",
-     "2026-10-27"
-    ],
-    [
-     "y:20250331",
-     60.0,
-     null,
-     "drop_y",
-     "stored src 6c673fb2 p69 prints 'sustaining at levels exceeding 60%' - lower bound only",
-     "2026-10-27"
-    ]
-   ]
-  },
-  {
    "name": "Global Business Market Share",
    "unit": "%",
    "kind": "level",
@@ -926,43 +857,77 @@
    }
   },
   {
-   "name": "Entry Segment (HF Deluxe) Market Share",
+   "name": "Financing % of Retail",
    "unit": "%",
-   "kind": "level",
+   "kind": "flow",
    "y": {
-    "20260331": 59.0
+    "20200331": 47
    },
    "q": {
-    "20230930": 49.0,
-    "20240630": 58.0,
-    "20250331": 65.0
+    "20231231": 64.8,
+    "20240930": 65.6,
+    "20241231": 65.2
    },
    "src": {
-    "y:20260331": [
-     "b80c703d-600d-472b-a18c-9565f6f780a7.pdf",
-     262,
-     "leadership with a market share of ~59% in FY 2025-26",
-     "59"
+    "q:20240930": [
+     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
+     3,
+     "Financing % of Retail",
+     "65.6"
     ],
-    "q:20250331": [
-     "192e7793-7994-4958-8617-0dd0c3bdc550.pdf",
-     20,
-     "market share in the entry segment climbed to 65%",
-     "65"
+    "q:20241231": [
+     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
+     3,
+     "Financing % of Retail",
+     "65.2"
     ],
-    "q:20240630": [
-     "b2622250-9f48-4e63-8a89-891accf26c14.pdf",
-     35,
-     "Entry segment market share recovered",
-     "58"
+    "q:20231231": [
+     "357a70bd-babf-4def-8cf6-1353f3ec639e.pdf",
+     3,
+     "Financing % of Retail",
+     "64.8"
     ],
-    "q:20230930": [
-     "b2622250-9f48-4e63-8a89-891accf26c14.pdf",
-     35,
-     "Entry segment market share (Q2 FY'24)",
-     "49"
+    "y:20200331": [
+     "137d16b8-d434-44a0-a2be-949585659f4b.pdf",
+     16,
+     "Financing penetration FY20",
+     "47"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20200331",
+     45.0,
+     47,
+     "set_y",
+     "stored src fee918ad p19 prints 'FY20 45%+' (lower bound, not a figure, so the newer print does not win); 137d16b8 p16 prints 'Financing penetration FY20: 47%'",
+     "2026-10-27"
+    ],
+    [
+     "y:20240331",
+     60.0,
+     null,
+     "drop_y",
+     "stored src fee918ad p19 prints 'FY24 60%+' - lower bound only, no exact FY24 print read",
+     "2026-10-27"
+    ],
+    [
+     "y:20250331",
+     60.0,
+     null,
+     "drop_y",
+     "stored src 6c673fb2 p69 prints 'sustaining at levels exceeding 60%' - lower bound only",
+     "2026-10-27"
+    ],
+    [
+     "y:20230331",
+     60.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Financing penetration FY23 (~60%)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Hero 2.0 Stores Count",
@@ -1189,6 +1154,47 @@
      "82.6"
     ]
    }
+  },
+  {
+   "name": "Entry Segment (HF Deluxe) Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 49.0,
+    "20240630": 58.0,
+    "20250331": 65.0
+   },
+   "src": {
+    "q:20250331": [
+     "192e7793-7994-4958-8617-0dd0c3bdc550.pdf",
+     20,
+     "market share in the entry segment climbed to 65%",
+     "65"
+    ],
+    "q:20240630": [
+     "b2622250-9f48-4e63-8a89-891accf26c14.pdf",
+     35,
+     "Entry segment market share recovered",
+     "58"
+    ],
+    "q:20230930": [
+     "b2622250-9f48-4e63-8a89-891accf26c14.pdf",
+     35,
+     "Entry segment market share (Q2 FY'24)",
+     "49"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     59.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: leadership with a market share of ~59% in FY 2025-26",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Global Business Annual Dispatches",
@@ -1624,31 +1630,6 @@
    }
   },
   {
-   "name": "Hero Premia Cities Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 73.0
-   },
-   "q": {
-    "20251231": 100.0
-   },
-   "src": {
-    "q:20251231": [
-     "1caaecba-8054-4fbc-bb4a-523796064769.pdf",
-     5,
-     "Expanded Hero Premia Stores to 100+ cities across India (doc period)",
-     "100"
-    ],
-    "y:20250331": [
-     "192e7793-7994-4958-8617-0dd0c3bdc550.pdf",
-     20,
-     "80+ Hero Premia outlets now active across 73 cities",
-     "73"
-    ]
-   }
-  },
-  {
    "name": "ICE Scooter Domestic Dispatches",
    "unit": "000s",
    "kind": "flow",
@@ -1861,23 +1842,6 @@
    }
   },
   {
-   "name": "Cumulative Patents Filed",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 1340.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "b80c703d-600d-472b-a18c-9565f6f780a7.pdf",
-     262,
-     "patent filings, which rose to over 1340 during this period",
-     "1340"
-    ]
-   }
-  },
-  {
    "name": "Cumulative Sales [Mn units]",
    "unit": "Mn units",
    "kind": "level",
@@ -2048,21 +2012,31 @@
    }
   },
   {
-   "name": "Karizma XMR Bookings",
+   "name": "Hero Premia Cities Covered",
    "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20231231": 13000.0
+   "kind": "level",
+   "y": {
+    "20250331": 73.0
    },
+   "q": {},
    "src": {
-    "q:20231231": [
-     "32376f1e-2b56-485b-b163-6ed5268f3ea6.pdf",
-     4,
-     "Received more than 13,000 bookings for the flagship Karizma XMR motorcycle",
-     "13,000"
+    "y:20250331": [
+     "192e7793-7994-4958-8617-0dd0c3bdc550.pdf",
+     20,
+     "80+ Hero Premia outlets now active across 73 cities",
+     "73"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Expanded Hero Premia Stores to 100+ cities across India (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Life Cycle Assessment Coverage",
@@ -2180,23 +2154,6 @@
      20,
      "Splendor+ ... hit an all-time high market share of 82.6%",
      "82.6"
-    ]
-   }
-  },
-  {
-   "name": "Sri Lanka Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 13.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "f2ea3950-9477-4ced-8c74-81b50661fee2.pdf",
-     192,
-     "brand's relaunch ... market share already exceeding 13% (doc period)",
-     "13"
     ]
    }
   },
@@ -2887,5 +2844,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

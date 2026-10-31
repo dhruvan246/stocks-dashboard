@@ -3353,30 +3353,6 @@
    }
   },
   {
-   "name": "Alternate Channel Integrations",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 20.0,
-    "20260331": 20.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "31bf16b8-1b24-4ff9-bc04-777e68b190f7.pdf",
-     52,
-     "20+ integrations are active and procuring premium (doc period)",
-     "20"
-    ],
-    "y:20260331": [
-     "57acfaf5-4806-4798-a344-042bea576c60.pdf",
-     57,
-     "More than live API integrations are currently operational (doc period)",
-     "20"
-    ]
-   }
-  },
-  {
    "name": "Engineering - Gross Direct Premium",
    "unit": "₹ Lakhs",
    "kind": "flow",
@@ -3596,6 +3572,33 @@
      "1,594"
     ]
    }
+  },
+  {
+   "name": "Alternate Channel Integrations",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 20.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "57acfaf5-4806-4798-a344-042bea576c60.pdf",
+     57,
+     "More than live API integrations are currently operational (doc period)",
+     "20"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     20.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 20+ integrations are active and procuring premium (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Alternate Channel Premium",
@@ -4243,5 +4246,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

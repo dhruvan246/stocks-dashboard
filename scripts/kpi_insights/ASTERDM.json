@@ -5527,40 +5527,6 @@
    }
   },
   {
-   "name": "Robotic Surgeries Performed (Aster)",
-   "unit": "Nos",
-   "kind": "flow",
-   "y": {
-    "20230331": 480.0,
-    "20240331": 1140.0,
-    "20250331": 1865.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
-     57,
-     "robotic surgeries",
-     "1,140"
-    ],
-    "y:20250331": [
-     "247937ef-3f07-4225-8a34-77037ba24360.pdf",
-     31,
-     "conducted more than 1865 robotic surgeries",
-     "1865"
-    ],
-    "y:20230331": [
-     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
-     57,
-     "robotic surgeries",
-     "480"
-    ]
-   },
-   "latest": {
-    "y:20240331": "2025-08-12"
-   }
-  },
-  {
    "name": "Total Patient Volume (Quality Care)",
    "unit": "Mn",
    "kind": "flow",
@@ -5589,40 +5555,6 @@
      "Total Patient Volume (Mn) QCIL column",
      "0.95"
     ]
-   }
-  },
-  {
-   "name": "Transplants Performed (Aster)",
-   "unit": "Nos",
-   "kind": "flow",
-   "y": {
-    "20230331": 430.0,
-    "20240331": 510.0,
-    "20250331": 575.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
-     57,
-     "transplants",
-     "510"
-    ],
-    "y:20250331": [
-     "247937ef-3f07-4225-8a34-77037ba24360.pdf",
-     31,
-     "performed over 575 transplants",
-     "575"
-    ],
-    "y:20230331": [
-     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
-     57,
-     "transplants",
-     "430"
-    ]
-   },
-   "latest": {
-    "y:20240331": "2025-08-12"
    }
   },
   {
@@ -5818,6 +5750,80 @@
      "2,49,817"
     ]
    }
+  },
+  {
+   "name": "Robotic Surgeries Performed (Aster)",
+   "unit": "Nos",
+   "kind": "flow",
+   "y": {
+    "20230331": 480.0,
+    "20240331": 1140.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
+     57,
+     "robotic surgeries",
+     "1,140"
+    ],
+    "y:20230331": [
+     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
+     57,
+     "robotic surgeries",
+     "480"
+    ]
+   },
+   "latest": {
+    "y:20240331": "2025-08-12"
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     1865.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: conducted more than 1865 robotic surgeries",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Transplants Performed (Aster)",
+   "unit": "Nos",
+   "kind": "flow",
+   "y": {
+    "20230331": 430.0,
+    "20240331": 510.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
+     57,
+     "transplants",
+     "510"
+    ],
+    "y:20230331": [
+     "e080464e-bc1f-4136-bc2c-234c8ef88b1a.pdf",
+     57,
+     "transplants",
+     "430"
+    ]
+   },
+   "latest": {
+    "y:20240331": "2025-08-12"
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     575.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: performed over 575 transplants",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Capacity Beds (network)",
@@ -6344,5 +6350,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

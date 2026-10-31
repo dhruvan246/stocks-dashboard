@@ -1230,38 +1230,6 @@
    }
   },
   {
-   "name": "Retail Dealer/Distributor Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 2742.0,
-    "20260331": 2598.0
-   },
-   "q": {
-    "20240930": 100.0
-   },
-   "src": {
-    "y:20260331": [
-     "5cfa2fc3-ea76-452d-a3a9-71d3c9bf5ad6.pdf",
-     396,
-     "Number of dealers/distributors to whom sales are made",
-     "2,598"
-    ],
-    "y:20250331": [
-     "5cfa2fc3-ea76-452d-a3a9-71d3c9bf5ad6.pdf",
-     396,
-     "Number of dealers/distributors to whom sales are made",
-     "2,742"
-    ],
-    "q:20240930": [
-     "6110cc58-527a-43dc-bd0c-999e9d824c40.pdf",
-     16,
-     "extended network of >100 dealers (doc period)",
-     "100"
-    ]
-   }
-  },
-  {
    "name": "BACL Assets Under Management",
    "unit": "INR Cr",
    "kind": "level",
@@ -1428,6 +1396,40 @@
      "1,875"
     ]
    }
+  },
+  {
+   "name": "Retail Dealer/Distributor Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 2742.0,
+    "20260331": 2598.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "5cfa2fc3-ea76-452d-a3a9-71d3c9bf5ad6.pdf",
+     396,
+     "Number of dealers/distributors to whom sales are made",
+     "2,598"
+    ],
+    "y:20250331": [
+     "5cfa2fc3-ea76-452d-a3a9-71d3c9bf5ad6.pdf",
+     396,
+     "Number of dealers/distributors to whom sales are made",
+     "2,742"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: extended network of >100 dealers (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Employee Headcount",
@@ -1938,5 +1940,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-12"
+ "updated": "2026-10-31"
 }

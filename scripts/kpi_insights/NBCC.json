@@ -295,70 +295,6 @@
    }
   },
   {
-   "name": "New Business Secured",
-   "unit": "₹ Cr",
-   "kind": "flow",
-   "y": {
-    "20240331": 23500.0,
-    "20260331": 18780.0
-   },
-   "q": {
-    "20250930": 7600.0
-   },
-   "src": {
-    "q:20250930": [
-     "9101bcbd-f48c-46a5-a7ae-9641a70e165b.pdf",
-     6,
-     "New Business secured Q2 (Consolidated)",
-     "7600"
-    ],
-    "y:20260331": [
-     "2624da86-168f-45cc-93cd-dbb7bcf7b4bf.pdf",
-     31,
-     "New Consolidated Business Secured during the year totalled ₹18,780 crore",
-     "18,780"
-    ],
-    "y:20240331": [
-     "de354b9f-6d02-4175-a0a9-34923b4722f4.pdf",
-     34,
-     "NBCC secured a record new business totaling approximately ₹23,500 crore (consoli",
-     "23,500"
-    ]
-   }
-  },
-  {
-   "name": "Order Book (Consolidated)",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {
-    "20240331": 52242.0,
-    "20260331": 127820.0
-   },
-   "q": {
-    "20250930": 128381.0
-   },
-   "src": {
-    "q:20250930": [
-     "9101bcbd-f48c-46a5-a7ae-9641a70e165b.pdf",
-     15,
-     "Consolidated Order Book as on 30.09.2025",
-     "1,28,381"
-    ],
-    "y:20260331": [
-     "2624da86-168f-45cc-93cd-dbb7bcf7b4bf.pdf",
-     31,
-     "consolidated work order book at the end of the year stood at Rs. 1,27,820 crore",
-     "1,27,820"
-    ],
-    "y:20240331": [
-     "de354b9f-6d02-4175-a0a9-34923b4722f4.pdf",
-     34,
-     "As of March 31, 2024, NBCC's order book stands at approximately ₹52,242 crore",
-     "52,242"
-    ]
-   }
-  },
-  {
    "name": "Employee Count (A&B Staff)",
    "unit": "count",
    "kind": "level",
@@ -429,6 +365,76 @@
      "53"
     ]
    }
+  },
+  {
+   "name": "New Business Secured",
+   "unit": "₹ Cr",
+   "kind": "flow",
+   "y": {
+    "20260331": 18780.0
+   },
+   "q": {
+    "20250930": 7600.0
+   },
+   "src": {
+    "q:20250930": [
+     "9101bcbd-f48c-46a5-a7ae-9641a70e165b.pdf",
+     6,
+     "New Business secured Q2 (Consolidated)",
+     "7600"
+    ],
+    "y:20260331": [
+     "2624da86-168f-45cc-93cd-dbb7bcf7b4bf.pdf",
+     31,
+     "New Consolidated Business Secured during the year totalled ₹18,780 crore",
+     "18,780"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     23500.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: NBCC secured a record new business totaling approximately ₹23,500 crore (consoli",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Order Book (Consolidated)",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 127820.0
+   },
+   "q": {
+    "20250930": 128381.0
+   },
+   "src": {
+    "q:20250930": [
+     "9101bcbd-f48c-46a5-a7ae-9641a70e165b.pdf",
+     15,
+     "Consolidated Order Book as on 30.09.2025",
+     "1,28,381"
+    ],
+    "y:20260331": [
+     "2624da86-168f-45cc-93cd-dbb7bcf7b4bf.pdf",
+     31,
+     "consolidated work order book at the end of the year stood at Rs. 1,27,820 crore",
+     "1,27,820"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     52242.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: As of March 31, 2024, NBCC's order book stands at approximately ₹52,242 crore",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Training & Capacity-Building Programmes",
@@ -509,23 +515,6 @@
      204,
      "Number of Employees* Contract Employees As at March 31, 2026",
      "47"
-    ]
-   }
-  },
-  {
-   "name": "Man-days Generated",
-   "unit": "Million",
-   "kind": "flow",
-   "y": {
-    "20240331": 25.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "de354b9f-6d02-4175-a0a9-34923b4722f4.pdf",
-     34,
-     "the company has generated around 25 Million Man-days in FY 2023-24",
-     "25"
     ]
    }
   },
@@ -960,5 +949,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-29"
+ "updated": "2026-10-31"
 }

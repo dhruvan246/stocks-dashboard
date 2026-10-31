@@ -662,37 +662,6 @@
    }
   },
   {
-   "name": "Carbon Black Exports from India",
-   "unit": "KT",
-   "kind": "flow",
-   "y": {
-    "20210331": 106.0,
-    "20220331": 145.0,
-    "20230331": 140.0
-   },
-   "q": {},
-   "src": {
-    "y:20220331": [
-     "1b6fc5fa-c2e3-4f4d-85c7-39f3128ac620.pdf",
-     15,
-     "PCBL exported c.145 KT of carbon black from India",
-     "145"
-    ],
-    "y:20230331": [
-     "c905d6d0-27e2-499f-9221-de71295d4884.pdf",
-     19,
-     "PCBL exported ~140 KT in FY23",
-     "140"
-    ],
-    "y:20210331": [
-     "d602f074-4219-4f23-8ce3-7b3f6bf7b49b.pdf",
-     14,
-     "PCBL exported c.106 KT of carbon black from India",
-     "106"
-    ]
-   }
-  },
-  {
    "name": "Green Power Generation Capacity",
    "unit": "MW",
    "kind": "level",
@@ -786,6 +755,40 @@
      "72"
     ]
    }
+  },
+  {
+   "name": "Carbon Black Exports from India",
+   "unit": "KT",
+   "kind": "flow",
+   "y": {
+    "20210331": 106.0,
+    "20220331": 145.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "1b6fc5fa-c2e3-4f4d-85c7-39f3128ac620.pdf",
+     15,
+     "PCBL exported c.145 KT of carbon black from India",
+     "145"
+    ],
+    "y:20210331": [
+     "d602f074-4219-4f23-8ce3-7b3f6bf7b49b.pdf",
+     14,
+     "PCBL exported c.106 KT of carbon black from India",
+     "106"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     140.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: PCBL exported ~140 KT in FY23",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Carbon Black Production (Standalone)",
@@ -1508,5 +1511,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

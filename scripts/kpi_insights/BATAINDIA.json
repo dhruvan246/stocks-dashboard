@@ -2207,58 +2207,6 @@
    }
   },
   {
-   "name": "MBO Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 14500.0,
-    "20250630": 15000.0,
-    "20250930": 14800.0,
-    "20251231": 14000.0,
-    "20260331": 15000.0,
-    "20260630": 17000.0
-   },
-   "src": {
-    "q:20260630": [
-     "ef4fccd1-ba4b-4ba0-a4fb-71b9701f6382.pdf",
-     9,
-     "Expanded to MBO's (doc period)",
-     "17000"
-    ],
-    "q:20260331": [
-     "ef265b76-ede8-44a6-bbe3-41254c612e36.pdf",
-     9,
-     "Reached MBO's (doc period)",
-     "15000"
-    ],
-    "q:20251231": [
-     "62263835-d1a0-49d8-83e2-6a644353f4fb.pdf",
-     19,
-     "Reached MBO's (doc period)",
-     "14000"
-    ],
-    "q:20250930": [
-     "43f09184-2650-4235-a4df-f220026f4352.pdf",
-     25,
-     "Reached MBO's (doc period)",
-     "14800"
-    ],
-    "q:20250630": [
-     "c4e7bd35-73fc-4c15-9554-4ed32b1a27f2.pdf",
-     22,
-     "Reached MBO's (doc period)",
-     "15000"
-    ],
-    "q:20250331": [
-     "aca693e4-f815-40c7-938e-4b6924dc4d8a.pdf",
-     23,
-     "Reached 14500+ MBO's (doc period)",
-     "14500"
-    ]
-   }
-  },
-  {
    "name": "Sneaker Studio Store Count",
    "unit": "count",
    "kind": "level",
@@ -2503,49 +2451,59 @@
    }
   },
   {
-   "name": "I&D Distributor Count",
+   "name": "MBO Count",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20250331": 350.0,
-    "20250630": 350.0,
-    "20250930": 320.0,
-    "20251231": 340.0,
-    "20260331": 300.0
+    "20250630": 15000.0,
+    "20250930": 14800.0,
+    "20251231": 14000.0,
+    "20260331": 15000.0,
+    "20260630": 17000.0
    },
    "src": {
+    "q:20260630": [
+     "ef4fccd1-ba4b-4ba0-a4fb-71b9701f6382.pdf",
+     9,
+     "Expanded to MBO's (doc period)",
+     "17000"
+    ],
     "q:20260331": [
      "ef265b76-ede8-44a6-bbe3-41254c612e36.pdf",
      9,
-     "Distributors (doc period)",
-     "300"
+     "Reached MBO's (doc period)",
+     "15000"
     ],
     "q:20251231": [
      "62263835-d1a0-49d8-83e2-6a644353f4fb.pdf",
      19,
-     "Distributors (doc period)",
-     "340"
+     "Reached MBO's (doc period)",
+     "14000"
     ],
     "q:20250930": [
      "43f09184-2650-4235-a4df-f220026f4352.pdf",
      25,
-     "Distributors (doc period)",
-     "320"
+     "Reached MBO's (doc period)",
+     "14800"
     ],
     "q:20250630": [
      "c4e7bd35-73fc-4c15-9554-4ed32b1a27f2.pdf",
      22,
-     "Distributors (doc period)",
-     "350"
-    ],
-    "q:20250331": [
-     "aca693e4-f815-40c7-938e-4b6924dc4d8a.pdf",
-     23,
-     "~350+ Distributors (doc period)",
-     "350"
+     "Reached MBO's (doc period)",
+     "15000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     14500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Reached 14500+ MBO's (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "COCO Store Count (Top 20 Cities)",
@@ -2622,6 +2580,54 @@
      "337"
     ]
    }
+  },
+  {
+   "name": "I&D Distributor Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 350.0,
+    "20250930": 320.0,
+    "20251231": 340.0,
+    "20260331": 300.0
+   },
+   "src": {
+    "q:20260331": [
+     "ef265b76-ede8-44a6-bbe3-41254c612e36.pdf",
+     9,
+     "Distributors (doc period)",
+     "300"
+    ],
+    "q:20251231": [
+     "62263835-d1a0-49d8-83e2-6a644353f4fb.pdf",
+     19,
+     "Distributors (doc period)",
+     "340"
+    ],
+    "q:20250930": [
+     "43f09184-2650-4235-a4df-f220026f4352.pdf",
+     25,
+     "Distributors (doc period)",
+     "320"
+    ],
+    "q:20250630": [
+     "c4e7bd35-73fc-4c15-9554-4ed32b1a27f2.pdf",
+     22,
+     "Distributors (doc period)",
+     "350"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     350.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~350+ Distributors (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "EBO Store Count",
@@ -3554,5 +3560,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

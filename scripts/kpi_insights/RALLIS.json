@@ -401,82 +401,6 @@
    }
   },
   {
-   "name": "Dealer Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 6600.0,
-    "20251231": 6700.0,
-    "20260331": 7200.0,
-    "20260630": 7200.0
-   },
-   "src": {
-    "q:20260630": [
-     "70c9059a-2559-46b7-9955-d71e4df1a17f.pdf",
-     8,
-     "7,200+ Dealers (doc period)",
-     "7,200"
-    ],
-    "q:20251231": [
-     "814fc4f4-0417-4497-9823-a26f718ec0e4.pdf",
-     5,
-     "6,700 Dealers (doc period)",
-     "6,700"
-    ],
-    "q:20260331": [
-     "a2675995-ee60-4204-b64e-0faac3c533e3.pdf",
-     8,
-     "7,200+ Dealers (doc period)",
-     "7,200"
-    ],
-    "q:20250930": [
-     "db130129-6dae-4c01-8137-7bea938d3efa.pdf",
-     5,
-     "6,600 Dealers (doc period)",
-     "6,600"
-    ]
-   }
-  },
-  {
-   "name": "Farmer Connects",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 8.0,
-    "20251231": 8.0,
-    "20260331": 8.5,
-    "20260630": 8.5
-   },
-   "src": {
-    "q:20260630": [
-     "70c9059a-2559-46b7-9955-d71e4df1a17f.pdf",
-     8,
-     "8.5 Mn+ Farmer connects (doc period)",
-     "8.5"
-    ],
-    "q:20251231": [
-     "814fc4f4-0417-4497-9823-a26f718ec0e4.pdf",
-     5,
-     "8 Mn+ Farmer connects (doc period)",
-     "8"
-    ],
-    "q:20260331": [
-     "a2675995-ee60-4204-b64e-0faac3c533e3.pdf",
-     8,
-     "8.5 Mn+ Farmer connects (doc period)",
-     "8.5"
-    ],
-    "q:20250930": [
-     "db130129-6dae-4c01-8137-7bea938d3efa.pdf",
-     5,
-     "8 Mn+ Farmer connects (doc period)",
-     "8"
-    ]
-   }
-  },
-  {
    "name": "Retailer Count",
    "unit": "count",
    "kind": "level",
@@ -623,6 +547,48 @@
    }
   },
   {
+   "name": "Dealer Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 6600.0,
+    "20251231": 6700.0
+   },
+   "src": {
+    "q:20251231": [
+     "814fc4f4-0417-4497-9823-a26f718ec0e4.pdf",
+     5,
+     "6,700 Dealers (doc period)",
+     "6,700"
+    ],
+    "q:20250930": [
+     "db130129-6dae-4c01-8137-7bea938d3efa.pdf",
+     5,
+     "6,600 Dealers (doc period)",
+     "6,600"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     7200.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 7,200+ Dealers (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20260331",
+     7200.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 7,200+ Dealers (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Crop Nutrition New Product Launches",
    "unit": "count",
    "kind": "flow",
@@ -641,5 +607,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

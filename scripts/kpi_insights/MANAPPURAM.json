@@ -2145,37 +2145,6 @@
    }
   },
   {
-   "name": "Manappuram Home Finance Share of Self-Employed Borrowers",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 78.0,
-    "20250331": 81.0,
-    "20260331": 80.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "e9d217cb-5a43-44e4-b8fb-c2ca3f2b8e84.pdf",
-     38,
-     "Share of Self-employed Borrowers",
-     "81"
-    ],
-    "y:20260331": [
-     "e9d217cb-5a43-44e4-b8fb-c2ca3f2b8e84.pdf",
-     38,
-     "Share of Self-employed Borrowers",
-     "80"
-    ],
-    "y:20240331": [
-     "87b001dd-251c-403c-8c7f-71c6af85b1c8.pdf",
-     22,
-     "approximately 78% of its clientele are self-employed (doc period)",
-     "78"
-    ]
-   }
-  },
-  {
    "name": "Number of Branches (Standalone)",
    "unit": "count",
    "kind": "level",
@@ -2310,31 +2279,6 @@
    }
   },
   {
-   "name": "Consolidated Active Customers",
-   "unit": "Million",
-   "kind": "level",
-   "y": {
-    "20240331": 5.09
-   },
-   "q": {
-    "20241231": 6.59
-   },
-   "src": {
-    "q:20241231": [
-     "75133bc4-8e70-499e-9d59-d1c82ca523cd.pdf",
-     4,
-     "customer base exceeding 6.59 million (doc period)",
-     "6.59"
-    ],
-    "y:20240331": [
-     "87b001dd-251c-403c-8c7f-71c6af85b1c8.pdf",
-     53,
-     "catering to over 5.09 million active customers",
-     "5.09"
-    ]
-   }
-  },
-  {
    "name": "MSME & Allied Loan Book",
    "unit": "Rs Cr",
    "kind": "level",
@@ -2381,6 +2325,40 @@
      "1,824"
     ]
    }
+  },
+  {
+   "name": "Manappuram Home Finance Share of Self-Employed Borrowers",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 81.0,
+    "20260331": 80.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "e9d217cb-5a43-44e4-b8fb-c2ca3f2b8e84.pdf",
+     38,
+     "Share of Self-employed Borrowers",
+     "81"
+    ],
+    "y:20260331": [
+     "e9d217cb-5a43-44e4-b8fb-c2ca3f2b8e84.pdf",
+     38,
+     "Share of Self-employed Borrowers",
+     "80"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     78.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: approximately 78% of its clientele are self-employed (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Consolidated Active Customers",
@@ -2784,5 +2762,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

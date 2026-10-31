@@ -3044,41 +3044,6 @@
    }
   },
   {
-   "name": "Worldwide Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 3100.0,
-    "20240331": 3100.0,
-    "20250331": 3100.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "e6be651e-59b9-4cb8-943d-e237ef52543b.pdf",
-     6,
-     "Worldwide Employees (doc period)",
-     "3,100"
-    ],
-    "y:20230331": [
-     "905cae5e-87c7-4d9d-a3ca-84108ec2f363.pdf",
-     5,
-     "~3,100 Worldwide Employees (As on 31st March 2023)",
-     "3,100"
-    ],
-    "y:20240331": [
-     "953e24a7-1364-4c90-87c2-5b277ef242f7.pdf",
-     5,
-     "~3,100 Worldwide Employees (As on 31st March 2024)",
-     "3,100"
-    ]
-   },
-   "latest": {
-    "y:20230331": "2023-05-02",
-    "y:20240331": "2024-05-11"
-   }
-  },
-  {
    "name": "Dealer Channel Sales Share",
    "unit": "%",
    "kind": "level",
@@ -3123,30 +3088,6 @@
      49,
      "Number of dealers / distributors to whom sales are made",
      "22"
-    ]
-   }
-  },
-  {
-   "name": "Distribution Centers",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 30.0,
-    "20240331": 30.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "659c636a-5454-477c-a455-c31f784b879b.pdf",
-     6,
-     "30+ Distribution Centers (As on 31st March 2023)",
-     "30"
-    ],
-    "y:20240331": [
-     "953e24a7-1364-4c90-87c2-5b277ef242f7.pdf",
-     5,
-     "30+ Distribution Centers (As on 31st March 2024)",
-     "30"
     ]
    }
   },
@@ -3357,6 +3298,45 @@
      "8"
     ]
    }
+  },
+  {
+   "name": "Worldwide Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 3100.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "e6be651e-59b9-4cb8-943d-e237ef52543b.pdf",
+     6,
+     "Worldwide Employees (doc period)",
+     "3,100"
+    ]
+   },
+   "latest": {
+    "y:20230331": "2023-05-02",
+    "y:20240331": "2024-05-11"
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     3100.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~3,100 Worldwide Employees (As on 31st March 2023)",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     3100.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~3,100 Worldwide Employees (As on 31st March 2024)",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -3770,5 +3750,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

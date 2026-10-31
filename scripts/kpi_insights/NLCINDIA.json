@@ -1249,62 +1249,6 @@
    }
   },
   {
-   "name": "Collection Efficiency of Power Debtors",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20210331": 114.0,
-    "20220331": 146.0,
-    "20230331": 90.19,
-    "20250331": 107.74,
-    "20260331": 100.0
-   },
-   "q": {
-    "20260630": 100.0
-   },
-   "src": {
-    "q:20260630": [
-     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
-     2,
-     "Collection efficiency of Power Debtors till 30.06.2026 stood at 100%",
-     "100"
-    ],
-    "y:20260331": [
-     "d28b50c9-e932-4f4e-b082-ab8a10dfcc20.pdf",
-     97,
-     "Maintained 100%+ collection efficiency against billing",
-     "100"
-    ],
-    "y:20230331": [
-     "430a99c2-8662-4985-9f27-e4b2b4f4fb20.pdf",
-     2,
-     "collection efficiency",
-     "90.19"
-    ],
-    "y:20220331": [
-     "aecb7861-633e-48fd-bed0-13f7a907144c.pdf",
-     2,
-     "Highest Ever Collection Efficiency",
-     "146"
-    ],
-    "y:20210331": [
-     "e3fa6de7-1e4a-4d58-b69d-adc83d90f29d.pdf",
-     2,
-     "power dues collection for the group for the year was 114% of the invoices raised",
-     "114"
-    ],
-    "y:20250331": [
-     "64333213-3419-4653-a910-0a7256bd5051.pdf",
-     14,
-     "Billing Efficiency: Achieved 107.74% collection efficiency",
-     "107.74"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2022-07-05"
-   }
-  },
-  {
    "name": "Group Gross Power Generation",
    "unit": "BU",
    "kind": "flow",
@@ -1411,6 +1355,65 @@
      "325.59"
     ]
    }
+  },
+  {
+   "name": "Collection Efficiency of Power Debtors",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20210331": 114.0,
+    "20220331": 146.0,
+    "20230331": 90.19,
+    "20250331": 107.74
+   },
+   "q": {
+    "20260630": 100.0
+   },
+   "src": {
+    "q:20260630": [
+     "a5ca1db7-c3ea-4cb8-a0a6-84d6cddc6224.pdf",
+     2,
+     "Collection efficiency of Power Debtors till 30.06.2026 stood at 100%",
+     "100"
+    ],
+    "y:20230331": [
+     "430a99c2-8662-4985-9f27-e4b2b4f4fb20.pdf",
+     2,
+     "collection efficiency",
+     "90.19"
+    ],
+    "y:20220331": [
+     "aecb7861-633e-48fd-bed0-13f7a907144c.pdf",
+     2,
+     "Highest Ever Collection Efficiency",
+     "146"
+    ],
+    "y:20210331": [
+     "e3fa6de7-1e4a-4d58-b69d-adc83d90f29d.pdf",
+     2,
+     "power dues collection for the group for the year was 114% of the invoices raised",
+     "114"
+    ],
+    "y:20250331": [
+     "64333213-3419-4653-a910-0a7256bd5051.pdf",
+     14,
+     "Billing Efficiency: Achieved 107.74% collection efficiency",
+     "107.74"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2022-07-05"
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     100.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Maintained 100%+ collection efficiency against billing",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Group Power Export",
@@ -1915,30 +1918,6 @@
    }
   },
   {
-   "name": "Coal and Lignite Production (Combined, Standalone)",
-   "unit": "MT",
-   "kind": "flow",
-   "y": {
-    "20240331": 36.32,
-    "20250331": 41.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "3820278f-a17a-467b-b3dd-aca7902cc966.pdf",
-     98,
-     "achieved record-breaking performance with over 41 Million Tonnes of coal and lig",
-     "41"
-    ],
-    "y:20240331": [
-     "bddec2c7-319f-40fb-b5e5-82acee49d715.pdf",
-     2,
-     "All time Highest ever Coal & Lignite Production (Year ended 31.03.2024)",
-     "36.32"
-    ]
-   }
-  },
-  {
    "name": "Group Installed Power Generation Capacity",
    "unit": "MW",
    "kind": "level",
@@ -2327,6 +2306,33 @@
      "41"
     ]
    }
+  },
+  {
+   "name": "Coal and Lignite Production (Combined, Standalone)",
+   "unit": "MT",
+   "kind": "flow",
+   "y": {
+    "20240331": 36.32
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "bddec2c7-319f-40fb-b5e5-82acee49d715.pdf",
+     2,
+     "All time Highest ever Coal & Lignite Production (Year ended 31.03.2024)",
+     "36.32"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     41.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: achieved record-breaking performance with over 41 Million Tonnes of coal and lig",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Coal-based Power Generation Capacity (incl. JVs)",
@@ -3102,5 +3108,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

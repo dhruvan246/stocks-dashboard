@@ -1709,10 +1709,7 @@
    "name": "Employee Headcount (Zydans Globally)",
    "unit": "Thousand",
    "kind": "level",
-   "y": {
-    "20250331": 27.0,
-    "20260331": 29.0
-   },
+   "y": {},
    "q": {
     "20220331": 23.0,
     "20220630": 23.0,
@@ -1723,10 +1720,6 @@
     "20230930": 25.0,
     "20240630": 26.0,
     "20240930": 27.0,
-    "20241231": 27.0,
-    "20250630": 27.0,
-    "20250930": 29.0,
-    "20251231": 29.0,
     "20260630": 30.0
    },
    "src": {
@@ -1735,42 +1728,6 @@
      5,
      "Zydans Globally",
      "30"
-    ],
-    "y:20260331": [
-     "6e72bb3a-947d-4512-b211-93829c92f260.pdf",
-     12,
-     ">29 K Zydans globally",
-     "29"
-    ],
-    "q:20251231": [
-     "92fec597-5665-48a4-b102-1872064c91e8.pdf",
-     12,
-     ">29 K Zydans globally",
-     "29"
-    ],
-    "q:20250930": [
-     "1ca929d3-bed6-476d-9375-7f85bf065af3.pdf",
-     5,
-     "29k+ Zydans Globally7 (doc period)",
-     "29"
-    ],
-    "q:20250630": [
-     "dde79516-6d2a-4c21-8cbf-5b4ca26d5757.pdf",
-     13,
-     ">27 K Zydans globally (doc period)",
-     "27"
-    ],
-    "y:20250331": [
-     "fbecbf9a-ccab-46b9-a3d3-616d25ae192c.pdf",
-     14,
-     ">27 K Zydans globally (doc period)",
-     "27"
-    ],
-    "q:20241231": [
-     "cd0c7209-6344-49f3-93dd-73d87952cc05.pdf",
-     13,
-     ">27 K Zydans globally (doc period)",
-     "27"
     ],
     "q:20240930": [
      "52e2caf2-09d0-4382-af9f-5986a8af322d.pdf",
@@ -1826,7 +1783,57 @@
      "23 K Zydans globally (doc period)",
      "23"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     29.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: >29 K Zydans globally",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     29.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: >29 K Zydans globally",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     29.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 29k+ Zydans Globally7 (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     27.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: >27 K Zydans globally (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     27.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: >27 K Zydans globally (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     27.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: >27 K Zydans globally (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "R&D Centres",
@@ -2785,40 +2792,6 @@
    }
   },
   {
-   "name": "Consumer Wellness Families Reached",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20250331": 70.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "1415e71d-79db-48ad-b29a-d1ce6a554352.pdf",
-     148,
-     "nourishes, nurtures, and energizes over 70 million families (doc period)",
-     "70"
-    ]
-   }
-  },
-  {
-   "name": "Consumer Wellness Retail Outlets",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20250331": 2.8
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "1415e71d-79db-48ad-b29a-d1ce6a554352.pdf",
-     148,
-     "over 2.8 million retail outlets stocking the Company's products (doc period)",
-     "2.8"
-    ]
-   }
-  },
-  {
    "name": "Customer Complaints Received",
    "unit": "count",
    "kind": "flow",
@@ -2883,23 +2856,6 @@
      7,
      "first-in-India launches (doc period)",
      "4"
-    ]
-   }
-  },
-  {
-   "name": "India Formulations Field Force Strength",
-   "unit": "Thousand",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 7.0
-   },
-   "src": {
-    "q:20260630": [
-     "83898b45-5ad5-4812-9114-b90af501f6c8.pdf",
-     13,
-     "Field Force strength of 7k+ representatives",
-     "7"
     ]
    }
   },
@@ -3709,5 +3665,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

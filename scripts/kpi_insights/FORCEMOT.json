@@ -197,31 +197,6 @@
    }
   },
   {
-   "name": "Cumulative Engines Manufactured for Mercedes-Benz India",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 200000.0
-   },
-   "q": {
-    "20250630": 150000.0
-   },
-   "src": {
-    "y:20260331": [
-     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
-     62,
-     "200,000th engine manufactured for Mercedes-Benz India (doc period)",
-     "200,000"
-    ],
-    "q:20250630": [
-     "f73f1cc2-bcba-4b92-9311-b2d82a09f326.pdf",
-     9,
-     "we have manufactured and supplied over 1,50,000 engines",
-     "1,50,000"
-    ]
-   }
-  },
-  {
    "name": "Days Payable Outstanding",
    "unit": "days",
    "kind": "flow",
@@ -266,30 +241,6 @@
      107,
      "Number of dealers / distributors to whom sales are made",
      "640"
-    ]
-   }
-  },
-  {
-   "name": "Dealership Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 200.0,
-    "20260630": 200.0
-   },
-   "src": {
-    "q:20260331": [
-     "01851d61-29d3-4f62-a3dd-41bc21b22484.pdf",
-     30,
-     "200+ dealerships (doc period)",
-     "200"
-    ],
-    "q:20260630": [
-     "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf",
-     31,
-     "Seamless integration across 200+ dealerships (doc period)",
-     "200"
     ]
    }
   },
@@ -455,21 +406,31 @@
    }
   },
   {
-   "name": "LCV Segment Market Share",
-   "unit": "%",
+   "name": "Cumulative Engines Manufactured for Mercedes-Benz India",
+   "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 70.0
+   "y": {
+    "20260331": 200000.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "ff03b586-7592-4e55-baf8-e0c00b5b4c55.pdf",
-     13,
-     "Market leader in the segment with over 70% market share (doc period)",
-     "70"
+    "y:20260331": [
+     "1d366b90-a4b0-48f6-bd90-3a28890cb8eb.pdf",
+     62,
+     "200,000th engine manufactured for Mercedes-Benz India (doc period)",
+     "200,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     150000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: we have manufactured and supplied over 1,50,000 engines",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Employee Count",
@@ -881,5 +842,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-29"
+ "updated": "2026-10-31"
 }

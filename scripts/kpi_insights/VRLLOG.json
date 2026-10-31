@@ -2904,93 +2904,6 @@
    }
   },
   {
-   "name": "Customer Base",
-   "unit": "lakh",
-   "kind": "level",
-   "y": {
-    "20230331": 8.0,
-    "20240331": 9.0
-   },
-   "q": {
-    "20220630": 7.0,
-    "20240930": 9.0
-   },
-   "src": {
-    "q:20220630": [
-     "b90af24d-32aa-4db4-afbb-5c00ac4cc9cb.pdf",
-     4,
-     "7 LAKH + CUSTOMER BASE (doc period)",
-     "7"
-    ],
-    "y:20230331": [
-     "55ab11af-273a-4728-8935-dd7148ab9469.pdf",
-     5,
-     "8 LAKH + CUSTOMER BASE (doc period)",
-     "8"
-    ],
-    "y:20240331": [
-     "3309619f-92a2-4f15-b1aa-2d52069ee69a.pdf",
-     8,
-     "9 Lakhs + Customer base (doc period)",
-     "9"
-    ],
-    "q:20240930": [
-     "46c15533-044a-49c1-a1cf-d473ca120569.pdf",
-     9,
-     "Customer base increases to ~9 lakhs (doc period)",
-     "9"
-    ]
-   }
-  },
-  {
-   "name": "Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 20000.0,
-    "20240331": 21000.0,
-    "20250331": 22236.0
-   },
-   "q": {
-    "20220630": 20000.0
-   },
-   "src": {
-    "q:20220630": [
-     "b90af24d-32aa-4db4-afbb-5c00ac4cc9cb.pdf",
-     4,
-     "20000+ WORKFORCE (doc period)",
-     "20000"
-    ],
-    "y:20230331": [
-     "55ab11af-273a-4728-8935-dd7148ab9469.pdf",
-     5,
-     "20000+ WORKFORCE (doc period)",
-     "20000"
-    ],
-    "y:20240331": [
-     "3309619f-92a2-4f15-b1aa-2d52069ee69a.pdf",
-     8,
-     "21000+ Workforce (doc period)",
-     "21000"
-    ],
-    "y:20250331": [
-     "7a6a894d-8a95-47bd-bfcc-d21d0d1bedf5.pdf",
-     22,
-     "22,236-strong in-house workforce as at FY25",
-     "22,236"
-    ]
-   },
-   "restated": [
-    [
-     "y:20250331",
-     "987dbb40-30d8-4b3a-a5e0-09ec3d226f86.pdf",
-     21000.0,
-     "7a6a894d-8a95-47bd-bfcc-d21d0d1bedf5.pdf",
-     22236.0
-    ]
-   ]
-  },
-  {
    "name": "Agencies",
    "unit": "count",
    "kind": "level",
@@ -3110,6 +3023,49 @@
    }
   },
   {
+   "name": "Customer Base",
+   "unit": "lakh",
+   "kind": "level",
+   "y": {
+    "20230331": 8.0
+   },
+   "q": {
+    "20220630": 7.0
+   },
+   "src": {
+    "q:20220630": [
+     "b90af24d-32aa-4db4-afbb-5c00ac4cc9cb.pdf",
+     4,
+     "7 LAKH + CUSTOMER BASE (doc period)",
+     "7"
+    ],
+    "y:20230331": [
+     "55ab11af-273a-4728-8935-dd7148ab9469.pdf",
+     5,
+     "8 LAKH + CUSTOMER BASE (doc period)",
+     "8"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     9.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 9 Lakhs + Customer base (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     9.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Customer base increases to ~9 lakhs (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Electric Vehicles Added",
    "unit": "count",
    "kind": "flow",
@@ -3225,28 +3181,54 @@
    }
   },
   {
-   "name": "Drivers on Company Payroll",
+   "name": "Employees",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20250331": 8600.0
+    "20250331": 22236.0
    },
    "q": {},
    "src": {
     "y:20250331": [
      "7a6a894d-8a95-47bd-bfcc-d21d0d1bedf5.pdf",
      22,
-     "8600+ drivers on payroll (as of FY25)",
-     "8600"
+     "22,236-strong in-house workforce as at FY25",
+     "22,236"
     ]
    },
    "restated": [
     [
      "y:20250331",
      "987dbb40-30d8-4b3a-a5e0-09ec3d226f86.pdf",
-     9000.0,
+     21000.0,
      "7a6a894d-8a95-47bd-bfcc-d21d0d1bedf5.pdf",
-     8600.0
+     22236.0
+    ]
+   ],
+   "fixed": [
+    [
+     "q:20220630",
+     20000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 20000+ WORKFORCE (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20230331",
+     20000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 20000+ WORKFORCE (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     21000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 21000+ Workforce (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -3285,23 +3267,6 @@
    }
   },
   {
-   "name": "Transhipment Hub Area",
-   "unit": "lakh sq ft",
-   "kind": "level",
-   "y": {
-    "20230331": 54.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "55ab11af-273a-4728-8935-dd7148ab9469.pdf",
-     5,
-     "54 lakhs+ Sq ft OF TRANSHIPMENT HUB AREA (doc period)",
-     "54"
-    ]
-   }
-  },
-  {
    "name": "Wind Power Installed Capacity",
    "unit": "MW",
    "kind": "level",
@@ -3320,5 +3285,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

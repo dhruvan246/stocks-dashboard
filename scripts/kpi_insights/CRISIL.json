@@ -609,37 +609,6 @@
    }
   },
   {
-   "name": "Rated Large & Mid Corporates and FIs (Active Ratings Outstanding)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240331": 7000.0,
-    "20240630": 7000.0,
-    "20240930": 7000.0
-   },
-   "src": {
-    "q:20240331": [
-     "81a496f9-d5dd-460a-8b07-12cb3bb1bd2e.pdf",
-     5,
-     "Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
-     "7000"
-    ],
-    "q:20240630": [
-     "f08c34b3-782e-45e6-a9c7-809d20af447f.pdf",
-     5,
-     "Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
-     "7,000"
-    ],
-    "q:20240930": [
-     "d7c6c736-93b7-4b01-825e-babd98eda4a1.pdf",
-     5,
-     "Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
-     "7,000"
-    ]
-   }
-  },
-  {
    "name": "Ratings for Large & Mid Corporates and FIs",
    "unit": "count",
    "kind": "level",
@@ -702,31 +671,6 @@
    }
   },
   {
-   "name": "Companies Rated",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20241231": 7000.0
-   },
-   "q": {
-    "20260331": 7200.0
-   },
-   "src": {
-    "q:20260331": [
-     "c4ff4589-aea5-42c1-aaf6-cca43746cabf.pdf",
-     6,
-     "Rated 7,200+ companies (doc period)",
-     "7,200"
-    ],
-    "y:20241231": [
-     "3efc592d-0a2e-4b79-8158-6f0f50180319.pdf",
-     45,
-     "companies with total active ratings outstanding (doc period)",
-     "7,000"
-    ]
-   }
-  },
-  {
    "name": "Global Banks and Asset Managers as Customers",
    "unit": "count",
    "kind": "level",
@@ -751,6 +695,40 @@
    }
   },
   {
+   "name": "Rated Large & Mid Corporates and FIs (Active Ratings Outstanding)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 7000.0,
+    "20240930": 7000.0
+   },
+   "src": {
+    "q:20240630": [
+     "f08c34b3-782e-45e6-a9c7-809d20af447f.pdf",
+     5,
+     "Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
+     "7,000"
+    ],
+    "q:20240930": [
+     "d7c6c736-93b7-4b01-825e-babd98eda4a1.pdf",
+     5,
+     "Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
+     "7,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     7000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Active ratings outstanding for ~7000 large and mid-scale corporates and financia",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Client Count",
    "unit": "count",
    "kind": "level",
@@ -766,6 +744,33 @@
      "11,400"
     ]
    }
+  },
+  {
+   "name": "Companies Rated",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20241231": 7000.0
+   },
+   "q": {},
+   "src": {
+    "y:20241231": [
+     "3efc592d-0a2e-4b79-8158-6f0f50180319.pdf",
+     45,
+     "companies with total active ratings outstanding (doc period)",
+     "7,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     7200.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Rated 7,200+ companies (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Contract Staff",
@@ -799,26 +804,6 @@
      "Clients across 20+ countries (doc period)",
      "300"
     ]
-   }
-  },
-  {
-   "name": "New Ratings Announced",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20211231": 1000.0
-   },
-   "q": {},
-   "src": {
-    "y:20211231": [
-     "72949500092.pdf",
-     34,
-     "over 1000 new ratings announced in 2021",
-     "1000"
-    ]
-   },
-   "latest": {
-    "y:20211231": "2022-03-28"
    }
   },
   {
@@ -1307,6 +1292,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-20",
+ "updated": "2026-10-31",
  "note_fy": "2026-10-20: rebuilt; year-end from own XBRL DateOfStartOfFinancialYear; backup ~/stocks-cache/kpi-dc/cy/backup + git 24dac6f41"
 }

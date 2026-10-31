@@ -710,37 +710,6 @@
    }
   },
   {
-   "name": "Skilled Workforce",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 2000.0,
-    "20231231": 2000.0,
-    "20251231": 6000.0
-   },
-   "src": {
-    "q:20251231": [
-     "bda2e0ff-c7e0-469a-bfd4-90881d4a5ca1.pdf",
-     32,
-     "Skilled Workforce (doc period)",
-     "6,000"
-    ],
-    "q:20221231": [
-     "3de00641-eabb-45ae-8521-1d9d038163d6.pdf",
-     2,
-     "2,000+ strong skilled workforce (doc period)",
-     "2,000"
-    ],
-    "q:20231231": [
-     "8108bf89-b67d-4b40-859b-dcfc7021fc06.pdf",
-     2,
-     "2,000+ strong skilled workforce (doc period)",
-     "2,000"
-    ]
-   }
-  },
-  {
    "name": "Trading Shipment",
    "unit": "MT",
    "kind": "flow",
@@ -768,30 +737,6 @@
      6,
      "Shipment - Trading",
      "49,016"
-    ]
-   }
-  },
-  {
-   "name": "Countries Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 75.0,
-    "20231231": 75.0
-   },
-   "src": {
-    "q:20221231": [
-     "3de00641-eabb-45ae-8521-1d9d038163d6.pdf",
-     2,
-     "serves customers in India and more than 75 countries (doc period)",
-     "75"
-    ],
-    "q:20231231": [
-     "8108bf89-b67d-4b40-859b-dcfc7021fc06.pdf",
-     2,
-     "serves customers in India and more than 75 countries (doc period)",
-     "75"
     ]
    }
   },
@@ -1025,21 +970,39 @@
    }
   },
   {
-   "name": "Total Customers",
+   "name": "Skilled Workforce",
    "unit": "count",
    "kind": "level",
-   "y": {
-    "20260331": 850.0
+   "y": {},
+   "q": {
+    "20251231": 6000.0
    },
-   "q": {},
    "src": {
-    "y:20260331": [
-     "e703d0c9-3ad7-41ac-bcb5-3e02bd8dfd9b.pdf",
-     75,
-     "serving over 850 customers including international customers (doc period)",
-     "850"
+    "q:20251231": [
+     "bda2e0ff-c7e0-469a-bfd4-90881d4a5ca1.pdf",
+     32,
+     "Skilled Workforce (doc period)",
+     "6,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20221231",
+     2000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 2,000+ strong skilled workforce (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     2000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 2,000+ strong skilled workforce (doc period)",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -1435,5 +1398,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

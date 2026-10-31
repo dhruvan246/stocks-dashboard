@@ -1793,9 +1793,7 @@
     "20240331": 27.0,
     "20250331": 35.0
    },
-   "q": {
-    "20230630": 27.0
-   },
+   "q": {},
    "src": {
     "y:20210331": [
      "5e535086-f03f-40be-97bd-e966c116c483.pdf",
@@ -1826,14 +1824,18 @@
      35,
      "Ratio of CNG vehicles to Maruti Suzuki vehicles sold",
      "35"
-    ],
-    "q:20230630": [
-     "a1a98a12-592a-4d04-9a62-8448987b030c.pdf",
-     5,
-     "CNG Penetration increased to ~27% (Q1 FY2023-24)",
-     "27"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     27.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: CNG Penetration increased to ~27% (Q1 FY2023-24)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "CNG Vehicle Sales",
@@ -2091,23 +2093,6 @@
      10,
      "MSIL Fleet CO2 FY'2021-22 [g/km]",
      "111"
-    ]
-   }
-  },
-  {
-   "name": "Railway Dispatch Share",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20230630": 22.0
-   },
-   "src": {
-    "q:20230630": [
-     "a1a98a12-592a-4d04-9a62-8448987b030c.pdf",
-     5,
-     "share of ~22% in overall dispatches through railways (Q1 FY2023-24)",
-     "22"
     ]
    }
   },
@@ -2702,5 +2687,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

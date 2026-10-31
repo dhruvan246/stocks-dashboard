@@ -259,30 +259,6 @@
    }
   },
   {
-   "name": "New Lines/Doubling/Gauge Conversion Commissioned and Handed Over",
-   "unit": "km",
-   "kind": "flow",
-   "y": {
-    "20240331": 666.04,
-    "20260331": 173.82
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c3b85eee-02ce-48e5-a541-fc3e2c09006d.pdf",
-     10,
-     "commissioned and handed over 173.82 km of railway infrastructure",
-     "173.82"
-    ],
-    "y:20240331": [
-     "4b2a7874-861d-4357-a27b-e748e59ce931.pdf",
-     50,
-     "Commissioned New Line, Gauge Conversion, Doubling (Total 666.04 Km)",
-     "666.04"
-    ]
-   }
-  },
-  {
    "name": "Order Book - Competitive Bidding Projects",
    "unit": "INR Crore",
    "kind": "level",
@@ -588,23 +564,6 @@
    }
   },
   {
-   "name": "CBTC System Implemented (cumulative)",
-   "unit": "km",
-   "kind": "level",
-   "y": {
-    "20260331": 18.5
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "c3b85eee-02ce-48e5-a541-fc3e2c09006d.pdf",
-     10,
-     "CBTC system over more than 18.5 km (doc period)",
-     "18.5"
-    ]
-   }
-  },
-  {
    "name": "Doubling Completed (cumulative)",
    "unit": "km",
    "kind": "level",
@@ -773,6 +732,33 @@
      "623.49"
     ]
    }
+  },
+  {
+   "name": "New Lines/Doubling/Gauge Conversion Commissioned and Handed Over",
+   "unit": "km",
+   "kind": "flow",
+   "y": {
+    "20240331": 666.04
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "4b2a7874-861d-4357-a27b-e748e59ce931.pdf",
+     50,
+     "Commissioned New Line, Gauge Conversion, Doubling (Total 666.04 Km)",
+     "666.04"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     173.82,
+     null,
+     "drop_y",
+     "Qualified print in src label: commissioned and handed over 173.82 km of railway infrastructure",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Order Book - L1/LOA Pipeline",
@@ -1381,5 +1367,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

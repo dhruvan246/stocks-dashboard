@@ -1036,9 +1036,6 @@
    },
    "q": {
     "20211231": 500.0,
-    "20230630": 750.0,
-    "20230930": 825.0,
-    "20231231": 865.0,
     "20240331": 926.0,
     "20240630": 955.0,
     "20240930": 1020.0,
@@ -1103,12 +1100,6 @@
      "500 qualified Engineers out of 818",
      "500"
     ],
-    "q:20231231": [
-     "7dfd171d-0793-4d6c-9895-a94a0fb32c2e.pdf",
-     18,
-     "more than 865 qualified engineers",
-     "865"
-    ],
     "q:20211231": [
      "94c93930-084f-41e2-b6e2-0ce986da4776.pdf",
      34,
@@ -1126,23 +1117,37 @@
      4,
      "1,020 Engineers",
      "1,020"
-    ],
-    "q:20230930": [
-     "a8679cfc-dc9c-43ef-ad87-fabea54bfa4b.pdf",
-     18,
-     "more than 825 qualified engineers",
-     "825"
-    ],
-    "q:20230630": [
-     "bf2460f7-18dc-457a-9248-cd2c407f793e.pdf",
-     19,
-     "more than 750 qualified engineers",
-     "750"
     ]
    },
    "latest": {
     "q:20211231": "2022-02-09"
-   }
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     865.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: more than 865 qualified engineers",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     825.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: more than 825 qualified engineers",
+     "2026-10-31"
+    ],
+    [
+     "q:20230630",
+     750.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: more than 750 qualified engineers",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Employees Headcount",
@@ -2071,5 +2076,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

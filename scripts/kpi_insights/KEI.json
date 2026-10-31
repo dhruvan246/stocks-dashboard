@@ -1908,31 +1908,6 @@
    }
   },
   {
-   "name": "Countries with Sales Presence",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 60.0
-   },
-   "q": {
-    "20260630": 60.0
-   },
-   "src": {
-    "q:20260630": [
-     "74b8b1dd-c40c-4aee-8aac-761c5a0ec7f5.pdf",
-     6,
-     "Presence in 60+ countries (doc period)",
-     "60"
-    ],
-    "y:20250331": [
-     "b3be73e1-9176-4a94-b10c-b0cc8a7a6a1e.pdf",
-     19,
-     "Presence across countries",
-     "60"
-    ]
-   }
-  },
-  {
    "name": "Dealer & Distributor Sale Contribution",
    "unit": "%",
    "kind": "level",
@@ -2239,6 +2214,33 @@
      "16"
     ]
    }
+  },
+  {
+   "name": "Countries with Sales Presence",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 60.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "b3be73e1-9176-4a94-b10c-b0cc8a7a6a1e.pdf",
+     19,
+     "Presence across countries",
+     "60"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     60.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Presence in 60+ countries (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Dealer/Distribution Channel Sales Contribution",
@@ -3236,5 +3238,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

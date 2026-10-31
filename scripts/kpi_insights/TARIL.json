@@ -1289,93 +1289,6 @@
    }
   },
   {
-   "name": "Group Employee Headcount",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 1200.0,
-    "20250930": 1200.0,
-    "20260630": 1700.0
-   },
-   "src": {
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     25,
-     "3 FACTORIES, 6 SUBSIDIARIES, 1700+PEOPLE (doc period)",
-     "1700"
-    ],
-    "q:20250930": [
-     "d92a657d-220f-42bf-8c45-18160b14a078.pdf",
-     1,
-     "managed by a highly skilled and experienced team of approximately 1200 employees",
-     "1200"
-    ],
-    "q:20250630": [
-     "247b50e7-b0c4-4c6b-b580-cf04a5714d56.pdf",
-     1,
-     "managed by a highly skilled and experienced team of approximately 1200 employees",
-     "1200"
-    ]
-   }
-  },
-  {
-   "name": "Installed Manufacturing Capacity",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20250331": 40000.0,
-    "20260331": 75000.0
-   },
-   "q": {
-    "20260630": 75000.0
-   },
-   "src": {
-    "y:20260331": [
-     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
-     5,
-     "installed capacity across units of ~75,000MVA (doc period)",
-     "75,000"
-    ],
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     19,
-     "manufacturing capacity of 75,000+ MVA (doc period)",
-     "75,000"
-    ],
-    "y:20250331": [
-     "72d122a8-cdb5-40df-9ab3-8a2b0196ed42.pdf",
-     4,
-     "installed capacity across units (doc period)",
-     "40,000"
-    ]
-   }
-  },
-  {
-   "name": "Employee Headcount",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 1200.0,
-    "20260331": 467.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a2c9ff7a-43ae-4cb0-a4c7-4acf5cd1b7e1.pdf",
-     43,
-     "467 people, one shared purpose (doc period)",
-     "467"
-    ],
-    "y:20250331": [
-     "72d122a8-cdb5-40df-9ab3-8a2b0196ed42.pdf",
-     1,
-     "approximately 1200 employees (doc period)",
-     "1200"
-    ]
-   }
-  },
-  {
    "name": "New Export Orders",
    "unit": "INR Cr",
    "kind": "flow",
@@ -1451,21 +1364,66 @@
    }
   },
   {
-   "name": "Customer Count",
+   "name": "Employee Headcount",
    "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1500.0
+   "y": {
+    "20260331": 467.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     16,
-     "1500+ Customers (doc period)",
-     "1500"
+    "y:20260331": [
+     "a2c9ff7a-43ae-4cb0-a4c7-4acf5cd1b7e1.pdf",
+     43,
+     "467 people, one shared purpose (doc period)",
+     "467"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     1200.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: approximately 1200 employees (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Installed Manufacturing Capacity",
+   "unit": "MVA",
+   "kind": "level",
+   "y": {
+    "20250331": 40000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "72d122a8-cdb5-40df-9ab3-8a2b0196ed42.pdf",
+     4,
+     "installed capacity across units (doc period)",
+     "40,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     75000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: installed capacity across units of ~75,000MVA (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     75000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: manufacturing capacity of 75,000+ MVA (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Moraiya Plant Area",
@@ -1566,23 +1524,6 @@
      25,
      "Utilization% Odhav (doc period)",
      "100"
-    ]
-   }
-  },
-  {
-   "name": "Product Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 130.0
-   },
-   "src": {
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     16,
-     "130+ Products (doc period)",
-     "130"
     ]
    }
   }
@@ -1971,5 +1912,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-30"
+ "updated": "2026-10-31"
 }

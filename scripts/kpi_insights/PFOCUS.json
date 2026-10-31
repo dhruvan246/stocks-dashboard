@@ -152,8 +152,6 @@
     "20200331": 9000.0,
     "20210331": 8000.0,
     "20220331": 9500.0,
-    "20230331": 12600.0,
-    "20240331": 10400.0,
     "20250331": 9200.0,
     "20260331": 10200.0
    },
@@ -185,18 +183,6 @@
      184,
      "Employees",
      "9,500"
-    ],
-    "y:20230331": [
-     "0b82b1b0-0699-4ba0-9203-1f5ced3e31ba.pdf",
-     98,
-     "PFL and its group employs over 12,600 professionals (doc period)",
-     "12,600"
-    ],
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     89,
-     "PFL, along with its group, employs over 10,400 professionals (doc period)",
-     "10,400"
     ],
     "y:20250331": [
      "1d244089-f442-4686-b713-03847588ed3b.pdf",
@@ -231,6 +217,24 @@
      10100.0,
      "2fdb2208-b794-4932-8383-5906f39f0ad2.pdf",
      10200.0
+    ]
+   ],
+   "fixed": [
+    [
+     "y:20230331",
+     12600.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: PFL and its group employs over 12,600 professionals (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     10400.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: PFL, along with its group, employs over 10,400 professionals (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -515,142 +519,6 @@
    }
   },
   {
-   "name": "Creative Services Personnel",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20200331": 8000.0
-   },
-   "q": {},
-   "src": {
-    "y:20200331": [
-     "f56a06a8-ca18-4913-a991-13f6a4a2eb59.pdf",
-     18,
-     "8,000+ personnel as of FY20",
-     "8,000"
-    ]
-   }
-  },
-  {
-   "name": "DNEG Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 11000.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "0b82b1b0-0699-4ba0-9203-1f5ced3e31ba.pdf",
-     107,
-     "with nearly 11,000+ employees (doc period)",
-     "11,000"
-    ]
-   }
-  },
-  {
-   "name": "Order Book Project Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 70.0
-   },
-   "src": {
-    "q:20251231": [
-     "d8a33581-15e7-4d1a-b015-fb62680d1feb.pdf",
-     14,
-     "Order book consists of 70+ projects",
-     "70"
-    ]
-   }
-  },
-  {
-   "name": "PFT Annual Compliance Content Hours",
-   "unit": "hours",
-   "kind": "flow",
-   "y": {
-    "20240331": 2500.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "Compliance operations for 2,500+ hours of content annually (doc period)",
-     "2,500"
-    ]
-   }
-  },
-  {
-   "name": "PFT Annual Compliance Minutes Processed",
-   "unit": "minutes",
-   "kind": "flow",
-   "y": {
-    "20240331": 600000.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "processing 600,000+ minutes in adherence to global regulatory standards (doc per",
-     "600,000"
-    ]
-   }
-  },
-  {
-   "name": "PFT Annual Dubbing Hours",
-   "unit": "hours",
-   "kind": "flow",
-   "y": {
-    "20240331": 15000.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "more than 15,000 hours of content annually (doc period)",
-     "15,000"
-    ]
-   }
-  },
-  {
-   "name": "PFT Annual Subtitling & Closed Captioning Minutes",
-   "unit": "minutes",
-   "kind": "flow",
-   "y": {
-    "20240331": 2400000.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "Annual delivery of over 2,400,000 minutes of Subtitling & Closed Captioning serv",
-     "2,400,000"
-    ]
-   }
-  },
-  {
-   "name": "PFT Brands Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 300.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "to more than 300 brands (doc period)",
-     "300"
-    ]
-   }
-  },
-  {
    "name": "PFT Monthly Promos Delivered",
    "unit": "count",
    "kind": "flow",
@@ -664,57 +532,6 @@
      98,
      "Delivery of 1,700 promos monthly (doc period)",
      "1,700"
-    ]
-   }
-  },
-  {
-   "name": "PFT Monthly Video & Audio Assets Delivered",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20240331": 20000.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "Delivering over 20,000 video & audio assets monthly (doc period)",
-     "20,000"
-    ]
-   }
-  },
-  {
-   "name": "PFT Streaming Platforms Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 450.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "preconfigured bots for 450+ streaming platforms (doc period)",
-     "450"
-    ]
-   }
-  },
-  {
-   "name": "PFT Subtitling & Localization Team Size",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 1500.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "20031ec1-f488-45ac-80f3-1fa81e7ebd7b.pdf",
-     98,
-     "A dedicated team of 1500+ subtitling experts, translators, and adapters (doc per",
-     "1500"
     ]
    }
   },
@@ -1249,5 +1066,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

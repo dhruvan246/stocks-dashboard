@@ -528,52 +528,6 @@
    }
   },
   {
-   "name": "TASVA Store Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 70.0,
-    "20260331": 94.0
-   },
-   "q": {
-    "20250630": 70.0,
-    "20250930": 78.0,
-    "20251231": 85.0
-   },
-   "src": {
-    "y:20260331": [
-     "841a77fc-68d0-44e1-bddc-b86250cea82b.pdf",
-     21,
-     "Available now at 94 stores (doc period)",
-     "94"
-    ],
-    "q:20251231": [
-     "a7d56c81-55c7-4acb-bd14-92225f5040d4.pdf",
-     20,
-     "Available across 85 stores (doc period)",
-     "85"
-    ],
-    "q:20250930": [
-     "6019978b-45a3-4e09-8469-af541d0b349b.pdf",
-     22,
-     "Available across 78 stores (doc period)",
-     "78"
-    ],
-    "y:20250331": [
-     "00a93d8c-d138-4094-9554-418cdb34127d.pdf",
-     58,
-     "The brand currently operates around 70 stores (doc period)",
-     "70"
-    ],
-    "q:20250630": [
-     "5f6c4068-6b52-4456-8104-32405826abe2.pdf",
-     21,
-     "Available across 70 stores (doc period)",
-     "70"
-    ]
-   }
-  },
-  {
    "name": "TMRW Brand Store Count",
    "unit": "count",
    "kind": "level",
@@ -658,6 +612,55 @@
    }
   },
   {
+   "name": "TASVA Store Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 94.0
+   },
+   "q": {
+    "20250630": 70.0,
+    "20250930": 78.0,
+    "20251231": 85.0
+   },
+   "src": {
+    "y:20260331": [
+     "841a77fc-68d0-44e1-bddc-b86250cea82b.pdf",
+     21,
+     "Available now at 94 stores (doc period)",
+     "94"
+    ],
+    "q:20251231": [
+     "a7d56c81-55c7-4acb-bd14-92225f5040d4.pdf",
+     20,
+     "Available across 85 stores (doc period)",
+     "85"
+    ],
+    "q:20250930": [
+     "6019978b-45a3-4e09-8469-af541d0b349b.pdf",
+     22,
+     "Available across 78 stores (doc period)",
+     "78"
+    ],
+    "q:20250630": [
+     "5f6c4068-6b52-4456-8104-32405826abe2.pdf",
+     21,
+     "Available across 70 stores (doc period)",
+     "70"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     70.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: The brand currently operates around 70 stores (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "TCMB (Luxury) Store Count",
    "unit": "count",
    "kind": "level",
@@ -693,45 +696,6 @@
      25,
      "Total network, including Mono brands, spans across 44 stores (doc period)",
      "44"
-    ]
-   }
-  },
-  {
-   "name": "TMRW Store Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 16.0,
-    "20260331": 120.0
-   },
-   "q": {
-    "20250930": 75.0,
-    "20251231": 90.0
-   },
-   "src": {
-    "y:20260331": [
-     "841a77fc-68d0-44e1-bddc-b86250cea82b.pdf",
-     27,
-     "spread across ~120# exclusive stores across brands (doc period)",
-     "120"
-    ],
-    "q:20251231": [
-     "a7d56c81-55c7-4acb-bd14-92225f5040d4.pdf",
-     26,
-     "now spread across 90+ # exclusive stores across brands (doc period)",
-     "90"
-    ],
-    "q:20250930": [
-     "6019978b-45a3-4e09-8469-af541d0b349b.pdf",
-     28,
-     "total presence is 75+ (doc period)",
-     "75"
-    ],
-    "y:20250331": [
-     "79557001-4a7d-4688-b9c2-fe08ebc83aa6.pdf",
-     40,
-     "Exited the year with 16 stores across 7 cities (doc period)",
-     "16"
     ]
    }
   },
@@ -848,21 +812,47 @@
    }
   },
   {
-   "name": "Ethnic Segment Store Count",
+   "name": "TMRW Store Count",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 680.0
+    "20250331": 16.0
    },
    "q": {},
    "src": {
-    "y:20260331": [
-     "841a77fc-68d0-44e1-bddc-b86250cea82b.pdf",
-     19,
-     "680+ stores across brands (doc period)",
-     "680"
+    "y:20250331": [
+     "79557001-4a7d-4688-b9c2-fe08ebc83aa6.pdf",
+     40,
+     "Exited the year with 16 stores across 7 cities (doc period)",
+     "16"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     120.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: spread across ~120# exclusive stores across brands (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     90.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: now spread across 90+ # exclusive stores across brands (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     75.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: total presence is 75+ (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Store Count",
@@ -1275,5 +1265,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-09-20"
+ "updated": "2026-10-31"
 }

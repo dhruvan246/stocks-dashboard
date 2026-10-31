@@ -1024,8 +1024,6 @@
     "20260331": 3800.0
    },
    "q": {
-    "20250630": 2040.0,
-    "20260630": 3800.0,
     "20260930": 4200.0
    },
    "src": {
@@ -1035,25 +1033,31 @@
      "Employees",
      "3,800"
     ],
-    "q:20260630": [
-     "1816274d-9bda-4ca7-98b4-b81553a5c236.pdf",
-     16,
-     "3,800+ personnel (including contract labourers and trainees), as of 30 June 2026",
-     "3,800"
-    ],
-    "q:20250630": [
-     "42feac3c-be02-4962-9709-fdb2df1a567e.pdf",
-     16,
-     "2,040+ personnel (including contract labourers and trainees)",
-     "2,040"
-    ],
     "q:20260930": [
      "101db260-4a66-4957-8e53-b0278a88bade.pdf",
      17,
      "personnel (including contract labourers and trainees)",
      "4,200"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     3800.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3,800+ personnel (including contract labourers and trainees), as of 30 June 2026",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     2040.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 2,040+ personnel (including contract labourers and trainees)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Order Book",
@@ -1101,31 +1105,6 @@
      19,
      "Split of Order Book for Solar PV Modules",
      "4.89"
-    ]
-   }
-  },
-  {
-   "name": "Order Inflows",
-   "unit": "GW",
-   "kind": "flow",
-   "y": {
-    "20260331": 7.74
-   },
-   "q": {
-    "20260930": 1.5
-   },
-   "src": {
-    "y:20260331": [
-     "f75149a7-f95c-4df5-8ce1-7aecc1b86cb4.pdf",
-     28,
-     "Recorded order inflows of approximately 7.74 GW during FY2026",
-     "7.74"
-    ],
-    "q:20260930": [
-     "101db260-4a66-4957-8e53-b0278a88bade.pdf",
-     6,
-     "New Order inflow for Q2FY27",
-     "1.5"
     ]
    }
   },
@@ -1227,6 +1206,33 @@
      "8.9"
     ]
    }
+  },
+  {
+   "name": "Order Inflows",
+   "unit": "GW",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 1.5
+   },
+   "src": {
+    "q:20260930": [
+     "101db260-4a66-4957-8e53-b0278a88bade.pdf",
+     6,
+     "New Order inflow for Q2FY27",
+     "1.5"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     7.74,
+     null,
+     "drop_y",
+     "Qualified print in src label: Recorded order inflows of approximately 7.74 GW during FY2026",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Order Inflows",
@@ -1383,5 +1389,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-17"
+ "updated": "2026-10-31"
 }

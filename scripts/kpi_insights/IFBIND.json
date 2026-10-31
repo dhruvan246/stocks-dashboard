@@ -260,68 +260,6 @@
    }
   },
   {
-   "name": "IFB Points (Exclusive Stores)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220930": 520.0,
-    "20221231": 517.0,
-    "20230331": 517.0,
-    "20230630": 517.0,
-    "20230930": 505.0,
-    "20240930": 465.0,
-    "20241231": 475.0
-   },
-   "src": {
-    "q:20220930": [
-     "27576a31-7128-4ba9-abf1-0e35903855f0.pdf",
-     9,
-     "There are 520 IFB Points (doc period)",
-     "520"
-    ],
-    "q:20230630": [
-     "2ffda9e7-33ca-489c-b2dd-7dddc077fe2e.pdf",
-     9,
-     "there are 517 IFB Points in operation (doc period)",
-     "517"
-    ],
-    "q:20221231": [
-     "341af894-84e4-4787-82dc-52cdf1ab41e2.pdf",
-     9,
-     "IFB Point count is at 517 stores as on date (doc period)",
-     "517"
-    ],
-    "q:20230331": [
-     "4f9aacf5-aba6-415f-a529-8c9613154a3f.pdf",
-     10,
-     "we have a total of 517 IFB Points (doc period)",
-     "517"
-    ],
-    "q:20230930": [
-     "72ba79af-4864-435a-936e-cea4add052ff.pdf",
-     10,
-     "IFB Point count is at 505 stores as on date (doc period)",
-     "505"
-    ],
-    "q:20240930": [
-     "db57d5f9-3873-4be5-b35a-12871cfeb290.pdf",
-     14,
-     "IFB Point count is at ~465 stores to date (doc period)",
-     "465"
-    ],
-    "q:20241231": [
-     "c2663fa8-6ead-47ec-a7bf-823622a70cd3.pdf",
-     10,
-     "IFB Point count is at ~475 stores as on date (doc period)",
-     "475"
-    ]
-   },
-   "latest": {
-    "q:20240930": "2024-11-06"
-   }
-  },
-  {
    "name": "IFB Refrigeration Sales Volume",
    "unit": "units",
    "kind": "flow",
@@ -497,6 +435,72 @@
    }
   },
   {
+   "name": "IFB Points (Exclusive Stores)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20220930": 520.0,
+    "20221231": 517.0,
+    "20230331": 517.0,
+    "20230630": 517.0,
+    "20230930": 505.0
+   },
+   "src": {
+    "q:20220930": [
+     "27576a31-7128-4ba9-abf1-0e35903855f0.pdf",
+     9,
+     "There are 520 IFB Points (doc period)",
+     "520"
+    ],
+    "q:20230630": [
+     "2ffda9e7-33ca-489c-b2dd-7dddc077fe2e.pdf",
+     9,
+     "there are 517 IFB Points in operation (doc period)",
+     "517"
+    ],
+    "q:20221231": [
+     "341af894-84e4-4787-82dc-52cdf1ab41e2.pdf",
+     9,
+     "IFB Point count is at 517 stores as on date (doc period)",
+     "517"
+    ],
+    "q:20230331": [
+     "4f9aacf5-aba6-415f-a529-8c9613154a3f.pdf",
+     10,
+     "we have a total of 517 IFB Points (doc period)",
+     "517"
+    ],
+    "q:20230930": [
+     "72ba79af-4864-435a-936e-cea4add052ff.pdf",
+     10,
+     "IFB Point count is at 505 stores as on date (doc period)",
+     "505"
+    ]
+   },
+   "latest": {
+    "q:20240930": "2024-11-06"
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     465.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: IFB Point count is at ~465 stores to date (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     475.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: IFB Point count is at ~475 stores as on date (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Steel Division Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -575,38 +579,6 @@
    "latest": {
     "q:20240930": "2024-11-06",
     "q:20230930": "2024-11-06"
-   }
-  },
-  {
-   "name": "MBO Counters (Kitchen Appliances)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20220331": 460.0
-   },
-   "q": {
-    "20220630": 550.0,
-    "20220930": 600.0
-   },
-   "src": {
-    "q:20220930": [
-     "27576a31-7128-4ba9-abf1-0e35903855f0.pdf",
-     15,
-     "present in ~600 MBO counters (doc period)",
-     "600"
-    ],
-    "y:20220331": [
-     "627ee33f-cbfc-4c3c-9c9d-6aa696e55860.pdf",
-     16,
-     "placed in 460 MBO counters, for this fiscal year",
-     "460"
-    ],
-    "q:20220630": [
-     "d9f0a514-f158-4c51-8451-54e376d3f4c5.pdf",
-     15,
-     "placed in ~550 MBO counters (doc period)",
-     "550"
-    ]
    }
   },
   {
@@ -712,6 +684,41 @@
    }
   },
   {
+   "name": "MBO Counters (Kitchen Appliances)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 460.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "627ee33f-cbfc-4c3c-9c9d-6aa696e55860.pdf",
+     16,
+     "placed in 460 MBO counters, for this fiscal year",
+     "460"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20220930",
+     600.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: present in ~600 MBO counters (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20220630",
+     550.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: placed in ~550 MBO counters (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "New Service Franchisees Added",
    "unit": "count",
    "kind": "flow",
@@ -776,5 +783,5 @@
    "why": "period_end disagrees: ours 20230331 model 20230930 for \"2nd Quarter FY '23-'24\""
   }
  ],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

@@ -308,77 +308,6 @@
    }
   },
   {
-   "name": "Plantation Area Covered",
-   "unit": "acres",
-   "kind": "flow",
-   "y": {
-    "20210331": 32700.0,
-    "20220331": 45000.0,
-    "20230331": 55700.0,
-    "20240331": 81173.0,
-    "20260331": 90238.0
-   },
-   "q": {
-    "20250630": 21659.0,
-    "20250930": 37260.0,
-    "20260630": 20177.0
-   },
-   "src": {
-    "y:20240331": [
-     "e6b2260b-943b-414a-9603-52f40a15156f.pdf",
-     3,
-     "saplings covering 81,173 acres in the current financial year",
-     "81,173"
-    ],
-    "q:20260630": [
-     "3fed8159-b2c9-43eb-979e-7b2cf66e0c56.pdf",
-     2,
-     "Saplings have been planted covering 20,177 Acres",
-     "20,177"
-    ],
-    "q:20250930": [
-     "d0f3e797-1652-4512-b113-9e312def9ee6.pdf",
-     3,
-     "covering over 37,260 Acres",
-     "37,260"
-    ],
-    "y:20260331": [
-     "8e0581e9-630c-48f0-b550-b02ba70bea84.pdf",
-     3,
-     "covering 90,238 Acres",
-     "90,238"
-    ],
-    "q:20250630": [
-     "ab6142f4-e3e7-4336-b3f7-fe07a3ea9f8c.pdf",
-     3,
-     "covering over 21,659 Acres",
-     "21,659"
-    ],
-    "y:20220331": [
-     "192a1af5-1bea-4577-9455-48e958f4b858.pdf",
-     8,
-     "45,000 acres of additional area covered",
-     "45,000"
-    ],
-    "y:20210331": [
-     "192a1af5-1bea-4577-9455-48e958f4b858.pdf",
-     8,
-     "(PY 32,700 acres)",
-     "32,700"
-    ],
-    "y:20230331": [
-     "56913df9-2281-4022-8e4a-46a1b70b39ef.pdf",
-     8,
-     "55,700 acres",
-     "55,700"
-    ]
-   },
-   "latest": {
-    "y:20220331": "2023-05-19",
-    "y:20210331": "2022-08-01"
-   }
-  },
-  {
    "name": "Uncoated Paper Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -729,6 +658,81 @@
    }
   },
   {
+   "name": "Plantation Area Covered",
+   "unit": "acres",
+   "kind": "flow",
+   "y": {
+    "20210331": 32700.0,
+    "20220331": 45000.0,
+    "20230331": 55700.0,
+    "20240331": 81173.0,
+    "20260331": 90238.0
+   },
+   "q": {
+    "20260630": 20177.0
+   },
+   "src": {
+    "y:20240331": [
+     "e6b2260b-943b-414a-9603-52f40a15156f.pdf",
+     3,
+     "saplings covering 81,173 acres in the current financial year",
+     "81,173"
+    ],
+    "q:20260630": [
+     "3fed8159-b2c9-43eb-979e-7b2cf66e0c56.pdf",
+     2,
+     "Saplings have been planted covering 20,177 Acres",
+     "20,177"
+    ],
+    "y:20260331": [
+     "8e0581e9-630c-48f0-b550-b02ba70bea84.pdf",
+     3,
+     "covering 90,238 Acres",
+     "90,238"
+    ],
+    "y:20220331": [
+     "192a1af5-1bea-4577-9455-48e958f4b858.pdf",
+     8,
+     "45,000 acres of additional area covered",
+     "45,000"
+    ],
+    "y:20210331": [
+     "192a1af5-1bea-4577-9455-48e958f4b858.pdf",
+     8,
+     "(PY 32,700 acres)",
+     "32,700"
+    ],
+    "y:20230331": [
+     "56913df9-2281-4022-8e4a-46a1b70b39ef.pdf",
+     8,
+     "55,700 acres",
+     "55,700"
+    ]
+   },
+   "latest": {
+    "y:20220331": "2023-05-19",
+    "y:20210331": "2022-08-01"
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     37260.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: covering over 37,260 Acres",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     21659.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: covering over 21,659 Acres",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Production",
    "unit": "MT",
    "kind": "flow",
@@ -895,5 +899,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

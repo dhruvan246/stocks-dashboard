@@ -681,9 +681,7 @@
    "name": "Cumulative Installations Worldwide",
    "unit": "GW",
    "kind": "level",
-   "y": {
-    "20260331": 21.5
-   },
+   "y": {},
    "q": {
     "20200331": 18.8,
     "20210331": 18.8,
@@ -698,43 +696,9 @@
     "20230630": 20.1,
     "20230930": 20.3,
     "20231231": 20.5,
-    "20240331": 20.7,
-    "20250331": 21.1,
-    "20250630": 21.0,
-    "20250930": 21.0,
-    "20251231": 21.5
+    "20240331": 20.7
    },
    "src": {
-    "y:20260331": [
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     73,
-     "global installed base of approximately 21.5 GW across 17 countries",
-     "21.5"
-    ],
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     25,
-     "21+ GW Global installed Wind energy capacity",
-     "21"
-    ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     17,
-     "~21+ GW* of wind energy capacity installed across 17 countries",
-     "21"
-    ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     14,
-     "~21.5 GW* of wind energy capacity installed across 17 countries",
-     "21.5"
-    ],
-    "q:20250331": [
-     "522aa78f-4abd-4d33-80d1-3738daa9341c.pdf",
-     21,
-     "approximately 21.1 GW* of wind energy capacity installed across 17 countries",
-     "21.1"
-    ],
     "q:20200331": [
      "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
      35,
@@ -820,19 +784,52 @@
      "20.7"
     ]
    },
-   "restated": [
-    [
-     "y:20260331",
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     20.0,
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     21.5
-    ]
-   ],
    "latest": {
     "q:20200331": "2020-11-11",
     "q:20230930": "2024-01-30"
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     21.5,
+     null,
+     "drop_y",
+     "Qualified print in src label: global installed base of approximately 21.5 GW across 17 countries",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     21.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 21+ GW Global installed Wind energy capacity",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     21.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~21+ GW* of wind energy capacity installed across 17 countries",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     21.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~21.5 GW* of wind energy capacity installed across 17 countries",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     21.1,
+     null,
+     "drop_q",
+     "Qualified print in src label: approximately 21.1 GW* of wind energy capacity installed across 17 countries",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "O&M Installed Base",
@@ -843,8 +840,7 @@
     "20200331": 12.8,
     "20210331": 12.9,
     "20220331": 13.4,
-    "20230331": 13.9,
-    "20260331": 15.5
+    "20230331": 13.9
    },
    "q": {
     "20200331": 16.0,
@@ -854,43 +850,9 @@
     "20230331": 13.9,
     "20230630": 14.2,
     "20230930": 14.3,
-    "20231231": 14.5,
-    "20250630": 15.2,
-    "20250930": 15.4,
-    "20251231": 15.5,
-    "20260630": 16.0
+    "20231231": 14.5
    },
    "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "16+ GW Installed base (doc period)",
-     "16"
-    ],
-    "y:20260331": [
-     "50d60865-a9cc-4edd-97f0-d75ce57f709f.pdf",
-     73,
-     "managing ~15.5 GW of assets in India",
-     "15.5"
-    ],
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     29,
-     "15.4+ GW Installed base",
-     "15.4"
-    ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     29,
-     "15.2+ GW Installed base",
-     "15.2"
-    ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     26,
-     "15.5+ GW Installed base",
-     "15.5"
-    ],
     "q:20200331": [
      "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
      20,
@@ -969,241 +931,49 @@
      "Installed base as on 31st Dec 2023",
      "14.5"
     ]
-   }
-  },
-  {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200331": 5700.0,
-    "20201231": 5350.0,
-    "20210331": 5450.0,
-    "20210930": 5400.0,
-    "20211231": 5428.0,
-    "20220331": 5437.0,
-    "20220930": 5500.0,
-    "20221231": 5800.0,
-    "20230331": 5900.0,
-    "20230630": 5900.0,
-    "20230930": 6000.0,
-    "20231231": 6300.0,
-    "20250331": 7800.0,
-    "20250630": 8100.0,
-    "20250930": 8300.0,
-    "20251231": 8500.0
    },
-   "src": {
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     25,
-     "8,300+ Experienced workforce",
-     "8,300"
+   "fixed": [
+    [
+     "q:20260630",
+     16.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 16+ GW Installed base (doc period)",
+     "2026-10-31"
     ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     17,
-     "diverse workforce of ~8,100+ employees",
-     "8,100"
+    [
+     "y:20260331",
+     15.5,
+     null,
+     "drop_y",
+     "Qualified print in src label: managing ~15.5 GW of assets in India",
+     "2026-10-31"
     ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     14,
-     "diverse workforce of 8,500+ employees",
-     "8,500"
+    [
+     "q:20250930",
+     15.4,
+     null,
+     "drop_q",
+     "Qualified print in src label: 15.4+ GW Installed base",
+     "2026-10-31"
     ],
-    "q:20250331": [
-     "522aa78f-4abd-4d33-80d1-3738daa9341c.pdf",
-     21,
-     "diverse workforce of ~7,800 employees",
-     "7,800"
+    [
+     "q:20250630",
+     15.2,
+     null,
+     "drop_q",
+     "Qualified print in src label: 15.2+ GW Installed base",
+     "2026-10-31"
     ],
-    "q:20200331": [
-     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
-     3,
-     "employees (doc period)",
-     "5,700"
-    ],
-    "q:20201231": [
-     "83c4ca93-e421-4767-9476-b884e2584539.pdf",
-     3,
-     "employees (doc period)",
-     "5,350"
-    ],
-    "q:20210331": [
-     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
-     7,
-     "Workforce (doc period)",
-     "5,450"
-    ],
-    "q:20210930": [
-     "810a9dd4-daab-4fe6-9d6e-e892037e5847.pdf",
-     7,
-     "Workforce (As on 30th September'21)",
-     "5,400"
-    ],
-    "q:20211231": [
-     "e9782941-cec0-413d-bfc3-9d2f1cdb5c9b.pdf",
-     7,
-     "Global Workforce (As on 31st December'21)",
-     "5,428"
-    ],
-    "q:20220331": [
-     "62c36712-c094-41ba-89d3-8ee51eba1da1.pdf",
-     7,
-     "Global Workforce (As on 31st March'22)",
-     "5,437"
-    ],
-    "q:20220930": [
-     "55d39e83-7a66-4c67-b7c1-484267ed04c2.pdf",
-     10,
-     "Global Workforce (As on 30th Sept'22)",
-     "5,500"
-    ],
-    "q:20221231": [
-     "d097a1e5-0908-4522-af3f-b7b4bc83be8d.pdf",
-     12,
-     "Global Workforce (As on 31st December 2022)",
-     "5,800"
-    ],
-    "q:20230331": [
-     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
-     12,
-     "Global Workforce As on 31st March 2023",
-     "5,900"
-    ],
-    "q:20230630": [
-     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
-     10,
-     "Global Workforce As on 30th June 2023",
-     "5,900"
-    ],
-    "q:20230930": [
-     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
-     8,
-     "Global Workforce As on 30th Sept 2023",
-     "6,000"
-    ],
-    "q:20231231": [
-     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
-     10,
-     "Global Workforce As on 31st Dec 2023",
-     "6,300"
+    [
+     "q:20251231",
+     15.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: 15.5+ GW Installed base",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "Customer Base",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 1900.0
-   },
-   "q": {
-    "20200331": 1800.0,
-    "20210331": 1800.0,
-    "20210930": 1800.0,
-    "20211231": 1800.0,
-    "20220331": 1800.0,
-    "20230331": 1900.0,
-    "20230630": 1900.0,
-    "20230930": 1900.0,
-    "20231231": 1900.0,
-    "20250331": 1900.0,
-    "20250630": 1900.0,
-    "20250930": 1900.0,
-    "20251231": 1900.0
-   },
-   "src": {
-    "y:20260331": [
-     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
-     21,
-     "1,900 customers, 100 wind clusters (doc period)",
-     "1,900"
-    ],
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     29,
-     "1,900+ Customers",
-     "1,900"
-    ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     29,
-     "1,900+ Customers",
-     "1,900"
-    ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     26,
-     "1,900+ Customers",
-     "1,900"
-    ],
-    "q:20250331": [
-     "522aa78f-4abd-4d33-80d1-3738daa9341c.pdf",
-     33,
-     "1,900+ Customers",
-     "1,900"
-    ],
-    "q:20200331": [
-     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
-     34,
-     "customer relationships (31st Mar'20)",
-     "1,800"
-    ],
-    "q:20210331": [
-     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
-     7,
-     "Customers Globally (doc period)",
-     "1,800"
-    ],
-    "q:20210930": [
-     "810a9dd4-daab-4fe6-9d6e-e892037e5847.pdf",
-     7,
-     "Customers Globally (As on 30th September'21)",
-     "1,800"
-    ],
-    "q:20211231": [
-     "e9782941-cec0-413d-bfc3-9d2f1cdb5c9b.pdf",
-     7,
-     "Customers Globally (As on 31st December'21)",
-     "1,800"
-    ],
-    "q:20220331": [
-     "62c36712-c094-41ba-89d3-8ee51eba1da1.pdf",
-     7,
-     "Customers Globally (As on 31st March'22)",
-     "1,800"
-    ],
-    "q:20230331": [
-     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
-     18,
-     "Customers (doc period)",
-     "1,900"
-    ],
-    "q:20230630": [
-     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
-     15,
-     "Customers (doc period)",
-     "1,900"
-    ],
-    "q:20230930": [
-     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
-     14,
-     "Customers (doc period)",
-     "1,900"
-    ],
-    "q:20231231": [
-     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
-     16,
-     "Customers (doc period)",
-     "1,900"
-    ]
-   },
-   "latest": {
-    "q:20200331": "2020-11-11"
-   }
+   ]
   },
   {
    "name": "Countries of Operation",
@@ -1301,6 +1071,134 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20200331": 5700.0,
+    "20201231": 5350.0,
+    "20210331": 5450.0,
+    "20210930": 5400.0,
+    "20211231": 5428.0,
+    "20220331": 5437.0,
+    "20220930": 5500.0,
+    "20221231": 5800.0,
+    "20230331": 5900.0,
+    "20230630": 5900.0,
+    "20230930": 6000.0,
+    "20231231": 6300.0
+   },
+   "src": {
+    "q:20200331": [
+     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
+     3,
+     "employees (doc period)",
+     "5,700"
+    ],
+    "q:20201231": [
+     "83c4ca93-e421-4767-9476-b884e2584539.pdf",
+     3,
+     "employees (doc period)",
+     "5,350"
+    ],
+    "q:20210331": [
+     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
+     7,
+     "Workforce (doc period)",
+     "5,450"
+    ],
+    "q:20210930": [
+     "810a9dd4-daab-4fe6-9d6e-e892037e5847.pdf",
+     7,
+     "Workforce (As on 30th September'21)",
+     "5,400"
+    ],
+    "q:20211231": [
+     "e9782941-cec0-413d-bfc3-9d2f1cdb5c9b.pdf",
+     7,
+     "Global Workforce (As on 31st December'21)",
+     "5,428"
+    ],
+    "q:20220331": [
+     "62c36712-c094-41ba-89d3-8ee51eba1da1.pdf",
+     7,
+     "Global Workforce (As on 31st March'22)",
+     "5,437"
+    ],
+    "q:20220930": [
+     "55d39e83-7a66-4c67-b7c1-484267ed04c2.pdf",
+     10,
+     "Global Workforce (As on 30th Sept'22)",
+     "5,500"
+    ],
+    "q:20221231": [
+     "d097a1e5-0908-4522-af3f-b7b4bc83be8d.pdf",
+     12,
+     "Global Workforce (As on 31st December 2022)",
+     "5,800"
+    ],
+    "q:20230331": [
+     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
+     12,
+     "Global Workforce As on 31st March 2023",
+     "5,900"
+    ],
+    "q:20230630": [
+     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
+     10,
+     "Global Workforce As on 30th June 2023",
+     "5,900"
+    ],
+    "q:20230930": [
+     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
+     8,
+     "Global Workforce As on 30th Sept 2023",
+     "6,000"
+    ],
+    "q:20231231": [
+     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
+     10,
+     "Global Workforce As on 31st Dec 2023",
+     "6,300"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     8300.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 8,300+ Experienced workforce",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     8100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: diverse workforce of ~8,100+ employees",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     8500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: diverse workforce of 8,500+ employees",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     7800.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: diverse workforce of ~7,800 employees",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Wind Market Share (India)",
    "unit": "%",
    "kind": "level",
@@ -1392,6 +1290,124 @@
    }
   },
   {
+   "name": "Customer Base",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 1900.0
+   },
+   "q": {
+    "20200331": 1800.0,
+    "20210331": 1800.0,
+    "20210930": 1800.0,
+    "20211231": 1800.0,
+    "20220331": 1800.0,
+    "20230331": 1900.0,
+    "20230630": 1900.0,
+    "20230930": 1900.0,
+    "20231231": 1900.0
+   },
+   "src": {
+    "y:20260331": [
+     "1b1b9fbb-55f9-4f1d-a70b-32f4ebdf2d7a.pdf",
+     21,
+     "1,900 customers, 100 wind clusters (doc period)",
+     "1,900"
+    ],
+    "q:20200331": [
+     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
+     34,
+     "customer relationships (31st Mar'20)",
+     "1,800"
+    ],
+    "q:20210331": [
+     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
+     7,
+     "Customers Globally (doc period)",
+     "1,800"
+    ],
+    "q:20210930": [
+     "810a9dd4-daab-4fe6-9d6e-e892037e5847.pdf",
+     7,
+     "Customers Globally (As on 30th September'21)",
+     "1,800"
+    ],
+    "q:20211231": [
+     "e9782941-cec0-413d-bfc3-9d2f1cdb5c9b.pdf",
+     7,
+     "Customers Globally (As on 31st December'21)",
+     "1,800"
+    ],
+    "q:20220331": [
+     "62c36712-c094-41ba-89d3-8ee51eba1da1.pdf",
+     7,
+     "Customers Globally (As on 31st March'22)",
+     "1,800"
+    ],
+    "q:20230331": [
+     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
+     18,
+     "Customers (doc period)",
+     "1,900"
+    ],
+    "q:20230630": [
+     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
+     15,
+     "Customers (doc period)",
+     "1,900"
+    ],
+    "q:20230930": [
+     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
+     14,
+     "Customers (doc period)",
+     "1,900"
+    ],
+    "q:20231231": [
+     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
+     16,
+     "Customers (doc period)",
+     "1,900"
+    ]
+   },
+   "latest": {
+    "q:20200331": "2020-11-11"
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     1900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 1,900+ Customers",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     1900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 1,900+ Customers",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     1900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 1,900+ Customers",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     1900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 1,900+ Customers",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "O&M Sites",
    "unit": "count",
    "kind": "level",
@@ -1405,16 +1421,9 @@
     "20250331": 94.0,
     "20250630": 99.0,
     "20250930": 99.0,
-    "20251231": 99.0,
-    "20260630": 110.0
+    "20251231": 99.0
    },
    "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "110+ Sites (doc period)",
-     "110"
-    ],
     "q:20250930": [
      "278096b7-4387-4893-a160-e13679ad5331.pdf",
      29,
@@ -1469,83 +1478,17 @@
      "Sites (doc period)",
      "94"
     ]
-   }
-  },
-  {
-   "name": "O&M Turbines Serviced",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200331": 8943.0,
-    "20230331": 10600.0,
-    "20230930": 9600.0,
-    "20231231": 9700.0,
-    "20250331": 9950.0,
-    "20250630": 10000.0,
-    "20250930": 10000.0,
-    "20251231": 10000.0,
-    "20260630": 10000.0
    },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "10,000+ Turbines (doc period)",
-     "10,000"
-    ],
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     29,
-     "10,000+ Turbines",
-     "10,000"
-    ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     29,
-     "10,000+ Turbines",
-     "10,000"
-    ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     26,
-     "10,000+ Turbines",
-     "10,000"
-    ],
-    "q:20250331": [
-     "522aa78f-4abd-4d33-80d1-3738daa9341c.pdf",
-     33,
-     "9,950+ Turbines",
-     "9,950"
-    ],
-    "q:20200331": [
-     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
-     34,
-     "# of Turbines Total (31st Mar'20)",
-     "8,943"
-    ],
-    "q:20230331": [
-     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
-     18,
-     "Turbines (doc period)",
-     "10,600"
-    ],
-    "q:20230930": [
-     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
-     14,
-     "Turbines (doc period)",
-     "9,600"
-    ],
-    "q:20231231": [
-     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
-     16,
-     "Turbines (doc period)",
-     "9,700"
+   "fixed": [
+    [
+     "q:20260630",
+     110.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 110+ Sites (doc period)",
+     "2026-10-31"
     ]
-   },
-   "latest": {
-    "q:20200331": "2020-11-11"
-   }
+   ]
   },
   {
    "name": "Installations",
@@ -1693,16 +1636,9 @@
     "20250331": 10.0,
     "20250630": 10.0,
     "20250930": 10.0,
-    "20251231": 10.0,
-    "20260630": 10.0
+    "20251231": 10.0
    },
    "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "USD 10+ Bn Assets under management (doc period)",
-     "10"
-    ],
     "q:20250930": [
      "278096b7-4387-4893-a160-e13679ad5331.pdf",
      29,
@@ -1745,136 +1681,17 @@
      "USD 10 Bn Assets under management (doc period)",
      "10"
     ]
-   }
-  },
-  {
-   "name": "O&M Team Size",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230331": 3500.0,
-    "20230930": 3600.0,
-    "20231231": 3500.0,
-    "20250331": 4000.0,
-    "20250630": 3900.0,
-    "20250930": 3900.0,
-    "20251231": 3900.0,
-    "20260630": 3600.0
    },
-   "src": {
-    "q:20260630": [
-     "e7b047f0-cfdd-4b64-9a3b-99df74c4f67a.pdf",
-     30,
-     "3,600+ Team (doc period)",
-     "3,600"
-    ],
-    "q:20250930": [
-     "278096b7-4387-4893-a160-e13679ad5331.pdf",
-     29,
-     "3,900+ Team",
-     "3,900"
-    ],
-    "q:20250630": [
-     "d75b22c1-521b-4551-9794-41dcc3059ec4.pdf",
-     29,
-     "3,900+ Team",
-     "3,900"
-    ],
-    "q:20251231": [
-     "9bc7c4a5-1c9d-4490-8585-9e4bd7a30c44.pdf",
-     26,
-     "3,900+ Team",
-     "3,900"
-    ],
-    "q:20250331": [
-     "522aa78f-4abd-4d33-80d1-3738daa9341c.pdf",
-     33,
-     "4,000+ Team",
-     "4,000"
-    ],
-    "q:20230331": [
-     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
-     18,
-     "Team (doc period)",
-     "3,500"
-    ],
-    "q:20230930": [
-     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
-     14,
-     "Team (doc period)",
-     "3,600"
-    ],
-    "q:20231231": [
-     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
-     16,
-     "Team (doc period)",
-     "3,500"
+   "fixed": [
+    [
+     "q:20260630",
+     10.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: USD 10+ Bn Assets under management (doc period)",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "Installed Capacity in India",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20250331": 15.1
-   },
-   "q": {
-    "20200331": 12.8,
-    "20210331": 12.9,
-    "20221231": 13.8,
-    "20230630": 14.2,
-    "20230930": 14.3,
-    "20231231": 14.5
-   },
-   "src": {
-    "y:20250331": [
-     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
-     41,
-     "Suzlon has an installed base of 15.1 GW",
-     "15.1"
-    ],
-    "q:20200331": [
-     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
-     34,
-     "Wind Energy Installations In India (31st Mar'20)",
-     "12.8"
-    ],
-    "q:20210331": [
-     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
-     4,
-     "installations in India (doc period)",
-     "12.9"
-    ],
-    "q:20221231": [
-     "d097a1e5-0908-4522-af3f-b7b4bc83be8d.pdf",
-     18,
-     "Installed base as on 31st December 2022",
-     "13.8"
-    ],
-    "q:20230630": [
-     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
-     10,
-     "Includes installed capacity of 14.2 GW in India",
-     "14.2"
-    ],
-    "q:20230930": [
-     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
-     8,
-     "Includes installed capacity of 14.3 GW in India",
-     "14.3"
-    ],
-    "q:20231231": [
-     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
-     10,
-     "Includes installed capacity of ~14.5 GW in India",
-     "14.5"
-    ]
-   },
-   "latest": {
-    "q:20200331": "2020-11-11"
-   }
+   ]
   },
   {
    "name": "WTG Annual Manufacturing Capacity",
@@ -1990,6 +1807,72 @@
    }
   },
   {
+   "name": "Installed Capacity in India",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20250331": 15.1
+   },
+   "q": {
+    "20200331": 12.8,
+    "20210331": 12.9,
+    "20221231": 13.8,
+    "20230630": 14.2,
+    "20230930": 14.3
+   },
+   "src": {
+    "y:20250331": [
+     "b3f426be-6b96-4a2e-855b-2e4937080064.pdf",
+     41,
+     "Suzlon has an installed base of 15.1 GW",
+     "15.1"
+    ],
+    "q:20200331": [
+     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
+     34,
+     "Wind Energy Installations In India (31st Mar'20)",
+     "12.8"
+    ],
+    "q:20210331": [
+     "5f744781-a189-4950-b4b9-9aecc2619411.pdf",
+     4,
+     "installations in India (doc period)",
+     "12.9"
+    ],
+    "q:20221231": [
+     "d097a1e5-0908-4522-af3f-b7b4bc83be8d.pdf",
+     18,
+     "Installed base as on 31st December 2022",
+     "13.8"
+    ],
+    "q:20230630": [
+     "a27ef163-ec31-4bda-98e8-10190744bc57.pdf",
+     10,
+     "Includes installed capacity of 14.2 GW in India",
+     "14.2"
+    ],
+    "q:20230930": [
+     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
+     8,
+     "Includes installed capacity of 14.3 GW in India",
+     "14.3"
+    ]
+   },
+   "latest": {
+    "q:20200331": "2020-11-11"
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     14.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: Includes installed capacity of ~14.5 GW in India",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "OMS Machine Availability",
    "unit": "%",
    "kind": "flow",
@@ -2089,6 +1972,89 @@
    }
   },
   {
+   "name": "O&M Turbines Serviced",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20200331": 8943.0,
+    "20230331": 10600.0,
+    "20230930": 9600.0,
+    "20231231": 9700.0
+   },
+   "src": {
+    "q:20200331": [
+     "ea721fc3-0f74-48fb-bbd5-a6383df1075d.pdf",
+     34,
+     "# of Turbines Total (31st Mar'20)",
+     "8,943"
+    ],
+    "q:20230331": [
+     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
+     18,
+     "Turbines (doc period)",
+     "10,600"
+    ],
+    "q:20230930": [
+     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
+     14,
+     "Turbines (doc period)",
+     "9,600"
+    ],
+    "q:20231231": [
+     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
+     16,
+     "Turbines (doc period)",
+     "9,700"
+    ]
+   },
+   "latest": {
+    "q:20200331": "2020-11-11"
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     10000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 10,000+ Turbines (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     10000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 10,000+ Turbines",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     10000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 10,000+ Turbines",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     10000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 10,000+ Turbines",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     9950.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 9,950+ Turbines",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "EPC Share %",
    "unit": "%",
    "kind": "level",
@@ -2149,6 +2115,79 @@
      "122,000"
     ]
    }
+  },
+  {
+   "name": "O&M Team Size",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 3500.0,
+    "20230930": 3600.0,
+    "20231231": 3500.0
+   },
+   "src": {
+    "q:20230331": [
+     "61f96f46-66ac-432a-a221-a29fdb5a5588.pdf",
+     18,
+     "Team (doc period)",
+     "3,500"
+    ],
+    "q:20230930": [
+     "6e1bbca4-eea5-49f1-9df3-2b3f7f002a2e.pdf",
+     14,
+     "Team (doc period)",
+     "3,600"
+    ],
+    "q:20231231": [
+     "1793045e-bfe6-4e50-a72e-aedabb24fe71.pdf",
+     16,
+     "Team (doc period)",
+     "3,500"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     3600.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3,600+ Team (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     3900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3,900+ Team",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     3900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3,900+ Team",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     3900.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 3,900+ Team",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4,000+ Team",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "RE Order Book",
@@ -2670,5 +2709,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

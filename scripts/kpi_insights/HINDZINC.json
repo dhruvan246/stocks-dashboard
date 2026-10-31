@@ -3097,59 +3097,6 @@
    }
   },
   {
-   "name": "Domestic Primary Zinc Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 77.0
-   },
-   "q": {
-    "20230630": 75.0,
-    "20230930": 75.0,
-    "20231231": 80.0,
-    "20240331": 75.0,
-    "20240630": 78.0
-   },
-   "src": {
-    "y:20250331": [
-     "bf1e9097-05d4-4259-9edb-6cdc2a2eb6e6.pdf",
-     7,
-     "domestic primary zinc market share (doc period)",
-     "77"
-    ],
-    "q:20230630": [
-     "291a0403-5a74-47d4-bd80-dd2f8c0e956d.pdf",
-     10,
-     "~75% Market share in India's primary zinc market (doc period)",
-     "75"
-    ],
-    "q:20230930": [
-     "d46c07ca-ba11-4a54-97ff-77daa735d011.pdf",
-     11,
-     "~75% market share in India's primary zinc market (doc period)",
-     "75"
-    ],
-    "q:20231231": [
-     "122b1553-6b69-427a-9f3b-6e9c7318589e.pdf",
-     10,
-     "~80% market share in India's primary zinc market (doc period)",
-     "80"
-    ],
-    "q:20240331": [
-     "495aa70a-0ca2-40c3-96a4-cfbd566c2660.pdf",
-     12,
-     "~75% market share in India's primary zinc market (doc period)",
-     "75"
-    ],
-    "q:20240630": [
-     "faf68ce0-7b24-40f9-9f61-d8ca1beb7703.pdf",
-     12,
-     "domestic primary zinc market share to 78% (doc period)",
-     "78"
-    ]
-   }
-  },
-  {
    "name": "Metal Contained in R&R",
    "unit": "Mt",
    "kind": "level",
@@ -3540,6 +3487,65 @@
      "175.1"
     ]
    }
+  },
+  {
+   "name": "Domestic Primary Zinc Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 77.0
+   },
+   "q": {
+    "20240630": 78.0
+   },
+   "src": {
+    "y:20250331": [
+     "bf1e9097-05d4-4259-9edb-6cdc2a2eb6e6.pdf",
+     7,
+     "domestic primary zinc market share (doc period)",
+     "77"
+    ],
+    "q:20240630": [
+     "faf68ce0-7b24-40f9-9f61-d8ca1beb7703.pdf",
+     12,
+     "domestic primary zinc market share to 78% (doc period)",
+     "78"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     75.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~75% Market share in India's primary zinc market (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     75.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~75% market share in India's primary zinc market (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     80.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~80% market share in India's primary zinc market (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20240331",
+     75.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~75% market share in India's primary zinc market (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Lead Smelting Capacity",
@@ -4156,5 +4162,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

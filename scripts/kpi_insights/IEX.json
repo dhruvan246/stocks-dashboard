@@ -2663,70 +2663,6 @@
    ]
   },
   {
-   "name": "DAM Share of Total Electricity Volume",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20150331": 95.0,
-    "20160331": 95,
-    "20250331": 44.0,
-    "20260331": 39.0
-   },
-   "q": {
-    "20260930": 36
-   },
-   "src": {
-    "y:20260331": [
-     "6b4c0801-5233-47fc-8d66-7de6795f88a4.pdf",
-     62,
-     "DAM contributed 39% of IEX's total traded volumes in FY'26",
-     "39"
-    ],
-    "y:20250331": [
-     "6b4c0801-5233-47fc-8d66-7de6795f88a4.pdf",
-     62,
-     "compared with 44% in FY'25",
-     "44"
-    ],
-    "y:20150331": [
-     "6b4c0801-5233-47fc-8d66-7de6795f88a4.pdf",
-     62,
-     "and nearly 95% in FY'15",
-     "95"
-    ],
-    "q:20260930": [
-     "9155f08d-bc64-4848-9660-3e1279c3604d.pdf",
-     11,
-     "DAM share of Total Electricity now (Q2 FY'27)",
-     "36"
-    ],
-    "y:20160331": [
-     "9155f08d-bc64-4848-9660-3e1279c3604d.pdf",
-     11,
-     "In FY'16 DAM was 95% of Total Electricity",
-     "95"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260930",
-     null,
-     36,
-     "set_q",
-     "9155f08d p11 prints 'In FY'16 DAM was 95% of Total Electricity and now 36% (Q2 FY'27)'; cell empty.",
-     "2026-10-30"
-    ],
-    [
-     "y:20160331",
-     null,
-     95,
-     "set_y",
-     "9155f08d p11 prints 'In FY'16 DAM was 95% of Total Electricity'; b3ce6c35 prints the same; cell empty.",
-     "2026-10-30"
-    ]
-   ]
-  },
-  {
    "name": "Green Market Volume",
    "unit": "BU",
    "kind": "flow",
@@ -2816,6 +2752,71 @@
      "1,17,600"
     ]
    }
+  },
+  {
+   "name": "DAM Share of Total Electricity Volume",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20160331": 95,
+    "20250331": 44.0,
+    "20260331": 39.0
+   },
+   "q": {
+    "20260930": 36
+   },
+   "src": {
+    "y:20260331": [
+     "6b4c0801-5233-47fc-8d66-7de6795f88a4.pdf",
+     62,
+     "DAM contributed 39% of IEX's total traded volumes in FY'26",
+     "39"
+    ],
+    "y:20250331": [
+     "6b4c0801-5233-47fc-8d66-7de6795f88a4.pdf",
+     62,
+     "compared with 44% in FY'25",
+     "44"
+    ],
+    "q:20260930": [
+     "9155f08d-bc64-4848-9660-3e1279c3604d.pdf",
+     11,
+     "DAM share of Total Electricity now (Q2 FY'27)",
+     "36"
+    ],
+    "y:20160331": [
+     "9155f08d-bc64-4848-9660-3e1279c3604d.pdf",
+     11,
+     "In FY'16 DAM was 95% of Total Electricity",
+     "95"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260930",
+     null,
+     36,
+     "set_q",
+     "9155f08d p11 prints 'In FY'16 DAM was 95% of Total Electricity and now 36% (Q2 FY'27)'; cell empty.",
+     "2026-10-30"
+    ],
+    [
+     "y:20160331",
+     null,
+     95,
+     "set_y",
+     "9155f08d p11 prints 'In FY'16 DAM was 95% of Total Electricity'; b3ce6c35 prints the same; cell empty.",
+     "2026-10-30"
+    ],
+    [
+     "y:20150331",
+     95.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: and nearly 95% in FY'15",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "GTAM MCP",
@@ -4121,5 +4122,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-30"
+ "updated": "2026-10-31"
 }

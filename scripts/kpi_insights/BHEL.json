@@ -145,51 +145,6 @@
  },
  "metrics": [
   {
-   "name": "Order Book Outstanding - Total",
-   "unit": "₹Crore",
-   "kind": "level",
-   "y": {
-    "20220331": 90084.0,
-    "20230331": 91336.0,
-    "20240331": 131598.0,
-    "20250331": 196328.0,
-    "20260331": 239057.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "c24318ed-7bfa-490a-b9f9-26a2e0357d0a.pdf",
-     22,
-     "Order Book outstanding",
-     "1,31,598"
-    ],
-    "y:20250331": [
-     "04116f8e-fa1a-4abc-9e5f-f3c8be2db99f.pdf",
-     24,
-     "Order Book Outstanding, Total (2024-25)",
-     "1,96,328"
-    ],
-    "y:20260331": [
-     "04116f8e-fa1a-4abc-9e5f-f3c8be2db99f.pdf",
-     24,
-     "Order Book Outstanding, Total (2025-26)",
-     "2,39,057"
-    ],
-    "y:20230331": [
-     "11b61e45-9864-47d2-9789-ade5525e24da.pdf",
-     2,
-     "ended the year with a total order book of over Rs.91,336 Crore (excluding taxes)",
-     "91,336"
-    ],
-    "y:20220331": [
-     "c24318ed-7bfa-490a-b9f9-26a2e0357d0a.pdf",
-     22,
-     "ORDER BOOK OUTSTANDING chart",
-     "90084"
-    ]
-   }
-  },
-  {
    "name": "Order Receipt (Inflow) - Power Sector",
    "unit": "₹Crore",
    "kind": "flow",
@@ -278,6 +233,54 @@
      "20379"
     ]
    }
+  },
+  {
+   "name": "Order Book Outstanding - Total",
+   "unit": "₹Crore",
+   "kind": "level",
+   "y": {
+    "20220331": 90084.0,
+    "20240331": 131598.0,
+    "20250331": 196328.0,
+    "20260331": 239057.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "c24318ed-7bfa-490a-b9f9-26a2e0357d0a.pdf",
+     22,
+     "Order Book outstanding",
+     "1,31,598"
+    ],
+    "y:20250331": [
+     "04116f8e-fa1a-4abc-9e5f-f3c8be2db99f.pdf",
+     24,
+     "Order Book Outstanding, Total (2024-25)",
+     "1,96,328"
+    ],
+    "y:20260331": [
+     "04116f8e-fa1a-4abc-9e5f-f3c8be2db99f.pdf",
+     24,
+     "Order Book Outstanding, Total (2025-26)",
+     "2,39,057"
+    ],
+    "y:20220331": [
+     "c24318ed-7bfa-490a-b9f9-26a2e0357d0a.pdf",
+     22,
+     "ORDER BOOK OUTSTANDING chart",
+     "90084"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     91336.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ended the year with a total order book of over Rs.91,336 Crore (excluding taxes)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Domestic Capacity Addition",
@@ -541,23 +544,6 @@
    }
   },
   {
-   "name": "BHEL Installed Capacity - Utility Scale (Thermal+Nuclear+Hydro)",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20240331": 168.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "c24318ed-7bfa-490a-b9f9-26a2e0357d0a.pdf",
-     36,
-     "BHEL 53%, ~168 GW",
-     "168"
-    ]
-   }
-  },
-  {
    "name": "BHEL Market Share - Coal & Lignite Utility Generation",
    "unit": "%",
    "kind": "level",
@@ -571,23 +557,6 @@
      36,
      "58.1% (752.05 BUs) of the country's total generation ... contributed by BHEL sup",
      "58.1"
-    ]
-   }
-  },
-  {
-   "name": "Captive/Solar Projects Synchronised",
-   "unit": "MW",
-   "kind": "flow",
-   "y": {
-    "20230331": 298.0
-   },
-   "q": {},
-   "src": {
-    "y:20230331": [
-     "11b61e45-9864-47d2-9789-ade5525e24da.pdf",
-     1,
-     "synchronising captive/solar projects of ~ 298 MW (doc period)",
-     "298"
     ]
    }
   },
@@ -1068,5 +1037,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-10"
+ "updated": "2026-10-31"
 }

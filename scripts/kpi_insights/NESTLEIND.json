@@ -754,61 +754,6 @@
    }
   },
   {
-   "name": "Village Coverage (RURBAN)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 200500.0,
-    "20250331": 208500.0,
-    "20260331": 216000.0
-   },
-   "q": {
-    "20231231": 196000.0,
-    "20240630": 205000.0
-   },
-   "src": {
-    "y:20240331": [
-     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
-     39,
-     "Total village coverage",
-     "200,500"
-    ],
-    "y:20250331": [
-     "5b77790b-2a67-4ab5-9da9-3ff0f48a7905.pdf",
-     19,
-     "present in approximately 208,500 villages",
-     "208,500"
-    ],
-    "q:20231231": [
-     "ba61b1ad-bd6b-450a-be21-8c0eee9d9981.pdf",
-     9,
-     "reaching a total of over 196,000 villages",
-     "196,000"
-    ],
-    "q:20240630": [
-     "eb129652-4265-40f3-9ef7-56a32cf39894.pdf",
-     5,
-     "village coverage ... taking it to ~ 2,05,000 villages",
-     "2,05,000"
-    ],
-    "y:20260331": [
-     "daeb1fcf-8f0c-4803-9bf4-636d8a396658.pdf",
-     20,
-     "expanding our presence to ~216,000 villages",
-     "216,000"
-    ]
-   },
-   "restated": [
-    [
-     "y:20240331",
-     "81fa5ed5-b9a2-4797-97c9-7d1c4fac5afc.pdf",
-     200000.0,
-     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
-     200500.0
-    ]
-   ]
-  },
-  {
    "name": "Premium Portfolio Contribution",
    "unit": "%",
    "kind": "flow",
@@ -920,54 +865,6 @@
    }
   },
   {
-   "name": "Distributors & Re-distributors",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 10000.0,
-    "20260331": 10000.0
-   },
-   "src": {
-    "q:20260331": [
-     "ac0cae38-27ed-4886-af33-f88442d4988c.pdf",
-     7,
-     "10,000+ Distributors & re-distributors (Data till 31 March 2026)",
-     "10,000"
-    ],
-    "q:20241231": [
-     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
-     7,
-     "10,000+ Distributors & re-distributors (Data till 31 December 2024)",
-     "10,000"
-    ]
-   }
-  },
-  {
-   "name": "Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 8700.0,
-    "20260331": 8680.0
-   },
-   "src": {
-    "q:20260331": [
-     "ac0cae38-27ed-4886-af33-f88442d4988c.pdf",
-     7,
-     "Employees (Data till 31 March 2026)",
-     "8,680"
-    ],
-    "q:20241231": [
-     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
-     7,
-     "8,700+ Employees (Data till 31 December 2024)",
-     "8,700"
-    ]
-   }
-  },
-  {
    "name": "RURBAN Distribution Touchpoints",
    "unit": "count",
    "kind": "level",
@@ -1016,23 +913,6 @@
    }
   },
   {
-   "name": "Dairy Farmers Sourced From",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200331": 100000.0
-   },
-   "src": {
-    "q:20200331": [
-     "7d292e2e-63b3-4985-b430-2f485174d339.pdf",
-     2,
-     "nearly 100,000 Dairy farmers (doc period)",
-     "100,000"
-    ]
-   }
-  },
-  {
    "name": "Direct Outlet Reach",
    "unit": "million",
    "kind": "level",
@@ -1048,6 +928,33 @@
      "3.6"
     ]
    }
+  },
+  {
+   "name": "Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 8680.0
+   },
+   "src": {
+    "q:20260331": [
+     "ac0cae38-27ed-4886-af33-f88442d4988c.pdf",
+     7,
+     "Employees (Data till 31 March 2026)",
+     "8,680"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     8700.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 8,700+ Employees (Data till 31 December 2024)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Farmers Engaged",
@@ -1082,6 +989,66 @@
      "1.6"
     ]
    }
+  },
+  {
+   "name": "Village Coverage (RURBAN)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 200500.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
+     39,
+     "Total village coverage",
+     "200,500"
+    ]
+   },
+   "restated": [
+    [
+     "y:20240331",
+     "81fa5ed5-b9a2-4797-97c9-7d1c4fac5afc.pdf",
+     200000.0,
+     "08e73837-f86e-4a9d-8464-27d8b6750cbe.pdf",
+     200500.0
+    ]
+   ],
+   "fixed": [
+    [
+     "y:20250331",
+     208500.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: present in approximately 208,500 villages",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     196000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: reaching a total of over 196,000 villages",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     205000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: village coverage ... taking it to ~ 2,05,000 villages",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     216000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: expanding our presence to ~216,000 villages",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -1522,7 +1489,7 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-20",
+ "updated": "2026-10-31",
  "fy_eras": [
   [
    12,

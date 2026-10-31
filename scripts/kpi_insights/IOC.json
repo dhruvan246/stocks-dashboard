@@ -1083,30 +1083,6 @@
    }
   },
   {
-   "name": "Marketing Touchpoints",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20050331": 18500.0,
-    "20250331": 63000.0
-   },
-   "q": {},
-   "src": {
-    "y:20050331": [
-     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
-     5,
-     "Marketing Touchpoints",
-     "18,500"
-    ],
-    "y:20250331": [
-     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
-     5,
-     "Marketing Touchpoints (63,000+)",
-     "63,000"
-    ]
-   }
-  },
-  {
    "name": "Motor Spirit (Petrol) Sales",
    "unit": "MMT",
    "kind": "flow",
@@ -1151,30 +1127,6 @@
      5,
      "Petrochemicals Capacity",
      "4.3"
-    ]
-   }
-  },
-  {
-   "name": "Pipeline Network Length",
-   "unit": "Km",
-   "kind": "level",
-   "y": {
-    "20050331": 7700.0,
-    "20250331": 20000.0
-   },
-   "q": {},
-   "src": {
-    "y:20050331": [
-     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
-     5,
-     "Pipeline Length",
-     "7,700"
-    ],
-    "y:20250331": [
-     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
-     5,
-     "Pipeline Length (20,000+ Km)",
-     "20,000"
     ]
    }
   },
@@ -1431,6 +1383,33 @@
    }
   },
   {
+   "name": "Marketing Touchpoints",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20050331": 18500.0
+   },
+   "q": {},
+   "src": {
+    "y:20050331": [
+     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
+     5,
+     "Marketing Touchpoints",
+     "18,500"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     63000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Marketing Touchpoints (63,000+)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Natural Gas Sales Volume",
    "unit": "MMTPA",
    "kind": "flow",
@@ -1499,6 +1478,33 @@
    }
   },
   {
+   "name": "Pipeline Network Length",
+   "unit": "Km",
+   "kind": "level",
+   "y": {
+    "20050331": 7700.0
+   },
+   "q": {},
+   "src": {
+    "y:20050331": [
+     "52b45f10-90de-42c7-82de-65e75a640f72.pdf",
+     5,
+     "Pipeline Length",
+     "7,700"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     20000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Pipeline Length (20,000+ Km)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Refinery Energy Intensity Index (EII)",
    "unit": "index",
    "kind": "flow",
@@ -1551,7 +1557,7 @@
   }
  ],
  "held": [],
- "updated": "2026-10-04",
+ "updated": "2026-10-31",
  "catalog": [
   {
    "kind": "ar",

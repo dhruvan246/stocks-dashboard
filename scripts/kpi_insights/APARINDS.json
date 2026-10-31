@@ -3919,94 +3919,6 @@
    }
   },
   {
-   "name": "Countries Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20220331": 125.0,
-    "20250331": 140.0
-   },
-   "q": {
-    "20191231": 100.0,
-    "20200331": 100.0,
-    "20200630": 100.0,
-    "20200930": 100.0,
-    "20201231": 100.0,
-    "20210331": 125.0,
-    "20210630": 125.0,
-    "20210930": 125.0,
-    "20220630": 140.0
-   },
-   "src": {
-    "y:20250331": [
-     "f4bb012f-0505-4707-a590-b2cf4e837c37.pdf",
-     96,
-     "footprint extends across more than 140 countries (doc period)",
-     "140"
-    ],
-    "q:20200630": [
-     "5cf4c1b2-e559-4720-a6a3-aada001777c2.pdf",
-     18,
-     "Presence in 100 countries (doc period)",
-     "100"
-    ],
-    "q:20191231": [
-     "64217064-4d8c-4ddc-b922-b3ef48836994.pdf",
-     22,
-     "Presence in 100 countries (doc period)",
-     "100"
-    ],
-    "q:20200331": [
-     "1a6e5599-ac82-46fc-8367-da3c5a01cdc2.pdf",
-     23,
-     "Presence in 100 countries (doc period)",
-     "100"
-    ],
-    "q:20200930": [
-     "d8531446-c712-4ed2-8f01-817eaebedb7b.pdf",
-     22,
-     "Presence in 100 countries (doc period)",
-     "100"
-    ],
-    "q:20201231": [
-     "8d044057-4aa4-4a4d-9fef-382f01c7981e.pdf",
-     20,
-     "Presence in 100 countries (doc period)",
-     "100"
-    ],
-    "q:20210331": [
-     "4a4fb175-bdf5-4bfd-84a4-0203bff3ec6a.pdf",
-     17,
-     "Present in 125 countries (doc period)",
-     "125"
-    ],
-    "q:20210630": [
-     "9db72927-5295-4b54-b4b3-ba3e0ede1840.pdf",
-     13,
-     "Present in 125 countries (doc period)",
-     "125"
-    ],
-    "q:20210930": [
-     "2f06dea7-fd67-42e8-92d7-2154d446e0e1.pdf",
-     15,
-     "Exporting to 125 countries (doc period)",
-     "125"
-    ],
-    "y:20220331": [
-     "9e8e4663-20fc-4724-b30b-86542d764620.pdf",
-     17,
-     "Present in 125 countries (doc period)",
-     "125"
-    ],
-    "q:20220630": [
-     "cafad60e-effc-425c-bac8-a1c01f41f806.pdf",
-     13,
-     "Exporting to 140+ countries (doc period)",
-     "140"
-    ]
-   }
-  },
-  {
    "name": "Total Export Revenue",
    "unit": "INR Cr",
    "kind": "flow",
@@ -4099,6 +4011,98 @@
     "y:20190331": "2021-05-31",
     "y:20200331": "2021-05-31"
    }
+  },
+  {
+   "name": "Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 125.0
+   },
+   "q": {
+    "20191231": 100.0,
+    "20200331": 100.0,
+    "20200630": 100.0,
+    "20200930": 100.0,
+    "20201231": 100.0,
+    "20210331": 125.0,
+    "20210630": 125.0,
+    "20210930": 125.0
+   },
+   "src": {
+    "q:20200630": [
+     "5cf4c1b2-e559-4720-a6a3-aada001777c2.pdf",
+     18,
+     "Presence in 100 countries (doc period)",
+     "100"
+    ],
+    "q:20191231": [
+     "64217064-4d8c-4ddc-b922-b3ef48836994.pdf",
+     22,
+     "Presence in 100 countries (doc period)",
+     "100"
+    ],
+    "q:20200331": [
+     "1a6e5599-ac82-46fc-8367-da3c5a01cdc2.pdf",
+     23,
+     "Presence in 100 countries (doc period)",
+     "100"
+    ],
+    "q:20200930": [
+     "d8531446-c712-4ed2-8f01-817eaebedb7b.pdf",
+     22,
+     "Presence in 100 countries (doc period)",
+     "100"
+    ],
+    "q:20201231": [
+     "8d044057-4aa4-4a4d-9fef-382f01c7981e.pdf",
+     20,
+     "Presence in 100 countries (doc period)",
+     "100"
+    ],
+    "q:20210331": [
+     "4a4fb175-bdf5-4bfd-84a4-0203bff3ec6a.pdf",
+     17,
+     "Present in 125 countries (doc period)",
+     "125"
+    ],
+    "q:20210630": [
+     "9db72927-5295-4b54-b4b3-ba3e0ede1840.pdf",
+     13,
+     "Present in 125 countries (doc period)",
+     "125"
+    ],
+    "q:20210930": [
+     "2f06dea7-fd67-42e8-92d7-2154d446e0e1.pdf",
+     15,
+     "Exporting to 125 countries (doc period)",
+     "125"
+    ],
+    "y:20220331": [
+     "9e8e4663-20fc-4724-b30b-86542d764620.pdf",
+     17,
+     "Present in 125 countries (doc period)",
+     "125"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     140.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: footprint extends across more than 140 countries (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20220630",
+     140.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Exporting to 140+ countries (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Conductor Order Book Premium Mix",
@@ -4784,5 +4788,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

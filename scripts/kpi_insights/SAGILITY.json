@@ -1256,54 +1256,6 @@
    }
   },
   {
-   "name": "Clinicians and Technology Experts",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 3200.0,
-    "20251231": 4100.0
-   },
-   "src": {
-    "q:20251231": [
-     "e202cda5-efe9-40f3-933f-aea2f3211d04.pdf",
-     6,
-     "4100+ Clinicians and Technology Experts (doc period)",
-     "4100"
-    ],
-    "q:20250630": [
-     "471ff1c3-61e2-47b1-a091-d6177327b221.pdf",
-     4,
-     "Clinicians & Technology heads (doc period)",
-     "3200"
-    ]
-   }
-  },
-  {
-   "name": "Offshore & Nearshore Share of Associates",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 94.0,
-    "20251231": 90.6
-   },
-   "src": {
-    "q:20251231": [
-     "e202cda5-efe9-40f3-933f-aea2f3211d04.pdf",
-     6,
-     "90.6% Offshore & Nearshore (doc period)",
-     "90.6"
-    ],
-    "q:20240930": [
-     "4de22680-0584-4227-9f64-a6ab9cf7d4cc.pdf",
-     4,
-     "~94% Headcount Offshore & Nearshore (doc period)",
-     "94"
-    ]
-   }
-  },
-  {
    "name": "Top 10 Payers Served (out of 10)",
    "unit": "count",
    "kind": "level",
@@ -1369,21 +1321,58 @@
    }
   },
   {
-   "name": "Number of Healthcare Clients",
+   "name": "Clinicians and Technology Experts",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20251231": 80.0
+    "20250630": 3200.0
+   },
+   "src": {
+    "q:20250630": [
+     "471ff1c3-61e2-47b1-a091-d6177327b221.pdf",
+     4,
+     "Clinicians & Technology heads (doc period)",
+     "3200"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     4100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4100+ Clinicians and Technology Experts (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Offshore & Nearshore Share of Associates",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 90.6
    },
    "src": {
     "q:20251231": [
      "e202cda5-efe9-40f3-933f-aea2f3211d04.pdf",
      6,
-     "80+ Healthcare Clients (doc period)",
-     "80"
+     "90.6% Offshore & Nearshore (doc period)",
+     "90.6"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     94.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~94% Headcount Offshore & Nearshore (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Transactions Processed",
@@ -1526,5 +1515,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

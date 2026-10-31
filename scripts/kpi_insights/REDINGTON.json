@@ -2436,7 +2436,6 @@
     "20200630": 4047.0,
     "20210630": 3983.0,
     "20241231": 5200.0,
-    "20250930": 5100.0,
     "20260630": 5300.0
    },
    "src": {
@@ -2463,12 +2462,6 @@
      33,
      "Redingtonians (doc period)",
      "5,200"
-    ],
-    "q:20250930": [
-     "df9507f9-3d9e-4dad-adf7-43b7845c942a.pdf",
-     5,
-     "~5,100 Redingtonians (doc period)",
-     "5,100"
     ],
     "q:20191231": [
      "081fd8ba-a801-4a5e-809c-b7249791e0df.pdf",
@@ -2497,7 +2490,17 @@
    },
    "latest": {
     "q:20210630": "2021-08-13"
-   }
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     5100.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~5,100 Redingtonians (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "ProConnect India Revenue Mix - Captive (Redington)",
@@ -2905,52 +2908,6 @@
    }
   },
   {
-   "name": "Channel Partners",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 50000.0,
-    "20260331": 70000.0
-   },
-   "q": {
-    "20241231": 70000.0,
-    "20250930": 75000.0,
-    "20260630": 73000.0
-   },
-   "src": {
-    "q:20260630": [
-     "87ad78d7-62a9-4415-8416-5875b67dd057.pdf",
-     23,
-     "Channel Partners (doc period)",
-     "73,000"
-    ],
-    "y:20260331": [
-     "820039fb-4e56-47ca-9a12-8223749dcb99.pdf",
-     34,
-     "Channel Partners (doc period)",
-     "70,000"
-    ],
-    "y:20250331": [
-     "27bf69e2-8de3-4d24-a902-7fca81e1fa3f.pdf",
-     59,
-     "distribution network of over 50,000+ channel partners globally",
-     "50,000"
-    ],
-    "q:20241231": [
-     "576f14ab-2515-46f3-a898-aaa5850b4f50.pdf",
-     33,
-     "Channel Partners (doc period)",
-     "70,000"
-    ],
-    "q:20250930": [
-     "df9507f9-3d9e-4dad-adf7-43b7845c942a.pdf",
-     5,
-     "Channel Partners (doc period)",
-     "75,000"
-    ]
-   }
-  },
-  {
    "name": "Sales Offices",
    "unit": "count",
    "kind": "level",
@@ -3043,43 +3000,53 @@
    }
   },
   {
-   "name": "Brands",
+   "name": "Channel Partners",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 440.0
+    "20260331": 70000.0
    },
    "q": {
-    "20241231": 450.0,
-    "20250930": 450.0,
-    "20260630": 450.0
+    "20241231": 70000.0,
+    "20250930": 75000.0,
+    "20260630": 73000.0
    },
    "src": {
     "q:20260630": [
      "87ad78d7-62a9-4415-8416-5875b67dd057.pdf",
      23,
-     "Brands (doc period)",
-     "450"
+     "Channel Partners (doc period)",
+     "73,000"
     ],
     "y:20260331": [
      "820039fb-4e56-47ca-9a12-8223749dcb99.pdf",
      34,
-     "~440 Brands (doc period)",
-     "440"
+     "Channel Partners (doc period)",
+     "70,000"
     ],
     "q:20241231": [
      "576f14ab-2515-46f3-a898-aaa5850b4f50.pdf",
      33,
-     "Brands (doc period)",
-     "450"
+     "Channel Partners (doc period)",
+     "70,000"
     ],
     "q:20250930": [
      "df9507f9-3d9e-4dad-adf7-43b7845c942a.pdf",
      5,
-     "~450 Brands (doc period)",
-     "450"
+     "Channel Partners (doc period)",
+     "75,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     50000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: distribution network of over 50,000+ channel partners globally",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Employee Turnover Rate",
@@ -3111,6 +3078,48 @@
      "21"
     ]
    }
+  },
+  {
+   "name": "Brands",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 450.0,
+    "20260630": 450.0
+   },
+   "src": {
+    "q:20260630": [
+     "87ad78d7-62a9-4415-8416-5875b67dd057.pdf",
+     23,
+     "Brands (doc period)",
+     "450"
+    ],
+    "q:20241231": [
+     "576f14ab-2515-46f3-a898-aaa5850b4f50.pdf",
+     33,
+     "Brands (doc period)",
+     "450"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     440.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~440 Brands (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     450.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~450 Brands (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "International Presence (Countries)",
@@ -3811,5 +3820,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

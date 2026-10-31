@@ -1493,30 +1493,6 @@
    }
   },
   {
-   "name": "App Downloads",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20250331": 11.5,
-    "20260331": 14.2
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a00b4c4d-5183-448b-90d3-8547f4426078.pdf",
-     32,
-     "App downloads 14.2 million",
-     "14.2"
-    ],
-    "y:20250331": [
-     "15885b3b-e678-418f-b8a4-4764e2f3ddf7.pdf",
-     14,
-     "App Downloads 11.5 Million+ (doc period)",
-     "11.5"
-    ]
-   }
-  },
-  {
    "name": "Cashless Claims Auto-Adjudication",
    "unit": "%",
    "kind": "level",
@@ -1561,30 +1537,6 @@
      9,
      "% of Cashless Claims through Network Hospitals FY2024",
      "70.0"
-    ]
-   }
-  },
-  {
-   "name": "Employee Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 9344.0,
-    "20260331": 10100.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "a00b4c4d-5183-448b-90d3-8547f4426078.pdf",
-     32,
-     "Employees 10,100+",
-     "10,100"
-    ],
-    "y:20250331": [
-     "e6435169-12a1-41dd-ac67-651eeaebb3bb.pdf",
-     4,
-     "Total employees (D + E)",
-     "9,344"
     ]
    }
   },
@@ -1635,6 +1587,60 @@
      "12.9"
     ]
    }
+  },
+  {
+   "name": "App Downloads",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20260331": 14.2
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "a00b4c4d-5183-448b-90d3-8547f4426078.pdf",
+     32,
+     "App downloads 14.2 million",
+     "14.2"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     11.5,
+     null,
+     "drop_y",
+     "Qualified print in src label: App Downloads 11.5 Million+ (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Employee Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 9344.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "e6435169-12a1-41dd-ac67-651eeaebb3bb.pdf",
+     4,
+     "Total employees (D + E)",
+     "9,344"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     10100.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Employees 10,100+",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "GWP Contribution of New Retail Health Policies (Sum Insured >= ₹1mn)",
@@ -1759,5 +1765,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-09-15"
+ "updated": "2026-10-31"
 }

@@ -1359,38 +1359,6 @@
    }
   },
   {
-   "name": "765kV Power Transformers & Reactors Delivered (Cumulative)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 800.0
-   },
-   "q": {
-    "20210630": 500.0,
-    "20250630": 800.0
-   },
-   "src": {
-    "y:20260331": [
-     "3ac035f5-0911-48ef-b59b-4b6eda828213.pdf",
-     10,
-     "delivered over 800 units of 765 kV power transformers and reactors (doc period)",
-     "800"
-    ],
-    "q:20250630": [
-     "3a7a4f82-ea36-45fb-9f49-2c29f93d384c.pdf",
-     9,
-     "~800 units of 765kV Power transformers delivered in India (doc period)",
-     "800"
-    ],
-    "q:20210630": [
-     "0431e773-01c4-4d95-81ae-ac049463675c.pdf",
-     8,
-     "milestone of manufacturing 500 Unit of 765 kV Transformers / reactors (doc perio",
-     "500"
-    ]
-   }
-  },
-  {
    "name": "AIS/GIS Substations Commissioned",
    "unit": "count",
    "kind": "flow",
@@ -1418,38 +1386,6 @@
      3,
      "commissioned AIS and GIS substations in FY 2020-21",
      "28"
-    ]
-   }
-  },
-  {
-   "name": "Export Countries Served",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 60.0
-   },
-   "q": {
-    "20240930": 75.0,
-    "20250630": 60.0
-   },
-   "src": {
-    "y:20260331": [
-     "3ac035f5-0911-48ef-b59b-4b6eda828213.pdf",
-     10,
-     "exported to more than 60 countries (doc period)",
-     "60"
-    ],
-    "q:20250630": [
-     "3a7a4f82-ea36-45fb-9f49-2c29f93d384c.pdf",
-     9,
-     "Worldwide exports covering over 60 countries in Asia, Europe, Latin America, Afr",
-     "60"
-    ],
-    "q:20240930": [
-     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     5,
-     "No of Countries served (doc period)",
-     "75"
     ]
    }
   },
@@ -1640,30 +1576,6 @@
    }
   },
   {
-   "name": "AIS Export Countries",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20210331": 40.0,
-    "20240930": 40.0
-   },
-   "src": {
-    "q:20240930": [
-     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     22,
-     "AIS exports to 40+ countries (doc period)",
-     "40"
-    ],
-    "q:20210331": [
-     "fd6aef5a-5964-43d4-8583-cd7e98c46c5e.pdf",
-     11,
-     "Padappai exports AIS to more than 40+ countries (doc period)",
-     "40"
-    ]
-   }
-  },
-  {
    "name": "Export Orders [₹ Mn]",
    "unit": "₹ Mn",
    "kind": "flow",
@@ -1786,30 +1698,6 @@
    }
   },
   {
-   "name": "Relay Export Countries",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20210930": 60.0,
-    "20240930": 60.0
-   },
-   "src": {
-    "q:20240930": [
-     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     22,
-     "Relay exports to 60+ countries (doc period)",
-     "60"
-    ],
-    "q:20210930": [
-     "b81f04b5-ae87-4215-be2f-b25066e74544.pdf",
-     7,
-     "Pallavaram Exports to more than 60 countries (doc period)",
-     "60"
-    ]
-   }
-  },
-  {
    "name": "Sales to Top 10 Dealers/Distributors (% of Dealer Sales)",
    "unit": "%",
    "kind": "level",
@@ -1834,38 +1722,74 @@
    }
   },
   {
-   "name": "GIS Export Countries",
+   "name": "765kV Power Transformers & Reactors Delivered (Cumulative)",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20240930": 45.0
+    "20210630": 500.0
+   },
+   "src": {
+    "q:20210630": [
+     "0431e773-01c4-4d95-81ae-ac049463675c.pdf",
+     8,
+     "milestone of manufacturing 500 Unit of 765 kV Transformers / reactors (doc perio",
+     "500"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     800.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: delivered over 800 units of 765 kV power transformers and reactors (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     800.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~800 units of 765kV Power transformers delivered in India (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Export Countries Served",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 75.0
    },
    "src": {
     "q:20240930": [
      "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     22,
-     "GIS exports to 45+ countries (doc period)",
-     "45"
+     5,
+     "No of Countries served (doc period)",
+     "75"
     ]
-   }
-  },
-  {
-   "name": "Smart Grid Control Centre Projects Delivered (Cumulative)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 100.0
    },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "3ac035f5-0911-48ef-b59b-4b6eda828213.pdf",
-     10,
-     "delivered more than 100 smart grid control centre projects (doc period)",
-     "100"
+   "fixed": [
+    [
+     "y:20260331",
+     60.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: exported to more than 60 countries (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     60.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Worldwide exports covering over 60 countries in Asia, Europe, Latin America, Afr",
+     "2026-10-31"
     ]
-   }
+   ]
   },
   {
    "name": "Total Employees",
@@ -1881,23 +1805,6 @@
      5,
      "No of Employees as of 31/03/24",
      "1,589"
-    ]
-   }
-  },
-  {
-   "name": "Transformer Export Countries",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 40.0
-   },
-   "src": {
-    "q:20240930": [
-     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     22,
-     "Transformer exports to 40+ countries (doc period)",
-     "40"
     ]
    }
   }
@@ -2394,5 +2301,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

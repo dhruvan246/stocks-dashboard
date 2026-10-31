@@ -187,30 +187,6 @@
    }
   },
   {
-   "name": "Full-Time Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 1950.0,
-    "20260331": 2530.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "1803f000-494a-4549-9879-368a821ca4c6.pdf",
-     14,
-     "1,950+ full-time people employed (doc period)",
-     "1,950"
-    ],
-    "y:20260331": [
-     "b8b0998d-5acd-4bb3-bd4a-b43b4c31c077.pdf",
-     16,
-     "Total workforce strength",
-     "2,530"
-    ]
-   }
-  },
-  {
    "name": "Hot End Capacity Utilization",
    "unit": "%",
    "kind": "level",
@@ -469,30 +445,6 @@
    }
   },
   {
-   "name": "Years of Operations",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 45.0,
-    "20260331": 45.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "e8ee667f-f8c9-45bb-b408-c1c0b98a6587.pdf",
-     6,
-     "Years of operations (doc period)",
-     "45"
-    ],
-    "y:20250331": [
-     "1803f000-494a-4549-9879-368a821ca4c6.pdf",
-     14,
-     "45+ years of operations (doc period)",
-     "45"
-    ]
-   }
-  },
-  {
    "name": "Bearings Capacity Utilization",
    "unit": "%",
    "kind": "level",
@@ -525,6 +477,33 @@
      "43"
     ]
    }
+  },
+  {
+   "name": "Full-Time Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 2530.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "b8b0998d-5acd-4bb3-bd4a-b43b4c31c077.pdf",
+     16,
+     "Total workforce strength",
+     "2,530"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     1950.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 1,950+ full-time people employed (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "New Customers Won (ART Segment)",
@@ -593,6 +572,33 @@
      "51"
     ]
    }
+  },
+  {
+   "name": "Years of Operations",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 45.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "e8ee667f-f8c9-45bb-b408-c1c0b98a6587.pdf",
+     6,
+     "Years of operations (doc period)",
+     "45"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     45.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 45+ years of operations (doc period)",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -637,5 +643,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

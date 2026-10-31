@@ -1158,54 +1158,6 @@
    }
   },
   {
-   "name": "Average Realisation - Total",
-   "unit": "INR per sq ft",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20220630": 12183.0,
-    "20230630": 17367.0,
-    "20231231": 16502.0,
-    "20240630": 25164.0,
-    "20241231": 21023.0
-   },
-   "src": {
-    "q:20230630": [
-     "18d9bc57-b782-42ab-aab5-ff139c947753.pdf",
-     21,
-     "Total AVERAGE REALISATION (₹)",
-     "17,367"
-    ],
-    "q:20220630": [
-     "18d9bc57-b782-42ab-aab5-ff139c947753.pdf",
-     21,
-     "Total AVERAGE REALISATION (₹)",
-     "12,183"
-    ],
-    "q:20240630": [
-     "f6f2d2d7-6d58-4178-8bd1-0c3c0af72997.pdf",
-     16,
-     "to ~INR 25,164/- PSF YoY basis",
-     "25,164"
-    ],
-    "q:20231231": [
-     "b5ec9a25-b218-4f0b-871c-9bfdf51241fe.pdf",
-     18,
-     "PSFT rate from INR 16,502/- (Q3FY25 YoY)",
-     "16,502"
-    ],
-    "q:20241231": [
-     "b5ec9a25-b218-4f0b-871c-9bfdf51241fe.pdf",
-     18,
-     "to INR 21,023/- (Q3FY25 YoY)",
-     "21,023"
-    ]
-   },
-   "latest": {
-    "q:20230630": "2024-08-05"
-   }
-  },
-  {
    "name": "Average Realisation - Affordable",
    "unit": "INR per sq ft",
    "kind": "flow",
@@ -1323,6 +1275,57 @@
    }
   },
   {
+   "name": "Average Realisation - Total",
+   "unit": "INR per sq ft",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220630": 12183.0,
+    "20230630": 17367.0,
+    "20231231": 16502.0,
+    "20241231": 21023.0
+   },
+   "src": {
+    "q:20230630": [
+     "18d9bc57-b782-42ab-aab5-ff139c947753.pdf",
+     21,
+     "Total AVERAGE REALISATION (₹)",
+     "17,367"
+    ],
+    "q:20220630": [
+     "18d9bc57-b782-42ab-aab5-ff139c947753.pdf",
+     21,
+     "Total AVERAGE REALISATION (₹)",
+     "12,183"
+    ],
+    "q:20231231": [
+     "b5ec9a25-b218-4f0b-871c-9bfdf51241fe.pdf",
+     18,
+     "PSFT rate from INR 16,502/- (Q3FY25 YoY)",
+     "16,502"
+    ],
+    "q:20241231": [
+     "b5ec9a25-b218-4f0b-871c-9bfdf51241fe.pdf",
+     18,
+     "to INR 21,023/- (Q3FY25 YoY)",
+     "21,023"
+    ]
+   },
+   "latest": {
+    "q:20230630": "2024-08-05"
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     25164.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: to ~INR 25,164/- PSF YoY basis",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Collections",
    "unit": "INR lakhs",
    "kind": "flow",
@@ -1410,5 +1413,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

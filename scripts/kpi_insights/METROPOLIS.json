@@ -334,7 +334,6 @@
     "20230630": 3693.0,
     "20230930": 3934.0,
     "20231231": 4127.0,
-    "20241231": 4450.0,
     "20250630": 4616.0,
     "20250930": 4750.0,
     "20251231": 4862.0,
@@ -394,12 +393,6 @@
      14,
      "Service network Total (doc period)",
      "4,150"
-    ],
-    "q:20241231": [
-     "8ba3a0ee-08ab-46fc-9c1a-b87c0226b64b.pdf",
-     5,
-     "4,450+ Service Network (doc period)",
-     "4,450"
     ],
     "y:20250331": [
      "737b1253-8f78-4b3f-9a78-cb72f2fa7703.pdf",
@@ -474,6 +467,16 @@
      3064.0,
      "2fd19f05-fa95-4912-8154-d4f581ce561c.pdf",
      3134.0
+    ]
+   ],
+   "fixed": [
+    [
+     "q:20241231",
+     4450.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: 4,450+ Service Network (doc period)",
+     "2026-10-31"
     ]
    ]
   },
@@ -1537,83 +1540,6 @@
    }
   },
   {
-   "name": "New Service Centres Opened",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20250331": 400.0,
-    "20260331": 490.0
-   },
-   "q": {
-    "20230630": 118.0,
-    "20230930": 141.0,
-    "20231231": 193.0,
-    "20250630": 80.0,
-    "20250930": 134.0,
-    "20251231": 112.0,
-    "20260630": 295.0
-   },
-   "src": {
-    "q:20230630": [
-     "8cf6e7b2-cfce-47df-8f8b-7b4210d3f281.pdf",
-     6,
-     "opened 118 centers ... in Q1FY24",
-     "118"
-    ],
-    "q:20230930": [
-     "05b7b485-7589-499c-9ef6-824256756d37.pdf",
-     7,
-     "opened 141 centers ... in Q2FY24",
-     "141"
-    ],
-    "q:20231231": [
-     "194c75bc-d587-49d9-ba41-27e55c4a16d3.pdf",
-     7,
-     "opened 193 centers ... in Q3FY24",
-     "193"
-    ],
-    "y:20250331": [
-     "737b1253-8f78-4b3f-9a78-cb72f2fa7703.pdf",
-     15,
-     "~400 Centres added in the current FY",
-     "400"
-    ],
-    "q:20250630": [
-     "b8ffa078-a9fa-4d99-aad0-4ad073a97c29.pdf",
-     18,
-     "80 Centres added in Q1 FY26 Including acquired Centers",
-     "80"
-    ],
-    "q:20250930": [
-     "6f4dfc6a-555e-4ea7-9985-ebad07aedf16.pdf",
-     18,
-     "Centres added in Q2 FY26",
-     "134"
-    ],
-    "q:20251231": [
-     "f199befd-ee5e-48af-bbe4-29d5411c48bc.pdf",
-     18,
-     "Centres added in Q3 FY26",
-     "112"
-    ],
-    "y:20260331": [
-     "2fd19f05-fa95-4912-8154-d4f581ce561c.pdf",
-     19,
-     "Centres added in FY26",
-     "490"
-    ],
-    "q:20260630": [
-     "1267d94c-78fa-442d-a6ae-a8bf7c4e8d4c.pdf",
-     11,
-     "service points added in Q1FY27",
-     "295"
-    ]
-   },
-   "latest": {
-    "q:20231231": "2024-02-03"
-   }
-  },
-  {
    "name": "Core Business Patient Visits",
    "unit": "Mn",
    "kind": "flow",
@@ -1755,74 +1681,84 @@
    }
   },
   {
-   "name": "Towns Present",
+   "name": "New Service Centres Opened",
    "unit": "count",
-   "kind": "level",
+   "kind": "flow",
    "y": {
-    "20240331": 601.0,
-    "20250331": 750.0
+    "20260331": 490.0
    },
    "q": {
-    "20230930": 488.0,
-    "20231231": 595.0,
-    "20240630": 650.0,
-    "20240930": 700.0,
-    "20241231": 750.0,
-    "20250630": 750.0
+    "20230630": 118.0,
+    "20230930": 141.0,
+    "20231231": 193.0,
+    "20250630": 80.0,
+    "20250930": 134.0,
+    "20251231": 112.0,
+    "20260630": 295.0
    },
    "src": {
+    "q:20230630": [
+     "8cf6e7b2-cfce-47df-8f8b-7b4210d3f281.pdf",
+     6,
+     "opened 118 centers ... in Q1FY24",
+     "118"
+    ],
     "q:20230930": [
      "05b7b485-7589-499c-9ef6-824256756d37.pdf",
      7,
-     "presence ... to 488 towns (doc period)",
-     "488"
+     "opened 141 centers ... in Q2FY24",
+     "141"
     ],
     "q:20231231": [
      "194c75bc-d587-49d9-ba41-27e55c4a16d3.pdf",
      7,
-     "presence ... to 595 towns (doc period)",
-     "595"
-    ],
-    "y:20240331": [
-     "58228bd1-6f8e-40aa-b467-bc00e1f2809d.pdf",
-     14,
-     "307 towns to 601 towns in FY24",
-     "601"
-    ],
-    "q:20240630": [
-     "8e9d2dbc-2c1b-4d09-9e43-a883a32b57a5.pdf",
-     13,
-     "650 towns (doc period)",
-     "650"
-    ],
-    "q:20240930": [
-     "cecacfb4-5605-4ae6-98a9-ece2fb6ef092.pdf",
-     15,
-     "Presence in ~700 towns (doc period)",
-     "700"
-    ],
-    "q:20241231": [
-     "8ba3a0ee-08ab-46fc-9c1a-b87c0226b64b.pdf",
-     15,
-     "Presence in ~750 towns (doc period)",
-     "750"
-    ],
-    "y:20250331": [
-     "737b1253-8f78-4b3f-9a78-cb72f2fa7703.pdf",
-     15,
-     "~750 towns (doc period)",
-     "750"
+     "opened 193 centers ... in Q3FY24",
+     "193"
     ],
     "q:20250630": [
      "b8ffa078-a9fa-4d99-aad0-4ad073a97c29.pdf",
      18,
-     "~750 towns (doc period)",
-     "750"
+     "80 Centres added in Q1 FY26 Including acquired Centers",
+     "80"
+    ],
+    "q:20250930": [
+     "6f4dfc6a-555e-4ea7-9985-ebad07aedf16.pdf",
+     18,
+     "Centres added in Q2 FY26",
+     "134"
+    ],
+    "q:20251231": [
+     "f199befd-ee5e-48af-bbe4-29d5411c48bc.pdf",
+     18,
+     "Centres added in Q3 FY26",
+     "112"
+    ],
+    "y:20260331": [
+     "2fd19f05-fa95-4912-8154-d4f581ce561c.pdf",
+     19,
+     "Centres added in FY26",
+     "490"
+    ],
+    "q:20260630": [
+     "1267d94c-78fa-442d-a6ae-a8bf7c4e8d4c.pdf",
+     11,
+     "service points added in Q1FY27",
+     "295"
     ]
    },
    "latest": {
     "q:20231231": "2024-02-03"
-   }
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     400.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~400 Centres added in the current FY",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "B2C Revenue Share",
@@ -2260,6 +2196,82 @@
    }
   },
   {
+   "name": "Towns Present",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 601.0
+   },
+   "q": {
+    "20230930": 488.0,
+    "20231231": 595.0,
+    "20240630": 650.0
+   },
+   "src": {
+    "q:20230930": [
+     "05b7b485-7589-499c-9ef6-824256756d37.pdf",
+     7,
+     "presence ... to 488 towns (doc period)",
+     "488"
+    ],
+    "q:20231231": [
+     "194c75bc-d587-49d9-ba41-27e55c4a16d3.pdf",
+     7,
+     "presence ... to 595 towns (doc period)",
+     "595"
+    ],
+    "y:20240331": [
+     "58228bd1-6f8e-40aa-b467-bc00e1f2809d.pdf",
+     14,
+     "307 towns to 601 towns in FY24",
+     "601"
+    ],
+    "q:20240630": [
+     "8e9d2dbc-2c1b-4d09-9e43-a883a32b57a5.pdf",
+     13,
+     "650 towns (doc period)",
+     "650"
+    ]
+   },
+   "latest": {
+    "q:20231231": "2024-02-03"
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     700.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Presence in ~700 towns (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     750.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Presence in ~750 towns (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     750.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~750 towns (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     750.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~750 towns (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "TruHealth Revenue Share",
    "unit": "%",
    "kind": "level",
@@ -2391,5 +2403,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

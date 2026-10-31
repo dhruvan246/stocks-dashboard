@@ -663,8 +663,7 @@
     "20220331": 1352.0,
     "20230331": 1400.0,
     "20240331": 1454.0,
-    "20250331": 1694.0,
-    "20260331": 1650.0
+    "20250331": 1694.0
    },
    "q": {
     "20210331": 1257.0,
@@ -681,12 +680,6 @@
      30,
      "Business Partners (doc period)",
      "1600"
-    ],
-    "y:20260331": [
-     "b2fb445b-227f-4d3a-96f3-b7478bdf8e5d.pdf",
-     261,
-     "multi-tier distribution footprint expanded to span more than 1,650 strategic bus",
-     "1,650"
     ],
     "q:20250930": [
      "6d4c215b-5260-4a7c-98b3-6589ac125a0e.pdf",
@@ -758,7 +751,17 @@
    "latest": {
     "y:20210331": "2025-05-21",
     "y:20220331": "2025-05-21"
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     1650.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: multi-tier distribution footprint expanded to span more than 1,650 strategic bus",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Manufacturing Plants (International)",
@@ -1229,66 +1232,6 @@
    }
   },
   {
-   "name": "Patents Filed",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 375.0,
-    "20240331": 444.0
-   },
-   "q": {
-    "20230630": 394.0,
-    "20230930": 394.0,
-    "20231231": 394.0,
-    "20250331": 444.0,
-    "20260630": 444.0
-   },
-   "src": {
-    "q:20260630": [
-     "43efd545-cc98-40a2-97ef-bc5481c69f3d.pdf",
-     32,
-     "Patent Filed (doc period)",
-     "444"
-    ],
-    "y:20240331": [
-     "f6484da9-6470-4665-8448-04604d5507d7.pdf",
-     200,
-     "filing of over 444 patent applications (doc period)",
-     "444"
-    ],
-    "q:20250331": [
-     "247638fa-843a-4d9b-89c7-6496d3eb1e62.pdf",
-     33,
-     "Patent Filed (doc period)",
-     "444"
-    ],
-    "y:20230331": [
-     "1a80724b-03de-4549-868e-174b67baf4ff.pdf",
-     216,
-     "patent applications (doc period)",
-     "375"
-    ],
-    "q:20231231": [
-     "276c68c9-8327-4a32-9d12-932847e2ee6c.pdf",
-     31,
-     "Patent Filed (doc period)",
-     "394"
-    ],
-    "q:20230630": [
-     "a3293b42-80d0-416e-b2db-d56fe82cf58a.pdf",
-     26,
-     "Patent Filed (doc period)",
-     "394"
-    ],
-    "q:20230930": [
-     "aa60d6c2-3113-4915-b4a3-e3bd081812a5.pdf",
-     32,
-     "Patent Filed (doc period)",
-     "394"
-    ]
-   }
-  },
-  {
    "name": "Patents Granted",
    "unit": "count",
    "kind": "level",
@@ -1399,6 +1342,69 @@
      "150,000"
     ]
    }
+  },
+  {
+   "name": "Patents Filed",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 375.0
+   },
+   "q": {
+    "20230630": 394.0,
+    "20230930": 394.0,
+    "20231231": 394.0,
+    "20250331": 444.0,
+    "20260630": 444.0
+   },
+   "src": {
+    "q:20260630": [
+     "43efd545-cc98-40a2-97ef-bc5481c69f3d.pdf",
+     32,
+     "Patent Filed (doc period)",
+     "444"
+    ],
+    "q:20250331": [
+     "247638fa-843a-4d9b-89c7-6496d3eb1e62.pdf",
+     33,
+     "Patent Filed (doc period)",
+     "444"
+    ],
+    "y:20230331": [
+     "1a80724b-03de-4549-868e-174b67baf4ff.pdf",
+     216,
+     "patent applications (doc period)",
+     "375"
+    ],
+    "q:20231231": [
+     "276c68c9-8327-4a32-9d12-932847e2ee6c.pdf",
+     31,
+     "Patent Filed (doc period)",
+     "394"
+    ],
+    "q:20230630": [
+     "a3293b42-80d0-416e-b2db-d56fe82cf58a.pdf",
+     26,
+     "Patent Filed (doc period)",
+     "394"
+    ],
+    "q:20230930": [
+     "aa60d6c2-3113-4915-b4a3-e3bd081812a5.pdf",
+     32,
+     "Patent Filed (doc period)",
+     "394"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     444.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: filing of over 444 patent applications (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Product Lines",
@@ -2403,23 +2409,6 @@
    }
   },
   {
-   "name": "Aftermarket Retail Touchpoints",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 55000.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "b2fb445b-227f-4d3a-96f3-b7478bdf8e5d.pdf",
-     261,
-     "a vast retail network of over 55,000 retail touchpoints across India (doc period",
-     "55,000"
-    ]
-   }
-  },
-  {
    "name": "Aftermarket SKUs",
    "unit": "K",
    "kind": "level",
@@ -2518,23 +2507,6 @@
      20,
      "Peak Annual Order Value from EV OEM - Total/Total (doc period)",
      "1,897"
-    ]
-   }
-  },
-  {
-   "name": "Sunroof Order Book",
-   "unit": "Rs Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 500.0
-   },
-   "src": {
-    "q:20260630": [
-     "43efd545-cc98-40a2-97ef-bc5481c69f3d.pdf",
-     13,
-     "Sunroof order book crossed Rs 500 Cr (doc period)",
-     "500"
     ]
    }
   },
@@ -2985,5 +2957,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

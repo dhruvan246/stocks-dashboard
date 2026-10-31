@@ -3971,44 +3971,6 @@
    }
   },
   {
-   "name": "Total Consumers",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20230331": 4.0,
-    "20240331": 4.4,
-    "20250331": 4.7,
-    "20260331": 4.9
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "fd3400f6-19af-4328-993a-6379cc563563.pdf",
-     7,
-     "4.7 Mn+ Consumer (doc period)",
-     "4.7"
-    ],
-    "y:20240331": [
-     "7af31d62-3e93-4a05-bb80-593704abd095.pdf",
-     12,
-     "Serves 4.4 million+ customers across 6 locations in India (doc period)",
-     "4.4"
-    ],
-    "y:20260331": [
-     "c2b9c642-60f9-4d54-9cf8-4289d4756b40.pdf",
-     4,
-     "4.9 Mn + customers across 7 geographies (doc period)",
-     "4.9"
-    ],
-    "y:20230331": [
-     "78238b32-638e-4146-a7a4-dcb3279b5b48.pdf",
-     14,
-     "4 million + consumers (doc period)",
-     "4"
-    ]
-   }
-  },
-  {
    "name": "CESC Kolkata Peak Demand",
    "unit": "MW",
    "kind": "level",
@@ -4036,92 +3998,6 @@
      13,
      "Peak power demand 2,337 MW in FY20",
      "2,337"
-    ]
-   }
-  },
-  {
-   "name": "Consolidated Sales Volume",
-   "unit": "MU",
-   "kind": "flow",
-   "y": {
-    "20230331": 16500.0,
-    "20240331": 17500.0,
-    "20260331": 21000.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "7af31d62-3e93-4a05-bb80-593704abd095.pdf",
-     12,
-     "~17,500 MU (Consolidated sales) (doc period)",
-     "17,500"
-    ],
-    "y:20260331": [
-     "c2b9c642-60f9-4d54-9cf8-4289d4756b40.pdf",
-     4,
-     "21,000 MU annual sales (doc period)",
-     "21,000"
-    ],
-    "y:20230331": [
-     "78238b32-638e-4146-a7a4-dcb3279b5b48.pdf",
-     14,
-     "~16,500 MU (Consolidated sales) (doc period)",
-     "16,500"
-    ]
-   }
-  },
-  {
-   "name": "Noida Power (NPCL) Peak Load",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20230331": 592.0,
-    "20240331": 652.0,
-    "20250331": 775.0
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
-     51,
-     "compared to 652 MW in FY 2023-24",
-     "652"
-    ],
-    "y:20250331": [
-     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
-     51,
-     "NPCL's peak load grew at 19% to 775 MW",
-     "775"
-    ],
-    "y:20230331": [
-     "78238b32-638e-4146-a7a4-dcb3279b5b48.pdf",
-     16,
-     "Noida Peak load (MW) 592+ MW (doc period)",
-     "592"
-    ]
-   }
-  },
-  {
-   "name": "Distribution Ventures Consumers (ex-Kolkata)",
-   "unit": "Lakh",
-   "kind": "level",
-   "y": {
-    "20240331": 8.1,
-    "20250331": 8.5
-   },
-   "q": {},
-   "src": {
-    "y:20240331": [
-     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
-     50,
-     "8.1 Lakh in FY 2023-24",
-     "8.1"
-    ],
-    "y:20250331": [
-     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
-     50,
-     "collectively service around 8.5 Lakh consumers",
-     "8.5"
     ]
    }
   },
@@ -4174,6 +4050,40 @@
    }
   },
   {
+   "name": "Noida Power (NPCL) Peak Load",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20240331": 652.0,
+    "20250331": 775.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
+     51,
+     "compared to 652 MW in FY 2023-24",
+     "652"
+    ],
+    "y:20250331": [
+     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
+     51,
+     "NPCL's peak load grew at 19% to 775 MW",
+     "775"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     592.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Noida Peak load (MW) 592+ MW (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "CESC Kolkata Distribution Customers",
    "unit": "Mn",
    "kind": "level",
@@ -4189,6 +4099,68 @@
      "3.7"
     ]
    }
+  },
+  {
+   "name": "Consolidated Sales Volume",
+   "unit": "MU",
+   "kind": "flow",
+   "y": {
+    "20260331": 21000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "c2b9c642-60f9-4d54-9cf8-4289d4756b40.pdf",
+     4,
+     "21,000 MU annual sales (doc period)",
+     "21,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     17500.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~17,500 MU (Consolidated sales) (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "y:20230331",
+     16500.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: ~16,500 MU (Consolidated sales) (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Distribution Ventures Consumers (ex-Kolkata)",
+   "unit": "Lakh",
+   "kind": "level",
+   "y": {
+    "20240331": 8.1
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "9f29d2b9-a892-4e37-bc3d-733687a99233.pdf",
+     50,
+     "8.1 Lakh in FY 2023-24",
+     "8.1"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     8.5,
+     null,
+     "drop_y",
+     "Qualified print in src label: collectively service around 8.5 Lakh consumers",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Kolkata Plants Total Generation",
@@ -4716,5 +4688,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

@@ -3733,73 +3733,6 @@
    }
   },
   {
-   "name": "Mahindra Holidays Occupancy Rate",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20230331": 84.0,
-    "20260331": 81.0
-   },
-   "q": {
-    "20210331": 85.0,
-    "20210630": 51.0,
-    "20210930": 73.0,
-    "20220630": 90.0,
-    "20220930": 79.0,
-    "20230630": 90.0
-   },
-   "src": {
-    "y:20260331": [
-     "44de8025-5ba1-4dfd-b7ef-ed83aa31bd7e.pdf",
-     20,
-     "Robust occupancy rate (FY26 Achievements)",
-     "81"
-    ],
-    "q:20210331": [
-     "00a657db-95f5-4237-a0ad-06d162b96ccb.pdf",
-     9,
-     "occupancy in 4Q F21",
-     "85"
-    ],
-    "q:20210630": [
-     "00a657db-95f5-4237-a0ad-06d162b96ccb.pdf",
-     9,
-     "occupancy in 1Q F22",
-     "51"
-    ],
-    "q:20230630": [
-     "1fffc0ac-1069-4fcb-a01a-bca2378ec8c9.pdf",
-     9,
-     "occupancy (doc period)",
-     "90"
-    ],
-    "q:20210930": [
-     "4c627fee-9acf-466e-8711-f8cb3ae3337d.pdf",
-     13,
-     "occupancy (doc period)",
-     "73"
-    ],
-    "q:20220630": [
-     "b020958e-7183-44dd-aacd-6f405f6e22d7.pdf",
-     37,
-     "High occupancy ~90% (doc period)",
-     "90"
-    ],
-    "q:20220930": [
-     "c69c97c9-9b27-405d-9aec-16da72ab3222.pdf",
-     40,
-     "79% occupancy (doc period)",
-     "79"
-    ],
-    "y:20230331": [
-     "c6d0a6e4-ecab-48e2-98f8-6434d446557e.pdf",
-     41,
-     "High resort occupancy (doc period)",
-     "84"
-    ]
-   }
-  },
-  {
    "name": "Tractor Exports",
    "unit": "K units",
    "kind": "flow",
@@ -4048,6 +3981,76 @@
      "6,914"
     ]
    }
+  },
+  {
+   "name": "Mahindra Holidays Occupancy Rate",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20230331": 84.0,
+    "20260331": 81.0
+   },
+   "q": {
+    "20210331": 85.0,
+    "20210630": 51.0,
+    "20210930": 73.0,
+    "20220930": 79.0,
+    "20230630": 90.0
+   },
+   "src": {
+    "y:20260331": [
+     "44de8025-5ba1-4dfd-b7ef-ed83aa31bd7e.pdf",
+     20,
+     "Robust occupancy rate (FY26 Achievements)",
+     "81"
+    ],
+    "q:20210331": [
+     "00a657db-95f5-4237-a0ad-06d162b96ccb.pdf",
+     9,
+     "occupancy in 4Q F21",
+     "85"
+    ],
+    "q:20210630": [
+     "00a657db-95f5-4237-a0ad-06d162b96ccb.pdf",
+     9,
+     "occupancy in 1Q F22",
+     "51"
+    ],
+    "q:20230630": [
+     "1fffc0ac-1069-4fcb-a01a-bca2378ec8c9.pdf",
+     9,
+     "occupancy (doc period)",
+     "90"
+    ],
+    "q:20210930": [
+     "4c627fee-9acf-466e-8711-f8cb3ae3337d.pdf",
+     13,
+     "occupancy (doc period)",
+     "73"
+    ],
+    "q:20220930": [
+     "c69c97c9-9b27-405d-9aec-16da72ab3222.pdf",
+     40,
+     "79% occupancy (doc period)",
+     "79"
+    ],
+    "y:20230331": [
+     "c6d0a6e4-ecab-48e2-98f8-6434d446557e.pdf",
+     41,
+     "High resort occupancy (doc period)",
+     "84"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20220630",
+     90.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: High occupancy ~90% (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Mahindra Holidays Room Inventory",
@@ -5914,5 +5917,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

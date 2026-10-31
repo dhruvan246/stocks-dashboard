@@ -1013,31 +1013,6 @@
    ]
   },
   {
-   "name": "Order Book Vessel Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 51.0
-   },
-   "q": {
-    "20250630": 75.0
-   },
-   "src": {
-    "y:20260331": [
-     "aba1459d-eea7-4d24-9b40-e52540f83926.pdf",
-     30,
-     "unexecuted order book consisting of around 51 vessels",
-     "51"
-    ],
-    "q:20250630": [
-     "52481d9b-1671-4f67-8e4d-7c956f78716a.pdf",
-     19,
-     "TOTAL number of vessels in shipbuilding order book",
-     "75"
-    ]
-   }
-  },
-  {
    "name": "Order Book Vessels - Commercial Domestic",
    "unit": "count",
    "kind": "level",
@@ -1288,6 +1263,33 @@
      "35"
     ]
    }
+  },
+  {
+   "name": "Order Book Vessel Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 75.0
+   },
+   "src": {
+    "q:20250630": [
+     "52481d9b-1671-4f67-8e4d-7c956f78716a.pdf",
+     19,
+     "TOTAL number of vessels in shipbuilding order book",
+     "75"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     51.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: unexecuted order book consisting of around 51 vessels",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Ship Repair Market Share (India)",
@@ -1814,5 +1816,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

@@ -493,44 +493,6 @@
    }
   },
   {
-   "name": "Distribution Touchpoints",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 750.0,
-    "20240930": 1800.0,
-    "20241231": 4000.0,
-    "20250331": 4000.0
-   },
-   "src": {
-    "q:20250331": [
-     "545b888a-ee6f-461f-8559-da96a4d43a7f.pdf",
-     4,
-     "expanded to 4,000+ touchpoints",
-     "4,000"
-    ],
-    "q:20241231": [
-     "99a2b9da-b4f2-43f5-9627-7381d4b34b6e.pdf",
-     3,
-     "Expanded to 4,000+ touchpoints",
-     "4,000"
-    ],
-    "q:20240930": [
-     "76db9653-dfff-4cf8-aefe-7d2989682af4.pdf",
-     9,
-     "retail points with Network Partner Program as of Sep'24",
-     "1,800"
-    ],
-    "q:20240630": [
-     "72936daa-a7b3-4b8b-9b33-f0f771f0266b.pdf",
-     3,
-     "more than 750 experience centres (doc period)",
-     "750"
-    ]
-   }
-  },
-  {
    "name": "Gigafactory Installed Capacity",
    "unit": "GWh",
    "kind": "level",
@@ -538,7 +500,6 @@
    "q": {
     "20250630": 1.4,
     "20250930": 2.5,
-    "20251231": 2.5,
     "20260331": 6.0
    },
    "src": {
@@ -547,12 +508,6 @@
      6,
      "Gigafactory Phase 1 infrastructure in place for the 6 GWh scale-up (doc period)",
      "6"
-    ],
-    "q:20251231": [
-     "d1ff5e32-180d-46a1-91f7-de98d8602abe.pdf",
-     9,
-     "currently operating at approximately 2.5 GWh of installed capacity",
-     "2.5"
     ],
     "q:20250930": [
      "6db5840f-9067-44c1-b88e-524da9c6ffaf.pdf",
@@ -566,7 +521,17 @@
      "fully utilising the 1.4 GWh (doc period)",
      "1.4"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     2.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: currently operating at approximately 2.5 GWh of installed capacity",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Auto Manufacturing Capacity",
@@ -641,30 +606,6 @@
    }
   },
   {
-   "name": "Same-Day Service Closure Rate",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 80.0,
-    "20260331": 87.0
-   },
-   "src": {
-    "q:20260331": [
-     "817606c5-d0c7-47ba-9a6c-407703ee14e9.pdf",
-     7,
-     "Same-day closures improved to about 87% (doc period)",
-     "87"
-    ],
-    "q:20251231": [
-     "d1ff5e32-180d-46a1-91f7-de98d8602abe.pdf",
-     6,
-     "completing 80% of service tickets on the same day (doc period)",
-     "80"
-    ]
-   }
-  },
-  {
    "name": "Vehicle Deliveries",
    "unit": "K",
    "kind": "flow",
@@ -685,23 +626,6 @@
      74,
      "Ola Deliveries FY23 chart",
      "156"
-    ]
-   }
-  },
-  {
-   "name": "AI Daily Connected Calls",
-   "unit": "lakh/day",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260331": 2.0
-   },
-   "src": {
-    "q:20260331": [
-     "817606c5-d0c7-47ba-9a6c-407703ee14e9.pdf",
-     9,
-     "around 2 lakh connected calls per day (doc period)",
-     "2"
     ]
    }
   },
@@ -740,6 +664,49 @@
    }
   },
   {
+   "name": "Distribution Touchpoints",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 1800.0
+   },
+   "src": {
+    "q:20240930": [
+     "76db9653-dfff-4cf8-aefe-7d2989682af4.pdf",
+     9,
+     "retail points with Network Partner Program as of Sep'24",
+     "1,800"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: expanded to 4,000+ touchpoints",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     4000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Expanded to 4,000+ touchpoints",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     750.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: more than 750 experience centres (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "In-house Component Development",
    "unit": "%",
    "kind": "level",
@@ -753,40 +720,6 @@
      3,
      "in-house development of 89% of components",
      "89"
-    ]
-   }
-  },
-  {
-   "name": "Installed Customer Base",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1.0
-   },
-   "src": {
-    "q:20260630": [
-     "7dc128e7-8fd8-475c-b9ed-11fe16e49cc3.pdf",
-     7,
-     "installed base of more than 1 million customers (doc period)",
-     "1"
-    ]
-   }
-  },
-  {
-   "name": "Installed Customer Base",
-   "unit": "lakh",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 11.0
-   },
-   "src": {
-    "q:20251231": [
-     "d1ff5e32-180d-46a1-91f7-de98d8602abe.pdf",
-     8,
-     "installed base of around 11 lakh customers (doc period)",
-     "11"
     ]
    }
   },
@@ -859,23 +792,6 @@
    }
   },
   {
-   "name": "New Employees Onboarded (Retail Expansion)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20250331": 2800.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "5d179c83-6a35-4feb-be6d-a5c61dd0bc7b.pdf",
-     85,
-     "over 2,800 employees were inducted in 45 days (doc period)",
-     "2,800"
-    ]
-   }
-  },
-  {
    "name": "New Employees Recruited (Skilled Professionals)",
    "unit": "count",
    "kind": "flow",
@@ -927,21 +843,31 @@
    }
   },
   {
-   "name": "Roadster Store Availability",
-   "unit": "count",
+   "name": "Same-Day Service Closure Rate",
+   "unit": "%",
    "kind": "level",
    "y": {},
    "q": {
-    "20250630": 200.0
+    "20251231": 80.0
    },
    "src": {
-    "q:20250630": [
-     "6e79c651-16c8-4fe5-9b08-d7df440869da.pdf",
-     5,
-     "Roadster is now available in about 200 stores (doc period)",
-     "200"
+    "q:20251231": [
+     "d1ff5e32-180d-46a1-91f7-de98d8602abe.pdf",
+     6,
+     "completing 80% of service tickets on the same day (doc period)",
+     "80"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     87.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Same-day closures improved to about 87% (doc period)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Service Backlog",
@@ -961,23 +887,6 @@
    }
   },
   {
-   "name": "Service Turnaround Time",
-   "unit": "days",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 1.0
-   },
-   "src": {
-    "q:20260331": [
-     "817606c5-d0c7-47ba-9a6c-407703ee14e9.pdf",
-     7,
-     "Average service TAT nearly 1 day in March 2026",
-     "1"
-    ]
-   }
-  },
-  {
    "name": "Total Employees",
    "unit": "count",
    "kind": "level",
@@ -991,23 +900,6 @@
      85,
      "As of March 31, 2025, the Company had a total of 12,396 employees",
      "12,396"
-    ]
-   }
-  },
-  {
-   "name": "Vehicle Registrations",
-   "unit": "lakh",
-   "kind": "flow",
-   "y": {
-    "20250331": 3.4
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "545b888a-ee6f-461f-8559-da96a4d43a7f.pdf",
-     3,
-     ">3.4 lakh units registered in FY25 (VAHAN)",
-     "3.4"
     ]
    }
   }
@@ -1135,5 +1027,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

@@ -419,45 +419,6 @@
    }
   },
   {
-   "name": "Average Age of Owned Vessels",
-   "unit": "Yrs",
-   "kind": "level",
-   "y": {
-    "20190331": 10.08,
-    "20220331": 13.28
-   },
-   "q": {
-    "20250930": 15.5,
-    "20260331": 15.5
-   },
-   "src": {
-    "q:20260331": [
-     "190af81e-ee66-4d86-b41c-ffa4c17960ed.pdf",
-     5,
-     "Average Age of Owned Vessels (doc period)",
-     "15.50"
-    ],
-    "q:20250930": [
-     "c3be3d64-2c18-4c2a-b72c-1316b27b311b.pdf",
-     5,
-     "Average Age of Owned Vessels (doc period)",
-     "15.50"
-    ],
-    "y:20220331": [
-     "ac730285-4d1c-445f-81e3-1fd7ad31ee03.pdf",
-     53,
-     "average age from 18 years in 2007 to about 13.28 years presently (w.r.t. B&T Fle",
-     "13.28"
-    ],
-    "y:20190331": [
-     "5235980319.pdf",
-     28,
-     "average age (doc period)",
-     "10.08"
-    ]
-   }
-  },
-  {
    "name": "Total Employees (Fleet)",
    "unit": "count",
    "kind": "level",
@@ -536,6 +497,48 @@
      164.0,
      "c5dc8300-ace8-49ea-b17a-7b7e466657cc.pdf",
      168.0
+    ]
+   ]
+  },
+  {
+   "name": "Average Age of Owned Vessels",
+   "unit": "Yrs",
+   "kind": "level",
+   "y": {
+    "20190331": 10.08
+   },
+   "q": {
+    "20250930": 15.5,
+    "20260331": 15.5
+   },
+   "src": {
+    "q:20260331": [
+     "190af81e-ee66-4d86-b41c-ffa4c17960ed.pdf",
+     5,
+     "Average Age of Owned Vessels (doc period)",
+     "15.50"
+    ],
+    "q:20250930": [
+     "c3be3d64-2c18-4c2a-b72c-1316b27b311b.pdf",
+     5,
+     "Average Age of Owned Vessels (doc period)",
+     "15.50"
+    ],
+    "y:20190331": [
+     "5235980319.pdf",
+     28,
+     "average age (doc period)",
+     "10.08"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20220331",
+     13.28,
+     null,
+     "drop_y",
+     "Qualified print in src label: average age from 18 years in 2007 to about 13.28 years presently (w.r.t. B&T Fle",
+     "2026-10-31"
     ]
    ]
   },
@@ -1625,6 +1628,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21",
+ "updated": "2026-10-31",
  "checked": "2026-09-07"
 }
