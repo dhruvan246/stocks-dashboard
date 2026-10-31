@@ -96,15 +96,15 @@
   "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf": {
    "kind": "pr",
    "date": "2020-02-12",
-   "title": "Q3 FY20 Press Release Presentation",
-   "read": "2026-10-27",
+   "title": "Q3 FY20 Press Release / Investor Presentation",
+   "read": "2026-10-31",
    "by": "claude-session"
   },
   "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf": {
    "kind": "ip",
    "date": "2020-07-31",
    "title": "Q1 FY21 Quarterly Presentation",
-   "read": "2026-10-27",
+   "read": "2026-10-31",
    "by": "claude-session"
   },
   "0b25831c-4ea5-4fec-8e0d-ceb4f5cb5bd9.pdf": {
@@ -132,7 +132,7 @@
    "kind": "ip",
    "date": "2021-01-29",
    "title": "Q3 FY21 Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-10-31",
    "by": "claude-session"
   },
   "2a1e2306-7de2-4341-9afd-f5d756217437.pdf": {
@@ -257,8 +257,8 @@
   "a9a8d0e3-bc87-41a1-a5bd-92e06623db46.pdf": {
    "kind": "pr",
    "date": "2020-05-30",
-   "title": "Q4 FY20 Press Release Presentation",
-   "read": "2026-10-27",
+   "title": "Q4 FY20 Press Release",
+   "read": "2026-10-31",
    "by": "claude-session"
   },
   "ac1ca75f-a017-470e-9cc3-b95d5e0d8f4c.pdf": {
@@ -278,8 +278,8 @@
   "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf": {
    "kind": "ip",
    "date": "2020-06-08",
-   "title": "Investor Presentation June 2020 (Q4 FY20)",
-   "read": "2026-10-27",
+   "title": "Investor Presentation June 2020",
+   "read": "2026-10-31",
    "by": "claude-session"
   },
   "c642a27a-d089-41d7-9317-07baa9b907bf.pdf": {
@@ -306,8 +306,8 @@
   "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf": {
    "kind": "ip",
    "date": "2020-02-17",
-   "title": "Investor Presentation February 2020 (Q3 FY20)",
-   "read": "2026-10-27",
+   "title": "Investor Presentation Feb 2020",
+   "read": "2026-10-31",
    "by": "claude-session"
   }
  },
@@ -2749,6 +2749,71 @@
    ]
   },
   {
+   "name": "Revenue Days - Owned Tonnage (Shipping)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 4210.0,
+    "20190331": 4278.0,
+    "20190630": 4142.0,
+    "20191231": 4227.0,
+    "20200331": 4073.0,
+    "20200630": 4018.0,
+    "20201231": 4081.0
+   },
+   "src": {
+    "q:20191231": [
+     "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+     10,
+     "Owned Tonnage",
+     "4,227"
+    ],
+    "q:20181231": [
+     "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+     10,
+     "Owned Tonnage",
+     "4,210"
+    ],
+    "q:20200630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     10,
+     "Owned Tonnage",
+     "4,018"
+    ],
+    "q:20190630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     10,
+     "Owned Tonnage",
+     "4,142"
+    ],
+    "q:20201231": [
+     "22ef3ebc-c92a-4d93-931e-21bf0939f2c5.pdf",
+     10,
+     "Owned Tonnage",
+     "4,081"
+    ],
+    "q:20200331": [
+     "a9a8d0e3-bc87-41a1-a5bd-92e06623db46.pdf",
+     12,
+     "Owned Tonnage",
+     "4,073"
+    ],
+    "q:20190331": [
+     "a9a8d0e3-bc87-41a1-a5bd-92e06623db46.pdf",
+     12,
+     "Owned Tonnage",
+     "4,278"
+    ]
+   },
+   "latest": {
+    "q:20191231": "2021-01-29",
+    "q:20200331": "2020-06-08",
+    "q:20190331": "2020-06-08",
+    "q:20181231": "2020-02-17"
+   }
+  },
+  {
    "name": "CO2 Emissions (Shipping Fleet)",
    "unit": "MT",
    "kind": "flow",
@@ -3293,6 +3358,84 @@
    ]
   },
   {
+   "name": "Offshore AHTSV Fleet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 8.0
+   },
+   "q": {
+    "20191231": 8.0,
+    "20200630": 8.0,
+    "20201231": 8.0
+   },
+   "src": {
+    "q:20200630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     33,
+     "Anchor Handling Tug cum Supply Vessels (AHTSV) Fleet Count (As on 30th June 2020",
+     "8"
+    ],
+    "q:20201231": [
+     "22ef3ebc-c92a-4d93-931e-21bf0939f2c5.pdf",
+     40,
+     "Anchor Handling Tug cum Supply Vessels (AHTSV) Fleet Count (As on 31st December ",
+     "8"
+    ],
+    "y:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     49,
+     "Anchor Handling Tug cum Supply Vessels (AHTSV) (As on 31st March 2020)",
+     "8"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     36,
+     "Anchor Handling Tug cum Supply Vessels (AHTSV) (As on 31st December2019)",
+     "8"
+    ]
+   }
+  },
+  {
+   "name": "Offshore MPSSV Fleet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 2.0
+   },
+   "q": {
+    "20191231": 2.0,
+    "20200630": 2.0,
+    "20201231": 2.0
+   },
+   "src": {
+    "q:20200630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     33,
+     "Multipurpose Platform Supply and Support Vessels (MPSSV) Fleet Count (As on 30th",
+     "2"
+    ],
+    "q:20201231": [
+     "22ef3ebc-c92a-4d93-931e-21bf0939f2c5.pdf",
+     40,
+     "Multipurpose Platform Supply and Support Vessels (MPSSV) Fleet Count (As on 31st",
+     "2"
+    ],
+    "y:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     49,
+     "Multipurpose Platform Supply and Support Vessels (MPSSV) (As on 31st March 2020)",
+     "2"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     36,
+     "Multipurpose Platform Supply and Support Vessels (MPSSV) (As on 31st December201",
+     "2"
+    ]
+   }
+  },
+  {
    "name": "Product Carrier Fleet Count",
    "unit": "count",
    "kind": "level",
@@ -3442,6 +3585,48 @@
    ]
   },
   {
+   "name": "Revenue Days - Inchartered Tonnage (Shipping)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 16.0,
+    "20190331": 105.0,
+    "20190630": 35.0,
+    "20201231": 44.0
+   },
+   "src": {
+    "q:20181231": [
+     "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+     10,
+     "Inchartered Tonnage",
+     "16"
+    ],
+    "q:20190630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     10,
+     "Inchartered Tonnage",
+     "35"
+    ],
+    "q:20201231": [
+     "22ef3ebc-c92a-4d93-931e-21bf0939f2c5.pdf",
+     10,
+     "Inchartered Tonnage",
+     "44"
+    ],
+    "q:20190331": [
+     "a9a8d0e3-bc87-41a1-a5bd-92e06623db46.pdf",
+     12,
+     "Inchartered Tonnage",
+     "105"
+    ]
+   },
+   "latest": {
+    "q:20190331": "2020-06-08",
+    "q:20181231": "2020-02-17"
+   }
+  },
+  {
    "name": "Spot Days Share - Dry Bulk",
    "unit": "%",
    "kind": "flow",
@@ -3552,6 +3737,120 @@
      43,
      "Total Spot %",
      "87"
+    ]
+   }
+  },
+  {
+   "name": "Time Days Share - Dry Bulk",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 7.0,
+    "20190331": 8.0,
+    "20191231": 16.0,
+    "20200331": 10.0
+   },
+   "src": {
+    "q:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Dry Bulk Time %",
+     "10"
+    ],
+    "q:20190331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Dry Bulk Time %",
+     "08"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Dry Bulk Time %",
+     "16"
+    ],
+    "q:20181231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Dry Bulk Time %",
+     "07"
+    ]
+   }
+  },
+  {
+   "name": "Time Days Share - Tankers",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 15.0,
+    "20190331": 16.0,
+    "20191231": 29.0,
+    "20200331": 27.0
+   },
+   "src": {
+    "q:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Tankers Time %",
+     "27"
+    ],
+    "q:20190331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Tankers Time %",
+     "16"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Tankers Time %",
+     "29"
+    ],
+    "q:20181231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Tankers Time %",
+     "15"
+    ]
+   }
+  },
+  {
+   "name": "Time Days Share - Total Shipping",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 13.0,
+    "20190331": 13.0,
+    "20191231": 26.0,
+    "20200331": 22.0
+   },
+   "src": {
+    "q:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Total Time %",
+     "22"
+    ],
+    "q:20190331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     57,
+     "Total Time %",
+     "13"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Total Time %",
+     "26"
+    ],
+    "q:20181231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     43,
+     "Total Time %",
+     "13"
     ]
    }
   },
@@ -4070,6 +4369,104 @@
    }
   },
   {
+   "name": "Offshore PSV Fleet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 4.0
+   },
+   "q": {
+    "20191231": 4.0
+   },
+   "src": {
+    "y:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     49,
+     "Platform Supply Vessels (PSV) (As on 31st March 2020)",
+     "4"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     36,
+     "Platform Supply Vessels (PSV) (As on 31st December2019)",
+     "4"
+    ]
+   }
+  },
+  {
+   "name": "Offshore PSV/ROVSV Fleet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20200630": 9.0,
+    "20201231": 9.0
+   },
+   "src": {
+    "q:20200630": [
+     "065fc23f-4000-46bb-a3ce-7ec64c460955.pdf",
+     33,
+     "Platform Supply Vessels (PSV) / ROV Support Vessels (ROVSV) Fleet Count (As on 3",
+     "9"
+    ],
+    "q:20201231": [
+     "22ef3ebc-c92a-4d93-931e-21bf0939f2c5.pdf",
+     40,
+     "Platform Supply Vessels (PSV) / ROV Support Vessels (ROVSV) Fleet Count (As on 3",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "Offshore ROVSV Fleet Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 5.0
+   },
+   "q": {
+    "20191231": 5.0
+   },
+   "src": {
+    "y:20200331": [
+     "c39a929c-df9d-44f8-92bb-bdf1f2aa7abf.pdf",
+     49,
+     "Platform / ROV Support Vessels (ROVSV) (As on 31st March 2020)",
+     "5"
+    ],
+    "q:20191231": [
+     "fae3f86f-79f7-49a4-ab76-bee25d283ba4.pdf",
+     36,
+     "Platform / ROV Support Vessels (ROVSV) (As on 31st December2019)",
+     "5"
+    ]
+   }
+  },
+  {
+   "name": "Revenue Days - Offshore Logistics",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20181231": 1569.0,
+    "20191231": 1495.0
+   },
+   "src": {
+    "q:20191231": [
+     "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+     10,
+     "Offshore Logistics",
+     "1,495"
+    ],
+    "q:20181231": [
+     "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+     10,
+     "Offshore Logistics",
+     "1,569"
+    ]
+   }
+  },
+  {
    "name": "Customers Served (Shipping)",
    "unit": "count",
    "kind": "flow",
@@ -4176,7 +4573,107 @@
    }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - Crude Carriers (Shipping)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 72.0,
+   "as_printed": "72",
+   "page": 11,
+   "label": "Crude Carriers - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - Product Carriers (Shipping)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 57.0,
+   "as_printed": "57",
+   "page": 11,
+   "label": "Product Carriers - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - LPG Carriers (Shipping)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 94.0,
+   "as_printed": "94",
+   "page": 11,
+   "label": "LPG Carriers - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - Dry Bulk (Shipping)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 65.0,
+   "as_printed": "65",
+   "page": 11,
+   "label": "Dry Bulk - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - PSV (Offshore)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 93.0,
+   "as_printed": "93",
+   "page": 11,
+   "label": "PSV - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - ROVSV (Offshore)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 100.0,
+   "as_printed": "100",
+   "page": 11,
+   "label": "ROVSV - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - AHTSV (Offshore)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 96.0,
+   "as_printed": "96",
+   "page": 11,
+   "label": "AHTSV - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - MPSVV (Offshore)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 67.0,
+   "as_printed": "67",
+   "page": 11,
+   "label": "MPSVV - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  },
+  {
+   "doc": "05f22cd4-c3b3-43b7-a292-297090ce96ef.pdf",
+   "metric": "Operating Days Coverage - Jackup Rigs (Offshore)",
+   "unit": "%",
+   "period": "FY20",
+   "value": 93.0,
+   "as_printed": "93",
+   "page": 11,
+   "label": "Jackup Rigs - Extent of coverage of fleet's operating days (FY20)",
+   "why": "period ends 20200331, after the document date 2020-02-12"
+  }
+ ],
  "catalog": [
   {
    "kind": "ip",
@@ -4731,5 +5228,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }
