@@ -4993,54 +4993,6 @@
   },
   {
    "name": "Bank Customers",
-   "unit": "mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20210331": 26.0,
-    "20210630": 27.0,
-    "20220331": 32.7,
-    "20220630": 34.5,
-    "20230331": 41.2
-   },
-   "src": {
-    "q:20230331": [
-     "ed30fa5a-e9da-47f5-b3db-b9c653f1a668.pdf",
-     2,
-     "Customers",
-     "41.2"
-    ],
-    "q:20220331": [
-     "3f57063f-5e66-42f7-9056-a3e814cc055e.pdf",
-     7,
-     "Customers (In mn) As on",
-     "32.7"
-    ],
-    "q:20220630": [
-     "e8b98c6b-8d0f-4692-88cb-7f5215269ea0.pdf",
-     11,
-     "Customers (figures in grey are Jun 22 numbers)",
-     "34.5"
-    ],
-    "q:20210630": [
-     "32f7100d-4e7d-4d8d-b876-a7462ce4033a.pdf",
-     14,
-     "Customers as on 30th Jun, 2021",
-     "27"
-    ],
-    "q:20210331": [
-     "3f57063f-5e66-42f7-9056-a3e814cc055e.pdf",
-     7,
-     "Customers (In mn) As on",
-     "26.0"
-    ]
-   },
-   "latest": {
-    "q:20220331": "2023-04-29"
-   }
-  },
-  {
-   "name": "Bank Customers",
    "unit": "cr",
    "kind": "level",
    "y": {},
@@ -5235,6 +5187,57 @@
    "latest": {
     "y:20200331": "2021-08-25"
    }
+  },
+  {
+   "name": "Bank Customers",
+   "unit": "mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 26.0,
+    "20220331": 32.7,
+    "20220630": 34.5,
+    "20230331": 41.2
+   },
+   "src": {
+    "q:20230331": [
+     "ed30fa5a-e9da-47f5-b3db-b9c653f1a668.pdf",
+     2,
+     "Customers",
+     "41.2"
+    ],
+    "q:20220331": [
+     "3f57063f-5e66-42f7-9056-a3e814cc055e.pdf",
+     7,
+     "Customers (In mn) As on",
+     "32.7"
+    ],
+    "q:20220630": [
+     "e8b98c6b-8d0f-4692-88cb-7f5215269ea0.pdf",
+     11,
+     "Customers (figures in grey are Jun 22 numbers)",
+     "34.5"
+    ],
+    "q:20210331": [
+     "3f57063f-5e66-42f7-9056-a3e814cc055e.pdf",
+     7,
+     "Customers (In mn) As on",
+     "26.0"
+    ]
+   },
+   "latest": {
+    "q:20220331": "2023-04-29"
+   },
+   "fixed": [
+    [
+     "q:20210630",
+     27.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  & TDs below ` 5  cr, as % of total  deposits 92% [90%] Customers as on  30th Jun, 2021:  ~ 27 mn EOP SA EOP CA YoY % 109,7",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "CASA & TDs below ₹5 cr as % of Total Deposits",
@@ -6143,5 +6146,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

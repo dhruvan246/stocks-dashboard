@@ -392,59 +392,6 @@
    }
   },
   {
-   "name": "Renewable Energy Loan Asset",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {
-    "20230331": 27095.0,
-    "20240331": 38971.0,
-    "20260331": 75347.0
-   },
-   "q": {
-    "20241231": 52394.0,
-    "20260630": 78596.0,
-    "20260930": 86660.0
-   },
-   "src": {
-    "y:20260331": [
-     "007b36b5-d3f0-4c7b-8833-68e37223c1a0.pdf",
-     27,
-     "renewable energy loan asset to approx. ₹75,347 crore",
-     "75,347"
-    ],
-    "q:20260630": [
-     "9c3dda56-5bd1-41c6-b1c7-d706e9cb2a3e.pdf",
-     2,
-     "renewable energy portfolio... growing to ₹78,596 crore",
-     "78,596"
-    ],
-    "q:20241231": [
-     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
-     16,
-     "Renewables incl Large Hydro outstanding loans as at 31st December 2024",
-     "52,394"
-    ],
-    "y:20240331": [
-     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
-     16,
-     "Renewables incl Large Hydro outstanding loans as at 31st March 2024",
-     "38,971"
-    ],
-    "y:20230331": [
-     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
-     16,
-     "Renewables incl Large Hydro outstanding loans as at 31st March 2023",
-     "27,095"
-    ],
-    "q:20260930": [
-     "0877f2a9-705a-4ca5-84bc-7eff5a027666.pdf",
-     25,
-     "RENEWABLE PORTFOLIO",
-     "86,660"
-    ]
-   }
-  },
-  {
    "name": "Capital Adequacy Ratio (CRAR)",
    "unit": "%",
    "kind": "level",
@@ -579,52 +526,6 @@
      15,
      "Generation disbursements, Q3 FY25",
      "8,834"
-    ]
-   }
-  },
-  {
-   "name": "Loan Book (Standalone)",
-   "unit": "Lakh Cr",
-   "kind": "level",
-   "y": {
-    "20260331": 5.84
-   },
-   "q": {
-    "20220630": 3.88,
-    "20230630": 4.54,
-    "20260630": 5.9,
-    "20260930": 6.17
-   },
-   "src": {
-    "q:20260630": [
-     "9c3dda56-5bd1-41c6-b1c7-d706e9cb2a3e.pdf",
-     2,
-     "REC's standalone loan book stood at ₹5.90 lakh crore as on June 30, 2026",
-     "5.90"
-    ],
-    "y:20260331": [
-     "5f0a0d14-3c62-4f46-852d-eaf3ac82d7de.pdf",
-     36,
-     "the loan book is at an all-time high of ₹5.84 lakh crore as on March 31, 2026",
-     "5.84"
-    ],
-    "q:20230630": [
-     "9d8fe82c-4bd6-48f8-84bf-3ab0e729f8dd.pdf",
-     11,
-     "loan book ... has increased by 17% to ₹4.54 lakh crore",
-     "4.54"
-    ],
-    "q:20220630": [
-     "9d8fe82c-4bd6-48f8-84bf-3ab0e729f8dd.pdf",
-     11,
-     "as against ₹3.88 lakh crore on June 30, 2022",
-     "3.88"
-    ],
-    "q:20260930": [
-     "0877f2a9-705a-4ca5-84bc-7eff5a027666.pdf",
-     25,
-     "LOAN BOOK",
-     "6.17"
     ]
    }
   },
@@ -805,6 +706,55 @@
    }
   },
   {
+   "name": "Loan Book (Standalone)",
+   "unit": "Lakh Cr",
+   "kind": "level",
+   "y": {
+    "20260331": 5.84
+   },
+   "q": {
+    "20220630": 3.88,
+    "20230630": 4.54,
+    "20260930": 6.17
+   },
+   "src": {
+    "y:20260331": [
+     "5f0a0d14-3c62-4f46-852d-eaf3ac82d7de.pdf",
+     36,
+     "the loan book is at an all-time high of ₹5.84 lakh crore as on March 31, 2026",
+     "5.84"
+    ],
+    "q:20230630": [
+     "9d8fe82c-4bd6-48f8-84bf-3ab0e729f8dd.pdf",
+     11,
+     "loan book ... has increased by 17% to ₹4.54 lakh crore",
+     "4.54"
+    ],
+    "q:20220630": [
+     "9d8fe82c-4bd6-48f8-84bf-3ab0e729f8dd.pdf",
+     11,
+     "as against ₹3.88 lakh crore on June 30, 2022",
+     "3.88"
+    ],
+    "q:20260930": [
+     "0877f2a9-705a-4ca5-84bc-7eff5a027666.pdf",
+     25,
+     "LOAN BOOK",
+     "6.17"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     5.9,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  2026, underscoring its robust earnings performance.  REC's standalone loan book stood at ~5.90 lakh crore as on June 30, 2",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Distribution Disbursements",
    "unit": "₹ Cr",
    "kind": "flow",
@@ -930,6 +880,64 @@
      "67.40"
     ]
    }
+  },
+  {
+   "name": "Renewable Energy Loan Asset",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {
+    "20230331": 27095.0,
+    "20240331": 38971.0
+   },
+   "q": {
+    "20241231": 52394.0
+   },
+   "src": {
+    "q:20241231": [
+     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
+     16,
+     "Renewables incl Large Hydro outstanding loans as at 31st December 2024",
+     "52,394"
+    ],
+    "y:20240331": [
+     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
+     16,
+     "Renewables incl Large Hydro outstanding loans as at 31st March 2024",
+     "38,971"
+    ],
+    "y:20230331": [
+     "98af09c2-8c66-4c27-a51d-79dee2d80581.pdf",
+     16,
+     "Renewables incl Large Hydro outstanding loans as at 31st March 2023",
+     "27,095"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     75347.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: ble rigor. On the Environmental front, REC has scaled  our renewable energy loan asset to approx. ₹75,347 crore, a 30% year",
+     "2026-10-31"
+    ],
+    [
+     "q:20260930",
+     86660.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  AT 6.17 LAKH CRORE ON  30.09.2026  •  ONE OF THE LARGEST RENEW ABLE ENERGY PORTFOLIO A T ~ 86,660 CRORE;  GROWN BY 27% ON ",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     78596.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: , 2026.  The renewable energy portfolio continued to witness robust traction, growing to  ~78,596 crore, constituting 13.32",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Renewable Energy Loan Book Share",
@@ -1304,23 +1312,6 @@
    }
   },
   {
-   "name": "Infrastructure & Logistics Loan Portfolio",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 59289.0
-   },
-   "src": {
-    "q:20260630": [
-     "9c3dda56-5bd1-41c6-b1c7-d706e9cb2a3e.pdf",
-     2,
-     "infrastructure and logistic portfolio has grown to ₹59,289 crore",
-     "59,289"
-    ]
-   }
-  },
-  {
    "name": "Interest Spread",
    "unit": "%",
    "kind": "level",
@@ -1355,23 +1346,6 @@
    }
   },
   {
-   "name": "Power Sector Disbursements",
-   "unit": "₹ Cr",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260930": 53541.0
-   },
-   "src": {
-    "q:20260930": [
-     "0877f2a9-705a-4ca5-84bc-7eff5a027666.pdf",
-     25,
-     "HIGHEST DISBURSEMENT (AMONG PEERS) IN POWER SECTOR",
-     "53,541"
-    ]
-   }
-  },
-  {
    "name": "RDSS Sanctioned Projects (as Nodal Agency, Cumulative)",
    "unit": "₹ Cr",
    "kind": "level",
@@ -1402,23 +1376,6 @@
      13,
      "security cover for secured non-convertible debt securities (listed and unlisted)",
      "1.55"
-    ]
-   }
-  },
-  {
-   "name": "Stage-II Loan Assets",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260930": 3235.0
-   },
-   "src": {
-    "q:20260930": [
-     "0877f2a9-705a-4ca5-84bc-7eff5a027666.pdf",
-     26,
-     "Stage-II loan assets",
-     "3,235"
     ]
    }
   },
@@ -1788,5 +1745,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

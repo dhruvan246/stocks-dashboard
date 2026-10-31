@@ -4914,131 +4914,6 @@
    }
   },
   {
-   "name": "Aircraft Movements - Delhi Airport",
-   "unit": "count",
-   "kind": "flow",
-   "y": {
-    "20240331": 442488.0,
-    "20250331": 468822.0
-   },
-   "q": {
-    "20260630": 120900.0
-   },
-   "src": {
-    "q:20260630": [
-     "8ff3ef94-99aa-47c8-a826-a2c33ae79689.pdf",
-     28,
-     "Passenger ATMs",
-     "120,900"
-    ],
-    "y:20240331": [
-     "7f329cc3-3ab0-45e5-812e-db86e6fbac73.pdf",
-     22,
-     "IGI Airport handled 442,488 Air Traffic Movements (ATMs)",
-     "442,488"
-    ],
-    "y:20250331": [
-     "fc6220f6-53d2-4dc8-84c6-5997675fba2d.pdf",
-     25,
-     "IGIA managed 468,822 Air Traffic Movements",
-     "468,822"
-    ]
-   }
-  },
-  {
-   "name": "Market Share (Goa System Traffic) - Goa Airport",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 40.0
-   },
-   "q": {
-    "20240630": 41.0,
-    "20260331": 49.0
-   },
-   "src": {
-    "q:20260331": [
-     "cf244e3e-2715-4126-b471-7be55a5e9405.pdf",
-     32,
-     "Captured market share (of Goa system traffic)",
-     "49"
-    ],
-    "y:20240331": [
-     "2297d62a-cd0e-496d-a9b6-f0f01cd47577.pdf",
-     33,
-     "market share",
-     "40"
-    ],
-    "q:20240630": [
-     "f3fd8689-2207-45b0-8715-93b38caafe5e.pdf",
-     31,
-     "market share (of Goa system traffic)",
-     "41"
-    ]
-   },
-   "latest": {
-    "y:20240331": "2024-08-24"
-   },
-   "fixed": [
-    [
-     "q:20240930",
-     40.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Achieved ~40% market share (of Goa system traffic) in Q2FY25",
-     "2026-10-31"
-    ],
-    [
-     "q:20250331",
-     40.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Maintained ~40% market share (of Goa system traffic) in Q4FY25",
-     "2026-10-31"
-    ],
-    [
-     "y:20250331",
-     40.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: Maintained ~40% market share (of Goa system traffic) in Q4FY25",
-     "2026-10-31"
-    ],
-    [
-     "q:20250630",
-     43.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Captured ~43% market share (of Goa system traffic) in Q1FY26",
-     "2026-10-31"
-    ],
-    [
-     "q:20250930",
-     46.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Captured ~46% market share (of Goa system traffic) in Q2FY26",
-     "2026-10-31"
-    ],
-    [
-     "q:20251231",
-     47.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Captured ~47% market share (of Goa system traffic) in Q3FY26",
-     "2026-10-31"
-    ],
-    [
-     "q:20241231",
-     39.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Achieved ~39% market share (of Goa system traffic) in Q3FY25",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Pax Traffic - Goa (Mopa) Airport",
    "unit": "mn",
    "kind": "flow",
@@ -5071,6 +4946,40 @@
    "latest": {
     "q:20230331": "2023-08-14"
    }
+  },
+  {
+   "name": "Aircraft Movements - Delhi Airport",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20240331": 442488.0,
+    "20250331": 468822.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "7f329cc3-3ab0-45e5-812e-db86e6fbac73.pdf",
+     22,
+     "IGI Airport handled 442,488 Air Traffic Movements (ATMs)",
+     "442,488"
+    ],
+    "y:20250331": [
+     "fc6220f6-53d2-4dc8-84c6-5997675fba2d.pdf",
+     25,
+     "IGIA managed 468,822 Air Traffic Movements",
+     "468,822"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     120900.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: tic: 89; International 70 ▪ Handled highest ever: • Q1 pax in Q1FY27 • Passenger ATMs1 of ~120,900 in Q1FY27 • Cargo volume",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Aircraft Movements - Hyderabad Airport (Total, Annual)",
@@ -5131,30 +5040,6 @@
    }
   },
   {
-   "name": "Cargo Terminal Capacity - Hyderabad Airport",
-   "unit": "MT",
-   "kind": "level",
-   "y": {
-    "20250331": 150000.0,
-    "20260331": 200000.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     17,
-     "bringing the current capacity to approximately MTs (doc period)",
-     "200,000"
-    ],
-    "y:20250331": [
-     "fc6220f6-53d2-4dc8-84c6-5997675fba2d.pdf",
-     27,
-     "current cargo operations capacity of 150,000 MT",
-     "150,000"
-    ]
-   }
-  },
-  {
    "name": "Cargo Volume - Hyderabad Airport (Annual)",
    "unit": "MT",
    "kind": "flow",
@@ -5187,30 +5072,6 @@
      "2026-10-31"
     ]
    ]
-  },
-  {
-   "name": "Domestic-to-International Transfer Passengers - Delhi Airport",
-   "unit": "Mn",
-   "kind": "flow",
-   "y": {
-    "20250331": 4.1,
-    "20260331": 7.5
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     16,
-     "up from",
-     "4.1"
-    ],
-    "y:20260331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     16,
-     "handled about domestic-to-international transfer passengers",
-     "7.5"
-    ]
-   }
   },
   {
    "name": "International Pax Traffic Share",
@@ -5336,30 +5197,6 @@
    }
   },
   {
-   "name": "Transfer Passengers Share of Total - Delhi Airport",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 24.0,
-    "20260331": 25.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     16,
-     "against during last year",
-     "24"
-    ],
-    "y:20260331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     16,
-     "transfer traffic rose to nearly of overall passenger volumes",
-     "25"
-    ]
-   }
-  },
-  {
    "name": "Aircraft Movements - Delhi Airport (Total, Annual)",
    "unit": "'000",
    "kind": "flow",
@@ -5411,21 +5248,31 @@
    }
   },
   {
-   "name": "Cargo Volume - Delhi Airport",
-   "unit": "kT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20260630": 310.6
+   "name": "Cargo Terminal Capacity - Hyderabad Airport",
+   "unit": "MT",
+   "kind": "level",
+   "y": {
+    "20250331": 150000.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "8ff3ef94-99aa-47c8-a826-a2c33ae79689.pdf",
-     28,
-     "Cargo volumes",
-     "310.6"
+    "y:20250331": [
+     "fc6220f6-53d2-4dc8-84c6-5997675fba2d.pdf",
+     27,
+     "current cargo operations capacity of 150,000 MT",
+     "150,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     200000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: ual cargo handling capacity has increased by 50,000 MTs, bringing the current capacity to approximately 200,000 MTs. Upon c",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Cargo Volume - Hyderabad Airport",
@@ -5460,6 +5307,33 @@
      "23"
     ]
    }
+  },
+  {
+   "name": "Domestic-to-International Transfer Passengers - Delhi Airport",
+   "unit": "Mn",
+   "kind": "flow",
+   "y": {
+    "20250331": 4.1
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
+     16,
+     "up from",
+     "4.1"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     7.5,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: with Delhi identified as the first implementation hub. In FY 2025-26, the airport handled about 7.5 Mn domestic-to- interna",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Indian Aviation Market Share - Delhi Airport",
@@ -5568,6 +5442,33 @@
      "34"
     ]
    }
+  },
+  {
+   "name": "Transfer Passengers Share of Total - Delhi Airport",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 24.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
+     16,
+     "against during last year",
+     "24"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     25.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: rnational transfer passengers, up from 4.1 Mn in FY 2024-25, and transfer traffic rose to nearly 25% of overall passenger v",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],

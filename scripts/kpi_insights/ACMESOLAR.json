@@ -873,31 +873,6 @@
   },
   {
    "name": "BESS Commissioned Capacity",
-   "unit": "GWh",
-   "kind": "level",
-   "y": {
-    "20260331": 3.6
-   },
-   "q": {
-    "20260630": 3.62
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     19,
-     "Operational BESS capacity",
-     "3.62"
-    ],
-    "y:20260331": [
-     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
-     47,
-     "Commissioned BESS",
-     "3.6"
-    ]
-   }
-  },
-  {
-   "name": "BESS Commissioned Capacity",
    "unit": "MWh",
    "kind": "level",
    "y": {
@@ -946,55 +921,31 @@
    }
   },
   {
-   "name": "BESS Depth of Discharge (DoD)",
-   "unit": "%",
+   "name": "BESS Commissioned Capacity",
+   "unit": "GWh",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 93.0
+   "y": {
+    "20260331": 3.6
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     18,
-     "Depth of Discharge - DoD",
-     "93"
+    "y:20260331": [
+     "1a9755be-4053-438a-aa9c-3caee6971658.pdf",
+     47,
+     "Commissioned BESS",
+     "3.6"
     ]
-   }
-  },
-  {
-   "name": "BESS Round Trip Efficiency (RTE)",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 89.0
    },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     18,
-     "Round Trip Efficiency - RTE",
-     "89"
+   "fixed": [
+    [
+     "q:20260630",
+     3.62,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: term contracts with INR 1,400+ Cr revenue lock-in for partial sale of FY27  BESS capacity ~3.62  GWh  Operational 10+  GWh ",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "BESS State of Health (SoH)",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 99.9
-   },
-   "src": {
-    "q:20260630": [
-     "bec2f929-44f7-4a48-8169-4868dff771f1.pdf",
-     18,
-     "State of Health - SoH",
-     "99.9"
-    ]
-   }
+   ]
   },
   {
    "name": "Operational Capacity Added During Year",
@@ -1171,5 +1122,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

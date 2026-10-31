@@ -1155,82 +1155,6 @@
    }
   },
   {
-   "name": "Total Employee Strength",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 584.0
-   },
-   "q": {
-    "20231231": 516.0,
-    "20250930": 1700.0
-   },
-   "src": {
-    "q:20250930": [
-     "d41f06fd-0ecd-4311-847e-7827d35512ad.pdf",
-     11,
-     "employees across JFSL group (doc period)",
-     "1,700"
-    ],
-    "y:20240331": [
-     "1a250892-478f-4995-b512-bd6ebd8af20e.pdf",
-     18,
-     "Total Employees (Consolidated, doc period)",
-     "584"
-    ],
-    "q:20231231": [
-     "46e64fac-d2c6-4b4d-ac0c-6c306c66efe1.pdf",
-     12,
-     "Total no of employees as at 31st Dec, 2023",
-     "516"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     1000.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: 1,000+ Total employee strength",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
-   "name": "AMC Institutional Investors",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 90.0,
-    "20250930": 150.0
-   },
-   "src": {
-    "q:20250930": [
-     "d41f06fd-0ecd-4311-847e-7827d35512ad.pdf",
-     15,
-     "institutional investors (doc period)",
-     "150"
-    ],
-    "q:20250630": [
-     "cbe4718c-43a8-4dcc-a97c-cbb795673925.pdf",
-     15,
-     "institutional investors (doc period)",
-     "90"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20260331",
-     400.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: 400+ institutional investors (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "AMC Number of Funds",
    "unit": "count",
    "kind": "level",
@@ -1253,40 +1177,6 @@
      "9"
     ]
    }
-  },
-  {
-   "name": "AMC Retail Investors Onboarded",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 67000.0,
-    "20250930": 635000.0
-   },
-   "src": {
-    "q:20250930": [
-     "d41f06fd-0ecd-4311-847e-7827d35512ad.pdf",
-     15,
-     "retail investors (doc period)",
-     "635,000"
-    ],
-    "q:20250630": [
-     "cbe4718c-43a8-4dcc-a97c-cbb795673925.pdf",
-     15,
-     "individual investors (doc period)",
-     "67,000"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20251231",
-     1000000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: 1,000,000+ retail investors (doc period)",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "D2C Insurance Plans",
@@ -1312,6 +1202,49 @@
      "65"
     ]
    }
+  },
+  {
+   "name": "Total Employee Strength",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 584.0
+   },
+   "q": {
+    "20231231": 516.0
+   },
+   "src": {
+    "y:20240331": [
+     "1a250892-478f-4995-b512-bd6ebd8af20e.pdf",
+     18,
+     "Total Employees (Consolidated, doc period)",
+     "584"
+    ],
+    "q:20231231": [
+     "46e64fac-d2c6-4b4d-ac0c-6c306c66efe1.pdf",
+     12,
+     "Total no of employees as at 31st Dec, 2023",
+     "516"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     1000.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: 1,000+ Total employee strength",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     1700.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: 10 4. People: Building next-gen talent with digital DNA 1,700+ employees across JFSL group • Young and dynamic team with a ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "AMC Digital Distribution Partners",

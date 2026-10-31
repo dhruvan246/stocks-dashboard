@@ -3687,44 +3687,6 @@
    }
   },
   {
-   "name": "Average Customers per Loan Officer (standalone)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 238.0,
-    "20250930": 200.0,
-    "20251231": 184.0,
-    "20260331": 200.0
-   },
-   "src": {
-    "q:20250630": [
-     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
-     12,
-     "Average customers per Loan Officer*",
-     "238"
-    ],
-    "q:20250930": [
-     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
-     12,
-     "Average customers per Loan Officer*",
-     "200"
-    ],
-    "q:20251231": [
-     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
-     12,
-     "Average customers per Loan Officer*",
-     "184"
-    ],
-    "q:20260331": [
-     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
-     12,
-     "Average customers per Loan Officer*",
-     "200"
-    ]
-   }
-  },
-  {
    "name": "Customer Addition",
    "unit": "L",
    "kind": "flow",
@@ -3754,6 +3716,48 @@
      "4.4"
     ]
    }
+  },
+  {
+   "name": "Average Customers per Loan Officer (standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 238.0,
+    "20251231": 184.0
+   },
+   "src": {
+    "q:20250630": [
+     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
+     12,
+     "Average customers per Loan Officer*",
+     "238"
+    ],
+    "q:20251231": [
+     "d73e5c11-4c5b-4a32-95a5-9a7d197a9e48.pdf",
+     12,
+     "Average customers per Loan Officer*",
+     "184"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     200.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: branch consolidation  Optimized reporting span and reporting layers  LO productivity at ~200 customers. Expect further  i",
+     "2026-10-31"
+    ],
+    [
+     "q:20260331",
+     200.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: branch consolidation  Optimized reporting span and reporting layers  LO productivity at ~200 customers. Expect further  i",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Recovery Associates",
@@ -3815,5 +3819,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

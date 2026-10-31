@@ -483,41 +483,6 @@
    }
   },
   {
-   "name": "Total Customers",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 900.0
-   },
-   "q": {
-    "20230331": 846.0,
-    "20250630": 900.0
-   },
-   "src": {
-    "y:20250331": [
-     "472a89bc-52e9-4b31-9035-fc33da1e21c6.pdf",
-     18,
-     "Total Customers, as on March 31st 2025",
-     "900"
-    ],
-    "q:20250630": [
-     "41c36624-345e-4d77-bdc3-1a032dc9e2fb.pdf",
-     12,
-     "Total Customers (doc period)",
-     "900"
-    ],
-    "q:20230331": [
-     "b91f6ac1-bc18-4262-a234-59ff196177f9.pdf",
-     23,
-     "Active Customers as on March 23",
-     "846"
-    ]
-   },
-   "latest": {
-    "q:20230331": "2023-10-31"
-   }
-  },
-  {
    "name": "Sales Offices",
    "unit": "count",
    "kind": "level",
@@ -558,6 +523,44 @@
      "20,000"
     ]
    }
+  },
+  {
+   "name": "Total Customers",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 846.0
+   },
+   "src": {
+    "q:20230331": [
+     "b91f6ac1-bc18-4262-a234-59ff196177f9.pdf",
+     23,
+     "Active Customers as on March 23",
+     "846"
+    ]
+   },
+   "latest": {
+    "q:20230331": "2023-10-31"
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     900.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: Verticals 3 4 3 Factories R&D Centres Sales Offices 4 3 5 Total Customers Total Employees 900+ 1,498 ",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     900.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: Verticals 3 4 3 Factories R&D Centres Sales Offices 4 3 5 Total Customers Total Employees 900+ 1,498 As on March 31st  2025",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -917,5 +920,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

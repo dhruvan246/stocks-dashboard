@@ -1121,66 +1121,6 @@
    ]
   },
   {
-   "name": "Bid Pipeline (Inquiries under Negotiation)",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {
-    "20260331": 23000.0
-   },
-   "q": {
-    "20240630": 17500.0,
-    "20240930": 18500.0,
-    "20250630": 18000.0,
-    "20250930": 18700.0,
-    "20251231": 16500.0,
-    "20260630": 23000.0
-   },
-   "src": {
-    "q:20260630": [
-     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
-     10,
-     "Inquiries under Negotiation (doc period)",
-     "23,000"
-    ],
-    "y:20260331": [
-     "e18fb6fb-e0dc-47d4-bb13-950610079466.pdf",
-     14,
-     "Inquiries under Negotiation (doc period)",
-     "23,000"
-    ],
-    "q:20251231": [
-     "2ed369ed-da65-449e-89a0-97faa6b11254.pdf",
-     10,
-     "Inquiries under Negotiation (doc period)",
-     "16,500"
-    ],
-    "q:20250930": [
-     "d92a657d-220f-42bf-8c45-18160b14a078.pdf",
-     11,
-     "Inquiries under Negotiation (doc period)",
-     "18,700"
-    ],
-    "q:20250630": [
-     "247b50e7-b0c4-4c6b-b580-cf04a5714d56.pdf",
-     10,
-     "Inquiries under Negotiation (doc period)",
-     "18,000"
-    ],
-    "q:20240630": [
-     "122ff885-7a6d-487c-8e24-717581bbea03.pdf",
-     10,
-     "Inquiries under Negotiation",
-     "17,500"
-    ],
-    "q:20240930": [
-     "b074122e-2221-4222-a36c-3104e5c2d42c.pdf",
-     11,
-     "Inquiries under Negotiation",
-     "18,500"
-    ]
-   }
-  },
-  {
    "name": "Transformer Sales Volume",
    "unit": "MVA",
    "kind": "flow",
@@ -1289,6 +1229,71 @@
    }
   },
   {
+   "name": "Bid Pipeline (Inquiries under Negotiation)",
+   "unit": "INR Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 17500.0,
+    "20240930": 18500.0,
+    "20260630": 23000.0
+   },
+   "src": {
+    "q:20260630": [
+     "1650f0ea-1a86-4a60-9b8a-600e4fc8f637.pdf",
+     10,
+     "Inquiries under Negotiation (doc period)",
+     "23,000"
+    ],
+    "q:20240630": [
+     "122ff885-7a6d-487c-8e24-717581bbea03.pdf",
+     10,
+     "Inquiries under Negotiation",
+     "17,500"
+    ],
+    "q:20240930": [
+     "b074122e-2221-4222-a36c-3104e5c2d42c.pdf",
+     11,
+     "Inquiries under Negotiation",
+     "18,500"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     23000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: Key Operational Highlights – Q4 FY26 & FY26 ₹23,000+ crore Inquiries under Negotiation ₹5,005 crore Unexecuted Order Book –",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     16500.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: Key Operational Highlights – Q3 9 ₹16,500+ crore Inquiries under Negotiation ₹5,450 crore Unexecuted Order Book Exceptional",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     18700.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: Key Operational Highlights – Q2 10 ₹18,700+ crore Inquiries under Negotiation ₹5,472 crore Unexecuted Order Book Operationa",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     18000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: Key Operational Highlights – Q1 9 ₹18,000+ crore Inquiries under Negotiation ₹5,246 crore Unexecuted Order Book Exceptional",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "New Export Orders",
    "unit": "INR Cr",
    "kind": "flow",
@@ -1386,41 +1391,6 @@
      null,
      "drop_y",
      "Qualified print in src label: approximately 1200 employees (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
-   "name": "Installed Manufacturing Capacity",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20250331": 40000.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "72d122a8-cdb5-40df-9ab3-8a2b0196ed42.pdf",
-     4,
-     "installed capacity across units (doc period)",
-     "40,000"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20260331",
-     75000.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: installed capacity across units of ~75,000MVA (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20260630",
-     75000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: manufacturing capacity of 75,000+ MVA (doc period)",
      "2026-10-31"
     ]
    ]

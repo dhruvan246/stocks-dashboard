@@ -291,38 +291,6 @@
    }
   },
   {
-   "name": "Online Exam Categories",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 16.0
-   },
-   "q": {
-    "20251231": 16.0,
-    "20260630": 16.0
-   },
-   "src": {
-    "q:20260630": [
-     "e0de1043-69e4-40c3-9526-fb4a15186793.pdf",
-     3,
-     "Online Exam Categories",
-     "16"
-    ],
-    "y:20260331": [
-     "90dcfca8-ae7f-4918-a2ab-806c4d42b0c5.pdf",
-     3,
-     "Education Categories: 16",
-     "16"
-    ],
-    "q:20251231": [
-     "a759a619-3043-4c3e-9fab-b11340a0ca17.pdf",
-     3,
-     "Number of Categories: 16 Categories",
-     "16"
-    ]
-   }
-  },
-  {
    "name": "Average Engagement Time",
    "unit": "minutes",
    "kind": "level",
@@ -357,48 +325,6 @@
    ]
   },
   {
-   "name": "Daily Active Users",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 3.5,
-    "20260630": 4.03
-   },
-   "src": {
-    "q:20260630": [
-     "e0de1043-69e4-40c3-9526-fb4a15186793.pdf",
-     3,
-     "Daily Active Users",
-     "4.03"
-    ],
-    "q:20250930": [
-     "b0cdcb48-b08e-4821-b563-090af9a60b47.pdf",
-     3,
-     "Daily Average User: 3.5 Mn",
-     "3.5"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20260331",
-     3.3,
-     null,
-     "drop_y",
-     "Qualified print in src label: Daily Active Users: 3.3 Mn+",
-     "2026-10-31"
-    ],
-    [
-     "q:20251231",
-     3.4,
-     null,
-     "drop_q",
-     "Qualified print in src label: Daily Average User: 3.4 Mn+",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Employees",
    "unit": "count",
    "kind": "level",
@@ -422,6 +348,41 @@
      "18,977"
     ]
    }
+  },
+  {
+   "name": "Online Exam Categories",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 16.0
+   },
+   "q": {
+    "20251231": 16.0
+   },
+   "src": {
+    "y:20260331": [
+     "90dcfca8-ae7f-4918-a2ab-806c4d42b0c5.pdf",
+     3,
+     "Education Categories: 16",
+     "16"
+    ],
+    "q:20251231": [
+     "a759a619-3043-4c3e-9fab-b11340a0ca17.pdf",
+     3,
+     "Number of Categories: 16 Categories",
+     "16"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     16.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  performance was  impacted by the NEET UG re-examination cycle  Online  Exam  Categories  16+  Offline Centres  366  Facult",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Online K-12 and Early Learning Enrollments",
@@ -650,28 +611,44 @@
    }
   },
   {
-   "name": "App Downloads",
+   "name": "Daily Active Users",
    "unit": "Mn",
    "kind": "level",
    "y": {},
    "q": {
-    "20260630": 97.0
+    "20250930": 3.5
    },
    "src": {
-    "q:20260630": [
-     "e0de1043-69e4-40c3-9526-fb4a15186793.pdf",
+    "q:20250930": [
+     "b0cdcb48-b08e-4821-b563-090af9a60b47.pdf",
      3,
-     "App Downloads",
-     "97"
+     "Daily Average User: 3.5 Mn",
+     "3.5"
     ]
    },
    "fixed": [
     [
      "y:20260331",
-     89.4,
+     3.3,
      null,
      "drop_y",
-     "Qualified print in src label: App Downloads: 89.4 Mn+",
+     "Qualified print in src label: Daily Active Users: 3.3 Mn+",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     3.4,
+     null,
+     "drop_q",
+     "Qualified print in src label: Daily Average User: 3.4 Mn+",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     4.03,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: 16+  Offline Centres  366  Faculty Members  7,268  Employees  19,567  Daily Active Users  4.03 Mn+, up 26% YoY  App Downloa",
      "2026-10-31"
     ]
    ]

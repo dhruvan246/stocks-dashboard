@@ -381,37 +381,6 @@
    }
   },
   {
-   "name": "Order Inflow",
-   "unit": "₹ Crore",
-   "kind": "flow",
-   "y": {
-    "20240331": 35046.0,
-    "20250331": 18715.0,
-    "20260331": 30045.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "86dbcf2a-6282-46a0-af84-c3e8db627020.pdf",
-     35,
-     "Orders received during the year",
-     "30,045"
-    ],
-    "y:20250331": [
-     "738702e6-6e61-4690-b85a-4cc6dca3f74c.pdf",
-     50,
-     "Orders received during the year",
-     "18,715"
-    ],
-    "y:20240331": [
-     "84ee8750-2309-4fd7-98eb-3d60ca6ecfc6.pdf",
-     32,
-     "Order inflow booked during the year",
-     "35,046"
-    ]
-   }
-  },
-  {
    "name": "Patents Granted",
    "unit": "count",
    "kind": "flow",
@@ -472,6 +441,40 @@
      "208"
     ]
    }
+  },
+  {
+   "name": "Order Inflow",
+   "unit": "₹ Crore",
+   "kind": "flow",
+   "y": {
+    "20240331": 35046.0,
+    "20260331": 30045.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "86dbcf2a-6282-46a0-af84-c3e8db627020.pdf",
+     35,
+     "Orders received during the year",
+     "30,045"
+    ],
+    "y:20240331": [
+     "84ee8750-2309-4fd7-98eb-3d60ca6ecfc6.pdf",
+     32,
+     "Order inflow booked during the year",
+     "35,046"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     18715.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: n Training  Simulator, among others. During the year, your Company received orders worth  about ` 18,715 Crore. Major order",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "R&D Team Size",
@@ -896,5 +899,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-04"
+ "updated": "2026-10-31"
 }

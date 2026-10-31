@@ -2935,44 +2935,6 @@
    }
   },
   {
-   "name": "Domestic Field Force",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 15000.0,
-    "20240331": 16000.0,
-    "20250331": 18000.0,
-    "20260331": 18500.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "f52efb65-7205-4441-8091-ac2e8c35dbe9.pdf",
-     16,
-     "Mar'26 Field force",
-     "18,500"
-    ],
-    "y:20250331": [
-     "fa7f58c8-bb30-43c8-8184-df124142ee0b.pdf",
-     17,
-     "Mar'25 Field force",
-     "18,000"
-    ],
-    "y:20240331": [
-     "8f508c34-1b16-40d2-b8e9-55cea708bdcf.pdf",
-     17,
-     "Mar'24 Field force***",
-     "16,000"
-    ],
-    "y:20230331": [
-     "607a1034-9279-4884-8e27-1a65237b541b.pdf",
-     3,
-     "Total field force of c. 15,000* (doc period)",
-     "15,000"
-    ]
-   }
-  },
-  {
    "name": "New Products Launched (US)",
    "unit": "count",
    "kind": "flow",
@@ -3103,6 +3065,48 @@
      "11"
     ]
    }
+  },
+  {
+   "name": "Domestic Field Force",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 15000.0,
+    "20250331": 18000.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "fa7f58c8-bb30-43c8-8184-df124142ee0b.pdf",
+     17,
+     "Mar'25 Field force",
+     "18,000"
+    ],
+    "y:20230331": [
+     "607a1034-9279-4884-8e27-1a65237b541b.pdf",
+     3,
+     "Total field force of c. 15,000* (doc period)",
+     "15,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     18500.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: umer Healthcare  Revenue CAGR FY21-26 Growth 54/22 Brand families1 worth  INR 50/100 Cr+  18,500+ Mar’26 Field force2 INR  ",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     16000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: % Consumer Healthcare  Revenue CAGR FY21-24 Growth 23 Brand families* worth  INR 100 Cr+  16,000+ Mar’24 Field force*** INR",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Manufacturing Facilities Count",

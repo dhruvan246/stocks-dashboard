@@ -1183,54 +1183,6 @@
    }
   },
   {
-   "name": "Cumulative E-Buses Deployed",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 3600.0,
-    "20260331": 3815.0
-   },
-   "src": {
-    "q:20260331": [
-     "de2b8a83-d95f-4c72-a6b8-011f36cd4ecc.pdf",
-     17,
-     "TMSCML cumulative E-buses deployed (doc period)",
-     "3815"
-    ],
-    "q:20251231": [
-     "8f6f6fda-20e3-4603-a325-7b9d7de97051.pdf",
-     17,
-     "e buses deployed (doc period)",
-     "3600"
-    ]
-   }
-  },
-  {
-   "name": "Cumulative Green Kms (E-buses)",
-   "unit": "Cr km",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 47.0,
-    "20260331": 53.0
-   },
-   "src": {
-    "q:20260331": [
-     "de2b8a83-d95f-4c72-a6b8-011f36cd4ecc.pdf",
-     17,
-     "Green Kms since inception (doc period)",
-     "53"
-    ],
-    "q:20251231": [
-     "8f6f6fda-20e3-4603-a325-7b9d7de97051.pdf",
-     17,
-     "cumulative distance of 47 Crore Kms (doc period)",
-     "47"
-    ]
-   }
-  },
-  {
    "name": "Domestic Retail Volume - Total CV",
    "unit": "units",
    "kind": "flow",
@@ -1299,30 +1251,6 @@
      219,
      "Flexi",
      "16,581"
-    ]
-   }
-  },
-  {
-   "name": "Government Bus Order Book",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 6000.0,
-    "20260331": 5000.0
-   },
-   "src": {
-    "q:20260331": [
-     "de2b8a83-d95f-4c72-a6b8-011f36cd4ecc.pdf",
-     17,
-     "Government business order book (doc period)",
-     "5,000"
-    ],
-    "q:20251231": [
-     "8f6f6fda-20e3-4603-a325-7b9d7de97051.pdf",
-     16,
-     "government order book (MSRTC, GSRTC, NWKSRTC) (doc period)",
-     "6,000"
     ]
    }
   },
@@ -1543,38 +1471,58 @@
    }
   },
   {
-   "name": "Cumulative EV Bus Registrations",
+   "name": "Cumulative E-Buses Deployed",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20250930": 3700.0
+    "20260331": 3815.0
    },
    "src": {
-    "q:20250930": [
-     "d32c4732-4350-4138-a3c8-16cff9d2b0e5.pdf",
-     16,
-     "total registrations (doc period)",
-     "3700"
+    "q:20260331": [
+     "de2b8a83-d95f-4c72-a6b8-011f36cd4ecc.pdf",
+     17,
+     "TMSCML cumulative E-buses deployed (doc period)",
+     "3815"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     3600.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  16% over Q2 after launch of  new subscription plan in July 25. Non-cyclical Businesses • 3600+ e buses deployed running  c",
+     "2026-10-31"
+    ]
+   ]
   },
   {
-   "name": "E-Dukaan Customers Onboarded",
-   "unit": "K customers",
+   "name": "Cumulative Green Kms (E-buses)",
+   "unit": "Cr km",
    "kind": "level",
    "y": {},
    "q": {
-    "20250930": 10.0
+    "20251231": 47.0
    },
    "src": {
-    "q:20250930": [
-     "d32c4732-4350-4138-a3c8-16cff9d2b0e5.pdf",
+    "q:20251231": [
+     "8f6f6fda-20e3-4603-a325-7b9d7de97051.pdf",
      17,
-     "Customers onboarded on platform (doc period)",
-     "10"
+     "cumulative distance of 47 Crore Kms (doc period)",
+     "47"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     53.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: tives discontinued BillionE Initiated deliveries of E.55S 40 Hydrogen trucks — MoU signed 53+ Cr Green Kms since inception ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "E-Dukaan Retailers Onboarded",
@@ -1590,23 +1538,6 @@
      17,
      "retailers onboarded on platform (doc period)",
      "33"
-    ]
-   }
-  },
-  {
-   "name": "EV Bus Order Book",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 850.0
-   },
-   "src": {
-    "q:20260630": [
-     "d6811390-f13f-4512-ba90-c485f42bba13.pdf",
-     17,
-     "EV Buses order in hand (doc period)",
-     "850"
     ]
    }
   },
@@ -1658,40 +1589,6 @@
      17,
      "Fleet Edge installed base (doc period)",
      "1.1"
-    ]
-   }
-  },
-  {
-   "name": "Fleet Edge Installed Base",
-   "unit": "K vehicles",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 885.0
-   },
-   "src": {
-    "q:20250930": [
-     "d32c4732-4350-4138-a3c8-16cff9d2b0e5.pdf",
-     17,
-     "active vehicles (doc period)",
-     "885"
-    ]
-   }
-  },
-  {
-   "name": "FleetVerse Platform-Assisted Retail Volume",
-   "unit": "K units",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250930": 22.0
-   },
-   "src": {
-    "q:20250930": [
-     "d32c4732-4350-4138-a3c8-16cff9d2b0e5.pdf",
-     17,
-     "platform assisted retails in Q2 FY26",
-     "22"
     ]
    }
   },

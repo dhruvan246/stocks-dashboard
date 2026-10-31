@@ -460,7 +460,6 @@
    "kind": "flow",
    "y": {},
    "q": {
-    "20240930": 20000.0,
     "20250630": 11744.0,
     "20250930": 38080.0,
     "20251231": 72418.0
@@ -483,14 +482,18 @@
      4,
      "Cells Produced (units) Q2 FY26",
      "38,080"
-    ],
-    "q:20240930": [
-     "76db9653-dfff-4cf8-aefe-7d2989682af4.pdf",
-     11,
-     "cells manufactured (trial production milestone Q2 FY25)",
-     "20,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     20000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: igafactory are fully operational. Trial production reached a milestone  in Q2 FY2025 with over 20,000 cells manufactured. O",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Gigafactory Installed Capacity",
@@ -662,49 +665,6 @@
      "54"
     ]
    }
-  },
-  {
-   "name": "Distribution Touchpoints",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 1800.0
-   },
-   "src": {
-    "q:20240930": [
-     "76db9653-dfff-4cf8-aefe-7d2989682af4.pdf",
-     9,
-     "retail points with Network Partner Program as of Sep'24",
-     "1,800"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20250331",
-     4000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: expanded to 4,000+ touchpoints",
-     "2026-10-31"
-    ],
-    [
-     "q:20241231",
-     4000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Expanded to 4,000+ touchpoints",
-     "2026-10-31"
-    ],
-    [
-     "q:20240630",
-     750.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: more than 750 experience centres (doc period)",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "In-house Component Development",

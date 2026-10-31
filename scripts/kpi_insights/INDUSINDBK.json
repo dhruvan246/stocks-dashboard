@@ -568,7 +568,6 @@
     "20190331": 1665.0,
     "20200331": 1911.0,
     "20220331": 2265.0,
-    "20230331": 2606.0,
     "20240331": 2984.0,
     "20260331": 3136.0
    },
@@ -681,12 +680,6 @@
      162,
      "branches / banking outlets",
      "2,984"
-    ],
-    "y:20230331": [
-     "610435dd-3e55-4dd9-8fb3-7440dca75c03.pdf",
-     10,
-     "Branches/Banking Outlets",
-     "2,606"
     ],
     "y:20220331": [
      "610435dd-3e55-4dd9-8fb3-7440dca75c03.pdf",
@@ -835,7 +828,17 @@
     "q:20231231": "2025-01-31",
     "q:20240331": "2025-01-31",
     "q:20260630": "2026-10-23"
-   }
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     2606.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified:  55% on a year-on-year basis. Customer Base: The Bank has over 34 million customers, with close to 2,606  Branches/Banking ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "BFIL Branches",
@@ -4590,134 +4593,6 @@
    }
   },
   {
-   "name": "Total Customer Base",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20200331": 25.37
-   },
-   "q": {
-    "20191231": 25.0,
-    "20200630": 26.0,
-    "20200930": 26.0,
-    "20201231": 27.0,
-    "20210331": 28.0,
-    "20210630": 29.0,
-    "20240630": 41.0,
-    "20250930": 42.0,
-    "20251231": 42.0,
-    "20260331": 42.0,
-    "20260630": 42.0,
-    "20260930": 42.0
-   },
-   "src": {
-    "q:20260630": [
-     "70067e51-dea9-47e9-baa4-270fe3423ac0.pdf",
-     4,
-     "Customers (doc period)",
-     "42"
-    ],
-    "q:20260331": [
-     "217000e1-89fe-408a-be85-dd5f231e7ef6.pdf",
-     4,
-     "Customers (doc period)",
-     "42"
-    ],
-    "q:20251231": [
-     "279052d3-a434-4653-a344-c4ebef0895ec.pdf",
-     4,
-     "Customers (doc period)",
-     "42"
-    ],
-    "q:20250930": [
-     "2b0d9f51-1f9e-4bfe-a890-a529a092188c.pdf",
-     35,
-     "Customer Base (doc period)",
-     "42"
-    ],
-    "q:20240630": [
-     "7b58a734-0b12-4b56-80ba-4c8c7646aada.pdf",
-     3,
-     "Customers Across Segments",
-     "41"
-    ],
-    "y:20200331": [
-     "7d04e4fd-33cd-49a8-b872-b6c44388b29e.pdf",
-     4,
-     "client base ... 25.37 million",
-     "25.37"
-    ],
-    "q:20200630": [
-     "16f2ea1a-6220-477b-8548-46685e008537.pdf",
-     4,
-     "Customer Base 26 million",
-     "26"
-    ],
-    "q:20200930": [
-     "a60a42ad-3c35-4945-a5da-e7cee241c3a4.pdf",
-     3,
-     "Client base at 26 million",
-     "26"
-    ],
-    "q:20191231": [
-     "9b8c4499-ec77-47ec-af18-fedc672059ec.pdf",
-     3,
-     "Client base grew by 2 million to touch 25 million",
-     "25"
-    ],
-    "q:20210630": [
-     "25a40445-8e6a-4bbe-aba9-31fd63722b51.pdf",
-     3,
-     "Client base at 29 million",
-     "29"
-    ],
-    "q:20210331": [
-     "d61908f5-d7d9-4fe7-ad8e-fed9511b377e.pdf",
-     3,
-     "Client base at 28 million",
-     "28"
-    ],
-    "q:20201231": [
-     "7c7b72e6-8685-4725-9027-a1a9210bb727.pdf",
-     3,
-     "Client base at 27 million",
-     "27"
-    ],
-    "q:20260930": [
-     "42f82ea3-3a85-41fd-ac52-79247694fc54.pdf",
-     4,
-     "Customers (doc period)",
-     "42"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20230331",
-     34.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: over 34 million customers (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20211231",
-     31.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: ~31 mn Customer Base",
-     "2026-10-31"
-    ],
-    [
-     "q:20220331",
-     32.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: ~32 mn Customer Base",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Total Touch Points",
    "unit": "count",
    "kind": "level",
@@ -4831,6 +4706,135 @@
      4853.0,
      "a60a42ad-3c35-4945-a5da-e7cee241c3a4.pdf",
      4844.0
+    ]
+   ]
+  },
+  {
+   "name": "Total Customer Base",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20200331": 25.37
+   },
+   "q": {
+    "20191231": 25.0,
+    "20200630": 26.0,
+    "20200930": 26.0,
+    "20201231": 27.0,
+    "20210331": 28.0,
+    "20210630": 29.0,
+    "20240630": 41.0,
+    "20251231": 42.0,
+    "20260331": 42.0,
+    "20260630": 42.0,
+    "20260930": 42.0
+   },
+   "src": {
+    "q:20260630": [
+     "70067e51-dea9-47e9-baa4-270fe3423ac0.pdf",
+     4,
+     "Customers (doc period)",
+     "42"
+    ],
+    "q:20260331": [
+     "217000e1-89fe-408a-be85-dd5f231e7ef6.pdf",
+     4,
+     "Customers (doc period)",
+     "42"
+    ],
+    "q:20251231": [
+     "279052d3-a434-4653-a344-c4ebef0895ec.pdf",
+     4,
+     "Customers (doc period)",
+     "42"
+    ],
+    "q:20240630": [
+     "7b58a734-0b12-4b56-80ba-4c8c7646aada.pdf",
+     3,
+     "Customers Across Segments",
+     "41"
+    ],
+    "y:20200331": [
+     "7d04e4fd-33cd-49a8-b872-b6c44388b29e.pdf",
+     4,
+     "client base ... 25.37 million",
+     "25.37"
+    ],
+    "q:20200630": [
+     "16f2ea1a-6220-477b-8548-46685e008537.pdf",
+     4,
+     "Customer Base 26 million",
+     "26"
+    ],
+    "q:20200930": [
+     "a60a42ad-3c35-4945-a5da-e7cee241c3a4.pdf",
+     3,
+     "Client base at 26 million",
+     "26"
+    ],
+    "q:20191231": [
+     "9b8c4499-ec77-47ec-af18-fedc672059ec.pdf",
+     3,
+     "Client base grew by 2 million to touch 25 million",
+     "25"
+    ],
+    "q:20210630": [
+     "25a40445-8e6a-4bbe-aba9-31fd63722b51.pdf",
+     3,
+     "Client base at 29 million",
+     "29"
+    ],
+    "q:20210331": [
+     "d61908f5-d7d9-4fe7-ad8e-fed9511b377e.pdf",
+     3,
+     "Client base at 28 million",
+     "28"
+    ],
+    "q:20201231": [
+     "7c7b72e6-8685-4725-9027-a1a9210bb727.pdf",
+     3,
+     "Client base at 27 million",
+     "27"
+    ],
+    "q:20260930": [
+     "42f82ea3-3a85-41fd-ac52-79247694fc54.pdf",
+     4,
+     "Customers (doc period)",
+     "42"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     34.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: over 34 million customers (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20211231",
+     31.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~31 mn Customer Base",
+     "2026-10-31"
+    ],
+    [
+     "q:20220331",
+     32.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~32 mn Customer Base",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     42.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: s 3,011 2,993 3,027 3,052 3,054 7,151 Group Network 3,054 ATMs ~1,64,000 Villages Covered ~42 mn  Customer Base 34 Eastern ",
+     "2026-10-31"
     ]
    ]
   },
@@ -5248,38 +5252,6 @@
    }
   },
   {
-   "name": "Villages Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20230331": 137000.0,
-    "20240331": 157000.0
-   },
-   "q": {
-    "20250930": 164000.0
-   },
-   "src": {
-    "q:20250930": [
-     "2b0d9f51-1f9e-4bfe-a890-a529a092188c.pdf",
-     35,
-     "Villages Covered (doc period)",
-     "1,64,000"
-    ],
-    "y:20240331": [
-     "f6c53d4f-6329-4818-b362-15fc7bc97ade.pdf",
-     101,
-     "BFIL villages served, as of March 2024",
-     "157,000"
-    ],
-    "y:20230331": [
-     "610435dd-3e55-4dd9-8fb3-7440dca75c03.pdf",
-     10,
-     "covering 1,37,000 villages (doc period)",
-     "1,37,000"
-    ]
-   }
-  },
-  {
    "name": "BFIL Disbursements",
    "unit": "INR Cr",
    "kind": "flow",
@@ -5400,6 +5372,40 @@
    }
   },
   {
+   "name": "Villages Covered",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 137000.0,
+    "20240331": 157000.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "f6c53d4f-6329-4818-b362-15fc7bc97ade.pdf",
+     101,
+     "BFIL villages served, as of March 2024",
+     "157,000"
+    ],
+    "y:20230331": [
+     "610435dd-3e55-4dd9-8fb3-7440dca75c03.pdf",
+     10,
+     "covering 1,37,000 villages (doc period)",
+     "1,37,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     164000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: FS) 304 300 297 297 297 ATMs 3,011 2,993 3,027 3,052 3,054 7,151 Group Network 3,054 ATMs ~1,64,000 Villages Covered ~42 mn",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Assets Under Management (Wealth)",
    "unit": "INR Cr",
    "kind": "level",
@@ -5447,23 +5453,6 @@
      68,
      "monthly active users",
      "2.8"
-    ]
-   }
-  },
-  {
-   "name": "INDIE App Registered Users",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260331": 4.8
-   },
-   "src": {
-    "q:20260331": [
-     "9d812711-189d-437a-824d-a068b3211fea.pdf",
-     68,
-     "INDIE registrations",
-     "4.8"
     ]
    }
   },

@@ -655,78 +655,6 @@
    }
   },
   {
-   "name": "O&M Portfolio Capacity (Total)",
-   "unit": "GW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 3.2,
-    "20240331": 3.2,
-    "20240630": 3.35,
-    "20241231": 3.5
-   },
-   "src": {
-    "q:20241231": [
-     "0e78d9d3-3496-4e6f-9c59-944aaddc3aef.pdf",
-     19,
-     "IGESL Current Portfolio",
-     "3.5"
-    ],
-    "q:20231231": [
-     "c2738707-6064-4c9d-8ec3-63b975adbfc8.pdf",
-     15,
-     "IGESL Current Portfolio (doc period)",
-     "3.2"
-    ],
-    "q:20240331": [
-     "9e11683a-ddeb-4654-9756-bf90cb9b78a8.pdf",
-     15,
-     "IGESL Current Portfolio (doc period)",
-     "3.2"
-    ],
-    "q:20240630": [
-     "745ebc8f-1ea1-4a19-8260-c7bd335a759b.pdf",
-     19,
-     "IGESL Current Portfolio (doc period)",
-     "3.35"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20250930",
-     12.5,
-     null,
-     "drop_q",
-     "Qualified print in src label: Portfolio of ~12.5 GW* of renewable O&M assets (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20250630",
-     5.1,
-     null,
-     "drop_q",
-     "Qualified print in src label: portfolio of ~5.1 GW of renewable O&M assets (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20250331",
-     5.1,
-     null,
-     "drop_q",
-     "Qualified print in src label: portfolio of ~5.1 GW of renewable O&M assets (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20240930",
-     3.5,
-     null,
-     "drop_q",
-     "Qualified print in src label: IGESL Current Portfolio ~3.5 GW (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Order Book (Equipment Supply)",
    "unit": "MW",
    "kind": "level",
@@ -803,6 +731,79 @@
      "2,186"
     ]
    }
+  },
+  {
+   "name": "O&M Portfolio Capacity (Total)",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20231231": 3.2,
+    "20240331": 3.2,
+    "20240630": 3.35
+   },
+   "src": {
+    "q:20231231": [
+     "c2738707-6064-4c9d-8ec3-63b975adbfc8.pdf",
+     15,
+     "IGESL Current Portfolio (doc period)",
+     "3.2"
+    ],
+    "q:20240331": [
+     "9e11683a-ddeb-4654-9756-bf90cb9b78a8.pdf",
+     15,
+     "IGESL Current Portfolio (doc period)",
+     "3.2"
+    ],
+    "q:20240630": [
+     "745ebc8f-1ea1-4a19-8260-c7bd335a759b.pdf",
+     19,
+     "IGESL Current Portfolio (doc period)",
+     "3.35"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     12.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: Portfolio of ~12.5 GW* of renewable O&M assets (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     5.1,
+     null,
+     "drop_q",
+     "Qualified print in src label: portfolio of ~5.1 GW of renewable O&M assets (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     5.1,
+     null,
+     "drop_q",
+     "Qualified print in src label: portfolio of ~5.1 GW of renewable O&M assets (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     3.5,
+     null,
+     "drop_q",
+     "Qualified print in src label: IGESL Current Portfolio ~3.5 GW (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     3.5,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  ✓ Presence across India with an established track record of > 10 years and  portfolio of ~3.5 GW of O&M assets ✓ Robust re",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "O&M Portfolio Capacity (Total)",

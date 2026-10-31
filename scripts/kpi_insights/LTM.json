@@ -3352,52 +3352,6 @@
    }
   },
   {
-   "name": "Total Employees (incl. Subcontractors)",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 85602.0,
-    "20250331": 88089.0
-   },
-   "q": {
-    "20241231": 86000.0,
-    "20250331": 88089.0,
-    "20260331": 92711.0
-   },
-   "src": {
-    "q:20260331": [
-     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
-     103,
-     "Total Workforce",
-     "92,711"
-    ],
-    "q:20250331": [
-     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
-     103,
-     "Total Workforce",
-     "88,089"
-    ],
-    "y:20250331": [
-     "919c9c5e-bb32-4251-abe5-f63194fa8c73.pdf",
-     79,
-     "Total Workforce Grand Total",
-     "88,089"
-    ],
-    "y:20240331": [
-     "919c9c5e-bb32-4251-abe5-f63194fa8c73.pdf",
-     79,
-     "Total Workforce Grand Total",
-     "85,602"
-    ],
-    "q:20241231": [
-     "c1ce3cc7-e3cb-41fa-b039-af3b86cda1de.pdf",
-     4,
-     "EMPLOYEES (doc period)",
-     "86,000"
-    ]
-   }
-  },
-  {
    "name": "Subcontractors",
    "unit": "count",
    "kind": "level",
@@ -3437,6 +3391,55 @@
    }
   },
   {
+   "name": "Total Employees (incl. Subcontractors)",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20240331": 85602.0,
+    "20250331": 88089.0
+   },
+   "q": {
+    "20250331": 88089.0,
+    "20260331": 92711.0
+   },
+   "src": {
+    "q:20260331": [
+     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
+     103,
+     "Total Workforce",
+     "92,711"
+    ],
+    "q:20250331": [
+     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
+     103,
+     "Total Workforce",
+     "88,089"
+    ],
+    "y:20250331": [
+     "919c9c5e-bb32-4251-abe5-f63194fa8c73.pdf",
+     79,
+     "Total Workforce Grand Total",
+     "88,089"
+    ],
+    "y:20240331": [
+     "919c9c5e-bb32-4251-abe5-f63194fa8c73.pdf",
+     79,
+     "Total Workforce Grand Total",
+     "85,602"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     86000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: 3 ~$4.4B 86,000+  700+ 40+ REVENUE EMPLOYEES CLIENTS PRESENCE Last twelve months Highly talented &  entrep",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Client Satisfaction Score",
    "unit": "score",
    "kind": "level",
@@ -3457,31 +3460,6 @@
      9,
      "Client Satisfaction scores",
      "5.85"
-    ]
-   }
-  },
-  {
-   "name": "Countries Present",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 42.0
-   },
-   "q": {
-    "20241231": 40.0
-   },
-   "src": {
-    "y:20260331": [
-     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
-     40,
-     "Global presence — countries (doc period)",
-     "42"
-    ],
-    "q:20241231": [
-     "c1ce3cc7-e3cb-41fa-b039-af3b86cda1de.pdf",
-     4,
-     "PRESENCE (doc period)",
-     "40"
     ]
    }
   },
@@ -3508,6 +3486,33 @@
      "741"
     ]
    }
+  },
+  {
+   "name": "Countries Present",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 42.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "638203b2-9e4a-47aa-b271-69ae61fd056c.pdf",
+     40,
+     "Global presence — countries (doc period)",
+     "42"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     40.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: 3 ~$4.4B 86,000+  700+ 40+ REVENUE EMPLOYEES CLIENTS PRESENCE Last twelve months Highly talented &  entrepreneurial ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Office Count",
@@ -4008,5 +4013,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-10-31"
 }

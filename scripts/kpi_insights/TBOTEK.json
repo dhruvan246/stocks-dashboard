@@ -2185,51 +2185,6 @@
    }
   },
   {
-   "name": "Annual Transacting Agents",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20210331": 22532.0,
-    "20220331": 37037.0,
-    "20230331": 42220.0,
-    "20240331": 45022.0,
-    "20250331": 50000.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
-     4,
-     "Transacting Agents (doc period)",
-     "50,000"
-    ],
-    "y:20210331": [
-     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
-     14,
-     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
-     "22,532"
-    ],
-    "y:20220331": [
-     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
-     14,
-     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
-     "37,037"
-    ],
-    "y:20230331": [
-     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
-     14,
-     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
-     "42,220"
-    ],
-    "y:20240331": [
-     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
-     14,
-     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
-     "45,022"
-    ]
-   }
-  },
-  {
    "name": "GTV - APAC",
    "unit": "₹ Cr",
    "kind": "flow",
@@ -2430,6 +2385,54 @@
      "4,620"
     ]
    }
+  },
+  {
+   "name": "Annual Transacting Agents",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20210331": 22532.0,
+    "20220331": 37037.0,
+    "20230331": 42220.0,
+    "20240331": 45022.0
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
+     14,
+     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
+     "22,532"
+    ],
+    "y:20220331": [
+     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
+     14,
+     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
+     "37,037"
+    ],
+    "y:20230331": [
+     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
+     14,
+     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
+     "42,220"
+    ],
+    "y:20240331": [
+     "8bcfb05a-b26a-40a3-8a36-32f54eb65560.pdf",
+     14,
+     "#Yearly Transacting Buyers (agents with net positive sale in a year; TBO core pl",
+     "45,022"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     50000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: PAC Africa 140 Source Markets2 16Mn+ Hotel Searches Made (B2A)2 30,000+ Destination Sold2 50,000 + Transacting Agents2 Glob",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Gross Bookings",
@@ -2773,49 +2776,6 @@
    }
   },
   {
-   "name": "Registered Travel Agent Base",
-   "unit": "K",
-   "kind": "level",
-   "y": {
-    "20250331": 200.0
-   },
-   "q": {
-    "20240930": 175.0
-   },
-   "src": {
-    "y:20250331": [
-     "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
-     17,
-     "Registered Travel Agent Base (doc period)",
-     "200"
-    ],
-    "q:20240930": [
-     "50d6e8aa-2c3f-425d-8621-9acd04e7aef7.pdf",
-     12,
-     "Registered buyers (175K, as of Q2 FY2025; TBO core platform) (printed as \"As of ",
-     "175"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20240331",
-     164.0,
-     null,
-     "drop_y",
-     "Qualified print in src label: Registered buyers (164K+, as on FY2024; TBO core platform) (printed as \"As on FY",
-     "2026-10-31"
-    ],
-    [
-     "q:20241231",
-     185.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Registered buyers (~185K, as on December 31, 2024; TBO core platform)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Take Rate (Revenue from Operations / GTV)",
    "unit": "%",
    "kind": "level",
@@ -2898,40 +2858,6 @@
    }
   },
   {
-   "name": "Destinations Sold",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 30000.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
-     4,
-     "Destination Sold (doc period)",
-     "30,000"
-    ]
-   }
-  },
-  {
-   "name": "Hotel Searches Made (B2A)",
-   "unit": "Mn",
-   "kind": "flow",
-   "y": {
-    "20250331": 16.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "17aa74a1-3b7c-4a5a-b388-3f4c8ad32fde.pdf",
-     4,
-     "Hotel Searches Made (B2A) (doc period)",
-     "16"
-    ]
-   }
-  },
-  {
    "name": "Payment Rail Currencies",
    "unit": "count",
    "kind": "level",
@@ -2966,21 +2892,47 @@
    }
   },
   {
-   "name": "Platinum Hotels in Portfolio",
-   "unit": "count",
+   "name": "Registered Travel Agent Base",
+   "unit": "K",
    "kind": "level",
    "y": {},
    "q": {
-    "20250630": 110.0
+    "20240930": 175.0
    },
    "src": {
-    "q:20250630": [
-     "ed175b84-165e-4f27-ab71-219579b5cdb2.pdf",
-     3,
-     "TBO Platinum program hotels (doc period)",
-     "110"
+    "q:20240930": [
+     "50d6e8aa-2c3f-425d-8621-9acd04e7aef7.pdf",
+     12,
+     "Registered buyers (175K, as of Q2 FY2025; TBO core platform) (printed as \"As of ",
+     "175"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "y:20240331",
+     164.0,
+     null,
+     "drop_y",
+     "Qualified print in src label: Registered buyers (164K+, as on FY2024; TBO core platform) (printed as \"As on FY",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     185.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Registered buyers (~185K, as on December 31, 2024; TBO core platform)",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     200.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: ad generation Account  onboarding Nurturing The buyer onboarding process has 3 key steps… ~200K Registered Travel Agent Bas",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Source Markets",

@@ -2439,31 +2439,100 @@
    ]
   },
   {
+   "name": "Mumbai Area Sold",
+   "unit": "Mn. Sq. Ft.",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20210930": 0.07,
+    "20211231": 0.07,
+    "20220630": 0.07,
+    "20220930": 0.04,
+    "20260630": 0.1
+   },
+   "src": {
+    "q:20260630": [
+     "c224e5fc-7fe9-4756-96a4-d3b68faef7d6.pdf",
+     13,
+     "Mumbai",
+     "0.10"
+    ],
+    "q:20220930": [
+     "07ca32ac-32d0-4b5d-a4b5-f6dfdbe8c891.pdf",
+     10,
+     "Total (Mumbai Projects)",
+     "0.04"
+    ],
+    "q:20220630": [
+     "0933cf8d-b66d-44e8-895d-69e027e9e0fb.pdf",
+     9,
+     "Total (Mumbai Projects)",
+     "0.07"
+    ],
+    "q:20210930": [
+     "0ab69fd1-1e98-41b4-9664-6b1c53a19f66.pdf",
+     9,
+     "Total (Mumbai Projects)",
+     "0.07"
+    ],
+    "q:20211231": [
+     "2698b244-fbbc-41e2-b86f-525dde3692a0.pdf",
+     9,
+     "Total (Mumbai Projects)",
+     "0.07"
+    ]
+   }
+  },
+  {
+   "name": "Bengaluru Area Sold",
+   "unit": "Mn. Sq. Ft.",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20210930": 0.07,
+    "20211231": 0.06,
+    "20220630": 0.03,
+    "20220930": 0.03
+   },
+   "src": {
+    "q:20220930": [
+     "07ca32ac-32d0-4b5d-a4b5-f6dfdbe8c891.pdf",
+     10,
+     "Total (Bengaluru Projects)",
+     "0.03"
+    ],
+    "q:20220630": [
+     "0933cf8d-b66d-44e8-895d-69e027e9e0fb.pdf",
+     9,
+     "Total (Bengaluru Projects)",
+     "0.03"
+    ],
+    "q:20210930": [
+     "0ab69fd1-1e98-41b4-9664-6b1c53a19f66.pdf",
+     9,
+     "Total (Bengaluru Projects)",
+     "0.07"
+    ],
+    "q:20211231": [
+     "2698b244-fbbc-41e2-b86f-525dde3692a0.pdf",
+     9,
+     "Total (Bengaluru Projects)",
+     "0.06"
+    ]
+   }
+  },
+  {
    "name": "Projects Developed",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20230930": 58.0,
-    "20240930": 64.0,
     "20250630": 68.0,
     "20250930": 68.0,
     "20251231": 68.0,
     "20260331": 68.0
    },
    "src": {
-    "q:20240930": [
-     "353e7cc6-fadf-44b1-bb1a-69eea3e6163d.pdf",
-     21,
-     "projects developed (doc period)",
-     "64"
-    ],
-    "q:20230930": [
-     "49fc2338-ea70-46cc-91eb-c2901736db5f.pdf",
-     24,
-     "projects developed (doc period)",
-     "58"
-    ],
     "q:20250630": [
      "3bf08c75-33cc-4204-a277-d0bb585ffde7.pdf",
      6,
@@ -2553,91 +2622,24 @@
      "drop_q",
      "Qualified print in src label: developed and constructed over 64 projects (doc period)",
      "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     64.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: , transparency and timely delivery of projects. The company has developed and constructed over 64 projects including reside",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     58.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: , transparency and timely delivery of projects. The company has developed and constructed over 58 projects including reside",
+     "2026-10-31"
     ]
    ]
-  },
-  {
-   "name": "Mumbai Area Sold",
-   "unit": "Mn. Sq. Ft.",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20210930": 0.07,
-    "20211231": 0.07,
-    "20220630": 0.07,
-    "20220930": 0.04,
-    "20260630": 0.1
-   },
-   "src": {
-    "q:20260630": [
-     "c224e5fc-7fe9-4756-96a4-d3b68faef7d6.pdf",
-     13,
-     "Mumbai",
-     "0.10"
-    ],
-    "q:20220930": [
-     "07ca32ac-32d0-4b5d-a4b5-f6dfdbe8c891.pdf",
-     10,
-     "Total (Mumbai Projects)",
-     "0.04"
-    ],
-    "q:20220630": [
-     "0933cf8d-b66d-44e8-895d-69e027e9e0fb.pdf",
-     9,
-     "Total (Mumbai Projects)",
-     "0.07"
-    ],
-    "q:20210930": [
-     "0ab69fd1-1e98-41b4-9664-6b1c53a19f66.pdf",
-     9,
-     "Total (Mumbai Projects)",
-     "0.07"
-    ],
-    "q:20211231": [
-     "2698b244-fbbc-41e2-b86f-525dde3692a0.pdf",
-     9,
-     "Total (Mumbai Projects)",
-     "0.07"
-    ]
-   }
-  },
-  {
-   "name": "Bengaluru Area Sold",
-   "unit": "Mn. Sq. Ft.",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20210930": 0.07,
-    "20211231": 0.06,
-    "20220630": 0.03,
-    "20220930": 0.03
-   },
-   "src": {
-    "q:20220930": [
-     "07ca32ac-32d0-4b5d-a4b5-f6dfdbe8c891.pdf",
-     10,
-     "Total (Bengaluru Projects)",
-     "0.03"
-    ],
-    "q:20220630": [
-     "0933cf8d-b66d-44e8-895d-69e027e9e0fb.pdf",
-     9,
-     "Total (Bengaluru Projects)",
-     "0.03"
-    ],
-    "q:20210930": [
-     "0ab69fd1-1e98-41b4-9664-6b1c53a19f66.pdf",
-     9,
-     "Total (Bengaluru Projects)",
-     "0.07"
-    ],
-    "q:20211231": [
-     "2698b244-fbbc-41e2-b86f-525dde3692a0.pdf",
-     9,
-     "Total (Bengaluru Projects)",
-     "0.06"
-    ]
-   }
   },
   {
    "name": "Area Delivered",

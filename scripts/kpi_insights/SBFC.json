@@ -2675,30 +2675,6 @@
    }
   },
   {
-   "name": "Secured MSME Segment Gross NPA",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 3.18,
-    "20260331": 3.15
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "37eb6e9a-69ae-4478-877c-22efd49f60dd.pdf",
-     43,
-     "GNPA (MSME segment)",
-     "3.18"
-    ],
-    "y:20260331": [
-     "37eb6e9a-69ae-4478-877c-22efd49f60dd.pdf",
-     43,
-     "GNPA (MSME segment)",
-     "3.15"
-    ]
-   }
-  },
-  {
    "name": "Cities Covered",
    "unit": "count",
    "kind": "level",
@@ -2714,6 +2690,33 @@
      "181"
     ]
    }
+  },
+  {
+   "name": "Secured MSME Segment Gross NPA",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20250331": 3.18
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "37eb6e9a-69ae-4478-877c-22efd49f60dd.pdf",
+     43,
+     "GNPA (MSME segment)",
+     "3.18"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     3.15,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: rowth.  Asset quality in the MSME segment  remained stable during the year, with  GNPA at ~3.15% in FY2026 (FY2025: 3.18%) ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "States Covered",
@@ -2901,5 +2904,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

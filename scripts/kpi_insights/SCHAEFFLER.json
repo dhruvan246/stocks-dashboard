@@ -1149,37 +1149,6 @@
    }
   },
   {
-   "name": "Total Manufacturing Floor Space",
-   "unit": "sq. mtr.",
-   "kind": "level",
-   "y": {
-    "20161231": 72000.0,
-    "20201231": 90000.0,
-    "20221231": 90000.0
-   },
-   "q": {},
-   "src": {
-    "y:20161231": [
-     "03321c31-618e-455f-99fb-6b8dbd462599.pdf",
-     16,
-     "Total Manufacturing Floor Space (sq. mtr.)- 2016",
-     "72,000"
-    ],
-    "y:20201231": [
-     "03321c31-618e-455f-99fb-6b8dbd462599.pdf",
-     16,
-     "Total Manufacturing Floor Space (sq. mtr.)- 2020",
-     "90,000"
-    ],
-    "y:20221231": [
-     "c61fa1dc-7988-4423-89a9-52e5bec5d116.pdf",
-     12,
-     "Total Manufacturing Floor Space (sq. mtr.) 2022",
-     "90,000"
-    ]
-   }
-  },
-  {
    "name": "Dealers/Distributors Served",
    "unit": "count",
    "kind": "level",
@@ -1861,6 +1830,41 @@
    }
   },
   {
+   "name": "Total Manufacturing Floor Space",
+   "unit": "sq. mtr.",
+   "kind": "level",
+   "y": {
+    "20201231": 90000.0
+   },
+   "q": {},
+   "src": {
+    "y:20201231": [
+     "03321c31-618e-455f-99fb-6b8dbd462599.pdf",
+     16,
+     "Total Manufacturing Floor Space (sq. mtr.)- 2020",
+     "90,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20161231",
+     72000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: Ø A strong footprint: Total Manufacturing Floor Space (sq. mtr.)- 2016: ~ 72,000+; 2020: ~ 90,000. Ø Localisation Ratio: 20",
+     "2026-10-31"
+    ],
+    [
+     "y:20221231",
+     90000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: t Localization ratio R&D expenditure ~72,000+ Total Manufacturing  Floor Space (sq. mtr.) ~90,000 Total Manufacturing  Floo",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Training Hours",
    "unit": "hours",
    "kind": "flow",
@@ -2311,6 +2315,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-20",
+ "updated": "2026-10-31",
  "note_fy": "2026-10-20: rebuilt; year-end from own XBRL DateOfStartOfFinancialYear; backup ~/stocks-cache/kpi-dc/cy/backup + git 24dac6f41"
 }

@@ -238,33 +238,6 @@
    }
   },
   {
-   "name": "Incremental Lifetime Order Book",
-   "unit": "INR Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 98400.0,
-    "20260331": 124000.0
-   },
-   "src": {
-    "q:20260331": [
-     "b8b0998d-5acd-4bb3-bd4a-b43b4c31c077.pdf",
-     8,
-     "Incremental lifetime* Order Book as of March 31, 2026",
-     "1,24,000"
-    ],
-    "q:20250930": [
-     "e8ee667f-f8c9-45bb-b408-c1c0b98a6587.pdf",
-     11,
-     "Orderbook as at 30 September 2025",
-     "98,400"
-    ]
-   },
-   "latest": {
-    "q:20260331": "2026-06-02"
-   }
-  },
-  {
    "name": "Manufacturing Facilities Count",
    "unit": "count",
    "kind": "level",
@@ -501,6 +474,36 @@
      null,
      "drop_y",
      "Qualified print in src label: 1,950+ full-time people employed (doc period)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Incremental Lifetime Order Book",
+   "unit": "INR Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 98400.0
+   },
+   "src": {
+    "q:20250930": [
+     "e8ee667f-f8c9-45bb-b408-c1c0b98a6587.pdf",
+     11,
+     "Orderbook as at 30 September 2025",
+     "98,400"
+    ]
+   },
+   "latest": {
+    "q:20260331": "2026-06-02"
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     124000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: ation and deployment. As of March 31, 2026, our incremental lifetime order book stood  at approximately INR 1,24,000 Millio",
      "2026-10-31"
     ]
    ]

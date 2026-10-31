@@ -3180,55 +3180,6 @@
    }
   },
   {
-   "name": "Distribution Location Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 300.0
-   },
-   "q": {
-    "20250930": 300.0,
-    "20251231": 310.0,
-    "20260331": 310.0
-   },
-   "src": {
-    "y:20250331": [
-     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
-     57,
-     "Locations (doc period)",
-     "300"
-    ],
-    "q:20260331": [
-     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
-     4,
-     "Locations",
-     "310"
-    ],
-    "q:20251231": [
-     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
-     4,
-     "Locations (doc period)",
-     "310"
-    ],
-    "q:20250930": [
-     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
-     4,
-     "Locations (doc period)",
-     "300"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260630",
-     310.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Locations 310+",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Investor Folios",
    "unit": "count",
    "kind": "level",
@@ -3374,47 +3325,6 @@
    }
   },
   {
-   "name": "MF Distributor Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 92000.0,
-    "20251231": 93000.0,
-    "20260331": 93700.0
-   },
-   "src": {
-    "q:20260331": [
-     "d5a3c787-2864-4426-8044-ae261e338125.pdf",
-     4,
-     "MF Distributors",
-     "93,700"
-    ],
-    "q:20251231": [
-     "b6047e38-164e-4630-9d8a-c4a14b812b2d.pdf",
-     4,
-     "MF Distributors (doc period)",
-     "93,000"
-    ],
-    "q:20250930": [
-     "e8f172a5-eaef-4d4a-8f6e-fedbdc10dc4a.pdf",
-     4,
-     "MF Distributors (doc period)",
-     "92,000"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260630",
-     95500.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: MF Distributors 95,500+",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Overall Average AUM (All Businesses)",
    "unit": "INR Crore",
    "kind": "level",
@@ -3473,37 +3383,6 @@
      58,
      "PMS asset",
      "3,075"
-    ]
-   }
-  },
-  {
-   "name": "Passive AUM (Closing)",
-   "unit": "INR Crore",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220331": 9962.0,
-    "20240331": 28902.0,
-    "20250331": 34694.0
-   },
-   "src": {
-    "q:20220331": [
-     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
-     58,
-     "Passive AUM (closing, ETFs/FoFs/Index Funds)",
-     "9,962"
-    ],
-    "q:20250331": [
-     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
-     58,
-     "Passive AUM (closing, ETFs/FoFs/Index Funds)",
-     "34,694"
-    ],
-    "q:20240331": [
-     "1cba9593-9024-45c6-b21a-82b4d87e8117.pdf",
-     24,
-     "passive product offering assets as on 31st March, 2024",
-     "28,902"
     ]
    }
   },
@@ -3578,6 +3457,40 @@
      "12,070"
     ]
    }
+  },
+  {
+   "name": "Passive AUM (Closing)",
+   "unit": "INR Crore",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20220331": 9962.0,
+    "20250331": 34694.0
+   },
+   "src": {
+    "q:20220331": [
+     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
+     58,
+     "Passive AUM (closing, ETFs/FoFs/Index Funds)",
+     "9,962"
+    ],
+    "q:20250331": [
+     "8a064fcf-142f-4d81-9a0a-f34c59026ea3.pdf",
+     58,
+     "Passive AUM (closing, ETFs/FoFs/Index Funds)",
+     "34,694"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     28902.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  Our current passive product offering has yielded good results  wherein our assets are at around `28,902 Crore as on  31st ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Real Estate AUM (Quarterly, INR Crore)",

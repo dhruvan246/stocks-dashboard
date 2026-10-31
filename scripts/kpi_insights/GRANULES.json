@@ -1193,45 +1193,6 @@
    }
   },
   {
-   "name": "Annual FD Dosage Capacity",
-   "unit": "Bn",
-   "kind": "level",
-   "y": {
-    "20260331": 39.0
-   },
-   "q": {
-    "20240930": 2.5,
-    "20241231": 2.5,
-    "20260630": 39.0
-   },
-   "src": {
-    "q:20260630": [
-     "5fe1e9ad-065a-4fbc-b2a7-9d93edb5c1ba.pdf",
-     19,
-     "Annual FD Dosage Capacity (doc period)",
-     "39"
-    ],
-    "y:20260331": [
-     "b6d337da-7b3f-4ae9-8506-d729a0e69275.pdf",
-     27,
-     "Annual FD Dosage Capacity (doc period)",
-     "39"
-    ],
-    "q:20241231": [
-     "bcab8c06-83d6-4bee-9172-0835e80af842.pdf",
-     18,
-     "FD: 2.5 Bn dosage (Phase I) (doc period)",
-     "2.5"
-    ],
-    "q:20240930": [
-     "46cac21f-eae1-4af4-a0a3-d788388832f4.pdf",
-     19,
-     "FD: 2.5 Bn dosage (Phase I) (doc period)",
-     "2.5"
-    ]
-   }
-  },
-  {
    "name": "Customer Audit Count",
    "unit": "count",
    "kind": "flow",
@@ -1522,6 +1483,48 @@
      "39,360"
     ]
    }
+  },
+  {
+   "name": "Annual FD Dosage Capacity",
+   "unit": "Bn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 2.5,
+    "20241231": 2.5
+   },
+   "src": {
+    "q:20241231": [
+     "bcab8c06-83d6-4bee-9172-0835e80af842.pdf",
+     18,
+     "FD: 2.5 Bn dosage (Phase I) (doc period)",
+     "2.5"
+    ],
+    "q:20240930": [
+     "46cac21f-eae1-4af4-a0a3-d788388832f4.pdf",
+     19,
+     "FD: 2.5 Bn dosage (Phase I) (doc period)",
+     "2.5"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     39.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: sentation Q1 FY27 18 Manufacturing & R&D Structural Advantage 10 Manufacturing Facilities 39 Bn+ Annual FD Dosage Capacity ",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     39.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: Presentation FY26 26 Manufacturing & R&D Structural Advantage 10 Manufacturing Facilities 39 Bn+ Annual FD Dosage Capacity ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Complex Gx Dossiers Filed",

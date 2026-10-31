@@ -963,21 +963,38 @@
    }
   },
   {
+   "name": "Total Plant Area",
+   "unit": "sq m",
+   "kind": "level",
+   "y": {
+    "20200331": 63000.0,
+    "20260331": 95000.0
+   },
+   "q": {},
+   "src": {
+    "y:20200331": [
+     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
+     10,
+     "Total Plant Area +63,000 sq m.",
+     "63,000"
+    ],
+    "y:20260331": [
+     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
+     11,
+     "Total Plant Area +95,000 sq m.",
+     "95,000"
+    ]
+   }
+  },
+  {
    "name": "Countries Served (Distribution Reach)",
    "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20201231": 110.0,
-    "20250630": 125.0
+    "20201231": 110.0
    },
    "src": {
-    "q:20250630": [
-     "7e5a38b2-9453-4c50-9603-f4965c52ed39.pdf",
-     4,
-     "Countries (doc period)",
-     "125"
-    ],
     "q:20201231": [
      "e8ad6bc0-92b1-4f73-9c98-f6e8062fbfc3.pdf",
      7,
@@ -1033,32 +1050,16 @@
      "drop_q",
      "Qualified print in src label: 125+ Countries (doc period)",
      "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     125.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  334 Patents Granted 12 Specialities 1.8 Billion+ Devices Manufacturing Capacity Per year 125+ Countries 900+ Distributors ",
+     "2026-10-31"
     ]
    ]
-  },
-  {
-   "name": "Total Plant Area",
-   "unit": "sq m",
-   "kind": "level",
-   "y": {
-    "20200331": 63000.0,
-    "20260331": 95000.0
-   },
-   "q": {},
-   "src": {
-    "y:20200331": [
-     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
-     10,
-     "Total Plant Area +63,000 sq m.",
-     "63,000"
-    ],
-    "y:20260331": [
-     "3d2b03da-7262-404e-99d3-e81859b263b0.pdf",
-     11,
-     "Total Plant Area +95,000 sq m.",
-     "95,000"
-    ]
-   }
   },
   {
    "name": "Dialysis Machines Sold (FY)",
@@ -1076,49 +1077,6 @@
      "450"
     ]
    }
-  },
-  {
-   "name": "Distributors (Global)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 900.0
-   },
-   "src": {
-    "q:20250630": [
-     "7e5a38b2-9453-4c50-9603-f4965c52ed39.pdf",
-     4,
-     "Distributors across India & Globally (doc period)",
-     "900"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260630",
-     1000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: 1000+ distributors globally (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20251231",
-     950.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: 950+ Distributors across India & Globally (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20250331",
-     900.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: 900+ Distributors across India & Globally (doc period)",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "Distributors (India)",

@@ -3357,42 +3357,6 @@
    }
   },
   {
-   "name": "Dealer Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20201231": 12000.0,
-    "20211231": 13000.0
-   },
-   "q": {
-    "20230331": 13100.0
-   },
-   "src": {
-    "y:20201231": [
-     "68361500410.pdf",
-     53,
-     "Dealers (doc period)",
-     "12,000"
-    ],
-    "y:20211231": [
-     "72946500410.pdf",
-     59,
-     "dealers (doc period)",
-     "13,000"
-    ],
-    "q:20230331": [
-     "8b5f12f7-052d-4799-9f46-ba55878f25b5.pdf",
-     111,
-     "dealers (doc period)",
-     "13,100"
-    ]
-   },
-   "latest": {
-    "y:20201231": "2021-03-11",
-    "y:20211231": "2022-03-22"
-   }
-  },
-  {
    "name": "Logistics Cost per Tonne-km",
    "unit": "₹ ptpk",
    "kind": "flow",
@@ -3796,6 +3760,45 @@
      "40.4"
     ]
    }
+  },
+  {
+   "name": "Dealer Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20201231": 12000.0
+   },
+   "q": {},
+   "src": {
+    "y:20201231": [
+     "68361500410.pdf",
+     53,
+     "Dealers (doc period)",
+     "12,000"
+    ]
+   },
+   "latest": {
+    "y:20201231": "2021-03-11",
+    "y:20211231": "2022-03-22"
+   },
+   "fixed": [
+    [
+     "y:20211231",
+     13000.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: ing a  loyal customer base. It also has a strong pan-India channel  network that includes ~13,000 dealers and ~56,000 retai",
+     "2026-10-31"
+    ],
+    [
+     "q:20230331",
+     13100.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: al empowerment. Market Development ACC has a strong PAN India channel network  comprising ~13,100 dealers and ~43,000 retai",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Electrical Energy Consumption",

@@ -4199,72 +4199,6 @@
    }
   },
   {
-   "name": "Empanelled Distribution Partners",
-   "unit": "k",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 90.0,
-    "20241231": 95.0,
-    "20250331": 95.0,
-    "20250630": 99.0,
-    "20250930": 103.0,
-    "20251231": 106.0,
-    "20260331": 109.0,
-    "20260630": 110.0
-   },
-   "src": {
-    "q:20260630": [
-     "fbfe25a8-f315-4e38-bf7b-a73b57463123.pdf",
-     20,
-     "empaneled distribution partners (doc period)",
-     "110"
-    ],
-    "q:20260331": [
-     "af251812-68f1-4cf3-91fa-005977d76050.pdf",
-     20,
-     "empaneled distribution partners (doc period)",
-     "109"
-    ],
-    "q:20251231": [
-     "1a12e3bb-8a31-46df-969a-1705eef22c86.pdf",
-     20,
-     "empaneled distribution partners (doc period)",
-     "106"
-    ],
-    "q:20250930": [
-     "c60a09e1-16b4-45d6-bb26-43f535e5b7f8.pdf",
-     21,
-     "empaneled distribution partners (doc period)",
-     "103"
-    ],
-    "q:20250630": [
-     "39005259-2aa4-4d22-8289-5158ea596a5b.pdf",
-     21,
-     "empaneled distribution partners (doc period)",
-     "99"
-    ],
-    "q:20250331": [
-     "9a4e8608-f847-43da-b4f6-48da4984952f.pdf",
-     21,
-     "empaneled distribution partners (doc period)",
-     "95"
-    ],
-    "q:20241231": [
-     "a8522ad2-72b9-4d78-85ad-06eca7f03c35.pdf",
-     3,
-     "Distribution Partners",
-     "95"
-    ],
-    "q:20240930": [
-     "ed604b92-8e3c-42b5-9154-9ea6b8010159.pdf",
-     21,
-     "empaneled distribution partners (doc period)",
-     "90"
-    ]
-   }
-  },
-  {
    "name": "Actively Managed Equity-Oriented AUM",
    "unit": "₹ Crore",
    "kind": "level",
@@ -4441,65 +4375,6 @@
      34,
      "Live Individual Accounts - March 2020",
      "93.4"
-    ]
-   }
-  },
-  {
-   "name": "Pincodes Serviced",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 99.0,
-    "20241231": 99.0,
-    "20250630": 98.0,
-    "20250930": 98.0,
-    "20251231": 98.0,
-    "20260331": 98.0,
-    "20260630": 98.0
-   },
-   "src": {
-    "q:20260630": [
-     "fbfe25a8-f315-4e38-bf7b-a73b57463123.pdf",
-     20,
-     "pincodes serviced across India (doc period)",
-     "98"
-    ],
-    "q:20260331": [
-     "af251812-68f1-4cf3-91fa-005977d76050.pdf",
-     20,
-     "pincodes serviced across India (doc period)",
-     "98"
-    ],
-    "q:20251231": [
-     "1a12e3bb-8a31-46df-969a-1705eef22c86.pdf",
-     20,
-     "pincodes serviced across India (doc period)",
-     "98"
-    ],
-    "q:20250930": [
-     "c60a09e1-16b4-45d6-bb26-43f535e5b7f8.pdf",
-     21,
-     "pincodes serviced across India (doc period)",
-     "98"
-    ],
-    "q:20250630": [
-     "39005259-2aa4-4d22-8289-5158ea596a5b.pdf",
-     21,
-     "pincodes serviced across India (doc period)",
-     "98"
-    ],
-    "q:20241231": [
-     "a8522ad2-72b9-4d78-85ad-06eca7f03c35.pdf",
-     3,
-     "Pin codes serviced across India",
-     "99"
-    ],
-    "q:20240930": [
-     "ed604b92-8e3c-42b5-9154-9ea6b8010159.pdf",
-     21,
-     "pincodes serviced (doc period)",
-     "99"
     ]
    }
   },
@@ -4715,30 +4590,6 @@
    }
   },
   {
-   "name": "AIF Commitments",
-   "unit": "₹ Billion",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 25.0,
-    "20260331": 25.0
-   },
-   "src": {
-    "q:20260331": [
-     "af251812-68f1-4cf3-91fa-005977d76050.pdf",
-     22,
-     "AIF Commitments (doc period)",
-     "25"
-    ],
-    "q:20251231": [
-     "1a12e3bb-8a31-46df-969a-1705eef22c86.pdf",
-     22,
-     "AIF commitments stand at (doc period)",
-     "25"
-    ]
-   }
-  },
-  {
    "name": "New Offices Added",
    "unit": "count",
    "kind": "flow",
@@ -4785,6 +4636,33 @@
      "36"
     ]
    }
+  },
+  {
+   "name": "AIF Commitments",
+   "unit": "₹ Billion",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260331": 25.0
+   },
+   "src": {
+    "q:20260331": [
+     "af251812-68f1-4cf3-91fa-005977d76050.pdf",
+     22,
+     "AIF Commitments (doc period)",
+     "25"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     25.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: sation (EPFO)* & the Seaman’s Provident Fund Organisation (SPFO) AIF commitments stand at ~ ₹25 billion HDFC AMC Select AI",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "AIF Commitments",
@@ -5222,5 +5100,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

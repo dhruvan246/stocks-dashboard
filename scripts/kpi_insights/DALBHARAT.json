@@ -4113,51 +4113,6 @@
    }
   },
   {
-   "name": "Channel Partners",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20210331": 32000.0,
-    "20220331": 32000.0,
-    "20230331": 41000.0,
-    "20250331": 46600.0,
-    "20260331": 44500.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "61e30780-450b-4729-9e0a-e9e7e57ba03b.pdf",
-     12,
-     "Channel partners",
-     "46,600"
-    ],
-    "y:20260331": [
-     "199656cb-4f9f-4498-ad91-a126447987fd.pdf",
-     12,
-     "Channel Partners (doc period)",
-     "44,500"
-    ],
-    "y:20210331": [
-     "5fd98c00-c8db-4446-99ac-baf6d21559ce.pdf",
-     7,
-     "Dealers and Sub-dealers (Data as of Mar-31, 2021)",
-     "32,000"
-    ],
-    "y:20220331": [
-     "ada16cc9-78b6-4990-9c6c-13c2756888d4.pdf",
-     7,
-     "Dealers and Sub-dealers (Data as of Mar-31, 2022)",
-     "32,000"
-    ],
-    "y:20230331": [
-     "25a1ebfd-81f1-4c65-a892-55c2c04b9180.pdf",
-     9,
-     "Channel Partners (FY23/as on March 31, 2023)",
-     "41,000"
-    ]
-   }
-  },
-  {
    "name": "East Clinker Capacity",
    "unit": "MnT",
    "kind": "level",
@@ -4592,6 +4547,55 @@
    }
   },
   {
+   "name": "Channel Partners",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20210331": 32000.0,
+    "20220331": 32000.0,
+    "20230331": 41000.0
+   },
+   "q": {},
+   "src": {
+    "y:20210331": [
+     "5fd98c00-c8db-4446-99ac-baf6d21559ce.pdf",
+     7,
+     "Dealers and Sub-dealers (Data as of Mar-31, 2021)",
+     "32,000"
+    ],
+    "y:20220331": [
+     "ada16cc9-78b6-4990-9c6c-13c2756888d4.pdf",
+     7,
+     "Dealers and Sub-dealers (Data as of Mar-31, 2022)",
+     "32,000"
+    ],
+    "y:20230331": [
+     "25a1ebfd-81f1-4c65-a892-55c2c04b9180.pdf",
+     9,
+     "Channel Partners (FY23/as on March 31, 2023)",
+     "41,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     44500.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: , considering upcoming expansion at Kadapa & Belgaum; ^reserves for operating plants only 44,500+ Channel  Partners 2.7+ Bn",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     46600.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified:  development, safety and  advanced training enables us to build a  high-performance team. 46,600+ Channel partners spread  ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Cement Capacity Addition",
    "unit": "MTPA",
    "kind": "flow",
@@ -4609,33 +4613,6 @@
    }
   },
   {
-   "name": "Limestone Reserves",
-   "unit": "Bn Tonnes",
-   "kind": "level",
-   "y": {
-    "20260331": 2.7
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "199656cb-4f9f-4498-ad91-a126447987fd.pdf",
-     12,
-     "Limestone Reserves (doc period)",
-     "2.7"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260630",
-     3.3,
-     null,
-     "drop_q",
-     "Qualified print in src label: 3.3+ Bn Tonnes of Limestone Reserves",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Sales Offices",
    "unit": "count",
    "kind": "level",
@@ -4649,23 +4626,6 @@
      11,
      "29 Sales Offices",
      "29"
-    ]
-   }
-  },
-  {
-   "name": "Warehouses",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 575.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "61e30780-450b-4729-9e0a-e9e7e57ba03b.pdf",
-     12,
-     "Warehouses (doc period)",
-     "575"
     ]
    }
   }

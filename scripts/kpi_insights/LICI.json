@@ -3547,30 +3547,6 @@
    }
   },
   {
-   "name": "Average Productivity per Agent",
-   "unit": "policies",
-   "kind": "flow",
-   "y": {
-    "20210331": 15.0,
-    "20220331": 16.0
-   },
-   "q": {},
-   "src": {
-    "y:20220331": [
-     "6427ca9f-264c-43f3-8be9-2b1a28da352d.pdf",
-     2,
-     "average productivity per agent",
-     "16"
-    ],
-    "y:20210331": [
-     "6427ca9f-264c-43f3-8be9-2b1a28da352d.pdf",
-     2,
-     "average productivity per agent (approximately)",
-     "15"
-    ]
-   }
-  },
-  {
    "name": "Net NPA (Policyholders' Fund)",
    "unit": "%",
    "kind": "level",
@@ -3617,6 +3593,33 @@
      "6871"
     ]
    }
+  },
+  {
+   "name": "Average Productivity per Agent",
+   "unit": "policies",
+   "kind": "flow",
+   "y": {
+    "20220331": 16.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "6427ca9f-264c-43f3-8be9-2b1a28da352d.pdf",
+     2,
+     "average productivity per agent",
+     "16"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20210331",
+     15.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: verage productivity per agent was 16 policies  in financial year 2021-22  as  compared to approximately 15 policies  in fin",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Group Market Share (by Policies/Schemes)",
@@ -3983,5 +3986,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

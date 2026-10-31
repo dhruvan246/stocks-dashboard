@@ -2301,9 +2301,7 @@
    "name": "Global Order Book",
    "unit": "₹ Cr",
    "kind": "level",
-   "y": {
-    "20260331": 25350.0
-   },
+   "y": {},
    "q": {
     "20200331": 5700.0,
     "20200630": 5500.0,
@@ -2316,7 +2314,6 @@
     "20220331": 12250.0,
     "20220630": 13350.0,
     "20220930": 13750.0,
-    "20221231": 13200.0,
     "20260630": 24750.0
    },
    "src": {
@@ -2325,12 +2322,6 @@
      12,
      "Global Order Book",
      "24,750"
-    ],
-    "y:20260331": [
-     "d4972016-6d1e-4eaa-8dd9-210436acf06c.pdf",
-     14,
-     "Global Consolidated Order Book Value",
-     "25,350"
     ],
     "q:20211231": [
      "3e70e0ec-3c88-479c-ba2c-8a4620dcdda2.pdf",
@@ -2355,12 +2346,6 @@
      2,
      "Current Global Order Book valued at Rs. cr (doc period)",
      "4900"
-    ],
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     8,
-     "Current Global Order Book valued at ~Rs. cr (doc period)",
-     "13,200"
     ],
     "q:20200331": [
      "8eb93e63-2073-4cd5-969d-a3b090d455ee.pdf",
@@ -2431,6 +2416,22 @@
      null,
      "drop_q",
      "Qualified print in src label: Order Book (Total value ~Rs 15,000 Crore)",
+     "2026-10-31"
+    ],
+    [
+     "q:20221231",
+     13200.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  Global Order Book – Line Pipes    Current Global Order Book stands at 928 KMT valued at ~ Rs. 13,200 cr    2. Sales Volum",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     25350.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: - rail ROCE:  > 20% Net Debt/ EBITDA:  < 1 Global Consolidated Order Book Value stands at ~INR 25,350 Cr 11 of 19 ",
      "2026-10-31"
     ]
    ]
@@ -3319,100 +3320,6 @@
    ]
   },
   {
-   "name": "DI Pipes Order Book",
-   "unit": "KMT",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 88.0,
-    "20230630": 149.0,
-    "20231231": 264.0,
-    "20240331": 328.0,
-    "20240630": 300.0,
-    "20240930": 356.0,
-    "20241231": 336.0,
-    "20250331": 353.0,
-    "20250630": 307.0
-   },
-   "src": {
-    "q:20250630": [
-     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "307"
-    ],
-    "q:20250331": [
-     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "353"
-    ],
-    "q:20241231": [
-     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "336"
-    ],
-    "q:20240930": [
-     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
-     6,
-     "Order Book - DI Pipes",
-     "356"
-    ],
-    "q:20240630": [
-     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
-     20,
-     "Order Book DI Pipes Volume (doc period)",
-     "300"
-    ],
-    "q:20231231": [
-     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
-     23,
-     "DI order backlog ~KMT (doc period)",
-     "264"
-    ],
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     5,
-     "order backlog of ~ KMT (doc period)",
-     "88"
-    ],
-    "q:20240331": [
-     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
-     2,
-     "Order Book DI Pipes Volume (doc period)",
-     "328"
-    ],
-    "q:20230630": [
-     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
-     4,
-     "DI order backlog of ~ KMT (doc period)",
-     "149"
-    ]
-   },
-   "latest": {
-    "q:20240630": "2024-08-08"
-   },
-   "fixed": [
-    [
-     "q:20230930",
-     246.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Strong order backlog of ~246 KMT (doc period)",
-     "2026-10-31"
-    ],
-    [
-     "q:20230331",
-     138.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: order backlog of ~138 KMT (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Line Pipes Order Book",
    "unit": "KMT",
    "kind": "level",
@@ -3795,13 +3702,108 @@
    }
   },
   {
+   "name": "DI Pipes Order Book",
+   "unit": "KMT",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 328.0,
+    "20240630": 300.0,
+    "20240930": 356.0,
+    "20241231": 336.0,
+    "20250331": 353.0,
+    "20250630": 307.0
+   },
+   "src": {
+    "q:20250630": [
+     "c7ec4fa4-5650-4342-8fb0-cca5585feaaf.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "307"
+    ],
+    "q:20250331": [
+     "1a3084d8-a802-4a89-99a3-cbd537aa585c.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "353"
+    ],
+    "q:20241231": [
+     "186e5b2a-af30-4410-950c-d424280f851e.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "336"
+    ],
+    "q:20240930": [
+     "a3397d12-4c5a-4d09-aef4-faf8c9f0f3c4.pdf",
+     6,
+     "Order Book - DI Pipes",
+     "356"
+    ],
+    "q:20240630": [
+     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
+     20,
+     "Order Book DI Pipes Volume (doc period)",
+     "300"
+    ],
+    "q:20240331": [
+     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
+     2,
+     "Order Book DI Pipes Volume (doc period)",
+     "328"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-08-08"
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     246.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Strong order backlog of ~246 KMT (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20230331",
+     138.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: order backlog of ~138 KMT (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20221231",
+     88.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: es.  Overall, the demand environment is robust and as on date we have an order backlog of ~ 88 KMT valued  at ~ Rs. 665 Cr.",
+     "2026-10-31"
+    ],
+    [
+     "q:20230630",
+     149.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: inished products i.e. DI Pipes production and sales    We have a strong order backlog of ~ 149 KMT valued at ~ INR 1,195 c",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     264.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: oQ basis. 9MFY24 sales  volume recorded at 135 KMT    We have a strong order  backlog of ~ 264 KMT valued  at ~ INR 2,185 ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "SS Bars & Pipes Order Book",
    "unit": "MT",
    "kind": "level",
    "y": {},
    "q": {
-    "20230630": 3864.0,
-    "20231231": 4204.0,
     "20240331": 5590.0,
     "20240630": 6791.0,
     "20240930": 5800.0,
@@ -3840,23 +3842,11 @@
      "Order Book SS Bars & Pipes (MT) (doc period)",
      "6,791"
     ],
-    "q:20231231": [
-     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
-     24,
-     "WSSL Order Book ~MT (doc period)",
-     "4,204"
-    ],
     "q:20240331": [
      "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
      2,
      "Order Book SS Bars & Pipes (MT) (doc period)",
      "5,590"
-    ],
-    "q:20230630": [
-     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
-     6,
-     "WSSL current Order Book ~ MT (doc period)",
-     "3,864"
     ]
    },
    "latest": {
@@ -3877,6 +3867,22 @@
      null,
      "drop_q",
      "Qualified print in src label: current Order Book stands at ~3,500 MT (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20230630",
+     3864.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: tial, at a very attractive valuation.          Outlook:  The current Order Book stands at ~ 3,864 MT valued at ~ INR 156 cr",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     4204.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: cutting- edge technology for PVCO products     Outlook:  The current Order Book stands at ~ 4,204 MT valued at ~ INR 166  c",
      "2026-10-31"
     ]
    ]
@@ -3934,61 +3940,6 @@
    }
   },
   {
-   "name": "DI Pipes Order Book Value",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 665.0,
-    "20230630": 1195.0,
-    "20231231": 2185.0,
-    "20240331": 2741.0,
-    "20240630": 2495.0
-   },
-   "src": {
-    "q:20240630": [
-     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
-     20,
-     "Order Book DI Pipes Value (doc period)",
-     "2,495"
-    ],
-    "q:20231231": [
-     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
-     23,
-     "DI order backlog valued at ~INR crore (doc period)",
-     "2,185"
-    ],
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     5,
-     "order backlog valued at ~ Rs. Cr (doc period)",
-     "665"
-    ],
-    "q:20240331": [
-     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
-     2,
-     "Order Book DI Pipes Value (doc period)",
-     "2,741"
-    ],
-    "q:20230630": [
-     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
-     4,
-     "DI order backlog valued at ~ INR crore (doc period)",
-     "1,195"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20230331",
-     1091.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: order backlog valued at ~Rs. 1091 crore (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "DRI Sales Volume",
    "unit": "KMT",
    "kind": "flow",
@@ -4035,61 +3986,6 @@
    "latest": {
     "q:20220930": "2023-02-02"
    }
-  },
-  {
-   "name": "SS Bars & Pipes Order Book Value",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220930": 170.0,
-    "20230630": 156.0,
-    "20231231": 166.0,
-    "20240331": 215.0,
-    "20240630": 303.0
-   },
-   "src": {
-    "q:20240630": [
-     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
-     20,
-     "Order Book SS Bars & Pipes Value (doc period)",
-     "303"
-    ],
-    "q:20231231": [
-     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
-     24,
-     "WSSL Order Book valued at ~INR crore (doc period)",
-     "166"
-    ],
-    "q:20220930": [
-     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
-     27,
-     "WSSL Order Book Bars and Tubes & Pipes valued at ~ Rs. cr (doc period)",
-     "170"
-    ],
-    "q:20240331": [
-     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
-     2,
-     "Order Book SS Bars & Pipes Value (doc period)",
-     "215"
-    ],
-    "q:20230630": [
-     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
-     6,
-     "WSSL Order Book valued at ~ INR crore (doc period)",
-     "156"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20230331",
-     155.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Order Book valued at ~Rs. 155 crores (doc period)",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "Sintex Plumbers",
@@ -4375,44 +4271,6 @@
    }
   },
   {
-   "name": "Line Pipes Order Book Value",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230630": 8675.0,
-    "20231231": 7200.0,
-    "20240331": 6100.0,
-    "20240630": 5710.0
-   },
-   "src": {
-    "q:20240630": [
-     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
-     20,
-     "Order Book Line Pipes (INDAS) Value (doc period)",
-     "5,710"
-    ],
-    "q:20231231": [
-     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
-     20,
-     "Order Book for Line Pipes in India and US valued at ~INR crore (doc period)",
-     "7,200"
-    ],
-    "q:20240331": [
-     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
-     2,
-     "Order Book Line Pipes (INDAS) Value (doc period)",
-     "6,100"
-    ],
-    "q:20230630": [
-     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
-     2,
-     "Order Book for Line Pipes valued at INR crore (doc period)",
-     "8,675"
-    ]
-   }
-  },
-  {
    "name": "MS Pipes Sales Volume",
    "unit": "MT",
    "kind": "flow",
@@ -4663,6 +4521,47 @@
    }
   },
   {
+   "name": "Line Pipes Order Book Value",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 8675.0,
+    "20240331": 6100.0,
+    "20240630": 5710.0
+   },
+   "src": {
+    "q:20240630": [
+     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
+     20,
+     "Order Book Line Pipes (INDAS) Value (doc period)",
+     "5,710"
+    ],
+    "q:20240331": [
+     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
+     2,
+     "Order Book Line Pipes (INDAS) Value (doc period)",
+     "6,100"
+    ],
+    "q:20230630": [
+     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
+     2,
+     "Order Book for Line Pipes valued at INR crore (doc period)",
+     "8,675"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     7200.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: 24 rose 65% YoY  o  Order Book for Line Pipes in India and US stands at 575 KMT valued at ~INR 7,200 crore  o  Our associat",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "SS Bars Capacity",
    "unit": "KMT",
    "kind": "level",
@@ -4814,6 +4713,64 @@
    }
   },
   {
+   "name": "DI Pipes Order Book Value",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 2741.0,
+    "20240630": 2495.0
+   },
+   "src": {
+    "q:20240630": [
+     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
+     20,
+     "Order Book DI Pipes Value (doc period)",
+     "2,495"
+    ],
+    "q:20240331": [
+     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
+     2,
+     "Order Book DI Pipes Value (doc period)",
+     "2,741"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230331",
+     1091.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: order backlog valued at ~Rs. 1091 crore (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20221231",
+     665.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: mand environment is robust and as on date we have an order backlog of ~ 88 KMT valued  at ~ Rs. 665 Cr.    B) Billets & TMT",
+     "2026-10-31"
+    ],
+    [
+     "q:20230630",
+     1195.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: . DI Pipes production and sales    We have a strong order backlog of ~ 149 KMT valued at ~ INR 1,195 crore and are targeti",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     2185.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: s  volume recorded at 135 KMT    We have a strong order  backlog of ~ 264 KMT valued  at ~ INR 2,185 crore     Consistent",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Export Contribution to Turnover",
    "unit": "%",
    "kind": "level",
@@ -4884,6 +4841,64 @@
      "369"
     ]
    }
+  },
+  {
+   "name": "SS Bars & Pipes Order Book Value",
+   "unit": "₹ Cr",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 215.0,
+    "20240630": 303.0
+   },
+   "src": {
+    "q:20240630": [
+     "69ff735a-ab56-40af-bf65-7e837ec3c26d.pdf",
+     20,
+     "Order Book SS Bars & Pipes Value (doc period)",
+     "303"
+    ],
+    "q:20240331": [
+     "b24f9bc2-6b43-4950-8c85-052540cc5fd1.pdf",
+     2,
+     "Order Book SS Bars & Pipes Value (doc period)",
+     "215"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230331",
+     155.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Order Book valued at ~Rs. 155 crores (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20220930",
+     170.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:     Order Book for Stainless Steel Bars: 1,387 MT & Tubes and Pipes: 1,853 MT (valued at ~ Rs. 170 cr)    Pipe Sales Volu",
+     "2026-10-31"
+    ],
+    [
+     "q:20230630",
+     156.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: ctive valuation.          Outlook:  The current Order Book stands at ~ 3,864 MT valued at ~ INR 156 crore.    The company h",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     166.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: ogy for PVCO products     Outlook:  The current Order Book stands at ~ 4,204 MT valued at ~ INR 166  crore.    After subdue",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "SS Bars Order Book",
@@ -4999,74 +5014,6 @@
    },
    "latest": {
     "q:20240630": "2024-08-08"
-   }
-  },
-  {
-   "name": "SS Bars Order Book Value",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 60.0
-   },
-   "src": {
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     6,
-     "WSSL order book Stainless Steel Bars ~Rs. crores (doc period)",
-     "60"
-    ]
-   }
-  },
-  {
-   "name": "SS Pipes Order Book Value",
-   "unit": "₹ Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 92.0
-   },
-   "src": {
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     6,
-     "WSSL order book Tubes and Pipes ~Rs. crores (doc period)",
-     "92"
-    ]
-   }
-  },
-  {
-   "name": "Sintex Plumber Contractors Added",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20251231": 1700.0
-   },
-   "src": {
-    "q:20251231": [
-     "d27a06fc-e5bb-44e0-8097-160857e72490.pdf",
-     18,
-     "plumber contractors added in the quarter",
-     "1700"
-    ]
-   }
-  },
-  {
-   "name": "Sintex Unique Billed Outlets",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 7000.0
-   },
-   "src": {
-    "q:20251231": [
-     "d27a06fc-e5bb-44e0-8097-160857e72490.pdf",
-     18,
-     "unique billed outlets",
-     "7,000"
-    ]
    }
   }
  ],

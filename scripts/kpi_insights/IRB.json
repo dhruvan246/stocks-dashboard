@@ -336,59 +336,6 @@
    }
   },
   {
-   "name": "Asset Base",
-   "unit": "Crs",
-   "kind": "level",
-   "y": {
-    "20260331": 94000.0
-   },
-   "q": {
-    "20240930": 80000.0,
-    "20250331": 80000.0,
-    "20250630": 80000.0,
-    "20250930": 80000.0,
-    "20251231": 94000.0
-   },
-   "src": {
-    "y:20260331": [
-     "ce061984-c5b4-4e33-8037-4c41d6714bbe.pdf",
-     26,
-     "asset base of Rs.94,000Crs (doc period)",
-     "94,000"
-    ],
-    "q:20250930": [
-     "68f23087-7a2d-4544-b95d-7879c2ca05c9.pdf",
-     17,
-     "asset base of Rs.80,000Crs (doc period)",
-     "80,000"
-    ],
-    "q:20251231": [
-     "aecb9488-854c-4cc6-981b-da5607a3a194.pdf",
-     15,
-     "Asset Base of approx. Rs.94,000Crs (doc period)",
-     "94,000"
-    ],
-    "q:20240930": [
-     "986fc519-7852-4d9d-ab45-d85ee7ba5d6a.pdf",
-     20,
-     "asset base of approx. Rs.80,000 Crs. (doc period)",
-     "80,000"
-    ],
-    "q:20250630": [
-     "863664da-c147-469c-ab77-f41a9e9a795e.pdf",
-     17,
-     "asset base of approx. Rs.80,000Crs. in 12 States (doc period)",
-     "80,000"
-    ],
-    "q:20250331": [
-     "f925de4e-cec2-4901-9682-59f4eb10e31c.pdf",
-     26,
-     "asset base of approx. Rs.80,000 Crs. in 12 States (doc period)",
-     "80,000"
-    ]
-   }
-  },
-  {
    "name": "North-South Highway Connectivity Share",
    "unit": "%",
    "kind": "level",
@@ -447,62 +394,6 @@
      null,
      "drop_y",
      "Qualified print in src label: ~12% share in India's North South Highway connectivity (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
-   "name": "Operational Lane Km",
-   "unit": "km",
-   "kind": "level",
-   "y": {
-    "20260331": 17500.0
-   },
-   "q": {
-    "20240930": 15500.0,
-    "20250630": 15500.0,
-    "20250930": 15500.0,
-    "20251231": 17500.0
-   },
-   "src": {
-    "y:20260331": [
-     "ce061984-c5b4-4e33-8037-4c41d6714bbe.pdf",
-     27,
-     "approx. 17,500 Operational Lane Kms (doc period)",
-     "17,500"
-    ],
-    "q:20250930": [
-     "68f23087-7a2d-4544-b95d-7879c2ca05c9.pdf",
-     17,
-     "of which 15,500 Lane Kms are under operations at present (doc period)",
-     "15,500"
-    ],
-    "q:20251231": [
-     "aecb9488-854c-4cc6-981b-da5607a3a194.pdf",
-     15,
-     "approx. 17,500 Operational Lane Kms (doc period)",
-     "17,500"
-    ],
-    "q:20240930": [
-     "986fc519-7852-4d9d-ab45-d85ee7ba5d6a.pdf",
-     20,
-     "15,500 Lane Kms are under operations at present",
-     "15,500"
-    ],
-    "q:20250630": [
-     "863664da-c147-469c-ab77-f41a9e9a795e.pdf",
-     17,
-     "15,500 Lane Kms are under operations at present",
-     "15,500"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20250331",
-     15500.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: approx.15,500 Lane Kms is under operations at present",
      "2026-10-31"
     ]
    ]
@@ -689,29 +580,120 @@
    }
   },
   {
-   "name": "FASTag Compliant Lanes",
-   "unit": "count",
+   "name": "Operational Lane Km",
+   "unit": "km",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 15500.0,
+    "20250630": 15500.0,
+    "20250930": 15500.0
+   },
+   "src": {
+    "q:20250930": [
+     "68f23087-7a2d-4544-b95d-7879c2ca05c9.pdf",
+     17,
+     "of which 15,500 Lane Kms are under operations at present (doc period)",
+     "15,500"
+    ],
+    "q:20240930": [
+     "986fc519-7852-4d9d-ab45-d85ee7ba5d6a.pdf",
+     20,
+     "15,500 Lane Kms are under operations at present",
+     "15,500"
+    ],
+    "q:20250630": [
+     "863664da-c147-469c-ab77-f41a9e9a795e.pdf",
+     17,
+     "15,500 Lane Kms are under operations at present",
+     "15,500"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     15500.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: approx.15,500 Lane Kms is under operations at present",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     17500.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: ading and the Largest Toll Road Concessionaire with Assets Portfolio of 28  Highways with approx. 17,500 Operational Lane K",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     17500.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: ading and the Largest Toll Road Concessionaire with Assets Portfolio  of 28 Highways with approx. 17,500 Operational Lane K",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Asset Base",
+   "unit": "Crs",
    "kind": "level",
    "y": {
-    "20260331": 1000.0
+    "20260331": 94000.0
    },
    "q": {
-    "20251231": 1000.0
+    "20250930": 80000.0
    },
    "src": {
     "y:20260331": [
      "ce061984-c5b4-4e33-8037-4c41d6714bbe.pdf",
-     27,
-     "approx. 1,000 FASTag compliant lanes (doc period)",
-     "1,000"
+     26,
+     "asset base of Rs.94,000Crs (doc period)",
+     "94,000"
     ],
-    "q:20251231": [
-     "aecb9488-854c-4cc6-981b-da5607a3a194.pdf",
-     15,
-     "approx. 1,000 FASTag compliant lanes (doc period)",
-     "1,000"
+    "q:20250930": [
+     "68f23087-7a2d-4544-b95d-7879c2ca05c9.pdf",
+     17,
+     "asset base of Rs.80,000Crs (doc period)",
+     "80,000"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     94000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: sets Portfolio  of 28 Highways with approx. 17,500 Operational Lane Kms and Asset Base of approx. Rs.94,000Crs  spread acro",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     80000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: vate toll roads and highways infrastructure developer in India, IRB has an  asset base of approx. Rs.80,000 Crs. in 12 Stat",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     80000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: vate toll roads and highways infrastructure developer in India, IRB has an  asset base of approx. Rs.80,000Crs. in 12 State",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     80000.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: vate toll roads and highways infrastructure developer in India, IRB has an  asset base of approx. Rs.80,000 Crs. in 12 Stat",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "FASTag Penetration",
@@ -737,49 +719,6 @@
      "97"
     ]
    }
-  },
-  {
-   "name": "Golden Quadrilateral Connectivity Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 16.0
-   },
-   "q": {
-    "20251231": 16.0
-   },
-   "src": {
-    "y:20260331": [
-     "ce061984-c5b4-4e33-8037-4c41d6714bbe.pdf",
-     27,
-     "approx. 16% share in India's prestigious Golden Quadrilateral connectivity (doc ",
-     "16"
-    ],
-    "q:20251231": [
-     "aecb9488-854c-4cc6-981b-da5607a3a194.pdf",
-     15,
-     "approx. 16% share in India's prestigious Golden Quadrilateral connectivity (doc ",
-     "16"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20250630",
-     14.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: around 14% share in the prestigious Golden Quadrilateral Highway Project (doc pe",
-     "2026-10-31"
-    ],
-    [
-     "q:20250331",
-     14.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: around 14% share in the prestigious Golden Quadrilateral Highway Project (doc pe",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "Toll Plazas",
