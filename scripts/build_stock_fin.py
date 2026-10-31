@@ -264,20 +264,22 @@ def main():
             nfill = nover = 0
             for sym, qs in abscf.items():
                 if sym.startswith("_") or not isinstance(qs, dict): continue
-                for qe, cell in qs.items():
-                    if not isinstance(cell, dict): continue
-                    b = cell.get("b") or "c"
-                    tgt = xtra.setdefault(sym, {}).setdefault(qe, {}).setdefault(b, {})
-                    added = False
-                    # 'xo' = fields whose PRINTED value is proven over the XBRL tag (the statement's own cash identity
-                    # closes with the print and not with the tag — CYIENT FY22 tagged CFO 1,060.7 against a printed
-                    # 634.5; runbook §168l). Only those fields override; everything else stays gap-fill.
-                    xo = set(cell.get("xo") or ())
-                    for k, v in cell.items():
-                        if k in PDF_FIELDS and v is not None and (tgt.get(k) is None or k in xo):
-                            if tgt.get(k) is not None and k in xo and tgt[k] != v: nover += 1
-                            tgt[k] = v; added = True
-                    if added: tgt["pdf"] = 1; nfill += 1
+                for qe, top in qs.items():
+                    if not isinstance(top, dict): continue
+                    # 'alt' = the same year on the other basis (one filing prints both; the page shows each under its own basis)
+                    for cell in [top] + list(top.get("alt") or []):
+                        b = cell.get("b") or "c"
+                        tgt = xtra.setdefault(sym, {}).setdefault(qe, {}).setdefault(b, {})
+                        added = False
+                        # 'xo' = fields whose PRINTED value is proven over the XBRL tag (the statement's own cash identity
+                        # closes with the print and not with the tag — CYIENT FY22 tagged CFO 1,060.7 against a printed
+                        # 634.5; runbook §168l). Only those fields override; everything else stays gap-fill.
+                        xo = set(cell.get("xo") or ())
+                        for k, v in cell.items():
+                            if k in PDF_FIELDS and v is not None and (tgt.get(k) is None or k in xo):
+                                if tgt.get(k) is not None and k in xo and tgt[k] != v: nover += 1
+                                tgt[k] = v; added = True
+                        if added: tgt["pdf"] = 1; nfill += 1
             print("annual BS/CF PDF fills: %d cells gap-filled, %d XBRL values overridden by proven prints (from %s)"
                   % (nfill, nover, os.path.basename(abscf_p)))
         except Exception as e:

@@ -260,6 +260,12 @@ def main():
                 for f in ("cfo", "cfi", "cff"):   # the statement's own cash identity failed: keep the BS,
                     cell.pop(f, None)             # never land a cash flow that doesn't add up
                 cfdrop.append("%s %s" % (sym, e.get("fy")))
+            prev = (ledger.get(sym) or {}).get(qe_of(e)) or {}
+            alts = list(prev.get("alt") or [])              # a year's other-basis cell is kept, not replaced
+            if prev and (prev.get("b") or "c") != cell["b"]:
+                alts.append({k: v for k, v in prev.items() if k != "alt"})
+            alts = [a for a in alts if (a.get("b") or "c") != cell["b"]]
+            if alts: cell["alt"] = alts
             ledger.setdefault(sym, {})[qe_of(e)] = cell
             landed += 1
     json.dump(ledger, open(LEDGER, "w"), separators=(",", ":"), sort_keys=True)
