@@ -82,89 +82,6 @@
  },
  "metrics": [
   {
-   "name": "Storage Tank Count — Verasco Terminal",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230930": 30.0,
-    "20231231": 30.0,
-    "20241231": 30.0
-   },
-   "src": {
-    "q:20231231": [
-     "21de6c94-9d61-4514-a5c1-6652c1e05c14.pdf",
-     16,
-     "30 tanks (Verasco Hamriyah terminal) (doc period)",
-     "30"
-    ],
-    "q:20230930": [
-     "a0ef047f-8454-4cc1-8d69-ee0e5acf0583.pdf",
-     16,
-     "30 tanks (Verasco Hamriyah terminal) (doc period)",
-     "30"
-    ],
-    "q:20241231": [
-     "04c87b1e-5f00-4f59-bfb7-9671d2d905ec.pdf",
-     18,
-     "Tanks: 30 (Corporate Presentation March 2025; latest period 9M FY25)",
-     "30"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     30.0,
-     null,
-     "drop_y",
-     "att8 04c87b1e (cover letter 17-Mar-2025, 'Corporate Presentation March 2025'); latest period in the deck is 9M FY25 (p39/41 '9m FY 25'); page prints no date. Sl",
-     "2026-10-21"
-    ],
-    [
-     "q:20241231",
-     null,
-     30.0,
-     "set_q",
-     "att8 04c87b1e (cover letter 17-Mar-2025, 'Corporate Presentation March 2025'); latest period in the deck is 9M FY25 (p39/41 '9m FY 25'); page prints no date. Sl",
-     "2026-10-21"
-    ]
-   ]
-  },
-  {
-   "name": "Textile Production Capacity",
-   "unit": "Lakh Metres/day",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230930": 1.0,
-    "20231231": 1.0
-   },
-   "src": {
-    "q:20231231": [
-     "21de6c94-9d61-4514-a5c1-6652c1e05c14.pdf",
-     18,
-     "installed production capacity of 1 Lakh meters per day (doc period)",
-     "1"
-    ],
-    "q:20230930": [
-     "a0ef047f-8454-4cc1-8d69-ee0e5acf0583.pdf",
-     18,
-     "installed production capacity of 1 Lakh meters per day (doc period)",
-     "1"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     1.0,
-     null,
-     "drop_y",
-     "att8 04c87b1e p36 'installed production capacity of 1 Lakh meters per day' undated; corporate deck 17-Mar-2025 (p1), no reporting period; FY25 end after doc dat",
-     "2026-10-21"
-    ]
-   ]
-  },
-  {
    "name": "Annual Steel Production Capacity — SDHI Shipyard",
    "unit": "'000 MT",
    "kind": "level",
@@ -301,6 +218,57 @@
      "set_q",
      "att8 04c87b1e (cover letter 17-Mar-2025, 'Corporate Presentation March 2025'); latest period in the deck is 9M FY25 (p39/41 '9m FY 25'); page prints no date. Sl",
      "2026-10-21"
+    ]
+   ]
+  },
+  {
+   "name": "Storage Tank Count — Verasco Terminal",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 30.0
+   },
+   "src": {
+    "q:20241231": [
+     "04c87b1e-5f00-4f59-bfb7-9671d2d905ec.pdf",
+     18,
+     "Tanks: 30 (Corporate Presentation March 2025; latest period 9M FY25)",
+     "30"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     30.0,
+     null,
+     "drop_y",
+     "att8 04c87b1e (cover letter 17-Mar-2025, 'Corporate Presentation March 2025'); latest period in the deck is 9M FY25 (p39/41 '9m FY 25'); page prints no date. Sl",
+     "2026-10-21"
+    ],
+    [
+     "q:20241231",
+     null,
+     30.0,
+     "set_q",
+     "att8 04c87b1e (cover letter 17-Mar-2025, 'Corporate Presentation March 2025'); latest period in the deck is 9M FY25 (p39/41 '9m FY 25'); page prints no date. Sl",
+     "2026-10-21"
+    ],
+    [
+     "q:20231231",
+     30.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): arashtra govt  Veritas Polychem  Pvt. Ltd. (100% subsidiary of VIL) •  Terminal located in Hamriyah, UAE is a ",
+     "2026-10-31"
+    ],
+    [
+     "q:20230930",
+     30.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): arashtra govt  Veritas Polychem  Pvt. Ltd. (100% subsidiary of VIL) •  Terminal located in Hamriyah, UAE is a ",
+     "2026-10-31"
     ]
    ]
   }

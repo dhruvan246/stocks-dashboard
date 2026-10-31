@@ -47,72 +47,6 @@
  },
  "metrics": [
   {
-   "name": "Cartridges Manufacturing Capacity",
-   "unit": "Million units",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 40.0,
-    "20250930": 40.0
-   },
-   "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     22,
-     "Cartridges: 40 million (doc period)",
-     "40"
-    ],
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "40million cartridges",
-     "40"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     40.0,
-     null,
-     "drop_y",
-     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
-     "2026-10-21"
-    ],
-    [
-     "q:20241231",
-     null,
-     40.0,
-     "set_q",
-     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
-     "2026-10-21"
-    ]
-   ]
-  },
-  {
-   "name": "DDC Device Platforms",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 9.0,
-    "20250930": 11.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     16,
-     "9 device platforms (doc period)",
-     "9"
-    ],
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     9,
-     "total number of device platforms to 11 (doc period)",
-     "11"
-    ]
-   }
-  },
-  {
    "name": "Non-permanent Workers (Total)",
    "unit": "count",
    "kind": "level",
@@ -233,63 +167,47 @@
    }
   },
   {
-   "name": "Soft Gelatin Capsules Manufacturing Capacity",
-   "unit": "billion",
+   "name": "Cartridges Manufacturing Capacity",
+   "unit": "Million units",
    "kind": "level",
-   "y": {
-    "20250331": 2.4
-   },
+   "y": {},
    "q": {
-    "20250930": 2.4
+    "20241231": 40.0
    },
    "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     22,
-     "Capsules: 2.4 billion (doc period)",
-     "2.4"
+    "q:20241231": [
+     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
+     9,
+     "40million cartridges",
+     "40"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     40.0,
+     null,
+     "drop_y",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
     ],
-    "y:20250331": [
-     "bc7ae255-5594-44e0-acf6-1b6c228a3a31.pdf",
-     68,
-     "already expanded our softgel capsule capacity ... to 2.4 billion units",
-     "2.4"
+    [
+     "q:20241231",
+     null,
+     40.0,
+     "set_q",
+     "att8 df850516 (Q3FY25 press release + investor communication, 29-Jan-2025, p1/p2): p11 capex-plan table FY25..FY28 printed before FY25 ended (plan); p9 prints c",
+     "2026-10-21"
+    ],
+    [
+     "q:20250930",
+     40.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): roducts site Biologics development centre Sterile Injectables Soft gelatin capsules1 Penicillin fill-finish Mi",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "ANDAs Commercialized",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 19.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     15,
-     "19 ANDAs commercialized (doc period)",
-     "19"
-    ]
-   }
-  },
-  {
-   "name": "Biologics Development Projects",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 6.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     16,
-     "6 development projects initiated (doc period)",
-     "6"
-    ]
-   }
+   ]
   },
   {
    "name": "Critical Suppliers",
@@ -305,23 +223,6 @@
      125,
      "Critical suppliers",
      "88"
-    ]
-   }
-  },
-  {
-   "name": "Customers Common Across Multiple Modalities",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 12.0
-   },
-   "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     9,
-     "Customers common across multiple modalities increase to 12 (doc period)",
-     "12"
     ]
    }
   },
@@ -378,23 +279,6 @@
    }
   },
   {
-   "name": "GLP-1 Customers",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 20.0
-   },
-   "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "GLP-1 customers (doc period)",
-     "20"
-    ]
-   }
-  },
-  {
    "name": "International Markets Served (Countries)",
    "unit": "count",
    "kind": "level",
@@ -425,40 +309,6 @@
      21,
      "5 State-of-the-Art Facilities",
      "5"
-    ]
-   }
-  },
-  {
-   "name": "NCE-1 and NBE Programs",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 9.0
-   },
-   "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     9,
-     "9 NCE-1 and NBE programs running on track (doc period)",
-     "9"
-    ]
-   }
-  },
-  {
-   "name": "New MSAs & Licensing Agreements Signed (quarter)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20250930": 9.0
-   },
-   "src": {
-    "q:20250930": [
-     "14e30e87-875e-4221-a841-51cbdcec660a.pdf",
-     9,
-     "Signed 9 new MSAs and licensing agreements (doc period)",
-     "9"
     ]
    }
   },
@@ -498,21 +348,31 @@
    ]
   },
   {
-   "name": "Regulatory & Customer Audits (trailing 2 years)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 54.0
+   "name": "Soft Gelatin Capsules Manufacturing Capacity",
+   "unit": "billion",
+   "kind": "level",
+   "y": {
+    "20250331": 2.4
    },
+   "q": {},
    "src": {
-    "q:20241231": [
-     "df850516-13a1-4ec4-b1a6-46f09ee00e28.pdf",
-     9,
-     "Successful regulatory, customer audits in last 2 years (doc period)",
-     "54"
+    "y:20250331": [
+     "bc7ae255-5594-44e0-acf6-1b6c228a3a31.pdf",
+     68,
+     "already expanded our softgel capsule capacity ... to 2.4 billion units",
+     "2.4"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     2.4,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): ables Soft gelatin capsules1 Penicillin fill-finish Microbial: 1x1KL SS Cartridges: 40 million Microbial: 1x 5",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Suppliers Engaged",

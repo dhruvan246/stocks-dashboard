@@ -1061,73 +1061,6 @@
    }
   },
   {
-   "name": "Manufacturing Facilities",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 5.0
-   },
-   "q": {
-    "20191231": 6.0,
-    "20200630": 6.0,
-    "20201231": 6.0,
-    "20210331": 6.0,
-    "20210630": 6.0,
-    "20221231": 5.0,
-    "20240930": 5.0
-   },
-   "src": {
-    "y:20260331": [
-     "3ac035f5-0911-48ef-b59b-4b6eda828213.pdf",
-     63,
-     "With 5 manufacturing sites (doc period)",
-     "5"
-    ],
-    "q:20240930": [
-     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
-     5,
-     "Manufacturing Plants (doc period)",
-     "5"
-    ],
-    "q:20200630": [
-     "131eea77-9b37-47b1-b03f-9a2a811af947.pdf",
-     3,
-     "manufacturing sites (doc period)",
-     "6"
-    ],
-    "q:20191231": [
-     "4171b08d-c4c4-4749-b35d-5bdbc22b963b.pdf",
-     3,
-     "manufacturing sites (doc period)",
-     "6"
-    ],
-    "q:20221231": [
-     "509fba5c-aa39-4efb-bfc6-5afd7eb66c9a.pdf",
-     3,
-     "world class manufacturing facilities in India (doc period)",
-     "5"
-    ],
-    "q:20210630": [
-     "56584ca7-055e-48cf-97a0-6fa56eb8ba5b.pdf",
-     3,
-     "manufacturing sites (doc period)",
-     "6"
-    ],
-    "q:20210331": [
-     "8afae740-a273-4f33-8a48-7dbe78549be9.pdf",
-     4,
-     "manufacturing sites (doc period)",
-     "6"
-    ],
-    "q:20201231": [
-     "c49eb53b-0ca5-4e7e-9280-c6c6ee70a2e9.pdf",
-     3,
-     "manufacturing sites (doc period)",
-     "6"
-    ]
-   }
-  },
-  {
    "name": "Export Orders",
    "unit": "BINR",
    "kind": "flow",
@@ -1246,6 +1179,77 @@
    "latest": {
     "y:20240331": "2024-11-08"
    }
+  },
+  {
+   "name": "Manufacturing Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 5.0
+   },
+   "q": {
+    "20200630": 6.0,
+    "20201231": 6.0,
+    "20210331": 6.0,
+    "20210630": 6.0,
+    "20240930": 5.0
+   },
+   "src": {
+    "y:20260331": [
+     "3ac035f5-0911-48ef-b59b-4b6eda828213.pdf",
+     63,
+     "With 5 manufacturing sites (doc period)",
+     "5"
+    ],
+    "q:20240930": [
+     "93150fa0-6d9a-42a2-a3e3-5a11a4e6bba6.pdf",
+     5,
+     "Manufacturing Plants (doc period)",
+     "5"
+    ],
+    "q:20200630": [
+     "131eea77-9b37-47b1-b03f-9a2a811af947.pdf",
+     3,
+     "manufacturing sites (doc period)",
+     "6"
+    ],
+    "q:20210630": [
+     "56584ca7-055e-48cf-97a0-6fa56eb8ba5b.pdf",
+     3,
+     "manufacturing sites (doc period)",
+     "6"
+    ],
+    "q:20210331": [
+     "8afae740-a273-4f33-8a48-7dbe78549be9.pdf",
+     4,
+     "manufacturing sites (doc period)",
+     "6"
+    ],
+    "q:20201231": [
+     "c49eb53b-0ca5-4e7e-9280-c6c6ee70a2e9.pdf",
+     3,
+     "manufacturing sites (doc period)",
+     "6"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20191231",
+     6.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 400/ 220/ 66kV GIS Substation at Wangtoo for H.P. Power Transmission Corporation Limited  400/220 kV GIS subst",
+     "2026-10-31"
+    ],
+    [
+     "q:20221231",
+     5.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): olutions for Substation Engineering & Construction, Flexible AC Transmission  Systems, High Voltage DC & Servi",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Number of Dealers/Distributors",

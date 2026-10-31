@@ -2049,51 +2049,6 @@
    }
   },
   {
-   "name": "Signed License Fees",
-   "unit": "US$ million",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20220630": 26.2,
-    "20230331": 28.8,
-    "20230630": 27.4,
-    "20230930": 40.5,
-    "20231231": 49.5
-   },
-   "src": {
-    "q:20220630": [
-     "b58c661f-1f86-4ca2-a30d-b47e8ff32ca7.pdf",
-     2,
-     "sign licenses of $26.2 million (doc period)",
-     "26.2"
-    ],
-    "q:20230331": [
-     "cc85c2dd-6ac1-458f-9547-b61d849dc05c.pdf",
-     3,
-     "signed license fees of $28.8 million during this quarter (doc period)",
-     "28.8"
-    ],
-    "q:20230630": [
-     "5535d56c-fa10-49ee-bd33-3dbcbbebe1cb.pdf",
-     2,
-     "license booking of $27.4 million (doc period)",
-     "27.4"
-    ],
-    "q:20230930": [
-     "c60999f5-d470-4bfa-885b-140fac580510.pdf",
-     3,
-     "signed license fees of $40.5 million during this quarter (doc period)",
-     "40.5"
-    ],
-    "q:20231231": [
-     "ca3914b4-61a9-4420-9060-d5ff377d8ea8.pdf",
-     3,
-     "signed license fees of $49.5 million during the quarter (doc period)",
-     "49.5"
-    ]
-   }
-  },
-  {
    "name": "Employees (Standalone)",
    "unit": "count",
    "kind": "level",
@@ -2264,37 +2219,6 @@
    }
   },
   {
-   "name": "Customers Went Live",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20230331": 13.0,
-    "20230930": 11.0,
-    "20231231": 19.0
-   },
-   "src": {
-    "q:20230331": [
-     "cc85c2dd-6ac1-458f-9547-b61d849dc05c.pdf",
-     3,
-     "customers went live during the quarter (doc period)",
-     "13"
-    ],
-    "q:20230930": [
-     "c60999f5-d470-4bfa-885b-140fac580510.pdf",
-     3,
-     "customers went live during the quarter (doc period)",
-     "11"
-    ],
-    "q:20231231": [
-     "ca3914b4-61a9-4420-9060-d5ff377d8ea8.pdf",
-     3,
-     "customers went live during the quarter (doc period)",
-     "19"
-    ]
-   }
-  },
-  {
    "name": "Products Revenue Mix - Consulting Fees Share",
    "unit": "%",
    "kind": "level",
@@ -2427,6 +2351,90 @@
      "30"
     ]
    }
+  },
+  {
+   "name": "Signed License Fees",
+   "unit": "US$ million",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220630": 26.2,
+    "20230331": 28.8,
+    "20230630": 27.4
+   },
+   "src": {
+    "q:20220630": [
+     "b58c661f-1f86-4ca2-a30d-b47e8ff32ca7.pdf",
+     2,
+     "sign licenses of $26.2 million (doc period)",
+     "26.2"
+    ],
+    "q:20230331": [
+     "cc85c2dd-6ac1-458f-9547-b61d849dc05c.pdf",
+     3,
+     "signed license fees of $28.8 million during this quarter (doc period)",
+     "28.8"
+    ],
+    "q:20230630": [
+     "5535d56c-fa10-49ee-bd33-3dbcbbebe1cb.pdf",
+     2,
+     "license booking of $27.4 million (doc period)",
+     "27.4"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     40.5,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):         2  Business Highlights    The company signed license fees of $40.5 million during this quarter with c",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     49.5,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):         2  Business Highlights    The Company signed license fees of $49.5 million during the quarter with cu",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Customers Went Live",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 13.0
+   },
+   "src": {
+    "q:20230331": [
+     "cc85c2dd-6ac1-458f-9547-b61d849dc05c.pdf",
+     3,
+     "customers went live during the quarter (doc period)",
+     "13"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     11.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):        2  Business Highlights    The company signed license fees of $40.5 million during this quarter with cu",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     19.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):         2  Business Highlights    The Company signed license fees of $49.5 million during the quarter with cu",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -2795,5 +2803,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-11"
+ "updated": "2026-10-31"
 }

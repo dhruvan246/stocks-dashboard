@@ -4959,38 +4959,6 @@
    }
   },
   {
-   "name": "E-Bike Share of Delivery Fleet",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20240331": 47.0,
-    "20260331": 67.0
-   },
-   "q": {
-    "20230930": 40.0
-   },
-   "src": {
-    "y:20260331": [
-     "11e51e5f-d3ec-4696-a970-ba0262b4f413.pdf",
-     44,
-     "proportion of e-bikes and e-cycles in the delivery fleet increased to 67%",
-     "67"
-    ],
-    "y:20240331": [
-     "5e1d0ad3-9347-4ee4-be4e-383b3c8c3778.pdf",
-     19,
-     "11,500+ e-bikes which is now 47% of our overall fleet (doc period)",
-     "47"
-    ],
-    "q:20230930": [
-     "e77684dc-83cd-4089-b733-a21c722cfdf6.pdf",
-     13,
-     "share of EVs in fleet (doc period)",
-     "40"
-    ]
-   }
-  },
-  {
    "name": "Net Store Additions (Worldwide, Annual)",
    "unit": "count",
    "kind": "flow",
@@ -5020,6 +4988,40 @@
      "356"
     ]
    }
+  },
+  {
+   "name": "E-Bike Share of Delivery Fleet",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20240331": 47.0,
+    "20260331": 67.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "11e51e5f-d3ec-4696-a970-ba0262b4f413.pdf",
+     44,
+     "proportion of e-bikes and e-cycles in the delivery fleet increased to 67%",
+     "67"
+    ],
+    "y:20240331": [
+     "5e1d0ad3-9347-4ee4-be4e-383b3c8c3778.pdf",
+     19,
+     "11,500+ e-bikes which is now 47% of our overall fleet (doc period)",
+     "47"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     40.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ear Sustainability Progress Responsible  Sourcing Baking Goodness Emissions and Energy  Management Benefit  Pe",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total Employee & Worker Headcount",
@@ -5073,60 +5075,6 @@
    }
   },
   {
-   "name": "Foodpark & Distribution Center Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 19.0
-   },
-   "src": {
-    "q:20250331": [
-     "119f844b-cf01-42fc-a603-981a1c6bd070.pdf",
-     3,
-     "Foodparks and Distribution centers (doc period)",
-     "19"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20260331",
-     25.0,
-     null,
-     "drop_y",
-     "Cited page prints it only qualified: s Food Operate with Excellence 4.3/5 CSAT Score(1) 300+ Multi-temperature logistics fleet 25+ Foodparks and Distribution ce",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
-   "name": "Multi-temperature Logistics Fleet Size",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 230.0
-   },
-   "src": {
-    "q:20250331": [
-     "119f844b-cf01-42fc-a603-981a1c6bd070.pdf",
-     3,
-     "Multi-temperature logistics fleet (doc period)",
-     "230"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20260331",
-     300.0,
-     null,
-     "drop_y",
-     "Cited page prints it only qualified: urpose Breakthrough Technology Delicious Food Operate with Excellence 4.3/5 CSAT Score(1) 300+ Multi-temperature logistics ",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "PNG-Enabled Store Count",
    "unit": "count",
    "kind": "level",
@@ -5174,23 +5122,6 @@
      19,
      "34% of workforce are now women (doc period)",
      "34"
-    ]
-   }
-  },
-  {
-   "name": "Women Share of Workforce",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230930": 33.0
-   },
-   "src": {
-    "q:20230930": [
-     "e77684dc-83cd-4089-b733-a21c722cfdf6.pdf",
-     13,
-     "33% of workforce are women (doc period)",
-     "33"
     ]
    }
   }

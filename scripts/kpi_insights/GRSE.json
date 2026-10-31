@@ -381,37 +381,6 @@
    }
   },
   {
-   "name": "Concurrent Shipbuilding Capacity",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 20.0,
-    "20240930": 20.0,
-    "20251231": 28.0
-   },
-   "src": {
-    "q:20251231": [
-     "8bb06258-ae24-4bc2-9e11-554ec1f79dbb.pdf",
-     4,
-     "can undertake concurrent construction of 28 ships at a time (doc period)",
-     "28"
-    ],
-    "q:20240930": [
-     "e4885a2e-3e52-4fd3-b371-ed2924c6d3f3.pdf",
-     3,
-     "concurrent construction of 20 ships at a time (doc period)",
-     "20"
-    ],
-    "q:20240630": [
-     "58e34c96-10c6-4cee-9ea3-e023f9484e26.pdf",
-     3,
-     "concurrent construction of 20 ships at a time (doc period)",
-     "20"
-    ]
-   }
-  },
-  {
    "name": "Export Revenue (VoP)",
    "unit": "INR Crore",
    "kind": "flow",
@@ -719,6 +688,41 @@
      "14"
     ]
    }
+  },
+  {
+   "name": "Concurrent Shipbuilding Capacity",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 20.0
+   },
+   "src": {
+    "q:20240930": [
+     "e4885a2e-3e52-4fd3-b371-ed2924c6d3f3.pdf",
+     3,
+     "concurrent construction of 20 ships at a time (doc period)",
+     "20"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     28.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  India for Four Years  in a row. GRSE embraced infrastructure modernization over past decades and can undertak",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     20.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): About Garden Reach Shipbuilders & Engineers Ltd BSE: 542011 NSE: GRSE (www.grse.in)  The journey of Garden Rea",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Export Countries Served",

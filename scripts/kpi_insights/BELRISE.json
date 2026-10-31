@@ -698,31 +698,6 @@
    ]
   },
   {
-   "name": "Aggregate Capacity Utilization",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 64.0
-   },
-   "q": {
-    "20250630": 65.0
-   },
-   "src": {
-    "y:20250331": [
-     "055bd89f-011a-4139-a0b5-c5cf4ea5321b.pdf",
-     16,
-     "Aggregate Capacity Utilization (doc period)",
-     "64"
-    ],
-    "q:20250630": [
-     "4d4f728b-262d-4a7b-882f-544c238ccf3b.pdf",
-     16,
-     "Aggregate Capacity Utilization (doc period)",
-     "65"
-    ]
-   }
-  },
-  {
    "name": "Exports (% of Manufacturing Revenue)",
    "unit": "%",
    "kind": "level",
@@ -795,6 +770,33 @@
      "1.2"
     ]
    }
+  },
+  {
+   "name": "Aggregate Capacity Utilization",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 65.0
+   },
+   "src": {
+    "q:20250630": [
+     "4d4f728b-262d-4a7b-882f-544c238ccf3b.pdf",
+     16,
+     "Aggregate Capacity Utilization (doc period)",
+     "65"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     64.0,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE):  Production Capacity 60,000+ MTPA Stamping Capacity  450+ machines up to  1,200 T Plastic Processing Capacity ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Manufacturing Facilities",

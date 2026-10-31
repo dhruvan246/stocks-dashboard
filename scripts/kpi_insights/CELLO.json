@@ -89,62 +89,6 @@
  },
  "metrics": [
   {
-   "name": "Own Manufacturing Facilities",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230930": 13.0,
-    "20231231": 13.0,
-    "20240331": 14.0,
-    "20250331": 14.0,
-    "20260331": 14.0,
-    "20260630": 14.0
-   },
-   "src": {
-    "q:20230930": [
-     "bbadf40f-80bd-4be6-af84-7a54c4ad9c36.pdf",
-     13,
-     "Own manufacturing facilities (As on 30th September 2023)",
-     "13"
-    ],
-    "q:20231231": [
-     "bd817162-1784-4dff-b550-e82d0e82e1d4.pdf",
-     11,
-     "Own manufacturing facilities (As on 31st December 2023)",
-     "13"
-    ],
-    "q:20240331": [
-     "5da428ab-ab1d-4e8f-9e34-a3f59a060143.pdf",
-     13,
-     "Own manufacturing facilities (As on 31st March 2024)",
-     "14"
-    ],
-    "q:20250331": [
-     "db5fca3f-c490-4075-95d8-7eec427174b0.pdf",
-     11,
-     "Own manufacturing facilities (As on 31st March 2025)",
-     "14"
-    ],
-    "q:20260331": [
-     "3c3d0e64-9b0a-4f4d-ae22-1eea21065cd0.pdf",
-     11,
-     "Own manufacturing facilities (As on 31st March 2026)",
-     "14"
-    ],
-    "q:20260630": [
-     "25b9f669-af48-4555-bf0a-52039ef4f3ea.pdf",
-     11,
-     "Manufacturing Facilities (doc period)",
-     "14"
-    ]
-   },
-   "latest": {
-    "q:20240331": "2025-02-12",
-    "q:20250331": "2026-02-14"
-   }
-  },
-  {
    "name": "Consumer Houseware Distributors",
    "unit": "count",
    "kind": "level",
@@ -245,6 +189,65 @@
     "q:20240331": "2025-02-12",
     "q:20250331": "2025-08-12"
    }
+  },
+  {
+   "name": "Own Manufacturing Facilities",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230930": 13.0,
+    "20231231": 13.0,
+    "20240331": 14.0,
+    "20250331": 14.0,
+    "20260331": 14.0
+   },
+   "src": {
+    "q:20230930": [
+     "bbadf40f-80bd-4be6-af84-7a54c4ad9c36.pdf",
+     13,
+     "Own manufacturing facilities (As on 30th September 2023)",
+     "13"
+    ],
+    "q:20231231": [
+     "bd817162-1784-4dff-b550-e82d0e82e1d4.pdf",
+     11,
+     "Own manufacturing facilities (As on 31st December 2023)",
+     "13"
+    ],
+    "q:20240331": [
+     "5da428ab-ab1d-4e8f-9e34-a3f59a060143.pdf",
+     13,
+     "Own manufacturing facilities (As on 31st March 2024)",
+     "14"
+    ],
+    "q:20250331": [
+     "db5fca3f-c490-4075-95d8-7eec427174b0.pdf",
+     11,
+     "Own manufacturing facilities (As on 31st March 2025)",
+     "14"
+    ],
+    "q:20260331": [
+     "3c3d0e64-9b0a-4f4d-ae22-1eea21065cd0.pdf",
+     11,
+     "Own manufacturing facilities (As on 31st March 2026)",
+     "14"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2025-02-12",
+    "q:20250331": "2026-02-14"
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     14.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): cross all material types to have an in-house glassware manufacturing unit in  India 77% FY26 revenues derived ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Writing Instruments Super-stockists",

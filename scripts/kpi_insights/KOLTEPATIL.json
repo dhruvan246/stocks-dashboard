@@ -2642,30 +2642,6 @@
    ]
   },
   {
-   "name": "Area Delivered",
-   "unit": "Mn. Sq. Ft.",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 28.0,
-    "20260630": 33.0
-   },
-   "src": {
-    "q:20260630": [
-     "c224e5fc-7fe9-4756-96a4-d3b68faef7d6.pdf",
-     9,
-     "Area Delivered (doc period)",
-     "33"
-    ],
-    "q:20240930": [
-     "353e7cc6-fadf-44b1-bb1a-69eea3e6163d.pdf",
-     21,
-     "saleable area developed (doc period)",
-     "28"
-    ]
-   }
-  },
-  {
    "name": "Mumbai Pre-Sales",
    "unit": "Rs. Cr",
    "kind": "flow",
@@ -2688,6 +2664,33 @@
      "68"
     ]
    }
+  },
+  {
+   "name": "Area Delivered",
+   "unit": "Mn. Sq. Ft.",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 33.0
+   },
+   "src": {
+    "q:20260630": [
+     "c224e5fc-7fe9-4756-96a4-d3b68faef7d6.pdf",
+     9,
+     "Area Delivered (doc period)",
+     "33"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240930",
+     28.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): cted over 64 projects including residential complexes, integrated townships, commercial complexes and IT Parks",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Bengaluru Pre-Sales",

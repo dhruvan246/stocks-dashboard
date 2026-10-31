@@ -1405,37 +1405,6 @@
    }
   },
   {
-   "name": "Coal Blocks Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220630": 7.0,
-    "20240630": 8.0,
-    "20250630": 9.0
-   },
-   "src": {
-    "q:20250630": [
-     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
-     23,
-     "Coal Blocks (doc period)",
-     "9"
-    ],
-    "q:20240630": [
-     "1ebdec52-84eb-4746-8483-96306342221d.pdf",
-     22,
-     "Coal Blocks (doc period)",
-     "8"
-    ],
-    "q:20220630": [
-     "a281a3a6-9333-4d22-a3e9-71c2b8ff3f98.pdf",
-     26,
-     "NTPC has 7 Coal blocks (doc period)",
-     "7"
-    ]
-   }
-  },
-  {
    "name": "Commercial Capacity Addition (NTPC Group)",
    "unit": "MW",
    "kind": "flow",
@@ -1463,37 +1432,6 @@
      6,
      "Comml Addition",
      "2,180"
-    ]
-   }
-  },
-  {
-   "name": "NTPC Group Under-Construction Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230630": 17463.0,
-    "20240630": 21029.0,
-    "20250630": 30853.0
-   },
-   "src": {
-    "q:20250630": [
-     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
-     7,
-     "NTPC Group",
-     "30853"
-    ],
-    "q:20240630": [
-     "1ebdec52-84eb-4746-8483-96306342221d.pdf",
-     9,
-     "Under Construction (doc period)",
-     "21,029"
-    ],
-    "q:20230630": [
-     "f752f657-7038-4ec4-86b2-a213a96684d4.pdf",
-     21,
-     "Under Construction (doc period)",
-     "17,463"
     ]
    }
   },
@@ -1553,28 +1491,38 @@
    }
   },
   {
-   "name": "Coal Mining Peak Capacity",
-   "unit": "MMTPA",
+   "name": "Coal Blocks Count",
+   "unit": "count",
    "kind": "level",
    "y": {},
    "q": {
-    "20200630": 103.0,
-    "20250630": 91.6
+    "20220630": 7.0,
+    "20250630": 9.0
    },
    "src": {
     "q:20250630": [
      "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
      23,
-     "Peak Mining Capacity (doc period)",
-     "91.6"
+     "Coal Blocks (doc period)",
+     "9"
     ],
-    "q:20200630": [
-     "3b75ef9d-14c5-4c2b-9587-0e810c86303a.pdf",
-     5,
-     "103 MMTPA ultimate mining capacity (doc period)",
-     "103"
+    "q:20220630": [
+     "a281a3a6-9333-4d22-a3e9-71c2b8ff3f98.pdf",
+     26,
+     "NTPC has 7 Coal blocks (doc period)",
+     "7"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     8.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Coal Mining 21 8 86 MTPA Coal Blocks Peak Mining Capacity Coal Blocks Capacity  (MTPA) Production FY24 (in MT)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Energy Sent Out (Standalone)",
@@ -1621,30 +1569,6 @@
      72,
      "NTPC Coal PLF (%)",
      "77.4"
-    ]
-   }
-  },
-  {
-   "name": "NTPC Standalone Under-Construction Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230630": 6569.0,
-    "20250630": 13834.0
-   },
-   "src": {
-    "q:20250630": [
-     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
-     7,
-     "NTPC Standalone",
-     "13834"
-    ],
-    "q:20230630": [
-     "f752f657-7038-4ec4-86b2-a213a96684d4.pdf",
-     21,
-     "Projects Under Construction Group Mix NTPC (doc period)",
-     "6,569"
     ]
    }
   },
@@ -1849,20 +1773,30 @@
   },
   {
    "name": "Coal Mining Peak Capacity",
-   "unit": "MTPA",
+   "unit": "MMTPA",
    "kind": "level",
    "y": {},
    "q": {
-    "20240630": 86.0
+    "20250630": 91.6
    },
    "src": {
-    "q:20240630": [
-     "1ebdec52-84eb-4746-8483-96306342221d.pdf",
-     22,
+    "q:20250630": [
+     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
+     23,
      "Peak Mining Capacity (doc period)",
-     "86"
+     "91.6"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20200630",
+     103.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ons Acquired 6,408 MW of Power Assets in FY20 Leading to three fold growth in Non-fossil portfolio Robust Coal",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Coal Stations Plant Load Factor (PLF)",
@@ -2001,6 +1935,41 @@
    }
   },
   {
+   "name": "NTPC Group Under-Construction Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 30853.0
+   },
+   "src": {
+    "q:20250630": [
+     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
+     7,
+     "NTPC Group",
+     "30853"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     17463.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Huge Capacity Addition Lined up 73,024  17,463  39,513  1,30,000 + Installed Capacity Under Construction Under",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     21029.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Huge Capacity Addition Lined up 76,048  21,029  1,30,000+ Installed Capacity Under Construction Target by FY32",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "NTPC Standalone Installed Capacity (Under Operation)",
    "unit": "MW",
    "kind": "level",
@@ -2016,6 +1985,33 @@
      "60978"
     ]
    }
+  },
+  {
+   "name": "NTPC Standalone Under-Construction Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250630": 13834.0
+   },
+   "src": {
+    "q:20250630": [
+     "2ea7ff14-0ada-4016-a07a-64c09ab62b14.pdf",
+     7,
+     "NTPC Standalone",
+     "13834"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     6569.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): E 5,908 Total 17,463 Coal Technology In MW Ultra Super Critical 6,640 Super Critical 2,640 Sub Critical 20 Tot",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "NVVN Total Power Traded",

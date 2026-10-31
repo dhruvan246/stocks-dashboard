@@ -941,38 +941,6 @@
    }
   },
   {
-   "name": "Manufacturing Plants",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20191231": 4.0,
-    "20211231": 4.0
-   },
-   "q": {
-    "20200630": 4.0
-   },
-   "src": {
-    "q:20200630": [
-     "55e95868-fe4a-4a35-a149-9a0c4d6b69ed.pdf",
-     8,
-     "manufacturing plants (doc period)",
-     "4"
-    ],
-    "y:20211231": [
-     "91e0b61f-d36f-4ad7-86c8-ffb69be0dda9.pdf",
-     11,
-     "manufacturing plants (doc period)",
-     "4"
-    ],
-    "y:20191231": [
-     "da20f988-eca7-462f-a54e-7635a0a398a1.pdf",
-     11,
-     "manufacturing plants (doc period)",
-     "4"
-    ]
-   }
-  },
-  {
    "name": "Patent Applications from India",
    "unit": "count",
    "kind": "level",
@@ -1078,38 +1046,6 @@
     "y:20231231": "2024-04-18",
     "y:20221231": "2024-04-18",
     "y:20211231": "2024-04-18"
-   }
-  },
-  {
-   "name": "Sales Offices",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20191231": 19.0,
-    "20211231": 8.0
-   },
-   "q": {
-    "20200630": 10.0
-   },
-   "src": {
-    "q:20200630": [
-     "55e95868-fe4a-4a35-a149-9a0c4d6b69ed.pdf",
-     8,
-     "sales offices (doc period)",
-     "10"
-    ],
-    "y:20211231": [
-     "91e0b61f-d36f-4ad7-86c8-ffb69be0dda9.pdf",
-     11,
-     "sales offices (doc period)",
-     "8"
-    ],
-    "y:20191231": [
-     "da20f988-eca7-462f-a54e-7635a0a398a1.pdf",
-     11,
-     "sales offices (doc period)",
-     "19"
-    ]
    }
   },
   {
@@ -1229,34 +1165,6 @@
    },
    "latest": {
     "y:20211231": "2022-04-18"
-   }
-  },
-  {
-   "name": "Permanent Women Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20191231": 75.0,
-    "20211231": 85.0
-   },
-   "q": {},
-   "src": {
-    "y:20191231": [
-     "5057901219.pdf",
-     67,
-     "Number of permanent women employees (doc period)",
-     "75"
-    ],
-    "y:20211231": [
-     "72958505790_20_04_22.pdf",
-     50,
-     "Number of permanent women employees 2021",
-     "85"
-    ]
-   },
-   "latest": {
-    "y:20211231": "2022-04-18",
-    "y:20191231": "2020-06-05"
    }
   },
   {
@@ -1594,6 +1502,72 @@
    }
   },
   {
+   "name": "Manufacturing Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20211231": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20211231": [
+     "91e0b61f-d36f-4ad7-86c8-ffb69be0dda9.pdf",
+     11,
+     "manufacturing plants (doc period)",
+     "4"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20200630",
+     4.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): bout Schaeffler India Limited   Schaeffler has been present in India for over 50 years. With 3 well known prod",
+     "2026-10-31"
+    ],
+    [
+     "y:20191231",
+     4.0,
+     null,
+     "drop_y",
+     "Undated on its own page (OTHER): bout Schaeffler India Limited   Schaeffler has been present in India for over 50 years. With 3 well known prod",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Permanent Women Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20211231": 85.0
+   },
+   "q": {},
+   "src": {
+    "y:20211231": [
+     "72958505790_20_04_22.pdf",
+     50,
+     "Number of permanent women employees 2021",
+     "85"
+    ]
+   },
+   "latest": {
+    "y:20211231": "2022-04-18",
+    "y:20191231": "2020-06-05"
+   },
+   "fixed": [
+    [
+     "y:20191231",
+     75.0,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE): e Total number of employees  hired on temporary/contractual/casual basis. 1,463 3 Please indicate the Number o",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "R&D Employees",
    "unit": "count",
    "kind": "level",
@@ -1757,6 +1731,41 @@
    "latest": {
     "y:20211231": "2022-04-18"
    }
+  },
+  {
+   "name": "Sales Offices",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20211231": 8.0
+   },
+   "q": {},
+   "src": {
+    "y:20211231": [
+     "91e0b61f-d36f-4ad7-86c8-ffb69be0dda9.pdf",
+     11,
+     "sales offices (doc period)",
+     "8"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20200630",
+     10.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ed   Schaeffler has been present in India for over 50 years. With 3 well known product brands  LuK, INA and FA",
+     "2026-10-31"
+    ],
+    [
+     "y:20191231",
+     19.0,
+     null,
+     "drop_y",
+     "Undated on its own page (OTHER): ed   Schaeffler has been present in India for over 50 years. With 3 well known product brands  LuK, INA and FA",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Schaeffler TruPower Launch Locations",

@@ -184,76 +184,6 @@
    }
   },
   {
-   "name": "Cell Capacity",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20250331": 5.4,
-    "20260331": 5.4
-   },
-   "q": {
-    "20241231": 5.4,
-    "20250630": 5.4,
-    "20250930": 5.4,
-    "20251231": 5.4,
-    "20260630": 5.4,
-    "20260930": 5.4
-   },
-   "src": {
-    "q:20250630": [
-     "db2e0387-cc51-48b9-9737-d7e7f68807d8.pdf",
-     5,
-     "Cell Capacity (doc period)",
-     "5.4"
-    ],
-    "q:20250930": [
-     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
-     5,
-     "Cell Capacity (doc period)",
-     "5.4"
-    ],
-    "q:20251231": [
-     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
-     5,
-     "Cell Capacity (doc period)",
-     "5.4"
-    ],
-    "y:20260331": [
-     "ee29d10a-7fd5-4ba7-9760-1ab86ed38ed1.pdf",
-     6,
-     "Cell Capacity (doc period)",
-     "5.4"
-    ],
-    "y:20250331": [
-     "1983691b-1e61-441b-932f-79da0e8a2b32.pdf",
-     6,
-     "Manufacturing capacity of cells (doc period)",
-     "5.4"
-    ],
-    "q:20241231": [
-     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
-     7,
-     "Manufacturing capacity of solar cell (doc period)",
-     "5.4"
-    ],
-    "q:20260630": [
-     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
-     55,
-     "Installed Capacity (GW)",
-     "5.4"
-    ],
-    "q:20260930": [
-     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
-     55,
-     "Installed Capacity (GW)",
-     "5.4"
-    ]
-   },
-   "latest": {
-    "y:20260331": "2026-10-28"
-   }
-  },
-  {
    "name": "Cell Production",
    "unit": "GW",
    "kind": "flow",
@@ -322,6 +252,80 @@
    "latest": {
     "y:20260331": "2026-10-28"
    }
+  },
+  {
+   "name": "Cell Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20250331": 5.4,
+    "20260331": 5.4
+   },
+   "q": {
+    "20250930": 5.4,
+    "20251231": 5.4,
+    "20260630": 5.4,
+    "20260930": 5.4
+   },
+   "src": {
+    "q:20250930": [
+     "5e65ca40-b9d5-49ce-b89e-08666311f772.pdf",
+     5,
+     "Cell Capacity (doc period)",
+     "5.4"
+    ],
+    "q:20251231": [
+     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
+     5,
+     "Cell Capacity (doc period)",
+     "5.4"
+    ],
+    "y:20260331": [
+     "ee29d10a-7fd5-4ba7-9760-1ab86ed38ed1.pdf",
+     6,
+     "Cell Capacity (doc period)",
+     "5.4"
+    ],
+    "y:20250331": [
+     "1983691b-1e61-441b-932f-79da0e8a2b32.pdf",
+     6,
+     "Manufacturing capacity of cells (doc period)",
+     "5.4"
+    ],
+    "q:20260630": [
+     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
+     55,
+     "Installed Capacity (GW)",
+     "5.4"
+    ],
+    "q:20260930": [
+     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
+     55,
+     "Installed Capacity (GW)",
+     "5.4"
+    ]
+   },
+   "latest": {
+    "y:20260331": "2026-10-28"
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     5.4,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): 3 28.2% ROE * -0.7x Debt-to-Equity* 34.1% ROCE * ₹ 1,169 Cr EBITDA +83% YoY 25.4% Margin ₹ 4,597 Cr Revenue + ",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     5.4,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 5 5.4 GW Manufacturing capacity of solar cell2 26.5 GW | ~₹ 50K Cr Order book3 2 NABL accredited labs Performs",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Module Sold",
@@ -478,57 +482,6 @@
    },
    "latest": {
     "y:20260331": "2026-10-28"
-   }
-  },
-  {
-   "name": "Order Mix - Domestic-India",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20250331": 30.0,
-    "20260331": 27.0
-   },
-   "q": {
-    "20241231": 46.0,
-    "20260630": 40.0,
-    "20260930": 48.6
-   },
-   "src": {
-    "y:20250331": [
-     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
-     9,
-     "Geographical Order Mix (%) - Domestic-India",
-     "30.0"
-    ],
-    "y:20260331": [
-     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
-     9,
-     "Geographical Order Mix (%) - Domestic-India",
-     "27.0"
-    ],
-    "q:20260630": [
-     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
-     9,
-     "Geographical Order Mix (%) - Domestic-India",
-     "40.0"
-    ],
-    "q:20241231": [
-     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
-     17,
-     "India (order book mix, doc period)",
-     "46.0"
-    ],
-    "q:20260930": [
-     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
-     56,
-     "Domestic – India",
-     "48.6"
-    ]
-   },
-   "latest": {
-    "y:20250331": "2026-10-28",
-    "y:20260331": "2026-10-28",
-    "q:20260630": "2026-10-28"
    }
   },
   {
@@ -841,66 +794,55 @@
    }
   },
   {
-   "name": "Order Book (GW)",
-   "unit": "GW",
+   "name": "Order Mix - Domestic-India",
+   "unit": "%",
    "kind": "level",
    "y": {
-    "20220331": 3.0,
-    "20230331": 18.0,
-    "20240331": 20.0
+    "20250331": 30.0,
+    "20260331": 27.0
    },
    "q": {
-    "20241231": 26.5
+    "20260630": 40.0,
+    "20260930": 48.6
    },
    "src": {
-    "q:20241231": [
-     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
-     17,
-     "Order book (doc period)",
-     "26.5"
-    ],
-    "y:20220331": [
-     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
+    "y:20250331": [
+     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
      9,
-     "Order Book (GW)*",
-     "3"
+     "Geographical Order Mix (%) - Domestic-India",
+     "30.0"
     ],
-    "y:20230331": [
-     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
+    "y:20260331": [
+     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
      9,
-     "Order Book (GW)*",
-     "18"
+     "Geographical Order Mix (%) - Domestic-India",
+     "27.0"
     ],
-    "y:20240331": [
-     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
+    "q:20260630": [
+     "b0651893-51aa-45bb-9abc-6e5d2fa37b59.pdf",
      9,
-     "Order Book (GW)*",
-     "20"
+     "Geographical Order Mix (%) - Domestic-India",
+     "40.0"
+    ],
+    "q:20260930": [
+     "ee210958-931a-4f2e-a92e-d07ebeeccdf2.pdf",
+     56,
+     "Domestic – India",
+     "48.6"
     ]
+   },
+   "latest": {
+    "y:20250331": "2026-10-28",
+    "y:20260331": "2026-10-28",
+    "q:20260630": "2026-10-28"
    },
    "fixed": [
     [
-     "q:20250630",
-     25.0,
+     "q:20241231",
+     46.0,
      null,
      "drop_q",
-     "Cited page prints it only qualified:  split of orderbook by GW volume Solid Order Book 41.3% 58.7% India Overseas Order Book1: ~25 GW ~₹49,000 Cr.   Module Prod",
-     "2026-10-31"
-    ],
-    [
-     "q:20250930",
-     24.0,
-     null,
-     "drop_q",
-     "Cited page prints it only qualified: s split of orderbook (of amount) Solid Order Book 40.5% 59.5% India Overseas Order Book1: ~24 GW ~₹47,000 Cr   Module Produ",
-     "2026-10-31"
-    ],
-    [
-     "y:20250331",
-     25.0,
-     null,
-     "drop_y",
-     "Cited page prints it only qualified: inning ₹50,000+ Cr. ~₹47,000 Cr. 43% India 57% Overseas 46% India 54% Overseas Order Book ~25 GW Order Book ",
+     "Undated on its own page (NOW): domestic network 1. As on date, for WEL solar manufacturing + WRTL; India and overseas split of orderbook by G",
      "2026-10-31"
     ]
    ]
@@ -1156,79 +1098,69 @@
    ]
   },
   {
-   "name": "EPC Projects Commissioned",
-   "unit": "GWp",
-   "kind": "level",
-   "y": {
-    "20260331": 5.06
-   },
-   "q": {
-    "20251231": 4.6
-   },
-   "src": {
-    "q:20251231": [
-     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
-     9,
-     "EPC Projects commissioned (doc period)",
-     "4.6"
-    ],
-    "y:20260331": [
-     "289391c0-c168-4e6b-b31e-dd2bcc6d5542.pdf",
-     81,
-     "EPC Projects commissioned (doc period)",
-     "5.06"
-    ]
-   }
-  },
-  {
-   "name": "O&M Portfolio",
+   "name": "Order Book (GW)",
    "unit": "GW",
    "kind": "level",
    "y": {
-    "20260331": 1.18
+    "20220331": 3.0,
+    "20230331": 18.0,
+    "20240331": 20.0
    },
-   "q": {
-    "20251231": 1.2
-   },
+   "q": {},
    "src": {
-    "q:20251231": [
-     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
+    "y:20220331": [
+     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
      9,
-     "O&M Portfolio (doc period)",
-     "1.2"
+     "Order Book (GW)*",
+     "3"
     ],
-    "y:20260331": [
-     "289391c0-c168-4e6b-b31e-dd2bcc6d5542.pdf",
-     81,
-     "O&M Portfolio (doc period)",
-     "1.18"
-    ]
-   }
-  },
-  {
-   "name": "Transformer Manufacturing Capacity",
-   "unit": "MVA",
-   "kind": "level",
-   "y": {
-    "20260331": 9530.0
-   },
-   "q": {
-    "20251231": 4000.0
-   },
-   "src": {
-    "q:20251231": [
-     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
-     11,
-     "Current Capacity (doc period)",
-     "4,000"
+    "y:20230331": [
+     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
+     9,
+     "Order Book (GW)*",
+     "18"
     ],
-    "y:20260331": [
-     "b04cd41c-d498-4bc5-bb56-41bd535882af.pdf",
-     32,
-     "Emerging Segment Manufacturing Capacity - Alwar, Rajasthan Transformer (doc peri",
-     "9,530"
+    "y:20240331": [
+     "b7738010-a735-4bf0-87c9-d398ded99900.pdf",
+     9,
+     "Order Book (GW)*",
+     "20"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250630",
+     25.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified:  split of orderbook by GW volume Solid Order Book 41.3% 58.7% India Overseas Order Book1: ~25 GW ~₹49,000 Cr.   Module Prod",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     24.0,
+     null,
+     "drop_q",
+     "Cited page prints it only qualified: s split of orderbook (of amount) Solid Order Book 40.5% 59.5% India Overseas Order Book1: ~24 GW ~₹47,000 Cr   Module Produ",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     25.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: inning ₹50,000+ Cr. ~₹47,000 Cr. 43% India 57% Overseas 46% India 54% Overseas Order Book ~25 GW Order Book ",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     26.5,
+     null,
+     "drop_q",
+     "Undated on its own page (NOW):  Robust domestic network 1. As on date, for WEL solar manufacturing + WRTL; India and overseas split of orderb",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Area Covered - Core Gujarat Module Facilities",
@@ -1278,23 +1210,6 @@
      56,
      "operations in 24 countries worldwide (doc period)",
      "24"
-    ]
-   }
-  },
-  {
-   "name": "EPC Capacity Under Execution",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20250331": 3.2
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "1983691b-1e61-441b-932f-79da0e8a2b32.pdf",
-     7,
-     "under execution (doc period)",
-     "3.2"
     ]
    }
   },
@@ -1469,40 +1384,6 @@
    }
   },
   {
-   "name": "O&M Portfolio",
-   "unit": "MWp",
-   "kind": "level",
-   "y": {
-    "20250331": 695.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "1983691b-1e61-441b-932f-79da0e8a2b32.pdf",
-     7,
-     "O&M portfolio of solar power plant assets (doc period)",
-     "695"
-    ]
-   }
-  },
-  {
-   "name": "Order Mix - Overseas",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 54.0
-   },
-   "src": {
-    "q:20241231": [
-     "83aa60bb-3560-4331-9cb8-94e08ce1deeb.pdf",
-     17,
-     "Overseas (order book mix, doc period)",
-     "54.0"
-    ]
-   }
-  },
-  {
    "name": "Retail Touch Points",
    "unit": "count",
    "kind": "level",
@@ -1598,21 +1479,31 @@
    }
   },
   {
-   "name": "Transformer Order Book",
-   "unit": "₹ Cr",
+   "name": "Transformer Manufacturing Capacity",
+   "unit": "MVA",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 245.0
+   "y": {
+    "20260331": 9530.0
    },
+   "q": {},
    "src": {
-    "q:20251231": [
-     "ef77aebc-9c5f-49db-b860-9c78d82e4689.pdf",
-     11,
-     "Order book of transformers (doc period)",
-     "245"
+    "y:20260331": [
+     "b04cd41c-d498-4bc5-bb56-41bd535882af.pdf",
+     32,
+     "Emerging Segment Manufacturing Capacity - Alwar, Rajasthan Transformer (doc peri",
+     "9,530"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     4000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NOW): me (RDSS) Distribution Transformer sanctioned ~5.84 lacs vs installed ~1.45 lacs  pointing to huge supply gap ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Waaree Share of India Module Shipments",

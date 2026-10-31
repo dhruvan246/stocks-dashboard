@@ -207,31 +207,6 @@
    }
   },
   {
-   "name": "Combined Actual Production",
-   "unit": "lakh MTPA",
-   "kind": "flow",
-   "y": {
-    "20250331": 1.7
-   },
-   "q": {
-    "20250930": 1.0
-   },
-   "src": {
-    "y:20250331": [
-     "b4332605-b9e7-498e-8452-93bd309280e0.pdf",
-     14,
-     "+1.7 lakh MPTA of combined actual production",
-     "1.7"
-    ],
-    "q:20250930": [
-     "a52495de-6224-4195-a437-00ac81a2e0bb.pdf",
-     12,
-     "+1 lakh MPTA of combined actual production (doc period)",
-     "1"
-    ]
-   }
-  },
-  {
    "name": "Creditor Days",
    "unit": "days",
    "kind": "flow",
@@ -413,21 +388,31 @@
    }
   },
   {
-   "name": "Copper Anode Installed Capacity",
-   "unit": "MT/month",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1600.0
+   "name": "Combined Actual Production",
+   "unit": "lakh MTPA",
+   "kind": "flow",
+   "y": {
+    "20250331": 1.7
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "be25c001-b588-4d33-a6da-1d7309189f65.pdf",
-     6,
-     "Copper Anode Total Capacity 1,600 MT/month (doc period)",
-     "1,600"
+    "y:20250331": [
+     "b4332605-b9e7-498e-8452-93bd309280e0.pdf",
+     14,
+     "+1.7 lakh MPTA of combined actual production",
+     "1.7"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     1.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): 11 Company at a glance One of India’s largest and fastest-growing non-ferrous metal recycling companies, with ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Copper Products Production Capacity (Facility 1)",

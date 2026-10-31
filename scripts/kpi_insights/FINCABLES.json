@@ -211,38 +211,6 @@
    }
   },
   {
-   "name": "Depot Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 26.0
-   },
-   "q": {
-    "20191231": 28.0,
-    "20260630": 26.0
-   },
-   "src": {
-    "y:20260331": [
-     "db3dd190-5353-4bdc-a4d7-abd2cbc72058.pdf",
-     23,
-     "26 depots across 28 states and 8 union territories (doc period)",
-     "26"
-    ],
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "26 Presence in Depots (doc period)",
-     "26"
-    ],
-    "q:20191231": [
-     "8a56da88-ce3e-4133-ae92-4b20da572035.pdf",
-     6,
-     "depots (doc period)",
-     "28"
-    ]
-   }
-  },
-  {
    "name": "Flexible / Contractual Employees",
    "unit": "count",
    "kind": "level",
@@ -417,41 +385,6 @@
    }
   },
   {
-   "name": "Distributors",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 600.0
-   },
-   "q": {
-    "20191231": 300.0
-   },
-   "src": {
-    "y:20240331": [
-     "67e807f4-012f-4757-868f-35bf24497f2d.pdf",
-     40,
-     "distribution network, comprising 600 distributors",
-     "600"
-    ],
-    "q:20191231": [
-     "8a56da88-ce3e-4133-ae92-4b20da572035.pdf",
-     6,
-     "distributors (doc period)",
-     "300"
-    ]
-   },
-   "fixed": [
-    [
-     "q:20260630",
-     800.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: ~800 Distributors (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "Electrical Cables Production",
    "unit": "MT",
    "kind": "flow",
@@ -496,56 +429,6 @@
      39,
      "Optic fiber cable production compared to 26,26,842 FKM in the previous year",
      "26,26,842"
-    ]
-   }
-  },
-  {
-   "name": "States Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 28.0
-   },
-   "q": {
-    "20260630": 28.0
-   },
-   "src": {
-    "y:20260331": [
-     "db3dd190-5353-4bdc-a4d7-abd2cbc72058.pdf",
-     23,
-     "26 depots across 28 states and 8 union territories (doc period)",
-     "28"
-    ],
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "28 States 8 Union Territories - Strong domestic presence (doc period)",
-     "28"
-    ]
-   }
-  },
-  {
-   "name": "Union Territories Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 8.0
-   },
-   "q": {
-    "20260630": 8.0
-   },
-   "src": {
-    "y:20260331": [
-     "db3dd190-5353-4bdc-a4d7-abd2cbc72058.pdf",
-     23,
-     "26 depots across 28 states and 8 union territories (doc period)",
-     "8"
-    ],
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "28 States 8 Union Territories - Strong domestic presence (doc period)",
-     "8"
     ]
    }
   },
@@ -610,21 +493,39 @@
    ]
   },
   {
-   "name": "Employee Strength",
+   "name": "Distributors",
    "unit": "count",
    "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 1606.0
+   "y": {
+    "20240331": 600.0
    },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "Employee Strength (doc period)",
-     "1,606"
+    "y:20240331": [
+     "67e807f4-012f-4757-868f-35bf24497f2d.pdf",
+     40,
+     "distribution network, comprising 600 distributors",
+     "600"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     800.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: ~800 Distributors (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20191231",
+     300.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Finolex  gets ppople toge.ther  Widespread distribution network  • 300 distributors  • 4000+ dealers  • 30000+",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Exclusive Retail Stores",
@@ -640,23 +541,6 @@
      40,
      "operates 7 exclusive retail stores under the brand 'Finolex House'",
      "7"
-    ]
-   }
-  },
-  {
-   "name": "Market Share in Organised Wire Industry",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 23.9
-   },
-   "src": {
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "Market share in organised Wire industry (doc period)",
-     "23.9"
     ]
    }
   },
@@ -709,23 +593,6 @@
      44,
      "completion of the Preform Fcaility with a capacity to manufacture upto 100MT of ",
      "100"
-    ]
-   }
-  },
-  {
-   "name": "World-class Manufacturing Units",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 5.0
-   },
-   "src": {
-    "q:20260630": [
-     "dec2c408-bfdf-4ef3-8bb1-ef7b7031d513.pdf",
-     15,
-     "World-class Manufacturing Units (doc period)",
-     "5"
     ]
    }
   }

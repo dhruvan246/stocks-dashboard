@@ -2722,81 +2722,6 @@
    }
   },
   {
-   "name": "Land Bank Total",
-   "unit": "Acres",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 283.0,
-    "20240930": 283.0,
-    "20241231": 283.0,
-    "20250331": 283.0,
-    "20250630": 283.0,
-    "20250930": 283.0,
-    "20260630": 369.0
-   },
-   "src": {
-    "q:20260630": [
-     "19397481-453e-4121-8dd1-83d6d19fab2f.pdf",
-     8,
-     "Land Bank (Acres) Total (doc period)",
-     "369"
-    ],
-    "q:20250630": [
-     "3f6363bb-61b0-43e6-afce-d9d65f610128.pdf",
-     8,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ],
-    "q:20240630": [
-     "33806ff2-8bc4-4f7c-b9e6-79cc0e37db27.pdf",
-     16,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ],
-    "q:20241231": [
-     "37822f85-3661-423c-9b8b-a1bc5a62007d.pdf",
-     8,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ],
-    "q:20250930": [
-     "749d8c71-3026-4d7c-9f40-105323d22612.pdf",
-     8,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ],
-    "q:20240930": [
-     "8203d5f4-8652-4534-ba36-7ea44b0d13f4.pdf",
-     33,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ],
-    "q:20250331": [
-     "b402c32c-b8f2-4b73-b6df-d44eeffc4842.pdf",
-     8,
-     "Land Bank (Acres) Total (doc period)",
-     "283"
-    ]
-   },
-   "latest": {
-    "q:20240630": "2024-09-16",
-    "q:20250630": "2025-09-01",
-    "q:20241231": "2025-02-10",
-    "q:20250331": "2025-05-13"
-   },
-   "fixed": [
-    [
-     "q:20251231",
-     283.0,
-     null,
-     "drop_q",
-     "att8 367a7c39 p6: 'Land Bank (Acres) ... Total 183 100 283' undated; doc 8-Dec-2025 (p1), its period is H1 FY26 / Sep-25 (p10); slot 31-Dec-2025 is after doc da",
-     "2026-10-21"
-    ]
-   ]
-  },
-  {
    "name": "Tuticorin Dry Bulk Terminal Cargo Handled",
    "unit": "MMT",
    "kind": "flow",
@@ -2969,6 +2894,83 @@
      "405"
     ]
    }
+  },
+  {
+   "name": "Land Bank Total",
+   "unit": "Acres",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240630": 283.0,
+    "20241231": 283.0,
+    "20250331": 283.0,
+    "20250630": 283.0,
+    "20250930": 283.0
+   },
+   "src": {
+    "q:20250630": [
+     "3f6363bb-61b0-43e6-afce-d9d65f610128.pdf",
+     8,
+     "Land Bank (Acres) Total (doc period)",
+     "283"
+    ],
+    "q:20240630": [
+     "33806ff2-8bc4-4f7c-b9e6-79cc0e37db27.pdf",
+     16,
+     "Land Bank (Acres) Total (doc period)",
+     "283"
+    ],
+    "q:20241231": [
+     "37822f85-3661-423c-9b8b-a1bc5a62007d.pdf",
+     8,
+     "Land Bank (Acres) Total (doc period)",
+     "283"
+    ],
+    "q:20250930": [
+     "749d8c71-3026-4d7c-9f40-105323d22612.pdf",
+     8,
+     "Land Bank (Acres) Total (doc period)",
+     "283"
+    ],
+    "q:20250331": [
+     "b402c32c-b8f2-4b73-b6df-d44eeffc4842.pdf",
+     8,
+     "Land Bank (Acres) Total (doc period)",
+     "283"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-09-16",
+    "q:20250630": "2025-09-01",
+    "q:20241231": "2025-02-10",
+    "q:20250331": "2025-05-13"
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     283.0,
+     null,
+     "drop_q",
+     "att8 367a7c39 p6: 'Land Bank (Acres) ... Total 183 100 283' undated; doc 8-Dec-2025 (p1), its period is H1 FY26 / Sep-25 (p10); slot 31-Dec-2025 is after doc da",
+     "2026-10-21"
+    ],
+    [
+     "q:20260630",
+     369.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ped Undeveloped / Under Development Total Panvel Maharashtra 84 59 143 Morbi, Gujarat 99 41 140 Kudathini,  Ka",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     283.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): and Area  (acres) PFT Facility Particulars Developed Undeveloped Total Panvel Maharashtra 84 59* 143 Morbi, Gu",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -3247,5 +3249,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

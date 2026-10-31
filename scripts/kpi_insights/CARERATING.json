@@ -633,51 +633,6 @@
    }
   },
   {
-   "name": "Sovereigns Rated (CareEdge Global)",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20241231": 39.0,
-    "20250930": 39.0,
-    "20251231": 41.0,
-    "20260331": 45.0,
-    "20260630": 45.0
-   },
-   "src": {
-    "q:20260331": [
-     "08ab63b0-00e0-4e8b-ae74-81a79feef3aa.pdf",
-     18,
-     "CareEdge Global has rated 45 sovereigns (doc period)",
-     "45"
-    ],
-    "q:20251231": [
-     "2d18c03e-42da-480d-8d26-c95605c2c394.pdf",
-     17,
-     "CareEdge Global has rated 41 sovereigns (doc period)",
-     "41"
-    ],
-    "q:20260630": [
-     "3061228e-bbb6-4082-8e03-329b1c304a03.pdf",
-     16,
-     "CareEdge Global has rated 45 sovereigns (doc period)",
-     "45"
-    ],
-    "q:20241231": [
-     "5bd7032f-61dd-4198-accb-a8862d1a905e.pdf",
-     18,
-     "Assigned Sovereign Ratings for 39 countries (doc period)",
-     "39"
-    ],
-    "q:20250930": [
-     "6542e649-a015-4041-957a-edeee0661fd8.pdf",
-     17,
-     "CareEdge Global has rated 39 sovereigns (doc period)",
-     "39"
-    ]
-   }
-  },
-  {
    "name": "Webinars Conducted",
    "unit": "count",
    "kind": "flow",
@@ -731,8 +686,7 @@
    "q": {
     "20250331": 50.0,
     "20251231": 52.0,
-    "20260331": 58.0,
-    "20260630": 58.0
+    "20260331": 58.0
    },
    "src": {
     "q:20260331": [
@@ -747,19 +701,23 @@
      "Now Market Leader with 52% market share for Cat 1 ERP, Issuer Pay's Model (doc p",
      "52"
     ],
-    "q:20260630": [
-     "3061228e-bbb6-4082-8e03-329b1c304a03.pdf",
-     16,
-     "58% market share for Cat 1 ERP, Issuer Pay's Model (doc period)",
-     "58"
-    ],
     "q:20250331": [
      "cd1745d5-bc98-4c85-8639-a2f859385e0d.pdf",
      17,
      "50% market share achieved as an Issuer-pays ERP as of March 31, 2025",
      "50"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     58.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Ratings  Nepal Limited  SEBI-registered India’s premier ESG Rating Provider (ERP). Continued market leader p",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Media Mentions and Quotes",
@@ -972,23 +930,6 @@
    }
   },
   {
-   "name": "ESG Ratings Sectors Covered",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20260630": 18.0
-   },
-   "src": {
-    "q:20260630": [
-     "3061228e-bbb6-4082-8e03-329b1c304a03.pdf",
-     16,
-     "Ratings across 18 sectors (doc period)",
-     "18"
-    ]
-   }
-  },
-  {
    "name": "Events Hosted",
    "unit": "count",
    "kind": "flow",
@@ -1021,6 +962,57 @@
      "14"
     ]
    }
+  },
+  {
+   "name": "Sovereigns Rated (CareEdge Global)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20241231": 39.0
+   },
+   "src": {
+    "q:20241231": [
+     "5bd7032f-61dd-4198-accb-a8862d1a905e.pdf",
+     18,
+     "Assigned Sovereign Ratings for 39 countries (doc period)",
+     "39"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     45.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):   Scale Ratings, along with ESG  and valuation services, and is  accredited by IFSCA and RBI ✓In a short perio",
+     "2026-10-31"
+    ],
+    [
+     "q:20251231",
+     41.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ancial Services  Centres Authority (IFSCA) at  GIFT City and now accredited  by RBI Within the short timefram",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     45.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): obal Scale Ratings, along with ESG and valuation services, and is accredited by IFSCA and RBI In a short peri",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     39.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): rvices Centres Authority  (IFSCA) at GIFT City and  now accredited by RBI ✓Within its first year of  operation",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],

@@ -765,37 +765,6 @@
    }
   },
   {
-   "name": "Wind Power Installed Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20230331": 200.9,
-    "20250331": 200.9,
-    "20260331": 200.09
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "d9d0f9e4-3a6f-4e4a-b002-d9b632e0d09c.pdf",
-     83,
-     "200.09 MW of wind power (doc period)",
-     "200.09"
-    ],
-    "y:20250331": [
-     "bf6e662d-aeef-4b3c-8ea1-6d7a98ae573e.pdf",
-     155,
-     "200.9 MW from seven wind projects",
-     "200.9"
-    ],
-    "y:20230331": [
-     "089bbe01-47cd-4d4b-a5bb-0db81f352d33.pdf",
-     127,
-     "GMDC currently has 200.9 MW Capacity of Wind Power Projects (doc period)",
-     "200.9"
-    ]
-   }
-  },
-  {
    "name": "LTPS Plant Load Factor",
    "unit": "%",
    "kind": "level",
@@ -966,6 +935,40 @@
     "y:20230331": "2023-05-31",
     "y:20220331": "2023-05-31"
    }
+  },
+  {
+   "name": "Wind Power Installed Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20250331": 200.9,
+    "20260331": 200.09
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "d9d0f9e4-3a6f-4e4a-b002-d9b632e0d09c.pdf",
+     83,
+     "200.09 MW of wind power (doc period)",
+     "200.09"
+    ],
+    "y:20250331": [
+     "bf6e662d-aeef-4b3c-8ea1-6d7a98ae573e.pdf",
+     155,
+     "200.9 MW from seven wind projects",
+     "200.9"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20230331",
+     200.9,
+     null,
+     "drop_y",
+     "Undated on its own page (NOW): Kearny has been taken on board as strategic advisor to  take an informed decision in respect of power plant.  ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Bauxite Despatch Volume",

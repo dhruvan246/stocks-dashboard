@@ -4828,65 +4828,6 @@
    }
   },
   {
-   "name": "Pulp & Paper Total Capacity",
-   "unit": "Lakh MTPA",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200930": 4.45,
-    "20201231": 4.45,
-    "20210331": 4.81,
-    "20211231": 4.81,
-    "20220630": 4.81,
-    "20230331": 4.81,
-    "20231231": 4.81
-   },
-   "src": {
-    "q:20200930": [
-     "dc9d2261-2841-48d5-8676-eab597fc7b0f.pdf",
-     20,
-     "Total Capacity (doc period)",
-     "4.45"
-    ],
-    "q:20201231": [
-     "908e3e0b-3c1f-4581-b4ed-98a074a3f8ef.pdf",
-     20,
-     "Total Capacity (doc period)",
-     "4.45"
-    ],
-    "q:20210331": [
-     "4ec06552-749d-4fed-927d-a66e6e732844.pdf",
-     25,
-     "Total Capacity (doc period)",
-     "4.81"
-    ],
-    "q:20211231": [
-     "047d31da-a2b3-4e5d-9c25-55a043a90742.pdf",
-     27,
-     "Total Capacity (doc period)",
-     "4.81"
-    ],
-    "q:20220630": [
-     "89a6add2-692d-428d-ab3b-b572a99a66fe.pdf",
-     27,
-     "Total Capacity (doc period)",
-     "4.81"
-    ],
-    "q:20230331": [
-     "c299fcb3-008c-4844-96ad-5cf959530c19.pdf",
-     26,
-     "Total Capacity (doc period)",
-     "4.81"
-    ],
-    "q:20231231": [
-     "ceec299e-7605-4f9a-bb5f-0666bc298651.pdf",
-     33,
-     "Total Capacity (doc period)",
-     "4.81"
-    ]
-   }
-  },
-  {
    "name": "Area Sold",
    "unit": "lakh Sq. ft.",
    "kind": "flow",
@@ -5102,6 +5043,69 @@
    }
   },
   {
+   "name": "Pulp & Paper Total Capacity",
+   "unit": "Lakh MTPA",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 4.81,
+    "20211231": 4.81,
+    "20220630": 4.81,
+    "20230331": 4.81,
+    "20231231": 4.81
+   },
+   "src": {
+    "q:20210331": [
+     "4ec06552-749d-4fed-927d-a66e6e732844.pdf",
+     25,
+     "Total Capacity (doc period)",
+     "4.81"
+    ],
+    "q:20211231": [
+     "047d31da-a2b3-4e5d-9c25-55a043a90742.pdf",
+     27,
+     "Total Capacity (doc period)",
+     "4.81"
+    ],
+    "q:20220630": [
+     "89a6add2-692d-428d-ab3b-b572a99a66fe.pdf",
+     27,
+     "Total Capacity (doc period)",
+     "4.81"
+    ],
+    "q:20230331": [
+     "c299fcb3-008c-4844-96ad-5cf959530c19.pdf",
+     26,
+     "Total Capacity (doc period)",
+     "4.81"
+    ],
+    "q:20231231": [
+     "ceec299e-7605-4f9a-bb5f-0666bc298651.pdf",
+     33,
+     "Total Capacity (doc period)",
+     "4.81"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20200930",
+     4.45,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ommitted employer of the local community. Board 500 Paper 550 Tissue 100 Rayon%Grade% Pulp 100 PRODUCTION%CAPA",
+     "2026-10-31"
+    ],
+    [
+     "q:20201231",
+     4.45,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ommitted employer of the local community. Board 500 Paper 550 Tissue 100 Rayon Grade  Pulp 100 PRODUCTION CAPA",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Board Production Capacity",
    "unit": "Tons per year",
    "kind": "level",
@@ -5222,68 +5226,6 @@
      33,
      "Production Capacity Break-up Tissue (doc period)",
      "72,000"
-    ]
-   }
-  },
-  {
-   "name": "Total Portfolio GDV",
-   "unit": "INR Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 698690.0,
-    "20250930": 698690.0,
-    "20251231": 703154.0
-   },
-   "src": {
-    "q:20251231": [
-     "adc100ba-247c-4b2b-8231-6f35d25ff684.pdf",
-     20,
-     "Total Portfolio (A+B+C+D) (doc period)",
-     "703,154"
-    ],
-    "q:20250930": [
-     "379665a0-88e4-4434-921e-7b1fb6f80981.pdf",
-     19,
-     "Total Portfolio (A+B+C) (doc period)",
-     "698,690"
-    ],
-    "q:20250630": [
-     "500d5307-1248-4236-bb4b-0ca68c1b9ce5.pdf",
-     19,
-     "Total Portfolio (A+B+C) (doc period)",
-     "698,690"
-    ]
-   }
-  },
-  {
-   "name": "Total Portfolio Saleable Area",
-   "unit": "Mn Sq ft",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250630": 35.0,
-    "20250930": 35.0,
-    "20251231": 35.1
-   },
-   "src": {
-    "q:20251231": [
-     "adc100ba-247c-4b2b-8231-6f35d25ff684.pdf",
-     20,
-     "Total Portfolio (A+B+C+D) (doc period)",
-     "35.1"
-    ],
-    "q:20250930": [
-     "379665a0-88e4-4434-921e-7b1fb6f80981.pdf",
-     19,
-     "Total Portfolio (A+B+C) (doc period)",
-     "35.0"
-    ],
-    "q:20250630": [
-     "500d5307-1248-4236-bb4b-0ca68c1b9ce5.pdf",
-     19,
-     "Total Portfolio (A+B+C) (doc period)",
-     "35.0"
     ]
    }
   },
@@ -5575,30 +5517,6 @@
      279,
      "Total permanent workers",
      "3,147"
-    ]
-   }
-  },
-  {
-   "name": "Total Portfolio Revenue Potential",
-   "unit": "INR Cr",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200930": 15984.0,
-    "20201231": 15984.0
-   },
-   "src": {
-    "q:20200930": [
-     "18bcafd0-fa08-41d7-a71c-896011479830.pdf",
-     16,
-     "Summary of portfolio under development TOTAL Revenue Potential (doc period)",
-     "15,984"
-    ],
-    "q:20201231": [
-     "a93838b1-44ae-42c3-beae-a81459ac3895.pdf",
-     15,
-     "Summary of portfolio under development TOTAL Revenue Potential (doc period)",
-     "15,984"
     ]
    }
   },

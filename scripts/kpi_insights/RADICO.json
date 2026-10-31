@@ -2726,84 +2726,6 @@
    }
   },
   {
-   "name": "Total Manufacturing Capacity",
-   "unit": "million litres",
-   "kind": "level",
-   "y": {
-    "20260331": 323.0
-   },
-   "q": {
-    "20200331": 157.0,
-    "20200630": 157.0,
-    "20200930": 165.0,
-    "20230930": 321.3,
-    "20250930": 321.3,
-    "20260630": 323.3
-   },
-   "src": {
-    "q:20260630": [
-     "ec961816-2f10-4e31-a2c6-6d0a287b8b0e.pdf",
-     12,
-     "Total Capacity (doc period)",
-     "323.3"
-    ],
-    "y:20260331": [
-     "de77c377-9512-4d31-8bde-670ca87977d4.pdf",
-     75,
-     "total production capacity of 323 Million litres (doc period)",
-     "323"
-    ],
-    "q:20250930": [
-     "1bf5c952-7f55-4df7-a8f0-222e0da488c9.pdf",
-     11,
-     "Total Capacity (million litres), Total row (doc period)",
-     "321.3"
-    ],
-    "q:20200930": [
-     "14b1fa11-7235-4048-96a3-2cf0e0729c4f.pdf",
-     13,
-     "Million litres (doc period)",
-     "165"
-    ],
-    "q:20200331": [
-     "e008654d-019d-46be-9968-cfc8755e1f2c.pdf",
-     16,
-     "Million litres (doc period)",
-     "157"
-    ],
-    "q:20200630": [
-     "f0a068ef-07cd-419a-921b-bdc8a407ac41.pdf",
-     11,
-     "Million litres (doc period)",
-     "157"
-    ],
-    "q:20230930": [
-     "fdd634dd-4543-41d9-b7f8-c121e87dd42b.pdf",
-     9,
-     "Capacity (million litres), Total row",
-     "321.3"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     321.0,
-     null,
-     "drop_y",
-     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
-     "2026-10-21"
-    ],
-    [
-     "q:20230930",
-     null,
-     321.3,
-     "set_q",
-     "Slot empty for fdd634dd (Corporate Presentation December 2023, dated 2023-12-08 -> doc period 20230930 per ledger convention). fdd634dd p9 'Capacity (million li",
-     "2026-10-27"
-    ]
-   ]
-  },
-  {
    "name": "Magic Moments Vodka Volume",
    "unit": "mn cases",
    "kind": "flow",
@@ -2857,69 +2779,6 @@
    }
   },
   {
-   "name": "Total Bottling Units",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 42.0
-   },
-   "q": {
-    "20200331": 28.0,
-    "20200630": 32.0,
-    "20200930": 32.0,
-    "20250930": 44.0,
-    "20260630": 42.0
-   },
-   "src": {
-    "q:20260630": [
-     "ec961816-2f10-4e31-a2c6-6d0a287b8b0e.pdf",
-     11,
-     "Bottling units (doc period)",
-     "42"
-    ],
-    "y:20260331": [
-     "de77c377-9512-4d31-8bde-670ca87977d4.pdf",
-     75,
-     "network of 42 bottling units (doc period)",
-     "42"
-    ],
-    "q:20250930": [
-     "1bf5c952-7f55-4df7-a8f0-222e0da488c9.pdf",
-     10,
-     "44 Bottling units (doc period)",
-     "44"
-    ],
-    "q:20200930": [
-     "14b1fa11-7235-4048-96a3-2cf0e0729c4f.pdf",
-     13,
-     "Bottling units (doc period)",
-     "32"
-    ],
-    "q:20200331": [
-     "e008654d-019d-46be-9968-cfc8755e1f2c.pdf",
-     16,
-     "Bottling units (doc period)",
-     "28"
-    ],
-    "q:20200630": [
-     "f0a068ef-07cd-419a-921b-bdc8a407ac41.pdf",
-     11,
-     "Bottling units (doc period)",
-     "32"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     44.0,
-     null,
-     "drop_y",
-     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
-     "2026-10-21"
-    ]
-   ]
-  },
-  {
    "name": "Magic Moments Vodka Market Share",
    "unit": "%",
    "kind": "level",
@@ -2963,6 +2822,86 @@
      "62"
     ]
    }
+  },
+  {
+   "name": "Total Manufacturing Capacity",
+   "unit": "million litres",
+   "kind": "level",
+   "y": {
+    "20260331": 323.0
+   },
+   "q": {
+    "20200331": 157.0,
+    "20200630": 157.0,
+    "20200930": 165.0,
+    "20230930": 321.3
+   },
+   "src": {
+    "y:20260331": [
+     "de77c377-9512-4d31-8bde-670ca87977d4.pdf",
+     75,
+     "total production capacity of 323 Million litres (doc period)",
+     "323"
+    ],
+    "q:20200930": [
+     "14b1fa11-7235-4048-96a3-2cf0e0729c4f.pdf",
+     13,
+     "Million litres (doc period)",
+     "165"
+    ],
+    "q:20200331": [
+     "e008654d-019d-46be-9968-cfc8755e1f2c.pdf",
+     16,
+     "Million litres (doc period)",
+     "157"
+    ],
+    "q:20200630": [
+     "f0a068ef-07cd-419a-921b-bdc8a407ac41.pdf",
+     11,
+     "Million litres (doc period)",
+     "157"
+    ],
+    "q:20230930": [
+     "fdd634dd-4543-41d9-b7f8-c121e87dd42b.pdf",
+     9,
+     "Capacity (million litres), Total row",
+     "321.3"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     321.0,
+     null,
+     "drop_y",
+     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
+     "2026-10-21"
+    ],
+    [
+     "q:20230930",
+     null,
+     321.3,
+     "set_q",
+     "Slot empty for fdd634dd (Corporate Presentation December 2023, dated 2023-12-08 -> doc period 20230930 per ledger convention). fdd634dd p9 'Capacity (million li",
+     "2026-10-27"
+    ],
+    [
+     "q:20260630",
+     323.3,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): litres) Rampur  6 19.3 82.5* 4.6 106.4 Sitapur  1 NA 108.9 NA 108.9 Aurangabad (Joint Venture) 3 42.0 66.0 NA ",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     321.3,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  litres) Rampur  4 19.3 82.5* 2.6 104.4 Sitapur  1 NA 108.9 NA 108.9 Aurangabad (Joint Venture) 3 42.0 66.0 NA",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Morpheus Brandy Volume",
@@ -3044,76 +2983,67 @@
    }
   },
   {
-   "name": "Distilleries",
+   "name": "Total Bottling Units",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20260331": 10.0
+    "20260331": 42.0
    },
    "q": {
-    "20250930": 8.0,
-    "20260630": 10.0
+    "20200331": 28.0,
+    "20200630": 32.0,
+    "20200930": 32.0
    },
    "src": {
-    "q:20260630": [
-     "ec961816-2f10-4e31-a2c6-6d0a287b8b0e.pdf",
-     12,
-     "Total Distilleries (doc period)",
-     "10"
-    ],
     "y:20260331": [
-     "4e625212-f698-4a04-96f6-64867f3e1fb1.pdf",
-     12,
-     "Total Distilleries (doc period)",
-     "10"
+     "de77c377-9512-4d31-8bde-670ca87977d4.pdf",
+     75,
+     "network of 42 bottling units (doc period)",
+     "42"
     ],
-    "q:20250930": [
-     "1bf5c952-7f55-4df7-a8f0-222e0da488c9.pdf",
-     11,
-     "Distilleries, Total row (doc period)",
-     "8"
-    ]
-   }
-  },
-  {
-   "name": "On-Premise Outlets",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 10000.0
-   },
-   "q": {
-    "20250930": 10000.0,
-    "20260630": 10000.0
-   },
-   "src": {
-    "q:20260630": [
-     "ec961816-2f10-4e31-a2c6-6d0a287b8b0e.pdf",
-     11,
-     "On premise outlets (doc period)",
-     "10,000"
+    "q:20200930": [
+     "14b1fa11-7235-4048-96a3-2cf0e0729c4f.pdf",
+     13,
+     "Bottling units (doc period)",
+     "32"
     ],
-    "y:20260331": [
-     "4e625212-f698-4a04-96f6-64867f3e1fb1.pdf",
-     11,
-     "on premise outlets (doc period)",
-     "10,000"
+    "q:20200331": [
+     "e008654d-019d-46be-9968-cfc8755e1f2c.pdf",
+     16,
+     "Bottling units (doc period)",
+     "28"
     ],
-    "q:20250930": [
-     "1bf5c952-7f55-4df7-a8f0-222e0da488c9.pdf",
-     10,
-     "Sale through over 100,000 retail and 10,000 on premise outlets (doc period)",
-     "10,000"
+    "q:20200630": [
+     "f0a068ef-07cd-419a-921b-bdc8a407ac41.pdf",
+     11,
+     "Bottling units (doc period)",
+     "32"
     ]
    },
    "fixed": [
     [
      "y:20250331",
-     10000.0,
+     44.0,
      null,
      "drop_y",
      "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
      "2026-10-21"
+    ],
+    [
+     "q:20260630",
+     42.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ience in  spirits making. One  of the most  recognized IMFL  brands in India  323 Million liters One of the la",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     44.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  India  321 Million liters One of the largest  spirits manufacturers.  Capacity expansion  completed: from 160",
+     "2026-10-31"
     ]
    ]
   },
@@ -3173,49 +3103,6 @@
    }
   },
   {
-   "name": "Retail Outlets",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20260331": 100000.0
-   },
-   "q": {
-    "20260630": 100000.0
-   },
-   "src": {
-    "q:20260630": [
-     "ec961816-2f10-4e31-a2c6-6d0a287b8b0e.pdf",
-     11,
-     "Retailers (doc period)",
-     "100,000"
-    ],
-    "y:20260331": [
-     "4e625212-f698-4a04-96f6-64867f3e1fb1.pdf",
-     11,
-     "Retailers (doc period)",
-     "100,000"
-    ]
-   },
-   "fixed": [
-    [
-     "y:20250331",
-     100000.0,
-     null,
-     "drop_y",
-     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
-     "2026-10-21"
-    ],
-    [
-     "q:20250930",
-     100000.0,
-     null,
-     "drop_q",
-     "Qualified print in src label: Sale through over 100,000 retail and 10,000 on premise outlets (doc period)",
-     "2026-10-31"
-    ]
-   ]
-  },
-  {
    "name": "After Dark Whisky Volume",
    "unit": "mn cases",
    "kind": "flow",
@@ -3260,6 +3147,49 @@
    }
   },
   {
+   "name": "On-Premise Outlets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 10000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4e625212-f698-4a04-96f6-64867f3e1fb1.pdf",
+     11,
+     "on premise outlets (doc period)",
+     "10,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     10000.0,
+     null,
+     "drop_y",
+     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
+     "2026-10-21"
+    ],
+    [
+     "q:20260630",
+     10000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  royalty bottling  units spread across the  country 100,000 Retailers Strong distribution  network. Sale  thro",
+     "2026-10-31"
+    ],
+    [
+     "q:20250930",
+     10000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  royalty bottling  units spread across the  country 100,000 Retailers Strong distribution  network. Sale  thro",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "PET Bottle Manufacturing Capacity",
    "unit": "Mn bottles/year",
    "kind": "level",
@@ -3275,6 +3205,49 @@
      "700"
     ]
    }
+  },
+  {
+   "name": "Retail Outlets",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20260331": 100000.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "4e625212-f698-4a04-96f6-64867f3e1fb1.pdf",
+     11,
+     "Retailers (doc period)",
+     "100,000"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20250331",
+     100000.0,
+     null,
+     "drop_y",
+     "c35d0c02 p11 (Investor Presentation February 2026, 'Company Overview'): value undated; 'FY2025' on the page labels only IMFL volume and net revenue boxes -> not",
+     "2026-10-21"
+    ],
+    [
+     "q:20250930",
+     100000.0,
+     null,
+     "drop_q",
+     "Qualified print in src label: Sale through over 100,000 retail and 10,000 on premise outlets (doc period)",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     100000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): rategically limiting  interstate taxes and  transport costs.  Five own, 37 contract  and royalty bottling  uni",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [

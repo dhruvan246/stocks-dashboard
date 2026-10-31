@@ -2621,73 +2621,6 @@
    }
   },
   {
-   "name": "Manufacturing Units",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 27.0,
-    "20260331": 26.0
-   },
-   "q": {
-    "20200331": 25.0,
-    "20200630": 25.0,
-    "20200930": 25.0,
-    "20201231": 25.0,
-    "20210331": 23.0,
-    "20230630": 25.0
-   },
-   "src": {
-    "y:20260331": [
-     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
-     12,
-     "Manufacturing units (doc period)",
-     "26"
-    ],
-    "y:20250331": [
-     "82657cf0-b6b8-4b01-bb68-9f477d451107.pdf",
-     23,
-     "Manufacturing Units",
-     "27"
-    ],
-    "q:20200331": [
-     "236219f9-c6b2-4891-9342-c10d8219505f.pdf",
-     4,
-     "manufacturing facilities, including a joint venture (doc period)",
-     "25"
-    ],
-    "q:20201231": [
-     "3b6a3c0a-5c3a-42ad-b56c-4e61fbdb2993.pdf",
-     3,
-     "manufacturing facilities, including a joint venture (doc period)",
-     "25"
-    ],
-    "q:20210331": [
-     "5b1b3f35-8ee2-4f0c-a6ce-26b50bf322b9.pdf",
-     3,
-     "PIL owns 23 manufacturing facilities (doc period)",
-     "23"
-    ],
-    "q:20200630": [
-     "93ad5df5-060c-4124-a4fc-c9d360b51ba0.pdf",
-     3,
-     "PIL owns 25 manufacturing facilities, including a joint venture (doc period)",
-     "25"
-    ],
-    "q:20230630": [
-     "e8ad784a-2b5c-44ed-8e81-df882f3aeaa5.pdf",
-     4,
-     "25 manufacturing facilities (doc period)",
-     "25"
-    ],
-    "q:20200930": [
-     "ff7b7b57-355a-4719-959f-0106ae1c58f9.pdf",
-     3,
-     "PIL owns 25 manufacturing facilities, including a joint venture (doc period)",
-     "25"
-    ]
-   }
-  },
-  {
    "name": "FMEG Revenue Contribution",
    "unit": "%",
    "kind": "flow",
@@ -2799,6 +2732,78 @@
    }
   },
   {
+   "name": "Manufacturing Units",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 27.0,
+    "20260331": 26.0
+   },
+   "q": {
+    "20200930": 25.0,
+    "20201231": 25.0,
+    "20210331": 23.0
+   },
+   "src": {
+    "y:20260331": [
+     "1e95b41f-12c7-4f97-b47b-c3abfce9efc5.pdf",
+     12,
+     "Manufacturing units (doc period)",
+     "26"
+    ],
+    "y:20250331": [
+     "82657cf0-b6b8-4b01-bb68-9f477d451107.pdf",
+     23,
+     "Manufacturing Units",
+     "27"
+    ],
+    "q:20201231": [
+     "3b6a3c0a-5c3a-42ad-b56c-4e61fbdb2993.pdf",
+     3,
+     "manufacturing facilities, including a joint venture (doc period)",
+     "25"
+    ],
+    "q:20210331": [
+     "5b1b3f35-8ee2-4f0c-a6ce-26b50bf322b9.pdf",
+     3,
+     "PIL owns 23 manufacturing facilities (doc period)",
+     "23"
+    ],
+    "q:20200930": [
+     "ff7b7b57-355a-4719-959f-0106ae1c58f9.pdf",
+     3,
+     "PIL owns 25 manufacturing facilities, including a joint venture (doc period)",
+     "25"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     25.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  strong distribution network of 4,300+ authorized dealers and 205,000+ retail  outlets. PIL’s business operati",
+     "2026-10-31"
+    ],
+    [
+     "q:20200331",
+     25.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): business. PIL has a strong a Pan-India distribution  network of over 3,500+ authorized dealers and distributor",
+     "2026-10-31"
+    ],
+    [
+     "q:20200630",
+     25.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): naged through a corporate office, 3  regional offices, 20 local offices across India and 30 warehouses located",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Revenue from Outside India",
    "unit": "%",
    "kind": "flow",
@@ -2858,9 +2863,7 @@
     "20260331": 35.0
    },
    "q": {
-    "20200630": 30.0,
-    "20200930": 30.0,
-    "20230630": 23.0
+    "20200930": 30.0
    },
    "src": {
     "y:20260331": [
@@ -2875,25 +2878,31 @@
      "Warehouses and Depots",
      "34"
     ],
-    "q:20200630": [
-     "93ad5df5-060c-4124-a4fc-c9d360b51ba0.pdf",
-     3,
-     "30 warehouses located across the nation (doc period)",
-     "30"
-    ],
-    "q:20230630": [
-     "e8ad784a-2b5c-44ed-8e81-df882f3aeaa5.pdf",
-     4,
-     "23 warehouses (doc period)",
-     "23"
-    ],
     "q:20200930": [
      "ff7b7b57-355a-4719-959f-0106ae1c58f9.pdf",
      3,
      "30 warehouses located across the nation (doc period)",
      "30"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     23.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ’s largest manufacturer of Wires and Cables and one of the  fastest growing FMEG companies with a consolidated",
+     "2026-10-31"
+    ],
+    [
+     "q:20200630",
+     30.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): mited   Registered office: Unit 4, Plot No.105, Halol Vadodara Road, Village Nurpura, Taluka Halol, Panchmahal",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "B2C Sales Contribution (Standalone)",
@@ -3142,30 +3151,6 @@
    }
   },
   {
-   "name": "Warehouses",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200331": 30.0,
-    "20201231": 30.0
-   },
-   "src": {
-    "q:20200331": [
-     "236219f9-c6b2-4891-9342-c10d8219505f.pdf",
-     4,
-     "warehouses located across the nation (doc period)",
-     "30"
-    ],
-    "q:20201231": [
-     "3b6a3c0a-5c3a-42ad-b56c-4e61fbdb2993.pdf",
-     3,
-     "warehouses located across the nation (doc period)",
-     "30"
-    ]
-   }
-  },
-  {
    "name": "Wires & Cables Annual Capacity",
    "unit": "mn kms",
    "kind": "level",
@@ -3303,6 +3288,33 @@
      "7"
     ]
    }
+  },
+  {
+   "name": "Warehouses",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20201231": 30.0
+   },
+   "src": {
+    "q:20201231": [
+     "3b6a3c0a-5c3a-42ad-b56c-4e61fbdb2993.pdf",
+     3,
+     "warehouses located across the nation (doc period)",
+     "30"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20200331",
+     30.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): lash – II, New Delhi – 110048 India  Corporate Office: Polycab House, 771, Pandit Satawalekar Marg, Mahim (Wes",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],

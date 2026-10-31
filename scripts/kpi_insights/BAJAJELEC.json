@@ -54,75 +54,6 @@
  },
  "metrics": [
   {
-   "name": "New Product Launches - Consumer Lighting (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20220930": 19.0,
-    "20230331": 47.0,
-    "20240630": 33.0,
-    "20240930": 55.0
-   },
-   "src": {
-    "q:20220930": [
-     "bccb13ff-a0b9-4d9a-9a6c-4286c571964f.pdf",
-     15,
-     "19* Launches in Q2 (No. of SKUs)",
-     "19"
-    ],
-    "q:20230331": [
-     "0a3d7d26-2c04-4b82-9aa6-cb48fbc0c2a7.pdf",
-     19,
-     "47* Launches in Q4 (No. of SKUs)",
-     "47"
-    ],
-    "q:20240630": [
-     "75f80a47-9010-42e1-be44-f8cf6fb70410.pdf",
-     16,
-     "New Product Launches: Consumer Lighting 33* Launches (doc period)",
-     "33"
-    ],
-    "q:20240930": [
-     "1b733df3-8d5e-4e80-90cf-3123f831d03d.pdf",
-     17,
-     "New Product Launches: Consumer Lighting 55 Launches* (doc period)",
-     "55"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - Morphy Richards (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240630": 7.0,
-    "20240930": 4.0,
-    "20241231": 9.0
-   },
-   "src": {
-    "q:20240630": [
-     "75f80a47-9010-42e1-be44-f8cf6fb70410.pdf",
-     14,
-     "New Product Launches: Morphy Richards 7* Launches (doc period)",
-     "7"
-    ],
-    "q:20240930": [
-     "1b733df3-8d5e-4e80-90cf-3123f831d03d.pdf",
-     15,
-     "New Product Launches: Morphy Richards 4 Launches* (doc period)",
-     "4"
-    ],
-    "q:20241231": [
-     "b99e9ed9-ef13-4865-af45-46fca1a261b3.pdf",
-     16,
-     "New Product Launches: Morphy Richards 9 Launches* (doc period)",
-     "9"
-    ]
-   }
-  },
-  {
    "name": "Core FMEG Alternate Channel Share (Gross Sales)",
    "unit": "%",
    "kind": "flow",
@@ -171,6 +102,48 @@
    }
   },
   {
+   "name": "New Product Launches - Consumer Lighting (SKUs)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20220930": 19.0,
+    "20230331": 47.0
+   },
+   "src": {
+    "q:20220930": [
+     "bccb13ff-a0b9-4d9a-9a6c-4286c571964f.pdf",
+     15,
+     "19* Launches in Q2 (No. of SKUs)",
+     "19"
+    ],
+    "q:20230331": [
+     "0a3d7d26-2c04-4b82-9aa6-cb48fbc0c2a7.pdf",
+     19,
+     "47* Launches in Q4 (No. of SKUs)",
+     "47"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     33.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): New Product Launches: Consumer Lighting 33* Launches *No. of SKUs LEDZ INVERTER LED PANEL 15W ROUND/SQUARE • B",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     55.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): CHANGING • IP 65 Protection • Auto changes colour – Red, Green,  Blue, Yellow, Purple, Ice Blue, White • Ideal",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "New Product Launches - Consumer Products (SKUs)",
    "unit": "count",
    "kind": "flow",
@@ -191,78 +164,6 @@
      18,
      "62* Launches in Q4 (No. of SKUs)",
      "62"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - Consumer Products Bajaj (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240930": 30.0,
-    "20241231": 113.0
-   },
-   "src": {
-    "q:20240930": [
-     "1b733df3-8d5e-4e80-90cf-3123f831d03d.pdf",
-     13,
-     "New Product Launches: Consumer Products (BAJAJ) 30 Launches* (doc period)",
-     "30"
-    ],
-    "q:20241231": [
-     "b99e9ed9-ef13-4865-af45-46fca1a261b3.pdf",
-     14,
-     "New Product Launches: Consumer Products (BAJAJ) 113 Launches* (doc period)",
-     "113"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - NEX (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240630": 11.0,
-    "20240930": 11.0
-   },
-   "src": {
-    "q:20240630": [
-     "75f80a47-9010-42e1-be44-f8cf6fb70410.pdf",
-     15,
-     "New Product Launches: NEX 11* Launches (doc period)",
-     "11"
-    ],
-    "q:20240930": [
-     "1b733df3-8d5e-4e80-90cf-3123f831d03d.pdf",
-     16,
-     "New Product Launches: Nex 11 Launches* (doc period)",
-     "11"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - Nirlep (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240930": 9.0,
-    "20241231": 4.0
-   },
-   "src": {
-    "q:20240930": [
-     "1b733df3-8d5e-4e80-90cf-3123f831d03d.pdf",
-     14,
-     "New Product Launches: Nirlep 9 Launches* (doc period)",
-     "9"
-    ],
-    "q:20241231": [
-     "b99e9ed9-ef13-4865-af45-46fca1a261b3.pdf",
-     15,
-     "New Product Launches: Nirlep 4 Launches* (doc period)",
-     "4"
     ]
    }
   },
@@ -299,59 +200,8 @@
      "33"
     ]
    }
-  },
-  {
-   "name": "New Product Launches - Fans & Appliances Bajaj (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240630": 48.0
-   },
-   "src": {
-    "q:20240630": [
-     "75f80a47-9010-42e1-be44-f8cf6fb70410.pdf",
-     12,
-     "New Product Launches: Fans & Appliances (BAJAJ) 48* Launches (doc period)",
-     "48"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - NPG Bajaj + Nirlep (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20240630": 12.0
-   },
-   "src": {
-    "q:20240630": [
-     "75f80a47-9010-42e1-be44-f8cf6fb70410.pdf",
-     13,
-     "New Product Launches: NPG (BAJAJ + Nirlep) 12* Launches (doc period)",
-     "12"
-    ]
-   }
-  },
-  {
-   "name": "New Product Launches - Professional Lighting (SKUs)",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 142.0
-   },
-   "src": {
-    "q:20241231": [
-     "b99e9ed9-ef13-4865-af45-46fca1a261b3.pdf",
-     18,
-     "New Product Launches: Professional Lighting 142 Launches* (doc period)",
-     "142"
-    ]
-   }
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

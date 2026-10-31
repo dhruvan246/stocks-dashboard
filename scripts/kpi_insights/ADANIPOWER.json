@@ -1933,133 +1933,6 @@
    }
   },
   {
-   "name": "Locked-in Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20260331": 23720.0
-   },
-   "q": {
-    "20240630": 4720.0,
-    "20240930": 4520.0,
-    "20241231": 4520.0,
-    "20250331": 13120.0,
-    "20251231": 23720.0,
-    "20260630": 23720.0
-   },
-   "src": {
-    "q:20260630": [
-     "0a67308a-1037-45a4-ab3c-4593628d851a.pdf",
-     11,
-     "Locked-in Capacity (doc period)",
-     "23,720"
-    ],
-    "y:20260331": [
-     "a6d30996-b420-4672-8524-1f8ce73260cb.pdf",
-     12,
-     "Locked-in Capacity (doc period)",
-     "23,720"
-    ],
-    "q:20251231": [
-     "9b1c9575-3e67-4f53-9037-894f39b1d635.pdf",
-     12,
-     "Locked-in Capacity (doc period)",
-     "23,720"
-    ],
-    "q:20240630": [
-     "fe23b9ba-8c7b-45c8-ad68-396ec4250412.pdf",
-     10,
-     "Locked-in Capacity (doc period)",
-     "4,720"
-    ],
-    "q:20240930": [
-     "ccc3f7a6-571a-4926-a773-0f6032b17287.pdf",
-     10,
-     "Locked-in Growth (doc period)",
-     "4,520"
-    ],
-    "q:20241231": [
-     "2293c908-9af2-4b48-8353-a898e4308338.pdf",
-     12,
-     "Locked-in Growth (doc period)",
-     "4,520"
-    ],
-    "q:20250331": [
-     "80780af8-0c8b-403f-83e5-f949e26d864f.pdf",
-     11,
-     "Locked-in Capacity (doc period)",
-     "13,120"
-    ]
-   },
-   "latest": {
-    "q:20250331": "2025-06-09"
-   }
-  },
-  {
-   "name": "Operating Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {
-    "20260331": 18330.0
-   },
-   "q": {
-    "20240630": 15250.0,
-    "20240930": 17550.0,
-    "20241231": 17550.0,
-    "20250331": 17550.0,
-    "20251231": 18150.0,
-    "20260630": 18330.0
-   },
-   "src": {
-    "q:20260630": [
-     "0a67308a-1037-45a4-ab3c-4593628d851a.pdf",
-     35,
-     "Operating Capacity (Q1 FY27 Insights)",
-     "18,330"
-    ],
-    "y:20260331": [
-     "7ead4174-304a-41e4-b2ca-64a1a31c2853.pdf",
-     8,
-     "Operating Capacity (FY26 Insights)",
-     "18,330"
-    ],
-    "q:20251231": [
-     "9b1c9575-3e67-4f53-9037-894f39b1d635.pdf",
-     12,
-     "Operating Capacity, 9MFY26 Asset Details",
-     "18,150"
-    ],
-    "q:20240630": [
-     "fe23b9ba-8c7b-45c8-ad68-396ec4250412.pdf",
-     10,
-     "Operating Capacity (doc period)",
-     "15,250"
-    ],
-    "q:20240930": [
-     "253229d5-b7c6-499e-90f5-19ff7113d995.pdf",
-     12,
-     "Current Operating Capacity (doc period)",
-     "17,550"
-    ],
-    "q:20241231": [
-     "2293c908-9af2-4b48-8353-a898e4308338.pdf",
-     12,
-     "Operating Capacity (doc period)",
-     "17,550"
-    ],
-    "q:20250331": [
-     "80780af8-0c8b-403f-83e5-f949e26d864f.pdf",
-     11,
-     "Operating Capacity (doc period)",
-     "17,550"
-    ]
-   },
-   "latest": {
-    "q:20240930": "2024-11-20",
-    "q:20250331": "2025-06-09"
-   }
-  },
-  {
    "name": "Coal Consumption",
    "unit": "MT",
    "kind": "flow",
@@ -2195,6 +2068,75 @@
    }
   },
   {
+   "name": "Locked-in Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 23720.0
+   },
+   "q": {
+    "20251231": 23720.0,
+    "20260630": 23720.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a67308a-1037-45a4-ab3c-4593628d851a.pdf",
+     11,
+     "Locked-in Capacity (doc period)",
+     "23,720"
+    ],
+    "y:20260331": [
+     "a6d30996-b420-4672-8524-1f8ce73260cb.pdf",
+     12,
+     "Locked-in Capacity (doc period)",
+     "23,720"
+    ],
+    "q:20251231": [
+     "9b1c9575-3e67-4f53-9037-894f39b1d635.pdf",
+     12,
+     "Locked-in Capacity (doc period)",
+     "23,720"
+    ]
+   },
+   "latest": {
+    "q:20250331": "2025-06-09"
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     4720.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): hers 81% 19% Contracted Capacity2 PPA Open 94% 6% Contracted Capacity3 PPA Open + Operating Capacity 15,250 MW",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     4520.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): chnology Ultra-supercritical Supercritical Others 71% 29% PPA Tie-ups PPA Open + Operating Capacity 17,550 MW ",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     4520.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): chnology Ultra-supercritical Supercritical Others 65% 35% PPA Tie-ups PPA Open + Operating Capacity 17,550 MW ",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     13120.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): ra-supercritical Supercritical Others 22% 78% PPA Tie-ups Till Date PPA Open + Operating Capacity 17,550 MW 12",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Net Debt",
    "unit": "$ Mn",
    "kind": "level",
@@ -2259,6 +2201,76 @@
    }
   },
   {
+   "name": "Operating Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20260331": 18330.0
+   },
+   "q": {
+    "20251231": 18150.0,
+    "20260630": 18330.0
+   },
+   "src": {
+    "q:20260630": [
+     "0a67308a-1037-45a4-ab3c-4593628d851a.pdf",
+     35,
+     "Operating Capacity (Q1 FY27 Insights)",
+     "18,330"
+    ],
+    "y:20260331": [
+     "7ead4174-304a-41e4-b2ca-64a1a31c2853.pdf",
+     8,
+     "Operating Capacity (FY26 Insights)",
+     "18,330"
+    ],
+    "q:20251231": [
+     "9b1c9575-3e67-4f53-9037-894f39b1d635.pdf",
+     12,
+     "Operating Capacity, 9MFY26 Asset Details",
+     "18,150"
+    ]
+   },
+   "latest": {
+    "q:20240930": "2024-11-20",
+    "q:20250331": "2025-06-09"
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     15250.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gy Ultra-supercritical Supercritical Others 81% 19% Contracted Capacity2 PPA Open 94% 6% Contracted Capacity3 ",
+     "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     17550.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): rcritical Supercritical Others 93% 7% Technology Ultra-supercritical Supercritical Others 65% 35% PPA Tie-ups ",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     17550.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): critical Others 42% 35% 24% Technology Ultra-supercritical Supercritical Others 22% 78% PPA Tie-ups Till Date ",
+     "2026-10-31"
+    ],
+    [
+     "q:20240930",
+     17550.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NOW): PPA Open 42% 35% 24% Technology Ultra-supercritical Supercritical Others 89% 11% Contracted Capacity5 PPA Open",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Water Intensity (inland plants)",
    "unit": "m3/MWh",
    "kind": "flow",
@@ -2297,23 +2309,25 @@
    "y": {
     "20260331": 0.86
    },
-   "q": {
-    "20251231": 0.85
-   },
+   "q": {},
    "src": {
     "y:20260331": [
      "7ead4174-304a-41e4-b2ca-64a1a31c2853.pdf",
      26,
      "Average Emission intensity, FY26",
      "0.86"
-    ],
-    "q:20251231": [
-     "9b1c9575-3e67-4f53-9037-894f39b1d635.pdf",
-     29,
-     "Average Emission intensity (doc period)",
-     "0.85"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20251231",
+     0.85,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): L: Adani Power Limited | tCO2e: Tonnes of Carbon Dioxide Equivalent Climate Change Adaptation and mitigation •",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
@@ -2925,5 +2939,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-21"
+ "updated": "2026-10-31"
 }

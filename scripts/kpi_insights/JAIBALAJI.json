@@ -75,110 +75,6 @@
  },
  "metrics": [
   {
-   "name": "DI Pipes Capacity",
-   "unit": "TPA",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 240000.0,
-    "20240331": 300000.0,
-    "20240630": 300000.0,
-    "20240930": 300000.0,
-    "20241231": 300000.0,
-    "20250331": 504000.0
-   },
-   "src": {
-    "q:20241231": [
-     "4c228695-aaa7-47f2-8b94-e834943a9e58.pdf",
-     15,
-     "DI Pipes Existing Capacity (doc period)",
-     "300,000"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     13,
-     "DI Pipes Existing Capacity (doc period)",
-     "240,000"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     14,
-     "DI Pipes Existing Capacity (doc period)",
-     "300,000"
-    ],
-    "q:20240630": [
-     "acf1e236-481a-4b09-ae5b-97c4d9ff9200.pdf",
-     14,
-     "DI Pipes Existing Capacity (doc period)",
-     "300,000"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     14,
-     "DI Pipes Existing Capacity (doc period)",
-     "504,000"
-    ],
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     15,
-     "DI Pipes Existing Capacity (doc period)",
-     "300,000"
-    ]
-   }
-  },
-  {
-   "name": "Ferro Alloys Capacity",
-   "unit": "TPA",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 130000.0,
-    "20240331": 166000.0,
-    "20240630": 166000.0,
-    "20240930": 166000.0,
-    "20241231": 166000.0,
-    "20250331": 166000.0
-   },
-   "src": {
-    "q:20241231": [
-     "4c228695-aaa7-47f2-8b94-e834943a9e58.pdf",
-     15,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "166,000"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     13,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "130,000"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     14,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "166,000"
-    ],
-    "q:20240630": [
-     "acf1e236-481a-4b09-ae5b-97c4d9ff9200.pdf",
-     14,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "166,000"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     14,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "166,000"
-    ],
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     15,
-     "Ferro Alloys Existing Capacity (doc period)",
-     "166,000"
-    ]
-   }
-  },
-  {
    "name": "Billets Realisation",
    "unit": "Rs. Per Ton",
    "kind": "flow",
@@ -359,55 +255,6 @@
    }
   },
   {
-   "name": "Power Capacity",
-   "unit": "MW",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 101.1,
-    "20240331": 101.1,
-    "20240930": 101.1,
-    "20250331": 101.1,
-    "20260630": 101.1
-   },
-   "src": {
-    "q:20260630": [
-     "5864a9d9-769c-4ce1-b395-8a53cd57b224.pdf",
-     7,
-     "POWER CAPACITY (doc period)",
-     "101.1"
-    ],
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     25,
-     "Power Capacity",
-     "101.1"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Power Capacity (doc period)",
-     "101.1"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     23,
-     "Power Capacity",
-     "101.1"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     23,
-     "Power Capacity",
-     "101.1"
-    ]
-   },
-   "latest": {
-    "q:20240331": "2024-06-19",
-    "q:20240930": "2025-03-05"
-   }
-  },
-  {
    "name": "Sponge Iron Realisation",
    "unit": "Rs. Per Ton",
    "kind": "flow",
@@ -498,12 +345,123 @@
    }
   },
   {
+   "name": "DI Pipes Capacity",
+   "unit": "TPA",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 300000.0,
+    "20240630": 300000.0,
+    "20240930": 300000.0,
+    "20250331": 504000.0
+   },
+   "src": {
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     14,
+     "DI Pipes Existing Capacity (doc period)",
+     "300,000"
+    ],
+    "q:20240630": [
+     "acf1e236-481a-4b09-ae5b-97c4d9ff9200.pdf",
+     14,
+     "DI Pipes Existing Capacity (doc period)",
+     "300,000"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     14,
+     "DI Pipes Existing Capacity (doc period)",
+     "504,000"
+    ],
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     15,
+     "DI Pipes Existing Capacity (doc period)",
+     "300,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     300000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): nsion Capex (in Rs. Mn.) Current Status Total Already incurred Balance to  be incurred Capitalized Under CWIP ",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     240000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): n Capacity After  Expansion Capex (in Rs. Mn.) Current Status Total Already  incurred Balance to  be incurred ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Ferro Alloys Capacity",
+   "unit": "TPA",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 166000.0,
+    "20240630": 166000.0,
+    "20240930": 166000.0,
+    "20250331": 166000.0
+   },
+   "src": {
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     14,
+     "Ferro Alloys Existing Capacity (doc period)",
+     "166,000"
+    ],
+    "q:20240630": [
+     "acf1e236-481a-4b09-ae5b-97c4d9ff9200.pdf",
+     14,
+     "Ferro Alloys Existing Capacity (doc period)",
+     "166,000"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     14,
+     "Ferro Alloys Existing Capacity (doc period)",
+     "166,000"
+    ],
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     15,
+     "Ferro Alloys Existing Capacity (doc period)",
+     "166,000"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     166000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): already commissioned,  balance 1.40 Lakh expected to commission  by FY25; Phase 2 = 2.2 Lakh T expected to  co",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     130000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): 9 Will be done in 2 phases Phase 1 = 2Lac T expected to commission by FY24; Phase 2 = 1.5 Lac T expected to co",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Coke Capacity",
    "unit": "T",
    "kind": "level",
    "y": {},
    "q": {
-    "20231231": 350000.0,
     "20240331": 350000.0,
     "20240930": 350000.0,
     "20250331": 350000.0
@@ -515,12 +473,6 @@
      "Coke Capacity",
      "350,000"
     ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Coke Capacity (doc period)",
-     "350,000"
-    ],
     "q:20240331": [
      "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
      23,
@@ -537,133 +489,17 @@
    "latest": {
     "q:20240331": "2024-06-19",
     "q:20240930": "2025-03-05"
-   }
-  },
-  {
-   "name": "Sinter Capacity",
-   "unit": "T",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 608000.0,
-    "20240331": 908000.0,
-    "20240930": 908000.0,
-    "20250331": 908000.0
    },
-   "src": {
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     25,
-     "Sinter Capacity",
-     "908,000"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Sinter Capacity (doc period)",
-     "608,000"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     23,
-     "Sinter Capacity",
-     "908,000"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     23,
-     "Sinter Capacity",
-     "908,000"
+   "fixed": [
+    [
+     "q:20231231",
+     350000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):  Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Capacity = 260,000 T Sinter Capacit",
+     "2026-10-31"
     ]
-   },
-   "latest": {
-    "q:20240331": "2024-06-19",
-    "q:20240930": "2025-03-05"
-   }
-  },
-  {
-   "name": "Sponge Iron Capacity",
-   "unit": "T",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 345000.0,
-    "20240331": 345000.0,
-    "20240930": 345000.0,
-    "20250331": 345000.0
-   },
-   "src": {
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     25,
-     "Sponge Iron Capacity",
-     "345,000"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Sponge Iron Capacity (doc period)",
-     "345,000"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     23,
-     "Sponge Iron Capacity",
-     "345,000"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     23,
-     "Sponge Iron Capacity",
-     "345,000"
-    ]
-   },
-   "latest": {
-    "q:20240331": "2024-06-19",
-    "q:20240930": "2025-03-05"
-   }
-  },
-  {
-   "name": "Steel Billets Capacity",
-   "unit": "T",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 394000.0,
-    "20240331": 394000.0,
-    "20240930": 394000.0,
-    "20250331": 394000.0
-   },
-   "src": {
-    "q:20240930": [
-     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
-     25,
-     "Steel Billets Capacity",
-     "394,000"
-    ],
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Steel Billets Capacity (doc period)",
-     "394,000"
-    ],
-    "q:20240331": [
-     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
-     23,
-     "Steel Billets Capacity",
-     "394,000"
-    ],
-    "q:20250331": [
-     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
-     23,
-     "Steel Billets Capacity",
-     "394,000"
-    ]
-   },
-   "latest": {
-    "q:20240331": "2024-06-19",
-    "q:20240930": "2025-03-05"
-   }
+   ]
   },
   {
    "name": "DI Pipes Sales Volume",
@@ -728,22 +564,203 @@
    }
   },
   {
+   "name": "Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 101.1,
+    "20240930": 101.1,
+    "20250331": 101.1
+   },
+   "src": {
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     25,
+     "Power Capacity",
+     "101.1"
+    ],
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     23,
+     "Power Capacity",
+     "101.1"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     23,
+     "Power Capacity",
+     "101.1"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2024-06-19",
+    "q:20240930": "2025-03-05"
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     101.1,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 0 T Steel Billets Capacity = 394,000 T TMT Bars Capacity = 260,000 T Sinter Capacity = 608,000 T Coke Capacity",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     101.1,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): attisgarh 1.1  MT INTEGRATED GREENFIELD STEEL MANUFACTURING 5.5  LAKH TPA DI PIPE CAPACITY Expanded capacity, ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Sinter Capacity",
+   "unit": "T",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 908000.0,
+    "20240930": 908000.0,
+    "20250331": 908000.0
+   },
+   "src": {
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     25,
+     "Sinter Capacity",
+     "908,000"
+    ],
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     23,
+     "Sinter Capacity",
+     "908,000"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     23,
+     "Sinter Capacity",
+     "908,000"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2024-06-19",
+    "q:20240930": "2025-03-05"
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     608000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):  Iron Capacity = 345,000 T Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Capacity ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Sponge Iron Capacity",
+   "unit": "T",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 345000.0,
+    "20240930": 345000.0,
+    "20250331": 345000.0
+   },
+   "src": {
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     25,
+     "Sponge Iron Capacity",
+     "345,000"
+    ],
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     23,
+     "Sponge Iron Capacity",
+     "345,000"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     23,
+     "Sponge Iron Capacity",
+     "345,000"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2024-06-19",
+    "q:20240930": "2025-03-05"
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     345000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): Sponge Iron Capacity = 345,000 T Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Cap",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Steel Billets Capacity",
+   "unit": "T",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 394000.0,
+    "20240930": 394000.0,
+    "20250331": 394000.0
+   },
+   "src": {
+    "q:20240930": [
+     "ddc283ba-e9bc-45d9-ba2a-24fdb9be6205.pdf",
+     25,
+     "Steel Billets Capacity",
+     "394,000"
+    ],
+    "q:20240331": [
+     "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
+     23,
+     "Steel Billets Capacity",
+     "394,000"
+    ],
+    "q:20250331": [
+     "cf31621c-bce9-48a2-a636-6c033b7d0889.pdf",
+     23,
+     "Steel Billets Capacity",
+     "394,000"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2024-06-19",
+    "q:20240930": "2025-03-05"
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     394000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): Sponge Iron Capacity = 345,000 T Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Cap",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Pig Iron Capacity",
    "unit": "T",
    "kind": "level",
    "y": {},
    "q": {
-    "20231231": 509250.0,
     "20240331": 630000.0,
     "20250331": 550000.0
    },
    "src": {
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "Pig Iron Capacity (doc period)",
-     "509,250"
-    ],
     "q:20240331": [
      "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
      23,
@@ -759,7 +776,17 @@
    },
    "latest": {
     "q:20240331": "2024-06-19"
-   }
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     509250.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): Sponge Iron Capacity = 345,000 T Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Cap",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "TMT Bars Capacity",
@@ -767,17 +794,10 @@
    "kind": "level",
    "y": {},
    "q": {
-    "20231231": 260000.0,
     "20240331": 260000.0,
     "20250331": 300000.0
    },
    "src": {
-    "q:20231231": [
-     "262189d0-7687-41d1-8a5b-009c758f4f46.pdf",
-     12,
-     "TMT Bars Capacity (doc period)",
-     "260,000"
-    ],
     "q:20240331": [
      "80c63626-a0d3-4fd4-bc94-c393991a0892.pdf",
      23,
@@ -793,9 +813,19 @@
    },
    "latest": {
     "q:20240331": "2024-06-19"
-   }
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     260000.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): Sponge Iron Capacity = 345,000 T Pig Iron Capacity = 509,250 T Steel Billets Capacity = 394,000 T TMT Bars Cap",
+     "2026-10-31"
+    ]
+   ]
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

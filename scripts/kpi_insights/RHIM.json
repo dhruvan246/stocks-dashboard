@@ -617,37 +617,6 @@
    }
   },
   {
-   "name": "Production Plants",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 9.0,
-    "20231231": 3.0,
-    "20250930": 8.0
-   },
-   "src": {
-    "q:20250930": [
-     "086e2fca-6c59-490c-a1e3-6c4782dd8517.pdf",
-     28,
-     "Production Plants (doc period)",
-     "8"
-    ],
-    "q:20221231": [
-     "3de00641-eabb-45ae-8521-1d9d038163d6.pdf",
-     2,
-     "state-of-the-art manufacturing plants (doc period)",
-     "9"
-    ],
-    "q:20231231": [
-     "8108bf89-b67d-4b40-859b-dcfc7021fc06.pdf",
-     2,
-     "state-of-the-art manufacturing plants (doc period)",
-     "3"
-    ]
-   }
-  },
-  {
    "name": "RHIMIR Shipment Volume",
    "unit": "KT",
    "kind": "flow",
@@ -765,30 +734,6 @@
    }
   },
   {
-   "name": "India Refractory Market Share",
-   "unit": "%",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20221231": 30.0,
-    "20240630": 30.0
-   },
-   "src": {
-    "q:20221231": [
-     "73cd9617-3fd3-4b0d-a5b9-60932f1ed508.pdf",
-     5,
-     "RHI Magnesita India has a market share of 30% in the India refractory market (do",
-     "30"
-    ],
-    "q:20240630": [
-     "0d31af46-fced-4841-8ab7-43d442020fe7.pdf",
-     11,
-     "Market leadership position with 30% market share in India (doc period)",
-     "30"
-    ]
-   }
-  },
-  {
    "name": "Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -835,6 +780,40 @@
      "348"
     ]
    }
+  },
+  {
+   "name": "Production Plants",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20221231": 9.0,
+    "20231231": 3.0
+   },
+   "src": {
+    "q:20221231": [
+     "3de00641-eabb-45ae-8521-1d9d038163d6.pdf",
+     2,
+     "state-of-the-art manufacturing plants (doc period)",
+     "9"
+    ],
+    "q:20231231": [
+     "8108bf89-b67d-4b40-859b-dcfc7021fc06.pdf",
+     2,
+     "state-of-the-art manufacturing plants (doc period)",
+     "3"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     8.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): lled Workforce* FY 2025 revenue * Workforce includes employees, workers & contingent workers 700+  Customers i",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Site Offices",
@@ -900,6 +879,33 @@
      "79"
     ]
    }
+  },
+  {
+   "name": "India Refractory Market Share",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20221231": 30.0
+   },
+   "src": {
+    "q:20221231": [
+     "73cd9617-3fd3-4b0d-a5b9-60932f1ed508.pdf",
+     5,
+     "RHI Magnesita India has a market share of 30% in the India refractory market (do",
+     "30"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     30.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): PUBLIC Summary and Investment Case Fueled by India’s growth, commitment to resilient margins  Market leadershi",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Installed Manufacturing Capacity",

@@ -132,16 +132,9 @@
     "20230630": 3.0,
     "20250630": 2.0,
     "20251231": 45.0,
-    "20260331": 36.0,
-    "20260630": 66.0
+    "20260331": 36.0
    },
    "src": {
-    "q:20260630": [
-     "24c9c8ae-50fd-4b39-8752-ebf166a14c42.pdf",
-     11,
-     "66 Customer audits (doc period)",
-     "66"
-    ],
     "q:20260331": [
      "44f1a1ac-18e6-4b29-af83-69b6569bfba5.pdf",
      11,
@@ -166,69 +159,17 @@
      "Completed successful audits by 2 key customers (doc period)",
      "2"
     ]
-   }
-  },
-  {
-   "name": "Manufacturing Facilities",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 7.0,
-    "20240331": 7.0,
-    "20260630": 16.0
    },
-   "src": {
-    "q:20260630": [
-     "24c9c8ae-50fd-4b39-8752-ebf166a14c42.pdf",
-     13,
-     "16 Manufacturing facilities (doc period)",
-     "16"
-    ],
-    "q:20231231": [
-     "2d03397b-9730-476c-b009-db9d60cc6192.pdf",
-     4,
-     "State of the art manufacturing facilities (doc period)",
-     "7"
-    ],
-    "q:20240331": [
-     "8bfb359f-e77a-4890-b609-e97e7f11810b.pdf",
-     5,
-     "State of the art manufacturing facilities (doc period)",
-     "7"
+   "fixed": [
+    [
+     "q:20260630",
+     66.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 10 4 Regulatory Audits  66 Customer audits Facility Inspections Regulatory Approvals Launches Products Filed V",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "Regulatory Audits",
-   "unit": "count",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20251231": 3.0,
-    "20260331": 2.0,
-    "20260630": 4.0
-   },
-   "src": {
-    "q:20260630": [
-     "24c9c8ae-50fd-4b39-8752-ebf166a14c42.pdf",
-     11,
-     "4 Regulatory Audits (doc period)",
-     "4"
-    ],
-    "q:20260331": [
-     "44f1a1ac-18e6-4b29-af83-69b6569bfba5.pdf",
-     11,
-     "2 Regulatory Audits",
-     "2"
-    ],
-    "q:20251231": [
-     "aa67a964-c0c4-457c-9c54-532ec458ca4b.pdf",
-     14,
-     "Regulatory Audits",
-     "3"
-    ]
-   }
+   ]
   },
   {
    "name": "Total USVMFs",
@@ -287,28 +228,38 @@
    }
   },
   {
-   "name": "R&D Centres",
+   "name": "Regulatory Audits",
    "unit": "count",
-   "kind": "level",
+   "kind": "flow",
    "y": {},
    "q": {
-    "20231231": 5.0,
-    "20240331": 5.0
+    "20251231": 3.0,
+    "20260331": 2.0
    },
    "src": {
-    "q:20231231": [
-     "2d03397b-9730-476c-b009-db9d60cc6192.pdf",
-     4,
-     "Global R&D centres (doc period)",
-     "5"
+    "q:20260331": [
+     "44f1a1ac-18e6-4b29-af83-69b6569bfba5.pdf",
+     11,
+     "2 Regulatory Audits",
+     "2"
     ],
-    "q:20240331": [
-     "8bfb359f-e77a-4890-b609-e97e7f11810b.pdf",
-     5,
-     "Global R&D centres (doc period)",
-     "5"
+    "q:20251231": [
+     "aa67a964-c0c4-457c-9c54-532ec458ca4b.pdf",
+     14,
+     "Regulatory Audits",
+     "3"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     4.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 10 4 Regulatory Audits  66 Customer audits Facility Inspections Regulatory Approvals Launches Products Filed V",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Total CEPs",
@@ -384,23 +335,6 @@
    }
   },
   {
-   "name": "API Manufacturing Plants",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20251231": 10.0
-   },
-   "src": {
-    "q:20251231": [
-     "aa67a964-c0c4-457c-9c54-532ec458ca4b.pdf",
-     20,
-     "Combined API Manufacturing Network: 10 facilities (doc period)",
-     "10"
-    ]
-   }
-  },
-  {
    "name": "API Regulated Markets Share of Revenue",
    "unit": "%",
    "kind": "flow",
@@ -470,5 +404,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-20"
+ "updated": "2026-10-31"
 }

@@ -2052,59 +2052,6 @@
    }
   },
   {
-   "name": "Branch Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 535.0,
-    "20250331": 652.0,
-    "20260331": 715.0
-   },
-   "q": {
-    "20230930": 483.0,
-    "20231231": 498.0,
-    "20240630": 595.0
-   },
-   "src": {
-    "y:20260331": [
-     "87058873-f32d-4ce7-af23-5b6fc65815e1.pdf",
-     60,
-     "Total no. of Company Branches (doc period)",
-     "715"
-    ],
-    "y:20250331": [
-     "7a0407cf-164b-44b8-95b5-6d5c8fa9e08a.pdf",
-     103,
-     "Total no. of Company Branches (doc period)",
-     "652"
-    ],
-    "q:20240630": [
-     "abc2d86b-0a2b-4865-89b5-8deab775783a.pdf",
-     19,
-     "595 physical branches and sales hubs (doc period)",
-     "595"
-    ],
-    "q:20230930": [
-     "65668625-4770-4dd9-81fe-26053ba30ecc.pdf",
-     20,
-     "483 Branches (plus 48 digital branches) (doc period)",
-     "483"
-    ],
-    "q:20231231": [
-     "1cbce191-48c9-46e2-8814-d5e429877332.pdf",
-     19,
-     "498 physical branches and 48 digital branches (doc period)",
-     "498"
-    ],
-    "y:20240331": [
-     "ddf0c247-b733-4d7f-a527-0fafb3704e82.pdf",
-     19,
-     "535 physical branches (doc period)",
-     "535"
-    ]
-   }
-  },
-  {
    "name": "Overall Sum Assured (Individual + Group)",
    "unit": "Rs bn",
    "kind": "flow",
@@ -2668,6 +2615,64 @@
    }
   },
   {
+   "name": "Branch Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20250331": 652.0,
+    "20260331": 715.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "87058873-f32d-4ce7-af23-5b6fc65815e1.pdf",
+     60,
+     "Total no. of Company Branches (doc period)",
+     "715"
+    ],
+    "y:20250331": [
+     "7a0407cf-164b-44b8-95b5-6d5c8fa9e08a.pdf",
+     103,
+     "Total no. of Company Branches (doc period)",
+     "652"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     483.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ocus on expansion in tier  2 and 3 markets Best in class 13M  persistency of >88% Bancassurance Banks, NBFCs, ",
+     "2026-10-31"
+    ],
+    [
+     "q:20231231",
+     498.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): nd up-sell to existing  customers Simplifying and personalizing journeys to offer  better customer experience ",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     595.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): ranches by increasing market share Simplifying and personalizing journeys to offer better  customer experience",
+     "2026-10-31"
+    ],
+    [
+     "y:20240331",
+     535.0,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE): age across all HDFC Bank  branches Simplifying and personalizing journeys to offer better  customer experience",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Consumer Complaints (Unfair Business Practices)",
    "unit": "count",
    "kind": "flow",
@@ -2788,30 +2793,6 @@
    }
   },
   {
-   "name": "Number of Agents",
-   "unit": "lakh",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240630": 2.33,
-    "20250930": 2.58
-   },
-   "src": {
-    "q:20250930": [
-     "ea6e9256-702e-4963-9114-6c44c4553e75.pdf",
-     21,
-     "Gross agent addition of over 51K in H1 FY26, reaching 2.58 lakh agents",
-     "2.58"
-    ],
-    "q:20240630": [
-     "abc2d86b-0a2b-4865-89b5-8deab775783a.pdf",
-     19,
-     "2.33 lakh agents (doc period)",
-     "2.33"
-    ]
-   }
-  },
-  {
    "name": "Total Claims Paid",
    "unit": "Rs Crore",
    "kind": "flow",
@@ -2868,6 +2849,33 @@
      "16,99,676"
     ]
    }
+  },
+  {
+   "name": "Number of Agents",
+   "unit": "lakh",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 2.58
+   },
+   "src": {
+    "q:20250930": [
+     "ea6e9256-702e-4963-9114-6c44c4553e75.pdf",
+     21,
+     "Gross agent addition of over 51K in H1 FY26, reaching 2.58 lakh agents",
+     "2.58"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240630",
+     2.33,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 14 Agency: segmented geographical growth Direct/Digital: leveraging analytics Diversified distribution mix 2.3",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Number of Distribution Partnerships",

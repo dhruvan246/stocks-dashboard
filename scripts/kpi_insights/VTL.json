@@ -710,45 +710,6 @@
    }
   },
   {
-   "name": "Processed Fabric Capacity",
-   "unit": "MM p.a.",
-   "kind": "level",
-   "y": {
-    "20230331": 180.0,
-    "20240331": 180.0,
-    "20260331": 222.0
-   },
-   "q": {
-    "20260630": 240.0
-   },
-   "src": {
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     10,
-     "Processed Fabric Capacity (doc period)",
-     "240"
-    ],
-    "y:20260331": [
-     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
-     10,
-     "Processed Fabric Capacity (doc period)",
-     "222"
-    ],
-    "y:20240331": [
-     "28ef525a-ba4a-474a-92af-35694ae0904e.pdf",
-     5,
-     "Fabric Processing capacity (doc period)",
-     "180"
-    ],
-    "y:20230331": [
-     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
-     5,
-     "Fabric processing capacity (doc period)",
-     "180"
-    ]
-   }
-  },
-  {
    "name": "Countries (Export Reach)",
    "unit": "count",
    "kind": "level",
@@ -894,61 +855,42 @@
    ]
   },
   {
-   "name": "Garment Capacity",
-   "unit": "Shirts/day",
+   "name": "Processed Fabric Capacity",
+   "unit": "MM p.a.",
    "kind": "level",
    "y": {
-    "20260331": 7500.0
+    "20230331": 180.0,
+    "20240331": 180.0,
+    "20260331": 222.0
    },
-   "q": {
-    "20260630": 7500.0
-   },
+   "q": {},
    "src": {
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     10,
-     "Capacity of 7,500 Shirts per day (doc period)",
-     "7,500"
-    ],
     "y:20260331": [
      "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
      10,
-     "Capacity of 7,500 Shirts per day (doc period)",
-     "7,500"
-    ]
-   }
-  },
-  {
-   "name": "Grey Fabric Loom Capacity",
-   "unit": "Looms",
-   "kind": "level",
-   "y": {
-    "20230331": 1550.0
-   },
-   "q": {
-    "20260630": 1550.0
-   },
-   "src": {
-    "q:20260630": [
-     "258727f1-adb3-462c-92fd-d2cbd4fa5657.pdf",
-     10,
-     "Grey Fabric Capacity (doc period)",
-     "1,550"
+     "Processed Fabric Capacity (doc period)",
+     "222"
+    ],
+    "y:20240331": [
+     "28ef525a-ba4a-474a-92af-35694ae0904e.pdf",
+     5,
+     "Fabric Processing capacity (doc period)",
+     "180"
     ],
     "y:20230331": [
      "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
      5,
-     "Looms (doc period)",
-     "1,550"
+     "Fabric processing capacity (doc period)",
+     "180"
     ]
    },
    "fixed": [
     [
-     "y:20260331",
-     1500.0,
+     "q:20260630",
+     240.0,
      null,
-     "drop_y",
-     "Cited page prints it only qualified: Product Profile Yarn Installed Capacity 1.25 Mn+ Spindles Fabric Grey Fabric Capacity 1,500+ Looms Processed Fabric Capacit",
+     "drop_q",
+     "Undated on its own page (OTHER): Product Profile Yarn Installed Capacity 1.25 Mn+ Spindles Fabric Grey Fabric Capacity 1,550 Looms Processed Fa",
      "2026-10-31"
     ]
    ]
@@ -1000,6 +942,68 @@
      "30"
     ]
    }
+  },
+  {
+   "name": "Garment Capacity",
+   "unit": "Shirts/day",
+   "kind": "level",
+   "y": {
+    "20260331": 7500.0
+   },
+   "q": {},
+   "src": {
+    "y:20260331": [
+     "fb59da1a-5141-4d23-a39a-d8f0cbf1607f.pdf",
+     10,
+     "Capacity of 7,500 Shirts per day (doc period)",
+     "7,500"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     7500.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): rn Installed Capacity 1.25 Mn+ Spindles Fabric Grey Fabric Capacity 1,550 Looms Processed Fabric Capacity  240",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Grey Fabric Loom Capacity",
+   "unit": "Looms",
+   "kind": "level",
+   "y": {
+    "20230331": 1550.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "effd7d14-cfb4-48f9-9ddb-c3af4813a430.pdf",
+     5,
+     "Looms (doc period)",
+     "1,550"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     1500.0,
+     null,
+     "drop_y",
+     "Cited page prints it only qualified: Product Profile Yarn Installed Capacity 1.25 Mn+ Spindles Fabric Grey Fabric Capacity 1,500+ Looms Processed Fabric Capacit",
+     "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     1550.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Product Profile Yarn Installed Capacity 1.25 Mn+ Spindles Fabric Grey Fabric Capacity 1,550 Looms Processed Fa",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Renewable Energy Capacity",

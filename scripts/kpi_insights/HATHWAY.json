@@ -155,86 +155,6 @@
    }
   },
   {
-   "name": "Broadband Homes Passed",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20191231": 5.6,
-    "20200930": 5.5,
-    "20210331": 5.6,
-    "20210630": 5.6,
-    "20210930": 5.6,
-    "20211231": 5.6,
-    "20220331": 5.7,
-    "20220630": 5.7,
-    "20220930": 5.8
-   },
-   "src": {
-    "q:20210331": [
-     "20d847f7-f1a3-440c-9d2d-73f3ae0d7eec.pdf",
-     12,
-     "HOMES PASSED",
-     "5.6"
-    ],
-    "q:20211231": [
-     "7198a4c7-3e2c-4028-b030-c1b13a80db3f.pdf",
-     4,
-     "two-way broadband homes passed (doc period)",
-     "5.6"
-    ],
-    "q:20220331": [
-     "20d847f7-f1a3-440c-9d2d-73f3ae0d7eec.pdf",
-     12,
-     "HOMES PASSED",
-     "5.7"
-    ],
-    "q:20210930": [
-     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
-     11,
-     "HOME PASS",
-     "5.6"
-    ],
-    "q:20220630": [
-     "ca443570-a887-40a9-ab5e-b47b97d22870.pdf",
-     11,
-     "HOMES PASSED",
-     "5.7"
-    ],
-    "q:20220930": [
-     "39033530-5878-4256-bb53-64da07249bb1.pdf",
-     11,
-     "HOMES PASSED",
-     "5.8"
-    ],
-    "q:20200930": [
-     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
-     11,
-     "HOME PASS",
-     "5.5"
-    ],
-    "q:20210630": [
-     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
-     11,
-     "HOME PASS",
-     "5.6"
-    ],
-    "q:20191231": [
-     "dd52b734-50fb-4212-9e59-7653bc5426c9.pdf",
-     12,
-     "two-way broadband homes passed (doc period)",
-     "5.6"
-    ]
-   },
-   "latest": {
-    "q:20210930": "2022-10-17",
-    "q:20211231": "2022-04-15",
-    "q:20210630": "2022-07-22",
-    "q:20220331": "2022-07-22",
-    "q:20220630": "2022-10-17"
-   }
-  },
-  {
    "name": "Average Bandwidth Consumption per Subscriber",
    "unit": "Mbps",
    "kind": "flow",
@@ -374,6 +294,89 @@
    }
   },
   {
+   "name": "Broadband Homes Passed",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20191231": 5.6,
+    "20200930": 5.5,
+    "20210331": 5.6,
+    "20210630": 5.6,
+    "20210930": 5.6,
+    "20220331": 5.7,
+    "20220630": 5.7,
+    "20220930": 5.8
+   },
+   "src": {
+    "q:20210331": [
+     "20d847f7-f1a3-440c-9d2d-73f3ae0d7eec.pdf",
+     12,
+     "HOMES PASSED",
+     "5.6"
+    ],
+    "q:20220331": [
+     "20d847f7-f1a3-440c-9d2d-73f3ae0d7eec.pdf",
+     12,
+     "HOMES PASSED",
+     "5.7"
+    ],
+    "q:20210930": [
+     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
+     11,
+     "HOME PASS",
+     "5.6"
+    ],
+    "q:20220630": [
+     "ca443570-a887-40a9-ab5e-b47b97d22870.pdf",
+     11,
+     "HOMES PASSED",
+     "5.7"
+    ],
+    "q:20220930": [
+     "39033530-5878-4256-bb53-64da07249bb1.pdf",
+     11,
+     "HOMES PASSED",
+     "5.8"
+    ],
+    "q:20200930": [
+     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
+     11,
+     "HOME PASS",
+     "5.5"
+    ],
+    "q:20210630": [
+     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
+     11,
+     "HOME PASS",
+     "5.6"
+    ],
+    "q:20191231": [
+     "dd52b734-50fb-4212-9e59-7653bc5426c9.pdf",
+     12,
+     "two-way broadband homes passed (doc period)",
+     "5.6"
+    ]
+   },
+   "latest": {
+    "q:20210930": "2022-10-17",
+    "q:20211231": "2022-04-15",
+    "q:20210630": "2022-07-22",
+    "q:20220331": "2022-07-22",
+    "q:20220630": "2022-10-17"
+   },
+   "fixed": [
+    [
+     "q:20211231",
+     5.6,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): hway holds a PAN India ISP license and is the first cable television services provider to offer broadband Inte",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Average Data Usage per Subscriber - Docsis",
    "unit": "GB",
    "kind": "flow",
@@ -503,58 +506,6 @@
     "q:20210930": "2022-01-18",
     "q:20220331": "2022-07-22",
     "q:20220630": "2022-10-17"
-   }
-  },
-  {
-   "name": "Digital Cable Subscribers",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20191231": 6.0,
-    "20210930": 5.5,
-    "20211231": 5.5,
-    "20220331": 5.4,
-    "20220630": 5.5,
-    "20220930": 5.6
-   },
-   "src": {
-    "q:20220331": [
-     "20d847f7-f1a3-440c-9d2d-73f3ae0d7eec.pdf",
-     4,
-     "digital cable subscribers / households (doc period)",
-     "5.4"
-    ],
-    "q:20220930": [
-     "39033530-5878-4256-bb53-64da07249bb1.pdf",
-     4,
-     "digital cable subscribers / households (doc period)",
-     "5.6"
-    ],
-    "q:20210930": [
-     "41302d98-47b4-44f2-b51f-a5518803b056.pdf",
-     4,
-     "digital cable subscribers / households (doc period)",
-     "5.5"
-    ],
-    "q:20211231": [
-     "7198a4c7-3e2c-4028-b030-c1b13a80db3f.pdf",
-     4,
-     "digital cable subscribers / households (doc period)",
-     "5.5"
-    ],
-    "q:20220630": [
-     "ca443570-a887-40a9-ab5e-b47b97d22870.pdf",
-     4,
-     "digital cable subscribers / households (doc period)",
-     "5.5"
-    ],
-    "q:20191231": [
-     "dd52b734-50fb-4212-9e59-7653bc5426c9.pdf",
-     12,
-     "digital cable subscribers / households (doc period)",
-     "6"
-    ]
    }
   },
   {
@@ -796,6 +747,65 @@
      "100"
     ]
    }
+  },
+  {
+   "name": "Digital Cable Subscribers",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20191231": 6.0
+   },
+   "src": {
+    "q:20191231": [
+     "dd52b734-50fb-4212-9e59-7653bc5426c9.pdf",
+     12,
+     "digital cable subscribers / households (doc period)",
+     "6"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20211231",
+     5.5,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gest MSO, across various regions of the country and transmitting the same to LCOs or directly to subscribers •",
+     "2026-10-31"
+    ],
+    [
+     "q:20220331",
+     5.4,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gest MSO, across various regions of the country and transmitting the same to LCOs or directly to subscribers •",
+     "2026-10-31"
+    ],
+    [
+     "q:20220930",
+     5.6,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gest MSO, across various regions of the country and transmitting the same to LCOs or directly to subscribers •",
+     "2026-10-31"
+    ],
+    [
+     "q:20210930",
+     5.5,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gest MSO, across various regions of the country and transmitting the same to LCOs or directly to subscribers •",
+     "2026-10-31"
+    ],
+    [
+     "q:20220630",
+     5.5,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): gest MSO, across various regions of the country and transmitting the same to LCOs or directly to subscribers •",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "HD Cable Subscribers",

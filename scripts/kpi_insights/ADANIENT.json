@@ -2452,52 +2452,6 @@
    }
   },
   {
-   "name": "Solar Module Line Capacity",
-   "unit": "GW",
-   "kind": "level",
-   "y": {
-    "20250331": 4.0
-   },
-   "q": {
-    "20230630": 4.0,
-    "20230930": 4.0,
-    "20231231": 4.0,
-    "20260630": 5.7
-   },
-   "src": {
-    "q:20260630": [
-     "87f9b62b-f36b-448a-8882-f051473798ea.pdf",
-     4,
-     "Module line capacity expanded to 5.7 GW (June '26)",
-     "5.7"
-    ],
-    "y:20250331": [
-     "731090d0-4769-4c33-be22-689ddceac71b.pdf",
-     47,
-     "Cell and Module manufacturing capacity",
-     "4"
-    ],
-    "q:20230630": [
-     "890dc39f-cdf3-4740-9cc3-991356d453f8.pdf",
-     17,
-     "Solar Manufacturing - Total capacity at 4.0 GW (doc period)",
-     "4.0"
-    ],
-    "q:20230930": [
-     "86209d89-24a4-4662-9d3f-1075a83b8f67.pdf",
-     3,
-     "Solar manufacturing - Total operational capacity at 4.0 GW (doc period)",
-     "4.0"
-    ],
-    "q:20231231": [
-     "f605eef6-5fc1-44fe-8616-519ec0a857c8.pdf",
-     3,
-     "Operational module line capacity at 4.0 GW (doc period)",
-     "4.0"
-    ]
-   }
-  },
-  {
    "name": "Mining Services Operational Contracts Count",
    "unit": "count",
    "kind": "level",
@@ -2535,6 +2489,55 @@
      "5"
     ]
    }
+  },
+  {
+   "name": "Solar Module Line Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {
+    "20250331": 4.0
+   },
+   "q": {
+    "20230930": 4.0,
+    "20231231": 4.0,
+    "20260630": 5.7
+   },
+   "src": {
+    "q:20260630": [
+     "87f9b62b-f36b-448a-8882-f051473798ea.pdf",
+     4,
+     "Module line capacity expanded to 5.7 GW (June '26)",
+     "5.7"
+    ],
+    "y:20250331": [
+     "731090d0-4769-4c33-be22-689ddceac71b.pdf",
+     47,
+     "Cell and Module manufacturing capacity",
+     "4"
+    ],
+    "q:20230930": [
+     "86209d89-24a4-4662-9d3f-1075a83b8f67.pdf",
+     3,
+     "Solar manufacturing - Total operational capacity at 4.0 GW (doc period)",
+     "4.0"
+    ],
+    "q:20231231": [
+     "f605eef6-5fc1-44fe-8616-519ec0a857c8.pdf",
+     3,
+     "Operational module line capacity at 4.0 GW (doc period)",
+     "4.0"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230630",
+     4.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): AEL : Business Highlights ANIL Ecosystem • Solar Manufacturing – Total capacity at 4.0 GW • Wind Manufacturin",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Aero Yield per Passenger",

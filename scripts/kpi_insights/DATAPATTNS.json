@@ -643,9 +643,7 @@
    "unit": "boards/day",
    "kind": "level",
    "y": {
-    "20220331": 600.0,
-    "20250331": 600.0,
-    "20260331": 600.0
+    "20220331": 600.0
    },
    "q": {
     "20211231": 600.0,
@@ -656,31 +654,10 @@
     "20230630": 600.0,
     "20230930": 600.0,
     "20231231": 600.0,
-    "20240331": 600.0,
-    "20240630": 600.0,
     "20240930": 600.0,
-    "20241231": 600.0,
-    "20260630": 600.0
+    "20241231": 600.0
    },
    "src": {
-    "q:20260630": [
-     "e68b20e7-1a07-425d-9ba3-08a112bd72a0.pdf",
-     25,
-     "EMS assembly capacity of 600 boards per day (doc period)",
-     "600"
-    ],
-    "y:20260331": [
-     "c11380d9-fed3-41f7-bf61-e417f8918934.pdf",
-     24,
-     "EMS assembly capacity of 600 boards per day (doc period)",
-     "600"
-    ],
-    "y:20250331": [
-     "359c655f-e816-4615-aab2-587211e82c36.pdf",
-     24,
-     "EMS assembly capacity of 600 boards per day (doc period)",
-     "600"
-    ],
     "q:20220930": [
      "86f3befc-b738-42de-b55f-614abb09b56a.pdf",
      25,
@@ -690,12 +667,6 @@
     "q:20231231": [
      "1e76ac2a-f672-4a12-9c15-fa7a784092ba.pdf",
      24,
-     "EMS assembly capacity of 600 boards per day (doc period)",
-     "600"
-    ],
-    "q:20240331": [
-     "2098e36a-300f-49b5-8ca3-8c555297f15c.pdf",
-     30,
      "EMS assembly capacity of 600 boards per day (doc period)",
      "600"
     ],
@@ -720,12 +691,6 @@
     "q:20230331": [
      "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
      27,
-     "EMS assembly capacity of 600 boards per day (doc period)",
-     "600"
-    ],
-    "q:20240630": [
-     "6fbb847c-01d6-4608-a380-4efd5eb3eead.pdf",
-     24,
      "EMS assembly capacity of 600 boards per day (doc period)",
      "600"
     ],
@@ -765,7 +730,49 @@
     "q:20231231": "2024-02-02",
     "q:20211231": "2022-02-11",
     "q:20220930": "2022-11-01"
-   }
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     600.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): ,000 class  clean room Capability to handle  complex boards with  22 layer, 6k  components and 21k  solder poi",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     600.0,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE): ,000 class  clean room Capability to handle  complex boards with  22 layer, 6k  components and 21k  solder poi",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     600.0,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE): 0,000 class clean room • Capability to handle complex boards with 22 layer, 6k  components and 21k solder poin",
+     "2026-10-31"
+    ],
+    [
+     "q:20240331",
+     600.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 0,000 class clean room • Capability to handle complex boards with 22 layer, 6k  components and 21k solder poin",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     600.0,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): 0,000 class clean room • Capability to handle complex boards with 22 layer, 6k  components and 21k solder poin",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Engineers Headcount",
@@ -782,7 +789,6 @@
     "20240630": 955.0,
     "20240930": 1020.0,
     "20241231": 1029.0,
-    "20250630": 1080.0,
     "20251231": 1071.0,
     "20260331": 1096.0,
     "20260630": 1112.0
@@ -811,12 +817,6 @@
      4,
      "1,071 Engineers (doc period)",
      "1,071"
-    ],
-    "q:20250630": [
-     "00884ab8-f6ed-4336-87ce-82831cfb985e.pdf",
-     4,
-     "1,080 Engineers (doc period)",
-     "1,080"
     ],
     "y:20250331": [
      "359c655f-e816-4615-aab2-587211e82c36.pdf",
@@ -887,6 +887,14 @@
      null,
      "drop_q",
      "Qualified print in src label: more than 750 qualified engineers",
+     "2026-10-31"
+    ],
+    [
+     "q:20250630",
+     1080.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Equipments. Servicing to the  customers such as MOD, DRDO, DPSUs and Private sectors including  international ",
      "2026-10-31"
     ]
    ]
@@ -1436,51 +1444,67 @@
    ]
   },
   {
+   "name": "Cash Conversion Cycle (after customer advances)",
+   "unit": "days",
+   "kind": "level",
+   "y": {
+    "20190331": 362.0,
+    "20200331": 339.0,
+    "20210331": 278.0,
+    "20220331": 286.0,
+    "20230331": 275.0
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
+     26,
+     "Cash Conversion Cycle*",
+     "362"
+    ],
+    "y:20200331": [
+     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
+     26,
+     "Cash Conversion Cycle*",
+     "339"
+    ],
+    "y:20210331": [
+     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
+     26,
+     "Cash Conversion Cycle*",
+     "278"
+    ],
+    "y:20220331": [
+     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
+     26,
+     "Cash Conversion Cycle*",
+     "286"
+    ],
+    "y:20230331": [
+     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
+     26,
+     "Cash Conversion Cycle*",
+     "275"
+    ]
+   },
+   "latest": {
+    "y:20190331": "2024-02-02",
+    "y:20200331": "2024-02-02",
+    "y:20210331": "2024-02-02",
+    "y:20220331": "2024-02-02",
+    "y:20230331": "2024-02-02"
+   }
+  },
+  {
    "name": "Land Area",
    "unit": "Acres",
    "kind": "level",
-   "y": {
-    "20250331": 10.28,
-    "20260331": 10.28
-   },
+   "y": {},
    "q": {
-    "20240331": 10.28,
-    "20240630": 10.28,
     "20240930": 10.28,
-    "20241231": 10.28,
-    "20260630": 10.28
+    "20241231": 10.28
    },
    "src": {
-    "q:20260630": [
-     "e68b20e7-1a07-425d-9ba3-08a112bd72a0.pdf",
-     25,
-     "10.28 Acres of land in Chennai, SIPCOT (doc period)",
-     "10.28"
-    ],
-    "y:20260331": [
-     "c11380d9-fed3-41f7-bf61-e417f8918934.pdf",
-     24,
-     "10.28 Acres of land in Chennai, SIPCOT (doc period)",
-     "10.28"
-    ],
-    "y:20250331": [
-     "359c655f-e816-4615-aab2-587211e82c36.pdf",
-     24,
-     "Acres of land in Chennai, SIPCOT (doc period)",
-     "10.28"
-    ],
-    "q:20240331": [
-     "2098e36a-300f-49b5-8ca3-8c555297f15c.pdf",
-     30,
-     "Acres of land in Chennai, SIPCOT (doc period)",
-     "10.28"
-    ],
-    "q:20240630": [
-     "6fbb847c-01d6-4608-a380-4efd5eb3eead.pdf",
-     24,
-     "Acres of land in Chennai, SIPCOT (doc period)",
-     "10.28"
-    ],
     "q:20241231": [
      "8f85551c-ea8b-43e9-89e2-431d71990fe0.pdf",
      24,
@@ -1572,60 +1596,48 @@
      "drop_q",
      "Cited page prints it only qualified: cturing Facilities ~ 100,000 sq. ft Aggregate of built up area  of manufacturing facility ~ 5.75 Acres Of land in Chennai, ",
      "2026-10-31"
+    ],
+    [
+     "q:20260630",
+     10.28,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE): rt Infrastructure Fully operational integrated manufacturing and test facilities  A mission - driven workforce",
+     "2026-10-31"
+    ],
+    [
+     "y:20260331",
+     10.28,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE): rt Infrastructure Fully operational integrated manufacturing and test facilities  A mission - driven workforce",
+     "2026-10-31"
+    ],
+    [
+     "y:20250331",
+     10.28,
+     null,
+     "drop_y",
+     "Undated on its own page (NODATE):   Integration • Additional  EMS Line • Clean Room for  Satellite  Integration • Additional  Space For  Design ",
+     "2026-10-31"
+    ],
+    [
+     "q:20240331",
+     10.28,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):   Integration • Additional  EMS Line • Clean Room for  Satellite  Integration • Additional  Space For  Design ",
+     "2026-10-31"
+    ],
+    [
+     "q:20240630",
+     10.28,
+     null,
+     "drop_q",
+     "Undated on its own page (NODATE):   Integration • Additional  EMS Line • Clean Room for  Satellite  Integration • Additional  Space For  Design ",
+     "2026-10-31"
     ]
    ]
-  },
-  {
-   "name": "Cash Conversion Cycle (after customer advances)",
-   "unit": "days",
-   "kind": "level",
-   "y": {
-    "20190331": 362.0,
-    "20200331": 339.0,
-    "20210331": 278.0,
-    "20220331": 286.0,
-    "20230331": 275.0
-   },
-   "q": {},
-   "src": {
-    "y:20190331": [
-     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
-     26,
-     "Cash Conversion Cycle*",
-     "362"
-    ],
-    "y:20200331": [
-     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
-     26,
-     "Cash Conversion Cycle*",
-     "339"
-    ],
-    "y:20210331": [
-     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
-     26,
-     "Cash Conversion Cycle*",
-     "278"
-    ],
-    "y:20220331": [
-     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
-     26,
-     "Cash Conversion Cycle*",
-     "286"
-    ],
-    "y:20230331": [
-     "65b5d175-096c-4e2e-9234-2e4d15035fdc.pdf",
-     26,
-     "Cash Conversion Cycle*",
-     "275"
-    ]
-   },
-   "latest": {
-    "y:20190331": "2024-02-02",
-    "y:20200331": "2024-02-02",
-    "y:20210331": "2024-02-02",
-    "y:20220331": "2024-02-02",
-    "y:20230331": "2024-02-02"
-   }
   }
  ],
  "held": [],

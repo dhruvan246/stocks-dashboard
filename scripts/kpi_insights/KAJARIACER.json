@@ -2625,73 +2625,6 @@
    }
   },
   {
-   "name": "Total Installed Tile Capacity",
-   "unit": "MSM",
-   "kind": "level",
-   "y": {
-    "20260331": 87.8
-   },
-   "q": {
-    "20230331": 84.45,
-    "20240630": 92.47,
-    "20240930": 93.1,
-    "20250331": 90.5,
-    "20250930": 87.8,
-    "20251231": 87.8,
-    "20260630": 82.7
-   },
-   "src": {
-    "q:20260630": [
-     "b986648f-25e7-4362-a2f7-eae79749c005.pdf",
-     19,
-     "annual capacity of 82.70* mn. sq. meters presently (doc period)",
-     "82.70"
-    ],
-    "y:20260331": [
-     "e43781aa-efe4-40a6-9810-c1879a6beda8.pdf",
-     19,
-     "annual capacity of 87.80 mn. sq. meters presently",
-     "87.80"
-    ],
-    "q:20251231": [
-     "a9814687-f787-434c-9105-47e6d834dde4.pdf",
-     18,
-     "annual capacity of 87.80 mn. sq. meters presently",
-     "87.80"
-    ],
-    "q:20250930": [
-     "f6ba69b2-d1e9-4624-8268-62cc5a9e6b9c.pdf",
-     18,
-     "annual capacity of 87.80 mn. sq. meters presently",
-     "87.80"
-    ],
-    "q:20250331": [
-     "5453cd30-c95b-43b8-be85-8fdde9c76527.pdf",
-     15,
-     "Tile Capacity 90.50 MSM (doc period)",
-     "90.50"
-    ],
-    "q:20240930": [
-     "6c1b03c0-8272-469b-957c-e524945bcd42.pdf",
-     14,
-     "Total Tile Capacity 93.10 MSM as on 30th Sep. 2024",
-     "93.10"
-    ],
-    "q:20240630": [
-     "cb458a33-e7bf-49e9-bc5f-00705b88946e.pdf",
-     14,
-     "Total Tile Capacity 92.47 MSM as on 30th June 2024",
-     "92.47"
-    ],
-    "q:20230331": [
-     "85061ca1-d4c9-4880-adf0-ee346e186524.pdf",
-     14,
-     "As on 31st March 2023, the total capacity of the company was 84.45 msm",
-     "84.45"
-    ]
-   }
-  },
-  {
    "name": "Kajaria Tiles (Andhra Pradesh) Capacity Utilisation",
    "unit": "%",
    "kind": "flow",
@@ -2809,6 +2742,76 @@
      "75"
     ]
    }
+  },
+  {
+   "name": "Total Installed Tile Capacity",
+   "unit": "MSM",
+   "kind": "level",
+   "y": {
+    "20260331": 87.8
+   },
+   "q": {
+    "20230331": 84.45,
+    "20240630": 92.47,
+    "20240930": 93.1,
+    "20250331": 90.5,
+    "20250930": 87.8,
+    "20251231": 87.8
+   },
+   "src": {
+    "y:20260331": [
+     "e43781aa-efe4-40a6-9810-c1879a6beda8.pdf",
+     19,
+     "annual capacity of 87.80 mn. sq. meters presently",
+     "87.80"
+    ],
+    "q:20251231": [
+     "a9814687-f787-434c-9105-47e6d834dde4.pdf",
+     18,
+     "annual capacity of 87.80 mn. sq. meters presently",
+     "87.80"
+    ],
+    "q:20250930": [
+     "f6ba69b2-d1e9-4624-8268-62cc5a9e6b9c.pdf",
+     18,
+     "annual capacity of 87.80 mn. sq. meters presently",
+     "87.80"
+    ],
+    "q:20250331": [
+     "5453cd30-c95b-43b8-be85-8fdde9c76527.pdf",
+     15,
+     "Tile Capacity 90.50 MSM (doc period)",
+     "90.50"
+    ],
+    "q:20240930": [
+     "6c1b03c0-8272-469b-957c-e524945bcd42.pdf",
+     14,
+     "Total Tile Capacity 93.10 MSM as on 30th Sep. 2024",
+     "93.10"
+    ],
+    "q:20240630": [
+     "cb458a33-e7bf-49e9-bc5f-00705b88946e.pdf",
+     14,
+     "Total Tile Capacity 92.47 MSM as on 30th June 2024",
+     "92.47"
+    ],
+    "q:20230331": [
+     "85061ca1-d4c9-4880-adf0-ee346e186524.pdf",
+     14,
+     "As on 31st March 2023, the total capacity of the company was 84.45 msm",
+     "84.45"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260630",
+     82.7,
+     null,
+     "drop_q",
+     "Undated on its own page (NOW): taken based on such statements. Kajaria Ceramics is the largest manufacturer of ceramic/vitrified tiles in Ind",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Vennar Ceramics Capacity Utilisation",
@@ -3619,5 +3622,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-27"
+ "updated": "2026-10-31"
 }

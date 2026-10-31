@@ -106,7 +106,6 @@
    },
    "q": {
     "20241231": 24.9,
-    "20250331": 25.8,
     "20250630": 26.3,
     "20250930": 24.1,
     "20260331": 27.7,
@@ -149,12 +148,6 @@
      "Pipeline Operations Throughput (MMT)",
      "26.3"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Pipeline Operations - Throughput (MMT) (doc period)",
-     "25.8"
-    ],
     "q:20241231": [
      "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
@@ -167,7 +160,17 @@
      "throughput of 98.626 million tonnes through pipelines network (doc period)",
      "98.626"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     25.8,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Distillate yield (%)  79.7  d  Fuel & loss (%)  8.6  e  Utilization of High Sulphur (%)  55.2  2  Pipeline Ope",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Petroleum Products Inland Sales",
@@ -179,7 +182,6 @@
    },
    "q": {
     "20241231": 22.048,
-    "20250331": 21.867,
     "20250630": 22.397,
     "20250930": 20.192,
     "20260331": 23.267,
@@ -222,79 +224,23 @@
      "(a) Inland Sales",
      "22.397"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Inland sales (doc period)",
-     "21.867"
-    ],
     "q:20241231": [
      "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
      "Marketing Operations - Inland sales",
      "22.048"
     ]
-   }
-  },
-  {
-   "name": "Aviation Fuel Sales Volume",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {
-    "20250331": 5.07,
-    "20260331": 4.91
    },
-   "q": {
-    "20241231": 1.256,
-    "20250331": 1.311,
-    "20250630": 1.217,
-    "20250930": 1.158,
-    "20260331": 1.279
-   },
-   "src": {
-    "y:20260331": [
-     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
-     105,
-     "domestic sales of 4.91 MMT out of industry volume of 9.15 MMT",
-     "4.91"
-    ],
-    "q:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     6,
-     "- ATF",
-     "1.279"
-    ],
-    "q:20250930": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     5,
-     "- ATF",
-     "1.158"
-    ],
-    "q:20250630": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     5,
-     "- ATF",
-     "1.217"
-    ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Inland sales -ATF (doc period)",
-     "1.311"
-    ],
-    "y:20250331": [
-     "3cffd48a-1c5c-4d50-a59a-bb7465967d3f.pdf",
-     26,
-     "sale of 5.07 MMT ATF",
-     "5.07"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Inland sales -ATF",
-     "1.256"
+   "fixed": [
+    [
+     "q:20250331",
+     21.867,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): h Sulphur (%)  55.2  2  Pipeline Operations  a  Throughput (MMT)  25.8  3  Marketing Operations  Petroleum pro",
+     "2026-10-31"
     ]
-   }
+   ]
   },
   {
    "name": "Refinery Crude Throughput",
@@ -357,6 +303,69 @@
    }
   },
   {
+   "name": "Aviation Fuel Sales Volume",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20250331": 5.07,
+    "20260331": 4.91
+   },
+   "q": {
+    "20241231": 1.256,
+    "20250630": 1.217,
+    "20250930": 1.158,
+    "20260331": 1.279
+   },
+   "src": {
+    "y:20260331": [
+     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
+     105,
+     "domestic sales of 4.91 MMT out of industry volume of 9.15 MMT",
+     "4.91"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "- ATF",
+     "1.279"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- ATF",
+     "1.158"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "- ATF",
+     "1.217"
+    ],
+    "y:20250331": [
+     "3cffd48a-1c5c-4d50-a59a-bb7465967d3f.pdf",
+     26,
+     "sale of 5.07 MMT ATF",
+     "5.07"
+    ],
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Inland sales -ATF",
+     "1.256"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     1.311,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): 25.8  3  Marketing Operations  Petroleum products (MMT)  a  Inland sales  21.867  -LPG  3.881  -Ms  3.869  -HS",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Total Sales Volume",
    "unit": "MMT",
    "kind": "flow",
@@ -366,7 +375,6 @@
    },
    "q": {
     "20241231": 26.134,
-    "20250331": 25.945,
     "20250630": 26.328,
     "20250930": 24.262,
     "20260331": 27.343
@@ -396,12 +404,6 @@
      "Total Sales (a+b+c)",
      "26.328"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Total sales (a+b+c) (doc period)",
-     "25.945"
-    ],
     "q:20241231": [
      "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
@@ -414,7 +416,17 @@
      "highest ever sales volume reaching 97.551 million tonnes (doc period)",
      "97.551"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     25.945,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): s (MMT)  Gas (LNG) + CGD  1.821  Petrochemicals  Domestic  0.811  Exports  0.018  Others  0.102  Sub-total (c)",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "LPG Sales Volume",
@@ -426,7 +438,6 @@
    },
    "q": {
     "20241231": 3.892,
-    "20250331": 3.881,
     "20250630": 3.664,
     "20250930": 3.932
    },
@@ -449,12 +460,6 @@
      "- LPG",
      "3.664"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Inland sales -LPG (doc period)",
-     "3.881"
-    ],
     "y:20250331": [
      "3cffd48a-1c5c-4d50-a59a-bb7465967d3f.pdf",
      26,
@@ -467,7 +472,17 @@
      "Inland sales -LPG",
      "3.892"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     3.881,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  55.2  2  Pipeline Operations  a  Throughput (MMT)  25.8  3  Marketing Operations  Petroleum products (MMT)  a",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Natural Gas Sales Volume",
@@ -478,7 +493,6 @@
    },
    "q": {
     "20241231": 1.766,
-    "20250331": 1.821,
     "20250630": 1.685,
     "20250930": 1.84,
     "20260331": 1.814
@@ -508,19 +522,23 @@
      "Gas",
      "1.685"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Gas (LNG) + CGD (doc period)",
-     "1.821"
-    ],
     "q:20241231": [
      "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
      "Gas (LNG) + CGD",
      "1.766"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     1.821,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):   1.311  - FO/LSHS  0.688  - Others  2.743  b  Exports Petroleum  1.326  Sub-total (a+b)  23.193  c  Other Pro",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Petroleum Products Exports",
@@ -531,7 +549,6 @@
    },
    "q": {
     "20241231": 1.334,
-    "20250331": 1.326,
     "20250630": 1.323,
     "20250930": 1.385,
     "20260331": 1.26
@@ -561,231 +578,23 @@
      "(b) Exports Petroleum",
      "1.323"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Exports Petroleum (doc period)",
-     "1.326"
-    ],
     "q:20241231": [
      "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
      "Exports Petroleum",
      "1.334"
     ]
-   }
-  },
-  {
-   "name": "Refinery Capacity Utilization",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 107.4
    },
-   "q": {
-    "20241231": 102.3,
-    "20250331": 107.1,
-    "20250630": 106.7,
-    "20250930": 99.5,
-    "20260331": 113.9
-   },
-   "src": {
-    "y:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Refinery Operations Capacity utilization (%)",
-     "107.4"
-    ],
-    "q:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Refinery Operations Capacity utilization (%)",
-     "113.9"
-    ],
-    "q:20250930": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Refinery Operations Capacity utilization (%)",
-     "99.5"
-    ],
-    "q:20250630": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Refinery Operations Capacity utilization (%)",
-     "106.7"
-    ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Refinery Operations - Capacity utilization (%) (doc period)",
-     "107.1"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Refinery Operations - Capacity utilization (%)",
-     "102.3"
+   "fixed": [
+    [
+     "q:20250331",
+     1.326,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): nd sales  21.867  -LPG  3.881  -Ms  3.869  -HSD  9.320  - SKO  0.055  -ATF  1.311  - FO/LSHS  0.688  - Others ",
+     "2026-10-31"
     ]
-   }
-  },
-  {
-   "name": "Refinery Fuel & Loss",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 8.5
-   },
-   "q": {
-    "20241231": 8.7,
-    "20250331": 8.6,
-    "20250630": 8.5,
-    "20250930": 8.7,
-    "20260331": 8.1
-   },
-   "src": {
-    "q:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Fuel & Loss (%)",
-     "8.1"
-    ],
-    "y:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Fuel & Loss (%)",
-     "8.5"
-    ],
-    "q:20250930": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Fuel & Loss (%)",
-     "8.7"
-    ],
-    "q:20250630": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Fuel & Loss (%)",
-     "8.5"
-    ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Refinery Operations - Fuel & loss (%) (doc period)",
-     "8.6"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Refinery Operations - Fuel & loss (%)",
-     "8.7"
-    ]
-   }
-  },
-  {
-   "name": "Refinery High Sulphur Crude Utilization",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 56.2
-   },
-   "q": {
-    "20241231": 57.6,
-    "20250331": 55.2,
-    "20250630": 53.2,
-    "20250930": 54.0,
-    "20260331": 61.3
-   },
-   "src": {
-    "q:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Utilization of High Sulphur crude (%)",
-     "61.3"
-    ],
-    "y:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     5,
-     "Utilization of High Sulphur crude (%)",
-     "56.2"
-    ],
-    "q:20250930": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Utilization of High Sulphur (%)",
-     "54.0"
-    ],
-    "q:20250630": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     4,
-     "Utilization of High Sulphur (%)",
-     "53.2"
-    ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Refinery Operations - Utilization of High Sulphur (%) (doc period)",
-     "55.2"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Refinery Operations - Utilization of High Sulphur (%)",
-     "57.6"
-    ]
-   }
-  },
-  {
-   "name": "Total Petroleum Products Sales (Inland+Export)",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {
-    "20260331": 94.078
-   },
-   "q": {
-    "20241231": 23.382,
-    "20250331": 23.193,
-    "20250630": 23.72,
-    "20250930": 21.577,
-    "20260331": 24.527
-   },
-   "src": {
-    "q:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     6,
-     "Sub-Total (a+b)",
-     "24.527"
-    ],
-    "y:20260331": [
-     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
-     6,
-     "Sub-Total (a+b)",
-     "94.078"
-    ],
-    "q:20250930": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     5,
-     "Sub-Total (a+b)",
-     "21.577"
-    ],
-    "q:20250630": [
-     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
-     5,
-     "Sub-Total (a+b)",
-     "23.720"
-    ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Sub-total (a+b) (doc period)",
-     "23.193"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Sub-total (a+b)",
-     "23.382"
-    ]
-   }
+   ]
   },
   {
    "name": "Pipeline Capacity Utilization",
@@ -834,35 +643,228 @@
    }
   },
   {
-   "name": "Other Products Sales (Gas+Petrochemicals)",
-   "unit": "MMT",
+   "name": "Refinery Capacity Utilization",
+   "unit": "%",
    "kind": "flow",
-   "y": {},
+   "y": {
+    "20260331": 107.4
+   },
    "q": {
-    "20250331": 2.752,
-    "20250630": 2.608,
-    "20250930": 2.685
+    "20241231": 102.3,
+    "20250630": 106.7,
+    "20250930": 99.5,
+    "20260331": 113.9
    },
    "src": {
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Refinery Operations Capacity utilization (%)",
+     "107.4"
+    ],
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Refinery Operations Capacity utilization (%)",
+     "113.9"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Capacity utilization (%)",
+     "99.5"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Refinery Operations Capacity utilization (%)",
+     "106.7"
+    ],
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Refinery Operations - Capacity utilization (%)",
+     "102.3"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     107.1,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): Obligations are not part of Debt level.  Operational  ights  1  Refinery Operations  a  Throughput (MMT)  185 ",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Refinery Fuel & Loss",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 8.5
+   },
+   "q": {
+    "20241231": 8.7,
+    "20250630": 8.5,
+    "20250930": 8.7,
+    "20260331": 8.1
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Fuel & Loss (%)",
+     "8.1"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Fuel & Loss (%)",
+     "8.5"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Fuel & Loss (%)",
+     "8.7"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Fuel & Loss (%)",
+     "8.5"
+    ],
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Refinery Operations - Fuel & loss (%)",
+     "8.7"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     8.6,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): s  1  Refinery Operations  a  Throughput (MMT)  185  b  Capacity utilization (%)  107.1  c  Distillate yield (",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Refinery High Sulphur Crude Utilization",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 56.2
+   },
+   "q": {
+    "20241231": 57.6,
+    "20250630": 53.2,
+    "20250930": 54.0,
+    "20260331": 61.3
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Utilization of High Sulphur crude (%)",
+     "61.3"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     5,
+     "Utilization of High Sulphur crude (%)",
+     "56.2"
+    ],
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Utilization of High Sulphur (%)",
+     "54.0"
+    ],
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     4,
+     "Utilization of High Sulphur (%)",
+     "53.2"
+    ],
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Refinery Operations - Utilization of High Sulphur (%)",
+     "57.6"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     55.2,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): (MMT)  185  b  Capacity utilization (%)  107.1  c  Distillate yield (%)  79.7  d  Fuel & loss (%)  8.6  e  Uti",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Total Petroleum Products Sales (Inland+Export)",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {
+    "20260331": 94.078
+   },
+   "q": {
+    "20241231": 23.382,
+    "20250630": 23.72,
+    "20250930": 21.577,
+    "20260331": 24.527
+   },
+   "src": {
+    "q:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Sub-Total (a+b)",
+     "24.527"
+    ],
+    "y:20260331": [
+     "079d0455-3f8d-4ec4-8aa5-c73a4d0c691e.pdf",
+     6,
+     "Sub-Total (a+b)",
+     "94.078"
+    ],
     "q:20250930": [
      "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
      5,
-     "Sub-Total (c)",
-     "2.685"
+     "Sub-Total (a+b)",
+     "21.577"
     ],
     "q:20250630": [
      "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
      5,
-     "Sub-Total (c)",
-     "2.608"
+     "Sub-Total (a+b)",
+     "23.720"
     ],
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
      2,
-     "Sub-total (c) (doc period)",
-     "2.752"
+     "Sub-total (a+b)",
+     "23.382"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     23.193,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): 3.881  -Ms  3.869  -HSD  9.320  - SKO  0.055  -ATF  1.311  - FO/LSHS  0.688  - Others  2.743  b  Exports Petro",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Aviation Fuel Market Share",
@@ -910,30 +912,6 @@
      8,
      "Total Capex incurred during FY 25-26 (Provisional)",
      "32,405"
-    ]
-   }
-  },
-  {
-   "name": "Distillate Yield",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 82.2,
-    "20250331": 79.7
-   },
-   "src": {
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Refinery Operations - Distillate yield (%) (doc period)",
-     "79.7"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Refinery Operations - Distillate yield (%)",
-     "82.2"
     ]
    }
   },
@@ -987,78 +965,6 @@
    }
   },
   {
-   "name": "Gross Refining Margin (GRM)",
-   "unit": "US$/bbl",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 2.95,
-    "20250331": 7.85
-   },
-   "src": {
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "GRM (US$/bbl) (doc period)",
-     "7.85"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "GRM (US$/bbl)",
-     "2.95"
-    ]
-   }
-  },
-  {
-   "name": "HSD (Diesel) Sales",
-   "unit": "MMT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20241231": 9.574,
-    "20250331": 9.32
-   },
-   "src": {
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Inland sales -HSD (doc period)",
-     "9.320"
-    ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Inland sales -HSD",
-     "9.574"
-    ]
-   }
-  },
-  {
-   "name": "LPG Distributorship Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250331": 12919.0,
-    "20260331": 12940.0
-   },
-   "src": {
-    "q:20260331": [
-     "1f26d8d3-83d0-402f-87d1-8c9aad405031.pdf",
-     44,
-     "12,940 LPG Distributorship (doc period)",
-     "12,940"
-    ],
-    "q:20250331": [
-     "e59774f0-ce7c-4f7c-804e-3ef56a8f42ea.pdf",
-     3,
-     "LPG Distributorships",
-     "12,919"
-    ]
-   }
-  },
-  {
    "name": "LPG Market Share",
    "unit": "%",
    "kind": "level",
@@ -1083,28 +989,38 @@
    }
   },
   {
-   "name": "Motor Spirit (Petrol) Sales",
+   "name": "Other Products Sales (Gas+Petrochemicals)",
    "unit": "MMT",
    "kind": "flow",
    "y": {},
    "q": {
-    "20241231": 3.969,
-    "20250331": 3.869
+    "20250630": 2.608,
+    "20250930": 2.685
    },
    "src": {
-    "q:20250331": [
-     "06d64951-1a57-4559-8070-72dbd1e19925.pdf",
-     2,
-     "Inland sales -Ms (doc period)",
-     "3.869"
+    "q:20250930": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (c)",
+     "2.685"
     ],
-    "q:20241231": [
-     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
-     2,
-     "Inland sales -Ms",
-     "3.969"
+    "q:20250630": [
+     "7c61b690-9c99-447b-8489-5b5e206e463a.pdf",
+     5,
+     "Sub-Total (c)",
+     "2.608"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     2.752,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): b)  23.193  c  Other Products (MMT)  Gas (LNG) + CGD  1.821  Petrochemicals  Domestic  0.811  Exports  0.018  ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Petrochemicals Capacity",
@@ -1315,6 +1231,33 @@
    }
   },
   {
+   "name": "Distillate Yield",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 82.2
+   },
+   "src": {
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Refinery Operations - Distillate yield (%)",
+     "82.2"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     79.7,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER):  level.  Operational  ights  1  Refinery Operations  a  Throughput (MMT)  185  b  Capacity utilization (%)  10",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "EV Charging & Battery Swapping Stations",
    "unit": "count",
    "kind": "level",
@@ -1349,6 +1292,60 @@
    }
   },
   {
+   "name": "Gross Refining Margin (GRM)",
+   "unit": "US$/bbl",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 2.95
+   },
+   "src": {
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "GRM (US$/bbl)",
+     "2.95"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     7.85,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): terest  Interest expenditure  2046  Interest income  425  6  Debt level*  134466  7  Oil bond holding (Face va",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "HSD (Diesel) Sales",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 9.574
+   },
+   "src": {
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Inland sales -HSD",
+     "9.574"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     9.32,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ions  a  Throughput (MMT)  25.8  3  Marketing Operations  Petroleum products (MMT)  a  Inland sales  21.867  -",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Highway Retail Outlets Commissioned",
    "unit": "count",
    "kind": "flow",
@@ -1364,6 +1361,33 @@
      "909"
     ]
    }
+  },
+  {
+   "name": "LPG Distributorship Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250331": 12919.0
+   },
+   "src": {
+    "q:20250331": [
+     "e59774f0-ce7c-4f7c-804e-3ef56a8f42ea.pdf",
+     3,
+     "LPG Distributorships",
+     "12,919"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20260331",
+     12940.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): tion corridors. Customer Access Infrastructure 53% Reduction  in domestic LPG accidents compared to the previo",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Lubricants Sales",
@@ -1405,6 +1429,33 @@
      null,
      "drop_y",
      "Qualified print in src label: Marketing Touchpoints (63,000+)",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
+   "name": "Motor Spirit (Petrol) Sales",
+   "unit": "MMT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20241231": 3.969
+   },
+   "src": {
+    "q:20241231": [
+     "568f6740-198e-498e-871a-ef1e22dd5a4a.pdf",
+     2,
+     "Inland sales -Ms",
+     "3.969"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250331",
+     3.869,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): peline Operations  a  Throughput (MMT)  25.8  3  Marketing Operations  Petroleum products (MMT)  a  Inland sal",
      "2026-10-31"
     ]
    ]

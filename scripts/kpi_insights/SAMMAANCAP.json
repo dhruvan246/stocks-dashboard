@@ -823,38 +823,6 @@
    }
   },
   {
-   "name": "Branch Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20240331": 218.0
-   },
-   "q": {
-    "20250930": 220.0,
-    "20260630": 220.0
-   },
-   "src": {
-    "q:20250930": [
-     "a05f6663-2e17-4216-a425-99111d25565d.pdf",
-     4,
-     "220 branches (doc period)",
-     "220"
-    ],
-    "q:20260630": [
-     "25de6c80-e886-445c-a653-67b786ff6d7e.pdf",
-     7,
-     "base of 220 branches (doc period)",
-     "220"
-    ],
-    "y:20240331": [
-     "1cbec767-f358-4bd3-a409-8f0c2c7b6bfa.pdf",
-     37,
-     "BRANCHES (doc period)",
-     "218"
-    ]
-   }
-  },
-  {
    "name": "Growth AUM",
    "unit": "₹ Crore",
    "kind": "level",
@@ -1062,28 +1030,39 @@
    }
   },
   {
-   "name": "Employee Headcount",
+   "name": "Branch Count",
    "unit": "count",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20240331": 218.0
+   },
    "q": {
-    "20240331": 4358.0,
-    "20250930": 4430.0
+    "20260630": 220.0
    },
    "src": {
-    "q:20250930": [
-     "a05f6663-2e17-4216-a425-99111d25565d.pdf",
-     4,
-     "4,430 employees (doc period)",
-     "4,430"
+    "q:20260630": [
+     "25de6c80-e886-445c-a653-67b786ff6d7e.pdf",
+     7,
+     "base of 220 branches (doc period)",
+     "220"
     ],
-    "q:20240331": [
+    "y:20240331": [
      "1cbec767-f358-4bd3-a409-8f0c2c7b6bfa.pdf",
-     87,
-     "Number of permanent employees on the rolls of Company",
-     "4,358"
+     37,
+     "BRANCHES (doc period)",
+     "218"
     ]
-   }
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     220.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): est non-bank lenders, focused primarily on extending mortgage loans. SCL has  a pan-India presence through 4,4",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Gross NPAs (Standalone)",
@@ -1375,6 +1354,33 @@
      "3,875"
     ]
    }
+  },
+  {
+   "name": "Employee Headcount",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 4358.0
+   },
+   "src": {
+    "q:20240331": [
+     "1cbec767-f358-4bd3-a409-8f0c2c7b6bfa.pdf",
+     87,
+     "Number of permanent employees on the rolls of Company",
+     "4,358"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20250930",
+     4430.0,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): MMAANCAP] is  one of India’s largest non-bank lenders, focused primarily on extending mortgage loans. SCL has ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Employees Trained",
