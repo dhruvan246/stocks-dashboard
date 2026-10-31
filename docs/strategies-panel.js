@@ -563,6 +563,8 @@ function renderCards(){
         (leg && !leg.ok ? '<div class="khelp">\u26a0 <b>' + esc(leg.msg) + '</b> \u2014 buying is locked until then.</div>' : '');
     }
     const mk = mixMarks(it.cfg, SM);
+    const cpX = planFor(it), outPlan = !!(cpX && cpX.excl);   // zba55: outside the chosen mix — its block says so and offers no buy
+    if (outPlan && body) body = '<div class="khelp" style="margin-top:0"><b>Not in the cash plan' + ((cpDoc() || {}).set ? ' (' + esc(cpDoc().set) + ')' : '') + '</b> \u2014 this strategy sells everything on the Sell side and buys nothing; its money joins the plan. Its screen is shown for reference only.</div>' + body;
     return '<div class="sblk' + (mk.length ? ' mixed' : '') + '"><div class="shead">' + (favNum(it.cfg) ? '<span class="snum' + (mk.length ? ' mixn' : '') + '" style="font-size:11px;background:var(--buy);color:#fff;border-color:var(--buy);padding:1px 6px;margin:0 4px 0 0">#' + favNum(it.cfg) + '</span>' : '') + '<span class="nm2" title="Code-name: ' + esc(nameWithBasis(it.name, it.cfg)) + '">' + (isFavCfg(loadFavs(), it.cfg) ? '\u2605 ' : '') + esc(disp) + '</span>' + mixChips(mk) +
       (it._priv ? '<span class="tag new">private</span>' : '') +
       (bought.has(it.id) ? '<span class="tag keep" data-unbought="' + esc(it.id) + '" title="Basket sent to Zerodha this rebalance \u2014 click if that was cancelled" style="cursor:pointer">\u2713 bought</span>' : '') +
@@ -574,10 +576,12 @@ function renderCards(){
               ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buying ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n + '</button>'
               : (bought.has(it.id)
                    ? '<button class="btn" disabled title="Already bought this rebalance \u2014 click the \u2713 bought chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">\u2713 Bought</button>'
-                   : (!RW.buyIn
+                   : (outPlan
+                      ? '<span class="tag exit" title="Outside the chosen mix in the cash plan \u2014 sells everything, buys nothing">No buys \u00b7 not in the plan</span>'
+                      : (!RW.buyIn
                         ? '<span class="tag off" title="Buy baskets act only on the morning after month-end \u2014 ' + esc(RW.t1lab) + ' (buffer to ' + esc(RW.t3lab) + '), on the official ' + esc(RW.tlab) + ' close screen, funded by the sell proceeds. Off-window this is a preview only.">Locked \u00b7 arms ' + esc(RW.t1lab) + '</span>'
                         : (leg.ok ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buy basket</button>'
-                                  : '<span class="tag warn" title="' + esc(leg.msg) + '">' + (p.live ? 'Rebalance picks required' : 'Waiting for ' + esc(RW.tlab) + ' close') + '</span>')))) : '') +
+                                  : '<span class="tag warn" title="' + esc(leg.msg) + '">' + (p.live ? 'Rebalance picks required' : 'Waiting for ' + esc(RW.tlab) + ' close') + '</span>'))))) : '') +
       '</span></div>' + body + '</div>';
   }).join('');
   $('cards').innerHTML = h;
@@ -621,10 +625,16 @@ function rebuyRows(it, p){
 }
 function buyAllAgg(list){
   const agg = {}, missing = [], NUM = blockNums(list);   // numbered like the blocks' badges, not by list position
-  let nAct = 0, nEst = 0, nPlan = 0;
+  let nAct = 0, nEst = 0, nPlan = 0, nPrev = 0;
   list.forEach((it, i) => {
     const p = PICKS[it.id]; if (!p || !p.rows.length) return;
     const cp = planFor(it);   // the cash plan sized this strategy: its buys, nothing else
+    const CPD = cpDoc(), o = CPD && CPD.S[it.id];
+    if (!cp && o && !o.excl && CPD.acct && CPD.acct.slotP > 0){   // zba55: its screen changed since the plan — preview every new slot at the plan's slot size until Re-plan (the engine's old proceeds sizing read #8 at ₹47 L next to ₹2.5 Cr slots)
+      nPrev++; const held = heldFor(it.cfg), hs = (CPD.mode === 'all' || o.sellAll) ? new Set() : new Set(((held && held.rows) || []).map(h => h.sym));
+      p.rows.slice(0, it.cfg.topN || 3).forEach(r => { if (hs.has(r.sym)) return; const L = liveQ(r.sym), px = (L && L.ltp != null) ? L.ltp : r.px;
+        const a = agg[r.sym] = agg[r.sym] || { sym: r.sym, px: px, amt: 0, from: [], capped: false, back: false }; a.px = px; a.amt += CPD.acct.slotP; a.from.push(NUM.get(it.id)); });
+      return; }
     if (cp){ nPlan++; cp.picks.forEach(sym => { const q = cp.buyQ[sym] || 0; if (!q) return; const L = liveQ(sym), px = (L && L.ltp != null) ? L.ltp : cp.px[sym];
         const N = planNeed(it, cp, sym, px); if (!N || !N.need) return;   // zba47: moved-in / already-bought shares are not bought again
         const a = agg[sym] = agg[sym] || { sym: sym, px: px, amt: 0, from: [], capped: false, back: false }; a.px = px; a.amt += q * cp.px[sym] - (N.mvIn + N.got) * px; a.from.push(NUM.get(it.id)); }); return; }
@@ -662,7 +672,7 @@ function buyAllAgg(list){
   });
   const rows = Object.values(agg).map(a => Object.assign(a, { qty: (a.amt > 0 && a.px > 0) ? Math.floor(a.amt / a.px) : 0 }))
     .sort((x, y) => (y.amt - x.amt) || (x.sym < y.sym ? -1 : 1));
-  return { rows: rows, missing: missing, nAct: nAct, nEst: nEst, nPlan: nPlan };
+  return { rows: rows, missing: missing, nAct: nAct, nEst: nEst, nPlan: nPlan, nPrev: nPrev };
 }
 /* ================= CASH PLAN =================
    zba53 (user 2026-10-29, "The Four, 10% cash" — replaces the zba52 own-money slots): ONE slot size P for every slot of
@@ -806,6 +816,7 @@ function cpDoc(){ const P = zbaDoc().plan; return (P && P.k === zbRebKey() && P.
 const cpSame = (a, b) => a.slice().sort().join() === b.slice().sort().join();
 function planFor(it){   // null unless the plan exists AND this strategy's current picks are the ones it was worked out on
   const P = cpDoc(); if (!P) return null; const o = P.S[it.id]; if (!o) return null;
+  if (o.excl) return o;   // zba55: outside the chosen mix — sells all, buys nothing, whatever its screen now says (31 Oct: #2/#4's new picks dropped them to the engine's sizing and the buy table listed them)
   const p = PICKS[it.id]; if (!p || !p.rows) return null;   // an empty screen is a real list: it matches a plan worked out on no picks
   return cpSame(p.rows.slice(0, it.cfg.topN || 3).map(r => r.sym), P.picks[it.id] || []) ? o : null;
 }
@@ -869,6 +880,9 @@ function planNeed(it, cp, sym, px){
   return { full: full, mvIn: mvIn, mvFrom: mvL.map(x => xfNum(x.from)).join('+'), got: got, need: Math.max(0, full - mvIn - got) };
 }
 const cpSellsStarted = () => zbSoldSet().size > 0;
+/* zba55: true only on the IST day the first sell basket went out — the freeze protects the slot size while baskets are in flight that day, not on the buy day after */
+function cpSellDay(){ const at = Object.values(zbMarkDoc('soldReb').at || {}).map(Number).filter(Boolean); if (!at.length) return false;
+  const day = t => new Date(t + 330 * 60000).toISOString().slice(0, 10); return day(Math.min.apply(null, at)) === day(Date.now()); }
 /* zba41: the picks are the FINAL list for this rebalance — rebalance mode, screened on the T close itself */
 function finalPicks(it){ const p = PICKS[it.id]; return !!(p && p.rows && !p.live && p.asOf === rebalWindow().tIso); }
 /* After the sells the plan is frozen — but the final list lands only at ~8:45 pm, after money has moved. A strategy
@@ -906,7 +920,7 @@ async function cashPlanRun(auto){
   const P0 = cpDoc(), stillHeld = books.some(it => heldFor(it.cfg).rows.some(r => dematQty(r.sym) > 0));
   /* zba53: frozen only while the demat still holds a book row (an exit not yet sold, or a stay) — once everything is sold
      (sell all & re-enter, the Monday buy day) the plan re-runs from the ACTUAL cash in the account, not Friday's estimate */
-  const frozen = !!(P0 && cpSellsStarted() && stillHeld), OPT = cpOpts();
+  const frozen = !!(P0 && cpSellsStarted() && stillHeld && cpSellDay()), OPT = cpOpts();   // zba55: a straggler held into the buy day (STLTECH at its circuit) no longer freezes Friday's slot size — the buy day plans from the actual cash
   /* zba41: once the sells are out, re-plan ONLY on the final list (rebalance picks dated T). Live picks flip intraday and
      rebalance picks dated T−1 are yesterday's screen — re-planning on either replaced a good plan (30 Sep). */
   const changed = frozen ? books.filter(it => P0.S[it.id] && !planFor(it) && finalPicks(it)) : [];
@@ -1140,7 +1154,7 @@ function renderBuyAll(list){
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
-    '<div class="khelp">Numbered by the strategy blocks below. ' + (agg.nPlan ? '<b>' + agg.nPlan + ' strateg' + (agg.nPlan === 1 ? 'y is' : 'ies are') + ' sized by the cash plan above</b>; for any other, amounts' : 'Amounts') + ' are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
+    '<div class="khelp">Numbered by the strategy blocks below. ' + (agg.nPlan ? '<b>' + agg.nPlan + ' strateg' + (agg.nPlan === 1 ? 'y is' : 'ies are') + ' sized by the cash plan above</b>; ' : '') + (agg.nPrev ? '<b>' + agg.nPrev + ' whose screen changed since the plan preview' + (agg.nPrev === 1 ? 's' : '') + ' at the plan’s slot size — press Re-plan</b>; ' : '') + (agg.nPlan || agg.nPrev ? 'for any other, amounts' : 'Amounts') + ' are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
   fillsKick();
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const cg = $('cpGo'); if (cg) cg.onclick = () => cashPlanRun(false);
