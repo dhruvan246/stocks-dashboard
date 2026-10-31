@@ -1312,29 +1312,29 @@
     "20230630": 5702.0,
     "20230930": 5529.0,
     "20231231": 5496.0,
-    "20240331": 5399.0,
+    "20240331": 5690,
     "20240630": 6355.0,
     "20240930": 6581.0,
     "20241231": 7978.0,
-    "20250331": 8577.0,
+    "20250331": 8877,
     "20250630": 8790.0,
     "20250930": 9090.0,
     "20251231": 9262.0,
-    "20260331": 9296.0,
+    "20260331": 9416,
     "20260630": 9445.0
    },
    "src": {
     "q:20250331": [
-     "35fc816b-f01b-4fad-b438-dc0d5b42ca4f.pdf",
-     259,
-     "Aggregate value of performance obligations unsatisfied as at March 31st 2025 (St",
-     "8577"
+     "901bd4bc-8e32-4bce-9fea-8833c0f1fa81.pdf",
+     25,
+     "Order Book (as on period end)",
+     "8,877"
     ],
     "q:20260331": [
-     "96fbd04e-24a9-4413-9b01-2f50ffbaba5a.pdf",
-     253,
-     "Aggregate value of performance obligations unsatisfied as at March 31st, 2026 (S",
-     "9,296"
+     "3fe35fbd-3ea6-4f7b-a05c-03e22e160e8b.pdf",
+     23,
+     "Order Book (as on period end)",
+     "9,416"
     ],
     "q:20260630": [
      "45a51ae2-6c7f-4ebc-b8e4-74d8a1324a4a.pdf",
@@ -1355,10 +1355,10 @@
      "9,090"
     ],
     "q:20240331": [
-     "35fc816b-f01b-4fad-b438-dc0d5b42ca4f.pdf",
-     259,
-     "Aggregate value of performance obligations unsatisfied as at March 31st 2024 (St",
-     "5399"
+     "14e3cf05-6e49-4268-a092-f6933c51c1af.pdf",
+     24,
+     "Order Book (as on period end)",
+     "5,690"
     ],
     "q:20250630": [
      "3d4bd072-93cb-4686-8d88-42a64991124c.pdf",
@@ -1494,7 +1494,33 @@
     "q:20210331": "2025-03-06",
     "q:20231231": "2024-02-02",
     "q:20220331": "2025-03-06"
-   }
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     5399.0,
+     5690,
+     "set_q",
+     "14e3cf05 p24 'Order Book (as on ...)' 5,690, stored segment cells sum to it; row's other 24 quarters are this deck series. Stored value is AR note l 'aggregate ",
+     "2026-10-31"
+    ],
+    [
+     "q:20250331",
+     8577.0,
+     8877,
+     "set_q",
+     "901bd4bc p25 'Order Book (as on ...)' 8,877, stored segment cells sum to it; row's other 24 quarters are this deck series. Stored value is AR note l 'aggregate ",
+     "2026-10-31"
+    ],
+    [
+     "q:20260331",
+     9296.0,
+     9416,
+     "set_q",
+     "3fe35fbd p23 'Order Book (as on ...)' 9,416, stored segment cells sum to it; row's other 24 quarters are this deck series. Stored value is AR note l 'aggregate ",
+     "2026-10-31"
+    ]
+   ]
   },
   {
    "name": "Order Book — Consultancy Segment",
@@ -3568,5 +3594,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-30"
+ "updated": "2026-10-31"
 }

@@ -276,11 +276,11 @@
     "20220630": 51.0,
     "20220930": 48.0,
     "20221231": 60.0,
-    "20230331": 60,
-    "20230630": 66.0,
+    "20230331": 56,
+    "20230630": 65,
     "20230930": 63.0,
     "20231231": 63.0,
-    "20240331": 61.0,
+    "20240331": 54,
     "20240630": 55.0,
     "20240930": 57.0,
     "20241231": 56.0,
@@ -344,10 +344,10 @@
      "55"
     ],
     "q:20240331": [
-     "43c0ac2e-1e70-40c4-a9b0-b180e2c09525.pdf",
-     23,
-     "Exports as of Income",
-     "61"
+     "7c2dd026-fa20-49a1-b0d7-3e0beb357230.pdf",
+     20,
+     "Export % as of Revenue Q4FY24",
+     "54"
     ],
     "q:20241231": [
      "075fb804-4bfc-45c0-986c-94f21d3ac95f.pdf",
@@ -446,16 +446,16 @@
      "60"
     ],
     "q:20230331": [
-     "43c0ac2e-1e70-40c4-a9b0-b180e2c09525.pdf",
-     23,
-     "Exports as of Income (Q4 FY23)",
-     "60"
+     "87eec99b-9aef-44f3-870e-20776fb1b1b6.pdf",
+     19,
+     "Exports as of Revenue Q4 FY23",
+     "56"
     ],
     "q:20230630": [
-     "3ec4fb10-647e-426c-876a-59388c038e36.pdf",
-     19,
-     "Exports as of Revenue",
-     "66"
+     "7c2dd026-fa20-49a1-b0d7-3e0beb357230.pdf",
+     20,
+     "Export % as of Revenue (base Total Income 14782) Q1FY24",
+     "65"
     ],
     "q:20230930": [
      "92d7a855-661c-42f5-928d-b14270aaff5b.pdf",
@@ -531,6 +531,30 @@
      "set_q",
      "Stored 56 from 87eec99b (Q4FY23 deck) p19 'Exports as of Revenue', base 15710 (= 'Total Income' 15,710 on 87eec99b p18). Newer 43c0ac2e (Q4FY24 deck) p23 'Expor",
      "2026-10-30"
+    ],
+    [
+     "q:20230630",
+     66.0,
+     65,
+     "set_q",
+     "7c2dd026 p20 (newest) Q1FY24 65% on base 14782 = Total Income (p19); 3ec4fb10 p19 66% on 14,669 revenue. Row is share of Total Income and newest print: 65.",
+     "2026-10-31"
+    ],
+    [
+     "q:20230331",
+     60,
+     56,
+     "set_q",
+     "Reverses earlier fix. 43c0ac2e p23 chart prints Q4FY23 60 on base 15,710; own deck 87eec99b p19 and 3ec4fb10 p19 print 56. Arithmetic: FY23 bases 16,717+14,239+",
+     "2026-10-31"
+    ],
+    [
+     "q:20240331",
+     61.0,
+     54,
+     "set_q",
+     "7c2dd026 p20 (newest) Q4FY24 54 on 16996; stored 61 from 43c0ac2e p23. FY24 bases 14,782+17,755+18,370+16,996 = 67,903 (43c0ac2e p29), export 61%: with Q4 54 gi",
+     "2026-10-31"
     ]
    ]
   },
@@ -2548,5 +2572,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-30"
+ "updated": "2026-10-31"
 }
