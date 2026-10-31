@@ -218,6 +218,13 @@
    "title": "Annual Report 2020-21",
    "read": "2026-10-11",
    "by": "gemini:gemini-3.6-flash"
+  },
+  "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf": {
+   "kind": "ip",
+   "date": "2026-10-30",
+   "title": "Investor Presentation Q2 & H1 FY27",
+   "read": "2026-10-31",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -250,7 +257,8 @@
     "20250930": 34.8,
     "20251231": 35.6,
     "20260331": 52.3,
-    "20260630": 42.1
+    "20260630": 42.1,
+    "20260930": 34.5
    },
    "src": {
     "q:20250331": [
@@ -390,6 +398,12 @@
      8,
      "Collections",
      "26.8"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     11,
+     "Total Collections",
+     "34.5"
     ]
    },
    "fixed": [
@@ -637,7 +651,8 @@
     "20250930": 45.7,
     "20251231": 56.2,
     "20260331": 58.9,
-    "20260630": 46.3
+    "20260630": 46.3,
+    "20260930": 50.4
    },
    "src": {
     "y:20210331": [
@@ -771,6 +786,12 @@
      8,
      "Pre-Sales",
      "30.3"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     13,
+     "Total Pre-Sales",
+     "50.4"
     ]
    },
    "fixed": [
@@ -806,7 +827,15 @@
      "21dc2516 (AR FY25) p81 'Year ended March 31, 2024' Pre-sales value 145.2 = FY24, not Q4; precise print replaces deck's rounded 145",
      "2026-10-15"
     ]
-   ]
+   ],
+   "latest": {
+    "y:20210331": "2026-10-30",
+    "y:20220331": "2026-10-30",
+    "y:20230331": "2026-10-30",
+    "y:20240331": "2026-10-30",
+    "y:20250331": "2026-10-30",
+    "y:20260331": "2026-10-30"
+   }
   },
   {
    "name": "Pre-Sales Developable Area",
@@ -1553,7 +1582,8 @@
     "20250930": 193.9,
     "20251231": 217.1,
     "20260331": 227.4,
-    "20260630": 237.4
+    "20260630": 237.4,
+    "20260930": 258.3
    },
    "src": {
     "q:20260331": [
@@ -1627,6 +1657,12 @@
      38,
      "Residual Collections from Sold units Total",
      "86.2"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     18,
+     "DevCo Total Residual Collections from Sold units",
+     "258.3"
     ]
    }
   },
@@ -2094,6 +2130,65 @@
    }
   },
   {
+   "name": "Annuity Leased Area",
+   "unit": "msf",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 2.56,
+    "20241231": 2.9,
+    "20250331": 3.0,
+    "20250630": 3.2,
+    "20250930": 3.5,
+    "20260630": 3.9,
+    "20260930": 4.2
+   },
+   "src": {
+    "q:20260630": [
+     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
+     31,
+     "Total, Area leased (As of Jun-26)",
+     "3.9"
+    ],
+    "q:20250930": [
+     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
+     22,
+     "Grand Total, Area leased (As of Sep-25)",
+     "3.5"
+    ],
+    "q:20250630": [
+     "202699f4-858a-43e8-9b54-ca744d6d535d.pdf",
+     22,
+     "Grand Total, Area leased (msf) (doc period)",
+     "3.2"
+    ],
+    "q:20250331": [
+     "5507ade6-3a04-468e-830f-d8735a8980d2.pdf",
+     25,
+     "Grand Total, Area leased (msf) (doc period)",
+     "3.0"
+    ],
+    "q:20241231": [
+     "2e898890-927e-4dd3-ac36-1d8a46c7016b.pdf",
+     19,
+     "Grand Total - Area leased (msf) (doc period)",
+     "2.9"
+    ],
+    "q:20240930": [
+     "7910d3d9-d474-42c1-90f7-fdc30ca5cfbd.pdf",
+     20,
+     "Grand Total - Area leased (msf) (doc period)",
+     "2.56"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     32,
+     "Total Area leased",
+     "4.2"
+    ]
+   }
+  },
+  {
    "name": "New Business Development GDV",
    "unit": "INR bn",
    "kind": "flow",
@@ -2154,54 +2249,54 @@
    }
   },
   {
-   "name": "Annuity Leased Area",
-   "unit": "msf",
+   "name": "Annuity Portfolio Investment (Already Invested)",
+   "unit": "INR bn",
    "kind": "level",
    "y": {},
    "q": {
-    "20240930": 2.56,
-    "20241231": 2.9,
-    "20250331": 3.0,
-    "20250630": 3.2,
-    "20250930": 3.5,
-    "20260630": 3.9
+    "20240930": 15.13,
+    "20241231": 19.1,
+    "20250331": 21.2,
+    "20250630": 23.5,
+    "20250930": 33.9,
+    "20260930": 37.9
    },
    "src": {
-    "q:20260630": [
-     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
-     31,
-     "Total, Area leased (As of Jun-26)",
-     "3.9"
-    ],
     "q:20250930": [
      "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
      22,
-     "Grand Total, Area leased (As of Sep-25)",
-     "3.5"
+     "Grand Total, Already invested (As of Sep-25)",
+     "33.9"
     ],
     "q:20250630": [
      "202699f4-858a-43e8-9b54-ca744d6d535d.pdf",
      22,
-     "Grand Total, Area leased (msf) (doc period)",
-     "3.2"
+     "Grand Total, Already invested (INR bn) (doc period)",
+     "23.5"
     ],
     "q:20250331": [
      "5507ade6-3a04-468e-830f-d8735a8980d2.pdf",
      25,
-     "Grand Total, Area leased (msf) (doc period)",
-     "3.0"
+     "Grand Total, Already invested (INR bn) (doc period)",
+     "21.2"
     ],
     "q:20241231": [
      "2e898890-927e-4dd3-ac36-1d8a46c7016b.pdf",
      19,
-     "Grand Total - Area leased (msf) (doc period)",
-     "2.9"
+     "Grand Total - Already invested (INR bn) (doc period)",
+     "19.1"
     ],
     "q:20240930": [
      "7910d3d9-d474-42c1-90f7-fdc30ca5cfbd.pdf",
      20,
-     "Grand Total - Area leased (msf) (doc period)",
-     "2.56"
+     "Grand Total - Already invested (INR bn) (doc period)",
+     "15.13"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     32,
+     "Total Already invested",
+     "37.9"
     ]
    }
   },
@@ -2307,51 +2402,6 @@
      97,
      "The number of permanent employees on the rolls of the Company",
      "3,359"
-    ]
-   }
-  },
-  {
-   "name": "Annuity Portfolio Investment (Already Invested)",
-   "unit": "INR bn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20240930": 15.13,
-    "20241231": 19.1,
-    "20250331": 21.2,
-    "20250630": 23.5,
-    "20250930": 33.9
-   },
-   "src": {
-    "q:20250930": [
-     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
-     22,
-     "Grand Total, Already invested (As of Sep-25)",
-     "33.9"
-    ],
-    "q:20250630": [
-     "202699f4-858a-43e8-9b54-ca744d6d535d.pdf",
-     22,
-     "Grand Total, Already invested (INR bn) (doc period)",
-     "23.5"
-    ],
-    "q:20250331": [
-     "5507ade6-3a04-468e-830f-d8735a8980d2.pdf",
-     25,
-     "Grand Total, Already invested (INR bn) (doc period)",
-     "21.2"
-    ],
-    "q:20241231": [
-     "2e898890-927e-4dd3-ac36-1d8a46c7016b.pdf",
-     19,
-     "Grand Total - Already invested (INR bn) (doc period)",
-     "19.1"
-    ],
-    "q:20240930": [
-     "7910d3d9-d474-42c1-90f7-fdc30ca5cfbd.pdf",
-     20,
-     "Grand Total - Already invested (INR bn) (doc period)",
-     "15.13"
     ]
    }
   },
@@ -2771,6 +2821,68 @@
    }
   },
   {
+   "name": "Annualized Rental Income (Leased Area)",
+   "unit": "INR bn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 3.2,
+    "20260331": 3.0,
+    "20260930": 3.2
+   },
+   "src": {
+    "q:20260331": [
+     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
+     31,
+     "Total, Annualized Rental income from area leased as of 31.3.2026",
+     "3.0"
+    ],
+    "q:20250930": [
+     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
+     22,
+     "Grand Total, Annualized Rental income from area leased (As of Sep-25)",
+     "3.2"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     32,
+     "Total Annualized Rental income from area leased as of 30.9.2026",
+     "3.2"
+    ]
+   }
+  },
+  {
+   "name": "Annuity Completed Area",
+   "unit": "msf",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20250930": 3.9,
+    "20260630": 4.5,
+    "20260930": 4.6
+   },
+   "src": {
+    "q:20260630": [
+     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
+     31,
+     "Total, Completed Area (As of Jun-26)",
+     "4.5"
+    ],
+    "q:20250930": [
+     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
+     22,
+     "Grand Total, Completed Area (As of Sep-25)",
+     "3.9"
+    ],
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     32,
+     "Total Completed Area",
+     "4.6"
+    ]
+   }
+  },
+  {
    "name": "Completed Unsold Inventory",
    "unit": "INR Cr",
    "kind": "level",
@@ -3021,54 +3133,6 @@
      34,
      "UK projects quarterly performance - Collections at GBP 24mn (doc period)",
      "24"
-    ]
-   }
-  },
-  {
-   "name": "Annualized Rental Income (Leased Area)",
-   "unit": "INR bn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 3.2,
-    "20260331": 3.0
-   },
-   "src": {
-    "q:20260331": [
-     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
-     31,
-     "Total, Annualized Rental income from area leased as of 31.3.2026",
-     "3.0"
-    ],
-    "q:20250930": [
-     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
-     22,
-     "Grand Total, Annualized Rental income from area leased (As of Sep-25)",
-     "3.2"
-    ]
-   }
-  },
-  {
-   "name": "Annuity Completed Area",
-   "unit": "msf",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20250930": 3.9,
-    "20260630": 4.5
-   },
-   "src": {
-    "q:20260630": [
-     "ab08c910-df8f-4562-bc9e-550b019b28d7.pdf",
-     31,
-     "Total, Completed Area (As of Jun-26)",
-     "4.5"
-    ],
-    "q:20250930": [
-     "55abdc6a-8141-4f9c-9eee-79c21677a45c.pdf",
-     22,
-     "Grand Total, Completed Area (As of Sep-25)",
-     "3.9"
     ]
    }
   },
@@ -3343,6 +3407,23 @@
    }
   },
   {
+   "name": "Completed Unsold Inventory",
+   "unit": "msf",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 3.9
+   },
+   "src": {
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     18,
+     "DevCo Total Completed unsold",
+     "3.9"
+    ]
+   }
+  },
+  {
    "name": "DC Park Land Sold (Cumulative)",
    "unit": "acres",
    "kind": "level",
@@ -3492,6 +3573,23 @@
      14,
      "Total Est. GDV",
      "14,600"
+    ]
+   }
+  },
+  {
+   "name": "Ongoing Unsold Inventory",
+   "unit": "msf",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 19.1
+   },
+   "src": {
+    "q:20260930": [
+     "6d6846d1-49cf-47b2-a783-a2bc5e622b8d.pdf",
+     18,
+     "DevCo Total Ongoing unsold",
+     "19.1"
     ]
    }
   },
@@ -3815,6 +3913,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-10-15",
+ "updated": "2026-10-31",
  "checked": "2026-09-06"
 }
