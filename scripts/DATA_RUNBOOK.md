@@ -23085,6 +23085,9 @@ original filing (214.74 / −17.94 / −159.49) nor the FY2022 filing's restated
   A builder fix (take the CF period from the filing's own DateOfStart fact) was not made (open).
 
 ### 168q. Round 6 (user "ok follow ur order n start", 2026-09-27) — never-tried N500 companies + December year-end filers; PAUSED by the user (tokens) after 3 pushes
+
+**Rounds 10-11 (2026-10-31).** Round 10: 36f036cf4c, 49 fill-years/16 stocks, 594/762. Round 11: b0bf002f47, 14 non-March companies, 606/762 measured at 4e8c9ba6cb. Screener round 11: 238 cells, 222 match, 16 read one by one (13 rule differences or rounding, 3 our errors on ENRIN FY24 cash flow, removed). Moneycontrol and Quantmac not compared. `xo` used where the print beat the tag: SCHAEFFLER Dec-20 cash flow (tag had wrong signs/values), PGHL Mar-25 intangibles, KENNAMET Jun-20 investments; w3_live_check then reports those as MISMATCH against the pre-push XBRL value, which is expected. HEXT Dec-20: no filing in window.
+
 Plan context: after round 5, 493 of 762 PIT-N500 stocks lacked a complete card (1,106 stock-years), grouped by what each needs.
 This round = group 1 (non-financial, never attempted, holds an FY2023-25 XBRL key) + group 4 (non-March filers).
 - **Group 4 was NOT a page fix (measured):** stock.html renderDeep() already anchors Dec/Jun filers (FYM); a page-faithful
@@ -24882,6 +24885,9 @@ BYLD 511730's filing is standalone-only — text has no "consolidated"; its figu
 consolidated is unknown without re-reading each filing (open).
 
 ## §186 — FISCAL YEAR-ENDS ARE READ YEAR BY YEAR: stock page Financial-detail card + CFO/PAT card (2026-09-27, user: "fix the fiscal-year-end detection")
+
+**§186 correction + `cf_m` (round 11, 2026-10-31).** This section's claim that transition filings "tag only their last 12 months" is wrong for the values: measured XBRL cfo on those cells equals the WHOLE-period print (IGIL 624.1, SIEMENS -535.4, NESTLEIND 4174.79; ACC -1235.48 vs print -1235.08). The CFO/PAT card was dividing 15/18-month cash by 12-month profit. New ledger field `cf_m` = printed cash-flow length in months for a transition year (9/15/18). It does not touch year detection (never give those cells a `cf_d`: 250-290 / 150-200 FORBID the date as a year-end). `cfSpans` accepts `d.cf_m===FY.months(fy)`; CFO/PAT skips `cf_m` cells; CFO/OP is blank when `cf_m` is not 12; the cash-flow tab header reads "MAR 2026 · 18 mo". Transition years show because the column states its length. Part-year years where the column looks like a full year stay blank (user 31-Oct: MSUMI FY21, TMCV FY25, ITCHOTELS FY24, and ENRIN FY24: period from 7 Feb 2024, notes 1(c)(d), filing 736e2c6f).
+
 **Defect.** `renderDeep()` picked ONE year-end month per stock from balance-sheet dates (Dec if ≥2 Dec-BS years and more
 than March, else Jun). A June filer files a balance sheet every December too (its H1), so KENNAMET / WIDIA / ACCELYA /
 KALECONSUL (Jul–Jun) got Dec and showed half-year balance sheets and 183-day cash flows as annual "Dec YYYY" columns;
