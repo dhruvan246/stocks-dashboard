@@ -42,7 +42,7 @@ import kpi_docs  # noqa: E402
 
 LEDGER_DIR = os.path.join(HERE, "kpi_insights")
 PACKET_DIR = os.path.join(LEDGER_DIR, "_packets")
-MAX_METRICS = 16
+MAX_METRICS = 40
 MAX_PAGES = 45          # pages sent per document (top-scored); raised so the business-profile /
 MAX_CHARS = 90000       # multi-year-highlights slide is never dropped for a rich deck or annual report
 SAVE_ANSWERS_DIR = None  # --save-answers DIR: gemini reads also persist their answer+meta here so a
@@ -332,13 +332,13 @@ PROMPT = """You are reading pages from a document that {company} ({sym}, an Indi
 TASK: list the company's BUSINESS / OPERATING metrics that this document reports with a numeric value for a stated period — the kind of numbers an investor tracks to understand the business, for example: sales volumes, production, capacity and utilisation, realisation per unit, stores/outlets/branches, subscribers/customers/users, ARPU, order book/inflow, AUM, disbursements, deposits/advances/CASA/NIM/GNPA/NNPA/CD ratio for lenders, market share, occupancy, passengers, fleet, area (sq ft), headcount, patents, attach rates, gross written premium/persistency for insurers. Company-level P&L lines (revenue, EBITDA, PAT, EPS, margins, tax, cash flow, debt, market cap, share price) are NOT wanted — they are shown elsewhere. Segment-level VOLUMES are wanted; segment revenue/EBITDA are not.
 
 RULES (each one is checked mechanically — a violation makes the whole metric worthless):
-1. Only numbers PRINTED on a page. Never compute, convert, derive, extrapolate or carry a value forward. If the page prints "~285 Mn", as_printed is "285" and value is 285.
+1. Only numbers PRINTED on a page. Never compute, convert, derive, extrapolate or carry a value forward. A figure printed with a qualifier ("~285 Mn", "2,000+", "over 18.9 GW", about, around, approx, nearly, more than, crossing, ">", "or more") is not an exact figure: leave it out.
 2. `as_printed` must be the number token exactly as it appears in the page text (digits, commas, decimal point; no unit, no ~, no %, no currency sign). `value` is that same number as a plain number.
 3. `period` is the period label AS PRINTED next to the value or in its column/axis header (e.g. "Q1 FY27", "FY26", "Jun-26", "Q4FY26", "31.03.2026"). Also give `period_end` as the last calendar day of that period (YYYY-MM-DD) and `period_type` = "Q" for a quarter or a quarter-end snapshot, "FY" for a full financial year or FY-end snapshot, "other" for H1/H2/9M/TTM/months. {fy_note}
 4. Skip growth rates, YoY/QoQ changes, bps changes, targets, guidance, ranges and industry/market data. Keep ratios the company reports as its own KPI (NIM %, GNPA %, CASA %, market share %, utilisation %, attach rate %). A mix share (export share of revenue, retail share of advances, a brand's share of revenue) is wanted ONLY when the document prints it as a named figure for at least two periods — never lift slices out of a single pie chart.
 5. One metric = one business quantity in one unit, consistently across periods. Name it clearly and generically (e.g. "Total Customer Base", "Retail Store Count", "Gross NPA", "KG D6 Gas Production (RIL share)"), and put the unit in `unit` exactly as printed ("Mn", "₹/month", "BCFe", "MMT", "%", "INR Cr", "count", "sq ft Mn"). If a metric below in KNOWN METRICS is the same quantity, reuse that exact name and unit.
 6. Prefer the value from a TABLE over the same value in a headline or bullet; do not list the same (metric, period) twice. Prefer metrics with several periods in this document. At most {max_metrics} metrics; most business-relevant first.
-7. `page` is the PAGE n marker the value came from; `label` is the row/axis label as printed there. If a page prints a KPI with NO period next to it and the document reports one period (see its title/date), use that reporting period and end the label with " (doc period)".
+7. `page` is the PAGE n marker the value came from; `label` is the row/axis label as printed there. If a KPI has NO period next to it but that same page prints the date of the reporting period (in its heading, "as on" line or footer), use that period and end the label with " (doc period)". If the page itself prints no date for that period, or the figure is "currently" / "as on date of this deck", leave it out: the document's title or date alone does not date a figure.
 7b. Give each metric a `kind`: "level" = a count, balance, capacity or ratio AS AT a date (stores, subscribers, employees, deposits, GNPA %, market share) — its Q4 value is the FY-end value; "flow" = a total or average OVER the period (production, volumes sold, disbursements, ARPU, net additions) — its Q4 value is NOT the FY value.
 8. If these pages are not about {company}, or contain no such metrics, return an empty metrics list and say why in `note`.
 
