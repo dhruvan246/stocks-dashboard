@@ -480,6 +480,28 @@ def fill_rev(revops, sym, qe, basis, rev=None, pat=None):
         d[str(qe)] = rr
     return changed
 
+def floor_ipo_fin_dates(funds, ledger):
+    """Runbook §232: a pre-listing quarter read from a prospectus has no result date of its own, and the
+    SEBI deadline would date it before the stock could trade. ann = max(deadline, listing date), §99."""
+    from fill_ann_dates import deadline
+    listed = {r[0]: int(r[3].replace("-", "")) for r in json.load(open(os.path.join(ROOT, "docs", "ipos.json")))["listed"] if r[3]}
+    n = 0
+    for sym, cells in ledger.items():
+        floor = listed.get(sym)
+        if not floor: continue
+        for qs, c in cells.items():
+            if c.get("via") != "ipo_fin": continue
+            qe = int(qs)
+            for fund in funds:
+                row = next((r for r in fund.get(sym, []) if r[0] == qe), None)
+                if row is None: continue
+                for basis, vi in (("Std", 1), ("Con", 3)):
+                    if c.get("pat" + basis) is None or row[vi] is None: continue
+                    want = max(deadline(qe), floor)
+                    if row[vi + 1] != want and (row[vi + 1] is None or row[vi + 1] < floor):
+                        row[vi + 1] = want; n += 1
+    return n
+
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
@@ -514,6 +536,9 @@ def main():
                     fill_rev(revops, sym, qe, basis, c.get("rev" + basis.capitalize()),
                              c.get("pat" + basis.capitalize()))
         print("reapplied ledger: %d PAT cells re-asserted" % n)
+        floored = floor_ipo_fin_dates(funds, ledger)
+        print("listing-date floor: %d announce dates set" % floored)
+        n += floored
         if not args.dry_run and n:
             _write_all(funds, revops); open(FLAG, "w").write(today)
         return

@@ -29237,3 +29237,5 @@ PVRINOX Dec-18, STLTECH Jun-15, GPPL Sep-18, JKTYRE Mar-13, BALLARPUR Jun-16, AS
 
 **Known limits (measured 2026-11-02, 135 equity listings).** 123 hold 3+ annual years, 4 hold 2, 1 holds 1, 3 hold a file with no annual revenue (SUDARSHAN, RFBL, RKFAL), 4 have no file (PARTYPP, EVENTIONS, SHANTIINOR, FASCINATE). Quarters exist for 37: a prospectus rarely prints quarters and results PDFs exist only after listing, so Screener's extra quarters mostly come from later filings. SUDARSHAN and PARTYPP have only 2019 and 2021 documents. Scanned statement pages (FASCINATE, RKFAL) are left pending, not read by vision: ask the user first. Bonds (5 rows, symbol starts with a digit) are skipped.
 
+**Announce dates of these fills (added 2-Nov):** `backfill_ipo_bases.py --reapply` sets ann = max(SEBI deadline, listing date in docs/ipos.json) on `via: ipo_fin` cells only (§99 rule). The deadline alone dated JPL's Jun-25 quarter 14-Aug-25, 14 months before it listed. A migrating SME's listing date is its new-board date, which is when that prospectus printed the figure.
+
