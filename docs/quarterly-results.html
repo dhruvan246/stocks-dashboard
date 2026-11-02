@@ -27,6 +27,9 @@
   .seg button{padding:6px 12px;font-size:12px;font-weight:700;color:var(--text-muted,#475569);background:var(--surface,#fff);cursor:pointer}
   .seg button.on{background:var(--accent,#2563eb);color:#fff}
   .tile{padding:14px 16px;border-radius:.75rem;border:1px solid var(--border,#e2e8f0);background:var(--surface,#fff)}
+  .tile-link{cursor:pointer;transition:box-shadow .12s,transform .12s,border-color .12s}
+  .tile-link:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(2,6,23,.10);border-color:var(--border-strong,#cbd5e1)}
+  .tile-link:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
   .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:.5rem;
           background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap}
   .docbtn:hover{border-color:var(--accent,#93c5fd)}
@@ -446,6 +449,9 @@ function isUp(pct, flag){ return flag==='LP' || (pct!=null && pct>0 && !flag); }
 // Two profit figures from the same filing: equal to the paise after rounding to 2 dp (0.015 cr tolerance).
 // A null stored profit always "agrees" (nothing to contradict); a null estimate never does.
 function samePat(stored,est){ return stored==null || (est!=null && Math.abs(stored-est)<=0.015); }
+// Turnaround = a loss becoming a real profit. The LP flag also covers a loss → exactly 0.00 (it scores and
+// counts as 'not down' there), which is not a profit, so the card, screen, feed chip and badge test this instead.
+function isTurn(g){ return !!g && g.flag==='LP' && g.cur>0; }
 function patFlag(g){                              // profit→loss detection needs cur sign too
   if(!g) return null;
   if(g.flag) return g.flag;
@@ -512,7 +518,7 @@ function recsFor(qi){
     const verdict = !scoreable? null : score>=3?'S' : score<=-2?'W' : 'M';
     out.push({ sym, c, rev, op, pat,
       ry:ry&&ry.pct, rq:rq&&rq.pct, py:gy&&gy.pct, pq:gq&&gq.pct,
-      pfY:pf, pfQ:patFlag(gq), opm:o1, dOpm, rec, streak, verdict, score,
+      pfY:pf, pfQ:patFlag(gq), turnY:isTurn(gy), turnQ:isTurn(gq), opm:o1, dOpm, rec, streak, verdict, score,
       ann:row[6]||null, rx:row[7], sr:row[8], prov:row[9]===1 });
   }
   CACHE[key]=out; return out;
@@ -633,8 +639,8 @@ function rsMedianFor(qe){
 }
 
 /* ---------- render: overview ---------- */
-function tile(label,val,sub,cls){
-  return '<div class="tile"><div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">'+label+'</div>'+
+function tile(label,val,sub,cls,id){              // id = a clickable tile (a drill-through, wired after render)
+  return '<div class="tile'+(id?' tile-link':'')+'"'+(id?' id="'+id+'" role="button" tabindex="0"':'')+'><div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">'+label+'</div>'+
     '<div class="text-xl font-extrabold mt-0.5 '+(cls||'text-slate-900')+'">'+val+'</div>'+
     (sub?'<div class="text-[11px] text-slate-500 mt-0.5">'+sub+'</div>':'')+'</div>';
 }
@@ -651,7 +657,7 @@ function renderOverview(){
   const pUp=rows.filter(r=>isUp(r[gKey],r[fKey])).length;
   const pDn=rows.filter(r=>(r[gKey]!=null&&r[gKey]<0&&!r[fKey])||r[fKey]==='PL'||r[fKey]==='LL').length;
   const rUp=revs.filter(v=>v>0).length, rDn=revs.filter(v=>v<0).length;
-  const lp=rows.filter(r=>r[fKey]==='LP').length;
+  const lp=rows.filter(r=>ST.mode==='yoy'?r.turnY:r.turnQ).length;
   // "Declared" = companies with parsed numbers + those we've SEEN FILE (in the feed) but whose numbers
   // haven't been parsed yet (our XBRL sync runs nightly, so a same-day filing shows here before its
   // numbers land). Bridges the gap between the live filing feed and the numbers scoreboard.
@@ -676,8 +682,15 @@ function renderOverview(){
     tile('Median revenue growth', fmtPct(medRev), medSub, pctCls(medRev))+
     tile('Median PAT growth', fmtPct(medPat), rsm?(pUp+' up · '+pDn+' down · matches Season Trends'):((pUp+pDn)?(pUp+' up · '+pDn+' down'):''), pctCls(medPat))+
     tile('PAT growers', (pUp+pDn)? Math.round(pUp/(pUp+pDn)*100)+'%' :'—', pUp+' of '+(pUp+pDn)+' with a comparable base', pUp>=pDn?'pos':'neg')+
-    tile('Turnarounds', lp||'0', 'loss → profit '+(ST.mode==='yoy'?'YoY':'QoQ'), lp?'pos':'text-slate-900')+
+    tile('Turnarounds', lp||'0', 'loss → profit '+(ST.mode==='yoy'?'YoY':'QoQ')+(lp?' · view all →':''), lp?'pos':'text-slate-900', lp?'tTurn':'')+
     tile('Median reaction', fmtPct(median(rxs)), rxs.length+' priced result days', pctCls(median(rxs)));
+  // Turnarounds tile → the Results tab's own 'turn' screen: same rows, same isTurn test as the count above.
+  // shown=lp so the whole list opens at once, not the first 100 behind "Load more".
+  if(lp){
+    const tt=$('tTurn'), openTurn=()=>{ ST.screen='turn'; ST.shown=Math.max(100,lp); setTab('results'); window.scrollTo({top:0,behavior:'instant'}); };   // instant: theme.css scrolls smoothly
+    tt.onclick=openTurn;
+    tt.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openTurn(); } };
+  }
   $('breadthMode').textContent='· '+(ST.mode==='yoy'?'YoY':'QoQ');
   const bbar=(lbl,up,dn)=>{
     const tot=up+dn||1, pu=Math.round(up/tot*100);
@@ -779,7 +792,7 @@ function screenPass(r){
   switch(ST.screen){
     case 'grow': return isUp(r[gKey],r[fKey]);
     case 'rocket': return r[gKey]!=null&&r[gKey]>20&&r[ST.mode==='yoy'?'ry':'rq']!=null&&r[ST.mode==='yoy'?'ry':'rq']>20;
-    case 'turn': return r[fKey]==='LP';
+    case 'turn': return ST.mode==='yoy'?r.turnY:r.turnQ;
     case 'slump': return r[fKey]==='PL';
     case 'marginup': return r.dOpm!=null&&r.dOpm>=200;
     case 'record': return r.rec;
@@ -1005,7 +1018,7 @@ function feedCard(it){
         '<div class="flex items-center gap-1.5 flex-wrap">'+
           '<b class="text-slate-900 text-[13px]">'+esc(sym)+'</b>'+
           '<span class="badge">'+qlabel(QTRS[qi],false)+'</span>'+
-          (fl==='LP'?'<span class="badge pos" style="background:transparent;border:1px solid currentColor">Turnaround</span>':'')+
+          (isTurn(it.gy)?'<span class="badge pos" style="background:transparent;border:1px solid currentColor">Turnaround</span>':'')+
           (fl==='PL'?'<span class="badge neg" style="background:transparent;border:1px solid currentColor">Into loss</span>':'')+
           (c.bse?'<span class="badge" title="Listed on BSE only">BSE</span>':'')+(c.f?'<span class="badge">🏦</span>':'')+
         '</div>'+
@@ -1075,7 +1088,7 @@ function renderFeed(){
   const rows= feedDay==='all'? all : all.filter(r=>r[2].slice(0,10)===feedDay);
   const cards=[], pend=[];
   rows.forEach(r=>{ const it=items.get(r); if(!it) pend.push(r); else if(!dupRow.has(r)) cards.push(it); });
-  let list=feedTurn? cards.filter(it=>patFlag(it.gy)==='LP') : cards;
+  let list=feedTurn? cards.filter(it=>isTurn(it.gy)) : cards;
   $('feedCount').textContent= (FEED_OWNER
     ? rows.length+' filings · '+list.length+(feedTurn?' turnarounds':' with numbers')
     : list.length+(feedTurn?' turnarounds':' results'))+' · '+qlabel(QTRS[ST.qi],false);
