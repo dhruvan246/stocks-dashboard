@@ -33,6 +33,7 @@ DOCS = os.path.join(HERE, "..", "docs")
 OUT = os.path.join(DOCS, "ipo_fin")
 STATE = os.path.join(HERE, "ipo_fin_state.json")
 FILLS = os.path.join(HERE, "ipo_base_fills.json")
+READS = os.path.join(HERE, "ipo_fin_reads.json")
 CACHE = os.environ.get("IPO_DOC_CACHE") or os.path.join(tempfile.gettempdir(), "ipo_docs")
 SEBI_LIST = "https://www.sebi.gov.in/sebiweb/ajax/home/getnewslistinfo.jsp"
 UA = {"User-Agent": "stocks-dashboard-research/1.0", "Accept": "text/html,application/pdf,*/*",
@@ -377,6 +378,20 @@ def result_filings(sym, jar, BF):
     return out
 
 
+def apply_reads(sym, fin):
+    """Statement pages read by hand, scanned or beyond the reader (scripts/ipo_fin_reads.json, runbook §232).
+    The same arithmetic stands guard: a record that fails is left out, not believed."""
+    n = 0
+    for basis, recs in load(READS, {}).get(sym, {}).items():
+        for key, rec in recs.items():
+            if key.endswith("|0"): oks = [R.check_bs(rec, 0.03)]
+            else: oks = [R.check_pl(rec, 0.03)] + ([R.check_cf(rec, 0.03)] if rec.get("cfo") is not None else [])
+            if all(ok for ok, _ in oks):
+                fin[basis].setdefault(key, {}).update(rec); n += 1
+            else: print("%s %s %s: read held %s" % (sym, basis, key, [w for _, w in oks]), flush=True)
+    return n
+
+
 def own_profit(rec):
     return rec.get("own") if rec.get("own") is not None else (rec.get("np") if rec.get("np") is not None else rec.get("pat"))
 
@@ -487,6 +502,7 @@ def main():
             st["err"] = str(e)[:200]
             print("%s: ERROR %s" % (sym, str(e)[:160]), flush=True)
             continue
+        apply_reads(sym, fin)
         n_ann = sum(1 for b in fin.values() for k in b if k.endswith("|12"))
         if not any(fin.values()):
             st.update(status="pending", why="no document on NSE or SEBI" if not page else "no statement read", held=len(held))

@@ -293,7 +293,7 @@
 "why": "our figure read from the filing; Screener's source row not identified",
 "row": {
 "page": 365,
-"label": "Cash and Cash Equivalents (\u20b9",
+"label": "Cash and Cash Equivalents (₹",
 "value": 1446.67
 },
 "src": "final"
@@ -1486,7 +1486,7 @@
 "why": "our figure read from the filing; Screener's source row not identified",
 "row": {
 "page": 199,
-"label": "Revenue from operations (\u20b9 million)",
+"label": "Revenue from operations (₹ million)",
 "value": 28703.95
 },
 "src": "final"
@@ -1503,7 +1503,7 @@
 "why": "our figure read from the filing; Screener's source row not identified",
 "row": {
 "page": 199,
-"label": "Restated profit for the year (\u20b9 million)",
+"label": "Restated profit for the year (₹ million)",
 "value": 2837.34
 },
 "src": "final"
@@ -4016,5 +4016,53 @@
 "value": 133846.27
 },
 "src": "final"
+},
+{
+"after_hand_reads": {
+"on": "2026-11-03",
+"note": "Gate after the hand reads of scripts/ipo_fin_reads.json: 332 cells, 324 match. Our figure equals the filing's printed row in all 8; Screener's row is not identified, so each stays UNKNOWN.",
+"cells": [
+{
+"cell": "LCL 20260331|12 Interest",
+"verdict": "UNKNOWN",
+"ours_row": "p293 and note p328: Finance costs 126.25 mn"
+},
+{
+"cell": "LCL 20260331|12 Other Income",
+"verdict": "UNKNOWN",
+"ours_row": "note 25 p327: Other income 208.75 mn"
+},
+{
+"cell": "LCL 20250331|12 Interest",
+"verdict": "UNKNOWN",
+"ours_row": "p293 and note p328: Finance costs 153.41 mn"
+},
+{
+"cell": "LCL 20250331|12 Cash from Investing Activity",
+"verdict": "UNKNOWN",
+"ours_row": "p293: investing (B) (312.93) mn"
+},
+{
+"cell": "RFBL 20250331|12 Cash from Operating Activity",
+"verdict": "UNKNOWN",
+"ours_row": "p56 and p79: operating (A) (1,244.03) lakh; A+B+C = printed 0.23"
+},
+{
+"cell": "RFBL 20250331|12 Cash from Financing Activity",
+"verdict": "UNKNOWN",
+"ours_row": "p56 and p79: financing (C) 1,314.69 lakh"
+},
+{
+"cell": "SWARAJ 20210331|12 Cash from Operating Activity",
+"verdict": "UNKNOWN",
+"ours_row": "p130: operating (A) 1,19,47,109 rupees"
+},
+{
+"cell": "SWARAJ 20210331|12 Cash from Financing Activity",
+"verdict": "UNKNOWN",
+"ours_row": "p130: financing (C) 4,65,43,212 rupees"
+}
+]
+}
 }
 ]
