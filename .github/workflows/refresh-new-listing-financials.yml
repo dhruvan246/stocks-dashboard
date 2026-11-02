@@ -1,0 +1,97 @@
+name: New-listing financials
+
+# Daily: every IPO in docs/ipos.json gets its full financials from its OWN prospectus and results PDFs
+# (scripts/fetch_new_listing_financials.py, runbook §232) without anyone asking. A document that is not
+# published yet stays pending and is retried each day; a finished stock is re-read weekly for new results.
+# Screener is NOT read here (gate_new_listings_screener.py is a separate local test gate).
+
+on:
+  # SCHEDULE — started by scripts/cron_dispatch.py, NOT GitHub cron (runbook §217).
+  # dispatch-cron: "10 3 * * *"  # 08:40 IST daily — NSE offer documents after the morning IPO feed
+  repository_dispatch:
+    types: [tick-refresh-new-listing-financials]   # sent by scripts/cron_dispatch.py
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/fetch_new_listing_financials.py"
+      - "scripts/ipo_statement_reader.py"
+      - ".github/workflows/refresh-new-listing-financials.yml"
+
+permissions:
+  contents: write
+  actions: write            # dispatch pages.yml after a bot commit (loop guard blocks auto-trigger)
+
+concurrency:
+  group: refresh-new-listing-financials
+  cancel-in-progress: false
+
+jobs:
+  new-listing-financials:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: pip install -q pymupdf requests curl_cffi
+
+      - name: Read new listings' own documents
+        run: python3 -X utf8 scripts/fetch_new_listing_financials.py --max-minutes 55
+
+      - name: Guard — every file written must be valid and carry a statement
+        run: |
+          python3 - <<'PY'
+          import glob, json
+          n = 0
+          for f in glob.glob("docs/ipo_fin/*.json"):
+              d = json.load(open(f, encoding="utf-8"))
+              assert d.get("con") or d.get("std"), f
+              n += 1
+          json.load(open("scripts/ipo_fin_state.json", encoding="utf-8"))
+          json.load(open("scripts/ipo_base_fills.json", encoding="utf-8"))
+          print("guard OK:", n, "stocks")
+          PY
+
+      # Lands only what this run changed, and only where origin still holds the copy it started from (runbook §212).
+      # Fills may lose a race with the nightly fundamentals run; the stock's weekly re-read writes them again.
+      - name: Commit (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BASE=$(git rev-parse HEAD)
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/ipo_fin/ scripts/ipo_fin_state.json scripts/ipo_base_fills.json
+          cp scripts/ci_land.py /tmp/ci_land.py
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each
+            git add docs/ipo_fin scripts/ipo_fin_state.json scripts/ipo_base_fills.json
+            if git diff --cached --quiet; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            git commit -m "New-listing financials $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"; exit 1
+
+      - name: Publish to Pages (only when changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — payload is committed; next push or ci-janitor publishes it"

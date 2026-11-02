@@ -164,10 +164,12 @@
     <div id="fundNote" class="text-[11px] text-slate-400 mt-2"></div>
   </div>
 
-  <!-- pre-IPO annual history (from the prospectus era, via MoneyControl) — DISPLAY ONLY, never the backtest -->
+  <!-- annual history of a recent listing: the company's own prospectus + results PDFs (docs/ipo_fin/<SYM>.json, runbook §232);
+       MoneyControl's standalone feed only while no document has been read — DISPLAY ONLY, never the backtest -->
   <div class="card p-4" id="preipoCard" data-jump="Pre-IPO" style="display:none">
     <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-      <div class="text-sm font-semibold text-slate-700">Pre-IPO financials <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
+      <div class="text-sm font-semibold text-slate-700"><span id="preipoTitle">Pre-IPO financials</span> <span id="preipoBadge" class="text-slate-400 font-normal"></span></div>
+      <div id="ipofinBasis" class="flex items-center gap-1.5 flex-wrap" style="display:none"></div>
     </div>
     <div id="preipo" class="sw-scrollx overflow-x-auto text-sm" style="font-variant-numeric:tabular-nums">—</div>
     <div id="preipoNote" class="text-[11px] text-slate-400 mt-2"></div>
@@ -1864,6 +1866,67 @@ function renderDelivSpark(){
    DISPLAY ONLY: this file is never read by the backtest engine (whose point-in-time fundamentals stay
    filing-sourced). Shown standalone; a "matches filed results" badge appears once a filed quarter
    cross-checks it. In rewind, years ending after the as-of date are dropped (point-in-time honesty). */
+let IPOFIN=null, IPOFIN_P=null, IPOFIN_B=null;
+function loadIpoFin(){
+  return IPOFIN_P||(IPOFIN_P=fetch('./ipo_fin/'+encodeURIComponent(SYM)+'.json').then(r=>r.ok?r.json():null).catch(()=>null).then(j=>{
+    IPOFIN=j; try{ if(j&&j.name&&$('sName')&&[ '',SYM].includes($('sName').textContent.trim())) $('sName').textContent=j.name; renderPreIPO(); }catch(e){ console.error(e); }
+  }));
+}
+/* The company's own restated statements (prospectus) and result columns. Every column shown passed its statement's
+   arithmetic in fetch_new_listing_financials.py; a period the documents don't print is simply absent, never estimated. */
+function renderIpoFin(){
+  const d=IPOFIN, card=$('preipoCard');
+  const has=b=>d[b]&&Object.keys(d[b]).length>0;
+  let b=IPOFIN_B||(FB_PICK&&has(FBASIS)?FBASIS:(has('con')?'con':'std')); if(!has(b)) b=has('con')?'con':'std';
+  IPOFIN_B=b;
+  let asof=null;
+  if(typeof ASOF!=='undefined'&&ASOF!=null&&typeof isoOff==='function') asof=+isoOff(ASOF).replace(/-/g,'');
+  const per=Object.keys(d[b]).map(k=>{ const [e,m]=k.split('|'); return {k,e:+e,m:+m,r:d[b][k]}; }).filter(p=>asof==null||p.e<=asof);
+  const MON=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lab=p=>MON[Math.floor(p.e/100)%100]+' '+Math.floor(p.e/10000);
+  const inr=v=>v==null?'<span class="text-slate-300">—</span>':(v<0?'<span class="neg">':'<span>')+Number(v).toLocaleString('en-IN',{maximumFractionDigits:Math.abs(v)<100?1:0})+'</span>';
+  const tab=(title,cols,rows,head)=>{
+    if(!cols.length) return '';
+    const live=rows.filter(([,f])=>cols.some(c=>f(c.r)!=null));
+    if(!live.length) return '';
+    let h='<div class="text-[11px] uppercase text-slate-500 font-semibold mt-3 mb-1">'+title+'</div><table class="w-full text-sm"><thead class="text-[11px] uppercase text-slate-500 border-b border-slate-200"><tr><th class="text-left py-1.5 pr-3">₹ crore</th>'
+      +cols.map(c=>'<th class="text-right px-3 whitespace-nowrap">'+head(c)+'</th>').join('')+'</tr></thead><tbody>';
+    for(const [l,f,fmt] of live) h+='<tr class="border-b border-slate-50"><td class="py-1.5 pr-3 font-semibold text-slate-700 whitespace-nowrap">'+l+'</td>'+cols.map(c=>{ const v=f(c.r); return '<td class="px-3 text-right whitespace-nowrap">'+(fmt?fmt(v):inr(v))+'</td>'; }).join('')+'</tr>';
+    return h+'</tbody></table>';
+  };
+  const opx=r=>(r.exp!=null&&r.fc!=null&&r.dep!=null)?r.exp-r.fc-r.dep:null;      // expenses before interest and depreciation
+  const op=r=>(opx(r)!=null&&r.rev!=null)?r.rev-opx(r):null;
+  const np=r=>r.own!=null?r.own:(r.np!=null?r.np:r.pat);
+  const tax=r=>r.tax!=null?r.tax:((r.ctax!=null||r.dtax!=null)?(r.ctax||0)+(r.dtax||0):null);
+  const pct=v=>v==null?'<span class="text-slate-300">—</span>':v.toFixed(0)+'%';
+  const eps=v=>v==null?'<span class="text-slate-300">—</span>':v.toFixed(2);
+  const plRows=[['Revenue',r=>r.rev],['Expenses',opx],['Operating profit',op],['OPM %',r=>(op(r)!=null&&r.rev)?op(r)/r.rev*100:null,pct],['Other income',r=>r.oi],['Interest',r=>r.fc],['Depreciation',r=>r.dep],['Profit before tax',r=>r.pbt],['Tax',tax],['Net profit',np],['EPS ₹',r=>r.eps_b,eps]];
+  const eq=r=>r.eq!=null?r.eq:((r.sc!=null&&r.oeq!=null)?r.sc+r.oeq:null);
+  const bsRows=[['Share capital',r=>r.sc],['Reserves',r=>r.oeq],['Total equity',eq],['Borrowings',r=>r.borr],['Fixed assets (PPE)',r=>r.ppe],['Capital WIP',r=>r.cwip],['Goodwill',r=>r.gw],['Inventories',r=>r.invnt],['Receivables',r=>r.rec],['Cash',r=>r.cash],['Total assets',r=>r.assets]];
+  const cfRows=[['Operating cash flow',r=>r.cfo],['Investing cash flow',r=>r.cfi],['Financing cash flow',r=>r.cff],['Capex',r=>r.capex]];
+  const asc=(x,y)=>x.e-y.e;
+  const yr=per.filter(p=>p.m===12&&p.r.rev!=null).sort(asc), qt=per.filter(p=>p.m===3&&p.r.rev!=null).sort(asc), st=per.filter(p=>(p.m===6||p.m===9)&&p.r.rev!=null).sort(asc);
+  const bs=per.filter(p=>p.m===0&&p.r.assets!=null).sort(asc), cf=per.filter(p=>p.m!==0&&p.r.cfo!=null).sort(asc);
+  const listed=+(d.listed||'0').replace(/-/g,'');
+  const yh=p=>lab(p)+(p.e<listed?' <span class="text-[9px] font-extrabold text-indigo-500">PRE-IPO</span>':'');
+  let h=tab('Annual results',yr,plRows,yh)+tab('Quarterly results',qt,plRows,yh);
+  if(st.length) h+=tab('Half-year and nine-month results',st,plRows,p=>p.m+'m '+lab(p));
+  h+=tab('Balance sheet',bs,bsRows,yh)+tab('Cash flow',cf,cfRows,p=>(p.m===12?'':p.m+'m ')+yh(p));
+  if(!h) return false;
+  $('preipoTitle').textContent='Annual and pre-listing financials';
+  $('preipoBadge').innerHTML='— ₹ crore, '+(b==='con'?'consolidated':'standalone');
+  $('preipo').innerHTML=h;
+  const box=$('ipofinBasis');
+  if(has('con')&&has('std')){
+    box.style.display='';
+    box.innerHTML=['con','std'].map(x=>'<button class="sw-chip '+(x===b?'on':'')+'" data-b="'+x+'" style="font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--sw-border,#cbd5e1);'+(x===b?'font-weight:700':'')+'">'+(x==='con'?'Consolidated':'Standalone')+'</button>').join('');
+    box.querySelectorAll('button').forEach(el=>el.onclick=()=>{ IPOFIN_B=el.dataset.b; renderIpoFin(); });
+  } else box.style.display='none';
+  const doc=d.src&&d.src.url?'<a class="text-indigo-600 underline" href="'+d.src.url+'" target="_blank" rel="noopener">'+({final:'prospectus',rhp:'red herring prospectus',draft:'draft prospectus'}[d.src.kind]||'offer document')+'</a>':'';
+  $('preipoNote').innerHTML='Read from the company’s own '+(doc||'documents')+(d.results&&d.results.length?' and its results filings':'')+' (restated figures for years before listing). Each column passed its statement’s own arithmetic; a period the documents don’t print is left out, not estimated. Shown for context; <b>not used in the backtest</b> beyond quarters it reads from filings.';
+  card.style.display='';
+  return true;
+}
 let PREIPO_DATA=null, PREIPO_P=null;
 function loadPreIPO(){
   return PREIPO_P||(PREIPO_P=fetch('./ipo_prehistory.json').then(r=>r.ok?r.json():null).then(j=>{
@@ -1873,6 +1936,7 @@ function loadPreIPO(){
 function renderPreIPO(){
   const card=$('preipoCard'); if(!card) return;
   const hide=()=>{ card.style.display='none'; };
+  if(IPOFIN&&renderIpoFin()) return;
   // a LIVE page is its own company: an alias only ever stands in for a dead old symbol (§197)
   const al=(typeof FUND_ALIAS!=='undefined'&&FUND_ALIAS[SYM])||null;
   const j=PREIPO_DATA, key=(al&&!(SLICE&&SLICE.alive)&&!(COLLIDE&&COLLIDE[SYM]))?al:SYM;
@@ -1898,7 +1962,7 @@ function renderPreIPO(){
   $('preipo').innerHTML=h+'</tbody></table>';
   $('preipoBadge').innerHTML=e.verified
     ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
-    : '— annual, as reported to MoneyControl';
+    : '— standalone only, as reported to MoneyControl, not yet read from a filing';
   $('preipoNote').innerHTML='Annual figures (standalone) from the company’s prospectus era via MoneyControl — the years before it began filing quarterly results with the exchange. Shown for context; <b>not used in the backtest</b> (which uses only point-in-time filed data).'
     +(e.verified?' The ✓ badge means at least one year here reproduces a quarter the company has since filed.':'');
   card.style.display='';
@@ -2136,7 +2200,7 @@ async function liveQuote(){
     try{ buildEvents(); if(LW) lwRefreshMarkers(); else drawChart(); }catch(e){ console.error(e); }     // engine FUND has the ann dates
   }
   renderClass().catch(e=>console.error(e));   // sector chain: after first paint, never blocking it
-  loadPreIPO();                                // pre-IPO annual history card (recent listings only)
+  loadPreIPO(); loadIpoFin();                  // annual history card (recent listings only): company documents first, §232
   // rewind controls: date bounds follow this stock's actual history
   const s0=SERIES[TKR];
   if(s0&&s0.d.length){
