@@ -193,7 +193,22 @@
         '<div class="s">worst yearly rank across all '+YRS.length+'</div></div>':'');
     } else { yw.style.display='none'; document.getElementById('ycards').innerHTML=''; }
   }
+  // Factors the user barred after a payload was built (2026-11-03). A payload built since then has
+  // already dropped them and re-ranked (they are in R.excluded); an older one still carries them, so
+  // hide its rows here. Its cards then show fewer rows: nothing is promoted into the gaps.
+  const HIDE_FIELDS=['rangePos','bollB','turnover'];
+  function hideBarred(j){
+    const ex=j.excluded||[], hide=HIDE_FIELDS.filter(f=>!ex.includes(f));
+    if(!hide.length||!j.combos) return;
+    const re=new RegExp('(^|[^A-Za-z])('+hide.join('|')+')([^A-Za-z]|$)');
+    const bad=j.combos.map(c=>re.test(c.s)||re.test(c.f||''));
+    const keep=x=>!bad[typeof x==='number'?x:x.i];
+    for(const k in j.cards) if(Array.isArray(j.cards[k])) j.cards[k]=j.cards[k].filter(keep);
+    (j.years||[]).forEach(y=>{ if(Array.isArray(y.rows)) y.rows=y.rows.filter(keep); });
+    j.excluded=ex.concat(hide);
+  }
   function applyData(j){
+    hideBarred(j);
     R=j; P=R.phases; C=R.combos; cards=R.cards; YRS=R.years||[];
     PI={}; P.forEach((p,i)=>PI[p.key]=i);
     document.getElementById('builtAt').textContent='Built '+R.built+'.';
@@ -210,9 +225,9 @@
       : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
     // Barred factors must be VISIBLE: a reader who knows the grid searches indRank/composite would
     // otherwise read their absence as "they never won" rather than "they were excluded".
-    const EXN={indRank:'industry rank',composite:'quality-momentum composite'};
+    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover'};
     const exNote=(R.excluded&&R.excluded.length)
-      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.map(f=>EXN[f]||f).join(' and ')+'.</span>' : '';
+      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.map(f=>EXN[f]||f).join(', ').replace(/, ([^,]*)$/,' and $1')+'</span>' : '';
     document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>'+exNote;
     document.getElementById('uname').textContent=UNIV[uOf(curVar)].label;
     document.getElementById('basketChip').textContent=(uOf(curVar)!=='n500'?UNIV[uOf(curVar)].label+' · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(isHold(curVar)?'ride winners':'monthly reset')+basisNote;

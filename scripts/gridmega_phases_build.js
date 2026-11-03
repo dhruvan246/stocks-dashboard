@@ -111,8 +111,10 @@ let NROWS = 0;
 //                admitting up to 163 unrelated stocks through `indRank<=3` in a single clump.
 //   composite  — coverage is 15% in 2004 and only ~82% by 2008, so a composite winner in the 22-year
 //                window is really a post-2008 result carrying a 22-year label.
+//   rangePos, bollB, turnover — barred by the user (2026-11-03): strategies using any of them are
+//                removed from every card.
 // Set EXCLUDE_FIELDS= (empty) to publish them again, or list other fields to bar.
-const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite')
+const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite,rangePos,bollB,turnover')
   .split(',').map(s => s.trim()).filter(Boolean);
 const EXCL_SET = new Set(EXCLUDE_FIELDS);
 const EXCL_RE = EXCLUDE_FIELDS.length
