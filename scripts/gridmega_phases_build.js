@@ -111,14 +111,19 @@ let NROWS = 0;
 //                admitting up to 163 unrelated stocks through `indRank<=3` in a single clump.
 //   composite  — coverage is 15% in 2004 and only ~82% by 2008, so a composite winner in the 22-year
 //                window is really a post-2008 result carrying a 22-year label.
-//   rangePos, bollB, turnover — barred by the user (2026-11-03): strategies using any of them are
-//                removed from every card.
+//   rangePos, bollB, turnover, stoch, postDrift — barred by the user (2026-11-03): strategies using
+//                any of them are removed from every card.
 // Set EXCLUDE_FIELDS= (empty) to publish them again, or list other fields to bar.
-const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite,rangePos,bollB,turnover')
+const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift')
   .split(',').map(s => s.trim()).filter(Boolean);
 const EXCL_SET = new Set(EXCLUDE_FIELDS);
 const EXCL_RE = EXCLUDE_FIELDS.length
   ? new RegExp('(^|[^A-Za-z])(' + EXCLUDE_FIELDS.join('|') + ')([^A-Za-z]|$)') : null;
+// Sort factor + direction pairs barred the same way (user, 2026-11-03: "high-vol" = sort by vol,
+// highest first). The field itself stays usable as a filter and as a low-direction sort.
+const EXCLUDE_SORTS = (process.env.EXCLUDE_SORTS !== undefined ? process.env.EXCLUDE_SORTS : 'vol:high')
+  .split(',').map(s => s.trim()).filter(Boolean);
+const EXCL_SORT_SET = new Set(EXCLUDE_SORTS);
 let EXCLFLAG = null;          // Uint8Array over the N grid rows, 1 = barred from the cards
 
 // Read one window/basis CSV → its CAGR column. On the very first call it also derives FUNDFLAG.
@@ -136,9 +141,9 @@ async function readCagr(file, deriveFlags) {
     const c4 = line.indexOf(',', c3 + 1);
     cagr.push(+line.slice(c3 + 1, c4));
     if (flags) {
-      const sortBy = line.slice(0, c1), fil = line.slice(c2 + 1, c3);
+      const sortBy = line.slice(0, c1), dir = line.slice(c1 + 1, c2), fil = line.slice(c2 + 1, c3);
       flags.push((FUND_SET.has(sortBy) || FUND_RE.test(fil)) ? 1 : 0);
-      excl.push(EXCL_RE && (EXCL_SET.has(sortBy) || EXCL_RE.test(fil)) ? 1 : 0);
+      excl.push((EXCL_RE && (EXCL_SET.has(sortBy) || EXCL_RE.test(fil))) || EXCL_SORT_SET.has(sortBy + ':' + dir) ? 1 : 0);
     }
   }
   if (flags) {
@@ -147,8 +152,8 @@ async function readCagr(file, deriveFlags) {
     const nDep = flags.reduce((a, b) => a + b, 0), nEx = excl.reduce((a, b) => a + b, 0);
     console.error('basis-dependent rows: ' + nDep.toLocaleString() + ' of ' + NROWS.toLocaleString() +
                   ' (' + (nDep / NROWS * 100).toFixed(1) + '%) — the rest score identically under every basis');
-    if (EXCLUDE_FIELDS.length)
-      console.error('barred by EXCLUDE_FIELDS=' + EXCLUDE_FIELDS.join(',') + ': ' + nEx.toLocaleString() +
+    if (EXCLUDE_FIELDS.length || EXCLUDE_SORTS.length)
+      console.error('barred by EXCLUDE_FIELDS=' + EXCLUDE_FIELDS.join(',') + ' EXCLUDE_SORTS=' + EXCLUDE_SORTS.join(',') + ': ' + nEx.toLocaleString() +
                     ' of ' + NROWS.toLocaleString() + ' rows (' + (nEx / NROWS * 100).toFixed(1) + '%)');
   }
   return cagr;
@@ -170,7 +175,7 @@ function buildGlobalIndex() {
   for (let k = 1; k < BASES.length; k++) for (let i = 0; i < NROWS; i++) if (keep(i) && FUNDFLAG[i]) { GB[g] = k; GR[g] = i; g++; }
   if (g !== M) throw new Error('global index build mismatch: ' + g + ' vs ' + M);
   console.error('merged pool: ' + M.toLocaleString() + ' (strategy × basis) pairs across ' + BASES.join('+') +
-                (EXCLUDE_FIELDS.length ? '  [' + (NROWS - nKeep).toLocaleString() + ' strategies barred]' : ''));
+                (EXCLUDE_FIELDS.length || EXCLUDE_SORTS.length ? '  [' + (NROWS - nKeep).toLocaleString() + ' strategies barred]' : ''));
 }
 
 // ---- pass 1: rank the merged pool for one window.
@@ -340,7 +345,8 @@ async function rankWindow(w) {
     universe: universeLabel + ' · monthly · ' + basket + basisLabel,
     earnBasis: BASES.length > 1 ? 'merged' : BASES[0],
     bases: BASES,
-    excluded: EXCLUDE_FIELDS,        // factors barred from the cards — the page must say so
+    excluded: EXCLUDE_FIELDS,
+    excludedSorts: EXCLUDE_SORTS,    // field:dir sorts barred the same way        // factors barred from the cards — the page must say so
     dataEnd: END,
     benchName: universeLabel === 'Nifty 50' ? 'Nifty 50' : 'Nifty 500',
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
