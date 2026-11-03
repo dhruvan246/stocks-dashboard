@@ -111,20 +111,21 @@ let NROWS = 0;
 //                admitting up to 163 unrelated stocks through `indRank<=3` in a single clump.
 //   composite  — coverage is 15% in 2004 and only ~82% by 2008, so a composite winner in the 22-year
 //                window is really a post-2008 result carrying a 22-year label.
-//   rangePos, bollB, turnover, stoch, postDrift, beta, volSurge, turnSurge, riskMom — barred by the user (2026-11-03): strategies using
+//   rangePos, bollB, turnover, stoch, postDrift, beta, volSurge, turnSurge, riskMom, macd, vol — barred by the user (2026-11-03): strategies using
 //                any of them are removed from every card.
 // Set EXCLUDE_FIELDS= (empty) to publish them again, or list other fields to bar.
-const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom')
+const EXCLUDE_FIELDS = (process.env.EXCLUDE_FIELDS !== undefined ? process.env.EXCLUDE_FIELDS : 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom,macd,vol')
   .split(',').map(s => s.trim()).filter(Boolean);
 const EXCL_SET = new Set(EXCLUDE_FIELDS);
 const EXCL_RE = EXCLUDE_FIELDS.length
   ? new RegExp('(^|[^A-Za-z])(' + EXCLUDE_FIELDS.join('|') + ')([^A-Za-z]|$)') : null;
 // Sort factor + direction pairs barred the same way (user, 2026-11-03: "high-vol" = sort by vol,
-// highest first). The field itself stays usable as a filter and as a low-direction sort.
-const EXCLUDE_SORTS = (process.env.EXCLUDE_SORTS !== undefined ? process.env.EXCLUDE_SORTS : 'vol:high')
+// highest first). Later the same day vol was barred outright (EXCLUDE_FIELDS), so no sort pair is needed.
+const EXCLUDE_SORTS = (process.env.EXCLUDE_SORTS !== undefined ? process.env.EXCLUDE_SORTS : '')
   .split(',').map(s => s.trim()).filter(Boolean);
 const EXCL_SORT_SET = new Set(EXCLUDE_SORTS);
-// Must equal the GRID_EXCLUDE_* env gridmega_phases_run.py gives the _n100_ grid runs.
+// Must equal the GRID_EXCLUDE_* env gridmega_phases_run.py gives the _n100_ grid runs — it is what the
+// saved Nifty 100 grid CSVs were enumerated with (macd/vol, barred later, are dropped by EXCLUDE_FIELDS).
 const N100_GX_FIELDS = 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom', N100_GX_SORTS = 'vol:high';
 let EXCLFLAG = null;          // Uint8Array over the N grid rows, 1 = barred from the cards
 

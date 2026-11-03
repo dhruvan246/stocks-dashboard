@@ -200,7 +200,7 @@
   // Factors the user barred after a payload was built (2026-11-03). A payload built since then has
   // already dropped them and re-ranked (they are in R.excluded); an older one still carries them, so
   // hide its rows here. Its cards then show fewer rows: nothing is promoted into the gaps.
-  const HIDE_FIELDS=['rangePos','bollB','turnover','stoch','postDrift','beta','volSurge','turnSurge','riskMom'], HIDE_SORTS=['vol:high'];
+  const HIDE_FIELDS=['rangePos','bollB','turnover','stoch','postDrift','beta','volSurge','turnSurge','riskMom','macd','vol'], HIDE_SORTS=[];
   function hideBarred(j){
     const ex=j.excluded||[], hide=HIDE_FIELDS.filter(f=>!ex.includes(f));
     const exS=j.excludedSorts||[], hideS=HIDE_SORTS.filter(f=>!exS.includes(f));
@@ -230,10 +230,10 @@
       : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
     // Barred factors must be VISIBLE: a reader who knows the grid searches indRank/composite would
     // otherwise read their absence as "they never won" rather than "they were excluded".
-    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover',stoch:'stochastic',postDrift:'post-results drift',beta:'beta',volSurge:'volume surge',turnSurge:'turnover surge',riskMom:'risk-adjusted momentum',
+    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover',stoch:'stochastic',postDrift:'post-results drift',beta:'beta',volSurge:'volume surge',turnSurge:'turnover surge',riskMom:'risk-adjusted momentum',macd:'MACD',vol:'volatility',
                'vol:high':'sorting by highest volatility'};
     const exNote=(R.excluded&&R.excluded.length)
-      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.concat(R.excludedSorts||[]).map(f=>EXN[f]||f).join(', ').replace(/, ([^,]*)$/,' and $1')+'</span>' : '';
+      ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.concat((R.excludedSorts||[]).filter(x=>!R.excluded.includes(x.split(':')[0]))).map(f=>EXN[f]||f).join(', ').replace(/, ([^,]*)$/,' and $1')+'</span>' : '';
     document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>'+exNote;
     document.getElementById('uname').textContent=UNIV[uOf(curVar)].label;
     document.getElementById('basketChip').textContent=(uOf(curVar)!=='n500'?UNIV[uOf(curVar)].label+' · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(isHold(curVar)?'ride winners':'monthly reset')+basisNote;
