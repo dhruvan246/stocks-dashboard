@@ -111,14 +111,14 @@
    "kind": "ip",
    "date": "2024-05-12",
    "title": "Q4 FY24 Investor Presentation",
-   "read": "2026-10-11",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "c61eface-40b6-4d6e-992c-953e3a19503a.pdf": {
    "kind": "ip",
    "date": "2023-11-04",
    "title": "Q2 FY24 Investor Presentation",
-   "read": "2026-10-11",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "62a3bbab-fd0f-4a79-b69b-3ec95d4cca6e.pdf": {
@@ -1490,6 +1490,73 @@
    ]
   },
   {
+   "name": "White Cement Subsidiary Sales Volume",
+   "unit": "lakh tonne",
+   "kind": "flow",
+   "y": {
+    "20230331": 4.28,
+    "20240331": 5.75
+   },
+   "q": {
+    "20220930": 0.83,
+    "20230331": 1.1,
+    "20230630": 1.21,
+    "20230930": 1.93,
+    "20231231": 1.29,
+    "20240331": 1.31
+   },
+   "src": {
+    "q:20230331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     17,
+     "Subsidiary",
+     "1.10"
+    ],
+    "q:20231231": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     17,
+     "Subsidiary",
+     "1.29"
+    ],
+    "q:20240331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     17,
+     "Subsidiary",
+     "1.31"
+    ],
+    "y:20230331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     18,
+     "Subsidiary",
+     "4.28"
+    ],
+    "y:20240331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     18,
+     "Subsidiary",
+     "5.75"
+    ],
+    "q:20230930": [
+     "c61eface-40b6-4d6e-992c-953e3a19503a.pdf",
+     14,
+     "Subsidiary",
+     "1.93"
+    ],
+    "q:20230630": [
+     "c61eface-40b6-4d6e-992c-953e3a19503a.pdf",
+     14,
+     "Subsidiary",
+     "1.21"
+    ],
+    "q:20220930": [
+     "c61eface-40b6-4d6e-992c-953e3a19503a.pdf",
+     14,
+     "Subsidiary",
+     "0.83"
+    ]
+   }
+  },
+  {
    "name": "Captive Solar and Wind Capacity",
    "unit": "MW",
    "kind": "level",
@@ -2229,6 +2296,37 @@
    }
   },
   {
+   "name": "Lead Distance",
+   "unit": "Kms",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 1245.0,
+    "20231231": 1290.0,
+    "20240331": 1274.0
+   },
+   "src": {
+    "q:20230331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     25,
+     "Lead Distance (Kms)",
+     "1245"
+    ],
+    "q:20231231": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     25,
+     "Lead Distance (Kms)",
+     "1290"
+    ],
+    "q:20240331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     25,
+     "Lead Distance (Kms)",
+     "1274"
+    ]
+   }
+  },
+  {
    "name": "White Cement Capacity",
    "unit": "MTPA",
    "kind": "level",
@@ -2402,6 +2500,33 @@
      "Grey Cement production (last year)",
      "13.89"
     ]
+   }
+  },
+  {
+   "name": "Specific Net Scope 1 CO2 Emission",
+   "unit": "Kg/Ton of Cementitious M",
+   "kind": "flow",
+   "y": {
+    "20230331": 520.0,
+    "20240331": 512.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "c61eface-40b6-4d6e-992c-953e3a19503a.pdf",
+     5,
+     "CO2 Emission (Kg/Ton of Cementitious Material)",
+     "520"
+    ],
+    "y:20240331": [
+     "2df19372-94d7-4040-b534-b2f77570f6ae.pdf",
+     6,
+     "CO2 Emission (Kg/Ton of Cementitious Material)",
+     "512"
+    ]
+   },
+   "latest": {
+    "y:20230331": "2024-05-12"
    }
   },
   {
@@ -3005,5 +3130,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-31"
+ "updated": "2026-11-03"
 }
