@@ -195,6 +195,10 @@ def gate_ok(read, key):
         if rp is None:
             return False, False
         return (abs(rp) <= max(1.0, 0.005 * abs(ka))), False
+    if kp is None and key.get("cfo") is not None:
+        # banks and insurers: XBRL tags no PP&E, so the second anchor is the same year's operating cash flow
+        rc, kc = read.get("cfo"), key.get("cfo")
+        return (rc is not None and (abs(rc - kc) <= 0.005 or (kc and abs(rc - kc) / abs(kc) <= 0.01))), False
     if not kp or rp is None:
         return False, False
     # the key is stored to 0.01 crore, so a near-zero PP&E also matches within half that storage unit
