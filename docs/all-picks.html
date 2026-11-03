@@ -28,6 +28,7 @@
   .tick.hold .hr{display:inline-flex;gap:5px;align-items:center}
   .tick.hold i{font-style:normal;font-size:9.5px;font-weight:600}
   .tick.hold i.p{color:var(--pos,#15803d)} .tick.hold i.n{color:var(--neg,#b91c1c)} .tick.hold i.z{opacity:.6}
+  .tick u{text-decoration:none;font-size:9.5px;font-weight:600;color:var(--muted,#64748b)}
   .up{color:var(--pos,#15803d);border-color:#bbf7d0;background:#f0fdf4}
   .dn{color:var(--neg,#b91c1c);border-color:#fecaca;background:#fef2f2}
   html[data-theme="dark"] .up{background:rgba(52,211,153,.10);border-color:rgba(52,211,153,.32)}
@@ -163,6 +164,7 @@
 
   <div id="stats" class="grid gap-3 mt-5 mb-4" style="grid-template-columns:repeat(auto-fit,minmax(158px,1fr))"></div>
   <div id="topPicks" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-2"></div>
+  <div id="allQual" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-2"></div>
   <div id="status" class="text-sm text-slate-500 py-8 text-center card border-dashed">Loading saved strategies…</div>
   <div id="uniEmpty" class="hidden text-sm text-slate-400 py-8 text-center card border-dashed"></div>
 
@@ -242,6 +244,14 @@ let SERIALS = new Map();   // identityKey → save serial (DDMMYY-NN), same tag 
  * mirrored into ?asof=YYYY-MM-DD so a rewound view can be bookmarked or shared.               */
 let ASOF = null;
 try { const q = new URLSearchParams(location.search).get('asof'); if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) ASOF = q; } catch (e) {}
+// Market cap at the price on screen — the same re-pricing stock.html does: the baked mcap scaled
+// from the price it was struck at (CORE_META.latest) to this one, share count held constant.
+function mcapAt(sym, price) {
+  const cm = (typeof CORE_META !== 'undefined' && CORE_META) ? (CORE_META[sym + '.NS'] || CORE_META[sym]) : null;
+  if (!cm || !(cm.mcap > 0)) return null;
+  return (cm.latest > 0 && price > 0) ? cm.mcap / cm.latest * price : cm.mcap;
+}
+const fmtCr = v => v == null || !isFinite(v) ? '' : v >= 100000 ? '₹' + (v / 100000).toFixed(2) + 'L Cr' : '₹' + Math.round(v).toLocaleString('en-IN') + ' Cr';
 const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
 /* factor columns for each pick (user 2026-09-22): the sort field + every filter field, each pick's
    value shown, in sort order — the same columns the terminal buy-side shows, so you see WHY a
@@ -550,6 +560,10 @@ function renderStats() {
   const rows = visible();
   const held = new Map();
   rows.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
+  // The all-qualifying strip lists the baskets screened at each strategy's LAST REBALANCE (what it
+  // holds), not the live picks; px = the price each is shown at, for its market cap.
+  const atReb = new Map(), px = new Map();
+  rows.forEach(r => r.held.forEach(h => { atReb.set(h.sym, (atReb.get(h.sym) || 0) + 1); if (h.live != null) px.set(h.sym, h.live); }));
   // Ties (common once you're 5 deep) break alphabetically so the list is deterministic
   // rather than riding on whatever order rows happened to be visited in.
   const top5 = [...held.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5);
@@ -575,6 +589,16 @@ function renderStats() {
     <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0">Most picked</span>
     ${top5.map(([sym, n], i) => `<a href="./stock.html?sym=${encodeURIComponent(sym)}" class="tick hover:border-indigo-300 hover:text-indigo-600"
         title="Picked by ${n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} ${ASOF ? 'on ' + ASOF : 'right now'}"><span class="opacity-60">#${i + 1}</span><b>${esc(sym)}</b><em>${n} strateg${n > 1 ? 'ies' : 'y'}</em></a>`).join('')}`;
+
+  // Every stock any strategy on screen screened in at its last rebalance, once each, biggest company
+  // first, with its market cap (re-priced to the price on screen) in brackets. No cap on file → last, "—".
+  const allQ = [...atReb.keys()].map(sym => ({ sym, n: atReb.get(sym), mc: mcapAt(sym, px.get(sym)) }))
+    .sort((a, b) => (b.mc == null ? -1 : b.mc) - (a.mc == null ? -1 : a.mc) || a.sym.localeCompare(b.sym));
+  $('allQual').classList.toggle('hidden', !allQ.length);
+  $('allQual').innerHTML = !allQ.length ? '' : `
+    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0" title="Every stock the strategies on screen qualified for at their last rebalance${ASOF ? ' before ' + esc(ASOF) : ''} — what they hold — biggest market cap first; market cap at the ${ASOF ? esc(ASOF) + ' close' : 'live price'}">All qualifying at rebalance · ${allQ.length}</span>
+    ${allQ.map(q => `<a href="./stock.html?sym=${encodeURIComponent(q.sym)}" class="tick hover:border-indigo-300 hover:text-indigo-600"
+        title="Held by ${q.n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} since its last rebalance · market cap at ${px.has(q.sym) ? '₹' + f2(px.get(q.sym)) : 'the last close'}"><b>${esc(q.sym)}</b><u>(${q.mc == null ? '—' : fmtCr(q.mc)})</u></a>`).join('')}`;
 }
 
 function renderCards() {
