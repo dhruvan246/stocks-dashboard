@@ -111,7 +111,7 @@
    "kind": "ip",
    "date": "2024-07-19",
    "title": "Q1 FY25 Investor Presentation",
-   "read": "2026-10-21",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "442deaa5-d5fe-47a0-a4eb-a9af327b4e9b.pdf": {
@@ -146,7 +146,7 @@
    "kind": "ip",
    "date": "2024-10-21",
    "title": "Q2 FY25 Investor Presentation",
-   "read": "2026-10-21",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "8fd4126b-42ed-41bc-ad92-5d65e4c41cf2.pdf": {
@@ -181,7 +181,7 @@
    "kind": "ip",
    "date": "2024-04-29",
    "title": "Q4 FY24 Investor Presentation",
-   "read": "2026-10-21",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "a575959a-f318-4917-bbc8-88bc8aefdcc6.pdf": {
@@ -195,14 +195,14 @@
    "kind": "ip",
    "date": "2026-10-19",
    "title": "Q2 FY27 Investor Presentation",
-   "read": "2026-10-21",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "b18f5358-fe22-4864-b178-75717be42c6c.pdf": {
    "kind": "ip",
    "date": "2025-01-23",
    "title": "Q3 FY25 Investor Presentation",
-   "read": "2026-10-21",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "bbc7d679-8def-4fb3-af44-78487b80b27a.pdf": {
@@ -2947,7 +2947,7 @@
     "q:20260930": [
      "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
      9,
-     "Q2FY27 Operational performance - Clinker Conversion Ratio",
+     "Clinker Conversion Ratio",
      "1.48"
     ],
     "q:20241231": [
@@ -2985,6 +2985,7 @@
     "20190331": 85.0,
     "20200331": 103.0,
     "20220331": 167.0,
+    "20230331": 210.0,
     "20240331": 278.0
    },
    "q": {
@@ -3068,7 +3069,7 @@
     "q:20260930": [
      "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
      9,
-     "Q2FY27 Operational performance - WHRS capacity",
+     "WHRS capacity",
      "444"
     ],
     "q:20241231": [
@@ -3082,6 +3083,12 @@
      10,
      "Green Power Capacity [MW] WHRS : 167 (FY22 Performance)",
      "167"
+    ],
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "WHRS (MW)",
+     "210"
     ]
    },
    "latest": {
@@ -3762,6 +3769,366 @@
    ]
   },
   {
+   "name": "Domestic Grey Cement Fuel Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 1295.0,
+    "20230630": 1208.0,
+    "20230930": 1123.0,
+    "20231231": 1052.0,
+    "20240331": 1025.0,
+    "20240630": 1003.0,
+    "20240930": 938.0,
+    "20241231": 883.0
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Fuel cost (₹/Mt)",
+     "1208"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel cost (₹/Mt)",
+     "1025"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Fuel cost (₹/Mt)",
+     "1003"
+    ],
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     26,
+     "Fuel cost (₹/Mt)",
+     "1123"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     26,
+     "Fuel cost (₹/Mt)",
+     "938"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel cost (₹/Mt)",
+     "1295"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel cost (₹/Mt)",
+     "1052"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     32,
+     "Fuel cost (₹/Mt)",
+     "883"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-10-21",
+    "q:20240331": "2024-07-19",
+    "q:20231231": "2025-01-23",
+    "q:20240930": "2025-01-23"
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Logistics Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 1251.0,
+    "20230630": 1264.0,
+    "20230930": 1219.0,
+    "20231231": 1221.0,
+    "20240331": 1226.0,
+    "20240630": 1198.0,
+    "20240930": 1191.0,
+    "20241231": 1161.0
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     24,
+     "Logistics cost (₹/Mt)",
+     "1264"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Logistics cost (₹/Mt)",
+     "1226"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     24,
+     "Logistics cost (₹/Mt)",
+     "1198"
+    ],
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     25,
+     "Logistics cost (₹/Mt)",
+     "1219"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     25,
+     "Logistics cost (₹/Mt)",
+     "1191"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Logistics cost (₹/Mt)",
+     "1251"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Logistics cost (₹/Mt)",
+     "1221"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     31,
+     "Logistics cost (₹/Mt)",
+     "1161"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-10-21",
+    "q:20240331": "2024-07-19",
+    "q:20231231": "2025-01-23",
+    "q:20240930": "2025-01-23"
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Other Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 624.0,
+    "20230630": 683.0,
+    "20230930": 862.0,
+    "20231231": 849.0,
+    "20240331": 649.0,
+    "20240630": 755.0,
+    "20240930": 858.0,
+    "20241231": 784.0
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     28,
+     "Other cost (₹/Mt)",
+     "683"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     33,
+     "Other cost (₹/Mt)",
+     "649"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     28,
+     "Other cost (₹/Mt)",
+     "755"
+    ],
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     29,
+     "Other cost (₹/Mt)",
+     "862"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     29,
+     "Other cost (₹/Mt)",
+     "858"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     33,
+     "Other cost (₹/Mt)",
+     "624"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     33,
+     "Other cost (₹/Mt)",
+     "849"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     35,
+     "Other cost (₹/Mt)",
+     "784"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-10-21",
+    "q:20240331": "2024-07-19",
+    "q:20231231": "2025-01-23",
+    "q:20240930": "2025-01-23"
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Power Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 402.0,
+    "20230630": 413.0,
+    "20230930": 431.0,
+    "20231231": 424.0,
+    "20240331": 395.0,
+    "20240630": 383.0,
+    "20240930": 400.0,
+    "20241231": 402.0
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     26,
+     "Power cost (₹/Mt)",
+     "413"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     30,
+     "Power cost (₹/Mt)",
+     "395"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     26,
+     "Power cost (₹/Mt)",
+     "383"
+    ],
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     27,
+     "Power cost (₹/Mt)",
+     "431"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     27,
+     "Power cost (₹/Mt)",
+     "400"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     30,
+     "Power cost (₹/Mt)",
+     "402"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     30,
+     "Power cost (₹/Mt)",
+     "424"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     33,
+     "Power cost (₹/Mt)",
+     "402"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-10-21",
+    "q:20240331": "2024-07-19",
+    "q:20231231": "2025-01-23",
+    "q:20240930": "2025-01-23"
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Raw Material Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 604.0,
+    "20230630": 610.0,
+    "20230930": 634.0,
+    "20231231": 631.0,
+    "20240331": 601.0,
+    "20240630": 619.0,
+    "20240930": 640.0,
+    "20241231": 633.0
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     27,
+     "Raw Material cost (₹/Mt)",
+     "610"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     31,
+     "Raw Material cost (₹/Mt)",
+     "601"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     27,
+     "Raw Material cost (₹/Mt)",
+     "619"
+    ],
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     28,
+     "Raw Material cost (₹/Mt)",
+     "634"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     28,
+     "Raw Material cost (₹/Mt)",
+     "640"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     31,
+     "Raw Material cost (₹/Mt)",
+     "604"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     31,
+     "Raw Material cost (₹/Mt)",
+     "631"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     34,
+     "Raw Material cost (₹/Mt)",
+     "633"
+    ]
+   },
+   "latest": {
+    "q:20240630": "2024-10-21",
+    "q:20240331": "2024-07-19",
+    "q:20231231": "2025-01-23",
+    "q:20240930": "2025-01-23"
+   }
+  },
+  {
    "name": "Domestic Sales Volume - India Operations",
    "unit": "Million tons",
    "kind": "flow",
@@ -3829,6 +4196,75 @@
    },
    "latest": {
     "q:20191231": "2021-01-23"
+   }
+  },
+  {
+   "name": "Grey Cement Lead Distance",
+   "unit": "kms",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 413.0,
+    "20230930": 403.0,
+    "20231231": 397.0,
+    "20240331": 400.0,
+    "20240630": 385.0,
+    "20240930": 388.0,
+    "20241231": 377.0,
+    "20260930": 358.0
+   },
+   "src": {
+    "q:20230930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     25,
+     "Lead distance",
+     "403"
+    ],
+    "q:20240630": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     25,
+     "Lead distance",
+     "385"
+    ],
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     25,
+     "Lead distance",
+     "388"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Lead distance",
+     "413"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Lead distance",
+     "397"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     28,
+     "Lead distance",
+     "400"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     9,
+     "Lead distance",
+     "358"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     31,
+     "Lead distance",
+     "377"
+    ]
+   },
+   "latest": {
+    "q:20231231": "2025-01-23"
    }
   },
   {
@@ -4154,6 +4590,61 @@
    }
   },
   {
+   "name": "Fuel Rate",
+   "unit": "₹/Kcal",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20210630": 1.34,
+    "20230331": 2.51,
+    "20230630": 2.35,
+    "20231231": 2.05,
+    "20240331": 2.03,
+    "20240630": 2.0
+   },
+   "src": {
+    "q:20210630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Fuel Rate : ₹ /Kcal",
+     "1.34"
+    ],
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Fuel Rate : ₹ /Kcal",
+     "2.35"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel Rate : ₹ /Kcal",
+     "2.03"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Fuel Rate : ₹ /Kcal",
+     "2.00"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel Rate : ₹ /Kcal",
+     "2.51"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Fuel Rate : ₹ /Kcal",
+     "2.05"
+    ]
+   },
+   "latest": {
+    "q:20240331": "2024-07-19"
+   }
+  },
+  {
    "name": "Overseas Sales Volume (Grey + White)",
    "unit": "Million tons",
    "kind": "flow",
@@ -4380,6 +4871,106 @@
    }
   },
   {
+   "name": "Pet Coke Consumption Mix",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 52.0,
+    "20231231": 44.0,
+    "20240331": 36.0,
+    "20240630": 37.0
+   },
+   "src": {
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     25,
+     "Pet coke consumption mix (doc period)",
+     "37"
+    ],
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Pet coke consumption",
+     "52"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Pet coke consumption",
+     "44"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     29,
+     "Pet coke consumption",
+     "36"
+    ]
+   }
+  },
+  {
+   "name": "Alternative Fuel Rate",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20140331": 1.8,
+    "20230331": 5.4,
+    "20240331": 5.4
+   },
+   "q": {},
+   "src": {
+    "y:20140331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "AFR %",
+     "1.8"
+    ],
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "AFR %",
+     "5.4"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "AFR %",
+     "5.4"
+    ]
+   }
+  },
+  {
+   "name": "Alternative Fuel Volume",
+   "unit": "LMT",
+   "kind": "flow",
+   "y": {
+    "20140331": 1.1,
+    "20230331": 10.5,
+    "20240331": 15.9
+   },
+   "q": {},
+   "src": {
+    "y:20140331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "Volume (LMT)",
+     "1.1"
+    ],
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "Volume (LMT)",
+     "10.5"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "Volume (LMT)",
+     "15.9"
+    ]
+   }
+  },
+  {
    "name": "Cement Production - Grey Cement (India)",
    "unit": "MMT",
    "kind": "flow",
@@ -4442,6 +5033,223 @@
    }
   },
   {
+   "name": "Clinker to Cement Conversion",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 69.7,
+    "20240331": 69.5,
+    "20240630": 68.3
+   },
+   "src": {
+    "q:20230630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     14,
+     "Clinker to cement conversion",
+     "69.7"
+    ],
+    "q:20240331": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     14,
+     "Clinker to cement conversion",
+     "69.5"
+    ],
+    "q:20240630": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     14,
+     "Clinker to cement conversion",
+     "68.3"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Employee Cost",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20230331": 226.0,
+    "20231231": 283.0,
+    "20240331": 212.0
+   },
+   "src": {
+    "q:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     32,
+     "Employee cost (₹/Mt)",
+     "226"
+    ],
+    "q:20231231": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     32,
+     "Employee cost (₹/Mt)",
+     "283"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     32,
+     "Employee cost (₹/Mt)",
+     "212"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Fuel Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 901.0,
+    "20260630": 918.0,
+    "20260930": 1030.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     25,
+     "Fuel cost (Rs./t)",
+     "901"
+    ],
+    "q:20260630": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     25,
+     "Fuel cost (Rs./t)",
+     "918"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     25,
+     "Fuel cost (Rs./t)",
+     "1,030"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Logistics Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 1134.0,
+    "20260630": 1151.0,
+    "20260930": 1136.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     24,
+     "Logistics cost (Rs./t)",
+     "1,134"
+    ],
+    "q:20260630": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     24,
+     "Logistics cost (Rs./t)",
+     "1,151"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     24,
+     "Logistics cost (Rs./t)",
+     "1,136"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Other Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 738.0,
+    "20260630": 543.0,
+    "20260930": 692.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     29,
+     "Other costs (Rs./t)",
+     "738"
+    ],
+    "q:20260630": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     29,
+     "Other costs (Rs./t)",
+     "543"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     29,
+     "Other costs (Rs./t)",
+     "692"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Packing Bag Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 166.0,
+    "20260630": 232.0,
+    "20260930": 216.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     28,
+     "Packing bag cost (Rs./t)",
+     "166"
+    ],
+    "q:20260630": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     28,
+     "Packing bag cost (Rs./t)",
+     "232"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     28,
+     "Packing bag cost (Rs./t)",
+     "216"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Raw Material Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 677.0,
+    "20260630": 697.0,
+    "20260930": 718.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     27,
+     "Raw material cost (Rs./t)",
+     "677"
+    ],
+    "q:20260630": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     27,
+     "Raw material cost (Rs./t)",
+     "697"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     27,
+     "Raw material cost (Rs./t)",
+     "718"
+    ]
+   }
+  },
+  {
    "name": "Power Consumption per Tonne of Cement",
    "unit": "kWh/t",
    "kind": "flow",
@@ -4469,6 +5277,99 @@
      16,
      "Power Consumption/t of Cement",
      "73.9"
+    ]
+   }
+  },
+  {
+   "name": "Premium Product Mix",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 23.9,
+    "20240930": 23.4,
+    "20241231": 26.5
+   },
+   "src": {
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     9,
+     "Premium product mix",
+     "23.4"
+    ],
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     8,
+     "Premium product mix",
+     "23.9"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     8,
+     "Premium product mix",
+     "26.5"
+    ]
+   }
+  },
+  {
+   "name": "RE Power Mix",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20140331": 0.2,
+    "20230331": 5.3,
+    "20240331": 7.2
+   },
+   "q": {},
+   "src": {
+    "y:20140331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "RE Power %",
+     "0.2"
+    ],
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "RE Power %",
+     "5.3"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "RE Power %",
+     "7.2"
+    ]
+   }
+  },
+  {
+   "name": "RMC ROCE",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 40.0,
+    "20241231": 40.0,
+    "20260930": 34.0
+   },
+   "src": {
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     12,
+     "ROCE%",
+     "40"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     12,
+     "RoCE",
+     "34"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     9,
+     "ROCE%",
+     "40"
     ]
    }
   },
@@ -4597,6 +5498,37 @@
    }
   },
   {
+   "name": "Scope 1 Net CO2 Emission",
+   "unit": "kg CO2/t cement",
+   "kind": "flow",
+   "y": {
+    "20060331": 759.0,
+    "20170331": 632.0,
+    "20240331": 556.0
+   },
+   "q": {},
+   "src": {
+    "y:20060331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     14,
+     "Scope 1 Net CO2 Emission",
+     "759"
+    ],
+    "y:20170331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     14,
+     "Scope 1 Net CO2 Emission",
+     "632"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     14,
+     "Scope 1 Net CO2 Emission",
+     "556"
+    ]
+   }
+  },
+  {
    "name": "Thermal Substitution Rate",
    "unit": "%",
    "kind": "flow",
@@ -4659,6 +5591,37 @@
    }
   },
   {
+   "name": "WHRS Power Mix",
+   "unit": "%",
+   "kind": "level",
+   "y": {
+    "20140331": 0.3,
+    "20230331": 14.3,
+    "20240331": 16.4
+   },
+   "q": {},
+   "src": {
+    "y:20140331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "WHRS %",
+     "0.3"
+    ],
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "WHRS %",
+     "14.3"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "WHRS %",
+     "16.4"
+    ]
+   }
+  },
+  {
    "name": "Blended Cement Share",
    "unit": "%",
    "kind": "flow",
@@ -4683,6 +5646,78 @@
    }
   },
   {
+   "name": "Captive Thermal Power Mix",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 36.8,
+    "20260930": 31.4
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Captive Thermal Power power mix",
+     "36.8"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Captive Thermal Power power mix",
+     "31.4"
+    ]
+   }
+  },
+  {
+   "name": "Captive Thermal Power Rate",
+   "unit": "₹/kWh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 6.9,
+    "20260930": 6.01
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Captive Thermal Power rate (Rs./kWh)",
+     "6.90"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Captive Thermal Power rate (Rs./kWh)",
+     "6.01"
+    ]
+   }
+  },
+  {
+   "name": "Carbon Intensity per Net Sales",
+   "unit": "tCO2 /Net Sales (INR Mln",
+   "kind": "flow",
+   "y": {
+    "20170331": 168.2,
+    "20240331": 116.6
+   },
+   "q": {},
+   "src": {
+    "y:20170331": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     15,
+     "tCO2 /Net Sales (INR Mln)",
+     "168.2"
+    ],
+    "y:20240331": [
+     "41a63293-386c-4ce9-b35e-ef04990ea7cb.pdf",
+     15,
+     "tCO2 /Net Sales (INR Mln)",
+     "116.6"
+    ]
+   }
+  },
+  {
    "name": "Consolidated Sales Volumes",
    "unit": "mtpa",
    "kind": "flow",
@@ -4703,6 +5738,78 @@
      9,
      "Consolidated Sales Volumes*",
      "33.85"
+    ]
+   }
+  },
+  {
+   "name": "Domestic Grey Cement Power Cost (incl. ICL)",
+   "unit": "₹/Mt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 382.0,
+    "20260930": 337.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Power cost (Rs./t)",
+     "382"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Power cost (Rs./t)",
+     "337"
+    ]
+   }
+  },
+  {
+   "name": "Grey Cement Power Consumed (incl. ICL)",
+   "unit": "kWh/t cement",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 71.97,
+    "20260930": 70.6
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Total power consumed (kWh/t of cement)",
+     "71.97"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Total power consumed (kWh/t of cement)",
+     "70.60"
+    ]
+   }
+  },
+  {
+   "name": "Grey Cement Power Cost (incl. ICL)",
+   "unit": "₹/kWh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 5.31,
+    "20260930": 4.77
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Power cost (Rs./kWh)",
+     "5.31"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Power cost (Rs./kWh)",
+     "4.77"
     ]
    }
   },
@@ -4804,6 +5911,30 @@
    }
   },
   {
+   "name": "RE Power Capacity",
+   "unit": "MW",
+   "kind": "level",
+   "y": {
+    "20230331": 345.0,
+    "20240331": 612.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "RE Power (MW)",
+     "345"
+    ],
+    "y:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     13,
+     "RE Power (MW)",
+     "612"
+    ]
+   }
+  },
+  {
    "name": "RMC Cement Consumed",
    "unit": "Mnt",
    "kind": "flow",
@@ -4846,6 +5977,54 @@
    ]
   },
   {
+   "name": "Renewable Energy Power Mix",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 21.1,
+    "20260930": 25.1
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Renewable Energy Power power mix",
+     "21.1"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Renewable Energy Power power mix",
+     "25.1"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Energy Power Rate",
+   "unit": "₹/kWh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 4.61,
+    "20260930": 4.78
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Renewable Energy Power rate (Rs./kWh)",
+     "4.61"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Renewable Energy Power rate (Rs./kWh)",
+     "4.78"
+    ]
+   }
+  },
+  {
    "name": "Sales Volume - White Cement",
    "unit": "mtpa",
    "kind": "flow",
@@ -4870,6 +6049,126 @@
    }
   },
   {
+   "name": "State Grid and Others Power Mix",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 24.1,
+    "20260930": 21.5
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "State Grid and Others Power power mix",
+     "24.1"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "State Grid and Others Power power mix",
+     "21.5"
+    ]
+   }
+  },
+  {
+   "name": "State Grid and Others Power Rate",
+   "unit": "₹/kWh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 6.84,
+    "20260930": 7.1
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "State Grid and Others Power rate (Rs./kWh)",
+     "6.84"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "State Grid and Others Power rate (Rs./kWh)",
+     "7.10"
+    ]
+   }
+  },
+  {
+   "name": "UBS Share of Domestic Grey Sales Volume",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240930": 19.4,
+    "20241231": 19.5
+   },
+   "src": {
+    "q:20240930": [
+     "86d34116-6640-48a2-90e6-d4b70d2400bf.pdf",
+     9,
+     "UBS outlets contributing % of domestic grey sales volume",
+     "19.4"
+    ],
+    "q:20241231": [
+     "b18f5358-fe22-4864-b178-75717be42c6c.pdf",
+     8,
+     "UBS outlets contributing % of domestic grey sales volume",
+     "19.5"
+    ]
+   }
+  },
+  {
+   "name": "Waste Heat Recovery Power Mix",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 18.0,
+    "20260930": 22.0
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Waste Heat Recovery Power power mix",
+     "18.0"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Waste Heat Recovery Power power mix",
+     "22.0"
+    ]
+   }
+  },
+  {
+   "name": "Waste Heat Recovery Power Rate",
+   "unit": "₹/kWh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20250930": 0.81,
+    "20260930": 0.72
+   },
+   "src": {
+    "q:20250930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Waste Heat Recovery Power rate (Rs./kWh)",
+     "0.81"
+    ],
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     26,
+     "Waste Heat Recovery Power rate (Rs./kWh)",
+     "0.72"
+    ]
+   }
+  },
+  {
    "name": "Alternative Fuel Share",
    "unit": "%",
    "kind": "flow",
@@ -4883,6 +6182,23 @@
      7,
      "Q1 Highlights - Alternative Fuel",
      "5.5"
+    ]
+   }
+  },
+  {
+   "name": "Bag Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 78.8
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Bag (Q2FY27 Sales performance)",
+     "78.8"
     ]
    }
   },
@@ -4904,6 +6220,91 @@
    }
   },
   {
+   "name": "Bulk Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 21.2
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Bulk (Q2FY27 Sales performance)",
+     "21.2"
+    ]
+   }
+  },
+  {
+   "name": "Depot Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 39.2
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Depot (Q2FY27 Sales performance)",
+     "39.2"
+    ]
+   }
+  },
+  {
+   "name": "Direct Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 60.8
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Direct (Q2FY27 Sales performance)",
+     "60.8"
+    ]
+   }
+  },
+  {
+   "name": "Grey Cement Capacity Commissioned",
+   "unit": "mtpa",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 4.6
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     9,
+     "Grey Cement capacity commissioned",
+     "4.6"
+    ]
+   }
+  },
+  {
+   "name": "Non-Trade Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 34.9
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Non-Trade (Q2FY27 Sales performance)",
+     "34.9"
+    ]
+   }
+  },
+  {
    "name": "Number of Manufacturing Plants",
    "unit": "count",
    "kind": "level",
@@ -4917,6 +6318,74 @@
      67,
      "Plants across India (doc period)",
      "75"
+    ]
+   }
+  },
+  {
+   "name": "Rail Dispatch Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 21.0
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Rail (Q2FY27 Sales performance)",
+     "21.0"
+    ]
+   }
+  },
+  {
+   "name": "Renewable Power Capacity",
+   "unit": "GW",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 1.58
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     9,
+     "Renewable Power capacity",
+     "1.58"
+    ]
+   }
+  },
+  {
+   "name": "Road Dispatch Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 77.0
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Road (Q2FY27 Sales performance)",
+     "77.0"
+    ]
+   }
+  },
+  {
+   "name": "Sea Dispatch Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 2.0
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Sea (Q2FY27 Sales performance)",
+     "2.0"
     ]
    }
   },
@@ -4968,6 +6437,57 @@
      129,
      "total headcount for permanent workforce (doc period)",
      "28,399"
+    ]
+   }
+  },
+  {
+   "name": "Trade Sales Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20260930": 65.1
+   },
+   "src": {
+    "q:20260930": [
+     "abada049-22e4-4ac0-8c18-1ff1787555a7.pdf",
+     11,
+     "Trade (Q2FY27 Sales performance)",
+     "65.1"
+    ]
+   }
+  },
+  {
+   "name": "UBS Cement Sales",
+   "unit": "Mnt",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240331": 6.2
+   },
+   "src": {
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     8,
+     "UBS outlets: 6.2 Mnt of cement sales",
+     "6.2"
+    ]
+   }
+  },
+  {
+   "name": "UBS Share of Trade Sales",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 28.0
+   },
+   "src": {
+    "q:20240331": [
+     "99b8f9ca-8e56-4b1f-a79b-8c7d6820a341.pdf",
+     8,
+     "UBS contributing % of trade sales",
+     "28"
     ]
    }
   }
@@ -5365,5 +6885,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-31"
+ "updated": "2026-11-03"
 }

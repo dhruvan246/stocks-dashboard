@@ -90,28 +90,28 @@
    "kind": "ip",
    "date": "2022-05-06",
    "title": "Q4 FY22 Investor Presentation",
-   "read": "2026-10-20",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "4356323c-eaab-4518-bfcd-60795c080fe5.pdf": {
    "kind": "ip",
    "date": "2022-11-08",
    "title": "Q2 FY23 Investor Presentation",
-   "read": "2026-10-20",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "a2d5e9cf-91bb-4ae8-bdbd-9416e8ec9fd8.pdf": {
    "kind": "ip",
    "date": "2023-01-30",
    "title": "Q3 FY23 Investor Presentation",
-   "read": "2026-10-20",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf": {
    "kind": "ip",
    "date": "2022-07-22",
    "title": "Q1 FY23 Investor Presentation",
-   "read": "2026-10-20",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "c5d4583c-9458-4bce-bd64-9d116931164c.pdf": {
@@ -132,7 +132,7 @@
    "kind": "ip",
    "date": "2022-01-24",
    "title": "Q3 FY22 Investor Presentation",
-   "read": "2026-10-20",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "e4c49c90-70f5-4a26-a44b-a485a8013b44.pdf": {
@@ -3186,9 +3186,13 @@
    "name": "Plywood Annual Capacity",
    "unit": "Mn Sqm",
    "kind": "level",
-   "y": {},
+   "y": {
+    "20210331": 10.5,
+    "20220331": 10.5
+   },
    "q": {
     "20201231": 10.5,
+    "20210331": 10.5,
     "20210930": 10.5,
     "20211231": 10.5,
     "20220331": 10.5,
@@ -3262,8 +3266,8 @@
      "10.50"
     ],
     "q:20220331": [
-     "886b9c3d-17a9-4ef6-8bca-e6d6b05406f3.pdf",
-     11,
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     13,
      "Annual Capacity (Mn Sqm)",
      "10.50"
     ],
@@ -3308,6 +3312,24 @@
      12,
      "Annual Capacity (Mn Sqm)",
      "10.50"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     13,
+     "Annual Capacity (Mn Sqm)",
+     "10.50"
+    ],
+    "y:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     14,
+     "Annual Capacity (Mn Sqm)",
+     "10.50"
+    ],
+    "y:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     14,
+     "Annual Capacity (Mn Sqm)",
+     "10.50"
     ]
    },
    "latest": {
@@ -3317,7 +3339,84 @@
     "q:20230331": "2024-05-01",
     "q:20231231": "2025-02-06",
     "q:20240630": "2025-07-30",
-    "q:20220930": "2023-11-01"
+    "q:20220930": "2023-11-01",
+    "q:20220331": "2023-05-06"
+   }
+  },
+  {
+   "name": "Inventory Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20201231": 60.0,
+    "20210331": 54.0,
+    "20210630": 52.0,
+    "20210930": 36.0,
+    "20211231": 35.0,
+    "20220331": 38.0,
+    "20220630": 36.0,
+    "20220930": 39.0,
+    "20221231": 38.0
+   },
+   "src": {
+    "q:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "38"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "54"
+    ],
+    "q:20220930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "39"
+    ],
+    "q:20210930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "36"
+    ],
+    "q:20221231": [
+     "a2d5e9cf-91bb-4ae8-bdbd-9416e8ec9fd8.pdf",
+     25,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "38"
+    ],
+    "q:20220630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "36"
+    ],
+    "q:20210630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     20,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "52"
+    ],
+    "q:20211231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     18,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "35"
+    ],
+    "q:20201231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     18,
+     "Days, Total Inventory expressed in days of turnover equivalent",
+     "60"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2023-01-30"
    }
   },
   {
@@ -3397,6 +3496,286 @@
    }
   },
   {
+   "name": "Payable Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20201231": 52.0,
+    "20210331": 47.0,
+    "20210630": 39.0,
+    "20210930": 33.0,
+    "20211231": 30.0,
+    "20220331": 32.0,
+    "20220630": 28.0,
+    "20220930": 24.0,
+    "20221231": 22.0
+   },
+   "src": {
+    "q:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "32"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "47"
+    ],
+    "q:20220930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "24"
+    ],
+    "q:20210930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "33"
+    ],
+    "q:20221231": [
+     "a2d5e9cf-91bb-4ae8-bdbd-9416e8ec9fd8.pdf",
+     26,
+     "Days, payables expressed in days of turnover equivalent",
+     "22"
+    ],
+    "q:20220630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "28"
+    ],
+    "q:20210630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     21,
+     "Days, payables expressed in days of turnover equivalent",
+     "39"
+    ],
+    "q:20211231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     19,
+     "Days, payables expressed in days of turnover equivalent",
+     "30"
+    ],
+    "q:20201231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     19,
+     "Days, payables expressed in days of turnover equivalent",
+     "52"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2023-01-30"
+   }
+  },
+  {
+   "name": "Receivable Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20201231": 25.0,
+    "20210331": 28.0,
+    "20210630": 21.0,
+    "20210930": 11.0,
+    "20211231": 8.0,
+    "20220331": 10.0,
+    "20220630": 8.0,
+    "20220930": 9.0,
+    "20221231": 7.0
+   },
+   "src": {
+    "q:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     21,
+     "Days, receivables expressed in days of turnover equivalent",
+     "10"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     21,
+     "Days, receivables expressed in days of turnover equivalent",
+     "28"
+    ],
+    "q:20220930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, receivables expressed in days of turnover equivalent",
+     "9"
+    ],
+    "q:20210930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, receivables expressed in days of turnover equivalent",
+     "11"
+    ],
+    "q:20221231": [
+     "a2d5e9cf-91bb-4ae8-bdbd-9416e8ec9fd8.pdf",
+     25,
+     "Days, receivables expressed in days of turnover equivalent",
+     "7"
+    ],
+    "q:20220630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     21,
+     "Days, receivables expressed in days of turnover equivalent",
+     "8"
+    ],
+    "q:20210630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     21,
+     "Days, receivables expressed in days of turnover equivalent",
+     "21"
+    ],
+    "q:20211231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     19,
+     "Days, receivables expressed in days of turnover equivalent",
+     "8"
+    ],
+    "q:20201231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     19,
+     "Days, receivables expressed in days of turnover equivalent",
+     "25"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2023-01-30"
+   }
+  },
+  {
+   "name": "Working Capital Cycle",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20201231": 33.0,
+    "20210331": 35.0,
+    "20210630": 34.0,
+    "20210930": 14.0,
+    "20211231": 13.0,
+    "20220331": 16.0,
+    "20220630": 16.0,
+    "20220930": 24.0,
+    "20221231": 23.0
+   },
+   "src": {
+    "q:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "16"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "35"
+    ],
+    "q:20220930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "24"
+    ],
+    "q:20210930": [
+     "4356323c-eaab-4518-bfcd-60795c080fe5.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "14"
+    ],
+    "q:20221231": [
+     "a2d5e9cf-91bb-4ae8-bdbd-9416e8ec9fd8.pdf",
+     25,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "23"
+    ],
+    "q:20220630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "16"
+    ],
+    "q:20210630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     20,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "34"
+    ],
+    "q:20211231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     18,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "13"
+    ],
+    "q:20201231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     18,
+     "Days, working capital cycle from resource purchase to sales receipt",
+     "33"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2023-01-30"
+   }
+  },
+  {
+   "name": "Plywood Decorative Veneer Share",
+   "unit": "%",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20201231": 7.0,
+    "20210331": 11.0,
+    "20210630": 8.0,
+    "20211231": 12.0,
+    "20220331": 13.0,
+    "20220630": 12.0
+   },
+   "src": {
+    "q:20211231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     21,
+     "decorative veneers (plywood business)",
+     "12"
+    ],
+    "q:20201231": [
+     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
+     21,
+     "decorative veneers (plywood business)",
+     "7"
+    ],
+    "q:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     23,
+     "of revenues derived from decorative veneers (plywood business)",
+     "11"
+    ],
+    "q:20210630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     23,
+     "of revenues derived from decorative veneers (plywood business)",
+     "8"
+    ],
+    "q:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     23,
+     "of revenues derived from decorative veneers (plywood business)",
+     "13"
+    ],
+    "q:20220630": [
+     "b4d0d647-f0ae-42f4-b538-9560ff768817.pdf",
+     23,
+     "of revenues derived from decorative veneers (plywood business)",
+     "12"
+    ]
+   }
+  },
+  {
    "name": "Employees",
    "unit": "count",
    "kind": "level",
@@ -3445,6 +3824,42 @@
     "q:20230331": "2024-01-31",
     "q:20240331": "2025-02-06",
     "q:20220331": "2023-01-30"
+   }
+  },
+  {
+   "name": "Number of Shareholders",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20200331": 19091.0,
+    "20210331": 19607.0,
+    "20220331": 63467.0
+   },
+   "q": {},
+   "src": {
+    "y:20200331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     44,
+     "Number of Shareholders",
+     "19,091"
+    ],
+    "y:20210331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     44,
+     "Number of Shareholders",
+     "19,607"
+    ],
+    "y:20220331": [
+     "23ab3659-dc49-48e2-9836-b8e009ca339b.pdf",
+     44,
+     "Number of Shareholders",
+     "63,467"
+    ]
+   },
+   "latest": {
+    "y:20200331": "2023-01-30",
+    "y:20210331": "2023-01-30",
+    "y:20220331": "2023-01-30"
    }
   },
   {
@@ -3509,32 +3924,18 @@
      "52"
     ]
    }
-  },
-  {
-   "name": "Plywood Decorative Veneer Share",
-   "unit": "%",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20201231": 7.0,
-    "20211231": 12.0
-   },
-   "src": {
-    "q:20211231": [
-     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
-     21,
-     "decorative veneers (plywood business)",
-     "12"
-    ],
-    "q:20201231": [
-     "e371ab60-85d2-409b-b707-f599918ef21d.pdf",
-     21,
-     "decorative veneers (plywood business)",
-     "7"
-    ]
-   }
   }
  ],
  "held": [],
- "updated": "2026-10-31"
+ "updated": "2026-11-04",
+ "fixed": [
+  [
+   "row",
+   "Decorative Veneer Share of Revenue",
+   "Plywood Decorative Veneer Share",
+   "merge",
+   "same label \"of revenues derived from decorative veneers (plywood business)\" on e371ab60 p21; duplicate row merged, no clashes",
+   "2026-11-03"
+  ]
+ ]
 }
