@@ -29260,3 +29260,37 @@ PVRINOX Dec-18, STLTECH Jun-15, GPPL Sep-18, JKTYRE Mar-13, BALLARPUR Jun-16, AS
 
 **Announce dates of these fills (added 2-Nov):** `backfill_ipo_bases.py --reapply` sets ann = max(SEBI deadline, listing date in docs/ipos.json) on `via: ipo_fin` cells only (§99 rule). The deadline alone dated JPL's Jun-25 quarter 14-Aug-25, 14 months before it listed. A migrating SME's listing date is its new-board date, which is when that prospectus printed the figure.
 
+
+## §233 — Market cap ON a past date: per-quarter exact caps for the All Picks rewind (2026-11-03, user: "Yes, use that day's")
+
+**Ask.** All Picks' "All qualifying at rebalance" strip showed a rewound date's cap as that day's price × TODAY's share count.
+The user asked for the cap on the shares outstanding on that date.
+
+**File.** `scripts/build_hist_mcap.py` → `docs/hist_mcap.json` `{_meta, chk:[SYM…], rows:{SYM:[[yyyymmdd, ₹Cr], …]}}` — one row per
+quarter-end = `shares_history.json` shares (§180) × NSE bhavcopy RAW close on the quarter's last trading day / 1e7. Raw, never
+adjusted: the share count is the count filed then (RELIANCE Mar-2023 676.6 cr, before the 2024 bonus). Inputs on the Mac:
+`~/stocks-cache/fii_mcap_threshold/nse_full_bhav/YYYYMMDD.zip` (2020Q1→2026Q2, with ISIN) + `~/stocks-cache/nse-bhav/
+sec_bhavdata_full_30092026.csv` (2026Q3, no ISIN) + `~/stocks-cache/univ/EQUITY_L.csv` / `sme_equity_l.csv` (current ISINs).
+Identity: a bhavcopy row is used only when its ISIN issuer prefix (7 chars) = the stock's current one; old tickers via
+`_rename_map.json`. The date printed inside each bhavcopy must be that session (§89f) or the build stops.
+
+**Check against NSE's own lists** (`~/stocks-cache/nse_mcap/MCAP*.xlsx`, lakhs; 31-Dec-21, 31-Mar-23, 31-Dec-23, 28-Mar-24 — the
+2019 file has no unit in its header and is skipped). Measured 2026-11-03: median |error| 0.0% on all four; 2,228 stocks checked;
+190 differ by >2% somewhere. 53 differ on 2+ dates or on their only checked date → dropped whole (BSE −88..−93%, HMT +157%,
+BHARTIARTL +7% every date, DIGJAMLMTD ×10, CREATIVE −90%…); 137 differ on ONE date and agree on all their others → only that
+quarter dropped. All 190 are listed in `_meta.dropped_vs_nse_official` and are **UNKNOWN** — no filing read yet; the likely
+cause for the whole-drops is a wrong count in `shares_history.json` (BSE Ltd is already the open "F5 share counts" item) and
+partly-paid shares for BHARTIARTL. Fixing them is a share-count heal, not part of this file. Result: 3,035 stocks, 41,788 caps,
+826 KB (loaded only when the page is rewound). Skipped: 56,116 BSE-only filer cells (no NSE row), 2,034 no NSE row that day.
+
+**Page (docs/all-picks.html `capOn`).** Rewound to D: the nearest row at or before D (within 200 days) moved by the page's OWN
+adjusted price, `cap(QE) × adj(D) / adj(QE)` — a split/bonus in between cancels, and a later re-adjustment of the price history
+cannot stale the file. "≈" = today's share count instead (no row, or for an unchecked stock a ratio outside 0.4×–2.5× vs today's
+count), or a quarter where rolling forward by price misses the next quarter-end's exact cap by >5% (shares or price basis changed
+mid-quarter: measured Dec-22→Mar-23 36 of 1,748 stocks — PVRINOX merger issue, GHCL demerger; RSWM / NRL / JETFREIGHT miss by
+exactly −50%, a bonus possibly absent from the price history — UNKNOWN, not read). Roll-forward test over those 1,748: median
+0.0%, p90 0.04%. Client check: rewound to 2023-12-29, the 9 stocks on screen matched NSE's list within 0.4%.
+
+**Open.** New quarters are NOT added automatically yet — the bhavcopy inputs live in the Mac cache. After a quarter's share
+counts land (shp-allstocks-update), put that session's bhavcopy in the cache and re-run the build; until then a date after the
+last row uses the last row moved by price (correct unless shares changed).

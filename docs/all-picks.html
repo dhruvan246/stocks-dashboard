@@ -251,6 +251,47 @@ function mcapAt(sym, price) {
   if (!cm || !(cm.mcap > 0)) return null;
   return (cm.latest > 0 && price > 0) ? cm.mcap / cm.latest * price : cm.mcap;
 }
+// Rewound: the cap ON that date, not today's share count. hist_mcap.json (scripts/build_hist_mcap.py,
+// runbook §233) holds each stock's exact cap on every quarter-end (filed shares × that day's raw close);
+// the nearest quarter-end at or before the date is moved by the page's own adjusted price, so a
+// split/bonus in between cancels. Falls back to today's share count ({approx:true}, shown "≈") when the
+// stock has no quarter-end within 200 days, or — for a stock NSE's lists never checked — when the two
+// disagree beyond 0.4×–2.5× (a share count that far off is more likely a bad count than real dilution).
+// Also "≈" (value kept) inside a quarter where rolling the cap forward by price misses the NEXT
+// quarter-end's exact cap by >5%: shares or the price basis changed mid-quarter on a day we don't know
+// (measured Dec-22 → Mar-23: 36 of 1,748 stocks, e.g. PVRINOX's merger issue, GHCL's demerger).
+let HMCAP;   // undefined = not asked yet, null = loading/failed, else { rows, chk:Set }
+function loadHistMcap() {
+  if (HMCAP !== undefined) return;
+  HMCAP = null;
+  fetch('./hist_mcap.json').then(r => r.ok ? r.json() : null).then(j => {
+    if (j && j.rows) { HMCAP = { rows: j.rows, chk: new Set(j.chk || []) }; renderStats(); }
+  }).catch(() => {});
+}
+function capOn(sym, tkr, price) {
+  const now = mcapAt(sym, price);
+  if (!ASOF) return { v: now, approx: false };
+  if (!HMCAP) { loadHistMcap(); return { v: now, approx: true }; }
+  const list = HMCAP.rows[sym], want = +ASOF.replace(/-/g, '');
+  let q = null, nx = null;
+  if (list) for (const e of list) { if (e[0] <= want) q = e; else { nx = e; break; } }
+  if (q && price > 0 && typeof priceAt === 'function') {
+    const qd = String(q[0]), qIso = qd.slice(0, 4) + '-' + qd.slice(4, 6) + '-' + qd.slice(6);
+    const days = (Date.parse(ASOF) - Date.parse(qIso)) / 864e5, pq = tkr ? priceAt(tkr, dayOff(qIso)) : null;
+    if (days <= 200 && pq > 0) {
+      const v = q[1] * price / pq, r = now ? v / now : 1;
+      if (HMCAP.chk.has(sym) || (r >= 0.4 && r <= 2.5)) {
+        let drift = false;
+        if (nx) {
+          const nd = String(nx[0]), pn = priceAt(tkr, dayOff(nd.slice(0, 4) + '-' + nd.slice(4, 6) + '-' + nd.slice(6)));
+          drift = pn > 0 && Math.abs(q[1] * pn / pq / nx[1] - 1) > 0.05;
+        }
+        return { v, approx: drift, qe: qIso, drift };
+      }
+    }
+  }
+  return { v: now, approx: true };
+}
 const fmtCr = v => v == null || !isFinite(v) ? '' : v >= 100000 ? '₹' + (v / 100000).toFixed(2) + 'L Cr' : '₹' + Math.round(v).toLocaleString('en-IN') + ' Cr';
 const dayWord = () => ASOF ? 'move on ' + ASOF : "today's move";
 /* factor columns for each pick (user 2026-09-22): the sort field + every filter field, each pick's
@@ -562,8 +603,8 @@ function renderStats() {
   rows.forEach(r => r.picks.forEach(p => held.set(p.sym, (held.get(p.sym) || 0) + 1)));
   // The all-qualifying strip lists the baskets screened at each strategy's LAST REBALANCE (what it
   // holds), not the live picks; px = the price each is shown at, for its market cap.
-  const atReb = new Map(), px = new Map();
-  rows.forEach(r => r.held.forEach(h => { atReb.set(h.sym, (atReb.get(h.sym) || 0) + 1); if (h.live != null) px.set(h.sym, h.live); }));
+  const atReb = new Map(), px = new Map(), tk = new Map();
+  rows.forEach(r => r.held.forEach(h => { atReb.set(h.sym, (atReb.get(h.sym) || 0) + 1); if (h.live != null) px.set(h.sym, h.live); if (h.tkr) tk.set(h.sym, h.tkr); }));
   // Ties (common once you're 5 deep) break alphabetically so the list is deterministic
   // rather than riding on whatever order rows happened to be visited in.
   const top5 = [...held.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5);
@@ -592,13 +633,13 @@ function renderStats() {
 
   // Every stock any strategy on screen screened in at its last rebalance, once each, biggest company
   // first, with its market cap (re-priced to the price on screen) in brackets. No cap on file → last, "—".
-  const allQ = [...atReb.keys()].map(sym => ({ sym, n: atReb.get(sym), mc: mcapAt(sym, px.get(sym)) }))
+  const allQ = [...atReb.keys()].map(sym => { const c = capOn(sym, tk.get(sym), px.get(sym)); return { sym, n: atReb.get(sym), mc: c.v, approx: c.approx, qe: c.qe, drift: c.drift }; })
     .sort((a, b) => (b.mc == null ? -1 : b.mc) - (a.mc == null ? -1 : a.mc) || a.sym.localeCompare(b.sym));
   $('allQual').classList.toggle('hidden', !allQ.length);
   $('allQual').innerHTML = !allQ.length ? '' : `
-    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0" title="Every stock the strategies on screen qualified for at their last rebalance${ASOF ? ' before ' + esc(ASOF) : ''} — what they hold — biggest market cap first; market cap at the ${ASOF ? esc(ASOF) + ' close' : 'live price'}">All qualifying at rebalance · ${allQ.length}</span>
+    <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold shrink-0" title="Every stock the strategies on screen qualified for at their last rebalance${ASOF ? ' before ' + esc(ASOF) : ''} — what they hold — biggest market cap first; market cap at the ${ASOF ? esc(ASOF) + ' close, on the shares outstanding then (≈ = today\'s share count: no checked quarter-end count for that date)' : 'live price'}">All qualifying at rebalance · ${allQ.length}</span>
     ${allQ.map(q => `<a href="./stock.html?sym=${encodeURIComponent(q.sym)}" class="tick hover:border-indigo-300 hover:text-indigo-600"
-        title="Held by ${q.n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} since its last rebalance · market cap at ${px.has(q.sym) ? '₹' + f2(px.get(q.sym)) : 'the last close'}"><b>${esc(q.sym)}</b><u>(${q.mc == null ? '—' : fmtCr(q.mc)})</u></a>`).join('')}`;
+        title="Held by ${q.n} of ${rows.length} strateg${rows.length > 1 ? 'ies' : 'y'} since its last rebalance · market cap at ${px.has(q.sym) ? '₹' + f2(px.get(q.sym)) : 'the last close'}${!ASOF ? '' : q.drift ? ' — ≈ from the ' + esc(q.qe) + ' quarter-end: shares or the price basis changed during this quarter' : q.approx ? ' — ≈ on today\'s share count (no checked quarter-end count for this date)' : ' — on the shares filed for the ' + esc(q.qe) + ' quarter-end'}"><b>${esc(q.sym)}</b><u>(${q.mc == null ? '—' : (ASOF && q.approx ? '≈' : '') + fmtCr(q.mc)})</u></a>`).join('')}`;
 }
 
 function renderCards() {
