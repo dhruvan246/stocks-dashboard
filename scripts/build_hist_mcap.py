@@ -31,6 +31,7 @@ ap.add_argument("--bhav-sec", default=f"{C}/nse-bhav")                       # s
 ap.add_argument("--univ", default=f"{C}/univ")                               # EQUITY_L.csv
 ap.add_argument("--sme", default=f"{C}/sme_equity_l.csv")
 ap.add_argument("--official", default=f"{C}/nse_mcap")                      # NSE MCAPddmmyyyy*.xlsx (lakhs) — the check
+ap.add_argument("--bse-master", default=f"{C}/bse_scrip_master.json")       # BSE scrip code -> ISIN (identity of BSE filers)
 ap.add_argument("--out", default=os.path.join(ROOT, "docs", "hist_mcap.json"))
 a = ap.parse_args()
 
@@ -47,6 +48,15 @@ for path, sk, ik in ((os.path.join(a.univ, "EQUITY_L.csv"), "SYMBOL", "ISIN NUMB
         r = {k.strip(): (v or "").strip() for k, v in r.items() if k}
         if r.get(sk) and r.get(ik): cur_isin.setdefault(r[sk], r[ik])
 pfx = lambda isin: (isin or "")[:7]
+# A share count read from a BSE filing (src "bsexbrl:<scrip code>_…") is used only when that scrip's ISIN issuer equals the
+# NSE row's: CREATIVE / WORTH / KEL / BRIGHT / INNOVATIVE / DRL are BSE-only companies whose BSE ticker is (or was) another
+# company's NSE symbol (§197) — pairing Creative Castings' 1.3 M shares with Creative Newtech's NSE close gave −90% (§233a).
+bse_isin = {r["SCRIP_CD"]: r.get("ISIN_NUMBER") for r in (json.load(open(a.bse_master, encoding="utf-8")).get("rows") or [])} \
+    if os.path.exists(a.bse_master) else {}
+# Cells judged one by one against their own filing where NSE's list differs (§233a): RULE DIFFERENCE / THEIR ERROR cells
+# are kept (our count is the filing's), every other differing cell is still dropped.
+VERD = json.load(open(os.path.join(HERE, "hist_mcap_verdicts.json"), encoding="utf-8")).get("cells", {}) \
+    if os.path.exists(os.path.join(HERE, "hist_mcap_verdicts.json")) else {}
 
 def qe_trading_day(qe):
     """The quarter's last trading day = the latest bhavcopy on disk dated QE-6..QE (the file's own date decides, §89f)."""
@@ -103,6 +113,11 @@ for sym, qmap in sh.items():
             skip["BSE-only filer, no NSE row" if src.startswith("bse") else "no NSE row on the quarter-end"] += 1; continue
         cl, isin = hit
         if ref and isin and pfx(isin) != ref: skip["ISIN issuer differs (other company)"] += 1; continue
+        src = str((qmap[q] or [None, None, ""])[2] or "")
+        if src.startswith("bse"):
+            own = pfx(bse_isin.get(src.split(":", 1)[1].split("_")[0]))
+            if not own or not isin or pfx(isin) != own:
+                skip["BSE filer is not the NSE row's company (or unproven)"] += 1; continue
         got.append((int(d.strftime("%Y%m%d")), round(shares * cl / 1e7, 2), pfx(isin) if isin else None))
     if not ref:                                          # no current ISIN: only one issuer across its quarters
         issuers = {g[2] for g in got if g[2]}
@@ -115,8 +130,12 @@ for sym, qmap in sh.items():
 # stock is dropped whole; same for a stock whose ONLY checked date differs. 139 differ on one date
 # and agree on all their other checked dates (a share change or split around that quarter-end), so
 # only that quarter is dropped. Every dropped cell is UNKNOWN until its own filing is read; the page
-# falls back to today's share count there, marked "≈".
-dropped, fails, checked = {}, collections.defaultdict(list), collections.Counter()
+# falls back to today's share count there, marked "≈". §233a: the 53 were read cell by cell —
+# hist_mcap_verdicts.json; a RULE DIFFERENCE / THEIR ERROR cell is kept when its shares still match.
+dropped, fails, checked, kept = {}, collections.defaultdict(list), collections.Counter(), {}
+def qe_of_day(day):                                      # 20231229 -> "2023-12-31"
+    y, m = day // 10000, day // 100 % 100
+    return "%d-%02d-%02d" % (y, m, {3: 31, 6: 30, 9: 30, 12: 31}[m])
 if os.path.isdir(a.official):
     import openpyxl
     for f in sorted(os.listdir(a.official)):
@@ -134,6 +153,9 @@ if os.path.isdir(a.official):
             if not hit: continue
             checked[sym] += 1
             if abs(hit[-1][1] / (r[3] / 100) - 1) > 0.02:
+                v_ = (VERD.get(sym) or {}).get(str(hit[-1][0])) or {}
+                if v_.get("verdict") in ("RULE DIFFERENCE", "THEIR ERROR") and v_.get("shares") == (sh.get(sym, {}).get(qe_of_day(hit[-1][0])) or [None])[0]:
+                    kept.setdefault(sym, []).append([hit[-1][0], hit[-1][1], round(r[3] / 100, 2), v_["verdict"]]); continue
                 fails[sym].append([hit[-1][0], hit[-1][1], round(r[3] / 100, 2)])
     whole = cells = 0
     for sym, fl in fails.items():
@@ -149,7 +171,7 @@ n = sum(len(v) for v in rows.values())
 meta = {"built": dt.datetime.now().strftime("%Y-%m-%d %H:%M IST"), "symbols": len(rows), "cells": n,
         "shape": "{SYM: [[yyyymmdd quarter's last trading day, mcap Rs Cr], ...]}",
         "formula": "shares_history.json shares x NSE bhavcopy raw close / 1e7", "skipped": dict(skip),
-        "dropped_vs_nse_official": dropped, "runbook": "§233"}
+        "dropped_vs_nse_official": dropped, "kept_vs_nse_official": kept, "runbook": "§233 / §233a"}
 # stocks NSE's lists checked and that still have rows: the page trusts these as they are; the rest get
 # its sanity test against today's share count (a 0.4x-2.5x band) before use
 chk = sorted(s for s in checked if s in rows)

@@ -143,6 +143,54 @@ def names_match(a, b):
 
 
 # ------------------------------------------------------------------------------------------ document analysis
+def mcap_shares(root, ctx, pct, shc):
+    """The share count a market cap multiplies by the fully-paid price (§233a, 2026-11-03) — computed, NOT yet what
+    shares_history stores (that is still parse_shares; the cells healed so far are in shares_history_fix.json, built with
+    this function, and
+    switching every cell to this rule is a user decision: measured on a 2,909-cell sample it changes 46). parse_shares' whole-company
+    NumberOfShares, with two filer defects corrected from the SAME filing's own rows —
+      * partly-paid shares (BHARTIARTL 392,287,662 of 6,047,374,739, AURUM 42.9 M of 71.6 M, SUZLON's 2022 rights) are
+        taken out: they are not worth the fully-paid price, and NSE's and BSE's market caps count fully-paid shares only
+        (NSE's 28-Mar-2024 list implies BHARTIARTL 5,655,087,094 = the filing's 5,655,087,077 fully paid);
+      * a whole-company row that is NOT 100% (BSE Ltd 2021-09..2024-09 files a sub-row there: 10,743,649 at 7.94%) is
+        replaced by promoter + public + non-promoter-non-public when those three close to 100% (BSE Ltd Mar-2024:
+        0 + 105,111,612 + 30,264,747 = 135,376,359; NSE's list implies 135,376,599)."""
+    n = F.parse_shares(root)
+    if not n: return n
+    k = 100.0 if any(v > 1.5 for v in pct.values()) else 1.0           # some schemas carry fractions, not percent
+    parts = ("ShareholdingOfPromoterAndPromoterGroupMember", "PublicShareholdingMember",
+             "SharesHeldByNonPromoterNonPublicShareholdersMember")
+    tot_pc = pct.get("ShareholdingPatternMember")
+    if tot_pc is not None and abs(tot_pc * 100 / k - 100) > 0.05 and shc.get("PublicShareholdingMember"):
+        if abs(sum(pct.get(m) or 0 for m in parts) * 100 / k - 100) <= 0.05:
+            n = int(sum(shc.get(m) or 0 for m in parts))
+    pp = 0
+    for f in root.iter():
+        if STRIP(f.tag) != "NumberOfPartlyPaidUpEquityShares": continue
+        mems, typed = ctx.get(f.get("contextRef"), ([], True))
+        if typed or mems != ["ShareholdingPatternMember"]: continue
+        try: pp = int(float(f.text))
+        except (TypeError, ValueError): pass
+    return n - pp if 0 < pp < n else n
+
+SHARES_FIX = os.path.join(HERE, "shares_history_fix.json")
+def apply_shares_fix(sh):
+    """§233a: heal share counts from shares_history_fix.json — each cell re-read from its OWN filing (cell-by-cell verdict
+    OUR ERROR, evidence in the ledger). A cell is replaced only while it still carries the same filing (src) and the
+    same wrong count ("was"); a newer filing or a changed count is left alone and reported. -> number of cells healed."""
+    if not os.path.exists(SHARES_FIX): return 0
+    fix = json.load(open(SHARES_FIX, encoding="utf-8")).get("fix") or {}
+    n = stale = 0
+    for s_, qs_ in fix.items():
+        for q_, f_ in qs_.items():
+            cur = (sh.get(s_) or {}).get(q_)
+            if cur and cur[2] == f_["src"] and cur[0] == f_["was"]: cur[0] = f_["shares"]
+            if cur and cur[2] == f_["src"] and cur[0] == f_["shares"]: n += 1
+            else:
+                stale += 1; print("shares_history_fix: %s %s not applied (stored %s, ledger was %s via %s)" % (s_, q_, cur, f_["was"], f_["src"]))
+    print("shares_history_fix: %d cells healed, %d not applicable" % (n, stale))
+    return n
+
 def analyse(txt, qe):
     """-> dict(cell, fmt, zero_proof, partition_closes, ambiguity, flags, isin, symtag, shares, nsh)."""
     if isinstance(txt, str): txt = txt.encode("utf-8")
@@ -1387,9 +1435,11 @@ def build(cache, window=None):
     json.dump({"_meta": {"built": built, "cells": sum(len(v) for v in holds.values())},
                "holds": {s: dict(sorted(q.items())) for s, q in sorted(holds.items()) if q}},
               open(HOLDS, "w", encoding="utf-8"), indent=0, default=str)
+    n_fix = apply_shares_fix(sh)
     json.dump({"_meta": {"built": built, "source": "NSE SHP XBRL whole-company NumberOfShares (parse_shares)",
                          "shape": "{SYM: {QE: [shares, visible_date, src]}}", "symbols": len(sh),
-                         "cells": sum(len(v) for v in sh.values()), "held": sh_hold, "runbook": "§180"},
+                         "cells": sum(len(v) for v in sh.values()), "held": sh_hold, "healed": n_fix,
+                         "runbook": "§180 / §233a"},
                **{s: dict(sorted(q.items())) for s, q in sorted(sh.items())}},
               open(SHARES_HIST, "w", encoding="utf-8"), separators=(",", ":"))
     print("LEDGER %s: %d cells / %d symbols" % (os.path.basename(LEDGER), n_cells, len(fills)))
@@ -1401,7 +1451,7 @@ def build(cache, window=None):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("stage", choices=["master", "download", "bse", "rowlevel", "build", "update"])
+    ap.add_argument("stage", choices=["master", "download", "bse", "rowlevel", "build", "update", "apply-shares-fix"])
     ap.add_argument("--quarters", default=None, help="update/build: comma list of quarter-ends (default: the last two closed)")
     ap.add_argument("--cache", default=CACHE)
     ap.add_argument("--shard", default="0/1", help="bse stage: k/n — this machine takes scrip codes with code %% n == k")
@@ -1409,6 +1459,10 @@ if __name__ == "__main__":
     ap.add_argument("--max-minutes", type=int, default=0, help="bse stage: stop cleanly after this many minutes (CI)")
     ap.add_argument("--codes", default=None, help="bse stage: JSON list of scrip codes to restrict this run to (later rounds)")
     a = ap.parse_args()
-    if a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes, codes_file=a.codes)
+    if a.stage == "apply-shares-fix":                          # §233a: heal the committed shares_history.json in place
+        d_ = json.load(open(SHARES_HIST, encoding="utf-8")); m_ = d_.pop("_meta")
+        m_["healed"] = apply_shares_fix(d_)
+        json.dump({"_meta": m_, **d_}, open(SHARES_HIST, "w", encoding="utf-8"), separators=(",", ":"))
+    elif a.stage == "bse": stage_bse(a.cache, cap=a.cap, shard=a.shard, max_minutes=a.max_minutes, codes_file=a.codes)
     elif a.stage == "update": stage_update(a.cache, quarters=a.quarters.split(",") if a.quarters else None, max_minutes=a.max_minutes)
     else: {"master": stage_master, "download": stage_download, "rowlevel": stage_rowlevel, "build": build}[a.stage](a.cache)

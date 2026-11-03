@@ -1,0 +1,2285 @@
+{
+ "_meta": {
+  "built": "2026-11-03 21:04 IST",
+  "runbook": "§233a",
+  "rule": "market-cap share count = fully paid equity shares of the whole company (100% row); partly-paid shares excluded; if the filing's whole-company row is not 100%, use promoter + public + non-promoter-non-public. Each cell computed from its own SHP filing (src) with fetch_shp_allstocks.mcap_shares. Applied only when stored count == 'was' and src matches.",
+  "scope": "the 10 stocks among the 53 dropped-vs-NSE stocks whose difference was a partly-paid or sub-row reading of our own (BSE, BHARTIARTL, URJA, VIKASLIFE, AARTISURF, AURUM, ADROITINFO, SUZLON, PATINTLOG, TNTELE); every quarter of those stocks re-read"
+ },
+ "fix": {
+  "BSE": {
+   "2021-09-30": {
+    "shares": 45024297,
+    "was": 5407735,
+    "src": "nse:SHP_162385_537585_19102021010854_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (12.01%, not 100%); promoter + public + non-promoter-non-public = 45024297 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5407735",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5407735"
+     },
+     "whole_company_pct": 12.01,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       32820190.0,
+       72.88
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       12204107.0,
+       27.1
+      ]
+     }
+    }
+   },
+   "2021-12-31": {
+    "shares": 45024297,
+    "was": 5346556,
+    "src": "nse:SHP_165086_592949_19012022120637_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (11.87%, not 100%); promoter + public + non-promoter-non-public = 45024297 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5346556",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5346556"
+     },
+     "whole_company_pct": 11.87,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       32861308.0,
+       72.98
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       12162989.0,
+       27.01
+      ]
+     }
+    }
+   },
+   "2022-03-31": {
+    "shares": 135267891,
+    "was": 16295307,
+    "src": "nse:SHP_166176_626742_08042022035846_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (12.05%, not 100%); promoter + public + non-promoter-non-public = 135267891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "16295307",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "16295307"
+     },
+     "whole_company_pct": 12.05,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       99443500.0,
+       73.52
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35824391.0,
+       26.49
+      ]
+     }
+    }
+   },
+   "2022-06-30": {
+    "shares": 135462891,
+    "was": 15823539,
+    "src": "nse:SHP_170072_695599_19072022054911_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (11.68%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "15823539",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "15823539"
+     },
+     "whole_company_pct": 11.68,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       100055304.0,
+       73.85
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35407587.0,
+       26.14
+      ]
+     }
+    }
+   },
+   "2022-12-31": {
+    "shares": 135462891,
+    "was": 15227662,
+    "src": "nse:SHP_174582_770754_18012023122156_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (11.24%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "15227662",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "15227662"
+     },
+     "whole_company_pct": 11.24,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       99957240.0,
+       73.79
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35505651.0,
+       26.21
+      ]
+     }
+    }
+   },
+   "2023-03-31": {
+    "shares": 135462891,
+    "was": 15097750,
+    "src": "nse:SHP_176286_821148_17042023011110_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (11.15%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "15097750",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "15097750"
+     },
+     "whole_company_pct": 11.15,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       100430610.0,
+       74.13
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35032281.0,
+       25.86
+      ]
+     }
+    }
+   },
+   "2023-06-30": {
+    "shares": 135462891,
+    "was": 15285541,
+    "src": "nse:SHP_179200_889721_18072023014605_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (11.28%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "15285541",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "15285541"
+     },
+     "whole_company_pct": 11.28,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       100430840.0,
+       74.14
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35032051.0,
+       25.85
+      ]
+     }
+    }
+   },
+   "2023-09-30": {
+    "shares": 135462891,
+    "was": 14747910,
+    "src": "nse:SHP_181881_959651_19102023124814_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (10.89%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "14747910",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "14747910"
+     },
+     "whole_company_pct": 10.89,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       101442276.0,
+       74.89
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       34020615.0,
+       25.1
+      ]
+     }
+    }
+   },
+   "2023-12-31": {
+    "shares": 135376359,
+    "was": 9086044,
+    "src": "nse:SHP_184040_1021994_16012024105329_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (6.71%, not 100%); promoter + public + non-promoter-non-public = 135376359 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "9086044",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "9086044"
+     },
+     "whole_company_pct": 6.71,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       104054056.0,
+       76.86
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       31322303.0,
+       23.14
+      ]
+     }
+    }
+   },
+   "2024-03-31": {
+    "shares": 135376359,
+    "was": 10743649,
+    "src": "nse:SHP_187478_1099821_19042024105056_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (7.94%, not 100%); promoter + public + non-promoter-non-public = 135376359 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "10743649",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "10743649"
+     },
+     "whole_company_pct": 7.94,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       105111612.0,
+       77.64
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       30264747.0,
+       22.36
+      ]
+     }
+    }
+   },
+   "2024-09-30": {
+    "shares": 135376359,
+    "was": 9340917,
+    "src": "nse:SHP_192048_1271707_16102024121524_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (6.90%, not 100%); promoter + public + non-promoter-non-public = 135376359 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "9340917",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "9340917"
+     },
+     "whole_company_pct": 6.9,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       104370785.0,
+       77.09
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       31005574.0,
+       22.9
+      ]
+     }
+    }
+   }
+  },
+  "BHARTIARTL": {
+   "2021-12-31": {
+    "shares": 5492027268,
+    "was": 5884314930,
+    "src": "nse:SHP_165599_597485_21012022072943_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5492027268",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5492027268",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5884314930"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-06-30": {
+    "shares": 5492027268,
+    "was": 5884314930,
+    "src": "nse:SHP_170565_698905_21072022011946_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5492027268",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5492027268",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5884314930"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-09-30": {
+    "shares": 5563231650,
+    "was": 5955519312,
+    "src": "nse:SHP_173130_741017_21102022082532_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5563231650",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5563231650",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5955519312"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 5564420567,
+    "was": 5956708229,
+    "src": "nse:SHP_175388_776218_20012023081554_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5564420567",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5564420567",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5956708229"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 5575134650,
+    "was": 5967422312,
+    "src": "nse:SHP_177246_824270_18042023060045_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5575134650",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5575134650",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5967422312"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 5581260476,
+    "was": 5973548138,
+    "src": "nse:SHP_179885_894437_20072023015855_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5581260476",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5581260476",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5973548138"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 5605344739,
+    "was": 5997632401,
+    "src": "nse:SHP_182826_964460_20102023100906_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5605344739",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5605344739",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5997632401"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 5624932822,
+    "was": 6017220484,
+    "src": "nse:SHP_184300_1022352_16012024125633_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5624932822",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5624932822",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6017220484"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 5655087077,
+    "was": 6047374739,
+    "src": "nse:SHP_188183_1104008_20042024035858_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5655087077",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5655087077",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6047374739"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 5690873149,
+    "was": 6083160811,
+    "src": "nse:SHP_189458_1185151_15072024041339_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5690873149",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5690873149",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6083160811"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 5693154486,
+    "was": 6085442148,
+    "src": "nse:SHP_192811_1397055_18032025015053_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5693154486",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5693154486",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6085442148"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 5695833021,
+    "was": 6088120683,
+    "src": "nse:SHP_195089_1349143_17012025033836_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5695833021",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5695833021",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6088120683"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 5702105319,
+    "was": 6094392981,
+    "src": "nse:SHP_198344_1419722_19042025011121_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5702105319",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5702105319",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6094392981"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-06-30": {
+    "shares": 5702105319,
+    "was": 6094392981,
+    "src": "nse:SHP_1489832_21072025090547_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5702105319",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5702105319",
+      "PartlyPaidUpEquityShares": "392287662",
+      "Shares": "6094392981"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-09-30": {
+    "shares": 5702105304,
+    "was": 6094392981,
+    "src": "nse:SHP_1554580_20102025114942_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 5702105304 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5702105304",
+      "PartlyPaidUpEquityShares": "392287677",
+      "Shares": "6094392981"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       3063629531.0,
+       0.5027
+      ],
+      "PublicShareholding": [
+       3027450218.0,
+       0.4968
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       3313232.0,
+       null
+      ]
+     }
+    }
+   },
+   "2025-12-31": {
+    "shares": 5702105319,
+    "was": 6094392981,
+    "src": "nse:SHP_1604248_19012026040903_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 5702105319 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5702105319",
+      "PartlyPaidUpEquityShares": "392287662",
+      "Shares": "6094392981"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       2978329531.0,
+       0.4887
+      ],
+      "PublicShareholding": [
+       3113142088.0,
+       0.5108
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       2921362.0,
+       null
+      ]
+     }
+    }
+   },
+   "2026-03-31": {
+    "shares": 6093103820,
+    "was": 6094392981,
+    "src": "nse:SHP_1654825_20042026024944_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 6093103820 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "6093103820",
+      "PartlyPaidUpEquityShares": "1289161",
+      "Shares": "6094392981"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       2978329531.0,
+       0.4887
+      ],
+      "PublicShareholding": [
+       3113567228.0,
+       0.5109
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       2496222.0,
+       null
+      ]
+     }
+    }
+   },
+   "2026-06-30": {
+    "shares": 6240040719,
+    "was": 6241154316,
+    "src": "nse:SHP_1702388_27072026070346_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 6240040719 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "6240040719",
+      "PartlyPaidUpEquityShares": "1113597",
+      "Shares": "6241154316"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       3125090866.0,
+       0.5007
+      ],
+      "PublicShareholding": [
+       3113716865.0,
+       0.4989
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       2346585.0,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "URJA": {
+   "2021-09-30": {
+    "shares": 507206000,
+    "was": 557206000,
+    "src": "nse:SHP_163167_544222_21102021075506_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "50000000 partly-paid shares counted at the fully-paid price; fully paid = 507206000",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "507206000",
+      "PartlyPaidUpEquityShares": "50000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2021-12-31": {
+    "shares": 507206000,
+    "was": 557206000,
+    "src": "nse:SHP_165377_595174_20012022032957_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "50000000 partly-paid shares counted at the fully-paid price; fully paid = 507206000",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "507206000",
+      "PartlyPaidUpEquityShares": "50000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-03-31": {
+    "shares": 525429773,
+    "was": 557206000,
+    "src": "nse:SHP_168269_646438_21042022061723_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31776227 partly-paid shares counted at the fully-paid price; fully paid = 525429773",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525429773",
+      "PartlyPaidUpEquityShares": "31776227",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-06-30": {
+    "shares": 525453377,
+    "was": 557229594,
+    "src": "nse:SHP_170897_710555_09092022035909_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31776217 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31776217",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557229594"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_173974_763695_12012023031106_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_177656_827612_20042023015009_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_178957_885130_14072023052227_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_181887_955632_17102023034243_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_184266_1022004_16012024105916_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_187576_1098804_18042024052359_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_190412_1195665_19072024063654_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_192638_1275642_17102024061333_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_195426_1390209_27022025122145_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_196719_1411562_10042025023358_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-06-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_1487528_19072025124315_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-09-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_1551267_17102025122522_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 525453377 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       103917761.0,
+       0.1865
+      ],
+      "PublicShareholding": [
+       453288239.0,
+       0.8135
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       0.0,
+       null
+      ]
+     }
+    }
+   },
+   "2025-12-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_1599654_13012026031307_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 525453377 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       102260528.0,
+       0.1835
+      ],
+      "PublicShareholding": [
+       454945472.0,
+       0.8165
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       0.0,
+       null
+      ]
+     }
+    }
+   },
+   "2026-03-31": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_1654666_20042026124248_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 525453377 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       102260528.0,
+       0.1835
+      ],
+      "PublicShareholding": [
+       454945472.0,
+       0.8165
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       0.0,
+       null
+      ]
+     }
+    }
+   },
+   "2026-06-30": {
+    "shares": 525453377,
+    "was": 557206000,
+    "src": "nse:SHP_1695271_17072026042853_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 525453377 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       96777888.0,
+       0.1737
+      ],
+      "PublicShareholding": [
+       460428112.0,
+       0.8263
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "VIKASLIFE": {
+   "2021-12-31": {
+    "shares": 928893693,
+    "was": 1105825825,
+    "src": "nse:SHP_165580_597377_21012022063519_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "176932132 partly-paid shares counted at the fully-paid price; fully paid = 928893693",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "928893693",
+      "PartlyPaidUpEquityShares": "176932132",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1105825825"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-06-30": {
+    "shares": 1224567769,
+    "was": 1230825825,
+    "src": "nse:SHP_170551_698729_21072022121740_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "6258056 partly-paid shares counted at the fully-paid price; fully paid = 1224567769",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "1224567769",
+      "PartlyPaidUpEquityShares": "6258056",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1230825825"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-09-30": {
+    "shares": 1328439381,
+    "was": 1334990698,
+    "src": "nse:SHP_172824_739572_21102022030516_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "6551317 partly-paid shares counted at the fully-paid price; fully paid = 1328439381",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "1328439381",
+      "PartlyPaidUpEquityShares": "6551317",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1334990698"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 1435966262,
+    "was": 1442224318,
+    "src": "nse:SHP_175540_777831_23012023080651_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "6258056 partly-paid shares counted at the fully-paid price; fully paid = 1435966262",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "1435966262",
+      "PartlyPaidUpEquityShares": "6258056",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1442224318"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 1435966262,
+    "was": 1442224318,
+    "src": "nse:SHP_177920_830067_21042023014611_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "6258056 partly-paid shares counted at the fully-paid price; fully paid = 1435966262",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "1435966262",
+      "PartlyPaidUpEquityShares": "6258056",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1442224318"
+     },
+     "whole_company_pct": 100.0
+    }
+   }
+  },
+  "AARTISURF": {
+   "2023-03-31": {
+    "shares": 7584477,
+    "was": 8476768,
+    "src": "nse:SHP_177758_828482_20042023053353_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 7584477,
+    "was": 8476768,
+    "src": "nse:SHP_179869_894231_20072023124328_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 7584477,
+    "was": 8476768,
+    "src": "nse:SHP_181432_950999_13102023034320_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 7584477,
+    "was": 8476768,
+    "src": "nse:SHP_183860_1016814_11012024051855_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 8458495,
+    "was": 8476768,
+    "src": "nse:SHP_188046_1237623_04092024115559_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "18273 partly-paid shares counted at the fully-paid price; fully paid = 8458495",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "8458495",
+      "PartlyPaidUpEquityShares": "18273",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 8458495,
+    "was": 8476768,
+    "src": "nse:SHP_188811_1237628_04092024115801_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "18273 partly-paid shares counted at the fully-paid price; fully paid = 8458495",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "8458495",
+      "PartlyPaidUpEquityShares": "18273",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0
+    }
+   }
+  },
+  "AURUM": {
+   "2022-06-30": {
+    "shares": 28629689,
+    "was": 71574222,
+    "src": "nse:SHP_170328_696847_20072022022737_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-09-30": {
+    "shares": 28629189,
+    "was": 71574222,
+    "src": "nse:SHP_172622_738660_21102022111326_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42945033 partly-paid shares counted at the fully-paid price; fully paid = 28629189",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629189",
+      "PartlyPaidUpEquityShares": "42945033",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 28629689,
+    "was": 71574222,
+    "src": "nse:SHP_174512_769338_17012023032941_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 28629689,
+    "was": 71574222,
+    "src": "nse:SHP_176783_820649_15042023063022_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 28629689,
+    "was": 71574222,
+    "src": "nse:SHP_178622_880700_12072023115354_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 28629689,
+    "was": 71574222,
+    "src": "nse:SHP_181571_952392_14102023041948_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 28629678,
+    "was": 71574222,
+    "src": "nse:SHP_184197_1021101_15012024035538_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944544 partly-paid shares counted at the fully-paid price; fully paid = 28629678",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629678",
+      "PartlyPaidUpEquityShares": "42944544",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 29034606,
+    "was": 71979139,
+    "src": "nse:SHP_187426_1097565_18042024123516_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29034606",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29034606",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71979139"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 29183656,
+    "was": 72128189,
+    "src": "nse:SHP_190429_1195853_19072024070439_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29183656",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29183656",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "72128189"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 29189656,
+    "was": 72134189,
+    "src": "nse:SHP_192153_1271166_15102024070541_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29189656",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29189656",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "72134189"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 29253206,
+    "was": 72197739,
+    "src": "nse:SHP_196020_1393639_07032025033641_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29253206",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29253206",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "72197739"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 29273456,
+    "was": 72217989,
+    "src": "nse:SHP_198607_1420650_21042025115347_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29273456",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29273456",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "72217989"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-06-30": {
+    "shares": 70674706,
+    "was": 72343489,
+    "src": "nse:SHP_1489457_21072025064756_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "1668783 partly-paid shares counted at the fully-paid price; fully paid = 70674706",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "70674706",
+      "PartlyPaidUpEquityShares": "1668783",
+      "Shares": "72343489"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-09-30": {
+    "shares": 76109436,
+    "was": 76605001,
+    "src": "nse:SHP_1633519_07032026121145_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 76109436 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "76109436",
+      "PartlyPaidUpEquityShares": "495565",
+      "Shares": "76605001"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       36032859.0,
+       0.4704
+      ],
+      "PublicShareholding": [
+       40572142.0,
+       0.5296
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2025-12-31": {
+    "shares": 76115247,
+    "was": 76606014,
+    "src": "nse:SHP_1607079_21012026041040_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 76115247 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "76115247",
+      "PartlyPaidUpEquityShares": "490767",
+      "Shares": "76606014"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       36284455.0,
+       0.4737
+      ],
+      "PublicShareholding": [
+       40321559.0,
+       0.5263
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2026-03-31": {
+    "shares": 76244663,
+    "was": 76658527,
+    "src": "nse:SHP_1656369_21042026050003_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 76244663 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "76244663",
+      "PartlyPaidUpEquityShares": "413864",
+      "Shares": "76658527"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       36342455.0,
+       0.4741
+      ],
+      "PublicShareholding": [
+       40316072.0,
+       0.5259
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2026-06-30": {
+    "shares": 76352367,
+    "was": 76736194,
+    "src": "nse:SHP_1697548_20072026082020_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 76352367 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "76352367",
+      "PartlyPaidUpEquityShares": "383827",
+      "Shares": "76736194"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       36748355.0,
+       0.4789
+      ],
+      "PublicShareholding": [
+       39987839.0,
+       0.5211
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "ADROITINFO": {
+   "2024-03-31": {
+    "shares": 21667372,
+    "was": 54168430,
+    "src": "nse:SHP_187952_1102034_19042024060334_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "32501058 partly-paid shares counted at the fully-paid price; fully paid = 21667372",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "21667372",
+      "PartlyPaidUpEquityShares": "32501058",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "54168430"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 24767372,
+    "was": 57268430,
+    "src": "nse:SHP_190471_1339355_08012025023049_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "32501058 partly-paid shares counted at the fully-paid price; fully paid = 24767372",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "24767372",
+      "PartlyPaidUpEquityShares": "32501058",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 24767372,
+    "was": 53947623,
+    "src": "nse:SHP_193481_1283013_21102024052105_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "29180251 partly-paid shares counted at the fully-paid price; fully paid = 24767372",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "24767372",
+      "PartlyPaidUpEquityShares": "29180251",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "53947623"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 24767372,
+    "was": 57268430,
+    "src": "nse:SHP_196001_1356033_21012025062849_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "32501058 partly-paid shares counted at the fully-paid price; fully paid = 24767372",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "24767372",
+      "PartlyPaidUpEquityShares": "32501058",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 54177208,
+    "was": 57268430,
+    "src": "nse:SHP_197490_1416094_16042025053324_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "3091222 partly-paid shares counted at the fully-paid price; fully paid = 54177208",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "54177208",
+      "PartlyPaidUpEquityShares": "3091222",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-06-30": {
+    "shares": 54177208,
+    "was": 57268430,
+    "src": "nse:SHP_1540899_03102025072945_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "3091222 partly-paid shares counted at the fully-paid price; fully paid = 54177208",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "54177208",
+      "PartlyPaidUpEquityShares": "3091222",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-09-30": {
+    "shares": 54177208,
+    "was": 57268430,
+    "src": "nse:SHP_1554931_21102025051649_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 54177208 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "54177208",
+      "PartlyPaidUpEquityShares": "3091222",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       21456255.0,
+       0.3747
+      ],
+      "PublicShareholding": [
+       35812175.0,
+       0.6253
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2025-12-31": {
+    "shares": 54177208,
+    "was": 57268430,
+    "src": "nse:SHP_1606223_20012026071044_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 54177208 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "54177208",
+      "PartlyPaidUpEquityShares": "3091222",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       21457525.0,
+       0.3747
+      ],
+      "PublicShareholding": [
+       35810905.0,
+       0.6253
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2026-03-31": {
+    "shares": 54177208,
+    "was": 57268430,
+    "src": "nse:SHP_1655515_20042026072045_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 54177208 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "54177208",
+      "PartlyPaidUpEquityShares": "3091222",
+      "Shares": "57268430"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       21925104.0,
+       0.3828
+      ],
+      "PublicShareholding": [
+       35343326.0,
+       0.6172
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  },
+  "SUZLON": {
+   "2022-12-31": {
+    "shares": 10073087083,
+    "was": 12473087083,
+    "src": "nse:SHP_175259_775136_20012023035736_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "2400000000 partly-paid shares counted at the fully-paid price; fully paid = 10073087083",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "10073087083",
+      "PartlyPaidUpEquityShares": "2400000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "12473087083"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 10073087083,
+    "was": 12473087083,
+    "src": "nse:SHP_177666_827686_20042023022041_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "2400000000 partly-paid shares counted at the fully-paid price; fully paid = 10073087083",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "10073087083",
+      "PartlyPaidUpEquityShares": "2400000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "12473087083"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 12405856105,
+    "was": 12473087083,
+    "src": "nse:SHP_180256_897957_21072023063709_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "67230978 partly-paid shares counted at the fully-paid price; fully paid = 12405856105",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "12405856105",
+      "PartlyPaidUpEquityShares": "67230978",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "12473087083"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 13573626830,
+    "was": 13612688222,
+    "src": "nse:SHP_182373_960115_19102023031905_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "39061392 partly-paid shares counted at the fully-paid price; fully paid = 13573626830",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13573626830",
+      "PartlyPaidUpEquityShares": "39061392",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13612688222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 13576693532,
+    "was": 13612688222,
+    "src": "nse:SHP_184771_1027169_18012024045236_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "35994690 partly-paid shares counted at the fully-paid price; fully paid = 13576693532",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13576693532",
+      "PartlyPaidUpEquityShares": "35994690",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13612688222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 13601542396,
+    "was": 13612688222,
+    "src": "nse:SHP_187282_1237671_04092024123255_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "11145826 partly-paid shares counted at the fully-paid price; fully paid = 13601542396",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13601542396",
+      "PartlyPaidUpEquityShares": "11145826",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13612688222"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 13624884415,
+    "was": 13633711722,
+    "src": "nse:SHP_190231_1237685_04092024124105_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "8827307 partly-paid shares counted at the fully-paid price; fully paid = 13624884415",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13624884415",
+      "PartlyPaidUpEquityShares": "8827307",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13633711722"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 13644793573,
+    "was": 13653424884,
+    "src": "nse:SHP_192708_1276347_18102024102416_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "8631311 partly-paid shares counted at the fully-paid price; fully paid = 13644793573",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13644793573",
+      "PartlyPaidUpEquityShares": "8631311",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13653424884"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 13647329011,
+    "was": 13647911818,
+    "src": "nse:SHP_194861_1347235_16012025025856_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "582807 partly-paid shares counted at the fully-paid price; fully paid = 13647329011",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13647329011",
+      "PartlyPaidUpEquityShares": "582807",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13647911818"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 13648445738,
+    "was": 13648872068,
+    "src": "nse:SHP_196611_1410830_09042025030644_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "426330 partly-paid shares counted at the fully-paid price; fully paid = 13648445738",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "13648445738",
+      "PartlyPaidUpEquityShares": "426330",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "13648872068"
+     },
+     "whole_company_pct": 100.0
+    }
+   }
+  },
+  "PATINTLOG": {
+   "2021-12-31": {
+    "shares": 26035923,
+    "was": 66035923,
+    "src": "nse:SHP_164417_586327_13012022032352_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "40000000 partly-paid shares counted at the fully-paid price; fully paid = 26035923",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "26035923",
+      "PartlyPaidUpEquityShares": "40000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-03-31": {
+    "shares": 26035923,
+    "was": 66035923,
+    "src": "nse:SHP_167673_641129_19042022044323_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "40000000 partly-paid shares counted at the fully-paid price; fully paid = 26035923",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "26035923",
+      "PartlyPaidUpEquityShares": "40000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-06-30": {
+    "shares": 26035923,
+    "was": 66035923,
+    "src": "nse:SHP_170149_695400_19072022051734_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "40000000 partly-paid shares counted at the fully-paid price; fully paid = 26035923",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "26035923",
+      "PartlyPaidUpEquityShares": "40000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-09-30": {
+    "shares": 26035923,
+    "was": 66035923,
+    "src": "nse:SHP_172592_738527_21102022101337_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "40000000 partly-paid shares counted at the fully-paid price; fully paid = 26035923",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "26035923",
+      "PartlyPaidUpEquityShares": "40000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 63498567,
+    "was": 66035533,
+    "src": "nse:SHP_173623_759747_10012023112216_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "2536966 partly-paid shares counted at the fully-paid price; fully paid = 63498567",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "63498567",
+      "PartlyPaidUpEquityShares": "2536966",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035533"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 64585746,
+    "was": 66035923,
+    "src": "nse:SHP_176205_814784_11042023060059_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "1450177 partly-paid shares counted at the fully-paid price; fully paid = 64585746",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "64585746",
+      "PartlyPaidUpEquityShares": "1450177",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0
+    }
+   }
+  },
+  "TNTELE": {
+   "2022-06-30": {
+    "shares": 45670600,
+    "was": 45680200,
+    "src": "nse:SHP_170400_697365_20072022043627_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45670600",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45670600",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45680200"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-09-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_172282_736687_20102022035616_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2022-12-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_174964_772997_19012023030401_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-03-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_177646_827541_20042023011837_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-06-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_180231_897696_21072023052637_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-09-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_182925_965487_21102023053008_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2023-12-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_184192_1021061_15012024034215_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-03-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_185840_1081453_05042024041005_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-06-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_190774_1198683_21072024102414_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-09-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_192756_1276726_18102024124108_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2024-12-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_195835_1354516_21012025123703_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-03-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_198677_1420903_21042025015419_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-06-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_1488838_21072025040356_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "9600 partly-paid shares counted at the fully-paid price; fully paid = 45671400",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 100.0
+    }
+   },
+   "2025-09-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_1554877_21102025042839_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 45671400 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       29067700.0,
+       0.6363
+      ],
+      "PublicShareholding": [
+       16613300.0,
+       0.3637
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2026-03-31": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_1656921_21042026110453_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 45671400 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       29067700.0,
+       0.6363
+      ],
+      "PublicShareholding": [
+       16613300.0,
+       0.3637
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   },
+   "2026-06-30": {
+    "shares": 45671400,
+    "was": 45681000,
+    "src": "nse:SHP_1698886_21072026081218_WEB.xml",
+    "verdict": "OUR ERROR",
+    "why": "whole-company row is a sub-row (1.00%, not 100%); promoter + public + non-promoter-non-public = 45671400 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "45671400",
+      "PartlyPaidUpEquityShares": "9600",
+      "Shares": "45681000"
+     },
+     "whole_company_pct": 1.0,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       29067700.0,
+       0.6363
+      ],
+      "PublicShareholding": [
+       16613300.0,
+       0.3637
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       null,
+       null
+      ]
+     }
+    }
+   }
+  }
+ }
+}

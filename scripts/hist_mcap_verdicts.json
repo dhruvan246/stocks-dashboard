@@ -1,0 +1,3397 @@
+{
+ "_meta": {
+  "built": "2026-11-03 21:05 IST",
+  "runbook": "§233a",
+  "what": "one verdict per cell where our quarter-end market cap differed from NSE's official list by >2%, for the 53 stocks dropped whole on 2026-11-03. build_hist_mcap.py keeps (publishes) a differing cell only when its verdict is RULE DIFFERENCE or THEIR ERROR and its 'shares' still equals shares_history.json.",
+  "rule_difference": "NSE's MCAP list prices the share count the company filed for an EARLIER quarter (shown in evidence.matching_filing); our §233 rule uses the count in that quarter-end's own SHP filing.",
+  "not_checked": "Screener / Moneycontrol / Quantmac historical market caps were not compared (no per-quarter history found on those sites)."
+ },
+ "cells": {
+  "GPIL": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 135944988,
+    "why": "NSE's list prices 140944988 shares = the count this company filed for 2023-03-31 (nse:SHP_176947_822003_17042023053517_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 135944988, i.e. the change between 2023-03-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 10295.11,
+     "nse_cr": 10673.76,
+     "shares": 135944988,
+     "src": "nse:SHP_186635_1091050_13042024042721_WEB.xml",
+     "nse_implied_shares": 140944990,
+     "filing_rows": {
+      "prom": 86004908,
+      "prom_pct": 63.26,
+      "pub": 49940080,
+      "pub_pct": 36.74,
+      "npnp": 0,
+      "tot": 135944988,
+      "tot_pct": 100.0,
+      "tot_fp": 135944988,
+      "tot_pp": 0,
+      "ISIN": "INE177H01021",
+      "NameOfTheCompany": "Godawari Power And Ispat limited"
+     },
+     "matching_filing": {
+      "qe": "2023-03-31",
+      "shares": 140944988,
+      "src": "nse:SHP_176947_822003_17042023053517_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 135944988,
+    "why": "NSE's list prices 140944988 shares = the count this company filed for 2023-03-31 (nse:SHP_176947_822003_17042023053517_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 135944988, i.e. the change between 2023-03-31 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 10289.0,
+     "nse_cr": 10667.42,
+     "shares": 135944988,
+     "src": "nse:SHP_183848_1016695_11012024045618_WEB.xml",
+     "nse_implied_shares": 140944920,
+     "filing_rows": {
+      "prom": 86004908,
+      "prom_pct": 63.26,
+      "pub": 49940080,
+      "pub_pct": 36.74,
+      "npnp": 0,
+      "tot": 135944988,
+      "tot_pct": 100.0,
+      "tot_fp": 135944988,
+      "tot_pp": 0,
+      "ISIN": "INE177H01021",
+      "NameOfTheCompany": "Godawari Power And Ispat limited"
+     },
+     "matching_filing": {
+      "qe": "2023-03-31",
+      "shares": 140944988,
+      "src": "nse:SHP_176947_822003_17042023053517_WEB.xml"
+     }
+    }
+   }
+  },
+  "NAZARA": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 76541640,
+    "why": "NSE's list prices 73316948 shares = the count this company filed for 2023-12-31 (nse:SHP_185004_1029583_19012024043527_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 76541640, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 5139.39,
+     "nse_cr": 4922.87,
+     "shares": 76541640,
+     "src": "nse:SHP_187960_1102081_19042024060802_WEB.xml",
+     "nse_implied_shares": 73316978,
+     "filing_rows": {
+      "prom": 12577546,
+      "prom_pct": 16.43,
+      "pub": 63964094,
+      "pub_pct": 83.57,
+      "npnp": 0,
+      "tot": 76541640,
+      "tot_pct": 100.0,
+      "tot_fp": 76541640,
+      "tot_pp": 0,
+      "ISIN": "INE418L01021",
+      "NameOfTheCompany": "Nazara Technologies Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 73316948,
+      "src": "nse:SHP_185004_1029583_19012024043527_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 73316948,
+    "why": "NSE's list prices 66174092 shares = the count this company filed for 2023-09-30 (nse:SHP_181503_951737_13102023063700_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 73316948, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 6280.7,
+     "nse_cr": 5668.8,
+     "shares": 73316948,
+     "src": "nse:SHP_185004_1029583_19012024043527_WEB.xml",
+     "nse_implied_shares": 66174012,
+     "filing_rows": {
+      "prom": 12577756,
+      "prom_pct": 17.16,
+      "pub": 60739192,
+      "pub_pct": 82.84,
+      "npnp": 0,
+      "tot": 73316948,
+      "tot_pct": 100.0,
+      "tot_fp": 73316948,
+      "tot_pp": 0,
+      "ISIN": "INE418L01021",
+      "NameOfTheCompany": "Nazara Technologies Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 66174092,
+      "src": "nse:SHP_181503_951737_13102023063700_WEB.xml"
+     }
+    }
+   }
+  },
+  "KSCL": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 51439071,
+    "why": "NSE's list prices 55921829 shares = the count this company filed for 2023-12-31 (nse:SHP_185265_1031781_20012024035112_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 51439071, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 3206.45,
+     "nse_cr": 3485.89,
+     "shares": 51439071,
+     "src": "nse:SHP_187830_1100997_19042024035213_WEB.xml",
+     "nse_implied_shares": 55921952,
+     "filing_rows": {
+      "prom": 31122242,
+      "prom_pct": 60.5,
+      "pub": 19502943,
+      "pub_pct": 37.91,
+      "npnp": 813886,
+      "tot": 51439071,
+      "tot_pct": 100.0,
+      "tot_fp": 51439071,
+      "tot_pp": 0,
+      "ISIN": "INE455I01029",
+      "NameOfTheCompany": "Kaveri Seed Company Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 55921829,
+      "src": "nse:SHP_185265_1031781_20012024035112_WEB.xml"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 58321660,
+    "why": "NSE's implied count 63129011 matches none of this company's filed counts; our count 58321660 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 3330.17,
+     "nse_cr": 3604.67,
+     "shares": 58321660,
+     "src": "nse:SHP_165498_596296_21012022101158_WEB.xml",
+     "nse_implied_shares": 63129011,
+     "filing_rows": {
+      "prom": 33497143,
+      "prom_pct": 57.44,
+      "pub": 23945026,
+      "pub_pct": 41.06,
+      "npnp": 879491,
+      "tot": 58321660,
+      "tot_pct": 100.0,
+      "tot_fp": 58321660,
+      "tot_pp": 0,
+      "ISIN": "INE455I01029",
+      "NameOfTheCompany": "Kaveri Seed Company Limited"
+     }
+    }
+   }
+  },
+  "INDOSTAR": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 136079295,
+    "why": "NSE's list prices 124010329 shares = the count this company filed for 2021-09-30 (nse:SHP_162948_542028_20102021094218_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 136079295, i.e. the change between 2021-09-30 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 2590.27,
+     "nse_cr": 2360.54,
+     "shares": 136079295,
+     "src": "nse:SHP_187600_1099085_18042024060436_WEB.xml",
+     "nse_implied_shares": 124010477,
+     "filing_rows": {
+      "prom": 102058226,
+      "prom_pct": 75.0,
+      "pub": 34021069,
+      "pub_pct": 25.0,
+      "npnp": 0,
+      "tot": 136079295,
+      "tot_pct": 100.0,
+      "tot_fp": 136079295,
+      "tot_pp": 0,
+      "ISIN": "INE896L01010",
+      "NameOfTheCompany": "IndoStar Capital Finance Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 124010329,
+      "src": "nse:SHP_162948_542028_20102021094218_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 136079295,
+    "why": "NSE's list prices 124010329 shares = the count this company filed for 2021-09-30 (nse:SHP_162948_542028_20102021094218_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 136079295, i.e. the change between 2021-09-30 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 1415.91,
+     "nse_cr": 1290.33,
+     "shares": 136079295,
+     "src": "nse:SHP_177917_830041_21042023013441_WEB.xml",
+     "nse_implied_shares": 124010140,
+     "filing_rows": {
+      "prom": 121398226,
+      "prom_pct": 89.21,
+      "pub": 14681069,
+      "pub_pct": 10.79,
+      "npnp": 0,
+      "tot": 136079295,
+      "tot_pct": 100.0,
+      "tot_fp": 136079295,
+      "tot_pp": 0,
+      "ISIN": "INE896L01010",
+      "NameOfTheCompany": "IndoStar Capital Finance Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 124010329,
+      "src": "nse:SHP_162948_542028_20102021094218_WEB.xml"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 136079295,
+    "why": "NSE's list prices 124010329 shares = the count this company filed for 2021-09-30 (nse:SHP_162948_542028_20102021094218_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 136079295, i.e. the change between 2021-09-30 and 2021-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 3264.54,
+     "nse_cr": 2975.01,
+     "shares": 136079295,
+     "src": "nse:SHP_165065_592588_18012022094018_WEB.xml",
+     "nse_implied_shares": 124010508,
+     "filing_rows": {
+      "prom": 121398226,
+      "prom_pct": 89.21,
+      "pub": 14681069,
+      "pub_pct": 10.8,
+      "npnp": 0,
+      "tot": 136079295,
+      "tot_pct": 100.0,
+      "tot_fp": 136079295,
+      "tot_pp": 0,
+      "ISIN": "INE896L01010",
+      "NameOfTheCompany": "IndoStar Capital Finance Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 124010329,
+      "src": "nse:SHP_162948_542028_20102021094218_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 136079295,
+    "why": "NSE's list prices 124010329 shares = the count this company filed for 2021-09-30 (nse:SHP_162948_542028_20102021094218_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 136079295, i.e. the change between 2021-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 2282.05,
+     "nse_cr": 2079.65,
+     "shares": 136079295,
+     "src": "nse:SHP_184507_1024559_17012024025711_WEB.xml",
+     "nse_implied_shares": 124010125,
+     "filing_rows": {
+      "prom": 102058226,
+      "prom_pct": 75.0,
+      "pub": 34021069,
+      "pub_pct": 25.0,
+      "npnp": 0,
+      "tot": 136079295,
+      "tot_pct": 100.0,
+      "tot_fp": 136079295,
+      "tot_pp": 0,
+      "ISIN": "INE896L01010",
+      "NameOfTheCompany": "IndoStar Capital Finance Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 124010329,
+      "src": "nse:SHP_162948_542028_20102021094218_WEB.xml"
+     }
+    }
+   }
+  },
+  "RAMASTEEL": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 1544167185,
+    "why": "NSE's implied count 1480069941 matches none of this company's filed counts; our count 1544167185 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 2223.6,
+     "nse_cr": 2131.3,
+     "shares": 1544167185,
+     "src": "nse:SHP_187268_1096393_17042024044104_WEB.xml",
+     "nse_implied_shares": 1480069941,
+     "filing_rows": {
+      "prom": 875467125,
+      "prom_pct": 56.7,
+      "pub": 668699760,
+      "pub_pct": 43.3,
+      "npnp": 300,
+      "tot": 1544167185,
+      "tot_pct": 100.0,
+      "tot_fp": 1544167185,
+      "tot_pp": 0,
+      "ISIN": "INE230R01035",
+      "NameOfTheCompany": "Rama Steel Tubes Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 509952025,
+    "why": "NSE's implied count 493354827 matches none of this company's filed counts; our count 509952025 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1835.83,
+     "nse_cr": 1776.08,
+     "shares": 509952025,
+     "src": "nse:SHP_184220_1021435_15012024051554_WEB.xml",
+     "nse_implied_shares": 493354827,
+     "filing_rows": {
+      "prom": 291822375,
+      "prom_pct": 57.23,
+      "pub": 218129550,
+      "pub_pct": 42.77,
+      "npnp": 100,
+      "tot": 509952025,
+      "tot_pct": 100.0,
+      "tot_fp": 509952025,
+      "tot_pp": 0,
+      "ISIN": "INE230R01035",
+      "NameOfTheCompany": "Rama Steel Tubes Limited"
+     }
+    }
+   }
+  },
+  "HMT": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 1204091640,
+    "why": "NSE's implied count 468170770 matches none of this company's filed counts; our count 1204091640 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 5207.7,
+     "nse_cr": 2024.84,
+     "shares": 1204091640,
+     "src": "nse:SHP_187176_1095670_17042024012128_WEB.xml",
+     "nse_implied_shares": 468170770,
+     "filing_rows": {
+      "prom": 1128056626,
+      "prom_pct": 93.69,
+      "pub": 76035014,
+      "pub_pct": 6.31,
+      "npnp": 0,
+      "tot": 1204091640,
+      "tot_pct": 100.0,
+      "tot_fp": 1204091640,
+      "tot_pp": 0,
+      "ISIN": "INE262A01018",
+      "NameOfTheCompany": "HMT Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 1204091640,
+    "why": "NSE's implied count 468169154 matches none of this company's filed counts; our count 1204091640 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 2925.94,
+     "nse_cr": 1137.65,
+     "shares": 1204091640,
+     "src": "nse:SHP_176344_816421_12042023054930_WEB.xml",
+     "nse_implied_shares": 468169154,
+     "filing_rows": {
+      "prom": 1128056626,
+      "prom_pct": 93.69,
+      "pub": 76035014,
+      "pub_pct": 6.31,
+      "npnp": 0,
+      "tot": 1204091640,
+      "tot_pct": 100.0,
+      "tot_fp": 1204091640,
+      "tot_pp": 0,
+      "ISIN": "INE262A01018",
+      "NameOfTheCompany": "HMT Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 1204091640,
+    "why": "NSE's implied count 468170435 matches none of this company's filed counts; our count 1204091640 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 3473.8,
+     "nse_cr": 1350.67,
+     "shares": 1204091640,
+     "src": "nse:SHP_165243_594086_19012022063546_WEB.xml",
+     "nse_implied_shares": 468170435,
+     "filing_rows": {
+      "prom": 1128056626,
+      "prom_pct": 93.69,
+      "pub": 76035014,
+      "pub_pct": 6.31,
+      "npnp": 0,
+      "tot": 1204091640,
+      "tot_pct": 100.0,
+      "tot_fp": 1204091640,
+      "tot_pp": 0,
+      "ISIN": "INE262A01018",
+      "NameOfTheCompany": "HMT Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 1204091640,
+    "why": "NSE's implied count 468170611 matches none of this company's filed counts; our count 1204091640 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 6363.62,
+     "nse_cr": 2474.28,
+     "shares": 1204091640,
+     "src": "nse:SHP_183393_1010682_08012024044349_WEB.xml",
+     "nse_implied_shares": 468170611,
+     "filing_rows": {
+      "prom": 1128056626,
+      "prom_pct": 93.69,
+      "pub": 76035014,
+      "pub_pct": 6.31,
+      "npnp": 0,
+      "tot": 1204091640,
+      "tot_pct": 100.0,
+      "tot_fp": 1204091640,
+      "tot_pp": 0,
+      "ISIN": "INE262A01018",
+      "NameOfTheCompany": "HMT Limited"
+     }
+    }
+   }
+  },
+  "HITECH": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 149886000,
+    "why": "NSE's implied count 143585473 matches none of this company's filed counts; our count 149886000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 2094.66,
+     "nse_cr": 2006.61,
+     "shares": 149886000,
+     "src": "nse:SHP_186135_1085364_09042024060652_WEB.xml",
+     "nse_implied_shares": 143585473,
+     "filing_rows": {
+      "prom": 79732290,
+      "prom_pct": 53.2,
+      "pub": 70153710,
+      "pub_pct": 46.8,
+      "npnp": 0,
+      "tot": 149886000,
+      "tot_pct": 100.0,
+      "tot_fp": 149886000,
+      "tot_pp": 0,
+      "ISIN": "INE106T01025",
+      "NameOfTheCompany": "Hi-Tech Pipes Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 12211100,
+    "why": "NSE's implied count 11746139 matches none of this company's filed counts; our count 12211100 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 656.04,
+     "nse_cr": 631.06,
+     "shares": 12211100,
+     "src": "nse:SHP_164778_590086_17012022040853_WEB.xml",
+     "nse_implied_shares": 11746139,
+     "filing_rows": {
+      "prom": 7227383,
+      "prom_pct": 59.19,
+      "pub": 4983717,
+      "pub_pct": 40.81,
+      "npnp": 0,
+      "tot": 12211100,
+      "tot_pct": 100.0,
+      "tot_fp": 12211100,
+      "tot_pp": 0,
+      "ISIN": "INE106T01017",
+      "NameOfTheCompany": "Hi-Tech Pipes Limited"
+     }
+    }
+   }
+  },
+  "PARACABLES": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 303434870,
+    "why": "NSE's implied count 281309582 matches none of this company's filed counts; our count 303434870 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 2034.53,
+     "nse_cr": 1886.18,
+     "shares": 303434870,
+     "src": "nse:SHP_186324_1087711_11042024021431_WEB.xml",
+     "nse_implied_shares": 281309582,
+     "filing_rows": {
+      "prom": 149621103,
+      "prom_pct": 49.31,
+      "pub": 153813767,
+      "pub_pct": 50.69,
+      "npnp": 0,
+      "tot": 303434870,
+      "tot_pct": 100.0,
+      "tot_fp": 303434870,
+      "tot_pp": 0,
+      "ISIN": "INE074B01023",
+      "NameOfTheCompany": "Paramount Communications Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 279609890,
+    "why": "NSE's list prices 234159890 shares = the count this company filed for 2023-06-30 (nse:SHP_179182_887511_17072023031411_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 279609890, i.e. the change between 2023-06-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 2464.76,
+     "nse_cr": 2064.12,
+     "shares": 279609890,
+     "src": "nse:SHP_185187_1031055_20012024111701_WEB.xml",
+     "nse_implied_shares": 234160067,
+     "filing_rows": {
+      "prom": 149621103,
+      "prom_pct": 53.51,
+      "pub": 129988787,
+      "pub_pct": 46.49,
+      "npnp": 0,
+      "tot": 279609890,
+      "tot_pct": 100.0,
+      "tot_fp": 279609890,
+      "tot_pp": 0,
+      "ISIN": "INE074B01023",
+      "NameOfTheCompany": "Paramount Communications Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 234159890,
+      "src": "nse:SHP_179182_887511_17072023031411_WEB.xml"
+     }
+    }
+   }
+  },
+  "ARMANFIN": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 10476774,
+    "why": "NSE's list prices 9787346 shares = the count this company filed for 2023-12-31 (nse:SHP_183271_1008797_05012024053437_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 10476774, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 1922.17,
+     "nse_cr": 1795.68,
+     "shares": 10476774,
+     "src": "nse:SHP_186331_1087773_11042024024422_WEB.xml",
+     "nse_implied_shares": 9787341,
+     "filing_rows": {
+      "prom": 2314738,
+      "prom_pct": 22.09,
+      "pub": 8162036,
+      "pub_pct": 77.91,
+      "npnp": 0,
+      "tot": 10476774,
+      "tot_pct": 100.0,
+      "tot_fp": 10476774,
+      "tot_pp": 0,
+      "ISIN": "INE109C01017",
+      "NameOfTheCompany": "Arman Financial Services Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 9787346,
+      "src": "nse:SHP_183271_1008797_05012024053437_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 9787346,
+    "why": "NSE's list prices 8711056 shares = the count this company filed for 2023-09-30 (nse:SHP_180893_944875_10102023010731_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 9787346, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 2385.86,
+     "nse_cr": 2123.49,
+     "shares": 9787346,
+     "src": "nse:SHP_183271_1008797_05012024053437_WEB.xml",
+     "nse_implied_shares": 8711044,
+     "filing_rows": {
+      "prom": 2314738,
+      "prom_pct": 23.65,
+      "pub": 7472608,
+      "pub_pct": 76.35,
+      "npnp": 0,
+      "tot": 9787346,
+      "tot_pct": 100.0,
+      "tot_fp": 9787346,
+      "tot_pp": 0,
+      "ISIN": "INE109C01017",
+      "NameOfTheCompany": "Arman Financial Services Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 8711056,
+      "src": "nse:SHP_180893_944875_10102023010731_WEB.xml"
+     }
+    }
+   }
+  },
+  "KRISHANA": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 61827600,
+    "why": "NSE's implied count 60552859 matches none of this company's filed counts; our count 61827600 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1508.9,
+     "nse_cr": 1477.79,
+     "shares": 61827600,
+     "src": "nse:SHP_186580_1327190_16122024100718_WEB.xml",
+     "nse_implied_shares": 60552859,
+     "filing_rows": {
+      "prom": 43902040,
+      "prom_pct": 71.01,
+      "pub": 17925560,
+      "pub_pct": 28.99,
+      "npnp": 0,
+      "tot": 61827600,
+      "tot_pct": 100.0,
+      "tot_fp": 61827600,
+      "tot_pp": 0,
+      "ISIN": "INE506W01012",
+      "NameOfTheCompany": "Krishana Phoschem Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 61827600,
+    "why": "NSE's implied count 60552347 matches none of this company's filed counts; our count 61827600 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1533.02,
+     "nse_cr": 1501.4,
+     "shares": 61827600,
+     "src": "nse:SHP_184457_1024081_17012024114711_WEB.xml",
+     "nse_implied_shares": 60552347,
+     "filing_rows": {
+      "prom": 43207385,
+      "prom_pct": 69.88,
+      "pub": 18620215,
+      "pub_pct": 30.12,
+      "npnp": 0,
+      "tot": 61827600,
+      "tot_pct": 100.0,
+      "tot_fp": 61827600,
+      "tot_pp": 0,
+      "ISIN": "INE506W01012",
+      "NameOfTheCompany": "Krishana Phoschem Limited"
+     }
+    }
+   }
+  },
+  "UNIVCABLES": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 34695381,
+    "why": "NSE's implied count 31989851 matches none of this company's filed counts; our count 34695381 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1580.03,
+     "nse_cr": 1456.82,
+     "shares": 34695381,
+     "src": "nse:SHP_187505_1098139_18042024034051_WEB.xml",
+     "nse_implied_shares": 31989851,
+     "filing_rows": {
+      "prom": 21472949,
+      "prom_pct": 61.89,
+      "pub": 13222432,
+      "pub_pct": 38.11,
+      "npnp": 0,
+      "tot": 34695381,
+      "tot_pct": 100.0,
+      "tot_fp": 34695381,
+      "tot_pp": 0,
+      "ISIN": "INE279A01012",
+      "NameOfTheCompany": "Universal Cables Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 34695381,
+    "why": "NSE's implied count 31989867 matches none of this company's filed counts; our count 34695381 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1244.18,
+     "nse_cr": 1147.16,
+     "shares": 34695381,
+     "src": "nse:SHP_177306_824906_19042023111253_WEB.xml",
+     "nse_implied_shares": 31989867,
+     "filing_rows": {
+      "prom": 21472949,
+      "prom_pct": 61.89,
+      "pub": 13222432,
+      "pub_pct": 38.11,
+      "npnp": 0,
+      "tot": 34695381,
+      "tot_pct": 100.0,
+      "tot_fp": 34695381,
+      "tot_pp": 0,
+      "ISIN": "INE279A01012",
+      "NameOfTheCompany": "Universal Cables Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 34695381,
+    "why": "NSE's implied count 31989508 matches none of this company's filed counts; our count 34695381 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 601.62,
+     "nse_cr": 554.7,
+     "shares": 34695381,
+     "src": "nse:SHP_164681_589290_17012022112829_WEB.xml",
+     "nse_implied_shares": 31989508,
+     "filing_rows": {
+      "prom": 21472949,
+      "prom_pct": 61.89,
+      "pub": 13222432,
+      "pub_pct": 38.11,
+      "npnp": 0,
+      "tot": 34695381,
+      "tot_pct": 100.0,
+      "tot_fp": 34695381,
+      "tot_pp": 0,
+      "ISIN": "INE279A01012",
+      "NameOfTheCompany": "Universal Cables Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 34695381,
+    "why": "NSE's implied count 31989812 matches none of this company's filed counts; our count 34695381 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1795.83,
+     "nse_cr": 1655.79,
+     "shares": 34695381,
+     "src": "nse:SHP_184278_1022121_16012024115026_WEB.xml",
+     "nse_implied_shares": 31989812,
+     "filing_rows": {
+      "prom": 21472949,
+      "prom_pct": 61.89,
+      "pub": 13222432,
+      "pub_pct": 38.11,
+      "npnp": 0,
+      "tot": 34695381,
+      "tot_pct": 100.0,
+      "tot_fp": 34695381,
+      "tot_pp": 0,
+      "ISIN": "INE279A01012",
+      "NameOfTheCompany": "Universal Cables Limited"
+     }
+    }
+   }
+  },
+  "STEELXIND": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 1197633270,
+    "why": "NSE's implied count 943813829 matches none of this company's filed counts; our count 1197633270 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1652.73,
+     "nse_cr": 1302.46,
+     "shares": 1197633270,
+     "src": "nse:SHP_187638_1099475_18042024073002_WEB.xml",
+     "nse_implied_shares": 943813829,
+     "filing_rows": {
+      "prom": 663595550,
+      "prom_pct": 55.41,
+      "pub": 534037720,
+      "pub_pct": 44.59,
+      "npnp": 0,
+      "tot": 1197633270,
+      "tot_pct": 100.0,
+      "tot_fp": 1197633270,
+      "tot_pp": 0,
+      "ISIN": "INE503B01021",
+      "NameOfTheCompany": "STEEL EXCHANGE INDIA LIMITED"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 1039611770,
+    "why": "NSE's implied count 943812051 matches none of this company's filed counts; our count 1039611770 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1403.48,
+     "nse_cr": 1274.15,
+     "shares": 1039611770,
+     "src": "nse:SHP_177293_824818_19042023103439_WEB.xml",
+     "nse_implied_shares": 943812051,
+     "filing_rows": {
+      "prom": 529574050,
+      "prom_pct": 50.94,
+      "pub": 510037720,
+      "pub_pct": 49.06,
+      "npnp": 0,
+      "tot": 1039611770,
+      "tot_pct": 100.0,
+      "tot_fp": 1039611770,
+      "tot_pp": 0,
+      "ISIN": "INE503B01021",
+      "NameOfTheCompany": "STEEL EXCHANGE INDIA LIMITED"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 1186633270,
+    "why": "NSE's implied count 943809957 matches none of this company's filed counts; our count 1186633270 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 1240.03,
+     "nse_cr": 986.28,
+     "shares": 1186633270,
+     "src": "nse:SHP_184806_1027615_18012024060528_WEB.xml",
+     "nse_implied_shares": 943809957,
+     "filing_rows": {
+      "prom": 663595550,
+      "prom_pct": 55.92,
+      "pub": 523037720,
+      "pub_pct": 44.08,
+      "npnp": 0,
+      "tot": 1186633270,
+      "tot_pct": 100.0,
+      "tot_fp": 1186633270,
+      "tot_pp": 0,
+      "ISIN": "INE503B01021",
+      "NameOfTheCompany": "STEEL EXCHANGE INDIA LIMITED"
+     }
+    }
+   }
+  },
+  "SPORTKING": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12707200,
+    "why": "NSE's list prices 13287200 shares = the count this company filed for 2023-03-31 (nse:SHP_175917_811505_08042023105253_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12707200, i.e. the change between 2023-03-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 1011.87,
+     "nse_cr": 1058.06,
+     "shares": 12707200,
+     "src": "nse:SHP_185940_1082748_08042024100512_WEB.xml",
+     "nse_implied_shares": 13287260,
+     "filing_rows": {
+      "prom": 9449445,
+      "prom_pct": 74.36,
+      "pub": 3257755,
+      "pub_pct": 25.64,
+      "npnp": 0,
+      "tot": 12707200,
+      "tot_pct": 100.0,
+      "tot_fp": 12707200,
+      "tot_pp": 0,
+      "ISIN": "INE885H01011",
+      "NameOfTheCompany": "Sportking India Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-03-31",
+      "shares": 13287200,
+      "src": "nse:SHP_175917_811505_08042023105253_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12707200,
+    "why": "NSE's list prices 13287200 shares = the count this company filed for 2023-03-31 (nse:SHP_175917_811505_08042023105253_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12707200, i.e. the change between 2023-03-31 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 1043.32,
+     "nse_cr": 1090.95,
+     "shares": 12707200,
+     "src": "nse:SHP_183503_1012283_09012024035513_WEB.xml",
+     "nse_implied_shares": 13287313,
+     "filing_rows": {
+      "prom": 9449445,
+      "prom_pct": 74.36,
+      "pub": 3257755,
+      "pub_pct": 25.64,
+      "npnp": 0,
+      "tot": 12707200,
+      "tot_pct": 100.0,
+      "tot_fp": 12707200,
+      "tot_pp": 0,
+      "ISIN": "INE885H01011",
+      "NameOfTheCompany": "Sportking India Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-03-31",
+      "shares": 13287200,
+      "src": "nse:SHP_175917_811505_08042023105253_WEB.xml"
+     }
+    }
+   }
+  },
+  "GANDHITUBE": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12152000,
+    "why": "NSE's list prices 12918616 shares = the count this company filed for 2021-09-30 (nse:SHP_162701_539635_20102021115231_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12152000, i.e. the change between 2021-09-30 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 890.38,
+     "nse_cr": 946.55,
+     "shares": 12152000,
+     "src": "nse:SHP_186415_1088751_12042024110745_WEB.xml",
+     "nse_implied_shares": 12918614,
+     "filing_rows": {
+      "prom": 8935257,
+      "prom_pct": 73.53,
+      "pub": 3216743,
+      "pub_pct": 26.47,
+      "npnp": 0,
+      "tot": 12152000,
+      "tot_pct": 100.0,
+      "tot_fp": 12152000,
+      "tot_pp": 0,
+      "ISIN": "INE524B01027",
+      "NameOfTheCompany": "Gandhi Special Tubes Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 12918616,
+      "src": "nse:SHP_162701_539635_20102021115231_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12152000,
+    "why": "NSE's list prices 12918616 shares = the count this company filed for 2021-09-30 (nse:SHP_162701_539635_20102021115231_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12152000, i.e. the change between 2021-09-30 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 594.66,
+     "nse_cr": 632.17,
+     "shares": 12152000,
+     "src": "nse:SHP_176421_817179_13042023014413_WEB.xml",
+     "nse_implied_shares": 12918525,
+     "filing_rows": {
+      "prom": 8935257,
+      "prom_pct": 73.53,
+      "pub": 3216743,
+      "pub_pct": 26.47,
+      "npnp": 0,
+      "tot": 12152000,
+      "tot_pct": 100.0,
+      "tot_fp": 12152000,
+      "tot_pp": 0,
+      "ISIN": "INE524B01027",
+      "NameOfTheCompany": "Gandhi Special Tubes Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 12918616,
+      "src": "nse:SHP_162701_539635_20102021115231_WEB.xml"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12152000,
+    "why": "NSE's list prices 12918616 shares = the count this company filed for 2021-09-30 (nse:SHP_162701_539635_20102021115231_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12152000, i.e. the change between 2021-09-30 and 2021-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 449.32,
+     "nse_cr": 477.67,
+     "shares": 12152000,
+     "src": "nse:SHP_163559_577368_06012022035202_WEB.xml",
+     "nse_implied_shares": 12918735,
+     "filing_rows": {
+      "prom": 8916132,
+      "prom_pct": 73.37,
+      "pub": 3235868,
+      "pub_pct": 26.63,
+      "npnp": 0,
+      "tot": 12152000,
+      "tot_pct": 100.0,
+      "tot_fp": 12152000,
+      "tot_pp": 0,
+      "ISIN": "INE524B01027",
+      "NameOfTheCompany": "Gandhi Special Tubes Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 12918616,
+      "src": "nse:SHP_162701_539635_20102021115231_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12152000,
+    "why": "NSE's list prices 12918616 shares = the count this company filed for 2021-09-30 (nse:SHP_162701_539635_20102021115231_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12152000, i.e. the change between 2021-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 885.82,
+     "nse_cr": 941.7,
+     "shares": 12152000,
+     "src": "nse:SHP_183442_1011539_09012024115717_WEB.xml",
+     "nse_implied_shares": 12918582,
+     "filing_rows": {
+      "prom": 8935257,
+      "prom_pct": 73.53,
+      "pub": 3216743,
+      "pub_pct": 26.47,
+      "npnp": 0,
+      "tot": 12152000,
+      "tot_pct": 100.0,
+      "tot_fp": 12152000,
+      "tot_pp": 0,
+      "ISIN": "INE524B01027",
+      "NameOfTheCompany": "Gandhi Special Tubes Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 12918616,
+      "src": "nse:SHP_162701_539635_20102021115231_WEB.xml"
+     }
+    }
+   }
+  },
+  "VIKASLIFE": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 1650168560,
+    "why": "NSE's implied count 1615178793 matches none of this company's filed counts; our count 1650168560 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 800.33,
+     "nse_cr": 783.36,
+     "shares": 1650168560,
+     "src": "nse:SHP_188247_1104567_20042024062646_WEB.xml",
+     "nse_implied_shares": 1615178793,
+     "filing_rows": {
+      "prom": 193813968,
+      "prom_pct": 11.76,
+      "pub": 1454654592,
+      "pub_pct": 88.24,
+      "npnp": 1700000,
+      "tot": 1650168560,
+      "tot_pct": 100.0,
+      "tot_fp": 1650168560,
+      "tot_pp": 0,
+      "ISIN": "INE161L01027",
+      "NameOfTheCompany": "Vikas Lifecare Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 928893693,
+    "was": 1105825825,
+    "why": "176932132 partly-paid shares counted at the fully-paid price; fully paid = 928893693",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "928893693",
+      "PartlyPaidUpEquityShares": "176932132",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "1105825825"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 447.86,
+     "nse_cr": 376.2,
+     "src": "nse:SHP_165580_597377_21012022063519_WEB.xml"
+    }
+   }
+  },
+  "WSI": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 50328247,
+    "why": "NSE's list prices 47011585 shares = the count this company filed for 2023-12-31 (nse:SHP_184126_1020220_13012024065055_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 50328247, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 754.92,
+     "nse_cr": 705.17,
+     "shares": 50328247,
+     "src": "nse:SHP_187430_1097584_18042024123832_WEB.xml",
+     "nse_implied_shares": 47011564,
+     "filing_rows": {
+      "prom": 29459324,
+      "prom_pct": 58.53,
+      "pub": 20868923,
+      "pub_pct": 41.47,
+      "npnp": 0,
+      "tot": 50328247,
+      "tot_pct": 100.0,
+      "tot_fp": 50328247,
+      "tot_pp": 0,
+      "ISIN": "INE100D01014",
+      "NameOfTheCompany": "W S Industries (I) Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 47011585,
+      "src": "nse:SHP_184126_1020220_13012024065055_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 41802267,
+    "why": "NSE's implied count 37249393 matches none of this company's filed counts; our count 41802267 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 136.07,
+     "nse_cr": 121.25,
+     "shares": 41802267,
+     "src": "nse:SHP_176983_822327_17042023071049_WEB.xml",
+     "nse_implied_shares": 37249393,
+     "filing_rows": {
+      "prom": 23051344,
+      "prom_pct": 55.14,
+      "pub": 18750923,
+      "pub_pct": 44.86,
+      "npnp": 0,
+      "tot": 41802267,
+      "tot_pct": 100.0,
+      "tot_fp": 41802267,
+      "tot_pp": 0,
+      "ISIN": "INE100D01014",
+      "NameOfTheCompany": "W S Industries (I) Limited"
+     }
+    }
+   }
+  },
+  "KAMATHOTEL": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 25906464,
+    "why": "NSE's list prices 24652863 shares = the count this company filed for 2023-12-31 (nse:SHP_184248_1021747_15012024064414_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 25906464, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 647.14,
+     "nse_cr": 615.83,
+     "shares": 25906464,
+     "src": "nse:SHP_187048_1094588_16042024053538_WEB.xml",
+     "nse_implied_shares": 24653055,
+     "filing_rows": {
+      "prom": 16407927,
+      "prom_pct": 63.34,
+      "pub": 9498537,
+      "pub_pct": 36.66,
+      "npnp": 0,
+      "tot": 25906464,
+      "tot_pct": 100.0,
+      "tot_fp": 25906464,
+      "tot_pp": 0,
+      "ISIN": "INE967C01018",
+      "NameOfTheCompany": "Kamat Hotels (I) Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 24652863,
+      "src": "nse:SHP_184248_1021747_15012024064414_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 24652863,
+    "why": "NSE's list prices 23584058 shares = the count this company filed for 2022-12-31 (nse:SHP_173794_761676_11012023123741_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 24652863, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 324.19,
+     "nse_cr": 310.13,
+     "shares": 24652863,
+     "src": "nse:SHP_176674_819572_14042023054438_WEB.xml",
+     "nse_implied_shares": 23583677,
+     "filing_rows": {
+      "prom": 15430765,
+      "prom_pct": 62.59,
+      "pub": 9222098,
+      "pub_pct": 37.41,
+      "npnp": 0,
+      "tot": 24652863,
+      "tot_pct": 100.0,
+      "tot_fp": 24652863,
+      "tot_pp": 0,
+      "ISIN": "INE967C01018",
+      "NameOfTheCompany": "Kamat Hotels (I) Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 23584058,
+      "src": "nse:SHP_173794_761676_11012023123741_WEB.xml"
+     }
+    }
+   }
+  },
+  "IITL": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 22547550,
+    "why": "NSE's implied count 21827921 matches none of this company's filed counts; our count 22547550 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 452.75,
+     "nse_cr": 438.3,
+     "shares": 22547550,
+     "src": "nse:SHP_185909_1082432_06042024041119_WEB.xml",
+     "nse_implied_shares": 21827921,
+     "filing_rows": {
+      "prom": 9432067,
+      "prom_pct": 48.1,
+      "pub": 10176713,
+      "pub_pct": 51.9,
+      "npnp": 2938770,
+      "tot": 22547550,
+      "tot_pct": 100.0,
+      "tot_fp": 19608780,
+      "tot_pp": 0,
+      "ISIN": "INE886A01014",
+      "NameOfTheCompany": "Industrial Investment Trust Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 22547550,
+    "why": "NSE's implied count 21827582 matches none of this company's filed counts; our count 22547550 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 190.41,
+     "nse_cr": 184.33,
+     "shares": 22547550,
+     "src": "nse:SHP_177803_828961_20042023070244_WEB.xml",
+     "nse_implied_shares": 21827582,
+     "filing_rows": {
+      "prom": 9432067,
+      "prom_pct": 57.97,
+      "pub": 6837933,
+      "pub_pct": 42.03,
+      "npnp": 6277550,
+      "tot": 22547550,
+      "tot_pct": 100.0,
+      "tot_fp": 16270000,
+      "tot_pp": 0,
+      "ISIN": "INE886A01014",
+      "NameOfTheCompany": "Industrial Investment Trust Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 22547550,
+    "why": "NSE's implied count 21827122 matches none of this company's filed counts; our count 22547550 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 183.09,
+     "nse_cr": 177.24,
+     "shares": 22547550,
+     "src": "nse:SHP_163534_577099_06012022011518_WEB.xml",
+     "nse_implied_shares": 21827122,
+     "filing_rows": {
+      "prom": 9432067,
+      "prom_pct": 57.97,
+      "pub": 6837933,
+      "pub_pct": 42.03,
+      "npnp": 6277550,
+      "tot": 22547550,
+      "tot_pct": 100.0,
+      "tot_fp": 16270000,
+      "tot_pp": 0,
+      "ISIN": "INE886A01014",
+      "NameOfTheCompany": "Industrial Investment Trust Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 22547550,
+    "why": "NSE's implied count 21827556 matches none of this company's filed counts; our count 22547550 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 422.77,
+     "nse_cr": 409.27,
+     "shares": 22547550,
+     "src": "nse:SHP_184196_1021098_15012024035534_WEB.xml",
+     "nse_implied_shares": 21827556,
+     "filing_rows": {
+      "prom": 9432067,
+      "prom_pct": 57.97,
+      "pub": 6837933,
+      "pub_pct": 42.03,
+      "npnp": 6277550,
+      "tot": 22547550,
+      "tot_pct": 100.0,
+      "tot_fp": 16270000,
+      "tot_pp": 0,
+      "ISIN": "INE886A01014",
+      "NameOfTheCompany": "Industrial Investment Trust Limited"
+     }
+    }
+   }
+  },
+  "AARTISURF": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 8458495,
+    "why": "NSE's list prices 7584477 shares = the count this company filed for 2023-12-31 (nse:SHP_183860_1016814_11012024051855_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 8458495, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 467.46,
+     "nse_cr": 419.16,
+     "shares": 8458495,
+     "src": "nse:SHP_188046_1237623_04092024115559_WEB.xml",
+     "nse_implied_shares": 7584527,
+     "filing_rows": {
+      "prom": 4222080,
+      "prom_pct": 49.81,
+      "pub": 4254688,
+      "pub_pct": 50.19,
+      "npnp": 0,
+      "tot": 8476768,
+      "tot_pct": 100.0,
+      "tot_fp": 8458495,
+      "tot_pp": 18273,
+      "ISIN": "INE09EO01013",
+      "NameOfTheCompany": "Aarti Surfactants Limited"
+     },
+     "healed_from": 8476768,
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 7584477,
+      "src": "nse:SHP_183860_1016814_11012024051855_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 7584477,
+    "was": 8476768,
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 384.59,
+     "nse_cr": 344.11,
+     "src": "nse:SHP_177758_828482_20042023053353_WEB.xml"
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 7584477,
+    "was": 8476768,
+    "why": "892291 partly-paid shares counted at the fully-paid price; fully paid = 7584477",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "7584477",
+      "PartlyPaidUpEquityShares": "892291",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "8476768"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 638.98,
+     "nse_cr": 571.72,
+     "src": "nse:SHP_183860_1016814_11012024051855_WEB.xml"
+    }
+   }
+  },
+  "SOFTTECH": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12819140,
+    "why": "NSE's list prices 10156020 shares = the count this company filed for 2023-09-30 (nse:SHP_181639_953047_16102023011757_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12819140, i.e. the change between 2023-09-30 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 379.64,
+     "nse_cr": 300.77,
+     "shares": 12819140,
+     "src": "nse:SHP_187823_1100936_19042024034426_WEB.xml",
+     "nse_implied_shares": 10155971,
+     "filing_rows": {
+      "prom": 4107872,
+      "prom_pct": 32.04,
+      "pub": 8711268,
+      "pub_pct": 67.96,
+      "npnp": 0,
+      "tot": 12819140,
+      "tot_pct": 100.0,
+      "tot_fp": 12819140,
+      "tot_pp": 0,
+      "ISIN": "INE728Z01015",
+      "NameOfTheCompany": "Softtech Engineers Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 10156020,
+      "src": "nse:SHP_181639_953047_16102023011757_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 12819140,
+    "why": "NSE's list prices 10156020 shares = the count this company filed for 2023-09-30 (nse:SHP_181639_953047_16102023011757_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 12819140, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 294.71,
+     "nse_cr": 233.49,
+     "shares": 12819140,
+     "src": "nse:SHP_185163_1030916_19012024105349_WEB.xml",
+     "nse_implied_shares": 10156225,
+     "filing_rows": {
+      "prom": 4107872,
+      "prom_pct": 32.04,
+      "pub": 8711268,
+      "pub_pct": 67.96,
+      "npnp": 0,
+      "tot": 12819140,
+      "tot_pct": 100.0,
+      "tot_fp": 12819140,
+      "tot_pp": 0,
+      "ISIN": "INE728Z01015",
+      "NameOfTheCompany": "Softtech Engineers Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 10156020,
+      "src": "nse:SHP_181639_953047_16102023011757_WEB.xml"
+     }
+    }
+   }
+  },
+  "THOMASCOTT": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 9795219,
+    "why": "NSE's list prices 8463719 shares = the count this company filed for 2023-12-31 (nse:SHP_185205_1031195_20012024121826_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 9795219, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 284.06,
+     "nse_cr": 245.45,
+     "shares": 9795219,
+     "src": "nse:SHP_187388_1097315_18042024110421_WEB.xml",
+     "nse_implied_shares": 8463833,
+     "filing_rows": {
+      "prom": 5889356,
+      "prom_pct": 60.12,
+      "pub": 3905863,
+      "pub_pct": 39.88,
+      "npnp": 0,
+      "tot": 9795219,
+      "tot_pct": 100.0,
+      "tot_fp": 9795219,
+      "tot_pp": 0,
+      "ISIN": "INE480M01011",
+      "NameOfTheCompany": "Thomas Scott (India) Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 8463719,
+      "src": "nse:SHP_185205_1031195_20012024121826_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 6356683,
+    "why": "NSE's list prices 5514402 shares = the count this company filed for 2022-12-31 (nse:SHP_175204_774728_20012023010706_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 6356683, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 23.46,
+     "nse_cr": 20.35,
+     "shares": 6356683,
+     "src": "nse:SHP_178025_831285_21042023071039_WEB.xml",
+     "nse_implied_shares": 5514003,
+     "filing_rows": {
+      "prom": 4122631,
+      "prom_pct": 64.86,
+      "pub": 2234051,
+      "pub_pct": 35.14,
+      "npnp": 1,
+      "tot": 6356683,
+      "tot_pct": 100.0,
+      "tot_fp": 6356683,
+      "tot_pp": 0,
+      "ISIN": "INE480M01011",
+      "NameOfTheCompany": "Thomas Scott (India) Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 5514402,
+      "src": "nse:SHP_175204_774728_20012023010706_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 8463719,
+    "why": "NSE's list prices 7852719 shares = the count this company filed for 2023-09-30 (nse:SHP_182350_959856_19102023021134_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 8463719, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 170.84,
+     "nse_cr": 158.51,
+     "shares": 8463719,
+     "src": "nse:SHP_185205_1031195_20012024121826_WEB.xml",
+     "nse_implied_shares": 7852869,
+     "filing_rows": {
+      "prom": 5462356,
+      "prom_pct": 64.54,
+      "pub": 3001362,
+      "pub_pct": 35.46,
+      "npnp": 1,
+      "tot": 8463719,
+      "tot_pct": 100.0,
+      "tot_fp": 8463719,
+      "tot_pp": 0,
+      "ISIN": "INE480M01011",
+      "NameOfTheCompany": "Thomas Scott (India) Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 7852719,
+      "src": "nse:SHP_182350_959856_19102023021134_WEB.xml"
+     }
+    }
+   }
+  },
+  "FLEXITUFF": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 30704082,
+    "why": "NSE's list prices 26882806 shares = the count this company filed for 2023-09-30 (nse:SHP_182568_961841_20102023105155_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 30704082, i.e. the change between 2023-09-30 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 143.54,
+     "nse_cr": 125.68,
+     "shares": 30704082,
+     "src": "nse:SHP_188213_1104266_20042024045858_WEB.xml",
+     "nse_implied_shares": 26883719,
+     "filing_rows": {
+      "prom": 10375219,
+      "prom_pct": 33.79,
+      "pub": 20328863,
+      "pub_pct": 66.21,
+      "npnp": 0,
+      "tot": 30704082,
+      "tot_pct": 100.0,
+      "tot_fp": 30704082,
+      "tot_pp": 0,
+      "ISIN": "INE060J01017",
+      "NameOfTheCompany": "Flexituff Ventures International Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 26882806,
+      "src": "nse:SHP_182568_961841_20102023105155_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 26882806,
+    "why": "NSE's list prices 24882806 shares = the count this company filed for 2022-12-31 (nse:SHP_174196_766061_13012023050733_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 26882806, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 73.66,
+     "nse_cr": 68.18,
+     "shares": 26882806,
+     "src": "nse:SHP_176632_819085_14042023032555_WEB.xml",
+     "nse_implied_shares": 24882836,
+     "filing_rows": {
+      "prom": 9381603,
+      "prom_pct": 34.9,
+      "pub": 17501203,
+      "pub_pct": 65.1,
+      "npnp": 0,
+      "tot": 26882806,
+      "tot_pct": 100.0,
+      "tot_fp": 26882806,
+      "tot_pp": 0,
+      "ISIN": "INE060J01017",
+      "NameOfTheCompany": "Flexituff Ventures International Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 24882806,
+      "src": "nse:SHP_174196_766061_13012023050733_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 30704082,
+    "why": "NSE's list prices 26882806 shares = the count this company filed for 2023-09-30 (nse:SHP_182568_961841_20102023105155_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 30704082, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 158.28,
+     "nse_cr": 138.58,
+     "shares": 30704082,
+     "src": "nse:SHP_184723_1026650_18012024025710_WEB.xml",
+     "nse_implied_shares": 26882561,
+     "filing_rows": {
+      "prom": 10375219,
+      "prom_pct": 33.79,
+      "pub": 20328863,
+      "pub_pct": 66.21,
+      "npnp": 0,
+      "tot": 30704082,
+      "tot_pct": 100.0,
+      "tot_fp": 30704082,
+      "tot_pp": 0,
+      "ISIN": "INE060J01017",
+      "NameOfTheCompany": "Flexituff Ventures International Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 26882806,
+      "src": "nse:SHP_182568_961841_20102023105155_WEB.xml"
+     }
+    }
+   }
+  },
+  "AAREYDRUGS": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 28054303,
+    "why": "NSE's list prices 25384684 shares = the count this company filed for 2023-12-31 (nse:SHP_184074_1019606_12012024074039_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 28054303, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 122.46,
+     "nse_cr": 110.8,
+     "shares": 28054303,
+     "src": "nse:SHP_186403_1088653_12042024071950_WEB.xml",
+     "nse_implied_shares": 25383119,
+     "filing_rows": {
+      "prom": 12702443,
+      "prom_pct": 45.28,
+      "pub": 15351860,
+      "pub_pct": 54.72,
+      "npnp": 0,
+      "tot": 28054303,
+      "tot_pct": 100.0,
+      "tot_fp": 28054303,
+      "tot_pp": 0,
+      "ISIN": "INE198H01019",
+      "NameOfTheCompany": "Aarey Drugs &amp; Pharmaceuticals Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 25384684,
+      "src": "nse:SHP_184074_1019606_12012024074039_WEB.xml"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 25384684,
+    "why": "NSE's list prices 23384684 shares = the count this company filed for 2021-09-30 (nse:SHP_161026_524948_08102021013329_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 25384684, i.e. the change between 2021-09-30 and 2021-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 109.03,
+     "nse_cr": 100.44,
+     "shares": 25384684,
+     "src": "nse:SHP_163565_577416_06012022041222_WEB.xml",
+     "nse_implied_shares": 23384735,
+     "filing_rows": {
+      "prom": 12198313,
+      "prom_pct": 48.05,
+      "pub": 13186371,
+      "pub_pct": 51.95,
+      "npnp": 0,
+      "tot": 25384684,
+      "tot_pct": 100.0,
+      "tot_fp": 25384684,
+      "tot_pp": 0,
+      "ISIN": "INE198H01019",
+      "NameOfTheCompany": "Aarey Drugs &amp; Pharmaceuticals Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 23384684,
+      "src": "nse:SHP_161026_524948_08102021013329_WEB.xml"
+     }
+    }
+   }
+  },
+  "GANGAFORGE": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 134177230,
+    "why": "NSE's implied count 110969500 matches none of this company's filed counts; our count 134177230 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 116.73,
+     "nse_cr": 96.54,
+     "shares": 134177230,
+     "src": "nse:SHP_186050_1084353_09042024121737_WEB.xml",
+     "nse_implied_shares": 110969500,
+     "filing_rows": {
+      "prom": 54768301,
+      "prom_pct": 40.82,
+      "pub": 79408929,
+      "pub_pct": 59.18,
+      "npnp": 0,
+      "tot": 134177230,
+      "tot_pct": 100.0,
+      "tot_fp": 134177230,
+      "tot_pp": 0,
+      "ISIN": "INE691Z01023",
+      "NameOfTheCompany": "Ganga Forging Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 119384410,
+    "why": "NSE's implied count 110959313 matches none of this company's filed counts; our count 119384410 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 75.81,
+     "nse_cr": 70.46,
+     "shares": 119384410,
+     "src": "nse:SHP_183966_1018141_12012024023328_WEB.xml",
+     "nse_implied_shares": 110959313,
+     "filing_rows": {
+      "prom": 51955481,
+      "prom_pct": 43.52,
+      "pub": 67428929,
+      "pub_pct": 56.48,
+      "npnp": 0,
+      "tot": 119384410,
+      "tot_pct": 100.0,
+      "tot_fp": 119384410,
+      "tot_pp": 0,
+      "ISIN": "INE691Z01023",
+      "NameOfTheCompany": "Ganga Forging Limited"
+     }
+    }
+   }
+  },
+  "MBECL": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 211570757,
+    "why": "NSE's implied count 172152552 matches none of this company's filed counts; our count 211570757 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 101.55,
+     "nse_cr": 82.63,
+     "shares": 211570757,
+     "src": "nse:SHP_187470_1097900_18042024023504_WEB.xml",
+     "nse_implied_shares": 172152552,
+     "filing_rows": {
+      "prom": 69374046,
+      "prom_pct": 32.79,
+      "pub": 142196711,
+      "pub_pct": 67.21,
+      "npnp": 0,
+      "tot": 211570757,
+      "tot_pct": 100.0,
+      "tot_fp": 211570757,
+      "tot_pp": 0,
+      "ISIN": "INE748A01016",
+      "NameOfTheCompany": "Mcnally Bharat Engineering Company Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 211570757,
+    "why": "NSE's implied count 172151244 matches none of this company's filed counts; our count 211570757 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 156.56,
+     "nse_cr": 127.39,
+     "shares": 211570757,
+     "src": "nse:SHP_163379_575544_04012022114927_WEB.xml",
+     "nse_implied_shares": 172151244,
+     "filing_rows": {
+      "prom": 69374046,
+      "prom_pct": 32.79,
+      "pub": 142196711,
+      "pub_pct": 67.21,
+      "npnp": 0,
+      "tot": 211570757,
+      "tot_pct": 100.0,
+      "tot_fp": 211570757,
+      "tot_pp": 0,
+      "ISIN": "INE748A01016",
+      "NameOfTheCompany": "Mcnally Bharat Engineering Company Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 211570757,
+    "why": "NSE's implied count 172151230 matches none of this company's filed counts; our count 211570757 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 120.6,
+     "nse_cr": 98.13,
+     "shares": 211570757,
+     "src": "nse:SHP_184861_1028240_19012024104234_WEB.xml",
+     "nse_implied_shares": 172151230,
+     "filing_rows": {
+      "prom": 69374046,
+      "prom_pct": 32.79,
+      "pub": 142196711,
+      "pub_pct": 67.21,
+      "npnp": 0,
+      "tot": 211570757,
+      "tot_pct": 100.0,
+      "tot_fp": 211570757,
+      "tot_pp": 0,
+      "ISIN": "INE748A01016",
+      "NameOfTheCompany": "Mcnally Bharat Engineering Company Limited"
+     }
+    }
+   }
+  },
+  "CEREBRAINT": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 121186482,
+    "why": "NSE's implied count 111980436 matches none of this company's filed counts; our count 121186482 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 76.35,
+     "nse_cr": 70.55,
+     "shares": 121186482,
+     "src": "nse:SHP_188037_1102857_19042024100808_WEB.xml",
+     "nse_implied_shares": 111980436,
+     "filing_rows": {
+      "prom": 1017065,
+      "prom_pct": 0.84,
+      "pub": 120169417,
+      "pub_pct": 99.16,
+      "npnp": 0,
+      "tot": 121186482,
+      "tot_pct": 100.0,
+      "tot_fp": 121186482,
+      "tot_pp": 0,
+      "ISIN": "INE345B01019",
+      "NameOfTheCompany": "Cerebra Integrated Technologies Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 121186482,
+    "why": "NSE's implied count 111988990 matches none of this company's filed counts; our count 121186482 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 89.07,
+     "nse_cr": 82.31,
+     "shares": 121186482,
+     "src": "nse:SHP_185334_1032528_20012024104423_WEB.xml",
+     "nse_implied_shares": 111988990,
+     "filing_rows": {
+      "prom": 282900,
+      "prom_pct": 0.23,
+      "pub": 120903582,
+      "pub_pct": 99.77,
+      "npnp": 0,
+      "tot": 121186482,
+      "tot_pct": 100.0,
+      "tot_fp": 121186482,
+      "tot_pp": 0,
+      "ISIN": "INE345B01019",
+      "NameOfTheCompany": "Cerebra Integrated Technologies Limited"
+     }
+    }
+   }
+  },
+  "OMFURN": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 11774400,
+    "why": "NSE's implied count 8175107 matches none of this company's filed counts; our count 11774400 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 90.19,
+     "nse_cr": 62.62,
+     "shares": 11774400,
+     "src": "nse:SHP_186300_1325321_11122024030232_WEB.xml",
+     "nse_implied_shares": 8175107,
+     "filing_rows": {
+      "prom": 6000000,
+      "prom_pct": 50.96,
+      "pub": 5774400,
+      "pub_pct": 49.04,
+      "npnp": 0,
+      "tot": 11774400,
+      "tot_pct": 100.0,
+      "tot_fp": 11774400,
+      "tot_pp": 0,
+      "ISIN": "INE338Y01016",
+      "NameOfTheCompany": "Omfurn India Limited"
+     }
+    }
+   }
+  },
+  "SRPL": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 214200000,
+    "why": "NSE's implied count 428400000 matches none of this company's filed counts; our count 214200000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 23.56,
+     "nse_cr": 47.12,
+     "shares": 214200000,
+     "src": "nse:SHP_187906_1403338_27032025023209_WEB.xml",
+     "nse_implied_shares": 428400000,
+     "filing_rows": {
+      "prom": 8734679,
+      "prom_pct": 4.08,
+      "pub": 205465321,
+      "pub_pct": 95.92,
+      "npnp": 0,
+      "tot": 214200000,
+      "tot_pct": 100.0,
+      "tot_fp": 214200000,
+      "tot_pp": 0,
+      "ISIN": "INE008Z01020",
+      "NameOfTheCompany": "Shree Ram Proteins Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 214200000,
+    "why": "NSE's implied count 428400000 matches none of this company's filed counts; our count 214200000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 23.56,
+     "nse_cr": 47.12,
+     "shares": 214200000,
+     "src": "nse:SHP_185391_1034852_24012024042802_WEB.xml",
+     "nse_implied_shares": 428400000,
+     "filing_rows": {
+      "prom": 9234679,
+      "prom_pct": 4.31,
+      "pub": 204965321,
+      "pub_pct": 95.69,
+      "npnp": 0,
+      "tot": 214200000,
+      "tot_pct": 100.0,
+      "tot_fp": 214200000,
+      "tot_pp": 0,
+      "ISIN": "INE008Z01020",
+      "NameOfTheCompany": "Shree Ram Proteins Limited"
+     }
+    }
+   }
+  },
+  "SUULD": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 67343643,
+    "why": "NSE's list prices 62760310 shares = the count this company filed for 2023-12-31 (nse:SHP_183923_1017666_12012024115556_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 67343643, i.e. the change between 2023-12-31 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 45.79,
+     "nse_cr": 42.68,
+     "shares": 67343643,
+     "src": "nse:SHP_187786_1100646_19042024030337_WEB.xml",
+     "nse_implied_shares": 62769746,
+     "filing_rows": {
+      "prom": 13723310,
+      "prom_pct": 20.38,
+      "pub": 53620333,
+      "pub_pct": 79.62,
+      "npnp": 0,
+      "tot": 67343643,
+      "tot_pct": 100.0,
+      "tot_fp": 67343643,
+      "tot_pp": 0,
+      "ISIN": "INE591Q01016",
+      "NameOfTheCompany": "Suumaya Industries Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-12-31",
+      "shares": 62760310,
+      "src": "nse:SHP_183923_1017666_12012024115556_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 61135310,
+    "why": "NSE's implied count 58641554 matches none of this company's filed counts; our count 61135310 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 71.83,
+     "nse_cr": 68.9,
+     "shares": 61135310,
+     "src": "nse:SHP_177862_829504_21042023102914_WEB.xml",
+     "nse_implied_shares": 58641554,
+     "filing_rows": {
+      "prom": 14912310,
+      "prom_pct": 24.39,
+      "pub": 46223000,
+      "pub_pct": 75.61,
+      "npnp": 0,
+      "tot": 61135310,
+      "tot_pct": 100.0,
+      "tot_fp": 61135310,
+      "tot_pp": 0,
+      "ISIN": "INE591Q01016",
+      "NameOfTheCompany": "Suumaya Industries Limited"
+     }
+    }
+   }
+  },
+  "ADROITINFO": {
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 21667372,
+    "why": "NSE's list prices 20267372 shares = the count this company filed for 2023-09-30 (nse:SHP_181572_952396_14102023042308_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 21667372, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 47.56,
+     "nse_cr": 44.49,
+     "shares": 21667372,
+     "src": "nse:SHP_183830_1016472_11012024042019_WEB.xml",
+     "nse_implied_shares": 20268742,
+     "filing_rows": {
+      "prom": 10035164,
+      "prom_pct": 46.31,
+      "pub": 11632208,
+      "pub_pct": 53.69,
+      "npnp": 0,
+      "tot": 21667372,
+      "tot_pct": 100.0,
+      "tot_fp": 21667372,
+      "tot_pp": 0,
+      "ISIN": "INE737B01033",
+      "NameOfTheCompany": "Adroit Infotech Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 20267372,
+      "src": "nse:SHP_181572_952396_14102023042308_WEB.xml"
+     }
+    }
+   },
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 21667372,
+    "was": 54168430,
+    "why": "32501058 partly-paid shares counted at the fully-paid price; fully paid = 21667372",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "21667372",
+      "PartlyPaidUpEquityShares": "32501058",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "54168430"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 80.71,
+     "nse_cr": 32.28,
+     "src": "nse:SHP_187952_1102034_19042024060334_WEB.xml"
+    }
+   }
+  },
+  "GATECH": {
+   "20240328": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 340287057,
+    "why": "NSE's list prices 229011200 shares = the count this company filed for 2023-06-30 (nse:SHP_180242_897795_21072023055200_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 340287057, i.e. the change between 2023-06-30 and 2024-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 42.54,
+     "nse_cr": 28.63,
+     "shares": 340287057,
+     "src": "nse:SHP_187550_1098560_18042024045013_WEB.xml",
+     "nse_implied_shares": 229017829,
+     "filing_rows": {
+      "prom": 28131673,
+      "prom_pct": 8.27,
+      "pub": 312155384,
+      "pub_pct": 91.73,
+      "npnp": 0,
+      "tot": 340287057,
+      "tot_pct": 100.0,
+      "tot_fp": 340287057,
+      "tot_pp": 0,
+      "ISIN": "INE224E01028",
+      "NameOfTheCompany": "GACM Technologies Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 229011200,
+      "src": "nse:SHP_180242_897795_21072023055200_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 340287057,
+    "why": "NSE's list prices 229011200 shares = the count this company filed for 2023-06-30 (nse:SHP_180242_897795_21072023055200_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 340287057, i.e. the change between 2023-06-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 57.85,
+     "nse_cr": 38.93,
+     "shares": 340287057,
+     "src": "nse:SHP_184350_1022753_16012024033229_WEB.xml",
+     "nse_implied_shares": 228995249,
+     "filing_rows": {
+      "prom": 28131673,
+      "prom_pct": 8.27,
+      "pub": 312155384,
+      "pub_pct": 91.73,
+      "npnp": 0,
+      "tot": 340287057,
+      "tot_pct": 100.0,
+      "tot_fp": 340287057,
+      "tot_pp": 0,
+      "ISIN": "INE224E01028",
+      "NameOfTheCompany": "GACM Technologies Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 229011200,
+      "src": "nse:SHP_180242_897795_21072023055200_WEB.xml"
+     }
+    }
+   }
+  },
+  "MITTAL": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 295933850,
+    "why": "NSE's implied count 149354014 matches none of this company's filed counts; our count 295933850 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 45.87,
+     "nse_cr": 23.15,
+     "shares": 295933850,
+     "src": "nse:SHP_186008_1083676_08042024044328_WEB.xml",
+     "nse_implied_shares": 149354014,
+     "filing_rows": {
+      "prom": 110944541,
+      "prom_pct": 37.49,
+      "pub": 184989309,
+      "pub_pct": 62.51,
+      "npnp": 0,
+      "tot": 295933850,
+      "tot_pct": 100.0,
+      "tot_fp": 295933850,
+      "tot_pp": 0,
+      "ISIN": "INE997Y01027",
+      "NameOfTheCompany": "Mittal Life Style Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 29593385,
+    "why": "NSE's list prices 14934448 shares = the count this company filed for 2022-12-31 (nse:SHP_174597_770249_17012023062801_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 29593385, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 28.56,
+     "nse_cr": 14.41,
+     "shares": 29593385,
+     "src": "nse:SHP_175938_811737_08042023032738_WEB.xml",
+     "nse_implied_shares": 14931396,
+     "filing_rows": {
+      "prom": 20560534,
+      "prom_pct": 69.48,
+      "pub": 9032851,
+      "pub_pct": 30.52,
+      "npnp": 0,
+      "tot": 29593385,
+      "tot_pct": 100.0,
+      "tot_fp": 29593385,
+      "tot_pp": 0,
+      "ISIN": "INE997Y01019",
+      "NameOfTheCompany": "Mittal Life Style Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 14934448,
+      "src": "nse:SHP_174597_770249_17012023062801_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 295933850,
+    "why": "NSE's implied count 149357087 matches none of this company's filed counts; our count 295933850 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 60.67,
+     "nse_cr": 30.62,
+     "shares": 295933850,
+     "src": "nse:SHP_183566_1013343_10012024111346_WEB.xml",
+     "nse_implied_shares": 149357087,
+     "filing_rows": {
+      "prom": 144956165,
+      "prom_pct": 48.98,
+      "pub": 150977685,
+      "pub_pct": 51.02,
+      "npnp": 0,
+      "tot": 295933850,
+      "tot_pct": 100.0,
+      "tot_fp": 295933850,
+      "tot_pp": 0,
+      "ISIN": "INE997Y01027",
+      "NameOfTheCompany": "Mittal Life Style Limited"
+     }
+    }
+   }
+  },
+  "DIGJAMLMTD": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 20000000,
+    "why": "NSE's implied count 2000000 matches none of this company's filed counts; our count 20000000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 167.3,
+     "nse_cr": 16.73,
+     "shares": 20000000,
+     "src": "nse:SHP_188332_1105431_21042024115547_WEB.xml",
+     "nse_implied_shares": 2000000,
+     "filing_rows": {
+      "prom": 18000000,
+      "prom_pct": 90.0,
+      "pub": 2000000,
+      "pub_pct": 10.0,
+      "npnp": 0,
+      "tot": 20000000,
+      "tot_pct": 100.0,
+      "tot_fp": 20000000,
+      "tot_pp": 0,
+      "ISIN": "INE731U01028",
+      "NameOfTheCompany": "Digjam Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 20000000,
+    "why": "NSE's implied count 2000000 matches none of this company's filed counts; our count 20000000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 166.4,
+     "nse_cr": 16.64,
+     "shares": 20000000,
+     "src": "nse:SHP_178044_831543_21042023101619_WEB.xml",
+     "nse_implied_shares": 2000000,
+     "filing_rows": {
+      "prom": 18000000,
+      "prom_pct": 90.0,
+      "pub": 2000000,
+      "pub_pct": 10.0,
+      "npnp": 0,
+      "tot": 20000000,
+      "tot_pct": 100.0,
+      "tot_fp": 20000000,
+      "tot_pp": 0,
+      "ISIN": "INE731U01028",
+      "NameOfTheCompany": "Digjam Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 20000000,
+    "why": "NSE's implied count 2000000 matches none of this company's filed counts; our count 20000000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 490.7,
+     "nse_cr": 49.07,
+     "shares": 20000000,
+     "src": "nse:SHP_165444_595836_20012022064033_WEB.xml",
+     "nse_implied_shares": 2000000,
+     "filing_rows": {
+      "prom": 18000000,
+      "prom_pct": 90.0,
+      "pub": 2000000,
+      "pub_pct": 10.0,
+      "npnp": 0,
+      "tot": 20000000,
+      "tot_pct": 100.0,
+      "tot_fp": 20000000,
+      "tot_pp": 0,
+      "ISIN": "INE731U01028",
+      "NameOfTheCompany": "Digjam Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 20000000,
+    "why": "NSE's implied count 2000000 matches none of this company's filed counts; our count 20000000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 165.0,
+     "nse_cr": 16.5,
+     "shares": 20000000,
+     "src": "nse:SHP_185374_1032838_21012024112300_WEB.xml",
+     "nse_implied_shares": 2000000,
+     "filing_rows": {
+      "prom": 18000000,
+      "prom_pct": 90.0,
+      "pub": 2000000,
+      "pub_pct": 10.0,
+      "npnp": 0,
+      "tot": 20000000,
+      "tot_pct": 100.0,
+      "tot_fp": 20000000,
+      "tot_pp": 0,
+      "ISIN": "INE731U01028",
+      "NameOfTheCompany": "Digjam Limited"
+     }
+    }
+   }
+  },
+  "DCMFINSERV": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 22125054,
+    "why": "NSE's implied count 18785022 matches none of this company's filed counts; our count 22125054 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 10.4,
+     "nse_cr": 8.83,
+     "shares": 22125054,
+     "src": "nse:SHP_187271_1096405_17042024044517_WEB.xml",
+     "nse_implied_shares": 18785022,
+     "filing_rows": {
+      "prom": 8739952,
+      "prom_pct": 39.5,
+      "pub": 13385102,
+      "pub_pct": 60.5,
+      "npnp": 0,
+      "tot": 22125054,
+      "tot_pct": 100.0,
+      "tot_fp": 22125054,
+      "tot_pp": 0,
+      "ISIN": "INE891B01012",
+      "NameOfTheCompany": "Dcm Financial Services Limited"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 22125054,
+    "why": "NSE's implied count 18799250 matches none of this company's filed counts; our count 22125054 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 7.85,
+     "nse_cr": 6.67,
+     "shares": 22125054,
+     "src": "nse:SHP_177201_823943_18042023050640_WEB.xml",
+     "nse_implied_shares": 18799250,
+     "filing_rows": {
+      "prom": 8739952,
+      "prom_pct": 39.5,
+      "pub": 13385102,
+      "pub_pct": 60.5,
+      "npnp": 0,
+      "tot": 22125054,
+      "tot_pct": 100.0,
+      "tot_fp": 22125054,
+      "tot_pp": 0,
+      "ISIN": "INE891B01012",
+      "NameOfTheCompany": "Dcm Financial Services Limited"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 22125054,
+    "why": "NSE's implied count 18775229 matches none of this company's filed counts; our count 22125054 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 8.19,
+     "nse_cr": 6.95,
+     "shares": 22125054,
+     "src": "nse:SHP_165218_593926_19012022054551_WEB.xml",
+     "nse_implied_shares": 18775229,
+     "filing_rows": {
+      "prom": 8739952,
+      "prom_pct": 39.5,
+      "pub": 13385102,
+      "pub_pct": 60.5,
+      "npnp": 0,
+      "tot": 22125054,
+      "tot_pct": 100.0,
+      "tot_fp": 22125054,
+      "tot_pp": 0,
+      "ISIN": "INE891B01012",
+      "NameOfTheCompany": "Dcm Financial Services Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 22125054,
+    "why": "NSE's implied count 18785423 matches none of this company's filed counts; our count 22125054 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 10.07,
+     "nse_cr": 8.55,
+     "shares": 22125054,
+     "src": "nse:SHP_185097_1030278_19012024061721_WEB.xml",
+     "nse_implied_shares": 18785423,
+     "filing_rows": {
+      "prom": 8739952,
+      "prom_pct": 39.5,
+      "pub": 13385102,
+      "pub_pct": 60.5,
+      "npnp": 0,
+      "tot": 22125054,
+      "tot_pct": 100.0,
+      "tot_fp": 22125054,
+      "tot_pp": 0,
+      "ISIN": "INE891B01012",
+      "NameOfTheCompany": "Dcm Financial Services Limited"
+     }
+    }
+   }
+  },
+  "MELSTAR": {
+   "20240328": {
+    "verdict": "UNKNOWN",
+    "shares": 18567418,
+    "why": "NSE's list already prices 14283139 shares = the count filed later, for 2024-06-30 (nse:SHP_189776_1189043_17072024020634_WEB.xml); our filing for this quarter shows 18567418. Why NSE was ahead is not read.",
+    "evidence": {
+     "ours_cr": 8.73,
+     "nse_cr": 6.71,
+     "shares": 18567418,
+     "src": "nse:SHP_188852_1176368_09072024035645_WEB.xml",
+     "nse_implied_shares": 14271177,
+     "filing_rows": {
+      "prom": 7625865,
+      "prom_pct": 41.07,
+      "pub": 10941553,
+      "pub_pct": 58.93,
+      "npnp": 0,
+      "tot": 18567418,
+      "tot_pct": 100.0,
+      "tot_fp": 18567418,
+      "tot_pp": 0,
+      "ISIN": "INE817A01019",
+      "NameOfTheCompany": "Melstar Information Technologies Limited"
+     },
+     "matching_filing": {
+      "qe": "2024-06-30",
+      "shares": 14283139,
+      "src": "nse:SHP_189776_1189043_17072024020634_WEB.xml"
+     }
+    }
+   }
+  },
+  "SUZLON": {
+   "20211231": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 9105779346,
+    "why": "NSE's list prices 8901780978 shares = the count this company filed for 2021-09-30 (nse:SHP_161957_533741_14102021075806_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 9105779346, i.e. the change between 2021-09-30 and 2021-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 9287.89,
+     "nse_cr": 9079.82,
+     "shares": 9105779346,
+     "src": "nse:SHP_164843_590706_17012022064440_WEB.xml",
+     "nse_implied_shares": 8901789042,
+     "filing_rows": {
+      "prom": 1460861456,
+      "prom_pct": 16.04,
+      "pub": 7644917890,
+      "pub_pct": 83.96,
+      "npnp": 0,
+      "tot": 9105779346,
+      "tot_pct": 100.0,
+      "tot_fp": 9105779346,
+      "tot_pp": 0,
+      "ISIN": "INE040H01021",
+      "NameOfTheCompany": "Suzlon Energy Limited"
+     },
+     "matching_filing": {
+      "qe": "2021-09-30",
+      "shares": 8901780978,
+      "src": "nse:SHP_161957_533741_14102021075806_WEB.xml"
+     }
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 10073087083,
+    "was": 12473087083,
+    "why": "2400000000 partly-paid shares counted at the fully-paid price; fully paid = 10073087083",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "10073087083",
+      "PartlyPaidUpEquityShares": "2400000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "12473087083"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 9853.74,
+     "nse_cr": 7957.74,
+     "src": "nse:SHP_177666_827686_20042023022041_WEB.xml"
+    }
+   }
+  },
+  "DBREALTY": {
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 352154782,
+    "why": "NSE's implied count 343354788 matches none of this company's filed counts; our count 352154782 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 2271.4,
+     "nse_cr": 2214.64,
+     "shares": 352154782,
+     "src": "nse:SHP_177406_825728_19042023032804_WEB.xml",
+     "nse_implied_shares": 343354788,
+     "filing_rows": {
+      "prom": 207674642,
+      "prom_pct": 58.97,
+      "pub": 144480140,
+      "pub_pct": 41.03,
+      "npnp": 0,
+      "tot": 352154782,
+      "tot_pct": 100.0,
+      "tot_fp": 352154782,
+      "tot_pp": 0,
+      "ISIN": "INE879I01012",
+      "NameOfTheCompany": "D B Realty Limited"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 501570404,
+    "why": "NSE's implied count 393684666 matches none of this company's filed counts; our count 501570404 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 9309.15,
+     "nse_cr": 7306.79,
+     "shares": 501570404,
+     "src": "nse:SHP_185038_1029864_19012024052017_WEB.xml",
+     "nse_implied_shares": 393684666,
+     "filing_rows": {
+      "prom": 255235618,
+      "prom_pct": 50.89,
+      "pub": 246334786,
+      "pub_pct": 49.11,
+      "npnp": 0,
+      "tot": 501570404,
+      "tot_pct": 100.0,
+      "tot_fp": 501570404,
+      "tot_pp": 0,
+      "ISIN": "INE879I01012",
+      "NameOfTheCompany": "D B Realty Limited"
+     }
+    }
+   }
+  },
+  "SEPC": {
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 1321529018,
+    "why": "NSE's list already prices 1371429018 shares = the count filed later, for 2023-06-30 (nse:SHP_179737_892991_19072023052659_WEB.xml); our filing for this quarter shows 1321529018. Why NSE was ahead is not read.",
+    "evidence": {
+     "ours_cr": 1374.39,
+     "nse_cr": 1426.25,
+     "shares": 1321529018,
+     "src": "nse:SHP_177777_828632_20042023060038_WEB.xml",
+     "nse_implied_shares": 1371394409,
+     "filing_rows": {
+      "prom": 410749462,
+      "prom_pct": 31.08,
+      "pub": 910779556,
+      "pub_pct": 68.92,
+      "npnp": 0,
+      "tot": 1321529018,
+      "tot_pct": 100.0,
+      "tot_fp": 1321529018,
+      "tot_pp": 0,
+      "ISIN": "INE964H01014",
+      "NameOfTheCompany": "SEPC Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 1371429018,
+      "src": "nse:SHP_179737_892991_19072023052659_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "UNKNOWN",
+    "shares": 1371429018,
+    "why": "NSE's list already prices 1409813633 shares = the count filed later, for 2024-03-31 (nse:SHP_188107_1240794_09092024052425_WEB.xml); our filing for this quarter shows 1371429018. Why NSE was ahead is not read.",
+    "evidence": {
+     "ours_cr": 2784.0,
+     "nse_cr": 2861.33,
+     "shares": 1371429018,
+     "src": "nse:SHP_185293_1032092_20012024051903_WEB.xml",
+     "nse_implied_shares": 1409522626,
+     "filing_rows": {
+      "prom": 380621139,
+      "prom_pct": 27.75,
+      "pub": 990807879,
+      "pub_pct": 72.25,
+      "npnp": 0,
+      "tot": 1371429018,
+      "tot_pct": 100.0,
+      "tot_fp": 1371429018,
+      "tot_pp": 0,
+      "ISIN": "INE964H01014",
+      "NameOfTheCompany": "SEPC Limited"
+     },
+     "matching_filing": {
+      "qe": "2024-03-31",
+      "shares": 1409813633,
+      "src": "nse:SHP_188107_1240794_09092024052425_WEB.xml"
+     }
+    }
+   }
+  },
+  "KERNEX": {
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 15459422,
+    "why": "NSE's list prices 13799655 shares = the count this company filed for 2022-12-31 (nse:SHP_175447_776697_21012023011701_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 15459422, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 379.53,
+     "nse_cr": 338.78,
+     "shares": 15459422,
+     "src": "nse:SHP_177348_825202_19042023123534_WEB.xml",
+     "nse_implied_shares": 13799549,
+     "filing_rows": {
+      "prom": 4884712,
+      "prom_pct": 31.6,
+      "pub": 10574710,
+      "pub_pct": 68.4,
+      "npnp": 0,
+      "tot": 15459422,
+      "tot_pct": 100.0,
+      "tot_fp": 15459422,
+      "tot_pp": 0,
+      "ISIN": "INE202H01019",
+      "NameOfTheCompany": "Kernex Microsystems (India) Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 13799655,
+      "src": "nse:SHP_175447_776697_21012023011701_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 16759422,
+    "why": "NSE's list prices 15459422 shares = the count this company filed for 2023-09-30 (nse:SHP_181657_953277_16102023030053_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 16759422, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 967.27,
+     "nse_cr": 892.24,
+     "shares": 16759422,
+     "src": "nse:SHP_185331_1032513_20012024095959_WEB.xml",
+     "nse_implied_shares": 15459413,
+     "filing_rows": {
+      "prom": 4884712,
+      "prom_pct": 29.15,
+      "pub": 11874710,
+      "pub_pct": 70.85,
+      "npnp": 0,
+      "tot": 16759422,
+      "tot_pct": 100.0,
+      "tot_fp": 16759422,
+      "tot_pp": 0,
+      "ISIN": "INE202H01019",
+      "NameOfTheCompany": "Kernex Microsystems (India) Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 15459422,
+      "src": "nse:SHP_181657_953277_16102023030053_WEB.xml"
+     }
+    }
+   }
+  },
+  "PENINLAND": {
+   "20230331": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 293701220,
+    "why": "NSE's list prices 279201220 shares = the count this company filed for 2022-12-31 (nse:SHP_174721_771332_18012023034837_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 293701220, i.e. the change between 2022-12-31 and 2023-03-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 350.97,
+     "nse_cr": 333.65,
+     "shares": 293701220,
+     "src": "nse:SHP_177671_827719_20042023022923_WEB.xml",
+     "nse_implied_shares": 279207374,
+     "filing_rows": {
+      "prom": 186524333,
+      "prom_pct": 63.51,
+      "pub": 107176887,
+      "pub_pct": 36.49,
+      "npnp": 0,
+      "tot": 293701220,
+      "tot_pct": 100.0,
+      "tot_fp": 293701220,
+      "tot_pp": 0,
+      "ISIN": "INE138A01028",
+      "NameOfTheCompany": "Peninsula Land Limited"
+     },
+     "matching_filing": {
+      "qe": "2022-12-31",
+      "shares": 279201220,
+      "src": "nse:SHP_174721_771332_18012023034837_WEB.xml"
+     }
+    }
+   },
+   "20231229": {
+    "verdict": "RULE DIFFERENCE",
+    "shares": 308701220,
+    "why": "NSE's list prices 293701220 shares = the count this company filed for 2023-09-30 (nse:SHP_182636_962448_20102023020056_WEB.xml). Our rule (§233) uses the count in this quarter's own filing, 308701220, i.e. the change between 2023-09-30 and 2023-12-31 (allotment / buyback / conversion) that NSE's listed count had not yet picked up.",
+    "evidence": {
+     "ours_cr": 1534.25,
+     "nse_cr": 1459.7,
+     "shares": 308701220,
+     "src": "nse:SHP_184080_1019694_12012024101833_WEB.xml",
+     "nse_implied_shares": 293701268,
+     "filing_rows": {
+      "prom": 201572333,
+      "prom_pct": 65.3,
+      "pub": 107128887,
+      "pub_pct": 34.7,
+      "npnp": 0,
+      "tot": 308701220,
+      "tot_pct": 100.0,
+      "tot_fp": 308701220,
+      "tot_pp": 0,
+      "ISIN": "INE138A01028",
+      "NameOfTheCompany": "Peninsula Land Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-09-30",
+      "shares": 293701220,
+      "src": "nse:SHP_182636_962448_20102023020056_WEB.xml"
+     }
+    }
+   }
+  },
+  "TANTIACONS": {
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 28742098,
+    "why": "NSE's list already prices 18823066 shares = the count filed later, for 2023-06-30 (nse:SHP_180172_897103_21072023031337_WEB.xml); our filing for this quarter shows 28742098. Why NSE was ahead is not read.",
+    "evidence": {
+     "ours_cr": 24.86,
+     "nse_cr": 16.28,
+     "shares": 28742098,
+     "src": "nse:SHP_177490_826315_19042023053105_WEB.xml",
+     "nse_implied_shares": 18822259,
+     "filing_rows": {
+      "prom": 20947530,
+      "prom_pct": 72.88,
+      "pub": 7794568,
+      "pub_pct": 27.12,
+      "npnp": 0,
+      "tot": 28742098,
+      "tot_pct": 100.0,
+      "tot_fp": 28742098,
+      "tot_pp": 0,
+      "ISIN": "INE388G01018",
+      "NameOfTheCompany": "Tantia Constructions Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 18823066,
+      "src": "nse:SHP_180172_897103_21072023031337_WEB.xml"
+     }
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 28742098,
+    "why": "NSE's list already prices 18823066 shares = the count filed later, for 2023-06-30 (nse:SHP_180172_897103_21072023031337_WEB.xml); our filing for this quarter shows 28742098. Why NSE was ahead is not read.",
+    "evidence": {
+     "ours_cr": 80.19,
+     "nse_cr": 52.52,
+     "shares": 28742098,
+     "src": "nse:SHP_165380_595215_20012022034713_WEB.xml",
+     "nse_implied_shares": 18824479,
+     "filing_rows": {
+      "prom": 20947530,
+      "prom_pct": 72.88,
+      "pub": 7794568,
+      "pub_pct": 27.12,
+      "npnp": 0,
+      "tot": 28742098,
+      "tot_pct": 100.0,
+      "tot_fp": 28742098,
+      "tot_pp": 0,
+      "ISIN": "INE388G01018",
+      "NameOfTheCompany": "Tantia Constructions Limited"
+     },
+     "matching_filing": {
+      "qe": "2023-06-30",
+      "shares": 18823066,
+      "src": "nse:SHP_180172_897103_21072023031337_WEB.xml"
+     }
+    }
+   }
+  },
+  "TNTELE": {
+   "20230331": {
+    "verdict": "UNKNOWN",
+    "shares": 45671400,
+    "why": "NSE's implied count 22656486 matches none of this company's filed counts; our count 45671400 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 24.21,
+     "nse_cr": 12.01,
+     "shares": 45671400,
+     "src": "nse:SHP_177646_827541_20042023011837_WEB.xml",
+     "nse_implied_shares": 22656486,
+     "filing_rows": {
+      "prom": 29067700,
+      "prom_pct": 63.63,
+      "pub": 16613300,
+      "pub_pct": 36.37,
+      "npnp": 0,
+      "tot": 45681000,
+      "tot_pct": 100.0,
+      "tot_fp": 45671400,
+      "tot_pp": 9600,
+      "ISIN": "INE141D01018",
+      "NameOfTheCompany": "Tamilnadu Telecommunication Limited"
+     },
+     "healed_from": 45681000
+    }
+   },
+   "20211231": {
+    "verdict": "UNKNOWN",
+    "shares": 45681000,
+    "why": "NSE's implied count 22656154 matches none of this company's filed counts; our count 45681000 is this quarter's own filing total. Not resolved.",
+    "evidence": {
+     "ours_cr": 49.56,
+     "nse_cr": 24.58,
+     "shares": 45681000,
+     "src": "nse:SHP_164330_585482_12012022103311_WEB.xml",
+     "nse_implied_shares": 22656154,
+     "filing_rows": {
+      "prom": 29067700,
+      "prom_pct": 63.63,
+      "pub": 16613300,
+      "pub_pct": 36.37,
+      "npnp": 0,
+      "tot": 45681000,
+      "tot_pct": 100.0,
+      "tot_fp": 45681000,
+      "tot_pp": 0,
+      "ISIN": "INE141D01018",
+      "NameOfTheCompany": "Tamilnadu Telecommunication Limited"
+     }
+    }
+   }
+  },
+  "BHARTIARTL": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 5655087077,
+    "was": 6047374739,
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5655087077",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5655087077",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6047374739"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 742980.46,
+     "nse_cr": 694784.0,
+     "src": "nse:SHP_188183_1104008_20042024035858_WEB.xml"
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 5575134650,
+    "was": 5967422312,
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5575134650",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5575134650",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5967422312"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 446959.93,
+     "nse_cr": 417577.59,
+     "src": "nse:SHP_177246_824270_18042023060045_WEB.xml"
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 5492027268,
+    "was": 5884314930,
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5492027268",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5492027268",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5884314930"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 402369.45,
+     "nse_cr": 375544.82,
+     "src": "nse:SHP_165599_597485_21012022072943_WEB.xml"
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 5624932822,
+    "was": 6017220484,
+    "why": "392287662 partly-paid shares counted at the fully-paid price; fully paid = 5624932822",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5624932822",
+      "PartlyPaidUpEquityShares": "392287662",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "6017220484"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 621097.5,
+     "nse_cr": 580280.12,
+     "src": "nse:SHP_184300_1022352_16012024125633_WEB.xml"
+    }
+   }
+  },
+  "BSE": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 135376359,
+    "was": 10743649,
+    "why": "whole-company row is a sub-row (7.94%, not 100%); promoter + public + non-promoter-non-public = 135376359 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "10743649",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "10743649"
+     },
+     "whole_company_pct": 7.94,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       105111612.0,
+       77.64
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       30264747.0,
+       22.36
+      ]
+     },
+     "ours_cr_before": 2702.99,
+     "nse_cr": 34059.34,
+     "src": "nse:SHP_187478_1099821_19042024105056_WEB.xml"
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 135462891,
+    "was": 15097750,
+    "why": "whole-company row is a sub-row (11.15%, not 100%); promoter + public + non-promoter-non-public = 135462891 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "15097750",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "15097750"
+     },
+     "whole_company_pct": 11.15,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       100430610.0,
+       74.13
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       35032281.0,
+       25.86
+      ]
+     },
+     "ours_cr_before": 650.64,
+     "nse_cr": 5837.77,
+     "src": "nse:SHP_176286_821148_17042023011110_WEB.xml"
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 45024297,
+    "was": 5346556,
+    "why": "whole-company row is a sub-row (11.87%, not 100%); promoter + public + non-promoter-non-public = 45024297 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "5346556",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "5346556"
+     },
+     "whole_company_pct": 11.87,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       32861308.0,
+       72.98
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       12162989.0,
+       27.01
+      ]
+     },
+     "ours_cr_before": 1025.74,
+     "nse_cr": 8650.38,
+     "src": "nse:SHP_165086_592949_19012022120637_WEB.xml"
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 135376359,
+    "was": 9086044,
+    "why": "whole-company row is a sub-row (6.71%, not 100%); promoter + public + non-promoter-non-public = 135376359 shares (100%)",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "9086044",
+      "PartlyPaidUpEquityShares": "0",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "9086044"
+     },
+     "whole_company_pct": 6.71,
+     "rows": {
+      "ShareholdingOfPromoterAndPromoterGroup": [
+       0.0,
+       0.0
+      ],
+      "PublicShareholding": [
+       104054056.0,
+       76.86
+      ],
+      "SharesHeldByNonPromoterNonPublicShareholders": [
+       31322303.0,
+       23.14
+      ]
+     },
+     "ours_cr_before": 2018.19,
+     "nse_cr": 30069.8,
+     "src": "nse:SHP_184040_1021994_16012024105329_WEB.xml"
+    }
+   }
+  },
+  "CREATIVE": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 92.63,
+     "nse_cr": 1001.41
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 55.38,
+     "nse_cr": 536.76
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 58.51,
+     "nse_cr": 540.06
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 98.21,
+     "nse_cr": 1061.7
+    }
+   }
+  },
+  "URJA": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 525453377,
+    "was": 557206000,
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 1053.12,
+     "nse_cr": 993.11,
+     "src": "nse:SHP_187576_1098804_18042024052359_WEB.xml"
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 525453377,
+    "was": 557206000,
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 381.69,
+     "nse_cr": 359.94,
+     "src": "nse:SHP_177656_827612_20042023015009_WEB.xml"
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 507206000,
+    "was": 557206000,
+    "why": "50000000 partly-paid shares counted at the fully-paid price; fully paid = 507206000",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "507206000",
+      "PartlyPaidUpEquityShares": "50000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 1156.2,
+     "nse_cr": 1052.45,
+     "src": "nse:SHP_165377_595174_20012022032957_WEB.xml"
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 525453377,
+    "was": 557206000,
+    "why": "31752623 partly-paid shares counted at the fully-paid price; fully paid = 525453377",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "525453377",
+      "PartlyPaidUpEquityShares": "31752623",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "557206000"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 819.09,
+     "nse_cr": 772.42,
+     "src": "nse:SHP_184266_1022004_16012024105916_WEB.xml"
+    }
+   }
+  },
+  "AURUM": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 29034606,
+    "was": 71979139,
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 29034606",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "29034606",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71979139"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 936.09,
+     "nse_cr": 377.6,
+     "src": "nse:SHP_187426_1097565_18042024123516_WEB.xml"
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 28629689,
+    "was": 71574222,
+    "why": "42944533 partly-paid shares counted at the fully-paid price; fully paid = 28629689",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629689",
+      "PartlyPaidUpEquityShares": "42944533",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 739.36,
+     "nse_cr": 295.74,
+     "src": "nse:SHP_176783_820649_15042023063022_WEB.xml"
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 28629678,
+    "was": 71574222,
+    "why": "42944544 partly-paid shares counted at the fully-paid price; fully paid = 28629678",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "28629678",
+      "PartlyPaidUpEquityShares": "42944544",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "71574222"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 924.02,
+     "nse_cr": 369.61,
+     "src": "nse:SHP_184197_1021101_15012024035538_WEB.xml"
+    }
+   }
+  },
+  "WORTH": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 101.19,
+     "nse_cr": 158.93
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 58.24,
+     "nse_cr": 144.91
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 30.57,
+     "nse_cr": 146.8
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 109.66,
+     "nse_cr": 172.24
+    }
+   }
+  },
+  "KEL": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 102.25,
+     "nse_cr": 149.61
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 151.57,
+     "nse_cr": 221.77
+    }
+   }
+  },
+  "BRIGHT": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 11.35,
+     "nse_cr": 20.37
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 7.73,
+     "nse_cr": 13.84
+    }
+   }
+  },
+  "INNOVATIVE": {
+   "20240328": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 6.6,
+     "nse_cr": 10.44
+    }
+   },
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 2.67,
+     "nse_cr": 4.23
+    }
+   }
+  },
+  "PATINTLOG": {
+   "20230331": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 64585746,
+    "was": 66035923,
+    "why": "1450177 partly-paid shares counted at the fully-paid price; fully paid = 64585746",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "64585746",
+      "PartlyPaidUpEquityShares": "1450177",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 72.64,
+     "nse_cr": 71.04,
+     "src": "nse:SHP_176205_814784_11042023060059_WEB.xml"
+    }
+   },
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/shares_history_fix.json",
+    "shares": 26035923,
+    "was": 66035923,
+    "why": "40000000 partly-paid shares counted at the fully-paid price; fully paid = 26035923",
+    "evidence": {
+     "whole_company_row": {
+      "FullyPaidUpEquityShares": "26035923",
+      "PartlyPaidUpEquityShares": "40000000",
+      "SharesUnderlyingOutstandingDepositoryReceipts": "0",
+      "Shares": "66035923"
+     },
+     "whole_company_pct": 100.0,
+     "ours_cr_before": 105.66,
+     "nse_cr": 41.66,
+     "src": "nse:SHP_164417_586327_13012022032352_WEB.xml"
+    }
+   }
+  },
+  "DRL": {
+   "20211231": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 14.08,
+     "nse_cr": 13.55
+    }
+   },
+   "20231229": {
+    "verdict": "OUR ERROR",
+    "fixed_in": "scripts/build_hist_mcap.py (ISIN check)",
+    "why": "our count came from a BSE-only company whose BSE ticker is the same as this NSE symbol; the BSE filer's ISIN is not the NSE row's ISIN, so the cell is no longer published",
+    "evidence": {
+     "ours_cr_before": 10.97,
+     "nse_cr": 11.61
+    }
+   }
+  }
+ }
+}

@@ -29294,3 +29294,34 @@ exactly −50%, a bonus possibly absent from the price history — UNKNOWN, not 
 **Open.** New quarters are NOT added automatically yet — the bhavcopy inputs live in the Mac cache. After a quarter's share
 counts land (shp-allstocks-update), put that session's bhavcopy in the cache and re-run the build; until then a date after the
 last row uses the last row moved by price (correct unless shares changed).
+
+### §233a — The 53 whole-dropped stocks, judged cell by cell (2026-11-03)
+
+Every one of the 135 cells where the 53 stocks differed from NSE's lists by >2% has its own verdict in
+`scripts/hist_mcap_verdicts.json` (`cells[SYM][yyyymmdd]`: verdict, our shares, NSE-implied shares = ours × NSE cap ÷ our cap,
+that quarter's own filing rows — promoter / public / non-promoter-non-public / total / % / partly-paid — and the matching filing).
+Every non-OUR-ERROR cell's own filing was read: its 100% total row = our count, no partly-paid shares.
+
+| Verdict | Cells | Stocks | What |
+|---|---|---|---|
+| OUR ERROR — partly-paid | 11 | 8 | `NumberOfShares` counted partly-paid shares as full shares. NSE's implied count = the filing's FULLY-paid count (BHARTIARTL Mar-24: fully paid 5,655,087,077 vs NSE 5,655,087,094; partly paid 392,287,662). BHARTIARTL, URJA, AURUM, PATINTLOG, VIKASLIFE, AARTISURF, ADROITINFO, SUZLON (TNTELE's 9,600 partly-paid shares healed too; its differing cells stay UNKNOWN) |
+| OUR ERROR — sub-row | 11 | 1 | BSE Ltd's whole-company row is 6.7–12.1%, not 100%. True count = promoter (0) + public + non-promoter-non-public (Mar-24: 105,111,612 + 30,264,747 = 135,376,359 vs NSE 135,376,599) |
+| OUR ERROR — identity | 16 | 6 | A BSE-only company's count was put on another company's NSE row (CREATIVE = Creative Castings INE146E, NSE CREATIVE = CNL; WORTH, KEL, BRIGHT, INNOVATIVE, DRL). `build_hist_mcap.py` now uses a BSE-filed count only when the BSE scrip's ISIN prefix (`bse_scrip_master.json`) = the NSE row's — 75 cells skipped site-wide |
+| RULE DIFFERENCE | 42 | 22 | NSE's list prices the count the company filed for an EARLIER quarter (named per cell, e.g. GPIL Dec-23/Mar-24 = 140,944,988 = its Mar-23 filing, before the buyback to 135,944,988). Our rule is the count in that quarter-end's own filing. Kept and published |
+| UNKNOWN | 55 | 25 | NSE's count matches none of the company's filed counts (HMT 1,204,091,640 filed vs NSE 468.2M; DIGJAMLMTD exactly ÷10; DCMFINSERV; IITL; UNIVCABLES …), or matches a LATER filing (SEPC, MELSTAR, TANTIACONS). Not resolved; still dropped |
+
+**Fix route.** New ledger `scripts/shares_history_fix.json` `{fix:{SYM:{QE:{shares, was, src, verdict, why, evidence}}}}` — 117 cells
+(every quarter of the 10 stocks above, each recomputed from its own filing with `fetch_shp_allstocks.mcap_shares`). Applied by
+`fetch_shp_allstocks.py` on every build/update write (only when the stored count = `was` and `src` matches, else printed "not
+applied"); by hand: `python3 scripts/fetch_shp_allstocks.py apply-shares-fix`. Then `python3 scripts/build_hist_mcap.py`.
+The build publishes a differing cell only if its verdict is RULE DIFFERENCE / THEIR ERROR and its `shares` still equal
+`shares_history.json` (`_meta.kept_vs_nse_official`).
+
+**Result.** Of the 53: 28 published in full, 5 with one quarter still dropped (KSCL, PARACABLES, SUULD, VIKASLIFE, WSI — UNKNOWN
+cells), 20 still dropped whole (all UNKNOWN). Site file: 3,062 stocks, 42,299 caps (was 3,035 / 41,788); 20 whole + 142 single-quarter drops.
+**Not compared:** Screener / Moneycontrol / Quantmac historical caps (no per-quarter history found there) — so the consensus rule
+(§0 point 6) was not applied. **Still unread:** the 137 single-quarter drops outside the 53 (137 cells, UNKNOWN).
+
+**Open — needs the user's OK.** The partly-paid rule is applied only to these 10 stocks. A filing scan (NSE files only; BSE-format
+files not scanned) found 356 partly-paid cells in 46 stocks — 273 cells in 37 stocks are still counted at full. On a 2,909-cell
+sample `mcap_shares` changed 46 (1.6%). Switching every cell changes the share count every page uses — ask before doing it.
