@@ -4064,5 +4064,99 @@
 }
 ]
 }
+},
+{
+"recent_years_from_annual_reports": {
+"on": "2026-11-03",
+"note": "Gate on SUDARSHAN, PARTYPP, ARHAM, DOLLEX, ANNAPURNA, QMSMEDI after adding their recent years from NSE/BSE annual reports: 373 cells checked, 364 match, 9 differ (7 RULE DIFFERENCE, 2 UNKNOWN). Two further cells differed before the fix and were OUR ERROR (Sudarshan FY25 consolidated, restated comparative stored instead of the FY25 report); both now match.",
+"cells": [
+{
+"cell": "SUDARSHAN 20250331|0 con Total Assets",
+"verdict": "OUR ERROR",
+"fixed": true,
+"ours_was": 406.27,
+"now": 402.41,
+"ours_row": "FY25 own report p132 (scanned, vision): Total Assets 40,240.84 lakh; we had stored the FY26 report's Ind AS restated comparative"
+},
+{
+"cell": "SUDARSHAN 20250331|12 con Profit before tax",
+"verdict": "OUR ERROR",
+"fixed": true,
+"ours_was": 20.02,
+"now": 21.63,
+"ours_row": "FY25 own report p133: Profit before tax 2,162.93 lakh"
+},
+{
+"cell": "SUDARSHAN 20250331|12 con Other Income",
+"verdict": "RULE DIFFERENCE",
+"ours": 2.52,
+"screener": -0.0,
+"rule": "Screener moves the exceptional item into Other Income",
+"row": "p133: Other Income 251.84, Exceptional items (281.73); 251.84 - 281.73 = -29.89 lakh"
+},
+{
+"cell": "SUDARSHAN 20250331|12 std Other Income",
+"verdict": "RULE DIFFERENCE",
+"ours": 2.88,
+"screener": 0.0,
+"rule": "Screener moves the exceptional item into Other Income (on the restated year)",
+"row": "FY25 p97: Other Income 287.73; FY26 p102 restated 299.88 less exceptional 281.73 = 18.15 lakh"
+},
+{
+"cell": "SUDARSHAN 20250331|12 std Profit before tax",
+"verdict": "RULE DIFFERENCE",
+"ours": 21.29,
+"screener": 19.0,
+"rule": "SUDARSHAN moved to Ind AS in FY26 and its FY26 report restates FY25 (p100 balance sheet, p102 P&L, transition note p106-110). We keep each year's own annual report (FY25 report, Indian GAAP); Screener takes the Ind AS restatement for standalone",
+"row": "FY25 p97: 2,128.56; FY26 p102 restated: 1,880.61"
+},
+{
+"cell": "SUDARSHAN 20250331|12 std Net Profit",
+"verdict": "RULE DIFFERENCE",
+"ours": 15.88,
+"screener": 14.0,
+"rule": "SUDARSHAN moved to Ind AS in FY26 and its FY26 report restates FY25 (p100 balance sheet, p102 P&L, transition note p106-110). We keep each year's own annual report (FY25 report, Indian GAAP); Screener takes the Ind AS restatement for standalone",
+"row": "FY25 p97: 1,587.70; FY26 p102 restated: 1,402.16"
+},
+{
+"cell": "SUDARSHAN 20250331|12 std Depreciation",
+"verdict": "RULE DIFFERENCE",
+"ours": 1.31,
+"screener": 3.0,
+"rule": "SUDARSHAN moved to Ind AS in FY26 and its FY26 report restates FY25 (p100 balance sheet, p102 P&L, transition note p106-110). We keep each year's own annual report (FY25 report, Indian GAAP); Screener takes the Ind AS restatement for standalone",
+"row": "FY25 p97: 131.43; FY26 p102 restated: 270.18"
+},
+{
+"cell": "SUDARSHAN 20250331|0 std Total Assets",
+"verdict": "RULE DIFFERENCE",
+"ours": 400.4,
+"screener": 403.0,
+"rule": "SUDARSHAN moved to Ind AS in FY26 and its FY26 report restates FY25 (p100 balance sheet, p102 P&L, transition note p106-110). We keep each year's own annual report (FY25 report, Indian GAAP); Screener takes the Ind AS restatement for standalone",
+"row": "FY25 p96: 40,039.69; FY26 p100 restated: 40,322.67"
+},
+{
+"cell": "ANNAPURNA 20250331|12 con Other Income",
+"verdict": "RULE DIFFERENCE",
+"ours": 0.74,
+"screener": 3.0,
+"rule": "Screener moves the exceptional item into Other Income",
+"row": "FY25 report p92: Other Income 74.30; Profit before exceptional 2,710.41, Profit before tax 2,893.88 (exceptional +183.47); 74.30 + 183.47 = 257.77 lakh"
+},
+{
+"cell": "ANNAPURNA 20240331|12 std Sales",
+"verdict": "UNKNOWN",
+"ours": 264.97,
+"screener": 263.0,
+"ours_row": "FY24 report p38 and note 19 p47: Revenue from operations 26,497.28 lakh; the two half-year results add to the same (131.13 + 133.84); Screener's row not identified"
+},
+{
+"cell": "ANNAPURNA 20240331|12 con Sales",
+"verdict": "UNKNOWN",
+"ours": 264.97,
+"screener": 263.0,
+"ours_row": "FY24 report p54: Revenue from operations 26,497.28 lakh; Screener's row not identified"
+}
+]
+}
 }
 ]
