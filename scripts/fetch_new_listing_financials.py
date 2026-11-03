@@ -6,7 +6,8 @@ Jio Platforms showed FY26 revenue 16,167 cr where its consolidated revenue is 1,
 
 SOURCES, in order: the final prospectus / RHP from NSE's offer-documents list (mainboard and SME), then
 SEBI's public-issues filings (restated consolidated and standalone P&L, balance sheet, cash flow), then the company's results PDFs on NSE/BSE (their
-comparative columns). Screener is never read here: scripts/gate_new_listings_screener.py compares
+comparative columns), then, for a migrated SME whose listing document stops years back, its own annual reports on
+NSE or BSE (scripts/ipo_fin_annual.json keeps each report's read, so it is read once). Screener is never read here: scripts/gate_new_listings_screener.py compares
 afterwards and writes nothing.
 
 EVERY column must pass its statement's arithmetic (ipo_statement_reader.check_*) or it is HELD, never
@@ -392,6 +393,188 @@ def apply_reads(sym, fin):
     return n
 
 
+NSE_MASTERS = ("https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv",
+               "https://nsearchives.nseindia.com/emerge/corporates/content/SME_EQUITY_L.csv")
+BSE_API = "https://api.bseindia.com/BseIndiaAPI/api/"
+BSE_H = {"Referer": "https://www.bseindia.com/", "Origin": "https://www.bseindia.com", "Accept": "application/json, text/plain, */*"}
+ANNUAL = os.path.join(HERE, "ipo_fin_annual.json")
+REPORT_LAG_DAYS = 183    # an annual report is due within six months of the year end
+_AR = {}
+
+
+def _cr():
+    if "cr" not in _AR:
+        from curl_cffi import requests as cr
+        _AR["cr"] = cr
+    return _AR["cr"]
+
+
+def nse_masters():
+    """[(symbol, name, isin)] from NSE's main-board and SME equity lists."""
+    if "masters" not in _AR:
+        rows = []
+        for u in NSE_MASTERS:
+            try: t = _cr().get(u, impersonate="chrome", timeout=60).text
+            except Exception as e:
+                print("NSE master %s FAILED: %s" % (u[-20:], e), flush=True); continue
+            for l in t.splitlines()[1:]:
+                c = [x.strip() for x in l.split(",")]
+                isin = next((x for x in c if re.match(r"^INE[0-9A-Z]{9}$", x)), None)
+                if len(c) > 2: rows.append((c[0], c[1], isin))
+        _AR["masters"] = rows
+    return _AR["masters"]
+
+
+def bse_scrips():
+    if "bse" not in _AR:
+        try: _AR["bse"] = _cr().get(BSE_API + "ListofScripData/w?Group=&Scripcode=&industry=&segment=Equity&status=Active",
+                                    headers=BSE_H, impersonate="chrome", timeout=120).json()
+        except Exception as e:
+            print("BSE scrip list FAILED: %s" % e, flush=True); _AR["bse"] = []
+    return _AR["bse"]
+
+
+def annual_reports(sym, name):
+    """{fy: [url, ...] newest first}. NSE under every symbol of the same company (a partly paid line such as PARTYPP files
+    under its main symbol PARTYCRUS); BSE only when NSE lists none (SUDARSHAN files its reports on BSE)."""
+    import fetch_sme_xbrl as FX
+    n = norm(name)
+    syms = [sym] + [s for s, nm, _ in nse_masters() if norm(nm) == n and s != sym]
+    isins = {i for s, nm, i in nse_masters() if i and (s == sym or norm(nm) == n)}
+    nse, out = FX.NSE(), {}
+    for s in dict.fromkeys(syms):
+        for idx in ("equities", "sme"):
+            try: rows = json.loads(nse.get("https://www.nseindia.com/api/annual-reports?index=%s&symbol=%s" % (idx, s))).get("data") or []
+            except Exception: rows = []
+            for r in sorted(rows, key=lambda r: datetime.datetime.strptime(r.get("disseminationDateTime") or r.get("broadcast_dttm") or "01-JAN-2000 00:00:00", "%d-%b-%Y %H:%M:%S"), reverse=True):
+                if str(r.get("toYr", "")).isdigit() and r.get("fileName"): out.setdefault(int(r["toYr"]), []).append(r["fileName"])
+            time.sleep(1)
+    if not out:
+        for x in bse_scrips():
+            if x.get("ISIN_NUMBER") in isins or x.get("scrip_id") == sym or norm(x.get("Issuer_Name") or "") == n:
+                try: rows = _cr().get(BSE_API + "AnnualReport_New/w?scripcode=%s" % x["SCRIP_CD"], headers=BSE_H, impersonate="chrome", timeout=60).json().get("Table") or []
+                except Exception: rows = []
+                for r in sorted(rows, key=lambda r: r.get("Fld_AuthoriseDate") or "", reverse=True):
+                    if str(r.get("Year", "")).isdigit() and r.get("PDFDownload"): out.setdefault(int(r["Year"]), []).append(r["PDFDownload"])
+                break
+    return {fy: list(dict.fromkeys(u)) for fy, u in out.items()}
+
+
+def fetch_report(url, key):
+    os.makedirs(CACHE, exist_ok=True)
+    path = os.path.join(CACHE, key + ".pdf")
+    if os.path.exists(path) and os.path.getsize(path) > 100000: return path
+    hdr = BSE_H if "bseindia" in url else {}
+    for attempt in range(3):
+        try:
+            r = _cr().get(url, headers=hdr, impersonate="chrome", timeout=420)
+            if r.status_code == 200 and r.content.startswith(b"%PDF"):
+                open(path, "wb").write(r.content); return path
+            if r.status_code == 200 and r.content[:2] == b"PK" and save_zip(r.content, path): return path
+            if r.status_code == 404: return None
+        except Exception:
+            pass
+        time.sleep(5 * (attempt + 1))
+    return None
+
+
+def clean_annual(rec, texts):
+    """Guards for traps measured on six reports read by hand (runbook §232). A doubtful line is dropped, never mended."""
+    if rec.get("eq") is not None and any(rec.get(f) is not None and R.near(rec["eq"], rec[f], 0.02) for f in ("tel", "assets")):
+        rec.pop("eq")                                                   # 'Total equity & liabilities' read as equity
+    if rec.get("borr") is not None:
+        page = texts[rec["_p"] - 1].lower() if rec.get("_p") else ""
+        nc = len(re.findall(r"non[- ]?current liabilities", page))
+        if not nc or len(re.findall(r"current liabilities", page)) - nc < 1: rec.pop("borr")      # current part on another page
+    if rec.get("pbt") is not None and rec.get("pat") is not None:
+        gap = rec["pbt"] - rec["pat"] + (rec.get("assoc") or 0)
+        tol = max(0.05, abs(rec["pat"]) * 0.02)
+        lines = [f for f in ("ctax", "dtax") if rec.get(f) is not None]
+        if lines and R.near(-sum(rec[f] for f in lines), gap, tol) and not R.near(sum(rec[f] for f in lines), gap, tol):
+            for f in lines + ["tax"]:                                   # tax printed as signed deductions
+                if rec.get(f) is not None: rec[f] = round(-rec[f], 2)
+        if rec.get("tax") is not None and not R.near(rec["tax"], gap, tol): rec.pop("tax")      # a prior-period line read as the total
+        if lines and not R.near(sum(rec[f] for f in lines), gap, tol):
+            for f in lines: rec.pop(f)
+    return rec
+
+
+def read_annual(path):
+    """-> ({basis: {key: rec}}, has_text, has_consolidated). Statements via the prospectus reader, then clean_annual."""
+    res, _held, used = read_prospectus(path)
+    doc = fitz.open(path)
+    texts = [doc[i].get_text() for i in range(len(doc))]
+    has_text = sum(len(t) for t in texts) > 2000 * min(len(texts), 20)
+    has_con = any(re.search(r"consolidated\s+(balance sheet|statement of profit)", t, re.I) for t in texts)
+    for b in res.values():
+        for rec in b.values(): clean_annual(rec, texts)
+    return res, has_text, has_con
+
+
+def annual_needed(fin, today):
+    """Years between the stored annual years and the last year whose report is due, missing from both bases."""
+    years = {int(k[:4]) for b in fin.values() for k in b if k.endswith("0331|12")}
+    due = today.year if today >= datetime.date(today.year, 3, 31) + datetime.timedelta(days=REPORT_LAG_DAYS) else today.year - 1
+    first = min(years) + 1 if years else due - 2          # nothing stored: the last three years
+    return [y for y in range(first, due + 1) if y not in years]
+
+
+def merge_annual(sym, fin, led):
+    """Fill-only. A year comes from its OWN report; a later report's comparative only when the own report is not listed, or
+    (consolidated) when the own report prints no consolidated statement. Keys read by hand are left to the hand read."""
+    hand = load(READS, {}).get(sym, {})
+    reps = led.get("reports", {})
+    by_fy = {}
+    for url, r in reps.items(): by_fy.setdefault(r["fy"], []).append(r)
+    n = 0
+    for basis in ("con", "std"):
+        keys = {k for r in reps.values() for k in r.get(basis, {})}
+        for key in sorted(keys):
+            y = int(key[:4])
+            if key in fin[basis] or key in hand.get(basis, {}) or key[4:8] != "0331": continue
+            own = by_fy.get(y, [])
+            src = [r for r in own if key in r.get(basis, {})]
+            # a scanned own report leaves the year blank: a later report may restate it (SUDARSHAN FY26 restates FY25 under Ind AS)
+            if not src and (not own or (basis == "con" and all(r.get("has_text") and not r.get("has_con") for r in own))):
+                later = sorted((r for r in reps.values() if r["fy"] > y and key in r.get(basis, {})), key=lambda r: r["fy"])
+                src = later[:1]
+            if src:
+                rec = dict(src[0][basis][key]); rec.update(_src="annual", _url=src[0]["url"], _fy=src[0]["fy"])
+                fin[basis][key] = rec; n += 1
+    return n
+
+
+def do_annual(sym, name, fin, st, ledger, a):
+    """Read the annual reports a migrated SME's prospectus years stop short of (runbook §232). Each report is read once."""
+    today = datetime.date.today()
+    need = annual_needed(fin, today)
+    led = ledger.setdefault(sym, {"reports": {}})
+    if need:
+        reps = annual_reports(sym, name)
+        led["listed"] = {str(k): v for k, v in sorted(reps.items())}
+        for fy in sorted(reps):
+            if fy < min(need) - 1: continue
+            for url in reps[fy]:
+                if url in led["reports"] and not a.reread: break
+                path = fetch_report(url, "%s_AR%d_%s" % (sym, fy, re.sub(r"[^A-Za-z0-9]", "", url)[-12:]))
+                if not path: continue
+                try: res, has_text, has_con = read_annual(path)
+                except Exception as e:
+                    print("%s FY%d report unreadable: %s" % (sym, fy, str(e)[:100]), flush=True); continue
+                finally:
+                    if not os.environ.get("IPO_DOC_CACHE"):
+                        try: os.remove(path)
+                        except OSError: pass
+                led["reports"][url] = {"fy": fy, "url": url, "has_text": has_text, "has_con": has_con, "con": res["con"], "std": res["std"]}
+                print("%s FY%d report: con %d std %d periods%s" % (sym, fy, len(res["con"]), len(res["std"]), "" if has_text else " (scanned)"), flush=True)
+                if res["con"] or res["std"]: break                      # the newest filing that reads; older versions not needed
+    n = merge_annual(sym, fin, led)
+    gaps = [y for y in annual_needed(fin, today) if y in {int(k) for k in led.get("listed", {})}]
+    st.update(annual_reads=n, annual_gaps=gaps or None)
+    if not led["reports"] and not led.get("listed"): ledger.pop(sym, None)
+    return n
+
+
 def own_profit(rec):
     return rec.get("own") if rec.get("own") is not None else (rec.get("np") if rec.get("np") is not None else rec.get("pat"))
 
@@ -424,11 +607,13 @@ def main():
     ap.add_argument("--max-minutes", type=float, default=0)
     ap.add_argument("--no-results", action="store_true", help="prospectus only")
     ap.add_argument("--reread", action="store_true", help="read the documents again even when the same document was read before")
+    ap.add_argument("--no-annual", action="store_true", help="skip the annual reports")
     a = ap.parse_args()
     t0 = time.time()
     today = datetime.date.today().isoformat()
     os.makedirs(OUT, exist_ok=True)
     state = load(STATE, {})
+    ledger = load(ANNUAL, {})
     fills = load(FILLS, {})
     listed = load(os.path.join(DOCS, "ipos.json"), {}).get("listed", [])
     only = {s for s in a.only.split(",") if s}
@@ -502,10 +687,14 @@ def main():
             st["err"] = str(e)[:200]
             print("%s: ERROR %s" % (sym, str(e)[:160]), flush=True)
             continue
+        if not a.no_annual:
+            try: do_annual(sym, name, fin, st, ledger, a)
+            except Exception as e: print("%s: annual reports ERROR %s" % (sym, str(e)[:160]), flush=True)
         apply_reads(sym, fin)
         n_ann = sum(1 for b in fin.values() for k in b if k.endswith("|12"))
         if not any(fin.values()):
             st.update(status="pending", why="no document on NSE or SEBI" if not page else "no statement read", held=len(held))
+            json.dump(ledger, open(ANNUAL, "w", encoding="utf-8"), indent=0, sort_keys=True)
             print("%s: pending (%s)" % (sym, st["why"]), flush=True); continue
         drop_impossible_years(fin)
         payload = {"sym": sym, "name": name, "listed": r[3], "src": src, "results": rsrc, "con": fin["con"], "std": fin["std"], "on": today}
@@ -517,8 +706,10 @@ def main():
         print("%s: con %d std %d periods, %d annual, %d new quarter cells, %d held" % (sym, len(fin["con"]), len(fin["std"]), n_ann, nq, len(held)), flush=True)
         json.dump(state, open(STATE, "w", encoding="utf-8"), indent=0, sort_keys=True)
         json.dump(fills, open(FILLS, "w", encoding="utf-8"), separators=(",", ":"))
+        json.dump(ledger, open(ANNUAL, "w", encoding="utf-8"), indent=0, sort_keys=True)
     json.dump(state, open(STATE, "w", encoding="utf-8"), indent=0, sort_keys=True)
     json.dump(fills, open(FILLS, "w", encoding="utf-8"), separators=(",", ":"))
+    json.dump(ledger, open(ANNUAL, "w", encoding="utf-8"), indent=0, sort_keys=True)
     print("DONE: %d stocks written this run" % done, flush=True)
 
 
