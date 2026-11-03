@@ -27,7 +27,7 @@ const LEGS = [
   { k: '2020-21', s: '2020-03-23', e: '2021-10-18' },
   { k: '2022-24', s: '2022-06-20', e: '2024-09-26' },
 ];
-const CUR = { k: 'cur', s: '2026-03-30', e: '2026-08-24' };   // end matches the grid cards' dataEnd
+const CUR = { k: 'cur', s: '2026-03-30', e: '2026-11-03' };   // end matches the grid cards' dataEnd
 const ALL = LEGS.concat([CUR]);
 
 globalThis.location = { hostname: 'dhruvan246.github.io', protocol: 'https:' };
