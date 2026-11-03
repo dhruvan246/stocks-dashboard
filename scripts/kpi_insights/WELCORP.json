@@ -160,7 +160,7 @@
    "kind": "pr",
    "date": "2023-05-30",
    "title": "Q4 FY23 Business Update and Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "6f4289e5-551b-4e1d-877e-d4df53ce45d5.pdf": {
@@ -174,7 +174,7 @@
    "kind": "ip",
    "date": "2024-02-06",
    "title": "Q3 FY24 Results, Business Update and Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "7e96456a-e848-4757-bf37-63276ad2c0e9.pdf": {
@@ -188,7 +188,7 @@
    "kind": "pr",
    "date": "2023-02-02",
    "title": "Q3 FY23 Business Update and Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "8eb93e63-2073-4cd5-969d-a3b090d455ee.pdf": {
@@ -202,7 +202,7 @@
    "kind": "ip",
    "date": "2022-11-03",
    "title": "Q2 FY23 Results, Business Update and Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "ad13c98b-062f-4aa9-8c69-a3e15e7d21c7.pdf": {
@@ -244,7 +244,7 @@
    "kind": "pr",
    "date": "2023-08-04",
    "title": "Q1 FY24 Results, Business Update and Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "e5d9fc2d-478c-45df-9377-4e09f5b3311b.pdf": {
@@ -3815,6 +3815,201 @@
    ]
   },
   {
+   "name": "DRI Sales Volume",
+   "unit": "KMT",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20210930": 0.0,
+    "20211231": 2.0,
+    "20220630": 1.0,
+    "20220930": 18.0,
+    "20221231": 14.0,
+    "20230331": 1.0
+   },
+   "src": {
+    "q:20221231": [
+     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
+     9,
+     "DRI (KMT)",
+     "14"
+    ],
+    "q:20220930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     30,
+     "DRI (KMT)",
+     "18"
+    ],
+    "q:20211231": [
+     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
+     9,
+     "DRI (KMT)",
+     "2"
+    ],
+    "q:20220630": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     30,
+     "DRI (KMT)",
+     "1"
+    ],
+    "q:20210930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     30,
+     "DRI (KMT)",
+     "0"
+    ],
+    "q:20230331": [
+     "6bfaf66f-72d4-4815-8c18-0438a0a509af.pdf",
+     15,
+     "DRI 1 KMT",
+     "1"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2023-02-02"
+   }
+  },
+  {
+   "name": "Debtors Turnover Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210930": 29.0,
+    "20220630": 43.0,
+    "20220930": 47.0,
+    "20221231": 32.0,
+    "20230930": 19.0,
+    "20231231": 28.0
+   },
+   "src": {
+    "q:20231231": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Debtors Turnover (no. of days)",
+     "28"
+    ],
+    "q:20230930": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Debtors Turnover (no. of days)",
+     "19"
+    ],
+    "q:20221231": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Debtors Turnover (no. of days)",
+     "32"
+    ],
+    "q:20220930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Debtors Turnover (no. of days)",
+     "47"
+    ],
+    "q:20220630": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Debtors Turnover (no. of days)",
+     "43"
+    ],
+    "q:20210930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Debtors Turnover (no. of days)",
+     "29"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230331",
+     43.0,
+     null,
+     "drop_q",
+     "NOT_QUARTER: year-ended 31-Mar-23 column",
+     "2026-11-03"
+    ],
+    [
+     "q:20220331",
+     46.0,
+     null,
+     "drop_q",
+     "NOT_QUARTER: year-ended 31-Mar-22 column",
+     "2026-11-03"
+    ]
+   ]
+  },
+  {
+   "name": "Inventory Turnover Days",
+   "unit": "days",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210930": 89.0,
+    "20220630": 133.0,
+    "20220930": 128.0,
+    "20221231": 246.0,
+    "20230930": 141.0,
+    "20231231": 97.0
+   },
+   "src": {
+    "q:20231231": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Inventory Turnover (no. of days)",
+     "97"
+    ],
+    "q:20230930": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Inventory Turnover (no. of days)",
+     "141"
+    ],
+    "q:20221231": [
+     "6fa36551-de80-4775-93c4-cd8ae85b8a1f.pdf",
+     13,
+     "Inventory Turnover (no. of days)",
+     "246"
+    ],
+    "q:20220930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Inventory Turnover (no. of days)",
+     "128"
+    ],
+    "q:20220630": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Inventory Turnover (no. of days)",
+     "133"
+    ],
+    "q:20210930": [
+     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
+     19,
+     "Inventory Turnover (no. of days)",
+     "89"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20230331",
+     171.0,
+     null,
+     "drop_q",
+     "NOT_QUARTER: year-ended 31-Mar-23 column",
+     "2026-11-03"
+    ],
+    [
+     "q:20220331",
+     86.0,
+     null,
+     "drop_q",
+     "NOT_QUARTER: year-ended 31-Mar-22 column",
+     "2026-11-03"
+    ]
+   ]
+  },
+  {
    "name": "SS Bars & Pipes Order Book",
    "unit": "MT",
    "kind": "level",
@@ -3953,54 +4148,6 @@
      "Plumber",
      "66,679"
     ]
-   }
-  },
-  {
-   "name": "DRI Sales Volume",
-   "unit": "KMT",
-   "kind": "flow",
-   "y": {},
-   "q": {
-    "20210930": 0.0,
-    "20211231": 2.0,
-    "20220630": 1.0,
-    "20220930": 18.0,
-    "20221231": 14.0
-   },
-   "src": {
-    "q:20221231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     9,
-     "DRI (KMT)",
-     "14"
-    ],
-    "q:20220930": [
-     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
-     30,
-     "DRI (KMT)",
-     "18"
-    ],
-    "q:20211231": [
-     "7ec7d0f7-b769-4660-819f-1640bbea11b5.pdf",
-     9,
-     "DRI (KMT)",
-     "2"
-    ],
-    "q:20220630": [
-     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
-     30,
-     "DRI (KMT)",
-     "1"
-    ],
-    "q:20210930": [
-     "8ec68138-5b37-4207-a7b9-dd9cebfa3cea.pdf",
-     30,
-     "DRI (KMT)",
-     "0"
-    ]
-   },
-   "latest": {
-    "q:20220930": "2023-02-02"
    }
   },
   {
@@ -4558,6 +4705,30 @@
      "2026-10-31"
     ]
    ]
+  },
+  {
+   "name": "DJSI ESG Rating",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20220331": 41.0,
+    "20230331": 57.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
+     8,
+     "achieved a score of 57 in DJSI rating FY 23",
+     "57"
+    ],
+    "y:20220331": [
+     "e25d8593-3e4f-478d-bacf-0dd259b5a441.pdf",
+     8,
+     "last year's score of 41 (DJSI rating)",
+     "41"
+    ]
+   }
   },
   {
    "name": "Line Pipes Order Book USA",
@@ -5252,5 +5423,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-31"
+ "updated": "2026-11-03"
 }

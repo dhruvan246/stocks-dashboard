@@ -146,28 +146,28 @@
    "kind": "ip",
    "date": "2023-11-11",
    "title": "Q2 FY24 Investor Presentation (revised)",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "4743e4c7-4e34-45ee-ab6f-7d4696da34c7.pdf": {
    "kind": "ip",
    "date": "2024-05-15",
    "title": "Q4 FY24 Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "07d36f55-fe3b-4119-902a-857ad00790c0.pdf": {
    "kind": "ip",
    "date": "2025-01-28",
    "title": "Q3 FY25 Investor Presentation",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "5957063e-8a80-4c23-a773-4616f6083591.pdf": {
    "kind": "ip",
    "date": "2023-08-19",
    "title": "Investor Presentation Aug 2023 (Q1 FY24)",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "5e6505b7-032f-4783-9186-52b7ada57230.pdf": {
@@ -181,7 +181,7 @@
    "kind": "ip",
    "date": "2024-01-30",
    "title": "Investor Presentation Q3 FY24",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "8670bdce-917e-4922-92aa-3e6eb10520fa.pdf": {
@@ -195,7 +195,7 @@
    "kind": "ip",
    "date": "2023-11-10",
    "title": "Investor Presentation Q2 FY24",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "9dae50c5-91d7-41ea-8214-901860103e92.pdf": {
@@ -209,14 +209,14 @@
    "kind": "ip",
    "date": "2024-07-30",
    "title": "Investor Presentation Q1 FY25",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "a8dee43d-a4c9-44a8-a1b7-05653af618bc.pdf": {
    "kind": "ip",
    "date": "2024-11-07",
    "title": "Investor Presentation Q2 FY25",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   },
   "be4b7903-d5d9-41f0-bf78-cd3d771d4b4d.pdf": {
@@ -230,7 +230,7 @@
    "kind": "ip",
    "date": "2024-05-15",
    "title": "Revised Investor Presentation Q4 FY24",
-   "read": "2026-10-27",
+   "read": "2026-11-03",
    "by": "claude-session"
   }
  },
@@ -2111,6 +2111,22 @@
      "drop_q",
      "Undated on its own page (OTHER): Shyam Metalics at a Glance 9 8.04 MTPA Combined Production Capacity 12,322 Employee Strength AA CRISIL Credit ",
      "2026-10-31"
+    ],
+    [
+     "q:20241231",
+     16660.0,
+     null,
+     "drop_q",
+     "UNDATED: employee count has no date on page",
+     "2026-11-03"
+    ],
+    [
+     "q:20240331",
+     15560.0,
+     null,
+     "drop_q",
+     "UNDATED: employee count has no date on page",
+     "2026-11-03"
     ]
    ]
   },
@@ -3340,8 +3356,19 @@
     ]
    },
    "latest": {
-    "q:20210930": "2021-11-16"
-   }
+    "q:20210930": "2021-11-16",
+    "q:20230930": "2023-11-11"
+   },
+   "fixed": [
+    [
+     "q:20241231",
+     15.13,
+     null,
+     "drop_q",
+     "UNDATED: capacity has no date on page",
+     "2026-11-03"
+    ]
+   ]
   },
   {
    "name": "Billets Capacity",
@@ -4641,6 +4668,75 @@
    }
   },
   {
+   "name": "Ferro Alloys Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {
+    "20220331": 0.21
+   },
+   "q": {
+    "20220930": 0.21,
+    "20221231": 0.22,
+    "20230630": 0.22
+   },
+   "src": {
+    "q:20221231": [
+     "a57dfc99-d493-4357-b7d0-4c4f4582dba6.pdf",
+     7,
+     "Ferro Alloy Plant - Aggregate implemented capacities as on 31st Dec",
+     "0.22"
+    ],
+    "q:20220930": [
+     "6ac49f7e-b0a9-4a79-9d44-d7878921d3fa.pdf",
+     5,
+     "Ferro Alloy Plant - Aggregate implemented capacities as on 30th Sept",
+     "0.21"
+    ],
+    "y:20220331": [
+     "be4b7903-d5d9-41f0-bf78-cd3d771d4b4d.pdf",
+     18,
+     "Capacity FY22 - Ferro Alloys (doc period)",
+     "0.21"
+    ],
+    "q:20230630": [
+     "5957063e-8a80-4c23-a773-4616f6083591.pdf",
+     4,
+     "specialised ferro alloy capacity (as of June'23)",
+     "0.22"
+    ]
+   },
+   "latest": {
+    "q:20210630": "2021-09-06",
+    "q:20210930": "2021-11-16"
+   },
+   "fixed": [
+    [
+     "y:20210331",
+     0.21,
+     null,
+     "drop_y",
+     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
+     "2026-10-31"
+    ],
+    [
+     "q:20210630",
+     0.21,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
+     "2026-10-31"
+    ],
+    [
+     "q:20210930",
+     0.21,
+     null,
+     "drop_q",
+     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
+     "2026-10-31"
+    ]
+   ]
+  },
+  {
    "name": "Aluminium Foil Sold",
    "unit": "Metric Tons",
    "kind": "flow",
@@ -4860,68 +4956,6 @@
      "61"
     ]
    }
-  },
-  {
-   "name": "Ferro Alloys Capacity",
-   "unit": "MTPA",
-   "kind": "level",
-   "y": {
-    "20220331": 0.21
-   },
-   "q": {
-    "20220930": 0.21,
-    "20221231": 0.22
-   },
-   "src": {
-    "q:20221231": [
-     "a57dfc99-d493-4357-b7d0-4c4f4582dba6.pdf",
-     7,
-     "Ferro Alloy Plant - Aggregate implemented capacities as on 31st Dec",
-     "0.22"
-    ],
-    "q:20220930": [
-     "6ac49f7e-b0a9-4a79-9d44-d7878921d3fa.pdf",
-     5,
-     "Ferro Alloy Plant - Aggregate implemented capacities as on 30th Sept",
-     "0.21"
-    ],
-    "y:20220331": [
-     "be4b7903-d5d9-41f0-bf78-cd3d771d4b4d.pdf",
-     18,
-     "Capacity FY22 - Ferro Alloys (doc period)",
-     "0.21"
-    ]
-   },
-   "latest": {
-    "q:20210630": "2021-09-06",
-    "q:20210930": "2021-11-16"
-   },
-   "fixed": [
-    [
-     "y:20210331",
-     0.21,
-     null,
-     "drop_y",
-     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
-     "2026-10-31"
-    ],
-    [
-     "q:20210630",
-     0.21,
-     null,
-     "drop_q",
-     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
-     "2026-10-31"
-    ],
-    [
-     "q:20210930",
-     0.21,
-     null,
-     "drop_q",
-     "Undated on its own page (OTHER): ner 3.10 7.70 Current  Capacity Post  Expansion Steel Products (in MTPA) 2.40 3.60 Current  Capacity Post  Exp",
-     "2026-10-31"
-    ]
-   ]
   },
   {
    "name": "Total Production (Consolidated)",
@@ -5205,6 +5239,40 @@
      59,
      "CRASH BARRIER Capacity Utilisation (%)",
      "49"
+    ]
+   }
+  },
+  {
+   "name": "Finished Steel Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 2.07
+   },
+   "src": {
+    "q:20230630": [
+     "5957063e-8a80-4c23-a773-4616f6083591.pdf",
+     4,
+     "Finished steel Capacity (as of June'23)",
+     "2.07"
+    ]
+   }
+  },
+  {
+   "name": "Iron Making Capacity",
+   "unit": "MTPA",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 2.7
+   },
+   "src": {
+    "q:20230630": [
+     "5957063e-8a80-4c23-a773-4616f6083591.pdf",
+     4,
+     "Iron Making capacity (as of June'23)",
+     "2.7"
     ]
    }
   }
@@ -5575,5 +5643,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-31"
+ "updated": "2026-11-03"
 }
