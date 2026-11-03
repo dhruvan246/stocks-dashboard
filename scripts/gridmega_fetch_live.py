@@ -25,7 +25,8 @@ OUT  = os.path.join(HERE, "_live")
 
 
 def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": "gridmega_fetch_live"})
+    # Yahoo refuses non-browser agents
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0" if "yahoo" in url else "gridmega_fetch_live"})
     with urllib.request.urlopen(req) as r:
         return r.read()
 
@@ -93,6 +94,19 @@ def main():
         with open(os.path.join(OUT, dst), "wb") as f:
             f.write(b)
         print("  %s  %.1f MB" % (dst, len(b) / 1e6), flush=True)
+
+    # ---- Nifty 100 benchmark: the site has no daily Nifty 100 file, so take Yahoo's ^CNX100 closes
+    # (daily from 2005-11-30; matched docs/index_monthly.json NIFTY 100 month-ends 2026-11-03 except 3
+    # months where Yahoo lacks the last trading day). Earlier phases fall back to index_monthly.json.
+    print("fetching ^CNX100 (Nifty 100 benchmark)…", flush=True)
+    yj = json.loads(get("https://query1.finance.yahoo.com/v8/finance/chart/%%5ECNX100?period1=1041379200&period2=%d&interval=1d" % time.time()))
+    yr = yj["chart"]["result"][0]
+    px = {time.strftime("%Y-%m-%d", time.gmtime(t + 19800)): round(c, 2)
+          for t, c in zip(yr["timestamp"], yr["indicators"]["quote"][0]["close"]) if c}
+    px = {d: v for d, v in px.items() if d <= full["end"]}
+    with open(os.path.join(OUT, "nifty100_live.json"), "w") as f:
+        json.dump({"src": "yahoo ^CNX100", "px": px}, f)
+    print("  nifty100_live.json  %d days %s..%s" % (len(px), min(px), max(px)), flush=True)
 
     print("\n_live/ staged. sf end = %s" % full["end"])
 

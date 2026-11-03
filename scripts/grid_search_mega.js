@@ -88,11 +88,11 @@
     throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>", got ' + JSON.stringify(UNIVERSE));
   if (EARN_BASIS !== 'con' && EARN_BASIS !== 'std' && EARN_BASIS !== 'conOnly')
     throw new Error('EARN_BASIS must be con|std|conOnly, got ' + JSON.stringify(process.env.EARN_BASIS));
-  if (UNIVERSE !== '__FNO__' && UNIVERSE !== 'Nifty 500' && UNIVERSE !== 'Nifty 50')
-    throw new Error('UNIVERSE: only Nifty 500 / Nifty 50 / __FNO__ have their own artifact names, got ' + JSON.stringify(UNIVERSE));
+  if (UNIVERSE !== '__FNO__' && UNIVERSE !== 'Nifty 500' && UNIVERSE !== 'Nifty 50' && UNIVERSE !== 'Nifty 100')
+    throw new Error('UNIVERSE: only Nifty 500 / Nifty 100 / Nifty 50 / __FNO__ have their own artifact names, got ' + JSON.stringify(UNIVERSE));
   // Universe prefix: '' for Nifty 500, 'fno_' for F&O, 'n50_' for Nifty 50 — every universe needs its
   // own, or a Nifty 50 run would overwrite the Nifty 500 CSV/marker of the same basket shape.
-  const UPRE = UNIVERSE === '__FNO__' ? 'fno_' : UNIVERSE === 'Nifty 50' ? 'n50_' : '';
+  const UPRE = UNIVERSE === '__FNO__' ? 'fno_' : UNIVERSE === 'Nifty 50' ? 'n50_' : UNIVERSE === 'Nifty 100' ? 'n100_' : '';
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
              : '_' + UPRE + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
   // Artifact naming. The basis is part of the TAG (2026-08-27): the two bases sweep the SAME
@@ -114,7 +114,8 @@
   const OOS2 = schedule('2021-06-30', '2024-06-30');   // mid-cycle, excludes crash-bottom AND latest year
   const yearsOf = (s, e) => (Date.parse(e) - Date.parse(s)) / (365.25 * 864e5);
   // Benchmark = the universe's own index: Nifty 50 for the Nifty 50 grid, Nifty 500 otherwise.
-  const BENCHPX = UNIVERSE === 'Nifty 50' ? NIFTY : NIFTY500;
+  // Nifty 100 has no index file of its own in docs/ — gridmega_fetch_live.py stages nifty100_live.json.
+  const BENCHPX = UNIVERSE === 'Nifty 50' ? NIFTY : UNIVERSE === 'Nifty 100' ? Jf(LIVE('nifty100_live.json')).px : NIFTY500;
   const benchCagrOf = (s, e) => { const a = nearestIdx(BENCHPX, s), b = nearestIdx(BENCHPX, e);
     return (a && b) ? (Math.pow(b / a, 1 / yearsOf(s, e)) - 1) * 100 : null; };
 
@@ -126,7 +127,7 @@
   // and per-BASIS: every profit* factor and resultAge comes out of factorsAt already carrying
   // cfg.earnBasis, so a 'std' run must never read a 'con' cache (or vice versa).
   // topN/method never reach factorsAt, so all basket sizes share one cache file.
-  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : UNIVERSE === 'Nifty 50' ? '_n50' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
+  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : UNIVERSE === 'Nifty 50' ? '_n50' : UNIVERSE === 'Nifty 100' ? '_n100' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
   const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + UTAG + '.json.gz');
   let CACHE = new Map();
   if (fs.existsSync(CACHE_FILE)) {
@@ -148,8 +149,13 @@
   }
 
   // ===== sort fields / filter atoms =====
-  const SORTFIELDS = FIELDS.map(f => f.v).filter(v => v !== 'mcap' && v !== 'hist_mcap'); // mcap is 0 in SF mode
+  // GRID_EXCLUDE_FIELDS / GRID_EXCLUDE_SORTS (field:dir) — factors the user barred from the Phases Lab
+  // are never enumerated at all (Nifty 100, 2026-11-03), instead of being run and dropped by the build.
+  const GX_F = new Set((process.env.GRID_EXCLUDE_FIELDS || '').split(',').map(x => x.trim()).filter(Boolean));
+  const GX_S = new Set((process.env.GRID_EXCLUDE_SORTS || '').split(',').map(x => x.trim()).filter(Boolean));
+  const SORTFIELDS = FIELDS.map(f => f.v).filter(v => v !== 'mcap' && v !== 'hist_mcap' && !GX_F.has(v)); // mcap is 0 in SF mode
   const DIRS = ['high', 'low'];
+  const SORTPAIRS = []; for (const sfld of SORTFIELDS) for (const dir of DIRS) if (!GX_S.has(sfld + ':' + dir)) SORTPAIRS.push([sfld, dir]);
   const ATOMS = [
     ['rsi','<',30],['rsi','<',45],['rsi','>=',55],['rsi','>=',70],
     ['d52','<=',5],['d52','<=',10],['d52','<=',25],
@@ -186,7 +192,7 @@
     ['macd','>',0],
     ['stoch','>=',80],['stoch','<=',20],
     ['bollB','>=',80],['bollB','<=',20],
-  ].map(([field, op, val]) => ({ field, op, val }));
+  ].filter(([field]) => !GX_F.has(field)).map(([field, op, val]) => ({ field, op, val }));
   const FILTFIELDS = [...new Set(ATOMS.map(a => a.field))];
   const FFI = {}; FILTFIELDS.forEach((f, i) => FFI[f] = i);
   const OPC = { '>':0, '>=':1, '<':2, '<=':3 };
@@ -357,7 +363,7 @@
     { s:'daysHigh', d:'low', a:[['upPct','>=',55],['vol','<',45]], n:5, m:'reset' },
     { s:'turnSurge', d:'high', a:[['stoch','>=',80]], n:8, m:'reset' },
     { s:'fiiChgPp', d:'high', a:[['composite','>',0],['dma50','>',0]], n:5, m:'reset' },
-  ];
+  ].filter(pc => !GX_F.has(pc.s) && !GX_S.has(pc.s + ':' + pc.d) && !pc.a.some(x => GX_F.has(x[0])));   // barred factors are not enumerated
   // EVAL mode: score a hand-picked list of configs on all 3 windows, skip everything else.
   // EVAL_FILE=<json array of {sortBy,dir,topN?,method?,filters:[{field,op,val}]}> node _gridmega_run.js
   if (process.env.EVAL_FILE) {
@@ -379,7 +385,7 @@
     console.error('EVAL done: ' + rows.length + ' configs'); process.exit(0);
   }
   if (!process.env.EVAL_FILE && !process.env.SELECT_FILE) {
-    console.error('parity check vs simulate() — 12 configs…'); const t0 = Date.now();
+    console.error('parity check vs simulate() — ' + PARITY.length + ' configs…'); const t0 = Date.now();
     let bad = 0;
     for (const pc of PARITY) {
       const filters = pc.a.map(([f, op, v]) => ({ field: f, op, val: v }));
@@ -392,8 +398,8 @@
         '\n  real cagr=' + real.cagr + ' finalV=' + real.finalV + ' maxDD=' + real.maxDD + ' win=' + real.winRate +
         '\n  fast cagr=' + fast.cagr + ' finalV=' + fast.finalV + ' maxDD=' + fast.maxDD + ' win=' + fast.winRate); }
     }
-    if (bad) { console.error('PARITY FAILED for ' + bad + '/12 — ABORTING'); process.exit(2); }
-    console.error('parity OK (12/12 exact) in ' + ((Date.now()-t0)/1000|0) + 's');
+    if (bad) { console.error('PARITY FAILED for ' + bad + '/' + PARITY.length + ' — ABORTING'); process.exit(2); }
+    console.error('parity OK (' + PARITY.length + '/' + PARITY.length + ' exact) in ' + ((Date.now()-t0)/1000|0) + 's');
   }
 
   // ===== enumerate filter sets: all 1/2/3-atom combos with distinct fields =====
@@ -403,8 +409,8 @@
   for (let i = 0; i < nA; i++) for (let j = i + 1; j < nA; j++) { if (CATOMS[i].fi === CATOMS[j].fi) continue; FSETS.push([i, j]); }
   for (let i = 0; i < nA; i++) for (let j = i + 1; j < nA; j++) { if (CATOMS[i].fi === CATOMS[j].fi) continue;
     for (let k = j + 1; k < nA; k++) { if (CATOMS[k].fi === CATOMS[i].fi || CATOMS[k].fi === CATOMS[j].fi) continue; FSETS.push([i, j, k]); } }
-  const TOTAL = FSETS.length * SORTFIELDS.length * 2;
-  console.error('atoms=' + nA + ' fsets=' + FSETS.length + ' sorts=' + SORTFIELDS.length + ' × 2 dirs → ' + TOTAL.toLocaleString() + ' combos');
+  const TOTAL = FSETS.length * SORTPAIRS.length;
+  console.error('atoms=' + nA + ' fsets=' + FSETS.length + ' sort×dir=' + SORTPAIRS.length + ' → ' + TOTAL.toLocaleString() + ' combos');
   const fdesc = fset => fset.map(x => { const a = CATOMS[x]; return a.field + a.op + a.val; }).join(' & ');
 
   // SELECT mode: re-score a set of grid ROW INDICES in THIS window and emit exact metrics.
@@ -416,7 +422,7 @@
   if (process.env.SELECT_FILE) {
     const want = new Set(JSON.parse(fs.readFileSync(process.env.SELECT_FILE, 'utf8')));
     const rows = []; let idx = 0;
-    for (const sfld of SORTFIELDS) for (const dir of DIRS) for (let fi = 0; fi < FSETS.length; fi++, idx++) {
+    for (const [sfld, dir] of SORTPAIRS) for (let fi = 0; fi < FSETS.length; fi++, idx++) {
       if (!want.has(idx)) continue;
       const r = simFast(sfld, dir, FSETS[fi].map(x => CATOMS[x]), TOPN, METHOD, MAIN);
       rows.push({ i: idx, s: sfld, d: dir, f: fdesc(FSETS[fi]), cagr: +r.cagr.toFixed(2),
@@ -456,7 +462,7 @@
   csvBuf.push('sortBy,dir,filters,cagr,maxDD,winRate,avgPicks');
   let done = 0, degenerate = 0;
   const CKPT = path.join(ROOT, 'scripts', '_gridmega_ckpt_' + TAG + '.json'); // per-window: runs go in parallel
-  for (const sfld of SORTFIELDS) for (const dir of DIRS) {
+  for (const [sfld, dir] of SORTPAIRS) {
     for (let fi = 0; fi < FSETS.length; fi++) {
       const fset = FSETS[fi];
       const r = simFast(sfld, dir, fset.map(x => CATOMS[x]), TOPN, METHOD, MAIN);

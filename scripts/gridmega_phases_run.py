@@ -16,6 +16,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 LOGD = os.path.join(HERE, "_gmlog")
 
+N100_GX = {"GRID_EXCLUDE_FIELDS": "indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom",
+           "GRID_EXCLUDE_SORTS": "vol:high"}
+
 # (vtag, env overrides) — vtag must match grid_search_mega.js's VTAG and the page's SUFS map
 VARIANTS = [
     ("",         {}),                                                          # top-5 reset  (default)
@@ -27,6 +30,12 @@ VARIANTS = [
     ("_n50_h5",  {"TOPN": "5", "METHOD": "hold",  "UNIVERSE": "Nifty 50"}),
     ("_n50_r3",  {"TOPN": "3", "METHOD": "reset", "UNIVERSE": "Nifty 50"}),
     ("_n50_h3",  {"TOPN": "3", "METHOD": "hold",  "UNIVERSE": "Nifty 50"}),
+    # Nifty 100 (2026-11-03): the factors the user barred are never enumerated (must equal the
+    # build's N100_GX_* — its SELECT pass re-enumerates the same row list)
+    ("_n100_r5", {"TOPN": "5", "METHOD": "reset", "UNIVERSE": "Nifty 100", **N100_GX}),
+    ("_n100_h5", {"TOPN": "5", "METHOD": "hold",  "UNIVERSE": "Nifty 100", **N100_GX}),
+    ("_n100_r3", {"TOPN": "3", "METHOD": "reset", "UNIVERSE": "Nifty 100", **N100_GX}),
+    ("_n100_h3", {"TOPN": "3", "METHOD": "hold",  "UNIVERSE": "Nifty 100", **N100_GX}),
 ]
 
 
