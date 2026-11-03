@@ -196,7 +196,7 @@
   // Factors the user barred after a payload was built (2026-11-03). A payload built since then has
   // already dropped them and re-ranked (they are in R.excluded); an older one still carries them, so
   // hide its rows here. Its cards then show fewer rows: nothing is promoted into the gaps.
-  const HIDE_FIELDS=['rangePos','bollB','turnover','stoch','postDrift'], HIDE_SORTS=['vol:high'];
+  const HIDE_FIELDS=['rangePos','bollB','turnover','stoch','postDrift','beta'], HIDE_SORTS=['vol:high'];
   function hideBarred(j){
     const ex=j.excluded||[], hide=HIDE_FIELDS.filter(f=>!ex.includes(f));
     const exS=j.excludedSorts||[], hideS=HIDE_SORTS.filter(f=>!exS.includes(f));
@@ -226,7 +226,7 @@
       : R.earnBasis && R.earnBasis!=='con' ? ' · '+(BN[R.earnBasis]||R.earnBasis)+' earnings' : '';
     // Barred factors must be VISIBLE: a reader who knows the grid searches indRank/composite would
     // otherwise read their absence as "they never won" rather than "they were excluded".
-    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover',stoch:'stochastic',postDrift:'post-results drift',
+    const EXN={indRank:'industry rank',composite:'quality-momentum composite',rangePos:'range position',bollB:'Bollinger %B',turnover:'turnover',stoch:'stochastic',postDrift:'post-results drift',beta:'beta',
                'vol:high':'sorting by highest volatility'};
     const exNote=(R.excluded&&R.excluded.length)
       ? ' <span style="font-weight:400">Excluded from every card: '+R.excluded.concat(R.excludedSorts||[]).map(f=>EXN[f]||f).join(', ').replace(/, ([^,]*)$/,' and $1')+'</span>' : '';
