@@ -34,7 +34,7 @@ echo "$(date +'%H:%M') artifacts purged; starting grids"
 
 python3 scripts/gridmega_phases_run.py "$END" --jobs "$JOBS" || exit 1
 
-for V in "" _h5 _r3 _h3 _fno_h3; do
+for V in "" _h5 _r3 _h3 _fno_h3 _n50_r5 _n50_h5 _n50_r3 _n50_h3; do
   echo "=== building strategy_phases${V}.json ==="
   GRID_END="$END" node --max-old-space-size=6144 scripts/gridmega_phases_build.js "$V" || exit 1
 done

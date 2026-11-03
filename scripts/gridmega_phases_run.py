@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Drive the whole Strategy Phases Lab refresh: 11 windows × 5 basket variants (DATA_RUNBOOK §7.4).
+"""Drive the whole Strategy Phases Lab refresh: 13 windows × 9 basket variants (5 Nifty 500/F&O + 4 Nifty 50) (DATA_RUNBOOK §7.4).
 
   python3 scripts/gridmega_phases_run.py <END> [--jobs N]
 
@@ -23,6 +23,10 @@ VARIANTS = [
     ("_r3",      {"TOPN": "3", "METHOD": "reset"}),
     ("_h5",      {"TOPN": "5", "METHOD": "hold"}),
     ("_fno_h3",  {"TOPN": "3", "METHOD": "hold", "UNIVERSE": "__FNO__"}),
+    ("_n50_r5",  {"TOPN": "5", "METHOD": "reset", "UNIVERSE": "Nifty 50"}),
+    ("_n50_h5",  {"TOPN": "5", "METHOD": "hold",  "UNIVERSE": "Nifty 50"}),
+    ("_n50_r3",  {"TOPN": "3", "METHOD": "reset", "UNIVERSE": "Nifty 50"}),
+    ("_n50_h3",  {"TOPN": "3", "METHOD": "hold",  "UNIVERSE": "Nifty 50"}),
 ]
 
 
@@ -48,7 +52,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("end")
     ap.add_argument("--jobs", type=int, default=4)
+    ap.add_argument("--only", default="", help="comma-separated vtags to run (use 'r5' for the un-suffixed default)")
     a = ap.parse_args()
+    only = {("" if v == "r5" else v) for v in a.only.split(",")} if a.only else None
     os.makedirs(LOGD, exist_ok=True)
 
     runner = os.path.join(HERE, "_gridmega_run.js")
@@ -65,6 +71,8 @@ def main():
     jobs = []
     for start, end in windows(a.end):
         for vtag, env in VARIANTS:
+            if only is not None and vtag not in only:
+                continue
             tag = "%s_%s%s_%s" % (start, end, vtag, basis)
             if os.path.exists(os.path.join(HERE, "_gridmega_top_%s.json" % tag)):
                 continue

@@ -6,8 +6,8 @@ bytes the site serves, never the stale committed snapshot. This script rebuilds 
 directory from the live GitHub Pages origins:
 
   stock_data_live.bin  <- stocks-dashboard/stock_data.bin   (indicesHistory/fnoHistory/startTs)
-  p1_new.bin           <- sf-data parts, merged per-symbol (deep first, recent appended)
-  p2_new.bin           <- empty stub (the engine merges p1+p2; one file is enough)
+  p1_new.bin/p2_new.bin <- sf-data parts, merged per-symbol (deep first, recent appended),
+                          symbols split in half across the two (the engine merges p1+p2)
   fund_live.json       <- stocks-dashboard/sf_fundamentals.json
   fund_months_live.json <- stocks-dashboard/fund_months.json (proven half-year rows, runbook §198)
   shp_live.json        <- stocks-dashboard/shp_engine.json
@@ -65,10 +65,21 @@ def main():
     nbars = sum(len(o.get("d", [])) for o in full["data"].values())
     print("merged: %d symbols, %d bars, end=%s" % (len(full["data"]), nbars, full["end"]), flush=True)
 
-    with open(os.path.join(OUT, "p1_new.bin"), "wb") as f:
-        f.write(gzip.compress(json.dumps(full, separators=(",", ":")).encode(), 6))
-    with open(os.path.join(OUT, "p2_new.bin"), "wb") as f:
-        f.write(gzip.compress(b'{"data":{},"meta":{}}', 6))
+    # Split the symbols across p1/p2 (the grid merges {...p1.data, ...p2.data}, each symbol whole in
+    # one file). One file stopped fitting by Nov-2026: 606 MB of JSON is past Node's 512 MB string
+    # limit, and every grid job died at load with ERR_STRING_TOO_LONG.
+    syms = sorted(full["data"])
+    half = len(syms) // 2
+    for name, chunk in (("p1_new.bin", syms[:half]), ("p2_new.bin", syms[half:])):
+        part = {k: v for k, v in full.items() if k not in ("data", "meta")}
+        part["data"] = {s: full["data"][s] for s in chunk}
+        part["meta"] = full["meta"] if name == "p1_new.bin" else {}   # merged by the grid; keep it whole
+        blob = json.dumps(part, separators=(",", ":")).encode()
+        if len(blob) >= 0x1fffffe8:
+            sys.exit("%s is %d bytes of JSON — over Node's string limit; split into more parts" % (name, len(blob)))
+        with open(os.path.join(OUT, name), "wb") as f:
+            f.write(gzip.compress(blob, 6))
+        print("  %s  %d symbols  %.0f MB JSON" % (name, len(chunk), len(blob) / 1e6), flush=True)
 
     # ---- site files (stock_data.bin is already gzip; copy the bytes through)
     for src, dst in [("stock_data.bin", "stock_data_live.bin"),

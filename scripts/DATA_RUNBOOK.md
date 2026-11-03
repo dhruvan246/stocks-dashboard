@@ -944,6 +944,23 @@ cache purge, costing a full rebuild-from-scratch before this refresh could even 
 - `gridmega_phases_run.py` — the 55-job driver; RESUMABLE (skips any window whose `_gridmega_top_` marker
   exists), longest windows first, staggered starts.
 - `gridmega_phases_build.js` — merges 11 windows → `docs/strategy_phases<vtag>.json`. Needs `GRID_END=`.
+- **Nifty 50 variants (2026-11-03, user request).** Same test on the point-in-time Nifty 50
+  (`indicesHistory['Nifty 50']`, snapshots from 1996): `UNIVERSE='Nifty 50'` → vtags `_n50_r5 _n50_h5
+  _n50_r3 _n50_h3`, factor cache suffix `_n50`, benchmark = Nifty 50 (`nifty.json`, daily from 2002;
+  build falls back to index_monthly `NIFTY 50`). Run them alone with
+  `EARN_BASIS=std|con python3 scripts/gridmega_phases_run.py <END> --only _n50_r5,_n50_h5,_n50_r3,_n50_h3`,
+  then `MERGE_BASES=std,con GRID_END=<END> node scripts/gridmega_phases_build.js _n50_r5` (etc.). The page
+  has a Universe switch (Nifty 500 / Nifty 50 / F&O). Before this, a 'Nifty 50' run would have written
+  the Nifty 500 artifact names (VTAG had no universe prefix for anything but F&O) — now refused loudly.
+- **`p1_new.bin` + `p2_new.bin` split (2026-11-03).** The stager used to put every symbol in p1; by
+  Nov-2026 that was 606 MB of JSON, past Node's 512 MB string limit → every grid job died at load with
+  `ERR_STRING_TOO_LONG`. Symbols are now split in half across the two files (the grid merges them).
+- **Grid fast path lagged the engine's end-date guard (fixed 2026-11-03).** The 2026-08-30 END-DATE
+  REBALANCE GUARD (simulate() never rebalances on cfg.end) was never mirrored in `simFast`, which kept
+  counting the end month as a win/loss period. CAGR/finalV/maxDD stayed identical; winRate was one month
+  off, so the built-in 12-config parity check aborted every job (`PARITY FAILED … rc=2`). The phases
+  JSONs built 2026-08-28 predate the guard and are unaffected; any grid run between 08-30 and 11-03
+  would have aborted rather than ship a wrong number.
 
 **Traps that will silently corrupt a refresh:**
 1. **PURGE `_gridmega_cache_*.json.gz` whenever `_live/` is re-staged.** The factor cache is keyed by

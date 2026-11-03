@@ -12,7 +12,7 @@
 //   PARITY_ONLY=1 node scripts/_gridmega_run.js                        # parity + ETA only
 // argv: [start] [end].  env: MAIN_ONLY=1 (grid + top-2000 only) · EVAL_FILE=x.json ·
 //   SELECT_FILE=x.json (exact metrics for a set of grid row indices, for the Phases Lab build) ·
-//   TOPN=3|5 · METHOD=reset|hold · UNIVERSE='Nifty 500'|__FNO__  (the Phases Lab basket variants).
+//   TOPN=3|5 · METHOD=reset|hold · UNIVERSE='Nifty 500'|'Nifty 50'|__FNO__  (the Phases Lab basket variants).
 // Reads LIVE data from scripts/_live/ (p1_new.bin p2_new.bin fund_live.json shp_live.json
 // nifty_live.json nifty500_live.json stock_data_live.bin) — stage it with
 // `python3 scripts/gridmega_fetch_live.py` (runbook §7.0/§7.4).
@@ -66,7 +66,7 @@
   // Basket variant — the Phases Lab ships one grid per basket shape (runbook §7.4).
   //   TOPN   basket size the grid itself searches over (default 5)
   //   METHOD 'reset' = sell all + rebuy monthly | 'hold' = ride winners (exits replaced, winners kept)
-  //   UNIVERSE 'Nifty 500' (default) or '__FNO__' for the F&O universe
+  //   UNIVERSE 'Nifty 500' (default), 'Nifty 50', or '__FNO__' for the F&O universe
   // VTAG keeps each variant's CSV/cache/top artifacts separate; the default variant keeps the
   // legacy un-suffixed names so old artifacts stay readable.
   const TOPN = +(process.env.TOPN || 5);
@@ -88,8 +88,13 @@
     throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>", got ' + JSON.stringify(UNIVERSE));
   if (EARN_BASIS !== 'con' && EARN_BASIS !== 'std' && EARN_BASIS !== 'conOnly')
     throw new Error('EARN_BASIS must be con|std|conOnly, got ' + JSON.stringify(process.env.EARN_BASIS));
+  if (UNIVERSE !== '__FNO__' && UNIVERSE !== 'Nifty 500' && UNIVERSE !== 'Nifty 50')
+    throw new Error('UNIVERSE: only Nifty 500 / Nifty 50 / __FNO__ have their own artifact names, got ' + JSON.stringify(UNIVERSE));
+  // Universe prefix: '' for Nifty 500, 'fno_' for F&O, 'n50_' for Nifty 50 — every universe needs its
+  // own, or a Nifty 50 run would overwrite the Nifty 500 CSV/marker of the same basket shape.
+  const UPRE = UNIVERSE === '__FNO__' ? 'fno_' : UNIVERSE === 'Nifty 50' ? 'n50_' : '';
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
-             : '_' + (UNIVERSE === '__FNO__' ? 'fno_' : '') + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
+             : '_' + UPRE + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
   // Artifact naming. The basis is part of the TAG (2026-08-27): the two bases sweep the SAME
   // 4,440,600 combos, so without it a `con` run silently overwrites the `std` CSV/marker it is
   // meant to be merged with. Callers that build this tag themselves — gridmega_phases_run.py's
@@ -108,7 +113,9 @@
   const OOS1 = schedule('2023-03-31', END);            // post-COVID regime
   const OOS2 = schedule('2021-06-30', '2024-06-30');   // mid-cycle, excludes crash-bottom AND latest year
   const yearsOf = (s, e) => (Date.parse(e) - Date.parse(s)) / (365.25 * 864e5);
-  const benchCagrOf = (s, e) => { const a = nearestIdx(NIFTY500, s), b = nearestIdx(NIFTY500, e);
+  // Benchmark = the universe's own index: Nifty 50 for the Nifty 50 grid, Nifty 500 otherwise.
+  const BENCHPX = UNIVERSE === 'Nifty 50' ? NIFTY : NIFTY500;
+  const benchCagrOf = (s, e) => { const a = nearestIdx(BENCHPX, s), b = nearestIdx(BENCHPX, e);
     return (a && b) ? (Math.pow(b / a, 1 / yearsOf(s, e)) - 1) * 100 : null; };
 
   // ===== factor cache: ALL factors at every rebalance date, computed once =====
@@ -119,7 +126,7 @@
   // and per-BASIS: every profit* factor and resultAge comes out of factorsAt already carrying
   // cfg.earnBasis, so a 'std' run must never read a 'con' cache (or vice versa).
   // topN/method never reach factorsAt, so all basket sizes share one cache file.
-  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
+  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : UNIVERSE === 'Nifty 50' ? '_n50' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
   const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + UTAG + '.json.gz');
   let CACHE = new Map();
   if (fs.existsSync(CACHE_FILE)) {
@@ -309,7 +316,9 @@
         for (const e of entries) { if (perSlot <= 1) break; pos.set(e.tkr, perSlot / e.price); avail -= perSlot; }
         cash = Math.max(0, avail);
       }
-      if (mi > 0) { nRebRet++; if (mv / (lastRebVal || 1) - 1 > 0) wins++; }
+      // The end date never rebalances in simulate() (END-DATE REBALANCE GUARD, 2026-08-30), so its
+      // month is no win/loss period there either — skip it here too or winRate drifts by one month.
+      if (mi > 0 && mi < nM - 1) { nRebRet++; if (mv / (lastRebVal || 1) - 1 > 0) wins++; }
       lastRebVal = mv > 0 ? mv : CAPITAL;
     }
     const finalV = equity[nM - 1];
@@ -414,7 +423,7 @@
                   tot: +((r.finalV / CAPITAL - 1) * 100).toFixed(1), dd: +r.maxDD.toFixed(1),
                   win: +r.winRate.toFixed(1), picks: +r.avgPicks.toFixed(2) });
     }
-    const bA = nearestIdx(NIFTY500, START), bB = nearestIdx(NIFTY500, END);
+    const bA = nearestIdx(BENCHPX, START), bB = nearestIdx(BENCHPX, END);
     const out = { window: [START, END], years: +yearsOf(START, END).toFixed(2), total: TOTAL,
       bench: { totRet: (bA && bB) ? +((bB / bA - 1) * 100).toFixed(1) : null,
                cagr: (bA && bB) ? +benchCagrOf(START, END).toFixed(2) : null }, rows };
