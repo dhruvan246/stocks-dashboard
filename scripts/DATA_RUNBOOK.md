@@ -29325,3 +29325,36 @@ cells), 20 still dropped whole (all UNKNOWN). Site file: 3,062 stocks, 42,299 ca
 **Open — needs the user's OK.** The partly-paid rule is applied only to these 10 stocks. A filing scan (NSE files only; BSE-format
 files not scanned) found 356 partly-paid cells in 46 stocks — 273 cells in 37 stocks are still counted at full. On a 2,909-cell
 sample `mcap_shares` changed 46 (1.6%). Switching every cell changes the share count every page uses — ask before doing it.
+
+## §234 — Insights KPI second-pass re-read on the 40-metric limit, waves 0–13 (2026-11-01 → 11-04)
+
+**Why.** The first KPI read kept at most 16 metrics per filing, so later metrics on long decks were never read. The limit was
+raised to 40 and every affected filing was re-read in 14 waves (the last wave, 13, pushed `c7762b1409`; `capprep.sh 14` finds 0
+packets). Tools and per-wave log: `~/stocks-cache/kpi-dc/` (`STATE.txt`, `capprep.sh` → readers → `capvalcheck.py` →
+`capcheck.py`/`capsplit.py` → checkers → `capfinish.py` → `apply_cell_fixes.py` → `cappush.sh`).
+
+**Rules this campaign settled (binding for every later KPI read):**
+1. **The page must print the period's date.** A figure with no period beside it is stored only when that same page prints the
+   reporting date (heading, "as on" line, footnote such as "1 - As of 31-Dec-20"). The document title — including a running
+   header like "Investor Presentation - Q1FY27" repeated on every slide — does NOT date a figure (KOLTEPATIL c224e5fc p21, 15
+   cells dropped). Labels ending "(doc period)" must be re-read against this rule.
+2. **Pairing must be proven by the page.** Chart values tied to labels only by order/layout are not stored; a label that could be
+   one of two bases (VENTIVE "68,892 Raaya" beside "Same Store" vs "With Raaya") is PAIRING → not stored.
+3. **Growth lines are not levels.** A % line on a volume chart is often YoY growth — check by arithmetic (IEX b3ce6c35 p12:
+   21.4/24.6/29.2/41.0 = RTM volume growth, live as "RTM Share" until wave 13; replaced with the pie shares 25/34/29).
+4. **Basis splits get their own rows:** deemed vs actual PLF (JSWENERGY "#" = Deemed PLF), own-app vs aggregator share
+   (JUBLFOOD), tugs vs total vessels (ADANIPORTS). Never mix two bases in one row; journal any moved live cell in `fixed`.
+5. **Never quarters:** H1, 9M, TTM/LTM/MAT, monthly, and market shares whose quarter-vs-YTD basis the page doesn't state
+   (EDELWEISS motor GDPI share not stored). Qualified values (+, ~, over, approx …) are never stored.
+6. **Merged/renamed companies:** a rename (Magma→POONAWALLA, IIFL Wealth→360ONE, Minda Inds→UNOMINDA) keeps one ledger; a merger
+   of two companies needs the pre-merger filings split (see wave logs).
+7. **A more precise print of the same figure replaces the rounded one** (EIDPARRY 29.5 → 29.48) — that is not a restatement.
+
+**Push trap.** `cappush.sh` → `caplandhead.sh` recognises the commit only when the subject starts with
+`Insights KPI re-read wave N`; any other subject prints "NOT PUSHED" even when the push landed (wave 11). Check
+`git merge-base --is-ancestor <sha> origin/main` before re-pushing.
+
+**Still open (user decisions / UNKNOWN):** ~1,000 older 12-month (LTM/TTM/MAT) cells still stored from the first pass (incl.
+PERSISTENT TTM TCV/ACV rows) — ask whether to drop; bracketed negatives "(12.3)" are rejected by ingest — ask whether to accept;
+KTKBANK Dec-18 PCR basis and JSWENERGY Barmer/Vijayanagar Mar-19/Mar-20 quarterly PLF basis (f5d43797 p24) UNKNOWN; the
+doc-title rule (point 1) was added after waves 0–7, so their "(doc period)" cells are not yet re-swept.
