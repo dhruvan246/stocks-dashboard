@@ -31,7 +31,7 @@ API = 'https://api.fxtwitter.com/2/profile/%s/statuses'
 HANDLES = ['narendramodi', 'PIB_India', 'MIB_India', 'nsitharaman', 'DefenceMinIndia', 'rajnathsingh',
            'SpokespersonMoD', 'RailMinIndia', 'AshwiniVaishnaw', 'GoI_MeitY', 'MinOfPower', 'mnreindia',
            'CoalMinistry', 'DPIITGoI', 'dgftindia', 'cbic_india', 'PiyushGoyal', 'MORTHIndia', 'nitin_gadkari',
-           'shipmin_india', 'MoCA_GoI', 'DoT_India', 'TRAI', 'RBI', 'NITIAayog', 'InvestIndia', 'PetroleumMin',
+           'shipmin_india', 'MoCA_GoI', 'DoT_India', 'RBI', 'NITIAayog', 'InvestIndia', 'PetroleumMin',
            'HardeepSPuri', 'MoHUA_India', 'DrSJaishankar', 'INSPACeIND', 'isro', 'HALHQBLR', 'GeM_India',
            'PMOIndia', 'FinMinIndia', 'SteelMinIndia', 'MoHFW_INDIA', 'DoC_GoI', 'BEL_CorpCom', 'SEBI_updates']
 
@@ -118,7 +118,7 @@ def main():
         old = json.load(open(OUT, encoding='utf-8'))
     except Exception:
         pass
-    posts = old.get('posts', {})
+    posts = {k: v for k, v in old.get('posts', {}).items() if v['handle'] in HANDLES}   # a dropped account leaves no posts (TRAI, user 2026-11-04)
     accounts = {}
     since = (ist.today() - datetime.timedelta(days=a.days)).isoformat()
     for h in (a.only.split(',') if a.only else HANDLES):
@@ -164,7 +164,8 @@ def main():
     cut = (ist.today() - datetime.timedelta(days=a.keep_days)).isoformat()
     posts = {k: v for k, v in posts.items() if v['date'] >= cut}
     for h, v in old.get('accounts', {}).items():
-        accounts.setdefault(h, v)
+        if h in HANDLES:
+            accounts.setdefault(h, v)
     out = dict(built=ist.stamp(), source='api.fxtwitter.com (unofficial X mirror)', days=a.days, accounts=accounts,
                posts=dict(sorted(posts.items(), key=lambda kv: kv[1]['created'] and datetime.datetime.strptime(kv[1]['created'], '%a %b %d %H:%M:%S %z %Y').timestamp(), reverse=True)))
     tmp = OUT + '.tmp'

@@ -275,7 +275,7 @@
     <div id="govt-days" class="muted text-xs mb-2"></div>
     <div id="govt-list" class="grid gap-3"></div>
     <div class="sechead mt-6"><h3 class="text-base font-semibold">Rule changes from other government sites</h3><span id="gsrc-meta" class="muted text-xs"></span></div>
-    <p class="muted text-sm mb-2">Read straight from the Gazette of India, DGFT, DGTR, TRAI, RBI, CERC, the Department of Economic Affairs and the Defence, Power, Renewable Energy (MNRE), Electronics (MeitY), Industry (DPIIT), Coal and Petroleum ministries, because most legal notices never reach PIB. Shown here: notices whose own title changes a trade, tax or market rule (import or export policy, minimum import price, anti-dumping and safeguard cases, customs, quality control orders, approved-maker lists, new regulations) or records a project or mine won by bidding (CERC tariff adoption, coal auctions). Land acquisitions, routine tariff petitions and money-market notices are counted below but not shown as rule changes.</p>
+    <p class="muted text-sm mb-2">Read straight from the Gazette of India, DGFT, DGTR, RBI, CERC, the Department of Economic Affairs and the Defence, Power, Renewable Energy (MNRE), Electronics (MeitY), Industry (DPIIT), Coal and Petroleum ministries, because most legal notices never reach PIB. Shown here: notices whose own title changes a trade, tax or market rule (import or export policy, minimum import price, anti-dumping and safeguard cases, customs, quality control orders, approved-maker lists, new regulations) or records a project or mine won by bidding (CERC tariff adoption, coal auctions). Land acquisitions, routine tariff petitions and money-market notices are counted below but not shown as rule changes.</p>
     <div id="gsrc-status" class="muted text-xs mb-2"></div>
     <div id="gsrc-list" class="grid gap-2"></div>
     <details class="mt-2"><summary id="gsrc-rest-sum" class="text-xs cursor-pointer" style="color:var(--accent)">Everything else read</summary><div id="gsrc-rest" class="mt-1 grid gap-1"></div></details>
@@ -1036,7 +1036,7 @@
     $('#govt-list').innerHTML = '<div class="card muted text-sm">govt.json not published yet.</div>';
   }
 
-  // ---- other government sites (Gazette, DGFT, DGTR, TRAI, RBI, CERC, DEA, ministries) ----------------------------
+  // ---- other government sites (Gazette, DGFT, DGTR, RBI, CERC, DEA, ministries) ----------------------------
   if (govtSrc && govtSrc.items) {
     const SRC = { gazette: 'Gazette', dgft: 'DGFT', trai: 'TRAI', rbi: 'RBI', cerc: 'CERC', dgtr: 'DGTR', ministries: 'Ministries', coal: 'Coal', mopng: 'Petroleum', dea: 'DEA' };
     const cut = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);

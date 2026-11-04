@@ -101,7 +101,7 @@ jobs:
       - name: Government lane — PIB releases
         run: rc=0; python3 -X utf8 scripts/ideas/govt.py || rc=$?; echo "govt=$rc" >> /tmp/ideas/steps.txt
 
-      # Gazette, DGFT, TRAI, RBI, CERC: the legal notices that never reach PIB. A site that fails keeps
+      # Gazette, DGFT, DGTR, RBI, CERC, DEA, ministries: the legal notices that never reach PIB. A site that fails keeps
       # what earlier runs read and says so in govt_sources.json -> sources.
       - name: Government lane — other government sites
         run: rc=0; python3 -X utf8 scripts/ideas/govt_sources.py || rc=$?; echo "govt_sources=$rc" >> /tmp/ideas/steps.txt

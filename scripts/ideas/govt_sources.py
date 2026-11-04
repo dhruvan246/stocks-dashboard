@@ -1,4 +1,4 @@
-"""Government notices that never reach PIB: the Gazette, DGFT, TRAI, RBI and CERC, read straight from each site.
+"""Government notices that never reach PIB: the Gazette, DGFT, RBI, CERC and more, read straight from each site.
 
 PIB (govt.py) carries Cabinet decisions and ministry press releases. The legal instruments that change an order
 book are published elsewhere and usually earlier or only there: a customs-duty or anti-dumping notification or a
@@ -10,7 +10,6 @@ the petitioner to its listed symbol by exact company name. Nothing is guessed fr
   source   page read                                                  rows per run
   gazette  egazette.gov.in RecentUploads.aspx Category 1-5, 5 pages   ~500 (about a month)
   dgft     dgft.gov.in/CP/?opt= notification, public-notice, trade-notice  ~400
-  trai     trai.gov.in/notifications/press-release                    ~20
   rbi      rbi.org.in/pressreleases_rss.xml                           ~10
   cerc     cercind.gov.in/recent_orders.html                          ~550
 
@@ -38,7 +37,7 @@ LE_CHAIN = os.path.join(HERE, 'certs', 'letsencrypt_yr.pem')
 
 
 def tls():
-    # certifi when installed: this Mac's /etc/ssl/cert.pem lacks GlobalSign Root R46, which TRAI chains to.
+    # certifi when installed: this Mac's /etc/ssl/cert.pem lacks GlobalSign Root R46, which some sites chain to.
     # Plus the two Let's Encrypt intermediates that egazette.gov.in and dea.gov.in leave out of their handshake.
     try:
         import certifi
@@ -128,20 +127,6 @@ def dgft():
             if d and title:
                 out.append(dict(src='dgft', id=f'{opt}:{no}', date=d, title=title, ministry=f'DGFT {opt.replace("-", " ")} {no}',
                                 url=href.group(1).replace(' ', '%20') if href else f'https://www.dgft.gov.in/CP/?opt={opt}'))
-    return out
-
-
-def trai():
-    _, s = fetch(opener(), 'https://www.trai.gov.in/notifications/press-release')
-    out = []
-    for it in re.findall(r'<div class="views-view-grid__item-inner">(.*?)<div class="share-pop">', s, re.S):
-        t = re.search(r'views-field-title.*?field-content">(.*?)</div>', it, re.S)
-        d = re.search(r'Date of Publication</span><div class="field-content">([^<]+)', it)
-        a = re.search(r'href="(/sites/default/files/[^"]+)"', it)
-        if t and d:
-            out.append(dict(src='trai', id=a.group(1) if a else clean(t.group(1)), date=ymd(d.group(1), '%d/%m/%Y'),
-                            title=clean(t.group(1)), ministry='TRAI',
-                            url='https://www.trai.gov.in' + a.group(1) if a else 'https://www.trai.gov.in/notifications/press-release'))
     return out
 
 
@@ -268,7 +253,7 @@ ROUTINE = re.compile(r'\b(land schedule|acquisition of land|right of user|pmp ac
                      r'interview|young professional|independent consultants?|liaison officer)\b', re.I)
 
 
-SOURCES = dict(gazette=gazette, dgft=dgft, trai=trai, rbi=rbi, cerc=cerc, dgtr=dgtr, ministries=ministries, coal=coal,
+SOURCES = dict(gazette=gazette, dgft=dgft, rbi=rbi, cerc=cerc, dgtr=dgtr, ministries=ministries, coal=coal,
                mopng=mopng, dea=dea)
 
 
@@ -296,7 +281,7 @@ def main():
             old = json.load(open(OUT, encoding='utf-8'))
         except Exception:
             old = {}
-    items = old.get('items', {})
+    items = {k: v for k, v in old.get('items', {}).items() if v.get('src') in SOURCES}   # a dropped source leaves no rows (TRAI, user 2026-11-04)
     status = {}
     for src, fn in SOURCES.items():
         if a.only and src not in a.only.split(','):
@@ -333,7 +318,6 @@ def main():
     items = {k: v for k, v in items.items() if (v.get('date') or '') >= cut}
     out = dict(built=ist.stamp(), sources=status, keep_days=a.keep_days,
                source_pages={'gazette': 'https://egazette.gov.in/', 'dgft': 'https://www.dgft.gov.in/CP/?opt=notification',
-                             'trai': 'https://www.trai.gov.in/notifications/press-release',
                              'rbi': 'https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx',
                              'cerc': 'https://cercind.gov.in/recent_orders.html', 'dgtr': 'https://www.dgtr.gov.in/',
                              'ministries': 'https://www.powermin.gov.in/documents/orders-and-notices', 'coal': 'https://coal.gov.in/',
