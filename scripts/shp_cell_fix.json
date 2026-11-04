@@ -181017,6 +181017,27 @@
       "exact": true
      }
     }
+   },
+   "2016-03-31": {
+    "cell": [
+     41.4845,
+     18.999817,
+     2.6985,
+     1.5146,
+     0.0,
+     "2016-04-22"
+    ],
+    "was": [
+     41.4845,
+     34.0201,
+     2.6985,
+     1.5146,
+     0.0,
+     "2016-04-22"
+    ],
+    "src": "BSE annual report FY2015-16 (bseplus/AnnualReport) + BSE ng Table III",
+    "why": "\u00a7164r part 111e (2026-11-04, user: 'Yes, check reports' - the FY2015-16 annual reports read for the 3 held cells, cell read this session): OUR ERROR: JSW Steel Annual Report 2015-16 PDF page 109 (printed 106; XIV Shareholding pattern as on 31.03.2016) lists FII 45,926,746 (= the filing's FPI row) and FBC 36,304,873 (JFE Steel International Europe B.V. 36,258,307 - top-10 list PDF page 109 and MGT-9 PDF page 67) + OCB 2,158 separately - the B1i block 36,307,431 is foreign body corporate/OCB/foreign nationals, out (part 22), as in Dec-15. FII = 45,926,746 / 241,722,044 = 18.999817; stored 34.0201 had counted JFE",
+    "exact": true
    }
   },
   "JUBLPHARMA": {
@@ -199640,25 +199661,33 @@
    "2016-03-31": {
     "cell": [
      51.718476,
-     20.5874,
+     20.587434,
      12.044487,
      12.03777,
      0.0,
      "2016-05-04"
     ],
     "was": [
-     51.72,
+     51.718476,
      20.5874,
-     12.064559,
-     12.04,
+     12.044487,
+     12.03777,
      0.0,
      "2016-05-04"
     ],
-    "src": "bsepage:523642 qtrid 89 + Table I",
-    "why": "\u00a7164s part 59 (2026-10-19, page-era sweep: stored value matched a fault identity against this cell's own cached BSE page, read this session): base = Table I STABC 137,127,222 - C1 DR 0 = 137,127,222 (row (C) on the page lumps C1 DR + C2 employee-trust 228,135; C2 stays in the base, \u00a7226); DII 12.064559 was a count divided by the wrong base; exact 16,516,271 sh / 137,127,222 = 12.044487; promoter 51.72 was the page's printed 2-dp row % summed; exact 70,920,110 sh / 137,127,222 = 51.718476; MF 12.04 was the page's printed 2-dp row % summed; exact 16,507,059 sh / 137,127,222 = 12.03777",
+    "src": "BSE annual report FY2015-16 (bseplus/AnnualReport) + BSE ng Table III",
+    "why": "\u00a7164r part 111e (2026-11-04, user: 'Yes, check reports' - the FY2015-16 annual reports read for the 3 held cells, cell read this session): OUR ERROR (precision): PI Industries Annual Report 2015-16 PDF page 43 (printed 42; MGT-9 shareholding at 31-Mar-2016) puts Rowanhill Investments 20,95,426 under Non-Institutions 'Bodies Corp. ii) Overseas' - foreign body corporate, out (part 22); row set kept. FII = FPI 28,230,977 / 137,127,222 = 20.587434; stored 20.5874 was its 4dp",
     "exact": true,
     "superseded": {
      "cell": [
+      51.718476,
+      20.5874,
+      12.044487,
+      12.03777,
+      0.0,
+      "2016-05-04"
+     ],
+     "was": [
       51.72,
       20.5874,
       12.064559,
@@ -199666,19 +199695,19 @@
       0.0,
       "2016-05-04"
      ],
-     "was": [
-      51.72,
-      20.5874,
-      12.05,
-      12.04,
-      0.0,
-      "2016-05-04"
-     ],
-     "src": "bsepage:523642:89",
-     "why": "\u00a7164s part 58 (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 12.05 = printed 2-dp row % on (A+B+C) 137,127,222 (12.04 + 0.01); the page's (C) 228,135 sit on the DR custodian line -> out of the base (\u00a7226). MF 16,507,059 + FI/Banks 9,212 = 16,516,271 / (A+B) 136,899,087",
+     "src": "bsepage:523642 qtrid 89 + Table I",
+     "why": "\u00a7164s part 59 (2026-10-19, page-era sweep: stored value matched a fault identity against this cell's own cached BSE page, read this session): base = Table I STABC 137,127,222 - C1 DR 0 = 137,127,222 (row (C) on the page lumps C1 DR + C2 employee-trust 228,135; C2 stays in the base, \u00a7226); DII 12.064559 was a count divided by the wrong base; exact 16,516,271 sh / 137,127,222 = 12.044487; promoter 51.72 was the page's printed 2-dp row % summed; exact 70,920,110 sh / 137,127,222 = 51.718476; MF 12.04 was the page's printed 2-dp row % summed; exact 16,507,059 sh / 137,127,222 = 12.03777",
      "exact": true,
      "superseded": {
       "cell": [
+       51.72,
+       20.5874,
+       12.064559,
+       12.04,
+       0.0,
+       "2016-05-04"
+      ],
+      "was": [
        51.72,
        20.5874,
        12.05,
@@ -199686,17 +199715,30 @@
        0.0,
        "2016-05-04"
       ],
-      "was": [
-       51.72,
-       22.11,
-       12.05,
-       12.04,
-       0.0,
-       "2016-05-04"
-      ],
-      "src": "bsetable3:523642:89",
-      "why": "\u00a7164r batch 30 part 28 (2026-10-06, SW-2 survivors): ROWANHILL INVESTMENTS LTD. 2,095,426 sh (the institutions block's only holder) is the company's 'Foreign Corporate Bodies' holder (Dec-2015 label) with no institution document -> public; FII = FPI 28,230,977 on 137,127,222 (= Quantmac 20.59). fii 22.11 -> 20.5874.",
-      "exact": true
+      "src": "bsepage:523642:89",
+      "why": "\u00a7164s part 58 (2026-10-18, re-check of the Quantmac DII reply-5 DATE cells against each first filing, cell read this session): stored 12.05 = printed 2-dp row % on (A+B+C) 137,127,222 (12.04 + 0.01); the page's (C) 228,135 sit on the DR custodian line -> out of the base (\u00a7226). MF 16,507,059 + FI/Banks 9,212 = 16,516,271 / (A+B) 136,899,087",
+      "exact": true,
+      "superseded": {
+       "cell": [
+        51.72,
+        20.5874,
+        12.05,
+        12.04,
+        0.0,
+        "2016-05-04"
+       ],
+       "was": [
+        51.72,
+        22.11,
+        12.05,
+        12.04,
+        0.0,
+        "2016-05-04"
+       ],
+       "src": "bsetable3:523642:89",
+       "why": "\u00a7164r batch 30 part 28 (2026-10-06, SW-2 survivors): ROWANHILL INVESTMENTS LTD. 2,095,426 sh (the institutions block's only holder) is the company's 'Foreign Corporate Bodies' holder (Dec-2015 label) with no institution document -> public; FII = FPI 28,230,977 on 137,127,222 (= Quantmac 20.59). fii 22.11 -> 20.5874.",
+       "exact": true
+      }
      }
     }
    },
@@ -458882,25 +458924,33 @@
    "2016-03-31": {
     "cell": [
      30.953191,
-     13.4,
+     13.38937,
      2.9153,
      2.862753,
      0.0,
      "2016-04-18"
     ],
     "was": [
-     30.95,
+     30.953191,
      13.4,
      2.9153,
-     2.86,
+     2.862753,
      0.0,
      "2016-04-18"
     ],
-    "src": "bsepage:532221 qtrid 89 + Table I",
-    "why": "\u00a7164s part 59 (2026-10-19, page-era sweep: stored value matched a fault identity against this cell's own cached BSE page, read this session): base = Table I STABC 105,159,306 - C1 DR 0 = 105,159,306 (row (C) on the page lumps C1 DR + C2 employee-trust 1,559,875; C2 stays in the base, \u00a7226); promoter 30.95 was the page's printed 2-dp row % summed; exact 32,550,161 sh / 105,159,306 = 30.953191; MF 2.86 was the page's printed 2-dp row % summed; exact 3,010,451 sh / 105,159,306 = 2.862753",
+    "src": "BSE annual report FY2015-16 (bseplus/AnnualReport) + BSE ng Table III",
+    "why": "\u00a7164r part 111e (2026-11-04, user: 'Yes, check reports' - the FY2015-16 annual reports read for the 3 held cells, cell read this session): OUR ERROR: Sonata Software Annual Report 2015-16 PDF page 39 (MGT-9 at 31-Mar-2016) labels the institutions 'Others' 8,409 'Beneficial holdings under MGT-4' - a labelled block with no foreign mark, not D1 (same ruling as SONATSOFTW Dec-16, runbook part 42). FII = FPI 14,080,169 / 105,159,306 = 13.38937; stored 13.40 had counted the 8,409",
     "exact": true,
     "superseded": {
      "cell": [
+      30.953191,
+      13.4,
+      2.9153,
+      2.862753,
+      0.0,
+      "2016-04-18"
+     ],
+     "was": [
       30.95,
       13.4,
       2.9153,
@@ -458908,17 +458958,30 @@
       0.0,
       "2016-04-18"
      ],
-     "was": [
-      30.95,
-      13.4,
-      2.89,
-      2.86,
-      0.0,
-      "2016-04-18"
-     ],
-     "src": "bsetable3:532221:89",
-     "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 3,010,451, VCF 0, AIF 0, FI/Banks 33,824, Insurance 0, PF 0, NBFC 21,485; total 105,159,306. dii 2.89 -> 2.9153, ins 0.0 -> 0.0.",
-     "exact": true
+     "src": "bsepage:532221 qtrid 89 + Table I",
+     "why": "\u00a7164s part 59 (2026-10-19, page-era sweep: stored value matched a fault identity against this cell's own cached BSE page, read this session): base = Table I STABC 105,159,306 - C1 DR 0 = 105,159,306 (row (C) on the page lumps C1 DR + C2 employee-trust 1,559,875; C2 stays in the base, \u00a7226); promoter 30.95 was the page's printed 2-dp row % summed; exact 32,550,161 sh / 105,159,306 = 30.953191; MF 2.86 was the page's printed 2-dp row % summed; exact 3,010,451 sh / 105,159,306 = 2.862753",
+     "exact": true,
+     "superseded": {
+      "cell": [
+       30.95,
+       13.4,
+       2.9153,
+       2.86,
+       0.0,
+       "2016-04-18"
+      ],
+      "was": [
+       30.95,
+       13.4,
+       2.89,
+       2.86,
+       0.0,
+       "2016-04-18"
+      ],
+      "src": "bsetable3:532221:89",
+      "why": "\u00a7164r batch 30 part 17 (2026-10-06, seam rule-4 / NBFC sweep, approved by the DII session): DII = MF 3,010,451, VCF 0, AIF 0, FI/Banks 33,824, Insurance 0, PF 0, NBFC 21,485; total 105,159,306. dii 2.89 -> 2.9153, ins 0.0 -> 0.0.",
+      "exact": true
+     }
     }
    },
    "2015-03-31": {

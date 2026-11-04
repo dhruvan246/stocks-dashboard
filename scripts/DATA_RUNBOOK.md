@@ -28621,6 +28621,11 @@ and RPOWER Mar-16 4.2009 → (FPI 80,561,436 + B1i FII 37,239,588) / 2,804,529,7
 total incl. DR column + Foreign Bank), INFY 39.49/40.17 → 39.6139/40.288355 (FPI total incl. DR column, as INFY's Jun-16/Sep-16
 cells; the stored had the fully-paid column only), VAIBHAVGBL 18.7382/18.9211 → 21.325457/21.537514 (FPI + FII line + Matthews +
 Nalanda; the stored were §164p seam re-bases).
+**Part 111e (2026-11-04, user: "Yes, check reports"):** the 3 held Mar-16 cells judged from each FY2015-16 annual report
+(BSE bseplus/AnnualReport/<code>/<code>0316.pdf): JSWSTEEL 34.0201 → 18.999817 (report's own category table: FII 45,926,746;
+JFE Steel in 'FBC' 36,304,873 - foreign body corporate, out, as Dec-15); PIIND 20.5874 → 20.587434 (Rowanhill under 'Bodies Corp.
+Overseas' - out, row set kept, precision); SONATSOFTW 13.40 → 13.38937 (the 8,409 is the labelled 'Beneficial holdings under MGT-4'
+block - not D1, same as its Dec-16 ruling in part 42). No held FII cell remains in the 90-cell set.
 
 ### §227 gap fill (2026-10-27, user: "calculate stocks to be filled" → "finish it")
 Ever-members Jun-2020..Jun-2026, each inside its own listing..last-bar window: 668/689 complete; 19 stocks / 37 quarters open.
