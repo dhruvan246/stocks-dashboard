@@ -128,6 +128,150 @@
    "fixed": 20240523,
    "why": "NIACL Q4 FY24 results (standalone and consolidated) were first filed on BSE 2024-05-22 21:38 ('Board Meeting Outcome ... held on 22nd May, 2024'; results outcome 21:45), board meeting intimated 2024-05-14 for 22-May. Measured: BSE announcement list 2024-05-10..06-05 has no earlier result filing. Stored 20240515 predates the filing (look-ahead); gated to next day 20240523.",
    "found": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20201231",
+   "basis": "con",
+   "was": 20210121,
+   "fixed": 20210122,
+   "why": "BSE 2021-01-22 15:41 be47121a-c89e-402f-8045-c8b55d96eb8a.pdf (Outcome of board meeting held 22-Jan-2021, results p12 consolidated); NSE Financial Result Updates 2021-01-22 15:41:50. Board met 22-Jan; nothing on either exchange earlier. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20200630",
+   "basis": "con",
+   "was": 20200812,
+   "fixed": 20200915,
+   "why": "BSE 2020-09-15 22:14 077bdf2d-a39d-4375-ae81-1035d8497675.pdf \"Consolidated Unaudited Quarterly Results June 30, 2020\"; NSE 2020-09-15 22:20:46 RELCon_15092020222046.zip. The stored 20200812 is the BSE posting of the FY20 (Mar-2020) audited results (673e396a..., letter dated 30-Jun-2020, OCR p1 \"Audited Financial Results For The Quarter & Year Ended March 31, 2020\"), not this quarter. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "RAJESHEXPO",
+   "qe": "20200630",
+   "basis": "std",
+   "was": 20200812,
+   "fixed": 20200916,
+   "why": "Standalone Jun-2020 first public: NSE 2020-09-16 00:08:23 RELSa_16092020000823.zip; BSE 2020-09-16 00:18 44b381d9-4417-4756-a9e5-883262cc9d51.pdf \"Stand Alone Unaudited Quarterly Results June 30, 2020\". Stored 20200812 = the FY20 results posting (see con entry). Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "con",
+   "was": 20221105,
+   "fixed": 20221109,
+   "why": "Board meeting held 09-Nov-2022 (BSE intimation 2022-11-02 21:09). Results: BSE 2022-11-09 15:25 e3e9280b-0720-4d55-9c9b-45ff077d317d.pdf p19 consolidated; NSE outcome 2022-11-09 15:26:36. Stored 20221105 predates the board meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "std",
+   "was": 20221105,
+   "fixed": 20221109,
+   "why": "Same filing as the con entry: BSE 2022-11-09 15:25 e3e9280b...pdf; NSE 2022-11-09 15:26:36. Stored 20221105 predates the 09-Nov board meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "KSB",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 20211105,
+   "fixed": 20211110,
+   "why": "BSE (scrip 500249) 2021-11-10 18:10 cc61660d-ae7f-4cd2-bc91-ab956934b467.pdf p3; NSE Financial Results Updates 2021-11-10 18:16:43. Board-meeting intimation 2021-11-02; no earlier result filing on either exchange. Std slot already 20211110. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240930",
+   "basis": "con",
+   "was": 20241105,
+   "fixed": 20241108,
+   "why": "BSE 2024-11-08 15:42 0b040c76-3c3c-4258-b3e8-0b0d603b7c9b.pdf p19 (board meeting outcome); NSE Financial Result Updates 2024-11-08 15:42:32. Stored 20241105 predates the board meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240930",
+   "basis": "std",
+   "was": 20241105,
+   "fixed": 20241108,
+   "why": "Same filing as the con entry: BSE 2024-11-08 15:42 0b040c76...pdf; NSE 2024-11-08 15:42:32. Stored 20241105 predates the board meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "IOB",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 20220804,
+   "fixed": 20220806,
+   "why": "Board meeting 06-Aug-2022: BSE 2022-08-06 17:24 22e01680-6023-4a20-b37c-c2a70b35cb69.pdf (OCR p5 \"Notes Forming Part of Standalone and Consolidated Reviewed Financial Results\"); NSE outcome 2022-08-06 17:24:18. Stored 20220804 predates the meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "IOB",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 20220804,
+   "fixed": 20220806,
+   "why": "Same filing as the con entry: BSE 2022-08-06 17:24 22e01680...pdf; NSE 2022-08-06 17:24:18. Stored 20220804 predates the meeting. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "M&M",
+   "qe": "20110930",
+   "basis": "con",
+   "was": 20111114,
+   "fixed": 20111117,
+   "why": "14-Nov-2011 filings (BSE 13:11, NSE 13:31) are standalone only (NSE: \"Standalone Financial Results\"). Consolidated statement first filed BSE 2011-11-17 13:44 Mahindra_&_Mahindra_Ltd_171111.pdf p3 (PAT after minority 681.98); none on NSE 15-17 Nov. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "M&M",
+   "qe": "20111231",
+   "basis": "con",
+   "was": 20120208,
+   "fixed": 20120221,
+   "why": "07-Feb-2012 filings are standalone only (NSE \"Results Update ... (Standalone)\"). Consolidated statement first public BSE 2012-02-21 13:00 Mahindra_&_Mahindra_Ltd_210212.pdf p3 (831.80); NSE press release 2012-02-21 12:55. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "M&M",
+   "qe": "20151231",
+   "basis": "con",
+   "was": 20160215,
+   "fixed": 20160225,
+   "why": "12-Feb-2016 filing is standalone only (BSE title \"(Standalone)\", NSE \"standalone financial results\"). Group consolidated first public NSE 2016-02-25 14:52, BSE 2016-02-25 15:10 7F10EC38_E8D8_418E_B8B6_AC3076736A8E_151035.pdf p3 (881). Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "POONAWALLA",
+   "qe": "20190930",
+   "basis": "con",
+   "was": 20191105,
+   "fixed": 20191108,
+   "why": "(then Magma Fincorp) BSE 2019-11-08 15:12 cdad8f27-0888-404b-9ea3-6f224d17f60d.pdf p5; NSE 2019-11-08 15:13:57. No result filing on either exchange 01-Oct..07-Nov. Std slot already 20191108. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "RCF",
+   "qe": "20220930",
+   "basis": "con",
+   "was": 20221105,
+   "fixed": 20221112,
+   "why": "Board meeting 12-Nov-2022: BSE 2022-11-12 14:21 bbc525e9-df1a-496f-84cd-8904d5ca3254.pdf p4; NSE outcome 2022-11-12 14:27:25. Std slot already 20221112. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
+  },
+  {
+   "sym": "HIMATSEIDE",
+   "qe": "20190331",
+   "basis": "con",
+   "was": 20190525,
+   "fixed": 20190528,
+   "why": "BSE 2019-05-28 20:19 813f33fe-694c-4182-a040-c72cf4c8e870.pdf p2; NSE 2019-05-28 20:24:08. Board-meeting intimation 2019-05-16; nothing earlier. Std slot already 20190528. Calendar day of first broadcast on either exchange (midnight rule, runbook 149). Stored date was earlier than any filing = look-ahead.",
+   "found": "StockView round 2 date check 2026-11-04 (BSE AnnSubCategoryGetData + NSE corporate-announcements read per cell)"
   }
  ]
 }
