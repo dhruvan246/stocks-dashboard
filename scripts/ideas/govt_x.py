@@ -59,7 +59,9 @@ STOP = set('the a an of to in for and on with by at from is are be as this that 
            'cabinet approves approved scheme crore rs lakh will has have new under its it'.split())
 
 
-def get_json(url, retries=3):
+def get_json(url, retries=5):
+    # FxTwitter answers 404 for a real account at random (2026-11-05: RBI, HALHQBLR and MORTHIndia each flipped
+    # 200 -> 404 -> 200 within a minute, and 9 of 40 accounts failed one cloud run), so a 404 is retried like any error
     last = None
     for i in range(retries):
         try:
@@ -68,7 +70,7 @@ def get_json(url, retries=3):
                 return json.loads(f.read().decode('utf-8', 'ignore'))
         except Exception as e:
             last = e
-            time.sleep(2 * (i + 1))
+            time.sleep(5 * (i + 1))
     raise RuntimeError(f'GET failed {url}: {last}')
 
 
@@ -83,8 +85,13 @@ def words(t):
 
 def read_account(h, since, max_pages):
     posts, cursor = [], None
-    for _ in range(max_pages):
-        d = get_json(API % h + (f'?cursor={cursor}' if cursor else ''))
+    for page in range(max_pages):
+        try:
+            d = get_json(API % h + (f'?cursor={cursor}' if cursor else ''))
+        except Exception:
+            if page == 0:
+                raise
+            break                                   # a later page failing keeps the pages already read
         res = d.get('results') or []
         for p in res:
             if p.get('reposted_by') or not p.get('created_at'):
@@ -95,6 +102,31 @@ def read_account(h, since, max_pages):
             break
         time.sleep(1)
     return posts
+
+
+def read_one(h, a, since, themes, tm, old, accounts, posts):
+    try:
+        got = read_account(h, since, a.max_pages)
+        accounts[h] = dict(ok=True, posts=len(got), read_at=ist.stamp())
+    except Exception as e:
+        got = []
+        prev = old.get('accounts', {}).get(h, {})
+        accounts[h] = dict(ok=False, posts=0, error=str(e)[:200], last_ok=prev.get('read_at') if prev.get('ok') else prev.get('last_ok'))
+        print(f'{h}: FAILED {e}', file=sys.stderr)
+    kept = 0
+    for p in got:
+        text = p.get('text') or ''
+        day = ist_day(p['created_at'])
+        g = keep(text, a.min_cr, themes) if day >= since else None
+        if not g:
+            continue
+        verb, amt, amt_text, mandate, hit = g
+        posts[p['id']] = dict(handle=h, date=day, created=p['created_at'], url=p.get('url'), text=text[:700],
+                              verb=verb, amount_cr=amt, amount_text=amt_text, mandate=mandate,
+                              mentions=[tm['themes'][k]['name'] for k in hit])
+        kept += 1
+    print(f'{h}: {len(got)} posts read, {kept} kept')
+    time.sleep(1)
 
 
 def main():
@@ -121,29 +153,15 @@ def main():
     posts = {k: v for k, v in old.get('posts', {}).items() if v['handle'] in HANDLES}   # a dropped account leaves no posts (TRAI, user 2026-11-04)
     accounts = {}
     since = (ist.today() - datetime.timedelta(days=a.days)).isoformat()
-    for h in (a.only.split(',') if a.only else HANDLES):
-        try:
-            got = read_account(h, since, a.max_pages)
-            accounts[h] = dict(ok=True, posts=len(got), read_at=ist.stamp())
-        except Exception as e:
-            got = []
-            prev = old.get('accounts', {}).get(h, {})
-            accounts[h] = dict(ok=False, posts=0, error=str(e)[:200], last_ok=prev.get('read_at') if prev.get('ok') else prev.get('last_ok'))
-            print(f'{h}: FAILED {e}', file=sys.stderr)
-        kept = 0
-        for p in got:
-            text = p.get('text') or ''
-            day = ist_day(p['created_at'])
-            g = keep(text, a.min_cr, themes) if day >= since else None
-            if not g:
-                continue
-            verb, amt, amt_text, mandate, hit = g
-            posts[p['id']] = dict(handle=h, date=day, created=p['created_at'], url=p.get('url'), text=text[:700],
-                                  verb=verb, amount_cr=amt, amount_text=amt_text, mandate=mandate,
-                                  mentions=[tm['themes'][k]['name'] for k in hit])
-            kept += 1
-        print(f'{h}: {len(got)} posts read, {kept} kept')
-        time.sleep(1)
+    todo = a.only.split(',') if a.only else HANDLES
+    for attempt in (1, 2):                          # second pass: the accounts FxTwitter refused the first time
+        if attempt == 2:
+            todo = [h for h in todo if not accounts[h]['ok']]
+            if not todo:
+                break
+            time.sleep(60)
+        for h in todo:
+            read_one(h, a, since, themes, tm, old, accounts, posts)
 
     posts = {k: v for k, v in posts.items() if keep(v['text'], a.min_cr, themes)}   # stored posts face today's gate too
     # match every stored post to the PIB lane: same or next IST day, and the same outlay or most of the words

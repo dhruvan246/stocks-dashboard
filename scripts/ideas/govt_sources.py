@@ -57,7 +57,8 @@ def fetch(op, url, data=None, referer=None, retries=3):
     last = None
     for i in range(retries):
         try:
-            h = {'User-Agent': UA, 'Accept': '*/*'}
+            h = {'User-Agent': UA, 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                 'Accept-Language': 'en-IN,en;q=0.9'}   # DGFT answered a bare Accept: */* with 403 from a GitHub runner (2026-11-05)
             if referer:
                 h['Referer'] = referer
             if data is not None:
