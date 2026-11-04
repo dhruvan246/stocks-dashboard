@@ -109,15 +109,19 @@
   // Every variant = one universe × one basket shape. The Nifty 50 grids (2026-11-03) are the same
   // 4.44M-strategy test run on the point-in-time Nifty 50, benchmarked against the Nifty 50 index.
   // Nifty 100 (2026-11-03): same test on the point-in-time Nifty 100, without the barred factors, vs the Nifty 100 index.
+  // Nifty Next 50 (2026-11-04): the same on the point-in-time Nifty Next 50, vs the Nifty Next 50 index.
   const SUFS={r5:'',h5:'_h5',r3:'_r3',h3:'_h3',fno:'_fno_h3',n50r5:'_n50_r5',n50h5:'_n50_h5',n50r3:'_n50_r3',n50h3:'_n50_h3',
-              n100r5:'_n100_r5',n100h5:'_n100_h5',n100r3:'_n100_r3',n100h3:'_n100_h3'};
+              n100r5:'_n100_r5',n100h5:'_n100_h5',n100r3:'_n100_r3',n100h3:'_n100_h3',
+              nn50r5:'_nn50_r5',nn50h5:'_nn50_h5',nn50r3:'_nn50_r3',nn50h3:'_nn50_h3'};
   const RIDE='ride winners (hold — exits replaced, winners kept)', RESET='rebalanced monthly (reset)';
   const VDESC={r5:['5',RESET,'Nifty 500'],h5:['5',RIDE,'Nifty 500'],r3:['3',RESET,'Nifty 500'],h3:['3',RIDE,'Nifty 500'],
                fno:['3',RIDE,'F&O stocks (survivorship-free)'],
                n50r5:['5',RESET,'Nifty 50'],n50h5:['5',RIDE,'Nifty 50'],n50r3:['3',RESET,'Nifty 50'],n50h3:['3',RIDE,'Nifty 50'],
-               n100r5:['5',RESET,'Nifty 100'],n100h5:['5',RIDE,'Nifty 100'],n100r3:['3',RESET,'Nifty 100'],n100h3:['3',RIDE,'Nifty 100']};
+               n100r5:['5',RESET,'Nifty 100'],n100h5:['5',RIDE,'Nifty 100'],n100r3:['3',RESET,'Nifty 100'],n100h3:['3',RIDE,'Nifty 100'],
+               nn50r5:['5',RESET,'Nifty Next 50'],nn50h5:['5',RIDE,'Nifty Next 50'],nn50r3:['3',RESET,'Nifty Next 50'],nn50h3:['3',RIDE,'Nifty Next 50']};
   const UNIV={n500:{label:'Nifty 500',bench:'Nifty 500',vars:['r5','h5','r3','h3']},
               n100:{label:'Nifty 100',bench:'Nifty 100',vars:['n100r5','n100h5','n100r3','n100h3']},
+              nn50:{label:'Nifty Next 50',bench:'Nifty Next 50',vars:['nn50r5','nn50h5','nn50r3','nn50h3']},
               n50:{label:'Nifty 50',bench:'Nifty 50',vars:['n50r5','n50h5','n50r3','n50h3']},
               fno:{label:'F&O stocks',bench:'Nifty 500',vars:['fno']}};
   const uOf = v => Object.keys(UNIV).find(u=>UNIV[u].vars.includes(v));

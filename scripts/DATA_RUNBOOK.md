@@ -1001,6 +1001,16 @@ NaN` false → EVERY basket empty → 4.44M combos "succeeded" in 12 s with NaN 
 TOPN/METHOD/UNIVERSE and aborts loudly, which is what turned the first one from silent into visible.
 
 
+**9. Nifty Next 50 universe (2026-11-04, user: "nifty next 50 do it for strategy-phases.html").** Four
+variants `_nn50_r5/_h5/_r3/_h3` → `docs/strategy_phases_nn50_*.json`, page key `nn50`. Unlike `_n100_`,
+the grid was enumerated with the FULL barred list (macd + vol included, no sort pair) — `NN50_GX` in
+`gridmega_phases_run.py` must equal `NN50_GX_*` in the build, or SELECT re-scores the wrong rows.
+Benchmark = Yahoo ^NSMIDCP (staged by `gridmega_fetch_live.py`); the 2004 window falls back to
+index_monthly 'NIFTY NEXT 50'. Run: `EARN_BASIS=std|con python3 scripts/gridmega_phases_run.py <END>
+--only _nn50_r5,_nn50_h5,_nn50_r3,_nn50_h3` (104 jobs, ~35 min on the M5), then
+`MERGE_BASES=std,con GRID_END=<END> node --max-old-space-size=8192 scripts/gridmega_phases_build.js _nn50_r5` etc.
+(~15 min each). Measured 11-04: pool 1,527,104; bench 2023-03-31→2024-09-30 +104.0% equals index_monthly.
+
 ### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_saved.json`)
 Same grid as §7.4, scored over the four MEASURED bull legs (NIFTY 500 daily close, 13% reversal filter:
 2013-08-28→2015-03-03, 2016-02-25→2018-08-31, 2020-03-23→2021-10-18, 2022-06-20→2024-09-26) plus the live

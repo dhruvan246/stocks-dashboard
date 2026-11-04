@@ -127,6 +127,8 @@ const EXCL_SORT_SET = new Set(EXCLUDE_SORTS);
 // Must equal the GRID_EXCLUDE_* env gridmega_phases_run.py gives the _n100_ grid runs — it is what the
 // saved Nifty 100 grid CSVs were enumerated with (macd/vol, barred later, are dropped by EXCLUDE_FIELDS).
 const N100_GX_FIELDS = 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom', N100_GX_SORTS = 'vol:high';
+// Same for _nn50_ (gridmega_phases_run.py NN50_GX): enumerated with the full barred list, macd/vol included.
+const NN50_GX_FIELDS = 'indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom,macd,vol', NN50_GX_SORTS = '';
 let EXCLFLAG = null;          // Uint8Array over the N grid rows, 1 = barred from the cards
 
 // Read one window/basis CSV → its CAGR column. On the very first call it also derives FUNDFLAG.
@@ -256,6 +258,8 @@ async function rankWindow(w) {
     // the Nifty 100 grid never enumerates the barred factors — SELECT must enumerate the identical
     // (shorter) row list, or every row index would point at a different combo
     baseEnv.GRID_EXCLUDE_FIELDS = N100_GX_FIELDS; baseEnv.GRID_EXCLUDE_SORTS = N100_GX_SORTS; }
+  else if (/^_nn50_[rh][35]$/.test(VTAG)) { baseEnv.TOPN = VTAG.slice(-1); baseEnv.METHOD = VTAG[6] === 'h' ? 'hold' : 'reset'; baseEnv.UNIVERSE = 'Nifty Next 50';
+    baseEnv.GRID_EXCLUDE_FIELDS = NN50_GX_FIELDS; baseEnv.GRID_EXCLUDE_SORTS = NN50_GX_SORTS; }
   else if (VTAG !== '') { console.error('unknown variant tag ' + JSON.stringify(VTAG)); process.exit(2); }
   const SELF = BASES.map((b, k) => {
     const f = S('_gridmega_selidx' + (VTAG || '_r5') + '_' + b + '.json');
@@ -313,7 +317,7 @@ async function rankWindow(w) {
   // month-end closes back to 1995. (Runbook §7.1b trap 4.)
   const IDXM = (() => {
     try { const j = JSON.parse(fs.readFileSync(path.join(ROOT, 'docs', 'index_monthly.json'), 'utf8'));
-          const IKEY = VTAG.startsWith('_n50_') ? 'NIFTY 50' : VTAG.startsWith('_n100_') ? 'NIFTY 100' : 'NIFTY 500';   // the grid's own benchmark index
+          const IKEY = VTAG.startsWith('_n50_') ? 'NIFTY 50' : VTAG.startsWith('_n100_') ? 'NIFTY 100' : VTAG.startsWith('_nn50_') ? 'NIFTY NEXT 50' : 'NIFTY 500';   // the grid's own benchmark index
           const n5 = (j.indices || []).find(i => i.key === IKEY);
           return n5 ? n5.closes : null; } catch (e) { return null; }
   })();
@@ -339,8 +343,8 @@ async function rankWindow(w) {
     }
   }
 
-  const universeLabel = VTAG === '_fno_h3' ? 'F&O stocks' : VTAG.startsWith('_n50_') ? 'Nifty 50' : VTAG.startsWith('_n100_') ? 'Nifty 100' : 'Nifty 500';
-  const VB = VTAG.replace(/^_(fno_|n50_|n100_)/, '_');   // basket part only ('_n50_r5' → '_r5'): '50' must not read as top-5
+  const universeLabel = VTAG === '_fno_h3' ? 'F&O stocks' : VTAG.startsWith('_n50_') ? 'Nifty 50' : VTAG.startsWith('_n100_') ? 'Nifty 100' : VTAG.startsWith('_nn50_') ? 'Nifty Next 50' : 'Nifty 500';
+  const VB = VTAG.replace(/^_(fno_|n50_|n100_|nn50_)/, '_');   // basket part only ('_n50_r5' → '_r5'): '50' must not read as top-5
   const basket = 'top-' + (VB.includes('3') ? 3 : 5) + ' · ' + (VB.includes('h') ? 'hold' : 'reset');
   const BLABEL = { std: 'standalone', con: 'consolidated', conOnly: 'consolidated-only' };
   const basisLabel = BASES.length > 1
@@ -355,7 +359,7 @@ async function rankWindow(w) {
     excluded: EXCLUDE_FIELDS,
     excludedSorts: EXCLUDE_SORTS,    // field:dir sorts barred the same way        // factors barred from the cards — the page must say so
     dataEnd: END,
-    benchName: universeLabel === 'Nifty 50' || universeLabel === 'Nifty 100' ? universeLabel : 'Nifty 500',
+    benchName: universeLabel === 'Nifty 50' || universeLabel === 'Nifty 100' || universeLabel === 'Nifty Next 50' ? universeLabel : 'Nifty 500',
     phases: PHASES.map(p => ({ key: p.key, label: p.label, card: p.card, short: p.short,
       metric: p.metric || 'tot', start: p.start, end: resolve(p).end,
       years: BENCH[p.key].years, bench: BENCH[p.key].bench })),

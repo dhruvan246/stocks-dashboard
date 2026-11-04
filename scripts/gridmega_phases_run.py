@@ -18,6 +18,10 @@ LOGD = os.path.join(HERE, "_gmlog")
 
 N100_GX = {"GRID_EXCLUDE_FIELDS": "indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom",
            "GRID_EXCLUDE_SORTS": "vol:high"}
+# Nifty Next 50 (2026-11-04): enumerated after macd/vol were barred too, so the full barred list is
+# left out of the grid itself (must equal the build's NN50_GX_*)
+NN50_GX = {"GRID_EXCLUDE_FIELDS": "indRank,composite,rangePos,bollB,turnover,stoch,postDrift,beta,volSurge,turnSurge,riskMom,macd,vol",
+           "GRID_EXCLUDE_SORTS": ""}
 
 # (vtag, env overrides) — vtag must match grid_search_mega.js's VTAG and the page's SUFS map
 VARIANTS = [
@@ -36,6 +40,10 @@ VARIANTS = [
     ("_n100_h5", {"TOPN": "5", "METHOD": "hold",  "UNIVERSE": "Nifty 100", **N100_GX}),
     ("_n100_r3", {"TOPN": "3", "METHOD": "reset", "UNIVERSE": "Nifty 100", **N100_GX}),
     ("_n100_h3", {"TOPN": "3", "METHOD": "hold",  "UNIVERSE": "Nifty 100", **N100_GX}),
+    ("_nn50_r5", {"TOPN": "5", "METHOD": "reset", "UNIVERSE": "Nifty Next 50", **NN50_GX}),
+    ("_nn50_h5", {"TOPN": "5", "METHOD": "hold",  "UNIVERSE": "Nifty Next 50", **NN50_GX}),
+    ("_nn50_r3", {"TOPN": "3", "METHOD": "reset", "UNIVERSE": "Nifty Next 50", **NN50_GX}),
+    ("_nn50_h3", {"TOPN": "3", "METHOD": "hold",  "UNIVERSE": "Nifty Next 50", **NN50_GX}),
 ]
 
 
