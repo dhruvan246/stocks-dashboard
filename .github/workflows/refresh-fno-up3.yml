@@ -6,8 +6,12 @@ name: Refresh F&O up-3% counts
 on:
   # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
   # which runs 4-7 h late in this repo (runbook §217). UTC, standard cron syntax.
-  # dispatch-cron: "30 13 * * 1-5"  # 19:00 IST weekdays — NSE's CM + FO bhavcopies are out by then
-  # dispatch-cron: "30 3 * * 2-6"   # 09:00 IST next morning — catches a late file or a missed slot
+  # NSE posts the day's CM bhavcopy anywhere from ~19:30 to ~21:00 IST (4 Nov 2026: not out at 19:06, out by
+  # 20:00), so try several times each evening. A slot that finds no file changes nothing and the next slot retries.
+  # dispatch-cron: "0 15 * * 1-5"   # 20:30 IST weekdays
+  # dispatch-cron: "0 16 * * 1-5"   # 21:30 IST
+  # dispatch-cron: "30 17 * * 1-5"  # 23:00 IST
+  # dispatch-cron: "30 3 * * 2-6"   # 09:00 IST next morning — catches a very late file or a missed slot
   repository_dispatch:
     types: [tick-refresh-fno-up3]   # sent by scripts/cron_dispatch.py
   workflow_dispatch: {}

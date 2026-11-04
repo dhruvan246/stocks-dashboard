@@ -29448,3 +29448,7 @@ range — it is never rebuilt from monthly snapshots.
 - **Cause:** `refresh-membership.yml` had a 20-min JOB timeout and no per-step limits. Best-effort steps that hung (the changelog fetch on 24 Oct, the phantom-CA scan on 31 Oct) used up the 20 minutes and the run was cancelled. The 31 Oct run had already built the F&O snapshot, but the commit step never ran.
 - **Fix:** job timeout raised to 45 min. Changelog, live-sf fetch, F&O refresh and phantom-CA steps each got a `timeout-minutes` plus `continue-on-error: true`, so one hang can no longer stop the commit. The two missing snapshots were added with `python3 scripts/extend_fno_history.py 20261023 20261028` (213 and 218 stocks). Both match NSE's daily F&O bhavcopy, read through `scripts/fno_daily_roster.json`, name for name.
 - **Still true:** fno_history is a weekly/monthly list (see §235), so a change between runs only shows up from the next run's date. Daily-accurate F&O stats use `fno_daily_roster.json`.
+
+### §235b — F&O up-3% job: evening slots moved later (2026-11-04)
+
+The 19:00 IST slot (13:30 UTC) found no CM bhavcopy for 4 Nov at 19:06. NSE had not posted it yet, though it was out by 20:00, so the page showed 3 Nov until a manual run at 21:53. The job now tries at 20:30, 21:30 and 23:00 IST on weekdays, plus 09:00 IST the next morning. A slot with no file changes nothing, and the next slot picks the day up.
