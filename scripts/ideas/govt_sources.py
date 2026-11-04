@@ -18,10 +18,9 @@ Not read here, measured 2026-11-04: CPPP's home page shows a handful of random s
 GeM needs a login for its bid list, so neither is a list of decisions; BIS publishes no dated QCO list (its QCO
 page is a product table) and the QCOs themselves are notified in the Gazette, which is read.
 
-The Gazette server sends only its own certificate, without the Let's Encrypt intermediates, so a strict client
-fails ("unable to get local issuer certificate"). We fetch the two intermediates from Let's Encrypt (the URLs in
-the certificates' own Authority Information Access field) and add them; verification stays on and still ends at
-ISRG Root X1.
+The Gazette and DEA servers leave the Let's Encrypt intermediates out of their handshake, so a strict client
+fails ("unable to get local issuer certificate"). certs/letsencrypt_yr.pem holds those two certificates (checked
+against ISRG Root X1 on 2026-11-04); verification stays on.
 
 Usage: python3 scripts/ideas/govt_sources.py [--keep-days 45]
 Writes docs/ideas/govt_sources.json  {built, sources:{src:{ok,rows,error}}, items:{id:{src,date,title,...}}}
@@ -35,16 +34,19 @@ import ist
 from govt import UA, MANDATE, amount_hit
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 OUT = os.path.join(DOCS, 'govt_sources.json')
-LE_INTERMEDIATES = ('http://yr1.i.lencr.org/', 'http://yr.i.lencr.org/')
+LE_CHAIN = os.path.join(HERE, 'certs', 'letsencrypt_yr.pem')
 
 
 def tls():
-    # certifi when installed: this Mac's /etc/ssl/cert.pem lacks GlobalSign Root R46, which TRAI chains to
+    # certifi when installed: this Mac's /etc/ssl/cert.pem lacks GlobalSign Root R46, which TRAI chains to.
+    # Plus the two Let's Encrypt intermediates that egazette.gov.in and dea.gov.in leave out of their handshake.
     try:
         import certifi
-        return ssl.create_default_context(cafile=certifi.where())
+        ctx = ssl.create_default_context(cafile=certifi.where())
     except ImportError:
-        return ssl.create_default_context()
+        ctx = ssl.create_default_context()
+    ctx.load_verify_locations(cafile=LE_CHAIN)
+    return ctx
 
 
 def opener(ctx=None):
@@ -87,11 +89,7 @@ def hidden(s):
 
 
 def gazette(pages=5):
-    ctx = tls()
-    for a in LE_INTERMEDIATES:
-        with urllib.request.urlopen(a, timeout=30) as f:
-            ctx.load_verify_locations(cadata=ssl.DER_cert_to_PEM_cert(f.read()))
-    op = opener(ctx)
+    op = opener()
     home, _ = fetch(op, 'https://egazette.gov.in/')          # the session id lives in the path: /(S(...))/
     base = home.rsplit('/', 1)[0]
     out = []
@@ -181,10 +179,83 @@ def cerc():
     return out
 
 
+# Five ministries moved to one Next.js + WordPress platform (digifootprint) whose pages render empty without
+# JavaScript; the page itself reads /cms/wp-json/document/documents, which answers plain GETs. Measured
+# 2026-11-04: MoD's own lists are empty (it publishes through PIB); Power, DPIIT, MNRE and MeitY carry orders,
+# notices, gazette copies and policies. The bare power host 302s to www.
+WP_SITES = {'www.mod.gov.in': 'Ministry of Defence', 'www.powermin.gov.in': 'Ministry of Power', 'dpiit.gov.in': 'DPIIT',
+            'mnre.gov.in': 'MNRE', 'www.meity.gov.in': 'MeitY'}
+WP_CATS = ('press-release', 'orders-and-notices', 'gazette-notifications', 'acts-and-policy', 'policies-and-regulations',
+           'guidelines', 'office-memorandum')
+
+
+def ministries():
+    op, out, errs = opener(), [], []
+    for host, name in WP_SITES.items():
+        for cat in WP_CATS:
+            u = f'https://{host}/cms/wp-json/document/documents?document_category={cat}&limit=20&page=1&sort=acf&order=DESC&search='
+            try:
+                _, t = fetch(op, u, retries=2)
+                d = json.loads(t)
+            except Exception as e:
+                errs.append(f'{host}/{cat}: {str(e)[:60]}')
+                continue
+            for p in (d.get('posts') or []) if isinstance(d, dict) else []:
+                acf = p.get('acf_data') or {}
+                date = ymd(acf.get('date') or '', '%d/%m/%Y') or (p.get('post_date') or '')[:10] or None
+                title = clean(p.get('post_title') or acf.get('title'))
+                if title and date:
+                    out.append(dict(src='ministries', id=f"{host}:{p.get('ID')}", date=date, title=title,
+                                    ministry=f'{name} · {cat.replace("-", " ")}', url=f'https://{host}/documents/{cat}'))
+    if not out and errs:
+        raise RuntimeError('; '.join(errs[:4]))
+    return out
+
+
+def dgtr():
+    """Trade remedies: anti-dumping, countervailing and safeguard initiations and findings (home page 'What's new')."""
+    _, s = fetch(opener(), 'https://www.dgtr.gov.in/en')   # the bare host 301s to http://, which times out from Python
+    out = []
+    for d, u, t in re.findall(r'<div class="notifi_list_inner">\s*<span>([^<]+)</span>\s*<span>\s*<a href="([^"]+)"[^>]*>(.*?)</a>', s, re.S):
+        title, date = clean(t), ymd(clean(d), '%d %b %Y')
+        if title and date:
+            out.append(dict(src='dgtr', id=u, date=date, title=title, ministry='DGTR (trade remedies)',
+                            url=u if u.startswith('http') else 'https://www.dgtr.gov.in' + u))
+    return out
+
+
+def coal():
+    _, s = fetch(opener(), 'https://coal.gov.in/')
+    out = []
+    for u, t, d in re.findall(r'<div class="list-content"><a href="([^"]+)"[^>]*>(.*?)</a>[^<(]*\((\d{2}/\d{2}/\d{4})\)', s, re.S):
+        out.append(dict(src='coal', id=u, date=ymd(d, '%d/%m/%Y'), title=clean(t), ministry='Ministry of Coal',
+                        url=u if u.startswith('http') else 'https://coal.gov.in' + u))
+    return out
+
+
+def mopng():
+    _, s = fetch(opener(), 'https://mopng.gov.in/en')
+    out = []
+    for d, u, t in re.findall(r'<span>Dt\.\s*([0-9-]+)\s*</span>\s*<p><a href="([^"]+)"[^>]*>(.*?)</a>', s, re.S):
+        out.append(dict(src='mopng', id=u, date=ymd(d, '%d-%m-%Y'), title=clean(t), ministry='Ministry of Petroleum and Natural Gas',
+                        url=u if u.startswith('http') else 'https://mopng.gov.in' + u))
+    return out
+
+
+def dea():
+    _, s = fetch(opener(), 'https://dea.gov.in/')
+    out = []
+    for d, u, t in re.findall(r'<div class="circularDate[^"]*">.*?(\d{2}/\d{2}/\d{4})\s*</div>\s*<div class="circularBox[^"]*">\s*<a href="\s*([^"]+)"[^>]*>(.*?)</a>', s, re.S):
+        u = u.strip()
+        out.append(dict(src='dea', id=u, date=ymd(d, '%d/%m/%Y'), title=clean(t), ministry='Department of Economic Affairs',
+                        url=u if u.startswith('http') else 'https://dea.gov.in' + u))
+    return out
+
+
 # What makes a notice worth a look: it changes a trade, tax or market rule, or records a project awarded by bidding.
 # Measured on the 2026-11-04 read (1,607 rows): sector words alone tagged 149 railway land-acquisition gazettes,
 # every TRAI release ("Telecom") and 86 routine CERC transmission true-ups, none of which moves an order book.
-RULE = re.compile(r'\b(import policy|export policy|minimum import price|\bmip\b|anti[- ]?dumping|countervailing|safeguard duty|'
+RULE = re.compile(r'\b(import policy|export policy|minimum import price|\bmip\b|anti[- ]?dumping|anti[- ]subsidy|countervailing|safeguard|'
                   r'customs (?:tariff|duty)|basic customs duty|quality control order|\bqco\b|production linked|\bpli\b|rodtep|'
                   r'duty drawback|prohibit(?:ed|ion)?|restrict(?:ed|ion)|embargo|free trade agreement|'
                   r'adoption of tariff|competitive bidding|auction|spectrum|mmdr|critical mineral|'
@@ -193,10 +264,12 @@ RULE = re.compile(r'\b(import policy|export policy|minimum import price|\bmip\b|
 ROUTINE = re.compile(r'\b(land schedule|acquisition of land|right of user|pmp act|section 3\(1\)|section 6\(1\)|section 20[ae]|'
                      r'section 3[ad]\b|3d\b|bye[- ]election|recruitment rules|competent authority|corrigendum|'
                      r'variable rate (?:reverse )?repo|vrr|money market operations|lending facility|auction of (?:government|state)|'
-                     r'treasury bills?|state government securities|t-bills?|transmission tariff for|truing[- ]up)\b', re.I)
+                     r'treasury bills?|state government securities|t-bills?|g-sec|transmission tariff for|truing[- ]up|'
+                     r'interview|young professional|independent consultants?|liaison officer)\b', re.I)
 
 
-SOURCES = dict(gazette=gazette, dgft=dgft, trai=trai, rbi=rbi, cerc=cerc)
+SOURCES = dict(gazette=gazette, dgft=dgft, trai=trai, rbi=rbi, cerc=cerc, dgtr=dgtr, ministries=ministries, coal=coal,
+               mopng=mopng, dea=dea)
 
 
 def norm_name(n):
@@ -262,7 +335,9 @@ def main():
                source_pages={'gazette': 'https://egazette.gov.in/', 'dgft': 'https://www.dgft.gov.in/CP/?opt=notification',
                              'trai': 'https://www.trai.gov.in/notifications/press-release',
                              'rbi': 'https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx',
-                             'cerc': 'https://cercind.gov.in/recent_orders.html'},
+                             'cerc': 'https://cercind.gov.in/recent_orders.html', 'dgtr': 'https://www.dgtr.gov.in/',
+                             'ministries': 'https://www.powermin.gov.in/documents/orders-and-notices', 'coal': 'https://coal.gov.in/',
+                             'mopng': 'https://mopng.gov.in/en', 'dea': 'https://dea.gov.in/'},
                items=dict(sorted(items.items(), key=lambda kv: (kv[1]['date'], kv[0]), reverse=True)))
     tmp = OUT + '.tmp'
     with open(tmp, 'w', encoding='utf-8') as f:
