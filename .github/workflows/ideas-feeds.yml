@@ -37,7 +37,7 @@ concurrency:
 jobs:
   feeds:
     runs-on: ubuntu-latest
-    timeout-minutes: 45   # a cold scan downloads 65 bhavcopies; the cache below makes the next run warm
+    timeout-minutes: 90   # was 45: from 2026-10-26 Scorecard (~10 min) + order-book ledger (~23 min) pushed the job past 45 and every run was killed before "Commit the feeds", so govt.json and the other feeds froze. A cold scan also downloads 65 bhavcopies.
     steps:
       - name: Checkout
         uses: actions/checkout@v5
