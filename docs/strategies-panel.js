@@ -580,7 +580,9 @@ function renderCards(){
       (p ? (BUYSLICER[it.id]
               ? '<button class="btn on" data-basket="' + esc(it.id) + '">Buying ' + BUYSLICER[it.id].i + '/' + BUYSLICER[it.id].n + '</button>'
               : (bought.has(it.id)
-                   ? '<button class="btn" disabled title="Already bought this rebalance \u2014 click the \u2713 bought chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">\u2713 Bought</button>'
+                   ? (restCount(it)
+                        ? '<button class="btn on" data-basket="' + esc(it.id) + '" title="Marked bought, but today\u2019s Zerodha order book shows these picks short of the plan (basket stopped or cancelled) \u2014 opens the basket with only the missing quantities">Buy the rest (' + restCount(it) + ')</button>'
+                        : '<button class="btn" disabled title="Already bought this rebalance \u2014 click the \u2713 bought chip to re-enable" style="opacity:.5;cursor:not-allowed;color:var(--up)">\u2713 Bought</button>')
                    : (outPlan
                       ? '<span class="tag exit" title="Outside the chosen mix in the cash plan \u2014 sells everything, buys nothing">No buys \u00b7 not in the plan</span>'
                       : (!RW.buyIn
@@ -876,12 +878,19 @@ const xfSum = l => l.reduce((a, x) => a + x.q, 0);
 const xfNum = id => { const P = cpDoc(), o = P && P.S[id], it = strategies().find(s => s.id === id); return '#' + ((o && o.num) || (it && favNumOf(it.cfg)) || '?'); };
 /* a buyer's rows opened on/after T: what it already got this rebalance (its own fills and booked moves) — the buy baskets
    subtract them, so a strategy whose stock arrived by a move never buys it again after the books update */
+/* zba59: picks of a plan-sized strategy still short of their planned quantity after today's buys (0 when the order book
+   has not been read, when the plan did not size it, or when everything is in) */
+function restCount(it){ try {
+  if (!OBBUY.at) return 0; const cp = planFor(it), p = PICKS[it.id]; if (!cp || cp.excl || !p || !p.rows.length) return 0;
+  return p.rows.slice(0, it.cfg.topN || 3).filter(r => { if ((cp.stays || []).indexOf(r.sym) >= 0) return false;
+    const L = liveQ(r.sym), px = (L && L.ltp != null) ? L.ltp : r.px, N = planNeed(it, cp, r.sym, px); return !!(N && N.need > 0 && obGot(it.id, r.sym) > 0); }).length;
+} catch (e){ return 0; } }
 function heldFresh(it, sym){ const h = heldFor(it.cfg), T = rebalWindow().tIso; return h ? h.rows.filter(r => r.sym === sym && r.date && r.date >= T).reduce((a, r) => a + r.qty, 0) : 0; }
 /* what the plan still has `it` buy of `sym` at price px: its planned value at today's price, less the shares moving in from
    another strategy and those it already got this rebalance — the ⚡ dialog, the This-rebalance table and the checklist agree */
 function planNeed(it, cp, sym, px){
   const q = cp && cp.buyQ ? cp.buyQ[sym] : null; if (q == null) return null;
-  const full = (px > 0 && cp.px[sym] > 0) ? Math.floor(q * cp.px[sym] / px) : q, mvL = xfIn(it.id, sym), mvIn = xfSum(mvL), got = heldFresh(it, sym);
+  const full = (px > 0 && cp.px[sym] > 0) ? Math.floor(q * cp.px[sym] / px) : q, mvL = xfIn(it.id, sym), mvIn = xfSum(mvL), got = Math.max(heldFresh(it, sym), obGot(it.id, sym));   // zba59: the book (reconciled) or today's order book, whichever knows more
   return { full: full, mvIn: mvIn, mvFrom: mvL.map(x => xfNum(x.from)).join('+'), got: got, need: Math.max(0, full - mvIn - got) };
 }
 const cpSellsStarted = () => zbSoldSet().size > 0;
@@ -1086,6 +1095,19 @@ function swapCheckHTML(list){
 const dayStartIST = () => { const d = istNow(); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) - 330 * 60000; };
 const FILL_TERM = new Set(['COMPLETE', 'CANCELLED', 'REJECTED']);
 const FILLS_OB = { at: 0, rows: null, busy: false };
+/* zba59: what each strategy's BUY basket already put through Zerodha TODAY, by its own tag (sb…) and stock:
+   filled shares + shares still open at the exchange. A basket stopped half-way (or cancelled on Kite) leaves these
+   behind; the ⚡ dialog, the This-rebalance table and the "Buy the rest" button subtract them so nothing is bought twice. */
+const OBBUY = { at: 0, by: {} };
+function obBuyAgg(list){ const by = {};
+  (list || []).forEach(o => { const tag = String(o.tag || ''); if (!/^sb/.test(tag) || o.transaction_type !== 'BUY') return;
+    const st = String(o.status || '').toUpperCase(), f = +o.filled_quantity || 0, q = +o.quantity || 0;
+    const got = FILL_TERM.has(st) ? f : Math.max(f, q);   // open / pending: the whole order is still on its way
+    if (!got) return; const sym = String(o.tradingsymbol || '').replace(/-(BE|BZ|BL|SM|ST)$/, '');
+    const m = by[tag] = by[tag] || {}; m[sym] = (m[sym] || 0) + got; });
+  return by; }
+function obGot(id, sym){ try { const m = OBBUY.by[buyTag(id)]; return m ? (m[sym] || 0) : 0; } catch (e){ return 0; } }
+function obRefresh(){ FILLS_OB.at = 0; return fillsFromOrderBook(); }   // bypass the 60 s throttle — before opening a basket
 function tagLabel(tag){
   if (/^ss/.test(tag)){ const it = strategies().find(x => sellTag(x.id) === tag); return it ? (((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || it.id) + ' \u00b7 exits') : tag; }
   if (/^sb/.test(tag)){ const it = strategies().find(x => buyTag(x.id) === tag); return it ? (((typeof strategyEnglish === 'function' && strategyEnglish(it.cfg)) || it.name || it.id) + ' \u00b7 entries') : tag; }
@@ -1096,6 +1118,7 @@ async function fillsFromOrderBook(){
   FILLS_OB.busy = true;
   try {
     const r = await zFetch('/orders'), list = (r.j && r.j.data) || [], by = {};
+    if (r.j && Array.isArray(r.j.data)){ OBBUY.by = obBuyAgg(list); OBBUY.at = Date.now(); }
     list.forEach(o => { const tag = String(o.tag || ''); if (!/^(ss|sw)/.test(tag)) return;
       const k = tag + '|' + o.transaction_type, a = by[k] = by[k] || { label: tagLabel(tag), side: o.transaction_type, filled: 0, value: 0, open: 0, n: 0 };
       const f = +o.filled_quantity || 0, px = +o.average_price || 0; a.filled += f; a.value += f * px; a.n++;
@@ -1369,7 +1392,8 @@ $('cards').addEventListener('click', e => {
   const b = e.target.closest('[data-basket]'); if (b){
     if (BUYSLICER[b.dataset.basket]){ const B = BUYSLICER[b.dataset.basket];
       buyStop(b.dataset.basket, 'Buying stopped — ' + B.i + '/' + B.n + ' slices sent, rest kept'); return; }
-    zBasketOpen(b.dataset.basket); }
+    const bid = b.dataset.basket;   // zba59: read today's order book first so already-bought quantities drop out
+    (Z.connected ? obRefresh() : Promise.resolve()).then(() => zBasketOpen(bid), () => zBasketOpen(bid)); }
 });
 
 /* ---------- basket dialog (identical flow to the portfolio page) ---------- */
