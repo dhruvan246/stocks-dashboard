@@ -1870,11 +1870,12 @@ function rebalWindow(){
   const lastTD = (yy, mm) => { let t = new Date(Date.UTC(yy, mm + 1, 0)); while (wk(t)) t = new Date(t.getTime() - 864e5); return t; };
   const nextTD = d => { let t = new Date(d.getTime() + 864e5); while (wk(t)) t = new Date(t.getTime() + 864e5); return t; };
   const d0 = Date.UTC(y, m, now.getUTCDate());
-  const legs = t => { const t1 = nextTD(t), t2 = nextTD(t1), t3 = nextTD(t2); return { t: t, t1: t1, t3: t3 }; };
+  const iso = d => d.toISOString().slice(0, 10);
+  const EXT = { '2026-10-30': '2026-11-15' };   // zba57: user extended the Oct-2026 buy leg to 15 Nov (nothing bought 31 Oct-4 Nov); keyed by T, value = last buy day
+  const legs = t => { const t1 = nextTD(t), t2 = nextTD(t1); let t3 = nextTD(t2); const x = EXT[iso(t)]; if (x && Date.parse(x + 'T00:00:00Z') > +t3) t3 = new Date(x + 'T00:00:00Z'); return { t: t, t1: t1, t3: t3 }; };
   let L = legs(lastTD(y, m - 1));                                        // last month's buy leg can spill into this month
   if (!(d0 >= +L.t && d0 <= +L.t3)) L = legs(lastTD(y, m));
   const lab = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-  const iso = d => d.toISOString().slice(0, 10);
   const sellIn = d0 === +L.t, buyIn = d0 >= +L.t1 && d0 <= +L.t3;
   const yrs = [...new Set([iso(L.t).slice(0, 4), iso(L.t3).slice(0, 4)])], calMissing = yrs.filter(yy => !HOL.years.includes(yy));
   return { in: sellIn || buyIn, sellIn: sellIn, buyIn: buyIn, planned: d0 === +L.t1,
