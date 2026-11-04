@@ -31,7 +31,10 @@ concurrency:
 jobs:
   refresh-membership:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 45, and every best-effort step carries its own timeout + continue-on-error (runbook §235a): a hung
+    # changelog fetch (24 Oct) or phantom-CA scan (31 Oct) used to hit the old 20-min job cap and cancel the
+    # whole run, so the F&O snapshot it had already built was never committed (fno_history stuck at 1 Oct).
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
@@ -44,6 +47,8 @@ jobs:
         run: pip install pypdf==6.19.0
 
       - name: Refresh changelog from NSE press releases (auto-discovers new ones)
+        timeout-minutes: 10
+        continue-on-error: true
         run: python3 scripts/build_changelog.py || echo "changelog refresh failed — keeping committed copy"
 
       # The builder judges "does this key trade on this date" (PHANTOM FLOOR + era-aware key
@@ -52,6 +57,8 @@ jobs:
       # no longer carry (CASTROL after CASTROL->CASTROLIND merged). Best-effort: on failure the
       # builder falls back to the committed copy and says so in the log.
       - name: Fetch the LIVE sf price bin for the builder's date checks
+        timeout-minutes: 8
+        continue-on-error: true
         run: python3 scripts/fetch_live_sf.py || echo "live sf fetch failed — builder will read the committed (stale) bin"
 
       - name: Rebuild point-in-time membership (validates vs official archives)
@@ -64,6 +71,8 @@ jobs:
       # patch docs/stock_data.bin's fnoHistory in place. build_membership_v2.py preserves fnoHistory,
       # so this stays consistent. Catches new F&O additions (e.g. GVT&D) within a week.
       - name: Refresh F&O membership (point-in-time, survivorship-free)
+        timeout-minutes: 6
+        continue-on-error: true
         run: python3 scripts/extend_fno_history.py || echo "F&O refresh failed — keeping existing fnoHistory"
 
       # Auto-detect PHANTOM corporate actions: a big single-day fall matching a split/bonus ratio but
@@ -71,6 +80,8 @@ jobs:
       # Appends to scripts/phantom_crashes.json, which build_corp_actions.py (noadjust) and
       # update_sf_data.py (self_heal) both read, so the daily build self-corrects new crashes too.
       - name: Detect phantom corporate actions (crashes mis-read as splits)
+        timeout-minutes: 8
+        continue-on-error: true
         run: python3 scripts/audit_phantom_ca.py 120 || echo "phantom-CA scan failed — keeping existing list"
 
       - name: Guard — refuse to commit a broken or shrunken feed

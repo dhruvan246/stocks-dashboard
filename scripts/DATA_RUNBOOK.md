@@ -29431,3 +29431,10 @@ year table, busiest days).
 (CM files from the local cache, which a launchd job `com.dhruvan.nse-bhav-update` now tops up daily via
 `~/stocks-cache/nse_bhav/update_full.py`; the cache had stopped at 2026-09-24). The roster file must already cover the
 range — it is never rebuilt from monthly snapshots.
+
+### §235a — backtest F&O list (fno_history.json) was stuck at 2026-10-01 (fixed 2026-11-04)
+
+- **Symptom:** `scripts/fno_history.json` (and `fnoHistory` in `docs/stock_data.bin` / `dash_slim.bin`) had no snapshot after 2026-10-01, so backtests were missing the 23 Oct and 28 Oct F&O changes (+ICICILIFE/−ICICIPRULI rename; +COROMANDEL, CUB, DATAPATTNS, KARURVYSYA, NAVINFLUOR, SYRMA; −BAJAJHLDNG).
+- **Cause:** `refresh-membership.yml` had a 20-min JOB timeout and no per-step limits. Best-effort steps that hung (the changelog fetch on 24 Oct, the phantom-CA scan on 31 Oct) used up the 20 minutes and the run was cancelled. The 31 Oct run had already built the F&O snapshot, but the commit step never ran.
+- **Fix:** job timeout raised to 45 min. Changelog, live-sf fetch, F&O refresh and phantom-CA steps each got a `timeout-minutes` plus `continue-on-error: true`, so one hang can no longer stop the commit. The two missing snapshots were added with `python3 scripts/extend_fno_history.py 20261023 20261028` (213 and 218 stocks). Both match NSE's daily F&O bhavcopy, read through `scripts/fno_daily_roster.json`, name for name.
+- **Still true:** fno_history is a weekly/monthly list (see §235), so a change between runs only shows up from the next run's date. Daily-accurate F&O stats use `fno_daily_roster.json`.
