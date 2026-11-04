@@ -25,14 +25,15 @@ OUT = os.path.join(DOCS, 'govt_x.json')
 API = 'https://api.fxtwitter.com/2/profile/%s/statuses'
 
 # Each handle was opened on FxTwitter on 2026-11-04 and its profile name and follower count checked; BEL_CorpCom is
-# the account bel-india.in links to. Not listed: Mines, SEBI and Jal Shakti — no handle tried resolved to an account
-# their own site or ministry names (SEBI_updates exists but sebi.gov.in links no X account).
+# the account bel-india.in links to. SEBI_updates (profile name SecuritiesandExchangeBoardofIndia) was added on the
+# user's instruction 2026-11-04; sebi.gov.in links no X account. Not listed: Mines and Jal Shakti — no handle tried
+# resolved to an account their own site names.
 HANDLES = ['narendramodi', 'PIB_India', 'MIB_India', 'nsitharaman', 'DefenceMinIndia', 'rajnathsingh',
            'SpokespersonMoD', 'RailMinIndia', 'AshwiniVaishnaw', 'GoI_MeitY', 'MinOfPower', 'mnreindia',
            'CoalMinistry', 'DPIITGoI', 'dgftindia', 'cbic_india', 'PiyushGoyal', 'MORTHIndia', 'nitin_gadkari',
            'shipmin_india', 'MoCA_GoI', 'DoT_India', 'TRAI', 'RBI', 'NITIAayog', 'InvestIndia', 'PetroleumMin',
            'HardeepSPuri', 'MoHUA_India', 'DrSJaishankar', 'INSPACeIND', 'isro', 'HALHQBLR', 'GeM_India',
-           'PMOIndia', 'FinMinIndia', 'SteelMinIndia', 'MoHFW_INDIA', 'DoC_GoI', 'BEL_CorpCom']
+           'PMOIndia', 'FinMinIndia', 'SteelMinIndia', 'MoHFW_INDIA', 'DoC_GoI', 'BEL_CorpCom', 'SEBI_updates']
 
 # A sector word alone needs a hard decision verb: on 2026-11-04 'policy', 'mission', 'launch' and 'clear' with a
 # sector word kept 25 event and summit posts (RE Summit panels, a HAL PF-trust award, a Transport Mela).
