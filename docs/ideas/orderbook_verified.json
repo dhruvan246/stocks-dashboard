@@ -1,5 +1,5 @@
 {
- "built": "2026-10-26",
+ "built": "2026-11-04 21:40 IST",
  "how": "each figure checked against the filing it came from (both the latest and the year-ago document opened); true_yoy_pct compares like with like ~12 months apart",
  "rows": [
   {
@@ -711,6 +711,44 @@
     "https://nsearchives.nseindia.com/corporate/SPEL_26102026165150_SubmissionofTranscriptH1FY27.pdf"
    ],
    "checked": "2026-10-26"
+  },
+  {
+   "key": "544477",
+   "name": "Highway Infrastructure Ltd",
+   "latest_verdict": "CONFIRMED",
+   "latest_correct_value_cr": 1776.19,
+   "latest_as_on": "2026-10-31",
+   "year_ago_verdict": "CONFIRMED",
+   "year_ago_correct_value_cr": 775.0,
+   "year_ago_as_on": "2025-09-30",
+   "true_yoy_pct": 129.19,
+   "book_to_ttm_sales": null,
+   "script_yoy_pct": 129.2,
+   "notes": "Both quotes opened and read in this run and both are company-wide totals (the ₹775 cr splits as EPC ₹584 cr + Tollway ₹191 cr). book_to_ttm_sales is left null rather than estimated: BSE's detailed-results API was not read for this scrip in this run, so no trailing revenue figure was measured here. Caveats: the as-on dates are 13 months apart; the company's own filings give ₹778 cr and ₹1,133 cr for the same 30-Jun-2026 date in two documents three days apart; market value ₹519.83 cr, scrip in group T (trade-for-trade).",
+   "docs": [
+    "https://nsearchives.nseindia.com/corporate/HIGHWAY123_04112026092156_HIL_PR_04112026.pdf",
+    "https://www.bseindia.com/xml-data/corpfiling/AttachLive/615d2db6-52d6-4631-b687-893093b8e193.pdf"
+   ],
+   "checked": "2026-11-04"
+  },
+  {
+   "key": "532178",
+   "name": "Engineers India Ltd",
+   "latest_verdict": "CORRECTED",
+   "latest_correct_value_cr": 20421.0,
+   "latest_as_on": "2026-09-30",
+   "year_ago_verdict": "CORRECTED",
+   "year_ago_correct_value_cr": 13131.0,
+   "year_ago_as_on": "2025-09-30",
+   "true_yoy_pct": 55.52,
+   "book_to_ttm_sales": null,
+   "script_yoy_pct": 53.8,
+   "notes": "Both of the screen's quotes were imprecise mid-call paraphrases; the management opening statements on the same two transcripts give ₹20,421 cr as on 30-Sep-2026 and ₹13,131 cr as on 30-Sep-2025, i.e. +55.52% rather than +53.8%. Management guides FY27 revenue of ‘around INR4,200 crores’, so the book is roughly 4.9x that; book_to_ttm_sales is left null because no trailing revenue was measured in this run. Outside the band at a ₹16,900.61 cr market value.",
+   "docs": [
+    "https://nsearchives.nseindia.com/corporate/ENGINERSIN_04112026172507_a717ec13-0e60-4e83-86f8-c9e671be9cf7.pdf",
+    "https://nsearchives.nseindia.com/corporate/ENGINERSIN_18112025163946_transcriptq2fy2526.pdf"
+   ],
+   "checked": "2026-11-04"
   }
  ]
 }
