@@ -274,6 +274,11 @@
     <p class="muted text-sm mb-3">Every English press release PIB put out, day by day for the last 30 days, filtered to decisions that carry a real outlay or a procurement mandate. A day the job could not read is filled in on the next run. Stocks are attached only when the release's own title names a sector we have a filing-backed company list for.</p>
     <div id="govt-days" class="muted text-xs mb-2"></div>
     <div id="govt-list" class="grid gap-3"></div>
+    <div class="sechead mt-6"><h3 class="text-base font-semibold">Rule changes from other government sites</h3><span id="gsrc-meta" class="muted text-xs"></span></div>
+    <p class="muted text-sm mb-2">Read straight from the Gazette of India, DGFT, TRAI, RBI and CERC, because most legal notices never reach PIB. Shown here: notices whose own title changes a trade, tax or market rule (import or export policy, minimum import price, customs, quality control orders, new regulations) or records a project won by bidding (CERC tariff adoption). Land acquisitions, routine tariff petitions and money-market notices are counted below but not shown as rule changes.</p>
+    <div id="gsrc-status" class="muted text-xs mb-2"></div>
+    <div id="gsrc-list" class="grid gap-2"></div>
+    <details class="mt-2"><summary id="gsrc-rest-sum" class="text-xs cursor-pointer" style="color:var(--accent)">Everything else read</summary><div id="gsrc-rest" class="mt-1 grid gap-1"></div></details>
   </section>
 
   <!-- ===== COMMODITIES ===== -->
@@ -459,11 +464,11 @@
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [latest, ideas, track] = await Promise.all([grab('./ideas/latest.json'), grab('./ideas/ideas.json'), grab('./ideas/track.json')]);
   const relIdeas = (f) => './ideas/' + String(f).replace(/^(\.\/)?(docs\/)?ideas\//, '');
-  const [scan, run, govt, signals, queue, obHist, govtHist] = await Promise.all([
+  const [scan, run, govt, signals, queue, obHist, govtHist, govtSrc] = await Promise.all([
     latest && latest.scan_file ? grab(relIdeas(latest.scan_file)) : null,
     latest && latest.run_file ? grab(relIdeas(latest.run_file)) : null,
     grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json'), grab('./ideas/order_book_history.json'),
-    grab('./ideas/govt_history.json')]);
+    grab('./ideas/govt_history.json'), grab('./ideas/govt_sources.json')]);
   const queueBy = {};
   ((queue && queue.ideas) || []).forEach(q => { queueBy[q.id] = q; });
   const trackBy = {};
@@ -1024,6 +1029,38 @@
     });
   } else {
     $('#govt-list').innerHTML = '<div class="card muted text-sm">govt.json not published yet.</div>';
+  }
+
+  // ---- other government sites (Gazette, DGFT, TRAI, RBI, CERC) ----------------------------
+  if (govtSrc && govtSrc.items) {
+    const SRC = { gazette: 'Gazette', dgft: 'DGFT', trai: 'TRAI', rbi: 'RBI', cerc: 'CERC' };
+    const cut = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+    const items = Object.values(govtSrc.items).filter(r => (r.date || '') >= cut)
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const flagged = items.filter(r => r.flag);
+    $('#gsrc-meta').textContent = `${govtSrc.built} · ${fmt(items.length, 0)} notices in 30 days, ${flagged.length} rule changes`;
+    $('#gsrc-status').innerHTML = Object.entries(govtSrc.sources || {}).map(([k, v]) =>
+      `${esc(SRC[k] || k)}: ${v.ok ? `read ${esc(v.read_at || '')}` : `<b>not read this run</b> (${esc((v.error || '').slice(0, 80))}${v.last_ok ? `; last read ${esc(v.last_ok)}` : ''})`}`).join(' · ');
+    const pg = (k) => (govtSrc.source_pages || {})[k] || '#';
+    const line = (r) => `<a class="pill" href="${esc(pg(r.src))}" target="_blank" rel="noopener">${esc(SRC[r.src] || r.src)}</a> <span class="muted">${esc(r.date)}</span> <a class="hover:underline" href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>`;
+    const gl = $('#gsrc-list');
+    if (!flagged.length) gl.innerHTML = '<div class="card muted text-sm">No rule change in the last 30 days of notices read.</div>';
+    flagged.forEach(r => {
+      const el = document.createElement('div');
+      el.className = 'card text-sm';
+      el.innerHTML = `<div>${line(r)}</div>
+        <div class="muted text-xs mt-1">${esc(r.ministry || '')} · why shown: “${esc(r.rule)}” in the title${(r.theme_names || []).length ? ' · ' + r.theme_names.map(esc).join(', ') : ''}${r.petitioner ? ` · petitioner ${r.company ? `<a class="font-semibold hover:underline" href="./stock.html?sym=${encodeURIComponent(r.company.symbol)}">${esc(r.company.symbol)}</a>` : esc(r.petitioner) + ' (not listed or name not matched)'}` : ''}</div>`;
+      gl.appendChild(el);
+    });
+    const rest = items.filter(r => !r.flag);
+    const by = {};
+    rest.forEach(r => { (by[r.src] = by[r.src] || []).push(r); });
+    $('#gsrc-rest-sum').textContent = `Everything else read in 30 days (${fmt(rest.length, 0)}: ${Object.entries(by).map(([k, v]) => `${SRC[k] || k} ${v.length}`).join(', ')})`;
+    $('#gsrc-rest').innerHTML = Object.entries(by).map(([k, v]) => `<div class="text-xs mt-2"><b>${esc(SRC[k] || k)}</b></div>` +
+      v.slice(0, 150).map(r => `<div class="text-xs">${line(r)}${r.petitioner ? ` <span class="muted">· ${esc(r.petitioner)}</span>` : ''}</div>`).join('') +
+      (v.length > 150 ? `<div class="muted text-xs">… ${v.length - 150} more on <a href="${esc(pg(k))}" target="_blank" rel="noopener">the site</a></div>` : '')).join('');
+  } else {
+    $('#gsrc-list').innerHTML = '<div class="card muted text-sm">govt_sources.json not published yet.</div>';
   }
 
   // ---- commodity signals ------------------------------------------------------------------

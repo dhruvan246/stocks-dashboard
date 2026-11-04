@@ -50,7 +50,7 @@ jobs:
       # PyMuPDF reads the Ministry of Steel and PPAC PDFs; xlrd reads the WPI workbook. Everything
       # else in scripts/ideas/ is stdlib on purpose (the routine runs on a bare VM).
       - name: Install PDF and XLS readers
-        run: pip install -q pymupdf xlrd
+        run: pip install -q pymupdf xlrd certifi
 
       - name: Restore the builders' cache (bhavcopies, report PDFs, scrip master)
         uses: actions/cache/restore@v4
@@ -100,6 +100,11 @@ jobs:
       # the builder has already left its file alone and said why on stdout.
       - name: Government lane — PIB releases
         run: rc=0; python3 -X utf8 scripts/ideas/govt.py || rc=$?; echo "govt=$rc" >> /tmp/ideas/steps.txt
+
+      # Gazette, DGFT, TRAI, RBI, CERC: the legal notices that never reach PIB. A site that fails keeps
+      # what earlier runs read and says so in govt_sources.json -> sources.
+      - name: Government lane — other government sites
+        run: rc=0; python3 -X utf8 scripts/ideas/govt_sources.py || rc=$?; echo "govt_sources=$rc" >> /tmp/ideas/steps.txt
 
       - name: Commodity — global spot (westmetall, businessinsider)
         run: rc=0; python3 -X utf8 scripts/ideas/spot.py || rc=$?; echo "spot=$rc" >> /tmp/ideas/steps.txt
@@ -183,7 +188,7 @@ jobs:
           json.dump(out, open('docs/ideas/feeds_status.json', 'w'), indent=1)
           print(json.dumps({k: out[k] for k in ('built', 'hosts_ok', 'hosts_blocked', 'steps_failed')}, indent=1))
           bad = 0
-          for f in ['govt.json', 'govt_history.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'moil_history.json', 'minsteel_mumbai.json',
+          for f in ['govt.json', 'govt_history.json', 'govt_sources.json', 'spot.json', 'spot_series.json', 'india_spot.json', 'nmdc_history.json', 'moil_history.json', 'minsteel_mumbai.json',
                     'universe.json', 'signals.json', 'track.json', 'feeds_status.json', 'theme_map.json', 'commodity_map.json',
                     'ideas.json', 'latest.json', 'updates_queue.json', 'order_book.json', 'orderbook_signals.json',
                     'orderbook_jumps.json', 'orderbook_tracker.json', 'order_wins.json', 'orderwins_signals.json', 'orderwins_tracker.json', 'breakout_watch.json', 'bse_ca_breakout.json']:
@@ -223,7 +228,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          FILES="docs/ideas/govt.json docs/ideas/govt_history.json docs/ideas/spot.json docs/ideas/spot_series.json docs/ideas/spot_history.csv \
+          FILES="docs/ideas/govt.json docs/ideas/govt_history.json docs/ideas/govt_sources.json docs/ideas/spot.json docs/ideas/spot_series.json docs/ideas/spot_history.csv \
                  docs/ideas/india_spot.json docs/ideas/india_spot_history.csv docs/ideas/nmdc_history.json docs/ideas/moil_history.json \
                  docs/ideas/minsteel_mumbai.json docs/ideas/india_history.json.gz docs/ideas/wpi.json.gz \
                  docs/ideas/universe.json docs/ideas/signals.json docs/ideas/track.json docs/ideas/feeds_status.json \
