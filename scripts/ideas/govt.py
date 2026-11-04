@@ -17,10 +17,14 @@ So the gate here is deliberately narrow. A release must look like a DECISION (ap
 allocated, awarded, notified) and carry either a large rupee outlay or a procurement mandate, in a sector we
 have a beneficiary map for. Everything else is dropped and counted, never published.
 
-Usage: python3 scripts/ideas/govt.py [--days 1] [--min-cr 1000]
-Writes docs/ideas/govt.json  {built, scanned, kept, releases:[...]}
+Usage: python3 scripts/ideas/govt.py [--date YYYY-MM-DD] [--backfill-days 14] [--min-cr 1000]
+Writes docs/ideas/govt.json  {built, scanned, kept, releases:[...]}  (today's day, as before)
+   and docs/ideas/govt_history.json  {days:{date:{scanned,kept,unmapped,read_at}}, releases:{prid:{...,date}}}
+A run reads today AND every day in the last --backfill-days that the history has not read yet (PIB's own
+date picker, a postback on allRel.aspx), so a day the job failed is filled on the next run, never lost
+(2026-11-04: nine stopped runs 26-Oct..3-Nov had left those days unread).
 """
-import argparse, datetime, html, json, os, re, sys, time, urllib.request
+import argparse, datetime, html, http.cookiejar, json, os, re, sys, time, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -36,7 +40,7 @@ DECISION = re.compile(r'\b(cabinet (?:committee )?(?:approve|clears|nod)|ccea ap
                       r'clears?|tender|invites bids|policy|scheme|mission|outlay|budget|procurement|indigenis|'
                       r'production linked incentive|\bpli\b|viability gap|capital outlay|contract worth)\b', re.I)
 # and must not be one of the daily rituals
-NOISE = re.compile(r'\b(congratulat|condol|greet|felicitat|celebrat|observ(?:es|ance)|diwas|divas|awards? ceremony|'
+NOISE = re.compile(r'\b(english rendering|text of (?:the )?(?:pm|prime minister)|congratulatcondol|greet|felicitat|celebrat|observ(?:es|ance)|diwas|divas|awards? ceremony|'
                    r'film award|exhibition|webinar|workshop|seminar|swachhata|cleanliness|yoga day|walkathon|'
                    r'photo caption|clarification|fact check|rashtrapati|visits|meets|inaugurat(?:es|ed) an? (?:exhibition|event)|'
                    r'address(?:es|ed) (?:the )?(?:gathering|students)|quiz|essay|poster|pledge|anniversar)\b', re.I)
@@ -91,9 +95,36 @@ def amount_cr(text):
     return amount_hit(text)[0]
 
 
-def listing():
-    """Today's English releases: [(prid, ministry, title)] — the page groups titles under ministry headings."""
-    page = get(LIST)
+def listing_page(day=None):
+    """allRel.aspx HTML for today, or for `day` (a date) via the page's own day/month/year postback."""
+    if day is None:
+        return get(LIST)
+    last = None
+    for i in range(3):
+        try:
+            op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+            first = op.open(urllib.request.Request(LIST, headers={'User-Agent': UA}), timeout=60).read().decode('utf-8', 'ignore')
+            form = dict(re.findall(r'<input[^>]*type="hidden"[^>]*name="([^"]+)"[^>]*value="([^"]*)"', first))
+            form.update({'ctl00$ContentPlaceHolder1$ddlday': str(day.day), 'ctl00$ContentPlaceHolder1$ddlMonth': str(day.month),
+                         'ctl00$ContentPlaceHolder1$ddlYear': str(day.year), 'ctl00$ContentPlaceHolder1$ddlMinistry': '0',
+                         'ctl00$Bar1$ddlregion': '3', 'ctl00$Bar1$ddlLang': '1', '__EVENTTARGET': 'ctl00$ContentPlaceHolder1$ddlday'})
+            page = op.open(urllib.request.Request(LIST, data=urllib.parse.urlencode(form).encode(),
+                           headers={'User-Agent': UA, 'Content-Type': 'application/x-www-form-urlencoded'}), timeout=60).read().decode('utf-8', 'ignore')
+            # the page echoes the day it served; refuse a page for some other day
+            sel = dict((k, re.search(r'<select name="ctl00\$ContentPlaceHolder1\$%s".*?<option selected="selected" value="(\d+)"' % k, page, re.S)) for k in ('ddlday', 'ddlMonth', 'ddlYear'))
+            got = tuple(int(m.group(1)) if m else -1 for m in sel.values())
+            if got != (day.day, day.month, day.year):
+                raise RuntimeError(f'PIB served {got} for {day}')
+            return page
+        except Exception as e:
+            last = e
+            time.sleep(2 * (i + 1))
+    raise RuntimeError(f'PIB listing for {day} failed: {last}')
+
+
+def listing(day=None):
+    """One day's English releases: [(prid, ministry, title)] — the page groups titles under ministry headings."""
+    page = listing_page(day)
     out = []
     # split on the ministry headings so each link inherits the ministry above it
     parts = re.split(r'<h3[^>]*>(.*?)</h3>', page, flags=re.S)
@@ -121,35 +152,8 @@ def body_text(prid):
     return re.sub(r'\s+', ' ', t)[:6000]
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--min-cr', type=float, default=1000.0, help='rupee outlay below which a release is noise')
-    ap.add_argument('--max-bodies', type=int, default=25, help='how many candidate releases to open in full')
-    a = ap.parse_args()
-
-    tm = json.load(open(os.path.join(DOCS, 'theme_map.json')))
-    # A keyword must START a word: bare 'port' matched 'support' (every MSP release was tagged shipbuilding on
-    # 2026-09-30) and 'hal' matched 'shall'. Suffixes stay open so 'railway' still finds 'railways'; a keyword
-    # that must also END a word carries its own \\b in theme_map.json (ports?\\b, hal\\b).
-    themes = {k: (v, re.compile(r'\b(?:' + v['keywords'] + ')', re.I)) for k, v in tm['themes'].items()}
-
-    try:
-        rels = listing()
-    except Exception as e:
-        # PIB is blocked outright on some networks (2026-09-23/24). Leave govt.json exactly as it is -
-        # a stale file the page can detect beats a half-written one - but exit cleanly and say which,
-        # so the run log can tell "nothing was announced" from "the lane could not be read".
-        fn = os.path.join(DOCS, 'govt.json')
-        built = '?'
-        if os.path.exists(fn):
-            try:
-                built = json.load(open(fn)).get('built', '?')
-            except Exception:
-                pass
-        print(f'govt: PIB unreachable ({str(e)[:130]}); docs/ideas/govt.json LEFT UNCHANGED at its {built} build. '
-              'The government lane did NOT run - its kept count is that build\'s, not today\'s.')
-        sys.exit(0)
-    stamp = ist.stamp()
+def process_day(rels, tm, themes, a):
+    """Gate one day's releases. -> (kept, unmapped, dropped, opened)"""
     kept, unmapped, opened = [], [], 0
     dropped = {'noise': 0, 'backgrounder': 0, 'no decision verb': 0, 'no theme': 0, 'too small': 0}
     seen_titles = set()
@@ -171,6 +175,8 @@ def main():
             dropped['no decision verb'] += 1
             continue
         hit = [k for k, (v, rx) in themes.items() if rx.search(title)]
+        theme_in = 'title' if hit else None
+        body_hint = []
         text = title
         amt, amt_text, amt_in = *amount_hit(title), 'title'
         if opened < a.max_bodies and (not hit or amt is None):
@@ -178,7 +184,10 @@ def main():
             opened += 1
             # the title names the programme; the body is read for the amount and, only when the title named no
             # sector, for the sector. Body-wide matching tagged GEC-III 'solar' from the phrase "non-solar hour".
-            hit = hit or [k for k, (v, rx) in themes.items() if rx.search(text)]
+            # 2026-11-04: a sector found ONLY in the body was wrong 5 times in 6 over 14 days (a farm-app launch
+            # tagged green hydrogen, a PM speech tagged solar). The body may suggest a sector; it never attaches
+            # stocks. Such a release goes to the unmapped list with the hint shown.
+            body_hint = [] if hit else [k for k, (v, rx) in themes.items() if rx.search(text)]
             if amt is None:
                 amt, amt_text = amount_hit(text)
                 amt_in = 'body' if amt is not None else None
@@ -188,13 +197,14 @@ def main():
             continue
         # Why it passed, from the file itself: the verb, the figure and where the figure was found.
         why = dict(verb=verb.group(0), amount_text=amt_text, amount_in=amt_in,
-                   mandate=mandate.group(0) if mandate else None)
+                   mandate=mandate.group(0) if mandate else None, theme_in=theme_in)
         if not hit:
             # big enough to matter but in a sector we have no beneficiary map for. Never drop this
             # silently: the run researches it from the universe and adds the names to theme_map.json.
             unmapped.append(dict(prid=prid, ministry=ministry, title=title,
                                  url=f'https://pib.gov.in/PressReleasePage.aspx?PRID={prid}',
-                                 outlay_cr=amt, mandate=bool(mandate), why=why))
+                                 outlay_cr=amt, mandate=bool(mandate), why=why,
+                                 body_mentions=[tm['themes'][k]['name'] for k in body_hint]))
             dropped['no theme'] += 1
             continue
         names = []
@@ -213,20 +223,85 @@ def main():
                          history=[tm['themes'][k]['history'] for k in hit],
                          outlay_cr=amt, mandate=bool(mandate), why=why,
                          small_caps=[c for c in uniq if c.get('mcap_cr') and 200 <= c['mcap_cr'] <= 7500][:15],
-                         companies=uniq[:30]))
+                         companies=uniq[:40]))
     kept.sort(key=lambda r: -(r['outlay_cr'] or 0))
-    out = dict(built=stamp, source='Press Information Bureau, English releases (pib.gov.in/allRel.aspx)',
-               gate=f'a decision verb in the title, a mapped sector, and either a procurement mandate or an outlay of at least Rs {a.min_cr:.0f} cr',
-               scanned=len(rels), opened=opened, kept=len(kept), dropped=dropped, releases=kept,
-               unmapped_releases=unmapped)
-    json.dump(out, open(os.path.join(DOCS, 'govt.json'), 'w'), indent=1, ensure_ascii=False)
-    print(f'govt: {len(rels)} releases scanned, {opened} opened in full, {len(kept)} kept, {len(unmapped)} big but unmapped  (dropped: {dropped})')
-    for r in unmapped:
-        print(f'  [UNMAPPED Rs {r["outlay_cr"] or 0:,.0f} cr] {r["title"][:90]}')
-    for r in kept:
-        amt = f'Rs {r["outlay_cr"]:,.0f} cr' if r['outlay_cr'] else ('mandate' if r['mandate'] else '-')
-        print(f'  [{amt}] {r["ministry"][:28]:28s} {r["title"][:80]}')
-        print(f'      themes {r["themes"]} | small caps: ' + ', '.join(c['symbol'] for c in r['small_caps'][:10]))
+    return kept, unmapped, dropped, opened
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--min-cr', type=float, default=1000.0, help='rupee outlay below which a release is noise')
+    ap.add_argument('--max-bodies', type=int, default=25, help='how many candidate releases to open in full, per day')
+    ap.add_argument('--date', help='read this day (YYYY-MM-DD) instead of today; govt.json is then left alone')
+    ap.add_argument('--backfill-days', type=int, default=14, help='also read any of the last N days the history has not read')
+    ap.add_argument('--keep-days', type=int, default=120, help='history window kept in govt_history.json')
+    a = ap.parse_args()
+
+    tm = json.load(open(os.path.join(DOCS, 'theme_map.json')))
+    # A keyword must START a word: bare 'port' matched 'support' (every MSP release was tagged shipbuilding on
+    # 2026-09-30) and 'hal' matched 'shall'. Suffixes stay open so 'railway' still finds 'railways'; a keyword
+    # that must also END a word carries its own \\b in theme_map.json (ports?\\b, hal\\b).
+    themes = {k: (v, re.compile(r'\b(?:' + v['keywords'] + ')', re.I)) for k, v in tm['themes'].items()}
+
+    hfn = os.path.join(DOCS, 'govt_history.json')
+    hist = {'days': {}, 'releases': {}}
+    if os.path.exists(hfn):
+        try:
+            hist = json.load(open(hfn))
+        except Exception:
+            pass
+    stamp = ist.stamp()
+    today = datetime.date.fromisoformat(stamp[:10])
+    if a.date:
+        todo = [datetime.date.fromisoformat(a.date)]
+    else:
+        todo = [today] + [today - datetime.timedelta(days=i) for i in range(1, a.backfill_days + 1)
+                          if (today - datetime.timedelta(days=i)).isoformat() not in hist['days']]
+
+    today_out, failed = None, []
+    for day in todo:
+        is_today = (day == today and not a.date)
+        try:
+            rels = listing(None if is_today else day)
+        except Exception as e:
+            failed.append(day.isoformat())
+            print(f'govt: PIB unreachable for {day} ({str(e)[:130]}); that day stays UNREAD and is retried next run.')
+            continue
+        kept, unmapped, dropped, opened = process_day(rels, tm, themes, a)
+        ds = day.isoformat()
+        # a day is only marked read once the day is over; today is re-read by every run
+        hist['days'][ds] = dict(scanned=len(rels), kept=len(kept), unmapped=len(unmapped), opened=opened,
+                                read_at=stamp, final=day < today)
+        for r in kept + unmapped:
+            hist['releases'][r['prid']] = dict(r, date=ds, unmapped=r in unmapped)
+        print(f'govt {ds}: {len(rels)} releases scanned, {opened} opened in full, {len(kept)} kept, {len(unmapped)} big but unmapped  (dropped: {dropped})')
+        for r in unmapped:
+            print(f'  [UNMAPPED Rs {r["outlay_cr"] or 0:,.0f} cr] {r["title"][:90]}')
+        for r in kept:
+            amt = f'Rs {r["outlay_cr"]:,.0f} cr' if r['outlay_cr'] else ('mandate' if r['mandate'] else '-')
+            print(f'  [{amt}] {r["ministry"][:28]:28s} {r["title"][:80]}  themes {r["themes"]} ({r["why"]["theme_in"]})')
+        if is_today:
+            today_out = dict(built=stamp, source='Press Information Bureau, English releases (pib.gov.in/allRel.aspx)',
+                             gate=f'a decision verb in the title, a mapped sector, and either a procurement mandate or an outlay of at least Rs {a.min_cr:.0f} cr',
+                             scanned=len(rels), opened=opened, kept=len(kept), dropped=dropped, releases=kept,
+                             unmapped_releases=unmapped)
+    # a day with "final": false (today, read before it ended) is re-read by the next run's backfill
+    for d, v in list(hist['days'].items()):
+        if not v.get('final') and d < today.isoformat():
+            hist['days'].pop(d)
+    cut = (today - datetime.timedelta(days=a.keep_days)).isoformat()
+    hist['days'] = {d: v for d, v in sorted(hist['days'].items()) if d >= cut}
+    hist['releases'] = {k: v for k, v in sorted(hist['releases'].items(), key=lambda kv: (kv[1]['date'], kv[0])) if v['date'] >= cut}
+    hist.update(built=stamp, source='Press Information Bureau, English releases, one listing per day (allRel.aspx date picker)',
+                unread_days=failed, keep_days=a.keep_days)
+    json.dump(hist, open(hfn, 'w'), indent=1, ensure_ascii=False)
+    if today_out is not None:
+        json.dump(today_out, open(os.path.join(DOCS, 'govt.json'), 'w'), indent=1, ensure_ascii=False)
+    elif not a.date:
+        # PIB is blocked outright on some networks (2026-09-23/24). Leave govt.json exactly as it is -
+        # a stale file the page can detect beats a half-written one - and say so in the run log.
+        print('govt: today could not be read; docs/ideas/govt.json LEFT UNCHANGED. The government lane did NOT run for today.')
+    print(f'govt: history now {len(hist["days"])} days read, {len(hist["releases"])} releases kept; unread this run: {failed or "none"}')
 
 
 if __name__ == '__main__':

@@ -271,7 +271,8 @@
   <!-- ===== GOVERNMENT ===== -->
   <section id="view-govt" class="view" hidden>
     <div class="sechead"><h2 class="text-lg font-semibold">Government announcements worth acting on</h2><span id="govt-meta" class="muted text-xs"></span></div>
-    <p class="muted text-sm mb-3">Every press release the government put out today, filtered to decisions that carry a real outlay or a procurement mandate in a sector we can map to listed suppliers. Most days this is empty, and that is correct.</p>
+    <p class="muted text-sm mb-3">Every English press release PIB put out, day by day for the last 30 days, filtered to decisions that carry a real outlay or a procurement mandate. A day the job could not read is filled in on the next run. Stocks are attached only when the release's own title names a sector we have a filing-backed company list for.</p>
+    <div id="govt-days" class="muted text-xs mb-2"></div>
     <div id="govt-list" class="grid gap-3"></div>
   </section>
 
@@ -458,10 +459,11 @@
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [latest, ideas, track] = await Promise.all([grab('./ideas/latest.json'), grab('./ideas/ideas.json'), grab('./ideas/track.json')]);
   const relIdeas = (f) => './ideas/' + String(f).replace(/^(\.\/)?(docs\/)?ideas\//, '');
-  const [scan, run, govt, signals, queue, obHist] = await Promise.all([
+  const [scan, run, govt, signals, queue, obHist, govtHist] = await Promise.all([
     latest && latest.scan_file ? grab(relIdeas(latest.scan_file)) : null,
     latest && latest.run_file ? grab(relIdeas(latest.run_file)) : null,
-    grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json'), grab('./ideas/order_book_history.json')]);
+    grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json'), grab('./ideas/order_book_history.json'),
+    grab('./ideas/govt_history.json')]);
   const queueBy = {};
   ((queue && queue.ideas) || []).forEach(q => { queueBy[q.id] = q; });
   const trackBy = {};
@@ -986,7 +988,20 @@
     $('#govt-meta').textContent = `${govt.built} · ${fmt(govt.scanned, 0)} releases scanned, ${govt.kept} kept`;
     lanePut('#govt-list', latest && latest.govt_status, govt.built, 'The government lane');
     const gl = $('#govt-list');
-    const rows = (govt.releases || []).concat((govt.unmapped_releases || []).map(r => Object.assign({ unmapped: true, companies: [], small_caps: [], themes: [], theme_names: [], history: [] }, r)));
+    const norm = (r) => Object.assign({ companies: [], small_caps: [], themes: [], theme_names: [], history: [] }, r);
+    let rows = (govt.releases || []).map(r => Object.assign({ date: dayOf(govt.built) }, r)).concat((govt.unmapped_releases || []).map(r => Object.assign({ unmapped: true, date: dayOf(govt.built) }, r))).map(norm);
+    if (govtHist && govtHist.releases) {
+      // the history holds every day read (today included); newest day first, the biggest outlay first within a day
+      const cut = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+      rows = Object.values(govtHist.releases).filter(r => (r.date || '') >= cut).map(norm)
+        .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (!!a.unmapped - !!b.unmapped) || ((b.outlay_cr || 0) - (a.outlay_cr || 0)));
+      const days = Object.keys(govtHist.days || {}).filter(d => d >= cut).sort();
+      const unread = (govtHist.unread_days || []);
+      const gaps = [];
+      if (days.length) { for (let t = new Date(days[0] + 'T00:00:00Z'); t.toISOString().slice(0, 10) <= days[days.length - 1]; t = new Date(+t + 864e5)) { const d = t.toISOString().slice(0, 10); if (!govtHist.days[d]) gaps.push(d); } }
+      $('#govt-days').innerHTML = `${days.length} day(s) read, ${esc(days[0] || '')} to ${esc(days[days.length - 1] || '')} · ${fmt(days.reduce((n, d) => n + (govtHist.days[d].scanned || 0), 0), 0)} releases scanned` +
+        (gaps.concat(unread).length ? ` · <b>not read yet: ${gaps.concat(unread).map(esc).join(', ')}</b> (retried on the next run)` : ' · no day missing');
+    }
     if (!rows.length) {
       const d = govt.dropped || {};
       const tally = `Of ${fmt(govt.scanned, 0)} releases, ${d['no decision verb']} were not decisions, ${d.noise} were ceremonial and ${d['too small']} were below the size floor.`;
@@ -998,11 +1013,13 @@
       const el = document.createElement('div');
       el.className = 'card text-sm';
       const amt = r.outlay_cr ? `₹${fmt(r.outlay_cr, 0)} cr` : (r.mandate ? 'procurement mandate' : '');
+      const allCos = (r.companies || []);
       el.innerHTML = `<div class="flex flex-wrap justify-between gap-2"><b><a href="${esc(r.url)}" target="_blank" rel="noopener" class="hover:underline">${esc(r.title)}</a></b>${amt ? `<span class="pill">${esc(amt)}</span>` : ''}</div>
-        <div class="muted text-xs mt-1">${esc(r.ministry || '')}${(r.theme_names || []).length ? ' · ' + r.theme_names.map(esc).join(', ') : ''}</div>
-        ${r.unmapped ? '<div class="mt-1">Big enough to matter, but no beneficiary map exists for this sector yet. The run researches it and adds what it finds.</div>' : ''}
+        <div class="muted text-xs mt-1">${esc(r.date || '')}${r.date ? ' · ' : ''}${esc(r.ministry || '')}${(r.theme_names || []).length ? ' · ' + r.theme_names.map(esc).join(', ') : ''}</div>
+        ${r.unmapped ? `<div class="mt-1">Big enough to matter, but no filing-backed company list exists for this sector yet.${(r.body_mentions || []).length ? ` <span class="muted">The release body mentions ${r.body_mentions.map(esc).join(', ')}, a guess that is not used to attach stocks.</span>` : ''}</div>` : ''}
         ${(r.history || []).map(h => `<div class="muted text-xs mt-1">What this theme did before: ${esc(h)}</div>`).join('')}
-        ${(r.small_caps || []).length ? `<div class="mt-2"><span class="muted text-xs">Mapped names, ₹200-7,500 cr:</span><br>${r.small_caps.map(c => `<a class="pill" href="./stock.html?sym=${encodeURIComponent(c.symbol)}" title="${esc(c.name || '')} — won ${c.n_order_filings} order filing(s) under this programme">${esc(c.symbol)}</a>`).join('')}</div>` : ''}`;
+        ${(r.small_caps || []).length ? `<div class="mt-2"><span class="muted text-xs">Mapped names, ₹200-7,500 cr:</span><br>${r.small_caps.map(c => `<a class="pill" href="./stock.html?sym=${encodeURIComponent(c.symbol)}" title="${esc(c.name || '')} — won ${c.n_order_filings} order filing(s) under this programme">${esc(c.symbol)}</a>`).join('')}</div>` : ''}
+        ${allCos.length ? `<details class="mt-2"><summary class="text-xs cursor-pointer" style="color:var(--accent)">All ${allCos.length} mapped companies, with the filings behind each</summary><div class="mt-1 grid gap-1">${allCos.map(c => `<div class="text-xs"><a class="font-semibold hover:underline" href="./stock.html?sym=${encodeURIComponent(c.symbol)}">${esc(c.symbol)}</a> <span class="muted">${esc(c.name || '')}${c.mcap_cr ? ` · ₹${fmt(c.mcap_cr, 0)} cr` : ''}</span><div class="muted">${esc(c.why || '')}</div></div>`).join('')}</div></details>` : ''}`;
       gl.appendChild(el);
     });
   } else {
