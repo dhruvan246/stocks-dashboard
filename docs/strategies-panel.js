@@ -891,7 +891,10 @@ function heldFresh(it, sym){ const h = heldFor(it.cfg), T = rebalWindow().tIso; 
 function planNeed(it, cp, sym, px){
   const q = cp && cp.buyQ ? cp.buyQ[sym] : null; if (q == null) return null;
   const full = (px > 0 && cp.px[sym] > 0) ? Math.floor(q * cp.px[sym] / px) : q, mvL = xfIn(it.id, sym), mvIn = xfSum(mvL), got = Math.max(heldFresh(it, sym), obGot(it.id, sym));   // zba59: the book (reconciled) or today's order book, whichever knows more
-  return { full: full, mvIn: mvIn, mvFrom: mvL.map(x => xfNum(x.from)).join('+'), got: got, need: Math.max(0, full - mvIn - got) };
+  // zba60: the planned SHARE count reached (moved in + bought) = done, whatever today's price does to the rupee re-scale —
+  // a strategy that bought its whole basket must not show "Buy the rest" because a pick fell since the plan
+  const done = mvIn + got >= q;
+  return { full: full, mvIn: mvIn, mvFrom: mvL.map(x => xfNum(x.from)).join('+'), got: got, done: done, need: done ? 0 : Math.max(0, full - mvIn - got) };
 }
 const cpSellsStarted = () => zbSoldSet().size > 0;
 /* zba55: true only on the IST day the first sell basket went out — the freeze protects the slot size while baskets are in flight that day, not on the buy day after */
