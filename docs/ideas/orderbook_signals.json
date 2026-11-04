@@ -1,5 +1,5 @@
 {
- "built": "2026-11-04 19:57 IST",
+ "built": "2026-11-04 22:10 IST",
  "rule": "latest stated order book vs the one stated ~a year earlier (10-14 months before); readings come from the companies' own filings, each with its sentence and document",
  "rows": [
   {
@@ -677,7 +677,19 @@
    "yoy_pct": 129.2,
    "check": false,
    "alt_keys": [],
-   "isin": "INE00RL01028"
+   "isin": "INE00RL01028",
+   "verified": {
+    "latest_verdict": "CONFIRMED",
+    "latest_correct_value_cr": 1776.19,
+    "latest_as_on": "2026-10-31",
+    "year_ago_verdict": "CONFIRMED",
+    "year_ago_correct_value_cr": 775.0,
+    "year_ago_as_on": "2025-09-30",
+    "true_yoy_pct": 129.19,
+    "book_to_ttm_sales": null,
+    "notes": "Both quotes opened and read in this run and both are company-wide totals (the ₹775 cr splits as EPC ₹584 cr + Tollway ₹191 cr). book_to_ttm_sales is left null rather than estimated: BSE's detailed-results API was not read for this scrip in this run, so no trailing revenue figure was measured here. Caveats: the as-on dates are 13 months apart; the company's own filings give ₹778 cr and ₹1,133 cr for the same 30-Jun-2026 date in two documents three days apart; market value ₹519.83 cr, scrip in group T (trade-for-trade).",
+    "checked": "2026-11-04"
+   }
   },
   {
    "scrip": "543358",
@@ -1243,7 +1255,19 @@
    "alt_keys": [
     "NSE:ENGINERSIN"
    ],
-   "isin": "INE510A01028"
+   "isin": "INE510A01028",
+   "verified": {
+    "latest_verdict": "CORRECTED",
+    "latest_correct_value_cr": 20421.0,
+    "latest_as_on": "2026-09-30",
+    "year_ago_verdict": "CORRECTED",
+    "year_ago_correct_value_cr": 13131.0,
+    "year_ago_as_on": "2025-09-30",
+    "true_yoy_pct": 55.52,
+    "book_to_ttm_sales": null,
+    "notes": "Both of the screen's quotes were imprecise mid-call paraphrases; the management opening statements on the same two transcripts give ₹20,421 cr as on 30-Sep-2026 and ₹13,131 cr as on 30-Sep-2025, i.e. +55.52% rather than +53.8%. Management guides FY27 revenue of ‘around INR4,200 crores’, so the book is roughly 4.9x that; book_to_ttm_sales is left null because no trailing revenue was measured in this run. Outside the band at a ₹16,900.61 cr market value.",
+    "checked": "2026-11-04"
+   }
   },
   {
    "scrip": "543364",
@@ -2361,6 +2385,39 @@
    "check": false,
    "alt_keys": [],
    "isin": "INE0TY101024"
+  },
+  {
+   "scrip": "517544",
+   "name": "Centum Electronics Ltd",
+   "nse": "CENTUM",
+   "latest": {
+    "value_cr": 1950.0,
+    "as_on": null,
+    "quote": "YoY • PBT / PBT%: Q2 ₹307 Mn / 9.8%, +140 bps YoY, +230 bps QoQ | H1 ₹462 Mn / 8.9%, (90) bps YoY • PAT: Q2 ₹228 Mn +77% YoY, +69% QoQ | H1 ₹363 Mn +28% YoY • Order book as of Sep’26 ₹19.5 Bn +38% YoY Balance Sheet and Cash • Net Working Capital improves by 6 days to 136 days • Receivables – DSO improves by 9 days to 106, driven by the collection drive in Se",
+    "filed": "2026-11-04",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/CENTUME_04112026220009_EPIntimation41126.pdf",
+    "doc_title": "Investor Presentation Centum Electronics Limited has informed the Exchange about Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 1815.1,
+    "as_on": "2025-09-30",
+    "quote": "venue across business verticals (INR Mn) Consolidated Order Book across business verticals (INR Mn; %) 1,508 ; 8.31% 9,012 ; 49.65% 7,631 ; 42.04% ER&D BTS EMS Order Book as on 30th September 2025 Consolidated order book at INR 18,151 Mn 17 2,793 2,438 1,686 1,508 6,611 7,088 9,021 9,012 5,715 6,900 6,657 7,631 15,119 16,426 17,364 18,151 FY23 FY24 FY25 FY26",
+    "filed": "2025-11-17",
+    "as_on_basis": "stated",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e47a8571-0495-4c0d-9455-0b660d99620a.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": 7.4,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE320B01020"
   },
   {
    "scrip": "517569",
@@ -6101,26 +6158,6 @@
    "isin": "INE071D01033"
   },
   {
-   "scrip": "517544",
-   "name": "Centum Electronics Ltd",
-   "nse": "CENTUM",
-   "latest": {
-    "value_cr": 1800.0,
-    "as_on": null,
-    "quote": "nd outlook on a full year basis. During the quarter, stand-alone revenue grew 11% year-on-year to INR205 crores, while we closed the quarter with a stand-alone order book of approximately INR1,800 crores, representing a robust 31% year-on-year growth and providing strong visibility for future growth. One of the most significant developments during the quarte",
-    "filed": "2026-08-18",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-06-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/de867b88-9779-46c4-a997-9d412f6523a1.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-    "n_same": 1,
-    "n_near": 2
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE320B01020"
-  },
-  {
    "scrip": "544822",
    "name": "Laser Power & Infra Ltd",
    "nse": "LASERPOWER",
@@ -9841,21 +9878,23 @@
   {
    "scrip": "544238",
    "name": "Premier Energies Ltd",
-   "nse": null,
+   "nse": "PREMIERENE",
    "latest": {
-    "value_cr": 15000.0,
+    "value_cr": 340.0,
     "as_on": null,
-    "quote": "tilization of 92%, showcasing our all-round excellence in plant operations. We won new orders totalling INR3,011 crores for cells and modules, taking our total order book to INR15,000 crores, including transformers. The overall business outlook for solar sector continues to be positive and encouraging. Power demand this year has been exceptionally strong. Pr",
-    "filed": "2026-08-13",
+    "quote": "creditations and certifications • Bagged first EHV order • Approved vendor status with an international major opening up a long-term growth opportunity • Total order book of INR 3.4 Bn including Neotrafo • 30% of Neotrafo orders from export market • 60% of order book with pass through of material costs 19 Business Updates Transcon – Neotrafo commissioning un",
+    "filed": "2026-11-04",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-06-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bc24eef5-4beb-4df6-bab4-9147155d8067.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/PEL2024_04112026200307_Investor_Presentation_Signed.pdf",
+    "doc_title": "Investor Presentation Premier Energies Limited has informed the Exchange about Investor Presentation",
     "n_same": 1,
     "n_near": 1
    },
    "year_ago": null,
-   "alt_keys": [],
+   "alt_keys": [
+    "NSE:PREMIERENE"
+   ],
    "isin": "INE0BS701011"
   },
   {
@@ -9965,14 +10004,14 @@
    "name": "Rites Ltd",
    "nse": "RITES",
    "latest": {
-    "value_cr": 120.0,
-    "as_on": "2026-09-30",
-    "quote": "30.09.2026 Order Book (as on 30.09.2026) ₹ 9,388 Crore Consultancy ₹2,707 Crore Exports ₹1,815 Crore Lease ₹235 Crore Turnkey ₹4,511 Crore REMC Ltd ₹ 120 Crore Order Book as on 30.09.2026 Projects Secured Spilt (New & extensions*) (During Q2FY27) Export NIL 20 2026 RITES Ltd. All rights reserved Major Projects Secured – Q2FY27 ₹ in Crore Secured 130+ project",
+    "value_cr": 9388.0,
+    "as_on": "2026-11-04",
+    "quote": "r 11, 2026. Order Book The company has secured more than 130 orders (including extension of works) worth more than ₹446 crore in Q2FY27, thereby maintaining an order book of ₹9388 crore as on September 30th, 2026. Outlook On the growth prospects, Mr. Mithal said, “The visibility of fresh orders as well as the planned execution of the current order book makes",
     "filed": "2026-11-04",
-    "as_on_basis": "stated",
-    "as_on_eff": "2026-09-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/RITES_04112026182225_IntimationSigned.pdf",
-    "doc_title": "Investor Presentation RITES Limited has informed the Exchange about Investor Presentation",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2026-11-04",
+    "doc": "https://nsearchives.nseindia.com/corporate/RITES_04112026214619_IntimationSigned.pdf",
+    "doc_title": "Press Release RITES Limited has informed the Exchange regarding a press release dated November 04, 2026, titled \"RITES Q2FY27 Revenue &#8377;583 cr; PAT &#8377;",
     "n_same": 1,
     "n_near": 1
    },
