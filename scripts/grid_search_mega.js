@@ -66,7 +66,7 @@
   // Basket variant — the Phases Lab ships one grid per basket shape (runbook §7.4).
   //   TOPN   basket size the grid itself searches over (default 5)
   //   METHOD 'reset' = sell all + rebuy monthly | 'hold' = ride winners (exits replaced, winners kept)
-  //   UNIVERSE 'Nifty 500' (default), 'Nifty 50', or '__FNO__' for the F&O universe
+  //   UNIVERSE 'Nifty 500' (default), 'Nifty 50', 'Nifty 100', 'Nifty Next 50', or '__FNO__' for the F&O universe
   // VTAG keeps each variant's CSV/cache/top artifacts separate; the default variant keeps the
   // legacy un-suffixed names so old artifacts stay readable.
   const TOPN = +(process.env.TOPN || 5);
@@ -84,15 +84,15 @@
     throw new Error('TOPN must be an integer 1-50, got ' + JSON.stringify(process.env.TOPN));
   if (METHOD !== 'reset' && METHOD !== 'hold')
     throw new Error('METHOD must be reset|hold, got ' + JSON.stringify(METHOD));
-  if (UNIVERSE !== '__FNO__' && !/^Nifty \d+$/.test(UNIVERSE))
-    throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>", got ' + JSON.stringify(UNIVERSE));
+  if (UNIVERSE !== '__FNO__' && !/^Nifty (Next )?\d+$/.test(UNIVERSE))
+    throw new Error('UNIVERSE must be __FNO__ or "Nifty <n>" / "Nifty Next <n>", got ' + JSON.stringify(UNIVERSE));
   if (EARN_BASIS !== 'con' && EARN_BASIS !== 'std' && EARN_BASIS !== 'conOnly')
     throw new Error('EARN_BASIS must be con|std|conOnly, got ' + JSON.stringify(process.env.EARN_BASIS));
-  if (UNIVERSE !== '__FNO__' && UNIVERSE !== 'Nifty 500' && UNIVERSE !== 'Nifty 50' && UNIVERSE !== 'Nifty 100')
-    throw new Error('UNIVERSE: only Nifty 500 / Nifty 100 / Nifty 50 / __FNO__ have their own artifact names, got ' + JSON.stringify(UNIVERSE));
+  if (UNIVERSE !== '__FNO__' && UNIVERSE !== 'Nifty 500' && UNIVERSE !== 'Nifty 50' && UNIVERSE !== 'Nifty 100' && UNIVERSE !== 'Nifty Next 50')
+    throw new Error('UNIVERSE: only Nifty 500 / Nifty 100 / Nifty 50 / Nifty Next 50 / __FNO__ have their own artifact names, got ' + JSON.stringify(UNIVERSE));
   // Universe prefix: '' for Nifty 500, 'fno_' for F&O, 'n50_' for Nifty 50 — every universe needs its
   // own, or a Nifty 50 run would overwrite the Nifty 500 CSV/marker of the same basket shape.
-  const UPRE = UNIVERSE === '__FNO__' ? 'fno_' : UNIVERSE === 'Nifty 50' ? 'n50_' : UNIVERSE === 'Nifty 100' ? 'n100_' : '';
+  const UPRE = UNIVERSE === '__FNO__' ? 'fno_' : UNIVERSE === 'Nifty 50' ? 'n50_' : UNIVERSE === 'Nifty 100' ? 'n100_' : UNIVERSE === 'Nifty Next 50' ? 'nn50_' : '';
   const VTAG = (TOPN === 5 && METHOD === 'reset' && UNIVERSE === 'Nifty 500') ? ''
              : '_' + UPRE + (METHOD === 'hold' ? 'h' : 'r') + TOPN;
   // Artifact naming. The basis is part of the TAG (2026-08-27): the two bases sweep the SAME
@@ -114,8 +114,10 @@
   const OOS2 = schedule('2021-06-30', '2024-06-30');   // mid-cycle, excludes crash-bottom AND latest year
   const yearsOf = (s, e) => (Date.parse(e) - Date.parse(s)) / (365.25 * 864e5);
   // Benchmark = the universe's own index: Nifty 50 for the Nifty 50 grid, Nifty 500 otherwise.
-  // Nifty 100 has no index file of its own in docs/ — gridmega_fetch_live.py stages nifty100_live.json.
-  const BENCHPX = UNIVERSE === 'Nifty 50' ? NIFTY : UNIVERSE === 'Nifty 100' ? Jf(LIVE('nifty100_live.json')).px : NIFTY500;
+  // Nifty 100 / Nifty Next 50 have no index file of their own in docs/ — gridmega_fetch_live.py stages
+  // nifty100_live.json and nifty_next50_live.json.
+  const BENCHPX = UNIVERSE === 'Nifty 50' ? NIFTY : UNIVERSE === 'Nifty 100' ? Jf(LIVE('nifty100_live.json')).px
+                : UNIVERSE === 'Nifty Next 50' ? Jf(LIVE('nifty_next50_live.json')).px : NIFTY500;
   const benchCagrOf = (s, e) => { const a = nearestIdx(BENCHPX, s), b = nearestIdx(BENCHPX, e);
     return (a && b) ? (Math.pow(b / a, 1 / yearsOf(s, e)) - 1) * 100 : null; };
 
@@ -127,7 +129,7 @@
   // and per-BASIS: every profit* factor and resultAge comes out of factorsAt already carrying
   // cfg.earnBasis, so a 'std' run must never read a 'con' cache (or vice versa).
   // topN/method never reach factorsAt, so all basket sizes share one cache file.
-  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : UNIVERSE === 'Nifty 50' ? '_n50' : UNIVERSE === 'Nifty 100' ? '_n100' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
+  const UTAG = (UNIVERSE === 'Nifty 500' ? '' : UNIVERSE === 'Nifty 50' ? '_n50' : UNIVERSE === 'Nifty 100' ? '_n100' : UNIVERSE === 'Nifty Next 50' ? '_nn50' : '_fno') + (EARN_BASIS === 'con' ? '' : '_' + EARN_BASIS);
   const CACHE_FILE = path.join(ROOT, 'scripts', '_gridmega_cache_' + START + '_' + END + UTAG + '.json.gz');
   let CACHE = new Map();
   if (fs.existsSync(CACHE_FILE)) {

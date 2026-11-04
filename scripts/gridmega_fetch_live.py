@@ -108,6 +108,18 @@ def main():
         json.dump({"src": "yahoo ^CNX100", "px": px}, f)
     print("  nifty100_live.json  %d days %s..%s" % (len(px), min(px), max(px)), flush=True)
 
+    # ---- Nifty Next 50 benchmark: no daily file on the site either — Yahoo ^NSMIDCP (= NIFTY NEXT 50,
+    # daily from 2007-09-17), cut at the sf end exactly like ^CNX100 above.
+    print("fetching ^NSMIDCP (Nifty Next 50 benchmark)…", flush=True)
+    yj = json.loads(get("https://query1.finance.yahoo.com/v8/finance/chart/%%5ENSMIDCP?period1=1041379200&period2=%d&interval=1d" % time.time()))
+    yr = yj["chart"]["result"][0]
+    px = {time.strftime("%Y-%m-%d", time.gmtime(t + 19800)): round(c, 2)
+          for t, c in zip(yr["timestamp"], yr["indicators"]["quote"][0]["close"]) if c}
+    px = {d: v for d, v in px.items() if d <= full["end"]}
+    with open(os.path.join(OUT, "nifty_next50_live.json"), "w") as f:
+        json.dump({"src": "yahoo ^NSMIDCP", "px": px}, f)
+    print("  nifty_next50_live.json  %d days %s..%s" % (len(px), min(px), max(px)), flush=True)
+
     print("\n_live/ staged. sf end = %s" % full["end"])
 
 

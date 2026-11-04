@@ -75,7 +75,10 @@
   </p>
 
   <!-- phone (2026-10-13): the view cards and the window cards each scroll on one line (theme.css .sw-strip) -->
-  <div class="flex flex-wrap items-center gap-2 mt-3 sw-strip" id="vpills">
+  <div class="flex flex-wrap items-center gap-2 mt-3 sw-strip" id="upills">
+    <span style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Universe</span>
+  </div>
+  <div class="flex flex-wrap items-center gap-2 mt-2 sw-strip" id="vpills">
     <span style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Rank across</span>
   </div>
 
@@ -100,15 +103,25 @@
 </main>
 <script>
 (async function(){
-  const R = await (await fetch('./bull_runs.json',{cache:'no-cache'})).json();
+  // One grid file per universe (2026-11-04: Nifty Next 50 added). The Nifty 500 file is required; any
+  // other universe whose file is missing or broken simply gets no switch pill.
+  const UNIS = [['n500','Nifty 500','./bull_runs.json'],['nn50','Nifty Next 50','./bull_runs_nn50.json']];
+  const RS = {};
+  RS.n500 = await (await fetch(UNIS[0][2],{cache:'no-cache'})).json();
+  for (const [k,,u] of UNIS.slice(1)) {
+    try { const r = await fetch(u,{cache:'no-cache'}); if (r.ok) { const j = await r.json(); if (j && j.views) RS[k] = j; } }
+    catch(e){ console.warn(k+' grid unavailable', e); }
+  }
+  let UNI = 'n500', R = RS.n500;
   // The saved-strategy views live in their own file so a grid rebuild of bull_runs.json can never
   // drop them. Missing or broken → the two extra pills simply do not render.
   let SV = null;
   try { const r = await fetch('./bull_runs_saved.json',{cache:'no-cache'});
         if (r.ok) { const j = await r.json(); if (j && j.views && j.n) SV = j; } }
   catch(e){ console.warn('saved-strategy views unavailable', e); }
-  if (SV) Object.keys(SV.views).forEach(k => R.views[k] = SV.views[k]);
-  const isSaved = k => !!(SV && SV.views[k]);
+  // saved strategies keep their own universes, so their cards ride with the Nifty 500 grid only
+  if (SV) Object.keys(SV.views).forEach(k => RS.n500.views[k] = SV.views[k]);
+  const isSaved = k => !!(SV && SV.views[k] && UNI === 'n500');
   const POOL = () => isSaved(VIEW) ? SV.n : R.pool;
   const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const nf = n => n.toLocaleString('en-IN');
@@ -116,24 +129,35 @@
   const BL = {std:'STD',con:'CON',any:'—'};
   const BT = {std:'Standalone earnings (parent only)',con:'Consolidated earnings (group)',
               any:'Reads no earnings factor — identical under either basis'};
-  document.getElementById('nTested').textContent = nf(R.totalCombos);
-  document.getElementById('builtAt').textContent = 'Built ' + R.built + ' · data to ' + R.dataEnd + '.';
-  document.getElementById('basketChip').textContent = R.basket;
-  if (SV) document.getElementById('savedIntro').innerHTML =
-    'The last two cards drop the grid entirely and put <b>your own ' + SV.n +
-    ' saved strategies</b> through the same five windows.';
-
+  function paintIntro(){
+    document.getElementById('nTested').textContent = nf(R.totalCombos);
+    document.getElementById('builtAt').textContent = 'Built ' + R.built + ' · data to ' + R.dataEnd + '.';
+    document.getElementById('basketChip').textContent = R.basket;
+    document.getElementById('savedIntro').innerHTML = (SV && UNI === 'n500') ?
+      'The last two cards drop the grid entirely and put <b>your own ' + SV.n +
+      ' saved strategies</b> through the same five windows.' : '';
+  }
+  const BENCH = () => R.benchName ? R.benchName.replace(/\b(\w)(\w*)/g,(m,a,b)=>a+b.toLowerCase()) : 'index';   // 'NIFTY NEXT 50' → 'Nifty Next 50'
 
   let VIEW='all4';
   const V = () => R.views[VIEW];
   const med = a => { const b=a.slice().sort((x,y)=>x-y); return b[b.length>>1]; };
+  const ord = n => { const t=n%100, u=n%10; return nf(n)+((t>=11&&t<=13)?'th':u===1?'st':u===2?'nd':u===3?'rd':'th'); };
 
   const pill = k => '<button class="vcard" data-v="'+k+'"><div class="n">'+esc(R.views[k].label)+
     '</div><div class="m">worst placing across '+R.views[k].keys.length+'</div></button>';
   const grpLabel = t => '<span class="grp">'+esc(t)+'</span>';
-  document.getElementById('vpills').insertAdjacentHTML('beforeend',
-    Object.keys(R.views).filter(k=>!isSaved(k)).map(pill).join('') +
-    (SV ? grpLabel('Our '+SV.n+' saved') + Object.keys(SV.views).map(pill).join('') : ''));
+  document.getElementById('upills').insertAdjacentHTML('beforeend', UNIS.filter(([k])=>RS[k]).map(([k,l])=>
+    '<button class="vcard" data-u="'+k+'"><div class="n">'+esc(l)+'</div><div class="m">'+
+    nf(RS[k].pool)+' candidates</div></button>').join(''));
+  function paintPills(){
+    const vp=document.getElementById('vpills');
+    vp.querySelectorAll('.vcard,.grp').forEach(e=>e.remove());
+    vp.insertAdjacentHTML('beforeend',
+      Object.keys(R.views).filter(k=>!(SV && SV.views[k])).map(pill).join('') +
+      (SV && UNI==='n500' ? grpLabel('Our '+SV.n+' saved') + Object.keys(SV.views).map(pill).join('') : ''));
+    document.querySelectorAll('#upills .vcard').forEach(b=>b.classList.toggle('on',b.dataset.u===UNI));
+  }
 
   function paintHead(){
     // Leg cards dim when the active view does not rank on them — the reader must be able to see
@@ -143,10 +167,10 @@
       Object.keys(R.legMeta).map(k=>{const l=R.legMeta[k];
         return '<div class="pcard'+(keys.includes(k)?'':' dim')+'"><div class="t">'+esc(l.label)+'</div>'+
         '<div class="v pos">+'+l.bench.toFixed(1)+'%</div>'+
-        '<div class="s">index · '+l.months+' months<br>'+l.s+' → '+l.e+'</div></div>';}).join('') +
+        '<div class="s">'+esc(BENCH())+' · '+l.months+' months<br>'+l.s+' → '+l.e+'</div></div>';}).join('') +
       '<div class="pcard live"><div class="t">'+esc(R.cur.label)+' · live</div>'+
         '<div class="v pos">+'+R.cur.bench.toFixed(1)+'%</div>'+
-        '<div class="s">index · in progress · '+R.cur.months+' months<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
+        '<div class="s">'+esc(BENCH())+' · in progress · '+R.cur.months+' months<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
     document.querySelectorAll('#vpills .vcard').forEach(b=>b.classList.toggle('on',b.dataset.v===VIEW));
 
     const rows=V().rows, curs=rows.map(r=>r.cur), N=POOL();
@@ -169,14 +193,19 @@
     } else {
       document.getElementById('n1').innerHTML =
         '<b>Ranked on '+(keys.length===4?'all four':'the latest two')+' bull runs.</b> Out of '+nf(N)+
-        ' candidates the most consistent still fell to <b>'+nf(rows[0].worst)+'th</b> in its weakest of the '+
-        keys.length+' — top '+(100*rows[0].worst/N).toFixed(2)+'%. Cut-off at row 1,000: '+nf(rows[999].worst)+'th.'+
+        ' candidates the most consistent still fell to <b>'+ord(rows[0].worst)+'</b> in its weakest of the '+
+        keys.length+' — top '+(100*rows[0].worst/N).toFixed(2)+'%. Cut-off at row 1,000: '+ord(rows[999].worst)+'.'+
         (keys.length===4 ? ' <b>Nothing was elite in all four.</b>'
                          : ' Demanding only two is a far easier test — which is exactly why it flatters.');
       document.getElementById('n2').innerHTML =
-        '<b>How this set is doing in the live run.</b> Median <b>'+pct(med(curs))+'</b> against an index of +'+
+        '<b>How this set is doing in the live run.</b> Median <b>'+pct(med(curs))+'</b> against the '+esc(BENCH())+' at +'+
         R.cur.bench.toFixed(1)+'%, with '+nf(curs.filter(v=>v>R.cur.bench).length)+' of 1,000 beating it.'+
-        (keys.length===2 ? ' Note that is <i>worse</i> than the four-run set — fitting to two recent regimes generalises less well.'
+        // measured per universe, never assumed: the two-run set lost to the four-run set on the Nifty 500
+        // but BEAT it on the Nifty Next 50 (2026-11-04), so the sentence must follow the numbers
+        (keys.length===2 && R.views.all4 ? (()=>{ const m2=med(curs), m4=med(R.views.all4.rows.map(r=>r.cur));
+          return m2<m4 ? ' Note that is <i>worse</i> than the four-run set ('+pct(m4)+') — fitting to two recent regimes generalised less well here.'
+               : m2>m4 ? ' That is <i>better</i> than the four-run set ('+pct(m4)+') so far in this run.'
+               : ' That matches the four-run set ('+pct(m4)+').'; })()
                          : '');
     }
   }
@@ -219,6 +248,7 @@
     document.getElementById('basketChip').textContent = SVW ? 'mixed baskets · your saved list' : R.basket;
     document.getElementById('foot').textContent =
       'All five periods are measured off the NIFTY 500 daily series with a 13% reversal filter, not calendar years: the four completed legs run trough→peak, and the live leg runs from its measured trough ('+R.cur.s+') to the latest data. '+
+      (UNI!=='n500' ? 'This grid picks only from the point-in-time '+esc(R.universe)+' (the members on each rebalance date), over those same five market-wide windows; the index figures on the cards are the '+esc(BENCH())+' itself. ' : '')+
       (SVW
         ? 'These two views hold your saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. '+
           (SV.stored>SV.n ? SV.stored+' are saved but '+SV.n+' are distinct rules: '+(SV.stored-SV.n)+' is the same rule saved twice, collapsed here the same way the Saved Strategies page collapses it. ' : '')+
@@ -226,6 +256,12 @@
         : 'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own top-1,000 search of the full pool — not a filter of the other. Excluded from the search: '+R.excluded.join(' and ')+'.')+
       ' Baskets are equal-weight, rebalanced monthly, survivorship-free.';
   }
+  document.getElementById('upills').addEventListener('click',e=>{
+    const b=e.target.closest('.vcard'); if(!b||b.dataset.u===UNI) return;
+    UNI=b.dataset.u; R=RS[UNI]; VIEW='all4';
+    Object.values(R.views).forEach(v=>v.rows.forEach((r,i)=>r.i=i+1));
+    paintIntro(); paintPills(); paintHead(); render();
+  });
   document.getElementById('vpills').addEventListener('click',e=>{
     const b=e.target.closest('.vcard'); if(!b) return;
     VIEW=b.dataset.v; V().rows.forEach((r,i)=>r.i=i+1); paintHead(); render();
@@ -237,7 +273,7 @@
   });
   document.getElementById('q').addEventListener('input',e=>{ needle=e.target.value.trim().toLowerCase(); render(); });
   Object.values(R.views).forEach(v=>v.rows.forEach((r,i)=>r.i=i+1));
-  paintHead(); render();
+  paintIntro(); paintPills(); paintHead(); render();
 })();
 </script>
 </body>

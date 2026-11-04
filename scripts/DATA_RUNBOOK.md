@@ -1000,6 +1000,34 @@ NaN` false → EVERY basket empty → 4.44M combos "succeeded" in 12 s with NaN 
 `env VAR=x VAR2=y node …` with literal assignments, or `env "$@"`. `grid_search_mega.js` now validates
 TOPN/METHOD/UNIVERSE and aborts loudly, which is what turned the first one from silent into visible.
 
+
+### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_saved.json`)
+Same grid as §7.4, scored over the four MEASURED bull legs (NIFTY 500 daily close, 13% reversal filter:
+2013-08-28→2015-03-03, 2016-02-25→2018-08-31, 2020-03-23→2021-10-18, 2022-06-20→2024-09-26) plus the live
+leg from its trough (2026-03-30) to the data end. Basket top-3 · hold, both earnings bases, one grid per
+universe — **Nifty 500** and **Nifty Next 50** (added 2026-11-04, user request; point-in-time
+`indicesHistory['Nifty Next 50']`, benchmark Yahoo `^NSMIDCP` staged as `_live/nifty_next50_live.json`,
+vtag `_nn50_h3`, cache suffix `_nn50`). The Next 50 grid uses the SAME five market-wide windows so the two
+universes compare like for like; only the index on the cards differs.
+```
+python3 scripts/gridmega_fetch_live.py                 # ONE staging; purge _gridmega_cache_* if re-staging
+python3 scripts/bullruns_grid_run.py --jobs 4          # 16 jobs, ~30 min on the M5 (Next 50 ~2.5 min each)
+GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 500"
+GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty Next 50"
+node --max-old-space-size=8192 scripts/bullruns_saved.js && node scripts/bullruns_saved_build.js   # set CUR.e first
+```
+- **Pool rule** (reproduces the 2026-08-28 pool of 5,439,680 exactly): a combo that reads a FUND field (sort or
+  filter) is two candidates (std, con); any other is ONE ('any', from the std grid — the build REQUIRES its std and
+  con CAGR to agree in every leg, which proves the grids line up row for row); indRank/composite barred as sort or
+  filter. 41 sorts since Sep-2026 (accel3m, promPct, promChgPp, mfPct, mfChgPp added) → 5,057,350 combos/basis,
+  pool 6,188,610.
+- **Rank** = competition rank on the grid CAGR per leg; view score = worst placing; top 1,000 re-scored EXACTLY
+  with SELECT_FILE in all five windows (SELECT descriptor + CAGR must match the grid row or the build aborts).
+- **Live column only** (no grid re-run): `scripts/bullruns_cur_refresh.js [--write]` — re-measures the live leg
+  first (stops if a 13% fall ended it) and re-simulates the 2×1,000 rows' `cur` to the latest bar.
+- Disk: ~1 GB of CSVs + caches. 2026-11-04 the Data volume was at 226 MB free and the first worktree checkout
+  failed mid-way (`No space left on device`) — check `df -h` before starting.
+
 ---
 
 ## 8. F&O MEMBERSHIP (survivorship-free; POINT-IN-TIME labels)  ★ extended to 2001 + de-normalized 2026-08-12 ★
