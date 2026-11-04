@@ -223,8 +223,11 @@ function factorMap(it){
   FACT_CACHE[it.id] = { stamp: stamp, m: m }; return m;
 }
 function screenOne(it){
-  const all = screenAsOf(it.cfg, SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
-  PICKS[it.id] = { asOf: SF.end, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
+  /* zba56: inside the rebalance window the buy leg trusts the T-close screen. The nightly bake moves SF.end past T (4 Nov: data
+     as of 3 Nov, 30 Oct's screen gone — "Waiting for the 30 Oct close"), so screen T itself while the window is open. */
+  const RW = rebalWindow(), d = (RW.in && SF.end > RW.tIso) ? RW.tIso : SF.end;
+  const all = screenAsOf(it.cfg, d), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
+  PICKS[it.id] = { asOf: d, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
     px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price, fv: pickFV(r, cols) })) };
 }
 /* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
