@@ -1,7 +1,7 @@
 {
- "built": "2026-11-04 22:55 IST",
+ "built": "2026-11-05 00:25 IST",
  "where": "GitHub Actions (ideas-feeds.yml)",
- "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/41866555734",
+ "run_url": "https://github.com/dhruvan246/stocks-dashboard/actions/runs/41879721694",
  "hosts": {
   "https://www.pib.gov.in/allRel.aspx?reg=3&lang=1": 200,
   "https://api.bseindia.com/BseIndiaAPI/api/ComHeadernew/w?quotetype=EQ&scripcode=500002&seriesid=": 200,
@@ -24,6 +24,7 @@
  "steps": {
   "govt": 0,
   "govt_sources": 0,
+  "govt_x": 0,
   "spot": 0,
   "minsteel": 0,
   "india_spot": 0,
@@ -66,20 +67,12 @@
  ],
  "note": "A step that exited non-zero left its file exactly as it was (every builder keeps-previous, runbook 144e). A host not in hosts_ok is the reason its builder changed nothing.",
  "landing": {
-  "base": "564fefb04",
-  "onto": "5a37e1785",
-  "moved_on_origin": [
-   "docs/ideas/govt_sources.json",
-   "docs/ideas/govt_x.json"
-  ],
-  "landed": 23,
+  "base": "c13173ee5",
+  "onto": "6a6e0f0da",
+  "moved_on_origin": [],
+  "landed": 24,
   "identical": 0,
-  "refused": [
-   {
-    "file": "docs/ideas/govt_sources.json",
-    "why": "origin changed it during the run: e51125c dhruvan246: Daily Ideas govt lane: rule changes also from DGTR, DEA, Coal, Petroleum and 5 ministry sites (Defence, Power, MNRE, Mei"
-   }
-  ],
+  "refused": [],
   "rebuilt": []
  }
 }
