@@ -279,6 +279,11 @@
     <div id="gsrc-status" class="muted text-xs mb-2"></div>
     <div id="gsrc-list" class="grid gap-2"></div>
     <details class="mt-2"><summary id="gsrc-rest-sum" class="text-xs cursor-pointer" style="color:var(--accent)">Everything else read</summary><div id="gsrc-rest" class="mt-1 grid gap-1"></div></details>
+    <div class="sechead mt-6"><h3 class="text-base font-semibold">Decisions posted on X by government accounts</h3><span id="gx-meta" class="muted text-xs"></span></div>
+    <p class="muted text-sm mb-2">The PM, ministers and ministries on X, read through FxTwitter (an unofficial mirror, because x.com refuses readers without a login). A post is kept only when it reads like a decision with an outlay, a mandate, or a hard verb (approved, sanctioned, allocated) next to a sector. Posts never attach stocks. Each one is matched to the PIB list above; <b>a post with no match is shown first</b>, because that is news the PIB reader did not catch.</p>
+    <div id="gx-list" class="grid gap-2"></div>
+    <details class="mt-2"><summary id="gx-matched-sum" class="text-xs cursor-pointer" style="color:var(--accent)">Posts that match a PIB release</summary><div id="gx-matched" class="mt-1 grid gap-1"></div></details>
+    <div id="gx-accounts" class="muted text-xs mt-2"></div>
   </section>
 
   <!-- ===== COMMODITIES ===== -->
@@ -464,11 +469,11 @@
   const grab = (u) => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   const [latest, ideas, track] = await Promise.all([grab('./ideas/latest.json'), grab('./ideas/ideas.json'), grab('./ideas/track.json')]);
   const relIdeas = (f) => './ideas/' + String(f).replace(/^(\.\/)?(docs\/)?ideas\//, '');
-  const [scan, run, govt, signals, queue, obHist, govtHist, govtSrc] = await Promise.all([
+  const [scan, run, govt, signals, queue, obHist, govtHist, govtSrc, govtX] = await Promise.all([
     latest && latest.scan_file ? grab(relIdeas(latest.scan_file)) : null,
     latest && latest.run_file ? grab(relIdeas(latest.run_file)) : null,
     grab('./ideas/govt.json'), grab('./ideas/signals.json'), grab('./ideas/updates_queue.json'), grab('./ideas/order_book_history.json'),
-    grab('./ideas/govt_history.json'), grab('./ideas/govt_sources.json')]);
+    grab('./ideas/govt_history.json'), grab('./ideas/govt_sources.json'), grab('./ideas/govt_x.json')]);
   const queueBy = {};
   ((queue && queue.ideas) || []).forEach(q => { queueBy[q.id] = q; });
   const trackBy = {};
@@ -1061,6 +1066,35 @@
       (v.length > 150 ? `<div class="muted text-xs">… ${v.length - 150} more on <a href="${esc(pg(k))}" target="_blank" rel="noopener">the site</a></div>` : '')).join('');
   } else {
     $('#gsrc-list').innerHTML = '<div class="card muted text-sm">govt_sources.json not published yet.</div>';
+  }
+
+  // ---- government X accounts -----------------------------------------------------------
+  if (govtX && govtX.posts) {
+    const cut = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+    const posts = Object.values(govtX.posts).filter(p => (p.date || '') >= cut);
+    const lone = posts.filter(p => !p.pib), matched = posts.filter(p => p.pib);
+    const acc = Object.entries(govtX.accounts || {});
+    const bad = acc.filter(([, v]) => !v.ok);
+    $('#gx-meta').textContent = `${govtX.built} · ${posts.length} decision posts in 30 days, ${lone.length} not in the PIB list`;
+    const snip = (t) => esc(String(t || '').replace(/\s+/g, ' ').slice(0, 280)) + (String(t || '').length > 280 ? '…' : '');
+    const gl = $('#gx-list');
+    if (!lone.length) gl.innerHTML = '<div class="card muted text-sm">Every decision posted on X in the last 30 days is also in the PIB list above.</div>';
+    lone.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'card text-sm';
+      el.innerHTML = `<div class="flex flex-wrap justify-between gap-2"><span><span class="pill">@${esc(p.handle)}</span> <span class="muted">${esc(p.date)}</span></span>${p.amount_cr ? `<span class="pill">${esc(p.amount_text)}</span>` : ''}</div>
+        <div class="mt-1"><a class="hover:underline" href="${esc(p.url)}" target="_blank" rel="noopener">${snip(p.text)}</a></div>
+        <div class="muted text-xs mt-1">Not in the PIB list · kept for “${esc(p.verb)}”${p.mandate ? ` and “${esc(p.mandate)}”` : ''}${(p.mentions || []).length ? ` · mentions ${p.mentions.map(esc).join(', ')} (not used to attach stocks)` : ''}</div>`;
+      gl.appendChild(el);
+    });
+    const byPib = {};
+    matched.forEach(p => { const k = p.pib.url || p.pib.title; (byPib[k] = byPib[k] || { pib: p.pib, posts: [] }).posts.push(p); });
+    const groups = Object.values(byPib).sort((a, b) => (b.pib.date || '').localeCompare(a.pib.date || ''));
+    $('#gx-matched-sum').textContent = `Posts that match a PIB release (${matched.length} posts on ${groups.length} releases)`;
+    $('#gx-matched').innerHTML = groups.map(g => `<div class="text-xs mt-1"><a class="font-semibold hover:underline" href="${esc(g.pib.url)}" target="_blank" rel="noopener">${esc(g.pib.title)}</a> <span class="muted">${esc(g.pib.date || '')}</span><div>${g.posts.map(p => `<a class="pill" href="${esc(p.url)}" target="_blank" rel="noopener" title="${esc(p.date)} · matched by ${esc(p.pib.how)}">@${esc(p.handle)}</a>`).join('')}</div></div>`).join('');
+    $('#gx-accounts').innerHTML = `${acc.length} accounts read${bad.length ? ` · <b>not read this run: ${bad.map(([h, v]) => `@${esc(h)}${v.last_ok ? ` (last read ${esc(v.last_ok)})` : ''}`).join(', ')}</b>` : ', all read this run'} · source ${esc(govtX.source || '')}`;
+  } else {
+    $('#gx-list').innerHTML = '<div class="card muted text-sm">govt_x.json not published yet.</div>';
   }
 
   // ---- commodity signals ------------------------------------------------------------------
