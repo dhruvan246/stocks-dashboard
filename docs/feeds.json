@@ -1018,6 +1018,18 @@
    "pages": [
     "data-checks.html"
    ]
+  },
+  {
+   "file": "fno_up3.json",
+   "name": "F&O stocks up >3% each day (since 2020, daily F&O list)",
+   "workflow": "refresh-fno-up3.yml",
+   "cadence": "weekdays 19:00 IST",
+   "max_age_hours": 96,
+   "min_bytes": 200000,
+   "min_ratio": 0.9,
+   "pages": [
+    "fno-up3.html"
+   ]
   }
  ],
  "special": [

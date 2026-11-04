@@ -29393,3 +29393,41 @@ packets). Tools and per-wave log: `~/stocks-cache/kpi-dc/` (`STATE.txt`, `cappre
 PERSISTENT TTM TCV/ACV rows) — ask whether to drop; bracketed negatives "(12.3)" are rejected by ingest — ask whether to accept;
 KTKBANK Dec-18 PCR basis and JSWENERGY Barmer/Vijayanagar Mar-19/Mar-20 quarterly PLF basis (f5d43797 p24) UNKNOWN; the
 doc-title rule (point 1) was added after waves 0–7, so their "(doc period)" cells are not yet re-swept.
+
+## §235 — F&O stocks up more than 3%: one count per trading day since 2020, on that day's own F&O list (2026-11-04, user: "i want this dashboard wit charts of how many stocks up more than 3 % in fno segment under admin tab . those older dates check should be point in time survivorsip free")
+
+**What ships.** `docs/fno-up3.html` (owner-only, Admin menu "F&O Up 3%+") reads `docs/fno_up3.json`: per trading day
+since 2020-01-01 the F&O list size (`nMem`), members with a close (`nObs`), members up > 3% (`up`) and their names
+with % (`list`). Built by `scripts/build_fno_up3.py`; kept current by `.github/workflows/refresh-fno-up3.yml`
+(dispatch-cron 19:00 IST weekdays + 09:00 IST next morning, §217). The page draws its own SVG charts (daily bars +
+20-day average with Count / % toggle and ranges, day picker with the stock list, monthly average, how-often histogram,
+year table, busiest days).
+
+**Rules (each measured 2026-11-04).**
+- **Day move = NSE CM bhavcopy CLOSE / PREVCLOSE − 1**, series EQ/BE/BZ, strictly > 3%. NSE's PREVCLOSE is adjusted on
+  a split/bonus ex-date. The moves > 20% since 2020 were listed and include known events (YESBANK Mar-2020,
+  INDUSINDBK 26-Mar-2020, ZEEL Sep-2021, OFSS 18-Jan-2024, ADANIGREEN 29-Nov-2024); they were NOT each checked
+  against a news source or a corporate-action list.
+- **F&O list = THAT DAY's NSE F&O bhavcopy** (every stock with stock futures/options trading, ticker as traded then),
+  stored as `scripts/fno_daily_roster.json` = base list + 74 add/drop events 2020-01-01 → 2026-11-03; every one of the
+  1,699 daily lists replays exactly from it. **Not the monthly `fno_history.json` snapshots (§8):** checked against
+  the daily files they were off by 1–10 stocks on 13 of 60 sampled days (NSE adds names at a new expiry cycle and drops
+  them after the last expiry, mid-month), and the file had no snapshot after 2026-10-01 (30-Oct NSE list 218 vs the
+  file's 213). Switching to daily lists changed the count on 54 of 1,699 days, by at most 7.
+- **Survivorship-free by construction:** a name is counted on every day NSE listed F&O contracts for it, including
+  names since merged or delisted (HDFC, IDFC, MINDTREE, …), and under its traded-then ticker (LTI, ZOMATO, TATAMOTORS…).
+  A roster name whose CM bar is under a new ticker is matched by its last-seen ISIN (state in `isin`). On the daily
+  lists 0 member-days lack a price (`noPx` empty).
+- **2021-03-30:** NSE serves no F&O bhavcopy for that day (both archive URLs 404); the list came from
+  `archives/fo/mkt/fo30032021.zip` → `fo30032021.csv` FUTSTK rows (156 names, identical to 26-Mar and 31-Mar).
+- **Holidays:** 2020-11-16, 2021-11-05, 2024-01-22 and 2024-05-20 sit in `~/stocks-cache/nse_bhav/trading_dates.json`
+  but NSE has no CM file for them (404; a control day fetched 200). Weekend special sessions (budget Saturdays,
+  muhurat, the 2024 DR drills) are real sessions and are counted.
+- **CI is incremental:** a day whose CM file is out but whose FO file is not stops the run (no guessed list); the
+  next slot continues. Verified by truncating to 2026-10-29 and re-running from NSE: the 3 re-fetched days and the
+  roster came out byte-equal to the backfill.
+
+**Backfill / full rebuild:** `BHAV_CACHE=~/stocks-cache/nse_bhav/full FULL=1 python3 -X utf8 scripts/build_fno_up3.py`
+(CM files from the local cache, which a launchd job `com.dhruvan.nse-bhav-update` now tops up daily via
+`~/stocks-cache/nse_bhav/update_full.py`; the cache had stopped at 2026-09-24). The roster file must already cover the
+range — it is never rebuilt from monthly snapshots.

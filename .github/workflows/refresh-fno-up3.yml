@@ -1,0 +1,88 @@
+# F&O stocks up more than 3% — one count per trading day (docs/fno_up3.json, owner-only page fno-up3.html).
+# Appends every trading day after the last one in the file from NSE's CM + FO bhavcopies; the F&O list is
+# that day's own (scripts/fno_daily_roster.json). Most runs add one day; a run before NSE publishes is a no-op.
+name: Refresh F&O up-3% counts
+
+on:
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron,
+  # which runs 4-7 h late in this repo (runbook §217). UTC, standard cron syntax.
+  # dispatch-cron: "30 13 * * 1-5"  # 19:00 IST weekdays — NSE's CM + FO bhavcopies are out by then
+  # dispatch-cron: "30 3 * * 2-6"   # 09:00 IST next morning — catches a late file or a missed slot
+  repository_dispatch:
+    types: [tick-refresh-fno-up3]   # sent by scripts/cron_dispatch.py
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/build_fno_up3.py"
+      - ".github/workflows/refresh-fno-up3.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a change
+
+concurrency:
+  group: refresh-fno-up3
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Append new trading days
+        run: python3 -X utf8 scripts/build_fno_up3.py
+
+      - name: Guard — refuse to commit a broken or shrunken feed
+        run: python3 scripts/guard_feed.py
+
+      - name: Commit (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # The count file and its roster are one read: they land together or not at all (ci_land default group).
+          BASE=$(git rev-parse HEAD)
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/fno_up3.json scripts/fno_daily_roster.json
+          cp scripts/ci_land.py /tmp/ci_land.py
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
+            git add docs/fno_up3.json scripts/fno_daily_roster.json
+            if git diff --cached --quiet; then
+              echo "F&O up-3% counts unchanged — nothing to commit"
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git commit -m "F&O up-3% counts $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')" -m "$(cat /tmp/land/landing.txt)"
+            if git push origin HEAD:main; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Push attempt #$attempt rejected; resetting and retrying"
+            sleep $(( attempt * 3 ))
+          done
+          echo "Failed to push after 5 attempts"
+          exit 1
+
+      # A GITHUB_TOKEN commit can't trigger pages.yml, so publish explicitly. Retried, never fails the run
+      # (the data is already pushed; the next push or ci-janitor publishes it anyway).
+      - name: Publish to Pages (only when changed)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3; do
+            gh workflow run pages.yml && exit 0
+            echo "::warning::pages dispatch attempt $i failed (GitHub-side); retrying in 15s"
+            sleep 15
+          done
+          echo "::warning::pages dispatch failed 3x — payload is committed; next push or ci-janitor publishes it"
