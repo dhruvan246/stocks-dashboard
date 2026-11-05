@@ -1,5 +1,5 @@
 {
- "built": "2026-11-04 21:40 IST",
+ "built": "2026-11-05 20:15 IST",
  "how": "each figure checked against the filing it came from (both the latest and the year-ago document opened); true_yoy_pct compares like with like ~12 months apart",
  "rows": [
   {
@@ -722,14 +722,14 @@
    "year_ago_correct_value_cr": 775.0,
    "year_ago_as_on": "2025-09-30",
    "true_yoy_pct": 129.19,
-   "book_to_ttm_sales": null,
+   "book_to_ttm_sales": 2.24,
    "script_yoy_pct": 129.2,
-   "notes": "Both quotes opened and read in this run and both are company-wide totals (the ₹775 cr splits as EPC ₹584 cr + Tollway ₹191 cr). book_to_ttm_sales is left null rather than estimated: BSE's detailed-results API was not read for this scrip in this run, so no trailing revenue figure was measured here. Caveats: the as-on dates are 13 months apart; the company's own filings give ₹778 cr and ₹1,133 cr for the same 30-Jun-2026 date in two documents three days apart; market value ₹519.83 cr, scrip in group T (trade-for-trade).",
+   "notes": "Both quotes opened and read in this run and both are company-wide totals (the ₹775 cr splits as EPC ₹584 cr + Tollway ₹191 cr). book_to_ttm_sales is left null rather than estimated: BSE's detailed-results API was not read for this scrip in this run, so no trailing revenue figure was measured here. Caveats: the as-on dates are 13 months apart; the company's own filings give ₹778 cr and ₹1,133 cr for the same 30-Jun-2026 date in two documents three days apart; market value ₹519.83 cr, scrip in group T (trade-for-trade). RE-CHECKED 2026-11-05 for the order-book-lane card published today: both documents were opened again in this run. The 4-Nov-2026 press release states 'the Company's total order book stands at Rs 1,776.19 crore as on October 31, 2026'; the Q2 FY26 transcript states 'Our order book stands at Rs.775 crores as of September 2025, up by 46% in H1 FY26 ... EPC contributes Rs. 584 crores and Tollway Rs. 191 crores' and, separately, 'our order book has scaled from Rs. 225 crores in March 2023 to Rs. 775 crores as of September 2025'. book_to_ttm_sales is now measured, not null: BSE's detailed-results API was read in this run and gives standalone revenue from operations FY26 Rs 600.39 cr, Q1 FY26 Rs 113.60 cr and Q1 FY27 Rs 302.11 cr (the Q1 FY27 deck states Rs 303.3 cr), so trailing-year revenue is about Rs 791.7 cr and 1,776.19/791.7 = 2.24x. The earlier note's Rs 1,133 cr 'for 30-Jun-2026' is corrected here: the Q4/FY26 deck states that figure 'As on Mar 26', not June, so the inconsistency is smaller than recorded - what remains is Rs 778 cr (21-Aug-2026 transcript) against Rs 789 cr (12-Aug-2026 press release headline) for 30-Jun-2026.",
    "docs": [
     "https://nsearchives.nseindia.com/corporate/HIGHWAY123_04112026092156_HIL_PR_04112026.pdf",
     "https://www.bseindia.com/xml-data/corpfiling/AttachLive/615d2db6-52d6-4631-b687-893093b8e193.pdf"
    ],
-   "checked": "2026-11-04"
+   "checked": "2026-11-05"
   },
   {
    "key": "532178",
