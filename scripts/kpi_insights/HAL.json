@@ -141,6 +141,27 @@
    "title": "Q2 FY22 results conference call presentation",
    "read": "2026-10-15",
    "by": "claude-session"
+  },
+  "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf": {
+   "kind": "res",
+   "date": "2024-02-12",
+   "title": "Audited Financial Results (Standalone & Consolidated) For The Quarter And Period Ended 31.12.2023",
+   "read": "2026-11-06",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "5876245d-6b64-4b28-989d-6e494c105561.pdf": {
+   "kind": "res",
+   "date": "2024-05-16",
+   "title": "Audited Financial Results For The FY 2023-24",
+   "read": "2026-11-06",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "65604635-8982-4c01-b0c6-86323082bd76.pdf": {
+   "kind": "res",
+   "date": "2024-08-14",
+   "title": "Audited Financial Results For The Quarter Ended 30.06.2024",
+   "read": "2026-11-06",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -532,6 +553,45 @@
    }
   },
   {
+   "name": "Reduction of salaries and wages due to pay revision",
+   "unit": "Lakhs",
+   "kind": "flow",
+   "y": {
+    "20230331": 5155.0,
+    "20240331": 5573.0
+   },
+   "q": {
+    "20230331": 1406.0,
+    "20240331": 1446.0
+   },
+   "src": {
+    "q:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "reduction of salaries and wages for the quarter ended 31st Mar 2024 by",
+     "1446"
+    ],
+    "y:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "reduction of salaries and wages for the... year ended 31st Mar 2024 by",
+     "5573"
+    ],
+    "q:20230331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "quarter ended 31 March 2023 by",
+     "1406"
+    ],
+    "y:20230331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "year ended 31 March 2023 by",
+     "5155"
+    ]
+   }
+  },
+  {
    "name": "Aircraft/Helicopters Overhauled",
    "unit": "Nos",
    "kind": "flow",
@@ -552,6 +612,54 @@
      4,
      "Aircraft / Helicopters overhauled",
      "201"
+    ]
+   }
+  },
+  {
+   "name": "Amount withheld from retired employees",
+   "unit": "lakhs",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 3026.0,
+    "20240331": 4445.0
+   },
+   "src": {
+    "q:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "amount withheld from employees who retired after 30th June 2021 is kept under ot",
+     "4445"
+    ],
+    "q:20230331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "Previous year: (doc period)",
+     "3026"
+    ]
+   }
+  },
+  {
+   "name": "Claims receivable from employees (Gross)",
+   "unit": "lakhs",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 29645.0,
+    "20240331": 35218.0
+   },
+   "src": {
+    "q:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "excess amount is shown under claims receivable (Gross) for (doc period)",
+     "35218"
+    ],
+    "q:20230331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     19,
+     "Previous year 31-03-2023:",
+     "29645"
     ]
    }
   },
@@ -652,6 +760,30 @@
    }
   },
   {
+   "name": "Number of Divisions",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20231231": 29.0,
+    "20240331": 29.0
+   },
+   "src": {
+    "q:20231231": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     16,
+     "audited Financial Results and financial information of Divisions (doc period)",
+     "29"
+    ],
+    "q:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     23,
+     "Divisions of the Company (doc period)",
+     "29"
+    ]
+   }
+  },
+  {
    "name": "Order Book",
    "unit": "₹ Lakh",
    "kind": "level",
@@ -672,6 +804,122 @@
      44,
      "Order Book Position",
      "1,89,30,200"
+    ]
+   }
+  },
+  {
+   "name": "Reduction of salaries and wages due to pay revision",
+   "unit": "lakh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20221231": 1325.0,
+    "20231231": 1588.0
+   },
+   "src": {
+    "q:20231231": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     5,
+     "reduction of salaries and wages",
+     "1588"
+    ],
+    "q:20221231": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     5,
+     "reduction of salaries and wages",
+     "1325"
+    ]
+   }
+  },
+  {
+   "name": "Unbilled Revenues (BAeHAL Software Limited)",
+   "unit": "Lakhs",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 461.28,
+    "20231231": 366.76
+   },
+   "src": {
+    "q:20231231": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     21,
+     "Unbilled Revenues",
+     "366.76"
+    ],
+    "q:20230331": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     21,
+     "Unbilled Revenues",
+     "461.28"
+    ]
+   }
+  },
+  {
+   "name": "Additional liability for Pension contribution",
+   "unit": "lakh",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20231231": 789.0
+   },
+   "src": {
+    "q:20231231": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     5,
+     "additional liability accruing to the Company due to the increased ceiling",
+     "789"
+    ]
+   }
+  },
+  {
+   "name": "Additional liability for Pension contribution",
+   "unit": "lakhs",
+   "kind": "flow",
+   "y": {
+    "20240331": 3513.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     20,
+     "additional liability accruing to the company due to the increased ceiling... (Rs",
+     "3513"
+    ]
+   }
+  },
+  {
+   "name": "Claims receivable from employees (Gross)",
+   "unit": "lakh",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 29645.0
+   },
+   "src": {
+    "q:20230331": [
+     "49a4cddb-82f3-4e88-a64a-180b03f628ac.pdf",
+     5,
+     "claims recoverable (Gross)",
+     "29645"
+    ]
+   }
+  },
+  {
+   "name": "LCA Division Inventory Loss",
+   "unit": "lakhs",
+   "kind": "flow",
+   "y": {
+    "20240331": 6591.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "5876245d-6b64-4b28-989d-6e494c105561.pdf",
+     20,
+     "actual loss has been re-assessed as",
+     "6591"
     ]
    }
   }
@@ -1087,5 +1335,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-11-06"
 }

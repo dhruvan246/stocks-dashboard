@@ -176,6 +176,20 @@
    "title": "Press release",
    "read": "2026-10-15",
    "by": "claude-session"
+  },
+  "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf": {
+   "kind": "res",
+   "date": "2024-10-17",
+   "title": "Results For The Quarter And Half Year Ended September 30, 2024",
+   "read": "2026-11-06",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "be117204-77cf-451d-ab0a-ffe5e2d053e9.pdf": {
+   "kind": "res",
+   "date": "2023-10-13",
+   "title": "Report Of Auditors On Financial Statements For The Quarter Ended September 30, 2023 With UDIN",
+   "read": "2026-11-06",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -1380,7 +1394,10 @@
     "20250331": 54.0,
     "20260331": 54.0
    },
-   "q": {},
+   "q": {
+    "20230930": 53.0,
+    "20240930": 54.0
+   },
    "src": {
     "y:20260331": [
      "19dd605c-2b6b-4084-8dca-9d578a3eb7a0.pdf",
@@ -1397,6 +1414,18 @@
     "y:20240331": [
      "4527f4d2-dac4-4528-a1dc-5070fd9e140d.pdf",
      323,
+     "percentage of revenue from fixed-price contracts",
+     "53"
+    ],
+    "q:20240930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     76,
+     "percentage of revenue from fixed-price contracts",
+     "54"
+    ],
+    "q:20230930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     76,
      "percentage of revenue from fixed-price contracts",
      "53"
     ]
@@ -1434,6 +1463,54 @@
    }
   },
   {
+   "name": "Equity Shares Outstanding (Consolidated)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 4139950635.0,
+    "20240930": 4141909556.0
+   },
+   "src": {
+    "q:20240930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     184,
+     "As at the end of the period",
+     "414,19,09,556"
+    ],
+    "q:20240331": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     184,
+     "As at the end of the period",
+     "413,99,50,635"
+    ]
+   }
+  },
+  {
+   "name": "Equity Shares Outstanding (Standalone)",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 4150867464.0,
+    "20240930": 4152146817.0
+   },
+   "src": {
+    "q:20240930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     148,
+     "As at the end of the period",
+     "415,21,46,817"
+    ],
+    "q:20240331": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     148,
+     "As at the end of the period",
+     "4,15,08,67,464"
+    ]
+   }
+  },
+  {
    "name": "Patents (granted / pending)",
    "unit": "count",
    "kind": "level",
@@ -1454,6 +1531,30 @@
      26,
      "Patents (granted / pending) (doc period)",
      "823"
+    ]
+   }
+  },
+  {
+   "name": "Shares earmarked for welfare activities",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20240331": 200000.0,
+    "20240930": 200000.0
+   },
+   "src": {
+    "q:20240930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     184,
+     "earmarked for welfare activities of the employees",
+     "200,000"
+    ],
+    "q:20240331": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     184,
+     "earmarked for welfare activities of the employees",
+     "200,000"
     ]
    }
   },
@@ -1591,6 +1692,23 @@
    }
   },
   {
+   "name": "Shares issued on exercise of employee stock options (Consolidated)",
+   "unit": "count",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20240930": 1958921.0
+   },
+   "src": {
+    "q:20240930": [
+     "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+     184,
+     "Shares issued on exercise of employee stock options",
+     "19,58,921"
+    ]
+   }
+  },
+  {
    "name": "Total Available Space",
    "unit": "sq ft Mn",
    "kind": "level",
@@ -1608,7 +1726,19 @@
    }
   }
  ],
- "held": [],
+ "held": [
+  {
+   "doc": "a79f8511-fbee-457b-99a8-aaf468780c1a.pdf",
+   "metric": "Shares issued on exercise of employee stock options (Consolidated)",
+   "unit": "count",
+   "period": "As at March 31, 2024",
+   "value": 3562710.0,
+   "as_printed": "35,62,710",
+   "page": 184,
+   "label": "Shares issued on exercise of employee stock options",
+   "why": "period_type FY but the label reads as a quarter: 'As at March 31, 2024'"
+  }
+ ],
  "catalog": [
   {
    "kind": "res",
@@ -2010,5 +2140,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-08",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-11-06"
 }
