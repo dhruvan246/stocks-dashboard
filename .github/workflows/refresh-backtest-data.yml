@@ -13,6 +13,9 @@ on:
     # (SF.end), so this is a no-op when the evening run succeeded.
     # moved to the dispatcher (scripts/cron_dispatch.py):
     # dispatch-cron: "25 3 * * 2-6"
+    # Weekend/holiday trading sessions (scripts/special_sessions.json): the 15:15 weekday cron never fires on a
+    # Sunday, so the dispatcher starts the evening run on those dates only (runbook §236).
+    # dispatch-cron[special-session]: "15 15 * * *"
   # Optional external trigger (cron-job.org), SEPARATE event type from the
   # stock/MF/FII jobs: POST /repos/dhruvan246/stocks-dashboard/dispatches
   # with {"event_type":"backtest-data-refresh"}

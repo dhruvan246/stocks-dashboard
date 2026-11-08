@@ -13,6 +13,7 @@ import json, os, sys, re, datetime, argparse, http.cookiejar, urllib.request, ti
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE); sys.path.append(os.path.join(HERE, '..'))
 import bse, bse_names, ist
+import special_sessions   # weekend trading sessions (Diwali Muhurat …) are read like weekdays
 
 DOCS = os.path.join(HERE, '..', '..', 'docs', 'ideas')
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
@@ -254,7 +255,7 @@ def second_reader(ideas, days, problems):
     today = ist.today()
     for k in range(days):
         day = today - datetime.timedelta(days=k)
-        if day.weekday() >= 5: continue
+        if day.weekday() >= 5 and day not in special_sessions.DATES: continue
         for ix in ('equities', 'sme'):
             for r in _rows(f'https://www.nseindia.com/api/corporate-announcements?index={ix}&from_date={day:%d-%m-%Y}&to_date={day:%d-%m-%Y}', problems, f'daily announcements {day} {ix}'):
                 iid = by_isin.get(str(r.get('sm_isin') or '').upper()) or by_sym.get(str(r.get('symbol') or '').upper()) or by_name.get(norm(r.get('sm_name')))

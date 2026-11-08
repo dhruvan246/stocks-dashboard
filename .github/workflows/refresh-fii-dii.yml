@@ -10,8 +10,11 @@ on:
   # stock ("scheduled-refresh") and MF ("mf-refresh") jobs so all three are
   # independent. POST /repos/dhruvan246/stocks-dashboard/dispatches with
   #   {"event_type":"fii-dii-refresh"}
+  # Weekend/holiday trading sessions (Diwali Muhurat …, scripts/special_sessions.json): the weekday trigger above
+  # never fires on a Sunday, so the dispatcher starts this run on those dates only (runbook §236).
+  # dispatch-cron[special-session]: "45 14 * * *"
   repository_dispatch:
-    types: [fii-dii-refresh]
+    types: [fii-dii-refresh, tick-refresh-fii-dii]
   workflow_dispatch: {}
 
 permissions:

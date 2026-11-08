@@ -22,6 +22,7 @@ Usage:
   python3 fetch_fo_bhavcopy.py --recent 7              # last N calendar days (CI)
 """
 import csv, datetime as dt, gzip, io, json, os, random, sys, time, urllib.request, zipfile
+import special_sessions   # weekend trading sessions (Diwali Muhurat …) are fetched like weekdays
 
 INDICES = {"NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY"}
 CACHE_DIR = os.environ.get("FO_CACHE", os.path.expanduser("~/stocks-wt/fo_raw_cache"))
@@ -126,7 +127,7 @@ def main():
     d = start
     while d <= end:
         iso = d.isoformat()
-        if d.weekday() >= 5 or (d > OLD_LAST and d < UDIFF_FIRST):
+        if (d.weekday() >= 5 and d not in special_sessions.DATES) or (d > OLD_LAST and d < UDIFF_FIRST):
             d += dt.timedelta(days=1); continue
         if iso in log["nofile"]:                      # known holiday - skip quietly
             d += dt.timedelta(days=1); continue

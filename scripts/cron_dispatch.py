@@ -26,6 +26,15 @@ docs/results_feed.json + docs/results_calendar.json + the quarter calendar (all 
 tick, so the whole cadence moves with the season and nobody edits crons by hand. If season_state fails, the IN-season
 slots are used — an idle run is cheaper than a missed result. `--list` prints the active slots for the current state.
 
+SPECIAL SESSIONS (Diwali Muhurat, budget weekends). scripts/special_sessions.json lists weekend/holiday IST dates on
+which the exchanges really trade. On such a date (IST date of the slot) every slot whose day-of-week list covers all of
+Mon-Fri ("1-5", "1-6", "*" ...) also fires, and lines tagged
+
+    # dispatch-cron[special-session]: "15 15 * * *"
+
+apply ONLY on those dates — that is how workflows whose everyday trigger lives outside this dispatcher (GitHub cron /
+cron-job.org: refresh.yml, refresh-fii-dii ...) get their evening run on a Sunday session without a second weekday run.
+
 Usage: python3 scripts/cron_dispatch.py [--dry-run] [--now 2026-09-29T03:42:00Z]
 Needs GITHUB_TOKEN (actions: read, contents: write — repository_dispatch) and GITHUB_REPOSITORY.
 """
@@ -41,7 +50,22 @@ import urllib.request
 
 WINDOW_MIN = 180   # a slot older than this is skipped, not run hours late
 GRACE_MIN = 2      # leave a just-passed slot to any external trigger aimed at the same minute
-CRON_RE = re.compile(r'^\s*#\s*dispatch-cron(?:\[(in-season|off-season)\])?:\s*"([^"]+)"', re.M)
+CRON_RE = re.compile(r'^\s*#\s*dispatch-cron(?:\[(in-season|off-season|special-session)\])?:\s*"([^"]+)"', re.M)
+IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
+WEEKDAYS = {1, 2, 3, 4, 5}
+
+
+def special_sessions():
+    """{date: label} of weekend/holiday trading sessions (scripts/special_sessions.json); {} if unreadable."""
+    try:
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'special_sessions.json')
+        return {dt.date.fromisoformat(k): v for k, v in json.load(open(p, encoding='utf-8'))['sessions'].items()}
+    except Exception as e:
+        print('::warning::special_sessions.json unreadable (%s) — no special sessions this tick' % e)
+        return {}
+
+
+SPECIAL = special_sessions()
 
 
 # ---- minimal 5-field cron matcher (numbers, *, ranges, lists, steps; DOM/DOW OR-ed like POSIX cron) ----
@@ -65,8 +89,9 @@ def _field(spec, lo, hi):
 
 
 class Cron:
-    def __init__(self, expr):
+    def __init__(self, expr, special_only=False):
         f = expr.split()
+        self.special_only = special_only
         if len(f) != 5:
             raise ValueError('bad cron: %r' % expr)
         self.expr = expr
@@ -78,7 +103,12 @@ class Cron:
     def match(self, t):
         if t.minute not in self.mi or t.hour not in self.h or t.month not in self.mon:
             return False
+        special = (t.replace(tzinfo=dt.timezone.utc) if t.tzinfo is None else t).astimezone(IST).date() in SPECIAL
+        if self.special_only and not special:
+            return False
         dom_ok, dow_ok = t.day in self.dom, (t.isoweekday() % 7) in self.dow
+        if special and WEEKDAYS <= self.dow:
+            dow_ok = True   # a weekday-only slot runs on a weekend/holiday trading session too
         if self.dom_star or self.dow_star:
             return dom_ok and dow_ok
         return dom_ok or dow_ok
@@ -119,13 +149,14 @@ def recent_runs(repo, since):
 
 
 def load_schedules(state='in'):
-    """{workflow: [Cron]} — untagged slots always; `[in-season]` / `[off-season]` slots only in that state."""
+    """{workflow: [Cron]} — untagged slots always; `[in-season]` / `[off-season]` slots only in that state;
+    `[special-session]` slots only on a special_sessions.json date (checked per slot in Cron.match)."""
     out = {}
     for f in sorted(glob.glob('.github/workflows/*.yml')):
-        crons = [c for tag, c in CRON_RE.findall(open(f, encoding='utf-8').read())
-                 if not tag or tag == state + '-season']
+        crons = [Cron(c, tag == 'special-session') for tag, c in CRON_RE.findall(open(f, encoding='utf-8').read())
+                 if not tag or tag == state + '-season' or tag == 'special-session']
         if crons:
-            out[f] = [Cron(c) for c in crons]
+            out[f] = crons
     return out
 
 
@@ -153,6 +184,8 @@ def main():
     repo = os.environ.get('GITHUB_REPOSITORY', 'dhruvan246/stocks-dashboard')
     state, season_line = season(now)
     print('%s UTC: season %s' % (now.strftime('%Y-%m-%d %H:%M'), season_line))
+    if now.astimezone(IST).date() in SPECIAL:
+        print('special session today (IST): %s — weekday-only and [special-session] slots are live' % SPECIAL[now.astimezone(IST).date()])
     sched = load_schedules(state)
     if a.list:
         for f, crons in sched.items():

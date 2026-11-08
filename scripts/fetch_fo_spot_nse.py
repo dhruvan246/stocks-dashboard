@@ -8,6 +8,7 @@ Resumable: skips dates already in scripts/fo_spot_nse.json. 404 = holiday.
 Usage: python3 fetch_fo_spot_nse.py 2016-01-01 2024-07-05
 """
 import csv, datetime as dt, io, json, os, random, sys, time, urllib.request
+import special_sessions   # weekend trading sessions (Diwali Muhurat …) are fetched like weekdays
 
 NAMES = {"Nifty 50": "NIFTY", "Nifty Bank": "BANKNIFTY",
          "Nifty Financial Services": "FINNIFTY", "Nifty Midcap Select": "MIDCPNIFTY"}
@@ -21,7 +22,7 @@ def main():
     d = start; new = 0
     while d <= end:
         iso = d.isoformat()
-        if d.weekday() >= 5 or iso in hol or any(iso in data.get(s, {}) for s in ("NIFTY",)):
+        if (d.weekday() >= 5 and d not in special_sessions.DATES) or iso in hol or any(iso in data.get(s, {}) for s in ("NIFTY",)):
             d += dt.timedelta(days=1); continue
         url = f"https://nsearchives.nseindia.com/content/indices/ind_close_all_{d:%d%m%Y}.csv"
         req = urllib.request.Request(url, headers={"User-Agent": UA})

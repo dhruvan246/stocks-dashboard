@@ -26,6 +26,7 @@ OUTPUT
 import os, sys, io, csv, json, time, datetime, hashlib, urllib.request
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import nse_sme_emerge_prs as N
+import special_sessions   # weekend trading sessions (Diwali Muhurat …) are probed like weekdays
 
 ROOT = os.path.dirname(HERE)
 OUT_LEVEL = os.path.join(ROOT, "docs", "nifty_sme_emerge.json")
@@ -236,7 +237,7 @@ def fetch_releases(days=30):
     new = 0
     for i in range(days):
         d = today - datetime.timedelta(days=i)
-        if d.weekday() >= 5:
+        if d.weekday() >= 5 and d not in special_sessions.DATES:
             continue
         for suf in ("", "_1", "_2", "_3", "_4"):
             stem = "ind_prs%s%s" % (d.strftime("%d%m%Y"), suf)

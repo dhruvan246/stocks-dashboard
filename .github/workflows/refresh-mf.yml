@@ -11,8 +11,11 @@ on:
   #   {"event_type":"mf-refresh"}
   # This is a SEPARATE event type from the stock dashboard's "scheduled-refresh"
   # so the two dashboards refresh independently on their own schedules.
+  # Weekend/holiday trading sessions (Diwali Muhurat …, scripts/special_sessions.json): the weekday trigger above
+  # never fires on a Sunday, so the dispatcher starts this run on those dates only (runbook §236).
+  # dispatch-cron[special-session]: "30 16 * * *"
   repository_dispatch:
-    types: [mf-refresh]
+    types: [mf-refresh, tick-refresh-mf]
   workflow_dispatch: {}
 
 permissions:

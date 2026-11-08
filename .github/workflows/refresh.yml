@@ -13,8 +13,13 @@ on:
   # with header `Authorization: Bearer <PAT>` and body
   # `{"event_type":"scheduled-refresh"}` — guaranteed delivery, no GitHub-cron
   # luck involved.
+  # Weekend/holiday trading sessions (Diwali Muhurat …, scripts/special_sessions.json): the weekday trigger above
+  # never fires on a Sunday, so the dispatcher starts this run on those dates only (runbook §236).
+  # dispatch-cron[special-session]: "30 10 * * *"
+  # dispatch-cron[special-session]: "0 11 * * *"
+  # dispatch-cron[special-session]: "30 11 * * *"
   repository_dispatch:
-    types: [scheduled-refresh]
+    types: [scheduled-refresh, tick-refresh]
   workflow_dispatch: {}
 
 permissions:
