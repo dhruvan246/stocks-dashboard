@@ -41,6 +41,7 @@ OUT = os.path.join(ROOT, "docs", "fno_up3.json")
 START = dt.date(2020, 1, 1)
 THRESH = 3.0
 SERIES = ("EQ", "BE", "BZ")
+import special_sessions   # weekend trading sessions (Diwali Muhurat …) — runbook §236
 CACHE = os.path.expanduser(os.environ.get("BHAV_CACHE", ""))
 URL = "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_{}_F_0000.csv.zip"
 FO_URL = "https://nsearchives.nseindia.com/content/fo/BhavCopy_NSE_FO_0_0_0_{}_F_0000.csv.zip"
@@ -132,7 +133,7 @@ def main():
     today = dt.date.today()
     added = []
     while day <= today:
-        if day.weekday() < 5 or CACHE:          # NSE holds the odd Saturday/Sunday session (budget, muhurat)
+        if day.weekday() < 5 or CACHE or day in special_sessions.DATES:   # NSE holds the odd Saturday/Sunday session (budget, muhurat; §236)
             txt = fetch(day)
             if txt:
                 iso, d8s = day.isoformat(), day.strftime("%Y%m%d")
