@@ -1,5 +1,5 @@
 {
- "built": "2026-11-09 04:37 IST",
+ "built": "2026-11-09 19:50 IST",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1312,6 +1312,35 @@
    "trigger_yoy_pct": 103.8,
    "verdict": "CORRECTED",
    "note": "SCREEN TOOK THE WATERFALL'S OPENING BALANCE AS THE CLOSING ONE. The 26-Oct-2025 deck's slide is headed 'Order Book Status as of 30 September 2025' and runs opening 1-Jul-2025 Rs 754.56 cr + Q2 FY26 new orders Rs 94.05 cr - Q2 FY26 executions Rs 173.57 cr = closing 30-Sep-2025 Rs 675.04 cr. The signals row used the Rs 754.56 cr OPENING figure and dated it 30-Sep-2025. On the correct closing figure the jump is +103.8%, not +82.3%, and it still clears the bar. Definitions match: the year-ago figure is consolidated (its footnote says it includes Rs 190.53 cr relating to subsidiary companies) and the latest is stated as 'the consolidated order book'. Earlier quarters were NOT tested: the ledger's consolidated points are Sep-25 675.04, Dec-25 1,082.76 (deck 31-Jan-2026), Mar-26 1,336.04 (decks 03-May-2026 and 26-Jul-2026) and Sep-26 1,375.7, with no Dec-2024 or Mar-2025 figure to pair against, so 05-Nov-2026 is the earliest PROVEN trigger and may move earlier once those are read. NOTE the shape of the run: the book has been roughly flat since March 2026 (1,336.04 -> 1,375.7, +3.0% in two quarters), so the year-on-year figure is mostly the Dec-2025 quarter. Outside the Rs 200-7,500 cr band (not in universe.json), so no card follows.",
+   "checked_on": "2026-11-09",
+   "faded": false
+  },
+  {
+   "key": "544335",
+   "name": "B.R.Goyal Infrastructure Ltd",
+   "nse": null,
+   "bse": "544335",
+   "isin": "INE00ST01011",
+   "latest_value_cr": 1755.0,
+   "latest_as_on": "2026-09-30",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6933ceee-1a4a-4220-bd97-fc4ddd3d9bd8.pdf",
+   "latest_doc_title": "Q2/H1 FY27 investor presentation (BSE Reg 30, 05-Nov-2026), slide 'Order Book Growth Sept-26': 'Current Order Book (as of Sep 30th, 2026) ₹1,755 Cr · 42% growth from ₹1,235 Cr in Mar 2026 · 36 Contracts' - segments on the same slide Rs 962 / 589 / 132 / 72 cr sum to 1,755; slide 21 repeats 'over ₹ 1,755 Cr orders in hand'",
+   "year_ago_value_cr": 1535.0,
+   "year_ago_as_on": "2025-09-30",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/564d8e30-2bcc-48cd-bd66-0c646a3d0555.pdf",
+   "year_ago_doc_title": "Q2/H1 FY26 investor presentation (BSE Reg 30, 13-Nov-2025), slide 'Order Book Growth': 'Current Order Book (as of September 30th, 2025) ₹1,535 Cr ↑ 73% growth from ₹887 Cr in Sep 2024 · 40 Contracts'; slide 21 'over ₹ 1535 Cr orders in hand' and slide 33 'As of Sept 2025, BRG has an order book of nearly Rs. 1535.00 Crore across roads, buildings, water, and toll projects'",
+   "true_yoy_pct": 14.3,
+   "qualifies": false,
+   "trigger_filed": null,
+   "trigger_doc": null,
+   "trigger_doc_title": null,
+   "trigger_as_on": null,
+   "trigger_book_cr": null,
+   "trigger_prev_cr": null,
+   "trigger_prev_as_on": null,
+   "trigger_yoy_pct": null,
+   "verdict": "NOT A JUMP",
+   "note": "SCREEN TOOK A SEGMENT AS THE YEAR-AGO TOTAL. The signals row read 'EPC – Road – Rs. 998 Cr' off the 13-Nov-2025 deck's order-book slide and used it as the company-wide book as on 30-Sep-2025, giving +75.9%. Both decks were opened in this run: the same slide states the TOTAL as '₹1,535 Cr' as on 30-Sep-2025 (998 road + 100 building + 162 waste water + 275 toll = 1,535), confirmed twice more on slides 21 and 33. Against the 5-Nov-2026 deck's ₹1,755 cr as on 30-Sep-2026 the true change is +14.3%, well under the 50% bar, so no trigger date was looked for. Definitions match: both figures are the company-wide 'Current Order Book' of the same four EPC/toll lines, stated by the company itself, on the same 30-September date. For context from the same two decks, the book went ₹887 cr (Sep-24) → ₹1,535 cr (Sep-25) → ₹1,235 cr (Mar-26) → ₹1,755 cr (Sep-26): the big year was FY26, not this one. Identity: BSE SME 544335, no NSE symbol, mcap ₹476.5 cr in this run's universe build.",
    "checked_on": "2026-11-09",
    "faded": false
   }
