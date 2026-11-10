@@ -3,7 +3,8 @@
   "Proven values for single deep-detail cells of scripts/xbrl_extra.json (runbook §214a F3). Applier + rules: scripts/xtra_cell_fix.py. Each entry: the filer's XBRL tag held `was`; two independent readers of the printed result give `fixed`.",
   "2026-09-28 (§214a F3, user \"yes\"): 60 basic-EPS cells + their diluted twins where the diluted tag carried the same slip — sign lost, continuing+discontinued doubled, cash EPS in the basic tag, before-exceptional / before-regulatory-deferral line, digits/decimal slips, a later filing's contexts dated to this quarter.",
   "2026-11-10 (§237, user \"yes\"): 64 net-worth (eq) cells, PIT N500. NBFC-taxonomy consolidated files tag TOTAL equity incl. non-controlling interests as `Equity` (no owners' tag) and GI-insurer files tag the 'Fair value change account - shareholders' funds' line as `ShareholdersFunds`; eq = share capital + other equity / reserves (owners). New filings get the same rule in build_xbrl_extra.owners_eq.",
-  "2026-11-10 (§237 follow-up): 3 share-capital (sc) cells, Ind-AS-format GI filers Sep-2026 (GODIGIT/STARHEALTH/NIVABUPA) stored 0; build_xbrl_extra now drops a 0 sc when eq-oeq says otherwise."
+  "2026-11-10 (§237 follow-up): 3 share-capital (sc) cells, Ind-AS-format GI filers Sep-2026 (GODIGIT/STARHEALTH/NIVABUPA) stored 0; build_xbrl_extra now drops a 0 sc when eq-oeq says otherwise.",
+  "2026-11-10 (§237b, user \"fix the GICRE quarter cells from standalone statements\"): 46 GICRE pre-2024 standalone quarter cells held the CONSOLIDATED figure (oi, pbt incl. share of associates, BS total, reserves, H1 cash flow); fixed to the standalone statement, two visual readers each."
  ],
  "fixes": [
   {
@@ -1745,6 +1746,466 @@
    "fixed": 1849.64,
    "why": "share capital stored as 0 from the Ind-AS-format GI filing (sc + oeq must equal the tagged total equity). READ 1: own XBRL identity: stored eq 3,843.16 (total) - oeq 1,993.52 = 1,849.64 exactly (result PDF not found on BSE in the Oct-Nov 2026 Result category). READ 2: shares_outstanding.json 1,849,644,703 shares at 2026-09-30 (SHP filed 2026-10-21) x FV Rs 10 = 1,849.64 cr.",
    "found": "eq net-worth audit follow-up 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200331",
+   "basis": "s",
+   "field": "oi",
+   "was": 254.66,
+   "fixed": 252.76,
+   "why": "GICRE 20200331 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 252.76 cr (READ 1 visual, p2; READ 2 independent visual, p2). Stored 254.66 = the CONSOLIDATED figure. Source: GIC20.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200331",
+   "basis": "s",
+   "field": "pbt",
+   "was": 1172.79,
+   "fixed": 1101.09,
+   "why": "GICRE 20200331 standalone row 25 Profit/(loss) before tax, 3 months = 1101.09 cr (READ 1 visual, p2; READ 2 independent visual, p2). Stored 1172.79 = the CONSOLIDATED figure plus share of associates. Source: GIC20.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "oi",
+   "was": 77.46,
+   "fixed": 70.6,
+   "why": "GICRE 20200630 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 70.6 cr (READ 1 visual, p1; READ 2 independent visual, p2). Stored 77.46 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20200630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "pbt",
+   "was": -740.35,
+   "fixed": -811.22,
+   "why": "GICRE 20200630 standalone row 25 Profit/(loss) before tax, 3 months = -811.22 cr (READ 1 visual, p1; READ 2 independent visual, p2). Stored -740.35 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20200630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "assets",
+   "was": 42829.35,
+   "fixed": 40727.79,
+   "why": "GICRE 20200630 standalone balance sheet Total (sources of funds) = 40727.79 cr (READ 1 visual, p7; READ 2 independent visual, p8). Stored 42829.35 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20200630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "oi",
+   "was": 0.92,
+   "fixed": 12.94,
+   "why": "GICRE 20201231 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 12.94 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 0.92 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20201231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "pbt",
+   "was": 1449.7,
+   "fixed": 1516.84,
+   "why": "GICRE 20201231 standalone row 25 Profit/(loss) before tax, 3 months = 1516.84 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 1449.7 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20201231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "assets",
+   "was": 49714.53,
+   "fixed": 47562.63,
+   "why": "GICRE 20201231 standalone balance sheet Total (sources of funds) = 47562.63 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 49714.53 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20201231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "oi",
+   "was": -88.97,
+   "fixed": -91.33,
+   "why": "GICRE 20210331 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = -91.33 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored -88.97 = the CONSOLIDATED figure. Source: GIC21.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "pbt",
+   "was": 3235.91,
+   "fixed": 2045.48,
+   "why": "GICRE 20210331 standalone row 25 Profit/(loss) before tax, 3 months = 2045.48 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 3235.91 = the CONSOLIDATED figure plus share of associates. Source: GIC21.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210630",
+   "basis": "s",
+   "field": "oi",
+   "was": 149.65,
+   "fixed": 154.58,
+   "why": "GICRE 20210630 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 154.58 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 149.65 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210630",
+   "basis": "s",
+   "field": "pbt",
+   "was": -1432.76,
+   "fixed": -1166.72,
+   "why": "GICRE 20210630 standalone row 25 Profit/(loss) before tax, 3 months = -1166.72 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored -1432.76 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20210630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210630",
+   "basis": "s",
+   "field": "assets",
+   "was": 54770.96,
+   "fixed": 52797.33,
+   "why": "GICRE 20210630 standalone balance sheet Total (sources of funds) = 52797.33 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 54770.96 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "oi",
+   "was": 20.61,
+   "fixed": 14.91,
+   "why": "GICRE 20210930 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 14.91 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 20.61 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "assets",
+   "was": 59056.2,
+   "fixed": 56691.65,
+   "why": "GICRE 20210930 standalone balance sheet Total (sources of funds) = 56691.65 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 59056.2 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "oeq",
+   "was": 25788.62,
+   "fixed": 23417.77,
+   "why": "GICRE 20210930 standalone balance sheet Reserves and surplus = 23417.77 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 25788.62 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "cfo",
+   "was": 4544.74,
+   "fixed": 4412.04,
+   "why": "GICRE 20210930 standalone H1 cash flow net cash from operating = 4412.04 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 4544.74 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "cfi",
+   "was": -4127.22,
+   "fixed": -3961.78,
+   "why": "GICRE 20210930 standalone H1 cash flow net cash from investing = -3961.78 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored -4127.22 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "capex",
+   "was": 3.39,
+   "fixed": 1.6,
+   "why": "GICRE 20210930 standalone H1 cash flow purchase of fixed assets = 1.6 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 3.39 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "cf_tax",
+   "was": 439.84,
+   "fixed": 437.25,
+   "why": "GICRE 20210930 standalone H1 cash flow income tax paid = 437.25 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 439.84 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20210930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "oi",
+   "was": 24.61,
+   "fixed": 21.41,
+   "why": "GICRE 20211231 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 21.41 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 24.61 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20211231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "pbt",
+   "was": 72.37,
+   "fixed": -101.66,
+   "why": "GICRE 20211231 standalone row 25 Profit/(loss) before tax, 3 months = -101.66 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 72.37 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20211231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "assets",
+   "was": 57857.38,
+   "fixed": 55423.7,
+   "why": "GICRE 20211231 standalone balance sheet Total (sources of funds) = 55423.7 cr (READ 1 visual, p11; READ 2 own visual read, p11). Stored 57857.38 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20211231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "oi",
+   "was": 205.51,
+   "fixed": 210.51,
+   "why": "GICRE 20220331 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 210.51 cr (READ 1 visual, p6; READ 2 independent visual, p6). Stored 205.51 = the CONSOLIDATED figure. Source: GIC22.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "oi",
+   "was": 361.27,
+   "fixed": 350.83,
+   "why": "GICRE 20220630 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 350.83 cr (READ 1 visual, p4; READ 2 independent visual, p4). Stored 361.27 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "pbt",
+   "was": 1046.17,
+   "fixed": 988.71,
+   "why": "GICRE 20220630 standalone row 25 Profit/(loss) before tax, 3 months = 988.71 cr (READ 1 visual, p4; READ 2 independent visual, p4). Stored 1046.17 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20220630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "assets",
+   "was": 58024.3,
+   "fixed": 55341.65,
+   "why": "GICRE 20220630 standalone balance sheet Total (sources of funds) = 55341.65 cr (READ 1 visual, p10; READ 2 independent visual, p10). Stored 58024.3 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "oi",
+   "was": 355.4,
+   "fixed": 352.1,
+   "why": "GICRE 20220930 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 352.1 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 355.4 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "assets",
+   "was": 63730.35,
+   "fixed": 60585.14,
+   "why": "GICRE 20220930 standalone balance sheet Total (sources of funds) = 60585.14 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 63730.35 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "oeq",
+   "was": 30213.8,
+   "fixed": 27129.46,
+   "why": "GICRE 20220930 standalone balance sheet Reserves and surplus = 27129.46 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 30213.8 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "capex",
+   "was": 8.1,
+   "fixed": 5.53,
+   "why": "GICRE 20220930 standalone H1 cash flow purchase of fixed assets = 5.53 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 8.1 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "cf_tax",
+   "was": 1060.73,
+   "fixed": 1029.36,
+   "why": "GICRE 20220930 standalone H1 cash flow income tax paid = 1029.36 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 1060.73 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "oi",
+   "was": 42.24,
+   "fixed": 43.08,
+   "why": "GICRE 20221231 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = 43.08 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 42.24 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20221231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "pbt",
+   "was": 1339.77,
+   "fixed": 1295.08,
+   "why": "GICRE 20221231 standalone row 25 Profit/(loss) before tax, 3 months = 1295.08 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 1339.77 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20221231",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "oi",
+   "was": -151.18,
+   "fixed": -149.61,
+   "why": "GICRE 20230331 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = -149.61 cr (READ 1 visual, p7; READ 2 independent visual, p7). Stored -151.18 = the CONSOLIDATED figure. Source: GIC23.pdf",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "oi",
+   "was": -57.18,
+   "fixed": -59.13,
+   "why": "GICRE 20230630 standalone row 5 Other income - foreign exchange gain/(loss), 3 months = -59.13 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored -57.18 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "pbt",
+   "was": 1181.16,
+   "fixed": 935.17,
+   "why": "GICRE 20230630 standalone row 25 Profit/(loss) before tax, 3 months = 935.17 cr (READ 1 visual, p5; READ 2 independent visual, p5). Stored 1181.16 = the CONSOLIDATED figure plus share of associates. Source: BSE result PDF GICRE_20230630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "assets",
+   "was": 73301.84,
+   "fixed": 70162.83,
+   "why": "GICRE 20230630 standalone balance sheet Total (sources of funds) = 70162.83 cr (READ 1 visual, p11; READ 2 independent visual, p11). Stored 73301.84 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230630",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "assets",
+   "was": 75071.68,
+   "fixed": 71889.08,
+   "why": "GICRE 20230930 standalone balance sheet Total (sources of funds) = 71889.08 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 75071.68 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "oeq",
+   "was": 36134.2,
+   "fixed": 32901.96,
+   "why": "GICRE 20230930 standalone balance sheet Reserves and surplus = 32901.96 cr (READ 1 visual, p12; READ 2 independent visual, p12). Stored 36134.2 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "cfo",
+   "was": 5589.72,
+   "fixed": 5367.13,
+   "why": "GICRE 20230930 standalone H1 cash flow net cash from operating = 5367.13 cr (READ 1 visual, p13; READ 2 independent visual, p13). Stored 5589.72 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "cfi",
+   "was": -4427.34,
+   "fixed": -4141.02,
+   "why": "GICRE 20230930 standalone H1 cash flow net cash from investing = -4141.02 cr (READ 1 visual, p13; READ 2 independent visual, p13). Stored -4427.34 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "capex",
+   "was": 0.73,
+   "fixed": 0.57,
+   "why": "GICRE 20230930 standalone H1 cash flow purchase of fixed assets = 0.57 cr (READ 1 visual, p13; READ 2 independent visual, p13). Stored 0.73 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "cf_tax",
+   "was": 1401.46,
+   "fixed": 1402.32,
+   "why": "GICRE 20230930 standalone H1 cash flow income tax paid = 1402.32 cr (READ 1 visual, p13; READ 2 independent visual, p13). Stored 1401.46 = the CONSOLIDATED figure. Source: BSE result PDF GICRE_20230930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "cfo",
+   "was": 4488.91,
+   "fixed": 4631.72,
+   "why": "GICRE 20220930 standalone H1 cash flow net cash from operating = 4631.72 cr (4 63 171.96 / (3 83 296.46) lakh as printed; READ 1 and READ 2 independent visual reads of the Sep-2022 filing's own standalone cash flow). Stored 4488.91 is near the CONSOLIDATED 4488.79 and is not the standalone figure. The Sep-2023 filing restates this comparative (FCTR moved to operating); per user rule the Sep-2022 filing's own print is kept. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "cfi",
+   "was": -3642.97,
+   "fixed": -3832.96,
+   "why": "GICRE 20220930 standalone H1 cash flow net cash from investing = -3832.96 cr (4 63 171.96 / (3 83 296.46) lakh as printed; READ 1 and READ 2 independent visual reads of the Sep-2022 filing's own standalone cash flow). Stored -3642.97 is near the CONSOLIDATED -3642.79 and is not the standalone figure. The Sep-2023 filing restates this comparative (FCTR moved to operating); per user rule the Sep-2022 filing's own print is kept. Source: BSE result PDF GICRE_20220930",
+   "found": "2026-11-10 §237b"
   }
  ]
 }
