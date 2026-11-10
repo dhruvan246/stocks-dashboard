@@ -29483,3 +29483,16 @@ NSE/BSE held the Diwali Muhurat session on **Sunday 8-Nov-2026, 14:20–15:30 IS
 Record: `~/stocks-cache/eqaudit/record.md` (+ scan.json, nbfc_cells.json, pdf_match.json, reader2*.json, ins_match.json, entries.json).
 ### §237a — Sep-2026 share capital 0 for three Ind-AS-format insurers (2026-11-10)
 GODIGIT / STARHEALTH / NIVABUPA Sep-2026 s cells stored sc = 0; their eq is the right total (GODIGIT p6 / STARHEALTH p8 print share capital + other equity = total equity = stored eq). 3 xtra_cell_fix sc entries: 925.15 / 588.62 / 1,849.64, each = SHP share count × ₹10 (shares_outstanding.json) = eq − oeq. `owners_eq` now drops a 0 sc when eq − oeq > 0.5. NIVABUPA's Sep-2026 result PDF was not found on BSE (the identity + SHP are its two readers).
+
+### §237b — GICRE pre-2024 standalone quarter cells held CONSOLIDATED figures (2026-11-10)
+
+User: "fix the GICRE quarter cells from standalone statements". The deep slice has only a standalone (`s`) cell for
+GICRE's 2019-09..2023-09 quarters, but 46 of its figures were the CONSOLIDATED statement's: oi (row 5 "Other income –
+foreign exchange gain/(loss)"), pbt (consolidated PBT PLUS share of associates — e.g. Jun-2020 stored −740.35 =
+con −783.37 + associates 43.01; standalone −811.22), assets (balance-sheet Total of sources of funds), oeq (reserves and
+surplus) and the H1 cash flow (cfo/cfi/capex/cf_tax). 2019-09, 2019-12, 2020-09 and the Mar-quarter balance sheets
+were already standalone. Two independent visual readers of each quarter's BSE result PDF (both statements) →
+`xtra_cell_fix.json` (46 entries, found "2026-11-10 §237b"); Dec-2021 BS: reader 2 missed page 11, second read done by
+hand. Sep-2022 cash flow kept as printed in its own filing (the Sep-2023 comparative restates it, FCTR moved to
+operating). OPEN: Dec-2022 `assets` 66,694.04 — the Dec-2022 filing prints no balance sheet and Mar-2023 has no Dec
+column, so no standalone figure exists to check it against (UNKNOWN, left as is). Records: ~/stocks-cache/eqaudit/gicq/.
