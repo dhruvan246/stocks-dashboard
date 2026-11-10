@@ -2,7 +2,8 @@
  "_README": [
   "Proven values for single deep-detail cells of scripts/xbrl_extra.json (runbook §214a F3). Applier + rules: scripts/xtra_cell_fix.py. Each entry: the filer's XBRL tag held `was`; two independent readers of the printed result give `fixed`.",
   "2026-09-28 (§214a F3, user \"yes\"): 60 basic-EPS cells + their diluted twins where the diluted tag carried the same slip — sign lost, continuing+discontinued doubled, cash EPS in the basic tag, before-exceptional / before-regulatory-deferral line, digits/decimal slips, a later filing's contexts dated to this quarter.",
-  "2026-11-10 (§237, user \"yes\"): 64 net-worth (eq) cells, PIT N500. NBFC-taxonomy consolidated files tag TOTAL equity incl. non-controlling interests as `Equity` (no owners' tag) and GI-insurer files tag the 'Fair value change account - shareholders' funds' line as `ShareholdersFunds`; eq = share capital + other equity / reserves (owners). New filings get the same rule in build_xbrl_extra.owners_eq."
+  "2026-11-10 (§237, user \"yes\"): 64 net-worth (eq) cells, PIT N500. NBFC-taxonomy consolidated files tag TOTAL equity incl. non-controlling interests as `Equity` (no owners' tag) and GI-insurer files tag the 'Fair value change account - shareholders' funds' line as `ShareholdersFunds`; eq = share capital + other equity / reserves (owners). New filings get the same rule in build_xbrl_extra.owners_eq.",
+  "2026-11-10 (§237 follow-up): 3 share-capital (sc) cells, Ind-AS-format GI filers Sep-2026 (GODIGIT/STARHEALTH/NIVABUPA) stored 0; build_xbrl_extra now drops a 0 sc when eq-oeq says otherwise."
  ],
  "fixes": [
   {
@@ -1714,6 +1715,36 @@
    "fixed": 60556.01,
    "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: own XBRL sc 877.2 + oeq 59678.81. READ 2: BSE result PDF 2eae0583 p22 results statement (lakh): paid-up capital 87,720, Reserve & Surplus 59,67,881.",
    "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GODIGIT",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "sc",
+   "was": 0.0,
+   "fixed": 925.15,
+   "why": "share capital stored as 0 from the Ind-AS-format GI filing (sc + oeq must equal the tagged total equity). READ 1: BSE result PDF f69c597d (filed 2026-11-05) p6 Ind-AS balance sheet (lakh): (i) Equity 92,515, (ii) Other Equity 7,21,224, Total Equity 8,13,739 (= stored eq 8,137.39, oeq 7,212.24). READ 2: shares_outstanding.json 925,146,582 shares at 2026-09-30 (SHP filed 2026-10-21) x FV Rs 10 = 925.15 cr.",
+   "found": "eq net-worth audit follow-up 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "STARHEALTH",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "sc",
+   "was": 0.0,
+   "fixed": 588.62,
+   "why": "share capital stored as 0 from the Ind-AS-format GI filing (sc + oeq must equal the tagged total equity). READ 1: BSE result PDF bb9a4db7 (filed 2026-10-27) p8 balance sheet (lakh): Share Capital 58,862, Other Equity 9,84,711, Total Equity (B) 10,43,573 (= stored eq 10,435.73, oeq 9,847.11). READ 2: shares_outstanding.json 588,623,619 shares at 2026-09-30 (SHP filed 2026-10-16) x FV Rs 10 = 588.62 cr.",
+   "found": "eq net-worth audit follow-up 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "NIVABUPA",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "sc",
+   "was": 0.0,
+   "fixed": 1849.64,
+   "why": "share capital stored as 0 from the Ind-AS-format GI filing (sc + oeq must equal the tagged total equity). READ 1: own XBRL identity: stored eq 3,843.16 (total) - oeq 1,993.52 = 1,849.64 exactly (result PDF not found on BSE in the Oct-Nov 2026 Result category). READ 2: shares_outstanding.json 1,849,644,703 shares at 2026-09-30 (SHP filed 2026-10-21) x FV Rs 10 = 1,849.64 cr.",
+   "found": "eq net-worth audit follow-up 2026-11-10 (runbook §237)"
   }
  ]
 }

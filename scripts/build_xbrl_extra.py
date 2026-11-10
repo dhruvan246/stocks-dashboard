@@ -250,6 +250,11 @@ def owners_eq(xml, fname, icid, row, basis):
     equity from the same filing; with a part missing an NBFC eq is dropped (never a wrong line).
     Cells stored before this rule are corrected per cell in xtra_cell_fix.json. Life-insurance
     files are left alone: there ShareholdersFunds is the real total."""
+    # a share-capital fact of 0 beside a positive total and other equity is a tagging slip, not a figure
+    # (GODIGIT / STARHEALTH / NIVABUPA Sep-2026 GI files: sc 0, while eq - oeq = 925.15 / 588.62 / 1,849.64
+    # = the printed share capital = SHP shares x Rs 10) — drop it rather than serve sc 0
+    if row.get("sc") == 0 and row.get("oeq") is not None and abs(row["eq"] - row["oeq"]) > 0.5:
+        row.pop("sc")
     if icid in facts_by_ctx(xml, ["EquityAttributableToOwnersOfParent"]):
         return
     up = os.path.basename(fname).upper()
