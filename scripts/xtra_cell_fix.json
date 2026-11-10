@@ -1,7 +1,8 @@
 {
  "_README": [
   "Proven values for single deep-detail cells of scripts/xbrl_extra.json (runbook §214a F3). Applier + rules: scripts/xtra_cell_fix.py. Each entry: the filer's XBRL tag held `was`; two independent readers of the printed result give `fixed`.",
-  "2026-09-28 (§214a F3, user \"yes\"): 60 basic-EPS cells + their diluted twins where the diluted tag carried the same slip — sign lost, continuing+discontinued doubled, cash EPS in the basic tag, before-exceptional / before-regulatory-deferral line, digits/decimal slips, a later filing's contexts dated to this quarter."
+  "2026-09-28 (§214a F3, user \"yes\"): 60 basic-EPS cells + their diluted twins where the diluted tag carried the same slip — sign lost, continuing+discontinued doubled, cash EPS in the basic tag, before-exceptional / before-regulatory-deferral line, digits/decimal slips, a later filing's contexts dated to this quarter.",
+  "2026-11-10 (§237, user \"yes\"): 64 net-worth (eq) cells, PIT N500. NBFC-taxonomy consolidated files tag TOTAL equity incl. non-controlling interests as `Equity` (no owners' tag) and GI-insurer files tag the 'Fair value change account - shareholders' funds' line as `ShareholdersFunds`; eq = share capital + other equity / reserves (owners). New filings get the same rule in build_xbrl_extra.owners_eq."
  ],
  "fixes": [
   {
@@ -1073,6 +1074,646 @@
    "fixed": -0.15,
    "why": "sign flipped: standalone XBRL EPS tags carry +0.15 on a loss (ProfitLossForPeriod -141.5 mn in the same file); the PDF prints (0.15). READ 1: BSE result PDF 4662f8f8 (filed 2023-08-09 17:36), p4 Statement of unaudited standalone financial results q.e. 30 June 2023, Rs lakhs (scanned, rendered 158 dpi) — 13 Earnings per share (not annualised): Basic (0.15), Diluted (0.15) (30-Jun-23 col); (loss) for the period (1,415) lakhs; paid-up 9,606 lakhs (Re 1). Raw XBRL INDAS_95943 (std): Basic/Diluted ContinuingAndDiscontinued = Continuing = 0.15 (positive). READ 2: BSE result PDF 248f3a3a (Sep-23 results, filed 2023-11-09), p5 standalone (scanned, rendered 144 dpi), quarter ended 30-Jun-23 comparative col; FV Re 1 both — 13 Basic (0.15), Diluted (0.15) (Moneycontrol std -0.15, screener -0.15 also).",
    "found": "second-reader audit triage 2026-09-28, F3 (runbook §214a)"
+  },
+  {
+   "sym": "BAJAJFINSV",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 77598.08,
+   "fixed": 46407.34,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_90923_834108_27042023080414_xml (con): Equity 77598.08 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 159.26 + OtherEquity 46248.08 + NCI 31190.74. READ 2: next result PDF of the same company (comparative column): owners ['BAJAJFINSV_20230930', 12, 'cr', '46,407.34'], total ['BAJAJFINSV_20230930', 12, 'cr', '77,598.08'], NCI None.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJFINSV",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 84943.4,
+   "fixed": 50872.69,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_98123_969851_28102023123221_xml (con): Equity 84943.4 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 159.26 + OtherEquity 50713.43 + NCI 34070.71. READ 2: BSE result PDF b693d02c text: owners [12, 'cr', '50,872.69'], total [12, 'cr', '84,943.40'], NCI [12, 'cr', '34,070.71'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJFINSV",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 103775.85,
+   "fixed": 60328.64,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_104856_1109872_27042024125639_xml (con): Equity 103775.85 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 159.41 + OtherEquity 60169.23 + NCI 43447.21. READ 2: next result PDF of the same company (comparative column): owners ['BAJAJFINSV_20240930', 12, 'cr', '60,328.64'], total None, NCI None.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJFINSV",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 119131.88,
+   "fixed": 68325.02,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113160_1286693_24102024110033_xml (con): Equity 119131.88 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 159.53 + OtherEquity 68165.49 + NCI 50806.86. READ 2: BSE result PDF e1b7304c p12 consolidated balance sheet, read from the page image: share capital 159.53, other equity 68165.49, NCI [{'label': 'Non-controlling interest', 'value': 50806.86, 'raw': '50,806.86'}], total equity 119131.88 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "HDFC",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 215312.77,
+   "fixed": 201474.48,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_91214_837682_05052023012558_xml (con): Equity 215312.77 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 366.91 + OtherEquity 201107.57 + NCI 13838.29. READ 2: BSE result PDF 6e5630b2 p20 consolidated balance sheet, read from the page image: share capital 366.91, other equity 201107.57, NCI [{'label': '(iii) Non-controlling interest', 'value': 13838.29, 'raw': '13,838.29'}], total equity 215312.77 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "UJJIVAN",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 4792.02,
+   "fixed": 3636.7,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_98927_977511_06112023041458_xml (con): Equity 4792.02 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 121.71 + OtherEquity 3514.99 + NCI 1155.32. READ 2: BSE result PDF dfbdb5cb text: owners [10, 'lakh', '3,63,670'], total [12, 'lakh', '4,79,202'], NCI [10, 'lakh', '1,15,532'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "EDELWEISS",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 7846.23,
+   "fixed": 6744.11,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_92966_854180_26052023084854_xml (con): Equity 7846.23 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 89.84 + OtherEquity 6654.27 + NCI 1102.12. READ 2: BSE result PDF 19953d88 text: owners [10, 'cr', '6,744.11'], total [9, 'cr', '7,846.23'], NCI [10, 'cr', '1,102.12'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "EDELWEISS",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 5546.67,
+   "fixed": 4404.83,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_100579_986534_10112023105145_xml (con): Equity 5546.67 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 89.85 + OtherEquity 4314.98 + NCI 1141.84. READ 2: BSE result PDF 3caa4857 text: owners [8, 'cr', '4,404.83'], total [7, 'cr', '5,546.67'], NCI [8, 'cr', '1,141.84'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "EDELWEISS",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 6049.29,
+   "fixed": 4762.37,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_106000_1125656_15052024071331_xml (con): Equity 6049.29 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 89.89 + OtherEquity 4672.48 + NCI 1286.92. READ 2: BSE result PDF 5e8f4d89 text: owners [15, 'cr', '4,762.37'], total [14, 'cr', '6,049.29'], NCI [15, 'cr', '1,286.92'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "EDELWEISS",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 6386.25,
+   "fixed": 5045.48,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113928_1293560_30102024115511_xml (con): Equity 6386.25 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 91.88 + OtherEquity 4953.6 + NCI 1340.77. READ 2: BSE result PDF 8a565291 text: owners [13, 'cr', '5,045.48'], total [12, 'cr', '6,386.25'], NCI [13, 'cr', '1,340.77'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ABCAPITAL",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 21820.07,
+   "fixed": 20310.75,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_91572_841224_12052023020206_xml (con): Equity 21820.07 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2417.99 + OtherEquity 17892.76 + NCI 1509.32. READ 2: BSE result PDF fb000bc8 p19 consolidated balance sheet, read from the page image: share capital 2417.99, other equity 17892.76, NCI [{'label': 'Non-Controlling Interest', 'value': 1509.32, 'raw': '1,509.32'}], total equity 21820.07 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ABCAPITAL",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 28637.78,
+   "fixed": 26817.26,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_105816_1123209_14052024011434_xml (con): Equity 28637.78 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2600.02 + OtherEquity 24217.24 + NCI 1820.52. READ 2: BSE result PDF a5aa7760 p11 consolidated balance sheet, read from the page image: share capital 2600.02, other equity 24217.24, NCI [{'label': 'Non-Controlling Interest', 'value': 1820.52, 'raw': '1,820.52'}], total equity 28637.78 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ABCAPITAL",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 30472.66,
+   "fixed": 28696.0,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_114067_1295042_31102024112609_xml (con): Equity 30472.66 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2605.1 + OtherEquity 26090.9 + NCI 1776.66. READ 2: BSE result PDF 923f6837 p11 consolidated balance sheet, read from the page image: share capital 2605.1, other equity 26090.9, NCI [{'label': 'Non-Controlling Interest', 'value': 1776.66, 'raw': '1,776.66'}], total equity 30472.66 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJHLDNG",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 51562.9,
+   "fixed": 44182.78,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_90929_834157_27042023085011_xml (con): Equity 51562.9 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 111.29 + OtherEquity 44071.49 + NCI 7380.12. READ 2: BSE result PDF e87a6bb5 text: owners [18, 'cr', '44,182.78'], total [18, 'cr', '51,562.90'], NCI [18, 'cr', '7,380.12'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJHLDNG",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 58058.35,
+   "fixed": 48869.74,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_98115_969789_28102023110923_xml (con): Equity 58058.35 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 111.29 + OtherEquity 48758.45 + NCI 9188.61. READ 2: BSE result PDF 6f21f44a text: owners [7, 'cr', '48,869.74'], total [7, 'cr', '58,058.35'], NCI [7, 'cr', '9,188.61'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "BAJAJHLDNG",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 62971.03,
+   "fixed": 54247.51,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_104852_1109820_27042024113513_xml (con): Equity 62971.03 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 111.29 + OtherEquity 54136.22 + NCI 8723.52. READ 2: BSE result PDF 0802f4fe text: owners [20, 'cr', '54,247.51'], total [20, 'cr', '62,971.03'], NCI None (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "JMFINANCIL",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 11269.85,
+   "fixed": 8136.26,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_91420_839789_09052023093808_xml (con): Equity 11269.85 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 95.48 + OtherEquity 8040.78 + NCI 3133.59. READ 2: BSE result PDF 7896ae58 text: owners [14, 'cr', '8,136.26'], total [14, 'cr', '11,269.85'], NCI None (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "JMFINANCIL",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 11400.22,
+   "fixed": 8416.1,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_98749_976206_03112023072929_xml (con): Equity 11400.22 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 95.51 + OtherEquity 8320.59 + NCI 2984.12. READ 2: BSE result PDF ce985658 text: owners [9, 'cr', '8,416.10'], total [9, 'cr', '11,400.22'], NCI None (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "JMFINANCIL",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 11056.03,
+   "fixed": 8490.5,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_107176_1138619_24052024112406_xml (con): Equity 11056.03 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 95.56 + OtherEquity 8394.94 + NCI 2565.53. READ 2: BSE result PDF a7481320 text: owners [15, 'cr', '8,490.50'], total [15, 'cr', '11,056.03'], NCI None (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "JMFINANCIL",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 11261.48,
+   "fixed": 8710.16,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113413_1289064_25102024070715_xml (con): Equity 11261.48 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 95.58 + OtherEquity 8614.58 + NCI 2551.32. READ 2: BSE result PDF c3576114 p11 consolidated balance sheet, read from the page image: share capital 95.58, other equity 8614.58, NCI [{'label': '(c) Non-controlling interests', 'value': 2450.65, 'raw': '2,450.65'}, {'label': '(d) Non-controlling interests of Security receipts holders under Distressed Credit Business', 'value': 100.67, 'raw': '100.67'}], total equity 11261.48 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "RELCAPITAL",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": -10555.12,
+   "fixed": -11491.36,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_99688_981971_09112023114218_xml (con): Equity -10555.12 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 253.24 + OtherEquity -11744.6 + NCI 936.24. READ 2: BSE result PDF e6433017 p18 consolidated balance sheet, read from the page image: share capital 253.24, other equity -11744.6, NCI [{'label': 'Non-controlling interests', 'value': 936.24, 'raw': '93,624'}], total equity -10555.12 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IIFL",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 11218.62,
+   "fixed": 9910.76,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_97688_960023_19102023030008_xml (con): Equity 11218.62 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 76.23 + OtherEquity 9834.53 + NCI 1307.86. READ 2: BSE result PDF 05b7c3e4 text: owners None, total [16, 'cr', '11,218.62'], NCI [16, 'cr', '1,307.86'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IIFL",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 12056.44,
+   "fixed": 10636.99,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_108876_1158842_16062024063320_xml (con): Equity 12056.44 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 76.31 + OtherEquity 10560.68 + NCI 1419.45. READ 2: next result PDF of the same company (comparative column): owners None, total ['IIFL_20240930', 6, 'cr', '12,056.44'], NCI ['IIFL_20240930', 7, 'cr', '1,419.45'].",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IIFL",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 13638.03,
+   "fixed": 12103.59,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113167_1286804_24102024011149_xml (con): Equity 13638.03 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 84.85 + OtherEquity 12018.74 + NCI 1534.44. READ 2: BSE result PDF 6ce6451a text: owners None, total [7, 'cr', '13,638.03'], NCI [7, 'cr', '1,534.44'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "PFC",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 111981.28,
+   "fixed": 84158.49,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_93178_855375_27052023073353_xml (con): Equity 111981.28 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2640.08 + OtherEquity 81518.41 + NCI 27822.79. READ 2: BSE result PDF 076abe88 p26 consolidated balance sheet, read from the page image: share capital 2640.08, other equity 81518.41, NCI [{'label': '(c) Non-Controlling Interest', 'value': 27822.79, 'raw': '27,822.79'}], total equity 111981.28 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "PFC",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 123702.95,
+   "fixed": 93293.09,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_99951_983201_09112023053312_xml (con): Equity 123702.95 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 3300.1 + OtherEquity 89992.99 + NCI 30409.86. READ 2: BSE result PDF 69bed369 p19 consolidated balance sheet, read from the page image: share capital 3300.1, other equity 89992.99, NCI [{'label': '(c) Non-Controlling Interest', 'value': 30409.86, 'raw': '30,409.86'}], total equity 123702.95 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "PFC",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 145158.24,
+   "fixed": 110046.15,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_114602_1301852_08112024055200_xml (con): Equity 145158.24 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 3300.1 + OtherEquity 106746.05 + NCI 35112.09. READ 2: BSE result PDF a910092f p21 consolidated balance sheet, read from the page image: share capital 3300.1, other equity 106746.05, NCI [{'label': '(c) Non-Controlling Interest', 'value': 35112.09, 'raw': '35,112.09'}], total equity 145158.24 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "CHOLAHLDNG",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 16258.02,
+   "fixed": 7660.58,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_91661_842111_13052023020645_xml (con): Equity 16258.02 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 18.78 + OtherEquity 7641.8 + NCI 8597.44. READ 2: BSE result PDF 3eb3fd0f text: owners [16, 'cr', '7,660.58'], total [15, 'cr', '16,258.02'], NCI [16, 'cr', '8,597.44'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "CHOLAHLDNG",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 17965.89,
+   "fixed": 8475.39,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_100135_984281_10112023102921_xml (con): Equity 17965.89 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 18.78 + OtherEquity 8456.61 + NCI 9490.5. READ 2: BSE result PDF 150856ab text: owners [12, 'cr', '8,475.39'], total [11, 'cr', '17,965.89'], NCI [12, 'cr', '9,490.50'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "CHOLAHLDNG",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 22124.02,
+   "fixed": 10241.73,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_105700_1120892_11052024114411_xml (con): Equity 22124.02 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 18.78 + OtherEquity 10222.95 + NCI 11882.29. READ 2: BSE result PDF f90c602d text: owners [19, 'cr', '10,241.73'], total [18, 'cr', '22,124.02'], NCI [19, 'cr', '11,882.29'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "CHOLAHLDNG",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 24456.3,
+   "fixed": 11360.91,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_114669_1302431_08112024092240_xml (con): Equity 24456.3 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 18.78 + OtherEquity 11342.13 + NCI 13095.39. READ 2: BSE result PDF 3be71543 text: owners [12, 'cr', '11,360.91'], total [12, 'cr', '24,456.30'], NCI [12, 'cr', '13,095.39'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IFCI",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 6668.84,
+   "fixed": 3766.72,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_92868_853474_26052023050352_xml (con): Equity 6668.84 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2195.93 + OtherEquity 1570.79 + NCI 2902.12. READ 2: next result PDF of the same company (comparative column): owners ['IFCI_20230930', 6, 'cr', '3,766.72'], total None, NCI ['IFCI_20230930', 6, 'cr', '2,902.12'].",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IFCI",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 6848.85,
+   "fixed": 3766.99,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_99902_982977_09112023050638_xml (con): Equity 6848.85 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2489.61 + OtherEquity 1277.38 + NCI 3081.86. READ 2: BSE result PDF 4de9d5d6 text: owners [6, 'cr', '3,766.99'], total None, NCI [6, 'lakh', '3,081,86'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "IFCI",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 7679.31,
+   "fixed": 4534.24,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_105117_1113261_01052024062629_xml (con): Equity 7679.31 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 2489.61 + OtherEquity 2044.63 + NCI 3145.07. READ 2: BSE result PDF 06782a8d text: owners [5, 'cr', '4,534.24'], total None, NCI None (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 3968.5,
+   "fixed": 3518.24,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_91638_841817_12052023074202_xml (con): Equity 3968.5 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 68.72 + OtherEquity 3449.52 + NCI 450.26. READ 2: BSE result PDF 3aac5302 text: owners [9, 'cr', '3,518.24'], total [9, 'cr', '3,968.50'], NCI [9, 'cr', '450.26'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 4238.63,
+   "fixed": 3752.12,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_98351_972674_31102023071901_xml (con): Equity 4238.63 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 68.71 + OtherEquity 3683.41 + NCI 486.51. READ 2: BSE result PDF 368db174 p7 consolidated balance sheet, read from the page image: share capital 68.71, other equity 3683.41, NCI [{'label': 'Non Controlling Interest', 'value': 486.51, 'raw': '486.51'}], total equity 4238.63 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 4369.54,
+   "fixed": 3865.93,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_105402_1117404_07052024073612_xml (con): Equity 4369.54 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 68.73 + OtherEquity 3797.2 + NCI 503.61. READ 2: BSE result PDF 6052deea text: owners [7, 'cr', '3,865.93'], total [7, 'cr', '4,369.54'], NCI [7, 'cr', '503.61'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "MFSL",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 6272.88,
+   "fixed": 5168.88,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113046_1285390_22102024081333_xml (con): Equity 6272.88 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 68.68 + OtherEquity 5100.2 + NCI 1104.0. READ 2: BSE result PDF b0bc8737 text: owners [6, 'cr', '5,168.88'], total [6, 'cr', '6,272.88'], NCI [6, 'cr', '1,104.00'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "SUNDARMFIN",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "eq",
+   "was": 12638.48,
+   "fixed": 9909.85,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_92918_853790_26052023062736_xml (con): Equity 12638.48 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 110.2 + OtherEquity 9799.65 + NCI 2728.63. READ 2: BSE result PDF 3D4122C6 p6 consolidated balance sheet, read from the page image: share capital 110.2, other equity 9799.65, NCI [{'label': 'Non Controlling Interest', 'value': 2728.63, 'raw': '2728.63'}], total equity 12638.48 (Rs cr).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "UTIAMC",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "eq",
+   "was": 4471.25,
+   "fixed": 3975.17,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_97690_960058_19102023030806_xml (con): Equity 4471.25 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 127.0 + OtherEquity 3848.17 + NCI 496.08. READ 2: BSE result PDF 8e9170ba text: owners [10, 'cr', '3,975.17'], total None, NCI [10, 'cr', '496.08'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "UTIAMC",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 4973.21,
+   "fixed": 4388.17,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_104790_1109190_26042024045948_xml (con): Equity 4973.21 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 127.26 + OtherEquity 4260.91 + NCI 585.04. READ 2: BSE result PDF 2812814e text: owners [15, 'cr', '4,388.17'], total [15, 'cr', '4,973.21'], NCI [15, 'cr', '585.04'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "UTIAMC",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 4993.37,
+   "fixed": 4341.1,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113439_1289258_25102024080925_xml (con): Equity 4993.37 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 127.48 + OtherEquity 4213.62 + NCI 652.27. READ 2: BSE result PDF 2268b7eb text: owners [10, 'cr', '4,341.10'], total [10, 'cr', '4,993.37'], NCI [10, 'cr', '652.27'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "TVSHLTD",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "eq",
+   "was": 6991.71,
+   "fixed": 2840.07,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_105588_1119836_10052024021145_xml (con): Equity 6991.71 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 10.12 + OtherEquity 2829.95 + NCI 4151.64. READ 2: BSE result PDF 2fecc44f text: owners [18, 'cr', '2,840.07'], total [18, 'cr', '6,991.71'], NCI [18, 'cr', '4,151.64'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "TVSHLTD",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "eq",
+   "was": 8022.6,
+   "fixed": 3309.2,
+   "why": "eq held total equity incl. minority. READ 1: own XBRL NBFC_INDAS_113151_1286617_24102024093956_xml (con): Equity 8022.6 (TOTAL incl. non-controlling interests; no EquityAttributableToOwnersOfParent fact) = EquityShareCapital 10.12 + OtherEquity 3299.08 + NCI 4713.4. READ 2: BSE result PDF 0ac6c043 text: owners [15, 'cr', '3,309.20'], total [15, 'cr', '8,022.60'], NCI [15, 'cr', '4,713.40'] (page, unit, printed).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20200331",
+   "basis": "s",
+   "field": "eq",
+   "was": -333.82,
+   "fixed": 6134.04,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 454.47 + oeq 5679.57. READ 2: BSE result PDF 4ee5f4ae prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20200930",
+   "basis": "s",
+   "field": "eq",
+   "was": 167.97,
+   "fixed": 6949.95,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 454.5 + oeq 6495.45. READ 2: BSE result PDF bdb45b60 prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "eq",
+   "was": 517.46,
+   "fixed": 7435.15,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 454.6 + oeq 6980.55. READ 2: BSE result PDF f440cb97 prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "eq",
+   "was": 697.56,
+   "fixed": 8648.47,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 490.53 + oeq 8157.94. READ 2: BSE result PDF 7d9adbdf prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eq",
+   "was": 276.24,
+   "fixed": 9109.65,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 490.89 + oeq 8618.76. READ 2: BSE result PDF 834b8104 prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eq",
+   "was": 386.5,
+   "fixed": 9821.54,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 491.09 + oeq 9330.45. READ 2: BSE result PDF 3eb4fb6f prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "ICICIGI",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "eq",
+   "was": 814.61,
+   "fixed": 18005.3,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: stored cell (own XBRL) sc 499.61 + oeq 17505.69. READ 2: BSE result PDF c8456127 prints share capital and reserves (or 'Net worth') matching to the rupee lakh/thousand; e.g. Mar-2020 Net Worth 613,403 lakh, Sep-2026 balance sheet share capital 49,961 / R&S 1,750,569 / FV change shareholders 81,461 lakh = old eq.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "NIACL",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "eq",
+   "was": 5116.94,
+   "fixed": 21983.76,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: own XBRL sc 824.0 + oeq 21159.76. READ 2: BSE result PDF d1822319 standalone balance sheet p9 (lakh): Share Capital 82,400, Reserves and Surplus 21,15,976, FV change Shareholders Funds 5,11,694 (= old s eq); consolidated reserves 22,25,539 p20.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "NIACL",
+   "qe": "20260930",
+   "basis": "c",
+   "field": "eq",
+   "was": 5120.64,
+   "fixed": 23079.39,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: own XBRL sc 824.0 + oeq 22255.39. READ 2: BSE result PDF d1822319 standalone balance sheet p9 (lakh): Share Capital 82,400, Reserves and Surplus 21,15,976, FV change Shareholders Funds 5,11,694 (= old s eq); consolidated reserves 22,25,539 p20.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20190930",
+   "basis": "s",
+   "field": "eq",
+   "was": 5964.64,
+   "fixed": 21372.26,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS p11 of PDF a096c170 (lakh): Share Capital 87 720, R&S 20 49 506, FV change shareholders 5 96 464 (= old eq); same figures in the Sep-2019 column of PDF df496e23 p11.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200930",
+   "basis": "s",
+   "field": "eq",
+   "was": 3998.88,
+   "fixed": 21640.93,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS p11 of PDF df496e23 (lakh): Share Capital 87720, R&S 20 76 373, FV change shareholders 3 99 888 (= old eq); same R&S in the Sep-2020 column of PDF 9d3262c0 p11.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "eq",
+   "was": 6990.25,
+   "fixed": 24294.97,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: cell holds CONSOLIDATED figures under s (old eq 6,990.25 = consolidated FV line, PDF p26). Standalone BS p11 of PDF 9d3262c0 (lakh): Share Capital 87720, R&S 23 41 777, FV shareholders 6 99 656; same R&S in the Sep-2021 column of PDF e3e9280b p11.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "eq",
+   "was": 7703.05,
+   "fixed": 28006.66,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: cell holds CONSOLIDATED figures under s (old eq 7,703.05 = consolidated FV line, PDF p25). Standalone BS p11 of PDF e3e9280b (lakh): Share Capital 87720, R&S 27 12 946, FV shareholders 7 64 218, policyholders 24 93 630; total 60 58 514 = their sum.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "eq",
+   "was": 10762.5,
+   "fixed": 33779.16,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: cell holds CONSOLIDATED figures under s (old eq 10,762.50 = consolidated FV line, PDF p26). Standalone BS p12 of PDF b4ecdf1f (lakh): Share Capital 87720, R&S 32 90 196, FV shareholders 10 81215, policyholders 27 29 777; total 71 88 908 = their sum.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20200331",
+   "basis": "s",
+   "field": "eq",
+   "was": 3251.33,
+   "fixed": 21922.96,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS of own FY20 PDF 09e30c2a (wave 15 read: sc 877.20, R&S 21,045.76); same R&S 21 04 576 lakh in the Mar-2020 column of PDF df496e23 p11; old eq 3,251.33 = consolidated FV line.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "eq",
+   "was": 6210.56,
+   "fixed": 24048.68,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS of own FY21 PDF 751d0ba2 (wave 15: R&S 23,171.48); same 23 17 148 lakh in the Mar-2021 column of PDF 9d3262c0 p11; old eq 6,210.56 = consolidated FV line.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "eq",
+   "was": 7180.82,
+   "fixed": 26132.46,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS of own FY22 PDF e1505c76 (wave 15: R&S 25,255.26); same 25 25 526 lakh in the Mar-2022 column of PDF e3e9280b p11; old eq 7,180.82 = consolidated FV line.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "eq",
+   "was": 9188.74,
+   "fixed": 32868.63,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1+2: standalone BS of own FY23 PDF 123d1145 (wave 15: R&S 31,991.43, identity exact) = the annual_bscf ledger s oeq for FY23; old eq 9,188.74 = consolidated FV line (PDF prints 9,188.74 consolidated).",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "eq",
+   "was": 13514.23,
+   "fixed": 56158.82,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: own XBRL sc 877.2 + oeq 55281.62. READ 2: BSE result PDF 2eae0583 p6 results statement (lakh): paid-up capital 87,720, Reserve & Surplus 55,28,162.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
+  },
+  {
+   "sym": "GICRE",
+   "qe": "20260930",
+   "basis": "c",
+   "field": "eq",
+   "was": 13570.12,
+   "fixed": 60556.01,
+   "why": "eq held the insurer's 'Fair value change account - shareholders' funds' line (tag ShareholdersFunds in the GI taxonomy), not net worth. Net worth = share capital + reserves and surplus. READ 1: own XBRL sc 877.2 + oeq 59678.81. READ 2: BSE result PDF 2eae0583 p22 results statement (lakh): paid-up capital 87,720, Reserve & Surplus 59,67,881.",
+   "found": "eq net-worth audit 2026-11-10 (runbook §237)"
   }
  ]
 }

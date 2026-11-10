@@ -233,6 +233,38 @@ def bs_sums(xml, icid, row, money):
                 break
 
 
+
+RE_GI = re.compile(r"<" + NS + r":(?:NetPremiumWritten|GrossPremiumsWritten)\b")
+
+
+def owners_eq(xml, fname, icid, row, basis):
+    """eq = OWNERS' net worth (runbook §237). Two taxonomies put another line where the old
+    fallback looked, and nothing in the stored cell can tell them apart afterwards:
+      - general-insurance files (INTEGRATED_FILING_GI_*): `ShareholdersFunds` is the balance-sheet
+        line "Fair value change account - shareholders' funds" (GICRE Mar-2023 con 9,188.74 =
+        the PDF's FV-change line; share capital 877.20 + reserves 35,118.79 is the net worth);
+      - NBFC-taxonomy CONSOLIDATED files: `Equity` is TOTAL equity incl. non-controlling
+        interests — no owners' tag exists (BAJAJFINSV Sep-2023 con: Equity 84,943.40 = owners
+        50,872.69 + NCI 34,070.71, all three printed in the result PDF).
+    In those files, with no EquityAttributableToOwnersOfParent fact, eq = share capital + other
+    equity from the same filing; with a part missing an NBFC eq is dropped (never a wrong line).
+    Cells stored before this rule are corrected per cell in xtra_cell_fix.json. Life-insurance
+    files are left alone: there ShareholdersFunds is the real total."""
+    if icid in facts_by_ctx(xml, ["EquityAttributableToOwnersOfParent"]):
+        return
+    up = os.path.basename(fname).upper()
+    gi = "_GI_" in up or (RE_GI.search(xml) is not None and "_LI_" not in up)
+    nbfc_c = "NBFC" in up and basis == "c"
+    if not (gi or nbfc_c):
+        return
+    if row.get("sc") and row.get("oeq") is not None:
+        row["eq"] = round(row["sc"] + row["oeq"], 2)
+    elif nbfc_c:
+        row.pop("eq", None)
+    # a GI file with no share-capital fact keeps its eq: the Ind-AS-format insurers (GODIGIT Sep-2026
+    # prints Equity 925.15 + Other equity 7,212.24 = Total equity 8,137.39 = eq) tag the real total
+
+
 def parse_bs_only(xml, fname, sym, ctx, end):
     """A filing whose OWN reporting-period facts span > 100 days (SME half-year / yearly results,
     INTEGRATED half-year statements — runbook §148). Its P&L / cash flow are 6- or 12-month figures
@@ -267,6 +299,8 @@ def parse_bs_only(xml, fname, sym, ctx, end):
             if icid in f:
                 row[key] = money(f[icid])
         bs_sums(xml, icid, row, money)
+        if row.get("eq") is not None:
+            owners_eq(xml, fname, icid, row, b)
     for b in ("s", "c"):
         if out[b] == {"tx": "na"}:
             out[b] = {}
@@ -429,6 +463,8 @@ def parse_file(path, fname, sym_override=None):
                 if icid in f:
                     row[key] = money(f[icid])
             bs_sums(xml, icid, row, money)
+            if row.get("eq") is not None:
+                owners_eq(xml, fname, icid, row, b)
 
     # ---- cash flow: any plain D context ending at the quarter end; longest period wins ------
     cf_ctx = {}  # cid -> days
