@@ -51,9 +51,18 @@ let FAVONLY = (function(){ try { return localStorage.getItem('sp_fav_only') !== 
    (SP_FILT) and a bucket that empties (its chip disappears) falls back to All / ★. */
 let SP_FILT = '';
 function spMarkSet(){ return SIDE === 'sell' ? zbSoldSet() : zbBoughtSet(); }
+/* zba63 (user 2026-11-11, "buy side shows 8 strategies instead of 4 … i hv shifted to 4 long back … even on sell side"):
+   when the cash plan is set to a saved mix (Plan for → 🍀 The Four), that mix is the default chip on BOTH sides — the
+   other ★ blocks hide. Exception: on the Sell side an outsider whose book still holds shares stays visible (it must
+   sell them). ★ Favourites is still one click away. */
+function planMix(){ try { const set = cpOpts().set; return set ? (subMixes().find(m => m.label === set) || null) : null; } catch(e){ return null; } }
+function inMix(it, M){ return !!M && (M.keys.has(identityKey(it.cfg)) || (typeof ruleKey === 'function' && M.keys.has(ruleKey(it.cfg)))); }
+function stillHolds(it){ const h = heldFor(it.cfg); const rows = Array.isArray(h) ? h : (h && Array.isArray(h.rows) ? h.rows : []); return rows.some(r => +(r.qty || r.q || 0) > 0); }
+function mixKeep(it, M){ return inMix(it, M) || (SIDE === 'sell' && stillHolds(it)); }
 function spBuckets(all, favs){
-  const mark = spMarkSet();
+  const mark = spMarkSet(), M = planMix();
   return { all: all.length, fav: all.filter(it => isFavCfg(favs, it.cfg)).length,
+           mix: M ? all.filter(it => isFavCfg(favs, it.cfg) && mixKeep(it, M)).length : 0, mixName: M ? M.label : '',
            mark: all.filter(it => mark.has(it.id)).length, priv: all.filter(it => it._priv).length };
 }
 function spList(all, favs){
@@ -63,20 +72,21 @@ function spList(all, favs){
   let l = all;
   if (SP_FILT === 'mark') l = all.filter(it => mark.has(it.id));
   else if (SP_FILT === 'priv') l = all.filter(it => it._priv);
-  else if (FAVONLY && B.fav > 0) l = all.filter(it => isFavCfg(favs, it.cfg));
+  else if (FAVONLY && B.fav > 0){ l = all.filter(it => isFavCfg(favs, it.cfg));
+    if (SP_FILT !== 'fav' && B.mix > 0){ const M = planMix(); l = l.filter(it => mixKeep(it, M)); } }   // zba63: the plan's mix by default
   // ★ float to the top, in ★-number order (#1, #2, …) so the blocks read in the order their badges count
   return l.slice().sort((a, b) => ((isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0)) || ((favNumOf(a.cfg) || 1e9) - (favNumOf(b.cfg) || 1e9)));
 }
-function spActive(B){ return SP_FILT || ((FAVONLY && B.fav > 0) ? 'fav' : 'all'); }
-function spChipName(k){ return k === 'fav' ? '★ Favourites' : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
+function spActive(B){ if (SP_FILT === 'fav') return B.fav > 0 ? 'fav' : 'all'; return SP_FILT || ((FAVONLY && B.fav > 0) ? (B.mix > 0 ? 'mix' : 'fav') : 'all'); }
+function spChipName(k, B){ return k === 'fav' ? '★ Favourites' : k === 'mix' ? '🍀 ' + ((B && B.mixName) || (planMix() || {}).label || 'Plan mix') : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
 /* footer label for a totals row: "Total" on All, else "Total · ★ Favourites 8 of 45" */
 function spTotLbl(list){
-  const all = uniqStrategies(), k = spActive(spBuckets(all, loadFavs()));
-  return k === 'all' ? 'Total' : 'Total · ' + spChipName(k) + ' ' + list.length + ' of ' + all.length;
+  const all = uniqStrategies(), B = spBuckets(all, loadFavs()), k = spActive(B);
+  return k === 'all' ? 'Total' : 'Total · ' + spChipName(k, B) + ' ' + list.length + ' of ' + all.length;
 }
 function spChipsRender(all, B, list){
   const act = spActive(B);
-  const defs = [['all', 'All', B.all], ['fav', spChipName('fav'), B.fav], ['mark', spChipName('mark'), B.mark], ['priv', 'Private', B.priv]].filter(d => d[2] > 0);
+  const defs = [['all', 'All', B.all], ['mix', spChipName('mix', B), B.mix], ['fav', spChipName('fav'), B.fav], ['mark', spChipName('mark'), B.mark], ['priv', 'Private', B.priv]].filter(d => d[2] > 0);
   const el = $('spChips'); if (el) el.innerHTML = defs.map(d => '<button data-spf="' + d[0] + '" class="' + (act === d[0] ? 'on' : '') + '">' + esc(d[1]) + '<span class="n">' + d[2] + '</span></button>').join('');
   const c = $('spCnt'); if (c) c.textContent = list.length + (list.length !== all.length ? ' / ' + all.length : '');
 }
@@ -237,9 +247,7 @@ function screenOne(it){
    first pass drops silently), spliced into SERIES as a real bar so every factor recomputes
    exactly. One implementation, shared with all-picks, so the two pages cannot diverge again.
    Rebalance mode is untouched: screening at SF.end never sees the spliced live bar. */
-  let PICKMODE = (function(){ let inWin = true; try { inWin = rebalWindow().in; } catch(e){}
-    if (!inWin) return 'live';   // zba62 (user 11-Nov): outside a rebalance window the Buy side always opens on Live picks — a saved 'reb' from the buy leg no longer pins it
-    try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();   // inside the window: the saved choice, default Rebalance picks
+  let PICKMODE = (function(){ try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();   // zba63: outside a rebalance window the panel init forces 'live' (rebalWindow needs HOL, declared below)
   let LIVEOV = { ts: 0, date: null, n: 0 };
   async function ensureLiveOverlay(cfgs, force){
     if (!force && LIVEOV.ts && Date.now() - LIVEOV.ts < 55000) return;
@@ -2719,11 +2727,12 @@ function renderAuto(){
   const ch = $('spChips');
   if (ch) ch.onclick = e => { const b = e.target.closest('[data-spf]'); if (!b) return;
     const k = b.dataset.spf;
-    if (k === 'fav'){ FAVONLY = true; SP_FILT = ''; } else if (k === 'all'){ FAVONLY = false; SP_FILT = ''; } else SP_FILT = k;
+    if (k === 'fav'){ FAVONLY = true; SP_FILT = 'fav'; } else if (k === 'mix'){ FAVONLY = true; SP_FILT = ''; } else if (k === 'all'){ FAVONLY = false; SP_FILT = ''; } else SP_FILT = k;   // zba63: 'fav' now means the whole ★ set, past the plan's mix
     try { localStorage.setItem('sp_fav_only', FAVONLY ? '1' : '0'); } catch(e){}
     renderCards(); };
   const mb = $('spMode');
   if (mb) mb.onclick = () => pickModeSet(PICKMODE === 'live' ? 'reb' : 'live');
+  try { if (!rebalWindow().in) PICKMODE = 'live'; } catch(e){}   // zba62/63 (user 11-Nov): outside a rebalance window the Buy side opens on Live picks — a saved 'reb' from the buy leg no longer pins it
   modeLabel();
   const sb2 = $('spSide');
   const sLbl = () => { if (sb2){ sb2.textContent = SIDE === 'sell' ? 'Sell side' : 'Buy side'; sb2.classList.toggle('on', SIDE === 'sell'); } };
