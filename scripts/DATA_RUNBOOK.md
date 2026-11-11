@@ -29496,3 +29496,15 @@ were already standalone. Two independent visual readers of each quarter's BSE re
 hand. Sep-2022 cash flow kept as printed in its own filing (the Sep-2023 comparative restates it, FCTR moved to
 operating). OPEN: Dec-2022 `assets` 66,694.04 — the Dec-2022 filing prints no balance sheet and Mar-2023 has no Dec
 column, so no standalone figure exists to check it against (UNKNOWN, left as is). Records: ~/stocks-cache/eqaudit/gicq/.
+
+**§164s part 60 (2026-11-11, Quantmac DII reply-6 re-check: all 886 differing cells re-read against their own filings; record `~/stocks-cache/shp/dii_qm/r14/` = look.txt, check.json, t3.json, left63.txt, fixes.json).**
+47 stored DII values did not equal their own filing's exact own-line count and are healed via cell_fix (`exact: true`):
+17 left out the NBFC row (R3), 2 counted a row the filing labels foreign (KEC Jun-16 'Other Foreign Bank' 5,480;
+KSB Dec-16 'Other Foreign financial Institution' 1,000), 28 were built from printed 2-dp row % (rounded pieces, all
+moves <= 0.01 pp; TREEHOUSE Dec-15 keeps Bajaj Holdings as an NBFC). XBRL and BSE Table III agree on every one.
+Trap found: the §226 rebase ledger pair CENTRALBK|2020-06-30|dii ([4.4661, 4.465936], NBFC row left out) sat within
+its 0.000051 window of the healed value and undid it on every load - pair dropped (`_meta.dropped_pairs`). When a heal
+moves a slot by < 0.00005 pp, check shp_rebase226.json.gz for a pair on that slot first.
+Not our errors (re-read): KARURVYSYA Mar-16 (own original = NSE ndsId 108111; BSE's Mar-16 XBRL/Table III carry Jun-16
+holdings), event rows INDHOTEL 01-Mar-16, COHANCE 29-Sep-20, IDBI 28-Dec-18, CENTRALBK 28-Mar-19 (the reader picks the
+quarter's document, not the event's - verdicts from the event files read 18-Oct stand).
