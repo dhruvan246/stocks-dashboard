@@ -266,6 +266,7 @@
 .fnw .fb{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:9px;padding:9px 13px;font-size:12.5px;font-weight:700;cursor:pointer}
 .fnw .fb.pri{background:var(--accent);border-color:var(--accent);color:#fff}.fnw .fb.sel{background:var(--sell);border-color:var(--sell);color:#fff}
 .fnw .fb.armed{background:#d98200;border-color:#d98200;color:#fff}.fnw .fb:disabled{opacity:.5;cursor:default}
+.fnw .acts2{display:flex;flex-direction:column;gap:6px;margin:6px 0 12px}.fnw .arow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.fnw .arow .fb{min-width:180px;text-align:left}.fnw .arow .sub{margin:0;flex:1;min-width:160px}
 .fnw .fb.on{outline:2px solid var(--accent)}
 .fnw input{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:8px;padding:8px 10px;font-size:13px;width:150px}
 .fnw .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
@@ -304,7 +305,7 @@
   function render() {
     if (!EL) return;
     const d = docGet(), c = d.cfg, P = POS;
-    let h = '<div class="fnw"><h2>F&amp;O plan · B on 15%</h2><div class="sub">' + c.syms.join(' · ') + ' — buy on a ' + c.trig + '% pot fall up to ' + c.buyTo + 'x, sell back to ' + c.maxLev + 'x, buy back ' + c.bb + '% off the low. Nothing is placed without your two clicks.</div>';
+    let h = '<div class="fnw"><h2>F&amp;O plan · B on 15%</h2><div class="sub">' + c.syms.join(' · ') + ' — buy on a ' + c.trig + '% pot fall up to ' + c.buyTo + 'x, sell back to ' + c.maxLev + 'x, buy back ' + c.bb + '% off the low. Orders go out only by your two clicks, or by the auto-pilot while you have it switched on.</div>';
     if (!P) {
       const why = { login: 'Zerodha isn\'t logged in today — log in from the Positions tab.', worker: 'Zerodha isn\'t connected on this device — set it up in the Positions tab.', token: 'This device has no access token — open your private link once.', down: 'Couldn\'t reach Zerodha just now — retrying.' }[POSERR] || 'Loading your F&O positions…';
       EL.innerHTML = h + '<div class="box">' + why + '</div></div>'; return;
@@ -338,9 +339,9 @@
     if (rollSoon) h += '<div class="box due"><div class="bt">Roll window</div>A contract expires within ' + c.rollDays + ' days. Stock futures settle by delivery, so roll before expiry. <button class="fb pri" data-f="plan" data-k="roll">Prepare roll</button></div>';
     h += previewHTML();
     h += '<div class="bt">Positions</div>' + posTable(d, P, a);
-    h += '<div class="bt">Actions (each shows the orders first)</div><div class="acts">' +
-      ['dip:Dip buy to ' + c.buyTo + 'x', 'bb:Buy back to ' + c.buyTo + 'x', 'sell:Sell to ' + c.maxLev + 'x', 'roll:Roll to next month', 'equal:Make the five equal'].map(x => { const [k, l] = x.split(':');
-        return '<button class="fb' + (PREVIEW && PREVIEW.k === k ? ' on' : '') + '" data-f="plan" data-k="' + k + '"' + (RUN ? ' disabled' : '') + '>' + l + '</button>'; }).join('') + '</div>';
+    h += '<div class="bt">Actions — each unlocks only when the rule calls for it, and shows the orders first</div><div class="acts2">' +
+      ['dip:Dip buy to ' + c.buyTo + 'x', 'bb:Buy back to ' + c.buyTo + 'x', 'sell:Sell to ' + c.maxLev + 'x', 'roll:Roll to next month', 'equal:Make the five equal'].map(x => { const [k, l] = x.split(':'), g = gate(d, P, a, k);
+        return '<div class="arow"><button class="fb' + (g.ok ? ' pri' : '') + (PREVIEW && PREVIEW.k === k ? ' on' : '') + '" data-f="plan" data-k="' + k + '"' + (RUN || !g.ok ? ' disabled' : '') + '>' + (g.ok ? '' : '🔒 ') + l + '</button><span class="sub">' + g.why + '</span></div>'; }).join('') + '</div>';
     h += '<details><summary>Add money · reset pot · settings</summary><div class="box">' +
       '<div class="row"><input id="fnAdd" placeholder="Added, e.g. 25 L"><button class="fb" data-f="add">Add money to pot</button><span class="sub" style="margin:0">raises the pot, its high and its low by the same amount, so the fall % is unchanged</span></div>' +
       '<div class="row"><input id="fnPot" placeholder="Pot now"><button class="fb" data-f="start">Set pot value</button><span class="sub" style="margin:0">overrides today\'s value (keeps the high)</span></div>' +
@@ -352,6 +353,24 @@
     EL.innerHTML = h;
   }
 
+  // a button is usable only when the rule says so (user 2026-11-11: "should be enabled only when such thing happens")
+  function gate(d, P, a, k) {
+    const c = d.cfg, st = d.st, due = (st.due || []).map(x => x.k), H = Math.max(st.H || a, a);
+    if (k === 'dip') return due.includes('dip') ? { ok: true, why: 'Due now — the pot closed ' + c.trig + '% or more under its high.' }
+      : st.armed ? { ok: false, why: 'Unlocks if the pot closes at or below <b class="secret">' + money(H * (1 - c.trig / 100)) + '</b> (' + c.trig + '% under its high ' + money(H) + ').' }
+      : { ok: false, why: 'Already used — re-arms once the pot closes above its high ' + money(H) + '.' };
+    if (k === 'bb') return due.includes('bb') ? { ok: true, why: 'Due now — the pot is ' + c.bb + '% above its low after the forced sell.' }
+      : st.pend ? { ok: false, why: 'Unlocks when the pot closes at <b class="secret">' + money(st.low * (1 + c.bb / 100)) + '</b> (' + c.bb + '% over its low ' + money(st.low) + ').' }
+      : { ok: false, why: 'Only after a forced sell to ' + c.maxLev + 'x.' };
+    if (k === 'sell') return due.includes('sell') ? { ok: true, why: 'Due now — positions closed above ' + c.maxLev + 'x of the pot.' }
+      : { ok: false, why: 'Unlocks if positions close above ' + c.maxLev + 'x of the pot (today ' + money(c.maxLev * a) + '; now ' + money(exposure(P)) + ').' };
+    if (k === 'roll') { const Hs = heldBySym(P, c.syms); let near = null;
+      c.syms.forEach(s => Hs[s].all.forEach(h => { if (h.exp && h.q > 0 && (!near || h.exp < near)) near = h.exp; }));
+      return near && daysTo(near) <= c.rollDays ? { ok: true, why: 'Expiry ' + esc(near) + ' is within ' + c.rollDays + ' days.' }
+        : { ok: false, why: 'Unlocks ' + c.rollDays + ' days before expiry' + (near ? ' (' + esc(near) + ' → from ' + new Date(Date.parse(near + 'T00:00:00Z') - c.rollDays * 864e5).toISOString().slice(0, 10) + ')' : '') + '.' }; }
+    const e = planEqual(d, P);
+    return e.orders.length ? { ok: true, why: 'One or more stocks sit a lot or more below the other four.' } : { ok: false, why: 'All five are within about a lot of each other.' };
+  }
   function autoBox(d) {
     const au = d.auto, last = d.log.filter(e => e.k === 'auto').slice(-3).reverse();
     const when = t => new Date(t + 330 * 60000).toISOString().slice(0, 16).replace('T', ' ');
@@ -445,6 +464,7 @@
     if (f === 'dismiss') { d.st.due = (d.st.due || []).filter(x => x.k !== b.dataset.k); d.st.ts = Date.now(); logAdd(d, 'dismiss', 'Dismissed ' + b.dataset.k); save(d, true); render(); return; }
     if (f === 'plan') {
       const calc = potCalc(d, P); if (!calc || !calc.ok) return; const k = b.dataset.k, a = calc.pot;
+      const g = gate(d, P, a, k); if (!g.ok) { toast(g.why.replace(/<[^>]+>/g, '')); return; }
       const r = k === 'dip' || k === 'bb' ? planBuyUpTo(d, P, a, k) : k === 'sell' ? planSell4x(d, P, a) : k === 'roll' ? planRoll(d, P) : planEqual(d, P);
       PREVIEW = Object.assign({ k, title: { dip: 'Dip buy', bb: 'Buy-back', sell: 'Sell to ' + d.cfg.maxLev + 'x', roll: 'Roll to next month', equal: 'Make the five equal' }[k] }, r);
       ARMED = false; render(); return;
