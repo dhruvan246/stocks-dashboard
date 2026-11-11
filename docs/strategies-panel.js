@@ -237,8 +237,9 @@ function screenOne(it){
    first pass drops silently), spliced into SERIES as a real bar so every factor recomputes
    exactly. One implementation, shared with all-picks, so the two pages cannot diverge again.
    Rebalance mode is untouched: screening at SF.end never sees the spliced live bar. */
-  let PICKMODE = (function(){ try { const v = localStorage.getItem('sp_pick_mode'); if (v) return v; } catch(e){}
-    try { return rebalWindow().in ? 'reb' : 'live'; } catch(e){ return 'reb'; } })();   // zba61 (user 11-Nov): with no saved choice, Live picks outside the rebalance window, Rebalance picks inside it
+  let PICKMODE = (function(){ let inWin = true; try { inWin = rebalWindow().in; } catch(e){}
+    if (!inWin) return 'live';   // zba62 (user 11-Nov): outside a rebalance window the Buy side always opens on Live picks — a saved 'reb' from the buy leg no longer pins it
+    try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();   // inside the window: the saved choice, default Rebalance picks
   let LIVEOV = { ts: 0, date: null, n: 0 };
   async function ensureLiveOverlay(cfgs, force){
     if (!force && LIVEOV.ts && Date.now() - LIVEOV.ts < 55000) return;
