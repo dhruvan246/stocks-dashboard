@@ -1163,6 +1163,17 @@ function allMtfPlan(P){
     return { R: R, sw: sw, lev: lev, px: px, wait: wait };
   } catch (e){ return null; }
 }
+/* zba69: the This-rebalance table in two versions — 'plan' (the cash plan as saved) or 'mtf' (allMtfPlan's buys, a what-if) */
+function rebVer(){ try { return localStorage.getItem('sp_reb_ver') === 'mtf' ? 'mtf' : 'plan'; } catch (e){ return 'plan'; } }
+function rebMtfRows(list){
+  const P = cpDoc(), AM = P && allMtfPlan(P); if (!AM) return null;
+  const NUM = blockNums(list), ag = {};
+  list.forEach(it => { const o = AM.R.S[it.id]; if (!o || o.excl) return; const sw = AM.sw[it.id] || {};
+    (o.picks || []).forEach(s => { const q = (o.buyQ || {})[s] || 0; if (!q) return; const px = +(AM.px[s] || o.px[s] || 0);
+      const a = ag[s] = ag[s] || { sym: s, px: px, amt: 0, qty: 0, from: [], capped: false, back: false, forS: [] };
+      a.qty += q; a.amt += q * px; a.from.push(NUM.get(it.id)); if (sw[s]) a.forS.push(sw[s]); }); });
+  return Object.values(ag).sort((a, b) => a.sym < b.sym ? -1 : a.sym > b.sym ? 1 : 0);
+}
 function swapCheckHTML(list){
   const P = cpDoc(); if (!P) return '';
   const H = Z.hraw || {}, LV = P.lev || {}, AM = allMtfPlan(P);
@@ -1299,29 +1310,31 @@ function renderBuyAll(list){
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + fillsHTML(); wireResidGo(); wireReenter(); fillsKick(); return; }
-  const agg = buyAllAgg(list), rows = agg.rows;
+  const agg = buyAllAgg(list), RV = rebVer(), rowsM = RV === 'mtf' ? rebMtfRows(list) : null, rows = rowsM || agg.rows;
   const SM = subMixes(), NUMS = blockNums(list), mixList = list.filter(it => mixMarks(it.cfg, SM).length);
   const mixNums = new Set(mixList.map(it => NUMS.get(it.id)));   // coloured like their blocks (🍀 The Four)
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b>' +
+  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b> <select id="rebVer" title="As planned = the saved cash plan. All MTF = the same plan with every no-MTF pick swapped for the next-ranked MTF stock (a what-if until you press Swap on the picks and Re-plan)"><option value="plan"' + (rowsM ? '' : ' selected') + '>As planned</option><option value="mtf"' + (rowsM ? ' selected' : '') + '>All MTF</option></select>' +
     '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
       (SM.length && mixNums.size ? ' · ' + SM.map(m => '<span class="snum mixc">#</span> = ' + esc(m.label)).join(', ') : '') + '</span>' +
     '<span class="go"><button class="btn" id="levGo" title="Zerodha margincalc on every entrant \u2014 catches MTF-blocked names that will need FULL cash via the auto-CNC fallback">Check leverage</button></span></div><div id="levOut"></div>' +   // Buy-all button REMOVED (user 2026-09-01): one round-robin queue for ~₹35 Cr ≈ 141 slices × 150s ≈ 6h — buy per-strategy (8 parallel ⚡ slicers) instead; the table stays as the consolidated checklist
     '<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategies</th><th>Live ₹</th><th title="Zerodha’s MTF leverage today (no MTF = full cash)">MTF</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
-    rows.map(r => '<tr><td><b>' + esc(r.sym) + '</b> ' + (r.back ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 restore the same quantity">buy back</span>' : (Z.held.has(r.sym) ? heldTag(r.sym, null) : '<span class="tag new">new</span>')) + '</td>' +
+    rows.map(r => '<tr><td><b>' + esc(r.sym) + '</b> ' + (r.forS && r.forS.length ? '<span class="tag keep" title="' + esc(r.forS.join(', ')) + ' has no MTF — the next-ranked MTF stock">for ' + esc(r.forS.join(', ')) + '</span> ' : '') + (r.back ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 restore the same quantity">buy back</span>' : (Z.held.has(r.sym) ? heldTag(r.sym, null) : '<span class="tag new">new</span>')) + '</td>' +
       '<td class="sym">' + r.from.map(n => '<span class="snum' + (mixNums.has(n) ? ' mixc' : '') + '">#' + n + '</span>').join('') + (r.from.length > 1 ? ' <b>×' + r.from.length + '</b>' : '') + '</td>' +
       '<td>₹' + (+r.px).toFixed(2) + '</td>' + levTD(r.sym) +
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
+    (RV === 'mtf' ? '<div class="khelp"><b>All MTF version' + (rowsM ? '' : ' — not available yet (needs the cash plan and Zerodha’s MTF check); showing the plan') + '.</b>' + (rowsM ? ' A what-if: the same free cash, cash % and mode with every no-MTF pick swapped. Nothing is saved or bought from it — to buy it, press Swap on those picks and Re-plan.' : '') + '</div>' : '') +
     '<div class="khelp">Numbered by the strategy blocks below. ' + (agg.nPlan ? '<b>' + agg.nPlan + ' strateg' + (agg.nPlan === 1 ? 'y is' : 'ies are') + ' sized by the cash plan above</b>; ' : '') + (agg.nPrev ? '<b>' + agg.nPrev + ' whose screen changed since the plan preview' + (agg.nPrev === 1 ? 's' : '') + ' at the plan’s slot size — press Re-plan</b>; ' : '') + (agg.nPlan || agg.nPrev ? 'for any other, amounts' : 'Amounts') + ' are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
   fillsKick();
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
+  const rv = $('rebVer'); if (rv) rv.onchange = () => { try { localStorage.setItem('sp_reb_ver', rv.value); } catch (e){} renderCards(); };
   const cg = $('cpGo'); if (cg) cg.onclick = () => cashPlanRun(false);
   const cpc = $('cpPct'); if (cpc) cpc.onchange = () => { const v = +cpc.value; cpSetOpts({ pct: (v >= 0 && v <= 90) ? v : 10 }); renderCards(); cashPlanRun(true); };
   const cps = $('cpSet'); if (cps) cps.onchange = () => { cpSetOpts({ set: cps.value }); renderCards(); cashPlanRun(true); };
