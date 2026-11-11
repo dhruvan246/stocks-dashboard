@@ -29508,3 +29508,23 @@ moves a slot by < 0.00005 pp, check shp_rebase226.json.gz for a pair on that slo
 Not our errors (re-read): KARURVYSYA Mar-16 (own original = NSE ndsId 108111; BSE's Mar-16 XBRL/Table III carry Jun-16
 holdings), event rows INDHOTEL 01-Mar-16, COHANCE 29-Sep-20, IDBI 28-Dec-18, CENTRALBK 28-Mar-19 (the reader picks the
 quarter's document, not the event's - verdicts from the event files read 18-Oct stand).
+
+## §238 — FII/DII daily table back to 2020: FII rows from NSDL (2026-11-11, user: "Yes, add 2020→now")
+
+The exchange feed `docs/fii_dii.json` only starts 2026-04-29 (NiftyTrader's free endpoint serves ~30 days; its 5Y view
+is behind their site's login — not used). No free source with daily exchange-provisional FII **and** DII back to 2020
+was found (Moneycontrol ~30 d, StockEdge ~50 d, StockeZee ~1 y, Traderscockpit monthly only). The user chose NSDL.
+- **Source:** NSDL "Daily Trends in FPI Investments" archive (`fpi.nsdl.co.in/web/Reports/Archive.aspx`, ASP.NET form,
+  one POST per date returns that month's reporting days + "Total for <Month>"). Row kept: **Equity → Stock Exchange**
+  gross purchases / gross sales / net. Builder `scripts/fetch_fii_nsdl.py` → `docs/fii_nsdl_daily.json`
+  `rows: [tradeDate, buy, sell, net, nsdlReportDate(, [sessions covered])]` + `anchor` (report bounding row 1).
+- **Dates:** NSDL reports the previous trading day(s). A row covers every NSE session (`nifty.json`) from the previous
+  report date to the day before its own; when NSDL is shut on a session the next report covers 2 (once 3) sessions —
+  45 such rows 2020→Nov-2026, tagged "NSDL · N days". A report with no session yet in nifty.json is held, never guessed.
+- **Checks (script refuses to write):** each month's daily rows = NSDL's own month total (buy, sell, net); measured
+  2026-11-11: 84/84 months Dec-2019→Nov-2026 pass, 1,704 NSE sessions 2020-01-01→2026-11-09 each covered exactly once.
+- **Not the same series** as the exchange provisional figures (e.g. Aug-2023 net: NSDL +11,343 vs exchange −20,621 cr).
+  The page shows NSDL rows ONLY before the first exchange row, tags them, says so above the table, and shows DII as "·".
+  Cards and charts still use the exchange feed only.
+- **Upkeep:** `refresh-fii-dii.yml` runs `fetch_fii_nsdl.py` (top-up: last 2 months + this one) after the main fetch;
+  a failure only warns and keeps the committed copy. Top-up output was measured byte-equal to `--full` on 2026-11-11.

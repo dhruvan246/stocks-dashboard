@@ -44,6 +44,12 @@ jobs:
       - name: Fetch latest FII/DII activity
         run: python3 scripts/fetch_fii_dii.py
 
+      - name: Top up NSDL daily FII (older rows of the daily table, runbook §238)
+        # Re-reads the last 2 months + this one from NSDL and refuses to write unless every
+        # month's daily rows add up to NSDL's own month total. A failure here must not stop
+        # the exchange feed above from landing, so it only warns (the file keeps its last good copy).
+        run: python3 scripts/fetch_fii_nsdl.py || { git checkout -- docs/fii_nsdl_daily.json; echo "::warning::NSDL FII top-up failed - kept the committed copy"; }
+
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
@@ -59,7 +65,7 @@ jobs:
           # ledger, so those four land together or not at all. A file origin changed during the run stays
           # origin's with a ::warning:: - the next run re-reads it from there (runbook §212).
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
-          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_fo.json docs/fii_fo_lots.json \
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_nsdl_daily.json docs/fii_fo.json docs/fii_fo_lots.json \
                  docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json \
                  scripts/_fo_stk_state.json scripts/_fo_stk_lots/
           cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
@@ -69,7 +75,7 @@ jobs:
             git reset --hard origin/main
             python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each \
               --group 'docs/fii_fo.json docs/fii_fo_lots.json scripts/_fo_stk_state.json scripts/_fo_stk_lots/'
-            git add docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_fo.json docs/fii_fo_lots.json docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json scripts/_fo_stk_state.json scripts/_fo_stk_lots
+            git add docs/fii_dii.json docs/fii_dii_monthly.json docs/fii_nsdl_daily.json docs/fii_fo.json docs/fii_fo_lots.json docs/nifty.json docs/nifty500.json docs/nifty_bank.json docs/india_vix.json scripts/_fo_stk_state.json scripts/_fo_stk_lots
 
             if git diff --cached --quiet; then
               echo "No new FII/DII data — nothing to commit"
