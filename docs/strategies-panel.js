@@ -1557,6 +1557,7 @@ function ensureZbDlg(){
   w.innerHTML = '<div class="card" id="zbDlg">' +
     '<h3 id="zbTitle"></h3><div class="sub" style="padding:0" id="zbSub"></div>' +
     '<div class="krow"><label>₹ to deploy<input id="zbAmt" type="number" min="0" step="10000" placeholder="e.g. 500000"></label>' +
+    '<label id="zbVerL" style="display:none" title="As planned = the saved cash plan. All MTF = every no-MTF pick swapped for the next-ranked MTF stock (same as the This-rebalance selector)">Version<select id="zbVer"><option value="plan">As planned</option><option value="mtf">All MTF</option></select></label>' +
     '<label>Split ₹ as<select id="zbMode"><option value="value">Order value</option><option value="margin">Funds used (margin)</option></select></label></div>' +
     '<div class="krow"><label>Product<select id="zbProd"><option value="MTF">MTF (margin)</option><option value="CNC">Delivery (CNC)</option><option value="MIS">Intraday (MIS)</option></select></label>' +
     '<label>Order type<select id="zbType"><option value="MARKET">Market</option><option value="LIMIT">Limit (set price per row)</option></select></label></div>' +
@@ -1571,6 +1572,7 @@ function ensureZbDlg(){
   $('zbCancel').onclick = () => $('zbWrap').classList.remove('open');
   $('zbAmt').addEventListener('input', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbMode').addEventListener('change', () => { zbAlloc(); zbRender(); zbMarginSoon(true); });
+  $('zbVer').addEventListener('change', () => { try { localStorage.setItem('sp_reb_ver', $('zbVer').value); } catch (e){} zbVerApply(); zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbProd').addEventListener('change', () => { ZB.rows.forEach(r => { r.mps = 0; r.margin = null; }); zbAlloc(); zbRender(); zbMarginSoon(true); });
   $('zbType').addEventListener('change', () => { const lim = $('zbType').value === 'LIMIT';
     ZB.rows.forEach(r => { if (lim && !(r.limit > 0)) r.limit = r.px; }); zbRender(); zbArmReset(); });
@@ -1659,7 +1661,7 @@ function zbRender(){
       : r.st === 'fail' ? '<span class="zchip bad" title="' + esc(r.msg) + '">FAILED</span>'
       : r.st ? '<span class="zchip open">' + esc(r.st) + '</span>' : '';
     h += '<tr><td><input type="checkbox" data-i="' + i + '"' + (r.on ? ' checked' : '') + '></td>' +
-      '<td><b>' + esc(r.sym) + '</b>' + (r.back ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 same quantity back">buy back</span>' : r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (r.mvIn || r.got) ? ' <span class="tag keep" title="Netting: shares another strategy sells this rebalance move here at the official close instead (no trade), and shares this strategy already got this rebalance are not bought again \u2014 only the rest is bought">' + [r.mvIn ? r.mvIn.toLocaleString('en-IN') + ' move in from ' + esc(r.mvFrom) : '', r.got ? r.got.toLocaleString('en-IN') + ' already bought' : ''].filter(Boolean).join(' \u00b7 ') + '</span>' : (Z.held.has(r.sym) ? ' ' + heldTag(r.sym, zit) : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
+      '<td><b>' + esc(r.sym) + '</b>' + (r.forS ? ' <span class="tag keep" title="' + esc(r.forS) + ' has no MTF — the next-ranked MTF stock">for ' + esc(r.forS) + '</span>' : '') + (r.back ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 same quantity back">buy back</span>' : r.kept ? ' <span class="tag keep">kept \u2014 riding, not re-bought</span>' : (r.mvIn || r.got) ? ' <span class="tag keep" title="Netting: shares another strategy sells this rebalance move here at the official close instead (no trade), and shares this strategy already got this rebalance are not bought again \u2014 only the rest is bought">' + [r.mvIn ? r.mvIn.toLocaleString('en-IN') + ' move in from ' + esc(r.mvFrom) : '', r.got ? r.got.toLocaleString('en-IN') + ' already bought' : ''].filter(Boolean).join(' \u00b7 ') + '</span>' : (Z.held.has(r.sym) ? ' ' + heldTag(r.sym, zit) : '')) + (r.live ? '' : ' <span class="badge">EOD</span>') + '</td>' +
       '<td>' + (r.px ? '₹' + (+r.px).toFixed(2) + baCell(r.sym) : '—') + '</td>' +
       '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
@@ -1670,6 +1672,31 @@ function zbRender(){
   h += '</tbody><tfoot><tr><td colspan="9" style="text-align:right" id="zbTot"></td></tr></tfoot>';
   $('zbTbl').innerHTML = h; $('zbTbl').classList.toggle('lim', lim); zbFoot();
   $('zbGo').style.display = Z.connected ? '' : 'none';
+}
+/* zba70: the basket in two versions, like the This-rebalance table — only for a strategy the cash plan sized */
+function zbVerBuild(it){
+  ZB.planRows = ZB.rows; ZB.mtfRows = null; ZB.planAmt = $('zbAmt').value;
+  const cp = planFor(it), P = cpDoc(), AM = (cp && !cp.excl && P) ? allMtfPlan(P) : null, o = AM && AM.R.S[it.id];
+  if (o && !o.excl && Object.keys(AM.sw[it.id] || {}).length){
+    const sw = AM.sw[it.id], held = heldFor(it.cfg);
+    ZB.mtfRows = (o.picks || []).map(sym => { const q = liveQ(sym), px = (q && q.ltp != null) ? +q.ltp : +(AM.px[sym] || o.px[sym] || 0);
+      const r = { sym: sym, px: px, limit: px, live: !!(q && q.ltp != null), on: true, qty: 0, st: '', msg: '', margin: null, mps: 0, chg: 0, forS: sw[sym] || '' };
+      const kq0 = (o.keep || {})[sym];
+      if ((kq0 && !((o.buyQ || {})[sym] > 0)) || (o.stays || []).indexOf(sym) >= 0){ r.on = false; r.kept = true; return r; }
+      const N = planNeed(it, o, sym, px); if (!N){ r.on = false; return r; }
+      if (kq0 && held){ const hq = held.rows.filter(h => h.sym === sym).reduce((a, h) => a + h.qty, 0); N.need = Math.min(N.need, Math.max(0, (o.holdQ[sym] || 0) - hq)); r.topup = true; }
+      r.mvIn = N.mvIn; r.mvFrom = N.mvFrom; r.got = N.got; r.planQ = N.need; r.on = r.planQ > 0; return r; });
+  }
+  $('zbVerL').style.display = ZB.mtfRows ? '' : 'none';
+  $('zbVer').value = ZB.mtfRows && rebVer() === 'mtf' ? 'mtf' : 'plan';
+  ZB.sub0 = $('zbSub').textContent;
+  zbVerApply();
+}
+function zbVerApply(){
+  const m = !!ZB.mtfRows && $('zbVer').value === 'mtf';
+  ZB.rows = m ? ZB.mtfRows : ZB.planRows;
+  $('zbAmt').value = m ? Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0)) : ZB.planAmt;
+  $('zbSub').textContent = ZB.sub0 + (m ? ' · ALL MTF version: ' + ZB.rows.filter(r => r.forS).map(r => r.sym + ' for ' + r.forS).join(', ') + ', every slot re-worked — the saved plan still lists the old pick (press Swap on it and Re-plan to make this the plan).' : '');
 }
 function zBasketOpen(id){
   const it = strategies().find(x => x.id === id), p = PICKS[id];
@@ -1731,6 +1758,7 @@ function zBasketOpen(id){
       (backs.length ? '; ' + backs.map(b => b.sym + ' \u00d7 ' + b.qty.toLocaleString('en-IN')).join(', ') + ' = buy back (sold on ' + RW.tlab + ', stayed in the final screen)' : '') +
       '; amount = ' + (PR ? 'actual sell proceeds captured on ' + RW.tlab + ' (' + zinr(exitVal) + ')' : 'the exits\u2019 value at today\u2019s prices (no proceeds captured \u2014 the exits were sold at the ' + RW.tlab + ' close)') + ' per open slot \u2014 edit if needed.';
   })();
+  zbVerBuild(it);
   zbAlloc(); zbRender();
   $('zbWrap').classList.add('open');
   zbMarginSoon(true);
