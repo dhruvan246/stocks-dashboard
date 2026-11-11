@@ -1679,6 +1679,7 @@ function zbVerBuild(it){
   const cp = planFor(it), P = cpDoc(), AM = (cp && !cp.excl && P) ? allMtfPlan(P) : null, o = AM && AM.R.S[it.id];
   if (o && !o.excl && Object.keys(AM.sw[it.id] || {}).length){
     const sw = AM.sw[it.id], held = heldFor(it.cfg);
+    ZB.mtfSlot = (AM.R.acct || {}).slotP || 0;
     ZB.mtfRows = (o.picks || []).map(sym => { const q = liveQ(sym), px = (q && q.ltp != null) ? +q.ltp : +(AM.px[sym] || o.px[sym] || 0);
       const r = { sym: sym, px: px, limit: px, live: !!(q && q.ltp != null), on: true, qty: 0, st: '', msg: '', margin: null, mps: 0, chg: 0, forS: sw[sym] || '' };
       const kq0 = (o.keep || {})[sym];
@@ -1696,7 +1697,7 @@ function zbVerApply(){
   const m = !!ZB.mtfRows && $('zbVer').value === 'mtf';
   ZB.rows = m ? ZB.mtfRows : ZB.planRows;
   $('zbAmt').value = m ? Math.round(ZB.rows.reduce((a, r) => a + (r.on && r.planQ ? r.planQ * r.px : 0), 0)) : ZB.planAmt;
-  $('zbSub').textContent = ZB.sub0 + (m ? ' · ALL MTF version: ' + ZB.rows.filter(r => r.forS).map(r => r.sym + ' for ' + r.forS).join(', ') + ', every slot re-worked — the saved plan still lists the old pick (press Swap on it and Re-plan to make this the plan).' : '');
+  $('zbSub').textContent = ZB.sub0 + (m ? ' · ALL MTF version: ' + ZB.rows.filter(r => r.forS).map(r => r.sym + ' for ' + r.forS).join(', ') + ', every slot re-worked to ' + zinr(ZB.mtfSlot || 0) + ' (instead of the plan’s slot above) — the saved plan still lists the old pick (press Swap on it and Re-plan to make this the plan).' : '');
 }
 function zBasketOpen(id){
   const it = strategies().find(x => x.id === id), p = PICKS[id];
