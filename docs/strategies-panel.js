@@ -1141,9 +1141,32 @@ function cpControlsHTML(P, frozen){
    (MTF or cash), and its book value now vs after the plan, both at live prices — gross, before the MTF loan. MTF → cash
    shrinks the book (the loan is repaid), cash → MTF grows it (a new loan); what you own changes only by the charges.
    Reads the plan as worked out (holdQ) and today's demat buckets (Z.hraw); a mixed holding sells its MTF shares first. */
+/* zba68: the cash plan re-worked with every no-MTF pick swapped for the next-ranked MTF stock (same rule as the Swap
+   button) — same free cash, cash %, mode and mix as the plan, today's prices. Nothing is saved: it only feeds the
+   Swap check's "· all MTF" columns. null when the inputs are missing; .sw = { id: { newSym: oldSym } } */
+function allMtfPlan(P){
+  try {
+    const books = uniqStrategies().filter(it => { const h = heldFor(it.cfg); return h && Array.isArray(h.rows) && PICKS[it.id] && PICKS[it.id].rows; });
+    if (!books.length) return null;
+    const lev = Object.assign({}, P.lev || {}), sw = {}, px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
+    Object.keys(MTFL.lev).forEach(s => { if (lev[s] == null && MTFL.lev[s] != null) lev[s] = +MTFL.lev[s]; });
+    let wait = false;
+    const strats = books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3, pk = PICKS[it.id];
+      const base = pk.rows.slice(0, topN).map(r => r.sym), used = new Set([...(pk.base || pk.rows).map(r => r.sym), ...base]);
+      const picks = base.map(s => { const v = lev[s]; if (v == null || v > 1.05) return s;
+        const n = swNextAlt(pk, used); if (n.wait) wait = true; if (!n.alt) return s;
+        used.add(n.alt.sym); (sw[it.id] = sw[it.id] || {})[n.alt.sym] = s; return n.alt.sym; });
+      pk.rows.concat(pk.alts || []).forEach(r => { if (px[r.sym] == null) px[r.sym] = pxOf(r.sym, +r.px); });
+      h.rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } });
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: picks, carry: scashCarry(it.id, P.k) }; });
+    const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: (P.acct && P.acct.free) || 0, buf: CP_BUF, net: true, cashPct: P.cashPct != null ? P.cashPct : 0.1, mode: P.mode, excl: P.exclIds || [] });
+    return { R: R, sw: sw, lev: lev, px: px, wait: wait };
+  } catch (e){ return null; }
+}
 function swapCheckHTML(list){
   const P = cpDoc(); if (!P) return '';
-  const H = Z.hraw || {}, LV = P.lev || {};
+  const H = Z.hraw || {}, LV = P.lev || {}, AM = allMtfPlan(P);
+  let tAftM = 0, tCashM = 0, tBuyM = 0, tNowM = 0;
   const px = (s, o) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : (H[s] && H[s].ltp) ? +H[s].ltp : (o && o.px && o.px[s]) || 0; };
   const holdKind = s => { const z = H[s]; if (!z) return { k: '?', t: 'not in Zerodha' };
     const m = (z.mq || 0), c = (z.cq || 0);
@@ -1169,23 +1192,29 @@ function swapCheckHTML(list){
       if (!exits.length && bm) grp.mm.push('#' + n); }
     const sells = exits.map((r, i) => '<b>' + esc(r.sym) + '</b> <span class="sym">' + ((o.trim || {})[r.sym] ? (o.trim[r.sym]).toLocaleString('en-IN') + ' extra · ' : '') + esc(sk[i].t) + '</span>').join('<br>') || '<span class="sym">none</span>';
     const bys = buys.map((s, i) => '<b>' + esc(s) + '</b> <span class="sym">' + bk[i] + '</span>').join('<br>') || '<span class="sym">none</span>';
-    const pk = PICKS[it.id], used = new Set([...((pk && pk.base) || []).map(r => r.sym), ...(o.picks || [])]);   // all-MTF version of the buys: a no-MTF buy -> the next-ranked MTF stock (same rule as the picks' Swap button)
-    const allM = buys.map(s => { const lv = levKnown(s) ? +MTFL.lev[s] : (LV[s] != null ? +LV[s] : null);
-      if (lv == null) return '<b>' + esc(s) + '</b> ' + levHTML(s);
-      if (lv > 1.05) return '<b>' + esc(s) + '</b> <span class="sym">MTF ' + lv.toFixed(2) + 'x</span>';
-      const n = pk ? swNextAlt(pk, used) : { alt: null, wait: false };
-      if (n.alt){ used.add(n.alt.sym); return '<b>' + esc(n.alt.sym) + '</b> <span class="sym">MTF ' + (+MTFL.lev[n.alt.sym]).toFixed(2) + 'x</span> <span class="tag keep" title="' + esc(s) + ' has no MTF \u2014 the next-ranked stock with MTF in this strategy">for ' + esc(s) + '</span>'; }
-      return '<b>' + esc(s) + '</b> <span class="sym">cash \u00b7 ' + (n.wait ? 'checking the next ranks\u2026' : 'no MTF stock in the next ' + SW_DEPTH) + '</span>'; }).join('<br>') || '<span class="sym">none</span>';
+    const oM = AM && AM.R.S[it.id], swM = (AM && AM.sw[it.id]) || {};
+    const buysM = oM ? (oM.picks || []).filter(s => (oM.buyQ || {})[s] > 0) : [];
+    const allM = !oM ? '<span class="sym">—</span>' : buysM.map(s => { const lv = AM.lev[s];
+      return '<b>' + esc(s) + '</b> <span class="sym">' + (lv != null && lv > 1.05 ? 'MTF ' + (+lv).toFixed(2) + 'x' : 'cash') + '</span>' +
+        (swM[s] ? ' <span class="tag keep" title="' + esc(swM[s]) + ' has no MTF — the next-ranked stock with MTF in this strategy">for ' + esc(swM[s]) + '</span>' : ''); }).join('<br>') || '<span class="sym">none</span>';
+    let mCells = '<td class="sym">—</td><td class="sym">—</td><td class="sym">—</td>';
+    if (oM){ const pM = sy => +(AM.px[sy] || px(sy, o));
+      const aftM = rows.filter(r => (oM.stays || []).indexOf(r.sym) >= 0).reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (oM.picks || []).reduce((a, sy) => a + (oM.holdQ[sy] || 0) * pM(sy), 0);
+      const cashM = oM.cashV || 0, dM = aftM + cashM - now, buyM = buysM.reduce((a, sy) => a + oM.buyQ[sy] * pM(sy), 0);
+      tAftM += aftM; tCashM += cashM; tBuyM += buyM; tNowM += now;
+      const chgM = !exits.length && !buysM.length ? '<span class="sym">no trades</span>' : Math.abs(dM) < 0.01 * now ? '<span class="sym">about the same</span>'
+        : '<span class="' + (dM < 0 ? 'down' : 'up') + '">' + (dM < 0 ? '−' : '+') + zinr(Math.abs(dM)) + '</span>';
+      mCells = '<td>' + zinr(aftM) + '</td><td>' + (cashM ? '<b>' + zinr(cashM) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chgM + '</td>'; }
     const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
       : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
     return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
-      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
+      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td>' + mCells + '</tr>'; }).join('');
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   const pcS = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, modeS = P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only';
   return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub"><b>' + modeS + '</b>' + (P.set ? ' · plan for ' + esc(P.set) : '') + ' · cash ' + pcS + '% · sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
-    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th title="The same buys with every no-MTF stock swapped for the next-ranked stock that has MTF \u2014 what the Swap button on the picks would buy">Buys · all MTF</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Its share of the cash kept back — Cash % of its shares">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
-    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th title="The same buys with every no-MTF stock swapped for the next-ranked stock that has MTF \u2014 what the Swap button on the picks would buy">Buys · all MTF</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Its share of the cash kept back — Cash % of its shares">To cash</th><th>Change</th><th class="mtfx" title="Shares after the buys if every no-MTF pick is swapped for the next-ranked MTF stock — the plan re-worked at today’s prices, same cash % and free cash">After · all MTF</th><th class="mtfx" title="Cash kept back in the all-MTF version">To cash · all MTF</th><th class="mtfx">Change · all MTF</th></tr></thead><tbody>' + rowsH +
+    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td>' + (AM ? zinr(tBuyM) : '') + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td>' + (AM ? '<td>' + zinr(tAftM) + '</td><td><b>' + zinr(tCashM) + '</b></td><td class="' + (tAftM + tCashM - tNowM < 0 ? 'down' : 'up') + '">' + (tAftM + tCashM - tNowM < 0 ? '−' : '+') + zinr(Math.abs(tAftM + tCashM - tNowM)) + '</td>' : '<td></td><td></td><td></td>') + '</tr></tfoot></table></div>' +
     '<div class="khelp"><b>Cash kept back: ' + zinr(tCash) + '</b> = ' + (tAft > 0 ? (Math.round(1000 * tCash / tAft) / 10) + '%' : pcS + '%') + ' of ' + zinr(tAft) + ' in shares after the buys (target ' + pcS + '%; the plan’s own-money cash is ' + zinr(P.acct.spare) + ').</div>' +
     '<div class="khelp"><b>Three kinds of swap:</b><br>' +
     '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same — it moves only as much as the new picks’ leverage differs.<br>' +
