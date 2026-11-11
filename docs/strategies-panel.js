@@ -237,7 +237,8 @@ function screenOne(it){
    first pass drops silently), spliced into SERIES as a real bar so every factor recomputes
    exactly. One implementation, shared with all-picks, so the two pages cannot diverge again.
    Rebalance mode is untouched: screening at SF.end never sees the spliced live bar. */
-  let PICKMODE = (function(){ try { return localStorage.getItem('sp_pick_mode') || 'reb'; } catch(e){ return 'reb'; } })();
+  let PICKMODE = (function(){ try { const v = localStorage.getItem('sp_pick_mode'); if (v) return v; } catch(e){}
+    try { return rebalWindow().in ? 'reb' : 'live'; } catch(e){ return 'reb'; } })();   // zba61 (user 11-Nov): with no saved choice, Live picks outside the rebalance window, Rebalance picks inside it
   let LIVEOV = { ts: 0, date: null, n: 0 };
   async function ensureLiveOverlay(cfgs, force){
     if (!force && LIVEOV.ts && Date.now() - LIVEOV.ts < 55000) return;
@@ -1900,7 +1901,7 @@ function rebalWindow(){
   const nextTD = d => { let t = new Date(d.getTime() + 864e5); while (wk(t)) t = new Date(t.getTime() + 864e5); return t; };
   const d0 = Date.UTC(y, m, now.getUTCDate());
   const iso = d => d.toISOString().slice(0, 10);
-  const EXT = { '2026-10-30': '2026-11-15' };   // zba57: user extended the Oct-2026 buy leg to 15 Nov (nothing bought 31 Oct-4 Nov); keyed by T, value = last buy day
+  const EXT = { '2026-10-30': '2026-11-10' };   // zba57: user extended the Oct-2026 buy leg (nothing bought 31 Oct-4 Nov); zba61: closed after the 4-Nov buys — keyed by T, value = last buy day
   const legs = t => { const t1 = nextTD(t), t2 = nextTD(t1); let t3 = nextTD(t2); const x = EXT[iso(t)]; if (x && Date.parse(x + 'T00:00:00Z') > +t3) t3 = new Date(x + 'T00:00:00Z'); return { t: t, t1: t1, t3: t3 }; };
   let L = legs(lastTD(y, m - 1));                                        // last month's buy leg can spill into this month
   if (!(d0 >= +L.t && d0 <= +L.t3)) L = legs(lastTD(y, m));
