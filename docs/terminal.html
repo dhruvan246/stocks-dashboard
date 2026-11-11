@@ -344,6 +344,10 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
         <span class="pfc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>
         <div class="pfc-body"><div class="pfc-top">Strategies</div><div class="pfc-sum"><span class="pfc-hint">picks &amp; basket orders</span></div></div>
       </div>
+      <div class="pfcard" id="fnoCard" role="tab" tabindex="0" title="F&amp;O plan — pot, 15% dip rule, roll and buy buttons">
+        <span class="pfc-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg></span>
+        <div class="pfc-body"><div class="pfc-top">F&amp;O plan</div><div class="pfc-sum"><span class="pfc-hint">B on 15% · 5 futures</span></div></div>
+      </div>
       <div class="mwtabs"><span class="t">Marketwatch</span></div>
       <div class="mwsearch"><span style="color:var(--text-3)">⌕</span><input id="searchInp" placeholder="Filter…" aria-label="Filter watchlist"></div>
       <div class="mwlist" id="mwlist"></div>
@@ -354,6 +358,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       <div id="acctView" class="acctview" style="display:none"></div>
       <div id="stratView" class="acctview" style="display:none"></div>
       <div id="ordView" class="acctview" style="display:none"></div>
+      <div id="fnoView" class="acctview" style="display:none"></div>
     </div>
 
     <div class="pane tk">
@@ -1188,12 +1193,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     document.getElementById('acctView').style.display=(v==='account')?'':'none';
     var sv=document.getElementById('stratView'); if(sv) sv.style.display=(v==='strategies')?'':'none';
     var ov=document.getElementById('ordView'); if(ov) ov.style.display=(v==='orders')?'':'none';
+    var fv=document.getElementById('fnoView'); if(fv) fv.style.display=(v==='fno')?'':'none';
+    var fc=document.getElementById('fnoCard'); if(fc) fc.classList.toggle('on',v==='fno');
     var c=document.getElementById('pfCard'); if(c) c.classList.toggle('on',v==='account');
     var sc=document.getElementById('stratCard'); if(sc) sc.classList.toggle('on',v==='strategies');
     var oc=document.getElementById('ordCard'); if(oc) oc.classList.toggle('on',v==='orders');
-    var MF={pfCard:'account',ordCard:'orders',stratCard:'strategies'};
+    var MF={pfCard:'account',ordCard:'orders',stratCard:'strategies',fnoCard:'fno'};
     document.querySelectorAll('.mftr [data-mf]').forEach(function(b){ b.classList.toggle('on',MF[b.dataset.mf]===v); });
-    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',(v==='account'||v==='strategies'||v==='orders'));
+    var b=document.querySelector('.body'); if(b) b.classList.toggle('acctmode',(v==='account'||v==='strategies'||v==='orders'||v==='fno'));
   }
   /* ---- native strategies panel (lazy-loads the engine + strategies-panel.js) ---- */
   var SP_LOADING=null;
@@ -1215,6 +1222,17 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     ensureStrategies().then(function(){ window.mountStrategies(sv,{theme:root.getAttribute('data-theme')}); })
       .catch(function(){ sv.innerHTML='<div class="acct-msg">Couldn\'t load the strategies engine — check your connection and try again.</div>'; });
   }
+  /* ---- F&O plan panel (lazy-loads fno-panel.js; user 2026-11-11) ---- */
+  var FNO_LOADING=null;
+  function openFno(){
+    showView('fno');
+    var fv=document.getElementById('fnoView');
+    if(!window.mountFno) fv.innerHTML='<div class="acct-msg">Loading the F&amp;O plan…</div>';
+    FNO_LOADING=FNO_LOADING||loadScript('./fno-panel.js?v=fno1');
+    FNO_LOADING.then(function(){ window.mountFno(fv,{acctFetch:acctFetch,ktoast:ktoast,kiteSend:kiteSend,ipBlocked:ipBlocked,
+        refresh:function(){ if(ACCT.connected){ renderAcct(true); renderOrders(true); } }}); })
+      .catch(function(){ FNO_LOADING=null; fv.innerHTML='<div class="acct-msg">Couldn\'t load the F&amp;O plan — check your connection and try again.</div>'; });
+  }
   (function(){
     function bindCard(id,fn){ var card=document.getElementById(id); if(!card)return;
       card.addEventListener('click',fn);
@@ -1222,6 +1240,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     bindCard('pfCard',function(){ showView('account'); renderAcct(false); });
     bindCard('ordCard',openOrders);
     bindCard('stratCard',openStrategies);
+    bindCard('fnoCard',openFno);
   })();
   /* ---- per-row SELL with value-sliced execution (user 2026-08-31: "should not sell all
      quantity at once because my quantity is high") ----
@@ -1498,6 +1517,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   })();
   /* deep-link: terminal.html#strategies opens the Strategies panel straight away (e.g. the portfolio header's 🧺 Strategies) */
   (function(){ if((location.hash||'').toLowerCase()==='#strategies' && !new URL(location.href).searchParams.get('request_token')) openStrategies(); })();
+  (function(){ if((location.hash||'').toLowerCase()==='#fno' && !new URL(location.href).searchParams.get('request_token')) openFno(); })();
   /* ---- near-live account refresh (user 2026-08-31: "cant we make it live?") ----
      Quantities and P&L refresh every 4s while you're LOOKING at the account, instead of every
      30s. It reads holdings/positions/margins directly — no /status round-trip — and skips a
@@ -1532,6 +1552,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
   <button data-mf="pfCard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"/></svg><span>Positions</span></button>
   <button data-mf="ordCard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg><span>Orders</span></button>
   <button data-mf="stratCard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg><span>Strategies</span></button>
+  <button data-mf="fnoCard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><span>F&amp;O</span></button>
 </nav>
 <script>
 document.getElementById('mFtr').addEventListener('click',function(e){
@@ -1539,6 +1560,8 @@ document.getElementById('mFtr').addEventListener('click',function(e){
   var c=document.getElementById(b.dataset.mf); if(c) c.click();
   window.scrollTo({top:0,behavior:'smooth'});
 });
+(function(){ var mf={'#fno':'fnoCard','#strategies':'stratCard'}[(location.hash||'').toLowerCase()];   // a deep link opened its view before this bar existed
+  if(mf){ var x=document.querySelector('#mFtr [data-mf="'+mf+'"]'); if(x) x.classList.add('on'); } })();
 </script>
 </body>
 </html>
