@@ -1228,7 +1228,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     showView('fno');
     var fv=document.getElementById('fnoView');
     if(!window.mountFno) fv.innerHTML='<div class="acct-msg">Loading the F&amp;O plan…</div>';
-    FNO_LOADING=FNO_LOADING||loadScript('./fno-panel.js?v=fno1');
+    FNO_LOADING=FNO_LOADING||loadScript('./fno-panel.js?v=fno2');
     FNO_LOADING.then(function(){ window.mountFno(fv,{acctFetch:acctFetch,ktoast:ktoast,kiteSend:kiteSend,ipBlocked:ipBlocked,
         refresh:function(){ if(ACCT.connected){ renderAcct(true); renderOrders(true); } }}); })
       .catch(function(){ FNO_LOADING=null; fv.innerHTML='<div class="acct-msg">Couldn\'t load the F&amp;O plan — check your connection and try again.</div>'; });

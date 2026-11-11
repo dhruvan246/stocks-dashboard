@@ -1,0 +1,76 @@
+# F&O AUTO-PILOT (user 2026-11-11: "Yes, build auto-pilot") — scripts/fno_autopilot.mjs.
+#
+# Runs the terminal's own F&O plan panel (docs/fno-panel.js, window.fnoAuto) for the plan "B on 15%" on five stock
+# futures. Every trading day: 14:30 IST the roll leg (a held contract ≤ 3 trading days from expiry → next month),
+# and the rule leg — started for 15:05 IST, it waits until 15:20 IST, checks the rule on the live pot and places what is
+# due (sell to 4x / buy-back / dip buy) before the 15:30 close; a 15:15 backup pass finishes anything the first missed.
+# It acts ONLY while the user's switch in the F&O tab is ON; otherwise every pass exits in seconds at the pre-check.
+#
+# The daily Zerodha login stays the user's (2FA). This repo and its logs are PUBLIC: the script prints counts and
+# states only; the token, the worker address and the alert topic come from repo secrets (PF_HOLDINGS_TOKEN,
+# PF_KITE_WORKER, NTFY_TOPIC).
+#
+# Manual rehearsal: Actions → "F&O auto-pilot" → Run workflow → mode "dry" (sends NOTHING, any day).
+name: F&O auto-pilot
+
+on:
+  # SCHEDULE — started by scripts/cron_dispatch.py (cron-job.org tick every 5 min), NOT GitHub cron (runbook §217). UTC.
+  # Weekday-only; the script skips NSE holidays from docs/nse_holidays.json.
+  # dispatch-cron: "0 9 * * 1-5"     # 14:30 IST — roll leg (+ Zerodha login check)
+  # dispatch-cron: "35 9 * * 1-5"    # 15:05 IST — rule leg (waits for 15:20 IST inside)
+  # dispatch-cron: "45 9 * * 1-5"    # 15:15 IST — rule backup pass (only if today's check is not done)
+  repository_dispatch:
+    types: [tick-fno-autopilot]   # sent by scripts/cron_dispatch.py
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry = rehearse (sends NOTHING, any day) · auto = act only if switched ON'
+        type: choice
+        options: [dry, auto]
+        default: dry
+      leg:
+        description: 'which leg'
+        type: choice
+        options: [rule, roll]
+        default: rule
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fno-autopilot
+  cancel-in-progress: false
+
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PF_HOLDINGS_TOKEN: ${{ secrets.PF_HOLDINGS_TOKEN }}
+      PF_KITE_WORKER: ${{ secrets.PF_KITE_WORKER }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      AP_MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'auto' }}
+      AP_LEG: ${{ github.event_name == 'workflow_dispatch' && inputs.leg || '' }}
+      AP_SLOT: ${{ github.event.client_payload.schedule || '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts/fno_autopilot.mjs
+            docs/nse_holidays.json
+            docs/fno_contracts.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pre-check (calendar, switch, Zerodha login — no browser)
+        id: pre
+        run: node scripts/fno_autopilot.mjs --precheck
+      - name: Install Playwright (only when there is a leg to run)
+        if: steps.pre.outputs.go == 'true'
+        run: |
+          npm install playwright@^1.48
+          npx playwright install --with-deps chromium
+      - name: Run the leg through the panel's own steps
+        if: steps.pre.outputs.go == 'true'
+        run: node scripts/fno_autopilot.mjs

@@ -12,7 +12,12 @@
          armed and pot ≥15% under high → DIP BUY up to 3.5x, disarmed until a new high
        (same order as the backtest engine sim5.run5(trig=15, Lb=3.5, bb=True)).
      - Rolls: within N days of expiry, sell the month's contract and buy the next month's (next month's own lot).
-   Orders are only ever sent by the user's two clicks (arm → confirm); nothing is placed on its own.
+   Orders are sent by the user's two clicks (arm → confirm) — or, ONLY while the user has switched the AUTO-PILOT on
+   in this tab (user 2026-11-11: "Yes, build auto-pilot"; ON until switched off; dip buy + buy-back, sell to 4x and
+   the monthly roll), by the cloud robot scripts/fno_autopilot.mjs, which runs window.fnoAuto below — the same plan
+   and order functions as the buttons:  14:30 IST roll (a held contract ≤ 3 trading days from expiry),  15:20 IST
+   rule check on the live pot (the user chose 3:20 PM over next-morning) and its orders before the 15:30 close.
+   Claude never switches it on.
    State lives in the token-addressed synced row <pf_token>.fnopot (same store/secret as the basket amounts), so the
    phone, the laptop and the local alert job (~/stocks-cache/zerodha-ACH754/fno_alert.py) see one pot. */
 (function () {
@@ -23,6 +28,7 @@
   const SECRET = 'sw_owner_8Kq2Lm9Xp4Rt7v';          // same public write secret strategies-panel.js / sw-sync.js ship
   const DEF = { syms: ['CDSL', 'CANBK', 'POWERINDIA', 'GODREJPROP', 'BHEL'], trig: 15, buyTo: 3.5, maxLev: 4, bb: 5,
                 maxLots: 10, rollDays: 7, gapMs: 1200 };
+  let AUTOARM = false, AUTOT = 0, READY = false;
   let API = null, EL = null, POS = null, POSERR = '', CON = null, PREVIEW = null, ARMED = false, ARMT = 0, RUN = null, TIMER = 0;
 
   /* ---------- small helpers ---------- */
@@ -47,15 +53,15 @@
     const v = parseFloat(s); return isFinite(v) ? v * m : NaN; };
 
   /* ---------- synced doc ---------- */
-  function blank() { return { v: 1, cfg: Object.assign({ ts: 0 }, DEF), rec: null, st: { ts: 0, H: null, Hd: '', armed: true, pend: false, low: null, evalDate: '', due: [] }, log: [] }; }
+  function blank() { return { v: 1, cfg: Object.assign({ ts: 0 }, DEF), rec: null, st: { ts: 0, H: null, Hd: '', armed: true, pend: false, low: null, evalDate: '', due: [] }, log: [], auto: { ts: 0, on: false, at: 0 } }; }
   function docGet() { try { const d = JSON.parse(localStorage.getItem(LS) || 'null'); if (d && d.v === 1) return fill(d); } catch (e) {} return blank(); }
-  function fill(d) { const b = blank(); d.cfg = Object.assign(b.cfg, d.cfg || {}); d.st = Object.assign(b.st, d.st || {}); d.log = d.log || []; return d; }
+  function fill(d) { const b = blank(); d.cfg = Object.assign(b.cfg, d.cfg || {}); d.st = Object.assign(b.st, d.st || {}); d.auto = Object.assign(b.auto, d.auto || {}); d.log = d.log || []; return d; }
   function merge(a, b) {          // newest section wins; the log is a union by time
     a = fill(a); b = fill(b);
     const pick = (x, y, k) => ((y || {})[k] || 0) >= ((x || {})[k] || 0) ? y : x;
     const L = {}; a.log.concat(b.log).forEach(e => { L[e.t + '|' + e.k] = e; });
     return { v: 1, cfg: pick(a.cfg, b.cfg, 'ts'), rec: (a.rec || b.rec) ? pick(a.rec, b.rec, 't') : null,
-             st: pick(a.st, b.st, 'ts'), log: Object.values(L).sort((x, y) => x.t - y.t).slice(-80) };
+             st: pick(a.st, b.st, 'ts'), auto: pick(a.auto, b.auto, 'ts'), log: Object.values(L).sort((x, y) => x.t - y.t).slice(-80) };
   }
   function row() { try { const t = localStorage.getItem('pf_token') || ''; return t ? t + '.fnopot' : ''; } catch (e) { return ''; } }
   async function gunzipB64(z) { const by = Uint8Array.from(atob(z), c => c.charCodeAt(0));
@@ -88,6 +94,18 @@
     try { const r = await fetch('./fno_contracts.json', { cache: 'no-store' }); if (r.ok) CON = await r.json(); } catch (e) {}
     return CON;
   }
+  let HOL = null;
+  async function loadHolidays() {
+    if (HOL) return HOL;
+    try { const r = await fetch('./nse_holidays.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json();
+      HOL = new Set(Object.values(j.holidays || {}).flatMap(y => Object.keys(y))); } } catch (e) {}
+    return HOL || new Set();
+  }
+  // trading days from tomorrow up to and including the expiry day (expiry tomorrow = 1; today = 0)
+  function tdTo(exp) { const H = HOL || new Set(); let n = 0, t = Date.parse(today() + 'T00:00:00Z'); const e = Date.parse(exp + 'T00:00:00Z');
+    if (!(e >= t)) return 0;
+    while (t < e) { t += 864e5; const d = new Date(t), g = d.getUTCDay(); if (g !== 0 && g !== 6 && !H.has(d.toISOString().slice(0, 10))) n++; }
+    return n; }
   function contracts(sym) { const f = (CON && CON.f && CON.f[sym]) || []; return f.map(c => ({ ts: c[0], exp: c[1], lot: c[2], settle: c[3], close: c[4] })); }
   function conOf(ts) { for (const s in (CON && CON.f) || {}) for (const c of CON.f[s]) if (c[0] === ts) return { sym: s, ts, exp: c[1], lot: c[2], settle: c[3] }; return null; }
   function symOf(ts, syms) { const m = /^([A-Z0-9&-]+?)(\d{2}[A-Z]{3})FUT$/.exec(ts || ''); return m && syms.includes(m[1]) ? m[1] : null; }
@@ -108,6 +126,7 @@
   }
 
   /* ---------- the pot ---------- */
+  function pnlSum(P) { let s = 0; for (const k in P) s += P[k].pnl; return s; }   // Zerodha's "P&L" (since the buy price)
   function m2mSum(P) { let s = 0; for (const k in P) s += P[k].m2m; return s; }
   function potCalc(d, P) {
     const rec = d.rec; if (!rec || !P) return null;
@@ -163,9 +182,10 @@
       const nq = Math.floor(p.q * f / lot) * lot; if (p.q - nq > 0) out.push(ord(ts, 'SELL', p.q - nq, p.sym, p.ltp, ((p.q - nq) / lot) + ' lots')); }
     return { orders: out, note: 'Sell back to ' + c.maxLev + 'x: positions ' + money(pos) + ' → about ' + money(c.maxLev * a) + ' (each stock cut by the same share, whole lots).' };
   }
-  function planRoll(d, P) {
+  function planRoll(d, P, inWin) {
     const c = d.cfg, H = heldBySym(P, c.syms), out = [], lines = [];
-    c.syms.forEach(s => { H[s].all.forEach(h => { if (!h.exp || daysTo(h.exp) > c.rollDays || !(h.q > 0)) return;
+    inWin = inWin || (h => daysTo(h.exp) <= c.rollDays);
+    c.syms.forEach(s => { H[s].all.forEach(h => { if (!h.exp || !inWin(h) || !(h.q > 0)) return;
       const nx = contracts(s).find(x => x.exp > h.exp); if (!nx) { lines.push(s + ': next month not in the contract list yet'); return; }
       const nq = Math.round(h.q / nx.lot) * nx.lot;
       out.push(ord(h.ts, 'SELL', h.q, s, h.ltp, 'roll out'));
@@ -189,27 +209,36 @@
   /* ---------- placing (two clicks: arm, then confirm) ---------- */
   async function placeAll(kind) {
     if (!PREVIEW || !PREVIEW.orders.length || RUN) return;
-    const d = docGet(), list = []; PREVIEW.orders.forEach(o => slices(o, d.cfg.maxLots).forEach(x => list.push(x)));
-    RUN = { kind, n: list.length, done: 0, ok: 0, fail: [], stop: false }; render();
+    await sendOrders(kind, PREVIEW.orders, 'you');
+    toast(RUN.ok + ' of ' + RUN.n + ' orders placed' + (RUN.fail.length ? ' · ' + RUN.fail.length + ' problem(s)' : ''), 6000);
+    try { API.refresh(); } catch (e) {}
+    setTimeout(() => { RUN = null; PREVIEW = null; refresh(); }, 2500);
+  }
+  // who = 'you' (buttons) or 'auto-pilot' (robot: no Zerodha-basket fallback — a headless page can't use it)
+  async function sendOrders(kind, orders, who) {
+    const d = docGet(), list = []; orders.forEach(o => slices(o, d.cfg.maxLots).forEach(x => list.push(x)));
+    RUN = { kind, n: list.length, done: 0, ok: 0, fail: [], stop: false, placed: [], failed: [] }; render();
     for (const o of list) {
       if (RUN.stop) break;
       const body = { variety: 'regular', validity: 'DAY', tag: 'fnoplan', tradingsymbol: o.tradingsymbol, exchange: 'NFO', transaction_type: o.transaction_type, order_type: 'MARKET', quantity: o.quantity, product: 'NRML' };
       const r = await API.acctFetch('/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const msg = (r && r.j && r.j.message) || ('HTTP ' + (r && r.st));
-      if (r && r.st === 200 && r.j && r.j.data && r.j.data.order_id) RUN.ok++;
-      else if (API.ipBlocked(msg) || (r && r.st === 0)) {      // static-IP rule: hand the rest to Zerodha's basket (max 10)
+      if (r && r.st === 200 && r.j && r.j.data && r.j.data.order_id) { RUN.ok++; RUN.placed.push(o.transaction_type + ' ' + o.quantity + ' ' + o.tradingsymbol); }
+      else if (who === 'you' && (API.ipBlocked(msg) || (r && r.st === 0))) {      // static-IP rule: hand the rest to Zerodha's basket (max 10)
         const rest = list.slice(RUN.done).map(x => { const y = Object.assign({}, x); Object.keys(y).forEach(k => k[0] === '_' && delete y[k]); return y; });
         API.kiteSend(rest.slice(0, 10)); RUN.fail.push('direct orders blocked — ' + Math.min(10, rest.length) + ' sent to the Zerodha basket' + (rest.length > 10 ? ', ' + (rest.length - 10) + ' NOT sent (basket max 10)' : ''));
         RUN.done = list.length; break;
-      } else RUN.fail.push(o.transaction_type + ' ' + o.quantity + ' ' + o.tradingsymbol + ': ' + msg);
+      } else { RUN.fail.push(o.transaction_type + ' ' + o.quantity + ' ' + o.tradingsymbol + ': ' + msg); RUN.failed.push(o); }
       RUN.done++; render();
       if (RUN.done < list.length) await new Promise(res => setTimeout(res, d.cfg.gapMs));
     }
-    const dd = docGet(); logAdd(dd, 'orders', kind + ': ' + RUN.ok + ' of ' + RUN.n + ' orders placed' + (RUN.fail.length ? '; ' + RUN.fail.join(' | ') : ''));
-    if (RUN.ok && ['dip', 'bb', 'sell'].includes(kind)) dd.st.due = (dd.st.due || []).filter(x => x.k !== kind), dd.st.ts = Date.now();
-    save(dd, true); toast(RUN.ok + ' of ' + RUN.n + ' orders placed' + (RUN.fail.length ? ' · ' + RUN.fail.length + ' problem(s)' : ''), 6000);
-    try { API.refresh(); } catch (e) {}
-    setTimeout(() => { RUN = null; PREVIEW = null; refresh(); }, 2500);
+    const dd = docGet(); logAdd(dd, who === 'you' ? 'orders' : 'auto', (who === 'you' ? '' : 'Auto-pilot ') + kind + ': ' + RUN.ok + ' of ' + RUN.n + ' orders placed' + (RUN.fail.length ? '; ' + RUN.fail.join(' | ') : ''));
+    // a due stays open while any order failed: the robot's next pass re-plans it from the fresh positions (only the rest)
+    if (RUN.ok && ['dip', 'bb', 'sell'].includes(kind) && (who === 'you' || !RUN.fail.length)) dd.st.due = (dd.st.due || []).filter(x => x.k !== kind), dd.st.ts = Date.now();
+    // robot: remember exactly the refused orders, so the next pass re-sends only those (not a fresh, smaller re-plan)
+    else if (who !== 'you' && RUN.fail.length && ['dip', 'bb', 'sell'].includes(kind)) { (dd.st.due || []).forEach(x => { if (x.k === kind) x.retry = RUN.failed.slice(); }); dd.st.ts = Date.now(); }
+    save(dd, true);
+    return RUN;
   }
 
   /* ---------- render ---------- */
@@ -247,15 +276,15 @@
     document.head.appendChild(s);
   }
   function posTable(d, P, a) {
-    const c = d.cfg, H = heldBySym(P, c.syms); let te = 0, tm = 0; const tot = exposure(P);
+    const c = d.cfg, H = heldBySym(P, c.syms); let te = 0, tm = 0, tp = 0; const tot = exposure(P);
     const rows = c.syms.map(s => {
-      const hs = H[s].all; if (!hs.length) return '<tr><td><b>' + s + '</b></td><td class="mono">no position</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
-      return hs.map(h => { const e = Math.abs(h.q) * h.ltp; te += e; tm += h.m2m; const dt = h.exp ? daysTo(h.exp) : null;
+      const hs = H[s].all; if (!hs.length) return '<tr><td><b>' + s + '</b></td><td class="mono">no position</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+      return hs.map(h => { const e = Math.abs(h.q) * h.ltp; te += e; tm += h.m2m; tp += h.pnl; const dt = h.exp ? daysTo(h.exp) : null;
         return '<tr><td><b>' + s + '</b></td><td class="mono">' + esc(h.ts) + '</td><td class="secret">' + (h.lot ? (h.q / h.lot) + ' × ' + h.lot : h.q) + '</td><td>' + (h.ltp ? h.ltp.toFixed(2) : '—') +
-          '</td><td class="secret">' + money(e) + '</td><td>' + (tot ? pct(e / tot, 0) : '—') + '</td><td class="secret ' + (h.m2m >= 0 ? 'up' : 'dn') + '">' + signed(h.m2m) + '</td><td' + (dt != null && dt <= c.rollDays ? ' class="dn"' : '') + '>' + (h.exp ? h.exp.slice(5) + ' · ' + dt + 'd' : '—') + '</td></tr>'; }).join('');
+          '</td><td class="secret">' + money(e) + '</td><td>' + (tot ? pct(e / tot, 0) : '—') + '</td><td class="secret ' + (h.m2m >= 0 ? 'up' : 'dn') + '">' + signed(h.m2m) + '</td><td class="secret ' + (h.pnl >= 0 ? 'up' : 'dn') + '">' + signed(h.pnl) + '</td><td' + (dt != null && dt <= c.rollDays ? ' class="dn"' : '') + '>' + (h.exp ? h.exp.slice(5) + ' · ' + dt + 'd' : '—') + '</td></tr>'; }).join('');
     }).join('');
-    return '<div class="tw"><table><thead><tr><th>Stock</th><th>Contract</th><th>Lots</th><th>LTP</th><th>Exposure</th><th>Share</th><th>Today</th><th>Expiry</th></tr></thead><tbody>' + rows +
-      '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret">' + money(te) + '</td><td>' + (a ? (te / a).toFixed(2) + 'x' : '') + '</td><td class="secret ' + (tm >= 0 ? 'up' : 'dn') + '">' + signed(tm) + '</td><td></td></tr></tfoot></table></div>';
+    return '<div class="tw"><table><thead><tr><th>Stock</th><th>Contract</th><th>Lots</th><th>LTP</th><th>Exposure</th><th>Share</th><th>Today</th><th>P&amp;L</th><th>Expiry</th></tr></thead><tbody>' + rows +
+      '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td></td><td class="secret">' + money(te) + '</td><td>' + (a ? (te / a).toFixed(2) + 'x' : '') + '</td><td class="secret ' + (tm >= 0 ? 'up' : 'dn') + '">' + signed(tm) + '</td><td class="secret ' + (tp >= 0 ? 'up' : 'dn') + '">' + signed(tp) + '</td><td></td></tr></tfoot></table></div>';
   }
   function previewHTML() {
     if (!PREVIEW) return '';
@@ -291,7 +320,7 @@
     }
     const a = calc.pot, st = d.st, H = Math.max(st.H || a, a), dd = 1 - a / H, lev = a > 0 ? pos / a : null;
     h += '<div class="kp">' +
-      '<div class="k"><div class="l">Pot value (live)</div><div class="v secret">' + money(a) + '</div><div class="s secret ' + (calc.m2m >= 0 ? 'up' : 'dn') + '">today ' + signed(calc.m2m) + '</div></div>' +
+      '<div class="k"><div class="l">Pot value (live)</div><div class="v secret">' + money(a) + '</div><div class="s secret ' + (calc.m2m >= 0 ? 'up' : 'dn') + '">today ' + signed(calc.m2m) + '</div><div class="s secret ' + (pnlSum(P) >= 0 ? 'up' : 'dn') + '">P&amp;L since buy ' + signed(pnlSum(P)) + '</div></div>' +
       '<div class="k"><div class="l">High</div><div class="v secret">' + money(H) + '</div><div class="s">' + (st.Hd ? 'set ' + esc(st.Hd) : 'from setup') + '</div></div>' +
       '<div class="k"><div class="l">Fall from high</div><div class="v ' + (dd * 100 >= c.trig ? 'dn' : '') + '">' + pct(dd) + '</div><div class="s">dip buy at ' + c.trig + '%</div></div>' +
       '<div class="k"><div class="l">Positions</div><div class="v secret">' + money(pos) + '</div><div class="s ' + (lev > c.maxLev ? 'dn' : '') + '">' + (lev != null ? lev.toFixed(2) + 'x of the pot' : '') + '</div></div>' +
@@ -301,8 +330,9 @@
     else lines.push('Dip buy is <b>used</b> — it re-arms when the pot closes above its high <b class="secret">' + money(H) + '</b>.');
     if (st.pend) lines.push('After the forced sell, a <b>buy-back</b> waits for the pot to close at <b class="secret">' + money(st.low * (1 + c.bb / 100)) + '</b> (' + c.bb + '% over its low ' + money(st.low) + ').');
     lines.push('A forced sell is due if positions close above ' + c.maxLev + 'x — today that is ' + money(c.maxLev * a) + '.');
-    lines.push('Last close check: ' + (st.evalDate ? esc(st.evalDate) : 'none yet') + ' (runs after 15:35 IST, from this page or the 4 PM phone alert).');
+    lines.push('Last close check: ' + (st.evalDate ? esc(st.evalDate) : 'none yet') + ' (' + (d.auto.on ? 'the auto-pilot checks at 3:20 PM; if it could not, ' : '') + 'runs after 15:35 IST, from this page or the 4 PM phone alert).');
     h += '<div class="box"><div class="bt">Rule status</div>' + lines.map(x => '<div>' + x + '</div>').join('') + '</div>';
+    h += autoBox(d);
     (st.due || []).forEach(x => { h += '<div class="box due"><div class="bt">Due since ' + esc(x.d) + '</div>' + esc(x.msg) + ' — <button class="fb pri" data-f="plan" data-k="' + x.k + '">' + ({ dip: 'Prepare dip buy', bb: 'Prepare buy-back', sell: 'Prepare sell to ' + c.maxLev + 'x' }[x.k]) + '</button> <button class="fb" data-f="dismiss" data-k="' + x.k + '">Dismiss</button></div>'; });
     const H2 = heldBySym(P, c.syms), rollSoon = c.syms.some(s => H2[s].all.some(h => h.exp && daysTo(h.exp) <= c.rollDays));
     if (rollSoon) h += '<div class="box due"><div class="bt">Roll window</div>A contract expires within ' + c.rollDays + ' days. Stock futures settle by delivery, so roll before expiry. <button class="fb pri" data-f="plan" data-k="roll">Prepare roll</button></div>';
@@ -321,6 +351,67 @@
     if (fo) return;                                  // never repaint over a field the user is typing in
     EL.innerHTML = h;
   }
+
+  function autoBox(d) {
+    const au = d.auto, last = d.log.filter(e => e.k === 'auto').slice(-3).reverse();
+    const when = t => new Date(t + 330 * 60000).toISOString().slice(0, 16).replace('T', ' ');
+    return '<div class="box' + (au.on ? ' due' : '') + '"><div class="bt">Auto-pilot · ' + (au.on ? 'ON' : 'OFF') + '</div>' +
+      (au.on ? '<div>Switched on ' + esc(when(au.at)) + '. Each trading day the cloud robot:</div>' : '<div>When switched on, the cloud robot does the rule\'s orders for you each trading day:</div>') +
+      '<div>· <b>2:30 PM</b> — rolls any contract that is 3 trading days or less from expiry (next month\'s lot size).</div>' +
+      '<div>· <b>3:20 PM</b> — checks the rule with the live pot and, if due, places the sell to ' + d.cfg.maxLev + 'x, buy-back or dip buy before the 3:30 close.</div>' +
+      '<div class="sub" style="margin:4px 0 0">You get a phone alert each time it acts or hits a problem. It needs your daily Zerodha login; your Mac can be off. "Make the five equal" stays a button. ' +
+      (au.on ? 'It stays on until you switch it off.' : 'Nothing is placed by itself while it is off.') + '</div>' +
+      '<div class="row">' + (au.on ? '<button class="fb" data-f="autooff">Switch OFF</button>' : '<button class="fb pri" data-f="autoon">' + (AUTOARM ? 'Tap again to switch ON' : 'Switch ON') + '</button>') + '</div>' +
+      (last.length ? '<div class="sub" style="margin:4px 0 0">' + last.map(e => esc(when(e.t)) + ' · ' + esc(e.msg)).join('<br>') + '</div>' : '') + '</div>';
+  }
+
+  /* ---------- auto-pilot (the robot calls these; nothing here runs unless the user switched it ON) ---------- */
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const oline = o => o.transaction_type + ' ' + o.quantity + ' ' + o.tradingsymbol + (o._note ? ' (' + o._note + ')' : '');
+  function autoStatus() {
+    const d = docGet(), P = POS, calc = P && d.rec ? potCalc(d, P) : null, H = P ? heldBySym(P, d.cfg.syms) : null;
+    return { ready: READY, on: !!d.auto.on, started: !!d.rec, potOk: !!(calc && calc.ok), err: POSERR, contracts: P ? Object.keys(P).filter(k => P[k].q).length : 0,
+             evalDate: d.st.evalDate, due: (d.st.due || []).map(x => x.k), rollDue: H ? d.cfg.syms.reduce((n, s) => n + H[s].all.filter(h => h.exp && h.q > 0 && tdTo(h.exp) <= 3).length, 0) : 0 };
+  }
+  // leg 'roll' (14:30) or 'rule' (15:20). dry = plan only, change nothing. anyTime = skip the clock window (tests only).
+  async function autoRun(leg, o) {
+    o = o || {}; const dry = !!o.dry, res = { leg, dry, done: [], skipped: [], errors: [], note: '' };
+    if (RUN) { res.errors.push('orders already running on this page'); return res; }
+    await loadContracts(); await loadHolidays(); await pull();
+    let d = docGet();
+    if (!dry && !d.auto.on) { res.note = 'auto-pilot is OFF'; return res; }
+    if (!d.rec) { res.note = 'the pot is not started'; return res; }
+    const m = istMin(), win = leg === 'roll' ? [14 * 60, 15 * 60 + 25] : [15 * 60 + 15, 15 * 60 + 28];
+    if (!dry && !o.anyTime && (m < win[0] || m > win[1])) { res.note = 'outside the ' + leg + ' window'; return res; }
+    let P = await loadPositions(); if (!P) { res.errors.push('Zerodha: ' + ({ login: 'not logged in today', worker: 'no worker', token: 'token refused', down: 'not reachable' }[POSERR] || POSERR)); return res; }
+    let calc = potCalc(d, P);
+    if (!calc || !calc.ok) { res.errors.push('the pot needs today\'s value (quantities changed: ' + ((calc && calc.bad) || []).join(', ') + ') — set it in the F&O tab'); return res; }
+    if (calc.ok && !dry && (!sameQty(d.rec, P) || d.rec.date !== today())) { d.rec = recordFrom(P, calc.pot); save(d, true); }
+    const go = async (k, plan) => {
+      if (!plan.orders.length) { res.skipped.push(k + ': ' + plan.note); return; }
+      if (dry) { res.done.push({ k, note: plan.note, orders: plan.orders.map(oline) }); return; }
+      await pull(); if (!docGet().auto.on) { res.note = 'switched OFF before ' + k; return; }
+      const R = await sendOrders(k, plan.orders, 'auto-pilot'); RUN = null;
+      res.done.push({ k, note: plan.note, ok: R.ok, n: R.n, orders: R.placed }); R.fail.forEach(f => res.errors.push(k + ': ' + f));
+    };
+    if (leg === 'roll') { await go('roll', planRoll(d, P, h => tdTo(h.exp) <= 3)); return res; }
+    if (dry) d = JSON.parse(JSON.stringify(d));
+    if (d.st.evalDate !== today()) { evalClose(d, calc.pot, exposure(P), 'auto-pilot 3:20 PM'); if (!dry) save(d, true); }
+    const due = (d.st.due || []).filter(x => x.d === today()).map(x => x.k);
+    res.note = 'pot ' + money(calc.pot) + ', positions ' + money(exposure(P)) + ' (' + (exposure(P) / calc.pot).toFixed(2) + 'x)' + (due.length ? ', due: ' + due.join(', ') : ', nothing due');
+    for (const k of ['sell', 'bb', 'dip']) {
+      if (!due.includes(k)) continue;
+      if (!dry && res.done.length) { await sleep(4000); P = (await loadPositions()) || P; }       // re-plan from fresh positions
+      const dn = dry ? d : docGet(), a = dry ? calc.pot : ((potCalc(dn, P) || {}).pot || calc.pot);
+      const rt = ((dn.st.due || []).find(x => x.k === k) || {}).retry;
+      const plan = rt && rt.length ? { orders: rt, note: 'retry of the ' + rt.length + ' order(s) refused earlier today' }
+                 : k === 'sell' ? planSell4x(dn, P, a) : planBuyUpTo(dn, P, a, k);
+      await go(k, plan);
+      if (!dry && !plan.orders.length) { const x = docGet(); x.st.due = (x.st.due || []).filter(y => y.k !== k); x.st.ts = Date.now(); logAdd(x, 'auto', 'Auto-pilot ' + k + ': nothing to place — ' + plan.note); save(x, true); }
+    }
+    return res;
+  }
+  function autoLog(msg) { const d = docGet(); logAdd(d, 'auto', msg); save(d, true); }
 
   /* ---------- refresh loop ---------- */
   async function refresh() {
@@ -358,6 +449,12 @@
       PREVIEW = Object.assign({ k, title: { dip: 'Dip buy', bb: 'Buy-back', sell: 'Sell to ' + d.cfg.maxLev + 'x', roll: 'Roll to next month', equal: 'Make the five equal' }[k] }, r);
       ARMED = false; render(); return;
     }
+    if (f === 'autoon') {
+      if (!AUTOARM) { AUTOARM = true; clearTimeout(AUTOT); AUTOT = setTimeout(() => { AUTOARM = false; render(); }, 8000); render(); return; }
+      AUTOARM = false; clearTimeout(AUTOT); d.auto = { ts: Date.now(), on: true, at: Date.now() };
+      logAdd(d, 'auto', 'Auto-pilot switched ON by you'); save(d, true); toast('Auto-pilot is ON', 4000); render(); return;
+    }
+    if (f === 'autooff') { d.auto = { ts: Date.now(), on: false, at: Date.now() }; logAdd(d, 'auto', 'Auto-pilot switched OFF by you'); save(d, true); toast('Auto-pilot is OFF', 4000); render(); return; }
     if (f === 'cancel') { PREVIEW = null; ARMED = false; render(); return; }
     if (f === 'stop') { if (RUN) RUN.stop = true; return; }
     if (f === 'place') {
@@ -368,9 +465,10 @@
   async function mount(el, api) {
     API = api; css();
     if (EL !== el) { EL = el; el.addEventListener('click', onClick); }
-    render(); await pull(); refresh();
+    render(); await pull(); await loadHolidays(); await refresh(); READY = true;
     clearInterval(TIMER); TIMER = setInterval(() => { if (!document.hidden && EL && EL.offsetParent !== null && !RUN) refresh(); }, 20000);
   }
   window.mountFno = mount;
-  window.__fnoTest = { potCalc, evalClose, planBuyUpTo, planSell4x, planRoll, planEqual, merge, parseRs, slices, blank, setCon: c => { CON = c; } };
+  window.fnoAuto = { status: autoStatus, run: autoRun, log: autoLog, flush: () => push() };
+  window.__fnoTest = { tdTo, setHol: h => { HOL = new Set(h); }, potCalc, evalClose, planBuyUpTo, planSell4x, planRoll, planEqual, merge, parseRs, slices, blank, setCon: c => { CON = c; } };
 })();
