@@ -137,8 +137,9 @@ def main():
             sym = str(r.get("symbol") or "").strip().upper()
             st = str(r.get("securityType") or "").strip().upper()
             # equity only: EQ + BE (new mainboard names often list in the T2T 'BE' series)
-            # + SME; N0/Z9/RR/DEBT/IV are NCD/REIT/InvIT tranches, not stock listings
-            if st not in ("EQ", "BE", "SME"): continue
+            # + SME; N0/Z9/RR/DEBT/IV are NCD/REIT/InvIT tranches, not stock listings.
+            # NSE relabelled mainboard rows "EQUITY" (seen 2026-11-07+; feed shrank 146->58).
+            if st not in ("EQ", "BE", "EQUITY", "SME"): continue
             if not (ld and sym) or ld < lo: continue
             m = meta.get(sym) or {}
             listed.append([sym, str(r.get("company") or "").strip(),
