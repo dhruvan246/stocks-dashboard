@@ -239,6 +239,27 @@
    "title": "Recording of Earnings call for Financial Results of Q2FY23",
    "read": "2026-11-10",
    "by": "gemini:gemini-3-flash-preview"
+  },
+  "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf": {
+   "kind": "ar",
+   "date": "2022-09-02",
+   "title": "Annual Report 2021-22",
+   "read": "2026-11-11",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "724cc4cb-f547-4a6c-8ace-094a3d2c1282.pdf": {
+   "kind": "ar",
+   "date": "2024-09-03",
+   "title": "Annual Report FY 2023-24",
+   "read": "2026-11-11",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "f1b1fc36-f1a2-4790-82c3-270a4178d846.pdf": {
+   "kind": "res",
+   "date": "2022-08-12",
+   "title": "Unaudited Financial Results for the Quarter Ended June 30, 2022",
+   "read": "2026-11-11",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -363,7 +384,8 @@
     "q:20241231": "2025-05-27",
     "q:20240331": "2026-05-26",
     "q:20250331": "2026-05-26",
-    "q:20250930": "2026-05-26"
+    "q:20250930": "2026-05-26",
+    "q:20231231": "2024-09-03"
    }
   },
   {
@@ -876,6 +898,92 @@
    }
   },
   {
+   "name": "ESOPs Exercisable",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 151655.0,
+    "20220331": 9900.0,
+    "20230331": 49500.0,
+    "20240331": 204450.0
+   },
+   "src": {
+    "q:20240331": [
+     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
+     237,
+     "Exercisable at the end of the year",
+     "204,450"
+    ],
+    "q:20230331": [
+     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
+     237,
+     "Exercisable at the end of the year",
+     "49,500"
+    ],
+    "q:20220331": [
+     "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+     316,
+     "Exercisable at the end of the year",
+     "9,900"
+    ],
+    "q:20210331": [
+     "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+     316,
+     "Exercisable at the end of the year",
+     "151,655"
+    ]
+   },
+   "latest": {
+    "q:20220331": "2023-09-04",
+    "q:20240331": "2024-09-03",
+    "q:20230331": "2024-09-03"
+   }
+  },
+  {
+   "name": "ESOPs Outstanding",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 424705.0,
+    "20220331": 140681.0,
+    "20230331": 536480.0,
+    "20240331": 415500.0
+   },
+   "src": {
+    "q:20240331": [
+     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
+     237,
+     "Outstanding at the end of the year",
+     "415,500"
+    ],
+    "q:20230331": [
+     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
+     237,
+     "Outstanding at the end of the year",
+     "536,480"
+    ],
+    "q:20220331": [
+     "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+     316,
+     "Outstanding at the end of the year",
+     "140,681"
+    ],
+    "q:20210331": [
+     "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+     316,
+     "Outstanding at the end of the year",
+     "424,705"
+    ]
+   },
+   "latest": {
+    "q:20220331": "2023-09-04",
+    "q:20240331": "2024-09-03",
+    "q:20230331": "2024-09-03"
+   }
+  },
+  {
    "name": "Projects Order Book",
    "unit": "US$ Mn",
    "kind": "level",
@@ -930,68 +1038,6 @@
      "2026-10-27"
     ]
    ]
-  },
-  {
-   "name": "ESOPs Exercisable",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220331": 9900.0,
-    "20230331": 49500.0,
-    "20240331": 204450.0
-   },
-   "src": {
-    "q:20240331": [
-     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
-     237,
-     "Exercisable at the end of the year",
-     "204,450"
-    ],
-    "q:20230331": [
-     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
-     237,
-     "Exercisable at the end of the year",
-     "49,500"
-    ],
-    "q:20220331": [
-     "1d96446b-7e79-47ee-a650-ee38d5379633.pdf",
-     246,
-     "Exercisable at the end of the year",
-     "9,900"
-    ]
-   }
-  },
-  {
-   "name": "ESOPs Outstanding",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220331": 140681.0,
-    "20230331": 536480.0,
-    "20240331": 415500.0
-   },
-   "src": {
-    "q:20240331": [
-     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
-     237,
-     "Outstanding at the end of the year",
-     "415,500"
-    ],
-    "q:20230331": [
-     "3476aab3-45d3-4c15-93b4-38208e21744c.pdf",
-     237,
-     "Outstanding at the end of the year",
-     "536,480"
-    ],
-    "q:20220331": [
-     "1d96446b-7e79-47ee-a650-ee38d5379633.pdf",
-     246,
-     "Outstanding at the end of the year",
-     "140,681"
-    ]
-   }
   },
   {
    "name": "Employees - Asia Pacific",
@@ -1874,13 +1920,57 @@
    "page": 246,
    "label": "Weighted average share price for options exercised during the year",
    "why": "period_type FY but the label reads as a quarter: '31 March 2022'"
+  },
+  {
+   "doc": "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+   "metric": "Revenue from Top Customer",
+   "unit": "%",
+   "period": "31 March 2022",
+   "value": 15.0,
+   "as_printed": "15",
+   "page": 333,
+   "label": "Revenue from top customer",
+   "why": "period_type FY but the label reads as a quarter: '31 March 2022'"
+  },
+  {
+   "doc": "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+   "metric": "Revenue from Top Customer",
+   "unit": "%",
+   "period": "31 March 2021",
+   "value": 17.0,
+   "as_printed": "17",
+   "page": 333,
+   "label": "Revenue from top customer",
+   "why": "period_type FY but the label reads as a quarter: '31 March 2021'"
+  },
+  {
+   "doc": "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+   "metric": "Revenue from Top 5 Customers",
+   "unit": "%",
+   "period": "31 March 2022",
+   "value": 23.0,
+   "as_printed": "23",
+   "page": 333,
+   "label": "Revenue from top five customers",
+   "why": "period_type FY but the label reads as a quarter: '31 March 2022'"
+  },
+  {
+   "doc": "3993697e-68a0-41e3-80fd-ce90e42cd79d.pdf",
+   "metric": "Revenue from Top 5 Customers",
+   "unit": "%",
+   "period": "31 March 2021",
+   "value": 24.0,
+   "as_printed": "24",
+   "page": 333,
+   "label": "Revenue from top five customers",
+   "why": "period_type FY but the label reads as a quarter: '31 March 2021'"
   }
  ],
  "catalog": [],
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-23",
  "catalog_ver": 5,
- "updated": "2026-11-10",
+ "updated": "2026-11-11",
  "checked": "2026-09-23",
  "note": "no presentations / press releases found on BSE since 2020-01-01"
 }
