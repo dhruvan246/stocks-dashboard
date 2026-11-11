@@ -232,13 +232,85 @@ function factorMap(it){
   try { (factorsAt(dayOff(date), it.cfg) || []).forEach(r => { const sym = (META[r.tkr] && META[r.tkr].symbol) || r.tkr; if (sym) m[sym] = r; }); } catch(e){}
   FACT_CACHE[it.id] = { stamp: stamp, m: m }; return m;
 }
+/* ================= MTF SWAP (zba65, user 2026-11-11) =================
+   "dont make the panel skip non-mtf stocks automatically, but show one more column for it for me to select".
+   Every pick shows Zerodha's MTF leverage (an MTF margin quote — the same field the 10:00 MTF watch reads). A pick Zerodha
+   will not fund on MTF (leverage 1x) offers a button: swap it for the NEXT-ranked stock of the same screen that IS on MTF
+   (ranks topN+1 … topN+SW_DEPTH, not already a pick, every higher-ranked candidate's leverage known). Nothing swaps unless
+   you press it. The choice is per strategy + per stock, synced in the zba doc (doc.mtfsw, latest edit wins) so every
+   device and the auto-pilot use it; it stays until you press "use <stock>" — and only acts while that stock is a pick
+   AND still has no MTF. The swap rewrites PICKS[id].rows from PICKS[id].base, so the cash plan, the baskets, the Sell
+   side's exits and the This-rebalance table all follow it. Leverage answers are cached for the day (sp_mtf_lev). */
+const SW_DEPTH = 15, MTFL = { lev: {}, busy: false, t: 0 };
+const istDay = () => new Date(Date.now() + 19800000).toISOString().slice(0, 10);
+(function(){ try { const o = JSON.parse(localStorage.getItem('sp_mtf_lev') || 'null'); if (o && o.d === istDay() && o.lev) MTFL.lev = o.lev; } catch(e){} })();
+const levKnown = s => Object.prototype.hasOwnProperty.call(MTFL.lev, s) && MTFL.lev[s] != null;
+const levOk = s => levKnown(s) && +MTFL.lev[s] > 1.05;
+function swSel(){ try { const d = zbaDoc().mtfsw; return (d && d.sel) || {}; } catch(e){ return {}; } }
+function swOn(it, sym){ const m = swSel()[identityKey(it.cfg)]; return !!(m && m[sym]); }
+function swSet(it, sym, on){
+  const d = zbaDoc(), sel = Object.assign({}, (d.mtfsw && d.mtfsw.sel) || {}), k = identityKey(it.cfg), m = Object.assign({}, sel[k] || {});
+  if (on) m[sym] = 1; else delete m[sym];
+  if (Object.keys(m).length) sel[k] = m; else delete sel[k];
+  d.mtfsw = { ts: Date.now(), sel: sel }; d.ts = Date.now();
+  try { localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch(e){}
+  try { zbaPush(); } catch(e){}
+}
+/* the next MTF stock below the picks, skipping `used`; null + wait=true when a higher-ranked candidate is still unchecked */
+function swNextAlt(p, used){
+  for (const a of (p.alts || [])){ if (used.has(a.sym)) continue; if (!levKnown(a.sym)) return { alt: null, wait: true }; if (levOk(a.sym)) return { alt: a, wait: false }; }
+  return { alt: null, wait: false };
+}
+function swApply(it){
+  const p = PICKS[it.id]; if (!p || !p.base) return;
+  const rows = p.base.map(r => Object.assign({}, r)), used = new Set(rows.map(r => r.sym));
+  rows.forEach((r, i) => { if (!swOn(it, r.sym) || !levKnown(r.sym) || levOk(r.sym)) return;   // only a chosen, checked, no-MTF pick swaps
+    const n = swNextAlt(p, used); if (!n.alt) return;
+    used.add(n.alt.sym); rows[i] = Object.assign({}, n.alt, { swFor: r.sym }); });
+  rows.forEach(r => { if (r.swFor || !levKnown(r.sym) || levOk(r.sym)) return;   // preview of what the button would bring in
+    const n = swNextAlt(p, used); r.swNext = n.alt ? n.alt.sym : null; r.swWait = n.wait; });
+  p.rows = rows;
+}
+/* Zerodha's MTF leverage for every pick + the first 10 ranks below it (20 per call, cached for the day) */
+async function mtfLevFetch(){
+  if (MTFL.busy || !Z.connected) return false;
+  const want = new Set();
+  uniqStrategies().forEach(it => { const p = PICKS[it.id]; if (!p || !p.base) return; p.base.forEach(r => want.add(r.sym)); (p.alts || []).slice(0, 10).forEach(r => want.add(r.sym)); });
+  const list = [...want].filter(s => !levKnown(s)); if (!list.length) return false;
+  MTFL.busy = true; let got = 0;
+  try {
+    await kiteSyms(list);
+    for (let i = 0; i < list.length; i += 20){ const part = list.slice(i, i + 20);
+      const body = part.map(s => ({ exchange: 'NSE', tradingsymbol: ordSym(s), product: 'MTF', quantity: 1, transaction_type: 'BUY', variety: 'regular', order_type: 'MARKET' }));
+      const mc = await zFetch('/margincalc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      if (!(mc.st === 200 && mc.j && Array.isArray(mc.j.data))) break;
+      part.forEach((s, k) => { const d = mc.j.data[k]; if (d && d.leverage != null && isFinite(+d.leverage)){ MTFL.lev[s] = +d.leverage; got++; } });
+    }
+    try { localStorage.setItem('sp_mtf_lev', JSON.stringify({ d: istDay(), lev: MTFL.lev })); } catch(e){}
+  } catch(e){} finally { MTFL.busy = false; }
+  if (got) uniqStrategies().forEach(swApply);
+  return got > 0;
+}
+function mtfLevKick(){ clearTimeout(MTFL.t); MTFL.t = setTimeout(async () => { if (await mtfLevFetch()) renderCards(); }, 400); }
+function mtfCell(it, r){
+  const id = esc(it.id);
+  if (r.swFor) return '<td style="white-space:nowrap">' + (+MTFL.lev[r.sym]).toFixed(2) + 'x <button class="btn" data-mtfsw="' + id + '" data-sym="' + esc(r.swFor) + '" data-on="0" title="Undo the swap — buy ' + esc(r.swFor) + ' (no MTF, full cash) again">↩ use ' + esc(r.swFor) + '</button></td>';
+  if (!levKnown(r.sym)) return '<td class="sym" title="' + (Z.connected ? 'Checking Zerodha’s MTF margin…' : 'Connect Zerodha to check MTF') + '">—</td>';
+  if (levOk(r.sym)) return '<td>' + (+MTFL.lev[r.sym]).toFixed(2) + 'x</td>';
+  const nx = r.swNext;
+  return '<td style="white-space:nowrap"><span class="tag exit" title="Zerodha does not fund this stock on MTF — the plan buys it with full cash">no MTF</span>' +
+    (nx ? ' <button class="btn on" data-mtfsw="' + id + '" data-sym="' + esc(r.sym) + '" data-on="1" title="Replace ' + esc(r.sym) + ' with the next-ranked stock that is on MTF — the plan, the baskets and the Sell side follow it">Swap → ' + esc(nx) + ' (' + (+MTFL.lev[nx]).toFixed(2) + 'x)</button>'
+        : r.swWait ? ' <span class="sym">checking the next ranks…</span>' : ' <span class="sym">no MTF stock in the next ' + SW_DEPTH + '</span>') + '</td>';
+}
 function screenOne(it){
   /* zba56: inside the rebalance window the buy leg trusts the T-close screen. The nightly bake moves SF.end past T (4 Nov: data
      as of 3 Nov, 30 Oct's screen gone — "Waiting for the 30 Oct close"), so screen T itself while the window is open. */
   const RW = rebalWindow(), d = (RW.in && SF.end > RW.tIso) ? RW.tIso : SF.end;
   const all = screenAsOf(it.cfg, d), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
-  PICKS[it.id] = { asOf: d, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
-    px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price, fv: pickFV(r, cols) })) };
+  const mk = (r, i) => ({ rank: i+1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null, px: (META[r.tkr] && META[r.tkr].raw) ? META[r.tkr].raw : r.price, fv: pickFV(r, cols) });
+  PICKS[it.id] = { asOf: d, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map(mk),
+    alts: all.slice(it.cfg.topN, it.cfg.topN + SW_DEPTH).map((r, j) => mk(r, it.cfg.topN + j)) };
+  PICKS[it.id].base = PICKS[it.id].rows.slice(); swApply(it);   // zba65: the MTF swap you chose replaces a no-MTF pick
 }
 /* ---------- LIVE re-ranking — the ENGINE'S OWN overlay (unified 2026-08-31) ----------
    The first version approximated live factors with ratio maths and its own candidate quotes —
@@ -256,8 +328,10 @@ function screenOne(it){
   }
   function screenLiveOne(it){
     const all = screenAsOf(it.cfg, LIVEOV.date || SF.end), picks = all.slice(0, it.cfg.topN), bd = borderMap(it.cfg, all), cols = pickCols(it.cfg);
-    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map((r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null,
-      px: r.price, fv: pickFV(r, cols) })) };   // the spliced bar IS the live price; rebalance mode still shows META.raw
+    const mk = (r, i) => ({ rank: i + 1, sym: r.sym, tkr: r.tkr, bd: bd[i+1] || null, px: r.price, fv: pickFV(r, cols) });
+    PICKS[it.id] = { asOf: SF.end, live: true, liveTs: LIVEOV.ts, cols: cols, edge: edgeRows(it.cfg, all), rows: picks.map(mk),   // the spliced bar IS the live price; rebalance mode still shows META.raw
+      alts: all.slice(it.cfg.topN, it.cfg.topN + SW_DEPTH).map((r, j) => mk(r, it.cfg.topN + j)) };
+    PICKS[it.id].base = PICKS[it.id].rows.slice(); swApply(it);   // zba65
   }
   async function screenPick(it){
     if (PICKMODE === 'live'){ await ensureLiveOverlay([it.cfg]); screenLiveOne(it); }
@@ -289,6 +363,7 @@ async function loadAllPicks(){   // the "Load picks" button — named so the aut
   for (const it of list){ $('status').textContent = 'Screening ' + (it.name || '') + '…';
     await new Promise(r => setTimeout(r, 0));
     if (PICKMODE === 'live') screenLiveOne(it); else screenOne(it); }
+  if (Z.connected){ try { await mtfLevFetch(); } catch(e){} }   // zba65: MTF answers before anything acts on the picks
   $('status').textContent = list.length + ' strategies screened as of ' + SF.end +
     (PICKMODE === 'live' ? ' — re-ranked LIVE (fundamentals as filed; ranking updates every minute while the market is open).' : '.');
   $('btnLoadAll').disabled = false;
@@ -549,6 +624,8 @@ function renderCards(){
   const all = uniqStrategies();
   // favourites float to the top; the chips narrow the list (★ on by default when stars exist)
   const list = spList(all, favs);
+  try { all.forEach(swApply); } catch(e){}   // zba65: the MTF swaps (synced) on the current screen
+  if (Z.connected) mtfLevKick();
   const NUM = blockNums(list), favNum = cfg => NUM.get((list.find(x => x.cfg === cfg) || {}).id) || 0;   // the same number the This-rebalance table shows
   const SM = subMixes();   // 🍀 saved mixes that are part of the ★ set
   spChipsRender(all, spBuckets(all, favs), list);
@@ -564,16 +641,17 @@ function renderCards(){
     let body = '';
     if (p){
       const cols = p.cols || [];
-      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live \u20b9</th><th>Day %</th>' + pickColHead(cols) + '</tr></thead><tbody>' +
+      body = '<div class="twrap"><table><thead><tr><th>#</th><th>Pick</th><th>Live \u20b9</th><th>Day %</th><th title="Zerodha\u2019s MTF leverage. A pick with no MTF can be swapped for the next-ranked stock that has it \u2014 your choice, per strategy">MTF</th>' + pickColHead(cols) + '</tr></thead><tbody>' +
         p.rows.map(r => {
           const q = liveQ(r.sym); const px = q && q.ltp != null ? q.ltp : r.px;
           const chg = q && q.ltp != null && q.prevClose ? (q.ltp / q.prevClose - 1) * 100 : null;
           const bk = backs.find(b => b.sym === r.sym);
           return '<tr><td class="sym">' + r.rank + '</td>' +
             '<td><b>' + esc(r.sym) + '</b> ' + (bk ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the ' + esc(RW.tlab) + ' close but still in the official screen \u2014 buy the same ' + bk.qty.toLocaleString('en-IN') + ' back">buy back</span>' : (Z.held.has(r.sym) ? heldTag(r.sym, it) : '<span class="tag new">new</span>')) +
+            (r.swFor ? ' <span class="tag" style="background:color-mix(in srgb,var(--buy) 16%,transparent);color:var(--buy)" title="You swapped ' + esc(r.swFor) + ' (no MTF) for this stock \u2014 rank ' + r.rank + ' of the screen">for ' + esc(r.swFor) + '</span>' : '') +
             (q && q.ltp != null ? '' : ' <span class="badge">EOD</span>') + '</td>' +
             '<td>\u20b9' + (+px).toFixed(2) + baCell(r.sym) + '</td>' +
-            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '\u2014' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + pickColCells(cols, r) + '</tr>';
+            '<td class="' + (chg == null ? 'sym' : chg >= 0 ? 'up' : 'down') + '">' + (chg == null ? '\u2014' : (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%') + '</td>' + mtfCell(it, r) + pickColCells(cols, r) + '</tr>';
         }).join('') + '</tbody></table></div>' +
         (leg && !leg.ok ? '<div class="khelp">\u26a0 <b>' + esc(leg.msg) + '</b> \u2014 buying is locked until then.</div>' : '');
     }
@@ -943,6 +1021,7 @@ async function cashPlanRun(auto){
   if (!books.length){ say('No strategy books loaded yet'); return; }
   const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows));   // NOT LOADED only — a strategy whose screen passes no stock (#6, 23 Oct) plans as all exits → cash
   if (noPicks.length){ say('Load all picks first — ' + noPicks.length + ' strateg' + (noPicks.length === 1 ? 'y has' : 'ies have') + ' none'); return; }
+  try { await mtfLevFetch(); } catch(e){} uniqStrategies().forEach(swApply);   // zba65: the chosen MTF swaps are in the picks the plan reads
   await zHoldRefresh();   // the demat decides whether the plan is still frozen (below)
   const P0 = cpDoc(), stillHeld = books.some(it => heldFor(it.cfg).rows.some(r => dematQty(r.sym) > 0));
   /* zba53: frozen only while the demat still holds a book row (an exit not yet sold, or a stay) — once everything is sold
@@ -1395,6 +1474,9 @@ async function buyAllStart(rows){
 $('cards').addEventListener('click', e => {
   const u = e.target.closest('[data-unbought]'); if (u){ zbSetBought(u.dataset.unbought, false); ktoast('Un-marked — it shows as not bought again'); return; }
   const l = e.target.closest('[data-load]'); if (l){ l.textContent = '⏳…'; loadPicks(l.dataset.load); return; }
+  const ms = e.target.closest('[data-mtfsw]'); if (ms){ const it = uniqStrategies().find(x => x.id === ms.dataset.mtfsw); if (!it) return;   // zba65
+    const on = ms.dataset.on === '1', sym = ms.dataset.sym; swSet(it, sym, on); swApply(it); renderCards(); try { fetchLive(); } catch(e){}   // the swapped-in stock's live price
+    ktoast(on ? sym + ' swapped for the next MTF stock in this strategy \u2014 re-plan cash before buying' : sym + ' is back in this strategy'); return; }
   const us = e.target.closest('[data-unsold]'); if (us){ zbSetSold(us.dataset.unsold, false); ktoast('Un-marked — it shows as not sold again'); return; }
   const cp = e.target.closest('[data-capture]'); if (cp){ captureProceeds(cp.dataset.capture); return; }
   const sb = e.target.closest('[data-sellbasket]'); if (sb){
@@ -1674,6 +1756,7 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            autos:     zbMergeAutos(newer.autos, older.autos),
            plan:      zbMergeReb(newer.plan, older.plan),
            cpo:       ((n, o) => (n && (!o || (+n.ts || 0) >= (+o.ts || 0))) ? n : o)(newer.cpo, older.cpo),   // zba54: the plan's controls follow their latest edit
+           mtfsw:     ((n, o) => (n && (!o || (+n.ts || 0) >= (+o.ts || 0))) ? n : o)(newer.mtfsw, older.mtfsw),   // zba65: MTF swap choices follow their latest edit
            scash:     zbMergeCash(newer.scash, older.scash) }; }
 /* per-strategy cash book (zba51): { id: { rebKey: rupees } } — every rebalance's "stays cash"; the newer doc wins per key */
 function zbMergeCash(n, o){ const out = {}; [o || {}, n || {}].forEach(m => Object.keys(m).forEach(id => { out[id] = Object.assign(out[id] || {}, m[id]); })); return out; }
