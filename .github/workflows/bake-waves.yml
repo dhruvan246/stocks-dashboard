@@ -42,7 +42,7 @@ jobs:
       - name: Install Playwright (chromium)
         run: |
           npm install playwright@^1.48
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium || { echo "::warning::apt deps install failed (mirror outage) - installing browser only; runner image already has Chrome libs"; npx playwright install chromium; }
 
       - name: Bake wave snapshot headlessly
         run: node scripts/bake_waves.mjs
