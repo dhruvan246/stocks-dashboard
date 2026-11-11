@@ -276,6 +276,8 @@ async function mtfLevFetch(){
   if (MTFL.busy || !Z.connected) return false;
   const want = new Set();
   uniqStrategies().forEach(it => { const p = PICKS[it.id]; if (!p || !p.base) return; p.base.forEach(r => want.add(r.sym)); (p.alts || []).slice(0, 10).forEach(r => want.add(r.sym)); });
+  try { uniqStrategies().forEach(it => { const h = heldFor(it.cfg); (h && h.rows || []).forEach(r => { if (r.qty > 0) want.add(r.sym); }); }); } catch(e){}   // held books: sell card + swap check
+  try { const P = cpDoc(); if (P) Object.values(P.S || {}).forEach(o => (o.picks || []).forEach(s => want.add(s))); } catch(e){}   // the cash plan's buys
   const list = [...want].filter(s => !levKnown(s)); if (!list.length) return false;
   MTFL.busy = true; let got = 0;
   try {
@@ -291,6 +293,13 @@ async function mtfLevFetch(){
   if (got) uniqStrategies().forEach(swApply);
   return got > 0;
 }
+/* one MTF cell for any stock table: Zerodha's leverage, 'no MTF' when it lends nothing, — when not checked yet */
+function levHTML(s, fb){
+  const v = levKnown(s) ? +MTFL.lev[s] : (fb != null && isFinite(+fb) ? +fb : null);
+  if (v == null) return '<span class="sym" title="' + (Z.connected ? 'Checking Zerodha\u2019s MTF margin\u2026' : 'Connect Zerodha to check MTF') + '">\u2014</span>';
+  return v > 1.05 ? (v.toFixed(2) + 'x') : '<span class="tag exit" title="Zerodha lends nothing on this stock \u2014 it needs full cash">no MTF</span>';
+}
+const levTD = (s, fb) => '<td style="white-space:nowrap">' + levHTML(s, fb) + '</td>';
 function mtfLevKick(){ clearTimeout(MTFL.t); MTFL.t = setTimeout(async () => { if (await mtfLevFetch()) renderCards(); }, 400); }
 function mtfCell(it, r){
   const id = esc(it.id);
@@ -1160,16 +1169,17 @@ function swapCheckHTML(list){
       if (!exits.length && bm) grp.mm.push('#' + n); }
     const sells = exits.map((r, i) => '<b>' + esc(r.sym) + '</b> <span class="sym">' + ((o.trim || {})[r.sym] ? (o.trim[r.sym]).toLocaleString('en-IN') + ' extra · ' : '') + esc(sk[i].t) + '</span>').join('<br>') || '<span class="sym">none</span>';
     const bys = buys.map((s, i) => '<b>' + esc(s) + '</b> <span class="sym">' + bk[i] + '</span>').join('<br>') || '<span class="sym">none</span>';
+    const levs = exits.map(r => '<span class="sym">' + esc(r.sym) + '</span> ' + levHTML(r.sym)).concat(buys.map(s => '<span class="sym">' + esc(s) + '</span> ' + levHTML(s, LV[s]))).join('<br>') || '<span class="sym">—</span>';
     const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
       : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
     return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
-      '<td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
+      '<td style="white-space:nowrap;text-align:left">' + levs + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td></tr>'; }).join('');
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   const pcS = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, modeS = P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only';
   return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub"><b>' + modeS + '</b>' + (P.set ? ' · plan for ' + esc(P.set) : '') + ' · cash ' + pcS + '% · sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
-    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Its share of the cash kept back — Cash % of its shares">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
-    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th title="Zerodha’s MTF leverage today for each sell and buy (no MTF = full cash)">MTF</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Its share of the cash kept back — Cash % of its shares">To cash</th><th>Change</th></tr></thead><tbody>' + rowsH +
+    '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td></td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td></tr></tfoot></table></div>' +
     '<div class="khelp"><b>Cash kept back: ' + zinr(tCash) + '</b> = ' + (tAft > 0 ? (Math.round(1000 * tCash / tAft) / 10) + '%' : pcS + '%') + ' of ' + zinr(tAft) + ' in shares after the buys (target ' + pcS + '%; the plan’s own-money cash is ' + zinr(P.acct.spare) + ').</div>' +
     '<div class="khelp"><b>Three kinds of swap:</b><br>' +
     '• <b>MTF → MTF</b> (' + none(grp.mm) + '): the value stays about the same — it moves only as much as the new picks’ leverage differs.<br>' +
@@ -1266,13 +1276,13 @@ function renderBuyAll(list){
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
       (SM.length && mixNums.size ? ' · ' + SM.map(m => '<span class="snum mixc">#</span> = ' + esc(m.label)).join(', ') : '') + '</span>' +
     '<span class="go"><button class="btn" id="levGo" title="Zerodha margincalc on every entrant \u2014 catches MTF-blocked names that will need FULL cash via the auto-CNC fallback">Check leverage</button></span></div><div id="levOut"></div>' +   // Buy-all button REMOVED (user 2026-09-01): one round-robin queue for ~₹35 Cr ≈ 141 slices × 150s ≈ 6h — buy per-strategy (8 parallel ⚡ slicers) instead; the table stays as the consolidated checklist
-    '<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategies</th><th>Live ₹</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
+    '<div class="twrap"><table><thead><tr><th>Stock</th><th>Strategies</th><th>Live ₹</th><th title="Zerodha’s MTF leverage today (no MTF = full cash)">MTF</th><th>Qty</th><th>Amount</th></tr></thead><tbody>' +
     rows.map(r => '<tr><td><b>' + esc(r.sym) + '</b> ' + (r.back ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Sold on the month-end close but still in the official screen \u2014 restore the same quantity">buy back</span>' : (Z.held.has(r.sym) ? heldTag(r.sym, null) : '<span class="tag new">new</span>')) + '</td>' +
       '<td class="sym">' + r.from.map(n => '<span class="snum' + (mixNums.has(n) ? ' mixc' : '') + '">#' + n + '</span>').join('') + (r.from.length > 1 ? ' <b>×' + r.from.length + '</b>' : '') + '</td>' +
-      '<td>₹' + (+r.px).toFixed(2) + '</td>' +
+      '<td>₹' + (+r.px).toFixed(2) + '</td>' + levTD(r.sym) +
       '<td>' + (r.qty ? r.qty.toLocaleString('en-IN') : '—') + '</td>' +
       '<td>' + (r.amt ? zinr(r.amt) : '—') + (r.capped ? ' <span class="sym" title="capped per basket">cap</span>' : '') + '</td></tr>').join('') +
-    '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td>' +
+    '</tbody><tfoot><tr><td>' + esc(spTotLbl(list)) + '</td><td class="sym">' + rows.length + ' stock' + (rows.length === 1 ? '' : 's') + '</td><td></td><td></td>' +
     '<td>' + (totQty ? totQty.toLocaleString('en-IN') : '—') + '</td><td>' + (totAmt ? zinr(totAmt) : '—') + '</td></tr></tfoot></table></div>' +
     '<div class="khelp">Numbered by the strategy blocks below. ' + (agg.nPlan ? '<b>' + agg.nPlan + ' strateg' + (agg.nPlan === 1 ? 'y is' : 'ies are') + ' sized by the cash plan above</b>; ' : '') + (agg.nPrev ? '<b>' + agg.nPrev + ' whose screen changed since the plan preview' + (agg.nPrev === 1 ? 's' : '') + ' at the plan’s slot size — press Re-plan</b>; ' : '') + (agg.nPlan || agg.nPrev ? 'for any other, amounts' : 'Amounts') + ' are the engine’s rebalance sizing — each new entry funded by its strategy’s EXIT proceeds: ' + (agg.nAct ? '<b>actual sell fills captured on ' + esc(rebalWindow().tlab) + '</b> for ' + agg.nAct + (agg.nEst ? ', ' : ' ') : '') + (agg.nEst ? '<b>estimated at today’s prices</b> for ' + agg.nEst + ' (no proceeds captured — the exits were sold at the month-end close) ' : '') + (agg.nAct || agg.nEst ? 'strateg' + ((agg.nAct + agg.nEst) === 1 ? 'y' : 'ies') + '; ' : '') + 'a first-ever buy with no holdings falls back to the ₹ amount in its ⚡ dialog. A stock several strategies want is bought once, for the combined amount; <b>buy back</b> = sold on the month-end close but still in the official screen.</div></div>' + fillsHTML();
   fillsKick();
@@ -1593,7 +1603,7 @@ function zbLiveTick(){
 }
 function zbRender(){
   const lim = ($('zbType') && $('zbType').value) === 'LIMIT';
-  let h = '<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th class="limcol">Limit ₹</th><th>Qty</th><th>≈ Cost</th><th title="What Zerodha will actually block — its live margin API">Uses ₹</th><th></th></tr></thead><tbody>';
+  let h = '<thead><tr><th></th><th>Pick</th><th>Live ₹</th><th class="limcol">Limit ₹</th><th>Qty</th><th>≈ Cost</th><th title="What Zerodha will actually block — its live margin API">Uses ₹</th><th title="Zerodha’s MTF leverage today (no MTF = full cash)">MTF</th><th></th></tr></thead><tbody>';
   const zit = strategies().find(x => x.id === ZB.id) || null;   // the "held by …" tag says whether a held pick is this strategy's own
   ZB.rows.forEach((r, i) => {
     const stChip = r.st === 'COMPLETE' ? '<span class="zchip ok">COMPLETE</span>'
@@ -1606,10 +1616,10 @@ function zbRender(){
       '<td class="limcol"><input class="zbl" type="number" min="0" step="0.05" data-i="' + i + '" value="' + ((r.limit > 0 ? r.limit : r.px) || 0).toFixed(2) + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td><input class="zbq" type="number" min="0" step="1" data-i="' + i + '" value="' + r.qty + '"' + (r.on ? '' : ' disabled') + '></td>' +
       '<td>' + (r.qty ? zinr(r.qty * r.px) : '—') + '</td>' +
-      '<td>' + (r.margin != null ? zinr(r.margin) : (Z.connected && r.qty ? '…' : '—')) + '</td>' +
+      '<td>' + (r.margin != null ? zinr(r.margin) : (Z.connected && r.qty ? '…' : '—')) + '</td>' + levTD(r.sym) +
       '<td>' + stChip + (r.st === 'REJECTED' || r.st === 'fail' ? '<div class="zmsg">' + esc(r.msg) + '</div>' : '') + '</td></tr>';
   });
-  h += '</tbody><tfoot><tr><td colspan="8" style="text-align:right" id="zbTot"></td></tr></tfoot>';
+  h += '</tbody><tfoot><tr><td colspan="9" style="text-align:right" id="zbTot"></td></tr></tfoot>';
   $('zbTbl').innerHTML = h; $('zbTbl').classList.toggle('lim', lim); zbFoot();
   $('zbGo').style.display = Z.connected ? '' : 'none';
 }
@@ -2068,11 +2078,11 @@ function sellCardHTML(it, disp, favNum){
     const todo = exits.filter(r => r.remain == null ? (r.mv || 0) < r.h.qty : r.remain > 0);      // shares still to sell (demat-aware; a wholly moved exit has none)
     const rt = (pickSet || isReset) && todo.length ? sellRuntime(todo.map(r => ({ h: { sym: r.h.sym, qty: (r.remain != null ? r.remain : r.h.qty), avg: r.h.avg }, px: r.px }))) : null;
     const rtTxt = rt ? ' \u00b7 \u2248 ' + rt.tot + ' slice' + (rt.tot === 1 ? '' : 's') + ', ~' + rt.mins + ' min at ' + sliceGap() + 's gap' + (rt.startBy ? ' \u2014 start by ' + rt.startBy + ' for a 3:28 finish' : '') : '';
-    body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th>Value</th>' + pickColHead(X.cols) + '<th></th></tr></thead><tbody>' +
+    body = '<div class="twrap"><table><thead><tr><th>Stock</th><th>Held</th><th>Live \u20b9</th><th title="Zerodha’s MTF leverage today (no MTF = full cash)">MTF</th><th>Value</th>' + pickColHead(X.cols) + '<th></th></tr></thead><tbody>' +
       rows.map(r => '<tr' + (r.stays ? ' style="opacity:.45"' : '') + '><td><b>' + esc(r.h.sym) + '</b>' + nameTag(r.h.sym) +
         (r.bd ? ' <span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="' + esc(r.bd) + '">borderline</span>' : '') + '</td>' +
         '<td>' + r.h.qty.toLocaleString('en-IN') + (r.sent ? ' <span class="sym" title="sent to Zerodha this rebalance">sent ' + r.sent.toLocaleString('en-IN') + '</span>' : '') + '</td>' +
-        '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) + baCell(r.h.sym) : '\u2014') + '</td>' +
+        '<td>' + (r.px != null ? '\u20b9' + r.px.toFixed(2) + baCell(r.h.sym) : '\u2014') + '</td>' + levTD(r.h.sym) +
         '<td>' + (r.val != null ? zinr(r.val) : '\u2014') + '</td>' + pickColCells(X.cols, r, true) +
         '<td>' + (r.mism != null ? '<span class="tag" style="background:color-mix(in srgb,#c98500 18%,transparent);color:#c98500" title="Zerodha demat holds ' + (r.h.qty + r.mism) + ' vs ' + r.h.qty + ' in the strategy ledger \u2014 sold already, or bonus/split/rename? The sell quantity is capped at what the demat holds beyond the keeping strategies.">demat ' + (r.mism > 0 ? '+' : '') + r.mism + '</span> ' : '') +
         (r.mv > 0 ? '<span class="tag keep" title="Netting: these shares move to ' + esc(r.mvTo.map(m => xfNum(m.to)).join(' + ')) + ' at the official ' + esc(RW.tlab) + ' close instead of being sold and bought back \u2014 that strategy buys that many fewer; only the difference trades. The books record the move when they are updated.">\u2192 ' + r.mvTo.map(m => esc(xfNum(m.to)) + ' ' + m.q.toLocaleString('en-IN')).join(', ') + ' move</span> ' : '') +
