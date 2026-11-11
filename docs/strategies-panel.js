@@ -78,7 +78,7 @@ function spList(all, favs){
   return l.slice().sort((a, b) => ((isFavCfg(favs, b.cfg) ? 1 : 0) - (isFavCfg(favs, a.cfg) ? 1 : 0)) || ((favNumOf(a.cfg) || 1e9) - (favNumOf(b.cfg) || 1e9)));
 }
 function spActive(B){ if (SP_FILT === 'fav') return B.fav > 0 ? 'fav' : 'all'; return SP_FILT || ((FAVONLY && B.fav > 0) ? (B.mix > 0 ? 'mix' : 'fav') : 'all'); }
-function spChipName(k, B){ return k === 'fav' ? '★ Favourites' : k === 'mix' ? '🍀 ' + ((B && B.mixName) || (planMix() || {}).label || 'Plan mix') : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
+function spChipName(k, B){ return k === 'fav' ? '★ Favourites' : k === 'mix' ? (lbl => /^\p{Extended_Pictographic}/u.test(lbl) ? lbl : '🍀 ' + lbl)((B && B.mixName) || (planMix() || {}).label || 'Plan mix') : k === 'mark' ? (SIDE === 'sell' ? '✓ Sold' : '✓ Bought') : k === 'priv' ? 'Private' : 'All'; }
 /* footer label for a totals row: "Total" on All, else "Total · ★ Favourites 8 of 45" */
 function spTotLbl(list){
   const all = uniqStrategies(), B = spBuckets(all, loadFavs()), k = spActive(B);
