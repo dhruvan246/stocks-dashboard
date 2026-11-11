@@ -14,6 +14,8 @@ applier writes the twins directly with no downstream gate pass. Guarded on `was`
 a cell someone else has since moved is reported and left alone. An EMPTY slot (null, or the ann==0
 unknown sentinel) is always writable — the scripts/ master mirror holds null anns for rows docs
 has dated, and filling an empty slot with a reviewed date clobbers nobody.
+A slot whose profit value is empty gets no date (NO-VALUE: e.g. a consolidated figure later retracted
+by con_nofile_retractions.json — TIMKEN Jun/Sep-25, 2026-11-11).
 `fixed` must be a real post-qe date. Dry run by default.
 
 Usage:  apply_ann_cell_fix.py            # report only
@@ -39,7 +41,7 @@ def main():
             continue
         fund = json.load(open(path))
         rel = os.path.relpath(path, ROOT)
-        applied = already = absent = moved = 0
+        applied = already = absent = moved = novalue = 0
         for f in fixes:
             sym, qe, slot, fixed = f['sym'], int(f['qe']), SLOT[f['basis']], int(f['fixed'])
             if fixed <= qe:
@@ -50,6 +52,12 @@ def main():
                 absent += 1
                 continue
             cur = row[slot]
+            if row[slot - 1] is None and cur in (None, 0):
+                # no profit value in this basis (e.g. retracted by con_nofile_retractions.json):
+                # a date with no figure would be an orphan — never write it
+                novalue += 1
+                print(f'  NO-VALUE {sym} {qe} {f["basis"]}: profit slot empty — date not written')
+                continue
             if cur == fixed:
                 already += 1
                 continue
@@ -64,7 +72,7 @@ def main():
                 row[slot] = fixed
             applied += 1
         print(f'  [{rel}] to-write {applied} | already-correct {already} | '
-              f'cell-absent {absent} | moved-on {moved}')
+              f'cell-absent {absent} | moved-on {moved} | no-value {novalue}')
         if apply and applied:
             json.dump(fund, open(path, 'w'), separators=(',', ':'))
             print(f'  wrote {rel}')
