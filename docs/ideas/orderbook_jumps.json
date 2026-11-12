@@ -1,5 +1,5 @@
 {
- "built": "2026-11-11 20:40 IST",
+ "built": "2026-11-12 20:45 IST",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1459,7 +1459,65 @@
    "note": "Screen read Rs 9,983 cr as the latest book and gave +56.8%. Rs 9,983 cr is the 'total order book at Sep 26' on the deck's 'Order Book Resilience Without Indian Railways' slide (non-IR Rs 9,874 cr + IR Rs 109 cr) and EXCLUDES the 8.8% the same deck attributes to 'Other Subsidiaries and JVs'; a third slide totals Rs 9,679 cr and notes 'Order book excludes Subsidiary / Joint Venture orders'. The figure on the same CONSOLIDATED basis as the Rs 6,367 cr year-ago number is Rs 10,940 cr, which management states in prose, so the true YoY is +71.8%, not +56.8%. Both ends read from the companys own filings this run. The crossing is only now because the Sep-2025 base was low: the book was Rs 9,923 cr at 30-Jun-2026 (Q1 FY27 deck, 04-Aug-2026) against Rs 7,053 cr at 30-Jun-2025 (Q1 FY26 press release, 13-Aug-2025) = +40.7%, below the 50% gate. The jump itself is one filing: the Rs 4,045 cr (USD 430,572,749) Letter of Award from Tsiko Africa Logistics (Pty) with Barberry Holdings (Pty) disclosed 12-May-2026, executing 2027-2028, which took the book from Rs 5,408 cr (31-Mar-2026, FY26 annual report) to Rs 9,923 cr. A second LOA from the same pair, USD 135 mn for Wabtec ES43ACi locomotives (01-Sep-2026, priced Rs 1,282 cr in the deck), is 'within 20 to 24 months from signature of the Definitive Agreement'. Together Rs 5,327 cr = 49% of the book. Indian Railways is 1% of the book (Rs 109 cr) against 65% in FY23.",
    "checked_on": "2026-11-11",
    "faded": false
+  },
+  {
+   "key": "NSE:PATILAUTOM",
+   "name": "Patil Automation Ltd",
+   "nse": "PATILAUTOM",
+   "bse": null,
+   "isin": "INE17GV01016",
+   "latest_value_cr": 130,
+   "latest_as_on": "2026-10-31",
+   "latest_doc": "https://nsearchives.nseindia.com/corporate/PAL_12112026150248_Investor_Presentation_Sept_2026.pdf",
+   "latest_doc_title": "Investor Presentation (Sept 2026), filed NSE 12-Nov-2026: 'Rs 130+ Cr Order book (as of October 2026)'",
+   "year_ago_value_cr": 140,
+   "year_ago_as_on": "2025-11-22",
+   "year_ago_doc": "https://nsearchives.nseindia.com/corporate/PAL_22112025120211_Investor_Presentation.pdf",
+   "year_ago_doc_title": "Investor Presentation filed NSE 22-Nov-2025: 'Currently Maintaining A Strong Order Book Of Rs 140 Crore From Leading Automotive And Engineering Clients'",
+   "true_yoy_pct": -7.1,
+   "qualifies": false,
+   "trigger_filed": null,
+   "trigger_doc": null,
+   "trigger_doc_title": null,
+   "trigger_as_on": null,
+   "trigger_book_cr": null,
+   "trigger_prev_cr": null,
+   "trigger_prev_as_on": null,
+   "trigger_yoy_pct": null,
+   "verdict": "NOT A JUMP",
+   "note": "The screen's Rs 800 cr latest is NOT an order book. The same slide of the Sept-2026 deck reads 'Rs 130+ Cr / Order book (as of October 2026)' and, in the box next to it, 'Rs 800 Cr+ / Proposals submitted to customers' - a bid pipeline, not orders in hand; the reader took the adjacent number. The company's own stated book is Rs 130+ cr as of October 2026 against Rs 140 cr stated in the 22-Nov-2025 deck, so the true change on comparable definitions is about -7%, not +471%. The Sept-2026 deck's own milestone timeline corroborates the year-ago level ('Oct 2025 - Wins Rs 10.82 Crore onsite assembly-line order; order book crosses Rs 140 Crore'). Against FY26 consolidated total income of Rs 172.79 cr (same deck) the Rs 130 cr book is 0.75x a year of sales. NSE SME (series ST), listed 23-Jun-2025; no BSE code.",
+   "checked_on": "2026-11-12",
+   "faded": false
+  },
+  {
+   "key": "520111",
+   "name": "Ratnamani Metals & Tubes Ltd",
+   "nse": "RATNAMANI",
+   "bse": "520111",
+   "isin": "INE703B01027",
+   "latest_value_cr": 2600,
+   "latest_as_on": "2026-09-30",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cedbe3a2-6bbd-44d2-a58a-017b081cd81a.pdf",
+   "latest_doc_title": "Transcript of the Q2/H1 FY27 investor conference call, filed BSE 12-Nov-2026: 'Our standalone business continues to remain debt-free, and the order book has increased to over INR2,600 crores, around 30% higher than the previous quarter'",
+   "year_ago_value_cr": 2000,
+   "year_ago_as_on": "2025-09-30",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/3e10b258-8f66-4986-a4ef-3253a8f2353a.pdf",
+   "year_ago_doc_title": "Transcript of the Q2/H1 FY26 investor conference call (call 10-Nov-2025), filed BSE 13-Nov-2025: 'INR 2,050 crores or INR 2,000 crores is on standalone basis. RTL and RFSS is not [included]'",
+   "true_yoy_pct": 30.0,
+   "qualifies": false,
+   "trigger_filed": null,
+   "trigger_doc": null,
+   "trigger_doc_title": null,
+   "trigger_as_on": null,
+   "trigger_book_cr": null,
+   "trigger_prev_cr": null,
+   "trigger_prev_as_on": null,
+   "trigger_yoy_pct": null,
+   "verdict": "CORRECTED",
+   "note": "The screen compared a subsidiary's book with the parent's. Its Rs 3,000 cr latest figure is Ratnamani Finow Spooling Solutions (RFSS): 'RFSS has secured a new export order worth approximately INR2,700 crores, taking its order book to over INR3,000 crores' - RFSS alone, and management confirms it later in the same call ('Currently, we already have order book of INR3,000-odd crores' about the Finow JV). The year-ago Rs 2,000 cr is the STANDALONE book, which management stated explicitly excludes RTL and RFSS. Like with like, the standalone book went from Rs 2,000-2,050 cr as on 30-Sep-2025 to over Rs 2,600 cr as on 30-Sep-2026 (the call also splits it: stainless steel close to Rs 1,000 cr, carbon steel close to Rs 1,700 cr), i.e. +30% at the Rs 2,000 cr end and +26.8% at Rs 2,050 cr - below the 50% bar either way. The real jump is inside RFSS: ~Rs 500 cr as on 30-Sep-2025 (same Q2 FY26 call, 'the current order book of Finow, I believe it stands at INR 500 crore', confirmed by management) to over Rs 3,000 cr, on a ~Rs 2,700 cr nuclear/export award; RFSS quarterly revenue was Rs 157 cr and its rating was upgraded to CRISIL AA. No single company-wide consolidated order-book total is stated in either call, so standalone-to-standalone is the only comparable pair. Market cap is far above the Rs 200-7,500 cr band, so no card either way.",
+   "checked_on": "2026-11-12",
+   "faded": false
   }
  ],
- "note": "3 rows re-checked and 4 added on 2026-11-09. Re-checked after the companies filed newer order books: CEIGALL (30-Sep-2026 vs 30-Sep-2025, +80.0%), SOUTHWEST (+86.1%), NUCLEUS (+96.2%). Added after orderbook.py --refresh surfaced them: DATAPATTNS CONFIRMED +136.3%, ZENTEC CORRECTED +103.8% (the screen read a waterfall's opening balance as its closing one), SURYAROSNI CORRECTED +60.0% (the screen compared a segment with the company total), BEL NOT A JUMP (-7.7%; the screen's year-ago was the LRSAM programme's pending book from an analyst question). Both ends of every row were read from the company's own documents in that run."
+ "note": "2 rows added on 2026-11-12 (routine step 4a-ii), both read from the companies own documents: PATILAUTOM NOT A JUMP (-7.1%; the screen read the deck Proposals-submitted-to-customers box instead of the order-book box beside it) and RATNAMANI CORRECTED (+30.0% standalone; the screen compared the RFSS subsidiary Rs 3,000 cr book with the parent standalone Rs 2,000 cr). Previous note: 3 rows re-checked and 4 added on 2026-11-09. Re-checked after the companies filed newer order books: CEIGALL (30-Sep-2026 vs 30-Sep-2025, +80.0%), SOUTHWEST (+86.1%), NUCLEUS (+96.2%). Added after orderbook.py --refresh surfaced them: DATAPATTNS CONFIRMED +136.3%, ZENTEC CORRECTED +103.8% (the screen read a waterfall's opening balance as its closing one), SURYAROSNI CORRECTED +60.0% (the screen compared a segment with the company total), BEL NOT A JUMP (-7.7%; the screen's year-ago was the LRSAM programme's pending book from an analyst question). Both ends of every row were read from the company's own documents in that run."
 }
