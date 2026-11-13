@@ -27843,6 +27843,13 @@ allowlist carries github.io).
 
 ## §222a — THE VISION ROUTINE IS ON THE FOUR-SLOT CRON: the API accepted a session edit of the UI-created routine (2026-10-14, user: "why. only once? is it not dynamic?" → "try it")
 
+**MODEL PINNED to `claude-sonnet-5-5` (2026-11-13 11:46 IST, user: "it was on sonnet before" → "Yes, pin Sonnet").** The routine's
+model field was BLANK, so it ran on the account default. Run logs (`init: model=`): Sonnet 5.5 on 5/8/9/10-Nov 01:03 IST; Fable 5.1
+from the 11-Nov 00:15 IST run on — no routine edit in between (updated_at stayed 2026-10-14), the DEFAULT moved. Cost: ~20 Fable
+runs × ~100 image subagents each ≈ half the user's weekly allowance (week of 8–15 Nov, 86% used). `RemoteTrigger update` body
+`{"model":"claude-sonnet-5-5"}` → HTTP 200; read back: derived_state / session_context / session_request model all
+`claude-sonnet-5-5`, prompt hash, cron, env, sources unchanged. **Rule: every routine carries an explicit model — never blank.**
+
 **Measured before the edit (11:49 IST).** `GET /v1/code/triggers/trig_01N3H7t8Dgn2XmLqwBg94j2r`: cron `45 18 * * *`, enabled, created_via
 http_api, stored prompt 19,028 bytes WITHOUT the step-0 season guard; vision PRs had landed once a day at 00:26–00:32 IST on 9–14 Oct
 (#514/516/517/518/520/522). `season_state.py --vision-slot` on the synced checkout (HEAD 23d7dcf21) printed RUN (IN — 70 filings
