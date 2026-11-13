@@ -1062,7 +1062,7 @@ async function cashPlanRun(auto){
     }
     const px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
     const strats = frozen ? changed.map(it => replanInputs(P0, it)).filter(Boolean) : books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3;
-      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym), carry: scashCarry(it.id, zbRebKey()) }; });
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym), carry: scashNow(it.id, zbRebKey(), h.rows).v }; });
     books.forEach(it => { PICKS[it.id].rows.forEach(r => { px[r.sym] = pxOf(r.sym, +r.px); });
       heldFor(it.cfg).rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } }); });
     const lev = Object.assign({}, frozen ? P0.lev : {}), need = new Set();
@@ -1094,6 +1094,8 @@ async function cashPlanRun(auto){
     }
     const doc = zbaDoc(); doc.plan = P; doc.ts = Date.now();
     doc.scash = doc.scash || {}; Object.keys(P.S).forEach(id => { (doc.scash[id] = doc.scash[id] || {})[P.k] = P.S[id].cashV || 0; });   // zba51: next rebalance carries it
+    doc.sval = doc.sval || {}; Object.keys(P.S).forEach(id => { const o = P.S[id];   // zba77: the shares it CARRIES into this rebalance (stays / kept re-picks at the plan's prices); the buys are counted at their fill price from the book
+      (doc.sval[id] = doc.sval[id] || {})[P.k] = Math.max(0, Math.round((o.sharesV || 0) - Object.keys(o.buyQ || {}).reduce((a, s) => a + (o.buyQ[s] || 0) * (+(o.px || {})[s] || 0), 0))); });
     try { localStorage.setItem(ZBA_LS, JSON.stringify(doc)); } catch (e){}
     zbaPush(); CPL.at = Date.now();
     say(P.acct.short ? '⚠ Cash plan: short ' + zinr(P.acct.short) : (frozen ? 'Re-planned on the final list' : 'Cash plan ready') + ' — ' + (planSize(P) === 'exit' ? 'exits replaced with ' + zinr(P.acct.shares || 0) + ' of shares · cash ' + zinr(P.acct.spare) : (P.acct.slots || 0) + ' slots × ' + zinr(P.acct.slotP || 0) + ' · cash ' + zinr(P.acct.spare) + ' (' + Math.round((P.cashPct != null ? P.cashPct : 0.1) * 100) + '% of shares)'));
@@ -1175,7 +1177,7 @@ function allMtfPlan(P){
       pk.rows.concat(pk.alts || []).forEach(r => { if (px[r.sym] == null) px[r.sym] = pxOf(r.sym, +r.px); });
       h.rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } });
       picks.forEach(s => { if (px[s] == null){ const z = (Z.hraw || {})[s]; px[s] = pxOf(s, (po.px || {})[s] != null ? +po.px[s] : z ? +z.ltp : 0); } });   // a planned pick no longer on today's screen: live, else the plan's price
-      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: picks, carry: scashCarry(it.id, P.k) }; });
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: picks, carry: scashNow(it.id, P.k, h.rows).v }; });
     const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: (P.acct && P.acct.free) || 0, buf: CP_BUF, net: true, cashPct: P.cashPct != null ? P.cashPct : 0.1, size: planSize(P), mode: P.mode, excl: P.exclIds || [] });
     return { R: R, sw: sw, lev: lev, px: px, wait: wait };
   } catch (e){ return null; }
@@ -1206,7 +1208,7 @@ function swapCheckHTML(list){
     const n = o.num || favNumOf(it.cfg), rows = h.rows.filter(r => r.qty > 0), stays = new Set(o.stays || []);
     const exits = rows.filter(r => o.fx && o.fx[r.sym] != null);
     const buys = (o.picks || []).filter(s => (o.buyQ || {})[s] > 0);
-    const now = rows.reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.carry || 0), cashA = o.cashV || 0;   // its carried cash counts in Now; its share of the cash kept back in After
+    const cn = scashNow(it.id, P.k, rows), now = cn.now, cashA = o.cashV || 0;   // zba77: Now = bought + (kept − charges − daily MTF interest), not live prices   // its carried cash counts in Now; its share of the cash kept back in After
     const aft = rows.filter(r => stays.has(r.sym)).reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.picks || []).reduce((a, s) => a + (o.holdQ[s] || 0) * px(s, o), 0);
     const sellV = exits.reduce((a, r) => a + ((o.trim || {})[r.sym] || r.qty) * px(r.sym, o), 0), buyV = buys.reduce((a, s) => a + o.buyQ[s] * px(s, o), 0);
     tNow += now; tAft += aft; tSell += sellV; tBuy += buyV; tCash += cashA;
@@ -1236,7 +1238,7 @@ function swapCheckHTML(list){
     const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
       : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
     return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
-      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + (o.carry ? '<div class="sym">incl. ' + zinr(o.carry) + ' cash</div>' : '') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td>' + mCells + '</tr>'; }).join('');
+      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + ('<div class="sym">bought ' + zinr(cn.entry) + ' + cash ' + zinr(cn.v) + '</div>') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td>' + mCells + '</tr>'; }).join('');
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   const pcS = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, byX = planSize(P) === 'exit', modeS = P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only';
@@ -1323,7 +1325,7 @@ function fillsHTML(){
 }
 function renderBuyAll(list){
   const box = $('buyall'); if (!box) return;
-  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + swapCheckHTML(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
+  if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + sinceRebHTML(list) + swapCheckHTML(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
   if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + fillsHTML(); wireResidGo(); wireReenter(); fillsKick(); return; }
@@ -1333,7 +1335,7 @@ function renderBuyAll(list){
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = renderReenter() + residHTML + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b> <select id="rebVer" title="As planned = the saved cash plan. All MTF = the same plan with every no-MTF pick swapped for the next-ranked MTF stock (a what-if until you press Swap on the picks and Re-plan)"><option value="plan"' + (rowsM ? '' : ' selected') + '>As planned</option><option value="mtf"' + (rowsM ? ' selected' : '') + '>All MTF</option></select>' +
+  box.innerHTML = renderReenter() + residHTML + sinceRebHTML(list) + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b> <select id="rebVer" title="As planned = the saved cash plan. All MTF = the same plan with every no-MTF pick swapped for the next-ranked MTF stock (a what-if until you press Swap on the picks and Re-plan)"><option value="plan"' + (rowsM ? '' : ' selected') + '>As planned</option><option value="mtf"' + (rowsM ? ' selected' : '') + '>All MTF</option></select>' +
     '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
@@ -1862,11 +1864,50 @@ function zbaMerge(a, b){ const newer = (b.ts || 0) >= (a.ts || 0) ? b : a, older
            plan:      zbMergeReb(newer.plan, older.plan),
            cpo:       ((n, o) => (n && (!o || (+n.ts || 0) >= (+o.ts || 0))) ? n : o)(newer.cpo, older.cpo),   // zba54: the plan's controls follow their latest edit
            mtfsw:     ((n, o) => (n && (!o || (+n.ts || 0) >= (+o.ts || 0))) ? n : o)(newer.mtfsw, older.mtfsw),   // zba65: MTF swap choices follow their latest edit
-           scash:     zbMergeCash(newer.scash, older.scash) }; }
+           scash:     zbMergeCash(newer.scash, older.scash), sval: zbMergeCash(newer.sval, older.sval) }; }
 /* per-strategy cash book (zba51): { id: { rebKey: rupees } } — every rebalance's "stays cash"; the newer doc wins per key */
 function zbMergeCash(n, o){ const out = {}; [o || {}, n || {}].forEach(m => Object.keys(m).forEach(id => { out[id] = Object.assign(out[id] || {}, m[id]); })); return out; }
 /* the cash strategy `id` carries INTO rebalance `k`: what its latest earlier rebalance left as cash (0 before zba51) */
 function scashCarry(id, k){ const m = (zbaDoc().scash || {})[id] || {}, ks = Object.keys(m).filter(x => x < k).sort(); return ks.length ? (+m[ks[ks.length - 1]] || 0) : 0; }
+/* zba77 (user 13-Nov, confirmed with numbers): a strategy's Cash and Now are worked out FROM ITS LAST REBALANCE, not from
+   live prices — "now value and cash value should be last month rebalance value minus charges and daily interest".
+   4-Nov example: bought ₹29.74 Cr, kept ₹2.974 Cr (10%) as cash → cash now = 2.974 Cr − 0.12% buy charges − Zerodha's MTF
+   interest (₹82,321/day on ~₹20.6 Cr loan) for each calendar day AFTER the buy day; Now = ₹29.74 Cr + cash now.
+   Per strategy: entry = Σ qty × buy price of its book; kept = Cash % × entry; charges = 0.12% of the rows bought at the
+   last rebalance (k0 = its latest saved cash key, else every row counts); interest = its share of each MTF stock's
+   Zerodha loan (mtf.value − mtf.initial_margin) × 0.04%/day × days since the later of k0 and the buy day. */
+const MTF_INT_DAY = 0.0004, BUY_CHG = 0.0012;
+function scashNow(id, k, rows){
+  const m = (zbaDoc().scash || {})[id] || {}, ks = Object.keys(m).filter(x => x < k).sort(), k0 = ks.length ? ks[ks.length - 1] : '';
+  const H = (typeof Z !== 'undefined' && Z.hraw) || {}, pct = cpOpts().pct / 100, sv = k0 ? ((zbaDoc().sval || {})[id] || {})[k0] : undefined;   // sv: saved from zba77 on
+  const t = istNow(), today = Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate());
+  let entry = 0, fresh = 0, it = 0, loan = 0, known = true;
+  (rows || []).forEach(r => { if (!(r.qty > 0)) return; const v = r.qty * (+r.avg || 0); entry += v;
+    const isNew = !k0 || (r.date && r.date > k0); if (isNew) fresh += v;
+    const h = H[r.sym]; if (!h){ known = false; return; }
+    const mq = (h.mq || 0) + (h.mu || 0), tot = mq + (h.cq || 0) + (h.cu || 0); if (!mq || !tot) return;
+    const l = r.qty * (mq / tot) * Math.max(0, ((h.mval || 0) - (h.mim || 0)) / mq);
+    const st = (r.date && (!k0 || r.date > k0)) ? r.date : k0; if (!st) return;
+    const days = Math.max(0, Math.round((today - Date.parse(st + 'T00:00:00Z')) / 864e5));
+    loan += l; it += l * MTF_INT_DAY * days; });
+  if (sv != null) entry = sv + fresh;   // from the Nov rebalance on: carried shares at the plan's prices + this rebalance's buys at their fill price
+  const kept = sv != null ? Math.round(+m[k0] || 0) : Math.round(pct * entry), chg = Math.round(BUY_CHG * fresh); it = Math.round(it);   // kept: Rule B's saved cash (Cash % of the shares); the Oct-2026 rebalance predates it → Cash % × bought (user: 2.974 Cr)
+  const v = Math.max(0, kept - chg - it);
+  return { k0: k0, entry: Math.round(entry), kept: kept, chg: chg, it: it, perDay: Math.round(loan * MTF_INT_DAY), loan: Math.round(loan), v: v, now: Math.round(entry) + v, known: known };
+}
+/* the table the user sees: per strategy, bought → kept → − charges − interest = cash now; Now = bought + cash now */
+function sinceRebHTML(list){
+  const k = zbRebKey(), rs = list.map(it => { const h = heldFor(it.cfg); if (!h || !h.rows || !h.rows.some(r => r.qty > 0)) return null;
+    return { n: favNumOf(it.cfg) || 0, c: scashNow(it.id, k, h.rows) }; }).filter(Boolean);
+  if (!rs.length) return '';
+  const T = { entry: 0, kept: 0, chg: 0, it: 0, perDay: 0, v: 0, now: 0 }; rs.forEach(x => Object.keys(T).forEach(f => { T[f] += x.c[f]; }));
+  const conn = !!(typeof Z !== 'undefined' && Z.hraw && Object.keys(Z.hraw).length), miss = rs.some(x => !x.c.known);
+  const row = (lab, c) => '<tr><td>' + lab + '</td><td>' + zinr(c.entry) + '</td><td>' + zinr(c.kept) + '</td><td>− ' + zinr(c.chg) + '</td><td>− ' + zinr(c.it) + '<div class="sym">' + zinr(c.perDay) + '/day</div></td><td><b>' + zinr(c.v) + '</b></td><td><b>' + zinr(c.now) + '</b></td></tr>';
+  return '<div class="bal"><div class="bal-h"><b>Since the last rebalance</b><span class="sub">book value at the buy price, not live prices — MTM profit never becomes cash</span></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th title="Σ qty × buy price">Bought</th><th title="Cash % of what was bought">Cash kept</th><th title="0.12% of what was bought at the last rebalance">Charges</th><th title="Zerodha MTF interest, 0.04% a day on its loan, for each day after the buy day">Interest</th><th>Cash now</th><th title="Bought + cash now">Now value</th></tr></thead><tbody>' +
+    rs.map(x => row('#' + x.n, x.c)).join('') + '</tbody><tfoot>' + row('Total', T) + '</tfoot></table></div>' +
+    (!conn ? '<div class="khelp">Connect Zerodha to count the MTF interest (it needs each stock’s loan).</div>' : miss ? '<div class="khelp">Some book stocks are not in the Zerodha holdings — their interest is not counted.</div>' : '') + '</div>';
+}
 function zbMergeReb(n, o){ return (n && (!o || String(n.k) >= String(o.k))) ? n : o; }
 /* auto-pilot state, per rebalance: the arm switch follows its latest flip (armedAt); log lines from every device (the
    robot's and the user's) union by time — newest 60 kept */
