@@ -1208,7 +1208,7 @@ function swapCheckHTML(list){
     const n = o.num || favNumOf(it.cfg), rows = h.rows.filter(r => r.qty > 0), stays = new Set(o.stays || []);
     const exits = rows.filter(r => o.fx && o.fx[r.sym] != null);
     const buys = (o.picks || []).filter(s => (o.buyQ || {})[s] > 0);
-    const cn = scashNow(it.id, P.k, rows), now = cn.now, cashA = o.cashV || 0;   // zba77: Now = bought + (kept − charges − daily MTF interest), not live prices   // its carried cash counts in Now; its share of the cash kept back in After
+    const cn = scashNow(it.id, P.k, rows), now = rows.reduce((a, r) => a + r.qty * px(r.sym, o), 0) + cn.v, cashA = o.cashV || 0;   // zba79: Now = shares at live price + (kept − charges − daily MTF interest)   // its carried cash counts in Now; its share of the cash kept back in After
     const aft = rows.filter(r => stays.has(r.sym)).reduce((a, r) => a + r.qty * px(r.sym, o), 0) + (o.picks || []).reduce((a, s) => a + (o.holdQ[s] || 0) * px(s, o), 0);
     const sellV = exits.reduce((a, r) => a + ((o.trim || {})[r.sym] || r.qty) * px(r.sym, o), 0), buyV = buys.reduce((a, s) => a + o.buyQ[s] * px(s, o), 0);
     tNow += now; tAft += aft; tSell += sellV; tBuy += buyV; tCash += cashA;
@@ -1238,7 +1238,7 @@ function swapCheckHTML(list){
     const chg = !exits.length && !buys.length ? '<span class="sym">no trades</span>' : Math.abs(d) < 0.01 * now ? '<span class="sym">about the same</span>'
       : '<span class="' + (d < 0 ? 'down' : 'up') + '">' + (d < 0 ? '−' : '+') + zinr(Math.abs(d)) + '</span>';
     return '<tr><td><span class="snum">#' + n + '</span></td><td style="white-space:normal;text-align:left">' + sells + '</td><td style="white-space:normal;text-align:left">' + bys + '</td>' +
-      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + ('<div class="sym">bought ' + zinr(cn.entry) + ' + cash ' + zinr(cn.v) + '</div>') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td>' + mCells + '</tr>'; }).join('');
+      '<td style="white-space:nowrap;text-align:left">' + allM + '</td><td class="sym">' + esc(kind) + '</td><td>' + zinr(now) + ('<div class="sym">incl. ' + zinr(cn.v) + ' cash</div>') + '</td><td>' + zinr(aft) + '</td><td>' + (cashA ? '<b>' + zinr(cashA) + '</b>' : '<span class="sym">₹0</span>') + '</td><td>' + chg + (planFor(it) || !o.picks.length ? '' : ' <span class="tag exit" title="The screen changed since the plan was worked out">picks changed</span>') + '</td>' + mCells + '</tr>'; }).join('');
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   const pcS = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, byX = planSize(P) === 'exit', modeS = P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only';
@@ -1881,8 +1881,9 @@ function scashNow(id, k, rows){
   const m = (zbaDoc().scash || {})[id] || {}, ks = Object.keys(m).filter(x => x < k).sort(), k0 = ks.length ? ks[ks.length - 1] : '';
   const H = (typeof Z !== 'undefined' && Z.hraw) || {}, pct = cpOpts().pct / 100, sv = k0 ? ((zbaDoc().sval || {})[id] || {})[k0] : undefined;   // sv: saved from zba77 on
   const t = istNow(), today = Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), t.getUTCDate());
-  let entry = 0, fresh = 0, it = 0, loan = 0, known = true;
+  let entry = 0, fresh = 0, it = 0, loan = 0, live = 0, known = true;
   (rows || []).forEach(r => { if (!(r.qty > 0)) return; const v = r.qty * (+r.avg || 0); entry += v;
+    const q = (typeof liveQ === 'function') ? liveQ(r.sym) : null, hz = H[r.sym], lp = (q && q.ltp != null) ? +q.ltp : (hz && hz.ltp) ? +hz.ltp : (+r.avg || 0); live += r.qty * lp;   // zba79: today's price
     const isNew = !k0 || (r.date && r.date > k0); if (isNew) fresh += v;
     const h = H[r.sym]; if (!h){ known = false; return; }
     const mq = (h.mq || 0) + (h.mu || 0), tot = mq + (h.cq || 0) + (h.cu || 0); if (!mq || !tot) return;
@@ -1893,18 +1894,18 @@ function scashNow(id, k, rows){
   if (sv != null) entry = sv + fresh;   // from the Nov rebalance on: carried shares at the plan's prices + this rebalance's buys at their fill price
   const kept = sv != null ? Math.round(+m[k0] || 0) : Math.round(pct * entry), chg = Math.round(BUY_CHG * fresh); it = Math.round(it);   // kept: Rule B's saved cash (Cash % of the shares); the Oct-2026 rebalance predates it → Cash % × bought (user: 2.974 Cr)
   const v = Math.max(0, kept - chg - it);
-  return { k0: k0, entry: Math.round(entry), kept: kept, chg: chg, it: it, perDay: Math.round(loan * MTF_INT_DAY), loan: Math.round(loan), v: v, now: Math.round(entry) + v, known: known };
+  return { k0: k0, entry: Math.round(entry), live: Math.round(live), kept: kept, chg: chg, it: it, perDay: Math.round(loan * MTF_INT_DAY), loan: Math.round(loan), v: v, now: Math.round(live) + kept - chg - it, known: known };   // zba79 (user 13-Nov): Now = today's strategy value (shares at live price + the cash kept) − charges − interest
 }
 /* the table the user sees: per strategy, bought → kept → − charges − interest = cash now; Now = bought + cash now */
 function sinceRebHTML(list){
   const k = zbRebKey(), rs = list.map(it => { const h = heldFor(it.cfg); if (!h || !h.rows || !h.rows.some(r => r.qty > 0)) return null;
     return { n: favNumOf(it.cfg) || 0, c: scashNow(it.id, k, h.rows) }; }).filter(Boolean);
   if (!rs.length) return '';
-  const T = { entry: 0, kept: 0, chg: 0, it: 0, perDay: 0, v: 0, now: 0 }; rs.forEach(x => Object.keys(T).forEach(f => { T[f] += x.c[f]; }));
+  const T = { entry: 0, live: 0, kept: 0, chg: 0, it: 0, perDay: 0, v: 0, now: 0 }; rs.forEach(x => Object.keys(T).forEach(f => { T[f] += x.c[f]; }));
   const conn = !!(typeof Z !== 'undefined' && Z.hraw && Object.keys(Z.hraw).length), miss = rs.some(x => !x.c.known);
-  const row = (lab, c) => '<tr><td>' + lab + '</td><td>' + zinr(c.entry) + '</td><td>' + zinr(c.kept) + '</td><td>− ' + zinr(c.chg) + '</td><td>− ' + zinr(c.it) + '<div class="sym">' + zinr(c.perDay) + '/day</div></td><td><b>' + zinr(c.v) + '</b></td><td><b>' + zinr(c.now) + '</b></td></tr>';
-  return '<div class="bal"><div class="bal-h"><b>Since the last rebalance</b><span class="sub">book value at the buy price, not live prices — MTM profit never becomes cash</span></div>' +
-    '<div class="twrap"><table><thead><tr><th>#</th><th title="Σ qty × buy price">Bought</th><th title="Cash % of what was bought">Cash kept</th><th title="0.12% of what was bought at the last rebalance">Charges</th><th title="Zerodha MTF interest, 0.04% a day on its loan, for each day after the buy day">Interest</th><th>Cash now</th><th title="Bought + cash now">Now value</th></tr></thead><tbody>' +
+  const row = (lab, c) => '<tr><td>' + lab + '</td><td>' + zinr(c.entry) + '</td><td>' + zinr(c.live) + '</td><td>' + zinr(c.kept) + '</td><td>− ' + zinr(c.chg) + '</td><td>− ' + zinr(c.it) + '<div class="sym">' + zinr(c.perDay) + '/day</div></td><td><b>' + zinr(c.v) + '</b></td><td><b>' + zinr(c.now) + '</b></td></tr>';
+  return '<div class="bal"><div class="bal-h"><b>Since the last rebalance</b><span class="sub">Now value = shares at today’s price + cash kept − charges − MTF interest · cash now never includes MTM profit</span></div>' +
+    '<div class="twrap"><table><thead><tr><th>#</th><th title="Σ qty × buy price">Bought</th><th title="Its shares at today’s live price">Shares now</th><th title="Cash % of what was bought">Cash kept</th><th title="0.12% of what was bought at the last rebalance">Charges</th><th title="Zerodha MTF interest, 0.04% a day on its loan, for each day after the buy day">Interest</th><th>Cash now</th><th title="Shares now + cash kept − charges − interest">Now value</th></tr></thead><tbody>' +
     rs.map(x => row('#' + x.n, x.c)).join('') + '</tbody><tfoot>' + row('Total', T) + '</tfoot></table></div>' +
     (!conn ? '<div class="khelp">Connect Zerodha to count the MTF interest (it needs each stock’s loan).</div>' : miss ? '<div class="khelp">Some book stocks are not in the Zerodha holdings — their interest is not counted.</div>' : '') + '</div>';
 }
