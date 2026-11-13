@@ -806,19 +806,22 @@ function solveUp(f, y, hi){   // the largest x in [0, hi] with f(x) <= y, for f 
    The synced copy wins; localStorage is just the offline fallback (and mirrors the last synced value). */
 function cpNorm(o){ o = o || {}; const pct = +o.pct;
   return { pct: (o.pct != null && o.pct !== '' && pct >= 0 && pct <= 90) ? pct : 10, mode: o.mode === 'all' ? 'all' : 'swap', set: String(o.set || ''),
-           size: o.size === 'slot' ? 'slot' : 'exit' }; }   // zba74 (user 13-Nov): 'exit' = each strategy re-buys only the share value it sold, the rest stays cash; 'slot' = equal slots + Cash %
+           size: (o.size === 'exit' && +o.szv >= 76) ? 'exit' : 'slot', szv: +o.szv || 0 }; }
+   // zba74 (user 13-Nov): 'exit' = Rule A, each strategy re-buys only the share value it sold, the rest stays cash; 'slot' = Rule B, equal slots + Cash %.
+   // zba76 (user 13-Nov, after the 2020-21 / 2023-24 backtests: "ok Rule B then … terminal me bhi add kar do"): Rule B is the default again.
+   // A stored 'exit' counts only if it was picked in the Sizing menu after zba76 (szv >= 76) — the zba74/75 default had written 'exit' into every saved doc.
 function cpOpts(){ let o = null;
   try { const d = zbaDoc().cpo; if (d && typeof d === 'object' && (d.pct != null || d.mode || d.set != null || d.size)) o = d; } catch (e){}
   if (!o) try { o = JSON.parse(localStorage.getItem('sw_cp_opts') || 'null'); } catch (e){}
   return cpNorm(o); }
-function cpSetOpts(ch){ const o = cpNorm(Object.assign(cpOpts(), ch));
+function cpSetOpts(ch){ const o = cpNorm(Object.assign(cpOpts(), ch, (ch && ch.size) ? { szv: 76 } : {}));
   try { const d = zbaDoc(); d.cpo = Object.assign({}, o, { ts: Date.now() }); d.ts = Date.now(); localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch (e){}
   try { localStorage.setItem('sw_cp_opts', JSON.stringify(o)); } catch (e){}
   try { zbaPush(); } catch (e){}
   return o; }
 /* the plan doc vs the controls now: '' when they agree, else what differs (shown in the Cash plan header) */
 const planSize = P => (P && P.size === 'exit') ? 'exit' : 'slot';   // plans saved before zba74 were equal-slot plans
-const sizeLab = z => z === 'exit' ? 'Replace exits only' : 'Equal slots + Cash %';
+const sizeLab = z => z === 'exit' ? 'Rule A · Replace exits only' : 'Rule B · Equal slots + Cash %';
 function cpMismatch(P){ if (!P) return ''; const o = cpOpts(), d = [];
   if (P.mode !== o.mode) d.push('mode now ' + (o.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ' (plan: ' + (P.mode === 'all' ? 'Sell all & re-enter' : 'Swap exits only') + ')');
   if (String(P.set || '') !== o.set) d.push('plan for now ' + (o.set || 'All strategies') + ' (plan: ' + (P.set || 'All strategies') + ')');
@@ -1137,14 +1140,14 @@ function cashPlanHTML(list){
   return h + '<div class="khelp">' + cpRuleText() + ' The ⚡ buy baskets on ' + esc(rebalWindow().t1lab) + ' and the table below use these quantities; a strategy whose screen changed since falls back to the normal sizing.</div></div>';
 }
 function cpRuleText(){
-  if (planSize(cpDoc()) === 'exit' && cpOpts().size === 'exit') return 'Rule (13 Nov, <b>Replace exits only</b>): each strategy sells its exits and re-buys <b>the same share value</b> (live price × shares sold), split equally over its new picks — each bought at its full Zerodha MTF leverage, or in full cash when Zerodha won’t fund it (that extra own money comes from the free cash). A strategy with no exits buys nothing; a reset strategy’s kept re-pick stays as it is. <b>Free cash and everything the buys don’t use stay as cash</b> — no Cash % target. <b>Sell all &amp; re-enter</b>: every holding is an exit, so each strategy re-buys its whole book value. <b>Sizing</b> → Equal slots + Cash % brings back the 29-Oct rule.';
-  return 'Rule (29 Oct): <b>every slot of every strategy gets the same value</b>, each pick bought at its full Zerodha MTF leverage (1x when Zerodha won’t fund it), and the slot size is set so that the own money left as <b>cash = Cash % of everything held in shares</b> (10% → a 10% fall is covered). Own money = free cash in Zerodha (incl. unsettled sale proceeds) + what the exits free after the loan + the equity in re-picks a reset strategy keeps; ACTIVE / GPECO and anything outside the strategy books stay out. An empty slot takes nothing — the picks that exist share all of it. <b>Swap exits only</b> sells just the exits (a hold strategy’s stays ride, a reset strategy’s re-pick is topped up or trimmed to the slot); <b>Sell all &amp; re-enter</b> sells every holding and buys every slot fresh on the buy day from the actual cash. <b>Plan for</b> a saved mix: a strategy outside it sells everything and buys nothing.';
+  if (planSize(cpDoc()) === 'exit' && cpOpts().size === 'exit') return 'Rule (13 Nov, <b>Replace exits only</b>): each strategy sells its exits and re-buys <b>the same share value</b> (live price × shares sold), split equally over its new picks — each bought at its full Zerodha MTF leverage, or in full cash when Zerodha won’t fund it (that extra own money comes from the free cash). A strategy with no exits buys nothing; a reset strategy’s kept re-pick stays as it is. <b>Free cash and everything the buys don’t use stay as cash</b> — no Cash % target. <b>Sell all &amp; re-enter</b>: every holding is an exit, so each strategy re-buys its whole book value. <b>Sizing</b> → Rule B (Equal slots + Cash %) brings back the default.';
+  return 'Rule B (29 Oct; the default again from 13 Nov): <b>every slot of every strategy gets the same value</b>, each pick bought at its full Zerodha MTF leverage (1x when Zerodha won’t fund it), and the slot size is set so that the own money left as <b>cash = Cash % of everything held in shares</b> (10% → a 10% fall is covered). Own money = free cash in Zerodha (incl. unsettled sale proceeds) + what the exits free after the loan + the equity in re-picks a reset strategy keeps; ACTIVE / GPECO and anything outside the strategy books stay out. An empty slot takes nothing — the picks that exist share all of it. <b>Swap exits only</b> sells just the exits (a hold strategy’s stays ride, a reset strategy’s re-pick is topped up or trimmed to the slot); <b>Sell all &amp; re-enter</b> sells every holding and buys every slot fresh on the buy day from the actual cash. <b>Plan for</b> a saved mix: a strategy outside it sells everything and buys nothing.';
 }
 function cpControlsHTML(P, frozen){
   const o = cpOpts(), mixes = subMixes(), dis = frozen ? ' disabled' : '';
   const opt = (v, l, cur) => '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(l) + '</option>';
   return '<span class="cpctl" title="' + (frozen ? 'Frozen — the sells have started' : 'Changing a control re-plans at once') + '">' +
-    '<label>Sizing <select id="cpSize"' + dis + ' title="Replace exits only = each strategy re-buys just the share value its exits sell, split equally over its new picks; free cash and anything left over stay cash. Equal slots + Cash % = every slot the same size, sized so Cash % of the shares stays as cash">' + opt('exit', 'Replace exits only', o.size) + opt('slot', 'Equal slots + Cash %', o.size) + '</select></label>' +
+    '<label>Sizing <select id="cpSize"' + dis + ' title="Replace exits only = each strategy re-buys just the share value its exits sell, split equally over its new picks; free cash and anything left over stay cash. Equal slots + Cash % = every slot the same size, sized so Cash % of the shares stays as cash">' + opt('slot', 'Rule B · Equal slots + Cash %', o.size) + opt('exit', 'Rule A · Replace exits only', o.size) + '</select></label>' +
     (o.size === 'slot' ? '<label>Cash % <input type="number" id="cpPct" min="0" max="90" step="0.5" value="' + o.pct + '"' + dis + ' title="Own money kept back as cash, as a % of everything held in shares (10 = a 10% fall is covered)"></label>' : '') +
     '<label>Plan for <select id="cpSet"' + dis + ' title="Strategies that get slots — the rest sell everything and buy nothing">' + opt('', 'All strategies', o.set) + mixes.map(m => opt(m.label, m.label, o.set)).join('') + '</select></label>' +
     '<label><select id="cpMode"' + dis + ' title="Swap exits only = the normal rebalance. Sell all &amp; re-enter = every holding sells, every slot is bought fresh">' + opt('swap', 'Swap exits only', o.mode) + opt('all', 'Sell all & re-enter', o.mode) + '</select></label></span>';
