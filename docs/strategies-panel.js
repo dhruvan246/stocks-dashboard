@@ -1328,7 +1328,7 @@ function renderBuyAll(list){
   if (SIDE === 'sell'){ box.innerHTML = renderSellAll(list) + sinceRebHTML(list) + swapCheckHTML(list) + renderExitAll() + '<div class="khelp" style="margin:6px 4px 10px">Timing (user 2026-09-23): <b>sell the exits near the close of ' + esc(rebalWindow().tlab) + '</b> \u2014 the month-end session, on that day\u2019s near-final \u26a1 live picks \u00b7 <b>buy the entries the next morning (' + esc(rebalWindow().t1lab) + ')</b> on the official month-end close screen, funded by the captured sell proceeds. A stock kept on month-end that drops out of the final screen sells the next morning as a straggler.</div>' + fillsHTML(); wireExitAll(); fillsKick(); return; }
   const residHTML = renderResidual();
   const withPicks = list.filter(it => PICKS[it.id] && PICKS[it.id].rows.length);
-  if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + fillsHTML(); wireResidGo(); wireReenter(); fillsKick(); return; }
+  if (!withPicks.length){ box.innerHTML = renderReenter() + residHTML + sinceRebHTML(list) + fillsHTML();   /* zba78: the since-rebalance table needs only the books + Zerodha, not the picks */ wireResidGo(); wireReenter(); fillsKick(); return; }
   const agg = buyAllAgg(list), RV = rebVer(), rowsM = RV === 'mtf' ? rebMtfRows(list) : null, rows = rowsM || agg.rows;
   const SM = subMixes(), NUMS = blockNums(list), mixList = list.filter(it => mixMarks(it.cfg, SM).length);
   const mixNums = new Set(mixList.map(it => NUMS.get(it.id)));   // coloured like their blocks (🍀 The Four)
