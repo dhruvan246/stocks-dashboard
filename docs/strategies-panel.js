@@ -1154,12 +1154,12 @@ function allMtfPlan(P){
     const strats = books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3, pk = PICKS[it.id];
       const pp = (P.picks || {})[it.id], base = Array.isArray(pp) ? pp.slice() : pk.rows.slice(0, topN).map(r => r.sym),   // zba72: the SAVED plan's picks, not today's screen — only the no-MTF ones change
         used = new Set([...(pk.base || pk.rows).map(r => r.sym), ...pk.rows.map(r => r.sym), ...base]), po = (P.S || {})[it.id] || {};
-      base.forEach(s => { if (px[s] == null){ const q = pxOf(s, null); px[s] = q != null ? q : +((po.px || {})[s] || 0); } });
       const picks = base.map(s => { const v = lev[s]; if (v == null || v > 1.05) return s;
         const n = swNextAlt(pk, used); if (n.wait) wait = true; if (!n.alt) return s;
         used.add(n.alt.sym); (sw[it.id] = sw[it.id] || {})[n.alt.sym] = s; return n.alt.sym; });
       pk.rows.concat(pk.alts || []).forEach(r => { if (px[r.sym] == null) px[r.sym] = pxOf(r.sym, +r.px); });
       h.rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } });
+      picks.forEach(s => { if (px[s] == null){ const z = (Z.hraw || {})[s]; px[s] = pxOf(s, (po.px || {})[s] != null ? +po.px[s] : z ? +z.ltp : 0); } });   // a planned pick no longer on today's screen: live, else the plan's price
       return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: picks, carry: scashCarry(it.id, P.k) }; });
     const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: (P.acct && P.acct.free) || 0, buf: CP_BUF, net: true, cashPct: P.cashPct != null ? P.cashPct : 0.1, mode: P.mode, excl: P.exclIds || [] });
     return { R: R, sw: sw, lev: lev, px: px, wait: wait };
