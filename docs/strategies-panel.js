@@ -1105,7 +1105,7 @@ function cashPlanHTML(list){
   if (frozen && changed.length && Z.connected && !CPL.busy && Date.now() - CPL.at > 60000) setTimeout(() => cashPlanRun(true), 50);   // the final list changed after the sells → same rules, on its own
   let h = '<div class="bal"><div class="bal-h"><b>Cash plan</b><span class="sub">' +
     (P ? 'worked out ' + when + ' on ' + (P.live ? 'live' : 'rebalance') + ' picks' + (P.re ? ' · re-planned ' + hhmm(new Date(P.re.at + 330 * 60000)) + ' on the final list' : '') + (frozen ? ' · <b>frozen</b> — sell baskets have gone out' + (changed.length ? '; the final list changed for ' + changed.map(it => '#' + (favNumOf(it.cfg) || '?')).join(' ') + ' — re-planning on the same rules' : '') : ' · refreshes itself on sell day until the first sell basket')
-       : 'every slot the same size — Cash % of the shares stays back as cash') + '</span>' +
+       : (cpOpts().size === 'exit' ? 'each strategy re-buys the share value its exits sell — the rest stays cash' : 'every slot the same size — Cash % of the shares stays back as cash')) + '</span>' +
     cpControlsHTML(P, frozen) +
     '<span class="go"><button class="btn" id="cpGo"' + (frozen && !changed.length ? ' disabled title="Frozen: the sells have started and every strategy still matches its plan"' : '') + '>' + (P ? (frozen ? 'Re-plan changed' : 'Re-plan') : 'Plan cash') + '</button></span></div>';
   if (!P) return h + '<div class="khelp">Needs Zerodha connected and every strategy’s picks loaded. ' + cpRuleText() + '</div></div>';
