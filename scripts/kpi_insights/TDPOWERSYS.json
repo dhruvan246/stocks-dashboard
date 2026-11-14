@@ -337,6 +337,13 @@
    "title": "Audited Financial Results for the Year Ended March 31, 2020",
    "read": "2026-11-09",
    "by": "gemini:gemini-3.8-flash"
+  },
+  "5a12caf6-cf27-425c-8a63-9300311df871.pdf": {
+   "kind": "ip",
+   "date": "2026-11-12",
+   "title": "Q2 FY27 Investor Presentation",
+   "read": "2026-11-14",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -367,9 +374,11 @@
     "20241231": 4073.0,
     "20250331": 4134.0,
     "20250630": 3918.0,
+    "20250930": 5241.0,
     "20251231": 6561.0,
     "20260331": 6665.0,
-    "20260630": 7341.0
+    "20260630": 7341.0,
+    "20260930": 8244.0
    },
    "src": {
     "y:20220331": [
@@ -509,6 +518,18 @@
      26,
      "Order Inflow Q1 FY'26",
      "3918"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     28,
+     "Order Inflow (Rs. in Mn)",
+     "8,244"
+    ],
+    "q:20250930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     28,
+     "Order Inflow (Rs. in Mn)",
+     "5,241"
     ]
    },
    "latest": {
@@ -565,7 +586,8 @@
     "20250331": 13681.0,
     "20251231": 18452.0,
     "20260331": 19729.0,
-    "20260630": 22073.0
+    "20260630": 22073.0,
+    "20260930": 23187.0
    },
    "src": {
     "q:20191231": [
@@ -699,6 +721,12 @@
      26,
      "Order Book on 30th June 2026",
      "22,073"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     26,
+     "Order Book on 30th September 2026",
+     "23,187"
     ]
    },
    "latest": {
@@ -892,7 +920,8 @@
     "20221231": 5661.0,
     "20230331": 5811.0,
     "20230630": 5935,
-    "20240630": 6419.0
+    "20240630": 6419.0,
+    "20260930": 8772.0
    },
    "src": {
     "q:20191231": [
@@ -996,6 +1025,12 @@
      4,
      "Since inception, manufactured 5,935 generators",
      "5,935"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Total",
+     "8772"
     ]
    },
    "latest": {
@@ -1331,72 +1366,6 @@
    }
   },
   {
-   "name": "Pending Order Book - Projects Business",
-   "unit": "Rs Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20191231": 354.0,
-    "20200331": 217.0,
-    "20200630": 226.0,
-    "20201231": 216.0,
-    "20210331": 162.0,
-    "20210630": 256.0,
-    "20210930": 178.0,
-    "20211231": 194.0
-   },
-   "src": {
-    "q:20191231": [
-     "813e74f2-8b0a-4e03-b4f3-b820037bf63b.pdf",
-     5,
-     "Projects Business",
-     "354"
-    ],
-    "q:20200331": [
-     "aa2c0f36-98b2-42ed-b8e1-f23b161cda30.pdf",
-     5,
-     "Projects Business",
-     "217"
-    ],
-    "q:20200630": [
-     "71ce808e-bdba-44b0-b06e-f49fe65727b7.pdf",
-     5,
-     "Projects Business",
-     "226"
-    ],
-    "q:20201231": [
-     "943decb1-9d7a-4058-af78-247c2c83ef48.pdf",
-     6,
-     "Projects Business",
-     "216"
-    ],
-    "q:20210331": [
-     "9f212fbc-be4f-4738-9f58-3135abf3cf3b.pdf",
-     6,
-     "Projects Business",
-     "162"
-    ],
-    "q:20210630": [
-     "60f0ff4b-3671-4ec6-82de-63958873bff0.pdf",
-     6,
-     "Projects Business",
-     "256"
-    ],
-    "q:20210930": [
-     "b7dda269-e2ad-433d-ada8-628f905036fe.pdf",
-     6,
-     "Projects Business",
-     "178"
-    ],
-    "q:20211231": [
-     "af59664c-5c73-4baa-b344-18b2290271a7.pdf",
-     6,
-     "Projects Business",
-     "194"
-    ]
-   }
-  },
-  {
    "name": "Countries Exported To (cumulative)",
    "unit": "count",
    "kind": "level",
@@ -1408,7 +1377,8 @@
     "20200930": 73.0,
     "20201231": 73.0,
     "20210331": 73.0,
-    "20210630": 80.0
+    "20210630": 80.0,
+    "20260930": 114.0
    },
    "src": {
     "q:20191231": [
@@ -1452,6 +1422,12 @@
      8,
      "in 80 Countries",
      "80"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Countries",
+     "114"
     ]
    },
    "fixed": [
@@ -1536,6 +1512,72 @@
      "2026-10-31"
     ]
    ]
+  },
+  {
+   "name": "Pending Order Book - Projects Business",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20191231": 354.0,
+    "20200331": 217.0,
+    "20200630": 226.0,
+    "20201231": 216.0,
+    "20210331": 162.0,
+    "20210630": 256.0,
+    "20210930": 178.0,
+    "20211231": 194.0
+   },
+   "src": {
+    "q:20191231": [
+     "813e74f2-8b0a-4e03-b4f3-b820037bf63b.pdf",
+     5,
+     "Projects Business",
+     "354"
+    ],
+    "q:20200331": [
+     "aa2c0f36-98b2-42ed-b8e1-f23b161cda30.pdf",
+     5,
+     "Projects Business",
+     "217"
+    ],
+    "q:20200630": [
+     "71ce808e-bdba-44b0-b06e-f49fe65727b7.pdf",
+     5,
+     "Projects Business",
+     "226"
+    ],
+    "q:20201231": [
+     "943decb1-9d7a-4058-af78-247c2c83ef48.pdf",
+     6,
+     "Projects Business",
+     "216"
+    ],
+    "q:20210331": [
+     "9f212fbc-be4f-4738-9f58-3135abf3cf3b.pdf",
+     6,
+     "Projects Business",
+     "162"
+    ],
+    "q:20210630": [
+     "60f0ff4b-3671-4ec6-82de-63958873bff0.pdf",
+     6,
+     "Projects Business",
+     "256"
+    ],
+    "q:20210930": [
+     "b7dda269-e2ad-433d-ada8-628f905036fe.pdf",
+     6,
+     "Projects Business",
+     "178"
+    ],
+    "q:20211231": [
+     "af59664c-5c73-4baa-b344-18b2290271a7.pdf",
+     6,
+     "Projects Business",
+     "194"
+    ]
+   }
   },
   {
    "name": "Pending Order Book - Manufacturing",
@@ -2219,6 +2261,100 @@
    }
   },
   {
+   "name": "Export Share of Order Inflow",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20260331": 80.0
+   },
+   "q": {
+    "20260331": 79.0,
+    "20260930": 88.0
+   },
+   "src": {
+    "q:20260331": [
+     "2e6d5117-94cc-4df6-9439-9105c12dc978.pdf",
+     26,
+     "of order inflow in Q4 FY'26 is from Exports",
+     "79"
+    ],
+    "y:20260331": [
+     "2e6d5117-94cc-4df6-9439-9105c12dc978.pdf",
+     26,
+     "of order inflow in FY'26 is from Exports",
+     "80"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     26,
+     "88% of order inflow in Q2 FY'27 is from Exports",
+     "88"
+    ]
+   }
+  },
+  {
+   "name": "Pending Order Book - Domestic",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 3566.0,
+    "20230930": 3232.0,
+    "20260930": 3673.0
+   },
+   "src": {
+    "q:20230630": [
+     "b99361c9-a1f6-4f91-81a8-bf967c248ca0.pdf",
+     18,
+     "domestic order book",
+     "3,566"
+    ],
+    "q:20230930": [
+     "9cc93786-1ad3-4d49-a096-dceb86c500ac.pdf",
+     18,
+     "domestic order book",
+     "3,232"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Domestic",
+     "3,673"
+    ]
+   }
+  },
+  {
+   "name": "Pending Order Book - Exports (incl. Deemed Exports)",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230630": 2591.0,
+    "20230930": 3007.0,
+    "20260930": 17208.0
+   },
+   "src": {
+    "q:20230630": [
+     "b99361c9-a1f6-4f91-81a8-bf967c248ca0.pdf",
+     18,
+     "Exports (incl. Deemed exports)",
+     "2,591"
+    ],
+    "q:20230930": [
+     "9cc93786-1ad3-4d49-a096-dceb86c500ac.pdf",
+     18,
+     "Exports (incl. Deemed exports)",
+     "3,007"
+    ],
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Exports including Deemed Export",
+     "17,208"
+    ]
+   }
+  },
+  {
    "name": "Permanent Workers in Association or Union Share",
    "unit": "%",
    "kind": "level",
@@ -2282,31 +2418,6 @@
    }
   },
   {
-   "name": "Export Share of Order Inflow",
-   "unit": "%",
-   "kind": "flow",
-   "y": {
-    "20260331": 80.0
-   },
-   "q": {
-    "20260331": 79.0
-   },
-   "src": {
-    "q:20260331": [
-     "2e6d5117-94cc-4df6-9439-9105c12dc978.pdf",
-     26,
-     "of order inflow in Q4 FY'26 is from Exports",
-     "79"
-    ],
-    "y:20260331": [
-     "2e6d5117-94cc-4df6-9439-9105c12dc978.pdf",
-     26,
-     "of order inflow in FY'26 is from Exports",
-     "80"
-    ]
-   }
-  },
-  {
    "name": "Order Inflow - Exports (incl. Deemed Exports)",
    "unit": "Rs Mn",
    "kind": "flow",
@@ -2351,54 +2462,6 @@
      19,
      "Total Order inflow from Manufacturing business in Q4 FY22",
      "1,925"
-    ]
-   }
-  },
-  {
-   "name": "Pending Order Book - Domestic",
-   "unit": "Rs Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230630": 3566.0,
-    "20230930": 3232.0
-   },
-   "src": {
-    "q:20230630": [
-     "b99361c9-a1f6-4f91-81a8-bf967c248ca0.pdf",
-     18,
-     "domestic order book",
-     "3,566"
-    ],
-    "q:20230930": [
-     "9cc93786-1ad3-4d49-a096-dceb86c500ac.pdf",
-     18,
-     "domestic order book",
-     "3,232"
-    ]
-   }
-  },
-  {
-   "name": "Pending Order Book - Exports (incl. Deemed Exports)",
-   "unit": "Rs Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20230630": 2591.0,
-    "20230930": 3007.0
-   },
-   "src": {
-    "q:20230630": [
-     "b99361c9-a1f6-4f91-81a8-bf967c248ca0.pdf",
-     18,
-     "Exports (incl. Deemed exports)",
-     "2,591"
-    ],
-    "q:20230930": [
-     "9cc93786-1ad3-4d49-a096-dceb86c500ac.pdf",
-     18,
-     "Exports (incl. Deemed exports)",
-     "3,007"
     ]
    }
   },
@@ -2499,6 +2562,74 @@
    }
   },
   {
+   "name": "Cumulative Generators Installed - Africa",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 318.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Africa",
+     "318"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - Asia",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 5606.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Asia",
+     "5606"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - Central America",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 50.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Central America",
+     "50"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - Europe",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 1600.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Europe",
+     "1600"
+    ]
+   }
+  },
+  {
    "name": "Cumulative Generators Installed - Exports",
    "unit": "count",
    "kind": "level",
@@ -2512,6 +2643,57 @@
      12,
      "Exports (Incl. Deemed Exports) (doc period)",
      "2,306"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - North America",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 926.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "North America",
+     "926"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - Oceania",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 213.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "Oceania",
+     "213"
+    ]
+   }
+  },
+  {
+   "name": "Cumulative Generators Installed - South America",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 59.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     24,
+     "South America",
+     "59"
     ]
    }
   },
@@ -2541,6 +2723,142 @@
      "2026-10-27"
     ]
    ]
+  },
+  {
+   "name": "Pending Order Book - Domestic Railways (E-Locomotive)",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 1378.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Domestic Railways (E-Locomotive)",
+     "1,378"
+    ]
+   }
+  },
+  {
+   "name": "Pending Order Book - Railways (Exports)",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 318.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Railways (Exports)",
+     "318"
+    ]
+   }
+  },
+  {
+   "name": "Pending Order Book - Spares and Aftermarket",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 161.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Spares and Aftermarket",
+     "161"
+    ]
+   }
+  },
+  {
+   "name": "Pending Order Book - Turkey",
+   "unit": "Rs Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 449.0
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     29,
+     "Turkey",
+     "449"
+    ]
+   }
+  },
+  {
+   "name": "Shareholding - FII",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 22.7
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     36,
+     "FII",
+     "22.7"
+    ]
+   }
+  },
+  {
+   "name": "Shareholding - Mutual Funds & AIF",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 29.2
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     36,
+     "Mutual Funds & AIF",
+     "29.2"
+    ]
+   }
+  },
+  {
+   "name": "Shareholding - Others",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 21.6
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     36,
+     "Others",
+     "21.6"
+    ]
+   }
+  },
+  {
+   "name": "Shareholding - Promoters",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260930": 26.5
+   },
+   "src": {
+    "q:20260930": [
+     "5a12caf6-cf27-425c-8a63-9300311df871.pdf",
+     36,
+     "Promoters",
+     "26.5"
+    ]
+   }
   }
  ],
  "held": [
@@ -3402,6 +3720,6 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-23",
  "catalog_ver": 5,
- "updated": "2026-11-09",
+ "updated": "2026-11-14",
  "checked": "2026-09-23"
 }
