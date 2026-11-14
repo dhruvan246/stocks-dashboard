@@ -27939,18 +27939,34 @@ simulation above, `cron_dispatch.py --list` locally = IN with 28 meetings. LIVE:
   off-season day to check is the one after the dispatcher prints `season OFF` — expect 11 intraday runs with the main job skipped
   on the :30 fires.
 
-## §222c — HALF-YEAR-ONLY FILERS ARE SKIPPED IN THE DAILY VISION RUNS, RE-READ ONCE AT MONTH END (2026-11-14, user: "skip them and run them directly once a month end" → "add these lines in bse vision fill for all future quarters")
+## §222c — SME HALF-YEARS ARE READ AS HALVES BY THE VISION ROUTINE, STORED LIKE SCREENER (2026-11-14/15, user: "skip them and run them directly once a month end" → "add these lines in bse vision fill for all future quarters" → "what exactly is issue with half yearly ones" → "change the routine for smes. save their half yearly like screener.in do")
 
-**Why.** About 430 SME filers print only half-year columns. Every bse-vision-fill run rendered and vision-read them again and every read came back ok:false "half-year columns only". That re-reading was the bulk of the routine's cost (the weekly allowance hit 100% on 13–14 Nov).
+**Why.** SME companies (BSE SME / NSE Emerge) publish results only every six months. The routine asked every filing for its "3 months ended" columns, so each SME read came back ok:false "half-year columns only". Nothing was stored, the company stayed pending, and it was rendered and read again every slot. The 21:15 IST run on 14-Nov (PR #678) read 238 companies: 56 were filled and 182 came back ok:false, most of them SME half-year filings (LESL, CHEMKART, GLEN, INFRAX, SHIVTEXCHEM, SHIVAM, NCML, SSPRL, ATHARVA, …). This was the bulk of the routine's cost.
+(The first fix, 01b2b40816, skipped them until month end. It was replaced the same night by reading them as halves.)
 
-**How (scripts/vision_halfyear_skip.py).**
-- Ledger `scripts/vision_halfyear_skip.json` = `{"EXCH|id": {"since", "qe" (first quarter seen), "sym", "note"}}`, id = NSE symbol or BSE scrip. ONE key per company, valid for every quarter, current and future.
-- `merge_bse_vision.py` adds a company when the reader returns ok:false with a half-year note (regex: half-year / six months / H1 / H2 / 6M), and removes it as soon as any quarter of it reads ok. It prints `half-year skip ledger: +A added, -R cleared, T total`.
-- `bse_vision_prep.py` drops ledgered companies from the current, early and late pending lists, then applies `--limit` (over-fetches by the ledger size so skipped names do not use up the cap). It prints `half-year-only filers: N skipped (re-read at month end)`.
-- Month end: a run that starts on the LAST calendar day of the month before 06:00 IST (the 00:15 IST slot, which runs in and off season) skips nothing, so every half-year filer is re-read once a month. `--include-halfyear` forces the same by hand. `--op-only` and `--enrich` never skip.
-- Nothing is deleted. Skipped names stay pending on the coverage page; the half-year P&L for SMEs comes from §213.
-- The routine prompt step 2 explains it and step 6 stages the ledger. The stored routine prompt was updated to match the repo file.
-- The first run after this rule still reads them all once, because the ledger starts empty.
+**How (scripts/vision_halfyear.py).**
+- **The list.** `scripts/vision_halfyear_filers.json` = `{"EXCH|id": {since, why, sym}}`, where id is the NSE symbol or the BSE scrip code. A company is listed only on evidence:
+  - `--seed`: its Sep-25 or Mar-26 row is a proven 6-month row (docs/fin pd = 6, §191/§198), or a BSE cell carries h=1 (§194/§195). Seeded 15-Nov: 1,252 companies (819 NSE, 433 BSE).
+  - From a read: a quarter read came back ok:false with a half-year note.
+  - A company leaves the list when it prints quarters (ok on a quarter read, or ok:false "quarterly columns" on a half read).
+- **Prep** (`bse_vision_prep.py`) marks listed companies' Sep / Mar entries `"period":"half"` with six-month headings (cur = the half ending qe, prev = the half before, yago = a year back). It prints `SME half-year reads: N of M`. Op re-reads are left alone. On 15-Nov, 735 of the 1,427 pending Sep-26 filings would be read as halves.
+- **Prompt.** The extraction rules read the six-month columns with the same rev / op / pat rules, never derive a figure, and return ok:false "quarterly columns, not half-year" if the filing prints quarters. A quarter read that finds only six-month columns stays ok:false "half-year columns only".
+- **Merge** (`merge_bse_vision.py --manifest /tmp/bse_pending/manifest.json`):
+  - The manifest's period is re-applied to every read, so a dropped field can never file a half as a quarter.
+  - cur goes to qe, prev to the previous half-end, yago to a year back. Merging is fill-only.
+  - A cell it CREATES gets `prov: 1, hy: 1`: the §195 provisional half. On BSE, `fetch_bse_results_xbrl` keeps prov cells wanted and replaces them with the proven half when XBRL lands. On NSE, the vision_fills overlay applies to empty cells only.
+  - It prints `SME half-year filers: +A added, -R now quarterly, T total`.
+- **Page.** quarterly-results.html shows "H1 · unconfirmed" (Sep) / "H2 · unconfirmed" (Mar) on a prov vision cell as well as on a BSE prov cell (sw v281).
+- **Row length.** The stock page marks a half 6 months only once its year is proven (H1 + H2 = FY, §191/§198). Before 15-Nov, 0 of 40 XBRL-stored Sep-26 SME rows were marked, and the same holds for vision halves. Nothing new here.
+
+**Tested 15-Nov (throwaway worktree, real stores).**
+- BSE 534563: Sep-25 / Mar-26 / Sep-26 cells gained only the missing op, and every stored figure was unchanged.
+- NSE CHEMKART: Sep-26 / Mar-26 / Sep-25 overlay cells were created with prov.
+- LESL (a half-year ok:false quarter read) was added to the list.
+- The manifest corrected 2 reads that lacked period.
+- The page row CHEMKART showed "H1 · unconfirmed", with 0 console errors.
+
+**Not yet seen:** a real routine run. Look for the prep line and the merge line in the next run log.
 
 ## §223 — THE REFINE LEDGER READ BSE'S NEWEST FILING: 817 entries were a later document than the stored row's own; 208 rebuilt from the row's own filing, 579 removed, and a cell_fix now outranks the refine (2026-10-07, user: "measure the class across the whole store … propose a source fix … show the A/B … then, if approved, land it and retire the now-unneeded `exact` ping-pong entries … only if the store keeps the same values"; approved "Land the full fix")
 

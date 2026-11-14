@@ -12,11 +12,15 @@ The pre-2026-09-27 shape keyed "jun2026"/"mar2026"/"jun2025" is still accepted (
 FILL-ONLY: a stored cell is never replaced or re-dated. A read may only add a figure the stored cell
 lacks, and only on the same basis (C/S). Until 2026-09-27 this merge overwrote whole cells.
 
-Run: python -X utf8 scripts/merge_bse_vision.py <results.json> [--qefix <outdir>/qe_fix_run.json]
+Run: python -X utf8 scripts/merge_bse_vision.py <results.json> [--qefix <outdir>/qe_fix_run.json] [--manifest <outdir>/manifest.json]
+
+SME HALF READS (§222c): a read with period "half" carries six-month columns: cur -> qe, prev -> the half before,
+yago -> a year back; a cell it creates gets prov=1 + hy=1 (the §195 provisional-half rule).
 """
 import os, sys, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import qe_util as QU
+import vision_halfyear as HY
 HERE = os.path.dirname(os.path.abspath(__file__))
 FUND = os.path.join(HERE, "..", "docs", "bse_fundamentals.json")
 FAILS = os.path.join(HERE, "_bse_fund_fail.json")
@@ -45,9 +49,14 @@ def feed_ann():
 LEGACY = [("jun2026", 20260630), ("mar2026", 20260331), ("jun2025", 20250630)]   # old reader output keys
 
 def quarters_of(it):
-    """[(qe_str, figures), ...] for one read, current quarter FIRST. [] when the read names no quarter."""
+    """[(qe_str, figures), ...] for one read, current quarter FIRST. [] when the read names no quarter.
+    An SME half read (period "half", §222c): cur = the half ending qe, prev = the half before it, yago = a year back."""
     try: q = int(str(it.get("qe") or "0"))
     except ValueError: q = 0
+    if HY.is_half_read(it):
+        if not HY.half_end(q): return []
+        return [(str(q), it.get("cur") or {}), (str(HY.prev_half(q)), it.get("prev") or {}),
+                (str(q - 10000), it.get("yago") or {})]
     if QU.is_qe(q):
         return [(str(q), it.get("cur") or {}), (str(QU.prevq(q)), it.get("prev") or {}),
                 (str(QU.yago(q)), it.get("yago") or {})]
@@ -55,14 +64,16 @@ def quarters_of(it):
         return [(str(qe), it.get(k) or {}) for k, qe in LEGACY]
     return []
 
-def fill(cells, qe, rec, basis, ann=0, src="vision"):
-    """Fill-only merge of one quarter's figures into cells[qe]. Returns True if anything was added."""
+def fill(cells, qe, rec, basis, ann=0, src="vision", half=False):
+    """Fill-only merge of one quarter's figures into cells[qe]. Returns True if anything was added.
+    half: an SME six-month read — a cell it CREATES is marked prov (+hy), the §195 provisional-half rule."""
     new = {k: _num(rec.get(k)) for k in ("rev", "op", "pat") if rec.get(k) is not None}
     if not new: return False
     old = cells.get(qe)
     if old is None:
         d = {"pat": new.get("pat"), "ann": ann or 0, "basis": basis, "src": src}
         d.update({k: v for k, v in new.items() if k != "pat"})
+        if half: d.update(prov=1, hy=1)
         cells[qe] = d; return True
     if old.get("basis", basis) != basis: return False       # never mix C and S figures in one cell
     added = False
@@ -119,7 +130,24 @@ def main():
     if "--qefix" in argv:                       # do this FIRST: it's independent of the merge below
         i = argv.index("--qefix")
         reapply_qefix(argv[i + 1]); del argv[i:i + 2]
+    if "--manifest" in argv:                    # §222c: a sub-agent that dropped "period" must not file a half as a quarter
+        i = argv.index("--manifest"); mpath = argv[i + 1]; del argv[i:i + 2]
+    else:
+        mpath = None
     items = json.load(open(argv[0], encoding="utf-8"))
+    if mpath:
+        try:
+            per = {(HY.entry_key(m), str(m.get("qe"))): m.get("period") for m in json.load(open(mpath, encoding="utf-8"))}
+            nfix = 0
+            for it in items:
+                p_ = per.get((HY.entry_key(it), str(it.get("qe"))))
+                if p_ != it.get("period"):
+                    nfix += 1
+                    if p_: it["period"] = p_
+                    else: it.pop("period", None)
+            print("  manifest: period re-applied from %s (%d read(s) corrected)" % (mpath, nfix))
+        except Exception as ex:
+            print("  ⚠ manifest %s unreadable (%s) — reads keep their own period field" % (mpath, ex))
     data = json.load(open(FUND, encoding="utf-8"))
     px = data["px"]
     fails = json.load(open(FAILS)) if os.path.exists(FAILS) else {}
@@ -143,7 +171,7 @@ def main():
             pre = e.get(cq); had = bool(pre) and (pre.get("rev") is not None or pre.get("pat") is not None)
             added = 0
             for qe, q in qs:
-                if fill(e, qe, q, basis):                    # overlay cells carry no date and no nulls
+                if fill(e, qe, q, basis, half=HY.is_half_read(it)):                    # overlay cells carry no date and no nulls
                     added += 1; e[qe] = {k: v for k, v in e[qe].items() if k != "ann" and v is not None}
             # §229a: a SECOND read of an already-filled cell that STILL finds no operating profit marks the cell so
             # prep's op-missing pass does not queue it again every slot (unreadable line / no such rows)
@@ -159,7 +187,7 @@ def main():
             ann = fann.get((sym, int(cq)), 0)     # the day THIS quarter was declared (0 = not in the feed window)
             cells = px.setdefault(scrip, {})
             pre = cells.get(cq); had = bool(pre) and (pre.get("rev") is not None or pre.get("pat") is not None)
-            added = sum(fill(cells, qe, q, basis, ann=(ann if qe == cq else 0)) for qe, q in qs)
+            added = sum(fill(cells, qe, q, basis, ann=(ann if qe == cq else 0), half=HY.is_half_read(it)) for qe, q in qs)
             if had and cur.get("op") is None and cells.get(cq) and cells[cq].get("op") is None:
                 cells[cq]["op_na"] = 1                       # §229a — see the NSE branch
             if not cells: px.pop(scrip, None)
@@ -173,9 +201,8 @@ def main():
     json.dump(sorted(done), open(DONE, "w"))
     json.dump(vfills, open(VFILLS, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print("Merged %d BSE-only into bse_fundamentals.json, %d NSE into vision_fills.json" % (nb, nn))
-    import vision_halfyear_skip as HY            # half-year-only reads -> skipped until month end
-    hy_add, hy_rem = HY.update_from_reads(items)
-    print("half-year skip ledger: +%d added, -%d cleared, %d total (scripts/vision_halfyear_skip.json)"
+    hy_add, hy_rem = HY.update_from_reads(items)     # §222c: SME half-year filers read six-month columns next run
+    print("SME half-year filers: +%d added, -%d now quarterly, %d total (scripts/vision_halfyear_filers.json)"
           % (hy_add, hy_rem, len(HY.load())))
 
 if __name__ == "__main__":
