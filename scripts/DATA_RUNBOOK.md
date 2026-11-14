@@ -27939,6 +27939,19 @@ simulation above, `cron_dispatch.py --list` locally = IN with 28 meetings. LIVE:
   off-season day to check is the one after the dispatcher prints `season OFF` — expect 11 intraday runs with the main job skipped
   on the :30 fires.
 
+## §222c — HALF-YEAR-ONLY FILERS ARE SKIPPED IN THE DAILY VISION RUNS, RE-READ ONCE AT MONTH END (2026-11-14, user: "skip them and run them directly once a month end" → "add these lines in bse vision fill for all future quarters")
+
+**Why.** About 430 SME filers print only half-year columns. Every bse-vision-fill run rendered and vision-read them again and every read came back ok:false "half-year columns only". That re-reading was the bulk of the routine's cost (the weekly allowance hit 100% on 13–14 Nov).
+
+**How (scripts/vision_halfyear_skip.py).**
+- Ledger `scripts/vision_halfyear_skip.json` = `{"EXCH|id": {"since", "qe" (first quarter seen), "sym", "note"}}`, id = NSE symbol or BSE scrip. ONE key per company, valid for every quarter, current and future.
+- `merge_bse_vision.py` adds a company when the reader returns ok:false with a half-year note (regex: half-year / six months / H1 / H2 / 6M), and removes it as soon as any quarter of it reads ok. It prints `half-year skip ledger: +A added, -R cleared, T total`.
+- `bse_vision_prep.py` drops ledgered companies from the current, early and late pending lists, then applies `--limit` (over-fetches by the ledger size so skipped names do not use up the cap). It prints `half-year-only filers: N skipped (re-read at month end)`.
+- Month end: a run that starts on the LAST calendar day of the month before 06:00 IST (the 00:15 IST slot, which runs in and off season) skips nothing, so every half-year filer is re-read once a month. `--include-halfyear` forces the same by hand. `--op-only` and `--enrich` never skip.
+- Nothing is deleted. Skipped names stay pending on the coverage page; the half-year P&L for SMEs comes from §213.
+- The routine prompt step 2 explains it and step 6 stages the ledger. The stored routine prompt was updated to match the repo file.
+- The first run after this rule still reads them all once, because the ledger starts empty.
+
 ## §223 — THE REFINE LEDGER READ BSE'S NEWEST FILING: 817 entries were a later document than the stored row's own; 208 rebuilt from the row's own filing, 579 removed, and a cell_fix now outranks the refine (2026-10-07, user: "measure the class across the whole store … propose a source fix … show the A/B … then, if approved, land it and retire the now-unneeded `exact` ping-pong entries … only if the store keeps the same values"; approved "Land the full fix")
 
 **Defect (§221 cause 2, now measured across the store).** `fetch_shp_bse_hist.py --refine` (built 2026-08-16, unchanged

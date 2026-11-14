@@ -173,6 +173,10 @@ def main():
     json.dump(sorted(done), open(DONE, "w"))
     json.dump(vfills, open(VFILLS, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print("Merged %d BSE-only into bse_fundamentals.json, %d NSE into vision_fills.json" % (nb, nn))
+    import vision_halfyear_skip as HY            # half-year-only reads -> skipped until month end
+    hy_add, hy_rem = HY.update_from_reads(items)
+    print("half-year skip ledger: +%d added, -%d cleared, %d total (scripts/vision_halfyear_skip.json)"
+          % (hy_add, hy_rem, len(HY.load())))
 
 if __name__ == "__main__":
     main()

@@ -388,6 +388,8 @@ def main():
     outdir = sys.argv[sys.argv.index("--outdir") + 1] if "--outdir" in sys.argv else os.path.join(os.environ.get("TEMP", "/tmp"), "bse_pending")
     os.makedirs(outdir, exist_ok=True)
     op_only = "--op-only" in sys.argv                 # §229a: ONLY the operating-profit re-read pass (targeted run)
+    import vision_halfyear_skip as HY
+    hy_led = {} if (op_only or "--enrich" in sys.argv or HY.include_all(sys.argv)) else HY.load()
     if "--enrich" in sys.argv:                       # re-render already-covered names missing year-ago
         qe = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))["quarters"][0]
         nse, bse = [], enrich_scrips(limit, qe)
@@ -395,8 +397,13 @@ def main():
         qe = json.load(open(os.path.join(D, "quarterly_results.json"), encoding="utf-8"))["quarters"][0]
         nse, bse = [], []
     else:
-        qe, nse, bse = find_pending(limit)
+        qe, nse, bse = find_pending(limit + len(hy_led))   # over-fetch: skipped names must not use up --limit
+    # Half-year-only filers (vision_halfyear_skip.py): skipped every run except the month-end slot.
+    nse, bse, hy_n = HY.filter_pending(nse, bse, qe, hy_led)
+    nse, bse = nse[:limit], bse[:limit]
     print("target quarter %d — pending: %d NSE, %d BSE-only" % (qe, len(nse), len(bse)))
+    print("half-year-only filers: %s" % ("re-read this run (month-end slot or --include-halfyear)" if not hy_led
+          else "%d skipped (re-read at month end)" % hy_n))
     manifest = []
 
     # ---- NSE (fetch each announcement PDF from nsearchives) ----
@@ -512,6 +519,8 @@ def main():
         for lq, lnse, lbse in find_pending_ahead(limit) + find_pending_late(limit):
             print("%s filers, quarter %d — pending: %d NSE, %d BSE-only"
                   % ("early" if lq > qe else "late", lq, len(lnse), len(lbse)))
+            lnse, lbse, hy_l = HY.filter_pending(lnse, lbse, lq, hy_led)
+            if hy_l: print("  %d half-year-only filers skipped for quarter %d" % (hy_l, lq))
             start = len(manifest)
             _render_nse(lnse, lq, outdir, manifest, qfix)
             _render_bse(lbse, lq, outdir, manifest)
