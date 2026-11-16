@@ -1026,9 +1026,16 @@ Run one universe alone with `--universes "Nifty 50"`, then the build with `"Nift
 2026-10-08 → the staged sf end, NOT measured by the 13% filter. `bullruns_grid_run.py --live-end <sf end>` grids it
 (2 more jobs per universe); the build always expects it (leg `2026-10`, `live:true`, view `oct26` = rank on that
 window alone) and never mixes it into all4 / last2. It re-ranks only on a grid re-run — `bullruns_cur_refresh.js`
-does not move it. Built for **Nifty 50 only** on 2026-11-17 (user: "i need nifty 50 only"); the Nifty 500 and
-Next 50 files are still the 11-04 builds (data to 11-03, no Oct tab) — rebuilding either now REQUIRES the
-`--live-end` grids. Measured 11-17, Nifty 50: pool 6,188,610; index legs +70.2 / +67.6 / +142.8 / +70.8%,
+does not move it. Built for Nifty 50 first on 2026-11-17 (user wanted it fast), then Nifty 500 + Next 50 the same night on the
+SAME 11-16 staging (all three files: data to 2026-11-16, three tabs each); `bull_runs_saved.json` re-run to
+11-16 too (`CUR.e` in bullruns_saved.js; 60 stored → 58 distinct). Yahoo ^NSMIDCP had NO 16-Nov close at
+staging time — the Next 50 close 72,490.25 was added to `_live/nifty_next50_live.json` from NSE's own
+`nsearchives…/content/indices/ind_close_all_16112026.csv` (same file: Nifty 50 25,291.10 and Nifty 500
+23,752.40 equal ours; 13-Nov Next 50 equals Yahoo) — check the staged index's last date before any build.
+Measured 11-17: completed-leg index figures of the 500 and Next 50 files identical to the 11-04 builds; live
+leg +15.7% / +20.1%, Oct window +9.9% / +7.2%; N500 all4 best worst-rank 88,544 (11-04: 88,553 — heals since).
+Timing on the M5: 20 jobs (500 + Next 50) 31 min at 4 jobs; each build ≈ 1–3 min.
+Measured 11-17, Nifty 50: pool 6,188,610; index legs +70.2 / +67.6 / +142.8 / +70.8%,
 Oct window +13.8%, live +13.3% (all six equal `nifty.json` closes); Oct tab top 1,000 = only 2 distinct returns
 (18.2%, 18.0%) because many rules hold the same three stocks. Grid 10 jobs ≈ 10 min, build ≈ 1 min.
 ```
