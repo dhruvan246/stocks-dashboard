@@ -288,6 +288,27 @@
    "title": "Revised Unaudited Standalone Financial Results For Quarter And Nine Months Ended On December 31, 2020",
    "read": "2026-11-16",
    "by": "gemini:gemini-3.8-flash"
+  },
+  "434a02cb-afc3-49c6-948e-b58760116844.pdf": {
+   "kind": "res",
+   "date": "2020-02-10",
+   "title": "Outcome of Board Meeting - February 10, 2020",
+   "read": "2026-11-16",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "5301170319.pdf": {
+   "kind": "ar",
+   "date": "2019-07-11",
+   "title": "Annual Report FY19",
+   "read": "2026-11-16",
+   "by": "gemini:gemini-3.8-flash"
+  },
+  "fcb9f4dc-5ae1-4521-b798-b180b6862cac.pdf": {
+   "kind": "res",
+   "date": "2020-06-23",
+   "title": "Outcome of Board Meeting and Auditor's Reports",
+   "read": "2026-11-16",
+   "by": "gemini:gemini-3.8-flash"
   }
  },
  "metrics": [
@@ -921,7 +942,7 @@
    "kind": "level",
    "y": {},
    "q": {
-    "20190331": 10.0,
+    "20190331": 10.41,
     "20200331": 10.0,
     "20210331": 10.0,
     "20220331": 10.0,
@@ -953,16 +974,17 @@
      "10"
     ],
     "q:20190331": [
-     "121cd4e0-d4fe-4eaa-b7fd-fa579c38d565.pdf",
-     152,
-     "The weighted average duration of the defined benefit obligation... for POIL",
-     "10"
+     "5301170319.pdf",
+     84,
+     "weighted average duration of the defined benefit obligation (doc period)",
+     "10.41"
     ]
    },
    "latest": {
     "q:20220331": "2023-07-17",
     "q:20210331": "2022-08-29",
-    "q:20200331": "2021-08-03"
+    "q:20200331": "2021-08-03",
+    "q:20190331": "2020-10-09"
    }
   },
   {
@@ -1077,6 +1099,61 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20190331": 190.0,
+    "20200331": 191.0,
+    "20210331": 764.0
+   },
+   "src": {
+    "q:20210331": [
+     "69248530117.pdf",
+     89,
+     "Total number of employees",
+     "764"
+    ],
+    "q:20200331": [
+     "121cd4e0-d4fe-4eaa-b7fd-fa579c38d565.pdf",
+     52,
+     "Total Number of employees as on 31-03-2020",
+     "191"
+    ],
+    "q:20190331": [
+     "5301170319.pdf",
+     12,
+     "employees on the payroll of the Company",
+     "190"
+    ]
+   }
+  },
+  {
+   "name": "Electricity Generated per Litre of Diesel",
+   "unit": "Units",
+   "kind": "flow",
+   "y": {
+    "20180331": 3.0993,
+    "20190331": 2.7632
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Units per Litre of Diesel",
+     "2.7632"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Units per Litre of Diesel",
+     "3.0993"
+    ]
+   }
+  },
+  {
    "name": "Employees covered by ESI",
    "unit": "%",
    "kind": "level",
@@ -1097,6 +1174,102 @@
      51,
      "ESI No. of employees covered as a % of total employees",
      "9.27"
+    ]
+   }
+  },
+  {
+   "name": "Furnace Oil Average Rate",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20180331": 27.32,
+    "20190331": 36.99
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "FURNACE OIL - Average rate per litre (Rs.)",
+     "36.99"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "FURNACE OIL - Average rate per litre (Rs.)",
+     "27.32"
+    ]
+   }
+  },
+  {
+   "name": "Furnace Oil Consumption",
+   "unit": "KL",
+   "kind": "flow",
+   "y": {
+    "20180331": 1251.76,
+    "20190331": 1152.677
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "FURNACE OIL - Quantity (in KL)",
+     "1,152.677"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "FURNACE OIL - Quantity (in KL)",
+     "1,251.760"
+    ]
+   }
+  },
+  {
+   "name": "Lignite / Coal Average Rate",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20180331": 6.68,
+    "20190331": 6.86
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "LIGNITE / COAL - Average rate per Kg. (Rs.)",
+     "6.86"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "LIGNITE / COAL - Average rate per Kg. (Rs.)",
+     "6.68"
+    ]
+   }
+  },
+  {
+   "name": "Lignite / Coal Consumption",
+   "unit": "M.Tons",
+   "kind": "flow",
+   "y": {
+    "20180331": 9049.293,
+    "20190331": 9568.025
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "LIGNITE / COAL - Quantity (in M.Tons)",
+     "9,568.025"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "LIGNITE / COAL - Quantity (in M.Tons)",
+     "9,049.293"
     ]
    }
   },
@@ -1183,6 +1356,54 @@
    ]
   },
   {
+   "name": "Own Electricity Generation",
+   "unit": "Units",
+   "kind": "flow",
+   "y": {
+    "20180331": 266184.0,
+    "20190331": 116184.0
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Units",
+     "1,16,184"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Units",
+     "2,66,184"
+    ]
+   }
+  },
+  {
+   "name": "Own Electricity Generation Average Cost",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20180331": 19.66,
+    "20190331": 23.6
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Average Cost / Unit (Rs.)",
+     "23.60"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Own Generation - Average Cost / Unit (Rs.)",
+     "19.66"
+    ]
+   }
+  },
+  {
    "name": "Permanent Employees [count]",
    "unit": "count",
    "kind": "level",
@@ -1251,6 +1472,54 @@
      51,
      "Total Permanent Worker % (D / C)",
      "100.00"
+    ]
+   }
+  },
+  {
+   "name": "Purchased Electricity",
+   "unit": "Units",
+   "kind": "flow",
+   "y": {
+    "20180331": 8022840.0,
+    "20190331": 8346730.0
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Purchased - Units",
+     "83,46,730"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Purchased - Units",
+     "80,22,840"
+    ]
+   }
+  },
+  {
+   "name": "Purchased Electricity Rate",
+   "unit": "Rs.",
+   "kind": "flow",
+   "y": {
+    "20180331": 7.54,
+    "20190331": 7.58
+   },
+   "q": {},
+   "src": {
+    "y:20190331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Purchased - Rate / Unit (Rs.)",
+     "7.58"
+    ],
+    "y:20180331": [
+     "5301170319.pdf",
+     20,
+     "ELECTRICITY - Purchased - Rate / Unit (Rs.)",
+     "7.54"
     ]
    }
   },
@@ -1325,30 +1594,6 @@
      52,
      "Total Number of such employees [temporary/contractual/casual] as on 31-03-2020",
      "120"
-    ]
-   }
-  },
-  {
-   "name": "Total Employees",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20200331": 191.0,
-    "20210331": 764.0
-   },
-   "src": {
-    "q:20210331": [
-     "69248530117.pdf",
-     89,
-     "Total number of employees",
-     "764"
-    ],
-    "q:20200331": [
-     "121cd4e0-d4fe-4eaa-b7fd-fa579c38d565.pdf",
-     52,
-     "Total Number of employees as on 31-03-2020",
-     "191"
     ]
    }
   },
@@ -1848,6 +2093,23 @@
      39,
      "registered 20 products under DUIN (doc period)",
      "20"
+    ]
+   }
+  },
+  {
+   "name": "Weighted Average Duration of Gratuity Obligation - Subsidiary",
+   "unit": "years",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20190331": 10.0
+   },
+   "src": {
+    "q:20190331": [
+     "5301170319.pdf",
+     142,
+     "weighted average duration of the defined benefit obligation for the Subsidiary C",
+     "10"
     ]
    }
   }
