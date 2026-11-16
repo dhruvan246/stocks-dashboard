@@ -174,3 +174,72 @@ class FundCellShape(C.Check):
                         if r[vi] is not None and p[vi] is not None and r[vi] == p[vi] and abs(r[vi]) >= 1:
                             hit = True; self.add("%s|%d|%s|dup" % (sym, qe, b), sym=sym, qe=C.iso(qe), basis=b, field="same_as_prev_quarter", a=r[vi], b=p[vi])
                 if not hit: self.agree += 1
+
+
+class FundNewResults(C.Check):
+    """§239. The newest two quarters of EVERY stock (not only Nifty 500), store-intrinsic, kept SHORT so it is read to
+    zero after each results season. fund_pbt_tax / fund_eps_shares list thousands of cells across all history ranked
+    by size, so a fresh wrong quarter never surfaced there (CPPLUS Sep-26 con 327.71 = the half-year figure, real
+    185.51 — the filer's XBRL carried the half year under the quarter's owners tag; found by the user, not by us).
+    A cell is listed only on a footprint that normal accounting does not produce:
+      ytd_copy     stored profit = this quarter's own PBT - tax PLUS the stock's previous 1-3 stored quarters
+                   (the year-to-date column stored as the quarter);
+      pbt_tax+eps  stored profit matches no PBT - tax presentation AND, divided by the filing's own basic EPS,
+                   implies a share count >25 % away from the same stock's median over its previous quarters
+                   (minority interest, regulatory deferrals and discontinued operations move the first test but
+                   not the second, so the pair is what separates a wrong cell from a presentation difference).
+    A listed cell is a CANDIDATE: read its filing, then heal through fund_cell_fix.json or accept it."""
+    id = "fund_new_results"
+    title = "Newest two quarters, every stock: profit cells that fail the filing's own arithmetic"
+    max_listed = 1000
+    domain = "Quarterly results"
+    reader_a = "sf_fundamentals profit cell (newest two quarter-ends)"
+    reader_b = "the same filing's PBT, tax and basic EPS (fin x) + the stock's own earlier quarters"
+    scope = "every stock with a results-detail row, standalone and consolidated, the two newest quarter-ends in the store"
+    tolerance = "PBT - tax within 2 % or Rs 0.1 cr; EPS-implied shares within -20 % / +25 % of the stock's median"
+
+    def run(self):
+        import glob, statistics
+        fund = _fund()
+        qs = sorted({q for d in fund.values() for q in d})[-2:]
+        self.note("quarters checked: " + ", ".join(C.iso(q) for q in qs))
+        for p in sorted(glob.glob(os.path.join(C.DOCS, "fin", "*.json"))):
+            try: d = json.load(open(p, encoding="utf-8"))
+            except ValueError: continue
+            sym, x = d.get("sym"), d.get("x") or {}
+            rows = fund.get(sym) or {}
+            for qe in qs:
+                fr = rows.get(qe)
+                if not fr: continue
+                prevq = sorted(q for q in rows if q < qe)[-3:][::-1]            # newest first
+                for bk, pi, _ in BASES:
+                    pat = fr[pi] if len(fr) > pi else None
+                    dd = (x.get(str(qe)) or {}).get(bk)
+                    if pat is None or not dd or dd.get("pbt") is None or dd.get("tax") is None: continue
+                    pbt, tax = dd["pbt"], dd["tax"]; asc = dd.get("assoc") or 0.0; nci = dd.get("nci") or 0.0
+                    cands = [pbt - tax]
+                    if bk == "c": cands += [pbt - tax + asc - nci, pbt - tax - nci, pbt - tax + asc]
+                    self.compared += 1
+                    best = min(cands, key=lambda v: abs(v - pat))
+                    if any(_near(pat, v, 0.02, 0.1) for v in cands): self.agree += 1; continue
+                    kind = None; run_ = 0.0
+                    for q2 in prevq:                                            # stored = own quarter + earlier ones
+                        v2 = rows[q2][pi] if len(rows[q2]) > pi else None
+                        if v2 is None: break
+                        run_ += v2
+                        if any(_near(pat, v + run_, 0.01, 0.05) for v in cands): kind = "ytd_copy"; break
+                    eps = dd.get("eps_b"); eps_pat = None
+                    if eps and abs(eps) >= 0.05 and abs(pat) >= 0.2:
+                        hist = []
+                        for q2, r2 in rows.items():
+                            if not (qe - 20000 <= q2 < qe): continue
+                            e2 = ((x.get(str(q2)) or {}).get(bk) or {}).get("eps_b")
+                            p2 = r2[pi] if len(r2) > pi else None
+                            if e2 and abs(e2) >= 0.05 and p2 and abs(p2) >= 0.2 and p2 / e2 > 0: hist.append(p2 / e2)
+                        if len(hist) >= 3:
+                            m = statistics.median(hist); eps_pat = round(eps * m, 2)
+                            if not kind and not (0.8 <= (pat / eps) / m <= 1.25): kind = "pbt_tax+eps"
+                    if not kind: self.agree += 1; continue
+                    self.add("%s|%d|%s" % (sym, qe, bk), sym=sym, qe=C.iso(qe), basis=bk, field=kind, pat=pat,
+                             pbt=pbt, tax=tax, pbt_less_tax=round(best, 2), eps=eps, eps_implies=eps_pat,
+                             weight=round(abs(pat - best), 2))

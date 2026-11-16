@@ -106,6 +106,13 @@
       ['Closest', function (f) { return f.closest ? esc(f.closest[0]) + ' = ' + num(f.closest[1]) : '—'; }],
       ['Ratio', function (f) { return num(f.ratio, 3); }, 1]
     ],
+    fund_new_results: [
+      ['Stock', function (f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
+      ['Quarter', function (f) { return esc(f.qe); }], ['Basis', function (f) { return esc(f.basis); }],
+      ['Footprint', function (f) { return esc(f.field === 'ytd_copy' ? 'year-to-date stored as quarter' : 'fails PBT − tax and EPS'); }],
+      ['Stored PAT', function (f) { return num(f.pat); }, 1], ['PBT − tax', function (f) { return num(f.pbt_less_tax); }, 1],
+      ['EPS implies', function (f) { return f.eps_implies == null ? '—' : num(f.eps_implies); }, 1]
+    ],
     fund_eps_shares: [
       ['Stock', function (f) { return esc(f.sym); }], ['Quarter', function (f) { return esc(f.qe); }],
       ['Basis', function (f) { return esc(f.basis); }], ['Stored PAT', function (f) { return num(f.pat); }, 1],

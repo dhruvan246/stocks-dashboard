@@ -210,6 +210,15 @@ def xbrl_profit(xml, basis_hint=None):
                 print("    owners tag 0, profit - NCI %s fails EPS %s (ctx %s) -> REFUSED" % (o, e, ctx))
                 return REFUSED
             return o
+        # §239 — owners tag is a COPY of another context while this context has no minority (CPPLUS Sep-26 con:
+        # owners OneD 327.71 = the half-year FourD figure, profit OneD 185.51, NCI 0 — the store served the half
+        # year as the quarter). With a zero / absent NCI the owners' profit IS the profit, so an owners tag that
+        # differs from it and equals another context's owners / profit figure to the paisa is not this quarter's.
+        if a is not None and p is not None and not n and abs(a - p) > 0.011:
+            others = [v for c2, v in attr.items() if c2 != ctx] + [v for c2, v in plp.items() if c2 != ctx]
+            if any(near(a, v) for v in others):
+                print("    owners tag = another period's figure (ctx %s: owners %s, profit %s, NCI %s) -> profit" % (ctx, a, p, n))
+                return p
         if a is None or n is None or not shares or e is None: return a
         tol = max(0.03, abs(e) * 0.03)
         ea, en = abs(a * 1e7 / shares - e), abs(n * 1e7 / shares - e)
