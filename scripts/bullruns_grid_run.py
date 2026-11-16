@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Bull-Run Survivors grids: 4 measured bull legs x 2 earnings bases x each universe (DATA_RUNBOOK §7.4b).
 
-  python3 scripts/bullruns_grid_run.py [--jobs N] [--universes "Nifty 500,Nifty Next 50"]
+  python3 scripts/bullruns_grid_run.py --live-end <sf end> [--jobs N] [--universes "Nifty 500,Nifty Next 50,Nifty 50"]
 
 Each job is one `grid_search_mega.js` run in MAIN_ONLY mode, basket top-3 · hold. RESUMABLE: a job
 whose `_gridmega_top_<tag>.json` marker exists is skipped. Run `python3 scripts/gridmega_fetch_live.py`
@@ -17,14 +17,18 @@ LOGD = os.path.join(HERE, "_gmlog")
 # the four completed legs, trough -> peak off the NIFTY 500 daily close, 13% reversal filter
 LEGS = [("2013-08-28", "2015-03-03"), ("2016-02-25", "2018-08-31"),
         ("2020-03-23", "2021-10-18"), ("2022-06-20", "2024-09-26")]
-UPRE = {"Nifty 500": "", "Nifty Next 50": "nn50_"}   # must match grid_search_mega.js UPRE
+# the hand-picked live window (user, 2026-11-17): 8 Oct 2026 -> the staged sf end, passed as --live-end
+LIVE2_S = "2026-10-08"
+UPRE = {"Nifty 500": "", "Nifty Next 50": "nn50_", "Nifty 50": "n50_"}   # must match grid_search_mega.js UPRE
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jobs", type=int, default=4)
-    ap.add_argument("--universes", default="Nifty 500,Nifty Next 50")
+    ap.add_argument("--universes", default="Nifty 500,Nifty Next 50,Nifty 50")
+    ap.add_argument("--live-end", default="", help="staged sf end: also grid %s -> this date" % LIVE2_S)
     a = ap.parse_args()
+    legs = LEGS + ([(LIVE2_S, a.live_end)] if a.live_end else [])
     os.makedirs(LOGD, exist_ok=True)
 
     runner = os.path.join(HERE, "_gridmega_run.js")
@@ -37,7 +41,7 @@ def main():
 
     jobs = []
     for uni in [u.strip() for u in a.universes.split(",")]:
-        for start, end in LEGS:
+        for start, end in legs:
             for basis in ("std", "con"):
                 tag = "%s_%s_%sh3_%s" % (start, end, UPRE[uni], basis)
                 if os.path.exists(os.path.join(HERE, "_gridmega_top_%s.json" % tag)):

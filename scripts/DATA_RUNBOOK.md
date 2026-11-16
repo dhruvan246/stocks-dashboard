@@ -1011,19 +1011,32 @@ index_monthly 'NIFTY NEXT 50'. Run: `EARN_BASIS=std|con python3 scripts/gridmega
 `MERGE_BASES=std,con GRID_END=<END> node --max-old-space-size=8192 scripts/gridmega_phases_build.js _nn50_r5` etc.
 (~15 min each). Measured 11-04: pool 1,527,104; bench 2023-03-31→2024-09-30 +104.0% equals index_monthly.
 
-### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_saved.json`)
+### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_n50.json` + `bull_runs_saved.json`)
 Same grid as §7.4, scored over the four MEASURED bull legs (NIFTY 500 daily close, 13% reversal filter:
 2013-08-28→2015-03-03, 2016-02-25→2018-08-31, 2020-03-23→2021-10-18, 2022-06-20→2024-09-26) plus the live
 leg from its trough (2026-03-30) to the data end. Basket top-3 · hold, both earnings bases, one grid per
 universe — **Nifty 500** and **Nifty Next 50** (added 2026-11-04, user request; point-in-time
 `indicesHistory['Nifty Next 50']`, benchmark Yahoo `^NSMIDCP` staged as `_live/nifty_next50_live.json`,
 vtag `_nn50_h3`, cache suffix `_nn50`). The Next 50 grid uses the SAME five market-wide windows so the two
-universes compare like for like; only the index on the cards differs.
+universes compare like for like; only the index on the cards differs. **Nifty 50** added 2026-11-17 (user
+request) the same way: point-in-time `indicesHistory['Nifty 50']`, benchmark `nifty.json` (staged as
+`_live/nifty_live.json`), vtag `_n50_h3`, cache suffix `_n50`, file `bull_runs_n50.json`, page key `n50`.
+Run one universe alone with `--universes "Nifty 50"`, then the build with `"Nifty 50"`.
+**Oct-26 → today tab** (user, 2026-11-17: "one more tab, Oct 8 2026 till date live"): a hand-picked window
+2026-10-08 → the staged sf end, NOT measured by the 13% filter. `bullruns_grid_run.py --live-end <sf end>` grids it
+(2 more jobs per universe); the build always expects it (leg `2026-10`, `live:true`, view `oct26` = rank on that
+window alone) and never mixes it into all4 / last2. It re-ranks only on a grid re-run — `bullruns_cur_refresh.js`
+does not move it. Built for **Nifty 50 only** on 2026-11-17 (user: "i need nifty 50 only"); the Nifty 500 and
+Next 50 files are still the 11-04 builds (data to 11-03, no Oct tab) — rebuilding either now REQUIRES the
+`--live-end` grids. Measured 11-17, Nifty 50: pool 6,188,610; index legs +70.2 / +67.6 / +142.8 / +70.8%,
+Oct window +13.8%, live +13.3% (all six equal `nifty.json` closes); Oct tab top 1,000 = only 2 distinct returns
+(18.2%, 18.0%) because many rules hold the same three stocks. Grid 10 jobs ≈ 10 min, build ≈ 1 min.
 ```
 python3 scripts/gridmega_fetch_live.py                 # ONE staging; purge _gridmega_cache_* if re-staging
-python3 scripts/bullruns_grid_run.py --jobs 4          # 16 jobs, ~30 min on the M5 (Next 50 ~2.5 min each)
+python3 scripts/bullruns_grid_run.py --jobs 4 --live-end <sf end>   # 30 jobs for 3 universes (Nifty 500 ~17 min each, the 50s ~3-8 min)
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 500"
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty Next 50"
+GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 50"
 node --max-old-space-size=8192 scripts/bullruns_saved.js && node scripts/bullruns_saved_build.js   # set CUR.e first
 ```
 - **Pool rule** (reproduces the 2026-08-28 pool of 5,439,680 exactly): a combo that reads a FUND field (sort or

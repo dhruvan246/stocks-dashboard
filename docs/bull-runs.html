@@ -103,9 +103,9 @@
 </main>
 <script>
 (async function(){
-  // One grid file per universe (2026-11-04: Nifty Next 50 added). The Nifty 500 file is required; any
+  // One grid file per universe (2026-11-04: Nifty Next 50 added; 2026-11-17: Nifty 50 added). The Nifty 500 file is required; any
   // other universe whose file is missing or broken simply gets no switch pill.
-  const UNIS = [['n500','Nifty 500','./bull_runs.json'],['nn50','Nifty Next 50','./bull_runs_nn50.json']];
+  const UNIS = [['n500','Nifty 500','./bull_runs.json'],['nn50','Nifty Next 50','./bull_runs_nn50.json'],['n50','Nifty 50','./bull_runs_n50.json']];
   const RS = {};
   RS.n500 = await (await fetch(UNIS[0][2],{cache:'no-cache'})).json();
   for (const [k,,u] of UNIS.slice(1)) {
@@ -144,8 +144,11 @@
   const med = a => { const b=a.slice().sort((x,y)=>x-y); return b[b.length>>1]; };
   const ord = n => { const t=n%100, u=n%10; return nf(n)+((t>=11&&t<=13)?'th':u===1?'st':u===2?'nd':u===3?'rd':'th'); };
 
+  // A view whose only leg is flagged live (the hand-picked 8 Oct 2026 window, 2026-11-17) ranks on a run
+  // still in progress — its wording differs from the completed-leg views everywhere below.
+  const isLiveView = k => { const v=R.views[k]; return !!(v && v.keys.length===1 && R.legMeta[v.keys[0]] && R.legMeta[v.keys[0]].live); };
   const pill = k => '<button class="vcard" data-v="'+k+'"><div class="n">'+esc(R.views[k].label)+
-    '</div><div class="m">worst placing across '+R.views[k].keys.length+'</div></button>';
+    '</div><div class="m">'+(isLiveView(k)?'ranked on this run alone':'worst placing across '+R.views[k].keys.length)+'</div></button>';
   const grpLabel = t => '<span class="grp">'+esc(t)+'</span>';
   document.getElementById('upills').insertAdjacentHTML('beforeend', UNIS.filter(([k])=>RS[k]).map(([k,l])=>
     '<button class="vcard" data-u="'+k+'"><div class="n">'+esc(l)+'</div><div class="m">'+
@@ -165,9 +168,9 @@
     const keys=V().keys;
     document.getElementById('legs').innerHTML =
       Object.keys(R.legMeta).map(k=>{const l=R.legMeta[k];
-        return '<div class="pcard'+(keys.includes(k)?'':' dim')+'"><div class="t">'+esc(l.label)+'</div>'+
-        '<div class="v pos">+'+l.bench.toFixed(1)+'%</div>'+
-        '<div class="s">'+esc(BENCH())+' · '+l.months+' months<br>'+l.s+' → '+l.e+'</div></div>';}).join('') +
+        return '<div class="pcard'+(l.live?' live':'')+(keys.includes(k)?'':' dim')+'"><div class="t">'+esc(l.label)+(l.live?' · live':'')+'</div>'+
+        '<div class="v '+(l.bench>=0?'pos':'warn')+'">'+(l.bench>=0?'+':'')+l.bench.toFixed(1)+'%</div>'+
+        '<div class="s">'+esc(BENCH())+' · '+(l.live?'in progress · '+l.days+' days':l.months+' months')+'<br>'+l.s+' → '+l.e+'</div></div>';}).join('') +
       '<div class="pcard live"><div class="t">'+esc(R.cur.label)+' · live</div>'+
         '<div class="v pos">+'+R.cur.bench.toFixed(1)+'%</div>'+
         '<div class="s">'+esc(BENCH())+' · in progress · '+R.cur.months+' months<br>'+R.cur.s+' → '+R.cur.e+'</div></div>';
@@ -190,6 +193,17 @@
         '. The list as a whole is doing well — median <b>'+pct(med(curs))+'</b> against an index of +'+
         R.cur.bench.toFixed(1)+'%, with <b>'+curs.filter(v=>v>R.cur.bench).length+' of '+N+'</b> beating it — '+
         'but past-bull-run steadiness is not what is sorting the winners today.';
+    } else if(isLiveView(VIEW)){
+      const L=R.legMeta[keys[0]], rr=rows.map(r=>r.rets[0]);
+      document.getElementById('n1').innerHTML =
+        '<b>Ranked on the run since '+L.s+' alone.</b> These are the 1,000 best of '+nf(N)+
+        ' candidates by return from '+L.s+' to '+L.e+' ('+L.days+' days). The best made <b>'+pct(rr[0])+
+        '</b>, row 1,000 made '+pct(rr[999])+', against the '+esc(BENCH())+' at '+(L.bench>=0?'+':'')+L.bench.toFixed(1)+
+        '%. Many rules end up holding the same three stocks, so they tie: these 1,000 rows carry only '+new Set(rr).size+' different return'+(new Set(rr).size===1?'':'s')+'. <b>This run is still in progress and very short</b> — a few weeks reward luck as much as a rule, so read it as what is working now, not as proof.';
+      document.getElementById('n2').innerHTML =
+        '<b>The same rows over the longer live run.</b> Since '+R.cur.s+' their median is <b>'+pct(med(curs))+'</b> against the '+esc(BENCH())+' at +'+
+        R.cur.bench.toFixed(1)+'%, with '+nf(curs.filter(v=>v>R.cur.bench).length)+' of 1,000 beating it. The start date '+L.s+
+        ' was chosen by hand, not measured by the 13% reversal filter, and this tab re-ranks only when the grid is re-run (data to '+R.dataEnd+').';
     } else {
       document.getElementById('n1').innerHTML =
         '<b>Ranked on '+(keys.length===4?'all four':'the latest two')+' bull runs.</b> Out of '+nf(N)+
@@ -220,7 +234,7 @@
     // Saved rows carry their own serial and their own basket — the grid cards are one fixed basket,
     // this list is not, so the basket has to travel with the row.
     const COLS=(SVW?[['i','#'],['sn','Saved'],['worst','Worst rank'],['fam','Rank by'],['bskt','Basket'],['b','Basis'],['f','Filters']]
-                   :[['i','#'],['worst','Worst rank'],['fam','Rank by'],['b','Basis'],['f','Filters']])
+                   :[['i','#'],['worst',isLiveView(VIEW)?'Rank':'Worst rank'],['fam','Rank by'],['b','Basis'],['f','Filters']])
       .concat(keys.map((k,i)=>['r'+i,R.legMeta[k].label]))
       .concat([['cur','Now'],['dd','Worst DD']]);
     if(!COLS.some(c=>c[0]===sortK)) sortK='worst';
@@ -253,7 +267,9 @@
         ? 'These two views hold your saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. '+
           (SV.stored>SV.n ? SV.stored+' are saved but '+SV.n+' are distinct rules: '+(SV.stored-SV.n)+' is the same rule saved twice, collapsed here the same way the Saved Strategies page collapses it. ' : '')+
           'Each cell shows that run’s absolute return with its placing among the '+POOL()+' beneath; under “Now” the small figure is the same placing in the live run. The live run is NOT part of the ranking. Each row keeps its own basket size, rebalance method and earnings basis exactly as you saved it, and its DDMMYY-NN serial matches the Saved Strategies page.'
-        : 'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small figure is the placing within these 1,000. The live run is NOT part of any ranking, and each view is its own top-1,000 search of the full pool — not a filter of the other. Excluded from the search: '+R.excluded.join(' and ')+'.')+
+        : 'Each cell shows that run’s absolute return with its placing out of '+nf(R.pool)+' beneath; under “Now” the small figure is the placing within these 1,000. The live run since '+R.cur.s+' is NOT part of any ranking, and each view is its own top-1,000 search of the full pool — not a filter of the other. '+
+          (Object.values(R.legMeta).some(l=>l.live) ? 'The one exception is the Oct-26 → today tab: it ranks on its own in-progress window, whose start (8 Oct 2026) was picked by hand rather than measured, and it is not used by the other tabs. ' : '')+
+          'Excluded from the search: '+R.excluded.join(' and ')+'.')+
       ' Baskets are equal-weight, rebalanced monthly, survivorship-free.';
   }
   document.getElementById('upills').addEventListener('click',e=>{

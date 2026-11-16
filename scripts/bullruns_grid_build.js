@@ -6,6 +6,7 @@
 
      GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 500"       → bull_runs.json
      GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty Next 50"   → bull_runs_nn50.json
+     GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 50"        → bull_runs_n50.json
 
    POOL — one candidate per (combo, basis) that actually differs: a combo whose sort or any filter is
    a FUND field is scored under std AND con (two candidates); every other combo reads no earnings and
@@ -21,10 +22,10 @@
 const fs = require('fs'), path = require('path'), zlib = require('zlib'), cp = require('child_process');
 const HERE = __dirname, ROOT = path.join(HERE, '..');
 const UNI = process.argv[2] || 'Nifty 500';
-const UPRE = { 'Nifty 500': '', 'Nifty Next 50': 'nn50_' }[UNI];
-const OUTF = { 'Nifty 500': 'bull_runs.json', 'Nifty Next 50': 'bull_runs_nn50.json' }[UNI];
+const UPRE = { 'Nifty 500': '', 'Nifty Next 50': 'nn50_', 'Nifty 50': 'n50_' }[UNI];
+const OUTF = { 'Nifty 500': 'bull_runs.json', 'Nifty Next 50': 'bull_runs_nn50.json', 'Nifty 50': 'bull_runs_n50.json' }[UNI];
 if (UPRE == null) throw new Error('unknown universe ' + UNI);
-const BENCH_NAME = UNI === 'Nifty 500' ? 'NIFTY 500' : 'NIFTY NEXT 50';
+const BENCH_NAME = { 'Nifty 500': 'NIFTY 500', 'Nifty Next 50': 'NIFTY NEXT 50', 'Nifty 50': 'NIFTY 50' }[UNI];
 
 const LEGS = [
   { k: '2013-15', label: 'Aug-13 → Mar-15', s: '2013-08-28', e: '2015-03-03' },
@@ -33,8 +34,15 @@ const LEGS = [
   { k: '2022-24', label: 'Jun-22 → Sep-24', s: '2022-06-20', e: '2024-09-26' },
 ];
 const CUR_S = '2026-03-30';
+const END = process.env.GRID_END;   // the sf end the grids were staged at (same as gridmega_phases_build.js)
+if (!/^\d{4}-\d\d-\d\d$/.test(END || '')) throw new Error('set GRID_END=<sf end the grids were staged at>');
+/* Hand-picked live window (user, 2026-11-17): 8 Oct 2026 → the data end. NOT measured by the 13%
+   reversal filter and still in progress; it is gridded and ranked like a leg so it can have its own
+   tab, but it never enters the all4 / last2 views. Its tab re-ranks only on a grid re-run. */
+LEGS.push({ k: '2026-10', label: 'Oct-26 → today', s: '2026-10-08', e: END, live: true });
 const VIEWS = { all4: { label: 'All four bull runs', keys: ['2013-15', '2016-18', '2020-21', '2022-24'] },
-                last2: { label: 'Latest two bull runs', keys: ['2020-21', '2022-24'] } };
+                last2: { label: 'Latest two bull runs', keys: ['2020-21', '2022-24'] },
+                oct26: { label: 'Oct-26 → today · live', keys: ['2026-10'] } };
 const FUND = new Set(['profitYoyPct', 'profitBase', 'profitAccel', 'profitTTM', 'profitStreak', 'postDrift', 'composite']);
 const BAR = new Set(['indRank', 'composite']);
 const TOP = 1000;
@@ -110,8 +118,7 @@ function main() {
   // ---- exact re-scoring: SELECT every chosen row in every leg + the live leg
   const runner = path.join(HERE, '_gridmega_run.js');
   if (!fs.existsSync(runner)) throw new Error('runner missing — run bullruns_grid_run.py first');
-  const end = process.env.GRID_END;   // the sf end the grids were staged at (same as gridmega_phases_build.js)
-  if (!/^\d{4}-\d\d-\d\d$/.test(end || '')) throw new Error('set GRID_END=<sf end the grids were staged at>');
+  const end = END;
   const want = { std: new Set(), con: new Set() };
   for (const t of Object.values(tops)) for (const { j } of t) { const c = cand[j]; want[c.b === 'any' ? 'std' : c.b].add(c.i); }
   const WIN = LEGS.map(L => [L.k, L.s, L.e]).concat([['cur', CUR_S, end]]);
@@ -143,7 +150,8 @@ function main() {
   // ---- assemble
   const months = (s, e) => Math.round((Date.parse(e) - Date.parse(s)) / (30.4375 * 864e5));
   const legMeta = {};
-  for (const L of LEGS) legMeta[L.k] = { label: L.label, s: L.s, e: L.e, bench: bench[L.k], months: months(L.s, L.e) };
+  for (const L of LEGS) legMeta[L.k] = Object.assign({ label: L.label, s: L.s, e: L.e, bench: bench[L.k], months: months(L.s, L.e) },
+    L.live ? { live: true, days: Math.round((Date.parse(L.e) - Date.parse(L.s)) / 864e5) } : {});
   const views = {};
   for (const [vk, V] of Object.entries(VIEWS)) {
     const rows = tops[vk].map(({ j, worst }) => {
