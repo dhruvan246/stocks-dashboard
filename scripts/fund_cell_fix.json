@@ -14225,6 +14225,15 @@
    "fixed": 933.4,
    "why": "StockView round 2 (4-Nov): BSE 10-Feb-2022 p7-8 Statement of Audited Consolidated Results, Quarter ended 31-Dec-2021: row 9 Net Profit for the period 93,338 lakh (our 933.38 = total) but row 12 Profit attributable to Owners of the Company 93,340 lakh = 933.40 cr (NCI -2). Your 933.4 is right; ours took the total line.",
    "found": "StockView reply round 2 cell-by-cell re-read 2026-11-04"
+  },
+  {
+   "sym": "CPPLUS",
+   "qe": "20260930",
+   "basis": "con",
+   "was": 327.71,
+   "fixed": 185.51,
+   "why": "Q2 FY27 own BSE results PDF abd8f0e8-ae0b-42c0-9021-c310f9c0c4df.pdf (filed 2026-11-05) p13 'Statement of Consolidated Unaudited Financial Results for quarter and half year ended 30 September 2026' (Rs million): quarter column 'Profit after tax for the period/year (X-XI)' 1,855.07 = PBT 2,518.64 (2,862.37 less exceptional fire loss 343.73) - tax 663.57 = 185.51 cr; basic EPS 15.67. Stored 327.71 = the HALF-YEAR column 3,277.07 (EPS 27.75). Second document: Q1 FY27 filing 9dee672d-4ef6-41c2-8f84-47226f8eb5a2.pdf p5 quarter PAT 1,422.00; 3,277.07 - 1,422.00 = 1,855.07. Cause: the filer's consolidated XBRL (Integrated_Finance_Ind_As_544466_511202619329.xml) tags ProfitOrLossAttributableToOwnersOfParent OneD = 3277070000 (the half-year figure) beside ProfitLossForPeriod OneD = 1855070000 and NCI 0; the reader preferred the owners tag. No NCI, so owners = total.",
+   "found": "user report 2026-11-17 (Aditya Infotech Sep-26 PAT wrong; own filing read)"
   }
  ],
  "retracted": [
