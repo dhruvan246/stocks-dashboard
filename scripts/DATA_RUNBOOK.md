@@ -29602,3 +29602,14 @@ period; the nightly check is what catches those. (2) Banks and NBFC-format XBRL 
 triage script — CANBK, BANKBARODA, UNIONBANK, BANKINDIA Jun-26 and PNB Jun-26/Sep-26 consolidated cells on the wider
 screen are UNKNOWN. (3) Quarters older than the newest two are outside this check (the older `fund_pbt_tax` /
 `fund_eps_shares` lists cover N500 only).
+
+**§239 addendum (2026-11-17 01:10 IST).** (4) A second screen was run once by hand and is NOT yet a nightly check:
+every cell since 2020 where the `sf_fundamentals` profit differs from its `sf_revop` mirror (slots 4/5) — 268 cells,
+103 of them since Jun-24; list kept at `~/stocks-cache/new-results-check-1117/fund_vs_revop_mismatch.json`. Only three
+were read (CEATLTD Sep-26, INOXINDIA Jun-26, CGPOWER Jun-26 consolidated — main store right, mirror held an OCI / total
+comprehensive line; healed through `revop_cell_fix.json`). The other ~265 are UNKNOWN. (5) ELANTAS standalone Sep-24 to
+Mar-26 (7 quarters) held unit-scale junk (0.01 / −0.03 / 4.0 against a real 29.7–39.4 cr) and was healed from each
+quarter's own PDF; its older rows Dec-22 (3699.78), Mar-23 (3005.28), Sep-23 to Jun-24 (0.06 / −0.01 / −0.03 / 0.04)
+are the same kind of junk and are NOT read yet. A year-ago base this small is what made ELANTAS look like +100,000 %
+growth — any growth screen should be read with the base cell opened first. (6) LANCER Jun-26 consolidated 5.24 is the
+total; the Sep-26 filing's comparative column shows owners 5.05 — not healed (comparative, not the quarter's own filing).
