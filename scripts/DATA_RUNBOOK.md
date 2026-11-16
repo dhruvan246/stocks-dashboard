@@ -29564,3 +29564,41 @@ was found (Moneycontrol ~30 d, StockEdge ~50 d, StockeZee ~1 y, Traderscockpit m
   Cards and charts still use the exchange feed only.
 - **Upkeep:** `refresh-fii-dii.yml` runs `fetch_fii_nsdl.py` (top-up: last 2 months + this one) after the main fetch;
   a failure only warns and keeps the committed copy. Top-up output was measured byte-equal to `--full` on 2026-11-11.
+
+## §239 — Newest-quarter profit check for every stock, after every results season (2026-11-17, user: "aditya infotech pat is wrong . wtf how ?" then "we need to have some job to verify all data we store after every quarter results")
+
+**What went wrong.** Aditya Infotech (CPPLUS) Sep-26 consolidated PAT was stored as 327.71; the filing's quarter column
+says 185.51 (PDF abd8f0e8… p13). 327.71 is the HALF-YEAR profit. The company's own XBRL file put the half-year figure
+under the quarter's `ProfitOrLossAttributableToOwnersOfParent` tag, and `build_fundamentals.xbrl_profit()` prefers that
+tag. The nightly audit already had PBT−tax and EPS checks, but they are N500-only, ranked by size and capped at 400 rows
+on a 5,000-row backlog, so a fresh error in the newest quarter never reached the top.
+
+**The fault is a family, not one stock.** The filer's owners tag can hold ANY neighbouring line. Read page by page on
+2026-11-17 (12 healed, ledger `found` = "§239"): half-year figure (CPPLUS, LANCER), other comprehensive income
+(TVSSRICHAK, FMGOETZE, SPMLINFRA, SILVERTUC), total comprehensive income (TI, CONTROLPR, NIITLTD), paid-up share capital
+(RADAAN), sign flipped (KAVDEFENCE), a figure not on the page at all (MCX 164.57 vs 454.57, ORICONENT).
+
+**What now guards it.**
+1. Reader (`build_fundamentals.xbrl_profit` → `owners()`): when the owners tag differs from the period's profit, the
+   period has no minority, and the owners figure equals another context's owners/profit figure, the profit is taken.
+   Tested on 6,463 cached XBRL files: 0 other cells move. It covers only the half-year-copy shape.
+2. Nightly check `fund_new_results` (`scripts/xcheck/fund.py`, first in `xcheck_run.CHECKS`, Data Checks page): the
+   newest TWO quarter-ends, EVERY stock with a fin slice, both bases. A cell is listed when (a) stored PAT = its own
+   PBT−tax plus the previous 1–3 stored quarters (`ytd_copy`), or (b) no PBT−tax presentation reproduces it within
+   2% / 0.1 cr AND PAT ÷ EPS implies a share count outside 0.8–1.25× the stock's own 2-year median (`pbt_tax+eps`).
+   First run: 9,548 cells compared, 60 listed.
+
+**Triage after each results season (binding).** Open Data Checks → "fund_new_results". For each listed cell:
+re-read the filing's XBRL (`Result_Arch_ng/w?scrip_cd=`, contexts OneD = quarter, FourD = year-to-date) — owners must
+equal profit − NCI. If it does (minority, associate, discontinued operations explain the gap), the cell is fine. If it
+does not, open the results PDF, read the consolidated page's "attributable to owners" row for the quarter column, and
+heal through `fund_cell_fix.json` + `revop_cell_fix.json` (+ the stock's `docs/fin/<SYM>.json`). A filing whose own
+page does not add up (RRIL Sep-26: profit 921.43, owners 474.62 + NCI 158.21) is left as printed and noted — never
+"corrected" by arithmetic. The XBRL total tag can be the wrong one too (MAHAPEXLTD Jun-26: page says 347.61, our figure)
+— so never switch tag by rule; read the page.
+
+**Not done.** (1) The reader still trusts an owners tag that contradicts profit − NCI when it is not a copy of another
+period; the nightly check is what catches those. (2) Banks and NBFC-format XBRL (different tags) are not re-read by the
+triage script — CANBK, BANKBARODA, UNIONBANK, BANKINDIA Jun-26 and PNB Jun-26/Sep-26 consolidated cells on the wider
+screen are UNKNOWN. (3) Quarters older than the newest two are outside this check (the older `fund_pbt_tax` /
+`fund_eps_shares` lists cover N500 only).
