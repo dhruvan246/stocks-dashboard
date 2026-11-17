@@ -27422,7 +27422,7 @@ files, the no-anchor list, UNIONBANK / PIRAMALFIN / PVRINOX / HINDUNILVR (ice-cr
 Mar-26 c revenue 46,490 vs Mar-25 37,825 (+22.91%) looks like the new definition already — UNKNOWN until its Mar-26 filing is read.
 OUR_ERROR level heals found on the way (AMBALALSA scale, CNL owners, CHEMCRUX, …) go through the level ledgers, not this one.
 
-**Batch 1 (2026-11-17 23:30, user: "continue, fix the rest one by one").** Every entry read from its own filing, page name-checked.
+**Batch 1 (2026-11-17 22:56, user: "continue, fix the rest one by one").** Every entry read from its own filing, page name-checked.
 - Ledger 10 -> 97 fields / 36 companies (`scripts/restated_bases.json`): 19 more `as_filed` restatements (incl. CHANDAN Mar-26 PAT s/c,
   re-stated in the Jun-26 filing under the Ind AS transition) and 68 entries of a NEW level **`period`** (added to `rbase.LEVELS`).
 - **`period` = SME half-yearly filers** (20: ADDICTIVE ALLETEC ARIHANTACA BLUEWATER DHANSA DURLAX FELIX HOACFOODS KRMAYURVED MADHUSUDAN
@@ -27436,6 +27436,22 @@ OUR_ERROR level heals found on the way (AMBALALSA scale, CNL owners, CHEMCRUX, �
 - 2 bases held back by the published-file rule (DHANSA c rev/pat: no Jun-26 c row stored; XBRL 1714314 has it — fill pending).
 - Siblings found while checking, NOT yet fixed (each needs its own filing read): MIIL Sep-24 con 2,382 / Sep-25 std 104.65;
   HBESD Jun-24/Sep-24/Dec-24 con 90.75/483.96/481.55; UPHOT Mar-25 1,222.62 and Jun-21 −259.56; SKP Jun-25/Dec-25 s placeholder rows.
+
+**Batch 2 (2026-11-17 23:33 IST, same instruction).** Level heals only, no new restated bases; every cell read from its own filing plus a
+second document (a later filing's comparative column), PDFs name-checked. 70 sf_fundamentals cells + 15 sf_revop cells.
+- `scripts/fund_cell_fix.json` +55: NOVARTIND 8, QUINT 20, KMCSHIL 8, ACSTECH 1 (lakh/crore and wrong-row reads, each per its filing);
+  PERMAGN 13 — con held the STANDALONE figure from Jun-23 on (consolidated now: Jun-23..Mar-26 6.78 7.07 3.84 2.51 5.04 7.10 2.04
+  1.58 6.17 2.37 2.25 3.99) and Sep-22 6.79 -> 7.66; the decimal was lost in Dec-25/Mar-26; SEIL 5 con (Sep-24 566.67 -> 2.5,
+  Dec-24 490.85 -> 1.95, Jun-25 562.26 -> 2.9, Sep-25 7.9 -> 2.62, Dec-25 51.41 -> −0.61: lakh figures stored as crore).
+- `scripts/revop_cell_fix.json` +15: ACSTECH 9; SEIL 6 (Jun/Sep/Dec-25 pat_con and con revenue, same filings).
+- NEW fill route for EMPTY standalone cells: `scripts/named_pat_cell_fills.json` +15 via `~/stocks-cache/xcheck-fixall/d2/add_stdfill.py`
+  (apply_fund_cell_fix cannot fill a None — it is guarded on a non-null `was`). PERMAGN 12 std (Jun-23..Mar-26, the standalone
+  figure that had been sitting in con), SEIL 3 std (Sep-24 2.7, Dec-24 1.65, Sep-25 2.6). verify_fills_live: MISSING 0,
+  RESURRECTED 0, checked 43,880 -> 43,965 (+85). Conflict guard 0; sync_pat_mirror dry-run 0; fund_rbase unchanged (36 / 95 / 2 held).
+- Found, NOT yet fixed (batch 3): MMWL full history (std/con swapped, con = group total not owners, lakh stored as crore in some
+  quarters, revop std slots hold consolidated, Mar-24 row missing); QUINT 2018–Sep-22 looks scaled (742.38, −2135.76, 20305.0 …) and
+  Dec-25 con 39.1 unread; SEIL Sep-23 (Sep-24 YoY −98%), Mar-24, Dec-23; ACSTECH Dec-23 16 / Sep-23 0.1; announcement dates PERMAGN
+  Dec-24 (stored 20250217, filing 20250214), SEIL Sep-24 (20241118 vs letter 2024-11-14).
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**

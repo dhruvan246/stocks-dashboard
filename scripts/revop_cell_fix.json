@@ -34656,6 +34656,141 @@
    "fixed": 6130.62,
    "why": "OUR ERROR, read 17-Nov-2026 (same quarter as the fund_cell_fix LICI Dec-22 con entry, runbook \u00a7243). op_con = PBT - other income (life-insurer rule, build_revop): the stored 8130.62 = 8,376.82 - 246.19, built from the Dec-22 filing's misprinted consolidated PBT 8,37,681.74 lakh (BSE 0e604354-8e27-46d5-85c4-ea3d3f698483.pdf p19). LIC's Dec-23 filing (BSE 851e0a15-e6b7-44c4-9ea4-ae68e817fa17.pdf p21, consolidated, Rs lakh, column 'Dec. 31, 2022', read from the page image) prints PBT 6,37,681.74; policyholders' other income 21,322.69; shareholders' other income 3,296.72 -> 6,376.82 - 246.19 = 6,130.62 cr.",
    "found": "2026-11-17 insurer BSE-form PAT anchor (runbook \u00a7243)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20240331",
+   "basis": "std",
+   "was": 4395.76,
+   "fixed": 28.0,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. The stored figure is not printed anywhere in the quarter's filing. Own Q4 FY24 results (d2/pdf/ACSTECH_20240331_o0.pdf p2, standalone, page image): Revenue From Operations 2,800.48 lakh (other income -3.12, total 2,797.36). Second: Jun-24 results p2 prints the Mar-24 total revenue 2,797.36 (= 2,800.48 - 3.12).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20240331",
+   "basis": "op_std",
+   "was": 544.88,
+   "fixed": 4.08,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. Own Q4 FY24 results p2 (standalone): PBT before exceptional 160.56 + finance 74.91 + depreciation 169.69 - other income (-3.12) = 408.28 lakh (= revenue 2,800.48 - cost 2,522.96 + inventory change 575.89 - employees 288.86 - other 156.26). op = profit before exceptional items and tax + finance cost + depreciation - other income (build_revop rule). Second: Jun-24 results p2 Mar-24 column (finance 74.91, depreciation 169.69, PBT 160.57).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 1641.84,
+   "fixed": 16.42,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. The lakh figure was stored as crore. Own Q1 FY25 results (BSE, d2/pdf/ACSTECH_20240630_o0.pdf p4, consolidated, page image): (a) Income from operations 1,641.84 lakh. Second: Jun-25 results p4 prints the Jun-24 column 1,641.84.",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20240630",
+   "basis": "op_con",
+   "was": 114.37,
+   "fixed": 2.34,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. Own Q1 FY25 results (BSE, d2/pdf/ACSTECH_20240630_o0.pdf p4, consolidated, page image): PBT 78.65 + finance 34.49 + depreciation 123.08 - other income 2.00 = 234.22 lakh. op = profit before exceptional items and tax + finance cost + depreciation - other income (build_revop rule). Second: Jun-25 results p4 Jun-24 column, same lines.",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20250630",
+   "basis": "std",
+   "was": 2800.83,
+   "fixed": 18.48,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. The stored figure is not printed anywhere in the quarter's filing. Own Q1 FY26 results (d2/pdf/ACSTECH_20250630_o0.pdf p2, standalone, page image): (a) Income from operations 1,847.59 lakh. Second: Jun-26 results (d2/pdf/ACSTECH_20260630_0.pdf, scanned, OCR) prints the same Jun-25 lines (1,847.59).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 2829.68,
+   "fixed": 27.63,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. The stored figure is not printed anywhere in the quarter's filing. Own Q1 FY26 results (d2/pdf/ACSTECH_20250630_o0.pdf p4, consolidated, page image): (a) Income from operations 2,762.68 lakh. Second: Jun-26 results (d2/pdf/ACSTECH_20260630_0.pdf, scanned, OCR) prints the same Jun-25 lines (2,762.68).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20250630",
+   "basis": "op_std",
+   "was": 204.17,
+   "fixed": 2.21,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. Own Q1 FY26 results (d2/pdf/ACSTECH_20250630_o0.pdf p2, standalone, page image): PBT 80.48 + finance 54.25 + depreciation 88.43 - other income 2.50 = 220.66 lakh. op = profit before exceptional items and tax + finance cost + depreciation - other income (build_revop rule). Second: Jun-26 results (d2/pdf/ACSTECH_20260630_0.pdf, scanned, OCR) prints the same Jun-25 lines (PBT 80.48, finance 54.25, depreciation 88.43).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20250630",
+   "basis": "op_con",
+   "was": 108.04,
+   "fixed": 2.5,
+   "why": "OUR ERROR: ACS Technologies prints 'Rs in Lakhs'. Own Q1 FY26 results (d2/pdf/ACSTECH_20250630_o0.pdf p4, consolidated, page image): PBT 100.17 + finance 59.00 + depreciation 93.29 - other income 2.50 = 249.96 lakh. op = profit before exceptional items and tax + finance cost + depreciation - other income (build_revop rule). Second: Jun-26 results (d2/pdf/ACSTECH_20260630_0.pdf, scanned, OCR) prints the same Jun-25 lines (PBT 100.17, finance 59.00, depreciation 93.29).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "ACSTECH",
+   "qe": "20250630",
+   "basis": "pat_con",
+   "was": 0.68,
+   "fixed": 0.75,
+   "why": "OUR ERROR (wrong line; mirror sync with the fund_cell_fix ACSTECH Jun-25 con entry): the stored con profit was the standalone 67.70 lakh. Own Q1 FY26 results (d2/pdf/ACSTECH_20250630_o0.pdf p4, consolidated, page image): net profit 82.17, owners of the company 75.08 lakh, NCI 7.09. Second: Jun-26 results (d2/pdf/ACSTECH_20260630_0.pdf, scanned, OCR) prints the same Jun-25 lines (owners 75.08).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20250630",
+   "basis": "pat_con",
+   "was": 562.26,
+   "fixed": 2.9,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Jun-25 results (ann 2025-08-07) p4 consolidated: Revenue from operations 1,516.37 lakh, Profit for the period 290.19 lakh = 2.90 cr. Second: Sep-25 results prints 30-06-2025 c 1,516.37 / 290.19; Jun-26 results p8 prints the same. Our 562.26 / revenue 26.58 are printed nowhere (op 4.02 / ebit 3.65 already agree with this page).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 26.58,
+   "fixed": 15.16,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Jun-25 results (ann 2025-08-07) p4 consolidated: Revenue from operations 1,516.37 lakh, Profit for the period 290.19 lakh = 2.90 cr. Second: Sep-25 results prints 30-06-2025 c 1,516.37 / 290.19; Jun-26 results p8 prints the same. Our 562.26 / revenue 26.58 are printed nowhere (op 4.02 / ebit 3.65 already agree with this page).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20250930",
+   "basis": "pat_con",
+   "was": 7.9,
+   "fixed": 2.62,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Sep-25 results (ann 2025-10-17; the 2025-10-18 revision corrected only the consolidated cash-flow statement) p5 consolidated: Revenue 1,141.72 lakh, Profit for the period 262.05 lakh = 2.62 cr. Second: Dec-25 results prints 30.09.2025 c 1,141.72 / 262.05. Our revenue 15.16 is the Jun-25 figure; our 7.9 is printed nowhere.",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20250930",
+   "basis": "con",
+   "was": 15.16,
+   "fixed": 11.42,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Sep-25 results (ann 2025-10-17; the 2025-10-18 revision corrected only the consolidated cash-flow statement) p5 consolidated: Revenue 1,141.72 lakh, Profit for the period 262.05 lakh = 2.62 cr. Second: Dec-25 results prints 30.09.2025 c 1,141.72 / 262.05. Our revenue 15.16 is the Jun-25 figure; our 7.9 is printed nowhere.",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20251231",
+   "basis": "pat_con",
+   "was": 51.41,
+   "fixed": -0.61,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Dec-25 results (ann 2026-02-10) p4 consolidated: Revenue 582.53 lakh = 5.83 cr, Profit for the period (61.41) lakh = -0.61 cr. Second: Mar-26 audited results p8 prints 31.12.2025 c 582.53 / (61.40). Our revenue held the lakh figure as crore; our 51.41 is printed nowhere (op -0.53 / ebit -1.01 already agree).",
+   "found": "D2 audit (\u00a7214b batch 2)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 582.53,
+   "fixed": 5.83,
+   "why": "Shanti Educational Initiatives Ltd (BSE 539921; name + CIN L80101GJ1988PLC010691 checked on each page image). Statements are 'in Lacs'; the consolidated statement has no non-controlling-interest line (one associate, share-of-profit row), so Profit for the period (3-4) = owners. Dec-25 results (ann 2026-02-10) p4 consolidated: Revenue 582.53 lakh = 5.83 cr, Profit for the period (61.41) lakh = -0.61 cr. Second: Mar-26 audited results p8 prints 31.12.2025 c 582.53 / (61.40). Our revenue held the lakh figure as crore; our 51.41 is printed nowhere (op -0.53 / ebit -1.01 already agree).",
+   "found": "D2 audit (\u00a7214b batch 2)"
   }
  ],
  "retracted": [
