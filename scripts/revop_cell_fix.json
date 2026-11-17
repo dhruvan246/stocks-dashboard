@@ -31182,6 +31182,60 @@
    "fixed": -25.27,
    "why": "Own NSE results PDF MBECL_SEC_12082026205014_OutcomeWithResults30062026.pdf p13 consolidated (Rs lakh), quarter 30-Jun-26: 'Profit/(Loss) attributable to Owners of the Holding Company' (2,527.34) = -25.27 cr, NCI nil, EPS (7.58). Second document: the Sep-26 filing MBECL_SEC_12112026190554_ResultsFinal121126.pdf p16 comparative column prints the same (2,527.34). Stored -25.87 is a digit mis-read.",
    "found": "\u00a7239 newest-quarter profit check 2026-11-17 (open list read cell by cell; own results PDF read)"
+  },
+  {
+   "sym": "UFLEX",
+   "qe": "20230331",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 0.88,
+   "why": "Own BSE results XBRL Main_Ind_As_500148_3052023181931.xml (filed 2023-05-30), quarter column: PBT 21.53 - tax 20.7 -> profit for the period 0.88 Rs cr (total comprehensive income 42.68). The sf_revop profit mirror held 0.0 = empty owners tag (0); corrected to 0.88 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "RTNINDIA",
+   "qe": "20210630",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -0.83,
+   "why": "Own BSE results XBRL Main_Ind_As_534597_1382021204853.xml (filed 2021-08-16), quarter column: PBT 0.33 - tax 0.05 -> profit for the period -0.83 Rs cr (total comprehensive income -0.83). The sf_revop profit mirror held 0.0 = empty owners tag (0); corrected to -0.83 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "WESTLIFE",
+   "qe": "20240331",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 0.76,
+   "why": "Own BSE results XBRL NBFC_505533_852024175529.xml (filed 2024-05-09), quarter column: PBT 1.95 - tax 1.19 -> profit for the period 0.76 Rs cr (total comprehensive income 0.34). The sf_revop profit mirror held 0.0 = empty owners tag (0); corrected to 0.76 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20240630",
+   "basis": "pat_con",
+   "was": 20.83,
+   "fixed": 20.09,
+   "why": "Own BSE results XBRL Main_Ind_As_532928_1972024154247.xml (filed 2024-08-21), quarter column: PBT 27.78 - tax 6.95 -> profit 20.83; attributable to owners of parent 20.09 + non-controlling 0.74 = 20.83 Rs cr. The sf_revop profit mirror held 20.83 = total profit incl. minority; corrected to 20.09 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "VHL",
+   "qe": "20210331",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": 75.03,
+   "why": "Own BSE results XBRL NBFC_500439_2752021132556.xml (filed 2021-06-05), quarter column: PBT 7.24 - tax 1.19 -> profit for the period 75.03 Rs cr (total comprehensive income 85.96). The sf_revop profit mirror held 0.0 = empty owners tag (0); corrected to 75.03 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "HEGAM",
+   "qe": "20201231",
+   "basis": "pat_con",
+   "was": 0.0,
+   "fixed": -0.8,
+   "why": "Own BSE results XBRL Main_Ind_As_509631_92202117525.xml (filed 2021-02-09), quarter column: PBT 4.28 - tax -0.4 -> profit for the period -0.8 Rs cr (total comprehensive income -0.87). The sf_revop profit mirror held 0.0 = empty owners tag (0); corrected to -0.8 (owners' profit basis). sf_fundamentals already holds it.",
+   "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
   }
  ],
  "retracted": [
