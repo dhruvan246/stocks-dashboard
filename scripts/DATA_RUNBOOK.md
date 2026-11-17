@@ -27308,6 +27308,40 @@ reached it only because that refresh (eaeae28e0) coincided with a trigger. Live 
 on all 2,922 bars of both symbols. Re-verify with scratchpad px2/verify_dash3.py once stock_data.bin is recommitted. A publish rule
 that also commits when historical bars change (a heal) would close this class — not built (a question for the user).
 
+**2026-11-17 — F4 detail lines healed (user: "fix everything . if reqd check entire data again"; FII/DII cells excluded).**
+Baseline uncapped run on 69ce99022: fund_pbt_tax 5,034 open. Worktree `~/stocks-wt/xcheck-fixall`, record
+`~/stocks-cache/xcheck-fixall/STATUS.md`. Pushed 3d46103ea2 + 4bb53ea9d7, both verified LIVE (slices 4534f3c81d / 6d1e728dcb).
+- **F4-A bank PBT placeholders.** 283 bank quarters 2005-07 (30 banks) carried pbt 0.00. Each page's own Op profit − Provisions
+  (− Exc) = NP + Tax → xtra_cell_fix.json (now 503 entries). MC agreed 264, MC wrong 5 (DENABANK ×2 / PNB ×2 / CUB row shifts), MC no
+  row 8; 6 ORIENTBANK pages do not close → pbt null, not a guess. LIVE: ORIENTBANK Mar-05 s 194.89, SBIN Jun-05 s 1,672.90.
+- **F4-B restated page.** xtra_nse_html took a LATER restated page for some quarters; it now reads the earliest filing first
+  (`filed_key`): 288 cells now fit, 0 regressions. 7 same-page misfits left for one-by-one reading (BHARTIARTL Mar-16 c, CASTROLIND
+  Dec-16 s, TATACONSUM Dec-15 c, AJANTPHARM Jun-15 c, PGHL Dec-16 s, STLTECH Jun-15 c, NITINFIRE Sep-16 s).
+- **F4-C renamed tickers.** build_stock_fin.merged_x merges a renamed company's detail cells per basis (XBRL > archive > MC); it
+  exposed 37 new comparisons (TMPV / SWANCORP / ADANIENSOL / GMRAIRPORT / CEMPRO …) — UNKNOWN until each is read.
+- **F4-D' archive reader gap.** The archive (nse-html) reader never read Minority interest / Share of associates, nor Extraordinary
+  items / Discontinued ops (after tax), so 6,602 consolidated archive cells had no assoc/nci and the stock page's annual Net Profit
+  was owners-only. Added `group_split` (assoc/nci) and `bridge` (xo/disc): a value lands only when the page's OWN rows close
+  (tolerance max(0.01, 0.5 %)), sign taken from the page's arithmetic, ties broken by exact closure then the natural sign, else
+  refused. XTRA_KEEP += xo, disc; FundPbtTax accepts pbt − tax + xo/disc (+ assoc − nci). Tested on 3,498 cached pages: c 2,329 /
+  s 122 newly fit, 0 regressions. Re-read 3,355 basis-cells (3,050 changed). Checked by hand against EPS × shares: VEDL Mar-12 c
+  1,081.11 − 384.80 + 465.80 = 1,162.1 (EPS 13.37 × 86.9 cr); RAYMOND Sep-11 c 80.96 (13.19 × 6.14 cr); TMPV Jun-12 c 2,244.9.
+- **F4-D2 Jun-26 XBRL cells without assoc/nci — ROOT CAUSE.** build_xbrl_extra learned the assoc/nci tags on 2026-09-06
+  (e7f64e348f), but xtra_nightly's seen-set never re-offers a file it already extracted (and its list window is only 14 days), so
+  every quarter filed before that date kept no associate/minority lines. Re-read the 1,059 PIT-N500 integrated-filing XBRL files
+  broadcast 2026-06-01..09-06 (`~/stocks-cache/xcheck-fixall/jun26/refill.py`, FILL-ONLY, a file fills a cell only when its PBT
+  equals the cell's): 485 fields in 340 cells, 2 refused on vintage. PIT-N500 Jun-26 con cells lacking both: 183 → 25 (all banks —
+  the banking taxonomy route carries neither line; separate item). ABFRL Jun-26 c read from its own file: −313.87 − (−71.53) +
+  (−6.39) = −248.73 group, nci −33.49, owners −215.24 = the filed attributable line.
+  **RULE for next time:** whenever build_xbrl_extra gains a tag, the nightly will NOT back-fill it. Re-read the files filed since the
+  last full parse with a fill-only, same-PBT-vintage pass like refill.py, or the new field exists only for quarters filed after the
+  change. Non-N500 Jun-26 cells have the same gap (not filled — scope was PIT N500).
+- **Result.** fund_pbt_tax 5,034 → 1,935 (F4) → 1,869 (Jun-26 fill; 66 closed, 0 new; Jun-26 open 0). §39: stock.html VEDL /
+  RAYMOND / ORIENTBANK / TMPV / unknown symbol — 0 script errors (only the existing ipo_fin 404, same on live), 375 px dark + light,
+  annual "Profit from associates / Minority interest / Owners' profit" rows render; Net Profit = owners + minority.
+- **Still open (not healed):** archive pages whose own rows don't close (s ~520, e.g. 63MOONS Mar-06 pbt − tax 5.56 vs period 3.92),
+  page PAT ≠ stored PAT within the anchor (c ~125, e.g. 3MINDIA Sep-15 47.61 vs 46.40), 34 anchor refusals, XBRL discontinued ops /
+  regulatory deferral (NTPC, POWERGRID, NHPC, NLCINDIA) and bank formats, class E small items, D2 policy (user's pick).
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
