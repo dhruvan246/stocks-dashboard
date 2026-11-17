@@ -322,6 +322,22 @@ def main():
                   % (nfill, nover, os.path.basename(abscf_p)))
         except Exception as e:
             print("WARN: annual_bscf.json unreadable (%s) — skipped" % e)
+        # Second pass of the proven single-cell fixes, for cells that exist ONLY in the annual-report store
+        # (the first pass above runs before that merge, so it cannot reach them — ABLBL Mar-25 con net worth,
+        # 2026-11-17). Measured on origin at the time: this pass changed 0 existing cells. The internal
+        # src_fix marker is stripped so the served cells keep their keys.
+        try:
+            if HERE not in sys.path:
+                sys.path.insert(0, HERE)
+            import xtra_cell_fix
+            nc2 =xtra_cell_fix.reassert(xtra)
+            for qs in xtra.values():
+                for cell in qs.values():
+                    for d in cell.values():
+                        if isinstance(d, dict): d.pop(xtra_cell_fix.MARK, None)
+            print("xtra_cell_fix second pass (annual-report cells): %d marks/sets" % nc2)
+        except Exception as e:
+            print("::warning::xtra_cell_fix second pass not applied (%s)" % e)
 
     # Insights card — operating KPIs read from the company's own presentations (runbook §137).
     # scripts/kpi_insights/<SLUG>.json is the ledger; the slice carries it compacted, verbatim
