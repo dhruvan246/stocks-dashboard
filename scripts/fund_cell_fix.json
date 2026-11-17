@@ -9583,15 +9583,6 @@
    "found": "StockView PIT-N500 std value-diff check 2026-10-22 (BSE detres = StockView 5329.77)"
   },
   {
-   "sym": "BDL",
-   "qe": "20250331",
-   "basis": "std",
-   "was": 272.77,
-   "fixed": 217.7,
-   "why": "BSE Corp_detailedResult_Transpose_ng scrip 541143 qtr 125.00 (as filed, Audited, span 01-Jan-25..31-Mar-25, Rs mn): 'Net Profit' 2176.9700 = 217.70 cr. No NSE archive page for this quarter. Stored 272.77 differs (value).",
-   "found": "StockView PIT-N500 std value-diff check 2026-10-22 (BSE detres = StockView 217.70)"
-  },
-  {
    "sym": "COFFEEDAY",
    "qe": "20190630",
    "basis": "std",
@@ -17895,6 +17886,16 @@
    "why": "Runbook \u00a7109e by-product: the stored value matches NO vintage NSE holds for this quarter. NSE's earliest-filed page (20161004, Ind-AS, seq 1014233) reads Net Profit 62.016999999999996 cr; Moneycontrol consolidated (\u00a785-guarded) independently reads 62.02 cr; the store held 54.82. Class: the store matched no filed figure.",
    "found": "vintage108 by-product sweep 2026-08-24",
    "retracted_why": "RETRACTED 2026-10-25: superseded by the later fixes entry (62.02 -> 54.82, StockView check 2026-10-23). Re-read this session: NSE zip NSEStandaloneconsolidatedFinancialResults30062016_04082016204401, PDF page 9 (rotated), 'Statement of Consolidated Unaudited Results for the Quarter Ended June 30, 2016', Rs in lakhs, col Quarter ended 30th June 2016: Net Profit for the period 6,201.7; attributable to Owners 5,481.7, Non-controlling interests 720.0 (5,481.7 + 720.0 = 6,201.7). Store column = owners' PAT -> 54.82 cr; 62.02 is the total incl. NCI. verify_fills_live flagged REVERTED only because this stale entry stayed live."
+  },
+  {
+   "sym": "BDL",
+   "qe": "20250331",
+   "basis": "std",
+   "was": 272.77,
+   "fixed": 217.7,
+   "why": "BSE Corp_detailedResult_Transpose_ng scrip 541143 qtr 125.00 (as filed, Audited, span 01-Jan-25..31-Mar-25, Rs mn): 'Net Profit' 2176.9700 = 217.70 cr. No NSE archive page for this quarter. Stored 272.77 differs (value).",
+   "found": "StockView PIT-N500 std value-diff check 2026-10-22 (BSE detres = StockView 217.70)",
+   "retracted_why": "RETRACTED 2026-11-17 (runbook \u00a7240): the quarter's own filing NSE BDL_27052025163945_BDLFR202425.pdf p2 (standalone, Rs lakh) prints Profit/(Loss) for the period 27,277.19 = 272.77 cr, EPS 7.44; FY25 quarters 7.22+122.53+147.13+272.77 = 549.65 = the printed year 54,964.52 lakh. BSE detailed-result 2176.97 mn was wrong. Superseded by the 17-Nov entry (217.70 -> 272.77)."
   }
  ]
 }

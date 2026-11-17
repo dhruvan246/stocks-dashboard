@@ -29746,3 +29746,27 @@ of the first later filing.
 pre-heal figure; the sync recorded that as a NEW second reading, so a healed cell would never close. Now a mirror figure
 equal to the recorded "main" or to the `was` of a fund_cell_fix entry is copied without being recorded. Tested: old
 figure put back → copied, not recorded; a different figure → recorded.
+
+## §240 — One active correction per cell in the fix ledgers (2026-11-17, user: "check who was right? and avoid such changes in future")
+
+**What happened.** BDL Mar-25 standalone had TWO active entries in `fund_cell_fix.json` `fixes`: 272.77 → 217.70
+(22-Oct, StockView check, from BSE's detailed-result data 2176.97 mn) and 217.70 → 272.77 (17-Nov, from the quarter's
+own PDF). `apply_fund_cell_fix.py` is guarded on `was`, so one pass flips the cell there and back, and
+`verify_fills_live.py` flags the older entry REVERTED forever.
+
+**Who was right (read this session).** NSE BDL_27052025163945_BDLFR202425.pdf p2, standalone, Rs lakh: Profit for
+the period 27,277.19 = **272.77 cr**, EPS 7.44; the four FY25 quarters 7.22 + 122.53 + 147.13 + 272.77 = 549.65 =
+the printed year 54,964.52 lakh. Verdict on the 22-Oct entry: OUR ERROR (BSE detailed-result figure was wrong). That
+entry moved to `retracted` with `retracted_why`; the cell stays 272.77.
+
+**The rule from now on.** A new correction for a cell that already has an active one must, in the SAME commit, move
+the older entry from `fixes` to `retracted` with a `retracted_why` that names the filing that settles it (read that
+cell's own filing first — §0). Every reader reads only `fixes`, so a retracted entry is inert everywhere.
+
+**Enforced.** `scripts/cell_fix_conflict_guard.py` (run by `scripts/githooks/pre-commit` whenever
+`fund_cell_fix.json`, `revop_cell_fix.json` or the allow-list is staged) refuses a commit that leaves two active
+entries for one (sym, qe, basis) with different `fixed` values. The 11 conflicts already present on 17-Nov, not yet
+settled from their own filings, are listed in `scripts/cell_fix_conflict_allow.json`: ASSAMCO Mar-17 std, CEMPRO
+Mar-18 con, CEMPRO Dec-18 con, COFFEEDAY Jun-19 std, GITANJALI Sep-15 std, GSFC Sep-24 std, LITL Sep-15 std, LUXIND
+Sep-23 std, SUNPHARMA Mar-15 std, TARIL Mar-25 con, TREEHOUSE Mar-16 std. Remove a key once its losing entry is
+retracted. CEMPRO ×2 is a rule question (printed "profit for the period" vs EPS-confirmed owners' share) for the user.

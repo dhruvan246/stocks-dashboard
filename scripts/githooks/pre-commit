@@ -69,6 +69,25 @@ def main():
         print("[pre-commit] phantom-key check errored (%s: %s) — allowing; run"
               " scripts/phantom_key_guard.py by hand." % (type(e).__name__, e))
 
+    # ★ TWO ACTIVE CORRECTIONS FOR ONE CELL (2026-11-17, runbook §240). BDL Mar-25 carried
+    # 272.77->217.70 and 217.70->272.77 at once; the applier flipped it and verify flagged REVERTED.
+    try:
+        import cell_fix_conflict_guard as _cg
+        if any(f in _cg.SCANNED for f in staged):
+            ok, lines = _cg.check()
+            if not ok:
+                print("=" * 78)
+                print("COMMIT REFUSED — a cell now has TWO ACTIVE corrections with different values.")
+                print("Read that cell's own filing, then move the losing entry from \"fixes\" to")
+                print("\"retracted\" with a \"retracted_why\" in this same commit.")
+                print("=" * 78)
+                for _l in lines:
+                    print("   " + _l)
+                return 1
+    except Exception as e:
+        print("[pre-commit] cell-fix conflict check errored (%s: %s) — allowing; run"
+              " scripts/cell_fix_conflict_guard.py by hand." % (type(e).__name__, e))
+
     if not relevant:
         return 0                                    # fast path: nothing ledger-shaped in this commit
 
