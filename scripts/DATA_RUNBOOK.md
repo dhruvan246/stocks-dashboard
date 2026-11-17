@@ -28760,6 +28760,11 @@ E2E Jun-22 S (BM outcome 25-Jul-22 p2), MBAPL Jun-22 + Sep-22 S (29-Jul-22 p5, 3
 (NSE symbol SUNDARMHLD, 3-Aug-22 p2/p3; con PAT incl. associates 4,113.50 lakh). Ledger: ~/stocks-cache/microcap250/nse_pdf_fills.json.
 The other 12 open quarters: each scrip's BSE results archive ends BEFORE the quarter and its last price bar comes before the due date
 (delisted/merged) — treated as not filed; NSE announcements not individually re-checked.
+2026-11-17 NSE check (user: "check the 12 microcap quarters on NSE too"): all 12 NOT FILED — NSE results list empty for each, and the
+announcements give the reason: ACLGATI/DHANI Sep-25, JMCPROJECT Dec-22, SANGHIIND Mar-26, TATAMETALI/TINPLATE Dec-23, UJJIVAN Mar-24,
+CIGNITITEC Mar-26 = amalgamation effective + trading suspended before the result was due (ACLGATI filed "reasons for non-submission");
+FRETAIL Mar/Jun/Sep-22 = last result Dec-21, CIRP from 20-Jul-22, none filed through 2025; CIGNITITEC Jun-26 is after its last trading
+day (the gap count should not have listed it). Microcap 250 gap list is closed: 25 filled, 12 never filed.
 
 ## §228 — JUST DECLARED ON A RESULTS DAY: the result PDF often rides ONLY on an "Outcome of Board Meeting" row — wider caption filter, no-quarter fallback, one card per filing, and the exchange CALENDAR as a second season signal (2026-10-12, user: "many results declared today but none are in my just declared for today . y ?" → "do it, all three" → "make it 20 from 40")
 
