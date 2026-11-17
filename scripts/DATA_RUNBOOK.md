@@ -30048,3 +30048,19 @@ exc 0, pbt 183.74, aud U. EPS not filled (half-year minus quarter is not exact f
 comparative (Jan-2026 filing p13) prints 69.22; PEL's own first filing (27-Jan-2025 p11) prints 183.30. Stored 69.0 was
 the merged figure rounded; healed to 69.22 (precision, same basis as the user's Jun-25 choice). Not read: the other
 whole-crore std cells of the series (Mar-24 −742.0, Jun-24 37.0, Sep-24 171.0, Mar-25 64.0, Sep-25 278.0).
+
+**§239c update 7 (17-Nov-2026, user: "Yes, read them").** The five other whole-crore PIRAMALFIN std quarters, each read by
+page image from three filers where they exist — the merged Piramal Finance (PFL), the legal entity's own pre-merger filing
+(PCHFL, NSE debt segment) and Piramal Enterprises (PEL). The merger's appointed date is 1-Apr-2024 (PFL 17-Oct-2025 note).
+
+| Quarter | Stored | Merged PFL | PCHFL own | PEL own | Done |
+|---|---|---|---|---|---|
+| Mar-24 | −742.0 | none (before appointed date) | −741.93 (8-May-2024 p7) | 953.54 (8-May-2024 p7) | → −741.93, precision |
+| Jun-24 | 37.0 | 269.62 derived: half year 440.96 − Sep-24 171.34 (17-Oct-2025 p16); never printed as a quarter | 36.55 (13-Aug-2024 p4) | 228.07 (13-Aug-2024 p3) | NOT changed — user decision (stored is PCHFL's, every later quarter is merged) |
+| Sep-24 | 171.0 | 171.34 (17-Oct-2025 p16) | 46.60 (23-Oct-2024 p5) | 115.69 (23-Oct-2024 p13) | → 171.34, precision |
+| Mar-25 | 64.0 | 63.89 (27-Apr-2026 p8) | 81.60 (6-May-2025 p8) | (23.33) (6-May-2025 p6) | → 63.89, precision |
+| Sep-25 | 278.0 | 277.67 own first filing (17-Oct-2025 p16) | — | none filed | → 277.67, precision |
+
+Merged FY25 adds up: 269.62 + 171.34 + 69.22 + 63.89 = 574.07 (FY25 column, both PFL filings). Seen, not changed: stored
+std ann dates 2024-05-30 / 2024-08-14 / 2024-11-14 / 2025-05-30 / 2025-11-14 against filings of 8-May-2024, 13-Aug-2024,
+23-Oct-2024, 6-May-2025 and 17-Oct-2025; the con cells Mar-24 −752.0, Sep-24 163.0, Mar-25 102.0, Sep-25 327.0 are whole crores, not read.
