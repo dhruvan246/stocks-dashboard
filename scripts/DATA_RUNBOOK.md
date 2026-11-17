@@ -30012,3 +30012,8 @@ profit 13,780. Second filing: the Sep-26 IF_INS_COM_IND_AS_19757 XBRL, half-year
 4,685.99 − 2,412.27 = 2,273.72 cr; investment income 357.15 − 159.61 = 197.54; other income 0.49; deferred tax 45.94; PBT 183.74;
 profit 137.80 — all equal. Filled (fill-only): revenue 2,471.26 cr (§242 rule), fin 1; line items oi 0.49, tax_c 0, tax_d 45.94,
 exc 0, pbt 183.74, aud U. EPS not filled (half-year minus quarter is not exact for EPS; one filing only).
+
+**§239c update 6 (17-Nov-2026, user: "read the Dec-24 Piramal cell too").** PIRAMALFIN Dec-24 std: merged entity's restated
+comparative (Jan-2026 filing p13) prints 69.22; PEL's own first filing (27-Jan-2025 p11) prints 183.30. Stored 69.0 was
+the merged figure rounded; healed to 69.22 (precision, same basis as the user's Jun-25 choice). Not read: the other
+whole-crore std cells of the series (Mar-24 −742.0, Jun-24 37.0, Sep-24 171.0, Mar-25 64.0, Sep-25 278.0).
