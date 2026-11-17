@@ -27342,6 +27342,63 @@ Baseline uncapped run on 69ce99022: fund_pbt_tax 5,034 open. Worktree `~/stocks-
 - **Still open (not healed):** archive pages whose own rows don't close (s ~520, e.g. 63MOONS Mar-06 pbt − tax 5.56 vs period 3.92),
   page PAT ≠ stored PAT within the anchor (c ~125, e.g. 3MINDIA Sep-15 47.61 vs 46.40), 34 anchor refusals, XBRL discontinued ops /
   regulatory deferral (NTPC, POWERGRID, NHPC, NLCINDIA) and bank formats, class E small items, D2 policy (user's pick).
+- **Non-N500 Jun-26 fill (user 2026-11-17: "A, and fill the non-Nifty 500 cells too").** Same refill.py over every company:
+  3,868 XBRL files (1 404) -> 3,102 fields in 2,190 cells, FILL-ONLY, same-PBT vintage; 396 cells newly close; 2 store-total cells
+  left (RETAIL Mar-26, SPAL Jun-26). Pushed b6290bce07, LIVE verified 20:55 (docs/fin/DVL.json x.20260630.c.assoc = 120.59 = XBRL).
+- **D2 policy = A** (same message): growth uses the company's own restated comparative; levels stay as first filed -> §214b.
+
+## §214b — GROWTH AGAINST THE COMPANY'S RESTATED COMPARATIVE (2026-11-17, user: "A, and fill the non-Nifty 500 cells too" — option A of the D2 question)
+
+**Problem.** A later filing prints, beside each current figure, the comparative of an earlier quarter. After a merger, demerger,
+reclassification or an Ind AS 103 purchase-price allocation that comparative differs from what the earlier filing printed. Our
+stores keep each quarter AS FIRST FILED (point-in-time, §40b), so YoY paired two definitions: COALINDIA Jun-26 c revenue 46,254.80
+vs our Jun-25 35,842.19 = +29.05%, while its own Jun-26 filing prints Jun-25 as 42,919.20 (note 6, regrouped) = +7.77%.
+
+**Rule (user policy A).** LEVELS stay as first filed. GROWTH of quarter F against quarter B (B = F − 1 year, or the quarter before)
+uses the comparative printed in F's own filing — PIT-safe, it is known when F is. ONE rule in every consumer: the restated base
+replaces a STORED base (never invents one) and only while the current figure in use equals the `cur` it was printed beside, within
+max(0.015, 0.2 %). So a base read off another row (total income for revenue, group total for owners) can never pair with our
+figure, and an entry whose current row is later corrected simply stops applying.
+
+**Plumbing.**
+- Ledger `scripts/restated_bases.json` {SYM: {"F|B": {s|c: {rev|pat: {base, cur, as_filed, level, src, read}}}}} — every entry read
+  from the filing named in src; `level` = as_filed (B's own filing re-read: a true restatement) / unknown (not re-read yet) /
+  our_error (our B level is wrong — healed separately through the level ledgers). Schema + validation + the rule: `scripts/rbase.py`
+  (a malformed entry raises -> build_stock_fin ABORTs, never publishes half a ledger).
+- `scripts/build_stock_fin.py` publishes slice key `rb` ({F|B: {basis: {field: [base, cur]}}}) and whole-market
+  `docs/fund_rbase.json`; an entry whose cur no longer matches the store is HELD BACK and printed. Old ticker names get the same
+  rb via resolve() (GUJAMBCEM, IIFLWAM, ITDCEM, TRAFALHSE — same companies). refresh-stock-fin.yml now triggers on the ledger and
+  rbase.py and commits docs/fund_rbase.json.
+- Consumers: stock.html renderFunds (quarter YoY/QoQ cells + TTM cards; also set on the no-slice fallback path from the engine's
+  RBASE), quarterly-results.html growth() (qarr.rbase — the page already has a local `rb` = row basis), build_results_season.py
+  (rb_pair in the pat/rev consistency calls), build_discovery.py (rb_ago, only when both periods were picked on the same basis),
+  backtest-engine.js + stock-backtest.html `_rbBase` in profitAt / profitMetrics (yoy, base, TTM, prev4) — ENGINE_VER e25.
+  Every restated growth figure carries a small **R** with a tooltip; stock.html adds a note line.
+
+**First entries (10 bases, 8 companies, all Jun-26 filings):** 360ONE c rev 966.58 (as_filed 911.46 confirmed: reclass from other
+income, total income 980.04 both), AEGISVOPAK c rev 207.99 / c pat 71.02 (Jun-25 own XBRL 47.72), AMBUJACEM c pat 869 (note p17:
+Orient Cement PPA), APOLLOPIPE c pat Mar-26 0.99 (QoQ; Mar-26 XBRL −0.13, NCI 0), CEMPRO s/c rev 2,576.40, COALINDIA c rev
+42,919.20 (Jun-25 BSE filing p8 printed 35,842.19), EDELWEISS c rev 2,241.51, GODREJCP c rev 3,571.32. `unknown` level ones still need
+B's own filing re-read (an our_error there is a level heal, not a restated base).
+
+**Measured.**
+- Engine: all-stock regression 49,752 profit cells, 4 differ (all AMBUJACEM / AEGISVOPAK con): AMBUJACEM 2026-08-01 yoy −26.77 ->
+  −33.60 (base 869); AEGISVOPAK +38.47 -> −6.96 (streak 5 -> 0). Missing fund_rbase.json = old behaviour; twins identical.
+- results_season (worktree build, Jun-26): Nifty 50 rev median 17.8 -> 17.2; Nifty Oil & Gas PAT median 21.4 -> −7.0 (n 15,
+  AEGISVOPAK); Nifty Energy rev median 21.5 -> 19.7; a few 0.1–0.3 shifts elsewhere. Discovery: only AEGISVOPAK leaves res20260630.
+  Both files are rebuilt by CI (refresh-fundamentals / refresh-announcements), not committed by hand.
+- §39 (local preview of the worktree): stock.html COALINDIA Jun-26 Rev YoY +7.77% R (TTM +7.24% R), AMBUJACEM PAT −33.60% R,
+  AEGISVOPAK rev +12.39% R / PAT −6.96% R, GODREJCP +18.32% R on the no-slice fallback path, TCS unchanged (no R); Quarterly Results
+  Jun-26 COALINDIA +7.8% R, APOLLOPIPE PAT QoQ −965.7% R; stock-backtest profitAt(AMBUJACEM) −33.60 vs 869; saved-strategies loads;
+  0 script errors (only the existing ipo_fin 404 probes); 375 px dark + light, no sideways scroll. sw v283. Pushed 7e8eaec80f + 470ac4ddbe.
+- **Testing note:** the local preview has no `./stk/` price slices, so stock.html takes the FALLBACK (whole-engine) path there —
+  a slice-only key (`rb`, `x`, `pd` …) silently never reaches the page locally. Copy the live `sf-data/stk/<SYM>.json` into
+  docs/stk/ to test the slice path, and test the fallback path on purpose too (that is how the missing FIN_RB there was caught).
+
+**Open.** More candidates from the D2 list still to read one by one (`~/stocks-cache/xcheck-fixall/d2/verdicts.jsonl`): NSE-only
+files, the no-anchor list, UNIONBANK / PIRAMALFIN / PVRINOX / HINDUNILVR (ice-cream demerger) / SONACOMS / MRPL … Also COALINDIA
+Mar-26 c revenue 46,490 vs Mar-25 37,825 (+22.91%) looks like the new definition already — UNKNOWN until its Mar-26 filing is read.
+OUR_ERROR level heals found on the way (AMBALALSA scale, CNL owners, CHEMCRUX, …) go through the level ledgers, not this one.
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
