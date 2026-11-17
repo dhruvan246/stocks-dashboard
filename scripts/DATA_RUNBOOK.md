@@ -29384,6 +29384,16 @@ Mar-20 con stays BLANK (con rule 2026-10-26, FY-only con with no earlier con): t
 (357.69) and the subsidiary STB International Pvt Ltd was incorporated 20-Nov-2019 (Nov-2020 filing p13 note 7), so no H1 con
 exists to subtract. The standalone pages of the same filings confirm the stored std cells (200.86, 360.05, 340.13 lakh).
 
+**Round 12e (2026-11-17, user: "fix the tirupati row-length marks").** row_periods.json held only 20240930/20250331 for
+TIRUPATI. Re-ran build_row_periods.py to a scratch file (`--sme-cache` pointed at the main checkout's cache) and merged ONLY
+the TIRUPATI entry — a full run would also change +1109/−19 rows on other stocks, not reviewed here. Added the FY26 proof
+(nse_sme_pdf_proofs.json 20260331, TIRUPATI_22052026215124_SELETTEROUTCOMEFINAL.pdf p7 std / p16 con, lakh: H1 9,583.98 +
+H2 10,704.09 = FY 20,288.07; PAT std 186.82 + 105.75 = 292.56, con 179.55 + 104.95 = 284.49). Now 11 of 13 rows are
+proven 6-month. NOT proven, left unmarked by the builder's arithmetic rule: **20230930** (stored 76.48 from its first
+filing; the May-2024 filing restates that half to 75.47, so 76.48 + 85.64 ≠ FY24 161.11) and **20250930** (stored 93.55
+from its first filing; the May-2026 filing restates it to 95.84, so 93.55 + 107.04 ≠ FY26 202.88). FY24 and FY26 therefore
+stay un-tiled on the card (blank, never wrong) while the stored halves follow the first filing.
+
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
 StockView sent standalone net profit and consolidated owners' profit for every PIT-N500 quarter (CSV, 2026-10-21). Every
