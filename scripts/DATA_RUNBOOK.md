@@ -29995,7 +29995,9 @@ first 'Current Tax' (policyholders' a/c — XBRL CurrentTax), assets = 'Total As
 / unit = our stored PAT within 0.1% (fixes the unit, mn for all eight); LIFE: next quarter's PrevValue must agree.
 **Landed (fill-only, changed 0, removed 0):** 314 values agreed by two filings + their aud flags, HDFCLIFE/ICICIPRULI/SBILIFE/LICI
 2019-09 … 2024-09. **Held (60, one filing only — user's 2-filing rule for this job):** every GICRE/GODIGIT/NIVABUPA form (no previous
-column) and the Dec-24 life quarters (no later form). Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
+column) and the Dec-24 life quarters (no later form). **Update 2026-11-17 (user: "yes fill the 60 on one filing"):** the 60 held values landed on one filing (run with
+`--single`), plus 3 LICI Dec-22 con values that pass the PAT anchor after the §243 LICI correction (two filings agree); 63 values +
+21 aud, changed 0, removed 0. Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
 NIVABUPA Sep-24 (empty response), STARHEALTH Sep-21 (pre-listing). Seen in passing: our LI tax_c is the policyholders'-account tax
 beside a shareholders'-account pbt (XBRL CurrentTax), so pbt − tax_c ≠ PAT for life insurers — a definition question, not changed.
 
