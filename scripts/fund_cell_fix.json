@@ -14468,6 +14468,33 @@
    "fixed": 31.08,
    "why": "Own BSE results PDF 829fb52b-f177-4f29-99a8-b0aa4e9e2b80.pdf (filed 2026-05-12) p2: quarter 31-Mar-26 'Net Profit for the period (3 - 4)' 3,108.43 = PBT 4,041.91 - tax 933.48; EPS 39.21 (Rs lakh) = 31.08 cr. Stored -0.03 is a unit-scale artefact (the filing's XBRL gives the same 31.08 cr). ELANTAS files standalone only; the con slot has always carried a byte copy of the standalone cell and is kept equal to it here, not treated as a consolidated figure.",
    "found": "\u00a7239 newest-quarter profit check 2026-11-17 (year-ago base 0.01 on the 200% growth screen; own BSE results PDF text read)"
+  },
+  {
+   "sym": "BLSE",
+   "qe": "20260930",
+   "basis": "con",
+   "was": 17.87,
+   "fixed": 17.36,
+   "why": "Own BSE results PDF 18585f7f-699b-455e-a9a7-832f9b021854.pdf p2 consolidated (Rs lakh), quarter 30-Sep-26: 'Profit attributable to: Owner of the Company' 1,735.62 = 17.36 cr. Stored 17.87 = 'Total comprehensive income attributable to Owner' 1,786.64 (the wrong line).",
+   "found": "\u00a7239 newest-quarter profit check 2026-11-17 (open list read cell by cell; own results PDF read)"
+  },
+  {
+   "sym": "SUMEETINDS",
+   "qe": "20260930",
+   "basis": "con",
+   "was": 4.4,
+   "fixed": 5.67,
+   "why": "Own BSE results PDF 1b491a25-1a9f-4bb7-a2b6-9331de38089d.pdf p3-p4 (Rs lakh), quarter 30-Sep-26: consolidated column 'Profit after Tax and Share of Profit from Associates' 567.06 (PBT 504.18, tax nil, associates 62.88) = 5.67 cr; no minority row. Stored 4.4 was a copy of the standalone column's 440.17.",
+   "found": "\u00a7239 newest-quarter profit check 2026-11-17 (open list read cell by cell; own results PDF read)"
+  },
+  {
+   "sym": "MBECL",
+   "qe": "20260630",
+   "basis": "con",
+   "was": -25.87,
+   "fixed": -25.27,
+   "why": "Own NSE results PDF MBECL_SEC_12082026205014_OutcomeWithResults30062026.pdf p13 consolidated (Rs lakh), quarter 30-Jun-26: 'Profit/(Loss) attributable to Owners of the Holding Company' (2,527.34) = -25.27 cr, NCI nil, EPS (7.58). Second document: the Sep-26 filing MBECL_SEC_12112026190554_ResultsFinal121126.pdf p16 comparative column prints the same (2,527.34). Stored -25.87 is a digit mis-read.",
+   "found": "\u00a7239 newest-quarter profit check 2026-11-17 (open list read cell by cell; own results PDF read)"
   }
  ],
  "retracted": [
