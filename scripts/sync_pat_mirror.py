@@ -10,7 +10,8 @@ reading and must not be thrown away by a blind copy.
 For every (stock, quarter, basis) where both stores hold a profit and they differ by more than Rs 0.011 cr:
   1. the mirror's own figure is written to scripts/pat_mirror_disagree.json  (key SYM|qe|s or c:
      {main, reader, first_seen}) — unless a figure is already recorded for that cell and the mirror now holds
-     nothing new;
+     nothing new, or the mirror only holds the profit store's own pre-heal figure (the recorded "main", or the
+     "was" of a fund_cell_fix.json entry for that cell) — that is our old copy, not a second reading;
   2. the mirror cell is set to the profit store's figure (docs/sf_revop.json and scripts/revop_fundamentals.json).
 A recorded cell CLOSES by itself when the profit store comes to equal the recorded second reading (the main store
 was healed through fund_cell_fix.json) or loses its figure. When the filing shows the main store was right, accept
@@ -49,6 +50,15 @@ def main():
             for b, fi, _ in BASES:
                 if len(r) > fi and r[fi] is not None: main_[(sym, str(r[0]), b)] = r[fi]
     side = load_side(); side0 = json.dumps(side, sort_keys=True)
+    # A mirror cell that only holds the profit store's OWN earlier figure is not a second reading: after a heal through
+    # fund_cell_fix.json the mirror still carries the pre-heal figure we copied into it (§239c, 2026-11-17 — 29 healed
+    # cells were re-recorded with the old wrong figure as their "second reading" and would never have closed).
+    healed = {}
+    fp = os.path.join(HERE, "fund_cell_fix.json")
+    if os.path.exists(fp):
+        for x in json.load(open(fp, encoding="utf-8")).get("fixes", []):
+            try: healed.setdefault((x["sym"], str(x["qe"]), {"std": "s", "con": "c"}[x["basis"]]), []).append(float(x["was"]))
+            except (KeyError, TypeError, ValueError): pass
     new = 0
     for ti, path in enumerate(TARGETS):
         if not os.path.exists(path):
@@ -65,7 +75,9 @@ def main():
                     if abs(f - m) <= TOL: continue
                     if ti == 0:                         # the published mirror is the one whose reading is recorded
                         k = "%s|%s|%s" % (sym, qe, b); e = side.get(k)
-                        if e is None or abs(e["reader"] - m) > TOL:
+                        own_old = (e is not None and abs(e["main"] - m) <= TOL) or \
+                            any(abs(w - m) <= TOL for w in healed.get((sym, qe, b), ()))
+                        if not own_old and (e is None or abs(e["reader"] - m) > TOL):
                             side[k] = {"main": f, "reader": m, "first_seen": today}; new += 1
                     row[slot] = f; moved += 1
         print("  [%s] mirror cells set to the profit store: %d" % (os.path.relpath(path, ROOT), moved))

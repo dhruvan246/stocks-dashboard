@@ -29699,3 +29699,34 @@ the recorded entry closes itself on the next sync and the mirror follows. Main s
 entries to `revop_cell_fix.json` any more — the mirror follows the main store by itself. Never close a cell from a
 category label or a neighbouring quarter (first rule, §0).
 
+
+## §239c — The 362 pre-2020 second readings read from their own filings (2026-11-17, user: "Yes, read them")
+
+**Result (362 cells of `pat_mirror_disagree.json` before 2020):** main store right 308 (accepted in `xcheck_accept.json`
+under `fund_pat_mirror`), main store wrong 29 (healed through `fund_cell_fix.json`), UNKNOWN 25 (left open on the Data
+Checks page). The nightly check should list 30 open: these 25 + the 5 of §239b.
+
+**How each cell was read.** 2005-2017: the exchange's archived results page of that quarter (earliest filing, declared
+basis, three-month column) — 121 cells where it prints the main figure. 2018-19: own results XBRL when it carries the
+owners line and adds up — 39 cells. Everything else (172 cells): the results PDF from NSE announcements, read by
+read-only subagents, with every main-store change re-read by page image by the lead session. 30 cells had no PDF
+(2001-2010): 8 healed where the archived page prints the second reading AND its own EPS x shares confirms it.
+
+**Healed (29):** AARTIIND 201909 con 151.78→147.56, AURUM 201909 con 16.79→13.84, AURUM 201912 con 30.06→23.43, KESORAMIND 201909 con -115.21→-133.58, ACCELYA 201909 con 32.54→32.56, SUNPHARMA 201503 std -79.38→-78.01, CEMPRO 201812 con 33.8→34.43, GEOJITFSL 201912 con 16.63→15.89, SMARTLINK 201909 con -3.75→-3.69, GITANJALI 201509 std 16.12→18.98, AJRINFRA 201909 con -75.59→-62.21, AJRINFRA 201912 con -65.62→-51.24, LITL 201509 std 5.2→6.09, COFFEEDAY 201906 std 1429.82→1256.69, COFFEEDAY 201912 con -131.09→-140.64, SOMATEX 201909 std -11.75→-1.01, TREEHOUSE 201603 std -40.1→-30.1, CEMPRO 201803 con 28.38→26.84, ASSAMCO 201703 std -49.81→-45.63, NSIL 201909 con 19.1→19.86, SPICEJET 201909 std -461.22→-462.58, AGRODUTCH 201003 std 10.68→-16.42, BAJAJHLDNG 200503 std 203.88→239.68, DABUR 200606 std 45.84→39.66, IPCALAB 200503 std 12.72→15.7, JINDALSAW 200609 std 47.57→42.91, MAHLIFE 200803 std 25.49→22.15, RUCHISOYA 200712 std 68.72→59.47, SAMTEL 200503 std 12.66→18.62.
+
+**UNKNOWN (25):** ABB 200106 std, ABB 200109 std, ABB 200112 std, AGROPHOS 201803 std, AJANTPHARM 200203 std, APOLLO 201706 std, ASTRON 201706 std, CEMPRO 201809 con, CMC 200109 std, CYBERTECH 200206 std, ELDERPHARM 200109 std, EXIDEIND 201903 con, GEOMETRIC 200206 std, HINDPETRO 200106 std, IDBI 200312 std, ITC 200112 std, MAHSCOOTER 200503 std, MAHSCOOTER 200703 std, ONIDA 200503 std, PGHH 200212 std, POLARIS 200212 std, PRAJIND 200303 std, RUCHISOYA 201003 std, SUNTECK 201603 con, VESUVIUS 200106 std. Reasons are in `~/stocks-cache/pre2020-mirror-1117/unknown.json`: 2001-03 quarters with no filing
+on either exchange; archived pages whose own EPS does not fit their profit; CEMPRO Sep-18 (owners' profit not printed, EPS
+fits both); EXIDEIND Mar-19 con (consolidated filed for the year only); AGROPHOS Mar-18 (SME half-yearly filer);
+SUNTECK Mar-16 con (first filing 155.99, corrigendum two days later 157.61 = stored — needs the user's rule).
+
+**Traps met.** (1) NSE's own XBRL of 2018-19 often has no owners tag — "no minority" from it is not evidence; the PDF
+decided, and several XBRL owner tags of that era were wrong. (2) The NSE Ind-AS 2016-17 archive template has no reliable
+owners row. (3) ITD Cementation and Shilpa Medicare print the owners split only for total comprehensive income; owners'
+profit was derived and kept only where the printed EPS confirms it. (4) PVR prints two owners figures; the attribution
+block that adds up was followed. (5) Pre-listing quarters (KHADIM Jun-17, IRCTC Sep-19) come from the comparative column
+of the first later filing.
+
+**Bug fixed in `sync_pat_mirror.py`.** After a heal through `fund_cell_fix.json` the mirror still held the main store's
+pre-heal figure; the sync recorded that as a NEW second reading, so a healed cell would never close. Now a mirror figure
+equal to the recorded "main" or to the `was` of a fund_cell_fix entry is copied without being recorded. Tested: old
+figure put back → copied, not recorded; a different figure → recorded.
