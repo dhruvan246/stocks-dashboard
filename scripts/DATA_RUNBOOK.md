@@ -29867,3 +29867,8 @@ restated for the ICICI Venture transfer; accepted. EMMVEE Mar-25 std: FY26 filin
 prints 162.43; the merged entity's restated comparative (Jun-26 filing p8, note 15) prints 263.25. Seen in passing, not
 healed: ICICIAMC Sep-25 stored 835.0, comparative column prints 8,354.3 mn (835.43); DATAPATTNS Dec-21 stored ann
 2022-02-10, filing reached NSE 2022-02-08 16:58.
+
+**§239c update 5 (17-Nov-2026).** PIRAMALFIN Jun-25 std: user chose "Merged 263.25" — the standalone series follows the
+merged Piramal Finance's restated comparative (Jun-26 filing p8), not Piramal Enterprises' pre-merger standalone (162.43).
+Healed 263.0 → 263.25. All 580 cells since 2020 are now judged. Decision was given for this cell; Dec-24 std (same
+question, §StockView open list) was not read.
