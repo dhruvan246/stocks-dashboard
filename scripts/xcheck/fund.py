@@ -176,6 +176,53 @@ class FundCellShape(C.Check):
                 if not hit: self.agree += 1
 
 
+class FundPatMirror(C.Check):
+    """§239b. Two stores hold each quarter's net profit: sf_fundamentals (the authority) and the mirror in sf_revop
+    slots 4/5, which several writers filled from their own read of the filing. Where they differ, one of them misread
+    the filing — on 2026-11-17 the main store was the wrong side in 163 of the first 262 cells judged. Listed:
+      store_diff      the two stores differ right now (a writer landed a different figure since the last sync);
+      second_reading  sync_pat_mirror.py has since copied the main figure into the mirror, and kept the mirror's own
+                      figure in scripts/pat_mirror_disagree.json — the disagreement is still unjudged.
+    A listed cell is a CANDIDATE: read its own filing, then heal sf_fundamentals through fund_cell_fix.json (the cell
+    closes itself) or accept it here when the main store is the one the filing supports. Newest quarters first."""
+    id = "fund_pat_mirror"
+    title = "Net profit: main store vs the second reading kept in the results mirror"
+    max_listed = 1000
+    domain = "Quarterly results"
+    reader_a = "sf_fundamentals profit cell"
+    reader_b = "sf_revop profit mirror (slots 4/5), or its figure kept by sync_pat_mirror.py before the copy"
+    scope = "every stock, every quarter, standalone and consolidated, where both stores hold a profit figure"
+    tolerance = "Rs 0.011 cr"
+
+    def run(self):
+        fund = _fund(); revop = C.jload(os.path.join(C.DOCS, "sf_revop.json"))
+        sp = os.path.join(C.HERE, "pat_mirror_disagree.json")
+        side = (C.jload(sp).get("cells") or {}) if os.path.exists(sp) else {}
+        seen = set(); n = {"store_diff": 0, "second_reading": 0}
+
+        def flag(sym, qe, bk, f, m, kind, since=None):
+            n[kind] += 1
+            self.add("%s|%d|%s" % (sym, qe, bk), sym=sym, qe=C.iso(qe), basis=bk, field=kind, main=f, mirror=m,
+                     diff=round(f - m, 2), since=since, weight=qe + min(abs(f - m), 9999.0) / 10000.0)
+
+        for sym, rows in fund.items():
+            rv = revop.get(sym) or {}
+            for qe, fr in rows.items():
+                rr = rv.get(str(qe))
+                if not rr: continue
+                for bk, pi, ri in BASES:
+                    f = fr[pi] if len(fr) > pi else None
+                    m = rr[4 + ri] if len(rr) > 4 + ri else None
+                    if f is None or m is None: continue
+                    self.compared += 1
+                    k = "%s|%d|%s" % (sym, qe, bk)
+                    if abs(f - m) > 0.011: seen.add(k); flag(sym, qe, bk, f, m, "store_diff")
+                    elif k in side and abs(f - side[k]["reader"]) > 0.011:
+                        seen.add(k); flag(sym, qe, bk, f, side[k]["reader"], "second_reading", side[k].get("first_seen"))
+                    else: self.agree += 1
+        self.note("stores differ now: %d · second reading kept, unjudged: %d" % (n["store_diff"], n["second_reading"]))
+
+
 class FundNewResults(C.Check):
     """§239. The newest two quarters of EVERY stock (not only Nifty 500), store-intrinsic, kept SHORT so it is read to
     zero after each results season. fund_pbt_tax / fund_eps_shares list thousands of cells across all history ranked

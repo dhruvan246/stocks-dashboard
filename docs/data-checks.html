@@ -113,6 +113,13 @@
       ['Stored PAT', function (f) { return num(f.pat); }, 1], ['PBT − tax', function (f) { return num(f.pbt_less_tax); }, 1],
       ['EPS implies', function (f) { return f.eps_implies == null ? '—' : num(f.eps_implies); }, 1]
     ],
+    fund_pat_mirror: [
+      ['Stock', function (f) { return '<a class="text-indigo-600 hover:underline" href="./stock.html?sym=' + encodeURIComponent(f.sym) + '">' + esc(f.sym) + '</a>'; }],
+      ['Quarter', function (f) { return esc(f.qe); }], ['Basis', function (f) { return esc(f.basis); }],
+      ['State', function (f) { return esc(f.field === 'store_diff' ? 'stores differ now' : 'second reading kept' + (f.since ? ' since ' + f.since : '')); }],
+      ['Main store', function (f) { return num(f.main); }, 1], ['Second reading', function (f) { return num(f.mirror); }, 1],
+      ['Difference', function (f) { return num(f.diff); }, 1]
+    ],
     fund_eps_shares: [
       ['Stock', function (f) { return esc(f.sym); }], ['Quarter', function (f) { return esc(f.qe); }],
       ['Basis', function (f) { return esc(f.basis); }], ['Stored PAT', function (f) { return num(f.pat); }, 1],

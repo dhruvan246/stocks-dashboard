@@ -482,6 +482,13 @@ jobs:
             # already at `fixed` produces no diff. Non-fatal, like every other ledger step here.
             python3 -X utf8 scripts/apply_fund_cell_fix.py --apply  || echo "::warning::fund_cell_fix reapply failed"
             python3 -X utf8 scripts/apply_revop_cell_fix.py --apply || echo "::warning::revop_cell_fix reapply failed"
+            # §239b: the profit MIRROR in sf_revop follows the profit store. Where a writer left a different
+            # figure in the mirror, that figure is first recorded in scripts/pat_mirror_disagree.json (it is a
+            # second reading of the filing — the main store was the wrong side in 163 of 262 cells on
+            # 2026-11-17), then the mirror is set to the main figure. The nightly check fund_pat_mirror lists
+            # every recorded cell until it is judged. After both ledgers, so reviewed heals are in place first.
+            python3 -X utf8 scripts/sync_pat_mirror.py --apply || echo "::warning::profit-mirror sync failed"
+            [ -f scripts/pat_mirror_disagree.json ] && git add scripts/pat_mirror_disagree.json
             git add docs/sf_fundamentals.json docs/sf_revop.json
             # DERIVED PAYLOADS, rebuilt HERE from the post-reset, post-merge, post-heal data — never a
             # pre-reset copy. A cp of this job's own build reverted newer payloads: 2026-09-27 09:42 UTC it

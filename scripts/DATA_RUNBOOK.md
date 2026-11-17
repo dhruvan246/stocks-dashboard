@@ -29647,3 +29647,35 @@ cut to 10 entries passes; broken JSON in the queue fails; `ann_date_fills.json` 
 **Rule.** A file whose job is to empty out must be in `SHRINK_OK` (scripts/) or have `min_ratio: 0` in
 `docs/feeds.json` (docs/). And a nightly that fails three nights must not go unnoticed — check why the feed monitor
 did not raise it (NOT investigated here).
+
+## §239b — Profit mirror follows the main store; the second reading is kept and listed nightly (2026-11-17, user: "build both: nightly alarm and copy mirror from main store")
+
+**What was found.** Net profit sits in two places: `sf_fundamentals` (authority) and the mirror in `sf_revop` slots 4/5.
+Since 2020 they differed in 580 cells. Every one was judged from its own filing (own BSE results XBRL where it is
+self-consistent, else the results PDF page, three-month column): first list (cells 2 %+ apart) 262 of 265 settled —
+163 main-store errors, 90 mirror errors, 9 both; second list (under 2 % apart) 313 of 315 settled — 44 main-store
+entries, 275 mirror entries (82 from XBRL, 231 from PDFs). The usual wrong figure: profit including minority, total
+comprehensive income (often filed under the owners tag), the other basis (standalone/consolidated swapped — ARCL
+Sep-25/Dec-25), a previous-quarter or year-to-date column, a whole-crore rounding.
+UNKNOWN, left as they are: KIRLFER Dec-22 con, DATAPATTNS Dec-21 std, EMMVEE Mar-25 std, ICICIAMC Jun-25 std,
+PIRAMALFIN Jun-25 std (the last three are pre-listing quarters with no filing that prints that three-month column).
+Pre-2020: 362 differing cells, NOT read (they are in the list).
+
+**What now guards it.**
+1. `scripts/sync_pat_mirror.py --apply` (in `refresh-fundamentals.yml`, right after the two ledger appliers): for every
+   cell where both stores hold a profit and differ by more than Rs 0.011 cr, the mirror's own figure is first written to
+   `scripts/pat_mirror_disagree.json` (`SYM|qe|s/c: {main, reader, first_seen}`), then the mirror is set to the main
+   figure. It never fills an empty mirror cell and never touches the main store. Idempotent.
+2. Nightly check `fund_pat_mirror` (`scripts/xcheck/fund.py`, Data Checks page, newest quarter first): lists cells where
+   the stores differ right now (`store_diff`) and cells whose kept second reading is still unjudged (`second_reading`).
+
+**Why the copy keeps the second reading (binding).** A blind copy would make the two stores agree and hide the error:
+in the first list the MAIN store was the wrong side in 163 of 262 cells. The mirror's figure is a second reading of
+the same filing; it is evidence until the filing is read.
+
+**Triage (binding).** For each listed cell read its own filing. Main store wrong → heal through `fund_cell_fix.json`;
+the recorded entry closes itself on the next sync and the mirror follows. Main store right → accept the cell in
+`scripts/xcheck_accept.json` under `fund_pat_mirror` with the page read as `why`. Do NOT add `pat_std`/`pat_con`
+entries to `revop_cell_fix.json` any more — the mirror follows the main store by itself. Never close a cell from a
+category label or a neighbouring quarter (first rule, §0).
+
