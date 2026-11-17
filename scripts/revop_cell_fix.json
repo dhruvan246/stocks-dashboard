@@ -34647,6 +34647,15 @@
    "fixed": -298.63,
    "why": "Own results filing SPICEJET_20231231_e890360d-55b4-4045-8a32-b2e1db4ed35c.pdf page 9, consolidated table, three-month column (Rs million, read from image): PBT -2987.83; tax 0; profit for the period -2987.83; attributable to owners -2986.25; non-controlling -1.58; total comprehensive income -2972.35 -> -298.63 Rs cr. The sf_revop profit mirror held -299.91: B. Corrected to -298.63 (owners' profit basis).",
    "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20221231",
+   "basis": "op_con",
+   "was": 8130.62,
+   "fixed": 6130.62,
+   "why": "OUR ERROR, read 17-Nov-2026 (same quarter as the fund_cell_fix LICI Dec-22 con entry, runbook \u00a7243). op_con = PBT - other income (life-insurer rule, build_revop): the stored 8130.62 = 8,376.82 - 246.19, built from the Dec-22 filing's misprinted consolidated PBT 8,37,681.74 lakh (BSE 0e604354-8e27-46d5-85c4-ea3d3f698483.pdf p19). LIC's Dec-23 filing (BSE 851e0a15-e6b7-44c4-9ea4-ae68e817fa17.pdf p21, consolidated, Rs lakh, column 'Dec. 31, 2022', read from the page image) prints PBT 6,37,681.74; policyholders' other income 21,322.69; shareholders' other income 3,296.72 -> 6,376.82 - 246.19 = 6,130.62 cr.",
+   "found": "2026-11-17 insurer BSE-form PAT anchor (runbook \u00a7243)"
   }
  ],
  "retracted": [
