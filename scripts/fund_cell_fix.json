@@ -16061,6 +16061,168 @@
    "fixed": 230.3,
    "why": "Own BSE results XBRL Integrated_Finance_Ind_As_500265_307202517335.xml (filed 2025-07-30), quarter column: PBT 299.65 - tax 69.35 -> profit for the period 230.3 Rs cr (total comprehensive income 230.33). sf_fundamentals held 230.32 = total comprehensive income; corrected to 230.3 (owners' profit basis). sf_revop mirror already holds it.",
    "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own BSE results XBRL read per cell)"
+  },
+  {
+   "sym": "COMFINTE",
+   "qe": "20260331",
+   "basis": "con",
+   "was": -0.07,
+   "fixed": -5.75,
+   "why": "Own results filing COMFINTE_20260331_fe0248fe-9fd9-4475-9b76-2c7e11a1b1ea.pdf page 14, consolidated table, three-month column (Rs lakh, read from image): PBT -6.37; tax 57.09; profit for the period -579.87; attributable to owners -575.2; non-controlling -4.67; total comprehensive income -1564.94 -> -5.75 Rs cr. sf_fundamentals held -0.07: Neither store is a printed figure. Printed: PBT (6.37) lakh = -0.06 cr; profit before associate (63.46) = -0.63 cr; profit after associate (579.87) = -5.80 cr; owners (575.20) = -5.75 cr. storeA -0.07 / storeB -0.05 look like a scale slip (about 1/100 of the owners / profit figure) but do not equal . Corrected to -5.75 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "COROENGG",
+   "qe": "20230930",
+   "basis": "std",
+   "was": -1.6,
+   "fixed": -1.57,
+   "why": "Own results filing COROENGG_20230930_7c1c2b20-e4df-4b8c-a3bc-c828f01d7685.pdf page 4, standalone table, three-month column (Rs lakh, read from text): PBT -106.53; tax 50.2; profit for the period -156.73; total comprehensive income -156.73 -> -1.57 Rs cr. sf_fundamentals held -1.6: storeA -1.60 = (160.09) lakh, the Net loss of the previous quarter (30 June 2023) column. Corrected to -1.57 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "HOCL",
+   "qe": "20200331",
+   "basis": "con",
+   "was": -20.4,
+   "fixed": -18.65,
+   "why": "Own results filing HOCL_20200331_89274d07-bc58-415a-b36b-0d458c80f78d.pdf page 8, consolidated table, three-month column (Rs lakh, read from image): PBT -2033.2; tax 0.0; profit for the period -2033.2; attributable to owners -1864.94; non-controlling -168.26; total comprehensive income -4401.35 -> -18.65 Rs cr. sf_fundamentals held -20.4: storeB -20.33 = net loss for the period incl. non-controlling interest (-2,033.20 lakh). storeA -20.40 is not a printed figure on the consolidated page (nor on the standalone page, which prints -1,647.01). Corrected to -18.65 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "JISLJALEQS",
+   "qe": "20220331",
+   "basis": "con",
+   "was": 279.06,
+   "fixed": 277.82,
+   "why": "Own results filing JISLJALEQS_20220331_JISLJALEQS_30052022155226_SELetterQuickResultMarch2022.pdf page 6, consolidated table, three-month column (Rs lakh, read from image): PBT 40124; tax 12218; profit for the period 27906; attributable to owners 27782; non-controlling 124; total comprehensive income 26901 -> 277.82 Rs cr. sf_fundamentals held 279.06: storeA 279.06 = profit for the period incl. non-controlling interest (27,906 lakh). Corrected to 277.82 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "KIRIINDUS",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 5022.8,
+   "fixed": 5022.01,
+   "why": "Own results filing KIRIINDUS_20251231_KIRIINDUS_10022026140507_FR_31122025.pdf page 9, consolidated table, three-month column (Rs lakh, read from text): PBT 582877.84; tax 81704.83; profit for the period 502279.85; attributable to owners 502201.46; non-controlling 78.39; total comprehensive income 500819.54 -> 5022.01 Rs cr. sf_fundamentals held 5022.8: storeA 5022.80 = profit after tax and share of associates incl. non-controlling interest (5,02,279.85 lakh). Corrected to 5022.01 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "LTFOODS",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 62.0,
+   "fixed": 61.68,
+   "why": "Own results filing LTFOODS_20230331_13135131-e551-4ed9-a7d6-1e5ab766b52e.pdf page 7, standalone table, three-month column (Rs lakh, read from image): PBT 7594.21; tax 1426.24; profit for the period 6167.97; total comprehensive income 6614.92 -> 61.68 Rs cr. sf_fundamentals held 62.0: storeA 62.00 = whole-crore rounding of 6,167.97 lakh (not a printed figure). Corrected to 61.68 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "LTFOODS",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 132.0,
+   "fixed": 128.19,
+   "why": "Own results filing LTFOODS_20230331_13135131-e551-4ed9-a7d6-1e5ab766b52e.pdf page 7, consolidated table, three-month column (Rs lakh, read from image): PBT 16900.24; tax 3718.32; profit for the period 13181.92; attributable to owners 12819.09; non-controlling 362.83; total comprehensive income 13659.15 -> 128.19 Rs cr. sf_fundamentals held 132.0: NEITHER store is the owners figure: storeB 131.82 = total profit for period incl. non-controlling interest (13,181.92 lakh); storeA 132.00 = whole-crore rounding of the same. Corrected to 128.19 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "MTNL",
+   "qe": "20230930",
+   "basis": "con",
+   "was": -793.0,
+   "fixed": -792.82,
+   "why": "Own results filing MTNL_20230930_b968cca1-7ba4-44be-b9b2-3c6a3a4f3c4c.pdf page 16, consolidated table, three-month column (Rs crore, read from image): PBT -792.82; tax 0.0; profit for the period -792.82; total comprehensive income -794.16 -> -792.82 Rs cr. sf_fundamentals held -793.0: storeA -793.00 is not a printed figure on the consolidated page (looks like a whole-crore rounding; nearest printed rows are -792.82 profit, -793.85 loss before share of associates/exceptional, standalone p3 -792.67). Corrected to -792.82 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "NAVNETEDUL",
+   "qe": "20210630",
+   "basis": "con",
+   "was": 32.12,
+   "fixed": 32.06,
+   "why": "Own results filing NAVNETEDUL_20210630_NSE__11082021143437.pdf page 8, consolidated table, three-month column (Rs lakh, read from image): PBT 4699; tax 1487; profit for the period 3212; attributable to owners 3206; non-controlling 6; total comprehensive income 2971 -> 32.06 Rs cr. sf_fundamentals held 32.12: storeA 32.12 = profit for the period incl. non-controlling interest (3,212 lakh). Corrected to 32.06 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "SIMPLEXCAS",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 0.11,
+   "fixed": 0.08,
+   "why": "Own results filing SIMPLEXCAS_20210930_b1f4e641-d187-4665-8c4a-deae6ed49b55.pdf page 9, consolidated table, three-month column (Rs lakh, read from image): PBT 12.09; tax 4.11; profit for the period 7.97; attributable to owners 7.97; total comprehensive income 5.48 -> 0.08 Rs cr. sf_fundamentals held 0.11: storeA 0.11 = STANDALONE profit for the period of the same quarter (11.41 lakh, standalone table pages 2-3 of the same PDF) - wrong basis, not a consolidated figure. Corrected to 0.08 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "SUNRAKSHAK",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 9.31,
+   "fixed": 9.41,
+   "why": "Own results filing SUNRAKSHAK_20251231_d619c334-fa76-47ea-b4f5-77f9f4de319c.pdf page 4, consolidated table, three-month column (Rs lakh, read from image): PBT 1187.12; profit for the period 940.73; total comprehensive income 940.73 -> 9.41 Rs cr. sf_fundamentals held 9.31: storeA 9.31 = a MISREAD of the same row: the PDF hidden OCR text layer says 930.73 where the page image clearly prints 940.73. 930.73 is not printed anywhere on the page.. Corrected to 9.41 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 94.16,
+   "fixed": 94.17,
+   "why": "Own results filing TARIL_20250331_0cadbb4a-b963-499e-8bd5-38f9bf669ba2.pdf page 17, consolidated table, three-month column (Rs lakh, read from image): PBT 11924; tax 2504; profit for the period 9420; attributable to owners 9417; non-controlling 3; total comprehensive income 9418 -> 94.17 Rs cr. sf_fundamentals held 94.16: 94.16 is total comprehensive income attributable to owners (9,416 lakh); owners profit row prints 9,417 lakh. Corrected to 94.17 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TGVSL",
+   "qe": "20241231",
+   "basis": "std",
+   "was": 23.86,
+   "fixed": 23.81,
+   "why": "Own results filing TGVSL_20241231_f117d985-2a2c-4f49-a528-afbd19866481.pdf page 2, standalone table, three-month column (Rs lakh, read from text): PBT 3209; profit for the period 2381; total comprehensive income 2484 -> 23.81 Rs cr. sf_fundamentals held 23.86: storeA = profit from CONTINUING operations (row IX, 2,386 lakh), before discontinued-operations loss (5). Corrected to 23.81 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TGVSL",
+   "qe": "20250630",
+   "basis": "std",
+   "was": 38.77,
+   "fixed": 38.75,
+   "why": "Own results filing TGVSL_20250630_2c4fc0b3-50c8-4721-b942-cd7f207dd607.pdf page 2, standalone table, three-month column (Rs lakh, read from image): PBT 5235; profit for the period 3875; total comprehensive income 4085 -> 38.75 Rs cr. sf_fundamentals held 38.77: storeA 38.77 is not a printed figure (profit from continuing operations row IX is 3,879 lakh = 38.79; profit for the period 3,875). Corrected to 38.75 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TGVSL",
+   "qe": "20250930",
+   "basis": "std",
+   "was": 37.09,
+   "fixed": 37.05,
+   "why": "Own results filing TGVSL_20250930_01624498-9c8d-486c-a355-8a1d985e42b3.pdf page 2, standalone table, three-month column (Rs lakh, read from text): PBT 4989; profit for the period 3705; total comprehensive income 3580 -> 37.05 Rs cr. sf_fundamentals held 37.09: storeA = profit from CONTINUING operations (row IX, 3,709 lakh). Corrected to 37.05 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TGVSL",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 28.14,
+   "fixed": 28.1,
+   "why": "Own results filing TGVSL_20251231_50d7f6b0-ced7-497d-8ed5-0f02c53dc523.pdf page 2, standalone table, three-month column (Rs lakh, read from text): PBT 3804; profit for the period 2810; total comprehensive income 2711 -> 28.1 Rs cr. sf_fundamentals held 28.14: storeA = profit from CONTINUING operations (row IX, 2,814 lakh). Corrected to 28.1 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "TITAGARH",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 48.0,
+   "fixed": 48.24,
+   "why": "Own results filing TITAGARH_20230331_960640c0-5f56-4c65-8e93-de21886d7957.pdf page 15, consolidated table, three-month column (Rs lakh, read from image): PBT 7015.94; tax 2216.41; profit for the period 4823.65; attributable to owners 4823.65; total comprehensive income 4795.93 -> 48.24 Rs cr. sf_fundamentals held 48.0: storeA = profit from CONTINUING operations (row 12, 4,799.53 lakh), before discontinued-operations profit 24.12. Corrected to 48.24 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "WEL",
+   "qe": "20260630",
+   "basis": "con",
+   "was": 4.04,
+   "fixed": 3.97,
+   "why": "Own results filing WEL_20260630_bf4dd92f-1467-4235-9ae1-eb322675eb17.pdf page 4, consolidated table, three-month column (Rs lakh, read from image): PBT 514.71; profit for the period 397.01; total comprehensive income 397.01 -> 3.97 Rs cr. sf_fundamentals held 4.04: storeA = STANDALONE profit after tax (403.66 lakh, page 2 of same PDF). Corrected to 3.97 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
   }
  ],
  "retracted": [
