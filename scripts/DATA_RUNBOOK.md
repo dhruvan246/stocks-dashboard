@@ -19139,6 +19139,21 @@ SHRIRAMPPS 3,741.38 -> 3,633.75, PP&E equal) — kept as first filed. 49 fill-ye
 Notes: ROTO FY20 prints Goodwill 122.35 / investments 78.49 lakh, FY21 comparative swaps them (kept as printed);
 IGPL FY22 borr left null (current-maturities line); BBL FY23 intg not read (20-lakh print ambiguity, validate year only).
 
+**§148g full Rs 1k-3k band (user: "do the full 1k-3k group", 2026-11-17).** 226 cos / 630 years (wave16/g1k_targets.json;
+12 skipped, no BSE code: CONSOFINVT MMP KAPSTON PANACHE IRISDOREME SERVOTECH MACPOWER GKWLIMITED ICEMAKE SAKAR TEMBO
+RELINFRA; 4 no validate year: HUHTAMAKI ACCELYA MMWL RSYSTEMS). Discovery 856 windows (3 s gap + 60 s*n backoff on BSE 400 /
+non-JSON; 31 late windows got a Sep-Dec look), 1,589 PDFs, 46 reader batches (~7.5M subagent tokens, ~9k/year). check.py:
+217 cos validate; 9 fail (7 no PDF on BSE for the validate year; MSPL FY21 + BODALCHEM FY22 Total Assets off the XBRL key
+with PP&E exact -> whole company left out). 520 fills tie next-year comparative (or have none); 36 more ACCEPTED by hand
+(wave16/g1k_accept.json) where the next filing says restated/regrouped/ROU split out of PP&E, or PP&E is exact and only TA
+moved — kept as first filed. HELD (not landed): every fill whose filing has only standalone accounts while the validate
+year is consolidated (~41: MARSONS GULPOLY SYNCOMF ARFIN NIBE MENONBE FISCHER ...) — basis can't mix; BAJAJHCARE FY20 (old
+I-GAAP 'Fixed Assets' incl CWIP/intangibles); KKCL FY22 + PATELENG FY22 (PP&E moved, no stated cause). NEW TRAP: the merge
+REPLACES an existing row wholesale — 8 existing text rows were hit; fixed by hand: old x2!=1 (ALEMBICLTD FY22, MTNL FY21)
+take the vision BS + keep same-doc cash flows; trusted x2=1 rows with equal TA (ASIANTILES FY20, JAICORPLTD FY25,
+XPROINDIA FY20) = add missing fields only; trusted rows whose TA differs (DSSL FY20/21, VIMTALABS FY22) left untouched
+(UNKNOWN which is right). Landed: 548 new rows + 5 add/replace, 0 rows lost. Next merge: diff vs origin before pushing.
+
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
 and buy the stocks on next day opening, so I am planning to remove that 3:30 gate — when I buy at 9:20 next morning
