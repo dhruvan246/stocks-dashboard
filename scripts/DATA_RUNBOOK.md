@@ -29997,7 +29997,9 @@ first 'Current Tax' (policyholders' a/c — XBRL CurrentTax), assets = 'Total As
 2019-09 … 2024-09. **Held (60, one filing only — user's 2-filing rule for this job):** every GICRE/GODIGIT/NIVABUPA form (no previous
 column) and the Dec-24 life quarters (no later form). **Update 2026-11-17 (user: "yes fill the 60 on one filing"):** the 60 held values landed on one filing (run with
 `--single`), plus 3 LICI Dec-22 con values that pass the PAT anchor after the §243 LICI correction (two filings agree); 63 values +
-21 aud, changed 0, removed 0. Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
+21 aud, changed 0, removed 0. Then RETRACTED (same day, our error): GICRE Sep-24 con assets 5,030.89 — that BSE form's whole asset block is broken (total
+investments 55,318.7 / total assets 50,308.9 mn vs ~14.2 lakh / ~9.0 lakh mn in the forms either side, and below the standalone
+92,017.75 cr); found by a neighbour screen over all 21 new asset values (only break; GODIGIT Mar→Jun-24 rise = May-2024 IPO capital). Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
 NIVABUPA Sep-24 (empty response), STARHEALTH Sep-21 (pre-listing). Seen in passing: our LI tax_c is the policyholders'-account tax
 beside a shareholders'-account pbt (XBRL CurrentTax), so pbt − tax_c ≠ PAT for life insurers — a definition question, not changed.
 
