@@ -623,59 +623,6 @@
    }
   },
   {
-   "name": "Paisabazaar Cumulative Completed Transactions",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20260331": 11.3
-   },
-   "q": {
-    "20211231": 3.6,
-    "20240331": 7.3,
-    "20250630": 9.5,
-    "20250930": 10.0,
-    "20260630": 12.1
-   },
-   "src": {
-    "y:20260331": [
-     "97f7d70a-5c4b-45b9-8a39-cc5444e047cc.pdf",
-     86,
-     "completed transactions reached 11.3 million",
-     "11.3"
-    ],
-    "q:20260630": [
-     "84e39192-c57e-418e-af35-fbcf519cbe37.pdf",
-     24,
-     "Transactions(6)",
-     "12.1"
-    ],
-    "q:20250930": [
-     "7bb12338-f855-4945-86f4-058fa2380ef1.pdf",
-     23,
-     "Transactions(6)",
-     "10"
-    ],
-    "q:20250630": [
-     "fc2cbd11-e3b9-44bd-b08a-0c5ceb0d5bef.pdf",
-     19,
-     "Transactions",
-     "9.5"
-    ],
-    "q:20240331": [
-     "52edcf3c-a166-492b-ab1e-85ffcf0e4b21.pdf",
-     73,
-     "7.3 million transactions on our credit marketplace",
-     "7.3"
-    ],
-    "q:20211231": [
-     "dca492d0-8409-4aaa-ba62-13f2b5157965.pdf",
-     13,
-     "Transactions",
-     "3.6"
-    ]
-   }
-  },
-  {
    "name": "Paisabazaar Cumulative Credit Score Consumers",
    "unit": "Mn",
    "kind": "level",
@@ -1068,6 +1015,62 @@
      "41"
     ]
    }
+  },
+  {
+   "name": "Paisabazaar Cumulative Completed Transactions",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20260331": 11.3
+   },
+   "q": {
+    "20211231": 3.6,
+    "20250630": 9.5,
+    "20250930": 10.0,
+    "20260630": 12.1
+   },
+   "src": {
+    "y:20260331": [
+     "97f7d70a-5c4b-45b9-8a39-cc5444e047cc.pdf",
+     86,
+     "completed transactions reached 11.3 million",
+     "11.3"
+    ],
+    "q:20260630": [
+     "84e39192-c57e-418e-af35-fbcf519cbe37.pdf",
+     24,
+     "Transactions(6)",
+     "12.1"
+    ],
+    "q:20250930": [
+     "7bb12338-f855-4945-86f4-058fa2380ef1.pdf",
+     23,
+     "Transactions(6)",
+     "10"
+    ],
+    "q:20250630": [
+     "fc2cbd11-e3b9-44bd-b08a-0c5ceb0d5bef.pdf",
+     19,
+     "Transactions",
+     "9.5"
+    ],
+    "q:20211231": [
+     "dca492d0-8409-4aaa-ba62-13f2b5157965.pdf",
+     13,
+     "Transactions",
+     "3.6"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20240331",
+     7.3,
+     null,
+     "drop_q",
+     "UNDATED: 52edcf3c p73 printed '7.3'; 'Till date' count, not tied to a date",
+     "2026-11-17"
+    ]
+   ]
   },
   {
    "name": "Policybazaar Registered Consumers (Cumulative)",
@@ -1814,5 +1817,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-31"
+ "updated": "2026-11-17"
 }

@@ -5862,30 +5862,6 @@
    }
   },
   {
-   "name": "Terminal Capacity - Delhi Airport",
-   "unit": "Mn",
-   "kind": "level",
-   "y": {
-    "20240331": 100.0,
-    "20260331": 105.0
-   },
-   "q": {},
-   "src": {
-    "y:20260331": [
-     "7dbdd4db-2744-40b5-9e75-a277c33b1b9a.pdf",
-     16,
-     "realigned terminal capacity reached (doc period)",
-     "105"
-    ],
-    "y:20240331": [
-     "7f329cc3-3ab0-45e5-812e-db86e6fbac73.pdf",
-     18,
-     "Delhi International Airport joined the elite club of global airports having 100 ",
-     "100"
-    ]
-   }
-  },
-  {
    "name": "Total Permanent Employees",
    "unit": "count",
    "kind": "level",
@@ -6138,6 +6114,33 @@
      "45.0"
     ]
    }
+  },
+  {
+   "name": "Terminal Capacity - Delhi Airport",
+   "unit": "Mn",
+   "kind": "level",
+   "y": {
+    "20240331": 100.0
+   },
+   "q": {},
+   "src": {
+    "y:20240331": [
+     "7f329cc3-3ab0-45e5-812e-db86e6fbac73.pdf",
+     18,
+     "Delhi International Airport joined the elite club of global airports having 100 ",
+     "100"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     105.0,
+     null,
+     "drop_y",
+     "UNDATED: 7dbdd4db p16 printed '105'; 105 Mn capacity stated as effective from FY2026-27 onward, after period end",
+     "2026-11-17"
+    ]
+   ]
   },
   {
    "name": "Terminal Capacity - Hyderabad Airport",
@@ -6613,5 +6616,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-11-01"
+ "updated": "2026-11-17"
 }

@@ -29563,6 +29563,27 @@ PERSISTENT TTM TCV/ACV rows) — ask whether to drop; bracketed negatives "(12.3
 KTKBANK Dec-18 PCR basis and JSWENERGY Barmer/Vijayanagar Mar-19/Mar-20 quarterly PLF basis (f5d43797 p24) UNKNOWN; the
 doc-title rule (point 1) was added after waves 0–7, so their "(doc period)" cells are not yet re-swept.
 
+
+**Follow-ups 2026-11-17 (user said yes to each item):**
+- *Doc-period re-sweep, waves 0–7:* 1,575 cells re-read by page (`~/stocks-cache/kpi-dc/cellcheck.py docperiod`). 1,512 OK;
+  63 dropped (44 UNDATED, i.e. "currently / now / to date" with no date of their own; 15 QUALIFIED such as "lac+", "c.168k" and
+  "(approx.)"; 3 NOT_QUARTER; 1 PAIRING). Drops are built by `celldrop.py`, not `capfinish.py`, because capfinish restores
+  existing cells.
+- *Annual-in-quarter suspects:* 88 of the 104 still live. 54 OK; 33 full-year or monthly figures on q: keys. 14 were moved to
+  the empty y: slot (HBLENGINE top-customer share, UNIONBANK per-branch/per-employee profit, YESBANK business per employee,
+  INDUSINDBK NIM, LTM top-5 share, BANKINDIA ROA FY24). The rest were dropped from q because the y: slot already held the
+  year. 1 UNDATED.
+- *Bracketed negatives:* `kpi_extract.asp_float` now reads "(1.88)", "(841)" and "(3.2)%" as negative. Screener shows losses as
+  minus. Rejected reads were never saved (ingest only printed them), so old ones come back only when a filing is re-read.
+- *JSWENERGY f5d43797 p24:* the plant PLFs are actual, and the starred figures are "*average deemed PLF". The Barmer/Ratnagiri
+  q Mar-19/Mar-20 cells are right as they are; the deemed quarters (86.1/82.9, 80.0/79.5) were added to the Deemed rows.
+- *KTKBANK Dec-18 PCR 57.20:* the press release (9b3dd83f p2) compares it with Dec-19 59.34, which equals the incl-TWO row, but
+  the page never says "incl TWO". It stays in the plain "PCR" row.
+- *MCX IPF Mar-24:* the deck's p4 figure 217.76 is a typo. Both annual reports print 227.76 (22,776 lakh). Added Mar-24 227.76,
+  Mar-25 283.73 (FY25 AR) and Mar-26 330.42 (FY26 AR p144). The FY26 AR consolidated note p179 reprints 227.76 as Mar-25, which
+  is a typo.
+- *PNB Core Retail:* the two rows are two bases. The plain row is "*Excl Pool, IBPC & LAD"; the other is "*Excl IBPC & LAD"
+  (Jun-24 deck onward). The newest print within each basis is kept, and nothing changed.
 ## §235 — F&O stocks up more than 3%: one count per trading day since 2020, on that day's own F&O list (2026-11-04, user: "i want this dashboard wit charts of how many stocks up more than 3 % in fno segment under admin tab . those older dates check should be point in time survivorsip free")
 
 **What ships.** `docs/fno-up3.html` (owner-only, Admin menu "F&O Up 3%+") reads `docs/fno_up3.json`: per trading day

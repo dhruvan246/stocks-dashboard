@@ -11291,44 +11291,6 @@
    }
   },
   {
-   "name": "Consolidated AUM",
-   "unit": "INR Mn",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20231231": 102161.0,
-    "20251231": 146415.0,
-    "20260331": 153039.0,
-    "20260630": 161227.0
-   },
-   "src": {
-    "q:20231231": [
-     "d92f3085-dc72-4886-8721-3172ee2cfd9f.pdf",
-     4,
-     "Consolidated AUM (doc period)",
-     "1,02,161"
-    ],
-    "q:20251231": [
-     "582b3d5c-1b20-4eb8-b355-47e970c6b7f0.pdf",
-     11,
-     "Consolidated AUM (Data as on 31st December 2025)",
-     "1,46,415"
-    ],
-    "q:20260331": [
-     "d7fa463d-8e83-4a6c-b9a1-8fcfbb79f61e.pdf",
-     6,
-     "Assets Under Management (Data as on 31st March 2026)",
-     "1,53,039"
-    ],
-    "q:20260630": [
-     "e869f958-6563-43ed-9917-e2645d99c7d5.pdf",
-     5,
-     "Assets Under Management (Data as on 30th June 2026)",
-     "1,61,227"
-    ]
-   }
-  },
-  {
    "name": "MRHMFL Management and Macroeconomic Overlay",
    "unit": "INR Mn",
    "kind": "level",
@@ -11403,6 +11365,47 @@
      "0.06"
     ]
    }
+  },
+  {
+   "name": "Consolidated AUM",
+   "unit": "INR Mn",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20251231": 146415.0,
+    "20260331": 153039.0,
+    "20260630": 161227.0
+   },
+   "src": {
+    "q:20251231": [
+     "582b3d5c-1b20-4eb8-b355-47e970c6b7f0.pdf",
+     11,
+     "Consolidated AUM (Data as on 31st December 2025)",
+     "1,46,415"
+    ],
+    "q:20260331": [
+     "d7fa463d-8e83-4a6c-b9a1-8fcfbb79f61e.pdf",
+     6,
+     "Assets Under Management (Data as on 31st March 2026)",
+     "1,53,039"
+    ],
+    "q:20260630": [
+     "e869f958-6563-43ed-9917-e2645d99c7d5.pdf",
+     5,
+     "Assets Under Management (Data as on 30th June 2026)",
+     "1,61,227"
+    ]
+   },
+   "fixed": [
+    [
+     "q:20231231",
+     102161.0,
+     null,
+     "drop_q",
+     "UNDATED: d92f3085 p4 printed '1,02,161'; no as-at date for consolidated AUM on page",
+     "2026-11-17"
+    ]
+   ]
   },
   {
    "name": "MAS Group Branches",
@@ -11505,5 +11508,5 @@
   }
  ],
  "held": [],
- "updated": "2026-10-31"
+ "updated": "2026-11-17"
 }

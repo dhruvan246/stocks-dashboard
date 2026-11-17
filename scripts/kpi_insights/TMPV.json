@@ -3513,90 +3513,6 @@
    }
   },
   {
-   "name": "JLR Order Book",
-   "unit": "k units",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20210630": 110.0,
-    "20210930": 125.0,
-    "20211231": 155.0,
-    "20220331": 168.0,
-    "20220630": 200.0,
-    "20220930": 205.0,
-    "20221231": 215.0,
-    "20230331": 200.0,
-    "20230630": 185.0,
-    "20230930": 168.0
-   },
-   "src": {
-    "q:20230331": [
-     "f4edb2c0-78a7-4290-8dea-57f978bb853d.pdf",
-     12,
-     "Order book remains strong with c. 200k units (doc period)",
-     "200"
-    ],
-    "q:20210630": [
-     "8859359d-1248-468e-b7e4-aa9974c5e124.pdf",
-     9,
-     "Record order bank of c. 110k units at 30th June",
-     "110"
-    ],
-    "q:20210930": [
-     "155a79a8-fe08-44fe-bff0-d40f096a4b19.pdf",
-     18,
-     "ORDER BANK Q2 FY22",
-     "125"
-    ],
-    "q:20211231": [
-     "155a79a8-fe08-44fe-bff0-d40f096a4b19.pdf",
-     18,
-     "ORDER BANK Q3 FY22",
-     "155"
-    ],
-    "q:20220331": [
-     "1663bbdd-d52f-4b86-8748-f1bd32c2a511.pdf",
-     23,
-     "record order bank of 168k units",
-     "168"
-    ],
-    "q:20220630": [
-     "937faf1d-7146-49da-a10e-d51814b31845.pdf",
-     42,
-     "record order bank of 200k units",
-     "200"
-    ],
-    "q:20220930": [
-     "b95fcfc0-d452-417f-bb4f-e20ea498ad12.pdf",
-     20,
-     "record order book of 205k units",
-     "205"
-    ],
-    "q:20221231": [
-     "94c9b207-6c8c-4952-b062-f2066cb94cd7.pdf",
-     20,
-     "record order book of 215k units",
-     "215"
-    ],
-    "q:20230630": [
-     "f58e98cb-d41f-4c7d-94eb-b3975f3d31d5.pdf",
-     19,
-     "Order book remains strong with c.185k units (doc period)",
-     "185"
-    ],
-    "q:20230930": [
-     "e670ce5f-d8e8-4dfd-aac3-98696e9bcdc4.pdf",
-     12,
-     "Order book remains strong with c.168k units (doc period)",
-     "168"
-    ]
-   },
-   "latest": {
-    "q:20220930": "2022-11-10",
-    "q:20230331": "2023-06-12"
-   }
-  },
-  {
    "name": "TMPV EV Charging Network",
    "unit": "count",
    "kind": "level",
@@ -4819,6 +4735,95 @@
     "q:20220630": "2023-07-25",
     "q:20230331": "2023-07-25"
    }
+  },
+  {
+   "name": "JLR Order Book",
+   "unit": "k units",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210630": 110.0,
+    "20210930": 125.0,
+    "20211231": 155.0,
+    "20220331": 168.0,
+    "20220630": 200.0,
+    "20220930": 205.0,
+    "20221231": 215.0
+   },
+   "src": {
+    "q:20210630": [
+     "8859359d-1248-468e-b7e4-aa9974c5e124.pdf",
+     9,
+     "Record order bank of c. 110k units at 30th June",
+     "110"
+    ],
+    "q:20210930": [
+     "155a79a8-fe08-44fe-bff0-d40f096a4b19.pdf",
+     18,
+     "ORDER BANK Q2 FY22",
+     "125"
+    ],
+    "q:20211231": [
+     "155a79a8-fe08-44fe-bff0-d40f096a4b19.pdf",
+     18,
+     "ORDER BANK Q3 FY22",
+     "155"
+    ],
+    "q:20220331": [
+     "1663bbdd-d52f-4b86-8748-f1bd32c2a511.pdf",
+     23,
+     "record order bank of 168k units",
+     "168"
+    ],
+    "q:20220630": [
+     "937faf1d-7146-49da-a10e-d51814b31845.pdf",
+     42,
+     "record order bank of 200k units",
+     "200"
+    ],
+    "q:20220930": [
+     "b95fcfc0-d452-417f-bb4f-e20ea498ad12.pdf",
+     20,
+     "record order book of 205k units",
+     "205"
+    ],
+    "q:20221231": [
+     "94c9b207-6c8c-4952-b062-f2066cb94cd7.pdf",
+     20,
+     "record order book of 215k units",
+     "215"
+    ]
+   },
+   "latest": {
+    "q:20220930": "2022-11-10",
+    "q:20230331": "2023-06-12"
+   },
+   "fixed": [
+    [
+     "q:20230930",
+     168.0,
+     null,
+     "drop_q",
+     "QUALIFIED: e670ce5f p12 printed '168'; 'c.' (circa) = approximate order book",
+     "2026-11-17"
+    ],
+    [
+     "q:20230331",
+     200.0,
+     null,
+     "drop_q",
+     "QUALIFIED: f4edb2c0 p12 printed '200'; 'c.' (circa) = approximate order book",
+     "2026-11-17"
+    ],
+    [
+     "q:20230630",
+     185.0,
+     null,
+     "drop_q",
+     "QUALIFIED: f58e98cb p19 printed '185'; 'c.' (circa) = approximate order book",
+     "2026-11-17"
+    ]
+   ]
   },
   {
    "name": "TMPV EV Annual Volumes",
@@ -8002,5 +8007,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-11-01"
+ "updated": "2026-11-17"
 }

@@ -14800,31 +14800,6 @@
    }
   },
   {
-   "name": "Gold Loan Market Share among NBFCs",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 47.0
-   },
-   "q": {
-    "20260630": 47.0
-   },
-   "src": {
-    "q:20260630": [
-     "c5fac5ae-eb49-4dcb-8f38-18029ade83b8.pdf",
-     15,
-     "Gold Loan Market Share among NBFCs (doc period)",
-     "47"
-    ],
-    "y:20260331": [
-     "431b0dcc-54bc-4dbb-85d1-2c144520ecef.pdf",
-     108,
-     "47% share of the gold loan NBFC market (doc period)",
-     "47"
-    ]
-   }
-  },
-  {
    "name": "Insurance Broking First Year Premium Collection",
    "unit": "₹ Cr",
    "kind": "flow",
@@ -14893,31 +14868,6 @@
      5,
      "No. of Policies (in lakhs)",
      "32"
-    ]
-   }
-  },
-  {
-   "name": "Loan Book Secured by Gold",
-   "unit": "%",
-   "kind": "level",
-   "y": {
-    "20260331": 95.0
-   },
-   "q": {
-    "20260630": 92.0
-   },
-   "src": {
-    "q:20260630": [
-     "c5fac5ae-eb49-4dcb-8f38-18029ade83b8.pdf",
-     15,
-     "Loan Book Secured by Gold (doc period)",
-     "92"
-    ],
-    "y:20260331": [
-     "431b0dcc-54bc-4dbb-85d1-2c144520ecef.pdf",
-     108,
-     "makes up 95% of the overall loan book (doc period)",
-     "95"
     ]
    }
   },
@@ -15401,6 +15351,33 @@
    }
   },
   {
+   "name": "Loan Book Secured by Gold",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20260630": 92.0
+   },
+   "src": {
+    "q:20260630": [
+     "c5fac5ae-eb49-4dcb-8f38-18029ade83b8.pdf",
+     15,
+     "Loan Book Secured by Gold (doc period)",
+     "92"
+    ]
+   },
+   "fixed": [
+    [
+     "y:20260331",
+     95.0,
+     null,
+     "drop_y",
+     "UNDATED: 431b0dcc p108 printed '95'; 95% of loan book stated as present fact, no as-on date",
+     "2026-11-17"
+    ]
+   ]
+  },
+  {
    "name": "Muthoot Homefin Loan AUM",
    "unit": "₹ Bn",
    "kind": "level",
@@ -15800,5 +15777,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-06",
  "catalog_ver": 5,
- "updated": "2026-11-01"
+ "updated": "2026-11-17"
 }

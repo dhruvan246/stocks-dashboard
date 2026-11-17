@@ -442,6 +442,18 @@ def to_float(v):
         return None
 
 
+def asp_float(v):
+    """A printed token as a number: accounting brackets '(1.88)' / '(841)' / '(3.2)%' read as negative, like
+    Screener shows them; a leading minus or en/em dash also counts. Until 2026-11-17 ingest rejected every
+    bracketed negative ('as_printed (1.88) != value -1.88'), so only 69 negative cells were stored (§234)."""
+    s = str(v or "").strip().replace("\u2212", "-").replace("\u2013", "-").replace("\u2014", "-")
+    m = re.fullmatch(r"\(\s*([0-9][0-9,]*(?:\.[0-9]+)?)\s*\)\s*%?", s)
+    if m:
+        f = to_float(m.group(1))
+        return -f if f is not None else None
+    return to_float(s.rstrip("%").strip())
+
+
 def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
     """Validate one document's answer and merge it. Returns (written, held, rejected) counts."""
     L = load_ledger(sym)
@@ -530,7 +542,7 @@ def ingest(sym, doc, answer, pages_text, by="?", verbose=True):
                     why = "period_end disagrees: ours %s model %s for %r" % (pend, me, per)
                 elif not isinstance(page, int) or page not in page_map:
                     why = "page %r not in document" % page
-                elif abs(to_float(asp) - val) > 1e-9 if to_float(asp) is not None else True:
+                elif abs(asp_float(asp) - val) > 1e-9 if asp_float(asp) is not None else True:
                     why = "as_printed %r != value %r" % (asp, val)
                 elif norm_num(asp) not in page_map[page]:
                     if page_map[page].strip():
