@@ -29718,6 +29718,8 @@ read-only subagents, with every main-store change re-read by page image by the l
 on either exchange; archived pages whose own EPS does not fit their profit; CEMPRO Sep-18 (owners' profit not printed, EPS
 fits both); EXIDEIND Mar-19 con (consolidated filed for the year only); AGROPHOS Mar-18 (SME half-yearly filer);
 SUNTECK Mar-16 con (first filing 155.99, corrigendum two days later 157.61 = stored — needs the user's rule).
+**Update, same day:** the user chose "Keep 157.61" for SUNTECK Mar-16 con (the corrigendum's figure); accepted in
+`xcheck_accept.json`. UNKNOWN is now 24; the nightly check should list 29 open.
 
 **Traps met.** (1) NSE's own XBRL of 2018-19 often has no owners tag — "no minority" from it is not evidence; the PDF
 decided, and several XBRL owner tags of that era were wrong. (2) The NSE Ind-AS 2016-17 archive template has no reliable
