@@ -218,6 +218,27 @@
    "title": "Investor Presentation",
    "read": "2026-10-15",
    "by": "claude-session"
+  },
+  "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf": {
+   "kind": "ar",
+   "date": "2022-08-10",
+   "title": "Annual Report 2021-22",
+   "read": "2026-11-17",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf": {
+   "kind": "ar",
+   "date": "2023-08-22",
+   "title": "Annual Report 2022-23",
+   "read": "2026-11-17",
+   "by": "gemini:gemini-3-flash-preview"
+  },
+  "8d0bdfd8-0436-49c9-ade3-acc131cad09f.pdf": {
+   "kind": "ip",
+   "date": "2026-11-06",
+   "title": "Q2 FY27 Investor Presentation",
+   "read": "2026-11-17",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -491,7 +512,8 @@
     "20250331": 1253.0,
     "20250630": 1635.0,
     "20250930": 1805.0,
-    "20251231": 1707.0
+    "20251231": 1707.0,
+    "20260930": 2701.0
    },
    "src": {
     "q:20251231": [
@@ -541,6 +563,12 @@
      13,
      "1,226 Cr Order Backlog",
      "1,226"
+    ],
+    "q:20260930": [
+     "8d0bdfd8-0436-49c9-ade3-acc131cad09f.pdf",
+     16,
+     "Order Backlog (doc period)",
+     "2701"
     ]
    }
   },
@@ -590,6 +618,84 @@
    }
   },
   {
+   "name": "Total Employees",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 819.0,
+    "20240331": 993.0,
+    "20250331": 1076.0
+   },
+   "q": {
+    "20230331": 819.0
+   },
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Employees",
+     "1,076"
+    ],
+    "y:20240331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Employees",
+     "993"
+    ],
+    "y:20230331": [
+     "0f1ef5cc-2069-4ab3-a01a-bb564acb9f62.pdf",
+     170,
+     "Total Employees (Previous Financial Year)",
+     "819"
+    ],
+    "q:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "Total Employees (D+E)",
+     "819"
+    ]
+   }
+  },
+  {
+   "name": "Total Workers",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 836.0,
+    "20240331": 757.0,
+    "20250331": 940.0
+   },
+   "q": {
+    "20230331": 836.0
+   },
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Workers",
+     "940"
+    ],
+    "y:20240331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     160,
+     "Total Workers",
+     "757"
+    ],
+    "y:20230331": [
+     "0f1ef5cc-2069-4ab3-a01a-bb564acb9f62.pdf",
+     170,
+     "Total Workers (Previous Financial Year)",
+     "836"
+    ],
+    "q:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "Total Workers (F+G)",
+     "836"
+    ]
+   }
+  },
+  {
    "name": "Number of Dealers/Distributors",
    "unit": "count",
    "kind": "level",
@@ -621,64 +727,216 @@
    }
   },
   {
-   "name": "Total Employees",
+   "name": "Recordable accidents",
    "unit": "count",
-   "kind": "level",
+   "kind": "flow",
    "y": {
-    "20230331": 819.0,
-    "20240331": 993.0,
-    "20250331": 1076.0
+    "20220331": 1.0,
+    "20230331": 3.0
    },
-   "q": {},
+   "q": {
+    "20260930": 1.0
+   },
    "src": {
-    "y:20250331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     160,
-     "Total Employees",
-     "1,076"
-    ],
-    "y:20240331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     160,
-     "Total Employees",
-     "993"
-    ],
     "y:20230331": [
-     "0f1ef5cc-2069-4ab3-a01a-bb564acb9f62.pdf",
-     170,
-     "Total Employees (Previous Financial Year)",
-     "819"
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Total recordable work-related injuries Workers",
+     "3"
+    ],
+    "y:20220331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Total recordable work-related injuries Workers",
+     "1"
+    ],
+    "q:20260930": [
+     "8d0bdfd8-0436-49c9-ade3-acc131cad09f.pdf",
+     14,
+     "Recordable accidents",
+     "1"
     ]
    }
   },
   {
-   "name": "Total Workers",
+   "name": "Turnover rate for permanent employees",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20210331": 9.0,
+    "20220331": 10.0,
+    "20230331": 11.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Permanent Employees Total Turnover rate",
+     "11"
+    ],
+    "y:20220331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Permanent Employees Total Turnover rate",
+     "10"
+    ],
+    "y:20210331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Permanent Employees Total Turnover rate",
+     "9"
+    ]
+   }
+  },
+  {
+   "name": "Turnover rate for permanent workers",
+   "unit": "%",
+   "kind": "flow",
+   "y": {
+    "20210331": 15.0,
+    "20220331": 8.0,
+    "20230331": 5.0
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Workers Total Turnover rate",
+     "5"
+    ],
+    "y:20220331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Workers Total Turnover rate",
+     "8"
+    ],
+    "y:20210331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     118,
+     "Workers Total Turnover rate",
+     "15"
+    ]
+   }
+  },
+  {
+   "name": "Countries Served",
    "unit": "count",
    "kind": "level",
    "y": {
-    "20230331": 836.0,
-    "20240331": 757.0,
-    "20250331": 940.0
+    "20230331": 34.0,
+    "20250331": 44.0
    },
    "q": {},
    "src": {
     "y:20250331": [
      "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     160,
-     "Total Workers",
-     "940"
-    ],
-    "y:20240331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     160,
-     "Total Workers",
-     "757"
+     136,
+     "International (No. of Countries) (doc period)",
+     "44"
     ],
     "y:20230331": [
-     "0f1ef5cc-2069-4ab3-a01a-bb564acb9f62.pdf",
-     170,
-     "Total Workers (Previous Financial Year)",
-     "836"
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "International (No. of Countries) (doc period)",
+     "34"
+    ]
+   }
+  },
+  {
+   "name": "Gender Diversity",
+   "unit": "%",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20230331": 17.0,
+    "20260930": 19.6
+   },
+   "src": {
+    "q:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "Total Employees (D+E) Female %",
+     "17"
+    ],
+    "q:20260930": [
+     "8d0bdfd8-0436-49c9-ade3-acc131cad09f.pdf",
+     14,
+     "Of workforce comprising of women",
+     "19.6"
+    ]
+   }
+  },
+  {
+   "name": "Lost Time Injury Frequency Rate (LTIFR) - Employees",
+   "unit": "per one million-person h",
+   "kind": "flow",
+   "y": {
+    "20220331": 0.54,
+    "20230331": 0.27
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Lost Time Injury Frequency Rate (LTIFR) Employees",
+     "0.27"
+    ],
+    "y:20220331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Lost Time Injury Frequency Rate (LTIFR) Employees",
+     "0.54"
+    ]
+   }
+  },
+  {
+   "name": "Lost Time Injury Frequency Rate (LTIFR) - Workers",
+   "unit": "per one million-person h",
+   "kind": "flow",
+   "y": {
+    "20220331": 0.27,
+    "20230331": 0.81
+   },
+   "q": {},
+   "src": {
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Lost Time Injury Frequency Rate (LTIFR) Workers",
+     "0.81"
+    ],
+    "y:20220331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     134,
+     "Lost Time Injury Frequency Rate (LTIFR) Workers",
+     "0.27"
+    ]
+   }
+  },
+  {
+   "name": "Manufacturing Plants Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 4.0,
+    "20250331": 4.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     136,
+     "National plants (doc period)",
+     "4"
+    ],
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "Number of plants (doc period)",
+     "4"
     ]
    }
   },
@@ -707,6 +965,126 @@
    }
   },
   {
+   "name": "Office Locations Count",
+   "unit": "count",
+   "kind": "level",
+   "y": {
+    "20230331": 17.0,
+    "20250331": 19.0
+   },
+   "q": {},
+   "src": {
+    "y:20250331": [
+     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
+     136,
+     "National offices (doc period)",
+     "19"
+    ],
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "No. of Offices (doc period)",
+     "17"
+    ]
+   }
+  },
+  {
+   "name": "Performance Stock Units Exercised",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20210331": 741.0,
+    "20220331": 1078.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Exercised during the year",
+     "1,078"
+    ],
+    "y:20210331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Exercised during the year",
+     "741"
+    ]
+   }
+  },
+  {
+   "name": "Performance Stock Units Forfeited",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20210331": 5.0,
+    "20220331": 183.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Forfeited during the year",
+     "183"
+    ],
+    "y:20210331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Forfeited during the year",
+     "5"
+    ]
+   }
+  },
+  {
+   "name": "Performance Stock Units Granted",
+   "unit": "count",
+   "kind": "flow",
+   "y": {
+    "20210331": 1556.0,
+    "20220331": 2521.0
+   },
+   "q": {},
+   "src": {
+    "y:20220331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Granted during the year",
+     "2,521"
+    ],
+    "y:20210331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Granted during the year",
+     "1,556"
+    ]
+   }
+  },
+  {
+   "name": "Performance Stock Units Outstanding",
+   "unit": "count",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 4206.0,
+    "20220331": 7306.0
+   },
+   "src": {
+    "q:20220331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Outstanding at March 31",
+     "7,306"
+    ],
+    "q:20210331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     145,
+     "Outstanding at March 31",
+     "4,206"
+    ]
+   }
+  },
+  {
    "name": "Sales to Dealers/Distributors Share of Total Sales",
    "unit": "%",
    "kind": "level",
@@ -731,6 +1109,30 @@
    }
   },
   {
+   "name": "Unutilised Credit Facilities",
+   "unit": "INR Million",
+   "kind": "level",
+   "y": {},
+   "q": {
+    "20210331": 7182.43,
+    "20220331": 7008.0
+   },
+   "src": {
+    "q:20220331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     131,
+     "unutilised credit facilities",
+     "7,008.00"
+    ],
+    "q:20210331": [
+     "2e009bf5-cd73-433d-8a40-40ab170f399c.pdf",
+     131,
+     "unutilised credit facilities",
+     "7,182.43"
+    ]
+   }
+  },
+  {
    "name": "Closing Order Backlog",
    "unit": "INR Cr",
    "kind": "level",
@@ -748,19 +1150,19 @@
    }
   },
   {
-   "name": "Countries Served",
-   "unit": "count",
-   "kind": "level",
+   "name": "Export share of turnover",
+   "unit": "%",
+   "kind": "flow",
    "y": {
-    "20250331": 44.0
+    "20230331": 15.0
    },
    "q": {},
    "src": {
-    "y:20250331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     136,
-     "International (No. of Countries) (doc period)",
-     "44"
+    "y:20230331": [
+     "2eac413a-ceeb-40cb-939d-2f108d0477d7.pdf",
+     117,
+     "contribution of exports as a percentage of the total turnover (doc period)",
+     "15"
     ]
    }
   },
@@ -795,40 +1197,6 @@
      17,
      "Existing capacity utilization - Kolkata Plant (doc period)",
      "90"
-    ]
-   }
-  },
-  {
-   "name": "Manufacturing Plants Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 4.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     136,
-     "National plants (doc period)",
-     "4"
-    ]
-   }
-  },
-  {
-   "name": "Office Locations Count",
-   "unit": "count",
-   "kind": "level",
-   "y": {
-    "20250331": 19.0
-   },
-   "q": {},
-   "src": {
-    "y:20250331": [
-     "ece4a9e3-2dac-4e40-b779-df112b59c50e.pdf",
-     136,
-     "National offices (doc period)",
-     "19"
     ]
    }
   },
@@ -1312,5 +1680,5 @@
  "catalog_since": "2020-01-01",
  "catalog_until": "2026-09-07",
  "catalog_ver": 5,
- "updated": "2026-10-15"
+ "updated": "2026-11-17"
 }
