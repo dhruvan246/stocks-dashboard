@@ -29872,3 +29872,20 @@ healed: ICICIAMC Sep-25 stored 835.0, comparative column prints 8,354.3 mn (835.
 merged Piramal Finance's restated comparative (Jun-26 filing p8), not Piramal Enterprises' pre-merger standalone (162.43).
 Healed 263.0 → 263.25. All 580 cells since 2020 are now judged. Decision was given for this cell; Dec-24 std (same
 question, §StockView open list) was not read.
+
+## §241 — Item 7 pilot: annual BS/CF vs Screener / Quantmac / Moneycontrol, 20 stocks (2026-11-17)
+
+User chose "Small pilot first" + "Read filing, report". 20 PIT-N500 stocks (seed 20261117; EMBASSY dropped, no BSE code),
+FY20-FY25, s + c, fields assets/oeq/cwip/cfo/cfi/cff. Work dir ~/stocks-cache/abscf/item7 (pick_fetch.py, scr_fetch.py,
+cmp.py; every verdict + evidence in verdicts.md). Counts: 984 cells agree, 309 ours empty, 100 differ (60 read, 40 not read).
+- OUR ERROR, 13 cells healed via xtra_cell_fix.json (53b3b0b918, LIVE 13/13): ASTRAZEN FY24 s cfo; OBEROIRLTY FY22 s
+  cfo/cfi + capex FY22-25; IRCTC FY21 s cfo/cfi/cff, FY23 s cfo/cfi/capex. Cause each time: the filer's results XBRL split
+  cfo/cfi wrongly (same total) or tagged capex 0; the printed statement wins (§240). Quantmac carries the same wrong XBRL
+  values on ASTRAZEN FY24, OBEROIRLTY FY22 cfi, IRCTC FY23 (their error).
+- LESSON: a 1% match tolerance hid OBEROIRLTY FY22 cfo 698.53 vs printed 699.73. A full run must compare at 0.01 cr
+  against the print and also check capex (not on Screener's table).
+- RULE DIFFERENCE (most other read gaps): the site shows the next year's restated comparative (mergers: ESCORTS FY24,
+  OBEROIRLTY FY23), Screener rounds to whole crores, Screener's Reserves include share suspense (ABLBL c FY25).
+- UNKNOWN: Screener figures that match no printed row (listed in verdicts.md) and the 40 not-read cells (FSL c, VRLLOG,
+  IRCTC FY20/FY22/FY25, HERITGFOOD c FY20, HCLTECH, NAVA, TTML, BSOFT, OBEROIRLTY c cfi, VENTIVE c FY25 cwip).
+No cell had all three sites agreeing against us, so the consensus rule (§0 point 6) did not fire. Full run awaits the user.
