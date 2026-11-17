@@ -5,7 +5,8 @@
   "2026-11-10 (§237, user \"yes\"): 64 net-worth (eq) cells, PIT N500. NBFC-taxonomy consolidated files tag TOTAL equity incl. non-controlling interests as `Equity` (no owners' tag) and GI-insurer files tag the 'Fair value change account - shareholders' funds' line as `ShareholdersFunds`; eq = share capital + other equity / reserves (owners). New filings get the same rule in build_xbrl_extra.owners_eq.",
   "2026-11-10 (§237 follow-up): 3 share-capital (sc) cells, Ind-AS-format GI filers Sep-2026 (GODIGIT/STARHEALTH/NIVABUPA) stored 0; build_xbrl_extra now drops a 0 sc when eq-oeq says otherwise.",
   "2026-11-10 (§237b, user \"fix the GICRE quarter cells from standalone statements\"): 46 GICRE pre-2024 standalone quarter cells held the CONSOLIDATED figure (oi, pbt incl. share of associates, BS total, reserves, H1 cash flow); fixed to the standalone statement, two visual readers each.",
-  "2026-11-17 (§214a F4, user \"fix everything\"): 283 PIT-N500 bank quarters 2005-2007 where the NSE archive page prints PBT 0.00 (= not reported) and the reader stored 0. 277 set to the page's own Operating Profit - Provisions (- Exceptional), which equals Net Profit + Tax on the same page; 6 ORIENTBANK pages whose own rows do not close are blanked (null)."
+  "2026-11-17 (§214a F4, user \"fix everything\"): 283 PIT-N500 bank quarters 2005-2007 where the NSE archive page prints PBT 0.00 (= not reported) and the reader stored 0. 277 set to the page's own Operating Profit - Provisions (- Exceptional), which equals Net Profit + Tax on the same page; 6 ORIENTBANK pages whose own rows do not close are blanked (null).",
+  "2026-11-17 (item 7 pilot, annual BS/CF vs Screener+Quantmac, cell by cell): 13 standalone annual CF cells where the stored figure (filer XBRL) disagrees with the signed results statement read this session - ASTRAZEN FY24 cfo; OBEROIRLTY FY22 cfo/cfi + capex FY22-25; IRCTC FY21 cfo/cfi/cff, FY23 cfo/cfi/capex. Statement wins (§240). Verdict log ~/stocks-cache/abscf/item7/verdicts.md."
  ],
  "fixes": [
   {
@@ -5037,6 +5038,136 @@
    "fixed": -1.32,
    "why": "NSE archive results page LAKSHVILAS_32565 (Amount printed in lakh; filer unit proven by the stored PAT = the page's Net Profit for the period / 100) prints 'Profit(+)/Loss(-) from Ordinary Activities before tax' as 0.00 = not reported, and the reader stored it as a value. The page's own rows give the figure two ways: Operating Profit before provisions and contingencies 970.13 - Provisions (other than tax) and contingencies 1102.38 = -132.25 lakh; Net Profit for the period 2167.43 + Tax Expense -2299.68 = -132.25 lakh (agree within 1 lakh). Read 2026-11-17. Reader 2: Moneycontrol quarterly 'P/L Before Tax' agrees (within Rs 0.02 cr).",
    "found": "§214a F4 pbt 0.00 placeholder, 2026-11-17"
+  },
+  {
+   "sym": "ASTRAZEN",
+   "qe": "20240331",
+   "basis": "s",
+   "field": "cfo",
+   "was": 92.53,
+   "fixed": 27.8623,
+   "why": "own FY24 results 5f5a744f p5 (Rs lakh) net cash from operating 2,786.23; cfi 2,174.19 + cff (4,437.29) close to 523.13 only with it; stored value was the filer XBRL",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "cfo",
+   "was": 698.53,
+   "fixed": 699.73,
+   "why": "own FY22 results 6383fad4 p13 standalone CF (Rs lakh) 69,973; A+B+C = 33,917 printed",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "cfi",
+   "was": 0.0,
+   "fixed": -1214.88,
+   "why": "own FY22 results 6383fad4 p13 standalone CF (Rs lakh) net cash from investing (1,21,488)",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "capex",
+   "was": 0.0,
+   "fixed": 816.91,
+   "why": "own FY22 results 6383fad4 p13 (Acquisition)/(adjustments) of PPE, investment property, intangibles/addition to CWIP (net) (81,691) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "capex",
+   "was": -0.04,
+   "fixed": 431.47,
+   "why": "own FY23 results c67958c4 p21 same line (43,147) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20240331",
+   "basis": "s",
+   "field": "capex",
+   "was": 0.0,
+   "fixed": 467.77,
+   "why": "own FY24 results 28027d42 p19 same line (46,777) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "OBEROIRLTY",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "capex",
+   "was": 0.0,
+   "fixed": 251.98,
+   "why": "own FY25 results b05916ef p19 same line (25,198) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "cfo",
+   "was": -102.2,
+   "fixed": 247.2698,
+   "why": "own FY21 results 43514a57 p5 (Rs lakh) total cash generated from operating 24,726.98; stored split was the filer XBRL (same A+B+C)",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "cfi",
+   "was": -36.44,
+   "fixed": -452.8751,
+   "why": "own FY21 results 43514a57 p5 net cash used in investing (45,287.51) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "cff",
+   "was": -113.73,
+   "fixed": -46.7647,
+   "why": "own FY21 results 43514a57 p5 net cash from financing (4,676.47) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "cfo",
+   "was": 668.6,
+   "fixed": 810.1224,
+   "why": "own FY23 results 446268c1 p7 (Rs lakh) total cash generated from operating 81,012.24; stored split was the filer XBRL (same sum)",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "cfi",
+   "was": -173.61,
+   "fixed": -315.1356,
+   "why": "own FY23 results 446268c1 p7 net cash used in investing (31,513.56) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
+  },
+  {
+   "sym": "IRCTC",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "capex",
+   "was": 238.64,
+   "fixed": 67.5585,
+   "why": "own FY23 results 446268c1 p7 purchase of PPE & other intangible assets (6,755.85) lakh",
+   "found": "2026-11-17 item7 pilot (Screener/Quantmac/Moneycontrol consensus check)"
   }
  ]
 }
