@@ -19119,6 +19119,16 @@ Result: 106 trusted, 759 gate-failed (text layer unusable → vision queue); 53 
 0.69 both years (vision 22.19 / 54.68) with Total Assets EXACT — a text misread the 7x assets guard cannot see
 (its x2 was 0 / -1). So only x2 = 1 cells ship (PP&E AND assets within 2% of next year's comparative): 24 added,
 12 held (x2 0/-1) in ~/stocks-wt/fa-run. Merge 3-way (never overwrite a cell another writer landed).
+**§148g — study-set vision reads, INA first (2026-11-17, user: "vision study set").** Measured on live slices at
+69ce99022: 1,007 non-financial companies with mcap >= Rs 100 cr miss PP&E for 3,009 listed FY20-25 years (FY20 821 /
+FY21 833 / FY22 873 / FY23 170 / FY24 176 / FY25 136; list ~/stocks-cache/abscf/wave16/studyset.json, builder
+studyset.py there; the old fa-run vision queue was removed by gc). INA landed by hand-read images, basis c, gate =
+FY26 XBRL key (assets 2,155.13 / PP&E 473.77, printed 2,15,512.71 / 47,377.20 lakh): FY23 PP&E 37.86, FY24 47.63,
+FY25 77.29 (+ CWIP 46.10) cr. FY22 (pre-listing; SME listing Oct-2022) taken from the FY23 filing's comparative column,
+allowed because no own-year filing exists. FY24's own filing prints ONE "Property, Plant and Equipment" line that
+INCLUDES CWIP (FY25 filing splits it 4,622.45 + 140.09 = 4,762.54 vs 4,762.53) — stored as printed. FY23-25 are
+Indian-GAAP SME statements; FY26 is Ind AS (its FY25 column is restated: total 85,100.39 vs 84,738.75 as filed).
+Every year ties to the next filing's comparative (FY23 37.86 / 159.29, FY24 262.78).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
