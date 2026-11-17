@@ -19153,6 +19153,13 @@ REPLACES an existing row wholesale — 8 existing text rows were hit; fixed by h
 take the vision BS + keep same-doc cash flows; trusted x2=1 rows with equal TA (ASIANTILES FY20, JAICORPLTD FY25,
 XPROINDIA FY20) = add missing fields only; trusted rows whose TA differs (DSSL FY20/21, VIMTALABS FY22) left untouched
 (UNKNOWN which is right). Landed: 548 new rows + 5 add/replace, 0 rows lost. Next merge: diff vs origin before pushing.
+**§148g standalone anchors (user: "try it", 2026-11-17).** The ~41 held standalone-only years (17 cos) can be gated
+only on a live STANDALONE XBRL year right after the held run. 9 cos qualify (ARFIN AYMSYNTEX CENTENKA GRPLTD GULPOLY KOTIC
+MENONBE SEJALLTD SYNCOMF): read each anchor year's standalone sheet (wave16/man_sanc_00.json) -> 9/9 match live s within
+1%; then each held year must tie the next year's standalone comparative (assets AND PP&E), walking back. 18 years landed
+as basis s. Held: GULPOLY FY20-22 (FY23 comparative FY22 assets 773.94 vs own 804.09, PP&E exact, no restatement stated)
+and KOTIC FY25 (199.995 vs 189.993 — differs by ~1,000 lakh, a likely digit slip on one side; unread). No anchor (s gap):
+BFUTILITIE BHAGERIA FISCHER JTLIND MARSONS MONTECARLO NIBE VINCOFE.
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
