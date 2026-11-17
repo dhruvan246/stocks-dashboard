@@ -29941,3 +29941,13 @@ first 'Current Tax' (policyholders' a/c — XBRL CurrentTax), assets = 'Total As
 column) and the Dec-24 life quarters (no later form). Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
 NIVABUPA Sep-24 (empty response), STARHEALTH Sep-21 (pre-listing). Seen in passing: our LI tax_c is the policyholders'-account tax
 beside a shareholders'-account pbt (XBRL CurrentTax), so pbt − tax_c ≠ PAT for life insurers — a definition question, not changed.
+
+## §244 — NIVABUPA Jun-26 from its results PDF (2026-11-17, gap "results" + "detail")
+
+No results XBRL exists for NIVABUPA Jun-26 (NSE: governance file only; BSE Result_Arch_ng: none). Read from NSE
+MAXBUPA_30072026161055_Discl30_Boardmeetingoutcome30072026.pdf p4 (image, Rs lakh, first Ind AS 117 quarter): Total Insurance
+Revenue 2,27,372; Total Investment Income 19,754; other income 49; current tax –; deferred tax (4,594); exceptional –; PBT 18,374;
+profit 13,780. Second filing: the Sep-26 IF_INS_COM_IND_AS_19757 XBRL, half-year (FourD) minus quarter (OneD): insurance revenue
+4,685.99 − 2,412.27 = 2,273.72 cr; investment income 357.15 − 159.61 = 197.54; other income 0.49; deferred tax 45.94; PBT 183.74;
+profit 137.80 — all equal. Filled (fill-only): revenue 2,471.26 cr (§242 rule), fin 1; line items oi 0.49, tax_c 0, tax_d 45.94,
+exc 0, pbt 183.74, aud U. EPS not filled (half-year minus quarter is not exact for EPS; one filing only).
