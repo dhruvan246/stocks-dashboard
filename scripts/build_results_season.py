@@ -23,7 +23,9 @@ Out: docs/results_season.json = { defaultUniverse, basis, universeAsOf, updated,
                                   universes:[{key,label,note,quarters}] }
 Run:  python -X utf8 build_results_season.py
 """
-import os, json, gzip, statistics, datetime
+import os, sys, json, gzip, statistics, datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rbase   # restated comparative bases (runbook §214b)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -209,6 +211,17 @@ def consistent(cur, base):
 
 MIN_N = 5   # don't publish a median computed over fewer than this many companies (not robust)
 
+# §214b (user policy A, 2026-11-17): a year-ago base the company RESTATED in this quarter's own filing replaces the stored
+# (as-first-filed) base — only while our current figure is the one it was printed beside (scripts/rbase.py). Loaded in main.
+RB = {}
+
+
+def rb_pair(sym, qe, ya, field, cur, base):
+    """(std, con) base with each basis' restated comparative swapped in where the ledger has one for this pair."""
+    if sym not in RB:
+        return base
+    return tuple(rbase.base_for(RB, sym, qe, ya, b, field, cur[i], base[i]) for i, b in ((0, "s"), (1, "c")))
+
 
 def median_yoy(pairs, min_n=MIN_N):
     """Per-company YoY %, Trendlyne's convention: (cur - base) / ABS(base).
@@ -284,7 +297,7 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
                     # filed con last year but only std this year was compared std-vs-con —
                     # ICICIPRULI Jun-2026 (no con XBRL exists) read op 306.56/282.09 = +8.67%
                     # instead of the true std/std 306.56/292.22 = +4.91%.
-                    pr = consistent(cur_pat, base_pat)
+                    pr = consistent(cur_pat, rb_pair(s, qe, ya, "pat", cur_pat, base_pat))
                     if pr:
                         pat_pairs.append(pr)
                         pat_tot.append(pr)
@@ -295,7 +308,7 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
             # NBFCs: core rev + EBITDA) — matches Trendlyne's index cards. Mixed universes without the
             # flag exclude them (industrial rev/EBITDA aren't comparable to bank interest income).
             if cq and bq and (include_fin or (not cq[6] and not bq[6])):
-                pr = consistent((cq[0], cq[1]), (bq[0], bq[1]))
+                pr = consistent((cq[0], cq[1]), rb_pair(s, qe, ya, "rev", (cq[0], cq[1]), (bq[0], bq[1])))
                 if pr:
                     rev_pairs.append(pr); rev_tot.append(pr)
                 po = consistent((cq[2], cq[3]), (bq[2], bq[3]))
@@ -319,6 +332,8 @@ def agg_quarter(members, qe, pat, revop, min_n=MIN_N, include_fin=False):
 
 
 def main():
+    global RB
+    RB = rbase.compact(rbase.load_ledger())
     rename = load_rename()
     U, end = build_liquid_universe(rename)
     print("liquid universe (alive, turnover>=%.1f cr): %d" % (TURN_FLOOR_CR, len(U)))

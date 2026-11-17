@@ -338,6 +338,7 @@ function installStockFin(sym, F) {
   // the slice's own row lengths (pd, and pp = profit proven) in fund_months.json's shape (§198)
   FUNDM = {}; _FM.clear();
   if (F && F.pd) { const pp = new Set(F.pp || []), m = {}; for (const k in F.pd) m[k] = pp.has(k) ? F.pd[k] : -F.pd[k]; FUNDM[sym] = m; }
+  RBASE = {}; if (F && F.rb) RBASE[sym] = F.rb;     // the slice's restated comparative bases (§214b)
 }
 
 /* ---- LIVE intraday overlay (optional — used by the 🎯 Live Picks screen) ----------------------
@@ -607,6 +608,23 @@ function needsFund(cfg) { return FUND_FIELDS.has(cfg.sortBy) || (cfg.filters || 
 // proven too, -m = proven on revenue only (its profit then counts toward nothing). In a year that holds a 6/12-month
 // row every other row is of UNKNOWN length. A stock absent from the file — every Nifty 500 member ever, measured
 // 2026-09-27 — takes exactly the old code path. The same rule as docs/stock.html renderFunds. (Sync: stock-backtest.html)
+// RESTATED COMPARATIVE BASES (runbook §214b, user policy A 2026-11-17): the profit a company printed for quarter b BESIDE
+// quarter f's current profit, in f's own filing (docs/fund_rbase.json; rule in scripts/rbase.py — the same in stock.html
+// and quarterly-results.html). After a merger, demerger or Ind AS 103 re-measurement it can differ from what b's own
+// filing printed (AMBUJACEM Jun-26: owners 577 beside a restated Jun-25 869; the Jun-25 filing printed 787.88). It
+// replaces a STORED base — never invents one — and only while the current profit in use is the one it was printed
+// beside. Point-in-time safe: printed in filing f, it is known exactly when f is. (Sync: stock-backtest.html _rbBase)
+let RBASE = {};
+function _rbBase(sym, f, b, ni, cur, stored) {
+  if (stored == null || cur == null) return stored;
+  const R = RBASE[FUND[sym] ? sym : (FUND_ALIAS[sym] || sym)], e = R && R[f + '|' + b], bs = e && e[ni === 3 ? 'c' : 's'], v = bs && bs.pat;
+  if (!Array.isArray(v) || Math.abs(cur - v[1]) > Math.max(0.015, 0.002 * Math.abs(v[1]))) return stored;
+  return v[0];
+}
+async function loadFundRbase() {
+  try { const r = await fetch('./fund_rbase.json'); RBASE = (r && r.ok) ? ((await r.json()) || {}) : {}; }
+  catch (e) { RBASE = {}; }
+}
 let FUNDM = {};
 const _FM = new Map();
 function fundMonthsFor(sym) {
@@ -695,7 +713,7 @@ function profitAt(sym, dateInt, basis) {
     if (!base) continue;
     // like for like (§198): a half-year against the quarter a year earlier is no growth figure
     const fm = fundMonthsFor(sym); if (fm) { const L = fm.len(cur[0]); if (!L || fm.len(baseEnd) !== L) continue; }
-    const b = base[npIdx], c = cur[npIdx];
+    const c = cur[npIdx], b = _rbBase(sym, cur[0], baseEnd, npIdx, c, base[npIdx]);   // §214b restated comparative
     // YoY% for EVERY stock with a non-zero base — tiny (₹0.01cr) and negative/loss bases included.
     // Divide by |base| so loss→profit reads positive. Null only when base is exactly 0 (÷0).
     // NOTE: tiny bases give extreme % (₹0.01cr→+18000%); add a current-profit filter to tame it.
@@ -742,10 +760,10 @@ function profitMetrics(sym, dateInt, basis) {
     // like for like (§198): a row against the row a year earlier only when both are of the same known length — quarter
     // vs quarter, half vs half (GICL's Sep-2025 quarter against its Apr–Sep 2024 half is no growth figure)
     const yoyOf = q => { if (fm) { const L = fm.len(q[0]); if (!L || fm.len(q[0] - 10000) !== L) return null; }
-      const c = q[ni], b = npAt(q[0] - 10000); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };
+      const c = q[ni], b = _rbBase(sym, q[0], q[0] - 10000, ni, c, npAt(q[0] - 10000)); return (c != null && b != null && b !== 0) ? (c - b) / Math.abs(b) * 100 : null; };
     const cur = arr[ci], yoy = yoyOf(cur);
     if (yoy == null) continue;
-    const base = npAt(cur[0] - 10000);
+    const base = _rbBase(sym, cur[0], cur[0] - 10000, ni, cur[ni], npAt(cur[0] - 10000));
     // Quarter-ends are quantized to Mar/Jun/Sep/Dec, so monthIdx steps by exactly 3 per quarter.
     // accel and streak below step by CALENDAR quarter (monthIdx-3), NOT by array index: arr[ci-1]
     // is the previous ROW, which silently skips a quarter our data never captured (the same class
@@ -757,10 +775,11 @@ function profitMetrics(sym, dateInt, basis) {
     if (fm) {   // §198: the rows that cover EXACTLY the latest 12 months, and the 12 before — see _tile12
       const byQ = new Map(); for (const q of arr) if (!byQ.has(q[0])) byQ.set(q[0], q);   // first row per quarter-end, as npAt
       const has = e => byQ.has(e), val = e => { const q = byQ.get(e); return (q && q[ni] != null) ? q[ni] : null; };
-      const sumW = w => { if (!w) return null; let t = 0;
-        for (const s of w) { const v = typeof s === 'number' ? val(s) : ((a, b) => (a == null || b == null) ? null : a - b)(val(s.h), val(s.q));
+      const val0 = e => _rbBase(sym, e + 10000, e, ni, val(e + 10000), val(e));   // a prior-year row: its restated figure (§214b)
+      const sumW = (w, vf) => { if (!w) return null; let t = 0;
+        for (const s of w) { const v = typeof s === 'number' ? vf(s) : ((a, b) => (a == null || b == null) ? null : a - b)(vf(s.h), vf(s.q));
           if (v == null) return null; t += v; } return t; };
-      const w1 = _tile12(has, fm.len, fm.q3, cur[0]), s1 = sumW(w1), s0 = w1 ? sumW(_tile12(has, fm.len, fm.q3, _qBack(cur[0], 12))) : null;
+      const w1 = _tile12(has, fm.len, fm.q3, cur[0]), s1 = sumW(w1, val), s0 = w1 ? sumW(_tile12(has, fm.len, fm.q3, _qBack(cur[0], 12)), val0) : null;
       if (s1 != null && s0 != null) ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null;
     } else { let ok = true, last4 = [], prev4 = [];
       for (let k = 0; k < 4; k++) { const q = arr[ci - k]; const v = q ? q[ni] : null; if (v == null) { ok = false; break; } last4.push(v); }
@@ -777,7 +796,7 @@ function profitMetrics(sym, dateInt, basis) {
       // failure modes at once: quarter-ends are quantized to Mar/Jun/Sep/Dec, so 4 truly
       // consecutive quarters step by EXACTLY 3 months each, never more (a gap) or less (a dupe).
       if (ok) { for (let k = 0; k < 3; k++) { if (monthIdx(arr[ci - k][0]) - monthIdx(arr[ci - k - 1][0]) !== 3) { ok = false; break; } } }
-      if (ok) for (let k = 0; k < 4; k++) { const v = npAt(arr[ci - k][0] - 10000); if (v == null) { ok = false; break; } prev4.push(v); }
+      if (ok) for (let k = 0; k < 4; k++) { const q = arr[ci - k], v = _rbBase(sym, q[0], q[0] - 10000, ni, q[ni], npAt(q[0] - 10000)); if (v == null) { ok = false; break; } prev4.push(v); }
       if (ok) { const s1 = last4.reduce((a, b) => a + b, 0), s0 = prev4.reduce((a, b) => a + b, 0); ttm = s0 !== 0 ? (s1 - s0) / Math.abs(s0) * 100 : null; } }
     // Consecutive +YoY quarters walked by CALENDAR (mi-=3), breaking on a missing quarter too — an
     // array walk counts a "streak" straight across a gap. (Sync: stock-backtest.html)
@@ -832,6 +851,7 @@ async function loadFund() {
   try { FUND = await (await fetch('./sf_fundamentals.json')).json(); } catch (e) { console.warn('no fundamentals data', e); FUND = {}; }
   foldFundAliases();
   await loadFundMonths();   // proven half-year rows (§198) — absent file = every row a quarter, the old behaviour
+  await loadFundRbase();    // restated comparative bases (§214b) — absent file = the stored bases, the old behaviour
 }
 // Merge renamed tickers' fundamentals under the CURRENT key — the same fold loadShp() already does
 // for shareholding. fundFor() resolves OLD->new, which covers a series still keyed by the old name;

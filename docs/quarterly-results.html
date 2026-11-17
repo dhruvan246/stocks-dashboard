@@ -422,14 +422,30 @@ function pick(row, metric){                       // -> [value, basisUsed] honou
   if(ST.basis==='std') return [row[ix.s],'s'];
   return row[ix.c]!=null ? [row[ix.c],'c'] : [row[ix.s],'s'];
 }
-function growth(qarr, qi, metric, lag){           // same-basis growth; returns {pct,flag,cur,base}
+// RESTATED COMPARATIVE BASE (runbook §214b, user policy A 2026-11-17): the figure the company printed for quarter bq
+// beside quarter fq's current figure in fq's own filing (docs/fund_rbase.json, attached as qarr.rbase; rule in
+// scripts/rbase.py — the same in stock.html and both backtest engines). Used only while the current figure in use is
+// the one it was printed beside. Levels on the page stay as first filed.
+const RB_TIP='Against the comparative figure as restated in this quarter’s own filing (the earlier quarter keeps the figure first filed)';
+function rbBase(rbase, fq, bq, b, metric, cv){
+  const e=rbase&&rbase[fq+'|'+bq], v=e&&e[b]&&e[b][metric];
+  if(!Array.isArray(v)||cv==null||Math.abs(cv-v[1])>Math.max(0.015,0.002*Math.abs(v[1]))) return null;
+  return v[0];
+}
+function growth(qarr, qi, metric, lag){           // same-basis growth; returns {pct,flag,cur,base,rb}
   const cur=qarr[qi], base=qarr[qi+lag];
   if(!cur||!base) return null;
   const ix=IDX[metric];
   let order = ST.basis==='con' ? ['c'] : ST.basis==='std' ? ['s'] : ['c','s'];
   for(const b of order){
-    const cv=cur[ix[b]], bv=base[ix[b]];
+    const cv=cur[ix[b]], rv=rbBase(qarr.rbase,QTRS[qi],QTRS[qi+lag],b,metric,cv), bv=rv!=null?rv:base[ix[b]];
     if(cv==null||bv==null) continue;
+    if(rv!=null){ const g=growth1(cv,bv); if(g) g.rb=1; return g; }
+    return growth1(cv,bv);
+  }
+  return null;
+}
+function growth1(cv,bv){
     if(bv>0)  return {pct:(cv/bv-1)*100, cur:cv, base:bv};
     // NEGATIVE base (22% of all PAT YoY cells — not an edge case): divide by |base|, so a
     // loss→profit swing reads POSITIVE. Same rule as Trendlyne, profitAt() in stock-backtest.html /
@@ -439,8 +455,6 @@ function growth(qarr, qi, metric, lag){           // same-basis growth; returns 
     // % can't — that the base was a loss), and the counts/filters keep keying off it.
     if(bv<0)  return {pct:(cv-bv)/Math.abs(bv)*100, flag: cv>=0?'LP':'LL', cur:cv, base:bv};
     return null;   // base == 0 -> ÷0
-  }
-  return null;
 }
 // "Profit up" = grew from a profitable base, OR turned a loss into a profit (LP). A SHRINKING LOSS
 // (LL) now computes a POSITIVE % against |base| — but it is not profit growth, so it must stay out of
@@ -518,6 +532,7 @@ function recsFor(qi){
     const verdict = !scoreable? null : score>=3?'S' : score<=-2?'W' : 'M';
     out.push({ sym, c, rev, op, pat,
       ry:ry&&ry.pct, rq:rq&&rq.pct, py:gy&&gy.pct, pq:gq&&gq.pct,
+      ryR:!!(ry&&ry.rb), rqR:!!(rq&&rq.rb), pyR:!!(gy&&gy.rb), pqR:!!(gq&&gq.rb),
       pfY:pf, pfQ:patFlag(gq), turnY:isTurn(gy), turnQ:isTurn(gq), opm:o1, dOpm, rec, streak, verdict, score,
       ann:row[6]||null, rx:row[7], sr:row[8], prov:row[9]===1 });
   }
@@ -823,12 +838,13 @@ function vdot(r){
   const t=r.verdict==='S'?'Strong':r.verdict==='W'?'Weak':'Mixed';
   return '<span class="vdot" style="background:'+c+'" title="'+t+' quarter (rule-based: PAT/revenue growth + margin change)"></span>';
 }
-function gcell(pct,flag,dp){
+function gcell(pct,flag,dp,rb){
   // The number ONLY — the same (cur−base)/|base| figure the backtest uses (profitAt in backtest-engine.js),
   // even when the base quarter was a loss (user 2026-10-05: no LP/PL/LL text, show the %). The flag stays
   // internal (counts, chips, verdict) and in the tooltip, which says the base was a loss.
   const tip = flag==='LP'?'Loss → profit: growth vs |base|':flag==='PL'?'Profit → loss':flag==='LL'?'Loss both periods: growth vs |base|':'';
-  return '<span class="font-bold '+pctCls(pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(pct)+'</span>';
+  return '<span class="font-bold '+pctCls(pct)+'"'+(tip?' title="'+tip+'"':'')+'>'+fmtPct(pct)+'</span>'+
+    (rb&&pct!=null?'<sup class="text-slate-400" title="'+RB_TIP+'">R</sup>':'');
 }
 function renderResults(){
   $('screenChips').innerHTML=SCREENS.map(([k,l])=>'<button class="chip'+(ST.screen===k?' on':'')+'" data-sc="'+k+'">'+l+'</button>').join('');
@@ -888,12 +904,12 @@ function renderResults(){
       '<div class="text-[10.5px] text-slate-400 truncate max-w-[190px]">'+esc(c.n)+' · '+esc(c.s)+'</div></td>'+
     '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+(c.m?fmtCr(c.m):'—')+'</td>'+
     '<td class="text-right px-2 font-bold text-slate-800">'+fmtCr(r.rev)+'</td>'+
-    '<td class="text-right px-2">'+gcell(r.ry,null)+'</td>'+
-    '<td class="text-right px-2">'+gcell(r.rq,null)+'</td>'+
+    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.ry,null,0,r.ryR)+'</td>'+
+    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.rq,null,0,r.rqR)+'</td>'+
     '<td class="text-right px-2 whitespace-nowrap">'+(r.opm!=null? '<span class="font-bold text-slate-700">'+r.opm.toFixed(1)+'%</span> <span class="growthsub '+pctCls(r.dOpm)+'">'+(r.dOpm==null?'':(r.dOpm>0?'+':'')+Math.round(r.dOpm)+'bps')+'</span>':'—')+'</td>'+
     '<td class="text-right px-2 font-extrabold '+(r.pat!=null&&r.pat<0?'neg':'text-slate-900')+'">'+fmtCr(r.pat)+'</td>'+
-    '<td class="text-right px-2">'+gcell(r.py,r.pfY)+'</td>'+
-    '<td class="text-right px-2">'+gcell(r.pq,r.pfQ)+'</td>'+
+    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.py,r.pfY,0,r.pyR)+'</td>'+
+    '<td class="text-right px-2 whitespace-nowrap">'+gcell(r.pq,r.pfQ,0,r.pqR)+'</td>'+
     '<td class="text-center px-1">'+vdot(r)+'</td>'+
     '<td class="text-right px-2 text-slate-500 font-semibold whitespace-nowrap">'+fmtDate8(r.ann)+'</td>'+
     '<td class="text-right px-2 font-bold '+pctCls(r.rx)+'">'+fmtPct(r.rx)+'</td>'+
@@ -961,9 +977,9 @@ function fYoyTd(g,isPat){
   if(!g) return '<td class="text-slate-400">—</td>';
   // Always the % (backtest formula, ÷|base| when the year-ago quarter was a loss) — never an LP/PL/LL word.
   const fl=isPat?patFlag(g):(g.flag||null);
-  const tip=fl==='LP'?' title="Turnaround: loss a year ago, profit now (growth vs |base|)"':fl==='PL'?' title="Profit a year ago, loss now"':fl==='LL'?' title="Loss both years (growth vs |base|)"':'';
+  const tip=g.rb?' title="'+RB_TIP+'"':fl==='LP'?' title="Turnaround: loss a year ago, profit now (growth vs |base|)"':fl==='PL'?' title="Profit a year ago, loss now"':fl==='LL'?' title="Loss both years (growth vs |base|)"':'';
   if(g.pct==null) return '<td class="text-slate-400">—</td>';
-  return '<td class="'+pctCls(g.pct)+' font-bold"'+tip+'>'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%</td>';
+  return '<td class="'+pctCls(g.pct)+' font-bold"'+tip+'>'+(g.pct>=0?'⇡ ':'⇣ ')+Math.abs(g.pct).toFixed(0)+'%'+(g.rb?'<sup class="text-slate-400">R</sup>':'')+'</td>';
 }
 const fValTd = v => '<td class="'+(v!=null&&v<0?'neg font-semibold':'text-slate-800')+'">'+fmtCr(v)+'</td>';
 /* Price · market cap · PE under the company name on every Just Declared card (user, 13-Oct-2026).
@@ -1577,7 +1593,7 @@ function wire(){
 
 async function load(){
   try{
-    const [qr,cal,feed,bse,vfill]=await Promise.all([
+    const [qr,cal,feed,bse,vfill,rbase]=await Promise.all([
       // ⚠️ MUST cache-bust like the siblings below: the numbers map is what the feed's "numbers being
       // parsed" state checks against. Without ?t, the browser serves a STALE co map while the feed loads
       // fresh, so results whose numbers ALREADY landed (RBLBANK, FEDERALBNK, HAVELLS…) render as pending.
@@ -1585,7 +1601,8 @@ async function load(){
       fetch('./results_calendar.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
       fetch('./results_feed.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),
       fetch('./bse_results.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),  // BSE-listed-only companies (cache-bust so fresh numbers always load)
-      fetch('./vision_fills.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)  // NSE vision overlay (fills gaps until XBRL lands)
+      fetch('./vision_fills.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),  // NSE vision overlay (fills gaps until XBRL lands)
+      fetch('./fund_rbase.json?t='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)    // restated comparative bases (§214b)
     ]);
     QR=qr; CAL=cal; FEED=feed; QTRS=qr.quarters; CO=qr.co;
     // CALENDAR RULE (runbook §218, user 2026-10-04): from a quarter's first calendar day (IST) the newest column is
@@ -1660,6 +1677,9 @@ async function load(){
           if(f.prov===1&&!cur) r[9]=1;                     // §222c: an SME half the vision read made — provisional (§195)
           c.q[qi]=r; c.vfill=1;
         } } }
+    // §214b: each company's restated comparative bases ride on its q array (survives the calendar unshift — same array)
+    if(rbase){ let n=0; for(const sym in rbase){ const c=CO[sym]; if(sym[0]!=='_'&&c&&Array.isArray(c.q)){ c.q.rbase=rbase[sym]; n++; } }
+      if(n) console.log('restated comparative bases on '+n+' companies'); }
     liveKeys=new Set(FEEDROWS.map(feedKey));
     $('updatedBox').innerHTML='Numbers '+esc(qr.updated)+'<span class="sm:hidden"> · </span><br class="hidden sm:block">Prices as of '+esc(qr.asof);
     if(feed) $('feedUpd').textContent='feed updated '+feed.updated;

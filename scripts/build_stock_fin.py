@@ -44,6 +44,12 @@ WHAT IT REPLACES
          any other row of a year that holds a half-year as UNKNOWN length (§198).
   pp     [qEnd, …] — the rows of pd whose PROFIT is proven too (it equals what the proving
          filing prints); a pd row's profit counts toward a TTM only when listed here (§198).
+  rb     {"F|B": {basis: {field: [base, cur]}}} — RESTATED COMPARATIVE BASES (runbook §214b, user policy A
+         2026-11-17): the figure the company printed for quarter B beside the current figure of quarter F in F's own
+         filing (scripts/restated_bases.json; rule and schema in scripts/rbase.py). Growth of F against B uses `base`
+         only while the current figure in use equals `cur`; stored levels stay as first filed. Published only while
+         our store's F figure still equals `cur` (an entry whose row changed is dropped and counted).
+  docs/fund_rbase.json (whole-market, for the Results page and the backtest engines): the same rb, {SYM: rb}.
   docs/fund_months.json (one whole-market file, for the backtest engines, which read
          sf_fundamentals and never load a slice): {SYM: {qEnd: m}} — the same marks,
          m = the row's length when its profit is proven, -m when only its revenue is.
@@ -59,6 +65,9 @@ Run: python scripts/build_stock_fin.py [--out DIR]   (--out: local verification
      builds that must not touch the committed docs/fin/)
 """
 import argparse, gzip, json, os, re, shutil, sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rbase   # restated comparative bases (runbook §214b)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -164,6 +173,32 @@ def main():
             gov_rows[sym] = g
     if not fund and not revop:
         sys.exit("ABORT: neither sf_fundamentals.json nor sf_revop.json could be read")
+    # §214b restated comparative bases: an entry is published only while our store's CURRENT figure of filing F still
+    # equals the current column the base was printed beside (rbase.matches) — the same rule every consumer re-checks
+    try:
+        rb_ledger = rbase.load_ledger()
+    except ValueError as e:
+        sys.exit("ABORT: scripts/restated_bases.json: %s" % e)
+    rb_pub, rb_stale = {}, []
+    for sym_, keys in rbase.compact(rb_ledger).items():
+        fr_ = {x[0]: x for x in (fund.get(sym_) or []) if isinstance(x, list) and x}
+        rv_ = revop.get(sym_) or {}
+        for k, kb in keys.items():
+            fq_ = int(k.split("|")[0])
+            for basis_, by_f in kb.items():
+                for field_, (base_, cur_) in by_f.items():
+                    if field_ == "rev":
+                        row_ = rv_.get(str(fq_)) or []
+                        i_ = 1 if basis_ == "c" else 0
+                        have = row_[i_] if len(row_) > i_ else None
+                    else:
+                        row_ = fr_.get(fq_) or []
+                        i_ = 3 if basis_ == "c" else 1
+                        have = row_[i_] if len(row_) > i_ else None
+                    if rbase.matches(have, cur_):
+                        rb_pub.setdefault(sym_, {}).setdefault(k, {}).setdefault(basis_, {})[field_] = [base_, cur_]
+                    else:
+                        rb_stale.append("%s %s %s %s: store %s, filing current %s" % (sym_, k, basis_, field_, have, cur_))
     if fund and len(fund) < 2000:
         sys.exit("ABORT: sf_fundamentals.json has only %d symbols — refusing to publish truncated slices" % len(fund))
 
@@ -599,6 +634,9 @@ def main():
         kp = resolve(kpi, sym)
         if kp:
             payload["kpi"] = kp
+        rbs = resolve(rb_pub, sym)
+        if rbs and (f or r):
+            payload["rb"] = rbs             # §214b restated comparative bases
         if len(payload) == 1:
             continue                   # nothing on file for this ticker
 
@@ -626,6 +664,20 @@ def main():
         fh.write(blob + "\n")
     print("fund_months.json: %d symbols, %d rows (%d with profit not proven) -> %s"
           % (len(months), sum(len(v) for v in months.values()), pp_off, os.path.relpath(months_path, ROOT)))
+    # §214b: the Results page and the backtest engines never load a slice — the same published bases in one file
+    rb_path = os.path.join(os.path.dirname(months_path), "fund_rbase.json")
+    doc = {"_note": "Restated comparative bases (runbook §214b) — built by scripts/build_stock_fin.py from "
+                    "scripts/restated_bases.json; never edit by hand. {SYM: {'F|B': {basis: {field: [base, cur]}}}}: "
+                    "growth of quarter F against quarter B uses base only while the current figure in use equals cur "
+                    "(max(0.015, 0.2%)) — scripts/rbase.py."}
+    doc.update({s_: rb_pub[s_] for s_ in sorted(rb_pub)})
+    with open(rb_path, "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(doc, separators=(",", ":"), ensure_ascii=False) + "\n")
+    print("fund_rbase.json: %d symbols, %d bases published, %d held back (store's current figure differs) -> %s"
+          % (len(rb_pub), sum(len(bf) for kb in rb_pub.values() for b in kb.values() for bf in b.values()),
+             len(rb_stale), os.path.relpath(rb_path, ROOT)))
+    for line in rb_stale:
+        print("  rbase held back: " + line)
 
 
 if __name__ == "__main__":

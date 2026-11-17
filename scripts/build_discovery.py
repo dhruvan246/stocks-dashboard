@@ -18,6 +18,9 @@ Output schema (compact):
 Run: python -X utf8 scripts/build_discovery.py   (CI: refresh-announcements.yml, after the fetch)
 """
 import os, sys, json, gzip, re, html, datetime
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import rbase   # restated comparative bases (runbook §214b)
+RB = rbase.compact(rbase.load_ledger())
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, "..", "docs")
@@ -176,6 +179,15 @@ def pick(cell, i_con, i_std):
     if v is None or v == 0: v = cell[i_std]
     return v
 
+def rb_ago(sym, qe, cell, i_con, i_std, field, ago_v, ago_cell):
+    """§214b: the year-ago figure the company RESTATED in quarter qe's own filing, in place of the stored one — only when
+    both periods were picked on the same basis and our current figure is the one it was printed beside (rbase.py)."""
+    if sym not in RB or not cell or not ago_cell: return ago_v
+    con = cell[i_con] is not None and cell[i_con] != 0
+    if con != (ago_cell[i_con] is not None and ago_cell[i_con] != 0): return ago_v
+    i = i_con if con else i_std
+    return rbase.base_for(RB, sym, qe, yoy_qe(qe), "c" if con else "s", field, cell[i], ago_v)
+
 QLBL = {3: "Mar", 6: "Jun", 9: "Sep", 12: "Dec"}
 def qlabel(qe): return "%s-%02d" % (QLBL[(qe//100) % 100], (qe//10000) % 100)
 
@@ -193,6 +205,8 @@ def build_results_buckets():
             if not cur or not ago: continue
             pat, patA = pick(cur, 5, 4), pick(ago, 5, 4)
             rev, revA = pick(cur, 1, 0), pick(ago, 1, 0)
+            patA = rb_ago(sym, qe, cur, 5, 4, "pat", patA, ago)
+            revA = rb_ago(sym, qe, cur, 1, 0, "rev", revA, ago)
             # NEGATIVE year-ago base is NOT an edge case — 22% of all PAT YoY cells. Use Trendlyne's
             # (and our backtest's) rule: (cur - base)/ABS(base), so a LOSS->PROFIT turnaround reads
             # POSITIVE and lands in Excellent Results instead of being skipped. The old `patA <= 0:
