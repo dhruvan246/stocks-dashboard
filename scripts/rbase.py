@@ -17,7 +17,11 @@ scripts/restated_bases.json is the hand-verified ledger (each entry read from th
     cur       the CURRENT column of that same row in F's filing — it ties the base to the row definition our store uses
     as_filed  what our store held for B when the entry was read (information only)
     level     "as_filed" = B's own filing printed as_filed (a true restatement); "unknown" = B's filing not re-read yet;
-              "our_error" = our stored level for B is wrong (fixed separately through the level ledgers)
+              "our_error" = our stored level for B is wrong (fixed separately through the level ledgers);
+              "period" = our stored B row covers a different period than the comparative column: SME half-yearly
+              filers whose stored Mar row is the Oct-Mar half (row_periods m:6) while F's filing prints the Jan-Mar
+              quarter beside a quarterly current figure. The stored level stays (it is what B's filing reported for
+              its period); growth uses the same-length quarter the company printed
     src, read where it was read, and the date
 
 ONE RULE, every consumer (Python: build_stock_fin / build_results_season / build_discovery; JS twins: stock.html rbBase,
@@ -35,7 +39,7 @@ LEDGER = os.path.join(HERE, "restated_bases.json")
 PUBLISHED = os.path.join(ROOT, "docs", "fund_rbase.json")
 FIELDS = ("rev", "pat")
 BASES = ("s", "c")
-LEVELS = ("as_filed", "unknown", "our_error")
+LEVELS = ("as_filed", "unknown", "our_error", "period")
 
 
 def tol(cur):

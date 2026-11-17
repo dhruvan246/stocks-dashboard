@@ -27414,6 +27414,22 @@ B's own filing re-read (an our_error there is a level heal, not a restated base)
 files, the no-anchor list, UNIONBANK / PIRAMALFIN / PVRINOX / HINDUNILVR (ice-cream demerger) / SONACOMS / MRPL … Also COALINDIA
 Mar-26 c revenue 46,490 vs Mar-25 37,825 (+22.91%) looks like the new definition already — UNKNOWN until its Mar-26 filing is read.
 OUR_ERROR level heals found on the way (AMBALALSA scale, CNL owners, CHEMCRUX, …) go through the level ledgers, not this one.
+
+**Batch 1 (2026-11-17 23:30, user: "continue, fix the rest one by one").** Every entry read from its own filing, page name-checked.
+- Ledger 10 -> 97 fields / 36 companies (`scripts/restated_bases.json`): 19 more `as_filed` restatements (incl. CHANDAN Mar-26 PAT s/c,
+  re-stated in the Jun-26 filing under the Ind AS transition) and 68 entries of a NEW level **`period`** (added to `rbase.LEVELS`).
+- **`period` = SME half-yearly filers** (20: ADDICTIVE ALLETEC ARIHANTACA BLUEWATER DHANSA DURLAX FELIX HOACFOODS KRMAYURVED MADHUSUDAN
+  MONOLITH RAJINDLTD SADHAV SELLOWRAP SKP TAC VIGOR VMARCIND WOMANCART ZTECH). Our Mar-26 row is the Oct–Mar HALF (what that filing
+  reported, row_periods m:6); the Jun-26 filing prints the Jan–Mar QUARTER beside a quarterly current figure. Levels stay; QoQ uses the
+  printed quarter. Checked per company: stored Sep half + stored Mar half = the FY the filing prints, and the printed Jan–Mar quarter
+  is the later quarter inside the stored Oct–Mar half. Example TAC c rev Jun-26 19.78 vs printed Jan–Mar 15.54 = +27.3% R (was −28.8% against the 27.78 half).
+- 5 LEVEL fixes, `scripts/fund_cell_fix.json` (no 2025+ XBRL for these three, so not scale_fix): HBESD Jun-25 con 38.18 -> 0.38,
+  MIIL Jun-25 con 153.36 / std 13936.0 -> 1.39, UPHOT Jun-25 std+con 325.7 -> 3.26 (lakh read as crore etc.; own filing + Jun-26
+  comparative).
+- 2 bases held back by the published-file rule (DHANSA c rev/pat: no Jun-26 c row stored; XBRL 1714314 has it — fill pending).
+- Siblings found while checking, NOT yet fixed (each needs its own filing read): MIIL Sep-24 con 2,382 / Sep-25 std 104.65;
+  HBESD Jun-24/Sep-24/Dec-24 con 90.75/483.96/481.55; UPHOT Mar-25 1,222.62 and Jun-21 −259.56; SKP Jun-25/Dec-25 s placeholder rows.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
