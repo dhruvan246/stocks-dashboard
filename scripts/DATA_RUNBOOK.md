@@ -19129,6 +19129,15 @@ allowed because no own-year filing exists. FY24's own filing prints ONE "Propert
 INCLUDES CWIP (FY25 filing splits it 4,622.45 + 140.09 = 4,762.54 vs 4,762.53) — stored as printed. FY23-25 are
 Indian-GAAP SME statements; FY26 is Ind AS (its FY25 column is restated: total 85,100.39 vs 84,738.75 as filed).
 Every year ties to the next filing's comparative (FY23 37.86 / 159.29, FY24 262.78).
+**§148g pilot (user: "Pilot 20 first").** 20 random Rs 1k-3k cr study-set companies (seed 20261117, list
+wave16/pilot_targets.json): BSE discovery one Apr-Aug window per year (TIL FY22 results came Sep-2022), 195 PDFs, 4 vision
+readers (wave16/READER.md: BS fields + the previous-year column's assets/PP&E), ~615k subagent tokens for 69 reads (~9k per
+year). Gate = each company's first XBRL year after the gap (merge_annual_bscf, Total Assets + PP&E[+ROU]): 20/20 pass.
+Extra check (wave16/check.py): each read year vs the NEXT year's filing comparative — 46/49 tie; HGINFRA FY22 has no
+read next year; NELCO FY21 and SHRIRAMPPS FY22 differ because the next filing RESTATED them (NELCO TA 246.19 -> 238.10;
+SHRIRAMPPS 3,741.38 -> 3,633.75, PP&E equal) — kept as first filed. 49 fill-years landed, 0 existing cells changed.
+Notes: ROTO FY20 prints Goodwill 122.35 / investments 78.49 lakh, FY21 comparative swaps them (kept as printed);
+IGPL FY22 borr left null (current-maturities line); BBL FY23 intg not read (20-lakh print ambiguity, validate year only).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
