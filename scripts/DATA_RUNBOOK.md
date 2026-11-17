@@ -29322,6 +29322,10 @@ p6 s / p13 c): Sep-23 rev 7,647.98 / PAT 1,092.25 s and c (ann 20231027; op left
 prior-period item sits above PBT); Sep-25 rev 9,355.40 / PAT 186.82 s, 179.55 c (ann 20251103; op = PBT+FC+Dep−OI 6.05/5.98, EBIT
 4.58/4.51). Written straight into sf_fundamentals / sf_revop / revop_fundamentals (fill-only, empty cells) — NOT the proof ledger:
 FY24 cannot close (original H1 + Ind-AS H2 ≠ the Ind-AS year), so these two rows carry no proven 6-month length.
+**Round 12c (2026-11-17, user: "yes remove the sep-19 row").** TIRUPATI 20190930 (Apr–Sep 2019 half, ann 0, from the Nov-2020
+filing's FY20 triple) removed: TIRUPATI was never in the Nifty 500 and non-N500 fills start at 2020-03-31 (user rule 2026-09-27).
+Dropped from sf_fundamentals, sf_revop, revop_fundamentals, nse_sme_pdf_proofs (its FY20 proof) and xbrl_extra. Nothing re-adds it:
+fetch_nse_sme_results_pdf.py targets only 2020-03-31 onward. The 20200331 half (Oct-19–Mar-20) stays.
 
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
