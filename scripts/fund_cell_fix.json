@@ -14972,6 +14972,717 @@
    "fixed": 8.79,
    "why": "Own BSE results XBRL Main_Ind_As_539289_1482020185647.xml (filed 2020-08-17), quarter column: PBT 17.68 - tax 6.24 -> profit 11.44; attributable to owners of parent 8.79 + non-controlling 2.65 = 11.44 Rs cr. sf_fundamentals held 11.44 = total profit incl. minority; corrected to 8.79 (owners' profit basis). sf_revop mirror already holds it.",
    "found": "\u00a7239 fund-vs-mirror profit screen 2026-11-17 (the two stores disagreed; cell's own BSE results XBRL read, arithmetic checked)"
+  },
+  {
+   "sym": "3PLAND",
+   "qe": "20220630",
+   "basis": "std",
+   "was": 0.75,
+   "fixed": 0.24,
+   "why": "own results PDF 3PLAND_20220630_bfc399fe-7f8c-475c-94f7-8ddfc2061cff.pdf p2 (lakh, image) prints 0.24; store held: 0.75 cr is not a figure printed on the results page (not any column of profit, PBT or TCI)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "3PLAND",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 0.14,
+   "fixed": 0.24,
+   "why": "own results PDF 3PLAND_20220630_bfc399fe-7f8c-475c-94f7-8ddfc2061cff.pdf p2 (lakh, image) prints 0.24; store held: 0.14 cr is not a profit figure printed on the page for this column (not identified)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "AEROENTER",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 11.11,
+   "fixed": 9.63,
+   "why": "own results PDF AEROENTER_20230331_317f3667-175d-4614-95da-a6eb58b2e5af.pdf p8 (lakh, image) prints 9.63; store held: A 11.11 = profit for the period including non-controlling interest (1,111.08); B 9.34 = TOTAL COMPREHENSIVE INCOME attributable to owners (934.35), not the profit block",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "AEROENTER",
+   "qe": "20240930",
+   "basis": "con",
+   "was": 22.37,
+   "fixed": 14.84,
+   "why": "own results PDF AEROENTER_20240930_0d012667-0f43-41aa-bedd-32b70a22c55f.pdf p5 (lakh, image) prints 14.84; store held: A 22.37 = profit for the period including non-controlling interest (2,236.65); B 15.62 = TOTAL COMPREHENSIVE INCOME attributable to owners (1,561.97), not the profit block",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "ALPINEHOU",
+   "qe": "20220930",
+   "basis": "std",
+   "was": 0.38,
+   "fixed": 0.14,
+   "why": "own results PDF ALPINEHOU_20220930_63b7f608-20ea-4785-89aa-8cdf8b7b5841.pdf p4 (lakh, image) prints 0.14; store held: 0.38 cr is not printed in any column of the profit row (columns: 14.03, 60.79, 10.30, 24.33, 118.75, 208.14); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "ANDREWYU",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 28.54,
+   "fixed": 18.43,
+   "why": "own results PDF ANDREWYU_20210930_9b6a1601-cd31-49f6-9ab1-6cb9018d8945.pdf p12 (lakh, image) prints 18.43; store held: net profit for the period BEFORE the share of profit from group companies/associates (2,853.86)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "AQYLON",
+   "qe": "20240331",
+   "basis": "con",
+   "was": -5.44,
+   "fixed": -5.35,
+   "why": "own results PDF AQYLON_20240331_7c0ac466-aa2b-49ba-a2ba-d7574a5347b8.pdf p4 (lakh, image) prints -5.35; store held: A -5.44 = profit/(loss) after tax BEFORE the minority-interest line (543.63 loss); B 0.08 = the 'Less: Share of Minority Interest' line itself (8.35 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "AURUM",
+   "qe": "20200930",
+   "basis": "con",
+   "was": 2376.54,
+   "fixed": 1758.3,
+   "why": "own results PDF AURUM_20200930_0f9a2256-20d3-4825-9b0f-aa95bbdcda22.pdf p14 (lakh, text) prints 1758.3; store held: net profit including non-controlling interest (237,654), continuing + discontinued",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "BATLIBOI",
+   "qe": "20251231",
+   "basis": "con",
+   "was": -7.97,
+   "fixed": -2.46,
+   "why": "own results PDF BATLIBOI_20251231_1b450ad9-ac46-4430-9022-f27351dccab1.pdf p11 (lakh, text) prints -2.46; store held: the STANDALONE net loss of the same quarter (797.42 loss, page 5 of the same PDF)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "BATLIBOI",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 2.07,
+   "fixed": 5.02,
+   "why": "own results PDF BATLIBOI_20260331_7fa4cb5a-6bd5-4a72-ad40-816c10e1f90c.pdf p19 (lakh, image) prints 5.02; store held: A 2.07 = the STANDALONE net profit of the quarter (206.58, page 9 of the same PDF); B 5.76 = TOTAL COMPREHENSIVE INCOME attributable to owners (576.01), not the profit block",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "BDL",
+   "qe": "20250331",
+   "basis": "std",
+   "was": 217.7,
+   "fixed": 272.77,
+   "why": "own results PDF BDL_20250331_8d67cbdc-f47a-4f49-a1bf-bc871fc947d7.pdf p2 (lakh, image) prints 272.77; store held: 217.70 cr is not printed in any column of this page (profit row: 27,277.19 / 14,712.54 / 28,877.64 / 54,964.52 / 61,272.06); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "CAMS",
+   "qe": "20201231",
+   "basis": "con",
+   "was": 58.42,
+   "fixed": 56.42,
+   "why": "own results PDF CAMS_20201231_72936085-a4d0-4676-badc-10121c1595fe.pdf p5 (lakh, image) prints 56.42; store held: 58.42 cr is not printed in this column; it differs from the printed 5,641.81 by one digit (6 read as 8), i.e. looks like a misread of the bold 5,641.81 - a guess, not something the page shows",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "CINEVISTA",
+   "qe": "20250331",
+   "basis": "std",
+   "was": -28.1,
+   "fixed": -25.85,
+   "why": "own results PDF CINEVISTA_20250331_f3816f61-8585-45d5-9c6e-110e4f19ea9e.pdf p5 (lakh, image) prints -25.85; store held: -28.10 cr is not printed in any column of the page (standalone columns: (2,585.48) Q4 FY25, (197.02), (224.49), (3,160.66) year, (749.76)); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "CINEVISTA",
+   "qe": "20250331",
+   "basis": "con",
+   "was": -28.11,
+   "fixed": -25.87,
+   "why": "own results PDF CINEVISTA_20250331_f3816f61-8585-45d5-9c6e-110e4f19ea9e.pdf p5 (lakh, image) prints -25.87; store held: -28.11 cr is not printed in any column of the page (consolidated columns: (2,586.63) Q4 FY25, (197.19), (224.51), (3,161.88) year, (749.98)); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COCKERILL",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 7.01,
+   "fixed": 7.36,
+   "why": "own results PDF COCKERILL_20260331_2dd10227-e6cd-4b69-b40f-6724a143f9f4.pdf p6 (lakh, image) prints 7.36; store held: the STANDALONE net profit of the same quarter (700.68, page 3 of the same PDF, read from the text layer)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COMFINTE",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 0.08,
+   "fixed": 0.56,
+   "why": "own results PDF COMFINTE_20251231_25833c8e-ae48-4059-987b-6262df27d7e8.pdf p3 (lakh, text) prints 0.56; store held: 0.08 cr is not printed in the profit row of any column of the standalone page (56.06 / (67.98) / 259.38 / 193.32 / 681.76 / 790.19); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COMFINTE",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 0.08,
+   "fixed": -0.41,
+   "why": "own results PDF COMFINTE_20251231_25833c8e-ae48-4059-987b-6262df27d7e8.pdf p7 (lakh, image) prints -0.41; store held: 0.08 cr is not a profit figure printed in this column; the nearest printed figure is the non-controlling interest 8.87 lakh (0.09 cr), which is not an exact match; not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COMFINTE",
+   "qe": "20260331",
+   "basis": "std",
+   "was": -0.07,
+   "fixed": -0.14,
+   "why": "own results PDF COMFINTE_20260331_fe0248fe-9fd9-4475-9b76-2c7e11a1b1ea.pdf p5 (lakh, image) prints -0.14; store held: -0.07 cr is not printed in the profit row of any column of the standalone page ((13.93) / 56.06 / 108.43 / 179.40 / 790.19); not identified",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COROENGG",
+   "qe": "20201231",
+   "basis": "std",
+   "was": 10.51,
+   "fixed": -2.69,
+   "why": "own results PDF COROENGG_20201231_bf0290ee-64f6-449e-8d79-5c81ef0d2981.pdf p4 (lakh, image) prints -2.69; store held: storeA 10.51 = the nine-months-ended 31 Dec 2020 column net loss (1,051.11) lakh with the sign dropped (10.51 cr)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COROENGG",
+   "qe": "20220930",
+   "basis": "std",
+   "was": -3.17,
+   "fixed": -1.15,
+   "why": "own results PDF COROENGG_20220930_a57f749d-6653-49a2-b9d6-e09d750fa0a4.pdf p4 (lakh, image) prints -1.15; store held: storeA -3.17 is not printed anywhere on this page (nearest: Sep-2021 quarter (286.92), half-year (251.38)); source unknown",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "COROENGG",
+   "qe": "20230630",
+   "basis": "std",
+   "was": -1.38,
+   "fixed": -1.6,
+   "why": "own results PDF COROENGG_20230630_dcf8d485-08b8-4919-81a8-1976a9e5561d.pdf p4 (lakh, image) prints -1.6; store held: storeA -1.38 is not printed on this page (June-2022 comparative quarter is (136.84) = -1.37, not an exact match); source unknown",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "DAICHI",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 0.08,
+   "fixed": -1.5,
+   "why": "own results PDF DAICHI_20251231_fb60847d-74d0-4698-a77b-0b3223add4e2.pdf p3 (lakh, image) prints -1.5; store held: storeA 0.08 is not a figure on this page; source unknown",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "DAICHI",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 0.08,
+   "fixed": -0.86,
+   "why": "own results PDF DAICHI_20251231_fb60847d-74d0-4698-a77b-0b3223add4e2.pdf p7 (lakh, image) prints -0.86; store held: storeA 0.08 is not a figure on this page; source unknown",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "DCMFINSERV",
+   "qe": "20200630",
+   "basis": "std",
+   "was": 0.32,
+   "fixed": 0.22,
+   "why": "own results PDF DCMFINSERV_20200630_9c7d7098-5050-41b6-b1d6-752a5947542c.pdf p2 (lakh, image) prints 0.22; store held: storeA 0.32 = previous quarter (31 March 2020) column profit 31.62 lakh",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "FEDDERSHOL",
+   "qe": "20251231",
+   "basis": "con",
+   "was": -0.07,
+   "fixed": 36.7,
+   "why": "own results PDF FEDDERSHOL_20251231_2cc417a1-f9e6-4d21-a067-e5e2c3aaa686.pdf p8 (lakh, image) prints 36.7; store held: storeA -0.07 = STANDALONE column loss (7.22) lakh for the same quarter",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "GRAUWEIL",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 2577.0,
+   "fixed": 33.66,
+   "why": "own results PDF GRAUWEIL_20251231_925209fc-d2bd-4dfd-9a6c-08018931c246.pdf p4 (lakh, image) prints 33.66; store held: storeA 2577.0 is not a figure on this page and a text search of the PDF finds no 2,577; source unknown (far too large for this company in crore)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "HTMEDIA",
+   "qe": "20200630",
+   "basis": "std",
+   "was": -47.79,
+   "fixed": -51.95,
+   "why": "own results PDF HTMEDIA_20200630_28aecbb4-0aee-46b3-a48b-0046f3ee6819.pdf p4 (lakh, image) prints -51.95; store held: storeA -47.79 is not printed on the standalone page (p4) nor on the consolidated page (p9: loss (5,564), owners (5,486)); text search finds no 4,779; source unknown",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "IWP",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 166.36,
+   "fixed": 1.0,
+   "why": "own results PDF IWP_20251231_7052b516-4d62-4401-9936-099789fe0ab8.pdf p6 (lakh, image) prints 1.0; store held: standalone profit before tax 166.36 lakh (page 5) stored as crore without unit conversion",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "IWP",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 153.53,
+   "fixed": 0.12,
+   "why": "own results PDF IWP_20260331_8ee40bf1-9713-4526-b8c1-317fc22482a2.pdf p15 (lakh, image) prints 0.12; store held: standalone profit before tax 153.53 lakh (page 12) stored as crore without unit conversion",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "J&KBANK",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 168.18,
+   "fixed": 161.02,
+   "why": "own results PDF J_KBANK_20220630_b9a0e4ca-d3ea-41f0-bc7f-7fc86e54dcc5.pdf p11 (crore, image) prints 161.02; store held: row 15 \"Net Profit for the period (13-14)\" before share of associates, printed 166.18; the PDF text layer (OCR) misreads it as 168.18, the image shows 166.18",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "JSWHL",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 13.14,
+   "fixed": 5.55,
+   "why": "own results PDF JSWHL_20220630_f2c22580-8ca0-4c80-86bc-6d04b9119e08.pdf p6 (lakh, image) prints 5.55; store held: row VI profit for the period BEFORE share of loss of associates (1,313.56 lakh); row VII share of associates is (758.66)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "KANCHI",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 0.65,
+   "fixed": 0.71,
+   "why": "own results PDF KANCHI_20260331_415ff67d-c513-4169-ab6c-bd25efd28324.pdf p14 (lakh, image) prints 0.71; store held: comparative quarter ended March 31, 2025 profit for the period (64.75 lakh), third column of the same page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "KCP",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 25.34,
+   "fixed": 22.08,
+   "why": "own results PDF KCP_20211231_d6bb0bc0-0324-4422-b804-80410c2bea79.pdf p4 (lakh, image) prints 22.08; store held: row 13 profit for the period BEFORE share of joint venture loss and before the NCI split (2,534.01 lakh); row 14 JV share is (56.85)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "KIMS",
+   "qe": "20211231",
+   "basis": "std",
+   "was": 53.1,
+   "fixed": 66.99,
+   "why": "own results PDF KIMS_20211231_ab8dbd4b-bbf2-4539-b358-9713b5f793e9.pdf p4 (million, image) prints 66.99; store held: not printed on this page; 53.10 is the same number as storeA of the KIMS 2021-03-31 standalone cell (a derived Jan-Mar 2021 figure: year 1,886.49 minus nine months 1,355.50 = 530.99 mn), so it looks like another quarter's value sitting in this slot",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "KIRLOSBROS",
+   "qe": "20211231",
+   "basis": "std",
+   "was": 73.1,
+   "fixed": 17.8,
+   "why": "own results PDF KIRLOSBROS_20211231_df489388-ae33-4479-a61e-2eae4b17fb46.pdf p3 (million, text) prints 17.8; store held: not found on the standalone or consolidated pages (consolidated Q3 profit is 218 mn, owners 217 mn; 9M standalone 408 mn) - 73.1 matches no printed figure seen",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "KOVAI",
+   "qe": "20211231",
+   "basis": "std",
+   "was": 30.28,
+   "fixed": 26.06,
+   "why": "own results PDF KOVAI_20211231_774db719-0b9d-436d-9fae-c4bf3748ed65.pdf p2 (lakh, image) prints 26.06; store held: 30.28 matches no figure printed on this page (not TCI 2,620.79, not prev qtr 2,414.87, not Dec-2020 2,075.14)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "LAHOTIOV",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 2.32,
+   "fixed": 1.45,
+   "why": "own results PDF LAHOTIOV_20260331_8cba920e-efce-4187-adf2-67a50f05e356.pdf p16 (lakh, image) prints 1.45; store held: 2.32 = STANDALONE Q4 net profit (232.43 lakh, p6 of same pdf)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "MADHAVIPL",
+   "qe": "20231231",
+   "basis": "std",
+   "was": 3.59,
+   "fixed": 2.19,
+   "why": "own results PDF MADHAVIPL_20231231_f0755cb9-eb73-429b-8820-2d8500a5c49c.pdf p4 (lakh, image) prints 2.19; store held: 3.59 = CONSOLIDATED column \"Net Profit for the period (9+10-11)\" 358.67 lakh on the same page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "MADHAVIPL",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 3.84,
+   "fixed": 2.69,
+   "why": "own results PDF MADHAVIPL_20241231_64d6e25a-a11d-450a-b73e-cf4038b6db02.pdf p4 (lakh, image) prints 2.69; store held: 3.84 = STANDALONE column net profit 384.49 lakh on the same page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "MERCANTILE",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 9.09,
+   "fixed": -0.87,
+   "why": "own results PDF MERCANTILE_20250630_294193a4-0bd7-40fb-bdaa-2f580edf321e.pdf p10 (lakh, image) prints -0.87; store held: 9.09 = the PREVIOUS quarter column (quarter ended 31/03/2025) net profit after minority 908.62 lakh",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "NATIONSTD",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 4.26,
+   "fixed": 3.25,
+   "why": "own results PDF NATIONSTD_20251231_6d577767-d263-4c1a-9a08-746c47e32999.pdf p4 (lakh, text) prints 3.25; store held: 4.26 = the PREVIOUS quarter column (30-Sep-25) profit 425.66 lakh",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "NDTV",
+   "qe": "20220630",
+   "basis": "con",
+   "was": 12.45,
+   "fixed": 23.23,
+   "why": "own results PDF NDTV_20220630_ecf1bb7b-3c46-40fd-99f5-24330f012815.pdf p3 (lakh, image) prints 23.23; store held: A 12.45 = standalone net profit after tax 1,245 lakh (standalone column of the same page)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "NFL",
+   "qe": "20221231",
+   "basis": "con",
+   "was": 5.89,
+   "fixed": 554.03,
+   "why": "own results PDF NFL_20221231_77616cb7-6c85-431a-afdb-d97bae1feaad.pdf p7 (lakh, image) prints 554.03; store held: A 5.89 = standalone profit for the period 58,862 lakh (=588.62 cr) with a 100x unit slip",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "NITTAGELA",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 0.06,
+   "fixed": 31.06,
+   "why": "own results PDF NITTAGELA_20251231_fc9cb029-71ae-4d4e-a55e-f08c89f89f06.pdf p4 (lakh, image) prints 31.06; store held: A 0.06 matches no figure on the page (not PAT, TCI, 9M, prior quarter or a 10x/100x slip of them)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "NITTAGELA",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 0.06,
+   "fixed": 25.57,
+   "why": "own results PDF NITTAGELA_20251231_fc9cb029-71ae-4d4e-a55e-f08c89f89f06.pdf p8 (lakh, image) prints 25.57; store held: A 0.06 matches no figure on the page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PARAGMILK",
+   "qe": "20211231",
+   "basis": "con",
+   "was": 0.7,
+   "fixed": 19.02,
+   "why": "own results PDF PARAGMILK_20211231_dd14bace-3f27-449b-ac40-586d38265e86.pdf p10 (million, image) prints 19.02; store held: B 19015.0 = the right figure 190.15 million with a 1000x unit slip (19.015 cr); A 0.7 matches no figure on the page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PRADPME",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 7.06,
+   "fixed": 6.48,
+   "why": "own results PDF PRADPME_20251231_5f13ff16-355e-4ab5-be48-29f0a40c7ead.pdf p3 (lakh, image) prints 6.48; store held: A 7.06 = consolidated profit for the period 706.44 lakh (consolidated column of the same page)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PRADPME",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 6.48,
+   "fixed": 7.06,
+   "why": "own results PDF PRADPME_20251231_5f13ff16-355e-4ab5-be48-29f0a40c7ead.pdf p3 (lakh, image) prints 7.06; store held: A 6.48 = standalone profit for the period 647.55 lakh (standalone column of the same page)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PRADPME",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 10.32,
+   "fixed": 7.79,
+   "why": "own results PDF PRADPME_20260331_e40783f6-8cf2-4344-acfb-6b1421eadf61.pdf p3 (lakh, image) prints 7.79; store held: A 10.32 = consolidated profit for the quarter 1,031.92 lakh (consolidated column of the same page)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PRADPME",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 7.79,
+   "fixed": 10.32,
+   "why": "own results PDF PRADPME_20260331_e40783f6-8cf2-4344-acfb-6b1421eadf61.pdf p3 (lakh, image) prints 10.32; store held: A 7.79 = standalone profit for the quarter 779.39 lakh; B 15.83 matches no figure on the page (nearest lookalikes: 15.82 = year earlier-years tax, 15.73 = FY25 EPS)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PTC",
+   "qe": "20220930",
+   "basis": "con",
+   "was": 157.11,
+   "fixed": 119.79,
+   "why": "own results PDF PTC_20220930_3d2f1182-2c7e-4b8b-8c03-d4efb41405ef.pdf p93 (lakh, image) prints 119.79; store held: A 157.11 = consolidated net profit 15,711 lakh of the quarter ended 31.03.2022 (comparative column of the June-2022 statement, e.g. page 48 of pdf/PTC_20220930_85e8ef2a-...pdf), before the split and wrong quarter",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PTCIL",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 6.0,
+   "fixed": 5.59,
+   "why": "own results PDF PTCIL_20230331_18a2195e-eb57-4ced-92fb-783521f0efe7.pdf p8 (lakh, image) prints 5.59; store held: A 6.0 matches no printed figure (looks like a rounded number; printed profit is 559.27 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "PTCIL",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 9.0,
+   "fixed": 9.2,
+   "why": "own results PDF PTCIL_20230331_18a2195e-eb57-4ced-92fb-783521f0efe7.pdf p13 (lakh, image) prints 9.2; store held: A 9.0 matches no printed figure (looks like a rounded number; printed profit is 920.13 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "QUINT",
+   "qe": "20260331",
+   "basis": "con",
+   "was": -19488.0,
+   "fixed": -2.92,
+   "why": "own results PDF QUINT_20260331_3aade5b4-c8cb-461c-8d0a-24e83f3e0512.pdf p20 (thousand, text) prints -2.92; store held: A -19488.0 = profit/(loss) for the period (19,488) in Rs THOUSANDS, stored unconverted (= -1.95 cr) and before the owners/non-controlling split",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RAJPALAYAM",
+   "qe": "20251231",
+   "basis": "con",
+   "was": -7.92,
+   "fixed": 59.53,
+   "why": "own results PDF RAJPALAYAM_20251231_d030bd79-8e80-4ff0-9602-8cceade4473f.pdf p5 (lakh, image) prints 59.53; store held: A -7.92 = net loss before share of profit of associates (791.68) lakh (row 7; same number as the standalone net loss)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RAJPALAYAM",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 29.61,
+   "fixed": -3.44,
+   "why": "own results PDF RAJPALAYAM_20260331_240a4295-b95d-408e-ab4f-35051a9ad75f.pdf p3 (lakh, image) prints -3.44; store held: A 29.61 = consolidated profit for the quarter 2,960.83 lakh (page 11)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RAJPALAYAM",
+   "qe": "20260331",
+   "basis": "con",
+   "was": -3.44,
+   "fixed": 29.61,
+   "why": "own results PDF RAJPALAYAM_20260331_240a4295-b95d-408e-ab4f-35051a9ad75f.pdf p11 (lakh, image) prints 29.61; store held: A -3.44 = net loss before share of profit of associates (344.22) lakh (row 7; same number as the standalone net loss)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RIR",
+   "qe": "20231231",
+   "basis": "std",
+   "was": 0.06,
+   "fixed": 1.43,
+   "why": "own results PDF RIR_20231231_905da90e-1d0a-49ea-9465-3059814d5975.pdf p3 (lakh, image) prints 1.43; store held: A 0.06 not found on the page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RIR",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 0.0,
+   "fixed": 1.48,
+   "why": "own results PDF RIR_20241231_0b3c3068-afc3-40a2-95e9-a51db955b1ef.pdf p6 (lakh, image) prints 1.48; store held: A 0.0 not a printed figure",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RRIL",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 0.34,
+   "fixed": 1.74,
+   "why": "own results PDF RRIL_20251231_98e87c25-76ef-4287-92f9-02d9500c9bc4.pdf p7 (lakh, image) prints 1.74; store held: A 0.34 = STANDALONE profit for the quarter (33.59 lakh, page 3)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RRIL",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 0.31,
+   "fixed": 2.94,
+   "why": "own results PDF RRIL_20260331_c5158174-cfcd-47eb-aaa3-79bfcda39c0c.pdf p14 (lakh, image) prints 2.94; store held: A 0.31 = STANDALONE profit for the quarter (30.69 lakh, page 6)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "RUSTOMJEE",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 83.48,
+   "fixed": 64.8,
+   "why": "own results PDF RUSTOMJEE_20250331_9ab0dd70-1b1c-40d3-b222-5b961f1b5d12.pdf p9 (lakh, image) prints 64.8; store held: A 83.48 not found in any column of the consolidated page (profit 6,695; PBT 8,662; TCI 6,559)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SAKTHIFIN",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 15.71,
+   "fixed": 3.45,
+   "why": "own results PDF SAKTHIFIN_20230331_82340fdd-a0f6-4f4f-8c3d-56a865af6227.pdf p6 (lakh, image) prints 3.45; store held: A 15.71 not found on the page (FY profit is 1,249.37; quarter PBT 544.70)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SEIL",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 2.76,
+   "fixed": 3.08,
+   "why": "own results PDF SEIL_20240630_f7ce37a2-f7d0-43f1-92fc-7790d363e606.pdf p8 (lakh, image) prints 3.085; store held: A 2.76 = standalone profit for the quarter (276.46 lakh, page 5)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHBAJRG",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 14.57,
+   "fixed": 1.96,
+   "why": "own results PDF SHBAJRG_20251231_8ec67cb9-fa6d-4880-afeb-2361e2399458.pdf p4 (lakh, image) prints 1.96; store held: B 1.95 is 0.01 below the printed 195.93 lakh (=1.9593 cr, rounds to 1.96) - same figure, last digit differs; A 14.57 = standalone profit for the YEAR ended 31.03.2026 (1457.37 lakh, printed in the May-2026 filing)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHBAJRG",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 14.57,
+   "fixed": 6.17,
+   "why": "own results PDF SHBAJRG_20251231_8ec67cb9-fa6d-4880-afeb-2361e2399458.pdf p9 (lakh, image) prints 6.17; store held: A 14.57 = STANDALONE profit for the YEAR ended 31.03.2026 (1457.37 lakh, May-2026 filing)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHBAJRG",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 3.51,
+   "fixed": 6.31,
+   "why": "own results PDF SHBAJRG_20260331_d748ff21-35ae-4d1e-9860-a89cf223c0db.pdf p8 (lakh, image) prints 6.31; store held: A 3.51 = standalone profit of the prior-year quarter ended 31.03.2025 (350.63 lakh, comparative column)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHBAJRG",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 3.51,
+   "fixed": 19.4,
+   "why": "own results PDF SHBAJRG_20260331_d748ff21-35ae-4d1e-9860-a89cf223c0db.pdf p16 (lakh, image) prints 19.4; store held: A 3.51 = STANDALONE profit of the prior-year quarter ended 31.03.2025 (350.63 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHINDL",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 5.43,
+   "fixed": 0.05,
+   "why": "own results PDF SHINDL_20260331_25a6c305-7592-4e60-a300-44e642fca1a5.pdf p19 (lakh, text) prints 0.05; store held: A 5.43 = the printed lakh figure (5.43 lakh) stored as crore - 100x unit slip",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SHINDL",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 5.43,
+   "fixed": 0.05,
+   "why": "own results PDF SHINDL_20260331_25a6c305-7592-4e60-a300-44e642fca1a5.pdf p32 (lakh, text) prints 0.05; store held: A 5.43 = the printed lakh figure (5.43 lakh) stored as crore - 100x unit slip",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SIMPLEXCAS",
+   "qe": "20210630",
+   "basis": "con",
+   "was": 4.4,
+   "fixed": 0.1,
+   "why": "own results PDF SIMPLEXCAS_20210630_cc657783-5501-4f84-ba14-812d139843fe.pdf p5 (lakh, image) prints 0.1; store held: A 4.4 = previous quarter ended 31-03-2021 column (439.63 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SPANDANA",
+   "qe": "20220630",
+   "basis": "con",
+   "was": -299.77,
+   "fixed": -219.77,
+   "why": "own results PDF SPANDANA_20220630_ba7899d7-28e3-4fcd-8a36-33a238124b51.pdf p11 (million, image) prints -219.77; store held: A -299.77 is not a printed figure; differs from the printed (2,197.7x) by one digit (2,997.7 vs 2,197.7) - digit misread",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SPELS",
+   "qe": "20220930",
+   "basis": "std",
+   "was": -7.77,
+   "fixed": 2.9,
+   "why": "own results PDF SPELS_20220930_878e61fa-0fcd-436d-a992-010dfe546964.pdf p4 (lakh, image) prints 2.9; store held: A -7.77 not found in any column of the page (quarter 290.13; Jun-22 165.06; Sep-21 (173.36); half-year 455.62; FY22 (1,184.35))",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SPELS",
+   "qe": "20230630",
+   "basis": "std",
+   "was": 1.46,
+   "fixed": -4.04,
+   "why": "own results PDF SPELS_20230630_4e5b3e07-00f4-4f76-afb5-6c744294cee6.pdf p2 (lakh, image) prints -4.04; store held: A 1.46 = Sep-2022 quarter comparative column (146.11 lakh) as printed in the Sep-2023 filing - a different quarter; not on this page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SPELS",
+   "qe": "20230930",
+   "basis": "std",
+   "was": -3.88,
+   "fixed": -3.73,
+   "why": "own results PDF SPELS_20230930_47e104a7-4943-4318-b5d7-3c89b7d94937.pdf p4 (lakh, image) prints -3.73; store held: A -3.88 not found in any column (quarter (372.94); Jun-23 (403.66); Sep-22 146.11; half-year (776.59); FY23 (308.90))",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": "20240331",
+   "basis": "std",
+   "was": 126.87,
+   "fixed": 119.0,
+   "why": "own results PDF SPICEJET_20240331_e890360d-55b4-4045-8a32-b2e1db4ed35c.pdf p19 (million, image) prints 119.0; store held: storeA 126.87 = CONSOLIDATED profit for the quarter incl. NCI 1,268.74 mn (p30; consolidated owners 1,271.39, NCI (2.65))",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "TAALTECH",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 0.07,
+   "fixed": 11.58,
+   "why": "own results PDF TAALTECH_20251231_40b2b5de-55e1-4c30-9a8d-36114377ff0a.pdf p9 (lakh, image) prints 11.58; store held: storeA 0.07 not found on the consolidated or standalone page (standalone Q3 profit is 1,078.56 lakh)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "TAALTECH",
+   "qe": "20260331",
+   "basis": "con",
+   "was": -0.05,
+   "fixed": 17.16,
+   "why": "own results PDF TAALTECH_20260331_effaee69-8a50-4202-ae32-8f8fbcb80c32.pdf p15 (lakh, image) prints 17.16; store held: storeA -0.05 not found on the consolidated or standalone page (standalone Q4 profit 1,713.93 lakh; the only similar printed figure is the (5.82) lakh OCI sub-total, not a match)",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
+  },
+  {
+   "sym": "VALIANTORG",
+   "qe": "20200930",
+   "basis": "std",
+   "was": 27.06,
+   "fixed": 30.71,
+   "why": "own results PDF VALIANTORG_20200930_d34bc2be-1474-4579-8ba9-42229ce81ce9.pdf p2 (lakh, image) prints 30.71; store held: storeA 27.06 not found on the page",
+   "found": "own results PDF page read 17-Nov-2026 (BSE filing, quarter's own three-month column)"
   }
  ],
  "retracted": [
