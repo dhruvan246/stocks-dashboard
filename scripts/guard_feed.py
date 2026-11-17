@@ -19,6 +19,11 @@ import json, os, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_RATIO = {".json": 0.5, ".bin": 0.9, ".html": 0.5}
+# To-do queues: an entry leaves the list the night its cell gets filled, so a big shrink is the job
+# working, not a broken fetch (2026-11-17: this file fell 37 -> 19 entries in results season, all 21
+# cleared cells verified filled, and the size floor stopped the nightly for three nights — runbook §239a).
+# Still must be valid JSON. scripts/ files cannot be listed in docs/feeds.json, hence this set.
+SHRINK_OK = {"scripts/_missing_quarter_pending.json"}
 
 
 def git(*args):
@@ -70,6 +75,8 @@ def main():
             continue  # new file — nothing to compare against
         old_size = int(old.stdout.strip())
         ratio = rule.get("min_ratio", DEFAULT_RATIO[ext])
+        if path in SHRINK_OK:
+            ratio = 0
         if ratio and old_size > 4096 and new_size < ratio * old_size:
             problems.append(
                 f"{path}: shrank {old_size} -> {new_size} B "

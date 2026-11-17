@@ -29633,3 +29633,17 @@ quarter's own PDF; its older rows Dec-22 (3699.78), Mar-23 (3005.28), Sep-23 to 
 are the same kind of junk and are NOT read yet. A year-ago base this small is what made ELANTAS look like +100,000 %
 growth — any growth screen should be read with the base cell opened first. (6) LANCER Jun-26 consolidated 5.24 is the
 total; the Sep-26 filing's comparative column shows owners 5.05 — not healed (comparative, not the quarter's own filing).
+
+## §239a — Nightly rebuild stopped three nights by the feed guard on a to-do queue (2026-11-17)
+
+**What happened.** The nightly `refresh-fundamentals` run failed on 14, 15 and 16 Nov (and a manual run on 17 Nov) at
+"Guard — refuse to commit a broken or shrunken feed": `scripts/_missing_quarter_pending.json` shrank 4778 → 2189 B
+(46 %, floor 50 %). Nothing from those nightly runs was committed (the half-hourly runs skip the reconcile step and
+kept working). **Measured cause:** the file is a to-do queue — `reconcile_missing_quarters.py` deletes an entry the
+night its cell is filled by any route. In results season 21 of 37 entries were cleared; all 21 were checked and each
+has a stored Sep-26 / Mar-26 row in `sf_fundamentals.json`. The shrink was the job working.
+**Fix.** `guard_feed.py` has a `SHRINK_OK` set (that one file): no size floor, still must be valid JSON. Tested: queue
+cut to 10 entries passes; broken JSON in the queue fails; `ann_date_fills.json` cut to a quarter still fails.
+**Rule.** A file whose job is to empty out must be in `SHRINK_OK` (scripts/) or have `min_ratio: 0` in
+`docs/feeds.json` (docs/). And a nightly that fails three nights must not go unnoticed — check why the feed monitor
+did not raise it (NOT investigated here).
