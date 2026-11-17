@@ -29813,3 +29813,11 @@ settled from their own filings, are listed in `scripts/cell_fix_conflict_allow.j
 Mar-18 con, CEMPRO Dec-18 con, COFFEEDAY Jun-19 std, GITANJALI Sep-15 std, GSFC Sep-24 std, LITL Sep-15 std, LUXIND
 Sep-23 std, SUNPHARMA Mar-15 std, TARIL Mar-25 con, TREEHOUSE Mar-16 std. Remove a key once its losing entry is
 retracted. CEMPRO ×2 is a rule question (printed "profit for the period" vs EPS-confirmed owners' share) for the user.
+
+**§239c update 2 (17-Nov-2026).** (a) User rule for ITD Cementation (CEMPRO) consolidated quarters whose page splits only total
+comprehensive income: "Owners' profit" — store profit for the period minus the non-controlling share shown in that split.
+Applied to Mar-18 (26.84), Sep-18 (27.36 → 27.27) and Dec-18 (34.43); the three October entries that stored the printed
+profit are retracted. Other CEMPRO quarters were not re-read. (b) Five more October entries retracted after a second
+filing was read for each (GITANJALI, LITL, SUNPHARMA, COFFEEDAY, TREEHOUSE — reasons in their `retracted_why`).
+(c) Still a rule question for the user: ASSAMCO Mar-17 std, quarter column as printed (-45.63, live) vs full year minus
+the other quarters (-49.81). Pre-2020 UNKNOWN is now 23; the nightly check should list 28 open.
