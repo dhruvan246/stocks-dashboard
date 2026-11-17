@@ -29394,6 +29394,17 @@ filing; the May-2024 filing restates that half to 75.47, so 76.48 + 85.64 ≠ FY
 from its first filing; the May-2026 filing restates it to 95.84, so 93.55 + 107.04 ≠ FY26 202.88). FY24 and FY26 therefore
 stay un-tiled on the card (blank, never wrong) while the stored halves follow the first filing.
 
+**Round 12f (2026-11-17, user: "read the two tirupati filings").** TIRUPATI 20240930 / 20250331 were 6-month by XBRL but their
+profit was unproven: the NSE SME XBRL tags TOTAL COMPREHENSIVE INCOME as the period's profit. Read by eye — Nov-2024 filing
+TIRUPATI_06112024211520_OUTCOMEFINAL.pdf p6 std profit 709.17 (TCI 710.90 = XBRL), p13 con 707.91 (TCI 709.63 = XBRL);
+May-2025 filing TIRUPATI_22052025194453_SELETTEROUTCOMEOFBM.pdf p6 std 727.67 (TCI 751.13 = XBRL), p15 con 726.58 (TCI
+750.04 = XBRL). Stored 7.09/7.08 and 7.28/7.27 are right (the earlier fund_cell_fix entries stand). build_row_periods.py now
+lets a result-PDF proof (nse_sme_pdf_proofs.json, its own closing year) supply the profit proof of an XBRL-marked row whose
+ps or pc is null — only fills the missing side, never replaces a length mark or a proven profit. Measured vs the old
+builder: 14 rows on 13 symbols gain a profit proof, 0 change otherwise (AATMAJ, BRACEPORT, DANISH, DUCOL, DURLAX, EMMIL,
+EUROBOND, GOLDKART, KNAGRI, MPTODAY, SAWALIYA, TIRUPATI ×2, WINSOL). Only TIRUPATI was merged now; the rest land on the next
+full run of the builder.
+
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
 StockView sent standalone net profit and consolidated owners' profit for every PIT-N500 quarter (CSV, 2026-10-21). Every

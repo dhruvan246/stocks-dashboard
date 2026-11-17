@@ -442,13 +442,19 @@ def main():
     pp_path = os.path.join(HERE, "nse_sme_pdf_proofs.json")
     PP = {k: v for k, v in json.load(open(pp_path, encoding="utf-8")).items() if not k.startswith("_")} \
         if os.path.exists(pp_path) else {}
+    n_pdf_pp = 0
     for sym, qs in sorted(PP.items()):
         if slug(sym) not in have:
             continue
         F_ = json.load(open(os.path.join(a.fin, slug(sym) + ".json"), encoding="utf-8"))
         rv, frows = F_.get("revop") or {}, {r[0]: r for r in (F_.get("fund") or [])}
         for qe, bases in sorted(qs.items()):
-            if qe in out.get(sym, {}):
+            # A row already proven 6-month from XBRL whose PROFIT failed there (ps or pc null) may still get its profit
+            # proven by the result PDF's own closing year — SME XBRL often tags total comprehensive income as the
+            # period's profit (TIRUPATI Sep-24/Mar-25: XBRL 710.90/751.13 lakh = TCI; PDFs print profit 709.17/727.67,
+            # runbook §210d round 12f). The length mark itself is never replaced here.
+            prev = out.get(sym, {}).get(qe)
+            if prev is not None and not (prev.get("m") == 6 and (prev.get("ps") is None or prev.get("pc") is None)):
                 continue
             for b, pr in sorted(bases.items()):
                 r3, p3 = pr.get("rev") or [], pr.get("pat") or []
@@ -481,10 +487,20 @@ def main():
                 ok_ = ph is not None and same_sum(p3[0] + p3[1], p3[2]) and pv is not None and same_row(pv, ph) and po_ok
                 e_["p" + ("c" if i == 1 else "s")] = pv if ok_ else None
                 e_["p" + ("s" if i == 1 else "c")] = po if ok_ else None
+                if prev is not None:                            # XBRL-proven length: only add the PDF-proven profit,
+                    if ok_ and same_row(prev.get("s") or 0, e_["s"] or 0) and same_row(prev.get("c") or 0, e_["c"] or 0) \
+                            and any(prev.get(k_) is None and e_.get(k_) is not None for k_ in ("ps", "pc")):
+                        for k_ in ("ps", "pc"):                 # fill only the side XBRL left unproven
+                            if prev.get(k_) is None:
+                                prev[k_] = e_[k_]
+                        prev["f"] = list(prev.get("f") or []) + [pr.get("f")]
+                        n_pdf_pp += 1
+                        break
+                    continue
                 out.setdefault(sym, {})[qe] = e_
                 n_rows += 1; n_pdf += 1
                 break
-    print("NSE SME result-PDF proofs: %d rows marked" % n_pdf)
+    print("NSE SME result-PDF proofs: %d rows marked, %d XBRL-marked rows given their profit proof" % (n_pdf, n_pdf_pp))
 
     # carry forward entries this run could not re-check (their evidence files were not scanned); "bse-pf" entries are
     # re-derived from docs/bse_fundamentals.json every run, so one that no longer proves is dropped, not carried
