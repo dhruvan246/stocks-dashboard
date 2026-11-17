@@ -29857,3 +29857,13 @@ the other quarters (-49.81). Pre-2020 UNKNOWN is now 23; the nightly check shoul
 **§239c update 3 (17-Nov-2026).** ASSAMCO Mar-17 std: user chose "Back to -49.81" — a Q4 whose printed three-month column
 disagrees with full year minus the other quarters is stored as the balancing figure (FY-consistency identity, §42/§52a).
 My -45.63 entry is retracted; pre-2020 healed count is 29 (28 of the first list + CEMPRO Sep-18).
+
+**§239c update 4 (17-Nov-2026, user: "read the 5 unknown cells from 2020 onwards").** Each read from its own filing.
+KIRLFER Dec-22 con: main 116.61 right — the quarter column prints minority 21.61 but 9M minority 35.89 − Jun 8.52 − Sep 14.28
+= 13.09 and EPS 8.40 agree with 116.61 (printed 21.61 is two quarters); accepted. DATAPATTNS Dec-21 std: page prints 8.96;
+accepted. ICICIAMC Jun-25 std: 782.32 = 9M − Q3 − Q2 of the first own filing (Jan-2026); the Jun-26 comparative 783.64 is
+restated for the ICICI Venture transfer; accepted. EMMVEE Mar-25 std: FY26 filing comparative prints 22.62 lakh; healed
+0.2 → 0.23. **Still open — user decision:** PIRAMALFIN Jun-25 std: stored 263.0; PEL's own first filing (29-Jul-2025 p6)
+prints 162.43; the merged entity's restated comparative (Jun-26 filing p8, note 15) prints 263.25. Seen in passing, not
+healed: ICICIAMC Sep-25 stored 835.0, comparative column prints 8,354.3 mn (835.43); DATAPATTNS Dec-21 stored ann
+2022-02-10, filing reached NSE 2022-02-08 16:58.
