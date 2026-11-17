@@ -82,7 +82,7 @@ COLLIDE_J = os.path.join(DOCS, "bse_alias_collisions.json")  # BSE tickers the N
 
 # per-quarter detail fields the PAGE consumes — the rest of the ledger stays local-only
 XTRA_KEEP = {"eps_b", "eps_d", "oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat",
-             "assoc", "nci",
+             "assoc", "nci", "xo", "disc",
              "assets", "eq", "sc", "oeq", "borr", "blt", "bst", "cash", "invnt", "rec", "pay",
              "ppe", "cwip", "iuad", "gw", "intg", "invst", "invprop", "bio", "prodprop",
              "cfo", "cfi", "cff", "capex", "divp", "cf_tax", "cf_d", "cf_m", "seg",
@@ -211,6 +211,7 @@ def main():
 
     # deep XBRL detail — prefer the local build output, fall back to the committed .gz (CI path)
     xtra = {}
+    XRANK = {}      # (sym, qe, basis) -> source rank of the detail cell: 0 filer XBRL, 1 NSE archive page, 2 Moneycontrol
     src = XTRA_J if os.path.exists(XTRA_J) else (XTRA_GZ if os.path.exists(XTRA_GZ) else None)
     if src:
         try:
@@ -239,6 +240,8 @@ def main():
                             kd = {k: v for k, v in d.items() if k in XTRA_KEEP}
                             if kd:
                                 kc[b] = kd
+                                s_ = str(d.get("src") or "")
+                                XRANK[(sym, qe, b)] = 0 if not s_ else (1 if s_.startswith("nse-html") else 2)
                     if kc:
                         keep[qe] = kc
                 if keep:
@@ -513,6 +516,28 @@ def main():
         rows.sort(key=lambda r: r[0])
         return rows or None
 
+    def merged_x(sym):
+        """§214a F4: the detail block merges a former symbol PER BASIS, by source. merged() fills whole QUARTERS, so a
+        Moneycontrol cell xtra_mc wrote under the new ticker hid the company's own filing stored under the old one
+        (INFRATEL -> INDUSTOWER, MOTHERSUMI -> MOTHERSON, TATAMOTORS -> TMPV, AEGISCHEM -> AEGISLOG …: 115 PIT-N500 cells
+        whose PBT / tax lines were not the filing's, 7 of them MC's post-demerger restatement). Now a former's cell fills a
+        missing basis, and replaces a cell of a LOWER-ranked source (filer XBRL > NSE archive page > Moneycontrol)."""
+        olds = [o for o in ok_formers.get(sym, ()) if xtra.get(o)]
+        base_key = sym if xtra.get(sym) else aliases.get(sym)
+        base = xtra.get(base_key) if base_key else None
+        if not olds:
+            return base
+        out = {q: dict(c) for q, c in (base or {}).items()}
+        rank = {(q, b): XRANK.get((base_key, q, b), 0) for q, c in out.items() for b in c}
+        for o in olds:
+            for q, c in xtra[o].items():
+                tgt = out.setdefault(q, {})
+                for b, d in c.items():
+                    r_old = XRANK.get((o, q, b), 0)
+                    if b not in tgt or r_old < rank.get((q, b), 0):
+                        tgt[b] = d; rank[(q, b)] = r_old
+        return out or None
+
     if os.path.isdir(out_dir):
         shutil.rmtree(out_dir)         # drop slices for symbols that left the feeds
     os.makedirs(out_dir, exist_ok=True)
@@ -568,7 +593,7 @@ def main():
         gv = merged(gov_rows, sym, "dict")
         if gv:
             payload["shpGov"] = gv          # {QE: gov%} — Screener's separate Government row
-        xt = merged(xtra, sym, "dict")
+        xt = merged_x(sym)
         if xt:
             payload["x"] = xt
         kp = resolve(kpi, sym)

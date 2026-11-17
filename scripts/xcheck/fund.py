@@ -88,10 +88,17 @@ class FundPbtTax(C.Check):
                     pat = fr[pi]
                     if pat is None or d.get("pbt") is None or d.get("tax") is None: continue
                     pbt, tax = d["pbt"], d["tax"]; asc = d.get("assoc") or 0.0; nci = d.get("nci") or 0.0
+                    # §214a F4-D: an archive page's extraordinary items / discontinued operations (signed profit
+                    # effect, landed only where the page's own rows close) sit between PBT - tax and the profit
+                    br = (d.get("xo") or 0.0) + (d.get("disc") or 0.0)
                     cands = {"pbt-tax": pbt - tax}
+                    if br:
+                        cands["pbt-tax+xo/disc"] = pbt - tax + br
                     if bk == "c":
                         cands.update({"pbt-tax+assoc-nci": pbt - tax + asc - nci, "pbt-tax-nci": pbt - tax - nci,
                                       "pbt-tax+assoc": pbt - tax + asc})
+                        if br:
+                            cands["pbt-tax+xo/disc+assoc-nci"] = pbt - tax + br + asc - nci
                     self.compared += 1
                     if any(_near(pat, v, 0.02, 1.0) for v in cands.values()): self.agree += 1; continue
                     best = min(cands.items(), key=lambda kv: abs(kv[1] - pat))

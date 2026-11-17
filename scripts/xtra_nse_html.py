@@ -148,6 +148,26 @@ R_TOTOPS = re.compile(r"^total income from operations", re.I)
 R_TOTEXP = re.compile(r"^total expenses?$", re.I)
 R_EQCAP = re.compile(r"paid-?up equity share capital", re.I)
 R_FV = re.compile(r"^face value", re.I)
+# §214a F4-D: the consolidated group split. Every archive con template prints the group profit, then associates and
+# minority, then the owners' figure (2005-12: "Net Profit (+) / Loss (-) for the period" → "Minority Interest" →
+# "Shares of Associates" → "Consolidated Net Profit …"; 2012-16: "… for the period" → "Share of profit / (loss) of
+# associates" → "Minority interest" → "Net Profit / (Loss) after taxes, minority interest and share …"). The reader
+# never read those two rows, so 6,602 con cells carried no assoc/nci and the stock page's annual Net Profit showed
+# owners' profit only. The SIGNS vary by filer (RAYMOND Sep-2015 prints associates -444 and ADDS 444), so a split
+# lands only when the page's own arithmetic closes: group ± associates ∓ minority == the owners' row.
+R_GRP = rx(r"^net profit\s*(?:\(\+\))?\s*/\s*\(?loss\)?\s*(?:\(-\))?\s*for the period$")
+R_ASSOC = rx(r"^shares? of (?:net )?(?:profit\s*/?\s*\(?loss\)?\s*(?:of|in)\s+)?associates?(?: companies| and jv)?$",
+             r"^profit\s*/\s*\(loss\) of associates?$")
+R_NCI = rx(r"^minority (?:ex)?inte?rest$")
+R_OWN = rx(r"^net profit\s*/\s*\(loss\) after taxes,? minority interest and share", r"^consolidated net profit")
+# §214a F4-D: what sits between PBT - tax and the period's profit on the archive pages — "Extraordinary items" (2005-16)
+# and "Profit/(loss) from discontinued operations (after tax)" (2016 Ind-AS template). Stored SIGNED as the effect on
+# profit (a loss is negative: ANSALAPI Jun-2015 prints 1532 lakh and deducts it, xo = -15.32), and only when the page
+# closes: ordinary after-tax profit + xo (+ disc) == the period's profit.
+R_AT = rx(r"^net profit\s*(?:\(\+\))?\s*/\s*\(?loss\)?\s*(?:\(-\))?\s*from ordinary activities after tax$",
+          r"^profit \(loss\) for the period from continuing operations$")
+R_XO = rx(r"^extra\s?ordinary items?(?: \(net of tax expense\))?$")
+R_DISC = rx(r"^profit\s*/\s*\(loss\) from discontinued operations \(after tax\)$")
 ROWNUM = NAR.ROWNUM
 MONEY_FIELDS = ("oi", "fc", "dep", "tax", "exc", "pbt", "emp", "mat", "int_exp")
 
@@ -226,6 +246,106 @@ def fc_block(rows):
         return None
     others = sum(r[1] for k, r in enumerate(items) if k != fcs[0])
     return items[fcs[0]][1], rows[i_te][1] - others
+
+
+def group_split(rows, div, hit):
+    """§214a F4-D. -> ({"assoc": cr, "nci": cr} subset, journal note) or (None, refusal). In the ledger's sense:
+    owners = PBT - tax + assoc - nci, so `assoc` is ADDED to the group profit and `nci` SUBTRACTED. A row the page's
+    arithmetic leaves out (INTELLECT Jun-2016: associates -125.28 printed, owners == group) is not landed — whether it
+    already sits inside PBT is not on the page. Lands only when (a) the owners' row is the stored-PAT anchor and
+    (b) exactly one sign reading closes the page to 0.5 % (or Rs 0.01 cr)."""
+    lg, g = pick_row(rows, R_GRP)
+    lo, o = pick_row(rows, R_OWN)
+    la, a = pick_row(rows, R_ASSOC)
+    lm, m = pick_row(rows, R_NCI)
+    if g is None or o is None or (a is None and m is None):
+        return None, "split: rows absent"
+    g, o = g / div, o / div
+    if not anchor_ok(o, hit):
+        return None, "split: owners' row %.2f is not the PAT anchor %.2f" % (o, hit)
+    a = None if a is None else a / div
+    m = None if m is None else m / div
+    tol = max(0.01, 0.005 * max(abs(g), abs(o)))
+    fits = {}
+    for sa in ((1, -1, 0) if a is not None else (0,)):
+        for sm in ((1, -1, 0) if m is not None else (0,)):
+            r = abs(g + sa * (a or 0) - sm * (m or 0) - o)
+            if r <= tol:
+                k = (round(sa * a, 2) if sa and a is not None else None,
+                     round(sm * m, 2) if sm and m is not None else None)
+                fits[k] = min(r, fits.get(k, r))
+    # a zero row fits under every sign: one value (0.00 as printed), not an ambiguity
+    if a is not None and abs(a) < 1e-9:
+        fits = {(0.0, mv): r for (av, mv), r in fits.items()}
+    if m is not None and abs(m) < 1e-9:
+        fits = {(av, 0.0): r for (av, mv), r in fits.items()}
+    if not fits:
+        return None, "split: page does not close (group %.2f, assoc %s, minority %s, owners %.2f)" % (g, a, m, o)
+    if len(fits) > 1:
+        # several readings close when a row is smaller than the tolerance (ABAN Mar-2008: minority 15.03 lakh against
+        # a 0.5 % band of 134 lakh). Take the reading that closes the page EXACTLY (to Rs 0.005 cr); if several do,
+        # the page's own convention (associates added and minority subtracted, each as printed); else refuse.
+        best = min(fits.values())
+        exact = [k for k, r in fits.items() if r <= best + 0.005]
+        nat = (None if a is None else round(a, 2), None if m is None else round(m, 2))
+        if len(exact) == 1:
+            fits = {exact[0]: best}
+        elif nat in exact:
+            fits = {nat: best}
+        else:
+            return None, "split: ambiguous signs %s" % sorted(fits, key=str)
+    av, mv = next(iter(fits))
+    out = {}
+    if av is not None:
+        out["assoc"] = av
+    if mv is not None:
+        out["nci"] = mv
+    if not out:
+        return None, "split: no row lands"
+    return out, {"assoc": (la or "")[:40] if "assoc" in out else None, "nci": (lm or "")[:40] if "nci" in out else None}
+
+
+def bridge(rows, div):
+    """§214a F4-D. -> ({"xo": cr} or {"disc": cr}, journal) or (None, note). Ordinary after-tax profit + xo + disc ==
+    the period's profit, to 0.5 % (or Rs 0.01 cr); one row explains the gap, with one sign, or nothing lands."""
+    _, at = pick_row(rows, R_AT)
+    _, g = pick_row(rows, R_GRP)
+    if at is None or g is None:
+        return None, None
+    at, g = at / div, g / div
+    tol = max(0.01, 0.005 * max(abs(at), abs(g)))
+    if abs(at - g) <= tol:
+        return None, None                                 # nothing between them
+    hits = []
+    for f, pats in (("xo", R_XO), ("disc", R_DISC)):
+        lab, v = pick_row(rows, pats)
+        if v is None or abs(v) < 1e-9:
+            continue
+        v /= div
+        for sg in (1, -1):
+            if abs(at + sg * v - g) <= tol:
+                hits.append((f, round(sg * v, 2), lab))
+    if len(hits) != 1:
+        return None, "bridge: %s (after-tax %.2f, period %.2f)" % ("ambiguous" if hits else "does not close", at, g)
+    f, v, lab = hits[0]
+    return {f: v}, {f: (lab or "")[:40]}
+
+
+def filed_key(r):
+    """Sort key for a results-list row: its filing time, then the archive page id (both rise with filing order).
+    A row without either sorts last."""
+    import datetime
+    t = None
+    for k in ("filingDate", "broadCastDate"):
+        s = (r.get(k) or "").strip()
+        for fmt in ("%d-%b-%Y %H:%M:%S", "%d-%b-%Y %H:%M", "%d-%b-%Y"):
+            try:
+                t = datetime.datetime.strptime(s, fmt); break
+            except ValueError:
+                pass
+        if t: break
+    m = re.search(r"_(\d+)\.html?$", (r.get("resultDetailedDataLink") or "").strip())
+    return (t or datetime.datetime.max, int(m.group(1)) if m else 1 << 62)
 
 
 def iso_qe(s):
@@ -380,6 +500,19 @@ def read_page(page, sym, qe, stored_pat_by_basis, fname=None):
             out.pop("fc")
             jn["fc"] = "refused: '(f) Finance costs' cell == 'Tax expense' (template defect, §211)"
             fc_note["fc_resid"] = round(blk[1] / div, 2)
+    split_note = {}
+    bx, bj = bridge(rows, div)
+    if bx:
+        out.update(bx); jn.update(bj)
+    elif bj:
+        split_note["bridge"] = bj
+    if basis == "c":
+        sp, sj = group_split(rows, div, hit)
+        if sp:
+            out.update(sp)
+            jn.update({k: v for k, v in sj.items() if v})
+        else:
+            split_note["split"] = sj
     if "oi" not in out:
         # Ind-AS 2016-17 template: no Other income row; Total Income − Total income from operations
         _, ti = pick_row(rows, [R_TOTINC])
@@ -467,7 +600,7 @@ def read_page(page, sym, qe, stored_pat_by_basis, fname=None):
         return basis, None, "no-rows-read"
     unit_note = {"unit_declared": meta["unit_declared"]} if ufix else {}
     return basis, out, {"unit": meta.get("unit", "lakhs"), "fmt": meta.get("fmt", "?"),
-                        "anchor": round(hit, 2), "labels": jn, **unit_note, **eps_note, **fc_note}
+                        "anchor": round(hit, 2), "labels": jn, **unit_note, **eps_note, **fc_note, **split_note}
 
 
 # ---------------------------------------------------------------------------------- targets ----
@@ -628,7 +761,11 @@ def main():
         if not rows:
             skips["%s|list" % sym] = "no-nse-filings-any-era"
             continue
-        for r in rows:
+        # EARLIEST filing first (§109a: the as-filed vintage is the first filing of the period). The list comes newest
+        # first, and a later page of the same quarter — the restated comparative a company re-files a year on (VEDL
+        # Jun-2015: 31-Jul-2015 page 1000493 as filed, 29-Sep-2016 page 1013530 the Ind-AS restatement) — still passes
+        # the 3 % PAT anchor, so list order let it win on 196 PIT-N500 cells (runbook §214a F4).
+        for r in sorted(rows, key=filed_key):
             qe = iso_qe(r.get("toDate"))
             if qe not in pending:
                 continue
