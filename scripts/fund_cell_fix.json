@@ -16414,15 +16414,6 @@
    "found": "pre-2020 second-reading read 2026-11-17 (\u00a7239c): each cell's own filing"
   },
   {
-   "sym": "ASSAMCO",
-   "qe": "20170331",
-   "basis": "std",
-   "was": -49.81,
-   "fixed": -45.63,
-   "why": "\u00a7239b pre-2020 read. ACIL_SELetter30052017 p2 (image read 17-Nov-2026): column '3 months ended 31st March 2017' standalone prints Net Profit/(Loss) after tax (4,563.32) lakh, tax rows blank, EPS (1.47). Stored -49.81 = that figure less the 417.35 earlier-year tax printed only in the full-year column; the quarter column is kept as printed.",
-   "found": "pre-2020 second-reading read 2026-11-17 (\u00a7239c): each cell's own filing"
-  },
-  {
    "sym": "NSIL",
    "qe": "20190930",
    "basis": "con",
@@ -16529,6 +16520,15 @@
    "fixed": 94.17,
    "why": "Bridge entry (runbook \u00a7240): the 22-Oct entry 94.0 -> 94.16 was retracted (it read total comprehensive income to owners, 9,416). Own filing TRIL_08042025145430_SE_Intimation_Outcome.pdf p17 (NSE, 08-Apr-2025, Rs lakh), consolidated quarter 31.03.2025: PBT 11,924; tax 2,504; profit for the period 9,420; attributable to Owners of the Company 9,417 -> 94.17 cr. Kept so a store that ever holds the older 94.0 still lands on 94.17.",
    "found": "\u00a7240 conflict read 2026-11-17 (own results PDF page read by eye)"
+  },
+  {
+   "sym": "ASSAMCO",
+   "qe": "20170331",
+   "basis": "std",
+   "was": -45.63,
+   "fixed": -49.81,
+   "why": "\u00a7239c, user decision 17-Nov-2026 ('Back to -49.81'): restores the FY-consistency figure of the \u00a7109h entry (FY17 audited net loss (7,078.77) lakh minus the three other quarters = -49.81; BSE detailed-result -49.807). My same-day change to the printed three-month column (-45.63) is retracted.",
+   "found": "pre-2020 second-reading read 2026-11-17 (\u00a7239c): each cell's own filing"
   }
  ],
  "retracted": [
@@ -17925,6 +17925,16 @@
    "why": "NSE XBRL INDAS_99407_980338_08112023030548.xml (bcast 08-Nov-2023 15:05, Standalone, OneD Q2) ProfitLossForPeriod=383400000 Rs, rounding Crores",
    "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)",
    "retracted_why": "RETRACTED 2026-11-17 (runbook \u00a7240): the quarter's own results PDF Outcome_07112023153447.pdf p3 (NSE, filed 07-Nov-2023 15:34, Rs crore, text layer), Standalone quarter Sep 30, 2023: PBT 50.49 - total tax 12.16 = 'Net Profit for the Period' 38.33. The NSE XBRL used here (filed 08-Nov) tags PBT 50.50 and profit 38.34 - it does not match the printed statement. The signed statement, filed first, wins: 38.33."
+  },
+  {
+   "sym": "ASSAMCO",
+   "qe": "20170331",
+   "basis": "std",
+   "was": -49.81,
+   "fixed": -45.63,
+   "why": "\u00a7239b pre-2020 read. ACIL_SELetter30052017 p2 (image read 17-Nov-2026): column '3 months ended 31st March 2017' standalone prints Net Profit/(Loss) after tax (4,563.32) lakh, tax rows blank, EPS (1.47). Stored -49.81 = that figure less the 417.35 earlier-year tax printed only in the full-year column; the quarter column is kept as printed.",
+   "found": "pre-2020 second-reading read 2026-11-17 (\u00a7239c): each cell's own filing",
+   "retracted_why": "RETRACTED 2026-11-17 (\u00a7239c/\u00a7240): RULE, user decision 'Back to -49.81'. The three-month column of ACIL_SELetter30052017 p2 prints (4,563.32) lakh with no tax, but the full-year column carries earlier-year tax 417.35 and net loss (7,078.77); full year minus the other three quarters = -49.81, which BSE's detailed-result table also shows (entry of runbook \u00a7109h, FY-consistency identity). The quarter is stored as the balancing figure, not the printed column."
   }
  ]
 }

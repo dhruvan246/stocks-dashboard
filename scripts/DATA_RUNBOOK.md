@@ -29832,3 +29832,7 @@ profit are retracted. Other CEMPRO quarters were not re-read. (b) Five more Octo
 filing was read for each (GITANJALI, LITL, SUNPHARMA, COFFEEDAY, TREEHOUSE — reasons in their `retracted_why`).
 (c) Still a rule question for the user: ASSAMCO Mar-17 std, quarter column as printed (-45.63, live) vs full year minus
 the other quarters (-49.81). Pre-2020 UNKNOWN is now 23; the nightly check should list 28 open.
+
+**§239c update 3 (17-Nov-2026).** ASSAMCO Mar-17 std: user chose "Back to -49.81" — a Q4 whose printed three-month column
+disagrees with full year minus the other quarters is stored as the balancing figure (FY-consistency identity, §42/§52a).
+My -45.63 entry is retracted; pre-2020 healed count is 29 (28 of the first list + CEMPRO Sep-18).
