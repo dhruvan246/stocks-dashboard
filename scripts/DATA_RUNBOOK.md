@@ -29306,6 +29306,12 @@ the con chain had no held anchor; unit proven by EPS x shares. Held by the origi
  Sep-23 original Oct-2023 p3 7,647.98 / 1,092.25 (Indian GAAP) vs May-2024 Ind AS restated comparative 7,547.11 / 1,076.96;
  Sep-25 original Nov-2025 p5 9,355.40 / 186.82 vs May-2026 p6 comparative 9,583.98 / 186.82 (other income reclassified into revenue).
 Proof ledger also gains AVPINFRA / UWCSL 20260331 (their stored H2 now equals the proven half after round 11). verify 0/0/0.
+**Round 12b (2026-11-17, user: "first filing for tirupati").** The two held halves filled from their ORIGINAL filings, re-read by eye
+(PDF page index is 1-based here: Oct-2023 2QUICKRESULTS_27102023170042.pdf p4 s / p10 c; Nov-2025 TIRUPATI_03112025211444_FINAL.pdf
+p6 s / p13 c): Sep-23 rev 7,647.98 / PAT 1,092.25 s and c (ann 20231027; op left empty like the other Indian-GAAP rows — a 7.67
+prior-period item sits above PBT); Sep-25 rev 9,355.40 / PAT 186.82 s, 179.55 c (ann 20251103; op = PBT+FC+Dep−OI 6.05/5.98, EBIT
+4.58/4.51). Written straight into sf_fundamentals / sf_revop / revop_fundamentals (fill-only, empty cells) — NOT the proof ledger:
+FY24 cannot close (original H1 + Ind-AS H2 ≠ the Ind-AS year), so these two rows carry no proven 6-month length.
 
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
