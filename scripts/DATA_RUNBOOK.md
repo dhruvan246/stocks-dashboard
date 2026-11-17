@@ -30071,3 +30071,19 @@ page image from three filers where they exist — the merged Piramal Finance (PF
 Merged FY25 adds up: 269.62 + 171.34 + 69.22 + 63.89 = 574.07 (FY25 column, both PFL filings). Seen, not changed: stored
 std ann dates 2024-05-30 / 2024-08-14 / 2024-11-14 / 2025-05-30 / 2025-11-14 against filings of 8-May-2024, 13-Aug-2024,
 23-Oct-2024, 6-May-2025 and 17-Oct-2025; the con cells Mar-24 −752.0, Sep-24 163.0, Mar-25 102.0, Sep-25 327.0 are whole crores, not read.
+
+## §245 — Life insurers: tax_c = SHAREHOLDERS' account tax (2026-11-17, user: "yes switch tax_c to shareholders' tax")
+- **Rule.** A life insurer's results carry two tax blocks: the policyholders' (revenue) account and the shareholders' (P&L)
+  account. Our pbt is the shareholders' PBT, so tax_c / tax_d are now the shareholders' figures too — pbt − tax_c − tax_d = PAT.
+  XBRL (INTEGRATED_FILING_LI_*): shareholders' = `CurrentTaxes` / `DefferedTaxes` [sic]; policyholders' = `CurrentTax` / `DefferedTax`.
+  BSE life form (Result_LicFinancialResult[cons]_ng): shareholders' = the 'Current tax' / 'Deferred Tax' rows AFTER 'Profit/(loss) before tax'.
+  New filings: build_xbrl_extra `LI_TAX` (file name `_LI_`), which also drops tax_c when the shareholders' tag is absent.
+- **Stored cells.** 161 entries in xtra_cell_fix.json (found "§245"): 159 tax_c (HDFCLIFE 56, ICICIPRULI 45, SBILIFE 22, LICI 36,
+  2019-09..2026-09; 2 already equal) + LICI Mar-23 std pbt 13,190.95→13,421.86 and tax_c 990.68→−5.95 (that std cell held the
+  CONSOLIDATED P&L: cons form PBT 131,909.49 mn; std form 134,218.59 mn in qtr=322 cur + qtr=326 prev). Gates per cell: form/file
+  PBT = stored pbt, PBT − tax = PAT = stored PAT; readers: 2019-09..2024-09 = BSE form cur + next form prev column (107 cells),
+  Dec-24 = one BSE form (7; no later form, NSE's Dec-24 integrated filings are governance only), 2025-03..2026-09 = the NSE XBRL (47).
+  The LICI Mar-23 std cell's BS/CF fields (assets, sc, oeq, cfo…) were NOT read — UNKNOWN whether they are std or cons.
+- **Trap.** NSE's per-symbol integrated list returns nothing for ICICIPRULI: NSE lists it as `ICICILIFE` (smName "ICICI Life
+  Insurance Limited"); the XBRL's own NSESymbol still says ICICIPRULI. Query by ICICILIFE. The per-symbol list pages at 20 rows (&page=2).
+- Scripts + evidence: ~/stocks-cache/n500fix/li_taxc.py, li_xbrl.py, li_taxc_build.py, li_taxc_fixes.json.

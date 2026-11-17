@@ -6,7 +6,8 @@
   "2026-11-10 (§237 follow-up): 3 share-capital (sc) cells, Ind-AS-format GI filers Sep-2026 (GODIGIT/STARHEALTH/NIVABUPA) stored 0; build_xbrl_extra now drops a 0 sc when eq-oeq says otherwise.",
   "2026-11-10 (§237b, user \"fix the GICRE quarter cells from standalone statements\"): 46 GICRE pre-2024 standalone quarter cells held the CONSOLIDATED figure (oi, pbt incl. share of associates, BS total, reserves, H1 cash flow); fixed to the standalone statement, two visual readers each.",
   "2026-11-17 (§214a F4, user \"fix everything\"): 283 PIT-N500 bank quarters 2005-2007 where the NSE archive page prints PBT 0.00 (= not reported) and the reader stored 0. 277 set to the page's own Operating Profit - Provisions (- Exceptional), which equals Net Profit + Tax on the same page; 6 ORIENTBANK pages whose own rows do not close are blanked (null).",
-  "2026-11-17 (item 7 pilot, annual BS/CF vs Screener+Quantmac, cell by cell): 13 standalone annual CF cells where the stored figure (filer XBRL) disagrees with the signed results statement read this session - ASTRAZEN FY24 cfo; OBEROIRLTY FY22 cfo/cfi + capex FY22-25; IRCTC FY21 cfo/cfi/cff, FY23 cfo/cfi/capex. Statement wins (§240). Verdict log ~/stocks-cache/abscf/item7/verdicts.md."
+  "2026-11-17 (item 7 pilot, annual BS/CF vs Screener+Quantmac, cell by cell): 13 standalone annual CF cells where the stored figure (filer XBRL) disagrees with the signed results statement read this session - ASTRAZEN FY24 cfo; OBEROIRLTY FY22 cfo/cfi + capex FY22-25; IRCTC FY21 cfo/cfi/cff, FY23 cfo/cfi/capex. Statement wins (§240). Verdict log ~/stocks-cache/abscf/item7/verdicts.md.",
+  "2026-11-17 (§245, user \"switch tax_c to shareholders' tax\"): 161 life-insurer tax_c cells (HDFCLIFE/ICICIPRULI/SBILIFE/LICI 2019-09..2026-09) held the POLICYHOLDERS' account current tax (XBRL CurrentTax / form's first 'Current Tax') beside the shareholders' pbt; fixed to the SHAREHOLDERS' account current tax (XBRL CurrentTaxes / the form's 'Current tax' after PBT), each proven by pbt - tax = PAT = stored PAT. Plus LICI Mar-23 std pbt (the consolidated figure). New filings: build_xbrl_extra LI_TAX."
  ],
  "fixes": [
   {
@@ -5748,6 +5749,1616 @@
    "fixed": 1276.53,
    "why": "ABLBL Mar-2025 consolidated Total Equity as printed in the FY26 results 7-May-2026 (82611089 p16, Mar-25 column): equity share capital 0.05 + Share Suspense 1,220.26 + other equity 56.22 = 1,276.53 (no NCI line). The page summed sc+oeq = 56.27 because the demerger share suspense sits in neither field; no own FY25 filing (listed 2025).",
    "found": "2026-11-17 item7 full run (pilot side note re-read)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20190930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -24.37,
+   "fixed": 18.08,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3267.70 - 'Current tax' 180.80 - 'Deferred Tax' 0.00 = PAT 3086.90 mn (= stored PAT 308.69 cr); readers: qtr=266 cur col 180.80; qtr=270 prev col 180.80. The stored -24.37 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20190930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -24.37,
+   "fixed": 18.08,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3270.60 - 'Current tax' 180.80 - 'Deferred Tax' 0.00 = PAT 3089.80 mn (= stored PAT 308.98 cr); readers: qtr=266 cur col 180.80; qtr=270 prev col 180.80. The stored -24.37 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20191231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 46.39,
+   "fixed": 13.37,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2636.10 - 'Current tax' 133.70 - 'Deferred Tax' 0.00 = PAT 2502.40 mn (= stored PAT 250.24 cr); readers: qtr=270 cur col 133.70; qtr=274 prev col 133.70. The stored 46.39 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20191231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 46.39,
+   "fixed": 13.37,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2644.60 - 'Current tax' 133.70 - 'Deferred Tax' 0.00 = PAT 2510.90 mn (= stored PAT 251.09 cr); readers: qtr=270 cur col 133.70; qtr=274 prev col 133.70. The stored 46.39 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 122.18,
+   "fixed": -27.24,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2844.70 - 'Current tax' -272.40 - 'Deferred Tax' 0.00 = PAT 3117.10 mn (= stored PAT 311.71 cr); readers: qtr=274 cur col -272.40; qtr=278 prev col -272.40. The stored 122.18 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 122.18,
+   "fixed": -27.24,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2844.10 - 'Current tax' -272.40 - 'Deferred Tax' 0.00 = PAT 3116.50 mn (= stored PAT 311.65 cr); readers: qtr=274 cur col -272.40; qtr=278 prev col -272.40. The stored 122.18 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 31.56,
+   "fixed": 0.11,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4512.00 - 'Current tax' 1.10 - 'Deferred Tax' 0.00 = PAT 4510.90 mn (= stored PAT 451.09 cr); readers: qtr=278 cur col 1.10; qtr=282 prev col 1.10. The stored 31.56 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 31.56,
+   "fixed": 0.11,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4506.50 - 'Current tax' 1.10 - 'Deferred Tax' 0.00 = PAT 4505.40 mn (= stored PAT 450.54 cr); readers: qtr=278 cur col 1.10; qtr=282 prev col 1.10. The stored 31.56 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 17.68,
+   "fixed": 0.12,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3262.10 - 'Current tax' 1.20 - 'Deferred Tax' 0.00 = PAT 3260.90 mn (= stored PAT 326.09 cr); readers: qtr=282 cur col 1.20; qtr=286 prev col 1.20. The stored 17.68 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20200930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 17.68,
+   "fixed": 0.12,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3279.50 - 'Current tax' 1.20 - 'Deferred Tax' 0.00 = PAT 3278.30 mn (= stored PAT 327.83 cr); readers: qtr=282 cur col 1.20; qtr=286 prev col 1.20. The stored 17.68 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 41.34,
+   "fixed": 2.01,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2670.00 - 'Current tax' 20.10 - 'Deferred Tax' 0.00 = PAT 2649.90 mn (= stored PAT 264.99 cr); readers: qtr=286 cur col 20.10; qtr=290 prev col 20.10. The stored 41.34 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20201231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 41.34,
+   "fixed": 2.02,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2654.60 - 'Current tax' 20.20 - 'Deferred Tax' 0.00 = PAT 2634.40 mn (= stored PAT 263.44 cr); readers: qtr=286 cur col 20.20; qtr=290 prev col 20.20. The stored 41.34 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20210331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 183.81,
+   "fixed": -8.86,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3090.80 - 'Current tax' -88.60 - 'Deferred Tax' 0.00 = PAT 3179.40 mn (= stored PAT 317.94 cr); readers: qtr=290 cur col -88.60; qtr=294 prev col -88.60. The stored 183.81 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20210331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 183.81,
+   "fixed": -8.85,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3102.10 - 'Current tax' -88.50 - 'Deferred Tax' 0.00 = PAT 3190.60 mn (= stored PAT 319.06 cr); readers: qtr=290 cur col -88.50; qtr=294 prev col -88.50. The stored 183.81 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20210630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -1.81,
+   "fixed": 4.38,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3067.30 - 'Current tax' 43.80 - 'Deferred Tax' 0.00 = PAT 3023.50 mn (= stored PAT 302.35 cr); readers: qtr=294 cur col 43.80; qtr=298 prev col 43.80. The stored -1.81 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20210630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -1.81,
+   "fixed": 4.6,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2741.50 - 'Current tax' 46.00 - 'Deferred Tax' 0.00 = PAT 2695.50 mn (= stored PAT 269.55 cr); readers: qtr=294 cur col 46.00; qtr=298 prev col 46.00. The stored -1.81 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20210930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 13.95,
+   "fixed": 2.16,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2780.70 - 'Current tax' 21.60 - 'Deferred Tax' 0.00 = PAT 2759.10 mn (= stored PAT 275.91 cr); readers: qtr=298 cur col 21.60; qtr=302 prev col 21.60. The stored 13.95 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 17.5,
+   "fixed": 2.25,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2759.00 - 'Current tax' 22.50 - 'Deferred Tax' 0.00 = PAT 2736.50 mn (= stored PAT 273.65 cr); readers: qtr=302 cur col 22.50; qtr=306 prev col 22.50. The stored 17.50 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20211231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 17.5,
+   "fixed": 2.42,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2777.00 - 'Current tax' 24.20 - 'Deferred Tax' 0.00 = PAT 2752.80 mn (= stored PAT 275.28 cr); readers: qtr=302 cur col 24.20; qtr=306 prev col 24.20. The stored 17.50 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 154.86,
+   "fixed": -35.96,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3215.60 - 'Current tax' -359.60 - 'Deferred Tax' 0.00 = PAT 3575.20 mn (= stored PAT 357.52 cr); readers: qtr=306 cur col -359.60; qtr=310 prev col -359.60. The stored 154.86 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 20.21,
+   "fixed": 1.02,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3663.10 - 'Current tax' 10.20 - 'Deferred Tax' 0.00 = PAT 3652.90 mn (= stored PAT 365.29 cr); readers: qtr=310 cur col 10.20; qtr=314 prev col 10.20. The stored 20.21 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20220630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 20.21,
+   "fixed": 1.57,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3303.60 - 'Current tax' 15.70 - 'Deferred Tax' 0.00 = PAT 3287.90 mn (= stored PAT 328.79 cr); readers: qtr=310 cur col 15.70; qtr=314 prev col 15.70. The stored 20.21 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 24.37,
+   "fixed": 1.07,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3273.10 - 'Current tax' 10.70 - 'Deferred Tax' 0.00 = PAT 3262.40 mn (= stored PAT 326.24 cr); readers: qtr=314 cur col 10.70; qtr=318 prev col 10.70. The stored 24.37 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 24.37,
+   "fixed": 1.52,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3305.40 - 'Current tax' 15.20 - 'Deferred Tax' 0.00 = PAT 3290.20 mn (= stored PAT 329.02 cr); readers: qtr=314 cur col 15.20; qtr=318 prev col 15.20. The stored 24.37 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -131.29,
+   "fixed": -0.98,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3142.40 - 'Current tax' -9.80 - 'Deferred Tax' 0.00 = PAT 3152.20 mn (= stored PAT 315.22 cr); readers: qtr=318 cur col -9.80; qtr=322 prev col -9.80. The stored -131.29 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20221231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -131.29,
+   "fixed": -0.63,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3152.80 - 'Current tax' -6.30 - 'Deferred Tax' 0.00 = PAT 3159.10 mn (= stored PAT 315.91 cr); readers: qtr=318 cur col -6.30; qtr=322 prev col -6.30. The stored -131.29 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 251.19,
+   "fixed": -88.89,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2697.70 - 'Current tax' -888.90 - 'Deferred Tax' 0.00 = PAT 3586.60 mn (= stored PAT 358.66 cr); readers: qtr=322 cur col -888.90; qtr=326 prev col -888.90. The stored 251.19 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 251.19,
+   "fixed": -88.58,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2733.90 - 'Current tax' -885.80 - 'Deferred Tax' 0.00 = PAT 3619.70 mn (= stored PAT 361.97 cr); readers: qtr=322 cur col -885.80; qtr=326 prev col -885.80. The stored 251.19 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 21.78,
+   "fixed": 1.26,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4166.00 - 'Current tax' 12.60 - 'Deferred Tax' 0.00 = PAT 4153.40 mn (= stored PAT 415.34 cr); readers: qtr=326 cur col 12.60; qtr=330 prev col 12.60. The stored 21.78 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 21.78,
+   "fixed": 1.37,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4180.90 - 'Current tax' 13.70 - 'Deferred Tax' 0.00 = PAT 4167.20 mn (= stored PAT 416.72 cr); readers: qtr=326 cur col 13.70; qtr=330 prev col 13.70. The stored 21.78 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -611.46,
+   "fixed": -46.1,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3306.70 - 'Current tax' -461.00 - 'Deferred Tax' 0.00 = PAT 3767.70 mn (= stored PAT 376.77 cr); readers: qtr=330 cur col -461.00; qtr=334 prev col -461.00. The stored -611.46 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -611.46,
+   "fixed": -46.01,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3321.90 - 'Current tax' -460.10 - 'Deferred Tax' 0.00 = PAT 3782.00 mn (= stored PAT 378.20 cr); readers: qtr=330 cur col -460.10; qtr=334 prev col -460.10. The stored -611.46 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -2.41,
+   "fixed": 1.77,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3668.30 - 'Current tax' 17.70 - 'Deferred Tax' 0.00 = PAT 3650.60 mn (= stored PAT 365.06 cr); readers: qtr=334 cur col 17.70; qtr=338 prev col 17.70. The stored -2.41 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20231231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -2.41,
+   "fixed": 1.9,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3694.40 - 'Current tax' 19.00 - 'Deferred Tax' 0.00 = PAT 3675.40 mn (= stored PAT 367.54 cr); readers: qtr=334 cur col 19.00; qtr=338 prev col 19.00. The stored -2.41 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -0.29,
+   "fixed": 38.05,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4497.10 - 'Current tax' 380.50 - 'Deferred Tax' 0.00 = PAT 4116.60 mn (= stored PAT 411.66 cr); readers: qtr=338 cur col 380.50; qtr=342 prev col 380.50. The stored -0.29 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -0.29,
+   "fixed": 38.32,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4499.60 - 'Current tax' 383.20 - 'Deferred Tax' 0.00 = PAT 4116.40 mn (= stored PAT 411.64 cr); readers: qtr=338 cur col 383.20; qtr=342 prev col 383.20. The stored -0.29 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -98.39,
+   "fixed": 19.84,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4974.90 - 'Current tax' 198.40 - 'Deferred Tax' 0.00 = PAT 4776.50 mn (= stored PAT 477.65 cr); readers: qtr=342 cur col 198.40; qtr=346 prev col 198.40. The stored -98.39 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -98.39,
+   "fixed": 20.2,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4991.70 - 'Current tax' 202.00 - 'Deferred Tax' 0.00 = PAT 4789.70 mn (= stored PAT 478.97 cr); readers: qtr=342 cur col 202.00; qtr=346 prev col 202.00. The stored -98.39 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -470.66,
+   "fixed": 4.57,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4375.60 - 'Current tax' 45.70 - 'Deferred Tax' 0.00 = PAT 4329.90 mn (= stored PAT 432.99 cr); readers: qtr=346 cur col 45.70; qtr=350 prev col 45.70. The stored -470.66 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -470.66,
+   "fixed": 5.28,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4404.60 - 'Current tax' 52.80 - 'Deferred Tax' 0.00 = PAT 4351.80 mn (= stored PAT 435.18 cr); readers: qtr=346 cur col 52.80; qtr=350 prev col 52.80. The stored -470.66 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -33.64,
+   "fixed": 29.88,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4448.20 - 'Current tax' 298.80 - 'Deferred Tax' 0.00 = PAT 4149.40 mn (= stored PAT 414.94 cr); readers: qtr=350 cur col 298.80. The stored -33.64 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20241231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -33.64,
+   "fixed": 31.06,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4523.70 - 'Current tax' 310.60 - 'Deferred Tax' 0.00 = PAT 4213.10 mn (= stored PAT 421.31 cr); readers: qtr=350 cur col 310.60. The stored -33.64 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 14.49,
+   "fixed": 10.58,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1417727_17042025062333_WEB_xml (filed 17-Apr-2025 18:23:33), OneD 20250331 consolidated: shareholders' account ProfitLossBeforeTax 485.94 - CurrentTaxes 10.58 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 475.36 cr (= stored PAT 475.36); the stored 14.49 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 14.49,
+   "fixed": 9.67,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1417773_17042025065000_WEB_xml (filed 17-Apr-2025 18:50:01), OneD 20250331 standalone: shareholders' account ProfitLossBeforeTax 486.21 - CurrentTaxes 9.67 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 476.54 cr (= stored PAT 476.54); the stored 14.49 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 40.22,
+   "fixed": 14.19,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1483473_15072025061909_WEB_xml (filed 15-Jul-2025 18:19:09), OneD 20250630 standalone: shareholders' account ProfitLossBeforeTax 560.65 - CurrentTaxes 14.19 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 546.46 cr (= stored PAT 546.46); the stored 40.22 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 40.22,
+   "fixed": 15.23,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1483479_15072025062415_WEB_xml (filed 15-Jul-2025 18:24:15), OneD 20250630 consolidated: shareholders' account ProfitLossBeforeTax 563.58 - CurrentTaxes 15.23 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 548.35 cr (= stored PAT 548.35); the stored 40.22 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 3.44,
+   "fixed": 19.75,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1549223_15102025054957_WEB_xml (filed 15-Oct-2025 17:49:58), OneD 20250930 consolidated: shareholders' account ProfitLossBeforeTax 468.04 - CurrentTaxes 19.75 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 448.29 cr (= stored PAT 448.29); the stored 3.44 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20250930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 3.44,
+   "fixed": 18.26,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1549292_15102025060840_WEB_xml (filed 15-Oct-2025 18:08:40), OneD 20250930 standalone: shareholders' account ProfitLossBeforeTax 465.41 - CurrentTaxes 18.26 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 447.15 cr (= stored PAT 447.15); the stored 3.44 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20251231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 4.19,
+   "fixed": 22.04,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1601811_15012026073514_WEB_xml (filed 15-Jan-2026 19:35:13), OneD 20251231 standalone: shareholders' account ProfitLossBeforeTax 442.77 - CurrentTaxes 22.04 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 420.73 cr (= stored PAT 420.73); the stored 4.19 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 4.19,
+   "fixed": 22.82,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1601820_15012026075716_WEB_xml (filed 15-Jan-2026 19:57:14), OneD 20251231 consolidated: shareholders' account ProfitLossBeforeTax 441.01 - CurrentTaxes 22.82 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 418.19 cr (= stored PAT 418.19); the stored 4.19 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 46.26,
+   "fixed": -9.44,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1652662_16042026072616_WEB_xml (filed 16-Apr-2026 19:26:15), OneD 20260331 standalone: shareholders' account ProfitLossBeforeTax 486.21 - CurrentTaxes -9.44 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 495.65 cr (= stored PAT 495.65); the stored 46.26 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 46.99,
+   "fixed": -5.4,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1652667_16042026072910_WEB_xml (filed 16-Apr-2026 19:29:09), OneD 20260331 consolidated: shareholders' account ProfitLossBeforeTax 489.70 - CurrentTaxes -5.40 - DefferedTaxes -2.39 = ProfitLossAfterTaxAndExtraordinaryItems 497.49 cr (= stored PAT 497.49); the stored 46.99 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 46.94,
+   "fixed": 19.0,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1693455_15072026055112_WEB_xml (filed 15-Jul-2026 17:51:10), OneD 20260630 consolidated: shareholders' account ProfitLossBeforeTax 630.19 - CurrentTaxes 19.00 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 611.19 cr (= stored PAT 611.19); the stored 46.94 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 46.94,
+   "fixed": 15.3,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1693456_15072026055120_WEB_xml (filed 15-Jul-2026 17:51:12), OneD 20260630 standalone: shareholders' account ProfitLossBeforeTax 626.72 - CurrentTaxes 15.30 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 611.42 cr (= stored PAT 611.42); the stored 46.94 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 36.96,
+   "fixed": 15.38,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1739355_15102026072525_WEB_xml (filed 15-Oct-2026 19:25:09), OneD 20260930 standalone: shareholders' account ProfitLossBeforeTax 523.38 - CurrentTaxes 15.38 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 508.00 cr (= stored PAT 508.00); the stored 36.96 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "HDFCLIFE",
+   "qe": "20260930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 38.16,
+   "fixed": 20.78,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1739360_15102026072721_WEB_xml (filed 15-Oct-2026 19:27:07), OneD 20260930 consolidated: shareholders' account ProfitLossBeforeTax 540.50 - CurrentTaxes 20.78 - DefferedTaxes -1.88 = ProfitLossAfterTaxAndExtraordinaryItems 521.60 cr (= stored PAT 521.60); the stored 38.16 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20190930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 25.62,
+   "fixed": 4.48,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3063.40 - 'Current tax' 44.80 - 'Deferred Tax' 0.00 = PAT 3018.60 mn (= stored PAT 301.86 cr); readers: qtr=266 cur col 44.80; qtr=270 prev col 44.80. The stored 25.62 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20190930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 25.62,
+   "fixed": 4.48,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3063.20 - 'Current tax' 44.80 - 'Deferred Tax' 0.00 = PAT 3018.40 mn (= stored PAT 301.84 cr); readers: qtr=266 cur col 44.80; qtr=270 prev col 44.80. The stored 25.62 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20191231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 19.41,
+   "fixed": 1.29,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3037.50 - 'Current tax' 12.90 - 'Deferred Tax' 0.00 = PAT 3024.60 mn (= stored PAT 302.46 cr); readers: qtr=270 cur col 12.90; qtr=274 prev col 12.90. The stored 19.41 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20191231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 19.41,
+   "fixed": 1.29,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3030.60 - 'Current tax' 12.90 - 'Deferred Tax' 0.00 = PAT 3017.70 mn (= stored PAT 301.77 cr); readers: qtr=270 cur col 12.90; qtr=274 prev col 12.90. The stored 19.41 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 22.7,
+   "fixed": 23.6,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3111.90 - 'Current tax' 236.00 - 'Deferred Tax' 0.00 = PAT 2875.90 mn (= stored PAT 287.59 cr); readers: qtr=278 cur col 236.00; qtr=282 prev col 236.00. The stored 22.70 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20200630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 22.7,
+   "fixed": 23.59,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3104.50 - 'Current tax' 235.90 - 'Deferred Tax' 0.00 = PAT 2868.60 mn (= stored PAT 286.86 cr); readers: qtr=278 cur col 235.90; qtr=282 prev col 235.90. The stored 22.70 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20200930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 35.32,
+   "fixed": 26.72,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3299.40 - 'Current tax' 267.20 - 'Deferred Tax' 0.00 = PAT 3032.20 mn (= stored PAT 303.22 cr); readers: qtr=282 cur col 267.20; qtr=286 prev col 267.20. The stored 35.32 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20200930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 35.32,
+   "fixed": 26.72,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3291.80 - 'Current tax' 267.20 - 'Deferred Tax' 0.00 = PAT 3024.60 mn (= stored PAT 302.46 cr); readers: qtr=282 cur col 267.20; qtr=286 prev col 267.20. The stored 35.32 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 24.14,
+   "fixed": 21.05,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3266.00 - 'Current tax' 210.50 - 'Deferred Tax' 0.00 = PAT 3055.50 mn (= stored PAT 305.55 cr); readers: qtr=286 cur col 210.50; qtr=290 prev col 210.50. The stored 24.14 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20201231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 24.14,
+   "fixed": 21.06,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3253.60 - 'Current tax' 210.60 - 'Deferred Tax' 0.00 = PAT 3043.00 mn (= stored PAT 304.30 cr); readers: qtr=286 cur col 210.60; qtr=290 prev col 210.60. The stored 24.14 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20210630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 0.0,
+   "fixed": 0.02,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' -2153.60 - 'Current tax' 0.20 - 'Deferred Tax' -300.90 = PAT -1852.90 mn (= stored PAT -185.29 cr); readers: qtr=294 cur col 0.20; qtr=298 prev col 0.20. The stored 0.00 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 26.04,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4746.70 - 'Current tax' 0.00 - 'Deferred Tax' 301.00 = PAT 4445.70 mn (= stored PAT 444.57 cr); readers: qtr=298 cur col 0.00; qtr=302 prev col 0.00. The stored 26.04 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20210930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 26.04,
+   "fixed": -0.02,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 4757.00 - 'Current tax' -0.20 - 'Deferred Tax' 301.00 = PAT 4456.20 mn (= stored PAT 445.62 cr); readers: qtr=298 cur col -0.20; qtr=302 prev col -0.20. The stored 26.04 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 47.44,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3106.20 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 3106.20 mn (= stored PAT 310.62 cr); readers: qtr=302 cur col 0.00; qtr=306 prev col 0.00. The stored 47.44 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20211231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 47.44,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3120.00 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 3120.00 mn (= stored PAT 312.00 cr); readers: qtr=302 cur col 0.00; qtr=306 prev col 0.00. The stored 47.44 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 44.1,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 1556.90 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 1556.90 mn (= stored PAT 155.69 cr); readers: qtr=310 cur col 0.00; qtr=314 prev col 0.00. The stored 44.10 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20220630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 44.1,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 1568.20 - 'Current tax' 0.00 - 'Deferred Tax' 2.60 = PAT 1565.60 mn (= stored PAT 156.56 cr); readers: qtr=310 cur col 0.00; qtr=314 prev col 0.00. The stored 44.10 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 42.55,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 1994.80 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 1994.80 mn (= stored PAT 199.48 cr); readers: qtr=314 cur col 0.00; qtr=318 prev col 0.00. The stored 42.55 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 42.55,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2002.20 - 'Current tax' 0.00 - 'Deferred Tax' 1.00 = PAT 2001.20 mn (= stored PAT 200.12 cr); readers: qtr=314 cur col 0.00; qtr=318 prev col 0.00. The stored 42.55 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 50.5,
+   "fixed": 4.29,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2249.20 - 'Current tax' 42.90 - 'Deferred Tax' 0.00 = PAT 2206.30 mn (= stored PAT 220.63 cr); readers: qtr=318 cur col 42.90; qtr=322 prev col 42.90. The stored 50.50 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20221231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 50.5,
+   "fixed": 4.29,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2260.60 - 'Current tax' 42.90 - 'Deferred Tax' 2.10 = PAT 2215.60 mn (= stored PAT 221.56 cr); readers: qtr=318 cur col 42.90; qtr=322 prev col 42.90. The stored 50.50 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 8.84,
+   "fixed": 1.57,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2084.80 - 'Current tax' 15.70 - 'Deferred Tax' 0.00 = PAT 2069.10 mn (= stored PAT 206.91 cr); readers: qtr=326 cur col 15.70; qtr=330 prev col 15.70. The stored 8.84 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20230630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 8.84,
+   "fixed": 1.58,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2074.30 - 'Current tax' 15.80 - 'Deferred Tax' -3.40 = PAT 2061.90 mn (= stored PAT 206.19 cr); readers: qtr=326 cur col 15.80; qtr=330 prev col 15.80. The stored 8.84 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 28.68,
+   "fixed": 4.06,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2483.10 - 'Current tax' 40.60 - 'Deferred Tax' 0.00 = PAT 2442.50 mn (= stored PAT 244.25 cr); readers: qtr=330 cur col 40.60; qtr=334 prev col 40.60. The stored 28.68 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 28.68,
+   "fixed": 4.07,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2476.70 - 'Current tax' 40.70 - 'Deferred Tax' -2.80 = PAT 2438.80 mn (= stored PAT 243.88 cr); readers: qtr=330 cur col 40.70; qtr=334 prev col 40.70. The stored 28.68 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 34.0,
+   "fixed": 4.63,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2321.00 - 'Current tax' 46.30 - 'Deferred Tax' 0.00 = PAT 2274.70 mn (= stored PAT 227.47 cr); readers: qtr=334 cur col 46.30; qtr=338 prev col 46.30. The stored 34.00 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20231231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 34.0,
+   "fixed": 4.63,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2312.90 - 'Current tax' 46.30 - 'Deferred Tax' -2.60 = PAT 2269.20 mn (= stored PAT 226.92 cr); readers: qtr=334 cur col 46.30; qtr=338 prev col 46.30. The stored 34.00 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 12.15,
+   "fixed": 34.87,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2602.70 - 'Current tax' 348.70 - 'Deferred Tax' 0.00 = PAT 2254.00 mn (= stored PAT 225.40 cr); readers: qtr=342 cur col 348.70; qtr=346 prev col 348.70. The stored 12.15 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 12.15,
+   "fixed": 34.88,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2588.70 - 'Current tax' 348.80 - 'Deferred Tax' -3.50 = PAT 2243.40 mn (= stored PAT 224.34 cr); readers: qtr=342 cur col 348.80; qtr=346 prev col 348.80. The stored 12.15 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 17.26,
+   "fixed": 34.5,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2862.20 - 'Current tax' 345.00 - 'Deferred Tax' 0.00 = PAT 2517.20 mn (= stored PAT 251.72 cr); readers: qtr=346 cur col 345.00; qtr=350 prev col 345.00. The stored 17.26 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 17.26,
+   "fixed": 34.52,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2852.40 - 'Current tax' 345.20 - 'Deferred Tax' -2.70 = PAT 2509.90 mn (= stored PAT 250.99 cr); readers: qtr=346 cur col 345.20; qtr=350 prev col 345.20. The stored 17.26 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 35.53,
+   "fixed": 50.17,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3758.20 - 'Current tax' 501.70 - 'Deferred Tax' 0.00 = PAT 3256.50 mn (= stored PAT 325.65 cr); readers: qtr=350 cur col 501.70. The stored 35.53 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20241231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 35.53,
+   "fixed": 50.1,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3746.60 - 'Current tax' 501.00 - 'Deferred Tax' -3.50 = PAT 3249.10 mn (= stored PAT 324.91 cr); readers: qtr=350 cur col 501.00. The stored 35.53 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 185.19,
+   "fixed": 27.83,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1415236_15042025073415_WEB_xml (filed 15-Apr-2025 19:34:15), OneD 20250331 standalone: shareholders' account ProfitLossBeforeTax 414.12 - CurrentTaxes 27.83 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 386.29 cr (= stored PAT 386.29); the stored 185.19 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 185.19,
+   "fixed": 27.83,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1415239_15042025073454_WEB_xml (filed 15-Apr-2025 19:34:54), OneD 20250331 consolidated: shareholders' account ProfitLossBeforeTax 412.90 - CurrentTaxes 27.83 - DefferedTaxes -0.20 = ProfitLossAfterTaxAndExtraordinaryItems 385.27 cr (= stored PAT 385.28); the stored 185.19 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 46.76,
+   "fixed": 42.75,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1483313_15072025051736_WEB_xml (filed 15-Jul-2025 17:17:37), OneD 20250630 standalone: shareholders' account ProfitLossBeforeTax 344.83 - CurrentTaxes 42.75 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 302.08 cr (= stored PAT 302.08); the stored 46.76 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 46.76,
+   "fixed": 42.75,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1483315_15072025051819_WEB_xml (filed 15-Jul-2025 17:18:20), OneD 20250630 consolidated: shareholders' account ProfitLossBeforeTax 343.38 - CurrentTaxes 42.75 - DefferedTaxes -0.36 = ProfitLossAfterTaxAndExtraordinaryItems 300.99 cr (= stored PAT 300.99); the stored 46.76 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 46.82,
+   "fixed": 47.75,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1548961_15102025043433_WEB_xml (filed 15-Oct-2025 16:34:33), OneD 20250930 standalone: shareholders' account ProfitLossBeforeTax 347.01 - CurrentTaxes 47.75 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 299.26 cr (= stored PAT 299.26); the stored 46.82 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20250930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 46.82,
+   "fixed": 47.75,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1548964_15102025043526_WEB_xml (filed 15-Oct-2025 16:35:26), OneD 20250930 consolidated: shareholders' account ProfitLossBeforeTax 342.44 - CurrentTaxes 47.75 - DefferedTaxes -1.14 = ProfitLossAfterTaxAndExtraordinaryItems 295.83 cr (= stored PAT 295.83); the stored 46.82 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20251231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 54.9,
+   "fixed": 56.99,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1600999_14012026055812_WEB_xml (filed 14-Jan-2026 17:58:10), OneD 20251231 standalone: shareholders' account ProfitLossBeforeTax 447.19 - CurrentTaxes 56.99 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 390.20 cr (= stored PAT 390.20); the stored 54.90 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 54.9,
+   "fixed": 56.99,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1601003_14012026060218_WEB_xml (filed 14-Jan-2026 18:02:17), OneD 20251231 consolidated: shareholders' account ProfitLossBeforeTax 443.25 - CurrentTaxes 56.99 - DefferedTaxes -0.89 = ProfitLossAfterTaxAndExtraordinaryItems 387.15 cr (= stored PAT 387.15); the stored 54.90 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -401.44,
+   "fixed": 58.9,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1650850_14042026062114_WEB_xml (filed 14-Apr-2026 18:21:12), OneD 20260331 standalone: shareholders' account ProfitLossBeforeTax 667.71 - CurrentTaxes 58.90 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 608.81 cr (= stored PAT 608.81); the stored -401.44 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20260331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -401.44,
+   "fixed": 58.9,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1650890_14042026065512_WEB_xml (filed 14-Apr-2026 18:55:11), OneD 20260331 consolidated: shareholders' account ProfitLossBeforeTax 682.78 - CurrentTaxes 58.90 - DefferedTaxes -0.03 = ProfitLossAfterTaxAndExtraordinaryItems 623.91 cr (= stored PAT 623.91); the stored -401.44 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20260630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 38.45,
+   "fixed": 45.04,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1693431_15072026054017_WEB_xml (filed 15-Jul-2026 17:40:08), OneD 20260630 standalone: shareholders' account ProfitLossBeforeTax 431.22 - CurrentTaxes 45.04 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 386.18 cr (= stored PAT 386.18); the stored 38.45 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "ICICIPRULI",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 10.45,
+   "fixed": 61.1,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1736933_13102026040430_WEB_xml (filed 13-Oct-2026 16:04:17), OneD 20260930 standalone: shareholders' account ProfitLossBeforeTax 435.32 - CurrentTaxes 61.10 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 374.22 cr (= stored PAT 374.22); the stored 10.45 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20190930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 58.9,
+   "fixed": -10.63,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 1192.13 - 'Current tax' -106.32 - 'Deferred Tax' 0.00 = PAT 1298.45 mn (= stored PAT 129.84 cr); readers: qtr=266 cur col -106.32; qtr=270 prev col -106.32. The stored 58.90 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20191231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 74.17,
+   "fixed": 5.14,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3949.11 - 'Current tax' 51.36 - 'Deferred Tax' 0.00 = PAT 3897.76 mn (= stored PAT 389.77 cr); readers: qtr=270 cur col 51.36; qtr=274 prev col 51.36. The stored 74.17 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20200630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 239.31,
+   "fixed": -3.21,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3876.72 - 'Current tax' -32.14 - 'Deferred Tax' 0.00 = PAT 3908.85 mn (= stored PAT 390.89 cr); readers: qtr=278 cur col -32.14; qtr=282 prev col -32.14. The stored 239.31 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20201231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 62.93,
+   "fixed": 0.23,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2330.88 - 'Current tax' 2.34 - 'Deferred Tax' 0.00 = PAT 2328.54 mn (= stored PAT 232.85 cr); readers: qtr=286 cur col 2.34; qtr=290 prev col 2.34. The stored 62.93 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20210630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 36.11,
+   "fixed": 10.26,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2334.17 - 'Current tax' 102.56 - 'Deferred Tax' 0.00 = PAT 2231.61 mn (= stored PAT 223.16 cr); readers: qtr=294 cur col 102.56; qtr=298 prev col 102.56. The stored 36.11 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20210930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 30.6,
+   "fixed": 5.28,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2518.97 - 'Current tax' 52.77 - 'Deferred Tax' 0.00 = PAT 2466.20 mn (= stored PAT 246.62 cr); readers: qtr=298 cur col 52.77; qtr=302 prev col 52.77. The stored 30.60 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20211231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 28.38,
+   "fixed": 17.32,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3813.83 - 'Current tax' 173.18 - 'Deferred Tax' 0.00 = PAT 3640.65 mn (= stored PAT 364.06 cr); readers: qtr=302 cur col 173.18; qtr=306 prev col 173.18. The stored 28.38 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 33.44,
+   "fixed": 4.57,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 2674.20 - 'Current tax' 45.66 - 'Deferred Tax' 0.00 = PAT 2628.54 mn (= stored PAT 262.85 cr); readers: qtr=310 cur col 45.66; qtr=314 prev col 45.66. The stored 33.44 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 50.31,
+   "fixed": 9.9,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3866.37 - 'Current tax' 99.05 - 'Deferred Tax' 0.00 = PAT 3767.32 mn (= stored PAT 376.74 cr); readers: qtr=314 cur col 99.05; qtr=318 prev col 99.05. The stored 50.31 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 35.69,
+   "fixed": 6.67,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3107.94 - 'Current tax' 66.65 - 'Deferred Tax' 0.00 = PAT 3041.29 mn (= stored PAT 304.13 cr); readers: qtr=318 cur col 66.65; qtr=322 prev col 66.65. The stored 35.69 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 42.9,
+   "fixed": 8.7,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3897.40 - 'Current tax' 86.96 - 'Deferred Tax' 0.00 = PAT 3810.44 mn (= stored PAT 381.04 cr); readers: qtr=326 cur col 86.96; qtr=330 prev col 86.96. The stored 42.90 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 37.1,
+   "fixed": 6.79,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3869.76 - 'Current tax' 67.91 - 'Deferred Tax' 0.00 = PAT 3801.85 mn (= stored PAT 380.19 cr); readers: qtr=330 cur col 67.91; qtr=334 prev col 67.91. The stored 37.10 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 40.91,
+   "fixed": 7.29,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 3290.42 - 'Current tax' 72.92 - 'Deferred Tax' 0.00 = PAT 3217.50 mn (= stored PAT 321.75 cr); readers: qtr=334 cur col 72.92; qtr=338 prev col 72.92. The stored 40.91 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 61.49,
+   "fixed": 15.97,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 5354.93 - 'Current tax' 159.68 - 'Deferred Tax' 0.00 = PAT 5195.25 mn (= stored PAT 519.52 cr); readers: qtr=342 cur col 159.68; qtr=346 prev col 159.68. The stored 61.49 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 54.51,
+   "fixed": 17.51,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 5469.28 - 'Current tax' 175.12 - 'Deferred Tax' 0.00 = PAT 5294.16 mn (= stored PAT 529.42 cr); readers: qtr=346 cur col 175.12; qtr=350 prev col 175.12. The stored 54.51 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 21.92,
+   "fixed": 20.79,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 5716.12 - 'Current tax' 207.89 - 'Deferred Tax' 0.00 = PAT 5508.23 mn (= stored PAT 550.82 cr); readers: qtr=350 cur col 207.89. The stored 21.92 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 60.02,
+   "fixed": 27.1,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1424277_24042025082603_WEB_xml (filed 24-Apr-2025 20:26:03), OneD 20250331 standalone: shareholders' account ProfitLossBeforeTax 840.61 - CurrentTaxes 27.10 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 813.51 cr (= stored PAT 813.51); the stored 60.02 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 45.25,
+   "fixed": 16.58,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1492604_24072025061244_WEB_xml (filed 24-Jul-2025 18:12:44), OneD 20250630 standalone: shareholders' account ProfitLossBeforeTax 610.95 - CurrentTaxes 16.58 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 594.37 cr (= stored PAT 594.37); the stored 45.25 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20251231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 44.41,
+   "fixed": 20.79,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1613391_29012026061203_WEB_xml (filed 28-Jan-2026 22:02:10), OneD 20251231 standalone: shareholders' account ProfitLossBeforeTax 597.53 - CurrentTaxes 20.79 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 576.74 cr (= stored PAT 576.74); the stored 44.41 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 51.21,
+   "fixed": 11.14,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1657299_22042026060213_WEB_xml (filed 22-Apr-2026 17:50:25), OneD 20260331 standalone: shareholders' account ProfitLossBeforeTax 815.78 - CurrentTaxes 11.14 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 804.64 cr (= stored PAT 804.64); the stored 51.21 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20260630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 47.25,
+   "fixed": 20.94,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1700867_24072026045312_WEB_xml (filed 24-Jul-2026 16:53:11), OneD 20260630 standalone: shareholders' account ProfitLossBeforeTax 745.87 - CurrentTaxes 20.94 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 724.93 cr (= stored PAT 724.93); the stored 47.25 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "SBILIFE",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 36.14,
+   "fixed": 4.5,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1747186_27102026072642_WEB_xml (filed 27-Oct-2026 19:26:20), OneD 20260930 standalone: shareholders' account ProfitLossBeforeTax 553.73 - CurrentTaxes 4.50 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 549.23 cr (= stored PAT 549.23); the stored 36.14 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -40.26,
+   "fixed": -18.06,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 23534.95 - 'Current tax' -180.57 - 'Deferred Tax' 0.00 = PAT 23715.52 mn (= stored PAT 2371.55 cr); readers: qtr=306 cur col -180.57; qtr=310 prev col -180.57. The stored -40.26 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -16.76,
+   "fixed": -13.83,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 23955.68 - 'Current tax' -138.29 - 'Deferred Tax' 0.00 = PAT 24093.97 mn (= stored PAT 2409.40 cr); readers: qtr=306 cur col -138.29; qtr=310 prev col -138.29. The stored -16.76 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1403.87,
+   "fixed": 21.54,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 7044.24 - 'Current tax' 215.35 - 'Deferred Tax' 0.00 = PAT 6828.89 mn (= stored PAT 682.89 cr); readers: qtr=310 cur col 215.35; qtr=314 prev col 215.35. The stored 1403.87 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1452.56,
+   "fixed": 28.44,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 6312.31 - 'Current tax' 284.44 - 'Deferred Tax' 0.00 = PAT 6027.87 mn (= stored PAT 602.79 cr); readers: qtr=310 cur col 284.44; qtr=314 prev col 284.44. The stored 1452.56 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 5401.07,
+   "fixed": 22.02,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 159745.18 - 'Current tax' 220.24 - 'Deferred Tax' 0.00 = PAT 159524.94 mn (= stored PAT 15952.49 cr); readers: qtr=314 cur col 220.24; qtr=318 prev col 220.24. The stored 5401.07 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20220930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 5424.65,
+   "fixed": 27.59,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 158819.38 - 'Current tax' 275.88 - 'Deferred Tax' 0.00 = PAT 158543.50 mn (= stored PAT 15854.35 cr); readers: qtr=314 cur col 275.88; qtr=318 prev col 275.88. The stored 5424.65 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20221231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -2515.35,
+   "fixed": 21.79,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 63559.80 - 'Current tax' 217.85 - 'Deferred Tax' 0.00 = PAT 63341.95 mn (= stored PAT 6334.20 cr); readers: qtr=318 cur col 217.85; qtr=322 prev col 217.85. The stored -2515.35 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20221231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -2485.93,
+   "fixed": 28.1,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 63768.17 - 'Current tax' 281.03 - 'Deferred Tax' 0.00 = PAT 63487.15 mn (= stored PAT 6348.71 cr); readers: qtr=318 cur col 281.03; qtr=322 prev col 281.03. The stored -2485.93 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1307.93,
+   "fixed": 90.93,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 96346.40 - 'Current tax' 909.28 - 'Deferred Tax' 0.00 = PAT 95437.13 mn (= stored PAT 9543.71 cr); readers: qtr=326 cur col 909.28; qtr=330 prev col 909.28. The stored 1307.93 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1362.83,
+   "fixed": 98.57,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 97335.53 - 'Current tax' 985.70 - 'Deferred Tax' 0.00 = PAT 96349.83 mn (= stored PAT 9634.98 cr); readers: qtr=326 cur col 985.70; qtr=330 prev col 985.70. The stored 1362.83 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1074.33,
+   "fixed": 90.6,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 80156.16 - 'Current tax' 906.01 - 'Deferred Tax' 0.00 = PAT 79250.16 mn (= stored PAT 7925.02 cr); readers: qtr=330 cur col 906.01; qtr=334 prev col 906.01. The stored 1074.33 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1083.89,
+   "fixed": 97.41,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 81276.93 - 'Current tax' 974.08 - 'Deferred Tax' 0.00 = PAT 80302.85 mn (= stored PAT 8030.28 cr); readers: qtr=330 cur col 974.08; qtr=334 prev col 974.08. The stored 1083.89 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20231231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1328.46,
+   "fixed": 54.32,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 94987.33 - 'Current tax' 543.16 - 'Deferred Tax' 0.00 = PAT 94444.17 mn (= stored PAT 9444.42 cr); readers: qtr=334 cur col 543.16; qtr=338 prev col 543.16. The stored 1328.46 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20231231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1361.79,
+   "fixed": 61.93,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 95309.20 - 'Current tax' 619.33 - 'Deferred Tax' 0.00 = PAT 94689.87 mn (= stored PAT 9468.99 cr); readers: qtr=334 cur col 619.33; qtr=338 prev col 619.33. The stored 1361.79 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 2114.43,
+   "fixed": -124.42,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 136382.20 - 'Current tax' -1244.20 - 'Deferred Tax' 0.00 = PAT 137626.40 mn (= stored PAT 13762.64 cr); readers: qtr=338 cur col -1244.20; qtr=342 prev col -1244.20. The stored 2114.43 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 2148.44,
+   "fixed": -117.16,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 136644.30 - 'Current tax' -1171.60 - 'Deferred Tax' 0.00 = PAT 137815.90 mn (= stored PAT 13781.59 cr); readers: qtr=338 cur col -1171.60; qtr=342 prev col -1171.60. The stored 2148.44 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1589.11,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 104610.50 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 104610.50 mn (= stored PAT 10461.05 cr); readers: qtr=342 cur col 0.00; qtr=346 prev col 0.00. The stored 1589.11 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1622.14,
+   "fixed": 7.07,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 105514.00 - 'Current tax' 70.70 - 'Deferred Tax' 0.00 = PAT 105443.30 mn (= stored PAT 10544.33 cr); readers: qtr=342 cur col 70.70; qtr=346 prev col 70.70. The stored 1622.14 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1102.32,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 76208.60 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 76208.60 mn (= stored PAT 7620.86 cr); readers: qtr=346 cur col 0.00; qtr=350 prev col 0.00. The stored 1102.32 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20240930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1138.8,
+   "fixed": 6.4,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 77350.80 - 'Current tax' 64.00 - 'Deferred Tax' 0.00 = PAT 77286.80 mn (= stored PAT 7728.68 cr); readers: qtr=346 cur col 64.00; qtr=350 prev col 64.00. The stored 1138.80 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20241231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1694.78,
+   "fixed": 0.0,
+   "why": "BSE insurer results form (Result_LicFinancialResult_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 110564.70 - 'Current tax' 0.00 - 'Deferred Tax' 0.00 = PAT 110564.70 mn (= stored PAT 11056.47 cr); readers: qtr=350 cur col 0.00. The stored 1694.78 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20241231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1733.43,
+   "fixed": 9.74,
+   "why": "BSE insurer results form (Result_LicFinancialResultcons_ng, Rs mn): shareholders' a/c 'Profit/(loss) before tax' 110183.90 - 'Current tax' 97.40 - 'Deferred Tax' 0.00 = PAT 110086.50 mn (= stored PAT 11008.65 cr); readers: qtr=350 cur col 97.40. The stored 1733.43 is the policyholders' a/c 'Current Tax'.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 3422.0,
+   "fixed": 7.07,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1454725_28052025050202_WEB_xml (filed 28-May-2025 17:02:03), OneD 20250331 consolidated: shareholders' account ProfitLossBeforeTax 19045.74 - CurrentTaxes 7.07 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 19038.67 cr (= stored PAT 19038.67); the stored 3422.00 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 3386.28,
+   "fixed": 0.0,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1457488_29052025070757_WEB_xml (filed 29-May-2025 19:07:57), OneD 20250331 standalone: shareholders' account ProfitLossBeforeTax 19012.79 - CurrentTaxes 0.00 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 19012.79 cr (= stored PAT 19012.79); the stored 3386.28 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1583.72,
+   "fixed": 19.63,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1505339_07082025052113_WEB_xml (filed 07-Aug-2025 17:21:13), OneD 20250630 standalone: shareholders' account ProfitLossBeforeTax 11006.14 - CurrentTaxes 19.63 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 10986.51 cr (= stored PAT 10986.51); the stored 1583.72 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1616.27,
+   "fixed": 28.72,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1505387_07082025052906_WEB_xml (filed 07-Aug-2025 17:29:07), OneD 20250630 consolidated: shareholders' account ProfitLossBeforeTax 10985.77 - CurrentTaxes 28.72 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 10957.05 cr (= stored PAT 10957.05); the stored 1616.27 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1386.57,
+   "fixed": 93.58,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1567090_06112025060524_WEB_xml (filed 06-Nov-2025 18:05:25), OneD 20250930 standalone: shareholders' account ProfitLossBeforeTax 10146.97 - CurrentTaxes 93.58 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 10053.39 cr (= stored PAT 10053.39); the stored 1386.57 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20250930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1421.93,
+   "fixed": 103.2,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1567099_06112025060644_WEB_xml (filed 06-Nov-2025 18:06:44), OneD 20250930 consolidated: shareholders' account ProfitLossBeforeTax 10201.68 - CurrentTaxes 103.20 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 10098.48 cr (= stored PAT 10098.48); the stored 1421.93 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20251231",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1982.07,
+   "fixed": -50.7,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1619167_05022026050916_WEB_xml (filed 05-Feb-2026 17:09:13), OneD 20251231 consolidated: shareholders' account ProfitLossBeforeTax 12879.74 - CurrentTaxes -50.70 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 12930.44 cr (= stored PAT 12930.44); the stored 1982.07 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20251231",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1945.16,
+   "fixed": -60.83,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1619183_05022026052120_WEB_xml (filed 05-Feb-2026 17:21:19), OneD 20251231 standalone: shareholders' account ProfitLossBeforeTax 12897.39 - CurrentTaxes -60.83 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 12958.22 cr (= stored PAT 12958.22); the stored 1945.16 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": -9088.86,
+   "fixed": -17.15,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1670941_21052026082323_WEB_xml (filed 21-May-2026 20:23:23), OneD 20260331 standalone: shareholders' account ProfitLossBeforeTax 23403.28 - CurrentTaxes -17.15 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 23420.43 cr (= stored PAT 23420.43); the stored -9088.86 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260331",
+   "basis": "c",
+   "field": "tax_c",
+   "was": -9068.67,
+   "fixed": -10.49,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1670942_21052026082347_WEB_xml (filed 21-May-2026 20:23:47), OneD 20260331 consolidated: shareholders' account ProfitLossBeforeTax 23456.69 - CurrentTaxes -10.49 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 23467.18 cr (= stored PAT 23467.18); the stored -9068.67 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260630",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1626.04,
+   "fixed": 102.14,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1709120_06082026053512_WEB_xml (filed 06-Aug-2026 17:35:11), OneD 20260630 consolidated: shareholders' account ProfitLossBeforeTax 13686.39 - CurrentTaxes 102.14 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 13584.25 cr (= stored PAT 13584.25); the stored 1626.04 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260630",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1598.32,
+   "fixed": 91.93,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1709121_06082026053521_WEB_xml (filed 06-Aug-2026 17:35:15), OneD 20260630 standalone: shareholders' account ProfitLossBeforeTax 13583.96 - CurrentTaxes 91.93 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 13492.03 cr (= stored PAT 13492.03); the stored 1598.32 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260930",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 1129.78,
+   "fixed": 49.8,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1753945_05112026064353_WEB_xml (filed 05-Nov-2026 18:43:16), OneD 20260930 standalone: shareholders' account ProfitLossBeforeTax 12125.82 - CurrentTaxes 49.80 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 12076.02 cr (= stored PAT 12076.02); the stored 1129.78 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20260930",
+   "basis": "c",
+   "field": "tax_c",
+   "was": 1163.03,
+   "fixed": 59.78,
+   "why": "NSE results XBRL INTEGRATED_FILING_LI_1753953_05112026064508_WEB_xml (filed 05-Nov-2026 18:44:12), OneD 20260930 consolidated: shareholders' account ProfitLossBeforeTax 12174.56 - CurrentTaxes 59.78 - DefferedTaxes 0.00 = ProfitLossAfterTaxAndExtraordinaryItems 12114.78 cr (= stored PAT 12114.78); the stored 1163.03 is the policyholders' account CurrentTax in the same file.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "pbt",
+   "was": 13190.95,
+   "fixed": 13421.86,
+   "why": "BSE insurer results forms, LICI (543526), Rs mn. Standalone: Result_LicFinancialResult_ng qtr=322 current col (31/03/2023) and qtr=326 previous col (31/03/2023) both print shareholders' 'Profit/(loss) before tax' 134,218.59, 'Current tax' -59.52, Deferred 0.00, PAT 134,278.12 (= stored standalone PAT 13,427.81 cr). Consolidated: Result_LicFinancialResultcons_ng qtr=322 cur / qtr=326 prev print PBT 131,909.49 and policyholders' 'Current Tax' 9,906.79 = the stored standalone pbt 13,190.95 / tax_c 990.68, i.e. the consolidated figures sat under the standalone key.",
+   "found": "§245 tax_c switch: pbt gate refused this cell"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "tax_c",
+   "was": 990.68,
+   "fixed": -5.95,
+   "why": "BSE insurer results forms, LICI (543526), Rs mn. Standalone: Result_LicFinancialResult_ng qtr=322 current col (31/03/2023) and qtr=326 previous col (31/03/2023) both print shareholders' 'Profit/(loss) before tax' 134,218.59, 'Current tax' -59.52, Deferred 0.00, PAT 134,278.12 (= stored standalone PAT 13,427.81 cr). Consolidated: Result_LicFinancialResultcons_ng qtr=322 cur / qtr=326 prev print PBT 131,909.49 and policyholders' 'Current Tax' 9,906.79 = the stored standalone pbt 13,190.95 / tax_c 990.68, i.e. the consolidated figures sat under the standalone key.",
+   "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
   }
  ]
 }

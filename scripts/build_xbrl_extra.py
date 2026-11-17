@@ -181,7 +181,13 @@ CF = {  # duration ending at the quarter end; ₹ -> cr
 }
 RE_CAPEX = re.compile(r"<" + NS + r':(PurchaseOfPropertyPlantAndEquipment\w*) contextRef="([^"]+)"[^>]*>([-0-9.eE+]+)<')
 
-ALL_NAMES = sorted({n for d in (PNL, EPS, RATIO, BS, CF) for names in d.values() for n in names}
+# LIFE insurers (INTEGRATED_FILING_LI_*, user 2026-11-17, runbook §245): the file tags TWO tax blocks — the
+# policyholders' (revenue) account as CurrentTax / DefferedTax [sic] and the SHAREHOLDERS' (P&L) account, the one
+# that sits between ProfitLossBeforeTax and the profit after tax, as CurrentTaxes / DefferedTaxes [sic]
+# (HDFCLIFE Jun-2025: PBT 563.58 - 15.23 - 0 = PAT 548.35; policyholders' CurrentTax 40.22). tax_c / tax_d = shareholders'.
+LI_TAX = {"tax_c": ["CurrentTaxes"], "tax_d": ["DefferedTaxes"]}
+
+ALL_NAMES = sorted({n for d in (PNL, EPS, RATIO, BS, CF, LI_TAX) for names in d.values() for n in names}
                    | {n for d in (BS_SUM, BS_SUM_ALT) for names in d.values() for n in names})
 RE_FACT = {n: re.compile(r"<" + NS + r":" + n + r' contextRef="([^"]+)"[^>]*>([-0-9.eE+]+)<') for n in ALL_NAMES}
 RE_SEGDESC = re.compile(r'DescriptionOfReportableSegment contextRef="([^"]+)"[^>]*>([^<]+)<')
@@ -430,6 +436,7 @@ def parse_file(path, fname, sym_override=None):
         return round(v / sc / CR, 2)
 
     na = "NONINDAS" in fname.upper()
+    li = "_LI_" in os.path.basename(fname).upper()
     for cid, b in bases.items():
         row = out[b]
         if na:
@@ -438,6 +445,13 @@ def parse_file(path, fname, sym_override=None):
             f = facts_by_ctx(xml, names)
             if cid in f:
                 row[key] = money(f[cid])
+        if li:
+            for key, names in LI_TAX.items():
+                f = facts_by_ctx(xml, names)
+                if cid in f:
+                    row[key] = money(f[cid])
+                else:
+                    row.pop(key, None)      # never leave the policyholders' figure under a shareholders' key
         for key, names in EPS.items():
             f = facts_by_ctx(xml, names)
             if cid in f:
