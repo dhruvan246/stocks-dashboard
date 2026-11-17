@@ -34557,6 +34557,96 @@
    "fixed": 145.33,
    "why": "Own results filing ZYDUSWELL_20230331_175a7273-6db9-4f59-8919-ea75e03bdbaa.pdf page 3, consolidated table, three-month column (Rs lakh, read from text): PBT 12633; tax -1900; profit for the period 14533; total comprehensive income 14561 -> 145.33 Rs cr. The sf_revop profit mirror held 145.61: storeB = total comprehensive income (attributable to owners) 14,561 lakh. Corrected to 145.33 (owners' profit basis).",
    "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "EMBDL",
+   "qe": "20200930",
+   "basis": "pat_con",
+   "was": -76.02,
+   "fixed": -76.14,
+   "why": "Own results filing EMBDL_20200930_56b8f8ee-cf96-49f3-bb25-33e86545e250.pdf page 2, consolidated table, three-month column (Rs lakh, read from image): PBT -7782.05; tax current 69.30 + deferred (249.85) (no total row printed); profit for the period -7601.5; attributable to owners -7613.84; non-controlling 12.34; total comprehensive income -7649.25 -> -76.14 Rs cr. The sf_revop profit mirror held -76.02: storeB -76.02 = net loss after tax incl. minority (7,601.50 lakh), not the owners row. Corrected to -76.14 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "GAMMONIND",
+   "qe": "20251231",
+   "basis": "pat_con",
+   "was": -345.87,
+   "fixed": -346.1,
+   "why": "Own results filing GAMMONIND_20251231_40f35512-1484-4882-8f14-0b6903b7faa5.pdf page 16, consolidated table, three-month column (Rs crore, read from image): PBT -345.77; tax 0.1; profit for the period -345.87; attributable to owners -346.1; non-controlling 0.23; total comprehensive income -398.16 -> -346.1 Rs cr. The sf_revop profit mirror held -345.87: storeB -345.87 = profit after tax incl. minority, not the owners row. Corrected to -346.1 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "ISEC",
+   "qe": "20220331",
+   "basis": "pat_con",
+   "was": 341.48,
+   "fixed": 340.29,
+   "why": "Own results filing ISEC_20220331_328c3c9e-2d28-4aaf-b66f-40bb222bf609.pdf page 16, consolidated table, three-month column (Rs million, read from image): PBT 4553.2; tax 1150.3; profit for the period 3402.9; total comprehensive income 3414.8 -> 340.29 Rs cr. The sf_revop profit mirror held 341.48: storeB 341.48 = total comprehensive income (3,414.8 million). Corrected to 340.29 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "AIIL",
+   "qe": "20250331",
+   "basis": "pat_std",
+   "was": 1766.0,
+   "fixed": 1766.47,
+   "why": "Own results filing AIIL_20250331_cf1a889d-c7e8-4536-835e-8febcc2ab8b7.pdf page 6, standalone table, three-month column (Rs crore, read from image): PBT 1252.24; tax current (137.49) + deferred (376.74) (no total row printed); profit for the period 1766.47; total comprehensive income 1275.5 -> 1766.47 Rs cr. The sf_revop profit mirror held 1766.0: storeB 1766.0 = whole-crore rounding of 1,766.47, not a printed figure. Corrected to 1766.47 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "BERGEPAINT",
+   "qe": "20210630",
+   "basis": "pat_con",
+   "was": 140.48,
+   "fixed": 140.59,
+   "why": "Own results filing BERGEPAINT_20210630_Results060821_06082021145503.pdf page 9, consolidated table, three-month column (Rs crore, read from text): PBT 190.32; tax 49.84; profit for the period 140.48; attributable to owners 140.59; non-controlling -0.11; total comprehensive income 130.02 -> 140.59 Rs cr. The sf_revop profit mirror held 140.48: storeB 140.48 = net profit incl. minority, not the owners row. Corrected to 140.59 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "BERGEPAINT",
+   "qe": "20240930",
+   "basis": "pat_con",
+   "was": 269.9,
+   "fixed": 269.66,
+   "why": "Own results filing BERGEPAINT_20240930_Resultsfinal_05112024161241.pdf page 11, consolidated table, three-month column (Rs crore, read from image): PBT 358.15; tax 88.25; profit for the period 269.9; attributable to owners 269.66; non-controlling 0.24; total comprehensive income 265.99 -> 269.66 Rs cr. The sf_revop profit mirror held 269.9: storeB 269.9 = net profit incl. minority, not the owners row. Corrected to 269.66 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "GROWW",
+   "qe": "20250630",
+   "basis": "pat_std",
+   "was": 305.92,
+   "fixed": 305.9,
+   "why": "Listed after this quarter, so no filing of its own exists; read from the 'quarter ended 30 June 2025' comparative column of the Sep-2025 results filing (user rule 21-Oct: pre-listing period from the comparative column) GROWW_20250630_0a24f696-a457-40e2-ba17-57af4c62de65.pdf page 10, standalone table, three-month column (Rs million, read from image): PBT 3921.74; tax 862.76; profit for the period 3058.98; total comprehensive income 3051.88 -> 305.9 Rs cr. The sf_revop profit mirror held 305.92: both (A by 0.10, B by 0.02). Corrected to 305.9 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "GROWW",
+   "qe": "20250630",
+   "basis": "pat_con",
+   "was": 378.35,
+   "fixed": 378.37,
+   "why": "Listed after this quarter, so no filing of its own exists; read from the 'quarter ended 30 June 2025' comparative column of the Sep-2025 results filing (user rule 21-Oct: pre-listing period from the comparative column) GROWW_20250630_0a24f696-a457-40e2-ba17-57af4c62de65.pdf page 5, consolidated table, three-month column (Rs million, read from image): PBT 5031.79; tax 1248.12; profit for the period 3783.67; attributable to owners 3783.67; non-controlling 0; total comprehensive income 3770.69 -> 378.37 Rs cr. The sf_revop profit mirror held 378.35: both (A by 0.37, B by 0.02). Corrected to 378.37 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": "20230331",
+   "basis": "pat_con",
+   "was": -6.22,
+   "fixed": -6.2,
+   "why": "Own results filing SPICEJET_20230331_4162b522-e0df-4439-989d-077b8d362d94.pdf page 9, consolidated table, three-month column (Rs million, read from image): PBT -62.22; tax 0; profit for the period -62.22; attributable to owners -62.02; non-controlling -0.2; total comprehensive income -124.01 -> -6.2 Rs cr. The sf_revop profit mirror held -6.22: B. Corrected to -6.2 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
+  },
+  {
+   "sym": "SPICEJET",
+   "qe": "20231231",
+   "basis": "pat_con",
+   "was": -299.91,
+   "fixed": -298.63,
+   "why": "Own results filing SPICEJET_20231231_e890360d-55b4-4045-8a32-b2e1db4ed35c.pdf page 9, consolidated table, three-month column (Rs million, read from image): PBT -2987.83; tax 0; profit for the period -2987.83; attributable to owners -2986.25; non-controlling -1.58; total comprehensive income -2972.35 -> -298.63 Rs cr. The sf_revop profit mirror held -299.91: B. Corrected to -298.63 (owners' profit basis).",
+   "found": "\u00a7239 small-mismatch read 2026-11-17 (main store vs profit mirror, cells under 2% apart; own results PDF read page by page)"
   }
  ],
  "retracted": [
