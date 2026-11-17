@@ -29923,3 +29923,21 @@ fill-only into sf_revop.json + revop_fundamentals.json; changed existing 0. **Ba
 are old-GI revenue (premium earned + investment income), Sep-26 is Ind AS insurance revenue — the two are not the same
 measure, so QoQ growth across that seam is not like-for-like. The daily upsert (`update_fundamentals.py`) now fills
 these files itself.
+
+## §243 — Insurer line items 2019-2024 from BSE's insurer results forms (2026-11-17, user: "fix the 14 nifty 500 gaps" + "Yes, read the PDFs")
+
+Before 2025 the listed insurers filed no results XBRL (NSE integrated + classic lists: none for HDFCLIFE/SBILIFE). BSE keeps
+each quarter's results as the insurer's OWN structured submission: life — `api/Result_LicFinancialResult[cons]_ng/w?scrip_code=
+&Fld_QuaterId=` (JSON, CurValue + PrevValue = current and previous quarter); general — `api/CorpGeneralInsurance_ng/w?scrip_code=
+&type=FR&isStandalone=1|0&Fld_QuaterId=&companyName=` (HTML, current quarter only). Fld_QuaterId = the `qtr=` in
+Result_Arch_ng's Weburl (Dec-24 350, Sep-24 346 … -4 per quarter). Script `~/stocks-cache/n500fix/bse_ins_form.py`, cache +
+`evidence.json` + `held_single.json` in `~/stocks-cache/n500fix/bseform/`.
+Fields = exactly the lines the integrated-XBRL route stores: LIFE pbt = 'Profit/(loss) before tax' (shareholders' a/c), tax_c =
+first 'Current Tax' (policyholders' a/c — XBRL CurrentTax), assets = 'Total Assets' (0.00 = not disclosed); GENERAL oi = first
+'Total other income' (policyholders' a/c — XBRL OtherIncome), pbt, assets. Gates: form end date + nature = quarter + basis; form PAT
+/ unit = our stored PAT within 0.1% (fixes the unit, mn for all eight); LIFE: next quarter's PrevValue must agree.
+**Landed (fill-only, changed 0, removed 0):** 314 values agreed by two filings + their aud flags, HDFCLIFE/ICICIPRULI/SBILIFE/LICI
+2019-09 … 2024-09. **Held (60, one filing only — user's 2-filing rule for this job):** every GICRE/GODIGIT/NIVABUPA form (no previous
+column) and the Dec-24 life quarters (no later form). Blank in both forms: HDFCLIFE Sep-21 std, Mar-22 con; SBILIFE Sep-20 std. No form:
+NIVABUPA Sep-24 (empty response), STARHEALTH Sep-21 (pre-listing). Seen in passing: our LI tax_c is the policyholders'-account tax
+beside a shareholders'-account pbt (XBRL CurrentTax), so pbt − tax_c ≠ PAT for life insurers — a definition question, not changed.
