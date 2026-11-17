@@ -9817,15 +9817,6 @@
    "found": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)"
   },
   {
-   "sym": "TARIL",
-   "qe": "20250331",
-   "basis": "con",
-   "was": 94.0,
-   "fixed": 94.16,
-   "why": "Consolidated Q4 FY25 own PDF p17: profit attributable to Owners 9,416 Rs lakh = 94.16 cr; stored 94.0 is rounded.",
-   "found": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)"
-  },
-  {
    "sym": "ZYDUSLIFE",
    "qe": "20250331",
    "basis": "con",
@@ -12490,15 +12481,6 @@
    "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)"
   },
   {
-   "sym": "GSFC",
-   "qe": "20240930",
-   "basis": "std",
-   "was": 302.67,
-   "fixed": 302.66,
-   "why": "NSE XBRL INDAS_115533_1308168_13112024030947.xml (bcast 13-Nov-2024 15:09, Standalone, OneD 2024-07-01..09-30) ProfitLossForPeriod=3026600000 Rs, decimals -5, rounding Lakhs",
-   "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)"
-  },
-  {
    "sym": "HCLTECH",
    "qe": "20150630",
    "basis": "std",
@@ -12568,15 +12550,6 @@
    "was": 17.96,
    "fixed": 17.95,
    "why": "NSE archive KITEX_20170630_1028203.html (bcast 31-Jul-2017 16:13:46, Non-Consolidated, Non-cumulative, Unaudited, Rs lakhs) row \"Net Profit / (Loss) for the period\" = 1795.25; EPS-identity ok; BSE API Corp_detailedResult 179.5300 mn (30-Jun-17)",
-   "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)"
-  },
-  {
-   "sym": "LUXIND",
-   "qe": "20230930",
-   "basis": "std",
-   "was": 38.33,
-   "fixed": 38.34,
-   "why": "NSE XBRL INDAS_99407_980338_08112023030548.xml (bcast 08-Nov-2023 15:05, Standalone, OneD Q2) ProfitLossForPeriod=383400000 Rs, rounding Crores",
    "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)"
   },
   {
@@ -16547,6 +16520,15 @@
    "fixed": 27.27,
    "why": "\u00a7239c, user rule 17-Nov-2026 ('Owners' profit'). unaudited_Financial_Result_qtr_30_09_2018_31102018202736 p9 (image read): consolidated quarter ended 30.09.2018 'Profit for the period' 2,736.02 lakh; attribution printed only for total comprehensive income: owners 2,823.53, non-controlling interest 9.02. Owners' profit = 2,736.02 - 9.02 = 2,727.00 lakh = 27.27 (takes the 96.53 OCI as the owners'; printed EPS 1.59 fits both figures).",
    "found": "pre-2020 second-reading read 2026-11-17 (\u00a7239c): each cell's own filing"
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 94.0,
+   "fixed": 94.17,
+   "why": "Bridge entry (runbook \u00a7240): the 22-Oct entry 94.0 -> 94.16 was retracted (it read total comprehensive income to owners, 9,416). Own filing TRIL_08042025145430_SE_Intimation_Outcome.pdf p17 (NSE, 08-Apr-2025, Rs lakh), consolidated quarter 31.03.2025: PBT 11,924; tax 2,504; profit for the period 9,420; attributable to Owners of the Company 9,417 -> 94.17 cr. Kept so a store that ever holds the older 94.0 still lands on 94.17.",
+   "found": "\u00a7240 conflict read 2026-11-17 (own results PDF page read by eye)"
   }
  ],
  "retracted": [
@@ -17913,6 +17895,36 @@
    "why": "Q Mar-18 results filing 293833a9 (2018-05-10; twin 3328dae8) p7 \"Statement of consolidated unaudited financial results for the quarter ended March 31, 2018\" (Rs lakhs): row 11 profit for the period (after share of JVs row 6) 2,837.52 lakhs = 28.38; no owners/NCI split of profit (split given only for TCI: owners 2,712.36, NCI 153.84) so rule = net profit after associates. Ours 26.84 = the standalone quarter (p3 2,683.65).",
    "found": "StockView cell-by-cell check 2026-10-25 (con SV-blank shard 0, PIT-N500, own filing read)",
    "retracted_why": "RETRACTED 2026-11-17 (\u00a7239c/\u00a7240): RULE, not a misread. This entry stored the printed 'Profit for the period'. ITD Cementation splits only total comprehensive income between owners and non-controlling interest; the user chose (17-Nov-2026, 'Owners' profit') to store owners' profit worked out from that split: 2,837.52 - NCI share 153.84 = 2,683.68 lakh = 26.84 (ITD_unaudited_financial_result_10052018160149 p7; printed EPS 1.61 fits it)."
+  },
+  {
+   "sym": "TARIL",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 94.0,
+   "fixed": 94.16,
+   "why": "Consolidated Q4 FY25 own PDF p17: profit attributable to Owners 9,416 Rs lakh = 94.16 cr; stored 94.0 is rounded.",
+   "found": "StockView cell-by-cell check 2026-10-22 (con Jan-24..Jun-25 PIT-N500, own filing read)",
+   "retracted_why": "RETRACTED 2026-11-17 (runbook \u00a7240): this entry read the wrong row. Own filing TRIL_08042025145430_SE_Intimation_Outcome.pdf p17 (NSE, 08-Apr-2025, Rs lakh), consolidated quarter 31.03.2025: profit attributable to Owners of the Company 9,417 = 94.17 cr; 9,416 is TOTAL COMPREHENSIVE INCOME attributable to owners. The 17-Nov entry (94.16 -> 94.17) and the bridge entry (94.0 -> 94.17) carry the right figure."
+  },
+  {
+   "sym": "GSFC",
+   "qe": "20240930",
+   "basis": "std",
+   "was": 302.67,
+   "fixed": 302.66,
+   "why": "NSE XBRL INDAS_115533_1308168_13112024030947.xml (bcast 13-Nov-2024 15:09, Standalone, OneD 2024-07-01..09-30) ProfitLossForPeriod=3026600000 Rs, decimals -5, rounding Lakhs",
+   "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)",
+   "retracted_why": "RETRACTED 2026-11-17 (runbook \u00a7240): the quarter's own results PDF GSFCRESULTQ2_12112024182404.pdf p2 (NSE, filed 12-Nov-2024 18:24, Rs lakh), Standalone quarter 30-Sep-24: PBT 39,143 - tax 8,876 = 'Net Profit after tax' 30,267 = 302.67 cr (owners 30,267). The NSE XBRL used here (filed next day) tags PBT 39,142 and profit 30,266 - a one-lakh slip in the XBRL; its half-year profit 39,531 matches the PDF. The signed statement, filed first, wins: 302.67."
+  },
+  {
+   "sym": "LUXIND",
+   "qe": "20230930",
+   "basis": "std",
+   "was": 38.33,
+   "fixed": 38.34,
+   "why": "NSE XBRL INDAS_99407_980338_08112023030548.xml (bcast 08-Nov-2023 15:05, Standalone, OneD Q2) ProfitLossForPeriod=383400000 Rs, rounding Crores",
+   "found": "StockView cell-by-cell check 2026-10-25 (std 0.01 cells, PIT-N500, own filing read)",
+   "retracted_why": "RETRACTED 2026-11-17 (runbook \u00a7240): the quarter's own results PDF Outcome_07112023153447.pdf p3 (NSE, filed 07-Nov-2023 15:34, Rs crore, text layer), Standalone quarter Sep 30, 2023: PBT 50.49 - total tax 12.16 = 'Net Profit for the Period' 38.33. The NSE XBRL used here (filed 08-Nov) tags PBT 50.50 and profit 38.34 - it does not match the printed statement. The signed statement, filed first, wins: 38.33."
   }
  ]
 }

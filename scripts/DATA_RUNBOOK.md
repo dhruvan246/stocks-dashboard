@@ -29814,6 +29814,17 @@ Mar-18 con, CEMPRO Dec-18 con, COFFEEDAY Jun-19 std, GITANJALI Sep-15 std, GSFC 
 Sep-23 std, SUNPHARMA Mar-15 std, TARIL Mar-25 con, TREEHOUSE Mar-16 std. Remove a key once its losing entry is
 retracted. CEMPRO ×2 is a rule question (printed "profit for the period" vs EPS-confirmed owners' share) for the user.
 
+**Settled 2026-11-17 (user: "read gsfc, luxind and taril filings").** Each read from the quarter's own NSE filing, page seen:
+GSFC Sep-24 std = **302.67** (GSFCRESULTQ2_12112024182404.pdf p2, lakh: PBT 39,143 - tax 8,876 = 30,267; the next-day XBRL
+tags PBT 39,142 / profit 30,266 — XBRL slip). LUXIND Sep-23 std = **38.33** (Outcome_07112023153447.pdf p3, crore, text layer:
+50.49 - 12.16 = 38.33; the next-day XBRL tags PBT 50.50 / profit 38.34). Rule applied: when the signed results statement and the
+company's own XBRL disagree, the statement (filed first, internally consistent) wins. TARIL Mar-25 con = **94.17**
+(TRIL_08042025145430_SE_Intimation_Outcome.pdf p17, lakh: owners 9,417; the 22-Oct entry took 9,416 = total comprehensive
+income to owners). The three losing entries are in `retracted`; TARIL gets a bridge entry 94.0 -> 94.17 so the chain still
+lands if a store ever holds 94.0. GSFC/LUXIND sf_revop profit mirror set to match (a 0.01 gap is below sync_pat_mirror's
+0.011 threshold, so it would not follow by itself). Other session settled GITANJALI, LITL, SUNPHARMA, COFFEEDAY, TREEHOUSE
+(00d6f578a9). Left: ASSAMCO Mar-17 std (rule question — quarter column as printed vs FY minus three quarters).
+
 **§239c update 2 (17-Nov-2026).** (a) User rule for ITD Cementation (CEMPRO) consolidated quarters whose page splits only total
 comprehensive income: "Owners' profit" — store profit for the period minus the non-controlling share shown in that split.
 Applied to Mar-18 (26.84), Sep-18 (27.36 → 27.27) and Dec-18 (34.43); the three October entries that stored the printed
