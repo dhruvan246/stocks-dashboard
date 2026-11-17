@@ -106,6 +106,7 @@ TAGS = ("RevenueFromOperations", "OtherIncome", "FinanceCosts",
         "ProfitLossAfterTaxAndExtraordinaryItems",   # LIFE: PAT
         "ProfitLossBeforeTax",                       # LIFE: PBT (both accounts combined)
         "PremiumEarned",                             # GI: net earned premium
+        "InsuranceRevenue",                          # Ind AS 117 insurer (IF_INS_COM_IND_AS, 2026-11-17)
         "ShareholdersAccountIncomeFromInvestments",  # GI: shareholders' investment income
         "OperatingExpenses",                         # GI: total policyholders'-account expenses
         "NonOperatingExpense",                       # GI: shareholders'-account net expense
@@ -279,6 +280,15 @@ def metrics_for(xml, ctx):
     #         PBT − their 'Other Income' row; their OI/PBT come from the PDF and differ from the
     #         XBRL by small regroupings (HDFCLIFE std: TL 505.8 vs this 532.2), so op is CLOSE
     #         but not paisa-exact for life insurers — rev and PAT are exact.
+    # IND AS 117 INSURER ('IF_INS_COM_IND_AS' integrated filing, from Q1 FY27: STARHEALTH Jun-26 onward).
+    # No PremiumEarned / NetPremiumIncome line any more. User rule (2026-11-17):
+    #   rev = InsuranceRevenue + InvestmentIncome  (STARHEALTH Jun-26: 4917.20 + 643.69 = 5560.89 Cr).
+    #   op/ebit: no rule agreed -> None.  PAT = ProfitLossForPeriod.
+    insrev = fnum(xml, "InsuranceRevenue", ctx)
+    if insrev is not None:
+        rev = insrev + (fnum(xml, "InvestmentIncome", ctx) or 0.0)
+        pat = fnum(xml, "ProfitLossForPeriod", ctx)
+        return (rev / CR, None, None, pat / CR if pat is not None else None, None)
     npi = fnum(xml, "NetPremiumIncome", ctx)
     if npi is not None:
         inv = fnum(xml, "IncomeFromInvestmentsNet", ctx) or 0.0
@@ -367,7 +377,7 @@ def xbrl_revop(xml, basis_hint=None):
     for m in re.finditer(r'NatureOfReportStandaloneConsolidated contextRef="([^"]+)"[^>]*>([^<]+)<', xml):
         nat[m.group(1)] = m.group(2).strip().lower()
     hint = (basis_hint or "").lower()
-    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml) else 0
+    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml or "InsuranceRevenue" in xml) else 0
     rev_std = op_std = ebit_std = rev_con = op_con = ebit_con = None
     one_nat = nat.get("OneD", "") or hint
     # build_fundamentals.is_con_basis, never `"consol" in …`: NSE's hint label "Non-Consolidated" CONTAINS
@@ -435,7 +445,7 @@ def parse_file(path, fname):
     if not sym:
         return None
     sym = sym.upper()
-    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml
+    fin = 1 if ("InterestEarned" in xml or "NetPremiumIncome" in xml or "PremiumEarned" in xml or "InsuranceRevenue" in xml
                 or fname.startswith("BANKING") or "NBFC" in fname
                 or "_LI_" in fname or "_GI_" in fname) else 0
 

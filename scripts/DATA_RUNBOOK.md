@@ -29889,3 +29889,16 @@ cmp.py; every verdict + evidence in verdicts.md). Counts: 984 cells agree, 309 o
 - UNKNOWN: Screener figures that match no printed row (listed in verdicts.md) and the 40 not-read cells (FSL c, VRLLOG,
   IRCTC FY20/FY22/FY25, HERITGFOOD c FY20, HCLTECH, NAVA, TTML, BSOFT, OBEROIRLTY c cfi, VENTIVE c FY25 cwip).
 No cell had all three sites agreeing against us, so the consensus rule (§0 point 6) did not fire. Full run awaits the user.
+
+## §242 — Ind AS 117 insurer results: revenue rule (2026-11-17, user: "Insurance + investment")
+
+From Q1 FY27 some insurers file a new NSE XBRL, `IF_INS_COM_IND_AS_*` (STARHEALTH Jun-26 refile 20-Oct-26 and Sep-26;
+NIVABUPA Sep-26; GODIGIT Sep-26). It has no `PremiumEarned` / `NetPremiumIncome`, so `build_revop.metrics_for` returned
+no revenue. **Rule (user):** rev = `InsuranceRevenue` + `InvestmentIncome`; PAT = `ProfitLossForPeriod`; op/ebit = None
+(no rule agreed). fin = 1. STARHEALTH Jun-26: 4,917.20 + 643.69 = **5,560.89 Cr**; Sep-26 5,073.77 + 267.57 = 5,341.34;
+NIVABUPA Sep-26 2,412.27 + 159.61 = 2,571.88; GODIGIT Sep-26 2,720.49 + 368.40 = 3,088.89 (its 5-Nov and 12-Nov files
+are identical). Each file's PAT equals our stored PAT (549.73 / 264.81 / 135.64 / 142.39). 4 revenue cells filled
+fill-only into sf_revop.json + revop_fundamentals.json; changed existing 0. **Basis break:** GODIGIT Jun-26 and earlier
+are old-GI revenue (premium earned + investment income), Sep-26 is Ind AS insurance revenue — the two are not the same
+measure, so QoQ growth across that seam is not like-for-like. The daily upsert (`update_fundamentals.py`) now fills
+these files itself.
