@@ -29341,6 +29341,15 @@ filing's FY20 triple) removed: TIRUPATI was never in the Nifty 500 and non-N500 
 Dropped from sf_fundamentals, sf_revop, revop_fundamentals, nse_sme_pdf_proofs (its FY20 proof) and xbrl_extra. Nothing re-adds it:
 fetch_nse_sme_results_pdf.py targets only 2020-03-31 onward. The 20200331 half (Oct-19–Mar-20) stays.
 
+**Round 12d (2026-11-17, user: "fill tirupati consolidated too").** Each half read by eye from its OWN filing (NSE SME
+announcements; Rs lakh → cr). Sep-20 con: SELETTERFINANCIAL_10112020164209.zip p10, revenue 4,876.48, profit for the period
+200.86 → 48.76 / 2.01. Sep-21 con: SELETTERFINANCIAL_13112021163804.pdf p11, 8,655.61 / 360.04 → 86.56 / 3.60. Mar-22 con:
+SELEtterResults_25052022200403.pdf p13, printed half-year column 31.03.2022, 11,120.76 / 340.11 → 111.21 / 3.40. Written as
+pat_c/ann_c (sf_fundamentals) and rev_c/pat_c (sf_revop + revop_fundamentals); op/ebit left blank like the std side of these rows.
+Mar-20 con stays BLANK (con rule 2026-10-26, FY-only con with no earlier con): the Jul-2020 filing p10 prints con only for FY20
+(357.69) and the subsidiary STB International Pvt Ltd was incorporated 20-Nov-2019 (Nov-2020 filing p13 note 7), so no H1 con
+exists to subtract. The standalone pages of the same filings confirm the stored std cells (200.86, 360.05, 340.13 lakh).
+
 ## §231 — StockView profit check, PIT Nifty 500 2009→2026: rulings and final reply (2026-10-27)
 
 StockView sent standalone net profit and consolidated owners' profit for every PIT-N500 quarter (CSV, 2026-10-21). Every
