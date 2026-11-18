@@ -27983,6 +27983,79 @@ held 36 fund rows but revop rows for only Mar-25, Jun-25, Jun-26 and Sep-26.
     and op value matches the plan.
   - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — CHEMCRUX full history Mar-18..Sep-26 (2026-11-19 00:10 IST, same instruction).** Chemcrux Enterprises Ltd (BSE
+540395; CIN L01110GJ1996PLC029329, name + CIN checked on each statement page). Two unit eras:
+- **BSE SME until FY22: half-yearly statements in RUPEES** (crore = value / 1e7). Per the §191 MIIL convention the Sep row is H1
+  and the Mar row is H2. The SME era has no revop rows.
+- **Quarterly statements in INR lakh from Jun-22** (crore = value / 100, half-up 2 dp).
+
+Every period was read from its own BSE filing (the text layer checked against the page image; `verify_reads.py` 196 figures,
+29 not in the text layer as plain digits: 28 image-read, plus Mar-19 PAT printed "4.92.24.797" in the text layer, confirmed by
+4,92,24,797 + 4,39,30,235 = FY19 9,31,55,032) plus a second document: a later filing's comparative column or the H1 / 9M / FY tie.
+Sep-26 is the latest quarter, so its second document is UNKNOWN until the Dec-26 filing (its H1 ties). Kit `d2/chemcrux/`
+(reads `reads.py`, plan `plan_chemcrux.py`, apply `apply_chemcrux.py`). Before the audit (origin 2936d403ab) the store held 27
+fund rows, 4 of them phantom quarters, and revop rows for Jun-26 and Sep-26 only.
+- **Consolidated history.** No consolidated statement exists before the Mar-24 filing (every filing scanned). The JV Kalichem
+  Pvt Ltd (equity method) had no P&L items until production began on 26-Nov-2024. The Mar-24 filing's consolidated statement
+  prints Mar-23 / Dec-23 / Mar-24 / FY23 / FY24 = std. Dec-24 carries the first JV share (−0.50 lakh), and Kalichem became a
+  wholly owned subsidiary on 27-Feb-2025 (Mar-25 con note 10). So con = std (§54b) up to Sep-24, and the filed consolidated
+  figures are used from Dec-24.
+- **36 fund PAT cells were OUR ERROR (`fund_cell_fix`).** The verdict for each cell names what the stored figure was:
+  - 23 were the **right figure at the wrong scale**: lakh stored as crore (×100) for Jun-23, Sep-23 std, Dec-23, Mar-24, Jun-24
+    std, Dec-24, Mar-25 std, Jun-25 std, Sep-25 std, Dec-25 con and Mar-26 std (15 cells); ×10,000 for Sep-23 con 12444, Jun-24
+    con 12382, Sep-24 std 11475 and Mar-26 con 18495. Mar-20 591910.5 was rupees / 100, and Sep-21 53946867 was rupees stored as crore.
+  - 6 were **another period's figure**: Mar-19 439.0 (= H1 FY19 4,39,30,235), Sep-20 42912351 (= H2 FY21 4,29,12,351) on both
+    bases; Jun-25 con 11475 (= Sep-24 std 114.75 lakh); Mar-25 con 2039 (= the RESTATED 20.39 first printed by the Jun-25 filing,
+    a look-ahead; the own filing printed 20.63).
+  - 3 were **garbled or truncated text-layer reads**: Sep-24 con 175.0 (the text layer prints "175" for 114.75), Sep-25 con 3139
+    (image 21.29) and Dec-25 std 207.7 (image 207.90).
+  - 4 **match no line** of their own statement: Mar-18 235.0 and Mar-23 8.44, both bases (source not identified).
+- **Half-year rows added (`named_pat_cell_fills` + `ann_date_fills` normal entries):** Sep-18 4.39 (ann 20181114), Sep-19 4.72
+  (20191114), Mar-21 4.29 (20210611), Mar-22 9.52 (20220520). con = std (no consolidated statement).
+- **4 phantom quarter rows dropped** (`named_pat_cell_fills` `held` absence assertions). Every results filing from 2017-11-14 to
+  2022-05-20 is a six-month statement, and the first per-quarter statement is Jun-22 (2022-08-12). No filing made these
+  quarters public at the stored dates:
+  - Dec-18 [30.0]: matches no line of any filing.
+  - Dec-19 [472347.71]: H1 FY20 PAT in rupees / 100.
+  - Jun-21 [46423890]: H1 FY21 PAT in rupees.
+  - Dec-21 [4.93]: the Oct–Dec 2021 quarter PAT 493.29 lakh, first printed on 2023-02-13 as the Dec-22 filing's year-ago
+    column (a look-ahead). The half that contains it is the Mar-22 row (H2 FY22, filed 2022-05-20).
+
+  Their old `ann_date_fills` entries stay; reapply never creates rows (`--reapply --only CHEMCRUX`: 0 cells, stores
+  byte-identical).
+- **Announcement dates.** Each date is the calendar day of the first BSE results filing (midnight rule §149). 26 of the 27 rows
+  already matched. **Sep-26 annStd 20261103 → 20261102** (`ann_date_fills` override): the results were filed 2026-11-02 14:36.
+  The 11-03 18:32 re-filing only corrects the auditor's review-report period (2025 → 2026) and repeats the same statements.
+  annCon was already 20261102.
+- **Revop (`named_rev_cell_fills`).** 16 quarter rows were missing (Jun-22..Mar-26) and are now added from the own statements.
+  Formula: op = PBT before the JV share + finance + depreciation − other income; ebit = op − depreciation. Jun-26 and Sep-26 were
+  right as stored.
+- **Restated bases (`restated_bases`, level `period`, 4 entries: s + c PAT):**
+  - Sep-22|Sep-21 base 3.40: the Sep-22 filing prints the Jul–Sep 2021 quarter at 339.69 lakh, while our Sep-21 row is H1 FY22
+    (5.39).
+  - Mar-23|Mar-22 base 4.53: the FY23 filing prints Q4 FY22 at 452.59, while our Mar-22 row is H2 FY22 (9.52).
+
+  The page now reads +18.53% R and −35.54% R. Jun-22 and Dec-22 YoY stay blank because no Jun-21 or Dec-21 row exists (the
+  consumer replaces only a stored base row).
+- **Noise / RULE DIFFERENCE, stored as first filed:**
+  - Dec-24 con: the Mar-25 filing restates it to 132.16 / rev 1,942.12; the 2-dp values are the same either way.
+  - Mar-25 con: restated 20.39 vs first-filed 20.63 = 0.0024 cr, below the 0.011 line.
+  - Jun-23: later reprints show 232.62 vs own 232.63.
+- **Right as stored:** Jun-22 3.83, Sep-22 4.03 and Dec-22 3.58 (fund cells); Jun-26 and Sep-26 (fund + revop, all slots).
+- **OPEN:**
+  - The §210d owner should add a CHEMCRUX `row_periods` entry (FY18–FY22 Sep/Mar rows are half-years). Not touched here.
+  - A Sep-17 H1 row is not added (our store starts at Mar-18).
+- **Twin lag (measured):** `scripts/fundamentals.json` has no 20260630 or 20260930 CHEMCRUX rows; every row it holds equals
+  docs. The revop twins are equal.
+- **Checks:**
+  - Blast radius = CHEMCRUX.
+  - verify_fills_live: 45,694 checked, MISSING 0, REVERTED 0, RESURRECTED 0. All 70 DRIFT lines are other symbols' older
+    ledgers; none is CHEMCRUX.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK; FUND_ALIAS in step.
+  - stock.html?s=CHEMCRUX local: consolidated and standalone tables have 27 rows each, and every revenue, op, EBIT, NP and
+    announcement value matches the plan.
+  - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads

@@ -19202,6 +19202,330 @@
    "fixed": 51.41,
    "why": "OUR ERROR: Milkfood Ltd (BSE 507621 / NSE MLKFOOD; CIN L15201PB1973PLC003746; statements in Rs lakh, /100 = crore, half-up 2 dp). Primary: 2026-03 results (BSE 2026-05-22 16:45, att f2367d61; d2/pdf/mlkfood/MLKFOOD_20260522_1645.pdf p6): standalone statement only; the only subsidiary was struck off on 20-Jan-2026 (BSE 2026-01-20), so the company has no subsidiary -> con = std (\u00a754b) -> con = std 51.41 cr. Second: Jun-26 filing (MLKFOOD_20260807_1506 p4) 31.03.2026 column = own (rev 17,893, OI 6,600, PBT 6,457, PAT 5,141); FY26 rev 41,293 = 23,400 + 17,893 exact; 2026-05-22 16:51 copy identical | our 0.06 does not match this statement's net profit for the period (5,141 lakh).",
    "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20180331",
+   "basis": "std",
+   "was": 235.0,
+   "fixed": 1.66,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2018-03 results (BSE, ann 2018-05-29, d2/pdf/chemcrux/CHEMCRUX_20180529_1943.pdf), standalone Profit for the period (six months ended 31 March (H2; SME half-yearly filing, Mar row = H2)) Rs 1,66,09,493 = 1.66 cr. Second: FY18 PAT 2,36,32,174 (H1 70,22,681 from 2017-11-14 filing). | our 235.0 matches no line of the H2 FY18 statement (PAT 1,66,09,493 rupees; FY18 2,36,32,174); source not identified.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20180331",
+   "basis": "con",
+   "was": 235.0,
+   "fixed": 1.66,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20180529_1943.pdf: no consolidated statement for the period (no subsidiary or joint venture with any P&L before 26-Nov-2024; the first consolidated statement is the Mar-24 filing's) -> con = std 1.66 cr (\u00a754b). Second: FY18 PAT 2,36,32,174 (H1 70,22,681 from 2017-11-14 filing). | our 235.0 matches no line of the H2 FY18 statement (PAT 1,66,09,493 rupees; FY18 2,36,32,174); source not identified; no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20190331",
+   "basis": "std",
+   "was": 439.0,
+   "fixed": 4.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2019-03 results (BSE, ann 2019-05-24, d2/pdf/chemcrux/CHEMCRUX_20190524_1913.pdf), standalone Profit for the period (six months ended 31 March (H2; SME half-yearly filing, Mar row = H2)) Rs 4,92,24,797 = 4.92 cr. Second: FY19 9,31,55,032 ties. | our 439.0 is the PRECEDING half-year's (H1 FY19) PAT 4,39,30,235 rupees read at the wrong scale, a neighbouring period.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20190331",
+   "basis": "con",
+   "was": 439.0,
+   "fixed": 4.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20190524_1913.pdf: no consolidated statement for the period (no subsidiary or joint venture with any P&L before 26-Nov-2024; the first consolidated statement is the Mar-24 filing's) -> con = std 4.92 cr (\u00a754b). Second: FY19 9,31,55,032 ties. | our 439.0 is the PRECEDING half-year's (H1 FY19) PAT 4,39,30,235 rupees read at the wrong scale, a neighbouring period; no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20200331",
+   "basis": "std",
+   "was": 591910.5,
+   "fixed": 5.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2020-03 results (BSE, ann 2020-06-16, d2/pdf/chemcrux/CHEMCRUX_20200616_1348.pdf), standalone Profit for the period (six months ended 31 March (H2; SME half-yearly filing, Mar row = H2)) Rs 5,91,91,050 = 5.92 cr. Second: FY20 ties (1 rupee). | our 591910.5 is the right figure (5,91,91,050 rupees) divided by 100 instead of 1e7 (scale).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20200331",
+   "basis": "con",
+   "was": 591910.5,
+   "fixed": 5.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20200616_1348.pdf: no consolidated statement for the period (no subsidiary or joint venture with any P&L before 26-Nov-2024; the first consolidated statement is the Mar-24 filing's) -> con = std 5.92 cr (\u00a754b). Second: FY20 ties (1 rupee). | our 591910.5 is the right figure (5,91,91,050 rupees) divided by 100 instead of 1e7 (scale); no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20200930",
+   "basis": "std",
+   "was": 42912351.0,
+   "fixed": 4.64,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2020-09 results (BSE, ann 2020-11-07, d2/pdf/chemcrux/CHEMCRUX_20201107_1357.pdf), standalone Profit for the period (six months ended 30 September (H1; SME half-yearly filing, Sep row = H1)) Rs 4,64,23,890 = 4.64 cr. Second: FY21 8,93,36,241 = 4,64,23,890 + 4,29,12,351. | our 42912351.0 is the NEXT half-year's (H2 FY21) PAT 4,29,12,351 in rupees, a neighbouring period at the wrong scale.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20200930",
+   "basis": "con",
+   "was": 42912351.0,
+   "fixed": 4.64,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20201107_1357.pdf: no consolidated statement for the period (no subsidiary or joint venture with any P&L before 26-Nov-2024; the first consolidated statement is the Mar-24 filing's) -> con = std 4.64 cr (\u00a754b). Second: FY21 8,93,36,241 = 4,64,23,890 + 4,29,12,351. | our 42912351.0 is the NEXT half-year's (H2 FY21) PAT 4,29,12,351 in rupees, a neighbouring period at the wrong scale; no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20210930",
+   "basis": "std",
+   "was": 53946867.0,
+   "fixed": 5.39,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2021-09 results (BSE, ann 2021-11-01, d2/pdf/chemcrux/CHEMCRUX_20211101_1406.pdf), standalone Profit for the period (six months ended 30 September (H1; SME half-yearly filing, Sep row = H1)) Rs 5,39,46,867 = 5.39 cr. Second: FY22 149,188,984 = 53,946,867 + 95,242,117. | our 53946867.0 is the right figure in rupees stored as crore (scale).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20210930",
+   "basis": "con",
+   "was": 53946867.0,
+   "fixed": 5.39,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20211101_1406.pdf: no consolidated statement for the period (no subsidiary or joint venture with any P&L before 26-Nov-2024; the first consolidated statement is the Mar-24 filing's) -> con = std 5.39 cr (\u00a754b). Second: FY22 149,188,984 = 53,946,867 + 95,242,117. | our 53946867.0 is the right figure in rupees stored as crore (scale); no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230331",
+   "basis": "std",
+   "was": 8.44,
+   "fixed": 2.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-03 results (BSE, ann 2023-05-20, d2/pdf/chemcrux/CHEMCRUX_20230520_1718.pdf), standalone Profit for the period (quarter) 292.36 lakh = 2.92 cr. Second: FY23 1,435.81 ties; Mar-24 filing reprints PBT 424.61 / PAT 292.36, and its consolidated statement prints Mar-23 con = std. | our 8.44 matches no line of the Mar-23 statement (PAT 292.36 lakh; FY23 1,435.81); source not identified.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230331",
+   "basis": "con",
+   "was": 8.44,
+   "fixed": 2.92,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-03 results (BSE, ann 2023-05-20, d2/pdf/chemcrux/CHEMCRUX_20230520_1718.pdf): con = std 2.92 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; no consolidated statement was filed before the Mar-24 filing, whose consolidated statement prints Mar-23 / Dec-23 / FY23 = std (\u00a754b). Second: FY23 1,435.81 ties; Mar-24 filing reprints PBT 424.61 / PAT 292.36, and its consolidated statement prints Mar-23 con = std. | our 8.44 matches no line of the Mar-23 statement (PAT 292.36 lakh; FY23 1,435.81); source not identified; no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230630",
+   "basis": "std",
+   "was": 232.62,
+   "fixed": 2.33,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-06 results (BSE, ann 2023-08-04, d2/pdf/chemcrux/CHEMCRUX_20230804_1825.pdf), standalone Profit for the period (quarter) 232.63 lakh = 2.33 cr. Second: Sep-23 / Jun-24 filings reprint PAT 232.62 / PBT 316.11 (0.01, noise). | our 232.62 is the figure in lakh (as reprinted by later filings) stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230630",
+   "basis": "con",
+   "was": 232.62,
+   "fixed": 2.33,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-06 results (BSE, ann 2023-08-04, d2/pdf/chemcrux/CHEMCRUX_20230804_1825.pdf): con = std 2.33 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; no consolidated statement was filed before the Mar-24 filing, whose consolidated statement prints Mar-23 / Dec-23 / FY23 = std (\u00a754b). Second: Sep-23 / Jun-24 filings reprint PAT 232.62 / PBT 316.11 (0.01, noise). | our 232.62 is the figure in lakh (as reprinted by later filings) stored as crore (x100); no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230930",
+   "basis": "std",
+   "was": 124.44,
+   "fixed": 1.24,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-09 results (BSE, ann 2023-11-09, d2/pdf/chemcrux/CHEMCRUX_20231109_1534.pdf), standalone Profit for the period (quarter) 124.44 lakh = 1.24 cr. Second: Sep-24 filing reprints the column on both statements (con Sep-23 = 124.44). | our 124.44 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20230930",
+   "basis": "con",
+   "was": 12444.0,
+   "fixed": 1.24,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-09 results (BSE, ann 2023-11-09, d2/pdf/chemcrux/CHEMCRUX_20231109_1534.pdf): con = std 1.24 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; no consolidated statement was filed before the Mar-24 filing, whose consolidated statement prints Mar-23 / Dec-23 / FY23 = std (\u00a754b). Second: Sep-24 filing reprints the column on both statements (con Sep-23 = 124.44). | our 12444.0 is the figure 124.44 lakh stored x10,000.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20231231",
+   "basis": "std",
+   "was": 266.14,
+   "fixed": 2.66,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-12 results (BSE, ann 2024-02-13, d2/pdf/chemcrux/CHEMCRUX_20240213_1334.pdf), standalone Profit for the period (quarter) 266.14 lakh = 2.66 cr. Second: Mar-24 filing reprints (std + con 266.14); own 9M 654.49 omits the 31.29 earlier-year tax (filer YTD slip). | our 266.14 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20231231",
+   "basis": "con",
+   "was": 266.14,
+   "fixed": 2.66,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2023-12 results (BSE, ann 2024-02-13, d2/pdf/chemcrux/CHEMCRUX_20240213_1334.pdf): con = std 2.66 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; no consolidated statement was filed before the Mar-24 filing, whose consolidated statement prints Mar-23 / Dec-23 / FY23 = std (\u00a754b). Second: Mar-24 filing reprints (std + con 266.14); own 9M 654.49 omits the 31.29 earlier-year tax (filer YTD slip). | our 266.14 is the right figure in lakh stored as crore (x100); no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240331",
+   "basis": "std",
+   "was": 221.24,
+   "fixed": 2.21,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-03 results (BSE, ann 2024-05-06, d2/pdf/chemcrux/CHEMCRUX_20240506_1655.pdf p2), standalone Profit for the period (quarter) 221.24 lakh = 2.21 cr. Second: FY24 7,846.53 / 844.43 tie; con statement p11 = std (JV no P&L); Jun-24 filing reprints. | our 221.24 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240331",
+   "basis": "con",
+   "was": 221.24,
+   "fixed": 2.21,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-03 results (BSE, ann 2024-05-06, d2/pdf/chemcrux/CHEMCRUX_20240506_1655.pdf p2): con = std 2.21 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; this filing's own consolidated statement (p11) prints the same figures (\u00a754b). Second: FY24 7,846.53 / 844.43 tie; con statement p11 = std (JV no P&L); Jun-24 filing reprints. | our 221.24 is the right figure in lakh stored as crore (x100); no consolidated statement existed for the period (\u00a754b), con = std.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240630",
+   "basis": "std",
+   "was": 123.82,
+   "fixed": 1.24,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-06 results (BSE, ann 2024-07-30, d2/pdf/chemcrux/CHEMCRUX_20240730_1446.pdf p2), standalone Profit for the period (quarter) 123.82 lakh = 1.24 cr. Second: con statement p5 identical (JV share nil); Sep-24 filing reprints both. | our 123.82 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240630",
+   "basis": "con",
+   "was": 12382.0,
+   "fixed": 1.24,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-06 results (BSE, ann 2024-07-30, d2/pdf/chemcrux/CHEMCRUX_20240730_1446.pdf p2): con = std 1.24 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; this filing's own consolidated statement (p5) prints the same figures (\u00a754b). Second: con statement p5 identical (JV share nil); Sep-24 filing reprints both. | our 12382.0 is the figure 123.82 lakh stored x10,000.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240930",
+   "basis": "std",
+   "was": 11475.0,
+   "fixed": 1.15,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-09 results (BSE, ann 2024-11-11, d2/pdf/chemcrux/CHEMCRUX_20241111_1438.pdf p3), standalone Profit for the period (quarter) 114.75 lakh = 1.15 cr. Second: con statement p9 identical (JV share nil); H1 238.57 = 123.82 + 114.75; Dec-24 filing reprints. | our 11475.0 is the figure 114.75 lakh stored x10,000.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20240930",
+   "basis": "con",
+   "was": 175.0,
+   "fixed": 1.15,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-09 results (BSE, ann 2024-11-11, d2/pdf/chemcrux/CHEMCRUX_20241111_1438.pdf p3): con = std 1.15 cr. No subsidiary; the JV Kalichem Pvt Ltd (equity method) had no P&L items before production began 26-Nov-2024; this filing's own consolidated statement (p9) prints the same figures (\u00a754b). Second: con statement p9 identical (JV share nil); H1 238.57 = 123.82 + 114.75; Dec-24 filing reprints. | our 175.0 is a truncated read of 114.75 (the text layer prints '175'), not a figure on the page.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20241231",
+   "basis": "std",
+   "was": 132.84,
+   "fixed": 1.33,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2024-12 results (BSE, ann 2025-02-11, d2/pdf/chemcrux/CHEMCRUX_20250211_1509.pdf p3), standalone Profit for the period (quarter) 132.84 lakh = 1.33 cr. Second: std: Mar-25 filing reprints 132.84, 9M 371.41 + Q4 47.45 = FY 418.86. con: Mar-25 filing restates Dec-24 con rev 1,942.12 / PBT-before-JV 178.06 / tax 45.40 / PAT 132.16 (FY con ties to the restated column); own con 9M 371.41 omits the JV share (filer slip). 2-dp values identical either way (PAT 1.32, rev 19.42, op 2.69, ebit 1.77). | our 132.84 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20241231",
+   "basis": "con",
+   "was": 132.34,
+   "fixed": 1.32,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20250211_1509.pdf p7, consolidated Profit for the period 132.34 lakh = 1.32 cr (after the share of JV loss (0.50)). Second: std: Mar-25 filing reprints 132.84, 9M 371.41 + Q4 47.45 = FY 418.86. con: Mar-25 filing restates Dec-24 con rev 1,942.12 / PBT-before-JV 178.06 / tax 45.40 / PAT 132.16 (FY con ties to the restated column); own con 9M 371.41 omits the JV share (filer slip). 2-dp values identical either way (PAT 1.32, rev 19.42, op 2.69, ebit 1.77). | our 132.34 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250331",
+   "basis": "std",
+   "was": 47.45,
+   "fixed": 0.47,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2025-03 results (BSE, ann 2025-05-20, d2/pdf/chemcrux/CHEMCRUX_20250520_1852.pdf p2), standalone Profit for the period (quarter) 47.45 lakh = 0.47 cr. Second: FY std 418.86 = 371.41 + 47.45; FY con 391.36 = 123.82 + 114.75 + 132.16 + 20.63; FY con rev 7,000.99 ties. | our 47.45 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250331",
+   "basis": "con",
+   "was": 2039.0,
+   "fixed": 0.21,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20250520_1852.pdf p11, consolidated Profit for the period 20.63 lakh = 0.21 cr. Second: FY std 418.86 = 371.41 + 47.45; FY con 391.36 = 123.82 + 114.75 + 132.16 + 20.63; FY con rev 7,000.99 ties. | our 2039.0 is 20.39 lakh x100: the RESTATED Mar-25 consolidated profit first printed as the comparative column of the Jun-25 filing (2025-08-06), a look-ahead at the wrong scale; the own filing printed 20.63.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250630",
+   "basis": "std",
+   "was": 58.45,
+   "fixed": 0.58,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2025-06 results (BSE, ann 2025-08-06, d2/pdf/chemcrux/CHEMCRUX_20250806_1436.pdf p3), standalone Profit for the period (quarter) 58.45 lakh = 0.58 cr. Second: Sep-25 filing reprints both columns (std 58.45, con 9.27); H1 FY26 std 138.39 / con 30.55 tie within 0.01. This filing restates Mar-25 con: rev 1,572.16, PBT 66.52, PAT 20.39 (first filed 20.63; 0.0024 cr, below the 0.011 noise line). | our 58.45 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250630",
+   "basis": "con",
+   "was": 11475.0,
+   "fixed": 0.09,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20250806_1436.pdf p7, consolidated Profit for the period 9.27 lakh = 0.09 cr. Second: Sep-25 filing reprints both columns (std 58.45, con 9.27); H1 FY26 std 138.39 / con 30.55 tie within 0.01. This filing restates Mar-25 con: rev 1,572.16, PBT 66.52, PAT 20.39 (first filed 20.63; 0.0024 cr, below the 0.011 noise line). | our 11475.0 is the Sep-24 standalone profit 114.75 lakh x100 (another quarter at the wrong scale).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250930",
+   "basis": "std",
+   "was": 79.95,
+   "fixed": 0.8,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2025-09 results (BSE, ann 2025-11-06, d2/pdf/chemcrux/CHEMCRUX_20251106_1357.pdf p4), standalone Profit for the period (quarter) 79.95 lakh = 0.8 cr. Second: Dec-25 filing reprints both columns; Sep-26 filing's 30-09-2025 columns 1,855.31 / 79.95 and 1,774.63 / 21.29. | our 79.95 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20250930",
+   "basis": "con",
+   "was": 3139.0,
+   "fixed": 0.21,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20251106_1357.pdf p10, consolidated Profit for the period 21.29 lakh = 0.21 cr. Second: Dec-25 filing reprints both columns; Sep-26 filing's 30-09-2025 columns 1,855.31 / 79.95 and 1,774.63 / 21.29. | our 3139.0 is the garbled text layer of the consolidated page ('3139' where the image prints 21.29), not a figure on the page.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20251231",
+   "basis": "std",
+   "was": 207.7,
+   "fixed": 2.08,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2025-12 results (BSE, ann 2026-02-05, d2/pdf/chemcrux/CHEMCRUX_20260205_1350.pdf p3), standalone Profit for the period (quarter) 207.90 lakh = 2.08 cr. Second: Mar-26 filing reprints both columns; own 9M std 346.30 = 58.45 + 79.95 + 207.90, con 188.13 (sum 188.14). | our 207.7 is the figure 207.90 lakh (truncated) stored as crore.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20251231",
+   "basis": "con",
+   "was": 157.58,
+   "fixed": 1.58,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20260205_1350.pdf p7, consolidated Profit for the period 157.58 lakh = 1.58 cr. Second: Mar-26 filing reprints both columns; own 9M std 346.30 = 58.45 + 79.95 + 207.90, con 188.13 (sum 188.14). | our 157.58 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20260331",
+   "basis": "std",
+   "was": 198.68,
+   "fixed": 1.99,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: 2026-03 results (BSE, ann 2026-05-14, d2/pdf/chemcrux/CHEMCRUX_20260514_1629.pdf p7), standalone Profit for the period (quarter) 198.68 lakh = 1.99 cr. Second: Jun-26 filing reprints both 31-03-2026 columns; FY26 std 544.97 (= 346.30 + 198.68 within 0.01), FY26 con 373.08 = 188.13 + 184.95. | our 198.68 is the right figure in lakh stored as crore (x100).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "CHEMCRUX",
+   "qe": "20260331",
+   "basis": "con",
+   "was": 18495.0,
+   "fixed": 1.85,
+   "why": "OUR ERROR: Chemcrux Enterprises Ltd (BSE 540395; CIN L01110GJ1996PLC029329 checked on each statement page; BSE SME half-yearly statements in rupees until FY22 (/1e7 = crore), quarterly statements in INR lakh from Jun-22 (/100 = crore); half-up 2 dp). Primary: CHEMCRUX_20260514_1629.pdf p17, consolidated Profit for the period 184.95 lakh = 1.85 cr. Second: Jun-26 filing reprints both 31-03-2026 columns; FY26 std 544.97 (= 346.30 + 198.68 within 0.01), FY26 con 373.08 = 188.13 + 184.95. | our 18495.0 is the figure 184.95 lakh stored x100.",
+   "found": "D2 audit (\u00a7214b batch 3)"
   }
  ],
  "retracted": [
