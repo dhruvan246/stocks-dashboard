@@ -27790,7 +27790,7 @@ All OUR ERROR (gaps):
   - stock.html?s=KMCSHIL local: 15 rows Mar-23..Sep-26, Standalone and Consolidated.
   - 375 px dark + light, page scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
-**Batch 3 — PERMAGN Dec-24 day + Jun-26 con (2026-11-18 16:00 IST, same instruction).** Permanent Magnets Ltd (BSE 504132).
+**Batch 3 — PERMAGN Dec-24 day + Jun-26 con (2026-11-18 15:44 IST, same instruction).** Permanent Magnets Ltd (BSE 504132).
 - **Dec-24 announcement day: OUR ERROR.** Stored 20250217 = a "Press Release / Media Release" (2025-02-17 12:19). The results were
   first filed 2025-02-14: Integrated Filing (Financial) 16:45, Board Meeting Outcome 16:49, "Unaudited Financial Result - Dec 2024"
   17:34 (standalone p2 + consolidated p3, read). Raw BSE listing strCat=-1, 2025-02-01..28. -> 20250214 both slots; `ann_date_fills`
