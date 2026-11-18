@@ -19197,6 +19197,14 @@ unaudited half-years), GEECEE FY22 (PP&E line incl intangibles), SURYALA FY24 (c
 SRD FY24 borr/pay null (one figure printed across three liability rows / photo rows offset). Held SURYALA FY23 (FY24 restates
 TA+PP&E, no reason read), s-only years (BEEKAY FY24-26, SURYALA FY20-22, GULFOILLUB FY20/21, TRF FY20, NIRAJ FY20, EQUIPPP FY22);
 validate FAIL PROZONER FY21 (PP&E 0.70 vs key 0.86), KCPSUGIND FY22 (live key PP&E 0.0 vs read 91.50 — live cell UNKNOWN).
+Batch rf (40 cos): 39 trusted, 99 new fill-years + APCL FY22 add-only. Accepted (rf_accept.json): YASHO FY22 (FY23 splits
+ROU 2.15 out: 144.88 + 2.15 = 147.03 first-filed), MANOMAY FY22 (old format, FY23 restates on Ind AS transition), MALLCOM FY22 +
+TIGERLOGS FY22 (PP&E exact, TA restated), WINDMACHIN FY20 (FY21 s-only -> no c tie source). Rejected (rf_reject.json):
+THOMASCOTT FY22 (PP&E 226.97 lakh incl WIP — FY23 restates 193.40 + CWIP 33.57), THOMASCOTT FY21 + VIPCLOTHNG FY21 (only the
+Sep-21 half-year comparative — own-filing rule), NCLIND FY21 (column printed Unaudited). MANINFRA invst null (incl equity-method
+line), TRANSPEK FY25 sc null (563.56 vs 558.56 standalone + prior year; likely misprint). No read: NESTLEIND FY20-23 + LINDEINDIA
+FY20-22 (Dec year-ends / 15-month transition, no 31-Mar BS), MOREPENLAB FY21, APCL FY20, TRANSPEK FY20. Held SAMBHAAV FY22 + APTECHT
+FY21 (restated, reason unread), s-only years; validate FAIL HCC FY23 (PP&E 358.09 vs key 604.55).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
