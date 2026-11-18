@@ -29,6 +29,17 @@ decide per SLOT:
 That keeps every deliberate CI change, including deletions, while never discarding another writer's
 work in a cell CI had no opinion about.
 
+DELETIONS BY ANOTHER WRITER (2026-11-18, runbook §214b batch 3 / §199 open item 3). A whole ROW (quarter) or a
+whole SYMBOL KEY that BASE held and origin no longer holds was removed by another writer while this job ran
+(a session dropping a phantom quarter with a `held` journal, a §30 rename merge deleting the old ticker). The
+old rule "origin lacks the row -> CI's row wins" put it straight back: the 14:46 IST refresh of 2026-11-18,
+built on 1ee1184de, re-added the three MIIL phantom quarters ff9b773818 had dropped 7 minutes earlier, and
+verify_fills_live then reported them RESURRECTED. Now such a row / key STAYS REMOVED (origin's state wins;
+the next run starts from origin and, if its sources still produce the row, adds it as a new row). A row BASE
+did not hold is still a CI addition and lands as before. Safety valve: if a run would drop more than
+MAX_DROP_KEYS keys or MAX_DROP_ROWS rows, origin looks truncated rather than edited, so the merge keeps the
+old union behaviour for that file and says so.
+
 Handles both payload shapes:
     sf_revop.json        {sym: {qe: [9 slots]}}
     sf_fundamentals.json {sym: [[qe, stdPAT, stdAnn, conPAT, conAnn], ...]}
@@ -70,16 +81,34 @@ def _predup(name, obj):
     return obj
 
 
-def merge_listrows(base, ours, theirs):
+MAX_DROP_KEYS = 25      # more than this many symbol keys removed on origin mid-run = truncation, not an edit
+MAX_DROP_ROWS = 1500    # likewise for rows (a §30 rename merge removes one key of ~100 rows)
+DROPPED = []            # (sym, qe or None) removed on origin while this job ran, kept removed; reported by main()
+
+
+def _origin_removed(base, theirs, sym, qe=None):
+    """True when BASE held this key/row and origin (THEIRS) no longer does: another writer deleted it."""
+    if qe is None:
+        return sym in base and sym not in theirs
+    return sym in theirs and qe in base and qe not in theirs
+
+
+def merge_listrows(base, ours, theirs, respect_removals=True):
     """sf_fundamentals shape: {sym: [[qe, ...], ...]}"""
     out = copy.deepcopy(theirs)
     changed = kept = 0
     for sym, orows in ours.items():
+        if respect_removals and _origin_removed(base, theirs, sym):
+            DROPPED.append((sym, None))            # whole key removed on origin mid-run -> stays removed
+            continue
         om, bm = _rows_to_map(orows), _rows_to_map(base.get(sym, []))
         tm = _rows_to_map(out.get(sym, []))
         for qe, orow in om.items():
             brow, trow = bm.get(qe), tm.get(qe)
-            if trow is None:                       # origin lacks the row entirely -> CI's row wins
+            if trow is None and brow is not None and sym in theirs and respect_removals:
+                DROPPED.append((sym, qe))          # row removed on origin mid-run -> stays removed
+                continue
+            if trow is None:                       # a row this run ADDED (BASE lacked it) -> CI's row wins
                 out.setdefault(sym, []).append(list(orow))
                 changed += 1
                 continue
@@ -97,14 +126,20 @@ def merge_listrows(base, ours, theirs):
     return out, changed, kept
 
 
-def merge_qmaps(base, ours, theirs):
+def merge_qmaps(base, ours, theirs, respect_removals=True):
     """sf_revop shape: {sym: {qe: [slots]}}"""
     out = copy.deepcopy(theirs)
     changed = kept = 0
     for sym, qm in ours.items():
+        if respect_removals and _origin_removed(base, theirs, sym):
+            DROPPED.append((sym, None))
+            continue
         for qe, orow in qm.items():
             brow = (base.get(sym) or {}).get(qe)
             trow = (out.get(sym) or {}).get(qe)
+            if trow is None and brow is not None and sym in theirs and respect_removals:
+                DROPPED.append((sym, qe))
+                continue
             if trow is None:
                 out.setdefault(sym, {})[qe] = list(orow)
                 changed += 1
@@ -138,15 +173,28 @@ def main():
     try:
         sample = next(iter(ours.values())) if ours else None
         if isinstance(sample, dict):
-            out, ch, kept = merge_qmaps(base, ours, theirs)
+            merge = merge_qmaps
         elif isinstance(sample, list):
             base = _predup("base", base)
             ours = _predup("ours", ours)
             theirs = _predup("theirs", theirs)
-            out, ch, kept = merge_listrows(base, ours, theirs)
-            out = _predup("merged", out)
+            merge = merge_listrows
         else:
             raise ValueError("unrecognised payload shape")
+        respect = bool(theirs) and bool(base)     # an unreadable origin/base copy: no removal can be inferred
+        out, ch, kept = merge(base, ours, theirs, respect)
+        nk = sum(1 for _, q in DROPPED if q is None); nr = len(DROPPED) - nk
+        if nk > MAX_DROP_KEYS or nr > MAX_DROP_ROWS:
+            print("::warning::ci_preserve_merge %s: origin lacks %d keys / %d rows this run's base held -- looks "
+                  "truncated, not edited; keeping the old union behaviour for this file" % (out_p.split("/")[-1], nk, nr))
+            del DROPPED[:]
+            out, ch, kept = merge(base, ours, theirs, False)
+        elif DROPPED:
+            print("ci_preserve_merge %s: %d key(s) / %d row(s) removed on origin while this job ran stay removed: %s%s"
+                  % (out_p.split("/")[-1], nk, nr, ", ".join("%s%s" % (s_, "" if q is None else "|%s" % q) for s_, q in DROPPED[:20]),
+                     " ..." if len(DROPPED) > 20 else ""))
+        if merge is merge_listrows:
+            out = _predup("merged", out)
     except Exception as ex:
         # Never make the refresh worse than the old blind copy: fall back to OURS.
         print("ci_preserve_merge: FALLBACK to ours (%s: %s)" % (type(ex).__name__, ex))

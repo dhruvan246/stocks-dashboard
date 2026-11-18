@@ -4387,6 +4387,13 @@ outrank it — the same precedence that saved NUCLEUS in §71c.
     column must pin its label column at every width, and nothing else inside it may scroll (stock.html moved
     the shareholding source note out of `#shp`; it was opening cut off at the left).
 
+- **★ A ROW OR KEY YOU DELETE MUST BE RE-CHECKED AFTER THE NEXT refresh-fundamentals RUN** (added 2026-11-18, MIIL).
+  A run whose base predates your push used to put deleted fund/revop rows back through `ci_preserve_merge.py`
+  (MIIL's three dropped quarters returned 7 minutes after ff9b773818). The merge now keeps origin's deletions
+  (`scripts/test_ci_preserve_merge.py`), but a deletion is still the one change a CI builder can re-create from its own
+  sources. After any push that removes rows or keys, run `verify_fills_live.py` on origin once the next refresh run has
+  landed, and journal every deletion as a `held` entry so a return shows up as RESURRECTED.
+
 **2. Blast radius — everything else that uses what you touched.**
 - `theme.js` / `theme.css` / nav / footer / tiles → **all pages**; spot-check ≥3 (home, a table page, a chart page).
 - Shared JS (`sw-sync.js`, `sw-watchlist.js`, `backtest-engine.js`) → `grep -rl` every consumer, open each.
@@ -27655,6 +27662,73 @@ No subsidiary until the partnership formed 25 Jan 2024 (the Mar-24 consolidated 
   - The page reads the FY20-FY22 half-years as quarters.
   - Sep-22's PAT YoY (-120%) compares a quarter with the Sep-21 six-month figure, and no filing prints a Sep-21 quarter, so that
     cell should be blank.
+
+**MIIL's three dropped rows came back 7 minutes after the push — CI's merge re-added them (2026-11-18 15:04 IST; fixed).**
+The 14:46 IST "Daily fundamentals + results refresh" (2f95f571e4) was built on 1ee1184de, which predates ff9b773818. Its
+`ci_preserve_merge.py` step put back MIIL Dec-19 / Dec-20 / Jun-21 into `docs/sf_fundamentals.json` (the scripts twin stayed
+clean). In that run's base and in its rebuilt copy the three rows were byte-identical (CI did not touch them). Origin had deleted
+them, and the merge's rule "origin lacks the row -> CI's row wins" could not tell a deletion from a missing row. `verify_fills_live`
+on origin then reported 6 RESURRECTED (the `held` journals did their job), which would also turn the next refresh's blocking step
+red. This is §199's open item (3), "a row origin lacks = CI's row wins", which also re-adds whole tickers deleted by a §30 rename
+merge.
+- **Fix** (`ci_preserve_merge.py`, both shapes): a row (or a whole symbol key) that BASE held and origin no longer holds was
+  removed by another writer while the job ran, so it STAYS REMOVED. The next run starts from origin and, if its sources still
+  produce the row, adds it as a new row. A row BASE lacked is still a CI addition and lands as before. Safety valve: more than
+  25 keys or 1,500 rows "removed" looks like a truncated origin, not an edit, so that file keeps the old union behaviour with a
+  `::warning::`. An unreadable origin or base copy infers no removal.
+- **Proof** (`scripts/test_ci_preserve_merge.py --replay`, ALL PASS):
+  - Synthetic L1/Q1/V1/B1: CI-changed slot wins, origin-only slot stays, CI-added row/key lands, removed row/key stays removed,
+    valve, broken origin.
+  - R1 replays the real 14:46 run (base 1ee1184de, CI output 2f95f571e4, origin 3e2ec0d1b0): the output differs from what CI
+    landed ONLY in MIIL's three rows. The same replay through the sf_revop merge changes nothing.
+  - The old script fails L1 ("a row removed on origin mid-run must stay removed"), so the test sees the bug.
+- The workflow calls the script AFTER `git reset --hard origin/main`, so every run that resets after this push uses the fix.
+- MIIL's three rows were dropped again in the same commit (each matched its `held` journal's "Row as stored" byte for byte).
+- Re-verify after the next two refresh-fundamentals runs.
+
+**Batch 3 — HBESD Jun-18..Sep-26 (2026-11-18 15:04 IST, same instruction).** HB Estate Developers Ltd (BSE 532334; CIN
+L99999HR1994PLC034146; name + CIN on every statement page; Rs LAKH, /100 = crore, half-up 2 dp). Quarterly filer throughout.
+- **Reads.** All 34 quarters read off their OWN results PDF (page images; replay kit `~/stocks-cache/xcheck-fixall/d2/hbesd/`
+  reads.py -> plan_hbesd.py -> apply_hbesd.py; raw BSE listing `listing.txt`, 610 rows).
+- **Second documents.** A later filing's comparative column for every quarter except two. Mar-19 is checked by the FY19 sum
+  ((1,042.93) = the four quarters). Sep-26, the latest filing, is checked by its six-month column (403.97 = 153.78 + 250.19).
+- **Consolidated.** The consolidated statement (from Jun-19) prints the SAME figures as the standalone page every quarter (no NCI
+  line). Before Jun-19 no consolidated quarter was printed, so con = std throughout (§54b).
+- **Restated comparatives.** None differs from the as-filed figure by >= 0.011 cr (the only lakh difference, Jun-18 (440.25) vs
+  (440.26), is -4.40 either way), so `restated_bases` +0.
+
+All OUR ERROR:
+- PAT levels (`fund_cell_fix` +5):
+  - Jun-23 con 3.84 -> -1.21 (3.84 printed nowhere in the filing).
+  - Jun-24 con 90.75 -> 0.91 and Dec-24 con 481.55 -> 4.82 (lakh stored as crore).
+  - Sep-24 con 483.96 -> 0.49: the Sep-25 filing's scanned consolidated page has an OCR text layer reading the 30.09.2024 profit
+    48.96 as "48396".
+  - Sep-25 std 1.21 -> 1.27: the scan's OCR layer reads 127.02 as "121.02" on p3; the page image (re-rendered at 200 dpi this
+    session) prints 127.02.
+- Empty std cells filled (`named_pat_cell_fills`):
+  - Jun-18 -4.40 (with annStd 0 -> 20180807, the day the existing normal `ann_date_fills` entry already named) and Dec-24 4.82.
+  - The scripts twin also had std empty at Dec-25 6.5 / Mar-26 3.55 while docs held them; both are now journalled.
+- Missing rows added (`named_pat_cell_fills` + `ann_date_fills`): Dec-18 -0.71 / -0.71, filed 2019-02-12 16:40; Jun-22
+  -1.28 / -1.28, filed 2022-08-09 13:17 (Board Meeting Outcome carrying the results).
+- Announcement days (`ann_date_fills`, exact, later):
+  - Jun-20 20200708 -> 20200911 and Jun-21 20210722 -> 20210807. Both stored days are "Disclosure Of Related Party Transactions
+    Under Regulation 23(9)" filings (BSE category "Result"), not the results.
+  - Every other stored day equals the results-filing day (each earlier same-quarter Board Meeting Outcome is the same calendar day).
+- Revop (`revop_cell_fix` +12, fills + new rows in `named_rev_cell_fills` +28):
+  - op slots that left other income in: Jun-23 opS 7.4 -> 7.18, Sep-23 opS/opC 7.91 -> 7.17, Dec-25 opC 15.61 -> 15.25.
+  - op = PBT alone: Dec-23 opS 3.06 -> 11.66, Jun-24 opS 1.71 -> 8.61.
+  - op = PBT + depreciation (no finance): Mar-24 opS 7.04 -> 12.83.
+  - Source not identified: Dec-23 opC 715.62 -> 11.66, Mar-25 opC 12.31 -> 13.26, Jun-23 revC 109.4 -> 23.93, Jun-23 patC 3.84 -> -1.21.
+  - Lakh as crore: Dec-23 revC 2,972.79 -> 29.73.
+  - 20 empty slots filled across Jun-23..Sep-25 (ebit slots, Jun-24/Jun-25 con side, Sep-25 std side).
+  - 22 rows added: Jun-18..Mar-23, Sep-24, Dec-24.
+- Checks:
+  - Blast radius = HBESD (+ the MIIL re-drop above).
+  - verify_fills_live: 44,667 checked, MISSING 0, RESURRECTED 0 (after the MIIL re-drop).
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; sync_pat_mirror dry-run 0.
+  - stock.html?s=HBESD local: 34 rows Jun-18..Sep-26, std and con, fixed values and days.
+  - 375 px dark + light, the table scrolls inside its holder (page scrollWidth 375); only the stk/ and ipo_fin/ 404s.
+  - stock.html?s=MIIL local: 25 rows, no Dec-19/Dec-20/Jun-21.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
