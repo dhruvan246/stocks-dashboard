@@ -2383,5 +2383,90 @@
   "ebitC": -1.61,
   "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/tntele); NSE announcement list for dates",
   "evidence": "Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2026-09 results (BSE, ann 2026-11-14, d2/pdf/tntele/TNTELE_20261114_0643.pdf p6): revenue from operations nil, other income 250, finance cost 288,483, depreciation 5,480, profit before exceptional items and tax (449,230) hundred -> op (155,517) = -1.56 cr, ebit -1.61 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: no later filing yet; the same statement's half-year column (7,90,566) = (3,41,336) + (4,49,230) exactly, and EPS (0.98) = 4,49,230 hundred / 4,56,76,200 shares. Filled slots were empty in docs/sf_revop.json."
+ },
+ "CANDC|20241231": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revS": 0.0,
+  "opS": 0.0,
+  "patS": 0.0,
+  "ebitS": 0.0,
+  "held": "PHANTOM ROW DROPPED 2026-11-18 (\u00a7214b batch 3): Dec-24 results filing (BSE 2025-02-14 22:36, att 4866a5c8; NSE 22:10:42) p6 prints '-' for the quarter ended 31-12-2024 (only the nine-month column carries figures: PAT (2,762.03) lakh); note 5: 'Due to non-preparation of quarterly financial results during the Corporate Insolvency Resolution Process and Liquidation Period, the Re-constituted Board ... is unable to publish the figures relating to the preceding periods'. The Mar-25 and Dec-25 filings print '-' for Dec-24 as well. A zero is not a published figure. The stored row was all zeros (fund [20241231, 0.0, 20250217, None, None], revop [0.0, None, 0.0, None, 0.0, None, 0, 0.0, None]). A value reappearing in this slot is a resurrection, not a fill.",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "Revop row as stored before the drop: [0.0, None, 0.0, None, 0.0, None, 0, 0.0, None]."
+ },
+ "CANDC|20170630": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revS": 246.39,
+  "revC": 291.08,
+  "opS": 35.69,
+  "opC": 73.45,
+  "patS": 6.79,
+  "patC": -2.23,
+  "ebitS": 26.42,
+  "ebitC": 43.91,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-06 results (BSE 2017-08-11 16:36:53 att 8b2eb1f9; NSE 2017-08-11 16:52:50; d2/pdf/candc/CANDC_20170811_1636.pdf p2); STD: revenue from operations 24,639.07, other income 1,123.55, finance 2,845.62, depreciation 926.17, profit before exceptional items and tax 920.27 lakh -> op 3,568.51 = 35.69 cr, ebit 26.42 cr; CON: revenue from operations 29,107.85, other income 1,177.26, finance 5,465.79, depreciation 2,954.44, profit before exceptional items and tax 102.07 lakh -> op 7,345.04 = 73.45 cr, ebit 43.91 cr. op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-17 filing (CANDC_20171114_1650 p2) Jun-17 columns = own figures (PAT 679.06 / (223.30)); Jun-18 filing restates Jun-17 revenue (std 25,197.92 / con 29,666.70), PAT unchanged The quarter's revop row was missing."
+ },
+ "CANDC|20170930": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revS": 193.56,
+  "revC": 211.23,
+  "opS": 57.05,
+  "opC": 82.0,
+  "patS": 20.26,
+  "patC": 31.8,
+  "ebitS": 48.25,
+  "ebitC": 80.96,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-09 results (BSE 2017-11-14 16:50:20 att dbedc3ab; NSE 2017-11-14 16:35:08; d2/pdf/candc/CANDC_20171114_1650.pdf p2 (rotated 270)); STD: revenue from operations 19,356.02, other income 543.96, finance 3,538.42, depreciation 880.47, profit before exceptional items and tax 1,830.17 lakh -> op 5,705.10 = 57.05 cr, ebit 48.25 cr; CON: revenue from operations 21,123.01, other income 929.73, finance 6,129.77, depreciation 103.69, profit before exceptional items and tax 2,896.41 lakh -> op 8,200.14 = 82.0 cr, ebit 80.96 cr. op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: H1 std 2,704.81 = 679.06 + 2,025.75 and con 2,956.95 = (223.30) + 3,180.26 (own half-year columns); Dec-17 filing Sep-17 columns = own; Sep-18 filing restates revenue only (std 19,475.20 / con 21,645.83) The quarter's revop row was missing."
+ },
+ "CANDC|20171231": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revS": 226.26,
+  "revC": 270.78,
+  "opS": 42.28,
+  "opC": 70.65,
+  "patS": 7.15,
+  "patC": 10.18,
+  "ebitS": 35.21,
+  "ebitC": 57.65,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-12 results (BSE 2018-01-31 16:39:55 att f72e5ce4; NSE 2018-01-31 16:33:31; d2/pdf/candc/CANDC_20180131_1639.pdf p2 (rotated 270)); STD: revenue from operations 22,625.96, other income (40.22), finance 3,042.33, depreciation 706.61, profit before exceptional items and tax 438.81 lakh -> op 4,227.97 = 42.28 cr, ebit 35.21 cr; CON: revenue from operations 27,078.06, other income 70.85, finance 5,093.19, depreciation 1,300.74, profit before exceptional items and tax 742.37 lakh -> op 7,065.45 = 70.65 cr, ebit 57.65 cr. op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: 9M std 3,419.46 and con 3,975.09 close exactly; Mar-18 filing Dec-17 columns: PAT same 714.65 / 1,018.13, revenue restated 22,937.84 / 27,519.28 The quarter's revop row was missing."
+ },
+ "CANDC|20180630": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revC": 263.29,
+  "opC": 26.04,
+  "patC": 9.12,
+  "ebitC": 12.73,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2018-06 results (BSE 2018-08-14 16:52:29 att 303e87f1; NSE 2018-08-14 16:56:53; d2/pdf/candc/CANDC_20180814_1652.pdf p4 (rotated 90)); STD: revenue from operations 23,568.82, other income 281.91, finance 1,277.80, depreciation 669.59, profit before exceptional items and tax 324.28 lakh -> op 1,989.76 = 19.9 cr, ebit 13.2 cr; CON: revenue from operations 26,328.98, other income 1,971.71, finance 2,882.41, depreciation 1,330.33, profit before exceptional items and tax 362.70 lakh -> op 2,603.73 = 26.04 cr, ebit 12.73 cr. op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-18 filing (CANDC_20181113_1709 p5) Jun-18 columns = own; H1 std 2,354.06 = 873.54 + 1,480.52, con 1,053.46 = 911.96 + 141.50 Filled slots were empty in docs/sf_revop.json."
+ },
+ "CANDC|20250331": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revC": 0.0,
+  "opC": -3.07,
+  "patC": 3.84,
+  "ebitC": -3.23,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-03 results (BSE 2025-05-29 20:07:35 att 8f550282; NSE 2025-05-29 20:38:07; d2/pdf/candc/CANDC_20250529_2007.pdf p8); STD: revenue from operations 0.00, other income 71.71, finance 0.95, depreciation 1.61, profit before exceptional items and tax 38.41 million -> op (30.74) = -3.07 cr, ebit -3.24 cr; CON: no consolidated statement (all investments sold in liquidation; the company's own note: first consolidated results ever prepared were for Dec-25) -> con slots = std (\u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: FY25 (237.79) = 9M (276.20) + Q4 38.41 exactly; Mar-26 filing (CANDC_20260506_2236 p-std) Mar-25 column = own (OI 71.71, PBT/PAT 38.41, revenue nil) Filled slots were empty in docs/sf_revop.json."
+ },
+ "CANDC|20250630": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revC": 0.0,
+  "opC": -1.97,
+  "patC": -0.15,
+  "ebitC": -2.12,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-06 results (BSE 2025-08-11 21:25:12 att 74237c15; NSE 2025-08-11 19:20:48; d2/pdf/candc/CANDC_20250811_2125.pdf statement page); STD: revenue from operations 0.00, other income 34.99, finance 15.31, depreciation 1.47, profit before exceptional items and tax (1.47) million -> op (19.68) = -1.97 cr, ebit -2.12 cr; CON: no consolidated statement; Sep-26 filing note 2: consolidated results prepared for the first time for Dec-25, 'no consolidated financial information existed' for earlier periods -> con slots = std (\u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-26 filing (CANDC_20260807_1735) Jun-25 column = own (OI 34.99, PBT/PAT (1.47)); H1 Sep-25 OI 37.84 = 34.99 + 2.85 Filled slots were empty in docs/sf_revop.json."
+ },
+ "CANDC|20250930": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "revC": 0.0,
+  "opC": -1.12,
+  "patC": -4.04,
+  "ebitC": -1.27,
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-09 results (BSE 2025-11-10 19:26:28 att 8bf8e590; NSE 2025-11-10 20:12:16; d2/pdf/candc/CANDC_20251110_1926.pdf statement page); STD: revenue from operations 0.00, other income 2.85, finance 30.57, depreciation 1.47, profit before exceptional items and tax (40.43) million -> op (11.24) = -1.12 cr, ebit -1.27 cr; CON: no consolidated statement; the Sep-26 consolidated statement prints '-' for Sep-25 'as no consolidated financial information existed for the said periods' (note 2) -> con slots = std (\u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-26 filing (CANDC_20261104_1606 p9) Sep-25 standalone column = own (OI 2.85, PBT (40.43)); NSE clarification reply 14-02-2026 re-statement p12 same figures Filled slots were empty in docs/sf_revop.json."
  }
 }

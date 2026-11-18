@@ -888,5 +888,64 @@
   "basis": "std = standalone Net Profit/(Loss) for the period, Rs hundreds / 1,00,000; con = std (one standalone statement, \u00a754b)",
   "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/tntele); NSE announcement list for dates",
   "evidence": "STD: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-09 results (BSE, ann 2025-11-14, d2/pdf/tntele/TNTELE_20251114_2308.pdf p6), standalone Net Profit/(Loss) for the period (429,823) hundred = -4.3 cr. Second: Dec-25 filing (TNTELE_20260213_1630.pdf p6) 30-Sep-25 column: finance 2,86,759, depreciation 5,449, profit (4,29,823); Sep-26 filing (TNTELE_20261114_0643.pdf p6) 30th SEP 2025 column the same. Note: Scanned page; read from the image. Other income nil. Expenses 40,690 + 2,86,759 + 5,449 + 96,926 = 4,29,824 (printed total 4,29,823). Six months (7,73,978) = (3,44,155) + (4,29,823) exactly. | CON: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-09 results (BSE, ann 2025-11-14, d2/pdf/tntele/TNTELE_20251114_2308.pdf p6): one standalone statement only (the company has no subsidiary; no consolidated statement in any filing Mar-18..Sep-26) -> con = std -4.3 cr (\u00a754b). | The quarter's row was missing from our store."
+ },
+ "CANDC|20241231": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "std": 0.0,
+  "held": "PHANTOM ROW DROPPED 2026-11-18 (\u00a7214b batch 3): Dec-24 results filing (BSE 2025-02-14 22:36, att 4866a5c8; NSE 22:10:42) p6 prints '-' for the quarter ended 31-12-2024 (only the nine-month column carries figures: PAT (2,762.03) lakh); note 5: 'Due to non-preparation of quarterly financial results during the Corporate Insolvency Resolution Process and Liquidation Period, the Re-constituted Board ... is unable to publish the figures relating to the preceding periods'. The Mar-25 and Dec-25 filings print '-' for Dec-24 as well. A zero is not a published figure. The stored row was all zeros (fund [20241231, 0.0, 20250217, None, None], revop [0.0, None, 0.0, None, 0.0, None, 0, 0.0, None]). A value reappearing in this slot is a resurrection, not a fill.",
+  "basis": "absence assertion (std slot 1; con slot was empty)",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "Row as stored before the drop: [20241231, 0.0, 20250217, None, None]. CIRP admitted 14-02-2019, liquidation ordered 07-10-2022, company sold as a going concern 27-12-2024; no quarterly results were filed between Feb-2019 and Feb-2025 (BSE raw listing + NSE announcement list read)."
+ },
+ "CANDC|20250331": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "con": 3.84,
+  "ann": 20250529,
+  "basis": "consolidated = standalone Net Profit/(Loss) for the period (no subsidiary: the company's first consolidated results ever post-CIRP were for Dec-25, \u00a754b), Rs million / 10",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-03 results (BSE 2025-05-29 20:07:35 att 8f550282; NSE 2025-05-29 20:38:07; d2/pdf/candc/CANDC_20250529_2007.pdf p8): no consolidated statement (all investments sold in liquidation; the company's own note: first consolidated results ever prepared were for Dec-25) -> con = std 3.84 cr (\u00a754b). Second: FY25 (237.79) = 9M (276.20) + Q4 38.41 exactly; Mar-26 filing (CANDC_20260506_2236 p-std) Mar-25 column = own (OI 71.71, PBT/PAT 38.41, revenue nil) Our con cell and annCon were empty."
+ },
+ "CANDC|20250630": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "con": -0.15,
+  "ann": 20250811,
+  "basis": "consolidated = standalone Net Profit/(Loss) for the period (no subsidiary: the company's first consolidated results ever post-CIRP were for Dec-25, \u00a754b), Rs million / 10",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-06 results (BSE 2025-08-11 21:25:12 att 74237c15; NSE 2025-08-11 19:20:48; d2/pdf/candc/CANDC_20250811_2125.pdf statement page): no consolidated statement; Sep-26 filing note 2: consolidated results prepared for the first time for Dec-25, 'no consolidated financial information existed' for earlier periods -> con = std -0.15 cr (\u00a754b). Second: Jun-26 filing (CANDC_20260807_1735) Jun-25 column = own (OI 34.99, PBT/PAT (1.47)); H1 Sep-25 OI 37.84 = 34.99 + 2.85 Our con cell and annCon were empty."
+ },
+ "CANDC|20250930": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "con": -4.04,
+  "ann": 20251110,
+  "basis": "consolidated = standalone Net Profit/(Loss) for the period (no subsidiary: the company's first consolidated results ever post-CIRP were for Dec-25, \u00a754b), Rs million / 10",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2025-09 results (BSE 2025-11-10 19:26:28 att 8bf8e590; NSE 2025-11-10 20:12:16; d2/pdf/candc/CANDC_20251110_1926.pdf statement page): no consolidated statement; the Sep-26 consolidated statement prints '-' for Sep-25 'as no consolidated financial information existed for the said periods' (note 2) -> con = std -4.04 cr (\u00a754b). Second: Sep-26 filing (CANDC_20261104_1606 p9) Sep-25 standalone column = own (OI 2.85, PBT (40.43)); NSE clarification reply 14-02-2026 re-statement p12 same figures Our con cell and annCon were empty."
+ },
+ "CANDC|20170630": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "std": 6.79,
+  "con": -2.23,
+  "ann": 20170811,
+  "basis": "std = standalone Net Profit/(Loss) for the period; con = consolidated Net Profit/(Loss) for the period; Rs lakh / 100",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "STD: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-06 results (BSE 2017-08-11 16:36:53 att 8b2eb1f9; NSE 2017-08-11 16:52:50; d2/pdf/candc/CANDC_20170811_1636.pdf p2), standalone Net Profit for the period 679.06 lakh = 6.79 cr. Second: Sep-17 filing (CANDC_20171114_1650 p2) Jun-17 columns = own figures (PAT 679.06 / (223.30)); Jun-18 filing restates Jun-17 revenue (std 25,197.92 / con 29,666.70), PAT unchanged | CON: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-06 results (BSE 2017-08-11 16:36:53 att 8b2eb1f9; NSE 2017-08-11 16:52:50; d2/pdf/candc/CANDC_20170811_1636.pdf p2), consolidated Net Profit for the period (223.30) lakh = -2.23 cr (EPS ties to the whole profit; no non-controlling split printed). Second: Sep-17 filing (CANDC_20171114_1650 p2) Jun-17 columns = own figures (PAT 679.06 / (223.30)); Jun-18 filing restates Jun-17 revenue (std 25,197.92 / con 29,666.70), PAT unchanged | The quarter's row was missing from our store."
+ },
+ "CANDC|20170930": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "std": 20.26,
+  "con": 31.8,
+  "ann": 20171114,
+  "basis": "std = standalone Net Profit/(Loss) for the period; con = consolidated Net Profit/(Loss) for the period; Rs lakh / 100",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "STD: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-09 results (BSE 2017-11-14 16:50:20 att dbedc3ab; NSE 2017-11-14 16:35:08; d2/pdf/candc/CANDC_20171114_1650.pdf p2 (rotated 270)), standalone Net Profit for the period 2,025.75 lakh = 20.26 cr. Second: H1 std 2,704.81 = 679.06 + 2,025.75 and con 2,956.95 = (223.30) + 3,180.26 (own half-year columns); Dec-17 filing Sep-17 columns = own; Sep-18 filing restates revenue only (std 19,475.20 / con 21,645.83) | CON: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-09 results (BSE 2017-11-14 16:50:20 att dbedc3ab; NSE 2017-11-14 16:35:08; d2/pdf/candc/CANDC_20171114_1650.pdf p2 (rotated 270)), consolidated Net Profit for the period 3,180.26 lakh = 31.8 cr (EPS ties to the whole profit; no non-controlling split printed). Second: H1 std 2,704.81 = 679.06 + 2,025.75 and con 2,956.95 = (223.30) + 3,180.26 (own half-year columns); Dec-17 filing Sep-17 columns = own; Sep-18 filing restates revenue only (std 19,475.20 / con 21,645.83) | The quarter's row was missing from our store."
+ },
+ "CANDC|20171231": {
+  "applied": "2026-11-18 CANDC full history (runbook \u00a7214b batch 3)",
+  "std": 7.15,
+  "con": 10.18,
+  "ann": 20180131,
+  "basis": "std = standalone Net Profit/(Loss) for the period; con = consolidated Net Profit/(Loss) for the period; Rs lakh / 100",
+  "src": "BSE results PDFs (own filing per quarter + later filings' comparative columns; page images read; d2/pdf/candc) and NSE announcement list / NSE archive PDFs for dates",
+  "evidence": "STD: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-12 results (BSE 2018-01-31 16:39:55 att f72e5ce4; NSE 2018-01-31 16:33:31; d2/pdf/candc/CANDC_20180131_1639.pdf p2 (rotated 270)), standalone Net Profit for the period 714.65 lakh = 7.15 cr. Second: 9M std 3,419.46 and con 3,975.09 close exactly; Mar-18 filing Dec-17 columns: PAT same 714.65 / 1,018.13, revenue restated 22,937.84 / 27,519.28 | CON: C & C Constructions Ltd (BSE 532813 / NSE CANDC; CIN L45201DL1996PLC080401; name + CIN checked on each statement page; statements in Rs lakh to FY19 (/100 = crore) and Rs MILLION from FY25 (/10 = crore), half-up 2 dp). Primary: 2017-12 results (BSE 2018-01-31 16:39:55 att f72e5ce4; NSE 2018-01-31 16:33:31; d2/pdf/candc/CANDC_20180131_1639.pdf p2 (rotated 270)), consolidated Net Profit for the period 1,018.13 lakh = 10.18 cr (EPS ties to the whole profit; no non-controlling split printed). Second: 9M std 3,419.46 and con 3,975.09 close exactly; Mar-18 filing Dec-17 columns: PAT same 714.65 / 1,018.13, revenue restated 22,937.84 / 27,519.28 | The quarter's row was missing from our store."
  }
 }

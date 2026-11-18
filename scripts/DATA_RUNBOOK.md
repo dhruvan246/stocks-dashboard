@@ -27854,6 +27854,67 @@ filing, plus a second document (a later filing's comparative column) (kit `d2/tn
   - stock.html?s=TNTELE local: 36 rows (35 + 2004-03), Results 36.
   - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — CANDC full history Mar-17..Sep-26 (2026-11-18 23:05 IST, same instruction).** C & C Constructions Ltd (BSE 532813 /
+NSE CANDC; CIN L45201DL1996PLC080401, name + CIN checked on each statement page). Statements are in **Rs lakh** to FY19
+(crore = value / 100) and **Rs MILLION** from FY25 (crore = value / 10), half-up 2 dp. 15 quarters were read from page images
+of each quarter's own filing (most pages scanned, several rotated), plus a second document (a later filing's comparative
+column, the FY column, or the NSE copy) (kit `d2/candc/`, reads in `reads_notes.md`, plan `plan_candc.py`).
+- **No quarterly results exist for Mar-19..Sep-24.** CIRP began 14-02-2019 and liquidation 07-10-2022. The BSE listing and
+  the NSE announcement list carry only delay letters (2019-06-28, 2019-08-09) and the FY19..FY23 annual reports (filed
+  2023-07..2024-03). Nothing to add.
+- **Dec-24 phantom row DROPPED (OUR ERROR).** The Dec-24 filing (BSE 2025-02-14 22:36, NSE 22:10) prints "-" for the quarter;
+  only the nine-month column has figures. Its note 5 says the re-constituted board cannot publish quarterly figures for the
+  CIRP / liquidation period, and the Mar-25 and Dec-25 filings print "-" for Dec-24 too. Our 0.0 std PAT and 0.0 revop
+  slots were not published figures. Removed from both fund twins and both revop twins; `named_pat_cell_fills` and
+  `named_rev_cell_fills` carry **held** entries (absence assertions) so verify_fills_live flags any resurrection.
+- **Mar-17, OUR ERRORs:**
+  - Announcement 20170616 → **20170529**. NSE carried the results on 2017-05-29 17:18
+    (FinancialresultsMarch2017_29052017171825.zip, the same statement figure for figure); 2017-06-16 is the BSE re-file.
+    The old `bse:exact` ann_date_fills entry is replaced by an override.
+  - revS 296.96 → **284.38** (`revop_cell_fix`). 296.96 is the Mar-18 filing's Ind AS restated Mar-17 comparative
+    (29,695.79 lakh). Under policy A the level stays as first filed (28,438.45); the restated figure becomes the Mar-18
+    growth base.
+  - revC 275.19 → **350.98**, opC 70.65 → **120.28**, ebitC 70.65 → **98.42** (`revop_cell_fix`). The stored figures came from
+    `xbrl_comparative_fills` CANDC|20170331, read from the Mar-18 XBRL context "FourD". That context holds the **Dec-17**
+    quarter (con revenue restated 27,519.28; con op 742.37 + 5,093.19 + 1,300.74 − 70.85 = 7,065.45 lakh), not Mar-17. The
+    journal entry is left untouched (it is a journal and not applied by builds).
+  - Std PAT 43.49 and con PAT 38.60 are right.
+- **Mar-18, OUR ERRORs:**
+  - Con PAT −9.23 → **−32.40** (`fund_cell_fix` + revop patC). The own statement prints (3,240.07) lakh, and the Jun-18
+    comparative repeats it. FY18 con 735.01 = (223.30) + 3,180.26 + 1,018.13 + (3,240.07). −9.23 matches no CANDC filing on
+    BSE or NSE.
+  - ebitC 28.76 → **5.07**: op had been stored as ebit; depreciation 2,369.36 lakh was not taken off.
+  - Announcement std 20180704 / con 20180623 → **20180529** (BSE 18:52, NSE 18:35). The NSE items of 05-18, 06-04 and
+    06-25 are clarification replies without revised figures.
+- **Jun-18:** announcement 20181204 / 20181126 → **20180814** (no filing on either stored day). Empty C slots filled: revC
+  263.29, opC 26.04, patC 9.12, ebitC 12.73.
+- **Sep-18:** announcement 20181126 → **20181113** (no CANDC filing on 2018-11-26).
+- **Jun-25:** announcement 20250812 → **20250811** (NSE 19:20, BSE 21:25 the same day).
+- **Jun-26:** announcement 20260810 → **20260807** (BSE 17:35, NSE 17:29; BSE 2026-08-08 12:11 is the newspaper publication).
+  `_ann_recon_skips` key CANDC|20260630|20260810 is now stale and harmless (keyed on the old date).
+- **Missing rows added (`named_pat_cell_fills` + normal `ann_date_fills` + revop rows):** Jun-17 6.79 / −2.23 @20170811,
+  Sep-17 20.26 / 31.80 @20171114, Dec-17 7.15 / 10.18 @20180131. Each nine-month or six-month total ties exactly to the
+  quarters read.
+- **Empty con cells filled, con = std (§54b):** Mar-25 3.84, Jun-25 −0.15, Sep-25 −4.04, plus their revop C slots. Mar-25..Sep-25
+  are standalone-only statements: all investments were sold in liquidation. The Sep-26 filing's note 2 says Dec-25 is the
+  first consolidated statement and no consolidated information existed for the earlier periods.
+- **Restated bases (`restated_bases`, policy A, 8 entries):** revenue s and c for Mar-18|Mar-17 (Ind AS), Jun-18|Jun-17,
+  Sep-18|Sep-17 and Dec-18|Dec-17, each from that quarter's own comparative column. PAT was unchanged in every
+  restatement.
+- **RULE DIFFERENCE, kept (under 0.011 cr):** Sep-18 con PAT 141.50 lakh = 1.415 → 1.42 half-up, stored 1.41 (fund con and
+  patC). Mar-25 ebitS −32.35 mn = −3.235 → −3.24, stored −3.23.
+- **Right as stored:** Dec-18 (all slots), Sep-18 std, Mar-18 std, Dec-25, Mar-26, Sep-25, Sep-26, and the remaining S
+  slots. Mar-26 and Jun-26, suspected ×10, are correct: Rs million / 10.
+- **Twin lag (measured):** the scripts twins have no 20260630 or 20260930 rows; those rows changed in docs only.
+- **Checks:**
+  - Blast radius = CANDC.
+  - verify_fills_live: 45,280 checked, MISSING 0, RESURRECTED 0.
+  - Conflict guard 0/0; fund_dup_guard 0; visibility guard OK; FUND_ALIAS in step.
+  - stock.html?s=CANDC local: 15 rows, Results 15, Dec-24 absent.
+  - Standalone and consolidated tables match the plan; R-tagged revenue YoY on the 2018 quarters; every PAT YoY recomputes
+    from the stored rows.
+  - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
