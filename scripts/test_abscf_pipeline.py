@@ -65,6 +65,16 @@ def fake_403(o, u, b=False):
     if 'Board%20Meeting' in u:
         raise urllib.error.HTTPError(u, 403, 'Forbidden', {}, None)
     return json.dumps({'Table': []})
+def fake_if(o, u, b=False):
+    if 'strCat=Integrated%20Filing' in u:
+        return json.dumps({'Table': [{'ATTACHMENTNAME': 'if.pdf', 'NEWS_DT': '2025-05-25T15:41:03'}]})
+    return json.dumps({'Table': []})
+calls_if = []
+F.get = lambda o, u, b=False: (calls_if.append(u), fake_if(o, u, b))[1]
+r = F.result_filings(None, 544081, '20250401', '20250630')
+check('Integrated Filing (Financial) queried and its annual result found (JYOTICNC FY25 shape)',
+      r == [(20250525, 'if.pdf')] and
+      any('subcategory=Integrated%20Filing%20(Financial)' in u for u in calls_if))
 F.get = fake_403
 try:
     F.result_filings(None, 500680, '20250401', '20250901'); blocked = False

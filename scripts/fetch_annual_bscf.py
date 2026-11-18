@@ -104,7 +104,11 @@ def _filings_override():
 # "Result" — measured 2026-09-26: a Result-only list lacked AUROPHARMA 2025-05, BALKRISIND 2023-05 +
 # 2025-05 and PFIZER 2020-04 + 2024-05 + 2025-05 (PFIZER's Result list for FY25 held only the Q1).
 # Both are asked; Result rows come first, so a filer that uses Result sees the same order as before.
-RESULT_CATS = (('Result', ''), ('Board%20Meeting', '&subcategory=Outcome%20of%20Board%20Meeting'))
+# Since 2025 SEBI's Integrated Filing lets a company file its results ONLY under "Integrated Filing" /
+# "Integrated Filing (Financial)" — measured 2026-11-19: JYOTICNC (544081) FY25 annual result (25-May-2025)
+# and Q3 (10-Feb-2025) sat there with no Result or Board-Meeting twin. The Governance sub-type is left out.
+RESULT_CATS = (('Result', ''), ('Board%20Meeting', '&subcategory=Outcome%20of%20Board%20Meeting'),
+               ('Integrated%20Filing', '&subcategory=Integrated%20Filing%20(Financial)'))
 
 def result_filings(o, code, frm, to, pages=6):
     ov = _filings_override()
