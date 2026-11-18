@@ -27485,6 +27485,35 @@ comparative column (Sep-26: own filing only — text layer + owners + NCI = tota
 - BSE fetch note: pre-Nov-2018 attachments are not served by AttachHis/AttachLive; they are at
   `https://www.bseindia.com/xml-data/corpfiling/CorpAttachment/YYYY/M/<att>` (month without a leading zero).
 
+**Batch 3 — QUINT Jun-18..Mar-23 (2026-11-18 08:57 IST, same instruction).** Quint Digital Media Ltd, formerly Gaurav Mercantiles Ltd
+(BSE 539515). Every quarter Jun-18..Mar-23 read off its OWN results PDF (page images; Rs THOUSAND, /10000 = crore, half-up 2 dp;
+replay kit `~/stocks-cache/xcheck-fixall/d2/quint/` reads.py -> plan_quint.py -> apply_quint.py), second document = a later filing's
+comparative column. Corporate events that shape the comparatives: a business acquired under common control in 2020 (Sep-20 results
+note 4; the Sep-20/Dec-20/Mar-21/Jun-21 filings print restated pre-acquisition columns), the Dec-20 note-9 and Mar-21 deferred-tax
+restatements of Sep-20 / Dec-20, and the subsidiary Quintillion Media Pvt Ltd acquired 19 Jan 2022 under common control — the first
+consolidated results are Mar-22, whose group comparatives pool the subsidiary as if held throughout (Dec-22 note 10 re-restated Dec-21).
+Before Mar-22 QUINT filed standalone only, so con = std (no-sub identity, §54b E1-E5). All OUR_ERROR:
+- Units: every stored pre-Jun-23 level was the raw thousands figure (Sep-18 742.38, Jun-19 -2135.76, Sep-19 1657.22, Mar-21 4469.42,
+  Jun-21 4902.56, Sep-22 20305.0 = the Dec-22 filing's whole-thousand column) or thousands/100 (Mar-19 -6.4, Dec-19 -8.98, Mar-20
+  -16.91, Jun-20 1.58, Sep-20 108.43, Dec-21 110.86, Mar-22 139.71, Jun-22 79.94). Basis: Mar-22/Jun-22/Sep-22 con held the
+  standalone figure; now the owners line -3.92 / -5.24 / -3.18 (group totals -4.62 / -6.35 / -4.51). `fund_cell_fix` +28.
+- MISSING quarters added (`named_pat_cell_fills` +6, `ann_date_fills` +6, std/con, ann = BSE NEWS_DT day): Jun-18 0.03/0.03
+  (20180810), Dec-18 0.07/0.07 (20190207), Dec-20 0.91/0.91 (20210120), Sep-21 1.83/1.83 (20211110), Dec-22 2.27/-4.97 (20230131),
+  Mar-23 1.28/-9.35 (20230530). Mar-18 and earlier: not read, not added.
+- Sep-22 ann 20221115 -> 20221114 (`ann_date_fills` override): the Result-category filing NEWS_DT 2022-11-14T15:53:10; no QUINT filing
+  is dated 2022-11-15 (the stored day equals the retired 15:30 gate's next-day form). `--reapply` afterwards: 0 cells.
+- `restated_bases.json` +21 (pat, level as_filed): s and c (c = the company under the no-sub identity) Sep-20|Jun-20 -3.56,
+  Sep-20|Sep-19 -6.27, Dec-20|Sep-20 0.35, Dec-20|Dec-19 -6.14, Mar-21|Dec-20 0.18, Mar-21|Mar-20 -6.32, Jun-21|Jun-20 -3.56,
+  Dec-21|Dec-20 0.18; c only (restated GROUP owners) Mar-22|Dec-21 -8.26, Mar-22|Mar-21 -19.62, Jun-22|Jun-21 -8.10, Sep-22|Sep-21
+  -4.55, Dec-22|Dec-21 -4.68. Not needed: Sep-21|Sep-20 (the Sep-21 filing reprints Sep-20 as first filed, 10,842.80).
+- Checks: blast radius = QUINT only in both fund twins (the scripts twin lacks QUINT Jun-26/Sep-26 like ~2,700 other symbols — the
+  usual lag, untouched); verify_fills_live checked 44,164 -> 44,204, MISSING 0, RESURRECTED 0; conflict guard 0; sync_pat_mirror
+  dry-run 0; fund_dup_guard 0; fund_rbase 38 cos / 123 published / 2 held (DHANSA, unchanged). stock.html?s=QUINT local: 34 rows;
+  con PAT YoY Mar-22 +80.02% R, Jun-22 +35.31% R, Sep-22 +30.11% R, Dec-22 -6.20% R, Mar-23 -138.52%; std Dec-21 +516.67% R,
+  Sep-20 +117.22% R, Mar-22 +211.11%; 375 px dark + light, no JS error (404s = the stk/ and ipo_fin/ probes absent locally).
+- Open (QUINT): sf_revop has no row before Dec-25 — a revenue/op history needs the Jun-23..Sep-25 filings read; the Jun-23..Jun-26
+  filings' comparative columns (scheme of arrangement restated Jun-24 / Dec-24) are not yet in restated_bases.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
