@@ -19190,6 +19190,13 @@ c tie source). Rejected (rd_reject.json): ATLANTAA FY21 (Unaudited column), SUDA
 intangibles), ZFSTEERING FY25 (only a later half-year comparative), AGIIL FY20 (liabilities side mixed with standalone).
 KESORAMIND FY20 borr null (reader used the 31-Jul re-filing; first filing's borrowings lines differ). Held INDOWIND FY22
 (FY23 restates PP&E 236.45 -> 160.56, no reason read), TVSELECT FY22, s-only years. SMARTLINK FY20 add-only.
+Batch re (40 cos; worktree sparse — disk full): 37 trusted, 76 new fill-years + ASHIMASYN FY20 add-only (origin row had no
+PP&E). Accepted (re_accept.json): MARALOVER FY22 (PP&E incl ROU; FY23 comparative 145.43 + ROU 27.12 = 172.55), CUBEXTUB FY22,
+LOVABLE FY22 (PP&E exact, TA restated). Rejected (re_reject.json): SIEMENS FY20-23 (Sep year-end; the March columns are
+unaudited half-years), GEECEE FY22 (PP&E line incl intangibles), SURYALA FY24 (column printed 'Un audited'). TARMAT FY20/21 +
+SRD FY24 borr/pay null (one figure printed across three liability rows / photo rows offset). Held SURYALA FY23 (FY24 restates
+TA+PP&E, no reason read), s-only years (BEEKAY FY24-26, SURYALA FY20-22, GULFOILLUB FY20/21, TRF FY20, NIRAJ FY20, EQUIPPP FY22);
+validate FAIL PROZONER FY21 (PP&E 0.70 vs key 0.86), KCPSUGIND FY22 (live key PP&E 0.0 vs read 91.50 — live cell UNKNOWN).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
