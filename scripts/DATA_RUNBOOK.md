@@ -19174,6 +19174,11 @@ kept whole) and read in disk-sized batches (build_ready.py), PDFs trashed once a
 first-filed PP&E, 4 restated-as-stated, KANCHI FY24 no c-basis tie). Held: MEGASTAR FY21 (offset rows, gap unexplained), all
 standalone-only years; validate FAIL CLEDUCATE OSWALAGRO UNIVCABLES (s-only filing vs c key), RPPINFRA (FY23 TA 780.06 vs key
 734.90), GAYAPROJ (no FY23 PDF). BIRLACORPN FY20 add-only (kept its cash flows).
+Batch rb (40 cos): 38 validate, 94 fill-years (wave16/rb_accept.json: ANUHPHR FY24, DODLA FY22, TIIL FY22 splits sum
+to first-filed PP&E; BASML FY22, MADHAVIPL FY24, PDSL FY20, RRIL FY23, VISHNU FY20 PP&E exact; JAYSREETEA FY21, MADHAVIPL
+FY21 TA exact + PP&E restated). CUPID FY20 cwip/intg left null (own print labels 315.64 lakh intangible, FY21 comparative
+calls it CWIP; UNKNOWN). Held XTGLOBAL FY20 (PP&E 25.57 vs 19.64 unexplained), all s-only years; validate FAIL ORCHPHARMA
+(no BS in PDF), SUBEXLTD (s-only). Add-only on 4 existing rows (MAGADSUGAR FY20, NAHARPOLY FY22, SHILPAMED FY20, VTL FY21).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
