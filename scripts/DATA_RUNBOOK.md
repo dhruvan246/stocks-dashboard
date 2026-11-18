@@ -30710,3 +30710,9 @@ earlier stay the legal entity's own (no merged figure exists before the 1-Apr-20
 - **Trap.** NSE's per-symbol integrated list returns nothing for ICICIPRULI: NSE lists it as `ICICILIFE` (smName "ICICI Life
   Insurance Limited"); the XBRL's own NSESymbol still says ICICIPRULI. Query by ICICILIFE. The per-symbol list pages at 20 rows (&page=2).
 - Scripts + evidence: ~/stocks-cache/n500fix/li_taxc.py, li_xbrl.py, li_taxc_build.py, li_taxc_fixes.json.
+- **Total tax (2026-11-19, user: "yes fill the total tax line").** The page shows only `tax`, which was empty for life insurers.
+  Filled 163 cells (fill-only): tax = the shareholders' 'Provisions for tax' row (form, row right after PBT) / XBRL
+  `ProvisionsForTaxes` (policyholders' total = `ProvisionForTax`), each = tax_c + tax_d and pbt − tax = stored PAT.
+  Readers: 108 cells two forms, 1 four, 54 one (47 XBRL, 7 Dec-24 form). Parser: LI_TAX gains "tax".
+  Seen, not changed: build_xbrl_extra.parse_file returns no P&L (pbt too) for three LI files — ICICIPRULI Dec-25 s/c
+  (1600999/1601003), HDFCLIFE Dec-25 c (1601820) — although their OneD facts exist; the stored cells already hold values. Cause UNKNOWN.

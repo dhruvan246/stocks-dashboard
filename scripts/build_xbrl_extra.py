@@ -185,7 +185,8 @@ RE_CAPEX = re.compile(r"<" + NS + r':(PurchaseOfPropertyPlantAndEquipment\w*) co
 # policyholders' (revenue) account as CurrentTax / DefferedTax [sic] and the SHAREHOLDERS' (P&L) account, the one
 # that sits between ProfitLossBeforeTax and the profit after tax, as CurrentTaxes / DefferedTaxes [sic]
 # (HDFCLIFE Jun-2025: PBT 563.58 - 15.23 - 0 = PAT 548.35; policyholders' CurrentTax 40.22). tax_c / tax_d = shareholders'.
-LI_TAX = {"tax_c": ["CurrentTaxes"], "tax_d": ["DefferedTaxes"]}
+# tax = the shareholders' total "Provisions for tax" = ProvisionsForTaxes (policyholders' total = ProvisionForTax).
+LI_TAX = {"tax": ["ProvisionsForTaxes"], "tax_c": ["CurrentTaxes"], "tax_d": ["DefferedTaxes"]}
 
 ALL_NAMES = sorted({n for d in (PNL, EPS, RATIO, BS, CF, LI_TAX) for names in d.values() for n in names}
                    | {n for d in (BS_SUM, BS_SUM_ALT) for names in d.values() for n in names})
