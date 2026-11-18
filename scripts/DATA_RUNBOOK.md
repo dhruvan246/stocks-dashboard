@@ -27915,7 +27915,7 @@ column, the FY column, or the NSE copy) (kit `d2/candc/`, reads in `reads_notes.
     from the stored rows.
   - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
-**Batch 3 — MLKFOOD full history Dec-17..Sep-26 (2026-11-18 23:50 IST, same instruction).** Milkfood Ltd (BSE 507621 / NSE
+**Batch 3 — MLKFOOD full history Dec-17..Sep-26 (2026-11-18 23:42 IST, same instruction).** Milkfood Ltd (BSE 507621 / NSE
 MLKFOOD; CIN L15201PB1973PLC003746, name + CIN checked on each statement page). Statements are in **Rs lakh** (crore = value
 / 100, half-up 2 dp). All 36 quarters were read from each quarter's own BSE filing: the text layer was checked against the
 page image, and scanned pages were read as images. A second document was read for 35 of them: a later filing's comparative
