@@ -1,7 +1,7 @@
 {
- "built": "2026-11-18 19:45 IST",
+ "built": "2026-11-18 21:41 IST",
  "rule": "Order book checked against the company's own filings; tracked from the first filing that showed it 50%+ above the figure stated about a year earlier. Entry = close on that filing day (next trading day if a holiday). Returns use bonus/split-adjusted closes.",
- "n": 34,
+ "n": 35,
  "stale": [],
  "rows": [
   {
@@ -51,7 +51,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 4504,
+   "mcap_cr": 4414,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -102,7 +102,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 4676,
+   "mcap_cr": 4574,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -153,7 +153,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 23571,
+   "mcap_cr": 23053,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -204,7 +204,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 15540,
+   "mcap_cr": 15431,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -255,7 +255,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 573,
+   "mcap_cr": 602,
    "nse_series": "BE",
    "bse_sym": null
   },
@@ -306,7 +306,7 @@
    "adj_events": 2,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 17598,
+   "mcap_cr": 17148,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -408,7 +408,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 2958,
+   "mcap_cr": 2922,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -510,8 +510,59 @@
    "adj_events": 0,
    "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
    "stale": false,
-   "mcap_cr": 5792,
+   "mcap_cr": 5802,
    "nse_series": "EQ",
+   "bse_sym": null
+  },
+  {
+   "key": "NSE:GANESHIN",
+   "name": "Ganesh Infraworld Ltd",
+   "nse": "GANESHIN",
+   "bse": "",
+   "isin": "INE0TVT01024",
+   "year_ago_value_cr": 2262.3,
+   "year_ago_as_on": "2025-09-30",
+   "year_ago_doc": "https://nsearchives.nseindia.com/corporate/GANESHINFRA_14112025223104_IP_letter.pdf",
+   "year_ago_doc_title": "Q2 FY26 investor presentation, filed 14-Nov-2025. Stated TWICE in the same document: the CMD's desk says \"In Q2 FY26, we recorded Revenue from Operations of ₹210.0 crores, EBITDA of ₹25.7 crores, and Profit After Tax of ₹18.1 crores, with an order book of 2,262.3 crores\", and the Company Snapshot slide shows \"2,262.3 Crs / Order Book\" beside \"Debt/Equity (As on September'25) 0.35x\", which anchors the as-on date. The same day's press release states ₹2,262.0 cr.",
+   "latest_value_cr": 3845.0,
+   "latest_as_on": "2026-09-30",
+   "latest_doc": "https://nsearchives.nseindia.com/corporate/GANESHINFRA_15112026195656_press_release_letter-15112026-s.pdf",
+   "latest_doc_title": "Press release for Q2 & H1 FY27, filed 15-Nov-2026. Headline itself states it: \"Ganesh Infraworld Reports Q2 & H1FY27 Results; Consolidated Order Book Stands at 3,845 Cr as of Sept,2026\", and the highlights block repeats ₹3,845 cr [as of Sept 30, 2026]. Explicitly CONSOLIDATED, so company-wide.",
+   "true_yoy_pct": 70.0,
+   "trigger_filed": "2026-08-14",
+   "trigger_doc": null,
+   "trigger_doc_title": "Analysts/Institutional Investor Meet / conference-call update filed 14-Aug-2026, stating an order book of ₹4,090.3 cr as on 30-Jun-2026",
+   "trigger_as_on": "2026-06-30",
+   "trigger_book_cr": 4090.3,
+   "trigger_prev_cr": 2262.3,
+   "trigger_prev_as_on": "2025-09-30",
+   "trigger_yoy_pct": 80.8,
+   "verdict": "CONFIRMED",
+   "note": "Both legs of the year-on-year pair were opened and read in this run and both are confirmed on comparable, company-wide definitions: ₹2,262.3 cr as on 30-Sep-2025 and ₹3,845.0 cr as on 30-Sep-2026, a clean twelve-month span filed almost exactly a year apart (14-Nov-2025 and 15-Nov-2026), **true YoY +70.0%**. The latest figure is labelled consolidated by the company; the 2025 presentation does not state standalone or consolidated, which is the only definitional softness here.\n\nTRIGGER: the first filing whose stated book was 50%+ above the figure stated about a year earlier is the **14-Aug-2026** conference-call update, ₹4,090.3 cr as on 30-Jun-2026 against ₹2,262.3 cr as on 30-Sep-2025 — +80.8%. Stated honestly, that comparison spans nine months rather than twelve, because the ledger holds no 30-Jun-2025 reading, so the trigger's own percentage is flattered by the shorter window even though it clears the bar on any reading.\n\nOne fact that cuts the other way and belongs on the row: **the order book FELL between the trigger and the latest figure**, ₹4,090.3 cr (30-Jun-2026) → ₹3,845.0 cr (30-Sep-2026), i.e. execution outran new awards in Q2 FY27. Context from the same press release: H1 FY27 consolidated revenue ₹694 cr (+78%), EBITDA ₹105 cr (15% margin, +128%), PAT ₹39 cr (+18%) — but **Q2 PAT was ₹9 cr against ₹18 cr, down 50%, while Q2 EBITDA rose 78%**, so something below EBITDA took the quarter. The book is about 2.8x the H1 FY27 revenue run rate annualised. An EPC in civil, electrical, road, railway, water and now mining, working under AMRUT and Namami Gange as both prime contractor and sub-contractor.\n\nNOT published as an idea card today, and the reason is capacity rather than merit: the Action's signals build landed at 19:57 IST, after this run had finished researching, and no market cap is available for an NSE-only name from this sandbox, so the ₹200–7,500 cr band test the order-book lane requires could not be applied, and no dossier or X/ValuePickr sweep was done. **It is the strongest order-book-lane candidate for the next run.**",
+   "checked_on": "2026-11-18",
+   "faded": false,
+   "first_trigger_filed": null,
+   "first_trigger_doc": null,
+   "first_trigger_doc_title": null,
+   "first_trigger_as_on": null,
+   "first_trigger_book_cr": null,
+   "first_trigger_prev_cr": null,
+   "first_trigger_yoy_pct": null,
+   "entry_date": "2026-08-14",
+   "entry_close": 110.55,
+   "last_date": "2026-11-18",
+   "last_close": 81.7,
+   "ret_pct": -26.1,
+   "peak_pct": 6.1,
+   "peak_date": "2026-08-18",
+   "low_pct": -32.9,
+   "prev_close": 81.55,
+   "days": 96,
+   "adj_events": 0,
+   "price_source": "NSE bhavcopy (bonus/split caught by the one-day-gap rule only)",
+   "stale": false,
+   "mcap_cr": 357,
+   "nse_series": "SM",
    "bse_sym": null
   },
   {
@@ -561,7 +612,7 @@
    "adj_events": 2,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 1716,
+   "mcap_cr": 1853,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -612,7 +663,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 4516,
+   "mcap_cr": 4444,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -663,7 +714,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 24954,
+   "mcap_cr": 24897,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -714,7 +765,7 @@
    "adj_events": 2,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 1636,
+   "mcap_cr": 1633,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -765,7 +816,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 770,
+   "mcap_cr": 755,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -816,7 +867,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 17014,
+   "mcap_cr": 16640,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -867,7 +918,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 1998,
+   "mcap_cr": 1943,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1020,7 +1071,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 6737,
+   "mcap_cr": 6700,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1075,7 +1126,7 @@
    "first_entry_close": 70.68,
    "first_ret_pct": 21.3,
    "first_peak_pct": 44.5,
-   "mcap_cr": 13568,
+   "mcap_cr": 13271,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1130,7 +1181,7 @@
    "first_entry_close": 75.92,
    "first_ret_pct": 160.3,
    "first_peak_pct": 257.4,
-   "mcap_cr": 28829,
+   "mcap_cr": 30252,
    "nse_series": "BE",
    "bse_sym": null
   },
@@ -1181,7 +1232,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 33020,
+   "mcap_cr": 34668,
    "nse_series": "BE",
    "bse_sym": null
   },
@@ -1232,7 +1283,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 2953,
+   "mcap_cr": 2926,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1287,7 +1338,7 @@
    "first_entry_close": 219.65,
    "first_ret_pct": 151.6,
    "first_peak_pct": 238.5,
-   "mcap_cr": 4326,
+   "mcap_cr": 4236,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1338,7 +1389,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 535,
+   "mcap_cr": 529,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1389,7 +1440,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 365,
+   "mcap_cr": 371,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1440,7 +1491,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 9533,
+   "mcap_cr": 9154,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1491,7 +1542,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 6464,
+   "mcap_cr": 6246,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1542,7 +1593,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 12172,
+   "mcap_cr": 11953,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1593,7 +1644,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 30230,
+   "mcap_cr": 30796,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1644,7 +1695,7 @@
    "adj_events": 0,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 11283,
+   "mcap_cr": 11131,
    "nse_series": "EQ",
    "bse_sym": null
   },
@@ -1695,7 +1746,7 @@
    "adj_events": 1,
    "price_source": "BSE, bonus/split adjusted",
    "stale": false,
-   "mcap_cr": 3007,
+   "mcap_cr": 2934,
    "nse_series": "EQ",
    "bse_sym": null
   },
