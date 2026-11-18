@@ -19179,6 +19179,11 @@ to first-filed PP&E; BASML FY22, MADHAVIPL FY24, PDSL FY20, RRIL FY23, VISHNU FY
 FY21 TA exact + PP&E restated). CUPID FY20 cwip/intg left null (own print labels 315.64 lakh intangible, FY21 comparative
 calls it CWIP; UNKNOWN). Held XTGLOBAL FY20 (PP&E 25.57 vs 19.64 unexplained), all s-only years; validate FAIL ORCHPHARMA
 (no BS in PDF), SUBEXLTD (s-only). Add-only on 4 existing rows (MAGADSUGAR FY20, NAHARPOLY FY22, SHILPAMED FY20, VTL FY21).
+Batch rc (40 cos): 39 validate, 90 fill-years (rc_accept.json: ELDEHSG FY20, ZUARIIND FY21, BATLIBOI FY24 PP&E exact;
+SAKHTISUG FY22 TA exact + PP&E regrouped to held-for-sale; RADHIKAJWE FY21 Ind AS transition). Rejected (rc_reject.json):
+MMFL FY20 (old 'Fixed Assets' line incl. CWIP), PGHH FY20 (June year-end), WAAREEINDO FY20/21 (only a later filing's
+comparative — own-filing rule), MAJESAUT FY21 (column printed Unaudited). Held AARNAV FY21/22 (merger restatement), all
+s-only years; validate FAIL INDOAMIN (s-only). GENUSPOWER FY22 add-only (TA 1,510.40 kept vs read 1,512.06; UNKNOWN).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
