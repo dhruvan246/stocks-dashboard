@@ -19205,6 +19205,12 @@ Sep-21 half-year comparative — own-filing rule), NCLIND FY21 (column printed U
 line), TRANSPEK FY25 sc null (563.56 vs 558.56 standalone + prior year; likely misprint). No read: NESTLEIND FY20-23 + LINDEINDIA
 FY20-22 (Dec year-ends / 15-month transition, no 31-Mar BS), MOREPENLAB FY21, APCL FY20, TRANSPEK FY20. Held SAMBHAAV FY22 + APTECHT
 FY21 (restated, reason unread), s-only years; validate FAIL HCC FY23 (PP&E 358.09 vs key 604.55).
+Batch rg (40 cos): 37 trusted, 87 new fill-years. Accepted (rg_accept.json): KPIGREEN FY21 (FY22 restates on Ind AS
+transition), VARDMNPOLY FY20, SHBAJRG FY20/FY23, SBGLP FY22 (PP&E exact, TA restated; SHBAJRG next years s-only), MOSCHIP FY24
+(PP&E+ROU 27.26 both filings, regrouped). Rejected (rg_reject.json): SADBHIN FY20/21 (title printed 'UNAUDITED'), CHEMFAB FY22 +
+REFEX FY20 (year-end column printed Unaudited). SBGLP FY23 oeq null (sub-lines disagree with total equity), DIAMINESQ FY20 pay
+null (blurred scan). Held HALDYNGL FY21 (FY22 restates PP&E 44.87 -> 42.35, split unread), s-only years; validate FAIL RML FY22
+(read 1,229.87/460.45 vs key 1,193.89/353.22 — unit UNKNOWN), MANINDS FY23 (s-only filing vs c key), SUPREMEINF (no FY23 BS).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
