@@ -30848,3 +30848,20 @@ entity's restated figures (identical where both print). PCHFL's own Mar-25 con (
   was cons reserves 40,102.84 + minority 117.10), cfo 54,518.51→59,718.01, capex 886.47→885.53, cfi −54,471.53→−58,196.10,
   cf_tax −5,825.31→−5,954.97 (a refund: paid +, refund −). Same in both statements, kept: sc 6,325.00, cff −948.59, divp 948.59.
   The consolidated cell was filled from the same two PDFs (p22-23 / p19-20), oeq = owners' reserves 40,102.84 (no minority, §237).
+
+## §246 — BSE "Integrated Filing (Financial)": a third results category for result PDFs (2026-11-19)
+- **Gap.** `fetch_annual_bscf.result_filings()` asked only `Result` and `Board Meeting / Outcome of Board Meeting`.
+  From early 2025 BSE also carried results under category `Integrated Filing`, sub-category `Integrated Filing (Financial)`
+  (URL `strCat=Integrated%20Filing&subcategory=Integrated%20Filing%20(Financial)`). Found on JYOTICNC (544081):
+  FY25 annual result 25-May-2025 + Q3 10-Feb-2025 existed only there. Now the third entry of `RESULT_CATS`
+  (commit c4f00b77a7, offline test in test_abscf_pipeline.py). The Governance sub-type is left out on purpose.
+- **Reach, measured** (market-wide scan of the three categories, weekly windows Apr–Jun 2025 and Apr–Jun 2026,
+  ~/stocks-cache/abscf/intfil/scan.json): Integrated Filing (Financial) rows = 616, all in Apr–May 2025; ZERO in Jun 2025 and
+  in the whole Apr–Jun 2026 season (companies are back on `Result`, e.g. JYOTICNC 29-May-2026). 14 scrips had their 2025
+  season result ONLY there; 2 are in the 652-symbol N500 union: JYOTICNC (healed by hand, §241) and AETHER.
+- **AETHER FY25, read cell by cell** (results filing f96d5b7a + annual report 2024-25 Annexure IV p164, Rs MM): standalone
+  assets/eq/sc/cwip/cfo/cfi/cff/capex all = print; consolidated assets/eq/sc/cwip/cff/capex = print; consolidated
+  cfo 134.50 → 100.091 and cfi −452.29 → −417.886 = OUR ERROR (the stored cell had 'Income from current investments' 344.08 MM
+  in operating; the print has it in investing). 2 entries in xtra_cell_fix.json.
+- Other scripts that search only `strCat=Result` (backfill_bse_fund_history, backfill_preipo, fetch_bse_results) were NOT changed:
+  the quarterly stores fill FY25 quarters from NSE/XBRL. Whether any quarterly cell missed a 2025 Integrated-only result is UNKNOWN.

@@ -7420,6 +7420,26 @@
    "fixed": -5954.97,
    "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
    "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "AETHER",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "cfo",
+   "was": 134.5,
+   "fixed": 100.091,
+   "why": "Printed FY25 consolidated cash flow (results filing 2-May-2025, BSE Integrated Filing (Financial) f96d5b7a...; annual report 2024-25 Annexure IV p164, Rs MM): operating 1,000.91, investing -4,178.86, financing 19.18, net -3,158.78. Stored cell put 'Income from current investments' 344.08 MM in operating.",
+   "found": "2026-11-19 item7 integrated-filing check"
+  },
+  {
+   "sym": "AETHER",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "cfi",
+   "was": -452.29,
+   "fixed": -417.886,
+   "why": "Printed FY25 consolidated cash flow (results filing 2-May-2025, BSE Integrated Filing (Financial) f96d5b7a...; annual report 2024-25 Annexure IV p164, Rs MM): operating 1,000.91, investing -4,178.86, financing 19.18, net -3,158.78. Stored cell put 'Income from current investments' 344.08 MM in operating.",
+   "found": "2026-11-19 item7 integrated-filing check"
   }
  ]
 }
