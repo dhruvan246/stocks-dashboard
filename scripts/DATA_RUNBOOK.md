@@ -27549,6 +27549,59 @@ All OUR_ERROR unless named:
 - Open (SEIL): Sep-25 revop row has PAT only (revenue/op slots empty); the Jun-25 o1 BSE headline names "Nandan Denim Limited"
   (filer typo; the o0 PDF names SEIL).
 
+**Batch 3 — ACSTECH Mar-22..Sep-26 (2026-11-18 11:40 IST, same instruction).** ACS Technologies Ltd, formerly LN Industries India
+Ltd (BSE 530745; CIN L18100TG1993PLC015268 -> L62099TG1993PLC015268). LN Industries sat in CIRP through 2022; the NCLT-approved
+resolution plan merged ACS in, and Mar-23 is the first quarter with operations. Every quarter Sep-22..Sep-26 was read off its OWN
+results PDF (page images; Rs LAKH, /100 = crore, half-up 2 dp; replay kit `~/stocks-cache/xcheck-fixall/d2/acstech/` reads.py ->
+plan_acs.py -> apply_acs.py). Second document = a later filing's comparative column. All OUR_ERROR unless named:
+- PAT levels (`fund_cell_fix` +13). The common fault was a LAKH figure stored as crore, often from another quarter or period:
+  - Sep-22 64.26/64.26 -> 0/0: the Sep-23 filing's H1-FY24 standalone 64.26 lakh, on the wrong quarter; the own filing prints
+    every line nil.
+  - Dec-22 13.36 / 0.1 -> 0/0: the Mar-23 filing's restated Dec-22 comparatives 13.36 / 9.94 lakh; the own filing prints nil, with
+    no consolidated statement, so con = std per §54b.
+  - Jun-23 38.71/38.71 -> 0.50/0.50: the Sep-23 filing's restated Jun-23 comparative (MAT credit) 38.71 lakh. First filed: std
+    49.86, cons owners 50.05 lakh.
+  - Sep-23 25.55 -> 0.26 (the right lakh, never converted); con 0.08 -> 0.15 (owners 15.28 lakh; 0.08 is printed nowhere).
+  - Dec-23 14.41 / 15.99 -> 1.28 / 1.29: these are the Sep-23 figures from the 2024-02-05 resubmission and the Dec-23 filing's
+    Sep-23 column.
+  - Sep-24 con 1.55 -> 1.50: 1.55 is the group total 155.45 lakh including NCI 5.06.
+  - Jun-26 con 3.92 -> 3.45 and Sep-26 con 6.58 -> 5.99. THE FILER'S SLIP: consolidated line 7(a) "Owners" prints the GROUP total
+    (392.23 / 658.15, NCI "-"). Line 9 (OCI nil) splits owners 345.27 + NCI 46.96, and 599.33 + 58.82. The Sep-26 filing's Ind AS
+    P&L (p9) gives H1 owners 944.60 = 345.27 + 599.33. `revop_cell_fix` mirrors both pat_con values.
+- Missing quarters added (`named_pat_cell_fills` +2, `ann_date_fills`): Dec-24 0.50/0.57 (filed 2025-02-12 13:09; the
+  Result-filtered window listed 0, the §57c trap) and Sep-25 2.01/2.19 (filed 2025-11-14).
+- Announcement days (`ann_date_fills`, BSE raw listing strCat=-1 around each stored day; `d2/acstech/ann_listing.txt`):
+  - Override earlier: Sep-22 20221115 -> 20221114. This replaces an older normal-fill entry with the right day that could never
+    move a non-zero slot.
+  - Override earlier: Jun-23 20230816 -> 20230814 and Sep-24 20241118 -> 20241114 (no ACSTECH filing on either stored day).
+  - Exact later: Dec-23 20240205 -> 20240213. 5 Feb 2024 was the Sep-23 RESUBMISSION; the Dec-23 results were first filed on 13 Feb.
+  - Confirmed as stored: Mar-24 0530, Jun-24 0805, Jun-25 0813 and Jun-26 0813 (Result rows on those days).
+  - `--reapply --only ACSTECH`: 0.
+- Revop (`named_rev_cell_fills` +11 quarters, both twins identical):
+  - Mar-25 opS 2.07 -> 1.99 (other income 8.12 lakh not subtracted; `revop_cell_fix`).
+  - Empty slots filled for Mar-24 / Jun-24 / Sep-24 / Mar-25 / Jun-25 (revC, op, patC, ebit).
+  - Rows added for Mar-23, Jun-23, Sep-23, Dec-23, Dec-24 and Sep-25.
+  - op = PBT before exceptional + finance + depreciation - other income.
+- `restated_bases.json` +4 (pat, s unless named):
+  - Mar-23|Dec-22: s 0.13, c 0.10 (as filed 0).
+  - Sep-23|Jun-23: 0.39 (as filed 0.50).
+  - Dec-23|Sep-23: 0.14 (as filed 0.26).
+  - Sep-24|Sep-23: 0.14 (as filed 0.26).
+  - The c twins of the last three are within 0.011, so they were skipped.
+- Not changed:
+  - Mar-23 2.20/2.24 is RULE (con = printed total): the own Mar-23 filing prints no owners split, though the Jun-23 filing later
+    splits owners 221.70.
+  - Mar-22 -0.01/-0.01, ann 0, is the only print of that quarter: the Mar-23 filing's Mar-22 column, net loss (1.00) lakh. BSE
+    Jan-Sep 2022 lists only CIRP notices and no results, so there is no day to fill.
+  - The stock page's Mar-23 PAT YoY reads +22100%: growth vs the abs(-0.01) base, the documented rule at stock.html `growth()`.
+- Checks:
+  - Blast radius = ACSTECH only in all four twins. The scripts twin lacks Jun-26/Sep-26, the usual lag.
+  - verify_fills_live: 44,367 checked, MISSING 0, RESURRECTED 0.
+  - Conflict guard 0/0; sync_pat_mirror dry-run 0; fund_dup_guard 0.
+  - fund_rbase: 40 cos / 132 published / 2 held (DHANSA).
+  - stock.html?s=ACSTECH local: 18 quarter rows, std and con, with the fixed values, days and R marker.
+  - 375 px dark + light, no horizontal scroll. The only console errors are the stk/ and ipo_fin/ 404 probes.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
