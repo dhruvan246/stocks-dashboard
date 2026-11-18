@@ -30691,6 +30691,10 @@ Merged FY25 adds up: 269.62 + 171.34 + 69.22 + 63.89 = 574.07 (FY25 column, both
 std ann dates 2024-05-30 / 2024-08-14 / 2024-11-14 / 2025-05-30 / 2025-11-14 against filings of 8-May-2024, 13-Aug-2024,
 23-Oct-2024, 6-May-2025 and 17-Oct-2025; the con cells Mar-24 −752.0, Sep-24 163.0, Mar-25 102.0, Sep-25 327.0 are whole crores, not read.
 
+**§239c update 8 (19-Nov-2026).** PIRAMALFIN Jun-24 std: user chose "Merged 269.62" — 37.0 → 269.62 (half year 440.96 −
+Sep-24 171.34, PFL 17-Oct-2025 p16). The std series is now on the merged basis for every quarter from Jun-24; Mar-24 and
+earlier stay the legal entity's own (no merged figure exists before the 1-Apr-2024 appointed date).
+
 ## §245 — Life insurers: tax_c = SHAREHOLDERS' account tax (2026-11-17, user: "yes switch tax_c to shareholders' tax")
 - **Rule.** A life insurer's results carry two tax blocks: the policyholders' (revenue) account and the shareholders' (P&L)
   account. Our pbt is the shareholders' PBT, so tax_c / tax_d are now the shareholders' figures too — pbt − tax_c − tax_d = PAT.
