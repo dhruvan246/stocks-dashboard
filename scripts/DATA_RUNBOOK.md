@@ -27764,6 +27764,32 @@ All OUR ERROR:
   - stock.html?s=UPHOT local: 36 rows Dec-17..Sep-26, Standalone and Consolidated, fixed values and days.
   - 375 px dark + light, the table scrolls inside its holder (page scrollWidth 375); only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — KMCSHIL Mar-23..Sep-26 (2026-11-18 15:39 IST, same instruction).** KMC Speciality Hospitals (India) Ltd (BSE 524520;
+CIN L85110TN1982PLC009781; name + CIN on every statement page; Rs LAKH, /100 = crore, half-up 2 dp). Quarterly filer; ONE
+(standalone) statement every quarter Mar-23..Sep-26 (no consolidated statement, no subsidiary named in any of the 16 PDFs; the
+one "consolidated" text hit, FY26 p8, is the labour-codes note), so con = std throughout (§54b).
+- **Scope.** The store's KMCSHIL span starts at Mar-23 (first row 20230331); every quarter Mar-23..Sep-26 read off its OWN results
+  PDF (page images; replay kit `~/stocks-cache/xcheck-fixall/d2/kmc/` reads.py -> plan_kmc.py -> apply_kmc.py; raw BSE listing
+  `listing.txt`, 699 rows 2017..2026-11-18). Pre-2023 KMCSHIL history is ABSENT from the store altogether: a coverage gap, not
+  touched here.
+- **Second documents.** A later filing's comparative column for every quarter, or the filing's own half-year / year column.
+  Restated comparatives: none differs from the as-filed figure, so `restated_bases` +0.
+- **Stored cells (each read):** Mar-23 7.26, Dec-23 9.49, Mar-24 7.09, Sep-24 3.88, Jun-25 7.54, Sep-25 10.84 (std = con), Jun-26
+  16.57, Sep-26 16.22 (std) and every stored announcement day = the filing day. All right; nothing to fix.
+
+All OUR ERROR (gaps):
+- Missing rows added (`named_pat_cell_fills` + `ann_date_fills`, normal entries): Jun-23 6.94 @20230811, Sep-23 6.87 @20231110,
+  Jun-24 5.51 @20240813, Dec-24 7.51 @20250212, Mar-25 4.52 @20250528, Dec-25 13.73 @20260211, Mar-26 14.63 @20260529.
+- Empty con cells filled (docs only; the scripts twin has no such rows): Jun-26 16.57 @20260814, Sep-26 16.22 @20261113.
+- Revop (`named_rev_cell_fills` +15): the 2 stored rows (Jun-26, Sep-26) had every S slot right and every C slot empty; C = S
+  filled. 13 rows added for Mar-23..Mar-26.
+- Checks:
+  - Blast radius = KMCSHIL.
+  - verify_fills_live: 44,983 checked, MISSING 0, REVERTED 0, RESURRECTED 0.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK; FUND_ALIAS in step.
+  - stock.html?s=KMCSHIL local: 15 rows Mar-23..Sep-26, Standalone and Consolidated.
+  - 375 px dark + light, page scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
