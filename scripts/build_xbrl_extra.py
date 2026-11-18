@@ -400,6 +400,13 @@ def parse_file(path, fname, sym_override=None):
     # declare OneD as Jul-Sep in the block while DateOf{Start,End}OfReportingPeriod say Apr-Sep
     # and the money is the 6-month figure (measured 2026-09-23, TRUST/GGBL Sep-2024, §148).
     fs_, fe_ = RE_DATE["OneD"]["Start"].search(xml), RE_DATE["OneD"]["End"].search(xml)
+    # ...except a start fact that is the block's own start with DAY and MONTH swapped — a typing slip, not a
+    # half-year (ICICIPRULI Dec-2025 s/c, HDFCLIFE Dec-2025 c: fact 2025-01-10, block 2025-10-01 -> a 355-day
+    # "period" sent the whole quarter's P&L to parse_bs_only; measured 2026-11-19, runbook §245)
+    if fs_ and one and one[0] == "D":
+        f1, b1 = fs_.group(1), one[1]
+        if f1 != b1 and f1[:4] == b1[:4] and f1[5:7] == b1[8:10] and f1[8:10] == b1[5:7]:
+            fs_ = None
     if fs_ and fe_ and days_between(fs_.group(1), fe_.group(1)) > 100:
         return parse_bs_only(xml, fname, sym, ctx, fe_.group(1))
     if one and one[0] == "D" and days_between(one[1], one[2]) > 100:

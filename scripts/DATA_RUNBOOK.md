@@ -30715,4 +30715,9 @@ earlier stay the legal entity's own (no merged figure exists before the 1-Apr-20
   `ProvisionsForTaxes` (policyholders' total = `ProvisionForTax`), each = tax_c + tax_d and pbt − tax = stored PAT.
   Readers: 108 cells two forms, 1 four, 54 one (47 XBRL, 7 Dec-24 form). Parser: LI_TAX gains "tax".
   Seen, not changed: build_xbrl_extra.parse_file returns no P&L (pbt too) for three LI files — ICICIPRULI Dec-25 s/c
-  (1600999/1601003), HDFCLIFE Dec-25 c (1601820) — although their OneD facts exist; the stored cells already hold values. Cause UNKNOWN.
+  (1600999/1601003), HDFCLIFE Dec-25 c (1601820) — although their OneD facts exist; the stored cells already hold values.
+  FIXED 2026-11-19 (user: "fix the parser for those 3 filings"): their DateOfStartOfReportingPeriod facts are the block start with
+  day and month SWAPPED (OneD 2025-01-10 for 2025-10-01, FourD 2025-01-04 for 2025-04-01), so the facts-outrank-block rule (§148)
+  saw a 355-day period and sent the file to parse_bs_only. parse_file now ignores a start fact that is exactly the block start
+  with day/month swapped. Old vs new parser over 9,505 cached XBRL files: only these 3 changed; each now parses as the quarter
+  and every field equals the stored cell (no store change).
