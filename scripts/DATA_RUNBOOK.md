@@ -28063,6 +28063,113 @@ fund rows, 4 of them phantom quarters, and revop rows for Jun-26 and Sep-26 only
     announcement value matches the plan.
   - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — CGFL full history Sep-18..Sep-26 (2026-11-19 01:09 IST, same instruction).** Credent Global Finance Ltd,
+formerly Oracle Credit Ltd, renamed AMPL Capital Ltd (MCA certificate 20-Jun-2026, Jun-26 filing note). BSE 539598, BSE-only.
+- **Identity.** The name on each statement was checked against the quarter. CIN L65910DL1991PLC043281 is printed up to the
+  Mar-23 filing; L65910MH1991PLC404531 from Jun-23 (registered office moved to Maharashtra).
+- **Units.** Statements are in Rs lakh (crore = value / 100, half-up 2 dp).
+- **Accounting basis.** Indian GAAP until Mar-19 (NonBanking XBRL); Ind AS NBFC layout from Jun-19.
+- **Ticker.** Our key stays CGFL: the live price slice `stk/CGFL.json` exists (name "AMPL Capital Ltd") and `stk/AMPL.json`
+  is 404. BSE now lists scrip 539598 as `AMPL` (see OPEN).
+
+**How it was read.** Every quarter was read from its own BSE filing. The text layer was checked against the page image or
+against arithmetic ties (total income − expenses = PBT; PBT − tax = PAT; quarters sum to the YTD / FY column). Scanned pages
+(Mar-22 p12, Dec-25, Mar-26, Jun-26, Sep-26) were read as images. Each quarter also has a second document: a later filing's
+comparative column, or the H1 / 9M / FY tie. The XBRL recompute (`build_revop.metrics_for`) matches revenue, op and PAT for every
+quarter that has XBRL (Sep-18..Dec-24). Sep-26 is the latest quarter, so its second document is UNKNOWN until the Dec-26
+filing; its H1 ties (std 158.08 vs 82.04 + 76.06 = 158.10, filer rounding; con 68.70 = −117.71 + 186.40).
+
+**Kit and starting point.** Kit `d2/cgfl/`: reads `reads.py` + `reads_notes.md`, plan `plan_cgfl.py`, apply `apply_cgfl.py`.
+Before the audit the store held 30 fund rows (Sep-18..Mar-26, with Mar-19 missing) and no CGFL revop key.
+- **Consolidated history.** There was no subsidiary before Q4 FY22. The Mar-22 filing's consolidated statement prints '-' for
+  Dec-21 / Mar-21; the Jun-22 one prints '-' for Jun-21. So con = std (§54b) up to Dec-21, and Mar-22 is the first
+  consolidated quarter. Con PAT = owners' share.
+- **5 fund con cells were OUR ERROR (`fund_cell_fix`):**
+  - Sep-21 1.03 → 0.04: 1.03 is the H1 FY23 consolidated profit (103.31 lakh, Sep-22 filing p9), another period. No
+    consolidated statement existed for Sep-21, so con = std 4.22 lakh.
+  - Mar-22 0.81 → 0.77: 0.81 is profit INCLUDING the non-controlling interest (80.63 lakh). Owners' share 77.34 (NCI 3.29,
+    p12). A wrong-line read.
+  - Jun-22 0.45 → 0.44: 0.45 is the RESTATED 45.34 first printed by the Sep-22 filing (a look-ahead). The own filing
+    printed 43.64, and the Dec-22 9M con 176.16 and the Jun-23 filing tie to 43.64.
+  - Dec-25 1756.61 → 17.59: the own 1,758.61 lakh was stored as crore, with one digit different. 1,756.61 appears in no
+    CGFL filing (text layers of all 79 PDFs searched).
+  - Mar-26 0.69 → 0.01: the right figure in lakh (0.69 lakh), stored as crore.
+- **Fill (`named_pat_cell_fills`).** Mar-26 std was empty → 1.71 (170.77 lakh, p9 read as an image). FY26 std 2,796.27 =
+  55.91 + 767.47 + 1,802.12 + 170.77 exactly.
+- **New rows (`named_pat_cell_fills` + `ann_date_fills` normal entries):**
+  - Mar-19 0.03 / 0.03, ann 20190529. The Result filed 13:28; the 13:20 board outcome carries no statement. FY19 10.49 lakh
+    ties.
+  - Jun-26 0.82 / −1.18, ann 20260814.
+  - Sep-26 0.76 / 1.86, ann 20261105.
+- **Announcement dates.** Each date is the calendar day of the first results-bearing BSE filing (midnight rule §149; raw BSE
+  listing of all categories, 617 items). 20 of the 30 stored rows already matched.
+  - **Moved LATER (`ann_cell_fix`, std + con):**
+    - Jun-19 20190807 → 20190914, and Sep-19 20191106 → 20191209. The stored days are the Ind AS time-extension notices,
+      not results.
+    - Jun-20 20200725 → 20200915. The stored day is the Mar-20 results day.
+  - **Moved EARLIER (`ann_date_fills` override, both slots):**
+    - Sep-22 20221115 → 20221114.
+    - Jun-23 20230816 → 20230814 (the stored day is the newspaper publication).
+    - Dec-23 20240215 → 20240214 (the stored day is a clarification letter with a revised limited review report).
+    - Jun-24 20240816 → 20240814 (the stored day is the newspaper publication).
+    - Sep-24 20241118 → 20241114.
+    - Dec-24 20250217 → 20250214.
+    - Sep-25 20251117 → 20251114.
+    - Where no reason is given above, the BSE listing has no CGFL filing on the stored day.
+- **Revop (`named_rev_cell_fills`).** All 33 quarter rows were missing and are now added from the own statements.
+  - op = PBT before the associate share + finance + depreciation − other income.
+  - Indian GAAP quarters (Sep-18..Mar-19): fin 0, ebit = op − depreciation.
+  - Ind AS NBFC quarters: fin 1, ebit not reproduced (`build_revop.metrics_for` NBFC branch).
+- **Restated bases (`restated_bases`, level `as_filed`, 4 rev entries):**
+  - Dec-22|Dec-21 s + c base 0.30: the Dec-22 filing's 31.12.2021 column prints revenue 29.55 lakh, with the 20.00 fee first
+    filed as other income moved into revenue. The c base is the restated standalone column, because Dec-21 con = std
+    (CHEMCRUX precedent).
+  - Sep-23|Sep-22 s base 0.65 (65.06, p4) and c base 1.09 (109.35, p10): first filed with 40.17 / 40.19 labelled "Other
+    income".
+  - The page now reads Dec-22 +220.00%R std / +480.00%R con, and Sep-23 +76.92%R std / +77.98%R con.
+- **Kept as first filed, or noise below 0.011 cr:**
+  - Mar-23 con 518.44 is kept. FY23 con 673.59 − 9M 176.16 = 497.43 contradicts it, but the Jun-23 and Mar-24 filings
+    reprint 518.44 and no revision exists.
+  - Dec-22 9M std 129.82 vs the sum 130.67: the 9M column carries 0.86 lakh more finance cost (0.0085 cr).
+  - Mar-25 later reprints 1.75 / 330.68 (0.0001 cr).
+  - The Dec-24 filing's Dec-23 con column prints (34.16) vs (34.17).
+- **Right as stored:** 54 of the 60 stored fund cells.
+- **OPEN:**
+  - **Identity split CGFL / AMPL.** `bse_universe.json`, `bse_results.json`, `shp_engine.json` and `_bse_master_all.json`
+    carry 539598 as `AMPL`. Our fund, revop and price data are keyed CGFL, and `_rename_map.json` has no CGFL entry. So
+    quarterly-results.html lists "AMPL Capital Ltd" as a BSE-only company from `bse_fundamentals.json` px, not from our
+    store. That row:
+    - is blank for Mar-25..Jun-26;
+    - for Sep-26 carries `{pat 0.76, basis C, rev 4.04}`, which are the STANDALONE PAT (76.06 lakh) and standalone total
+      income (399.69 + 3.97 = 403.66 lakh), labelled C (consolidated: PAT 1.86, revenue 4.87);
+    - has 14 of its 21 px ann dates later than the first results filing: 13 by one day (e.g. Dec-24 20250215 vs
+      2025-02-14 16:33) and Jun-21 by two (20210816 vs 20210814). Its other 20 rows' PAT and revenue match ours.
+
+    This needs a rename decision. It was not touched here; shareholding is another session's work.
+  - **`vision_fills.json` CGFL "rev" is total income on 5 quarters.** Jun-25 3.25, Sep-25 12.14, Mar-26 5.09, Jun-26 5.68
+    and Sep-26 5.46 = revenue from operations + other income. It is an empty-cell overlay; our revop rows now fill those
+    cells.
+  - **Sep-22 relabelling.** The 40.17 / 40.19 "Other income" was relabelled as fee revenue by the Sep-23 filing. The level
+    stays as first filed (policy A). Whether level revenue should follow is a RULE QUESTION.
+  - **Restated op.** The restated Sep-22 op (s 0.47, c 0.58) has no slot: `rbase.FIELDS` = ("rev", "pat").
+  - **XBRL risk.** The Jun-23 consolidated XBRL tags owners' profit 0 and NCI 0 (the PDF prints 37.20 lakh). The
+    `build_revop` owners guard (line 547) uses the total only when |total| > 2 cr, so it would write 0 if this XBRL were
+    ever ingested.
+  - **Filer typo.** The Mar-26 filing's Dec-25 comparative prints PAT "1,002.12" (2,409.04 − 606.92 = 1,802.12).
+  - **Jun-18.** A Jun-18 row is not added (our store starts at Sep-18).
+- **Twins (measured):** both fund twins held the same 30 CGFL rows; neither revop twin had a CGFL key.
+- **Checks:**
+  - Blast radius = CGFL: every changed key in all 10 files.
+  - verify_fills_live: 45,849 checked, MISSING 0, REVERTED 0, RESURRECTED 0.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK; FUND_ALIAS in step.
+  - `backfill_ann_dates_bse.py --reapply --only CGFL`: 0 cells, stores byte-identical.
+  - stock.html?s=CGFL local, with the live `stk/CGFL.json` slice copied into the ignored `docs/stk/`:
+    - consolidated and standalone tables have 33 rows each;
+    - all 330 displayed revenue, op, EBIT, NP and announcement values match the plan;
+    - the preview `fin/CGFL.json` fund and revop equal the plan exactly;
+    - its deep table (oi, finance, depreciation, tax, PBT; Mar-20..Dec-24, s + c) matches the reads on 160 of 160 figures.
+  - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
