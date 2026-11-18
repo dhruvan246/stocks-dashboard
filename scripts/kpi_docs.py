@@ -59,6 +59,7 @@ def _get(url, timeout=60, binary=False):
 
 
 _SCRIPS = None
+_DELISTED = None
 
 
 def scripcode(sym):
@@ -67,6 +68,18 @@ def scripcode(sym):
     if _SCRIPS is None:
         _SCRIPS = json.load(open(SCRIPS, encoding="utf-8")).get("by_id", {})
     v = _SCRIPS.get(sym)
+    if not v:
+        # DELISTED/merged/newly-listed names are absent from the ACTIVE-equity scrape above; their
+        # ISIN-gated codes live in bse_scrips_delisted.json (2026-11-19: 33 PIT-N500 stocks had no
+        # Insights card only because this lookup never read that file).
+        global _DELISTED
+        if _DELISTED is None:
+            try:
+                _DELISTED = json.load(open(os.path.join(os.path.dirname(SCRIPS), "bse_scrips_delisted.json"),
+                                           encoding="utf-8")).get("scrips") or {}
+            except (OSError, ValueError):
+                _DELISTED = {}
+        v = (_DELISTED.get(sym) or {}).get("bse_code")
     return int(v) if v else None
 
 
