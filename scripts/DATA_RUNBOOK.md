@@ -27549,7 +27549,7 @@ All OUR_ERROR unless named:
 - Open (SEIL): Sep-25 revop row has PAT only (revenue/op slots empty); the Jun-25 o1 BSE headline names "Nandan Denim Limited"
   (filer typo; the o0 PDF names SEIL).
 
-**Batch 3 — ACSTECH Mar-22..Sep-26 (2026-11-18 11:40 IST, same instruction).** ACS Technologies Ltd, formerly LN Industries India
+**Batch 3 — ACSTECH Mar-22..Sep-26 (2026-11-18 10:57 IST, same instruction).** ACS Technologies Ltd, formerly LN Industries India
 Ltd (BSE 530745; CIN L18100TG1993PLC015268 -> L62099TG1993PLC015268). LN Industries sat in CIRP through 2022; the NCLT-approved
 resolution plan merged ACS in, and Mar-23 is the first quarter with operations. Every quarter Sep-22..Sep-26 was read off its OWN
 results PDF (page images; Rs LAKH, /100 = crore, half-up 2 dp; replay kit `~/stocks-cache/xcheck-fixall/d2/acstech/` reads.py ->
@@ -27601,6 +27601,60 @@ plan_acs.py -> apply_acs.py). Second document = a later filing's comparative col
   - fund_rbase: 40 cos / 132 published / 2 held (DHANSA).
   - stock.html?s=ACSTECH local: 18 quarter rows, std and con, with the fixed values, days and R marker.
   - 375 px dark + light, no horizontal scroll. The only console errors are the stk/ and ipo_fin/ 404 probes.
+
+**Batch 3 — MIIL Mar-19..Sep-26 (2026-11-18 14:38 IST, same instruction).** Meghna Infracon Infrastructure Ltd, formerly Naysaa
+Securities Ltd (BSE SME 538668; CIN L67120MH2007PLC175208 -> L68100MH2007PLC175208). It filed HALF-YEARLY results only until FY23
+(raw BSE listing 2019-2026, `d2/miil/listing.txt`): Sep row = H1 (Apr-Sep), Mar row = H2 (Oct-Mar), the 7592 / §191 convention.
+FY23 is the switch: the FY23 filing (2023-05-29) prints Q3 and Q4, and Q1 / Q2 were first printed as the year-ago columns of the
+Jun-23 / Sep-23 filings. Every period was read off its OWN results PDF (page images; Rs LAKH, /100 = crore, half-up 2 dp; replay kit
+`~/stocks-cache/xcheck-fixall/d2/miil/` reads.py -> plan_miil.py -> apply_miil.py). Second document = a later filing's comparative
+column, plus H1 + H2 = FY sums for FY20 (-60.22 + 88.22 = 28.00), FY21 (18.34 + 22.75 = 41.09) and FY22 (64.86 - 24.20 = 40.66).
+No subsidiary until the partnership formed 25 Jan 2024 (the Mar-24 consolidated comparatives print N.A.), so con = std before Mar-24
+(§54b). All OUR_ERROR unless named:
+- PAT levels (`fund_cell_fix` +17):
+  - Mar-22 -0.32/-0.32 -> -0.24: our figure was the Jan-Mar 2022 QUARTER (31.85) lakh, first printed 2023-05-29 (look-ahead); the
+    own filing (2022-05-24) prints H2 FY22 (24.20).
+  - Jun-22 -0.24 -> 0.14 (the H2 FY22 column of the H1 FY23 filing, not the quarter) and Sep-22 -0.06 -> -0.13 (-0.06 is printed
+    in no MIIL filing). Quarter figures 13.98 / (12.89) lakh; H1 FY23 prints 1.09 = their sum.
+  - Mar-24 0.48 -> 0.55 / 0.58 (source of 0.48 not identified); Jun-24 0.55 -> 1.61 / 1.61 (0.55 = Mar-24's standalone).
+  - Sep-24 30.07 / 2,382.0 -> 0.30 / 0.30 (lakh stored as crore; con = the group 23.82 lakh x100).
+  - Sep-25 104.65 / 19.71 -> 1.05 / 1.05 (std lakh as crore; source of 19.71 not identified).
+  - con: Mar-25 5.59 -> 3.92 (source of 5.59 not identified), Dec-25 1.1 -> 0.95 and Mar-26 1.76 -> 2.00 (both group totals
+    incl. NCI, not owners).
+  - THE FILER'S SLIP on four consolidated statements: the line-16 owners/NCI split prints figures that match no other line (Mar-24
+    27.22, Jun-24 75.46, Sep-24 14.11, Dec-24 159.72). We use the "Net Profit after tax and Minority Interest" line, which the EPS
+    confirms (e.g. Dec-24 EPS 3.13 = 340.41 / 108.62 lakh shares) and the next filing's reprint repeats.
+- Empty std cells filled (`named_pat_cell_fills`): Mar-25 3.92, Dec-25 0.95, Mar-26 2.00. Independent check: the §219a
+  `pat_mismatch` list (company XBRL, 2026-10-05) has the same file_pat for Mar-25..Mar-26.
+- Missing rows added (`named_pat_cell_fills` + `ann_date_fills`): Sep-19 (H1 FY20) -0.60 / -0.60, filed 2019-11-13 14:23;
+  Dec-24 3.40 / 3.40, filed 2025-02-14 12:39.
+- PHANTOM ROWS DROPPED: Dec-19 -0.6 (H1 FY20, misplaced), Dec-20 0.18 (copy of H1 FY21) and Jun-21 0.23 (copy of H2 FY21). No MIIL
+  filing prints a quarter ending on any of those dates. Each drop is journalled as a `held` entry in `named_pat_cell_fills` (an
+  absence assertion). Negative control on sandbox copies: re-inserting Dec-20 gave RESURRECTED with exit 1, and
+  `settle_stale_holds` refuses to lift it ("NO filing-sourced ledger backs this value"). The old normal `ann_date_fills` entry
+  MIIL|20201231 stays; reapply never creates rows (`--reapply --only MIIL`: 0).
+- Announcement days (`ann_date_fills`):
+  - Exact later: Jun-22 20221111 -> 20230808 (replaces the normal covering-filing entry) and Sep-22 20221111 -> 20231102. The
+    quarter figures were first public on those days; 2022-11-11 printed only the six-month total.
+  - Override earlier: Sep-24 20241118 -> 20241114 (filed 23:21 on the 14th); Jun-25 20250818 -> 20250814 (no MIIL filing on
+    18 Aug); Sep-25 20251117 -> 20251114 (17 Nov was the newspaper publication).
+- Revop: 16 rows added Jun-22..Mar-26 (`named_rev_cell_fills` +16, both twins identical); Jun-26 / Sep-26 already matched.
+  Standalone revenue is nil ("-") in Sep-24 and Dec-25 and stored as 0.0; the page shows OPM "—" and blank growth against the 0
+  base. The half-year era has no revop rows.
+- `restated_bases.json` +6:
+  - Dec-25|Dec-24: s pat 4.03 / rev 6.02 and c pat 4.03 / rev 10.77 (first filed 3.40 / 5.21 / 3.40 / 9.97).
+  - Mar-23|Mar-22: s and c pat -0.32 (the quarter), while our Mar-22 row keeps H2 -0.24.
+- Checks:
+  - Blast radius = MIIL only. The scripts twin lacks Jun-26/Sep-26, the usual lag.
+  - verify_fills_live: 44,493 checked, MISSING 0, RESURRECTED 0.
+  - Conflict guard 0/0; sync_pat_mirror dry-run 0; fund_dup_guard 0.
+  - fund_rbase: 41 cos / 138 published / 2 held (DHANSA).
+  - stock.html?s=MIIL local: 25 rows (Mar-19..Sep-26), con and std.
+  - 375 px dark + light, no horizontal scroll; only the stk/ and ipo_fin/ 404s.
+- OPEN (MIIL): `row_periods.json` (owner §210d; not touched) has no MIIL entry. Two effects:
+  - The page reads the FY20-FY22 half-years as quarters.
+  - Sep-22's PAT YoY (-120%) compares a quarter with the Sep-21 six-month figure, and no filing prints a Sep-21 quarter, so that
+    cell should be blank.
 
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
