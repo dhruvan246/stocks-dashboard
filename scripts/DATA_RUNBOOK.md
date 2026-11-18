@@ -19167,6 +19167,13 @@ MENONBE SEJALLTD SYNCOMF): read each anchor year's standalone sheet (wave16/man_
 as basis s. Held: GULPOLY FY20-22 (FY23 comparative FY22 assets 773.94 vs own 804.09, PP&E exact, no restatement stated)
 and KOTIC FY25 (199.995 vs 189.993 — differs by ~1,000 lakh, a likely digit slip on one side; unread). No anchor (s gap):
 BFUTILITIE BHAGERIA FISCHER JTLIND MARSONS MONTECARLO NIBE VINCOFE.
+**§148g other bands (user: "go ahead", 2026-11-17).** 636 cos / 1,900 years in Rs100-1k + 3k+ bands; 73 no BSE code, 50 no
+validate year. Disk filled (2026-11-19): PDFs are now slimmed after download (wave16/slim.py: pp1-2 + each BS page -1..+2; scans
+kept whole) and read in disk-sized batches (build_ready.py), PDFs trashed once a batch is LIVE. Batch ra (40 cos): 35 validate,
+91 fill-years landed incl. 10 adjudicated restatements (wave16/ra_accept.json: 5 ROU/inv-property splits that sum to the
+first-filed PP&E, 4 restated-as-stated, KANCHI FY24 no c-basis tie). Held: MEGASTAR FY21 (offset rows, gap unexplained), all
+standalone-only years; validate FAIL CLEDUCATE OSWALAGRO UNIVCABLES (s-only filing vs c key), RPPINFRA (FY23 TA 780.06 vs key
+734.90), GAYAPROJ (no FY23 PDF). BIRLACORPN FY20 add-only (kept its cash flows).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
