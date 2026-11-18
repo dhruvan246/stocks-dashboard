@@ -27514,6 +27514,41 @@ Before Mar-22 QUINT filed standalone only, so con = std (no-sub identity, §54b 
 - Open (QUINT): sf_revop has no row before Dec-25 — a revenue/op history needs the Jun-23..Sep-25 filings read; the Jun-23..Jun-26
   filings' comparative columns (scheme of arrangement restated Jun-24 / Dec-24) are not yet in restated_bases.
 
+**Batch 3 — SEIL Dec-18..Mar-25 (2026-11-18 10:30 IST, same instruction).** Shanti Educational Initiatives Ltd (BSE 539921). Every
+quarter Dec-18..Mar-25 read off its OWN results PDF (page images; Rs LAKH, /100 = crore, half-up 2 dp; replay kit
+`~/stocks-cache/xcheck-fixall/d2/seil/` reads.py -> plan_seil.py -> apply_seil.py), second document = a later filing's comparative
+column. SEIL filed standalone only until Jun-23 (first consolidated statement), so before Jun-23 con = std (no-sub identity, §54b).
+All OUR_ERROR unless named:
+- PAT levels (`fund_cell_fix` +26; s/c each unless named). Stored value = ANOTHER quarter's profit: Jun-19 -0.36 -> 2.40 (= Mar-19),
+  Mar-20 -1.14 -> -0.39 (= Dec-19), Jun-20 -0.39 -> -0.55 (= Mar-20), Mar-21 -0.55 -> 3.23 (= Jun-20), Sep-21 -1.19 -> 0.18 (= Dec-20),
+  Dec-21 0.18 -> -0.63 (= Sep-21), Mar-22 3.23 -> 1.37 (= Mar-21), Sep-23 std 2.33 -> 1.40 (= Jun-23), Dec-23 1.4 -> 0.30 / 0.17
+  (= Sep-23), Mar-24 con -0.86 -> -1.09 (= Mar-24 STANDALONE). Another period: Dec-20 -1.1 -> -1.19 (= the Dec-20 filing's nine-month
+  column (109.74) lakh), Sep-22 con 4.57 -> 1.00 (= the Sep-23 filing's H1-24 consolidated 456.93 lakh, a year later). Unit: Sep-23
+  con 143.84 -> 1.44 (lakh never converted). Printed nowhere: Jun-22 1.38 -> 1.33, Mar-23 1.38 -> 1.42. Mar-23 con = FY23 group
+  336.62 - 9M 195.01 = 141.61 lakh (the Mar-23 consolidated statement prints the year only; subsidiary w.e.f. 31.03.2023).
+- MISSING quarters added (`named_pat_cell_fills` +2, `ann_date_fills` +2): Mar-19 -0.36/-0.36 (20190530), Mar-25 -0.48/-0.47 (20250521).
+- Announcement days (`ann_date_fills`, BSE listing read around each stored day): override earlier Dec-18 20190215 -> 20190214,
+  Sep-19 20191115 -> 20191114, Dec-19 20200217 -> 20200214, Sep-24 20241118 -> 20241114 (named_pat SEIL|20240930 ann edited too),
+  Mar-26 annCon 20260717 -> 20260521 (no SEIL filing 14-20 Jul 2026); exact LATER Jun-20 20200730 -> 20200915 (30 Jul 2020 was the
+  FY20 board meeting; the Jun-20 results were first filed 15 Sep 2020 — the stored day was a look-ahead). `--reapply --only SEIL`: 0.
+- Revop: Dec-23 revS 3.78 -> 2.07 (3.78 = the Mar-23 revenue), revC 4.52 -> 3.19 (= Sep-23 cons), patS/patC 1.4 -> 0.30/0.17
+  (`revop_cell_fix` +4); empty slots filled Jun-23 / Dec-23 / Mar-24 (op, ebit, revC, patC); rows added Dec-18..Mar-23 (std rev +
+  PAT only, op/ebit empty), Sep-23, Sep-24, Dec-24, Mar-25 (`named_rev_cell_fills` +25 quarters, both revop twins identical).
+- `restated_bases.json` +4 (pat, QoQ, s and c): Jun-19|Mar-19 base 0.13 as_filed -0.36 (Jun-19 note 6: prior-period interest 49.38
+  lakh restated into Mar-19, printed column 12.89 lakh); Mar-20|Dec-19 base -1.14 as_filed -1.06 (FY20 6.64 - Q4 (38.84) = 45.48 =
+  239.70 - 79.97 - 114.25 lakh).
+- Not changed: Sep-24|Sep-23 con comparative (THEIR ERROR: the Sep-24 consolidated table prints the STANDALONE Sep-23 figures
+  291.38 / 140.46, associates 0.00, EPS 0.00, no restatement note); Mar-24 std p9 column headed 31.03.2023 (THEIR ERROR: it prints
+  the FY23 figures 1098.62 / 336.70); Sep-24|Jun-24 std 276.64 vs 276.46 (below the
+  0.011 threshold); Jun-24 con 308.50 lakh -> 3.08 (exact half, left as is).
+- Checks: blast radius = SEIL only in all four twins and the ledgers (scripts twin lacks SEIL Mar-26..Sep-26, the usual lag; the
+  Mar-26 annCon fix goes through docs + `ann_date_fills`); verify_fills_live 44,293 checked, MISSING 0, RESURRECTED 0; conflict
+  guard 0/0; sync_pat_mirror dry-run 0; fund_dup_guard 0; fund_rbase 39 cos / 127 published / 2 held (DHANSA). stock.html?s=SEIL
+  local: 32 quarter rows Dec-18..Sep-26 with the fixed values and days; 375 px dark + light, no JS error (404s = stk/ and ipo_fin/
+  probes, absent for every stock live too).
+- Open (SEIL): Sep-25 revop row has PAT only (revenue/op slots empty); the Jun-25 o1 BSE headline names "Nandan Denim Limited"
+  (filer typo; the o0 PDF names SEIL).
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
