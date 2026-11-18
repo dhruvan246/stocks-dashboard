@@ -27730,6 +27730,40 @@ All OUR ERROR:
   - 375 px dark + light, the table scrolls inside its holder (page scrollWidth 375); only the stk/ and ipo_fin/ 404s.
   - stock.html?s=MIIL local: 25 rows, no Dec-19/Dec-20/Jun-21.
 
+**Batch 3 — UPHOT Dec-17..Sep-26 (2026-11-18 15:45 IST, same instruction).** U.P. Hotels Ltd (BSE 509960; CIN
+L55101DL1961PLC017307; name + CIN on every statement page; Rs LAKH, /100 = crore, half-up 2 dp). Quarterly filer; ONE
+(standalone) statement every quarter, no consolidated statement in any filing, so con = std throughout (§54b).
+- **Reads.** All 36 quarters read off their OWN results PDF (page images; replay kit `~/stocks-cache/xcheck-fixall/d2/uphot/`
+  reads.py -> plan_uphot.py -> apply_uphot.py; raw BSE listing `listing.txt`, 402 rows).
+- **Fetch trap.** The first fetch missed 4 results filings: multi-line BSE subjects broke the " | " parse (Jun-23, Mar-26, Jun-26),
+  and the Dec-24 subject contains "Notice Of Board Meeting", which the skip regex excluded. Fetched by attachment name instead.
+- **Second documents.** A later filing's comparative column for every quarter, or the filing's own half-year / nine-month / year
+  column. Restated comparatives: none differs from the as-filed (or revised) figure, so `restated_bases` +0.
+- **Mar-18 = the company's REVISED filing (principled line above).** The original FY18 filing (2018-05-29 21:37) printed quarter profit
+  541.01 lakh with quarter tax 0 against year tax 231.01; its quarter + nine months (541.01 + 8.64) does not close to its own year
+  (304.65). The "Revised Financial Results for March 31, 2018" (2018-08-02 14:44) note 1 corrects it (excess profit 285.30 lakh):
+  255.71 lakh = 2.56 cr. Date = the revision's day 20180802, pinned `exact`.
+- **BSE title trap.** The 2018-05-29 21:20 filing is TITLED "Unaudited Financial Results For The Quarter Ended 30.06.2018", but its
+  statement page reads "QUARTER ENDED 30TH JUNE, 2017" (a backlog filing). The Jun-18 date is pinned `exact` to its real filing,
+  2018-08-02 14:02.
+
+All OUR ERROR:
+- PAT levels, lakh stored as crore (`fund_cell_fix` +8, std and con each): Jun-21 -259.56 -> -2.60, Jun-22 357.09 -> 3.57,
+  Jun-23 451.43 -> 4.51, Mar-25 1,222.62 -> 12.23. (Jun-25 325.7 -> 3.26 was already in the ledger, 2026-11-17.)
+- Missing rows added (`named_pat_cell_fills` + `ann_date_fills`): Mar-18 2.56 @20180802 (exact), Jun-18 -1.15 @20180802 (exact),
+  Mar-19 5.82 @20190525, Jun-19 -1.59 @20190802.
+- Announcement day (`ann_date_fills`, exact, later): Jun-24 20240718 -> 20240726. The stored day is the "Notice Of Board Meeting"
+  intimation; the results were filed 2024-07-26 12:43.
+- Empty con cells filled (docs only; the scripts twin has no such rows): Jun-26 2.70 @20260813, Sep-26 2.56 @20261105.
+- Revop (`named_rev_cell_fills` +36): the 6 stored rows (Dec-24, Sep-25..Sep-26) had every S slot right and every C slot empty;
+  C = S filled. 30 rows added for the other quarters.
+- Checks:
+  - Blast radius = UPHOT.
+  - verify_fills_live: 44,883 checked, MISSING 0, REVERTED 0, RESURRECTED 0.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK.
+  - stock.html?s=UPHOT local: 36 rows Dec-17..Sep-26, Standalone and Consolidated, fixed values and days.
+  - 375 px dark + light, the table scrolls inside its holder (page scrollWidth 375); only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
