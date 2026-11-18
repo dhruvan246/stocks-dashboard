@@ -7,7 +7,8 @@
   "2026-11-10 (§237b, user \"fix the GICRE quarter cells from standalone statements\"): 46 GICRE pre-2024 standalone quarter cells held the CONSOLIDATED figure (oi, pbt incl. share of associates, BS total, reserves, H1 cash flow); fixed to the standalone statement, two visual readers each.",
   "2026-11-17 (§214a F4, user \"fix everything\"): 283 PIT-N500 bank quarters 2005-2007 where the NSE archive page prints PBT 0.00 (= not reported) and the reader stored 0. 277 set to the page's own Operating Profit - Provisions (- Exceptional), which equals Net Profit + Tax on the same page; 6 ORIENTBANK pages whose own rows do not close are blanked (null).",
   "2026-11-17 (item 7 pilot, annual BS/CF vs Screener+Quantmac, cell by cell): 13 standalone annual CF cells where the stored figure (filer XBRL) disagrees with the signed results statement read this session - ASTRAZEN FY24 cfo; OBEROIRLTY FY22 cfo/cfi + capex FY22-25; IRCTC FY21 cfo/cfi/cff, FY23 cfo/cfi/capex. Statement wins (§240). Verdict log ~/stocks-cache/abscf/item7/verdicts.md.",
-  "2026-11-17 (§245, user \"switch tax_c to shareholders' tax\"): 161 life-insurer tax_c cells (HDFCLIFE/ICICIPRULI/SBILIFE/LICI 2019-09..2026-09) held the POLICYHOLDERS' account current tax (XBRL CurrentTax / form's first 'Current Tax') beside the shareholders' pbt; fixed to the SHAREHOLDERS' account current tax (XBRL CurrentTaxes / the form's 'Current tax' after PBT), each proven by pbt - tax = PAT = stored PAT. Plus LICI Mar-23 std pbt (the consolidated figure). New filings: build_xbrl_extra LI_TAX."
+  "2026-11-17 (§245, user \"switch tax_c to shareholders' tax\"): 161 life-insurer tax_c cells (HDFCLIFE/ICICIPRULI/SBILIFE/LICI 2019-09..2026-09) held the POLICYHOLDERS' account current tax (XBRL CurrentTax / form's first 'Current Tax') beside the shareholders' pbt; fixed to the SHAREHOLDERS' account current tax (XBRL CurrentTaxes / the form's 'Current tax' after PBT), each proven by pbt - tax = PAT = stored PAT. Plus LICI Mar-23 std pbt (the consolidated figure). New filings: build_xbrl_extra LI_TAX.",
+  "2026-11-19 (§245 follow-up, user \"check the LICI Mar-23 standalone balance sheet fields\"): LICI Mar-23 std cell held the consolidated annual BS/CF; 6 fields fixed to the standalone statements (assets, oeq, cfo, capex, cfi, cf_tax). sc 6,325.00, cff/divp 948.59, cf_d 364 are the same in both statements."
  ],
  "fixes": [
   {
@@ -7359,6 +7360,66 @@
    "fixed": -5.95,
    "why": "BSE insurer results forms, LICI (543526), Rs mn. Standalone: Result_LicFinancialResult_ng qtr=322 current col (31/03/2023) and qtr=326 previous col (31/03/2023) both print shareholders' 'Profit/(loss) before tax' 134,218.59, 'Current tax' -59.52, Deferred 0.00, PAT 134,278.12 (= stored standalone PAT 13,427.81 cr). Consolidated: Result_LicFinancialResultcons_ng qtr=322 cur / qtr=326 prev print PBT 131,909.49 and policyholders' 'Current Tax' 9,906.79 = the stored standalone pbt 13,190.95 / tax_c 990.68, i.e. the consolidated figures sat under the standalone key.",
    "found": "user 2026-11-17 'switch tax_c to shareholders' tax' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "assets",
+   "was": 4518866.86,
+   "fixed": 4491131.44,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "oeq",
+   "was": 40219.94,
+   "fixed": 39492.05,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "cfo",
+   "was": 54518.51,
+   "fixed": 59718.01,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "capex",
+   "was": 886.47,
+   "fixed": 885.53,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "cfi",
+   "was": -54471.53,
+   "fixed": -58196.1,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
+  },
+  {
+   "sym": "LICI",
+   "qe": "20230331",
+   "basis": "s",
+   "field": "cf_tax",
+   "was": -5825.31,
+   "fixed": -5954.97,
+   "why": "Stored std cell held the CONSOLIDATED annual BS/CF (= cons BS total 45,18,86,685.96 lakh, cons R&P cfo 54,51,850.70). READ 1: LICI FY23 results PDF (BSE c682f0c5, Outcome 24-May-2023, Rs lakh) p10 AUDITED STANDALONE BALANCE SHEET at 31-Mar-2023: share capital 6,32,499.77, reserves & surplus 39,49,204.86, TOTAL 44,91,13,144.11 (sub-totals add up); p11 STANDALONE RECEIPTS AND PAYMENTS FY23: net cash from operating 59,71,800.86 incl. 'Income taxes paid (Net)' +5,95,496.72 (an inflow: the column sums only with it positive), purchase of fixed assets (88,553.07), investing (58,19,609.82), financing (94,859.10); 87,011.37 net increase = opening 37,57,499.24 -> closing 38,44,510.61. READ 2: FY24 results PDF (BSE 166bd60d, 27-May-2024, Rs crore) p7 std BS 31-Mar-2023 column: reserves 39,492.05, TOTAL 4,491,131.44; p8 std R&P FY23 column: operating 59,718.02 (rounded), income taxes 5,954.97, purchase of fixed assets (885.53), investing (58,196.10). cf_tax sign: paid +, refund - (store convention, §168j).",
+   "found": "user 2026-11-19 'check the LICI Mar-23 standalone balance sheet fields' (runbook §245)"
   }
  ]
 }

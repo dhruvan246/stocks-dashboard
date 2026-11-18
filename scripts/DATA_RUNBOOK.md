@@ -30728,3 +30728,9 @@ entity's restated figures (identical where both print). PCHFL's own Mar-25 con (
   saw a 355-day period and sent the file to parse_bs_only. parse_file now ignores a start fact that is exactly the block start
   with day/month swapped. Old vs new parser over 9,505 cached XBRL files: only these 3 changed; each now parses as the quarter
   and every field equals the stored cell (no store change).
+- **LICI Mar-23 std BS/CF (2026-11-19, user: "check the LICI Mar-23 standalone balance sheet fields").** Read: the whole std cell held the
+  CONSOLIDATED annual statements. OUR ERROR, 6 fields fixed via xtra_cell_fix (std statements, FY23 results PDF p10-11 in lakh + FY24
+  results PDF p7-8 comparative column in crore agree): assets 4,518,866.86→4,491,131.44, oeq 40,219.94→39,492.05 (the stored figure
+  was cons reserves 40,102.84 + minority 117.10), cfo 54,518.51→59,718.01, capex 886.47→885.53, cfi −54,471.53→−58,196.10,
+  cf_tax −5,825.31→−5,954.97 (a refund: paid +, refund −). Same in both statements, kept: sc 6,325.00, cff −948.59, divp 948.59.
+  The consolidated cell was filled from the same two PDFs (p22-23 / p19-20), oeq = owners' reserves 40,102.84 (no minority, §237).
