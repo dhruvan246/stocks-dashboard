@@ -27915,6 +27915,74 @@ column, the FY column, or the NSE copy) (kit `d2/candc/`, reads in `reads_notes.
     from the stored rows.
   - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — MLKFOOD full history Dec-17..Sep-26 (2026-11-18 23:50 IST, same instruction).** Milkfood Ltd (BSE 507621 / NSE
+MLKFOOD; CIN L15201PB1973PLC003746, name + CIN checked on each statement page). Statements are in **Rs lakh** (crore = value
+/ 100, half-up 2 dp). All 36 quarters were read from each quarter's own BSE filing: the text layer was checked against the
+page image, and scanned pages were read as images. A second document was read for 35 of them: a later filing's comparative
+column, or the YTD / FY column tie. Sep-26 is the latest quarter, so its second document is UNKNOWN until the Dec-26 filing.
+(Kit `d2/mlkfood/`, reads in `reads_notes.md`, plan `plan_mlkfood.py`.) Before the audit (origin 4e774c0ea0) the store
+held 36 fund rows but revop rows for only Mar-25, Jun-25, Jun-26 and Sep-26.
+- **60 fund PAT cells were OUR ERROR (`fund_cell_fix`).** The verdict for each cell names what the stored figure was:
+  - 10 were that quarter's **total comprehensive income** (TCI) read as net profit: Mar-18 con 2.40, Dec-18 con 3.10,
+    Mar-19 con 3.56, Mar-21 std 0.48, Dec-21 con 0.86, Mar-22 std 1.94, Mar-23 con 3.30, Mar-24 std + con 3.79, Dec-24
+    con 0.67. Dec-21's 0.86 vs 0.87 is a wrong-line read, so it is fixed and not treated as noise.
+  - 8 were **another quarter's TCI** (rows shifted): Dec-17 2.61 (= Sep-18 TCI 261), Jun-18 3.01 (= Jun-19 TCI), Sep-18
+    3.10 (= Dec-18 TCI) and Dec-25 50.95 (= Mar-26 TCI 5,095), each on both bases.
+  - 3 were **another quarter's PAT**: Jun-24 con 2.41 (= Mar-25 con), Sep-24 con −7.86 (= Sep-25 std) and Mar-25 con
+    0.59 (= Jun-24).
+  - 39 **match no line** of their own statement. 36 of them are between −0.06 and 0.06; the others are Dec-19 con 0.66,
+    Dec-23 std 0.72 and Sep-19 con 1.39.
+- **Dec-25 std PAT 1.42 (policy A exception).** The first filing (BSE 2026-02-13 14:09) prints PAT 141 lakh, but its own PBT 107
+  minus tax (35) gives 142, and its own 9M (713) = −69 − 786 + 142. The Mar-26 filing reprints Dec-25 PAT as 142. The
+  original contradicts its own YTD, so the revision is adopted.
+- **Empty std cells filled (`named_pat_cell_fills`):**
+  - Mar-18 2.44 (annStd 0 → 20180525).
+  - Sep-23 3.45.
+  - Sep-25 −7.86 (annStd 20251115 → 20251114).
+- **Consolidated from Dec-25 = standalone (§54b).** The only subsidiary, MFL Trading Pvt Ltd (wholly owned, never operated),
+  filed STK-2 on 2025-10-15, and the ROC approved its strike-off on 2026-01-20 (both are BSE Reg 30 filings). From Dec-25
+  the company files one standalone statement.
+  - Mar-26 con 0.06 → **51.41**.
+  - Empty Jun-26 and Sep-26 con cells filled: 0.22 and 1.32, with annCon.
+  - **Dec-25 con 50.95 → 1.42 is FLAGGED as an inference.** The subsidiary was still on the register at 31-Dec-2025 (under
+    strike-off, nil operations; con = std exactly in Jun-25 and Sep-25), but no consolidated figure was filed for Dec-25.
+    The stored 50.95 is OUR ERROR either way.
+- **Announcement dates.** Each date is the calendar day of the BSE results filing (midnight rule §149). NSE's announcement
+  API returned 0 items for MLKFOOD in every half-year 2017–2026; a CANDC control query returned 31, so the API itself
+  works. The dates therefore rest on the BSE listing alone.
+  - Moved LATER (`ann_cell_fix`), both bases. The stored days were Reg 23(9) related-party filings, not results:
+    - Jun-20: 20200702 → **20200813**.
+    - Jun-21: 20210728 → **20210814**.
+  - Moved EARLIER (`ann_date_fills` overrides):
+    - Jun-24: 20240815 → **20240814**. The 15th was the newspaper publication.
+    - Sep-24: 20241118 → **20241114**. Results were filed 11-14 17:44; BSE has nothing on 11-18.
+    - Sep-25 annCon: 20251115 → **20251114**. The 15th was the newspaper publication.
+- **Revop (`named_rev_cell_fills`).** 32 rows were missing and are now added, one row per quarter from the own statement.
+  The empty C slots were filled for Mar-25 (158.03 / 8.30 / 2.41 / 6.35; the con statement differs from std by 1 lakh of
+  other expenses), Jun-26 and Sep-26. Formula: op = PBT before exceptional + finance + depreciation − other income.
+- **Restated base (`restated_bases`, policy A, 1 entry):** Jun-20|Jun-19 con revenue base 132.57. Jun-19 was the first
+  quarterly consolidated statement and printed rev 13,225 / OI 35; later filings print 13,257 / 3. The level stays as first
+  filed (132.25). Jun-20 rev YoY now reads −39.43% R, matching the filing's own note (−39.42%).
+- **RULE QUESTION for the user (stored as printed, the same handling as TNTELE Mar-25):** Q4 revenue and other income in
+  Mar-21 and Mar-22. FY minus 9M gives Mar-21 10,053 / 0 (op 4.78) against the printed 10,048 / 5 (op 4.73), and Mar-22
+  9,301 / (3) (op 4.08) against the printed 9,297 / 1 (op 4.04). Total income ties in both; PAT is unaffected.
+- **Right as stored:**
+  - Jun-25, all slots.
+  - Std PAT and revop S slots for Mar-25, Jun-26 and Sep-26.
+  - Jun-24 std 0.59 and Jun-23 con −1.38.
+  - Mar-20 printed (6) is kept: FY − 9M gives (5), a 0.01 difference that is rounding noise.
+- **Not added:** a Sep-17 row. The filing exists (BSE 2017-12-14), but our store starts at Dec-17.
+- **Twin lag (measured):** `scripts/fundamentals.json` has no 20260630 or 20260930 MLKFOOD rows, and holds std None for
+  20250630 (docs −0.69, the own filing's figure; not touched). Those rows changed in docs only. The revop twins are equal.
+- **Checks:**
+  - Blast radius = MLKFOOD.
+  - verify_fills_live: 45,546 checked, MISSING 0, REVERTED 0, RESURRECTED 0. Its 11 DRIFT lines are all
+    `mc_history_fills` cells of other symbols.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK; FUND_ALIAS in step.
+  - stock.html?s=MLKFOOD local: consolidated and standalone tables have 36 rows each, and every NP, announcement, revenue
+    and op value matches the plan.
+  - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads

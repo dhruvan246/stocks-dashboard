@@ -1388,6 +1388,42 @@
    "fixed": 20160428,
    "why": "standalone statement printed in the first result filing BSE 2016-04-28T15:36:39 (Announces Q4 & FY16 Results (Standalone & Consolidated), Auditors Repo): standalone statement row 13 net profit 3,882.37 cr (ours 3,882.38). Same filing that dates the other basis; stored date was later (old next-day gate / later results-page date); midnight rule = calendar day of first broadcast.",
    "found": "StockView round 2 sibling check 2026-11-11"
+  },
+  {
+   "sym": "MLKFOOD",
+   "qe": "20200630",
+   "basis": "std",
+   "was": 20200702,
+   "fixed": 20200813,
+   "why": "OUR ERROR: 2020-06 results: BSE 2020-08-13 17:33:31 (att b63e57ea-8699-45b0-95d9-aebb23a74bdd.pdf; d2/pdf/mlkfood/MLKFOOD_20200813_1733.pdf), the board meeting's own day; the stored 20200702 is BSE 2020-07-02 15:10 / 16:38 'Compliance Under Regulation 23(9)' (related-party disclosure filed under the Result category), not results; NSE corporate-announcements API returns 0 MLKFOOD items for 2017-2026 (CANDC control query in the same session: 31). Midnight rule \u00a7149: the filing's calendar day",
+   "found": "D2 audit (\u00a7214b batch 3) 2026-11-18"
+  },
+  {
+   "sym": "MLKFOOD",
+   "qe": "20200630",
+   "basis": "con",
+   "was": 20200702,
+   "fixed": 20200813,
+   "why": "OUR ERROR: 2020-06 results: BSE 2020-08-13 17:33:31 (att b63e57ea-8699-45b0-95d9-aebb23a74bdd.pdf; d2/pdf/mlkfood/MLKFOOD_20200813_1733.pdf), the board meeting's own day; the stored 20200702 is BSE 2020-07-02 15:10 / 16:38 'Compliance Under Regulation 23(9)' (related-party disclosure filed under the Result category), not results; NSE corporate-announcements API returns 0 MLKFOOD items for 2017-2026 (CANDC control query in the same session: 31). Midnight rule \u00a7149: the filing's calendar day",
+   "found": "D2 audit (\u00a7214b batch 3) 2026-11-18"
+  },
+  {
+   "sym": "MLKFOOD",
+   "qe": "20210630",
+   "basis": "std",
+   "was": 20210728,
+   "fixed": 20210814,
+   "why": "OUR ERROR: 2021-06 results: BSE 2021-08-14 13:41:37 (att 13e676e7-1f17-4825-809e-f71cca50d6fa.pdf; d2/pdf/mlkfood/MLKFOOD_20210814_1341.pdf), the board meeting's own day; the stored 20210728 is BSE 2021-07-28 12:38 'Compliance Under Regulation 23(9)' (related-party disclosure filed under the Result category), not results; NSE corporate-announcements API returns 0 MLKFOOD items for 2017-2026 (CANDC control query in the same session: 31). Midnight rule \u00a7149: the filing's calendar day",
+   "found": "D2 audit (\u00a7214b batch 3) 2026-11-18"
+  },
+  {
+   "sym": "MLKFOOD",
+   "qe": "20210630",
+   "basis": "con",
+   "was": 20210728,
+   "fixed": 20210814,
+   "why": "OUR ERROR: 2021-06 results: BSE 2021-08-14 13:41:37 (att 13e676e7-1f17-4825-809e-f71cca50d6fa.pdf; d2/pdf/mlkfood/MLKFOOD_20210814_1341.pdf), the board meeting's own day; the stored 20210728 is BSE 2021-07-28 12:38 'Compliance Under Regulation 23(9)' (related-party disclosure filed under the Result category), not results; NSE corporate-announcements API returns 0 MLKFOOD items for 2017-2026 (CANDC control query in the same session: 31). Midnight rule \u00a7149: the filing's calendar day",
+   "found": "D2 audit (\u00a7214b batch 3) 2026-11-18"
   }
  ],
  "retired": [
