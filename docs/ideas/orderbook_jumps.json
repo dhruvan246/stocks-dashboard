@@ -1,5 +1,5 @@
 {
- "built": "2026-11-12 20:45 IST",
+ "built": "2026-11-18 21:05 IST",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1516,6 +1516,35 @@
    "verdict": "CORRECTED",
    "note": "The screen compared a subsidiary's book with the parent's. Its Rs 3,000 cr latest figure is Ratnamani Finow Spooling Solutions (RFSS): 'RFSS has secured a new export order worth approximately INR2,700 crores, taking its order book to over INR3,000 crores' - RFSS alone, and management confirms it later in the same call ('Currently, we already have order book of INR3,000-odd crores' about the Finow JV). The year-ago Rs 2,000 cr is the STANDALONE book, which management stated explicitly excludes RTL and RFSS. Like with like, the standalone book went from Rs 2,000-2,050 cr as on 30-Sep-2025 to over Rs 2,600 cr as on 30-Sep-2026 (the call also splits it: stainless steel close to Rs 1,000 cr, carbon steel close to Rs 1,700 cr), i.e. +30% at the Rs 2,000 cr end and +26.8% at Rs 2,050 cr - below the 50% bar either way. The real jump is inside RFSS: ~Rs 500 cr as on 30-Sep-2025 (same Q2 FY26 call, 'the current order book of Finow, I believe it stands at INR 500 crore', confirmed by management) to over Rs 3,000 cr, on a ~Rs 2,700 cr nuclear/export award; RFSS quarterly revenue was Rs 157 cr and its rating was upgraded to CRISIL AA. No single company-wide consolidated order-book total is stated in either call, so standalone-to-standalone is the only comparable pair. Market cap is far above the Rs 200-7,500 cr band, so no card either way.",
    "checked_on": "2026-11-12",
+   "faded": false
+  },
+  {
+   "key": "544669",
+   "name": "Admach Systems Ltd",
+   "nse": "",
+   "bse": "544669",
+   "isin": "INE0XLO01010",
+   "latest_value_cr": 78.39,
+   "latest_as_on": "2026-11-14",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1bbe02aa-6d67-4139-88f3-f767d57c932a.pdf",
+   "latest_doc_title": "Press release, 14-Nov-2026, covering letter subject 'Submission of Press Release pertaining to Total Order Book of the Company': 'Current Order Book: ₹78.39 Crore (including GST)', repeated in the MD's quote",
+   "year_ago_value_cr": 51.44,
+   "year_ago_as_on": "2025-03-31",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/21ad0cc5-17fe-430a-883e-fe55f5d84108.pdf",
+   "year_ago_doc_title": "Press release, 31-Dec-2025 (NFC nuclear order) — the figure is in the 'About Admach Systems Limited' boilerplate: 'In FY25, the Company reported revenue of ₹5,335.82 lakhs ... and a growing order book of approx. ₹5,144 lakhs'. No GST basis stated.",
+   "true_yoy_pct": null,
+   "qualifies": false,
+   "trigger_filed": null,
+   "trigger_doc": null,
+   "trigger_doc_title": null,
+   "trigger_as_on": null,
+   "trigger_book_cr": null,
+   "trigger_prev_cr": null,
+   "trigger_prev_as_on": null,
+   "trigger_yoy_pct": null,
+   "verdict": "NOT A JUMP",
+   "note": "Both documents were opened in this run and the LATEST figure is fully confirmed: ₹78.39 cr, stated twice in the 14-Nov-2026 press release, and the covering letter's own subject line is 'Press Release pertaining to Total Order Book of the Company', so it is the company-wide total and not a segment. It is explicitly INCLUDING GST. The comparison fails on the year-ago leg, for three reasons. (1) **The as-on date is misdated by the screen.** orderbook.py assigned 2025-09-30 on its 'quarter before filing' rule (the press release is dated 31-Dec-2025), but the sentence the figure comes from reads 'In FY25, the Company reported revenue of ₹5,335.82 lakhs ... and a growing order book of approx. ₹5,144 lakhs' — it is attached to the FY25 narrative, i.e. the year ended 31-Mar-2025. That makes the span 31-Mar-2025 → 14-Nov-2026 = 594 days, about 19.5 months, not a year, and outside the 240–480 day window the rule intends. (2) **On the correct dates the change is not a jump.** +52.4% over 19.5 months is roughly +30% annualised, below the 50% bar. (3) **The two figures are not stated on the same basis** — ₹78.39 cr is 'including GST', the ₹5,144 lakh figure states no GST basis, is qualified 'approx.', and sits in About-the-company boilerplate rather than in an order-book disclosure. For context the FY25 book of ~₹51.44 cr was about 0.96x that year's revenue of ₹53.36 cr. Recorded qualifies=false so it is not re-checked; it will be re-checked if the company files a newer stated order book against a dated comparable.",
+   "checked_on": "2026-11-18",
    "faded": false
   }
  ],
