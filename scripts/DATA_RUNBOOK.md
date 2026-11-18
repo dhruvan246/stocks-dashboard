@@ -19184,6 +19184,12 @@ SAKHTISUG FY22 TA exact + PP&E regrouped to held-for-sale; RADHIKAJWE FY21 Ind A
 MMFL FY20 (old 'Fixed Assets' line incl. CWIP), PGHH FY20 (June year-end), WAAREEINDO FY20/21 (only a later filing's
 comparative — own-filing rule), MAJESAUT FY21 (column printed Unaudited). Held AARNAV FY21/22 (merger restatement), all
 s-only years; validate FAIL INDOAMIN (s-only). GENUSPOWER FY22 add-only (TA 1,510.40 kept vs read 1,512.06; UNKNOWN).
+Batch rd (40 cos): 40 validate (TCC FY26 PP&E 193.95 + ROU 274.08 = key 468.03), 96 fill-years. Accepted (rd_accept.json):
+KESORAMIND FY21, MEDICO FY22 PP&E exact; RUBFILA FY20, VADILALIND FY20, BNALTD FY23, COMFINTE FY21 (next year s-only -> no
+c tie source). Rejected (rd_reject.json): ATLANTAA FY21 (Unaudited column), SUDARCOLOR FY22 + COMFINTE FY24 (PP&E line incl.
+intangibles), ZFSTEERING FY25 (only a later half-year comparative), AGIIL FY20 (liabilities side mixed with standalone).
+KESORAMIND FY20 borr null (reader used the 31-Jul re-filing; first filing's borrowings lines differ). Held INDOWIND FY22
+(FY23 restates PP&E 236.45 -> 160.56, no reason read), TVSELECT FY22, s-only years. SMARTLINK FY20 add-only.
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
