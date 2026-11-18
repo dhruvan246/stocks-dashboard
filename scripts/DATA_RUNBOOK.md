@@ -30695,6 +30695,13 @@ std ann dates 2024-05-30 / 2024-08-14 / 2024-11-14 / 2025-05-30 / 2025-11-14 aga
 Sep-24 171.34, PFL 17-Oct-2025 p16). The std series is now on the merged basis for every quarter from Jun-24; Mar-24 and
 earlier stay the legal entity's own (no merged figure exists before the 1-Apr-2024 appointed date).
 
+**§239c update 9 (19-Nov-2026, user: "read the four consolidated cells too").** PIRAMALFIN con, each by page image:
+Mar-24 −752.0 → −752.36 (PCHFL's own con, 8-May-2024 p19; precision on the stored basis — PEL's group con for the quarter
+is 137.09, p20, basis left to the user); Sep-24 163.0 → 162.97 (PEL 23-Oct-2024 p6 = merged comparative 17-Oct-2025 p8);
+Mar-25 102.0 → 102.44 (PEL 6-May-2025 p20 = merged comparative 27-Apr-2026 p22); Sep-25 327.0 → 326.83 (merged PFL's own
+first filing 17-Oct-2025 p8: profit 326.99, owners 326.83, NCI 0.16). From Jun-24 the con series = PEL's group = the merged
+entity's restated figures (identical where both print). PCHFL's own Mar-25 con (6-May-2025 p21) not read.
+
 ## §245 — Life insurers: tax_c = SHAREHOLDERS' account tax (2026-11-17, user: "yes switch tax_c to shareholders' tax")
 - **Rule.** A life insurer's results carry two tax blocks: the policyholders' (revenue) account and the shareholders' (P&L)
   account. Our pbt is the shareholders' PBT, so tax_c / tax_d are now the shareholders' figures too — pbt − tax_c − tax_d = PAT.
