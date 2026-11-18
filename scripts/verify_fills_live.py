@@ -54,6 +54,12 @@ LEDGERS = [
     # sat in the ledger with nothing re-checking them after a refresh. All 15 verified present at
     # registration time.
     ("named_rev_cell_fills.json",      "revop", "revC", 1),
+    # op / ebit on the same hand-read ledger (MMWL full history, §214b batch 3, 2026-11-18): op = PBT before exceptional
+    # + finance + depreciation - other income, read off the same page as the revenue. Registered at creation time.
+    ("named_rev_cell_fills.json",      "revop", "opS",  2),
+    ("named_rev_cell_fills.json",      "revop", "opC",  3),
+    ("named_rev_cell_fills.json",      "revop", "ebitS", 7),
+    ("named_rev_cell_fills.json",      "revop", "ebitC", 8),
     ("named_rev_cell_fills_2019.json", "revop", "revC", 1),
     ("named_rev_cell_fills_2019.json", "revop", "revS", 0),
     # hand-read PAT cells that no quarter-keyed index serves (§57/§58), keyed SYM|QE with the whole

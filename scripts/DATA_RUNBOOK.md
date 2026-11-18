@@ -27453,6 +27453,38 @@ second document (a later filing's comparative column), PDFs name-checked. 70 sf_
   Dec-25 con 39.1 unread; SEIL Sep-23 (Sep-24 YoY −98%), Mar-24, Dec-23; ACSTECH Dec-23 16 / Sep-23 0.1; announcement dates PERMAGN
   Dec-24 (stored 20250217, filing 20250214), SEIL Sep-24 (20241118 vs letter 2024-11-14).
 
+**Batch 3 — MMWL full history (2026-11-18 08:33 IST, same instruction).** Media Matrix Worldwide Ltd (BSE 512267; CIN
+L32100MH1985PLC036518, L32100HR1985PLC144515 from the Sep-26 filing after the office moved to Gurugram). Every quarter Mar-18..Sep-26
+read off its OWN results PDF (page images; statements in Rs lakh, /100 = crore, half-up 2 dp), second document = a later filing's
+comparative column (Sep-26: own filing only — text layer + owners + NCI = total identity). IGAAP through FY19, Ind AS from 1 Apr 2019
+(transition 1 Apr 2018); FY20 filings print no owners split (NCI first appears Mar-20). All OUR_ERROR:
+- std/con SWAPPED in every stored quarter; con held figures printed nowhere (Mar-19 0.01, Jun-21 0.36, Jun-18 0.26 = the Ind AS
+  RESTATED con from the Jun-19 filing); lakh stored as crore (Mar-20 con -12.67 -> 3.88 owners, from the Jun-20/Mar-21 filings since
+  the own filing prints only the total 689.06 lakh; Jun-20 29.33 -> 1.13). `fund_cell_fix` +51.
+- EMPTY std cells filled (`named_pat_cell_fills` +9: Jun-18 0.17, Jun-19 0.3, Mar-20 -0.13, Jun-20 0.29, Mar-21 -0.12, Jun-21 0.15,
+  Mar-22 0.01, Mar-23 -0.11, Jun-23 0.15; Jun-18 annStd 0 -> 20180813, Jun-21 annStd 20210720 -> 20210813 = the existing exact
+  ledger dates). MISSING quarters added (`named_pat_cell_fills` +5 std+con, `ann_date_fills` +5): Sep-18 0.18/97.88 (20181114),
+  Sep-19 -0.09/-0.75 (20191212), Mar-24 0.44/1.70 (20240524), Jun-26 0.86/2.73 (20260813), Sep-26 0.82/3.07 (20261028).
+- Announcement dates Sep-22 20221115 -> 20221114 and Dec-23 20240215 -> 20240214 (`ann_date_fills` +2 `override`): the stored day was
+  the newspaper-publication filing; the first Result-category filing NEWS_DT 2022-11-14T16:55:37 / 2024-02-14T16:56:13 (midnight rule
+  §149). `--reapply` afterwards: 0 cells.
+- sf_revop: `revop_cell_fix` +25 (Dec-23..Mar-26 revS held consolidated-scale values 183-636, op_std likewise, pat mirror swaps; Jun-25
+  / Mar-26 revC); empty slots and missing rows through `named_rev_cell_fills` +35 quarters (revS/revC every quarter Mar-18..Sep-26;
+  opS/opC/ebitS/ebitC only from Dec-23, op = PBT before exceptional + finance + depreciation - other income with the exceptional row
+  checked blank; pre-Dec-23 op left empty). `verify_fills_live.py` now also checks named_rev opS 2 / opC 3 / ebitS 7 / ebitC 8.
+  TWIN DRIFT found: scripts/revop_fundamentals.json held revS 1124.83 / opS 5.04 in Sep-25 and Dec-25 (= Sep-24 consolidated minus
+  standalone revenue: wrong quarter AND basis) while docs/sf_revop.json held null — both twins now carry the same filed rows.
+- `restated_bases.json` +7 (pat, level as_filed, the Ind AS transition restated FY19 comparatives): Jun-19|Jun-18 s 0.20 / c 0.26,
+  Sep-19|Sep-18 s -0.12 / c 95.71, Dec-19|Dec-18 s 0.27 / c 0.60, Mar-20|Mar-19 s -0.08. NOT ledgered: Mar-20|Mar-19 c (the filing
+  prints only the group total, 6.89 vs our owners 3.88 — `cur` would never match); Dec-22|Dec-21 s (the Dec-22 filing's Dec-21
+  standalone column repeats the Sep-21 column — a company slip; the Mar-22 filing and the FY22 quarter sum give 18.26 lakh).
+- Checks: blast radius = MMWL only in all four twins; fund twins and revop twins equal for MMWL; pat mirror == fund for all 35
+  quarters; verify_fills_live checked 43,965 -> 44,164 (+199 = 123 fill cells + 76 fix entries), MISSING 0; conflict guard 0;
+  sync_pat_mirror dry-run 0; fund_rbase 37 cos / 102 published / 2 held (DHANSA, unchanged). stock.html?s=MMWL local: 35 rows,
+  R growth Jun-19 c -530.77%, Sep-19 c -100.78%, Dec-19 c +475%, s +50 / +25 / -14.81 / -62.5%, 375 px dark + light, no JS error.
+- BSE fetch note: pre-Nov-2018 attachments are not served by AttachHis/AttachLive; they are at
+  `https://www.bseindia.com/xml-data/corpfiling/CorpAttachment/YYYY/M/<att>` (month without a leading zero).
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
