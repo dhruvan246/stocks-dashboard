@@ -16764,16 +16764,6 @@
    "found": "non-Ind-AS op/EBIT audit 2026-09-27 (runbook \u00a7205)"
   },
   {
-   "sym": "TNTELE",
-   "qe": "20210331",
-   "basis": "op_std",
-   "was": -85.23,
-   "fixed": 43.52,
-   "why": "\u00a7205: the op slot held EBIT \u2014 build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense, and this non-Ind-AS filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing NONINDAS_74847_503441_11082021054140 (Yearly, uploaded 2021-08-11, Standalone): its current-period column reproduces the stored revenue 0.00 and EBIT -85.23 to the paisa; op = PBET -2015.81 + finance costs 1969.14 + depreciation 128.75 \u2212 other income 38.56 = 43.52 cr; the same column's expenses route (revenue \u2212 (expenses \u2212 finance costs \u2212 depreciation)) = 43.52. Identity: file carries no ISIN: its own NSE symbol. second check: no later filing of this financial year is on file yet to close its depreciation.",
-   "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT); fixed in build_revop.metrics_for in the same commit",
-   "found": "non-Ind-AS op/EBIT audit 2026-09-27 (runbook \u00a7205)"
-  },
-  {
    "sym": "THANGAMAYL",
    "qe": "20190930",
    "basis": "op_std",
@@ -35187,6 +35177,546 @@
    "fixed": 15.25,
    "why": "OUR ERROR: HB Estate Developers Ltd (BSE 532334; CIN L99999HR1994PLC034146; name + CIN checked on each statement page; statements in Rs lakh, /100 = crore, half-up 2 dp). Primary: 2025-12 results (BSE, ann 2026-02-13, d2/pdf/hbesd/HBESD_20260213_1435.pdf p3/p7): standalone revenue from operations 3,345.68, other income 36.12, finance costs 413.49, depreciation 200.91, profit before exceptional items and tax 946.40 lakh -> op 1,524.68 = 15.25 cr, ebit 13.24 cr; the consolidated page prints the same figures. op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: FY26 results (HBESD_20260529_1445.pdf p6/p14) 31.12.2025 column: revenue 3,345.68, profit 650.49. | our 15.61 = 1,560.80 lakh = profit before tax + finance + depreciation WITHOUT subtracting other income 36.12.",
    "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190331",
+   "basis": "op_std",
+   "was": -0.02,
+   "fixed": -2.03,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-03 results (BSE, ann 2019-05-30, d2/pdf/tntele/TNTELE_20190530_2250.pdf p2): revenue from operations nil, other income 3,358, finance cost 225,156, depreciation 7,356, profit before exceptional items and tax (431,714) hundred -> op (202,560) = -2.03 cr, ebit -2.1 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-19 filing (TNTELE_20190808_2037.pdf p1) March 31,2019 column: OI 3,358, finance 225,156, depreciation 7,356, PBT (431,714), profit (431,714). | our -0.02 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190331",
+   "basis": "pat_std",
+   "was": -0.04,
+   "fixed": -4.32,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-03 results (BSE, ann 2019-05-30, d2/pdf/tntele/TNTELE_20190530_2250.pdf p2): revenue from operations nil, other income 3,358, finance cost 225,156, depreciation 7,356, profit before exceptional items and tax (431,714) hundred -> op (202,560) = -2.03 cr, ebit -2.1 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-19 filing (TNTELE_20190808_2037.pdf p1) March 31,2019 column: OI 3,358, finance 225,156, depreciation 7,356, PBT (431,714), profit (431,714). | our -0.04 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190331",
+   "basis": "ebit_std",
+   "was": -0.02,
+   "fixed": -2.1,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-03 results (BSE, ann 2019-05-30, d2/pdf/tntele/TNTELE_20190530_2250.pdf p2): revenue from operations nil, other income 3,358, finance cost 225,156, depreciation 7,356, profit before exceptional items and tax (431,714) hundred -> op (202,560) = -2.03 cr, ebit -2.1 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-19 filing (TNTELE_20190808_2037.pdf p1) March 31,2019 column: OI 3,358, finance 225,156, depreciation 7,356, PBT (431,714), profit (431,714). | our -0.02 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190630",
+   "basis": "op_std",
+   "was": -0.01,
+   "fixed": -1.0,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-06 results (BSE, ann 2019-08-08, d2/pdf/tntele/TNTELE_20190808_2037.pdf p1): revenue from operations nil, other income 572, finance cost 227,899, depreciation 7,349, profit before exceptional items and tax (334,356) hundred -> op (99,680) = -1.0 cr, ebit -1.07 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-19 filing (TNTELE_20191114_1821.pdf p1) June 30,2019 column: OI 572, finance 227,899, depreciation 7,349, profit (334,356). | our -0.01 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190630",
+   "basis": "pat_std",
+   "was": -0.03,
+   "fixed": -3.34,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-06 results (BSE, ann 2019-08-08, d2/pdf/tntele/TNTELE_20190808_2037.pdf p1): revenue from operations nil, other income 572, finance cost 227,899, depreciation 7,349, profit before exceptional items and tax (334,356) hundred -> op (99,680) = -1.0 cr, ebit -1.07 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-19 filing (TNTELE_20191114_1821.pdf p1) June 30,2019 column: OI 572, finance 227,899, depreciation 7,349, profit (334,356). | our -0.03 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20190630",
+   "basis": "ebit_std",
+   "was": -0.01,
+   "fixed": -1.07,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2019-06 results (BSE, ann 2019-08-08, d2/pdf/tntele/TNTELE_20190808_2037.pdf p1): revenue from operations nil, other income 572, finance cost 227,899, depreciation 7,349, profit before exceptional items and tax (334,356) hundred -> op (99,680) = -1.0 cr, ebit -1.07 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-19 filing (TNTELE_20191114_1821.pdf p1) June 30,2019 column: OI 572, finance 227,899, depreciation 7,349, profit (334,356). | our -0.01 is the right figure in Rs hundreds divided by 1,00,00,000 (x0.01, a hundredth of it).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20200331",
+   "basis": "op_std",
+   "was": -2265.14,
+   "fixed": -2.27,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2020-03 results (BSE, ann 2020-08-01, d2/pdf/tntele/TNTELE_20200801_0045.pdf p2): revenue from operations nil, other income 643, finance cost 216,585, depreciation 7,318, profit before exceptional items and tax (449,774) hundred -> op (226,514) = -2.27 cr, ebit -2.34 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-20 filing (TNTELE_20200930_1928.pdf p5) Mar 31,2020 column: OI 643, finance 2,16,585, depreciation 7,318, profit (4,49,774); revised filing 2020-08-10 p3 same. | our -2,265.14 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20200331",
+   "basis": "pat_std",
+   "was": -4497.74,
+   "fixed": -4.5,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2020-03 results (BSE, ann 2020-08-01, d2/pdf/tntele/TNTELE_20200801_0045.pdf p2): revenue from operations nil, other income 643, finance cost 216,585, depreciation 7,318, profit before exceptional items and tax (449,774) hundred -> op (226,514) = -2.27 cr, ebit -2.34 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-20 filing (TNTELE_20200930_1928.pdf p5) Mar 31,2020 column: OI 643, finance 2,16,585, depreciation 7,318, profit (4,49,774); revised filing 2020-08-10 p3 same. | our -4,497.74 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20200331",
+   "basis": "ebit_std",
+   "was": -2338.32,
+   "fixed": -2.34,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2020-03 results (BSE, ann 2020-08-01, d2/pdf/tntele/TNTELE_20200801_0045.pdf p2): revenue from operations nil, other income 643, finance cost 216,585, depreciation 7,318, profit before exceptional items and tax (449,774) hundred -> op (226,514) = -2.27 cr, ebit -2.34 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-20 filing (TNTELE_20200930_1928.pdf p5) Mar 31,2020 column: OI 643, finance 2,16,585, depreciation 7,318, profit (4,49,774); revised filing 2020-08-10 p3 same. | our -2,338.32 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": 43.52,
+   "fixed": 0.04,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-03 results (BSE, ann 2021-07-01, d2/pdf/tntele/TNTELE_20210701_0726.pdf p2): revenue from operations nil, other income 3,856, finance cost 196,914, depreciation 12,875, profit before exceptional items and tax (201,581) hundred -> op 4,352 = 0.04 cr, ebit -0.09 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-21 filing (TNTELE_20210825_2307.pdf p2) March 31,2021 column: OI 3,856, finance 196,914, depreciation 12,875, profit (201,581). | our 43.52 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210331",
+   "basis": "pat_std",
+   "was": -2015.81,
+   "fixed": -2.02,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-03 results (BSE, ann 2021-07-01, d2/pdf/tntele/TNTELE_20210701_0726.pdf p2): revenue from operations nil, other income 3,856, finance cost 196,914, depreciation 12,875, profit before exceptional items and tax (201,581) hundred -> op 4,352 = 0.04 cr, ebit -0.09 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-21 filing (TNTELE_20210825_2307.pdf p2) March 31,2021 column: OI 3,856, finance 196,914, depreciation 12,875, profit (201,581). | our -2,015.81 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210331",
+   "basis": "ebit_std",
+   "was": -85.23,
+   "fixed": -0.09,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-03 results (BSE, ann 2021-07-01, d2/pdf/tntele/TNTELE_20210701_0726.pdf p2): revenue from operations nil, other income 3,856, finance cost 196,914, depreciation 12,875, profit before exceptional items and tax (201,581) hundred -> op 4,352 = 0.04 cr, ebit -0.09 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-21 filing (TNTELE_20210825_2307.pdf p2) March 31,2021 column: OI 3,856, finance 196,914, depreciation 12,875, profit (201,581). | our -85.23 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210630",
+   "basis": "op_std",
+   "was": -659.82,
+   "fixed": -0.66,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-06 results (BSE, ann 2021-08-25, d2/pdf/tntele/TNTELE_20210825_2307.pdf p2): revenue from operations nil, other income 483, finance cost 202,129, depreciation 6,803, profit before exceptional items and tax (274,431) hundred -> op (65,982) = -0.66 cr, ebit -0.73 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-21 filing (TNTELE_20211115_2212.pdf p3) June 30, 2021 column: OI 483, finance 2,02,129, depreciation 6,803, profit (2,74,431). | our -659.82 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210630",
+   "basis": "pat_std",
+   "was": -2744.31,
+   "fixed": -2.74,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-06 results (BSE, ann 2021-08-25, d2/pdf/tntele/TNTELE_20210825_2307.pdf p2): revenue from operations nil, other income 483, finance cost 202,129, depreciation 6,803, profit before exceptional items and tax (274,431) hundred -> op (65,982) = -0.66 cr, ebit -0.73 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-21 filing (TNTELE_20211115_2212.pdf p3) June 30, 2021 column: OI 483, finance 2,02,129, depreciation 6,803, profit (2,74,431). | our -2,744.31 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210630",
+   "basis": "ebit_std",
+   "was": -727.85,
+   "fixed": -0.73,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-06 results (BSE, ann 2021-08-25, d2/pdf/tntele/TNTELE_20210825_2307.pdf p2): revenue from operations nil, other income 483, finance cost 202,129, depreciation 6,803, profit before exceptional items and tax (274,431) hundred -> op (65,982) = -0.66 cr, ebit -0.73 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-21 filing (TNTELE_20211115_2212.pdf p3) June 30, 2021 column: OI 483, finance 2,02,129, depreciation 6,803, profit (2,74,431). | our -727.85 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210930",
+   "basis": "op_std",
+   "was": -423.04,
+   "fixed": -0.42,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-09 results (BSE, ann 2021-11-15, d2/pdf/tntele/TNTELE_20211115_2212.pdf p3): revenue from operations nil, other income 554, finance cost 207,446, depreciation 6,978, profit before exceptional items and tax (256,174) hundred -> op (42,304) = -0.42 cr, ebit -0.49 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-21 filing (TNTELE_20220211_0955.pdf p7) Sept 30,2021 column: OI 554, finance 2,07,446, depreciation 6,978, profit (2,56,174). | our -423.04 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210930",
+   "basis": "pat_std",
+   "was": -2561.74,
+   "fixed": -2.56,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-09 results (BSE, ann 2021-11-15, d2/pdf/tntele/TNTELE_20211115_2212.pdf p3): revenue from operations nil, other income 554, finance cost 207,446, depreciation 6,978, profit before exceptional items and tax (256,174) hundred -> op (42,304) = -0.42 cr, ebit -0.49 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-21 filing (TNTELE_20220211_0955.pdf p7) Sept 30,2021 column: OI 554, finance 2,07,446, depreciation 6,978, profit (2,56,174). | our -2,561.74 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210930",
+   "basis": "ebit_std",
+   "was": -492.82,
+   "fixed": -0.49,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-09 results (BSE, ann 2021-11-15, d2/pdf/tntele/TNTELE_20211115_2212.pdf p3): revenue from operations nil, other income 554, finance cost 207,446, depreciation 6,978, profit before exceptional items and tax (256,174) hundred -> op (42,304) = -0.42 cr, ebit -0.49 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-21 filing (TNTELE_20220211_0955.pdf p7) Sept 30,2021 column: OI 554, finance 2,07,446, depreciation 6,978, profit (2,56,174). | our -492.82 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20211231",
+   "basis": "op_std",
+   "was": -376.48,
+   "fixed": -0.38,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-12 results (BSE, ann 2022-02-11, d2/pdf/tntele/TNTELE_20220211_0955.pdf p7): revenue from operations nil, other income 828, finance cost 207,446, depreciation 6,809, profit before exceptional items and tax (251,075) hundred -> op (37,648) = -0.38 cr, ebit -0.44 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-22 filing (TNTELE_20220530_1529.pdf p2) Dec 31, 2021 column: OI 828, finance 2,07,446, depreciation 6,809, PBT before exceptional (2,51,075), profit (2,53,523); Dec-22 filing (TNTELE_20230208_1137.pdf p3) Dec 31,2021 column: profit (2,53,524). | our -376.48 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20211231",
+   "basis": "pat_std",
+   "was": -2486.26,
+   "fixed": -2.54,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-12 results (BSE, ann 2022-02-11, d2/pdf/tntele/TNTELE_20220211_0955.pdf p7): revenue from operations nil, other income 828, finance cost 207,446, depreciation 6,809, profit before exceptional items and tax (251,075) hundred -> op (37,648) = -0.38 cr, ebit -0.44 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-22 filing (TNTELE_20220530_1529.pdf p2) Dec 31, 2021 column: OI 828, finance 2,07,446, depreciation 6,809, PBT before exceptional (2,51,075), profit (2,53,523); Dec-22 filing (TNTELE_20230208_1137.pdf p3) Dec 31,2021 column: profit (2,53,524). | our -2,486.26 = profit before exceptional items (2,51,075) hundred with the exceptional charge 2,449 ADDED instead of deducted ((2,48,626)), and x1000 in scale.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20211231",
+   "basis": "ebit_std",
+   "was": -444.57,
+   "fixed": -0.44,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2021-12 results (BSE, ann 2022-02-11, d2/pdf/tntele/TNTELE_20220211_0955.pdf p7): revenue from operations nil, other income 828, finance cost 207,446, depreciation 6,809, profit before exceptional items and tax (251,075) hundred -> op (37,648) = -0.38 cr, ebit -0.44 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-22 filing (TNTELE_20220530_1529.pdf p2) Dec 31, 2021 column: OI 828, finance 2,07,446, depreciation 6,809, PBT before exceptional (2,51,075), profit (2,53,523); Dec-22 filing (TNTELE_20230208_1137.pdf p3) Dec 31,2021 column: profit (2,53,524). | our -444.57 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220331",
+   "basis": "op_std",
+   "was": -1938.3,
+   "fixed": -0.48,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-03 results (BSE, ann 2022-05-30, d2/pdf/tntele/TNTELE_20220530_1529.pdf p2): revenue from operations nil, other income 287, finance cost 205,030, depreciation 7,600, profit before exceptional items and tax (260,239) hundred -> op (47,896) = -0.48 cr, ebit -0.55 cr (Q4 BALANCING lines: FY22 minus the three earlier quarters, line by line; printed quarter op (56,075) = -0.56 cr); consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-22 filing (TNTELE_20220805_1049.pdf p3) March 31,2022 quarter column (2,67,869) and year column (10,44,368), both as in the Mar-22 statement. | our -1,938.30 is the FULL-YEAR FY22 op (-1,93,830 hundred = (10,41,919) + 8,22,051 + 28,190 - 2,152), x1000 in scale.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220331",
+   "basis": "pat_std",
+   "was": -10443.68,
+   "fixed": -2.6,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-03 results (BSE, ann 2022-05-30, d2/pdf/tntele/TNTELE_20220530_1529.pdf p2): revenue from operations nil, other income 287, finance cost 205,030, depreciation 7,600, profit before exceptional items and tax (260,239) hundred -> op (47,896) = -0.48 cr, ebit -0.55 cr (Q4 BALANCING lines: FY22 minus the three earlier quarters, line by line; printed quarter op (56,075) = -0.56 cr); consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-22 filing (TNTELE_20220805_1049.pdf p3) March 31,2022 quarter column (2,67,869) and year column (10,44,368), both as in the Mar-22 statement. | our -10,443.68 is the FULL-YEAR FY22 loss (10,44,368) hundred, x1000 in scale, stored in the quarter slot.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220331",
+   "basis": "ebit_std",
+   "was": -2220.2,
+   "fixed": -0.55,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-03 results (BSE, ann 2022-05-30, d2/pdf/tntele/TNTELE_20220530_1529.pdf p2): revenue from operations nil, other income 287, finance cost 205,030, depreciation 7,600, profit before exceptional items and tax (260,239) hundred -> op (47,896) = -0.48 cr, ebit -0.55 cr (Q4 BALANCING lines: FY22 minus the three earlier quarters, line by line; printed quarter op (56,075) = -0.56 cr); consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-22 filing (TNTELE_20220805_1049.pdf p3) March 31,2022 quarter column (2,67,869) and year column (10,44,368), both as in the Mar-22 statement. | our -2,220.20 is the FULL-YEAR FY22 ebit (-2,22,020 hundred), x1000 in scale.",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220630",
+   "basis": "op_std",
+   "was": -329.99,
+   "fixed": -0.33,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-06 results (BSE, ann 2022-08-04, d2/pdf/tntele/TNTELE_20220805_1049.pdf p3): revenue from operations nil, other income 443, finance cost 209,557, depreciation 5,989, profit before exceptional items and tax (248,102) hundred -> op (32,999) = -0.33 cr, ebit -0.39 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-22 filing (TNTELE_20221117_1025.pdf p6) June 30, 2022 column: OI 443, finance 2,09,557, depreciation 5,989, profit (2,48,102). | our -329.99 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220630",
+   "basis": "pat_std",
+   "was": -2481.02,
+   "fixed": -2.48,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-06 results (BSE, ann 2022-08-04, d2/pdf/tntele/TNTELE_20220805_1049.pdf p3): revenue from operations nil, other income 443, finance cost 209,557, depreciation 5,989, profit before exceptional items and tax (248,102) hundred -> op (32,999) = -0.33 cr, ebit -0.39 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-22 filing (TNTELE_20221117_1025.pdf p6) June 30, 2022 column: OI 443, finance 2,09,557, depreciation 5,989, profit (2,48,102). | our -2,481.02 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20220630",
+   "basis": "ebit_std",
+   "was": -389.88,
+   "fixed": -0.39,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-06 results (BSE, ann 2022-08-04, d2/pdf/tntele/TNTELE_20220805_1049.pdf p3): revenue from operations nil, other income 443, finance cost 209,557, depreciation 5,989, profit before exceptional items and tax (248,102) hundred -> op (32,999) = -0.33 cr, ebit -0.39 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-22 filing (TNTELE_20221117_1025.pdf p6) June 30, 2022 column: OI 443, finance 2,09,557, depreciation 5,989, profit (2,48,102). | our -389.88 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20221231",
+   "basis": "op_std",
+   "was": -319.55,
+   "fixed": -0.32,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-12 results (BSE, ann 2023-02-08, d2/pdf/tntele/TNTELE_20230208_1137.pdf p3): revenue from operations nil, other income 501, finance cost 238,982, depreciation 6,510, profit before exceptional items and tax (276,947) hundred -> op (31,956) = -0.32 cr, ebit -0.38 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-23 filing (TNTELE_20230530_1822.pdf p4) Dec 31,2022 column: OI 501, finance 2,38,982, depreciation 6,510, profit (2,76,947). | our -319.55 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20221231",
+   "basis": "pat_std",
+   "was": -2769.46,
+   "fixed": -2.77,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-12 results (BSE, ann 2023-02-08, d2/pdf/tntele/TNTELE_20230208_1137.pdf p3): revenue from operations nil, other income 501, finance cost 238,982, depreciation 6,510, profit before exceptional items and tax (276,947) hundred -> op (31,956) = -0.32 cr, ebit -0.38 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-23 filing (TNTELE_20230530_1822.pdf p4) Dec 31,2022 column: OI 501, finance 2,38,982, depreciation 6,510, profit (2,76,947). | our -2,769.46 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20221231",
+   "basis": "ebit_std",
+   "was": -384.65,
+   "fixed": -0.38,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2022-12 results (BSE, ann 2023-02-08, d2/pdf/tntele/TNTELE_20230208_1137.pdf p3): revenue from operations nil, other income 501, finance cost 238,982, depreciation 6,510, profit before exceptional items and tax (276,947) hundred -> op (31,956) = -0.32 cr, ebit -0.38 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-23 filing (TNTELE_20230530_1822.pdf p4) Dec 31,2022 column: OI 501, finance 2,38,982, depreciation 6,510, profit (2,76,947). | our -384.65 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230331",
+   "basis": "op_std",
+   "was": -1557.58,
+   "fixed": -1.56,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-03 results (BSE, ann 2023-05-30, d2/pdf/tntele/TNTELE_20230530_1822.pdf p4): revenue from operations nil, other income 16,965, finance cost 249,339, depreciation 6,369, profit before exceptional items and tax (394,501) hundred -> op (155,758) = -1.56 cr, ebit -1.62 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-23 filing (TNTELE_20230811_1110.pdf p2) March 31,2023 column: OI 16,965, finance 2,49,339, depreciation 6,369, profit (3,94,501). | our -1,557.58 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230331",
+   "basis": "pat_std",
+   "was": -3945.01,
+   "fixed": -3.95,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-03 results (BSE, ann 2023-05-30, d2/pdf/tntele/TNTELE_20230530_1822.pdf p4): revenue from operations nil, other income 16,965, finance cost 249,339, depreciation 6,369, profit before exceptional items and tax (394,501) hundred -> op (155,758) = -1.56 cr, ebit -1.62 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-23 filing (TNTELE_20230811_1110.pdf p2) March 31,2023 column: OI 16,965, finance 2,49,339, depreciation 6,369, profit (3,94,501). | our -3,945.01 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230331",
+   "basis": "ebit_std",
+   "was": -1621.27,
+   "fixed": -1.62,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-03 results (BSE, ann 2023-05-30, d2/pdf/tntele/TNTELE_20230530_1822.pdf p4): revenue from operations nil, other income 16,965, finance cost 249,339, depreciation 6,369, profit before exceptional items and tax (394,501) hundred -> op (155,758) = -1.56 cr, ebit -1.62 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-23 filing (TNTELE_20230811_1110.pdf p2) March 31,2023 column: OI 16,965, finance 2,49,339, depreciation 6,369, profit (3,94,501). | our -1,621.27 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230930",
+   "basis": "op_std",
+   "was": -478.72,
+   "fixed": -0.48,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-09 results (BSE, ann 2023-11-10, d2/pdf/tntele/TNTELE_20231110_1525.pdf p6): revenue from operations nil, other income 1,861, finance cost 267,406, depreciation 6,181, profit before exceptional items and tax (319,598) hundred -> op (47,872) = -0.48 cr, ebit -0.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-23 filing (TNTELE_20240215_1047.pdf p2) 30-Sep-23 column: OI 1,861, finance 2,67,406, depreciation 6,181, profit (3,19,598); Sep-24 filing (TNTELE_20241114_1223.pdf p7) Sep-23 column the same. | our -478.72 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230930",
+   "basis": "pat_std",
+   "was": -3195.98,
+   "fixed": -3.2,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-09 results (BSE, ann 2023-11-10, d2/pdf/tntele/TNTELE_20231110_1525.pdf p6): revenue from operations nil, other income 1,861, finance cost 267,406, depreciation 6,181, profit before exceptional items and tax (319,598) hundred -> op (47,872) = -0.48 cr, ebit -0.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-23 filing (TNTELE_20240215_1047.pdf p2) 30-Sep-23 column: OI 1,861, finance 2,67,406, depreciation 6,181, profit (3,19,598); Sep-24 filing (TNTELE_20241114_1223.pdf p7) Sep-23 column the same. | our -3,195.98 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20230930",
+   "basis": "ebit_std",
+   "was": -540.53,
+   "fixed": -0.54,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-09 results (BSE, ann 2023-11-10, d2/pdf/tntele/TNTELE_20231110_1525.pdf p6): revenue from operations nil, other income 1,861, finance cost 267,406, depreciation 6,181, profit before exceptional items and tax (319,598) hundred -> op (47,872) = -0.48 cr, ebit -0.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-23 filing (TNTELE_20240215_1047.pdf p2) 30-Sep-23 column: OI 1,861, finance 2,67,406, depreciation 6,181, profit (3,19,598); Sep-24 filing (TNTELE_20241114_1223.pdf p7) Sep-23 column the same. | our -540.53 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20231231",
+   "basis": "op_std",
+   "was": -351.12,
+   "fixed": -0.35,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-12 results (BSE, ann 2024-02-15, d2/pdf/tntele/TNTELE_20240215_1047.pdf p2): revenue from operations nil, other income 658, finance cost 268,506, depreciation 6,734, profit before exceptional items and tax (309,694) hundred -> op (35,112) = -0.35 cr, ebit -0.42 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-24 filing (TNTELE_20240527_1717.pdf p20, digital text) 31-Dec-23 column: OI 658, finance 2,68,506, depreciation 6,734, profit (3,09,694). | our -351.12 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20231231",
+   "basis": "pat_std",
+   "was": -3096.94,
+   "fixed": -3.1,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-12 results (BSE, ann 2024-02-15, d2/pdf/tntele/TNTELE_20240215_1047.pdf p2): revenue from operations nil, other income 658, finance cost 268,506, depreciation 6,734, profit before exceptional items and tax (309,694) hundred -> op (35,112) = -0.35 cr, ebit -0.42 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-24 filing (TNTELE_20240527_1717.pdf p20, digital text) 31-Dec-23 column: OI 658, finance 2,68,506, depreciation 6,734, profit (3,09,694). | our -3,096.94 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20231231",
+   "basis": "ebit_std",
+   "was": -418.46,
+   "fixed": -0.42,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2023-12 results (BSE, ann 2024-02-15, d2/pdf/tntele/TNTELE_20240215_1047.pdf p2): revenue from operations nil, other income 658, finance cost 268,506, depreciation 6,734, profit before exceptional items and tax (309,694) hundred -> op (35,112) = -0.35 cr, ebit -0.42 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-24 filing (TNTELE_20240527_1717.pdf p20, digital text) 31-Dec-23 column: OI 658, finance 2,68,506, depreciation 6,734, profit (3,09,694). | our -418.46 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240331",
+   "basis": "op_std",
+   "was": -2480.87,
+   "fixed": -2.48,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-03 results (BSE, ann 2024-05-27, d2/pdf/tntele/TNTELE_20240527_1717.pdf p20): revenue from operations nil, other income 924, finance cost 268,824, depreciation 6,359, profit before exceptional items and tax (522,346) hundred -> op (248,087) = -2.48 cr, ebit -2.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-24 filing (TNTELE_20240813_1705.pdf p5) 31-Mar-24 column: OI 924, finance 2,68,824, depreciation 6,359, profit (5,22,346). | our -2,480.87 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240331",
+   "basis": "pat_std",
+   "was": -5223.46,
+   "fixed": -5.22,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-03 results (BSE, ann 2024-05-27, d2/pdf/tntele/TNTELE_20240527_1717.pdf p20): revenue from operations nil, other income 924, finance cost 268,824, depreciation 6,359, profit before exceptional items and tax (522,346) hundred -> op (248,087) = -2.48 cr, ebit -2.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-24 filing (TNTELE_20240813_1705.pdf p5) 31-Mar-24 column: OI 924, finance 2,68,824, depreciation 6,359, profit (5,22,346). | our -5,223.46 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240331",
+   "basis": "ebit_std",
+   "was": -2544.46,
+   "fixed": -2.54,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-03 results (BSE, ann 2024-05-27, d2/pdf/tntele/TNTELE_20240527_1717.pdf p20): revenue from operations nil, other income 924, finance cost 268,824, depreciation 6,359, profit before exceptional items and tax (522,346) hundred -> op (248,087) = -2.48 cr, ebit -2.54 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Jun-24 filing (TNTELE_20240813_1705.pdf p5) 31-Mar-24 column: OI 924, finance 2,68,824, depreciation 6,359, profit (5,22,346). | our -2,544.46 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240630",
+   "basis": "op_std",
+   "was": -497.34,
+   "fixed": -0.5,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-06 results (BSE, ann 2024-08-13, d2/pdf/tntele/TNTELE_20240813_1705.pdf p5): revenue from operations nil, other income 556, finance cost 268,122, depreciation 6,500, profit before exceptional items and tax (323,800) hundred -> op (49,734) = -0.5 cr, ebit -0.56 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-24 filing (TNTELE_20241114_1223.pdf p7) Jun-24 column: OI 556, finance 2,68,122, depreciation 6,500, profit (3,23,800); Jun-25 filing (TNTELE_20250813_2255.pdf p6) 30-Jun-24 column the same. | our -497.34 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240630",
+   "basis": "pat_std",
+   "was": -3238.0,
+   "fixed": -3.24,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-06 results (BSE, ann 2024-08-13, d2/pdf/tntele/TNTELE_20240813_1705.pdf p5): revenue from operations nil, other income 556, finance cost 268,122, depreciation 6,500, profit before exceptional items and tax (323,800) hundred -> op (49,734) = -0.5 cr, ebit -0.56 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-24 filing (TNTELE_20241114_1223.pdf p7) Jun-24 column: OI 556, finance 2,68,122, depreciation 6,500, profit (3,23,800); Jun-25 filing (TNTELE_20250813_2255.pdf p6) 30-Jun-24 column the same. | our -3,238.00 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240630",
+   "basis": "ebit_std",
+   "was": -562.34,
+   "fixed": -0.56,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-06 results (BSE, ann 2024-08-13, d2/pdf/tntele/TNTELE_20240813_1705.pdf p5): revenue from operations nil, other income 556, finance cost 268,122, depreciation 6,500, profit before exceptional items and tax (323,800) hundred -> op (49,734) = -0.5 cr, ebit -0.56 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-24 filing (TNTELE_20241114_1223.pdf p7) Jun-24 column: OI 556, finance 2,68,122, depreciation 6,500, profit (3,23,800); Jun-25 filing (TNTELE_20250813_2255.pdf p6) 30-Jun-24 column the same. | our -562.34 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240930",
+   "basis": "op_std",
+   "was": -1113.36,
+   "fixed": -1.11,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-09 results (BSE, ann 2024-11-14, d2/pdf/tntele/TNTELE_20241114_1223.pdf p7): revenue from operations nil, other income 66,789, finance cost 276,986, depreciation 7,569, profit before exceptional items and tax (329,101) hundred -> op (111,335) = -1.11 cr, ebit -1.19 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-24 filing (TNTELE_20250214_1402.pdf p6) 30-Sep-24 column: OI 66,789, finance 2,76,986, depreciation 7,568, profit (3,29,101); Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Sep-24 column the same. | our -1,113.36 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240930",
+   "basis": "pat_std",
+   "was": -3291.02,
+   "fixed": -3.29,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-09 results (BSE, ann 2024-11-14, d2/pdf/tntele/TNTELE_20241114_1223.pdf p7): revenue from operations nil, other income 66,789, finance cost 276,986, depreciation 7,569, profit before exceptional items and tax (329,101) hundred -> op (111,335) = -1.11 cr, ebit -1.19 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-24 filing (TNTELE_20250214_1402.pdf p6) 30-Sep-24 column: OI 66,789, finance 2,76,986, depreciation 7,568, profit (3,29,101); Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Sep-24 column the same. | our -3,291.02 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20240930",
+   "basis": "ebit_std",
+   "was": -1189.05,
+   "fixed": -1.19,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-09 results (BSE, ann 2024-11-14, d2/pdf/tntele/TNTELE_20241114_1223.pdf p7): revenue from operations nil, other income 66,789, finance cost 276,986, depreciation 7,569, profit before exceptional items and tax (329,101) hundred -> op (111,335) = -1.11 cr, ebit -1.19 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Dec-24 filing (TNTELE_20250214_1402.pdf p6) 30-Sep-24 column: OI 66,789, finance 2,76,986, depreciation 7,568, profit (3,29,101); Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Sep-24 column the same. | our -1,189.05 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large) (to within Rs 100 of rounding).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20241231",
+   "basis": "op_std",
+   "was": -579.65,
+   "fixed": -0.58,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-12 results (BSE, ann 2025-02-14, d2/pdf/tntele/TNTELE_20250214_1402.pdf p6): revenue from operations nil, other income 1,026, finance cost 278,578, depreciation 7,024, profit before exceptional items and tax (342,541) hundred -> op (57,965) = -0.58 cr, ebit -0.65 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-25 filing (TNTELE_20250528_1955.pdf p7) Dec-24 column: OI 1,026, finance 2,78,577, depreciation 7,024, profit (3,42,541); Dec-25 filing (TNTELE_20260213_1630.pdf p6) 31-Dec-24 column the same. | our -579.65 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20241231",
+   "basis": "pat_std",
+   "was": -3425.41,
+   "fixed": -3.43,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-12 results (BSE, ann 2025-02-14, d2/pdf/tntele/TNTELE_20250214_1402.pdf p6): revenue from operations nil, other income 1,026, finance cost 278,578, depreciation 7,024, profit before exceptional items and tax (342,541) hundred -> op (57,965) = -0.58 cr, ebit -0.65 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-25 filing (TNTELE_20250528_1955.pdf p7) Dec-24 column: OI 1,026, finance 2,78,577, depreciation 7,024, profit (3,42,541); Dec-25 filing (TNTELE_20260213_1630.pdf p6) 31-Dec-24 column the same. | our -3,425.41 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20241231",
+   "basis": "ebit_std",
+   "was": -649.89,
+   "fixed": -0.65,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2024-12 results (BSE, ann 2025-02-14, d2/pdf/tntele/TNTELE_20250214_1402.pdf p6): revenue from operations nil, other income 1,026, finance cost 278,578, depreciation 7,024, profit before exceptional items and tax (342,541) hundred -> op (57,965) = -0.58 cr, ebit -0.65 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-25 filing (TNTELE_20250528_1955.pdf p7) Dec-24 column: OI 1,026, finance 2,78,577, depreciation 7,024, profit (3,42,541); Dec-25 filing (TNTELE_20260213_1630.pdf p6) 31-Dec-24 column the same. | our -649.89 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20250630",
+   "basis": "op_std",
+   "was": -533.59,
+   "fixed": -0.53,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-06 results (BSE, ann 2025-08-13, d2/pdf/tntele/TNTELE_20250813_2255.pdf p6): revenue from operations nil, other income 376, finance cost 285,782, depreciation 5,390, profit before exceptional items and tax (344,155) hundred -> op (53,359) = -0.53 cr, ebit -0.59 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Jun-25 column: OI 376, finance 2,85,782, depreciation 5,390, profit (3,44,155); Jun-26 filing (TNTELE_20260814_2152.pdf p6) 30-Jun-25 column the same. | our -533.59 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20250630",
+   "basis": "pat_std",
+   "was": -3441.55,
+   "fixed": -3.44,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-06 results (BSE, ann 2025-08-13, d2/pdf/tntele/TNTELE_20250813_2255.pdf p6): revenue from operations nil, other income 376, finance cost 285,782, depreciation 5,390, profit before exceptional items and tax (344,155) hundred -> op (53,359) = -0.53 cr, ebit -0.59 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Jun-25 column: OI 376, finance 2,85,782, depreciation 5,390, profit (3,44,155); Jun-26 filing (TNTELE_20260814_2152.pdf p6) 30-Jun-25 column the same. | our -3,441.55 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20250630",
+   "basis": "ebit_std",
+   "was": -587.49,
+   "fixed": -0.59,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-06 results (BSE, ann 2025-08-13, d2/pdf/tntele/TNTELE_20250813_2255.pdf p6): revenue from operations nil, other income 376, finance cost 285,782, depreciation 5,390, profit before exceptional items and tax (344,155) hundred -> op (53,359) = -0.53 cr, ebit -0.59 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-25 filing (TNTELE_20251114_2308.pdf p6) 30-Jun-25 column: OI 376, finance 2,85,782, depreciation 5,390, profit (3,44,155); Jun-26 filing (TNTELE_20260814_2152.pdf p6) 30-Jun-25 column the same. | our -587.49 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20251231",
+   "basis": "op_std",
+   "was": -581.66,
+   "fixed": -0.58,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-12 results (BSE, ann 2026-02-13, d2/pdf/tntele/TNTELE_20260213_1630.pdf p6): revenue from operations nil, other income 0, finance cost 282,630, depreciation 5,552, profit before exceptional items and tax (346,348) hundred -> op (58,166) = -0.58 cr, ebit -0.64 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-26 filing (TNTELE_20260529_2312.pdf p3) 31-Dec-25 column: finance 2,82,630, depreciation 5,552, profit -3,46,348. | our -581.66 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20251231",
+   "basis": "pat_std",
+   "was": -3463.48,
+   "fixed": -3.46,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-12 results (BSE, ann 2026-02-13, d2/pdf/tntele/TNTELE_20260213_1630.pdf p6): revenue from operations nil, other income 0, finance cost 282,630, depreciation 5,552, profit before exceptional items and tax (346,348) hundred -> op (58,166) = -0.58 cr, ebit -0.64 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-26 filing (TNTELE_20260529_2312.pdf p3) 31-Dec-25 column: finance 2,82,630, depreciation 5,552, profit -3,46,348. | our -3,463.48 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20251231",
+   "basis": "ebit_std",
+   "was": -637.18,
+   "fixed": -0.64,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2025-12 results (BSE, ann 2026-02-13, d2/pdf/tntele/TNTELE_20260213_1630.pdf p6): revenue from operations nil, other income 0, finance cost 282,630, depreciation 5,552, profit before exceptional items and tax (346,348) hundred -> op (58,166) = -0.58 cr, ebit -0.64 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Mar-26 filing (TNTELE_20260529_2312.pdf p3) 31-Dec-25 column: finance 2,82,630, depreciation 5,552, profit -3,46,348. | our -637.18 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20260630",
+   "basis": "op_std",
+   "was": -527.44,
+   "fixed": -0.53,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2026-06 results (BSE, ann 2026-08-14, d2/pdf/tntele/TNTELE_20260814_2152.pdf p6): revenue from operations nil, other income 0, finance cost 283,375, depreciation 5,217, profit before exceptional items and tax (341,336) hundred -> op (52,744) = -0.53 cr, ebit -0.58 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-26 filing (TNTELE_20261114_0643.pdf p6) quarter ended 30th June 2026 column: finance 2,83,375, depreciation 5,217, profit -3,41,336. | our -527.44 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20260630",
+   "basis": "pat_std",
+   "was": -3413.36,
+   "fixed": -3.41,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2026-06 results (BSE, ann 2026-08-14, d2/pdf/tntele/TNTELE_20260814_2152.pdf p6): revenue from operations nil, other income 0, finance cost 283,375, depreciation 5,217, profit before exceptional items and tax (341,336) hundred -> op (52,744) = -0.53 cr, ebit -0.58 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-26 filing (TNTELE_20261114_0643.pdf p6) quarter ended 30th June 2026 column: finance 2,83,375, depreciation 5,217, profit -3,41,336. | our -3,413.36 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20260630",
+   "basis": "ebit_std",
+   "was": -579.61,
+   "fixed": -0.58,
+   "why": "OUR ERROR: Tamilnadu Telecommunications Ltd (BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705; name + CIN checked on each statement page; statements in Indian Rupees in HUNDREDS, /1,00,000 = crore, half-up 2 dp). Primary: 2026-06 results (BSE, ann 2026-08-14, d2/pdf/tntele/TNTELE_20260814_2152.pdf p6): revenue from operations nil, other income 0, finance cost 283,375, depreciation 5,217, profit before exceptional items and tax (341,336) hundred -> op (52,744) = -0.53 cr, ebit -0.58 cr; consolidated = standalone (one standalone statement, \u00a754b). op = profit before exceptional items and tax + finance + depreciation - other income; ebit = op - depreciation. Second: Sep-26 filing (TNTELE_20261114_0643.pdf p6) quarter ended 30th June 2026 column: finance 2,83,375, depreciation 5,217, profit -3,41,336. | our -579.61 is the right figure in Rs hundreds divided by 100 instead of 1,00,000 (x1000 too large).",
+   "found": "D2 audit (\u00a7214b batch 3)"
   }
  ],
  "retracted": [
@@ -35562,6 +36092,17 @@
    "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT); fixed in build_revop.metrics_for in the same commit",
    "found": "non-Ind-AS op/EBIT audit 2026-09-27 (runbook \u00a7205)",
    "retracted_why": "2026-10-27: the \u00a7205 fix wrote the H1 Sep-25 op (PBT+fin+dep-OI of the Sep-25 column) into the H2 Mar-26 slot, because the stored Mar-26 row was itself a copy of Sep-25. Superseded by the 2026-10-27 entry read from the H2 column of the same filing."
+  },
+  {
+   "sym": "TNTELE",
+   "qe": "20210331",
+   "basis": "op_std",
+   "was": -85.23,
+   "fixed": 43.52,
+   "why": "\u00a7205: the op slot held EBIT \u2014 build_revop.metrics_for read only the Ind-AS tag DepreciationDepletionAndAmortisationExpense, and this non-Ind-AS filing tags DepreciationAndAmortisationExpense (depreciation read as 0). filing NONINDAS_74847_503441_11082021054140 (Yearly, uploaded 2021-08-11, Standalone): its current-period column reproduces the stored revenue 0.00 and EBIT -85.23 to the paisa; op = PBET -2015.81 + finance costs 1969.14 + depreciation 128.75 \u2212 other income 38.56 = 43.52 cr; the same column's expenses route (revenue \u2212 (expenses \u2212 finance costs \u2212 depreciation)) = 43.52. Identity: file carries no ISIN: its own NSE symbol. second check: no later filing of this financial year is on file yet to close its depreciation.",
+   "wrong_value_class": "parser tag-name gap: non-Ind-AS depreciation read as 0 (op == EBIT); fixed in build_revop.metrics_for in the same commit",
+   "found": "non-Ind-AS op/EBIT audit 2026-09-27 (runbook \u00a7205)",
+   "retracted_why": "2026-11-18 (\u00a7214b batch 3): the \u00a7205 correction added back depreciation rightly but kept the x1000 scale slip of the stored row: the Mar-21 filing (TNTELE_20210701_0726.pdf p2) prints Indian Rupees in HUNDREDS, op = (2,01,581) + 1,96,914 + 12,875 - 3,856 = 4,352 hundred = 0.04 cr, not 43.52. Superseded by the batch-3 entry 43.52 -> 0.04."
   }
  ]
 }

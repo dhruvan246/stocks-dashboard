@@ -27805,6 +27805,55 @@ All OUR ERROR (gaps):
 - Checks: blast radius = PERMAGN Dec-24 day; verify_fills_live 44,983 / 0 / 0; conflict guard 0/0; visibility guard OK;
   stock.html?s=PERMAGN local 375 px light + dark: Dec-24 row announced 2025-02-14; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — TNTELE full history Mar-18..Sep-26 (2026-11-18 16:17 IST, same instruction).** Tamilnadu Telecommunications Ltd
+(BSE 523419 / NSE TNTELE; CIN L32201TN1988PLC015705, name + CIN checked on each statement page). Statements are in **Indian
+Rupees in HUNDREDS** (crore = value / 1,00,000, half-up 2 dp). Revenue from operations is nil in every quarter. There is one
+standalone statement and no subsidiary, so con = std (§54b). 35 quarters were read from page images of each quarter's own
+filing, plus a second document (a later filing's comparative column) (kit `d2/tntele/`, 57 BSE PDFs + 2 NSE PDFs).
+- **Std PAT, 20 OUR ERRORs (`fund_cell_fix` +20):**
+  - Stored ×1000 (the hundreds figure read as lakh): Mar-20, Mar-21, Jun-21, Sep-21, Jun-22, Dec-22, Mar-23, Sep-23,
+    Dec-23, Mar-24, Jun-24, Sep-24, Dec-24, Jun-25, Dec-25, Jun-26.
+  - Stored ×0.01: Mar-19 −0.04 → −4.32; Jun-19 −0.03 → −3.34.
+  - Dec-21 −2,486.26 → −2.54: the stored figure was pre-exceptional (2,51,075) with the 2,449 exceptional charge ADDED
+    instead of deducted, then ×1000. The printed quarter (2,53,524) is kept as printed: EPS (0.56) matches it, and the
+    Mar-22 and Dec-22 filings reprint it. The filing's own 9M column is (7,81,682), not (7,84,130), because 9M counts the
+    2,449 once, inside other expenses.
+  - Mar-22 −10,443.68 → −2.60, a **Q4 balancing figure** (user rule §239c update 3). The stored figure was the FY22 total
+    ×1000. The printed quarter is (2,67,869). FY22 audited (10,44,368) minus Jun-21, Sep-21 and Dec-21 (each read from its
+    own filing) = (2,60,239).
+- **Right as stored:** Mar-18, Jun-18, Sep-19, Dec-19, Sep-20, Dec-20, Mar-26, Sep-26.
+- **Missing rows added (`named_pat_cell_fills` + `ann_date_fills` normal entries):** Sep-18 −3.80 @20181119, Dec-18 −3.77
+  @20190213, Jun-20 −2.72 @20200930, Sep-22 −2.77 @20221117, Jun-23 −3.10 @20230811, Mar-25 −5.52 @20250528, Sep-25 −4.30
+  @20251114.
+- **Empty con cells filled (con = std, 28 rows, `named_pat_cell_fills`).**
+- **Announcement day, 11 OUR ERRORs:** each is the first filing that carries the figures, by calendar day (midnight rule §149);
+  `ann_date_fills` override; all moves are earlier.
+  - Mar-19 → 20190530; Jun-19 → 20190808; Mar-20 → 20200801; Dec-20 → 20210212; Sep-21 → 20211115; Mar-22 → 20220530;
+    Dec-22 → 20230208; Jun-24 → 20240813; Jun-25 → 20250813; Jun-26 → 20260814.
+  - Jun-22 → **20220804 from NSE** (NSE_20220804_1827.pdf p3, the same statement as BSE's 2022-08-05 filing). This replaces the
+    old `bse:backlog:exact` override 20220805. For dual-listed names, check the NSE list too: NSE can be a day earlier than BSE.
+- **Revop:**
+  - 60 OUR ERRORs (op/pat/ebit std, the same ×1000 / ×0.01 slips; `revop_cell_fix` +60).
+  - 112 empty C-slot fills and 7 new rows (`named_rev_cell_fills` +35).
+  - op = PBT before exceptional + finance + depreciation − other income; ebit = op − depreciation.
+  - The §205 entry for Mar-21 op_std (−85.23 → 43.52) is **retracted**. It rightly added back depreciation but kept the ×1000
+    slip: (2,01,581) + 1,96,914 + 12,875 − 3,856 = 4,352 hundred = 0.04 cr. It is superseded by 43.52 → 0.04.
+- **Open, RULE QUESTION for the user — Mar-25 op.** The printed quarter column shows other income 35,923 hundred. FY25 minus
+  nine months gives other income 1,172 and an employee-cost credit of about 34,750. Profit, finance and depreciation agree.
+  Stored as printed (reprinted unchanged in the Jun-25 and Mar-26 filings): op −0.33 cr; from the FY lines it would be +0.02.
+- **Noted, not changed:** Mar-24 FY nets 1,824 hundred of other income against other expenses (≈0.02 cr); the quarter is kept
+  gross as printed. Sep-24 depreciation is printed as 7,569; the later reprints show 7,568, which is the figure that foots. The
+  0.0001-cr difference is noise.
+- **UNKNOWN:** 20040331 (−3.95, a pre-2018 row) was not read and is untouched.
+- **Twin lag (measured):** `scripts/fundamentals.json` has no 20040331, 20200331, 20260630 or 20260930 rows, and
+  `scripts/revop_fundamentals.json` has no 20260630 or 20260930 rows. Those rows changed in docs only.
+- **Checks:**
+  - Blast radius = TNTELE plus one retracted ledger entry.
+  - verify_fills_live: 45,230 checked, MISSING 0, REVERTED 0, RESURRECTED 0.
+  - Conflict guard 0/0; fund_dup_guard 0; phantom-key guard OK; visibility guard OK; FUND_ALIAS in step.
+  - stock.html?s=TNTELE local: 36 rows (35 + 2004-03), Results 36.
+  - 375 px dark + light, scrollWidth 375; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
