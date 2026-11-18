@@ -27730,7 +27730,7 @@ All OUR ERROR:
   - 375 px dark + light, the table scrolls inside its holder (page scrollWidth 375); only the stk/ and ipo_fin/ 404s.
   - stock.html?s=MIIL local: 25 rows, no Dec-19/Dec-20/Jun-21.
 
-**Batch 3 — UPHOT Dec-17..Sep-26 (2026-11-18 15:45 IST, same instruction).** U.P. Hotels Ltd (BSE 509960; CIN
+**Batch 3 — UPHOT Dec-17..Sep-26 (2026-11-18 15:24 IST, same instruction).** U.P. Hotels Ltd (BSE 509960; CIN
 L55101DL1961PLC017307; name + CIN on every statement page; Rs LAKH, /100 = crore, half-up 2 dp). Quarterly filer; ONE
 (standalone) statement every quarter, no consolidated statement in any filing, so con = std throughout (§54b).
 - **Reads.** All 36 quarters read off their OWN results PDF (page images; replay kit `~/stocks-cache/xcheck-fixall/d2/uphot/`
