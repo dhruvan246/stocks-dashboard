@@ -27790,6 +27790,21 @@ All OUR ERROR (gaps):
   - stock.html?s=KMCSHIL local: 15 rows Mar-23..Sep-26, Standalone and Consolidated.
   - 375 px dark + light, page scrollWidth 375; only the stk/ and ipo_fin/ 404s.
 
+**Batch 3 — PERMAGN Dec-24 day + Jun-26 con (2026-11-18 16:00 IST, same instruction).** Permanent Magnets Ltd (BSE 504132).
+- **Dec-24 announcement day: OUR ERROR.** Stored 20250217 = a "Press Release / Media Release" (2025-02-17 12:19). The results were
+  first filed 2025-02-14: Integrated Filing (Financial) 16:45, Board Meeting Outcome 16:49, "Unaudited Financial Result - Dec 2024"
+  17:34 (standalone p2 + consolidated p3, read). Raw BSE listing strCat=-1, 2025-02-01..28. -> 20250214 both slots; `ann_date_fills`
+  `override` (earlier move), docs + scripts twins.
+- **Jun-26 con 3.81 vs first-filed 3.80: RULE DIFFERENCE (noise threshold), unchanged.** The Jun-26 filing (2026-08-04 16:40) p3
+  prints PBT 5.99, profit 3.80, EPS 4.42. The Sep-26 filing (2026-10-24 12:52) p3 restates the 30.06.2026 column: PBT 6.00, profit
+  3.81, EPS 4.43; total expenditure 58.16 against 58.17 first filed. The gap is 0.01 cr, under the 0.011-cr noise rule ("anything
+  under 0.011 is noise, at any scale"). The cell-fix appliers' own tolerance (TOL 0.01) cannot hold a 0.01 correction either: a
+  fix staged here applied to patC/ebitC by float luck and read opC 10.98 -> 10.97 as "already correct". Revop Jun-26 C slots (opC
+  10.98, patC 3.81, ebitC 7.44) are the same restated figures, also under 0.011 from first filed (10.97 / 3.80 / 7.43), unchanged.
+  Every other stored Jun-26 / Sep-26 slot (std and con, fund and revop) equals its own filing.
+- Checks: blast radius = PERMAGN Dec-24 day; verify_fills_live 44,983 / 0 / 0; conflict guard 0/0; visibility guard OK;
+  stock.html?s=PERMAGN local 375 px light + dark: Dec-24 row announced 2025-02-14; only the stk/ and ipo_fin/ 404s.
+
 ## §215 — THE ARCHIVE PAGE'S "Amount(Rs. in lakhs)" IS NSE'S TEMPLATE, NOT THE FILER'S UNIT: 5 detail cells read 10×/100× small through the PAT anchor's 2-cr floor, TTKPRESTIG's stored PAT and revenue with them; the anchor gets a relative cap (2026-09-28, user: "yes" to heal the 3 cells + the TTKPRESTIG stored PAT/revenue and its 2 cells)
 **NO ASSUMPTIONS, NO GUESSWORK — every number below was measured this session (population on origin dcb1b47a0, landed on d5cbb8c11).**
 **Defect.** `xtra_nse_html.py` scaled every money row by the page's "Amount(Rs. in …)" header, and that header reads
