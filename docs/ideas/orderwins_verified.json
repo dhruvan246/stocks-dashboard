@@ -1,6 +1,6 @@
 {
- "built": "2026-11-09 20:09 IST",
- "how": "Order-win letters added up since the company's last stated order book, each letter opened and counted once (L1/LoA/press-release repeats not double-counted); flag = first filing date the confirmed total reached 0.5x that book. Research agent 2026-10-11; the daily routine adds new rows (step 4a-iii). Routine 2026-10-12 added 12 rows (step 4a-iii). Routine 2026-10-13 added 7 rows (step 4a-iii): 7 flagged rows checked, 2 NOT A FLAG (base misread), 4 CORRECTED, 1 CONFIRMED.",
+ "built": "2026-11-19 20:08 IST",
+ "how": "Routine 2026-11-19 (step 4a-iii) added 2 rows, every letter opened: ARMEE NOT A FLAG (base was the renewable SEGMENT book Rs 2,300.01 cr of a Rs 2,609.41 cr total, and the single 'win' is an MoU for the company's own PPA project) and MARKOLINES NOT A FLAG (the Rs 120.28 cr order was counted twice - once from the 16-Nov intimation and again inside the Rs 234.83 cr aggregate re-announced on 18-Nov; true 0.376x, GST-inclusive). Order-win letters added up since the company's last stated order book, each letter opened and counted once (L1/LoA/press-release repeats not double-counted); flag = first filing date the confirmed total reached 0.5x that book. Research agent 2026-10-11; the daily routine adds new rows (step 4a-iii). Routine 2026-10-12 added 12 rows (step 4a-iii). Routine 2026-10-13 added 7 rows (step 4a-iii): 7 flagged rows checked, 2 NOT A FLAG (base misread), 4 CORRECTED, 1 CONFIRMED.",
  "rows": [
   {
    "key": "NSE:MARINE",
@@ -2081,6 +2081,78 @@
    "verdict": "CORRECTED",
    "note": "THE FLAG MIXES TWO DEFINITIONS AND DOES NOT SURVIVE. The screen flagged ratio 0.557 (Rs 70.8 cr of wins against a Rs 127.16 cr base, crossing on 9-Nov-2026). Both documents behind the base were opened in this run. The base is confirmed to the rupee - the Q4 FY26 earnings-call transcript and presentation filed 9-Jun-2026 (call held 3-Jun-2026) say 'As on 31st May 2026, our confirmed order book stands at approximately Rs.12,716 Lakhs', and the deck's table splits it Automation 4,496 + Car Parking 8,220 = 12,716 lakh - but the SAME document makes clear this covers only the automation and car-parking verticals ('overall, 127 crores order book is there ... at the automation and car parking both vertical'), with ARAPL RaaS / Humro's Rs 36 cr lease-model book stated separately. The Rs 51.8 cr win of 4-Nov-2026 is a RaaS/Humro order, so it cannot be added to a base that excludes RaaS. Like for like, confirmed wins inside the base's definition are Rs 19.0 cr, a ratio of 0.149 - far below the 0.5x flag. Even on the widest consistent reading (base 127.16 + 36 = Rs 163.16 cr against both wins, Rs 70.8 cr) the ratio is 0.434, still below 0.5. NOT an order-book-lane candidate. Context measured in the same run: 5 order filings on BSE in the 760 days to 9-Nov-2026 (4 before today's), FY26 revenue Rs 109.05 cr, Q1 FY27 revenue Rs 9.06 cr with a loss of Rs 4.80 cr, median daily turnover Rs 4.9 lakh.",
    "checked_on": "2026-11-09"
+  },
+  {
+   "key": "NSE:ARMEE",
+   "isin": "INE0TWE01016",
+   "name": "Armee Infotech Ltd",
+   "nse": "ARMEE",
+   "bse": "544951",
+   "base_cr": 2609.41,
+   "base_as_on": "2026-06-30",
+   "base_filed": "2026-10-19",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/ARMEEINFOTECH_19102026170520_Investor_Presentation_Q1_30th_June.pdf",
+   "confirmed_sum_cr": 0.0,
+   "confirmed_ratio": 0.0,
+   "largest_ratio": 0.0,
+   "all_single_below_half": true,
+   "cross_date": null,
+   "n_wins": 1,
+   "wins_checked": [
+    {
+     "filed": "2026-11-17",
+     "value_cr": 1629.03,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/43a680c6-ba37-402c-b438-7018309e326b.pdf",
+     "verdict": "EXCLUDED",
+     "note": "Read in full. The Reg 30 letter of 17-Nov-2026 is the signing of a Memorandum of Understanding with MSEDCL for a 135 MW solar power project; Annexure A states 'Nature of Order(s)/contract(s): Memorandum of Understanding' and that 'ArMee MH ONE Renewable Energy Private Limited, a wholly owned subsidiary ... will be executed Power Purchase Agreement (PPA) to set up a 135 MW Solar Power Project', aggregate order value Rs 16,29,03,15,000. So it is an MoU for the company's own PPA/IPP asset, not a firm order letter to supply or build for a third party, and it is not comparable with the stated EPC/IT order book. Excluded on both counts."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Two faults in the screen's row. (1) The base is a SEGMENT, not the company total: p.15 of the Q1 FY27 deck states 'Total Outstanding Order Book: Rs 2,609.41 Cr', of which 'Renewable Energy Order Book: Rs 2,300.01 Cr', 'IT Infrastructure Rs 166.26 Cr' and 'IT Managed Services Rs 143.14 Cr'; the screen took the Rs 2,300.01 cr renewable segment. (2) The one 'win' in the sum is an MoU, not an order (see wins_checked). The deck also already carries 'Renewable Energy PPA Project for Maharashtra State Electricity Distribution Company Limited' inside its RE-PPA bucket of Rs 1,186.72 cr. Confirmed firm order letters since the base: none, so the ratio is 0.00x against either the Rs 2,609.41 cr total or the Rs 2,300.01 cr segment. Deck gives no 'as on' date for the order book; it is the Q1 FY27 (quarter ended 30-Jun-2026) presentation, filed 19-Oct-2026.",
+   "checked_on": "2026-11-19"
+  },
+  {
+   "key": "543364",
+   "isin": "INE0FW001016",
+   "name": "Markolines Pavement Technologies Ltd",
+   "nse": "MARKOLINES",
+   "bse": "543364",
+   "base_cr": 624.22,
+   "base_as_on": "2026-09-30",
+   "base_filed": "2026-11-05",
+   "base_doc": "https://nsearchives.nseindia.com/corporate/MPTL2002_05112026105910_PressRelease051126WorkOrdersBMC.pdf",
+   "confirmed_sum_cr": 234.83,
+   "confirmed_ratio": 0.376,
+   "largest_ratio": 0.376,
+   "all_single_below_half": true,
+   "cross_date": null,
+   "n_wins": 3,
+   "wins_checked": [
+    {
+     "filed": "2026-11-16",
+     "value_cr": 234.83,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/257fc75c-eee9-4415-a67c-c8810ac9ee2c.pdf",
+     "verdict": "COUNTED",
+     "note": "The Reg 30 intimation of 16-Nov-2026 carries ALL THREE orders, each 'including applicable GST': Rs 1,20,28,26,390 (major bridge over Middle Strait Creek, NH-04, sub-contract from RKEC Projects), Rs 57,83,93,010 (NH-4 End of Jarwa to Rangat rehabilitation, also from RKEC) and Rs 56,71,15,344 (47 km major maintenance in Andhra Pradesh, from Ranastalam Anandapuram Road Limited). Sum Rs 234.83 cr, inclusive of GST. The screen read only the first value (Rs 120.28 cr) from this letter."
+    },
+    {
+     "filed": "2026-11-16",
+     "value_cr": null,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/89fc5bf4-42c4-4064-a755-1a2244bcad4c.pdf",
+     "verdict": "EXCLUDED",
+     "note": "Corrigendum to the same 16-Nov intimation: the first two RKEC orders were 'inadvertently referred to as Letter of Award' and are actually Work Orders; it states the correction 'does not involve any change in the underlying particulars ... including ... order value'. No new order."
+    },
+    {
+     "filed": "2026-11-18",
+     "value_cr": 234.83,
+     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/e95bc430-201d-4567-ac4d-4a61d7d7e654.pdf",
+     "verdict": "EXCLUDED",
+     "note": "Press release of 18-Nov-2026 re-announcing the SAME three orders: 'three work orders aggregating Rs 234.83 crore (inclusive applicable GST)', naming the Rs 120.28 cr bridge, the Rs 57.84 cr NH-4 stretch and the Rs 56.71 cr Andhra Pradesh maintenance. Already counted from the 16-Nov intimation."
+    }
+   ],
+   "verdict": "NOT A FLAG",
+   "note": "Double count. The screen added Rs 120.28 cr from the 16-Nov intimation to Rs 234.83 cr from the 18-Nov press release (Rs 355.11 cr, 0.569x) but the Rs 234.83 cr IS the aggregate of the same three orders and already contains the Rs 120.28 cr. Confirmed new orders since the base: Rs 234.83 cr including GST, 0.376x the base, below the 0.5x flag; excluding GST it would be lower still. Base corrected too: the 5-Nov-2026 press release states 'With the addition of these work orders, our total current unexecuted order book has reached Rs 624.22 crore' - i.e. as on 5-Nov-2026 after the Rs 135.20 cr BMC orders, not as on 30-Sep-2026 as the screen dated it. The company's own 18-Nov release says the unexecuted order book now stands at approximately Rs 800 crore. Correction made later in the same run after opening the Q2/H1 FY27 investor presentation filed 18-Nov-2026 (https://www.bseindia.com/xml-data/corpfiling/AttachLive/e8f6f5c8-c35c-48b6-8800-fcdf1ae19302.pdf): it states the unexecuted order book as \"624+ Cr ... as on 30th September 2026\" and \"over Rs 624.22 Cr as on 30th September 2026\", so base_as_on is recorded as 2026-09-30. That contradicts the company's own 5-Nov-2026 press release, which says \"With the addition of these work orders, our total current unexecuted order book has reached Rs 624.22 crore\" - i.e. the same figure presented as post-BMC. The company has dated one number two ways; the ratio and the NOT A FLAG verdict are unaffected either way. The presentation also gives H1 FY27 revenue Rs 161.88 cr, EBITDA Rs 20.51 cr, PAT Rs 9.31 cr and a bidding pipeline of nearly Rs 2,000 cr.",
+   "checked_on": "2026-11-19"
   }
  ]
 }

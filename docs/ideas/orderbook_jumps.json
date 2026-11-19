@@ -1,5 +1,5 @@
 {
- "built": "2026-11-18 21:55 IST",
+ "built": "2026-11-19 20:05 IST",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1575,7 +1575,68 @@
    "note": "Both legs of the year-on-year pair were opened and read in this run and both are confirmed on comparable, company-wide definitions: ₹2,262.3 cr as on 30-Sep-2025 and ₹3,845.0 cr as on 30-Sep-2026, a clean twelve-month span filed almost exactly a year apart (14-Nov-2025 and 15-Nov-2026), **true YoY +70.0%**. The latest figure is labelled consolidated by the company; the 2025 presentation does not state standalone or consolidated, which is the only definitional softness here.\n\nTRIGGER: the first filing whose stated book was 50%+ above the figure stated about a year earlier is the **14-Aug-2026** conference-call update, ₹4,090.3 cr as on 30-Jun-2026 against ₹2,262.3 cr as on 30-Sep-2025 — +80.8%. Stated honestly, that comparison spans nine months rather than twelve, because the ledger holds no 30-Jun-2025 reading, so the trigger's own percentage is flattered by the shorter window even though it clears the bar on any reading.\n\nOne fact that cuts the other way and belongs on the row: **the order book FELL between the trigger and the latest figure**, ₹4,090.3 cr (30-Jun-2026) → ₹3,845.0 cr (30-Sep-2026), i.e. execution outran new awards in Q2 FY27. Context from the same press release: H1 FY27 consolidated revenue ₹694 cr (+78%), EBITDA ₹105 cr (15% margin, +128%), PAT ₹39 cr (+18%) — but **Q2 PAT was ₹9 cr against ₹18 cr, down 50%, while Q2 EBITDA rose 78%**, so something below EBITDA took the quarter. The book is about 2.8x the H1 FY27 revenue run rate annualised. An EPC in civil, electrical, road, railway, water and now mining, working under AMRUT and Namami Gange as both prime contractor and sub-contractor.\n\nNOT published as an idea card today, and the reason is capacity rather than merit: the Action's signals build landed at 19:57 IST, after this run had finished researching, and no market cap is available for an NSE-only name from this sandbox, so the ₹200–7,500 cr band test the order-book lane requires could not be applied, and no dossier or X/ValuePickr sweep was done. **It is the strongest order-book-lane candidate for the next run.**",
    "checked_on": "2026-11-18",
    "faded": false
+  },
+  {
+   "key": "513517",
+   "name": "Steelcast Ltd",
+   "nse": "STEELCAS",
+   "bse": "513517",
+   "isin": "INE124E01038",
+   "alt_keys": [
+    "NSE:STEELCAS"
+   ],
+   "latest_value_cr": 145.0,
+   "latest_as_on": "2026-09-30",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4d883447-31ca-4c52-b40f-1e2c0ea1cf49.pdf",
+   "latest_doc_title": "Q2 FY27 earnings call transcript (call 13-Nov-2026, filed 19-Nov-2026): 'Our executable order book stood at approximately INR145 crores, equivalent to around 3 months of sales'",
+   "year_ago_value_cr": 115.0,
+   "year_ago_as_on": "2025-12-31",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/cf24ed19-be07-4420-b871-d20effbd7bdb.pdf",
+   "year_ago_doc_title": "Nearest same-definition reading inside the 240-480 day window is Rs 115 cr as on 31-Dec-2025 (Q3 FY26 call transcript filed 05-Feb-2026); the Rs 80 cr reading is from the Q1 FY26 call of 01-Aug-2025 (transcript filed 07-Aug-2025), read in this run: MD Chetan Tamboli, 'the current order book as of 1st of August is about INR80 crores'",
+   "true_yoy_pct": 26.1,
+   "qualifies": false,
+   "trigger_filed": null,
+   "trigger_doc": null,
+   "trigger_doc_title": null,
+   "trigger_as_on": null,
+   "trigger_book_cr": null,
+   "trigger_prev_cr": null,
+   "trigger_prev_as_on": null,
+   "trigger_yoy_pct": null,
+   "verdict": "CORRECTED",
+   "note": "Screen misread. The Rs 3,000 cr it took as Steelcast's order book is an ANALYST's sentence in the Q2 FY27 transcript (Saket Saurabh, Sagari Capital, p.11): 'companies like Sona BLW or Ramkrishna Forgings may report an order book of around Rs 3,000 crore'. Steelcast's own figure in the same transcript is Rs 145 cr executable (~3 months of sales); MD Chetan Tamboli explains the business has only 3-4 months of physical purchase orders plus a rolling 12-month customer forecast, so it has no multi-year book. Against the nearest comparable reading inside the window (Rs 115 cr as on 31-Dec-2025) the change is +26.1%, below 50. Measured against the Rs 80 cr of 01-Aug-2025 the change is +81.3%, but that span is 15.5 months, not a year, so it is not used. FY27 guidance in the same call: revenue growth of approximately 30%; capex raised from Rs 120 cr to Rs 151 cr for 11,750 t of extra capacity, new foundry targeted around 1-Apr-2028.",
+   "checked_on": "2026-11-19",
+   "faded": false
+  },
+  {
+   "key": "544150",
+   "name": "KP Green Engineering Ltd",
+   "nse": "",
+   "bse": "544150",
+   "isin": "INE0QVH01025",
+   "latest_value_cr": 1892.0,
+   "latest_as_on": "2026-09-30",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/20477472-9eb8-45c7-a735-5594670ca736.pdf",
+   "latest_doc_title": "Q2 FY27 earnings call transcript (call 13-Nov-2026, filed 19-Nov-2026): 'we closed the half year with an order book of INR1,892 crores' and 'closed September with an order book of INR1,892 crores'",
+   "year_ago_value_cr": 460.0,
+   "year_ago_as_on": "2025-09-30",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/18a78b78-e35e-4e13-beae-c9f1aca03b66.pdf",
+   "year_ago_doc_title": "Q2 FY26 earnings call transcript (call 14-Nov-2025, filed 21-Nov-2025): Salim Yahoo, 'by the end of the half year, we had INR460 crores of order book which was there with us, plus these INR682 crores. Together, it has become approximately INR1100 crores'",
+   "true_yoy_pct": 311.3,
+   "qualifies": true,
+   "trigger_filed": "2026-05-08",
+   "trigger_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/c3654403-86f9-41dd-ba71-4b10e3bb33a6.pdf",
+   "trigger_doc_title": "FY26 investor presentation filed 08-May-2026: 'Rs 1,831 CRORE ORDERBOOK IN HAND AS ON 31ST MARCH 2026'",
+   "trigger_as_on": "2026-03-31",
+   "trigger_book_cr": 1831.0,
+   "trigger_prev_cr": 807.0,
+   "trigger_prev_as_on": "2025-03-31",
+   "trigger_yoy_pct": 126.9,
+   "verdict": "CORRECTED",
+   "note": "Both values the screen quoted are real, but it dated the year-ago one wrong: the Rs 1,100 cr was the book as on the call date 14-Nov-2025 (Rs 460 cr at 30-Sep-2025 plus the Rs 682 cr order announced 13-Nov-2025), not as on 30-Sep-2025. Like-for-like 30-Sep-2025 to 30-Sep-2026 is Rs 460 cr -> Rs 1,892 cr, +311.3%; on a call-date basis (14-Nov-2025 -> 13-Nov-2026) it is +72.0%, which is what the screen reported. Both clear 50%. Company-wide book confirmed in both transcripts. Trigger: the first filing showing a 50%+ rise over the figure stated about a year earlier is the 08-May-2026 FY26 deck (Rs 1,831 cr as on 31-Mar-2026) against Rs 807 cr 'ORDERBOOK IN HAND TILL FY 25' in the FY25 deck filed 14-May-2025 (https://www.bseindia.com/xml-data/corpfiling/AttachHis/ae2bcb9d-276e-4035-8ea0-cb8254882380.pdf), +126.9%. The book has since been flat: Rs 1,831 cr (31-Mar-2026) -> Rs 1,892 cr (30-Sep-2026); on the Q2 FY27 call an analyst put that to management and the CFO answered that about Rs 800 cr was added and Rs 600-700 cr executed this year, leaving 9-10 months of the current revenue run-rate. Separate data problem found in the ledger: the 30-Sep-2026 investor presentation reading of '2026.0 cr' is a misread of the date '31 March 2026' in the sentence 'ORDER BOOK ~Rs 1,831 Cr* Order book as on 31 March 2026'.",
+   "checked_on": "2026-11-19",
+   "faded": false
   }
  ],
- "note": "2 rows added on 2026-11-12 (routine step 4a-ii), both read from the companies own documents: PATILAUTOM NOT A JUMP (-7.1%; the screen read the deck Proposals-submitted-to-customers box instead of the order-book box beside it) and RATNAMANI CORRECTED (+30.0% standalone; the screen compared the RFSS subsidiary Rs 3,000 cr book with the parent standalone Rs 2,000 cr). Previous note: 3 rows re-checked and 4 added on 2026-11-09. Re-checked after the companies filed newer order books: CEIGALL (30-Sep-2026 vs 30-Sep-2025, +80.0%), SOUTHWEST (+86.1%), NUCLEUS (+96.2%). Added after orderbook.py --refresh surfaced them: DATAPATTNS CONFIRMED +136.3%, ZENTEC CORRECTED +103.8% (the screen read a waterfall's opening balance as its closing one), SURYAROSNI CORRECTED +60.0% (the screen compared a segment with the company total), BEL NOT A JUMP (-7.7%; the screen's year-ago was the LRSAM programme's pending book from an analyst question). Both ends of every row were read from the company's own documents in that run."
+ "note": "2 rows added on 2026-11-19 (routine step 4a-ii), both ends of each read from the company's own filings in that run: STEELCAS CORRECTED (+26.1%, does not qualify - the screen's Rs 3,000 cr was an analyst naming Sona BLW and Ramkrishna Forgings; Steelcast's own executable book is Rs 145 cr) and KP Green Engineering CORRECTED but QUALIFIES (+311.3% on a 30-Sep-2025 to 30-Sep-2026 basis; the screen's year-ago Rs 1,100 cr was as on the 14-Nov-2025 call date, not 30-Sep-2025; trigger 08-May-2026). Not re-read this run although the screen now carries a later as-on date, because the stated figure is unchanged: PARTH, SUPREMEPWR, APOLLO (Apollo Micro), FABTECH, BRGOYAL, TECHD. Still pending a re-read after a genuinely newer book: ASTRAMICRO (Jun-26 Rs 2,849 cr -> Sep-26 Rs 4,708 cr), DBL (Jun-26 Rs 27,691 cr -> Sep-26 Rs 33,081/34,000 cr), EIEL (Jun-26 -> 12-Nov-26 Rs 6,778 cr), JASH (Aug-26 Rs 932 cr -> Oct-26 Rs 944 cr). 2 rows added on 2026-11-12 (routine step 4a-ii), both read from the companies own documents: PATILAUTOM NOT A JUMP (-7.1%; the screen read the deck Proposals-submitted-to-customers box instead of the order-book box beside it) and RATNAMANI CORRECTED (+30.0% standalone; the screen compared the RFSS subsidiary Rs 3,000 cr book with the parent standalone Rs 2,000 cr). Previous note: 3 rows re-checked and 4 added on 2026-11-09. Re-checked after the companies filed newer order books: CEIGALL (30-Sep-2026 vs 30-Sep-2025, +80.0%), SOUTHWEST (+86.1%), NUCLEUS (+96.2%). Added after orderbook.py --refresh surfaced them: DATAPATTNS CONFIRMED +136.3%, ZENTEC CORRECTED +103.8% (the screen read a waterfall's opening balance as its closing one), SURYAROSNI CORRECTED +60.0% (the screen compared a segment with the company total), BEL NOT A JUMP (-7.7%; the screen's year-ago was the LRSAM programme's pending book from an analyst question). Both ends of every row were read from the company's own documents in that run."
 }
