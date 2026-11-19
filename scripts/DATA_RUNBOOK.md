@@ -19211,6 +19211,12 @@ transition), VARDMNPOLY FY20, SHBAJRG FY20/FY23, SBGLP FY22 (PP&E exact, TA rest
 REFEX FY20 (year-end column printed Unaudited). SBGLP FY23 oeq null (sub-lines disagree with total equity), DIAMINESQ FY20 pay
 null (blurred scan). Held HALDYNGL FY21 (FY22 restates PP&E 44.87 -> 42.35, split unread), s-only years; validate FAIL RML FY22
 (read 1,229.87/460.45 vs key 1,193.89/353.22 — unit UNKNOWN), MANINDS FY23 (s-only filing vs c key), SUPREMEINF (no FY23 BS).
+Batch rh (40 cos): 37 trusted, 107 new fill-years. Accepted (rh_accept.json): BI FY23, GANESHBE FY20, GENUSPAPER FY21,
+DJML FY22 (PP&E exact, TA restated), ARIHANTSUP FY20 + NILE FY22 (next year s-only -> no c tie source), VTMLTD FY20 (FY21 splits
+ROU 1.10 out: 94.85 + 1.10 = 95.95 first-filed). No read: POWERINDIA FY20/21 (Dec year-end to a 15-month FY22), ELITECON FY26.
+Held APOLLO FY22 (FY23 restates PP&E 50.26 -> 85.88), BI FY25 (FY26 restates TA 1,416.88 -> 924.10), SUKHJITS FY20, SHALPAINTS
+FY22 (Note 5 restatement, reason unread), s-only years; validate FAIL TBZ FY22 (read PP&E 82.17 vs key 62.17 — possible 8/6
+misread, UNKNOWN), 3IINFOLTD FY23 (s-only filing vs c key).
 
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
