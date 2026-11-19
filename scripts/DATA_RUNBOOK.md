@@ -19218,6 +19218,8 @@ Held APOLLO FY22 (FY23 restates PP&E 50.26 -> 85.88), BI FY25 (FY26 restates TA 
 FY22 (Note 5 restatement, reason unread), s-only years; validate FAIL TBZ FY22 (read PP&E 82.17 vs key 62.17 — possible 8/6
 misread, UNKNOWN), 3IINFOLTD FY23 (s-only filing vs c key).
 
+**Batch ri (2026-11-19):** 40 companies, 152 filings read by 8 readers; 87 fill-years landed (SUNTECK FY22 kept as already on origin). Accepted PPE-exact restatements: DALMIASUG FY22, OBCL FY22, FCL FY21. Rejected: KECL FY22 (only a half-year comparative), QUICKHEAL FY22 (investor-presentation slide, not the filed sheet), SREEL FY21 (column printed Unaudited), KAVDEFENCE FY20-22 (PPE line includes goodwill). Held (restatement reason unread, UNKNOWN): ISGEC FY20, ZUARI FY21, AMBALALSA FY24, KAVDEFENCE FY22; validate FAIL CCHHL FY23 (no PDF); GINNIFILA FY20/21 no PDF; all standalone-only years.
+
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
 and buy the stocks on next day opening, so I am planning to remove that 3:30 gate — when I buy at 9:20 next morning
