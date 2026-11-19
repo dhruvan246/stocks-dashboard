@@ -19224,6 +19224,8 @@ misread, UNKNOWN), 3IINFOLTD FY23 (s-only filing vs c key).
 
 **Batch rk (2026-11-19):** 40 companies, 167 filings; 103 fill-years landed (ZODIAC FY22 add-only). Accepted PPE-exact restatements: MUNJALAU FY21, BIRLAPREC FY21, KRITI FY21, AVL FY22 (lease assets added in FY23 comparative). Held (restatement reason unread, UNKNOWN): ELECTCAST FY21, WAAREERTL FY21/FY24, LOTUSEYE FY21, NIMBSPROJ FY24 (FY25 comparative 432 vs 127 Cr), MCCHRLS-B FY21, SANDHAR FY20, ARIHANT FY25. Not filled: ACC FY20-22 (Dec year-end, no March balance sheet), RACE FY22 (listed PDF is another company's FY16 results), ABANSENT FY25 + MCCHRLS-B FY25 (no PDF).
 
+**Batch rl (2026-11-19):** 40 companies, 164 filings; 89 fill-years landed. Accepted PPE-exact restatements: RNBDENIMS FY24, MODIS FY25 (FY26 comparative marked Restated, 282 vs 159 Cr). Rejected: PGHL FY20 (June year-end after an 18-month period), SCPL FY22 + VIPULLTD FY21 (only a half-year filing's March column). Held (UNKNOWN): SGIL FY21, RNBDENIMS FY21, INDIANCARD FY22, PRAVEG FY20; validate FAIL SWELECTES FY23 + HCG FY23 (s-only filing), RADIOCITY FY23 (no balance sheet). Not filled: AMBUJACEM FY20-22 (Dec year-end), PGHL FY21-24, SCPL FY20/21, RADIOCITY FY22 (no balance sheet in listed PDFs).
+
 ## 149. ★★★ MIDNIGHT VISIBILITY RULE — the 15:30 filing-time gate RETIRED, every shift reversed on the data side  (2026-09-23)
 **User decision (2026-09-23, confirmed three times, then "ok do it"):** "I exit the stocks on rebalance-day close
 and buy the stocks on next day opening, so I am planning to remove that 3:30 gate — when I buy at 9:20 next morning
