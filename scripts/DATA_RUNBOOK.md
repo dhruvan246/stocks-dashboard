@@ -30923,3 +30923,11 @@ entity's restated figures (identical where both print). PCHFL's own Mar-25 con (
   in operating; the print has it in investing). 2 entries in xtra_cell_fix.json.
 - Other scripts that search only `strCat=Result` (backfill_bse_fund_history, backfill_preipo, fetch_bse_results) were NOT changed:
   the quarterly stores fill FY25 quarters from NSE/XBRL. Whether any quarterly cell missed a 2025 Integrated-only result is UNKNOWN.
+- **LICI cf_tax sign check (2026-11-21) — all 10 stored cells RIGHT, no change.** Life-insurer XBRL closes
+  `Receipts − Payments + OtherInflowsOutflows − IncomeTaxesPaidRefund = CashFlowsFromUsedInOperatingActivities` (+ = paid,
+  §168j) on every LICI file tested: Mar-25 s (1457488, tax −571.57 = refund, cfo −6,179.81), Mar-25 c (1454725, −395.54),
+  Sep-25 s/c (1567090/1567099, 3,649.60/3,802.95 paid), Mar-26 s/c (1670941/1670942, 5,261.13/5,558.65 paid). Mar-23 s/c
+  (PDF direct method, line ADDED): FY24 PDF 166bd60d p8 "Income taxes paid (Net) 5,954.97" and p20 "Income taxes refund /
+  (Paid) 5,825.31" are inflows — 473,770.67 + 7,648.54 − 173.53 − 347,296.28 − 25,144.69 − 52,770.67 + 167.49 + 5,954.97 −
+  2,438.48 = 59,718.02 = printed CFO → refund → stored −5,954.97 / −5,825.31 correct. Direct-method PDF trap: a bracket-free
+  tax line there is a REFUND, not a payment.
