@@ -30988,6 +30988,9 @@ Follow-up to §180f / the bseB pass (61 filled). Each remaining cell judged on i
   reset to the raw figure (ledger + store, fii only, nothing else touched). CHECK ADDED: before a row-level rule adds a
   row, prove from the file that the base excludes it (base == sum of the institutional rows). NOT CHECKED: whether the
   older seam-confirmed "R2-FII (§159)" all-stocks cells carry the same double count.
+- **The 292 are recorded in `scripts/shp_not_due.json`** (user 2026-11-22 "mark the 292 as not due"): 244 half-yearly
+  Jun/Dec + 48 before listing, one reason per cell. Any quarter-level SHP gap list outside the N500 subtracts this file.
+  (Later test of the older seam-confirmed R2-FII cells: 10 exclude the row from the raw figure = fine, 1 too small to tell.)
 
 ## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
 
