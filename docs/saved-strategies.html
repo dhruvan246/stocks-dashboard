@@ -312,7 +312,18 @@ function toggleFav(k) {
    on strategy-backtest.html. '*' is the sentinel for "every membership" — note '' is already a
    real universe ("All stocks"), so it can't double as the show-everything value. */
 function uniKey(c) { return c.indexName ? c.indexName : (c.mcapFloor ? 'mcap:' + c.mcapFloor : ''); }
-function uniText(k) { return universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
+/* Saved mixes as memberships (2026-11-22, user: "under a new membership … everywhere") — the SAME '__MIX__<label>'
+ * choices All Picks offers, from the Mixer's named mixes (mix_presets_v1, synced through SETTINGS). A mix holds
+ * identityKeys, so membership is the two-form test the stars use. KEEP IN SYNC with all-picks.html. */
+function loadMixes() { try { const v = JSON.parse(localStorage.getItem('mix_presets_v1') || '[]');
+  return Array.isArray(v) ? v.filter(p => p && p.label && Array.isArray(p.sel)) : []; } catch (e) { return []; } }
+const isMixUni = k => k.slice(0, 7) === '__MIX__';
+function mixSet(k) { const m = loadMixes().find(p => p.label === k.slice(7)); return m ? new Set(m.sel) : null; }
+// does this strategy belong to the active membership? (a universe, or a saved mix)
+function inUni(c) { if (UNI === '*') return true;
+  if (isMixUni(UNI)) { const s = mixSet(UNI); return !s || s.has(identityKey(c)) || s.has(ruleKey(c)); }
+  return uniKey(c) === UNI; }
+function uniText(k) { return isMixUni(k) ? k.slice(7) : universeLabel(k.slice(0, 5) === 'mcap:' ? { mcapFloor: +k.slice(5) } : { indexName: k }); }
 // Display order: indices broad-to-narrow, then F&O, then turnover buckets ascending, then All stocks.
 const UNI_ORDER = ['Nifty 50', 'Nifty 100', 'Nifty 200', 'Nifty 500', 'Nifty Midcap 150', 'Nifty Smallcap 250', 'Nifty Microcap 250', 'Nifty SME Emerge', '__FNO__'];
 function uniRank(k) {
@@ -321,19 +332,23 @@ function uniRank(k) {
   return 200;                                              // '' = All stocks, last
 }
 let UNI = localStorage.getItem('bt_uni_filter') || '*';    // sticky across tabs AND visits
-// All Picks adds '__FAV__' (⭐ favourites) and '__MIX__<label>' (the Mixer's saved mixes) choices to
-// this SHARED key; this page has its own Favourites tab and no mix picker, so fall back to All here
-// rather than filtering the list to nothing.
-if (UNI === '__FAV__' || UNI.slice(0, 7) === '__MIX__') UNI = '*';
+// All Picks adds a '__FAV__' (⭐ favourites) choice to this SHARED key; this page has its own Favourites
+// tab, so fall back to All here. '__MIX__<label>' (a saved mix) is a choice on this page too.
+if (UNI === '__FAV__') UNI = '*';
 // Rebuild the picker from the universes present in `rows` (the CURRENT tab's set, before the universe
 // filter) so each option carries a count that means something on the tab you're looking at. The active
 // pick is always kept selectable even at 0, otherwise the <select> would silently jump to another value.
 function buildUniSelect(rows) {
+  const mixes = loadMixes();
+  // a mix deleted on another device would leave the <select> with no matching value → show all
+  if (isMixUni(UNI) && !mixes.some(m => m.label === UNI.slice(7))) UNI = '*';
   const counts = new Map();
   for (const g of rows) { const k = uniKey(g.rep.cfg); counts.set(k, (counts.get(k) || 0) + 1); }
-  if (UNI !== '*' && !counts.has(UNI)) counts.set(UNI, 0);
+  if (UNI !== '*' && !isMixUni(UNI) && !counts.has(UNI)) counts.set(UNI, 0);
+  const mixOpts = mixes.map(m => { const s = new Set(m.sel), n = rows.filter(g => s.has(identityKey(g.rep.cfg)) || s.has(ruleKey(g.rep.cfg))).length;
+    return `<option value="${esc('__MIX__' + m.label)}">${esc(m.label)} (${n})</option>`; }).join('');
   const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
-  $('uniSel').innerHTML = `<option value="*">All memberships (${rows.length})</option>` +
+  $('uniSel').innerHTML = `<option value="*">All memberships (${rows.length})</option>` + mixOpts +
     keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
   $('uniSel').value = UNI;
 }
@@ -397,7 +412,7 @@ async function computeLivePerf(force) {
     // Price the membership you're LOOKING AT first, so the visible list fills first (same trick as
     // computeWindow); a stable sort keeps each partition's order.
     const groups = groups0.slice();
-    if (UNI !== '*') groups.sort((a, b) => (uniKey(b.rep.cfg) === UNI) - (uniKey(a.rep.cfg) === UNI));
+    if (UNI !== '*') groups.sort((a, b) => inUni(b.rep.cfg) - inUni(a.rep.cfg));
     // ONE quote fan-out for the union of every strategy's universe — the overlay also splices a
     // synthetic live bar onto each series, which is what makes priceAt() return the live price.
     setComputeUI(true, 'Fetching live prices…', 0.04);
@@ -759,7 +774,7 @@ function render() {
   buildUniSelect(rows);
   if (UNI !== '*') {
     const all = rows.length;
-    rows = rows.filter(g => uniKey(g.rep.cfg) === UNI);
+    rows = rows.filter(g => inUni(g.rep.cfg));
     if (!rows.length) {
       $('list').className = '';
       $('list').innerHTML = `<div class="card p-8 text-center text-slate-400 text-sm">No <b>${esc(uniText(UNI))}</b> strategies in this tab.
@@ -914,7 +929,7 @@ async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk
   // Compute the membership you're LOOKING AT first (results stream in, so the visible list fills
   // immediately); the rest still run afterwards, so switching membership later isn't blank. Stable
   // sort keeps each partition's order. No-op for the headless wave bake — UNI is '*' there.
-  if (UNI !== '*') groups.sort((a, b) => (uniKey(b.rep.cfg) === UNI) - (uniKey(a.rep.cfg) === UNI));
+  if (UNI !== '*') groups.sort((a, b) => inUni(b.rep.cfg) - inUni(a.rep.cfg));
   const out = existing ? Object.assign({}, existing) : {};
   let done = 0;
   if (sink) for (const k in out) sink.set(k, out[k]);
