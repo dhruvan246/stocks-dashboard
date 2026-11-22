@@ -1011,7 +1011,7 @@ index_monthly 'NIFTY NEXT 50'. Run: `EARN_BASIS=std|con python3 scripts/gridmega
 `MERGE_BASES=std,con GRID_END=<END> node --max-old-space-size=8192 scripts/gridmega_phases_build.js _nn50_r5` etc.
 (~15 min each). Measured 11-04: pool 1,527,104; bench 2023-03-31→2024-09-30 +104.0% equals index_monthly.
 
-### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_n50.json` + `bull_runs_saved.json`)
+### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_n50.json` + `bull_runs_fno.json` + `bull_runs_saved.json`)
 Same grid as §7.4, scored over the four MEASURED bull legs (NIFTY 500 daily close, 13% reversal filter:
 2013-08-28→2015-03-03, 2016-02-25→2018-08-31, 2020-03-23→2021-10-18, 2022-06-20→2024-09-26) plus the live
 leg from its trough (2026-03-30) to the data end. Basket top-3 · hold, both earnings bases, one grid per
@@ -1022,6 +1022,14 @@ universes compare like for like; only the index on the cards differs. **Nifty 50
 request) the same way: point-in-time `indicesHistory['Nifty 50']`, benchmark `nifty.json` (staged as
 `_live/nifty_live.json`), vtag `_n50_h3`, cache suffix `_n50`, file `bull_runs_n50.json`, page key `n50`.
 Run one universe alone with `--universes "Nifty 50"`, then the build with `"Nifty 50"`.
+**F&O stocks** added 2026-11-22 (user: "add fno data as well"): the point-in-time F&O list (`fnoHistory`, engine
+`UNIVERSE=__FNO__`; the two scripts take the name `"F&O"`), vtag `_fno_h3`, cache suffix `_fno`, file
+`bull_runs_fno.json`, page key `fno`. It has no index of its own, so its cards carry the NIFTY 500 (the engine's
+own benchmark for `__FNO__`). Built on the SAME 11-16 staging and engine as the other three (worktree
+`~/stocks-wt/bullruns-n50`, 66975a3572) so all four compare like for like: pool 6,188,610; all six index figures
+equal the Nifty 500 file's (+81.5 / +71.8 / +154.5 / +89.2, Oct +9.9, live +15.7%); all4 best worst-rank 50,618,
+last2 593; Oct tab top 1,000 = 8 distinct returns. Grid 10 jobs = 26 min at 4 jobs, build ≈ 2 min. A full refresh
+is now 40 jobs — add `"F&O"` as a fourth build line below.
 **Oct-26 → today tab** (user, 2026-11-17: "one more tab, Oct 8 2026 till date live"): a hand-picked window
 2026-10-08 → the staged sf end, NOT measured by the 13% filter. `bullruns_grid_run.py --live-end <sf end>` grids it
 (2 more jobs per universe); the build always expects it (leg `2026-10`, `live:true`, view `oct26` = rank on that
@@ -1044,6 +1052,7 @@ python3 scripts/bullruns_grid_run.py --jobs 4 --live-end <sf end>   # 30 jobs fo
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 500"
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty Next 50"
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 50"
+GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "F&O"
 node --max-old-space-size=8192 scripts/bullruns_saved.js && node scripts/bullruns_saved_build.js   # set CUR.e first
 ```
 - **Pool rule** (reproduces the 2026-08-28 pool of 5,439,680 exactly): a combo that reads a FUND field (sort or

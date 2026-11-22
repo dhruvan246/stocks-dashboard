@@ -7,6 +7,7 @@
      GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 500"       → bull_runs.json
      GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty Next 50"   → bull_runs_nn50.json
      GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "Nifty 50"        → bull_runs_n50.json
+     GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "F&O"             → bull_runs_fno.json
 
    POOL — one candidate per (combo, basis) that actually differs: a combo whose sort or any filter is
    a FUND field is scored under std AND con (two candidates); every other combo reads no earnings and
@@ -22,10 +23,13 @@
 const fs = require('fs'), path = require('path'), zlib = require('zlib'), cp = require('child_process');
 const HERE = __dirname, ROOT = path.join(HERE, '..');
 const UNI = process.argv[2] || 'Nifty 500';
-const UPRE = { 'Nifty 500': '', 'Nifty Next 50': 'nn50_', 'Nifty 50': 'n50_' }[UNI];
-const OUTF = { 'Nifty 500': 'bull_runs.json', 'Nifty Next 50': 'bull_runs_nn50.json', 'Nifty 50': 'bull_runs_n50.json' }[UNI];
+const UPRE = { 'Nifty 500': '', 'Nifty Next 50': 'nn50_', 'Nifty 50': 'n50_', 'F&O': 'fno_' }[UNI];
+const OUTF = { 'Nifty 500': 'bull_runs.json', 'Nifty Next 50': 'bull_runs_nn50.json', 'Nifty 50': 'bull_runs_n50.json', 'F&O': 'bull_runs_fno.json' }[UNI];
 if (UPRE == null) throw new Error('unknown universe ' + UNI);
-const BENCH_NAME = { 'Nifty 500': 'NIFTY 500', 'Nifty Next 50': 'NIFTY NEXT 50', 'Nifty 50': 'NIFTY 50' }[UNI];
+/* F&O (user, 2026-11-22): the point-in-time F&O list (fnoHistory, engine name __FNO__). It has no index of its own,
+   so its cards carry the NIFTY 500 — the same benchmark grid_search_mega.js gives the F&O universe. */
+const BENCH_NAME = { 'Nifty 500': 'NIFTY 500', 'Nifty Next 50': 'NIFTY NEXT 50', 'Nifty 50': 'NIFTY 50', 'F&O': 'NIFTY 500' }[UNI];
+const ENGINE_UNI = UNI === 'F&O' ? '__FNO__' : UNI, UNI_LABEL = UNI === 'F&O' ? 'F&O stocks' : UNI;
 
 const LEGS = [
   { k: '2013-15', label: 'Aug-13 → Mar-15', s: '2013-08-28', e: '2015-03-03' },
@@ -132,7 +136,7 @@ function main() {
       const tag = tagOf(s, e, b), out = path.join(HERE, '_gridmega_sel_' + tag + '.json');
       log('SELECT ' + tag + ' (' + want[b].size + ' rows)…');
       cp.execFileSync('node', ['--max-old-space-size=4096', runner, s, e], { cwd: ROOT, stdio: ['ignore', 'ignore', 'inherit'],
-        env: Object.assign({}, process.env, { SELECT_FILE: sf, MAIN_ONLY: '', TOPN: '3', METHOD: 'hold', UNIVERSE: UNI, EARN_BASIS: b }) });
+        env: Object.assign({}, process.env, { SELECT_FILE: sf, MAIN_ONLY: '', TOPN: '3', METHOD: 'hold', UNIVERSE: ENGINE_UNI, EARN_BASIS: b }) });
       const J = JSON.parse(fs.readFileSync(out, 'utf8'));
       if (J.rows.length !== want[b].size) throw new Error('SELECT returned ' + J.rows.length + '/' + want[b].size + ' for ' + tag);
       sel[wk + '|' + b] = new Map(J.rows.map(r => [r.i, r]));
@@ -166,9 +170,9 @@ function main() {
     views[vk] = { label: V.label, keys: V.keys, rows };
   }
   const R = {
-    built: new Date().toLocaleDateString('en-CA'), dataEnd: end, universe: UNI, benchName: BENCH_NAME,
+    built: new Date().toLocaleDateString('en-CA'), dataEnd: end, universe: UNI_LABEL, benchName: BENCH_NAME,
     pool: P, totalCombos: N, excluded: [...BAR], bases: ['std', 'con'],
-    basket: UNI + ' · monthly · top-3 · hold · standalone + consolidated, ranked together',
+    basket: UNI_LABEL + ' · monthly · top-3 · hold · standalone + consolidated, ranked together',
     legMeta, cur: { label: 'Mar-26 → today', s: CUR_S, e: end, bench: bench.cur, months: months(CUR_S, end) }, views,
   };
   fs.writeFileSync(path.join(ROOT, 'docs', OUTF), JSON.stringify(R));

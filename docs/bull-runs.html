@@ -105,7 +105,8 @@
 (async function(){
   // One grid file per universe (2026-11-04: Nifty Next 50 added; 2026-11-17: Nifty 50 added). The Nifty 500 file is required; any
   // other universe whose file is missing or broken simply gets no switch pill.
-  const UNIS = [['n500','Nifty 500','./bull_runs.json'],['nn50','Nifty Next 50','./bull_runs_nn50.json'],['n50','Nifty 50','./bull_runs_n50.json']];
+  // 2026-11-22: F&O stocks added (the point-in-time F&O list; no index of its own, so its cards carry the Nifty 500).
+  const UNIS = [['n500','Nifty 500','./bull_runs.json'],['nn50','Nifty Next 50','./bull_runs_nn50.json'],['n50','Nifty 50','./bull_runs_n50.json'],['fno','F&O stocks','./bull_runs_fno.json']];
   const RS = {};
   RS.n500 = await (await fetch(UNIS[0][2],{cache:'no-cache'})).json();
   for (const [k,,u] of UNIS.slice(1)) {
@@ -262,7 +263,7 @@
     document.getElementById('basketChip').textContent = SVW ? 'mixed baskets · your saved list' : R.basket;
     document.getElementById('foot').textContent =
       'All five periods are measured off the NIFTY 500 daily series with a 13% reversal filter, not calendar years: the four completed legs run trough→peak, and the live leg runs from its measured trough ('+R.cur.s+') to the latest data. '+
-      (UNI!=='n500' ? 'This grid picks only from the point-in-time '+esc(R.universe)+' (the members on each rebalance date), over those same five market-wide windows; the index figures on the cards are the '+esc(BENCH())+' itself. ' : '')+
+      (UNI!=='n500' ? 'This grid picks only from the point-in-time '+R.universe+' (the members on each rebalance date), over those same five market-wide windows; the index figures on the cards are the '+BENCH()+' itself'+(UNI==='fno'?' (the F&O list has no index of its own)':'')+'. ' : '')+
       (SVW
         ? 'These two views hold your saved strategies — every one of them, not a top-N cut — re-run over the same five windows with the site’s own engine. '+
           (SV.stored>SV.n ? SV.stored+' are saved but '+SV.n+' are distinct rules: '+(SV.stored-SV.n)+' is the same rule saved twice, collapsed here the same way the Saved Strategies page collapses it. ' : '')+
