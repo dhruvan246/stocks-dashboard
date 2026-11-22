@@ -94,6 +94,13 @@ RE_PATS = {(t, c): re.compile(r'<[\w-]+:%s contextRef="%s"[^>]*>([^<]*)<' % (t, 
            for t in PAT_TAGS for c in ("OneD", "FourD")}
 
 
+# 628 NSE SME files uploaded in 2024 print no reporting period at all (empty header, no OneD context); their period is
+# NSE's own listing row for the file, six-month halves only (scripts/xbrl_sme_periods.json, smeC 2026-11-22)
+_SP = os.path.join(HERE, "xbrl_sme_periods.json")
+SME_PERIODS = {k: v for k, v in json.load(open(_SP, encoding="utf-8")).items() if not k.startswith("_")} \
+    if os.path.exists(_SP) else {}
+
+
 def read(path):
     b = open(path, "rb").read()
     return (gzip.decompress(b) if b[:2] == b"\x1f\x8b" else b).decode("utf-8", "replace")
@@ -121,6 +128,8 @@ def parse(path):
         return None
     h = {k: (m.group(1).strip() if (m := r.search(s)) else None) for k, r in RE_TAG.items()}
     end = h["DateOfEndOfReportingPeriod"] or ((m.group(1)) if (m := RE_END.search(s)) else None)
+    if not end and os.path.basename(path) in SME_PERIODS:      # header-less 2024 NSE SME file: NSE's listing period
+        h["DateOfStartOfReportingPeriod"], end = SME_PERIODS[os.path.basename(path)]
     if not end or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", end):
         return None
     one = RE_ONE.search(s)
