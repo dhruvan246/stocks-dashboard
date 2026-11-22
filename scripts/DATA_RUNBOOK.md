@@ -30977,6 +30977,13 @@ Follow-up to §180f / the bseB pass (61 filled). Each remaining cell judged on i
 - Landing: committed ledger + the 80 new keys only (the §180f 4-dp trap still applies: the fresh build again differed
   in 7,345 cells and dropped 37). Store: +80, 0 changed, 0 removed. STILL HELD: BRIGHT x7 (two companies on one ticker,
   §203), OBCL / DMCC d1 x2.
+- **CORRECTION same day (my own bug, 71 cells, live ~20 min):** the first push ADDED the FPI-labelled row to `fii_r`, but in
+  the all-stocks route the raw reading already counts that row (MPDL Jun-22: the filing has ONE foreign row, 60,000 sh =
+  0.81 %, raw fii 0.8094; stored 1.6194). Tested on all 82 own-line cells: raw fii minus the institutional FPI rows equals
+  the row in 47, within rounding in 35, never zero. Fixed: own-line now only RELEASES the hold (no add); the 71 new cells
+  reset to the raw figure (ledger + store, fii only, nothing else touched). CHECK ADDED: before a row-level rule adds a
+  row, prove from the file that the base excludes it (base == sum of the institutional rows). NOT CHECKED: whether the
+  older seam-confirmed "R2-FII (§159)" all-stocks cells carry the same double count.
 
 ## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
 

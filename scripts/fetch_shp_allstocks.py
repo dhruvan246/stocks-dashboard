@@ -735,8 +735,10 @@ def stage_rowlevel(cache):
                     # Non-Institutions row the filing ITSELF labels Foreign Portfolio Investor is FII on that filing's own
                     # terms — no other filing (the 2022-form seam) is needed to place it. d1 keeps waiting on the seam.
                     if comp == "m159" and c.get("m159_labels") and all(OWN_FPI.search(l_) for l_ in c["m159_labels"]):
-                        fii += amt; own = True; live.pop(comp, None)
-                        note.append("m159 %.4f -> fii (own line: the filing's Non-Institutions row is labelled FPI)" % amt); continue
+                        # NOT added: the all-stocks raw reading (fii_r) already counts this row — measured 2026-11-22 on all 82
+                        # such cells (MPDL Jun-22: one 60,000-share row = 0.81 %, raw fii 0.8094; adding it gave 1.6194)
+                        own = True; live.pop(comp, None)
+                        note.append("m159 %.4f already in the raw fii (own line: the filing's Non-Institutions row is labelled FPI)" % amt); continue
                     ok = False; live.pop(comp, None); note.append("%s %.4f unconfirmed by the 2022-form seam" % (comp, amt)); continue
                 if dec[0] == "fii":
                     fii += amt; dii -= amt if comp == "d1" else 0.0; note.append("%s %.4f -> fii (seam-confirmed)" % (comp, amt))
