@@ -121,6 +121,16 @@
 <!-- Lightweight "computing" overlay for the custom-period compare (determinate, not a spinner: the
      count/bar advance each time a strategy finishes — a spinner can't animate through simulate()'s
      synchronous blocks anyway). -->
+<!-- Owner's "what to bake" chooser (opened by ↻ Update snapshot): baking everything takes long, so the
+     owner can bake only the strategies that have no result yet, or only the membership on screen. -->
+<div id="bakeDlg" class="hidden fixed inset-0 z-50 bg-slate-900/30 flex items-start justify-center pt-24 px-4">
+  <div class="bg-white shadow-xl rounded-xl border border-slate-200 p-4 w-full max-w-sm" role="dialog" aria-modal="true" aria-labelledby="bakeTtl">
+    <div id="bakeTtl" class="text-sm font-bold text-slate-800 mb-1">Update snapshot</div>
+    <div class="text-[11px] text-slate-500 mb-3">Choose what to recalculate. Everything else keeps the results it already has.</div>
+    <div id="bakeOpts" class="flex flex-col gap-2"></div>
+    <div class="text-right"><button id="bakeCancel" class="mt-3 text-xs font-semibold text-slate-500 hover:underline">Cancel</button></div>
+  </div>
+</div>
 <div id="cOverlay" class="hidden fixed inset-0 z-40 bg-slate-900/25 backdrop-blur-[1px] flex items-start justify-center pt-32 pointer-events-none">
   <div class="bg-white shadow-xl rounded-xl border border-slate-200 px-5 py-4 text-center w-72">
     <div class="text-2xl mb-1 text-slate-400"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg></div>
@@ -924,8 +934,9 @@ function setComputeUI(on, txt, frac, note) {
 // filled live for streaming. `existing` pre-seeds already-computed strategies (within-wave RESUME — they
 // are skipped). `onChunk(out)` is awaited after EVERY fresh compute — a single 6-year backtest can take
 // ~40s, so one batch may only finish a handful; saving per-strategy is what guarantees forward progress.
-async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk) {
-  const groups = [...buildGroups(strategies()).values()];
+async function computeWindow(from, to, topN, onProgress, sink, existing, onChunk, only) {
+  let groups = [...buildGroups(strategies()).values()];
+  if (only) groups = groups.filter(only);                      // partial bake: just these strategies
   // Compute the membership you're LOOKING AT first (results stream in, so the visible list fills
   // immediately); the rest still run afterwards, so switching membership later isn't blank. Stable
   // sort keeps each partition's order. No-op for the headless wave bake — UNI is '*' there.
@@ -1005,6 +1016,80 @@ function runPreset(key) {
   } else {
     $('waveSnapInfo').textContent = WAVE_SNAP && WAVE_SNAP.date ? `snapshot ${WAVE_SNAP.date}` : '';
   }
+}
+/* ---- Partial bake (owner): the full bake below recomputes every wave for every strategy, which takes
+   long. These two modes compute only a SUBSET and merge it into the stored snapshot, leaving every
+   other strategy's result exactly as it is:
+     'missing' — strategies that have no result yet in a wave (e.g. just-saved ones)
+     'uni'     — every strategy of the Membership on screen (universe or saved mix)
+   Each wave is merged into the NEWEST stored snapshot (re-read just before the write), so a daily CI
+   bake that finished meanwhile is not overwritten with this tab's older copy. */
+function bakeMissingKeys() {
+  const waves = bakeWaveList(), miss = new Set();
+  for (const g of buildGroups(strategies()).values()) {
+    const idk = identityKey(g.rep.cfg);
+    if (waves.some(k => !(WAVE_SNAP && WAVE_SNAP[k] && WAVE_SNAP[k].results && WAVE_SNAP[k].results[idk]))) miss.add(idk);
+  }
+  return miss;
+}
+async function bakePartial(mode) {
+  const setMsg = m => { $('waveSnapInfo').textContent = m; };
+  setComputeUI(true, 'Loading market data…', 0, 'running a real backtest for each strategy'); setMsg('Loading market data…');
+  if (!await ensureEngine()) { setComputeUI(false, 'Couldn’t load market data.', 0); setMsg('Couldn’t load market data — try again.'); return false; }
+  const waves = bakeWaveList();
+  let computed = 0, wanted = 0, saved = true;
+  for (let wi = 0; wi < waves.length; wi++) {
+    const key = waves[wi], p = PERIOD_PRESETS[key];
+    const from = clampDate(p.from, SF.start, SF.end);
+    const to   = clampDate(p.to || SF.end, SF.start, SF.end);
+    const cur = (WAVE_SNAP && WAVE_SNAP[key] && WAVE_SNAP[key].results) || {};
+    const only = mode === 'uni' ? g => inUni(g.rep.cfg) : g => !cur[identityKey(g.rep.cfg)];
+    const n = [...buildGroups(strategies()).values()].filter(only).length;
+    wanted += n;
+    if (!n) continue;
+    const out = await computeWindow(from, to, null, (done, total) => {
+      setComputeUI(true, `Baking ${key} — ${done}/${total} strategies…`, (wi + done / total) / waves.length);
+      setMsg(`Baking ${key} ${done}/${total} (${wi + 1}/${waves.length} waves)`);
+    }, null, null, null, only);
+    computed += Object.keys(out).length;
+    let base = null;
+    try { base = await btSync.snapGet('waves'); } catch (e) {}
+    if (!base || typeof base !== 'object') base = (WAVE_SNAP && typeof WAVE_SNAP === 'object') ? Object.assign({}, WAVE_SNAP) : {};
+    const w = base[key] || {};
+    base[key] = Object.assign({ start: from, end: to, topN: null }, w, { results: Object.assign({}, w.results, out) });
+    if (!base.date) base.date = SF.end;
+    let ok = false;
+    try { ok = await btSync.snapSet('waves', base); } catch (e) {}
+    if (!ok) saved = false;
+    WAVE_SNAP = base;
+  }
+  setComputeUI(false, '', 1);
+  setMsg(!saved ? 'Computed, but could not save — try again.'
+       : `updated ${computed}/${wanted} results · snapshot ${WAVE_SNAP && WAVE_SNAP.date || ''}`);
+  if (VIEW === 'best') { highlightWave(BEST_WAVE); applyBestWave(); }
+  render();
+  return saved;
+}
+function openBakeMenu() {
+  const all = buildGroups(strategies()), nAll = all.size;
+  const nMiss = bakeMissingKeys().size;
+  const nUni = UNI === '*' ? 0 : [...all.values()].filter(g => inUni(g.rep.cfg)).length;
+  const opts = [['missing', 'Only strategies with no results yet', nMiss, 'New strategies get their numbers; nothing else is touched. Fastest.']];
+  if (UNI !== '*') opts.push(['uni', 'Only “' + uniText(UNI) + '”', nUni, 'Recalculates every strategy of the Membership picked on this page.']);
+  opts.push(['all', 'Everything', nAll, 'Recalculates every strategy in every window. Slowest.']);
+  $('bakeOpts').innerHTML = opts.map(([m, t, n, d]) =>
+    `<button data-bake="${m}"${n ? '' : ' disabled'} class="text-left border border-slate-200 rounded-lg px-3 py-2 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed">
+       <div class="text-xs font-semibold text-slate-800">${esc(t)} <span class="text-slate-400 font-normal">(${n})</span></div>
+       <div class="text-[11px] text-slate-500">${esc(d)}</div></button>`).join('');
+  const close = () => $('bakeDlg').classList.add('hidden');
+  $('bakeOpts').querySelectorAll('[data-bake]').forEach(b => b.onclick = () => {
+    close();
+    const m = b.dataset.bake;
+    if (m === 'all') computeAndSaveWaves(false); else bakePartial(m);
+  });
+  $('bakeCancel').onclick = close;
+  $('bakeDlg').onclick = e => { if (e.target === $('bakeDlg')) close(); };
+  $('bakeDlg').classList.remove('hidden');
 }
 /* Compute all waves for every strategy and persist a snapshot to Supabase (bt_snapshots id 'waves') via
    the public write token in bt-sync.js — no owner secret. Saves INCREMENTALLY after each wave and
@@ -1472,7 +1557,7 @@ function wireUI() {
   if (params.get('bakewaves')) { await computeAndSaveWaves(true); return; }   // headless wave-snapshot baker
   // ---- refresh paint with the freshly pulled shared data -----------------------
   wireUI();   // was wired in the early paint too — idempotent .onclick assignments
-  if (window.btSync && btSync.isOwner()) { $('waveUpdate').classList.remove('hidden'); $('waveUpdate').onclick = () => computeAndSaveWaves(false); }
+  if (window.btSync && btSync.isOwner()) { $('waveUpdate').classList.remove('hidden'); $('waveUpdate').onclick = openBakeMenu; }
   setView(initialView);   // re-render now that strategies / HIST / WAVE_SNAP reflect the shared pull
   // Don't eager-load the 17 MB + 90 MB engine — the list + 👁 results work from saved data alone.
   // Market data loads on demand only when you open Today's Picks (ensureEngine), so first paint is instant.
