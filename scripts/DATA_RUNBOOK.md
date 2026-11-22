@@ -30931,3 +30931,13 @@ entity's restated figures (identical where both print). PCHFL's own Mar-25 con (
   (Paid) 5,825.31" are inflows — 473,770.67 + 7,648.54 − 173.53 − 347,296.28 − 25,144.69 − 52,770.67 + 167.49 + 5,954.97 −
   2,438.48 = 59,718.02 = printed CFO → refund → stored −5,954.97 / −5,825.31 correct. Direct-method PDF trap: a bracket-free
   tax line there is a REFUND, not a payment.
+
+## §180f — BSE-era shareholding of BSE-to-NSE stocks (2026-11-22)
+Same hole as the results fetcher (category A, RUNNING_RECORD_181): stocks that left `bse_universe` when they listed on NSE
+were never asked for their 2020-> BSE-era SHP. 238 stocks / 2,059 quarters missing; 182 codes added to
+`_shp_bse_targets.json` as grp NSE-hole (key = NSE symbol). `bse --codes` split Mac 0/3 + `shp-bse-fill.yml` 1/3, 2/3
+(`_shp_bse_round_catA.json`, force-added — `scripts/_*` is git-ignored). Build: the fresh build REWROTE 7,061 committed
+ledger cells at the 4th decimal and dropped 33 (BRIGHT …) — NOT shipped: the landed ledger = committed ledger + the 2,371
+new keys only. Store: +2,371 cells, 0 changed, 0 removed; apply idempotent. Spot reads: HALDER Dec-21 prom 65.68 and
+PICCADIL Dec-21 prom 70.9 equal their filings; Public == Non-institutions in both (proven zero). Left: 420 quarters.
+OPEN: why a fresh build differs from the committed ledger at 4 dp (7,061 cells) — UNKNOWN, not investigated.
