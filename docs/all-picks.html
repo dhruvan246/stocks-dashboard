@@ -195,12 +195,16 @@
   <!-- Monthly-returns matrix modal (opened by #mrCard) -->
   <div id="mrModal" class="hidden fixed inset-0 z-50 p-2 sm:p-5 flex items-start justify-center">
     <div class="card w-full flex flex-col shadow-2xl" style="max-width:min(1500px,96vw);max-height:92vh">
-      <div class="flex items-start justify-between gap-3 px-4 py-3 border-b border-slate-200 shrink-0">
+      <div class="flex items-start justify-between gap-x-3 gap-y-2 flex-wrap px-4 py-3 border-b border-slate-200 shrink-0">
         <div class="min-w-0">
           <h2 class="font-bold text-slate-900 flex items-center gap-2">Monthly returns — every saved strategy</h2>
           <p id="mrSub" class="text-[12px] text-slate-500 mt-0.5">Loading…</p>
         </div>
-        <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center gap-2 flex-wrap justify-end">
+          <!-- Membership picker — the SAME filter (and bt_uni_filter key) as the page's own picker above,
+               so a pick here also filters the board and vice versa. Counts are of this table's rows. -->
+          <label for="mrUni" class="text-[11px] font-bold uppercase tracking-wide text-slate-500">Membership</label>
+          <select id="mrUni" title="Show only strategies built on this universe" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white" style="max-width:210px"></select>
           <button id="mrRefresh" class="border border-indigo-300 text-indigo-600 hover:bg-indigo-50 rounded-lg px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap" title="Reload the latest figures. Monthly returns are end-of-day, and the server re-bakes them after every price/fundamentals refresh — this pulls that latest bake.">↻ Refresh</button>
           <button id="mrCsv" class="border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg px-2.5 py-1.5 text-xs font-semibold" title="Download the whole matrix as CSV"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
           <button id="mrClose" class="border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-lg px-2.5 py-1.5 text-xs font-semibold" aria-label="Close">✕ Close</button>
@@ -1002,8 +1006,41 @@ $('rwExit').onclick = exitRewind;
   }
   // the value used for the last column (live if available), for both display and sorting
   function lastVal(c) { const lv = liveOn() ? liveLast(c) : null; return lv != null ? lv : c.rets[c.rets.length - 1]; }
+  // ---- membership filter — the page's own picker (UNI / bt_uni_filter), applied to the baked rows -----
+  // A baked card's `key` IS its identityKey: indexName|mcapFloor|…|topN. So its universe is the first
+  // two parts (same flattening as uniKey), and ⭐ / saved-mix membership is the same two-form test
+  // the board uses (identityKey, or ruleKey = the key without its last "|topN" part).
+  function mrUniKey(c) { const p = String(c.key || '').split('|'); return p[0] ? p[0] : (+p[1] ? 'mcap:' + p[1] : ''); }
+  function mrIn(set, c) { const k = String(c.key || ''); return set.has(k) || set.has(k.slice(0, k.lastIndexOf('|'))); }
+  function shown() {
+    if (UNI === '*') return MR.cards;
+    if (UNI === '__FAV__') { const f = loadFavs(); return MR.cards.filter(c => mrIn(f, c)); }
+    if (UNI.slice(0, 7) === '__MIX__') {
+      const m = loadMixes().find(p => p.label === UNI.slice(7));
+      if (!m) return MR.cards;
+      const s = new Set(m.sel); return MR.cards.filter(c => mrIn(s, c));
+    }
+    return MR.cards.filter(c => mrUniKey(c) === UNI);
+  }
+  function buildMrUni() {
+    const mixes = loadMixes();
+    const counts = new Map();
+    for (const c of MR.cards) { const k = mrUniKey(c); counts.set(k, (counts.get(k) || 0) + 1); }
+    const isMix = UNI.slice(0, 7) === '__MIX__';
+    const synth = UNI === '*' || UNI === '__FAV__' || isMix;
+    if (!synth && !counts.has(UNI)) counts.set(UNI, 0);   // keep the active pick selectable even at 0 rows
+    const keys = [...counts.keys()].sort((a, b) => uniRank(a) - uniRank(b) || a.localeCompare(b));
+    const favs = loadFavs(), nFav = MR.cards.filter(c => mrIn(favs, c)).length;
+    const mixOpts = mixes.map(m => { const s = new Set(m.sel), n = MR.cards.filter(c => mrIn(s, c)).length;
+      return `<option value="${esc('__MIX__' + m.label)}">${esc(m.label)} (${n})</option>`; }).join('');
+    $('mrUni').innerHTML = `<option value="*">All memberships (${MR.cards.length})</option>`
+      + `<option value="__FAV__">⭐ Favourite strategies (${nFav})</option>` + mixOpts
+      + keys.map(k => `<option value="${esc(k)}">${esc(uniText(k))} (${counts.get(k)})</option>`).join('');
+    // a mix deleted elsewhere has no option — show "All" (shown() lists everything in that case too)
+    $('mrUni').value = (isMix && !mixes.some(m => m.label === UNI.slice(7))) ? '*' : UNI;
+  }
   function sortedCards() {
-    const k = SORT.key, last = MR.months.length - 1, cards = MR.cards.slice();
+    const k = SORT.key, last = MR.months.length - 1, cards = shown().slice();
     const val = (c) => k === 'total' ? c.total : (+k === last ? lastVal(c) : c.rets[+k]);
     cards.sort((a, b) => {
       if (k === 'name') return a.name.localeCompare(b.name) * (SORT.asc ? 1 : -1);
@@ -1015,7 +1052,9 @@ $('rwExit').onclick = exitRewind;
   }
   function render() {
     const M = MR, labels = M.labels, last = labels.length - 1, LIVE = liveOn();
-    $('mrSub').textContent = `${M.cards.length} strategies · entered 31 Mar 2020 · ${labels[0]} → ${labels[last]} · ${LIVE ? labels[last] + ' is LIVE (today\'s move, ↻ Refresh to update)' : 'last is partial, to ' + M.dataEnd} · updated ${M.generated}`;
+    buildMrUni();
+    const rowsShown = sortedCards(), filtered = $('mrUni').value !== '*';
+    $('mrSub').textContent = `${filtered ? rowsShown.length + ' of ' + M.cards.length + ' strategies (' + uniText($('mrUni').value) + ')' : M.cards.length + ' strategies'} · entered 31 Mar 2020 · ${labels[0]} → ${labels[last]} · ${LIVE ? labels[last] + ' is LIVE (today\'s move, ↻ Refresh to update)' : 'last is partial, to ' + M.dataEnd} · updated ${M.generated}`;
     $('mrLegend').innerHTML = 'Each cell is that strategy\'s equal-weight basket return for the month. '
       + '<b>Total</b> = full-window growth, <b>CAGR</b> = annualised. <b>*</b> = partial current month. Click any month or “Strategy” to sort.'
       + '<span style="display:inline-flex;align-items:center;gap:5px;margin-left:2px">'
@@ -1031,7 +1070,8 @@ $('rwExit').onclick = exitRewind;
     let body = '<tbody>'
       + `<tr class="bench"><td class="stk"><div class="stkwrap"><span class="font-bold text-slate-700">${esc(M.benchName)}</span><span class="block text-[10px] text-slate-400 mono">benchmark · total +${((benchTotal - 1) * 100).toFixed(0)}%</span></div></td>`
       + M.benchRets.map((v, i) => `<td class="cellv${i === last && LIVE ? ' mrlive' : ''}" style="${heat(v)}">${fmt(v)}</td>`).join('') + '</tr>';
-    for (const c of sortedCards()) {
+    if (!rowsShown.length) body += `<tr><td class="stk"><div class="stkwrap text-slate-500" style="white-space:normal">No <b>${esc(uniText($('mrUni').value))}</b> strategies in this table. <button id="mrUniClear" class="text-indigo-600 hover:underline font-semibold">Show all ${M.cards.length}</button></div></td><td colspan="${labels.length}"></td></tr>`;
+    for (const c of rowsShown) {
       const lv = (LIVE) ? liveLast(c) : null;   // live current-month value (null → fall back to baked)
       body += '<tr>'
         + `<td class="stk"><div class="stkwrap"><a href="./strategy-backtest.html?k=${encodeURIComponent(c.key)}" class="flex items-center gap-1 min-w-0 hover:text-indigo-600" title="${esc(c.name)}"><span class="sw-sn shrink-0">${esc(c.serial)}</span><span class="sname text-[11.5px] font-semibold text-slate-800">${esc(c.name)}</span></a>`
@@ -1047,6 +1087,15 @@ $('rwExit').onclick = exitRewind;
       if (SORT.key === k) SORT.asc = !SORT.asc; else SORT = { key: k, asc: false };
       render();
     });
+    const clr = $('mrUniClear'); if (clr) clr.onclick = () => pickUni('*');
+  }
+  // One filter for the page and this table: with the board built, setUni() stores the pick and
+  // repaints the board; before that (still loading) just store it — the board reads it when it paints.
+  function pickUni(v) {
+    v = v || '*';
+    if (typeof RESULT !== 'undefined' && RESULT.length) setUni(v);
+    else { UNI = v; try { localStorage.setItem('bt_uni_filter', UNI); } catch (e) {} }
+    if (MR) render();
   }
   async function open() {
     $('mrModal').classList.remove('hidden'); document.body.style.overflow = 'hidden';
@@ -1088,6 +1137,7 @@ $('rwExit').onclick = exitRewind;
   $('mrClose').onclick = close;
   $('mrRefresh').onclick = refresh;
   $('mrCsv').onclick = csv;
+  $('mrUni').onchange = () => pickUni($('mrUni').value);
   $('mrModal').onclick = e => { if (e.target === $('mrModal')) close(); };
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('mrModal').classList.contains('hidden')) close(); });
   // Reveal the card + fill its subtitle from the baked file (small ~36 KB). If the file isn't there
