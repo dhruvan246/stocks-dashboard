@@ -14,34 +14,34 @@
 <script src="./bt-sync.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d}.neg{color:#b91c1c}
-  .lbl{display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px}
-  .inp{width:100%;padding:.5rem .6rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:14px;background:#fff;color:#0f172a}
-  .inp:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
-  .chip{font-size:10px;font-weight:600;border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:1px 7px;white-space:nowrap}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
+  .lbl{display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px}
+  .inp{width:100%;padding:.5rem .6rem;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:var(--surface);color:var(--text)}
+  .inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+  .chip{font-size:10px;font-weight:600;border:1px solid var(--border,var(--border));border-radius:var(--radius-sm);padding:1px 7px;white-space:nowrap}
   .dot{width:10px;height:10px;border-radius:999px;display:inline-block;flex-shrink:0}
-  .srow:hover{background:var(--surface-2,#f8fafc)}
+  .srow:hover{background:var(--surface-2,var(--surface-2))}
   .srow input[type=checkbox]{accent-color:#4f46e5;width:15px;height:15px}
   /* matrix cells: background tint carries the signal, the number stays in text ink */
-  .cell{font-size:12px;font-weight:700;text-align:center;padding:8px 6px;border:1px solid var(--border,#e2e8f0)}
+  .cell{font-size:12px;font-weight:700;text-align:center;padding:8px 6px;border:1px solid var(--border,var(--border))}
   .tint-lo{background:rgba(16,185,129,.12)} .tint-mid{background:rgba(245,158,11,.14)} .tint-hi{background:rgba(244,63,94,.14)}
   .legit{cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;
-         border:1px solid var(--border,#e2e8f0);border-radius:999px;padding:3px 10px}
+         border:1px solid var(--border,var(--border));border-radius:var(--radius-sm);padding:3px 10px}
   .legit.off{opacity:.38}
-  .tick{font-size:11px;font-weight:650;border:1px solid var(--border,#e2e8f0);border-radius:7px;padding:3px 7px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
+  .tick{font-size:11px;font-weight:650;border:1px solid var(--border,var(--border));border-radius:7px;padding:3px 7px;white-space:nowrap;display:inline-flex;gap:5px;align-items:center}
   /* mode cards — the two ways to put the money in */
-  .modecard{text-align:left;border:1.5px solid var(--border,#e2e8f0);border-radius:.6rem;padding:10px 12px;transition:.15s;background:var(--surface,#fff);cursor:pointer}
+  .modecard{text-align:left;border:1.5px solid var(--border,var(--border));border-radius:var(--radius);padding:10px 12px;transition:.15s;background:var(--surface,var(--surface));cursor:pointer}
   .modecard:hover{border-color:#a5b4fc}
-  .modecard[aria-pressed="true"]{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+  .modecard[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
   .modecard .mtitle{font-size:12.5px;font-weight:750;display:flex;align-items:center;gap:6px}
-  .modecard .mdesc{font-size:10.5px;line-height:1.45;margin-top:3px;color:#64748b}
-  .modecard[aria-pressed="true"] .mtitle{color:#4f46e5}
-  html[data-theme="dark"] .modecard[aria-pressed="true"] .mtitle{color:#a5b4fc}
-  .mradio{width:13px;height:13px;border-radius:999px;border:2px solid var(--border,#cbd5e1);flex-shrink:0}
-  .modecard[aria-pressed="true"] .mradio{border-color:#4f46e5;background:radial-gradient(circle,#4f46e5 0 3px,transparent 3.5px)}
-  .kx{font-size:9.5px;font-weight:750;border-radius:4px;padding:1px 4px;background:rgba(79,70,229,.12);color:#4f46e5}
-  html[data-theme="dark"] .kx{color:#a5b4fc}
+  .modecard .mdesc{font-size:10.5px;line-height:1.45;margin-top:3px;color:var(--text-muted)}
+  .modecard[aria-pressed="true"] .mtitle{color:var(--accent-text)}
+  html[data-theme="dark"] .modecard[aria-pressed="true"] .mtitle{color:var(--accent-text)}
+  .mradio{width:13px;height:13px;border-radius:999px;border:2px solid var(--border,var(--border-strong));flex-shrink:0}
+  .modecard[aria-pressed="true"] .mradio{border-color:var(--accent);background:radial-gradient(circle,#4f46e5 0 3px,transparent 3.5px)}
+  .kx{font-size:9.5px;font-weight:750;border-radius:4px;padding:1px 4px;background:rgba(79,70,229,.12);color:var(--accent-text)}
+  html[data-theme="dark"] .kx{color:var(--accent-text)}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

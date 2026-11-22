@@ -9,20 +9,20 @@
 <script src="./theme.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .pos{color:#16a34a}.neg{color:#dc2626}
-  .card{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.85rem;transition:transform .12s,box-shadow .12s,border-color .12s}
-  .card.click:hover{transform:translateY(-2px);box-shadow:0 12px 28px -16px rgba(0,0,0,.4);border-color:var(--border-strong,#cbd5e1);cursor:pointer}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
+  .card{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);transition:transform .12s,box-shadow .12s,border-color .12s}
+  .card.click:hover{transform:translateY(-2px);box-shadow:0 12px 28px -16px rgba(0,0,0,.4);border-color:var(--border-strong,var(--border-strong));cursor:pointer}
   .pill{cursor:pointer;user-select:none;white-space:nowrap}
   .pill.on{background:linear-gradient(135deg,var(--accent,#4f46e5),var(--accent-2,#7c3aed));color:#fff;border-color:transparent}
-  .spark-tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.3rem .5rem;font-size:.66rem;line-height:1.25;box-shadow:0 6px 18px -8px rgba(0,0,0,.4);white-space:nowrap;z-index:30}
-  .hm-tile{border-radius:.4rem;cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:.25rem;transition:outline .1s}
-  .hm-tile:hover{outline:2px solid var(--accent,#4f46e5);outline-offset:-2px}
+  .spark-tip{position:absolute;pointer-events:none;display:none;background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius);padding:.3rem .5rem;font-size:.66rem;line-height:1.25;box-shadow:0 6px 18px -8px rgba(0,0,0,.4);white-space:nowrap;z-index:30}
+  .hm-tile{border-radius:var(--radius-sm);cursor:pointer;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:.25rem;transition:outline .1s}
+  .hm-tile:hover{outline:2px solid var(--accent,var(--accent));outline-offset:-2px}
   #modal{position:fixed;inset:0;background:rgba(8,12,22,.55);backdrop-filter:blur(3px);z-index:60;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:2.5rem 1rem}
-  #modalCard{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:1rem;max-width:60rem;width:100%;box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
+  #modalCard{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);max-width:60rem;width:100%;box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
   .mchartWrap{position:relative}
   table.tbl{width:100%;font-size:.8rem;border-collapse:collapse}
-  table.tbl th{position:sticky;top:0;background:var(--surface,#fff)}
-  #ov{position:fixed;inset:0;background:var(--app-bg,#f8fafc);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80}
+  table.tbl th{position:sticky;top:0;background:var(--surface,var(--surface))}
+  #ov{position:fixed;inset:0;background:var(--app-bg,var(--surface-2));display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:80}
   /* On phones theme.js re-uses this table's .overflow-x-auto holder as a .sw-scrollx, which PINS
      the first column. A pinned "SYMBOL Full Company Name" cell measures 228px of a 298px-wide
      scroller at 375px, so it paints over every column you sideways-scroll to — P/E, 1Y and 6M were

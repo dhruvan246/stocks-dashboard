@@ -13,8 +13,8 @@
 <script src="./bt-identity.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d}.neg{color:#b91c1c}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
   /* .sw-sn (Save serial pill) now lives in theme.css — shared by every page that lists strategies. */
   /* long strategy names on the KPI tiles stay one tidy line */
   .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -22,7 +22,7 @@
   /* Sort arrow via ::after, NOT a text node: theme.js builds each phone card's label from the
      header's textContent, so an arrow in the DOM would ride along into every card row. */
   th[data-sort]{cursor:pointer;user-select:none}
-  th[data-sort]:hover{color:#334155}
+  th[data-sort]:hover{color:var(--text)}
   th[data-sort][data-dir]::after{font-size:9px;margin-left:3px;vertical-align:1px}
   th[data-sort][data-dir="asc"]::after{content:"▲"}
   th[data-sort][data-dir="desc"]::after{content:"▼"}

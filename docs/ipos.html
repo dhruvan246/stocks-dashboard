@@ -10,22 +10,22 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:9999px;white-space:nowrap}
-  .chip.main{background:#e0e7ff;color:#4338ca}.chip.sme{background:#fef3c7;color:#b45309}
-  .chip.open{background:#dcfce7;color:#15803d}.chip.soon{background:#f1f5f9;color:#475569}
-  html[data-theme="dark"] .chip.main{background:rgba(99,102,241,.18);color:#a5b4fc}
-  html[data-theme="dark"] .chip.sme{background:rgba(245,158,11,.16);color:#fcd34d}
-  html[data-theme="dark"] .chip.open{background:rgba(16,185,129,.18);color:#6ee7b7}
-  html[data-theme="dark"] .chip.soon{background:rgba(148,163,184,.14);color:#cbd5e1}
-  .subbar{height:6px;border-radius:9999px;background:var(--surface-2,#f1f5f9);overflow:hidden}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
+  .chip.main{background:var(--accent-soft);color:var(--accent-text)}.chip.sme{background:var(--warn-soft);color:var(--warn)}
+  .chip.open{background:var(--pos-soft);color:var(--pos)}.chip.soon{background:var(--surface-2);color:var(--text-muted)}
+  html[data-theme="dark"] .chip.main{background:rgba(99,102,241,.18);color:var(--accent-text)}
+  html[data-theme="dark"] .chip.sme{background:rgba(245,158,11,.16);color:var(--warn)}
+  html[data-theme="dark"] .chip.open{background:rgba(16,185,129,.18);color:var(--pos)}
+  html[data-theme="dark"] .chip.soon{background:rgba(148,163,184,.14);color:var(--text)}
+  .subbar{height:6px;border-radius:9999px;background:var(--surface-2,var(--surface-2));overflow:hidden}
   .subbar>div{height:100%;border-radius:9999px;background:linear-gradient(90deg,#4f46e5,#8b5cf6)}
-  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
-  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  select,input[type=text]{background:#fff;border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px}
+  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
+  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
+  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -157,7 +157,7 @@ async function liveSubs(){
   if (!ut) return;
   renderIssues();
   const t = /(\d{1,2}:\d{2})/.exec(ut);
-  $('updated').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> subscription' + (t ? ' as of ' + t[1] + ' IST' : '') + ' · refreshes every few minutes';
+  $('updated').innerHTML = ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> subscription' + (t ? ' as of ' + t[1] + ' IST' : '') + ' · refreshes every few minutes';
 }
 setInterval(() => { if (!document.hidden){ liveSubs(); liveListed(); } }, 180000);
 
@@ -193,7 +193,7 @@ async function liveListed(){
   if (asOf){
     const t = new Date(asOf + 330 * 60000);   // -> IST
     const hh = String(t.getUTCHours()).padStart(2,'0'), mm = String(t.getUTCMinutes()).padStart(2,'0');
-    $('liveNote').innerHTML = ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> prices as of ' + hh + ':' + mm + ' IST';
+    $('liveNote').innerHTML = ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> prices as of ' + hh + ':' + mm + ' IST';
   }
 }
 
@@ -243,7 +243,7 @@ function onListedClick(e){
 }
 function preTable(pe){
   const src = pe.source === 'screener' ? 'Screener' : 'MoneyControl';
-  const badge = pe.verified ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
+  const badge = pe.verified ? '<span style="color:var(--pos);font-weight:700">✓ matches filed results</span>'
                             : 'as reported to ' + src;
   let t = '<div class="text-[11px] font-semibold text-slate-500 mb-1">Pre-IPO financials · ' + badge + '</div>' +
     '<table class="text-xs" style="font-variant-numeric:tabular-nums"><thead class="text-[10px] uppercase text-slate-400"><tr>' +

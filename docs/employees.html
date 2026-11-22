@@ -10,28 +10,28 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem}
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:9999px;white-space:nowrap;letter-spacing:.02em}
-  .chip.now{background:#dcfce7;color:#15803d}.chip.left{background:#f1f5f9;color:#64748b}
-  html[data-theme="dark"] .chip.now{background:rgba(16,185,129,.18);color:#6ee7b7}
-  html[data-theme="dark"] .chip.left{background:rgba(148,163,184,.14);color:#cbd5e1}
-  .vbtn{padding:6px 12px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
-  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  select,input[type=text]{background:var(--surface,#fff);border:1px solid var(--border,#cbd5e1);border-radius:.5rem;font-size:13px;padding:7px 10px;color:inherit}
+  .card{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg)}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:var(--radius-sm);white-space:nowrap;letter-spacing:.02em}
+  .chip.now{background:var(--pos-soft);color:var(--pos)}.chip.left{background:var(--surface-2);color:var(--text-muted)}
+  html[data-theme="dark"] .chip.now{background:rgba(16,185,129,.18);color:var(--pos)}
+  html[data-theme="dark"] .chip.left{background:rgba(148,163,184,.14);color:var(--text)}
+  .vbtn{padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
+  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
+  select,input[type=text]{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border-strong));border-radius:var(--radius);font-size:13px;padding:7px 10px;color:inherit}
   table{border-collapse:separate;border-spacing:0}
   th,td{white-space:nowrap}
-  thead th{position:sticky;top:0;background:var(--surface,#fff);z-index:5;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,#64748b)}
-  tbody tr{cursor:pointer;border-top:1px solid var(--border,#eef2f7)}
-  tbody tr:hover{background:var(--surface-2,#f8fafc)}
+  thead th{position:sticky;top:0;background:var(--surface,var(--surface));z-index:5;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted,var(--text-muted))}
+  tbody tr{cursor:pointer;border-top:1px solid var(--border,var(--border))}
+  tbody tr:hover{background:var(--surface-2,var(--surface-2))}
   .fy{ text-align:right; font-variant-numeric:tabular-nums }
   .miss{color:var(--text-faint,#cbd5e1)}
-  .exp{background:var(--surface-2,#f8fafc)}
+  .exp{background:var(--surface-2,var(--surface-2))}
   .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .spark rect{fill:var(--accent,#6366f1)}
-  .subnote{font-size:12px;color:var(--text-muted,#64748b)}
+  .spark rect{fill:var(--accent,var(--accent-text))}
+  .subnote{font-size:12px;color:var(--text-muted,var(--text-muted))}
 </style>
 </head>
 <body class="min-h-screen" style="background:var(--bg,#f8fafc);color:var(--text,#0f172a)">

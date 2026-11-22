@@ -10,17 +10,17 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   .xc-tab{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .xc-tab table{border-collapse:collapse;width:100%;font-size:12px}
   .xc-tab th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:6px 8px;white-space:nowrap;opacity:.65}
   .xc-tab td{padding:5px 8px;border-top:1px solid rgba(148,163,184,.25);white-space:nowrap;vertical-align:top}
   .xc-tab td.num{text-align:right}
   .xc-bar{height:6px;border-radius:9999px;background:rgba(148,163,184,.3);overflow:hidden}
-  .xc-bar > span{display:block;height:100%;background:#22c55e}
+  .xc-bar > span{display:block;height:100%;background:var(--pos)}
   details > summary{cursor:pointer;list-style:none}
   details > summary::-webkit-details-marker{display:none}
-  .xc-pill{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9999px;border:1px solid currentColor}
+  .xc-pill{display:inline-block;font-size:10px;font-weight:700;padding:1px 6px;border-radius:var(--radius-sm);border:1px solid currentColor}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

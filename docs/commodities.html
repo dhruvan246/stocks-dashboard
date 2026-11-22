@@ -12,10 +12,10 @@
   <style>
     main { width: 100%; }   /* body is a flex column: without this, main shrinks-to-fit its widest table and the page scrolls sideways (runbook §... index-chart precedent) */
     .muted { color: var(--text-muted); }
-    .card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); margin: 0 4px 4px 0; white-space: nowrap; }
-    .pill.b { border-color: #16a34a66; color: #16a34a; } .pill.s { border-color: #dc262666; color: #dc2626; }
-    .pos { color: #16a34a; } .neg { color: #dc2626; }
+    .card { background: var(--surface-2); border: 1px solid var(--border); border-radius:var(--radius-lg); padding: 16px; }
+    .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius:var(--radius-sm); border: 1px solid var(--border); margin: 0 4px 4px 0; white-space: nowrap; }
+    .pill.b { border-color: #16a34a66; color: var(--pos); } .pill.s { border-color: #dc262666; color: var(--neg); }
+    .pos { color: var(--pos); } .neg { color: var(--neg); }
     table.sw { width: 100%; font-size: 13px; border-collapse: collapse; }
     table.sw th, table.sw td { padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
     table.sw th { color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; user-select: none; }
@@ -24,10 +24,10 @@
     table.sw tr.row { cursor: pointer; } table.sw tr.row:hover td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
     .seg button { font-size: 12px; padding: 4px 10px; border: 1px solid var(--border); background: var(--surface-2); }
     .seg button:first-child { border-radius: 8px 0 0 8px; } .seg button:last-child { border-radius: 0 8px 8px 0; }
-    .seg button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
-    input.ctl, select.ctl { font-size: 13px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); color: var(--text); }
+    .seg button.on { background: var(--accent); color:#fff; border-color: var(--accent); }
+    input.ctl, select.ctl { font-size: 13px; padding: 5px 8px; border: 1px solid var(--border); border-radius:var(--radius); background: var(--surface-2); color: var(--text); }
     #search { font-size: 15px; padding: 10px 14px; }
-    #results { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; max-height: 420px; overflow: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 30px #0004; }
+    #results { position: absolute; left: 0; right: 0; top: 100%; z-index: 30; max-height: 420px; overflow: auto; background: var(--surface-2); border: 1px solid var(--border); border-radius:var(--radius); box-shadow: 0 10px 30px #0004; }
     #results div { padding: 7px 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid var(--border); }
     #results div:hover, #results div.on { background: color-mix(in srgb, var(--accent) 12%, transparent); }
     #results .k { font-size: 11px; color: var(--text-muted); margin-right: 6px; }

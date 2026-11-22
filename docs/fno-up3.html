@@ -10,14 +10,14 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .seg{display:inline-flex;background:var(--surface-2,#f1f5f9);border:1px solid var(--border,#e2e8f0);border-radius:9999px;padding:2px}
-  .seg span{padding:4px 11px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,#475569);transition:var(--tr,.15s)}
-  .seg span.on{background:var(--accent,#2563eb);color:#fff}
-  .chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border,#e2e8f0);border-radius:6px;padding:2px 7px;font-size:12px;margin:0 4px 4px 0;background:var(--surface-2,#f8fafc)}
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .seg{display:inline-flex;background:var(--surface-2,var(--surface-2));border:1px solid var(--border,var(--border));border-radius:9999px;padding:2px}
+  .seg span{padding:4px 11px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,var(--text-muted));transition:var(--tr,.15s)}
+  .seg span.on{background:var(--accent,var(--accent));color:#fff}
+  .chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border,var(--border));border-radius:6px;padding:2px 7px;font-size:12px;margin:0 4px 4px 0;background:var(--surface-2,var(--surface-2))}
   .chip b{font-weight:700}
-  .chip:hover{border-color:var(--accent,#2563eb)}
+  .chip:hover{border-color:var(--accent,var(--accent))}
   td,th{white-space:nowrap}
 </style>
 </head>
@@ -53,8 +53,8 @@
         </div>
       </div>
       <div class="flex flex-wrap gap-4 mb-2 text-xs text-slate-600">
-        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background:#16a34a;opacity:.75"></span>Stocks up &gt;3% that day</span>
-        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:#4f46e5"></span>20-day average</span>
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm" style="background:var(--pos);opacity:.75"></span>Stocks up &gt;3% that day</span>
+        <span class="inline-flex items-center gap-1.5"><span class="inline-block w-3.5 h-[3px] rounded" style="background:var(--accent)"></span>20-day average</span>
       </div>
       <div id="chartDaily"></div>
     </div>

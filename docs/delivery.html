@@ -10,16 +10,16 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:9999px;white-space:nowrap}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
   .chip.mult{background:#ede9fe;color:#6d28d9}
   html[data-theme="dark"] .chip.mult{background:rgba(139,92,246,.18);color:#c4b5fd}
-  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
-  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  select,input[type=text]{background:#fff;border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px}
+  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
+  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
+  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

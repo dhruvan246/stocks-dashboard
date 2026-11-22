@@ -10,10 +10,10 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   .dot{width:.65rem;height:.65rem;border-radius:9999px;flex:none}
-  .dot.ok{background:#22c55e;box-shadow:0 0 0 3px #dcfce7}
-  .dot.bad{background:#ef4444;box-shadow:0 0 0 3px #fee2e2;animation:pulse 1.6s infinite}
+  .dot.ok{background:var(--pos);box-shadow:0 0 0 3px #dcfce7}
+  .dot.bad{background:var(--neg);box-shadow:0 0 0 3px #fee2e2;animation:pulse 1.6s infinite}
   .dot.na{background:#cbd5e1;box-shadow:0 0 0 3px #f1f5f9}
   @keyframes pulse{50%{opacity:.45}}
 </style>

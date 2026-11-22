@@ -10,20 +10,20 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   th[data-s]{cursor:pointer;user-select:none;white-space:nowrap}
-  th[data-s]:hover{color:#2563eb}
+  th[data-s]:hover{color:var(--accent-text)}
   /* theme-variable styling so Light / Dark / Soft all work (theme.css defines the vars) */
   .catlink{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;text-align:left;
-           padding:7px 11px;border-radius:9px;border:0;background:none;cursor:pointer;
-           font-size:12.5px;font-weight:600;color:var(--text-muted,#475569);transition:background .12s,color .12s}
-  .catlink:hover{background:var(--surface-2,#f1f5f9);color:var(--text,#0f172a)}
-  .catlink.on{background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8)}
-  .catn{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:9999px;flex:none;
-        background:var(--surface-2,#f1f5f9);color:var(--text-faint,#94a3b8)}
-  .catlink.on .catn{background:var(--accent,#2563eb);color:#fff}
-  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:.5rem;
-          background:var(--accent-soft,#eff6ff);color:var(--accent,#1d4ed8);border:1px solid var(--border-strong,#bfdbfe);white-space:nowrap;
+           padding:7px 11px;border-radius:var(--radius);border:0;background:none;cursor:pointer;
+           font-size:12.5px;font-weight:600;color:var(--text-muted,var(--text-muted));transition:background .12s,color .12s}
+  .catlink:hover{background:var(--surface-2,var(--surface-2));color:var(--text,var(--text))}
+  .catlink.on{background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text))}
+  .catn{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:var(--radius-sm);flex:none;
+        background:var(--surface-2,var(--surface-2));color:var(--text-faint,var(--text-faint))}
+  .catlink.on .catn{background:var(--accent,var(--accent));color:#fff}
+  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius);
+          background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));white-space:nowrap;
           transition:border-color .12s}
   .docbtn:hover{border-color:var(--accent,#93c5fd)}
 </style>

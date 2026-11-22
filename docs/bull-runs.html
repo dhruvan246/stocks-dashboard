@@ -11,52 +11,52 @@
 <script src="./theme.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .pcard{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
+  .pcard{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);
     padding:12px 14px;min-width:150px;flex:1}
-  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,#94a3b8)}
+  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,var(--text-faint))}
   .pcard .v{font-size:19px;font-weight:800;margin-top:2px}
-  .pcard .s{font-size:11px;color:var(--text-muted,#64748b);margin-top:2px}
-  .pcard.live{border-color:var(--accent,#2563eb)}
+  .pcard .s{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:2px}
+  .pcard.live{border-color:var(--accent,var(--accent))}
   .pcard.dim{opacity:.42}
-  .vcard{background:var(--surface,#fff);border:1.5px solid var(--border,#e2e8f0);border-radius:.7rem;
+  .vcard{background:var(--surface,var(--surface));border:1.5px solid var(--border,var(--border));border-radius:var(--radius-lg);
     padding:8px 14px;cursor:pointer;user-select:none;transition:.15s;text-align:left}
-  .vcard:hover{border-color:var(--accent,#2563eb)}
+  .vcard:hover{border-color:var(--accent,var(--accent))}
   .vcard .n{font-size:13.5px;font-weight:800;letter-spacing:-.01em}
-  .vcard .m{font-size:11px;color:var(--text-muted,#64748b);margin-top:1px}
-  .vcard.on{border-color:var(--accent,#2563eb);box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
-  .vcard.on .n{color:var(--accent,#2563eb)}
+  .vcard .m{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:1px}
+  .vcard.on{border-color:var(--accent,var(--accent));box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
+  .vcard.on .n{color:var(--accent,var(--accent-text))}
   /* group heading inside the pill row — the two families rank DIFFERENT populations, so the
      reader has to be able to tell which one a pill belongs to before clicking it. */
   .grp{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--text-faint,#94a3b8);margin-left:.35rem;padding-left:.7rem;
-    border-left:1px solid var(--border,#e2e8f0)}
+    color:var(--text-faint,var(--text-faint));margin-left:.35rem;padding-left:.7rem;
+    border-left:1px solid var(--border,var(--border))}
   @media(max-width:640px){.grp{border-left:0;padding-left:0;margin-left:0;flex-basis:100%}}
-  .vcard:focus-visible{outline:2px solid var(--accent,#2563eb);outline-offset:2px}
-  .pcard.live .t{color:var(--accent,#2563eb)}
-  .note{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;
-    padding:12px 14px;font-size:13px;color:var(--text,#0f172a);line-height:1.6}
-  .pos{color:#16a34a} html[data-theme="dark"] .pos{color:#4ade80}
-  .warn{color:#b45309} html[data-theme="dark"] .warn{color:#fbbf24}
-  .shell{background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.75rem;overflow-x:auto}
+  .vcard:focus-visible{outline:2px solid var(--accent,var(--accent));outline-offset:2px}
+  .pcard.live .t{color:var(--accent,var(--accent-text))}
+  .note{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);
+    padding:12px 14px;font-size:13px;color:var(--text,var(--text));line-height:1.6}
+  .pos{color:var(--pos)} html[data-theme="dark"] .pos{color:var(--pos)}
+  .warn{color:var(--warn)} html[data-theme="dark"] .warn{color:var(--warn)}
+  .shell{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);overflow-x:auto}
   table{border-collapse:collapse;width:100%;min-width:1000px}
-  th{position:sticky;top:0;background:var(--surface-2,#f1f5f9);color:var(--text-muted,#64748b);
+  th{position:sticky;top:0;background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));
     font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 9px;
     cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
   th.num,td.num{text-align:right}
-  td{padding:6px 9px;border-top:1px solid var(--border,#e2e8f0);font-size:13px}
+  td{padding:6px 9px;border-top:1px solid var(--border,var(--border));font-size:13px}
   td.mono{font-family:ui-monospace,Consolas,monospace}
-  .fam{display:inline-block;background:var(--surface-2,#f1f5f9);border-radius:4px;padding:1px 7px;
-    font-size:12px;white-space:nowrap;color:var(--text-muted,#475569)}
+  .fam{display:inline-block;background:var(--surface-2,var(--surface-2));border-radius:4px;padding:1px 7px;
+    font-size:12px;white-space:nowrap;color:var(--text-muted,var(--text-muted))}
   /* Earnings basis — the same rule can appear under either, so it must be readable at a glance. */
   .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;
     letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
-  .b-std{background:#eef2ff;color:#4338ca} .b-con{background:#ecfdf5;color:#047857}
-  .b-any{background:transparent;color:var(--text-muted,#94a3b8);border-color:var(--border,#e2e8f0);font-weight:600}
+  .b-std{background:var(--accent-soft);color:var(--accent-text)} .b-con{background:var(--pos-soft);color:var(--pos)}
+  .b-any{background:transparent;color:var(--text-muted,var(--text-faint));border-color:var(--border,var(--border));font-weight:600}
   html[data-theme="dark"] .b-std{background:#312e81;color:#c7d2fe}
   html[data-theme="dark"] .b-con{background:#064e3b;color:#a7f3d0}
-  html[data-theme="dark"] .b-any{color:#94a3b8;border-color:#374151}
-  .sub{display:block;font-size:10px;color:var(--text-faint,#94a3b8);font-family:ui-monospace,Consolas,monospace}
-  .now{color:var(--accent,#2563eb);font-weight:700}
+  html[data-theme="dark"] .b-any{color:var(--text-muted);border-color:var(--border-strong)}
+  .sub{display:block;font-size:10px;color:var(--text-faint,var(--text-faint));font-family:ui-monospace,Consolas,monospace}
+  .now{color:var(--accent,var(--accent-text));font-weight:700}
   @media(max-width:700px){
     #tbl th[data-c="f"],#tbl td.filt{min-width:186px;max-width:210px;white-space:normal;overflow-wrap:break-word;line-height:1.35}
   }

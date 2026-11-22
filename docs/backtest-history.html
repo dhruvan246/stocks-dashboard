@@ -14,8 +14,8 @@
 <script src="./bt-sync.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   /* keep long strategy names on the KPI tiles to one tidy line */
   .sw-stat .sw-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* expand chevron rotates instead of swapping glyphs */
@@ -23,19 +23,19 @@
   tr.isopen .exparrow{transform:rotate(90deg)}
   /* action buttons, themed via tokens so they work on light / soft / dark */
   .btn-load{
-    font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:999px;white-space:nowrap;
-    color:var(--accent,#4f46e5);background:var(--accent-soft,rgba(79,70,229,.10));
-    border:1px solid color-mix(in srgb, var(--accent,#4f46e5) 32%, transparent);
+    font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:var(--radius-sm);white-space:nowrap;
+    color:var(--accent,var(--accent-text));background:var(--accent-soft,rgba(79,70,229,.10));
+    border:1px solid color-mix(in srgb, var(--accent,var(--accent)) 32%, transparent);
   }
-  .btn-load:hover{background:color-mix(in srgb, var(--accent,#4f46e5) 20%, transparent)}
+  .btn-load:hover{background:color-mix(in srgb, var(--accent,var(--accent)) 20%, transparent)}
   .btn-del{
-    font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:999px;white-space:nowrap;
-    color:var(--neg,#b91c1c);background:transparent;
+    font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:var(--radius-sm);white-space:nowrap;
+    color:var(--neg,var(--neg));background:transparent;
     border:1px solid color-mix(in srgb, var(--neg,#b91c1c) 30%, transparent);opacity:.85;
   }
-  .btn-del:hover{background:color-mix(in srgb, var(--neg,#b91c1c) 12%, transparent);opacity:1}
+  .btn-del:hover{background:color-mix(in srgb, var(--neg,var(--neg)) 12%, transparent);opacity:1}
   /* year-by-year panel inside the expand row */
-  .yby-panel{border:1px solid var(--border,#e7eaf2);border-radius:var(--radius-sm,10px);background:var(--surface,#fff);padding:12px 14px}
+  .yby-panel{border:1px solid var(--border,#e7eaf2);border-radius:var(--radius-sm,10px);background:var(--surface,var(--surface));padding:12px 14px}
   .yby-panel table td,.yby-panel table th{padding:3px 10px;white-space:nowrap}
   .yby-panel .rowlab{font-weight:700;font-size:11.5px}
 </style>

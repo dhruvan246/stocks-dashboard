@@ -27,24 +27,24 @@
     html[data-theme] #shp table thead th:first-child, html[data-theme] #kpiBody table thead th:first-child{ background:var(--sw-pin-head,var(--surface)); }
     html[data-theme] #shp table tbody td:first-child, html[data-theme] #kpiBody table tbody td:first-child{ background:var(--sw-pin-body,var(--surface)); }
   }
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   .lbl{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-  #ov{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  #ov{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
   .rng{cursor:pointer}
   .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
   #chartWrap{position:relative}
   /* price card: Lightweight Charts draws into #chart (autoSize follows this box) */
   #chart{height:340px}
   @media (max-width:640px){ #chart{height:260px} }
-  .tvlink{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:.5rem;border:1px solid var(--border,#e2e8f0);font-size:11px;font-weight:700;color:var(--text-muted,#64748b);text-decoration:none;line-height:1.4}
-  .tvlink:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
-  .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border,#e2e8f0);background:var(--surface-2,#f8fafc);color:var(--text-muted,#475569);font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
-  .clschip:hover{border-color:var(--accent,#4f46e5);color:var(--accent,#4f46e5)}
-  .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,#94a3b8)}
+  .tvlink{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .6rem;border-radius:var(--radius);border:1px solid var(--border,var(--border));font-size:11px;font-weight:700;color:var(--text-muted,var(--text-muted));text-decoration:none;line-height:1.4}
+  .tvlink:hover{border-color:var(--accent,var(--accent));color:var(--accent,var(--accent-text))}
+  .clschip{display:inline-flex;align-items:baseline;gap:.3rem;padding:.15rem .55rem;border-radius:var(--radius-sm);border:1px solid var(--border,var(--border));background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));font-size:.72rem;font-weight:600;line-height:1.5;white-space:nowrap;text-decoration:none;transition:border-color .12s,color .12s}
+  .clschip:hover{border-color:var(--accent,var(--accent));color:var(--accent,var(--accent-text))}
+  .clslv{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint,var(--text-faint))}
   .pkcol{cursor:pointer;white-space:nowrap;user-select:none}
-  .pkcol:hover{color:var(--accent,#4f46e5)}
-  #peers .psym{font-size:.625rem;color:var(--text-faint,#94a3b8);margin-left:.25rem;font-weight:400}
+  .pkcol:hover{color:var(--accent,var(--accent-text))}
+  #peers .psym{font-size:.625rem;color:var(--text-faint,var(--text-faint));margin-left:.25rem;font-weight:400}
   /* On phones theme.js makes #peers a .sw-scrollx, which PINS the first column — and a pinned
      "Company Name SYM" cell measured 269px of a 309px scroller at 375px, hiding MCap, P/E and 1Y
      (and the headings you now sort by) behind it. Below 640px the row leads with the SYMBOL and
@@ -56,7 +56,7 @@
   /* Financial detail pins its ROW LABELS on phones (§186). Every header cell there is sticky at z-index 4 and
      theme.css lifts the pinned corner only for .sw-pin2, so without this the scrolled years paint over it. */
   @media (max-width:640px){ html[data-theme] #deepBody .sw-scrollx.tscroll table thead th:first-child{z-index:5} }
-  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:.5rem;padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
+  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius);padding:.35rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -662,7 +662,7 @@ function render(){
   $('sPrice').textContent='₹'+(rawLast>=1000?Math.round(rawLast).toLocaleString('en-IN'):rawLast.toFixed(2));
   $('sChg').innerHTML=`<span class="${dayChg>=0?'pos':'neg'}">${pct(dayChg)}</span> <span class="text-slate-400 text-xs">1-day</span>`;
   if(!rw&&LIVE_OFF!=null&&off===LIVE_OFF)
-    $('sAsof').innerHTML='<span style="color:#16a34a;font-weight:800">● LIVE</span> '+
+    $('sAsof').innerHTML='<span style="color:var(--pos);font-weight:800">● LIVE</span> '+
       (liveMarketOpen()?'':'(last traded) ')+isoOff(off)+' · Yahoo NSE, ~15-min delay';
   else $('sAsof').textContent=(rw?'rewound to ':(off<SF_END_OFF?'last traded ':'as of '))+isoOff(off);
   $('sBt').href='./stock-backtest.html';
@@ -749,7 +749,7 @@ function render(){
   // never mistaken for a settled close.
   { const ln=$('liveNote');
     if(ln){ if(!rw&&LIVE_OFF!=null){
-        ln.innerHTML='<span style="color:#16a34a;font-weight:800">●</span> <b>'+isoOff(LIVE_OFF)+'</b> is a provisional live bar '+
+        ln.innerHTML='<span style="color:var(--pos);font-weight:800">●</span> <b>'+isoOff(LIVE_OFF)+'</b> is a provisional live bar '+
           '(Yahoo NSE, ~15-min delay). Volume and delivery % aren\'t published intraday, so that session carries neither. '+
           'The official close replaces it after the evening bhavcopy run (~20:45 IST).';
         ln.classList.remove('hidden');
@@ -1982,7 +1982,7 @@ function renderPreIPO(){
   }
   $('preipo').innerHTML=h+'</tbody></table>';
   $('preipoBadge').innerHTML=e.verified
-    ? '<span style="color:#16a34a;font-weight:700">✓ matches filed results</span>'
+    ? '<span style="color:var(--pos);font-weight:700">✓ matches filed results</span>'
     : '— standalone only, as reported to MoneyControl, not yet read from a filing';
   $('preipoNote').innerHTML='Annual figures (standalone) from the company’s prospectus era via MoneyControl — the years before it began filing quarterly results with the exchange. Shown for context; <b>not used in the backtest</b> (which uses only point-in-time filed data).'
     +(e.verified?' The ✓ badge means at least one year here reproduces a quarter the company has since filed.':'');
@@ -2144,7 +2144,7 @@ async function liveQuote(){
     $('sPrice').textContent='₹'+(ltp>=1000?Math.round(ltp).toLocaleString('en-IN'):ltp.toFixed(2));
     if(pc>0){ const ch=(ltp/pc-1)*100;
       $('sChg').innerHTML=`<span class="${ch>=0?'pos':'neg'}">${pct(ch)}</span> <span class="text-slate-400 text-xs">1-day</span>`; }
-    $('sAsof').innerHTML='<span style="color:#16a34a;font-weight:800">● LIVE</span> '+
+    $('sAsof').innerHTML='<span style="color:var(--pos);font-weight:800">● LIVE</span> '+
       (liveMarketOpen()?'':'(last traded) ')+'· Yahoo NSE, ~15-min delay';
   }catch(e){ /* keep baked close */ }
 }

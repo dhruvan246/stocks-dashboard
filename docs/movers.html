@@ -10,51 +10,72 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  :root { --mvc:#ffffff; --mvline:#e2e8f0; --gain:#15803d; --loss:#b91c1c; }
-  html[data-theme="dark"] { --mvc:#0f172a; --mvline:#293548; --gain:#4ade80; --loss:#f87171; }
-  .card{background:var(--mvc);border:1px solid var(--mvline);border-radius:.75rem}
+  :root { --mvc:var(--surface); --mvline:var(--border); --gain:var(--pos); --loss:var(--neg); }
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   .pos{color:var(--gain);font-weight:700}.neg{color:var(--loss);font-weight:700}
-  .vbtn{padding:6px 13px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0);transition:var(--tr,.15s)}
-  .vbtn:hover{border-color:var(--accent,#2563eb);color:var(--accent,#2563eb)}
-  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  select{background:var(--mvc);border:1px solid #cbd5e1;border-radius:.5rem;font-size:12.5px;font-weight:600;padding:6px 9px;color:var(--text,#0f172a)}
-  html[data-theme="dark"] select{border-color:#374151}
-  .flab{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)}
 
-  /* stat cards */
-  .stat{background:var(--mvc);border:1px solid var(--mvline);border-radius:.75rem;padding:12px 14px}
-  .stat .v{font-size:22px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
-  .stat .l{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint,#94a3b8);margin-top:3px}
+  /* page head */
+  .mv-head h1{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:var(--text);margin:0}
+  .mv-head h1 span{font-size:14px;font-weight:500;color:var(--text-faint);letter-spacing:0}
+  .mv-head p{font-size:12.5px;line-height:1.55;color:var(--text-muted);margin:6px 0 0;max-width:1000px}
+  .mv-head p b{color:var(--text);font-weight:600}
 
-  /* sector heatmap chips */
-  .schip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:9999px;font-size:11.5px;font-weight:700;
-         border:1px solid var(--mvline);cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums}
-  .schip .sv{font-weight:800}
+  /* buttons: square, quiet; a row marked .seg joins its buttons into one control */
+  .vbtn{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);transition:var(--tr,.15s);box-sizing:border-box}
+  .vbtn:hover{border-color:var(--border-strong);color:var(--text)}
+  .vbtn.on{background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent)}
+  .seg{gap:0 !important}
+  .seg .vbtn{border-radius:0;margin-left:-1px}
+  .seg .vbtn:first-child{border-radius:var(--radius-sm) 0 0 var(--radius-sm);margin-left:0}
+  .seg .vbtn:last-of-type{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  .seg .vbtn.on{position:relative;z-index:1}
+  .seg #tabActive{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  select{background-color:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;font-weight:600;height:30px;padding:0 10px;color:var(--text)}
+  #fSearch{height:30px;box-sizing:border-box;background:var(--surface-2) !important;border:1px solid var(--border) !important;border-radius:var(--radius-sm) !important;color:var(--text);font-size:12px;min-width:170px}
+  .flab{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint)}
+
+  /* stat strip: four figures in one bar */
+  #cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+  .stat{padding:13px 16px;border-left:1px solid var(--border);min-width:0}
+  .stat:first-child{border-left:0}
+  .stat .v{font-size:22px;font-weight:700;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* sector pulse: an even grid of small tiles */
+  #sectorPulse{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:6px}
+  .schip{display:flex;align-items:center;gap:8px;padding:0 10px;height:30px;border-radius:var(--radius-sm);font-size:11.5px;font-weight:600;
+         border:1px solid transparent;cursor:pointer;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:0;transition:border-color var(--tr,.15s)}
+  .schip:hover{border-color:var(--border-strong)}
+  .schip .sn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+  .schip .sv{font-weight:700}
+  .schip .sc{color:var(--text-faint);font-weight:500;min-width:22px;text-align:right}
 
   /* table */
   .mv{border-collapse:separate;border-spacing:0;width:100%}
-  .mv th,.mv td{padding:8px 10px;font-size:12.5px;border-bottom:1px solid var(--mvline);white-space:nowrap}
-  .mv thead th{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:#64748b;position:sticky;top:0;background:var(--mvc);z-index:3;
-               cursor:pointer;user-select:none;text-align:right}
+  .mv th,.mv td{padding:7px 12px;font-size:12.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+  .mv tbody tr:last-child td{border-bottom:0}
+  .mv thead th{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);position:sticky;top:0;background:var(--surface-2);z-index:3;
+               cursor:pointer;user-select:none;text-align:right;padding-top:9px;padding-bottom:9px}
   .mv thead th.l{text-align:left}.mv thead th.noclick{cursor:default}
   .mv td{text-align:right;font-variant-numeric:tabular-nums}
   .mv td.l{text-align:left}
   .mv tbody tr{cursor:pointer;transition:background .12s}
-  .mv tbody tr:hover{background:var(--surface-2,#f1f5f9)}
-  html[data-theme="dark"] .mv tbody tr:hover{background:#16233b}
-  .mv .sym{font-weight:800;color:var(--accent,#2563eb)}
-  .mv .nm{font-size:11px;color:var(--text-faint,#94a3b8);max-width:230px;overflow:hidden;text-overflow:ellipsis}
-  .sec-chip{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9999px;background:var(--surface-2,#eef2ff);color:var(--text-muted,#475569)}
-  .chg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:.5rem;font-weight:800;font-size:12px}
-  .chg.g{background:rgba(22,163,74,.12);color:var(--gain)}
-  .chg.b{background:rgba(220,38,38,.12);color:var(--loss)}
+  .mv tbody tr:hover{background:var(--surface-2)}
+  .mv .sym{font-weight:700;color:var(--accent-text)}
+  .mv .nm{font-size:11px;color:var(--text-faint);max-width:230px;overflow:hidden;text-overflow:ellipsis}
+  .sec-chip{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted)}
+  .chg{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:var(--radius-sm);font-weight:700;font-size:12px}
+  .chg.g{background:var(--pos-soft);color:var(--gain)}
+  .chg.b{background:var(--neg-soft);color:var(--loss)}
   .spark{display:block}
-  .rk{color:var(--text-faint,#94a3b8);font-weight:700;font-size:11px}
-  #tip{position:fixed;z-index:80;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:.5rem;
-       padding:7px 10px;font-size:11.5px;line-height:1.5;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:250px;display:none}
-  #tip b{color:#fff}
-  @media (max-width:640px){ .mv th,.mv td{padding:7px 7px;font-size:12px} .hide-sm{display:none} }
+  .rk{color:var(--text-faint);font-weight:600;font-size:11px}
+  #tip{position:fixed;z-index:80;pointer-events:none;background:var(--surface-3);color:var(--text);border:1px solid var(--border-strong);border-radius:var(--radius);
+       padding:7px 10px;font-size:11.5px;line-height:1.5;box-shadow:var(--shadow-lg);max-width:250px;display:none}
+  #tip b{color:var(--text)}
+  @media (max-width:760px){ #cards{grid-template-columns:repeat(2,minmax(0,1fr))} .stat:nth-child(odd){border-left:0} .stat:nth-child(n+3){border-top:1px solid var(--border)} }
+  @media (max-width:640px){ .mv th,.mv td{padding:7px 8px;font-size:12px} .hide-sm{display:none} .mv-head h1{font-size:21px}
+    #sectorPulse{grid-template-columns:repeat(2,minmax(0,1fr))} .stat .v{font-size:19px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -70,9 +91,9 @@
 </header>
 
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Top Movers <span class="text-slate-400 font-semibold text-base">· gainers &amp; losers</span></h1>
-    <p class="text-sm text-slate-500 mt-1">NSE's biggest movers over the <b>session, week, month, quarter, half-year or year</b> — computed from <b>split/bonus-adjusted</b> closes so a corporate action never shows up as a fake jump. Filter by <b>universe</b> (F&amp;O / Nifty 500 / SME), <b>market-cap band</b> and <b>sector</b>. Each row carries an <b>8-month sparkline</b>, distance from the stock's own <b>52-week high &amp; low</b>, and a one-click deep link to its full page. <span id="updated" class="text-slate-400"></span></p>
+  <div class="mb-4 mv-head">
+    <h1>Top Movers <span>· gainers &amp; losers</span></h1>
+    <p>NSE's biggest movers over the <b>session, week, month, quarter, half-year or year</b> — computed from <b>split/bonus-adjusted</b> closes so a corporate action never shows up as a fake jump. Filter by <b>universe</b> (F&amp;O / Nifty 500 / SME), <b>market-cap band</b> and <b>sector</b>. Each row carries an <b>8-month sparkline</b>, distance from the stock's own <b>52-week high &amp; low</b>, and a one-click deep link to its full page. <span id="updated" class="text-slate-400"></span></p>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading market data…</div>
@@ -82,7 +103,7 @@
     <div id="liveCard" class="card p-4 mb-4 hidden">
       <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
         <div class="text-[11px] font-extrabold uppercase tracking-wide text-slate-400">
-          <span style="color:#16a34a">● LIVE</span> this session · biggest moves right now <span id="liveAt" class="normal-case font-semibold"></span>
+          <span style="color:var(--pos)">● LIVE</span> this session · biggest moves right now <span id="liveAt" class="normal-case font-semibold"></span>
         </div>
         <div class="text-[11px] text-slate-400">NSE raw session prices (vs prev close) · top 10 each side</div>
       </div>
@@ -96,13 +117,13 @@
     <div id="modeNote" class="text-xs mb-3 px-3 py-2 rounded-lg hidden" style="background:var(--surface-2,rgba(100,116,139,.08))"></div>
 
     <!-- stat cards -->
-    <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+    <div id="cards" class="mb-3"></div>
 
     <!-- filters -->
-    <div class="card p-3 mb-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+    <div class="card p-3 mb-3 flex flex-wrap items-end gap-x-5 gap-y-3">
       <div class="flex flex-col gap-1.5">
         <span class="flab">Window</span>
-        <div class="flex gap-1.5" id="fWindow">
+        <div class="flex seg" id="fWindow">
           <span class="vbtn on" data-w="1D">1D</span>
           <span class="vbtn" data-w="1W">1W</span>
           <span class="vbtn" data-w="1M">1M</span>
@@ -125,7 +146,7 @@
       </div>
       <div class="flex flex-col gap-1.5">
         <span class="flab">Market cap</span>
-        <div class="flex gap-1.5" id="fCap">
+        <div class="flex seg" id="fCap">
           <span class="vbtn on" data-c="all">All</span>
           <span class="vbtn" data-c="large">Large</span>
           <span class="vbtn" data-c="mid">Mid</span>
@@ -148,7 +169,7 @@
       <div class="flex flex-col gap-1.5 ml-auto">
         <span class="flab">&nbsp;</span>
         <div class="flex gap-1.5 items-center">
-          <input id="fSearch" type="search" placeholder="Search symbol…" class="text-xs px-3 py-1.5 rounded-lg border" style="border-color:var(--mvline);background:var(--mvc);min-width:150px" />
+          <input id="fSearch" type="search" placeholder="Search symbol…" class="px-3" />
           <button id="btnCsv" class="vbtn" title="Download the current view as CSV"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> CSV</button>
         </div>
       </div>
@@ -157,11 +178,11 @@
     <!-- sector heatmap -->
     <div class="mb-4">
       <div class="flab mb-1.5">Sector pulse <span class="normal-case font-medium text-slate-400" style="letter-spacing:0">· median move over the window (click to filter)</span></div>
-      <div id="sectorPulse" class="flex flex-wrap gap-2"></div>
+      <div id="sectorPulse"></div>
     </div>
 
     <!-- tabs -->
-    <div class="flex items-center gap-1.5 mb-3">
+    <div class="flex items-center seg mb-3">
       <span class="vbtn on" id="tabGain" data-t="gain">▲ Gainers</span>
       <span class="vbtn" id="tabLose" data-t="lose">▼ Losers</span>
       <span class="vbtn" id="tabActive" data-t="active">↕ Biggest moves</span>
@@ -469,10 +490,10 @@ function renderSectorPulse(){
   el.innerHTML = rows.map(x => {
     const up = x.med >= 0;
     const col = up ? 'var(--gain)' : 'var(--loss)';
-    const bg = up ? 'rgba(22,163,74,.10)' : 'rgba(220,38,38,.10)';
+    const bg = up ? 'var(--pos-soft)' : 'var(--neg-soft)';
     const on = SECTOR === x.s ? 'box-shadow:0 0 0 2px var(--accent,#2563eb) inset;' : '';
-    return '<span class="schip" data-sec="'+esc(x.s)+'" style="background:'+bg+';color:'+col+';'+on+'">'+
-           esc(x.s)+' <span class="sv">'+(up?'+':'')+x.med.toFixed(2)+'%</span> <span style="color:var(--text-faint,#94a3b8);font-weight:600">'+x.n+'</span></span>';
+    return '<span class="schip" data-sec="'+esc(x.s)+'" title="'+esc(x.s)+'" style="background:'+bg+';color:'+col+';'+on+'">'+
+           '<span class="sn">'+esc(x.s)+'</span><span class="sv">'+(up?'+':'')+x.med.toFixed(2)+'%</span><span class="sc">'+x.n+'</span></span>';
   }).join('');
 }
 
@@ -494,7 +515,7 @@ function renderModeNote(){
     const sk = [];
     if (LIVE_SKIP.bse) sk.push(LIVE_SKIP.bse.toLocaleString('en-IN') + ' BSE-only listings with no price yet today');
     if (LIVE_SKIP.untraded) sk.push(LIVE_SKIP.untraded.toLocaleString('en-IN') + ' not yet traded today');
-    h = '<b style="color:#16a34a">● LIVE</b> — 1D is today\'s move (last price vs previous close), NSE updated ' + esc(LIVE.time) +
+    h = '<b style="color:var(--pos)">● LIVE</b> — 1D is today\'s move (last price vs previous close), NSE updated ' + esc(LIVE.time) +
         (bseLiveOn() ? ' · BSE ' + esc(BLIVE.time) : '') + ' IST, refreshes every minute' +
         (bseLiveOn() ? ' (BSE prices can run up to ~6 min behind)' : '') + '.' +
         (LIVE_SKIP.bseSnap ? ' <b>BSE-only listings (' + LIVE_SKIP.bseSnap.toLocaleString('en-IN') + ') are not live</b> — they use the site\'s ' +

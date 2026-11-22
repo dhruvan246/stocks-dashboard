@@ -9,20 +9,20 @@
 <script src="./theme.js"></script>
 <style>
   table { font-feature-settings: "tnum" 1; }
-  table thead th { position:sticky; top:0; background:#f8fafc; z-index:10; }
-  .badge { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:10px; font-weight:600; }
-  .b-equity { background:#dbeafe; color:#1e40af; }
-  .b-debt   { background:#fef3c7; color:#92400e; }
+  table thead th { position:sticky; top:0; background:var(--surface-2); z-index:10; }
+  .badge { display:inline-block; padding:1px 6px; border-radius:var(--radius-sm); font-size:10px; font-weight:600; }
+  .b-equity { background:var(--accent-soft); color:var(--accent-text); }
+  .b-debt   { background:var(--warn-soft); color:var(--warn); }
   .b-hybrid { background:#fae8ff; color:#86198f; }
-  .b-passive{ background:#dcfce7; color:#166534; }
-  .b-fof    { background:#e0e7ff; color:#3730a3; }
+  .b-passive{ background:var(--pos-soft); color:var(--pos); }
+  .b-fof    { background:var(--accent-soft); color:var(--accent-text); }
   .b-commodity { background:#ffedd5; color:#9a3412; }
-  .b-other  { background:#f1f5f9; color:#475569; }
-  .b-plan-dir { background:#dbeafe; color:#1e40af; }
-  .b-plan-reg { background:#fee2e2; color:#991b1b; }
-  #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
-  .pos { color:#15803d; font-weight:600; }
-  .neg { color:#b91c1c; font-weight:600; }
+  .b-other  { background:var(--surface-2); color:var(--text-muted); }
+  .b-plan-dir { background:var(--accent-soft); color:var(--accent-text); }
+  .b-plan-reg { background:var(--neg-soft); color:var(--neg); }
+  #loadingOverlay{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;}
+  .pos { color:var(--pos); font-weight:600; }
+  .neg { color:var(--neg); font-weight:600; }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

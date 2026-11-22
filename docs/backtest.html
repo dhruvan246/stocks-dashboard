@@ -9,11 +9,11 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .tab.active { border-color:#2563eb; color:#1e40af; font-weight:700; }
-  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .tab.active { border-color:var(--accent); color:var(--accent-text); font-weight:700; }
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   input,select{outline:none}
-  #overlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  #overlay{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -203,7 +203,7 @@ const $ = id => document.getElementById(id);
 // inject small utility classes
 document.querySelectorAll('.lbl').forEach(e=>e.className='lbl block text-xs font-medium text-slate-600 mb-1');
 const STYLE=document.createElement('style');
-STYLE.textContent='.inp{width:100%;border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;background:#fff}.btn{background:#2563eb;color:#fff;border-radius:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:600}.btn:hover{background:#1d4ed8}.lbl{display:block;font-size:.75rem;color:#475569;margin-bottom:.25rem}';
+STYLE.textContent='.inp{width:100%;border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;background:#fff}.btn{background:var(--accent);color:#fff;border-radius:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:600}.btn:hover{background:#1d4ed8}.lbl{display:block;font-size:.75rem;color:#475569;margin-bottom:.25rem}';
 document.head.appendChild(STYLE);
 
 let FUNDS=[], BYCODE={}, HIST=null, SEL=null;

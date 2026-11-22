@@ -1,99 +1,99 @@
 /* =============================================================================
- * STOCKSWORLD — shared theme v4 "Obsidian" (Dark default · Light · Soft)
+ * STOCKSWORLD — shared theme v5 "Meridian" (Dark default · Light · Soft)
  *
  * Loaded on every page alongside the Tailwind CDN. Strategy (unchanged since v1):
  *   1. Each theme defines a set of CSS-variable TOKENS (--surface, --text, …).
  *   2. The Tailwind classes the pages already use (bg-white, text-slate-*,
  *      border-slate-*, bg-indigo-600, …) are re-routed onto those tokens, so one
- *      stylesheet restyles all ~45 pages with no HTML changes.
+ *      stylesheet restyles every page with no HTML changes.
  *   3. theme.js sets <html data-theme="…"> before first paint (no flash) and
- *      injects the header chrome (nav, search, tabs, footer, bottom bar).
+ *      builds the chrome: ONE header for every page (logo, search, nav, theme
+ *      pill), the market strip above it, page tabs, footer, phone bottom bar.
  * Selectors use html[data-theme] for specificity so they win over Tailwind
  * without fighting load order; the remap layer uses !important on purpose.
  *
- * v4 (2026-09-05): new type system (Geist + Geist Mono, tabular figures),
- * neutral near-black base with hairline borders instead of glowing navy,
- * one accent used sparingly, flat cards, calmer motion, SVG icons in the
- * chrome (theme.js), segmented tab strip, quieter footer.
+ * v5 (2026-11-22): flat ink surfaces (no glow gradients), Inter + JetBrains Mono,
+ * tighter 6/8/10px radii, one uniform header and footer on a single 1536px rail,
+ * a site-wide market strip, uniform form controls, no entrance animations, and
+ * <main> pinned to the window at every width (desktop sideways cut-off fix).
+ * The v5 rules live in the "V5 LAYER" at the bottom of this file.
  * ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root{
-  --radius: 12px;
-  --radius-sm: 9px;
-  --radius-lg: 16px;
-  --tr: .16s cubic-bezier(.4, 0, .2, 1);
-  --font: 'Geist', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-lg: 10px;
+  --tr: .14s cubic-bezier(.4, 0, .2, 1);
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --rail: 1536px;            /* the one width the header, market strip and footer share */
 }
 
 /* -------------------------------- DARK (default) -------------------------- */
 html[data-theme="dark"]{
-  --app-bg:
-    radial-gradient(1000px 460px at 50% -160px, rgba(79, 134, 247, .13) 0%, transparent 70%),
-    #0b0d12;
-  --surface:#12151c;
-  --surface-2:#171b23;
-  --surface-3:#1e232d;
-  --border:#242a35;
-  --border-strong:#323a49;
-  --text:#eceef3;
-  --text-muted:#9aa3b3;
-  --text-faint:#687184;
-  --accent:#4f86f7; --accent-text:#8fb5ff; --accent-2:#22d3ee;
-  --accent-soft: rgba(79, 134, 247, .14);
-  --pos:#31d17e; --neg:#ff5d6c; --warn:#f5b73f;
-  --pos-soft: rgba(49, 209, 126, .13); --neg-soft: rgba(255, 93, 108, .13); --warn-soft: rgba(245, 183, 63, .13);
-  --shadow: inset 0 1px 0 rgba(255, 255, 255, .03), 0 1px 2px rgba(0, 0, 0, .35);
-  --shadow-lg: inset 0 1px 0 rgba(255, 255, 255, .04), 0 24px 56px -20px rgba(0, 0, 0, .8);
-  --header-bg: rgba(11, 13, 18, .78);
-  --glow: rgba(79, 134, 247, .45);
+  --app-bg:#131722;
+  --surface:#1a1f2c;
+  --surface-2:#202636;
+  --surface-3:#2a3142;
+  --border:#2a3040;
+  --border-strong:#3a4257;
+  --text:#e6e9f0;
+  --text-muted:#9aa3b8;
+  --text-faint:#737c93;
+  --accent:#0d9488; --accent-text:#5eead4; --accent-2:#38bdf8; --on-accent:#ffffff;
+  --accent-soft: rgba(20, 184, 166, .16);
+  --pos:#26a69a; --neg:#ef5350; --warn:#f0b440;
+  --pos-soft: rgba(38, 166, 154, .14); --neg-soft: rgba(239, 83, 80, .14); --warn-soft: rgba(240, 180, 64, .13);
+  --shadow: none;
+  --shadow-lg: 0 16px 40px -16px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .02);
+  --header-bg: rgba(19, 23, 34, .94);
+  --side-bg:#0e121b;
+  --glow: rgba(20, 184, 166, .35);
 }
 
 /* -------------------------------- LIGHT ----------------------------------- */
 html[data-theme="light"]{
-  --app-bg:
-    radial-gradient(1000px 460px at 50% -160px, rgba(47, 107, 230, .09) 0%, transparent 70%),
-    #f4f5f8;
+  --app-bg:#f2f4f7;
   --surface:#ffffff;
-  --surface-2:#f7f8fa;
-  --surface-3:#eef0f4;
-  --border:#e5e8ee;
-  --border-strong:#d2d7e0;
-  --text:#0f1319;
-  --text-muted:#5b6474;
-  --text-faint:#8a93a3;
-  --accent:#2f6be6; --accent-text:#2458c9; --accent-2:#0ea5e9;
-  --accent-soft: rgba(47, 107, 230, .10);
-  --pos:#0f8a4d; --neg:#d9313f; --warn:#b7791f;
-  --pos-soft: rgba(15, 138, 77, .10); --neg-soft: rgba(217, 49, 63, .10); --warn-soft: rgba(183, 121, 31, .12);
-  --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 1px 1px rgba(16, 24, 40, .03);
-  --shadow-lg: 0 16px 40px -16px rgba(16, 24, 40, .28);
-  --header-bg: rgba(255, 255, 255, .82);
-  --glow: rgba(47, 107, 230, .35);
+  --surface-2:#f6f7f9;
+  --surface-3:#eceff3;
+  --border:#e2e6ec;
+  --border-strong:#cbd2dc;
+  --text:#0c1220;
+  --text-muted:#525d71;
+  --text-faint:#6f7a8d;
+  --accent:#0d9488; --accent-text:#0b7a70; --accent-2:#0ea5e9; --on-accent:#ffffff;
+  --accent-soft: rgba(13, 148, 136, .10);
+  --pos:#0a8a55; --neg:#d92d3f; --warn:#a96a08;
+  --pos-soft: rgba(10, 138, 85, .10); --neg-soft: rgba(217, 45, 63, .09); --warn-soft: rgba(169, 106, 8, .12);
+  --shadow: 0 1px 2px rgba(16, 24, 40, .05);
+  --shadow-lg: 0 16px 40px -16px rgba(16, 24, 40, .28), 0 0 0 1px rgba(16, 24, 40, .03);
+  --header-bg: rgba(255, 255, 255, .94);
+  --side-bg:#ffffff;
+  --glow: rgba(13, 148, 136, .3);
 }
 
 /* --------------------------- SOFT (warm paper) ---------------------------- */
 html[data-theme="soft"]{
-  --app-bg:
-    radial-gradient(1000px 460px at 50% -160px, rgba(211, 55, 111, .08) 0%, transparent 70%),
-    #f8f5f1;
+  --app-bg:#f7f3ee;
   --surface:#fffdfa;
   --surface-2:#f7f2ec;
   --surface-3:#efe8e0;
-  --border:#eae2d9;
-  --border-strong:#d8cdc1;
+  --border:#e8dfd5;
+  --border-strong:#d6cabd;
   --text:#2a2420;
-  --text-muted:#6f655c;
-  --text-faint:#9b9086;
-  --accent:#d3376f; --accent-text:#b8285c; --accent-2:#8b5cf6;
-  --accent-soft: rgba(211, 55, 111, .10);
-  --pos:#0f9d58; --neg:#e11d48; --warn:#b45309;
-  --pos-soft: rgba(15, 157, 88, .11); --neg-soft: rgba(225, 29, 72, .10); --warn-soft: rgba(180, 83, 9, .12);
-  --shadow: 0 1px 2px rgba(80, 60, 50, .06), 0 1px 1px rgba(80, 60, 50, .03);
+  --text-muted:#685e55;
+  --text-faint:#85796e;
+  --accent:#c93068; --accent-text:#b0245a; --accent-2:#8b5cf6;
+  --accent-soft: rgba(201, 48, 104, .10);
+  --pos:#0c8a4e; --neg:#d81f45; --warn:#a85008;
+  --pos-soft: rgba(12, 138, 78, .11); --neg-soft: rgba(216, 31, 69, .10); --warn-soft: rgba(168, 80, 8, .12);
+  --shadow: 0 1px 2px rgba(80, 60, 50, .06);
   --shadow-lg: 0 18px 44px -18px rgba(120, 80, 90, .30);
-  --header-bg: rgba(255, 253, 250, .84);
-  --glow: rgba(211, 55, 111, .35);
+  --header-bg: rgba(255, 253, 250, .92);
+  --glow: rgba(201, 48, 104, .3);
+  --side-bg:#fbf7f1; --on-accent:#ffffff;
 }
 
 /* ------------------------------- base ------------------------------------- */
@@ -286,12 +286,12 @@ html[data-theme="dark"] .text-rose-600, html[data-theme="dark"] .text-rose-700{ 
 html[data-theme="dark"] .text-orange-700, html[data-theme="dark"] .text-orange-600{ color:#fdba74 !important; }
 
 html[data-theme="dark"] .bg-blue-50{ background-color: var(--accent-soft) !important; }
-html[data-theme="dark"] .bg-blue-100{ background-color: rgba(79, 134, 247, .22) !important; }
+html[data-theme="dark"] .bg-blue-100{ background-color: color-mix(in srgb, var(--accent) 22%, transparent) !important; }
 html[data-theme="dark"] .bg-indigo-50{ background-color: var(--accent-soft) !important; }
-html[data-theme="dark"] .bg-indigo-100{ background-color: rgba(79, 134, 247, .22) !important; }
+html[data-theme="dark"] .bg-indigo-100{ background-color: color-mix(in srgb, var(--accent) 22%, transparent) !important; }
 html[data-theme="dark"] .bg-violet-50{ background-color: rgba(139, 92, 246, .16) !important; }
 html[data-theme="dark"] .bg-amber-50, html[data-theme="dark"] .bg-amber-50\/40{ background-color: var(--warn-soft) !important; }
-html[data-theme="dark"] .bg-amber-100{ background-color: rgba(245, 183, 63, .20) !important; }
+html[data-theme="dark"] .bg-amber-100{ background-color: color-mix(in srgb, var(--warn) 20%, transparent) !important; }
 html[data-theme="dark"] .bg-emerald-50, html[data-theme="dark"] .bg-emerald-100{ background-color: var(--pos-soft) !important; }
 html[data-theme="dark"] .bg-green-50, html[data-theme="dark"] .bg-green-100{ background-color: var(--pos-soft) !important; }
 html[data-theme="dark"] .bg-red-50, html[data-theme="dark"] .bg-red-100{ background-color: var(--neg-soft) !important; }
@@ -301,14 +301,14 @@ html[data-theme="dark"] .bg-slate-800{ background-color:#2a3242 !important; }
 html[data-theme="dark"] .bg-slate-900{ background-color:#1a1f2a !important; }
 html[data-theme="dark"] .border-slate-800, html[data-theme="dark"] .border-slate-700{ border-color:#3a4457 !important; }
 
-html[data-theme="dark"] .hover\:bg-blue-50:hover{ background-color: rgba(79, 134, 247, .20) !important; }
-html[data-theme="dark"] .hover\:bg-indigo-100:hover{ background-color: rgba(79, 134, 247, .24) !important; }
+html[data-theme="dark"] .hover\:bg-blue-50:hover{ background-color: color-mix(in srgb, var(--accent) 20%, transparent) !important; }
+html[data-theme="dark"] .hover\:bg-indigo-100:hover{ background-color: color-mix(in srgb, var(--accent) 24%, transparent) !important; }
 
-html[data-theme="dark"] .border-blue-200, html[data-theme="dark"] .border-indigo-200{ border-color: rgba(79, 134, 247, .38) !important; }
-html[data-theme="dark"] .border-amber-200, html[data-theme="dark"] .border-amber-300{ border-color: rgba(245, 183, 63, .38) !important; }
+html[data-theme="dark"] .border-blue-200, html[data-theme="dark"] .border-indigo-200{ border-color: color-mix(in srgb, var(--accent) 38%, transparent) !important; }
+html[data-theme="dark"] .border-amber-200, html[data-theme="dark"] .border-amber-300{ border-color: color-mix(in srgb, var(--warn) 38%, transparent) !important; }
 html[data-theme="dark"] .border-violet-200{ border-color: rgba(139, 92, 246, .38) !important; }
-html[data-theme="dark"] .border-emerald-200, html[data-theme="dark"] .border-green-200{ border-color: rgba(49, 209, 126, .38) !important; }
-html[data-theme="dark"] .border-red-200, html[data-theme="dark"] .border-rose-200{ border-color: rgba(255, 93, 108, .38) !important; }
+html[data-theme="dark"] .border-emerald-200, html[data-theme="dark"] .border-green-200{ border-color: color-mix(in srgb, var(--pos) 38%, transparent) !important; }
+html[data-theme="dark"] .border-red-200, html[data-theme="dark"] .border-rose-200{ border-color: color-mix(in srgb, var(--neg) 38%, transparent) !important; }
 
 /* page-defined .pos/.neg helpers (in each page's <style>) → themed */
 html[data-theme] .pos{ color: var(--pos) !important; }
@@ -712,3 +712,178 @@ html[data-theme] .sw-filt-btn{ display:none; }
     padding:0; margin:2px 0 0; cursor:pointer; }
 }
 @media (min-width:641px){ html[data-theme] .sw-clamp-more{ display:none; } }
+
+
+/* =============================================================================
+ * V5 LAYER "MERIDIAN" (2026-11-22). Everything below refines the rules above;
+ * it comes last so equal-specificity rules here win.
+ * ========================================================================== */
+
+/* ---- base: flat ink, Inter with tabular figures where numbers are read ---- */
+html[data-theme] body{ letter-spacing:-.006em; font-feature-settings:"cv11" 1, "calt" 1; }
+html[data-theme] main > *, html[data-theme] section, html[data-theme] .card{ animation:none; }
+html[data-theme] a.card:hover{ transform:none; }
+html[data-theme] .mono{ font-size:.92em; letter-spacing:-.01em; }
+
+/* ---- <main> is pinned to the window at EVERY width. body is a flex column, so a
+   centred <main> was sized shrink-to-fit and one wide table dragged the whole page
+   past the window between 761 and 1300px (23 pages, measured 2026-10-07). ---- */
+html[data-theme] body > main{ min-width:0; width:100%; }
+html[data-theme] body > *{ min-width:0; }
+
+/* ---- tighter geometry: Tailwind's big radii land on the theme's three ---- */
+html[data-theme] .rounded-2xl:not([class*="rounded-t-"]):not([class*="rounded-b-"]):not([class*="rounded-l-"]):not([class*="rounded-r-"]),
+html[data-theme] .rounded-3xl:not([class*="rounded-t-"]):not([class*="rounded-b-"]):not([class*="rounded-l-"]):not([class*="rounded-r-"]){ border-radius:var(--radius-lg); }
+html[data-theme] .rounded-xl:not([class*="rounded-t-"]):not([class*="rounded-b-"]):not([class*="rounded-l-"]):not([class*="rounded-r-"]){ border-radius:var(--radius); }
+html[data-theme] .rounded-lg:not([class*="rounded-t-"]):not([class*="rounded-b-"]):not([class*="rounded-l-"]):not([class*="rounded-r-"]){ border-radius:var(--radius-sm); }
+
+/* ---- ONE header on every page (markup normalised by theme.js buildHeader) ---- */
+html[data-theme] header.sw-header{ z-index:50; width:100%; }
+html[data-theme] header.sw-scrolled{ box-shadow:0 8px 24px -18px rgba(0, 0, 0, .55) !important; }
+html[data-theme] header > .sw-hd{
+  max-width:var(--rail); width:100%; margin:0 auto; height:56px; padding:0 20px;
+  display:flex; align-items:center; justify-content:flex-start; gap:12px; box-sizing:border-box;
+}
+.sw-logo{
+  display:inline-flex; align-items:center; gap:9px; flex:none; text-decoration:none;
+  color:var(--text); font-weight:800; font-size:15.5px; letter-spacing:-.02em; line-height:1;
+}
+.sw-logo-mark{
+  width:28px; height:28px; border-radius:7px; flex:none; display:grid; place-items:center;
+  background:var(--accent); color:#fff; box-shadow:inset 0 1px 0 rgba(255, 255, 255, .22);
+}
+.sw-logo-mark svg{ width:17px; height:17px; display:block; }
+html[data-theme] .sw-logo-tx b{ font-weight:800; color:var(--accent-text); }
+@media (max-width:640px){
+  html[data-theme] header > .sw-hd{ height:52px; padding:0 12px; gap:8px; }
+}
+@media (max-width:430px){ .sw-logo-tx{ display:none; } }
+
+/* ---- market strip: last closes of the main markets, above the header on every page ---- */
+.sw-tape{ background:var(--surface); border-bottom:1px solid var(--border); font-size:11.5px; line-height:1; width:100%; }
+.sw-tape-in{
+  max-width:var(--rail); margin:0 auto; padding:0 20px; height:30px; box-sizing:border-box;
+  display:flex; align-items:center; overflow-x:auto; overflow-y:hidden; white-space:nowrap;
+  scrollbar-width:none; -webkit-overflow-scrolling:touch;
+}
+.sw-tape-in::-webkit-scrollbar{ display:none; }
+.sw-tape-lb{ flex:none; font-size:10px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--text-faint); padding-right:14px; }
+.sw-tape-it{
+  flex:none; display:inline-flex; align-items:baseline; gap:6px; padding:0 13px;
+  border-left:1px solid var(--border); color:var(--text-muted); text-decoration:none;
+  font-variant-numeric:tabular-nums; font-weight:500;
+}
+.sw-tape-it:hover .sw-tape-n{ color:var(--text); }
+.sw-tape-n{ font-weight:600; color:var(--text-muted); transition:color var(--tr); }
+.sw-tape-v{ color:var(--text); }
+.sw-tape-c.up{ color:var(--pos); } .sw-tape-c.dn{ color:var(--neg); }
+@media (max-width:640px){ .sw-tape-in{ padding:0 12px; height:28px; } .sw-tape-it{ padding:0 10px; } }
+@media print{ .sw-tape{ display:none !important; } }
+
+/* ---- a page's own header extras (data range, snapshot time) move to one quiet line ---- */
+.sw-pagemeta{ display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center; justify-content:flex-end; font-size:11.5px; color:var(--text-faint); margin:0 0 10px; }
+html[data-theme] .sw-pagemeta > *{ display:inline-flex !important; }
+
+/* ---- cards ---- */
+html[data-theme] .card{ border-radius:var(--radius); }
+
+/* ---- form controls: one look for every input / select / textarea ---- */
+html[data-theme] select{
+  -webkit-appearance:none; appearance:none; cursor:pointer; text-overflow:ellipsis;
+  padding-right:28px !important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a93a3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-repeat:no-repeat !important; background-position:right 8px center !important; background-size:14px 14px !important;
+}
+html[data-theme] select[multiple], html[data-theme] select[size]:not([size="1"]){ background-image:none !important; padding-right:8px !important; }
+html[data-theme] select:not([class*="border"]),
+html[data-theme] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([class*="border"]):not(.sw-srch-in):not(.hs-in),
+html[data-theme] textarea:not([class*="border"]){ border:1px solid var(--border-strong); }
+html[data-theme] select:not([class*="rounded"]),
+html[data-theme] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([class*="rounded"]):not(.sw-srch-in):not(.hs-in),
+html[data-theme] textarea:not([class*="rounded"]){ border-radius:var(--radius-sm); }
+html[data-theme] select:not([class*="px-"]):not([class*="p-"]):not([class*="pl-"]){ padding-left:10px; }
+html[data-theme] select:not([class*="py-"]):not([class*="p-"]):not([class*="h-"]){ padding-top:5px; padding-bottom:5px; }
+html[data-theme] select:not([class*="text-"]){ font-size:13px; }
+html[data-theme] input[type="range"]{ accent-color:var(--accent); background:transparent !important; border:0; }
+html[data-theme] input:disabled, html[data-theme] select:disabled, html[data-theme] button:disabled{ opacity:.55; cursor:not-allowed; }
+html[data-theme] button{ cursor:pointer; }
+
+/* ---- tables: quiet header band, hairline rows ---- */
+html[data-theme] table thead th{ color:var(--text-faint); font-weight:600; letter-spacing:.035em; }
+html[data-theme] tbody tr:hover{ background-color:color-mix(in srgb, var(--accent) 5%, transparent); }
+
+/* ---- theme pill ---- */
+.sw-theme-switch{ border-radius:8px; padding:2px; margin-left:0; }
+.sw-theme-switch button{ border-radius:6px; }
+
+/* ---- footer on the same rail as the header ---- */
+html[data-theme] .sw-footer{ background:var(--surface); width:100%; }
+.sw-footer-in{ max-width:var(--rail); padding:40px 20px 28px; gap:32px 64px; box-sizing:border-box; }
+.sw-f-brand{ flex-direction:column; gap:12px; max-width:300px; }
+.sw-f-brand .sw-logo{ font-size:16px; }
+.sw-f-tag{ margin-top:0; }
+.sw-f-cols{ flex:1 1 560px; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:24px 28px; }
+.sw-f-col{ min-width:0; }
+.sw-f-h{ color:var(--text); font-size:11px; letter-spacing:.07em; margin-bottom:10px; }
+.sw-f-link{ padding:4px 0; }
+.sw-f-link > span[aria-hidden]{ display:none; }
+.sw-f-bar{ background:var(--surface-2); }
+.sw-f-bar-in{ max-width:var(--rail); padding:14px 20px; box-sizing:border-box; }
+@media (max-width:640px){
+  .sw-footer-in{ padding:28px 16px 20px; gap:24px; }
+  .sw-f-cols{ grid-template-columns:repeat(2, minmax(0, 1fr)); gap:20px 16px; flex-basis:100%; }
+  .sw-f-bar-in{ padding:12px 16px; }
+}
+
+/* =============================================================================
+ * LOOK C "WORKSPACE" (2026-11-22, chosen by the user). Graphite surfaces, teal
+ * accent, and on screens >=1100px a permanent side menu (markup: theme.js
+ * buildSidebar). Under 1100px nothing changes: header logo + Markets/Funds/Tools
+ * (or the phone Menu button and bottom bar) stay as they were.
+ * ========================================================================== */
+:root{ --side-w:232px; }
+.sw-side{ display:none; }
+.sw-cta{ color:var(--on-accent, #fff) !important; }
+.sw-logo-mark{ color:var(--on-accent, #fff); }
+@media (min-width:1100px){
+  html.sw-has-side body{ padding-left:var(--side-w); }
+  html.sw-has-side .sw-side{
+    display:flex; flex-direction:column; position:fixed; left:0; top:0; bottom:0; width:var(--side-w);
+    background:var(--side-bg, var(--surface)); border-right:1px solid var(--border); z-index:56; box-sizing:border-box;
+  }
+  .sw-side-logo{ height:86px; flex:none; padding:0 18px; box-sizing:border-box; border-bottom:1px solid var(--border); font-size:16px; }
+  .sw-side-nav{ flex:1; min-height:0; overflow-y:auto; padding:10px 10px 24px; scrollbar-width:thin; scrollbar-color:var(--border-strong) transparent; }
+  .sw-side-g{ font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint); padding:18px 10px 6px; }
+  .sw-side-l{
+    display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:6px; text-decoration:none;
+    font-size:13px; font-weight:500; line-height:1.25; color:var(--text-muted); transition:background var(--tr), color var(--tr);
+  }
+  .sw-side-l:hover{ background:var(--surface-2); color:var(--text); }
+  .sw-side-l:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+  .sw-side-ic{ display:grid; place-items:center; flex:none; width:16px; height:16px; }
+  .sw-side-ic svg{ width:16px; height:16px; display:block; opacity:.85; }
+  .sw-side-tx{ min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sw-side-l.on{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; box-shadow:inset 2px 0 0 var(--accent); }
+  /* the side menu carries the logo and every page, so the header keeps search + actions only */
+  html.sw-has-side header.sw-header .sw-logo, html.sw-has-side header.sw-header .sw-group{ display:none !important; }
+  html.sw-has-side header > .sw-hd, html.sw-has-side .sw-tape-in{ max-width:none; padding-left:28px; padding-right:28px; }
+  html.sw-has-side header.sw-header .sw-srch-btn{ min-width:min(420px, 38vw); }
+}
+@media print{ .sw-side{ display:none !important; } html.sw-has-side body{ padding-left:0 !important; } }
+@media (min-width:1100px){ html.sw-has-side .sw-footer-in, html.sw-has-side .sw-f-bar-in{ padding-left:28px; padding-right:28px; } }
+/* with the side menu, every page's content starts on the same left line as the header search */
+@media (min-width:1100px){ html.sw-has-side body > main{ max-width:none !important; padding-left:28px !important; padding-right:28px !important; } }
+
+/* ---- Look C on every page: calmer weights, square controls, one card shape ---- */
+html[data-theme] .font-extrabold, html[data-theme] .font-black{ font-weight:700; }
+html[data-theme] main h1{ font-weight:700; letter-spacing:-.02em; }
+html[data-theme] .card{ border-radius:var(--radius-lg); box-shadow:none; }
+html[data-theme] a.card:hover{ box-shadow:none; }
+/* pill-shaped buttons and chips (anything rounded-full that carries text padding) become square */
+html[data-theme] .rounded-full[class*="px-"]{ border-radius:var(--radius-sm); }
+html[data-theme] .rounded-md{ border-radius:var(--radius-sm); }
+html[data-theme] .bg-blue-600, html[data-theme] .bg-indigo-600{ box-shadow:none; color:var(--on-accent, #fff) !important; }
+html[data-theme] .bg-gradient-to-r, html[data-theme] .bg-gradient-to-br{ background-image:none !important; background-color:var(--accent) !important; box-shadow:none; }
+html[data-theme] .bg-emerald-600, html[data-theme] .bg-rose-600, html[data-theme] .bg-amber-600, html[data-theme] .bg-violet-600{ box-shadow:none; }
+/* tables: header band + hairlines in the theme's colours on every page */
+html[data-theme] table thead th{ background-color:var(--surface-2); }

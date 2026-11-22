@@ -9,17 +9,17 @@
 <script src="./theme.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --gain:#16a34a; --gain-bg:#dcfce7; --loss:#dc2626; --loss-bg:#fee2e2; }
+  :root { --gain:var(--pos); --gain-bg:#dcfce7; --loss:var(--neg); --loss-bg:#fee2e2; }
   body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; }
-  table thead th { position:sticky; top:0; background:#f8fafc; z-index:10; }
+  table thead th { position:sticky; top:0; background:var(--surface-2); z-index:10; }
   .gain{color:var(--gain);} .loss{color:var(--loss);}
   .chip-gain{background:var(--gain-bg);color:var(--gain);}
   .chip-loss{background:var(--loss-bg);color:var(--loss);}
   .scrollbar::-webkit-scrollbar{width:8px;height:8px;}
   .scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}
-  .scrollbar::-webkit-scrollbar-track{background:#f1f5f9;}
-  #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .3s;}
-  .spinner{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;}
+  .scrollbar::-webkit-scrollbar-track{background:var(--surface-2);}
+  #loadingOverlay{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .3s;}
+  .spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 </head>

@@ -9,8 +9,8 @@
 <script src="./theme.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:#dc2626; --down-soft:rgba(220,38,38,.10); }
-  html[data-theme="dark"]{ --up:#34d399; --up-soft:rgba(52,211,153,.14); --down:#f87171; --down-soft:rgba(248,113,113,.14); }
+  :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:var(--neg); --down-soft:rgba(220,38,38,.10); }
+  html[data-theme="dark"]{ --up:var(--pos); --up-soft:rgba(52,211,153,.14); --down:var(--neg); --down-soft:rgba(248,113,113,.14); }
   *{box-sizing:border-box;}
   body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);
        -webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1;}
@@ -27,7 +27,7 @@
   header.sw-scrolled{box-shadow:var(--shadow);}
   .hd{display:flex;align-items:center;gap:12px;height:60px;}
   .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
-  .logo .mark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
+  .logo .mark{width:30px;height:30px;border-radius:var(--radius);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
     background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
   .logo em{font-style:normal;color:var(--accent);}
   @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
@@ -49,7 +49,7 @@
 
   /* index switcher */
   .switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  .swi{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;font-size:12.5px;font-weight:700;
+  .swi{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;
     background:var(--surface);border:1px solid var(--border);color:var(--text-muted);box-shadow:var(--shadow);transition:var(--tr);}
   .swi:hover{border-color:var(--accent);color:var(--text);}
   .swi.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
@@ -60,10 +60,10 @@
   .hero-card h1{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;}
   .hero-card .sub{font-size:12.5px;color:var(--text-muted);margin-top:4px;}
   .hero-card .px{font-size:clamp(26px,4vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.1;text-align:right;}
-  .chgpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;margin-top:6px;}
+  .chgpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:var(--radius-sm);margin-top:6px;}
   .chgpill.up{background:var(--up-soft);} .chgpill.down{background:var(--down-soft);}
   .asof{font-size:11px;color:var(--text-faint);margin-top:6px;text-align:right;}
-  .badge{font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
+  .badge{font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-3);color:var(--text-muted);}
   .badge.live{color:var(--up);background:var(--up-soft);}
   .facts{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;
     border-top:1px solid var(--border);padding-top:12px;margin-top:2px;}
@@ -76,7 +76,7 @@
   /* controls */
   .ctrls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .rngs,.tgls{display:flex;gap:4px;flex-wrap:wrap;}
-  .rng,.tgl{cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;
+  .rng,.tgl{cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:var(--radius-sm);
     border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);transition:var(--tr);}
   .rng:hover,.tgl:hover{border-color:var(--accent);color:var(--text);}
   .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
@@ -86,7 +86,7 @@
   #chartWrap{position:relative;}
   #chart svg{display:block;width:100%;height:auto;touch-action:pan-y;}
   #tip{position:absolute;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border-strong);
-    border-radius:10px;padding:7px 10px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:5;}
+    border-radius:var(--radius);padding:7px 10px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:5;}
   .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted);margin-top:8px;}
   .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px;}
 
@@ -106,6 +106,7 @@
   tbody tr:hover{background:var(--surface-2);}
   tbody tr:last-child td{border-bottom:0;}
   td.num{font-variant-numeric:tabular-nums;font-weight:600;}
+  #monthly{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
   .heat td.h{font-weight:700;color:var(--text);}
   .heat td:first-child{font-weight:800;}
 
@@ -115,10 +116,10 @@
   .bcb{transition:opacity var(--tr);cursor:default;}
   .bcb:hover{opacity:1 !important;}
   .bctip{position:absolute;top:0;display:none;pointer-events:none;background:var(--surface);border:1px solid var(--border-strong);
-    border-radius:10px;padding:6px 9px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:6;}
+    border-radius:var(--radius);padding:6px 9px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:6;}
 
   .chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .chip{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:8px;background:var(--surface-2);
+  .chip{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:var(--radius);background:var(--surface-2);
     border:1px solid var(--border);color:var(--text-muted);transition:var(--tr);}
   .chip:hover{border-color:var(--accent);color:var(--text);}
   .lnk{color:var(--accent);font-weight:700;font-size:12.5px;}
@@ -127,7 +128,7 @@
   .skel{background:var(--surface-3);border-radius:6px;color:transparent;animation:sk 1.2s ease-in-out infinite;}
   @keyframes sk{50%{opacity:.5;}}
   /* every member, ever — survivorship table */
-  .sinp{font-family:inherit;font-size:12px;padding:6px 12px;border-radius:999px;border:1px solid var(--border);
+  .sinp{font-family:inherit;font-size:12px;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);
     background:var(--surface-2);color:var(--text);min-width:220px;transition:var(--tr);}
   .sinp:focus{outline:none;border-color:var(--accent);}
   .shown{font-size:11px;margin:-4px 0 8px;}
@@ -140,19 +141,19 @@
   #survTable td .nm{display:block;max-width:190px;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
   .rwrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
   .sinp[type=date]{min-width:0;padding:5px 10px;}
-  .rw{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:999px;
+  .rw{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:var(--radius-sm);
     border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft);color:var(--accent);
     transition:var(--tr);white-space:nowrap;}
   .rw:hover{background:var(--accent);color:#fff;}
   .rw svg{width:12px;height:12px;}
-  .st{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-muted);}
+  .st{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-3);color:var(--text-muted);}
   .st.in{background:var(--up-soft);color:var(--up);} .st.dead{background:var(--down-soft);color:var(--down);}
   @media (max-width:560px){.sinp{min-width:0;width:100%;}.sinp[type=date]{width:auto;flex:1 1 150px;}}
   /* the theme's .sw-scrollx holder is styled for PHONES ONLY (theme.css ≤640px). This table is
      23 columns (~2,800px) at every width, so its holder gets the same sideways scroll + pinned
      Stock column on desktop too — otherwise the table spills out of the card and widens the page. */
   html[data-theme] #survTable .sw-scrollx{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    scrollbar-width:thin;max-width:100%;max-height:72vh;border:1px solid var(--border);border-radius:10px;}
+    scrollbar-width:thin;max-width:100%;max-height:72vh;border:1px solid var(--border);border-radius:var(--radius);}
   html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar{height:7px;}
   html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar-thumb{border-width:2px;}
   html[data-theme] #survTable .sw-scrollx table{width:auto !important;min-width:100%;font-size:11.5px;}

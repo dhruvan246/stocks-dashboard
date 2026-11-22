@@ -10,10 +10,10 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   th[data-s]{cursor:pointer;user-select:none}
-  th[data-s]:hover{color:#2563eb}
+  th[data-s]:hover{color:var(--accent-text)}
   .rbtn{cursor:pointer}
   /* chart tooltip */
   .tip{transition:opacity .08s}

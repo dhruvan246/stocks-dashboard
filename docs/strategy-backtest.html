@@ -14,17 +14,17 @@
 <script src="./backtest-engine.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d}.neg{color:#b91c1c}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
   .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
-  .lbl{display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px}
-  .inp{width:100%;padding:.5rem .6rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:14px;background:#fff;color:#0f172a}
-  .inp:focus{outline:none;border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
-  .tabbtn{padding:.45rem .9rem;border-radius:.5rem;font-size:12px;font-weight:600;transition:all .15s}
-  .tabbtn.on{background:#4f46e5;color:#fff;box-shadow:0 1px 3px rgba(79,70,229,.4)}
-  .tabbtn.off{background:#f1f5f9;color:#475569}
-  .tabbtn.off:hover{background:#e2e8f0}
-  .newbadge{font-size:9px;font-weight:700;background:#dcfce7;color:#15803d;border-radius:4px;padding:1px 4px;margin-left:4px;vertical-align:middle}
+  .lbl{display:block;font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px}
+  .inp{width:100%;padding:.5rem .6rem;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:var(--surface);color:var(--text)}
+  .inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+  .tabbtn{padding:.45rem .9rem;border-radius:var(--radius);font-size:12px;font-weight:600;transition:all .15s}
+  .tabbtn.on{background:var(--accent);color:#fff;box-shadow:0 1px 3px rgba(79,70,229,.4)}
+  .tabbtn.off{background:var(--surface-2);color:var(--text-muted)}
+  .tabbtn.off:hover{background:var(--surface-3)}
+  .newbadge{font-size:9px;font-weight:700;background:var(--pos-soft);color:var(--pos);border-radius:4px;padding:1px 4px;margin-left:4px;vertical-align:middle}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

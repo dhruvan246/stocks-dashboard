@@ -10,24 +10,24 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
-  .pos{color:#15803d;font-weight:600}.neg{color:#b91c1c;font-weight:600}
-  html[data-theme="dark"] .pos{color:#6ee7b7}html[data-theme="dark"] .neg{color:#fca5a5}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:9999px;white-space:nowrap}
-  .chip.D{background:#dcfce7;color:#15803d}.chip.B{background:#ede9fe;color:#6d28d9}
-  .chip.S{background:#e0f2fe;color:#0369a1}.chip.R{background:#fef3c7;color:#b45309}
-  .chip.BB{background:#fee2e2;color:#b91c1c}.chip.O{background:#f1f5f9;color:#475569}
-  html[data-theme="dark"] .chip.D{background:rgba(16,185,129,.18);color:#6ee7b7}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
+  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
+  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 8px;border-radius:var(--radius-sm);white-space:nowrap}
+  .chip.D{background:var(--pos-soft);color:var(--pos)}.chip.B{background:#ede9fe;color:#6d28d9}
+  .chip.S{background:#e0f2fe;color:#0369a1}.chip.R{background:var(--warn-soft);color:var(--warn)}
+  .chip.BB{background:var(--neg-soft);color:var(--neg)}.chip.O{background:var(--surface-2);color:var(--text-muted)}
+  html[data-theme="dark"] .chip.D{background:rgba(16,185,129,.18);color:var(--pos)}
   html[data-theme="dark"] .chip.B{background:rgba(139,92,246,.18);color:#c4b5fd}
   html[data-theme="dark"] .chip.S{background:rgba(14,165,233,.16);color:#7dd3fc}
-  html[data-theme="dark"] .chip.R{background:rgba(245,158,11,.16);color:#fcd34d}
-  html[data-theme="dark"] .chip.BB{background:rgba(244,63,94,.16);color:#fca5a5}
-  html[data-theme="dark"] .chip.O{background:rgba(148,163,184,.14);color:#cbd5e1}
-  .vbtn{padding:6px 14px;border-radius:9999px;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
-        background:var(--surface-2,#f1f5f9);color:var(--text-muted,#334155);border:1px solid var(--border,#e2e8f0)}
-  .vbtn.on{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
-  select,input[type=text]{background:#fff;border:1px solid #cbd5e1;border-radius:.5rem;font-size:13px;padding:7px 10px}
-  tr.newday>td{border-top:2px solid var(--border-strong,#cbd5e1)}
+  html[data-theme="dark"] .chip.R{background:rgba(245,158,11,.16);color:var(--warn)}
+  html[data-theme="dark"] .chip.BB{background:rgba(244,63,94,.16);color:var(--neg)}
+  html[data-theme="dark"] .chip.O{background:rgba(148,163,184,.14);color:var(--text)}
+  .vbtn{padding:6px 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
+  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
+  select,input[type=text]{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius);font-size:13px;padding:7px 10px}
+  tr.newday>td{border-top:2px solid var(--border-strong,var(--border-strong))}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">

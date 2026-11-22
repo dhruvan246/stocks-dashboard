@@ -11,8 +11,8 @@
 <style>
   body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
   .tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f8fafc;font-size:12px;font-weight:600;
-       padding:6px 9px;border-radius:8px;box-shadow:0 8px 24px -8px rgba(0,0,0,.4);opacity:0;transition:opacity .08s}
-  .bar{fill:#4f46e5}.bar:hover{fill:#4338ca}
+       padding:6px 9px;border-radius:var(--radius);box-shadow:0 8px 24px -8px rgba(0,0,0,.4);opacity:0;transition:opacity .08s}
+  .bar{fill:var(--accent-text)}.bar:hover{fill:var(--accent-text)}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -111,7 +111,7 @@
     $('pages').innerHTML = pages.map(p =>
       '<div class="flex items-center gap-3 py-1.5" title="' + esc(p) + '">' +
         '<div class="w-44 sm:w-56 text-[13px] font-semibold text-slate-700 truncate text-right shrink-0">' + esc(p.replace('.html','')) + '</div>' +
-        '<div class="flex-1 h-5 bg-slate-100 rounded overflow-hidden"><div class="h-full rounded" style="width:' + Math.max(2, Math.round(100 * byPage[p] / max)) + '%;background:#4f46e5"></div></div>' +
+        '<div class="flex-1 h-5 bg-slate-100 rounded overflow-hidden"><div class="h-full rounded" style="width:' + Math.max(2, Math.round(100 * byPage[p] / max)) + '%;background:var(--accent)"></div></div>' +
         '<div class="w-14 text-right text-[13px] font-bold text-slate-800 shrink-0">' + fmt(byPage[p]) + '</div>' +
       '</div>').join('') || '<div class="text-sm text-slate-400 py-6 text-center">No visits in this window yet.</div>';
     document.querySelectorAll('.wbtn').forEach(b => {

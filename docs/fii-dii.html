@@ -9,13 +9,13 @@
 <script src="./theme.js"></script>
 <style>
   body { font-feature-settings: "tnum" 1; }
-  .pos{color:#15803d;font-weight:600} .neg{color:#b91c1c;font-weight:600}
-  .nsdl-tag{display:inline-block;font-size:9px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;background:#e0e7ff;color:#3730a3;vertical-align:middle}
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .nsdl-tag{display:inline-block;font-size:9px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;background:var(--accent-soft);color:var(--accent-text);vertical-align:middle}
   html[data-theme="dark"] .nsdl-tag{background:#312e81;color:#c7d2fe}
-  .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
   th[data-s]{cursor:pointer;user-select:none}
-  th[data-s]:hover{color:#2563eb}
-  .tab.active{border-color:#2563eb;color:#1e40af;font-weight:700}
+  th[data-s]:hover{color:var(--accent-text)}
+  .tab.active{border-color:var(--accent);color:var(--accent-text);font-weight:700}
   /* Holdings tab breaks out of the narrow reading column so its wide table isn't clipped */
   #pane-holdings{width:min(1240px,96vw);margin-left:50%;transform:translateX(-50%);}
   #shpFrame{width:100%;}
@@ -362,7 +362,7 @@ async function liveFiiDii(){
     });
     if(rec.fiiNet==null&&rec.diiNet==null) return;
     ROWS.push(rec);
-    $('updated').innerHTML=' · <span style="color:#16a34a;font-weight:800">● LIVE</span> today ('+dt+') provisional numbers included — NSE publishes ~6pm IST';
+    $('updated').innerHTML=' · <span style="color:var(--pos);font-weight:800">● LIVE</span> today ('+dt+') provisional numbers included — NSE publishes ~6pm IST';
     renderCards(); renderNetChart(); renderCumChart(); renderTable();
   }catch(e){ /* keep baked feed */ }
 }

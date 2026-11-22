@@ -10,7 +10,7 @@
 <style>
   body{ font-feature-settings:"tnum" 1; }
   /* pills (range + group filters + rotation periods) */
-  .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; color:var(--text-muted);
+  .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:var(--radius-sm); color:var(--text-muted);
     border:1px solid var(--border); background:var(--surface-2); cursor:pointer; transition:var(--tr); }
   .segbtn:hover{ color:var(--text); border-color:var(--border-strong); }
   .segbtn.on{ color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 4px 12px -4px var(--glow); }
@@ -19,7 +19,7 @@
   .pulse .p-lb{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:11px;
     font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--text-faint); }
   .pulse .p-v{ font-size:22px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin-top:3px; }
-  .p-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:999px; border:1px solid var(--border); color:var(--text-muted); white-space:nowrap; }
+  .p-chip{ font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:var(--radius-sm); border:1px solid var(--border); color:var(--text-muted); white-space:nowrap; }
   .p-chip.pos{ color:var(--pos); background:color-mix(in srgb,var(--pos) 12%,transparent); border-color:color-mix(in srgb,var(--pos) 28%,transparent); }
   .p-chip.neg{ color:var(--neg); background:color-mix(in srgb,var(--neg) 12%,transparent); border-color:color-mix(in srgb,var(--neg) 28%,transparent); }
   .p-rail{ position:relative; height:4px; border-radius:999px; margin-top:8px;
@@ -44,7 +44,7 @@
 
   /* ---- shared tooltip ---- */
   .mac-tip{ position:fixed; pointer-events:none; z-index:70; background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:10px; box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; max-width:240px; }
+    border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; max-width:240px; }
   .mac-tip b{ color:var(--text); } .mac-tip .d{ color:var(--text-faint); font-size:11px; }
 
   .secttl{ font-size:15px; font-weight:800; letter-spacing:-.01em; color:var(--text); }
@@ -83,7 +83,7 @@
   .rg-meter i{ position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%;
     background:var(--surface); border:3px solid var(--accent); box-shadow:var(--shadow-lg); }
   .rg-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-  .rg-chip{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); }
+  .rg-chip{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); }
   .rg-chip b{ color:var(--text); }
   .mv-row{ display:flex; align-items:center; gap:8px; padding:5px 0; border-bottom:1px dashed var(--border); font-size:12.5px; }
   .mv-row:last-child{ border-bottom:none; }
@@ -445,7 +445,7 @@ async function load(){
     'crude','cruderu','gold','silver','copper','goldnifty','forex'];
   ORDER.length=0; TILE_ORDER.forEach(k=>{ if(S[k]) ORDER.push(k); });
   $('updated').textContent = '· updated '+ (macro.updated? macro.updated.slice(0,10) : '');
-  if(liveOn) $('updated').innerHTML += ' · <span style="color:#16a34a;font-weight:800">● LIVE</span> Nifty &amp; VIX (Yahoo, ~15-min delay)';
+  if(liveOn) $('updated').innerHTML += ' · <span style="color:var(--pos);font-weight:800">● LIVE</span> Nifty &amp; VIX (Yahoo, ~15-min delay)';
   $('sources').innerHTML = 'Sources: NSE (Nifty, FII/DII cash &amp; derivatives, breadth) · niftyindices (Nifty PE/PB/dividend yield) · RBI via mql5 economic calendar (repo, deposits, M3, forex, bank credit) · MOSPI via mql5 (CPI, WPI, IIP, GDP, trade) · S&amp;P Global PMIs, US Fed rate &amp; US CPI via mql5 · Yahoo Finance (yields, USD/INR, dollar index, global indices, Brent, gold, silver, copper) · FRED (India 10Y). Breadth, earnings pulse (median YoY from our quarterly-results data), market-cap÷GDP and all ratio/derived panels computed in-house. The regime score is a simple percentile blend — a compass, not investment advice.';
 
   buildPulse();
