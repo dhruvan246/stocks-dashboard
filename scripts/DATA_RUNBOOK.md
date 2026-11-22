@@ -30941,3 +30941,21 @@ ledger cells at the 4th decimal and dropped 33 (BRIGHT …) — NOT shipped: the
 new keys only. Store: +2,371 cells, 0 changed, 0 removed; apply idempotent. Spot reads: HALDER Dec-21 prom 65.68 and
 PICCADIL Dec-21 prom 70.9 equal their filings; Public == Non-institutions in both (proven zero). Left: 420 quarters.
 OPEN: why a fresh build differs from the committed ledger at 4 dp (7,061 cells) — UNKNOWN, not investigated.
+
+## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
+
+LIVE in 74f37f9c36 (sw v284). What it is, for the next session that touches the UI:
+- **Tokens** in `docs/theme.css`: dark = graphite (`--app-bg:#131722`, surfaces `#1a1f2c/#202636/#2a3142`), teal accent
+  (`--accent:#0d9488`, `--accent-text:#5eead4`, `--on-accent:#fff`), `--pos:#26a69a`, `--neg:#ef5350`; radii 6/4/8;
+  `--side-w:232px`. Light uses the same teal. Soft keeps its old warm colours (not redesigned).
+- **Side menu**: `buildSidebar()` in `docs/theme.js` builds `aside.sw-side` from `NAV_GROUPS` and adds `html.sw-has-side`.
+  Shown at >=1100px (header then keeps only search + CTA + theme pill); below that the old header menus / phone bottom bar.
+- **Last close strip** (`.sw-tape`, from `global.json`) on every theme page.
+- **Pages**: 46 pages had the hard-coded colours in their `<style>` blocks mapped to tokens by a one-off converter;
+  Home and Top Movers were restyled by hand; Home's Season card was removed (user). Use tokens for any new page CSS —
+  a hard-coded hex will not follow the themes.
+- NOT changed: chart palettes inside page scripts, a few blue buttons on Options Backtest, the non-theme pages
+  (portfolio, terminal, pf-glance, trip).
+- Verified: local sweep 48 pages x dark/light/soft x 8 widths (1920-360) = 0 overflow / clipped / script errors;
+  LIVE sweep 48 pages x dark/light x 1440/390 = 0 flagged; stock page RELIANCE seen on live. Not verified: owner-only
+  pages past the lock screen, live-quote boxes, filter clicks.
