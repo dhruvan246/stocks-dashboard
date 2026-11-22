@@ -807,7 +807,13 @@ def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
         if sym:                                              # §228b: a feed/--extra target is joined by scrip id — the
             own = xbrl_symbol.resolve("NOTLISTED", xml)      # file's own ISIN must name the same NSE symbol (one ticker
             if own and own.upper() != str(sym).upper():      # can be two companies, §203/§207); an unmapped ISIN cannot
-                print("  %s: file ISIN names %s, not %s — skipped" % (code, own, sym)); continue   # contradict it
+                # ...unless the file's FULL ISIN is one the target symbol itself traded under: then the two names are one
+                # equity renamed on NSE (EQUITY_L already lists the new symbol) and the filing belongs to the target's
+                # stored history until the §30 merge moves it (VIRAT -> BRAHMVIRAT, NOVARTIND -> EVONILE,
+                # SHUKRAPHAR -> SHUKRAMED, INE467D01017 / INE234A01025 / INE551C01044, 2026-11-22)
+                if not (isin and isin.upper() in bse_resolve.identities()["nse"].get(str(sym).upper(), set())):
+                    print("  %s: file ISIN names %s, not %s — skipped" % (code, own, sym)); continue   # contradict it
+                print("  %s: file ISIN %s is %s's own (NSE now lists it as %s) — kept under %s" % (code, isin, sym, own, sym))
         kind = "nse" if tgt else "bse"
         vals = parse_values(xml, basis, fname)
         rec = {"code": code, "qe": qe, "basis": basis, "half": half, "ann": ann_from_name(fname, qe, fdt), "file": fname,
