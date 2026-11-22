@@ -10,6 +10,7 @@ directory from the live GitHub Pages origins:
                           symbols split in half across the two (the engine merges p1+p2)
   fund_live.json       <- stocks-dashboard/sf_fundamentals.json
   fund_months_live.json <- stocks-dashboard/fund_months.json (proven half-year rows, runbook §198)
+  fund_rbase_live.json <- stocks-dashboard/fund_rbase.json (restated comparative bases, runbook §214b)
   shp_live.json        <- stocks-dashboard/shp_engine.json
   nifty_live.json      <- stocks-dashboard/nifty.json
   nifty500_live.json   <- stocks-dashboard/nifty500.json
@@ -86,6 +87,7 @@ def main():
     for src, dst in [("stock_data.bin", "stock_data_live.bin"),
                      ("sf_fundamentals.json", "fund_live.json"),
                      ("fund_months.json", "fund_months_live.json"),
+                     ("fund_rbase.json", "fund_rbase_live.json"),
                      ("shp_engine.json", "shp_live.json"),
                      ("nifty.json", "nifty_live.json"),
                      ("nifty500.json", "nifty500_live.json")]:

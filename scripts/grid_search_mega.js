@@ -50,6 +50,7 @@
   activateSF();
   FUND = Jf(LIVE('fund_live.json'));
   FUNDM = Jf(LIVE('fund_months_live.json')); _FM.clear();   // proven half-year rows — profit TTM / YoY (runbook §198)
+  RBASE = Jf(LIVE('fund_rbase_live.json'));   // restated comparative bases (§214b) — the same file the site engine's loadFundRbase reads
   SHPD = Jf(LIVE('shp_live.json'));
   // merge renamed tickers' SHP eras under the CURRENT key (mirror of loadShp())
   for (const old in FUND_ALIAS) {

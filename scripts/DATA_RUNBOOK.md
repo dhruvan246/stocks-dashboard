@@ -1055,6 +1055,10 @@ GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js 
 GRID_END=<sf end> node --max-old-space-size=8192 scripts/bullruns_grid_build.js "F&O"
 node --max-old-space-size=8192 scripts/bullruns_saved.js && node scripts/bullruns_saved_build.js   # set CUR.e first
 ```
+- **Restated bases in the grid (2026-11-22):** `gridmega_fetch_live.py` now also stages `fund_rbase.json` →
+  `_live/fund_rbase_live.json` and `grid_search_mega.js` loads it into `RBASE`, so the grid uses the same §214b
+  restated comparative bases as the site engine. Refresh of 2026-11-22 = four universes, 40 jobs at `--jobs 4`
+  (about 110 min with other work on the machine), then the four builds (about 25 min) — all files data to 2026-11-20.
 - **Pool rule** (reproduces the 2026-08-28 pool of 5,439,680 exactly): a combo that reads a FUND field (sort or
   filter) is two candidates (std, con); any other is ONE ('any', from the std grid — the build REQUIRES its std and
   con CAGR to agree in every leg, which proves the grids line up row for row); indRank/composite barred as sort or
