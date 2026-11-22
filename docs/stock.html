@@ -1645,7 +1645,7 @@ function wireShpToggle(){
 function shpTrendChart(hist){
   const el=$('shpChart'); if(!el||!hist||hist.length<3){ if(el) el.style.display='none'; return; }
   const H=170,W=760,PL=36,PR=8,PT=10,PB=18;
-  const series=[['Promoters',1,'#6366f1'],['FIIs',2,'#16a34a'],['DIIs',3,'#f59e0b']];
+  const series=[['Promoters',1,'#6366f1'],['FIIs',2,'#16a34a'],['DIIs',3,'#d97706']];
   let lo=100,hi=0;
   for(const r of hist) for(const[,k]of series){ const x=r[k]; if(x!=null){ lo=Math.min(lo,x); hi=Math.max(hi,x); } }
   if(hi<=lo){ el.style.display='none'; return; }

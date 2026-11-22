@@ -4320,6 +4320,14 @@ injected site-wide. Never push those unchecked. Never let `|| echo` swallow a fa
 `read_page` and confirm the new thing is really in the DOM **with real values** — not `Loading…`,
 `NaN`, `undefined`, `null`, `—`, or an empty table. Reading your own diff is not verification.
 
+- **★ POP-UPS, MENUS AND EMBEDDED PAGES AGAINST THE FIXED SITE FRAME** (added 2026-11-22, Look C, §247a).
+  A sweep that only LOADS each page misses everything that opens on a click. After any change to
+  `theme.css` / `theme.js` or to a page's pop-up: (1) OPEN every pop-up, dropdown and mega menu and check
+  that nothing fixed (side menu ≥1100px, header, market strip, phone bottom bar) sits on top of it —
+  `document.elementFromPoint` at the pop-up's edges must return the pop-up; (2) check sideways scroll
+  AFTER each click, not only at load, at 1440 / 1024 / 768 / 390; (3) a page shown inside an iframe
+  (`?embed=1`) must hide all site chrome; (4) click the plain buttons too — two old script errors
+  (dashboard "Since 1996", Mutual Funds AUM sort) were found only by clicking.
 - **★ EVERY TOGGLE / TAB IN ITS EMPTY STATE** (added 2026-09-24, terminal Sell side). A view that renders fine
   with data loaded can throw with none: `factorMap` read `SF.end` before the engine loaded, so the terminal's
   **Sell side crashed whenever picks were not loaded** — every sell card AND the "🚨 Exit everything" block
@@ -31050,3 +31058,25 @@ LIVE in 74f37f9c36 (sw v284). What it is, for the next session that touches the 
 - Verified: local sweep 48 pages x dark/light/soft x 8 widths (1920-360) = 0 overflow / clipped / script errors;
   LIVE sweep 48 pages x dark/light x 1440/390 = 0 flagged; stock page RELIANCE seen on live. Not verified: owner-only
   pages past the lock screen, live-quote boxes, filter clicks.
+
+### §247a — Look C click-through bug sweep (2026-11-22, user: "find all bugs, do not miss any")
+
+The user found the All Picks "Monthly returns" pop-up half hidden under the new side menu. The earlier
+sweeps only loaded pages; a finder that also CLICKS (up to 45 clickable elements per page, every theme,
+1440/1024/768/390) found and fixed, in `1feed32909` + sw bump `8c97966a4d`:
+
+1. Page pop-ups (`.fixed.inset-0.z-50`: All Picks `#mrModal`, Mutual Funds `#detailModal`, Saved
+   Strategies `#modal`) sat UNDER the side menu (z 56) and the phone bottom bar (z 55). Side menu is now
+   z 39 and those pop-ups z 80 (search overlay stays z 90). Any new full-screen pop-up must use
+   `fixed inset-0 z-50` (lifted by theme.css) or its own z-index above 56.
+2. `fii-dii.html` Holdings tab: 16px sideways scroll (old 1240px breakout) and the framed
+   `shareholding.html?embed=1` would draw its own side menu / strip — `html.embed` now hides all chrome.
+3. Markets mega menu ran off-screen at 761–1099px (256px sideways scroll) — pinned to the header width.
+4. `nse-bse-dashboard.html` "Since 1996" threw "Invalid time value" (`dataset.since1996` is never set for
+   `data-since-1996`; use `hasAttribute`). `mutual-funds.html` AUM header had no `.sort-ind` span → sort threw.
+5. White text on `bg-amber-500` buttons was hard to read → darker amber.
+
+Verified LIVE 2026-11-22 by clicking: the three pop-ups at 1440 and 390 (nothing on top, z 80), Holdings
+tab (0 sideways scroll, no chrome in the frame, 300 rows), "Since 1996" and AUM sort (no script error).
+NOT checked: the owner-only pages past their lock, live-quote boxes. New §39 bullet: "POP-UPS, MENUS AND
+EMBEDDED PAGES AGAINST THE FIXED SITE FRAME".
