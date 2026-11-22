@@ -10270,6 +10270,106 @@
    "fixed": 186.2144,
    "why": "own-year FY22 results (14d5743e p10 Standalone cash flow statement, Rs lakh): Net cash generated from operating activities 18,621.44 (=22,166.52-3,545.08; A+B+C = 760.12 printed) [cells stored under pre-rename key DAAWAT]",
    "found": "2026-11-22 item7 Screener+Moneycontrol check"
+  },
+  {
+   "sym": "HFCL",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "oeq",
+   "was": 3975.11,
+   "fixed": 3934.94,
+   "why": "own-year FY25 results (ef6ac4bc p16 consolidated BS, Rs cr): Other Equity 3,934.94; Non-controlling interest 40.17 on its own line; Sub-total 4,119.32. Stored oeq had NCI folded in",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "HFCL",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eq",
+   "was": 4119.32,
+   "fixed": 4079.15,
+   "why": "own-year FY25 results (ef6ac4bc p16, Rs cr): owners equity = 144.21+3,934.94 = 4,079.15 (excl. NCI 40.17, §237)",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "VTL",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eq",
+   "was": 9965.64,
+   "fixed": 9896.02,
+   "why": "own-year FY25 results (ce037508 p16 consolidated BS, Rs cr): Share capital 56.90 + Other Equity 9,839.12 = 9,896.02; NCI 69.62 separate; Total 9,965.64 incl. NCI (§237 owners only)",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "oeq",
+   "was": 9124.95,
+   "fixed": 9157.707,
+   "why": "own-year FY25 results (60539099 p5 consolidated BS, Rs mn): Other equity 91,577.07; NCI (327.53) separate; Total 92,205.81. Stored oeq had negative NCI folded in",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20250331",
+   "basis": "c",
+   "field": "eq",
+   "was": 9220.58,
+   "fixed": 9253.334,
+   "why": "own-year FY25 results (60539099 p5, Rs mn): owners equity = 956.27+91,577.07 = 92,533.34 (excl. NCI, §237)",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20260331",
+   "basis": "c",
+   "field": "oeq",
+   "was": 9461.2,
+   "fixed": 9484.213,
+   "why": "own-year FY26 results (d1c7fccb p5 consolidated BS, Rs mn): Other equity 94,842.13; NCI (230.16) separate; Total 95,568.24. Stored oeq had negative NCI folded in",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "BHARATFORG",
+   "qe": "20260331",
+   "basis": "c",
+   "field": "eq",
+   "was": 9556.83,
+   "fixed": 9579.84,
+   "why": "own-year FY26 results (d1c7fccb p5, Rs mn): owners equity = 956.27+94,842.13 = 95,798.40 (excl. NCI, §237)",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "CUB",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "cfo",
+   "was": -11434.63,
+   "fixed": 802.46,
+   "why": "own-year FY26 results (b75680c8 p13 cash flow statement, Rs lakh): Net cash flow from Operating Activities A 80,246. Stored XBRL triple summed to 0 (filer tag error)",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "CUB",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "cfi",
+   "was": 14859.62,
+   "fixed": -207.85,
+   "why": "own-year FY26 results (b75680c8 p13, Rs lakh): Net cash used in Investing Activities B -20,785",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
+  },
+  {
+   "sym": "CUB",
+   "qe": "20260331",
+   "basis": "s",
+   "field": "cff",
+   "was": -3424.99,
+   "fixed": 3041.91,
+   "why": "own-year FY26 results (b75680c8 p13, Rs lakh): Net cash flow from Financing Activities C 3,04,191",
+   "found": "2026-11-22 store-wide fold scan (NCI/CF fold)"
   }
  ]
 }
