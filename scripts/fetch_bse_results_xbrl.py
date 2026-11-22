@@ -749,9 +749,12 @@ def fetch(budget, fills_path, from_dir=None, codes=None, extra=None):
             if DL[0] >= MAX_FILES:
                 break                                        # hard per-run cap on downloads (politeness, §181a)
             fname = link.rsplit("/", 1)[-1]; p = os.path.join(tmpd, fname)
+            if os.path.exists(p) and os.path.getsize(p) == 0:
+                os.remove(p)                                     # an empty cache entry is a failed download, never a file
             if not os.path.exists(p):
                 try:
-                    open(p, "wb").write(get(WWW + link))
+                    body_ = get(WWW + link)                 # fetch FIRST: open() before a failed get left a 0-byte
+                    open(p, "wb").write(body_)               # file that later runs read as "downloaded" (2026-11-22, 63 NBFC files)
                 except Refused as e:
                     print("  BSE-REFUSED file %s: %s" % (fname, e)); break
                 except Exception:
