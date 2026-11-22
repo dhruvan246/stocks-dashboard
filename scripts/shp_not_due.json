@@ -2,8 +2,8 @@
  "_note": "(symbol, quarter-end) pairs where no shareholding pattern was DUE, so the cell is not a coverage gap: (a) a Jun/Dec quarter-end while the company was on an SME board, which owes Mar + Sep only; (b) a quarter-end before the company listed. Each entry was judged on its own evidence 2026-11-22 (DATA_RUNBOOK §180g; BSE SHPQNewFormat listing, board anchors, BSE bhavcopy). Any quarter-level SHP gap list for non-N500 stocks must subtract these. Not the same as shp_no_filing.json (a DUE filing proven absent at both exchanges). If a pattern for one of these cells ever turns up it is still stored — this file only stops the cell counting as missing.",
  "_added": "2026-11-22",
  "_counts": {
-  "half_yearly_not_due": 244,
-  "before_listing": 48
+  "half_yearly_not_due": 247,
+  "before_listing": 51
  },
  "cells": {
   "AAATECH": {
@@ -110,7 +110,13 @@
    "2021-12-31": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831)",
    "2022-06-30": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831)",
    "2022-12-31": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831)",
-   "2023-06-30": "half-yearly filer, Jun/Dec not due: SME board at this date; BSE listing (scrip 543831): half-yearly: both halves listed"
+   "2023-06-30": "half-yearly filer, Jun/Dec not due: SME board at this date; BSE listing (scrip 543831): half-yearly: both halves listed",
+   "2021-09-30": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831); the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company",
+   "2022-03-31": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831); the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company",
+   "2022-09-30": "before listing: first BSE bhavcopy bar 2023-03-24 (scrip 543831); the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company",
+   "2023-12-31": "half-yearly filer, Jun/Dec not due: BSE listing for scrip 543831 carries Mar and Sep rows only; the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company",
+   "2024-06-30": "half-yearly filer, Jun/Dec not due: BSE listing for scrip 543831 carries Mar and Sep rows only; the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company",
+   "2024-12-31": "half-yearly filer, Jun/Dec not due: BSE listing for scrip 543831 carries Mar and Sep rows only; the NSE filing for this quarter under ticker BRIGHT belongs to Bright Solar Ltd (INE684Z01010), another company"
   },
   "BTML": {
    "2020-06-30": "before listing: before the first price bar we hold; BSE first lists a pattern for 2023-03-31 (scrip 543767)",

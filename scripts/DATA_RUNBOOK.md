@@ -30992,6 +30992,22 @@ Follow-up to §180f / the bseB pass (61 filled). Each remaining cell judged on i
   Jun/Dec + 48 before listing, one reason per cell. Any quarter-level SHP gap list outside the N500 subtracts this file.
   (Later test of the older seam-confirmed R2-FII cells: 10 exclude the row from the raw figure = fine, 1 too small to tell.)
 
+## §180h — the last 15 of §180g, each read on its own (2026-11-22)
+- **BRIGHT (7):** the site's BRIGHT is Bright Outdoor Media (BSE 543831, INE0OMI01019, first bar 2023-03-24). Mar-2023 =
+  its own BSE filing (file names the scrip, ISIN and company; no institutions block) -> FILLED 72.72 / 0 / 0. The other six
+  held documents (Sep-21, Mar-22, Sep-22, Dec-23, Jun-24, Dec-24) are NSE filings of Bright Solar Ltd (INE684Z01010), a
+  different company: for ours they are before listing (3) or Jun/Dec of a half-yearly filer (3) -> `shp_not_due.json` (298 now).
+- **OBCL Mar-20:** Institutions 700,642 = FPI 36,000 + Any Other 664,642; Any Other names AJMERA ASSOCIATES LIMITED
+  644,000 under "Clearing Member" (public, R1) and leaves 20,642 unnamed -> FII (user 2026-10-13 rule 2). FII 0.2687, DII 0.
+- **DMCC Dec-20:** Other Institutions 2,705 sh carries no label in this filing (the neighbours label it "Other UTI")
+  -> FII on this filing's own terms; FII 0.3236, DII 1.2413 (MF 2,204 + FI/Banks 304,981 + Insurance 200 + NBFC 2,200).
+  Both hand-placed in the ledger; the other 109 `d1` holds in the row-level file are NOT done.
+- **DCI / KRISHIVAL / PASHUPATI Mar-2022: UNKNOWN.** NSE's SME master lists each filing (21-Apr, 20-Apr, 21-Apr-2022) but
+  the XBRL link returns 404 on nsearchives .in/.com and archives; no web-archive copy. The master row gives promoter /
+  public only (DCI 60 / 40) — not stored, FII/DII were not read. Not on BSE at that date.
+- **RAMASIGNS Sep-25..Mar-26: not filed.** BSE's SHP listing for 515127 (fetched 2026-11-22 09:33) ends at Dec-2024
+  (revised 7-Apr-2025). BSE-only company. Stays a gap; re-check when the listing is next refreshed.
+
 ## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
 
 LIVE in 74f37f9c36 (sw v284). What it is, for the next session that touches the UI:
