@@ -392,10 +392,25 @@ def main():
     n_pf = 0
     fund_all = None
     bf = json.load(open(os.path.join(ROOT, "docs", "bse_fundamentals.json"), encoding="utf-8")).get("px", {})
+    _bs = json.load(open(os.path.join(HERE, "bse_scrips.json"), encoding="utf-8"))
+    code2isin = {str(v): k for k, v in _bs.get("by_isin", {}).items()}
+    from build_stock_fin import nse_tape_isin
+    isin2nse = {}
+    for s_, i_ in nse_tape_isin().items():
+        isin2nse.setdefault(i_, set()).add(s_)
+    pairs = []
     for code, cells in sorted(bf.items()):
-        sym = code2tk.get(str(code))
-        if not sym or slug(sym) not in have or not isinstance(cells, dict) or bse_resolve.bse_blocked_under(sym, None, code):
+        if not isinstance(cells, dict):
             continue
+        sym = code2tk.get(str(code))
+        if sym and (slug(sym) not in have or bse_resolve.bse_blocked_under(sym, None, code)):
+            sym = None
+        # 2026-11-22: a BSE SME -> NSE main migrant's proven half (an h=1 cell under its scrip code) is folded by
+        # build_stock_fin onto the NSE page of the same ISIN, so it is marked there too (the pages the fold writes)
+        pages = ([sym] if sym else []) + sorted(s_ for s_ in isin2nse.get(code2isin.get(str(code), ""), ())
+                                               if s_ != sym and slug(s_) in have)
+        pairs += [(code, cells, p_) for p_ in pages]
+    for code, cells, sym in pairs:
         rv = None
         for qe, c in sorted(cells.items()):
             if not (str(qe).isdigit() and isinstance(c, dict) and c.get("h") == 1 and pf_ok(int(qe), c)):

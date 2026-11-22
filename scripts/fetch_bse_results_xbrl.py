@@ -550,6 +550,8 @@ def feed_declared(sf, rvp, sme_codes_, extra=None):
         want.setdefault(str(e["sym"]).upper(), set()).update(qs_)
         forced.setdefault(str(e["sym"]).upper(), set()).update(qs_)
     codes_extra = {str(e["sym"]).upper(): str(e["code"]) for e in extra or [] if e.get("code")}
+    sme_extra = {str(e["code"]) for e in extra or [] if e.get("code") and e.get("sme")}   # 2026-11-22: a BSE SME era of a
+    #                                                       stock now on NSE main — its files are half-years (§194 decides)
     out = []
     for sym, qs in sorted(want.items()):
         nse = sym in sf or sym in rvp
@@ -560,7 +562,7 @@ def feed_declared(sf, rvp, sme_codes_, extra=None):
         if not code:
             continue
         code = str(code)
-        out.append((code, sym if nse else None, "nse" if nse else "bse", (not nse) and code in sme_codes_, miss))
+        out.append((code, sym if nse else None, "nse" if nse else "bse", ((not nse) and code in sme_codes_) or code in sme_extra, miss))
     return out
 
 
@@ -786,7 +788,7 @@ def fetch(budget, fills_path, from_dir=None, codes=None, extra=None):
 
 def handle(code, sym, sme, miss, dl, code2tk, xbrl_symbol):
     """Parse downloaded files for one scrip → fill records for missing quarters only."""
-    if sme and not sym:
+    if sme:                                                  # (an NSE-sym target is sme only via --extra "sme", 2026-11-22)
         return handle_sme(code, miss, dl, code2tk, xbrl_symbol)[0]
     out = []
     want = set(miss) if miss else None
@@ -849,10 +851,11 @@ def handle_sme(code, miss, dl, code2tk, xbrl_symbol, stored=None):
             held.setdefault(qe, d["why"])
             continue
         tgt = xbrl_symbol.resolve("NOTLISTED", src["xml"])  # an NSE listing of the same ISIN owns the page
-        if tgt and d["how"] == "half":
-            held.setdefault(qe, "half-year of NSE listing %s — the NSE stores have no row-length flag" % tgt)
-            continue
-        kind = "nse" if tgt else "bse"
+        # A proven half of a scrip whose ISIN now has an NSE listing (BSE SME -> NSE main migrant, user 2026-11-22): stored
+        # as the BSE scrip's own h=1 cell with its proof (pf). build_stock_fin folds it onto the NSE page of the same ISIN
+        # (fill-only) and build_row_periods marks it 6 months from that proof ("bse-pf", ISIN-joined). The NSE stores are
+        # never given a half (they carry no row length); before this change the half was held.
+        kind = "bse" if (d["how"] == "half" or not tgt) else "nse"
         if d["how"] == "quarter":
             vals = parse_values(src["xml"], basis, src.get("fname"))   # the OneD quarter, exactly as a main-board filing
         else:
@@ -862,7 +865,7 @@ def handle_sme(code, miss, dl, code2tk, xbrl_symbol, stored=None):
             vals["pat_" + b], vals["rev_" + b] = cr(d["pat"]), cr(d["rev"])
         mi = RE_ISIN.search(src["xml"])
         rec = {"code": code, "qe": qe, "basis": basis, "half": d["how"] == "half", "ann": src["ann"], "file": src["fname"],
-               "kind": kind, "sym": tgt or code2tk.get(code), "isin": mi.group(1) if mi else "", **vals}
+               "kind": kind, "sym": (tgt if kind == "nse" else None) or code2tk.get(code), "isin": mi.group(1) if mi else "", **vals}
         if d.get("pf"):
             rec["pf"] = d["pf"]
         if d.get("prov"):
