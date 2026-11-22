@@ -1011,6 +1011,17 @@ index_monthly 'NIFTY NEXT 50'. Run: `EARN_BASIS=std|con python3 scripts/gridmega
 `MERGE_BASES=std,con GRID_END=<END> node --max-old-space-size=8192 scripts/gridmega_phases_build.js _nn50_r5` etc.
 (~15 min each). Measured 11-04: pool 1,527,104; bench 2023-03-31→2024-09-30 +104.0% equals index_monthly.
 
+**10. F&O variant alone (2026-11-22, user: "update fno data").** `strategy_phases_fno_h3.json` had sat at built
+2026-08-28 / dataEnd 2026-08-24. Refreshed alone in a private worktree on one staging (sf end 2026-11-20):
+`python3 scripts/gridmega_fetch_live.py`, then `EARN_BASIS=std python3 scripts/gridmega_phases_run.py <END> --jobs 3
+--only _fno_h3`, the same with `EARN_BASIS=con` (13 jobs each; 152 + 70 min at 3-way while another session ran grids),
+then `MERGE_BASES=std,con GRID_END=<END> node --max-old-space-size=8192 scripts/gridmega_phases_build.js _fno_h3`.
+Measured: grid 5,057,350 combos; the build's current default barred list (13 factors, user 2026-11-03) now applies to
+F&O too, so the pool is 1,527,104 (the Aug file barred only indRank + composite, pool 5,439,680); bear benchmark −36.8%
+as measured in the build header. F&O roster needed no new snapshot: `fno_daily_roster.json` shows no change after
+2026-10-28. Verified live: F&O tab shows `2020-03-31 → 2026-11-20`, no console errors. The four Nifty 500 variants
+are still the 2026-08-28 build (dataEnd 2026-08-24).
+
 ### 7.4b REFRESH BULL-RUN SURVIVORS (`bull-runs.html` · `bull_runs.json` + `bull_runs_nn50.json` + `bull_runs_n50.json` + `bull_runs_fno.json` + `bull_runs_saved.json`)
 Same grid as §7.4, scored over the four MEASURED bull legs (NIFTY 500 daily close, 13% reversal filter:
 2013-08-28→2015-03-03, 2016-02-25→2018-08-31, 2020-03-23→2021-10-18, 2022-06-20→2024-09-26) plus the live
