@@ -30951,6 +30951,33 @@ new keys only. Store: +2,371 cells, 0 changed, 0 removed; apply idempotent. Spot
 PICCADIL Dec-21 prom 70.9 equal their filings; Public == Non-institutions in both (proven zero). Left: 420 quarters.
 OPEN: why a fresh build differs from the committed ledger at 4 dp (7,061 cells) — UNKNOWN, not investigated.
 
+## §180g — the 359 quarters §180f left: 292 were never due, 80 more filled (2026-11-22)
+Follow-up to §180f / the bseB pass (61 filled). Each remaining cell judged on its own evidence
+(`~/stocks-cache/allfill/shp_i_evidence.json`, `bseB_outcomes.json`):
+- **298 "no row in BSE's SHP listing" are mostly NOT gaps.** 244 are Jun/Dec quarter-ends while the company was a
+  half-yearly SME filer (133 on NSE Emerge at that date per `sme_backfill` anchors; 111 on BSE SME where BSE's own
+  listing carries the Mar and Sep rows on both sides and no Jun/Dec row). 48 are before the company's first trading day
+  (BRIGHT first bhavcopy 2023-03-24, VEEFIN 2023-07-05, the rest before our first bar). A gap list built from
+  "quarter-ends with a price bar" over-counts these: SME boards owe Mar + Sep only. OPEN 6: DCI / KRISHIVAL / PASHUPATI
+  Mar-2022 (on NSE Emerge, a Mar filing is due, not found) and RAMASIGNS Sep-25..Mar-26 (BSE's last row is Dec-2024).
+- **Own-line rule in the row-level stage** (`fetch_shp_allstocks.stage_rowlevel`, `OWN_FPI`): a Non-Institutions row the
+  filing ITSELF labels "Foreign Portfolio Investor (Category - III)" / "... - Individual" is FII on that filing's own
+  terms (user 2026-10-11 "follow the filing's own line", §164r parts 57A / 66) — it no longer waits for the 2022-form
+  seam (§159 placement, retired by that ruling). Checked on MPDL Jun-22: category row 60,000 sh = 0.81 %. +71 cells
+  (43 of the §180f holds + 28 other stocks: KALLAM 9, ATVPR 8, KIRLFER 3 ...). The `d1` (unnamed institutional rest)
+  holds still wait on the seam: 111 cells, incl. OBCL Mar-20 and DMCC Dec-20 — the own-line D1 rule would settle them
+  but needs the ownline reader's named-holder checks, not done. Cells an earlier run stored with the row LEFT in public
+  because the seam said "stay" are inconsistent with this rule — not re-judged (non-N500 corrections are parked, §220d).
+- **8 continuity holds read and passed as filed** via `_shp_allstocks_second_reader.json` (a second reading of the same
+  filing's block totals, user 2026-11-22 "filer's own figures stay as filed"): ABMKNO Sep-22 (Institutions-Foreign
+  10.56 %), SGFIN Dec-22 (9.09 %), ORCHASP Jun-24 (FPI 5.71 %), SUPREME Sep-21 (FI/Banks 12.52 %), AAREYDRUGS Mar-20
+  (FPI 14.34 %), PRITIKAUTO Mar-20 (FPI 1.61 %), PROTEAN Dec-23 / Mar-24 (domestic 54.13 / 44.07 %).
+- **FEDDERSHOL Mar-20** passed identity: the file prints ISIN "INS417D01012"; BSE's bhavcopy carries INE417D01012 for
+  scrip 511628 on 2020-03-31..2021-01-04 (today INE417D01020) -> `FORMER_ISIN` in the build, one-letter filer typo.
+- Landing: committed ledger + the 80 new keys only (the §180f 4-dp trap still applies: the fresh build again differed
+  in 7,345 cells and dropped 37). Store: +80, 0 changed, 0 removed. STILL HELD: BRIGHT x7 (two companies on one ticker,
+  §203), OBCL / DMCC d1 x2.
+
 ## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
 
 LIVE in 74f37f9c36 (sw v284). What it is, for the next session that touches the UI:

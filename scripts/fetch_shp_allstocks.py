@@ -553,6 +553,8 @@ def stage_bse(cache, cap=20000, shard="0/1", max_minutes=0, codes_file=None):
 
 # ------------------------------------------------------------------------------------------ row-level stage (§180c)
 ROWLEVEL = os.path.join(HERE, "_shp_allstocks_rowlevel.json")
+FORMER_ISIN = {"511628": ["INE417D01012"]}
+OWN_FPI = re.compile(r"foreign\s+portfolio\s+investor", re.I)   # a row's OWN label (§180g)
 GENERIC_LBL = re.compile(r"(?i)(no typed rows|any other|others?|other institutions?|)")
 
 
@@ -720,7 +722,7 @@ def stage_rowlevel(cache):
         live = dict(decided)
         seam_labels = (seam_cell or {}).get("m159_labels") or []
         for q in sorted(cells, reverse=True):
-            c = cells[q]; ok, note = True, []
+            c = cells[q]; ok, note, own = True, [], False
             if c.get("seam_only"): continue
             fii, dii = c["fii_r"], c["dii_r"]
             for comp in ("m159", "d1"):
@@ -729,6 +731,12 @@ def stage_rowlevel(cache):
                 dec = live.get(comp)
                 same_row = comp == "m159" and dec is not None and seam_labels and c.get("m159_labels") == seam_labels
                 if dec is None or (not same_row and abs(amt - dec[1]) > max(0.02, 0.03 * dec[1])):
+                    # OWN LINE (user 2026-10-11, "follow the filing's own line"; runbook §164r parts 57A/66, §180g): a
+                    # Non-Institutions row the filing ITSELF labels Foreign Portfolio Investor is FII on that filing's own
+                    # terms — no other filing (the 2022-form seam) is needed to place it. d1 keeps waiting on the seam.
+                    if comp == "m159" and c.get("m159_labels") and all(OWN_FPI.search(l_) for l_ in c["m159_labels"]):
+                        fii += amt; own = True; live.pop(comp, None)
+                        note.append("m159 %.4f -> fii (own line: the filing's Non-Institutions row is labelled FPI)" % amt); continue
                     ok = False; live.pop(comp, None); note.append("%s %.4f unconfirmed by the 2022-form seam" % (comp, amt)); continue
                 if dec[0] == "fii":
                     fii += amt; dii -= amt if comp == "d1" else 0.0; note.append("%s %.4f -> fii (seam-confirmed)" % (comp, amt))
@@ -736,6 +744,7 @@ def stage_rowlevel(cache):
                     dii -= amt; note.append("%s %.4f -> public (seam: the filer's 2022 form lists it under Non-institutions)" % (comp, amt))
                 else: note.append("%s %.4f stays (the 2022-form seam keeps it where the raw reading has it)" % (comp, amt))
             parts = ["R1-R3 (§158)"] + (["R2-FII (§159)"] if c["m159"] and decided.get("m159", ("stay",))[0] == "fii" else []) + \
+                    (["own-line FPI-labelled row -> FII (§180g)"] if own else []) + \
                     (["D1 unnamed remainder -> FII (§164c)"] if c["d1"] and decided.get("d1", ("stay",))[0] == "fii" else []) + \
                     (["unnamed remainder -> public (seam)"] if c["d1"] and decided.get("d1", ("stay",))[0] == "public" else [])
             if ok:
@@ -1031,6 +1040,9 @@ def build(cache, window=None):
     except Exception as e:
         print("WARN bse_universe.json unreadable (%s)" % e)
     by_id_sym = {str(v): k for k, v in bs.get("by_id", {}).items()}
+    # a scrip's FORMER ISIN, measured on BSE's own bhavcopy (not in bse_universe, which carries today's): 511628 traded as
+    # INE417D01012 on 2020-03-31 .. 2021-01-04 (now INE417D01020) - its Mar-2020 SHP prints "INS417D01012" (§180g)
+    for c_, i_ in FORMER_ISIN.items(): code_isins[c_] |= set(i_)
 
     def identity_bse(sym, a):
         """A BSE copy belongs to `sym` when the FILE's ScripCode is the scrip we asked for and its ISIN issuer is one that
