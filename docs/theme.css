@@ -887,3 +887,21 @@ html[data-theme] .bg-gradient-to-r, html[data-theme] .bg-gradient-to-br{ backgro
 html[data-theme] .bg-emerald-600, html[data-theme] .bg-rose-600, html[data-theme] .bg-amber-600, html[data-theme] .bg-violet-600{ box-shadow:none; }
 /* tables: header band + hairlines in the theme's colours on every page */
 html[data-theme] table thead th{ background-color:var(--surface-2); }
+
+/* ── Look C fixes (2026-11-22): stacking, embeds, contrast ── */
+/* side menu sits UNDER page pop-ups (page modals use z 40-80); it never overlaps page content sideways */
+@media (min-width:1100px){ html.sw-has-side .sw-side{ z-index:39; } }
+/* full-screen page modals must also cover the phone bottom bar (z 55) */
+html[data-theme] .fixed.inset-0.z-50{ z-index:80 !important; }
+/* a page framed inside another (?embed=1 → html.embed) shows no site chrome at all */
+html.embed .sw-side, html.embed .sw-tape, html.embed .sw-bbar, html.embed header.sw-header{ display:none !important; }
+html.embed body, html.embed.sw-has-side body{ padding-left:0 !important; padding-bottom:0 !important; }
+html.embed.sw-has-side body > main{ padding:0 !important; }
+/* white text on amber was unreadable (2.1:1) */
+html[data-theme] .bg-amber-500.text-white{ background-color:#b45309 !important; }
+html[data-theme] .bg-amber-500.text-white:hover{ background-color:#92400e !important; }
+/* header "Markets" mega menu (761-1099px): span the header instead of hanging off the button, so it never runs off-screen */
+@media (min-width:761px) and (max-width:1099px){
+  header.sw-header .sw-group:has(> .sw-group-panel--mega){ position:static; }
+  header.sw-header .sw-group-panel--mega{ left:16px !important; right:16px !important; width:auto; max-width:none; top:calc(100% + 6px); }
+}

@@ -1088,7 +1088,7 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
       from = snapDate;
     }
     else if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
-    else if (btn.dataset.since1996)       from = new Date(1996, 0, 1);
+    else if (btn.hasAttribute('data-since-1996'))       from = new Date(1996, 0, 1);
     else { const days = parseInt(btn.dataset.days, 10); from = new Date(); from.setDate(today.getDate() - days); }
     document.getElementById('toDate').value   = to.toISOString().split('T')[0];
     document.getElementById('fromDate').value = from.toISOString().split('T')[0];
