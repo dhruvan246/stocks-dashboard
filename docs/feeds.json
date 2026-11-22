@@ -431,6 +431,30 @@
    ]
   },
   {
+   "file": "daily_moves.bin",
+   "name": "Daily Moves grid \u2014 day-by-day closes, flows and 52-week range for every index stock",
+   "workflow": "refresh-market-mood.yml",
+   "cadence": "weekdays 21:35 IST",
+   "max_age_hours": 110,
+   "min_bytes": 300000,
+   "min_ratio": 0.8,
+   "pages": [
+    "daily-moves.html"
+   ]
+  },
+  {
+   "file": "daily_moves_x.bin",
+   "name": "Daily Moves hover details \u2014 volume, delivery %, RSI",
+   "workflow": "refresh-market-mood.yml",
+   "cadence": "weekdays 21:35 IST",
+   "max_age_hours": 110,
+   "min_bytes": 900000,
+   "min_ratio": 0.8,
+   "pages": [
+    "daily-moves.html"
+   ]
+  },
+  {
    "file": "nifty500_turnover.json",
    "name": "Market Mood monthly turnover",
    "workflow": "refresh-market-mood.yml",

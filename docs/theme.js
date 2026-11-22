@@ -260,6 +260,7 @@
       { sub: 'Overview', items: [
         ['./nse-bse-dashboard.html',  ic('candle'), 'Stocks'],
         ['./movers.html',             ic('trend'), 'Top Movers'],
+        ['./daily-moves.html',        ic('caldays'), 'Daily Moves'],
         ['./indices.html',            ic('gauge'), 'Indices'],
         ['./sectors.html',            ic('pie'), 'Sectors'],
         ['./monthly-returns.html',    ic('calendar'), 'Monthly Returns'],
@@ -321,6 +322,7 @@
   var PAGE_GROUPS = [
     { g: 'Market Analytics', tabs: [
       ['./movers.html',           ic('trend'), 'Top Movers'],
+      ['./daily-moves.html',      ic('caldays'), 'Daily Moves'],
       ['./indices.html',          ic('gauge'), 'Indices'],
       ['./monthly-returns.html',  ic('calendar'), 'Monthly Returns'],
       ['./market-mood.html',      ic('thermo'), 'Market Mood']

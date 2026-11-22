@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Daily Moves</title>
+<meta name="description" content="Every stock of an index, day by day: a colour grid of each session's % change and close for Nifty 50, Nifty 500, sector indices or the F&O list, with FII/DII flows, FII index-futures positioning, the index itself, period change and distance from the 52-week high and low." />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body { font-feature-settings: "tnum" 1; }
+  main.dm-main{width:100%;min-width:0}
+  .dm-head h1{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:var(--text);margin:0}
+  .dm-head h1 span{font-size:14px;font-weight:500;color:var(--text-faint);letter-spacing:0}
+  .dm-head p{font-size:13px;line-height:1.55;color:var(--text-muted);margin:6px 0 0;max-width:900px}
+  .dm-head p b{color:var(--text);font-weight:600}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  .pos{color:var(--pos)}.neg{color:var(--neg)}
+
+  /* controls */
+  .ctl{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 12px}
+  .ctl label{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .flab{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint)}
+  .ctl select,.ctl input[type=date],.ctl input[type=search]{background-color:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);
+    font-size:12.5px;font-weight:600;height:32px;padding:0 10px;color:var(--text);box-sizing:border-box;max-width:100%}
+  .ctl input[type=search]{width:150px;font-weight:500}
+  #fIndex{min-width:170px}
+  .vbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:32px;padding:0 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;user-select:none;white-space:nowrap;
+        background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);box-sizing:border-box}
+  .vbtn:hover{border-color:var(--border-strong);color:var(--text)}
+  .vbtn.on{background:var(--accent);color:var(--on-accent,#fff);border-color:var(--accent)}
+  .seg{display:inline-flex}
+  .seg .vbtn{border-radius:0;margin-left:-1px}
+  .seg .vbtn:first-child{border-radius:var(--radius-sm) 0 0 var(--radius-sm);margin-left:0}
+  .seg .vbtn:last-child{border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+  .seg .vbtn.on{position:relative;z-index:1}
+
+  /* tiles */
+  #tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .tile{padding:13px 16px;min-width:0}
+  .tile .l{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-faint)}
+  .tile .v{font-size:24px;font-weight:700;line-height:1.15;letter-spacing:-.02em;margin-top:4px;overflow-wrap:anywhere}
+  .tile .v.sm{font-size:18px;line-height:1.25}
+  .tile .s{font-size:12px;color:var(--text-muted);margin-top:4px;line-height:1.45}
+
+  /* legend */
+  .legend{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);white-space:nowrap}
+  .legend i{display:inline-block;width:15px;height:11px;border-radius:2px}
+
+  /* grid */
+  #grid{overflow:auto;max-height:calc(100vh - 110px);min-height:320px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface);position:relative}
+  body.dm-max{overflow:hidden}
+  body.dm-max #gridCard{position:fixed;inset:0;z-index:200;border-radius:0;border:0;margin:0;padding:10px 12px;display:flex;flex-direction:column;background:var(--bg,var(--surface))}
+  body.dm-max #grid{max-height:none;flex:1;min-height:0}
+  table.dm{border-collapse:separate;border-spacing:0;font-size:12px}
+  .dm th,.dm td{box-sizing:border-box;white-space:nowrap;padding:0;font-variant-numeric:tabular-nums}
+  .dm thead th{position:sticky;background:var(--surface);z-index:3;font-weight:600}
+  .dm thead tr.h0 th{top:0;height:44px;font-size:12px;color:var(--text);cursor:pointer;user-select:none;text-align:center;border-bottom:1px solid var(--border)}
+  .dm thead tr.h0 th small{display:block;font-size:10.5px;font-weight:500;color:var(--text-faint);line-height:1.2}
+  .dm thead tr.h0 th.srt{color:var(--accent-text)}
+  .dm thead tr.h1 th{top:44px;height:36px}
+  .dm thead tr.h2 th{top:80px;height:36px}
+  .dm thead tr.h3 th{top:116px;height:44px}
+  .dm thead tr.h4 th{top:160px;height:46px;border-bottom:1px solid var(--border-strong)}
+  .dm .c0{position:sticky;left:0;z-index:2;background:var(--surface);width:210px;min-width:210px;max-width:210px;text-align:left;padding:0 10px;border-right:1px solid var(--border);overflow:hidden}
+  .dm thead .c0{z-index:5}
+  .dm .cd{width:76px;min-width:76px}
+  .dm .cr{width:88px;min-width:88px;position:sticky;z-index:2;background:var(--surface)}
+  .dm thead .cr{z-index:5}
+  .dm .cr.r3{right:176px;border-left:1px solid var(--border)}
+  .dm .cr.r2{right:88px}
+  .dm .cr.r1{right:0}
+  .dm tbody td{height:60px}
+  .dm tbody td.c0{height:60px}
+  .dm .sym{font-weight:700;color:var(--text);font-size:12.5px;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis}
+  .dm a.sym:hover{color:var(--accent-text);text-decoration:underline}
+  .dm .nm{font-size:11px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;line-height:1.35}
+  .dm .ind{font-size:10.5px;color:var(--text-faint);border-bottom:1px dotted var(--border-strong);cursor:pointer;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+  .dm .ind:hover{color:var(--accent-text)}
+  .dm .rl{font-size:12px;color:var(--text);font-weight:600;line-height:1.25}
+  .dm .rl small{display:block;font-size:10.5px;font-weight:500;color:var(--text-faint)}
+  /* a cell = an inset coloured tile */
+  .dm .x{margin:2px;border-radius:5px;height:calc(100% - 4px);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.3;position:relative;color:var(--text)}
+  .dm td .x,.dm th .x{cursor:default}
+  .dm .x b{font-weight:700;font-size:12px}
+  .dm .x span{font-size:11px;color:var(--text-muted);font-weight:500}
+  .dm .x.one b{font-weight:600}
+  .dm .x .dot{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--text)}
+  .dm .x.na{color:var(--text-faint);background:transparent}
+  .z{background:var(--surface-2)}
+  .p1{background:color-mix(in srgb,var(--pos) 13%,var(--surface))}
+  .p2{background:color-mix(in srgb,var(--pos) 24%,var(--surface))}
+  .p3{background:color-mix(in srgb,var(--pos) 36%,var(--surface))}
+  .p4{background:color-mix(in srgb,var(--pos) 50%,var(--surface))}
+  .p5{background:color-mix(in srgb,var(--pos) 66%,var(--surface))}
+  .n1{background:color-mix(in srgb,var(--neg) 13%,var(--surface))}
+  .n2{background:color-mix(in srgb,var(--neg) 24%,var(--surface))}
+  .n3{background:color-mix(in srgb,var(--neg) 36%,var(--surface))}
+  .n4{background:color-mix(in srgb,var(--neg) 50%,var(--surface))}
+  .n5{background:color-mix(in srgb,var(--neg) 66%,var(--surface))}
+  .p3 span,.p4 span,.p5 span,.n3 span,.n4 span,.n5 span{color:var(--text)}
+  #more{padding:10px 12px 2px;text-align:center;font-size:12px;color:var(--text-faint)}
+  #tip{position:fixed;z-index:300;pointer-events:none;background:var(--surface-3,var(--surface));color:var(--text);border:1px solid var(--border-strong);border-radius:var(--radius,8px);
+       padding:9px 11px;font-size:12px;line-height:1.55;box-shadow:var(--shadow-lg,0 8px 24px rgba(0,0,0,.25));max-width:290px;display:none}
+  #tip .t{font-weight:700;font-size:12.5px}
+  #tip .m{color:var(--text-muted)}
+  details.how{font-size:12.5px;color:var(--text-muted);line-height:1.6}
+  details.how summary{cursor:pointer;color:var(--text);font-weight:600;font-size:13px}
+  details.how p{margin:8px 0 0;max-width:820px}
+  details.how b{color:var(--text);font-weight:600}
+
+  @media (max-width:900px){ #tiles{grid-template-columns:repeat(2,minmax(0,1fr))} .dm tbody .cr{position:static} .dm .cr.r1,.dm .cr.r2,.dm .cr.r3{right:auto} .dm .cr.r3{border-left:0} }
+  @media (max-width:640px){
+    .dm-head h1{font-size:21px}
+    .tile .v{font-size:19px}
+    .ctl label{flex:1 1 44%}
+    .ctl label.wide{flex:1 1 100%}
+    .ctl select,.ctl input[type=date],.ctl input[type=search]{width:100%}
+    #fIndex{min-width:0}
+    .dm .c0{width:112px;min-width:112px;max-width:112px;padding:0 7px}
+    .dm .nm{display:none}
+    .dm .cd{width:68px;min-width:68px}
+    .dm .cr{width:78px;min-width:78px}
+    /* only the date row stays pinned on a phone: five pinned rows would leave no room for stocks */
+    .dm thead tr.h1 th,.dm thead tr.h2 th,.dm thead tr.h3 th,.dm thead tr.h4 th{position:static}
+    .dm thead tr.h1 th.c0,.dm thead tr.h2 th.c0,.dm thead tr.h3 th.c0,.dm thead tr.h4 th.c0{position:sticky;left:0}
+    #grid{max-height:78vh}
+    /* theme.css pads every cell of a phone table; this grid's cells are their own tiles */
+    html[data-theme] .sw-scrollx table.dm th,html[data-theme] .sw-scrollx table.dm td{padding:0}
+    html[data-theme] .sw-scrollx table.dm .c0{padding:0 7px}
+    html[data-theme] .sw-scrollx table.dm{font-size:12px}
+    html[data-theme] .sw-scrollx table.dm thead th{z-index:4}
+    html[data-theme] .sw-scrollx table.dm thead th.c0{z-index:6}
+    html[data-theme] .sw-scrollx table.dm tbody td.c0{z-index:2}
+    .legend{flex-wrap:wrap}
+  }
+</style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+
+<main class="dm-main max-w-screen-2xl mx-auto px-4 py-6">
+  <div class="mb-4 dm-head">
+    <h1>Daily Moves <span>· every stock, day by day</span></h1>
+    <p id="lead">Loading…</p>
+  </div>
+
+  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading market data…</div>
+
+  <div id="content" class="hidden">
+    <div class="card p-3 mb-3">
+      <div class="ctl">
+        <label class="wide"><span class="flab">Index</span><select id="fIndex"></select></label>
+        <label><span class="flab">From date</span><input type="date" id="fFrom" /></label>
+        <label><span class="flab">To date</span><input type="date" id="fTo" /></label>
+        <label><span class="flab">Industry</span><select id="fInd"></select></label>
+        <label><span class="flab">Find stock</span><input type="search" id="fQ" placeholder="Symbol or name" autocomplete="off" /></label>
+        <div><span class="flab" style="display:block;margin-bottom:4px">Range</span>
+          <div class="seg" id="rng">
+            <span class="vbtn" data-n="5">5D</span><span class="vbtn" data-n="10">10D</span><span class="vbtn" data-n="20">1M</span><span class="vbtn" data-n="62">3M</span><span class="vbtn" data-n="125">6M</span><span class="vbtn" data-n="0">1Y</span>
+          </div></div>
+        <div><span class="flab" style="display:block;margin-bottom:4px">One column per</span>
+          <div class="seg" id="gran">
+            <span class="vbtn" data-g="d">Day</span><span class="vbtn" data-g="w">Week</span><span class="vbtn" data-g="m">Month</span>
+          </div></div>
+        <span class="vbtn" id="bReset">Reset</span>
+      </div>
+    </div>
+
+    <div id="tiles" class="mb-3"></div>
+
+    <div class="card p-3" id="gridCard">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--text)" id="gTitle">Change by stock, close to close</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;max-width:900px" id="gNote"></div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="legend" id="legend"></div>
+          <span class="vbtn" id="bCsv">Download CSV</span>
+          <span class="vbtn" id="bMax">Maximise table</span>
+        </div>
+      </div>
+      <div id="grid"><table class="dm" id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+      <div id="more" class="hidden"></div>
+    </div>
+
+    <details class="how card p-3 mt-3">
+      <summary>How these numbers are worked out, and what is missing</summary>
+      <div id="how"></div>
+    </details>
+  </div>
+</main>
+<div id="tip"></div>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const MAXC = 60;            // most day/week/month columns drawn at once (the latest ones)
+const BATCH = 80;           // stock rows drawn per step
+const FNO = 'F&O stocks';
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+let C = null, X = null, XLOAD = null;      // core file, hover file, its promise
+let DAYS = [], L = 0;
+let IX = 'Nifty 50', FROM = 1, TO = 1, G = 'd', IND = '', Q = '', SORT = {k:'per', dir:-1};
+let COLS = [], ALLCOLS = [], ROWS = [], DRAWN = 0, TOUCH = false;
+
+async function gunzipFetch(url){
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(url + ' → HTTP ' + r.status);
+  const buf = await r.arrayBuffer();
+  const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+
+/* ---------- dates & numbers ---------- */
+const dObj = d => new Date(Date.UTC(Math.floor(d/10000), Math.floor(d/100)%100 - 1, d%100));
+const dIso = d => String(d).replace(/^(\d{4})(\d{2})(\d{2})$/, '$1-$2-$3');
+const dShort = d => (d%100) + ' ' + MON[Math.floor(d/100)%100 - 1];
+const dLong = d => (d%100) + ' ' + MON[Math.floor(d/100)%100 - 1] + ' ' + Math.floor(d/10000);
+const dDow = d => DOW[dObj(d).getUTCDay()];
+const weekKey = d => { const t = dObj(d); const dow = (t.getUTCDay() + 6) % 7; return Math.round((t.getTime() - dow*864e5) / 864e5); };
+const monKey = d => Math.floor(d/100);
+const n2 = v => v.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+const n0 = v => Math.round(v).toLocaleString('en-IN');
+const pct = v => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + '%';
+const sgn0 = v => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + (v !== 0 && Math.abs(v) < 0.5 ? Math.abs(v).toFixed(2) : n0(Math.abs(v)));
+const pc = v => v == null ? '' : v > 0 ? 'pos' : v < 0 ? 'neg' : '';
+
+/* colour band for value v on a scale (scale = the size of one step) */
+function band(v, scale){
+  if (v == null || !isFinite(v)) return 'na';
+  const a = Math.abs(v) / scale;
+  const k = a < 0.25 ? 0 : a < 1 ? 1 : a < 2 ? 2 : a < 3 ? 3 : a < 4 ? 4 : 5;
+  return k === 0 ? 'z' : (v > 0 ? 'p' : 'n') + k;
+}
+const gScale = () => G === 'd' ? 1 : G === 'w' ? 2 : 4;
+
+/* ---------- series helpers ---------- */
+// last non-null close at or before index i (a stock that did not trade keeps its last traded close as the base)
+function closeAtOrBefore(c, i){ for (let j = i; j >= 0; j--) if (c[j] != null) return c[j]; return null; }
+function chg(c, a, b){
+  if (!c || c[b] == null) return null;
+  const base = closeAtOrBefore(c, a);
+  return base ? (c[b] / base - 1) * 100 : null;
+}
+
+/* ---------- columns ---------- */
+function buildCols(){
+  const out = [];
+  if (G === 'd'){
+    for (let i = FROM; i <= TO; i++) out.push({a:i-1, b:i, f:i, top:dShort(DAYS[i]), sub:dDow(DAYS[i])});
+  } else {
+    const key = G === 'w' ? weekKey : monKey;
+    let cur = null;
+    for (let i = FROM; i <= TO; i++){
+      const k = key(DAYS[i]);
+      if (!cur || cur.k !== k){ cur = {k, a:i-1, f:i, b:i}; out.push(cur); } else cur.b = i;
+    }
+    for (const c of out){
+      const n = c.b - c.f + 1;
+      if (G === 'w'){ c.top = dShort(DAYS[c.b]); c.sub = 'week · ' + n + (n === 1 ? ' day' : ' days'); }
+      else { c.top = MON[Math.floor(DAYS[c.b]/100)%100 - 1] + ' ' + String(Math.floor(DAYS[c.b]/10000)).slice(2); c.sub = n + (n === 1 ? ' day' : ' days'); }
+    }
+  }
+  ALLCOLS = out;
+  COLS = out.length > MAXC ? out.slice(out.length - MAXC) : out;
+}
+function sumRange(arr, f, b){
+  let s = 0, n = 0;
+  for (let i = f; i <= b; i++) if (arr[i] != null){ s += arr[i]; n++; }
+  return {s: n ? s : null, n, of: b - f + 1};
+}
+
+/* ---------- rows ---------- */
+function members(){ return ((C.idx[IX] || {}).m || []).filter(s => C.stocks[s]); }
+function compute(){
+  buildCols();
+  const q = Q.trim().toLowerCase();
+  const rows = [];
+  for (const s of members()){
+    const st = C.stocks[s];
+    if (IND && st.i !== IND) continue;
+    if (q && s.toLowerCase().indexOf(q) < 0 && st.n.toLowerCase().indexOf(q) < 0) continue;
+    const c = st.c, last = c[TO];
+    const r = {s, st, per: chg(c, FROM-1, TO), cells: COLS.map(col => chg(c, col.a, col.b)),
+               hi: last != null && st.hh[TO] ? (last / st.hh[TO] - 1) * 100 : null,
+               lo: last != null && st.ll[TO] ? (last / st.ll[TO] - 1) * 100 : null};
+    rows.push(r);
+  }
+  const k = SORT.k, dir = SORT.dir;
+  const val = r => k === 'sym' ? r.s : k === 'per' ? r.per : k === 'hi' ? r.hi : k === 'lo' ? r.lo : r.cells[COLS.findIndex(c => 'c' + c.b === k)];
+  if (k === 'sym') rows.sort((x, y) => dir * (x.s < y.s ? 1 : x.s > y.s ? -1 : 0) * -1);
+  else {
+    if (k[0] === 'c' && COLS.findIndex(c => 'c' + c.b === k) < 0){ SORT = {k:'per', dir:-1}; return compute(); }
+    rows.sort((x, y) => { const a = val(x), b = val(y); if (a == null && b == null) return x.s < y.s ? -1 : 1; if (a == null) return 1; if (b == null) return -1; return dir * (a - b) || (x.s < y.s ? -1 : 1); });
+  }
+  ROWS = rows;
+}
+
+/* ---------- index row values ---------- */
+function idxInfo(){
+  const ix = C.idx[IX] || {};
+  const lv = ix.lv || null;
+  const per = lv && lv[TO] != null && lv[FROM-1] != null ? (lv[TO] / lv[FROM-1] - 1) * 100 : null;
+  let hh = null, ll = null, src = '';
+  if (lv && lv[TO] != null){
+    if (TO === L - 1 && ix.yh != null && C.idxAsof === C.end){ hh = ix.yh; ll = ix.yl; src = "NSE's 52-week high and low"; }
+    else if (ix.hh && ix.hh[TO] != null){ hh = ix.hh[TO]; ll = ix.ll[TO]; src = '52-week high and low of the closing level'; }
+  }
+  return {ix, lv, per, hh, ll, src,
+          hi: hh ? (lv[TO] / hh - 1) * 100 : null, lo: ll ? (lv[TO] / ll - 1) * 100 : null};
+}
+
+/* ---------- render ---------- */
+function cellHtml(v, close, scale, extra){
+  if (v == null && close == null) return '<div class="x na">—</div>';
+  return '<div class="x ' + band(v, scale) + '">' + (extra || '') + '<b>' + pct(v) + '</b>' + (close != null ? '<span>' + n2(close) + '</span>' : '') + '</div>';
+}
+function render(){
+  compute();
+  const nSess = TO - FROM + 1, sc = gScale(), perScale = Math.max(1, Math.sqrt(nSess));
+  const II = idxInfo();
+  const sortMark = k => SORT.k === k ? (SORT.dir < 0 ? ' ▼' : ' ▲') : '';
+  const sortCls = k => SORT.k === k ? ' srt' : '';
+
+  /* head row */
+  let h0 = '<tr class="h0"><th class="c0' + sortCls('sym') + '" data-k="sym" style="text-align:left">Stock' + sortMark('sym') + '<small>' + ROWS.length + ' shown</small></th>';
+  for (const c of COLS) h0 += '<th class="cd' + sortCls('c' + c.b) + '" data-k="c' + c.b + '">' + esc(c.top) + sortMark('c' + c.b) + '<small>' + esc(c.sub) + '</small></th>';
+  h0 += '<th class="cr r3' + sortCls('per') + '" data-k="per">Period' + sortMark('per') + '<small>' + nSess + (nSess === 1 ? ' session' : ' sessions') + '</small></th>'
+      + '<th class="cr r2' + sortCls('hi') + '" data-k="hi">% from' + sortMark('hi') + '<small>52W high</small></th>'
+      + '<th class="cr r1' + sortCls('lo') + '" data-k="lo">% from' + sortMark('lo') + '<small>52W low</small></th></tr>';
+
+  /* flows */
+  const fs = COLS.map(c => sumRange(C.fii, c.f, c.b)), ds = COLS.map(c => sumRange(C.dii, c.f, c.b));
+  let mx = 0; for (const a of [fs, ds]) for (const o of a) if (o.s != null) mx = Math.max(mx, Math.abs(o.s));
+  const fScale = mx / 4 || 1;
+  const fTot = sumRange(C.fii, FROM, TO), dTot = sumRange(C.dii, FROM, TO);
+  const flowRow = (cls, label, arr, tot, key) => {
+    let h = '<tr class="' + cls + '"><th class="c0"><div class="rl">' + label + '<small>₹ crore, cash market</small></div></th>';
+    arr.forEach((o, i) => { h += '<th class="cd" data-f="' + key + '" data-i="' + i + '"><div class="x one ' + band(o.s, fScale) + '"><b>' + sgn0(o.s) + (o.s != null && o.n < o.of ? '*' : '') + '</b></div></th>'; });
+    h += '<th class="cr r3" data-f="' + key + '" data-i="-1"><div class="x one ' + band(tot.s, fScale * Math.max(1, Math.sqrt(nSess / Math.max(1, G === 'd' ? 1 : G === 'w' ? 5 : 21)))) + '"><b>' + sgn0(tot.s) + (tot.s != null && tot.n < tot.of ? '*' : '') + '</b></div></th><th class="cr r2"></th><th class="cr r1"></th></tr>';
+    return h;
+  };
+  const h1 = flowRow('h1', 'FII net', fs, fTot, 'fii'), h2 = flowRow('h2', 'DII net', ds, dTot, 'dii');
+
+  /* FII index futures long:short */
+  const ls = i => { const a = C.fl[i], b = C.fs[i]; return a != null && b != null && a + b > 0 ? {l: a / (a + b) * 100, net: a - b} : null; };
+  let h3 = '<tr class="h3"><th class="c0"><div class="rl">FII long : short<small>index futures, net contracts below</small></div></th>';
+  COLS.forEach((c, i) => { const o = ls(c.b);
+    h3 += '<th class="cd" data-f="ls" data-i="' + i + '">' + (o ? '<div class="x ' + band(o.l - 50, 6) + '"><b>' + Math.round(o.l) + ':' + (100 - Math.round(o.l)) + '</b><span>' + sgn0(o.net) + '</span></div>' : '<div class="x na">—</div>') + '</th>'; });
+  const lsA = ls(FROM - 1), lsB = ls(TO);
+  h3 += '<th class="cr r3" data-f="ls" data-i="-1">' + (lsA && lsB ? '<div class="x ' + band(lsB.l - lsA.l, 3) + '"><b>' + Math.round(lsA.l) + ' → ' + Math.round(lsB.l) + '</b><span>long share</span></div>' : '<div class="x na">—</div>') + '</th><th class="cr r2"></th><th class="cr r1"></th></tr>';
+
+  /* index row */
+  let h4 = '';
+  if (IX !== FNO){
+    h4 = '<tr class="h4"><th class="c0"><div class="rl">' + esc(IX.toUpperCase()) + '<small>index level</small></div></th>';
+    COLS.forEach((c, i) => { const lv = II.lv; const v = lv && lv[c.b] != null && lv[c.a] != null ? (lv[c.b] / lv[c.a] - 1) * 100 : null;
+      h4 += '<th class="cd" data-f="ix" data-i="' + i + '">' + cellHtml(v, lv ? lv[c.b] : null, sc) + '</th>'; });
+    h4 += '<th class="cr r3">' + cellHtml(II.per, null, perScale) + '</th>'
+        + '<th class="cr r2" title="' + esc(II.src) + '">' + cellHtml(II.hi, II.hh, 5) + '</th>'
+        + '<th class="cr r1" title="' + esc(II.src) + '">' + cellHtml(II.lo, II.ll, 10) + '</th></tr>';
+  }
+  $('thead').innerHTML = h0 + h1 + h2 + h3 + h4;
+
+  /* body, in steps */
+  $('tbody').innerHTML = ''; DRAWN = 0;
+  drawMore();
+  renderTiles(II, fTot, dTot, nSess);
+  renderText(II, nSess);
+  syncControls();
+}
+function rowHtml(r, ri){
+  const sc = gScale(), nSess = TO - FROM + 1, perScale = Math.max(1, Math.sqrt(nSess)), st = r.st, ex = C.exd[r.s];
+  let h = '<tr data-r="' + ri + '"><td class="c0"><a class="sym" href="./stock.html?sym=' + encodeURIComponent(r.s) + '">' + esc(r.s) + '</a><div class="nm">' + esc(st.n) + '</div><span class="ind" data-ind="' + esc(st.i) + '" title="Show only ' + esc(st.i) + '">' + esc(st.i) + '</span></td>';
+  for (let i = 0; i < COLS.length; i++){
+    const c = COLS[i], cl = st.c[c.b];
+    let dot = '';
+    if (ex) for (const e of ex){ const j = DAYS.indexOf(e[0]); if (j >= c.f && j <= c.b){ dot = '<i class="dot"></i>'; break; } }
+    h += '<td class="cd" data-i="' + i + '">' + cellHtml(r.cells[i], cl != null ? cl / 100 : null, sc, dot) + '</td>';
+  }
+  const last = st.c[TO];
+  h += '<td class="cr r3" data-i="-1">' + cellHtml(r.per, null, perScale) + '</td>'
+     + '<td class="cr r2" data-i="-2">' + cellHtml(r.hi, last != null && st.hh[TO] ? st.hh[TO] / 100 : null, 5) + '</td>'
+     + '<td class="cr r1" data-i="-3">' + cellHtml(r.lo, last != null && st.ll[TO] ? st.ll[TO] / 100 : null, 10) + '</td></tr>';
+  return h;
+}
+function drawMore(){
+  const end = Math.min(ROWS.length, DRAWN + BATCH);
+  let h = '';
+  for (let i = DRAWN; i < end; i++) h += rowHtml(ROWS[i], i);
+  $('tbody').insertAdjacentHTML('beforeend', h);
+  DRAWN = end;
+  const m = $('more');
+  if (!ROWS.length){ m.classList.remove('hidden'); m.textContent = Q || IND ? 'No stock matches these filters.' : 'No stocks in this list.'; }
+  else if (DRAWN < ROWS.length){ m.classList.remove('hidden'); m.textContent = 'Showing ' + DRAWN + ' of ' + ROWS.length + ' stocks. Scroll for more.'; }
+  else m.classList.add('hidden');
+}
+
+function renderTiles(II, fTot, dTot, nSess){
+  const withPer = ROWS.filter(r => r.per != null);
+  const up = withPer.filter(r => r.per > 0).length, dn = withPer.filter(r => r.per < 0).length;
+  const srt = withPer.map(r => r.per).sort((a, b) => a - b);
+  const med = srt.length ? (srt.length % 2 ? srt[(srt.length-1)/2] : (srt[srt.length/2 - 1] + srt[srt.length/2]) / 2) : null;
+  let best = null, worst = null;
+  for (const r of withPer){ if (!best || r.per > best.per) best = r; if (!worst || r.per < worst.per) worst = r; }
+  const lv = II.lv;
+  const t = [];
+  t.push('<div class="card tile"><div class="l">FII net, cash market</div><div class="v ' + pc(fTot.s) + '">' + (fTot.s == null ? '—' : (fTot.s > 0 ? '+' : '−') + '₹' + n0(Math.abs(fTot.s)) + ' Cr') + '</div><div class="s">'
+    + (fTot.s == null ? 'No exchange figure stored for these dates.' : 'From ' + fTot.n + ' of ' + fTot.of + ' sessions. DIIs ' + (dTot.s == null ? '—' : sgn0(dTot.s) + ' Cr') + '.') + '</div></div>');
+  t.push('<div class="card tile"><div class="l">' + (IX === FNO ? 'Index' : 'Index over the period') + '</div><div class="v ' + pc(II.per) + '">' + (IX === FNO ? '—' : pct(II.per)) + '</div><div class="s">'
+    + (IX === FNO ? 'The F&amp;O list is not an index, so it has no level.' : II.per != null ? esc(IX) + ': ' + n2(lv[FROM-1]) + ' to ' + n2(lv[TO]) + ' over ' + nSess + (nSess === 1 ? ' session' : ' sessions') : 'No daily level stored for ' + esc(IX) + ' on ' + dLong(DAYS[FROM-1]) + '.') + '</div></div>');
+  t.push('<div class="card tile"><div class="l">Stocks up / down</div><div class="v">' + up + ' / ' + dn + '</div><div class="s">' + esc(IND || 'All industries') + (med != null ? ', median ' + pct(med) : '') + (withPer.length < ROWS.length ? '. ' + (ROWS.length - withPer.length) + ' without a price on both dates' : '') + '</div></div>');
+  t.push('<div class="card tile"><div class="l">Best and worst</div><div class="v sm ' + (best ? pc(best.per) : '') + '">' + (best ? esc(best.s) + ' ' + pct(best.per) : '—') + '</div><div class="s">' + (worst && worst !== best ? 'Weakest: ' + esc(worst.s) + ' ' + pct(worst.per) : '') + '</div></div>');
+  $('tiles').innerHTML = t.join('');
+}
+
+function renderText(II, nSess){
+  const withPer = ROWS.filter(r => r.per != null), up = withPer.filter(r => r.per > 0).length;
+  const fTot = sumRange(C.fii, FROM, TO);
+  let s = 'Between <b>' + dLong(DAYS[FROM]) + '</b> and <b>' + dLong(DAYS[TO]) + '</b> ';
+  if (IX !== FNO && II.per != null) s += 'the <b>' + esc(IX) + '</b> moved <b>' + pct(II.per) + '</b>. ';
+  else s += '(' + nSess + (nSess === 1 ? ' session' : ' sessions') + '), <b>' + esc(IX) + '</b>: ';
+  s += withPer.length ? '<b>' + up + '</b> of the <b>' + withPer.length + '</b> stocks shown ended the period higher' : 'no stock matches the filters';
+  if (fTot.s != null) s += ', and FII net ' + (fTot.s >= 0 ? 'buying' : 'selling') + ' came to <b>₹' + n0(Math.abs(fTot.s)) + ' Cr</b>' + (fTot.n < fTot.of ? ' over the ' + fTot.n + ' sessions that have a figure' : '');
+  s += '. Prices up to ' + dLong(DAYS[L-1]) + '.';
+  $('lead').innerHTML = s;
+
+  const unit = G === 'd' ? 'day' : G === 'w' ? 'week' : 'month';
+  $('gTitle').textContent = (G === 'd' ? 'Daily' : G === 'w' ? 'Weekly' : 'Monthly') + ' change by stock, close to close';
+  let note = 'Click a column heading to sort, or an industry to show only that industry. Each cell shows the ' + unit + '’s % change with the closing price below it; point at or tap a cell for volume, delivery and RSI. A dot marks an ex-dividend day.';
+  if (ALLCOLS.length > COLS.length) note += ' <b>Showing the latest ' + COLS.length + ' of ' + ALLCOLS.length + ' ' + unit + ' columns</b>; the Period column and the tiles still cover the whole range. Switch to Week or Month to see it all.';
+  $('gNote').innerHTML = note;
+  const sc = gScale();
+  $('legend').innerHTML = '<span>−' + (4*sc) + '% or worse</span><i class="n5"></i><i class="n4"></i><i class="n3"></i><i class="n2"></i><i class="n1"></i><span>0</span><i class="p1"></i><i class="p2"></i><i class="p3"></i><i class="p4"></i><i class="p5"></i><span>+' + (4*sc) + '% or better</span>';
+}
+
+function renderHow(){
+  const ix = C.idx, short = [], long = [];
+  for (const k in ix){ if (k === FNO) continue; const lv = ix[k].lv; if (!lv) continue; const first = lv.findIndex(v => v != null); (first <= 1 ? long : short).push(k); }
+  const firstFlow = C.fii.findIndex(v => v != null), firstLvShort = short.length ? ix[short[0]].lv.findIndex(v => v != null) : -1;
+  const effs = Object.keys(ix).filter(k => k !== FNO).map(k => k + ' ' + (ix[k].eff ? dLong(+ix[k].eff.replace(/-/g, '')) : '—'));
+  const p = [];
+  p.push('<b>Each cell</b> is the stock’s closing price against its previous close, from the site’s own price store (NSE daily prices, adjusted for splits and bonuses so a corporate action never shows up as a fake move). Prices are <b>not</b> adjusted for dividends, so an ex-dividend day shows the full fall; those days carry a dot. If a stock did not trade on a day its cell is blank, and its next change is measured from its last traded close.');
+  p.push('<b>Period</b> is the change from the close before the From date to the close on the To date. Week and Month columns run from the last close of the previous week or month to the last close of that one; a first or last column can cover only part of a week or month, and says how many days it holds.');
+  p.push('<b>% from 52W high / low</b> use the close on the To date against the highest and lowest price traded in the 52 weeks up to that date, so they move when you change the To date. For the index row they use NSE’s own 52-week high and low when the To date is the latest day; on earlier dates they use the highest and lowest closing level, which is stored only for ' + esc(long.join(', ')) + '.');
+  p.push('<b>FII and DII</b> rows are the exchanges’ provisional cash-market net figures in rupees crore. They are stored from ' + (firstFlow >= 0 ? dLong(DAYS[firstFlow]) : '—') + '; earlier days are blank. A total marked * is missing at least one session.');
+  p.push('<b>FII long : short</b> is the share of FII index-futures open interest held long versus short at the day’s close, from NSE’s participant-wise open interest files, with net contracts (NSE’s raw count) below. Red means FIIs are mostly short. In Week or Month columns it is the position on the last day of that column.');
+  p.push('<b>Index level</b>: daily levels for the whole year are stored for ' + esc(long.join(', ')) + '. For the other indices they are stored from ' + (firstLvShort >= 0 ? dLong(DAYS[firstLvShort]) : '—') + ', so their index row and tile are blank before that.');
+  p.push('<b>Stocks</b> are the current members of each index (roster dates: ' + esc(effs.join('; ')) + ') and today’s F&amp;O list. The same current list is used for every past date, so a stock that left the index earlier is not shown.' + (C.missing && C.missing.length ? ' Not shown because the price store has no bars for them: ' + esc(C.missing.join(', ')) + '.' : ''));
+  p.push('<b>Hover figures</b>: volume and delivery % are NSE’s for that day. RSI is the 14-period Wilder RSI on daily, weekly and monthly bars; the weekly and monthly bars end at that day’s close. Ex-dividend dates are collected from NSE’s corporate-actions list from ' + dLong(20261022) + ' onward, so earlier ex-dividend days carry no dot.');
+  p.push('The file is rebuilt every trading evening after the day’s prices are stored. It holds the last ' + (L - 1) + ' sessions (' + dLong(DAYS[1]) + ' to ' + dLong(DAYS[L-1]) + '), including special sessions such as Diwali Muhurat trading.');
+  $('how').innerHTML = p.map(x => '<p>' + x + '</p>').join('');
+}
+
+/* ---------- controls ---------- */
+function syncControls(){
+  $('fIndex').value = IX; $('fFrom').value = dIso(DAYS[FROM]); $('fTo').value = dIso(DAYS[TO]); $('fQ').value = Q;
+  const inds = [...new Set(members().map(s => C.stocks[s].i))].sort();
+  if (IND && inds.indexOf(IND) < 0) inds.push(IND);
+  $('fInd').innerHTML = '<option value="">All industries</option>' + inds.map(i => '<option' + (i === IND ? ' selected' : '') + '>' + esc(i) + '</option>').join('');
+  document.querySelectorAll('#gran .vbtn').forEach(b => b.classList.toggle('on', b.dataset.g === G));
+  const n = TO - FROM + 1;
+  document.querySelectorAll('#rng .vbtn').forEach(b => { const k = +b.dataset.n || (L - 1); b.classList.toggle('on', TO === L - 1 && n === Math.min(k, L - 1)); });
+  const p = new URLSearchParams();
+  if (IX !== 'Nifty 50') p.set('ix', IX);
+  if (!(TO === L - 1 && n === 20)){ p.set('from', dIso(DAYS[FROM])); if (TO !== L - 1) p.set('to', dIso(DAYS[TO])); }
+  if (G !== 'd') p.set('g', G);
+  if (IND) p.set('ind', IND);
+  const qs = p.toString();
+  try { history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '')); } catch (e) {}
+}
+function idxOnOrAfter(d){ for (let i = 1; i < L; i++) if (DAYS[i] >= d) return i; return L - 1; }
+function idxOnOrBefore(d){ for (let i = L - 1; i >= 1; i--) if (DAYS[i] <= d) return i; return 1; }
+function setRange(n){ TO = L - 1; FROM = Math.max(1, L - (n || (L - 1))); }
+function defaults(){ IX = C.idx['Nifty 50'] ? 'Nifty 50' : Object.keys(C.idx)[0]; G = 'd'; IND = ''; Q = ''; SORT = {k:'per', dir:-1}; setRange(20); }
+function readUrl(){
+  const p = new URLSearchParams(location.search);
+  if (p.get('ix') && C.idx[p.get('ix')]) IX = p.get('ix');
+  const f = p.get('from'), t = p.get('to');
+  if (t && /^\d{4}-\d{2}-\d{2}$/.test(t)) TO = idxOnOrBefore(+t.replace(/-/g, ''));
+  if (f && /^\d{4}-\d{2}-\d{2}$/.test(f)) FROM = Math.min(idxOnOrAfter(+f.replace(/-/g, '')), TO);
+  if (['d','w','m'].indexOf(p.get('g')) >= 0) G = p.get('g');
+  if (p.get('ind')) IND = p.get('ind');
+}
+function wire(){
+  const sel = $('fIndex');
+  sel.innerHTML = Object.keys(C.idx).map(k => '<option value="' + esc(k) + '">' + esc(k) + ' (' + C.idx[k].m.filter(s => C.stocks[s]).length + ')</option>').join('');
+  $('fFrom').min = $('fTo').min = dIso(DAYS[1]); $('fFrom').max = $('fTo').max = dIso(DAYS[L-1]);
+  sel.onchange = () => { IX = sel.value; IND = ''; render(); $('grid').scrollTop = 0; };
+  $('fFrom').onchange = e => { if (!e.target.value) return; FROM = idxOnOrAfter(+e.target.value.replace(/-/g, '')); if (FROM > TO) TO = FROM; render(); };
+  $('fTo').onchange = e => { if (!e.target.value) return; TO = idxOnOrBefore(+e.target.value.replace(/-/g, '')); if (TO < FROM) FROM = TO; render(); };
+  $('fInd').onchange = e => { IND = e.target.value; render(); };
+  let qt = null; $('fQ').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { Q = e.target.value; render(); }, 180); };
+  $('rng').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; const n = +b.dataset.n; setRange(n); G = n === 0 ? 'm' : n >= 62 ? 'w' : 'd'; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  $('gran').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; G = b.dataset.g; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  $('bReset').onclick = () => { defaults(); render(); scrollLatest(); $('grid').scrollTop = 0; };
+  $('bMax').onclick = () => { const on = document.body.classList.toggle('dm-max'); $('bMax').textContent = on ? 'Exit full screen' : 'Maximise table'; };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('dm-max')) $('bMax').click(); });
+  $('bCsv').onclick = exportCsv;
+  $('thead').addEventListener('click', e => {
+    const th = e.target.closest('tr.h0 th'); if (!th || !th.dataset.k) return;
+    const k = th.dataset.k; SORT = SORT.k === k ? {k, dir:-SORT.dir} : {k, dir: k === 'sym' ? 1 : -1}; render();
+  });
+  $('tbody').addEventListener('click', e => { const s = e.target.closest('.ind'); if (s){ IND = IND === s.dataset.ind ? '' : s.dataset.ind; render(); $('grid').scrollTop = 0; } });
+  $('grid').addEventListener('scroll', () => { const g = $('grid'); if (DRAWN < ROWS.length && g.scrollTop + g.clientHeight > g.scrollHeight - 700) drawMore(); hideTip(); }, {passive:true});
+  window.addEventListener('scroll', hideTip, {passive:true});
+  /* tooltip: hover on desktop, tap on touch */
+  const tbl = $('tbl');
+  tbl.addEventListener('touchstart', () => { TOUCH = true; }, {passive:true});
+  tbl.addEventListener('mousemove', e => { if (!TOUCH) tipFor(e.target, e.clientX, e.clientY); });
+  tbl.addEventListener('mouseleave', hideTip);
+  tbl.addEventListener('click', e => { if (TOUCH && !e.target.closest('a,.ind,tr.h0')) tipFor(e.target, e.clientX, e.clientY, true); });
+}
+// show the latest column: at the far right, or just left of the three summary columns where those are not pinned
+function scrollLatest(){
+  const g = $('grid'); let x = g.scrollWidth;
+  if (matchMedia('(max-width:900px)').matches) document.querySelectorAll('tr.h0 th.cr').forEach(th => { x -= th.offsetWidth; });
+  g.scrollLeft = Math.max(0, x - (matchMedia('(max-width:900px)').matches ? g.clientWidth : 0));
+}
+
+/* ---------- tooltip ---------- */
+let TIPKEY = '';
+function hideTip(){ $('tip').style.display = 'none'; TIPKEY = ''; }
+function ensureX(){
+  if (X || XLOAD) return;
+  XLOAD = gunzipFetch('./daily_moves_x.bin').then(d => { X = d.end === C.end ? d : {stocks:{}, stale:true}; if (TIPKEY) { const k = TIPKEY; TIPKEY = ''; const el = document.querySelector('[data-tipkey="' + k + '"]'); if (el && LASTXY) tipFor(el, LASTXY[0], LASTXY[1]); } })
+    .catch(() => { X = {stocks:{}, failed:true}; });
+}
+let LASTXY = null;
+function tipFor(target, x, y, toggle){
+  const cell = target.closest('td,th'); const tr = cell && cell.parentElement;
+  if (!cell || cell.dataset.i == null){ hideTip(); return; }
+  const i = +cell.dataset.i; let html = '', key = '';
+  const colTitle = c => G === 'd' ? dDow(DAYS[c.b]) + ' ' + dLong(DAYS[c.b]) : dLong(DAYS[c.f]) + ' to ' + dLong(DAYS[c.b]);
+  if (tr.dataset.r != null){
+    const r = ROWS[+tr.dataset.r]; if (!r){ hideTip(); return; }
+    const st = r.st; key = r.s + '|' + i;
+    if (i >= 0){
+      const c = COLS[i], cl = st.c[c.b], base = closeAtOrBefore(st.c, c.a);
+      html = '<div class="t">' + esc(r.s) + ' · ' + colTitle(c) + '</div>';
+      if (cl == null) html += '<div class="m">No trade stored for this ' + (G === 'd' ? 'day' : 'period’s last day') + '.</div>';
+      else {
+        html += '<div>Close ₹' + n2(cl/100) + ' <b class="' + pc(r.cells[i]) + '">' + pct(r.cells[i]) + '</b></div>'
+              + '<div class="m">Previous close ' + (base != null ? '₹' + n2(base/100) : '—') + '</div>';
+        ensureX();
+        const xs = X && X.stocks[r.s];
+        if (xs){
+          let vol = null;
+          if (G === 'd') vol = xs.v[c.b]; else { vol = 0; let any = false; for (let j = c.f; j <= c.b; j++) if (xs.v[j] != null){ vol += xs.v[j]; any = true; } if (!any) vol = null; }
+          html += '<div>Volume ' + (vol != null ? n0(vol) + ' shares' : '—') + (G === 'd' ? ' · Delivery ' + (xs.dv[c.b] != null ? xs.dv[c.b].toFixed(1) + '%' : '—') : '') + '</div>'
+                + '<div>RSI-14 · Daily ' + f1(xs.r[c.b]) + ' · Weekly ' + f1(xs.rw[c.b]) + ' · Monthly ' + f1(xs.rm[c.b]) + '</div>';
+        } else if (X) html += '<div class="m">Volume, delivery and RSI could not be loaded.</div>';
+        else html += '<div class="m">Loading volume, delivery and RSI…</div>';
+        html += '<div class="m">52W high ₹' + n2(st.hh[c.b]/100) + ' · low ₹' + n2(st.ll[c.b]/100) + ' on that day</div>';
+        const ex = (C.exd[r.s] || []).filter(e => { const j = DAYS.indexOf(e[0]); return j >= c.f && j <= c.b; });
+        for (const e of ex) html += '<div>Ex-dividend ' + dShort(e[0]) + (e[1] != null ? ': ₹' + e[1] + ' a share' : '') + '</div>';
+      }
+    } else if (i === -1){
+      const base = closeAtOrBefore(st.c, FROM-1), cl = st.c[TO];
+      html = '<div class="t">' + esc(r.s) + ' · ' + dLong(DAYS[FROM]) + ' to ' + dLong(DAYS[TO]) + '</div>'
+           + (r.per == null ? '<div class="m">No price on ' + (cl == null ? 'the To date' : 'or before ' + dLong(DAYS[FROM-1])) + '.</div>'
+              : '<div>₹' + n2(base/100) + ' to ₹' + n2(cl/100) + ' <b class="' + pc(r.per) + '">' + pct(r.per) + '</b></div>');
+    } else {
+      const cl = st.c[TO];
+      html = '<div class="t">' + esc(r.s) + ' · 52 weeks to ' + dLong(DAYS[TO]) + '</div>'
+           + (cl == null ? '<div class="m">No close on the To date.</div>'
+              : '<div>Close ₹' + n2(cl/100) + '</div><div>High ₹' + n2(st.hh[TO]/100) + ' <b class="neg">' + pct(r.hi) + '</b></div><div>Low ₹' + n2(st.ll[TO]/100) + ' <b class="pos">' + pct(r.lo) + '</b></div>');
+    }
+  } else if (cell.dataset.f){
+    const f = cell.dataset.f; key = f + '|' + i;
+    const c = i >= 0 ? COLS[i] : {f:FROM, b:TO, a:FROM-1};
+    const title = i >= 0 ? colTitle(c) : dLong(DAYS[FROM]) + ' to ' + dLong(DAYS[TO]);
+    if (f === 'fii' || f === 'dii'){
+      const o = sumRange(C[f], c.f, c.b);
+      html = '<div class="t">' + f.toUpperCase() + ' net · ' + title + '</div>' + (o.s == null ? '<div class="m">No exchange figure stored.</div>' : '<div><b class="' + pc(o.s) + '">' + sgn0(o.s) + ' Cr</b></div>' + (o.of > 1 ? '<div class="m">From ' + o.n + ' of ' + o.of + ' sessions</div>' : ''));
+    } else if (f === 'ls'){
+      const a = C.fl[c.b], b = C.fs[c.b];
+      html = '<div class="t">FII index futures · ' + dLong(DAYS[c.b]) + '</div>' + (a == null ? '<div class="m">No open-interest file stored.</div>' : '<div>Long ' + n0(a) + ' · Short ' + n0(b) + ' contracts</div><div>Net <b class="' + pc(a - b) + '">' + sgn0(a - b) + '</b> · long share ' + (a / (a + b) * 100).toFixed(1) + '%</div>');
+    } else if (f === 'ix'){
+      const lv = (C.idx[IX] || {}).lv;
+      html = '<div class="t">' + esc(IX) + ' · ' + title + '</div>' + (!lv || lv[c.b] == null ? '<div class="m">No daily level stored.</div>' : '<div>Close ' + n2(lv[c.b]) + (lv[c.a] != null ? ' <b class="' + pc(lv[c.b]/lv[c.a]-1) + '">' + pct((lv[c.b]/lv[c.a]-1)*100) + '</b></div><div class="m">Previous close ' + n2(lv[c.a]) + '</div>' : '</div>'));
+    }
+  }
+  if (!html){ hideTip(); return; }
+  const tip = $('tip');
+  if (toggle && TIPKEY === key && tip.style.display === 'block'){ hideTip(); return; }
+  document.querySelectorAll('[data-tipkey]').forEach(el => el.removeAttribute('data-tipkey'));
+  cell.setAttribute('data-tipkey', key); TIPKEY = key; LASTXY = [x, y];
+  tip.innerHTML = html; tip.style.display = 'block';
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let lx = x + 14, ty = y + 16;
+  if (lx + w > innerWidth - 8) lx = Math.max(8, x - w - 12);
+  if (ty + h > innerHeight - 8) ty = Math.max(8, y - h - 12);
+  tip.style.left = lx + 'px'; tip.style.top = ty + 'px';
+}
+const f1 = v => v == null ? '—' : v.toFixed(1);
+
+/* ---------- csv ---------- */
+function exportCsv(){
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const cols = ALLCOLS, lines = [];
+  lines.push(['Symbol','Name','Industry'].concat(cols.map(c => G === 'd' ? dIso(DAYS[c.b]) : dIso(DAYS[c.f]) + ' to ' + dIso(DAYS[c.b])), ['Period %','% from 52W high','% from 52W low','Close on ' + dIso(DAYS[TO])]).map(q).join(','));
+  for (const r of ROWS){
+    const cells = cols.map(c => { const v = chg(r.st.c, c.a, c.b); return v == null ? '' : v.toFixed(2); });
+    lines.push([q(r.s), q(r.st.n), q(r.st.i)].concat(cells, [r.per == null ? '' : r.per.toFixed(2), r.hi == null ? '' : r.hi.toFixed(2), r.lo == null ? '' : r.lo.toFixed(2), r.st.c[TO] == null ? '' : (r.st.c[TO]/100).toFixed(2)]).join(','));
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\n')], {type:'text/csv'}));
+  a.download = 'daily_moves_' + IX.replace(/[^A-Za-z0-9]+/g, '_') + '_' + dIso(DAYS[FROM]) + '_' + dIso(DAYS[TO]) + '.csv';
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------- init ---------- */
+async function init(){
+  try {
+    C = await gunzipFetch('./daily_moves.bin');
+    DAYS = C.days || []; L = DAYS.length;
+    if (L < 2 || !C.idx || !Object.keys(C.idx).length || !C.stocks) throw new Error('the data file is empty');
+    C.exd = C.exd || {}; C.fii = C.fii || []; C.dii = C.dii || []; C.fl = C.fl || []; C.fs = C.fs || [];
+    defaults(); readUrl();
+    wire(); renderHow();
+    $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+    render(); scrollLatest();
+  } catch (e){
+    $('status').textContent = 'Could not load market data: ' + e.message;
+    $('lead').textContent = '';
+    console.error(e);
+  }
+}
+init();
+</script>
+</body>
+</html>

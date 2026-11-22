@@ -23,6 +23,7 @@ on:
       - "scripts/build_market_breadth.py"
       - "scripts/build_market_breadth_pit.py"
       - "scripts/build_index_survivorship.py"
+      - "scripts/build_daily_moves.py"
       - "scripts/fetch_release_bin.py"
       - ".github/workflows/refresh-market-mood.yml"
 
@@ -37,7 +38,7 @@ concurrency:
 jobs:
   refresh-market-mood:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -79,6 +80,12 @@ jobs:
       - name: Rebuild index survivorship tables
         run: python3 -X utf8 scripts/build_index_survivorship.py
 
+      # Day-by-day grid for daily-moves.html: last 260 sessions of every stock in the site's index lists
+      # (+ F&O), with FII/DII flows, FII index-futures position and 52-week range -> docs/daily_moves.bin
+      # (+ docs/daily_moves_x.bin, the hover details). Same fresh bin; rosters from docs/dash_slim.bin.
+      - name: Rebuild Daily Moves grid
+        run: python3 -X utf8 scripts/build_daily_moves.py
+
       # Commit BOTH built feeds (the freshly downloaded bin is discarded by the
       # reset). ⚠️ reset-and-replay gotcha (runbook §18): every file the build
       # steps write MUST ride the cp-to-/tmp + cp-back + git-add lists below,
@@ -95,13 +102,13 @@ jobs:
           # holds the copy the run started from. The old `cp docs/survivorship/*.json` also put back tables this job
           # never builds (bsesmeipo.json is refresh-bse-sme-ipo's) and reverted roster heals landed mid-run (§212).
           BASE=$(git rev-parse HEAD)   # nothing has committed yet: the tree the builders above read
-          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/daily_moves.bin docs/daily_moves_x.bin docs/survivorship/
           cp scripts/ci_land.py /tmp/ci_land.py   # the reset below must not swap it mid-loop
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land --each
-            git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/survivorship/*.json
+            git add docs/nifty500_turnover.json docs/market_breadth.json docs/market_breadth_pit.json docs/daily_moves.bin docs/daily_moves_x.bin docs/survivorship/*.json
             if git diff --cached --quiet; then
               echo "Turnover + breadth series unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
