@@ -31008,6 +31008,20 @@ Follow-up to §180f / the bseB pass (61 filled). Each remaining cell judged on i
 - **RAMASIGNS Sep-25..Mar-26: not filed.** BSE's SHP listing for 515127 (fetched 2026-11-22 09:33) ends at Dec-2024
   (revised 7-Apr-2025). BSE-only company. Stays a gap; re-check when the listing is next refreshed.
 
+## §180i — the other `d1` holds (unnamed institutional "Any Other"), 107 cells (2026-11-22)
+User: "do the 109 held ones too" (107 were actually outside the store). Rule = user 2026-10-13 rule 2: an institutional
+Any-Other amount with no label and no named holder is FII on that filing's own terms. Each cell recomputed SHARE-EXACT
+from its file (OtherInstitutions shares / total; the tool's `d1` is sometimes 2 dp: AJWAFUN 1.85 vs 1.8545), base checked
+(dii_r includes it, fii_r does not), date = earliest BSE list row of the quarter.
+- **80 FILLED** (25 companies), store +80, 0 changed. Agreement with the company's later 2022-form rows where one exists:
+  INDIAHOMES 0.069 / 1.2574 = next stored, TCIIND 0.0064 / 0.0711 vs 0.0064 / 0.0715, BPAGRI 0.2637 vs 0.26, SAMRATPH 3.2366.
+- **14 HELD for the user** — the rule's FII differs by >1 pp from BOTH adjacent stored quarters: AJWAFUN x8 (1.85),
+  INCON x3 (4.62; neighbours store 4.6357 as DII), CHDCHEM Jun-21 (3.02), ANDREWYU Mar-22 (2.27), ORIENTPPR Jun-20 (1.90).
+- **13 NOT DONE:** JAGAJITIND x4 (tool d1 8.19 but the Other-Institutions row is 3.72 — unexplained), LUDLOWJUT x7 (rows
+  labelled "Other", so not unnamed), NAKSH Mar-20 (named + labelled + unnamed mix), RAMINFO Mar-20 (file has no total).
+- Smaller one-quarter blips went in under the rule although the next filing shows nothing foreign (THAKKERS 0.95,
+  INDSUCR 0.98, CONTCHM 0.65, HITTCO 0.38) — the filing's own line, flagged to the user.
+
 ## §247 — Site-wide redesign "Look C" (2026-11-22, user chose Look C, then "apply to all")
 
 LIVE in 74f37f9c36 (sw v284). What it is, for the next session that touches the UI:
