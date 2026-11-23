@@ -71,6 +71,13 @@ def main():
            "source": "NSE UDiFF F&O bhavcopy of that day, stock futures (STF) only",
            "cols": ["tradingsymbol", "expiry", "lot", "settle", "close", "underlying"],
            "f": dict(sorted(fut.items()))}
+    # the previous day's settlement, kept when the file moves on (user 2026-11-23): after the close Zerodha
+    # swaps a future's close_price to TODAY's close, so its m2m loses today's move; the terminal rebuilds
+    # today's move from the prior trading day's settle -- which, once tonight's file lands, is this one.
+    if old.get("asof") and old["asof"] < doc["asof"] and old.get("f"):
+        doc["prev"] = {"asof": old["asof"], "s": {c[0]: c[3] for v in old["f"].values() for c in v if c[3]}}
+    elif old.get("asof") == doc["asof"] and old.get("prev"):
+        doc["prev"] = old["prev"]
     with open(OUT + ".tmp", "w", encoding="utf-8") as f:
         json.dump(doc, f, separators=(",", ":"))
     os.replace(OUT + ".tmp", OUT)

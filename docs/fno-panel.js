@@ -115,12 +115,16 @@
       POS = null; POSERR = r && r.st === 403 ? 'login' : (r && r.st === -1 ? 'worker' : (r && r.st === 401 ? 'token' : 'down'));
       return null;
     }
-    const syms = docGet().cfg.syms, P = {};
+    const syms = docGet().cfg.syms, P = {}, FP = window.foPrevClose;
+    /* m2m + close through foPrevClose: after the market shuts Zerodha swaps close_price to today's close, which
+       wiped today's move from the pot on 23-Nov (pot read 3.45 Cr for a real ~3.25 Cr) — see fo-prevclose.js */
+    if (FP) await FP.load(); const mp = FP ? FP.map() : null;
     (r.j.data.net || []).forEach(p => {
       if (p.exchange !== 'NFO') return; const s = symOf(p.tradingsymbol, syms); if (!s) return;
-      const o = P[p.tradingsymbol] || (P[p.tradingsymbol] = { sym: s, ts: p.tradingsymbol, q: 0, oq: 0, ltp: +p.last_price || 0, close: +p.close_price || 0, m2m: 0, pnl: 0 });
-      o.q += +p.quantity || 0; o.oq += +p.overnight_quantity || 0; o.m2m += +p.m2m || 0; o.pnl += +p.pnl || 0;
-      if (+p.last_price) o.ltp = +p.last_price; if (+p.close_price) o.close = +p.close_price;
+      const fx = FP ? FP.fix(p, mp) : { m2m: +p.m2m || 0, close: +p.close_price || 0 };
+      const o = P[p.tradingsymbol] || (P[p.tradingsymbol] = { sym: s, ts: p.tradingsymbol, q: 0, oq: 0, ltp: +p.last_price || 0, close: fx.close || 0, m2m: 0, pnl: 0 });
+      o.q += +p.quantity || 0; o.oq += +p.overnight_quantity || 0; o.m2m += +fx.m2m || 0; o.pnl += +p.pnl || 0;
+      if (+p.last_price) o.ltp = +p.last_price; if (+fx.close) o.close = +fx.close;
     });
     POS = P; POSERR = ''; return P;
   }

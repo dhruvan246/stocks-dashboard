@@ -151,7 +151,7 @@ async function legRun() {
     // a same-origin page that mounts ONLY the F&O panel, with the terminal's acctFetch (worker + X-PF-Token)
     const PAGE = BASE + '/__fnoauto.html';
     await ctx.route(PAGE, r => r.fulfill({ contentType: 'text/html', body: `<!doctype html><html><head><meta charset="utf-8"><title>fno auto-pilot</title></head>
-<body><div id="fv"></div><script>
+<body><div id="fv"></div><script src="./fo-prevclose.js?v=${Date.now()}"></script><script>
 function acctFetch(path, opts){ const w = localStorage.getItem('pf_kite_worker') || ''; if (!w) return Promise.resolve({ st: -1, j: null });
   const o = Object.assign({ cache: 'no-store' }, opts || {}); o.headers = Object.assign({ 'X-PF-Token': localStorage.getItem('pf_token') || '' }, o.headers || {});
   return fetch(w.replace(/\\/+$/, '') + path, o).then(r => r.json().then(j => ({ st: r.status, j }), () => ({ st: r.status, j: null }))).catch(() => ({ st: 0, j: null })); }

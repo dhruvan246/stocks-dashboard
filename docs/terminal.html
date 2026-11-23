@@ -410,6 +410,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
 </div>
 
 <script src="./kite-live.js"></script>
+<script src="./fo-prevclose.js?v=1"></script>
 <script>
 (function(){
   "use strict";
@@ -921,10 +922,14 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
       return {sym:r.tradingsymbol,exch:r.exchange||'NSE',qty:q,avg:avg,ltp:ltp,dayPnl:dayPnl,dayPct:dayPct,totPnl:totPnl,totPct:totPct,val:val,inv:avg*q,isMtf:mq>0,mq:mq,cq:r.collateral_quantity||0,
         mAvg:mAvg,blkNow:blkNow,blkPrev:blkPrev,cashHit:cashHit};
     });
-    var posTot=0,posDay=0;
+    var posTot=0,posDay=0, FOPC_MAP=window.foPrevClose?window.foPrevClose.map():null;
+    if(window.foPrevClose&&!drawAcct._fl){ drawAcct._fl=1; window.foPrevClose.load().then(function(){ if(ACCT.lastD&&!editingAcct()) drawAcct(ACCT.lastD); }); }
     ACCT.pos=(D.pos||[]).filter(function(r){return r.quantity!==0;}).map(function(r){
-      var pnl=+r.pnl||0,m2m=(r.m2m!=null?+r.m2m:null); posTot+=pnl; posDay+=(m2m||0);
-      var avg=+r.average_price||0,qty=r.quantity,ltp=+r.last_price||0,close=+r.close_price||0,cost=Math.abs(avg*qty);
+      /* futures: Zerodha swaps close_price to today's close after the market shuts, wiping today's move from m2m
+         (23-Nov: +2.6 L shown for a -17.7 L day) — foPrevClose rebuilds it from NSE's settlement (fo-prevclose.js) */
+      var fx=window.foPrevClose?window.foPrevClose.fix(r,FOPC_MAP):{m2m:(r.m2m!=null?+r.m2m:null),close:+r.close_price||0};
+      var pnl=+r.pnl||0,m2m=fx.m2m; posTot+=pnl; posDay+=(m2m||0);
+      var avg=+r.average_price||0,qty=r.quantity,ltp=+r.last_price||0,close=fx.close,cost=Math.abs(avg*qty);
       /* dayPct / pnlPct = P&L over the position's cost (|avg×qty|) — same convention as the holdings
          tab and the position cards, so the % always tracks the ₹ amount's sign (reads correctly for
          shorts & F&O). movePct is the instrument's own day move (LTP vs prev close), shown under LTP;
@@ -1228,7 +1233,7 @@ body.blur-secret .secret{filter:blur(7px);-webkit-user-select:none;user-select:n
     showView('fno');
     var fv=document.getElementById('fnoView');
     if(!window.mountFno) fv.innerHTML='<div class="acct-msg">Loading the F&amp;O plan…</div>';
-    FNO_LOADING=FNO_LOADING||loadScript('./fno-panel.js?v=fno3');
+    FNO_LOADING=FNO_LOADING||loadScript('./fno-panel.js?v=fno4');
     FNO_LOADING.then(function(){ window.mountFno(fv,{acctFetch:acctFetch,ktoast:ktoast,kiteSend:kiteSend,ipBlocked:ipBlocked,
         refresh:function(){ if(ACCT.connected){ renderAcct(true); renderOrders(true); } }}); })
       .catch(function(){ FNO_LOADING=null; fv.innerHTML='<div class="acct-msg">Couldn\'t load the F&amp;O plan — check your connection and try again.</div>'; });
