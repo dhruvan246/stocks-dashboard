@@ -1,5 +1,5 @@
 {
- "built": "2026-11-20 19:15 IST",
+ "built": "2026-11-23 19:28 IST",
  "rule": "latest stated order book vs the one stated ~a year earlier (10-14 months before); readings come from the companies' own filings, each with its sentence and document",
  "rows": [
   {
@@ -567,7 +567,19 @@
    "yoy_pct": 187.5,
    "check": false,
    "alt_keys": [],
-   "isin": "INE07OG01012"
+   "isin": "INE07OG01012",
+   "verified": {
+    "latest_verdict": "CORRECT",
+    "latest_correct_value_cr": 1150.0,
+    "latest_as_on": "2026-09-30",
+    "year_ago_verdict": "CORRECTED",
+    "year_ago_correct_value_cr": 400.0,
+    "year_ago_as_on": "2025-11-07",
+    "true_yoy_pct": 187.5,
+    "book_to_ttm_sales": 1.28,
+    "notes": "Both ends opened in this run. Latest: the Q2/H1 FY27 investor presentation filed BSE 04-Nov-2026 says 'Standalone order book as on September 30, 2026 stands at Rs. 1,150 crore, Includes Rs. 500 crore orders won in Q2 FY27 towards seating and other varied auto components', and its order-book page repeats 'Rs. 1,150 crore - Total Order Book as on 30 September 2026' with 'Order inflow of Rs. 540 crore across Seating Solutions, Ambient Lightning, Sunshades and other auto components'. The Q2 FY27 call transcript filed 12-Nov-2026 confirms it is the company-wide standalone total: 'Our consolidated order book has expanded to INR1,190 crore ... comprising of INR1,150 crore from NDR Auto standalone and INR40 crore from our NDR Hayashi Joint Venture'. Year-ago CORRECTED only on its date: the screen dated Rs 400 cr to 25-Nov-2025, which is the filing date; the Q2 FY26 transcript (call 07-Nov-2025, filed 25-Nov-2025) has Pranav Relan saying 'Our current order book is about INR400 crore to INR450 crore', so the as-on is the call date and the figure is a RANGE. Using the bottom of the range gives +187.5%, the top +155.6%; either way far above 50% over an 11-month span. DEFINITION, and it matters more than the percentage: NDR's 'order book' is not a billable backlog. Asked on the 12-Nov-2026 call 'the standalone order book that we have of INR1,150 crore, is the understanding correct that at peak, potentially it translates into an annual revenue of INR1,150 crore?', management answered 'Yes. That is correct.' - it is the incremental PEAK ANNUAL revenue of programmes won but not yet ramped, to be executed by FY30, and management removes programmes from it once they ramp. So book_to_ttm_sales 1.28x (Rs 1,150 cr against trailing-four-quarter revenue of Rs 897.0 cr, from the BSE detailed-results API: Rs 208.29 + 229.07 + 223.60 + 236.05 cr) is a multiple of annual revenue potential, not of a backlog, and is not comparable with an EPC company's book-to-sales. Management gives no annual guidance ('We do not share annual guidance'); it stated current top line 'anything between INR900 crore and INR1,000 crore' and an aspiration of Rs 2,000 cr organic and Rs 3,000 cr with the DYA JV by FY30/FY31. ICRA's 26-Oct-2026 rationale, read in the same run, still carries the pre-Q2 book: 'a healthy order book of around Rs. 650 crore' and expects only '10-15% revenue growth in FY2027'.",
+    "checked": "2026-11-20"
+   }
   },
   {
    "scrip": "544332",
@@ -816,6 +828,41 @@
     "NSE:ADANIENSOL"
    ],
    "isin": "INE931S01010"
+  },
+  {
+   "scrip": "532144",
+   "name": "Welspun Corp Ltd",
+   "nse": "WELCORP",
+   "latest": {
+    "value_cr": 50000.0,
+    "as_on": null,
+    "quote": "Y27 25 * As on 29th October, 2026; Order Book data for FY24, FY25 and FY26 are as per the disclosures made along with the earnings results All Time Record High Order Book of ₹50,000 Cr A Proven History Of Surpassing Stated EBITDA Targets Year-over-year. 1,500 1,700 2,200 2,850 1,804 1,858 2,371 1,538 (H1) 0 500 1000 1500 2000 2500 3000 FY24 FY25 FY26 Guidanc",
+    "filed": "2026-11-23",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c67fa8bf-42bf-4aa1-b398-b11613e835cf.pdf",
+    "doc_title": "Welspun Corp Ltd - 532144 - Announcement under Regulation 30 (LODR)-Investor Presentation Investor Presentation of the Company Company Update Investor Presentat",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 23500.0,
+    "as_on": null,
+    "quote": "Businesses Volume Line Pipes (India + USA) ~1,250 KMT DI Pipes ~355 KMT Stainless Steel Bars & Pipes ~6,950 MT Total Order Book Value stands at ~INR 23,500 Cr ORDER BOOK 14 PIPES: USA Largest player in USA Only player offering Pipes 6” to 60” OD incl. DJ and Coating Impeccable quality track record Capacity (KMTPA) HSAW 350 HFIW 350 LSAW* 300 TOTAL >1MN MT",
+    "filed": "2025-11-13",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/732cbe9e-ea4b-4757-90bf-11e84faa146f.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": 112.8,
+   "check": false,
+   "alt_keys": [
+    "NSE:WELCORP"
+   ],
+   "isin": "INE191B01025"
   },
   {
    "scrip": "540879",
@@ -1488,8 +1535,8 @@
     "as_on_eff": "2026-09-30",
     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/55d3db5a-719d-4ad5-a633-d539db0df202.pdf",
     "doc_title": "Neetu Yoshi Ltd - 544434 - Announcement under Regulation 30 (LODR)-Investor Presentation Investor Presentation Company Update Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
+    "n_same": 2,
+    "n_near": 2
    },
    "year_ago": {
     "value_cr": 100.0,
@@ -1506,7 +1553,19 @@
    "yoy_pct": 60.0,
    "check": false,
    "alt_keys": [],
-   "isin": "INE0UZO01024"
+   "isin": "INE0UZO01024",
+   "verified": {
+    "latest_verdict": "CORRECTED",
+    "latest_correct_value_cr": 160.0,
+    "latest_as_on": "2026-03-31",
+    "year_ago_verdict": "CORRECTED",
+    "year_ago_correct_value_cr": 105.0,
+    "year_ago_as_on": "2025-03-31",
+    "true_yoy_pct": 52.4,
+    "book_to_ttm_sales": 1.63,
+    "notes": "Both ends opened in this run; the screen was wrong at both. The Rs 160 cr is the FY26 ANNUAL REPORT figure (filed BSE 09-Sep-2026, FY26 highlights: 'ORDER BOOK In excess of Rs 160 crore'), i.e. as at 31-Mar-2026, not the 30-Sep-2026 the screen assigned from the 20-Nov-2026 deck's filing date - that deck labels the number '(Annual Report FY26)' itself. The year-ago Rs 100 cr the screen used is a MILESTONE slide line repeated in three successive decks; the 10-Nov-2025 deck's own Key Facts page states 'Rs 105+ Cr Order Book', and the 14-Aug-2025 call states 'at the end of last year, we had around Rs. 105 crores of order book'. On a clean 31-Mar-2025 to 31-Mar-2026 basis that is +52.4%. The company has stated NO order book after 31-Mar-2026. Internal inconsistency to note: the 04-Jun-2026 deck's FY26 page says 'Rs 140 Cr Order Book' and the 10-Jun-2026 call 'more than INR140 crores, INR150.00 crores' as on date, both below the annual report's Rs 160+ cr for the same year-end, so the series is round-figure, not to the crore. book_to_ttm_sales 1.63x = Rs 160 cr against FY26 revenue from operations of Rs 98.24 cr (H1 FY27 deck's revenue-mix table; FY26 total income Rs 101.59 cr per the annual report). FY26 PAT Rs 25.01 cr (25% margin, +52.03%); order intake during FY26 Rs 150+ cr; effectively debt-free at year-end; capacity 21,287 MTPA across two units. MD&A guidance: 'revenue of approximately Rs 210 crore to Rs 220 crore for FY2027, with profit-after-tax margins expected to remain around 25%' and a 'peak revenue potential of approximately Rs 340 crore to Rs 350 crore'. No idea card published: step 4a-ii forbids it, and the jump's trigger (09-Sep-2026) is ten weeks old.",
+    "checked": "2026-11-20"
+   }
   },
   {
    "scrip": "544244",
@@ -1987,39 +2046,6 @@
     "NSE:LUMAXTECH"
    ],
    "isin": "INE872H01027"
-  },
-  {
-   "scrip": "532553",
-   "name": "Welspun Enterprises Limted",
-   "nse": null,
-   "latest": {
-    "value_cr": 18729.0,
-    "as_on": "2026-08-04",
-    "quote": "arg, Managing Director, Welspun Enterprises Limited Business Updates Segment-wise Break-up Robust Order Book - Water, Transportation and Tunnelling ₹18,729 Cr. Order Book as on 30th June 2026 Current Order Book provides strong growth visibility Project type-wise Break-up STRONG PLATFORM SET FOR FUTURE GROWTH Water, 55% Transport, 30% Tunnel, 11% Others, 4% H",
-    "filed": "2026-08-04",
-    "as_on_basis": "as on filing date",
-    "as_on_eff": "2026-08-04",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b717b398-7705-4adb-b0b8-15ed2a73a051.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": {
-    "value_cr": 13665.0,
-    "as_on": null,
-    "quote": "ook stands at INR11,960 crores, I correct myself INR11,962 crores, while our subsidiary, WMEL holds an order book of INR2,805 crores, bringing the consolidated order book to INR13,665 crores. It is important to clarify that WMEL order book includes INR1,102 crores order related to DGT project, which has been sourced from WEL. Additionally, the consolidated o",
-    "filed": "2025-08-14",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-06-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fc250647-2270-43ef-91ec-cf5ee761b24b.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-    "n_same": 2,
-    "n_near": 2
-   },
-   "yoy_pct": 37.1,
-   "check": false,
-   "alt_keys": [],
-   "isin": "INE625G01013"
   },
   {
    "scrip": "542652",
@@ -2743,6 +2769,74 @@
     "NSE:MIDHANI"
    ],
    "isin": "INE099Z01011"
+  },
+  {
+   "scrip": "522195",
+   "name": "Frontier Springs Ltd",
+   "nse": "FRONTSP",
+   "latest": {
+    "value_cr": 300.0,
+    "as_on": "2026-11-21",
+    "quote": "and how much do we have in pipeline? Kapil Bhatia: The current order book is around Rs. 300 crores to Rs. 350 crores. By the year ending we will again have an order book of around Rs. 300 crores to Rs. 400 crores. So, it will like that because the tenders are taking place and every day and we are getting orders every day from the zonal railways, on the wagon",
+    "filed": "2026-11-21",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2026-11-21",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/fca88687-eca3-41e8-9e00-1cb3d251f7f2.pdf",
+    "doc_title": "Frontier Springs Ltd - 522195 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Transcript of Concall held on Monday, November 16,2026. Company",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 250.0,
+    "as_on": null,
+    "quote": "s. Around INR 60 crores to INR 80 crores orders have already been received by us. And by the year end, | think we'll be around INR 200 crores to INR 250 crores order in hand after closing this year. So, itis in a good position as far as order books are concerned. Page 4 of 17 Moderator: Akshay Kaila: Kapil Bhatia: Akshay Kaila: Kapil Bhatia: Akshay Kaila: Ka",
+    "filed": "2025-11-17",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9fb94e89-ffda-4e99-be0d-f7869216ab54.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": 20.0,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE572D01014"
+  },
+  {
+   "scrip": "532553",
+   "name": "Welspun Enterprises Limted",
+   "nse": "WELENT",
+   "latest": {
+    "value_cr": 18708.0,
+    "as_on": "2026-09-30",
+    "quote": "ng value accretive growth Urban Infra Utilities Tunneling, Pipeline Rehabilitation, Storm water Management Order Book Trend (₹ Cr) Strategic Order Book Buildup Order Book as on 30-Sep-26 ₹18,708 Cr. 7,850 7,600 11,300 9,854 14,339 550 2,500 2,500 4,500 5,400 8,400 10,100 13,800 14,354 19,739 FY22 FY23 FY24 FY25 FY26 EPC (₹ Cr.) O&M (₹ Cr.) Column2 4 Strong O",
+    "filed": "2026-11-23",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/14ed3de6-e6bc-446f-9059-262fd98f30ed.pdf",
+    "doc_title": "Welspun Enterprises Ltd - 532553 - Announcement under Regulation 30 (LODR)-Investor Presentation Welspun Enterprises Limited has informed the Exchange about upd",
+    "n_same": 2,
+    "n_near": 2
+   },
+   "year_ago": {
+    "value_cr": 15600.0,
+    "as_on": null,
+    "quote": "23.9% for Q2 FY26.  Awarded LoA for construction of 910 MLD Water Treatment Plant at Panjrapur, Maharashtra, valued at INR 3,145 Cr., taking the consolidated order book to INR 15,600 Cr.  Emerged L1 for Pune-Shirur elevated highway corridor by MSIDC, at a Total Project Cost of INR 7,300 Cr.  Strong Balance Sheet with consolidated cash and cash equivalents",
+    "filed": "2025-11-11",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3700d14b-d0e2-4d13-abfc-5f2a187096d4.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": 19.9,
+   "check": false,
+   "alt_keys": [
+    "NSE:WELENT"
+   ],
+   "isin": "INE625G01013"
   },
   {
    "scrip": "532811",
@@ -3528,6 +3622,39 @@
    "isin": "INE073K01018"
   },
   {
+   "scrip": "544524",
+   "name": "JD Cables Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 300.0,
+    "as_on": "2026-11-21",
+    "quote": "worth approximately INR30.43 crores, INR18 crores, and INR12 crores. So, how should investors look at overall order visibility? Management: Ma'am, our current order book stands around INR300 crores, ma'am. So, we are not short of order book, and as I said, we are looking to expand our manufacturing facility. We are expanding, and further, we are looking to e",
+    "filed": "2026-11-21",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2026-11-21",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/63a5c915-deed-4271-87e4-cb07b0e72644.pdf",
+    "doc_title": "JD Cables Ltd - 544524 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript BSE Intimation for Earnings call transcript Company Update Earnings Ca",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 286.0,
+    "as_on": null,
+    "quote": "ARY 5 Investor Presentation We delivered a stable and consistent performance in H1 FY26, supported by healthy demand for our cables and conductors and a strong order book of over ₹286 crore. The company continues to deepen its presence across key regions, further strengthened by new vendor approvals from both Himachal and Punjab. A major highlight this perio",
+    "filed": "2025-11-20",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9415f52f-981e-4a04-bb37-ca94384e7333.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+    "n_same": 2,
+    "n_near": 3
+   },
+   "yoy_pct": 4.9,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE14VP01014"
+  },
+  {
    "scrip": "538715",
    "name": "Dhabriya Polywood Ltd",
    "nse": "DHABRIYA",
@@ -3796,6 +3923,39 @@
    "check": false,
    "alt_keys": [],
    "isin": "INE926X01010"
+  },
+  {
+   "scrip": "NSE:POSITRON",
+   "name": "POSITRON",
+   "nse": "POSITRON",
+   "latest": {
+    "value_cr": 486.82,
+    "as_on": "2026-09-30",
+    "quote": "₹ 5.86 Crore Construction Projects ₹ 5.06 Crore ₹ 3.59 Crore Operation & Maintenance ₹ 2.30 Crore ₹ 0.92 Crore Natural Gas sales ₹ 370.82 Crore ₹ 486.82 Crore Order Book The total unexecuted order book as of 30th September, 2026, stands at approximately 387.54 crores. H1 2026 H1 2027 0 10 20 30 40 50 H1 2026 H1 2027 0 5K 10K 15K 20K 25K 30K 35K Products 98.8",
+    "filed": "2026-11-21",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/POSITRON_21112026184728_Investor_Presentation.pdf",
+    "doc_title": "Investor Presentation Positron Energy Limited has informed the Exchange about Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 495.79,
+    "as_on": "2025-10-31",
+    "quote": "n Projects ₹8.37 crore ₹3.59 crore Operation & Maintenance ₹4.60 crore ₹0.92 crore Natural Gas sales ₹46.31 crore ₹486.82 crore ORDER BOOK 31-10-2025 The total unexecuted order book as of 31st october 2025 stands at approximately 495.79 crores. ** Calculations are based on prevailing market scenario Strategic Roadmap Expand presence into new industrial clust",
+    "filed": "2025-11-12",
+    "as_on_basis": "stated",
+    "as_on_eff": "2025-10-31",
+    "doc": "https://nsearchives.nseindia.com/corporate/POSITRON_12112025192213_H1FY26_Investor_Presentation.pdf",
+    "doc_title": "Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": -1.8,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE0S3H01017"
   },
   {
    "scrip": "500185",
@@ -4312,7 +4472,7 @@
   },
   {
    "scrip": "544471",
-   "name": null,
+   "name": "Takyon Networks Ltd",
    "nse": null,
    "latest": {
     "value_cr": 46.65,
@@ -4339,7 +4499,9 @@
     "n_near": 1
    },
    "yoy_pct": -16.7,
-   "check": false
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE14OX01013"
   },
   {
    "scrip": "544424",
@@ -4408,6 +4570,51 @@
    "isin": "INE0AE001013"
   },
   {
+   "scrip": "NSE:EMMIL",
+   "name": "EMMIL",
+   "nse": "EMMIL",
+   "latest": {
+    "value_cr": 62.27,
+    "as_on": null,
+    "quote": "We received orders worth INR 91.5 crore in this six months, with 15.6% year-on-year growth and 28% growth over the preceding six months. The September closing order book is approximately INR 62.27 crore, with an increase of 31.8% or 32% from the start of this financial year. This gives us the better execution visibility for coming months. And I would like to",
+    "filed": "2026-11-23",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/EMMIL_23112026150741_EMMIL_Post_Earnings_H1_Transcripts.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Energy Mission Machineries (India) Limited has informed the Exchange about Transcript",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 79.17,
+    "as_on": null,
+    "quote": "jarat South Gujarat Kutch & Saurashtra Mumbai Navi Mumbai Pune Kolhapur Marathwada Nagpur MP Eastern Punjab Gurugram UP North NCR RJ Bihar INR7916.94 LACS TotalOrder Book Healthy and well-diversified orderbook reflecting steady growth and strong customer trust across industries ₹ 5,408.03 ₹ 6,308.78 ₹ 6,889.30 ₹ 7,400.66 ₹ 7,201.40 HY1 24 HY2 24 HY1 25 HY2 2",
+    "filed": "2025-12-03",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/EMMIL_03122025170025_EMMIL_Investor_Meet_Outcome_Final.pdf",
+    "doc_title": "Investor Presentation",
+    "n_same": 2,
+    "n_near": 2
+   },
+   "yoy_pct": -21.3,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE0S1L01013",
+   "verified": {
+    "latest_verdict": "WRONG",
+    "latest_correct_value_cr": 47.23,
+    "latest_as_on": "2026-03-31",
+    "year_ago_verdict": "WRONG",
+    "year_ago_correct_value_cr": 55.75,
+    "year_ago_as_on": "2025-09-30",
+    "true_yoy_pct": -2.8,
+    "book_to_ttm_sales": 0.29,
+    "notes": "Latest 160.85 = FY26 TOPLINE ('Achieved highest-ever topline of 160.85 Cr'); same deck: 'Robust order book of 47.23 Cr' (FY26-end figure repeated in Aug deck). Year-ago 79.17 = 'INR 7916.94 LACS Total Order Book' on map slide, but the order table shows 7,916.94 lacs is ORDERS RECEIVED in H1FY26; order in hand 30-9-25 = 5,575.41 lacs (55.75 cr); text says ~55 Cr. Order in hand 01-04-25 = 48.60 cr -> Mar-26 vs Apr-25: -2.8%. Book/sales 47.23/160.85.",
+    "checked": "2026-10-11"
+   }
+  },
+  {
    "scrip": "530343",
    "name": "Genus Power Infrastructures Lt",
    "nse": "GENUSPOWER",
@@ -4474,6 +4681,39 @@
    "check": false,
    "alt_keys": [],
    "isin": "INE0XBS01012"
+  },
+  {
+   "scrip": "NSE:VGINFOTECH",
+   "name": "VGINFOTECH",
+   "nse": "VGINFOTECH",
+   "latest": {
+    "value_cr": 148.9,
+    "as_on": null,
+    "quote": "l institutions increasingly require specialized technology infrastructure to support their operations and regulatory requirements. At the end of H1 FY2027, our unexecuted order book stood at Rs.148.9 Crores compared with Rs.102 crores in the corresponding period of last year, representing a growth of 46%. Additionally, the company has an active bid pipeline,",
+    "filed": "2026-11-21",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/VIRTUAL_21112026133533_Submission_of_Transcript.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Virtual Galaxy Infotech Limited has informed the Exchange about submission of Transcript",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 200.0,
+    "as_on": null,
+    "quote": "ated to the INR 17 crore, the tax provision liability. Avinash Shende: It is this year liability. Gaurav Sethi: Okay. Alright. Okay. Sir also the INR 200 crore order book which you have just mentioned about and which you expect in H2. Avinash Shende: I have not said the figure yet. I have not said. I said percentage wise we can definitely look at. Do not put",
+    "filed": "2025-12-01",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/VIRTUAL_01122025163148_Submission_of_Transcript_of_Investor-Analysts_Call_dated-28-11-2025.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
+    "n_same": 1,
+    "n_near": 2
+   },
+   "yoy_pct": -25.5,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE0VRH01015"
   },
   {
    "scrip": "531147",
@@ -4978,42 +5218,6 @@
    "year_ago": null
   },
   {
-   "scrip": "NSE:WHITEFORCE",
-   "name": "WHITEFORCE",
-   "nse": "WHITEFORCE",
-   "latest": {
-    "value_cr": 23.58,
-    "as_on": null,
-    "quote": "ore Team Employees  1 million+ Registered Candidates on white-force.com  3,000+ Active Job Postings  100,000+ Monthly Visitors to the job platform  Q1 FY27 Order Book: ₹23.58 Cr Key Order Secured Client Scope of Work Value RSRDCC Toll plaza operations & user fee collection ₹21.00 Cr Bharat Dynamics Ltd. Manpower supply contract extension ₹0.81 Cr MPPGCL ",
-    "filed": "2026-07-29",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-06-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/HAPPYSQUARE_29072026185128_Q1_Business_Update.pdf",
-    "doc_title": "General Updates",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null
-  },
-  {
-   "scrip": "NSE:SATTVAENGG",
-   "name": "SATTVAENGG",
-   "nse": "SATTVAENGG",
-   "latest": {
-    "value_cr": 486.0,
-    "as_on": null,
-    "quote": "evenue and profitability Return and capital Client and people Revenue from operations ₹81.1 crores YoY growth 25% Return on equity (ROE) 17.4% in FY26 19.9% vs Orderbook ₹486 crores YoY growth 89% Operating profit (EBITDA) ₹12.8 crores YoY growth 52% Return on capital employed (ROCE) 27.8% in FY26 32.7% vs Order inflow ₹242 crores in H1 FY26 ₹106 cr vs EBITD",
-    "filed": "2026-11-14",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-09-30",
-    "doc": "https://nsearchives.nseindia.in/corporate/SATTVAENGG_14112026205153_FInal.pdf",
-    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Sattva Engineering Construction Limited has informed the Exchange about Presentation",
-    "n_same": 2,
-    "n_near": 2
-   },
-   "year_ago": null
-  },
-  {
    "scrip": "NSE:MANAV",
    "name": "MANAV",
    "nse": "MANAV",
@@ -5032,18 +5236,90 @@
    "year_ago": null
   },
   {
-   "scrip": "544498",
+   "scrip": "544538",
+   "name": "Praruh Technologies Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 155.0,
+    "as_on": "2026-11-05",
+    "quote": "already done 84 crores of revenue in H1 only what is our revenue target for full year FY27? Mr. Rahul Sharma: So ma'am, basically as of now I am sitting on an order book of 155 crore means that 84 crore is already delivered and rest Praruh needs to deliver. Today is 4 November so as of today we have an order book of 154 crore this is confirmed order book. Ms",
+    "filed": "2026-11-05",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2026-11-05",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b14e8755-59ef-4b64-810b-5fc61154a7f2.pdf",
+    "doc_title": "Praruh Technologies Ltd - 544538 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Earning Call Transcript Company Update Earnings Call Transcr",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null
+  },
+  {
+   "scrip": "544565",
    "name": null,
    "nse": null,
    "latest": {
-    "value_cr": 780.0,
+    "value_cr": 325.15,
     "as_on": null,
-    "quote": "rastructure, CGD projects, and other strategic energy assets. With over 12 years of execution experience, strong relationships with leading PSU clients, and an order book of over ₹780 Crore, we are well-positioned to capitalize on these opportunities. We remain focused on strengthening our execution capabilities and delivering sustainable growth for all stak",
-    "filed": "2026-05-30",
+    "quote": "crore); debt-to-equity of 0.37x • Dues to micro and small enterprises reduced to ₹2.63 crore from ₹9.94 crore VALPLAST TECHNOLOGIES LIMITED www.valplastech.com Order Book: ₹325.15 Crore of Outstanding Quantified Orders Based on the Company’s list of ongoing projects (with work executed reported through September 30, 2026), the outstanding quantified order va",
+    "filed": "2026-11-14",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c26e6520-25f1-47aa-8ca7-d705a0d74e53.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7725087-87eb-4d2e-80c4-2af6b77e5be6.pdf",
+    "doc_title": "Valplast Technologies Ltd - 544565 - Announcement under Regulation 30 (LODR)-Press Release / Media Release Valplast Techonologies - H1 FY27 Press release Compan",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null
+  },
+  {
+   "scrip": "544922",
+   "name": "Om Galaxy Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 165.0,
+    "as_on": "2026-09-30",
+    "quote": "ent order book, ₹72 crore is one-time and lumpy in nature, while the remaining ₹93 crore represents regular business. The entire order book is executable in H2 Order Book (As of H1 FY27) ~INR 165 Crore Over 17+ years of experience in mould design and manufacturing 7 Incorporation of company 2008 Acquisition of a Manufacturing Unit-II at Gauraipada together w",
+    "filed": "2026-11-20",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/02a5fe06-9a54-4b47-88ae-dc2db4183f25.pdf",
+    "doc_title": "Om Galaxy Ltd - 544922 - Announcement under Regulation 30 (LODR)-Investor Presentation Enclosed the Investor Presentation Company Update Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null
+  },
+  {
+   "scrip": "NSE:QUESTLAB",
+   "name": "QUESTLAB",
+   "nse": "QUESTLAB",
+   "latest": {
+    "value_cr": 25.0,
+    "as_on": null,
+    "quote": "Exchange (NSE) Representation at PharmaLabExpoChem Strategic Overview Investor Presentation - Q1 FY26 20+ products to be registered in Myanmar, with ₹25 crore order book secured and new engagements in multiple countries. 19 Expanding manufacturing capacity with the addition of two new Advanced Manufacturing Systems, enhancing efficiency through cutting- edge",
+    "filed": "2025-07-25",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-06-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/QUEST_25072025131320_Quest_Laboratories_Investor_Presentation_-_Q1_FY26-1_1.pdf",
+    "doc_title": "Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null
+  },
+  {
+   "scrip": "544313",
+   "name": null,
+   "nse": null,
+   "latest": {
+    "value_cr": 118.26,
+    "as_on": "2025-03-31",
+    "quote": "metro University, Noida Order Book (Ongoing Projects) Construction of Bus Terminal and Workshop Building at Ramnagar Dist. Nainital 9 As on Mar 2025 Company’s Order Book of ₹11,825.66 lakhs (ongoing projects), represents its focused approach towards building a specialized service portfolio and their ability to successfully bid and win projects Total Contract",
+    "filed": "2025-12-02",
+    "as_on_basis": "stated",
+    "as_on_eff": "2025-03-31",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6c976b90-31bd-4e63-a40c-3b5d44375500.pdf",
+    "doc_title": "Investor Presentation",
     "n_same": 1,
     "n_near": 1
    },
@@ -6170,38 +6446,6 @@
    "isin": "INE704P01025"
   },
   {
-   "scrip": "NSE:EMMIL",
-   "name": "EMMIL",
-   "nse": "EMMIL",
-   "latest": {
-    "value_cr": 47.23,
-    "as_on": null,
-    "quote": "ts international distributor and service network. 30+ Product variants 7,250+ Machines installed globally 1,500 Machines p.a. capacity (India) ₹47.23 Cr Robust order book Energy Mission Machineries (India) Limited 3 LE AD E RSH I P & GOV E RN A N C E Promoters & Board of Directors Promoter-led since incorporation — three first-generation entrepreneurs who gr",
-    "filed": "2026-06-20",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/EMMIL_20062026145133_Revised_EMMIL_Investor_Presentation_20062026.pdf",
-    "doc_title": "Investor Presentation",
-    "n_same": 2,
-    "n_near": 2
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0S1L01013",
-   "verified": {
-    "latest_verdict": "WRONG",
-    "latest_correct_value_cr": 47.23,
-    "latest_as_on": "2026-03-31",
-    "year_ago_verdict": "WRONG",
-    "year_ago_correct_value_cr": 55.75,
-    "year_ago_as_on": "2025-09-30",
-    "true_yoy_pct": -2.8,
-    "book_to_ttm_sales": 0.29,
-    "notes": "Latest 160.85 = FY26 TOPLINE ('Achieved highest-ever topline of 160.85 Cr'); same deck: 'Robust order book of 47.23 Cr' (FY26-end figure repeated in Aug deck). Year-ago 79.17 = 'INR 7916.94 LACS Total Order Book' on map slide, but the order table shows 7,916.94 lacs is ORDERS RECEIVED in H1FY26; order in hand 30-9-25 = 5,575.41 lacs (55.75 cr); text says ~55 Cr. Order in hand 01-04-25 = 48.60 cr -> Mar-26 vs Apr-25: -2.8%. Book/sales 47.23/160.85.",
-    "checked": "2026-10-11"
-   }
-  },
-  {
    "scrip": "NSE:ANAWIL",
    "name": "ANAWIL",
    "nse": "ANAWIL",
@@ -6548,14 +6792,14 @@
    "name": "CURRENT",
    "nse": "CURRENT",
    "latest": {
-    "value_cr": 100.0,
-    "as_on": "2026-05-26",
-    "quote": "ng highly reliable cash flows at exceptionally low maintenance costs. Moving forward, our growth trajectory is secure. We are backed by an expanding ₹320 Crore order book as on date, further reinforced by approximately ₹100 Crores in new government mandates from Jaipur and Jodhpur Discoms, which will heavily drive our revenue realization in FY 2027. With a s",
-    "filed": "2026-05-26",
+    "value_cr": 169.0,
+    "as_on": "2026-11-23",
+    "quote": "rtfolio diversification beyond public sector dependency and ensures greater project flexibility. Current Order Book: ₹ 161 Cr (49% of total order book) Current Order Book: ₹ 169 Cr (51% of total order book) Investor Presentation 8 Business Verticals: EPC, Consulting, Hospitality & RESCO Engineering, Procurement and Consultancy (EPC) Engineering Consultancy S",
+    "filed": "2026-11-23",
     "as_on_basis": "as on filing date",
-    "as_on_eff": "2026-05-26",
-    "doc": "https://nsearchives.nseindia.com/corporate/CURRENTINFRA_26052026235452_PRESS_RELEASE.pdf",
-    "doc_title": "Press Release",
+    "as_on_eff": "2026-11-23",
+    "doc": "https://nsearchives.nseindia.in/corporate/CURRENTINFRA_23112026115508_Investor_Meet_presentation_final.pdf",
+    "doc_title": "Investor Presentation Current Infraprojects Limited has informed the Exchange about Investor Presentation",
     "n_same": 1,
     "n_near": 1
    },
@@ -7048,6 +7292,26 @@
    "isin": "INE0R8B01010"
   },
   {
+   "scrip": "NSE:WHITEFORCE",
+   "name": "WHITEFORCE",
+   "nse": "WHITEFORCE",
+   "latest": {
+    "value_cr": 23.58,
+    "as_on": null,
+    "quote": "ore Team Employees  1 million+ Registered Candidates on white-force.com  3,000+ Active Job Postings  100,000+ Monthly Visitors to the job platform  Q1 FY27 Order Book: ₹23.58 Cr Key Order Secured Client Scope of Work Value RSRDCC Toll plaza operations & user fee collection ₹21.00 Cr Bharat Dynamics Ltd. Manpower supply contract extension ₹0.81 Cr MPPGCL ",
+    "filed": "2026-07-29",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-06-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/HAPPYSQUARE_29072026185128_Q1_Business_Update.pdf",
+    "doc_title": "General Updates",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE0TLP01015"
+  },
+  {
    "scrip": "532884",
    "name": "Refex Industries Ltd",
    "nse": "REFEX",
@@ -7164,24 +7428,24 @@
    "isin": "INE0CJD01037"
   },
   {
-   "scrip": "NSE:VGINFOTECH",
-   "name": "VGINFOTECH",
-   "nse": "VGINFOTECH",
+   "scrip": "NSE:SATTVAENGG",
+   "name": "SATTVAENGG",
+   "nse": "SATTVAENGG",
    "latest": {
-    "value_cr": 200.0,
+    "value_cr": 486.0,
     "as_on": null,
-    "quote": "ated to the INR 17 crore, the tax provision liability. Avinash Shende: It is this year liability. Gaurav Sethi: Okay. Alright. Okay. Sir also the INR 200 crore order book which you have just mentioned about and which you expect in H2. Avinash Shende: I have not said the figure yet. I have not said. I said percentage wise we can definitely look at. Do not put",
-    "filed": "2025-12-01",
+    "quote": "evenue and profitability Return and capital Client and people Revenue from operations ₹81.1 crores YoY growth 25% Return on equity (ROE) 17.4% in FY26 19.9% vs Orderbook ₹486 crores YoY growth 89% Operating profit (EBITDA) ₹12.8 crores YoY growth 52% Return on capital employed (ROCE) 27.8% in FY26 32.7% vs Order inflow ₹242 crores in H1 FY26 ₹106 cr vs EBITD",
+    "filed": "2026-11-14",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-09-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/VIRTUAL_01122025163148_Submission_of_Transcript_of_Investor-Analysts_Call_dated-28-11-2025.pdf",
-    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
-    "n_same": 1,
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/SATTVAENGG_14112026205153_FInal.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Sattva Engineering Construction Limited has informed the Exchange about Presentation",
+    "n_same": 2,
     "n_near": 2
    },
    "year_ago": null,
    "alt_keys": [],
-   "isin": "INE0VRH01015"
+   "isin": "INE14DW01018"
   },
   {
    "scrip": "NSE:TCL",
@@ -7508,6 +7772,26 @@
     "NSE:TALBROAUTO"
    ],
    "isin": "INE187D01029"
+  },
+  {
+   "scrip": "511034",
+   "name": "Jindal Drilling & Industries Ltd",
+   "nse": "JINDRILL",
+   "latest": {
+    "value_cr": 1652.0,
+    "as_on": null,
+    "quote": "expected to pan going ahead as we get new contracts. Thank you. That is my first question. Kaushal Bengani: Order book as on 30th September stands at -- sorry, order book as on 30th September stands at INR1,652 crores. Once we get a contract for Virtue- 1 and for Jindal Star, then this order book will be closer to INR2,600 crores or INR2,700 crores, to be am",
+    "filed": "2026-11-23",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/4da1ee56-bc38-452a-9a8a-ed6f8c61f17b.pdf",
+    "doc_title": "Jindal Drilling & Industries Ltd - 511034 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Transcript of Earnings Conference Call held on 16th",
+    "n_same": 2,
+    "n_near": 2
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE742C01031"
   },
   {
    "scrip": "NSE:ANLON",
@@ -7882,16 +8166,16 @@
    "name": "Solarium Green Energy Ltd",
    "nse": null,
    "latest": {
-    "value_cr": 720.87,
+    "value_cr": 720.9,
     "as_on": null,
-    "quote": "7 crore, against ₹116.93 crore in the corresponding half and ₹230.08 crore for the whole of FY2025. Two single site EPC contracts of 50 MWac each were won. The order book stands at ₹720.87 crore, of which ₹461.06 crore is EPC and ₹259.81 crore module supply. Residential remains the highest margin business the Company operates. The step up in large EPC and in",
-    "filed": "2026-11-16",
+    "quote": "Atomic Research Centre, The Indian Air Force, The Border Security Force, Military Engineering Services, NTPC and Gujarat Urban Business Development. Our total order book stands at Rs. 720.9 crores. Of this, Rs. 461.1 crores is EPC and Rs. 259.8 crores is module supply. In June, we spoke of an order book of little Rs. 300 crores. In Residential, we continued ",
+    "filed": "2026-11-21",
     "as_on_basis": "quarter before filing",
     "as_on_eff": "2026-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/2124f834-2285-4a0a-8a01-7cc9ef541adb.pdf",
-    "doc_title": "Solarium Green Energy Ltd - 544354 - Announcement under Regulation 30 (LODR)-Investor Presentation Investor Presentation under Regulation 30 read with Schedule ",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/cf739238-c848-44c4-a6ad-91c6b3615a4f.pdf",
+    "doc_title": "Solarium Green Energy Ltd - 544354 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Transcript of Earnings Conference call with Investor/Analy",
     "n_same": 1,
-    "n_near": 1
+    "n_near": 2
    },
    "year_ago": null,
    "alt_keys": [],
@@ -8128,26 +8412,6 @@
    "isin": "INE644Q01039"
   },
   {
-   "scrip": "544538",
-   "name": "Praruh Technologies Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 155.0,
-    "as_on": "2026-11-05",
-    "quote": "already done 84 crores of revenue in H1 only what is our revenue target for full year FY27? Mr. Rahul Sharma: So ma'am, basically as of now I am sitting on an order book of 155 crore means that 84 crore is already delivered and rest Praruh needs to deliver. Today is 4 November so as of today we have an order book of 154 crore this is confirmed order book. Ms",
-    "filed": "2026-11-05",
-    "as_on_basis": "as on filing date",
-    "as_on_eff": "2026-11-05",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b14e8755-59ef-4b64-810b-5fc61154a7f2.pdf",
-    "doc_title": "Praruh Technologies Ltd - 544538 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Earning Call Transcript Company Update Earnings Call Transcr",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0TI501017"
-  },
-  {
    "scrip": "522034",
    "name": "Shanthi Gears Ltd",
    "nse": "SHANTIGEAR",
@@ -8270,26 +8534,6 @@
     "NSE:OMNI"
    ],
    "isin": "INE0UH301010"
-  },
-  {
-   "scrip": "544565",
-   "name": "Valplast Technologies Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 325.15,
-    "as_on": null,
-    "quote": "crore); debt-to-equity of 0.37x • Dues to micro and small enterprises reduced to ₹2.63 crore from ₹9.94 crore VALPLAST TECHNOLOGIES LIMITED www.valplastech.com Order Book: ₹325.15 Crore of Outstanding Quantified Orders Based on the Company’s list of ongoing projects (with work executed reported through September 30, 2026), the outstanding quantified order va",
-    "filed": "2026-11-14",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f7725087-87eb-4d2e-80c4-2af6b77e5be6.pdf",
-    "doc_title": "Valplast Technologies Ltd - 544565 - Announcement under Regulation 30 (LODR)-Press Release / Media Release Valplast Techonologies - H1 FY27 Press release Compan",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0QP701017"
   },
   {
    "scrip": "500265",
@@ -8722,26 +8966,6 @@
    "isin": "INE364U01010"
   },
   {
-   "scrip": "544922",
-   "name": "Om Galaxy Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 165.0,
-    "as_on": "2026-09-30",
-    "quote": "ent order book, ₹72 crore is one-time and lumpy in nature, while the remaining ₹93 crore represents regular business. The entire order book is executable in H2 Order Book (As of H1 FY27) ~INR 165 Crore Over 17+ years of experience in mould design and manufacturing 7 Incorporation of company 2008 Acquisition of a Manufacturing Unit-II at Gauraipada together w",
-    "filed": "2026-11-20",
-    "as_on_basis": "stated",
-    "as_on_eff": "2026-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/02a5fe06-9a54-4b47-88ae-dc2db4183f25.pdf",
-    "doc_title": "Om Galaxy Ltd - 544922 - Announcement under Regulation 30 (LODR)-Investor Presentation Enclosed the Investor Presentation Company Update Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE2D0Q01027"
-  },
-  {
    "scrip": "500144",
    "name": "Finolex Cables Ltd",
    "nse": null,
@@ -8786,16 +9010,16 @@
    "name": "Raksan Transformers Ltd",
    "nse": null,
    "latest": {
-    "value_cr": 427.0,
+    "value_cr": 550.0,
     "as_on": null,
-    "quote": "l structure.  Trade receivables declined by 29% during the period, reflecting improved collections and better working capital management.  The Company has an order book of approximately Rs. 427 crore (as of Sept’26), of which around 85– 90% comprises orders from private-sector customers and EPC companies, showing strong revenue and profitability growth in ",
-    "filed": "2026-11-15",
+    "quote": "Regarding our total order book, we have already executed orders worth INR122 crores in the current financial year. With an additional INR430 crores, our total order book now stands at approximately INR550 crores. When securing these orders, we explicitly communicate to our clients that we can supply a specific portion of the material by March 31st, with the ",
+    "filed": "2026-11-23",
     "as_on_basis": "quarter before filing",
     "as_on_eff": "2026-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0c0b4fec-67d8-44be-8075-3a871606ff13.pdf",
-    "doc_title": "Raksan Transformers Ltd - 544924 - Announcement under Regulation 30 (LODR)-Press Release / Media Release Press Release - Unaudited Financials Results of the Com",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/1cd8cec8-6f43-4303-95f7-e4b36103bf93.pdf",
+    "doc_title": "Raksan Transformers Ltd - 544924 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Please find enclosed the transcript of the Company''s Earnin",
     "n_same": 1,
-    "n_near": 1
+    "n_near": 2
    },
    "year_ago": null,
    "alt_keys": [],
@@ -8860,6 +9084,26 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE330T01021"
+  },
+  {
+   "scrip": "544498",
+   "name": "Oval Projects Engineering Limi",
+   "nse": null,
+   "latest": {
+    "value_cr": 780.0,
+    "as_on": null,
+    "quote": "rastructure, CGD projects, and other strategic energy assets. With over 12 years of execution experience, strong relationships with leading PSU clients, and an order book of over ₹780 Crore, we are well-positioned to capitalize on these opportunities. We remain focused on strengthening our execution capabilities and delivering sustainable growth for all stak",
+    "filed": "2026-05-30",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-03-31",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c26e6520-25f1-47aa-8ca7-d705a0d74e53.pdf",
+    "doc_title": "Announcement under Regulation 30 (LODR)-Press Release / Media Release",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE0RTI01017"
   },
   {
    "scrip": "544061",
@@ -9002,26 +9246,6 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE177C01022"
-  },
-  {
-   "scrip": "532144",
-   "name": "Welspun Corp Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 23500.0,
-    "as_on": null,
-    "quote": "Businesses Volume Line Pipes (India + USA) ~1,250 KMT DI Pipes ~355 KMT Stainless Steel Bars & Pipes ~6,950 MT Total Order Book Value stands at ~INR 23,500 Cr ORDER BOOK 14 PIPES: USA Largest player in USA Only player offering Pipes 6” to 60” OD incl. DJ and Coating Impeccable quality track record Capacity (KMTPA) HSAW 350 HFIW 350 LSAW* 300 TOTAL >1MN MT",
-    "filed": "2025-11-13",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/732cbe9e-ea4b-4757-90bf-11e84faa146f.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE191B01025"
   },
   {
    "scrip": "532395",
@@ -9618,26 +9842,6 @@
    "isin": "INE600Y01019"
   },
   {
-   "scrip": "544524",
-   "name": "JD Cables Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 515.0,
-    "as_on": "2026-03-31",
-    "quote": "5  YoY Growth: 51.97% FY26 Performance (vs FY25)  Revenue from Operations: ₹ 36,459.15 F.Y 26 Vs ₹ 25,052.58 F.Y 25  YoY Growth: 45.53% Key Metrics (FY26)  Order Book: ₹515 Cr approx (as on March 2026)  Capacity Utilization: o Unit I: 82.43% (vs ~79% in FY25) o Unit II: 84.56% (vs ~81% in FY25)  Installed Capacity: o Unit I: 6,000 Kms o Unit II: 22,000",
-    "filed": "2026-04-25",
-    "as_on_basis": "stated",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/bafe3eb4-a4a5-4f72-b85d-0a6d89dbe579.pdf",
-    "doc_title": "Announcement For Business Update Q3 FY 2025-26",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE14VP01014"
-  },
-  {
    "scrip": "500411",
    "name": "Thermax Ltd",
    "nse": null,
@@ -9676,26 +9880,6 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE080I01025"
-  },
-  {
-   "scrip": "522195",
-   "name": "Frontier Springs Ltd",
-   "nse": "FRONTSP",
-   "latest": {
-    "value_cr": 250.0,
-    "as_on": null,
-    "quote": "s. Around INR 60 crores to INR 80 crores orders have already been received by us. And by the year end, | think we'll be around INR 200 crores to INR 250 crores order in hand after closing this year. So, itis in a good position as far as order books are concerned. Page 4 of 17 Moderator: Akshay Kaila: Kapil Bhatia: Akshay Kaila: Kapil Bhatia: Akshay Kaila: Ka",
-    "filed": "2025-11-17",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/9fb94e89-ffda-4e99-be0d-f7869216ab54.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE572D01014"
   },
   {
    "scrip": "523610",
@@ -10026,16 +10210,16 @@
    "name": "Simplex Castings Ltd",
    "nse": null,
    "latest": {
-    "value_cr": 100.0,
+    "value_cr": 150.0,
     "as_on": null,
-    "quote": "phase of evolution marked by renewed focus, operational excellence, and a commitment to unlocking its full potential. Total Number of employees 1000+ Quarterly Order Book ₹ 100CR. Simplex Castings Ltd 4 CHAIRMAN’S ADDRESS 5 Over the past quarters, Simplex Castings has made steady progress across multiple fronts, and we are pleased to share that the Company r",
-    "filed": "2026-02-07",
+    "quote": "idance: given that we are largely into heavy fabrication equipments, typically the lead time is also 3–4 months, and in your presentation you have mentioned an order book number of close to ₹150 crores. So I just wanted to understand the guidance of ₹330 crores mentioned in the presentation—how are we looking to bridge that gap of another ₹60 odd crores? And",
+    "filed": "2026-11-21",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-12-31",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/f29ffe8a-124b-4b14-96d0-641d93449c73.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Investor Presentation",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7183fe41-5d42-452d-9a11-03c575341aaa.pdf",
+    "doc_title": "Simplex Castings Ltd - 513472 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Please find enclosed the Transcript of Earning Conference Call ",
     "n_same": 1,
-    "n_near": 2
+    "n_near": 1
    },
    "year_ago": null,
    "alt_keys": [],
@@ -10548,26 +10732,6 @@
    "isin": "INE0VBS01016"
   },
   {
-   "scrip": "NSE:QUESTLAB",
-   "name": "QUESTLAB",
-   "nse": "QUESTLAB",
-   "latest": {
-    "value_cr": 25.0,
-    "as_on": null,
-    "quote": "Exchange (NSE) Representation at PharmaLabExpoChem Strategic Overview Investor Presentation - Q1 FY26 20+ products to be registered in Myanmar, with ₹25 crore order book secured and new engagements in multiple countries. 19 Expanding manufacturing capacity with the addition of two new Advanced Manufacturing Systems, enhancing efficiency through cutting- edge",
-    "filed": "2025-07-25",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-06-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/QUEST_25072025131320_Quest_Laboratories_Investor_Presentation_-_Q1_FY26-1_1.pdf",
-    "doc_title": "Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0TNW01017"
-  },
-  {
    "scrip": "NSE:SELLOWRAP",
    "name": "SELLOWRAP",
    "nse": "SELLOWRAP",
@@ -10728,38 +10892,18 @@
    "isin": "INE531R01010"
   },
   {
-   "scrip": "NSE:POSITRON",
-   "name": "POSITRON",
-   "nse": "POSITRON",
-   "latest": {
-    "value_cr": 495.79,
-    "as_on": "2025-10-31",
-    "quote": "n Projects ₹8.37 crore ₹3.59 crore Operation & Maintenance ₹4.60 crore ₹0.92 crore Natural Gas sales ₹46.31 crore ₹486.82 crore ORDER BOOK 31-10-2025 The total unexecuted order book as of 31st october 2025 stands at approximately 495.79 crores. ** Calculations are based on prevailing market scenario Strategic Roadmap Expand presence into new industrial clust",
-    "filed": "2025-11-12",
-    "as_on_basis": "stated",
-    "as_on_eff": "2025-10-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/POSITRON_12112025192213_H1FY26_Investor_Presentation.pdf",
-    "doc_title": "Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0S3H01017"
-  },
-  {
    "scrip": "NSE:SAHASRA",
    "name": "SAHASRA",
    "nse": "SAHASRA",
    "latest": {
-    "value_cr": 68.5,
+    "value_cr": 148.3,
     "as_on": null,
-    "quote": "e and profitability Revenue and profitability Return and capital Revenue from operations ₹138.8 cr YoY growth Return on equity (ROE) 4.9% in FY25 vs in FY25 vs Orderbook ₹68.5 cr Operating profit (EBITDA 1) ₹18.2 cr YoY growth Return on capital employed (ROCE) 3.0% in FY25 vs 84.1% in FY25 82.7% vs EBITDA margin 13.1% YoY growth Debtor days 93 days in FY25 v",
-    "filed": "2026-05-28",
+    "quote": "7 (Based on consolidated financials) 4 Revenue and profitabilityRevenue and profitabilityRevenue from operations ₹91.4 cr YoY growth Return on equity (ROE)5.7% Orderbook ₹148.3 cr Operating profit (EBITDA 1 ) ₹12.2 cr YoY growth Return on capital employed (ROCE)3.2% in FY26 vs 88.4% in H1 FY26 91.9% vs EBITDA margin13.3% Debtor days 84 days in FY26 vs 63.6%T",
+    "filed": "2026-11-20",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/SAHASRA_28052026151742_investor_presentation_final_signed.pdf",
-    "doc_title": "Investor Presentation",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/SAHASRA_20112026231032_Final_investor_presentation.pdf",
+    "doc_title": "Investor Presentation Sahasra Electronic Solutions Limited has informed the Exchange about Investor Presentation",
     "n_same": 1,
     "n_near": 1
    },
@@ -11023,15 +11167,15 @@
    "nse": "HEXAGON",
    "latest": {
     "value_cr": 100.0,
-    "as_on": "2026-08-18",
-    "quote": "your first one. So you mentioned the order book a couple of times, so can you let me know the current order book? Dr. Nikhil: Yeah, so like I said, the current order book stands at INR100 crores. Urvija Shah: And it is executable over how much period of time? Dr. Nikhil: This is for the -- that it will be executed in the second quarter and partly in the thir",
-    "filed": "2026-08-18",
-    "as_on_basis": "as on filing date",
-    "as_on_eff": "2026-08-18",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/a0026886-d606-425b-b72e-13abba690b7c.pdf",
-    "doc_title": "Announcement under Regulation 30 (LODR)-Earnings Call Transcript",
-    "n_same": 1,
-    "n_near": 1
+    "as_on": null,
+    "quote": "0% to 25% growth year-on-year. And from the order book position, as Vikram has already mentioned, from the ESG point of view, we have about INR100 crores total order book covered, and INR75 crores of which we are expecting to ship in the H2. Saket Kapoor: So, you mentioned INR100 crores order book and INR75 crores is what we are trying to execute over H2? Dr",
+    "filed": "2026-11-21",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0abb0d27-ae21-4705-b6d7-05e86ba7264e.pdf",
+    "doc_title": "Hexagon Nutrition Ltd - 544785 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Hexagon Nutrition Limited has informed the Exchange about Tran",
+    "n_same": 2,
+    "n_near": 2
    },
    "year_ago": null,
    "alt_keys": [],
@@ -11368,26 +11512,6 @@
    "isin": "INE0WKY01013"
   },
   {
-   "scrip": "544313",
-   "name": "Nacdac Infrastructure Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 118.26,
-    "as_on": "2025-03-31",
-    "quote": "metro University, Noida Order Book (Ongoing Projects) Construction of Bus Terminal and Workshop Building at Ramnagar Dist. Nainital 9 As on Mar 2025 Company’s Order Book of ₹11,825.66 lakhs (ongoing projects), represents its focused approach towards building a specialized service portfolio and their ability to successfully bid and win projects Total Contract",
-    "filed": "2025-12-02",
-    "as_on_basis": "stated",
-    "as_on_eff": "2025-03-31",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/6c976b90-31bd-4e63-a40c-3b5d44375500.pdf",
-    "doc_title": "Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0LB101011"
-  },
-  {
    "scrip": "544823",
    "name": "Devson Catalyst Ltd",
    "nse": null,
@@ -11406,6 +11530,26 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE2KRP01017"
+  },
+  {
+   "scrip": "501261",
+   "name": "Lords Mark Industries Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 3000.0,
+    "as_on": null,
+    "quote": "r: Yes, you're audible. Please continue. Tejas: Hi. Actually my question is last time you mentioned that order book that you mentioned renewable energy and LED order book approx 3,000 crore book. I just want to know how much has been executed during the H1 FY27 and how much unexecuted order book? Suneet: Thanks, Tejas. See, the order book keeps on adding als",
+    "filed": "2026-11-21",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7a626a68-d6a3-425c-a635-94d3c1b7f68c.pdf",
+    "doc_title": "Lords Mark Industries Ltd - 501261 - Announcement under Regulation 30 (LODR)-Investor Presentation Transcript on Investor Conference Call Company Update Investo",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE567L01025"
   },
   {
    "scrip": "541096",
