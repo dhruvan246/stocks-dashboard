@@ -225,6 +225,13 @@
    "title": "Un-Audited Financial Results For The 1St Quarter Ended 30.06.2021",
    "read": "2026-11-23",
    "by": "gemini:gemini-3-flash-preview"
+  },
+  "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf": {
+   "kind": "res",
+   "date": "2021-06-24",
+   "title": "Audited Financial Results For The Year Ended 31.03.2021",
+   "read": "2026-11-23",
+   "by": "gemini:gemini-3-flash-preview"
   }
  },
  "metrics": [
@@ -777,7 +784,9 @@
    "kind": "flow",
    "y": {},
    "q": {
+    "20200331": 4622.0,
     "20201231": 9936.0,
+    "20210331": 4966.0,
     "20210630": 1834.0,
     "20210930": 5396.0,
     "20211231": 12270.0,
@@ -904,6 +913,18 @@
      10,
      "Volume Silver Products",
      "1,834"
+    ],
+    "q:20210331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     13,
+     "Volume in Silver products",
+     "4,966"
+    ],
+    "q:20200331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     12,
+     "Volume in Silver Products",
+     "4,622"
     ]
    },
    "latest": {
@@ -1797,6 +1818,96 @@
    }
   },
   {
+   "name": "Gold Volume Sales",
+   "unit": "Kgs",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20200331": 740.0,
+    "20201231": 1995.0,
+    "20210331": 1438.0,
+    "20210630": 478.0,
+    "20210930": 1309.0,
+    "20211231": 2910.0,
+    "20240630": 1547.0,
+    "20241231": 1325.0,
+    "20250930": 1513.0,
+    "20251231": 1743.0,
+    "20260930": 1500.0
+   },
+   "src": {
+    "q:20260930": [
+     "a860ed72-43be-4519-b23c-2b136528fb67.pdf",
+     11,
+     "Volume Gold Ornament",
+     "1,500"
+    ],
+    "q:20241231": [
+     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
+     6,
+     "Volume Gold Ornament",
+     "1,325"
+    ],
+    "q:20250930": [
+     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
+     7,
+     "Volume Gold Ornament",
+     "1,513"
+    ],
+    "q:20251231": [
+     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
+     6,
+     "Volume Gold Ornament",
+     "1,743"
+    ],
+    "q:20240630": [
+     "a79290ef-c8a0-4834-994f-196563220023.pdf",
+     5,
+     "Volume Gold Ornament",
+     "1,547"
+    ],
+    "q:20211231": [
+     "53c5d9ff-dff0-4ef9-93b4-0ca66dd2946a.pdf",
+     8,
+     "Volume Gold Ornament",
+     "2,910"
+    ],
+    "q:20210930": [
+     "54d39d4d-00e6-415f-a050-2da6e531e369.pdf",
+     10,
+     "Volume Gold Ornament",
+     "1,309"
+    ],
+    "q:20201231": [
+     "0dff79da-8411-4478-91cc-a328d005008f.pdf",
+     10,
+     "Volume Gold Ornament",
+     "1,995"
+    ],
+    "q:20210630": [
+     "54d39d4d-00e6-415f-a050-2da6e531e369.pdf",
+     10,
+     "Volume Gold Ornament",
+     "478"
+    ],
+    "q:20210331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     13,
+     "Volume in gold ornaments",
+     "1,438"
+    ],
+    "q:20200331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     12,
+     "Volume in Gold Ornaments products",
+     "740"
+    ]
+   },
+   "latest": {
+    "q:20210930": "2022-01-27"
+   }
+  },
+  {
    "name": "Same Store Sales (SSS) growth",
    "unit": "%",
    "kind": "flow",
@@ -1886,79 +1997,76 @@
    }
   },
   {
-   "name": "Gold Volume Sales",
-   "unit": "Kgs",
-   "kind": "flow",
+   "name": "Retail Outlets",
+   "unit": "count",
+   "kind": "level",
    "y": {},
    "q": {
-    "20201231": 1995.0,
-    "20210630": 478.0,
-    "20210930": 1309.0,
-    "20211231": 2910.0,
-    "20240630": 1547.0,
-    "20241231": 1325.0,
-    "20250930": 1513.0,
-    "20251231": 1743.0,
-    "20260930": 1500.0
+    "20210331": 47.0,
+    "20220331": 50.0,
+    "20230331": 53.0,
+    "20230630": 54.0,
+    "20240331": 57.0,
+    "20250331": 60.0,
+    "20250630": 64.0,
+    "20251231": 66.0,
+    "20260331": 66.0
    },
    "src": {
-    "q:20260930": [
-     "a860ed72-43be-4519-b23c-2b136528fb67.pdf",
-     11,
-     "Volume Gold Ornament",
-     "1,500"
-    ],
-    "q:20241231": [
-     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
+    "q:20260331": [
+     "04484843-2f96-463a-a427-442288c71f6b.pdf",
      6,
-     "Volume Gold Ornament",
-     "1,325"
+     "Number of retail outlets in operation",
+     "66"
     ],
-    "q:20250930": [
-     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
-     7,
-     "Volume Gold Ornament",
-     "1,513"
+    "q:20250331": [
+     "04484843-2f96-463a-a427-442288c71f6b.pdf",
+     6,
+     "Number of retail outlets in operation",
+     "60"
     ],
     "q:20251231": [
      "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
-     6,
-     "Volume Gold Ornament",
-     "1,743"
-    ],
-    "q:20240630": [
-     "a79290ef-c8a0-4834-994f-196563220023.pdf",
      5,
-     "Volume Gold Ornament",
-     "1,547"
+     "net active retails outlets",
+     "66"
     ],
-    "q:20211231": [
-     "53c5d9ff-dff0-4ef9-93b4-0ca66dd2946a.pdf",
-     8,
-     "Volume Gold Ornament",
-     "2,910"
+    "q:20250630": [
+     "a79290ef-c8a0-4834-994f-196563220023.pdf",
+     4,
+     "Number of retail outlets in operation",
+     "64"
     ],
-    "q:20210930": [
-     "54d39d4d-00e6-415f-a050-2da6e531e369.pdf",
+    "q:20240331": [
+     "13fc3158-1231-4432-a9a8-dfc579af3974.pdf",
+     6,
+     "Number of retail outlets in operation",
+     "57"
+    ],
+    "q:20230630": [
+     "75d16da0-3b3c-4143-867a-92896aa442b6.pdf",
+     5,
+     "total retail outlets (doc period)",
+     "54"
+    ],
+    "q:20220331": [
+     "04a5e479-9b58-4f79-9811-423f8d5fbab3.pdf",
      10,
-     "Volume Gold Ornament",
-     "1,309"
+     "Retail Outlets [count]",
+     "50"
     ],
-    "q:20201231": [
-     "0dff79da-8411-4478-91cc-a328d005008f.pdf",
-     10,
-     "Volume Gold Ornament",
-     "1,995"
+    "q:20230331": [
+     "6efed1bc-fcf7-4ced-b143-10bd4d0f570b.pdf",
+     17,
+     "The company has 53 ( as on 31st March 23) retail outlets",
+     "53"
     ],
-    "q:20210630": [
-     "54d39d4d-00e6-415f-a050-2da6e531e369.pdf",
-     10,
-     "Volume Gold Ornament",
-     "478"
+    "q:20210331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     15,
+     "operating out of 47 retail outlet (doc period)",
+     "47"
     ]
-   },
-   "latest": {
-    "q:20210930": "2022-01-27"
    }
   },
   {
@@ -2033,72 +2141,6 @@
     "y:20210331": "2025-07-03",
     "y:20200331": "2024-07-02",
     "y:20190331": "2023-06-12"
-   }
-  },
-  {
-   "name": "Retail Outlets",
-   "unit": "count",
-   "kind": "level",
-   "y": {},
-   "q": {
-    "20220331": 50.0,
-    "20230331": 53.0,
-    "20230630": 54.0,
-    "20240331": 57.0,
-    "20250331": 60.0,
-    "20250630": 64.0,
-    "20251231": 66.0,
-    "20260331": 66.0
-   },
-   "src": {
-    "q:20260331": [
-     "04484843-2f96-463a-a427-442288c71f6b.pdf",
-     6,
-     "Number of retail outlets in operation",
-     "66"
-    ],
-    "q:20250331": [
-     "04484843-2f96-463a-a427-442288c71f6b.pdf",
-     6,
-     "Number of retail outlets in operation",
-     "60"
-    ],
-    "q:20251231": [
-     "8af09f56-e6d2-4bdc-97a6-bbfe55648af0.pdf",
-     5,
-     "net active retails outlets",
-     "66"
-    ],
-    "q:20250630": [
-     "a79290ef-c8a0-4834-994f-196563220023.pdf",
-     4,
-     "Number of retail outlets in operation",
-     "64"
-    ],
-    "q:20240331": [
-     "13fc3158-1231-4432-a9a8-dfc579af3974.pdf",
-     6,
-     "Number of retail outlets in operation",
-     "57"
-    ],
-    "q:20230630": [
-     "75d16da0-3b3c-4143-867a-92896aa442b6.pdf",
-     5,
-     "total retail outlets (doc period)",
-     "54"
-    ],
-    "q:20220331": [
-     "04a5e479-9b58-4f79-9811-423f8d5fbab3.pdf",
-     10,
-     "Retail Outlets [count]",
-     "50"
-    ],
-    "q:20230331": [
-     "6efed1bc-fcf7-4ced-b143-10bd4d0f570b.pdf",
-     17,
-     "The company has 53 ( as on 31st March 23) retail outlets",
-     "53"
-    ]
    }
   },
   {
@@ -2657,6 +2699,37 @@
      18,
      "Customer base",
      "32.50"
+    ]
+   }
+  },
+  {
+   "name": "Diamond Volume Sales",
+   "unit": "Cts",
+   "kind": "flow",
+   "y": {},
+   "q": {
+    "20200331": 1539.0,
+    "20201231": 2272.0,
+    "20210331": 2250.0
+   },
+   "src": {
+    "q:20210331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     13,
+     "Volume in studded Diamond products",
+     "2,250"
+    ],
+    "q:20201231": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     13,
+     "Volume in studded Diamond products",
+     "2,272"
+    ],
+    "q:20200331": [
+     "65db13c4-2758-4895-a4e9-9f5eea6d1db3.pdf",
+     12,
+     "Volume in Diamond Products",
+     "1,539"
     ]
    }
   },
