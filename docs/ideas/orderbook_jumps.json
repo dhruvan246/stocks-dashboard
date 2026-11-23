@@ -1,5 +1,5 @@
 {
- "built": "2026-11-20 21:05 IST",
+ "built": "2026-11-23 20:40 IST",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1664,6 +1664,35 @@
    "verdict": "CORRECTED",
    "note": "Both ends read from the company's own filings in this run. The screen was wrong at both ends. (a) Year-ago: it took '₹100 crore' from the 10-Nov-2025 investor presentation's MILESTONE slide ('2025 - Expanded installed capacity to 8,087 MTPA. Order book stands at over ₹100 crore'), a history line that the 04-Jun-2026 and 20-Nov-2026 decks repeat verbatim; that same Nov-2025 deck's own Key Facts page states '₹ 105+ Cr Order Book'. (b) Latest as-on: the screen dated the ₹160 cr to 30-Sep-2026 ('quarter before filing'), but the 20-Nov-2026 deck itself attributes it to the FY26 Annual Report, and the annual report (read this run) carries it in the FY26 highlights, i.e. as at 31-Mar-2026. On a clean 31-Mar-2025 -> 31-Mar-2026 basis - ₹105 cr stated on the 14-Aug-2025 call for 'the end of last year' against ₹160+ cr in the FY26 annual report - the change is +52.4%, so the jump is real but its trigger is the annual report filed 09-Sep-2026, not the 20-Nov-2026 deck. Definition caveat: all of these are 'over/in excess of' round figures, not as-on-date totals, and the company's own ₹140 cr (04-Jun-2026 deck, FY26 page) and 'more than INR140 crores, INR150.00 crores as on date' (10-Jun-2026 call) sit below the annual report's ₹160+ cr for the same year-end, so the series is not internally consistent to the crore. The company has NOT stated a post-31-Mar-2026 order book: the 20-Nov-2026 H1 FY27 deck repeats the FY26 figure, so there is no 30-Sep-2026 reading. Context read in the same run: FY26 total income ₹101.59 cr (+43.47%), PAT ₹25.01 cr (+52.03%, 25% margin), order intake during FY26 ₹150+ cr, installed capacity 21,287 MTPA across two units, effectively debt-free at year-end; MD&A guidance 'revenue of approximately ₹210 crore to ₹220 crore for FY2027, with profit-after-tax margins expected to remain around 25% as the new Haridwar bogie facility ramps up from June 2026' and 'peak revenue potential of approximately ₹340 crore to ₹350 crore'. Market cap ₹744.8 cr (BSE scrip master, 2026-11-20 universe build), BSE SME.",
    "checked_on": "2026-11-20",
+   "faded": false
+  },
+  {
+   "key": "532144",
+   "name": "Welspun Corp Ltd",
+   "nse": "WELCORP",
+   "bse": "532144",
+   "isin": "INE191B01025",
+   "latest_value_cr": 50000.0,
+   "latest_as_on": "2026-10-29",
+   "latest_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c67fa8bf-42bf-4aa1-b398-b11613e835cf.pdf",
+   "latest_doc_title": "Investor presentation filed BSE 23-Nov-2026, p.26 'Global Order Book (Rs Cr.)' - 'the global order book has scaled to a historic, all-time record of USD 5.2 Billion (~INR 50,000 Crore)', chart FY24 9,056 / FY25 19,553 / FY26 25,350 / H1FY27 50,000, footnote '* As on 29th October, 2026'",
+   "year_ago_value_cr": 23500.0,
+   "year_ago_as_on": "2025-10-25",
+   "year_ago_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/426d8cf1-0571-4466-86f8-cc80868cacaf.pdf",
+   "year_ago_doc_title": "Q2 FY26 investor presentation filed BSE 30-Oct-2025, ORDER BOOK page: 'Total Order Book Value stands at ~INR 23,500 Cr', note 'Line Pipes figures are excluding EPIC, KSA; Order Book as on 25th October, considering execution till 30th September' (the 13-Nov-2025 deck repeats the same Rs 23,500 cr, as on 30th October)",
+   "true_yoy_pct": 112.8,
+   "qualifies": true,
+   "trigger_filed": "2026-10-29",
+   "trigger_doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/8b379781-b35f-4b21-86b8-81f2fd6f95be.pdf",
+   "trigger_doc_title": "Q2 FY27 investor presentation filed BSE 29-Oct-2026 - management commentary 'Our order book reached an all-time record high of ~50,000 cr' and p.14 'ORDER BOOK TREND AND KEY ORDER WINS' chart FY24 14,730 / FY25 19,553 / FY26 25,350 / H1FY27 50,000, with the three USA mega orders listed (~USD 1.8 bn / ~Rs 17,200 cr Little Rock; ~USD 412.5 mn / ~Rs 4,000 cr HFIW; ~USD 578 mn / ~Rs 5,500 cr data centre)",
+   "trigger_as_on": "2026-10-29",
+   "trigger_book_cr": 50000.0,
+   "trigger_prev_cr": 23500.0,
+   "trigger_prev_as_on": "2025-10-25",
+   "trigger_yoy_pct": 112.8,
+   "verdict": "CONFIRMED",
+   "note": "Both ends opened in this run and both are the company-wide GLOBAL order book, not a segment. Definitions are comparable: the 2025 deck's 'Total Order Book Value' spans Line Pipes (India + USA) ~1,250 KMT, DI Pipes ~355 KMT and SS Bars & Pipes ~6,950 MT; the 2026 decks call the same total the 'Global Order Book'. The screen's as-on dates were WRONG and are corrected here: it assigned 'quarter before filing' (30-Sep-2026 / 30-Sep-2025), while the decks state 29-Oct-2026 and 25-Oct-2025 on their own faces. Values unchanged, so yoy +112.8% stands. The trigger is the 29-Oct-2026 Q2 FY27 deck, not today's 23-Nov-2026 roadshow deck which restates the same Rs 50,000 cr: the intervening filings do NOT clear 50% - 21-May-2026 (FY26) stated Rs 25,350 cr and 24-Jul-2026 (Q1 FY27) Rs 24,750 cr '* Based on execution upto 30th June and new orders upto 22nd July', against Rs 19,000 cr stated in the 29-Jul-2025 Q1 FY26 deck ('Order Book (Total value ~INR 19,000 Crore)'), i.e. +30.3%. Order book / trailing-year sales = Rs 50,000 cr / FY26 consolidated revenue Rs 16,770 cr (21-May-2026 deck, GUIDANCE: FY27 page, FY26 Actual) = 2.98x. One internal inconsistency worth recording: the 29-Oct-2026 deck plots FY24 at 14,730 while the 23-Nov-2026 deck plots FY24 at 9,056 - the FY24 bar was restated between the two decks; FY25 (19,553) and FY26 (25,350) are identical in both. NOT an idea candidate: market cap Rs 56,766 cr (BSE scrip master, 23-Nov-2026) is far above the Rs 200-7,500 cr band, and runbook 144b measured no 5x run above Rs 25,000 cr in three years.",
+   "checked_on": "2026-11-23",
    "faded": false
   }
  ],
