@@ -31080,3 +31080,29 @@ Verified LIVE 2026-11-22 by clicking: the three pop-ups at 1440 and 390 (nothing
 tab (0 sideways scroll, no chrome in the frame, 300 rows), "Since 1996" and AUM sort (no script error).
 NOT checked: the owner-only pages past their lock, live-quote boxes. New §39 bullet: "POP-UPS, MENUS AND
 EMBEDDED PAGES AGAINST THE FIXED SITE FRAME".
+
+## §248 — Charts page (`docs/chart.html`): candles, index history, stock open/high/low (2026-11-24)
+
+- **Index bars** live in `docs/idx_ohlc/<KEY>.json` (+ `_index.json`), built by `scripts/build_index_ohlc.py`.
+  Two official NSE sources, in this order:
+  1. the daily all-indices file `nsearchives.nseindia.com/content/indices/ind_close_all_DDMMYYYY.csv` (first
+     file 2012-02-21; raw cache `~/stocks-backups/index_ohlc_raw/`, filled by `scripts/fetch_index_ohlc.py`).
+     It is the master for every day it has. `--update` (run daily inside `refresh-indices.yml`, non-blocking)
+     appends the last 10 days; `docs/idx_ohlc` rides that workflow's cp / replay / git-add lists (§18).
+  2. niftyindices.com per-index history (same browser-only endpoint as §28) for everything BEFORE an index
+     appears in the daily file, plus the 12 trading days whose daily file NSE never published. Pulled once on
+     2026-11-24 for 158 indices into `~/stocks-backups/index_hist_ni/<KEY>.txt`, merged with
+     `build_index_ohlc.py --merge-ni <dir>`. Rows with open = high = low = close are NSE's back-computed
+     close-only history and are stored without open/high/low. ⚠️ `--full` rebuilds from source 1 only — run
+     `--merge-ni` again afterwards or the pre-2012 history is gone.
+  The page is CSP-locked (`connect-src 'self'`), so the browser pull hands data over with a plain form POST to a
+  local helper (`~/stocks-backups/index_hist_ni/_recv.py`), not fetch.
+- **Open differences (verdict UNKNOWN, not read):** 276 closes differ between the two sources on overlapping
+  days — none in Nifty 50 / Bank / 500 / Midcap 100 / Smallcap 100; 141 are NIFTY100 LOWVOL30. The list is
+  `~/stocks-backups/index_hist_ni/_diffs.json`. The daily-file value was kept in every case, including closes
+  of 0.0 (the chart skips a close ≤ 0).
+- **Stock open/high/low:** `scripts/build_stock_ohlc.py` → `sf-data/ohlc/<SLUG>.json`, bar-for-bar with the
+  slice, published by `refresh-backtest-data.yml` (failure there never blocks the slices).
+- **Weekly / monthly bars** are aggregated in the page from the daily bars of the finished expression (first
+  open, highest high, lowest low, last close). Checked against TradingView's CNXSMALLCAP/NIFTY monthly chart:
+  Jan-2008 high 0.989, Jan-2018 high 0.903, Mar-2020 low 0.410 agree to the 2 decimals TradingView shows.

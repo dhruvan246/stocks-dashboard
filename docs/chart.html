@@ -66,6 +66,7 @@
       <div id="tools" class="flex items-center gap-1 flex-wrap"></div>
       <div class="flex items-center gap-2 flex-wrap">
         <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <span id="tfBtns" class="flex items-center gap-1" title="Bar size: daily, weekly or monthly"><span data-tf="D" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Daily bars">D</span><span data-tf="W" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Weekly bars">W</span><span data-tf="M" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Monthly bars">M</span></span>
         <span id="candleBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Candles (open, high, low, close) instead of a line">Candles</span>
         <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
       </div>
@@ -318,7 +319,19 @@ function evalNode(n,val){ if(n.num!=null) return n.num; if(n.sym) return val[n.s
    A MONTHLY point is used once — on the first date on/after it — so a month-end index close is
    never smeared across the following days as if it were daily data. */
 const STALE=5*DAY;
-function evaluate(ast,ops){
+/* Weekly / monthly bars are built from the DAILY bars of the finished expression: open of the first day, highest
+   daily high, lowest daily low, close of the last day — so a monthly A/B candle shows the real extremes the ratio
+   reached inside the month (measured against TradingView's CNXSMALLCAP/NIFTY monthly chart, 2026-11-24). A day on
+   which a leg has only a close (older index history, USDINR, crude) enters with open = high = low = close for that
+   leg. The bar is stamped on the period's first calendar day (Monday, or the 1st). */
+function periodStart(t,tf){ if(tf==='W'){ const d=Math.floor(t/DAY); return (d-((d+3)%7))*DAY; }
+  const D=new Date(t*1000); return Date.UTC(D.getUTCFullYear(),D.getUTCMonth(),1)/1000; }
+function aggregate(daily,tf){ const out=[]; let cur=null;
+  for(const d of daily){ const k=periodStart(d.time,tf), o=d.open!=null?d.open:d.value, h=d.high!=null?d.high:d.value, l=d.low!=null?d.low:d.value;
+    if(!cur||cur.time!==k){ cur={time:k,value:d.value,open:o,high:Math.max(h,o,d.value),low:Math.min(l,o,d.value),close:d.value}; out.push(cur); }
+    else { cur.value=cur.close=d.value; if(h>cur.high) cur.high=h; if(l<cur.low) cur.low=l; } }
+  return out; }
+function evaluate(ast,ops,fill){
   const syms=Object.keys(ops); if(!syms.length) throw new Error('Type at least one symbol.');
   const dated=syms.filter(s=>ops[s].kind!=='macro');      // NSE dates only when the expression has an NSE leg
   const all=new Set(); for(const s of (dated.length?dated:syms)) for(const p of ops[s].pts) all.add(p.t);
@@ -342,7 +355,8 @@ function evaluate(ast,ops){
        widened to contain open and close, because high-of-A / high-of-B is not the true high of the ratio. */
     let full=true, real=false;
     for(const s of syms){ const p=ops[s].pts[ptr[s]];
-      if(ops[s].kind==='macro'){ vo[s]=vh[s]=vl[s]=p.v; }                       // closes only: flat at its close (said in the legend)
+      if(fill&&(p.o==null||p.t!==t)){ vo[s]=vh[s]=vl[s]=p.v; real=true; }
+      else if(ops[s].kind==='macro'){ vo[s]=vh[s]=vl[s]=p.v; }                       // closes only: flat at its close (said in the legend)
       else if(p.o==null) full=false;
       else if(p.t!==t){ vo[s]=vh[s]=vl[s]=p.v; }
       else { vo[s]=p.o; vh[s]=p.h; vl[s]=p.l; real=true; } }
@@ -356,6 +370,7 @@ function evaluate(ast,ops){
 /* ---------- chart ------------------------------------------------------------------------------ */
 let CH=null;            // {chart, series, prim}
 let DATA=[], TIMES=[], KEY='', RANGE='Max', LOG=false;
+const LS_TF='sw_chart_tf_v1'; let TF=lsGet(LS_TF,'D'); if(!['D','W','M'].includes(TF)) TF='D';
 const LS_MODE='sw_chart_mode_v1'; let MODE=lsGet(LS_MODE,'line')==='candle'?'candle':'line';   // what the user asked for
 let FULLN=0, CNOTE='';      // bars before the candle filter; why candles are (partly) unavailable
 const UP='#16a34a', DN='#dc2626';
@@ -435,6 +450,8 @@ function renderRanges(){
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; renderRanges(); applyRange(); });
 }
 $('candleBtn').classList.toggle('on',MODE==='candle');
+const renderTf=()=>$('tfBtns').querySelectorAll('[data-tf]').forEach(b=>b.classList.toggle('on',b.dataset.tf===TF));
+renderTf(); $('tfBtns').querySelectorAll('[data-tf]').forEach(b=>b.onclick=()=>{ TF=b.dataset.tf; lsSet(LS_TF,TF); renderTf(); if(KEY) loadExpr(KEY,false); });
 $('candleBtn').onclick=()=>{ MODE=MODE==='candle'?'line':'candle'; lsSet(LS_MODE,MODE); $('candleBtn').classList.toggle('on',MODE==='candle'); if(KEY) loadExpr(KEY,false); };
 $('logBtn').onclick=()=>{ LOG=!LOG; $('logBtn').classList.toggle('on',LOG); applyLog(); };
 function applyLog(){ if(!CH) return; const canLog=DATA.every(d=>d.value>0);
@@ -454,14 +471,14 @@ async function loadExpr(raw,push){
     ast=parse(r.toks); ops={};
     (function walk(n){ if(!n) return; if(n.sym) ops[n.sym]=r.ops[n.sym]; walk(n.l); walk(n.r); })(ast);
     if(MODE==='candle'){ await Promise.all(Object.values(ops).filter(o=>o.kind==='stock').map(stockOhlc)); if(seq!==LOADSEQ) return; }
-    let data=evaluate(ast,ops);
+    let data=evaluate(ast,ops,TF!=='D'); if(TF!=='D') data=aggregate(data,TF);
     if(!data.length) throw new Error('These symbols have no dates in common, so there is nothing to draw.');
     FULLN=data.length; CNOTE='';
     if(MODE==='candle'){
       const c=data.filter(d=>d.open!=null), L=Object.values(ops);
       if(!c.length){ const mac=L.filter(o=>o.kind==='macro').map(o=>o.label);
         CNOTE='Candles are not available for this chart — showing the line. '+(mac.length?'There is no open/high/low for '+mac.join(', ')+' (daily closes only).':'No open/high/low history is published for '+L.filter(o=>!o.pts.some(p=>p.o!=null)).map(o=>o.label).join(', ')+'.'); }
-      else { const mac=L.filter(o=>o.kind==='macro').map(o=>o.label);
+      else { const mac=TF==='D'?L.filter(o=>o.kind==='macro').map(o=>o.label):[];
         if(mac.length) CNOTE=mac.join(', ')+': daily closes only, so each candle uses that day\'s close for it — the open, high and low come from the other leg. ';
         if(c.length<data.length) CNOTE+='Candles start '+fmtDate(c[0].time)+': '+(data.length-c.length).toLocaleString('en-IN')+' other bars have a close but no open/high/low. Switch Candles off for the full history.'; data=c; }
     }
@@ -484,7 +501,7 @@ function showEmpty(msg){
 function setLegend(h){ $('legend').innerHTML=h; }
 function renderLegend(ops){
   const rows=[];
-  rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
+  rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' '+({D:'daily',W:'weekly',M:'monthly'})[TF]+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
   for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
     if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily '+(CH&&CH.kind==='candle'?'open/high/low/close':'close')+', '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
     else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }

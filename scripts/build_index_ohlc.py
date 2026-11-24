@@ -178,7 +178,8 @@ def full(cache):
           % (matched, len(idx) - matched, sorted(set(hk) - set(idx))))
 
 
-def update(ndays):
+def load():
+    """the published files back into {key: {'cur','names','bars'}} + the index meta"""
     ip = os.path.join(OUT, "_index.json")
     if not os.path.exists(ip):
         sys.exit("ABORT: %s missing — run --full once first" % ip)
@@ -192,6 +193,58 @@ def update(ndays):
         f = lambda v: None if v is None else v / 100.0
         series[key] = {"cur": m["cur"], "names": b["names"],
                        "bars": {ds[i].isoformat(): (f(b["o"][i]), f(b["h"][i]), f(b["l"][i]), f(b["c"][i])) for i in range(len(ds))}}
+    return meta, series
+
+
+def merge_ni(nidir, report=None):
+    """Add niftyindices.com's per-index history (Historical Data page; runbook §28 — a browser page-context pull,
+    one <KEY>.txt per index: rows 'YYYYMMDD_o_h_l_c' joined by 'n', 'x' = not published) to the published files.
+
+    The daily all-indices file stays the master for every day it has. This only (a) adds the days BEFORE an index
+    appears in that file (2012-02-21 at the earliest) and the 12 days whose file NSE never published, and
+    (b) fills open/high/low where the daily file printed '-'. A row whose open = high = low = close is NSE's
+    back-computed close-only history, so its open/high/low are stored as missing, never as a flat candle.
+    Every day both sources have is compared; differing closes are counted and listed, nothing is overwritten."""
+    meta, series = load()
+    before = {k: m["n"] for k, m in meta["idx"].items()}
+    added = filled = same = 0
+    diffs, nofile = [], []
+    for key, s in sorted(series.items()):
+        fp = os.path.join(nidir, slug(key) + ".txt")
+        if not os.path.exists(fp):
+            nofile.append(key); continue
+        for row in open(fp).read().split("n"):
+            p = row.split("_")
+            if len(p) != 5 or len(p[0]) != 8:
+                continue
+            iso = "%s-%s-%s" % (p[0][:4], p[0][4:6], p[0][6:])
+            o, h, l, c = [None if x == "x" else float(x) for x in p[1:]]
+            if c is None or c <= 0:
+                continue
+            if o is None or h is None or l is None or (o == h == l == c):
+                o = h = l = None
+            have = s["bars"].get(iso)
+            if have is None:
+                s["bars"][iso] = (o, h, l, c); added += 1
+                continue
+            if abs(have[3] - c) > 0.011:
+                diffs.append((key, iso, have[3], c))
+            else:
+                same += 1
+                if (have[0] is None or have[1] is None or have[2] is None) and o is not None:
+                    s["bars"][iso] = (o, h, l, have[3]); filled += 1
+    idx = write(series, meta.get("joins", []))
+    shrunk = [k for k in before if idx.get(k, {}).get("n", 0) < before[k]]
+    if shrunk:
+        sys.exit("ABORT: series lost bars: %s" % shrunk[:5])
+    print("niftyindices merge: %d days added, %d open/high/low filled, %d overlapping closes equal, %d differ; %d series had no history file"
+          % (added, filled, same, len(diffs), len(nofile)))
+    if report:
+        json.dump({"diffs": diffs, "nofile": nofile}, open(report, "w"), indent=0)
+
+
+def update(ndays):
+    meta, series = load()
     bycur = {s["cur"]: k for k, s in series.items()}
     joins, added, today = meta.get("joins", []), 0, dt.date.today()
     for back in range(ndays, -1, -1):
@@ -243,7 +296,15 @@ if __name__ == "__main__":
     ap.add_argument("--full", action="store_true"); ap.add_argument("--update", action="store_true")
     ap.add_argument("--cache", default=os.path.expanduser("~/stocks-backups/index_ohlc_raw"))
     ap.add_argument("--days", type=int, default=10)
+    ap.add_argument("--merge-ni", default="", help="dir of niftyindices history files to merge into the published files")
+    ap.add_argument("--report", default="", help="with --merge-ni: write the differing cells here")
     a = ap.parse_args()
-    if a.full == a.update:
-        sys.exit("pick one of --full / --update")
-    full(a.cache) if a.full else update(a.days)
+    if a.merge_ni and not (a.full or a.update):
+        merge_ni(a.merge_ni, a.report)
+    elif a.full == a.update:
+        sys.exit("pick one of --full / --update / --merge-ni DIR")
+    elif a.full:
+        full(a.cache)
+        print("NOTE: --full rebuilds from the daily files only — re-run --merge-ni <dir> to put the pre-2012 history back")
+    else:
+        update(a.days)
