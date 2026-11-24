@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>STOCKSWORLD · Charts</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="./theme.css" />
+<script src="./theme.js"></script>
+<style>
+  body{font-feature-settings:"tnum" 1}
+  main{width:100%;min-width:0}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
+  #chartWrap{position:relative}
+  #chart{height:calc(100vh - 330px);min-height:360px}
+  @media (max-width:640px){ #chart{height:calc(100vh - 380px);min-height:300px} }
+  #chartWrap.drawing{cursor:crosshair;touch-action:none}
+  #tip{position:absolute;left:8px;top:8px;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.3rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
+  .rng,.tool{cursor:pointer;user-select:none}
+  .rng.on,.tool.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent}
+  .tool{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .55rem;border-radius:var(--radius);border:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);background:var(--surface);line-height:1.3}
+  .tool:hover{border-color:var(--accent)}
+  .tool[disabled]{opacity:.4;cursor:default}
+  .tool svg{width:14px;height:14px}
+  .chip{cursor:pointer;display:inline-flex;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-muted);background:var(--surface-2)}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  #expr{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+</style>
+</head>
+<body>
+<main class="max-w-screen-xl mx-auto px-3 sm:px-4 py-4 space-y-3">
+
+  <div class="card p-4">
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <div>
+        <div class="text-lg font-bold text-slate-800">Charts</div>
+        <div class="text-slate-500 text-xs">One symbol, a ratio (A/B) or a basket (A+B+C). Draw on it; drawings are saved in this browser, per chart, with no limit.</div>
+      </div>
+    </div>
+    <form id="exprForm" class="flex items-center gap-2 mt-3">
+      <input id="expr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. HINDZINC   ·   CANFINHOME/NIFTY   ·   PFC+RECLTD   ·   CNXPSUBANK/NIFTY" class="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1 min-w-0" />
+      <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-white">Show</button>
+    </form>
+    <div id="chips" class="flex flex-wrap items-center gap-1.5 mt-2"></div>
+  </div>
+
+  <div class="card p-3 sm:p-4">
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+      <div id="tools" class="flex items-center gap-1 flex-wrap"></div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
+      </div>
+    </div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
+    <div id="legend" class="mt-2 text-[11px] text-slate-500 space-y-0.5"></div>
+  </div>
+
+  <div class="card p-4 text-xs text-slate-500 space-y-1">
+    <div class="font-semibold text-slate-700 text-sm">How to use</div>
+    <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
+    <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
+    <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line and Text need one click. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it.</div>
+    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: currencies, gold/silver, global indices, futures.</div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+'use strict';
+/* =====================================================================================================
+ * chart.html — expression charts (symbol, ratio A/B, basket A+B) with drawing tools.
+ *
+ * DATA (all measured 2026-11-24, see the legend the page prints under every chart):
+ *   stocks        sf-data/stk/<SYM>.json — the same per-stock slice stock.html draws (adjusted closes)
+ *   NIFTY 50      nifty.json            daily from 2002
+ *   NIFTY 500     nifty500.json         daily from 2012
+ *   NIFTY BANK    nifty_bank.json       daily from 2012
+ *   INDIA VIX     india_vix.json        daily from 2012
+ *   other indices indices_hist.json     daily only from 2026-07-20, and index_monthly.json month-end
+ *                 closes before that (32 indices). A chart that uses one of these is MONTHLY before
+ *                 its daily history starts — the legend says so for each operand.
+ * DRAWINGS live in localStorage (key LS_DRAW), one list per normalised expression. Local only — the
+ * key is deliberately NOT in theme.js SW_SETTINGS_KEYS, so nothing here is pushed to the shared doc.
+ * ===================================================================================================== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAY=86400;
+const SLICE_URL='https://dhruvan246.github.io/sf-data/stk/';   // same origin on the live site; CORS-open elsewhere
+const LS_DRAW='sw_chart_drawings_v1', LS_RECENT='sw_chart_recent_v1';
+const lsGet=(k,fb)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?fb:v; }catch(e){ return fb; } };
+const lsSet=(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } };
+const isoToTs=s=>Date.parse(s+'T00:00:00Z')/1000;
+const tsToIso=t=>new Date(t*1000).toISOString().slice(0,10);
+const fmtDate=t=>new Date(t*1000).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
+const slugSym=s=>String(s).replace(/[^A-Za-z0-9._-]/g,'_');     // mirrors backtest-engine.js slugSym()
+const norm=s=>String(s).toUpperCase().replace(/[^A-Z0-9]/g,'');
+
+/* ---------- index catalogue ------------------------------------------------------------------- */
+// TradingView-style codes → the NSE index name used as the key in indices_hist.json
+const IDX_ALIAS={ NIFTY:'NIFTY 50', NIFTY50:'NIFTY 50', CNX500:'NIFTY 500', CNX100:'NIFTY 100', CNX200:'NIFTY 200',
+  NIFTYJR:'NIFTY NEXT 50', BANKNIFTY:'NIFTY BANK', CNXPSUBANK:'NIFTY PSU BANK', CNXIT:'NIFTY IT', CNXPHARMA:'NIFTY PHARMA',
+  CNXAUTO:'NIFTY AUTO', CNXMETAL:'NIFTY METAL', CNXFMCG:'NIFTY FMCG', CNXENERGY:'NIFTY ENERGY', CNXREALTY:'NIFTY REALTY',
+  CNXMEDIA:'NIFTY MEDIA', CNXINFRA:'NIFTY INFRA', CNXPSE:'NIFTY PSE', CNXMNC:'NIFTY MNC', CNXFINANCE:'NIFTY FIN SERVICE',
+  CNXMIDCAP:'NIFTY MIDCAP 100', CNXSMALLCAP:'NIFTY SMLCAP 100', CNXCONSUMPTION:'NIFTY CONSUMPTION', CNXCOMMODITIES:'NIFTY COMMODITIES',
+  NIFTYMIDSML400:'NIFTY MIDSMALLCAP 400', INDIAVIX:'INDIA VIX' };
+// index_monthly.json names that differ from indices_hist.json names (each pair verified equal by value on 2026-10-22)
+const MONTHLY_NAME={ 'NIFTY SMLCAP 100':'NIFTY SMALLCAP 100', 'NIFTY SMLCAP 250':'NIFTY SMALLCAP 250', 'NIFTY MICROCAP250':'NIFTY MICROCAP 250',
+  'NIFTY PVT BANK':'NIFTY PRIVATE BANK', 'NIFTY IND DEFENCE':'NIFTY INDIA DEFENCE', 'NIFTY CONSUMPTION':'NIFTY INDIA CONSUMPTION' };
+// indices with their own long daily file
+const DAILY_FILE={ 'NIFTY 50':'nifty.json', 'NIFTY 500':'nifty500.json', 'NIFTY BANK':'nifty_bank.json', 'INDIA VIX':'india_vix.json', 'NIFTY MICROCAP250':'nifty_microcap250.json' };
+
+const jget=(()=>{ const c={}; return u=>c[u]||(c[u]=fetch(u).then(r=>{ if(!r.ok) throw new Error(u+' HTTP '+r.status); return r.json(); })); })();
+let IDX_NAMES=null;   // norm → canonical index name
+async function indexNames(){
+  if(IDX_NAMES) return IDX_NAMES;
+  const m={};
+  try{ const h=await jget('./indices_hist.json'); const days=Object.keys(h.daily||{}).sort(); const last=h.daily[days[days.length-1]]||{};
+    for(const k of Object.keys(last)) m[norm(k)]=k; }catch(e){ console.warn('indices_hist.json unavailable',e); }
+  for(const k of Object.keys(DAILY_FILE)) m[norm(k)]=k;
+  for(const a in IDX_ALIAS) m[a]=IDX_ALIAS[a];
+  for(const k in MONTHLY_NAME) m[norm(MONTHLY_NAME[k])]=k;
+  return IDX_NAMES=m;
+}
+// → {label, kind:'index', pts:[{t,v,m}] ascending, dailyFrom:ts|null, note}
+async function loadIndex(name){
+  const daily=new Map();
+  if(DAILY_FILE[name]){ const j=await jget('./'+DAILY_FILE[name]); for(const d in (j.px||{})) if(j.px[d]>0) daily.set(isoToTs(d),j.px[d]); }
+  if(name!=='INDIA VIX'){
+    try{ const h=await jget('./indices_hist.json'); for(const d in h.daily){ const v=h.daily[d][name]; if(v>0) daily.set(isoToTs(d),v); } }catch(e){}
+  }
+  const dts=[...daily.keys()].sort((a,b)=>a-b);
+  const firstDaily=dts.length?dts[0]:Infinity;
+  // month-end closes for the months before the daily history starts
+  const pts=[];
+  const mname=MONTHLY_NAME[name]||name;
+  if(name!=='INDIA VIX'){
+    try{
+      const mo=await jget('./index_monthly.json'); const ix=(mo.indices||[]).find(x=>x.key===mname);
+      if(ix){
+        const cal=await tradingCalendar();
+        for(const y of Object.keys(ix.closes).sort()){ const arr=ix.closes[y]||[];
+          for(let i=0;i<arr.length;i++){ const v=arr[i]; if(!(v>0)) continue;
+            const t=monthEnd(+y,i,cal); if(t<firstDaily && tsToIso(t).slice(0,7)<tsToIso(firstDaily===Infinity?4e9:firstDaily).slice(0,7)) pts.push({t,v,m:1}); } }
+      }
+    }catch(e){ console.warn('index_monthly.json unavailable',e); }
+  }
+  for(const t of dts) pts.push({t,v:daily.get(t),m:0});
+  if(!pts.length) throw new Error('No history for index '+name);
+  const nM=pts.filter(p=>p.m).length;
+  return { label:name, kind:'index', pts, dailyFrom:dts.length?dts[0]:null, nMonthly:nM };
+}
+// last trading day of each month, from the NIFTY 50 calendar (2002→); before that, the last weekday
+let CAL=null;
+async function tradingCalendar(){
+  if(CAL) return CAL; const m=new Map();
+  try{ const j=await jget('./nifty.json'); for(const d in (j.px||{})){ const k=d.slice(0,7); if(!m.has(k)||d>m.get(k)) m.set(k,d); } }catch(e){}
+  return CAL=m;
+}
+function monthEnd(y,mi,cal){
+  const k=y+'-'+String(mi+1).padStart(2,'0'); const hit=cal.get(k); if(hit) return isoToTs(hit);
+  let d=new Date(Date.UTC(y,mi+1,0)); while(d.getUTCDay()===0||d.getUTCDay()===6) d=new Date(d.getTime()-DAY*1000);
+  return d.getTime()/1000;
+}
+async function loadStock(sym){
+  const r=await fetch(SLICE_URL+slugSym(sym)+'.json'); if(!r.ok) throw new Error('HTTP '+r.status);
+  const S=await r.json(); if(!S||!Array.isArray(S.p)||!S.p.length||typeof S.d0!=='number'||typeof S.ts!=='number') throw new Error('malformed');
+  const pts=[]; let off=S.d0, prev=-Infinity; const dd=S.dd||[];
+  for(let i=0;i<S.p.length;i++){ if(i>0) off+=dd[i-1]; if(!(off>prev)) continue; prev=off; const v=S.p[i]/100; if(v>0) pts.push({t:S.ts+off*DAY,v,m:0}); }
+  if(!pts.length) throw new Error('empty');
+  return { label:S.sym||sym, name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+const OPCACHE={};
+async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
+  if(OPCACHE[tok]) return OPCACHE[tok];
+  const names=await indexNames(); const idx=names[norm(tok)];
+  const p=idx ? loadIndex(idx) : loadStock(tok);
+  OPCACHE[tok]=p; p.catch(()=>{ delete OPCACHE[tok]; });
+  return p;
+}
+
+/* ---------- expression: tokenise → resolve symbols → parse → evaluate ---------------------------- */
+function tokenize(src){
+  const s=src.toUpperCase(); const out=[]; let i=0;
+  while(i<s.length){ const c=s[i];
+    if(/\s/.test(c)){ i++; continue; }
+    if('+*/()'.includes(c)){ out.push({k:c}); i++; continue; }
+    if(c==='-'){ out.push({k:'-'}); i++; continue; }
+    if(/[0-9.]/.test(c)){ let j=i; while(j<s.length&&/[0-9.]/.test(s[j])) j++;
+      // a digit run followed by letters is a symbol (3MINDIA, 20MICRONS), not a number
+      if(j<s.length&&/[A-Z&_]/.test(s[j])){ /* fall through to the symbol branch */ }
+      else { const n=parseFloat(s.slice(i,j)); if(!isFinite(n)) throw new Error('Bad number "'+s.slice(i,j)+'"'); out.push({k:'num',v:n}); i=j; continue; } }
+    if(/[A-Z0-9&_]/.test(c)){ let j=i;
+      while(j<s.length&&(/[A-Z0-9&_.:!]/.test(s[j])||(s[j]==='-'&&j+1<s.length&&/[A-Z0-9]/.test(s[j+1])&&/[A-Z0-9]/.test(s[j-1])))) j++;
+      let sym=s.slice(i,j); const colon=sym.lastIndexOf(':');
+      if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
+        if(ex!=='NSE'&&ex!=='BSE') throw new Error('"'+ex+':'+sym+'" is not available here — only NSE/BSE stocks and NSE indices are.'); }
+      out.push({k:'sym',v:sym}); i=j; continue; }
+    throw new Error('Unexpected character "'+c+'"');
+  }
+  return out;
+}
+// resolve every symbol; a hyphenated token that is not itself a symbol becomes a subtraction (A-B)
+async function resolveTokens(toks){
+  const out=[], ops={};
+  for(const t of toks){
+    if(t.k!=='sym'){ out.push(t); continue; }
+    try{ ops[t.v]=await resolveSymbol(t.v); out.push(t); continue; }catch(e){
+      if(!t.v.includes('-')) throw new Error('No price data for "'+t.v+'". Check the symbol.');
+    }
+    const parts=t.v.split('-');
+    for(let i=0;i<parts.length;i++){ const p=parts[i];
+      if(i) out.push({k:'-'});
+      if(/^[0-9.]+$/.test(p)) out.push({k:'num',v:parseFloat(p)});
+      else { try{ ops[p]=await resolveSymbol(p); }catch(e){ throw new Error('No price data for "'+t.v+'" (also tried "'+p+'"). Check the symbol.'); } out.push({k:'sym',v:p}); } }
+  }
+  return {toks:out,ops};
+}
+function parse(toks){
+  let i=0; const peek=()=>toks[i], eat=k=>{ if(toks[i]&&toks[i].k===k){ return toks[i++]; } return null; };
+  function expr(){ let l=term(); for(;;){ if(eat('+')) l={op:'+',l,r:term()}; else if(eat('-')) l={op:'-',l,r:term()}; else return l; } }
+  function term(){ let l=unary(); for(;;){ if(eat('*')) l={op:'*',l,r:unary()}; else if(eat('/')) l={op:'/',l,r:unary()}; else return l; } }
+  function unary(){ if(eat('-')) return {op:'neg',l:unary()}; if(eat('+')) return unary(); return atom(); }
+  function atom(){ const t=peek(); if(!t) throw new Error('The expression ends too early.');
+    if(eat('(')){ const e=expr(); if(!eat(')')) throw new Error('Missing ")".'); return e; }
+    if(t.k==='num'){ i++; return {num:t.v}; }
+    if(t.k==='sym'){ i++; return {sym:t.v}; }
+    throw new Error('Unexpected "'+t.k+'".'); }
+  const e=expr(); if(i<toks.length) throw new Error('Unexpected "'+(toks[i].v!=null?toks[i].v:toks[i].k)+'".'); return e;
+}
+function show(n){ if(n.num!=null) return String(n.num); if(n.sym) return n.sym; if(n.op==='neg') return '-'+showP(n.l,3);
+  const pr={'+':1,'-':1,'*':2,'/':2}[n.op]; return showP(n.l,pr)+(n.op==='-'?' - ':n.op)+showP(n.r,pr+(n.op==='-'||n.op==='/'?1:0)); }   // ' - ' spaced: a bare hyphen would re-read as one symbol (BAJAJ-AUTO)
+function showP(n,min){ const pr=n.num!=null||n.sym?9:(n.op==='neg'?3:{'+':1,'-':1,'*':2,'/':2}[n.op]); const s=show(n); return pr<min?'('+s+')':s; }
+function evalNode(n,val){ if(n.num!=null) return n.num; if(n.sym) return val[n.sym];
+  if(n.op==='neg') return -evalNode(n.l,val);
+  const a=evalNode(n.l,val), b=evalNode(n.r,val);
+  return n.op==='+'?a+b : n.op==='-'?a-b : n.op==='*'?a*b : (b===0?NaN:a/b); }
+/* Join the operands on dates. A point is drawn on date D only when EVERY operand has a close on D
+   or within the previous 5 calendar days (one name's holiday/suspension must not blank the day).
+   A MONTHLY point is used once — on the first date on/after it — so a month-end index close is
+   never smeared across the following days as if it were daily data. */
+const STALE=5*DAY;
+function evaluate(ast,ops){
+  const syms=Object.keys(ops); if(!syms.length) throw new Error('Type at least one symbol.');
+  const all=new Set(); for(const s of syms) for(const p of ops[s].pts) all.add(p.t);
+  const dates=[...all].sort((a,b)=>a-b);
+  const ptr={}, used={}; for(const s of syms){ ptr[s]=-1; used[s]=-1; }
+  const out=[], val={};
+  for(const t of dates){ let ok=true;
+    for(const s of syms){ const P=ops[s].pts; let i=ptr[s]; while(i+1<P.length&&P[i+1].t<=t) i++; ptr[s]=i;
+      if(i<0||t-P[i].t>STALE||(P[i].m&&used[s]===i&&P[i].t!==t)){ ok=false; continue; }
+      val[s]=P[i].v; }
+    if(!ok) continue;
+    // every monthly operand must be on a fresh point; a day where only stale monthly points exist was rejected above
+    let fresh=true; for(const s of syms){ const P=ops[s].pts, i=ptr[s]; if(P[i].m&&used[s]===i) fresh=false; }
+    if(!fresh) continue;
+    const v=evalNode(ast,val); if(!isFinite(v)) continue;
+    for(const s of syms){ const P=ops[s].pts, i=ptr[s]; if(P[i].m) used[s]=i; }
+    out.push({time:t,value:v});
+  }
+  return out;
+}
+
+/* ---------- chart ------------------------------------------------------------------------------ */
+let CH=null;            // {chart, series, prim}
+let DATA=[], TIMES=[], KEY='', RANGE='Max', LOG=false;
+const cssVar=(n,fb)=>{ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; };
+const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
+function alpha(c,a){ const m=/^#([0-9a-f]{6})$/i.exec(c||''); if(!m) return c; const n=parseInt(m[1],16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
+function colors(){ return { bg:cssVar('--surface','#ffffff'), text:cssVar('--text-muted','#586173'), faint:cssVar('--text-faint','#8b94a6'),
+  grid:cssVar('--border','#e7eaf2'), accent:cssVar('--accent','#4f46e5') }; }
+function themeOpts(){ const c=colors(); return {
+  layout:{ background:{type:'solid',color:c.bg}, textColor:c.text },
+  grid:{ vertLines:{color:c.grid}, horzLines:{color:c.grid} },
+  rightPriceScale:{ borderColor:c.grid }, timeScale:{ borderColor:c.grid },
+  crosshair:{ vertLine:{color:c.faint,labelBackgroundColor:c.accent}, horzLine:{color:c.faint,labelBackgroundColor:c.accent} } }; }
+function seriesOpts(){ const c=colors(); return {lineColor:c.accent, topColor:alpha(c.accent,.28), bottomColor:alpha(c.accent,.02)}; }
+function precisionFor(v){ const a=Math.abs(v); return a>=1?2 : a>=0.01?4 : a>=0.0001?6 : 8; }
+let PREC=2;
+let ALLPOS=true;   // every plotted value > 0 → axis ticks at or below zero (bottom margin) are blanked, as stock.html does
+const fmtVal=v=>{ if(!isFinite(v)||(ALLPOS&&!(v>0))) return ''; return Math.abs(v)>=1000?v.toLocaleString('en-IN',{maximumFractionDigits:2}):v.toFixed(PREC); };
+
+function ensureChart(){
+  if(CH) return CH;
+  const LC=window.LightweightCharts, t=themeOpts(), el=$('chart'); el.innerHTML='';
+  const chart=LC.createChart(el,{ autoSize:true,
+    layout:Object.assign({ fontSize:11, fontFamily:getComputedStyle(document.body).fontFamily, attributionLogo:true }, t.layout),
+    grid:t.grid, rightPriceScale:Object.assign({ scaleMargins:{top:.08,bottom:.08} }, t.rightPriceScale),
+    timeScale:Object.assign({ timeVisible:false, rightOffset:8, minBarSpacing:.01 }, t.timeScale),
+    crosshair:Object.assign({ mode:LC.CrosshairMode.Normal }, t.crosshair),
+    handleScroll:{ vertTouchDrag:false },
+    localization:{ locale:'en-IN', priceFormatter:fmtVal } });
+  const series=chart.addSeries(LC.AreaSeries,Object.assign({ lineWidth:2, priceLineVisible:true, lastValueVisible:true }, seriesOpts()));
+  const prim={ _req:null,
+    attached(p){ this._req=p.requestUpdate; }, detached(){ this._req=null; }, updateAllViews(){},
+    paneViews(){ return [VIEW]; } };
+  series.attachPrimitive(prim);
+  chart.subscribeCrosshairMove(onCrosshair);
+  CH={chart,series,prim};
+  return CH;
+}
+const VIEW={ zOrder(){ return 'top'; }, renderer(){ return { draw(target){ target.useMediaCoordinateSpace(s=>{ try{ paint(s.context,s.mediaSize); }catch(e){ console.error(e); } }); } }; } };
+const redraw=()=>{ if(CH&&CH.prim._req) CH.prim._req(); };
+new MutationObserver(()=>{ if(!CH) return; try{ CH.chart.applyOptions(themeOpts()); CH.series.applyOptions(seriesOpts()); redraw(); }catch(e){ console.error(e); } })
+  .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function onCrosshair(p){
+  const tip=$('tip'); if(!CH||!p||p.time==null||!p.point){ tip.style.display='none'; return; }
+  const d=p.seriesData&&p.seriesData.get(CH.series); if(!d||d.value==null){ tip.style.display='none'; return; }
+  tip.innerHTML='<b>'+fmtDate(p.time)+'</b> · '+esc(fmtVal(d.value)); tip.style.display='block';
+}
+function rangeDays(r){ return {'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'10Y':3650,'Max':1e9}[r]||1e9; }
+function applyRange(){ if(!CH||!DATA.length) return; const ts=CH.chart.timeScale();
+  if(RANGE==='Max'){ ts.fitContent(); return; }
+  const last=DATA[DATA.length-1].time, first=DATA[0].time;
+  ts.setVisibleRange({from:Math.max(first,last-rangeDays(RANGE)*DAY), to:last}); }
+function renderRanges(){
+  $('ranges').innerHTML=['6M','1Y','3Y','5Y','10Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500'} px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
+  $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; renderRanges(); applyRange(); });
+}
+$('logBtn').onclick=()=>{ LOG=!LOG; $('logBtn').classList.toggle('on',LOG); applyLog(); };
+function applyLog(){ if(!CH) return; const canLog=DATA.every(d=>d.value>0);
+  CH.chart.priceScale('right').applyOptions({ mode:(LOG&&canLog)?window.LightweightCharts.PriceScaleMode.Logarithmic:window.LightweightCharts.PriceScaleMode.Normal }); }
+
+/* ---------- load an expression ----------------------------------------------------------------- */
+let LOADSEQ=0;
+async function loadExpr(raw,push){
+  const src=String(raw||'').trim(); const seq=++LOADSEQ;
+  if(!src){ showEmpty('Type a symbol, a ratio or a basket above and press Show.'); return; }
+  $('expr').value=src.toUpperCase();
+  if(!window.LightweightCharts){ showEmpty('The chart library did not load (offline?). Reload the page when you are back online.'); return; }
+  setLegend('<span class="text-slate-400">Loading…</span>');
+  let ast, ops;
+  try{
+    const r=await resolveTokens(tokenize(src)); if(seq!==LOADSEQ) return;
+    ast=parse(r.toks); ops={};
+    (function walk(n){ if(!n) return; if(n.sym) ops[n.sym]=r.ops[n.sym]; walk(n.l); walk(n.r); })(ast);
+    const data=evaluate(ast,ops);
+    if(!data.length) throw new Error('These symbols have no dates in common, so there is nothing to draw.');
+    KEY=show(ast); DATA=data; TIMES=data.map(d=>d.time);
+  }catch(e){ if(seq!==LOADSEQ) return; DATA=[]; TIMES=[]; KEY=''; SEL=null; DRAFT=null; if(CH){ CH.series.setData([]); redraw(); } showEmpty(e&&e.message||String(e)); renderTools(); return; }
+  $('chartErr')&&$('chartErr').remove();
+  const {chart,series}=ensureChart();
+  PREC=precisionFor(DATA[DATA.length-1].value); ALLPOS=DATA.every(d=>d.value>0);
+  series.applyOptions({ priceFormat:{type:'price',precision:PREC,minMove:Math.pow(10,-PREC)} });
+  series.setData(DATA); applyLog(); applyRange();
+  DRAWINGS=loadDrawings(KEY); SEL=null; DRAFT=null; setTool('cursor'); redraw();
+  $('expr').value=KEY; document.title='STOCKSWORLD · '+KEY;
+  if(push!==false){ const u=new URL(location.href); u.searchParams.set('s',KEY); history.replaceState(null,'',u); }
+  rememberRecent(KEY); renderChips(); renderLegend(ops);
+}
+function showEmpty(msg){
+  let e=$('chartErr'); if(!e){ e=document.createElement('div'); e.id='chartErr'; e.className='text-slate-500 text-sm py-10 text-center'; e.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;background:var(--surface);z-index:4'; $('chartWrap').appendChild(e); }
+  e.textContent=msg; setLegend('');
+}
+function setLegend(h){ $('legend').innerHTML=h; }
+function renderLegend(ops){
+  const rows=[];
+  rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
+  for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
+    if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily close, '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
+    else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
+    rows.push('<div>'+t+'</div>'); }
+  if(Object.values(ops).some(o=>o.nMonthly)) rows.push('<div class="text-amber-600">Part of this chart is monthly: the dashboard holds only month-end closes for that index before its daily history starts.</div>');
+  setLegend(rows.join(''));
+}
+function rememberRecent(k){ let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[]; r=[k].concat(r.filter(x=>x!==k)).slice(0,12); lsSet(LS_RECENT,r); }
+const EXAMPLES=['NIFTY','RELIANCE','CANFINHOME/NIFTY','PFC+RECLTD','BANKNIFTY/NIFTY','CNXPSUBANK/NIFTY','HINDPETRO+BPCL+IOC'];
+function renderChips(){
+  let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[];
+  const saved=Object.keys(allDrawings()).filter(k=>(allDrawings()[k]||[]).length);
+  const mk=(k,extra)=>'<span class="chip" data-x="'+esc(k)+'">'+esc(k)+(extra||'')+'</span>';
+  let h='';
+  if(saved.length) h+='<span class="text-[11px] text-slate-400">With drawings</span>'+saved.slice(0,30).map(k=>mk(k,' <span class="text-slate-400 ml-1">'+allDrawings()[k].length+'</span>')).join('');
+  const rec=r.filter(k=>!saved.includes(k)).slice(0,6); if(rec.length) h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Recent</span>'+rec.map(k=>mk(k)).join('');
+  h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Examples</span>'+EXAMPLES.filter(k=>!r.includes(k)&&!saved.includes(k)).map(k=>mk(k)).join('');
+  $('chips').innerHTML=h; $('chips').querySelectorAll('[data-x]').forEach(c=>c.onclick=()=>loadExpr(c.dataset.x));
+}
+$('exprForm').onsubmit=e=>{ e.preventDefault(); loadExpr($('expr').value); };
+
+/* ---------- drawings ---------------------------------------------------------------------------
+ * A drawing is {id,type,a:{t,p},b:{t,p}?,color,text?}; t = unix seconds, p = price. Points are stored
+ * as TIME, not bar index, so they stay on the same date when new bars arrive or the history grows.
+ * Beyond the last bar a point's time is extrapolated at 5 bars per 7 days. ------------------------- */
+let DRAWINGS=[], SEL=null, DRAFT=null, TOOL='cursor', COLOR='#f59e0b', HOVER=null;
+const FIB=[0,.236,.382,.5,.618,.786,1];
+const allDrawings=()=>{ const a=lsGet(LS_DRAW,{}); return (a&&typeof a==='object'&&!Array.isArray(a))?a:{}; };
+function loadDrawings(k){ const l=allDrawings()[k]; return Array.isArray(l)?l.filter(d=>d&&d.a&&isFinite(d.a.t)&&isFinite(d.a.p)):[]; }
+function saveDrawings(){ if(!KEY) return; const a=allDrawings(); if(DRAWINGS.length) a[KEY]=DRAWINGS; else delete a[KEY];
+  if(!lsSet(LS_DRAW,a)) flash('Could not save: this browser is blocking or has run out of site storage.'); renderChips(); renderTools(); }
+function timeToLogical(t){ const n=TIMES.length; if(!n) return 0;
+  if(t>=TIMES[n-1]) return n-1+(t-TIMES[n-1])/DAY*5/7;
+  if(t<=TIMES[0]) return (t-TIMES[0])/DAY*5/7;
+  let lo=0, hi=n-1; while(lo<hi){ const m=(lo+hi)>>1; if(TIMES[m]<t) lo=m+1; else hi=m; }
+  if(TIMES[lo]===t) return lo; return lo-1+(t-TIMES[lo-1])/(TIMES[lo]-TIMES[lo-1]); }
+function logicalToTime(l){ const n=TIMES.length; if(!n) return 0; const r=Math.round(l);
+  if(r>n-1) return Math.round(TIMES[n-1]+(r-(n-1))*DAY*7/5);
+  if(r<0) return Math.round(TIMES[0]+r*DAY*7/5);
+  return TIMES[r]; }
+function toXY(pt){ if(!CH) return null; const x=CH.chart.timeScale().logicalToCoordinate(timeToLogical(pt.t)); const y=CH.series.priceToCoordinate(pt.p);
+  return (x==null||y==null)?null:{x,y}; }
+function fromXY(x,y){ if(!CH) return null; const l=CH.chart.timeScale().coordinateToLogical(x); const p=CH.series.coordinateToPrice(y);
+  return (l==null||p==null||!isFinite(p))?null:{t:logicalToTime(l),p}; }
+function paneSize(){ const el=$('chart'); let pw=0, th=0; try{ pw=CH.chart.priceScale('right').width(); th=CH.chart.timeScale().height(); }catch(e){}
+  return { w:el.clientWidth-pw, h:el.clientHeight-th }; }
+
+function paint(ctx,size){
+  const list=DRAFT?DRAWINGS.concat([DRAFT]):DRAWINGS;
+  for(const d of list){ const A=toXY(d.a), B=d.b?toXY(d.b):null; if(!A||(d.b&&!B)) continue;
+    const sel=d===SEL||d===DRAFT; ctx.save(); ctx.strokeStyle=d.color; ctx.fillStyle=d.color; ctx.lineWidth=sel?2.5:1.75; ctx.font='600 11px '+getComputedStyle(document.body).fontFamily;
+    if(d.type==='line'){ ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); }
+    else if(d.type==='hline'){ ctx.beginPath(); ctx.moveTo(0,A.y); ctx.lineTo(size.width,A.y); ctx.stroke();
+      const s=fmtVal(d.a.p), w=ctx.measureText(s).width+8; ctx.fillRect(size.width-w-2,A.y-8,w,16); ctx.fillStyle='#fff'; ctx.textBaseline='middle'; ctx.fillText(s,size.width-w+2,A.y+.5); }
+    else if(d.type==='rect'){ const x=Math.min(A.x,B.x), y=Math.min(A.y,B.y), w=Math.abs(A.x-B.x), h=Math.abs(A.y-B.y);
+      ctx.globalAlpha=.14; ctx.fillRect(x,y,w,h); ctx.globalAlpha=1; ctx.strokeRect(x,y,w,h); }
+    else if(d.type==='fib'){ const x0=Math.min(A.x,B.x), x1=Math.max(Math.max(A.x,B.x),x0+60);
+      ctx.globalAlpha=.5; ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha=1; ctx.textBaseline='bottom';
+      for(const f of FIB){ const p=d.b.p+(d.a.p-d.b.p)*f, y=CH.series.priceToCoordinate(p); if(y==null) continue;
+        ctx.globalAlpha=(f===0||f===1||f===.5)?1:.75; ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); ctx.fillText(f.toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'  '+fmtVal(p),x0+3,y-2); }
+      ctx.globalAlpha=1; }
+    else if(d.type==='text'){ ctx.font='600 13px '+getComputedStyle(document.body).fontFamily; ctx.textBaseline='middle'; const lines=String(d.text||'').split('\n');
+      lines.forEach((ln,i)=>ctx.fillText(ln,A.x+4,A.y+i*16));
+      if(sel){ const w=Math.max.apply(null,lines.map(l=>ctx.measureText(l).width)); ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.strokeRect(A.x,A.y-10,w+8,lines.length*16+4); ctx.setLineDash([]); } }
+    if(sel){ for(const P of (d.type==='hline'||d.type==='text'||!B)?[A]:[A,B]){ ctx.beginPath(); ctx.arc(P.x,P.y,4.5,0,Math.PI*2); ctx.fillStyle=cssVar('--surface','#fff'); ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle=d.color; ctx.stroke(); } }
+    ctx.restore();
+  }
+}
+// distance from point to segment
+function segDist(px,py,a,b){ const dx=b.x-a.x, dy=b.y-a.y, L=dx*dx+dy*dy; let t=L?((px-a.x)*dx+(py-a.y)*dy)/L:0; t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(a.x+t*dx),py-(a.y+t*dy)); }
+// → {d, part:'a'|'b'|'body'} for the top-most drawing under (x,y)
+function hit(x,y){ const T=7;
+  for(let i=DRAWINGS.length-1;i>=0;i--){ const d=DRAWINGS[i], A=toXY(d.a), B=d.b?toXY(d.b):null; if(!A||(d.b&&!B)) continue;
+    if(d===SEL){ if(Math.hypot(x-A.x,y-A.y)<=9) return {d,part:d.b?'a':'body'}; if(B&&Math.hypot(x-B.x,y-B.y)<=9) return {d,part:'b'}; }
+    if(d.type==='line'){ if(segDist(x,y,A,B)<=T) return {d,part:'body'}; }
+    else if(d.type==='hline'){ if(Math.abs(y-A.y)<=T) return {d,part:'body'}; }
+    else if(d.type==='rect'||d.type==='fib'){ const x0=Math.min(A.x,B.x)-T, x1=Math.max(A.x,B.x,d.type==='fib'?Math.min(A.x,B.x)+60:-1e9)+T, y0=Math.min(A.y,B.y)-T, y1=Math.max(A.y,B.y)+T;
+      if(x>=x0&&x<=x1&&y>=y0&&y<=y1) return {d,part:'body'}; }
+    else if(d.type==='text'){ const lines=String(d.text||'').split('\n'); const w=Math.max.apply(null,lines.map(l=>l.length))*7.5+10;
+      if(x>=A.x-4&&x<=A.x+w&&y>=A.y-12&&y<=A.y+lines.length*16) return {d,part:'body'}; }
+  }
+  return null;
+}
+
+/* ---------- pointer handling: capture-phase listeners on the wrapper. When a tool is active or a
+ * drawing is being dragged the events are stopped before Lightweight Charts sees them (so the chart
+ * does not pan); otherwise they pass through untouched. ------------------------------------------- */
+let DRAG=null, BLOCK=false, DOWN=null;
+const wrap=$('chartWrap');
+function local(e){ const r=$('chart').getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
+function inPane(p){ const s=paneSize(); return p.x>=0&&p.y>=0&&p.x<=s.w&&p.y<=s.h; }
+wrap.addEventListener('pointerdown',e=>{
+  BLOCK=false; if(!CH||!DATA.length||(e.pointerType==='mouse'&&e.button!==0)) return;
+  const p=local(e); if(!inPane(p)) return;
+  if(TOOL!=='cursor'){
+    BLOCK=true; e.preventDefault(); e.stopPropagation(); try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
+    const pt=fromXY(p.x,p.y); if(!pt) return;
+    DOWN={x:p.x,y:p.y,hadDraft:!!DRAFT};
+    if(TOOL==='hline'){ addDrawing({type:'hline',a:pt}); return; }
+    if(TOOL==='text'){ DOWN=null; const s=prompt('Text to place on the chart:'); if(s&&s.trim()) addDrawing({type:'text',a:pt,text:s.trim().slice(0,200)}); else setTool('cursor'); return; }
+    if(!DRAFT) DRAFT={id:'draft',type:TOOL,a:pt,b:{t:pt.t,p:pt.p},color:COLOR}; else DRAFT.b=pt;
+    redraw(); return;
+  }
+  const h=hit(p.x,p.y);
+  if(h){ BLOCK=true; e.preventDefault(); e.stopPropagation(); try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
+    SEL=h.d; const A=toXY(h.d.a), B=h.d.b?toXY(h.d.b):null;
+    DRAG={part:h.part,x:p.x,y:p.y,A,B,moved:false}; renderTools(); redraw(); }
+  else if(SEL){ SEL=null; renderTools(); redraw(); }
+},true);
+wrap.addEventListener('pointermove',e=>{
+  if(!CH) return; const p=local(e);
+  if(DRAFT){ const pt=fromXY(p.x,p.y); if(pt){ DRAFT.b=pt; redraw(); } e.stopPropagation(); return; }
+  if(DRAG&&SEL){ e.preventDefault(); e.stopPropagation(); const dx=p.x-DRAG.x, dy=p.y-DRAG.y; if(Math.hypot(dx,dy)>2) DRAG.moved=true;
+    if(DRAG.part==='a'||DRAG.part==='body'){ const n=fromXY(DRAG.A.x+dx,DRAG.A.y+dy); if(n) SEL.a=n; }
+    if(SEL.b&&(DRAG.part==='b'||DRAG.part==='body')){ const n=fromXY(DRAG.B.x+dx,DRAG.B.y+dy); if(n) SEL.b=n; }
+    redraw(); return; }
+  if(TOOL==='cursor'&&e.pointerType==='mouse'){ const h=inPane(p)?hit(p.x,p.y):null; if(!!h!==!!HOVER){ HOVER=h; wrap.style.cursor=h?'pointer':''; } }
+},true);
+function endPointer(e){
+  try{ wrap.releasePointerCapture(e.pointerId); }catch(_){}
+  if(DRAG){ if(DRAG.moved) saveDrawings(); DRAG=null; e.stopPropagation(); return; }
+  if(DRAFT&&DOWN){ const p=local(e), moved=Math.hypot(p.x-DOWN.x,p.y-DOWN.y)>6;
+    if(moved||DOWN.hadDraft){ const d=DRAFT; DRAFT=null; const A=toXY(d.a), B=toXY(d.b);
+      if(A&&B&&Math.hypot(A.x-B.x,A.y-B.y)>4) addDrawing({type:d.type,a:d.a,b:d.b}); else { setTool('cursor'); redraw(); } }
+    DOWN=null; e.stopPropagation(); }
+}
+wrap.addEventListener('pointerup',endPointer,true);
+wrap.addEventListener('pointercancel',e=>{ DRAG=null; DOWN=null; if(DRAFT){ DRAFT=null; redraw(); } },true);
+// Lightweight Charts listens to mouse and touch events, which follow the pointer event — stop those too
+for(const ev of ['mousedown','touchstart','touchmove','click','dblclick']) wrap.addEventListener(ev,e=>{ if(BLOCK||DRAFT||DRAG||TOOL!=='cursor'){ const p=e.touches&&e.touches[0]?local(e.touches[0]):(e.clientX!=null?local(e):null); if(!p||inPane(p)){ e.stopPropagation(); if(e.cancelable&&ev!=='click'&&ev!=='dblclick') e.preventDefault(); } } },true);
+wrap.addEventListener('dblclick',e=>{ if(TOOL!=='cursor'||!CH) return; const p=local(e), h=hit(p.x,p.y);
+  if(h&&h.d.type==='text'){ e.stopPropagation(); const s=prompt('Edit text:',h.d.text); if(s!=null&&s.trim()){ h.d.text=s.trim().slice(0,200); saveDrawings(); redraw(); } } },true);
+document.addEventListener('keydown',e=>{ const tag=(e.target&&e.target.tagName)||''; if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
+  if((e.key==='Delete'||e.key==='Backspace')&&SEL){ e.preventDefault(); deleteSelected(); }
+  else if(e.key==='Escape'){ if(DRAFT){ DRAFT=null; redraw(); } if(TOOL!=='cursor') setTool('cursor'); else if(SEL){ SEL=null; renderTools(); redraw(); } } });
+
+function addDrawing(d){ d.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6); d.color=COLOR; DRAWINGS.push(d); SEL=d; DRAFT=null; DOWN=null; setTool('cursor'); saveDrawings(); redraw(); }
+function deleteSelected(){ if(!SEL) return; DRAWINGS=DRAWINGS.filter(d=>d!==SEL); SEL=null; saveDrawings(); redraw(); }
+function setTool(t){ TOOL=t; if(t!=='cursor'){ SEL=null; } DRAFT=null; wrap.classList.toggle('drawing',t!=='cursor'); wrap.style.cursor=''; renderTools(); redraw(); }
+let FLASH_T=null;
+function flash(msg){ const tip=$('tip'); tip.textContent=msg; tip.style.display='block'; clearTimeout(FLASH_T); FLASH_T=setTimeout(()=>{ tip.style.display='none'; },4000); }
+const ICON={ cursor:'<path d="M5 3l14 8-6 2-2 6z"/>', line:'<path d="M4 20L20 4"/><circle cx="4" cy="20" r="1.6"/><circle cx="20" cy="4" r="1.6"/>', hline:'<path d="M3 12h18"/>',
+  rect:'<rect x="4" y="6" width="16" height="12" rx="1"/>', fib:'<path d="M3 5h18M3 10h18M3 14h18M3 19h18"/>', text:'<path d="M5 6V4h14v2M12 4v16M9 20h6"/>',
+  trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>' };
+const TOOLS=[['cursor','Pointer'],['line','Trend line'],['hline','Horizontal line'],['rect','Rectangle'],['fib','Fib retracement'],['text','Text']];
+function renderTools(){
+  const ok=!!(CH&&DATA.length);
+  const svg=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+ICON[k]+'</svg>';
+  let h=TOOLS.map(([k,l])=>`<button type="button" class="tool ${TOOL===k?'on':''}" data-tool="${k}" title="${l}" ${ok?'':'disabled'}>${svg(k)}<span class="hidden sm:inline">${l}</span></button>`).join('');
+  h+=`<input id="colorPick" type="color" value="${COLOR}" title="Colour for new drawings and the selected one" style="width:28px;height:26px;padding:0;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);cursor:pointer" ${ok?'':'disabled'}/>`;
+  h+=`<button type="button" class="tool" id="delBtn" title="Delete the selected drawing (Delete key)" ${SEL?'':'disabled'}>${svg('trash')}<span class="hidden sm:inline">Delete</span></button>`;
+  h+=`<button type="button" class="tool" id="clearBtn" title="Remove every drawing on this chart" ${DRAWINGS.length?'':'disabled'}>Clear all${DRAWINGS.length?' ('+DRAWINGS.length+')':''}</button>`;
+  $('tools').innerHTML=h;
+  $('tools').querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+  $('colorPick').oninput=e=>{ COLOR=e.target.value; if(SEL){ SEL.color=COLOR; saveDrawings(); redraw(); } };
+  $('delBtn').onclick=deleteSelected;
+  $('clearBtn').onclick=()=>{ if(DRAWINGS.length&&confirm('Remove all '+DRAWINGS.length+' drawings on '+KEY+'? This cannot be undone.')){ DRAWINGS=[]; SEL=null; saveDrawings(); redraw(); } };
+}
+
+/* ---------- boot ------------------------------------------------------------------------------- */
+renderRanges(); renderTools(); renderChips();
+(function boot(){ const q=new URLSearchParams(location.search); const s=q.get('s')||q.get('sym')||''; if(s) loadExpr(s,false); else showEmpty('Type a symbol, a ratio or a basket above and press Show.'); })();
+</script>
+</body>
+</html>

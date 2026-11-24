@@ -122,6 +122,7 @@
       </div>
       <div class="flex items-center gap-2 flex-wrap">
         <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <a id="drawLink" class="tvlink" title="Open this stock on the Charts page: draw trend lines, levels and notes (saved in this browser), or chart it as a ratio or basket">Draw / ratio ↗</a>
         <a id="tvLink" class="tvlink hidden" target="_blank" rel="noopener" title="Open the full TradingView chart (candles, indicators, drawing tools) in a new tab">TradingView ↗</a>
         <span class="text-slate-300">·</span>
         <input id="rwPick" type="date" class="border border-slate-300 rounded-lg px-1.5 py-0.5 text-[11px] text-slate-600" title="Rewind: view the page as of a past date" />
@@ -697,6 +698,7 @@ function render(){
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; onRangeChange(); $('ranges').querySelectorAll('[data-r]').forEach(x=>x.classList.toggle('on',x.dataset.r===RANGE)); $('ranges').querySelectorAll('[data-r]').forEach(x=>{if(x.dataset.r!==RANGE)x.classList.add('text-slate-500');else x.classList.remove('text-slate-500');}); });
   buildEvents();          // slice events now; results dates join once the fin file lands
   drawChart();
+  $('drawLink').href='chart.html?s='+encodeURIComponent(m.symbol);
   const tv=$('tvLink'); tv.href='https://www.tradingview.com/chart/?symbol='+encodeURIComponent('NSE:'+m.symbol); tv.classList.toggle('hidden',rw||!m.alive);
   if(rw){                 // current-only sections: hide, never show today's data under a past date
     ['stratCard','peersCard','actCard'].forEach(id=>{ const el=$(id); if(el) el.style.display='none'; });

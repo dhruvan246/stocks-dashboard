@@ -262,6 +262,7 @@
         ['./movers.html',             ic('trend'), 'Top Movers'],
         ['./daily-moves.html',        ic('caldays'), 'Daily Moves'],
         ['./indices.html',            ic('gauge'), 'Indices'],
+        ['./chart.html',              ic('trend'), 'Charts'],
         ['./sectors.html',            ic('pie'), 'Sectors'],
         ['./monthly-returns.html',    ic('calendar'), 'Monthly Returns'],
         ['./market-mood.html',        ic('thermo'), 'Market Mood'],
