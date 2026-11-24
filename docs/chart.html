@@ -25,6 +25,16 @@
   .chip{cursor:pointer;display:inline-flex;padding:.15rem .55rem;border-radius:999px;border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--text-muted);background:var(--surface-2)}
   .chip:hover{border-color:var(--accent);color:var(--accent)}
   #expr{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  #exprBox{position:relative}
+  #sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 14px 34px -14px rgba(0,0,0,.45);max-height:min(60vh,380px);overflow-y:auto;padding:4px}
+  #sug.open{display:block}
+  .sug-r{display:flex;align-items:center;gap:.6rem;padding:.42rem .6rem;border-radius:var(--radius);cursor:pointer;font-size:12.5px;color:var(--text)}
+  .sug-r.on{background:var(--surface-2);box-shadow:inset 2px 0 0 var(--accent)}
+  .sug-c{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;flex:0 0 auto;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sug-n{flex:1 1 auto;min-width:0;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sug-k{flex:0 0 auto;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint)}
+  .sug-k.idx{color:var(--accent)}
+  @media (max-width:640px){ .sug-r{flex-wrap:wrap;row-gap:1px} .sug-c{flex:1 1 0;max-width:none} .sug-n{order:3;flex:0 0 100%;font-size:11.5px} }
 </style>
 </head>
 <body>
@@ -38,7 +48,10 @@
       </div>
     </div>
     <form id="exprForm" class="flex items-center gap-2 mt-3">
-      <input id="expr" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. HINDZINC   ·   CANFINHOME/NIFTY   ·   PFC+RECLTD   ·   CNXPSUBANK/NIFTY" class="border border-slate-300 rounded-lg px-3 py-2 text-sm flex-1 min-w-0" />
+      <div id="exprBox" class="flex-1 min-w-0">
+        <input id="expr" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" role="combobox" aria-autocomplete="list" aria-controls="sug" aria-expanded="false" placeholder="Type a name: nif, reliance…   or a ratio: CANFINHOME/NIFTY   ·   PFC+RECLTD" class="border border-slate-300 rounded-lg px-3 py-2 text-sm w-full" />
+        <div id="sug" role="listbox" aria-label="Matching indices and stocks"></div>
+      </div>
       <button class="px-4 py-2 rounded-lg text-sm font-semibold bg-slate-800 text-white">Show</button>
     </form>
     <div id="chips" class="flex flex-wrap items-center gap-1.5 mt-2"></div>
@@ -376,7 +389,123 @@ function renderChips(){
   h+='<span class="text-[11px] text-slate-400'+(h?' ml-2':'')+'">Examples</span>'+EXAMPLES.filter(k=>!r.includes(k)&&!saved.includes(k)).map(k=>mk(k)).join('');
   $('chips').innerHTML=h; $('chips').querySelectorAll('[data-x]').forEach(c=>c.onclick=()=>loadExpr(c.dataset.x));
 }
-$('exprForm').onsubmit=e=>{ e.preventDefault(); loadExpr($('expr').value); };
+$('exprForm').onsubmit=e=>{ e.preventDefault(); sugClose(); loadExpr($('expr').value); };
+
+/* ---------- suggestions: type-ahead for the symbol under the caret --------------------------------
+ * The box holds an EXPRESSION, so only the token the caret sits in is matched and replaced
+ * (CANFINHOME/NIF → pick → CANFINHOME/NIFTY). Indices come from the page's own catalogue (every name
+ * indexNames() can resolve — so a suggestion is always chartable); stocks from search_index.json, the
+ * index behind the site-wide search: rows [sym,name,alive,mcap,ind], pre-sorted live first, mcap desc.
+ * An index is inserted as its short code (NIFTY, CNXMIDCAP) or, without one, its name with the spaces
+ * removed (NIFTYMIDCAP150) — both are what resolveSymbol() accepts. ------------------------------- */
+const SUG_MAX=10, SUG_IDX_MAX=6;
+// best-known first; the rest follow alphabetically
+const IDX_ORDER=['NIFTY 50','NIFTY BANK','NIFTY 500','NIFTY NEXT 50','NIFTY MIDCAP 100','NIFTY SMLCAP 100','NIFTY MIDCAP 150','NIFTY SMLCAP 250',
+  'NIFTY MICROCAP250','NIFTY 100','NIFTY 200','NIFTY IT','NIFTY PSU BANK','NIFTY PVT BANK','NIFTY FIN SERVICE','NIFTY AUTO','NIFTY PHARMA','NIFTY FMCG',
+  'NIFTY METAL','NIFTY ENERGY','NIFTY REALTY','NIFTY INFRA','NIFTY PSE','NIFTY CPSE','NIFTY MEDIA','NIFTY MNC','NIFTY OIL AND GAS','NIFTY HEALTHCARE','INDIA VIX'];
+let SUG_IDX=null, SUG_STK=null, SUG_STK_LOAD=null, SUG_ITEMS=[], SUG_AT=-1, SUG_TOK=null;
+const titleCase=s=>s.toLowerCase().replace(/(^|[\s\-&:])([a-z])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(It|Psu|Pse|Cpse|Mnc|Fmcg|Vix|Ev|Ipo|Esg|Gs|Ew|Sme|Fpi|Mfg|Reits|Lms)\b/g,m=>m.toUpperCase());
+async function sugIndices(){
+  if(SUG_IDX) return SUG_IDX;
+  const names=await indexNames(); const byName={};
+  for(const k in names){ const n=names[k]; (byName[n]||(byName[n]={name:n,keys:new Set(),alias:null})).keys.add(k); }
+  for(const a in IDX_ALIAS){ const o=byName[IDX_ALIAS[a]]; if(o&&(!o.alias||a.length<o.alias.length)) o.alias=a; }
+  const list=Object.values(byName).map(o=>{ const full=MONTHLY_NAME[o.name]||o.name; o.keys.add(norm(full));
+    return { kind:'idx', code:o.alias||norm(o.name), label:titleCase(full), keys:[...o.keys], rank:IDX_ORDER.indexOf(o.name) }; });
+  list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
+  return SUG_IDX=list;
+}
+function sugStocks(){
+  if(SUG_STK) return Promise.resolve(SUG_STK);
+  if(SUG_STK_LOAD) return SUG_STK_LOAD;
+  SUG_STK_LOAD=jget('./search_index.json').then(j=>SUG_STK=(j.s||[]).filter(r=>r&&typeof r[0]==='string').map(r=>({sym:r[0],name:String(r[1]||''),up:String(r[1]||'').toUpperCase(),alive:!!r[2]})))
+    .catch(e=>{ console.warn('search_index.json unavailable',e); SUG_STK_LOAD=null; return SUG_STK=null, []; });
+  return SUG_STK_LOAD;
+}
+// the token the caret is in: [start,end) and its text, exchange prefix (NSE:) left out of the match
+function sugToken(){
+  const el=$('expr'), v=el.value, c=el.selectionStart==null?v.length:el.selectionStart, D=/[\s+*\/()]/;
+  let s=c, e=c; while(s>0&&!D.test(v[s-1])) s--; while(e<v.length&&!D.test(v[e])) e++;
+  let text=v.slice(s,c); const colon=text.lastIndexOf(':'); if(colon>=0){ s+=colon+1; text=text.slice(colon+1); }
+  // the same, but reaching back over spaces to the last operator — so "nifty mid" can match a name typed in words
+  let ws=c; while(ws>0&&!/[+*\/()]/.test(v[ws-1])) ws--; while(ws<c&&/\s/.test(v[ws])) ws++;
+  const wide=v.slice(ws,c);
+  return { s, e, text, wide:(ws<s&&/\s/.test(wide)&&!wide.includes(':'))?{ s:ws, e, text:wide }:null };
+}
+function sugMatch(raw,idx,stk){
+  const q=raw.toUpperCase().trim(), qn=norm(q); if(!q||(!qn&&!/[A-Z0-9]/.test(q))) return [];
+  if(/^[0-9.]+$/.test(q)) return [];                       // a plain number is a number, not a search
+  const i0=[], i1=[];
+  if(qn) for(const x of idx){ let best=-1; for(const k of x.keys){ const p=k.indexOf(qn); if(p===0){ best=0; break; } if(p>0) best=1; }
+    if(best===0) i0.push(x); else if(best===1&&qn.length>=3) i1.push(x); }
+  const s1=[], s2=[], s3=[], s4=[], s5=[];
+  for(const r of stk){ const sym=r.sym;
+    if(sym===q){ (r.alive?s1:s2).push(r); continue; }
+    if(sym.indexOf(q)===0){ s2.push(r); continue; }
+    const ni=r.up.indexOf(q);
+    if(ni===0||(ni>0&&!/[A-Z0-9]/.test(r.up.charAt(ni-1)))){ s3.push(r); continue; }
+    if(q.length>=3&&sym.indexOf(q)>0){ s4.push(r); continue; }
+    if(q.length>=3&&ni>0) s5.push(r);
+    if(s1.length+s2.length+s3.length>60) break; }
+  const stocks=s1.concat(s2,s3,s4,s5).map(r=>({kind:'stk',code:r.sym,label:r.name,alive:r.alive}));
+  // an exact stock symbol first, then indices that START with the query, then stocks, then looser index hits
+  const out=[]; const exact=stocks.length&&stocks[0].code===q&&stocks[0].alive?[stocks.shift()]:[];
+  const idxHead=i0.slice(0,SUG_IDX_MAX), room=SUG_MAX-exact.length-idxHead.length;
+  out.push(...exact,...idxHead,...stocks.slice(0,Math.max(room,0)));
+  for(const x of i0.slice(SUG_IDX_MAX).concat(i1)){ if(out.length>=SUG_MAX) break; out.push(x); }
+  return out.slice(0,SUG_MAX);
+}
+function sugHi(text,q){ const i=q?text.toUpperCase().indexOf(q.toUpperCase()):-1; return i<0?esc(text):esc(text.slice(0,i))+'<b>'+esc(text.slice(i,i+q.length))+'</b>'+esc(text.slice(i+q.length)); }
+function sugRender(){
+  const box=$('sug');
+  if(!SUG_ITEMS.length){ box.classList.remove('open'); box.innerHTML=''; $('expr').setAttribute('aria-expanded','false'); $('expr').removeAttribute('aria-activedescendant'); return; }
+  const q=SUG_TOK?SUG_TOK.text:'';
+  box.innerHTML=SUG_ITEMS.map((x,i)=>'<div class="sug-r'+(i===SUG_AT?' on':'')+'" role="option" id="sug'+i+'" aria-selected="'+(i===SUG_AT)+'" data-i="'+i+'">'+
+    '<span class="sug-c">'+sugHi(x.code,q)+'</span><span class="sug-n">'+sugHi(x.label,q)+'</span>'+
+    '<span class="sug-k'+(x.kind==='idx'?' idx':'')+'">'+(x.kind==='idx'?'Index':(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
+  box.classList.add('open'); $('expr').setAttribute('aria-expanded','true');
+  if(SUG_AT>=0){ $('expr').setAttribute('aria-activedescendant','sug'+SUG_AT); const r=$('sug'+SUG_AT); if(r&&r.scrollIntoView) r.scrollIntoView({block:'nearest'}); }
+  else $('expr').removeAttribute('aria-activedescendant');
+}
+function sugClose(){ SUG_ITEMS=[]; SUG_AT=-1; sugRender(); }
+let SUG_SEQ=0;
+async function sugUpdate(){
+  const seq=++SUG_SEQ, tok=sugToken();
+  if(!tok.text.trim()){ sugClose(); return; }
+  let idx=[], stk=[];
+  try{ idx=await sugIndices(); }catch(e){ console.warn(e); }
+  if(seq!==SUG_SEQ) return;
+  // a name typed in words ("nifty mid") wins when it matches anything; otherwise the single token under the caret
+  const run=list=>{ let t=tok, items=tok.wide?sugMatch(tok.wide.text,idx,list):[]; if(items.length) t=tok.wide; else items=sugMatch(tok.text,idx,list);
+    SUG_TOK=t; SUG_ITEMS=items; SUG_AT=-1; sugRender(); };
+  run(SUG_STK||[]);                                                                     // indices at once…
+  if(!SUG_STK){ stk=await sugStocks(); if(seq!==SUG_SEQ||document.activeElement!==$('expr')) return;   // …stocks when the index arrives
+    run(stk||[]); }
+}
+function sugPick(i){
+  const x=SUG_ITEMS[i], tok=SUG_TOK; if(!x||!tok) return;
+  const el=$('expr'), v=el.value, nv=v.slice(0,tok.s)+x.code+v.slice(tok.e), caret=tok.s+x.code.length;
+  el.value=nv; sugClose(); el.focus(); try{ el.setSelectionRange(caret,caret); }catch(e){}
+  // draw straight away when the box now holds a complete expression (a lone symbol, or A/B with both sides typed)
+  let complete=false; try{ parse(tokenize(nv)); complete=true; }catch(e){}
+  if(complete) loadExpr(nv);
+}
+(function(){ const el=$('expr'), box=$('sug');
+  el.addEventListener('input',sugUpdate);
+  el.addEventListener('focus',()=>{ sugIndices().catch(()=>{}); sugStocks(); });      // warm both lists before the first keystroke
+  el.addEventListener('keydown',e=>{
+    const open=SUG_ITEMS.length>0;
+    if(e.key==='ArrowDown'){ if(!open){ sugUpdate(); return; } e.preventDefault(); SUG_AT=(SUG_AT+1)%SUG_ITEMS.length; sugRender(); }
+    else if(e.key==='ArrowUp'){ if(!open) return; e.preventDefault(); SUG_AT=SUG_AT<=0?SUG_ITEMS.length-1:SUG_AT-1; sugRender(); }
+    else if(e.key==='Enter'){ if(open&&SUG_AT>=0){ e.preventDefault(); sugPick(SUG_AT); } }      // nothing highlighted → the form submits as typed
+    else if(e.key==='Tab'){ if(open&&!e.shiftKey){ e.preventDefault(); sugPick(SUG_AT>=0?SUG_AT:0); } }
+    else if(e.key==='Escape'){ if(open){ e.preventDefault(); e.stopPropagation(); sugClose(); } }
+  });
+  el.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==el) sugClose(); },120));
+  box.addEventListener('pointerdown',e=>{ e.preventDefault(); });                     // keep the caret in the box while tapping a row
+  box.addEventListener('click',e=>{ const r=e.target.closest('[data-i]'); if(r) sugPick(+r.dataset.i); });
+  box.addEventListener('mousemove',e=>{ const r=e.target.closest('[data-i]'); if(r&&+r.dataset.i!==SUG_AT){ SUG_AT=+r.dataset.i; box.querySelectorAll('.sug-r').forEach((n,i)=>n.classList.toggle('on',i===SUG_AT)); } });
+})();
 
 /* ---------- drawings ---------------------------------------------------------------------------
  * A drawing is {id,type,a:{t,p},b:{t,p}?,color,text?}; t = unix seconds, p = price. Points are stored
