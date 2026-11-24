@@ -140,11 +140,15 @@ jobs:
           # into the SAME stk/ dir — runs AFTER build_stock_slices so it never clobbers an NSE slice.
           # 2026-09-06 universe-fill: gives BSE-only listings a working stock page + cards.
           python3 scripts/build_bse_slices.py --out scripts/_sfsplit/stk || echo "(BSE slice build failed — NSE slices still push)"
+          # Full-history open/high/low per stock for the candle view on chart.html (2026-11-24). Its own ohlc/ dir;
+          # a failure removes the partial dir and the page falls back to a line — it never blocks the slices.
+          python3 scripts/build_stock_ohlc.py || { echo "(stock OHLC build failed — slices still push)"; rm -rf scripts/_sfsplit/ohlc; }
           cd scripts/_sfsplit
           git init -q -b main
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add sf_recent_*.bin sf_deep_*.bin sf_meta.json stk_meta.json pe_ttm.json stk
+          if [ -d ohlc ]; then git add ohlc; fi
           git commit -q -m "data $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
           git push -q --force "https://x:${SF_DATA_TOKEN}@github.com/dhruvan246/sf-data.git" main
           echo "force-pushed fresh split data + $(ls stk | wc -l) stock slices to sf-data"

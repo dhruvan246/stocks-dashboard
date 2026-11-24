@@ -17,7 +17,8 @@
   #chartWrap.drawing{cursor:crosshair;touch-action:none}
   #tip{position:absolute;left:8px;top:8px;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.3rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
   .rng,.tool{cursor:pointer;user-select:none}
-  .rng.on,.tool.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent}
+  html[data-theme] .rng.on{color:#fff !important}
+  .rng.on,.tool.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff !important;border-color:transparent}
   .tool{display:inline-flex;align-items:center;gap:.3rem;padding:.3rem .55rem;border-radius:var(--radius);border:1px solid var(--border);font-size:11px;font-weight:700;color:var(--text-muted);background:var(--surface);line-height:1.3}
   .tool:hover{border-color:var(--accent)}
   .tool[disabled]{opacity:.4;cursor:default}
@@ -62,6 +63,7 @@
       <div id="tools" class="flex items-center gap-1 flex-wrap"></div>
       <div class="flex items-center gap-2 flex-wrap">
         <div id="ranges" class="flex items-center gap-1 text-[11px] font-semibold"></div>
+        <span id="candleBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Candles (open, high, low, close) instead of a line">Candles</span>
         <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
       </div>
     </div>
@@ -165,13 +167,26 @@ async function indexNames(){
   for(const k in MONTHLY_NAME) m[norm(MONTHLY_NAME[k])]=k;
   return IDX_NAMES=m;
 }
-// → {label, kind:'index', pts:[{t,v,m}] ascending, dailyFrom:ts|null, note}
+/* Daily open/high/low/close per index from NSE's all-indices file (scripts/build_index_ohlc.py): 2012-02-21 →,
+   or from the day NSE first published that index. It supplies (a) the daily closes for days our own files do
+   not have, and (b) the open/high/low for candles. Our own close files win where both have a day. */
+let IDXO=null;
+const idxOhlcIndex=()=>IDXO||(IDXO=jget('./idx_ohlc/_index.json').then(j=>(j&&j.idx)||{}).catch(()=>({})));
+async function idxBars(name){
+  const m=(await idxOhlcIndex())[name]; if(!m) return null;
+  try{ const b=await jget('./idx_ohlc/'+m.f+'.json'); const out=new Map(); let t=isoToTs(b.d0);
+    for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; out.set(t,[b.o[i],b.h[i],b.l[i],b.c[i]]); }
+    return out; }catch(e){ console.warn('index history unavailable for '+name,e); return null; }
+}
+// → {label, kind:'index', pts:[{t,v,m,o?,h?,l?}] ascending, dailyFrom:ts|null, note}
 async function loadIndex(name){
   const daily=new Map();
   if(DAILY_FILE[name]){ const j=await jget('./'+DAILY_FILE[name]); for(const d in (j.px||{})) if(j.px[d]>0) daily.set(isoToTs(d),j.px[d]); }
   if(name!=='INDIA VIX'){
     try{ const h=await jget('./indices_hist.json'); for(const d in h.daily){ const v=h.daily[d][name]; if(v>0) daily.set(isoToTs(d),v); } }catch(e){}
   }
+  const bars=await idxBars(name);
+  if(bars) for(const [t,b] of bars) if(!daily.has(t)&&b[3]>0) daily.set(t,b[3]/100);
   const dts=[...daily.keys()].sort((a,b)=>a-b);
   const firstDaily=dts.length?dts[0]:Infinity;
   // month-end closes for the months before the daily history starts
@@ -188,7 +203,9 @@ async function loadIndex(name){
       }
     }catch(e){ console.warn('index_monthly.json unavailable',e); }
   }
-  for(const t of dts) pts.push({t,v:daily.get(t),m:0});
+  for(const t of dts){ const p={t,v:daily.get(t),m:0}, b=bars&&bars.get(t);
+    if(b&&b[0]!=null&&b[1]!=null&&b[2]!=null){ p.o=b[0]/100; p.h=b[1]/100; p.l=b[2]/100; }
+    pts.push(p); }
   if(!pts.length) throw new Error('No history for index '+name);
   const nM=pts.filter(p=>p.m).length;
   return { label:name, kind:'index', pts, dailyFrom:dts.length?dts[0]:null, nMonthly:nM };
@@ -211,9 +228,20 @@ async function loadStock(sym){
   if(!r.ok) throw new Error('HTTP '+r.status);
   const S=await r.json(); if(!S||!Array.isArray(S.p)||!S.p.length||typeof S.d0!=='number'||typeof S.ts!=='number') throw new Error('malformed');
   const pts=[]; let off=S.d0, prev=-Infinity; const dd=S.dd||[];
-  for(let i=0;i<S.p.length;i++){ if(i>0) off+=dd[i-1]; if(!(off>prev)) continue; prev=off; const v=S.p[i]/100; if(v>0) pts.push({t:S.ts+off*DAY,v,m:0}); }
+  for(let i=0;i<S.p.length;i++){ if(i>0) off+=dd[i-1]; if(!(off>prev)) continue; prev=off; const v=S.p[i]/100; if(v>0) pts.push({t:S.ts+off*DAY,v,m:0,i}); }
   if(!pts.length) throw new Error('empty');
-  return { label:(S.sym||sym)+(was?' (was '+was+')':''), name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0 };
+  return { label:(S.sym||sym)+(was?' (was '+was+')':''), name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0, file:was?RENAMED[sym]:sym, np:S.p.length };
+}
+/* Open/high/low for a stock: sf-data/ohlc/<SYM>.json (scripts/build_stock_ohlc.py), bar-for-bar with the slice,
+   each stored as the difference from the close in price x100. Fetched only when Candles is on. A missing file or
+   a bar count that differs from the slice (the two were built on different days) means no candles — never a guess. */
+let OHLC_URL='https://dhruvan246.github.io/sf-data/ohlc/';
+async function stockOhlc(op){
+  if(op.ohlcTried) return; op.ohlcTried=true;
+  try{ const r=await fetch(OHLC_URL+slugSym(op.file)+'.json'); if(!r.ok) return; const J=await r.json();
+    if(!J||J.n!==op.np||!Array.isArray(J.o)||J.o.length!==op.np||J.h.length!==op.np||J.l.length!==op.np) return;
+    for(const p of op.pts){ p.o=p.v+J.o[p.i]/100; p.h=p.v+J.h[p.i]/100; p.l=p.v+J.l[p.i]/100; }
+  }catch(e){ op.ohlcTried=false; console.warn('no open/high/low for '+op.label,e); }   // network failure: try again next time
 }
 const OPCACHE={};
 async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
@@ -293,7 +321,7 @@ function evaluate(ast,ops){
   const all=new Set(); for(const s of (dated.length?dated:syms)) for(const p of ops[s].pts) all.add(p.t);
   const dates=[...all].sort((a,b)=>a-b);
   const ptr={}, used={}; for(const s of syms){ ptr[s]=-1; used[s]=-1; }
-  const out=[], val={};
+  const out=[], val={}, vo={}, vh={}, vl={};
   for(const t of dates){ let ok=true;
     for(const s of syms){ const P=ops[s].pts; let i=ptr[s]; while(i+1<P.length&&P[i+1].t<=t) i++; ptr[s]=i;
       if(i<0||t-P[i].t>STALE||(P[i].m&&used[s]===i&&P[i].t!==t)){ ok=false; continue; }
@@ -304,7 +332,20 @@ function evaluate(ast,ops){
     if(!fresh) continue;
     const v=evalNode(ast,val); if(!isFinite(v)) continue;
     for(const s of syms){ const P=ops[s].pts, i=ptr[s]; if(P[i].m) used[s]=i; }
-    out.push({time:t,value:v});
+    const pt={time:t,value:v};
+    /* candle: the expression applied to the opens, the highs and the lows (as TradingView does for A/B and A+B).
+       An operand carried from an earlier day (its holiday) counts as flat at its close, and so does a macro series
+       (USDINR, crude …), for which we hold daily closes only. A day needs real open/high/low from at least one leg. The drawn high/low are
+       widened to contain open and close, because high-of-A / high-of-B is not the true high of the ratio. */
+    let full=true, real=false;
+    for(const s of syms){ const p=ops[s].pts[ptr[s]];
+      if(ops[s].kind==='macro'){ vo[s]=vh[s]=vl[s]=p.v; }                       // closes only: flat at its close (said in the legend)
+      else if(p.o==null) full=false;
+      else if(p.t!==t){ vo[s]=vh[s]=vl[s]=p.v; }
+      else { vo[s]=p.o; vh[s]=p.h; vl[s]=p.l; real=true; } }
+    if(full&&real){ const o=evalNode(ast,vo), a=evalNode(ast,vh), b=evalNode(ast,vl);
+      if(isFinite(o)&&isFinite(a)&&isFinite(b)){ pt.open=o; pt.close=v; pt.high=Math.max(o,v,a,b); pt.low=Math.min(o,v,a,b); } }
+    out.push(pt);
   }
   return out;
 }
@@ -312,6 +353,9 @@ function evaluate(ast,ops){
 /* ---------- chart ------------------------------------------------------------------------------ */
 let CH=null;            // {chart, series, prim}
 let DATA=[], TIMES=[], KEY='', RANGE='Max', LOG=false;
+const LS_MODE='sw_chart_mode_v1'; let MODE=lsGet(LS_MODE,'line')==='candle'?'candle':'line';   // what the user asked for
+let FULLN=0, CNOTE='';      // bars before the candle filter; why candles are (partly) unavailable
+const UP='#16a34a', DN='#dc2626';
 const cssVar=(n,fb)=>{ const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v||fb; };
 const isDark=()=>document.documentElement.getAttribute('data-theme')==='dark';
 function alpha(c,a){ const m=/^#([0-9a-f]{6})$/i.exec(c||''); if(!m) return c; const n=parseInt(m[1],16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
@@ -338,24 +382,34 @@ function ensureChart(){
     crosshair:Object.assign({ mode:LC.CrosshairMode.Normal }, t.crosshair),
     handleScroll:{ vertTouchDrag:false },
     localization:{ locale:'en-IN', priceFormatter:fmtVal } });
-  const series=chart.addSeries(LC.AreaSeries,Object.assign({ lineWidth:2, priceLineVisible:true, lastValueVisible:true }, seriesOpts()));
   const prim={ _req:null,
     attached(p){ this._req=p.requestUpdate; }, detached(){ this._req=null; }, updateAllViews(){},
     paneViews(){ return [VIEW]; } };
-  series.attachPrimitive(prim);
   chart.subscribeCrosshairMove(onCrosshair);
-  CH={chart,series,prim};
+  CH={chart,series:null,prim,kind:''};
+  makeSeries('line');
   return CH;
+}
+// one price series at a time: an area line, or candles. The drawing layer is re-attached to whichever is live.
+function makeSeries(kind){
+  const LC=window.LightweightCharts; if(!CH||CH.kind===kind) return;
+  if(CH.series){ try{ CH.series.detachPrimitive(CH.prim); }catch(e){} CH.chart.removeSeries(CH.series); }
+  CH.series= kind==='candle'
+    ? CH.chart.addSeries(LC.CandlestickSeries,{ upColor:UP, downColor:DN, borderVisible:false, wickUpColor:UP, wickDownColor:DN, priceLineVisible:true, lastValueVisible:true })
+    : CH.chart.addSeries(LC.AreaSeries,Object.assign({ lineWidth:2, priceLineVisible:true, lastValueVisible:true }, seriesOpts()));
+  CH.series.attachPrimitive(CH.prim); CH.kind=kind;
 }
 const VIEW={ zOrder(){ return 'top'; }, renderer(){ return { draw(target){ target.useMediaCoordinateSpace(s=>{ try{ paint(s.context,s.mediaSize); }catch(e){ console.error(e); } }); } }; } };
 const redraw=()=>{ if(CH&&CH.prim._req) CH.prim._req(); };
-new MutationObserver(()=>{ if(!CH) return; try{ CH.chart.applyOptions(themeOpts()); CH.series.applyOptions(seriesOpts()); redraw(); }catch(e){ console.error(e); } })
+new MutationObserver(()=>{ if(!CH) return; try{ CH.chart.applyOptions(themeOpts()); if(CH.kind==='line') CH.series.applyOptions(seriesOpts()); redraw(); }catch(e){ console.error(e); } })
   .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
 function onCrosshair(p){
   const tip=$('tip'); if(!CH||!p||p.time==null||!p.point){ tip.style.display='none'; return; }
-  const d=p.seriesData&&p.seriesData.get(CH.series); if(!d||d.value==null){ tip.style.display='none'; return; }
-  tip.innerHTML='<b>'+fmtDate(p.time)+'</b> · '+esc(fmtVal(d.value)); tip.style.display='block';
+  const d=p.seriesData&&p.seriesData.get(CH.series); if(!d||(d.value==null&&d.close==null)){ tip.style.display='none'; return; }
+  tip.innerHTML='<b>'+fmtDate(p.time)+'</b> · '+(d.close!=null&&d.open!=null
+    ? 'O '+esc(fmtVal(d.open))+' · H '+esc(fmtVal(d.high))+' · L '+esc(fmtVal(d.low))+' · C '+esc(fmtVal(d.close))
+    : esc(fmtVal(d.value))); tip.style.display='block';
 }
 function rangeDays(r){ return {'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'10Y':3650,'Max':1e9}[r]||1e9; }
 function applyRange(){ if(!CH||!DATA.length) return; const ts=CH.chart.timeScale();
@@ -366,6 +420,8 @@ function renderRanges(){
   $('ranges').innerHTML=['6M','1Y','3Y','5Y','10Y','Max'].map(r=>`<span class="rng ${r===RANGE?'on':'text-slate-500'} px-2 py-1 rounded-md border border-slate-200" data-r="${r}">${r}</span>`).join('');
   $('ranges').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{ RANGE=b.dataset.r; renderRanges(); applyRange(); });
 }
+$('candleBtn').classList.toggle('on',MODE==='candle');
+$('candleBtn').onclick=()=>{ MODE=MODE==='candle'?'line':'candle'; lsSet(LS_MODE,MODE); $('candleBtn').classList.toggle('on',MODE==='candle'); if(KEY) loadExpr(KEY,false); };
 $('logBtn').onclick=()=>{ LOG=!LOG; $('logBtn').classList.toggle('on',LOG); applyLog(); };
 function applyLog(){ if(!CH) return; const canLog=DATA.every(d=>d.value>0);
   CH.chart.priceScale('right').applyOptions({ mode:(LOG&&canLog)?window.LightweightCharts.PriceScaleMode.Logarithmic:window.LightweightCharts.PriceScaleMode.Normal }); }
@@ -383,12 +439,22 @@ async function loadExpr(raw,push){
     const r=await resolveTokens(tokenize(src)); if(seq!==LOADSEQ) return;
     ast=parse(r.toks); ops={};
     (function walk(n){ if(!n) return; if(n.sym) ops[n.sym]=r.ops[n.sym]; walk(n.l); walk(n.r); })(ast);
-    const data=evaluate(ast,ops);
+    if(MODE==='candle'){ await Promise.all(Object.values(ops).filter(o=>o.kind==='stock').map(stockOhlc)); if(seq!==LOADSEQ) return; }
+    let data=evaluate(ast,ops);
     if(!data.length) throw new Error('These symbols have no dates in common, so there is nothing to draw.');
+    FULLN=data.length; CNOTE='';
+    if(MODE==='candle'){
+      const c=data.filter(d=>d.open!=null), L=Object.values(ops);
+      if(!c.length){ const mac=L.filter(o=>o.kind==='macro').map(o=>o.label);
+        CNOTE='Candles are not available for this chart — showing the line. '+(mac.length?'There is no open/high/low for '+mac.join(', ')+' (daily closes only).':'No open/high/low history is published for '+L.filter(o=>!o.pts.some(p=>p.o!=null)).map(o=>o.label).join(', ')+'.'); }
+      else { const mac=L.filter(o=>o.kind==='macro').map(o=>o.label);
+        if(mac.length) CNOTE=mac.join(', ')+': daily closes only, so each candle uses that day\'s close for it — the open, high and low come from the other leg. ';
+        if(c.length<data.length) CNOTE+='Candles start '+fmtDate(c[0].time)+': '+(data.length-c.length).toLocaleString('en-IN')+' other bars have a close but no open/high/low. Switch Candles off for the full history.'; data=c; }
+    }
     KEY=show(ast); DATA=data; TIMES=data.map(d=>d.time);
   }catch(e){ if(seq!==LOADSEQ) return; DATA=[]; TIMES=[]; KEY=''; SEL=null; DRAFT=null; if(CH){ CH.series.setData([]); redraw(); } showEmpty(e&&e.message||String(e)); renderTools(); return; }
   $('chartErr')&&$('chartErr').remove();
-  const {chart,series}=ensureChart();
+  ensureChart(); makeSeries(DATA[0].open!=null&&MODE==='candle'?'candle':'line'); const series=CH.series;
   PREC=precisionFor(DATA[DATA.length-1].value); ALLPOS=DATA.every(d=>d.value>0);
   series.applyOptions({ priceFormat:{type:'price',precision:PREC,minMove:Math.pow(10,-PREC)} });
   series.setData(DATA); applyLog(); applyRange();
@@ -406,11 +472,12 @@ function renderLegend(ops){
   const rows=[];
   rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
   for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
-    if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily close, '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
+    if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily '+(CH&&CH.kind==='candle'?'open/high/low/close':'close')+', '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
     else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
     else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
     rows.push('<div>'+t+'</div>'); }
   if(Object.values(ops).some(o=>o.nMonthly&&o.dailyFrom!=null&&DATA[0].time<o.dailyFrom||o.nMonthly&&o.dailyFrom==null)) rows.push('<div class="text-amber-600">Part of this chart is monthly: the dashboard holds only month-end closes for that index before its daily history starts.</div>');
+  if(CNOTE) rows.push('<div class="text-amber-600">'+esc(CNOTE)+'</div>');
   setLegend(rows.join(''));
 }
 function rememberRecent(k){ let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[]; r=[k].concat(r.filter(x=>x!==k)).slice(0,12); lsSet(LS_RECENT,r); }

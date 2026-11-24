@@ -20,6 +20,7 @@ on:
   push:
     paths:
       - "scripts/fetch_index_table.py"
+      - "scripts/build_index_ohlc.py"
       - ".github/workflows/refresh-indices.yml"
 
 permissions:
@@ -46,6 +47,16 @@ jobs:
       - name: Build the indices table
         run: python3 -X utf8 scripts/fetch_index_table.py
 
+      # Daily open/high/low/close of every index for the candle view on docs/chart.html (docs/idx_ohlc/).
+      # Appends the latest days from NSE's all-indices file. Never blocks the table: on any failure the
+      # folder is put back as checked out and the next run tries again (it re-reads the last 10 days).
+      - name: Append index open/high/low/close (candles)
+        run: |
+          python3 -X utf8 scripts/build_index_ohlc.py --update || {
+            echo "::warning::index OHLC update failed — docs/idx_ohlc left as it was"
+            git checkout -- docs/idx_ohlc; git clean -fdq docs/idx_ohlc
+          }
+
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
@@ -59,12 +70,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp docs/indices.json      /tmp/indices.json
           cp docs/indices_hist.json /tmp/indices_hist.json
+          rm -rf /tmp/idx_ohlc; cp -r docs/idx_ohlc /tmp/idx_ohlc
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/indices.json      docs/indices.json
             cp /tmp/indices_hist.json docs/indices_hist.json
-            git add docs/indices.json docs/indices_hist.json
+            rm -rf docs/idx_ohlc; cp -r /tmp/idx_ohlc docs/idx_ohlc
+            git add docs/indices.json docs/indices_hist.json docs/idx_ohlc
             if git diff --cached --quiet; then
               echo "Feeds unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"
