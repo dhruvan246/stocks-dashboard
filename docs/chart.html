@@ -80,8 +80,9 @@
     <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
     <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
     <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line and Text need one click. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it.</div>
-    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX, SPX, NASDAQ, NDX, DJI, DAX, CAC40, FTSE, AEX, SMI, NIKKEI, HSI, KOSPI — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>CNX500/SPX</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted. Not available: MCX and other futures, BSE sector indices.</div>
-    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, futures, intraday prices.</div>
+    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX, SPX, NASDAQ, NDX, DJI, DAX, CAC40, FTSE, AEX, SMI, NIKKEI, HSI, KOSPI — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>CNX500/SPX</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted.</div>
+    <div><b>BSE indices and MCX:</b> <code>BSE:METAL</code>, <code>BSE:MIDCAP</code>, <code>BSE:SMLCAP</code>, <code>BSE:POWER</code>, <code>BSE:PSU</code> · MCX futures in rupees, front month <code>1!</code> and second month <code>2!</code>: <code>MCX:COPPER1!</code>, <code>MCX:ALUMINIUM1!</code>, <code>MCX:CRUDEOIL1!</code>, <code>MCX:NATURALGAS2!</code>, and the MCX copper index <code>MCX:MCXCOPRDEX</code>. These come from the BSE and MCX websites, which only answer a browser, so they are refreshed by hand and not every night — the line under the chart shows the last date. A futures series is the contracts joined end to end without adjustment, so the price steps on each roll day; a day the contract did not trade has no bar.</div>
+    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, GIFT Nifty, India money supply, intraday prices.</div>
   </div>
 </main>
 
@@ -152,6 +153,26 @@ const RENAMED={ CADILAHC:'ZYDUSLIFE', GUJGASLTD:'GUJENERGY', GUJGAS:'GUJENERGY',
   GMM:'GMMPFAUDLR', RAJGLOWIR:'RAJRATAN', RSYSTEMINT:'RSYSTEMS' };
 // TradingView BSE: codes that are BSE indices, not stocks (METAL and MIDCAP are also dead NSE tickers — never load those for a BSE: code)
 const BSE_INDEX={ METAL:'BSE Metal index', MIDCAP:'BSE Midcap index', SMLCAP:'BSE Smallcap index', POWER:'BSE Power index', PSU:'BSE PSU index' };
+/* Extra series (scripts/build_xseries.py → ./xseries/): BSE sector indices, MCX and NSE continuous futures and one
+   delisted BSE-only stock. Their sources answer only a real browser, so no nightly job refreshes them — the legend
+   shows each one's last date. Codes: BSE:METAL, MCX:COPPER1!, NSE:BANKNIFTY1! … plus the aliases in _index.json. */
+let XSER=null;
+const xIndex=()=>XSER||(XSER=jget('./xseries/_index.json').then(j=>{ const m={}, S=(j&&j.ser)||{};
+  for(const c in S){ const e=Object.assign({code:c},S[c]); m[c]=e; }
+  for(const c in S) for(const a of (S[c].alias||[])) if(!m[a]) m[a]=m[c];
+  return m; }).catch(e=>{ console.warn('xseries index unavailable',e); XSER=null; return {}; }));
+async function loadX(e){
+  const b=await jget('./xseries/'+e.f+'.json'); const pts=[]; let t=isoToTs(b.d0);
+  for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; if(!(b.c[i]>0)) continue; const p={t,v:b.c[i]/100,m:0};
+    if(b.o[i]!=null&&b.h[i]!=null&&b.l[i]!=null){ p.o=b.o[i]/100; p.h=b.h[i]/100; p.l=b.l[i]/100; } pts.push(p); }
+  if(!pts.length) throw new Error('empty');
+  return { label:e.label, kind:'x', tag:e.kind||'', src:e.src||'', unit:e.unit||'', note:e.note||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+function xMissing(tok){ const i=tok.indexOf(':'), ex=tok.slice(0,i), sym=tok.slice(i+1);
+  if(ex==='BSE'&&BSE_INDEX[sym]) return BSE_INDEX[sym]+' ("'+tok+'") is not available here yet. Sensex is: SENSEX.';
+  if(ex==='NSEIX') return '"'+tok+'" is a GIFT City contract; its prices are not available here. NSE\'s own front-month futures are NSE:NIFTY1! and NSE:BANKNIFTY1!.';
+  if(!/[0-9]!$/.test(sym)) return '"'+tok+'" is not available here. MCX codes that are: MCX:COPPER1!, MCX:ALUMINIUM1!, MCX:CRUDEOIL1!, MCX:NATURALGAS1! (and 2!), MCX:MCXCOPRDEX.';
+  return '"'+tok+'" is a futures contract that is not available here.'+(ex==='NSE'?' Use the index itself, e.g. '+sym.replace(/[0-9]!$/,'')+'.':''); }
 async function loadMacro(code){
   const [key,label,mul]=MACRO[code]; const j=await jget('./macro.json'); const S=(j.series||{})[key]; const d=S&&S.d;
   if(!d||!Object.keys(d).length) throw new Error(label+' is not in the data yet.');
@@ -250,8 +271,10 @@ async function stockOhlc(op){
 const OPCACHE={};
 async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
   if(OPCACHE[tok]) return OPCACHE[tok];
+  const X=await xIndex(), x=MACRO[tok]?null:X[tok];
+  if(!x&&tok.includes(':')){ const e=new Error(xMissing(tok)); e.keep=true; throw e; }
   const names=await indexNames(); const idx=names[norm(tok)];
-  const p=MACRO[tok] ? loadMacro(tok) : idx ? loadIndex(idx) : loadStock(tok);
+  const p=MACRO[tok] ? loadMacro(tok) : x ? loadX(x) : idx ? loadIndex(idx) : loadStock(tok);
   OPCACHE[tok]=p; p.catch(()=>{ delete OPCACHE[tok]; });
   return p;
 }
@@ -271,9 +294,9 @@ function tokenize(src){
       while(j<s.length&&(/[A-Z0-9&_.:!]/.test(s[j])||(s[j]==='-'&&j+1<s.length&&/[A-Z0-9]/.test(s[j+1])&&/[A-Z0-9]/.test(s[j-1])))) j++;
       let sym=s.slice(i,j); const colon=sym.lastIndexOf(':');
       if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
-        if(ex==='BSE'&&BSE_INDEX[sym]) throw new Error(BSE_INDEX[sym]+' ("BSE:'+sym+'") is not available here yet. Sensex is: SENSEX.');
-        if(/[0-9]!$/.test(sym)&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is a futures contract; futures prices are not available here.'+(ex==='NSE'||ex==='NSEIX'?' Use the index itself, e.g. '+sym.replace(/[0-9]!$/,'')+'.':''));
-        if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
+        if(ex==='BSE'&&BSE_INDEX[sym]) sym='BSE:'+sym;                          // a BSE index, never the dead NSE ticker of the same name
+        else if((/[0-9]!$/.test(sym)||ex==='MCX')&&!MACRO[sym]) sym=ex+':'+sym; // a futures contract or an MCX code: resolved in ./xseries or refused by name
+        else if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
       out.push({k:'sym',v:sym}); i=j; continue; }
     throw new Error('Unexpected character "'+c+'"');
   }
@@ -285,6 +308,7 @@ async function resolveTokens(toks){
   for(const t of toks){
     if(t.k!=='sym'){ out.push(t); continue; }
     try{ ops[t.v]=await resolveSymbol(t.v); out.push(t); continue; }catch(e){
+      if(e&&e.keep) throw e;
       if(!t.v.includes('-')) throw new Error('No price data for "'+t.v+'". Check the symbol.');
     }
     const parts=t.v.split('-');
@@ -357,6 +381,7 @@ function evaluate(ast,ops,fill){
     for(const s of syms){ const p=ops[s].pts[ptr[s]];
       if(fill&&(p.o==null||p.t!==t)){ vo[s]=vh[s]=vl[s]=p.v; real=true; }
       else if(ops[s].kind==='macro'){ vo[s]=vh[s]=vl[s]=p.v; }                       // closes only: flat at its close (said in the legend)
+      else if(ops[s].kind==='x'&&p.o==null){ vo[s]=vh[s]=vl[s]=p.v; real=true; }      // BSE/MCX day with a close only: drawn at its close (said in the legend) — never dropped, the gaps sit inside the history
       else if(p.o==null) full=false;
       else if(p.t!==t){ vo[s]=vh[s]=vl[s]=p.v; }
       else { vo[s]=p.o; vh[s]=p.h; vl[s]=p.l; real=true; } }
@@ -480,6 +505,8 @@ async function loadExpr(raw,push){
         CNOTE='Candles are not available for this chart — showing the line. '+(mac.length?'There is no open/high/low for '+mac.join(', ')+' (daily closes only).':'No open/high/low history is published for '+L.filter(o=>!o.pts.some(p=>p.o!=null)).map(o=>o.label).join(', ')+'.'); }
       else { const mac=TF==='D'?L.filter(o=>o.kind==='macro').map(o=>o.label):[];
         if(mac.length) CNOTE=mac.join(', ')+': daily closes only, so each candle uses that day\'s close for it — the open, high and low come from the other leg. ';
+        for(const o of L){ if(o.kind!=='x') continue; const n=o.pts.filter(p=>p.o==null).length;
+          if(n) CNOTE+=o.label+': '+n.toLocaleString('en-IN')+' of its '+o.pts.length.toLocaleString('en-IN')+' days have a close only (the source published no open/high/low); those days are drawn at the close. '; }
         if(c.length<data.length) CNOTE+='Candles start '+fmtDate(c[0].time)+': '+(data.length-c.length).toLocaleString('en-IN')+' other bars have a close but no open/high/low. Switch Candles off for the full history.'; data=c; }
     }
     KEY=show(ast); DATA=data; TIMES=data.map(d=>d.time);
@@ -504,6 +531,7 @@ function renderLegend(ops){
   rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' '+({D:'daily',W:'weekly',M:'monthly'})[TF]+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
   for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
     if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily '+(CH&&CH.kind==='candle'?'open/high/low/close':'close')+', '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
+    else if(o.kind==='x'){ t+=esc(o.label)+' ('+esc(o.src)+(o.unit?', '+esc(o.unit):'')+', daily '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+'; not refreshed automatically)'+(o.note?' · '+esc(o.note):''); }
     else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
     else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
     rows.push('<div>'+t+'</div>'); }
@@ -549,6 +577,9 @@ async function sugIndices(){
   list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
   const seen={}; for(const c in MACRO){ const [k0,label,mul]=MACRO[c]; const key=k0+'|'+(mul||1); if(seen[key]){ seen[key].keys.push(c); continue; }
     list.push(seen[key]={ kind:'mac', code:c, label, keys:[c,norm(label)].concat(label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)), rank:-1 }); }
+  const X=await xIndex(), xs={}; for(const c in X){ const e=X[c]; if(xs[e.code]) continue; const a=(e.alias||[])[0]||e.code;
+    list.push(xs[e.code]={ kind:'x', tag:e.kind||'Index', code:a, label:e.label, rank:-1,
+      keys:[norm(a),norm(e.code),norm(e.label)].concat(e.label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)) }); }
   return SUG_IDX=list;
 }
 function sugStocks(){
@@ -598,7 +629,7 @@ function sugRender(){
   const q=SUG_TOK?SUG_TOK.text:'';
   box.innerHTML=SUG_ITEMS.map((x,i)=>'<div class="sug-r'+(i===SUG_AT?' on':'')+'" role="option" id="sug'+i+'" aria-selected="'+(i===SUG_AT)+'" data-i="'+i+'">'+
     '<span class="sug-c">'+sugHi(x.code,q)+'</span><span class="sug-n">'+sugHi(x.label,q)+'</span>'+
-    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
+    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':x.kind==='x'?esc(x.tag):(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
   box.classList.add('open'); $('expr').setAttribute('aria-expanded','true');
   if(SUG_AT>=0){ $('expr').setAttribute('aria-activedescendant','sug'+SUG_AT); const r=$('sug'+SUG_AT); if(r&&r.scrollIntoView) r.scrollIntoView({block:'nearest'}); }
   else $('expr').removeAttribute('aria-activedescendant');

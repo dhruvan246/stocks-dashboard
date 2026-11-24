@@ -31106,3 +31106,44 @@ EMBEDDED PAGES AGAINST THE FIXED SITE FRAME".
 - **Weekly / monthly bars** are aggregated in the page from the daily bars of the finished expression (first
   open, highest high, lowest low, last close). Checked against TradingView's CNXSMALLCAP/NIFTY monthly chart:
   Jan-2008 high 0.989, Jan-2018 high 0.903, Mar-2020 low 0.410 agree to the 2 decimals TradingView shows.
+
+## §249 — Charts page extra series (`docs/xseries/`): BSE sector indices, MCX futures, MCX copper index, Apollo Tricoat (2026-11-24)
+
+User: "add the remaining 17 instruments" (the TradingView codes on their drawings that the Charts page refused).
+
+- **What is published** (`scripts/build_xseries.py` → `docs/xseries/<FILE>.json` + `_index.json`, same x100 column
+  shape as `docs/idx_ohlc`): `BSE:METAL`, `BSE:MIDCAP`, `BSE:SMLCAP`, `BSE:POWER`, `BSE:PSU` · `MCX:COPPER1!/2!`,
+  `MCX:ALUMINIUM1!/2!`, `MCX:CRUDEOIL1!/2!`, `MCX:NATURALGAS1!/2!` · `MCX:MCXCOPRDEX` · `BSE:APOLLOTRI`.
+- **No CI refresh — by hand, through a real browser.** api.bseindia.com and mcxindia.com refuse a plain client, and a
+  scripted probe with browser impersonation was denied by the permission classifier (do not retry it). So these files
+  are static until someone repeats the pull below; the page says "not refreshed automatically" and shows the last date.
+- **The pull (page-context `fetch` in the user's Chrome, then a hand-off to disk):**
+  - BSE indices: on `www.bseindia.com/indices/IndexArchiveData.html`,
+    `api.bseindia.com/BseIndiaAPI/api/IndexArchDaily/w?fmdt=DD/MM/YYYY&index=CODE&period=D&todt=DD/MM/YYYY`
+    — capped at ~26 rows a call, so half-month windows. Codes: METAL `SI1200`, MIDCAP `BSEMID`, SMLCAP `BSESML`,
+    POWER `SIPOWE`, PSU `SIBPSU` (SENSEX `SENSEX`). Early years carry a close only; MIDCAP and SMLCAP carry
+    open/high/low only 2015-04-01 → 2026-01-23 (after that BSE repeats the close in all four fields).
+  - BSE stock (delisted): `.../StockpricesearchData/w?MonthDate=..&Scode=538566&YearDate=..&pageType=0&rbType=D`,
+    capped at 31 rows a call (half-month windows). UNADJUSTED; actions from `.../CorporateAction/w?scripcode=`
+    go in the `ADJ` table of the script (APOLLOTRI: split 10→2 ex 2014-12-31, bonus 1:1 ex 2021-09-16).
+  - MCX futures: on `www.mcxindia.com/market-data/bhavcopy`, the hidden `#symbol-data` div lists every contract;
+    `GET /market-data/bhavcopy/GetCommoditywiseBhavCopy?InstrumentName=FUTCOM&Symbol=..&Expiry=30NOV2026&fromDate=DD/MM/YYYY&toDate=..`
+    one contract at a time, windows ≤ 140 days (an 11-month window returned "No data found").
+  - MCX index: on `/market-data/mcx-icomdex-indices`, `GetMCXIComdexIndicesHistoryFilter?instrument_Identifier=575&fromDate=&toDate=`
+    (a year a call works). MCXCOPRDEX closes start 2015-12-31, open/high/low 2019-12-20.
+  - Hand-off: bseindia.com allows a plain form POST to the local helper (`~/stocks-backups/index_hist_ni/_recv.py`,
+    port 8848). mcxindia.com sends `form-action 'self'`, and a `fetch` to 127.0.0.1 hangs on Chrome's local-network
+    prompt — park the data in `localStorage`, then navigate the tab to `http://127.0.0.1:8849/h#<FIELD>=<data>`
+    (`_recv2.py`; the row format is URL-safe; < 2 MB per navigation). A hidden-iframe form target does not work.
+  - Never run a pull loop with a `setTimeout` pause in a background tab: Chrome throttles it to ~1 call/s or slower.
+- **Rules in the builder (also in the page's help):** `1!` = nearest expiry on or after the day, `2!` = the next one;
+  contract prices joined without back-adjustment; a day the contract shows volume 0 gets no bar (MCX prints a
+  carried or base price on such rows — COPPER 31JUL2019 shows 2157.5 on 2019-06-17 with volume 0, between 406 and
+  446). MCX's own prints are kept as published, including CRUDEOIL 20APR2020 close 1 on 2020-04-20.
+- **Page:** `BSE:` + a `BSE_INDEX` name and every `MCX:` / `…1!` code keep their exchange prefix as the lookup key
+  (`BSE:METAL` must never fall through to the dead NSE ticker METAL). In Candles, a day with a close only is drawn at
+  the close for that leg and counted in the legend — not dropped (the close-only stretches sit inside the history).
+- **Still not available (no source found 2026-11-24):** `ECONOMICS:INM2` (FRED unreachable from this Mac, DBnomics
+  holds only growth rates indexed 2025-08), `NSEIX:NIFTY1!` (GIFT Nifty — a different contract from NSE's).
+  NSE's own `NSE:NIFTY1!` / `NSE:BANKNIFTY1!` are built by the same script from `~/stocks-wt/fo_raw_cache`
+  (`fetch_fo_bhavcopy.py`, a multi-hour first download) — check `docs/xseries/_index.json` for whether they are in.

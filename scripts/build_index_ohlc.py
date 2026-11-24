@@ -102,7 +102,7 @@ def write(series, joins):
         if b != "_index" and b not in seen:
             os.remove(f)
     with open(os.path.join(OUT, "_index.json"), "w", encoding="utf-8") as fh:
-        json.dump({"sv": SCHEMA, "updated": dt.datetime.now().strftime("%Y-%m-%d %H:%M IST"), "idx": idx, "joins": joins},
+        json.dump({"sv": SCHEMA, "updated": dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).strftime("%Y-%m-%d %H:%M IST"), "idx": idx, "joins": joins},
                   fh, separators=(",", ":"))
     return idx
 
