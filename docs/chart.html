@@ -144,7 +144,7 @@ const MACRO={ USDINR:['usdinr','USD/INR'], DXY:['dxy','US dollar index (DXY)'], 
 /* Old tickers → the symbol that carries their price history today. Used only when the old ticker has no file of its own.
    Each pair was checked on 2026-11-24: NSE renames from scripts/_rename_map.json plus a continuous slice under the new symbol;
    old BSE ids (GMM, RAJGLOWIR, RSYSTEMINT) from BSE's own page address for that scrip code; CEINSYSTECH from the NSE filing prefix. */
-const RENAMED={ CADILAHC:'ZYDUSLIFE', GUJGASLTD:'GUJENERGY', HEG:'HEGAM', TATAMOTORS:'TMPV', DHARAMSI:'DMCC', CEINSYSTECH:'CEINSYS',
+const RENAMED={ CADILAHC:'ZYDUSLIFE', GUJGASLTD:'GUJENERGY', GUJGAS:'GUJENERGY', BHAGIL:'BHAGCHEM', HEG:'HEGAM', TATAMOTORS:'TMPV', DHARAMSI:'DMCC', CEINSYSTECH:'CEINSYS',
   GMM:'GMMPFAUDLR', RAJGLOWIR:'RAJRATAN', RSYSTEMINT:'RSYSTEMS' };
 // TradingView BSE: codes that are BSE indices, not stocks (METAL and MIDCAP are also dead NSE tickers — never load those for a BSE: code)
 const BSE_INDEX={ METAL:'BSE Metal index', MIDCAP:'BSE Midcap index', SMLCAP:'BSE Smallcap index', POWER:'BSE Power index', PSU:'BSE PSU index' };
