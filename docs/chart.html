@@ -103,7 +103,8 @@
     <div><b>Chart types:</b> Line, Candles, Bars (open-high-low-close) and Heikin Ashi (smoothed candles: the bars drawn are averages, the numbers at the top left stay the real prices). <b>Indicators:</b> up to three moving averages (simple or exponential, any length), Bollinger Bands, RSI and MACD, all worked out on the closes of the bars on screen (daily, weekly or monthly). Volume is offered for a single stock on daily bars and covers the last 400 sessions only.</div>
     <div><b>Compare:</b> open a chart, type another symbol or ratio in the box and press Compare. Both are then drawn as % change from the first bar on screen (up to four at once); remove one under the chart. The <b>%</b> button puts a single chart on the same percent scale.</div>
     <div><b>Keys:</b> <code>+</code> / <code>-</code> zoom, <code>&larr;</code> / <code>&rarr;</code> move, <code>/</code> jump to the symbol box, <code>F</code> full screen, <code>Ctrl+Z</code> / <code>Ctrl+Y</code> undo and redo a drawing, <code>Esc</code> drop the tool, <code>Delete</code> remove the selected drawing.</div>
-    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX, SPX, NASDAQ, NDX, DJI, DAX, CAC40, FTSE, AEX, SMI, NIKKEI, HSI, KOSPI — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>CNX500/SPX</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted.</div>
+    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>NIFTY/USOIL</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted.</div>
+    <div><b>World indices</b> (daily open, high, low and close, whole history, refreshed every night from Yahoo): <b>Americas</b> SPX, NASDAQ, NDX, DJI, RUT, NYA, VIX (US), TSX, IBOV, MEXBOL · <b>Europe</b> FTSE, FTSE250, DAX, MDAX, CAC40, STOXX50, STOXX600, AEX, SMI, IBEX, FTSEMIB, BEL20, ATX, PSI, ISEQ, OMXS30, OMXC25, OMXH25, OSEBX, ATHEX, BIST100 · <b>Asia-Pacific</b> NIKKEI, HSI, HSCEI, SHCOMP, SZCOMP, KOSPI, KOSDAQ, TAIEX, STI, KLCI, JCI, ASX200, ALLORDS, NZX50 · <b>Middle East and Africa</b> TA125, TA35, JSE, JSE40. Typing a country (japan, korea, germany) finds its index, and <code>NIFTY/SPX</code> or <code>CNX500/NIKKEI</code> work. They are in their own currency and points. On a ratio with an Indian index each day uses the world index bar of the same calendar date. An Asian index can be a day behind until its close is published. Not available (no daily history at the source): Argentina, Chile, Poland, Hungary, Russia, China CSI 300, Thailand, Philippines, Vietnam, Pakistan, Sri Lanka, Saudi Arabia, Egypt, Dubai, Qatar.</div>
     <div><b>BSE indices and MCX:</b> <code>BSE:METAL</code>, <code>BSE:MIDCAP</code>, <code>BSE:SMLCAP</code>, <code>BSE:POWER</code>, <code>BSE:PSU</code> · MCX futures in rupees, front month <code>1!</code> and second month <code>2!</code>: <code>MCX:COPPER1!</code>, <code>MCX:ALUMINIUM1!</code>, <code>MCX:CRUDEOIL1!</code>, <code>MCX:NATURALGAS2!</code>, and the MCX copper index <code>MCX:MCXCOPRDEX</code> · NSE index futures, front month: <code>NSE:NIFTY1!</code>, <code>NSE:BANKNIFTY1!</code> (from NSE's daily F&amp;O file). These come from the BSE and MCX websites, which only answer a browser, so they are refreshed by hand and not every night — the line under the chart shows the last date. A futures series is the contracts joined end to end without adjustment, so the price steps on each roll day; a day the contract did not trade has no bar.</div>
     <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, GIFT Nifty, India money supply, intraday prices.</div>
   </div>
@@ -190,6 +191,22 @@ async function loadX(e){
     if(b.o[i]!=null&&b.h[i]!=null&&b.l[i]!=null){ p.o=b.o[i]/100; p.h=b.h[i]/100; p.l=b.l[i]/100; } pts.push(p); }
   if(!pts.length) throw new Error('empty');
   return { label:e.label, kind:'x', tag:e.kind||'', src:e.src||'', unit:e.unit||'', note:e.note||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
+/* World indices (./world, built by scripts/fetch_world_indices.py every night from Yahoo's daily chart feed): full daily
+   open/high/low/close history of each country's main index. Same file shape as ./xseries. They resolve BEFORE the MACRO
+   table, so SPX, NIKKEI, DAX … get their whole history and real candles; if ./world cannot be read the MACRO closes still work. */
+let WSER=null, WMAP={};
+const wIndex=()=>WSER||(WSER=jget('./world/_index.json').then(j=>{ const m={}, S=(j&&j.ser)||{};
+  for(const c in S) m[c]=Object.assign({code:c},S[c]);
+  for(const c in S) for(const a of (S[c].alias||[])) if(!m[a]) m[a]=m[c];
+  return WMAP=m; }).catch(e=>{ console.warn('world index list unavailable',e); WSER=null; return {}; }));
+async function loadWorld(e){
+  const b=await jget('./world/'+e.f+'.json'); const pts=[]; let t=isoToTs(b.d0);
+  for(let i=0;i<b.c.length;i++){ if(i) t+=b.dd[i-1]*DAY; if(!(b.c[i]>0)) continue; const p={t,v:b.c[i]/100,m:0};
+    if(b.o[i]!=null&&b.h[i]!=null&&b.l[i]!=null){ p.o=b.o[i]/100; p.h=b.h[i]/100; p.l=b.l[i]/100; } pts.push(p); }
+  if(!pts.length) throw new Error('empty');
+  // kind 'macro': it trades on days NSE is shut, so it never adds dates to a chart that has an NSE leg
+  return { label:e.label, kind:'macro', world:true, country:e.country||'', src:e.src||'', unit:'', pts, dailyFrom:pts[0].t, nMonthly:0 };
 }
 function xMissing(tok){ const i=tok.indexOf(':'), ex=tok.slice(0,i), sym=tok.slice(i+1);
   if(ex==='BSE'&&BSE_INDEX[sym]) return BSE_INDEX[sym]+' ("'+tok+'") is not available here yet. Sensex is: SENSEX.';
@@ -295,10 +312,11 @@ async function stockOhlc(op){
 const OPCACHE={};
 async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
   if(OPCACHE[tok]) return OPCACHE[tok];
-  const X=await xIndex(), x=MACRO[tok]?null:X[tok];
+  const W=await wIndex(), w=W[tok];
+  const X=await xIndex(), x=(MACRO[tok]||w)?null:X[tok];
   if(!x&&tok.includes(':')){ const e=new Error(xMissing(tok)); e.keep=true; throw e; }
   const names=await indexNames(); const idx=names[norm(tok)];
-  const p=MACRO[tok] ? loadMacro(tok) : x ? loadX(x) : idx ? loadIndex(idx) : loadStock(tok);
+  const p=w ? loadWorld(w).catch(e=>{ if(MACRO[tok]) return loadMacro(tok); throw e; }) : MACRO[tok] ? loadMacro(tok) : x ? loadX(x) : idx ? loadIndex(idx) : loadStock(tok);
   OPCACHE[tok]=p; p.catch(()=>{ delete OPCACHE[tok]; });
   return p;
 }
@@ -320,7 +338,7 @@ function tokenize(src){
       if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
         if(ex==='BSE'&&BSE_INDEX[sym]) sym='BSE:'+sym;                          // a BSE index, never the dead NSE ticker of the same name
         else if((/[0-9]!$/.test(sym)||ex==='MCX')&&!MACRO[sym]) sym=ex+':'+sym; // a futures contract or an MCX code: resolved in ./xseries or refused by name
-        else if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
+        else if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]&&!WMAP[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
       out.push({k:'sym',v:sym}); i=j; continue; }
     throw new Error('Unexpected character "'+c+'"');
   }
@@ -404,7 +422,7 @@ function evaluate(ast,ops,fill){
     let full=true, real=false;
     for(const s of syms){ const p=ops[s].pts[ptr[s]];
       if(fill&&(p.o==null||p.t!==t)){ vo[s]=vh[s]=vl[s]=p.v; real=true; }
-      else if(ops[s].kind==='macro'){ vo[s]=vh[s]=vl[s]=p.v; }                       // closes only: flat at its close (said in the legend)
+      else if(ops[s].kind==='macro'&&p.o==null){ vo[s]=vh[s]=vl[s]=p.v; }                    // closes only: flat at its close (said in the legend)
       else if(ops[s].kind==='x'&&p.o==null){ vo[s]=vh[s]=vl[s]=p.v; real=true; }      // BSE/MCX day with a close only: drawn at its close (said in the legend) — never dropped, the gaps sit inside the history
       else if(p.o==null) full=false;
       else if(p.t!==t){ vo[s]=vh[s]=vl[s]=p.v; }
@@ -643,6 +661,7 @@ let CMPNEW='';
 /* ---------- load an expression ----------------------------------------------------------------- */
 let LOADSEQ=0;
 async function computeExpr(src,ohlc,seq){
+  await wIndex();                                  // the tokenizer needs the world codes to accept TVC:NI225, XETR:DAX …
   const r=await resolveTokens(tokenize(src)); if(seq!==LOADSEQ) return null;
   const ast=parse(r.toks), ops={};
   (function walk(n){ if(!n) return; if(n.sym) ops[n.sym]=r.ops[n.sym]; walk(n.l); walk(n.r); })(ast);
@@ -663,9 +682,9 @@ async function loadExpr(raw,push){
     const fulln=data.length; let cnote='';
     if(MODE!=='line'){
       const c=data.filter(d=>d.open!=null), L=Object.values(ops);
-      if(!c.length){ const mac=L.filter(o=>o.kind==='macro').map(o=>o.label);
+      if(!c.length){ const mac=L.filter(o=>o.kind==='macro'&&!o.world).map(o=>o.label);
         cnote='Candles and bars are not available for this chart — showing the line. '+(mac.length?'There is no open/high/low for '+mac.join(', ')+' (daily closes only).':'No open/high/low history is published for '+L.filter(o=>!o.pts.some(p=>p.o!=null)).map(o=>o.label).join(', ')+'.'); }
-      else { const mac=TF==='D'?L.filter(o=>o.kind==='macro').map(o=>o.label):[];
+      else { const mac=TF==='D'?L.filter(o=>o.kind==='macro'&&!o.world).map(o=>o.label):[];
         if(mac.length) cnote=mac.join(', ')+': daily closes only, so each candle uses that day\'s close for it — the open, high and low come from the other leg. ';
         for(const o of L){ if(o.kind!=='x') continue; const n=o.pts.filter(p=>p.o==null).length;
           if(n) cnote+=o.label+': '+n.toLocaleString('en-IN')+' of its '+o.pts.length.toLocaleString('en-IN')+' days have a close only (the source published no open/high/low); those days are drawn at the close. '; }
@@ -709,6 +728,7 @@ function renderLegend(ops){
   for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
     if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily '+(CH&&CH.kind!=='line'?'open/high/low/close':'close')+', '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
     else if(o.kind==='x'){ t+=esc(o.label)+' ('+esc(o.src)+(o.unit?', '+esc(o.unit):'')+', daily '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+'; not refreshed automatically)'+(o.note?' · '+esc(o.note):''); }
+    else if(o.world){ t+=esc(o.label)+' ('+(o.country?esc(o.country)+', ':'')+esc(o.src)+', daily open/high/low/close, '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
     else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
     else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
     rows.push('<div>'+t+'</div>'); }
@@ -757,7 +777,11 @@ async function sugIndices(){
   const list=Object.values(byName).map(o=>{ const full=MONTHLY_NAME[o.name]||o.name; o.keys.add(norm(full));
     return { kind:'idx', code:o.alias||norm(o.name), label:titleCase(full), keys:[...o.keys], rank:IDX_ORDER.indexOf(o.name) }; });
   list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
-  const seen={}; for(const c in MACRO){ const [k0,label,mul]=MACRO[c]; const key=k0+'|'+(mul||1); if(seen[key]){ seen[key].keys.push(c); continue; }
+  const W=await wIndex(), ws={}, wkey={};
+  for(const c of Object.keys(W).sort((a,b)=>(W[a].ord||0)-(W[b].ord||0))){ const e=W[c]; if(MACRO[c]) wkey[MACRO[c][0]+'|'+(MACRO[c][2]||1)]=1; if(ws[e.code]) continue;
+    list.push(ws[e.code]={ kind:'w', code:e.code, label:e.label+(e.country?' · '+e.country:''), rank:-1,
+      keys:[e.code].concat(e.alias||[],[norm(e.label),norm(e.country||'')],(e.label+' '+(e.country||'')).toUpperCase().split(/[^A-Z0-9]+/).filter(x=>x.length>2)) }); }
+  const seen={}; for(const c in MACRO){ const [k0,label,mul]=MACRO[c]; const key=k0+'|'+(mul||1); if(wkey[key]) continue; if(seen[key]){ seen[key].keys.push(c); continue; }
     list.push(seen[key]={ kind:'mac', code:c, label, keys:[c,norm(label)].concat(label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)), rank:-1 }); }
   const X=await xIndex(), xs={}; for(const c in X){ const e=X[c]; if(xs[e.code]) continue; const a=(e.alias||[])[0]||e.code;
     list.push(xs[e.code]={ kind:'x', tag:e.kind||'Index', code:a, label:e.label, rank:-1,
@@ -811,7 +835,7 @@ function sugRender(){
   const q=SUG_TOK?SUG_TOK.text:'';
   box.innerHTML=SUG_ITEMS.map((x,i)=>'<div class="sug-r'+(i===SUG_AT?' on':'')+'" role="option" id="sug'+i+'" aria-selected="'+(i===SUG_AT)+'" data-i="'+i+'">'+
     '<span class="sug-c">'+sugHi(x.code,q)+'</span><span class="sug-n">'+sugHi(x.label,q)+'</span>'+
-    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':x.kind==='x'?esc(x.tag):(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
+    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':x.kind==='w'?'World':x.kind==='x'?esc(x.tag):(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
   box.classList.add('open'); $('expr').setAttribute('aria-expanded','true');
   if(SUG_AT>=0){ $('expr').setAttribute('aria-activedescendant','sug'+SUG_AT); const r=$('sug'+SUG_AT); if(r&&r.scrollIntoView) r.scrollIntoView({block:'nearest'}); }
   else $('expr').removeAttribute('aria-activedescendant');

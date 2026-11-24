@@ -31150,3 +31150,35 @@ User: "add the remaining 17 instruments" (the TradingView codes on their drawing
   2026-11-24: NIFTY from 2000-06-12, BANKNIFTY from 2005-06-13. NSE has no F&O file for 373 weekdays (mostly 2000,
   listed under `nofile` in the cache's `_fo_fetch_log.json`); those days have no futures bar. Unlike BSE/MCX this
   source answers a plain client, so a CI top-up is possible — not wired yet.
+
+## §250 — Charts page world indices (`docs/world/`): 49 country indices, daily open/high/low/close (2026-11-24)
+
+User: "add all country indexes nasdaq dow jones s&p 500 kospi nikkei hangseng etc etc".
+
+- **What is published** (`scripts/fetch_world_indices.py` → `docs/world/<CODE>.json` + `_index.json`, same x100 column
+  shape as `docs/xseries`; ~12 MB): SPX, NASDAQ, NDX, DJI, RUT, NYA, VIX, TSX, IBOV, MEXBOL · FTSE, FTSE250, DAX, MDAX,
+  CAC40, STOXX50, STOXX600, AEX, SMI, IBEX, FTSEMIB, BEL20, ATX, PSI, ISEQ, OMXS30, OMXC25, OMXH25, OSEBX, ATHEX,
+  BIST100 · NIKKEI, HSI, HSCEI, SHCOMP, SZCOMP, KOSPI, KOSDAQ, TAIEX, STI, KLCI, JCI, ASX200, ALLORDS, NZX50 · TA125,
+  TA35, JSE, JSE40. The code table, Yahoo symbol, country and aliases live in `WORLD` in the script.
+- **Source:** Yahoo's daily chart feed (`query1.finance.yahoo.com/v8/finance/chart/<sym>?period1=-631152000&interval=1d`),
+  whole history each run. NOT cross-checked against a second source — treat any figure as Yahoo's, unverified.
+- **Not available (measured 2026-11-24 — Yahoo answers 404, or holds only monthly/quarterly bars or one bar):** MERVAL,
+  IPSA, WIG20, BUX, MOEX, CSI300, SET, PSEI, VNINDEX, KSE100, CSEALL, TASI, EGX30, DFM, QSI. They stay in `WORLD`
+  and are retried every run; one that starts answering ≥250 daily bars is published by itself.
+- **Rules in the script:** bar date = session open + the exchange's `gmtoffset` (fetch_macro.py dates by UTC — fine for
+  closes, wrong by a day for Asia-Pacific opens); the bar of a session still open is dropped; a bar whose close is
+  missing is skipped (Yahoo leaves the newest Asian bar empty for hours after the close — it arrives on the next run);
+  open/high/low that are missing, zero or do not contain the close are stored as null (close-only bar); a file is never
+  replaced by a pull with <98% of its bars; <250 bars = not available.
+- **Client:** call through `build_fundamentals._get` with `B.UA`, exactly as fetch_macro.py does. Yahoo answers 429 to
+  Python's default client string. Do NOT swap in other browser strings to get past a 429 — the permission classifier
+  denied that on 2026-11-24, and it is not needed.
+- **Refresh:** a step in `.github/workflows/refresh-macro.yml` (20:40 IST) after the macro guard, `continue-on-error`,
+  committed together with `docs/macro.json`. First CI run not yet observed at the time of writing — check the next
+  "Macro refresh" commit touches `docs/world/`.
+- **Page (`docs/chart.html`):** `wIndex()` / `loadWorld()`; world codes resolve BEFORE the `MACRO` table (which keeps
+  the 2012+ closes from macro.json as the fallback when `./world` cannot be read), then xseries, NSE indices, stocks —
+  so a world code or alias must never equal a stock symbol (checked against search_index.json: `KSE` was dropped for
+  that reason) or an NSE index name. Kind is `macro` with `world:true`: it never adds dates to a chart that has an NSE
+  leg, but its real open/high/low are used for candles. A ratio pairs bars by calendar date (US session of date D ends
+  after NSE's date D).

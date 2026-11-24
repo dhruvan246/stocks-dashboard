@@ -26,7 +26,7 @@ concurrency:
 jobs:
   refresh-macro:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -42,6 +42,12 @@ jobs:
       - name: Guard — refuse to commit a broken or shrunken feed
         run: python3 scripts/guard_feed.py
 
+      # World indices for the Charts page (docs/world/, runbook §250). Runs AFTER the guard and may fail without
+      # failing the job: the script keeps every existing file when the source answers nothing or less than before.
+      - name: Fetch world indices (Yahoo daily open/high/low/close — stdlib only)
+        continue-on-error: true
+        run: python3 scripts/fetch_world_indices.py
+
       - name: Commit updated macro data
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,12 +57,14 @@ jobs:
 
           mkdir -p /tmp/mac/docs
           cp docs/macro.json /tmp/mac/docs/
+          cp -r docs/world /tmp/mac/docs/world
 
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             cp /tmp/mac/docs/macro.json docs/macro.json
-            git add docs/macro.json
+            mkdir -p docs/world && cp /tmp/mac/docs/world/*.json docs/world/
+            git add docs/macro.json docs/world
 
             if git diff --cached --quiet; then
               echo "No new macro data — nothing to commit"
