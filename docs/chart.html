@@ -15,6 +15,9 @@
   #chart{height:calc(100vh - 330px);min-height:360px}
   @media (max-width:640px){ #chart{height:calc(100vh - 380px);min-height:300px} }
   #chartWrap.drawing{cursor:crosshair;touch-action:none}
+  #zoomBar{position:absolute;left:50%;bottom:38px;transform:translateX(-50%);display:none;gap:6px;z-index:5}
+  #zoomBar button{width:32px;height:32px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;line-height:1;font-weight:600;cursor:pointer;box-shadow:0 4px 12px -6px rgba(0,0,0,.35);opacity:.9;display:flex;align-items:center;justify-content:center;padding:0}
+  #zoomBar button:hover{opacity:1;border-color:var(--accent)}
   #tip{position:absolute;left:8px;top:8px;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:.3rem .55rem;font-size:.72rem;box-shadow:0 6px 18px -8px rgba(0,0,0,.35);white-space:nowrap;z-index:5}
   .rng,.tool{cursor:pointer;user-select:none}
   html[data-theme] .rng.on{color:#fff !important}
@@ -67,7 +70,7 @@
         <span id="logBtn" class="rng px-2 py-1 rounded-md border border-slate-200 text-[11px] font-semibold text-slate-500" title="Logarithmic price scale">Log</span>
       </div>
     </div>
-    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
+    <div id="chartWrap"><div id="chart"></div><div id="tip"></div><div id="zoomBar"><button type="button" data-z="out" title="Zoom out" aria-label="Zoom out">&minus;</button><button type="button" data-z="in" title="Zoom in" aria-label="Zoom in">+</button><button type="button" data-z="reset" title="Back to the selected range" aria-label="Reset zoom" style="font-size:15px">&#8634;</button></div></div>
     <div id="legend" class="mt-2 text-[11px] text-slate-500 space-y-0.5"></div>
   </div>
 
@@ -412,7 +415,18 @@ function onCrosshair(p){
     : esc(fmtVal(d.value))); tip.style.display='block';
 }
 function rangeDays(r){ return {'6M':182,'1Y':365,'3Y':1095,'5Y':1825,'10Y':3650,'Max':1e9}[r]||1e9; }
-function applyRange(){ if(!CH||!DATA.length) return; const ts=CH.chart.timeScale();
+/* Zoom buttons: widen or narrow the visible bars around their centre (a click = 30% fewer / more bars),
+   the same thing the mouse wheel or a pinch does. ⟲ goes back to the range button that is selected. */
+let ZPEND=null, ZSUB=null;     // the range we last asked for, until the chart reports it (it applies on the next frame, so fast clicks would otherwise all start from the same range)
+function zoomBy(f){ if(!CH||!DATA.length) return; const ts=CH.chart.timeScale(), r=ZPEND||ts.getVisibleLogicalRange(); if(!r) return;
+  if(ZSUB!==CH.chart){ ZSUB=CH.chart; ts.subscribeVisibleLogicalRangeChange(()=>{ ZPEND=null; }); }
+  const mid=(r.from+r.to)/2, half=Math.min(Math.max((r.to-r.from)*f/2,2.5),Math.max(DATA.length*0.6,5));
+  ZPEND={from:mid-half,to:mid+half}; ts.setVisibleLogicalRange(ZPEND); }
+document.querySelectorAll('#zoomBar button').forEach(b=>{
+  ['pointerdown','mousedown','touchstart','dblclick'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation()));   // never start a drawing
+  b.addEventListener('click',e=>{ e.stopPropagation(); const z=b.dataset.z; if(z==='reset') applyRange(); else zoomBy(z==='in'?0.7:1/0.7); }); });
+function applyRange(){ ZPEND=null; const zb=document.getElementById('zoomBar'); if(zb) zb.style.display=(CH&&DATA.length)?'flex':'none';
+  if(!CH||!DATA.length) return; const ts=CH.chart.timeScale();
   if(RANGE==='Max'){ ts.fitContent(); return; }
   const last=DATA[DATA.length-1].time, first=DATA[0].time;
   ts.setVisibleRange({from:Math.max(first,last-rangeDays(RANGE)*DAY), to:last}); }
