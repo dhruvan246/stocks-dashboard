@@ -74,7 +74,8 @@
     <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
     <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
     <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line and Text need one click. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it.</div>
-    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: currencies, gold/silver, global indices, futures.</div>
+    <div><b>Global:</b> USDINR, USOIL (US crude), BRENT, GOLD, SILVER, COPPER, DXY, SPX, NASDAQ, NIKKEI, HSI, US10Y — daily closes from 2012, so <code>NIFTY/USDINR</code> or <code>NIFTY/USOIL</code> work.</div>
+    <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, futures, intraday prices.</div>
   </div>
 </main>
 
@@ -123,6 +124,21 @@ const MONTHLY_NAME={ 'NIFTY SMLCAP 100':'NIFTY SMALLCAP 100', 'NIFTY SMLCAP 250'
 // indices with their own long daily file
 const DAILY_FILE={ 'NIFTY 50':'nifty.json', 'NIFTY 500':'nifty500.json', 'NIFTY BANK':'nifty_bank.json', 'INDIA VIX':'india_vix.json', 'NIFTY MICROCAP250':'nifty_microcap250.json' };
 
+/* Currency / commodity / world-index series from macro.json — the Macro page's own file (Yahoo daily closes from 2012).
+   code → [series key, label]. These trade on days NSE is shut, so in a mixed expression (NIFTY/USDINR) only the
+   NSE dates are plotted and the macro value is carried from its last close (≤5 days). A macro code wins over a
+   stock of the same name (SILVER is also a dead ticker). */
+const MACRO={ USDINR:['usdinr','USD/INR'], DXY:['dxy','US dollar index (DXY)'], USOIL:['wti','US crude oil (WTI)'], WTI:['wti','US crude oil (WTI)'], USCRUDE:['wti','US crude oil (WTI)'],
+  CRUDEOIL:['wti','US crude oil (WTI)'], BRENT:['crude','Brent crude oil'], UKOIL:['crude','Brent crude oil'], GOLD:['gold','Gold (Rs/10g)'], SILVER:['silver','Silver (Rs/kg)'],
+  COPPER:['copper','Copper ($/lb)'], SPX:['spx','S&P 500'], SP500:['spx','S&P 500'], NASDAQ:['nasdaq','Nasdaq Composite'], IXIC:['nasdaq','Nasdaq Composite'],
+  NIKKEI:['nikkei','Nikkei 225'], NI225:['nikkei','Nikkei 225'], HSI:['hsi','Hang Seng'], HANGSENG:['hsi','Hang Seng'], US10Y:['us10y','US 10-year yield (%)'] };
+async function loadMacro(code){
+  const [key,label]=MACRO[code]; const j=await jget('./macro.json'); const S=(j.series||{})[key]; const d=S&&S.d;
+  if(!d||!Object.keys(d).length) throw new Error(label+' is not in the data yet.');
+  const pts=Object.keys(d).sort().map(k=>({t:isoToTs(k),v:+d[k],m:0})).filter(p=>isFinite(p.v));
+  if(!pts.length) throw new Error('empty');
+  return { label, kind:'macro', src:S.src||'', unit:S.unit||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
+}
 const jget=(()=>{ const c={}; return u=>c[u]||(c[u]=fetch(u).then(r=>{ if(!r.ok) throw new Error(u+' HTTP '+r.status); return r.json(); })); })();
 let IDX_NAMES=null;   // norm → canonical index name
 async function indexNames(){
@@ -187,7 +203,7 @@ const OPCACHE={};
 async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
   if(OPCACHE[tok]) return OPCACHE[tok];
   const names=await indexNames(); const idx=names[norm(tok)];
-  const p=idx ? loadIndex(idx) : loadStock(tok);
+  const p=MACRO[tok] ? loadMacro(tok) : idx ? loadIndex(idx) : loadStock(tok);
   OPCACHE[tok]=p; p.catch(()=>{ delete OPCACHE[tok]; });
   return p;
 }
@@ -207,7 +223,7 @@ function tokenize(src){
       while(j<s.length&&(/[A-Z0-9&_.:!]/.test(s[j])||(s[j]==='-'&&j+1<s.length&&/[A-Z0-9]/.test(s[j+1])&&/[A-Z0-9]/.test(s[j-1])))) j++;
       let sym=s.slice(i,j); const colon=sym.lastIndexOf(':');
       if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
-        if(ex!=='NSE'&&ex!=='BSE') throw new Error('"'+ex+':'+sym+'" is not available here — only NSE/BSE stocks and NSE indices are.'); }
+        if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here — only NSE/BSE stocks and NSE indices are.'); }
       out.push({k:'sym',v:sym}); i=j; continue; }
     throw new Error('Unexpected character "'+c+'"');
   }
@@ -255,7 +271,8 @@ function evalNode(n,val){ if(n.num!=null) return n.num; if(n.sym) return val[n.s
 const STALE=5*DAY;
 function evaluate(ast,ops){
   const syms=Object.keys(ops); if(!syms.length) throw new Error('Type at least one symbol.');
-  const all=new Set(); for(const s of syms) for(const p of ops[s].pts) all.add(p.t);
+  const dated=syms.filter(s=>ops[s].kind!=='macro');      // NSE dates only when the expression has an NSE leg
+  const all=new Set(); for(const s of (dated.length?dated:syms)) for(const p of ops[s].pts) all.add(p.t);
   const dates=[...all].sort((a,b)=>a-b);
   const ptr={}, used={}; for(const s of syms){ ptr[s]=-1; used[s]=-1; }
   const out=[], val={};
@@ -372,13 +389,14 @@ function renderLegend(ops){
   rows.push('<div><b class="text-slate-700">'+esc(KEY)+'</b> · '+DATA.length.toLocaleString('en-IN')+' points · '+fmtDate(DATA[0].time)+' → '+fmtDate(DATA[DATA.length-1].time)+' · last '+esc(fmtVal(DATA[DATA.length-1].value))+'</div>');
   for(const s of Object.keys(ops)){ const o=ops[s], P=o.pts; let t=esc(s)+' = ';
     if(o.kind==='stock'){ t+=esc(o.name||o.label)+' (adjusted daily close, '+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'+(o.alive?'':' · <span class="neg">not trading now</span>'); }
+    else if(o.kind==='macro'){ t+=esc(o.label)+' ('+(o.src?esc(o.src)+' daily close, ':'daily close, ')+fmtDate(P[0].t)+' → '+fmtDate(P[P.length-1].t)+')'; }
     else { t+=esc(o.label)+' index ('+(o.nMonthly?('month-end closes '+fmtDate(P[0].t)+' → '+fmtDate(P[o.nMonthly-1].t)+', then '):'')+(o.dailyFrom!=null?('daily '+fmtDate(o.dailyFrom)+' → '+fmtDate(P[P.length-1].t)):'no daily history')+')'; }
     rows.push('<div>'+t+'</div>'); }
-  if(Object.values(ops).some(o=>o.nMonthly)) rows.push('<div class="text-amber-600">Part of this chart is monthly: the dashboard holds only month-end closes for that index before its daily history starts.</div>');
+  if(Object.values(ops).some(o=>o.nMonthly&&o.dailyFrom!=null&&DATA[0].time<o.dailyFrom||o.nMonthly&&o.dailyFrom==null)) rows.push('<div class="text-amber-600">Part of this chart is monthly: the dashboard holds only month-end closes for that index before its daily history starts.</div>');
   setLegend(rows.join(''));
 }
 function rememberRecent(k){ let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[]; r=[k].concat(r.filter(x=>x!==k)).slice(0,12); lsSet(LS_RECENT,r); }
-const EXAMPLES=['NIFTY','RELIANCE','CANFINHOME/NIFTY','PFC+RECLTD','BANKNIFTY/NIFTY','CNXPSUBANK/NIFTY','HINDPETRO+BPCL+IOC'];
+const EXAMPLES=['NIFTY','RELIANCE','CANFINHOME/NIFTY','NIFTY/USDINR','NIFTY/USOIL','PFC+RECLTD','BANKNIFTY/NIFTY','CNXPSUBANK/NIFTY','HINDPETRO+BPCL+IOC'];
 function renderChips(){
   let r=lsGet(LS_RECENT,[]); if(!Array.isArray(r)) r=[];
   const saved=Object.keys(allDrawings()).filter(k=>(allDrawings()[k]||[]).length);
@@ -413,6 +431,8 @@ async function sugIndices(){
   const list=Object.values(byName).map(o=>{ const full=MONTHLY_NAME[o.name]||o.name; o.keys.add(norm(full));
     return { kind:'idx', code:o.alias||norm(o.name), label:titleCase(full), keys:[...o.keys], rank:IDX_ORDER.indexOf(o.name) }; });
   list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
+  const seen={}; for(const c in MACRO){ const [key,label]=MACRO[c]; if(seen[key]){ seen[key].keys.push(c); continue; }
+    list.push(seen[key]={ kind:'mac', code:c, label, keys:[c,norm(label)].concat(label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)), rank:-1 }); }
   return SUG_IDX=list;
 }
 function sugStocks(){
@@ -462,7 +482,7 @@ function sugRender(){
   const q=SUG_TOK?SUG_TOK.text:'';
   box.innerHTML=SUG_ITEMS.map((x,i)=>'<div class="sug-r'+(i===SUG_AT?' on':'')+'" role="option" id="sug'+i+'" aria-selected="'+(i===SUG_AT)+'" data-i="'+i+'">'+
     '<span class="sug-c">'+sugHi(x.code,q)+'</span><span class="sug-n">'+sugHi(x.label,q)+'</span>'+
-    '<span class="sug-k'+(x.kind==='idx'?' idx':'')+'">'+(x.kind==='idx'?'Index':(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
+    '<span class="sug-k'+(x.kind!=='stk'?' idx':'')+'">'+(x.kind==='idx'?'Index':x.kind==='mac'?'Global':(x.alive?'Stock':'Not trading'))+'</span></div>').join('');
   box.classList.add('open'); $('expr').setAttribute('aria-expanded','true');
   if(SUG_AT>=0){ $('expr').setAttribute('aria-activedescendant','sug'+SUG_AT); const r=$('sug'+SUG_AT); if(r&&r.scrollIntoView) r.scrollIntoView({block:'nearest'}); }
   else $('expr').removeAttribute('aria-activedescendant');

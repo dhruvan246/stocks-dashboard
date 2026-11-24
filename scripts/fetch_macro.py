@@ -44,6 +44,7 @@ META = {
     "usdinr":  {"label": "USD/INR",                 "unit": "",        "src": "Yahoo"},
     "dxy":     {"label": "US dollar index (DXY)",   "unit": "",        "src": "Yahoo DX-Y.NYB"},
     "crude":   {"label": "Brent crude",             "unit": "$/bbl",   "src": "Yahoo BZ=F"},
+    "wti":     {"label": "US crude (WTI)",          "unit": "$/bbl",   "src": "Yahoo CL=F"},   # 2026-11-24: for chart.html ratios; front-month future, settled NEGATIVE on 2020-04-20
     "gold":    {"label": "Gold",                    "unit": "Rs/10g",  "src": "Yahoo GC=F x USDINR"},
     "niftype": {"label": "Nifty 50 PE",             "unit": "",        "src": "NSE / niftyindices"},
     "niftypb": {"label": "Nifty 50 PB",             "unit": "",        "src": "NSE / niftyindices"},
@@ -78,6 +79,7 @@ YH = {
     "usdinr": "INR%3DX",
     "dxy":    "DX-Y.NYB",
     "crude":  "BZ%3DF",
+    "wti":    "CL%3DF",
     "goldusd": "GC%3DF",   # gold in USD/oz — converted to Rs/10g below
     "silverusd": "SI%3DF", # silver in USD/oz — converted to Rs/kg below
     "copper": "HG%3DF",
@@ -251,7 +253,7 @@ def main():
             ok.append("yh:" + key)
         except Exception as e:
             fail.append("yh:%s (%s)" % (key, str(e)[:60]))
-    for key in ("us10y", "usdinr", "dxy", "crude", "copper", "spx", "nasdaq", "nikkei", "hsi"):
+    for key in ("us10y", "usdinr", "dxy", "crude", "wti", "copper", "spx", "nasdaq", "nikkei", "hsi"):
         if yh.get(key):
             _merge(out, key, yh[key], rnd=3 if key in ("usdinr", "copper") else 2)
     # gold/silver: USD/oz -> Rs/10g / Rs/kg using same-day USD/INR (fallback: latest INR)
