@@ -1040,7 +1040,11 @@ async function cashPlanRun(auto){
   if (CPL.busy) return;
   const books = uniqStrategies().filter(it => { const h = heldFor(it.cfg); return h && Array.isArray(h.rows); });   // zba53: an EMPTY book counts — on the buy day after a sell-all every slot is empty and the plan sizes from the cash
   if (!books.length){ say('No strategy books loaded yet'); return; }
-  const noPicks = books.filter(it => !(PICKS[it.id] && PICKS[it.id].rows));   // NOT LOADED only — a strategy whose screen passes no stock (#6, 23 Oct) plans as all exits → cash
+  /* zba80 (user 24-Nov: Re-plan did nothing): a strategy OUTSIDE the chosen mix sells all and buys nothing, so its picks are
+     never read — but "Load all picks" loads only the listed (chip) strategies, so it refused with "4 strategies have none" */
+  const exclEarly = new Set(cpExclIds(books, cpOpts()));
+  const hasPicks = it => !!(PICKS[it.id] && PICKS[it.id].rows);
+  const noPicks = books.filter(it => !exclEarly.has(it.id) && !hasPicks(it));   // NOT LOADED only — a strategy whose screen passes no stock (#6, 23 Oct) plans as all exits → cash
   if (noPicks.length){ say('Load all picks first — ' + noPicks.length + ' strateg' + (noPicks.length === 1 ? 'y has' : 'ies have') + ' none'); return; }
   try { await mtfLevFetch(); } catch(e){} uniqStrategies().forEach(swApply);   // zba65: the chosen MTF swaps are in the picks the plan reads
   await zHoldRefresh();   // the demat decides whether the plan is still frozen (below)
@@ -1062,8 +1066,8 @@ async function cashPlanRun(auto){
     }
     const px = {}, pxOf = (s, fb) => { const q = liveQ(s); return (q && q.ltp != null) ? +q.ltp : fb; };
     const strats = frozen ? changed.map(it => replanInputs(P0, it)).filter(Boolean) : books.map(it => { const h = heldFor(it.cfg), topN = it.cfg.topN || h.topN || 3;
-      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: PICKS[it.id].rows.slice(0, topN).map(r => r.sym), carry: scashNow(it.id, zbRebKey(), h.rows).v }; });
-    books.forEach(it => { PICKS[it.id].rows.forEach(r => { px[r.sym] = pxOf(r.sym, +r.px); });
+      return { id: it.id, num: favNumOf(it.cfg) || 0, method: h.method, topN: topN, rows: h.rows.map(r => ({ sym: r.sym, qty: r.qty, avg: r.avg, date: r.date || '' })), picks: hasPicks(it) ? PICKS[it.id].rows.slice(0, topN).map(r => r.sym) : [], carry: scashNow(it.id, zbRebKey(), h.rows).v }; });
+    books.forEach(it => { if (hasPicks(it)) PICKS[it.id].rows.forEach(r => { px[r.sym] = pxOf(r.sym, +r.px); });
       heldFor(it.cfg).rows.forEach(r => { if (px[r.sym] == null){ const z = (Z.hraw || {})[r.sym]; px[r.sym] = pxOf(r.sym, z ? z.ltp : r.avg); } }); });
     const lev = Object.assign({}, frozen ? P0.lev : {}), need = new Set();
     strats.forEach(st => st.picks.forEach(s => { if (!(s in lev)) need.add(s); }));
@@ -1089,7 +1093,7 @@ async function cashPlanRun(auto){
       const R = planCompute({ strats: strats, hraw: Z.hraw || {}, px: px, lev: lev, free: free, buf: CP_BUF, net: true, cashPct: OPT.pct / 100, size: OPT.size, mode: OPT.mode, excl: excl });
       const pfOf = id => { const it = books.find(x => x.id === id), h = it && heldFor(it.cfg); return (h && h.pfId) || ''; };   // the books' portfolio ids: the box books each move by them
       R.xf.forEach(x => { x.fpf = pfOf(x.from); x.tpf = pfOf(x.to); });
-      P = { k: zbRebKey(), at: Date.now(), live: books.some(it => PICKS[it.id].live), picks: Object.fromEntries(strats.map(st => [st.id, st.picks])), lev: lev, S: R.S, acct: R.acct, warn: R.warn.slice(0, 6), xf: R.xf.filter(x => x.fpf && x.tpf),
+      P = { k: zbRebKey(), at: Date.now(), live: books.some(it => hasPicks(it) && PICKS[it.id].live), picks: Object.fromEntries(strats.map(st => [st.id, st.picks])), lev: lev, S: R.S, acct: R.acct, warn: R.warn.slice(0, 6), xf: R.xf.filter(x => x.fpf && x.tpf),
             mode: OPT.mode, cashPct: OPT.size === 'exit' ? 0 : OPT.pct / 100, size: OPT.size, set: OPT.set, exclIds: excl };
     }
     const doc = zbaDoc(); doc.plan = P; doc.ts = Date.now();
