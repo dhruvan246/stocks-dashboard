@@ -23484,7 +23484,7 @@ its exact ex trading day and stores BOTH numbers with more than 4 decimals uses 
 To make another row exact, write both numbers unrounded from NSE's ex-day row — never only one of them.
 **Dry run** (live release, end 2026-11-23, `dry_main.py`, NSE refused): baseline unchanged code = no heal; fixed code "SELF-HEAL RELIANCE ex
 20230720", 1 of 5,335 symbols differs, 5,669 pre-ex bars of c/h/l/op/vw x 0.9999748 within rounding, bar 19-Jul-2023 1290.0324 -> 1290.0000,
-ex-day and later bars untouched; second pass byte-identical. Not re-run: the favourites backtests and the Quantmac comparison.
+ex-day and later bars untouched; second pass byte-identical. Checked after the push (2026-11-25): run 45463619769 logged `SELF-HEAL RELIANCE ex 20230720 ... rescaled 5669 pre-ex points`; live sf-data rev e65a6196d6 -> 687a272c2c, the same fingerprint as the dry-run store (whole payload equal); live stk/RELIANCE.json = dry run on all 6,499 bars. The 8 favourites, saved window and from 2010: 0 months with a different pick, CAGR unchanged to 2 decimals. Quantmac r13 month-end file, RELIANCE, 3 indicators x 213 months = 639 cells: 18 differed by up to 0.0037 points before (Jul 2023 - Apr 2024), 0 differ by more than 0.0005 after. Not checked: docs/stock_data.bin (dashboard bin, follows on its own >5-day rule) and the Charts page against TradingView after the fix.
 
 ### 170e. CORRECTION — UNIONBANK 2009-05-13 restored (2026-09-26, user-approved)
 The 7 "older rows re-priced" in §170a included UNIONBANK 20090513 — but that row is NOT a demerger: it is one of the 4
