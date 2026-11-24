@@ -23474,6 +23474,18 @@ share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonu
 - **Verified** (release base after §170, real `main()`, NSE blocked): baseline 0 changes; fixed "Self-heal corrected 15" + 3 ex-day bars;
   exactly 15 symbols changed (price arrays only); 359,580 cells = exact correction within rounding; 15/15 boundaries exact; second
   pass 0. Quantmac 96.52% -> 96.49% (+14 / -84).
+### 170e. An exact (unrounded) demerger row is healed to the 4-decimal storage floor — RELIANCE 2023-07-20  (2026-11-25, user: "Yes, fix it")
+**Found** comparing the Charts page with TradingView bar by bar: every RELIANCE price before 20-Jul-2023 sat 0.0025% high. NSE's row for
+20-Jul-2023: OPEN 2580, CLOSE 2619.85, PREVCLOSE 2841.85 -> factor 2580 / 2841.85 = 0.90785932; the store's step was 0.9078822. Cause: the
+ledger's raw ex-day ratio is rounded to 4 decimals (0.9219 vs 0.92188187) and self_heal measures the applied step against it, so the
+stored step = 0.9079 x 0.92188187 / 0.9219. The 0.15% floor of §170d hid it. All 179 rows carry 4-decimal values; only this row was changed.
+**Fix.** `demerger_adj.json` RELIANCE 20230720 = [0.90785932, 0.92188187] (both from NSE's row). `update_sf_data.self_heal`: a row that names
+its exact ex trading day and stores BOTH numbers with more than 4 decimals uses tol = max(2e-6, 2e-4 / price) instead of the 0.15% floor.
+To make another row exact, write both numbers unrounded from NSE's ex-day row — never only one of them.
+**Dry run** (live release, end 2026-11-23, `dry_main.py`, NSE refused): baseline unchanged code = no heal; fixed code "SELF-HEAL RELIANCE ex
+20230720", 1 of 5,335 symbols differs, 5,669 pre-ex bars of c/h/l/op/vw x 0.9999748 within rounding, bar 19-Jul-2023 1290.0324 -> 1290.0000,
+ex-day and later bars untouched; second pass byte-identical. Not re-run: the favourites backtests and the Quantmac comparison.
+
 ### 170e. CORRECTION — UNIONBANK 2009-05-13 restored (2026-09-26, user-approved)
 The 7 "older rows re-priced" in §170a included UNIONBANK 20090513 — but that row is NOT a demerger: it is one of the 4
 large-dividend separations of the user-approved 2026-08-23 dividend sweep (59b967a18; Rs 5 = 3.03% of 165.00, (prev-div)/prev =

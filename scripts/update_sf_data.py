@@ -384,6 +384,12 @@ def self_heal(data, CA_OFF, NOADJ, end_ymd, jar, window_days=28):
         # of the 2% band — the band silently blocked every spin-off worth <2% (HINDUNILVR 2025: 1.6%). Rows dated on a
         # non-trading day (MRPL 20260303 -> bar 20260304) keep the old 2% band: their bar is not the one they describe.
         tol = max(0.0015, 0.011 / min(c[j], c[j - 1])) if (dem is not None and dem_exact) else 0.02
+        # A ledger row whose factor AND raw ex-day ratio are both stored unrounded (more than 4 decimals; RELIANCE 20230720 =
+        # 2580 / 2841.85 and 2619.85 / 2841.85, user 2026-11-25) is reconciled to the 4-decimal storage floor instead: the
+        # 0.15% floor above hid a 0.0025% step error that came from the 4-decimal ratio. Two closes rounded to 4 decimals
+        # move the boundary ratio by at most 1e-4 / price; twice that, never below 2e-6, keeps a healed bar from re-healing.
+        if dem is not None and dem_exact and round(dem[0], 4) != dem[0] and round(dem[1], 4) != dem[1]:
+            tol = max(2e-6, 2e-4 / min(c[j], c[j - 1]))
         if abs(corr - 1) > tol:   # baked-in treatment disagrees with the rebuild's -> fix
             for key in ("c", "h", "l", "op", "vw"):
                 if key in e: e[key] = [_pxr(x * corr) for x in e[key][:j]] + e[key][j:]
