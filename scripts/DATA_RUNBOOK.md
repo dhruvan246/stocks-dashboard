@@ -31146,4 +31146,7 @@ User: "add the remaining 17 instruments" (the TradingView codes on their drawing
 - **Still not available (no source found 2026-11-24):** `ECONOMICS:INM2` (FRED unreachable from this Mac, DBnomics
   holds only growth rates indexed 2025-08), `NSEIX:NIFTY1!` (GIFT Nifty — a different contract from NSE's).
   NSE's own `NSE:NIFTY1!` / `NSE:BANKNIFTY1!` are built by the same script from `~/stocks-wt/fo_raw_cache`
-  (`fetch_fo_bhavcopy.py`, a multi-hour first download) — check `docs/xseries/_index.json` for whether they are in.
+  (`fetch_fo_bhavcopy.py`, a ~2.5-hour first download; top up with `--recent N`, then re-run the builder) — in since
+  2026-11-24: NIFTY from 2000-06-12, BANKNIFTY from 2005-06-13. NSE has no F&O file for 373 weekdays (mostly 2000,
+  listed under `nofile` in the cache's `_fo_fetch_log.json`); those days have no futures bar. Unlike BSE/MCX this
+  source answers a plain client, so a CI top-up is possible — not wired yet.
