@@ -247,12 +247,35 @@ const istDay = () => new Date(Date.now() + 19800000).toISOString().slice(0, 10);
 const levKnown = s => Object.prototype.hasOwnProperty.call(MTFL.lev, s) && MTFL.lev[s] != null;
 const levOk = s => levKnown(s) && +MTFL.lev[s] > 1.05;
 function swSel(){ try { const d = zbaDoc().mtfsw; return (d && d.sel) || {}; } catch(e){ return {}; } }
-function swOn(it, sym){ const m = swSel()[identityKey(it.cfg)]; return !!(m && m[sym]); }
+/* zba81 (user 24-Nov: "I am always going to use all MTF only"): ALWAYS ALL MTF — every checked no-MTF pick swaps for the
+   next-ranked MTF stock without a button press (synced doc.mtfsw.auto, default ON). "↩ use <stock>" still opts one pick out
+   (stored as 0). When that next stock is one the strategy already HOLDS, the plan keeps it as a stay — it is not sold and
+   nothing new is bought for the no-MTF pick (swKeepNote shows it). */
+function swAuto(){ try { const d = zbaDoc().mtfsw; return !(d && d.auto === false); } catch(e){ return true; } }
+function swOn(it, sym){ const m = swSel()[identityKey(it.cfg)]; if (m && Object.prototype.hasOwnProperty.call(m, sym)) return !!m[sym]; return swAuto(); }
+function swAutoSet(on){
+  const d = zbaDoc(), sel = Object.assign({}, (d.mtfsw && d.mtfsw.sel) || {});
+  d.mtfsw = { ts: Date.now(), sel: sel, auto: !!on }; d.ts = Date.now();
+  try { localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch(e){}
+  try { zbaPush(); } catch(e){}
+}
+/* "#6 · #7 keep LAURUSLABS for CUPID (already held — not sold)" for picks swapped onto a stock the strategy holds */
+function swKeepNote(list){
+  const by = {};
+  try { (list || uniqStrategies()).forEach(it => { const p = PICKS[it.id], h = heldFor(it.cfg); if (!p || !p.rows || !h || !Array.isArray(h.rows)) return;
+    const held = new Set(h.rows.filter(r => r.qty > 0).map(r => r.sym)), n = favNumOf(it.cfg);
+    const P = cpDoc(), pp = P && P.picks && P.picks[it.id];
+    p.rows.forEach(r => { if (r.swFor && held.has(r.sym)){ const k = r.sym + '|' + r.swFor, b = by[k] = by[k] || { sym: r.sym, f: r.swFor, n: [], re: false };
+      b.n.push(n ? '#' + n : it.id); if (P && !(Array.isArray(pp) && pp.indexOf(r.sym) >= 0)) b.re = true; } }); }); } catch(e){}
+  const a = Object.values(by); if (!a.length) return '';
+  return a.map(x => x.n.join(' · ') + ' keep' + (x.n.length === 1 ? 's' : '') + ' <b>' + esc(x.sym) + '</b> for ' + esc(x.f) + ' (already held — not sold, nothing new bought' + (x.re ? '; <b>Re-plan</b> to apply' : '') + ')').join('; ');
+}
 function swSet(it, sym, on){
   const d = zbaDoc(), sel = Object.assign({}, (d.mtfsw && d.mtfsw.sel) || {}), k = identityKey(it.cfg), m = Object.assign({}, sel[k] || {});
-  if (on) m[sym] = 1; else delete m[sym];
+  const au = swAuto();
+  if (au){ if (on) delete m[sym]; else m[sym] = 0; } else { if (on) m[sym] = 1; else delete m[sym]; }   // zba81: under ALWAYS ALL MTF only an opt-out is stored
   if (Object.keys(m).length) sel[k] = m; else delete sel[k];
-  d.mtfsw = { ts: Date.now(), sel: sel }; d.ts = Date.now();
+  d.mtfsw = { ts: Date.now(), sel: sel, auto: au }; d.ts = Date.now();
   try { localStorage.setItem(ZBA_LS, JSON.stringify(d)); } catch(e){}
   try { zbaPush(); } catch(e){}
 }
@@ -275,7 +298,7 @@ function swApply(it){
 async function mtfLevFetch(){
   if (MTFL.busy || !Z.connected) return false;
   const want = new Set();
-  uniqStrategies().forEach(it => { const p = PICKS[it.id]; if (!p || !p.base) return; p.base.forEach(r => want.add(r.sym)); (p.alts || []).slice(0, 10).forEach(r => want.add(r.sym)); });
+  uniqStrategies().forEach(it => { const p = PICKS[it.id]; if (!p || !p.base) return; p.base.forEach(r => want.add(r.sym)); (p.alts || []).slice(0, SW_DEPTH).forEach(r => want.add(r.sym)); });
   try { uniqStrategies().forEach(it => { const h = heldFor(it.cfg); (h && h.rows || []).forEach(r => { if (r.qty > 0) want.add(r.sym); }); }); } catch(e){}   // held books: sell card + swap check
   try { const P = cpDoc(); if (P) Object.values(P.S || {}).forEach(o => (o.picks || []).forEach(s => want.add(s))); } catch(e){}   // the cash plan's buys
   const list = [...want].filter(s => !levKnown(s)); if (!list.length) return false;
@@ -1246,7 +1269,7 @@ function swapCheckHTML(list){
   if (!rowsH) return '';
   const td = tAft + tCash - tNow, none = l => l.length ? l.join(', ') : 'none in this rebalance';
   const pcS = Math.round((P.cashPct != null ? P.cashPct : 0.1) * 1000) / 10, byX = planSize(P) === 'exit', modeS = P.mode === 'all' ? 'Sell all &amp; re-enter' : 'Swap exits only';
-  return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub"><b>' + modeS + '</b>' + (P.set ? ' · plan for ' + esc(P.set) : '') + (byX ? ' · replace exits only' : ' · cash ' + pcS + '%') + ' · sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
+  return '<div class="bal"><div class="bal-h"><b>Swap check</b><span class="sub">' + ((kn => kn ? kn + ' · ' : '')(swKeepNote(list))) + '<b>' + modeS + '</b>' + (P.set ? ' · plan for ' + esc(P.set) : '') + (byX ? ' · replace exits only' : ' · cash ' + pcS + '%') + ' · sell at live prices, then buy as the cash plan says · book value before the MTF loan · plan worked out ' + hhmm(new Date(P.at + 330 * 60000)) + '</span></div>' +
     '<div class="twrap"><table><thead><tr><th>#</th><th>Sells · held in Zerodha</th><th>Buys · bought with</th><th title="The saved plan\u2019s buys with every no-MTF stock swapped for the next-ranked stock that has MTF \u2014 the other picks stay as planned">Buys · all MTF</th><th>Swap</th><th>Now</th><th title="Shares after the buys, book value">After</th><th title="Its share of the cash kept back — Cash % of its shares, or with Replace exits only what its sells freed that its buys didn’t use">To cash</th><th>Change</th><th class="mtfx" title="Shares after the buys if every no-MTF pick is swapped for the next-ranked MTF stock — the plan re-worked at today’s prices, same cash % and free cash">After · all MTF</th><th class="mtfx" title="Cash kept back in the all-MTF version">To cash · all MTF</th><th class="mtfx">Change · all MTF</th></tr></thead><tbody>' + rowsH +
     '</tbody><tfoot><tr><td>Total</td><td>' + zinr(tSell) + '</td><td>' + zinr(tBuy) + '</td><td>' + (AM ? zinr(tBuyM) : '') + '</td><td></td><td>' + zinr(tNow) + '</td><td>' + zinr(tAft) + '</td><td><b>' + zinr(tCash) + '</b></td><td class="' + (td < 0 ? 'down' : td > 0 ? 'up' : '') + '">' + (td < 0 ? '−' : '+') + zinr(Math.abs(td)) + '</td>' + (AM ? '<td>' + zinr(tAftM) + '</td><td><b>' + zinr(tCashM) + '</b></td><td class="' + (tAftM + tCashM - tNowM < 0 ? 'down' : 'up') + '">' + (tAftM + tCashM - tNowM < 0 ? '−' : '+') + zinr(Math.abs(tAftM + tCashM - tNowM)) + '</td>' : '<td></td><td></td><td></td>') + '</tr></tfoot></table></div>' +
     '<div class="khelp"><b>Cash kept back: ' + zinr(tCash) + '</b> = ' + (tAft > 0 ? (Math.round(1000 * tCash / tAft) / 10) + '%' : pcS + '%') + ' of ' + zinr(tAft) + ' in shares after the buys (' + (byX ? 'what each strategy’s sells freed that its buys didn’t use' : 'target ' + pcS + '%') + '; the plan’s own-money cash is ' + zinr(P.acct.spare) + ').</div>' +
@@ -1339,8 +1362,8 @@ function renderBuyAll(list){
   const totAmt = rows.reduce((s, r) => s + r.amt, 0), totQty = rows.reduce((s, r) => s + (r.qty || 0), 0);
   const anyQty = rows.some(r => r.qty > 0);
   const B = BUYSLICER['__all__'];
-  box.innerHTML = renderReenter() + residHTML + sinceRebHTML(list) + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b> <select id="rebVer" title="As planned = the saved cash plan. All MTF = the same plan with every no-MTF pick swapped for the next-ranked MTF stock (a what-if until you press Swap on the picks and Re-plan)"><option value="plan"' + (rowsM ? '' : ' selected') + '>As planned</option><option value="mtf"' + (rowsM ? ' selected' : '') + '>All MTF</option></select>' +
-    '<span class="sub">from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
+  box.innerHTML = renderReenter() + residHTML + sinceRebHTML(list) + cashPlanHTML(list) + swapCheckHTML(list) + '<div class="bal"><div class="bal-h"><b>This rebalance · ' + rows.length + ' stocks to buy</b> <select id="rebVer" title="As planned = the saved cash plan. All MTF = the same plan with every no-MTF pick swapped for the next-ranked MTF stock (a what-if until you press Swap on the picks and Re-plan)"><option value="plan"' + (rowsM ? '' : ' selected') + '>As planned</option><option value="mtf"' + (rowsM ? ' selected' : '') + '>All MTF</option></select> <label class="sub" style="white-space:nowrap" title="Swap every no-MTF pick for the next-ranked MTF stock automatically — the cash plan, baskets and sells follow it after Re-plan. Off = only the picks you press Swap on."><input type="checkbox" id="swAutoChk"' + (swAuto() ? ' checked' : '') + '> Always all MTF</label>' +
+    '<span class="sub">' + ((kn => kn ? kn + ' · ' : '')(swKeepNote(list))) + 'from ' + withPicks.length + ' ' + (withPicks.length === 1 ? 'strategy' : 'strategies') +
       (totAmt ? ' · ' + zinr(totAmt) : '') +
       (agg.missing.length ? ' · no amount set for ' + agg.missing.map(n => '#' + n).join(', ') : '') +
       (SM.length && mixNums.size ? ' · ' + SM.map(m => '<span class="snum mixc">#</span> = ' + esc(m.label)).join(', ') : '') + '</span>' +
@@ -1358,6 +1381,7 @@ function renderBuyAll(list){
   fillsKick();
   const lg = $('levGo'); if (lg) lg.onclick = () => zbLevSweep(rows);
   const rv = $('rebVer'); if (rv) rv.onchange = () => { try { localStorage.setItem('sp_reb_ver', rv.value); } catch (e){} renderCards(); };
+  const sa = $('swAutoChk'); if (sa) sa.onchange = () => { swAutoSet(sa.checked); uniqStrategies().forEach(swApply); renderCards(); try { fetchLive(); } catch(e){} };   // zba81
   const cg = $('cpGo'); if (cg) cg.onclick = () => cashPlanRun(false);
   const cpc = $('cpPct'); if (cpc) cpc.onchange = () => { const v = +cpc.value; cpSetOpts({ pct: (v >= 0 && v <= 90) ? v : 10 }); renderCards(); cashPlanRun(true); };
   const cps = $('cpSet'); if (cps) cps.onchange = () => { cpSetOpts({ set: cps.value }); renderCards(); cashPlanRun(true); };
