@@ -71,7 +71,25 @@ META = {
     "uscpi":   {"label": "US CPI inflation",        "unit": "% y/y",   "src": "BLS (mql5)"},
     "gdpn":    {"label": "India nominal GDP",       "unit": "Rs lakh cr", "src": "MOSPI, FY (seeded)"},
     "mcaptot": {"label": "Listed market cap",       "unit": "Rs lakh cr", "src": "our tracked universe, daily"},
+    # ---- chart.html symbols (2026-11-24): the instruments the user charts on TradingView. Daily closes only.
+    #      Not on the Macro page (its tile list is explicit), read by docs/chart.html through its MACRO table.
+    "goldusd":   {"label": "Gold",                  "unit": "$/oz",    "src": "Yahoo GC=F"},
+    "silverusd": {"label": "Silver",                "unit": "$/oz",    "src": "Yahoo SI=F"},
+    "natgas":    {"label": "US natural gas",        "unit": "$/mmBtu", "src": "Yahoo NG=F"},
+    "alum":      {"label": "Aluminium (COMEX)",     "unit": "$/t",     "src": "Yahoo ALI=F"},
+    "btc":       {"label": "Bitcoin",               "unit": "$",       "src": "Yahoo BTC-USD"},
+    "sensex":    {"label": "BSE Sensex",            "unit": "",        "src": "Yahoo ^BSESN"},
+    "dji":       {"label": "Dow Jones Industrial Average", "unit": "", "src": "Yahoo ^DJI"},
+    "ndx":       {"label": "Nasdaq 100",            "unit": "",        "src": "Yahoo ^NDX"},
+    "dax":       {"label": "DAX",                   "unit": "",        "src": "Yahoo ^GDAXI"},
+    "cac":       {"label": "CAC 40",                "unit": "",        "src": "Yahoo ^FCHI"},
+    "ftse":      {"label": "FTSE 100",              "unit": "",        "src": "Yahoo ^FTSE"},
+    "kospi":     {"label": "KOSPI",                 "unit": "",        "src": "Yahoo ^KS11"},
+    "smi":       {"label": "Swiss Market Index",    "unit": "",        "src": "Yahoo ^SSMI"},
+    "aex":       {"label": "AEX (Netherlands)",     "unit": "",        "src": "Yahoo ^AEX"},
 }
+# chart.html-only Yahoo series: stored as fetched, 2 decimals
+CHART_ONLY = ("goldusd", "silverusd", "natgas", "alum", "btc", "sensex", "dji", "ndx", "dax", "cac", "ftse", "kospi", "smi", "aex")
 
 # Yahoo symbol -> series key (URL-encoded symbol)
 YH = {
@@ -87,6 +105,18 @@ YH = {
     "nasdaq": "%5EIXIC",
     "nikkei": "%5EN225",
     "hsi":    "%5EHSI",
+    "natgas": "NG%3DF",
+    "alum":   "ALI%3DF",
+    "btc":    "BTC-USD",
+    "sensex": "%5EBSESN",
+    "dji":    "%5EDJI",
+    "ndx":    "%5ENDX",
+    "dax":    "%5EGDAXI",
+    "cac":    "%5EFCHI",
+    "ftse":   "%5EFTSE",
+    "kospi":  "%5EKS11",
+    "smi":    "%5ESSMI",
+    "aex":    "%5EAEX",
 }
 # series key -> (mql5 country, slug)
 MQ = {
@@ -256,6 +286,9 @@ def main():
     for key in ("us10y", "usdinr", "dxy", "crude", "wti", "copper", "spx", "nasdaq", "nikkei", "hsi"):
         if yh.get(key):
             _merge(out, key, yh[key], rnd=3 if key in ("usdinr", "copper") else 2)
+    for key in CHART_ONLY:
+        if yh.get(key):
+            _merge(out, key, yh[key], rnd=3 if key in ("natgas", "silverusd") else 2)
     # gold/silver: USD/oz -> Rs/10g / Rs/kg using same-day USD/INR (fallback: latest INR)
     inr = yh.get("usdinr") or {}
     last_inr = inr[max(inr)] if inr else None

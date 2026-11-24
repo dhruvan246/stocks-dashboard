@@ -74,7 +74,7 @@
     <div><b>Symbols:</b> any NSE/BSE symbol on this site (RELIANCE, M&amp;M, BAJAJ-AUTO), or an index: NIFTY, CNX500, BANKNIFTY, CNXPSUBANK, CNXIT, CNXPHARMA, CNXAUTO, CNXMETAL, CNXREALTY, CNXPSE… TradingView-style <code>NSE:</code> / <code>BSE:</code> prefixes are accepted and ignored.</div>
     <div><b>Maths:</b> <code>+ - * /</code>, brackets and plain numbers. Put spaces around a minus sign (<code>A - B</code>), because some symbols contain a hyphen.</div>
     <div><b>Drawing:</b> pick a tool, then click two points (or press and drag). Horizontal line and Text need one click. With the pointer tool, click a drawing to select it, drag it or its end points to move it, and press Delete to remove it.</div>
-    <div><b>Global:</b> USDINR, USOIL (US crude), BRENT, GOLD, SILVER, COPPER, DXY, SPX, NASDAQ, NIKKEI, HSI, US10Y — daily closes from 2012, so <code>NIFTY/USDINR</code> or <code>NIFTY/USOIL</code> work.</div>
+    <div><b>Global:</b> USDINR, DXY, US10Y · USOIL (US crude), BRENT, NATGAS, GOLD and SILVER ($/oz), GOLDINR (Rs/10g), SILVERINR (Rs/kg), XAUINRG (Rs/gram), COPPER, ALUMINIUM, BTCUSD · SENSEX, SPX, NASDAQ, NDX, DJI, DAX, CAC40, FTSE, AEX, SMI, NIKKEI, HSI, KOSPI — daily closes (most from 2012), so <code>NIFTY/USDINR</code> or <code>CNX500/SPX</code> work. TradingView prefixes (<code>TVC:</code>, <code>SP:</code>, <code>FX_IDC:</code>…) are accepted. Not available: MCX and other futures, BSE sector indices.</div>
     <div><b>Data:</b> split/bonus-adjusted daily closes. Not available here: other currencies, futures, intraday prices.</div>
   </div>
 </main>
@@ -129,13 +129,27 @@ const DAILY_FILE={ 'NIFTY 50':'nifty.json', 'NIFTY 500':'nifty500.json', 'NIFTY 
    NSE dates are plotted and the macro value is carried from its last close (≤5 days). A macro code wins over a
    stock of the same name (SILVER is also a dead ticker). */
 const MACRO={ USDINR:['usdinr','USD/INR'], DXY:['dxy','US dollar index (DXY)'], USOIL:['wti','US crude oil (WTI)'], WTI:['wti','US crude oil (WTI)'], USCRUDE:['wti','US crude oil (WTI)'],
-  CRUDEOIL:['wti','US crude oil (WTI)'], BRENT:['crude','Brent crude oil'], UKOIL:['crude','Brent crude oil'], GOLD:['gold','Gold (Rs/10g)'], SILVER:['silver','Silver (Rs/kg)'],
-  COPPER:['copper','Copper ($/lb)'], SPX:['spx','S&P 500'], SP500:['spx','S&P 500'], NASDAQ:['nasdaq','Nasdaq Composite'], IXIC:['nasdaq','Nasdaq Composite'],
+  CRUDEOIL:['wti','US crude oil (WTI)'], BRENT:['crude','Brent crude oil'], UKOIL:['crude','Brent crude oil'],
+  GOLD:['goldusd','Gold ($/oz)'], XAUUSD:['goldusd','Gold ($/oz)'], SILVER:['silverusd','Silver ($/oz)'], XAGUSD:['silverusd','Silver ($/oz)'],
+  GOLDINR:['gold','Gold (Rs/10g)'], SILVERINR:['silver','Silver (Rs/kg)'], XAUINRG:['gold','Gold (Rs/gram)',0.1],
+  COPPER:['copper','Copper ($/lb)'], 'HG1!':['copper','Copper ($/lb)'], NATGAS:['natgas','US natural gas ($/mmBtu)'], NATURALGAS:['natgas','US natural gas ($/mmBtu)'],
+  ALUMINIUM:['alum','Aluminium, COMEX ($/t)'], BTCUSD:['btc','Bitcoin ($)'], BTC:['btc','Bitcoin ($)'],
+  SENSEX:['sensex','BSE Sensex'], SPX:['spx','S&P 500'], SP500:['spx','S&P 500'], NASDAQ:['nasdaq','Nasdaq Composite'], IXIC:['nasdaq','Nasdaq Composite'],
+  NDX:['ndx','Nasdaq 100'], US100:['ndx','Nasdaq 100'], DJI:['dji','Dow Jones Industrial Average'], US30:['dji','Dow Jones Industrial Average'],
+  DAX:['dax','DAX'], CAC40:['cac','CAC 40'], CAC:['cac','CAC 40'], PX1:['cac','CAC 40'], FTSE:['ftse','FTSE 100'], KOSPI:['kospi','KOSPI'], SMI:['smi','Swiss Market Index'],
+  AEX:['aex','AEX (Netherlands)'], NL25:['aex','AEX (Netherlands)'],
   NIKKEI:['nikkei','Nikkei 225'], NI225:['nikkei','Nikkei 225'], HSI:['hsi','Hang Seng'], HANGSENG:['hsi','Hang Seng'], US10Y:['us10y','US 10-year yield (%)'] };
+/* Old tickers → the symbol that carries their price history today. Used only when the old ticker has no file of its own.
+   Each pair was checked on 2026-11-24: NSE renames from scripts/_rename_map.json plus a continuous slice under the new symbol;
+   old BSE ids (GMM, RAJGLOWIR, RSYSTEMINT) from BSE's own page address for that scrip code; CEINSYSTECH from the NSE filing prefix. */
+const RENAMED={ CADILAHC:'ZYDUSLIFE', GUJGASLTD:'GUJENERGY', HEG:'HEGAM', TATAMOTORS:'TMPV', DHARAMSI:'DMCC', CEINSYSTECH:'CEINSYS',
+  GMM:'GMMPFAUDLR', RAJGLOWIR:'RAJRATAN', RSYSTEMINT:'RSYSTEMS' };
+// TradingView BSE: codes that are BSE indices, not stocks (METAL and MIDCAP are also dead NSE tickers — never load those for a BSE: code)
+const BSE_INDEX={ METAL:'BSE Metal index', MIDCAP:'BSE Midcap index', SMLCAP:'BSE Smallcap index', POWER:'BSE Power index', PSU:'BSE PSU index' };
 async function loadMacro(code){
-  const [key,label]=MACRO[code]; const j=await jget('./macro.json'); const S=(j.series||{})[key]; const d=S&&S.d;
+  const [key,label,mul]=MACRO[code]; const j=await jget('./macro.json'); const S=(j.series||{})[key]; const d=S&&S.d;
   if(!d||!Object.keys(d).length) throw new Error(label+' is not in the data yet.');
-  const pts=Object.keys(d).sort().map(k=>({t:isoToTs(k),v:+d[k],m:0})).filter(p=>isFinite(p.v));
+  const pts=Object.keys(d).sort().map(k=>({t:isoToTs(k),v:+d[k]*(mul||1),m:0})).filter(p=>isFinite(p.v));
   if(!pts.length) throw new Error('empty');
   return { label, kind:'macro', src:S.src||'', unit:S.unit||'', pts, dailyFrom:pts[0].t, nMonthly:0 };
 }
@@ -192,12 +206,14 @@ function monthEnd(y,mi,cal){
   return d.getTime()/1000;
 }
 async function loadStock(sym){
-  const r=await fetch(SLICE_URL+slugSym(sym)+'.json'); if(!r.ok) throw new Error('HTTP '+r.status);
+  let r=await fetch(SLICE_URL+slugSym(sym)+'.json'); let was='';
+  if(!r.ok&&RENAMED[sym]){ was=sym; r=await fetch(SLICE_URL+slugSym(RENAMED[sym])+'.json'); }
+  if(!r.ok) throw new Error('HTTP '+r.status);
   const S=await r.json(); if(!S||!Array.isArray(S.p)||!S.p.length||typeof S.d0!=='number'||typeof S.ts!=='number') throw new Error('malformed');
   const pts=[]; let off=S.d0, prev=-Infinity; const dd=S.dd||[];
   for(let i=0;i<S.p.length;i++){ if(i>0) off+=dd[i-1]; if(!(off>prev)) continue; prev=off; const v=S.p[i]/100; if(v>0) pts.push({t:S.ts+off*DAY,v,m:0}); }
   if(!pts.length) throw new Error('empty');
-  return { label:S.sym||sym, name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0 };
+  return { label:(S.sym||sym)+(was?' (was '+was+')':''), name:S.name||'', kind:'stock', alive:!!S.alive, pts, dailyFrom:pts[0].t, nMonthly:0 };
 }
 const OPCACHE={};
 async function resolveSymbol(tok){           // tok: upper-case, exchange prefix already stripped
@@ -223,7 +239,9 @@ function tokenize(src){
       while(j<s.length&&(/[A-Z0-9&_.:!]/.test(s[j])||(s[j]==='-'&&j+1<s.length&&/[A-Z0-9]/.test(s[j+1])&&/[A-Z0-9]/.test(s[j-1])))) j++;
       let sym=s.slice(i,j); const colon=sym.lastIndexOf(':');
       if(colon>=0){ const ex=sym.slice(0,colon); sym=sym.slice(colon+1);
-        if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here — only NSE/BSE stocks and NSE indices are.'); }
+        if(ex==='BSE'&&BSE_INDEX[sym]) throw new Error(BSE_INDEX[sym]+' ("BSE:'+sym+'") is not available here yet. Sensex is: SENSEX.');
+        if(/[0-9]!$/.test(sym)&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is a futures contract; futures prices are not available here.'+(ex==='NSE'||ex==='NSEIX'?' Use the index itself, e.g. '+sym.replace(/[0-9]!$/,'')+'.':''));
+        if(ex!=='NSE'&&ex!=='BSE'&&!MACRO[sym]) throw new Error('"'+ex+':'+sym+'" is not available here. Open "How it works" for the list of global series.'); }
       out.push({k:'sym',v:sym}); i=j; continue; }
     throw new Error('Unexpected character "'+c+'"');
   }
@@ -431,7 +449,7 @@ async function sugIndices(){
   const list=Object.values(byName).map(o=>{ const full=MONTHLY_NAME[o.name]||o.name; o.keys.add(norm(full));
     return { kind:'idx', code:o.alias||norm(o.name), label:titleCase(full), keys:[...o.keys], rank:IDX_ORDER.indexOf(o.name) }; });
   list.sort((a,b)=>(a.rank<0?1e3:a.rank)-(b.rank<0?1e3:b.rank)||a.label.localeCompare(b.label));
-  const seen={}; for(const c in MACRO){ const [key,label]=MACRO[c]; if(seen[key]){ seen[key].keys.push(c); continue; }
+  const seen={}; for(const c in MACRO){ const [k0,label,mul]=MACRO[c]; const key=k0+'|'+(mul||1); if(seen[key]){ seen[key].keys.push(c); continue; }
     list.push(seen[key]={ kind:'mac', code:c, label, keys:[c,norm(label)].concat(label.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>2)), rank:-1 }); }
   return SUG_IDX=list;
 }
