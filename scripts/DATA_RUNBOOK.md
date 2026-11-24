@@ -23474,7 +23474,7 @@ share (NSE 21-Nov-2008), not equity in a spun-off company -> belongs to the bonu
 - **Verified** (release base after §170, real `main()`, NSE blocked): baseline 0 changes; fixed "Self-heal corrected 15" + 3 ex-day bars;
   exactly 15 symbols changed (price arrays only); 359,580 cells = exact correction within rounding; 15/15 boundaries exact; second
   pass 0. Quantmac 96.52% -> 96.49% (+14 / -84).
-### 170e. An exact (unrounded) demerger row is healed to the 4-decimal storage floor — RELIANCE 2023-07-20  (2026-11-25, user: "Yes, fix it")
+### 170f. An exact (unrounded) demerger row is healed to the 4-decimal storage floor — RELIANCE 2023-07-20  (2026-11-25, user: "Yes, fix it")
 **Found** comparing the Charts page with TradingView bar by bar: every RELIANCE price before 20-Jul-2023 sat 0.0025% high. NSE's row for
 20-Jul-2023: OPEN 2580, CLOSE 2619.85, PREVCLOSE 2841.85 -> factor 2580 / 2841.85 = 0.90785932; the store's step was 0.9078822. Cause: the
 ledger's raw ex-day ratio is rounded to 4 decimals (0.9219 vs 0.92188187) and self_heal measures the applied step against it, so the
