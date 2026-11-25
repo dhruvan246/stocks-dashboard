@@ -130,6 +130,29 @@
     #trkBar .sg{max-width:100%;overflow-x:auto}
     #tpC .tps{flex-wrap:wrap}
   }
+  /* MONTHLY — one table: a row per group, a column per month */
+  #mBar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+  #mBar .sg{max-width:100%;overflow-x:auto}
+  #mBar .hint{font-size:12px;color:var(--text-faint)}
+  #mBox{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:auto;max-height:calc(100vh - 215px);min-height:300px}
+  #mTbl{border-collapse:separate;border-spacing:0;font-size:12.5px;font-variant-numeric:tabular-nums;width:max-content;min-width:100%}
+  html[data-theme] #mTbl th{position:sticky;top:0;z-index:2;background:var(--surface-2);color:var(--text-muted);font-weight:500;font-size:11.5px;padding:7px 6px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;text-transform:none;letter-spacing:0}
+  html[data-theme] #mTbl th.on{color:var(--accent-text)}
+  html[data-theme] #mTbl th.nm,html[data-theme] #mTbl td.nm{position:sticky;left:0;text-align:left;min-width:210px;max-width:250px;padding-left:12px;border-right:1px solid var(--border)}
+  html[data-theme] #mTbl th.nm{z-index:3}
+  html[data-theme] #mTbl td{padding:0;border-bottom:1px solid var(--border);border-right:1px solid var(--surface);text-align:right;white-space:nowrap;height:27px}
+  html[data-theme] #mTbl td.nm{z-index:1;background:var(--surface);color:var(--text);padding:0 8px 0 12px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+  #mTbl td.nm:hover{color:var(--accent-text)} #mTbl td.nm i{font-style:normal;color:var(--text-faint);margin-left:5px;font-size:11px}
+  #mTbl td.c{min-width:54px;padding:0 7px;font-weight:500} #mTbl td.na{color:var(--text-faint);padding:0 7px}
+  html[data-theme] #mTbl td.tot,html[data-theme] #mTbl th.tot{border-left:1px solid var(--border);padding:0 9px;font-weight:600;min-width:62px}
+  html[data-theme] #mTbl th.tot{padding:7px 9px}
+  html[data-theme] #mTbl tr.bm td{border-bottom:1px solid var(--border-strong,var(--border))} #mTbl tr.bm td.nm{cursor:default;color:var(--text-muted)}
+  #mNote{font-size:12px;color:var(--text-faint);margin-top:8px;line-height:1.5}
+  #mMsg{padding:40px 12px;text-align:center;color:var(--text-faint);font-size:13px}
+  @media (max-width:899px){
+    html[data-theme] #mTbl th.nm,html[data-theme] #mTbl td.nm{min-width:132px;max-width:132px;padding-left:8px} #mTbl{font-size:12px} #mTbl td.c{min-width:48px;padding:0 5px}
+    #mBox{max-height:70vh}
+  }
 </style>
 </head>
 <body class="min-h-screen text-slate-800">
@@ -195,6 +218,19 @@
         <div id="tStats"></div>
       </section>
     </div>
+  </div>
+
+  <!-- MONTHLY: every group's return month by month -->
+  <div id="mWrap" class="hidden">
+    <div id="mBar">
+      <div class="sg" id="mLevels" role="group" aria-label="Grouping"></div>
+      <div class="sg" id="mRange" role="group" aria-label="How many months"></div>
+      <div class="sg" id="mWeight" role="group" aria-label="Weighting"></div>
+      <button type="button" class="tbtn" id="mCsv" title="Download this table">CSV</button>
+      <span class="hint">Click a month to sort · click a name to open its stocks</span>
+    </div>
+    <div id="mBox"><div id="mMsg">Loading…</div></div>
+    <div id="mNote"></div>
   </div>
 
   <div id="oldWrap" class="space-y-3 hidden">
@@ -746,7 +782,7 @@ function closeModal(){ $('modal').style.display='none'; document.body.style.over
 // Tile ink is resolved into an inline style, so a theme switch repaints the CSS around it and
 // leaves white text on a now-pale tile. theme.js re-resolves pinned table columns for exactly this
 // reason and emits no event, so watch the attribute it sets.
-new MutationObserver(()=>{ if(ST.view==='heat') renderGrid(); })
+new MutationObserver(()=>{ if(ST.view==='heat') renderGrid(); else if(ST.view==='monthly') mRender(true); })
   .observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 
 $('modal').onclick=e=>{ if(e.target.id==='modal')closeModal(); };
@@ -793,7 +829,7 @@ function renderToolbar(){
   $('movers').innerHTML=[['all','All'],['top','Top 20'],['bottom','Bottom 20'],['watch','★ Watchlist']].map(([k,l])=>`<span class="pill px-2.5 py-1 rounded-md border border-slate-300 ${k===ST.mover?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${k}">${l}</span>`).join('');
   $('periods').innerHTML=PERIODS.map(p=>`<span class="pill px-2 py-1 rounded-md border border-slate-300 ${p[0]===ST.period?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${p[0]}">${p[0]}</span>`).join('');
   $('weights').innerHTML=[['equal','Equal'],['mcap','Mkt cap']].map(([k,l])=>`<span class="pill px-2 py-1 rounded-md border border-slate-300 ${k===ST.weight?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${k}">${l}</span>`).join('');
-  $('vtabs').innerHTML=[['tracker','Tracker'],['cards','Cards'],['heat','Heatmap']].map(([k,l])=>`<button type="button" role="tab" aria-selected="${k===ST.view}" class="${k===ST.view?'on':''}" data-v="${k}">${l}</button>`).join('');
+  $('vtabs').innerHTML=[['tracker','Tracker'],['monthly','Monthly'],['cards','Cards'],['heat','Heatmap']].map(([k,l])=>`<button type="button" role="tab" aria-selected="${k===ST.view}" class="${k===ST.view?'on':''}" data-v="${k}">${l}</button>`).join('');
   $('levels').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.level=b.dataset.v; recompute(); });
   $('movers').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.mover=b.dataset.v; renderToolbar(); renderGrid(); });
   $('periods').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>changePeriod(b.dataset.v));
@@ -831,7 +867,7 @@ const T={g:null,s:null,q:'',gsort:{k:'ret',dir:-1},ssort:{k:'r',dir:-1},bse:fals
 let RS={};
 function saveUI(){ try{ localStorage.setItem('sw_sec_ui',JSON.stringify({view:ST.view,period:ST.period,level:ST.level,bse:T.bse,sme:T.sme,iv:T.iv,range:T.range,log:T.log})); }catch(e){} }
 function loadUI(){ try{ const u=JSON.parse(localStorage.getItem('sw_sec_ui')||'null'); if(!u)return;
-  if(['tracker','cards','heat'].includes(u.view))ST.view=u.view;
+  if(['tracker','monthly','cards','heat'].includes(u.view))ST.view=u.view;
   // the period is deliberately not restored: the page always opens on Today (user, 2026-11-25)
   if(LEVELS.some(l=>l.key===u.level))ST.level=u.level;
   T.bse=!!u.bse; T.sme=!!u.sme; T.log=!!u.log;
@@ -1164,6 +1200,7 @@ function applyLive(L){
   return true;
 }
 function setAsof(){
+  if(ST.view==='monthly'){ const a=$('asof'); a.textContent=(REW!=null?'Rewound · ':'')+'Monthly returns · prices to '+niceDate(isoOff(END_OFF)); a.title=''; a.classList.remove('live'); a.classList.toggle('rew',REW!=null); return; }
   const end=niceDate(isoOff(END_OFF)), lv=!!(LIVE&&LIVE.off===END_OFF), fresh=lv&&LIVE.date===istNow().toISOString().slice(0,10)&&marketOpenIST();
   const span=(REW!=null?'Rewound · ':'')+(ST.period==='Today'?(REW!=null?'':'Today: ')+end+' vs previous close':ST.period+': '+niceDate(isoOff(periodStart()))+' → '+end);
   $('asof').innerHTML=esc(span)+' · '+(lv?`<i class="lvdot${fresh?' on':''}"></i>${fresh?'Live':'Last traded prices'} ${esc(LIVE.time)} IST`:'closing prices');
@@ -1198,6 +1235,7 @@ function liveRefresh(){
   const g=$('tgList'), s=$('tsList'), gy=g.scrollTop, sy=s.scrollTop;
   buildRS(); compute(); renderBreadth(); setAsof(); rewBar();
   if(ST.view==='tracker'){ trkCompute(); trkRenderGroups(); trkRenderStocks(true); g.scrollTop=gy; s.scrollTop=sy; trkLiveLine(); }
+  else if(ST.view==='monthly') mRender(true);
   else if($('modal').style.display!=='flex') renderGrid();
 }
 async function liveTick(){ if(liveBusy)return; liveBusy=true; try{ const L=await fetchLive(1); if(L&&applyLive(L)&&REW==null)liveRefresh(); }catch(e){} finally{ liveBusy=false; } }
@@ -1207,11 +1245,120 @@ function liveStart(){
 }
 function applyView(){
   setAsof();
-  const tr=ST.view==='tracker';
-  $('trkWrap').classList.toggle('hidden',!tr); $('oldWrap').classList.toggle('hidden',tr);
-  $('pageMain').classList.toggle('wide',tr);
-  if(tr)trkRender(); else renderGrid();
+  const tr=ST.view==='tracker', mo=ST.view==='monthly';
+  $('trkWrap').classList.toggle('hidden',!tr); $('mWrap').classList.toggle('hidden',!mo); $('oldWrap').classList.toggle('hidden',tr||mo);
+  $('pageMain').classList.toggle('wide',tr||mo);
+  if(tr)trkRender(); else if(mo)mRender(); else renderGrid();
 }
+
+/* ================= MONTHLY — a row per group, a column per calendar month =================
+ * A cell = the average (or market-cap weighted) return of the group's stocks over that month: last close of
+ * the previous month → last close of the month (the newest month runs to the date on screen).
+ * A stock counts in a month only if it traded in it and had a close within 20 days before the month began.
+ * Sector / industry rows: the Tracker's universe (₹500 Cr and up, SME / BSE-only as toggled there, 5+ stocks),
+ * built from TODAY's companies and classification. Index rows: the members on the last day before the month. */
+const M={range:12,sort:{k:null,dir:-1},rows:[],months:[],bm:null,tok:0};
+const M_RANGES=[[12,'1Y'],[24,'2Y'],[36,'3Y'],[60,'5Y'],[120,'10Y']], M_CAP=15;
+const M_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function mMonths(n){
+  const end=isoOff(END_OFF); let y=+end.slice(0,4), m=+end.slice(5,7); const out=[];
+  for(let i=0;i<n;i++){
+    const key=y+'-'+String(m).padStart(2,'0'), ny=m===12?y+1:y, nm=m===12?1:m+1;
+    const last=dayOff(ny+'-'+String(nm).padStart(2,'0')+'-01')-1;
+    out.unshift({key,s:dayOff(key+'-01')-1,e:Math.min(END_OFF,last),part:END_OFF<last,label:M_MON[m-1]+' '+String(y).slice(2),full:M_MON[m-1]+' '+y});
+    if(--m===0){ m=12; y--; }
+  }
+  return out;
+}
+function mStockRet(t,mo){
+  const s=SERIES[t]; if(!s)return null;
+  const i0=idxLE(s.d,mo.s), i1=idxLE(s.d,mo.e);
+  if(i0<0||i1<=i0||mo.s-s.d[i0]>20)return null;
+  const p0=s.p[i0]; return p0>0?(s.p[i1]/p0-1)*100:null;
+}
+function mIdxMembers(name,iso){
+  let best=null; for(const s of IDXH[name]){ if(s.effectiveDate<=iso&&(!best||s.effectiveDate>best.effectiveDate))best=s; }
+  return best?best.symbols.map(s=>SERIES[s]?s:(SERIES[s+'.NS']?s+'.NS':null)).filter(Boolean):null;
+}
+function mCell(mem,mo,minN){
+  let ws=0,wr=0,n=0;
+  for(const t of mem){ const r=mStockRet(t,mo); if(r==null)continue;
+    const w=ST.weight==='mcap'?((META[t]&&META[t].mcap)||0):1; if(w<=0)continue; ws+=w; wr+=w*r; n++; }
+  return (n>=minN&&ws>0)?{r:wr/ws,n}:null;
+}
+function mCompute(){
+  const months=M.months=mMonths(M.range), isIdx=ST.level==='nse'; M.rows=[];
+  if(isIdx){
+    for(const name in IDXH){
+      const cells=months.map(mo=>{ const mem=mIdxMembers(name,isoOff(mo.s)); return mem&&mem.length?mCell(mem,mo,1):null; });
+      if(cells.some(Boolean)){ const now=mIdxMembers(name,isoOff(END_OFF)); M.rows.push({name,n:now?now.length:0,cells}); }
+    }
+  } else {
+    for(const name in GROUPS){
+      const mem=GROUPS[name].filter(trkOK); if(mem.length<MIN_N)continue;
+      const cells=months.map(mo=>mCell(mem,mo,MIN_N));
+      if(cells.some(Boolean))M.rows.push({name,n:mem.length,cells});
+    }
+  }
+  for(const r of M.rows){ let v=1,k=0; for(const c of r.cells) if(c){ v*=1+c.r/100; k++; } r.tot=k?(v-1)*100:null; r.k=k; }
+  // benchmark row
+  const bc=months.map(mo=>{ if(!NIFTY_OFFS.length||mo.s<NIFTY_OFFS[0])return null; const a=niftyValAt(mo.s), b=niftyValAt(mo.e); return (a>0&&b>0)?{r:(b/a-1)*100,n:0}:null; });
+  let v=1,k=0; for(const c of bc) if(c){ v*=1+c.r/100; k++; }
+  M.bm=k?{name:'Nifty 500',cells:bc,tot:(v-1)*100,k}:null;
+}
+function mSorted(){
+  const {k,dir}=M.sort, r=M.rows.slice(), last=M.months.length-1;
+  const val=x=>k==='name'?0:k==='tot'?x.tot:(x.cells[k==null?last:k]||{}).r;
+  if(k==='name')return r.sort((a,b)=>a.name.localeCompare(b.name)*-dir);
+  return r.sort((a,b)=>{ const x=val(a),y=val(b); if(x==null&&y==null)return a.name.localeCompare(b.name); if(x==null)return 1; if(y==null)return -1; return (x-y)*dir; });
+}
+function mTd(c,srf,tip){
+  if(!c)return '<td class="na">—</td>';
+  const t=Math.min(1,Math.abs(c.r)/M_CAP), alpha=.10+t*.70, rgb=c.r>=0?[22,163,74]:[220,38,38], ink=tileInk(rgb,alpha,srf);
+  return `<td class="c" style="background:rgba(${rgb},${alpha.toFixed(2)});color:${ink.fg}" title="${esc(tip)}">${(c.r>=0?'+':'')+c.r.toFixed(1)}</td>`;
+}
+function mBarRender(){
+  const seg=(id,arr,cur,fn)=>{ $(id).innerHTML=arr.map(([k,l])=>`<button type="button" class="${k===cur?'on':''}" data-v="${k}">${l}</button>`).join('');
+    $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>fn(b.dataset.v)); };
+  seg('mLevels',LEVELS.map(l=>[l.key,l.label]),ST.level,v=>{ ST.level=v; T.g=null; T.s=null; saveUI(); recompute(); });
+  seg('mRange',M_RANGES,M.range,v=>{ M.range=+v; M.sort={k:null,dir:-1}; mRender(); });
+  seg('mWeight',[['equal','Equal weight'],['mcap','Market-cap weight']],ST.weight,v=>{ ST.weight=v; recompute(); });
+}
+async function mRender(keep){
+  const tok=++M.tok, box=$('mBox'); mBarRender();
+  const need=mMonths(M.range)[0].s-25;
+  if(need<EARLIEST&&!FULL){ box.innerHTML='<div id="mMsg">Loading full price history…</div>';
+    try{ await ensureFull(); }catch(e){ if(tok===M.tok)box.innerHTML='<div id="mMsg">Could not load the full price history. Try again, or pick 1Y.</div>'; return; }
+    if(tok!==M.tok||ST.view!=='monthly')return; }
+  const sx=box.scrollLeft, sy=box.scrollTop;
+  mCompute();
+  const rows=mSorted(), mo=M.months, srf=surfaceRGB(), last=mo.length-1, sk=M.sort.k==null?last:M.sort.k, ar=M.sort.dir<0?' ▼':' ▲';
+  const lv=LEVELS.find(l=>l.key===ST.level).label, isIdx=ST.level==='nse';
+  if(!rows.length){ box.innerHTML='<div id="mMsg">No groups to show.</div>'; $('mNote').textContent=''; return; }
+  const head=`<tr><th class="nm${sk==='name'?' on':''}" data-k="name">${esc(lv)} <span style="color:var(--text-faint)">${rows.length}</span>${sk==='name'?ar:''}</th>`+
+    mo.map((m,i)=>`<th class="${sk===i?'on':''}" data-k="${i}" title="${esc(m.full+(m.part?' — up to '+niceDate(isoOff(END_OFF)):''))}">${m.label}${m.part?'*':''}${sk===i?ar:''}</th>`).join('')+
+    `<th class="tot${sk==='tot'?' on':''}" data-k="tot" title="All the months shown, compounded">${M_RANGES.find(x=>x[0]===M.range)[1]}${sk==='tot'?ar:''}</th></tr>`;
+  const line=(r,bm)=>`<tr class="${bm?'bm':''}"><td class="nm" ${bm?'':`data-name="${esc(r.name)}"`} title="${esc(r.name)}">${esc(r.name)}${bm?'':`<i>${r.n}</i>`}</td>`+
+    r.cells.map((c,i)=>mTd(c,srf,c?`${r.name} · ${mo[i].full}${mo[i].part?' (so far)':''}: ${fmtPct(c.r)}${c.n?' · '+c.n+' stocks':''}`:'')).join('')+
+    `<td class="tot ${clsPN(r.tot)}" title="${esc(r.k<mo.length?r.k+' of '+mo.length+' months have a figure':'')}">${r.tot==null?'—':(r.tot>=0?'+':'')+r.tot.toFixed(1)}</td></tr>`;
+  box.innerHTML=`<table id="mTbl"><thead>${head}</thead><tbody>${M.bm?line(M.bm,true):''}${rows.map(r=>line(r,false)).join('')}</tbody></table>`;
+  box.querySelectorAll('th').forEach(th=>th.onclick=()=>{ const k=th.dataset.k==='name'||th.dataset.k==='tot'?th.dataset.k:+th.dataset.k;
+    M.sort=(sk===k)?{k,dir:-M.sort.dir}:{k,dir:-1}; mRender(true); });
+  box.querySelectorAll('td.nm[data-name]').forEach(td=>td.onclick=()=>{ ST.view='tracker'; T.g=td.dataset.name; T.s=null; saveUI(); renderToolbar(); applyView(); });
+  if(keep){ box.scrollLeft=sx; box.scrollTop=sy; } else { box.scrollTop=0; box.scrollLeft=box.scrollWidth; }
+  $('mNote').innerHTML='Figures are % returns for each calendar month'+(mo[last].part?'; * = month still running, up to '+esc(niceDate(isoOff(END_OFF))):'')+'. Colour is full strength at ±'+M_CAP+'%. '+
+    (isIdx?'Each index uses its members on the last day before the month; an index with no checked member list for a month shows —.'+(XIDX.size?' '+XIDX.size+' newer indices use today’s members for every month.':'')
+          :'Groups are built from today’s companies of ₹'+MIN_MC+' Cr and above ('+MIN_N+' or more per group) under today’s classification, so a company that has since delisted is not counted.')+
+    ' The last column compounds the months shown.'+
+    (M.bm&&NIFTY_OFFS.length&&NIFTY_OFFS[NIFTY_OFFS.length-1]<END_OFF?' The Nifty 500 row uses closing values up to '+esc(niceDate(isoOff(NIFTY_OFFS[NIFTY_OFFS.length-1])))+'.':'');
+}
+function mCsv(){
+  const mo=M.months, q=x=>'"'+String(x).replace(/"/g,'""')+'"', f=c=>c?c.r.toFixed(2):'';
+  const rows=(M.bm?[M.bm]:[]).concat(mSorted());
+  const lines=[['Group','Stocks'].concat(mo.map(m=>m.key),['Compounded_%']).join(',')].concat(rows.map(r=>[q(r.name),r.n||''].concat(r.cells.map(f),[r.tot==null?'':r.tot.toFixed(2)]).join(',')));
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'})); a.download='stocksworld_monthly_'+ST.level+'_'+M.range+'m.csv'; a.click();
+}
+$('mCsv').onclick=mCsv;
 
 /* ---- boot ---- */
 async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer(); const s=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(s).text()); }
@@ -1225,7 +1372,8 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     const [slim,cls,nifty,smeipo,smeem,xidx,xhist]=await Promise.all([
       gunzipJSON('./dash_slim.bin'),
       fetch('./sector_classification.json').then(r=>r.json()),
-      fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
+      // the benchmark every label on this page calls Nifty 500 — nifty.json is Nifty 50 (found 2026-11-25), nifty500.json is the right file
+      fetch('./nifty500.json').then(r=>r.json()).catch(()=>({px:{}})),
       // BSE SME IPO membership history (runbook §195) — own file, full "<ID>.BO" keys; a missing file costs only this group
       fetch('./bse_sme_ipo/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       // Nifty SME Emerge membership history (runbook §210) — bare NSE tickers, resolved like Nifty's by buildGroups()

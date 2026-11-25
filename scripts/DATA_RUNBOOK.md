@@ -31227,6 +31227,17 @@ history, add it to `build_changelog.py` / `build_membership_v2.py` (§227) and r
 Measured 2026-11-25: 53 of 53 fetched; unresolved symbols on the page: Nifty REITs & Realty has 6 REIT units, Commercial &
 Transport Services has DUMMYINXGN.
 
+**Monthly view (2026-11-25, user: "i want a heatmap of all sectors monthwise returns").** Tab "Monthly" in docs/sectors.html
+(`mCompute` / `mRender`): a row per group at the chosen level, a column per calendar month (1Y–10Y), cell = equal- or
+market-cap-weighted mean of the members' return from the last close before the month to the month's last close (newest month:
+to the date on screen, marked *). A stock counts in a month only if it traded in it and had a close within 20 days before it
+began. Sector/industry rows use the Tracker universe (₹500 Cr+, 5+ stocks, TODAY's companies and classification — delisted
+companies are absent, so old months are survivorship-biased; the note under the table says so). Index rows use the members on
+the last day before the month (history above; the 15 without history use today's members). Checked 2026-11-25: Energy, Oct 2026,
+equal weight = −8.9658% from 39 stocks by an independent loop over SERIES = the page's cell.
+**Benchmark file fixed the same day:** every "Nifty 500" label on this page was reading `docs/nifty.json`, which is Nifty 50
+(25,349.65 on 2026-11-23 vs 23,748.15 in `nifty500.json`). The page now reads `nifty500.json` (2012 →).
+
 **History of the 53 (2026-11-25, user: "build history for all 53 . dont make any mistakes").**
 `scripts/build_extra_index_history.py` + `scripts/extra_index_rules.py` → `docs/nse_extra_indices/history.json`
 (`{built, indices:{name:{from, checks, snapshots}}, unverified:{name:reason}}`). A LOCAL re-runnable tool, not CI:
