@@ -462,8 +462,9 @@
   // MARKET STRIP (v5) — one thin line above the header on every page: the last
   // close and 1-day move of the main Indian and world markets, read from the
   // committed ./global.json (CI-refreshed, ~23 KB; the same file the Global
-  // Markets page renders). These are LAST CLOSES, never live quotes — the label
-  // says so and each item's tooltip carries its own close date. It scrolls away
+  // Markets page renders), then topped up every 60 s with the latest quotes from our
+  // quotes Worker (2026-11-25, user: strip showed yesterday's Nifty). The label says
+  // which one is on screen: "Last close" (file) or "● Live HH:MM" (Worker, IST). It scrolls away
   // with the page (the header below it is the sticky part). No file → no strip.
   // =========================================================================
   var TAPE = [['nifty', 'Nifty 50', 1], ['sensex', 'Sensex', 1], ['bank', 'Bank Nifty', 1], ['spx', 'S&P 500'], ['ndq', 'Nasdaq'],
@@ -477,11 +478,9 @@
       t.innerHTML = '<div class="sw-tape-in"><span class="sw-tape-lb">Last close</span></div>';
       h.parentNode.insertBefore(t, h);
       var gone = function () { if (t.parentNode) t.parentNode.removeChild(t); };
-      fetch('./global.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
-        if (!j) { gone(); return; }
-        var by = {};
-        Object.keys(j.groups || {}).forEach(function (k) { (j.groups[k] || []).forEach(function (x) { by[x.id] = x; }); });
-        (j.fx || []).forEach(function (x) { by[x.id] = x; });
+      var by = {}, liveAt = 0;
+      // paint(): rebuild the items from `by`. A record topped up by liveTape() carries _live.
+      var paint = function () {
         var html = '';
         TAPE.forEach(function (d) {
           var x = by[d[0]];
@@ -491,12 +490,56 @@
           var dp = Math.min(2, typeof x.dp === 'number' ? x.dp : 2);
           var val = x.last.toLocaleString(d[2] ? 'en-IN' : 'en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
           html += '<a class="sw-tape-it" href="' + (d[2] ? './indices.html' : './global.html') + '" title="' + esc(x.name || d[1]) +
-            (x.last_date ? ' · close of ' + esc(x.last_date) : '') + '">' +
+            (x._live ? ' · latest quote (Yahoo, can lag up to 15 min; a closed market shows its last close)'
+                     : (x.last_date ? ' · close of ' + esc(x.last_date) : '')) + '">' +
             '<span class="sw-tape-n">' + esc(d[1]) + '</span><span class="sw-tape-v">' + val + '</span>' +
             (ch === null ? '' : '<span class="sw-tape-c ' + (ch >= 0 ? 'up' : 'dn') + '">' + (ch >= 0 ? '+' : '−') + Math.abs(ch).toFixed(2) + '%</span>') + '</a>';
         });
-        if (!html) { gone(); return; }
-        t.firstChild.insertAdjacentHTML('beforeend', html);
+        if (!html) return false;
+        var hm = '';
+        if (liveAt) { try { hm = new Date(liveAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }); } catch (e) {} }
+        var keep = t.firstChild.scrollLeft;
+        t.firstChild.innerHTML = '<span class="sw-tape-lb' + (liveAt ? ' sw-tape-live' : '') + '">' +
+          (liveAt ? '● Live' + (hm ? ' ' + hm : '') : 'Last close') + '</span>' + html;
+        t.firstChild.scrollLeft = keep;
+        t.setAttribute('aria-label', liveAt ? 'Markets, latest quotes' : 'Markets at last close');
+        return true;
+      };
+      // liveTape(): top up last price + 1-day change from our own quotes Worker (?quotes= =
+      // verbatim Yahoo symbols, the same route global.html uses). Every 60 s while the tab is
+      // visible. Any failure keeps what is on screen (last closes, labelled so). The change is
+      // computed against the Worker's own prevClose, never against the baked file.
+      var WORKER = 'https://stocksworld-quotes.dhruvan2510.workers.dev';
+      var liveTape = function () {
+        if (document.hidden || !t.parentNode) return;
+        var syms = [];
+        TAPE.forEach(function (d) { var x = by[d[0]]; if (x && x.symbol) syms.push(x.symbol); });
+        if (!syms.length) return;
+        var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 8000);
+        fetch(WORKER + '/?quotes=' + encodeURIComponent(syms.join(',')), ctl ? { cache: 'no-store', signal: ctl.signal } : { cache: 'no-store' })
+          .then(function (r) { clearTimeout(timer); if (!r.ok) throw 0; return r.json(); })
+          .then(function (d) {
+            var q = (d && d.data) || {}, hit = 0;
+            TAPE.forEach(function (it) {
+              var x = by[it[0]], v = x && x.symbol && q[x.symbol];
+              if (!v || typeof v.ltp !== 'number' || !isFinite(v.ltp) || v.ltp <= 0) return;
+              x.last = v.ltp;
+              x.d1 = (typeof v.prevClose === 'number' && v.prevClose > 0) ? (v.ltp / v.prevClose - 1) * 100 : null;
+              x.prev = null; x._live = true; hit++;
+            });
+            if (!hit) return;
+            liveAt = (d && typeof d.asOf === 'number') ? d.asOf : Date.now();
+            paint();
+          }).catch(function () { clearTimeout(timer); });
+      };
+      fetch('./global.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (!j) { gone(); return; }
+        Object.keys(j.groups || {}).forEach(function (k) { (j.groups[k] || []).forEach(function (x) { by[x.id] = x; }); });
+        (j.fx || []).forEach(function (x) { by[x.id] = x; });
+        if (!paint()) { gone(); return; }
+        liveTape(); setInterval(liveTape, 60000);
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) liveTape(); });
       }).catch(gone);
     } catch (e) {}
   }

@@ -31194,3 +31194,13 @@ User: "add all country indexes nasdaq dow jones s&p 500 kospi nikkei hangseng et
   that reason) or an NSE index name. Kind is `macro` with `world:true`: it never adds dates to a chart that has an NSE
   leg, but its real open/high/low are used for candles. A ratio pairs bars by calendar date (US session of date D ends
   after NSE's date D).
+
+### §247b — Top market strip shows live quotes (2026-11-25, user: "header shows Nifty prices of yesterday, not live")
+
+The strip (`buildTape()` in `docs/theme.js`) first paints the last closes from `./global.json` (label
+"Last close"), then tops up last price + 1-day change from our quotes Worker (`?quotes=` with each
+record's Yahoo `symbol`, the same route `global.html` uses) at load, every 60 s while the tab is
+visible, and when the tab comes back. Label becomes "● Live HH:MM" (IST, Worker `asOf`). The change is
+computed against the Worker's own `prevClose`. Worker unreachable / no hit → the strip stays on
+"Last close" (tested by blocking the Worker). Yahoo quotes can lag up to ~15 min, and a closed market
+shows its last close — the tooltip says so.
