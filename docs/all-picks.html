@@ -97,6 +97,24 @@
     #mrTbl .stkwrap{width:150px}   /* a narrower name column leaves room for more months on a phone */
     #mrTbl th,#mrTbl td{padding:4px 5px}
   }
+  /* ▸ full qualifying list under a board row (user 2026-11-25, "layout 1") */
+  .xbtn{display:block;font-size:11px;font-weight:700;border:1px solid var(--border);border-radius:6px;padding:1px 7px;margin-top:4px;color:var(--muted,#64748b)}
+  .xbtn:hover{color:var(--accent,#4f46e5)}
+  .ftw{overflow-x:auto}
+  /* the board scrolls sideways on a phone (its grid is ~1,100px); pin the opened list to the visible width so it
+     scrolls on its own instead of riding the whole board */
+  .xrow{position:sticky;left:0;max-width:calc(100vw - 32px)}
+  @media (min-width:1024px){.xrow{max-width:none}}
+  .ft{width:100%;border-collapse:collapse;font-size:12px}
+  .ft th{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:#94a3b8;font-weight:600;padding:4px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  .ft th:nth-child(2),.ft td:nth-child(2){text-align:left}
+  .ft td{padding:4px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  /* cells opaque (theme.js copies the first cell's colour onto the phone's pinned name column — a see-through
+     tint resolved to grey there); the top-N shade is painted over it as an inset shadow */
+  .ft td{background:var(--surface,#fff)}
+  .ft tr.intop td{box-shadow:inset 0 0 0 999px rgba(99,102,241,.10)!important}
+  .ft .tg{font-size:9.5px;font-weight:700;border-radius:5px;padding:0 4px;margin-left:4px}
+  .ft .tg.h{color:#6366f1;border:1px solid rgba(99,102,241,.45)} .ft .tg.o{color:#d97706;background:rgba(245,158,11,.16)}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -517,6 +535,7 @@ function normFilters(list) {
 function repriceAll(off, prevOff) {
   RESULT.forEach(r => {
     r.picks.forEach(p => pricePick(p, off, prevOff));
+    (r.all || []).forEach(p => pricePick(p, off, prevOff));
     r.held.forEach(h => priceHold(h, off, prevOff));
     r.ret = avgOf(r.held, 'ret'); r.day = avgOf(r.held, 'day');
   });
@@ -703,12 +722,29 @@ function meanField(rows, field) {
   return { avg: n ? sum / n : null, n };
 }
 
+// ▸ under a board row opens the strategy's FULL qualifying list — every stock that passes its rule, ranked,
+// with the strategy's own columns (same as its Live Picks tab). Shaded = inside its top N; "held" = in the
+// basket bought at the last rebalance; "in k" = in the top N of k strategies currently on screen.
+const OPEN = new Set(); let OVL = new Map();
+function fullTable(r) {
+  const heldS = new Set(r.held.map(h => h.sym)), list = r.all || [];
+  if (!list.length) return '<div class="text-[12px] text-slate-400 py-2">' + noQual(r) + '</div>';
+  return '<div class="ftw"><table class="ft"><thead><tr><th>#</th><th>Stock</th><th>₹</th><th>' + (ASOF ? 'Day' : 'Today') + '</th>' + apColHead(r.cols) + '</tr></thead><tbody>' +
+    list.map(p => { const k = OVL.get(p.sym) || 0, inTop = p.rank <= r.topN;
+      return '<tr class="' + (inTop ? 'intop' : '') + '"><td class="text-slate-400">' + p.rank + '</td><td><a href="./stock.html?sym=' + encodeURIComponent(p.sym) + '" class="font-bold text-slate-800 hover:text-indigo-600">' + esc(p.sym) + '</a>' +
+        (heldS.has(p.sym) ? '<span class="tg h" title="in the basket bought at the last rebalance">held</span>' : '') +
+        (k > 1 && inTop ? '<span class="tg o" title="in the top N of ' + k + ' of the strategies on screen">in ' + k + '</span>' : '') + '</td>' +
+        '<td class="text-slate-500">' + f2(p.live) + '</td><td class="font-bold ' + kls(p.day) + '">' + sp(p.day) + '</td>' + apColCells(r.cols, p) + '</tr>'; }).join('') +
+    '</tbody></table></div><div class="text-[10.5px] text-slate-400 mt-1">' + list.length + ' qualif' + (list.length > 1 ? 'y' : 'ies') + ' · shaded = inside the top ' + r.topN +
+    (heldS.size ? ' · held = bought at the ' + esc(r.rebDate || '') + ' rebalance' : '') + ' · in N = in the top of N strategies on screen</div>';
+}
 function renderBoard() {
+  OVL = new Map(); visible().forEach(r => r.picks.forEach(p => OVL.set(p.sym, (OVL.get(p.sym) || 0) + 1)));
   const favs = loadFavs();
   const rows = visible();
   $('boardRows').innerHTML = rows.map((r, i) => `
     <div class="grid-row brow${r.mix && r.mix.length ? ' mixrow' : ''} px-4 py-2.5 border-b border-slate-100 transition">
-      <div>${numBadge(r)}</div>
+      <div>${numBadge(r)}${r.all && r.all.length ? `<button class="xbtn" data-x="${esc(r.s.id)}" aria-expanded="${OPEN.has(r.s.id)}" title="Show all ${r.all.length} stocks that qualify, with the strategy's columns">${OPEN.has(r.s.id) ? '▾' : '▸'}</button>` : ''}</div>
       <div class="min-w-0">
         <a href="${stratHref(r.s)}" title="Code-name: ${esc(nameWithBasis(r.name, r.cfg))}" class="block text-[12.5px] font-semibold text-slate-800 hover:text-indigo-600">${isFav(favs, r.cfg) ? FAV_MARK : ''}<span data-yrs="${esc(r.s.id)}">${esc(strategyEnglish(r.cfg))}</span>${mixChipsAP(r)}</a>
         <div class="text-[10.5px] text-slate-400 truncate"><span class="sw-sn" title="Save serial — DDMMYY plus the order saved that day">${esc(SERIALS.get(identityKey(r.cfg)) || '—')}</span>${esc(r.uni)} · ${esc(r.freqL)} · ${r.rebDate ? 'since ' + esc(r.rebDate) : 'before our data'}</div>
@@ -728,7 +764,7 @@ function renderBoard() {
         <a href="./stock.html?sym=${encodeURIComponent(h.sym)}" class="tick hold ${h.ret >= 0 ? 'up' : 'dn'}"
            title="₹${f2(h.entry)} → ₹${f2(h.live)} · since the ${esc(r.rebDate)} rebalance · ${sp(h.day)} ${dayWord()}"><span class="hr"><b>${esc(h.sym)}</b><em>${sp(h.ret)}</em></span><i class="${h.day == null || isNaN(h.day) ? 'z' : h.day >= 0 ? 'p' : 'n'}">(${ASOF ? 'that day' : 'today'} ${sp(h.day)})</i></a>`).join('')}${
         r.held.length > PICK_CAP ? `<a href="${stratHref(r.s)}" class="tick text-slate-500">+${r.held.length - PICK_CAP} more</a>` : ''}</div>
-    </div>`).join('');
+    </div>${OPEN.has(r.s.id) ? `<div class="xrow px-4 pb-3 pt-1 border-b border-slate-200">${fullTable(r)}</div>` : ''}`).join('');
 
   // ---- totals row -----------------------------------------------------------------------------
   // Equal-weight average of the strategies CURRENTLY SHOWN, so the Membership picker re-computes it
@@ -803,6 +839,12 @@ function paint() {
   $('foot').classList.remove('hidden');
 }
 
+$('boardRows').addEventListener('click', e => {
+  const x = e.target.closest('[data-x]'); if (!x) return;
+  const id = x.dataset.x; OPEN.has(id) ? OPEN.delete(id) : OPEN.add(id);
+  renderBoard(); scAttach($('board'));
+});
+
 /* ---------- boot ---------- */
 async function build(msg) {
   $('status').classList.remove('hidden');
@@ -871,21 +913,24 @@ async function build(msg) {
     const rebRaw = rebOf[i];
     const rebDate = rebRaw ? isoOff(snapTD(dayOff(rebRaw))) : null;
     const topN = cfg.topN || 5;
-    let heldRows = [], pickRows = [];
+    let heldRows = [], pickRows = [], allRows = [];
     try {
       if (rebDate) heldRows = basketAt(cfg, rebDate, topN);   // what was bought — drives the headline return
-      pickRows = basketAt(cfg, today, topN);                  // what qualifies on the date — what the card lists
+      // the FULL ranked list of what passes the rule (its Live Picks tab) — opened under a board row with ▸
+      // (user 2026-11-25); the top-N slice of it is what the card and the board chips list
+      const full = basketAt(cfg, today, 1e9); pickRows = full.slice(0, topN); pickRows.noData = full.noData; allRows = full;
     } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
     // An empty list is a real state, not a failure: nothing passed the filters. Show it as such
     // rather than dropping the card.
     const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, priceOff, prevOff));
     const cols = pickCols(cfg);
     const picks = pickRows.map(r => { const pp = pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff); pp.fv = pickFV(r, cols); return pp; });
+    const all = allRows.map((r, k) => { const pp = pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff); pp.fv = pickFV(r, cols); pp.rank = k + 1; return pp; });
     RESULT.push({
       s, name: s.name || strategyLabel(cfg), cfg, topN, ids: groups[i].ids,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
       nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
-      picks, held, cols, empty: !picks.length,
+      picks, held, cols, all, empty: !picks.length,
       // read off the RAW basketAt arrays — `held`/`picks` above are .map() results, and a mapped
       // array is a new one that drops the flag basketAt hangs on it
       heldNoData: !!heldRows.noData, picksNoData: !!pickRows.noData,
