@@ -1,5 +1,5 @@
 {
- "built": "2026-11-24 19:12 IST",
+ "built": "2026-11-25 19:15 IST",
  "rule": "latest stated order book vs the one stated ~a year earlier (10-14 months before); readings come from the companies' own filings, each with its sentence and document",
  "rows": [
   {
@@ -522,16 +522,16 @@
    "alt_keys": [],
    "isin": "INE0JQS01019",
    "verified": {
-    "latest_verdict": "CORRECT",
-    "latest_correct_value_cr": 45,
-    "latest_as_on": "2026-05-30",
+    "latest_verdict": "WRONG",
+    "latest_correct_value_cr": 55.0,
+    "latest_as_on": "2026-11-18",
     "year_ago_verdict": "WRONG",
-    "year_ago_correct_value_cr": 40,
+    "year_ago_correct_value_cr": 40.0,
     "year_ago_as_on": "2025-11-11",
-    "true_yoy_pct": null,
+    "true_yoy_pct": 37.5,
     "book_to_ttm_sales": null,
-    "notes": "Latest: MD 'INR46-47 crores in hand', later 'around INR45 crores'. Year-ago 15 = a conditional 5-year aerospace contract on hold ('if that gets converted ... 15 crore order book till 2030'); same Nov-2025 call: 'current order book value is around Rs. 40 crores'. True 12-month YoY unknown (vs Nov-2025: +12.5% in 6.5 months; management says the book is about 2x the start of FY26, no figure).",
-    "checked": "2026-10-11"
+    "notes": "Re-checked 2026-11-24 against the NEW 18-Nov-2026 call transcript (filed NSE 24-Nov-2026): the screen's latest Rs 45 cr is an ANALYST's question about the 31-Mar-2026 book, not the call-date book. Management's own current book: 'around Rs. 55 crores to Rs. 57 crores' (prepared remarks), 'around Rs. 55 crores right now', and in one answer 'nearly Rs. 60 crores'. Against the Rs 40 cr the company stated on 11-Nov-2025, the true YoY is +37.5% on the repeated Rs 55 cr and +50.0% on the loosest Rs 60 cr - does not clear 50% on the stated figure. Previous check 2026-10-11: Latest 'INR46-47 crores in hand', later 'around INR45 crores' (30-May-2026 call); year-ago 15 = a conditional 5-year aerospace contract on hold; same Nov-2025 call: 'current order book value is around Rs. 40 crores'.",
+    "checked": "2026-11-24"
    }
   },
   {
@@ -839,7 +839,19 @@
    "alt_keys": [
     "NSE:GRSE"
    ],
-   "isin": "INE382Z01011"
+   "isin": "INE382Z01011",
+   "verified": {
+    "latest_verdict": "CORRECT",
+    "latest_correct_value_cr": 44846.0,
+    "latest_as_on": "2026-11-19",
+    "year_ago_verdict": "CORRECT (value) / WRONG (speaker)",
+    "year_ago_correct_value_cr": 20000.0,
+    "year_ago_as_on": "2025-11-14",
+    "true_yoy_pct": 124.2,
+    "book_to_ttm_sales": null,
+    "notes": "Latest Rs 44,846 cr is the CMD's own 'current order book value' at the 19-Nov-2026 call (transcript filed BSE 24-Nov-2026); correct. Year-ago: the screen quoted an ANALYST ('as we speak, roughly, our current order book is about Rs 20,000 crores'), but the CMD confirms the same Rs 20,000 cr later in the same transcript, so the value stands. The company's own quarter-end figures are Rs 12,977.93 cr as on 30-Sep-2026 and Rs 20,205.56 cr as on 30-Sep-2025, i.e. -35.8% on a strict like-for-like basis; the entire +124.2% is the five-NGC contract signed 02-Nov-2026 at Rs 32,000 cr. book_to_ttm_sales not stated: FY26 full-year revenue was not read in this run; book / H1 FY27 revenue annualised (Rs 7,282 cr) = 6.2x. Market cap far above the Rs 200-7,500 cr lane band, so not researched as an idea.",
+    "checked": "2026-11-24"
+   }
   },
   {
    "scrip": "543358",
@@ -1535,6 +1547,39 @@
    }
   },
   {
+   "scrip": "NSE:KRISHCA",
+   "name": "KRISHCA",
+   "nse": "KRISHCA",
+   "latest": {
+    "value_cr": 300.0,
+    "as_on": null,
+    "quote": "tal Packaging Solutions Including 3M’s - Manpower, Materials and Maintenance of tools & tackles Inventory Management Manpower Optimisation Packaging Automation Order book 300 Cr+ Over 5 Years Active Contracts 15 Contracts across India Manpower 500+ Employed Tools & Equipments 300+ Deployed Investor Presentation 12 Marquee Clients Investor Presentation 13 Ind",
+    "filed": "2026-11-25",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/KSSLIPO_25112026144705_KSSLH1PRESENTATION2026.pdf",
+    "doc_title": "Investor Presentation Krishca Strapping Solutions Limited has informed the Exchange about Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": {
+    "value_cr": 180.0,
+    "as_on": "2025-12-04",
+    "quote": "ice reliability and long-term partnership approach. This division is steadily transforming Krishca into a solution driven service LED organization. Our current order book is over 180 crore with the execution timelines between 1 to 5 years. For the next financial year, we have a confirmed packing contract order worth 75 crore. And currently we are in particip",
+    "filed": "2025-12-04",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2025-12-04",
+    "doc": "https://nsearchives.nseindia.com/corporate/KSSLIPO_04122025125250_KSSLEarningsCallTranscriptH12025-26.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "yoy_pct": 66.7,
+   "check": false,
+   "alt_keys": [],
+   "isin": "INE0NR701018"
+  },
+  {
    "scrip": "544198",
    "name": "Dee Development Engineers Ltd",
    "nse": "DEEDEV",
@@ -1614,16 +1659,16 @@
    ],
    "isin": "INE025B01025",
    "verified": {
-    "latest_verdict": "CORRECT",
-    "latest_correct_value_cr": 225,
-    "latest_as_on": "2026-06-30",
+    "latest_verdict": "STALE - a newer order book has been filed",
+    "latest_correct_value_cr": 225.0,
+    "latest_as_on": "2026-09-30",
     "year_ago_verdict": "CORRECT",
-    "year_ago_correct_value_cr": 140,
-    "year_ago_as_on": "2025-06-30",
-    "true_yoy_pct": 60.7,
-    "book_to_ttm_sales": 0.18,
-    "notes": "Both quotes correct and company-wide, read from the two investor presentations (7-Aug-2026 and 11-Aug-2025): 'order book position as on June 30' of Rs 2,250 mn against Rs 1,400 mn, both excluding e-commerce sales. book_to_ttm_sales uses consolidated revenue: Q1 FY27 alone was Rs 3,637 mn (Rs 363.7 cr), so the Rs 225 cr book is about 0.18x a trailing year and the company states it executes in three to four months. The stated series over nine quarters runs Rs 150 / 270 / 175 / 140 / 140 / 200 / 180 / 200 / 225 cr.",
-    "checked": "2026-10-12"
+    "year_ago_correct_value_cr": 200.0,
+    "year_ago_as_on": "2025-09-30",
+    "true_yoy_pct": 12.5,
+    "book_to_ttm_sales": null,
+    "notes": "The screen's figures (Jun-26 Rs 225 cr vs Jun-25 Rs 140 cr, +60.7%) are both correct, but the company filed a NEWER order book on 07-Nov-2026 that the screen has not taken as its latest: Rs 2,250 million as on 30-Sep-2026, identical to the June figure, against Rs 2,000 million as on 30-Sep-2025 = +12.5%. On the newest comparable pair the jump does not clear 50%. The company describes the book as executed over three to four months and excludes spot e-commerce sales (19.4% of Q2 FY27 revenue) from it. Checked for the order-book lane on 2026-11-24 and NOT published.",
+    "checked": "2026-11-24"
    }
   },
   {
@@ -2852,8 +2897,8 @@
     "as_on_eff": "2026-10-01",
     "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/7c640812-5c5a-45e4-926a-14a34c6f6046.pdf",
     "doc_title": "Mishra Dhatu Nigam Ltd - 541195 - Financial Results For The Quarter And Half Year Ended On 30Th September, 2026 Financial Results for quarter and half year ende",
-    "n_same": 2,
-    "n_near": 2
+    "n_same": 3,
+    "n_near": 3
    },
    "year_ago": {
     "value_cr": 1800.0,
@@ -4537,9 +4582,7 @@
     "n_near": 1
    },
    "yoy_pct": -14.7,
-   "check": false,
-   "alt_keys": [],
-   "isin": "INE0R9101015"
+   "check": false
   },
   {
    "scrip": "532309",
@@ -4576,7 +4619,7 @@
   },
   {
    "scrip": "544471",
-   "name": "Takyon Networks Ltd",
+   "name": null,
    "nse": null,
    "latest": {
     "value_cr": 46.65,
@@ -4603,9 +4646,7 @@
     "n_near": 1
    },
    "yoy_pct": -16.7,
-   "check": false,
-   "alt_keys": [],
-   "isin": "INE14OX01013"
+   "check": false
   },
   {
    "scrip": "544424",
@@ -5271,54 +5312,18 @@
    "isin": "INE389H01022"
   },
   {
-   "scrip": "NSE:VLINFRA",
-   "name": "VLINFRA",
-   "nse": "VLINFRA",
+   "scrip": "NSE:WHITEFORCE",
+   "name": "WHITEFORCE",
+   "nse": "WHITEFORCE",
    "latest": {
-    "value_cr": 280.0,
+    "value_cr": 23.58,
     "as_on": null,
-    "quote": "tion, and healthy order inflow. During financial year 26, we executed over INRIS1 crores of orders, closed the year with 18 ongoing projects, and maintained an order book of approximately INR280 crores. We also delivered healthy return ratio with ROE of 16.73% and ROCE of 18.07%. Over the last three years, we have delivered strong growth with revenue, EBITDA",
-    "filed": "2026-06-11",
+    "quote": "ore Team Employees  1 million+ Registered Candidates on white-force.com  3,000+ Active Job Postings  100,000+ Monthly Visitors to the job platform  Q1 FY27 Order Book: ₹23.58 Cr Key Order Secured Client Scope of Work Value RSRDCC Toll plaza operations & user fee collection ₹21.00 Cr Bharat Dynamics Ltd. Manpower supply contract extension ₹0.81 Cr MPPGCL ",
+    "filed": "2026-07-29",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/VLINFRA_11062026182215_Transcript.pdf",
-    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null
-  },
-  {
-   "scrip": "NSE:MANAV",
-   "name": "MANAV",
-   "nse": "MANAV",
-   "latest": {
-    "value_cr": 18.0,
-    "as_on": "2026-03-31",
-    "quote": "OK AND PROJECT PIPELINE: A healthy order book is an important indicator of revenue visibility for infrastructure companies. As on March 31, 2026, the Company's order book stood at approximately Rs. 18 Crores comprising projects across the state. The Company continues to adopt a selective approach towards new projects, with emphasis on: • Project profitabilit",
-    "filed": "2026-08-17",
-    "as_on_basis": "stated",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/MANAV_17082026173324_MIP_AR_2026_final.pdf",
-    "doc_title": "Updates",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null
-  },
-  {
-   "scrip": "544538",
-   "name": "Praruh Technologies Ltd",
-   "nse": null,
-   "latest": {
-    "value_cr": 155.0,
-    "as_on": "2026-11-05",
-    "quote": "already done 84 crores of revenue in H1 only what is our revenue target for full year FY27? Mr. Rahul Sharma: So ma'am, basically as of now I am sitting on an order book of 155 crore means that 84 crore is already delivered and rest Praruh needs to deliver. Today is 4 November so as of today we have an order book of 154 crore this is confirmed order book. Ms",
-    "filed": "2026-11-05",
-    "as_on_basis": "as on filing date",
-    "as_on_eff": "2026-11-05",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b14e8755-59ef-4b64-810b-5fc61154a7f2.pdf",
-    "doc_title": "Praruh Technologies Ltd - 544538 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Earning Call Transcript Company Update Earnings Call Transcr",
+    "as_on_eff": "2026-06-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/HAPPYSQUARE_29072026185128_Q1_Business_Update.pdf",
+    "doc_title": "General Updates",
     "n_same": 1,
     "n_near": 1
    },
@@ -5343,36 +5348,18 @@
    "year_ago": null
   },
   {
-   "scrip": "544922",
-   "name": "Om Galaxy Ltd",
-   "nse": null,
+   "scrip": "NSE:PSFL",
+   "name": "PSFL",
+   "nse": "PSFL",
    "latest": {
-    "value_cr": 165.0,
-    "as_on": "2026-09-30",
-    "quote": "ent order book, ₹72 crore is one-time and lumpy in nature, while the remaining ₹93 crore represents regular business. The entire order book is executable in H2 Order Book (As of H1 FY27) ~INR 165 Crore Over 17+ years of experience in mould design and manufacturing 7 Incorporation of company 2008 Acquisition of a Manufacturing Unit-II at Gauraipada together w",
-    "filed": "2026-11-20",
-    "as_on_basis": "stated",
-    "as_on_eff": "2026-09-30",
-    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/02a5fe06-9a54-4b47-88ae-dc2db4183f25.pdf",
-    "doc_title": "Om Galaxy Ltd - 544922 - Announcement under Regulation 30 (LODR)-Investor Presentation Enclosed the Investor Presentation Company Update Investor Presentation",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null
-  },
-  {
-   "scrip": "NSE:QUESTLAB",
-   "name": "QUESTLAB",
-   "nse": "QUESTLAB",
-   "latest": {
-    "value_cr": 25.0,
+    "value_cr": 50.0,
     "as_on": null,
-    "quote": "Exchange (NSE) Representation at PharmaLabExpoChem Strategic Overview Investor Presentation - Q1 FY26 20+ products to be registered in Myanmar, with ₹25 crore order book secured and new engagements in multiple countries. 19 Expanding manufacturing capacity with the addition of two new Advanced Manufacturing Systems, enhancing efficiency through cutting- edge",
-    "filed": "2025-07-25",
+    "quote": "zation Operational and Strategic Progress Customer Additions: 12 new clients’ on-boarded across Oil & Gas and Engineering; repeat orders from 5 major customers Order Book: healthy at around ₹50 crore New Installations: 2000-ton Hot Forging Press and 10-ton Hammer commissioned, strengthening production capabilities. Upcoming Automation: Bandsaw machine automa",
+    "filed": "2025-11-17",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-06-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/QUEST_25072025131320_Quest_Laboratories_Investor_Presentation_-_Q1_FY26-1_1.pdf",
-    "doc_title": "Investor Presentation",
+    "as_on_eff": "2025-09-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/9820035987_17112025124230_PressRelease_PSFL.pdf",
+    "doc_title": "Press Release",
     "n_same": 1,
     "n_near": 1
    },
@@ -7121,6 +7108,26 @@
    "isin": "INE0SYV01018"
   },
   {
+   "scrip": "NSE:VLINFRA",
+   "name": "VLINFRA",
+   "nse": "VLINFRA",
+   "latest": {
+    "value_cr": 280.0,
+    "as_on": null,
+    "quote": "tion, and healthy order inflow. During financial year 26, we executed over INRIS1 crores of orders, closed the year with 18 ongoing projects, and maintained an order book of approximately INR280 crores. We also delivered healthy return ratio with ROE of 16.73% and ROCE of 18.07%. Over the last three years, we have delivered strong growth with revenue, EBITDA",
+    "filed": "2026-06-11",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2026-03-31",
+    "doc": "https://nsearchives.nseindia.com/corporate/VLINFRA_11062026182215_Transcript.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE0QXL01015"
+  },
+  {
    "scrip": "NSE:ENVIRO",
    "name": "ENVIRO",
    "nse": "ENVIRO",
@@ -7199,26 +7206,6 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE24H301028"
-  },
-  {
-   "scrip": "NSE:KRISHCA",
-   "name": "KRISHCA",
-   "nse": "KRISHCA",
-   "latest": {
-    "value_cr": 180.0,
-    "as_on": "2025-12-04",
-    "quote": "ice reliability and long-term partnership approach. This division is steadily transforming Krishca into a solution driven service LED organization. Our current order book is over 180 crore with the execution timelines between 1 to 5 years. For the next financial year, we have a confirmed packing contract order worth 75 crore. And currently we are in particip",
-    "filed": "2025-12-04",
-    "as_on_basis": "as on filing date",
-    "as_on_eff": "2025-12-04",
-    "doc": "https://nsearchives.nseindia.com/corporate/KSSLIPO_04122025125250_KSSLEarningsCallTranscriptH12025-26.pdf",
-    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0NR701018"
   },
   {
    "scrip": "543911",
@@ -7361,26 +7348,6 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE0R8B01010"
-  },
-  {
-   "scrip": "NSE:WHITEFORCE",
-   "name": "WHITEFORCE",
-   "nse": "WHITEFORCE",
-   "latest": {
-    "value_cr": 23.58,
-    "as_on": null,
-    "quote": "ore Team Employees  1 million+ Registered Candidates on white-force.com  3,000+ Active Job Postings  100,000+ Monthly Visitors to the job platform  Q1 FY27 Order Book: ₹23.58 Cr Key Order Secured Client Scope of Work Value RSRDCC Toll plaza operations & user fee collection ₹21.00 Cr Bharat Dynamics Ltd. Manpower supply contract extension ₹0.81 Cr MPPGCL ",
-    "filed": "2026-07-29",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-06-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/HAPPYSQUARE_29072026185128_Q1_Business_Update.pdf",
-    "doc_title": "General Updates",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0TLP01015"
   },
   {
    "scrip": "532884",
@@ -7687,6 +7654,26 @@
    "isin": "INE0QEI01011"
   },
   {
+   "scrip": "NSE:MANAV",
+   "name": "MANAV",
+   "nse": "MANAV",
+   "latest": {
+    "value_cr": 18.0,
+    "as_on": "2026-03-31",
+    "quote": "OK AND PROJECT PIPELINE: A healthy order book is an important indicator of revenue visibility for infrastructure companies. As on March 31, 2026, the Company's order book stood at approximately Rs. 18 Crores comprising projects across the state. The Company continues to adopt a selective approach towards new projects, with emphasis on: • Project profitabilit",
+    "filed": "2026-08-17",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-03-31",
+    "doc": "https://nsearchives.nseindia.com/corporate/MANAV_17082026173324_MIP_AR_2026_final.pdf",
+    "doc_title": "Updates",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE104Y01012"
+  },
+  {
    "scrip": "542725",
    "name": "Sbc Exports Ltd",
    "nse": "SBC",
@@ -7955,14 +7942,14 @@
    "name": "SUNTECH",
    "nse": "SUNTECH",
    "latest": {
-    "value_cr": 214.0,
+    "value_cr": 209.0,
     "as_on": null,
-    "quote": "e. Now with the growth that we envisage for the coming year is based on the order book we have on the very first year of this financial year. Now INR214 crores order book, we were able to secure, because we have built the capability. Now this capability will translate into profitability, not immediately because the investment cycle give you result over a per",
-    "filed": "2026-05-23",
+    "quote": "aid you have round about INR209 crores of order books and it is deliverable up to [inaudible 08:57] Management: Yes, please? Bimal Panchal: You said you've got order book of INR209 crores. So it is deliverable up to what period, within this year or months? Management: So we have updated all the shared orders through the investor presentation this morning whe",
+    "filed": "2026-11-25",
     "as_on_basis": "quarter before filing",
-    "as_on_eff": "2026-03-31",
-    "doc": "https://nsearchives.nseindia.com/corporate/SUNTECH_23052026142335_Earning_Call_Transcript_NSE_Submission.pdf",
-    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://nsearchives.nseindia.in/corporate/SUNTECH_25112026143941_Transcript_NSE.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Suntech Infra Solutions Limited has informed the Exchange about Transcript",
     "n_same": 1,
     "n_near": 1
    },
@@ -8449,6 +8436,26 @@
     "NSE:GLASSWALL"
    ],
    "isin": "INE644Q01039"
+  },
+  {
+   "scrip": "544538",
+   "name": "Praruh Technologies Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 155.0,
+    "as_on": "2026-11-05",
+    "quote": "already done 84 crores of revenue in H1 only what is our revenue target for full year FY27? Mr. Rahul Sharma: So ma'am, basically as of now I am sitting on an order book of 155 crore means that 84 crore is already delivered and rest Praruh needs to deliver. Today is 4 November so as of today we have an order book of 154 crore this is confirmed order book. Ms",
+    "filed": "2026-11-05",
+    "as_on_basis": "as on filing date",
+    "as_on_eff": "2026-11-05",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/b14e8755-59ef-4b64-810b-5fc61154a7f2.pdf",
+    "doc_title": "Praruh Technologies Ltd - 544538 - Announcement under Regulation 30 (LODR)-Earnings Call Transcript Earning Call Transcript Company Update Earnings Call Transcr",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE0TI501017"
   },
   {
    "scrip": "522034",
@@ -9003,6 +9010,26 @@
    "year_ago": null,
    "alt_keys": [],
    "isin": "INE364U01010"
+  },
+  {
+   "scrip": "544922",
+   "name": "Om Galaxy Ltd",
+   "nse": null,
+   "latest": {
+    "value_cr": 165.0,
+    "as_on": "2026-09-30",
+    "quote": "ent order book, ₹72 crore is one-time and lumpy in nature, while the remaining ₹93 crore represents regular business. The entire order book is executable in H2 Order Book (As of H1 FY27) ~INR 165 Crore Over 17+ years of experience in mould design and manufacturing 7 Incorporation of company 2008 Acquisition of a Manufacturing Unit-II at Gauraipada together w",
+    "filed": "2026-11-20",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/02a5fe06-9a54-4b47-88ae-dc2db4183f25.pdf",
+    "doc_title": "Om Galaxy Ltd - 544922 - Announcement under Regulation 30 (LODR)-Investor Presentation Enclosed the Investor Presentation Company Update Investor Presentation",
+    "n_same": 2,
+    "n_near": 2
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE2D0Q01027"
   },
   {
    "scrip": "500144",
@@ -10791,6 +10818,26 @@
    "isin": "INE0VBS01016"
   },
   {
+   "scrip": "NSE:QUESTLAB",
+   "name": "QUESTLAB",
+   "nse": "QUESTLAB",
+   "latest": {
+    "value_cr": 25.0,
+    "as_on": null,
+    "quote": "Exchange (NSE) Representation at PharmaLabExpoChem Strategic Overview Investor Presentation - Q1 FY26 20+ products to be registered in Myanmar, with ₹25 crore order book secured and new engagements in multiple countries. 19 Expanding manufacturing capacity with the addition of two new Advanced Manufacturing Systems, enhancing efficiency through cutting- edge",
+    "filed": "2025-07-25",
+    "as_on_basis": "quarter before filing",
+    "as_on_eff": "2025-06-30",
+    "doc": "https://nsearchives.nseindia.com/corporate/QUEST_25072025131320_Quest_Laboratories_Investor_Presentation_-_Q1_FY26-1_1.pdf",
+    "doc_title": "Investor Presentation",
+    "n_same": 1,
+    "n_near": 1
+   },
+   "year_ago": null,
+   "alt_keys": [],
+   "isin": "INE0TNW01017"
+  },
+  {
    "scrip": "NSE:SELLOWRAP",
    "name": "SELLOWRAP",
    "nse": "SELLOWRAP",
@@ -10871,26 +10918,6 @@
    "isin": "INE0HQI01014"
   },
   {
-   "scrip": "NSE:PSFL",
-   "name": "PSFL",
-   "nse": "PSFL",
-   "latest": {
-    "value_cr": 50.0,
-    "as_on": null,
-    "quote": "zation Operational and Strategic Progress Customer Additions: 12 new clients’ on-boarded across Oil & Gas and Engineering; repeat orders from 5 major customers Order Book: healthy at around ₹50 crore New Installations: 2000-ton Hot Forging Press and 10-ton Hammer commissioned, strengthening production capabilities. Upcoming Automation: Bandsaw machine automa",
-    "filed": "2025-11-17",
-    "as_on_basis": "quarter before filing",
-    "as_on_eff": "2025-09-30",
-    "doc": "https://nsearchives.nseindia.com/corporate/9820035987_17112025124230_PressRelease_PSFL.pdf",
-    "doc_title": "Press Release",
-    "n_same": 1,
-    "n_near": 1
-   },
-   "year_ago": null,
-   "alt_keys": [],
-   "isin": "INE0Q6001012"
-  },
-  {
    "scrip": "NSE:BHADORA",
    "name": "BHADORA",
    "nse": "BHADORA",
@@ -10955,16 +10982,16 @@
    "name": "SAHASRA",
    "nse": "SAHASRA",
    "latest": {
-    "value_cr": 148.3,
+    "value_cr": 150.0,
     "as_on": null,
-    "quote": "7 (Based on consolidated financials) 4 Revenue and profitabilityRevenue and profitabilityRevenue from operations ₹91.4 cr YoY growth Return on equity (ROE)5.7% Orderbook ₹148.3 cr Operating profit (EBITDA 1 ) ₹12.2 cr YoY growth Return on capital employed (ROCE)3.2% in FY26 vs 88.4% in H1 FY26 91.9% vs EBITDA margin13.3% Debtor days 84 days in FY26 vs 63.6%T",
-    "filed": "2026-11-20",
+    "quote": "Crores instead of Rs.150 Crores. So rather than reporting those kind of numbers, we prefer to report whatever is actual and therefore, we are saying the actual order book is close to Rs.150 Crores and we prefer to continue to report with the actual numbers. Sahasra Electronic Solutions Limited November 21, 2026 Page 17 of 18 Achuth Pabbath: So, what is the c",
+    "filed": "2026-11-25",
     "as_on_basis": "quarter before filing",
     "as_on_eff": "2026-09-30",
-    "doc": "https://nsearchives.nseindia.in/corporate/SAHASRA_20112026231032_Final_investor_presentation.pdf",
-    "doc_title": "Investor Presentation Sahasra Electronic Solutions Limited has informed the Exchange about Investor Presentation",
+    "doc": "https://nsearchives.nseindia.in/corporate/SAHASRA_25112026152713_final_transcipt.pdf",
+    "doc_title": "Analysts/Institutional Investor Meet/Con. Call Updates Sahasra Electronic Solutions Limited has informed the Exchange about Transcript",
     "n_same": 1,
-    "n_near": 1
+    "n_near": 2
    },
    "year_ago": null,
    "alt_keys": [],
@@ -12094,6 +12121,28 @@
     "NSE:HDFIRE"
    ],
    "isin": "INE18AK01028"
+  },
+  {
+   "scrip": "545009",
+   "name": "Sfc Environmental Technologies",
+   "nse": "SFCTECH",
+   "latest": {
+    "value_cr": 1656.2,
+    "as_on": "2026-09-30",
+    "quote": "UTs with installations 1,000+ C-Tech plant orders secured 425 TPD MSW capacity operated in Goa 150 Nm³/t Biogas yield vs 80–100 industry avg. ₹16,562 Mn Total order book 263 H1 FY27 Well Qualified Personnel as of Sept 26 Wastewater treatment Solid waste treatment In-house manufacturing The SFC team H1 FY27 CONSOLIDATED ₹2,966.7 Mn Revenue (+80.5% YoY) ₹200.5",
+    "filed": "2026-11-25",
+    "as_on_basis": "stated",
+    "as_on_eff": "2026-09-30",
+    "doc": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/67ff6c72-0cdd-4c45-863f-03fbc213823d.pdf",
+    "doc_title": "SFC Environmental Technologies Ltd - 545009 - Announcement under Regulation 30 (LODR)-Investor Presentation Pursuant to Regulation 30 read with Para A of Part A",
+    "n_same": 1,
+    "n_near": 2
+   },
+   "year_ago": null,
+   "alt_keys": [
+    "NSE:SFCTECH"
+   ],
+   "isin": "INE0PKN01028"
   }
  ]
 }
