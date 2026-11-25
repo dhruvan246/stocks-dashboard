@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   .pos{color:var(--pos)}.neg{color:var(--neg)}
@@ -34,6 +35,90 @@
   /* 11 columns in a 60rem modal: a number column left to wrap breaks "₹12.77K Cr" over two lines.
      Only the numbers are pinned to one line — the company-name column may still wrap. */
   #mPeerHead th, #mPeerBody td:not(:first-child){white-space:nowrap}
+
+  /* ================= one-screen layout: view tabs, control bar, three panes =================
+     Dense and flat on purpose — 1px borders, no shadows, colour only on numbers and the selected row. */
+  #pageMain.wide{max-width:none}
+  #vbar{display:flex;align-items:flex-end;gap:20px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+  html[data-theme] #vbar h1{font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1;padding-bottom:9px;margin:0}
+  #vtabs{display:flex;gap:18px}
+  html[data-theme] #vtabs button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;padding:0 1px 8px;margin-bottom:-1px;font-size:14px;font-weight:500;color:var(--text-muted);cursor:pointer;min-height:0;box-shadow:none}
+  html[data-theme] #vtabs button:hover{color:var(--text)}
+  html[data-theme] #vtabs button.on{color:var(--accent-text);border-bottom-color:var(--accent-text)}
+  #asof{margin-left:auto;padding-bottom:9px;font-size:12px;color:var(--text-faint);white-space:nowrap}
+  #trkWrap{font-size:13px}
+  #trkBar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
+  #trkBar .sp{flex:1}
+  #trkBar .hint{font-size:12px;color:var(--text-faint);white-space:nowrap}
+  #trkBar .hint b{font-weight:500;color:var(--text-muted)}
+  .sg{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface)}
+  html[data-theme] .sg button{background:none;border:0;border-right:1px solid var(--border);border-radius:0;padding:5px 10px;font-size:12.5px;font-weight:500;line-height:1.3;color:var(--text-muted);cursor:pointer;min-height:0;box-shadow:none;white-space:nowrap}
+  html[data-theme] .sg button:last-child{border-right:0}
+  html[data-theme] .sg button:hover{color:var(--text);background:var(--surface-2)}
+  html[data-theme] .sg button.on{background:var(--accent);color:var(--on-accent,#fff)}
+  html[data-theme] .tbtn{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12.5px;font-weight:500;line-height:1.3;color:var(--text-muted);cursor:pointer;min-height:0;box-shadow:none;white-space:nowrap;text-decoration:none}
+  html[data-theme] .tbtn:hover{color:var(--text);border-color:var(--border-strong)}
+  html[data-theme] .tbtn.on{color:var(--accent-text);border-color:var(--accent);background:var(--accent-soft)}
+  html[data-theme] .tbtn:disabled{opacity:.45;cursor:default}
+  .tbtn.static{cursor:default}
+  #trk{display:grid;grid-template-columns:minmax(250px,340px) minmax(240px,310px) minmax(0,1fr);gap:10px;min-height:460px}
+  #trk.focus{grid-template-columns:minmax(0,1fr)}
+  #trk.focus #tpG,#trk.focus #tpS{display:none}
+  .tp{background:var(--surface);border:1px solid var(--border);border-radius:8px;display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden;animation:none !important}
+  .tph{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);min-height:44px}
+  .tph .ttl{font-size:14px;font-weight:600;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tph .ttl i{font-style:normal;font-weight:400;color:var(--text-faint);margin-left:4px}
+  .tph .ttl b{font-weight:600;margin-left:6px}
+  .tph .r{margin-left:auto;font-size:12px;color:var(--text-faint);white-space:nowrap;display:flex;align-items:center;gap:6px}
+  .tps{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center}
+  html[data-theme] #tSearch{width:100%;background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);min-height:0}
+  .tch{display:grid;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-faint);user-select:none}
+  .tch span[data-k]{cursor:pointer}.tch span[data-k]:hover{color:var(--text)}
+  .tch span:not(:first-child){text-align:right}
+  #tgHead,.gr{grid-template-columns:minmax(0,1fr) 58px 26px 64px}
+  #tsHead,.sr{grid-template-columns:minmax(0,1fr) 30px 64px}
+  .tl{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+  .gr,.sr{display:grid;align-items:center;gap:8px;padding:0 12px;height:33px;border-bottom:1px solid var(--border);cursor:pointer;box-shadow:inset 2px 0 0 transparent}
+  .gr:hover,.sr:hover{background:var(--surface-2)}
+  .gr.on,.sr.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  .gr>span:not(:first-child),.sr>span:not(:first-child){text-align:right;white-space:nowrap}
+  .gn,.sn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+  .gn i,.sn i{font-style:normal;color:var(--text-faint)}
+  .gr.on .gn{color:var(--accent-text)}
+  .gb{font-size:12.5px;color:var(--text-faint)} .gb b{font-weight:500}
+  .gbar{height:8px;display:flex;justify-content:flex-start;background:var(--surface-2);border-radius:2px;overflow:hidden}
+  .gbar i{display:block;height:100%;border-radius:2px}
+  .gv{font-weight:500}
+  .sn b{font-weight:500;color:var(--accent-text)}
+  .sn i{font-size:12.5px;margin-left:4px}
+  .rs{color:var(--text-muted)}
+  .tempty{padding:28px 12px;text-align:center;color:var(--text-faint);font-size:12.5px}
+  #tcSym{font-size:16px;font-weight:700;color:var(--text)}
+  #tcName{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  #tcPx{font-size:15px;font-weight:600;color:var(--text);white-space:nowrap}
+  .chg{font-size:12px;font-weight:600;padding:2px 6px;border-radius:4px;background:var(--surface-2);white-space:nowrap}
+  #tChartWrap{position:relative;flex:1;min-height:0}
+  #tChart{position:absolute;inset:0}
+  #tLegend{position:absolute;left:10px;top:6px;right:70px;z-index:3;font-size:12px;line-height:1.55;pointer-events:none;color:var(--text)}
+  #tLegend div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #tLegend .mut{color:var(--text-faint)}
+  #tMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:13px;pointer-events:none;z-index:2}
+  #tStats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid var(--border)}
+  #tStats div{padding:9px 12px;border-right:1px solid var(--border);min-width:0}
+  #tStats div:last-child{border-right:0}
+  #tStats span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #tStats b{display:block;font-size:14px;font-weight:600;margin-top:3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #tStats b.pos{color:var(--pos)} #tStats b.neg{color:var(--neg)}
+  @media (max-width:1180px){ #trk{grid-template-columns:minmax(220px,270px) minmax(210px,250px) minmax(0,1fr)} #trkBar .hint.keys{display:none} }
+  @media (max-width:899px){
+    #trk{grid-template-columns:minmax(0,1fr);height:auto}
+    #tpG .tl{max-height:266px} #tpS .tl{max-height:266px}
+    #tChartWrap{flex:none;height:380px}
+    #tStats{grid-template-columns:repeat(3,minmax(0,1fr))} #tStats div:nth-child(3){border-right:0} #tStats div:nth-child(-n+3){border-bottom:1px solid var(--border)}
+    #tcFocus{display:none}
+    #trkBar .sg{max-width:100%;overflow-x:auto}
+    #tpC .tps{flex-wrap:wrap}
+  }
 </style>
 </head>
 <body class="min-h-screen text-slate-800">
@@ -49,15 +134,53 @@
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-4 py-4 space-y-3">
-  <!-- title -->
-  <div class="flex flex-wrap items-end justify-between gap-2">
-    <div>
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Sector &amp; Industry Indexes</h1>
-      <p class="text-xs text-slate-500 mt-0.5" id="subT">Self-made indexes · equal-weighted, rebased to 100 · hover any chart for values</p>
-    </div>
-    <div class="text-right text-xs text-slate-400" id="asof"></div>
+<main id="pageMain" class="max-w-screen-2xl mx-auto px-4 py-4 space-y-3">
+  <!-- title + view tabs -->
+  <div id="vbar">
+    <h1>Sectors</h1>
+    <div id="vtabs" role="tablist" aria-label="View"></div>
+    <div id="asof"></div>
   </div>
+
+  <!-- TRACKER: sectors → stocks → chart on one screen -->
+  <div id="trkWrap" class="hidden">
+    <div id="trkBar">
+      <div class="sg" id="tPeriods" role="group" aria-label="Period"></div>
+      <div class="sg" id="tLevels" role="group" aria-label="Grouping"></div>
+      <button type="button" class="tbtn" id="tBse" title="Also count companies listed only on BSE">Include BSE-only stocks</button>
+      <button type="button" class="tbtn" id="tSme" title="Also count SME-platform companies">Include SME stocks</button>
+      <span class="tbtn static" id="tFloor" title="Only companies of this size are counted, and only groups with at least this many of them are listed"></span>
+      <span class="sp"></span>
+      <span class="hint keys"><b>↑↓</b> stock · <b>←→</b> group · <b>F</b> focus · <b>Enter</b> open</span>
+    </div>
+    <div id="trk">
+      <section class="tp" id="tpG" aria-label="Groups">
+        <div class="tph"><span class="ttl" id="tgTitle"></span><span class="r" id="tgBy"></span></div>
+        <div class="tps"><input id="tSearch" type="search" placeholder="Find sector or a stock" autocomplete="off" aria-label="Find sector or a stock" /></div>
+        <div class="tch" id="tgHead"></div>
+        <div class="tl" id="tgList" role="listbox" aria-label="Groups"></div>
+      </section>
+      <section class="tp" id="tpS" aria-label="Stocks in the group">
+        <div class="tph"><span class="ttl" id="tsTitle"></span><span class="r" id="tsCount"></span></div>
+        <div class="tps"><button type="button" class="tbtn" id="tsIdx" title="This group as an index against Nifty 500, with every member's returns and P/E">Index vs Nifty 500</button>
+          <button type="button" class="tbtn" id="tsCopy" title="Copy these symbols as a TradingView watchlist (NSE:AAA,NSE:BBB…)" style="margin-left:auto">Copy TV</button></div>
+        <div class="tch" id="tsHead"></div>
+        <div class="tl" id="tsList" role="listbox" aria-label="Stocks"></div>
+      </section>
+      <section class="tp" id="tpC" aria-label="Chart">
+        <div class="tph"><span id="tcSym"></span><span id="tcName"></span><span id="tcPx"></span><span id="tcChg"></span>
+          <span class="r"><a class="tbtn" id="tcOpen" href="#" title="Open the stock's own page">Open ↗</a><button type="button" class="tbtn" id="tcFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="tps"><div class="sg" id="tIv" role="group" aria-label="Bar size"></div><div class="sg" id="tRg" role="group" aria-label="Range"></div>
+          <button type="button" class="tbtn" id="tLog" title="Logarithmic price scale">Log</button>
+          <a class="tbtn" id="tcFull" href="#" style="margin-left:auto" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
+        <div id="tChartWrap"><div id="tLegend"></div><div id="tMsg"></div><div id="tChart"></div></div>
+        <div id="tStats"></div>
+      </section>
+    </div>
+  </div>
+
+  <div id="oldWrap" class="space-y-3 hidden">
+  <p class="text-xs text-slate-500" id="subT">Self-made indexes · equal-weighted, rebased to 100 · hover any chart for values</p>
 
   <!-- breadth summary -->
   <div id="breadth" class="card p-3 text-sm flex flex-wrap items-center gap-x-5 gap-y-1.5"></div>
@@ -90,11 +213,6 @@
         <div id="weights" class="flex items-center gap-1"></div>
       </div>
       <span class="text-slate-200">|</span>
-      <div class="flex items-center gap-1">
-        <span class="text-slate-400 font-semibold mr-0.5">View</span>
-        <div id="views" class="flex items-center gap-1"></div>
-      </div>
-      <span class="text-slate-200">|</span>
       <label class="flex items-center gap-1 text-slate-500">Sort
         <select id="sort" class="border border-slate-300 rounded-lg px-1.5 py-1 text-xs bg-white">
           <option value="ret">Return ▼</option>
@@ -116,6 +234,7 @@
   <div id="count" class="text-xs text-slate-400 px-1"></div>
   <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"></div>
   <div id="heat" class="hidden"></div>
+  </div>
 </main>
 
 <!-- detail modal -->
@@ -153,8 +272,8 @@ const LEVELS=[
   {key:'basic',    label:'Sub-Industries', field:'industry'},
   {key:'nse',      label:'Indices',        field:null},   // NSE indices + BSE SME IPO (§195) + Nifty SME Emerge (§210); key kept for saved links
 ];
-const PERIODS=[['1W',7],['1M',30],['3M',91],['6M',182],['YTD',-1],['1Y',365],['3Y',1095]];
-const ST={ level:'industry', mover:'all', period:'6M', weight:'equal', view:'cards', sort:'ret', q:'' };
+const PERIODS=[['Today',1],['1W',7],['1M',30],['3M',91],['6M',182],['YTD',-1],['1Y',365],['3Y',1095]];
+const ST={ level:'industry', mover:'all', period:'1W', weight:'equal', view:'tracker', sort:'ret', q:'' };
 let WATCH=new Set(JSON.parse(localStorage.getItem('sw_sec_watch')||'[]'));
 function saveWatch(){ localStorage.setItem('sw_sec_watch',JSON.stringify([...WATCH])); }
 
@@ -656,12 +775,12 @@ function renderToolbar(){
   $('movers').innerHTML=[['all','All'],['top','Top 20'],['bottom','Bottom 20'],['watch','★ Watchlist']].map(([k,l])=>`<span class="pill px-2.5 py-1 rounded-md border border-slate-300 ${k===ST.mover?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${k}">${l}</span>`).join('');
   $('periods').innerHTML=PERIODS.map(p=>`<span class="pill px-2 py-1 rounded-md border border-slate-300 ${p[0]===ST.period?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${p[0]}">${p[0]}</span>`).join('');
   $('weights').innerHTML=[['equal','Equal'],['mcap','Mkt cap']].map(([k,l])=>`<span class="pill px-2 py-1 rounded-md border border-slate-300 ${k===ST.weight?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${k}">${l}</span>`).join('');
-  $('views').innerHTML=[['cards','▦ Cards'],['heat','▩ Heatmap']].map(([k,l])=>`<span class="pill px-2 py-1 rounded-md border border-slate-300 ${k===ST.view?'on':'text-slate-600 hover:bg-slate-100'}" data-v="${k}">${l}</span>`).join('');
+  $('vtabs').innerHTML=[['tracker','Tracker'],['cards','Cards'],['heat','Heatmap']].map(([k,l])=>`<button type="button" role="tab" aria-selected="${k===ST.view}" class="${k===ST.view?'on':''}" data-v="${k}">${l}</button>`).join('');
   $('levels').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.level=b.dataset.v; recompute(); });
   $('movers').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.mover=b.dataset.v; renderToolbar(); renderGrid(); });
   $('periods').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>changePeriod(b.dataset.v));
   $('weights').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.weight=b.dataset.v; recompute(); });
-  $('views').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.view=b.dataset.v; renderToolbar(); renderGrid(); });
+  $('vtabs').querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ ST.view=b.dataset.v; saveUI(); renderToolbar(); applyView(); });
 }
 async function changePeriod(p){
   const prev=ST.period; ST.period=p;
@@ -669,7 +788,7 @@ async function changePeriod(p){
   if(so<EARLIEST&&!FULL){ renderToolbar(); try{ await ensureFull(); }catch(e){ ST.period=prev; } }
   recompute();
 }
-function recompute(){ compute(); renderToolbar(); renderBreadth(); renderGrid(); }
+function recompute(){ compute(); renderToolbar(); renderBreadth(); applyView(); }
 
 $('search').oninput=e=>{ ST.q=e.target.value.trim(); renderGrid(); };
 $('sort').onchange=e=>{ ST.sort=e.target.value; renderGrid(); };
@@ -680,6 +799,294 @@ $('csv').onclick=()=>{
   const blob=new Blob([lines.join('\n')],{type:'text/csv'}); const a=document.createElement('a');
   a.href=URL.createObjectURL(blob); a.download='stocksworld_'+ST.level+'_'+ST.period+'.csv'; a.click();
 };
+
+/* ================= TRACKER — sector list → its stocks → the stock's chart, on one screen =================
+ * Reads the same GROUPS / groupStats() the cards use, so a sector's return here is the card's return
+ * (given the same members). What differs is the universe: the tracker drops names under ₹500 Cr and
+ * groups left with fewer than 5 stocks, and hides SME / BSE-only lines unless asked — a 1W sector
+ * move made of three illiquid microcaps is noise on a screen meant for picking a stock to open.
+ * NSE/SME index groups keep their official members untouched.
+ * Candles come from the per-stock slices the chart page uses (sf-data/stk + sf-data/ohlc). */
+const MIN_MC=500, MIN_N=5;
+const T={g:null,s:null,q:'',gsort:{k:'ret',dir:-1},ssort:{k:'r',dir:-1},bse:false,sme:false,rows:[],vis:[],stocks:[],
+  focus:false,iv:'D',range:'6M',log:false,data:null,bars:[],ema:[],tIdx:new Map(),tok:0};
+let RS={};
+function saveUI(){ try{ localStorage.setItem('sw_sec_ui',JSON.stringify({view:ST.view,period:ST.period,level:ST.level,bse:T.bse,sme:T.sme,iv:T.iv,range:T.range,log:T.log})); }catch(e){} }
+function loadUI(){ try{ const u=JSON.parse(localStorage.getItem('sw_sec_ui')||'null'); if(!u)return;
+  if(['tracker','cards','heat'].includes(u.view))ST.view=u.view;
+  if(PERIODS.some(p=>p[0]===u.period)&&!['1Y','3Y'].includes(u.period))ST.period=u.period;   // long periods need the 17 MB file — never on first paint
+  if(LEVELS.some(l=>l.key===u.level))ST.level=u.level;
+  T.bse=!!u.bse; T.sme=!!u.sme; T.log=!!u.log;
+  if(['D','W','M'].includes(u.iv))T.iv=u.iv; if(['3M','6M','1Y','3Y','Max'].includes(u.range))T.range=u.range; }catch(e){} }
+
+function retOver(t,days){ const p1=priceAt(t,END_OFF), p0=priceAt(t,END_OFF-days); return (p0==null||p1==null||p0<=0)?null:(p1/p0-1)*100; }
+/* RS rating: where a stock's recent return ranks among every stock of ₹500 Cr and up, 1 (weakest) to 99.
+   Blend = 20% 1-month + 40% 3-month + 40% 6-month return. A stock without 6 months of prices has no rating. */
+function buildRS(){
+  const sc=[];
+  for(const t in META){ if(!SERIES[t]||((META[t].mcap||0)<MIN_MC))continue;
+    const a=retOver(t,30),b=retOver(t,91),c=retOver(t,182); if(a==null||b==null||c==null)continue;
+    sc.push([t,.2*a+.4*b+.4*c]); }
+  sc.sort((x,y)=>x[1]-y[1]); RS={};
+  sc.forEach(([t],i)=>{ RS[t]=Math.max(1,Math.min(99,Math.round((i+1)/sc.length*99))); });
+}
+function trkOK(t){ const m=META[t]||{}; if((m.mcap||0)<MIN_MC)return false; if(!T.sme&&m.sme)return false; if(!T.bse&&/\.BO$/.test(t))return false; return true; }
+function trkCompute(){
+  const so=periodStart(), isIdx=ST.level==='nse'; T.rows=[];
+  for(const name in GROUPS){
+    const mem=isIdx?GROUPS[name]:GROUPS[name].filter(trkOK);
+    if(!isIdx&&mem.length<MIN_N)continue;
+    const st=groupStats(mem,so,END_OFF);
+    if(!st.n||(!isIdx&&st.n<MIN_N))continue;
+    T.rows.push({name,...st});
+  }
+}
+const stockHit=(m,q)=>String(symOf(m.t)).toLowerCase().startsWith(q)||m.name.toLowerCase().includes(q);
+function trkGroups(){
+  const q=T.q.toLowerCase(); let r=T.rows;
+  if(q) r=r.filter(x=>x.name.toLowerCase().includes(q)||(q.length>=2&&x.mem.some(m=>stockHit(m,q))));
+  const {k,dir}=T.gsort;
+  return r.slice().sort((a,b)=>k==='name'?a.name.localeCompare(b.name)*dir:((a.ret==null?-1e9:a.ret)-(b.ret==null?-1e9:b.ret))*dir);
+}
+function trkStocks(){
+  const row=T.rows.find(x=>x.name===T.g); if(!row)return [];
+  const {k,dir}=T.ssort, val=m=>k==='sym'?String(symOf(m.t)):k==='rs'?RS[m.t]:m.r;
+  return row.mem.slice().sort((a,b)=>{ const va=val(a),vb=val(b);
+    if(va==null&&vb==null)return 0; if(va==null)return 1; if(vb==null)return -1; return (va<vb?-1:va>vb?1:0)*dir; });
+}
+const arrow=(s,k)=>s.k===k?(s.dir===1?' ▲':' ▼'):'';
+const fmtPx=p=>p==null?'—':'₹'+p.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtVol=v=>v==null?'—':v>=1e7?(v/1e7).toFixed(2)+'Cr':v>=1e5?(v/1e5).toFixed(2)+'L':v>=1e3?(v/1e3).toFixed(1)+'K':String(v);
+const niceDate=iso=>{ const d=new Date(iso+'T00:00:00Z'); return d.getUTCDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCFullYear(); };
+
+function trkBar(){
+  $('tPeriods').innerHTML=PERIODS.map(p=>`<button type="button" class="${p[0]===ST.period?'on':''}" data-v="${p[0]}">${p[0]}</button>`).join('');
+  $('tLevels').innerHTML=LEVELS.map(l=>`<button type="button" class="${l.key===ST.level?'on':''}" data-v="${l.key}">${l.label}</button>`).join('');
+  $('tPeriods').querySelectorAll('button').forEach(b=>b.onclick=()=>{ changePeriod(b.dataset.v).then(saveUI); });
+  $('tLevels').querySelectorAll('button').forEach(b=>b.onclick=()=>{ ST.level=b.dataset.v; T.g=null; T.s=null; saveUI(); recompute(); });
+  const idx=ST.level==='nse';
+  [['tBse','bse'],['tSme','sme']].forEach(([id,k])=>{ const b=$(id); b.classList.toggle('on',T[k]); b.setAttribute('aria-pressed',T[k]); b.disabled=idx;
+    b.onclick=()=>{ T[k]=!T[k]; saveUI(); trkRender(); }; });
+  $('tFloor').textContent=idx?'Official index members':'₹'+MIN_MC+' Cr+ · '+MIN_N+'+ stocks';
+}
+function trkRender(){
+  trkBar(); trkCompute(); trkRenderGroups(); trkRenderStocks(); trkSize();
+}
+function trkRenderGroups(){
+  T.vis=trkGroups();
+  if(!T.vis.some(x=>x.name===T.g)){ T.g=T.vis[0]?T.vis[0].name:null; T.s=null; }
+  const lv=LEVELS.find(l=>l.key===ST.level);
+  $('tgTitle').innerHTML=`${esc(lv.label)} <i>${T.vis.length}</i>`;
+  $('tgBy').textContent='by '+ST.period+' return';
+  $('tgHead').innerHTML=`<span data-k="name">${({sector:'Sector',sub:'Sub-sector',industry:'Industry',basic:'Sub-industry',nse:'Index'})[lv.key]}${arrow(T.gsort,'name')}</span><span title="Stocks up / down over ${ST.period}">↑ ↓</span><span></span><span data-k="ret">${ST.period}${arrow(T.gsort,'ret')}</span>`;
+  $('tgHead').querySelectorAll('[data-k]').forEach(h=>h.onclick=()=>{ const k=h.dataset.k; T.gsort=T.gsort.k===k?{k,dir:-T.gsort.dir}:{k,dir:k==='name'?1:-1}; trkRenderGroups(); });
+  const mx=Math.max(.01,...T.vis.map(x=>Math.abs(x.ret||0)));
+  $('tgList').innerHTML=T.vis.map((x,i)=>`<div class="gr${x.name===T.g?' on':''}" data-i="${i}" role="option" aria-selected="${x.name===T.g}">
+      <span class="gn" title="${esc(x.name)}">${esc(x.name)} <i>${x.n}</i></span>
+      <span class="gb"><b class="pos">${x.up}</b> / <b class="neg">${x.down}</b></span>
+      <span class="gbar"><i style="width:${Math.max(4,Math.round(Math.abs(x.ret||0)/mx*100))}%;background:var(--${(x.ret||0)>=0?'pos':'neg'})"></i></span>
+      <span class="gv ${clsPN(x.ret)}">${fmtPct(x.ret)}</span></div>`).join('')
+    ||`<div class="tempty">Nothing matches “${esc(T.q)}”.</div>`;
+  $('tgList').querySelectorAll('.gr').forEach(el=>el.onclick=()=>trkPickGroup(T.vis[+el.dataset.i].name));
+}
+function trkPickGroup(name,keepStock){
+  if(name===T.g&&!keepStock)return;
+  T.g=name; if(!keepStock)T.s=null;
+  $('tgList').querySelectorAll('.gr').forEach(el=>{ const on=T.vis[+el.dataset.i].name===name; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on)el.scrollIntoView({block:'nearest'}); });
+  trkRenderStocks();
+}
+function trkRenderStocks(){
+  const row=T.rows.find(x=>x.name===T.g);
+  T.stocks=trkStocks();
+  const q=T.q.toLowerCase();
+  if(q.length>=2&&row&&!row.name.toLowerCase().includes(q)){ const hit=T.stocks.find(m=>stockHit(m,q)); if(hit)T.s=hit.t; }
+  if(!T.stocks.some(m=>m.t===T.s)) T.s=T.stocks[0]?T.stocks[0].t:null;
+  $('tsTitle').innerHTML=row?`${esc(row.name)} <b class="${clsPN(row.ret)}">${fmtPct(row.ret)}</b>`:'—';
+  $('tsCount').textContent=row?row.n+' stock'+(row.n!==1?'s':''):'';
+  $('tsHead').innerHTML=`<span data-k="sym">Stock${arrow(T.ssort,'sym')}</span><span data-k="rs" title="RS rating: where the stock's 1, 3 and 6-month return ranks among all stocks of ₹${MIN_MC} Cr and up — 99 is the strongest">RS${arrow(T.ssort,'rs')}</span><span data-k="r">${ST.period}${arrow(T.ssort,'r')}</span>`;
+  $('tsHead').querySelectorAll('[data-k]').forEach(h=>h.onclick=()=>{ const k=h.dataset.k; T.ssort=T.ssort.k===k?{k,dir:-T.ssort.dir}:{k,dir:k==='sym'?1:-1}; trkRenderStocks(); });
+  $('tsList').innerHTML=T.stocks.map((m,i)=>{ const rs=RS[m.t];
+    return `<div class="sr${m.t===T.s?' on':''}" data-i="${i}" role="option" aria-selected="${m.t===T.s}">
+      <span class="sn" title="${esc(m.name)}"><b>${esc(symOf(m.t))}</b> <i>${esc(m.name)}</i></span>
+      <span class="rs ${rs==null?'':rs>=80?'pos':rs<=30?'neg':''}">${rs==null?'—':rs}</span>
+      <span class="${clsPN(m.r)}">${fmtPct(m.r)}</span></div>`; }).join('')||'<div class="tempty">No stocks.</div>';
+  $('tsList').querySelectorAll('.sr').forEach(el=>el.onclick=()=>trkPickStock(T.stocks[+el.dataset.i].t));
+  $('tsIdx').disabled=$('tsCopy').disabled=!row;
+  trkShowStock();
+}
+function trkPickStock(t,lazy){
+  if(t===T.s)return; T.s=t;
+  $('tsList').querySelectorAll('.sr').forEach(el=>{ const on=T.stocks[+el.dataset.i].t===t; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on)el.scrollIntoView({block:'nearest'}); });
+  trkShowStock(lazy);
+}
+
+/* ---- the chart pane ---- */
+const SF_STK='https://dhruvan246.github.io/sf-data/stk/', SF_OHLC='https://dhruvan246.github.io/sf-data/ohlc/';   // CORS-open, so the same address works on localhost
+const BARS={};
+function loadBars(sym){
+  if(BARS[sym])return BARS[sym];
+  const slug=String(sym).replace(/[^A-Za-z0-9._-]/g,'_');
+  const p=(async()=>{
+    const [S,J]=await Promise.all([
+      fetch(SF_STK+slug+'.json').then(r=>{ if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); }),
+      fetch(SF_OHLC+slug+'.json').then(r=>r.ok?r.json():null).catch(()=>null) ]);
+    if(!S||!Array.isArray(S.p)||!S.p.length)throw new Error('empty');
+    const n=S.p.length, dd=S.dd||[], vq=Array.isArray(S.v)?S.v:[], v0=n-vq.length;
+    // open/high/low only when that file lines up bar-for-bar with the closes — otherwise a line, never guessed candles
+    const ok=!!(J&&J.n===n&&Array.isArray(J.o)&&J.o.length===n&&J.h.length===n&&J.l.length===n);
+    const bars=[]; let off=S.d0, prev=-Infinity;
+    for(let i=0;i<n;i++){ if(i>0)off+=dd[i-1]; if(!(off>prev))continue; prev=off; const c=S.p[i]/100; if(!(c>0))continue;
+      const b={ts:S.ts+off*DAY,c}; if(ok){ b.o=c+J.o[i]/100; b.h=c+J.h[i]/100; b.l=c+J.l[i]/100; }
+      if(v0>=0&&i>=v0&&vq[i-v0]!=null)b.v=vq[i-v0]; bars.push(b); }
+    if(!bars.length)throw new Error('empty');
+    return {bars,ohlc:ok};
+  })();
+  BARS[sym]=p; p.catch(()=>{ delete BARS[sym]; });
+  return p;
+}
+function aggBars(bars,iv){
+  if(iv==='D')return bars;
+  const out=[]; let key=null,cur=null;
+  for(const b of bars){
+    const d=new Date(b.ts*1000), k=iv==='M'?d.getUTCFullYear()*12+d.getUTCMonth():Math.floor((b.ts/DAY+3)/7);   // weeks run Monday–Sunday
+    if(k!==key){ cur={ts:b.ts,o:b.o,h:b.h,l:b.l,c:b.c,v:b.v}; out.push(cur); key=k; }
+    else{ cur.ts=b.ts; cur.c=b.c; if(b.h!=null){ cur.h=Math.max(cur.h,b.h); cur.l=Math.min(cur.l,b.l); } if(b.v!=null)cur.v=(cur.v||0)+b.v; }
+  }
+  return out;
+}
+function emaArr(v,n){ const out=new Array(v.length).fill(null); if(v.length<n)return out; let s=0; for(let i=0;i<n;i++)s+=v[i]; let e=s/n; out[n-1]=e; const k=2/(n+1);
+  for(let i=n;i<v.length;i++){ e=v[i]*k+e*(1-k); out[i]=e; } return out; }
+const tsISO=ts=>new Date(ts*1000).toISOString().slice(0,10);
+const EMA_N=[21,50,200], EMA_COL=['#3b82f6','#eab308','#ef4444'];
+let CH=null;
+function chartInit(){
+  if(CH){ try{ CH.chart.remove(); }catch(e){} CH=null; }
+  const LC=window.LightweightCharts; if(!LC)return;
+  const cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+  const pos=v('--pos')||'#26a69a', neg=v('--neg')||'#ef5350', bd=v('--border')||'#2a3040';
+  const chart=LC.createChart($('tChart'),{ autoSize:true,
+    layout:{background:{color:'transparent'},textColor:v('--text-muted')||'#9aa3b8',fontSize:11,fontFamily:getComputedStyle(document.body).fontFamily},
+    grid:{vertLines:{visible:false},horzLines:{color:bd}},
+    rightPriceScale:{borderColor:bd,scaleMargins:{top:.08,bottom:.2},mode:T.log?1:0},
+    timeScale:{borderColor:bd,rightOffset:5}, crosshair:{mode:0} });
+  CH={chart,pos,neg};
+  CH.vol=chart.addSeries(LC.HistogramSeries,{priceFormat:{type:'volume'},priceScaleId:'vol',lastValueVisible:false,priceLineVisible:false});
+  chart.priceScale('vol').applyOptions({scaleMargins:{top:.84,bottom:0}});
+  CH.ema=EMA_N.map((n,i)=>chart.addSeries(LC.LineSeries,{color:EMA_COL[i],lineWidth:1,priceLineVisible:false,lastValueVisible:false,crosshairMarkerVisible:false}));
+  CH.line=chart.addSeries(LC.LineSeries,{color:v('--accent-text')||'#5eead4',lineWidth:2,priceLineVisible:true,lastValueVisible:true});
+  CH.candle=chart.addSeries(LC.CandlestickSeries,{upColor:pos,downColor:neg,borderVisible:false,wickUpColor:pos,wickDownColor:neg});
+  chart.subscribeCrosshairMove(p=>{ const i=(p&&p.time!=null)?T.tIdx.get(p.time):null; trkLegend(i==null?T.bars.length-1:i); });
+}
+function trkDraw(){
+  const d=T.data; if(!d||!CH)return;
+  const bars=aggBars(d.bars,T.iv), tm=bars.map(b=>tsISO(b.ts)), cl=bars.map(b=>b.c);
+  T.bars=bars; T.tIdx=new Map(tm.map((t,i)=>[t,i]));
+  if(d.ohlc){ CH.line.setData([]); CH.candle.setData(bars.map((b,i)=>({time:tm[i],open:b.o,high:b.h,low:b.l,close:b.c}))); }
+  else{ CH.candle.setData([]); CH.line.setData(bars.map((b,i)=>({time:tm[i],value:b.c}))); }
+  const up=(b,i)=>d.ohlc?b.c>=b.o:(i===0||b.c>=bars[i-1].c);
+  CH.vol.setData(bars.map((b,i)=>b.v==null?null:{time:tm[i],value:b.v,color:(up(b,i)?CH.pos:CH.neg)+'66'}).filter(Boolean));
+  T.ema=EMA_N.map((n,j)=>{ const e=emaArr(cl,n); CH.ema[j].setData(e.map((x,i)=>x==null?null:{time:tm[i],value:x}).filter(Boolean)); return e; });
+  trkRange(); trkLegend(bars.length-1);
+}
+function trkRange(){
+  if(!CH||!T.bars.length)return;
+  const days={'3M':91,'6M':182,'1Y':365,'3Y':1095}[T.range], last=T.bars[T.bars.length-1].ts, first=T.bars[0].ts;
+  if(!days||last-days*DAY<=first){ CH.chart.timeScale().fitContent(); return; }
+  CH.chart.timeScale().setVisibleRange({from:tsISO(last-days*DAY),to:tsISO(last)});
+}
+function trkLegend(i){
+  const b=T.bars[i], d=T.data, m=META[T.s]||{}; if(!b||!d){ $('tLegend').innerHTML=''; return; }
+  const prev=i>0?T.bars[i-1].c:null, chg=prev?b.c-prev:null, pc=prev?(chg/prev*100):null, cls=clsPN(chg==null?0:chg);
+  const f=x=>x.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  $('tLegend').innerHTML=`<div><b>${esc(m.name||symOf(T.s))}</b> <span class="mut">· 1${T.iv} · ${/\.BO$/.test(T.s)?'BSE':'NSE'} · ${niceDate(tsISO(b.ts))}</span> `+
+    (d.ohlc?`<span class="mut">O</span> <span class="${cls}">${f(b.o)}</span> <span class="mut">H</span> <span class="${cls}">${f(b.h)}</span> <span class="mut">L</span> <span class="${cls}">${f(b.l)}</span> `:'')+
+    `<span class="mut">C</span> <span class="${cls}">${f(b.c)}</span>`+(chg==null?'':` <span class="${cls}">${chg>=0?'+':''}${f(chg)} (${fmtPct(pc)})</span>`)+
+    (b.v==null?'':` <span class="mut">Vol</span> ${fmtVol(b.v)}`)+`</div>`+
+    `<div>`+EMA_N.map((n,j)=>{ const e=T.ema[j]&&T.ema[j][i]; return `<span class="mut">EMA ${n}</span> <span style="color:${EMA_COL[j]}">${e==null?'—':f(e)}</span>`; }).join(' &nbsp;')+
+    (d.ohlc?'':' <span class="mut">· closing prices only — no open/high/low on file for this stock</span>')+`</div>`;
+}
+function trkStats(t,d){
+  const cell=(l,v,c,tip)=>`<div${tip?` title="${esc(tip)}"`:''}><span>${l}</span><b class="${c||''}">${v}</b></div>`;
+  const rs=RS[t], rsCell=cell('RS rating',rs==null?'—':rs,rs==null?'':rs>=80?'pos':rs<=30?'neg':'','Rank of the 1, 3 and 6-month return among all stocks of ₹'+MIN_MC+' Cr and up. 99 = strongest.');
+  if(!d){ $('tStats').innerHTML=rsCell+['From 52W high','52W range','Vol vs 50D avg','vs 50 SMA','vs 200 SMA'].map(l=>cell(l,'—')).join(''); return; }
+  const b=d.bars, n=b.length, last=b[n-1].c, w=b.slice(-252);
+  const hi=Math.max(...w.map(x=>x.h!=null?x.h:x.c)), lo=Math.min(...w.map(x=>x.l!=null?x.l:x.c));
+  const sma=k=>n>=k?b.slice(-k).reduce((s,x)=>s+x.c,0)/k:null;
+  const vs=b.slice(-51,-1).map(x=>x.v).filter(x=>x!=null), lv=b[n-1].v, vr=(lv!=null&&vs.length>=20)?lv/(vs.reduce((a,c)=>a+c,0)/vs.length):null;
+  const rel=s=>{ if(s==null)return ['—','']; const p=(last/s-1)*100; return [(p>=0?'Above ':'Below ')+fmtPct(p),clsPN(p)]; };
+  const fromHi=(last/hi-1)*100, r50=rel(sma(50)), r200=rel(sma(200)), px=x=>x>=1000?Math.round(x).toLocaleString('en-IN'):x.toFixed(x>=100?0:2);
+  $('tStats').innerHTML=rsCell+
+    cell('From 52W high',fmtPct(fromHi),fromHi>-5?'pos':fromHi<-25?'neg':'','Last close against the highest price of the last 252 sessions')+
+    cell('52W range',px(lo)+' – '+px(hi))+
+    cell('Vol vs 50D avg',vr==null?'—':vr.toFixed(1)+'×',vr==null?'':vr>=1.5?'pos':'','Latest session’s volume ÷ the average of the 50 sessions before it')+
+    cell('vs 50 SMA',r50[0],r50[1])+cell('vs 200 SMA',r200[0],r200[1]);
+}
+let showTimer=null;
+function trkShowStock(lazy){
+  const t=T.s, m=META[t]||{}, tok=++T.tok;
+  if(!t){ $('tcSym').textContent='—'; $('tcName').textContent='Pick a stock'; $('tcPx').textContent=''; $('tcChg').textContent=''; $('tcChg').className='';
+    $('tLegend').innerHTML=''; $('tMsg').textContent=''; T.data=null; trkStats(null,null); return; }
+  const sym=symOf(t), p1=priceAt(t,END_OFF), dr=retOver(t,1);
+  $('tcSym').textContent=sym; $('tcName').textContent=m.name||''; $('tcPx').textContent=fmtPx(p1);
+  $('tcChg').textContent=fmtPct(dr); $('tcChg').className='chg '+clsPN(dr);
+  $('tcOpen').href='./stock.html?sym='+encodeURIComponent(sym); $('tcFull').href='./chart.html?s='+encodeURIComponent(sym);
+  trkStats(t,null);
+  clearTimeout(showTimer);
+  // holding an arrow key walks the list; only the stock you stop on is fetched
+  showTimer=setTimeout(async()=>{
+    $('tMsg').textContent=BARS[sym]?'':'Loading chart…';
+    try{ const d=await loadBars(sym); if(tok!==T.tok)return;
+      if(!CH)chartInit(); if(!CH){ $('tMsg').textContent='Chart library did not load — use “Full chart”.'; return; }
+      T.data=d; $('tMsg').textContent=''; trkDraw(); trkStats(t,d);
+    }catch(e){ if(tok!==T.tok)return; T.data=null; T.bars=[]; if(CH){ CH.candle.setData([]); CH.line.setData([]); CH.vol.setData([]); CH.ema.forEach(s=>s.setData([])); }
+      $('tLegend').innerHTML=''; $('tMsg').textContent='No price history on file for '+sym+'.'; }
+  },lazy?140:0);
+}
+function trkChartBar(){
+  $('tIv').innerHTML=['D','W','M'].map(k=>`<button type="button" class="${k===T.iv?'on':''}" data-v="${k}" title="${{D:'Daily',W:'Weekly',M:'Monthly'}[k]} bars">${k}</button>`).join('');
+  $('tRg').innerHTML=['3M','6M','1Y','3Y','Max'].map(k=>`<button type="button" class="${k===T.range?'on':''}" data-v="${k}">${k}</button>`).join('');
+  $('tIv').querySelectorAll('button').forEach(b=>b.onclick=()=>{ T.iv=b.dataset.v;
+    if(T.iv==='W'&&['3M','6M'].includes(T.range))T.range='3Y'; if(T.iv==='M'&&T.range!=='Max')T.range='Max'; saveUI(); trkChartBar(); trkDraw(); });
+  $('tRg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ T.range=b.dataset.v; saveUI(); trkChartBar(); trkRange(); });
+  $('tLog').classList.toggle('on',T.log); $('tLog').setAttribute('aria-pressed',T.log);
+}
+function trkFocus(on){ T.focus=on==null?!T.focus:on; $('trk').classList.toggle('focus',T.focus); $('tcFocus').textContent=T.focus?'Show lists':'Focus'; $('tcFocus').setAttribute('aria-pressed',T.focus); }
+function trkSize(){
+  const el=$('trk'); if(!el||ST.view!=='tracker')return;
+  if(window.innerWidth<900){ el.style.height=''; return; }
+  el.style.height=Math.max(460,window.innerHeight-el.getBoundingClientRect().top-window.scrollY*0-12)+'px';
+}
+function trkWire(){
+  $('tSearch').oninput=e=>{ T.q=e.target.value.trim(); trkRenderGroups(); trkRenderStocks(); };
+  $('tLog').onclick=()=>{ T.log=!T.log; saveUI(); trkChartBar(); if(CH)CH.chart.priceScale('right').applyOptions({mode:T.log?1:0}); };
+  $('tcFocus').onclick=()=>trkFocus();
+  $('tsIdx').onclick=()=>{ if(T.g)openDetail(T.g); };
+  $('tsCopy').onclick=()=>{ const txt=T.stocks.map(m=>(/\.BO$/.test(m.t)?'BSE:':'NSE:')+symOf(m.t)).join(','), b=$('tsCopy'), done=ok=>{ b.textContent=ok?'Copied '+T.stocks.length:'Copy failed'; setTimeout(()=>b.textContent='Copy TV',1400); };
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>done(true),()=>done(false)); };
+  trkChartBar();
+  window.addEventListener('resize',trkSize);
+  document.addEventListener('keydown',e=>{
+    if(ST.view!=='tracker'||$('modal').style.display==='flex'||e.metaKey||e.ctrlKey||e.altKey)return;
+    const tg=e.target, typing=tg&&/^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if(typing){ if(e.key==='Escape'||e.key==='Enter')tg.blur(); if(e.key!=='ArrowDown'&&e.key!=='ArrowUp')return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ const i=T.stocks.findIndex(m=>m.t===T.s), j=i+(e.key==='ArrowDown'?1:-1);
+      if(T.stocks[j])trkPickStock(T.stocks[j].t,true); e.preventDefault(); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const i=T.vis.findIndex(x=>x.name===T.g), j=i+(e.key==='ArrowRight'?1:-1);
+      if(T.vis[j])trkPickGroup(T.vis[j].name); e.preventDefault(); }
+    else if(e.key==='Enter'&&T.s){ location.href='./stock.html?sym='+encodeURIComponent(symOf(T.s)); }
+    else if(e.key==='f'||e.key==='F'){ trkFocus(); }
+    else if(e.key==='/'){ $('tSearch').focus(); e.preventDefault(); }
+  });
+  // chart colours are resolved from the theme once, so a theme switch rebuilds the chart
+  new MutationObserver(()=>{ if(CH){ chartInit(); trkDraw(); } }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+}
+function applyView(){
+  $('asof').textContent=ST.period+': '+niceDate(isoOff(periodStart()))+' → '+niceDate(isoOff(END_OFF))+' · closing prices';
+  const tr=ST.view==='tracker';
+  $('trkWrap').classList.toggle('hidden',!tr); $('oldWrap').classList.toggle('hidden',tr);
+  $('pageMain').classList.toggle('wide',tr);
+  if(tr)trkRender(); else renderGrid();
+}
 
 /* ---- boot ---- */
 async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer(); const s=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(s).text()); }
@@ -712,9 +1119,11 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;
     NIFTY_ARR=Object.entries(nifty.px||{}).map(([d,v])=>[dayOff(d),v]).filter(x=>isFinite(x[0])&&x[1]>0).sort((a,b)=>a[0]-b[0]);
     NIFTY_OFFS=NIFTY_ARR.map(x=>x[0]);
-    $('asof').innerHTML='as of <b>'+isoOff(END_OFF)+'</b><br>EOD · refreshes after market close (~7 PM IST)';
+    $('asof').title='End-of-day data, refreshed after the market closes (about 7 PM IST)';
+    buildRS(); trkWire();
     let nCls=0; for(const k in SERIES) if(CLS[k])nCls++;
     document.title='STOCKSWORLD · Sectors';
+    loadUI();
     const dq=new URLSearchParams(location.search);
     const dlLevel=(dq.get('level')||'').trim(), dlName=dq.get('name')||dq.get('g');
     if(dlLevel&&LEVELS.some(l=>l.key===dlLevel)) ST.level=dlLevel;   // level first, so the grid behind the modal matches
