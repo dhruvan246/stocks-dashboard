@@ -50,6 +50,12 @@
   #tip{position:fixed;z-index:60;pointer-events:none;background:#0f172a;color:#f1f5f9;border:1px solid #334155;border-radius:var(--radius);
        padding:7px 10px;font-size:12px;line-height:1.45;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:270px;display:none}
   #tip b{color:#fff}
+  .rew{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);opacity:.55}
+  .rew.ready{opacity:1} .rew.on{border-color:var(--accent)} .rew.on .lb{color:var(--accent-text,var(--accent))}
+  .rew .lb{padding:0 8px 0 10px;font-size:12px;font-weight:600;color:var(--text-muted)}
+  html[data-theme] .rew button{background:none;border:0;border-left:1px solid var(--border);border-radius:0;padding:5px 9px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;min-height:0}
+  html[data-theme] .rew button:hover{color:var(--text);background:var(--surface-2)} html[data-theme] .rew button:disabled{opacity:.4;cursor:default}
+  html[data-theme] .rew input{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12px;padding:4px 6px;height:auto;min-height:0;width:auto;box-shadow:none}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -75,6 +81,7 @@
   <div id="content" class="hidden">
     <div id="cards" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"></div>
 
+    <div id="rewNote" class="hidden text-xs mb-2" style="color:var(--accent-text,var(--accent))"></div>
     <div class="mb-3 flex flex-wrap items-center gap-2">
       <div class="flex gap-1.5">
         <span id="vYear" class="vbtn on">All indexes</span>
@@ -96,6 +103,13 @@
         <span data-g="strategy" class="vbtn gch">Strategy</span>
         <span data-g="other" class="vbtn gch">Bonds &amp; other</span>
       </div>
+      <span id="rew" class="rew" title="Rewind: see all three views as they stood at the close of a past date">
+        <span class="lb">Rewind</span>
+        <button type="button" id="rewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+        <input type="date" id="rewDate" aria-label="Show the page as of this date" />
+        <button type="button" id="rewNext" title="One trading day forward" aria-label="One trading day forward">▶</button>
+        <button type="button" id="rewNow" title="Back to the latest data">Latest</button>
+      </span>
       <div class="flex items-center gap-2 ml-auto text-[11px] text-slate-500">
         <span id="lgL">−8%</span><div class="lgd"></div><span id="lgR">+8%</span>
       </div>
@@ -419,7 +433,7 @@ function renderSeas(){
   years.forEach(Y => {
     const slots = monthsFor(Y);
     const ann = annualCell(ix, Y);
-    html += '<tr><td class="font-bold">' + yLbl(Y) + (Y === curY ? '<span class="chipmtd">live</span>' : '') + '</td>';
+    html += '<tr><td class="font-bold">' + yLbl(Y) + (Y === curY ? '<span class="chipmtd">' + (REWP == null ? 'live' : 'to date') + '</span>' : '') + '</td>';
     slots.forEach(s => html += cellHtml(retCell(ix, s.y, s.m), cap.m, isMTD(s.y, s.m) ? 'mtd' : '', tipA(ix.key, s.y, s.m)));
     html += ann == null ? '<td class="ann text-slate-300">–</td>'
       : cellHtml(ann.v, cap.a, 'ann', 'data-i="' + esc(ix.key) + '" data-ann="' + Y + '"').replace('>', '>' + (ann.partial ? '<span class="text-[9px] align-top">*</span>' : ''));
@@ -595,14 +609,15 @@ async function addAllSeries(){
   if (P < 0) return;
   const at = (h, p) => { const i = p - h.s; return (i >= 0 && i < h.c.length && h.c[i] != null) ? h.c[i] / 100 : null; };
   const baked = ix => { let out = null; Object.keys(ix.closes).sort().forEach(y => ix.closes[y].forEach(c => { if (c != null) out = c; })); return out; };
-  const used = new Set();
-  IDX.forEach(ix => { if (b.idx[ix.key]) used.add(ix.key); });
+  const used = new Set(), tie = {};
+  IDX.forEach(ix => { if (b.idx[ix.key]){ used.add(ix.key); tie[ix.key] = ix; } });
   IDX.forEach(ix => { if (b.idx[ix.key]) return; const v = baked(ix); if (v == null) return;
     const c = Object.keys(b.idx).filter(k => !used.has(k) && at(b.idx[k], P) != null && Math.abs(at(b.idx[k], P) - v) < 0.011);
-    if (c.length === 1) used.add(c[0]); else console.warn('no single history series for', ix.key, c); });
+    if (c.length === 1){ used.add(c[0]); tie[c[0]] = ix; } else console.warn('no single history series for', ix.key, c); });
   const TG = {}, G = { broad:'broad', sectoral:'sector', thematic:'theme', strategy:'strategy', other:'other' };
   ((tb && tb.indices) || []).forEach(x => { TG[x.k] = { g: G[x.g], n: x.n }; });
   const dailyDs = FEED.daily ? Object.keys(FEED.daily) : [], posOf = {}; dn.forEach((n, i) => { posOf[iso(n)] = i; });
+  const meta = {}; for (const k in tie) meta[k] = { key: tie[k].key, label: tie[k].label, grp: tie[k].grp };
   const add = [];
   for (const k in b.idx){
     if (used.has(k) || BY[k]) continue;
@@ -616,6 +631,7 @@ async function addAllSeries(){
     if (lastP < 0) continue;
     for (let i = lastP - h.s; i >= 0 && dn[lastP] - dn[h.s + i] <= 365; i--){ const v = h.c[i]; if (v == null) continue; if (lo == null || v/100 < lo) lo = v/100; if (hi == null || v/100 > hi) hi = v/100; }
     const t = TG[k], ended = dn[P] - dn[lastP] > 7, e = new Date(dn[lastP] * 864e5);
+    meta[k] = { key: k, label: t ? t.n : h.cur, grp: (t && t.g) || grpRule(h.cur) };
     const ix = { key: k, label: (t ? t.n : h.cur) + (ended ? ' · ended ' + MONC[e.getUTCMonth()] + ' ' + e.getUTCFullYear() : ''), grp: (t && t.g) || grpRule(h.cur), closes: closes, added: 1 };
     if (ended) ix.ended = 1;
     else {
@@ -634,6 +650,75 @@ async function addAllSeries(){
   populateYearSel(); populateIdxSel();
   const n = $('nIdx'); if (n) n.textContent = IDX.length + ' NSE indices';
   setView(view);
+  H = { b: b, dn: dn, P0: P, meta: meta, iso: iso, day: day }; NOW = { FEED: FEED, IDX: IDX, BY: BY, upd: $('updated').innerHTML };
+  $('rew').classList.add('ready'); rewWire(); rewBar();
+}
+
+/* ---------- Rewind ----------
+ * The whole page as of the close of a past date, rebuilt from the daily closes of every series (the 32 feed indices
+ * included, through the series each is tied to): month-end closes up to that date (its month = month-to-date),
+ * level = that day's close, 1D = the close before it, 52-week range by CLOSES, the daily window = the 45 sessions before it.
+ * A series whose last close is more than 7 days older than the date is treated as ended on that date. */
+let H = null, NOW = null, REWP = null;
+function feedAt(P){
+  const dn = H.dn, b = H.b, idx = [], live = {}, daily = {};
+  const win = []; for (let q = P; q >= 0 && win.length < 45; q--) win.push(q);
+  win.forEach(q => { daily[H.iso(dn[q])] = {}; });
+  for (const k in b.idx){
+    const h = b.idx[k], m = H.meta[k]; if (!m) continue;
+    const closes = {}; let lastP = -1, lastV = null, prevV = null, lo = null, hi = null;
+    for (let i = 0; i < h.c.length && h.s + i <= P; i++){
+      const v = h.c[i]; if (v == null) continue;
+      const d = new Date(dn[h.s + i] * 864e5), y = d.getUTCFullYear(), mo = d.getUTCMonth();
+      (closes[y] || (closes[y] = [null,null,null,null,null,null,null,null,null,null,null,null]))[mo] = v / 100;
+      prevV = lastV; lastV = v / 100; lastP = h.s + i;
+    }
+    if (lastP < 0) continue;
+    const ended = dn[P] - dn[lastP] > 7, e = new Date(dn[lastP] * 864e5);
+    const ix = { key: m.key, label: m.label + (ended ? ' · ended ' + MONC[e.getUTCMonth()] + ' ' + e.getUTCFullYear() : ''), grp: m.grp, closes: closes };
+    if (ended) ix.ended = 1;
+    else {
+      for (let i = lastP - h.s; i >= 0 && dn[lastP] - dn[h.s + i] <= 365; i--){ const v = h.c[i]; if (v == null) continue; if (lo == null || v/100 < lo) lo = v/100; if (hi == null || v/100 > hi) hi = v/100; }
+      live[m.key] = { last: lastV, prev: prevV, yh: hi, yl: lo, d: H.iso(dn[lastP]) };
+      win.forEach(q => { const i = q - h.s; if (i >= 0 && i < h.c.length && h.c[i] != null) daily[H.iso(dn[q])][m.key] = h.c[i] / 100; });
+    }
+    idx.push(ix);
+  }
+  const ord = new Map(NOW.IDX.map((ix, i) => [ix.key, i]));
+  idx.sort((x, y) => (GRP_ORD.indexOf(x.grp) - GRP_ORD.indexOf(y.grp)) || (ord.get(x.key) - ord.get(y.key)));
+  return { feed: { asof: H.iso(dn[P]), live: live, daily: daily, indices: idx }, idx: idx };
+}
+function setRew(P){
+  if (!H) return;
+  if (P == null || P >= H.P0){ REWP = null; FEED = NOW.FEED; IDX = NOW.IDX; BY = NOW.BY; }
+  else {
+    let q = Math.max(0, P); const n50 = H.b.idx['NIFTY 50'];            // Nifty 50 is the page's benchmark: never rewind before its first close
+    if (n50 && q < n50.s) q = n50.s;
+    REWP = q; const r = feedAt(q); FEED = r.feed; IDX = r.idx; BY = {}; IDX.forEach(ix => BY[ix.key] = ix);
+  }
+  N50 = BY['NIFTY 50'];
+  if (!BY[selIdx]) selIdx = 'NIFTY 50';
+  const a = asofYM();
+  $('updated').innerHTML = REWP == null ? NOW.upd : '· data till ' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y + ' (rewound).';
+  $('nIdx').textContent = IDX.length + ' NSE indices';
+  if (REWP == null) selYear = null; sortCol = null;
+  populateYearSel(); populateIdxSel(); rewBar(); render();
+}
+function rewBar(){
+  if (!H) return; const d = $('rewDate'), cur = REWP == null ? H.P0 : REWP, n50 = H.b.idx['NIFTY 50'], lo = n50 ? n50.s : 0;
+  d.min = H.iso(H.dn[lo]); d.max = H.iso(H.dn[H.P0]); d.value = H.iso(H.dn[cur]);
+  $('rew').classList.toggle('on', REWP != null); $('rewNext').disabled = $('rewNow').disabled = REWP == null; $('rewPrev').disabled = cur <= lo;
+  const nt = $('rewNote'); nt.classList.toggle('hidden', REWP == null);
+  if (REWP != null){ const a = asofYM();
+    nt.innerHTML = 'Rewound to the close of <b>' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y + '</b> · ' + IDX.filter(ix => !ix.ended).length + ' indices had a level then · ' +
+      MONC[a.m-1] + ' ' + a.y + ' is month-to-date as of that day · 52-week high is by closing values · nothing after this date is used.'; }
+}
+function rewWire(){
+  $('rewPrev').onclick = () => setRew((REWP == null ? H.P0 : REWP) - 1);
+  $('rewNext').onclick = () => { if (REWP != null) setRew(REWP + 1); };
+  $('rewNow').onclick = () => setRew(null);
+  $('rewDate').onchange = e => { const v = e.target.value; if (!/^\d{4}-\d{2}-\d{2}$/.test(v)){ rewBar(); return; }
+    const t = H.day(v); let p = -1; for (let i = H.P0; i >= 0; i--) if (H.dn[i] <= t){ p = i; break; } setRew(p < 0 ? 0 : p); };
 }
 
 async function load(){
