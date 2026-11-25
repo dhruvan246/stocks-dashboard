@@ -726,15 +726,16 @@ function meanField(rows, field) {
 // with the strategy's own columns (same as its Live Picks tab). Shaded = inside its top N; "held" = in the
 // basket bought at the last rebalance; "in k" = in the top N of k strategies currently on screen.
 const OPEN = new Set(); let OVL = new Map();
+function mcTxt(p) { const c = capOn(p.sym, p.tkr, p.live); return c.v == null ? '—' : (ASOF && c.approx ? '≈' : '') + fmtCr(c.v); }
 function fullTable(r) {
   const heldS = new Set(r.held.map(h => h.sym)), list = r.all || [];
   if (!list.length) return '<div class="text-[12px] text-slate-400 py-2">' + noQual(r) + '</div>';
-  return '<div class="ftw"><table class="ft"><thead><tr><th>#</th><th>Stock</th><th>₹</th><th>' + (ASOF ? 'Day' : 'Today') + '</th>' + apColHead(r.cols) + '</tr></thead><tbody>' +
+  return '<div class="ftw"><table class="ft"><thead><tr><th>#</th><th>Stock</th><th>₹</th><th>' + (ASOF ? 'Day' : 'Today') + '</th><th title="Market cap at the price shown' + (ASOF ? ' (≈ = on today\'s share count)' : '') + '">Mcap</th>' + apColHead(r.cols) + '</tr></thead><tbody>' +
     list.map(p => { const k = OVL.get(p.sym) || 0, inTop = p.rank <= r.topN;
       return '<tr class="' + (inTop ? 'intop' : '') + '"><td class="text-slate-400">' + p.rank + '</td><td><a href="./stock.html?sym=' + encodeURIComponent(p.sym) + '" class="font-bold text-slate-800 hover:text-indigo-600">' + esc(p.sym) + '</a>' +
         (heldS.has(p.sym) ? '<span class="tg h" title="in the basket bought at the last rebalance">held</span>' : '') +
         (k > 1 && inTop ? '<span class="tg o" title="in the top N of ' + k + ' of the strategies on screen">in ' + k + '</span>' : '') + '</td>' +
-        '<td class="text-slate-500">' + f2(p.live) + '</td><td class="font-bold ' + kls(p.day) + '">' + sp(p.day) + '</td>' + apColCells(r.cols, p) + '</tr>'; }).join('') +
+        '<td class="text-slate-500">' + f2(p.live) + '</td><td class="font-bold ' + kls(p.day) + '">' + sp(p.day) + '</td><td class="text-slate-500">' + mcTxt(p) + '</td>' + apColCells(r.cols, p) + '</tr>'; }).join('') +
     '</tbody></table></div><div class="text-[10.5px] text-slate-400 mt-1">' + list.length + ' qualif' + (list.length > 1 ? 'y' : 'ies') + ' · shaded = inside the top ' + r.topN +
     (heldS.size ? ' · held = bought at the ' + esc(r.rebDate || '') + ' rebalance' : '') + ' · in N = in the top of N strategies on screen</div>';
 }
