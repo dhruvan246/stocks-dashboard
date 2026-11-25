@@ -46,6 +46,11 @@
   html[data-theme] #vtabs button:hover{color:var(--text)}
   html[data-theme] #vtabs button.on{color:var(--accent-text);border-bottom-color:var(--accent-text)}
   #asof{margin-left:auto;padding-bottom:9px;font-size:12px;color:var(--text-faint);white-space:nowrap}
+  .lvdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--text-faint);margin-right:5px;vertical-align:1px}
+  .lvdot.on{background:var(--pos);animation:lvp 1.6s ease-in-out infinite}
+  #asof.live{color:var(--text-muted)}
+  @keyframes lvp{50%{opacity:.3}}
+  @media (prefers-reduced-motion:reduce){ .lvdot.on{animation:none} }
   #trkWrap{font-size:13px}
   #trkBar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
   #trkBar .sp{flex:1}
@@ -273,7 +278,7 @@ const LEVELS=[
   {key:'nse',      label:'Indices',        field:null},   // NSE indices + BSE SME IPO (§195) + Nifty SME Emerge (§210); key kept for saved links
 ];
 const PERIODS=[['Today',1],['1W',7],['1M',30],['3M',91],['6M',182],['YTD',-1],['1Y',365],['3Y',1095]];
-const ST={ level:'industry', mover:'all', period:'1W', weight:'equal', view:'tracker', sort:'ret', q:'' };
+const ST={ level:'industry', mover:'all', period:'Today', weight:'equal', view:'tracker', sort:'ret', q:'' };
 let WATCH=new Set(JSON.parse(localStorage.getItem('sw_sec_watch')||'[]'));
 function saveWatch(){ localStorage.setItem('sw_sec_watch',JSON.stringify([...WATCH])); }
 
@@ -814,7 +819,7 @@ let RS={};
 function saveUI(){ try{ localStorage.setItem('sw_sec_ui',JSON.stringify({view:ST.view,period:ST.period,level:ST.level,bse:T.bse,sme:T.sme,iv:T.iv,range:T.range,log:T.log})); }catch(e){} }
 function loadUI(){ try{ const u=JSON.parse(localStorage.getItem('sw_sec_ui')||'null'); if(!u)return;
   if(['tracker','cards','heat'].includes(u.view))ST.view=u.view;
-  if(PERIODS.some(p=>p[0]===u.period)&&!['1Y','3Y'].includes(u.period))ST.period=u.period;   // long periods need the 17 MB file — never on first paint
+  // the period is deliberately not restored: the page always opens on Today (user, 2026-11-25)
   if(LEVELS.some(l=>l.key===u.level))ST.level=u.level;
   T.bse=!!u.bse; T.sme=!!u.sme; T.log=!!u.log;
   if(['D','W','M'].includes(u.iv))T.iv=u.iv; if(['3M','6M','1Y','3Y','Max'].includes(u.range))T.range=u.range; }catch(e){} }
@@ -895,7 +900,7 @@ function trkPickGroup(name,keepStock){
   $('tgList').querySelectorAll('.gr').forEach(el=>{ const on=T.vis[+el.dataset.i].name===name; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on)el.scrollIntoView({block:'nearest'}); });
   trkRenderStocks();
 }
-function trkRenderStocks(){
+function trkRenderStocks(keep){   // keep: a live-price refresh — same stock stays on the chart, only its price line changes
   const row=T.rows.find(x=>x.name===T.g);
   T.stocks=trkStocks();
   const q=T.q.toLowerCase();
@@ -912,8 +917,10 @@ function trkRenderStocks(){
       <span class="${clsPN(m.r)}">${fmtPct(m.r)}</span></div>`; }).join('')||'<div class="tempty">No stocks.</div>';
   $('tsList').querySelectorAll('.sr').forEach(el=>el.onclick=()=>trkPickStock(T.stocks[+el.dataset.i].t));
   $('tsIdx').disabled=$('tsCopy').disabled=!row;
-  trkShowStock();
+  if(keep&&T.s===T.shown&&T.data)trkHead(); else trkShowStock();
 }
+function trkHead(){ const t=T.s; if(!t)return; const dr=retOver(t,1);
+  $('tcPx').textContent=fmtPx(priceAt(t,END_OFF)); $('tcChg').textContent=fmtPct(dr); $('tcChg').className='chg '+clsPN(dr); }
 function trkPickStock(t,lazy){
   if(t===T.s)return; T.s=t;
   $('tsList').querySelectorAll('.sr').forEach(el=>{ const on=T.stocks[+el.dataset.i].t===t; el.classList.toggle('on',on); el.setAttribute('aria-selected',on); if(on)el.scrollIntoView({block:'nearest'}); });
@@ -986,7 +993,18 @@ function trkDraw(){
   const up=(b,i)=>d.ohlc?b.c>=b.o:(i===0||b.c>=bars[i-1].c);
   CH.vol.setData(bars.map((b,i)=>b.v==null?null:{time:tm[i],value:b.v,color:(up(b,i)?CH.pos:CH.neg)+'66'}).filter(Boolean));
   T.ema=EMA_N.map((n,j)=>{ const e=emaArr(cl,n); CH.ema[j].setData(e.map((x,i)=>x==null?null:{time:tm[i],value:x}).filter(Boolean)); return e; });
-  trkRange(); trkLegend(bars.length-1);
+  trkRange(); trkLegend(bars.length-1); trkLiveLine();
+}
+/* The candles are end-of-day. While live prices are on and the chart has no bar for today yet, the live
+   price is drawn as a dashed line — the feed has no open/high/low, so a candle would be made up. */
+function trkLiveLine(){
+  if(!CH)return;
+  if(CH.pl){ try{ CH.plS.removePriceLine(CH.pl); }catch(e){} CH.pl=null; }
+  const t=T.s, d=T.data; if(!t||!d||!LVSET.has(t)||!T.bars.length)return;
+  if(tsISO(T.bars[T.bars.length-1].ts)>=isoOff(END_OFF))return;
+  const p=priceAt(t,END_OFF); if(!(p>0))return;
+  CH.plS=d.ohlc?CH.candle:CH.line;
+  CH.pl=CH.plS.createPriceLine({price:p,color:getComputedStyle(document.documentElement).getPropertyValue('--accent-text').trim()||'#5eead4',lineWidth:1,lineStyle:2,axisLabelVisible:true,title:'Live'});
 }
 function trkRange(){
   if(!CH||!T.bars.length)return;
@@ -1023,7 +1041,7 @@ function trkStats(t,d){
 }
 let showTimer=null;
 function trkShowStock(lazy){
-  const t=T.s, m=META[t]||{}, tok=++T.tok;
+  const t=T.s, m=META[t]||{}, tok=++T.tok; T.shown=t;
   if(!t){ $('tcSym').textContent='—'; $('tcName').textContent='Pick a stock'; $('tcPx').textContent=''; $('tcChg').textContent=''; $('tcChg').className='';
     $('tLegend').innerHTML=''; $('tMsg').textContent=''; T.data=null; trkStats(null,null); return; }
   const sym=symOf(t), p1=priceAt(t,END_OFF), dr=retOver(t,1);
@@ -1080,8 +1098,76 @@ function trkWire(){
   // chart colours are resolved from the theme once, so a theme switch rebuilds the chart
   new MutationObserver(()=>{ if(CH){ chartInit(); trkDraw(); } }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 }
+/* ================= LIVE PRICES (runbook §36) =================
+ * NSE: the whole-market "stocks traded" feed through our Worker — one call, {SYM:[ltp, prevClose, pchange]}.
+ * BSE-only names: the live-bse branch file a GitHub job refreshes every minute, {code:[ltp, prevClose, pchange, id]}.
+ * A live price becomes one more bar on the stock's series, so every return, the sector ranking and the RS
+ * rating read it through the same priceAt() — no second code path. Nothing is added when the end-of-day
+ * file already holds that day. Any failure leaves the page on closing prices, and the header line says which. */
+const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev', BSE_LIVE_URL='https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
+const MON={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+let LIVE=null, EOD_END=0, liveBusy=false; const LVSET=new Set();
+function istNow(){ return new Date(Date.now()+19800000); }
+function marketOpenIST(){ const d=istNow(), wd=d.getUTCDay(), m=d.getUTCHours()*60+d.getUTCMinutes(); return wd>=1&&wd<=5&&m>=540&&m<=945; }
+async function fetchLive(tries){
+  let nse=null, bse=null;
+  // NSE answers 502/403 now and then (movers.html measured it) — so retry, with a growing pause
+  for(let a=0;a<tries&&!nse;a++){
+    try{ const j=await fetch(WORKER+'/?nse=traded',{cache:'no-store'}).then(r=>r.json());
+      const m=/^(\d{1,2})-([A-Za-z]{3})-(\d{4}) (\d{2}):(\d{2})/.exec((j&&j.timestamp)||'');
+      if(m&&MON[m[2]]&&j.data&&Object.keys(j.data).length>=200) nse={date:m[3]+'-'+MON[m[2]]+'-'+m[1].padStart(2,'0'),time:m[4]+':'+m[5],data:j.data};
+    }catch(e){}
+    if(!nse&&a<tries-1) await new Promise(r=>setTimeout(r,2000*(a+1)));
+  }
+  if(!nse)return null;
+  try{ const b=await fetch(BSE_LIVE_URL,{cache:'no-store'}).then(r=>r.json());
+    const m=/^(\d{4}-\d{2}-\d{2})T/.exec((b&&b.timestamp)||'');
+    if(m&&m[1]===nse.date&&b.data) bse=b.data;   // a BSE file from another day is ignored, never mixed in
+  }catch(e){}
+  return {nse,bse};
+}
+function prevWeekday(off){ for(let o=off-1;;o--){ const wd=new Date((START_TS+o*DAY)*1000).getUTCDay(); if(wd>=1&&wd<=5)return o; } }
+function putLive(t,off,pv,ltp,prev){
+  const s=SERIES[t]; if(!s||!s.d||!s.d.length||!(ltp>0))return 0;
+  const n=s.d.length, last=s.d[n-1], v=Math.round(ltp*100);
+  if(last>off)return 0;
+  if(last===off){ if(!LVSET.has(t))return 0; s.p[n-1]=v; return 1; }   // a real end-of-day bar for that day is never overwritten
+  // if our end-of-day file stops before the previous session, the feed's own previous close fills that
+  // one bar — so "Today" is today's move, not two days' worth
+  if(last<pv&&prev>0){ s.d.push(pv); s.p.push(Math.round(prev*100)); }
+  s.d.push(off); s.p.push(v); LVSET.add(t); return 1;
+}
+function applyLive(L){
+  const off=dayOff(L.nse.date); if(!isFinite(off)||off<=EOD_END)return false;   // end-of-day file already has this day
+  const pv=prevWeekday(off); let n=0;
+  for(const sym in L.nse.data){ const q=L.nse.data[sym]; n+=putLive(sym+'.NS',off,pv,+q[0],+q[1]); }
+  if(n<200)return false;
+  if(L.bse) for(const code in L.bse){ const q=L.bse[code], t=SERIES[q[3]+'.BO']?q[3]+'.BO':code+'.BO'; n+=putLive(t,off,pv,+q[0],+q[1]); }
+  END_OFF=Math.max(END_OFF,off);
+  LIVE={off,date:L.nse.date,time:L.nse.time,n};
+  return true;
+}
+function setAsof(){
+  const end=niceDate(isoOff(END_OFF)), lv=!!(LIVE&&LIVE.off===END_OFF), fresh=lv&&LIVE.date===istNow().toISOString().slice(0,10)&&marketOpenIST();
+  const span=ST.period==='Today'?'Today: '+end+' vs previous close':ST.period+': '+niceDate(isoOff(periodStart()))+' → '+end;
+  $('asof').innerHTML=esc(span)+' · '+(lv?`<i class="lvdot${fresh?' on':''}"></i>${fresh?'Live':'Last traded prices'} ${esc(LIVE.time)} IST`:'closing prices');
+  $('asof').classList.toggle('live',fresh);
+  $('asof').title=lv?`Prices as of ${LIVE.time} IST on ${niceDate(LIVE.date)} for ${LIVE.n.toLocaleString('en-IN')} stocks. Refreshes every minute while the market is open. The candles and the stats under the chart are end-of-day.`
+    :'End-of-day data, refreshed after the market closes (about 7 PM IST)';
+}
+function liveRefresh(){
+  const g=$('tgList'), s=$('tsList'), gy=g.scrollTop, sy=s.scrollTop;
+  buildRS(); compute(); renderBreadth(); setAsof();
+  if(ST.view==='tracker'){ trkCompute(); trkRenderGroups(); trkRenderStocks(true); g.scrollTop=gy; s.scrollTop=sy; trkLiveLine(); }
+  else if($('modal').style.display!=='flex') renderGrid();
+}
+async function liveTick(){ if(liveBusy)return; liveBusy=true; try{ const L=await fetchLive(1); if(L&&applyLive(L))liveRefresh(); }catch(e){} finally{ liveBusy=false; } }
+function liveStart(){
+  setInterval(()=>{ if(!document.hidden&&marketOpenIST())liveTick(); },60000);
+  document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&marketOpenIST())liveTick(); });
+}
 function applyView(){
-  $('asof').textContent=ST.period+': '+niceDate(isoOff(periodStart()))+' → '+niceDate(isoOff(END_OFF))+' · closing prices';
+  setAsof();
   const tr=ST.view==='tracker';
   $('trkWrap').classList.toggle('hidden',!tr); $('oldWrap').classList.toggle('hidden',tr);
   $('pageMain').classList.toggle('wide',tr);
@@ -1091,6 +1177,7 @@ function applyView(){
 /* ---- boot ---- */
 async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer(); const s=new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip')); return JSON.parse(await new Response(s).text()); }
 (async function boot(){
+  const liveP=fetchLive(4).catch(()=>null);
   try{
     $('ovT').textContent='Loading market data…';
     // P/E joins the boot fetch now that every CARD carries a median, not just the detail modal.
@@ -1119,8 +1206,11 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;
     NIFTY_ARR=Object.entries(nifty.px||{}).map(([d,v])=>[dayOff(d),v]).filter(x=>isFinite(x[0])&&x[1]>0).sort((a,b)=>a[0]-b[0]);
     NIFTY_OFFS=NIFTY_ARR.map(x=>x[0]);
-    $('asof').title='End-of-day data, refreshed after the market closes (about 7 PM IST)';
-    buildRS(); trkWire();
+    EOD_END=END_OFF;
+    // live prices were requested when boot began; if they are back already they go in before the first paint
+    const L0=await Promise.race([liveP,new Promise(r=>setTimeout(r,0,null))]);
+    if(L0)applyLive(L0); else liveP.then(L=>{ if(L&&applyLive(L))liveRefresh(); });
+    buildRS(); trkWire(); liveStart();
     let nCls=0; for(const k in SERIES) if(CLS[k])nCls++;
     document.title='STOCKSWORLD · Sectors';
     loadUI();
