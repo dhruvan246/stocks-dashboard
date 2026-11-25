@@ -141,15 +141,22 @@ async function _sfClear() { try { const db = await _sfdb(); await new Promise(re
 // `allowClear` — only the INITIAL page load may wipe the cache on a version change; a deep-history
 // cache miss must never evict the recent parts cached moments earlier under the same version.
 let _SF_CLEARED = false;
-async function _sfPart(file, key, ver, allowClear) {
+let _SF_CLEARING = null;
+async function _sfBuf(file, key, ver, allowClear) {
   let buf = ver ? await _sfGet(key + ':' + ver) : null;
   if (!buf) {
-    if (allowClear && !_SF_CLEARED) { await _sfClear(); _SF_CLEARED = true; }   // evict older versions
+    // evict older versions — ONE clear shared by every part fetched side by side, finished before any part is stored
+    if (allowClear && !_SF_CLEARED) { _SF_CLEARED = true; _SF_CLEARING = _sfClear(); }
+    if (_SF_CLEARING) await _SF_CLEARING;
     const resp = await fetch(SF_BASE + file + '?v=' + (ver || Date.now()), { cache: 'reload' });
     if (!resp.ok) throw new Error('HTTP ' + resp.status + ' ' + file);
     buf = await resp.arrayBuffer();
     if (ver) _sfPut(key + ':' + ver, buf);
   }
+  return buf;
+}
+async function _sfPart(file, key, ver, allowClear, bufP) {
+  const buf = await (bufP || _sfBuf(file, key, ver, allowClear));
   return JSON.parse(await new Response(new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
 }
 // Normalise one symbol's raw record into engine arrays: day offsets, paise closes (2 paise decimals, §179f), exact
@@ -185,8 +192,13 @@ async function loadSF() {
     ? Array.from({ length: M.recent || 1 }, (_, i) => ['sf_recent_' + (i + 1) + '.bin', 'sfr' + (i + 1)])
     : Array.from({ length: M.parts || 2 }, (_, i) => ['sf_stock_data_' + (i + 1) + '.bin', 'sfp' + (i + 1)]);   // legacy by-symbol layout
   const D = { data: {}, meta: {}, end: '', start: '' };
-  for (const [file, key] of files) {
-    const Dp = await _sfPart(file, key, ver, true);
+  // The parts DOWNLOAD (or come out of the IndexedDB cache) side by side — the waits overlap instead of adding up
+  // (user 2026-11-25: All Picks opens late). They are still unpacked ONE AT A TIME, in file order, so the merged
+  // data is identical and a phone never holds two unpacked parts at once.
+  const bufs = files.map(([file, key]) => { const b = _sfBuf(file, key, ver, true); b.catch(() => {}); return b; });
+  for (let fi = 0; fi < files.length; fi++) {
+    const [file, key] = files[fi];
+    const Dp = await _sfPart(file, key, ver, true, bufs[fi]);
     Object.assign(D.data, Dp.data); Object.assign(D.meta, Dp.meta);
     D.end = Dp.end || D.end; D.start = Dp.start || D.start;
   }
@@ -385,10 +397,30 @@ async function _liveFetch(chunk, quotes) {
   for (const k in ((d && d.data) || {})) { const q = d.data[k]; if (q && q.ltp != null) { quotes[k] = q; got++; } }
   return got;
 }
+// The first pass of the quote fan-out on its own: batches of LIVE_BATCH, LIVE_CONC in flight. Used by
+// applyLiveOverlay, and by a page that wants the quotes on their way WHILE the market history is still loading
+// (all-picks.html) — it hands the result back as applyLiveOverlay's third argument.
+// `conc` = batches in flight at once (default LIVE_CONC). all-picks passes a large number: its ~17 batches then go
+// out together, because a wave that has to wait for the page's busy main thread (it is unpacking the history)
+// only starts when that work ends. Measured 2026-11-25, 3 runs: 498 of 498 quoted in ~0.55 s, against ~1.5 s in waves.
+async function liveFetchQuotes(syms, onProgress, conc) {
+  const quotes = {}, step = conc > 0 ? conc : LIVE_CONC;
+  const batches = []; for (let i = 0; i < syms.length; i += LIVE_BATCH) batches.push(syms.slice(i, i + LIVE_BATCH));
+  let done = 0;
+  for (let i = 0; i < batches.length; i += step) {
+    await Promise.all(batches.slice(i, i + step).map(b =>
+      _liveFetch(b, quotes).catch(() => 0).then(() => {
+        done += b.length;
+        onProgress && onProgress(`Fetching live prices… ${Math.min(done, syms.length)}/${syms.length}`);
+      })));
+  }
+  return quotes;
+}
 // Quote the strategy's universe and splice the live bars in. Returns a summary for the UI.
 // Accepts ONE cfg or an ARRAY of them (all-picks.html overlays every saved strategy at once) —
 // the quoted set is the union of their universes, so one fan-out serves the whole page.
-async function applyLiveOverlay(cfg, onProgress) {
+// `pre` (optional) = quotes already fetched by liveFetchQuotes moments ago: symbols it holds are not asked for again.
+async function applyLiveOverlay(cfg, onProgress, pre) {
   clearLiveOverlay();
   const date = liveScreenDate(), off = dayOff(date);
   const cfgs = Array.isArray(cfg) ? cfg : [cfg];
@@ -404,15 +436,10 @@ async function applyLiveOverlay(cfg, onProgress) {
   // price overlay there, but still screen at today's date so fresh EARNINGS are picked up.
   if (!syms.length || syms.length > LIVE_MAX) return { date, n: 0, quoted: 0, tried: syms.length, skipped: true, unbounded };
   const quotes = {};
-  const batches = []; for (let i = 0; i < syms.length; i += LIVE_BATCH) batches.push(syms.slice(i, i + LIVE_BATCH));
-  let done = 0;
-  for (let i = 0; i < batches.length; i += LIVE_CONC) {
-    await Promise.all(batches.slice(i, i + LIVE_CONC).map(b =>
-      _liveFetch(b, quotes).catch(() => 0).then(() => {
-        done += b.length;
-        onProgress && onProgress(`Fetching live prices… ${Math.min(done, syms.length)}/${syms.length}`);
-      })));
-  }
+  if (pre) for (const s of syms) if (pre[s]) quotes[s] = pre[s];
+  const ask = pre ? syms.filter(s => !quotes[s]) : syms;
+  // with pre-fetched quotes the few gaps go straight to the small-chunk retry rounds below
+  if (!pre || ask.length > 60) Object.assign(quotes, await liveFetchQuotes(ask, onProgress));   // > 60 missing = the pre-fetch failed
   // Yahoo drops symbols intermittently (a first pass typically misses ~15%) — re-ask for the gaps in
   // small chunks. Without this, a stock silently keeps Friday's price and can drop out of the basket.
   for (let round = 0; round < 2; round++) {

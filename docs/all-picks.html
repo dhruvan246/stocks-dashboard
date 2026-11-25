@@ -565,14 +565,70 @@ async function refreshPrices() {
   stampLive(live);
   $('status').classList.add('hidden');
   paint();
+  snapSave();
 }
 // LAST_LIVE is kept because paintRewindUI() rewrites #intro (and with it the #upd span) on every
 // paint — the stamp has to be re-applied from the last known quote summary, not lost.
 let LAST_LIVE = { n: 0 };
+
+/* ---------- opening fast (user 2026-11-25: "it loads very late") ----------
+ * Measured on the live site: ~3 s unpacking the market history (two parts, ~100 MB packed, every stock since
+ * 2019), ~2 s of live quotes, ~0.5 s screening — one after the other, with nothing on screen until the end.
+ *  1. The last board this browser built is kept (IndexedDB 'apsnap') and painted at once, marked
+ *     "saved view from HH:MM · updating…"; the fresh build then replaces it. Never used for a rewind.
+ *  2. The engine data starts loading the moment the page opens (not after the saved-strategies sync), the
+ *     fundamentals/shareholding files load beside the market history, and the live quotes are fetched
+ *     WHILE the history unpacks (liveFetchQuotes -> applyLiveOverlay's third argument).
+ * The screening itself is untouched — same engine calls on the same data. */
+let SNAP_AT = 0;
+function snapWhen(t) {
+  const d = new Date(t), same = d.toDateString() === new Date().toDateString();
+  return (same ? '' : d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' ')
+    + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+function snapDb() { return new Promise((res, rej) => { const r = indexedDB.open('apsnap', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function snapLoad() {
+  try { const db = await snapDb(); return await new Promise(res => { const t = db.transaction('kv', 'readonly').objectStore('kv').get('board'); t.onsuccess = () => res(t.result || null); t.onerror = () => res(null); }); }
+  catch (e) { return null; }
+}
+function snapSave() {
+  if (ASOF || !RESULT.length) return;
+  const rec = { v: 1, at: Date.now(), rows: RESULT, skipped: SKIPPED, live: LAST_LIVE };
+  setTimeout(async () => {
+    try { const db = await snapDb(); db.transaction('kv', 'readwrite').objectStore('kv').put(rec, 'board'); } catch (e) {}
+  }, 300);
+}
+function statusSlim(on) { const c = $('status').classList; c.toggle('py-8', !on); c.toggle('py-2', on); }
+// The engine data, started once and shared: boot kicks it off, build() awaits it. A failure clears it so
+// "Try again" really tries again.
+let ENG_P = null, CORE_P = null;
+function engineStart() {
+  if (ENG_P) return ENG_P;
+  CORE_P = loadCore();                                   // memberships + market caps (small)
+  ENG_P = CORE_P.then(() => Promise.all([
+    loadSF().then(() => activateSF()),                   // market history (the heavy one)
+    loadFund().then(() => loadShp()),                    // profits, then shareholding — same order as loadEngineData
+  ])).then(() => { window.__ENGINE_READY = true; });
+  CORE_P.catch(() => {});
+  ENG_P.catch(() => { ENG_P = null; CORE_P = null; });
+  return ENG_P;
+}
+// Live quotes for every saved strategy's universe, asked for as soon as the memberships are known.
+function prefetchLive() {
+  return CORE_P.then(() => {
+    const day = istToday(), set = new Set();
+    for (const g of groupByIdentity(loadStrategies())) {
+      const m = g.cfg && g.cfg.indexName ? membersAsOf(g.cfg.indexName, day) : null;
+      if (m) for (const x of m) set.add(x);
+    }
+    return set.size && set.size <= LIVE_MAX ? liveFetchQuotes([...set], null, 99) : null;   // every batch at once
+  }).catch(() => null);
+}
 function stampLive(live) {
   LAST_LIVE = live || LAST_LIVE;
   const el = $('upd'); if (!el) return;
   el.textContent = ASOF ? `· rewind · prices at the ${ASOF} close`
+    : SNAP_AT ? `· saved view from ${snapWhen(SNAP_AT)} · updating…`
     : LAST_LIVE.n ? `· 🟢 live · ${LAST_LIVE.n} quotes at ${new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}`
     : (typeof SF !== 'undefined' && SF) ? `· prices as of ${SF.end} close` : '';   // SF is null until the engine loads
 }
@@ -850,9 +906,12 @@ $('boardRows').addEventListener('click', e => {
 async function build(msg) {
   $('status').classList.remove('hidden');
   $('status').textContent = msg || 'Loading market data…';
+  let preP = null;
   if (!window.__ENGINE_READY) {
-    await loadEngineData(m => { if (m) $('status').textContent = m; });
-    window.__ENGINE_READY = true;
+    const eng = engineStart();
+    if (!ASOF) preP = prefetchLive();                    // quotes travel while the history unpacks
+    $('status').textContent = 'Loading market history — downloads once a day, then cached…';
+    await eng;
   }
   // Rewind bounds come from the dataset, now that it's loaded. The floor is where TRUE daily bars
   // begin (2002-01-02) — before that the bars are weekly, so RSI/52w-style factors aren't real.
@@ -880,7 +939,7 @@ async function build(msg) {
   let live = { n: 0, date: SF.end };
   if (!ASOF) {
     $('status').textContent = 'Fetching live prices…';
-    try { live = await applyLiveOverlay(groups.map(g => g.cfg), m => { $('status').textContent = m; }); } catch (e) {}
+    try { live = await applyLiveOverlay(groups.map(g => g.cfg), m => { $('status').textContent = m; }, (preP && await preP) || undefined); } catch (e) {}
   }
   let today = ASOF || live.date || SF.end;
   // A rewind reaching back past ~2020 needs the deep-history parts; factorsAt() has no guard of its
@@ -898,7 +957,9 @@ async function build(msg) {
   const priceOff = ASOF ? snapTD(dayOff(today)) : dayOff(today);
   const prevOff = ASOF ? prevTD(priceOff) : null;
 
-  RESULT = []; SKIPPED = []; lpResetRows();
+  // Built into local lists and swapped in at the end: the board on screen (a saved view, or the one being
+  // replaced) stays whole and clickable while this runs.
+  const out = [], skipped = []; lpResetRows();
   for (let i = 0; i < groups.length; i++) {
     const s = groups[i].s, cfg = groups[i].cfg, counts = groups[i].counts;
     $('status').textContent = `Screening baskets… ${i + 1}/${groups.length}`;
@@ -907,7 +968,7 @@ async function build(msg) {
     // Also catch an index we hold NO membership snapshot for: factorsAt() treats a null member set
     // as "no filter" and screens all ~4,400 stocks with every factor family on, which takes minutes
     // per strategy and looks like a hang.
-    if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    if (!cfg.indexName || !membersAsOf(cfg.indexName, today)) { skipped.push(s.name || 'unnamed'); continue; }
     // A null anchor now means only one thing (see lastRebalanceDate): the boundary lands before the
     // dataset begins — a rewind into the first weeks of 2002 — so there is nothing to screen there.
     // It holds nothing, but its rule still screens on the date itself, so keep the card.
@@ -920,14 +981,14 @@ async function build(msg) {
       // the FULL ranked list of what passes the rule (its Live Picks tab) — opened under a board row with ▸
       // (user 2026-11-25); the top-N slice of it is what the card and the board chips list
       const full = basketAt(cfg, today, 1e9); pickRows = full.slice(0, topN); pickRows.noData = full.noData; allRows = full;
-    } catch (e) { SKIPPED.push(s.name || 'unnamed'); continue; }
+    } catch (e) { skipped.push(s.name || 'unnamed'); continue; }
     // An empty list is a real state, not a failure: nothing passed the filters. Show it as such
     // rather than dropping the card.
     const held = heldRows.map(r => priceHold({ sym: r.sym, tkr: r.tkr, ind: r.ind, entry: r.price }, priceOff, prevOff));
     const cols = pickCols(cfg);
     const picks = pickRows.map(r => { const pp = pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff); pp.fv = pickFV(r, cols); return pp; });
     const all = allRows.map((r, k) => { const pp = pricePick({ sym: r.sym, tkr: r.tkr, ind: r.ind }, priceOff, prevOff); pp.fv = pickFV(r, cols); pp.rank = k + 1; return pp; });
-    RESULT.push({
+    out.push({
       s, name: s.name || strategyLabel(cfg), cfg, topN, ids: groups[i].ids,
       uni: universeLabel(cfg), freqL: FREQL[cfg.freq] || (cfg.freq + 'mo'),
       nf: (cfg.filters || []).length, rebDate, rebLabel: rebDate ? 'since ' + rebDate : 'not started', counts,
@@ -938,9 +999,11 @@ async function build(msg) {
       ret: avgOf(held, 'ret'), day: avgOf(held, 'day'),
     });
   }
+  RESULT = out; SKIPPED = skipped; SNAP_AT = 0; statusSlim(false);
   $('status').classList.add('hidden');
   stampLive(live);
   paint();
+  snapSave();
 }
 
 /* ---------- rewind wiring ---------- */
@@ -994,6 +1057,19 @@ $('rwExit').onclick = exitRewind;
 (async function boot() {
   setView(VIEW);
   paintRewindUI();   // ?asof= in the URL: banner + labels up front, before the slow rebuild
+  engineStart();     // the market data starts travelling now, beside everything below
+  if (!ASOF) {       // the last board built here, on screen at once; the fresh build replaces it
+    const sn = await snapLoad();
+    if (sn && sn.v === 1 && Array.isArray(sn.rows) && sn.rows.length && Date.now() - sn.at < 7 * 864e5) {
+      try {
+        const saved = new Set(groupByIdentity(loadStrategies()).map(g => identityKey(g.cfg)));
+        RESULT = sn.rows.filter(r => saved.has(identityKey(r.cfg)));
+        if (!RESULT.length) throw 0;
+        SKIPPED = sn.skipped || []; LAST_LIVE = sn.live || LAST_LIVE; SNAP_AT = sn.at;
+        paint(); statusSlim(true);
+      } catch (e) { RESULT = []; SKIPPED = []; SNAP_AT = 0; statusSlim(false); }
+    }
+  }
   if (window.btSync) { try { await btSync.pullStrategies(); } catch (e) {} }
   await runBuild();
   loadCardData();      // history + wave snapshot for the hover card — decoration, so it comes last
