@@ -31216,14 +31216,46 @@ close, the feed's previous close fills one bar on the previous weekday (measured
 
 **Rewind.** `setRewind(off)` moves `END_OFF` to a past trading day (calendar = RELIANCE.NS bars); live refresh is paused while
 rewound (`REW`). Dates more than ~6 months back load `stock_data.bin`. As-of-date: prices, returns, rankings, RS, chart, and the
-members of the 28 pipeline indices. NOT as-of-date: market cap (the ₹500 Cr floor uses today's) and the 53 extra indices.
+members of the 28 pipeline indices and of the 38 extra indices that have checked history (below). NOT as-of-date: market cap
+(the ₹500 Cr floor uses today's) and the 15 extra indices without checked history (today's members on every date; the
+Rewind note on the page names them).
 
 **53 extra indices.** `scripts/fetch_nse_extra_indices.py` → `docs/nse_extra_indices/members.json` (workflow
 `refresh-nse-extra-indices.yml`, 08:00 IST weekdays). CURRENT members from NSE's own constituent files; file names were read
 from each index's page on niftyindices.com (no pattern — see `FILES`). Not point-in-time, feeds no backtest. To give one real
 history, add it to `build_changelog.py` / `build_membership_v2.py` (§227) and remove it from `FILES`.
-Measured 2026-11-25: 53 of 53 fetched; unresolved symbols on the page: Nifty Housing lists HDFC and IBULHSGFIN (NSE's file is
-stale), Nifty REITs & Realty has 6 REIT units, Commercial & Transport Services has DUMMYINXGN.
+Measured 2026-11-25: 53 of 53 fetched; unresolved symbols on the page: Nifty REITs & Realty has 6 REIT units, Commercial &
+Transport Services has DUMMYINXGN.
+
+**History of the 53 (2026-11-25, user: "build history for all 53 . dont make any mistakes").**
+`scripts/build_extra_index_history.py` + `scripts/extra_index_rules.py` → `docs/nse_extra_indices/history.json`
+(`{built, indices:{name:{from, checks, snapshots}}, unverified:{name:reason}}`). A LOCAL re-runnable tool, not CI:
+`python scripts/build_extra_index_history.py --pr <notice PDFs> --txt <text cache> --wb <archived lists> --cur <today's NSE files> --report rep.json --write`
+(needs pypdf 6.19.0; working copy of the inputs: `~/stocks-cache/extra_idx/`, record in its `NOTES.md`).
+Method: every NSE Indices press release 2012→today (1,318 PDFs; the list on niftyindices.com/press-release is the roster —
+compare against it, 7 notices exist only on nsearchives) is parsed with build_changelog.py's parser; each index is walked BACK
+from today's list; the result is compared, name for name, with every Wayback capture of NSE's own list file. An index ships
+only if EVERY capture matches and no event contradicts the roster; its history starts at the first capture (never earlier).
+What the parser needed beyond the 28-index pipeline, each read from the notices:
+- old headings "(6)  CNX Finance Index:" and the non-Nifty blocks between them (LIX 15, NI15, NV20, NSE Quality 30) as boundaries;
+- one-index notices named in the title ("Inclusion in Nifty IPO index" ×164, "Exclusion from Nifty Waves index");
+- demergers: placeholder in / listed share out, index list from each notice's "Sr. No. Index Name" table (`DEMERGERS`, 24 rows);
+- 13052020 item 1 voids the Feb–Mar 2020 review for everything except Nifty 50 / Bank (`COVID_NULL`);
+- 15092025_1 item 9 prepones the PEL leg of the Sep-2025 review (`MANUAL_FIXES`); image-only / heading-less notices (`MANUAL_EVENTS`);
+- same ISIN in NSE's files = same company (ICICIPRULI → ICICILIFE, INE726G01019), where symchg.csv has no row.
+**NSE's list files can be STALE** (measured 2026-11-25): niftyindices.com's copy can lag nsearchives by years
+(`ind_niftymidsmallindiaconsumption_list.csv` there is still the pre-2023-03-31 list), and several 2023 captures are launch
+lists. A capture that differs on its own date but equals the rebuilt list of an EARLIER period is credited to the last day
+of that period (`stale` in the report). `ind_niftyhousing_list.csv` exists ONLY on niftyindices.com and is the list from
+before 2022-03-31 (it still carries HDFC): our Nifty Housing list = that file + NSE's 10 announced changes, equal to NSE's
+live page for NIFTY HOUSING (50 of 50, 2026-11-25 14:26 IST). The fetcher therefore never refreshes Housing
+(`STALE_AT_SOURCE`) — after each review (March / September) rerun the builder and compare with nseindia.com's live page.
+Result 2026-11-25: 38 of 53 with history. Without: 14 indices NSE first announced in 2026 whose list file was never archived
+(NBFC, Housing Finance, Insurance, Power, Capital Goods, Cement, Construction, Commercial & Transport Services, Consumer
+Services, Retail, Telecommunications, Hospitals, REITs & Realty, Sugar & Ethanol), and Nifty IPO (NSE's notice of 24 Mar 2026
+"Replacements in Nifty IPO w.e.f. March 30, 2026" cannot be opened anywhere; the 13 Mar 2026 capture differs by 12 names).
+Going forward the page appends the fetcher's `changes` dated after `built`, so no rebuild is needed for new changes.
+A rebuild is needed only to extend an index backwards or to add one of the 15.
 
 **Open.** 33 NSE stocks of ₹500 Cr+ have no row in `sector_classification.json` (BSE, CDSL, TSFINV, MBAPL, KRISHANA …) and so
 appear in no sector/industry group. The Tracker's 5-stock floor hides 7 of 58 industries and 91 of 191 sub-industries.

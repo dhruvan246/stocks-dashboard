@@ -1169,7 +1169,7 @@ function setAsof(){
   $('asof').innerHTML=esc(span)+' · '+(lv?`<i class="lvdot${fresh?' on':''}"></i>${fresh?'Live':'Last traded prices'} ${esc(LIVE.time)} IST`:'closing prices');
   $('asof').classList.toggle('live',fresh); $('asof').classList.toggle('rew',REW!=null);
   $('asof').title=lv?`Prices as of ${LIVE.time} IST on ${niceDate(LIVE.date)} for ${LIVE.n.toLocaleString('en-IN')} stocks. Refreshes every minute while the market is open. The candles and the stats under the chart are end-of-day.`
-    :REW!=null?'The page as it stood at the close of '+end+'. Prices, returns, rankings and RS are as of that date; company size (the ₹'+MIN_MC+' Cr floor) is today’s. The 28 main NSE indices use their members on that date; the other NSE sector and theme indices use today’s members.'
+    :REW!=null?'The page as it stood at the close of '+end+'. Prices, returns, rankings and RS are as of that date; company size (the ₹'+MIN_MC+' Cr floor) is today’s. NSE indices use their members on that date. A sector or theme index whose history starts later is not shown before its first checked date.'+(XIDX.size?' '+XIDX.size+' use today’s members for every date (no checked history): '+[...XIDX].map(n=>n.replace(/^Nifty /,'')).join(', ')+'.':'')
     :'End-of-day data, refreshed after the market closes (about 7 PM IST)';
 }
 /* ---- Rewind: the whole page as it stood at the close of a past date. END_OFF is the only thing that moves;
@@ -1222,7 +1222,7 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     // P/E joins the boot fetch now that every CARD carries a median, not just the detail modal.
     // 14 KB gzipped against dash_slim's megabytes, in parallel — it lands long before the prices do,
     // and ensurePE() never rejects, so a missing feed costs the cards their P/E and nothing else.
-    const [slim,cls,nifty,smeipo,smeem,xidx]=await Promise.all([
+    const [slim,cls,nifty,smeipo,smeem,xidx,xhist]=await Promise.all([
       gunzipJSON('./dash_slim.bin'),
       fetch('./sector_classification.json').then(r=>r.json()),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
@@ -1232,6 +1232,8 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
       fetch('./nse_sme_emerge/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       // NSE sector / theme indices outside the 28 of the shared pipeline (scripts/fetch_nse_extra_indices.py) — CURRENT members only
       fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
+      // their point-in-time history (scripts/build_extra_index_history.py): only indices whose rebuilt lists match NSE's archived files
+      fetch('./nse_extra_indices/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       ensurePE(),
     ]);
     START_TS=slim.startTs; META=slim.meta; SERIES=slim.series; IDXH=Object.assign({},slim.indicesHistory||{}); CLS=cls;
@@ -1242,8 +1244,23 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     }
     if(smeem&&Array.isArray(smeem['Nifty SME Emerge'])&&smeem['Nifty SME Emerge'].length)
       IDXH['Nifty SME Emerge']=smeem['Nifty SME Emerge'].map(s=>({effectiveDate:s.effectiveDate,symbols:s.symbols}));
-    // one undated snapshot each: these lists are today's members, shown for every date (the 28 above are point-in-time)
-    if(xidx&&xidx.indices) for(const nm in xidx.indices){ const sy=xidx.indices[nm].symbols; if(!IDXH[nm]&&Array.isArray(sy)&&sy.length){ IDXH[nm]=[{effectiveDate:'1900-01-01',symbols:sy}]; XIDX.add(nm); } }
+    // Checked history where there is one: dated snapshots from the first date NSE's own archived list confirms (the index is
+    // not shown before that). The rest: one undated snapshot = today's members for every date (named in the Rewind note).
+    if(xidx&&xidx.indices) for(const nm in xidx.indices){
+      const cur=xidx.indices[nm], sy=cur.symbols; if(IDXH[nm]||!Array.isArray(sy)||!sy.length)continue;
+      const h=xhist&&xhist.indices&&xhist.indices[nm];
+      if(h&&Array.isArray(h.snapshots)&&h.snapshots.length){
+        const snaps=h.snapshots.map(x=>({effectiveDate:x.effectiveDate,symbols:x.symbols}));
+        let last=new Set(snaps[snaps.length-1].symbols), lastD=snaps[snaps.length-1].effectiveDate;
+        // changes the daily fetch saw after the history was built
+        for(const c of (cur.changes||[])){ if(!(c.date>xhist.built)||!(c.date>lastD))continue;
+          last=new Set(last); (c.removed||[]).forEach(x=>last.delete(x)); (c.added||[]).forEach(x=>last.add(x));
+          snaps.push({effectiveDate:c.date,symbols:[...last]}); lastD=c.date; }
+        const want=new Set(sy);
+        if(want.size!==last.size||[...want].some(x=>!last.has(x))){ const d=new Date().toISOString().slice(0,10); if(d>lastD)snaps.push({effectiveDate:d,symbols:sy}); else snaps[snaps.length-1].symbols=sy; }
+        IDXH[nm]=snaps;
+      } else { IDXH[nm]=[{effectiveDate:'1900-01-01',symbols:sy}]; XIDX.add(nm); }
+    }
     EARLIEST=slim.recentCutoffOff||0;
     // latest offset with data
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;

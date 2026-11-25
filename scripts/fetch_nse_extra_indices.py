@@ -8,9 +8,11 @@ This script reads NSE's own CURRENT constituent file for each of them and writes
     docs/nse_extra_indices/members.json
       {"asOf": "<date of the last change>", "indices": {"<name>": {"file", "symbols", "since", "changes"}}}
 
-Consumer: docs/sectors.html (Indices level). It is a CURRENT list, not a point-in-time history: `since` is the day
-this script first captured the index, `changes` logs what it saw change from then on. Nothing here feeds a backtest.
-To give one of these indices real history, move it into build_changelog.py / build_membership_v2.py instead.
+Consumer: docs/sectors.html (Indices level). It is the CURRENT list: `since` is the day this script first captured
+the index, `changes` logs what it saw change from then on. Nothing here feeds a backtest.
+The PAST lists are in docs/nse_extra_indices/history.json, built by scripts/build_extra_index_history.py (a local,
+re-runnable tool; runbook SECTORS-TRACKER). The page joins the two: history up to its `built` date, then the
+`changes` this script logs after it. So a change NSE makes is picked up here without rebuilding the history.
 
 File names were read from each index's own page on niftyindices.com on 2026-11-25 (they follow no pattern:
 ind_niftyfinancelist, ind_niftyPower_list, ind_NiftyCement_list, ind_niftymidsmallfinancailservice_list ...).
@@ -50,7 +52,7 @@ FILES = {
     "Nifty Power": "ind_niftyPower_list.csv",
     "Nifty Chemicals": "ind_niftyChemicals_list.csv",
     "Nifty Capital Goods": "ind_niftyCapitalGoods_list.csv",
-    "Nifty Cement": "ind_NiftyCement_list.csv",
+    "Nifty Cement": "ind_niftyCement_list.csv",
     "Nifty Construction": "ind_niftyConstruction_list.csv",
     "Nifty Commercial & Transport Services": "ind_niftyCommercialTransportServices_list.csv",
     "Nifty Consumer Services": "ind_niftyConsumerServices_list.csv",
@@ -77,7 +79,7 @@ FILES = {
     "Nifty India Manufacturing": "ind_niftyindiamanufacturing_list.csv",
     "Nifty India Digital": "ind_niftyindiadigital_list.csv",
     "Nifty India Internet": "ind_niftyIndiaInternet_list.csv",
-    "Nifty AI Catalysts": "ind_niftyAICatalystslist.csv",
+    "Nifty AI Catalysts": "ind_niftyaicatalystslist.csv",
     "Nifty Capital Markets": "ind_niftyCapitalMarkets_list.csv",
     "Nifty EV & New Age Automotive": "ind_niftyEv_NewAgeAutomotive_list.csv",
     "Nifty Mobility": "ind_niftymobility_list.csv",
@@ -95,6 +97,13 @@ FILES = {
     "Nifty Mahindra Group": "ind_nifty_mahindralist.csv",
     "Nifty Select 5 Corporate Groups": "ind_niftyIndiaSelect5CorporateGroupsMAATR_list.csv",
 }
+
+# Indices whose NSE list file is a STALE copy, so it must never replace our list. Measured 2026-11-25:
+# ind_niftyhousing_list.csv (niftyindices.com only; nsearchives has no copy) is still the list from before 2022-03-31
+# (it carries HDFC, merged away in July 2023). Our list = that file + the 10 changes NSE announced since, and it equals
+# NSE's live page for NIFTY HOUSING (50 of 50, 2026-11-25 14:26 IST). Kept current by build_extra_index_history.py;
+# re-check after every review (runbook SECTORS-TRACKER).
+STALE_AT_SOURCE = {"Nifty Housing"}
 
 
 def get(url, tries=3, timeout=45):
@@ -150,6 +159,10 @@ def main():
     out, changed, kept = {}, [], []
     for name, fname in FILES.items():
         p = prev.get(name)
+        if name in STALE_AT_SOURCE and p:
+            out[name] = p
+            kept.append("%s (NSE's file is a stale copy — our list kept)" % name)
+            continue
         syms = members(fname)
         if syms is None or len(syms) < 3 or (p and len(syms) * 2 < len(p["symbols"])):
             got = "no file" if syms is None else "%d symbols" % len(syms)
