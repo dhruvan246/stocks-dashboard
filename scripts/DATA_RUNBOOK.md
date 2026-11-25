@@ -3656,6 +3656,8 @@ and the last 6 months of listings with performance vs issue price.
 ---
 
 ## 28. INDEX MONTHLY RETURNS  (docs/monthly-returns.html — "Monthly Returns" nav, built 2026-07-16, SELF-UPDATING)
+
+**2026-11-25 — all indices.** `index_monthly.json` still carries 32 indices; `monthly-returns.html` now adds every other series from `docs/idx_ohlc/_closes.bin` (see §37) in the browser after first paint: month-end closes (cut at the feed's `asof`), level / previous close / 52-week closing range, and the daily window, so all three views cover them (177 series on 2026-11-25: 169 active, 8 ended — ended ones are labelled "· ended Mon YYYY" and stay out of Trailing returns). Existing rows are tied to their series by key, else by value on `asof` (6 rows: NIFTY SMALLCAP 100 ↔ NIFTY SMLCAP 100 etc.), so nothing is listed twice; check 2026-11-25: 7,786 month-end cells of the 26 key-matched indices equal the series' month-end closes, 0 differ. Groups: the Indices page's group for the key, else a name rule; two new chips (Strategy, Bonds & other); the "other" group stays out of the Best/Worst/Median cards unless picked.
 **The heatmap page:** month-by-month % returns for 32 NSE indices (10 broad / 16 sectoral / 6 thematic)
 with the year's return in the last column — plus the extras: FY (Apr–Mar) view, "vs Nifty 50" alpha
 mode, per-index seasonality (avg + hit-rate per calendar month), live MTD cell, sortable columns.
@@ -4131,6 +4133,8 @@ Gotchas:
   are network-first — live-layer edits need no SW cache bump unless the SHELL list changes.
 
 ## 37. INDIAN INDICES TABLE  (docs/indices.html — "Indices" nav 📇, built 2026-07-20, SELF-UPDATING)
+
+**2026-11-25 — every NSE index + Rewind (`docs/idx_ohlc/_closes.bin`).** `scripts/build_index_ohlc.py` now also writes `_closes.bin` (gzip JSON `{sv,updated,d0,dd,idx:{key:{cur,s,c}}}`: one shared calendar, each series' daily close x100 from position `s`, null = no close that day) at the end of every `write()` (so `--update` in `refresh-indices.yml` keeps it current; `--closes` rewrites it from the published files with no fetch). Checked bar-for-bar against the 177 per-index files. `indices.html` loads it after first paint and (a) adds a row for every live series the niftyindices feed does not carry (38 on 2026-11-25: Nifty Power, NBFC, Insurance, Capital Goods, Nifty 1000, India VIX, the leverage/inverse series ...), marked CLOSE — level and changes come from closing values, PE/PB/yield blank; (b) offers **Rewind**: every column recomputed at the close of the chosen date (1D = previous close; 1W/1M/1Y = the close 7/30/365 calendar days earlier, at most 10 days older; 52W range by CLOSES; PE/PB/yield not kept for past dates). Series ↔ row is by key; the 11 fixed-income rows use the `SER_ALIAS` table in the page (feed key `NIFTY GS 10YR` etc.) — measured over 88 days each pair stays within 0.6% (never equal: feed snapshot and closing file are struck at different times) with the next series 1.5–10% away. Members for the extra sector/theme indices come from `nse_extra_indices/members.json`; on a rewound date from `history.json` (38 verified; the rest say "members as of today"); the 28 pipeline indices show today's list with that label. Live rows keep NSE's own 1W/1M/1Y, so a live row and its rewound self on the same day can differ by the rule (NSE perChange365d vs close 365 days back) — RULE DIFFERENCE, not an error.
 
 - **Feed:** `scripts/fetch_index_table.py` (NOT `fetch_indices.py` — that one tags stock
   membership; name collision avoided) → `docs/indices.json` (slim page payload, every

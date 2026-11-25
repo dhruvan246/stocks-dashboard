@@ -34,7 +34,7 @@
   .hm td.inkw{color:#fff}
   .hm td.mtd{outline:1.5px dashed rgba(100,116,139,.55);outline-offset:-2px}
   .hm tr.grp td{background:var(--surface-2,var(--surface-2));font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:4px 8px}
-  .hm tr.grp td.g-broad{color:var(--accent-text)}.hm tr.grp td.g-sector{color:#6d28d9}.hm tr.grp td.g-theme{color:var(--warn)}
+  .hm tr.grp td.g-broad{color:var(--accent-text)}.hm tr.grp td.g-sector{color:#6d28d9}.hm tr.grp td.g-theme{color:var(--warn)}.hm tr.grp td.g-strategy{color:var(--pos)}.hm tr.grp td.g-other{color:var(--text-muted)}
   html[data-theme="dark"] .hm tr.grp td{background:#1b2537}
   html[data-theme="dark"] .hm tr.grp td.g-broad{color:var(--accent-text)}
   html[data-theme="dark"] .hm tr.grp td.g-sector{color:#c4b5fd}
@@ -67,7 +67,7 @@
 <main class="max-w-screen-2xl mx-auto px-4 py-6">
   <div class="mb-4">
     <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Monthly Returns <span class="text-slate-400 font-semibold text-base">· every index, month by month</span></h1>
-    <p class="text-sm text-slate-500 mt-1">Month-end to month-end % returns for <b>32 NSE indices</b> — broad, sectoral and thematic — with the year's return in the last column. Extras you won't find elsewhere: a <b>trailing-returns view</b> (1D → 10Y plus distance from the 52-week high), a <b>financial-year (Apr–Mar) view</b>, a <b>“vs Nifty 50” alpha mode</b>, per-index <b>seasonality stats</b> (average &amp; hit-rate per calendar month) and a <b>live MTD</b> cell for the running month. <span id="updated" class="text-slate-400"></span></p>
+    <p class="text-sm text-slate-500 mt-1">Month-end to month-end % returns for <b id="nIdx">every NSE index</b> — broad, sectoral, thematic, strategy and bond — with the year's return in the last column. Extras you won't find elsewhere: a <b>trailing-returns view</b> (1D → 10Y plus distance from the 52-week high), a <b>financial-year (Apr–Mar) view</b>, a <b>“vs Nifty 50” alpha mode</b>, per-index <b>seasonality stats</b> (average &amp; hit-rate per calendar month) and a <b>live MTD</b> cell for the running month. <span id="updated" class="text-slate-400"></span></p>
   </div>
 
   <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading index history…</div>
@@ -93,6 +93,8 @@
         <span data-g="broad" class="vbtn gch">Broad</span>
         <span data-g="sector" class="vbtn gch">Sectors</span>
         <span data-g="theme" class="vbtn gch">Themes</span>
+        <span data-g="strategy" class="vbtn gch">Strategy</span>
+        <span data-g="other" class="vbtn gch">Bonds &amp; other</span>
       </div>
       <div class="flex items-center gap-2 ml-auto text-[11px] text-slate-500">
         <span id="lgL">−8%</span><div class="lgd"></div><span id="lgR">+8%</span>
@@ -120,7 +122,8 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MONC = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const GRP_LBL = { broad:'Broad market', sector:'Sectoral', theme:'Thematic' };
+const GRP_LBL = { broad:'Broad market', sector:'Sectoral', theme:'Thematic', strategy:'Strategy / factor', other:'Bonds & other' };
+const GRP_ORD = ['broad','sector','theme','strategy','other'];
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 });
 
 let FEED = null, IDX = [], BY = {}, N50 = null;
@@ -264,7 +267,7 @@ function renderYear(){
   $('tFoot').innerHTML = '';
   $('tBody').querySelectorAll('a.ix').forEach(a => a.onclick = () => { selIdx = a.getAttribute('data-i'); setView('seas'); });
 
-  const withAnn = rows.filter(r => r.ann != null).map(r => ({ l: r.ix.label, v: r.ann.v })).sort((a,b) => b.v - a.v);
+  const withAnn = rows.filter(r => r.ann != null && (grp === 'other' || r.ix.grp !== 'other')).map(r => ({ l: r.ix.label, v: r.ann.v })).sort((a,b) => b.v - a.v);
   const med = withAnn.length ? withAnn[Math.floor(withAnn.length/2)].v : null;
   const n50a = annualCell(N50, Y);
   const t = yLbl(Y) + (Y === curY ? ' YTD' : '');
@@ -319,6 +322,7 @@ function dailyBase(ix, days){            // close from the rolling daily window,
   return null;
 }
 function trailRaw(ix, col){              // {v, from, to, note} | null
+  if (ix.ended) return null;             // NSE stopped publishing it: no "latest level" to measure from
   const to = lastOf(ix); if (to == null) return null;
   if (col.k === 'd52'){
     const lv = liveOf(ix); if (!lv || !lv.yh) return null;
@@ -516,7 +520,7 @@ function populateYearSel(){
   sel.value = selYear;
 }
 function populateIdxSel(){
-  const groups = ['broad','sector','theme'];
+  const groups = GRP_ORD.filter(g => IDX.some(ix => ix.grp === g));
   $('selIdx').innerHTML = groups.map(g =>
     '<optgroup label="' + GRP_LBL[g] + '">' +
     IDX.filter(ix => ix.grp === g).map(ix => '<option value="' + esc(ix.key) + '">' + esc(ix.label) + '</option>').join('') +
@@ -544,6 +548,94 @@ function render(){
                                         : 'y=' + selYear + (fy ? '&fy=1' : '') + (alpha ? '&a=1' : '') + (grp !== 'all' ? '&g=' + grp : ''); } catch (e) {}
 }
 
+let LIVEJ = null;
+function applyLive(){                    // overwrite each index's live level from the niftyindices feed; returns the feed's newest time
+  let liveTv = '';
+  ((LIVEJ && LIVEJ.data) || []).forEach(rr => {
+    const lv = FEED.live && FEED.live[String(rr.indexName || '').trim()];
+    const last = parseFloat(rr.last), prev = parseFloat(rr.previousClose);
+    if (!lv || !isFinite(last) || last <= 0) return;
+    lv.last = last;
+    if (isFinite(prev) && prev > 0) lv.prev = prev;
+    const dm = /(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(String(rr.timeVal || ''));
+    const MO = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+    if (dm && MO[dm[2]]) lv.d = dm[3] + '-' + MO[dm[2]] + '-' + dm[1];
+    const yh = parseFloat(rr.yearHigh), yl = parseFloat(rr.yearLow);
+    if (isFinite(yh) && yh > 0) lv.yh = yh;
+    if (isFinite(yl) && yl > 0) lv.yl = yl;
+    if (String(rr.timeVal || '') > liveTv) liveTv = String(rr.timeVal);
+  });
+  return liveTv;
+}
+
+/* ---------- every other NSE index ----------
+ * index_monthly.json carries 32 indices. docs/idx_ohlc/_closes.bin (scripts/build_index_ohlc.py) has the daily close of
+ * every series in NSE's all-indices file; each series not already on the page becomes a row here: month-end closes,
+ * a level / previous close / 52-week closing range, and the rolling daily window, all cut at the feed's own date.
+ * A series is tied to an existing row by key, else by VALUE (its close on the feed's date equals that row's baked close).
+ * Group = the Indices page's group for that key (indices.json), else a rule on NSE's own name. */
+function grpRule(name){
+  const n = name.toUpperCase();
+  if (/BOND|G-SEC|GSEC|SDL|\bSME\b|VIX|INVERSE|LEVERAGE|FUTURES|ARBITRAGE|RATE INDEX|DIVIDEND POINTS|USD|T-BILL|LIQUID 15 TR/.test(n)) return 'other';
+  if (/^(NIFTY 1000|NIFTY NEXT 100|NIFTY FULL MIDCAP 100|NIFTY FULL SMALLCAP 100)$/.test(n)) return 'broad';
+  if (/^NIFTY (FINANCIAL SERVICES EX-BANK|NBFC|HOUSING FINANCE|INSURANCE|POWER|CAPITAL GOODS|CONSTRUCTION|COMMERCIAL & TRANSPORT SERVICES|CONSUMER SERVICES|RETAIL|TELECOMMUNICATIONS|HOSPITALS|SMALL FINANCE BANKS & MICROFINANCE INSTITUTIONS)$/.test(n)) return 'sector';
+  if (/ALPHA|QUALITY|VALUE|MOMENTUM|LOW VOL|EQUAL WEIGHT|SHARIAH|ESG|DIVIDEND YIELD|DIVIDEND OPP|AHIMSA|GROWTH|LIQUID|BETA/.test(n) && !/DEFENCE/.test(n)) return 'strategy';
+  return 'theme';
+}
+async function addAllSeries(){
+  let b, tb = null;
+  try {
+    const buf = await (await fetch('./idx_ohlc/_closes.bin')).arrayBuffer();
+    b = JSON.parse(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
+    tb = await fetch('./indices.json').then(r => r.json()).catch(() => null);
+  } catch (e) { console.error('index history not loaded', e); return; }
+  const day = iso => Math.round(Date.parse(iso + 'T00:00:00Z') / 864e5), iso = n => new Date(n * 864e5).toISOString().slice(0, 10);
+  const dn = [day(b.d0)]; for (const g of b.dd) dn.push(dn[dn.length-1] + g);
+  const asofN = day(FEED.asof); let P = -1; for (let i = dn.length - 1; i >= 0; i--) if (dn[i] <= asofN){ P = i; break; }
+  if (P < 0) return;
+  const at = (h, p) => { const i = p - h.s; return (i >= 0 && i < h.c.length && h.c[i] != null) ? h.c[i] / 100 : null; };
+  const baked = ix => { let out = null; Object.keys(ix.closes).sort().forEach(y => ix.closes[y].forEach(c => { if (c != null) out = c; })); return out; };
+  const used = new Set();
+  IDX.forEach(ix => { if (b.idx[ix.key]) used.add(ix.key); });
+  IDX.forEach(ix => { if (b.idx[ix.key]) return; const v = baked(ix); if (v == null) return;
+    const c = Object.keys(b.idx).filter(k => !used.has(k) && at(b.idx[k], P) != null && Math.abs(at(b.idx[k], P) - v) < 0.011);
+    if (c.length === 1) used.add(c[0]); else console.warn('no single history series for', ix.key, c); });
+  const TG = {}, G = { broad:'broad', sectoral:'sector', thematic:'theme', strategy:'strategy', other:'other' };
+  ((tb && tb.indices) || []).forEach(x => { TG[x.k] = { g: G[x.g], n: x.n }; });
+  const dailyDs = FEED.daily ? Object.keys(FEED.daily) : [], posOf = {}; dn.forEach((n, i) => { posOf[iso(n)] = i; });
+  const add = [];
+  for (const k in b.idx){
+    if (used.has(k) || BY[k]) continue;
+    const h = b.idx[k], closes = {}; let lastP = -1, lastV = null, prevV = null, lo = null, hi = null;
+    for (let i = 0; i < h.c.length && h.s + i <= P; i++){
+      const v = h.c[i]; if (v == null) continue;
+      const d = new Date(dn[h.s + i] * 864e5), y = d.getUTCFullYear(), m = d.getUTCMonth();
+      (closes[y] || (closes[y] = [null,null,null,null,null,null,null,null,null,null,null,null]))[m] = v / 100;   // the month's last close wins
+      prevV = lastV; lastV = v / 100; lastP = h.s + i;
+    }
+    if (lastP < 0) continue;
+    for (let i = lastP - h.s; i >= 0 && dn[lastP] - dn[h.s + i] <= 365; i--){ const v = h.c[i]; if (v == null) continue; if (lo == null || v/100 < lo) lo = v/100; if (hi == null || v/100 > hi) hi = v/100; }
+    const t = TG[k], ended = dn[P] - dn[lastP] > 7, e = new Date(dn[lastP] * 864e5);
+    const ix = { key: k, label: (t ? t.n : h.cur) + (ended ? ' · ended ' + MONC[e.getUTCMonth()] + ' ' + e.getUTCFullYear() : ''), grp: (t && t.g) || grpRule(h.cur), closes: closes, added: 1 };
+    if (ended) ix.ended = 1;
+    else {
+      FEED.live = FEED.live || {}; FEED.live[k] = { last: lastV, prev: prevV, yh: hi, yl: lo, d: iso(dn[lastP]) };
+      dailyDs.forEach(d => { const q = posOf[d]; if (q == null) return; const v = at(h, q); if (v != null) FEED.daily[d][k] = v; });
+    }
+    add.push(ix);
+  }
+  if (!add.length) return;
+  add.sort((x, y) => x.label.localeCompare(y.label));
+  add.forEach(ix => { IDX.push(ix); BY[ix.key] = ix; });
+  const pos = new Map(IDX.map((ix, i) => [ix, i]));
+  IDX.sort((x, y) => (GRP_ORD.indexOf(x.grp) - GRP_ORD.indexOf(y.grp)) || (pos.get(x) - pos.get(y)));
+  applyLive();
+  try { const hi = new URLSearchParams(location.hash.replace(/^#/, '')).get('i'); if (hi && BY[hi] && selIdx !== hi){ selIdx = hi; view = 'seas'; } } catch (e) {}
+  populateYearSel(); populateIdxSel();
+  const n = $('nIdx'); if (n) n.textContent = IDX.length + ' NSE indices';
+  setView(view);
+}
+
 async function load(){
   try { FEED = await (await fetch('./index_monthly.json?t=' + Date.now())).json(); }
   catch (e){ $('status').textContent = 'Could not load index_monthly.json.'; return; }
@@ -553,23 +645,9 @@ async function load(){
   // keys match FEED.live verbatim). Overwrites each index's live level in place so the
   // MTD / trailing cells reflect right now, not the last trading evening. Best-effort.
   let liveTv = '';
-  try {
-    const lj = await (await fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json?cb=' + Date.now(), {cache:'no-store'})).json();
-    ((lj && lj.data) || []).forEach(rr => {
-      const lv = FEED.live && FEED.live[String(rr.indexName || '').trim()];
-      const last = parseFloat(rr.last), prev = parseFloat(rr.previousClose);
-      if (!lv || !isFinite(last) || last <= 0) return;
-      lv.last = last;
-      if (isFinite(prev) && prev > 0) lv.prev = prev;
-      const dm = /(\d{2})-([A-Za-z]{3})-(\d{4})/.exec(String(rr.timeVal || ''));
-      const MO = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
-      if (dm && MO[dm[2]]) lv.d = dm[3] + '-' + MO[dm[2]] + '-' + dm[1];
-      const yh = parseFloat(rr.yearHigh), yl = parseFloat(rr.yearLow);
-      if (isFinite(yh) && yh > 0) lv.yh = yh;
-      if (isFinite(yl) && yl > 0) lv.yl = yl;
-      if (String(rr.timeVal || '') > liveTv) liveTv = String(rr.timeVal);
-    });
-  } catch (e) { /* CDN hiccup — evening-baked live levels stay */ }
+  try { LIVEJ = await (await fetch('https://liveindexsa.niftyindices.com/jsonfiles/LiveIndicesWatch.json?cb=' + Date.now(), {cache:'no-store'})).json(); }
+  catch (e) { /* CDN hiccup — evening-baked live levels stay */ }
+  liveTv = applyLive();
 
   const a = asofYM();
   $('updated').textContent = '· data till ' + a.d + ' ' + MONC[a.m-1] + ' ' + a.y + ' · current month updates every trading evening.';
@@ -610,6 +688,7 @@ async function load(){
   });
   wireTip();
   setView(view);
+  addAllSeries();
 }
 function flipFY(){
   $('tCY').classList.toggle('on', !fy); $('tFY').classList.toggle('on', fy);

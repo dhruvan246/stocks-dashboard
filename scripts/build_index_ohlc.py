@@ -104,7 +104,34 @@ def write(series, joins):
     with open(os.path.join(OUT, "_index.json"), "w", encoding="utf-8") as fh:
         json.dump({"sv": SCHEMA, "updated": dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).strftime("%Y-%m-%d %H:%M IST"), "idx": idx, "joins": joins},
                   fh, separators=(",", ":"))
+    write_closes(series)
     return idx
+
+
+def write_closes(series):
+    """docs/idx_ohlc/_closes.bin — every series' daily CLOSE in one gzip'd JSON, for docs/indices.html (all-index table,
+    Rewind, month-by-month and trailing-return views). Derived from the same bars as the per-index files, nothing else:
+      {sv, updated, d0, dd, idx: {key: {cur, s, c}}}
+      d0 + dd = the calendar (every date on which at least one series has a close; dd = day gaps);
+      s = calendar position of the series' first close; c = close x100 for each calendar day from s to the series'
+      last close, null on a day the series has no close. Written by write() on every run, so CI keeps it current."""
+    cal = sorted({d for s in series.values() for d, b in s["bars"].items() if b[3] is not None})
+    if not cal:
+        return 0
+    pos = {d: i for i, d in enumerate(cal)}
+    idx = {}
+    for key in sorted(series):
+        bars = {d: b[3] for d, b in series[key]["bars"].items() if b[3] is not None}
+        if not bars:
+            continue
+        a, z = pos[min(bars)], pos[max(bars)]
+        idx[key] = {"cur": series[key]["cur"], "s": a, "c": [x100(bars.get(cal[i])) for i in range(a, z + 1)]}
+    dd = [(dt.date.fromisoformat(cal[i]) - dt.date.fromisoformat(cal[i - 1])).days for i in range(1, len(cal))]
+    blob = json.dumps({"sv": SCHEMA, "updated": cal[-1], "d0": cal[0], "dd": dd, "idx": idx}, separators=(",", ":")).encode()
+    with open(os.path.join(OUT, "_closes.bin"), "wb") as raw:
+        with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0, compresslevel=9) as gz:      # mtime=0: same bars -> same bytes
+            gz.write(blob)
+    return len(idx)
 
 
 def full(cache):
@@ -298,7 +325,10 @@ if __name__ == "__main__":
     ap.add_argument("--days", type=int, default=10)
     ap.add_argument("--merge-ni", default="", help="dir of niftyindices history files to merge into the published files")
     ap.add_argument("--report", default="", help="with --merge-ni: write the differing cells here")
+    ap.add_argument("--closes", action="store_true", help="only rewrite _closes.bin from the published files (no fetch)")
     a = ap.parse_args()
+    if a.closes:
+        print("closes file: %d series" % write_closes(load()[1])); sys.exit(0)
     if a.merge_ni and not (a.full or a.update):
         merge_ni(a.merge_ni, a.report)
     elif a.full == a.update:
