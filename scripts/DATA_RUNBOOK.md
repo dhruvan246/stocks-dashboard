@@ -31286,3 +31286,16 @@ chart meta for `^NSEI` through the Worker (`?chart=`, at load + every 2 min): in
 `currentTradingPeriod.regular` AND a trade in the last 20 min (a weekday holiday has session hours but no
 trades). If that call fails it falls back to the clock (Mon-Fri 09:15-15:30 IST). Tested by faking the
 meta: open, holiday, chart blocked (after hours and at 11:00), Worker blocked.
+
+### §250a — two of the 15 missing indices from other sources (2026-11-25)
+
+User: "add the remaining 15 country indexes from another source". Probed with the repo's ordinary client:
+- **Added (same script, same nightly step):** `CSI300` from the index owner, `csindex.com.cn/csindex-home/perf/index-perf?indexCode=000300&startDate=…&endDate=…`
+  (closes from 2002-01-04, open/high/low from 2005-01-04; the feed echoes the requested start date as a made-up first row —
+  dropped) and `VNINDEX` from VNDIRECT's chart feed `dchart-api.vndirect.com.vn/dchart/history?resolution=D&symbol=VNINDEX`
+  (from 2017-08-24 only). Today's bar is kept only after 16:00 exchange time. Neither is cross-checked with a second source.
+- **Refused or unusable (do not work around):** Stooq answers a browser check page instead of the CSV; Eastmoney's kline feed
+  answered two calls then closed every connection (and has WIG not WIG20, RTS not MOEX, a FTSE Saudi index not TASI);
+  iss.moex.com fails certificate verification (never disable it); PSX 462; SET 403; CSE 405; GPW Benchmark closed the
+  connection. Still missing: Argentina, Chile, Poland, Hungary, Russia, Thailand, Philippines, Pakistan, Sri Lanka,
+  Saudi Arabia, Egypt, Dubai, Qatar — the only route seen is a by-hand pull through a browser (like §249), not refreshed nightly.

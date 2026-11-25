@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """World stock indices (one or more per country) for docs/chart.html — daily open/high/low/close, full history.
 
-Source: Yahoo Finance chart API, one call per index, the whole daily history Yahoo holds
+Sources: China CSI 300 from the index owner (csindex.com.cn) and Vietnam's VN-Index from VNDIRECT's chart feed
+(fetch_csindex / fetch_vndirect below — Yahoo holds no daily history for either); everything else from the
+Yahoo Finance chart API, one call per index, the whole daily history Yahoo holds
   https://query1.finance.yahoo.com/v8/finance/chart/<symbol>?period1=<1950>&period2=<now>&interval=1d
 Every index in WORLD below was probed on 2026-11-24; an index Yahoo does not answer for is simply not
 written (and is listed in the run's output) — nothing is invented.
@@ -77,7 +79,7 @@ WORLD = [
     ("HSCEI", "^HSCE", "Hang Seng China Enterprises", "Hong Kong", ["HSCE"]),
     ("SHCOMP", "000001.SS", "Shanghai Composite", "China", ["SSEC", "SHANGHAI", "CHINA"]),
     ("SZCOMP", "399001.SZ", "Shenzhen Component", "China", ["SZSE", "SHENZHEN"]),
-    ("CSI300", "000300.SS", "CSI 300", "China", ["CHINA300"]),
+    ("CSI300", "csindex:000300", "CSI 300", "China", ["CHINA300"]),
     ("KOSPI", "^KS11", "KOSPI", "South Korea", ["KS11", "KOREA", "SOUTHKOREA"]),
     ("KOSDAQ", "^KQ11", "KOSDAQ", "South Korea", ["KQ11"]),
     ("TAIEX", "^TWII", "Taiwan Weighted (TAIEX)", "Taiwan", ["TWII", "TWSE", "TAIWAN"]),
@@ -86,7 +88,7 @@ WORLD = [
     ("JCI", "^JKSE", "Jakarta Composite", "Indonesia", ["JKSE", "INDONESIA"]),
     ("SET", "^SET.BK", "SET Index", "Thailand", ["THAILAND"]),
     ("PSEI", "PSEI.PS", "PSE Composite", "Philippines", ["PHILIPPINES"]),
-    ("VNINDEX", "^VNINDEX.VN", "VN-Index", "Vietnam", ["VIETNAM"]),
+    ("VNINDEX", "vndirect:VNINDEX", "VN-Index", "Vietnam", ["VIETNAM"]),
     ("KSE100", "^KSE", "KSE 100", "Pakistan", ["PAKISTAN"]),
     ("CSEALL", "^CSE", "CSE All Share", "Sri Lanka", ["ASPI", "SRILANKA"]),
     ("ASX200", "^AXJO", "S&P/ASX 200", "Australia", ["XJO", "AXJO", "AUS200", "AUSTRALIA"]),
@@ -154,6 +156,52 @@ def fetch(sym):
     return rows, ("dropped %d unfinished bar" % dropped_live if dropped_live else "")
 
 
+def _clean(rows, tz_hours):
+    """Shared tail for the non-Yahoo sources: (date, o, h, l, c) → sorted rows, unusable o/h/l → None, and the
+    exchange's own TODAY dropped until 16:00 local time (both markets below close at 15:00), so an unfinished
+    bar is never stored."""
+    local = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=tz_hours)
+    today, done = local.date().isoformat(), local.hour >= 16
+    out, dropped = {}, 0
+    for d, o, h, l, c in rows:
+        if c is None or not (c > 0):
+            continue
+        if d > today or (d == today and not done):
+            dropped += 1
+            continue
+        c2 = round(c, 2)
+        if (o is None or h is None or l is None or not (o > 0 and h > 0 and l > 0)
+                or round(h, 2) < max(round(o, 2), c2) or round(l, 2) > min(round(o, 2), c2)):
+            o = h = l = None
+        out[d] = (d, o, h, l, c)
+    return [out[k] for k in sorted(out)], ("dropped %d unfinished bar" % dropped if dropped else "")
+
+
+def fetch_csindex(code):
+    """China Securities Index Co. (the index owner): one call, every day since 2002; open/high/low from 2005-01-04."""
+    url = ("https://www.csindex.com.cn/csindex-home/perf/index-perf?indexCode=" + code + "&startDate=19900101&endDate=" +
+           (dt.date.today() + dt.timedelta(days=2)).strftime("%Y%m%d"))
+    j = json.loads(_get(url))
+    if str(j.get("code")) != "200" or not j.get("data"):
+        raise ValueError("csindex answered %s" % str(j.get("msg"))[:60])
+    rows = [(r["tradeDate"][:4] + "-" + r["tradeDate"][4:6] + "-" + r["tradeDate"][6:8], r.get("open"), r.get("high"), r.get("low"), r.get("close"))
+            for r in j["data"] if r.get("indexCode") == code and len(str(r.get("tradeDate"))) == 8
+            and r["tradeDate"] != "19900101"]   # the feed echoes the requested start date as a made-up first row (measured 2026-11-25)
+    return _clean(rows, 8)
+
+
+def fetch_vndirect(sym):
+    """VNDIRECT's public chart feed (a Vietnamese broker): daily bars from 2017-08-24, timestamps = the date at 00:00 UTC."""
+    j = json.loads(_get("https://dchart-api.vndirect.com.vn/dchart/history?resolution=D&symbol=" + sym + "&from=946684800&to=" + str(int(time.time()) + 86400)))
+    if j.get("s") != "ok" or not j.get("t"):
+        raise ValueError("vndirect answered %s" % str(j.get("s"))[:40])
+    rows = [(dt.datetime.fromtimestamp(t, dt.timezone.utc).date().isoformat(), j["o"][i], j["h"][i], j["l"][i], j["c"][i]) for i, t in enumerate(j["t"])]
+    return _clean(rows, 7)
+
+
+OTHER = {"csindex": (fetch_csindex, "China Securities Index Co. "), "vndirect": (fetch_vndirect, "VNDIRECT ")}
+
+
 def pack(code, label, rows):
     x = lambda v: None if v is None else int(round(v * 100))
     d0 = rows[0][0]
@@ -186,7 +234,9 @@ def main():
         fp = os.path.join(a.out, code + ".json")
         old_n = (ser.get(code) or {}).get("n", 0) if os.path.exists(fp) else 0
         try:
-            rows, note = fetch(sym)
+            kind, _, rest = sym.partition(":")
+            rows, note = OTHER[kind][0](rest) if kind in OTHER else fetch(sym)
+            src = OTHER[kind][1] + rest if kind in OTHER else "Yahoo " + sym
             if len(rows) < 250:
                 raise ValueError("only %d daily bars" % len(rows))
             if old_n and len(rows) < 0.98 * old_n:
@@ -198,7 +248,7 @@ def main():
             fh.write(blob)
         os.replace(fp + ".tmp", fp)
         ohl = next((r[0] for r in rows if r[1] is not None), None)
-        ser[code] = {"f": code, "label": label, "country": country, "src": "Yahoo " + sym, "first": rows[0][0], "last": rows[-1][0],
+        ser[code] = {"f": code, "label": label, "country": country, "src": src, "first": rows[0][0], "last": rows[-1][0],
                      "ord": codes.index(code), "n": len(rows), "close_only": sum(1 for r in rows if r[1] is None), "ohl_from": ohl, "alias": alias}
         ok.append(code)
         print("%-9s %-12s %6d bars %s -> %s  close-only %d  last close %.2f %s" % (
