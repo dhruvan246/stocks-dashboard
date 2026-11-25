@@ -31275,3 +31275,10 @@ A rebuild is needed only to extend an index backwards or to add one of the 15.
 **Open.** 33 NSE stocks of ₹500 Cr+ have no row in `sector_classification.json` (BSE, CDSL, TSFINV, MBAPL, KRISHANA …) and so
 appear in no sector/industry group. The Tracker's 5-stock floor hides 7 of 58 industries and 91 of 191 sub-industries.
 
+**§247b addendum (2026-11-25, user approved): label "NSE closed" after hours.** With Worker quotes on
+screen the label is "● Live HH:MM" only while the Indian session is on, else "NSE closed" (Nifty /
+Sensex / Bank Nifty then show the final close; other markets keep updating). `nseOpen()` reads Yahoo's
+chart meta for `^NSEI` through the Worker (`?chart=`, at load + every 2 min): inside
+`currentTradingPeriod.regular` AND a trade in the last 20 min (a weekday holiday has session hours but no
+trades). If that call fails it falls back to the clock (Mon-Fri 09:15-15:30 IST). Tested by faking the
+meta: open, holiday, chart blocked (after hours and at 11:00), Worker blocked.

@@ -464,7 +464,7 @@
   // committed ./global.json (CI-refreshed, ~23 KB; the same file the Global
   // Markets page renders), then topped up every 60 s with the latest quotes from our
   // quotes Worker (2026-11-25, user: strip showed yesterday's Nifty). The label says
-  // which one is on screen: "Last close" (file) or "● Live HH:MM" (Worker, IST). It scrolls away
+  // which one is on screen: "Last close" (file), "● Live HH:MM" (Worker, IST) or "NSE closed" (Worker quotes, Indian session over; see nseOpen()). It scrolls away
   // with the page (the header below it is the sticky part). No file → no strip.
   // =========================================================================
   var TAPE = [['nifty', 'Nifty 50', 1], ['sensex', 'Sensex', 1], ['bank', 'Bank Nifty', 1], ['spx', 'S&P 500'], ['ndq', 'Nasdaq'],
@@ -479,6 +479,21 @@
       h.parentNode.insertBefore(t, h);
       var gone = function () { if (t.parentNode) t.parentNode.removeChild(t); };
       var by = {}, liveAt = 0;
+      // NSE session, from Yahoo's own chart meta for ^NSEI (via the Worker): today's regular
+      // session start/end and the time of the last trade. null until that call answers.
+      var nse = null;
+      // true = trading now, false = closed. With the meta: inside the session AND a trade in
+      // the last 20 min (a weekday holiday has session hours but no trades). Without it: the
+      // clock alone — outside Mon-Fri 09:15-15:30 IST is certainly closed.
+      var nseOpen = function () {
+        var now = Date.now() / 1000;
+        if (nse) {
+          if (now < nse.start || now > nse.end) return false;
+          return (now - nse.at) < 1200 || (now - nse.start) < 300;
+        }
+        var d = new Date(Date.now() + 19800000), m = d.getUTCHours() * 60 + d.getUTCMinutes(), wd = d.getUTCDay();
+        return wd >= 1 && wd <= 5 && m >= 555 && m <= 930;
+      };
       // paint(): rebuild the items from `by`. A record topped up by liveTape() carries _live.
       var paint = function () {
         var html = '';
@@ -499,8 +514,10 @@
         var hm = '';
         if (liveAt) { try { hm = new Date(liveAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }); } catch (e) {} }
         var keep = t.firstChild.scrollLeft;
-        t.firstChild.innerHTML = '<span class="sw-tape-lb' + (liveAt ? ' sw-tape-live' : '') + '">' +
-          (liveAt ? '● Live' + (hm ? ' ' + hm : '') : 'Last close') + '</span>' + html;
+        var open = liveAt && nseOpen();
+        t.firstChild.innerHTML = '<span class="sw-tape-lb' + (open ? ' sw-tape-live' : '') + '"' +
+          (liveAt && !open ? ' title="The Indian market is closed: Nifty, Sensex and Bank Nifty show the final close. Other markets update while they trade."' : '') + '>' +
+          (!liveAt ? 'Last close' : open ? '● Live' + (hm ? ' ' + hm : '') : 'NSE closed') + '</span>' + html;
         t.firstChild.scrollLeft = keep;
         t.setAttribute('aria-label', liveAt ? 'Markets, latest quotes' : 'Markets at last close');
         return true;
@@ -533,13 +550,25 @@
             paint();
           }).catch(function () { clearTimeout(timer); });
       };
+      var nseState = function () {
+        if (document.hidden || !t.parentNode) return;
+        fetch(WORKER + '/?chart=' + encodeURIComponent('^NSEI'), { cache: 'no-store' })
+          .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+          .then(function (j) {
+            var m = j.chart.result[0].meta, p = m.currentTradingPeriod && m.currentTradingPeriod.regular;
+            if (!p || typeof p.start !== 'number' || typeof p.end !== 'number' || typeof m.regularMarketTime !== 'number') return;
+            nse = { start: p.start, end: p.end, at: m.regularMarketTime };
+            if (liveAt) paint();
+          }).catch(function () {});
+      };
       fetch('./global.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
         if (!j) { gone(); return; }
         Object.keys(j.groups || {}).forEach(function (k) { (j.groups[k] || []).forEach(function (x) { by[x.id] = x; }); });
         (j.fx || []).forEach(function (x) { by[x.id] = x; });
         if (!paint()) { gone(); return; }
         liveTape(); setInterval(liveTape, 60000);
-        document.addEventListener('visibilitychange', function () { if (!document.hidden) liveTape(); });
+        nseState(); setInterval(nseState, 120000);
+        document.addEventListener('visibilitychange', function () { if (!document.hidden) { liveTape(); nseState(); } });
       }).catch(gone);
     } catch (e) {}
   }
