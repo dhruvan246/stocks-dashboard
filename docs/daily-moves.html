@@ -135,6 +135,12 @@
     html[data-theme] .sw-scrollx table.dm tbody td.c0{z-index:2}
     .legend{flex-wrap:wrap}
   }
+  .rew{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface)}
+  .rew.on{border-color:var(--accent)}
+  html[data-theme] .rew button{background:none;border:0;border-left:1px solid var(--border);border-radius:0;padding:6px 9px;font-size:12px;font-weight:600;color:var(--text-muted);cursor:pointer;min-height:0}
+  html[data-theme] .rew button:first-child{border-left:0}
+  html[data-theme] .rew button:hover{color:var(--text);background:var(--surface-2)} html[data-theme] .rew button:disabled{opacity:.4;cursor:default}
+  html[data-theme] .rew input{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12px;padding:5px 6px;height:auto;min-height:0;width:auto;box-shadow:none}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -173,8 +179,16 @@
           <div class="seg" id="gran">
             <span class="vbtn" data-g="d">Day</span><span class="vbtn" data-g="w">Week</span><span class="vbtn" data-g="m">Month</span>
           </div></div>
+        <div><span class="flab" style="display:block;margin-bottom:4px">Rewind</span>
+          <span id="rew" class="rew" title="Rewind: slide the same window back so it ends on a past date">
+            <button type="button" id="rewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+            <input type="date" id="rewDate" aria-label="End the window on this date" />
+            <button type="button" id="rewNext" title="One trading day forward" aria-label="One trading day forward">▶</button>
+            <button type="button" id="rewNow" title="Back to the latest day">Latest</button>
+          </span></div>
         <span class="vbtn" id="bReset">Reset</span>
       </div>
+      <div id="rewNote" class="hidden" style="font-size:12px;margin-top:8px;color:var(--accent-text,var(--accent))"></div>
     </div>
 
     <div id="tiles" class="mb-3"></div>
@@ -474,7 +488,12 @@ function syncControls(){
   $('fInd').innerHTML = '<option value="">All industries</option>' + inds.map(i => '<option' + (i === IND ? ' selected' : '') + '>' + esc(i) + '</option>').join('');
   document.querySelectorAll('#gran .vbtn').forEach(b => b.classList.toggle('on', b.dataset.g === G));
   const n = TO - FROM + 1;
-  document.querySelectorAll('#rng .vbtn').forEach(b => { const k = +b.dataset.n || (L - 1); b.classList.toggle('on', TO === L - 1 && n === Math.min(k, L - 1)); });
+  const rw = TO !== L - 1;
+  $('rewDate').value = dIso(DAYS[TO]); $('rew').classList.toggle('on', rw);
+  $('rewNext').disabled = $('rewNow').disabled = !rw; $('rewPrev').disabled = FROM <= 1;
+  $('rewNote').classList.toggle('hidden', !rw);
+  if (rw) $('rewNote').innerHTML = 'Rewound to the close of <b>' + dDow(DAYS[TO]) + ' ' + dLong(DAYS[TO]) + '</b> · the ' + n + '-session window ends there and nothing later is used · stocks are today’s members of the index, not that day’s · the file holds ' + dLong(DAYS[1]) + ' to ' + dLong(DAYS[L-1]) + '.';
+  document.querySelectorAll('#rng .vbtn').forEach(b => { const k = +b.dataset.n || (L - 1); b.classList.toggle('on', n === Math.min(k, L - 1)); });
   const p = new URLSearchParams();
   if (IX !== 'Nifty 50') p.set('ix', IX);
   if (!(TO === L - 1 && n === 20)){ p.set('from', dIso(DAYS[FROM])); if (TO !== L - 1) p.set('to', dIso(DAYS[TO])); }
@@ -505,8 +524,15 @@ function wire(){
   $('fTo').onchange = e => { if (!e.target.value) return; TO = idxOnOrBefore(+e.target.value.replace(/-/g, '')); if (TO < FROM) FROM = TO; render(); };
   $('fInd').onchange = e => { IND = e.target.value; render(); };
   let qt = null; $('fQ').oninput = e => { clearTimeout(qt); qt = setTimeout(() => { Q = e.target.value; render(); }, 180); };
-  $('rng').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; const n = +b.dataset.n; setRange(n); G = n === 0 ? 'm' : n >= 62 ? 'w' : 'd'; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  $('rng').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; const n = +b.dataset.n, keep = TO; setRange(n); if (keep !== L - 1){ const len = TO - FROM; TO = keep; FROM = Math.max(1, TO - len); } G = n === 0 ? 'm' : n >= 62 ? 'w' : 'd'; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
   $('gran').onclick = e => { const b = e.target.closest('.vbtn'); if (!b) return; G = b.dataset.g; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  /* Rewind: the same number of sessions, ending on an earlier day (within the sessions the file holds) */
+  const slide = to => { const len = TO - FROM; TO = Math.max(1 + len, Math.min(L - 1, to)); FROM = TO - len; if (SORT.k[0] === 'c') SORT = {k:'per', dir:-1}; render(); scrollLatest(); };
+  $('rewDate').min = dIso(DAYS[1]); $('rewDate').max = dIso(DAYS[L-1]);
+  $('rewPrev').onclick = () => slide(TO - 1);
+  $('rewNext').onclick = () => slide(TO + 1);
+  $('rewNow').onclick = () => slide(L - 1);
+  $('rewDate').onchange = e => { if (!/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){ syncControls(); return; } slide(idxOnOrBefore(+e.target.value.replace(/-/g, ''))); };
   $('bReset').onclick = () => { defaults(); render(); scrollLatest(); $('grid').scrollTop = 0; };
   $('bMax').onclick = () => { const on = document.body.classList.toggle('dm-max'); $('bMax').textContent = on ? 'Exit full screen' : 'Maximise table'; };
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('dm-max')) $('bMax').click(); });
