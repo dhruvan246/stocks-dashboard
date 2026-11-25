@@ -1,0 +1,353 @@
+{
+ "date": "2026-11-25",
+ "asof": "2026-11-25",
+ "run_started": "2026-11-25 19:37 IST",
+ "run_finished": "2026-11-25 20:25 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1206,
+ "environment": {
+  "sandbox": "Fresh clone, throwaway cloud VM, clock UTC; every timestamp here taken from TZ=Asia/Kolkata date.",
+  "bse": "OK - the step-0 probe returned 200 and every BSE read in this run worked (announcements, detailed results, company headers, attachments, bhavcopy via score.py).",
+  "nse": "PARTLY OK - nsearchives.nseindia.in is refused at the egress proxy but nsearchives.nseindia.com is allowed and served every document asked of it (Krishca, UHTL, Oriana). www.nseindia.com itself answers 403, so updates.py's per-company NSE feeds fail.",
+  "blocked_from_sandbox": [
+   "pib.gov.in (ENOTFOUND / 403 at proxy)",
+   "forum.valuepickr.com",
+   "cdn.syndication.twimg.com",
+   "nsearchives.nseindia.in",
+   "www.metalbook.com",
+   "ibjarates.com",
+   "rubberboard.gov.in",
+   "chinimandi.com",
+   "ppac.gov.in",
+   "steel.gov.in",
+   "tradingeconomics.com",
+   "guidechem.com",
+   "caionline.in",
+   "indianspices.com",
+   "eaindustry.nic.in",
+   "tradestat.commerce.gov.in",
+   "westmetall.com",
+   "markets.businessinsider.com"
+  ],
+  "note": "Everything the sandbox could not reach, the ideas-feeds GitHub Action had already reached at 19:28 IST today from a runner with open egress, so the committed panels are today's. The two exceptions are in data_problems."
+ },
+ "feeds_status": {
+  "built": "2026-11-25 19:28 IST",
+  "where": "GitHub Actions (ideas-feeds.yml), run 45623473325",
+  "steps_failed": [
+   "wpi"
+  ],
+  "hosts_blocked_from_actions": [
+   "tradestat.commerce.gov.in",
+   "www.metalbook.com",
+   "westmetall.com"
+  ],
+  "landing_refused": [],
+  "read": "feeds_status.json was read before any lane was called a blocked lane, per the PLAYBOOK. Only `wpi` failed on the runner too, so the WPI panel is genuinely stale; everything else is a sandbox-only block and the committed rows are today's."
+ },
+ "filings_status": {
+  "announcements_total": 556,
+  "announcements_reported": 557,
+  "announcements_capped": true,
+  "announcements_read_at": "2026-11-25 19:44 IST",
+  "note": "556 rows read against BSE's own count of 557 for 25-Nov-2026, so the read is CAPPED - one page came back short and these are the newest rows, not the whole range. The count is a floor. The read also happened the same evening, so filings made after 19:44 IST are not in it. The Action's earlier scan at 19:06 IST read 515 of 515 uncapped; this run's deeper read found 41 more filings and one more candidate (11 vs 10)."
+ },
+ "candidates_considered": [
+  {
+   "name": "Highway Infrastructure Ltd",
+   "scrip": "544477",
+   "score": 4.5,
+   "signals": "ORDER + DISCLOSE",
+   "verdict": "not researched - already published (card 2026-11-05); the order was handled through the updates sweep, where it turned out to be a Rs 12 cr RELATED-PARTY order announced by press release"
+  },
+  {
+   "name": "Sai Silks (Kalamandir) Ltd",
+   "scrip": "543989",
+   "score": 4.0,
+   "signals": "VOL + BREAKOUT",
+   "verdict": "watch-listed, not researched - the playbook researches a volume breakout only when a filing or result explains it, and none does"
+  },
+  {
+   "name": "Kopran Ltd",
+   "scrip": "524280",
+   "score": 4.0,
+   "signals": "VOL + BREAKOUT",
+   "verdict": "watch-listed, not researched - same rule, no explanatory filing"
+  },
+  {
+   "name": "ArisInfra Solutions Ltd",
+   "scrip": "544419",
+   "score": 4.0,
+   "signals": "VOL + BREAKOUT",
+   "verdict": "watch-listed, not researched - no explanatory filing; its order-wins flag (ratio 1.55) was already verified in orderwins_verified.json"
+  },
+  {
+   "name": "GHCL Textiles Ltd",
+   "scrip": "543918",
+   "score": 4.0,
+   "signals": "VOL + BREAKOUT",
+   "verdict": "watch-listed, not researched - no explanatory filing"
+  },
+  {
+   "name": "Pune E-Stock Broking, String Metaverse, Aerpace Industries, Exhicon Events, Skyways Air Services, Dhruva Capital, Yaashvi Jewellers, Recode Studios, Sunita Tools",
+   "scrip": "various",
+   "score": null,
+   "signals": "various",
+   "verdict": "not researched - all already published; their new filings were handled through the updates sweep"
+  }
+ ],
+ "signals_considered": {
+  "built": "2026-11-25 19:42 IST",
+  "strong_up": 36,
+  "strong_down": 5,
+  "spot_date": "2026-11-25 19:05 IST",
+  "india_built": "2026-11-25 19:42 IST",
+  "trade_month": "2026-09",
+  "wpi_month": "2026-04",
+  "stamp_verdict": "Spot and the India panel are today's. **The trade panel is two months old (September 2026) and the WPI panel is SEVEN MONTHS old (April 2026)** - far more than three trading days, and the reason the commodity lane produced nothing today.",
+  "why_nothing_published": "Of the 36 groups clearing the up-threshold, the top of the table is almost entirely WPI-driven: crude +10.70 (WPI Crude Petroleum 3m +85.6%), silver +10.16 (WPI Silver 12m +152.4%), sulphuric acid +6.97 (WPI Sulphuric Acid 1m +20.9%), carbon black +4.43, zinc +4.39, caustic soda +3.20, tea +3.10. Every one of those 1m/3m/12m changes ENDS IN APRIL 2026. A seven-month-old wholesale index is not a price that moved today, and publishing a company on it would be publishing on a stale number. Today's actual dated prints point the other way: Brent -20.2% on the month, copper -18.3%, naphtha -22.2%.\n\nThe one strong group resting on something other than WPI is **dye intermediates (+4.29)**, driven by DGCI&S customs data for September 2026 - H-acid export unit price +42.9% on the month, +25.0% on three months, +49.2% on the same month a year earlier. Two mapped small caps there are unpublished: AksharChem (Rs 271 cr; the map records H-acid capacity 1,200 t with FY26 output 785 t and vinyl sulphone 7,800 t from AR 2025-26) and Shree Pushkar Chemicals (Rs 1,667 cr). Neither was researched today: the government lane took the research budget, and two-month-old customs data is a weaker trigger than a Cabinet decision taken this afternoon. **Recorded as the first commodity candidate for the next run.**",
+  "mapping_problem_found": "The **paper and pulp** group (+3.08) is headlined by HS 4707 waste-paper IMPORT unit price +46.2% over three months and lists Andhra Paper and Seshasayee Paper as `benefit`. Waste paper is an INPUT to a recycled-paper mill, so a rising import price is a cost, not a gain. The direction of that mapping looks wrong and is logged for the owner - commodity_map.json was NOT edited, because the exposure was not read from either company's filings in this run."
+ },
+ "govt_considered": [
+  {
+   "release": "Cabinet approves development of the Second Container Terminal at Kamarajar Port Limited under PPP on DBFOT basis (PRID 2341174, CCEA, Rs 4,288.26 cr)",
+   "status": "KEPT by govt.py, theme shipbuilding",
+   "verdict": "Not researched. The gate matched on the word 'ports' in the title, but a DBFOT concession for one container terminal lands in the order book of whoever wins the concession, and the mapped small caps attached to the shipbuilding theme are Avantel (defence electronics), Seamec (offshore vessels), TCI (logistics), RPP Infra and Centum Electronics. None has a filing showing it builds container terminals, and the PIB body was unreadable from this sandbox, so no concessionaire name could be checked. Exposure unverified for every attached name - no card."
+  },
+  {
+   "release": "Cabinet approves Rs.11,000 crore Scheme for Enhancement of Construction and Infrastructure Equipment (CIE) Manufacturing Ecosystem (PRID 2341171, Ministry of Heavy Industries)",
+   "status": "UNMAPPED - no basket existed",
+   "verdict": "**RESEARCHED AND PUBLISHED (Indo Farm Equipment).** The largest genuinely new decision of the day. A new theme `construction_equipment` was added to theme_map.json with two names whose manufacturing was read from their own filings this run: Indo Farm (cranes 49.6% of FY26 consolidated revenue, Integrated AR 2025-26) and ACE as the larger reference producer (63% mobile-crane share, its own 12-Nov-2026 deck). The theme's `history` field says plainly that NO measured basket history exists for this programme and points the reader at the PM Surya Ghar line of the 144c table, because a sales-linked manufacturing incentive is not an order book."
+  },
+  {
+   "release": "Major Step by India Towards Self-Reliance in Urea Production; 6 New Plants Approved (PRID 2341442, Department of Fertilizers, Rs 54,000 cr)",
+   "status": "UNMAPPED",
+   "verdict": "Not researched today - the biggest number of the day and the most likely to become somebody's order book, which is exactly the pattern the 144c table says paid. Six greenfield urea plants at Rs 54,000 cr become orders for process-plant EPC, fabrication, piping, heat exchangers and compressors. A name search over universe.json and docs/search_index.json for fertiliser/urea/ammonia-plant builders in the Rs 200-7,500 cr band found no clean candidate (the only name matches were fertiliser PRODUCERS - Madras Fertilizers, Tuticorin Alkali, Khaitan Chemicals - who buy plants rather than build them). Dee Development Engineers, HLE Glascoat, Anup Engineering and KRN Heat Exchanger are the plausible suppliers but none was checked against its own filings, so NONE was added to theme_map.json. **Carried to the next run as the top government item.**"
+  },
+  {
+   "release": "Cabinet approves development of Greenfield Airport at Doloo, Silchar, Assam at an estimated cost of Rs 2,014 crore (PRID 2341175, CCEA)",
+   "status": "UNMAPPED",
+   "verdict": "Not researched. One airport at Rs 2,014 cr, awarded as a single EPC package, most likely to a large contractor. No theme added - a single project is not a programme, and the runbook's baskets are built from programmes with repeated order flow."
+  },
+  {
+   "release": "PLI Scheme for Automobile and Auto Component Industry Records Rs 4,385.28 Crore Incentive Disbursement in FY 2026-27 (PRID 2341207, Ministry of Heavy Industries)",
+   "status": "UNMAPPED",
+   "verdict": "Dropped - not a decision. This reports money already disbursed under an existing scheme; the gate's own definition requires a decision taken, and no new outlay was approved."
+  },
+  {
+   "release": "Cabinet approves continuation of Estates Management Scheme for Department of Posts, Rs 1,491 cr (PRID 2341181)",
+   "status": "UNMAPPED",
+   "verdict": "Dropped. Government housekeeping - managing the Department of Posts' own property estate. It does not become a listed company's order book in any way readable from the title, and the 'PLI' mandate flag that govt.py attached is a false positive from the gate's keyword list."
+  },
+  {
+   "release": "Cabinet approves continuation of Postal Operations Scheme, Rs 1,141 cr for the 16th Finance Commission cycle (PRID 2341179)",
+   "status": "UNMAPPED",
+   "verdict": "Dropped, same reason - operating expenditure of a government department, not procurement. Same false 'PLI' flag."
+  }
+ ],
+ "govt_lane": {
+  "pib_read_by": "scripts/ideas/govt.py on the GitHub Action runner at 18:57 IST; 47 releases scanned, 11 opened, 1 kept, dropped as: 28 no decision verb, 6 no theme, 4 too small, 6 duplicate, 2 noise.",
+  "pib_from_sandbox": "FAILED - pib.gov.in is not on this sandbox's allow-list (403 at the egress proxy for urllib, ENOTFOUND for WebFetch). The routine's own govt.py run therefore left govt.json untouched and marked 25-Nov and 24-Nov unread in govt_history.json; the committed govt.json from the Action at 18:57 IST is today's and was used.",
+  "limit_stated_on_the_card": "Because the release body could not be read, only the title, ministry, PRID and the Rs 11,000 cr outlay are primary on the published card. Scheme mechanics (13%-to-8% incentive on incremental sales, Rs 375 cr testing-facility VGF, FY27-FY34) come from news reports read this run, which disagree on the step-down direction and the end year, and the eligible-product list is unpublished. All of that is written into the card's Unknowns as its first item.",
+  "kept": 1,
+  "unmapped": 6,
+  "theme_added": "construction_equipment"
+ },
+ "commodity_lane": {
+  "builders_run": {
+   "spot.py": "rc=2 - EVERY source failed (westmetall.com and markets.businessinsider.com both refused at the proxy). spot.json and spot_series.json LEFT UNCHANGED; the committed rows are the Action's, stamped 2026-11-25 19:05 IST.",
+   "minsteel.py": "rc=1 - steel.gov.in refused at the proxy; no report listed; minsteel_mumbai.json left as it was. Latest Ministry of Steel month in the committed file is unchanged by this run.",
+   "india_spot.py": "rc=0 - ran to completion. Sources that worked from the sandbox: nmdc (2 rows), minsteel (3 rows from the committed file), moil (3 rows). Sources that FAILED and kept previous rows: metalbook, ibja, rubber, sugar, fuel, guidechem, cai, spices, te (Trading Economics parsed 0 of its list). 0 history rows appended. india_history.json.gz REBUILT: 277 series, 81,036 dated points.",
+   "wpi.py": "rc=1 - eaindustry.nic.in refused at the proxy; wpi.json.gz LEFT UNCHANGED. **This also failed on the Action runner**, so the WPI panel really is stuck at April 2026.",
+   "trade.py --latest": "rc=1 - tradestat.commerce.gov.in refused at the proxy and also blocked from the Action; docs/ideas/trade/** LEFT UNCHANGED at September 2026.",
+   "signals.py": "rc=0 - always works, reads the committed panels. 53 groups, 36 strong up, 5 strong down."
+  },
+  "published": 0,
+  "reason": "No commodity idea today. See signals_considered.why_nothing_published: the strong end of the table is driven by a WPI panel seven months stale, and the one group resting on fresher customs data (dye intermediates, September 2026) was deferred because the Cabinet decision outranked it on the routine's own lane ordering."
+ },
+ "orderbook_lane": {
+  "signals_built": "2026-11-25 19:15 IST (ideas-feeds Action) - 472 rows, 49 with yoy_pct >= 50",
+  "candidates": "Zero NEW candidates with check=false in the Rs 200-7,500 cr band and not already published: all 49 rows at yoy_pct >= 50 except one are already in orderbook_jumps.json, and the one new row (Krishca) is an NSE SME outside the BSE universe.",
+  "published": 0
+ },
+ "orderbook_jumps_table": {
+  "rows_checked_this_run": 1,
+  "rows_before": 59,
+  "rows_after": 60,
+  "pending": 0,
+  "detail": "Krishca Strapping Solutions (NSE:KRISHCA, ISIN INE0NR701018) was the only signals row at yoy_pct >= 50 not already in the ledger. BOTH documents behind it were opened in full from nsearchives.nseindia.com: the H1 FY27 investor presentation filed 25-Nov-2026 (Rs 300 cr+ order book) and the H1 FY26 earnings-call transcript filed 04-Dec-2025 (Rs 180 cr+). Verdict CONFIRMED, qualifies true, true YoY +66.7%, trigger = today's deck. Three caveats are written into the row's note: both figures are the INDUSTRIAL PACKAGING division's multi-year book and not the company-wide total (the deck attributes it explicitly on p12), both are stated as floors ('over 180 crore', '300 Cr+'), and it is a FIVE-YEAR book - 1.28x FY26 revenue of Rs 233.65 cr in total but only about 0.26x a year. Also noted: the same deck carries 'Orderbook 100 Cr+' on its Major Milestones slide against the 2025 marker, which orderbook.py read as a third reading; that is a past milestone, not a current figure.",
+  "why_no_card": "Not an idea candidate and no card was published from this table (the rule forbids it anyway unless the order-book lane picks the name on its own rules). Krishca's H1 FY27, from the same deck: revenue Rs 101.68 cr (+9.87%) but EBITDA Rs 11.61 cr (-22.58%), PAT Rs 3.43 cr (-43.56%), operating cash flow NEGATIVE Rs 42.99 cr, short-term borrowings up to Rs 64.63 cr from Rs 33.90 cr at FY26.",
+  "tracker": "ob_tracker.py re-run after the append; orderbook_tracker.json rebuilt 2026-11-25 20:02 IST, 40 priced rows, Krishca included."
+ },
+ "orderwins_lane": {
+  "signals_built": "2026-11-25 19:16 IST - 120 rows, 20 flagged at ratio >= 0.5",
+  "rows_checked_this_run": 0,
+  "detail": "All 20 flagged rows are already in orderwins_verified.json (42 rows). No new flag appeared today, so nothing needed opening and orderwins_verified.json is unchanged.",
+  "published": 0
+ },
+ "researched": [
+  {
+   "scrip": "544328",
+   "name": "Indo Farm Equipment Ltd",
+   "lane": "govt",
+   "verdict": "PUBLISHED",
+   "reason": "Rs 547.8 cr maker of 9-30 t hydraulic pick & carry cranes and 16-110 HP tractors at Baddi. Cranes were Rs 21,809.19 lakh of Rs 44,002.05 lakh of FY26 consolidated revenue (49.6%) per its own Integrated Annual Report, so roughly half the company is construction equipment - the subject of today's Rs 11,000 cr Cabinet scheme. The publishable fact is not the scheme, though: the FY26 annual report says the existing crane plant ran at ~80% utilisation and that 'capacity, not demand, has been the binding constraint', and Infomerics' 18-Sep-2026 rating UPGRADE (IVR A/Stable, IVR A1) documents a new Bhud plant adding 3,600 cranes a year for Rs 71.13 cr of project cost, operational in H2 FY27. At the Rs 21.3 lakh per crane derived from the segment accounts, management's own FY28 ramp of 1,500-1,800 units is Rs 320-384 cr of incremental revenue against a company that did Rs 440 cr in FY26 - from Rs 71 cr of capex. Promoter group has bought every quarter and filed on 23-Nov-2026 that it reached 71.25%, two days before the Cabinet decision and near the 52-week low. Published at MEDIUM confidence with the negatives stated at equal length: the capex is already past its prospectus deadline of March 2026 with Rs 38.60 cr of Rs 70.07 cr unspent at 30-Sep-2026 (Monitoring Agency Report); crane dealers have been stuck at 25 for three quarters against the 50 needed; FY27 guidance of 20-25% is running at +12.4% at the half-year; ROE is 4.15%; the operating cycle is 240 days; and ACE - 63% of the mobile-crane market by its own 12-Nov-2026 deck - grew Q2 volumes 2,348 to 2,812 at a 19.31% margin while Indo Farm's crane revenue went sideways at 12.63%. Median daily turnover is Rs 11.0 lakh, below the playbook's own Rs 25 lakh floor, and that is in the red flags. **Whether pick-and-carry cranes are even eligible for the scheme is unknown** - the guidelines are unpublished and the news-reported product list names TBMs, excavators, ship-to-shore cranes and off-highway trucks, not pick-and-carry cranes. No part of the earnings table assumes the incentive."
+  }
+ ],
+ "published": [
+  "2026-11-25-INDOFARM"
+ ],
+ "x_checked": [
+  {
+   "name": "Indo Farm Equipment Ltd",
+   "posts_found": 6,
+   "result": "WebSearch on x.com and twitter.com for the company name, INDOFARM, pick-and-carry cranes, tower cranes and Q2 FY27 returned six items: one substantive fundamental post from Sep-2025, two from the Jan-2025 IPO, one Nov-2026 trading-group promotion and the two company handles. NO post on today's Cabinet scheme and none on Q2 FY27 - indexing lags a day or two, so that is not evidence of silence. **cdn.syndication.twimg.com is refused at this sandbox's egress proxy (measured), so no post body was read**; the card's social section says so and works from search snippets only. Verified against primary documents: cranes 9-30 t (presentation p3), IPO price Rs 215 (Monitoring Agency Report), crane revenue share ~45-58% (AR FY26 gives 49.6%). **Contradiction flagged on the card:** a post lists an FY27 revenue target of Rs 750-800 cr; H1 FY27 standalone revenue was Rs 213.89 cr and management's actual guidance is 20-25% growth, about Rs 528-550 cr. The post's targets are not management's and are recorded as unverified."
+  },
+  {
+   "name": "Krishca Strapping Solutions Ltd (order-book jumps check, not an idea)",
+   "posts_found": 0,
+   "result": "No X sweep run. The row was checked for the confirmed-jumps ledger only, and the playbook's sweeps apply to names researched for publication; both primary documents were read in full instead. forum.valuepickr.com and cdn.syndication.twimg.com are blocked from this sandbox in any case."
+  }
+ ],
+ "valuepickr_checked": [
+  {
+   "name": "Indo Farm Equipment Ltd",
+   "threads_found": 3,
+   "result": "**forum.valuepickr.com does not resolve from this sandbox** - curl returned 000 and WebFetch of search.json returned ENOTFOUND, both measured this run - so the Discourse search API and raw thread text could not be read and no post body was quoted. A domain-restricted WebSearch found no dedicated Indo Farm thread, only three mentions: a portfolio thread, an old Action Construction Equipment research note naming Indo Farm among pick-and-carry crane players, and a smallcap screening thread. Post counts and dates are recorded as unknown rather than guessed. One forum claim VERIFIED against primary documents: the new facility at 3,600 cranes a year, confirmed by both the Infomerics release and the Q1 FY27 call. One NOT verified: combines and rotavators as products - the 17-Nov-2026 presentation's product portfolio lists only cranes and tractors. The card's valuepickr section states the block explicitly so 'could not read' is not confused with 'nothing found'."
+  }
+ ],
+ "updates_sweep": {
+  "queue_built": "2026-11-25 19:28 IST (ideas-feeds GitHub Action) - today's",
+  "queue_used": "the committed queue",
+  "why": "updates.py was run in this sandbox and began degrading every idea's status to SUSPECT because www.nseindia.com answers 403 here (it did NOT exit 3). It was stopped before it could write, and the Action's queue - built 40 minutes earlier from a runner that reaches NSE, status `complete` on all 92 ideas - was restored byte-for-byte from a copy taken before the run. docs/ideas/updates_queue.json is therefore the Action's file, unmodified.",
+  "second_reader_misses": 0,
+  "second_reader_problems": [],
+  "statuses_not_complete": 0,
+  "ideas_swept": 92,
+  "ideas_with_new_nonroutine_filings": 14,
+  "filings_opened": 17,
+  "updates_added": 16,
+  "guidance_changed": 3,
+  "per_idea": [
+   {
+    "id": "2026-11-05-HILINFRA",
+    "filings_read": 3,
+    "updates_added": 1,
+    "tone": "bad",
+    "note": "Rs 12.00 cr work order from Sacham Highway Real Estates, announced by press release. The Reg 30 annexure answers YES to both 'promoter/promoter group have any interest in the entity that awarded the order' and 'would fall within related party transactions'. About 1.4% of the FY27 turnover target, over two years. The first disclosure (08:35 IST) was superseded at 10:15 IST after 'certain inadvertent errors were noticed'. Guidance unchanged."
+   },
+   {
+    "id": "2026-09-25-VASCONEQ",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "Rs 195.00 cr Letter of Intent from Kanakia Transparent Developers for shell-and-core works at Mohan Society Redevelopment, Borivali; 24 months, BOQ basis. Sized against sales from BSE detailed results read this run: trailing four quarters Rs 905.03 cr, so 21.5% of a year (20.6% of FY26's Rs 948.53 cr). Guidance unchanged."
+   },
+   {
+    "id": "2026-10-29-GKENERGY",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "bad",
+    "note": "Company-filed report of a violation of its own insider-trading code by a Designated Person in the PROMOTER GROUP (Ashok P. Rathi): 'Trading Without Pre-Clearance, Contra trade, and Non-Disclosure of Transaction to the Company on Time'. Matched same-day buys and sells of 3,715 (09-Nov), 6,298 (11-Nov) and 6,298 (12-Nov) shares. Action: a warning letter; first instance; no amount collected. Governance red flag independent of the operating numbers. Guidance unchanged."
+   },
+   {
+    "id": "2026-09-23-BHAGYANGR",
+    "filings_read": 1,
+    "updates_added": 2,
+    "tone": "neutral",
+    "note": "Transcript of TIERAMET's first post-restructuring investor call (20-Nov-2026), disseminated by Bhagyanagar. The entire copper business - this card's whole thesis - now sits in Tieramet; one Tieramet share per Bhagyanagar share as of 08-Oct-2026, in-principle approval from BSE and NSE, SEBI awaited, listing hoped for by Dec-2026. Q2 FY27: record Rs 1,000 cr turnover, EBITDA Rs 52 cr at 5.08%, PAT Rs 30.5 cr, 7,300 t, Rs 72/kg EBITDA; ICRA upgrade to A-. MD on the copper fall: 85% of exposure hedged on MCX, 'it will be very difficult to reach 1,000 crores turnover at least in the next quarter', margin 4.5-5% through Q3. **GUIDANCE REWRITTEN** to the Tieramet numbers, with the pre-demerger volume/realisation guidance left on the record as not reaffirmed."
+   },
+   {
+    "id": "2026-11-04-MARKOLINES",
+    "filings_read": 1,
+    "updates_added": 2,
+    "tone": "neutral",
+    "note": "Q2/H1 FY27 call transcript (call 19-Nov-2026). Results verdict AVERAGE: H1 revenue Rs 161 cr vs Rs 150 cr (+7.64%) but PAT Rs 9.31 cr vs Rs 7.88 cr (+18.15%); Q2 margin 13.18% vs 11.72%. Order book Rs 624-625 cr unexecuted at 30-Sep-2026 and 'close to Rs 800 crores' at the call, about 2.3x FY26 revenue; pipeline ~Rs 2,000 cr. **GUIDANCE CHANGED**: the card's 'at least 30% for FY27' is replaced by management's new framing of 25-30% a year for three years - and the track-record line now states that H1 came in at +7.64%, so H2 needs ~1.7x H1 to reach even 25%."
+   },
+   {
+    "id": "2026-11-20-UHTL",
+    "filings_read": 2,
+    "updates_added": 2,
+    "tone": "neutral",
+    "note": "Rs 48.5 lakh oil-cooler order (about 1% of a year's sales) and the H1 FY27 call transcript (19-Nov-2026). **GUIDANCE UPDATED**: FY27 30-35% reaffirmed, and FY28 now quantified - at least Rs 50 cr from the Vertiv data-centre CDU vertical, Rs 25-30 cr from Hitachi, EBITDA +2-3 points, facilities sufficient for Rs 300-400 cr. Caveat management accepted on the call: the Hitachi validation trial is taking longer than expected, and it could not state capex spent or committed beyond 'around INR 5 crores or INR 6 crores'."
+   },
+   {
+    "id": "2026-11-19-SUSAN",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Board meeting 27-Nov-2026 to consider raising funds by issuing CONVERTIBLE WARRANTS on a preferential basis; trading window closed. Amount, price, terms, allottees and use of funds all unstated. Six days after the card was published. The outcome and subscriber list are flagged to be read on 27-Nov - a preferential issue below market and warrants to related parties are both on this card's red-flag checklist."
+   },
+   {
+    "id": "2026-09-28-RECODE",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "New FOFO store in Jammu: network 25 to 26 outlets, total exclusive touchpoints 34 to 35 (26 FOFO + 2 COCO + 7 kiosks). One store, ~3% on the count; does not move the 'at least 50% growth in FY27' promise, which needs H2 of about Rs 74.1 cr against H1's Rs 45.82 cr. Guidance unchanged."
+   },
+   {
+    "id": "2026-09-22-SUGSLLOYD",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "Form C under Reg 7(2)(b): the PROMOTER, Santosh Kumar Shah, discloses a PURCHASE of equity shares. The attachment is a poor scan - 181,500 is the figure in the quantity cell but the columns for held-before / acquired / held-after cannot be separated, and no price or trade date is legible. Recorded as unknown rather than guessed, to be confirmed against the December-quarter shareholding pattern. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-13-VRAJ",
+    "filings_read": 0,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "Interim dividend of Re 0.60 per share, ex-date and record date both 25-Nov-2026, from BSE's corporate-action record; no announcement document accompanies it in the feed, so the declaration date, total outgo and payment date are not stated. 0.5% on the card's call close. Notable only because this company holds no call and files no presentation. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-14-MOREPENLAB",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Q2 FY27 analyst call held 25-Nov-2026; only the audio-recording intimation is filed, hosted on the company website. No transcript, no presentation, nothing quotable from a primary document yet. Logged so the card shows the call happened; the reactor-capacity guidance (614 KL done, 800 KL next) is to be re-read when the transcript is filed. Guidance unchanged."
+   },
+   {
+    "id": "2026-09-28-SHREEREF",
+    "filings_read": 2,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Two investor-conference intimations, both opened (BSE served them from AttachLive after AttachHis 404s): Antique's 5th Aerospace & Defence Conference on 30-Nov-2026 and the company's IR firm Kaptify's conference on 01-Dec-2026. No company data in either; both state no UPSI. Guidance unchanged."
+   },
+   {
+    "id": "2026-11-19-KPGREEN",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Analyst and institutional-investor SITE VISIT to the Matar, Gujarat plant on 30-Nov-2026; discussions confined to public-domain information. Noted because Matar is the capacity behind this card's FY27 guidance of Rs 1,700-1,800 cr, and a plant visit is on the card's own 'verify on the ground' list. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-05-ORIANA",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Audio and video recordings of the analyst/investor meet held 23-Nov-2026, hosted on the company website. No transcript, so nothing verified from it. The June-2026 guidance stands until the transcript is filed. Guidance unchanged."
+   }
+  ]
+ },
+ "scorecard": {
+  "built_by": "scripts/ideas/score.py, run after the card was appended",
+  "ideas_total": 93,
+  "published_today": 1,
+  "note": "See docs/ideas/track.json for the measured scorecard; score.py prices every open card from BSE bhavcopies (NSE UDiFF for NSE-only names)."
+ },
+ "note": "A heavy government day - the first in weeks where the PIB gate had real material - and one idea published from it.\n\n**Lane one did the work.** 47 PIB releases, a Cabinet meeting, and seven decisions carrying a real outlay. The gate kept one (Kamarajar Port container terminal, Rs 4,288 cr) and the kept one was NOT the interesting one: its mapped small caps are defence-electronics and offshore-vessel companies with no filing showing they build container terminals, so exposure is unverified for every attached name and no card came from it. The interesting decisions were both UNMAPPED - a Rs 11,000 cr CIE manufacturing scheme and six new urea plants at Rs 54,000 cr. The first became today's idea and a new theme in theme_map.json; the second is carried to the next run because no supplier could be verified from its own filings today.\n\n**The honest limit on the published card.** pib.gov.in is not on this sandbox's allow-list, so the release BODY was never read in this run. The title, ministry, PRID and the Rs 11,000 cr outlay come from the repository's own PIB reader on the Action runner at 18:57 IST; the scheme's mechanics come from news reports that disagree with each other; and the eligible-product list does not exist publicly yet, so whether pick-and-carry cranes even qualify is the card's first Unknown. No part of the card's earnings arithmetic assumes the incentive. What IS primary is the company: half its revenue is cranes (its own annual report), its crane plant is capacity-constrained at 80% utilisation (same document), and it is commissioning 3,600 cranes a year of new capacity for Rs 71.13 cr (its rating agency's press release). That is the idea; the scheme is why the name surfaced today.\n\n**Lane two produced nothing, and the reason is a broken feed, not a quiet market.** 36 groups clear the up-threshold but the whole top of the table is computed off a WPI panel stuck at **April 2026** - seven months stale, because eaindustry.nic.in failed on the GitHub runner as well as here. A 1-month change ending in April is not a price that moved. Today's dated prints run the other way (Brent -20.2% on the month, copper -18.3%). The one group standing on fresher data is dye intermediates, off September customs numbers, with AksharChem and Shree Pushkar unpublished - first candidate for the next run. One mapping error found and logged for the owner, not edited: the paper group lists paper mills as beneficiaries of a rising waste-paper import price, which is their input cost.\n\n**Lane three was thin.** 11 candidates, and the only hard trigger belonged to a name already published - whose 'order win' turned out, on reading the annexure, to be a Rs 12 cr related-party order put out under a press-release headline. The rest were volume breakouts with no filing to explain them, which the playbook watch-lists rather than researches.\n\n**The sweep found more than the lanes did.** 92 cards swept, 17 filings opened, 16 updates written, three guidance lines rewritten. Two red flags worth the reader's attention: a promoter-group member at GK Energy reported for contra trades without pre-clearance, and Highway Infrastructure's related-party order. One structural change: Bhagyanagar's entire copper business has been demerged into Tieramet, whose MD told his first call that the record Rs 1,000 cr quarter will not repeat next quarter because copper has fallen - the card's own mechanism, running in reverse.",
+ "data_problems": [
+  "**WPI panel seven months stale (April 2026).** wpi.py failed here (eaindustry.nic.in refused at the proxy) AND on the ideas-feeds Action runner, where it is the only failed step. This is a genuinely missing feed, not a sandbox block, and it is the single reason the commodity lane published nothing: 36 of today's strong signals are computed off April-2026 index levels. Needs the owner's attention - the host has now failed on the runner too.",
+  "**Trade panel two months stale (September 2026).** tradestat.commerce.gov.in refused at the proxy here and is also on the Action's hosts_blocked list. docs/ideas/trade/** unchanged. Monthly data by nature, but two months behind.",
+  "**pib.gov.in unreachable from the sandbox**, so the routine's own govt.py could not read 25-Nov or 24-Nov and left govt.json untouched; both days are marked unread in govt_history.json for the next run to back-fill. The Action's 18:57 IST read was used. The practical cost: the body of the Rs 11,000 cr CIE release and of the Rs 54,000 cr urea release could not be read, so neither scheme's design is primary in this run.",
+  "**forum.valuepickr.com unreachable** (curl 000; WebFetch ENOTFOUND). The ValuePickr sweep ran on WebSearch snippets only - no thread was read, no post body quoted, and post counts and dates are recorded as unknown. This is 'could not read the forum', not 'nothing on the forum'.",
+  "**cdn.syndication.twimg.com unreachable** (curl 000). The X sweep ran on WebSearch result snippets only; no post body was read. Searches did run, so 'no post found on the Cabinet scheme' is a real search result - but same-day indexing lags, so it is not evidence of silence.",
+  "**nsearchives.nseindia.in is refused at the proxy but nsearchives.nseindia.com is allowed.** Substituting the .com host served every NSE document this run needed (Krishca's two filings, UHTL's order and transcript, Oriana's recording intimation). Worth noting in case the owner wants updates.py to try the .com host when .in fails.",
+  "**updates.py cannot run usefully from this sandbox.** www.nseindia.com answers 403, and updates.py does NOT exit 3 on that - it carries on and marks each idea's status SUSPECT, which would have replaced today's complete queue with a degraded one. It was stopped before writing and the Action's queue restored from a pre-run copy. Either the exit-3 path has stopped triggering or it does not cover this failure mode; flagged for the owner, scripts untouched per the run's instructions.",
+  "**scan.py's read of today is capped**: 556 rows against BSE's own count of 557 for 25-Nov-2026, and read at 19:44 IST, so the counts are a floor and evening filings are missing. Not treated as the day's complete filing list anywhere in this run.",
+  "**spot.py fetched nothing** (0 commodities; westmetall.com and markets.businessinsider.com both refused). spot.json and spot_series.json were left unchanged, so the spot rows in signals.json are the Action's, stamped 19:05 IST today. Correct behaviour, but worth stating that no spot price in this run was fetched by the routine itself.",
+  "**Ten of twelve india_spot sources failed from the sandbox** (metalbook, ibja, rubber, sugar, fuel, guidechem, cai, spices, te, plus minsteel via steel.gov.in); nmdc, minsteel-from-file and moil worked. All failures kept their previous rows and india_history.json.gz was rebuilt (277 series, 81,036 points), so no data was lost.",
+  "**commodity_map.json direction looks wrong for the paper group**: HS 4707 waste-paper IMPORT unit price rising is logged as a `benefit` for Andhra Paper and Seshasayee Paper, but waste paper is their raw material. NOT edited - neither company's filings were read this run, and the rule is to add or change a mapping only on a document read. Logged for the owner.",
+  "**Revathi Equipment India (RVTH, Rs 209 cr) was found by the construction-equipment name search and deliberately NOT added to theme_map.json**: its BSE filings of 29-Sep, 06-Oct and 13-Oct-2026 are Corporate Insolvency Resolution Process updates. A CIRP name needs careful reading before it joins any basket, and it got none today."
+ ]
+}

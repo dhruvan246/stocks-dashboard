@@ -1,5 +1,5 @@
 {
- "built": "2026-11-24 20:07 IST",
+ "built": "2026-11-25",
  "how": "Each row checked against the company's own filings (NSE/BSE announcements and the PDFs). trigger_* = the filing that started the 50%+ jump that holds today; first_trigger_* = an earlier 50%+ jump that later faded (shown as a second return). faded = qualified once, below 50% today. User rules 2026-10-11: company's stated book counts; show both start dates; keep faded jumps, marked. Rows are one per company (ISIN); key = the BSE code where the company has one, other codes in alt_keys (2026-10-13: KNR, Goldiam and Jash had been checked twice under their BSE and NSE codes).",
  "rows": [
   {
@@ -1756,6 +1756,34 @@
    "checked_on": "2026-11-24",
    "faded": false,
    "alt_keys": []
+  },
+  {
+   "key": "NSE:KRISHCA",
+   "name": "Krishca Strapping Solutions Ltd",
+   "nse": "KRISHCA",
+   "bse": "",
+   "isin": "INE0NR701018",
+   "latest_value_cr": 300.0,
+   "latest_as_on": "2026-11-25",
+   "latest_doc": "https://nsearchives.nseindia.com/corporate/KSSLIPO_25112026144705_KSSLH1PRESENTATION2026.pdf",
+   "latest_doc_title": "H1 FY27 Investor Presentation, filed NSE 25-Nov-2026 - p5 Key Facts & Figures '300 Cr+ Order Book (Over 5 Years)' and separately 'Rs 75+ Cr Packaging Order Book (FY27)'; p12 attributes the same 300 Cr+ to the Industrial Packaging - Packaging Contract division with '15 Contracts across India'",
+   "year_ago_value_cr": 180.0,
+   "year_ago_as_on": "2025-12-04",
+   "year_ago_doc": "https://nsearchives.nseindia.com/corporate/KSSLIPO_04122025125250_KSSLEarningsCallTranscriptH12025-26.pdf",
+   "year_ago_doc_title": "H1 FY26 earnings call transcript (call 28-Nov-2025, filed NSE 04-Dec-2025) - MD Balamanikandan, inside the packaging-contract paragraph: 'Our current order book is over 180 crore with the execution timelines between 1 to 5 years'",
+   "true_yoy_pct": 66.7,
+   "qualifies": true,
+   "trigger_filed": "2026-11-25",
+   "trigger_doc": "https://nsearchives.nseindia.com/corporate/KSSLIPO_25112026144705_KSSLH1PRESENTATION2026.pdf",
+   "trigger_doc_title": "H1 FY27 Investor Presentation (NSE, 25-Nov-2026)",
+   "trigger_as_on": "2026-11-25",
+   "trigger_book_cr": 300.0,
+   "trigger_prev_cr": 180.0,
+   "trigger_prev_as_on": "2025-12-04",
+   "trigger_yoy_pct": 66.7,
+   "verdict": "CONFIRMED",
+   "note": "Both figures read in full this run and they ARE the same definition - the industrial-packaging contract division's multi-year order book, not the company-wide total. The Rs 180 cr+ sentence sits inside the packaging-contract paragraph of the H1 FY26 call and is followed by 'For the next financial year, we have a confirmed packing contract order worth 75 crore'; the H1 FY27 deck makes the attribution explicit on p12. CAVEATS a reader needs: (a) both are stated as floors ('over 180 crore', '300 Cr+'), so +66.7% is a floor-to-floor change; (b) it is a 5-YEAR book - against FY26 revenue of Rs 233.65 cr it is 1.28x of one year's sales but only ~0.26x a year; (c) the deck's separate 'Rs 75+ Cr Packaging Order Book (FY27)' is the near-term piece, unchanged from the 'confirmed packing contract order worth 75 crore' stated a year earlier. The same deck also carries 'Orderbook 100 Cr+' on its Major Milestones slide (p6) against the 2025 marker - that is a past milestone, not a current figure, and orderbook.py also picked it up as a reading. No filing between Dec-2025 and this deck stated an order book, so this deck is the first filing showing a 50%+ higher figure and is the trigger. NOT an idea candidate: H1 FY27 revenue Rs 101.68 cr (+9.87%) but EBITDA Rs 11.61 cr (-22.58%), PAT Rs 3.43 cr (-43.56%), operating cash flow negative Rs 42.99 cr, short-term borrowings up to Rs 64.63 cr from Rs 33.90 cr at FY26 (same deck, pp26/29/30). NSE SME, not in the BSE 200-2,000 cr universe.",
+   "checked_on": "2026-11-25"
   }
  ],
  "note": "Goldiam International re-checked 2026-11-24 after the company filed a newer order book: FADED (Rs 225 cr as on 30-Sep-2026 vs Rs 200 cr as on 30-Sep-2025 = +12.5%; the Jun-26 trigger of +60.7% is kept as the historical trigger). 2 rows added on 2026-11-24 (routine step 4a-ii), both ends of each read from the company's own filings in this run: GRSE (BSE 542011) CONFIRMED, qualifies true, true YoY +124.2% (Rs 44,846 cr at the 19-Nov-2026 call vs Rs 20,000 cr at the 14-Nov-2025 call) - the whole jump is the five-Next-Generation-Corvette contract signed 02-Nov-2026 at Rs 32,000 cr, and on the strict 30-Sep quarter-end basis the book FELL 35.8% (Rs 12,977.93 cr vs Rs 20,205.56 cr); trigger 24-Nov-2026, the first filing to state the post-NGC book. TECHERA (NSE Emerge) NOT A JUMP, qualifies false: both ends of the screen's +200% were misreads (latest Rs 45 cr was an analyst's question about 31-Mar-2026, year-ago Rs 15 cr was a conditional contract on hold); the company's own books are Rs 55 cr (18-Nov-2026) vs Rs 40 cr (11-Nov-2025) = +37.5%, borderline because the MD also said 'nearly Rs. 60 crores' in the same call (+50.0% exactly). No other signals row with yoy_pct >= 50 was new this run. Previous note: 1 row added on 2026-11-20 (routine step 4a-ii), both ends read from the company's own filings in that run: NEETUYOSHI CORRECTED but QUALIFIES (+52.4% on a 31-Mar-2025 to 31-Mar-2026 basis; the screen's year-ago Rs 100 cr was a milestone slide, the Nov-2025 deck's own stated book was Rs 105+ cr, and the Rs 160 cr is the FY26 annual report figure, not a 30-Sep-2026 reading - trigger 09-Sep-2026). No other signals row with yoy_pct >= 50 was new this run; the ones carrying a later as-on date with an unchanged stated figure were not re-read. Still pending a re-read after a genuinely newer book: ASTRAMICRO, DBL, EIEL, JASH. Previous note: 2 rows added on 2026-11-19 (routine step 4a-ii), both ends of each read from the company's own filings in that run: STEELCAS CORRECTED (+26.1%, does not qualify - the screen's Rs 3,000 cr was an analyst naming Sona BLW and Ramkrishna Forgings; Steelcast's own executable book is Rs 145 cr) and KP Green Engineering CORRECTED but QUALIFIES (+311.3% on a 30-Sep-2025 to 30-Sep-2026 basis; the screen's year-ago Rs 1,100 cr was as on the 14-Nov-2025 call date, not 30-Sep-2025; trigger 08-May-2026). Not re-read this run although the screen now carries a later as-on date, because the stated figure is unchanged: PARTH, SUPREMEPWR, APOLLO (Apollo Micro), FABTECH, BRGOYAL, TECHD. Still pending a re-read after a genuinely newer book: ASTRAMICRO (Jun-26 Rs 2,849 cr -> Sep-26 Rs 4,708 cr), DBL (Jun-26 Rs 27,691 cr -> Sep-26 Rs 33,081/34,000 cr), EIEL (Jun-26 -> 12-Nov-26 Rs 6,778 cr), JASH (Aug-26 Rs 932 cr -> Oct-26 Rs 944 cr). 2 rows added on 2026-11-12 (routine step 4a-ii), both read from the companies own documents: PATILAUTOM NOT A JUMP (-7.1%; the screen read the deck Proposals-submitted-to-customers box instead of the order-book box beside it) and RATNAMANI CORRECTED (+30.0% standalone; the screen compared the RFSS subsidiary Rs 3,000 cr book with the parent standalone Rs 2,000 cr). Previous note: 3 rows re-checked and 4 added on 2026-11-09. Re-checked after the companies filed newer order books: CEIGALL (30-Sep-2026 vs 30-Sep-2025, +80.0%), SOUTHWEST (+86.1%), NUCLEUS (+96.2%). Added after orderbook.py --refresh surfaced them: DATAPATTNS CONFIRMED +136.3%, ZENTEC CORRECTED +103.8% (the screen read a waterfall's opening balance as its closing one), SURYAROSNI CORRECTED +60.0% (the screen compared a segment with the company total), BEL NOT A JUMP (-7.7%; the screen's year-ago was the LRSAM programme's pending book from an analyst question). Both ends of every row were read from the company's own documents in that run."
