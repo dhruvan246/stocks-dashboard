@@ -22,6 +22,9 @@ Rules (each one measured, none guessed):
   * Never shrink: if Yahoo answers with fewer than 98% of the bars the existing file has, or the fetch fails,
     the existing file is kept as it is.
 
+Twelve codes Yahoo does not answer for (MERVAL, WIG20, BUX, MOEX, SET, PSEI, KSE100, CSEALL, TASI, EGX30, DFM, QSI) are
+published by build_world_tv.py from a by-hand TradingView pull (runbook §250b); this script keeps those files as they are.
+
 Runs every evening in .github/workflows/refresh-macro.yml (after fetch_macro.py). stdlib only; shares fetch_macro.py's HTTP helper.
 Usage: python3 scripts/fetch_world_indices.py [--out DIR] [--only CODE,CODE]
 """

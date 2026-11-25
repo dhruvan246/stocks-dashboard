@@ -31299,3 +31299,33 @@ User: "add the remaining 15 country indexes from another source". Probed with th
   iss.moex.com fails certificate verification (never disable it); PSX 462; SET 403; CSE 405; GPW Benchmark closed the
   connection. Still missing: Argentina, Chile, Poland, Hungary, Russia, Thailand, Philippines, Pakistan, Sri Lanka,
   Saudi Arabia, Egypt, Dubai, Qatar — the only route seen is a by-hand pull through a browser (like §249), not refreshed nightly.
+
+## §250b — World indices read by hand from TradingView: 12 more countries (2026-11-25)
+
+User (after the §250a question): "Yes, pull them".
+
+- **What is published** (`scripts/build_world_tv.py` → `docs/world/<CODE>.json`, index entry carries `"manual": true`):
+  MERVAL `SP:IMV` (2004-09-17 → 2026-10-16 — TradingView's own series stops there), WIG20 `GPW:WIG20` (1994-04-18),
+  BUX `BET:BUX` (2002-05-29), MOEX `RUS:IRUS` (1997-09-22), SET `SET:SET` (1982-01-04), PSEI `PSE:PSEI` (1987-01-02),
+  KSE100 `PSX:KSE100` (2013-01-02), CSEALL `CSELK:ASI` (2012-02-23), TASI `TADAWUL:TASI` (1986-04-12),
+  EGX30 `EGX:EGX30` (1998-01-01), DFM `DFM:DFMGI` (2005-01-02), QSI `QSE:GNRI` (1999-01-03).
+- **Single source, not cross-checked.** Every figure is TradingView's. MOEX is the series TradingView names
+  "Russia Index" (`RUS:IRUS`; `IMOEX` finds nothing there); it starts at 100 on 1997-09-22. It was NOT compared with
+  the exchange (iss.moex.com fails its certificate check in Python and in Chrome — not bypassed).
+- **Chile is still missing.** TradingView has no S&P IPSA, only `BCS:MXIPSAPC` (MSCI IPSA, 60 daily bars) — a
+  different index and under the 250-bar floor.
+- **No CI refresh.** The page legend says "not refreshed automatically". To top up, repeat the pull and re-run the
+  builder. `fetch_world_indices.py` still asks Yahoo for these codes every night and leaves the file alone unless
+  Yahoo answers with ≥98% as many daily bars (then the entry becomes a normal nightly one).
+- **The pull (user's logged-in Chrome, their chart layout — record its symbol and interval first, restore after):**
+  `TradingViewApi.activeChart().setSymbol(sym)` + `setResolution('1D')`; then on
+  `activeChart()._chartWidget.model().mainSeries()` call `requestMoreData(5000)` until `endOfData()` is true and read
+  `bars().each((i,v)=>…)` (`v` = time, open, high, low, close). On the Basic plan `exportData()` answers "Data export
+  is not supported" and `setVisibleRange()` "Not implemented". The bar's date = its time in `symbolInfo().timezone`.
+  Hand-off: park each series in `localStorage`, open `https://www.tradingview.com/robots.txt` (same origin, light),
+  navigate to `http://127.0.0.1:8849/h#TV_<KEY>=<data>` (`_recv2.py`, copied to `~/stocks-backups/world_tv/`), then
+  remove the parked keys. ~13 s a symbol.
+- **Rules in the builder:** a bar dated the pull's own exchange-local day is dropped unless the pull was at or after
+  20:00 local; a bar with open = high = low = close, or whose high/low do not contain open and close, keeps its close
+  only (QSI 3,036 such days, SET 2,491, MOEX 1,287 — Candles start later than Line for those, the page says so).
+- **Licence note:** these are TradingView-delivered exchange data republished on a public page; the user asked for it.
