@@ -1,0 +1,60 @@
+name: Refresh NSE sector and theme index members
+
+# Current members of the NSE sector / theme indices that are NOT in the shared 28-index membership pipeline
+# (Financial Services, India Defence, Power, Chemicals, Commodities ...). scripts/fetch_nse_extra_indices.py reads
+# NSE's own constituent file for each and writes docs/nse_extra_indices/members.json, read by docs/sectors.html
+# (Indices level). Current lists only, not point-in-time. A failed or shrunken fetch keeps the previous list.
+
+on:
+  # SCHEDULE — started by scripts/cron_dispatch.py (runbook §217), not GitHub cron. UTC.
+  # dispatch-cron: "30 2 * * 1-5"  # 08:00 IST on weekdays — before the market opens
+  repository_dispatch:
+    types: [tick-refresh-nse-extra-indices]
+  workflow_dispatch: {}
+  push:
+    paths:
+      - "scripts/fetch_nse_extra_indices.py"
+      - ".github/workflows/refresh-nse-extra-indices.yml"
+
+permissions:
+  contents: write
+  actions: write   # dispatch pages.yml after a bot commit
+
+concurrency:
+  group: refresh-nse-extra-indices
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - name: Fetch the current member lists
+        run: python3 -X utf8 scripts/fetch_nse_extra_indices.py
+      - name: Commit (only if changed)
+        id: commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain docs/nse_extra_indices)" ]; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          cp docs/nse_extra_indices/members.json /tmp/members.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p docs/nse_extra_indices && cp /tmp/members.json docs/nse_extra_indices/members.json
+            git add docs/nse_extra_indices/members.json
+            if git diff --cached --quiet; then echo "unchanged"; echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+            git commit -m "NSE sector and theme index members refresh $(TZ=Asia/Kolkata date +'%Y-%m-%d %H:%M IST')"
+            if git push origin HEAD:main; then echo "changed=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+            echo "push #$attempt rejected; retry"; sleep $((attempt*3))
+          done
+          echo "push failed"; exit 1
+      - name: Publish to Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml || echo "(pages dispatch failed — next push publishes)"

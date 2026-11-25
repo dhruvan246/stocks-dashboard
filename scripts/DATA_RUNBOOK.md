@@ -31204,3 +31204,27 @@ visible, and when the tab comes back. Label becomes "● Live HH:MM" (IST, Worke
 computed against the Worker's own `prevClose`. Worker unreachable / no hit → the strip stays on
 "Last close" (tested by blocking the Worker). Yahoo quotes can lag up to ~15 min, and a closed market
 shows its last close — the tooltip says so.
+
+## §SECTORS-TRACKER — sectors.html: live prices, Rewind, and 53 NSE sector/theme indices outside the 28 (2026-11-25, user: "live data i want", "add all missing", "rewind button")
+
+**Live.** `docs/sectors.html` opens on Today. It reads the Worker's `?nse=traded` feed (§36) plus the `live-bse` file at boot
+and every 60 s in market hours (tab visible). A live price is appended as ONE bar on the stock's series (`putLive`), so every
+return, ranking and RS reads it through `priceAt()`. A real end-of-day bar is never overwritten; when the EOD file already has
+the feed's date nothing is applied and the header says "closing prices". If our last close differs from the feed's previous
+close, the feed's previous close fills one bar on the previous weekday (measured 2026-11-25: 3,018 of 3,022 equal; after the
+24-Nov holiday no bar was added). The candles and the six stats under the chart stay end-of-day; the live price is a dashed line.
+
+**Rewind.** `setRewind(off)` moves `END_OFF` to a past trading day (calendar = RELIANCE.NS bars); live refresh is paused while
+rewound (`REW`). Dates more than ~6 months back load `stock_data.bin`. As-of-date: prices, returns, rankings, RS, chart, and the
+members of the 28 pipeline indices. NOT as-of-date: market cap (the ₹500 Cr floor uses today's) and the 53 extra indices.
+
+**53 extra indices.** `scripts/fetch_nse_extra_indices.py` → `docs/nse_extra_indices/members.json` (workflow
+`refresh-nse-extra-indices.yml`, 08:00 IST weekdays). CURRENT members from NSE's own constituent files; file names were read
+from each index's page on niftyindices.com (no pattern — see `FILES`). Not point-in-time, feeds no backtest. To give one real
+history, add it to `build_changelog.py` / `build_membership_v2.py` (§227) and remove it from `FILES`.
+Measured 2026-11-25: 53 of 53 fetched; unresolved symbols on the page: Nifty Housing lists HDFC and IBULHSGFIN (NSE's file is
+stale), Nifty REITs & Realty has 6 REIT units, Commercial & Transport Services has DUMMYINXGN.
+
+**Open.** 33 NSE stocks of ₹500 Cr+ have no row in `sector_classification.json` (BSE, CDSL, TSFINV, MBAPL, KRISHANA …) and so
+appear in no sector/industry group. The Tracker's 5-stock floor hides 7 of 58 industries and 91 of 191 sub-industries.
+

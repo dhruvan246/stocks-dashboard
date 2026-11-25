@@ -54,6 +54,12 @@
   #trkWrap{font-size:13px}
   #trkBar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px}
   #trkBar .sp{flex:1}
+  #tRew{align-items:center}
+  #tRew .lbl{padding:0 8px 0 10px;font-size:12.5px;font-weight:500;color:var(--text-muted)}
+  html[data-theme] #tRewDate{border:0;border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;padding:4px 6px;height:auto;min-height:0;width:auto;box-shadow:none;outline-offset:-2px}
+  html[data-theme] #tRew.on{border-color:var(--accent)} html[data-theme] #tRew.on .lbl{color:var(--accent-text)}
+  html[data-theme] #tRew button:disabled{opacity:.4;cursor:default}
+  #asof.rew{color:var(--accent-text)}
   #trkBar .hint{font-size:12px;color:var(--text-faint);white-space:nowrap}
   #trkBar .hint b{font-weight:500;color:var(--text-muted)}
   .sg{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface)}
@@ -155,6 +161,13 @@
       <button type="button" class="tbtn" id="tBse" title="Also count companies listed only on BSE">Include BSE-only stocks</button>
       <button type="button" class="tbtn" id="tSme" title="Also count SME-platform companies">Include SME stocks</button>
       <span class="tbtn static" id="tFloor" title="Only companies of this size are counted, and only groups with at least this many of them are listed"></span>
+      <span class="sg" id="tRew" role="group" aria-label="Rewind to a past date" title="Rewind: see this page as it stood at the close of a past date">
+        <span class="lbl">Rewind</span>
+        <button type="button" id="tRewPrev" title="One trading day back" aria-label="One trading day back">◀</button>
+        <input type="date" id="tRewDate" aria-label="Show the page as of this date" />
+        <button type="button" id="tRewNext" title="One trading day forward" aria-label="One trading day forward">▶</button>
+        <button type="button" id="tRewNow" title="Back to the latest prices">Latest</button>
+      </span>
       <span class="sp"></span>
       <span class="hint keys"><b>↑↓</b> stock · <b>←→</b> group · <b>F</b> focus · <b>Enter</b> open</span>
     </div>
@@ -1000,7 +1013,7 @@ function trkDraw(){
 function trkLiveLine(){
   if(!CH)return;
   if(CH.pl){ try{ CH.plS.removePriceLine(CH.pl); }catch(e){} CH.pl=null; }
-  const t=T.s, d=T.data; if(!t||!d||!LVSET.has(t)||!T.bars.length)return;
+  const t=T.s, d=T.data; if(REW!=null||!t||!d||!LVSET.has(t)||!T.bars.length)return;
   if(tsISO(T.bars[T.bars.length-1].ts)>=isoOff(END_OFF))return;
   const p=priceAt(t,END_OFF); if(!(p>0))return;
   CH.plS=d.ohlc?CH.candle:CH.line;
@@ -1055,9 +1068,11 @@ function trkShowStock(lazy){
     $('tMsg').textContent=BARS[sym]?'':'Loading chart…';
     try{ const d=await loadBars(sym); if(tok!==T.tok)return;
       if(!CH)chartInit(); if(!CH){ $('tMsg').textContent='Chart library did not load — use “Full chart”.'; return; }
-      T.data=d; $('tMsg').textContent=''; trkDraw(); trkStats(t,d);
+      const lim=isoOff(END_OFF), v=REW==null?d:{ohlc:d.ohlc,bars:d.bars.filter(b=>tsISO(b.ts)<=lim)};
+      if(!v.bars.length)throw new Error('none');
+      T.data=v; $('tMsg').textContent=''; trkDraw(); trkStats(t,v);
     }catch(e){ if(tok!==T.tok)return; T.data=null; T.bars=[]; if(CH){ CH.candle.setData([]); CH.line.setData([]); CH.vol.setData([]); CH.ema.forEach(s=>s.setData([])); }
-      $('tLegend').innerHTML=''; $('tMsg').textContent='No price history on file for '+sym+'.'; }
+      $('tLegend').innerHTML=''; $('tMsg').textContent='No price history on file for '+sym+(REW!=null?' on or before '+niceDate(isoOff(END_OFF)):'')+'.'; }
   },lazy?140:0);
 }
 function trkChartBar(){
@@ -1106,7 +1121,7 @@ function trkWire(){
  * file already holds that day. Any failure leaves the page on closing prices, and the header line says which. */
 const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev', BSE_LIVE_URL='https://raw.githubusercontent.com/dhruvan246/stocks-dashboard/live-bse/bse_live.json';
 const MON={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
-let LIVE=null, EOD_END=0, liveBusy=false; const LVSET=new Set();
+let LIVE=null, EOD_END=0, NOW_OFF=0, REW=null, liveBusy=false; const LVSET=new Set(), XIDX=new Set();
 function istNow(){ return new Date(Date.now()+19800000); }
 function marketOpenIST(){ const d=istNow(), wd=d.getUTCDay(), m=d.getUTCHours()*60+d.getUTCMinutes(); return wd>=1&&wd<=5&&m>=540&&m<=945; }
 async function fetchLive(tries){
@@ -1132,9 +1147,10 @@ function putLive(t,off,pv,ltp,prev){
   const n=s.d.length, last=s.d[n-1], v=Math.round(ltp*100);
   if(last>off)return 0;
   if(last===off){ if(!LVSET.has(t))return 0; s.p[n-1]=v; return 1; }   // a real end-of-day bar for that day is never overwritten
-  // if our end-of-day file stops before the previous session, the feed's own previous close fills that
-  // one bar — so "Today" is today's move, not two days' worth
-  if(last<pv&&prev>0){ s.d.push(pv); s.p.push(Math.round(prev*100)); }
+  // when our last close is not the feed's previous close (a session our end-of-day file lacks), the feed's
+  // previous close fills that one bar — so "Today" is today's move, not two days' worth. After a market
+  // holiday the two are equal and nothing is added, so no bar ever lands on a non-trading day by this path.
+  if(last<pv&&prev>0&&Math.round(prev*100)!==s.p[n-1]){ s.d.push(pv); s.p.push(Math.round(prev*100)); }
   s.d.push(off); s.p.push(v); LVSET.add(t); return 1;
 }
 function applyLive(L){
@@ -1143,25 +1159,48 @@ function applyLive(L){
   for(const sym in L.nse.data){ const q=L.nse.data[sym]; n+=putLive(sym+'.NS',off,pv,+q[0],+q[1]); }
   if(n<200)return false;
   if(L.bse) for(const code in L.bse){ const q=L.bse[code], t=SERIES[q[3]+'.BO']?q[3]+'.BO':code+'.BO'; n+=putLive(t,off,pv,+q[0],+q[1]); }
-  END_OFF=Math.max(END_OFF,off);
+  NOW_OFF=Math.max(NOW_OFF,off); if(REW==null)END_OFF=NOW_OFF;
   LIVE={off,date:L.nse.date,time:L.nse.time,n};
   return true;
 }
 function setAsof(){
   const end=niceDate(isoOff(END_OFF)), lv=!!(LIVE&&LIVE.off===END_OFF), fresh=lv&&LIVE.date===istNow().toISOString().slice(0,10)&&marketOpenIST();
-  const span=ST.period==='Today'?'Today: '+end+' vs previous close':ST.period+': '+niceDate(isoOff(periodStart()))+' → '+end;
+  const span=(REW!=null?'Rewound · ':'')+(ST.period==='Today'?(REW!=null?'':'Today: ')+end+' vs previous close':ST.period+': '+niceDate(isoOff(periodStart()))+' → '+end);
   $('asof').innerHTML=esc(span)+' · '+(lv?`<i class="lvdot${fresh?' on':''}"></i>${fresh?'Live':'Last traded prices'} ${esc(LIVE.time)} IST`:'closing prices');
-  $('asof').classList.toggle('live',fresh);
+  $('asof').classList.toggle('live',fresh); $('asof').classList.toggle('rew',REW!=null);
   $('asof').title=lv?`Prices as of ${LIVE.time} IST on ${niceDate(LIVE.date)} for ${LIVE.n.toLocaleString('en-IN')} stocks. Refreshes every minute while the market is open. The candles and the stats under the chart are end-of-day.`
+    :REW!=null?'The page as it stood at the close of '+end+'. Prices, returns, rankings and RS are as of that date; company size (the ₹'+MIN_MC+' Cr floor) is today’s. The 28 main NSE indices use their members on that date; the other NSE sector and theme indices use today’s members.'
     :'End-of-day data, refreshed after the market closes (about 7 PM IST)';
+}
+/* ---- Rewind: the whole page as it stood at the close of a past date. END_OFF is the only thing that moves;
+   every return, ranking and RS already reads prices through priceAt(…, END_OFF). ---- */
+function calDays(){ const s=SERIES['RELIANCE.NS']||SERIES['TCS.NS']||SERIES['INFY.NS']; if(!s)return []; const c=s.d.filter(o=>o<=EOD_END); if(NOW_OFF>EOD_END)c.push(NOW_OFF); return c; }
+async function setRewind(off){
+  if(off!=null&&!FULL&&off-200<EARLIEST){ try{ await ensureFull(); }catch(e){} }   // RS needs 6 months before the date
+  const cal=calDays();
+  if(off==null||!cal.length||off>=NOW_OFF){ REW=null; END_OFF=NOW_OFF; }
+  else{ const i=Math.max(0,idxLE(cal,off)); REW=cal[i]; END_OFF=REW; if(REW>=NOW_OFF){ REW=null; END_OFF=NOW_OFF; } }
+  if(periodStart()<EARLIEST&&!FULL){ try{ await ensureFull(); }catch(e){ ST.period='Today'; } }
+  buildRS(); recompute(); rewBar();
+}
+function rewStep(dir){ const cal=calDays(); if(!cal.length)return; const i=idxLE(cal,END_OFF);
+  if(dir<0){ if(i>0)setRewind(cal[i-1]); else if(!FULL)setRewind(END_OFF-1); } else setRewind(i+1<cal.length?cal[i+1]:null); }
+function rewBar(){
+  const d=$('tRewDate'), cal=calDays(); d.value=isoOff(END_OFF); d.max=isoOff(NOW_OFF); d.min='1996-01-01';
+  $('tRew').classList.toggle('on',REW!=null); $('tRewNext').disabled=$('tRewNow').disabled=REW==null;
+}
+function rewWire(){
+  $('tRewPrev').onclick=()=>rewStep(-1); $('tRewNext').onclick=()=>rewStep(1); $('tRewNow').onclick=()=>setRewind(null);
+  $('tRewDate').onchange=e=>{ const v=e.target.value; if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){ rewBar(); return; } setRewind(dayOff(v)); };
+  rewBar();
 }
 function liveRefresh(){
   const g=$('tgList'), s=$('tsList'), gy=g.scrollTop, sy=s.scrollTop;
-  buildRS(); compute(); renderBreadth(); setAsof();
+  buildRS(); compute(); renderBreadth(); setAsof(); rewBar();
   if(ST.view==='tracker'){ trkCompute(); trkRenderGroups(); trkRenderStocks(true); g.scrollTop=gy; s.scrollTop=sy; trkLiveLine(); }
   else if($('modal').style.display!=='flex') renderGrid();
 }
-async function liveTick(){ if(liveBusy)return; liveBusy=true; try{ const L=await fetchLive(1); if(L&&applyLive(L))liveRefresh(); }catch(e){} finally{ liveBusy=false; } }
+async function liveTick(){ if(liveBusy)return; liveBusy=true; try{ const L=await fetchLive(1); if(L&&applyLive(L)&&REW==null)liveRefresh(); }catch(e){} finally{ liveBusy=false; } }
 function liveStart(){
   setInterval(()=>{ if(!document.hidden&&marketOpenIST())liveTick(); },60000);
   document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&marketOpenIST())liveTick(); });
@@ -1183,7 +1222,7 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     // P/E joins the boot fetch now that every CARD carries a median, not just the detail modal.
     // 14 KB gzipped against dash_slim's megabytes, in parallel — it lands long before the prices do,
     // and ensurePE() never rejects, so a missing feed costs the cards their P/E and nothing else.
-    const [slim,cls,nifty,smeipo,smeem]=await Promise.all([
+    const [slim,cls,nifty,smeipo,smeem,xidx]=await Promise.all([
       gunzipJSON('./dash_slim.bin'),
       fetch('./sector_classification.json').then(r=>r.json()),
       fetch('./nifty.json').then(r=>r.json()).catch(()=>({px:{}})),
@@ -1191,6 +1230,8 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
       fetch('./bse_sme_ipo/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       // Nifty SME Emerge membership history (runbook §210) — bare NSE tickers, resolved like Nifty's by buildGroups()
       fetch('./nse_sme_emerge/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
+      // NSE sector / theme indices outside the 28 of the shared pipeline (scripts/fetch_nse_extra_indices.py) — CURRENT members only
+      fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       ensurePE(),
     ]);
     START_TS=slim.startTs; META=slim.meta; SERIES=slim.series; IDXH=Object.assign({},slim.indicesHistory||{}); CLS=cls;
@@ -1201,16 +1242,18 @@ async function gunzipJSON(url){ const buf=await(await fetch(url)).arrayBuffer();
     }
     if(smeem&&Array.isArray(smeem['Nifty SME Emerge'])&&smeem['Nifty SME Emerge'].length)
       IDXH['Nifty SME Emerge']=smeem['Nifty SME Emerge'].map(s=>({effectiveDate:s.effectiveDate,symbols:s.symbols}));
+    // one undated snapshot each: these lists are today's members, shown for every date (the 28 above are point-in-time)
+    if(xidx&&xidx.indices) for(const nm in xidx.indices){ const sy=xidx.indices[nm].symbols; if(!IDXH[nm]&&Array.isArray(sy)&&sy.length){ IDXH[nm]=[{effectiveDate:'1900-01-01',symbols:sy}]; XIDX.add(nm); } }
     EARLIEST=slim.recentCutoffOff||0;
     // latest offset with data
     let mx=0; for(const k in SERIES){ const d=SERIES[k].d; if(d&&d.length){ const v=d[d.length-1]; if(v>mx)mx=v; } } END_OFF=mx;
     NIFTY_ARR=Object.entries(nifty.px||{}).map(([d,v])=>[dayOff(d),v]).filter(x=>isFinite(x[0])&&x[1]>0).sort((a,b)=>a[0]-b[0]);
     NIFTY_OFFS=NIFTY_ARR.map(x=>x[0]);
-    EOD_END=END_OFF;
+    EOD_END=NOW_OFF=END_OFF;
     // live prices were requested when boot began; if they are back already they go in before the first paint
     const L0=await Promise.race([liveP,new Promise(r=>setTimeout(r,0,null))]);
-    if(L0)applyLive(L0); else liveP.then(L=>{ if(L&&applyLive(L))liveRefresh(); });
-    buildRS(); trkWire(); liveStart();
+    if(L0)applyLive(L0); else liveP.then(L=>{ if(L&&applyLive(L)&&REW==null)liveRefresh(); });
+    buildRS(); trkWire(); rewWire(); liveStart();
     let nCls=0; for(const k in SERIES) if(CLS[k])nCls++;
     document.title='STOCKSWORLD · Sectors';
     loadUI();
