@@ -4,59 +4,96 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex" />
+<meta name="x-layout" content="one-screen" />
 <title>STOCKSWORLD · Strategy Phases Lab</title>
 <meta name="description" content="Unlisted research page: top strategies from the 4.44M exhaustive grid, per market phase." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .pcard{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);
-    padding:12px 14px;cursor:pointer;min-width:150px;flex:1;transition:.15s;user-select:none}
-  .pcard:hover{border-color:var(--accent,var(--accent))}
-  .pcard.on{border-color:var(--accent,var(--accent));box-shadow:0 0 0 1px var(--accent,#2563eb) inset}
-  .pcard .t{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint,var(--text-faint))}
-  .pcard .v{font-size:20px;font-weight:800;margin-top:2px}
-  .pcard .s{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:2px}
-  .pcard.info{cursor:default}
-  .vcard{background:var(--surface,var(--surface));border:1.5px solid var(--border,var(--border));border-radius:var(--radius-lg);
-    padding:9px 16px;cursor:pointer;user-select:none;transition:.15s;text-align:left;min-width:138px}
-  .vcard:hover{border-color:var(--accent,var(--accent));transform:translateY(-1px)}
-  .vcard .n{font-size:14px;font-weight:800;letter-spacing:-.01em}
-  .vcard .m{font-size:11px;color:var(--text-muted,var(--text-muted));margin-top:1px}
-  .vcard.on{border-color:var(--accent,var(--accent));box-shadow:0 0 0 1.5px var(--accent,#2563eb) inset}
-  .vcard.on .n{color:var(--accent,var(--accent-text))}
-  .vcard.off{opacity:.45;cursor:not-allowed}
-  .vcard .cmp{display:none;font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
-    color:var(--text-faint,var(--text-faint));margin-top:2px}
-  .vcard.off .cmp{display:block}
-  .vcard:focus-visible{outline:2px solid var(--accent,var(--accent));outline-offset:2px}
-  .pos{color:var(--pos)} html[data-theme="dark"] .pos{color:var(--pos)}
-  .warn{color:var(--warn)} html[data-theme="dark"] .warn{color:var(--warn)}
-  table{border-collapse:collapse;width:100%;min-width:960px}
-  th{position:sticky;top:0;background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text-muted));
-    font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;text-align:left;padding:8px 9px;
-    cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
-  th.num,td.num{text-align:right}
-  td{padding:6px 9px;border-top:1px solid var(--border,var(--border));font-size:13px}
-  td.mono{font-family:ui-monospace,Consolas,monospace}
-  .fam{display:inline-block;background:var(--surface-2,var(--surface-2));border-radius:4px;padding:1px 7px;
-    font-size:12px;white-space:nowrap;color:var(--text-muted,var(--text-muted))}
+  .hidden{display:none!important}
+  .pos{color:var(--pos)} .warn{color:var(--warn)} .dim{color:var(--text-faint)}
+  #grid{grid-template-columns:minmax(0,1fr) minmax(320px,370px)}
+  /* ranking + variant buttons */
+  #cards,#ycards{flex-wrap:wrap}
+  html[data-theme] #cards button,html[data-theme] #ycards button{border-bottom:1px solid var(--border);margin-bottom:-1px}
+  #cards .v,#ycards .v{font-weight:600;color:var(--pos);margin-left:3px}
+  html[data-theme] #cards button.on .v,html[data-theme] #ycards button.on .v{color:inherit}
+  #vpills .cmp{display:none}
+  html[data-theme] #vpills button.off{opacity:.45;cursor:not-allowed}
+  #vpills button.off .cmp{display:inline}
+  #vdesc{padding:0 2px 8px;font-size:12px;color:var(--text-muted);line-height:1.5}
+  #vdesc b{font-weight:600;color:var(--text)}
+  #benchLine b{font-weight:600;color:var(--text-muted)}
+  html[data-theme] #q{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:12.5px;color:var(--text);min-height:0;height:29px;box-shadow:none;width:250px;min-width:0}
+  /* the strategies table */
+  #shell{overflow:auto}
+  #tbl{border-collapse:collapse;width:100%}
+  #tbl th{position:sticky;top:0;background:var(--surface);color:var(--text-faint);border-bottom:1px solid var(--border);
+    font-size:11px;font-weight:500;letter-spacing:.03em;text-align:left;padding:6px 9px;cursor:pointer;user-select:none;white-space:nowrap;z-index:1}
+  #tbl th:hover{color:var(--text)}
+  #tbl th.num,#tbl td.num{text-align:right}
+  #tbl td{padding:5px 9px;border-bottom:1px solid var(--border);font-size:12.5px;white-space:nowrap;color:var(--text)}
+  #tbl td.mono{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+  #tbl.tight th{white-space:normal;line-height:1.25;vertical-align:bottom;padding-left:6px;padding-right:6px}
+  #tbl.tight td{padding-left:6px;padding-right:6px}
+  #tbl.tight td.fcell{max-width:0;width:100%;min-width:150px;overflow:hidden;text-overflow:ellipsis}
+  #tbl tr.srow{cursor:pointer}
+  #tbl tr.srow:hover td{background:var(--surface-2)}
+  #tbl tr.srow.on td{background:var(--accent-soft)}
+  #tbl tr.srow.on td:first-child{box-shadow:inset 2px 0 0 var(--accent)}
+  .fam{display:inline-block;background:var(--surface-2);border-radius:4px;padding:1px 7px;font-size:12px;white-space:nowrap;color:var(--text-muted)}
   /* Earnings basis. Std and con must be told apart at a glance because a merged card can hold the
      SAME rule twice, once per basis; 'any' means the rule reads no earnings at all, so it is
      deliberately quiet rather than a third competing colour. */
-  .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;
-    letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
+  .bchip{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;letter-spacing:.03em;white-space:nowrap;border:1px solid transparent}
   .b-std{background:var(--accent-soft);color:var(--accent-text);border-color:color-mix(in srgb,var(--accent) 38%,transparent)}
   .b-con{background:var(--pos-soft);color:var(--pos);border-color:#a7f3d0}
   .b-any{background:transparent;color:var(--text-muted,var(--text-faint));border-color:var(--border,var(--border));font-weight:600}
   html[data-theme="dark"] .b-std{background:#312e81;color:#c7d2fe;border-color:#4338ca}
   html[data-theme="dark"] .b-con{background:#064e3b;color:#a7f3d0;border-color:#047857}
   html[data-theme="dark"] .b-any{background:transparent;color:var(--text-muted);border-color:var(--border-strong)}
-  .shell{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius-lg);overflow-x:auto}
-  input[type=search]{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border-strong));color:var(--text,var(--text));
-    border-radius:var(--radius);padding:7px 11px;font-size:13px;min-width:230px}
-  html[data-theme="dark"] input[type=search]{border-color:var(--border-strong);color:var(--text)}
+  #foot{border-top:1px solid var(--border)}
+  /* right pane */
+  .yleg{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;font-size:11.5px;color:var(--text-muted);padding:7px 12px;border-bottom:1px solid var(--border)}
+  .yleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  .yleg .sp{flex:1}
+  #chartBox{flex:none;height:230px;border-bottom:1px solid var(--border)}
+  #chart{display:block;width:100%;height:100%}
+  #chart text{font-size:10.5px;fill:var(--text-faint);font-variant-numeric:tabular-nums}
+  #chart .ax{stroke:var(--border-strong);stroke-width:1}
+  #chart .bp{fill:var(--pos)} #chart .bn{fill:var(--neg)} #chart .bb{fill:var(--text-faint);opacity:.45}
+  .mb{flex:1;min-height:0;overflow:auto;font-size:12.5px;color:var(--text)}
+  .sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+  .sec:last-child{border-bottom:0}
+  .sec h4{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 7px}
+  .sec h4 i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+  .filt{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;margin-top:7px;line-height:1.45;overflow-wrap:anywhere;color:var(--text)}
+  table.kv{width:100%;border-collapse:collapse}
+  .kv td{padding:3px 0;vertical-align:top;font-size:12.5px}
+  .kv td:first-child{color:var(--text-faint);width:128px;white-space:nowrap}
+  .kv b{font-weight:600}
+  table.bk{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .bk td,.bk th{padding:5px 6px;font-size:12px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  .bk tr:last-child td{border-bottom:0}
+  .bk th{font-weight:500;color:var(--text-faint);font-size:11px}
+  .bk td:first-child,.bk th:first-child{text-align:left;color:var(--text-muted);padding-left:0}
+  .bk td:last-child,.bk th:last-child{padding-right:0}
+  .bk tr.cur td{background:var(--accent-soft)}
+  .scr{overflow-x:auto}
+  @media (max-width:899px){
+    #grid{grid-template-columns:minmax(0,1fr)}
+    #shell{max-height:62vh}
+    #pR{scroll-margin-top:64px}
+    .mb{flex:none;overflow-x:auto;overflow-y:visible}
+    .os-vbar{gap:10px}
+    #cards,#ycards{flex-wrap:nowrap}
+    #pL .os-ph .r{margin-left:0;flex-wrap:wrap;white-space:normal;min-width:0;max-width:100%}
+    #basketChip{white-space:normal}
+    html[data-theme] #q{width:100%}
+  }
   /* Phones: the strategy's identity (Rank by + Filters) leads the row instead of
      trailing 600px off-screen — see headFor(). Cap the filter cell so the whole
      expression wraps inside the viewport rather than running past its edge. */
@@ -70,39 +107,37 @@
 </style>
 </head>
 <body class="min-h-screen">
-<main class="max-w-6xl mx-auto px-3 sm:px-5 py-5">
-  <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Strategy Phases Lab</h1>
-  <p class="text-[13px] mt-1" style="color:var(--text-muted,#64748b)">
-    <span id="nTested">4,440,600</span> strategies tested (every sort factor × direction × all 1–3 filter combos) · survivorship-free engine ·
-    <span id="uname">Nifty 500</span> · <span id="vdesc"><b>every strategy = a TOP-5 basket, equal-weight, rebalanced monthly (reset)</b></span>.
-    Unlisted research page. <span id="builtAt"></span>
-    <a href="./bull-runs.html" class="underline" style="color:var(--accent,#2563eb)">Bull-Run Survivors →</a>
-  </p>
-
-  <div class="flex flex-wrap items-center gap-2 mt-3" id="upills">
-    <span class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Universe</span>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Strategy Phases Lab</h1>
+    <span class="os-asof"><span id="nTested">4,440,600</span> strategies tested · survivorship-free engine · <span id="uname">Nifty 500</span> · unlisted research page · <span id="builtAt"></span>
+      <a href="./bull-runs.html" style="color:var(--accent-text);font-weight:600">Bull-Run Survivors →</a></span>
   </div>
-  <div class="flex flex-wrap items-center gap-2 mt-2" id="vpills">
-    <span class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Basket</span>
+  <div class="os-bar">
+    <div class="os-sg" id="upills"><span class="lbl">Universe</span></div>
+    <div class="os-sg" id="vpills"><span class="lbl">Basket</span></div>
+    <span class="sp"></span>
+    <span class="os-hint keys"><b>↑ ↓</b> move · <b>Home End</b> first / last</span>
   </div>
-
-  <div class="flex flex-wrap gap-2.5 mt-3" id="cards"></div>
-  <div class="mt-3" id="ywrap" style="display:none">
-    <div class="flab" style="font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint,#94a3b8)">Year-wise · top 1000 each</div>
-    <div class="flex flex-wrap gap-2.5 mt-1.5" id="ycards"></div>
+  <div class="os-bar"><div class="os-sg" id="cards"><span class="lbl">Phase</span></div></div>
+  <div class="os-bar" id="ywrap" style="display:none"><div class="os-sg" id="ycards"><span class="lbl">Year · top 1000 each</span></div></div>
+  <div id="vdesc"><b>every strategy = a TOP-5 basket, equal-weight, rebalanced monthly (reset)</b></div>
+  <div class="os-grid" id="grid">
+    <section class="os-pane os-main" id="pL">
+      <div class="os-ph"><span class="ttl">Strategies <i id="count"></i></span>
+        <span class="r"><span class="fam" style="font-weight:600" id="basketChip">Top-5 basket · equal-weight · monthly reset</span>
+        <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search"></span></div>
+      <div class="os-list shell" id="shell"><table id="tbl"><thead id="th"></thead><tbody id="tb"><tr><td class="os-empty">Loading the strategy grid…</td></tr></tbody></table></div>
+      <div class="os-note" id="foot"></div>
+    </section>
+    <section class="os-pane" id="pR">
+      <div class="os-ph"><span class="ttl">This strategy <i id="cTtl"></i></span></div>
+      <div class="yleg"><span><i style="background:var(--pos)"></i>Strategy</span><span><i style="background:var(--text-faint);opacity:.45"></i><span id="lgB">Benchmark</span></span></div>
+      <div id="chartBox"><svg id="chart" role="img" aria-label="The selected strategy against its benchmark"></svg></div>
+      <div class="mb" id="dBody"><div class="os-empty">Select a strategy in the table.</div></div>
+      <div class="os-note" id="benchLine" style="border-top:1px solid var(--border)"></div>
+    </section>
   </div>
-
-  <div class="flex flex-wrap items-center gap-3 mt-4">
-    <input type="search" id="q" placeholder="Search filters / factor… e.g. delivPct" aria-label="Search">
-    <span class="fam" style="font-weight:700" id="basketChip">Top-5 basket · equal-weight · monthly reset</span>
-    <span id="count" class="text-[12px]" style="color:var(--text-muted,#64748b)"></span>
-  </div>
-
-  <div class="shell mt-2">
-    <table id="tbl"><thead id="th"></thead><tbody id="tb"></tbody></table>
-  </div>
-  <p class="text-[11.5px] mt-3" style="color:var(--text-faint,#94a3b8)" id="foot"></p>
-
 </main>
 <script>
 (async function(){
@@ -127,7 +162,10 @@
   const uOf = v => Object.keys(UNIV).find(u=>UNIV[u].vars.includes(v));
   const VLABEL = v => (VDESC[v][0]==='5'?'Top 5':'Top 3')+' · '+(VDESC[v][1]===RIDE?'Ride winners':'Monthly reset');
   const isHold = v => VDESC[v][1]===RIDE;
+  const K=window.OSKit;
   const DATA={}; let curVar='r5';
+  let ROWS=[], SELC=null, IDENT_FIRST=false;
+  const paneW = () => document.getElementById('shell').clientWidth;
   let R=null,P=null,C=null,cards=null,YRS=[],PI={};
   const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const fmtTot = v => (v>=0?'+':'') + (Math.abs(v)>=1000 ? (v/100).toFixed(1)+'x' : v.toFixed(0)+'%');
@@ -141,8 +179,8 @@
   const OFF={}; // v -> true when its JSON is not served
   function paintPills(){
     const u=uOf(curVar);
-    document.querySelectorAll('#upills .vcard').forEach(b=>b.classList.toggle('on', b.dataset.u===u));
-    document.querySelectorAll('#vpills .vcard').forEach(b=>{
+    document.querySelectorAll('#upills button').forEach(b=>b.classList.toggle('on', b.dataset.u===u));
+    document.querySelectorAll('#vpills button').forEach(b=>{
       b.style.display = uOf(b.dataset.v)===u ? '' : 'none';
       b.classList.toggle('on', b.dataset.v===curVar);
       b.classList.toggle('off', !!OFF[b.dataset.v]);
@@ -155,18 +193,18 @@
   }
   const up=document.getElementById('upills'), vp=document.getElementById('vpills');
   up.insertAdjacentHTML('beforeend', Object.keys(UNIV).map(u=>
-    '<button class="vcard" data-u="'+u+'"><div class="n">'+UNIV[u].label+'</div><div class="m">bench '+UNIV[u].bench+'</div></button>').join(''));
+    '<button data-u="'+u+'" title="bench '+UNIV[u].bench+'">'+UNIV[u].label+'</button>').join(''));
   vp.insertAdjacentHTML('beforeend', Object.keys(SUFS).map(v=>{const parts=VLABEL(v).split(' · ');
-    return '<button class="vcard" data-v="'+v+'"><div class="n">'+parts[0]+'</div><div class="m">'+parts[1]+'</div><div class="cmp">⏳ computing…</div></button>';}).join(''));
-  vp.addEventListener('click',e=>{const b=e.target.closest('.vcard');if(b)pick(b.dataset.v);});
+    return '<button data-v="'+v+'">'+parts[0]+' · '+parts[1]+'<span class="cmp"> ⏳ computing…</span></button>';}).join(''));
+  vp.addEventListener('click',e=>{const b=e.target.closest('button[data-v]');if(b)pick(b.dataset.v);});
   // Switching universe keeps the basket shape when that universe has it (Top 5 reset ↔ Top 5 reset).
-  up.addEventListener('click',async e=>{const b=e.target.closest('.vcard');if(!b)return;
+  up.addEventListener('click',async e=>{const b=e.target.closest('button[data-u]');if(!b)return;
     const vs=UNIV[b.dataset.u].vars; if(vs.includes(curVar)){paintPills();return;}
     const same=vs.find(v=>VDESC[v][0]===VDESC[curVar][0]&&VDESC[v][1]===VDESC[curVar][1]);
     for(const v of [same, ...vs].filter(Boolean)) if(!OFF[v] && await pick(v)) return;
     // nothing in that universe is served yet: show its (greyed) baskets so the reader sees why
     const prev=curVar; curVar=vs[0]; paintPills(); curVar=prev;
-    document.querySelectorAll('#vpills .vcard.on').forEach(x=>x.classList.remove('on'));});
+    document.querySelectorAll('#vpills button.on').forEach(x=>x.classList.remove('on'));});
   // probe which variants exist (they appear incrementally as their grids finish)
   Object.keys(SUFS).filter(v=>v!=='r5').forEach(v=>{
     fetch('./strategy_phases'+SUFS[v]+'.json',{method:'HEAD',cache:'no-cache'}).then(r=>{
@@ -182,23 +220,23 @@
         big:()=> p.metric==='cagr' ? C[cards[p.key][0]].p[i][0].toFixed(1)+'% CAGR'
                                    : fmtTot(C[cards[p.key][0]].p[i][1]) }))
       .concat([{ key:'all4', title:'⭐ Best in ALL '+P.length, sub:'consistency ranking', big:()=>'Top 100' }]);
-    document.getElementById('cards').innerHTML = DEFS.map(d=>'<div class="pcard" data-k="'+d.key+'" role="button" tabindex="0">'+
-        '<div class="t">'+d.title+'</div><div class="v pos">'+d.big()+'</div><div class="s">'+d.sub+'</div></div>').join('') +
+    document.getElementById('cards').innerHTML = '<span class="lbl">Phase</span>' + DEFS.map(d=>'<button class="pcard" data-k="'+d.key+'" title="'+d.sub+'">'+
+        '<span class="t">'+d.title+'</span> <span class="v">'+d.big()+'</span><span class="s" hidden>'+d.sub+'</span></button>').join('');
       // Null-safe: a phase whose window predates the daily NIFTY500 series (starts 2012) can come
       // back with bench null. The build recovers it from index_monthly, but never crash if it can't.
-      '<div class="pcard info"><div class="t">'+benchName()+' benchmark</div><div class="v">'+
+    document.getElementById('benchLine').innerHTML = '<b class="t">'+benchName()+' benchmark</b> <span class="v">'+
         (P[0].bench&&P[0].bench.cagr!=null?P[0].bench.cagr.toFixed(1)+'%':'—')+
-        ' <span class="text-[12px] font-semibold">CAGR full cycle</span></div>'+
-      '<div class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+
-        (p.bench&&p.bench.totRet!=null?fmtTot(p.bench.totRet):'—')).join(' · ')+'</div></div>';
+        ' CAGR full cycle</span> · '+
+      '<span class="s">'+P.slice(1).map(p=>p.label.split(' ')[0]+' '+
+        (p.bench&&p.bench.totRet!=null?fmtTot(p.bench.totRet):'—')).join(' · ')+'</span>';
     const yw=document.getElementById('ywrap');
     if(YRS.length){ yw.style.display='';
-      document.getElementById('ycards').innerHTML = YRS.map(y=>'<div class="pcard" data-k="'+y.key+'" role="button" tabindex="0">'+
-        '<div class="t">'+y.label+'</div><div class="v pos">'+fmtTot(y.rows[0].tot)+'</div>'+
-        '<div class="s">best of '+lakh(NPOOL)+' · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—')+'</div></div>').join('')+
-        (cards.allY?'<div class="pcard" data-k="allY" role="button" tabindex="0">'+
-        '<div class="t">⭐ Best in ALL years</div><div class="v pos">Top 100</div>'+
-        '<div class="s">worst yearly rank across all '+YRS.length+'</div></div>':'');
+      document.getElementById('ycards').innerHTML = '<span class="lbl">Year · top 1000 each</span>' + YRS.map(y=>{const s='best of '+lakh(NPOOL)+' · bench '+(y.bench?(y.bench.totRet>=0?'+':'')+y.bench.totRet+'%':'—');
+        return '<button class="pcard" data-k="'+y.key+'" title="'+s+'">'+
+        '<span class="t">'+y.label+'</span> <span class="v">'+fmtTot(y.rows[0].tot)+'</span><span class="s" hidden>'+s+'</span></button>';}).join('')+
+        (cards.allY?'<button class="pcard" data-k="allY" title="worst yearly rank across all '+YRS.length+'">'+
+        '<span class="t">⭐ Best in ALL years</span> <span class="v">Top 100</span>'+
+        '<span class="s" hidden>worst yearly rank across all '+YRS.length+'</span></button>':'');
     } else { yw.style.display='none'; document.getElementById('ycards').innerHTML=''; }
   }
   // Factors the user barred after a payload was built (2026-11-03). A payload built since then has
@@ -241,7 +279,7 @@
     document.getElementById('vdesc').innerHTML='<b>every strategy = a TOP-'+VDESC[curVar][0]+' basket on '+VDESC[curVar][2]+', equal-weight, '+VDESC[curVar][1]+basisNote+'</b>'+exNote;
     document.getElementById('uname').textContent=UNIV[uOf(curVar)].label;
     document.getElementById('basketChip').textContent=(uOf(curVar)!=='n500'?UNIV[uOf(curVar)].label+' · ':'')+'Top-'+VDESC[curVar][0]+' basket · equal-weight · '+(isHold(curVar)?'ride winners':'monthly reset')+basisNote;
-    cur='all4'; sortK=null; needle=''; document.getElementById('q').value='';
+    cur='all4'; sortK=null; needle=''; SELC=null; document.getElementById('q').value='';
     buildCards(); paintPills(); render();
   }
   const yearOf = k => YRS.find(y=>y.key===k);
@@ -264,7 +302,7 @@
   // in every embedded context, and losing it strands the phone column order on a
   // desktop-width screen. Both paths no-op unless the breakpoint actually flipped.
   let wasNarrow = narrow(), rzT = null;
-  const onViewport = () => { if (!R || narrow() === wasNarrow) return; wasNarrow = narrow(); render(); };
+  const onViewport = () => { K.fitGrid(document.getElementById('grid')); if (!R) return; wasNarrow = narrow(); render(); };
   if (MQ.addEventListener) MQ.addEventListener('change', onViewport);
   else if (MQ.addListener) MQ.addListener(onViewport);
   window.addEventListener('resize', () => { if (rzT) clearTimeout(rzT); rzT = setTimeout(onViewport, 150); }, { passive: true });
@@ -294,7 +332,8 @@
     // without this column two rows would look identical and disagree on every number.
     const ident = HAS_BASIS ? [['fam','Rank by'],['b','Basis'],['f','Filters']]
                             : [['fam','Rank by'],['f','Filters']];
-    return narrow() ? [base[0]].concat(ident, base.slice(1)) : base.concat(ident);
+    IDENT_FIRST = narrow() || paneW() < base.length*74 + 170 + (HAS_BASIS?60:0) + 290;
+    return IDENT_FIRST ? [base[0]].concat(ident, base.slice(1)) : base.concat(ident);
   }
   function valOf(r,k,col){
     if(col==='rk')return r.rk; if(col==='worst')return r.worst;
@@ -312,16 +351,20 @@
     const head = headFor(cur);
     document.getElementById('th').innerHTML = '<tr>'+head.map(([ck,l])=>
       '<th data-c="'+ck+'" class="'+(ck==='fam'||ck==='f'?'':'num')+'">'+l+(sortK===ck?(sortAsc?' ▴':' ▾'):'')+'</th>').join('')+'</tr>';
+    // pane too narrow for every column: the Filters cell takes what is left and ends in … (full text on hover + in the right pane)
+    document.getElementById('tbl').classList.toggle('tight', IDENT_FIRST && !narrow());
     let rows = rowsFor(cur);
     if(needle) rows = rows.filter(r=>r.c.f.toLowerCase().includes(needle)||famOf(r.c).toLowerCase().includes(needle)||(r.c.b||'').toLowerCase().includes(needle));
     if(sortK) rows.sort((a,b)=>{const x=valOf(a,cur,sortK),y=valOf(b,cur,sortK);
       return (typeof x==='number'?x-y:String(x).localeCompare(String(y)))*(sortAsc?1:-1);});
-    document.getElementById('tb').innerHTML = rows.map(r=>{
+    ROWS = rows;
+    if(!rows.some(r=>r.c===SELC)) SELC = rows.length ? rows[0].c : null;
+    document.getElementById('tb').innerHTML = rows.map((r,j)=>{
       const cells = head.map(([ck])=>{
         if(ck==='fam')return '<td><span class="fam">'+esc(famOf(r.c))+'</span></td>';
         if(ck==='b'){const b=r.c.b||'';
           return '<td><span class="bchip b-'+esc(b)+'" title="'+esc(BTIP[b]||'')+'">'+esc(BLBL[b]||b)+'</span></td>';}
-        if(ck==='f')return '<td class="mono" style="font-size:12px">'+esc(r.c.f)+'</td>';
+        if(ck==='f')return '<td class="mono fcell" style="font-size:12px" title="'+esc(r.c.f).replace(/"/g,'&quot;')+'">'+esc(r.c.f)+'</td>';
         let v=valOf(r,cur,ck), txt;
         // In the consistency table a phase column is a TOTAL return unless that phase declares
         // metric:'cagr' (the multi-year windows), in which case it is a plain percentage.
@@ -333,7 +376,7 @@
         const isPhaseCagr = cur==='all4' && /^r[0-9]+$/.test(ck) && P[+ck.slice(1)].metric==='cagr';
         const cls=(ck==='dd'&&v>35)?' warn':((ck==='tot'||ck==='cg'||isPhaseCagr||isPhaseTot||(cur==='allY'&&ck[0]==='y'&&v<0))?(v<0?' warn':' pos font-semibold'):'');
         return '<td class="num mono'+cls+'">'+txt+'</td>';});
-      return '<tr>'+cells.join('')+'</tr>';}).join('');
+      return '<tr class="srow'+(r.c===SELC?' on':'')+'" data-j="'+j+'">'+cells.join('')+'</tr>';}).join('');
     document.getElementById('count').textContent = rows.length.toLocaleString('en-IN')+' strategies'+(needle?' · matching "'+needle+'"':'');
     document.querySelectorAll('.pcard[data-k]').forEach(el=>el.classList.toggle('on',el.dataset.k===cur));
     const Y=yearOf(cur), pi=PI[cur]||0;
@@ -343,20 +386,117 @@
       ? 'Worst yearly rank = a strategy’s poorest rank across all '+YRS.length+' calendar years (out of '+lakh(NPOOL)+'). Year columns are absolute total returns. All rows: '+basketDesc()+'.'
       : Y ? 'Year '+Y.start+' → '+Y.end+' ('+Y.years+'y). Total % is absolute. Benchmark '+benchName()+': '+(Y.bench?fmtTot(Y.bench.totRet):'—')+' total. All rows: '+UNIV[uOf(curVar)].label+' universe, '+basketDesc()+'.'
       : 'Phase '+P[pi].start+' → '+P[pi].end+' ('+P[pi].years+'y). Total % is absolute (not annualised). Benchmark '+benchName()+': '+(P[pi].bench&&P[pi].bench.totRet!=null?fmtTot(P[pi].bench.totRet):'—')+' total. All rows: '+UNIV[uOf(curVar)].label+' universe, '+basketDesc()+'.';
+    paintDetail();
   }
+  // ---------- one-screen glue: the selected strategy's figures + chart (right pane) ----------
+  const $ = id => document.getElementById(id);
+  const selRow = () => ROWS.find(r=>r.c===SELC) || null;
+  const okN = v => typeof v==='number' && isFinite(v);
+  const f1 = v => okN(v) ? v.toFixed(1) : '—';
+  const sgn = (v,t) => okN(v) ? '<span class="'+(v<0?'warn':'pos')+'">'+t+'</span>' : '<span class="dim">—</span>';
+  function paintDetail(){
+    document.querySelectorAll('#tb tr.srow').forEach(tr=>{const x=ROWS[+tr.dataset.j]; tr.classList.toggle('on', !!x && x.c===SELC);});
+    const r=selRow();
+    if(!r){
+      $('dBody').innerHTML='<div class="os-empty">'+(needle?'No strategy matches that search.':'No strategy to show.')+'</div>';
+      $('chart').innerHTML=''; $('cTtl').textContent=''; return;
+    }
+    const c=r.c, b=c.b||'', Y=yearOf(cur);
+    let h='<div class="sec"><div><span class="fam">'+esc(famOf(c))+'</span>'+
+        (HAS_BASIS?' <span class="bchip b-'+esc(b)+'" title="'+esc(BTIP[b]||'')+'">'+esc(BLBL[b]||b)+'</span>':'')+
+        ' <span class="dim" style="font-size:11.5px">#'+r.rk.toLocaleString('en-IN')+' in this ranking</span></div>'+
+      '<div class="filt">'+(c.f?esc(c.f):'<span class="dim">no filters</span>')+'</div>'+
+      '<div class="dim" style="font-size:11.5px;margin-top:5px">Ranked by '+esc(c.s)+', '+(c.d==='high'?'highest first':c.d==='low'?'lowest first':esc(String(c.d)))+' · '+esc(basketDesc())+'</div></div>';
+    if(r.worst!=null || r.y){
+      h+='<div class="sec"><h4>'+(r.y&&Y?esc(Y.label):'Consistency')+'</h4><table class="kv">'+
+        (r.worst!=null?'<tr><td>'+(cur==='allY'?'Worst yearly rank':'Worst rank')+'</td><td><b>'+r.worst.toLocaleString('en-IN')+'</b> <span class="dim">of '+lakh(NPOOL)+'</span></td></tr>':'')+
+        (r.y?'<tr><td>Total</td><td><b>'+sgn(r.y.tot,okN(r.y.tot)?fmtTot(r.y.tot):'')+'</b></td></tr>'+
+             '<tr><td>CAGR</td><td>'+sgn(r.y.cg,f1(r.y.cg)+'%')+'</td></tr>'+
+             '<tr><td>Max drawdown</td><td'+(r.y.dd>35?' class="warn"':'')+'>'+f1(r.y.dd)+'%</td></tr>'+
+             '<tr><td>Win</td><td>'+f1(r.y.win)+'%</td></tr>'+
+             '<tr><td>'+esc(benchName())+'</td><td class="dim">'+(Y&&Y.bench&&okN(Y.bench.totRet)?fmtTot(Y.bench.totRet):'—')+' total</td></tr>':'')+
+        '</table></div>';
+    }
+    const hasRk = Array.isArray(r.ranks) && r.ranks.length===P.length;
+    h+='<div class="sec"><h4>Every phase</h4><div class="scr"><table class="bk"><thead><tr><th>Phase</th><th>CAGR %</th><th>Total</th><th>Max DD %</th><th>Win %</th>'+
+        (hasRk?'<th>Rank</th>':'')+'<th title="Benchmark total return over the same phase">'+esc(benchName())+'</th></tr></thead><tbody>'+
+      P.map((p,i)=>{const ph=c.p[i]||[];
+        return '<tr'+(p.key===cur?' class="cur"':'')+'><td title="'+esc(p.start+' → '+p.end+' ('+p.years+'y)')+'">'+esc(p.label)+'</td>'+
+          '<td>'+sgn(ph[0],f1(ph[0]))+'</td><td>'+sgn(ph[1],okN(ph[1])?fmtTot(ph[1]):'')+'</td>'+
+          '<td'+(ph[2]>35?' class="warn"':'')+'>'+f1(ph[2])+'</td><td>'+f1(ph[3])+'</td>'+
+          (hasRk?'<td>'+(okN(r.ranks[i])?r.ranks[i].toLocaleString('en-IN'):'—')+'</td>':'')+
+          '<td class="dim">'+(p.bench&&okN(p.bench.totRet)?fmtTot(p.bench.totRet):'—')+'</td></tr>';}).join('')+
+      '</tbody></table></div></div>';
+    const byYear = Array.isArray(r.yr) && r.yr.length===YRS.length && YRS.length>0;
+    if(byYear){
+      h+='<div class="sec"><h4>Every year <i>total return</i></h4><div class="scr"><table class="bk"><thead><tr><th>Year</th><th>Strategy</th><th>'+esc(benchName())+'</th></tr></thead><tbody>'+
+        YRS.map((y,j)=>'<tr><td title="'+esc(y.start+' → '+y.end)+'">'+esc(y.label)+'</td><td>'+sgn(r.yr[j],okN(r.yr[j])?fmtTot(r.yr[j]):'')+'</td><td class="dim">'+(y.bench&&okN(y.bench.totRet)?fmtTot(y.bench.totRet):'—')+'</td></tr>').join('')+
+        '</tbody></table></div></div>';
+    }
+    $('dBody').innerHTML=h;
+    if(byYear){
+      $('cTtl').textContent='Total return % each year';
+      drawBars(YRS.map((y,j)=>({lab:"’"+y.key.slice(3), full:y.label, s:r.yr[j], b:y.bench?y.bench.totRet:null})));
+    } else {
+      $('cTtl').textContent='CAGR % in each phase';
+      drawBars(P.map((p,i)=>({lab:p.short||p.key, full:p.label, s:(c.p[i]||[])[0], b:p.bench?p.bench.cagr:null})));
+    }
+    $('lgB').textContent=benchName();
+  }
+  function drawBars(g){
+    const el=$('chartBox'), W=Math.max(240,el.clientWidth), H=el.clientHeight||230;
+    const vals=[]; g.forEach(x=>{ if(okN(x.s)) vals.push(x.s); if(okN(x.b)) vals.push(x.b); });
+    if(!vals.length){ $('chart').innerHTML=''; return; }
+    const hi=Math.max(0,...vals), lo=Math.min(0,...vals), span=(hi-lo)||1;
+    const L=8, Rr=8, T=18, B=22, ph=H-T-B, pw=W-L-Rr;
+    const y=v=>T+(hi-v)/span*ph, slot=pw/g.length, bw=Math.max(4,Math.min(24,slot*0.34));
+    const lab=v=>(v>=0?'+':'')+(Math.abs(v)>=1000?(v/100).toFixed(1)+'x':Math.abs(v)>=100?v.toFixed(0):v.toFixed(1));
+    let s='<line class="ax" x1="'+L+'" x2="'+(W-Rr)+'" y1="'+y(0)+'" y2="'+y(0)+'"/>';
+    g.forEach((x,i)=>{
+      const cx=L+slot*(i+0.5);
+      const bar=(v,x0,cls,name)=>{const y0=y(Math.max(0,v)), hh=Math.max(1,Math.abs(y(v)-y(0)));
+        return '<rect class="'+cls+'" x="'+x0.toFixed(1)+'" y="'+y0.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hh.toFixed(1)+'"><title>'+esc(x.full)+' — '+name+': '+lab(v)+'%</title></rect>';};
+      if(okN(x.s)){ s+=bar(x.s,cx-bw-1,x.s>=0?'bp':'bn','strategy');
+        if(slot>=40) s+='<text x="'+(cx-bw/2-1).toFixed(1)+'" y="'+(x.s>=0?y(x.s)-4:y(x.s)+12).toFixed(1)+'" text-anchor="middle">'+lab(x.s)+'</text>'; }
+      if(okN(x.b)) s+=bar(x.b,cx+1,'bb',esc(benchName()));
+      s+='<text x="'+cx.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle">'+esc(x.lab)+'</text>';
+    });
+    const svg=$('chart'); svg.setAttribute('viewBox','0 0 '+W+' '+H); svg.innerHTML=s;
+  }
+  function selectJ(j, byTap){
+    const r=ROWS[j]; if(!r) return;
+    SELC=r.c; paintDetail();
+    if(byTap && window.innerWidth<900) $('pR').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('tb').addEventListener('click',e=>{const tr=e.target.closest('tr.srow'); if(tr) selectJ(+tr.dataset.j,true);});
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    const t=e.target, tag=t&&t.tagName;
+    if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
+    if(!ROWS.length) return;
+    const i=ROWS.findIndex(r=>r.c===SELC); let j=null;
+    if(e.key==='ArrowDown') j=Math.min(ROWS.length-1,i+1);
+    else if(e.key==='ArrowUp') j=Math.max(0,i-1);
+    else if(e.key==='Home') j=0;
+    else if(e.key==='End') j=ROWS.length-1;
+    if(j==null) return;
+    e.preventDefault();
+    selectJ(j,false);
+    const tr=$('tb').querySelector('tr.srow.on'); if(tr) tr.scrollIntoView({block:'nearest'});
+  });
   function basketDesc(){ return 'top-'+VDESC[curVar][0]+' equal-weight, '+(isHold(curVar)?'ride winners (hold)':'monthly reset'); }
   // The JSON names its own benchmark (benchName, Nifty 50 grids onward); older JSONs = Nifty 500.
   function benchName(){ return (R&&R.benchName)||'Nifty 500'; }
-  const onCard=e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;render();};
-  const onKey=e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target.closest('.pcard[data-k]');if(!el)return;e.preventDefault();cur=el.dataset.k;sortK=null;render();};
+  const onCard=e=>{const el=e.target.closest('.pcard[data-k]');if(!el)return;cur=el.dataset.k;sortK=null;SELC=null;render();document.getElementById('shell').scrollTop=0;};
   const cardsEl=document.getElementById('cards');
-  cardsEl.addEventListener('click',onCard); cardsEl.addEventListener('keydown',onKey);
+  cardsEl.addEventListener('click',onCard);
   document.getElementById('ycards').addEventListener('click',onCard);
-  document.getElementById('ycards').addEventListener('keydown',onKey);
   document.getElementById('q').addEventListener('input',e=>{needle=e.target.value.trim().toLowerCase();render();});
   document.getElementById('th').addEventListener('click',e=>{const th=e.target.closest('th');if(!th)return;
     const ck=th.dataset.c; if(sortK===ck)sortAsc=!sortAsc;else{sortK=ck;sortAsc=(ck==='rk'||ck==='worst'||ck==='dd'||ck==='fam'||ck==='f');} render();});
-  applyData(await loadVar('r5'));
+  K.fitGrid(document.getElementById('grid'));
+  try{ applyData(await loadVar('r5')); K.fitGrid(document.getElementById('grid')); render(); }
+  catch(err){ document.getElementById('tb').innerHTML='<tr><td class="os-empty">The strategy grid could not be loaded. Reload to try again.</td></tr>'; }
 })();
 </script>
 </body>
