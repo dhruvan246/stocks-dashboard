@@ -4,204 +4,154 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Stocks</title>
+<meta name="description" content="Every NSE and BSE stock on one screen — pick dates, market cap, index and industry; see each stock's change, its chart and its 52-week position; backtest the top movers." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  :root { --gain:#16a34a; --gain-bg:#dcfce7; --loss:#dc2626; --loss-bg:#fee2e2; }
-  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; }
-  table thead th { position:sticky; top:0; background:#f8fafc; z-index:10; }
-  .gain{color:var(--gain);} .loss{color:var(--loss);}
-  .chip-gain{background:var(--gain-bg);color:var(--gain);}
-  .chip-loss{background:var(--loss-bg);color:var(--loss);}
-  .scrollbar::-webkit-scrollbar{width:8px;height:8px;}
-  .scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px;}
-  .scrollbar::-webkit-scrollbar-track{background:#f1f5f9;}
-  #loadingOverlay{position:fixed;inset:0;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .3s;}
-  .spinner{width:44px;height:44px;border:4px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:spin 1s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(190px,220px) minmax(430px,460px) minmax(0,1fr)}
+  #gHead,.gr{grid-template-columns:minmax(0,1fr) 38px 54px}
+  #kHead,.kr{grid-template-columns:24px minmax(0,1fr) 52px 56px 80px 46px}
+  #kHead .cf,.kr .cf{display:none}
+  #kHead > .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .os-ch span{white-space:nowrap}
+  @container (max-width:600px){ #pC .os-hint.keys{display:none} }
+  @media (min-width:1640px){ #grid{grid-template-columns:minmax(200px,240px) minmax(540px,600px) minmax(0,1fr)} #kHead,.kr{grid-template-columns:24px minmax(0,1fr) 56px 58px 58px 84px 48px} #kHead .cf,.kr .cf{display:inline} }
+  #grid.bt #kHead,.br{grid-template-columns:24px minmax(0,1fr) 70px 70px 88px}
+  .os-row > .n,.os-ch > span.n{text-align:left}
+  .os-row > .ix{text-align:left;color:var(--text-faint);font-size:11.5px}
+  .kr .sw-star{margin-right:3px}
+  .wn{color:var(--warn);font-size:11px;font-weight:500}
+  .w1{color:var(--warn)} .w2{color:#e2761b}
+  .os-tag.wt{color:var(--warn);border-color:var(--warn)} .os-tag.bt{color:var(--accent-text);border-color:var(--accent)}
+  html[data-theme] .os-sg select{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:500;padding:5px 8px;height:auto;min-height:0;cursor:pointer;max-width:210px}
+  html[data-theme] .os-sg input[type="date"]{border-right:0}
+  #pK .os-ps{flex-wrap:nowrap} html[data-theme] #pK .os-ps input[type="search"]{flex:1 1 0;min-width:0;width:auto}
+  #stats{display:flex;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;overflow:hidden}
+  #stats > div{flex:1 1 118px;padding:7px 12px;border-right:1px solid var(--border);min-width:0;margin-right:-1px}
+  #stats span{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #stats b{display:block;font-size:14px;font-weight:600;margin-top:2px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #stats b small{font-size:11px;font-weight:500;color:var(--text-faint);margin-left:4px}
+  #stats b.os-pos{color:var(--pos)} #stats b.os-neg{color:var(--neg)}
+  html[data-theme] #stats button{background:none;border:0;padding:0;min-height:0;font:inherit;font-weight:600;color:var(--accent-text);cursor:pointer;box-shadow:none}
+  #msRow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 10px}
+  #msRow .lb{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint)}
+  .msc{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:12.5px;color:var(--text-muted);cursor:pointer;overflow:hidden}
+  .msc:hover{color:var(--text);border-color:var(--border-strong)} .msc span{padding:4px 4px 4px 10px}
+  html[data-theme] .msc button{background:none;border:0;padding:4px 8px 4px 4px;min-height:0;color:var(--text-faint);cursor:pointer;font-size:13px;line-height:1;box-shadow:none}
+  html[data-theme] .msc button:hover{color:var(--neg)}
+  html[data-theme] #msName{background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:4px 9px;font-size:12.5px;color:var(--text);min-height:0;height:auto;width:230px;max-width:100%}
+  #btForm{padding:12px;display:grid;grid-template-columns:1fr;gap:9px;border-bottom:1px solid var(--border)}
+  #btForm label{display:block;font-size:11px;color:var(--text-faint);margin-bottom:3px}
+  html[data-theme] #btForm input,html[data-theme] #btForm select{width:100%;background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:13px;color:var(--text);min-height:0;height:auto}
+  html[data-theme] #runBacktestBtn{background:var(--accent);color:var(--on-accent,#fff);border:0;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600;cursor:pointer;min-height:0}
+  html[data-theme] #runBacktestBtn:disabled{opacity:.5;cursor:default}
+  #btMsg{color:var(--warn);font-size:12px;line-height:1.45}
+  #cNote{border-top:1px solid var(--border)}
+  #cNote b{font-weight:500;color:var(--text-muted)}
+  .more{padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--text-faint)}
+  #status{margin-bottom:10px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(170px,200px) minmax(340px,400px) minmax(0,1fr)}
+    #kHead,.kr{grid-template-columns:24px minmax(0,1fr) 58px 88px 50px} #kHead .c3,.kr .c3{display:none} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pC .os-ph{flex-wrap:wrap}
+    #kHead,.kr{grid-template-columns:22px minmax(0,1fr) 54px 84px 48px} #grid.bt #kHead,.br{grid-template-columns:22px minmax(0,1fr) 62px 62px 80px}
+    #stats > div{flex-basis:30%} .os-asof{padding-bottom:6px} }
 </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="mt-5 text-sm font-semibold text-slate-700">Delivering magic soon&hellip;</div>
-  <div class="mt-1 text-xs text-slate-500" id="loadingStatus">Brewing your dashboard</div>
-</div>
-
-<div class="min-h-screen">
-  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-4">
-      <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
-        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
-        <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
-      </a>
-      <div class="flex items-center gap-3 min-w-0">
-        <nav></nav>
-        <span class="text-[11px] text-slate-400 hidden xl:block shrink-0" id="lastUpdated">01 Jan 1996 &rarr; 25 Nov 2026 20:02 IST</span>
-      </div>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+    <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
+      <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
+    </a>
+    <nav></nav>
+  </div>
+</header>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Stocks</h1>
+    <div class="os-vtabs" id="modes" role="tablist" aria-label="Screener or backtest">
+      <button type="button" data-v="screen" class="on" role="tab">Screener</button>
+      <button type="button" data-v="bt" role="tab" title="Buy the top movers of the From → To period and hold them to a later date">Backtest</button>
     </div>
-  </header>
-
-  <section class="max-w-7xl mx-auto px-6 py-6">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Filters</h2>
-        <span class="text-xs text-slate-500" id="universeCount">Loading universe&hellip;</span>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">From Date</label>
-          <input type="date" id="fromDate" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
-        </div>
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">To Date</label>
-          <input type="date" id="toDate" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
-        </div>
-        <div class="md:col-span-1 relative">
-          <label class="block text-xs font-medium text-slate-600 mb-1">Market Cap (&#8377; Cr)</label>
-          <button type="button" id="mcapTrigger"
-                  class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white text-left flex justify-between items-center hover:bg-slate-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            <span id="mcapLabel" class="truncate">All market caps</span>
-            <svg class="w-4 h-4 text-slate-400 ml-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </button>
-          <div id="mcapPanel" class="hidden absolute z-30 mt-1 w-64 bg-white border border-slate-200 rounded-lg shadow-lg p-2">
-            <div class="flex justify-between text-[11px] text-slate-500 px-2 py-1 border-b border-slate-100 mb-1">
-              <button type="button" id="mcapSelectAll" class="hover:text-blue-600 font-medium">Select all</button>
-              <button type="button" id="mcapClear"     class="hover:text-blue-600 font-medium">Clear</button>
-            </div>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="below100"/>100 and below</label>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="100to500"/>100 &ndash; 500</label>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="500to1000"/>500 &ndash; 1,000</label>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="1000to5000"/>1,000 &ndash; 5,000</label>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="5000to20000"/>5,000 &ndash; 20,000</label>
-            <label class="flex items-center gap-2 px-2 py-1 hover:bg-slate-50 rounded cursor-pointer text-sm"><input type="checkbox" class="mcap-cb rounded border-slate-300" data-bucket="above20000"/>20,000 and above</label>
-          </div>
-        </div>
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">Index</label>
-          <select id="indexFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-            <option value="all">All indices</option>
-          </select>
-        </div>
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">F&amp;O</label>
-          <select id="fnoFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-            <option value="all">All stocks</option>
-            <option value="fno">F&amp;O stocks only</option>
-          </select>
-        </div>
-        <div class="md:col-span-1">
-          <label class="block text-xs font-medium text-slate-600 mb-1">Industry</label>
-          <select id="sectorFilter" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
-            <option value="all">All sectors</option>
-          </select>
-        </div>
-        <div class="md:col-span-1 flex items-end">
-          <button id="loadBtn" class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">Load Data</button>
-        </div>
-      </div>
-      <div class="flex flex-wrap gap-2 mt-4">
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-latest="1" title="Most recent trading day's move (vs the previous trading day's close)">Latest move</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="7">Last 7 days</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="30">Last 30 days</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="90">Last 90 days</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="365">1 year</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1095">3 years</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="1825">5 years</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="3650">10 years</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-days="7300">20 years</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-since-1996="1">Since 1996</button>
-        <button class="preset-btn text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full px-3 py-1 font-medium" data-ytd="1">YTD</button>
-      </div>
-      <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
-        <span class="text-[11px] font-bold uppercase tracking-wide text-slate-400">My screens</span>
-        <span id="msList" class="flex flex-wrap gap-2"></span>
-        <button id="msSave" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 font-semibold" title="Save the current filter combination (dates, mcap, index, F&amp;O, industry) under a name — synced to your other devices">+ Save current filters</button>
-      </div>
+    <div class="os-asof"><span id="universeCount">Loading universe…</span> · prices <span id="lastUpdated">01 Jan 1996 &rarr; 25 Nov 2026 20:02 IST</span></div>
+  </div>
+  <div id="status" class="os-empty">Loading stock data…</div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <div class="os-sg" id="pers" role="group" aria-label="Period"></div>
+      <span class="os-sg" title="The change is measured from the last close before the From date to the last close on or before the To date">
+        <span class="lbl">From</span><input type="date" id="fromDate" aria-label="From date" />
+        <span class="lbl">To</span><input type="date" id="toDate" aria-label="To date" /></span>
+      <span class="os-sg" id="mcaps" role="group" aria-label="Market cap bands in rupees crore — pick any, none means all"></span>
+      <span class="os-sg" title="Members of this index on the From date"><span class="lbl">Index</span>
+        <select id="indexFilter" aria-label="Index"><option value="all">All</option></select></span>
+      <span class="os-sg" role="group" aria-label="Futures and options"><button type="button" id="fnoBtn" title="Only stocks that were in the F&amp;O list on the From date">F&amp;O only</button></span>
     </div>
-  </section>
-
-  <section class="max-w-7xl mx-auto px-6 pb-6">
-    <div class="grid grid-cols-2 md:grid-cols-7 gap-3" id="statsGrid"></div>
-  </section>
-
-  <!-- Backtest panel: pick top-N by screening returns, hold to a later date, see portfolio P&L -->
-  <section class="max-w-7xl mx-auto px-6 pb-6">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <div class="flex items-center justify-between mb-3">
-        <div>
-          <h2 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Backtest</h2>
-          <p class="text-[11px] text-slate-500 mt-0.5">Pick the top-N stocks by the From&rarr;To return, &ldquo;buy&rdquo; them equal-weighted on the To Date, sell on Hold&nbsp;Until. Returns shown.</p>
+    <div id="msRow"><span class="lb" title="Saved filter sets: dates, market cap, index, F&amp;O, industry. Synced to your other devices.">My screens</span>
+      <span id="msList" style="display:contents"></span>
+      <button type="button" class="os-btn" id="msSave" title="Save the filters on screen under a name">+ Save these filters</button>
+      <input type="text" id="msName" class="hidden" maxlength="60" placeholder="Name, then Enter (Esc to cancel)" aria-label="Name for this screen" /></div>
+    <div id="stats"></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Industries">
+        <div class="os-ph"><span class="ttl">Industry</span><span class="r" id="gCount"></span></div>
+        <div class="os-ps"><input id="gSearch" type="search" placeholder="Find an industry" autocomplete="off" aria-label="Find an industry" /></div>
+        <div class="os-ch" id="gHead"></div>
+        <div class="os-list" id="gList" role="listbox" aria-label="Industries"></div>
+      </section>
+      <section class="os-pane hidden" id="pB" aria-label="Backtest setup">
+        <div class="os-ph"><span class="ttl">Backtest</span></div>
+        <div id="btForm">
+          <div><label for="backtestN">Top N (by the From → To change)</label><input type="number" id="backtestN" value="10" min="1" max="500" /></div>
+          <div><label for="backtestHoldTo">Hold until</label><input type="date" id="backtestHoldTo" /></div>
+          <div><label for="backtestCapital">Capital (₹)</label><input type="text" id="backtestCapital" value="1,00,000" inputmode="numeric" /></div>
+          <div><label for="btSec">Industry</label><select id="btSec"></select></div>
+          <button type="button" id="runBacktestBtn">Run backtest</button>
+          <div id="btMsg"></div>
         </div>
-      </div>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 items-end">
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Top N (sorted by % Change)</label>
-          <input type="number" id="backtestN" value="10" min="1" max="500" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Hold Until</label>
-          <input type="date" id="backtestHoldTo" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Capital (&#8377;)</label>
-          <input type="text" id="backtestCapital" value="1,00,000" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm tabular-nums focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white" />
-        </div>
-        <div class="flex items-end">
-          <button id="runBacktestBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg px-4 py-2 text-sm font-semibold shadow-sm transition">Run Backtest</button>
-        </div>
-        <div class="flex items-end">
-          <p class="text-[11px] text-slate-500 italic">Screen period = main From&rarr;To dates above. Buy date = To Date.</p>
-        </div>
-      </div>
-      <div id="backtestResults" class="mt-5 hidden"></div>
+        <div class="os-note">Picks the top N stocks by the From → To change (the dates and filters in the bar above), buys them in equal amounts on the To date and sells on Hold until. Market cap and index / F&amp;O membership are taken as of the From date; market cap that far back is today's cap scaled by the price change, an approximation.</div>
+      </section>
+      <section class="os-pane" id="pK" aria-label="Stocks">
+        <div class="os-ph"><span class="ttl" id="kTitle">Results</span><span class="r" id="resultCount"></span></div>
+        <div class="os-ps" id="kTools"><input id="searchBox" type="search" placeholder="Search symbol, company or industry" autocomplete="off" aria-label="Search the results" />
+          <button type="button" class="os-btn" id="exportBtn" title="Download every result as CSV">CSV</button></div>
+        <div class="os-ch" id="kHead"></div>
+        <div class="os-list" id="kList" role="listbox" aria-label="Stocks"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym"></span><span class="nm" id="cName"></span><span class="px" id="cPx"></span><span id="cChg"></span>
+          <span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <a class="os-btn hidden" id="cScr" href="#" target="_blank" rel="noopener" title="This company on Screener.in">Screener ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
+          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> switch list · <b>/</b> search · <b>F</b> focus</span>
+          <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+        <div class="os-note" id="cNote"></div>
+      </section>
     </div>
-  </section>
-
-  <section class="max-w-7xl mx-auto px-6 pb-10">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap gap-3 justify-between items-center">
-        <div>
-          <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Results</h3>
-          <p class="text-xs text-slate-500 mt-0.5" id="resultCount">Pick dates + market cap, then click <span class="font-semibold">Load Data</span>.</p>
-        </div>
-        <div class="flex gap-2 items-center">
-          <input type="text" id="searchBox" placeholder="Search symbol or company&hellip;" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64" />
-          <button id="exportBtn" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg px-3 py-1.5 font-medium">Export CSV</button>
-        </div>
-      </div>
-      <div class="max-h-[640px] overflow-auto scrollbar">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 text-slate-600 text-xs uppercase">
-            <tr id="resultsHead">
-              <th class="px-4 py-3 text-left font-semibold">#</th>
-              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="symbol">Symbol <span class="sort-ind text-slate-300">&#8597;</span></th>
-              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="name">Company <span class="sort-ind text-slate-300">&#8597;</span></th>
-              <th class="px-4 py-3 text-left font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="sector">Industry <span class="sort-ind text-slate-300">&#8597;</span></th>
-              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="mcap">Market Cap <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>
-              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="fromPrice">From Price <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
-              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="toPrice">To Price <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377;)</span></th>
-              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="changePercent">Change % <span class="sort-ind text-blue-600">&darr;</span></th>
-              <th class="px-4 py-3 text-right font-semibold cursor-pointer hover:bg-slate-100 select-none" data-sort="d52" title="Distance from 52-week high, anchored at snapshot date">From 52W <span class="sort-ind text-slate-300">&#8597;</span><br><span class="normal-case text-slate-400 text-[10px] font-normal">High</span></th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody" class="divide-y divide-slate-100">
-            <tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">Loading stock data&hellip;</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <footer class="max-w-7xl mx-auto px-6 py-6 text-xs text-slate-400 text-center">
-    Price data from Yahoo Finance &middot; Market caps from BSE &middot; Weekly closes 1996&ndash;2019, daily 2020&ndash;today &middot; NSE suffix .NS / BSE suffix .BO
-  </footer>
-</div>
-
+    <details id="how"><summary>How these numbers are made</summary>
+      <p><b>Change %</b> compares two closing prices: the last close <i>before</i> the From date and the last close on or before the To date. So From = To shows that one day's move against the previous trading day, and "Latest" is the newest trading day in our data. A stock whose only price inside the window is its first trading day shows <span class="os-tag bt">DAY 1</span> and no change. <span class="os-tag wt">STALE</span> means the stock's last trade in the window was more than 14 days before your To date. "since Mar 2024" in amber means the exchange has had no trade since then — the price is the last traded price, and such stocks are left out of gainers, losers and the average.</p>
+      <p><b>Index and F&amp;O</b> filters use the list in force on the From date, not today's list. <b>Market cap</b> is today's, in ₹ crore, from the exchanges. <b>From 52W high</b> is how far the latest price sits below the highest price of the last 52 weeks (0% = at the high). The industry average is the plain average of the stocks in it.</p>
+      <p><b>Backtest</b> ranks the stocks that pass the filters by their From → To change, buys the top N in equal amounts at the To-date close and sells at the Hold-until close. No costs, taxes or dividends are counted.</p>
+      <p>Prices are split and bonus adjusted closes from the NSE and BSE daily files (weekly closes 1996–2019, daily 2020 → today). Dividends are not adjusted. Educational only — not investment advice.</p>
+    </details>
+  </div>
+</main>
 <script>
+'use strict';
+const K = window.OSKit, $ = id => document.getElementById(id), { fmtN, fmtPct, esc, niceDate, cls } = K;
+
+/* ================= data — ported unchanged from the old page ================= */
 let META = {}, SERIES = {}, UNIVERSE = [], START_TS = 0, END_TS = 0,
     INDICES_HISTORY = {}, FNO_TODAY = new Set(), FNO_HISTORY = [];
 // Slim-first loading: SERIES initially holds only the last ~250 days (from dash_slim.bin).
@@ -234,10 +184,9 @@ function mergeSeries(base, overlay) {
   return merged;
 }
 // Lazily pull the FULL price history (only when a long-range query / backtest needs it).
-async function ensureFull(statusFn) {
+async function ensureFull() {
   if (FULL_LOADED) return true;
   if (!FULL_LOADING) FULL_LOADING = (async () => {
-    if (statusFn) statusFn('Loading full history…');
     const D = await gunzipFetch('./stock_data.bin');   // full series, already built + cacheable
     // MERGE, never replace (the sectors.html guard, runbook §103/§145): stock_data.bin is committed
     // on its own cadence, so it can lag dash_slim.bin — on 2026-09-22 it still carried the 4,929-name
@@ -250,7 +199,6 @@ async function ensureFull(statusFn) {
   await FULL_LOADING;
   return FULL_LOADED;
 }
-
 // Return the set of NSE symbols that were in `indexName` on `dateISO`.
 // Snapshots are stored ascending by effectiveDate and each snapshot is the
 // membership FROM its effectiveDate onward (see build_n500_membership.py) —
@@ -267,7 +215,6 @@ function getIndexMembersAt(indexName, dateISO) {
   }
   return new Set((best || snaps[0]).symbols);
 }
-
 // F&O membership at a given date — same lastSnap convention as indices.
 // Without history snapshots, fall back to today's NSE F&O list.
 function getFnoMembersAt(dateISO) {
@@ -282,14 +229,51 @@ function getFnoMembersAt(dateISO) {
   return FNO_TODAY;
 }
 const DAY = 86400;
+// Test a single mcap value against a single bucket key
+function inMcapBucket(mcap, bucket) {
+  if (bucket === 'below100')     return mcap > 0 && mcap <= 100;
+  if (bucket === '100to500')     return mcap > 100    && mcap <= 500;
+  if (bucket === '500to1000')    return mcap > 500    && mcap <= 1000;
+  if (bucket === '1000to5000')   return mcap > 1000   && mcap <= 5000;
+  if (bucket === '5000to20000')  return mcap > 5000   && mcap <= 20000;
+  if (bucket === 'above20000')   return mcap > 20000;
+  return false;
+}
+// True if mcap matches ANY bucket in the set. Empty set = no filter (all).
+// All 6 buckets selected = also no filter (catches mcap=0/unknown stocks too,
+// matching user intuition that "all checked" means "everything").
+function inAnyMcapBucket(mcap, bucketSet) {
+  if (!bucketSet || bucketSet.size === 0) return true;
+  if (bucketSet.size >= 6) return true;
+  for (const b of bucketSet) if (inMcapBucket(mcap, b)) return true;
+  return false;
+}
+function lastOnOrBefore(arr, v) {
+  let lo = 0, hi = arr.length - 1, ans = -1;
+  while (lo <= hi) { const mid = (lo + hi) >> 1; if (arr[mid] <= v) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+  return ans;
+}
+
+/* ================= page state ================= */
+const S = { tab: 'screen', preset: '7', mcap: new Set(), idx: 'all', fno: 'all', sec: 'all', gq: '', pane: 'k',
+            sel: null, btSel: null, focus: false, gsort: { k: 'cnt', dir: -1 } };
+const PRESETS = [['latest', 'Latest', 'The newest trading day against the day before'], ['7', '7D', 'Last 7 days'], ['30', '30D', 'Last 30 days'], ['90', '90D', 'Last 90 days'],
+  ['365', '1Y', '1 year'], ['1095', '3Y', '3 years'], ['1825', '5Y', '5 years'], ['3650', '10Y', '10 years'], ['7300', '20Y', '20 years'], ['since1996', '1996 →', 'Since 1996'], ['ytd', 'YTD', 'Since 1 January']];
+const MCAP_LABELS = {
+  'below100':    '≤ 100',
+  '100to500':    '100–500',
+  '500to1000':   '500–1k',
+  '1000to5000':  '1k–5k',
+  '5000to20000': '5k–20k',
+  'above20000':  '≥ 20k',
+};
+function getMcapBucketSet() { return S.mcap; }
+let ALL = [], lastResults = [], RMAP = new Map(), VIEW = [], MSG = '', LTOK = 0, CH = null;
+const BT = { d: null };
 
 async function loadAndInit() {
-  const statusEl = document.getElementById('loadingStatus');
+  const statusEl = $('status');
   try {
-    const t0 = performance.now();
-    statusEl.textContent = 'Loading…';
-    await new Promise(r => requestAnimationFrame(() => setTimeout(r, 16)));
-
     // Slim payload: metadata + last ~250 days only (~1 MB). Full history is fetched
     // lazily by ensureFull() from stock_data.bin when a longer range / backtest needs it.
     const D = await gunzipFetch('./dash_slim.bin');
@@ -322,17 +306,16 @@ async function loadAndInit() {
     FNO_TODAY = new Set(D.fnoToday || []);
     FNO_HISTORY = D.fnoHistory || [];
 
-    // Populate the dropdown using BSE's IndustryNew (granular: Pharma, Metals,
-    // Chemicals, etc.) with a fallback to the broad sector or 'Uncategorized'.
-    // The selected key is stored on each option's data-key for filtering.
+    // Industry = BSE's IndustryNew (granular: Pharma, Metals, Chemicals, etc.) with a fallback
+    // to the broad sector or 'Uncategorized'. Largest industry first.
     const indCounts = {};
     for (const t of UNIVERSE) {
       const m = META[t];
       const ind = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
       indCounts[ind] = (indCounts[ind] || 0) + 1;
     }
-    const sectorSel = document.getElementById('sectorFilter');
-    // Sort: largest industry first so common ones surface
+    const sectorSel = $('btSec');
+    sectorSel.innerHTML = '<option value="all">All industries</option>';
     Object.entries(indCounts)
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .forEach(([ind, n]) => {
@@ -344,7 +327,7 @@ async function loadAndInit() {
 
     // Index dropdown — every index with membership history (the roster in force today, counted over stocks this
     // page carries), plus any per-stock `indices` tags. META.indices is empty in today's feed, so the history is what
-    // actually lists Nifty 50/500/… here (before this the menu offered only "All indices").
+    // actually lists Nifty 50/500/… here.
     const indexCounts = {};
     for (const t of UNIVERSE) {
       const arr = META[t].indices || [];
@@ -359,7 +342,7 @@ async function loadAndInit() {
       for (const s of mem) if (META[s] || META[s + '.NS']) n++;
       if (n) indexCounts[ix] = n;
     }
-    const indexSel = document.getElementById('indexFilter');
+    const indexSel = $('indexFilter');
     // Preferred ordering so the most common picks surface at the top
     const PREFERRED = ['Nifty 50','Nifty Next 50','Nifty 100','Nifty 200','Nifty 500',
                        'Nifty Midcap 50','Nifty Midcap 100','Nifty Midcap 150',
@@ -374,75 +357,42 @@ async function loadAndInit() {
       indexSel.appendChild(opt);
     }
 
-    const dt = ((performance.now() - t0) / 1000).toFixed(1);
-    statusEl.textContent = 'Ready ✨';
     const priced = Object.keys(SERIES).length;
     const unpriced = UNIVERSE.length - priced;
-    document.getElementById('universeCount').textContent =
-      UNIVERSE.length.toLocaleString('en-IN') + ' NSE & BSE listings' +
-      ' (' + priced.toLocaleString('en-IN') + ' with prices, ' + unpriced.toLocaleString('en-IN') + ' metadata-only)';
+    $('universeCount').textContent = UNIVERSE.length.toLocaleString('en-IN') + ' NSE & BSE listings';
+    $('universeCount').title = priced.toLocaleString('en-IN') + ' with prices, ' + unpriced.toLocaleString('en-IN') + ' with company details only';
 
     // Default range: last 7 days
     const today = new Date();
     const weekAgo = new Date(); weekAgo.setDate(today.getDate() - 7);
-    document.getElementById('toDate').value   = today.toISOString().split('T')[0];
-    document.getElementById('fromDate').value = weekAgo.toISOString().split('T')[0];
+    $('toDate').value   = today.toISOString().split('T')[0];
+    $('fromDate').value = weekAgo.toISOString().split('T')[0];
+    $('backtestHoldTo').value = today.toISOString().split('T')[0];   // default Hold Until = today
 
-    const ov = document.getElementById('loadingOverlay');
-    ov.style.opacity = '0';
-    setTimeout(() => ov.remove(), 300);
-
+    statusEl.classList.add('hidden'); $('content').classList.remove('hidden');
+    CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: 'D', range: '1Y', log: false });
+    wire();
     loadData();
   } catch (err) {
-    statusEl.innerHTML = 'Error: ' + (err && err.message ? err.message : err) +
-      '<br><span class="text-[11px]">Your browser may not support DecompressionStream. Use Chrome 80+ / Edge / Safari 16+ / Firefox 113+.</span>';
+    statusEl.innerHTML = 'Error: ' + esc(err && err.message ? err.message : err) +
+      '<br>Your browser may not support DecompressionStream. Use Chrome 80+ / Edge / Safari 16+ / Firefox 113+.';
     console.error(err);
   }
 }
 
-// Test a single mcap value against a single bucket key
-function inMcapBucket(mcap, bucket) {
-  if (bucket === 'below100')     return mcap > 0 && mcap <= 100;
-  if (bucket === '100to500')     return mcap > 100    && mcap <= 500;
-  if (bucket === '500to1000')    return mcap > 500    && mcap <= 1000;
-  if (bucket === '1000to5000')   return mcap > 1000   && mcap <= 5000;
-  if (bucket === '5000to20000')  return mcap > 5000   && mcap <= 20000;
-  if (bucket === 'above20000')   return mcap > 20000;
-  return false;
-}
-// True if mcap matches ANY bucket in the set. Empty set = no filter (all).
-// All 6 buckets selected = also no filter (catches mcap=0/unknown stocks too,
-// matching user intuition that "all checked" means "everything").
-function inAnyMcapBucket(mcap, bucketSet) {
-  if (!bucketSet || bucketSet.size === 0) return true;
-  if (bucketSet.size >= 6) return true;
-  for (const b of bucketSet) if (inMcapBucket(mcap, b)) return true;
-  return false;
-}
-
-function firstOnOrAfter(arr, v) {
-  let lo = 0, hi = arr.length - 1, ans = -1;
-  while (lo <= hi) { const mid = (lo + hi) >> 1; if (arr[mid] >= v) { ans = mid; hi = mid - 1; } else lo = mid + 1; }
-  return ans;
-}
-function lastOnOrBefore(arr, v) {
-  let lo = 0, hi = arr.length - 1, ans = -1;
-  while (lo <= hi) { const mid = (lo + hi) >> 1; if (arr[mid] <= v) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
-  return ans;
-}
-
-let lastResults = [];
+function fail(msg) { ALL = []; lastResults = []; RMAP = new Map(); MSG = msg; renderAll(); }
 
 async function loadData() {
-  const fromDate     = document.getElementById('fromDate').value;
-  const toDate       = document.getElementById('toDate').value;
+  const tok = ++LTOK;
+  const fromDate     = $('fromDate').value;
+  const toDate       = $('toDate').value;
   const mcapBuckets  = getMcapBucketSet();   // Set of selected buckets (empty = all)
-  const sectorFilter = document.getElementById('sectorFilter').value;
-  const indexFilter  = document.getElementById('indexFilter').value;
-  if (!fromDate || !toDate)                 return alert('Please select both From Date and To Date');
+  const sectorFilter = S.sec;
+  const indexFilter  = S.idx;
+  if (!fromDate || !toDate)                 return fail('Pick both a From date and a To date.');
   // Allow From == To (means "show this day's 1-day move" — slide-back logic
   // below picks the previous trading day's close as the comparison point).
-  if (new Date(fromDate) > new Date(toDate)) return alert('From Date must be on or before To Date');
+  if (new Date(fromDate) > new Date(toDate)) return fail('The From date must be on or before the To date.');
 
   // Interpret user-picked dates as UTC midnight so they line up exactly with
   // Yahoo's day_offsets (which use UTC). Without 'Z' the browser would treat
@@ -455,16 +405,16 @@ async function loadData() {
   // If the window reaches before the slim recent-data cutoff, pull the FULL history once.
   // Short / default ranges stay instant on the slim data.
   if (fromDayOffset < RECENT_CUTOFF_OFF && !FULL_LOADED) {
-    const rc = document.getElementById('resultCount');
-    if (rc) rc.textContent = 'Loading full history…';
-    try { await ensureFull(); } catch (e) { if (rc) rc.textContent = 'Could not load full history. Check your connection and retry.'; return; }
+    $('resultCount').textContent = 'Loading full history…';
+    try { await ensureFull(); } catch (e) { if (tok === LTOK) fail('Could not load the full price history. Check your connection and try again.'); return; }
+    if (tok !== LTOK) return;
   }
 
   // Historical index membership at the user's From Date — so e.g. selecting
   // "Nifty 500 + 2021-Jan-01 → 2021-Dec-31" shows stocks that were in Nifty 500
   // back in 2021, not today's Nifty 500. Falls back to today's META.indices if
   // no history is available for the chosen index.
-  const fnoFilter    = document.getElementById('fnoFilter').value;
+  const fnoFilter    = S.fno;
   const histMembers = indexFilter !== 'all'
     ? getIndexMembersAt(indexFilter, fromDate)
     : null;
@@ -486,13 +436,14 @@ async function loadData() {
       if (!fnoMembers.has(base)) continue;
     }
     const indKey = (m.industry && m.industry.trim()) || m.sector || 'Uncategorized';
-    if (sectorFilter !== 'all' && indKey !== sectorFilter) continue;
+    // (the industry filter is applied after the loop — the industry pane needs every industry's rows)
     const ser = SERIES[ticker];
     // Base row — same shape regardless of whether we have prices.
     const row = {
+      t: ticker,
       symbol: m.symbol, name: m.name,
-      sector: indKey,                       // shown in the table chip
-      sectorBroad: m.sector || '',           // kept for tooltip / CSV
+      sector: indKey,                       // shown in the list / industry pane
+      sectorBroad: m.sector || '',           // kept for the detail line / CSV
       mcap: m.mcap,
       frozenSince: m.frozenSince || null,   // price unchanged for >= 1 year while Yahoo still prints it (§145)
       lastTrade: m.lastTrade || null,       // BSE's last trade for a row with no price series {d, p} (§145)
@@ -551,155 +502,35 @@ async function loadData() {
     }
     results.push(row);
   }
-  lastResults = results;
-  renderResults(results);
-  updateStats(results);
+  ALL = results;
+  lastResults = sectorFilter === 'all' ? results : results.filter(r => r.sector === sectorFilter);
+  RMAP = new Map(lastResults.map(r => [r.t, r]));
+  MSG = '';
+  renderAll();
 }
 
-// Mutable sort state (key = column data-sort, dir = 'asc'|'desc')
+// Mutable sort state (key = column, dir = 'asc'|'desc')
 const SORT_STATE = { key: 'changePercent', dir: 'desc' };
 const STRING_COLS = new Set(['symbol', 'name', 'sector']);
-
 function compareRows(a, b, key, dir) {
   // Always push noData rows to the bottom for any sort.
   if (a.noData && !b.noData) return 1;
   if (b.noData && !a.noData) return -1;
-
   const av = a[key];
   const bv = b[key];
-
   // Null/undefined goes to bottom regardless of direction
   const aNull = (av == null || (typeof av === 'number' && isNaN(av)));
   const bNull = (bv == null || (typeof bv === 'number' && isNaN(bv)));
   if (aNull && bNull) return 0;
   if (aNull) return 1;
   if (bNull) return -1;
-
   let cmp;
   if (STRING_COLS.has(key)) cmp = String(av).localeCompare(String(bv));
   else                       cmp = av - bv;
   return dir === 'asc' ? cmp : -cmp;
 }
-
-// Rows are drawn in pages of ROW_PAGE (drawing all 5,500 at once is slow on phones); a row at the
-// foot of the table reveals the next page or everything. The old hard cap of 500 hid every stock
-// ranked below it with no way to scroll to it — SUNLITE ranked 654th for 31-Mar→today (runbook §145).
-const ROW_PAGE = 500;
-let ROW_LIMIT = ROW_PAGE;
-function showMoreRows(all) { ROW_LIMIT = all ? Infinity : ROW_LIMIT + ROW_PAGE; renderResults(lastResults, true); }
-function renderResults(results, keepLimit) {
-  if (!keepLimit) ROW_LIMIT = ROW_PAGE;           // new data / search / sort starts at the first page
-  const q = document.getElementById('searchBox').value.toLowerCase().trim();
-  let f = results;
-  if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
-  f = f.slice();
-  f.sort((a, b) => compareRows(a, b, SORT_STATE.key, SORT_STATE.dir));
-
-  const tbody = document.getElementById('resultsBody');
-  const truncated = f.length > ROW_LIMIT;
-  const view = f.slice(0, ROW_LIMIT);
-
-  if (view.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" class="text-center text-slate-400 py-16 text-sm">No matching stocks. Adjust filters or search.</td></tr>';
-  } else {
-    const out = [];
-    const DASH = '<span class="text-slate-400">\u2014</span>';
-    for (let i = 0; i < view.length; i++) {
-      const r = view[i];
-      // Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
-      const mcap = r.mcap > 0 ? (r.mcap < 0.01 ? '&lt;0.01' : r.mcap.toLocaleString('en-IN', r.mcap < 10 ? {minimumFractionDigits: 2, maximumFractionDigits: 2} : {maximumFractionDigits: 0})) : '\u2014';
-      let fromCell, toCell, chgCell;
-      if (r.noData && r.lastTrade) {
-        // Listed but no trade in our price stores: show BSE's own last trade, or say there is none (§145).
-        const lt = r.lastTrade;
-        fromCell = DASH;
-        toCell = lt.p ? '&#8377;' + Number(lt.p).toFixed(2) : DASH;
-        const when = lt.d ? new Date(lt.d + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'}) : null;
-        chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="' +
-          (lt.p ? 'Last BSE trade ' + lt.d + ' at \u20b9' + lt.p + (lt.src === 'bse-archive' ? ' (BSE daily archive)' : ' (BSE quote page)') : (lt.since ? 'No trade in BSE\u2019s daily files since ' + lt.since + ' (BSE serves no file for 28 sessions in that span) and none on its quote page' : 'BSE shows no trade on record for this scrip')) + '">' +
-          (lt.p ? 'not traded since ' + when : (lt.since ? 'no BSE trade since ' + lt.since.slice(0, 4) : 'no trades on record')) + '</span>';
-      } else if (r.noData) {
-        fromCell = toCell = chgCell = DASH;
-      } else if (r.firstDay) {
-        // Stock has only one trading day inside the window (its listing day);
-        // show the price but flag that no comparison is possible.
-        fromCell = toCell = '&#8377;' + r.fromPrice.toFixed(2);
-        chgCell  = '<span class="inline-flex items-center bg-blue-50 text-blue-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="Stock\'s first trading day — no prior close to compare">Day 1</span>';
-      } else {
-        const cls = r.changePercent >= 0 ? 'chip-gain' : 'chip-loss';
-        const arr = r.changePercent >= 0 ? '&#9650;' : '&#9660;';
-        const sgn = r.changePercent >= 0 ? '+' : '';
-        fromCell = '&#8377;' + r.fromPrice.toFixed(2);
-        toCell   = '&#8377;' + r.toPrice.toFixed(2);
-        // Append a small "stale" warning badge if the resolved To date is more
-        // than 14 days before the user-picked To date — almost always means the
-        // stock is suspended or hasn't traded recently. We still report the
-        // change, just flag that it's not "fresh".
-        const staleNote = (r.staleDays && r.staleDays > 14)
-          ? '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-1.5 py-0.5 font-medium text-[10px] ml-1" title="Stock\'s last trade in this window was ' + r.staleDays + ' days before your To Date">stale</span>'
-          : '';
-        chgCell  = '<span class="inline-flex items-center gap-1 ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + arr + ' ' + sgn + r.changePercent.toFixed(2) + '%</span>' + staleNote;
-        if (r.frozenSince) {
-          // The exchange has no trade for this scrip; the "price" is the last trade repeated (§145).
-          const fs = new Date(r.frozenSince + 'T00:00:00Z').toLocaleDateString('en-IN', {month: 'short', year: 'numeric', timeZone: 'UTC'});
-          chgCell = '<span class="inline-flex items-center bg-amber-50 text-amber-700 rounded-md px-2 py-0.5 font-semibold text-xs" title="No trades since ' + r.frozenSince + ' — the price shown is the last traded price">not traded since ' + fs + '</span>';
-        }
-      }
-      // Screener.in URL: NSE symbols use the symbol itself; BSE-only stocks use
-      // the numeric scrip code (Screener accepts both formats).
-      const swKey = encodeURIComponent(r.symbol);
-      const linkAttrs = 'href="./stock.html?sym=' + swKey + '" title="' + r.symbol + ' — full details on STOCKSWORLD"';
-      const screenerAttrs = 'href="https://www.screener.in/company/' + swKey + '/" target="_blank" rel="noopener" title="' + r.symbol + ' on Screener.in"';
-      // From-52w-high cell. d52 is always <= 0; closer to zero = closer to high.
-      let h52Cell;
-      if (typeof r.d52 !== 'number') {
-        h52Cell = DASH;
-      } else {
-        // colour scale: 0% = green chip, deeper = red. tooltip shows the price.
-        let cls;
-        if (r.d52 >= -2)       cls = 'chip-gain';
-        else if (r.d52 >= -10) cls = 'bg-amber-50 text-amber-700';
-        else if (r.d52 >= -25) cls = 'bg-orange-50 text-orange-700';
-        else                    cls = 'chip-loss';
-        const titleAttr = r.h52 ? ' title="52W high: ₹' + r.h52.toFixed(2) + '"' : '';
-        h52Cell = '<span class="inline-flex items-center ' + cls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums"' + titleAttr + '>' + r.d52.toFixed(2) + '%</span>';
-      }
-      out.push(
-        '<tr class="hover:bg-slate-50 transition' + (r.noData ? ' bg-slate-50/40' : '') + '">' +
-        '<td class="px-4 py-3 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-        '<td class="px-4 py-3"><span class="sw-star" data-sym="' + r.symbol + '"></span> <a ' + linkAttrs + ' class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + r.symbol + '</a> <a ' + screenerAttrs + ' class="text-slate-300 hover:text-blue-600 text-[10px] align-super">↗</a></td>' +
-        '<td class="px-4 py-3"><a ' + linkAttrs + ' class="text-slate-700 hover:text-blue-600 hover:underline">' + r.name + '</a></td>' +
-        '<td class="px-4 py-3"><span class="text-xs bg-slate-100 text-slate-600 rounded-md px-2 py-0.5">' + r.sector + '</span></td>' +
-        '<td class="px-4 py-3 text-right text-slate-700 tabular-nums">' + mcap + '</td>' +
-        '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fromCell + '</td>' +
-        '<td class="px-4 py-3 text-right text-slate-800 font-medium tabular-nums">' + toCell + '</td>' +
-        '<td class="px-4 py-3 text-right">' + chgCell + '</td>' +
-        '<td class="px-4 py-3 text-right">' + h52Cell + '</td>' +
-        '</tr>'
-      );
-    }
-    if (truncated) {
-      const left = f.length - view.length;
-      // Pinned to the LEFT edge (position:sticky): on a phone the table is wider than the screen, and a
-      // centred cell spanning the whole table put these buttons off-screen to the right.
-      out.push('<tr><td colspan="9" class="py-4 text-left text-sm">' +
-        '<div style="position:sticky;left:12px;display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 12px;max-width:calc(100vw - 72px)">' +
-        '<span class="text-slate-500">Showing ' + view.length.toLocaleString('en-IN') + ' of ' + f.length.toLocaleString('en-IN') + '</span>' +
-        '<button type="button" onclick="showMoreRows(false)" class="px-3 py-1.5 rounded-lg bg-blue-600 text-white font-semibold text-xs">Show ' + Math.min(ROW_PAGE, left).toLocaleString('en-IN') + ' more</button>' +
-        '<button type="button" onclick="showMoreRows(true)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-xs">Show all</button>' +
-        '</div></td></tr>');
-    }
-    tbody.innerHTML = out.join('');
-  }
-  const noDataCount = f.filter(r => r.noData).length;
-  const noDataNote  = noDataCount ? ' &middot; <span class="text-slate-400">' + noDataCount.toLocaleString('en-IN') + ' without price data</span>' : '';
-  document.getElementById('resultCount').innerHTML =
-    '<span class="font-semibold text-slate-700">' + f.length.toLocaleString('en-IN') + '</span> stocks' + noDataNote +
-    (truncated ? ' (showing first ' + view.length.toLocaleString('en-IN') + ' \u2014 "Show more" at the bottom of the table, or search)' : '');
-}
-
-function updateStats(results) {
-  if (!results.length) { document.getElementById('statsGrid').innerHTML = ''; return; }
+// The summary figures of a set of rows — the old page's updateStats() arithmetic, unchanged.
+function agg(results) {
   const priced    = results.filter(r => !r.noData && !r.frozenSince);   // frozen = no trades, not a 0% move
   const gainers   = priced.filter(r => r.changePercent > 0).length;
   const losers    = priced.filter(r => r.changePercent < 0).length;
@@ -707,90 +538,225 @@ function updateStats(results) {
   const noData    = results.length - priced.length;
   const avg       = priced.length ? priced.reduce((s, r) => s + r.changePercent, 0) / priced.length : 0;
   const top       = priced.length ? priced.reduce((m, r) => r.changePercent > m.changePercent ? r : m) : null;
+  return { priced, gainers, losers, unchanged, noData, avg, top };
+}
 
-  const card = (label, value, sub, cls = '') =>
-    '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
-    '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">' + label + '</div>' +
-    '<div class="text-xl font-bold mt-1 ' + cls + '">' + value + '</div>' +
-    (sub ? '<div class="text-[11px] text-slate-400 mt-0.5">' + sub + '</div>' : '') +
-    '</div>';
+/* ================= formatting ================= */
+const N = n => n.toLocaleString('en-IN');
+const monYr = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-IN', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+// Whole crores hid real sub-crore caps as "0" (BENTCOM 0.40, ZJEETMAC 0.13 — §145): under 10 Cr keep 2 dp.
+const mcapTxt = m => m > 0 ? (m < 0.01 ? '<0.01' : m.toLocaleString('en-IN', m < 10 ? { minimumFractionDigits: 2, maximumFractionDigits: 2 } : { maximumFractionDigits: 0 })) : '—';
+const rs = p => '₹' + p.toFixed(2);
+const stat = (l, v, c, tip) => `<div${tip ? ` title="${esc(tip)}"` : ''}><span>${l}</span><b class="${c || ''}">${v}</b></div>`;
+function parseCapital(s) {
+  // Accept "1,00,000" or "100000" or "100,000"
+  const cleaned = String(s).replace(/[^0-9.]/g, '');
+  return parseFloat(cleaned) || 0;
+}
+function fmtINR(n) {
+  // Indian numbering: 1,23,45,678
+  const neg = n < 0 ? '-' : '';
+  const x = Math.round(Math.abs(n));
+  const s = String(x);
+  if (s.length <= 3) return neg + s;
+  const last3 = s.slice(-3);
+  const rest = s.slice(0, -3);
+  return neg + rest.replace(/(\d)(?=(\d\d)+$)/g, '$1,') + ',' + last3;
+}
+// What the Change cell says for one row: short text for the list, the full sentence for the detail line.
+function chgInfo(r) {
+  if (r.noData && r.lastTrade) {
+    // Listed but no trade in our price stores: show BSE's own last trade, or say there is none (§145).
+    const lt = r.lastTrade;
+    const full = lt.p ? 'Last BSE trade ' + lt.d + ' at ₹' + lt.p + (lt.src === 'bse-archive' ? ' (BSE daily archive)' : ' (BSE quote page)')
+      : (lt.since ? 'No trade in BSE’s daily files since ' + lt.since + ' (BSE serves no file for 28 sessions in that span) and none on its quote page' : 'BSE shows no trade on record for this scrip');
+    const long = lt.p ? 'not traded since ' + (lt.d ? monYr(lt.d) : '?') : (lt.since ? 'no BSE trade since ' + lt.since.slice(0, 4) : 'no trades on record');
+    const short = lt.p ? 'since ' + (lt.d ? monYr(lt.d) : '?') : (lt.since ? 'since ' + lt.since.slice(0, 4) : 'no trades');
+    return { h: `<span class="wn" title="${esc(long + ' — ' + full)}">${esc(short)}</span>`, long, full };
+  }
+  if (r.noData) return { h: '<span class="m">—</span>', long: 'no price in this date range', full: '' };
+  if (r.firstDay) return { h: '<span class="os-tag bt" title="The stock’s first trading day — no earlier close to compare with">DAY 1</span>', long: 'Day 1', full: 'First trading day inside the window — no earlier close to compare with.' };
+  if (r.frozenSince) {
+    // The exchange has no trade for this scrip; the "price" is the last trade repeated (§145).
+    const long = 'not traded since ' + monYr(r.frozenSince), full = 'No trades since ' + r.frozenSince + ' — the price shown is the last traded price.';
+    return { h: `<span class="wn" title="${esc(full)}">since ${esc(monYr(r.frozenSince))}</span>`, long, full };
+  }
+  // "stale": the resolved To date is more than 14 days before the user-picked To date — almost always a
+  // suspended stock or one that has not traded recently. The change is still reported, just flagged.
+  const stale = r.staleDays && r.staleDays > 14;
+  return { h: `<span class="${cls(r.changePercent) || 'os-pos'}">${fmtPct(r.changePercent)}</span>` + (stale ? `<span class="os-tag wt" title="The stock’s last trade in this window was ${r.staleDays} days before your To date">STALE</span>` : ''),
+           long: fmtPct(r.changePercent), full: stale ? 'Stale: the last trade in this window was ' + r.staleDays + ' days before your To date.' : '', pct: true };
+}
+// From-52w-high: d52 is always <= 0; closer to zero = closer to the high.
+const d52Cls = d => d >= -2 ? 'os-pos' : d >= -10 ? 'w1' : d >= -25 ? 'w2' : 'os-neg';
 
-  const topCard = top ?
-    '<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">' +
-    '<div class="text-[11px] text-slate-500 uppercase font-semibold tracking-wide">Top Mover</div>' +
-    '<div class="text-sm font-bold mt-1 truncate"><a href="./stock.html?sym=' + encodeURIComponent(top.symbol) + '" class="text-slate-800 hover:text-blue-600 hover:underline">' + top.symbol + '</a></div>' +
-    '<div class="text-xs gain mt-0.5">+' + top.changePercent.toFixed(2) + '%</div></div>'
-    : card('Top Mover', '\u2014', '');
-
+/* ================= panes ================= */
+function renderAll() {
+  const bt = S.tab === 'bt';
+  $('grid').classList.toggle('bt', bt);
+  $('pG').classList.toggle('hidden', bt); $('pB').classList.toggle('hidden', !bt); $('kTools').classList.toggle('hidden', bt);
+  if (bt) { renderBT(); } else { renderInd(); renderResults(); renderStats(); }
+  K.fitGrid($('grid'));
+}
+let GROWS = [];
+function renderInd() {
+  const by = new Map();
+  for (const r of ALL) { let a = by.get(r.sector); if (!a) by.set(r.sector, a = []); a.push(r); }
+  let rows = [...by].map(([n, a]) => { const g = agg(a); return { k: n, n, cnt: a.length, avg: g.priced.length ? g.avg : null }; });
+  if (S.sec !== 'all' && !by.has(S.sec)) rows.push({ k: S.sec, n: S.sec, cnt: 0, avg: null });
+  const q = S.gq.toLowerCase();
+  if (q) rows = rows.filter(x => x.n.toLowerCase().includes(q) || x.k === S.sec);
+  const { k, dir } = S.gsort;
+  rows.sort((a, b) => k === 'n' ? dir * a.n.localeCompare(b.n) : ((a[k] == null) - (b[k] == null)) || dir * (a[k] - b[k]) || a.n.localeCompare(b.n));
+  const g = agg(ALL);
+  GROWS = [{ k: 'all', n: 'All industries', cnt: ALL.length, avg: g.priced.length ? g.avg : null }].concat(rows);
+  $('gCount').textContent = N(by.size) + ' industries';
+  const hd = (key, lab, tip) => `<span data-k="${key}" class="${k === key ? 'on' : ''}${key === 'n' ? ' n' : ''}" title="${tip}">${lab}${k === key ? (dir > 0 ? ' ↑' : ' ↓') : ''}</span>`;
+  $('gHead').innerHTML = hd('n', 'Industry', 'Sort by name') + hd('cnt', 'Stocks', 'Sort by number of stocks') + hd('avg', 'Avg', 'Plain average change of the stocks in the industry — sort');
+  const L = $('gList'), top = L.scrollTop;
+  L.innerHTML = GROWS.map((x, i) => `<div class="os-row gr${x.k === S.sec ? ' on' : ''}" data-i="${i}" role="option" aria-selected="${x.k === S.sec}" title="${esc(x.n)}">
+    <span class="n">${esc(x.n)}</span><span class="m">${N(x.cnt)}</span><span class="v ${cls(x.avg)}">${fmtPct(x.avg)}</span></div>`).join('');
+  L.scrollTop = top;
+}
+// Rows are drawn in pages of ROW_PAGE (drawing all 5,500 at once is slow on phones); a row at the
+// foot of the list reveals the next page or everything. The old hard cap of 500 hid every stock
+// ranked below it with no way to scroll to it — SUNLITE ranked 654th for 31-Mar→today (runbook §145).
+const ROW_PAGE = 500;
+let ROW_LIMIT = ROW_PAGE;
+function showMoreRows(all) { ROW_LIMIT = all ? Infinity : ROW_LIMIT + ROW_PAGE; renderResults(true); }
+function renderResults(keepLimit) {
+  if (!keepLimit) ROW_LIMIT = ROW_PAGE;           // new data / search / sort starts at the first page
+  const q = $('searchBox').value.toLowerCase().trim();
+  let f = lastResults;
+  if (q) f = f.filter(r => r.symbol.toLowerCase().includes(q) || r.name.toLowerCase().includes(q) || (r.sector || '').toLowerCase().includes(q));
+  f = f.slice();
+  f.sort((a, b) => compareRows(a, b, SORT_STATE.key, SORT_STATE.dir));
+  VIEW = f;
+  const truncated = f.length > ROW_LIMIT;
+  const view = f.slice(0, ROW_LIMIT);
+  const sk = SORT_STATE.key, ar = SORT_STATE.dir === 'asc' ? ' ↑' : ' ↓';
+  const hd = (key, lab, tip, c) => `<span data-k="${key}" class="${sk === key ? 'on' : ''}${c ? ' ' + c : ''}"${tip ? ` title="${tip}"` : ''}>${lab}${sk === key ? ar : ''}</span>`;
+  $('kHead').innerHTML = '<span>#</span><span class="n">' + hd('symbol', 'Symbol') + ' · ' + hd('name', 'Company') + ' · ' + hd('sector', 'Industry') + '</span>' +
+    hd('mcap', 'M-cap', 'Market cap, ₹ crore') + hd('fromPrice', 'From ₹', 'Close before the From date', 'c3 cf') + hd('toPrice', 'To ₹', 'Close on or before the To date', 'c3') +
+    hd('changePercent', 'Change') + hd('d52', '52W', 'Distance below the 52-week high');
+  const L = $('kList'), top = L.scrollTop;
+  if (view.length === 0) {
+    L.innerHTML = `<div class="os-empty">${esc(MSG || 'No matching stocks. Change the filters or the search.')}</div>`;
+  } else {
+    const out = [];
+    for (let i = 0; i < view.length; i++) {
+      const r = view[i], c = chgInfo(r);
+      let fromCell = '—', toCell = '—';
+      if (r.noData && r.lastTrade) toCell = r.lastTrade.p ? Number(r.lastTrade.p).toFixed(2) : '—';
+      else if (!r.noData) { fromCell = r.fromPrice.toFixed(2); toCell = r.toPrice.toFixed(2); }
+      const h52 = typeof r.d52 !== 'number' ? '<span class="m">—</span>' : `<span class="${d52Cls(r.d52)}"${r.h52 ? ` title="52W high: ₹${r.h52.toFixed(2)}"` : ''}>${r.d52.toFixed(1)}%</span>`;
+      out.push(`<div class="os-row kr${r.t === S.sel ? ' on' : ''}" data-i="${i}" role="option" aria-selected="${r.t === S.sel}" title="${esc(r.name)} · ${esc(r.sector)}">` +
+        `<span class="ix">${i + 1}</span><span class="n"><span class="sw-star" data-sym="${esc(r.symbol)}"></span><b>${esc(r.symbol)}</b><i>${esc(r.name)}</i></span>` +
+        `<span class="m">${esc(mcapTxt(r.mcap))}</span><span class="m c3 cf">${fromCell}</span><span class="c3">${toCell}</span><span class="v">${c.h}</span><span>${h52}</span></div>`);
+    }
+    if (truncated) {
+      const left = f.length - view.length;
+      out.push(`<div class="more"><span>Showing ${N(view.length)} of ${N(f.length)}</span>` +
+        `<button type="button" class="os-btn" data-more="0">Show ${N(Math.min(ROW_PAGE, left))} more</button><button type="button" class="os-btn" data-more="1">Show all</button></div>`);
+    }
+    L.innerHTML = out.join('');
+  }
+  L.scrollTop = keepLimit ? top : 0;
+  const noDataCount = f.filter(r => r.noData).length;
+  $('kTitle').textContent = S.sec === 'all' ? 'Results' : S.sec;
+  $('resultCount').textContent = MSG ? '' : N(f.length) + ' stocks' + (noDataCount ? ' · ' + N(noDataCount) + ' without price' : '');
+  // keep a stock on the chart: the one already picked if it is still listed, else the first row
+  if (!S.sel || !f.some(r => r.t === S.sel)) { S.sel = f.length ? f[0].t : null; markSel(); }
+  showSel();
+}
+function markSel() {
+  const bt = S.tab === 'bt', cur = bt ? S.btSel : S.sel, rows = bt ? (BT.d ? BT.d.picked : []) : VIEW;
+  $('kList').querySelectorAll('.os-row').forEach(el => { const r = rows[+el.dataset.i], on = !!r && (bt ? r.ticker : r.t) === cur;
+    el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
+}
+function renderStats() {
+  const results = lastResults;
+  if (!results.length) { $('stats').innerHTML = stat('Total stocks', '0'); return; }
+  const { priced, gainers, losers, unchanged, noData, avg, top } = agg(results);
   // Total = full row count = Gainers + Losers + Unchanged + No Data exactly.
-  document.getElementById('statsGrid').innerHTML =
-    card('Total Stocks', results.length.toLocaleString('en-IN'), 'in current view') +
-    card('Gainers',   gainers.toLocaleString('en-IN'),   '', 'gain') +
-    card('Losers',    losers.toLocaleString('en-IN'),    '', 'loss') +
-    card('Unchanged', unchanged.toLocaleString('en-IN'), '0% change', 'text-slate-700') +
-    card('No Data',   noData.toLocaleString('en-IN'),    'no price in range', 'text-slate-500') +
-    card('Avg Change', priced.length ? ((avg >= 0 ? '+' : '') + avg.toFixed(2) + '%') : '\u2014',
-         'across ' + priced.length.toLocaleString('en-IN') + ' priced', priced.length ? (avg >= 0 ? 'gain' : 'loss') : '') +
-    topCard;
+  $('stats').innerHTML =
+    stat('Total stocks', N(results.length), '', 'In the current view') +
+    stat('Gainers', N(gainers), 'os-pos') + stat('Losers', N(losers), 'os-neg') +
+    stat('Unchanged', N(unchanged), '', '0% change') + stat('No data', N(noData), '', 'No price in the date range, or no trades') +
+    stat('Avg change', priced.length ? fmtPct(avg) + `<small>${N(priced.length)} priced</small>` : '—', priced.length ? (avg >= 0 ? 'os-pos' : 'os-neg') : '', 'Plain average across the priced stocks') +
+    stat('Top mover', top ? `<button type="button" id="topBtn" title="Show ${esc(top.symbol)}">${esc(top.symbol)}</button><small class="os-pos" style="color:var(--pos)">+${top.changePercent.toFixed(2)}%</small>` : '—');
+  const tb = $('topBtn'); if (tb) tb.onclick = () => pick(top.t);
+}
+function pick(t, lazy) {
+  if (!t) return;
+  if (S.tab === 'bt') { S.btSel = t; }
+  else { S.sel = t; const i = VIEW.findIndex(r => r.t === t); if (i >= ROW_LIMIT) { ROW_LIMIT = Math.ceil((i + 1) / ROW_PAGE) * ROW_PAGE; renderResults(true); return; } }
+  markSel(); showSel(lazy);
+}
+function pickInd(k) {
+  if (k === S.sec) return;
+  S.sec = k; $('btSec').value = k; if ($('btSec').value !== k) $('btSec').value = 'all';
+  lastResults = k === 'all' ? ALL : ALL.filter(r => r.sector === k); RMAP = new Map(lastResults.map(r => [r.t, r]));
+  $('gList').querySelectorAll('.gr').forEach(el => { const on = GROWS[+el.dataset.i].k === k; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
+  renderResults(); renderStats();
 }
 
-function exportCSV() {
-  if (!lastResults.length) return alert('No data to export. Load data first.');
-  const rows = [['Symbol','Company','Sector','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %','52W High','From 52W High %']];
-  lastResults.forEach(r => rows.push([
-    r.symbol, r.name, r.sector, r.mcap,
-    r.fromDate || '', r.fromPrice != null ? r.fromPrice.toFixed(2) : '',
-    r.toDate   || '', r.toPrice   != null ? r.toPrice.toFixed(2)   : '',
-    r.changePercent != null ? r.changePercent.toFixed(2) : '',
-    r.h52 != null ? r.h52.toFixed(2) : '',
-    r.d52 != null ? r.d52.toFixed(2) : '',
-  ]));
-  const csv  = rows.map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = 'stocksworld-stocks-' + document.getElementById('fromDate').value + '-to-' + document.getElementById('toDate').value + '.csv';
-  a.click();
-  URL.revokeObjectURL(url);
+/* ================= the chart pane ================= */
+let showTimer = null, CTOK = 0;
+function showSel(lazy) {
+  const bt = S.tab === 'bt', tok = ++CTOK; clearTimeout(showTimer);
+  const p = bt ? (BT.d && BT.d.picked.find(x => x.ticker === S.btSel)) : null, r = bt ? null : RMAP.get(S.sel);
+  const t = bt ? (p && p.ticker) : (r && r.t);
+  ['cOpen', 'cScr', 'cFull'].forEach(id => $(id).classList.toggle('hidden', !t));
+  if (!t) { $('cStar').innerHTML = ''; $('cSym').textContent = '—'; $('cName').textContent = bt ? 'Run a backtest, then pick a stock' : 'Pick a stock'; $('cPx').textContent = ''; $('cChg').textContent = ''; $('cChg').className = '';
+    $('cStats').innerHTML = ''; $('cNote').textContent = ''; CH.clear(''); return; }
+  const m = META[t] || {}, sym = (bt ? p.symbol : r.symbol), name = bt ? p.name : r.name;
+  $('cStar').innerHTML = `<span class="sw-star" data-sym="${esc(sym)}"></span>`;
+  $('cSym').textContent = sym; $('cName').textContent = name;
+  $('cOpen').href = './stock.html?sym=' + encodeURIComponent(sym);
+  $('cScr').href = 'https://www.screener.in/company/' + encodeURIComponent(sym) + '/';
+  $('cFull').href = './chart.html?s=' + encodeURIComponent(sym); $('cFull').classList.toggle('hidden', !t.endsWith('.NS'));
+  let note = [];
+  if (bt) {
+    $('cPx').textContent = rs(p.sellPrice); $('cChg').textContent = fmtPct(p.holdPct); $('cChg').className = 'os-chg ' + (cls(p.holdPct) || 'os-pos');
+    $('cStats').innerHTML = stat('M-cap then', '₹' + fmtINR(p.histMcap) + '<small>Cr</small>', '', 'Approximate market cap at the screening start: today’s cap × the price change since') +
+      stat('Screen %', fmtPct(p.screenPct), cls(p.screenPct)) + stat('Buy · ' + niceDate(p.buyDate), rs(p.buyPrice)) + stat('Sell · ' + niceDate(p.sellDate), rs(p.sellPrice)) +
+      stat('Hold %', fmtPct(p.holdPct), cls(p.holdPct)) + stat('Final value', '₹' + fmtINR(p.finalValue) + `<small>${p.pnl >= 0 ? '+' : '−'}₹${fmtINR(Math.abs(p.pnl))}</small>`, '', 'Allocated ₹' + fmtINR(p.allocated));
+    note.push('<b>' + esc(p.sector) + '</b>', 'Allocated ₹' + fmtINR(p.allocated) + ' → ₹' + fmtINR(p.finalValue) + ' (' + (p.pnl >= 0 ? '+' : '−') + '₹' + fmtINR(Math.abs(p.pnl)) + ')');
+  } else {
+    const c = chgInfo(r), px = r.noData ? (r.lastTrade && r.lastTrade.p ? Number(r.lastTrade.p) : null) : r.toPrice;
+    $('cPx').textContent = px == null ? '—' : rs(px);
+    $('cChg').innerHTML = c.pct ? fmtPct(r.changePercent) : esc(c.long); $('cChg').className = 'os-chg ' + (c.pct ? (cls(r.changePercent) || 'os-pos') : '');
+    $('cStats').innerHTML = stat('Market cap', esc(mcapTxt(r.mcap)) + (r.mcap > 0 ? '<small>Cr</small>' : '')) +
+      stat('From' + (r.fromDate ? ' · ' + niceDate(r.fromDate) : ''), r.noData ? '—' : rs(r.fromPrice), '', 'The last close before your From date') +
+      stat('To' + (r.toDate ? ' · ' + niceDate(r.toDate) : ''), r.noData ? '—' : rs(r.toPrice), '', 'The last close on or before your To date') +
+      stat('Change', c.pct ? fmtPct(r.changePercent) : '—', c.pct ? cls(r.changePercent) : '') +
+      stat('52W high', r.h52 != null ? rs(r.h52) : '—') + stat('From 52W high', r.d52 != null ? r.d52.toFixed(2) + '%' : '—', r.d52 != null ? d52Cls(r.d52) : '', 'How far the latest price is below the 52-week high');
+    note.push('<b>' + esc(r.sector) + '</b>' + (r.sectorBroad && r.sectorBroad !== r.sector ? ' · ' + esc(r.sectorBroad) : ''));
+    if (!c.pct) note.push(esc(c.long.charAt(0).toUpperCase() + c.long.slice(1)) + (c.full ? ' — ' + esc(c.full) : ''));
+    else if (c.full) note.push(esc(c.full));
+  }
+  const setNote = extra => { $('cNote').innerHTML = note.concat(extra ? [esc(extra)] : []).join(' · '); };
+  setNote();
+  showTimer = setTimeout(async () => {                 // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent = 'Loading chart…';
+    let d = null, extra = '';
+    try { d = await K.loadStockBars(sym); } catch (e) { d = null; }
+    if (tok !== CTOK) return;
+    if (!d) { const s = SERIES[t]; if (s && s.d.length > 1) { d = { ohlc: false, mixed: true, bars: s.d.map((o, i) => ({ ts: START_TS + o * DAY, c: s.p[i] / 100, co: 1 })).filter(b => b.c > 0) }; extra = 'Chart: closing prices only' + (FULL_LOADED ? '' : ', last 8 months'); } }
+    if (!d || !d.bars.length) { CH.clear('No daily price history on file for ' + sym + '.'); return; }
+    CH.show(d, { name: name || sym, tag: /\.BO$/.test(t) ? 'BSE' : 'NSE' });
+    setNote(extra);
+  }, lazy ? 140 : 0);
 }
-
-document.getElementById('loadBtn').addEventListener('click', loadData);
-document.getElementById('searchBox').addEventListener('input', () => lastResults.length && renderResults(lastResults));
-
-// Column-header click sort.
-function updateSortIndicators() {
-  document.querySelectorAll('#resultsHead th[data-sort]').forEach(th => {
-    const ind = th.querySelector('.sort-ind');
-    if (!ind) return;
-    if (th.dataset.sort === SORT_STATE.key) {
-      ind.textContent = SORT_STATE.dir === 'asc' ? '↑' : '↓';
-      ind.classList.remove('text-slate-300');
-      ind.classList.add('text-blue-600');
-    } else {
-      ind.textContent = '↕';
-      ind.classList.add('text-slate-300');
-      ind.classList.remove('text-blue-600');
-    }
-  });
+function chartBar() {
+  $('cIv').innerHTML = ['D', 'W', 'M'].map(k => `<button type="button" class="${k === CH.iv ? 'on' : ''}" data-v="${k}" title="${{ D: 'Daily', W: 'Weekly', M: 'Monthly' }[k]} bars">${k}</button>`).join('');
+  $('cRg').innerHTML = ['3M', '6M', '1Y', '3Y', 'Max'].map(k => `<button type="button" class="${k === CH.range ? 'on' : ''}" data-v="${k}">${k}</button>`).join('');
+  $('cLog').classList.toggle('on', CH.log); $('cLog').setAttribute('aria-pressed', CH.log);
 }
-document.querySelectorAll('#resultsHead th[data-sort]').forEach(th => {
-  th.addEventListener('click', () => {
-    const key = th.dataset.sort;
-    if (SORT_STATE.key === key) {
-      SORT_STATE.dir = SORT_STATE.dir === 'asc' ? 'desc' : 'asc';
-    } else {
-      SORT_STATE.key = key;
-      // String columns default to ascending; numeric default to descending
-      SORT_STATE.dir = STRING_COLS.has(key) ? 'asc' : 'desc';
-    }
-    updateSortIndicators();
-    if (lastResults.length) renderResults(lastResults);
-  });
-});
-document.getElementById('exportBtn').addEventListener('click', exportCSV);
+function setFocus(on) { S.focus = on == null ? !S.focus : on; $('grid').classList.toggle('focus', S.focus); $('cFocus').textContent = S.focus ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', S.focus); }
 
-// --- Backtest engine -----------------------------------------------
+/* ================= backtest — the old page's engine, unchanged ================= */
 function computeReturn(ticker, fromDate, toDate) {
   const ser = SERIES[ticker]; if (!ser) return null;
   const fromTs = Math.floor(new Date(fromDate + 'T00:00:00Z').getTime() / 1000);
@@ -812,46 +778,32 @@ function computeReturn(ticker, fromDate, toDate) {
     toDate:   new Date((START_TS + ser.d[iTo]   * DAY) * 1000).toISOString().slice(0, 10),
   };
 }
-
-function parseCapital(s) {
-  // Accept "1,00,000" or "100000" or "100,000"
-  const cleaned = String(s).replace(/[^0-9.]/g, '');
-  return parseFloat(cleaned) || 0;
-}
-function fmtINR(n) {
-  // Indian numbering: 1,23,45,678
-  const x = Math.round(n);
-  const s = String(x);
-  if (s.length <= 3) return s;
-  const last3 = s.slice(-3);
-  const rest = s.slice(0, -3);
-  return rest.replace(/(\d)(?=(\d\d)+$)/g, '$1,') + ',' + last3;
-}
-
 async function runBacktest() {
-  const screenFrom = document.getElementById('fromDate').value;
-  const screenTo   = document.getElementById('toDate').value;
-  const holdTo     = document.getElementById('backtestHoldTo').value;
-  const topN       = Math.max(1, Math.min(500, parseInt(document.getElementById('backtestN').value, 10) || 10));
-  const capital    = parseCapital(document.getElementById('backtestCapital').value);
-
-  if (!screenFrom || !screenTo) return alert('Set the From/To dates in the main filter row first — those are the screening period.');
-  if (!holdTo)                  return alert('Pick a Hold Until date.');
-  if (new Date(screenTo) > new Date(holdTo)) return alert('Hold Until must be on or after the screening To Date.');
-  if (capital <= 0)             return alert('Capital must be a positive number.');
+  const screenFrom = $('fromDate').value;
+  const screenTo   = $('toDate').value;
+  const holdTo     = $('backtestHoldTo').value;
+  const topN       = Math.max(1, Math.min(500, parseInt($('backtestN').value, 10) || 10));
+  const capital    = parseCapital($('backtestCapital').value);
+  const say = m => { $('btMsg').textContent = m; };
+  say('');
+  if (!screenFrom || !screenTo) return say('Set the From and To dates in the bar above first — they are the screening period.');
+  if (new Date(screenFrom) > new Date(screenTo)) return say('The From date must be on or before the To date.');
+  if (!holdTo)                  return say('Pick a Hold until date.');
+  if (new Date(screenTo) > new Date(holdTo)) return say('Hold until must be on or after the To date.');
+  if (capital <= 0)             return say('Capital must be a positive number.');
 
   // The backtest screens over arbitrary history → ensure the full series is loaded first.
   if (!FULL_LOADED) {
-    const btn = document.getElementById('runBacktestBtn'); const prev = btn.textContent;
+    const btn = $('runBacktestBtn'); const prev = btn.textContent;
     btn.textContent = 'Loading full history…'; btn.disabled = true;
     try { await ensureFull(); }
-    catch (e) { alert('Could not load full history. Check your connection and retry.'); return; }
+    catch (e) { say('Could not load the full price history. Check your connection and try again.'); return; }
     finally { btn.textContent = prev; btn.disabled = false; }
   }
 
   const mcapBuckets   = getMcapBucketSet();
-  const sectorFilter  = document.getElementById('sectorFilter').value;
-  const indexFilter   = document.getElementById('indexFilter').value;
+  const sectorFilter  = S.sec;
+  const indexFilter   = S.idx;
 
   // Build screen-period results filtered by index + F&O + mcap + sector. For
   // backtesting, mcap AND index/F&O membership MUST be evaluated as-of the
@@ -861,7 +813,7 @@ async function runBacktest() {
   // today's mcap × (price-at-screen-From / latest-price). Yahoo's adjusted
   // prices handle splits/bonuses, so the main residual error is
   // buybacks/new-issuances (typically <10% for large caps).
-  const fnoFilter = document.getElementById('fnoFilter').value;
+  const fnoFilter = S.fno;
   const historicalMembers = indexFilter !== 'all'
     ? getIndexMembersAt(indexFilter, screenFrom)
     : null;
@@ -915,7 +867,7 @@ async function runBacktest() {
     });
   }
   if (screened.length === 0) {
-    alert('No stocks matched both periods. Widen filters or date range.');
+    BT.d = null; say('No stocks matched both periods. Widen the filters or the date range.'); renderAll();
     return;
   }
   // Sort by screening return (desc) and take top-N
@@ -937,163 +889,92 @@ async function runBacktest() {
   const top    = picked.reduce((a, b) => a.holdPct > b.holdPct ? a : b);
   const bottom = picked.reduce((a, b) => a.holdPct < b.holdPct ? a : b);
 
-  renderBacktest({
+  BT.d = {
     picked, capital, finalValue, totalReturnPct, avgHoldPct, winners,
     top, bottom,
-    screenFrom: picked[0]?.buyDate ? null : screenFrom,    // not used here
     holdFrom: picked[0]?.buyDate, holdTo: picked[0]?.sellDate,
     universeSize: screened.length,
-  });
+  };
+  S.btSel = picked[0].ticker;
+  renderAll();
+}
+function renderBT() {
+  const d = BT.d, L = $('kList');
+  $('kTitle').textContent = 'Picks';
+  $('kHead').innerHTML = '<span>#</span><span class="n">Symbol · Company</span><span title="Change over the From → To screening period">Screen</span><span title="Change from the buy date to the sell date">Hold</span><span>P&amp;L ₹</span>';
+  if (!d) {
+    $('resultCount').textContent = '';
+    $('stats').innerHTML = stat('Backtest', '<small style="margin:0">Set Top N, Hold until and Capital on the left, then Run backtest.</small>');
+    L.innerHTML = '<div class="os-empty">No backtest run yet.</div>'; showSel(); return;
+  }
+  $('resultCount').textContent = d.picked.length + ' of ' + N(d.universeSize) + ' matching';
+  $('stats').innerHTML = stat('Starting capital', '₹' + fmtINR(d.capital)) + stat('Final value', '₹' + fmtINR(d.finalValue)) +
+    stat('Total return', fmtPct(d.totalReturnPct), d.totalReturnPct >= 0 ? 'os-pos' : 'os-neg') + stat('Winners', d.winners + ' / ' + d.picked.length) +
+    stat('Hold period', `<small style="margin:0;font-size:12px;color:var(--text)">${d.holdFrom ? niceDate(d.holdFrom) : '—'} → ${d.holdTo ? niceDate(d.holdTo) : '—'}</small>`) +
+    stat('Best', `<button type="button" data-bp="${esc(d.top.ticker)}">${esc(d.top.symbol)}</button><small style="color:var(--pos)">${fmtPct(d.top.holdPct)}</small>`) +
+    stat('Worst', `<button type="button" data-bp="${esc(d.bottom.ticker)}">${esc(d.bottom.symbol)}</button><small style="color:var(--${d.bottom.holdPct < 0 ? 'neg' : 'pos'})">${fmtPct(d.bottom.holdPct)}</small>`) +
+    stat('Mean hold', fmtPct(d.avgHoldPct), cls(d.avgHoldPct), 'Plain average of the picks; sampled from ' + N(d.universeSize) + ' stocks matching the filters');
+  $('stats').querySelectorAll('[data-bp]').forEach(b => { b.onclick = () => pick(b.dataset.bp); });
+  L.innerHTML = d.picked.map((p, i) => `<div class="os-row br${p.ticker === S.btSel ? ' on' : ''}" data-i="${i}" role="option" aria-selected="${p.ticker === S.btSel}" title="${esc(p.name)} · ${esc(p.sector)}">` +
+    `<span class="ix">${i + 1}</span><span class="n"><b>${esc(p.symbol)}</b><i>${esc(p.name)}</i></span><span class="m">${fmtPct(p.screenPct)}</span>` +
+    `<span class="v ${cls(p.holdPct)}">${fmtPct(p.holdPct)}</span><span class="${p.pnl >= 0 ? 'os-pos' : 'os-neg'}">${p.pnl >= 0 ? '+' : '−'}${fmtINR(Math.abs(p.pnl))}</span></div>`).join('');
+  L.scrollTop = 0;
+  showSel();
 }
 
-function renderBacktest(d) {
-  const wrap = document.getElementById('backtestResults');
-  wrap.classList.remove('hidden');
-  const sign = d.totalReturnPct >= 0 ? '+' : '';
-  const retCls = d.totalReturnPct >= 0 ? 'text-green-700 bg-green-50' : 'text-red-700 bg-red-50';
-  let rowsHtml = '';
-  d.picked.forEach((p, i) => {
-    const pnlCls = p.holdPct >= 0 ? 'chip-gain' : 'chip-loss';
-    const sgn = p.holdPct >= 0 ? '+' : '';
-    const screenSgn = p.screenPct >= 0 ? '+' : '';
-    rowsHtml += '<tr class="hover:bg-slate-50">' +
-      '<td class="px-3 py-2 text-slate-400 text-xs">' + (i + 1) + '</td>' +
-      '<td class="px-3 py-2"><a href="./stock.html?sym=' + encodeURIComponent(p.symbol) + '" title="' + p.symbol + ' — full details" class="font-semibold text-slate-800 hover:text-blue-600 hover:underline">' + p.symbol + '</a></td>' +
-      '<td class="px-3 py-2 text-slate-700 text-xs">' + p.name + '</td>' +
-      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums" title="Approx mcap at screening start (today\'s mcap × adj-price ratio)">&#8377;' + fmtINR(p.histMcap) + '</td>' +
-      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">' + screenSgn + p.screenPct.toFixed(2) + '%</td>' +
-      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">&#8377;' + p.buyPrice.toFixed(2) + '</td>' +
-      '<td class="px-3 py-2 text-right text-slate-800 font-medium tabular-nums">&#8377;' + p.sellPrice.toFixed(2) + '</td>' +
-      '<td class="px-3 py-2 text-right"><span class="inline-flex items-center gap-1 ' + pnlCls + ' rounded-md px-2 py-0.5 font-semibold text-xs tabular-nums">' + sgn + p.holdPct.toFixed(2) + '%</span></td>' +
-      '<td class="px-3 py-2 text-right text-slate-600 tabular-nums">&#8377;' + fmtINR(p.allocated) + '</td>' +
-      '<td class="px-3 py-2 text-right text-slate-800 font-medium tabular-nums">&#8377;' + fmtINR(p.finalValue) + '</td>' +
-      '<td class="px-3 py-2 text-right tabular-nums ' + (p.pnl >= 0 ? 'text-green-700' : 'text-red-700') + '">' + (p.pnl >= 0 ? '+' : '') + '&#8377;' + fmtINR(p.pnl) + '</td>' +
-      '</tr>';
-  });
-  const summary =
-    '<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">' +
-      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
-        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Starting Capital</div>' +
-        '<div class="text-base font-bold mt-0.5">&#8377;' + fmtINR(d.capital) + '</div>' +
-      '</div>' +
-      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
-        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Final Value</div>' +
-        '<div class="text-base font-bold mt-0.5">&#8377;' + fmtINR(d.finalValue) + '</div>' +
-      '</div>' +
-      '<div class="rounded-lg p-3 border border-slate-200 ' + retCls + '">' +
-        '<div class="text-[10px] uppercase tracking-wide font-semibold opacity-80">Total Return</div>' +
-        '<div class="text-base font-bold mt-0.5">' + sign + d.totalReturnPct.toFixed(2) + '%</div>' +
-      '</div>' +
-      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
-        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Winners</div>' +
-        '<div class="text-base font-bold mt-0.5">' + d.winners + ' / ' + d.picked.length + '</div>' +
-      '</div>' +
-      '<div class="bg-slate-50 rounded-lg p-3 border border-slate-200">' +
-        '<div class="text-[10px] uppercase tracking-wide font-semibold text-slate-500">Hold Period</div>' +
-        '<div class="text-xs font-bold mt-0.5">' + (d.holdFrom || '—') + ' &rarr; ' + (d.holdTo || '—') + '</div>' +
-      '</div>' +
-    '</div>' +
-    '<div class="text-xs text-slate-500 mb-2">Top mover: <span class="font-semibold text-green-700"><a href="./stock.html?sym=' + encodeURIComponent(d.top.symbol) + '" class="hover:underline">' + d.top.symbol + '</a> +' + d.top.holdPct.toFixed(2) + '%</span> · ' +
-      'Worst: <span class="font-semibold text-red-700"><a href="./stock.html?sym=' + encodeURIComponent(d.bottom.symbol) + '" class="hover:underline">' + d.bottom.symbol + '</a> ' + d.bottom.holdPct.toFixed(2) + '%</span> · ' +
-      'Mean: ' + (d.avgHoldPct >= 0 ? '+' : '') + d.avgHoldPct.toFixed(2) + '% · ' +
-      'Sampled from ' + d.universeSize.toLocaleString('en-IN') + ' stocks matching filters</div>';
-
-  wrap.innerHTML = summary +
-    '<div class="overflow-x-auto border border-slate-200 rounded-lg">' +
-      '<table class="w-full text-sm">' +
-        '<thead class="bg-slate-50 text-slate-600 text-xs uppercase">' +
-        '<tr>' +
-          '<th class="px-3 py-2 text-left font-semibold">#</th>' +
-          '<th class="px-3 py-2 text-left font-semibold">Symbol</th>' +
-          '<th class="px-3 py-2 text-left font-semibold">Company</th>' +
-          '<th class="px-3 py-2 text-right font-semibold" title="Approx historical market cap at screening start">Hist Mcap<br><span class="normal-case text-slate-400 text-[10px] font-normal">(&#8377; Cr)</span></th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Screen %</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Buy Price</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Sell Price</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Hold %</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Allocated</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">Final Value</th>' +
-          '<th class="px-3 py-2 text-right font-semibold">P&amp;L</th>' +
-        '</tr></thead>' +
-        '<tbody class="divide-y divide-slate-100">' + rowsHtml + '</tbody>' +
-      '</table>' +
-    '</div>';
-  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function exportCSV() {
+  if (!lastResults.length) return;
+  const rows = [['Symbol','Company','Sector','Market Cap (Cr)','From Date','From Price','To Date','To Price','Change %','52W High','From 52W High %']];
+  lastResults.forEach(r => rows.push([
+    r.symbol, r.name, r.sector, r.mcap,
+    r.fromDate || '', r.fromPrice != null ? r.fromPrice.toFixed(2) : '',
+    r.toDate   || '', r.toPrice   != null ? r.toPrice.toFixed(2)   : '',
+    r.changePercent != null ? r.changePercent.toFixed(2) : '',
+    r.h52 != null ? r.h52.toFixed(2) : '',
+    r.d52 != null ? r.d52.toFixed(2) : '',
+  ]));
+  const csv  = rows.map(row => row.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = 'stocksworld-stocks-' + $('fromDate').value + '-to-' + $('toDate').value + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-document.getElementById('runBacktestBtn').addEventListener('click', runBacktest);
-// Default Hold Until = today
-(function initBacktest() {
+/* ================= controls ================= */
+function paintBar() {
+  $('pers').innerHTML = PRESETS.map(p => `<button type="button" data-v="${p[0]}" class="${S.preset === p[0] ? 'on' : ''}" title="${p[2]}">${p[1]}</button>`).join('');
+  $('mcaps').innerHTML = '<span class="lbl" title="Market cap in ₹ crore. Pick any bands; none picked means all.">M-cap ₹ Cr</span>' +
+    Object.keys(MCAP_LABELS).map(b => `<button type="button" data-b="${b}" class="${S.mcap.has(b) ? 'on' : ''}" aria-pressed="${S.mcap.has(b)}">${MCAP_LABELS[b]}</button>`).join('');
+  $('fnoBtn').classList.toggle('on', S.fno === 'fno'); $('fnoBtn').setAttribute('aria-pressed', S.fno === 'fno');
+  $('indexFilter').value = S.idx; if ($('indexFilter').value !== S.idx) { S.idx = 'all'; $('indexFilter').value = 'all'; }
+  $('modes').querySelectorAll('button').forEach(b => { const on = b.dataset.v === S.tab; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+}
+// The old page's preset arithmetic, unchanged; the dates now apply at once (no separate Load button).
+function applyPreset(key) {
   const today = new Date();
-  document.getElementById('backtestHoldTo').value = today.toISOString().split('T')[0];
-})();
-
-// --- Market cap multi-select ---
-const MCAP_LABELS = {
-  'below100':    '\u2264 100 Cr',
-  '100to500':    '100\u2013500 Cr',
-  '500to1000':   '500\u20131k Cr',
-  '1000to5000':  '1k\u20135k Cr',
-  '5000to20000': '5k\u201320k Cr',
-  'above20000':  '\u2265 20k Cr',
-};
-function getMcapBucketSet() {
-  const cbs = document.querySelectorAll('#mcapPanel .mcap-cb:checked');
-  return new Set(Array.from(cbs).map(c => c.dataset.bucket));
+  let from, to = today;
+  if (key === 'latest') {
+    // Anchor to the snapshot date inside the data, not the calendar today,
+    // so "Latest" always points to the freshest trading-day pair the
+    // dashboard actually contains.
+    const snapDate = END_TS ? new Date(END_TS * 1000) : today;
+    to   = snapDate;
+    // From == To. With the "from-anchor = last close before from-date"
+    // rule, this resolves to (previous trading day's close → snapshot day's
+    // close), i.e. exactly the latest 1-trading-day move. Slide-back picks
+    // up the right pair even across weekends or holidays.
+    from = snapDate;
+  }
+  else if (key === 'ytd')             from = new Date(today.getFullYear(), 0, 1);
+  else if (key === 'since1996')       from = new Date(1996, 0, 1);
+  else { const days = parseInt(key, 10); from = new Date(); from.setDate(today.getDate() - days); }
+  $('toDate').value   = to.toISOString().split('T')[0];
+  $('fromDate').value = from.toISOString().split('T')[0];
+  S.preset = key; paintBar(); loadData();
 }
-function updateMcapLabel() {
-  const cbs = document.querySelectorAll('#mcapPanel .mcap-cb:checked');
-  const lab = document.getElementById('mcapLabel');
-  if (cbs.length === 0 || cbs.length >= 6) lab.textContent = 'All market caps';
-  else if (cbs.length === 1)               lab.textContent = MCAP_LABELS[cbs[0].dataset.bucket];
-  else if (cbs.length <= 3)                lab.textContent = Array.from(cbs).map(c => MCAP_LABELS[c.dataset.bucket]).join(', ');
-  else                                      lab.textContent = cbs.length + ' selected';
-}
-document.getElementById('mcapTrigger').addEventListener('click', e => {
-  e.stopPropagation();
-  document.getElementById('mcapPanel').classList.toggle('hidden');
-});
-document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb =>
-  cb.addEventListener('change', () => { updateMcapLabel(); if (lastResults.length || META) loadData(); }));
-document.getElementById('mcapSelectAll').addEventListener('click', () => {
-  document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb => cb.checked = true);
-  updateMcapLabel();
-  if (Object.keys(META).length) loadData();
-});
-document.getElementById('mcapClear').addEventListener('click', () => {
-  document.querySelectorAll('#mcapPanel .mcap-cb').forEach(cb => cb.checked = false);
-  updateMcapLabel();
-  if (Object.keys(META).length) loadData();
-});
-// click outside closes the panel
-document.addEventListener('click', e => {
-  const panel = document.getElementById('mcapPanel');
-  const trigger = document.getElementById('mcapTrigger');
-  if (!panel.contains(e.target) && !trigger.contains(e.target)) panel.classList.add('hidden');
-});
-document.querySelectorAll('.preset-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const today = new Date();
-    let from, to = today;
-    if (btn.dataset.latest) {
-      // Anchor to the snapshot date inside the data, not the calendar today,
-      // so "Latest move" always points to the freshest trading-day pair the
-      // dashboard actually contains (Yahoo close data lags reality).
-      const snapDate = END_TS ? new Date(END_TS * 1000) : today;
-      to   = snapDate;
-      // From == To. With the new "from-anchor = last close before from-date"
-      // rule, this resolves to (previous trading day's close → snapshot day's
-      // close), i.e. exactly the latest 1-trading-day move. Slide-back picks
-      // up the right pair even across weekends or holidays.
-      from = snapDate;
-    }
-    else if (btn.dataset.ytd)             from = new Date(today.getFullYear(), 0, 1);
-    else if (btn.dataset.since1996)       from = new Date(1996, 0, 1);
-    else { const days = parseInt(btn.dataset.days, 10); from = new Date(); from.setDate(today.getDate() - days); }
-    document.getElementById('toDate').value   = to.toISOString().split('T')[0];
-    document.getElementById('fromDate').value = from.toISOString().split('T')[0];
-  });
-});
 
 /* ---- "My screens": named saved filter-sets (localStorage sw_dash_presets, synced across
         devices through theme.js's settings sync when the browser is owner-unlocked) ---- */
@@ -1104,44 +985,94 @@ function msStore(a) {
   msRender();
 }
 function msCapture() {
-  return { from: document.getElementById('fromDate').value, to: document.getElementById('toDate').value,
-           mcap: Array.from(document.querySelectorAll('.mcap-cb')).filter(c => c.checked).map(c => c.dataset.bucket),
-           idx: document.getElementById('indexFilter').value, fno: document.getElementById('fnoFilter').value,
-           sec: document.getElementById('sectorFilter').value };
+  return { from: $('fromDate').value, to: $('toDate').value,
+           mcap: Object.keys(MCAP_LABELS).filter(b => S.mcap.has(b)),
+           idx: S.idx, fno: S.fno, sec: S.sec };
 }
 function msApply(p) {
-  if (p.from) document.getElementById('fromDate').value = p.from;
-  if (p.to)   document.getElementById('toDate').value   = p.to;
-  document.querySelectorAll('.mcap-cb').forEach(c => c.checked = (p.mcap || []).indexOf(c.dataset.bucket) >= 0);
-  if (typeof updateMcapLabel === 'function') updateMcapLabel();
-  document.getElementById('indexFilter').value  = p.idx || 'all';
-  document.getElementById('fnoFilter').value    = p.fno || 'all';
-  document.getElementById('sectorFilter').value = p.sec || 'all';
+  if (!p) return;
+  if (p.from) $('fromDate').value = p.from;
+  if (p.to)   $('toDate').value   = p.to;
+  S.mcap = new Set((p.mcap || []).filter(b => MCAP_LABELS[b]));
+  S.idx = p.idx || 'all'; S.fno = p.fno || 'all'; S.sec = p.sec || 'all'; S.preset = '';
+  $('btSec').value = S.sec; if ($('btSec').value !== S.sec) $('btSec').value = 'all';
+  paintBar();
   loadData();
 }
 function msRender() {
   const list = msAll();
-  document.getElementById('msList').innerHTML = list.map(function (p, i) {
-    return '<span class="inline-flex items-center gap-1 text-xs bg-slate-100 hover:bg-indigo-100 text-slate-700 rounded-full pl-3 pr-1.5 py-1 font-medium cursor-pointer" data-ms="' + i + '" title="Apply this screen">' +
-      p.name.replace(/&/g, '&amp;').replace(/</g, '&lt;') +
-      '<button class="text-slate-400 hover:text-rose-600 font-bold px-0.5" data-msdel="' + i + '" title="Delete this screen">×</button></span>';
-  }).join('') || '<span class="text-[11px] text-slate-400">none yet — set your filters, then save them here</span>';
+  $('msList').innerHTML = list.map(function (p, i) {
+    return '<span class="msc" data-ms="' + i + '" title="Apply this screen"><span>' + esc(p.name) + '</span>' +
+      '<button type="button" data-msdel="' + i + '" title="Delete this screen" aria-label="Delete ' + esc(p.name) + '">×</button></span>';
+  }).join('') || '<span class="os-hint">none yet — set your filters, then save them</span>';
 }
-document.getElementById('msSave').addEventListener('click', function () {
-  const name = prompt('Name this screen (e.g. "Smallcap N500 momentum"):');
-  if (!name || !name.trim()) return;
-  const list = msAll().filter(function (p) { return p.name !== name.trim(); });
-  list.unshift(Object.assign({ name: name.trim() }, msCapture()));
+function msSaveName(name) {
+  name = (name || '').trim(); if (!name) return;
+  const list = msAll().filter(function (p) { return p.name !== name; });
+  list.unshift(Object.assign({ name: name }, msCapture()));
   msStore(list.slice(0, 30));
-});
-document.getElementById('msList').addEventListener('click', function (e) {
-  const del = e.target.closest('[data-msdel]');
-  if (del) { const l = msAll(); l.splice(+del.getAttribute('data-msdel'), 1); msStore(l); e.stopPropagation(); return; }
-  const chip = e.target.closest('[data-ms]');
-  if (chip) msApply(msAll()[+chip.getAttribute('data-ms')]);
-});
-msRender();
-setTimeout(msRender, 2500);   // re-render once the settings sync may have pulled newer presets
+}
+
+function wire() {
+  paintBar(); chartBar(); msRender();
+  setTimeout(msRender, 2500);   // re-render once the settings sync may have pulled newer presets
+  $('modes').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.v === S.tab) return; S.tab = b.dataset.v; S.pane = 'k'; paintBar(); renderAll(); };
+  $('pers').onclick = e => { const b = e.target.closest('button'); if (b) applyPreset(b.dataset.v); };
+  const dateChanged = () => { S.preset = ''; paintBar(); loadData(); };
+  $('fromDate').onchange = dateChanged; $('toDate').onchange = dateChanged;
+  $('mcaps').onclick = e => { const b = e.target.closest('button'); if (!b) return; const k = b.dataset.b; if (S.mcap.has(k)) S.mcap.delete(k); else S.mcap.add(k); paintBar(); loadData(); };
+  $('indexFilter').onchange = e => { S.idx = e.target.value; loadData(); };
+  $('fnoBtn').onclick = () => { S.fno = S.fno === 'fno' ? 'all' : 'fno'; paintBar(); loadData(); };
+  $('btSec').onchange = e => { S.sec = e.target.value; loadData(); };
+  $('runBacktestBtn').onclick = runBacktest;
+  $('exportBtn').onclick = exportCSV;
+  let t1 = null, t2 = null;
+  $('searchBox').oninput = () => { S.pane = 'k'; clearTimeout(t1); t1 = setTimeout(() => { if (S.tab === 'screen') renderResults(); }, 120); };
+  $('gSearch').oninput = e => { S.pane = 'g'; clearTimeout(t2); t2 = setTimeout(() => { S.gq = e.target.value.trim(); renderInd(); }, 120); };
+  $('gHead').onclick = e => { const s = e.target.closest('[data-k]'); if (!s) return; const k = s.dataset.k;
+    S.gsort = S.gsort.k === k ? { k, dir: -S.gsort.dir } : { k, dir: k === 'n' ? 1 : -1 }; renderInd(); };
+  $('gList').onclick = e => { const el = e.target.closest('.gr'); if (!el) return; S.pane = 'g'; pickInd(GROWS[+el.dataset.i].k); };
+  // Column-header click sort. String columns default to ascending; numeric default to descending.
+  $('kHead').onclick = e => { if (S.tab !== 'screen') return; const s = e.target.closest('[data-k]'); if (!s) return; const key = s.dataset.k;
+    if (SORT_STATE.key === key) SORT_STATE.dir = SORT_STATE.dir === 'asc' ? 'desc' : 'asc';
+    else { SORT_STATE.key = key; SORT_STATE.dir = STRING_COLS.has(key) ? 'asc' : 'desc'; }
+    renderResults(); };
+  $('kList').onclick = e => { const mb = e.target.closest('[data-more]'); if (mb) { showMoreRows(mb.dataset.more === '1'); return; }
+    const el = e.target.closest('.os-row'); if (!el) return; S.pane = 'k';
+    if (S.tab === 'bt') { const p = BT.d && BT.d.picked[+el.dataset.i]; if (p) pick(p.ticker); } else { const r = VIEW[+el.dataset.i]; if (r) pick(r.t); } };
+  $('msSave').onclick = () => { $('msSave').classList.add('hidden'); const i = $('msName'); i.classList.remove('hidden'); i.value = ''; i.focus(); };
+  const msDone = () => { $('msName').classList.add('hidden'); $('msSave').classList.remove('hidden'); };
+  $('msName').onkeydown = e => { if (e.key === 'Enter') { msSaveName(e.target.value); msDone(); } else if (e.key === 'Escape') msDone(); e.stopPropagation(); };
+  $('msName').onblur = msDone;
+  $('msList').onclick = function (e) {
+    const del = e.target.closest('[data-msdel]');
+    if (del) { const l = msAll(); l.splice(+del.getAttribute('data-msdel'), 1); msStore(l); e.stopPropagation(); return; }
+    const chip = e.target.closest('[data-ms]');
+    if (chip) msApply(msAll()[+chip.getAttribute('data-ms')]);
+  };
+  $('cIv').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setIv(b.dataset.v); chartBar(); } };
+  $('cRg').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setRange(b.dataset.v); chartBar(); } };
+  $('cLog').onclick = () => { CH.setLog(!CH.log); chartBar(); };
+  $('cFocus').onclick = () => setFocus();
+  window.addEventListener('resize', () => K.fitGrid($('grid')));
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+    if (typing) { if (e.key === 'Escape' || (e.key === 'Enter' && tg.type === 'search')) tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; if (tg.type !== 'search') return; }
+    const bt = S.tab === 'bt';
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const st = e.key === 'ArrowDown' ? 1 : -1;
+      if (S.pane === 'g' && !bt) { const j = GROWS.findIndex(x => x.k === S.sec) + st; if (GROWS[j]) pickInd(GROWS[j].k); }
+      else if (bt) { const P = BT.d ? BT.d.picked : [], j = P.findIndex(p => p.ticker === S.btSel) + st; if (P[j]) pick(P[j].ticker, true); }
+      else { const j = VIEW.findIndex(r => r.t === S.sel) + st; if (VIEW[j]) pick(VIEW[j].t, true); }
+      e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { if (!bt) { S.pane = 'g'; const on = $('gList').querySelector('.on'); if (on) on.scrollIntoView({ block: 'nearest' }); e.preventDefault(); } }
+    else if (e.key === 'ArrowRight') { S.pane = 'k'; e.preventDefault(); }
+    else if (e.key === 'Escape') { if (S.focus) setFocus(false); }
+    else if (e.key === 'Enter') { const a = $('cOpen'); if (!a.classList.contains('hidden') && a.getAttribute('href') !== '#') location.href = a.href; }
+    else if (e.key === 'f' || e.key === 'F') { setFocus(); }
+    else if (e.key === '/') { (bt ? $('backtestN') : $('searchBox')).focus(); e.preventDefault(); }
+  });
+}
 
 loadAndInit();
 </script>
