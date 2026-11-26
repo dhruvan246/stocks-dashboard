@@ -151,10 +151,10 @@ HTML = r"""<!DOCTYPE html>
 <title>STOCKSWORLD · Mutual Funds</title>
 <meta name="description" content="Every growth-plan mutual fund on one screen — pick a category on the left, see its funds ranked in the middle and the selected fund's NAV chart and return calendars on the right." />
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="./theme.css" />
-<script src="./theme.js"></script>
+<link rel="stylesheet" href="./theme.css?v=330" />
+<script src="./theme.js?v=330"></script>
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
-<script src="./os-kit.js"></script>
+<script src="./os-kit.js?v=330"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
   #grid{grid-template-columns:minmax(236px,270px) minmax(310px,380px) minmax(0,1fr)}
