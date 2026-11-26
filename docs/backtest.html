@@ -4,208 +4,237 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Backtest</title>
+<meta name="description" content="Mutual-fund strategy lab on one screen — pick a fund or a saved strategy on the left, see the backtest in the middle and its chart on the right." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .tab.active { border-color:var(--accent); color:var(--accent-text); font-weight:700; }
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(250px,300px) minmax(360px,1.15fr) minmax(320px,1fr)}
+  #grid.sv{grid-template-columns:minmax(300px,370px) minmax(360px,1.15fr) minmax(320px,1fr)}
+  #lHead,.fr{grid-template-columns:minmax(0,1fr) 34px 40px}
+  #grid.sv #lHead,.sr{grid-template-columns:minmax(0,1fr) 56px 44px}
+  .gh{padding:6px 12px;font-size:11.5px;font-weight:600;color:var(--text-muted);background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gh i{font-style:normal;font-weight:400;color:var(--text-faint);margin-left:4px}
+  .tg{display:inline-block;margin-right:6px;font-size:9.5px;font-weight:600;letter-spacing:.04em;color:var(--text-faint);border:1px solid var(--border);border-radius:4px;padding:0 4px;vertical-align:1px;font-style:normal}
   .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  input,select{outline:none}
-  #overlay{position:fixed;inset:0;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+  #pL .os-ps{flex-wrap:nowrap} html[data-theme] #pL .os-ps input[type="search"]{flex:1 1 0;min-width:0;width:auto}
+  #mBody{flex:1;min-height:0;overflow:auto;padding:10px 12px 14px;font-size:13px;color:var(--text)}
+  #fundChosen{font-size:12.5px;color:var(--text-muted);padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid var(--border);line-height:1.45}
+  #fundChosen b{color:var(--text);font-weight:600}
+  .bt-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px 10px;align-items:end;padding-bottom:10px}
+  .bt-note{font-size:12px;color:var(--text-faint);line-height:1.5;margin:0 0 9px}
+  .bt-note b{color:var(--text-muted);font-weight:600}
+  .bt-h{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;gap:8px;align-items:flex-start}
+  .bt-h span{flex:1;min-width:0}
+  .lbl{display:block;font-size:11.5px;color:var(--text-faint);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  html[data-theme] #mBody .inp{width:100%;background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:13px;color:var(--text);min-height:0;height:32px;outline:none}
+  html[data-theme] #mBody .inp:focus{border-color:var(--accent)}
+  #mBody .btn{background:var(--accent);color:#fff;border-radius:6px;padding:0 14px;height:32px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+  #mBody .btn:hover{filter:brightness(1.08)}
+  #mBody .card{background:none;border:0;border-top:1px solid var(--border);border-radius:0;padding:10px 0}
+  #mBody details{border:0 !important;margin:0}
+  #mBody details > summary{list-style:none;pointer-events:none;padding:0 0 6px;background:none !important}
+  #mBody details > summary::-webkit-details-marker{display:none}
+  #mBody details > summary button{pointer-events:auto;cursor:pointer}
+  #mBody details > div{padding:0}
+  #mBody table{font-variant-numeric:tabular-nums}
+  #rResults{background:var(--surface)}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  #status{margin-bottom:10px}
+  .os-asof a{color:var(--accent-text)}
+  @media (max-width:1180px){ #grid,#grid.sv{grid-template-columns:minmax(220px,250px) minmax(320px,1.2fr) minmax(280px,1fr)} }
+  @media (max-width:899px){ #grid,#grid.sv{grid-template-columns:minmax(0,1fr)} #mBody{overflow-x:auto;overflow-y:visible;flex:none} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
-<div id="overlay">
-  <div class="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3"></div>
-  <p class="text-sm text-slate-600" id="status">Loading fund list…</p>
-</div>
-
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
-    <div class="flex items-center gap-3 min-w-0">
-      <nav></nav>
-      <span class="text-[11px] font-semibold text-indigo-600 hidden md:block shrink-0">Backtest</span>
-    </div>
+    <nav></nav>
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-
-  <div class="mb-4">
-    <h1 class="text-xl md:text-2xl font-bold text-slate-900">MF Backtest <span class="text-sm font-semibold text-slate-400">· mutual-fund strategy lab</span></h1>
-    <p class="text-xs text-slate-500 mt-1">Test any Indian mutual fund on real daily NAVs — lumpsum, SIP, rolling returns, timing, rotation &amp; best-of-breed. <a href="./mutual-funds.html" class="text-indigo-600 hover:underline">← all funds</a></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>MF Backtest</h1>
+    <div class="os-vtabs" id="tabs" role="tablist" aria-label="Backtest tool">
+      <button type="button" class="tab on" data-tab="lumpsum">Lumpsum</button>
+      <button type="button" class="tab" data-tab="sip">SIP</button>
+      <button type="button" class="tab" data-tab="rolling">Rolling returns</button>
+      <button type="button" class="tab" data-tab="timing">Timing strategy</button>
+      <button type="button" class="tab" data-tab="rotation">Rotation</button>
+      <button type="button" class="tab" data-tab="catrot">Category rotation</button>
+      <button type="button" class="tab" data-tab="bob">Best-of-breed</button>
+    </div>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading fund list…</div>
 
-  <!-- Fund picker -->
-  <div class="card p-4 mb-4">
-    <label class="block text-xs font-medium text-slate-600 mb-1">Fund</label>
-    <input id="fundSearch" type="search" placeholder="Search a fund — e.g. SBI Small Cap, Parag Parikh…"
-           class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500" autocomplete="off"/>
-    <div id="fundResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-64 overflow-y-auto"></div>
-    <div id="fundChosen" class="mt-2 text-sm"></div>
+  <div id="content" class="hidden">
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="Funds or saved strategies">
+        <div class="os-ph"><span class="ttl" id="lTtl">Funds</span><span class="r" id="lCnt"></span></div>
+        <div class="os-ps" id="lSearch"><input id="fundSearch" type="search" placeholder="Search a fund — e.g. SBI Small Cap, Parag Parikh…" autocomplete="off" aria-label="Search a fund"/></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="fundResults" role="listbox" aria-label="Funds"></div>
+        <div class="os-list hidden" id="rotSaved" role="listbox" aria-label="Saved rotations"></div>
+        <div class="os-list hidden" id="crSaved" role="listbox" aria-label="Saved category rotations"></div>
+        <div class="os-list hidden" id="bobSaved" role="listbox" aria-label="Saved best-of-breed strategies"></div>
+      </section>
+
+      <section class="os-pane" id="pM" aria-label="Backtest inputs and result">
+        <div class="os-ph"><span class="ttl" id="mTtl"></span><span class="r"><span class="os-hint keys"><b>↑↓</b> move · <b>Enter</b> run · <b>F</b> focus chart</span></span></div>
+        <div id="mBody">
+          <div id="fundChosen"></div>
+
+          <!-- LUMPSUM -->
+          <section id="tab-lumpsum" class="tabpane">
+            <div class="bt-form">
+              <div><label class="lbl">Amount (₹)</label><input id="lsAmt" type="number" value="100000" class="inp"/></div>
+              <div><label class="lbl">From</label><input id="lsFrom" type="date" class="inp"/></div>
+              <div><label class="lbl">To</label><input id="lsTo" type="date" class="inp"/></div>
+              <button id="lsRun" class="btn">Run</button>
+            </div>
+            <div id="lsOut"></div>
+          </section>
+
+          <!-- SIP -->
+          <section id="tab-sip" class="tabpane hidden">
+            <div class="bt-form">
+              <div><label class="lbl">Monthly SIP (₹)</label><input id="sipAmt" type="number" value="10000" class="inp"/></div>
+              <div><label class="lbl">From</label><input id="sipFrom" type="date" class="inp"/></div>
+              <div><label class="lbl">To</label><input id="sipTo" type="date" class="inp"/></div>
+              <button id="sipRun" class="btn">Run</button>
+            </div>
+            <div id="sipOut"></div>
+          </section>
+
+          <!-- ROLLING -->
+          <section id="tab-rolling" class="tabpane hidden">
+            <div class="bt-form">
+              <div><label class="lbl">Window (years)</label>
+                <select id="rollWin" class="inp"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div>
+              <div><label class="lbl">Beat target (% CAGR)</label><input id="rollTgt" type="number" value="12" class="inp"/></div>
+              <button id="rollRun" class="btn">Run</button>
+            </div>
+            <div id="rollOut"></div>
+            <div id="rollCal"></div>
+          </section>
+
+          <!-- TIMING -->
+          <section id="tab-timing" class="tabpane hidden">
+            <p class="bt-note">Start in cash; <b>BUY</b> (lumpsum) on the buy signal, <b>SELL</b> back to cash on the sell signal. Benchmarked vs buy-&amp;-hold and monthly SIP over the same period.</p>
+            <div class="bt-form">
+              <div><label class="lbl">Amount (₹)</label><input id="tAmt" type="number" value="100000" class="inp"/></div>
+              <div><label class="lbl">Signal</label>
+                <select id="tSig" class="inp">
+                  <option value="cagr" selected>Trailing CAGR</option>
+                  <option value="dip">Buy the dip</option>
+                  <option value="trend">Trend (10-mo MA)</option>
+                </select></div>
+              <div id="tWinWrap"><label class="lbl">Lookback (yrs)</label>
+                <select id="tWin" class="inp"><option>3</option><option selected>5</option><option>7</option></select></div>
+              <div id="tBuyWrap"><label class="lbl" id="tBuyLbl">Buy when &lt; (%)</label><input id="tBuy" type="number" value="10" class="inp"/></div>
+              <div id="tSellWrap"><label class="lbl" id="tSellLbl">Sell when &gt; (%)</label><input id="tSell" type="number" value="25" class="inp"/></div>
+              <button id="tRun" class="btn">Run</button>
+            </div>
+            <div id="tOut"></div>
+          </section>
+
+          <!-- ROTATION -->
+          <section id="tab-rotation" class="tabpane hidden">
+            <p class="bt-note">Each period, hold whichever fund(s) had the best (<b>relative momentum</b>) or worst (<b>contrarian</b>) trailing return. Or use <b>absolute momentum</b>: hold the best equity while its own trend is positive, and fall back to a defensive sleeve (gold) only when it turns negative. Add candidates — e.g. one small-cap, one mid-cap, one gold.</p>
+            <input id="rSearch" type="search" placeholder="Search a fund to add as a rotation candidate…" class="inp" autocomplete="off"/>
+            <div id="rResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-56 overflow-y-auto"></div>
+            <div id="rSleeves" class="mt-2"></div>
+            <div id="rAbsHint" class="text-[11px] text-amber-700 mt-2" style="display:none"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg> Absolute momentum: click the shield on the fund you want as the <b>defensive</b> sleeve (usually gold) — it's only held when every equity's trend is negative.</div>
+            <div class="bt-form mt-3">
+              <div><label class="lbl">Amount (₹)</label><input id="rAmt" type="number" value="100000" class="inp"/></div>
+              <div><label class="lbl">From</label><input id="rFrom" type="date" class="inp"/></div>
+              <div><label class="lbl">To</label><input id="rTo" type="date" class="inp"/></div>
+              <div><label class="lbl">Momentum lookback</label>
+                <select id="rLook" class="inp"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></div>
+              <div><label class="lbl">Hold top</label>
+                <select id="rTop" class="inp"><option value="1" selected>1 (winner)</option><option value="2">2</option><option value="3">3</option></select></div>
+              <div><label class="lbl">Direction</label>
+                <select id="rDir" class="inp"><option value="mom" selected>Relative momentum (best)</option><option value="contra">Contrarian (worst)</option><option value="abs">Absolute momentum (gold-defensive)</option></select></div>
+              <div><label class="lbl">Re-check</label>
+                <select id="rRebal" class="inp"><option value="quarter">Quarterly</option><option value="half">Half-yearly</option><option value="annual" selected>Annually</option></select></div>
+              <button id="rRun" class="btn">Run</button>
+            </div>
+            <div id="rOut"></div>
+          </section>
+
+          <!-- CATEGORY ROTATION -->
+          <section id="tab-catrot" class="tabpane hidden">
+            <p class="bt-note">Instead of a fixed basket, this rotates over <b>every</b> fund in a whole category. At each re-check it holds the single fund with the best (momentum) or worst (contrarian) trailing return among all funds in that category that have enough history. Optionally fix the fund you start with.</p>
+            <div class="bt-form">
+              <div><label class="lbl">Category</label><select id="crCat" class="inp"></select></div>
+              <div><label class="lbl">Plan</label><select id="crPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
+              <div><label class="lbl">Start fund</label><select id="crStart" class="inp"></select></div>
+              <div><label class="lbl">Start month</label><input id="crFrom" type="month" value="2015-02" class="inp"/></div>
+              <div><label class="lbl">Lookback</label><select id="crLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option><option value="12" selected>12 months</option><option value="24">24 months</option></select></div>
+              <div><label class="lbl">Re-check</label><select id="crRebal" class="inp"><option value="quarter">Quarterly</option><option value="half">Half-yearly</option><option value="annual" selected>Annually</option></select></div>
+              <div><label class="lbl">Direction</label><select id="crDir" class="inp"><option value="mom" selected>Momentum (best)</option><option value="contra">Contrarian (worst)</option></select></div>
+              <button id="crRun" class="btn">Run</button>
+            </div>
+            <div id="crOut"></div>
+          </section>
+
+          <!-- BEST OF BREED -->
+          <section id="tab-bob" class="tabpane hidden">
+            <p class="bt-note">The strongest idea found in testing. Each re-check, the engine finds the single best-momentum fund <b>within each category you pick</b> (e.g. the best small-cap AND the best mid-cap right now), adds an optional gold sleeve, then holds whichever of those leaders has the best trailing return. You always own the current category leader, not a fixed fund.</p>
+            <div class="lbl">Categories (leader of each competes):</div>
+            <div id="bobCats" class="flex flex-wrap gap-x-4 gap-y-1 mb-2"></div>
+            <label class="text-xs text-slate-700 flex items-center gap-1 mb-3"><input type="checkbox" id="bobGold" checked/> Include a gold sleeve (defensive)</label>
+            <div class="bt-form">
+              <div><label class="lbl">Plan</label><select id="bobPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
+              <div><label class="lbl">Start month</label><input id="bobFrom" type="month" value="2014-01" class="inp"/></div>
+              <div><label class="lbl">Lookback</label><select id="bobLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9" selected>9 months</option><option value="12">12 months</option></select></div>
+              <div><label class="lbl">Re-check</label><select id="bobRebal" class="inp"><option value="quarter" selected>Quarterly</option><option value="half">Half-yearly</option><option value="annual">Annually</option><option value="month">Monthly</option></select></div>
+              <div><label class="lbl">Direction</label><select id="bobDir" class="inp"><option value="mom" selected>Relative momentum (best)</option><option value="abs">Absolute (gold-defensive)</option></select></div>
+              <div><label class="lbl">Hold top</label><select id="bobTop" class="inp"><option value="1" selected>1 (winner)</option><option value="2">2</option></select></div>
+              <button id="bobRun" class="btn">Run</button>
+            </div>
+            <div id="bobOut"></div>
+          </section>
+
+          <div id="savedOut" class="hidden"></div>
+        </div>
+      </section>
+
+      <section class="os-pane os-main" id="pR" aria-label="Chart">
+        <div class="os-ph"><span class="ttl" id="cTtl"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the other panes and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps">
+          <div class="os-sg hidden" id="cMode" role="group" aria-label="Which chart"></div>
+          <div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <button type="button" class="os-btn" id="cLog" title="Logarithmic NAV scale">Log</button></div>
+        <div class="os-chartwrap" id="navWrap"><div class="os-legend" id="navLg"></div><div class="os-msg" id="navMsg"></div><div class="os-chart" id="navChart"></div></div>
+        <div class="os-chartwrap hidden" id="eqWrap"><div class="os-legend" id="eqLg"></div><div class="os-chart" id="eqChart"></div></div>
+      </section>
+    </div>
+
+    <details id="how"><summary>What these backtests do, and their limits</summary>
+      <p>Test any Indian mutual fund on real daily NAVs — lumpsum, SIP, rolling returns, timing, rotation &amp; best-of-breed.
+      Backtests use daily NAVs (post data-floor: Direct from 2013, Regular from 2006). All returns are point-to-point on actual NAVs.
+      <b>Caveats:</b> only funds that exist <i>today</i> are here (survivorship bias — results flatter than reality);
+      figures are <b>before</b> exit load &amp; capital-gains tax; past performance isn't predictive. For research, not advice.</p>
+    </details>
   </div>
-
-  <!-- Tabs -->
-  <div class="flex flex-wrap gap-1 border-b border-slate-200 mb-4 text-sm">
-    <button class="tab active px-3 py-2 border-b-2 border-transparent" data-tab="lumpsum">Lumpsum</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="sip">SIP</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rolling">Rolling returns</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="timing">Timing strategy</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="rotation">Rotation</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="catrot">Category rotation</button>
-    <button class="tab px-3 py-2 border-b-2 border-transparent" data-tab="bob">Best-of-breed</button>
-  </div>
-
-  <!-- LUMPSUM -->
-  <section id="tab-lumpsum" class="tabpane">
-    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
-      <div><label class="lbl">Amount (₹)</label><input id="lsAmt" type="number" value="100000" class="inp"/></div>
-      <div><label class="lbl">From</label><input id="lsFrom" type="date" class="inp"/></div>
-      <div><label class="lbl">To</label><input id="lsTo" type="date" class="inp"/></div>
-      <button id="lsRun" class="btn">Run</button>
-    </div>
-    <div id="lsOut" class="mt-3"></div>
-  </section>
-
-  <!-- SIP -->
-  <section id="tab-sip" class="tabpane hidden">
-    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
-      <div><label class="lbl">Monthly SIP (₹)</label><input id="sipAmt" type="number" value="10000" class="inp"/></div>
-      <div><label class="lbl">From</label><input id="sipFrom" type="date" class="inp"/></div>
-      <div><label class="lbl">To</label><input id="sipTo" type="date" class="inp"/></div>
-      <button id="sipRun" class="btn">Run</button>
-    </div>
-    <div id="sipOut" class="mt-3"></div>
-  </section>
-
-  <!-- ROLLING -->
-  <section id="tab-rolling" class="tabpane hidden">
-    <div class="card p-4 grid grid-cols-2 md:grid-cols-4 gap-3 items-end">
-      <div><label class="lbl">Window (years)</label>
-        <select id="rollWin" class="inp"><option>3</option><option selected>5</option><option>7</option><option>10</option></select></div>
-      <div><label class="lbl">Beat target (% CAGR)</label><input id="rollTgt" type="number" value="12" class="inp"/></div>
-      <button id="rollRun" class="btn">Run</button>
-    </div>
-    <div id="rollOut" class="mt-3"></div>
-    <div id="rollCal" class="mt-3"></div>
-  </section>
-
-  <!-- TIMING -->
-  <section id="tab-timing" class="tabpane hidden">
-    <div class="card p-4">
-      <p class="text-xs text-slate-500 mb-3">Start in cash; <b>BUY</b> (lumpsum) on the buy signal, <b>SELL</b> back to cash on the sell signal. Benchmarked vs buy-&-hold and monthly SIP over the same period.</p>
-      <div class="grid grid-cols-2 md:grid-cols-6 gap-3 items-end">
-        <div><label class="lbl">Amount (₹)</label><input id="tAmt" type="number" value="100000" class="inp"/></div>
-        <div><label class="lbl">Signal</label>
-          <select id="tSig" class="inp">
-            <option value="cagr" selected>Trailing CAGR</option>
-            <option value="dip">Buy the dip</option>
-            <option value="trend">Trend (10-mo MA)</option>
-          </select></div>
-        <div id="tWinWrap"><label class="lbl">Lookback (yrs)</label>
-          <select id="tWin" class="inp"><option>3</option><option selected>5</option><option>7</option></select></div>
-        <div id="tBuyWrap"><label class="lbl" id="tBuyLbl">Buy when &lt; (%)</label><input id="tBuy" type="number" value="10" class="inp"/></div>
-        <div id="tSellWrap"><label class="lbl" id="tSellLbl">Sell when &gt; (%)</label><input id="tSell" type="number" value="25" class="inp"/></div>
-        <button id="tRun" class="btn">Run</button>
-      </div>
-    </div>
-    <div id="tOut" class="mt-3"></div>
-  </section>
-
-  <!-- ROTATION -->
-  <section id="tab-rotation" class="tabpane hidden">
-    <div class="mb-2 text-sm font-semibold text-slate-700">Saved results</div>
-    <div id="rotSaved" class="mb-4"><div class="text-xs text-slate-400">Loading saved results…</div></div>
-    <div class="mb-2 text-sm font-semibold text-slate-700">Build a rotation</div>
-    <div class="card p-4 mb-3">
-      <p class="text-xs text-slate-500 mb-2">Each period, hold whichever fund(s) had the best (<b>relative momentum</b>) or worst (<b>contrarian</b>) trailing return. Or use <b>absolute momentum</b>: hold the best equity while its own trend is positive, and fall back to a defensive sleeve (gold) only when it turns negative. Add candidates — e.g. one small-cap, one mid-cap, one gold.</p>
-      <input id="rSearch" type="search" placeholder="Search a fund to add as a rotation candidate…" class="inp" autocomplete="off"/>
-      <div id="rResults" class="mt-1 border border-slate-200 rounded-lg divide-y hidden max-h-56 overflow-y-auto"></div>
-      <div id="rSleeves" class="mt-3"></div>
-      <div id="rAbsHint" class="text-[11px] text-amber-700 mt-2" style="display:none"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg> Absolute momentum: click the shield on the fund you want as the <b>defensive</b> sleeve (usually gold) — it's only held when every equity's trend is negative.</div>
-    </div>
-    <div class="card p-4 flex flex-wrap gap-3 items-end">
-      <div><label class="lbl">Amount (₹)</label><input id="rAmt" type="number" value="100000" class="inp w-32"/></div>
-      <div><label class="lbl">From</label><input id="rFrom" type="date" class="inp"/></div>
-      <div><label class="lbl">To</label><input id="rTo" type="date" class="inp"/></div>
-      <div><label class="lbl">Momentum lookback</label>
-        <select id="rLook" class="inp"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></div>
-      <div><label class="lbl">Hold top</label>
-        <select id="rTop" class="inp"><option value="1" selected>1 (winner)</option><option value="2">2</option><option value="3">3</option></select></div>
-      <div><label class="lbl">Direction</label>
-        <select id="rDir" class="inp"><option value="mom" selected>Relative momentum (best)</option><option value="contra">Contrarian (worst)</option><option value="abs">Absolute momentum (gold-defensive)</option></select></div>
-      <div><label class="lbl">Re-check</label>
-        <select id="rRebal" class="inp"><option value="quarter">Quarterly</option><option value="half">Half-yearly</option><option value="annual" selected>Annually</option></select></div>
-      <button id="rRun" class="btn">Run</button>
-    </div>
-    <div id="rOut" class="mt-3"></div>
-  </section>
-
-  <section id="tab-catrot" class="tabpane hidden">
-    <div class="mb-2 text-sm font-semibold text-slate-700">Saved category rotations</div>
-    <div id="crSaved" class="mb-4"><div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div></div>
-    <div class="mb-2 text-sm font-semibold text-slate-700">Rotate across an entire category</div>
-    <div class="card p-4 mb-3">
-      <p class="text-xs text-slate-500">Instead of a fixed basket, this rotates over <b>every</b> fund in a whole category. At each re-check it holds the single fund with the best (momentum) or worst (contrarian) trailing return among all funds in that category that have enough history. Optionally fix the fund you start with.</p>
-    </div>
-    <div class="card p-4 flex flex-wrap gap-3 items-end">
-      <div><label class="lbl">Category</label><select id="crCat" class="inp"></select></div>
-      <div><label class="lbl">Plan</label><select id="crPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
-      <div><label class="lbl">Start fund</label><select id="crStart" class="inp"></select></div>
-      <div><label class="lbl">Start month</label><input id="crFrom" type="month" value="2015-02" class="inp"/></div>
-      <div><label class="lbl">Lookback</label><select id="crLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9">9 months</option><option value="12" selected>12 months</option><option value="24">24 months</option></select></div>
-      <div><label class="lbl">Re-check</label><select id="crRebal" class="inp"><option value="quarter">Quarterly</option><option value="half">Half-yearly</option><option value="annual" selected>Annually</option></select></div>
-      <div><label class="lbl">Direction</label><select id="crDir" class="inp"><option value="mom" selected>Momentum (best)</option><option value="contra">Contrarian (worst)</option></select></div>
-      <button id="crRun" class="btn">Run</button>
-    </div>
-    <div id="crOut" class="mt-3"></div>
-  </section>
-
-  <section id="tab-bob" class="tabpane hidden">
-    <div class="mb-2 text-sm font-semibold text-slate-700">Saved best-of-breed</div>
-    <div id="bobSaved" class="mb-4"><div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div></div>
-    <div class="mb-2 text-sm font-semibold text-slate-700">Rotate among category leaders</div>
-    <div class="card p-4 mb-3">
-      <p class="text-xs text-slate-500 mb-2">The strongest idea found in testing. Each re-check, the engine finds the single best-momentum fund <b>within each category you pick</b> (e.g. the best small-cap AND the best mid-cap right now), adds an optional gold sleeve, then holds whichever of those leaders has the best trailing return. You always own the current category leader, not a fixed fund.</p>
-      <div class="text-xs font-medium text-slate-600 mb-1">Categories (leader of each competes):</div>
-      <div id="bobCats" class="flex flex-wrap gap-x-4 gap-y-1 mb-2"></div>
-      <label class="text-xs text-slate-700 flex items-center gap-1"><input type="checkbox" id="bobGold" checked/> Include a gold sleeve (defensive)</label>
-    </div>
-    <div class="card p-4 flex flex-wrap gap-3 items-end">
-      <div><label class="lbl">Plan</label><select id="bobPlan" class="inp"><option value="Direct" selected>Direct</option><option value="Regular">Regular</option></select></div>
-      <div><label class="lbl">Start month</label><input id="bobFrom" type="month" value="2014-01" class="inp"/></div>
-      <div><label class="lbl">Lookback</label><select id="bobLook" class="inp"><option value="3">3 months</option><option value="6">6 months</option><option value="9" selected>9 months</option><option value="12">12 months</option></select></div>
-      <div><label class="lbl">Re-check</label><select id="bobRebal" class="inp"><option value="quarter" selected>Quarterly</option><option value="half">Half-yearly</option><option value="annual">Annually</option><option value="month">Monthly</option></select></div>
-      <div><label class="lbl">Direction</label><select id="bobDir" class="inp"><option value="mom" selected>Relative momentum (best)</option><option value="abs">Absolute (gold-defensive)</option></select></div>
-      <div><label class="lbl">Hold top</label><select id="bobTop" class="inp"><option value="1" selected>1 (winner)</option><option value="2">2</option></select></div>
-      <button id="bobRun" class="btn">Run</button>
-    </div>
-    <div id="bobOut" class="mt-3"></div>
-  </section>
-
-  <p class="text-[11px] text-slate-500 mt-6">
-    Backtests use daily NAVs (post data-floor: Direct from 2013, Regular from 2006). All returns are point-to-point on actual NAVs.
-    <b>Caveats:</b> only funds that exist <i>today</i> are here (survivorship bias — results flatter than reality);
-    figures are <b>before</b> exit load &amp; capital-gains tax; past performance isn't predictive. For research, not advice.
-  </p>
 </main>
 
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
-// inject small utility classes
-document.querySelectorAll('.lbl').forEach(e=>e.className='lbl block text-xs font-medium text-slate-600 mb-1');
-const STYLE=document.createElement('style');
-STYLE.textContent='.inp{width:100%;border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem .75rem;font-size:.875rem;background:#fff}.btn{background:var(--accent);color:#fff;border-radius:.5rem;padding:.5rem 1rem;font-size:.875rem;font-weight:600}.btn:hover{background:#1d4ed8}.lbl{display:block;font-size:.75rem;color:#475569;margin-bottom:.25rem}';
-document.head.appendChild(STYLE);
-
 let FUNDS=[], BYCODE={}, HIST=null, SEL=null;
 
 // ---- packed daily history helpers (shared format with the dashboard) ----
@@ -232,40 +261,12 @@ async function load(){
   const stream = new Blob([new Uint8Array(buf)]).stream().pipeThrough(new DecompressionStream('gzip'));
   HIST = JSON.parse(await new Response(stream).text());
   HIST.dec={};
-  $('overlay').remove();
-}
-
-// ---- fund picker ----
-function renderResults(q){
-  const box=$('fundResults');
-  q=q.trim().toLowerCase();
-  if(!q){box.classList.add('hidden');return;}
-  const hits=FUNDS.filter(f=>(f.short+' '+(f.amc||'')).toLowerCase().includes(q)).slice(0,30);
-  box.innerHTML=hits.map(f=>`<div class="px-3 py-1.5 text-sm hover:bg-blue-50 cursor-pointer" data-c="${f.code}">
-     <span class="font-medium">${f.short.replace(/[<>]/g,'')}</span>
-     <span class="text-[10px] ${f.plan==='Regular'?'text-red-700':'text-blue-700'}">${(f.plan||'Direct').slice(0,3).toUpperCase()}</span>
-     <span class="text-[10px] text-slate-400"> · ${(f.amc||'').replace(/[<>]/g,'')}</span></div>`).join('')
-     || '<div class="px-3 py-2 text-sm text-slate-400">No match</div>';
-  box.classList.remove('hidden');
-}
-function chooseFund(code){
-  SEL=BYCODE[code];
-  $('fundResults').classList.add('hidden'); $('fundSearch').value='';
-  const r=fundRange(code);
-  const lo=r?intToYmd(r[0]):'—', hi=r?intToYmd(r[1]):'—';
-  $('fundChosen').innerHTML=`Selected: <b>${SEL.short.replace(/[<>]/g,'')}</b>
-     <span class="text-[10px] ${SEL.plan==='Regular'?'text-red-700':'text-blue-700'}">${(SEL.plan||'Direct').toUpperCase()}</span>
-     <span class="text-slate-500">· data ${lo} → ${hi}</span>`;
-  // default date inputs to the fund's range
-  if(r){['lsFrom','sipFrom'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=lo;});
-        ['lsTo','sipTo'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=hi;});}
-  // monthly-returns calendar shown in the Rolling tab
-  const cal=$('rollCal'); if(cal) cal.innerHTML='';   // 3 calendars now render together on Run
+  $('status').classList.add('hidden'); $('content').classList.remove('hidden');
 }
 
 // ---- engines ----
 function runLumpsum(){
-  if(!SEL)return alert('Pick a fund first');
+  if(!SEL)return needMsg('lsOut','Pick a fund on the left first.');
   const amt=+$('lsAmt').value, f=$('lsFrom').value, t=$('lsTo').value;
   const nf=navOn(SEL.code,f), nt=navOn(SEL.code,t);
   if(nf==null||nt==null)return $('lsOut').innerHTML=card('No NAV data at one of those dates for this fund.');
@@ -294,7 +295,7 @@ function xirr(cf){
   return r*100;
 }
 function runSip(){
-  if(!SEL)return alert('Pick a fund first');
+  if(!SEL)return needMsg('sipOut','Pick a fund on the left first.');
   const amt=+$('sipAmt').value, f=ymdToInt($('sipFrom').value), t=ymdToInt($('sipTo').value);
   let units=0, invested=0, n=0; const cf=[];
   for(const mk of monthIter(f,t)){
@@ -362,7 +363,7 @@ function forwardReturnsTable(code, win){
     <div class="text-[10px] text-slate-400 mt-1">Each cell = annualized return if you <b>invested at the start of that month and held ${win} years</b>. "·" = the ${win}-year window runs past the latest NAV.</div></div>`;
 }
 function runRolling(){
-  if(!SEL)return alert('Pick a fund first');
+  if(!SEL)return needMsg('rollOut','Pick a fund on the left first.');
   const win=+$('rollWin').value, tgt=+$('rollTgt').value;
   const r=fundRange(SEL.code); if(!r)return;
   const cagrs=[];
@@ -394,7 +395,7 @@ function runRolling(){
 }
 
 function runTiming(){
-  if(!SEL)return alert('Pick a fund first');
+  if(!SEL)return needMsg('tOut','Pick a fund on the left first.');
   const amt=+$('tAmt').value, sig=$('tSig').value, win=+$('tWin').value, buy=+$('tBuy').value, sell=+$('tSell').value;
   const r=fundRange(SEL.code); if(!r)return;
   const months=[...monthIter(r[0],r[1])];
@@ -495,44 +496,6 @@ function histogram(vals){
   return h+'</div>';
 }
 function fmtShort(n){if(n>=1e7)return '₹'+(n/1e7).toFixed(1)+'Cr';if(n>=1e5)return '₹'+(n/1e5).toFixed(1)+'L';if(n>=1e3)return '₹'+(n/1e3).toFixed(0)+'k';return '₹'+Math.round(n);}
-function equityChart(a,b,la='strategy',lb='buy &amp; hold'){
-  const W=720,H=230,PL=46,PR=14,PT=14,PB=26;
-  const gis=a.map(p=>p[0]); const vals=a.map(p=>p[1]).concat(b.map(p=>p[1]));
-  const minG=gis[0],maxG=gis[gis.length-1], minV=Math.min(...vals),maxV=Math.max(...vals);
-  const x=gi=>PL+(gi-minG)/(maxG-minG)*(W-PL-PR);
-  const y=v=>H-PB-(v-minV)/(maxV-minV)*(H-PT-PB);
-  const path=arr=>arr.map((p,i)=>(i?'L':'M')+x(p[0]).toFixed(1)+' '+y(p[1]).toFixed(1)).join(' ');
-  // x-axis year ticks
-  let ticks='';
-  const nT=Math.min(8,Math.max(2,Math.round((maxG-minG)/260)));
-  let lastYr='';
-  for(let k=0;k<=nT;k++){
-    const idx=Math.round(minG+(maxG-minG)*k/nT);
-    const yr=(''+HIST.dates[idx]).slice(0,4);
-    if(yr===lastYr)continue; lastYr=yr;
-    const xx=x(idx);
-    ticks+=`<line x1="${xx.toFixed(1)}" y1="${PT}" x2="${xx.toFixed(1)}" y2="${H-PB}" stroke="#f1f5f9"/>`+
-           `<text x="${xx.toFixed(1)}" y="${H-8}" font-size="10" fill="#94a3b8" text-anchor="middle">${yr}</text>`;
-  }
-  // y-axis value labels (3 gridlines)
-  let ylab='';
-  for(let k=0;k<=2;k++){const v=minV+(maxV-minV)*k/2; const yy=y(v);
-    ylab+=`<line x1="${PL}" y1="${yy.toFixed(1)}" x2="${W-PR}" y2="${yy.toFixed(1)}" stroke="#f1f5f9"/>`+
-          `<text x="${PL-4}" y="${(yy+3).toFixed(1)}" font-size="10" fill="#94a3b8" text-anchor="end">${fmtShort(v)}</text>`;}
-  // hover: one transparent column per point with a native tooltip (date + both series values)
-  let hits='';
-  const colW=(W-PL-PR)/Math.max(1,a.length-1);
-  const plain=s=>String(s).replace(/&amp;/g,'&').replace(/<[^>]*>/g,'');
-  a.forEach((p,i)=>{ const bv=(b[i]&&b[i][1]!=null)?b[i][1]:null;
-    const bx=Math.max(PL, x(p[0])-colW/2);
-    hits+=`<rect x="${bx.toFixed(1)}" y="${PT}" width="${colW.toFixed(1)}" height="${(H-PT-PB).toFixed(1)}" fill="transparent"><title>${intToYmd(HIST.dates[p[0]])} · ${plain(la)}: ${fmtShort(p[1])}${bv!=null?' · '+plain(lb)+': '+fmtShort(bv):''}</title></rect>`;});
-  return `<div class="card p-4 mt-3"><div class="text-xs font-semibold text-slate-600 mb-2">Portfolio value over time
-     <span class="text-blue-600">— ${la}</span> <span class="text-slate-400">— ${lb}</span> <span class="text-slate-400 font-normal">· hover for values</span></div>
-     <svg viewBox="0 0 ${W} ${H}" class="w-full">${ylab}${ticks}
-     <path d="${path(b)}" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
-     <path d="${path(a)}" fill="none" stroke="#2563eb" stroke-width="2"/>${hits}</svg></div>`;
-}
-
 // ---- rebalance frequencies (shared with rotation) ----
 const REBAL_M={none:0,quarter:3,half:6,annual:12};
 
@@ -560,10 +523,10 @@ function rAdd(code){if(SLEEVES.some(h=>h.code===code))return;const f=BYCODE[code
 function updateRotDates(){if(!SLEEVES.length)return;let lo=0,hi=99999999;SLEEVES.forEach(h=>{const r=fundRange(h.code);if(r){lo=Math.max(lo,r[0]);hi=Math.min(hi,r[1]);}});if(lo<hi){const L=intToYmd(lo),H=intToYmd(hi);['rFrom','rTo'].forEach(id=>{$(id).min=L;$(id).max=H;});$('rFrom').value=L;$('rTo').value=H;}}
 function trailingRet(code,gi,lbMonths){const dt=ymdToDate(HIST.dates[gi]);const back=new Date(dt.getFullYear(),dt.getMonth()-lbMonths,dt.getDate());const bY=back.getFullYear()*10000+(back.getMonth()+1)*100+back.getDate();const nb=navAtIdx(code,dateToIdx(bY)),nn=navAtIdx(code,gi);if(nb==null||nn==null||nb<=0)return null;return nn/nb-1;}
 function runRotation(){
-  if(SLEEVES.length<2)return alert('Add at least 2 funds');
+  if(SLEEVES.length<2)return needMsg('rOut','Add at least 2 funds.');
   const amt=+$('rAmt').value, f=ymdToInt($('rFrom').value), t=ymdToInt($('rTo').value);
   const lb=+$('rLook').value, topK=Math.min(+$('rTop').value,SLEEVES.length), rebM=REBAL_M[$('rRebal').value], dir=$('rDir').value;
-  if(dir==='abs'&&!SLEEVES.some(h=>h.safe))return alert('Absolute momentum needs a defensive sleeve — click the shield on your gold fund.');
+  if(dir==='abs'&&!SLEEVES.some(h=>h.safe))return needMsg('rOut','Absolute momentum needs a defensive sleeve — click the shield on your gold fund.');
   const codes=SLEEVES.map(h=>h.code);
   let [fY,fM]=[Math.floor(f/10000),Math.floor(f/100)%100];
   const [tY,tM]=[Math.floor(t/10000),Math.floor(t/100)%100];
@@ -630,7 +593,7 @@ $('rSleeves').addEventListener('click',e=>{
   const sf=e.target.closest('[data-rsafe]'); if(sf){const i=+sf.dataset.rsafe; const was=SLEEVES[i].safe; SLEEVES.forEach(h=>h.safe=false); SLEEVES[i].safe=!was; renderSleeves();}
 });
 $('rDir').addEventListener('change',renderSleeves);
-$('rRun').addEventListener('click',runRotation);
+$('rRun').addEventListener('click',()=>runTool('rotation'));
 renderSleeves();
 
 // ---- saved rotation results (nested: basket -> strategies -> details; month-end logic) ----
@@ -785,8 +748,7 @@ function saveCurrentRotation(){
   if(g.strategies.some(s=>`${s.lb}-${s.reb}-${s.topK}-${s.dir}`===sk)){ if(msg)msg.textContent='Already saved.'; return; }
   g.strategies.push({label, lb:c.lb, reb:c.reb, topK:c.topK, dir:c.dir});
   saveUserGroups(user); renderSavedRotations();
-  if(msg)msg.textContent='✓ Saved — see Saved results above.';
-  $('rotSaved').scrollIntoView({behavior:'smooth',block:'start'});
+  if(msg)msg.textContent='✓ Saved — it is now in the list on the left.';
 }
 function removeUserStrategy(key,sk){
   let user=loadUserGroups();
@@ -800,17 +762,6 @@ function allGroups(){
     if(map.has(key)){const ex=map.get(key); g.strategies.forEach(s=>{if(!ex.strategies.some(e=>e.lb===s.lb&&e.reb===s.reb&&e.topK===s.topK&&e.dir===s.dir))ex.strategies.push({...s,user:true});});}
     else map.set(key,{key,name:g.name,funds:g.funds,strategies:g.strategies.map(s=>({...s,user:true}))});}
   return [...map.values()];
-}
-function renderSavedRotations(){
-  const box=$('rotSaved'); if(!box)return;
-  box.innerHTML = allGroups().map(g=>`
-    <details class="card mb-3">
-      <summary class="px-4 py-3 cursor-pointer select-none font-semibold text-slate-800 hover:bg-slate-50 rounded-xl">${g.name} <span class="text-xs font-normal text-slate-500">(${g.strategies.length} strategies · month-end logic)</span></summary>
-      <div class="px-4 pb-4">
-        <div class="text-[11px] text-slate-500 mb-2">${g.note?'<b>'+g.note+'</b><br>':''}Top rotation setups by CAGR — click any to expand its decision log, holding periods &amp; chart. Before exit-load/tax; swept "best" params, treat with skepticism.</div>
-        ${g.strategies.map(s=>strategyHTML(g.funds,s)).join('')}
-      </div>
-    </details>`).join('') || '<div class="text-xs text-slate-400">No saved results yet.</div>';
 }
 
 // ================= CATEGORY ROTATION ENGINE =================
@@ -923,18 +874,9 @@ function saveCurrentCatRot(){
   const sig=JSON.stringify([LAST_CATROT.cat,LAST_CATROT.plan,LAST_CATROT.startCode,LAST_CATROT.startY,LAST_CATROT.startM,LAST_CATROT.lb,LAST_CATROT.rebM,LAST_CATROT.dir]);
   if(all.some(c=>JSON.stringify([c.cat,c.plan,c.startCode,c.startY,c.startM,c.lb,c.rebM,c.dir])===sig)){if(msg)msg.textContent='Already saved.';return;}
   all.push(LAST_CATROT); saveCatSaved(all); renderCatSaved();
-  if(msg)msg.textContent='✓ Saved — see the saved list above.'; $('crSaved').scrollIntoView({behavior:'smooth',block:'start'});
+  if(msg)msg.textContent='✓ Saved — it is now in the list on the left.';
 }
 function removeCatSaved(i){const all=loadCatSaved(); all.splice(i,1); saveCatSaved(all); renderCatSaved();}
-function renderCatSaved(){
-  const box=$('crSaved'); if(!box)return; const all=loadCatSaved();
-  if(!all.length){box.innerHTML='<div class="text-xs text-slate-400">None yet — build one below and click “Save”.</div>';return;}
-  box.innerHTML=all.map((cfg,i)=>{const res=simCatRot(cfg); if(!res||!res.periods.length)return '';
-    return `<details class="border border-amber-300 rounded-lg mb-2">
-      <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg"><button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeCatSaved(${i})">✕ remove</button><span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>${cfg.label} <span class="text-xs font-normal text-slate-500">· <span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
-      <div class="px-3 pb-3">${catBody(res,cfg)}</div>
-    </details>`;}).join('')||'<div class="text-xs text-slate-400">None yet.</div>';
-}
 function populateCatStart(){
   const cat=$('crCat').value, plan=$('crPlan').value;
   const list=FUNDS.filter(f=>f.category===cat&&f.plan===plan).map(f=>({code:+f.code,n:catNameOf(+f.code)})).sort((a,b)=>a.n.localeCompare(b.n));
@@ -948,7 +890,7 @@ function populateCatControls(){
   populateCatStart(); renderCatSaved();
   $('crCat').addEventListener('change',populateCatStart);
   $('crPlan').addEventListener('change',populateCatStart);
-  $('crRun').addEventListener('click',runCatRotation);
+  $('crRun').addEventListener('click',()=>runTool('catrot'));
 }
 // ================= BEST-OF-BREED ENGINE =================
 // Each re-check: find the single best-momentum fund WITHIN each chosen category (the live
@@ -1066,42 +1008,213 @@ function saveCurrentBob(){
   const sig=JSON.stringify([LAST_BOB.cats,LAST_BOB.plan,LAST_BOB.gold,LAST_BOB.startY,LAST_BOB.startM,LAST_BOB.lb,LAST_BOB.rebM,LAST_BOB.dir,LAST_BOB.topK]);
   if(all.some(c=>JSON.stringify([c.cats,c.plan,c.gold,c.startY,c.startM,c.lb,c.rebM,c.dir,c.topK])===sig)){if(msg)msg.textContent='Already saved.';return;}
   all.push(LAST_BOB); saveBobSaved(all); renderBobSaved();
-  if(msg)msg.textContent='✓ Saved — see the saved list above.'; $('bobSaved').scrollIntoView({behavior:'smooth',block:'start'});
+  if(msg)msg.textContent='✓ Saved — it is now in the list on the left.';
 }
 function removeBobSaved(i){const all=loadBobSaved();all.splice(i,1);saveBobSaved(all);renderBobSaved();}
-function renderBobSaved(){
-  const box=$('bobSaved'); if(!box)return;
-  const user=loadBobSaved();
-  const list=BOB_BUILTIN.map(c=>({cfg:c,user:false})).concat(user.map(c=>({cfg:c,user:true})));
-  box.innerHTML=list.map((it,idx)=>{const cfg=it.cfg; const res=simBOB(cfg); if(!res||!res.periods.length)return '';
-    const ui=user.indexOf(cfg); const rm=it.user?`<button class="text-red-500 text-xs ml-2 float-right" title="Remove" onclick="event.preventDefault();event.stopPropagation();removeBobSaved(${ui})">✕ remove</button>`:'';
-    const badge=it.user?'<span class="text-[9px] uppercase bg-amber-100 text-amber-700 px-1 rounded mr-1">yours</span>':'<span class="text-[9px] uppercase bg-emerald-100 text-emerald-700 px-1 rounded mr-1">built-in</span>';
-    return `<details class="border ${it.user?'border-amber-300':'border-emerald-200'} rounded-lg mb-2">
-      <summary class="px-3 py-2 cursor-pointer select-none text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg">${rm}${badge}${cfg.label} <span class="text-xs font-normal text-slate-500">· <span class="${res.cagr>=0?'pos':'neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span> · <span class="neg">-${res.mdd.toFixed(0)}% DD</span> · ${res.switches} switches</span></summary>
-      <div class="px-3 pb-3">${bobBody(res,cfg)}</div>
-    </details>`;}).join('')||'<div class="text-xs text-slate-400">None yet.</div>';
-}
 function populateBobControls(){
   if(window.__bobInit)return; window.__bobInit=true;
   $('bobCats').innerHTML=BOB_CATS.map(o=>`<label class="text-xs text-slate-700 flex items-center gap-1"><input type="checkbox" value="${o.c}" ${o.on?'checked':''}/> ${o.k}</label>`).join('');
   renderBobSaved();
-  $('bobRun').addEventListener('click',runBOB);
+  $('bobRun').addEventListener('click',()=>runTool('bob'));
 }
-$('fundSearch').addEventListener('input',e=>renderResults(e.target.value));
-$('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(+d.dataset.c);});
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
+// ================= ONE-SCREEN GLUE (list → inputs + result → chart) =================
+const K=window.OSKit, esc=K.esc;
+const FUND_TOOLS={lumpsum:1,sip:1,rolling:1,timing:1};
+const TOOL_NAME={lumpsum:'Lumpsum',sip:'SIP',rolling:'Rolling returns',timing:'Timing strategy',rotation:'Rotation',catrot:'Category rotation',bob:'Best-of-breed'};
+const RUN={lumpsum:runLumpsum,sip:runSip,rolling:runRolling,timing:runTiming,rotation:runRotation,catrot:runCatRotation,bob:runBOB};
+const OUT={lumpsum:'lsOut',sip:'sipOut',rolling:'rollOut',timing:'tOut',rotation:'rOut',catrot:'crOut',bob:'bobOut'};
+const LIST_ID={rotation:'rotSaved',catrot:'crSaved',bob:'bobSaved'};
+const SAVED={rotation:[],catrot:[],bob:[]}, SSEL={}, LASTEQ={}, RAN={};
+let TOOL='lumpsum', CH=null, EQ=null, EQC=null, CMODE='eq', SHOWN=[], NAVDRAWN=null;
+const wide=()=>window.innerWidth>=900;
+
+function needMsg(id,t){$(id).innerHTML=card(t);}
+// the engines call this where the old page drew an inline SVG; the curve now goes to the chart pane
+function equityChart(a,b,la='strategy',lb='buy &amp; hold'){EQ={a,b,la,lb};return '';}
+function runTool(t){
+  EQ=null; RUN[t](); LASTEQ[t]=EQ;
+  if(FUND_TOOLS[t]&&!$(OUT[t]).innerHTML.trim())needMsg(OUT[t],'No NAV history for this fund in the data file.');
+  if(FUND_TOOLS[t]&&SEL)RAN[t]=SEL.code;
+  if(t===TOOL)drawRight();
+}
+
+// ---- left list: funds ----
+function renderFunds(){
+  const q=$('fundSearch').value.trim().toLowerCase();
+  const hits=q?FUNDS.filter(f=>(f.short+' '+(f.amc||'')).toLowerCase().includes(q)):FUNDS;
+  SHOWN=hits.slice(0,300);
+  if(FUND_TOOLS[TOOL])$('lCnt').textContent=hits.length>300?('first 300 of '+hits.length.toLocaleString('en-IN')):(hits.length.toLocaleString('en-IN')+(hits.length===1?' fund':' funds'));
+  $('fundResults').innerHTML=SHOWN.map(f=>`<div class="os-row fr${SEL&&SEL.code===f.code?' on':''}" data-c="${esc(f.code)}" role="option" title="${esc(f.short)} · ${esc(f.amc||'')}">
+    <span class="n">${esc(f.short)}</span><span class="m">${(f.plan||'Direct').slice(0,3).toUpperCase()}</span><span class="m">${f.years==null?'—':(+f.years).toFixed(1)}</span></div>`).join('')
+    || '<div class="os-empty">No fund matches that search.</div>';
+}
+function chooseFund(code){
+  const f=BYCODE[code]; if(!f)return;
+  SEL=f; NAVDRAWN=null;
+  const r=fundRange(code);
+  const lo=r?intToYmd(r[0]):'—', hi=r?intToYmd(r[1]):'—';
+  $('fundChosen').innerHTML=`<b>${esc(SEL.short)}</b> <span class="tg">${(SEL.plan||'Direct').toUpperCase()}</span><br>${esc(SEL.amc||'')} · ${esc(SEL.category||'')} · data ${lo} → ${hi}`;
+  // default date inputs to the fund's range
+  if(r){['lsFrom','sipFrom'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=lo;});
+        ['lsTo','sipTo'].forEach(i=>{$(i).min=lo;$(i).max=hi;$(i).value=hi;});}
+  ['lsOut','sipOut','rollOut','rollCal','tOut'].forEach(i=>{$(i).innerHTML='';});
+  ['lumpsum','sip','rolling','timing'].forEach(t=>{delete RAN[t];delete LASTEQ[t];});
+  $('fundResults').querySelectorAll('.os-row').forEach(el=>el.classList.toggle('on',el.dataset.c===''+SEL.code));
+  const L=$('fundResults'), on=L.querySelector('.os-row.on');   // keep the chosen fund in view inside its own list (never scrolls the page)
+  if(on){const d=on.getBoundingClientRect().top-L.getBoundingClientRect().top; if(d<0||d>L.clientHeight-33)L.scrollTop+=d-66;}
+  if(FUND_TOOLS[TOOL])runTool(TOOL);
+}
+
+// ---- left list: saved strategies (built-in + this browser's) ----
+const savedRow=(id,label,res,user,builtin)=>`<div class="os-row sr" data-id="${esc(id)}" role="option" title="${esc(label)}">
+  <span class="n">${user?'<span class="tg">YOURS</span>':builtin?'<span class="tg">BUILT-IN</span>':''}${esc(label)}</span>
+  <span class="v ${res.cagr>=0?'os-pos':'os-neg'}">${res.cagr>=0?'+':''}${res.cagr.toFixed(1)}%</span><span class="m">-${res.mdd.toFixed(0)}%</span></div>`;
+const NEW_ROW='<div class="os-row sr" data-id="" role="option"><span class="n"><b>＋ Build your own</b></span><span></span><span></span></div>';
+function fixSel(t){
+  const items=SAVED[t];
+  if(SSEL[t]===undefined || (SSEL[t]!==null && !items.some(x=>x.id===SSEL[t]))) SSEL[t]=items.length?items[0].id:null;
+  if(t===TOOL)showSaved();
+}
+function renderSavedRotations(){
+  const items=[]; let h=NEW_ROW;
+  allGroups().forEach(g=>{
+    let rows='';
+    g.strategies.forEach(s=>{const res=simRotME(g.funds,s.lb,s.reb,s.topK,s.dir,12); if(!res)return;
+      const id=g.key+'|'+s.lb+'-'+s.reb+'-'+s.topK+'-'+s.dir; items.push({id,g,s,res}); rows+=savedRow(id,s.label,res,s.user,false);});
+    if(rows)h+=`<div class="gh" title="${esc(g.name)}">${esc(g.name)}<i>${g.strategies.length}</i></div>`+rows;
+  });
+  SAVED.rotation=items; $('rotSaved').innerHTML=h; fixSel('rotation');
+}
+function renderCatSaved(){
+  const items=[]; let h=NEW_ROW;
+  loadCatSaved().forEach((cfg,i)=>{const res=simCatRot(cfg); if(!res||!res.periods.length)return;
+    const id='u'+i; items.push({id,cfg,res,ui:i}); h+=savedRow(id,cfg.label,res,true,false);});
+  if(!items.length)h+='<div class="os-empty">None saved yet — build one and click “Save this strategy”.</div>';
+  SAVED.catrot=items; $('crSaved').innerHTML=h; fixSel('catrot');
+}
+function renderBobSaved(){
+  const items=[]; let h=NEW_ROW;
+  const user=loadBobSaved();
+  BOB_BUILTIN.map((c,i)=>({cfg:c,id:'b'+i,ui:-1})).concat(user.map((c,i)=>({cfg:c,id:'u'+i,ui:i}))).forEach(it=>{
+    const res=simBOB(it.cfg); if(!res||!res.periods.length)return;
+    it.res=res; items.push(it); h+=savedRow(it.id,it.cfg.label,res,it.ui>=0,it.ui<0);});
+  SAVED.bob=items; $('bobSaved').innerHTML=h; fixSel('bob');
+}
+function showSaved(){
+  const t=TOOL; if(FUND_TOOLS[t])return;
+  const items=SAVED[t], it=items.find(x=>x.id===SSEL[t]), so=$('savedOut');
+  $(LIST_ID[t]).querySelectorAll('.os-row').forEach(el=>el.classList.toggle('on',el.dataset.id===(it?it.id:'')));
+  $('lCnt').textContent=items.length+' saved';
+  if(!it){
+    $('tab-'+t).classList.remove('hidden'); so.classList.add('hidden'); so.innerHTML='';
+    $('mTtl').innerHTML=esc(TOOL_NAME[t])+'<i>build your own</i>';
+    EQ=LASTEQ[t]||null; drawRight(); return;
+  }
+  $('tab-'+t).classList.add('hidden'); so.classList.remove('hidden'); EQ=null;
+  $('mTtl').innerHTML=esc(TOOL_NAME[t])+'<i>saved result</i>';
+  if(t==='rotation'){
+    so.innerHTML=`<div class="bt-h"><span>${esc(it.g.name)}</span></div>
+      <p class="bt-note">${it.g.note?'<b>'+esc(it.g.note)+'</b><br>':''}Funds: ${it.g.funds.map(f=>esc(f.n)+(f.safe?' (defensive)':'')).join(' · ')} · month-end logic. Before exit-load/tax; swept "best" params, treat with skepticism.</p>`
+      +strategyHTML(it.g.funds,it.s);
+    so.querySelectorAll('details').forEach(d=>{d.open=true;});
+  }else{
+    const rm=it.ui>=0?`<button type="button" class="os-btn" data-rm="${it.ui}" title="Remove this saved strategy from this browser">Remove</button>`:'';
+    so.innerHTML=`<div class="bt-h"><span>${it.ui>=0?'<span class="tg">YOURS</span>':'<span class="tg">BUILT-IN</span>'}${esc(it.cfg.label)}</span>${rm}</div>`
+      +(t==='catrot'?catBody(it.res,it.cfg):bobBody(it.res,it.cfg));
+  }
+  $('mBody').scrollTop=0;
+  drawRight();
+}
+
+// ---- right pane: fund NAV chart (kit) or a two-line value curve ----
+function navBars(code){
+  const d=decoded(code); if(!d)return [];
+  const out=[];
+  for(let i=0;i<d.nav.length;i++){const v=d.nav[i]; if(!(v>0))continue; const s=''+HIST.dates[d.start+i];
+    out.push({ts:Date.UTC(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8))/1000,c:v/100});}
+  return out;
+}
+function eqInit(){
+  const LC=window.LightweightCharts, cs=getComputedStyle(document.documentElement), v=n=>cs.getPropertyValue(n).trim();
+  if(EQC)EQC.chart.remove();
+  const acc=v('--accent')||'#2563eb', ref=v('--text-faint')||'#94a3b8', grid=v('--border')||'#e2e8f0';
+  const chart=LC.createChart($('eqChart'),{autoSize:true,
+    layout:{background:{color:'transparent'},textColor:v('--text-muted')||'#9aa3b8',fontSize:11,fontFamily:getComputedStyle(document.body).fontFamily,attributionLogo:false},
+    grid:{vertLines:{color:grid},horzLines:{color:grid}},rightPriceScale:{borderVisible:false},timeScale:{borderVisible:false},
+    localization:{priceFormatter:x=>x<0?'':fmtShort(x)}});
+  const sb=chart.addSeries(LC.LineSeries,{color:ref,lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+  const sa=chart.addSeries(LC.LineSeries,{color:acc,lineWidth:2,priceLineVisible:false});
+  EQC={chart,sa,sb,acc,ref,da:[],db:[]};
+  chart.subscribeCrosshairMove(p=>{
+    if(!p||!p.time||!p.seriesData){eqLegend();return;}
+    const A=p.seriesData.get(sa),B=p.seriesData.get(sb);
+    eqLegend(typeof p.time==='string'?p.time:(p.time.year+'-'+String(p.time.month).padStart(2,'0')+'-'+String(p.time.day).padStart(2,'0')),A?A.value:null,B?B.value:null);
+  });
+}
+function eqPts(arr){const m=new Map(); (arr||[]).forEach(p=>{if(p&&p[1]>0)m.set(intToYmd(HIST.dates[p[0]]),p[1]);}); return [...m].map(([time,value])=>({time,value})).sort((x,y)=>x.time<y.time?-1:1);}
+function eqLegend(t,va,vb){
+  if(!EQ||!EQC){$('eqLg').innerHTML='';return;}
+  if(t==null){const la=EQC.da[EQC.da.length-1], lb=EQC.db[EQC.db.length-1]; if(!la){$('eqLg').innerHTML='';return;} t=la.time; va=la.value; vb=lb?lb.value:null;}
+  $('eqLg').innerHTML=`<div><span class="mut">${K.niceDate(t)}</span></div><div><span style="color:${EQC.acc}">●</span> ${EQ.la} <b>${va==null?'—':fmtINR(va)}</b></div><div><span style="color:${EQC.ref}">●</span> <span class="mut">${EQ.lb}</span> ${vb==null?'—':fmtINR(vb)}</div>`;
+}
+function drawEq(){
+  if(!EQC)eqInit();
+  EQC.da=eqPts(EQ.a); EQC.db=eqPts(EQ.b);
+  EQC.sb.setData(EQC.db); EQC.sa.setData(EQC.da); EQC.chart.timeScale().fitContent(); eqLegend();
+}
+function drawRight(){
+  const fund=!!FUND_TOOLS[TOOL], hasEq=!!(EQ&&EQ.a&&EQ.a.length>1), hasNav=fund&&!!SEL;
+  $('cMode').classList.toggle('hidden',!(hasEq&&hasNav));
+  const mode=(hasEq&&hasNav)?CMODE:(hasEq?'eq':'nav');
+  ['cIv','cRg','cLog'].forEach(i=>$(i).classList.toggle('hidden',mode!=='nav'||!hasNav));
+  $('navWrap').classList.toggle('hidden',mode!=='nav'); $('eqWrap').classList.toggle('hidden',mode!=='eq');
+  if(mode==='eq'){ $('cTtl').innerHTML='Value over time<i>'+EQ.la+' vs '+EQ.lb+'</i>'; drawEq(); return; }
+  if(!hasNav){ $('cTtl').textContent=fund?'Fund NAV':'Value over time'; NAVDRAWN=null;
+    CH.clear(fund?'Pick a fund on the left to see its NAV chart.':'Run the backtest, or pick a saved one on the left — its value curve shows here.'); return; }
+  $('cTtl').innerHTML='Fund NAV<i>'+esc(cleanName(SEL.short))+'</i>';
+  if(NAVDRAWN!==SEL.code){
+    const bars=navBars(SEL.code);
+    if(!bars.length)CH.clear('No NAV history for this fund.'); else CH.show({bars,ohlc:false},{name:cleanName(SEL.short),tag:SEL.plan||''});
+    NAVDRAWN=SEL.code;
+  }
+}
+
+// ---- tools (top tabs) ----
+function setTool(t){
+  TOOL=t; const fund=!!FUND_TOOLS[t];
+  document.querySelectorAll('#tabs .tab').forEach(x=>{const on=x.dataset.tab===t; x.classList.toggle('on',on); x.setAttribute('aria-selected',on?'true':'false');});
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.add('hidden'));
-  $('tab-'+t.dataset.tab).classList.remove('hidden');
-  if(t.dataset.tab==='rotation' && !window.__rotSavedDone){window.__rotSavedDone=true; setTimeout(renderSavedRotations,30);}
-  if(t.dataset.tab==='catrot'){setTimeout(populateCatControls,20);}
-  if(t.dataset.tab==='bob'){setTimeout(populateBobControls,20);}
-}));
-$('lsRun').addEventListener('click',runLumpsum);
-$('sipRun').addEventListener('click',runSip);
-$('rollRun').addEventListener('click',runRolling);
-$('tRun').addEventListener('click',runTiming);
+  ['fundResults','rotSaved','crSaved','bobSaved'].forEach(id=>$(id).classList.add('hidden'));
+  $('grid').classList.toggle('sv',!fund);
+  $('lSearch').classList.toggle('hidden',!fund); $('fundChosen').classList.toggle('hidden',!fund);
+  $('savedOut').classList.add('hidden');
+  if(fund){
+    $('fundResults').classList.remove('hidden'); $('tab-'+t).classList.remove('hidden');
+    $('lTtl').textContent='Funds'; $('lHead').innerHTML='<span>Fund</span><span>Plan</span><span>Yrs</span>';
+    $('mTtl').textContent=TOOL_NAME[t];
+    renderFunds();
+    EQ=LASTEQ[t]||null;
+    if(SEL&&RAN[t]!==SEL.code)runTool(t); else drawRight();
+  }else{
+    $(LIST_ID[t]).classList.remove('hidden');
+    $('lTtl').textContent='Saved strategies'; $('lHead').innerHTML='<span>Strategy</span><span>CAGR</span><span title="Maximum drawdown">DD</span>';
+    if(t==='rotation'&&!window.__rotSavedDone){window.__rotSavedDone=true; renderSavedRotations();}
+    else if(t==='catrot'&&!window.__catInit)populateCatControls();
+    else if(t==='bob'&&!window.__bobInit)populateBobControls();
+    else showSaved();
+  }
+  K.fitGrid($('grid'));
+}
+function move(step){
+  const box=$(FUND_TOOLS[TOOL]?'fundResults':LIST_ID[TOOL]); const rows=[...box.querySelectorAll('.os-row')]; if(!rows.length)return;
+  let i=rows.findIndex(r=>r.classList.contains('on')); i=i<0?(step>0?0:rows.length-1):Math.max(0,Math.min(rows.length-1,i+step));
+  rows[i].click(); rows[i].scrollIntoView({block:'nearest'});
+}
+function toggleFocus(){ if(!wide())return; const on=$('grid').classList.toggle('focus'); $('cFocus').classList.toggle('on',on); }
+function mkSeg(id,opts,cur,fn){
+  const el=$(id); el.innerHTML=opts.map(o=>`<button type="button" data-v="${o[0]}" class="${o[0]===cur?'on':''}">${o[1]}</button>`).join('');
+  el.addEventListener('click',e=>{const b=e.target.closest('button[data-v]'); if(!b)return; el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); fn(b.dataset.v);});
+}
 function updateSigUI(){
   const s=$('tSig').value;
   $('tWinWrap').style.display = s==='cagr'?'':'none';
@@ -1110,9 +1223,50 @@ function updateSigUI(){
   if(s==='cagr'){$('tBuyLbl').innerHTML='Buy when &lt; (%)';$('tSellLbl').innerHTML='Sell when &gt; (%)';$('tBuy').value=10;$('tSell').value=25;}
   else if(s==='dip'){$('tBuyLbl').innerHTML='Buy when % below peak &gt;';$('tSellLbl').innerHTML='Sell within % of peak &lt;';$('tBuy').value=20;$('tSell').value=3;}
 }
-$('tSig').addEventListener('change',updateSigUI); updateSigUI();
 
-load().then(()=>{ /* ready */ }).catch(e=>{$('status').textContent='Load failed: '+e.message;});
+$('fundSearch').addEventListener('input',renderFunds);
+$('fundResults').addEventListener('click',e=>{const d=e.target.closest('[data-c]');if(d)chooseFund(d.dataset.c);});
+['rotation','catrot','bob'].forEach(t=>$(LIST_ID[t]).addEventListener('click',e=>{const d=e.target.closest('.os-row[data-id]'); if(!d)return; SSEL[t]=d.dataset.id||null; showSaved();}));
+$('savedOut').addEventListener('click',e=>{const b=e.target.closest('[data-rm]'); if(!b)return; if(TOOL==='catrot')removeCatSaved(+b.dataset.rm); else if(TOOL==='bob')removeBobSaved(+b.dataset.rm);});
+document.querySelectorAll('#tabs .tab').forEach(t=>t.addEventListener('click',()=>setTool(t.dataset.tab)));
+$('lsRun').addEventListener('click',()=>runTool('lumpsum'));
+$('sipRun').addEventListener('click',()=>runTool('sip'));
+$('rollRun').addEventListener('click',()=>runTool('rolling'));
+$('tRun').addEventListener('click',()=>runTool('timing'));
+$('tSig').addEventListener('change',updateSigUI); updateSigUI();
+$('cFocus').addEventListener('click',toggleFocus);
+document.addEventListener('keydown',e=>{
+  const t=e.target, typing=t&&(t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA');
+  if(e.key==='Escape'){ if(typing)t.blur(); else if($('grid').classList.contains('focus'))toggleFocus(); return; }
+  if(typing||e.metaKey||e.ctrlKey||e.altKey||!HIST)return;
+  if(e.key==='f'||e.key==='F'){toggleFocus();return;}
+  const step={ArrowDown:1,ArrowUp:-1,PageDown:10,PageUp:-10,Home:-1e6,End:1e6}[e.key];
+  if(step){e.preventDefault();move(step);}
+  else if(e.key==='Enter'&&!$('tab-'+TOOL).classList.contains('hidden')&&!(t&&t.tagName==='BUTTON')){e.preventDefault();runTool(TOOL);}
+});
+
+load().then(()=>{
+  const D=HIST.dates;
+  $('asof').innerHTML='Daily NAVs '+K.niceDate(intToYmd(D[0]))+' → '+K.niceDate(intToYmd(D[D.length-1]))+' · <a href="./mutual-funds.html">← all funds</a>';
+  CH=new K.Chart({chart:$('navChart'),legend:$('navLg'),msg:$('navMsg'),iv:'D',range:'Max'});
+  const EC=['#3b82f6','#eab308','#ef4444'], EN=[21,50,200];
+  CH.legend=function(i){             // a NAV has no open / high / low, so the legend says NAV, not O H L C
+    const b=this.bars[i], el=this.o.legend, me=this; if(!b||!this.data){el.innerHTML='';return;}
+    const prev=i>0?this.bars[i-1].c:null, pc=prev?(b.c/prev-1)*100:null;
+    el.innerHTML='<div><b>'+esc(this.meta.name||'')+'</b> <span class="mut">· 1'+this.iv+' · '+K.niceDate(K.tsISO(b.ts))+' · NAV</span> ₹'+K.fmtN(b.c)
+      +(pc==null?'':' <span class="'+(K.cls(pc)||'os-pos')+'">'+K.fmtPct(pc)+'</span>')+'</div><div>'
+      +EN.map((n,j)=>{const e=me.ema[j]&&me.ema[j][i]; return '<span class="mut">EMA '+n+'</span> <span style="color:'+EC[j]+'">'+(e==null?'—':K.fmtN(e))+'</span>';}).join(' &nbsp;')+'</div>';
+  };
+  mkSeg('cMode',[['eq','Value curve'],['nav','Fund NAV']],CMODE,v=>{CMODE=v;drawRight();});
+  mkSeg('cIv',[['D','D'],['W','W'],['M','M']],'D',v=>CH.setIv(v));
+  mkSeg('cRg',[['3M','3M'],['6M','6M'],['1Y','1Y'],['3Y','3Y'],['Max','Max']],'Max',v=>CH.setRange(v));
+  $('cLog').addEventListener('click',()=>{const on=$('cLog').classList.toggle('on'); CH.setLog(on);});
+  new MutationObserver(()=>{ if(EQC){eqInit(); if(EQ&&!$('eqWrap').classList.contains('hidden'))drawEq();} }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  let rz; window.addEventListener('resize',()=>{clearTimeout(rz); rz=setTimeout(()=>K.fitGrid($('grid')),120);});
+  setTool('lumpsum');
+  const first=FUNDS.find(f=>f.years>=10&&HIST.data[f.code])||SHOWN[0];   // open on a fund old enough for every tool
+  if(first)chooseFund(first.code);
+}).catch(e=>{$('status').textContent='Load failed: '+e.message;});
 </script>
 </body>
 </html>
