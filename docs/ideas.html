@@ -180,7 +180,7 @@
           <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
       <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
         <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
-        <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> tabs · <b>/</b> search · <b>F</b> focus</span>
+        <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> tabs · <b>F</b> focus</span>
         <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
       <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
       <div class="os-stats" id="cStats"></div>
@@ -1296,7 +1296,6 @@
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
     if (typing) { if (e.key === 'Escape' || (e.key === 'Enter' && tg.type === 'search')) tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; if (tg.type !== 'search') return; }
-    if (e.key === '/') { e.preventDefault(); if (VIEW !== 'ideas') setView('ideas'); $('#q').focus(); return; }
     if (VIEW === 'method') return;
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       const d = CUR; if (!d) return;

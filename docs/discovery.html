@@ -427,7 +427,6 @@ async function load(){
       else if (e.key === 'f' || e.key === 'F') setFocus();
       else if (e.key === 'i' || e.key === 'I') { if (SEL) triToggle(SEL[0], 'in'); }
       else if (e.key === 'r' || e.key === 'R') { if (SEL) triToggle(SEL[0], 'out'); }
-      else if (e.key === '/') { $('q').focus(); e.preventDefault(); }
     });
   } catch (e) {
     $('status').innerHTML = 'Could not load discovery data (' + esc(e.message) + '). Please try again in a minute.';

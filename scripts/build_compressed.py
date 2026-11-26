@@ -332,7 +332,7 @@ HTML = r"""<!DOCTYPE html>
             <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
         <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
           <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
-          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> switch list · <b>/</b> search · <b>F</b> focus</span>
+          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> switch list · <b>F</b> focus</span>
           <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
         <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
         <div class="os-stats" id="cStats"></div>
@@ -1270,7 +1270,6 @@ function wire() {
     else if (e.key === 'Escape') { if (S.focus) setFocus(false); }
     else if (e.key === 'Enter') { const a = $('cOpen'); if (!a.classList.contains('hidden') && a.getAttribute('href') !== '#') location.href = a.href; }
     else if (e.key === 'f' || e.key === 'F') { setFocus(); }
-    else if (e.key === '/') { (bt ? $('backtestN') : $('searchBox')).focus(); e.preventDefault(); }
   });
 }
 

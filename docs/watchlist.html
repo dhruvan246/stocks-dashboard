@@ -83,7 +83,7 @@
         <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
       <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
         <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
-        <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>Enter</b> open · <b>/</b> add · <b>F</b> focus</span>
+        <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>Enter</b> open · <b>F</b> focus</span>
         <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
       <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
       <div class="os-stats" id="cStats"></div>
@@ -307,7 +307,6 @@
       else if (e.key === 'Enter') { if (S.sel) location.href = './stock.html?sym=' + encodeURIComponent(S.sel); }
       else if (e.key === 'f' || e.key === 'F') setFocus();
       else if (e.key === 'n' || e.key === 'N') { if (S.sel) { $('dNote').focus(); e.preventDefault(); } }
-      else if (e.key === '/') { $('wlAdd').focus(); e.preventDefault(); }
     });
   }
   document.readyState === 'loading' ? addEventListener('DOMContentLoaded', boot) : boot();
