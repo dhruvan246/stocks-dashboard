@@ -7,68 +7,88 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <style>
   body{ font-feature-settings:"tnum" 1; }
   :root{ --cx-govt:var(--accent); --cx-be:#8a94a8; --cx-re:#b8720f; --cx-pvt:#1a9e87; --cx-pvt2:#7c5cd6; --cx-grid:var(--border); }
   /* dark: same hues re-stepped and validated against the #0d1322 surface (dataviz palette checks pass both modes) */
   html[data-theme="dark"]{ --cx-be:#6f7a92; --cx-re:#c17516; --cx-pvt:#1a9e87; --cx-pvt2:#9a7de6; }
-  .segbtn{ font-size:12px; font-weight:700; padding:5px 12px; border-radius:var(--radius-sm); color:var(--text-muted);
-    border:1px solid var(--border); background:var(--surface-2); cursor:pointer; transition:var(--tr); }
-  .segbtn:hover{ color:var(--text); border-color:var(--border-strong); }
-  .segbtn.on{ color:#fff; border-color:transparent; background:linear-gradient(135deg,var(--accent),var(--accent-2)); box-shadow:0 4px 12px -4px var(--glow); }
-  .pulse .p-lb{ font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; color:var(--text-faint); }
-  .pulse .p-v{ font-size:22px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin-top:3px; }
-  .pulse .p-sub{ font-size:11px; color:var(--text-muted); margin-top:4px; }
-  .p-chip{ display:inline-block; font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:var(--radius-sm); border:1px solid var(--border); color:var(--text-muted); white-space:nowrap; margin-left:4px; }
-  .p-chip.pos{ color:var(--pos); background:color-mix(in srgb,var(--pos) 12%,transparent); border-color:color-mix(in srgb,var(--pos) 28%,transparent); }
-  .p-chip.neg{ color:var(--neg); background:color-mix(in srgb,var(--neg) 12%,transparent); border-color:color-mix(in srgb,var(--neg) 28%,transparent); }
-  .secttl{ font-size:15px; font-weight:800; letter-spacing:-.01em; color:var(--text); }
-  .sectsub{ font-size:11.5px; color:var(--text-faint); margin-top:1px; }
-  .h2{ font-size:18px; font-weight:800; letter-spacing:-.02em; color:var(--text); margin:26px 0 10px; }
-  .legend{ display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--text-muted); margin-top:8px; }
-  .legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
-  .legend i.hollow{ background:transparent !important; border:2px solid var(--cx-be); box-sizing:border-box; }
-  .cx-tip{ position:fixed; pointer-events:none; z-index:70; background:var(--surface); border:1px solid var(--border-strong);
-    border-radius:var(--radius); box-shadow:var(--shadow-lg); padding:7px 10px; font-size:12px; color:var(--text); opacity:0; transition:opacity .1s; max-width:280px; line-height:1.35; }
-  .cx-tip b{ color:var(--text); } .cx-tip .d{ color:var(--text-faint); font-size:11px; }
-  .cx-chart svg{ width:100%; height:auto; display:block; }
-  .cx-chart text{ font-family:var(--font); }
-  .tbl{ width:100%; font-size:12.5px; }
-  .tbl th{ font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint); font-weight:800; padding:6px 6px; border-bottom:1px solid var(--border); text-align:right; white-space:nowrap; }
-  .tbl th:first-child, .tbl td:first-child{ text-align:left; }
-  .tbl td{ padding:6px 6px; border-bottom:1px solid var(--border); text-align:right; font-variant-numeric:tabular-nums; color:var(--text); }
-  .tbl tr:last-child td{ border-bottom:none; }
-  .tbl .mut{ color:var(--text-muted); }
-  .pos{ color:var(--pos); font-weight:700; } .neg{ color:var(--neg); font-weight:700; }
-  .tag{ display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:1px 6px; border-radius:5px;
-    color:var(--accent-text,var(--accent)); background:color-mix(in srgb,var(--accent) 10%,transparent); border:1px solid color-mix(in srgb,var(--accent) 22%,transparent); margin-left:6px; vertical-align:1px; }
-  .verdict{ display:inline-block; font-size:10.5px; font-weight:800; padding:2px 8px; border-radius:var(--radius-sm); white-space:nowrap; }
-  .verdict.ok{ color:var(--pos); background:color-mix(in srgb,var(--pos) 12%,transparent); }
-  .verdict.def{ color:var(--warn,#b7791f); background:color-mix(in srgb,var(--warn,#d98a1f) 14%,transparent); }
-  .verdict.na{ color:var(--text-muted); background:var(--surface-2); }
-  .note{ font-size:11.5px; color:var(--text-muted); line-height:1.5; }
-  .note b{ color:var(--text); }
-  .sbar{ display:grid; grid-template-columns:170px 1fr 72px; align-items:center; gap:10px; padding:4px 0; border-bottom:1px dashed var(--border); font-size:12px; }
-  .sbar:last-child{ border-bottom:none; }
-  .sbar .lb{ color:var(--text-muted); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .sbar .tr{ position:relative; height:16px; }
-  .sbar .bar{ position:absolute; top:3px; height:10px; border-radius:3px; min-width:2px; }
-  .sbar .bar.cur{ background:var(--cx-pvt); }
-  .sbar .bar.prev{ top:0; height:16px; border-radius:3px; background:transparent; border:1.5px dashed var(--cx-be); box-sizing:border-box; }
-  .sbar .v{ text-align:right; font-weight:700; font-variant-numeric:tabular-nums; }
-  .sbar .tr .zero{ position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--border-strong); }
-  .sbar .bar.pos{ background:color-mix(in srgb,var(--pos) 78%,transparent); }
-  .sbar .bar.neg{ background:color-mix(in srgb,var(--neg) 78%,transparent); }
-  .sbar .lb small{ display:block; font-size:10px; color:var(--text-faint); font-weight:500; }
-  .anchors a{ font-size:12px; font-weight:700; color:var(--text-muted); padding:5px 11px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); }
-  .anchors a:hover{ color:var(--text); border-color:var(--border-strong); }
-  @media (max-width:640px){ .sbar{ grid-template-columns:110px 1fr 60px; gap:7px; } .sbar .lb{ font-size:11px; } .pulse .p-v{ font-size:19px; } }
+  #grid{grid-template-columns:minmax(270px,330px) minmax(260px,320px) minmax(0,1fr)}
+  #grid.two{grid-template-columns:minmax(300px,440px) minmax(0,1fr)} #grid.two #pC{display:none}
+  #lHead,.lr{grid-template-columns:minmax(0,1fr) 92px 66px}
+  #pL.c2 #lHead,#pL.c2 .lr{grid-template-columns:minmax(0,1fr) 108px}
+  #pL.chk #lHead,#pL.chk .lr{grid-template-columns:minmax(0,1fr) 124px}
+  #lList{position:relative}
+  .lr .n small{color:var(--text-faint);font-weight:400;margin-left:6px}
+  .lgrp{padding:5px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border)}
+  .pos{color:var(--pos)} .neg{color:var(--neg)} .mut{color:var(--text-muted)}
+  .dh{padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);background:var(--surface-2);border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+  .dh:first-child{border-top:0}
+  .dp{padding:8px 12px;font-size:12px;color:var(--text-muted);line-height:1.5;border-bottom:1px solid var(--border)}
+  .dp b{color:var(--text)} .dp a{color:var(--accent-text,var(--accent))}
+  .kv{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:12.5px}
+  .kv span{color:var(--text-muted)} .kv b{font-weight:600;color:var(--text);text-align:right} .kv b.pos{color:var(--pos)} .kv b.neg{color:var(--neg)}
+  .kv b small{display:block;font-weight:400;font-size:11px;color:var(--text-faint)}
+  /* pulse strip */
+  .cx-pulse{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border:1px solid var(--border);border-radius:8px;background:var(--surface);margin:10px 0;overflow:hidden}
+  .cx-pulse > div{padding:8px 12px;border-right:1px solid var(--border);min-width:0;cursor:pointer}
+  .cx-pulse > div:hover{background:var(--surface-2)} .cx-pulse > div:last-child{border-right:0}
+  .cx-pulse .p-lb{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cx-pulse .p-v{font-size:15px;font-weight:600;color:var(--text);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cx-pulse .p-sub{font-size:11px;color:var(--text-faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p-chip{font-size:11.5px;font-weight:500;color:var(--text-muted);margin-left:6px;white-space:nowrap} .p-chip.pos{color:var(--pos)} .p-chip.neg{color:var(--neg)}
+  /* chart pane */
+  #cCtl{row-gap:6px} #cCtl:empty{display:none}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--text-muted);padding:6px 12px 8px}
+  .legend:empty{display:none}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .legend i.hollow{background:transparent !important;border:2px solid var(--cx-be);box-sizing:border-box}
+  .cx-chart{padding:10px 12px 0}
+  .cx-chart svg{width:100%;height:auto;max-height:440px;display:block}
+  .cx-chart text{font-family:var(--font)}
+  .cx-chart rect[data-i]{cursor:pointer}
+  #cRead{margin:0;padding:8px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12px;line-height:1.5;color:var(--text);min-height:36px}
+  #cRead .d{color:var(--text-faint);font-size:11px} #cRead.idle{color:var(--text-faint)}
+  .tbl{width:100%;font-size:12.5px;border-collapse:collapse}
+  .tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-faint);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+  .tbl th:first-child,.tbl td:first-child{text-align:left;padding-left:12px}
+  .tbl td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:right;font-variant-numeric:tabular-nums;color:var(--text);white-space:nowrap}
+  .tag{display:inline-block;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:0 4px;border-radius:4px;color:var(--text-faint);border:1px solid var(--border);margin-left:6px;vertical-align:1px}
+  .verdict{font-size:11.5px;font-weight:600;white-space:nowrap}
+  .verdict.ok{color:var(--pos)} .verdict.def{color:var(--warn,#b7791f)} .verdict.na{color:var(--text-muted)}
+  .sbars{padding:6px 12px}
+  .sbar{display:grid;grid-template-columns:170px 1fr 72px;align-items:center;gap:10px;padding:4px 6px;border-bottom:1px solid var(--border);font-size:12px;cursor:pointer}
+  .sbar:hover{background:var(--surface-2)} .sbar.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  .sbar .lb{color:var(--text-muted);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sbar .tr{position:relative;height:16px}
+  .sbar .bar{position:absolute;top:3px;height:10px;border-radius:2px;min-width:2px}
+  .sbar .bar.cur{background:var(--cx-pvt)}
+  .sbar .bar.prev{top:0;height:16px;border-radius:2px;background:transparent;border:1.5px dashed var(--cx-be);box-sizing:border-box}
+  .sbar .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+  .sbar .tr .zero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--border-strong)}
+  .sbar .bar.pos{background:color-mix(in srgb,var(--pos) 78%,transparent)}
+  .sbar .bar.neg{background:color-mix(in srgb,var(--neg) 78%,transparent)}
+  .sbar .lb small{display:block;font-size:10px;color:var(--text-faint);font-weight:400}
+  .dcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .dsub{padding:8px 12px 2px;font-size:11.5px;color:var(--text-faint)}
+  .h1r{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:6px 12px;border-bottom:1px solid var(--border)}
+  .h1r .a{font-size:12.5px;font-weight:600;color:var(--text)} .h1r .a small{font-size:11px;font-weight:400;color:var(--text-faint);margin-left:4px}
+  .h1r .b{font-size:11px;color:var(--text-muted)} .h1r .g{font-size:14px;font-weight:600}
+  .os-ps input{width:100%}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  #how p{margin-top:6px} #how b{color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(240px,280px) minmax(230px,270px) minmax(0,1fr)} .cx-pulse{grid-template-columns:repeat(3,minmax(0,1fr))} .cx-pulse > div:nth-child(3n){border-right:0} .cx-pulse > div:nth-child(-n+3){border-bottom:1px solid var(--border)} }
+  @media (max-width:899px){ #grid,#grid.two{grid-template-columns:minmax(0,1fr)} #pD .os-list,#pC .os-list{max-height:none !important}
+    .os-vtabs{overflow-x:auto;max-width:100%} .os-vtabs button{white-space:nowrap}
+    .sbar{grid-template-columns:110px 1fr 60px;gap:7px} .sbar .lb{font-size:11px} }
+  @media (max-width:640px){ .cx-pulse{grid-template-columns:repeat(2,minmax(0,1fr))} .cx-pulse > div{border-right:1px solid var(--border) !important;border-bottom:1px solid var(--border)} .cx-pulse > div:nth-child(2n){border-right:0 !important} .cx-pulse > div:nth-last-child(-n+2){border-bottom:0}
+    .cx-pulse .p-sub{white-space:normal} .cx-pulse .p-chip{display:block;margin-left:0} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -77,163 +97,63 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6 w-full">
-  <div class="mb-4">
-    <h1 class="text-xl font-bold text-slate-900">Capex Tracker</h1>
-    <p class="text-sm text-slate-500 mt-0.5 max-w-3xl">Government capital expenditure and India Inc's own spending, side by side. Centre capex from the Union Budget and the CGA's monthly accounts; company capex read from the cash-flow statements companies file; MoSPI and RBI gauges for the private sector; and a reality check against the numbers the press quotes. <span id="updated" class="text-slate-400"></span></p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Capex Tracker</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="View">
+      <button type="button" data-v="govt" title="Union Budget capital expenditure, year by year">Centre · by year</button>
+      <button type="button" data-v="pace" title="How fast this year's capex target is being spent, month by month">Centre · this year</button>
+      <button type="button" data-v="pvt" title="Listed companies' capex by financial year, from their cash-flow statements">India Inc</button>
+      <button type="button" data-v="sec" title="Where the money goes, by sector">Sectors</button>
+      <button type="button" data-v="top" title="Biggest spenders, and who stepped up or pulled back">Biggest spenders</button>
+      <button type="button" data-v="gauges" title="MoSPI survey, RBI project pipeline and economy-wide GFCF">Gauges &amp; GFCF</button>
+      <button type="button" data-v="check" title="Published figures versus this page">Reality check</button>
+    </div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading capex data…</div>
+  <div id="status" class="os-empty">Loading capex data…</div>
 
   <div id="content" class="hidden">
-    <div id="pulse" class="pulse grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-4"></div>
-    <div class="anchors flex flex-wrap gap-1.5 mb-2">
-      <a href="#govt">Government</a><a href="#pvt">India Inc</a><a href="#gauges">Official gauges</a><a href="#gfcf">Economy-wide</a><a href="#check">Reality check</a><a href="#notes">Notes &amp; sources</a>
+    <div id="pulse" class="cx-pulse"></div>
+    <div class="os-bar" style="margin-top:0">
+      <span id="lede" class="os-hint" style="white-space:normal;line-height:1.5;flex:1 1 320px"></span>
+      <span class="os-hint keys"><b>↑↓</b> row · <b>←→</b> chart view · <b>F</b> focus</span>
     </div>
 
-    <!-- ===================== GOVERNMENT ===================== -->
-    <div class="h2" id="govt" data-jump="Government">Government capex — Centre</div>
-    <div class="card p-4 mb-4">
-      <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
-        <div>
-          <div class="secttl">Union Budget capital expenditure, year by year</div>
-          <div class="sectsub">Solid bar = what was actually spent (Actuals; the latest closed year is the CGA's provisional figure). Hollow bar = Budget Estimate, tick = Revised Estimate. Hover a year for the miss/beat and its share of total spending.</div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="lNote"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Figures">
+        <div class="os-ph"><span class="ttl" id="dTitle"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="cSym"></span><span class="nm" id="cName"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps" id="cCtl"></div>
+        <div class="os-list" id="cBody">
+          <div class="dp" id="cSub"></div>
+          <div id="c1" class="cx-chart"></div>
+          <div class="legend" id="cLeg"></div>
+          <div id="cRead" class="idle"></div>
+          <div id="cExtra"></div>
         </div>
-        <div id="gSeg" class="flex items-center gap-1.5 flex-wrap"></div>
-      </div>
-      <div id="gAnnual" class="cx-chart"></div>
-      <div class="legend" id="gLegend"></div>
+      </section>
     </div>
 
-    <div class="grid lg:grid-cols-5 gap-4 mb-4">
-      <div class="card p-4 lg:col-span-3">
-        <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
-          <div>
-            <div class="secttl">How fast the year's capex target is being spent</div>
-            <div class="sectsub">Cumulative spend since April as a share of the year's target (Budget Estimate; Revised Estimate once it is out in January — the CGA's own convention). Current year in colour, earlier years for pace.</div>
-          </div>
-          <div id="mSeg" class="flex items-center gap-1.5 flex-wrap"></div>
-        </div>
-        <div id="gMonthly" class="cx-chart"></div>
-        <div id="gMonthlyLegend" class="legend"></div>
-      </div>
-      <div class="card p-4 lg:col-span-2">
-        <div class="secttl">This year, month by month</div>
-        <div class="sectsub" id="mTableSub"></div>
-        <div class="overflow-x-auto mt-2"><table class="tbl" id="mTable"></table></div>
-      </div>
-    </div>
-
-    <!-- ===================== PRIVATE ===================== -->
-    <div class="h2" id="pvt" data-jump="India Inc">India Inc capex — from the companies' own cash-flow statements</div>
-    <div class="card p-4 mb-4">
-      <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
-        <div>
-          <div class="secttl">Listed companies' capex by financial year</div>
-          <div class="sectsub">Purchase of property, plant &amp; equipment as filed in the year-end cash-flow statement (consolidated where filed, else standalone), financial-services companies excluded. Year-on-year uses only companies reporting on the same basis in both years.</div>
-        </div>
-        <div class="flex flex-col items-end gap-1.5">
-          <div id="pViewSeg" class="flex items-center gap-1.5 flex-wrap"></div>
-          <div id="pSeg" class="flex items-center gap-1.5 flex-wrap justify-end"></div>
-        </div>
-      </div>
-      <div id="pAnnual" class="cx-chart"></div>
-      <div id="pLegend" class="legend"></div>
-      <div id="pFoot" class="note mt-2"></div>
-    </div>
-
-    <div class="grid lg:grid-cols-2 gap-4 mb-4">
-      <div class="card p-4">
-        <div class="flex items-start justify-between gap-3 flex-wrap">
-          <div>
-            <div class="secttl">Where the money goes — by sector</div>
-            <div class="sectsub" id="sSub"></div>
-          </div>
-          <div id="sSeg" class="flex items-center gap-1.5 flex-wrap"></div>
-        </div>
-        <div id="pSectors" class="mt-2"></div>
-        <div class="legend" id="sLegend"><span><i style="background:var(--cx-pvt)"></i><span id="sCur"></span></span><span><i class="hollow" style="border-style:dashed"></i><span id="sPrev"></span></span></div>
-      </div>
-      <div class="card p-4">
-        <div class="secttl">Half-year pulse</div>
-        <div class="sectsub">April–September capex from the half-year cash-flow statements, same companies and same basis both years.</div>
-        <div id="pH1" class="mt-3"></div>
-        <div class="secttl mt-5">Same companies, five years</div>
-        <div class="sectsub">Fixed panels: every company that filed capex in all five years, so growth is not coverage growth.</div>
-        <div id="pFixed" class="mt-2"></div>
-      </div>
-    </div>
-
-    <div class="card p-4 mb-4">
-      <div class="flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <div class="secttl">Biggest spenders <span id="topFy"></span></div>
-          <div class="sectsub">Capex as filed (₹ crore). Prev = same company, same basis, previous year. Capex ÷ CFO = share of operating cash flow reinvested.</div>
-        </div>
-        <div id="topSeg" class="flex items-center gap-1.5 flex-wrap"></div>
-      </div>
-      <div class="overflow-x-auto mt-2"><table class="tbl" id="topTable"></table></div>
-    </div>
-
-    <div class="card p-4 mb-4">
-      <div class="secttl">Who stepped up, who pulled back <span id="deltaFy"></span></div>
-      <div class="sectsub">Change in capex versus the previous year (₹ crore, same basis) among the 40 biggest spenders. Green added spending, red cut it; the label carries the percentage.</div>
-      <div class="grid md:grid-cols-2 gap-x-8 mt-2"><div id="risers"></div><div id="fallers"></div></div>
-    </div>
-
-    <!-- ===================== OFFICIAL GAUGES ===================== -->
-    <div class="h2" id="gauges" data-jump="Gauges">Official private-capex gauges</div>
-    <div class="grid lg:grid-cols-2 gap-4 mb-4">
-      <div class="card p-4">
-        <div class="secttl">MoSPI capex-intentions survey</div>
-        <div class="sectsub">The NSO's forward-looking survey of the private corporate sector (listed and unlisted): weighted aggregate capex by year, per survey round. Rounds are not comparable with each other — different frames and weights.</div>
-        <div id="mospi" class="cx-chart mt-2"></div>
-        <div id="mospiNote" class="note mt-2"></div>
-      </div>
-      <div class="card p-4">
-        <div class="secttl">RBI — capex envisaged from the project pipeline</div>
-        <div class="sectsub">RBI Bulletin's annual article on private corporate investment: cost of projects sanctioned by banks/FIs each year, and the capex those pipelines (all financing channels) put into each year. Later articles revise earlier years — the latest vintage is shown, earlier ones on hover.</div>
-        <div id="rbi" class="cx-chart mt-2"></div>
-        <div id="rbiNote" class="note mt-2"></div>
-      </div>
-    </div>
-
-    <!-- ===================== GFCF ===================== -->
-    <div class="h2" id="gfcf" data-jump="GFCF">Economy-wide investment — Gross Fixed Capital Formation</div>
-    <div class="grid lg:grid-cols-2 gap-4 mb-4">
-      <div class="card p-4">
-        <div class="secttl">Real GFCF growth, quarter by quarter</div>
-        <div class="sectsub">Year-on-year change at constant (2022-23) prices, MoSPI's new GDP series.</div>
-        <div id="gfcfG" class="cx-chart mt-2"></div>
-      </div>
-      <div class="card p-4">
-        <div class="secttl">Investment share of GDP</div>
-        <div class="sectsub">GFCF as a share of nominal GDP each quarter. Seasonal — compare a quarter with the same quarter a year earlier.</div>
-        <div id="gfcfS" class="cx-chart mt-2"></div>
-      </div>
-    </div>
-    <div class="card p-4 mb-4">
-      <div class="secttl">Annual GFCF</div>
-      <div class="overflow-x-auto mt-2"><table class="tbl" id="gfcfTable"></table></div>
-    </div>
-
-    <!-- ===================== REALITY CHECK ===================== -->
-    <div class="h2" id="check" data-jump="Reality check">Reality check — published figures vs this page</div>
-    <div class="card p-4 mb-4">
-      <div class="sectsub mb-2">Every private-capex number we found in the press or official releases, what it actually measures, and the closest equivalent computed from our filings data. <b>Match</b> = same concept and within ~15%. <b>Definition differs</b> = a different measure (gross-block additions, group totals incl. unlisted arms, spectrum/intangibles) — the gap is explained, not hidden. <b>Not comparable</b> = a different concept altogether (project announcements, survey intentions, GDP accounts).</div>
-      <div class="overflow-x-auto"><table class="tbl" id="checkTable"></table></div>
-    </div>
-
-    <!-- ===================== NOTES ===================== -->
-    <div class="h2" id="notes" data-jump="Notes">Notes &amp; sources</div>
-    <div class="card p-4 mb-6 note" id="notesBody"></div>
+    <details id="how"><summary>Notes &amp; sources</summary>
+      <p>Government capital expenditure and India Inc's own spending, side by side. Centre capex from the Union Budget and the CGA's monthly accounts; company capex read from the cash-flow statements companies file; MoSPI and RBI gauges for the private sector; and a reality check against the numbers the press quotes.</p>
+      <div id="notesBody"></div>
+    </details>
   </div>
 </main>
 
-<div class="cx-tip" id="tip"></div>
-
 <script>
 'use strict';
+const K = window.OSKit;
 const $ = id => document.getElementById(id);
 const IN = n => n==null||!isFinite(n) ? '·' : Math.round(n).toLocaleString('en-IN');
 const L = (cr, d=2) => cr==null||!isFinite(cr) ? '·' : '₹'+(cr/1e5).toFixed(d)+' L cr';
@@ -248,62 +168,71 @@ let D, G, M, F, O, GDP;
 let gMode='capex', mMode='pct', pMode='all', pView='level', sView='amount', topMode='all';
 const sgn = v => v>=0 ? CSS('--pos') : CSS('--neg');
 
-/* ---------- tooltip ---------- */
-const tip = $('tip');
-function showTip(e, html){ tip.innerHTML=html; tip.style.opacity=1; moveTip(e); }
-function moveTip(e){ const x=(e.touches?e.touches[0].clientX:e.clientX), y=(e.touches?e.touches[0].clientY:e.clientY);
-  const w=tip.offsetWidth, h=tip.offsetHeight; tip.style.left=Math.min(x+14, innerWidth-w-8)+'px'; tip.style.top=(y-h-12<8 ? y+16 : y-h-12)+'px'; }
-function hideTip(){ tip.style.opacity=0; }
+/* ---------- page state ---------- */
+const VIEWS = ['govt','pace','pvt','sec','top','gauges','check'];
+let view = 'govt';
+const SEL = {};          // chosen row id per view
+let VIS = [];            // row ids in the list, in order
+const kv = (l, v, c) => `<div class="kv"><span>${l}</span><b${c?` class="${c}"`:''}>${v}</b></div>`;
+const dh = t => `<div class="dh">${t}</div>`;
+
+/* ---------- readout (replaces the old floating hover box) ---------- */
+const READ_IDLE = 'Hover or tap a bar or a point for its figures.';
+function showTip(e, html){ const r=$('cRead'); r.classList.remove('idle'); r.innerHTML=html; }
+function hideTip(){ const r=$('cRead'); r.classList.add('idle'); r.textContent=READ_IDLE; }
 function bindTips(root){
   root.querySelectorAll('[data-tip]').forEach(el=>{
     el.addEventListener('mouseenter', e=>showTip(e, el.getAttribute('data-tip')));
-    el.addEventListener('mousemove', moveTip);
-    el.addEventListener('mouseleave', hideTip);
     el.addEventListener('touchstart', e=>showTip(e, el.getAttribute('data-tip')), {passive:true});
   });
 }
-document.addEventListener('touchstart', e=>{ if(!e.target.closest('[data-tip]')) hideTip(); }, {passive:true});
 
-/* ---------- generic SVG charts ---------- */
+/* ---------- generic SVG charts (the old page's own, plus a marker for the chosen row) ---------- */
 const CSS = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || v;
 function niceMax(v){ if(!(v>0)) return 1; const p=Math.pow(10, Math.floor(Math.log10(v))); const m=v/p; const s = m<=1?1 : m<=2?2 : m<=2.5?2.5 : m<=5?5 : 10; return s*p; }
-/* bars: {labels, bars:[{v,color,hollow,tip}], marks:[{i,v,color}] , yfmt, h, neg} */
+/* bars: {labels, bars:[{v,color,hollow,tip}], marks:[{i,v,color}] , yfmt, h, neg, sel, ids} */
 function barChart(el, cfg){
   const n=cfg.labels.length, W=Math.max(560, n*46), H=cfg.h||250, PL=54, PR=12, PT=14, PB=30;
   const vals=cfg.bars.map(b=>b.v).concat((cfg.marks||[]).map(m=>m.v)).filter(v=>v!=null&&isFinite(v));
   const mx=niceMax(Math.max(...vals, 0)), mn=cfg.neg?Math.min(0,...vals):0, rng=(mx-mn)||1;
   const y=v=>PT+(H-PT-PB)*(1-(v-mn)/rng), x=i=>PL+(W-PL-PR)*(i+0.5)/n, bw=(W-PL-PR)/n*0.56;
   let s='';
+  if(cfg.sel!=null && cfg.sel>=0) s+=`<rect x="${(x(cfg.sel)-(W-PL-PR)/n/2).toFixed(1)}" y="${PT}" width="${((W-PL-PR)/n).toFixed(1)}" height="${H-PT-PB}" fill="${CSS('--accent-soft')}"/>`;
   for(let k=0;k<=4;k++){ const v=mn+rng*k/4, yy=y(v); s+=`<line x1="${PL}" x2="${W-PR}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="${CSS('--cx-grid')}" stroke-width="${Math.abs(v)<1e-9?1.2:0.7}"/><text x="${PL-6}" y="${(yy+3.5).toFixed(1)}" font-size="10" text-anchor="end" fill="${CSS('--text-faint')}">${cfg.yfmt(v)}</text>`; }
   cfg.bars.forEach((b,i)=>{ if(b.v==null||!isFinite(b.v)) return; const x0=x(i)-bw/2, y1=y(Math.max(0,b.v)), y0=y(Math.min(0,b.v)), h=Math.max(1,y0-y1);
     s+=`<rect x="${x0.toFixed(1)}" y="${y1.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${b.hollow?'none':b.color}" stroke="${b.hollow?b.color:'none'}" stroke-width="${b.hollow?1.6:0}" ${b.dash?'stroke-dasharray="4 3"':''} opacity="${b.hollow?1:0.92}"/>`; });
   (cfg.marks||[]).forEach(m=>{ if(m.v==null) return; const xc=x(m.i), yy=y(m.v); s+=`<line x1="${(xc-bw/2-4).toFixed(1)}" x2="${(xc+bw/2+4).toFixed(1)}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="${m.color}" stroke-width="2.2"/>`; });
-  cfg.labels.forEach((lb,i)=>{ if(n>16 && i%2) return; s+=`<text x="${x(i).toFixed(1)}" y="${H-PB+16}" font-size="10" text-anchor="middle" fill="${CSS('--text-muted')}">${esc(lb)}</text>`; });
-  cfg.bars.forEach((b,i)=>{ s+=`<rect x="${(x(i)-(W-PL-PR)/n/2).toFixed(1)}" y="${PT}" width="${((W-PL-PR)/n).toFixed(1)}" height="${H-PT-PB}" fill="transparent" data-tip="${esc(b.tip||'')}"/>`; });
+  cfg.labels.forEach((lb,i)=>{ if(n>16 && i%2) return; s+=`<text x="${x(i).toFixed(1)}" y="${H-PB+16}" font-size="10" text-anchor="middle" fill="${i===cfg.sel?CSS('--accent-text'):CSS('--text-muted')}" ${i===cfg.sel?'font-weight="700"':''}>${esc(lb)}</text>`; });
+  cfg.bars.forEach((b,i)=>{ s+=`<rect x="${(x(i)-(W-PL-PR)/n/2).toFixed(1)}" y="${PT}" width="${((W-PL-PR)/n).toFixed(1)}" height="${H-PT-PB}" fill="transparent" ${cfg.ids&&cfg.ids[i]!=null?`data-i="${esc(cfg.ids[i])}"`:''} data-tip="${esc(b.tip||'')}"/>`; });
   el.innerHTML=`<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="min-width:${Math.min(W,560)}px">${s}</svg></div>`;
-  bindTips(el);
+  bindTips(el); bindPick(el);
 }
-/* lines: {xlabels, series:[{name,color,vals,width,dash,op}], yfmt, h, ymax} */
+/* lines: {xlabels, series:[{name,color,vals,width,dash,op}], yfmt, h, ymax, sel, ids} */
 function lineChart(el, cfg){
   const n=cfg.xlabels.length, W=640, H=cfg.h||250, PL=46, PR=12, PT=14, PB=28;
   const all=cfg.series.flatMap(sr=>sr.vals).filter(v=>v!=null&&isFinite(v));
   const mx=cfg.ymax||niceMax(Math.max(...all,0)), mn=cfg.ymin!=null?cfg.ymin:Math.min(0,...all), rng=(mx-mn)||1;
   const y=v=>PT+(H-PT-PB)*(1-(v-mn)/rng), x=i=>PL+(W-PL-PR)*(n<=1?0.5:i/(n-1));
   let s='';
+  if(cfg.sel!=null && cfg.sel>=0) s+=`<line x1="${x(cfg.sel).toFixed(1)}" x2="${x(cfg.sel).toFixed(1)}" y1="${PT}" y2="${H-PB}" stroke="${CSS('--accent')}" stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>`;
   for(let k=0;k<=4;k++){ const v=mn+rng*k/4, yy=y(v); s+=`<line x1="${PL}" x2="${W-PR}" y1="${yy.toFixed(1)}" y2="${yy.toFixed(1)}" stroke="${CSS('--cx-grid')}" stroke-width="${Math.abs(v)<1e-9?1.2:0.7}"/><text x="${PL-6}" y="${(yy+3.5).toFixed(1)}" font-size="10" text-anchor="end" fill="${CSS('--text-faint')}">${cfg.yfmt(v)}</text>`; }
-  cfg.xlabels.forEach((lb,i)=>{ s+=`<text x="${x(i).toFixed(1)}" y="${H-PB+16}" font-size="10" text-anchor="middle" fill="${CSS('--text-muted')}">${esc(lb)}</text>`; });
+  cfg.xlabels.forEach((lb,i)=>{ s+=`<text x="${x(i).toFixed(1)}" y="${H-PB+16}" font-size="10" text-anchor="middle" fill="${i===cfg.sel?CSS('--accent-text'):CSS('--text-muted')}" ${i===cfg.sel?'font-weight="700"':''}>${esc(lb)}</text>`; });
   cfg.series.forEach(sr=>{ let p='', started=false; sr.vals.forEach((v,i)=>{ if(v==null||!isFinite(v)){ started=false; return; } p+=(started?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)+' '; started=true; });
     s+=`<path d="${p}" fill="none" stroke="${sr.color}" stroke-width="${sr.width||2}" ${sr.dash?'stroke-dasharray="5 4"':''} opacity="${sr.op==null?1:sr.op}" stroke-linejoin="round" stroke-linecap="round"/>`;
     if(sr.dots){ sr.vals.forEach((v,i)=>{ if(v==null||!isFinite(v)) return; s+=`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3.2" fill="${sr.color}" stroke="${CSS('--surface')}" stroke-width="1.5"/>`; }); } });
   // hover columns
   for(let i=0;i<n;i++){ const rows=cfg.series.filter(sr=>sr.vals[i]!=null&&isFinite(sr.vals[i])).map(sr=>`<div><span style="color:${sr.color}">●</span> ${esc(sr.name)}: <b>${cfg.tipfmt?cfg.tipfmt(sr.vals[i],sr,i):cfg.yfmt(sr.vals[i])}</b></div>`).join('');
-    if(rows) s+=`<rect x="${(x(i)-(W-PL-PR)/Math.max(1,n-1)/2).toFixed(1)}" y="${PT}" width="${((W-PL-PR)/Math.max(1,n-1)).toFixed(1)}" height="${H-PT-PB}" fill="transparent" data-tip="${esc(`<div class=d>${cfg.xtip?cfg.xtip(i):cfg.xlabels[i]}</div>`+rows)}"/>`; }
+    if(rows) s+=`<rect x="${(x(i)-(W-PL-PR)/Math.max(1,n-1)/2).toFixed(1)}" y="${PT}" width="${((W-PL-PR)/Math.max(1,n-1)).toFixed(1)}" height="${H-PT-PB}" fill="transparent" ${cfg.ids&&cfg.ids[i]!=null?`data-i="${esc(cfg.ids[i])}"`:''} data-tip="${esc(`<div class=d>${cfg.xtip?cfg.xtip(i):cfg.xlabels[i]}</div>`+rows)}"/>`; }
   el.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
-  bindTips(el);
+  bindTips(el); bindPick(el);
 }
-function seg(el, opts, cur, onpick){
-  el.innerHTML=opts.map(o=>`<button class="segbtn${o.k===cur?' on':''}" data-k="${o.k}">${esc(o.l)}</button>`).join('');
-  el.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ onpick(b.dataset.k); el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); }));
+function bindPick(el){ el.querySelectorAll('[data-i]').forEach(r=>r.addEventListener('click',()=>pick(r.getAttribute('data-i')))); }
+function seg(opts, cur, onpick, label){
+  const box=document.createElement('div'); box.className='os-sg'; box.setAttribute('role','group'); if(label) box.setAttribute('aria-label',label);
+  box.innerHTML=opts.map(o=>`<button type="button" class="${o.k===cur?'on':''}" data-k="${o.k}">${esc(o.l)}</button>`).join('');
+  box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ onpick(b.dataset.k); }));
+  box._opts=opts.map(o=>o.k); box._pick=onpick; box._cur=()=>cur;
+  $('cCtl').appendChild(box); return box;
 }
 
 /* ---------- load ---------- */
@@ -312,11 +241,15 @@ async function load(){
   catch(e){ $('status').textContent='Could not load capex.json — has the refresh run yet?'; return; }
   G=D.govt.annual||[]; M=D.govt.monthly||[]; F=(D.private||{}).filings||null; O=(D.private||{}).official||{}; GDP=D.gdp||{};
   if(!G.length||!M.length){ $('status').textContent='No government capex data in capex.json yet.'; return; }
-  $('updated').textContent = D.updated ? '· data as of '+D.updated.replace('T',' ') : '';
+  $('asof').textContent = D.updated ? 'data as of '+D.updated.replace('T',' ') : '';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
-  renderPulse(); renderGovAnnual(); renderGovMonthly(); renderMonthTable();
-  if(F){ renderPvtAnnual(); renderSectors(); renderH1(); renderFixed(); renderTop(); renderDelta(); } else { $('pFoot').textContent='Company filings summary not built yet.'; }
-  renderMospi(); renderRbi(); renderGfcf(); renderCheck(); renderNotes();
+  renderPulse(); renderNotes();
+  readHash(); render(true);
+  $('views').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ view=b.getAttribute('data-v'); render(true); }));
+  $('cFocus').addEventListener('click', toggleFocus);
+  document.addEventListener('keydown', onKey);
+  window.addEventListener('resize', ()=>K.fitGrid($('grid')));
+  window.addEventListener('hashchange', ()=>{ if(location.hash.replace(/^#/,'')===lastHash) return; readHash(); render(true); });
 }
 
 /* ---------- helpers on the data ---------- */
@@ -326,6 +259,7 @@ const gdpCr = fy => { const v=GDP[fy]; if(v!=null) return v*1e5; const r=G.find(
 function fyMonths(fy){ return M.filter(m=>m.fy===fy); }
 const lastM = () => M[M.length-1];
 function monthIdx(ym){ const mm=+ym.slice(5,7); return (mm+8)%12; }   // Apr=0 .. Mar=11
+function prevFy(fy){ const y=+fy.slice(0,4)-1; return y+'-'+String(y+1).slice(-2); }
 
 /* ---------- pulse ---------- */
 function renderPulse(){
@@ -335,44 +269,71 @@ function renderPulse(){
   const cur=G[G.length-1], prevRow=G[G.length-2];
   const beVsRe = prevRow&&prevRow.capex_re ? yoy(cur.capex_be, prevRow.capex_re) : null;
   const cards=[];
-  const card=(lb,v,sub,chip,chipCls)=>`<div class="card p-3"><div class="p-lb">${lb}</div><div class="p-v">${v}${chip?`<span class="p-chip ${chipCls||''}">${chip}</span>`:''}</div><div class="p-sub">${sub}</div></div>`;
-  cards.push(card('Centre capex · '+fyShort(lm.fy)+' so far', L(lm.ce), `${MON[monthIdx(lm.ym)]} ${lm.ym.slice(0,4)}: ${P(pct_now,1,false)} of ${lm.est}${pctLast!=null?` · same point last year ${P(pctLast,1,false)}`:''}`, yoyCum!=null?P(yoyCum)+' y/y':'', cls(yoyCum)));
-  cards.push(card('Budget '+fyShort(cur.fy)+' capex target', L(cur.capex_be), `BE ₹${IN(cur.capex_be)} cr${cur.eff_be?` · effective capex ${L(cur.eff_be)}`:''}`, beVsRe!=null?P(beVsRe)+' vs RE '+fyShort(prevRow.fy):'', cls(beVsRe)));
+  const card=(v_,lb,v,sub,chip,chipCls)=>`<div data-v="${v_}" title="${esc(lb+' — '+sub)}"><div class="p-lb">${lb}</div><div class="p-v">${v}${chip?`<span class="p-chip ${chipCls||''}">${chip}</span>`:''}</div><div class="p-sub">${sub}</div></div>`;
+  cards.push(card('pace','Centre capex · '+fyShort(lm.fy)+' so far', L(lm.ce), `${MON[monthIdx(lm.ym)]} ${lm.ym.slice(0,4)}: ${P(pct_now,1,false)} of ${lm.est}${pctLast!=null?` · same point last year ${P(pctLast,1,false)}`:''}`, yoyCum!=null?P(yoyCum)+' y/y':'', cls(yoyCum)));
+  cards.push(card('govt','Budget '+fyShort(cur.fy)+' capex target', L(cur.capex_be), `BE ₹${IN(cur.capex_be)} cr${cur.eff_be?` · effective capex ${L(cur.eff_be)}`:''}`, beVsRe!=null?P(beVsRe)+' vs RE '+fyShort(prevRow.fy):'', cls(beVsRe)));
   if(F){
     const i=F.fys.length-1, a=F.all, g=yoy(a.panel_cur[i],a.panel_prev[i]);
-    cards.push(card('India Inc capex · '+fyShort(String(F.fys[i]-1)+'-'+String(F.fys[i]).slice(-2)), L(a.capex[i]), `${IN(a.n[i])} listed non-financial cos · ${IN(a.gt1000[i])} spent ≥₹1,000 cr`, P(g)+' same-basis y/y', cls(g)));
+    cards.push(card('pvt','India Inc capex · '+fyShort(String(F.fys[i]-1)+'-'+String(F.fys[i]).slice(-2)), L(a.capex[i]), `${IN(a.n[i])} listed non-financial cos · ${IN(a.gt1000[i])} spent ≥₹1,000 cr`, P(g)+' same-basis y/y', cls(g)));
     const fx=F.fixed_n500, k=fx.capex.length-1, mult=fx.capex[k]/fx.capex[0];
-    cards.push(card('Nifty 500 · same '+fx.n+' cos', L(fx.capex[k]), `FY${String(fx.fys[0]).slice(-2)} ${L(fx.capex[0])} → FY${String(fx.fys[k]).slice(-2)}`, '×'+mult.toFixed(2)+' in '+(fx.fys[k]-fx.fys[0])+' yrs', 'pos'));
+    cards.push(card('pvt:fixed_n500','Nifty 500 · same '+fx.n+' cos', L(fx.capex[k]), `FY${String(fx.fys[0]).slice(-2)} ${L(fx.capex[0])} → FY${String(fx.fys[k]).slice(-2)}`, '×'+mult.toFixed(2)+' in '+(fx.fys[k]-fx.fys[0])+' yrs', 'pos'));
   }
   const q=(O.gfcf&&O.gfcf.quarterly||[]).slice(-1)[0];
-  if(q) cards.push(card('GFCF · '+q.q, P(q.g_const)+' real', `y/y at constant prices · ${q.share_cur!=null?q.share_cur.toFixed(1)+'% of nominal GDP':''}`, q.g_cur!=null?P(q.g_cur)+' nominal':'', cls(q.g_cur)));
+  if(q) cards.push(card('gauges:gfcfG','GFCF · '+q.q, P(q.g_const)+' real', `y/y at constant prices · ${q.share_cur!=null?q.share_cur.toFixed(1)+'% of nominal GDP':''}`, q.g_cur!=null?P(q.g_cur)+' nominal':'', cls(q.g_cur)));
   const ms=(O.mospi_survey&&O.mospi_survey.rounds||[]).slice(-1)[0];
   if(ms){ const ks=Object.keys(ms.aggregate); const lastK=ks[ks.length-1], prevK=ks[ks.length-2];
-    cards.push(card('MoSPI survey · intentions '+fyShort(lastK), L(ms.aggregate[lastK]), `${prevK?fyShort(prevK)+' provisional '+L(ms.aggregate[prevK]):''} · private corporate sector`, '', '')); }
+    cards.push(card('gauges:mospi','MoSPI survey · intentions '+fyShort(lastK), L(ms.aggregate[lastK]), `${prevK?fyShort(prevK)+' provisional '+L(ms.aggregate[prevK]):''} · private corporate sector`, '', '')); }
   $('pulse').innerHTML=cards.join('');
+  $('pulse').querySelectorAll('[data-v]').forEach(el=>el.addEventListener('click',()=>{ const [v,k]=el.getAttribute('data-v').split(':'); view=v;
+    if(v==='pvt') pMode = k||'all'; else if(k) SEL[v]=k; render(true); }));
 }
-function prevFy(fy){ const y=+fy.slice(0,4)-1; return y+'-'+String(y+1).slice(-2); }
 
-/* ---------- government annual ---------- */
-function renderGovAnnual(){
-  seg($('gSeg'), [{k:'capex',l:'Capital expenditure'},{k:'yoy',l:'y/y growth'},{k:'eff',l:'Effective capex'},{k:'share',l:'% of total spend'},{k:'gdp',l:'% of GDP'}], gMode, k=>{ gMode=k; drawGovAnnual(); });
-  drawGovAnnual();
+/* =====================================================================
+   VIEW: Centre by year
+   ===================================================================== */
+function govYoy(r){   // the old "y/y growth" bar for this year: {g, hollow, pa, act} — spent vs spent, else BE vs last year's RE
+  const j=G.indexOf(r), prev=j>0?G[j-1]:null, act=actOf(r), pa=prev?actOf(prev):null;
+  if(act!=null && pa) return {g:yoy(act,pa), hollow:false, from:pa, to:act};
+  if(r.capex_be!=null && prev && prev.capex_re!=null) return {g:yoy(r.capex_be,prev.capex_re), hollow:true, from:prev.capex_re, to:r.capex_be};
+  return null;
 }
-function drawGovAnnual(){
+function govTip(r){
+  const act=actOf(r), te=teOf(r), gdp=gdpCr(r.fy);
+  const be=r.capex_be, re=r.capex_re;
+  return `<div class=d>FY ${r.fy}${r.capex_prov!=null&&r.capex_act==null?' · provisional (CGA)':''}</div>`
+    +(be!=null?`<div>Budget Estimate: <b>₹${IN(be)} cr</b></div>`:'')+(re!=null?`<div>Revised Estimate: <b>₹${IN(re)} cr</b></div>`:'')
+    +(act!=null?`<div>Actual: <b>₹${IN(act)} cr</b>${be?` · ${P(pct(act,be)-100)} vs BE`:''}</div>`:'')
+    +(r.eff_act!=null||r.eff_be!=null?`<div>Effective capex (incl. grants for capital assets): <b>₹${IN(r.eff_act!=null?r.eff_act:r.eff_re!=null?r.eff_re:r.eff_be)} cr</b></div>`:'')
+    +(act!=null&&te?`<div>Share of total expenditure: <b>${(act/te*100).toFixed(1)}%</b></div>`:'')
+    +(act!=null&&gdp?`<div>Capex / GDP: <b>${(act/gdp*100).toFixed(2)}%</b></div>`:'')
+    +`<div class=d>${esc(r.act_src||r.prov_src||r.be_src||'')}</div>`;
+}
+function govList(){
+  const rows=G.slice().reverse().map(r=>{ const act=actOf(r), y=govYoy(r);
+    const tag = act==null ? '<small>BE</small>' : (r.capex_prov!=null&&r.capex_act==null ? '<small>prov.</small>' : '');
+    return {id:r.fy, html:`<span class="n">${r.fy}${tag}</span><span class="v">${act!=null?L(act):L(r.capex_be)}</span><span class="${y?cls(y.g):'mut'}">${y?P(y.g):'·'}</span>`}; });
+  return {title:'Union Budget capex', count:rows.length, note:'newest first', head:['Year','Spent (or BE)','y/y'], cls:'', rows};
+}
+function govDetail(id){
+  const r=G.find(x=>x.fy===id); if(!r) return null;
+  const act=actOf(r), te=teOf(r), gdp=gdpCr(r.fy), be=r.capex_be, re=r.capex_re, y=govYoy(r);
+  let h=dh('Capital expenditure'+(r.capex_prov!=null&&r.capex_act==null?' · provisional (CGA)':''));
+  if(be!=null) h+=kv('Budget Estimate','₹'+IN(be)+' cr');
+  if(re!=null) h+=kv('Revised Estimate','₹'+IN(re)+' cr');
+  if(act!=null){ h+=kv('Actual','₹'+IN(act)+' cr'); if(be) h+=kv('Actual vs Budget Estimate', P(pct(act,be)-100), cls(pct(act,be)-100)); }
+  if(y) h+=kv(y.hollow?"Budget Estimate vs last year's Revised Estimate":'Spent vs the year before', `${P(y.g)}<small>₹${IN(y.from)} → ₹${IN(y.to)} cr</small>`, cls(y.g));
+  if(r.eff_act!=null||r.eff_be!=null) h+=kv('Effective capex <small style="color:var(--text-faint)">(incl. grants for capital assets)</small>','₹'+IN(r.eff_act!=null?r.eff_act:r.eff_re!=null?r.eff_re:r.eff_be)+' cr');
+  if(act!=null&&te) h+=kv('Share of total expenditure',(act/te*100).toFixed(1)+'%');
+  if(act!=null&&gdp) h+=kv('Capex / GDP',(act/gdp*100).toFixed(2)+'%'+(GDP[r.fy]==null&&r.gdp_budget?"<small>GDP = the budget's own assumption</small>":''));
+  h+=dh('Source')+`<div class="dp">${esc(r.act_src||r.prov_src||r.be_src||'·')}<br>Each year's Actuals appear only in the budget two years later; the latest closed year is the CGA's provisional figure.</div>`;
+  return {title:'FY '+r.fy, html:h};
+}
+function govChart(id){
+  seg([{k:'capex',l:'Capital expenditure'},{k:'yoy',l:'y/y growth'},{k:'eff',l:'Effective capex'},{k:'share',l:'% of total spend'},{k:'gdp',l:'% of GDP'}], gMode, k=>{ gMode=k; drawPane(); writeHash(); }, 'Measure');
+  $('cSym').textContent='Union Budget capital expenditure'; $('cName').textContent='year by year';
+  $('cSub').textContent='Solid bar = what was actually spent (Actuals; the latest closed year is the CGA\'s provisional figure). Hollow bar = Budget Estimate, tick = Revised Estimate. Click a year to open it.';
   const rows=G.filter(r=>gMode!=='eff' || r.eff_be!=null||r.eff_act!=null);
-  const labels=rows.map(r=>fyShort(r.fy));
-  const mk = r => {
-    const act=actOf(r), te=teOf(r), gdp=gdpCr(r.fy);
-    const be=r.capex_be, re=r.capex_re;
-    const t=`<div class=d>FY ${r.fy}${r.capex_prov!=null&&r.capex_act==null?' · provisional (CGA)':''}</div>`
-      +(be!=null?`<div>Budget Estimate: <b>₹${IN(be)} cr</b></div>`:'')+(re!=null?`<div>Revised Estimate: <b>₹${IN(re)} cr</b></div>`:'')
-      +(act!=null?`<div>Actual: <b>₹${IN(act)} cr</b>${be?` · ${P(pct(act,be)-100)} vs BE`:''}</div>`:'')
-      +(r.eff_act!=null||r.eff_be!=null?`<div>Effective capex (incl. grants for capital assets): <b>₹${IN(r.eff_act!=null?r.eff_act:r.eff_re!=null?r.eff_re:r.eff_be)} cr</b></div>`:'')
-      +(act!=null&&te?`<div>Share of total expenditure: <b>${(act/te*100).toFixed(1)}%</b></div>`:'')
-      +(act!=null&&gdp?`<div>Capex / GDP: <b>${(act/gdp*100).toFixed(2)}%</b></div>`:'')
-      +`<div class=d>${esc(r.act_src||r.prov_src||r.be_src||'')}</div>`;
-    return t;
-  };
+  const labels=rows.map(r=>fyShort(r.fy)), mk=govTip;
   let cfg;
   if(gMode==='capex'||gMode==='eff'){
     const k = gMode==='eff' ? 'eff' : 'capex';
@@ -391,18 +352,43 @@ function drawGovAnnual(){
   } else {
     cfg={labels, yfmt:v=>v.toFixed(1)+'%', h:240, bars:rows.map(r=>{ const act=actOf(r), gdp=gdpCr(r.fy); const v=act!=null&&gdp?act/gdp*100:(r.capex_be&&gdp?r.capex_be/gdp*100:null); return {v, color:act!=null?CSS('--cx-govt'):CSS('--cx-be'), hollow:act==null, tip:mk(r)+(GDP[r.fy]==null&&r.gdp_budget?'<div class=d>GDP = the budget\'s own assumption</div>':'')}; })};
   }
-  barChart($('gAnnual'), cfg);
-  $('gLegend').innerHTML = gMode==='yoy'
+  cfg.ids=rows.map(r=>r.fy); cfg.sel=rows.findIndex(r=>r.fy===id);
+  barChart($('c1'), cfg);
+  $('cLeg').innerHTML = gMode==='yoy'
     ? `<span><i style="background:var(--pos)"></i>spent more than the year before</span><span><i style="background:var(--neg)"></i>spent less</span><span><i class="hollow"></i>Budget Estimate vs last year's Revised Estimate (year not closed)</span>`
     : `<span><i style="background:var(--cx-govt)"></i>Actual / provisional</span><span><i class="hollow"></i>Budget Estimate</span><span><i style="background:var(--cx-re)"></i>Revised Estimate</span>`;
 }
 
-/* ---------- government monthly ---------- */
-function renderGovMonthly(){
-  seg($('mSeg'), [{k:'pct',l:'% of target'},{k:'yoy',l:'y/y growth'},{k:'cum',l:'₹ cumulative'},{k:'mon',l:'₹ per month'}], mMode, k=>{ mMode=k; drawGovMonthly(); });
-  drawGovMonthly();
+/* =====================================================================
+   VIEW: Centre this year (monthly)
+   ===================================================================== */
+function paceRows(){ const lm=lastM(), fy=lm.fy, ms=fyMonths(fy), pms=fyMonths(prevFy(fy));
+  return ms.map((m,i)=>{ const prev=ms[i-1]; const inm=i===0?m.ce:m.ce-prev.ce; const same=pms.find(p=>monthIdx(p.ym)===monthIdx(m.ym)); const lp=same?pct(same.ce,same.ce_be):null; const g=same?yoy(m.ce,same.ce):null;
+    return {m, inm, same, lp, g}; }); }
+function paceList(){
+  const lm=lastM();
+  const rows=paceRows().map(x=>({id:x.m.ym, html:`<span class="n">${MON[monthIdx(x.m.ym)]} ${x.m.ym.slice(0,4)}${x.m.est==='RE'?'<span class="tag">RE</span>':''}</span><span class="v">${IN(x.m.ce)}</span><span><b style="font-weight:600">${P(pct(x.m.ce,x.m.ce_be),1,false)}</b></span>`}));
+  return {title:'FY '+lm.fy+' month by month', count:rows.length, note:'₹ crore', head:['Month','Cumulative','% of target'], cls:'', rows};
 }
-function drawGovMonthly(){
+function paceDetail(id){
+  const x=paceRows().find(r=>r.m.ym===id); if(!x) return null; const m=x.m;
+  let h=dh('April to '+MON[monthIdx(m.ym)]+' · FY '+m.fy);
+  h+=kv('Cumulative capex','₹'+IN(m.ce)+' cr');
+  h+=kv('Spent in the month','₹'+IN(x.inm)+' cr');
+  h+=kv("Year's target ("+m.est+')','₹'+IN(m.ce_be)+' cr');
+  h+=kv('% of target', P(pct(m.ce,m.ce_be),1,false));
+  h+=kv('Last year at this point', P(x.lp,1,false));
+  h+=kv('Cumulative y/y', P(x.g), cls(x.g)+(x.same?'':' mut'));
+  if(x.same) h+=kv('A year earlier','₹'+IN(x.same.ce)+' cr');
+  h+=dh('Source')+`<div class="dp">Unaudited provisional figures from the CGA's monthly accounts.${m.src?` <a href="${esc(m.src)}" target="_blank" rel="noopener">CGA accounts ↗</a>`:''}</div>`;
+  return {title:MON[monthIdx(m.ym)]+' '+m.ym.slice(0,4), html:h};
+}
+function paceChart(id){
+  seg([{k:'pct',l:'% of target'},{k:'yoy',l:'y/y growth'},{k:'cum',l:'₹ cumulative'},{k:'mon',l:'₹ per month'}], mMode, k=>{ mMode=k; drawPane(); writeHash(); }, 'Measure');
+  const lm=lastM();
+  $('cSym').textContent="How fast the year's capex target is being spent"; $('cName').textContent='FY '+lm.fy;
+  $('cSub').textContent=`Cumulative spend since April as a share of the year's target (Budget Estimate; Revised Estimate once it is out in January — the CGA's own convention). Current year in colour, earlier years for pace. ${lm.fy}: cumulative Centre capex vs the ${lm.est} of ₹${IN(lm.ce_be)} cr.`;
+  const selI = id ? monthIdx(id) : -1, ids=MON.map((_,k)=>{ const r=fyMonths(lm.fy).find(m=>monthIdx(m.ym)===k); return r?r.ym:null; });
   const fys=[...new Set(M.map(m=>m.fy))]; const cur=fys[fys.length-1];
   if(mMode==='yoy'){
     const ms=fyMonths(cur), pms=fyMonths(prevFy(cur)), ppms=fyMonths(prevFy(prevFy(cur)));
@@ -413,8 +399,8 @@ function drawGovMonthly(){
       if(gl!=null) marks.push({i:k, v:gl, color:CSS('--cx-be')}); });
     // months not yet reported this year: show last year's growth as ticks only
     pms.forEach(s=>{ const k=monthIdx(s.ym); if(bars[k].v!=null) return; const s2=same(ppms,s); if(s2) marks.push({i:k, v:yoy(s.ce,s2.ce), color:CSS('--cx-be')}); });
-    barChart($('gMonthly'), {labels:MON, bars, marks, h:250, neg:true, yfmt:v=>v.toFixed(0)+'%'});
-    $('gMonthlyLegend').innerHTML=`<span><i style="background:var(--pos)"></i>${fyShort(cur)} cumulative spend above the same months last year</span><span><i style="background:var(--neg)"></i>below</span><span><i style="background:var(--cx-be);height:3px;border-radius:2px"></i>${fyShort(prevFy(cur))}'s growth at the same point</span>`;
+    barChart($('c1'), {labels:MON, bars, marks, h:250, neg:true, yfmt:v=>v.toFixed(0)+'%', sel:selI, ids});
+    $('cLeg').innerHTML=`<span><i style="background:var(--pos)"></i>${fyShort(cur)} cumulative spend above the same months last year</span><span><i style="background:var(--neg)"></i>below</span><span><i style="background:var(--cx-be);height:3px;border-radius:2px"></i>${fyShort(prevFy(cur))}'s growth at the same point</span>`;
     return;
   }
   const shown=fys.slice(-4);
@@ -423,29 +409,57 @@ function drawGovMonthly(){
     ms.forEach((m,i)=>{ const k=monthIdx(m.ym); const prev=ms[i-1]; const v = mMode==='pct'?pct(m.ce,m.ce_be) : mMode==='cum'?m.ce : (i===0? m.ce : m.ce-prev.ce); if(v!=null) vals[k]=v; });
     const isCur=fy===cur; return {name:fyShort(fy), color:pal[shown.length-1-j], vals, width:isCur?2.6:1.6, op:isCur?1:0.55, dots:isCur, dash:false}; });
   const fmt = mMode==='pct' ? (v=>v.toFixed(0)+'%') : (v=>(v/1e5).toFixed(v>=1e6?0:1)+' L');
-  lineChart($('gMonthly'), {xlabels:MON, series, h:250, yfmt:fmt, ymax: mMode==='pct'?niceMax(Math.max(100,...series.flatMap(s=>s.vals).filter(v=>v!=null))):undefined,
-    tipfmt:(v)=> mMode==='pct'? v.toFixed(1)+'%' : '₹'+IN(v)+' cr'});
-  $('gMonthlyLegend').innerHTML=series.slice().reverse().map(s=>`<span><i style="background:${s.color};opacity:${s.op}"></i>${s.name}${s.name===fyShort(cur)?' (current)':''}</span>`).join('');
-}
-function renderMonthTable(){
-  const lm=lastM(), fy=lm.fy, ms=fyMonths(fy), pms=fyMonths(prevFy(fy));
-  $('mTableSub').textContent=`${fy}: cumulative Centre capex vs the ${lm.est} of ₹${IN(lm.ce_be)} cr. Unaudited provisional figures from the CGA.`;
-  let h='<thead><tr><th>Month</th><th>Cumulative</th><th>In month</th><th>% of target</th><th>Last yr %</th><th>Cum y/y</th></tr></thead><tbody>';
-  ms.forEach((m,i)=>{ const prev=ms[i-1]; const inm=i===0?m.ce:m.ce-prev.ce; const same=pms.find(p=>monthIdx(p.ym)===monthIdx(m.ym)); const lp=same?pct(same.ce,same.ce_be):null; const g=same?yoy(m.ce,same.ce):null;
-    h+=`<tr><td>${MON[monthIdx(m.ym)]} ${m.ym.slice(0,4)}${m.est==='RE'?'<span class="tag">RE</span>':''}</td><td>${IN(m.ce)}</td><td class="mut">${IN(inm)}</td><td><b>${P(pct(m.ce,m.ce_be),1,false)}</b></td><td class="mut">${P(lp,1,false)}</td><td class="${cls(g)}">${P(g)}</td></tr>`; });
-  $('mTable').innerHTML=h+'</tbody>';
+  lineChart($('c1'), {xlabels:MON, series, h:250, yfmt:fmt, ymax: mMode==='pct'?niceMax(Math.max(100,...series.flatMap(s=>s.vals).filter(v=>v!=null))):undefined,
+    tipfmt:(v)=> mMode==='pct'? v.toFixed(1)+'%' : '₹'+IN(v)+' cr', sel:selI, ids});
+  $('cLeg').innerHTML=series.slice().reverse().map(s=>`<span><i style="background:${s.color};opacity:${s.op}"></i>${s.name}${s.name===fyShort(cur)?' (current)':''}</span>`).join('');
 }
 
-/* ---------- private annual ---------- */
-function renderPvtAnnual(){
-  seg($('pViewSeg'), [{k:'level',l:'₹ amount'},{k:'growth',l:'y/y growth'}], pView, k=>{ pView=k; drawPvtAnnual(); });
-  seg($('pSeg'), [{k:'all',l:'All listed (ex-financials)'},{k:'n500',l:'Nifty 500'},{k:'fixed_all',l:'Same cos, 5 yrs'},{k:'fixed_n500',l:'Nifty 500 · same cos'}], pMode, k=>{ pMode=k; drawPvtAnnual(); });
-  drawPvtAnnual();
+/* =====================================================================
+   VIEW: India Inc by year
+   ===================================================================== */
+const PM_LABEL={all:'All listed (ex-financials)', n500:'Nifty 500', fixed_all:'Same cos, 5 yrs', fixed_n500:'Nifty 500 · same cos'};
+function pvtYear(i){   // the old chart's own numbers for year slot i of the chosen panel
+  const fixed=pMode.startsWith('fixed'), U=F[pMode], fys=fixed?U.fys:F.fys;
+  const cap=U.capex[i], n=fixed?U.n:U.n[i], cfo=U.cfo[i];
+  const g = fixed ? (i? yoy(cap,U.capex[i-1]) : null) : (U.panel_n[i]>=100 ? yoy(U.panel_cur[i],U.panel_prev[i]) : null);
+  return {y:fys[i], cap, n, cfo, g, fixed, U};
 }
-function drawPvtAnnual(){
-  const fys = (pMode.startsWith('fixed')? F[pMode].fys : F.fys);
+function pvtFys(){ return pMode.startsWith('fixed') ? F[pMode].fys : F.fys; }
+function pvtList(){
+  if(!F) return {title:'India Inc capex', count:0, note:'', head:['Year','Capex','y/y'], cls:'', rows:[], empty:'Company filings summary not built yet.'};
+  const fys=pvtFys();
+  const rows=fys.map((y,i)=>{ const x=pvtYear(i); return {id:String(y), html:`<span class="n">${y-1}-${String(y).slice(-2)}<small>${IN(x.n)} cos</small></span><span class="v">${L(x.cap)}</span><span class="${x.g!=null?cls(x.g):'mut'}">${x.g!=null?P(x.g):'·'}</span>`}; }).reverse();
+  return {title:PM_LABEL[pMode], count:rows.length, note:'same-basis y/y', head:['Financial year','Capex','y/y'], cls:'', rows};
+}
+function h1Html(){
+  const h=F.h1||[]; if(!h.length) return '<div class="os-note">No half-year pairs yet.</div>';
+  return h.slice().reverse().map(r=>{ const g=yoy(r.cur,r.prev); return `<div class="h1r"><div><div class="a">H1 ${fyShort(r.h1_fy)}<small>Apr–Sep · ${IN(r.n)} cos</small></div><div class="b">${L(r.cur)} vs ${L(r.prev)} a year earlier</div></div><div class="g ${cls(g)}">${P(g)}</div></div>`; }).join('');
+}
+function fixedHtml(){
+  const rows=[['Nifty 500', F.fixed_n500],['All listed (ex-fin)', F.fixed_all]];
+  return '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Panel</th><th>Cos</th>'+F.fixed_all.fys.map(y=>`<th>FY${String(y).slice(-2)}</th>`).join('')+'<th>CAGR</th></tr></thead><tbody>'+rows.map(([lb,fx])=>{ const k=fx.capex.length-1, cagr=(Math.pow(fx.capex[k]/fx.capex[0],1/(fx.fys[k]-fx.fys[0]))-1)*100;
+    return `<tr><td>${lb}</td><td class="mut">${IN(fx.n)}</td>${fx.capex.map(v=>`<td>${(v/1e5).toFixed(2)}</td>`).join('')}<td class="pos">${P(cagr,1,false)}</td></tr>`; }).join('')+'</tbody></table></div><div class="os-note">₹ lakh crore. CAGR = compound annual growth from the first to the last year.</div>';
+}
+function pvtDetail(id){
+  if(!F) return null; const fys=pvtFys(), i=fys.indexOf(+id); if(i<0) return null; const x=pvtYear(i), U=x.U;
+  let h=dh(PM_LABEL[pMode]);
+  h+=kv('Capex',`₹${IN(x.cap)} cr<small>${L(x.cap)}</small>`);
+  h+=kv('Companies', IN(x.n));
+  h+=x.g!=null ? kv('Same-basis y/y'+(x.fixed?'':` <small style="color:var(--text-faint)">(${IN(U.panel_n[i])} cos)</small>`), P(x.g), cls(x.g)) : kv('Same-basis y/y','<small>not shown — too few same-basis pairs</small>');
+  if(x.cfo){ h+=kv('Operating cash flow','₹'+IN(x.cfo)+' cr'); h+=kv('Capex ÷ operating cash flow',(x.cap/x.cfo*100).toFixed(0)+'%'); }
+  if(!x.fixed) h+=kv('≥ ₹1,000 cr spenders', IN(U.gt1000[i]));
+  h+=dh('Half-year pulse')+'<div class="dp">April–September capex from the half-year cash-flow statements, same companies and same basis both years.</div>'+h1Html();
+  return {title:'FY '+(x.y-1)+'-'+String(x.y).slice(-2), html:h};
+}
+function pvtChart(id){
+  $('cSym').textContent="Listed companies' capex"; $('cName').textContent='by financial year';
+  $('cSub').innerHTML='Purchase of property, plant &amp; equipment as filed in the year-end cash-flow statement (consolidated where filed, else standalone), financial-services companies excluded. Year-on-year uses only companies reporting on the same basis in both years.';
+  if(!F){ $('c1').innerHTML='<div class="os-empty">Company filings summary not built yet.</div>'; return; }
+  seg([{k:'level',l:'₹ amount'},{k:'growth',l:'y/y growth'}], pView, k=>{ pView=k; drawPane(); writeHash(); }, 'Measure');
+  seg([{k:'all',l:'All listed (ex-financials)'},{k:'n500',l:'Nifty 500'},{k:'fixed_all',l:'Same cos, 5 yrs'},{k:'fixed_n500',l:'Nifty 500 · same cos'}], pMode, k=>{ pMode=k; render(false); }, 'Companies');
+  const fys = pvtFys();
   const labels=fys.map(y=>'FY'+String(y).slice(-2));
-  const U = pMode.startsWith('fixed') ? F[pMode] : F[pMode];
+  const U = F[pMode];
   const bars=fys.map((y,i)=>{
     const cap=U.capex[i], n=pMode.startsWith('fixed')?U.n:U.n[i], cfo=U.cfo[i];
     const g = pMode.startsWith('fixed') ? (i? yoy(cap,U.capex[i-1]) : null) : (U.panel_n[i]>=100 ? yoy(U.panel_cur[i],U.panel_prev[i]) : null);
@@ -456,116 +470,221 @@ function drawPvtAnnual(){
     if(pView==='growth') return g!=null ? {v:g, color:sgn(g), tip:t} : {v:null, tip:t};
     return {v:cap, color:CSS('--cx-pvt'), tip:t, hollow:(!pMode.startsWith('fixed') && U.n[i] < 0.6*Math.max(...U.n))};
   });
+  const ids=fys.map(String), sel=fys.indexOf(+id);
   if(pView==='growth'){
-    barChart($('pAnnual'), {labels, bars, h:250, neg:true, yfmt:v=>v.toFixed(0)+'%'});
-    $('pLegend').innerHTML=`<span><i style="background:var(--pos)"></i>capex up on the year before</span><span><i style="background:var(--neg)"></i>down</span><span class="mut">${pMode.startsWith('fixed')?'same companies every year':'same companies, same basis, both years — a year with too few pairs is left blank'}</span>`;
+    barChart($('c1'), {labels, bars, h:250, neg:true, yfmt:v=>v.toFixed(0)+'%', ids, sel});
+    $('cLeg').innerHTML=`<span><i style="background:var(--pos)"></i>capex up on the year before</span><span><i style="background:var(--neg)"></i>down</span><span class="mut">${pMode.startsWith('fixed')?'same companies every year':'same companies, same basis, both years — a year with too few pairs is left blank'}</span>`;
   } else {
-    barChart($('pAnnual'), {labels, bars, h:250, yfmt:v=>(v/1e5).toFixed(v>=1e6?0:1)+' L'});
-    $('pLegend').innerHTML=`<span><i style="background:var(--cx-pvt)"></i>Capex, ₹ crore (hover for y/y, companies, capex/CFO)</span>`+(pMode.startsWith('fixed')?'':`<span><i class="hollow" style="border-color:var(--cx-pvt)"></i>thin coverage year (fewer filers in our store)</span>`);
+    barChart($('c1'), {labels, bars, h:250, yfmt:v=>(v/1e5).toFixed(v>=1e6?0:1)+' L', ids, sel});
+    $('cLeg').innerHTML=`<span><i style="background:var(--cx-pvt)"></i>Capex, ₹ crore (hover for y/y, companies, capex/CFO)</span>`+(pMode.startsWith('fixed')?'':`<span><i class="hollow" style="border-color:var(--cx-pvt)"></i>thin coverage year (fewer filers in our store)</span>`);
   }
   const last=fys.length-1;
-  $('pFoot').innerHTML = pMode==='all' ? `<b>${IN(U.n[last])}</b> non-financial companies filed FY${String(fys[last]).slice(-2)} capex in our XBRL store (${IN(U.gt1000[last])} of them ≥ ₹1,000 cr). Totals rise partly because coverage rises — use the same-basis y/y in the hover, or the fixed panels, for growth.` :
+  const foot = pMode==='all' ? `<b>${IN(U.n[last])}</b> non-financial companies filed FY${String(fys[last]).slice(-2)} capex in our XBRL store (${IN(U.gt1000[last])} of them ≥ ₹1,000 cr). Totals rise partly because coverage rises — use the same-basis y/y in the hover, or the fixed panels, for growth.` :
     pMode==='n500' ? `Nifty 500 as of ${esc(F.n500_meta.snapshot||'latest snapshot')}: ${IN(F.n500_meta.nonfin)} non-financial members, ${IN(U.n[last])} with FY${String(fys[last]).slice(-2)} capex filed.` :
     `${IN(U.n)} companies with capex filed in every one of these ${fys.length} years — growth here is real growth, not coverage.`;
+  $('cExtra').innerHTML=`<div class="dp">${foot}</div>`+dh('Same companies, five years')+'<div class="dp">Fixed panels: every company that filed capex in all five years, so growth is not coverage growth.</div>'+fixedHtml();
 }
-function renderSectors(){
-  seg($('sSeg'), [{k:'amount',l:'₹ amount'},{k:'growth',l:'y/y growth'}], sView, k=>{ sView=k; drawSectors(); });
-  drawSectors();
-}
-function drawSectors(){
+
+/* =====================================================================
+   VIEW: Sectors
+   ===================================================================== */
+function secData(){
   const ks=Object.keys(F.sectors).sort(), curK=ks[ks.length-1], prevK=ks[ks.length-2];
   const cur=F.sectors[curK], prev=F.sectors[prevK]||{};
-  $('sCur').textContent='FY'+curK.slice(-2); $('sPrev').textContent='FY'+prevK.slice(-2);
   let rows=Object.entries(cur).filter(([k])=>k!=='Unclassified').slice(0,11);
-  const tipOf=(k,v,p,g)=>esc(`<div class=d>${k}</div><div>FY${curK.slice(-2)}: <b>₹${IN(v)} cr</b></div>${p!=null?`<div>FY${prevK.slice(-2)}: <b>₹${IN(p)} cr</b> · ${P(g)}</div>`:''}`);
-  if(sView==='growth'){
-    $('sSub').textContent=`Change in each sector's capex, FY${curK.slice(-2)} vs FY${prevK.slice(-2)} (all listed non-financial filers). Bars fan out from zero.`;
-    rows=rows.map(([k,v])=>[k,v,prev[k],yoy(v,prev[k])]).filter(r=>r[3]!=null).sort((a,b)=>b[3]-a[3]);
-    const mx=Math.max(...rows.map(r=>Math.abs(r[3])),1);
-    $('pSectors').innerHTML=rows.map(([k,v,p,g])=>`<div class="sbar" data-tip="${tipOf(k,v,p,g)}"><div class="lb">${esc(k)}<small>₹${IN(p)} → ₹${IN(v)} cr</small></div><div class="tr"><div class="zero"></div><div class="bar ${g>=0?'pos':'neg'}" style="${g>=0?'left:50%':'right:50%'};width:${(Math.abs(g)/mx*50).toFixed(1)}%"></div></div><div class="v ${cls(g)}">${P(g,0)}</div></div>`).join('');
-    $('sLegend').style.display='none';
-  } else {
-    $('sSub').textContent=`BSE macro sectors, all listed non-financial filers, ₹ crore. Dashed outline = the previous year.`;
-    const mx=Math.max(...rows.map(r=>r[1]), ...rows.map(r=>prev[r[0]]||0));
-    $('pSectors').innerHTML=rows.map(([k,v])=>{ const p=prev[k]; const g=yoy(v,p);
-      return `<div class="sbar" data-tip="${tipOf(k,v,p,g)}"><div class="lb">${esc(k)}</div><div class="tr">${p!=null?`<div class="bar prev" style="width:${(p/mx*100).toFixed(1)}%"></div>`:''}<div class="bar cur" style="width:${(v/mx*100).toFixed(1)}%"></div></div><div class="v ${cls(g)}">${g!=null?P(g,0):L(v,1)}</div></div>`; }).join('');
-    $('sLegend').style.display='';
-  }
-  bindTips($('pSectors'));
+  if(sView==='growth') rows=rows.map(([k,v])=>[k,v,prev[k],yoy(v,prev[k])]).filter(r=>r[3]!=null).sort((a,b)=>b[3]-a[3]);
+  else rows=rows.map(([k,v])=>[k,v,prev[k],yoy(v,prev[k])]);
+  return {curK, prevK, cur, prev, rows};
 }
-function renderDelta(){
+function secList(){
+  if(!F) return {title:'Sectors', count:0, note:'', head:['Sector','₹ cr','y/y'], cls:'', rows:[], empty:'Company filings summary not built yet.'};
+  const S=secData();
+  const rows=S.rows.map(([k,v,p,g])=>({id:k, html:`<span class="n">${esc(k)}</span><span class="v">${IN(v)}</span><span class="${g!=null?cls(g):'mut'}">${g!=null?P(g,0):'·'}</span>`}));
+  return {title:'By sector · FY'+S.curK.slice(-2), count:rows.length, note:sView==='growth'?'fastest first':'biggest first', head:['BSE macro sector','₹ crore','y/y'], cls:'', rows};
+}
+function secDetail(id){
+  if(!F) return null; const S=secData(), r=S.rows.find(x=>x[0]===id); if(!r) return null; const [k,v,p,g]=r;
+  let h=dh('Capex, all listed non-financial filers');
+  h+=kv('FY'+S.curK.slice(-2),`₹${IN(v)} cr<small>${L(v)}</small>`);
+  if(p!=null){ h+=kv('FY'+S.prevK.slice(-2),`₹${IN(p)} cr<small>${L(p)}</small>`); h+=kv('Change', P(g), cls(g)); }
+  h+=`<div class="dp">BSE macro sectors. The amounts are as filed; coverage differs a little between the two years.</div>`;
+  return {title:k, html:h};
+}
+function secChart(id){
+  $('cSym').textContent='Where the money goes'; $('cName').textContent='by sector';
+  if(!F){ $('cSub').textContent=''; $('c1').innerHTML='<div class="os-empty">Company filings summary not built yet.</div>'; return; }
+  seg([{k:'amount',l:'₹ amount'},{k:'growth',l:'y/y growth'}], sView, k=>{ sView=k; render(false); }, 'Measure');
+  const S=secData(), curK=S.curK, prevK=S.prevK, prev=S.prev;
+  const tipOf=(k,v,p,g)=>esc(`<div class=d>${k}</div><div>FY${curK.slice(-2)}: <b>₹${IN(v)} cr</b></div>${p!=null?`<div>FY${prevK.slice(-2)}: <b>₹${IN(p)} cr</b> · ${P(g)}</div>`:''}`);
+  const on=k=>k===id?' on':'';
+  if(sView==='growth'){
+    $('cSub').textContent=`Change in each sector's capex, FY${curK.slice(-2)} vs FY${prevK.slice(-2)} (all listed non-financial filers). Bars fan out from zero.`;
+    const rows=S.rows, mx=Math.max(...rows.map(r=>Math.abs(r[3])),1);
+    $('c1').innerHTML='<div class="sbars" style="padding:0">'+rows.map(([k,v,p,g])=>`<div class="sbar${on(k)}" data-i="${esc(k)}" data-tip="${tipOf(k,v,p,g)}"><div class="lb">${esc(k)}<small>₹${IN(p)} → ₹${IN(v)} cr</small></div><div class="tr"><div class="zero"></div><div class="bar ${g>=0?'pos':'neg'}" style="${g>=0?'left:50%':'right:50%'};width:${(Math.abs(g)/mx*50).toFixed(1)}%"></div></div><div class="v ${cls(g)}">${P(g,0)}</div></div>`).join('')+'</div>';
+    $('cLeg').innerHTML='';
+  } else {
+    $('cSub').textContent=`BSE macro sectors, all listed non-financial filers, ₹ crore. Dashed outline = the previous year.`;
+    const rows=S.rows, mx=Math.max(...rows.map(r=>r[1]), ...rows.map(r=>prev[r[0]]||0));
+    $('c1').innerHTML='<div class="sbars" style="padding:0">'+rows.map(([k,v])=>{ const p=prev[k]; const g=yoy(v,p);
+      return `<div class="sbar${on(k)}" data-i="${esc(k)}" data-tip="${tipOf(k,v,p,g)}"><div class="lb">${esc(k)}</div><div class="tr">${p!=null?`<div class="bar prev" style="width:${(p/mx*100).toFixed(1)}%"></div>`:''}<div class="bar cur" style="width:${(v/mx*100).toFixed(1)}%"></div></div><div class="v ${cls(g)}">${g!=null?P(g,0):L(v,1)}</div></div>`; }).join('')+'</div>';
+    $('cLeg').innerHTML=`<span><i style="background:var(--cx-pvt)"></i>FY${curK.slice(-2)}</span><span><i class="hollow" style="border-style:dashed"></i>FY${prevK.slice(-2)}</span>`;
+  }
+  bindTips($('c1')); bindPick($('c1'));
+}
+
+/* =====================================================================
+   VIEW: Biggest spenders
+   ===================================================================== */
+function topRows(){ return F.top.filter(r=>topMode==='all'||r.n500).slice(0,25); }
+function topList(){
+  if(!F) return {title:'Biggest spenders', count:0, note:'', head:['Company','₹ cr','y/y'], cls:'', rows:[], empty:'Company filings summary not built yet.'};
+  const rows=topRows().map((r,i)=>{ const g=yoy(r.capex,r.prev);
+    return {id:r.sym, html:`<span class="n" title="${esc(r.name||r.sym)}"><i style="margin:0 6px 0 0">${i+1}</i>${esc((r.name||r.sym).replace(/ Ltd$/,''))}</span><span class="v">${IN(r.capex)}</span><span class="${g!=null?cls(g):'mut'}">${P(g)}</span>`}; });
+  return {title:'Biggest spenders · FY'+String(F.top_fy).slice(-2), count:rows.length, note:topMode==='n500'?'Nifty 500 only':'all listed', head:['Company','Capex ₹ cr','y/y'], cls:'', rows};
+}
+function topDetail(id){
+  if(!F) return null; const rows=topRows(), i=rows.findIndex(r=>r.sym===id); if(i<0) return null; const r=rows[i];
+  const g=yoy(r.capex,r.prev), ratio=r.cfo?r.capex/r.cfo*100:null;
+  let h=dh(esc(r.sym)+(r.basis==='s'?' · standalone':'')+' · rank '+(i+1));
+  h+=kv('Sector', esc(r.macro));
+  h+=kv('Capex FY'+String(F.top_fy).slice(-2),'₹'+IN(r.capex)+' cr');
+  h+=kv('Previous year','₹'+IN(r.prev)+' cr');
+  h+=kv('y/y', P(g), cls(g));
+  h+=kv('Capex ÷ CFO', ratio!=null?ratio.toFixed(0)+'%':'·', ratio!=null&&ratio>100?'neg':'');
+  h+=`<div class="dp">Capex as filed (₹ crore). Prev = same company, same basis, previous year. Capex ÷ CFO = share of operating cash flow reinvested.</div>`;
+  h+=`<div class="dp"><a href="./stock.html?s=${encodeURIComponent(r.sym)}">Open ${esc(r.name||r.sym)} →</a></div>`;
+  return {title:r.name||r.sym, html:h};
+}
+function topChart(id){
+  $('cSym').textContent='Who stepped up, who pulled back'; $('cName').textContent=F?'FY'+String(F.top_fy).slice(-2)+' vs FY'+String(F.top_fy-1).slice(-2):'';
+  if(!F){ $('cSub').textContent=''; $('c1').innerHTML='<div class="os-empty">Company filings summary not built yet.</div>'; return; }
+  seg([{k:'all',l:'All'},{k:'n500',l:'Nifty 500 only'}], topMode, k=>{ topMode=k; render(false); }, 'List');
+  $('cSub').textContent='Change in capex versus the previous year (₹ crore, same basis) among the 40 biggest spenders. Green added spending, red cut it; the label carries the percentage. The All / Nifty 500 switch applies to the list on the left.';
   const rows=F.top.filter(r=>r.prev!=null && r.prev>0).map(r=>Object.assign({}, r, {d:r.capex-r.prev, g:yoy(r.capex,r.prev)}));
   const up=rows.filter(r=>r.d>0).sort((a,b)=>b.d-a.d).slice(0,10), down=rows.filter(r=>r.d<0).sort((a,b)=>a.d-b.d).slice(0,10);
   const mx=Math.max(...rows.map(r=>Math.abs(r.d)),1);
-  $('deltaFy').textContent='· FY'+String(F.top_fy).slice(-2)+' vs FY'+String(F.top_fy-1).slice(-2);
-  const row=r=>`<div class="sbar" data-tip="${esc(`<div class=d>${r.name||r.sym}</div><div>FY${String(F.top_fy-1).slice(-2)}: ₹${IN(r.prev)} cr → FY${String(F.top_fy).slice(-2)}: <b>₹${IN(r.capex)} cr</b></div><div>Change: <b>${(r.d>=0?'+':'−')}₹${IN(Math.abs(r.d))} cr</b> (${P(r.g)})</div>`)}"><div class="lb"><a href="./stock.html?s=${encodeURIComponent(r.sym)}" style="color:inherit">${esc((r.name||r.sym).replace(/ Ltd$/,''))}</a><small>${esc(r.macro)}</small></div><div class="tr"><div class="bar ${r.d>=0?'pos':'neg'}" style="width:${(Math.abs(r.d)/mx*100).toFixed(1)}%"></div></div><div class="v ${cls(r.d)}">${(r.d>=0?'+':'−')}${IN(Math.abs(r.d))}<small style="display:block;font-size:10px;font-weight:600;color:var(--text-faint)">${P(r.g,0)}</small></div></div>`;
-  $('risers').innerHTML=(up.length?`<div class="sectsub mb-1">Added the most, ₹ crore</div>`+up.map(row).join(''):'<div class="note">No increases among the top spenders.</div>');
-  $('fallers').innerHTML=(down.length?`<div class="sectsub mb-1">Cut the most, ₹ crore</div>`+down.map(row).join(''):'<div class="note">No cuts among the top spenders.</div>');
-  bindTips($('risers')); bindTips($('fallers'));
-}
-function renderH1(){
-  const h=F.h1||[]; if(!h.length){ $('pH1').innerHTML='<div class="note">No half-year pairs yet.</div>'; return; }
-  $('pH1').innerHTML=h.slice().reverse().map((r,i)=>{ const g=yoy(r.cur,r.prev); return `<div class="flex items-baseline justify-between gap-3 py-1.5 border-b border-dashed" style="border-color:var(--border)"><div><div class="text-[12px] font-bold" style="color:var(--text)">H1 ${fyShort(r.h1_fy)} <span class="text-[11px] font-medium" style="color:var(--text-faint)">Apr–Sep · ${IN(r.n)} cos</span></div><div class="text-[11px]" style="color:var(--text-muted)">${L(r.cur)} vs ${L(r.prev)} a year earlier</div></div><div class="${cls(g)} text-[15px]">${P(g)}</div></div>`; }).join('');
-}
-function renderFixed(){
-  const rows=[['Nifty 500', F.fixed_n500],['All listed (ex-fin)', F.fixed_all]];
-  $('pFixed').innerHTML='<table class="tbl"><thead><tr><th>Panel</th><th>Cos</th>'+F.fixed_all.fys.map(y=>`<th>FY${String(y).slice(-2)}</th>`).join('')+'<th>CAGR</th></tr></thead><tbody>'+rows.map(([lb,fx])=>{ const k=fx.capex.length-1, cagr=(Math.pow(fx.capex[k]/fx.capex[0],1/(fx.fys[k]-fx.fys[0]))-1)*100;
-    return `<tr><td>${lb}</td><td class="mut">${IN(fx.n)}</td>${fx.capex.map(v=>`<td>${(v/1e5).toFixed(2)}</td>`).join('')}<td class="pos">${P(cagr,1,false)}</td></tr>`; }).join('')+'</tbody></table><div class="note mt-1">₹ lakh crore. CAGR = compound annual growth from the first to the last year.</div>';
-}
-function renderTop(){
-  seg($('topSeg'), [{k:'all',l:'All'},{k:'n500',l:'Nifty 500 only'}], topMode, k=>{ topMode=k; drawTop(); });
-  $('topFy').textContent='· FY'+String(F.top_fy).slice(-2);
-  drawTop();
-}
-function drawTop(){
-  const rows=F.top.filter(r=>topMode==='all'||r.n500).slice(0,25);
-  let h='<thead><tr><th>#</th><th>Company</th><th>Sector</th><th>Capex ₹ cr</th><th>Prev yr</th><th>y/y</th><th>Capex ÷ CFO</th></tr></thead><tbody>';
-  rows.forEach((r,i)=>{ const g=yoy(r.capex,r.prev), ratio=r.cfo?r.capex/r.cfo*100:null;
-    h+=`<tr><td class="mut">${i+1}</td><td><a href="./stock.html?s=${encodeURIComponent(r.sym)}" style="color:var(--accent-text,var(--accent));font-weight:700">${esc(r.name||r.sym)}</a> <span class="mut text-[11px]">${esc(r.sym)}${r.basis==='s'?' · standalone':''}</span></td><td class="mut">${esc(r.macro)}</td><td><b>${IN(r.capex)}</b></td><td class="mut">${IN(r.prev)}</td><td class="${cls(g)}">${P(g)}</td><td class="${ratio!=null&&ratio>100?'neg':''}">${ratio!=null?ratio.toFixed(0)+'%':'·'}</td></tr>`; });
-  $('topTable').innerHTML=h+'</tbody>';
+  const row=r=>`<div class="sbar${r.sym===id?' on':''}" data-i="${esc(r.sym)}" data-tip="${esc(`<div class=d>${r.name||r.sym}</div><div>FY${String(F.top_fy-1).slice(-2)}: ₹${IN(r.prev)} cr → FY${String(F.top_fy).slice(-2)}: <b>₹${IN(r.capex)} cr</b></div><div>Change: <b>${(r.d>=0?'+':'−')}₹${IN(Math.abs(r.d))} cr</b> (${P(r.g)})</div>`)}"><div class="lb">${esc((r.name||r.sym).replace(/ Ltd$/,''))}<small>${esc(r.macro)}</small></div><div class="tr"><div class="bar ${r.d>=0?'pos':'neg'}" style="width:${(Math.abs(r.d)/mx*100).toFixed(1)}%"></div></div><div class="v ${cls(r.d)}">${(r.d>=0?'+':'−')}${IN(Math.abs(r.d))}<small style="display:block;font-size:10px;font-weight:600;color:var(--text-faint)">${P(r.g,0)}</small></div></div>`;
+  $('c1').innerHTML='<div class="dcols" style="margin:0 -12px"><div>'+(up.length?`<div class="dsub">Added the most, ₹ crore</div><div class="sbars">`+up.map(row).join('')+'</div>':'<div class="os-note">No increases among the top spenders.</div>')
+    +'</div><div>'+(down.length?`<div class="dsub">Cut the most, ₹ crore</div><div class="sbars">`+down.map(row).join('')+'</div>':'<div class="os-note">No cuts among the top spenders.</div>')+'</div></div>';
+  $('cLeg').innerHTML='';
+  bindTips($('c1')); bindPick($('c1'));
 }
 
-/* ---------- official gauges ---------- */
-function renderMospi(){
-  const S=O.mospi_survey; if(!S||!S.rounds||!S.rounds.length){ $('mospi').innerHTML='<div class="note">No survey readings in the ledger.</div>'; return; }
-  const fys=[...new Set(S.rounds.flatMap(r=>Object.keys(r.aggregate)))].sort();
-  const pal=[CSS('--cx-be'), CSS('--cx-pvt2')];
-  const bars=[], labels=[];
-  fys.forEach(fy=>{ S.rounds.forEach((r,j)=>{ if(r.aggregate[fy]==null) return; labels.push(fyShort(fy)+(S.rounds.length>1?' r'+(j+1):'')); bars.push({v:r.aggregate[fy], color:pal[j%pal.length], tip:`<div class=d>${esc(r.round)}</div><div>${fy}: <b>₹${IN(r.aggregate[fy])} cr</b> (${L(r.aggregate[fy])})</div><div class=d>${esc(r.kind[fy]||'')}</div>`}); }); });
-  barChart($('mospi'), {labels, bars, h:230, yfmt:v=>(v/1e5).toFixed(1)+' L'});
-  $('mospiNote').innerHTML=S.rounds.map((r,j)=>`<div><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${pal[j%pal.length]};margin-right:5px;vertical-align:-1px"></span><b>Round ${j+1}</b> — ${esc(r.round)}${r.note?': '+esc(r.note):''} <a href="${esc(r.src)}" target="_blank" rel="noopener" style="color:var(--accent-text,var(--accent))">source ↗</a></div>`).join('')
-    +(S.rounds[S.rounds.length-1].panel?`<div class="mt-1">Fixed panel of ${IN(S.rounds[S.rounds.length-1].panel.n)} enterprises (round ${S.rounds.length}, unweighted): ${Object.entries(S.rounds[S.rounds.length-1].panel).filter(([k])=>k!=='n').map(([k,v])=>fyShort(k)+' '+L(v)).join(' → ')}.</div>`:'');
-}
-function renderRbi(){
-  const R=O.rbi; if(!R){ $('rbi').innerHTML='<div class="note">No RBI readings in the ledger.</div>'; return; }
+/* =====================================================================
+   VIEW: Gauges & GFCF
+   ===================================================================== */
+const qLab = r => r.q.replace(/^(\d{4})-(\d{2}) (Q\d)$/,(m,a,b,c)=>c+' FY'+b);
+function rbiData(){
+  const R=O.rbi; if(!R) return null;
   const latest={}; (R.envisaged||[]).forEach(e=>{ if(!latest[e.fy]||e.vintage>latest[e.fy].vintage) latest[e.fy]=e; });
   const hist={}; (R.envisaged||[]).forEach(e=>{ (hist[e.fy]=hist[e.fy]||[]).push(e); });
   const proj={}; (R.projects||[]).forEach(p=>{ if(!proj[p.fy]||p.vintage>proj[p.fy].vintage) proj[p.fy]=p; });
   const fys=[...new Set([...Object.keys(proj), ...Object.keys(latest)])].sort();
-  const bars=fys.map((fy,i)=>{ const p=proj[fy], e=latest[fy]; const v=p?p.cost:null; const pp=proj[fys[i-1]], pe=latest[fys[i-1]];
-    const t=`<div class=d>${fy}</div>`+(p?`<div>Projects sanctioned by banks/FIs: <b>${IN(p.n)}</b>, cost <b>₹${IN(p.cost)} cr</b>${pp?` · <b>${P(yoy(p.cost,pp.cost))}</b> y/y`:''} <span class=d>(${esc(p.vintage)})</span></div>`:'')
-      +(e?`<div>Capex envisaged in the year (all channels): <b>₹${IN(e.capex)} cr</b>${pe?` · <b>${P(yoy(e.capex,pe.capex))}</b> y/y`:''} <span class=d>(${esc(e.vintage)})</span></div>`:'')
-      +((hist[fy]||[]).filter(h=>h!==e).map(h=>`<div class=d>earlier vintage ${esc(h.vintage)}: ₹${IN(h.capex)} cr</div>`).join(''));
-    return {v, color:CSS('--cx-pvt2'), tip:t}; });
-  const marks=fys.map((fy,i)=>latest[fy]?{i, v:latest[fy].capex, color:CSS('--cx-re')}:null).filter(Boolean);
-  barChart($('rbi'), {labels:fys.map(fyShort), bars, marks, h:230, yfmt:v=>(v/1e5).toFixed(1)+' L'});
-  $('rbiNote').innerHTML=`<span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${CSS('--cx-pvt2')};margin-right:5px;vertical-align:-1px"></span>cost of projects sanctioned by banks/FIs in the year &nbsp; <span style="display:inline-block;width:14px;height:0;border-top:2.5px solid ${CSS('--cx-re')};margin-right:5px;vertical-align:3px"></span>capex envisaged to be spent in the year (bank/FI + ECB + IPO channels). ${esc(R.note||'')} `+(R.src||[]).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener" style="color:var(--accent-text,var(--accent))">${esc(s.label)} ↗</a>`).join(' · ');
+  return {R, latest, hist, proj, fys};
 }
-
-/* ---------- GFCF ---------- */
-function renderGfcf(){
-  const X=O.gfcf; if(!X||!X.quarterly){ $('gfcfG').innerHTML='<div class="note">No GFCF readings in the ledger.</div>'; return; }
-  const q=X.quarterly.filter(r=>r.q>='2023-24');   // keep every quarter slot; a null growth (vintage change) shows as a gap, not a dropped label
-  const lab=r=>r.q.replace(/^(\d{4})-(\d{2}) (Q\d)$/,(m,a,b,c)=>c+' FY'+b);
-  barChart($('gfcfG'), {labels:q.map(lab), h:220, neg:true, yfmt:v=>v.toFixed(0)+'%', bars:q.map(r=>({v:r.g_const, color:r.g_const==null?CSS('--cx-pvt'):sgn(r.g_const), tip:`<div class=d>${r.q}</div><div>Real GFCF: <b>₹${IN(r.const)} cr</b> · <b>${P(r.g_const)}</b> y/y</div>${r.g_cur!=null?`<div>Nominal: ₹${IN(r.cur)} cr · ${P(r.g_cur)}</div>`:''}`}))});
-  const s=X.quarterly.filter(r=>r.share_cur!=null);
-  lineChart($('gfcfS'), {xlabels:s.map(lab), h:220, ymin:25, ymax:40, yfmt:v=>v.toFixed(0)+'%', series:[{name:'GFCF share of GDP', color:CSS('--cx-govt'), vals:s.map(r=>r.share_cur), dots:true}], tipfmt:v=>v.toFixed(1)+'%'});
-  let h='<thead><tr><th>FY</th><th>Real GFCF ₹ cr</th><th>Real y/y</th><th>Nominal ₹ cr</th><th>Nominal y/y</th><th>Share of GDP</th></tr></thead><tbody>';
+function gaugeList(){
+  const rows=[]; const S=O.mospi_survey, X=O.gfcf, RB=rbiData();
+  const row=(id,n,v,m)=>({id, html:`<span class="n">${n}</span><span class="v">${v}<small style="display:block;font-size:10.5px;font-weight:400;color:var(--text-faint);line-height:1.1">${m}</small></span>`});
+  rows.push({grp:'Official private-capex gauges'});
+  if(S&&S.rounds&&S.rounds.length){ const ms=S.rounds[S.rounds.length-1], ks=Object.keys(ms.aggregate), lastK=ks[ks.length-1]; rows.push(row('mospi','MoSPI capex-intentions survey', L(ms.aggregate[lastK]), 'intentions '+fyShort(lastK))); }
+  else rows.push(row('mospi','MoSPI capex-intentions survey','·','no readings'));
+  if(RB&&RB.fys.length){ const fy=RB.fys.slice().reverse().find(f=>RB.proj[f]); rows.push(row('rbi','RBI — project pipeline', fy?L(RB.proj[fy].cost):'·', fy?'sanctioned '+fyShort(fy):'')); }
+  else rows.push(row('rbi','RBI — project pipeline','·','no readings'));
+  rows.push({grp:'Economy-wide investment (GFCF)'});
+  const q=(X&&X.quarterly||[]).slice(-1)[0], qs=(X&&X.quarterly||[]).filter(r=>r.share_cur!=null).slice(-1)[0];
+  rows.push(row('gfcfG','Real GFCF growth', q?`<span class="${cls(q.g_const)}">${P(q.g_const)}</span>`:'·', q?qLab(q)+' y/y':'no readings'));
+  rows.push(row('gfcfS','Investment share of GDP', qs?qs.share_cur.toFixed(1)+'%':'·', qs?qLab(qs):'no readings'));
+  return {title:'Gauges', count:4, note:'latest reading', head:['Gauge','Latest'], cls:'c2', rows};
+}
+function gfcfAnnualHtml(){
+  const X=O.gfcf; if(!X||!(X.annual||[]).length) return '';
+  let h='<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>FY</th><th>Real GFCF ₹ cr</th><th>Real y/y</th><th>Nominal ₹ cr</th><th>Nominal y/y</th><th>Share of GDP</th></tr></thead><tbody>';
   (X.annual||[]).forEach(r=>{ h+=`<tr><td>${r.fy}${r.tag?'<span class="tag">'+esc(r.tag)+'</span>':''}</td><td>${IN(r.const)}</td><td class="${cls(r.g_const)}">${P(r.g_const)}</td><td>${IN(r.cur)}</td><td class="${cls(r.g_cur)}">${P(r.g_cur)}</td><td>${r.share_cur!=null?r.share_cur.toFixed(1)+'%':'·'}</td></tr>`; });
-  $('gfcfTable').innerHTML=h+'</tbody>';
+  return dh('Annual GFCF')+h+'</tbody></table></div>';
+}
+const srcLinks = a => (a||[]).map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)} ↗</a>`).join(' · ');
+function gaugeDetail(id){
+  let h='';
+  if(id==='mospi'){
+    const S=O.mospi_survey; h+=`<div class="dp">The NSO's forward-looking survey of the private corporate sector (listed and unlisted): weighted aggregate capex by year, per survey round. Rounds are not comparable with each other — different frames and weights.</div>`;
+    if(!S||!S.rounds||!S.rounds.length) return {title:'MoSPI capex-intentions survey', html:h+'<div class="os-empty">No survey readings in the ledger.</div>'};
+    S.rounds.forEach((r,j)=>{ h+=dh('Round '+(j+1)); Object.keys(r.aggregate).sort().forEach(fy=>{ h+=kv(`${fy} <small style="color:var(--text-faint)">${esc(r.kind[fy]||'')}</small>`, `₹${IN(r.aggregate[fy])} cr<small>${L(r.aggregate[fy])}</small>`); });
+      h+=`<div class="dp">${esc(r.round)}${r.note?': '+esc(r.note):''} <a href="${esc(r.src)}" target="_blank" rel="noopener">source ↗</a></div>`; });
+    const lr=S.rounds[S.rounds.length-1];
+    if(lr.panel) h+=`<div class="dp">Fixed panel of ${IN(lr.panel.n)} enterprises (round ${S.rounds.length}, unweighted): ${Object.entries(lr.panel).filter(([k])=>k!=='n').map(([k,v])=>fyShort(k)+' '+L(v)).join(' → ')}.</div>`;
+    return {title:'MoSPI capex-intentions survey', html:h};
+  }
+  if(id==='rbi'){
+    const B=rbiData(); h+=`<div class="dp">RBI Bulletin's annual article on private corporate investment: cost of projects sanctioned by banks/FIs each year, and the capex those pipelines (all financing channels) put into each year. Later articles revise earlier years — the latest vintage is shown, earlier ones listed beneath it.</div>`;
+    if(!B) return {title:'RBI — project pipeline', html:h+'<div class="os-empty">No RBI readings in the ledger.</div>'};
+    B.fys.slice().reverse().forEach(fy=>{ const i=B.fys.indexOf(fy), p=B.proj[fy], e=B.latest[fy], pp=B.proj[B.fys[i-1]], pe=B.latest[B.fys[i-1]];
+      h+=dh(fy);
+      if(p) h+=kv(`Projects sanctioned <small style="color:var(--text-faint)">${IN(p.n)} projects · ${esc(p.vintage)}</small>`, `₹${IN(p.cost)} cr${pp?`<small>${P(yoy(p.cost,pp.cost))} y/y</small>`:''}`);
+      if(e) h+=kv(`Capex envisaged in the year <small style="color:var(--text-faint)">${esc(e.vintage)}</small>`, `₹${IN(e.capex)} cr${pe?`<small>${P(yoy(e.capex,pe.capex))} y/y</small>`:''}`);
+      (B.hist[fy]||[]).filter(x=>x!==e).forEach(x=>{ h+=kv(`<small style="color:var(--text-faint)">earlier vintage ${esc(x.vintage)}</small>`, `<small>₹${IN(x.capex)} cr</small>`); }); });
+    h+=`<div class="dp">${esc(B.R.note||'')} ${srcLinks(B.R.src)}</div>`;
+    return {title:'RBI — project pipeline', html:h};
+  }
+  const X=O.gfcf;
+  if(!X||!X.quarterly) return {title:id==='gfcfG'?'Real GFCF growth':'Investment share of GDP', html:'<div class="os-empty">No GFCF readings in the ledger.</div>'};
+  if(id==='gfcfG'){
+    h+=`<div class="dp">Gross Fixed Capital Formation: year-on-year change at constant (2022-23) prices, MoSPI's new GDP series.</div>`+dh('Quarter · real y/y');
+    X.quarterly.filter(r=>r.q>='2023-24').slice().reverse().forEach(r=>{ h+=kv(`${qLab(r)} <small style="color:var(--text-faint)">₹${IN(r.const)} cr${r.g_cur!=null?' · nominal '+P(r.g_cur):''}</small>`, P(r.g_const), cls(r.g_const)); });
+    h+=`<div class="dp">${srcLinks(X.src)}</div>`;
+    return {title:'Real GFCF growth', html:h};
+  }
+  h+=`<div class="dp">GFCF as a share of nominal GDP each quarter. Seasonal — compare a quarter with the same quarter a year earlier.</div>`+dh('Quarter · share of GDP');
+  X.quarterly.filter(r=>r.share_cur!=null).slice().reverse().forEach(r=>{ h+=kv(qLab(r), r.share_cur.toFixed(1)+'%'); });
+  h+=`<div class="dp">${srcLinks(X.src)}</div>`;
+  return {title:'Investment share of GDP', html:h};
+}
+function gaugeChart(id){
+  $('cLeg').innerHTML='';
+  if(id==='mospi'){
+    $('cSym').textContent='MoSPI capex-intentions survey'; $('cName').textContent='weighted aggregate capex by year';
+    $('cSub').textContent='Each bar is one year in one survey round (r1, r2 = round). Rounds are not comparable with each other — different frames and weights.';
+    const S=O.mospi_survey; if(!S||!S.rounds||!S.rounds.length){ $('c1').innerHTML='<div class="os-empty">No survey readings in the ledger.</div>'; return; }
+    const fys=[...new Set(S.rounds.flatMap(r=>Object.keys(r.aggregate)))].sort();
+    const pal=[CSS('--cx-be'), CSS('--cx-pvt2')];
+    const bars=[], labels=[];
+    fys.forEach(fy=>{ S.rounds.forEach((r,j)=>{ if(r.aggregate[fy]==null) return; labels.push(fyShort(fy)+(S.rounds.length>1?' r'+(j+1):'')); bars.push({v:r.aggregate[fy], color:pal[j%pal.length], tip:`<div class=d>${esc(r.round)}</div><div>${fy}: <b>₹${IN(r.aggregate[fy])} cr</b> (${L(r.aggregate[fy])})</div><div class=d>${esc(r.kind[fy]||'')}</div>`}); }); });
+    barChart($('c1'), {labels, bars, h:230, yfmt:v=>(v/1e5).toFixed(1)+' L'});
+    $('cLeg').innerHTML=S.rounds.map((r,j)=>`<span><i style="background:${pal[j%pal.length]}"></i>Round ${j+1}</span>`).join('');
+    return;
+  }
+  if(id==='rbi'){
+    $('cSym').textContent='RBI — capex envisaged from the project pipeline'; $('cName').textContent='';
+    $('cSub').textContent='Bars = cost of projects sanctioned by banks/FIs in the year; tick = capex envisaged to be spent in the year (bank/FI + ECB + IPO channels).';
+    const B=rbiData(); if(!B){ $('c1').innerHTML='<div class="os-empty">No RBI readings in the ledger.</div>'; return; }
+    const {latest, hist, proj, fys}=B;
+    const bars=fys.map((fy,i)=>{ const p=proj[fy], e=latest[fy]; const v=p?p.cost:null; const pp=proj[fys[i-1]], pe=latest[fys[i-1]];
+      const t=`<div class=d>${fy}</div>`+(p?`<div>Projects sanctioned by banks/FIs: <b>${IN(p.n)}</b>, cost <b>₹${IN(p.cost)} cr</b>${pp?` · <b>${P(yoy(p.cost,pp.cost))}</b> y/y`:''} <span class=d>(${esc(p.vintage)})</span></div>`:'')
+        +(e?`<div>Capex envisaged in the year (all channels): <b>₹${IN(e.capex)} cr</b>${pe?` · <b>${P(yoy(e.capex,pe.capex))}</b> y/y`:''} <span class=d>(${esc(e.vintage)})</span></div>`:'')
+        +((hist[fy]||[]).filter(h=>h!==e).map(h=>`<div class=d>earlier vintage ${esc(h.vintage)}: ₹${IN(h.capex)} cr</div>`).join(''));
+      return {v, color:CSS('--cx-pvt2'), tip:t}; });
+    const marks=fys.map((fy,i)=>latest[fy]?{i, v:latest[fy].capex, color:CSS('--cx-re')}:null).filter(Boolean);
+    barChart($('c1'), {labels:fys.map(fyShort), bars, marks, h:230, yfmt:v=>(v/1e5).toFixed(1)+' L'});
+    $('cLeg').innerHTML=`<span><i style="background:var(--cx-pvt2)"></i>cost of projects sanctioned by banks/FIs in the year</span><span><i style="background:var(--cx-re);height:3px;border-radius:2px"></i>capex envisaged to be spent in the year</span>`;
+    return;
+  }
+  const X=O.gfcf;
+  $('cSym').textContent=id==='gfcfG'?'Real GFCF growth':'Investment share of GDP'; $('cName').textContent='quarter by quarter';
+  $('cSub').textContent=id==='gfcfG'?"Year-on-year change at constant (2022-23) prices, MoSPI's new GDP series.":'GFCF as a share of nominal GDP each quarter. Seasonal — compare a quarter with the same quarter a year earlier.';
+  if(!X||!X.quarterly){ $('c1').innerHTML='<div class="os-empty">No GFCF readings in the ledger.</div>'; return; }
+  const lab=qLab;
+  if(id==='gfcfG'){
+    const q=X.quarterly.filter(r=>r.q>='2023-24');   // keep every quarter slot; a null growth (vintage change) shows as a gap, not a dropped label
+    barChart($('c1'), {labels:q.map(lab), h:220, neg:true, yfmt:v=>v.toFixed(0)+'%', bars:q.map(r=>({v:r.g_const, color:r.g_const==null?CSS('--cx-pvt'):sgn(r.g_const), tip:`<div class=d>${r.q}</div><div>Real GFCF: <b>₹${IN(r.const)} cr</b> · <b>${P(r.g_const)}</b> y/y</div>${r.g_cur!=null?`<div>Nominal: ₹${IN(r.cur)} cr · ${P(r.g_cur)}</div>`:''}`}))});
+  } else {
+    const s=X.quarterly.filter(r=>r.share_cur!=null);
+    lineChart($('c1'), {xlabels:s.map(lab), h:220, ymin:25, ymax:40, yfmt:v=>v.toFixed(0)+'%', series:[{name:'GFCF share of GDP', color:CSS('--cx-govt'), vals:s.map(r=>r.share_cur), dots:true}], tipfmt:v=>v.toFixed(1)+'%'});
+  }
+  $('cExtra').innerHTML=gfcfAnnualHtml();
 }
 
-/* ---------- reality check ---------- */
+/* =====================================================================
+   VIEW: Reality check (nothing to chart — list and detail only)
+   ===================================================================== */
 function ours(c){
   if(!F) return null;
   const fyi = y => F.fys.indexOf(y);
@@ -583,30 +702,137 @@ function ours(c){
   }catch(e){ return null; }
   return null;
 }
-function renderCheck(){
+function verdictOf(c, o){
+  let vcls={match:'ok',differs:'def',na:'na'}[c.verdict]||'na', vtxt={match:'Match',differs:'Definition differs',na:'Not comparable'}[c.verdict]||c.verdict;
+  if(c.verdict==='auto' && o && c.value!=null && o.v!=null){ const gap=Math.abs(o.v/c.value-1); vcls=gap<=0.15?'ok':'def'; vtxt=gap<=0.15?`Match (${(gap*100).toFixed(0)}% apart)`:`${(gap*100).toFixed(0)}% apart`; }
+  return {vcls, vtxt};
+}
+function checkList(){
   const P_=(O.press||[]);
-  if(!P_.length){ $('checkTable').innerHTML='<tbody><tr><td class="note">No published figures in the ledger yet.</td></tr></tbody>'; return; }
-  let h='<thead><tr><th>Published figure</th><th>Who · when</th><th>What it measures</th><th>Our equivalent (filed cash-flow capex)</th><th>Verdict</th></tr></thead><tbody>';
-  P_.forEach(c=>{ const o=ours(c);
-    let verdict=c.verdict, vcls={match:'ok',differs:'def',na:'na'}[c.verdict]||'na', vtxt={match:'Match',differs:'Definition differs',na:'Not comparable'}[c.verdict]||c.verdict;
-    if(c.verdict==='auto' && o && c.value!=null && o.v!=null){ const gap=Math.abs(o.v/c.value-1); vcls=gap<=0.15?'ok':'def'; vtxt=gap<=0.15?`Match (${(gap*100).toFixed(0)}% apart)`:`${(gap*100).toFixed(0)}% apart`; }
-    h+=`<tr><td style="min-width:200px"><b>${esc(c.claim)}</b></td><td class="mut" style="min-width:120px">${esc(c.outlet)}<br><span class="text-[11px]">${esc(c.date)}</span>${c.src?` <a href="${esc(c.src)}" target="_blank" rel="noopener" style="color:var(--accent-text,var(--accent))">↗</a>`:''}</td><td class="mut" style="min-width:200px;white-space:normal">${esc(c.measures)}</td><td style="min-width:220px;white-space:normal">${o?esc(o.txt):'<span class=mut>—</span>'}</td><td style="white-space:normal;min-width:180px"><span class="verdict ${vcls}">${vtxt}</span>${c.why?`<div class="note mt-1">${esc(c.why)}</div>`:''}</td></tr>`; });
-  $('checkTable').innerHTML=h+'</tbody>';
+  const rows=P_.map((c,i)=>{ const v=verdictOf(c, ours(c)); return {id:String(i), html:`<span class="n" title="${esc(c.claim)}">${esc(c.claim)}</span><span class="verdict ${v.vcls}">${esc(v.vtxt)}</span>`}; });
+  return {title:'Published figures', count:rows.length, note:'vs this page', head:['Published figure','Verdict'], cls:'chk', rows, empty:'No published figures in the ledger yet.'};
+}
+function checkDetail(id){
+  const c=(O.press||[])[+id]; if(!c) return null; const o=ours(c), v=verdictOf(c,o);
+  let h=dh('Published figure')+`<div class="dp" style="font-size:13px"><b>${esc(c.claim)}</b></div>`;
+  h+=kv('Who', esc(c.outlet)+(c.src?` <a href="${esc(c.src)}" target="_blank" rel="noopener" style="color:var(--accent-text,var(--accent));font-weight:500">↗</a>`:''));
+  h+=kv('When', esc(c.date));
+  h+=dh('What it measures')+`<div class="dp">${esc(c.measures)}</div>`;
+  h+=dh('Our equivalent (filed cash-flow capex)')+`<div class="dp" style="color:var(--text)">${o?esc(o.txt):'<span class="mut">—</span>'}</div>`;
+  h+=dh('Verdict')+`<div class="dp"><span class="verdict ${v.vcls}">${esc(v.vtxt)}</span>${c.why?`<div style="margin-top:4px">${esc(c.why)}</div>`:''}</div>`;
+  h+=`<div class="dp">Every private-capex number we found in the press or official releases, what it actually measures, and the closest equivalent computed from our filings data. <b>Match</b> = same concept and within ~15%. <b>Definition differs</b> = a different measure (gross-block additions, group totals incl. unlisted arms, spectrum/intangibles) — the gap is explained, not hidden. <b>Not comparable</b> = a different concept altogether (project announcements, survey intentions, GDP accounts).</div>`;
+  return {title:c.outlet+' · '+c.date, html:h};
 }
 
 /* ---------- notes ---------- */
 function renderNotes(){
   const lm=lastM();
   $('notesBody').innerHTML=`
-  <p><b>Government capex.</b> Annual figures are the Union Budget's "Budget at a Glance" (capital expenditure = "On Capital Account"; effective capex adds grants-in-aid to states for creating capital assets, published since Budget 2022-23). Each year's Actuals appear only in the budget two years later, so the series chains ${G.length} documents (the source document is in every hover). The latest closed year uses the CGA's provisional accounts until the audited Actuals are published. ${G.filter(r=>r.gdp_budget).length?'Capex/GDP uses MoSPI nominal GDP where the Macro page carries it, else the GDP the budget itself assumed.':''}</p>
+  <p><b>Government capex.</b> Annual figures are the Union Budget's "Budget at a Glance" (capital expenditure = "On Capital Account"; effective capex adds grants-in-aid to states for creating capital assets, published since Budget 2022-23). Each year's Actuals appear only in the budget two years later, so the series chains ${G.length} documents (the source document is shown with every year). The latest closed year uses the CGA's provisional accounts until the audited Actuals are published. ${G.filter(r=>r.gdp_budget).length?'Capex/GDP uses MoSPI nominal GDP where the Macro page carries it, else the GDP the budget itself assumed.':''}</p>
   <p><b>Monthly tracker.</b> The Controller General of Accounts' "Union Government Accounts at a Glance" — unaudited provisional cash figures, cumulative from April, published about a month after each month closes (latest: ${MON[monthIdx(lm.ym)]} ${lm.ym.slice(0,4)}). Percent-of-target follows the CGA's own convention: against the Budget Estimate until the Revised Estimate is published with the next budget (usually February), then against the RE. The CGA's own printed percentage is not used — every ratio here is recomputed from the amounts.</p>
   <p><b>India Inc capex.</b> Our XBRL store of results filings (the same data behind the stock pages' cash-flow tab). Capex = "purchase of property, plant &amp; equipment" as tagged in the year-end cash-flow statement, consolidated where the company files one, otherwise standalone. It excludes intangibles (spectrum, software, brands), acquisitions and capital advances, so it runs below "capex" numbers that add those in; financial-services companies are excluded. Companies with December/June/September year-ends are placed in the financial year their year-end falls in. Year-on-year growth is computed only on companies reporting on the same basis in both years, because a company that switches from consolidated to standalone would otherwise read as a collapse in spending. Our coverage grows over time (${IN(F?F.all.n[0]:0)} filers in FY${F?String(F.fys[0]).slice(-2):''} → ${IN(F?F.all.n[F.fys.length-1]:0)} in FY${F?String(F.fys[F.fys.length-1]).slice(-2):''}), which is why totals and same-company panels are both shown.</p>
   <p><b>Official gauges.</b> MoSPI/NSO's Forward-Looking Survey on Private Sector Capex Investment Intentions (rounds as published; a weighted estimate for the whole private corporate sector, listed and unlisted, so it is not comparable with the listed-company totals above). RBI Bulletin's annual "Private Corporate Investment" article (August issues): projects sanctioned by banks/FIs and the capex those pipelines — together with ECB and IPO-financed projects — are envisaged to put into each year; the RBI revises the prior year in each new article, so vintages are kept. GFCF from MoSPI's GDP press notes (new series, base 2022-23). These readings live in a hand-maintained ledger with the source URL beside each value; the government and filings series refresh automatically.</p>
   <p><b>Sources.</b> indiabudget.gov.in (Budget at a Glance, 2014-15 to date) · cga.nic.in (Monthly Accounts, April 2017 to date) · NSE/BSE XBRL results filings · mospi.gov.in · rbi.org.in · press articles listed in the reality check.</p>`;
 }
 
+/* =====================================================================
+   page plumbing: list → detail → chart
+   ===================================================================== */
+const V = {
+  govt:{list:govList, detail:govDetail, chart:govChart, def:rows=>{ const r=G.slice().reverse().find(x=>actOf(x)!=null); return r?r.fy:rows[0].id; },
+        lede:"Government capex — Centre. What the Union Budget planned, revised and actually spent on capital account, year by year."},
+  pace:{list:paceList, detail:paceDetail, chart:paceChart, def:rows=>rows[rows.length-1].id,
+        lede:"Government capex — Centre, this year. Cumulative spend since April against the year's target, from the CGA's monthly accounts."},
+  pvt:{list:pvtList, detail:pvtDetail, chart:pvtChart, def:rows=>rows[0].id,
+        lede:"India Inc capex — from the companies' own cash-flow statements. Pick the set of companies above the chart."},
+  sec:{list:secList, detail:secDetail, chart:secChart, def:rows=>rows[0].id,
+        lede:"India Inc capex by BSE macro sector, latest filed year against the year before."},
+  top:{list:topList, detail:topDetail, chart:topChart, def:rows=>rows[0].id,
+        lede:"The 25 biggest spenders, and — on the right — who added or cut the most among the 40 biggest."},
+  gauges:{list:gaugeList, detail:gaugeDetail, chart:gaugeChart, def:rows=>'mospi',
+        lede:"Official private-capex gauges (MoSPI survey, RBI project pipeline) and economy-wide investment (Gross Fixed Capital Formation)."},
+  check:{list:checkList, detail:checkDetail, chart:null, def:rows=>rows[0].id,
+        lede:"Reality check — published figures vs this page. Nothing to chart here: pick a published figure to see what it measures and our closest equivalent."}
+};
+function render(see){
+  if(VIEWS.indexOf(view)<0) view='govt';
+  const v=V[view];
+  $('views').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.getAttribute('data-v')===view));
+  $('lede').textContent=v.lede;
+  $('grid').classList.toggle('two', !v.chart);
+  if(!v.chart) $('grid').classList.remove('focus');
+  const Ls=v.list();
+  $('pL').className='os-pane '+(Ls.cls||'');
+  $('lTitle').innerHTML=esc(Ls.title)+' <i>'+Ls.count+'</i>'; $('lNote').textContent=Ls.note||'';
+  $('lHead').innerHTML=Ls.head.map(h=>'<span>'+esc(h)+'</span>').join('');
+  const real=Ls.rows.filter(r=>r.id!=null);
+  VIS=real.map(r=>r.id);
+  if(real.length && VIS.indexOf(SEL[view])<0) SEL[view]=v.def(real);
+  $('lList').innerHTML = real.length ? Ls.rows.map(r=>r.grp?`<div class="lgrp">${esc(r.grp)}</div>`:`<div class="os-row lr${r.id===SEL[view]?' on':''}" role="option" data-i="${esc(r.id)}">${r.html}</div>`).join('') : `<div class="os-empty">${esc(Ls.empty||'Nothing to show.')}</div>`;
+  $('lList').querySelectorAll('.lr').forEach(el=>el.onclick=()=>pick(el.getAttribute('data-i')));
+  K.fitGrid($('grid'));
+  drawPane(); if(see) seeRow(); writeHash();
+}
+function drawPane(){
+  const v=V[view], id=SEL[view];
+  const d = VIS.length ? v.detail(id) : null;
+  $('dTitle').textContent = d ? d.title : '—';
+  $('dBody').innerHTML = d ? d.html : '<div class="os-empty">Pick a row.</div>';
+  if(!v.chart) return;
+  $('cCtl').innerHTML=''; $('cExtra').innerHTML=''; $('cLeg').innerHTML=''; $('c1').innerHTML=''; hideTip();
+  try{ v.chart(id); }catch(e){ console.error('capex chart', e); $('c1').innerHTML='<div class="os-empty">Could not draw this chart.</div>'; }
+}
+function seeRow(){ const box=$('lList'), on=box.querySelector('.lr.on'); if(!on) return;
+  if(on.offsetTop<box.scrollTop || on.offsetTop+on.offsetHeight>box.scrollTop+box.clientHeight) box.scrollTop=Math.max(0,on.offsetTop-box.clientHeight/2); }
+function pick(id, see){
+  if(id==null||VIS.indexOf(String(id))<0) return;
+  SEL[view]=String(id);
+  $('lList').querySelectorAll('.lr').forEach(el=>el.classList.toggle('on', el.getAttribute('data-i')===String(id)));
+  if(see!==false) seeRow();
+  drawPane(); writeHash();
+}
+function toggleFocus(){ if(!V[view].chart) return; const g=$('grid'); g.classList.toggle('focus'); $('cFocus').classList.toggle('on', g.classList.contains('focus')); K.fitGrid(g); }
+function onKey(e){
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  const t=e.target, tag=t&&t.tagName; if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){ if(!VIS.length) return; e.preventDefault();
+    const i=VIS.indexOf(SEL[view]), j=Math.max(0, Math.min(VIS.length-1, i+(e.key==='ArrowDown'?1:-1))); pick(VIS[j]); }
+  else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ const box=$('cCtl').querySelector('.os-sg'); if(!box||!V[view].chart) return; e.preventDefault();
+    const o=box._opts, i=o.indexOf(box._cur()), j=(i+(e.key==='ArrowRight'?1:-1)+o.length)%o.length; box._pick(o[j]); }
+  else if(e.key==='f'||e.key==='F'){ e.preventDefault(); toggleFocus(); }
+  else if(e.key==='Escape'){ if($('grid').classList.contains('focus')) toggleFocus(); }
+}
+
+/* ---------- address: #v=view&k=row plus the chart switches; the old #govt #pvt #gauges #gfcf #check #notes still land ---------- */
+let lastHash='';
+const OLD_ANCHOR={govt:['govt'], pvt:['pvt'], gauges:['gauges','mospi'], gfcf:['gauges','gfcfG'], check:['check'], notes:['govt',null,true]};
+function readHash(){
+  const raw=location.hash.replace(/^#/,''); if(!raw) return;
+  if(OLD_ANCHOR[raw]){ const a=OLD_ANCHOR[raw]; view=a[0]; if(a[1]) SEL[view]=a[1]; if(a[2]){ const h=$('how'); h.open=true; setTimeout(()=>h.scrollIntoView(),50); } return; }
+  let h; try{ h=new URLSearchParams(raw); }catch(e){ return; }
+  const v=h.get('v'); if(v&&VIEWS.indexOf(v)>=0) view=v;
+  const k=h.get('k'); if(k!=null) SEL[view]=k;
+  const pickOf=(val,opts,cur)=>opts.indexOf(val)>=0?val:cur;
+  gMode=pickOf(h.get('g'),['capex','yoy','eff','share','gdp'],gMode);
+  mMode=pickOf(h.get('m'),['pct','yoy','cum','mon'],mMode);
+  pMode=pickOf(h.get('p'),['all','n500','fixed_all','fixed_n500'],pMode);
+  pView=pickOf(h.get('pv'),['level','growth'],pView);
+  sView=pickOf(h.get('s'),['amount','growth'],sView);
+  topMode=pickOf(h.get('t'),['all','n500'],topMode);
+}
+function writeHash(){
+  const h=new URLSearchParams(); h.set('v',view); if(SEL[view]!=null && VIS.length) h.set('k',SEL[view]);
+  if(view==='govt'&&gMode!=='capex') h.set('g',gMode);
+  if(view==='pace'&&mMode!=='pct') h.set('m',mMode);
+  if(view==='pvt'){ if(pMode!=='all') h.set('p',pMode); if(pView!=='level') h.set('pv',pView); }
+  if(view==='sec'&&sView!=='amount') h.set('s',sView);
+  if(view==='top'&&topMode!=='all') h.set('t',topMode);
+  lastHash=h.toString();
+  try{ history.replaceState(null,'',location.pathname+location.search+'#'+lastHash); }catch(e){}
+}
+
 // charts read theme tokens at draw time — redraw when the theme pill flips data-theme
-new MutationObserver(()=>{ if(!D) return; try{ drawGovAnnual(); drawGovMonthly(); if(F){ drawPvtAnnual(); drawSectors(); } renderMospi(); renderRbi(); renderGfcf(); }catch(e){ console.error('capex redraw', e); } })
+new MutationObserver(()=>{ if(!D) return; try{ drawPane(); }catch(e){ console.error('capex redraw', e); } })
   .observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
 load();
 </script>
