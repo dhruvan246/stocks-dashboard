@@ -4,6 +4,10 @@
 Produces scripts/fno_list.json with shape:
   { "asOf": "YYYY-MM-DD", "stocks": ["RELIANCE", "TCS", ...] }
 
+SUPERSEDED 2026-11-26: no workflow ran this, so fno_list.json sat at 2026-05-17. scripts/build_fno_up3.py now
+writes fno_list.json every trading day from NSE's F&O bhavcopy (sync_lists). Do not run this by hand: fo_mktlots.csv
+also lists the index NIFTYFPI, which the filter below does not know.
+
 NOTE: This is TODAY's list. Historical F&O membership (which stocks were in F&O
 on a past date) is not yet tracked — see fetch_fno_history.py for that.
 The dashboard falls back to today's list when no historical snapshot exists.

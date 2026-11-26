@@ -58,13 +58,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # The count file and its roster are one read: they land together or not at all (ci_land default group).
           BASE=$(git rev-parse HEAD)
-          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/fno_up3.json docs/fno_contracts.json scripts/fno_daily_roster.json
+          python3 -X utf8 scripts/ci_land.py snapshot "$BASE" /tmp/land docs/fno_up3.json docs/fno_contracts.json scripts/fno_daily_roster.json scripts/fno_list.json scripts/fno_history.json
           cp scripts/ci_land.py /tmp/ci_land.py
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
             python3 -X utf8 /tmp/ci_land.py apply "$BASE" /tmp/land
-            git add docs/fno_up3.json docs/fno_contracts.json scripts/fno_daily_roster.json
+            git add docs/fno_up3.json docs/fno_contracts.json scripts/fno_daily_roster.json scripts/fno_list.json scripts/fno_history.json
             if git diff --cached --quiet; then
               echo "F&O up-3% counts unchanged — nothing to commit"
               echo "changed=false" >> "$GITHUB_OUTPUT"

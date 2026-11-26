@@ -119,6 +119,44 @@ class Roster:
             os.replace(ROSTER + ".tmp", ROSTER)
 
 
+def sync_lists(ros):
+    """Keep the two site-wide F&O lists equal to the roster's last day (runbook 235b).
+
+    scripts/fno_list.json     today's list -> `fnoToday` in dash_slim.bin / stock_data.bin (build_compressed.py)
+    scripts/fno_history.json  dated lists  -> `fnoHistory`; a snapshot is appended on the day the list changes
+    Before 2026-11-26 nothing refreshed fno_list.json (it sat at 2026-05-17, 8 names too many and 17 missing against
+    NSE's 25-Nov-2026 file) and fno_history.json only got a snapshot from the Saturday job."""
+    last = ros.R["last"]
+    iso = "%s-%s-%s" % (last[:4], last[4:6], last[6:])
+    mem = sorted(ros.on(last))
+    if len(mem) < 50:
+        print("F&O lists not synced: roster has only %d names on %s" % (len(mem), iso))
+        return
+    lp = os.path.join(HERE, "fno_list.json")
+    try:
+        cur = json.load(open(lp, encoding="utf-8"))
+    except Exception:
+        cur = {}
+    if cur.get("stocks") != mem or cur.get("asOf") != iso:
+        with open(lp + ".tmp", "w", encoding="utf-8") as f:
+            json.dump({"asOf": iso, "stocks": mem}, f, indent=2)
+        os.replace(lp + ".tmp", lp)
+        print("fno_list.json -> %d stocks as of %s" % (len(mem), iso))
+    hp = os.path.join(HERE, "fno_history.json")
+    try:
+        hist = json.load(open(hp, encoding="utf-8"))
+    except Exception as e:
+        print("fno_history.json unreadable (%r) -- not touched" % (e,))
+        return
+    hist.sort(key=lambda x: x["effectiveDate"])
+    if hist and hist[-1]["effectiveDate"] < iso and sorted(hist[-1]["symbols"]) != mem:
+        hist.append({"effectiveDate": iso, "symbols": mem})
+        with open(hp + ".tmp", "w", encoding="utf-8") as f:
+            json.dump(hist, f, separators=(",", ":"))
+        os.replace(hp + ".tmp", hp)
+        print("fno_history.json += %s (%d stocks)" % (iso, len(mem)))
+
+
 def empty():
     return {"dates": [], "nMem": [], "nObs": [], "up": [], "list": [],
             "noPx": {}, "isin": {}}
@@ -183,6 +221,7 @@ def main():
     keep = set(ros.R["base"]) | {s for e in ros.R["ev"].values() for s in e.get("+", [])}
     D["isin"] = {s: v for s, v in sorted(D["isin"].items()) if s in keep}
     ros.save()
+    sync_lists(ros)
     if not added:
         print("no new trading day -- file unchanged")
         return
