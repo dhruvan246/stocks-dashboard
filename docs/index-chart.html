@@ -7,170 +7,129 @@
 <meta name="description" content="Live chart and full history for NIFTY 50, NIFTY 500, NIFTY BANK and INDIA VIX — returns, month-by-month heatmap, rolling CAGR, seasonality and drawdowns." />
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="./os-kit.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --up:#059669; --up-soft:rgba(5,150,105,.10); --down:var(--neg); --down-soft:rgba(220,38,38,.10); }
-  html[data-theme="dark"]{ --up:var(--pos); --up-soft:rgba(52,211,153,.14); --down:var(--neg); --down-soft:rgba(248,113,113,.14); }
   *{box-sizing:border-box;}
   body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;color:var(--text);
        -webkit-font-smoothing:antialiased;overflow-x:hidden;font-feature-settings:"tnum" 1;}
-  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-    background:
-     radial-gradient(60% 55% at 15% 8%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 60%),
-     radial-gradient(55% 50% at 88% 4%,color-mix(in srgb,var(--accent-2) 12%,transparent),transparent 60%);}
   a{text-decoration:none;color:inherit;}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
-
-  /* header (same shell as the home page — theme.js injects Menu + theme pill) */
+  .wrap{margin:0 auto;padding:0 16px;}
   header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--surface) 82%,transparent);
-    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:box-shadow var(--tr);}
-  header.sw-scrolled{box-shadow:var(--shadow);}
-  .hd{display:flex;align-items:center;gap:12px;height:60px;}
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  .hd{display:flex;align-items:center;gap:12px;height:56px;}
   .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px;color:var(--text);}
   .logo .mark{width:30px;height:30px;border-radius:var(--radius);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:800;
-    background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 16px -6px var(--glow);}
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));}
   .logo em{font-style:normal;color:var(--accent);}
   @media (max-width:430px){.hd{gap:8px;}.logo{font-size:0;gap:0;}.logo .mark{font-size:12px;}}
-
-  /* theme.css makes <body> a flex column and .wrap centres with margin:0 auto — auto cross-axis
-     margins cancel the flex stretch, so <main> was sized SHRINK-TO-FIT: the 23-column survivorship
-     table (~2,900px min-content, nowrap) pushed it to its 1120px cap on a 1014px viewport and the
-     page grew sideways (measured 2026-09-21). An explicit width:100% (capped by max-width) pins
-     main to the body so the wide table scrolls INSIDE its card holder instead. */
-  main.wrap{padding-top:18px;padding-bottom:64px;width:100%;min-width:0;}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;}
-  .card h2{font-size:15px;font-weight:800;letter-spacing:-.01em;margin:0 0 2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-  .card h2 .mut{font-size:12px;font-weight:500;color:var(--text-faint);letter-spacing:0;}
-  .card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+  main.wrap{padding-top:12px;padding-bottom:28px;width:100%;min-width:0;}
   .mut{color:var(--text-muted);} .faint{color:var(--text-faint);}
-  .up{color:var(--up);} .down{color:var(--down);}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
-  @media (max-width:860px){.grid2{grid-template-columns:1fr;}}
+  .up{color:var(--pos);} .down{color:var(--neg);}
+  .hidden{display:none !important;}
+  .os-vbar{margin-bottom:10px}
+  .view{display:none} .view.on{display:block}
 
-  /* index switcher */
-  .switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  .swi{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;
-    background:var(--surface);border:1px solid var(--border);color:var(--text-muted);box-shadow:var(--shadow);transition:var(--tr);}
-  .swi:hover{border-color:var(--accent);color:var(--text);}
-  .swi.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
-  .swi .d{font-size:11px;font-weight:700;opacity:.85;}
+  /* view 1: indices → figures → chart */
+  #g1{grid-template-columns:minmax(250px,300px) 350px minmax(0,1fr)}
+  #g1.focus{grid-template-columns:minmax(0,1fr)}
+  #ixHead,.ixr{grid-template-columns:minmax(0,1fr) 78px 52px;gap:6px}
+  #ixList{flex:none;overflow:visible}
+  .ixr .n{display:flex;align-items:center;min-width:0;overflow:visible} .ixr .n u{text-decoration:none;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .ixr .os-tag{margin-left:4px;font-weight:500;letter-spacing:0;flex:none;padding:0 3px}
+  .subh{padding:7px 12px;border-bottom:1px solid var(--border);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);display:flex;gap:8px;align-items:center}
+  .subh i{font-style:normal;letter-spacing:0;text-transform:none;margin-left:auto}
+  #memWrap{flex:1;min-height:0;display:flex;flex-direction:column}
+  #members{flex:1;min-height:0;overflow-y:auto;padding:10px 12px;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;scrollbar-width:thin}
+  .chip{font-size:11.5px;font-weight:500;padding:3px 7px;border-radius:5px;border:1px solid var(--border);color:var(--text-muted);}
+  .chip:hover{border-color:var(--accent);color:var(--text);}
+  .scr{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent}
+  .kv{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:5px 12px;min-height:31px;border-bottom:1px solid var(--border)}
+  .kv .k{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .kv .v{font-weight:600;text-align:right;white-space:nowrap}
+  .kv .v .faint,.kv .v .up,.kv .v .down{font-weight:500}
+  .rangebar{height:4px;border-radius:999px;background:var(--surface-3);position:relative;margin-top:5px;min-width:150px}
+  .rangebar i{position:absolute;top:-3px;width:3px;height:10px;border-radius:2px;background:var(--accent);}
+  .rr{display:grid;grid-template-columns:72px minmax(0,1fr) 78px 64px;gap:6px;align-items:center;padding:0 12px;height:30px;border-bottom:1px solid var(--border)}
+  .rr span:nth-child(n+3){text-align:right;font-weight:600}
+  .rr.h{height:28px;font-size:12px;color:var(--text-faint)} .rr.h span{font-weight:400}
+  .rr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #chart svg{display:block;width:100%;height:100%;touch-action:pan-y;}
+  #cLegend b{font-weight:600}
+  .os-legend i.sw{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+  .os-legend span + span{margin-left:12px}
+  .os-stats em{display:block;font-style:normal;font-size:11px;color:var(--text-faint);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .os-stats b.up{color:var(--pos)} .os-stats b.down{color:var(--neg)}
 
-  /* hero card */
-  .hero-card{display:grid;grid-template-columns:1fr auto;gap:14px;}
-  .hero-card h1{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.02em;margin:0;}
-  .hero-card .sub{font-size:12.5px;color:var(--text-muted);margin-top:4px;}
-  .hero-card .px{font-size:clamp(26px,4vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.1;text-align:right;}
-  .chgpill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:var(--radius-sm);margin-top:6px;}
-  .chgpill.up{background:var(--up-soft);} .chgpill.down{background:var(--down-soft);}
-  .asof{font-size:11px;color:var(--text-faint);margin-top:6px;text-align:right;}
-  .badge{font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-3);color:var(--text-muted);}
-  .badge.live{color:var(--up);background:var(--up-soft);}
-  .facts{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;
-    border-top:1px solid var(--border);padding-top:12px;margin-top:2px;}
-  .fact .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
-  .fact .v{font-size:14px;font-weight:700;margin-top:3px;}
-  .rangebar{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--down-soft),var(--surface-3),var(--up-soft));position:relative;margin-top:7px;}
-  .rangebar i{position:absolute;top:-3px;width:3px;height:11px;border-radius:2px;background:var(--accent);}
-  @media (max-width:560px){.hero-card{grid-template-columns:1fr;}.hero-card .px,.asof{text-align:left;}}
-
-  /* controls */
-  .ctrls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .rngs,.tgls{display:flex;gap:4px;flex-wrap:wrap;}
-  .rng,.tgl{cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:var(--radius-sm);
-    border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);transition:var(--tr);}
-  .rng:hover,.tgl:hover{border-color:var(--accent);color:var(--text);}
-  .rng.on{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent;}
-  .tgl.on{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent);}
-
-  /* chart */
-  #chartWrap{position:relative;}
-  #chart svg{display:block;width:100%;height:auto;touch-action:pan-y;}
-  #tip{position:absolute;pointer-events:none;display:none;background:var(--surface);border:1px solid var(--border-strong);
-    border-radius:var(--radius);padding:7px 10px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:5;}
-  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text-muted);margin-top:8px;}
-  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px;}
-
-  /* stat tiles */
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:12px;margin-bottom:14px;}
-  .tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:13px 14px;}
-  .tile .k{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);}
-  .tile .v{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-top:4px;}
-  .tile .s{font-size:11px;color:var(--text-faint);margin-top:3px;}
-
-  /* tables */
+  /* view 2: month-by-month + history tabs */
+  #g2{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+  /* view 3: every member, ever */
+  #g3{grid-template-columns:minmax(0,1fr)}
   table{border-collapse:collapse;width:100%;font-size:12.5px;}
   th,td{padding:6px 9px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--border);}
   th:first-child,td:first-child{text-align:left;}
-  thead th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);
-    background:var(--surface-2);border-bottom:1px solid var(--border-strong);}
+  thead th{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-faint);
+    background:var(--surface-2);border-bottom:1px solid var(--border-strong);position:sticky;top:0;z-index:2;}
   tbody tr:hover{background:var(--surface-2);}
-  tbody tr:last-child td{border-bottom:0;}
   td.num{font-variant-numeric:tabular-nums;font-weight:600;}
-  #monthly{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
-  .heat td.h{font-weight:700;color:var(--text);}
-  .heat td:first-child{font-weight:800;}
-
-  /* mini bar charts */
-  .bcw{position:relative;margin-top:6px;}
+  .heat td.h{font-weight:600;color:var(--text);padding:5px 6px}
+  .heat td:first-child,.heat th:first-child{font-weight:700;position:sticky;left:0;background:var(--surface);z-index:1}
+  .heat thead th:first-child{background:var(--surface-2);z-index:3}
+  .tabp{display:none} .tabp.on{display:block}
+  .bcw{position:relative;padding:8px 12px 0;}
   .bcw svg{display:block;width:100%;height:auto;}
-  .bcb{transition:opacity var(--tr);cursor:default;}
-  .bcb:hover{opacity:1 !important;}
-  .bctip{position:absolute;top:0;display:none;pointer-events:none;background:var(--surface);border:1px solid var(--border-strong);
-    border-radius:var(--radius);padding:6px 9px;font-size:11.5px;line-height:1.45;box-shadow:var(--shadow-lg);white-space:nowrap;z-index:6;}
+  .bcb{cursor:default;} .bcb:hover{opacity:1 !important;}
+  .bcread{font-size:12px;color:var(--text-muted);min-height:18px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .note{font-size:11.5px;color:var(--text-faint);padding:9px 12px;line-height:1.5;}
+  .ptitle{padding:12px 12px 4px;font-size:13px;font-weight:600}
+  .lnk{color:var(--accent-text);font-weight:600;} .lnk:hover{text-decoration:underline;}
 
-  .chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .chip{font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:var(--radius);background:var(--surface-2);
-    border:1px solid var(--border);color:var(--text-muted);transition:var(--tr);}
-  .chip:hover{border-color:var(--accent);color:var(--text);}
-  .lnk{color:var(--accent);font-weight:700;font-size:12.5px;}
-  .lnk:hover{text-decoration:underline;}
-  .note{font-size:11px;color:var(--text-faint);margin-top:8px;line-height:1.5;}
-  .skel{background:var(--surface-3);border-radius:6px;color:transparent;animation:sk 1.2s ease-in-out infinite;}
-  @keyframes sk{50%{opacity:.5;}}
-  /* every member, ever — survivorship table */
-  .sinp{font-family:inherit;font-size:12px;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);
-    background:var(--surface-2);color:var(--text);min-width:220px;transition:var(--tr);}
-  .sinp:focus{outline:none;border-color:var(--accent);}
-  .shown{font-size:11px;margin:-4px 0 8px;}
-  #survTable table{font-size:12px;}
-  #survTable th.s{cursor:pointer;user-select:none;}
-  #survTable th.s:hover{color:var(--text);}
-  #survTable th.s.on{color:var(--accent);}
-  #survTable th .arr{font-size:9px;opacity:.65;margin-left:2px;}
-  #survTable td.symc{font-weight:700;}
-  #survTable td .nm{display:block;max-width:190px;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
-  .rwrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .sinp[type=date]{min-width:0;padding:5px 10px;}
-  .rw{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:700;padding:6px 12px;border-radius:var(--radius-sm);
-    border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-soft);color:var(--accent);
-    transition:var(--tr);white-space:nowrap;}
-  .rw:hover{background:var(--accent);color:#fff;}
-  .rw svg{width:12px;height:12px;}
-  .st{font-size:10px;font-weight:800;letter-spacing:.04em;padding:2px 7px;border-radius:var(--radius-sm);background:var(--surface-3);color:var(--text-muted);}
-  .st.in{background:var(--up-soft);color:var(--up);} .st.dead{background:var(--down-soft);color:var(--down);}
-  @media (max-width:560px){.sinp{min-width:0;width:100%;}.sinp[type=date]{width:auto;flex:1 1 150px;}}
-  /* the theme's .sw-scrollx holder is styled for PHONES ONLY (theme.css ≤640px). This table is
-     23 columns (~2,800px) at every width, so its holder gets the same sideways scroll + pinned
-     Stock column on desktop too — otherwise the table spills out of the card and widens the page. */
-  html[data-theme] #survTable .sw-scrollx{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;
-    scrollbar-width:thin;max-width:100%;max-height:72vh;border:1px solid var(--border);border-radius:var(--radius);}
-  html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar{height:7px;}
-  html[data-theme] #survTable .sw-scrollx::-webkit-scrollbar-thumb{border-width:2px;}
+  /* every member, ever — 23 columns: the holder scrolls both ways inside the pane, header row and Stock column pinned */
+  #survBar{flex-wrap:wrap}
+  html[data-theme] #survBar input[type="search"]{width:230px;max-width:100%}
+  #survShown{padding:6px 12px;font-size:11.5px;color:var(--text-faint);border-bottom:1px solid var(--border)}
+  #survTable{flex:1;min-height:0;display:flex;flex-direction:column}
+  html[data-theme] #survTable .sw-scrollx{flex:1;min-height:0;overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;max-width:100%;}
   html[data-theme] #survTable .sw-scrollx table{width:auto !important;min-width:100%;font-size:11.5px;}
   html[data-theme] #survTable .sw-scrollx table th,html[data-theme] #survTable .sw-scrollx table td{white-space:nowrap;padding:5px 8px;}
-  /* header row stays put while the 100+ rows scroll inside the holder */
   html[data-theme] #survTable .sw-scrollx table thead th{position:sticky;top:0;z-index:3;}
   html[data-theme] #survTable .sw-scrollx table thead th:first-child{z-index:4;}
-  /* text columns read left-to-right; long names clip with an ellipsis (full text on hover) */
+  #survTable th.s{cursor:pointer;user-select:none;}
+  #survTable th.s:hover{color:var(--text);}
+  #survTable th.s.on{color:var(--accent-text);}
+  #survTable th .arr{font-size:9px;opacity:.65;margin-left:2px;}
+  #survTable td.symc{font-weight:700;}
   #survTable td.txt,#survTable th.txt{text-align:left;}
   #survTable td .el{display:block;max-width:150px;overflow:hidden;text-overflow:ellipsis;}
-  #survTable td .nm{max-width:170px;}
+  #survTable td .nm{display:block;max-width:170px;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
   html[data-theme] #survTable .sw-scrollx table thead th:first-child,
   html[data-theme] #survTable .sw-scrollx table tbody td:first-child{position:sticky;left:0;z-index:2;box-shadow:1px 0 0 var(--border);}
   html[data-theme] #survTable .sw-scrollx table thead th:first-child{background:var(--sw-pin-head,var(--surface-2));}
   html[data-theme] #survTable .sw-scrollx table tbody td:first-child{background:var(--sw-pin-body,var(--surface));}
   html[data-theme] #survTable .sw-scrollx table tbody tr:hover td:first-child{background:var(--surface-2);}
-  .hidden{display:none !important;}
+  .st{font-size:10px;font-weight:700;letter-spacing:.04em;padding:2px 7px;border-radius:4px;background:var(--surface-3);color:var(--text-muted);}
+  .st.in{background:var(--pos-soft);color:var(--pos);} .st.dead{background:var(--neg-soft);color:var(--neg);}
+  details.how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  details.how summary{cursor:pointer;color:var(--text-muted)}
+  details.how .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  /* mid-width desktops: three panes do not fit without clipping figures, so list left, chart over figures right; the page scrolls */
+  @media (min-width:900px) and (max-width:1339px){
+    #g1{grid-template-columns:minmax(230px,280px) minmax(0,1fr);height:auto!important;align-items:start}
+    #g1.focus{grid-template-columns:minmax(0,1fr)}
+    #pL{grid-column:1;grid-row:1 / span 2} #pC{grid-column:2;grid-row:1} #pF{grid-column:2;grid-row:2}
+    #g1.focus #pC{grid-column:1}
+    #members{max-height:300px}
+    #g1 #chartWrap{flex:none;height:340px}
+  }
+  @media (max-width:899px){
+    #g1,#g1.focus,#g2,#g3{grid-template-columns:minmax(0,1fr)}
+    #pC{order:2} #pF{order:3}
+    #members{max-height:170px}
+    .scr{max-height:72vh}
+    #g1 .os-main .os-chartwrap{height:340px}
+    html[data-theme] #survTable .sw-scrollx{max-height:72vh}
+    .os-vtabs{order:3;width:100%}
+  }
 </style>
 </head>
 <body>
@@ -182,126 +141,103 @@
   </div>
 </header>
 
-<main class="wrap">
-
-  <!-- sibling indices -->
-  <div class="switch" id="switch"></div>
-
-  <!-- price header -->
-  <section class="card hero-card" data-jump="Overview">
-    <div>
-      <h1 id="ixName" class="skel">NIFTY 50</h1>
-      <div class="sub" id="ixSub">&nbsp;</div>
+<main class="wrap os-wide" id="pageMain">
+  <div class="os-vbar">
+    <h1>Index</h1>
+    <div class="os-vtabs" id="vtabs" role="tablist">
+      <button type="button" data-v="chart" class="on" title="Chart, returns and technicals (1)">Chart</button>
+      <button type="button" data-v="history" title="Month by month, seasonality, rolling returns, biggest falls (2)">History</button>
+      <button type="button" data-v="members" title="Every stock that was ever in this index (3)">Members</button>
     </div>
-    <div>
-      <div class="px" id="ixPx">—</div>
-      <div style="text-align:right"><span class="chgpill" id="ixChg">&nbsp;</span></div>
-      <div class="asof" id="ixAsof">&nbsp;</div>
-    </div>
-    <div class="facts" id="facts"></div>
-  </section>
-
-  <!-- chart -->
-  <section class="card" data-jump="Chart">
-    <div class="card-h">
-      <h2>Chart <span class="mut" id="rngNote"></span></h2>
-      <div class="ctrls">
-        <div class="rngs" id="rngs"></div>
-        <div class="tgls" id="tgls"></div>
-      </div>
-    </div>
-    <div id="chartWrap"><div id="chart"></div><div id="tip"></div></div>
-    <div class="legend" id="chartLegend"></div>
-  </section>
-
-  <!-- headline stats -->
-  <section class="tiles" id="statTiles"></section>
-
-  <div class="grid2" data-jump="Returns">
-    <!-- returns -->
-    <section class="card">
-      <h2>Returns <span class="mut">— absolute &amp; annualised</span></h2>
-      <div id="returns" class="faint" style="font-size:12px">Loading…</div>
-      <div class="note" id="retNote"></div>
-    </section>
-    <!-- technicals -->
-    <section class="card">
-      <h2>Technicals <span class="mut">— at last close</span></h2>
-      <div id="tech" class="faint" style="font-size:12px">Loading…</div>
-    </section>
+    <div class="os-asof" id="ixAsof">&nbsp;</div>
   </div>
 
-  <!-- month-by-month -->
-  <section class="card" data-jump="Monthly">
-    <h2>Month-by-month <span class="mut" id="mhNote"></span></h2>
-    <div id="monthly" class="faint" style="font-size:12px">Loading…</div>
-  </section>
-
-  <!-- seasonality -->
-  <section class="card" data-jump="Seasonality">
-    <h2>Seasonality <span class="mut" id="seasNote"></span></h2>
-    <div id="season" class="faint" style="font-size:12px">Loading…</div>
-  </section>
-
-  <!-- rolling returns -->
-  <section class="card" id="rollCard" data-jump="Rolling returns">
-    <h2>Rolling returns <span class="mut">— every possible holding period, annualised (CAGR)</span></h2>
-    <div id="rolling" class="faint" style="font-size:12px">Loading…</div>
-    <div class="note">Every start month in the history is tested. “% positive” is the share of those windows that ended in profit — the practical answer to “what if I had bought at the worst possible time?”</div>
-  </section>
-
-  <!-- calendar years -->
-  <section class="card" data-jump="Calendar years">
-    <h2>Calendar-year returns</h2>
-    <div id="yearly" class="faint" style="font-size:12px">Loading…</div>
-  </section>
-
-  <!-- drawdowns -->
-  <section class="card" id="ddCard" data-jump="Drawdowns">
-    <h2>Biggest falls <span class="mut">— peak-to-trough drawdowns &amp; recovery</span></h2>
-    <div id="dd" class="faint" style="font-size:12px">Loading…</div>
-  </section>
-
-  <!-- VIX-only extras -->
-  <section class="card hidden" id="vixCard" data-jump="Volatility">
-    <h2>Where volatility sits today</h2>
-    <div id="vixBody"></div>
-  </section>
-
-  <!-- constituents -->
-  <section class="card hidden" id="memCard" data-jump="Constituents">
-    <h2>Constituents <span class="mut" id="memNote"></span></h2>
-    <div id="members" class="chips"></div>
-    <div class="note"><button class="tgl" id="memMore" type="button">Show all</button></div>
-  </section>
-
-  <!-- related -->
-  <!-- every member, ever — survivorship table (lazy; hidden until ./survivorship/<ix>.json lands) -->
-  <section class="card hidden" id="survCard" data-jump="All members">
-    <div class="card-h">
-      <h2>Every member, ever <span class="mut" id="survNote"></span></h2>
-      <div class="ctrls">
-        <div class="rwrow">
-          <input id="survDate" type="date" class="sinp" title="Rewind: show the roster in force on this date" />
-          <button class="rw" id="survGo" type="button" title="Show only the stocks that were in the index on the chosen date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> Rewind</button>
-          <button class="tgl hidden" id="survExit" type="button">Exit rewind</button>
+  <!-- ============ view 1 ============ -->
+  <div class="view on" id="vChart">
+    <div class="os-grid" id="g1">
+      <section class="os-pane" id="pL" aria-label="Indices">
+        <div class="os-ph"><span class="ttl">Indices</span><span class="r"><a class="os-btn" href="./markets.html?v=indices" title="All indices, live">All indices →</a></span></div>
+        <div class="os-ch" id="ixHead"><span>Index</span><span>Level</span><span>1 day</span></div>
+        <div class="os-list" id="ixList" role="listbox" aria-label="Indices"></div>
+        <div class="os-note" id="ixSub" style="border-bottom:1px solid var(--border)">&nbsp;</div>
+        <div id="memWrap" class="hidden">
+          <div class="subh"><span>Constituents</span><i id="memNote"></i></div>
+          <div id="members"></div>
         </div>
-        <div class="tgls" id="survFilters"></div>
-        <input id="survQ" type="search" class="sinp" placeholder="Search stock, sector, industry…" autocomplete="off" />
-      </div>
+      </section>
+
+      <section class="os-pane" id="pF" aria-label="Figures">
+        <div class="os-ph"><span class="ttl">Figures</span>
+          <span class="r"><span class="os-sg" id="figTabs" role="group" aria-label="Figures">
+            <button type="button" data-f="sum" class="on">Summary</button><button type="button" data-f="ret">Returns</button></span></span></div>
+        <div class="scr" id="figSum">
+          <div id="facts"><div class="os-empty">Loading…</div></div>
+          <div class="subh"><span>Technicals</span><i>at last close</i></div>
+          <div id="tech"></div>
+        </div>
+        <div class="scr hidden" id="figRet">
+          <div id="returns"></div>
+          <div class="os-note" id="retNote"></div>
+        </div>
+      </section>
+
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="sym" id="ixName">NIFTY 50</span><span class="os-tag" id="ixBadge" style="margin-left:0">AT CLOSE</span>
+          <span class="px" id="ixPx">—</span><span id="ixChg"></span>
+          <span class="r"><button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div class="os-ps"><div class="os-sg" id="rngs" role="group" aria-label="Range"></div><span id="tgls" style="display:inline-flex;gap:6px;flex-wrap:wrap"></span></div>
+        <div class="os-chartwrap" id="chartWrap"><div class="os-legend" id="cLegend"><div id="rngNote"></div><div id="chartLegend"></div></div><div class="os-chart" id="chart"></div></div>
+        <div class="os-stats" id="statTiles"></div>
+      </section>
     </div>
-    <div class="shown faint" id="survShown"></div>
-    <div id="survTable" class="faint" style="font-size:12px">Loading…</div>
-    <div class="note"><button class="tgl hidden" id="survMore" type="button">Show all</button></div>
-    <div class="note" id="survFoot"></div>
-  </section>
+  </div>
 
-  <section class="card">
-    <h2>Go deeper</h2>
-    <div class="chips" id="links" style="margin-top:6px"></div>
-    <div class="note" id="srcNote"></div>
-  </section>
+  <!-- ============ view 2 ============ -->
+  <div class="view" id="vHistory">
+    <div class="os-grid" id="g2">
+      <section class="os-pane" aria-label="Month by month">
+        <div class="os-ph"><span class="ttl">Month by month <i id="mhNote"></i></span></div>
+        <div class="scr" id="monthly"><div class="os-empty">Loading…</div></div>
+      </section>
+      <section class="os-pane" aria-label="History">
+        <div class="os-ph" style="flex-wrap:wrap;row-gap:6px"><span class="os-sg" id="hTabs" role="group" aria-label="History view" style="flex:none"></span><span class="os-hint" id="seasNote"></span></div>
+        <div class="scr">
+          <div class="tabp" id="tp-season"><div id="season"></div></div>
+          <div class="tabp" id="tp-years"><div id="yearly"></div></div>
+          <div class="tabp" id="tp-roll"><div id="rolling"></div>
+            <div class="note">Every possible holding period, annualised (CAGR). Every start month in the history is tested. “% positive” is the share of those windows that ended in profit — the practical answer to “what if I had bought at the worst possible time?”</div></div>
+          <div class="tabp" id="tp-dd"><div id="dd"></div></div>
+          <div class="tabp" id="tp-regime"><div id="vixReg"></div></div>
+          <div class="tabp" id="tp-spikes"><div id="vixSpk"></div></div>
+        </div>
+      </section>
+    </div>
+  </div>
 
+  <!-- ============ view 3 ============ -->
+  <div class="view" id="vMembers">
+    <div class="os-grid" id="g3">
+      <section class="os-pane" aria-label="Every member, ever">
+        <div class="os-ph"><span class="ttl">Every member, ever <i id="survNote"></i></span></div>
+        <div class="os-ps" id="survBar">
+          <span class="os-sg" id="rewSg" title="Rewind: show the roster in force on this date"><span class="lbl">Rewind</span><input id="survDate" type="date" aria-label="Roster date" />
+            <button type="button" id="survGo" title="Show only the stocks that were in the index on the chosen date">Go</button><button type="button" id="survExit" class="hidden" title="Back to every member, ever">Exit</button></span>
+          <div class="os-sg" id="survFilters" role="group" aria-label="Status"></div>
+          <input id="survQ" type="search" placeholder="Search stock, sector, industry…" autocomplete="off" aria-label="Search members" />
+          <button class="os-btn hidden" id="survMore" type="button">Show all</button>
+        </div>
+        <div id="survShown"></div>
+        <div id="survTable"><div class="os-empty" id="survEmpty">Loading…</div></div>
+      </section>
+    </div>
+  </div>
+
+  <details class="how">
+    <summary>Sources, how the numbers are made, and related pages</summary>
+    <div class="chips" id="links"></div>
+    <p id="srcNote"></p>
+    <p id="survFoot"></p>
+  </details>
 </main>
 
 <script>
@@ -309,13 +245,14 @@
 'use strict';
 
 /* ===========================================================================
- * INDEX DETAIL PAGE  —  ./index-chart.html?ix=nifty
+ * INDEX DETAIL PAGE  —  ./index-chart.html?ix=nifty      (one-screen layout, 2026-11-26)
  *
- * Payload discipline (CLAUDE.md / "slim by default"): the chart paints from ONE
- * per-index daily-close JSON (~75 KB, 2012→date). Everything else is lazy and
- * additive — index_monthly.json (month-end closes back to 1995) for the history
- * tables, indices.json for valuation + members, and the live quote for the
- * intraday line. Nothing here loads a price bin.
+ * Three views: Chart (indices → figures → chart), History (month by month + seasonality / calendar years /
+ * rolling returns / biggest falls), Members (every member, ever). Every number is computed by the same
+ * functions as the page it replaces — only the panes around them are new.
+ * Payload: one per-index daily-close JSON paints the screen; index_monthly.json, indices.json, the
+ * survivorship file and the live quote are lazy and additive; the other six indices' daily files are
+ * fetched after first paint only to fill the Level / 1 day columns of the list (plus one live quote each for the Yahoo-backed ones). Nothing loads a price bin.
  * ======================================================================== */
 
 var REG = {
@@ -352,6 +289,7 @@ var ALIAS = { nifty50:'nifty', 'nifty 50':'nifty', n50:'nifty', nsei:'nifty',
               niftymicrocap250:'microcap', 'nifty microcap 250':'microcap', microcap250:'microcap', nifty_microcap250:'microcap' };
 var ORDER = ['nifty','nifty500','banknifty','vix','smeipo','smeemerge','microcap'];
 
+var K = window.OSKit;
 var $ = function (id) { return document.getElementById(id); };
 var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); };
 var fmt = function (n, d) { return n == null || !isFinite(n) ? '—' : n.toLocaleString('en-IN', { minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d }); };
@@ -363,15 +301,19 @@ var cls = function (v) { return v == null || !isFinite(v) ? '' : v >= 0 ? 'up' :
 var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 /* ---- state ------------------------------------------------------------- */
-var KEY = null, CFG = null;
+var KEY = null, CFG = null, SEQ = 0;
 var D = [], P = [];                 // daily: iso dates + closes (ascending)
 var MC = [];                        // monthly: [{ym:'1995-11', t:<sort>, c:close}] ascending
 var MSRC = '';                      // where the monthly series came from
 var LIVE = null;                    // {price, prev, series:[[ms,px]], dayHi, dayLo, at}
 var VAL = null;                     // valuation row out of indices.json
-var RANGE = '1Y', LOG = false, DDMODE = false, CMP = false, LASTW = 0;
+var RANGE = '1Y', LOG = false, DDMODE = false, CMP = false, LASTW = 0, LASTH = 0;
 var CMPD = null;                    // Nifty 50 daily closes for the compare overlay
 var CHART = null;
+var VIEW = 'chart', FIG = 'sum', HT = 'season', FOCUS = false;
+var DATA = {}, QUOTE = {}, LIVEQ = {};   // per-index daily series (promise) · last / previous close for the list · last live quote per index
+function DCUR() { return D; } function PCUR() { return P; }
+var MONTHLY = null, INDICES = null; // shared files, fetched once
 
 /* ---- date helpers ------------------------------------------------------ */
 function iso(d) { return d.toISOString().slice(0, 10); }
@@ -518,7 +460,7 @@ var PROXIES = [
   function (s) { return { url: 'https://api.allorigins.win/get?url=' + encodeURIComponent(yurl(s)), wrap: true }; }
 ];
 function yurl(s) { return 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(s) + '?interval=1m&range=1d'; }
-function fetchLive(sym) {
+function fetchLive(sym, ser) {
   var i = 0;
   function next() {
     if (i >= PROXIES.length) return Promise.reject('all proxies failed');
@@ -535,7 +477,7 @@ function fetchLive(sym) {
         var price = m.regularMarketPrice, prev = m.chartPreviousClose != null ? m.chartPreviousClose : m.previousClose;
         if (price == null || prev == null) throw 0;
         var at = m.regularMarketTime ? m.regularMarketTime * 1000 : Date.now();
-        return { price: price, prev: storePrev(at, prev), series: series, dayHi: m.regularMarketDayHigh, dayLo: m.regularMarketDayLow,
+        return { price: price, prev: storePrev(at, prev, ser), series: series, dayHi: m.regularMarketDayHigh, dayLo: m.regularMarketDayLow,
                  at: at };
       })
       .catch(function () { return next(); });
@@ -546,7 +488,8 @@ function fetchLive(sym) {
 // every Indian index quoted Friday as "previous close"; VIX read +10.3% vs NSE's -2.32%). The
 // committed daily closes (D/P) had Monday right, so the previous close is the latest committed
 // close dated before the live bar's IST day, if within 6 days; otherwise Yahoo's.
-function storePrev(atMs, yprev) {
+function storePrev(atMs, yprev, ser) {
+  var D = ser ? ser.D : DCUR(), P = ser ? ser.P : PCUR();
   if (!D.length) return yprev;
   var day = new Date(atMs + 5.5 * 3600000).toISOString().slice(0, 10);
   for (var i = D.length - 1; i >= 0; i--) {
@@ -565,31 +508,58 @@ function istTime(ms) {
 }
 
 /* =========================================================================
- * HEADER
+ * LIST + HEADER
  * ====================================================================== */
-function renderSwitch() {
-  $('switch').innerHTML = ORDER.map(function (k) {
-    var c = REG[k];
-    return '<a class="swi' + (k === KEY ? ' on' : '') + '" href="./index-chart.html?ix=' + k + '">' + esc(c.name) + '</a>';
-  }).join('') + '<a class="swi" href="./markets.html?v=indices">📇 All 131 indices</a>';
+function loadIx(k) {
+  if (DATA[k]) return DATA[k];
+  var p = fetch('./' + REG[k].src, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    var px = j.px || {}, d = Object.keys(px).sort(), v = d.map(function (x) { return px[x]; });
+    if (d.length > 1) QUOTE[k] = { last: v[v.length - 1], prev: v[v.length - 2], d: d[d.length - 1] };
+    return { D: d, P: v };
+  });
+  DATA[k] = p; p.catch(function () { delete DATA[k]; });
+  return p;
+}
+function renderList() {
+  // end-of-day-only indices sit under their own sub-header carrying the day of their close; if their files end on
+  // different days each row carries its own day instead
+  var eod = ORDER.filter(function (k) { return !REG[k].ysym; }), eds = {}, same = null;
+  eod.forEach(function (k) { if (QUOTE[k]) eds[QUOTE[k].d] = 1; });
+  if (Object.keys(eds).length === 1) same = Object.keys(eds)[0];
+  $('ixList').innerHTML = ORDER.map(function (k) {
+    var head = k === eod[0] ? '<div class="subh"><span>End of day only</span><i>' + (same ? 'close of ' + prettyDate(same) : 'no live feed') + '</i></div>' : '';
+    var c = REG[k], q = QUOTE[k], lq = k === KEY ? LIVE : LIVEQ[k], price = null, base = null, tag = '';
+    // a row with no live quote shows its latest CLOSE, and says which day that is — never yesterday's move under a bare "1 day"
+    if (q) { price = q.last; base = q.prev; tag = '<i class="os-tag" title="Close of ' + prettyDate(q.d) + (c.ysym ? ' — live quote not loaded' : ' — end-of-day index, no live feed') + '">' + prettyDate(q.d).replace(/ \d{4}$/, '') + '</i>'; }
+    if (lq) { price = lq.price; base = lq.prev; tag = ''; }
+    if (!c.ysym && same) tag = '';
+    var cp = price != null && base ? (price / base - 1) * 100 : null;
+    return head + '<div class="os-row ixr' + (k === KEY ? ' on' : '') + '" data-k="' + k + '" role="option" aria-selected="' + (k === KEY) + '">' +
+      '<span class="n" title="' + esc(c.name) + '"><u>' + esc(c.name) + '</u>' + tag + '</span><span class="v">' + (price == null ? '—' : fmt(price)) + '</span>' +
+      '<span class="' + cls(cp) + '">' + (cp == null ? '—' : pct(cp)) + '</span></div>';
+  }).join('');
 }
 function renderHeader() {
   var last = P.length ? P[P.length - 1] : null, prev = P.length > 1 ? P[P.length - 2] : null;
   var price = LIVE ? LIVE.price : last, base = LIVE ? LIVE.prev : prev;
   var live = !!(LIVE && marketOpen());
-  $('ixName').classList.remove('skel');
-  $('ixName').innerHTML = esc(CFG.name) + ' <span class="badge' + (live ? ' live' : '') + '">' + (live ? '● LIVE' : 'AT CLOSE') + '</span>';
+  $('ixName').textContent = CFG.name;
+  $('ixBadge').textContent = live ? '● LIVE' : 'AT CLOSE';
+  $('ixBadge').style.color = live ? 'var(--pos)' : '';
   $('ixSub').textContent = CFG.sub;
   $('ixPx').textContent = fmt(price);
+  var e = $('ixChg');
   if (price != null && base) {
     var ch = price - base, cp = ch / base * 100;
-    var e = $('ixChg');
-    e.className = 'chgpill ' + cls(cp);
+    e.className = 'os-chg ' + cls(cp);
     e.innerHTML = (cp >= 0 ? '▲' : '▼') + ' ' + fmt(Math.abs(ch)) + ' (' + pct(cp) + ')';
-  }
-  $('ixAsof').textContent = LIVE ? ('as of ' + istTime(LIVE.at) + ' IST' + (live ? '' : ' · last traded') + ' · ~15 min delayed')
-                                 : (D.length ? 'close of ' + prettyDate(D[D.length - 1]) : '');
+  } else { e.className = ''; e.innerHTML = ''; }
+  $('ixAsof').className = 'os-asof' + (live ? ' live' : '');
+  $('ixAsof').innerHTML = '<span class="os-dot' + (live ? ' on' : '') + '"></span>' +
+    (LIVE ? ('as of ' + istTime(LIVE.at) + ' IST' + (live ? '' : ' · last traded') + ' · ~15 min delayed')
+          : (D.length ? 'close of ' + prettyDate(D[D.length - 1]) : ''));
   renderFacts(price, base);
+  renderList();
 }
 function renderFacts(price, base) {
   var hl = hi52(), f = [];
@@ -613,9 +583,10 @@ function renderFacts(price, base) {
     if (pr != null) f.push(['Percentile since 2012', pr.toFixed(0) + 'th']);
   }
   $('facts').innerHTML = f.map(function (x) {
-    return '<div class="fact"><div class="k">' + x[0] + '</div><div class="v">' + x[1] + '</div></div>';
+    return '<div class="kv"><span class="k">' + x[0] + '</span><span class="v">' + x[1] + '</span></div>';
   }).join('');
 }
+
 function hi52() {
   if (!D.length) return null;
   var from = shiftISO(D[D.length - 1], 1, 'y'), hi = -Infinity, lo = Infinity, hid = '', lod = '';
@@ -641,16 +612,17 @@ function pctileOf(v) {
  * CHART
  * ====================================================================== */
 var RANGES = [['1D', 0], ['1W', 7], ['1M', 31], ['6M', 183], ['YTD', -1], ['1Y', 366], ['3Y', 1096], ['5Y', 1827], ['10Y', 3653], ['MAX', 1e9]];
+
 function renderControls() {
   $('rngs').innerHTML = RANGES.map(function (r) {
-    return '<button class="rng' + (r[0] === RANGE ? ' on' : '') + '" data-r="' + r[0] + '" type="button">' + r[0] + '</button>';
+    return '<button class="' + (r[0] === RANGE ? 'on' : '') + '" data-r="' + r[0] + '" type="button">' + r[0] + '</button>';
   }).join('');
-  $('rngs').querySelectorAll('.rng').forEach(function (b) {
+  $('rngs').querySelectorAll('button').forEach(function (b) {
     b.onclick = function () { RANGE = b.dataset.r; renderControls(); drawChart(); };
   });
-  var t = '<button class="tgl' + (LOG ? ' on' : '') + '" id="tLog" type="button">Log scale</button>' +
-          '<button class="tgl' + (DDMODE ? ' on' : '') + '" id="tDD" type="button">Drawdown</button>';
-  if (KEY !== 'nifty') t += '<button class="tgl' + (CMP ? ' on' : '') + '" id="tCmp" type="button">vs NIFTY 50</button>';
+  var t = '<button class="os-btn' + (LOG ? ' on' : '') + '" id="tLog" type="button" title="Logarithmic scale">Log</button>' +
+          '<button class="os-btn' + (DDMODE ? ' on' : '') + '" id="tDD" type="button" title="% below the running peak of this window">Drawdown</button>';
+  if (KEY !== 'nifty') t += '<button class="os-btn' + (CMP ? ' on' : '') + '" id="tCmp" type="button" title="Both lines start at 0% on the first day of the window">vs NIFTY 50</button>';
   $('tgls').innerHTML = t;
   $('tLog').onclick = function () { LOG = !LOG; if (LOG) DDMODE = false; renderControls(); drawChart(); };
   $('tDD').onclick = function () { DDMODE = !DDMODE; if (DDMODE) { LOG = false; CMP = false; } renderControls(); drawChart(); };
@@ -658,15 +630,15 @@ function renderControls() {
     CMP = !CMP; if (CMP) { DDMODE = false; LOG = false; }
     renderControls();
     if (CMP && !CMPD) {
-      fetch('./nifty.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-        var px = j.px || {}, ds = Object.keys(px).sort();
-        CMPD = { d: ds, p: ds.map(function (x) { return px[x]; }) };
+      loadIx('nifty').then(function (d) {
+        CMPD = { d: d.D, p: d.P };
         drawChart();
       }).catch(function () { CMP = false; renderControls(); drawChart(); });
     }
     drawChart();
   };
 }
+
 // points for the active range: [[x(ms), y], …]
 function rangePoints() {
   if (RANGE === '1D') {
@@ -701,7 +673,7 @@ function downsample(pts, max) {
 }
 function drawChart() {
   var rp = rangePoints(), pts = downsample(rp.pts, 520);
-  if (pts.length < 2) { $('chart').innerHTML = '<div class="faint" style="padding:40px 0;text-align:center">No history for this range.</div>'; return; }
+  if (pts.length < 2) { $('chart').innerHTML = '<div class="os-empty">No history for this range.</div>'; $('rngNote').innerHTML = ''; $('chartLegend').innerHTML = ''; return; }
   var x0 = pts[0][0], x1 = pts[pts.length - 1][0];
   var cmp = cmpPoints(x0, x1), cmpNorm = null;
   var base = pts[0][1];
@@ -733,12 +705,13 @@ function drawChart() {
   // Draw in the container's OWN pixels (viewBox width = CSS width) so labels render
   // 1:1 at every screen size — a fixed 960-wide viewBox squeezes a phone chart to
   // ~107px tall with 3px text.
-  var CW = Math.max(300, Math.round($('chartWrap').clientWidth || 960));
-  var W = CW, H = CW < 560 ? 300 : 340, PL = CW < 560 ? 46 : 58, PR = 14, PT = 12, PB = 26;
+  var CW = Math.max(300, Math.round($('chartWrap').clientWidth || 960)), CH = Math.round($('chartWrap').clientHeight || 0);
+  LASTW = $('chartWrap').clientWidth; LASTH = $('chartWrap').clientHeight;
+  var W = CW, H = Math.max(240, CH || (CW < 560 ? 300 : 340)), PL = CW < 560 ? 46 : 58, PR = 14, PT = 46, PB = 26;
   var X = function (t) { return PL + (t - x0) / ((x1 - x0) || 1) * (W - PL - PR); };
   var Y = function (v) { return PT + (1 - (transform(v) - yMin) / ((yMax - yMin) || 1)) * (H - PT - PB); };
   var up = DDMODE ? false : ys[ys.length - 1] >= ys[0];
-  var stroke = up ? 'var(--up)' : 'var(--down)';
+  var stroke = up ? 'var(--pos)' : 'var(--neg)';
   var fill = up ? 'rgba(5,150,105,.13)' : 'rgba(220,38,38,.13)';
 
   var line = '', area = '';
@@ -773,11 +746,11 @@ function drawChart() {
     ? '<line x1="' + PL + '" y1="' + Y(0).toFixed(1) + '" x2="' + (W - PR) + '" y2="' + Y(0).toFixed(1) + '" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="4 4" opacity=".7"/>' : '';
 
   $('chart').innerHTML =
-    '<svg id="svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="none">' +
+    '<svg id="svg" viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="100%" preserveAspectRatio="none">' +
       grid + '<path d="' + area + '" fill="' + fill + '" stroke="none"/>' +
       '<path d="' + line + '" fill="none" stroke="' + stroke + '" stroke-width="2" stroke-linejoin="round"/>' + cmpPath + zero +
       '<line id="cross" x1="0" y1="' + PT + '" x2="0" y2="' + (H - PB) + '" stroke="var(--text-faint)" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>' +
-      '<circle id="dot" r="3.6" fill="' + (up ? 'var(--up)' : 'var(--down)') + '" style="display:none"/>' + xl +
+      '<circle id="dot" r="3.6" fill="' + (up ? 'var(--pos)' : 'var(--neg)') + '" style="display:none"/>' + xl +
     '</svg>';
 
   CHART = { pts: pts, ys: ys, X: X, Y: Y, W: W, intraday: rp.intraday, cmp: cmpNorm, base: base };
@@ -787,24 +760,26 @@ function drawChart() {
   var chg = (rp.pts[rp.pts.length - 1][1] / rp.pts[0][1] - 1) * 100;
   var lo = Infinity, hiv = -Infinity;
   rp.pts.forEach(function (p) { if (p[1] < lo) lo = p[1]; if (p[1] > hiv) hiv = p[1]; });
-  $('rngNote').innerHTML = '— ' + RANGE + ': ' +
+  $('rngNote').innerHTML = '<b>' + RANGE + '</b> ' +
     (DDMODE ? '<b class="down">' + ys[ys.length - 1].toFixed(2) + '%</b> below this window’s peak · '
             : '<b class="' + cls(chg) + '">' + pct(chg) + '</b> · ') +
     'high ' + lvl(hiv) + ' · low ' + lvl(lo) +
     (rp.note ? ' <span class="faint">(' + rp.note + ')</span>' : '');
-  var leg = '<span><i style="background:' + (up ? 'var(--up)' : 'var(--down)') + '"></i>' + esc(CFG.name) + (DDMODE ? ' drawdown from peak' : '') + '</span>';
+  var leg = '<span><i class="sw" style="background:' + (up ? 'var(--pos)' : 'var(--neg)') + '"></i>' + esc(CFG.name) + (DDMODE ? ' drawdown from peak' : '') + '</span>';
   if (cmpNorm) {
     var mine = (pts[pts.length - 1][1] / pts[0][1] - 1) * 100, theirs = (cmp[cmp.length - 1][1] / cmp[0][1] - 1) * 100;
-    leg += '<span><i style="background:var(--accent)"></i>NIFTY 50</span>' +
+    leg += '<span><i class="sw" style="background:var(--accent)"></i>NIFTY 50</span>' +
            '<span class="' + cls(mine - theirs) + '">Relative: <b>' + pct(mine - theirs) + '</b> over this window</span>';
   }
   if (LOG) leg += '<span class="faint">Log scale — equal vertical distance = equal % move</span>';
   $('chartLegend').innerHTML = leg;
 }
 
+/* hover / tap readout: the second line of the legend (no floating box) */
 function wireHover() {
   var svg = $('svg'); if (!svg || !CHART) return;
   var pts = CHART.pts, ys = CHART.ys, X = CHART.X, Y = CHART.Y, W = CHART.W;
+  var rest = $('chartLegend').innerHTML;
   function move(clientX) {
     var r = svg.getBoundingClientRect(), px = (clientX - r.left) / r.width * W;
     var best = 0, bd = 1e18;
@@ -814,36 +789,34 @@ function wireHover() {
     cr.setAttribute('x1', cx); cr.setAttribute('x2', cx); cr.style.display = '';
     dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.style.display = '';
     var when = CHART.intraday ? istTime(p[0]) + ' IST' : prettyDate(iso(new Date(p[0])));
-    var body = '<b>' + when + '</b><br>' + fmt(p[1]);
-    if (DDMODE) body += '<br><span class="down">' + ys[best].toFixed(2) + '% below peak</span>';
+    var body = '<b>' + when + '</b> &nbsp;' + fmt(p[1]);
+    if (DDMODE) body += ' &nbsp;<span class="down">' + ys[best].toFixed(2) + '% below peak</span>';
     else {
       var ch = (p[1] / CHART.base - 1) * 100;
       body += ' <span class="' + cls(ch) + '">(' + pct(ch) + ' in range)</span>';
       if (CHART.cmp) {
         var c = CHART.cmp, k = 0, bd2 = 1e18;
         for (var q = 0; q < c.length; q++) { var d2 = Math.abs(c[q][0] - p[0]); if (d2 < bd2) { bd2 = d2; k = q; } }
-        body += '<br><span class="faint">NIFTY 50: ' + pct(c[k][1]) + '</span>';
+        body += ' &nbsp;<span class="faint">NIFTY 50: ' + pct(c[k][1]) + '</span>';
       }
     }
-    var tip = $('tip'), wrapW = $('chartWrap').clientWidth, tx = cx / W * wrapW;
-    tip.style.display = 'block'; tip.innerHTML = body;
-    tip.style.left = Math.min(Math.max(tx + 12, 4), Math.max(4, wrapW - tip.offsetWidth - 6)) + 'px';
-    tip.style.top = '8px';
+    $('chartLegend').innerHTML = body;
   }
   svg.addEventListener('pointermove', function (e) { move(e.clientX); });
   svg.addEventListener('pointerdown', function (e) { move(e.clientX); });
   svg.addEventListener('pointerleave', function () {
-    $('cross').style.display = 'none'; $('dot').style.display = 'none'; $('tip').style.display = 'none';
+    $('cross').style.display = 'none'; $('dot').style.display = 'none'; $('chartLegend').innerHTML = rest;
   });
 }
 
 /* =========================================================================
- * STAT TILES + TECHNICALS
+ * STAT STRIP + TECHNICALS
  * ====================================================================== */
 function tile(k, v, s, c) {
-  return '<div class="tile"><div class="k">' + k + '</div><div class="v ' + (c || '') + '">' + v + '</div>' +
-         (s ? '<div class="s">' + s + '</div>' : '') + '</div>';
+  return '<div><span>' + k + '</span><b class="' + (c || '') + '">' + v + '</b>' +
+         (s ? '<em title="' + esc(s) + '">' + s + '</em>' : '') + '</div>';
 }
+
 function renderTiles() {
   var last = P[P.length - 1], hl = hi52(), ath = allTimeHigh(), t = [];
   var ytd = retBetween(D[D.length - 1].slice(0, 4) + '-01-01');
@@ -888,9 +861,9 @@ function renderTech() {
   var ath = allTimeHigh();
   if (ath) rows.push(['Days since that peak', Math.round(daysBetween(ath.d, D[D.length - 1])).toLocaleString('en-IN') +
     ' <span class="faint">(' + prettyDate(ath.d) + ')</span>']);
-  $('tech').innerHTML = '<table><tbody>' + rows.map(function (r) {
-    return '<tr><td>' + r[0] + '</td><td class="num">' + r[1] + '</td></tr>';
-  }).join('') + '</tbody></table>';
+  $('tech').innerHTML = rows.map(function (r) {
+    return '<div class="kv"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>';
+  }).join('');
 }
 
 /* =========================================================================
@@ -927,12 +900,12 @@ function renderReturns() {
   add('Since ' + start.slice(0, 4), start);
   var unit = CFG.kind === 'vix' ? 'change in the index level' : 'price return (dividends not included)';
   $('returns').innerHTML =
-    '<table><thead><tr><th>Period</th><th>From</th><th>Return</th><th>Annualised</th></tr></thead><tbody>' +
+    '<div class="rr h"><span>Period</span><span>From</span><span>Return</span><span>Annualised</span></div>' +
     rows.map(function (r) {
-      return '<tr><td>' + r[0] + '</td><td class="faint">' + baseLabel(r[3]) + '</td>' +
-        '<td class="num ' + cls(r[1]) + '">' + pct(r[1]) + '</td>' +
-        '<td class="num ' + cls(r[2]) + '">' + (r[2] == null ? '—' : pct(r[2])) + '</td></tr>';
-    }).join('') + '</tbody></table>';
+      return '<div class="rr"><span>' + r[0] + '</span><span class="faint">' + baseLabel(r[3]) + '</span>' +
+        '<span class="' + cls(r[1]) + '">' + pct(r[1]) + '</span>' +
+        '<span class="' + cls(r[2]) + '">' + (r[2] == null ? '—' : pct(r[2])) + '</span></div>';
+    }).join('');
   var since = retBetween(start);
   $('retNote').innerHTML = CFG.kind === 'vix'
     ? 'VIX is a volatility level, not an investable price — treat these as changes in the fear gauge, not returns. ' + unit + '.'
@@ -957,7 +930,7 @@ function renderMonthly() {
   var vix = CFG.kind === 'vix';
   var rows = vix ? monthLevelMatrix() : monthMatrix();
   var years = Object.keys(rows).map(Number).sort(function (a, b) { return b - a; });
-  if (!years.length) { $('monthly').textContent = 'No monthly history.'; return; }
+  if (!years.length) { $('monthly').innerHTML = '<div class="os-empty">No monthly history.</div>'; return; }
   var lo = 1e9, hi = -1e9;
   if (vix) years.forEach(function (y) { rows[y].m.forEach(function (v) { if (v != null) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }); });
   var head = '<tr><th>Year</th>' + MON.map(function (m) { return '<th>' + m + '</th>'; }).join('') +
@@ -973,8 +946,8 @@ function renderMonthly() {
   }).join('');
   $('monthly').innerHTML = '<table class="heat">' + '<thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
   $('mhNote').textContent = vix
-    ? '— average VIX level in each month (green = calm, red = fearful)'
-    : '— % change in each calendar month' + (MSRC ? ' · ' + MSRC : '');
+    ? 'average VIX level in each month (green = calm, red = fearful)'
+    : '% change in each calendar month' + (MSRC ? ' · ' + MSRC : '');
 }
 function renderSeasonality() {
   if (CFG.kind === 'vix') {
@@ -985,7 +958,7 @@ function renderSeasonality() {
     $('season').innerHTML = barChart('season', vals, MON, function (v, m) {
       return '<b>' + MON[m] + '</b><br>average VIX ' + v.toFixed(1) + '<br><span class="faint">' + cnt[m] + ' years</span>';
     }, mx, false) + '<div class="note">Average level of the fear gauge in each calendar month since 2012.</div>';
-    $('seasNote').textContent = '— when the market gets nervous';
+    $('seasNote').textContent = 'when the market gets nervous';
     return;
   }
   var mm = monthMatrix(), years = Object.keys(mm), sum = new Array(12).fill(0), n = new Array(12).fill(0), pos = new Array(12).fill(0), all = [[], [], [], [], [], [], [], [], [], [], [], []];
@@ -1000,21 +973,32 @@ function renderSeasonality() {
     if (best < 0 || v > avgs[best]) best = m;
     if (worst < 0 || v < avgs[worst]) worst = m;
   });
-  if (best < 0) { $('season').textContent = 'Not enough monthly history yet.'; return; }
+  if (best < 0) { $('season').innerHTML = '<div class="os-empty">Not enough monthly history yet.</div>'; return; }
   $('season').innerHTML = barChart('season', avgs, MON, function (v, m) {
     return '<b>' + MON[m] + '</b><br>average ' + pct(v) + '<br>median ' + pct(median(all[m])) +
            '<br><span class="faint">' + pos[m] + ' of ' + n[m] + ' years positive</span>';
-  }, mag, true) +
+  }, mag, true) + seasTable(avgs, all, pos, n) +
     '<div class="note">Strongest month on average: <b>' + MON[best] + '</b> (' + pct(avgs[best]) + ') · weakest: <b>' + MON[worst] +
     '</b> (' + pct(avgs[worst]) + '). Averages over ' + years.length + ' years — a tendency, never a promise.</div>';
-  $('seasNote').textContent = '— average return by calendar month';
+  $('seasNote').textContent = 'average return by calendar month';
 }
-// generic mini bar chart (SVG) with its own hover tooltip. `hostId` supplies the
-// pixel width so, like the price chart, it draws 1:1 instead of being scaled down.
+
+// 12-row table under the seasonality bars: the figures the old hover box showed, always on screen
+function seasTable(avgs, all, pos, n) {
+  return '<table><thead><tr><th>Month</th><th>Average</th><th>Median</th><th>Years positive</th></tr></thead><tbody>' +
+    avgs.map(function (v, m) {
+      if (v == null) return '';
+      var md = median(all[m]);
+      return '<tr><td>' + MON[m] + '</td><td class="num ' + cls(v) + '">' + pct(v) + '</td><td class="num ' + cls(md) + '">' + pct(md) +
+             '</td><td class="num">' + pos[m] + ' of ' + n[m] + '</td></tr>';
+    }).join('') + '</tbody></table>';
+}
+// generic mini bar chart (SVG). `hostId` supplies the pixel width so it draws 1:1 instead of being
+// scaled down. Hovering or tapping a bar writes its figures to the line above the bars.
 var BARN = 0;
 function barChart(hostId, vals, labels, tipFn, scale, signed) {
   var id = 'bc' + (++BARN);
-  var W = Math.max(300, Math.round(($(hostId) && $(hostId).clientWidth) || 960));
+  var W = Math.max(300, Math.round(((($(hostId) && $(hostId).clientWidth) || 960)) - 24));
   var H = signed ? 170 : 140, PT = 8, PB = 18;
   var n = vals.length, mx = scale || 1, slot = W / n, bw = Math.max(3, Math.min(slot * 0.68, 46));
   var zeroY = signed ? PT + (H - PT - PB) / 2 : H - PB;
@@ -1027,38 +1011,36 @@ function barChart(hostId, vals, labels, tipFn, scale, signed) {
     if (v == null || !isFinite(v)) return;
     var h = Math.max(1.5, Math.min(Math.abs(v) / mx, 1) * span);
     var y = (!signed || v >= 0) ? zeroY - h : zeroY;
-    var col = signed ? (v >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--accent)';
+    var col = signed ? (v >= 0 ? 'var(--pos)' : 'var(--neg)') : 'var(--accent)';
     bars += '<rect class="bcb" data-i="' + i + '" x="' + (cx - bw / 2).toFixed(1) + '" y="' + y.toFixed(1) +
             '" width="' + bw.toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="' + col + '" opacity=".85"/>';
   });
   var zero = signed ? '<line x1="0" y1="' + zeroY + '" x2="' + W + '" y2="' + zeroY + '" stroke="var(--border-strong)" stroke-width="1"/>' : '';
-  var html = '<div id="' + id + '" class="bcw">' +
-      '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="none">' + zero + bars + lbls + '</svg>' +
-      '<div id="' + id + 't" class="bctip"></div></div>';
+  var hint = 'Point at a bar (or tap it) for its figures';
+  var html = '<div id="' + id + '" class="bcw"><div id="' + id + 't" class="bcread">' + hint + '</div>' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" preserveAspectRatio="none">' + zero + bars + lbls + '</svg></div>';
   setTimeout(function () {
     var root = $(id); if (!root) return;
     var tip = $(id + 't');
     root.querySelectorAll('.bcb').forEach(function (b) {
       var show = function () {
         var i = +b.getAttribute('data-i');
-        tip.style.display = 'block'; tip.innerHTML = tipFn(vals[i], i);
-        var rr = root.getBoundingClientRect(), br = b.getBoundingClientRect();
-        tip.style.left = Math.min(Math.max(br.left - rr.left - 24, 0), Math.max(0, rr.width - tip.offsetWidth - 2)) + 'px';
+        tip.innerHTML = tipFn(vals[i], i).replace(/<br>/g, ' · ');
       };
       b.addEventListener('pointerenter', show);
       b.addEventListener('pointerdown', show);
-      b.addEventListener('pointerleave', function () { tip.style.display = 'none'; });
     });
   }, 0);
   return html;
 }
+
 function renderYearly() {
   var vix = CFG.kind === 'vix';
   var rows = vix ? monthLevelMatrix() : monthMatrix();
   var years = Object.keys(rows).map(Number).sort(function (a, b) { return a - b; });
   var vals = [], labs = [];
   years.forEach(function (y) { if (rows[y].y == null) return; vals.push(rows[y].y); labs.push(String(y).slice(2)); });
-  if (!vals.length) { $('yearly').textContent = 'No yearly history.'; return; }
+  if (!vals.length) { $('yearly').innerHTML = '<div class="os-empty">No yearly history.</div>'; return; }
   var mag = Math.max.apply(null, vals.map(Math.abs));
   var posN = vals.filter(function (v) { return v > 0; }).length;
   $('yearly').innerHTML = barChart('yearly', vals, labs, function (v, i) {
@@ -1074,8 +1056,8 @@ function renderYearly() {
  * ROLLING RETURNS (CAGR table)
  * ====================================================================== */
 function renderRolling() {
-  if (CFG.kind === 'vix') { $('rollCard').classList.add('hidden'); return; }
-  if (MC.length < 24) { $('rolling').textContent = 'Not enough history yet.'; return; }
+  if (CFG.kind === 'vix') { $('rolling').innerHTML = ''; return; }
+  if (MC.length < 24) { $('rolling').innerHTML = '<div class="os-empty">Not enough history yet.</div>'; return; }
   var wins = [1, 3, 5, 7, 10, 15];
   var rows = wins.map(function (w) {
     var k = w * 12, out = [];
@@ -1126,9 +1108,9 @@ function drawdowns() {
 function renderDrawdowns() {
   // a mean-reverting volatility index has no meaningful "drawdown" — its regime
   // table and spike list (below) say the same thing honestly
-  if (CFG.kind === 'vix') { $('ddCard').classList.add('hidden'); return; }
+  if (CFG.kind === 'vix') { $('dd').innerHTML = ''; return; }
   var eps = drawdowns();
-  if (!eps.length) { $('dd').textContent = 'No drawdowns in this history.'; return; }
+  if (!eps.length) { $('dd').innerHTML = '<div class="os-empty">No drawdowns in this history.</div>'; return; }
   $('dd').innerHTML =
     '<table><thead><tr><th>Peak</th><th>Level</th><th>Trough</th><th>Level</th><th>Fall</th><th>Fall took</th><th>Recovered</th><th>Recovery</th></tr></thead><tbody>' +
     eps.map(function (e) {
@@ -1143,11 +1125,10 @@ function renderDrawdowns() {
 }
 
 /* =========================================================================
- * VIX EXTRAS
+ * VIX EXTRAS  (History view: "Regimes" and "Spikes" tabs)
  * ====================================================================== */
 function renderVix() {
-  if (CFG.kind !== 'vix') return;
-  $('vixCard').classList.remove('hidden');
+  if (CFG.kind !== 'vix') { $('vixReg').innerHTML = ''; $('vixSpk').innerHTML = ''; return; }
   var last = LIVE ? LIVE.price : P[P.length - 1];
   var bands = [[0, 12, 'Calm', 'Complacent market — small daily moves expected'],
                [12, 16, 'Normal', 'Business as usual'],
@@ -1163,28 +1144,30 @@ function renderVix() {
       '<td class="faint">' + b[0] + (b[1] > 100 ? '+' : '–' + b[1]) + '</td>' +
       '<td class="num">' + (counts[i] / tot * 100).toFixed(1) + '%</td>' +
       '<td class="num">' + (y1c[i] / y1.length * 100).toFixed(1) + '%</td>' +
-      '<td class="faint" style="white-space:normal">' + b[3] + '</td></tr>';
+      '<td class="faint" style="white-space:normal;text-align:left">' + b[3] + '</td></tr>';
   }).join('');
   // biggest single-day spikes
   var spikes = [];
   for (var i = 1; i < P.length; i++) spikes.push({ d: D[i], v: (P[i] / P[i - 1] - 1) * 100, lvl: P[i] });
   spikes.sort(function (a, b) { return b.v - a.v; });
-  $('vixBody').innerHTML =
-    '<table><thead><tr><th>Regime</th><th>VIX</th><th>Days since 2012</th><th>Last year</th><th>What it means</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<h2 style="margin-top:16px">Biggest one-day spikes</h2>' +
+  $('vixReg').innerHTML =
+    '<div class="ptitle">Where volatility sits today</div>' +
+    '<table><thead><tr><th>Regime</th><th>VIX</th><th>Days since 2012</th><th>Last year</th><th style="text-align:left">What it means</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  $('vixSpk').innerHTML =
+    '<div class="ptitle">Biggest one-day spikes</div>' +
     '<table><thead><tr><th>Date</th><th>Jump</th><th>Closed at</th><th>Nifty that day</th></tr></thead><tbody>' +
     spikes.slice(0, 6).map(function (s) {
       return '<tr><td>' + prettyDate(s.d) + '</td><td class="num up">' + pct(s.v) + '</td><td class="num">' + fmt(s.lvl) + '</td>' +
              '<td class="num faint" data-nd="' + s.d + '">—</td></tr>';
     }).join('') + '</tbody></table>' +
     '<div class="note">A VIX spike is the market paying up for protection — historically it peaks near the bottom of a fall, not the top.</div>';
-  // fill the Nifty column (cheap: the file is already cached by the compare toggle path)
-  fetch('./nifty.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
-    var px = j.px || {}, ds = Object.keys(px).sort();
+  // fill the Nifty column from the Nifty 50 daily file (shared with the list and the compare toggle)
+  loadIx('nifty').then(function (nd) {
+    var ds = nd.D, px = nd.P;
     document.querySelectorAll('[data-nd]').forEach(function (td) {
       var d = td.getAttribute('data-nd'), k = ds.indexOf(d);
       if (k > 0) {
-        var ch = (px[ds[k]] / px[ds[k - 1]] - 1) * 100;
+        var ch = (px[k] / px[k - 1] - 1) * 100;
         td.className = 'num ' + cls(ch); td.textContent = pct(ch);
       }
     });
@@ -1194,22 +1177,16 @@ function renderVix() {
 /* =========================================================================
  * CONSTITUENTS + LINKS
  * ====================================================================== */
-var MEM_OPEN = false;
 function renderMembers() {
-  if (!VAL || !VAL.members || !VAL.members.length) return;
-  $('memCard').classList.remove('hidden');
-  $('memNote').textContent = '— ' + VAL.members.length + ' stocks · tap one for its page';
-  var draw = function () {
-    var list = MEM_OPEN ? VAL.members : VAL.members.slice(0, 60);
-    $('members').innerHTML = list.map(function (s) {
-      return '<a class="chip" href="./stock.html?sym=' + encodeURIComponent(s) + '">' + esc(s) + '</a>';
-    }).join('');
-    $('memMore').textContent = MEM_OPEN ? 'Show fewer' : 'Show all ' + VAL.members.length;
-    $('memMore').classList.toggle('hidden', VAL.members.length <= 60);
-  };
-  $('memMore').onclick = function () { MEM_OPEN = !MEM_OPEN; draw(); };
-  draw();
+  var has = !!(VAL && VAL.members && VAL.members.length);
+  $('memWrap').classList.toggle('hidden', !has);
+  if (!has) { $('members').innerHTML = ''; return; }
+  $('memNote').textContent = VAL.members.length + ' stocks · tap one for its page';
+  $('members').innerHTML = VAL.members.map(function (s) {
+    return '<a class="chip" href="./stock.html?sym=' + encodeURIComponent(s) + '">' + esc(s) + '</a>';
+  }).join('');
 }
+
 function renderLinks() {
   var l = [['./markets.html?v=indices', '📇 All indices, live'],
            ['./monthly-returns.html', '🗓️ Monthly returns — every index'],
@@ -1323,6 +1300,7 @@ function survCell(r, k) {
     default: return v == null ? '—' : esc(v);
   }
 }
+
 function wireSurv() {
   if (SWIRED) return; SWIRED = true;
   var t = null;
@@ -1332,9 +1310,8 @@ function wireSurv() {
   };
   $('survMore').onclick = function () { SV.all = !SV.all; renderSurv(); };
   var d = $('survDate');
-  d.min = SURV.firstSnap; d.max = SURV.dataEnd;
-  if (SV.asof) d.value = SV.asof;
   var go = function () {
+    if (!SURV) return;
     var v = d.value; if (!v) { d.focus(); return; }
     if (v > SURV.dataEnd) { v = SURV.dataEnd; d.value = v; }
     SV.asof = v; SV.all = false; setAsofUrl(v); renderSurv();
@@ -1343,31 +1320,32 @@ function wireSurv() {
   d.onkeydown = function (e) { if (e.key === 'Enter') go(); };
   $('survExit').onclick = function () { SV.asof = null; d.value = ''; setAsofUrl(null); renderSurv(); };
 }
+
 function renderSurv() {
   if (!SURV) return;
   if (!SROWS.length) SROWS = SURV.rows.map(function (a) { var o = {}; SURV.cols.forEach(function (c, i) { o[c] = a[i]; }); return o; });
-  wireSurv();
-  $('survCard').classList.remove('hidden');
+  $('survDate').min = SURV.firstSnap; $('survDate').max = SURV.dataEnd;
+  if (SV.asof && !$('survDate').value) $('survDate').value = SV.asof;
   var base = survBase(), tot = base.length, counts = { all: tot, 'in': 0, out: 0, dead: 0, untraced: 0 };
   base.forEach(function (r) { counts[r.status] = (counts[r.status] || 0) + 1; });
   $('survExit').classList.toggle('hidden', !SV.asof);
   if (SV.asof && SV.asof < SURV.firstSnap) {
-    $('survNote').innerHTML = '— <b class="down">no roster before ' + prettyDate(SURV.firstSnap) + '</b> (the record begins there)';
+    $('survNote').innerHTML = '<b class="down">no roster before ' + prettyDate(SURV.firstSnap) + '</b> (the record begins there)';
   } else if (SV.asof) {
-    $('survNote').innerHTML = '— roster on <b>' + prettyDate(SV.asof) + '</b>: ' + fmt(tot, 0) + ' stocks · <b class="up">' + counts['in'] + '</b> still in today · ' +
+    $('survNote').innerHTML = 'roster on <b>' + prettyDate(SV.asof) + '</b>: ' + fmt(tot, 0) + ' stocks · <b class="up">' + counts['in'] + '</b> still in today · ' +
       counts.out + ' since left &amp; still trade · <b class="down">' + counts.dead + '</b> since delisted or merged' +
       (counts.untraced ? ' · ' + counts.untraced + ' with no price series' : '');
   } else {
-    $('survNote').innerHTML = '— ' + fmt(tot, 0) + ' stocks since ' + prettyDate(SURV.firstSnap) + ' · <b class="up">' + counts['in'] + '</b> in today · ' +
+    $('survNote').innerHTML = fmt(tot, 0) + ' stocks since ' + prettyDate(SURV.firstSnap) + ' · <b class="up">' + counts['in'] + '</b> in today · ' +
       counts.out + ' left &amp; still trade · <b class="down">' + counts.dead + '</b> delisted or merged' +
       (counts.untraced ? ' · ' + counts.untraced + ' with no price series' : '');
   }
   var pills = [['all', 'All'], ['in', 'In index'], ['out', 'Left'], ['dead', 'Delisted'], ['untraced', 'No series']];
   $('survFilters').innerHTML = pills.filter(function (p) { return counts[p[0]]; }).map(function (p) {
-    return '<button class="tgl' + (SV.filter === p[0] ? ' on' : '') + '" data-f="' + p[0] + '" type="button">' + p[1] +
-           ' <span class="faint">' + counts[p[0]] + '</span></button>';
+    return '<button class="' + (SV.filter === p[0] ? 'on' : '') + '" data-f="' + p[0] + '" type="button">' + p[1] +
+           '<i>' + counts[p[0]] + '</i></button>';
   }).join('');
-  $('survFilters').querySelectorAll('.tgl').forEach(function (b) { b.onclick = function () { SV.filter = b.dataset.f; renderSurv(); }; });
+  $('survFilters').querySelectorAll('button').forEach(function (b) { b.onclick = function () { SV.filter = b.dataset.f; renderSurv(); }; });
 
   var rows = survSort(survRows());
   var shown = SV.all ? rows : rows.slice(0, SPAGE);
@@ -1385,7 +1363,6 @@ function renderSurv() {
     (SV.asof && SV.asof < SURV.firstSnap ? 'No roster exists before ' + prettyDate(SURV.firstSnap) + '.' : 'No stock matches.') + '</td></tr>';
   // .sw-scrollx = theme.js's sideways-scroll holder with the Stock column pinned (it re-resolves
   // the pin on every re-render via its MutationObserver; wrapping here keeps the DOM stable)
-  $('survTable').className = '';
   $('survTable').innerHTML = '<div class="sw-scrollx"><table id="survT"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
   $('survTable').querySelectorAll('th.s').forEach(function (th) {
     th.onclick = function () {
@@ -1415,8 +1392,64 @@ function renderSurv() {
 }
 
 /* =========================================================================
- * BOOT
+ * VIEWS, TABS, KEYS
  * ====================================================================== */
+var GRID = { chart: 'g1', history: 'g2', members: 'g3' };
+function fit() { K.fitGrid($(GRID[VIEW])); }
+function setUrl() {
+  try {
+    var u = new URL(location.href);
+    u.searchParams.set('ix', KEY);
+    u.hash = VIEW === 'chart' ? '' : VIEW;
+    history.replaceState(null, '', u);
+  } catch (e) {}
+}
+function setView(v, quiet) {
+  if (v === 'members' && !CFG.surv) v = 'chart';
+  VIEW = v;
+  $('vChart').classList.toggle('on', v === 'chart');
+  $('vHistory').classList.toggle('on', v === 'history');
+  $('vMembers').classList.toggle('on', v === 'members');
+  $('vtabs').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.v === v); });
+  fit();
+  if (!D.length) return;
+  if (v === 'chart') safe(drawChart);
+  if (v === 'history') safe(renderBars);
+  if (!quiet) setUrl();
+}
+function setFig(f) {
+  FIG = f;
+  $('figSum').classList.toggle('hidden', f !== 'sum'); $('figRet').classList.toggle('hidden', f !== 'ret');
+  $('figTabs').querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.dataset.f === f); });
+}
+// the four tabs of the History view's right pane; a volatility index swaps the last two
+function hTabs() {
+  return CFG.kind === 'vix' ? [['season', 'Seasonality'], ['years', 'Calendar years'], ['regime', 'Regimes'], ['spikes', 'Spikes']]
+                            : [['season', 'Seasonality'], ['years', 'Calendar years'], ['roll', 'Rolling returns'], ['dd', 'Biggest falls']];
+}
+function setHT(t) {
+  var tabs = hTabs();
+  if (!tabs.some(function (x) { return x[0] === t; })) t = 'season';
+  HT = t;
+  $('hTabs').innerHTML = tabs.map(function (x) { return '<button type="button" data-t="' + x[0] + '" class="' + (x[0] === t ? 'on' : '') + '">' + x[1] + '</button>'; }).join('');
+  $('hTabs').querySelectorAll('button').forEach(function (b) { b.onclick = function () { setHT(b.dataset.t); }; });
+  document.querySelectorAll('.tabp').forEach(function (p) { p.classList.toggle('on', p.id === 'tp-' + t); });
+  $('seasNote').textContent = '';
+  if (D.length) safe(renderBars);
+}
+// the two bar charts are drawn in real pixels, so they are drawn only while their tab is on screen
+function renderBars() {
+  if (VIEW !== 'history') return;
+  if (HT === 'season') renderSeasonality();
+  else if (HT === 'years') renderYearly();
+}
+function setFocus(on) {
+  FOCUS = on == null ? !FOCUS : on;
+  $('g1').classList.toggle('focus', FOCUS);
+  $('cFocus').textContent = FOCUS ? 'Show lists' : 'Focus';
+  if (D.length) safe(drawChart);
+}
+
 function resolveKey() {
   var q = new URLSearchParams(location.search).get('ix') || 'nifty';
   var k = String(q).toLowerCase().trim();
@@ -1427,89 +1460,173 @@ function resolveKey() {
 // one section failing must never blank the rest of the page
 function safe(fn) { try { fn(); } catch (e) { if (window.console) console.error('[index-chart]', fn.name || 'section', e); } }
 
-// the SVGs are drawn in real pixels, so a width change (rotation, window drag)
+// the SVGs are drawn in real pixels, so a size change (rotation, window drag)
 // needs a redraw rather than a stretch
 var RSZT = null;
 window.addEventListener('resize', function () {
   clearTimeout(RSZT);
   RSZT = setTimeout(function () {
-    var w = $('chartWrap') ? $('chartWrap').clientWidth : 0;
-    if (!D.length || Math.abs(w - LASTW) < 24) return;
-    LASTW = w;
-    [drawChart, renderSeasonality, renderYearly].forEach(safe);
+    fit();
+    var w = $('chartWrap') ? $('chartWrap').clientWidth : 0, h = $('chartWrap') ? $('chartWrap').clientHeight : 0;
+    if (!D.length) return;
+    if (VIEW === 'chart' && (Math.abs(w - LASTW) >= 24 || Math.abs(h - LASTH) >= 24)) safe(drawChart);
+    safe(renderBars);
   }, 180);
 });
 function renderAll() {
-  [renderHeader, renderTiles, renderTech, renderReturns, renderMonthly, renderSeasonality,
-   renderRolling, renderYearly, renderDrawdowns, renderVix, renderLinks].forEach(safe);
+  [renderHeader, renderTiles, renderTech, renderReturns, renderMonthly,
+   renderRolling, renderDrawdowns, renderVix, renderLinks, renderBars].forEach(safe);
 }
-function boot() {
-  KEY = resolveKey(); CFG = REG[KEY];
+function blank() {
+  ['facts', 'tech', 'returns', 'retNote', 'statTiles', 'monthly', 'season', 'yearly', 'rolling', 'dd', 'vixReg', 'vixSpk', 'rngNote', 'chartLegend', 'chart', 'survTable', 'survShown', 'survNote', 'survFoot', 'mhNote']
+    .forEach(function (id) { $(id).innerHTML = ''; });
+  $('ixPx').textContent = '—'; $('ixChg').innerHTML = ''; $('ixChg').className = '';
+  $('memWrap').classList.add('hidden');
+}
+function select(k, first) {
+  if (k === KEY && !first) return;
+  var seq = ++SEQ;
+  KEY = k; CFG = REG[k];
+  D = []; P = []; MC = []; MSRC = ''; LIVE = LIVEQ[k] || null; VAL = null; SURV = null; SROWS = []; CHART = null;
+  if (!first) { SV = { filter: 'all', q: '', sort: 'status', dir: 1, all: false, asof: null }; $('survQ').value = ''; $('survDate').value = ''; }
+  if (KEY === 'nifty') CMP = false;
   document.title = CFG.name + ' chart · STOCKSWORLD';
-  renderSwitch();
-  $('ixName').textContent = CFG.name;
-  $('ixSub').textContent = CFG.sub;
+  blank();
+  $('ixName').textContent = CFG.name; $('ixSub').textContent = CFG.sub;
+  $('vtabs').querySelector('[data-v="members"]').classList.toggle('hidden', !CFG.surv);
+  if (VIEW === 'members' && !CFG.surv) setView('chart', true);
+  if (!first) { try { var u = new URL(location.href); u.searchParams.delete('asof'); history.replaceState(null, '', u); } catch (e) {} setUrl(); }
+  renderList(); renderControls(); setHT(HT);
+  $('chart').innerHTML = '<div class="os-empty">Loading…</div>';
+  var row = $('ixList').querySelector('.on'); if (row && row.scrollIntoView && !first) row.scrollIntoView({ block: 'nearest' });
 
-  fetch('./' + CFG.src, { cache: 'no-store' })
-    .then(function (r) { return r.json(); })
-    .then(function (j) {
-      var px = j.px || {};
-      D = Object.keys(px).sort();
-      P = D.map(function (d) { return px[d]; });
+  loadIx(k)
+    .then(function (d) {
+      if (seq !== SEQ) return;
+      D = d.D; P = d.P;
       if (D.length < 30) throw new Error('thin history');
       MC = monthlyFromDaily(); MSRC = '';
+      fit();
       renderControls();
       drawChart();
-      LASTW = $('chartWrap').clientWidth;
       renderAll();
 
       // ---- lazy, additive: month-end history back to the 1990s
       if (CFG.key) {
-        fetch('./index_monthly.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j2) {
+        (MONTHLY || (MONTHLY = fetch('./index_monthly.json', { cache: 'no-store' }).then(function (r) { return r.json(); }))).then(function (j2) {
+          if (seq !== SEQ) return;
           var rec = (j2.indices || []).filter(function (x) { return x.key === (CFG.mkey || CFG.key); })[0];
           if (!rec) return;
           var m = monthlyFromFile(rec);
           if (m.length > MC.length) { MC = m; MSRC = 'NSE month-end closes from ' + m[0].ym.slice(0, 4); }
-          [renderReturns, renderMonthly, renderSeasonality, renderRolling, renderYearly, renderLinks].forEach(safe);
-        }).catch(function () {});
+          [renderReturns, renderMonthly, renderRolling, renderLinks, renderBars].forEach(safe);
+        }).catch(function () { MONTHLY = null; });
       }
       // ---- lazy, additive: valuation + members
       if (CFG.key) {
-        fetch('./indices.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j3) {
+        (INDICES || (INDICES = fetch('./indices.json', { cache: 'no-store' }).then(function (r) { return r.json(); }))).then(function (j3) {
+          if (seq !== SEQ) return;
           VAL = (j3.indices || []).filter(function (x) { return x.k === CFG.key; })[0] || null;
           if (!VAL) return;
           renderHeader(); renderMembers();
-        }).catch(function () {});
+        }).catch(function () { INDICES = null; });
       }
       // ---- lazy, additive: every member ever (survivorship table; only indices with a baked file)
       if (CFG.surv) {
+        $('survTable').innerHTML = '<div class="os-empty">Loading…</div>';
         fetch('./survivorship/' + CFG.surv + '.json', { cache: 'no-store' })
           .then(function (r) { if (!r.ok) throw new Error('no survivorship file'); return r.json(); })
           .then(function (j4) {
-            if (!j4 || !j4.rows || !j4.rows.length) return;
+            if (seq !== SEQ) return;
+            if (!j4 || !j4.rows || !j4.rows.length) throw new Error('empty');
             SURV = j4;
-            var a = new URLSearchParams(location.search).get('asof');
-            if (a && /^\d{4}-\d{2}-\d{2}$/.test(a)) SV.asof = a > j4.dataEnd ? j4.dataEnd : a;
+            if (first) {
+              var a = new URLSearchParams(location.search).get('asof');
+              if (a && /^\d{4}-\d{2}-\d{2}$/.test(a)) SV.asof = a > j4.dataEnd ? j4.dataEnd : a;
+            }
             safe(renderSurv);
           })
-          .catch(function () {});
+          .catch(function () { if (seq === SEQ) $('survTable').innerHTML = '<div class="os-empty">The member history of this index could not be loaded.</div>'; });
       }
-      // ---- live quote + polling
-      var poll = function () {
-        if (!CFG.ysym) return;                       // end-of-day-only index (BSE SME IPO, Nifty SME Emerge): nothing live to poll
-        fetchLive(CFG.ysym).then(function (q) {
-          LIVE = q; renderHeader();
-          if (RANGE === '1D') drawChart();
-        }).catch(function () {});
-      };
       poll();
-      setInterval(function () { if (!document.hidden && marketOpen()) poll(); }, 45000);
-      document.addEventListener('visibilitychange', function () { if (!document.hidden && marketOpen()) poll(); });
+      if (first) setTimeout(fillList, 400);
     })
     .catch(function (e) {
+      if (seq !== SEQ) return;
       $('ixPx').textContent = '—';
-      $('chart').innerHTML = '<div class="faint" style="padding:40px 0;text-align:center">Could not load ' + esc(CFG.src) + '. Please refresh.</div>';
+      $('chart').innerHTML = '<div class="os-empty">Could not load ' + esc(CFG.src) + '. Please refresh.</div>';
     });
+}
+// live quote of the index on screen (end-of-day-only indices — BSE SME IPO, Nifty SME Emerge, Microcap 250 — have nothing to poll)
+function poll() {
+  if (!CFG || !CFG.ysym || !D.length) return;
+  var seq = SEQ;
+  fetchLive(CFG.ysym).then(function (q) {
+    if (seq !== SEQ) return;
+    LIVE = q; LIVEQ[KEY] = q; renderHeader();
+    if (CFG.kind === 'vix') safe(renderVix);
+    if (RANGE === '1D' && VIEW === 'chart') drawChart();
+  }).catch(function () {});
+}
+// Level / 1 day of the other indices in the list: their daily files, one after another, after first paint
+function fillList() {
+  var todo = ORDER.filter(function (k) { return !DATA[k]; });
+  (function next() {
+    var k = todo.shift(); if (!k) return;
+    loadIx(k).then(function () { renderList(); }, function () {}).then(next);
+  })();
+  pollOthers();
+}
+// live quotes of the other Yahoo-backed indices in the list (same Worker call as the one on screen)
+function pollOthers() {
+  ORDER.forEach(function (k) {
+    if (k === KEY || !REG[k].ysym) return;
+    loadIx(k).then(function (ser) { return fetchLive(REG[k].ysym, ser); }).then(function (q) { LIVEQ[k] = q; renderList(); }).catch(function () {});
+  });
+}
+function step(n) {
+  var i = ORDER.indexOf(KEY) + n;
+  if (i < 0 || i >= ORDER.length) return;
+  select(ORDER[i]);
+}
+function boot() {
+  var h = (location.hash || '').replace('#', '');
+  var k0 = resolveKey();
+  KEY = k0; CFG = REG[k0];
+  var a0 = new URLSearchParams(location.search).get('asof');
+  if (h === 'history' || h === 'members') VIEW = h;
+  else if (a0 && /^\d{4}-\d{2}-\d{2}$/.test(a0) && CFG.surv) VIEW = 'members';   // a rewound roster link opens on the roster
+  setView(VIEW, true); setFig('sum');
+  wireSurv();
+  $('ixList').addEventListener('click', function (e) { var r = e.target.closest('.os-row'); if (r) select(r.dataset.k); });
+  $('vtabs').querySelectorAll('button').forEach(function (b) { b.onclick = function () { setView(b.dataset.v); }; });
+  $('figTabs').querySelectorAll('button').forEach(function (b) { b.onclick = function () { setFig(b.dataset.f); }; });
+  $('cFocus').onclick = function () { setFocus(); };
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var t = e.target || {}, tag = (t.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) { if (e.key === 'Escape') t.blur(); return; }
+    if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+    else if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && VIEW === 'chart') {
+      var i = RANGES.map(function (r) { return r[0]; }).indexOf(RANGE) + (e.key === 'ArrowRight' ? 1 : -1);
+      if (i < 0 || i >= RANGES.length) return;
+      e.preventDefault(); RANGE = RANGES[i][0]; renderControls(); if (D.length) drawChart();
+    }
+    else if (e.key === '1') setView('chart');
+    else if (e.key === '2') setView('history');
+    else if (e.key === '3') setView('members');
+    else if ((e.key === 'f' || e.key === 'F') && VIEW === 'chart' && window.innerWidth >= 900) setFocus();
+    else if (e.key === 'Escape' && FOCUS) setFocus(false);
+  });
+  if (window.ResizeObserver) new ResizeObserver(function () {
+    var w = $('chartWrap').clientWidth, h = $('chartWrap').clientHeight;
+    if (!D.length || VIEW !== 'chart' || !w || (Math.abs(w - LASTW) < 2 && Math.abs(h - LASTH) < 2)) return;
+    safe(drawChart);
+  }).observe($('chartWrap'));
+  setInterval(function () { if (!document.hidden && marketOpen()) { poll(); pollOthers(); } }, 45000);
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && marketOpen()) { poll(); pollOthers(); } });
+  select(k0, true);
 }
 boot();
 })();
