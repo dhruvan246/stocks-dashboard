@@ -8,35 +8,50 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .bkt{cursor:pointer;transition:transform var(--tr,.15s),box-shadow var(--tr,.15s),border-color var(--tr,.15s)}
-  .bkt:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg,0 10px 30px -12px rgba(0,0,0,.25));border-color:var(--accent,var(--accent))}
-  .gpill{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:6px 14px;border-radius:var(--radius-sm);cursor:pointer;user-select:none;
-         background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border));transition:background .12s,color .12s}
-  .gpill:hover{border-color:var(--accent,var(--border-strong))}
-  .gpill.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent))}
-  .cnt{display:inline-block;font-size:11px;font-weight:800;padding:2px 9px;border-radius:var(--radius-sm);background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text))}
-  .docbtn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--radius);
-          background:var(--accent-soft,var(--accent-soft));color:var(--accent,var(--accent-text));border:1px solid var(--border-strong,color-mix(in srgb,var(--accent) 38%,transparent));white-space:nowrap}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  html[data-theme="dark"] .pos{color:var(--pos)}html[data-theme="dark"] .neg{color:var(--neg)}
-  /* triage marks: 👍 interesting / 👎 rejected */
-  .tribtn{cursor:pointer;user-select:none;font-size:12px;opacity:.28;padding:0 2px;display:inline-block;transition:opacity .12s,transform .12s;filter:grayscale(1)}
-  .tribtn:hover{opacity:.9;transform:scale(1.25);filter:none}
-  .tribtn.on{opacity:1;filter:none}
-  .tribtn.on[data-v="in"]{color:#10b981}
-  .tribtn.on[data-v="out"]{color:var(--neg)}
-  tr.tri-in>td:first-child{box-shadow:inset 3px 0 0 #10b981}
-  tr.tri-out{opacity:.42}
-  tr.tri-out:hover{opacity:.85}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(240px,280px) minmax(420px,470px) minmax(0,1fr)}
+  .gr{grid-template-columns:minmax(0,1fr) 52px}
+  .gr > span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .gh{padding:9px 12px 4px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid var(--border);background:var(--surface-2)}
+  #pK.t-ann #kHead,#pK.t-ann .kr{grid-template-columns:22px minmax(0,1fr) 62px 54px}
+  #pK.t-ord #kHead,#pK.t-ord .kr{grid-template-columns:22px minmax(0,1fr) 58px 76px 52px}
+  #pK.t-deal #kHead,#pK.t-deal .kr{grid-template-columns:22px minmax(0,1fr) 74px 54px 58px}
+  #pK.t-spike #kHead,#pK.t-spike .kr{grid-template-columns:22px minmax(0,1fr) 52px 78px 56px}
+  #pK.t-res #kHead,#pK.t-res .kr{grid-template-columns:22px minmax(0,1fr) 64px 64px 72px}
+  #pK.t-px #kHead,#pK.t-px .kr{grid-template-columns:22px minmax(0,1fr) 82px 64px 62px}
+  #pK.t-sec #kHead,#pK.t-sec .kr{grid-template-columns:22px minmax(0,1fr) 82px 66px}
+  .os-row > span.n,.os-ch > span.n{text-align:left}
+  .os-ch span{white-space:nowrap}
+  .kr .n i{font-style:normal;color:var(--text-faint);font-size:11.5px;margin-left:6px}
+  .kr .mu{color:var(--text-muted)}
+  .kr.tri-out{opacity:.42} .kr.tri-out:hover,.kr.tri-out.on{opacity:.85}
+  .kr .tg{display:inline-block;margin-left:5px;font-size:10.5px;font-weight:600;color:var(--pos)}
+  #kDesc{border-bottom:1px solid var(--border)}
+  html[data-theme] .os-sg select{border:0;border-left:1px solid var(--border);border-radius:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:500;padding:5px 8px;height:auto;min-height:0;cursor:pointer;max-width:150px}
+  #ordCtl:not(.hidden){display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border)}
+  .more{padding:10px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--text-faint)}
+  #cText{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.5;color:var(--text-muted);max-height:104px;overflow:auto}
+  #cText .lb{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin-bottom:2px}
+  #cText a{color:var(--accent-text);font-weight:500;white-space:nowrap}
+  html[data-theme] #tIn.on{color:var(--pos);border-color:var(--pos)} html[data-theme] #tOut.on{color:var(--neg);border-color:var(--neg)}
+  #cNote{border-top:1px solid var(--border)}
+  #pK,#pC{scroll-margin-top:112px}
+  #status{margin-bottom:10px}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  @container (max-width:600px){ #pC .os-hint.keys{display:none} }
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(200px,230px) minmax(340px,380px) minmax(0,1fr)} .kr .n i{display:none} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #pC .os-ph{flex-wrap:wrap} #gList{max-height:38vh} #kList{max-height:52vh}
+    #pK.t-ord #kHead,#pK.t-ord .kr{grid-template-columns:22px minmax(0,1fr) 50px 70px 48px} #pK.t-res #kHead,#pK.t-res .kr{grid-template-columns:22px minmax(0,1fr) 58px 58px 70px} #pK.t-px #kHead,#pK.t-px .kr{grid-template-columns:22px minmax(0,1fr) 76px 58px 58px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -45,95 +60,99 @@
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-
-  <!-- ================= bucket grid view ================= -->
-  <div id="gridView">
-    <div class="mb-4">
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Smart Money Picks <span class="text-slate-400 font-semibold text-base">· fundamental triggers</span></h1>
-      <p class="text-sm text-slate-500 mt-1">Stocks grouped by what's actually happening to them — order wins, fund raises, great or weak results, breakouts, sector themes. Every bucket is <b>computed automatically from exchange filings and market data</b> (nothing hand-picked) and refreshes through the day. <span id="updated" class="text-slate-400"></span></p>
-    </div>
-
-    <div id="status" class="text-sm text-slate-500 py-10 text-center">Loading buckets…</div>
-
-    <div id="controls" class="hidden mb-4 flex flex-wrap items-center gap-2">
-      <div id="gpills" class="flex flex-wrap gap-2 sw-strip"></div>  <!-- phone: one scrolling line (2026-10-13) -->
-      <input id="q" type="text" placeholder="Search buckets…" autocomplete="off"
-             class="ml-auto w-48 px-3 py-2 rounded-lg border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
-    <div id="groups"></div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Smart Money Picks</h1>
+    <div class="os-asof"><span id="updated"></span></div>
   </div>
-
-  <!-- ================= bucket detail view ================= -->
-  <div id="detailView" class="hidden">
-    <button id="back" class="mb-4 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">← All buckets</button>
-    <div class="mb-4">
-      <h1 id="dTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight"></h1>
-      <p id="dDesc" class="text-sm text-slate-500 mt-1"></p>
+  <div id="status" class="os-empty">Loading buckets…</div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <div class="os-sg sw-strip" id="gpills" role="group" aria-label="Bucket group"></div>
     </div>
-    <!-- filters + sort (Order Wins only) -->
-    <div id="ordCtl" class="hidden card p-3 mb-4 flex flex-wrap items-center gap-x-5 gap-y-2">
-      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">Market Cap
-        <select id="fMcap" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="all">All</option>
-          <option value="lt500">Under ₹500 cr</option>
-          <option value="500-2000">₹500 – 2,000 cr</option>
-          <option value="2000-10000">₹2,000 – 10,000 cr</option>
-          <option value="gt10000">Over ₹10,000 cr</option>
-        </select></label>
-      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600">P/E (TTM)
-        <select id="fPe" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="all">All</option>
-          <option value="lt15">Under 15</option>
-          <option value="15-30">15 – 30</option>
-          <option value="30-60">30 – 60</option>
-          <option value="gt60">Over 60</option>
-          <option value="na">Loss / NA</option>
-        </select></label>
-      <label class="flex items-center gap-2 text-[13px] font-semibold text-slate-600 ml-auto">Sort by
-        <select id="fSort" class="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-slate-700 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="date">Latest first</option>
-          <option value="ordval">Largest order</option>
-          <option value="mcap">Largest market cap</option>
-          <option value="pe">Lowest P/E</option>
-        </select></label>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pG" aria-label="Buckets">
+        <div class="os-ph"><span class="ttl">Buckets</span><span class="r" id="gCount"></span></div>
+        <div class="os-ps"><input id="q" type="search" placeholder="Search buckets…" autocomplete="off" aria-label="Search buckets" /></div>
+        <div class="os-list" id="gList" role="listbox" aria-label="Buckets"></div>
+      </section>
+      <section class="os-pane" id="pK" aria-label="Stocks in the bucket">
+        <div class="os-ph"><span class="ttl" id="dTitle">Stocks</span><span class="r" id="dCount"></span></div>
+        <div class="os-note" id="kDesc"></div>
+        <!-- filters + sort (Order Wins only) -->
+        <div id="ordCtl" class="hidden">
+          <span class="os-sg"><span class="lbl">M-cap</span>
+            <select id="fMcap" aria-label="Market cap">
+              <option value="all">All</option>
+              <option value="lt500">Under ₹500 cr</option>
+              <option value="500-2000">₹500 – 2,000 cr</option>
+              <option value="2000-10000">₹2,000 – 10,000 cr</option>
+              <option value="gt10000">Over ₹10,000 cr</option>
+            </select></span>
+          <span class="os-sg"><span class="lbl">P/E</span>
+            <select id="fPe" aria-label="P/E (TTM)">
+              <option value="all">All</option>
+              <option value="lt15">Under 15</option>
+              <option value="15-30">15 – 30</option>
+              <option value="30-60">30 – 60</option>
+              <option value="gt60">Over 60</option>
+              <option value="na">Loss / NA</option>
+            </select></span>
+          <span class="os-sg"><span class="lbl">Sort</span>
+            <select id="fSort" aria-label="Sort by">
+              <option value="date">Latest first</option>
+              <option value="ordval">Largest order</option>
+              <option value="mcap">Largest market cap</option>
+              <option value="pe">Lowest P/E</option>
+            </select></span>
+        </div>
+        <div class="os-ps"><span class="os-sg" role="group" aria-label="Rejected stocks"><button type="button" id="triHide" title="Marks you make are remembered — rejected rows fade out, or hide entirely with this on">Hide rejected</button></span></div>
+        <div class="os-ch" id="kHead"></div>
+        <div class="os-list" id="kList" role="listbox" aria-label="Stocks"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Stock detail and chart">
+        <div class="os-ph"><span id="cStar"></span><span class="sym" id="cSym">—</span><span class="nm" id="cName"></span>
+          <span class="r"><button type="button" class="os-btn hidden" id="tIn" title="Mark interesting (I) — click again to clear">Interesting</button>
+            <button type="button" class="os-btn hidden" id="tOut" title="Reject (R) — fades, or hides, this stock everywhere on this page; click again to clear">Reject</button>
+            <a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a>
+            <button type="button" class="os-btn os-focusbtn" id="cFocus" title="Hide the lists and give the chart the whole width (F)">Focus</button></span></div>
+        <div id="cText" class="hidden"></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div>
+          <button type="button" class="os-btn" id="cLog" title="Logarithmic price scale">Log</button>
+          <span class="os-hint keys" style="margin-left:auto"><b>↑↓</b> move · <b>←→</b> switch list · <b>I</b> / <b>R</b> mark · <b>F</b> focus</span>
+          <a class="os-btn hidden" id="cFull" href="#" title="Open in the full chart page — drawing tools, indicators, compare">Full chart ↗</a></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+        <div class="os-note" id="cNote"></div>
+      </section>
     </div>
-    <div class="card p-4 mb-4">
-      <div class="flex flex-wrap items-center gap-3 mb-2">
-        <div id="dCount" class="text-sm font-semibold text-slate-700"></div>
-        <label class="ml-auto flex items-center gap-1.5 text-[12px] font-semibold text-slate-500 cursor-pointer" title="Marks you make with the thumbs are remembered — rejected rows fade out (or hide entirely with this on)">
-          <input id="triHide" type="checkbox" class="accent-blue-600"> Hide rejected
-        </label>
-      </div>
-      <div class="sw-cards overflow-x-auto rounded-lg border border-slate-100">
-        <table class="w-full text-sm min-w-[760px]">
-          <thead id="dHead" class="text-[11px] uppercase text-slate-500 border-b border-slate-200 bg-slate-100"></thead>
-          <tbody id="dBody" class="divide-y divide-slate-100"></tbody>
-        </table>
-      </div>
-      <div class="text-center mt-3"><button id="dMore" class="hidden px-5 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">Load more ↓</button></div>
-    </div>
+    <details id="how"><summary>How these buckets are made</summary>
+      <p>Stocks grouped by what's actually happening to them — order wins, fund raises, great or weak results, breakouts, sector themes. Every bucket is <b>computed automatically from exchange filings and market data</b> (nothing hand-picked) and refreshes through the day.</p>
+      <p>Buckets are screens computed from public NSE/BSE data — announcements (last ~31 days), quarterly filings and daily prices. For research &amp; education only, not recommendations. Results buckets: PAT is owners-attributable, consolidated preferred.</p>
+      <p>The chart, <b>Last close</b> and <b>1 year</b> come from our own daily price files (split and bonus adjusted, dividends not adjusted); the other figures are the bucket's own.</p>
+    </details>
   </div>
-
-  <p class="text-[11px] text-slate-500 mt-2">Buckets are screens computed from public NSE/BSE data — announcements (last ~31 days), quarterly filings and daily prices. For research &amp; education only, not recommendations. Results buckets: PAT is owners-attributable, consolidated preferred.</p>
 </main>
 
 <script>
 'use strict';
+const K = window.OSKit;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const PDF_PREFIX = 'https://nsearchives.nseindia.com/corporate/';
 const inr = n => n == null ? '—' : Number(n).toLocaleString('en-IN');
-const pct = (n, signed) => n == null ? '—' : '<span class="' + (n >= 0 ? 'pos' : 'neg') + '">' + (signed && n > 0 ? '+' : '') + n.toFixed(1) + '%</span>';
-const slink = (sym, name) => '<span class="sw-star" data-sym="' + esc(sym) + '"></span> ' +
-                             '<a class="font-bold text-blue-700 hover:underline" href="./stock.html?sym=' + encodeURIComponent(sym) + '" title="' + esc(name || '') + '">' + esc(sym) + '</a>' +
-                             '<span class="whitespace-nowrap ml-1"><span class="tribtn' + (TRI[sym] === 'in' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="in" title="Mark interesting"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>' +
-                             '<span class="tribtn' + (TRI[sym] === 'out' ? ' on' : '') + '" data-tri="' + esc(sym) + '" data-v="out" title="Reject — fades (or hides) this stock everywhere on this page"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg></span></span>' +
-                             (name ? '<div class="text-[11px] text-slate-400 font-normal max-w-[180px] truncate">' + esc(name) + '</div>' : '');
+const pct = (n, signed) => n == null ? '—' : '<span class="' + (n >= 0 ? 'os-pos' : 'os-neg') + '">' + (signed && n > 0 ? '+' : '') + n.toFixed(1) + '%</span>';
+const fDeal = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));     // deal / spike amounts, as on the old page
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dShort = d => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] : esc(d == null ? '' : d); };
+const dLong = d => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] + ' ' + m[1] : esc(d == null ? '—' : d); };
+const stat = (l, v, c, tip) => `<div${tip ? ` title="${esc(tip)}"` : ''}><span>${l}</span><b class="${c || ''}">${v}</b></div>`;
+const rs = p => '₹' + (p >= 1000 ? Math.round(p).toLocaleString('en-IN') : p.toFixed(2));
+const docUrl = f => encodeURI(f.indexOf('http') === 0 ? f : PDF_PREFIX + f);
 
-/* ---- triage: 👍 interesting / 👎 rejected, remembered across visits.
+/* ---- triage: interesting / rejected, remembered across visits.
    Owner browsers sync through Supabase kv 'TRIAGE' (all devices); everyone else
-   keeps a private browser-local list — same model as the watchlist. ---- */
+   keeps a private browser-local list — same model as the watchlist. Unchanged from the old page. ---- */
 let TRI = {};                                   // sym -> 'in' | 'out'
 let triHide = false; try { triHide = localStorage.getItem('sw_triage_hide') === '1'; } catch (e) {}
 const triOwner = () => !!(window.swSync && swSync.isOwner());
@@ -156,85 +175,48 @@ function triToggle(sym, v){
 (function triBoot(){ window.swSync ? triLoad() : setTimeout(triBoot, 250); })();
 
 let DATA = null, BUCKETS = {}, curGroup = 'All', shown = 100, curB = null;
+let VIEWB = [], VIEW = [], SEL = null, SELI = 0, PANE = 'k', FOCUS = false, CH = null, CTOK = 0, showTimer = null, LASTBARS = null;
 
-const GROUP_ICON = { 'Triggers (last 31 days)': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>', 'Smart money': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/></svg>', 'Price & Value': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg>', 'Results — computed from filings': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>', 'Results history': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>', 'Sector themes': '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>' };
-
+/* ---- bucket list ---- */
 function renderGrid(){
   const q = $('q').value.trim().toLowerCase();
-  let h = '';
+  let h = ''; VIEWB = [];
   for (const g of DATA.groups){
     if (curGroup !== 'All' && g.g !== curGroup) continue;
     const bks = g.buckets.filter(b => !q || b.t.toLowerCase().includes(q));
     if (!bks.length) continue;
-    h += '<div class="mt-6 mb-3 flex items-baseline gap-2"><span aria-hidden="true" class="self-center text-slate-400">' + (GROUP_ICON[g.g] || '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 12.5"/><path d="m22 17.5-8.58 3.91a2 2 0 0 1-1.66 0L2.6 17.5"/></svg>') + '</span>' +
-         '<h2 class="text-base font-extrabold text-slate-800">' + esc(g.g) + '</h2>' +
-         '<span class="text-[11px] text-slate-400 font-semibold">' + bks.length + ' buckets</span></div>' +
-         '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">';
+    h += '<div class="gh">' + esc(g.g) + ' · ' + bks.length + '</div>';
     for (const b of bks){
-      h += '<div class="card bkt p-4" data-k="' + esc(b.k) + '" role="button" tabindex="0">' +
-        '<div class="flex items-start justify-between gap-2">' +
-          '<div class="text-[15px] font-bold text-slate-800 leading-snug">' + esc(b.t) + '</div>' +
-          '<span class="cnt shrink-0">' + inr(b.n) + '</span></div>' +
-        '<div class="text-[12.5px] text-slate-500 mt-1.5 leading-relaxed">' + esc(b.d) + '</div></div>';
+      const on = curB && curB.k === b.k; VIEWB.push(b);
+      h += '<div class="os-row gr' + (on ? ' on' : '') + '" role="option" aria-selected="' + !!on + '" data-k="' + esc(b.k) + '" title="' + esc(b.d) + '">' +
+           '<span>' + esc(b.t) + '</span><span>' + inr(b.n) + '</span></div>';
     }
-    h += '</div>';
   }
-  $('groups').innerHTML = h || '<div class="text-sm text-slate-400 py-10 text-center">No buckets match.</div>';
+  $('gCount').textContent = VIEWB.length + (VIEWB.length === 1 ? ' bucket' : ' buckets');
+  $('gList').innerHTML = h || '<div class="os-empty">No buckets match.</div>';
 }
 
+/* ---- stock list: columns per bucket type (every other field of the row is in the detail pane) ---- */
 const HEADS = {
-  ann: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-left px-3">Latest</th><th class="text-right px-3">Filings</th><th class="text-left px-3 w-[48%]">What happened</th><th class="text-right px-3">Doc</th></tr>',
-  ord: '<tr><th class="text-left py-2.5 px-3 whitespace-nowrap">Date Of Info.</th><th class="text-left px-3">Company</th><th class="text-right px-3">Market Cap (in Cr.)</th><th class="text-right px-3">TTM PE</th><th class="text-left px-3 w-[46%]">Order details</th><th class="text-right px-3">Read</th></tr>',
-  res: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">PAT (₹ cr)</th><th class="text-right px-3">Year ago</th><th class="text-right px-3">PAT YoY</th><th class="text-right px-3">Revenue YoY</th></tr>',
-  px:  '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">Price</th><th class="text-right px-3">vs 52-wk high</th><th class="text-right px-3">P/E (TTM)</th></tr>',
-  deal:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Net bought (₹ cr)</th><th class="text-right px-3">Bought (₹ cr)</th><th class="text-right px-3">Buyers</th><th class="text-left px-3">Latest</th><th class="text-left px-3 w-[30%]">Biggest buyer</th></tr>',
-  spike:'<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Spikes</th><th class="text-right px-3">Delivered (₹ cr)</th><th class="text-right px-3">Best multiple</th><th class="text-left px-3">Latest</th></tr>',
-  sec: '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Mcap (₹ cr)</th><th class="text-right px-3">vs 52-wk high</th><th class="text-left px-3">Sub-industry</th></tr>'
+  ann:   ['Stock', 'Latest', 'Filings'],
+  ord:   ['Company', 'Date', 'M-cap ₹ Cr', 'TTM PE'],
+  res:   ['Stock', 'PAT ₹ Cr', 'Year ago', 'PAT YoY'],
+  px:    ['Stock', 'M-cap ₹ Cr', 'Price', 'vs 52W hi'],
+  deal:  ['Stock', 'Net ₹ Cr', 'Buyers', 'Latest'],
+  spike: ['Stock', 'Spikes', 'Deliv. ₹ Cr', 'Best ×'],
+  sec:   ['Stock', 'M-cap ₹ Cr', 'vs 52W hi']
 };
-
-function rowHtml(b, r){
-  if (b.type === 'ann'){
-    const doc = r[5] ? '<a class="docbtn" href="' + esc(encodeURI(r[5].indexOf('http') === 0 ? r[5] : PDF_PREFIX + r[5])) + '" target="_blank" rel="noopener">📄</a>' : '<span class="text-slate-300">—</span>';
-    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + r[3] + '</td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[2] + '</td><td class="py-2.5 px-3 text-[12.5px] text-slate-600 leading-relaxed">' + esc(r[4]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + doc + '</td>';
+const TYPE = b => HEADS[b.type] ? b.type : 'sec';
+function cells(b, r){
+  switch (TYPE(b)){
+    case 'ann':   return '<span class="mu">' + dShort(r[3]) + '</span><span class="mu">' + r[2] + '</span>';
+    case 'ord':   return '<span class="mu">' + dShort(r[4]) + '</span><span>' + inr(r[2]) + '</span><span class="mu">' + (r[3] == null ? '—' : r[3] + 'x') + '</span>';
+    case 'deal':  return '<span class="' + (r[2] >= 0 ? 'os-pos' : 'os-neg') + '">' + (r[2] >= 0 ? '+' : '−') + fDeal(Math.abs(r[2])) + '</span><span>' + r[4] + '</span><span class="mu">' + dShort(r[5]) + '</span>';
+    case 'spike': return '<span>' + r[2] + '</span><span>' + fDeal(r[3]) + '</span><span class="mu">' + r[4] + '×</span>';
+    case 'res':   return '<span>' + inr(r[2]) + '</span><span class="mu">' + inr(r[3]) + '</span>' + '<span>' + pct(r[4], true) + '</span>';
+    case 'px':    return '<span>' + inr(r[2]) + '</span><span>' + inr(r[3]) + '</span><span>' + pct(r[4]) + '</span>';
+    default:      return '<span>' + inr(r[2]) + '</span><span>' + pct(r[3]) + '</span>';
   }
-  if (b.type === 'ord'){
-    const doc = r[6] ? '<a class="docbtn" href="' + esc(encodeURI(r[6].indexOf('http') === 0 ? r[6] : PDF_PREFIX + r[6])) + '" target="_blank" rel="noopener">Read</a>' : '<span class="text-slate-300">—</span>';
-    return '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + r[4] + '</td>' +
-           '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-600">' + (r[3] == null ? '—' : r[3] + 'x') + '</td>' +
-           '<td class="py-2.5 px-3 text-[12.5px] text-slate-700 leading-relaxed">' + esc(r[5]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + doc + '</td>';
-  }
-  if (b.type === 'deal'){
-    const f = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));
-    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right"><span class="' + (r[2] >= 0 ? 'pos' : 'neg') + '">' + (r[2] >= 0 ? '+' : '−') + f(Math.abs(r[2])) + '</span></td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-600">' + f(r[3]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + r[4] + '</td>' +
-           '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>' +
-           '<td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[6]) + '</td>';
-  }
-  if (b.type === 'spike'){
-    const f = v => v == null ? '—' : (v >= 100 ? Math.round(v).toLocaleString('en-IN') : v.toFixed(1));
-    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right font-semibold">' + r[2] + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + f(r[3]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-600">' + r[4] + '×</td>' +
-           '<td class="py-2.5 px-3 whitespace-nowrap text-slate-600">' + esc(r[5]) + '</td>';
-  }
-  if (b.type === 'res')
-    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-500">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4], true) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + pct(r[5], true) + '</td>';
-  if (b.type === 'px')
-    return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right">' + inr(r[3]) + '</td><td class="py-2.5 px-3 text-right">' + pct(r[4]) + '</td>' +
-           '<td class="py-2.5 px-3 text-right text-slate-600">' + (r[5] == null ? '—' : r[5]) + '</td>';
-  return '<td class="py-2.5 px-3">' + slink(r[0], r[1]) + '</td><td class="py-2.5 px-3 text-right">' + inr(r[2]) + '</td>' +
-         '<td class="py-2.5 px-3 text-right">' + pct(r[3]) + '</td><td class="py-2.5 px-3 text-[12px] text-slate-500">' + esc(r[4]) + '</td>';
 }
 
 // Order Wins filters/sort. ord row: [sym,name,mcap,pe,date,remark,file,orderCr]
@@ -272,43 +254,119 @@ function viewRows(){
 function renderDetailRows(){
   const rows = viewRows();
   const upto = Math.min(shown, rows.length);
+  VIEW = rows.slice(0, upto);
+  if (SEL && VIEW.indexOf(SEL) < 0) { const same = VIEW.find(r => r[0] === SEL[0]); SEL = same || VIEW[Math.min(SELI, VIEW.length - 1)] || null; }   // a row that just got hidden hands over to the one that took its place
+  if (!SEL && VIEW.length) SEL = VIEW[0];
+  SELI = Math.max(0, VIEW.indexOf(SEL));
   let h = '';
   for (let i = 0; i < upto; i++){
-    const st = TRI[rows[i][0]];
-    h += '<tr class="align-top hover:bg-slate-50' + (st === 'in' ? ' tri-in' : st === 'out' ? ' tri-out' : '') + '">' + rowHtml(curB, rows[i]) + '</tr>';
+    const r = rows[i], st = TRI[r[0]], on = r === SEL;
+    h += '<div class="os-row kr' + (on ? ' on' : '') + (st === 'in' ? ' tri-in' : st === 'out' ? ' tri-out' : '') + '" role="option" aria-selected="' + on + '" data-i="' + i + '" title="' + esc(r[1] || '') + '">' +
+         '<span class="sw-star" data-sym="' + esc(r[0]) + '"></span>' +
+         '<span class="n"><b>' + esc(r[0]) + '</b>' + (st === 'in' ? '<span class="tg" title="Marked interesting">✓</span>' : '') + (r[1] ? '<i>' + esc(r[1]) + '</i>' : '') + '</span>' + cells(curB, r) + '</div>';
   }
-  $('dBody').innerHTML = h;
-  if (window.swWatch) swWatch.paintAll($('dBody'));
+  if (!rows.length) h = '<div class="os-empty">' + (curB.rows.length ? 'No stock in this bucket passes the filters.' : 'This bucket is empty right now.') + '</div>';
+  else if (upto < rows.length) h += '<div class="more"><button type="button" class="os-btn" id="dMore">Load more ↓</button></div>';
+  $('kList').innerHTML = h;
+  if (window.swWatch) swWatch.paintAll($('kList'));
   const hid = triHide ? Object.keys(TRI).filter(s => TRI[s] === 'out').length : 0;
   $('dCount').textContent = 'Showing ' + upto.toLocaleString('en-IN') + ' of ' + rows.length.toLocaleString('en-IN') + ' stocks' + (hid ? ' (rejected hidden)' : '');
-  $('dMore').classList.toggle('hidden', upto >= rows.length);
+  showSel(false);
 }
 
 function openBucket(k, push){
   const b = BUCKETS[k]; if (!b) return;
-  curB = b; shown = 100;
+  curB = b; shown = 100; SEL = null; SELI = 0;
   $('dTitle').textContent = b.t;
-  $('dDesc').textContent = b.d;
-  $('dHead').innerHTML = HEADS[b.type] || HEADS.sec;
+  $('kDesc').textContent = b.d;
+  const t = TYPE(b);
+  $('pK').className = 'os-pane t-' + t;
+  $('kHead').innerHTML = '<span></span>' + HEADS[t].map((x, i) => '<span' + (i === 0 ? ' class="n"' : '') + '>' + x + '</span>').join('');
   const isOrd = b.type === 'ord';
   $('ordCtl').classList.toggle('hidden', !isOrd);
   if (isOrd){ $('fMcap').value = 'all'; $('fPe').value = 'all'; $('fSort').value = 'date'; }
+  $('gList').querySelectorAll('.gr').forEach(el => { const on = el.dataset.k === k; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
   renderDetailRows();
-  $('gridView').classList.add('hidden');
-  $('detailView').classList.remove('hidden');
+  $('kList').scrollTop = 0;
   if (push !== false) location.hash = 'b=' + encodeURIComponent(k);
-  window.scrollTo(0, 0);
-}
-function closeBucket(push){
-  $('detailView').classList.add('hidden');
-  $('gridView').classList.remove('hidden');
-  if (push !== false && location.hash) history.pushState('', '', location.pathname);
 }
 function applyHash(){
   const m = /b=([^&]+)/.exec(location.hash);
-  if (m && BUCKETS[decodeURIComponent(m[1])]) openBucket(decodeURIComponent(m[1]), false);
-  else closeBucket(false);
+  let k = null; try { k = m ? decodeURIComponent(m[1]) : null; } catch (e) {}
+  if (k && BUCKETS[k]) { if (!curB || curB.k !== k) openBucket(k, false); }
+  else if (!curB && VIEWB.length) openBucket(VIEWB[0].k, false);     // no bucket in the address: show the first one
 }
+
+/* ---- detail + chart ---- */
+function barsStats(){
+  const d = LASTBARS && SEL && LASTBARS.sym === SEL[0] ? LASTBARS.d : null; if (!d) return null;
+  const B = d.bars, last = B[B.length - 1], cut = last.ts - 365 * 86400; let hi = null, y1 = null;
+  for (let i = B.length - 1; i >= 0 && B[i].ts > cut; i--) { const h = B[i].h != null ? B[i].h : B[i].c; if (hi == null || h > hi) hi = h; }
+  for (let i = B.length - 1; i >= 0; i--) if (B[i].ts <= cut) { y1 = (last.c / B[i].c - 1) * 100; break; }
+  return { last, hi, y1 };
+}
+function paintStats(){
+  if (!SEL || !curB) { $('cStats').innerHTML = ''; return; }
+  const r = SEL, t = TYPE(curB), bs = barsStats();
+  const own = [];
+  if (t === 'ann') own.push(stat('Latest filing', dLong(r[3])), stat('Filings', r[2], '', 'Filings of this kind in the window'));
+  else if (t === 'ord') own.push(stat('Date of info', dLong(r[4])), stat('Market cap', inr(r[2]) + '<small>Cr</small>'), stat('TTM PE', r[3] == null ? '—' : r[3] + 'x'), stat('Order value', r[7] == null ? '—' : '₹' + inr(r[7]) + '<small>Cr</small>', '', 'The order value read from the filing, where it states one — this is what "Largest order" sorts by'));
+  else if (t === 'deal') own.push(stat('Net bought', (r[2] >= 0 ? '+' : '−') + fDeal(Math.abs(r[2])) + '<small>Cr</small>', r[2] >= 0 ? 'os-pos' : 'os-neg'), stat('Bought', fDeal(r[3]) + '<small>Cr</small>'), stat('Buyers', r[4]), stat('Latest', dLong(r[5])));
+  else if (t === 'spike') own.push(stat('Spikes', r[2]), stat('Delivered', fDeal(r[3]) + '<small>Cr</small>'), stat('Best multiple', r[4] + '×'), stat('Latest', dLong(r[5])));
+  else if (t === 'res') own.push(stat('PAT', inr(r[2]) + '<small>Cr</small>'), stat('Year ago', inr(r[3]) + '<small>Cr</small>'), stat('PAT YoY', pct(r[4], true)), stat('Revenue YoY', pct(r[5], true)));
+  else if (t === 'px') own.push(stat('Market cap', inr(r[2]) + '<small>Cr</small>'), stat('Price', inr(r[3])), stat('vs 52-wk high', pct(r[4])), stat('P/E (TTM)', r[5] == null ? '—' : r[5]));
+  else own.push(stat('Market cap', inr(r[2]) + '<small>Cr</small>'), stat('vs 52-wk high', pct(r[3])), stat('Sub-industry', esc(r[4] == null ? '—' : r[4]), '', r[4] || ''));
+  const mine = [
+    stat('Last close' + (bs ? ' · ' + K.niceDate(K.tsISO(bs.last.ts)) : ''), bs ? rs(bs.last.c) : '—', '', 'The newest close in our daily price file'),
+    stat('1 year', bs && bs.y1 != null ? K.fmtPct(bs.y1) : '—', bs && bs.y1 != null ? K.cls(bs.y1) : '', 'Last close against the close one year earlier, from our daily price file'),
+    stat('52W high', bs && bs.hi != null ? rs(bs.hi) : '—', '', 'Highest price of the last 52 weeks in our daily price file'),
+    stat('From 52W high', bs && bs.hi ? ((bs.last.c / bs.hi - 1) * 100).toFixed(2) + '%' : '—', bs && bs.hi && bs.last.c < bs.hi ? 'os-neg' : '', 'How far the last close is below that 52-week high') ];
+  $('cStats').innerHTML = own.concat(mine).slice(0, 6).join('');
+}
+function showSel(lazy){
+  const tok = ++CTOK; clearTimeout(showTimer);
+  const r = SEL;
+  ['tIn', 'tOut', 'cOpen', 'cFull'].forEach(id => $(id).classList.toggle('hidden', !r));
+  if (!r) { $('cStar').innerHTML = ''; $('cSym').textContent = '—'; $('cName').textContent = curB ? 'Pick a stock' : ''; $('cText').classList.add('hidden'); $('cStats').innerHTML = ''; $('cNote').textContent = ''; LASTBARS = null; if (CH) CH.clear(''); return; }
+  const sym = r[0], t = TYPE(curB), st = TRI[sym];
+  $('cStar').innerHTML = '<span class="sw-star" data-sym="' + esc(sym) + '"></span>';
+  $('cSym').textContent = sym; $('cName').textContent = r[1] || '';
+  $('tIn').classList.toggle('on', st === 'in'); $('tIn').setAttribute('aria-pressed', st === 'in');
+  $('tOut').classList.toggle('on', st === 'out'); $('tOut').setAttribute('aria-pressed', st === 'out');
+  $('cOpen').href = './stock.html?sym=' + encodeURIComponent(sym);
+  $('cFull').href = './chart.html?s=' + encodeURIComponent(sym);
+  let tx = '';
+  if (t === 'ann') tx = '<span class="lb">What happened</span>' + esc(r[4] == null ? '' : r[4]) + (r[5] ? ' <a href="' + esc(docUrl(r[5])) + '" target="_blank" rel="noopener">Filing ↗</a>' : '');
+  else if (t === 'ord') tx = '<span class="lb">Order details</span>' + esc(r[5] == null ? '' : r[5]) + (r[6] ? ' <a href="' + esc(docUrl(r[6])) + '" target="_blank" rel="noopener">Read ↗</a>' : '');
+  else if (t === 'deal') tx = '<span class="lb">Biggest buyer</span>' + esc(r[6] == null ? '—' : r[6]);
+  $('cText').innerHTML = tx; $('cText').classList.toggle('hidden', !tx);
+  if (!LASTBARS || LASTBARS.sym !== sym) { LASTBARS = null; $('cNote').textContent = ''; }
+  paintStats();
+  if (LASTBARS && LASTBARS.sym === sym) return;
+  showTimer = setTimeout(async () => {       // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent = 'Loading chart…';
+    let d = null;
+    try { d = await K.loadStockBars(sym); } catch (e) { d = null; }
+    if (tok !== CTOK) return;
+    if (!d || !d.bars.length) { CH.clear('No daily price history on file for ' + sym + '.'); return; }
+    LASTBARS = { sym, d };
+    CH.show(d, { name: r[1] || sym, tag: '' });
+    $('cNote').textContent = d.ohlc ? '' : 'Chart: closing prices only.';
+    paintStats();
+  }, lazy ? 140 : 0);
+}
+function pick(i, lazy){
+  if (!VIEW[i]) return; SEL = VIEW[i]; SELI = i;
+  $('kList').querySelectorAll('.kr').forEach(el => { const on = +el.dataset.i === i; el.classList.toggle('on', on); el.setAttribute('aria-selected', on); if (on) el.scrollIntoView({ block: 'nearest' }); });
+  showSel(lazy);
+}
+function chartBar(){
+  $('cIv').innerHTML = ['D', 'W', 'M'].map(k => `<button type="button" class="${k === CH.iv ? 'on' : ''}" data-v="${k}" title="${{ D: 'Daily', W: 'Weekly', M: 'Monthly' }[k]} bars">${k}</button>`).join('');
+  $('cRg').innerHTML = ['3M', '6M', '1Y', '3Y', 'Max'].map(k => `<button type="button" class="${k === CH.range ? 'on' : ''}" data-v="${k}">${k}</button>`).join('');
+  $('cLog').classList.toggle('on', CH.log); $('cLog').setAttribute('aria-pressed', CH.log);
+}
+function setFocus(on){ FOCUS = on == null ? !FOCUS : on; $('grid').classList.toggle('focus', FOCUS); $('cFocus').textContent = FOCUS ? 'Show lists' : 'Focus'; $('cFocus').setAttribute('aria-pressed', FOCUS); }
+function paintHide(){ $('triHide').classList.toggle('on', triHide); $('triHide').setAttribute('aria-pressed', triHide); }
 
 async function load(){
   try {
@@ -316,42 +374,61 @@ async function load(){
     if (!res.ok) throw new Error('HTTP ' + res.status);
     DATA = await res.json();
     for (const g of DATA.groups) for (const b of g.buckets) BUCKETS[b.k] = b;
-    $('updated').textContent = 'Updated ' + DATA.updated + '.';
+    $('updated').textContent = 'Updated ' + DATA.updated;
     const names = ['All'].concat(DATA.groups.map(g => g.g));
     $('gpills').innerHTML = names.map(n =>
-      '<button type="button" class="gpill' + (n === 'All' ? ' on' : '') + '" data-g="' + esc(n) + '">' + esc(n === 'All' ? 'All' : n) + '</button>').join('');
+      '<button type="button" class="' + (n === 'All' ? 'on' : '') + '" data-g="' + esc(n) + '">' + esc(n) + '</button>').join('');
     $('gpills').addEventListener('click', e => {
-      const el = e.target.closest('.gpill'); if (!el) return;
+      const el = e.target.closest('button'); if (!el) return;
       curGroup = el.getAttribute('data-g');
-      document.querySelectorAll('.gpill').forEach(p => p.classList.toggle('on', p === el));
+      $('gpills').querySelectorAll('button').forEach(p => p.classList.toggle('on', p === el));
       renderGrid();
     });
-    $('q').addEventListener('input', renderGrid);
-    $('groups').addEventListener('click', e => {
-      const el = e.target.closest('.bkt'); if (el) openBucket(el.getAttribute('data-k'));
+    $('q').addEventListener('input', () => { PANE = 'g'; renderGrid(); });
+    $('gList').addEventListener('click', e => { const el = e.target.closest('.gr'); if (el) { PANE = 'g'; openBucket(el.getAttribute('data-k')); if (innerWidth < 900) $('pK').scrollIntoView({ block: 'start', behavior: 'instant' }); } });
+    $('kList').addEventListener('click', e => {
+      if (e.target.closest('#dMore')) { shown += 200; renderDetailRows(); return; }
+      const el = e.target.closest('.kr'); if (el) { PANE = 'k'; pick(+el.dataset.i); if (innerWidth < 900 && !e.target.closest('.sw-star')) $('pC').scrollIntoView({ block: 'start', behavior: 'instant' }); }
     });
-    $('groups').addEventListener('keydown', e => {
-      const el = e.target.closest('.bkt'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openBucket(el.getAttribute('data-k')); }
-    });
-    $('back').addEventListener('click', () => closeBucket());
-    $('dMore').addEventListener('click', () => { shown += 200; renderDetailRows(); });
-    $('triHide').checked = triHide;
-    $('triHide').addEventListener('change', () => {
-      triHide = $('triHide').checked;
+    paintHide();
+    $('triHide').addEventListener('click', () => {
+      triHide = !triHide; paintHide();
       try { localStorage.setItem('sw_triage_hide', triHide ? '1' : ''); } catch (e) {}
       shown = 100; renderDetailRows();
     });
-    $('dBody').addEventListener('click', e => {
-      const t = e.target.closest('.tribtn'); if (!t) return;
-      e.preventDefault(); e.stopPropagation();
-      triToggle(t.getAttribute('data-tri'), t.getAttribute('data-v'));
-    });
-    ['fMcap', 'fPe', 'fSort'].forEach(id => $(id).addEventListener('change', () => { shown = 100; renderDetailRows(); }));
+    $('tIn').addEventListener('click', () => { if (SEL) triToggle(SEL[0], 'in'); });
+    $('tOut').addEventListener('click', () => { if (SEL) triToggle(SEL[0], 'out'); });
+    ['fMcap', 'fPe', 'fSort'].forEach(id => $(id).addEventListener('change', () => { shown = 100; SEL = null; SELI = 0; renderDetailRows(); }));
     window.addEventListener('hashchange', applyHash);
-    renderGrid();
+    CH = new K.Chart({ chart: $('cChart'), legend: $('cLegend'), msg: $('cMsg'), iv: 'D', range: '1Y', log: false });
+    chartBar();
+    $('cIv').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setIv(b.dataset.v); chartBar(); } };
+    $('cRg').onclick = e => { const b = e.target.closest('button'); if (b) { CH.setRange(b.dataset.v); chartBar(); } };
+    $('cLog').onclick = () => { CH.setLog(!CH.log); chartBar(); };
+    $('cFocus').onclick = () => setFocus();
     $('status').classList.add('hidden');
-    $('controls').classList.remove('hidden');
+    $('content').classList.remove('hidden');
+    K.fitGrid($('grid'));
+    window.addEventListener('resize', () => K.fitGrid($('grid')));
+    renderGrid();
     applyHash();
+    document.addEventListener('keydown', e => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tg = e.target, typing = tg && /^(INPUT|SELECT|TEXTAREA)$/.test(tg.tagName);
+      if (typing) { if (e.key === 'Escape' || (e.key === 'Enter' && tg.type === 'search')) tg.blur(); if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return; if (tg.type !== 'search') return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { const st = e.key === 'ArrowDown' ? 1 : -1;
+        if (PANE === 'g') { const j = VIEWB.findIndex(b => curB && b.k === curB.k) + st; if (VIEWB[j]) openBucket(VIEWB[j].k); else if (j < 0 && VIEWB.length && st > 0) openBucket(VIEWB[0].k); }
+        else { const j = VIEW.indexOf(SEL) + st; if (VIEW[j]) pick(j, true); }
+        e.preventDefault(); }
+      else if (e.key === 'ArrowLeft') { PANE = 'g'; const on = $('gList').querySelector('.on'); if (on) on.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { PANE = 'k'; e.preventDefault(); }
+      else if (e.key === 'Escape') { if (FOCUS) setFocus(false); }
+      else if (e.key === 'Enter') { if (SEL) location.href = './stock.html?sym=' + encodeURIComponent(SEL[0]); }
+      else if (e.key === 'f' || e.key === 'F') setFocus();
+      else if (e.key === 'i' || e.key === 'I') { if (SEL) triToggle(SEL[0], 'in'); }
+      else if (e.key === 'r' || e.key === 'R') { if (SEL) triToggle(SEL[0], 'out'); }
+      else if (e.key === '/') { $('q').focus(); e.preventDefault(); }
+    });
   } catch (e) {
     $('status').innerHTML = 'Could not load discovery data (' + esc(e.message) + '). Please try again in a minute.';
   }
