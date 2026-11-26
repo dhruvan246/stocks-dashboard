@@ -245,9 +245,14 @@ function render(){
   $('count').textContent=LIST.length.toLocaleString('en-IN')+' '+(view==='deals'?'deals':'stocks');
   renderList(); renderSel(); saveUrl();
 }
+const DROP={stocks:['Deals','Latest','Buyers']};   // columns given up first when the list pane is too narrow for all of them
+const pxw=c=>+((c[2].match(/(\d+)px/)||[0,0])[1]);
 function pickCols(){
   const all=COLS[view], ph=window.innerWidth<900;
-  CUR = ph ? PHONE[view].map(i=>all[i]) : all;
+  let cur = ph ? PHONE[view].map(i=>all[i]) : all.slice();
+  const room=$('pL').clientWidth-24, need=a=>a.reduce((s,c)=>s+pxw(c),0)+8*(a.length-1);
+  for(const lab of (DROP[view]||[])){ if(room<=0||need(cur)<=room) break; cur=cur.filter(c=>c[1]!==lab); }
+  CUR=cur;
   $('pL').style.setProperty('--cols', CUR.map(c=>c[2]).join(' '));
 }
 const al=c=>c[3]==='l'?'text-align:left':c[3]==='c'?'text-align:center':'text-align:right';
@@ -356,7 +361,7 @@ function wire(){
   $('season').addEventListener('click',e=>{ const a=e.target.closest('[data-sym]'); if(!a) return;
     SELSYM=a.dataset.sym; SELDEAL=null; if(!AGG[SELSYM]){ $('q').value=''; $('fKind').value='all'; $('fSide').value='all'; $('fVal').value='0'; if(+$('fDays').value===0||+$('fDays').value>=1) $('fDays').value='30'; } render(); });
   let rt=null, w0=window.innerWidth;
-  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); if((w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
+  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); const s0=CUR.map(c=>c[1]).join(); pickCols(); if(CUR.map(c=>c[1]).join()!==s0||(w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
   document.addEventListener('keydown',e=>{
     if(e.metaKey||e.ctrlKey||e.altKey) return; const t=e.target, tg=t&&t.tagName;
     if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }

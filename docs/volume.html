@@ -4,217 +4,190 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Volume Shockers</title>
-<meta name="description" content="NSE volume shockers — stocks trading many times their own 20-session average volume today, with delivery %, turnover, sector and F&O context: sudden interest made visible." />
+<meta name="description" content="NSE volume shockers — stocks trading many times their own 20-session average volume today, with delivery %, turnover, sector and F&amp;O context: sudden interest made visible." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-feature-settings: "tnum" 1; }
-  .card{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius,.9rem);box-shadow:var(--shadow,0 1px 2px rgba(0,0,0,.05))}
-  .pos{color:var(--pos,var(--pos));font-weight:600}.neg{color:var(--neg,var(--neg));font-weight:600}
-  /* hero */
-  .hero{position:relative;overflow:hidden;border:1px solid var(--border,var(--border));border-radius:var(--radius-lg,20px);
-        background:var(--surface)}
-  .hero::before{content:"";position:absolute;inset:0;background:none;pointer-events:none}
-  /* stat tiles */
-  .tile{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border));border-radius:var(--radius,.9rem);padding:.7rem .85rem;position:relative;overflow:hidden}
-  .tile .lab{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint,var(--text-faint))}
-  .tile .val{font-size:1.35rem;font-weight:800;line-height:1.1;color:var(--text,var(--text))}
-  .tile .sub{font-size:11px;color:var(--text-muted,var(--text-muted))}
-  .tile .ic{position:absolute;top:.55rem;right:.6rem;font-size:15px;opacity:.55}
-  /* pills / chips */
-  .vbtn{padding:6px 13px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;user-select:none;transition:var(--tr,.15s);
-        background:var(--surface-2,var(--surface-2));color:var(--text-muted,var(--text));border:1px solid var(--border,var(--border))}
-  .vbtn:hover{border-color:var(--border-strong,var(--border-strong))}
-  .vbtn.on{background:var(--accent,var(--accent));color:#fff;border-color:var(--accent,var(--accent));box-shadow:0 4px 14px -6px var(--glow,rgba(37,99,235,.6))}
-  .seg{display:inline-flex;background:var(--surface-2,var(--surface-2));border:1px solid var(--border,var(--border));border-radius:9999px;padding:2px}
-  .seg span{padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted,var(--text-muted));transition:var(--tr,.15s)}
-  .seg span.on{background:var(--accent,var(--accent));color:#fff}
-  select,input[type=text]{background:var(--surface,var(--surface));border:1px solid var(--border,var(--border-strong));border-radius:var(--radius);font-size:13px;padding:7px 10px;color:var(--text,var(--text))}
-  .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:var(--radius-sm);white-space:nowrap}
-  .chip.fno{background:rgba(139,92,246,.16);color:#7c3aed}
-  html[data-theme="dark"] .chip.fno{color:#c4b5fd}
-  .chip.del{background:rgba(16,185,129,.16);color:var(--pos)}
-  html[data-theme="dark"] .chip.del{color:var(--pos)}
-  .chip.sec{background:var(--surface-3,var(--surface-3));color:var(--text-muted,var(--text-muted));font-weight:700}
-  /* ratio bar */
-  .rbar{position:relative;height:7px;border-radius:9999px;background:var(--surface-3,var(--surface-3));overflow:hidden;min-width:54px}
-  .rbar>i{position:absolute;left:0;top:0;bottom:0;border-radius:9999px;background:linear-gradient(90deg,var(--accent,#2563eb),var(--accent-2,#8b5cf6))}
-  .rbar.down>i{background:linear-gradient(90deg,#fb7185,#f59e0b)}
-  /* sector activity strip */
-  .sbar{height:9px;border-radius:9999px;background:linear-gradient(90deg,var(--accent,#3b82f6),var(--accent-2,#8b5cf6))}
-  tbody tr:hover{background:var(--surface-2,var(--surface-2))}
-  th{position:sticky;top:56px;background:var(--surface-2,var(--surface-2));z-index:1}
-  .num{font-variant-numeric:tabular-nums}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(560px,1.2fr) 280px minmax(0,1fr)}
+  @media (max-width:1599px){ .os-bar .keys{display:none} }
+  #lHead,#lList .os-row{grid-template-columns:var(--cols)}
+  #lList .os-row{font-size:12.5px} #lList .os-row .n,#lList .os-row .cl{text-align:left}
+  #lHead span[data-k]{cursor:pointer;user-select:none} #lHead span[data-k]:hover{color:var(--text)}
+  #lHead span.srt{color:var(--accent-text)}
+  .os-row .cl{color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .os-row .fl{color:var(--text-faint)} .os-row .mu{font-weight:600}
+  .tg{display:inline-block;font-size:9.5px;font-weight:700;line-height:1;padding:2px 4px;border-radius:4px;letter-spacing:.02em}
+  .tg.b{background:var(--pos-soft,rgba(16,185,129,.14));color:var(--pos)} .tg.s{background:var(--neg-soft,rgba(244,63,94,.12));color:var(--neg)}
+  .tg.k{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+  .tg.p{background:var(--warn-soft,rgba(245,158,11,.16));color:var(--warn)}
+  #season{font-size:12px;color:var(--text-muted);padding:0 2px 8px;line-height:1.5}
+  #season b{color:var(--text);font-weight:600} #season a{color:var(--accent-text);cursor:pointer;font-weight:600}
+  #season .d{color:var(--text-faint);margin:0 7px}
+  html[data-theme] .os-bar input[type="search"],html[data-theme] .os-bar select{border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-size:12px;padding:4px 7px;height:28px;min-height:0;width:auto;max-width:170px}
+  html[data-theme] .os-bar input[type="search"]{width:190px}
+  #dBody{cursor:default}
+  .kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:0 12px;min-height:31px;border-bottom:1px solid var(--border)}
+  .kv span{color:var(--text-muted)} .kv b{font-weight:600;color:var(--text);white-space:nowrap}
+  .kv b.os-pos{color:var(--pos)} .kv b.os-neg{color:var(--neg)}
+  .sh{padding:9px 12px 5px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);border-bottom:1px solid var(--border);background:var(--surface-2)}
+  .nm{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:12.5px;line-height:1.4}
+  .dl{padding:7px 12px;border-bottom:1px solid var(--border);font-size:12.5px;line-height:1.45}
+  .dl.cur{background:var(--accent-soft)}
+  .dl .t{display:flex;align-items:center;gap:6px} .dl .t b{margin-left:auto;font-weight:600;color:var(--text)}
+  .dl .t .dt{color:var(--text-muted)}
+  .dl .c{display:flex;gap:8px;justify-content:space-between;color:var(--text-muted);margin-top:1px}
+  .dl .c .cli{cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;color:var(--text)} .dl .c .cli:hover{text-decoration:underline;color:var(--accent-text)}
+  .dl .c .qp{white-space:nowrap;color:var(--text-faint)}
+  #cStats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #cStats div{border-bottom:0 !important}
+  #cStats i{display:block;font-style:normal;font-size:11px;margin-top:2px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)} #how p{margin-top:6px}
+  #secs{display:flex;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:4px 6px;padding:0 2px 8px;font-size:12px;color:var(--text-muted);align-items:center}
+  #secs button{border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-muted);padding:2px 7px;font-size:12px;line-height:1.5;cursor:pointer;white-space:nowrap}
+  #secs button b{color:var(--text);font-weight:600;margin-left:3px} #secs button i{font-style:normal;color:var(--pos);margin-left:3px}
+  #secs button.on{border-color:var(--accent);color:var(--accent-text);background:var(--accent-soft)}
+  #secs span{white-space:nowrap}
+  html[data-theme] .os-bar select{max-width:132px} html[data-theme] .os-bar input[type="search"]{width:150px}
+  .live{color:var(--pos);font-weight:600}
+  #fbtn{display:none}
+  @media (max-width:1280px) and (min-width:900px){
+    #grid{grid-template-columns:minmax(420px,1.2fr) minmax(0,1fr);grid-template-rows:minmax(0,1.1fr) minmax(0,1fr)}
+    #pL{grid-row:1 / span 2} #pD{grid-column:2;grid-row:1} #pC{grid-column:2;grid-row:2}
+    #pC .os-stats{display:none}
+  }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)}
+    #fbtn{display:inline-flex} .os-bar:not(.open) .fx{display:none !important}
+    #pD .os-list{max-height:420px !important}
+    #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important}
+    #secs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+    html[data-theme] .os-bar input[type="search"]{width:150px}
+  }
+  @container (max-width:520px){ #cStats{grid-template-columns:repeat(2,minmax(0,1fr))} #cStats div:nth-child(2n){border-right:0} #cStats div:nth-child(-n+2){border-bottom:1px solid var(--border) !important} }
 </style>
 </head>
-<body class="min-h-screen" style="background:var(--app-bg,#f8fafc);color:var(--text,#1e293b)">
+<body class="bg-slate-50 min-h-screen text-slate-800">
 
-<header class="sticky top-0 z-40 backdrop-blur-md border-b" style="background:var(--header-bg,rgba(255,255,255,.9));border-color:var(--border,#e2e8f0)">
-  <div class="max-w-screen-xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
-      <span class="font-bold tracking-tight hidden sm:block" style="color:var(--text)">STOCKS<span style="color:var(--accent-2,#7c3aed)">WORLD</span></span>
+      <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
     <nav></nav>
   </div>
 </header>
 
-<main class="max-w-screen-xl mx-auto px-4 py-6">
-
-  <!-- HERO -->
-  <div class="hero p-5 sm:p-6 mb-5">
-    <div class="relative flex flex-wrap items-end justify-between gap-4">
-      <div class="max-w-2xl">
-        <div class="flex items-center gap-2 mb-1">
-          <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight" style="color:var(--text)">Volume Shockers</h1>
-        </div>
-        <p class="text-sm" style="color:var(--text-muted)">Stocks trading <b style="color:var(--text)">many times their own 20-session average volume</b> today — often the first sign someone is suddenly interested. We pair every spike with <b style="color:var(--text)">delivery %</b> (real accumulation vs intraday churn), sector, F&amp;O status and distance from the 52-week high, so you can tell a breakout from a blow-off.</p>
-        <p class="text-[11px] mt-1.5" style="color:var(--text-faint)"><span id="updated"></span></p>
-      </div>
-    </div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Volume Shockers</h1>
+    <div class="os-vtabs" id="views" role="tablist" aria-label="List"></div>
+    <div class="os-asof" id="asof"></div>
   </div>
-
-  <div id="status" class="text-sm py-16 text-center" style="color:var(--text-muted)">Loading volume data…</div>
+  <div id="status" class="os-empty">Loading volume data…</div>
 
   <div id="content" class="hidden">
+    <div class="os-bar">
+      <input id="q" type="search" placeholder="Search stock…  ( / )" autocomplete="off" aria-label="Search stock" />
+      <div class="os-sg" id="fRatio" role="group" aria-label="Minimum ratio to the 20-session average"></div>
+      <button id="fbtn" type="button" class="os-btn" aria-expanded="false" title="Show or hide the other filters">Filters</button>
+      <div class="os-sg fx" id="fTurn" role="group" aria-label="Minimum turnover"></div>
+      <select class="fx" id="fDir" aria-label="Direction"><option value="all">Up &amp; down</option><option value="up">Up days only</option><option value="down">Down days only</option></select>
+      <select class="fx" id="fLens" aria-label="Lens"><option value="all">All stocks</option><option value="del">Delivery-confirmed</option><option value="fno">F&amp;O only</option></select>
+      <select class="fx" id="fSector" aria-label="Sector"><option value="">All sectors</option></select>
+      <select id="fSort" aria-label="Sort"><option value="ratio">Highest ratio</option><option value="turn">Biggest turnover</option><option value="chg">Biggest gainer</option><option value="vol">Biggest volume</option></select>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>←→</b> change list · <b>Enter</b> open the stock</span>
+    </div>
+    <div id="season"></div>
+    <div id="secs" aria-label="Today's shockers by sector"></div>
 
-    <!-- STAT TILES -->
-    <div id="tiles" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4"></div>
-
-    <!-- SECTOR ACTIVITY STRIP (our extra) -->
-    <div class="card p-4 mb-5">
-      <div class="flex items-center justify-between mb-2.5">
-        <div class="text-[11px] font-extrabold uppercase tracking-wide" style="color:var(--text-faint)">Where the unusual volume is · today's shockers by sector</div>
-        <div class="text-[11px]" style="color:var(--text-faint)">green = share on up days</div>
-      </div>
-      <div id="sectors" class="space-y-1.5"></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pL" aria-label="List">
+        <div class="os-ph"><span class="ttl" id="lTitle"></span><span class="r" id="count"></span></div>
+        <div class="os-ch" id="lHead"></div>
+        <div class="os-list" id="lList" role="listbox" aria-label="List" tabindex="0"></div>
+      </section>
+      <section class="os-pane" id="pD" aria-label="Detail">
+        <div class="os-ph"><span class="sym" id="dSym"></span><span class="r" id="dTag"></span></div>
+        <div class="os-list" id="dBody"></div>
+      </section>
+      <section class="os-pane os-main" id="pC" aria-label="Chart">
+        <div class="os-ph"><span class="ttl" id="cTitle"></span><span class="r"><a class="os-btn hidden" id="cOpen" href="#" title="Open the stock's own page (Enter)">Open ↗</a></span></div>
+        <div class="os-ps"><div class="os-sg" id="cIv" role="group" aria-label="Bar size"></div><div class="os-sg" id="cRg" role="group" aria-label="Range"></div></div>
+        <div class="os-chartwrap"><div class="os-legend" id="cLegend"></div><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div class="os-stats" id="cStats"></div>
+      </section>
     </div>
 
-    <!-- LIVE SESSION SPURTS (our CF Worker → NSE volume-gainers; hidden unless live data parses) -->
-    <div id="liveCard" class="card p-4 mb-5 hidden">
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-        <div class="text-[11px] font-extrabold uppercase tracking-wide" style="color:var(--text-faint)">
-          <span style="color:var(--pos)">● LIVE</span> volume spurts · this session, right now <span id="liveAt" class="normal-case font-semibold"></span>
-        </div>
-        <div class="text-[11px]" style="color:var(--text-faint)">× = today's volume vs NSE's <b>1-week</b> average · the table below is EOD vs our <b>20-session</b> baseline</div>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[680px]">
-          <thead class="text-[11px] uppercase" style="color:var(--text-faint);border-bottom:1px solid var(--border)">
-            <tr><th class="text-left py-1.5 px-2">Stock</th><th class="text-right px-2">LTP</th><th class="text-right px-2">Chg %</th><th class="text-right px-2">Volume</th><th class="text-right px-2">× 1-wk avg</th><th class="text-right px-2">Turnover</th></tr>
-          </thead>
-          <tbody id="liveBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- VIEW + FILTERS -->
-    <div class="mb-3 flex flex-wrap items-center gap-2">
-      <div class="seg" role="tablist">
-        <span id="vToday" class="on">Today's shockers</span>
-        <span id="vRepeat">Repeat · 5 sessions</span>
-      </div>
-      <span class="mx-1 hidden sm:inline" style="color:var(--border-strong)">|</span>
-      <div id="fRatioWrap" class="flex gap-1.5">
-        <span class="vbtn ratio on" data-v="2">≥ 2×</span>
-        <span class="vbtn ratio" data-v="3">≥ 3×</span>
-        <span class="vbtn ratio" data-v="5">≥ 5×</span>
-        <span class="vbtn ratio" data-v="10">≥ 10×</span>
-      </div>
-      <div id="fTurnWrap" class="flex gap-1.5">
-        <span class="vbtn turn on" data-v="0">Any ₹</span>
-        <span class="vbtn turn" data-v="0.25">≥ ₹25L</span>
-        <span class="vbtn turn" data-v="1">≥ ₹1 Cr</span>
-      </div>
-      <select id="fDir"><option value="all">Up &amp; down</option><option value="up">Up days only</option><option value="down">Down days only</option></select>
-      <select id="fLens"><option value="all">All stocks</option><option value="del">Delivery-confirmed</option><option value="fno">F&amp;O only</option></select>
-      <select id="fSector"><option value="">All sectors</option></select>
-      <input id="q" type="text" placeholder="Search stock…" autocomplete="off" class="w-40" />
-      <select id="fSort"><option value="ratio">Highest ratio</option><option value="turn">Biggest turnover</option><option value="chg">Biggest gainer</option><option value="vol">Biggest volume</option></select>
-    </div>
-
-    <!-- TABLE -->
-    <div class="card overflow-x-auto">
-      <table class="w-full text-sm min-w-[940px]">
-        <thead id="tHead" class="text-[11px] uppercase" style="color:var(--text-faint);border-bottom:1px solid var(--border)"></thead>
-        <tbody id="tBody"></tbody>
-      </table>
-      <div class="p-3 flex items-center justify-between text-xs" style="color:var(--text-muted)">
-        <span id="count"></span>
-        <button id="more" class="hidden px-3 py-1.5 rounded-lg font-semibold transition" style="background:var(--surface-2);color:var(--text)">Show more</button>
-      </div>
-    </div>
-
-    <p class="text-[11px] mt-5" style="color:var(--text-faint)">Source: NSE daily full bhavcopy (one file per trading day), refreshed every trading evening (~21:15 IST) plus a next-morning catch-up — missed days self-heal because each date has its own file. <b>Ratio</b> = today's traded volume ÷ the mean of the stock's own prior 20 sessions (needs ≥15 sessions of history, so fresh listings appear after ~3 weeks and never inflate their own baseline). <b>Turnover</b> and <b>volume</b> are real NSE columns; <b>delivery %</b> is the share of volume that settled into a demat account rather than squaring off intraday. A volume shock is <i>interest</i>, not proof — cross-check who's buying on the Bulk/Block Deals and Insider Trades pages. Educational only, not investment advice.</p>
+    <details id="how"><summary>How these numbers are made</summary>
+      <p>Stocks trading <b>many times their own 20-session average volume</b> today — often the first sign someone is suddenly interested. Every spike is paired with <b>delivery %</b> (real accumulation vs intraday churn), sector, F&amp;O status and distance from the 52-week high, so you can tell a breakout from a blow-off. <b>Delivery-confirmed</b> = delivery % ≥ 50. <b>Repeat · 5 sessions</b> lists stocks with at least 2 shock sessions in the last 5. The sector line counts today's shockers by sector (green = how many of them were on up days); click a sector to filter the list.</p>
+      <p><b>Live now</b> appears only during market hours: it is NSE's own intraday volume-spurt feed, where × = today's volume vs NSE's <b>1-week</b> average — a different window from the end-of-day list, which uses our <b>20-session</b> baseline, so the two are never mixed. It refreshes every minute and shows the first 15 names at 2× or more.</p>
+      <p>Source: NSE daily full bhavcopy (one file per trading day), refreshed every trading evening (~21:15 IST) plus a next-morning catch-up — missed days self-heal because each date has its own file. <b>Ratio</b> = today's traded volume ÷ the mean of the stock's own prior 20 sessions (needs ≥15 sessions of history, so fresh listings appear after ~3 weeks and never inflate their own baseline). <b>Turnover</b> and <b>volume</b> are real NSE columns; <b>delivery %</b> is the share of volume that settled into a demat account rather than squaring off intraday. The chart is the stock's daily price history from this site's own store. A volume shock is <i>interest</i>, not proof — cross-check who's buying on the Bulk/Block Deals and Insider Trades pages. Educational only, not investment advice.</p>
+    </details>
   </div>
 </main>
 
 <script>
 'use strict';
+const K=window.OSKit;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmtD8 = d => { const s=''+d; return (+s.slice(6))+' '+MON[+s.slice(4,6)-1]+" '"+s.slice(2,4); };
 const volf = n => n==null ? '—' : n>=1e7 ? (n/1e7).toFixed(1)+'Cr' : n>=1e5 ? (n/1e5).toFixed(1)+'L' : n>=1e3 ? (n/1e3).toFixed(1)+'k' : (''+Math.round(n));
 const crf = v => v==null ? '—' : v>=100 ? Math.round(v).toLocaleString('en-IN') : v>=10 ? v.toFixed(1) : v.toFixed(2);
-const mcf = v => v==null ? '—' : v>=1e5 ? (v/1e5).toFixed(2)+'L Cr' : v>=1e3 ? (v/1e3).toFixed(1)+'k' : Math.round(v).toLocaleString('en-IN');
 const inr = n => n==null ? '—' : Number(n).toLocaleString('en-IN');
-const pctc = v => v==null ? '—' : '<span class="'+(v>=0?'pos':'neg')+'">'+(v>0?'+':'')+v.toFixed(1)+'%</span>';
-const slink = (sym,name) => '<span class="sw-star" data-sym="'+esc(sym)+'"></span> '+
-  '<a class="font-bold hover:underline" style="color:var(--accent)" href="./stock.html?sym='+encodeURIComponent(sym)+'" title="'+esc(name||'')+'">'+esc(sym)+'</a>'+
-  (name ? '<div class="text-[11px] font-normal max-w-[190px] truncate" style="color:var(--text-faint)">'+esc(name)+'</div>' : '');
+const pctc = v => v==null ? '—' : '<span class="'+(v>=0?'os-pos':'os-neg')+'">'+(v>0?'+':'')+v.toFixed(1)+'%</span>';
+// the live feed sends volume and turnover either as numbers or as ready-made text ("36.92 L", "341.59 Cr"): text is shown as sent
+const lvol = v => typeof v==='string' ? esc(v) : volf(v);
+const ltur = v => v==null ? '—' : typeof v==='string' ? '₹'+esc(v) : '₹'+crf(v/100)+' Cr';
+const stockUrl = s => './stock.html?sym=' + encodeURIComponent(s);
+const star = s => '<span class="sw-star" data-sym="' + esc(s) + '"></span> ';
 // row: 0 sym,1 name,2 ltp,3 chg,4 vol,5 avg,6 ratio,7 turn,8 delp,9 sector,10 mcap,11 fno,12 near52,13 dir
-const SECCOL = {}; const PAL=['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#ef4444','#84cc16','#a855f7','#14b8a6','#f97316','#6366f1'];
-const secColor = s => SECCOL[s] || (SECCOL[s] = PAL[Object.keys(SECCOL).length % PAL.length]);
 
-let DATA=null, view='today', shown=200, ratioMin=2, turnMin=0;
+const U0=new URLSearchParams(location.search);
+let DATA=null, view = U0.get('view')==='repeat' ? 'repeat' : 'today', wantLive = U0.get('view')==='live', shown=0, ratioMin=2, turnMin=0;
+let LIST=[], ROW={}, REP={}, LIVE=[], LIVEAT='', SELSYM=(U0.get('sym')||'').toUpperCase()||null, CH=null, TOK=0, showTimer=null;
+const PAGE=200;
 
 async function load(){
   try { DATA = await (await fetch('./volume.json?t='+Date.now())).json(); }
   catch(e){ $('status').textContent='Could not load volume.json — run scripts/build_volume.py first.'; return; }
   if (!DATA || !DATA.rows){ $('status').textContent='No volume data yet.'; return; }
-  $('updated').textContent = 'Session '+fmtD8(+DATA.date)+' · '+DATA.rows.length+' stocks flagged · window '+fmtD8(+DATA.from)+' → '+fmtD8(+DATA.to)+' · updated '+DATA.updated+' IST';
+  $('asof').innerHTML = '<span class="os-dot"></span>Session '+fmtD8(+DATA.date)+' · '+DATA.rows.length+' stocks flagged · window '+fmtD8(+DATA.from)+' → '+fmtD8(+DATA.to)+' · updated '+esc(DATA.updated)+' IST';
   $('status').classList.add('hidden'); $('content').classList.remove('hidden');
+  if(U0.get('q')) $('q').value=U0.get('q');
+  for(const r of DATA.rows) ROW[r[0]]=r;
+  for(const r of (DATA.repeat||[])) REP[r[0]]=r;
   // sector dropdown
   const secs = [...new Set(DATA.rows.map(r=>r[9]))].sort();
   $('fSector').insertAdjacentHTML('beforeend', secs.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join(''));
-  renderTiles(); renderSectors(); render();
-  // pill groups
-  document.querySelectorAll('#fRatioWrap .ratio').forEach(el=>el.onclick=()=>{
-    document.querySelectorAll('#fRatioWrap .ratio').forEach(x=>x.classList.remove('on')); el.classList.add('on'); ratioMin=+el.dataset.v; shown=200; render(); });
-  document.querySelectorAll('#fTurnWrap .turn').forEach(el=>el.onclick=()=>{
-    document.querySelectorAll('#fTurnWrap .turn').forEach(x=>x.classList.remove('on')); el.classList.add('on'); turnMin=+el.dataset.v; shown=200; render(); });
-  ['fDir','fLens','fSector','fSort'].forEach(id=>$(id).addEventListener('change',()=>{shown=200;render();}));
-  $('q').addEventListener('input',()=>{shown=200;render();});
-  $('vToday').onclick=()=>setView('today'); $('vRepeat').onclick=()=>setView('repeat');
-  $('more').onclick=()=>{shown+=200;render();};
+  CH=new K.Chart({chart:$('cChart'),legend:$('cLegend'),msg:$('cMsg'),iv:'D',range:'6M',log:false});
+  wire(); renderTiles(); render();
+  liveSpurts(); setInterval(()=>{ if(!document.hidden) liveSpurts(); },60000);
 }
-function setView(v){ view=v; shown=200;
-  $('vToday').classList.toggle('on',v==='today'); $('vRepeat').classList.toggle('on',v==='repeat');
-  ['fTurnWrap','fDir','fLens','fSector'].forEach(id=>$(id).style.display = v==='repeat'?'none':'');
-  render(); }
+function setView(v){ view=v; render(); }
 
+// the session line (was five tiles): the file's own stats, unchanged
 function renderTiles(){
-  const s=DATA.stats;
-  const tile=(lab,val,sub,ic,cls)=>'<div class="tile"><span class="ic">'+ic+'</span><div class="lab">'+lab+'</div><div class="val '+(cls||'')+'">'+val+'</div><div class="sub">'+sub+'</div></div>';
-  $('tiles').innerHTML =
-     tile('Shockers today', s.n, fmtD8(+DATA.date), '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>')
-   + tile('Median ratio', s.medRatio+'×', 'typical spike vs 20-sess avg', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>')
-   + tile('Top spike', esc(s.maxSym||'—'), s.maxRatio+'× average volume', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>')
-   + tile('Delivery-confirmed', s.delivConf, 'delivery % ≥ 50 — real accumulation', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><path d="M15 18H9"/><circle cx="17" cy="18" r="2"/></svg>','pos')
-   + tile('Direction', '<span class="pos">'+s.up+'</span> / <span class="neg">'+s.down+'</span>', 'up-day vs down-day spikes · '+s.fno+' in F&O', '<svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>');
+  const s=DATA.stats, d='<span class="d">·</span>';
+  $('season').innerHTML = '<b>'+fmtD8(+DATA.date)+'</b>: <b>'+s.n+'</b> shockers'+d+'Median ratio <b>'+s.medRatio+'×</b> the 20-session average'+d+
+    'Top spike: '+(s.maxSym?'<a data-sym="'+esc(s.maxSym)+'" title="Show '+esc(s.maxSym)+'">'+esc(s.maxSym)+'</a>':'—')+' '+s.maxRatio+'× average volume'+d+
+    'Delivery-confirmed <b class="os-pos">'+s.delivConf+'</b> <span title="delivery % ≥ 50 — real accumulation">(delivery ≥ 50%)</span>'+d+
+    'Up-day <b class="os-pos">'+s.up+'</b> / down-day <b class="os-neg">'+s.down+'</b> spikes'+d+'<b>'+s.fno+'</b> in F&amp;O';
 }
-
+// today's shockers by sector (was the bar strip): same top 9, count and up-day count; a click filters the list
 function renderSectors(){
-  const arr=(DATA.sectors||[]).slice(0,9), max=arr.length?arr[0][1]:1;
-  $('sectors').innerHTML = arr.map(([sec,c,u])=>{
-    const w=Math.max(6,Math.round(c/max*100)), uw=c?Math.round(u/c*100):0;
-    return '<div class="flex items-center gap-2.5">'
-      +'<div class="w-40 shrink-0 text-[12px] truncate" style="color:var(--text-muted)" title="'+esc(sec)+'">'+esc(sec)+'</div>'
-      +'<div class="flex-1 h-[9px] rounded-full overflow-hidden" style="background:var(--surface-3)"><div class="sbar h-full" style="width:'+w+'%;background:linear-gradient(90deg,'+secColor(sec)+',var(--accent-2,#8b5cf6))" title="'+c+' shockers · '+uw+'% on up days"></div></div>'
-      +'<div class="w-10 text-right text-[12px] font-bold num" style="color:var(--text)">'+c+'</div></div>';
-  }).join('') || '<div class="text-[12px]" style="color:var(--text-faint)">No shockers today.</div>';
+  const arr=(DATA.sectors||[]).slice(0,9), cur=$('fSector').value;
+  $('secs').innerHTML = arr.length ? '<span>By sector:</span>'+arr.map(([sec,c,u])=>{
+    const uw=c?Math.round(u/c*100):0;
+    return '<button type="button" data-sec="'+esc(sec)+'" class="'+(cur===sec?'on':'')+'" title="'+c+' shockers · '+uw+'% on up days">'+esc(sec)+'<b>'+c+'</b><i>'+u+' up</i></button>';
+  }).join('') : '<span>No shockers today.</span>';
 }
 
 function filtered(){
@@ -227,104 +200,216 @@ function filtered(){
     (!q || r[0].toLowerCase().includes(q) || (r[1]||'').toLowerCase().includes(q)));
 }
 
-const HEAD = '<tr>'
-  +'<th class="text-left py-2.5 px-3">Stock</th>'
-  +'<th class="text-right px-3">LTP</th>'
-  +'<th class="text-right px-3">Chg</th>'
-  +'<th class="text-right px-3">Volume</th>'
-  +'<th class="text-right px-3">20D avg</th>'
-  +'<th class="text-left px-3">Ratio vs avg</th>'
-  +'<th class="text-right px-3">Turnover</th>'
-  +'<th class="text-right px-3">Delivery</th>'
-  +'<th class="text-right px-3">vs 52w hi</th>'
-  +'<th class="text-left px-3">Sector</th></tr>';
-const HEAD_REP = '<tr><th class="text-left py-2.5 px-3">Stock</th><th class="text-right px-3">Shock sessions</th><th class="text-right px-3">Best ratio</th><th class="text-right px-3">Latest shock</th></tr>';
-
-function render(){ view==='repeat' ? renderRepeat() : renderToday(); }
-
-function renderToday(){
-  const sort=$('fSort').value;
-  const rows=filtered().slice();
-  if (sort==='ratio') rows.sort((a,b)=>b[6]-a[6]);
-  else if (sort==='turn') rows.sort((a,b)=>b[7]-a[7]);
-  else if (sort==='chg') rows.sort((a,b)=>(b[3]||-999)-(a[3]||-999));
-  else if (sort==='vol') rows.sort((a,b)=>b[4]-a[4]);
-  $('tHead').innerHTML=HEAD;
-  const upto=Math.min(shown,rows.length); let h='';
-  for(let i=0;i<upto;i++){ const r=rows[i];
-    const w=Math.min(100,Math.round(r[6]/10*100));
-    const del = r[8]!=null && r[8]>=50;
-    h+='<tr style="border-bottom:1px solid var(--border)" class="align-top">'
-      +'<td class="py-2.5 px-3">'+slink(r[0],r[1])+(r[11]?' <span class="chip fno">F&amp;O</span>':'')+'</td>'
-      +'<td class="py-2.5 px-3 text-right num">'+inr(r[2])+'</td>'
-      +'<td class="py-2.5 px-3 text-right num">'+pctc(r[3])+'</td>'
-      +'<td class="py-2.5 px-3 text-right num font-semibold" title="'+inr(r[4])+' shares">'+volf(r[4])+'</td>'
-      +'<td class="py-2.5 px-3 text-right num" style="color:var(--text-muted)" title="mean of prior 20 sessions">'+volf(r[5])+'</td>'
-      +'<td class="py-2.5 px-3"><div class="flex items-center gap-2"><div class="rbar '+(r[13]<0?'down':'')+'" title="'+r[6]+'× the 20-session average"><i style="width:'+w+'%"></i></div><span class="font-bold num" style="color:var(--text)">'+r[6]+'×</span></div></td>'
-      +'<td class="py-2.5 px-3 text-right num font-semibold">₹'+crf(r[7])+'</td>'
-      +'<td class="py-2.5 px-3 text-right num">'+(r[8]==null?'—':'<span'+(del?' class="chip del"':' style="color:var(--text-muted)"')+'>'+r[8].toFixed(1)+'%</span>')+'</td>'
-      +'<td class="py-2.5 px-3 text-right num" style="color:var(--text-muted)" title="distance from 52-week high">'+(r[12]==null?'—':r[12].toFixed(0)+'%')+'</td>'
-      +'<td class="py-2.5 px-3"><span class="chip sec" style="background:'+secColor(r[9])+'22;color:'+secColor(r[9])+'">'+esc(r[9])+'</span></td></tr>';
+/* ---- list ---- */
+const COLS={
+  today:[['Stock','minmax(112px,1fr)','l'],['LTP','66px','r'],['Chg','54px','r'],['Volume','58px','r'],['Ratio','56px','r'],['Turn ₹cr','62px','r'],['Deliv %','54px','r']],
+  repeat:[['Stock','minmax(112px,1fr)','l'],['Shock sessions','96px','r'],['Best ratio','74px','r'],['Latest shock','84px','r']],
+  live:[['Stock','minmax(112px,1fr)','l'],['LTP','72px','r'],['Chg %','58px','r'],['Volume','68px','r'],['× 1-wk avg','76px','r'],['Turnover','82px','r']] };
+const PHONE={today:[0,2,4,6], repeat:[0,1,2], live:[0,2,3,4]};
+const TIP={Volume:'Shares traded',Ratio:'Today’s volume ÷ the mean of the stock’s own prior 20 sessions','Turn ₹cr':'Turnover, ₹ crore',Turnover:'Turnover so far, as NSE reports it','Deliv %':'Share of volume that was delivered; green = 50% or more','× 1-wk avg':'Today’s volume vs NSE’s 1-week average','Shock sessions':'Sessions with a volume shock, out of the last 5'};
+let CUR=[];
+const rowSym=r=>view==='live'?r.symbol:r[0];
+function render(){
+  if(view==='live' && !LIVE.length) view='today';
+  if(view==='today'){
+    const sort=$('fSort').value; const rows=filtered().slice();
+    if (sort==='ratio') rows.sort((a,b)=>b[6]-a[6]);
+    else if (sort==='turn') rows.sort((a,b)=>b[7]-a[7]);
+    else if (sort==='chg') rows.sort((a,b)=>(b[3]||-999)-(a[3]||-999));
+    else if (sort==='vol') rows.sort((a,b)=>b[4]-a[4]);
+    LIST=rows;
+  } else if(view==='repeat'){
+    const q=$('q').value.trim().toLowerCase();
+    LIST=(DATA.repeat||[]).filter(r=>!q||r[0].toLowerCase().includes(q)||(r[1]||'').toLowerCase().includes(q));
+  } else LIST=LIVE;
+  if(!SELSYM || !LIST.some(r=>rowSym(r)===SELSYM)) SELSYM=LIST[0]?rowSym(LIST[0]):null;
+  renderTabs(); renderSectors();
+  // controls that do nothing in a view are not shown in it (Repeat: search only; Live: none)
+  const T=view==='today';
+  $('q').style.display=view==='live'?'none':''; $('fRatio').style.display=T?'':'none'; $('fTurn').style.display=T?'':'none'; $('fbtn').style.display=T?'':'none';
+  ['fDir','fLens','fSector','fSort'].forEach(id=>$(id).style.display=T?'':'none');
+  sg('fRatio',[[2,'≥ 2×'],[3,'≥ 3×'],[5,'≥ 5×'],[10,'≥ 10×']],ratioMin,v=>{ ratioMin=+v; render(); });
+  sg('fTurn',[[0,'Any ₹'],[0.25,'≥ ₹25L'],[1,'≥ ₹1 Cr']],turnMin,v=>{ turnMin=+v; render(); });
+  { const nf=(turnMin>0)+($('fDir').value!=='all')+($('fLens').value!=='all')+($('fSector').value!==''); $('fbtn').textContent='Filters'+(nf?' · '+nf:''); if(nf&&!$('fbtn').dataset.t) $('fbtn').parentNode.classList.add('open'); }
+  $('lTitle').innerHTML= view==='today'?'Shockers · '+fmtD8(+DATA.date) : view==='repeat'?'Repeat · stocks with ≥2 shock sessions in 5' : '<span class="live">● LIVE</span> volume spurts · this session';
+  $('count').textContent= view==='live' ? LIVEAT : LIST.length.toLocaleString('en-IN')+' '+(view==='today'?'shocker':'stock')+(LIST.length===1?'':'s');
+  renderList(); renderSel(); saveUrl();
+}
+function renderTabs(){
+  const tabs=[['today','Today’s shockers'],['repeat','Repeat · 5 sessions']]; if(LIVE.length) tabs.push(['live','<span class="live">●</span> Live now']);
+  $('views').innerHTML=tabs.map(([k,l])=>'<button type="button" role="tab" data-v="'+k+'" class="'+(view===k?'on':'')+'">'+l+'</button>').join('');
+  $('views').querySelectorAll('button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
+}
+const DROP={today:['Volume','LTP'], live:['LTP','Volume']};   // columns given up first when the list pane is too narrow for all of them (they stay in the middle pane)
+const pxw=c=>+((c[1].match(/(\d+)px/)||[0,0])[1]);
+function pickCols(){
+  const all=COLS[view], ph=window.innerWidth<900;
+  let cur = ph ? PHONE[view].map(i=>all[i]) : all.slice();
+  const room=$('pL').clientWidth-24, need=a=>a.reduce((s,c)=>s+pxw(c),0)+8*(a.length-1);
+  for(const lab of (DROP[view]||[])){ if(room<=0||need(cur)<=room) break; cur=cur.filter(c=>c[0]!==lab); }
+  CUR=cur;
+  $('pL').style.setProperty('--cols', CUR.map(c=>c[1]).join(' '));
+}
+const al=c=>c[2]==='l'?'text-align:left':'text-align:right';
+const fno='<span class="tg k" style="margin-left:5px">F&amp;O</span>';
+function rowHtml(r,i){
+  const s=rowSym(r), on=s===SELSYM; let m, ttl;
+  if(view==='today'){ ttl=r[1]||s; const del=r[8]!=null&&r[8]>=50;
+    m={Stock:'<span class="n">'+star(s)+esc(s)+(r[11]?fno:'')+'</span>', LTP:'<span class="v">'+inr(r[2])+'</span>', Chg:'<span class="v">'+pctc(r[3])+'</span>', Volume:'<span class="v" title="'+inr(r[4])+' shares">'+volf(r[4])+'</span>',
+      Ratio:'<span class="v mu '+(r[13]<0?'os-neg':'')+'" title="'+r[6]+'× the 20-session average'+(r[13]<0?' · on a down day':'')+'">'+r[6]+'×</span>', 'Turn ₹cr':'<span class="v">'+crf(r[7])+'</span>',
+      'Deliv %':'<span class="v '+(del?'os-pos':'fl')+'">'+(r[8]==null?'—':r[8].toFixed(1)+'%')+'</span>'};
+  } else if(view==='repeat'){ ttl=r[1]||s;
+    m={Stock:'<span class="n">'+star(s)+esc(s)+'</span>', 'Shock sessions':'<span class="v"><b style="font-weight:600">'+r[2]+'</b> <span class="fl">/ 5</span></span>', 'Best ratio':'<span class="v mu">'+r[3]+'×</span>', 'Latest shock':'<span class="v fl">'+fmtD8(r[4])+'</span>'};
+  } else { ttl=r.companyName||s;
+    m={Stock:'<span class="n">'+star(s)+esc(s)+'</span>', LTP:'<span class="v">'+(r.ltp!=null?Number(r.ltp).toLocaleString('en-IN'):'—')+'</span>', 'Chg %':'<span class="v">'+pctc(r.pChange)+'</span>', Volume:'<span class="v">'+lvol(r.volume)+'</span>',
+      '× 1-wk avg':'<span class="v mu">'+(r.week1volChange!=null?Number(r.week1volChange).toFixed(1)+'×':'—')+'</span>', Turnover:'<span class="v">'+ltur(r.turnover)+'</span>'};
   }
-  finish(h,upto,rows.length,'shockers · '+fmtD8(+DATA.date),10);
+  return '<div class="os-row'+(on?' on':'')+'" role="option" aria-selected="'+on+'" data-i="'+i+'" title="'+esc(ttl)+'">'+CUR.map(c=>m[c[0]]).join('')+'</div>';
+}
+function renderList(){
+  pickCols();
+  $('lHead').innerHTML=CUR.map(c=>'<span style="'+al(c)+'"'+(TIP[c[0]]?' title="'+TIP[c[0]]+'"':'')+'>'+c[0]+'</span>').join('');
+  shown=0; const keep=$('lList').scrollTop; $('lList').innerHTML='';
+  if(!LIST.length){ $('lList').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  renderMore(Math.max(PAGE, selIndex()+40)); $('lList').scrollTop=view==='live'?keep:0;
+}
+const selIndex=()=>LIST.findIndex(r=>rowSym(r)===SELSYM);
+function reveal(el){ if(!el) return; const L=$('lList');
+  const top=el.getBoundingClientRect().top-L.getBoundingClientRect().top+L.scrollTop;
+  if(top<L.scrollTop) L.scrollTop=top; else if(top+el.offsetHeight>L.scrollTop+L.clientHeight) L.scrollTop=top+el.offsetHeight-L.clientHeight; }
+function renderMore(upto){
+  const to=Math.min(LIST.length, Math.max(shown+PAGE, upto||0)); if(to<=shown) return;
+  let h=''; for(let i=shown;i<to;i++) h+=rowHtml(LIST[i],i);
+  $('lList').insertAdjacentHTML('beforeend', h); shown=to;
+}
+function select(i,noScroll){
+  if(i<0||i>=LIST.length) return; if(i>=shown) renderMore(i+40);
+  SELSYM=rowSym(LIST[i]);
+  $('lList').querySelectorAll('.os-row.on').forEach(e=>{ e.classList.remove('on'); e.setAttribute('aria-selected','false'); });
+  const el=$('lList').querySelector('.os-row[data-i="'+i+'"]'); if(el){ el.classList.add('on'); el.setAttribute('aria-selected','true'); if(!noScroll) reveal(el); }
+  renderSel(true); saveUrl();
+}
+let LASTSYM=null;
+function renderSel(lazy){ renderDetail(); renderStats(); chartBar(); K.fitGrid($('grid')); reveal($('lList').querySelector('.os-row.on'));
+  if(SELSYM!==LASTSYM||!lazy){ LASTSYM=SELSYM; renderChart(lazy); } }
+
+/* ---- detail: everything the page knows about the selected stock ---- */
+const liveOf=s=>LIVE.find(r=>r.symbol===s);
+const nameOf=s=>(ROW[s]&&ROW[s][1])||(REP[s]&&REP[s][1])||((liveOf(s)||{}).companyName)||'';
+function renderDetail(){
+  const s=LIST.length?SELSYM:null;
+  if(!s){ $('dSym').textContent='—'; $('dTag').textContent=''; $('dBody').innerHTML='<div class="os-empty">Nothing matches these filters.</div>'; return; }
+  const r=ROW[s], p=REP[s], l=liveOf(s), kv=(k,v,c)=>'<div class="kv"><span>'+k+'</span><b class="'+(c||'')+'">'+v+'</b></div>';
+  $('dSym').innerHTML=star(s)+'<a href="'+stockUrl(s)+'" title="Open '+esc(s)+'’s own page">'+esc(s)+'</a>';
+  $('dTag').textContent=r?(r[11]?'F&O · ':'')+r[9]:'';
+  const nm=nameOf(s); let h=nm?'<div class="nm">'+esc(nm)+'</div>':'';
+  if(view==='live') h+='<div class="nm" style="font-size:11.5px;color:var(--text-faint)">× here = today’s volume vs NSE’s <b>1-week</b> average. The Today’s shockers list is end-of-day vs our <b>20-session</b> baseline.</div>';
+  if(l){ h+='<div class="sh"><span class="live">● LIVE</span> this session '+esc(LIVEAT)+'</div>'+kv('LTP',l.ltp!=null?Number(l.ltp).toLocaleString('en-IN'):'—')+kv('Change',pctc(l.pChange))+kv('Volume',lvol(l.volume))+kv('× 1-week average',l.week1volChange!=null?Number(l.week1volChange).toFixed(1)+'×':'—')+kv('Turnover',ltur(l.turnover)); }
+  if(r){ const del=r[8]!=null&&r[8]>=50;
+    h+='<div class="sh">Session '+fmtD8(+DATA.date)+' · end of day</div>'+kv('LTP',inr(r[2]))+kv('Day change',pctc(r[3]))+kv('Volume (shares)',inr(r[4]))+kv('20-session average volume',volf(r[5]))+
+      kv('Ratio vs average',r[6]+'×'+(r[13]<0?' · down day':''),r[13]<0?'os-neg':'')+kv('Turnover (₹ cr)',crf(r[7]))+kv('Delivery %',r[8]==null?'—':r[8].toFixed(1)+'%'+(del?' · confirmed':''),del?'os-pos':'')+
+      kv('vs 52-week high',r[12]==null?'—':r[12].toFixed(0)+'%')+kv('Sector',esc(r[9]))+kv('F&amp;O stock',r[11]?'Yes':'No'); }
+  else if(view!=='live') h+='<div class="os-empty" style="padding:14px 12px">Not among the shockers of '+fmtD8(+DATA.date)+'.</div>';
+  if(p){ h+='<div class="sh">Repeat · last 5 sessions</div>'+kv('Shock sessions',p[2]+' / 5')+kv('Best ratio',p[3]+'×')+kv('Latest shock',fmtD8(p[4])); }
+  h+='<a class="os-row" style="grid-template-columns:1fr" href="'+stockUrl(s)+'"><span class="n" style="color:var(--accent-text)">Open '+esc(s)+'’s page →</span></a>';
+  $('dBody').innerHTML=h; $('dBody').scrollTop=0;
+}
+function renderStats(){
+  const s=LIST.length?SELSYM:null; if(!s){ $('cStats').innerHTML=''; return; }
+  const c=(l,v,sub,k)=>'<div><span>'+l+'</span><b class="'+(k||'')+'">'+v+'</b><i>'+sub+'</i></div>';
+  const r=ROW[s], p=REP[s], l=liveOf(s);
+  if(view==='live'&&l){ $('cStats').innerHTML=c('× 1-week avg',l.week1volChange!=null?Number(l.week1volChange).toFixed(1)+'×':'—','live, this session')+c('Volume',lvol(l.volume),'shares so far')+c('Turnover',ltur(l.turnover),'so far')+c('Change',l.pChange==null?'—':(l.pChange>0?'+':'')+Number(l.pChange).toFixed(1)+'%','on the day',l.pChange>=0?'os-pos':'os-neg'); return; }
+  if(r){ const del=r[8]!=null&&r[8]>=50;
+    $('cStats').innerHTML=c('Ratio',r[6]+'×','of its 20-session average',r[13]<0?'os-neg':'')+c('Volume',volf(r[4]),'average '+volf(r[5]))+c('Turnover','₹'+crf(r[7])+' cr',fmtD8(+DATA.date))+c('Delivery',r[8]==null?'—':r[8].toFixed(1)+'%',del?'delivery-confirmed':'of volume',del?'os-pos':''); return; }
+  if(p){ $('cStats').innerHTML=c('Shock sessions',p[2]+' / 5','last 5 sessions')+c('Best ratio',p[3]+'×','of its 20-session average')+c('Latest shock',fmtD8(p[4]),'')+c('Today','—','not a shocker on '+fmtD8(+DATA.date)); return; }
+  $('cStats').innerHTML='';
 }
 
-function renderRepeat(){
-  const q=$('q').value.trim().toLowerCase();
-  let rows=(DATA.repeat||[]).filter(r=>!q||r[0].toLowerCase().includes(q)||(r[1]||'').toLowerCase().includes(q));
-  $('tHead').innerHTML=HEAD_REP;
-  const upto=Math.min(shown,rows.length); let h='';
-  for(let i=0;i<upto;i++){ const r=rows[i];
-    h+='<tr style="border-bottom:1px solid var(--border)" class="align-top">'
-      +'<td class="py-2.5 px-3">'+slink(r[0],r[1])+'</td>'
-      +'<td class="py-2.5 px-3 text-right"><span class="font-bold num" style="color:var(--accent)">'+r[2]+'</span> <span class="text-[11px]" style="color:var(--text-faint)">/ 5</span></td>'
-      +'<td class="py-2.5 px-3 text-right num font-semibold">'+r[3]+'×</td>'
-      +'<td class="py-2.5 px-3 text-right num" style="color:var(--text-muted)">'+fmtD8(r[4])+'</td></tr>';
-  }
-  finish(h,upto,rows.length,'stocks with ≥2 shock sessions in 5',4);
+/* ---- chart: the selected stock's price ---- */
+function sg(id,items,cur,cb){ const el=$(id);
+  el.innerHTML=items.map(([k,l,t])=>'<button type="button" data-v="'+k+'" class="'+(k===cur?'on':'')+'"'+(t?' title="'+esc(t)+'"':'')+'>'+l+'</button>').join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>cb(b.dataset.v)); }
+function chartBar(){
+  sg('cIv',[['D','D','Daily bars'],['W','W','Weekly bars'],['M','M','Monthly bars']],CH.iv,v=>{ CH.setIv(v); chartBar(); });
+  sg('cRg',['3M','6M','1Y','3Y','Max'].map(k=>[k,k]),CH.range,v=>{ CH.setRange(v); chartBar(); });
+  const s=LIST.length?SELSYM:null;
+  $('cOpen').classList.toggle('hidden',!s); if(s) $('cOpen').href=stockUrl(s);
+  $('cTitle').innerHTML=s?esc(s)+' <span style="font-weight:400;color:var(--text-faint);margin-left:6px">daily price</span>':'Chart';
+}
+function renderChart(lazy){
+  const s=LIST.length?SELSYM:null, tok=++TOK; clearTimeout(showTimer);
+  if(!s){ CH.clear('Pick a row from the list.'); return; }
+  showTimer=setTimeout(async()=>{            // holding an arrow key walks the list; only the row you stop on is fetched
+    $('cMsg').textContent='Loading chart…';
+    try{ const d=await K.loadStockBars(s); if(tok!==TOK) return; if(!d||!d.bars.length) throw 0;
+      CH.show(d,{name:nameOf(s)||s,tag:'NSE',note:''}); }
+    catch(e){ if(tok!==TOK) return; CH.clear('No daily price history on file for '+s+'.'); }
+  },lazy?140:0);
 }
 
-function finish(h,upto,total,unit,cols){
-  $('tBody').innerHTML = h || '<tr><td colspan="'+cols+'" class="py-12 text-center text-sm" style="color:var(--text-faint)">Nothing matches these filters.</td></tr>';
-  if (window.swWatch) swWatch.paintAll($('tBody'));
-  $('count').textContent='Showing '+upto.toLocaleString('en-IN')+' of '+total.toLocaleString('en-IN')+' '+unit;
-  $('more').classList.toggle('hidden',upto>=total);
+/* ---- url + controls ---- */
+function saveUrl(){
+  const u=new URLSearchParams();
+  if(view!=='today') u.set('view',view);
+  if($('q').value.trim()) u.set('q',$('q').value.trim());
+  if(SELSYM&&LIST.length) u.set('sym',SELSYM);
+  const s=u.toString(); try{ history.replaceState(null,'',location.pathname+(s?'?'+s:'')); }catch(e){}
 }
-
-load();
+function wire(){
+  ['fDir','fLens','fSector','fSort'].forEach(id=>$(id).addEventListener('change',render));
+  $('q').addEventListener('input',render);
+  $('fbtn').onclick=()=>{ const b=$('fbtn').parentNode; $('fbtn').dataset.t='1'; $('fbtn').setAttribute('aria-expanded',b.classList.toggle('open')); };
+  $('lList').addEventListener('click',e=>{ if(e.target.closest('.sw-star')) return; const el=e.target.closest('.os-row[data-i]'); if(el) select(+el.dataset.i,true); });
+  $('lList').addEventListener('dblclick',e=>{ const el=e.target.closest('.os-row[data-i]'); if(el&&SELSYM) location.href=stockUrl(SELSYM); });
+  $('lList').addEventListener('scroll',()=>{ const L=$('lList'); if(shown<LIST.length && L.scrollTop+L.clientHeight>L.scrollHeight-400) renderMore(); });
+  $('secs').addEventListener('click',e=>{ const b=e.target.closest('[data-sec]'); if(!b) return; $('fSector').value = $('fSector').value===b.dataset.sec ? '' : b.dataset.sec; view='today'; render(); });
+  // the top spike may sit outside the current filters: open them up so it shows
+  $('season').addEventListener('click',e=>{ const a=e.target.closest('[data-sym]'); if(!a) return;
+    SELSYM=a.dataset.sym; view='today';
+    if(!filtered().some(r=>r[0]===SELSYM)){ $('q').value=''; ratioMin=2; turnMin=0; $('fDir').value='all'; $('fLens').value='all'; $('fSector').value=''; } render(); });
+  let rt=null, w0=window.innerWidth;
+  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); const s0=CUR.map(c=>c[0]).join(); pickCols(); if(CUR.map(c=>c[0]).join()!==s0||(w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
+  document.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return; const t=e.target, tg=t&&t.tagName;
+    if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
+    const i=selIndex(), step={ArrowDown:1,ArrowUp:-1,PageDown:10,PageUp:-10}[e.key];
+    if(step&&LIST.length){ e.preventDefault(); select(Math.max(0,Math.min(LIST.length-1,i+step))); }
+    else if(e.key==='Home'&&LIST.length){ e.preventDefault(); select(0); }
+    else if(e.key==='End'&&LIST.length){ e.preventDefault(); select(LIST.length-1); }
+    else if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault(); const V=['today','repeat'].concat(LIVE.length?['live']:[]), k=V.indexOf(view); setView(V[(k+(e.key==='ArrowRight'?1:V.length-1))%V.length]); }
+    else if(e.key==='Enter'&&SELSYM&&LIST.length){ e.preventDefault(); location.href=stockUrl(SELSYM); }
+    else if(e.key==='/'&&view!=='live'){ e.preventDefault(); $('q').focus(); $('q').select(); }
+  });
+}
 
 /* ---- live session spurts via our Cloudflare Worker (?nse=volume-gainers).
    NSE's own intraday volume-spurt feed: today's volume vs its 1-WEEK average
-   (the EOD table keeps our 20-session baseline — different windows, so they're
-   shown as separate sections, never mixed). Market-hours only; the card stays
-   hidden if the Worker route isn't deployed yet or NSE hiccups. ---- */
+   (the EOD list keeps our 20-session baseline — different windows, so they are
+   separate lists, never mixed). Market-hours only; the Live tab stays hidden if
+   the Worker route isn't deployed yet or NSE hiccups. ---- */
 const WORKER='https://stocksworld-quotes.dhruvan2510.workers.dev';
 function marketOpenIST(){
   const n=new Date(Date.now()+330*60000);
   const d=n.getUTCDay(), h=n.getUTCHours()+n.getUTCMinutes()/60;
   return d>=1&&d<=5&&h>=9&&h<=15.75;
 }
+function setLive(rows,at){
+  const had=LIVE.length; LIVE=rows; LIVEAT=at;
+  if(view==='live'||(wantLive&&rows.length)){ if(wantLive&&rows.length){ view='live'; wantLive=false; } render(); }
+  else { renderTabs(); if(had!==rows.length||liveOf(SELSYM)) { renderDetail(); } }
+}
 async function liveSpurts(){
-  if(!marketOpenIST()){ $('liveCard').classList.add('hidden'); return; }
+  if(!marketOpenIST()){ if(LIVE.length) setLive([],''); return; }
   try{
     const j=await (await fetch(WORKER+'/?nse=volume-gainers',{cache:'no-store'})).json();
     const rows=((j&&j.data)||[]).filter(r=>r&&r.symbol&&r.week1volChange>=2);
     if(!rows.length) return;
-    $('liveBody').innerHTML=rows.slice(0,15).map(r=>'<tr style="border-bottom:1px solid var(--border)">'
-      +'<td class="py-1.5 px-2">'+slink(r.symbol,r.companyName)+'</td>'
-      +'<td class="text-right px-2 num font-semibold">'+(r.ltp!=null?Number(r.ltp).toLocaleString('en-IN'):'—')+'</td>'
-      +'<td class="text-right px-2 num">'+pctc(r.pChange)+'</td>'
-      +'<td class="text-right px-2 num">'+volf(r.volume)+'</td>'
-      +'<td class="text-right px-2 num font-bold" style="color:var(--accent)">'+(r.week1volChange!=null?Number(r.week1volChange).toFixed(1)+'×':'—')+'</td>'
-      +'<td class="text-right px-2 num">₹'+crf(r.turnover/100)+' Cr</td>'
-      +'</tr>').join('');
     const t=new Date(j.asOf||Date.now());
-    $('liveAt').textContent='· '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' IST · refreshes every minute';
-    $('liveCard').classList.remove('hidden');
-    if(window.swWatch) swWatch.paintAll($('liveBody'));
-  }catch(e){ /* keep the card hidden — EOD table below is unaffected */ }
+    setLive(rows.slice(0,15), '· '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+' IST · refreshes every minute');
+  }catch(e){ /* keep the Live tab as it is — the EOD lists are unaffected */ }
 }
-liveSpurts(); setInterval(()=>{ if(!document.hidden) liveSpurts(); },60000);
+
+load();
 </script>
 </body>
 </html>

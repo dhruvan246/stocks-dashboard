@@ -12,7 +12,7 @@
 <script src="./os-kit.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  #grid{grid-template-columns:minmax(520px,1.2fr) 300px minmax(0,1fr)}
+  #grid{grid-template-columns:minmax(560px,1.2fr) 280px minmax(0,1fr)}
   #lHead,#lList .os-row{grid-template-columns:var(--cols)}
   #lList .os-row{font-size:12.5px} #lList .os-row .n,#lList .os-row .cl{text-align:left}
   #lHead span[data-k]{cursor:pointer;user-select:none} #lHead span[data-k]:hover{color:var(--text)}
@@ -180,7 +180,7 @@ function filtered(){
 
 /* ---- list ---- */
 const COLS={
-  spikes:[['','Date','50px','l'],['','Stock','minmax(104px,1fr)','l'],['','Close','68px','r'],['','Day chg','58px','r'],['','Deliv ₹cr','66px','r'],['','Deliv %','54px','r'],['','Usual %','54px','r'],['','vs base','54px','r']],
+  spikes:[['','Date','46px','l'],['','Stock','minmax(104px,1fr)','l'],['','Close','60px','r'],['','Day chg','54px','r'],['','Deliv ₹cr','60px','r'],['','Deliv %','52px','r'],['','Usual %','52px','r'],['','vs base','50px','r']],
   stocks:[['','Stock','minmax(104px,1fr)','l'],['n','Spikes','54px','r'],['cr','Deliv ₹cr','74px','r'],['best','Best ×','62px','r'],['last','Latest','62px','r']],
   today:[['','Stock','minmax(104px,1fr)','l'],['','Close','76px','r'],['','Day chg','64px','r'],['','Deliv ₹cr','76px','r'],['','Deliv %','60px','r']] };
 const PHONE={spikes:[0,1,4,7], stocks:[0,1,2,3], today:[0,2,3,4]};
@@ -223,9 +223,14 @@ function render(){
   $('count').textContent=LIST.length.toLocaleString('en-IN')+' '+(view==='spikes'?'spikes':'stocks');
   renderList(); renderSel(); saveUrl();
 }
+const DROP={spikes:['Usual %','Close','Deliv %'], today:['Close']};   // columns given up first when the list pane is too narrow for all of them (they stay in the middle pane)
+const pxw=c=>+((c[2].match(/(\d+)px/)||[0,0])[1]);
 function pickCols(){
   const all=COLS[view], ph=window.innerWidth<900;
-  CUR = ph ? PHONE[view].map(i=>all[i]) : all;
+  let cur = ph ? PHONE[view].map(i=>all[i]) : all.slice();
+  const room=$('pL').clientWidth-24, need=a=>a.reduce((s,c)=>s+pxw(c),0)+8*(a.length-1);
+  for(const lab of (DROP[view]||[])){ if(room<=0||need(cur)<=room) break; cur=cur.filter(c=>c[1]!==lab); }
+  CUR=cur;
   $('pL').style.setProperty('--cols', CUR.map(c=>c[2]).join(' '));
 }
 const al=c=>c[3]==='l'?'text-align:left':'text-align:right';
@@ -342,7 +347,7 @@ function wire(){
     SELSYM=a.dataset.sym; SELROW=null; if(view==='today') view='spikes';
     if(!AGG[SELSYM]){ $('q').value=''; $('fVal').value='1'; $('fMult').value='0'; } render(); });
   let rt=null, w0=window.innerWidth;
-  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); if((w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
+  window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ K.fitGrid($('grid')); const s0=CUR.map(c=>c[1]).join(); pickCols(); if(CUR.map(c=>c[1]).join()!==s0||(w0<900)!==(window.innerWidth<900)) renderList(); w0=window.innerWidth; },90); });
   document.addEventListener('keydown',e=>{
     if(e.metaKey||e.ctrlKey||e.altKey) return; const t=e.target, tg=t&&t.tagName;
     if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'){ if(e.key==='Escape') t.blur(); return; }
