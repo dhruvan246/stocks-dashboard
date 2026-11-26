@@ -4,58 +4,88 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>STOCKSWORLD · Options Backtest</title>
+<meta name="description" content="Index options backtest on one screen — strategies on the left, set-up and results in the middle, the P&amp;L chart on the right." />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <script src="./fo-engine.js"></script>
 <style>
   body{font-feature-settings:"tnum" 1}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .pos{color:var(--pos);font-weight:600}.neg{color:var(--neg);font-weight:600}
-  .chip{padding:.25rem .6rem;border-radius:var(--radius);border:1px solid var(--border-strong);font-size:11px;cursor:pointer;user-select:none;background:var(--surface)}
-  .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:var(--radius);overflow:hidden}
-  .seg button{padding:.3rem .7rem;font-size:12px;background:var(--surface)}
-  .seg button.on{background:#0ea5e9;color:#fff}
-  .statc{border-radius:var(--radius);border:1px solid;padding:.5rem .6rem;text-align:center}
-  .statc h4{font-size:10.5px;font-weight:700;letter-spacing:.02em}
-  .statc .v{font-size:14px;font-weight:700;margin-top:2px}
-  .sg h4{color:var(--pos)}
-  .sr h4{color:var(--neg)}
-  .sy h4{color:var(--warn)}
-  .sb h4{color:#3b82f6}
-  input[type=number]{width:4.6rem;border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:.2rem .35rem;font-size:12px}
-  select{border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:.25rem .3rem;font-size:12px;background:var(--surface)}
-  .legrow{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius)}
-  .icon-btn{cursor:pointer;opacity:.55}.icon-btn:hover{opacity:1}
-  .disabled-feat{opacity:.45;pointer-events:none}
-  .tt{position:relative}
-  .tt:hover:after{content:attr(data-tt);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;font-size:10.5px;padding:4px 8px;border-radius:6px;white-space:nowrap;z-index:60}
-  .tbl th{position:sticky;top:0;background:var(--surface-2);font-size:11px;text-transform:uppercase;letter-spacing:.02em;color:var(--text-muted);padding:.45rem .5rem;white-space:nowrap;cursor:pointer}
-  .tbl td{padding:.4rem .5rem;border-top:1px solid var(--border);font-size:12.5px;white-space:nowrap}
-  .bk td,.bk th{padding:.35rem .55rem;font-size:12px;text-align:center;border:1px solid var(--border)}
-  .bk th{background:#0ea5e9;color:#fff;font-weight:600}
-  .modal{position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:70;display:flex;align-items:center;justify-content:center;padding:1rem}
-  .modal>div{background:var(--surface);border-radius:var(--radius-lg);max-width:56rem;width:100%;max-height:90vh;overflow:auto}
-  /* stat tints as translucents so they survive dark/soft themes */
-  .sg{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.09)}
-  .sr{border-color:rgba(239,68,68,.35);background:rgba(239,68,68,.08)}
-  .sy{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.09)}
-  .sb{border-color:rgba(59,130,246,.35);background:rgba(59,130,246,.09)}
-  html[data-theme="dark"] .legrow{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1)}
-  html[data-theme="dark"] .chip{background:transparent;border-color:rgba(255,255,255,.25);color:inherit}
-  html[data-theme="dark"] .chip.on{background:var(--accent);border-color:#2563eb;color:#fff}
-  html[data-theme="dark"] .seg{border-color:rgba(255,255,255,.25)}
-  html[data-theme="dark"] .seg button{background:transparent;color:inherit}
-  html[data-theme="dark"] .seg button.on{background:#0ea5e9;color:#fff}
-  html[data-theme="dark"] .tbl th{background:var(--surface-2);color:var(--text-muted)}
-  html[data-theme="dark"] .tbl td{border-color:rgba(255,255,255,.07)}
-  html[data-theme="dark"] .bk td,html[data-theme="dark"] .bk th{border-color:rgba(255,255,255,.14)}
-  html[data-theme="dark"] .bk th{background:#0c4a6e}
-  html[data-theme="dark"] .modal>div{background:#111930;color:var(--text)}
-  html[data-theme="dark"] .pos{color:var(--pos)}
-  html[data-theme="dark"] .neg{color:var(--neg)}
-  html[data-theme="dark"] #eodNote{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35)}
+  #tab-single{grid-template-columns:minmax(210px,250px) minmax(430px,1.25fr) minmax(320px,1fr)}
+  #tab-basket{grid-template-columns:minmax(210px,250px) minmax(430px,1.25fr) minmax(320px,1fr)}
+  .os-grid.hidden{display:none}
+  .s1{grid-template-columns:minmax(0,1fr) 22px}
+  .s1 .x{color:var(--text-faint);text-align:center;border-radius:4px} .s1 .x:hover{color:var(--neg);background:var(--surface-2)}
+  .gh{padding:6px 12px;font-size:11.5px;font-weight:600;color:var(--text-muted);background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+  .gh i{font-style:normal;font-weight:400;color:var(--text-faint);margin-left:4px}
+  .pos{color:var(--pos);font-weight:600} .neg{color:var(--neg);font-weight:600}
+  .mb{flex:1;min-height:0;overflow:auto;font-size:12.5px;color:var(--text)}
+  .sec{padding:10px 12px;border-bottom:1px solid var(--border)}
+  .sec:last-child{border-bottom:0}
+  .sec h4{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-faint);margin:0 0 8px}
+  .sec h4 i{font-style:normal;text-transform:none;letter-spacing:0;font-weight:400;margin-left:6px}
+  .frm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 10px}
+  .frm label,.lb{font-size:11.5px;color:var(--text-faint)}
+  .ln{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:8px;color:var(--text-muted)}
+  .ln:last-child{margin-bottom:0}
+  html[data-theme] .mb input[type=number],html[data-theme] .mb input[type=date],html[data-theme] .mb input[type=text],html[data-theme] .os-ps input[type=text]{background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12.5px;color:var(--text);min-height:0;height:28px;box-shadow:none}
+  html[data-theme] .mb input[type=number]{width:4.6rem}
+  html[data-theme] .mb select,html[data-theme] .os-ps select{background:var(--app-bg);border:1px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12.5px;color:var(--text);min-height:0;height:28px;width:auto;max-width:100%}
+  html[data-theme] .mb input:focus,html[data-theme] .mb select:focus{border-color:var(--accent);outline:none}
+  html[data-theme] .os-sg select{border:0;border-right:1px solid var(--border);border-radius:0;background:transparent;height:auto;padding:5px 8px;font-weight:500}
+  html[data-theme] .go{background:var(--accent);color:var(--on-accent,#fff);border:1px solid var(--accent);border-radius:6px;padding:5px 14px;font-size:12.5px;font-weight:600;cursor:pointer;min-height:0;white-space:nowrap}
+  html[data-theme] .go:hover{filter:brightness(1.08)}
+  .legrow{border-top:1px solid var(--border);padding:8px 0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 7px;color:var(--text-muted)}
+  .legrow:first-child{border-top:0}
+  .legrow .lg{font-size:10.5px;font-weight:600;color:var(--text-faint);border:1px solid var(--border);border-radius:4px;padding:0 5px}
+  html[data-theme] .legrow button{border:1px solid var(--border);border-radius:5px;padding:1px 8px;font-size:11.5px;font-weight:600;min-height:0;background:none;cursor:pointer}
+  html[data-theme] .legrow button.sell{color:var(--neg)} html[data-theme] .legrow button.buy{color:var(--pos)} html[data-theme] .legrow button.ty{color:var(--text)}
+  .legrow b{color:var(--text);font-weight:600}
+  .icon-btn{cursor:pointer;color:var(--text-faint);display:inline-flex;align-items:center} .icon-btn:hover{color:var(--text)}
+  .icon-btn svg{width:14px;height:14px}
+  .off{opacity:.45}
+  .statg{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));border-top:1px solid var(--border);border-left:1px solid var(--border)}
+  .statc{padding:8px 10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-width:0}
+  .statc h4{font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .statc .v{font-size:13.5px;font-weight:600;margin-top:3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .statc .sub{font-size:10.5px;color:var(--text-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .statc.sg .v{color:var(--pos)} .statc.sr .v{color:var(--neg)}
+  .scr{overflow-x:auto}
+  table.bk,table.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  .bk td,.bk th{padding:5px 8px;font-size:12px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+  .bk th{font-weight:500;color:var(--text-faint);font-size:11.5px}
+  .bk td:first-child,.bk th:first-child{text-align:left;color:var(--text-muted)}
+  .tbl th{position:sticky;top:0;background:var(--surface);font-size:11.5px;font-weight:500;color:var(--text-faint);padding:6px 8px;white-space:nowrap;cursor:pointer;text-align:left;border-bottom:1px solid var(--border);z-index:1}
+  .tbl td{padding:5px 8px;border-bottom:1px solid var(--border);font-size:12.5px;white-space:nowrap}
+  #tradeT tr[data-td]{cursor:pointer} #tradeT tr[data-td]:hover{background:var(--surface-2)}
+  #tradeT tr.on{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent)}
+  #tradeT td:last-child{max-width:340px;overflow:hidden;text-overflow:ellipsis;color:var(--text-muted)}
+  .msg{font-size:12px;color:var(--text-muted);min-height:16px}
+  .msg.bad{color:var(--neg)}
+  #loadBar .trk{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+  #loadFill{height:100%;background:var(--accent);width:0}
+  #tdLegs{border-top:1px solid var(--border);max-height:38%;overflow:auto;flex:none}
+  #tdLegs:empty{display:none}
+  .ccw{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
+  .ccw .os-legend{position:static;padding:8px 12px 2px;font-size:12px;color:var(--text-muted);min-height:26px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ccw .os-legend b{color:var(--text);font-weight:600;margin-right:8px}
+  .ccw .cv{flex:1;min-height:0;position:relative}
+  .ccw .cmsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--text-faint);font-size:12.5px;pointer-events:none}
+  .ccw .cmsg.hidden,.msg.hidden,#mBody .hidden{display:none}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55}
+  #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #tab-single,#tab-basket{grid-template-columns:minmax(190px,220px) minmax(360px,1.3fr) minmax(260px,1fr)} }
+  @media (max-width:899px){
+    #tab-single,#tab-basket{grid-template-columns:minmax(0,1fr)}
+    .mb{flex:none;overflow-x:auto;overflow-y:visible}
+    .ccw{flex:none;height:380px}
+    #tdLegs{max-height:none}
+    .os-vbar{gap:10px}
+    #pM > .os-ph{flex-wrap:wrap;row-gap:6px} #pM > .os-ph .r{margin-left:0}
+    #eodNote{white-space:normal}
+  }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -66,254 +96,256 @@
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
     </a>
-    <div class="flex items-center gap-3 min-w-0"><nav></nav>
-      <span class="text-[11px] font-semibold text-indigo-600 hidden md:block shrink-0">Options Backtest</span>
-    </div>
+    <nav></nav>
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-3 sm:px-4 py-4">
-
-<div class="card p-3 mb-3 text-[12.5px] bg-amber-50 border-amber-200" id="eodNote">
-  <b>EOD engine.</b> Runs on <b>real NSE F&amp;O bhavcopy data</b> (exchange closes/settles per strike, 2016→today) at <b>daily granularity</b>:
-  entries &amp; exits fill at day close, SL/TP checked once per day (or vs the day's option high/low — see ⚙ Settings).
-  Intraday features (entry time, wait &amp; trade, range breakout) are shown but disabled until minute data lands (phase 2).
-  Strikes that didn't trade that day are treated as <b>NA</b>, like StockMock.
-</div>
-
-<!-- ======================= TABS ======================= -->
-<div class="flex gap-1 border-b border-slate-200 mb-4 text-sm font-medium">
-  <button class="mtab px-4 py-2 border-b-2 border-blue-600 text-blue-700" data-t="single">Single Backtest</button>
-  <button class="mtab px-4 py-2 border-b-2 border-transparent text-slate-500" data-t="basket">Basket</button>
-</div>
-
-<!-- ======================= SINGLE ======================= -->
-<div id="tab-single">
-<div class="grid lg:grid-cols-[220px_1fr] gap-4">
-
-  <!-- Strategy sidebar -->
-  <aside class="card p-3 h-fit lg:sticky lg:top-16">
-    <h3 class="text-xs font-bold text-slate-500 tracking-wide mb-2">STRATEGIES</h3>
-    <input id="stratSearch" type="search" placeholder="Search strategy" class="w-full border border-slate-300 rounded-lg px-2 py-1.5 text-xs mb-2"/>
-    <div class="text-[11px] font-bold text-slate-400 mt-2 mb-1">SAVED</div>
-    <div id="savedList" class="space-y-0.5 max-h-44 overflow-y-auto text-[12.5px]"></div>
-    <div class="text-[11px] font-bold text-slate-400 mt-3 mb-1">DEFAULT</div>
-    <div id="defaultList" class="space-y-0.5 max-h-56 overflow-y-auto text-[12.5px]"></div>
-  </aside>
-
-  <div class="min-w-0">
-
-  <!-- Positions builder -->
-  <div class="card p-4 mb-3" data-jump="Positions">
-    <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-      <h3 class="font-bold text-slate-700 text-sm">POSITIONS</h3>
-      <div class="flex items-center gap-2 text-[11.5px]">
-        <span class="text-slate-500">ATM basis:</span>
-        <div class="seg" id="basisSeg">
-          <button data-v="spot" class="on">Spot</button><button data-v="fut">Futures</button>
-        </div>
-        <span class="text-slate-500 ml-2">On SL/TP:</span>
-        <div class="seg" id="sqSeg">
-          <button data-v="leg" class="on tt" data-tt="Only that leg squares off">One leg</button>
-          <button data-v="all" class="tt" data-tt="Entire strategy squares off">All legs</button>
-        </div>
-      </div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Options Backtest</h1>
+    <div class="os-vtabs" role="tablist" aria-label="Backtest mode">
+      <button type="button" class="mtab on" data-t="single">Single backtest</button>
+      <button type="button" class="mtab" data-t="basket">Basket</button>
     </div>
-    <div class="flex flex-wrap items-end gap-3 text-xs mb-3">
-      <label>Index<br><select id="idx"><option>NIFTY</option><option>BANKNIFTY</option><option>FINNIFTY</option><option>MIDCPNIFTY</option></select></label>
-      <label>Segment<br><select id="segSel"><option value="OPT">Options</option><option value="FUT">Futures</option></select></label>
-      <label>Type<br><select id="cpSel"><option>CE</option><option>PE</option></select></label>
-      <label>Action<br><select id="baSel"><option value="S">Sell</option><option value="B">Buy</option></select></label>
-      <label>Strike by<br>
-        <select id="methodSel">
-          <option value="atm">ATM Point</option><option value="atm_p">ATM Percent</option>
-          <option value="atm_sp">Straddle Width</option><option value="cp">Closest Premium</option>
-          <option value="sp">CP as % of Straddle</option>
-        </select></label>
-      <label id="valWrap">Offset<br><select id="atmOff"></select></label>
-      <label id="valNumWrap" class="hidden">Value<br><input id="valNum" type="number" step="0.1" value="0"></label>
-      <label>Lots<br><input id="lotsIn" type="number" min="1" value="1"></label>
-      <label>Expiry<br><select id="expSel"><option value="w">Weekly</option><option value="nw">Next weekly</option><option value="m">Monthly</option></select></label>
-      <button id="addLeg" class="bg-sky-500 hover:bg-sky-600 text-white rounded-lg px-4 py-1.5 font-semibold">Add Position</button>
-    </div>
-
-    <div class="flex flex-wrap gap-4 text-[11.5px] mb-2 items-center">
-      <label class="flex items-center gap-1"><input type="checkbox" id="moveSL"> Move SL to Cost</label>
-      <label class="flex items-center gap-1 disabled-feat tt" data-tt="needs minute data — phase 2"><input type="checkbox" disabled> Wait &amp; Trade 🕐</label>
-      <label class="flex items-center gap-1 disabled-feat tt" data-tt="needs minute data — phase 2"><input type="checkbox" disabled> Range Breakout 🕐</label>
-      <label class="flex items-center gap-1"><input type="checkbox" id="naStrict" checked> Untraded strike = NA (skip)</label>
-    </div>
-
-    <div id="legList" class="space-y-2"></div>
+    <span class="os-asof" id="dataNote">Loading the data list…</span>
   </div>
 
-  <!-- Entry / exit rules -->
-  <div class="card p-4 mb-3" data-jump="Entry/Exit">
-    <div class="grid md:grid-cols-2 gap-4 text-xs">
-      <div>
-        <h4 class="font-bold text-slate-600 mb-2">Entry (at day close)</h4>
-        <div class="flex items-center gap-1.5 flex-wrap mb-2" id="dayChips">
-          <span class="text-slate-500 mr-1">Days:</span>
-          <span class="chip on" data-d="1">Mon</span><span class="chip on" data-d="2">Tue</span>
-          <span class="chip on" data-d="3">Wed</span><span class="chip on" data-d="4">Thu</span>
-          <span class="chip on" data-d="5">Fri</span>
-        </div>
-        <label class="block mb-2">Enter only at DTE
-          <input id="entryDTE" type="number" min="0" placeholder="any" class="ml-1">
-          <span class="text-slate-400">(blank = every allowed day when flat)</span></label>
-        <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-slate-500">VIX between</span>
-          <input id="vixLo" type="number" step="0.1" placeholder="min">–<input id="vixHi" type="number" step="0.1" placeholder="max">
-        </div>
-        <div id="gapFilters" class="mt-2 space-y-1"></div>
-        <button id="addGapF" class="text-blue-600 text-[11.5px] mt-1">+ add gap / prev-day / spot-change filter</button>
-        <div class="mt-2 disabled-feat tt inline-block" data-tt="needs minute data — phase 2">Entry time: <select disabled><option>close</option></select> 🕐</div>
+  <div class="os-bar">
+    <span class="os-hint" id="eodNote">End-of-day engine on real NSE F&amp;O bhavcopy closes · entries and exits fill at the day close</span>
+    <span class="sp"></span>
+    <span class="os-hint keys"><b>↑ ↓</b> move · <b>Enter</b> run · <b>F</b> chart only · <b>Esc</b> back</span>
+  </div>
+
+  <!-- ======================= SINGLE ======================= -->
+  <div class="os-grid" id="tab-single">
+    <section class="os-pane" id="pS">
+      <div class="os-ph"><span class="ttl">Strategies <i id="stratN"></i></span></div>
+      <div class="os-ps"><input id="stratSearch" type="search" placeholder="Search strategy" autocomplete="off"/></div>
+      <div class="os-list" id="stratList" tabindex="0"></div>
+    </section>
+
+    <section class="os-pane" id="pM">
+      <div class="os-ph">
+        <span class="ttl" id="mTitle">Set-up</span>
+        <span class="r"><div class="os-sg" id="midSeg">
+          <button type="button" data-m="setup" class="on">Set-up</button><button type="button" data-m="res">Results</button><button type="button" data-m="brk">Break-ups</button><button type="button" data-m="trd">Trades</button>
+        </div></span>
       </div>
-      <div>
-        <h4 class="font-bold text-slate-600 mb-2">Exit</h4>
-        <label class="block mb-2">Hold max <input id="holdDays" type="number" min="1" placeholder="—"> trading days</label>
-        <label class="block mb-2">Or exit when DTE ≤ <input id="exitDTE" type="number" min="0" placeholder="—"></label>
-        <div class="text-slate-500">Otherwise held to <b>expiry settle</b>. Legs may exit earlier on SL/TP.</div>
-        <div class="mt-3 grid grid-cols-1 gap-2">
-          <div><span class="font-semibold">Strategy Target Profit</span>
-            <select id="stpU"><option value="">off</option><option value="mtm">Total MTM ₹</option><option value="cp%">Combined premium %</option></select>
-            <input id="stpV" type="number" step="1" placeholder="0"></div>
-          <div><span class="font-semibold">Strategy Stop Loss</span>
-            <select id="sslU"><option value="">off</option><option value="mtm">Total MTM ₹</option><option value="cp%">Combined premium %</option></select>
-            <input id="sslV" type="number" step="1" placeholder="0"></div>
-          <div class="flex items-center gap-2 flex-wrap"><span class="font-semibold">Protect profits</span>
-            <select id="ptMode"><option value="">off</option><option value="lock">Lock minimum</option><option value="trail">Trail</option><option value="locktrail">Lock &amp; trail</option></select>
-            <span id="ptFields" class="hidden">if ≥₹<input id="ptTrig" type="number" value="1000"> lock ₹<input id="ptLock" type="number" value="0">
-              <span id="ptTrail" class="hidden">then / +₹<input id="ptX" type="number" value="1000"> raise ₹<input id="ptY" type="number" value="500"></span></span>
+      <div class="mb" id="mBody">
+
+        <!-- run bar: always visible -->
+        <div class="sec" id="runSec">
+          <div class="frm">
+            <label>From<br><input type="date" id="fromD"></label>
+            <label>To<br><input type="date" id="toD"></label>
+            <div class="os-sg" id="rangeChips">
+              <button type="button" data-r="1m">1M</button><button type="button" data-r="3m">3M</button><button type="button" data-r="6m">6M</button><button type="button" data-r="1y">1Y</button><button type="button" data-r="2y">2Y</button><button type="button" data-r="3y">3Y</button><button type="button" data-r="5y">5Y</button><button type="button" data-r="max">Max</button>
+            </div>
+            <label>Slippage %<br><input id="slip" type="number" step="0.05" value="0.5"></label>
+            <button type="button" id="runBtn" class="go">Run backtest</button>
+          </div>
+          <div id="loadBar" class="hidden" style="margin-top:8px"><div class="trk"><div id="loadFill"></div></div><span id="loadTxt" class="msg"></span></div>
+          <div class="msg" id="resMeta" style="margin-top:6px"></div>
+        </div>
+
+        <div id="vSetup">
+          <div class="sec">
+            <h4>Positions</h4>
+            <div class="ln">
+              <span class="lb">ATM basis</span>
+              <div class="os-sg" id="basisSeg"><button type="button" data-v="spot" class="on">Spot</button><button type="button" data-v="fut">Futures</button></div>
+              <span class="lb" style="margin-left:6px">On SL/TP</span>
+              <div class="os-sg" id="sqSeg"><button type="button" data-v="leg" class="on" title="Only that leg squares off">One leg</button><button type="button" data-v="all" title="Entire strategy squares off">All legs</button></div>
+            </div>
+            <div class="frm" style="margin-bottom:8px">
+              <label>Index<br><select id="idx"><option>NIFTY</option><option>BANKNIFTY</option><option>FINNIFTY</option><option>MIDCPNIFTY</option></select></label>
+              <label>Segment<br><select id="segSel"><option value="OPT">Options</option><option value="FUT">Futures</option></select></label>
+              <label>Type<br><select id="cpSel"><option>CE</option><option>PE</option></select></label>
+              <label>Action<br><select id="baSel"><option value="S">Sell</option><option value="B">Buy</option></select></label>
+              <label>Strike by<br>
+                <select id="methodSel">
+                  <option value="atm">ATM Point</option><option value="atm_p">ATM Percent</option>
+                  <option value="atm_sp">Straddle Width</option><option value="cp">Closest Premium</option>
+                  <option value="sp">CP as % of Straddle</option>
+                </select></label>
+              <label id="valWrap">Offset<br><select id="atmOff"></select></label>
+              <label id="valNumWrap" class="hidden">Value<br><input id="valNum" type="number" step="0.1" value="0"></label>
+              <label>Lots<br><input id="lotsIn" type="number" min="1" value="1"></label>
+              <label>Expiry<br><select id="expSel"><option value="w">Weekly</option><option value="nw">Next weekly</option><option value="m">Monthly</option></select></label>
+              <button type="button" id="addLeg" class="os-btn">＋ Add position</button>
+            </div>
+            <div class="ln">
+              <label class="flex items-center gap-1"><input type="checkbox" id="moveSL"> Move SL to cost</label>
+              <label class="flex items-center gap-1"><input type="checkbox" id="naStrict" checked> Untraded strike = NA (skip)</label>
+              <label class="flex items-center gap-1 off" title="Needs minute data — phase 2"><input type="checkbox" disabled> Wait &amp; trade</label>
+              <label class="flex items-center gap-1 off" title="Needs minute data — phase 2"><input type="checkbox" disabled> Range breakout</label>
+            </div>
+            <div id="legList"></div>
+          </div>
+
+          <div class="sec">
+            <h4>Entry <i>at the day close</i></h4>
+            <div class="ln">
+              <span class="lb">Days</span>
+              <div class="os-sg" id="dayChips">
+                <button type="button" class="chip on" data-d="1">Mon</button><button type="button" class="chip on" data-d="2">Tue</button><button type="button" class="chip on" data-d="3">Wed</button><button type="button" class="chip on" data-d="4">Thu</button><button type="button" class="chip on" data-d="5">Fri</button>
+              </div>
+            </div>
+            <div class="ln"><span>Enter only at DTE</span><input id="entryDTE" type="number" min="0" placeholder="any"><span class="lb">blank = every allowed day when flat</span></div>
+            <div class="ln"><span>VIX between</span><input id="vixLo" type="number" step="0.1" placeholder="min">–<input id="vixHi" type="number" step="0.1" placeholder="max"></div>
+            <div id="gapFilters"></div>
+            <div class="ln"><button type="button" id="addGapF" class="os-btn">＋ Gap / previous-day / spot-change filter</button>
+              <span class="off" title="Needs minute data — phase 2">Entry time: <select disabled><option>close</option></select></span></div>
+          </div>
+
+          <div class="sec">
+            <h4>Exit</h4>
+            <div class="ln"><span>Hold max</span><input id="holdDays" type="number" min="1" placeholder="—"><span>trading days</span>
+              <span style="margin-left:8px">or exit when DTE ≤</span><input id="exitDTE" type="number" min="0" placeholder="—"></div>
+            <div class="ln lb">Otherwise held to expiry settle. Legs may exit earlier on SL/TP.</div>
+            <div class="ln"><span>Strategy target profit</span>
+              <select id="stpU"><option value="">off</option><option value="mtm">Total MTM ₹</option><option value="cp%">Combined premium %</option></select>
+              <input id="stpV" type="number" step="1" placeholder="0"></div>
+            <div class="ln"><span>Strategy stop loss</span>
+              <select id="sslU"><option value="">off</option><option value="mtm">Total MTM ₹</option><option value="cp%">Combined premium %</option></select>
+              <input id="sslV" type="number" step="1" placeholder="0"></div>
+            <div class="ln"><span>Protect profits</span>
+              <select id="ptMode"><option value="">off</option><option value="lock">Lock minimum</option><option value="trail">Trail</option><option value="locktrail">Lock &amp; trail</option></select>
+              <span id="ptFields" class="hidden">if ≥₹<input id="ptTrig" type="number" value="1000"> lock ₹<input id="ptLock" type="number" value="0">
+                <span id="ptTrail" class="hidden">then / +₹<input id="ptX" type="number" value="1000"> raise ₹<input id="ptY" type="number" value="500"></span></span>
+            </div>
+          </div>
+
+          <div class="sec">
+            <h4>Save, share, settings</h4>
+            <div class="ln">
+              <input type="text" id="saveName" placeholder="Name to save as" maxlength="60" style="width:11rem">
+              <button type="button" id="saveStrat" class="os-btn">Save strategy</button>
+              <button type="button" id="shareStrat" class="os-btn">Copy share link</button>
+              <button type="button" id="settingsBtn" class="os-btn">Lot sizes and SL/TP check</button>
+            </div>
+            <div class="msg" id="saveMsg"></div>
+            <input type="text" id="shareUrl" class="hidden" readonly style="width:100%;margin-top:6px">
+            <div id="setModal" class="hidden" style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
+              <div class="grid sm:grid-cols-2 gap-4" id="lotBoxes"></div>
+              <div class="ln" style="margin-top:10px"><span>SL/TP check</span>
+                <select id="slCheck"><option value="close">Daily close only</option><option value="hilo">Against day's option High/Low (conservative fill at level)</option></select></div>
+              <div class="lb" style="margin-bottom:8px">High/Low mode assumes the level filled exactly — the honest end-of-day approximation of intraday triggers.</div>
+              <div class="ln"><button type="button" id="setSave" class="go">Save settings</button><button type="button" id="setClose" class="os-btn">Close</button></div>
+            </div>
           </div>
         </div>
+
+        <div id="results" class="hidden">
+          <div id="vRes" class="hidden">
+            <div class="sec">
+              <div class="ln">
+                <label class="flex items-center gap-1"><input type="checkbox" id="roiPct"> Show ROI %</label>
+                <span style="flex:1"></span>
+                <button type="button" id="csvBtn" class="os-btn">Export CSV</button>
+              </div>
+              <div id="statCards" class="statg"></div>
+            </div>
+            <div class="sec"><h4>Streaks and exits</h4><div id="moreStatsBox" class="statg"></div></div>
+          </div>
+          <div id="vBrk" class="hidden">
+            <div class="sec"><h4>Day-wise break-up</h4><div class="scr"><table class="bk" id="dayWiseT"></table></div></div>
+            <div class="sec"><h4>Monthly break-up</h4><div class="scr"><table class="bk" id="monWiseT"></table></div></div>
+          </div>
+          <div id="vTrd" class="hidden">
+            <div class="sec" style="padding-bottom:6px">
+              <div class="ln"><span id="tradeCount" class="lb"></span><span style="flex:1"></span>
+                <input id="tradeSearch" type="text" placeholder="Filter: date / day / exit" style="width:12rem"></div>
+              <div class="lb">Click a trade to see its day-by-day P&amp;L and legs on the right. Untick a trade to leave it out of every figure.</div>
+            </div>
+            <div class="scr"><table class="tbl" id="tradeT"></table></div>
+          </div>
+        </div>
+        <div id="noRes" class="os-empty hidden">No result yet — pick a strategy on the left or add a position in Set-up, then Run backtest.</div>
       </div>
-    </div>
+    </section>
+
+    <section class="os-pane os-main" id="pC">
+      <div class="os-ph">
+        <span class="ttl" id="cTitle">Chart</span>
+        <span class="r">
+          <div class="os-sg" id="chartTabs">
+            <button type="button" class="chip on" data-c="pnl">Trade P&amp;L</button><button type="button" class="chip" data-c="cum">Cumulative</button><button type="button" class="chip" data-c="dd">Drawdown</button><button type="button" class="chip" data-c="trade">One trade</button>
+          </div>
+          <button type="button" class="os-btn os-focusbtn" id="focusBtn" title="Chart only (F)">⤢</button>
+        </span>
+      </div>
+      <div class="ccw">
+        <div class="os-legend" id="chartHover"></div>
+        <div class="cv"><div id="chart" style="position:absolute;inset:0"></div><div class="cmsg" id="chartMsg">Run a backtest to draw the chart.</div></div>
+      </div>
+      <div id="tdLegs" class="scr"></div>
+    </section>
   </div>
 
-  <!-- Dates + run -->
-  <div class="card p-4 mb-3" data-jump="Run">
-    <div class="flex flex-wrap items-end gap-3 text-xs">
-      <label>From<br><input type="date" id="fromD" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
-      <label>To<br><input type="date" id="toD" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
-      <div class="flex gap-1 flex-wrap" id="rangeChips">
-        <span class="chip" data-r="1m">1M</span><span class="chip" data-r="3m">3M</span><span class="chip" data-r="6m">6M</span>
-        <span class="chip" data-r="1y">1Y</span><span class="chip" data-r="2y">2Y</span><span class="chip" data-r="3y">3Y</span>
-        <span class="chip" data-r="5y">5Y</span><span class="chip" data-r="max">Max</span>
+  <!-- ======================= BASKET ======================= -->
+  <div class="os-grid hidden" id="tab-basket">
+    <section class="os-pane">
+      <div class="os-ph"><span class="ttl">Baskets <i id="bkN"></i></span></div>
+      <div class="os-ps"><input type="text" id="bkName" placeholder="Basket name" maxlength="60" style="flex:1 1 0;min-width:0"><button type="button" id="newBasket" class="os-btn">＋ New</button></div>
+      <div class="os-list" id="basketList" tabindex="0"></div>
+      <div class="os-ps" style="border-top:1px solid var(--border);border-bottom:0">
+        <button type="button" id="renBasket" class="os-btn" title="Rename the selected basket to the name typed above">Rename</button>
+        <button type="button" id="delBasket" class="os-btn">Delete</button>
+        <span class="msg" id="bkMsg" style="flex-basis:100%"></span>
       </div>
-      <label>Slippage %<br><input id="slip" type="number" step="0.05" value="0.5"></label>
-      <button id="settingsBtn" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Settings</button>
-      <span class="flex-1"></span>
-      <button id="saveStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
-      <button id="shareStrat" class="bg-slate-200 hover:bg-slate-300 rounded-lg px-3 py-1.5 font-semibold"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share</button>
-      <button id="runBtn" class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-5 py-2 font-bold">START BACKTEST</button>
-    </div>
-    <div id="loadBar" class="hidden mt-3 text-xs text-slate-500"><div class="h-1.5 bg-slate-200 rounded overflow-hidden mb-1"><div id="loadFill" class="h-full bg-blue-500" style="width:0%"></div></div><span id="loadTxt"></span></div>
-    <div id="dataNote" class="text-[11px] text-slate-400 mt-2"></div>
-  </div>
+    </section>
 
-  <!-- Results -->
-  <div id="results" class="hidden">
-    <div class="card p-4 mb-3" data-jump="Results">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
-        <h3 class="font-bold text-slate-700 text-sm">RESULTS <span id="resMeta" class="font-normal text-slate-400 text-[11.5px]"></span></h3>
-        <div class="flex items-center gap-2 text-[11.5px]">
-          <label class="flex items-center gap-1"><input type="checkbox" id="roiPct"> Show ROI %</label>
-          <button id="csvBtn" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export CSV</button>
+    <section class="os-pane">
+      <div class="os-ph"><span class="ttl" id="bkTitle">STRATEGIES</span></div>
+      <div class="mb">
+        <div class="sec">
+          <div class="ln"><select id="bkPick"></select><button type="button" id="bkAdd" class="os-btn">＋ Add saved strategy</button></div>
+          <div id="bkRows"></div>
+        </div>
+        <div class="sec">
+          <div class="frm">
+            <label>From<br><input type="date" id="bkFrom"></label>
+            <label>To<br><input type="date" id="bkTo"></label>
+            <button type="button" id="bkRunSel" class="os-btn">Run selected</button>
+            <button type="button" id="bkRunAll" class="go">Run all</button>
+          </div>
+          <div id="bkLoad" class="msg hidden" style="margin-top:6px"></div>
+        </div>
+        <div id="bkResults" class="hidden">
+          <div class="sec"><h4>Combined</h4><div id="bkStatCards" class="statg"></div></div>
+          <div class="sec"><h4>Compare <i>untick or multiply to optimise — recomputes at once</i></h4><div class="scr"><table class="bk" id="bkCompareT"></table></div></div>
+          <div class="sec"><h4>Date-wise <i>combined and per strategy</i></h4><div class="scr" style="max-height:420px;overflow-y:auto"><table class="tbl" id="bkDateT"></table></div></div>
         </div>
       </div>
-      <div id="statCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div>
-      <button id="moreStats" class="mx-auto block mt-3 text-green-700 border border-green-300 rounded-lg px-4 py-1.5 text-xs font-semibold">SHOW MORE STATS ▾</button>
-      <div id="moreStatsBox" class="hidden grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-3"></div>
-    </div>
+    </section>
 
-    <div class="card p-4 mb-3 overflow-x-auto" data-jump="Day-wise"><h4 class="font-bold text-slate-600 text-xs mb-2">DAY-WISE BREAKUP</h4><table class="bk w-full" id="dayWiseT"></table></div>
-    <div class="card p-4 mb-3 overflow-x-auto" data-jump="Monthly"><h4 class="font-bold text-slate-600 text-xs mb-2">MONTHLY BREAKUP</h4><table class="bk w-full" id="monWiseT"></table></div>
-
-    <div class="card p-4 mb-3" data-jump="Chart">
-      <div class="flex gap-1 text-xs mb-2" id="chartTabs">
-        <button class="chip on" data-c="pnl">Trade P&amp;L</button>
-        <button class="chip" data-c="cum">Cumulative</button>
-        <button class="chip" data-c="dd">Drawdown</button>
+    <section class="os-pane os-main">
+      <div class="os-ph">
+        <span class="ttl">Basket chart</span>
+        <span class="r">
+          <div class="os-sg" id="bkChartTabs">
+            <button type="button" class="chip on" data-c="cum">Cumulative</button><button type="button" class="chip" data-c="pnl">Daily P&amp;L</button><button type="button" class="chip" data-c="dd">Drawdown</button>
+          </div>
+          <button type="button" class="os-btn os-focusbtn" id="focusBtn2" title="Chart only (F)">⤢</button>
+        </span>
       </div>
-      <canvas id="chart" class="w-full" height="240"></canvas>
-      <div id="chartHover" class="text-[11px] text-slate-500 h-4 mt-1"></div>
-    </div>
-
-    <div class="card p-4 mb-3" data-jump="Trades">
-      <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-        <h4 class="font-bold text-slate-600 text-xs">TRADES <span class="text-slate-400 font-normal" id="tradeCount"></span></h4>
-        <input id="tradeSearch" type="search" placeholder="filter: date / day / exit" class="border border-slate-300 rounded-lg px-2 py-1 text-xs">
+      <div class="ccw">
+        <div class="os-legend" id="bkHover"></div>
+        <div class="cv"><div id="bkChart" style="position:absolute;inset:0"></div><div class="cmsg" id="bkChartMsg">Run a basket to draw the chart.</div></div>
       </div>
-      <div class="overflow-x-auto max-h-[480px] overflow-y-auto">
-        <table class="tbl w-full" id="tradeT"></table>
-      </div>
-    </div>
+    </section>
   </div>
 
-  </div>
-</div>
-</div>
-
-<!-- ======================= BASKET ======================= -->
-<div id="tab-basket" class="hidden">
-  <div class="grid lg:grid-cols-[240px_1fr] gap-4">
-    <aside class="card p-3 h-fit">
-      <h3 class="text-xs font-bold text-slate-500 tracking-wide mb-2">BASKETS</h3>
-      <div id="basketList" class="space-y-0.5 text-[12.5px] mb-2"></div>
-      <div class="flex gap-1">
-        <button id="newBasket" class="chip">+ Basket</button>
-        <button id="delBasket" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
-        <button id="renBasket" class="chip"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-      </div>
-    </aside>
-    <div class="min-w-0">
-      <div class="card p-4 mb-3" data-jump="Strategies">
-        <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
-          <h3 class="font-bold text-slate-700 text-sm" id="bkTitle">STRATEGIES</h3>
-          <button id="bkAdd" class="chip">+ Add saved strategy</button>
-        </div>
-        <div id="bkRows" class="space-y-1.5 text-xs"></div>
-        <div class="flex flex-wrap items-end gap-3 text-xs mt-3">
-          <label>From<br><input type="date" id="bkFrom" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
-          <label>To<br><input type="date" id="bkTo" class="border border-slate-300 rounded-lg px-2 py-1.5"></label>
-          <span class="flex-1"></span>
-          <button id="bkRunSel" class="bg-amber-500 hover:bg-amber-600 text-white rounded-lg px-4 py-2 font-bold text-xs">RUN SELECTED</button>
-          <button id="bkRunAll" class="bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 font-bold text-xs">RUN ALL</button>
-        </div>
-        <div id="bkLoad" class="hidden mt-2 text-xs text-slate-500"></div>
-      </div>
-      <div id="bkResults" class="hidden">
-        <div class="card p-4 mb-3" data-jump="Combined"><h4 class="font-bold text-slate-600 text-xs mb-2">COMBINED</h4><div id="bkStatCards" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"></div></div>
-        <div class="card p-4 mb-3 overflow-x-auto" data-jump="Compare"><h4 class="font-bold text-slate-600 text-xs mb-2">COMPARE STATS <span class="text-slate-400 font-normal">(uncheck / multiply to optimize — recomputes live)</span></h4><table class="bk w-full" id="bkCompareT"></table></div>
-        <div class="card p-4 mb-3" data-jump="Chart"><div class="flex gap-1 text-xs mb-2" id="bkChartTabs"><button class="chip on" data-c="cum">Cumulative</button><button class="chip" data-c="pnl">Daily P&amp;L</button><button class="chip" data-c="dd">Drawdown</button></div><canvas id="bkChart" class="w-full" height="240"></canvas></div>
-        <div class="card p-4 mb-3 overflow-x-auto" data-jump="Date-wise"><h4 class="font-bold text-slate-600 text-xs mb-2">DATE-WISE (combine + per strategy)</h4><div class="max-h-[420px] overflow-y-auto"><table class="tbl w-full" id="bkDateT"></table></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
+  <details id="how">
+    <summary>How this backtest works, and its limits</summary>
+    <p style="margin-top:6px"><b>End-of-day engine.</b> Runs on real NSE F&amp;O bhavcopy data (exchange closes and settles per strike, 2016 → today) at daily granularity:
+    entries and exits fill at the day close, SL/TP are checked once per day (or against the day's option high/low — see “Lot sizes and SL/TP check” in Set-up).
+    Intraday features (entry time, wait &amp; trade, range breakout) are shown but switched off until minute data lands (phase 2).
+    Strikes that did not trade that day are treated as <b>NA</b>, like StockMock.</p>
+    <p style="margin-top:6px">Picking a strategy on the left loads it and runs it on the dates shown. Saved strategies and baskets are kept in this browser only.</p>
+  </details>
 </main>
-
-<!-- Settings modal -->
-<div id="setModal" class="modal hidden"><div class="p-5">
-  <div class="flex items-center justify-between mb-3"><h3 class="font-bold">Settings</h3><button class="icon-btn" id="setClose">✕</button></div>
-  <div class="grid sm:grid-cols-2 gap-4 text-xs" id="lotBoxes"></div>
-  <div class="mt-4 text-xs space-y-2">
-    <label class="block">SL/TP check:
-      <select id="slCheck"><option value="close">Daily close only</option><option value="hilo">Against day's option High/Low (conservative fill at level)</option></select>
-    </label>
-    <div class="text-slate-400">High/Low mode assumes the level filled exactly — the honest EOD approximation of intraday triggers.</div>
-  </div>
-  <div class="text-right mt-4"><button id="setSave" class="bg-blue-600 text-white rounded-lg px-4 py-1.5 text-xs font-semibold">Save</button></div>
-</div></div>
-
-<!-- Trade detail modal -->
-<div id="tdModal" class="modal hidden"><div class="p-5">
-  <div class="flex items-center justify-between mb-2"><h3 class="font-bold text-sm" id="tdTitle"></h3><button class="icon-btn" id="tdClose">✕</button></div>
-  <canvas id="tdChart" width="820" height="300" class="w-full"></canvas>
-  <div id="tdLegs" class="mt-3 overflow-x-auto"></div>
-</div></div>
 
 <script>
 (function(){
@@ -361,30 +393,29 @@ function methodLabel(l){
 function renderLegs(){
   var h='';
   legs.forEach(function(l,i){
-    h+='<div class="legrow p-2.5 text-xs flex flex-wrap items-center gap-2" data-i="'+i+'">'
-      +'<span class="bg-sky-100 text-sky-700 font-bold rounded px-1.5">L'+(i+1)+'</span>'
+    h+='<div class="legrow" data-i="'+i+'">'
+      +'<span class="lg">L'+(i+1)+'</span>'
       +'<label>Lots <input type="number" min="1" value="'+l.lots+'" data-f="lots" style="width:3.2rem"></label>'
-      +'<button class="seg-side px-2 py-0.5 rounded font-bold '+(l.side==='S'?'bg-red-100 text-red-700':'bg-green-100 text-green-700')+'" data-f="side">'+(l.side==='S'?'SELL':'BUY')+'</button>'
-      +'<button class="seg-type px-2 py-0.5 rounded font-bold bg-sky-100 text-sky-700" data-f="type">'+l.type+'</button>'
-      +'<span class="font-semibold">'+methodLabel(l)+'</span>'
+      +'<button type="button" class="'+(l.side==='S'?'sell':'buy')+'" data-f="side">'+(l.side==='S'?'SELL':'BUY')+'</button>'
+      +'<button type="button" class="ty" data-f="type">'+l.type+'</button>'
+      +'<b>'+methodLabel(l)+'</b>'
       +'<select data-f="expiry"><option value="w"'+(l.expiry==='w'?' selected':'')+'>Weekly</option><option value="nw"'+(l.expiry==='nw'?' selected':'')+'>Next wk</option><option value="m"'+(l.expiry==='m'?' selected':'')+'>Monthly</option></select>'
-      +'<span class="mx-1 text-slate-300">|</span>'
       +'TP <select data-f="tpu"><option value="">—</option><option value="%"'+(l.tp&&l.tp.u==='%'?' selected':'')+'>%</option><option value="pt"'+(l.tp&&l.tp.u==='pt'?' selected':'')+'>pt</option></select>'
       +'<input type="number" step="1" data-f="tpv" value="'+(l.tp?l.tp.v:'')+'" placeholder="—" style="width:3.6rem">'
       +'SL <select data-f="slu"><option value="">—</option><option value="%"'+(l.sl&&l.sl.u==='%'?' selected':'')+'>%</option><option value="pt"'+(l.sl&&l.sl.u==='pt'?' selected':'')+'>pt</option><option value="spot%"'+(l.sl&&l.sl.u==='spot%'?' selected':'')+'>Spot%</option><option value="spotpt"'+(l.sl&&l.sl.u==='spotpt'?' selected':'')+'>Spot pt</option></select>'
       +'<input type="number" step="1" data-f="slv" value="'+(l.sl?l.sl.v:'')+'" placeholder="—" style="width:3.6rem">'
-      +'<span class="tt" data-tt="every X% favourable move shifts SL by Y%">Trail</span> '
+      +'<span title="every X% favourable move shifts SL by Y%">Trail</span> '
       +'<input type="number" data-f="trx" value="'+(l.trail?l.trail.x:'')+'" placeholder="X%" style="width:3.2rem">'
       +'<input type="number" data-f="try" value="'+(l.trail?l.trail.y:'')+'" placeholder="Y%" style="width:3.2rem">'
       +'Re-entry <select data-f="rem"><option value="">—</option><option value="RE"'+(l.re&&l.re.mode==='RE'?' selected':'')+'>RE (same strike)</option><option value="RECOST"'+(l.re&&l.re.mode==='RECOST'?' selected':'')+'>RE cost</option><option value="REI"'+(l.re&&l.re.mode==='REI'?' selected':'')+'>Re-execute</option></select>'
       +'<select data-f="ren">'+[1,2,3,4,5].map(function(n){return '<option'+(l.re&&+l.re.n===n?' selected':'')+'>'+n+'</option>'}).join('')+'</select>'
       +'Hedge <select data-f="hcmp"><option value="">—</option><option value="~"'+(l.hedge&&l.hedge.cmp==='~'?' selected':'')+'>CP ~</option><option value=">="'+(l.hedge&&l.hedge.cmp==='>='?' selected':'')+'>CP ≥</option><option value="<="'+(l.hedge&&l.hedge.cmp==='<='?' selected':'')+'>CP ≤</option></select>'
       +'<input type="number" data-f="hprem" value="'+(l.hedge?l.hedge.prem:'')+'" placeholder="₹" style="width:3.4rem">'
-      +'<span class="flex-1"></span>'
-      +'<span class="icon-btn" data-act="copy">⧉</span><span class="icon-btn" data-act="del"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span>'
+      +'<span style="flex:1"></span>'
+      +'<span class="icon-btn" data-act="copy" title="Copy this position">⧉</span><span class="icon-btn" data-act="del" title="Remove">✕</span>'
       +'</div>';
   });
-  $('#legList').innerHTML=h||'<div class="text-xs text-slate-400 text-center py-2">No positions yet — add one above.</div>';
+  $('#legList').innerHTML=h||'<div class="os-note">No positions yet — add one above.</div>';
 }
 $('#legList').addEventListener('click',function(e){
   var row=e.target.closest('[data-i]');if(!row)return;var i=+row.dataset.i,l=legs[i];
@@ -422,7 +453,7 @@ $('#addLeg').addEventListener('click',function(){
 // ---------- gap filters ----------
 function renderGapF(){
   $('#gapFilters').innerHTML=gapFilters.map(function(f,i){
-    return '<div class="flex items-center gap-1" data-i="'+i+'">'
+    return '<div class="ln" data-i="'+i+'">'
       +'<select data-f="field"><option value="gap"'+(f.field==='gap'?' selected':'')+'>Gap open vs prev close %</option>'
       +'<option value="pdhl"'+(f.field==='pdhl'?' selected':'')+'>Open vs prev day H/L %</option>'
       +'<option value="spotchg"'+(f.field==='spotchg'?' selected':'')+'>Spot day change %</option></select>'
@@ -458,7 +489,7 @@ function renderSettings(){
   Object.keys(FOEngine.LOTS).forEach(function(sym){
     var sch=FOEngine.LOTS[sym].map(function(p){return p[1]+(p[0]==='9999'?' after':' till '+p[0])}).join(', ');
     var ov=(settings.lotOverride||{})[sym]||'';
-    h+='<div><b>'+sym+'</b> lot size<br><span class="text-slate-400">'+sch+'</span><br>'
+    h+='<div><b>'+sym+'</b> lot size<br><span class="lb">'+sch+'</span><br>'
       +'Override: <input type="number" data-lot="'+sym+'" value="'+ov+'" placeholder="dated (default)"></div>';
   });
   $('#lotBoxes').innerHTML=h;
@@ -471,7 +502,7 @@ $('#setSave').addEventListener('click',function(){
   $$('#lotBoxes [data-lot]').forEach(function(inp){if(+inp.value)settings.lotOverride[inp.dataset.lot]=+inp.value;});
   settings.slCheck=$('#slCheck').value;
   localStorage.setItem('fo_bt_settings',JSON.stringify(settings));
-  $('#setModal').classList.add('hidden');
+  $('#setModal').classList.add('hidden');say('#saveMsg','Settings saved — they apply from the next run.');
 });
 
 // ---------- default strategies ----------
@@ -493,31 +524,8 @@ var DEFAULTS=[
  ['Short CP as 25% SP',[mkLeg('S','CE','sp',25),mkLeg('S','PE','sp',25)]],
  ['Expiry-eve Straddle (DTE 1)',[mkLeg('S','CE','atm',0,'w',{sl:{u:'%',v:40}}),mkLeg('S','PE','atm',0,'w',{sl:{u:'%',v:40}})],{entryDTE:1}]
 ];
-function renderDefaults(){
-  $('#defaultList').innerHTML=DEFAULTS.map(function(d,i){return '<div class="cursor-pointer hover:text-blue-600 py-0.5" data-d="'+i+'">📄 '+d[0]+'</div>'}).join('');
-}
-$('#defaultList').addEventListener('click',function(e){
-  var t=e.target.closest('[data-d]');if(!t)return;
-  var d=DEFAULTS[+t.dataset.d];
-  legs=JSON.parse(JSON.stringify(d[1]));
-  if(d[2]&&d[2].entryDTE!=null)$('#entryDTE').value=d[2].entryDTE;
-  renderLegs();
-});
-
 // ---------- saved strategies ----------
 function savedAll(){return JSON.parse(localStorage.getItem('fo_bt_strategies')||'{}');}
-function renderSaved(){
-  var all=savedAll(),q=($('#stratSearch').value||'').toLowerCase();
-  $('#savedList').innerHTML=Object.keys(all).filter(function(n){return n.toLowerCase().indexOf(q)>=0})
-    .map(function(n){return '<div class="flex items-center gap-1 py-0.5"><span class="cursor-pointer hover:text-blue-600 flex-1 truncate" data-s="'+encodeURIComponent(n)+'">💾 '+n+'</span><span class="icon-btn" data-x="'+encodeURIComponent(n)+'">✕</span></div>'}).join('')
-    ||'<div class="text-slate-400">none yet</div>';
-}
-$('#stratSearch').addEventListener('input',renderSaved);
-$('#savedList').addEventListener('click',function(e){
-  var s=e.target.dataset.s,x=e.target.dataset.x;
-  if(x){var all=savedAll();delete all[decodeURIComponent(x)];localStorage.setItem('fo_bt_strategies',JSON.stringify(all));renderSaved();return;}
-  if(s){applyCfg(savedAll()[decodeURIComponent(s)]);}
-});
 function currentCfg(){
   return {
     name:null, index:$('#idx').value, basis:segVal('basisSeg'), squareOff:segVal('sqSeg'),
@@ -558,14 +566,15 @@ function applyCfg(c){
   legs=JSON.parse(JSON.stringify(c.legs||[]));renderLegs();
 }
 $('#saveStrat').addEventListener('click',function(){
-  var n=prompt('Strategy name:');if(!n)return;
+  var n=($('#saveName').value||'').trim();if(!n){say('#saveMsg','Type a name in the box, then press Save strategy.',true);$('#saveName').focus();return;}
   var all=savedAll();all[n]=currentCfg();all[n].name=n;
-  localStorage.setItem('fo_bt_strategies',JSON.stringify(all));renderSaved();
+  localStorage.setItem('fo_bt_strategies',JSON.stringify(all));selKey='s:'+n;$('#mTitle').textContent=n;renderSaved();say('#saveMsg','Saved as “'+n+'” — it is in the list on the left.');
 });
 $('#shareStrat').addEventListener('click',function(){
   var enc=btoa(unescape(encodeURIComponent(JSON.stringify(currentCfg()))));
   var url=location.origin+location.pathname+'#s='+enc;
-  navigator.clipboard.writeText(url).then(function(){alert('Share link copied!')},function(){prompt('Copy link:',url)});
+  var showUrl=function(){var u=$('#shareUrl');u.value=url;u.classList.remove('hidden');u.select();say('#saveMsg','Copy the link from the box below.');};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(function(){say('#saveMsg','Share link copied.')},showUrl);else showUrl();
 });
 if(location.hash.slice(0,3)==='#s='){try{applyCfg(JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(3))))));}catch(e){}}
 
@@ -585,10 +594,10 @@ function loadManifest(){
     return m;});
 }
 function runBacktest(){
-  if(!legs.length){alert('Add at least one position.');return;}
+  if(!legs.length){runMsg('Add at least one position in Set-up first.');return;}
   var cfg=currentCfg();
-  if(!cfg.from||!cfg.to){alert('Pick dates');return;}
-  $('#loadBar').classList.remove('hidden');$('#loadTxt').textContent='Loading data…';
+  if(!cfg.from||!cfg.to){runMsg('Pick the From and To dates.');return;}
+  $('#loadBar').classList.remove('hidden');say('#loadTxt','Loading data…');
   Promise.all([loadVix(),loadManifest()]).then(function(){
     return FOEngine.loadRange(cfg.index,cfg.from,cfg.to,function(a,b){
       $('#loadFill').style.width=(a/b*100)+'%';$('#loadTxt').textContent='Loading '+cfg.index+' slices '+a+'/'+b;
@@ -604,14 +613,14 @@ function runBacktest(){
       $('#results').classList.remove('hidden');
       $('#resMeta').textContent=cfg.index+' · '+cfg.from+' → '+cfg.to+' · '+lastRun.trades.length+' trades · '+((performance.now()-t0)/1000).toFixed(1)+'s';
       renderResults();
-      $('#results').scrollIntoView({behavior:'smooth'});
+      afterRun();
     },30);
   }).catch(function(e){$('#loadTxt').textContent='Failed: '+e.message;});
 }
 $('#runBtn').addEventListener('click',runBacktest);
 
 // ---------- results rendering ----------
-function card(cls,title,val,sub){return '<div class="statc '+cls+'"><h4>'+title+'</h4><div class="v">'+val+'</div>'+(sub?'<div class="text-[10px] text-slate-400">'+sub+'</div>':'')+'</div>';}
+function card(cls,title,val,sub){return '<div class="statc '+cls+'"><h4>'+title+'</h4><div class="v">'+val+'</div>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>';}
 function renderResults(){
   var s=FOEngine.computeStats(lastRun.trades,lastRun.cfg,lastRun.data);
   lastRun.stats=s;
@@ -673,53 +682,7 @@ function renderResults(){
   renderTrades();
 }
 $('#roiPct').addEventListener('change',renderResults);
-$('#moreStats').addEventListener('click',function(){
-  var b=$('#moreStatsBox');b.classList.toggle('hidden');
-  this.textContent=b.classList.contains('hidden')?'SHOW MORE STATS ▾':'SHOW LESS STATS ▴';
-});
-
 // ---------- charts (vanilla canvas) ----------
-function drawSeries(cv,mode,trades){
-  var ctx=cv.getContext('2d');var W=cv.width=cv.clientWidth*2;var H=cv.height=480;ctx.scale(1,1);
-  ctx.clearRect(0,0,W,H);
-  var inc=trades.filter(function(t){return t.include!==false});
-  if(!inc.length)return;
-  var pts=[],cum=0,peak=0;
-  inc.forEach(function(t){cum+=t.pnl;peak=Math.max(peak,cum);pts.push({d:t.exitDate,pnl:t.pnl,cum:cum,dd:cum-peak});});
-  var key=mode==='pnl'?'pnl':mode==='cum'?'cum':'dd';
-  var vals=pts.map(function(p){return p[key]});
-  var mn=Math.min(0,Math.min.apply(null,vals)),mx=Math.max(0,Math.max.apply(null,vals));
-  if(mx===mn)mx=mn+1;
-  var pad=46,w=(W-pad-10)/pts.length;
-  var y=function(v){return 12+(H-40-12)*(1-(v-mn)/(mx-mn))};
-  ctx.font='20px system-ui';ctx.fillStyle='#94a3b8';ctx.strokeStyle='rgba(148,163,184,.3)';
-  for(var g=0;g<=4;g++){var gv=mn+(mx-mn)*g/4;ctx.beginPath();ctx.moveTo(pad,y(gv));ctx.lineTo(W-10,y(gv));ctx.stroke();ctx.fillText(Math.round(gv/1000)+'k',2,y(gv)+6);}
-  if(mode==='pnl'){
-    pts.forEach(function(p,i){ctx.fillStyle=p.pnl>=0?'#16a34a':'#dc2626';var x=pad+i*w;var y0=y(0),y1=y(p.pnl);ctx.fillRect(x+w*0.15,Math.min(y0,y1),Math.max(w*0.7,1),Math.abs(y1-y0)||1);});
-  }else{
-    ctx.beginPath();ctx.strokeStyle=mode==='dd'?'#dc2626':'#2563eb';ctx.lineWidth=2.5;
-    pts.forEach(function(p,i){var x=pad+i*w+w/2;i?ctx.lineTo(x,y(p[key])):ctx.moveTo(x,y(p[key]));});
-    ctx.stroke();
-    if(mode==='dd'){ctx.lineTo(pad+(pts.length-1)*w+w/2,y(0));ctx.lineTo(pad+w/2,y(0));ctx.closePath();ctx.fillStyle='rgba(220,38,38,.08)';ctx.fill();}
-  }
-  // x labels
-  ctx.fillStyle='#94a3b8';
-  var stepN=Math.max(1,Math.floor(pts.length/8));
-  for(var i=0;i<pts.length;i+=stepN){ctx.fillText(pts[i].d.slice(2),pad+i*w,H-10);}
-  cv._pts=pts;cv._geom={pad:pad,w:w};
-}
-function drawChart(){drawSeries($('#chart'),chartMode,lastRun.trades);}
-$('#chartTabs').addEventListener('click',function(e){
-  if(!e.target.dataset.c)return;
-  $$('#chartTabs .chip').forEach(function(c){c.classList.remove('on')});e.target.classList.add('on');
-  chartMode=e.target.dataset.c;drawChart();
-});
-$('#chart').addEventListener('mousemove',function(e){
-  var cv=this;if(!cv._pts)return;
-  var i=Math.floor((e.offsetX*2-cv._geom.pad)/cv._geom.w);
-  var p=cv._pts[i];$('#chartHover').textContent=p?p.d+' · trade P&L '+fmt(p.pnl)+' · cumulative '+fmt(p.cum)+' · DD '+fmt(p.dd):'';
-});
-
 // ---------- trade table ----------
 var sortKey='entryDate',sortAsc=false;
 function renderTrades(){
@@ -740,13 +703,13 @@ function renderTrades(){
     var dPrev=lastRun.data.byDate[t.entryDate];
     if(dPrev&&dPrev.idx>0){var pv=lastRun.data.days[dPrev.idx-1];if(pv&&pv.spot&&dPrev.spotO)gap=((dPrev.spotO-pv.spot)/pv.spot*100).toFixed(2);}
     var legsTxt=t.legs.map(function(l){return (l.isHedge?'H:':'')+l.side+' '+(l.type==='FUT'?'FUT':l.k+' '+l.type)+' @'+l.entry.toFixed(1)+'→'+(l.exitPx!=null?l.exitPx.toFixed(1):'—')+(l.exitWhy?' ('+l.exitWhy+')':'')}).join(' · ');
-    h+='<tr><td><input type="checkbox" data-inc="'+idx+'"'+(t.include===false?'':' checked')+'></td>'
-      +'<td><a href="#" class="text-blue-600" data-td="'+idx+'">📈 '+t.entryDate+'</a></td>'
+    h+='<tr data-td="'+idx+'"'+(idx===selTrade?' class="on"':'')+'><td><input type="checkbox" data-inc="'+idx+'"'+(t.include===false?'':' checked')+'></td>'
+      +'<td>'+t.entryDate+'</td>'
       +'<td>'+t.exitDate+'</td><td>'+dow+'</td><td>'+t.dte+'</td><td>'+t.expiry+'</td><td>'+t.exitWhy+'</td>'
       +'<td class="'+(t.pnl<0?'neg':'pos')+'">'+fmt(t.pnl)+'</td>'
       +'<td class="pos">'+fmt(t.maxUp)+'</td><td class="neg">'+fmt(t.maxDn)+'</td>'
       +'<td>'+t.lot+'</td><td>'+(t.vix!=null?t.vix.toFixed(2):'—')+'</td><td>'+gap+'</td>'
-      +'<td class="max-w-[420px] overflow-hidden text-ellipsis" title="'+legsTxt.replace(/"/g,'&quot;')+'">'+legsTxt+'</td></tr>';
+      +'<td title="'+legsTxt.replace(/"/g,'&quot;')+'">'+legsTxt+'</td></tr>';
   });
   $('#tradeT').innerHTML=h;
   $('#tradeCount').textContent='('+shown+' of '+lastRun.trades.length+')';
@@ -771,69 +734,29 @@ $('#csvBtn').addEventListener('click',function(){
 });
 
 // ---------- trade detail popup ----------
-function openTradeDetail(t){
-  $('#tdTitle').textContent='Trade '+t.entryDate+' → '+t.exitDate+' · P&L '+fmt(t.pnl);
-  $('#tdModal').classList.remove('hidden');
-  var cv=$('#tdChart'),ctx=cv.getContext('2d');
-  var W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
-  var pts=[{date:t.entryDate,pnl:0}].concat(t.daily);
-  if(pts.length<2){ctx.fillText('single-day trade',20,40);}
-  var vals=pts.map(function(p){return p.pnl}),mn=Math.min.apply(null,vals.concat(0)),mx=Math.max.apply(null,vals.concat(0));
-  if(mx===mn)mx=mn+1;
-  var pad=52,y=function(v){return 12+(H-46-12)*(1-(v-mn)/(mx-mn))},x=function(i){return pad+(W-pad-14)*i/(pts.length-1||1)};
-  ctx.strokeStyle='rgba(148,163,184,.3)';ctx.fillStyle='#94a3b8';ctx.font='11px system-ui';
-  for(var g=0;g<=4;g++){var gv=mn+(mx-mn)*g/4;ctx.beginPath();ctx.moveTo(pad,y(gv));ctx.lineTo(W-14,y(gv));ctx.stroke();ctx.fillText(Math.round(gv).toLocaleString('en-IN'),2,y(gv)+4);}
-  ctx.beginPath();ctx.strokeStyle=document.documentElement.getAttribute('data-theme')==='dark'?'#e2e8f0':'#0f172a';ctx.lineWidth=2;
-  pts.forEach(function(p,i){i?ctx.lineTo(x(i),y(p.pnl)):ctx.moveTo(x(i),y(p.pnl));});ctx.stroke();
-  pts.forEach(function(p,i){if(i%Math.max(1,Math.floor(pts.length/8))===0)ctx.fillText(p.date.slice(5),x(i)-14,H-8);});
-  // legs table
-  var h='<table class="tbl w-full"><tr><th>Leg</th><th>Side</th><th>Strike</th><th>Expiry</th><th>Entry dt</th><th>Entry</th><th>Exit dt</th><th>Exit</th><th>Why</th><th>P&L ₹</th></tr>';
-  t.legs.forEach(function(l){
-    var lp=(l.exitPx-l.entry)*(l.side==='B'?1:-1)*l.lots*t.lot;
-    h+='<tr><td>'+l.id+(l.isHedge?' (hedge)':'')+(l.isRe?' (re-entry)':'')+'</td><td>'+(l.side==='S'?'SELL':'BUY')+'</td>'
-      +'<td>'+(l.type==='FUT'?'FUT':l.k+' '+l.type)+'</td><td>'+l.exp+'</td>'
-      +'<td>'+l.entryDate+'</td><td>'+l.entry.toFixed(2)+'</td><td>'+(l.exitDate||'')+'</td><td>'+(l.exitPx!=null?l.exitPx.toFixed(2):'')+'</td>'
-      +'<td>'+(l.exitWhy||'')+'</td><td class="'+(lp<0?'neg':'pos')+'">'+fmt(lp)+'</td></tr>';
-  });
-  $('#tdLegs').innerHTML=h+'</table>';
-}
-$('#tdClose').addEventListener('click',function(){$('#tdModal').classList.add('hidden');});
-
 // ======================= BASKET =======================
 function basketsAll(){return JSON.parse(localStorage.getItem('fo_bt_baskets')||'{}');}
 var curBasket=null,bkRuns=null;
 function renderBaskets(){
   var all=basketsAll(),names=Object.keys(all);
   if(curBasket==null&&names.length)curBasket=names[0];
-  $('#basketList').innerHTML=names.map(function(n){return '<div class="cursor-pointer py-0.5 '+(n===curBasket?'font-bold text-blue-700':'')+'" data-b="'+encodeURIComponent(n)+'">🧺 '+n+'</div>'}).join('')||'<div class="text-slate-400">none yet</div>';
+  $('#basketList').innerHTML=names.map(function(n){return '<div class="os-row s1'+(n===curBasket?' on':'')+'" data-b="'+encodeURIComponent(n)+'"><span class="n">'+esc(n)+'</span><span class="m">'+((all[n].strategies||[]).length)+'</span></div>'}).join('')||'';
   renderBkRows();
 }
 function renderBkRows(){
   var all=basketsAll(),b=all[curBasket]||{strategies:[]};
   $('#bkTitle').textContent='STRATEGIES'+(curBasket?' — '+curBasket:'');
   $('#bkRows').innerHTML=b.strategies.map(function(s,i){
-    return '<div class="legrow p-2 flex items-center gap-2 flex-wrap" data-i="'+i+'">'
+    return '<div class="legrow" data-i="'+i+'">'
       +'<input type="checkbox" data-f="sel"'+(s.sel!==false?' checked':'')+'>'
-      +'<span class="bg-sky-100 text-sky-700 font-bold rounded px-1.5">#S-'+(i+1)+'</span>'
-      +'<span class="font-semibold flex-1">'+s.name+'</span>'
-      +'<span class="text-slate-400">'+(s.cfg.index||'')+'</span>'
+      +'<span class="lg">#S-'+(i+1)+'</span>'
+      +'<b style="flex:1">'+esc(s.name)+'</b>'
+      +'<span class="lb">'+(s.cfg.index||'')+'</span>'
       +'<label>× <input type="number" min="1" value="'+(s.mult||1)+'" data-f="mult" style="width:3rem"></label>'
-      +'<span class="icon-btn" data-act="del"><svg class="sw-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span></div>';
-  }).join('')||'<div class="text-slate-400 text-center py-2">Add saved strategies to this basket.</div>';
+      +'<span class="icon-btn" data-act="del" title="Remove">✕</span></div>';
+  }).join('')||'<div class="os-note">'+(curBasket?'Add saved strategies to this basket.':'Create or select a basket on the left first.')+'</div>';
 }
 $('#basketList').addEventListener('click',function(e){var b=e.target.closest('[data-b]');if(b){curBasket=decodeURIComponent(b.dataset.b);renderBaskets();}});
-$('#newBasket').addEventListener('click',function(){var n=prompt('Basket name:');if(!n)return;var all=basketsAll();all[n]={strategies:[]};localStorage.setItem('fo_bt_baskets',JSON.stringify(all));curBasket=n;renderBaskets();});
-$('#delBasket').addEventListener('click',function(){if(!curBasket)return;if(!confirm('Delete basket '+curBasket+'?'))return;var all=basketsAll();delete all[curBasket];localStorage.setItem('fo_bt_baskets',JSON.stringify(all));curBasket=null;renderBaskets();});
-$('#renBasket').addEventListener('click',function(){if(!curBasket)return;var n=prompt('New name:',curBasket);if(!n)return;var all=basketsAll();all[n]=all[curBasket];delete all[curBasket];localStorage.setItem('fo_bt_baskets',JSON.stringify(all));curBasket=n;renderBaskets();});
-$('#bkAdd').addEventListener('click',function(){
-  if(!curBasket){alert('Create a basket first.');return;}
-  var saved=savedAll(),names=Object.keys(saved);
-  if(!names.length){alert('No saved strategies yet — save one from the Single tab.');return;}
-  var pick=prompt('Add which strategy?\n'+names.map(function(n,i){return (i+1)+'. '+n}).join('\n'),'1');
-  var n=names[(+pick||1)-1];if(!n)return;
-  var all=basketsAll();all[curBasket].strategies.push({name:n,cfg:saved[n],mult:1,sel:true});
-  localStorage.setItem('fo_bt_baskets',JSON.stringify(all));renderBkRows();
-});
 $('#bkRows').addEventListener('change',function(e){
   var r=e.target.closest('[data-i]');if(!r)return;var all=basketsAll(),s=all[curBasket].strategies[+r.dataset.i];
   if(e.target.dataset.f==='sel')s.sel=e.target.checked;
@@ -846,11 +769,11 @@ $('#bkRows').addEventListener('click',function(e){
 });
 function bkRun(onlySel){
   var all=basketsAll(),b=all[curBasket];
-  if(!b||!b.strategies.length){alert('Basket is empty.');return;}
+  if(!b||!b.strategies.length){bkLoadMsg('Basket is empty — add a saved strategy first.');return;}
   var from=$('#bkFrom').value,to=$('#bkTo').value;
-  if(!from||!to){alert('Pick basket dates');return;}
+  if(!from||!to){bkLoadMsg('Pick the basket From and To dates.');return;}
   var list=b.strategies.filter(function(s){return !onlySel||s.sel!==false});
-  $('#bkLoad').classList.remove('hidden');$('#bkLoad').textContent='Running '+list.length+' strategies…';
+  $('#bkLoad').classList.remove('hidden');say('#bkLoad','Running '+list.length+' strategies…');
   loadVix().then(function(){
     var seq=Promise.resolve();var runs=[];
     list.forEach(function(s,i){
@@ -923,9 +846,9 @@ function renderBkResults(){
     ['Max loss streak',function(r){return r.run.res.stats.streakL}],
     ['Expectancy',function(r){var s=r.run.res.stats;return s.expectancy!=null?s.expectancy.toFixed(2):'—'}]
   ];
-  var t='<tr><th></th><th>Combine</th>'+rows.map(function(r,i){return '<th>#S-'+(i+1)+'<br><span class="font-normal text-[10px]">'+r.run.name+'</span></th>'}).join('')+'</tr>';
+  var t='<tr><th></th><th>Combine</th>'+rows.map(function(r,i){return '<th>#S-'+(i+1)+'<br><span style="font-weight:400;font-size:10.5px">'+esc(r.run.name)+'</span></th>'}).join('')+'</tr>';
   metrics.forEach(function(m,mi){
-    t+='<tr><td class="font-semibold text-left">'+m[0]+'</td>';
+    t+='<tr><td>'+m[0]+'</td>';
     if(mi===0)t+='<td></td>';
     else if(mi===1)t+='<td></td>';
     else if(m[0]==='Overall Profit')t+='<td class="'+(tot<0?'neg':'pos')+'">'+fmt(tot)+'</td>';
@@ -949,23 +872,6 @@ function renderBkResults(){
   // chart
   drawBkChart(dates,byDate);
 }
-function drawBkChart(dates,byDate){
-  var cv=$('#bkChart'),ctx=cv.getContext('2d');
-  var W=cv.width=cv.clientWidth*2,H=cv.height=480;ctx.clearRect(0,0,W,H);
-  if(!dates.length)return;
-  var pts=[],cum=0,peak=0;
-  dates.forEach(function(d){cum+=byDate[d];peak=Math.max(peak,cum);pts.push({d:d,pnl:byDate[d],cum:cum,dd:cum-peak});});
-  var key=bkChartMode==='pnl'?'pnl':bkChartMode==='cum'?'cum':'dd';
-  var vals=pts.map(function(p){return p[key]});
-  var mn=Math.min(0,Math.min.apply(null,vals)),mx=Math.max(0,Math.max.apply(null,vals));if(mx===mn)mx=mn+1;
-  var pad=52,w=(W-pad-10)/pts.length,y=function(v){return 12+(H-40-12)*(1-(v-mn)/(mx-mn))};
-  ctx.font='20px system-ui';ctx.strokeStyle='rgba(148,163,184,.3)';ctx.fillStyle='#94a3b8';
-  for(var g=0;g<=4;g++){var gv=mn+(mx-mn)*g/4;ctx.beginPath();ctx.moveTo(pad,y(gv));ctx.lineTo(W-10,y(gv));ctx.stroke();ctx.fillText(Math.round(gv/1000)+'k',2,y(gv)+6);}
-  if(bkChartMode==='pnl'){pts.forEach(function(p,i){ctx.fillStyle=p.pnl>=0?'#16a34a':'#dc2626';var x=pad+i*w,y0=y(0),y1=y(p.pnl);ctx.fillRect(x,Math.min(y0,y1),Math.max(w*0.7,1),Math.abs(y1-y0)||1);});}
-  else{ctx.beginPath();ctx.strokeStyle=bkChartMode==='dd'?'#dc2626':'#2563eb';ctx.lineWidth=2.5;pts.forEach(function(p,i){var x=pad+i*w+w/2;i?ctx.lineTo(x,y(p[key])):ctx.moveTo(x,y(p[key]));});ctx.stroke();}
-  var stepN=Math.max(1,Math.floor(pts.length/8));ctx.fillStyle='#94a3b8';
-  for(var i=0;i<pts.length;i+=stepN)ctx.fillText(pts[i].d.slice(2),pad+i*w,H-10);
-}
 $('#bkChartTabs').addEventListener('click',function(e){
   if(!e.target.dataset.c)return;
   $$('#bkChartTabs .chip').forEach(function(c){c.classList.remove('on')});e.target.classList.add('on');
@@ -980,22 +886,261 @@ $('#bkCompareT').addEventListener('change',function(e){
   renderBkRows();renderBkResults();
 });
 
-// ---------- tabs ----------
-$$('.mtab').forEach(function(b){b.addEventListener('click',function(){
-  $$('.mtab').forEach(function(x){x.classList.remove('border-blue-600','text-blue-700');x.classList.add('border-transparent','text-slate-500');});
-  b.classList.add('border-blue-600','text-blue-700');b.classList.remove('border-transparent','text-slate-500');
-  $('#tab-single').classList.toggle('hidden',b.dataset.t!=='single');
-  $('#tab-basket').classList.toggle('hidden',b.dataset.t!=='basket');
-  if(b.dataset.t==='basket')renderBaskets();
-});});
+
+// ======================= ONE-SCREEN GLUE =======================
+var K=window.OSKit, LC=window.LightweightCharts, esc=K.esc;
+var selKey=null, selTrade=-1, midView='res', curTab='single';
+function say(id,t,bad){var m=$(id);m.textContent=t||'';m.classList.toggle('bad',!!bad);}
+function runMsg(t){$('#loadBar').classList.remove('hidden');$('#loadFill').style.width='0%';say('#loadTxt',t,true);}
+function bkLoadMsg(t){$('#bkLoad').classList.remove('hidden');say('#bkLoad',t,true);}
+
+// ---------- strategies list (saved + built-in) ----------
+function stratItems(){
+  var q=($('#stratSearch').value||'').toLowerCase(),all=savedAll(),sv=[],df=[];
+  Object.keys(all).forEach(function(n){if(n.toLowerCase().indexOf(q)>=0)sv.push({k:'s:'+n,n:n});});
+  DEFAULTS.forEach(function(d,i){if(d[0].toLowerCase().indexOf(q)>=0)df.push({k:'d:'+i,n:d[0]});});
+  return {sv:sv,df:df,all:sv.concat(df)};
+}
+function renderStrats(){
+  var it=stratItems();
+  var row=function(o,x){return '<div class="os-row s1'+(o.k===selKey?' on':'')+'" data-k="'+esc(o.k)+'"><span class="n">'+esc(o.n)+'</span>'+(x?'<span class="x" data-x="1" title="Remove this saved strategy">✕</span>':'<span></span>')+'</div>';};
+  $('#stratList').innerHTML='<div class="gh">Saved <i>'+it.sv.length+'</i></div>'
+    +(it.sv.map(function(o){return row(o,true)}).join('')||'<div class="os-note">'+($('#stratSearch').value?'No saved strategy matches.':'None yet — set one up and use Save strategy.')+'</div>')
+    +'<div class="gh">Built-in <i>'+it.df.length+'</i></div>'
+    +(it.df.map(function(o){return row(o,false)}).join('')||'<div class="os-note">No built-in strategy matches.</div>');
+  $('#stratN').textContent=it.all.length;
+}
+function renderSaved(){renderStrats();}
+function pick(k,run){
+  if(k.slice(0,2)==='d:'){
+    var d=DEFAULTS[+k.slice(2)];if(!d)return;
+    legs=JSON.parse(JSON.stringify(d[1]));
+    $('#entryDTE').value=(d[2]&&d[2].entryDTE!=null)?d[2].entryDTE:'';   // a built-in carries its own entry-DTE rule, so the last one's DTE 1 does not stick to the next
+    renderLegs();$('#mTitle').textContent=d[0];
+  }else{
+    var c=savedAll()[k.slice(2)];if(!c)return;
+    applyCfg(c);$('#mTitle').textContent=k.slice(2);$('#saveName').value=k.slice(2);
+  }
+  selKey=k;renderStrats();
+  var on=$('#stratList .os-row.on'),L=$('#stratList');
+  if(on){var r=on.getBoundingClientRect(),lr=L.getBoundingClientRect();if(r.top<lr.top+26)L.scrollTop-=lr.top+26-r.top;else if(r.bottom>lr.bottom)L.scrollTop+=r.bottom-lr.bottom;}
+  if(run)runBacktest();
+}
+$('#stratSearch').addEventListener('input',renderStrats);
+$('#stratList').addEventListener('click',function(e){
+  var r=e.target.closest('.os-row');if(!r)return;var k=r.dataset.k;
+  if(e.target.dataset.x){var all=savedAll();delete all[k.slice(2)];localStorage.setItem('fo_bt_strategies',JSON.stringify(all));if(selKey===k)selKey=null;renderStrats();return;}
+  pick(k,true);
+});
+function moveStrat(step){
+  var a=stratItems().all;if(!a.length)return;
+  var i=a.map(function(o){return o.k}).indexOf(selKey);
+  i=i<0?(step>0?0:a.length-1):Math.max(0,Math.min(a.length-1,i+step));
+  if(a[i].k!==selKey)pick(a[i].k,true);
+}
+
+// ---------- middle pane views ----------
+function setMid(m){
+  midView=m;
+  $$('#midSeg button').forEach(function(b){b.classList.toggle('on',b.dataset.m===m)});
+  $('#vSetup').classList.toggle('hidden',m!=='setup');
+  $('#vRes').classList.toggle('hidden',m!=='res');
+  $('#vBrk').classList.toggle('hidden',m!=='brk');
+  $('#vTrd').classList.toggle('hidden',m!=='trd');
+  $('#noRes').classList.toggle('hidden',m==='setup'||!!lastRun);
+}
+$('#midSeg').addEventListener('click',function(e){if(e.target.dataset.m)setMid(e.target.dataset.m);});
+var runFromBtn=false;
+function afterRun(){
+  if(selTrade>=lastRun.trades.length)selTrade=-1;
+  if(chartMode==='trade'){chartMode='pnl';$$('#chartTabs .chip').forEach(function(c){c.classList.toggle('on',c.dataset.c==='pnl')});drawChart();}
+  selTrade=-1;$('#tdLegs').innerHTML='';renderTrades();
+  if(runFromBtn&&midView==='setup')setMid('res');else setMid(midView);
+  runFromBtn=false;
+}
+
+// ---------- charts (lightweight-charts) ----------
+function cssv(n,f){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||f;}
+function Pane(el,msg,leg){this.el=$(el);this.msg=$(msg);this.leg=$(leg);this.chart=null;this.last=null;}
+Pane.prototype.clear=function(t){if(this.chart){this.chart.remove();this.chart=null;}this.last=null;this.msg.textContent=t||'';this.msg.classList.remove('hidden');this.leg.innerHTML='';};
+// pts: [{time:'YYYY-MM-DD',value,...}] ascending and unique; kind: 'bars' | 'line' | 'dd'; legend(p) -> html
+Pane.prototype.draw=function(pts,kind,legend){
+  if(this.chart){this.chart.remove();this.chart=null;}
+  this.last=[pts,kind,legend];
+  if(!pts.length){this.msg.textContent='No trades to draw for this selection.';this.msg.classList.remove('hidden');this.leg.innerHTML='';return;}
+  this.msg.classList.add('hidden');
+  var grid=cssv('--border','#e2e8f0'),pos=cssv('--pos','#16a34a'),neg=cssv('--neg','#dc2626'),acc=cssv('--accent','#2563eb'),me=this;
+  var ch=LC.createChart(this.el,{autoSize:true,
+    layout:{background:{color:'transparent'},textColor:cssv('--text-muted','#94a3b8'),fontSize:11,fontFamily:getComputedStyle(document.body).fontFamily,attributionLogo:false},
+    grid:{vertLines:{color:grid},horzLines:{color:grid}},rightPriceScale:{borderVisible:false},timeScale:{borderVisible:false},
+    localization:{priceFormatter:function(x){var a=Math.abs(x);return (x<0?'-':'')+'₹'+(a>=1e7?(a/1e7).toFixed(2)+'Cr':a>=1e5?(a/1e5).toFixed(2)+'L':a>=1e3?(a/1e3).toFixed(1)+'k':a.toFixed(0));}}});
+  var s;
+  if(kind==='bars')s=ch.addSeries(LC.HistogramSeries,{priceLineVisible:false,lastValueVisible:false});
+  else s=ch.addSeries(LC.LineSeries,{color:kind==='dd'?neg:acc,lineWidth:2,priceLineVisible:false});
+  s.setData(pts.map(function(p){return kind==='bars'?{time:p.time,value:p.value,color:p.value>=0?pos:neg}:{time:p.time,value:p.value};}));
+  ch.timeScale().fitContent();
+  var byT={};pts.forEach(function(p){byT[p.time]=p;});
+  var show=function(p){me.leg.innerHTML=p?legend(p):'';};
+  show(pts[pts.length-1]);
+  ch.subscribeCrosshairMove(function(e){
+    if(!e||!e.time){show(pts[pts.length-1]);return;}
+    var t=typeof e.time==='string'?e.time:(e.time.year+'-'+String(e.time.month).padStart(2,'0')+'-'+String(e.time.day).padStart(2,'0'));
+    show(byT[t]||pts[pts.length-1]);
+  });
+  this.chart=ch;
+};
+Pane.prototype.redraw=function(){if(this.last)this.draw(this.last[0],this.last[1],this.last[2]);};
+var PC=new Pane('#chart','#chartMsg','#chartHover'), PB=new Pane('#bkChart','#bkChartMsg','#bkHover');
+function sg(v){return '<span class="'+(v<0?'neg':'pos')+'">'+fmt(v)+'</span>';}
+// same running sums the old canvas chart used (included trades, in trade order); trades closing on the same date share one bar
+function seriesPts(list){
+  var m={},order=[],cum=0,peak=0;
+  list.forEach(function(x){cum+=x.pnl;peak=Math.max(peak,cum);
+    if(!m[x.d]){m[x.d]={time:x.d,pnl:0};order.push(x.d);}
+    m[x.d].pnl+=x.pnl;m[x.d].cum=cum;m[x.d].dd=cum-peak;});
+  return order.sort().map(function(d){return m[d]});
+}
+function drawModes(P,pts,mode,word){
+  var key=mode==='pnl'?'pnl':mode==='cum'?'cum':'dd';
+  pts.forEach(function(p){p.value=p[key];});
+  P.draw(pts,mode==='pnl'?'bars':mode==='dd'?'dd':'line',function(p){
+    return '<b>'+K.niceDate(p.time)+'</b>'+word+' P&amp;L '+sg(p.pnl)+' · cumulative '+sg(p.cum)+' · drawdown '+sg(p.dd);});
+}
+function drawChart(){
+  if(!lastRun){PC.clear('Run a backtest to draw the chart.');return;}
+  $('#cTitle').innerHTML=esc(lastRun.cfg.index)+' <i>'+esc(lastRun.cfg.from)+' → '+esc(lastRun.cfg.to)+'</i>';
+  if(chartMode==='trade'){drawTrade();return;}
+  $('#tdLegs').innerHTML='';
+  var inc=lastRun.trades.filter(function(t){return t.include!==false});
+  drawModes(PC,seriesPts(inc.map(function(t){return {d:t.exitDate,pnl:t.pnl}})),chartMode,'trade');
+}
+function drawTrade(){
+  var t=lastRun&&lastRun.trades[selTrade];
+  if(!t){PC.clear('Open Trades in the middle pane and click a trade to see its day-by-day P&L here.');$('#tdLegs').innerHTML='';return;}
+  var m={},order=[];
+  [{date:t.entryDate,pnl:0}].concat(t.daily).forEach(function(p){if(!m[p.date])order.push(p.date);m[p.date]={time:p.date,value:p.pnl};});
+  var pts=order.sort().map(function(d){return m[d]});
+  var head='Trade '+t.entryDate+' → '+t.exitDate+' · P&amp;L '+sg(t.pnl);
+  PC.draw(pts,'line',function(p){return '<b>'+K.niceDate(p.time)+'</b>running P&amp;L '+sg(p.value)+' <span style="margin-left:10px">'+head+'</span>';});
+  var h='<table class="tbl"><tr><th>Leg</th><th>Side</th><th>Strike</th><th>Expiry</th><th>Entry dt</th><th>Entry</th><th>Exit dt</th><th>Exit</th><th>Why</th><th>P&L ₹</th></tr>';
+  t.legs.forEach(function(l){
+    var lp=(l.exitPx-l.entry)*(l.side==='B'?1:-1)*l.lots*t.lot;
+    h+='<tr><td>'+l.id+(l.isHedge?' (hedge)':'')+(l.isRe?' (re-entry)':'')+'</td><td>'+(l.side==='S'?'SELL':'BUY')+'</td>'
+      +'<td>'+(l.type==='FUT'?'FUT':l.k+' '+l.type)+'</td><td>'+l.exp+'</td>'
+      +'<td>'+l.entryDate+'</td><td>'+l.entry.toFixed(2)+'</td><td>'+(l.exitDate||'')+'</td><td>'+(l.exitPx!=null?l.exitPx.toFixed(2):'')+'</td>'
+      +'<td>'+(l.exitWhy||'')+'</td><td class="'+(lp<0?'neg':'pos')+'">'+fmt(lp)+'</td></tr>';
+  });
+  $('#tdLegs').innerHTML=h+'</table>';
+}
+function openTradeDetail(t){
+  selTrade=lastRun.trades.indexOf(t);chartMode='trade';
+  $$('#chartTabs .chip').forEach(function(c){c.classList.toggle('on',c.dataset.c==='trade')});
+  $$('#tradeT tr[data-td]').forEach(function(r){r.classList.toggle('on',+r.dataset.td===selTrade)});
+  drawChart();
+}
+$('#chartTabs').addEventListener('click',function(e){
+  if(!e.target.dataset.c)return;
+  $$('#chartTabs .chip').forEach(function(c){c.classList.remove('on')});e.target.classList.add('on');
+  chartMode=e.target.dataset.c;drawChart();
+});
+function moveTrade(step){
+  var rows=$$('#tradeT tr[data-td]');if(!rows.length)return;
+  var i=rows.map(function(r){return +r.dataset.td}).indexOf(selTrade);
+  i=i<0?(step>0?0:rows.length-1):Math.max(0,Math.min(rows.length-1,i+step));
+  openTradeDetail(lastRun.trades[+rows[i].dataset.td]);
+  var r=$('#tradeT tr.on');if(r&&window.innerWidth>=900){var b=$('#mBody'),rr=r.getBoundingClientRect(),br=b.getBoundingClientRect();if(rr.top<br.top+34)b.scrollTop-=br.top+34-rr.top;else if(rr.bottom>br.bottom)b.scrollTop+=rr.bottom-br.bottom;}
+}
+function drawBkChart(dates,byDate){
+  if(!dates.length){PB.clear('No included strategy has a trade in this range.');return;}
+  drawModes(PB,seriesPts(dates.map(function(d){return {d:d,pnl:byDate[d]}})),bkChartMode,'day');
+}
+
+// ---------- save / share without pop-ups ----------
+$('#saveName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();e.stopPropagation();$('#saveStrat').click();}});
+
+// ---------- baskets without pop-ups ----------
+function bkSay(t,bad){say('#bkMsg',t,bad);}
+function fillPick(){
+  var names=Object.keys(savedAll());
+  $('#bkPick').innerHTML=names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join('')||'<option value="">no saved strategies yet</option>';
+  $('#bkN').textContent=Object.keys(basketsAll()).length;
+}
+var _renderBaskets=renderBaskets;
+renderBaskets=function(){_renderBaskets();fillPick();if(!Object.keys(basketsAll()).length)$('#basketList').innerHTML='<div class="os-note">None yet — type a name above and press ＋ New.</div>';};
+$('#newBasket').addEventListener('click',function(){
+  var n=($('#bkName').value||'').trim();if(!n){bkSay('Type a basket name first.',true);$('#bkName').focus();return;}
+  var all=basketsAll();if(all[n]){bkSay('A basket called “'+n+'” already exists.',true);return;}
+  all[n]={strategies:[]};localStorage.setItem('fo_bt_baskets',JSON.stringify(all));curBasket=n;$('#bkName').value='';bkSay('Basket “'+n+'” created.');renderBaskets();
+});
+$('#bkName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();e.stopPropagation();$('#newBasket').click();}});
+var delArm=0;
+$('#delBasket').addEventListener('click',function(){
+  if(!curBasket){bkSay('Select a basket first.',true);return;}
+  var b=this;
+  if(!delArm){b.textContent='Click again to delete';b.classList.add('on');delArm=setTimeout(function(){delArm=0;b.textContent='Delete';b.classList.remove('on');},4000);return;}
+  clearTimeout(delArm);delArm=0;b.textContent='Delete';b.classList.remove('on');
+  var all=basketsAll(),n=curBasket;delete all[n];localStorage.setItem('fo_bt_baskets',JSON.stringify(all));curBasket=null;bkSay('Basket “'+n+'” deleted.');renderBaskets();
+});
+$('#renBasket').addEventListener('click',function(){
+  if(!curBasket){bkSay('Select a basket first.',true);return;}
+  var n=($('#bkName').value||'').trim();if(!n){bkSay('Type the new name in the box above, then press Rename.',true);$('#bkName').focus();return;}
+  if(n===curBasket)return;
+  var all=basketsAll();if(all[n]){bkSay('A basket called “'+n+'” already exists.',true);return;}
+  all[n]=all[curBasket];delete all[curBasket];localStorage.setItem('fo_bt_baskets',JSON.stringify(all));bkSay('Renamed to “'+n+'”.');curBasket=n;$('#bkName').value='';renderBaskets();
+});
+$('#bkAdd').addEventListener('click',function(){
+  if(!curBasket){bkSay('Create a basket first.',true);return;}
+  var saved=savedAll(),n=$('#bkPick').value;
+  if(!Object.keys(saved).length||!saved[n]){bkSay('No saved strategies yet — save one from Single backtest.',true);return;}
+  var all=basketsAll();all[curBasket].strategies.push({name:n,cfg:saved[n],mult:1,sel:true});
+  localStorage.setItem('fo_bt_baskets',JSON.stringify(all));bkSay('');renderBkRows();
+});
+function moveBasket(step){
+  var names=Object.keys(basketsAll());if(!names.length)return;
+  var i=names.indexOf(curBasket);i=i<0?0:Math.max(0,Math.min(names.length-1,i+step));
+  if(names[i]!==curBasket){curBasket=names[i];renderBaskets();}
+}
+
+// ---------- tabs, focus, keyboard ----------
+function grid(){return $(curTab==='single'?'#tab-single':'#tab-basket');}
+function setTab(t){
+  curTab=t;
+  $$('.mtab').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)});
+  $('#tab-single').classList.toggle('hidden',t!=='single');
+  $('#tab-basket').classList.toggle('hidden',t!=='basket');
+  if(t==='basket')renderBaskets();
+  K.fitGrid(grid());
+}
+$$('.mtab').forEach(function(b){b.addEventListener('click',function(){setTab(b.dataset.t)});});
+function toggleFocus(){var g=grid(),on=g.classList.toggle('focus');$('#focusBtn').classList.toggle('on',on&&curTab==='single');$('#focusBtn2').classList.toggle('on',on&&curTab==='basket');}
+$('#focusBtn').addEventListener('click',toggleFocus);$('#focusBtn2').addEventListener('click',toggleFocus);
+$('#runBtn').addEventListener('click',function(){runFromBtn=true;},true);
+document.addEventListener('keydown',function(e){
+  var t=e.target,typing=t&&(t.tagName==='INPUT'||t.tagName==='SELECT'||t.tagName==='TEXTAREA');
+  if(e.key==='Escape'){if(typing)t.blur();else if(grid().classList.contains('focus'))toggleFocus();return;}
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='Enter'&&typing&&t.closest('#runSec')){e.preventDefault();runFromBtn=true;runBacktest();return;}
+  if(typing)return;
+  if(e.key==='f'||e.key==='F'){toggleFocus();return;}
+  var step={ArrowDown:1,ArrowUp:-1,PageDown:10,PageUp:-10,Home:-1e6,End:1e6}[e.key];
+  if(step){e.preventDefault();if(curTab==='basket')moveBasket(step);else if(midView==='trd'&&lastRun&&lastRun.trades.length)moveTrade(step);else moveStrat(step);return;}
+  if(e.key==='Enter'&&curTab==='single'&&!(t&&t.tagName==='BUTTON')){e.preventDefault();runFromBtn=true;runBacktest();}
+});
+new MutationObserver(function(){PC.redraw();PB.redraw();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+var rz;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){K.fitGrid(grid());},120);});
 
 // ---------- boot ----------
-renderDefaults();renderSaved();renderLegs();renderGapF();
+var hashCfg=location.hash.slice(0,3)==='#s='&&legs.length>0;
+renderStrats();renderLegs();renderGapF();setMid(hashCfg?'res':'res');K.fitGrid(grid());
+if(hashCfg)$('#mTitle').textContent='Shared strategy';
 loadManifest().then(function(m){
   var mm=m.indices.NIFTY;
   $('#bkFrom').value=$('#fromD').value||mm.last.slice(0,4)+'-01-01';
   $('#bkTo').value=mm.last;
   setRange('1y');
+  var full=document.createElement('p');full.style.marginTop='6px';full.textContent=$('#dataNote').textContent;$('#how').appendChild(full);
+  $('#dataNote').textContent='F&O data to '+K.niceDate(mm.last)+' · store updated '+m.updated;
+  if(hashCfg)runBacktest();else pick('d:0',true);
 }).catch(function(){$('#dataNote').textContent='fo/manifest.json not found — data store not built yet.';});
 })();
 </script>
