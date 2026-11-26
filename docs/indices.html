@@ -179,7 +179,7 @@ let DATA=null, VIEW='table', GRP='broad', SORT={key:'pc',dir:-1}, DENSE=false, Q
 let HIST=null, REW=null, RROWS=null, XMEM=null, XHIST=null;     // close history of every series · rewound calendar position · rows on that date
 const IX=()=>RROWS||DATA.indices;
 
-const HIDE_IX=/\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend/i;     /* user 2026-11-26: rows not wanted — Nifty 50 TR / PR series, names with 50:50, 25/50 or Dividend */
+const HIDE_IX=/\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend|\bg-?sec|\bnifty gs\b|bharat ?bond|\b1d rate\b|india vix|arbitrage|futures|\busd\b/i;     /* user 2026-11-26: rows not wanted — Nifty 50 TR / PR series, names with 50:50, 25/50 or Dividend; bond / rate, VIX, arbitrage, futures, USD series */
 fetch('./indices.json?cb='+Date.now()).then(r=>r.json()).then(d=>{ d.indices=d.indices.filter(x=>!HIDE_IX.test(x.n)&&!HIDE_IX.test(x.k)); DATA=d; boot(); })
   .catch(e=>{ $('status').textContent='Could not load indices.json — '+e; });
 
