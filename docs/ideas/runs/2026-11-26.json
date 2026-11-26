@@ -1,0 +1,440 @@
+{
+ "date": "2026-11-26",
+ "asof": "2026-11-26",
+ "run_started": "2026-11-26 19:37 IST",
+ "run_finished": "2026-11-26 20:22 IST",
+ "mode": "scheduled cloud routine",
+ "universe": 1212,
+ "environment": {
+  "sandbox": "Fresh clone, throwaway cloud VM, clock UTC; every timestamp here taken from TZ=Asia/Kolkata date.",
+  "python": "python3 is 3.11 but the default pip installs into 3.13, so `pip install pymupdf xlrd` reported 'already satisfied' while `import fitz` still failed. Fixed with `python3 -m pip install pymupdf xlrd`; both then imported. Worth knowing for every future run on this image.",
+  "bse": "OK - the step-0 probe returned 200 and every BSE read in this run worked (announcements for 518 of BSE's own 518 rows, detailed results, company header, attachments, bhavcopies via score.py and ob_tracker.py).",
+  "nse": "PARTLY OK - nsearchives.nseindia.com is allowed and served every document asked of it (Astra Q1 filings, Jash order letter, Utssav voting results, DEE transcript); nsearchives.nseindia.in is refused at the proxy, and substituting .com works for most files but NOT all (Viviana's 26-Nov L1 intimation 404s on the .com host). www.nseindia.com answers 403 from NSE itself.",
+  "blocked_from_sandbox": [
+   "pib.gov.in (403 at the agent proxy: 'no rule or network setting allows this host')",
+   "www.dgtr.gov.in (403 at proxy; WebFetch ENOTFOUND) - this blocked lane one today",
+   "forum.valuepickr.com",
+   "cdn.syndication.twimg.com",
+   "nsearchives.nseindia.in",
+   "www.metalbook.com",
+   "ibjarates.com",
+   "rubberboard.gov.in",
+   "chinimandi.com",
+   "ppac.gov.in",
+   "steel.gov.in",
+   "tradingeconomics.com",
+   "guidechem.com",
+   "caionline.in",
+   "indianspices.com",
+   "eaindustry.nic.in",
+   "tradestat.commerce.gov.in",
+   "westmetall.com",
+   "markets.businessinsider.com"
+  ],
+  "websearch": "WORKS. The X and ValuePickr sweeps ran on WebSearch result titles and snippets; no post body or forum page could be read.",
+  "note": "Everything the sandbox could not reach, the ideas-feeds GitHub Action had already reached from a runner with open egress, so the committed panels are today's. The routine waited for that Action (run 45829038238, started 18:55 IST) to land at 19:43 IST and fast-forwarded onto it BEFORE running any builder, per the PLAYBOOK's 'the feeds are built by GitHub Actions first'."
+ },
+ "feeds_status": {
+  "built": "2026-11-26 19:42 IST",
+  "where": "GitHub Actions (ideas-feeds.yml), run 45829038238",
+  "steps_failed": [
+   "wpi"
+  ],
+  "hosts_blocked_from_actions": [
+   "tradestat.commerce.gov.in",
+   "www.metalbook.com",
+   "westmetall.com"
+  ],
+  "landing_refused": [],
+  "landed": 28,
+  "read": "feeds_status.json was read before any lane was called blocked, per the PLAYBOOK. Only `wpi` failed on the runner too, so the WPI panel is genuinely stale; every other sandbox failure is sandbox-only and the committed rows are today's. Nothing was refused at landing."
+ },
+ "filings_status": {
+  "announcements_total": 518,
+  "announcements_reported": 518,
+  "announcements_capped": false,
+  "announcements_read_at": "2026-11-26 19:50 IST",
+  "scan_selftest": "PASS (the OCCL trade-remedy cases)",
+  "note": "This run's own scan read 518 rows against BSE's own count of 518 for 26-Nov-2026 - NOT capped, unlike yesterday. 70 classified in universe, 9 candidates. The Action's earlier scan at 19:18 IST was capped (493 of 494), so the committed scan file is this run's deeper read. Still an evening read: filings made after 19:50 IST are not in it."
+ },
+ "candidates_considered": [
+  {
+   "name": "Jyoti Structures Ltd",
+   "scrip": "513250",
+   "score": 9.0,
+   "signals": "ORDER x2 + DISCLOSE",
+   "verdict": "not researched as a new idea - already published (card 2026-10-01). Both filings were opened and written up through the updates sweep: a fresh LOI of Rs 272 cr from Sterlite Grid 5 for the 400 kV Xeldom-Narendra line, of which only Rs 175.67 cr is INCREMENTAL - it re-prices the September-2022 Sterlite Power contract."
+  },
+  {
+   "name": "Pune E - Stock Broking Ltd",
+   "scrip": "544141",
+   "score": 6.0,
+   "signals": "DEAL + VOL + BREAKOUT",
+   "verdict": "not researched - the only filing is a SAST Reg 29(1) disclosure, which the PLAYBOOK's triage list skips outright ('fund raises without a stated use, clarifications on price movement, promoter or director changes'). A SAST disclosure plus a volume breakout is a watch line, not a trigger with a number."
+  },
+  {
+   "name": "Commercial Syn Bags Ltd",
+   "scrip": "539986",
+   "score": 6.0,
+   "signals": "FUNDRAISE x2 + RESULT",
+   "verdict": "not researched - warrant conversion plus allotment of 3,25,000 warrants at Rs 283. A conversion of an already-approved warrant issue is a capital-structure event with no stated use of proceeds; triage skips it."
+  },
+  {
+   "name": "Cubex Tubings Ltd",
+   "scrip": "526027",
+   "score": 4.5,
+   "signals": "DISCLOSE + TRADE",
+   "verdict": "RESEARCHED AND PUBLISHED (lane filing). Note the TRADE flag is a scan false positive - see data_problems."
+  },
+  {
+   "name": "PH Capital Ltd",
+   "scrip": "500143",
+   "score": 4.0,
+   "signals": "DEAL + VOL",
+   "verdict": "not researched - incorporation of a wholly owned subsidiary, with a 9.8x volume day. An incorporation with no investment amount or business plan is not a trigger with a number."
+  },
+  {
+   "name": "Walchandnagar Industries Ltd",
+   "scrip": "507410",
+   "score": 4.0,
+   "signals": "ORDER",
+   "verdict": "researched to the order-sizing test and NOT PUBLISHED. Filing opened: Rs 18,46,23,686 for development, manufacture and supply of 2 sets of Universal Vertical Launcher, domestic customer, name withheld under confidentiality, delivery T0+18 and T0+24 months. Trailing four quarters of revenue from BSE's detailed results read this run = Rs 358.33 cr (Sep-26 93.53 + Jun-26 90.83 + Mar-26 93.02 + Dec-25 80.95), so the order is 5.2% of a year's sales - the under-10% bucket that the 1,245-filing study (runbook 144c) found reached 2x only 21.4% of the time. The company is also loss-making at the bottom line (FY26 PAT -Rs 14.68 cr, FY25 -Rs 86.03 cr) and is a serial defence order filer."
+  },
+  {
+   "name": "JD Cables Ltd",
+   "scrip": "544524",
+   "score": 4.0,
+   "signals": "ORDER",
+   "verdict": "researched to the order-sizing test and NOT PUBLISHED. Filing opened: a work order for manufacturing, testing, supply and delivery of cables and conductors, 'approx. Rs 15.89 Crores (including GST)', from a 'Private Entity' (not named), delivery within March 2027. BSE's detailed-results feed carries only the FY26 audited row for this recent listing - revenue Rs 364.59 cr, PAT Rs 31.73 cr - so the order is 4.4% of a year's sales, again the under-10% bucket. An unnamed private counterparty and a GST-inclusive value make it weaker still."
+  },
+  {
+   "name": "EMS Ltd",
+   "scrip": "543983",
+   "score": 4.0,
+   "signals": "ORDER",
+   "verdict": "researched to the order-sizing test and NOT PUBLISHED. Filing opened: NHAI Letter of Award for engagement as User Fee Collection Agency at the Hatnoor fee plaza on NH-211 in Maharashtra plus upkeep of adjacent toilet blocks, approximately Rs 2,595.55 lakh excluding TCS, one year. Trailing four quarters of revenue = Rs 539.02 cr, so 4.8% of a year - and it is toll-collection agency work, not EPC. EMS is a serial order filer."
+  },
+  {
+   "name": "Johnsoncab Electricals Ltd",
+   "scrip": "545021",
+   "score": 4.0,
+   "signals": "RESULT x2",
+   "verdict": "not researched - half-yearly results from a Rs 267 cr recent listing. Looked at the scan row only: no order, capex or rating trigger alongside, and the half-year filing was not opened. Carried forward as a watch line; stated here as NOT read rather than as 'nothing there'."
+  }
+ ],
+ "signals_considered": [
+  {
+   "group": "Crude oil",
+   "strength": 10.7,
+   "direction": "up",
+   "verdict": "NOT actionable - the strength is a WPI artefact. The WPI panel is stamped 2026-04 (seven months stale), and the only fresh prints point the other way: Brent 95.98 USD/bbl 1w +3.4% but 1m -16.9%, WTI 84.59 1m -17.1%, Urals 75.18 1m -34.3%, gasoline 1m -20.1% (spot read 2026-11-26)."
+  },
+  {
+   "group": "Silver",
+   "strength": 10.16,
+   "direction": "up",
+   "verdict": "NOT actionable - same artefact. WPI Silver 12m +152.4% is from April; today's prints are silver 1,140 EUR/kg, 1w -13.7%, 1m -25.5%, 3m -38.7%, at the bottom of its 52-week range (pos52 = 0)."
+  },
+  {
+   "group": "Polyethylene and polypropylene",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "NOT actionable - driven by a September-2026 import unit price (+196% 3m on HS 3902) while today's Chinese prints fall: polyethylene 8,169 CNY/t 1m -10.7%, polypropylene 8,762 CNY/t 1m -12.9%."
+  },
+  {
+   "group": "Solar cells, wafers and modules",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "NOT actionable - a single HS code (381800 undiffused silicon wafers, 1 code) up 575% over three months on the September trade panel, with the same series down 40.8% on a smoothed-year basis and the global Solar Energy Index down 14.4% in a month. A lone trade-panel jump is the noise the PLAYBOOK says to discount."
+  },
+  {
+   "group": "Tungsten (APT, tungsten carbide)",
+   "strength": 10.0,
+   "direction": "up",
+   "verdict": "NOT actionable from fresh data - all three evidence lines are September-2026 trade unit prices (sodium tungstate export +449% smoothed-year, tungsten wire import +229%). No daily print exists for tungsten in our panels, so there is nothing to confirm it with today. Left as the standing watch item it has been."
+  },
+  {
+   "group": "Natural gas",
+   "strength": 6.14,
+   "direction": "up",
+   "verdict": "the one genuinely fresh UP move, and still NOT publishable. Henry Hub 3.61 USD/MMBtu, 1w +8.1%, 1m +40.5%, at the top of our 35-reading range (pos52 = 100), read 2026-11-26. But it is a US weather price: LNG JKM is 28.07 USD/MMBtu, 1m -12.8%, and UK gas 1m -9.1%, and Indian gas producers sell at Government-notified APM/ceiling prices linked to crude, not to Henry Hub. No Indian small cap's revenue is documented as Henry-Hub-linked in commodity_map.json, so there is no name to research."
+  },
+  {
+   "group": "Milk, SMP and whey",
+   "strength": 1.65,
+   "direction": "up",
+   "verdict": "NOT actionable - milk 17.77 USD/cwt, 1m +16.4%, pos52 98, is US Class III milk. The Indian procurement price it would have to work through is not in our panels, and the mapped small cap (Parag Milk) is already published (card 2026-10-06)."
+  },
+  {
+   "group": "Wheat and rice",
+   "strength": 2.83,
+   "direction": "up",
+   "verdict": "NOT actionable - rough rice 18.76 USD/cwt, 1m +10.0%, pos52 98, is the US CBOT contract; Indian basmati and non-basmati export realisations are a different market and the trade panel that would show them is stamped September 2026."
+  },
+  {
+   "group": "Cotton",
+   "strength": 1.57,
+   "direction": "up",
+   "verdict": "watch - the only group where an Indian daily print moved: spot cotton 1w +5.3% alongside global cotton 1y +31.8%. But CAI's own spot page (caionline.in) is blocked from this sandbox, the India row therefore carries the Action's reading rather than one taken here, and a one-week move is below the bar."
+  },
+  {
+   "group": "Aluminium / Zinc and lead / Gold",
+   "strength": "2.53 / 4.39 / 3.20",
+   "direction": "up (nominally)",
+   "verdict": "NOT actionable, and worth stating because three DGTR trade-remedy actions today touch aluminium and copper: aluminium 2,849 USD/t is 1w -7.9%, 1m -6.5%, 3m -11.7% at pos52 0; zinc 3,520.5 USD/t 1w -5.7%, 1m -9.7%; gold 102,040 EUR/kg 1w -6.1%, 1m -9.9%. The 'up' direction on all three comes from the April WPI, not from any current price."
+  }
+ ],
+ "govt_considered": [
+  {
+   "source": "PIB",
+   "release": "none kept",
+   "verdict": "The Action's govt.py read at 18:56 IST scanned 47 English releases, opened 4 and kept 0, with 0 unmapped. Dropped: 34 with no decision verb, 7 noise, 4 below the Rs 1,000 cr floor, 1 backgrounder, 1 duplicate. Zero is the correct answer on a normal day and the gate is working as designed."
+  },
+  {
+   "source": "DGTR (govt_sources.json, read 2026-11-26 19:00 IST)",
+   "release": "Initiation of Anti-Dumping Investigation concerning imports of Clavulanic Acid (also known as Potassium Clavulanate) and its Amine Salt from China PR and the European Union",
+   "verdict": "UNKNOWN - flagged, not researched, and the reason is a blocked host, not a judgement. www.dgtr.gov.in is refused by this sandbox's network policy (403 at the proxy; WebFetch ENOTFOUND), so the initiation notice could not be opened and the applicant (= the domestic industry that petitioned), the product scope and the period of investigation are all unread. No listed company filed anything about it with BSE today (today's 518-row announcement list was read). Adding a name to theme_map.json on the strength of a headline would break the 'never add a name on a hunch' rule, so nothing was added. Carried to the next run."
+  },
+  {
+   "source": "DGTR",
+   "release": "Initiation of Countervailing Duty Investigation concerning imports of Copper Tubes and Pipes from Malaysia, Thailand and Vietnam",
+   "verdict": "UNKNOWN for the same reason, and this is the one that hurts: it lands on exactly the product line of today's published name, Cubex Tubings (copper and copper-alloy tube). Without the notice there is no way to know the product scope, whether Cubex is an applicant or outside it, or whether its cupronickel and Monel grades are even covered. The Cubex card therefore rests on the company's own filings only and says explicitly that this duty case must not be assumed to help it. Needs dgtr.gov.in allowed in the session's network settings."
+  },
+  {
+   "source": "DGTR",
+   "release": "Suo-Moto anti-dumping investigation concerning imports of Aluminium Extrusion Profiles, Structures and Articles thereof from China PR, Malaysia, Vietnam and Thailand",
+   "verdict": "UNKNOWN - same block. A suo-moto initiation is the strongest form (the authority acts without a petition), and listed Indian extruders in the Rs 200-7,500 cr band exist, but the PLAYBOOK's TRADE research rule requires reading the finding itself (product, duty, countries, applicant, retrospective date) before a name is touched. Not done, so no name was researched and none was added to the map."
+  },
+  {
+   "source": "RBI",
+   "release": "Underwriting Auction for sale of Government Securities for Rs 33,000 crore on November 27, 2026",
+   "verdict": "not a decision that becomes an order book - a routine debt auction, above the amount floor only because the gate reads rupee figures. No action."
+  },
+  {
+   "source": "govt_sources hosts",
+   "release": "egazette.gov.in timed out and dgft.gov.in answered 403 on the Action runner",
+   "verdict": "two of nine government sources did not read today (last OK 25-Nov and 24-Nov respectively); rbi, cerc, dgtr, ministries, coal, mopng and dea all read. Noted so the lane's coverage is not overstated."
+  },
+  {
+   "source": "govt_x (api.fxtwitter.com, Action 19:16 IST)",
+   "release": "15 ministry and minister accounts read, including the Rs 4,288.26 cr Kamarajar Port second container terminal Cabinet approval",
+   "verdict": "nothing new - the Kamarajar Port decision is YESTERDAY'S (kept and dispositioned in the 2026-11-25 run); MIB_India merely posted a video about it today. No new decision with an outlay appeared on the government X accounts."
+  }
+ ],
+ "govt_lane": {
+  "pib_kept": 0,
+  "pib_unmapped": 0,
+  "trade_remedy_actions_today": 3,
+  "researched": 0,
+  "published": 0,
+  "summary": "Lane one produced nothing publishable, and for two different reasons that should not be blurred. The PIB gate kept nothing out of 47 releases, which is the normal and correct outcome. Separately, the DGTR filed THREE trade-remedy initiations today - clavulanic acid (anti-dumping, China and the EU), copper tubes and pipes (countervailing, Malaysia/Thailand/Vietnam) and aluminium extrusion profiles (suo-moto anti-dumping, four countries) - and all three are unresearchable from this sandbox because www.dgtr.gov.in is blocked at the network policy. Under the PLAYBOOK's TRADE rule (added after the OCCL miss) the finding itself must be read before any name is named. So the honest verdict on all three is UNKNOWN, carried forward, with the blocked host named. This is the single highest-value thing to unblock for this routine: a trade-remedy initiation names the domestic industry that asked for it, which is the most direct 'who gains' signal the government lane ever produces."
+ },
+ "commodity_lane": {
+  "signals_built": "2026-11-26 19:47 IST (re-run here after india_spot.py; the Action's build was 19:26 IST)",
+  "stamps": {
+   "spot_date": "2026-11-26 19:16 IST",
+   "india_built": "2026-11-26 19:47 IST",
+   "wpi_month": "2026-04",
+   "trade_month": "2026-09"
+  },
+  "groups": 53,
+  "strong": 36,
+  "researched": 0,
+  "published": 0,
+  "summary": "36 of 53 groups clear the strength bar and almost none of it is real. The WPI panel is stamped APRIL 2026 - seven months stale, and the wpi step is the only one that failed on the Action runner too, so this is a genuinely missing feed and not a sandbox block. The trade panel is stamped September 2026, two months stale. Between them they drive the strength score of every group in the top ten. Measured against the prints that ARE from today, the picture is the opposite of the ranking: crude -16.9% in a month, silver -25.5%, gold -9.9%, aluminium -6.5%, zinc -9.7%, polypropylene -12.9%, styrene -19.9%, naphtha -21.4%, rubber -9.7%. The only fresh up-moves are Henry Hub gas (+40.5% 1m, pos52 100), US Class III milk (+16.4%) and CBOT rough rice (+10.0%) - all three American prints with no documented Indian pass-through in commodity_map.json. Nothing was published, and nothing should have been."
+ },
+ "orderbook_lane": {
+  "signals_built": "2026-11-26 19:26 IST (ideas-feeds Action) - 473 rows, 49 at yoy_pct >= 50",
+  "candidates": "ZERO new candidates. All 49 rows at yoy_pct >= 50 already carry a verdict in orderbook_jumps.json (60 rows). After dropping check:true rows, NOT A JUMP verdicts and names already published, the in-band (Rs 200-7,500 cr) survivors are the same five the lane has already dispositioned in earlier runs: Surya Roshni (Rs 4,632 cr - researched and rejected on 2026-11-23 for immaterial scale), Goldiam (Rs 4,274 cr, CONFIRMED but faded), Techknowgreen/TECHD (Rs 363 cr), Ganesh Infraworld (Rs 343 cr, confirmed 2026-11-18) and Krishca (Rs 293 cr, confirmed yesterday). Market caps read from docs/search_index.json today.",
+  "published": 0
+ },
+ "orderbook_jumps_table": {
+  "rows_before": 60,
+  "rows_after": 60,
+  "rows_checked_this_run": 5,
+  "pending": 0,
+  "detail": "No signals row at yoy_pct >= 50 was missing from the ledger, so the day's work was the queue of re-checks that the 2026-11-19 run carried forward - companies that had since stated a NEWER order book. All four were cleared, plus a fifth found today:\n\n1. **ASTRA MICROWAVE (532493) - NOT A JUMP -> CONFIRMED.** This is the find of the run. Both sides were read from the quarterly results notes themselves: Group+JV order book **Rs 4,707.59 cr as at 30-Sep-2026** (Q2 FY27 board outcome, BSE 12-Nov-2026, note 4 to the consolidated results; standalone note 3 gives Rs 3,937.00 cr) against **Rs 2,208.90 cr as at 30-Sep-2025** (Q2 FY26 results, BSE 13-Nov-2025, note 4; standalone Rs 1,908.78 cr) = **+113.1% consolidated, +106.3% standalone**. It is intake, not a definition change: H1 FY27 orders booked Rs 2,647.34 cr against Rs 390.92 cr in H1 FY26, both from the same notes. The June pair stays below the bar (Rs 2,849.09 cr vs Rs 2,236.19 cr = +27.4%, Q1 filings re-read this run from NSE), and the BSE announcement list for Aug-Nov 2026 was read to confirm no filing in between states a book, so the TRIGGER is 12-Nov-2026. Market cap Rs 15,477 cr puts it far outside the band, so table row only - no card.\n\n2. **DILIP BUILDCON (540047) - latest corrected.** The filed figure is **Rs 33,081 cr as of 30-Sep-2026** (Q2 FY27 press release, BSE 12-Nov-2026: 'a record Rs 33,081 crore, up 19% from Rs 27,691 crore as of June 30, 2026'), against Rs 18,610 cr at 30-Sep-2025 = +77.8%. The screen's Rs 34,000 cr is management's rounded number spoken in the 19-Nov analyst-meet transcript. Trigger unchanged (10-Feb-2026).\n\n3. **ENVIRO INFRA (544290) - latest moved to a dated figure.** Rs 6,778.2 cr as of 30-Sep-2026 from the Q2 FY27 press release (BSE 05-Nov-2026), which splits it - Water & Wastewater Rs 34,387 mn (EPC 21,056 + HAM 3,463 + O&M 9,867), renewables Rs 33,395 mn - rather than the 'as on date' figure in the 12-Nov transcript the screen used. The two agree. Renewables are now ~49% of the book against nil two years ago; that caveat was strengthened in the row.\n\n4. **JASH ENGINEERING (544402) - re-checked, verdict unchanged.** Rs 944 cr consolidated as on 1-Oct-2026 read from the NSE letter of 09-Oct-2026 (India Rs 313 cr, outside India Rs 631 cr). Against the Rs 863 cr at 1-Sep-2025 and Rs 890 cr at 1-Nov-2025 already in the row's walk that is +6% to +9%. Still NOT A JUMP.\n\n5. **DEE DEVELOPMENT (544198) - confirmed again, and a date error in the screen found.** Today's Q2/H1 FY27 transcript states the Sep-26 pair in the company's own words ('Rs. 2,531 crores as of 30th September 2026, up 94% from Rs. 1,308 crores a year earlier') and a newer book of **Rs 2,586 cr as of 31 OCTOBER 2026**. orderbook_signals.json carries that Rs 2,586 cr with as_on 2026-09-30, which is wrong. The ledger keeps the like-for-like September pair as `latest` because no 31-Oct-2025 figure has been read to pair the October book with.",
+  "tracker": "ob_tracker.py re-run after the edits: 41 jump rows priced (40 before - Astra Microwave's newly qualifying row joined), 0 carried forward stale; the order-wins tracker priced 26 rows, 0 stale.",
+  "why_no_card": "The rule forbids publishing a card from this table, and in any case the only newly qualifying row (Astra Microwave at Rs 15,477 cr) is twice the top of the band."
+ },
+ "orderwins_lane": {
+  "signals_built": "2026-11-26 19:27 IST - 121 rows, 19 flagged at ratio >= 0.5",
+  "rows_checked_this_run": 0,
+  "detail": "All 19 flagged rows are already in orderwins_verified.json (42 rows), so there was no new flag to open. The confirmed ones were all crossed months ago - Univastu 10-Mar-2026, Digikore 01-Dec-2025, HEC Projects 10-Mar-2026, K2 Infralogistics 16-Jun-2026, Trom 08-Jan-2026, Rappid Valves 15-Jun-2026 - and the pattern this lane exists to catch (Welspun Corp, Aug-2024 to Mar-2025) is a crossing that has just happened, not one eight months old. Nothing was published and nothing is pending.",
+  "published": 0
+ },
+ "researched": [
+  {
+   "scrip": "526027",
+   "name": "Cubex Tubings Ltd",
+   "lane": "filing",
+   "verdict": "PUBLISHED",
+   "reason": "Today's investor presentation is a hard trigger with numbers: Q2 FY27 PAT Rs 4.57 cr with an EBITDA margin of 8.62% against 2.17% a year earlier, and a Rs 87 cr vacuum-induction-melting project 100% funded (Rs 75 cr of warrants at Rs 150, approved at the EGM of 6-Nov-2026, plus Rs 12 cr of reserves) that takes a 47-year-old copper and cupronichel maker with NPCIL, DAE, Naval DQA and Ordnance Factory approvals into nickel superalloys and titanium. Published at low-to-medium confidence with eleven red flags written in, including: the presentation's own YoY column is mislabelled (it compares Q2 FY27 with Q1 FY27 - corrected against BSE's detailed results, where the real YoY is revenue +12.6% and PAT +162.6%); both exchanges raised observations that forced a corrigendum to the EGM notice; the warrants are priced 26% below market with the promoter taking 33.9 lakh of 50 lakh; two non-promoter allottees share the same two ultimate beneficial owners and sit just under 5% each; FY26 PAT of Rs 7.45 cr was carried by Rs 8.22 cr of other income; note 31 of the accounts says receivable and payable balances are subject to confirmation from the parties; and median turnover is about Rs 11 lakh a day in a T-group scrip already up 165% in three months."
+  },
+  {
+   "scrip": "507410",
+   "name": "Walchandnagar Industries Ltd",
+   "lane": "filing",
+   "verdict": "NOT PUBLISHED - order too small against sales, and the company loses money",
+   "reason": "Rs 18.46 cr Universal Vertical Launcher order = 5.2% of Rs 358.33 cr trailing-four-quarter revenue (BSE detailed results, read this run). FY26 PAT -Rs 14.68 cr, FY25 -Rs 86.03 cr. Serial defence order filer."
+  },
+  {
+   "scrip": "544524",
+   "name": "JD Cables Ltd",
+   "lane": "filing",
+   "verdict": "NOT PUBLISHED - order too small against sales, counterparty unnamed",
+   "reason": "Rs 15.89 cr including GST = 4.4% of FY26 revenue of Rs 364.59 cr (BSE detailed results, read this run). 'Private Entity' not named in the filing."
+  },
+  {
+   "scrip": "543983",
+   "name": "EMS Ltd",
+   "lane": "filing",
+   "verdict": "NOT PUBLISHED - order too small, and it is fee-collection agency work",
+   "reason": "NHAI LOA of Rs 25.96 cr excluding TCS = 4.8% of Rs 539.02 cr trailing-four-quarter revenue (BSE detailed results, read this run). One-year user-fee collection contract at the Hatnoor plaza, not EPC. Serial order filer."
+  }
+ ],
+ "published": [
+  "2026-11-26-CUBEXTUB"
+ ],
+ "x_checked": [
+  {
+   "name": "Cubex Tubings Ltd",
+   "posts_found": 1,
+   "result": "WebSearch on x.com and twitter.com for 'Cubex Tubings', CUBEXTUB, and the company with its results, order book and the vacuum-induction-melting warrant issue. ONE post names the company: a ~Dec-2023 Smart Sync Investment Advisory Services list of names for which '5-Min Stock Idea' requests had come in, with no financial content. Everything else matching 'Cubex' is an unrelated foreign business. No new verified data point came from X. Today's filing is hours old and indexing lags a day or two, so this is not evidence of silence about it. cdn.syndication.twimg.com is refused by this sandbox, so no post body was read - the sweep ran on search titles and snippets.",
+   "valuepickr": "NO dedicated thread exists. Two passing one-line mentions in broad threads: an EV copper thread where a member says they screened RCI Industries, Hindustan Copper and Cubex and bought RCI; and an investing-basics thread where a member's ten-year-ROE screen showed Cubex at about 0.3x book and asked whether that was a sound method. No figure to verify against a filing, and the 0.3x book remark is historic - BSE's header today reads 4.08x. forum.valuepickr.com is refused by this sandbox, so no thread was read."
+  },
+  {
+   "name": "Walchandnagar / JD Cables / EMS",
+   "posts_found": 0,
+   "result": "NOT SWEPT. All three were stopped at the order-sizing test - under 10% of a trailing year's sales - before dossier work began, so no X or ValuePickr sweep was run on them. Stated as 'not checked', not as 'nothing found'."
+  }
+ ],
+ "updates_sweep": {
+  "queue_built": "2026-11-26 19:42 IST (ideas-feeds GitHub Action) - today's",
+  "queue_used": "the committed queue, unmodified",
+  "why": "updates.py was NOT run in this sandbox, deliberately. Yesterday's run measured what happens: www.nseindia.com answers 403 here and updates.py does NOT exit 3 on that failure - it carries on and degrades every idea's status to SUSPECT, which would have replaced a complete queue with a worse one. The Action's queue, built 40 minutes before this run from a runner that reaches NSE, is stamped today and reports status `complete` on all 93 ideas, second_reader_misses 0. docs/ideas/updates_queue.json is therefore the Action's file, byte for byte. The cost of not running it: the --selftest line the prompt asks for was not produced this run. Flagged for the owner again; scripts untouched per the run's instructions.",
+  "second_reader_misses": 0,
+  "second_reader_problems": [
+   "BSE daily list 2026-11-26 incomplete"
+  ],
+  "statuses_not_complete": 0,
+  "ideas_swept": 93,
+  "ideas_with_new_nonroutine_filings": 20,
+  "filings_opened": 13,
+  "updates_added": 9,
+  "guidance_changed": 1,
+  "per_idea": [
+   {
+    "id": "2026-09-28-RATNAVEER",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "The biggest update of the day. A press release on the Copper Clad Laminate project (filed 15:53, revised 16:22-16:36 IST) puts THREE-YEAR PROJECTIONS on the record for the first time: consolidated revenue ~Rs 1,414 cr FY27 -> Rs 2,434 cr FY28 -> Rs 3,914 cr FY29, EBITDA ~Rs 180 cr -> Rs 399 cr -> Rs 775 cr, margins 12.7% -> 16.4% -> 19.8%, with CCL at Rs 49.5 cr / Rs 653.4 cr / Rs 2,004.75 cr of that at a ~25.9% EBITDA margin. Five lines of ~15.84 lakh sheets each (79.2 lakh total), commissioned Feb-2027 through Jun-2028, about Rs 338 cr of investment over three years, approved under the Government's Electronics Component Manufacturing Scheme with a capex subsidy, and customer commitments covering 'nearly 50%' of planned capacity (not quantified in rupees). GUIDANCE LINE REWRITTEN. Logged with the caveat the reader needs: FY29 revenue is 3.6x FY26's Rs 1,080 cr and about half of it comes from a product whose first line starts in February 2027."
+   },
+   {
+    "id": "2026-10-01-JYOTISTRUC",
+    "filings_read": 2,
+    "updates_added": 2,
+    "tone": "good + neutral",
+    "note": "Fresh LOI dated 25-Nov-2026 from Sterlite Grid 5 for the 400 kV D/C Xeldom-Narendra line in Goa and Karnataka: Rs 272 cr excluding GST headline, of which **Rs 175.67 cr is incremental**, 18 months. It is not a new award - it re-prices and extends the EPC contract Sterlite Power gave Jyoti in September 2022, whose infra business passed to Sterlite Grid 5 under the NCLT order of 05-Sep-2024. The press release headlines the gross number; both filings were opened and logged separately so the Rs 96.33 cr gap between headline and increment is on the card."
+   },
+   {
+    "id": "2026-10-11-DEEDEV",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "good",
+    "note": "Q2/H1 FY27 call transcript. Q2 revenue Rs 293 cr (+8.5%), EBITDA Rs 58.9 cr (+33.7%) at a 20.1% margin against 16.3%, PAT Rs 23.5 cr (+31.8%); H1 revenue Rs 587.4 cr (+19%), EBITDA Rs 108.6 cr (+35.9%), PAT Rs 39.5 cr (+27.8%). Order book Rs 2,531 cr at Sep-26 (+94% YoY), Rs 2,586 cr at 31-Oct. H1 inflow Rs 1,179 cr (+97%), ~60% of the Rs 2,000 cr annual guidance. Verdict GOOD. The qualifier that matters: ~45% of H1 execution was job work on customer-supplied material, which held the reported top line back. Nuclear piping JV at an advanced stage, closure expected by end FY27. Guidance unchanged."
+   },
+   {
+    "id": "2026-11-11-TEXRAIL",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Rs 55.63 cr including taxes from Utkal Alumina International for 108 BTAPM1 and BVCM wagons, by 30-Sep-2027. Routine scale for a Rs 4,671 cr wagon builder and well under 10% of a year's sales. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-21-ORIRAIL",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Rs 4.11 cr from Integral Coach Factory, Chennai for 53 coach sets of seats by 31-Dec-2027 - about 0.6% of the 'around Rs 700 crores' FY27 turnover management guided to. Payment terms stated in the filing (80% on inspection, 20% plus installation after acceptance). Guidance unchanged."
+   },
+   {
+    "id": "2026-10-29-GKENERGY",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "GK Energy BESS Private Limited incorporated 25-Nov-2026, the first of the five wholly owned subsidiaries the board approved on 29-Oct. Wide objects (storage, battery manufacturing and recycling, green hydrogen, trading, EPC) but no investment amount, plan or timeline, so nothing enters the model. Guidance unchanged."
+   },
+   {
+    "id": "2026-09-28-UTSSAV",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Postal-ballot results and scrutinizer's report: an authorised-capital increase and the issuance of BONUS EQUITY SHARES both passed, 99.99% of votes polled in favour, 72.68% of outstanding shares voting. The ratio is not stated in this document. The filing also pins promoter and promoter-group holding at 1,81,37,000 of 2,49,98,000 shares = 72.55%. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-11-CEIGALL",
+    "filings_read": 1,
+    "updates_added": 1,
+    "tone": "neutral",
+    "note": "Two investor-meet intimations of 25-Nov, the only unlogged item from yesterday on any card. Housekeeping, logged so the filing trail has no gap. Guidance unchanged."
+   },
+   {
+    "id": "2026-10-05-VIVIANA",
+    "filings_read": 0,
+    "updates_added": 0,
+    "tone": "n/a",
+    "note": "FAILURE TO REPORT, not a quiet day: Viviana filed a 'General Updates' item on NSE at 09:54 IST today whose filename reads 'Intimation of L1 Stage Successful bidder PGVCL' - which, if it says what the filename suggests, is an L1 position on a Paschim Gujarat Vij Company tender and material to a card published in the govt lane. The document could NOT be opened: Viviana is NSE-only (no BSE scrip), the file lives on nsearchives.nseindia.in which this sandbox refuses, and the usual .com substitution returns NSE's 'file you are trying to access doesn't appear to exist' page for this particular filename. No update was written, because the rule is never to write from a filing not opened. Carried to the next run."
+   },
+   {
+    "id": "already-logged",
+    "filings_read": 0,
+    "updates_added": 0,
+    "tone": "n/a",
+    "note": "Ten ideas whose 'new' items are 25-Nov filings already written up in yesterday's sweep were checked against their existing updates and correctly skipped rather than duplicated: BHAGYANGR (Tieramet Q2 + guidance), SHREEREF, RECODE, ORIANA, VRAJ (interim dividend), MOREPENLAB, MARKOLINES (results + guidance), HILINFRA (the related-party order), KPGREEN and UHTL. INDOBORAX's and DEEDEV's call intimations and SHREEREF's conference intimations are housekeeping and were skipped per the PLAYBOOK."
+   }
+  ]
+ },
+ "scorecard": {
+  "built_by": "scripts/ideas/score.py, run after the card was appended",
+  "ideas_total": 94,
+  "published_today": 1,
+  "note": "See docs/ideas/track.json for the measured scorecard; score.py prices every open card from BSE bhavcopies (NSE UDiFF for NSE-only names).",
+  "summary": {
+   "count": 94,
+   "median_ret": -5.5,
+   "mean_ret": -3.2,
+   "up": 31,
+   "median_peak": 5.0,
+   "hit_20": 16,
+   "hit_50": 4,
+   "stale": 0,
+   "from_bhavcopy": 0
+  },
+  "updated": "2026-11-26 20:15 IST",
+  "rows_priced": 94,
+  "stale": 0
+ },
+ "note": "A day where the honest answer in two of the three lanes was 'nothing', and the real work was in the order-book ledger and the updates sweep.\n\n**Lane one: the gate kept nothing, and a blocked host cost us three live signals.** The PIB read scanned 47 releases and kept 0 - normal, and correct. But the government-sources feed caught THREE DGTR trade-remedy initiations filed today: anti-dumping on clavulanic acid / potassium clavulanate from China and the EU, countervailing duty on copper tubes and pipes from Malaysia, Thailand and Vietnam, and a SUO-MOTO anti-dumping investigation into aluminium extrusion profiles from four countries. These are exactly the category the PLAYBOOK added after the OCCL miss, and a trade-remedy initiation is the most direct 'who gains' document the government lane ever produces because it names the domestic industry that petitioned. All three are UNKNOWN tonight: www.dgtr.gov.in is refused by this sandbox's network policy, no listed company filed anything about them with BSE today, and the rule against naming a beneficiary on a hunch held. Unblocking dgtr.gov.in is the highest-value change the owner could make to this routine.\n\n**Lane two: 36 strong signals, none real.** The WPI panel is seven months stale (April 2026) and the wpi step is the only one that fails on the Actions runner too, so it is a genuinely missing feed - the same finding as yesterday, now a week old. It drives the strength score of almost every group in the top ten. Read against the prints that are actually from today, the ranking inverts: crude -16.9% in a month, silver -25.5%, gold -9.9%, aluminium -6.5%, polypropylene -12.9%, styrene -19.9%, naphtha -21.4%. The only fresh up-moves are Henry Hub gas, US Class III milk and CBOT rough rice - American prints with no documented Indian pass-through.\n\n**Lane three published one name, and it is a name with eleven red flags.** Cubex Tubings (BSE 526027, Rs 291 cr) filed an investor presentation at 17:08 showing Q2 FY27 PAT of Rs 4.57 cr at an 8.62% EBITDA margin against 2.17% a year earlier, and a Rs 87 cr vacuum-induction-melting project fully funded by a Rs 75 cr warrant issue approved at the EGM on 6-Nov. The business is genuinely hard to replicate - 47 years old, five India-first copper and cupronickel grades, approvals from NPCIL, DAE, Engineers India, Naval DQA and the Ordnance Factory - and the furnace opens nickel superalloys and titanium, which India imports. The card is published at LOW-TO-MEDIUM confidence because everything else about it argues for caution, and all of it is written in: the presentation's own year-on-year column is mislabelled (it compares Q2 FY27 with Q1 FY27 - against BSE's detailed results the real YoY is revenue +12.6%, PAT +162.6%); both exchanges raised observations that forced a corrigendum to the EGM notice supplying disclosures the original notice lacked; the warrants are 26% below market with the promoter group taking 33.9 lakh of 50 lakh and going from 44.42% to 50.48%; two non-promoter allottees share the same two ultimate beneficial owners and sit just under 5% each; FY26 PAT of Rs 7.45 cr was carried by Rs 8.22 cr of other income; note 31 of the accounts says receivable and payable balances are subject to confirmation from the parties; the order book is 0.31x a year's sales; and median turnover is about Rs 11 lakh a day in a T-group scrip already up 165% in three months. Revenue is flat - the entire step-up is one quarter of margin, and Q3 decides whether it is a mix shift or an artefact.\n\nThree other order filings were opened and all three failed the same measured test - Walchandnagar's Rs 18.46 cr launcher order at 5.2% of a trailing year's sales, JD Cables' Rs 15.89 cr at 4.4%, EMS's Rs 25.96 cr NHAI fee-collection award at 4.8%. All in the under-10% bucket that the 1,245-filing study found has no edge.\n\n**The order-book ledger is where the run earned its keep.** The queue of re-checks carried forward since 2026-11-19 was cleared, and one row flipped: ASTRA MICROWAVE goes from NOT A JUMP to CONFIRMED on a group-and-JV order book of Rs 4,707.59 cr at 30-Sep-2026 against Rs 2,208.90 cr a year earlier, +113.1%, both read from the quarterly results notes themselves, driven by H1 intake of Rs 2,647.34 cr against Rs 390.92 cr. At Rs 15,477 cr of market capitalisation it is far outside the band, so it is a table row and not a card - but the table is now right. Dilip Buildcon's latest was corrected from the transcript's rounded Rs 34,000 cr to the filed Rs 33,081 cr, Enviro Infra's moved to a dated and segment-split Rs 6,778.2 cr, Jash stays NOT A JUMP on a newly read Rs 944 cr, and a date error in the screen was found on DEE Development.\n\n**The updates sweep found the day's most consequential filing, and it was not on a candidate list.** Ratnaveer Precision put three-year projections on the record for the first time - consolidated revenue Rs 1,414 cr FY27 to Rs 3,914 cr FY29, EBITDA Rs 180 cr to Rs 775 cr - with the Copper Clad Laminate plant (five lines, 79.2 lakh sheets, Rs 338 cr, ECMS-approved) carrying almost all of it. The guidance line on that card was rewritten. Jyoti Structures' Rs 272 cr LOI turned out to be Rs 175.67 cr of new work on a 2022 contract. Nine updates across eight cards, one guidance change. One failure to report, not a quiet day: Viviana filed what its filename calls an L1-stage intimation on a PGVCL tender and the document could not be opened from this sandbox - carried to the next run rather than guessed at.",
+ "data_problems": [
+  "**www.dgtr.gov.in is refused by this sandbox's network policy** (curl: 403 at the agent proxy, 'no rule or network setting allows this host'; WebFetch: ENOTFOUND). This cost lane one three live trade-remedy initiations today - clavulanic acid, copper tubes and pipes, and a suo-moto case on aluminium extrusion profiles - every one of which names the petitioning domestic industry in its notice. Of everything on this list, this is the one worth fixing: the PLAYBOOK's own TRADE rule (written after OCCL rose 43% while the scan showed it as a volume spike) cannot be followed without this host.",
+  "**WPI panel seven months stale (April 2026).** wpi.py failed here (eaindustry.nic.in refused at the proxy) AND is the only failed step on the ideas-feeds Action runner, which reaches it on good days. This is a genuinely missing feed, not a sandbox block, and it is the single reason 36 of 53 commodity groups show a 'strong' signal that today's prices contradict. It has now failed on the runner for at least two consecutive days. Needs the owner's attention.",
+  "**Trade panel two months stale (September 2026).** tradestat.commerce.gov.in refused here and on the Action's hosts_blocked list. docs/ideas/trade/** unchanged. Monthly by nature, but it is the second of the two panels that set the commodity strength score, so between them the ranking is built on April and September data.",
+  "**pib.gov.in unreachable from the sandbox**, so this run's own govt.py could not read 26-Nov or 25-Nov and left govt.json untouched (it printed 'today could not be read; govt.json LEFT UNCHANGED' and marked both days unread). The Action's 18:56 IST read was used instead - 47 releases scanned, 0 kept. docs/ideas/govt_history.json was restored to the Action's version with `git checkout --` on that one path, because this run's copy would have overwritten the Action's successful read of those two days with 'unread'.",
+  "**BSE's AttachLive can serve a 730-byte error page for older attachments; AttachHis serves the same file in full.** Measured on Astra Microwave's November-2025 results and press release: AttachLive returned a one-page PDF reading 'Error / This page can't be displayed / Contact support', AttachHis returned 2.0 MB and 1.1 MB documents. Any reader that trusts a 200 response without checking the size will silently read nothing. This run checks every download and retries on AttachHis.",
+  "**orderbook_signals.json quotes Rs 34,000 cr for Dilip Buildcon's Sep-2026 order book; the filed figure is Rs 33,081 cr.** The screen took management's rounded number from the 19-Nov-2026 analyst-meet transcript. The Q2 FY27 press release of 12-Nov-2026 says 'a record Rs 33,081 crore'. Corrected in orderbook_jumps.json.",
+  "**orderbook_signals.json dates DEE Development's Rs 2,586 cr order book to 2026-09-30; it is the 31-OCTOBER-2026 book.** Today's Q2 transcript states both: Rs 2,531 cr as of 30-Sep-2026 and Rs 2,586 cr as of 31-Oct-2026 after Rs 148 cr of October inflow. The ledger keeps the September pair because no 31-Oct-2025 figure has been read to pair the October book against.",
+  "**scan.py's TRADE category produced a false positive on Cubex Tubings.** The filing is an investor presentation; the only string in the 31-page PDF that matches the TRADE keyword set is 'BIS IS 154', a product standard on the credentials slide. No anti-dumping, countervailing, safeguard, DGTR, MIP or quality-control-order text appears anywhere in it (searched explicitly). The candidate was still worth researching on its results and capex, but the TRADE flag is noise - the keyword list probably needs 'quality control order' to require the full phrase rather than matching 'BIS'.",
+  "**Viviana Power Tech's 26-Nov NSE filing could not be opened.** The queue row's filename is 'VIVIANA__Intimation_of_L1_Stage_Successful_bidder_PGVCL.pdf' on nsearchives.nseindia.in, which this sandbox refuses; the .com substitution that works for most NSE files returns NSE's 'file you are trying to access doesn't appear to exist' page for this one (3,814 bytes, two pages). Viviana is NSE-only (no BSE scrip), so there is no second copy. No update was written. If the filename is accurate this is an L1 position on a Paschim Gujarat Vij Company tender and is material to a card in the govt lane.",
+  "**updates.py was not run, by choice, and the --selftest line the prompt asks for was therefore not produced.** www.nseindia.com answers 403 from NSE itself in this sandbox and updates.py does not exit 3 on that; yesterday's run measured it degrading every idea's status to SUSPECT mid-write. The Action's queue (19:42 IST, status complete on all 93 ideas, second_reader_misses 0) was used unmodified. Either the exit-3 path has stopped triggering or it does not cover a 403 from NSE; flagged for the owner for the second day running, scripts untouched per the run's instructions.",
+  "**updates_queue.json reports one second-reader problem: 'BSE daily list 2026-11-26 incomplete'.** second_reader_misses is 0, so nothing was found that the per-company reads had missed, but the whole-market BSE day list the second reader re-reads was itself short for today. Stated rather than treated as a clean sweep.",
+  "**Ten of twelve india_spot sources failed from the sandbox** (metalbook, ibja, rubber, sugar, fuel, guidechem, cai, spices, te, and minsteel via steel.gov.in); nmdc, minsteel-from-file and moil worked. All failures kept their previous rows, 0 history rows were appended, and india_history.json.gz WAS rebuilt (277 series, 81,216 dated points). nmdc_history.json and moil_history.json changed only in their build timestamp - no new price letters.",
+  "**spot.py fetched nothing** (0 commodities; westmetall.com and markets.businessinsider.com both refused), so spot.json and spot_series.json were left unchanged and every spot row in signals.json is the Action's, stamped 19:16 IST today. Correct keep-previous behaviour, but no spot price in this run was fetched by the routine itself.",
+  "**minsteel.py could not list steel.gov.in**, so docs/ideas/minsteel_mumbai.json is unchanged; the Ministry of Steel series in signals.json is still the committed one and lags 2-3 months by nature. Say which month when quoting it.",
+  "**Two of nine government sources did not read today on the Action runner either**: egazette.gov.in timed out (last OK 25-Nov) and dgft.gov.in answered 403 (last OK 24-Nov). rbi, cerc, dgtr, ministries, coal, mopng and dea all read.",
+  "**forum.valuepickr.com and cdn.syndication.twimg.com are both refused by this sandbox** (curl returns nothing; WebFetch ENOTFOUND for twimg). The X and ValuePickr sweeps ran on WebSearch titles and snippets only: no post body was read, no forum page was read, and post counts and dates are recorded as unknown. 'Could not read' is not 'nothing there' - though for Cubex the absence of a dedicated ValuePickr thread is itself a real search result.",
+  "**This run's own scan read is an evening read.** 518 of BSE's own 518 rows for 26-Nov-2026, so not capped - better than the Action's 19:18 IST read of 493 of 494 - but taken at 19:50 IST, so any filing made after that is not in it.",
+  "**Johnsoncab Electricals (545021, Rs 267 cr) was a candidate whose half-yearly results filing was NOT opened.** It scored 4.0 on two RESULT signals with no order, capex or rating trigger alongside, and the four names ahead of it used the run's reading time. Recorded as not read rather than as nothing there, and carried forward."
+ ]
+}
