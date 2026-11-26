@@ -8,29 +8,39 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-  .bar{height:.55rem;border-radius:9999px;background:var(--surface-3);overflow:hidden;display:flex}
-  .bar > span{display:block;height:100%}
-  table.cov{width:100%;border-collapse:collapse;font-size:12px}
-  table.cov th,table.cov td{padding:.4rem .55rem;text-align:right;white-space:nowrap}
-  table.cov th:first-child,table.cov td:first-child{text-align:left}
-  table.cov thead th{position:sticky;top:0;background:var(--surface-2);border-bottom:1px solid var(--border);font-weight:700;color:var(--text-muted);z-index:1}
-  table.cov tbody tr{border-bottom:1px solid var(--border);cursor:pointer}
-  table.cov tbody tr:hover{background:var(--surface-2)}
-  table.cov tr.inwin{background:#fbfdff}
-  .z{color:#cbd5e1}
-  .who td{background:var(--surface-2);white-space:normal;text-align:left}
-  .sym{display:inline-block;background:var(--accent-soft);color:var(--accent-text);border-radius:var(--radius-sm);padding:.1rem .35rem;margin:.1rem;font-size:11px;font-weight:600}
-  .wrap{overflow-x:auto}
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(380px,470px) minmax(220px,280px) minmax(0,1fr)}
+  #qHead,.qr{grid-template-columns:minmax(0,1fr) 54px 44px 44px 44px 44px 48px;gap:6px}
+  .qr .z,.z{color:var(--text-faint);opacity:.6}
+  .qr .v{font-weight:600;color:var(--text)}
+  .qr.out .n{color:var(--text-muted)}
+  .qr .n u{text-decoration:none;display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-left:6px;vertical-align:2px}
+  #fTabs{margin:8px 10px;display:flex} html[data-theme] #fTabs button{flex:1 1 0;padding:5px 2px;font-size:12px;min-width:0} html[data-theme] #fTabs button i{margin-left:3px}
+  #qHead{font-size:11px;white-space:nowrap} #qHead i{font-style:normal} #qHead i.sm{display:none}
+  #kHead,.kr{grid-template-columns:minmax(0,1fr)}
+  .kr .n{font-weight:500;color:var(--accent-text)}
+  .warn{color:var(--warn,#d19a1c) !important}
+  #dStats{border-top:0;border-bottom:1px solid var(--border)}
+  #camp{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted)}
+  #camp .bar{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;display:flex;margin:6px 0}
+  #camp .bar span{display:block;height:100%}
+  #camp b{float:right;font-weight:600}
+  #cTitle{padding:8px 12px 0;font-size:12px;color:var(--text-muted)}
+  #cTitle b{color:var(--text);font-weight:600}
+  #pD .os-chartwrap{min-height:200px}
+  #status{margin:10px 0}
+  #how{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.55} #how summary{cursor:pointer;color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(340px,380px) minmax(190px,220px) minmax(0,1fr)} #qHead,.qr{grid-template-columns:minmax(0,1fr) 46px 38px 38px 38px 38px 42px;gap:4px} #qHead i.lg{display:none} #qHead i.sm{display:inline} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #qHead,.qr{grid-template-columns:minmax(0,1fr) 34px 32px 32px 32px 32px 34px;gap:4px;font-size:12.5px} #qHead{font-size:10.5px} #qHead i.lg{display:none} #qHead i.sm{display:inline} .os-grid > #pQ .os-list{max-height:330px} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
 
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-  <div class="max-w-screen-lg mx-auto px-4 h-14 flex items-center justify-between gap-4">
+  <div class="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
     <a href="./index.html" class="flex items-center gap-2.5 shrink-0 group">
       <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center font-extrabold text-[13px] shadow-md group-hover:scale-105 transition">SW</span>
       <span class="font-bold text-slate-900 tracking-tight hidden sm:block">STOCKS<span class="text-indigo-600">WORLD</span></span>
@@ -39,49 +49,49 @@
   </div>
 </header>
 
-<main class="max-w-screen-lg mx-auto px-4 py-6">
-  <div class="mb-4">
-    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Fill coverage</h1>
-    <p class="text-xs text-slate-500 mt-1">Empty revenue / PAT cells for the point-in-time Nifty&nbsp;500. Tap any quarter to see which companies are still open.</p>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Fill coverage</h1>
+    <div class="os-asof" id="asof"></div>
   </div>
+  <div id="status" class="os-empty">Loading…</div>
 
-  <div id="banner" class="card p-3 mb-5 text-xs text-slate-500">Loading…</div>
-
-  <div id="body" class="hidden">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Closed</div><div id="sClosed" class="text-2xl font-extrabold text-emerald-600">–</div><div id="sClosedSub" class="text-[11px] text-slate-400"></div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Still open</div><div id="sOpen" class="text-2xl font-extrabold text-amber-600">–</div><div id="sOpenSub" class="text-[11px] text-slate-400"></div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Revenue std</div><div id="sRevS" class="text-2xl font-extrabold text-slate-800">–</div><div class="text-[11px] text-slate-400">open cells</div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Revenue con</div><div id="sRevC" class="text-2xl font-extrabold text-slate-800">–</div><div class="text-[11px] text-slate-400">open cells</div></div>
+  <div id="content" class="hidden">
+    <div class="os-bar">
+      <span class="os-hint" style="white-space:normal">Empty revenue / PAT cells for the point-in-time Nifty&nbsp;500. Pick a quarter to see which companies are still open.</span>
+      <span class="sp"></span>
+      <span class="os-hint keys"><b>↑↓</b> move · <b>← →</b> switch list · <b>1–4</b> field · <b>Enter</b> stock page</span>
     </div>
 
-    <div class="card p-3 mb-5">
-      <div class="flex items-center justify-between text-xs mb-1.5">
-        <span class="font-semibold text-slate-700">Campaign window</span>
-        <span id="pctBig" class="font-extrabold text-emerald-600"></span>
-      </div>
-      <div class="bar"><span id="barDone" style="background:#10b981"></span><span id="barOpen" style="background:#f59e0b"></span></div>
-      <div id="barSub" class="text-[11px] text-slate-400 mt-1.5"></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pQ" aria-label="Quarters">
+        <div class="os-ph"><span class="ttl">Per quarter</span><span class="r"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent)"></span> inside the campaign window</span></div>
+        <div class="os-ch" id="qHead"><span>Quarter</span><span title="Members"><i class="lg">Members</i><i class="sm">Mem</i></span><span title="rev std"><i class="lg">rev std</i><i class="sm">revS</i></span><span title="rev con"><i class="lg">rev con</i><i class="sm">revC</i></span><span title="pat std"><i class="lg">pat std</i><i class="sm">patS</i></span><span title="pat con"><i class="lg">pat con</i><i class="sm">patC</i></span><span title="n/a con"><i class="lg">n/a con</i><i class="sm">n/a</i></span></div>
+        <div class="os-list" id="qList" role="listbox" aria-label="Quarters"></div>
+      </section>
+      <section class="os-pane" id="pK" aria-label="Open companies">
+        <div class="os-ph"><span class="ttl" id="kTitle"></span><span class="r" id="kCount"></span></div>
+        <div class="os-sg" id="fTabs" role="group" aria-label="Which field"></div>
+        <div class="os-list" id="kList" role="listbox" aria-label="Open companies"></div>
+      </section>
+      <section class="os-pane os-main" id="pD" aria-label="Campaign and chart">
+        <div class="os-ph"><span class="ttl">Campaign</span><span class="r"><a class="os-btn hidden" id="dOpen" href="#" title="Open the selected company's page (Enter)">Open ↗</a></span></div>
+        <div class="os-stats" id="dStats"></div>
+        <div id="camp"><span>Campaign window</span><b id="pctBig" class="os-pos"></b>
+          <div class="bar"><span id="barDone" style="background:#10b981"></span><span id="barOpen" style="background:#f59e0b"></span></div>
+          <div id="barSub"></div></div>
+        <div id="cTitle"></div>
+        <div class="os-chartwrap"><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+      </section>
     </div>
-
-    <div class="card overflow-hidden">
-      <div class="px-3 py-2 border-b border-slate-200 text-xs font-semibold text-slate-700">Per quarter <span class="text-slate-400 font-normal">· shaded rows are inside the campaign window</span></div>
-      <div class="wrap" style="max-height:70vh;overflow-y:auto">
-        <table class="cov">
-          <thead><tr>
-            <th>Quarter</th><th>Members</th><th>rev std</th><th>rev con</th><th>pat std</th><th>pat con</th><th>n/a con</th>
-          </tr></thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <p class="text-[11px] text-slate-400 mt-3">“n/a con” = companies that do not file consolidated at that quarter (never filed, or stopped — rolling 4-quarter rule). Those are not gaps and are excluded from the counts. Jun-2026 sits outside the window because that season is still filing.</p>
+    <details id="how"><summary>How to read this page</summary>“n/a con” = companies that do not file consolidated at that quarter (never filed, or stopped — rolling 4-quarter rule). Those are not gaps and are excluded from the counts. Jun-2026 sits outside the window because that season is still filing. The chart is one bar per quarter for the chosen field (open cells); the selected quarter is the bright bar and quarters outside the campaign window are faint. Click a bar to select its quarter.</details>
   </div>
 </main>
 
 <script>
 (function () {
   'use strict';
+  var K = window.OSKit, $ = function (id) { return document.getElementById(id); };
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
     return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   function qlab(qe){
@@ -95,7 +105,6 @@
   var SW_OWNER = (function(){ try { return !!localStorage.getItem('bt_owner_key'); } catch(e){ return false; } })();
   if (!SW_OWNER) { swLock(); return; }
 
-  var banner = document.getElementById('banner');
 
   // cache:'no-store' so a refresh really re-reads the file CI just rebuilt, rather than the
   // service worker's copy -- the whole point of this page is that it is current.
@@ -103,72 +112,129 @@
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .then(render)
     .catch(function(e){
-      banner.innerHTML = '<span class="text-rose-600 font-semibold">Could not load coverage data.</span> ' +
-        '<span class="text-slate-400">' + esc(e.message) + '</span>';
+      $('status').innerHTML = '<span class="os-neg" style="font-weight:600">Could not load coverage data.</span> ' + esc(e.message);
     });
 
+  var D = null, FIELDS = ['revS', 'revC', 'patS', 'patC'], FL = { revS: 'rev std', revC: 'rev con', patS: 'pat std', patC: 'pat con' };
+  var S = { q: 0, f: 'revC', k: 0, pane: 1 }, NAMES = [], CH = null;
+  function qISO(qe) { var s = String(qe); return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8); }
+  function inWin(r) { return r.qe >= D.window.start && r.qe <= D.window.end; }
+
   function render(d){
+    D = d;
     var open = 0, base = 0, closed = 0, k;
     for (k in d.totals) { open += d.totals[k]; }
     for (k in d.baseline) { base += d.baseline[k]; }
     closed = base - open;
 
-    banner.className = 'card p-3 mb-5 text-xs text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1';
-    banner.innerHTML =
-      '<b class="text-slate-700">Point-in-time Nifty 500</b><span class="text-slate-300">·</span>' +
-      'window ' + qlab(d.window.start) + ' → ' + qlab(d.window.end) +
-      '<span class="text-slate-300">·</span>rebuilt with the nightly fundamentals refresh' +
-      '<span class="text-slate-300">·</span>updated ' + esc(d.generated);
-    document.getElementById('body').classList.remove('hidden');
-
-    document.getElementById('sClosed').textContent = closed.toLocaleString('en-IN');
-    document.getElementById('sClosedSub').textContent = 'of ' + base.toLocaleString('en-IN') + ' at campaign start';
-    document.getElementById('sOpen').textContent = open.toLocaleString('en-IN');
-    document.getElementById('sOpenSub').textContent = open === 0 ? 'fully closed 🎉'
-      : ('revS ' + d.totals.revS + ' · revC ' + d.totals.revC + ' · patS ' + d.totals.patS + ' · patC ' + d.totals.patC);
-    document.getElementById('sRevS').textContent = d.totals.revS;
-    document.getElementById('sRevC').textContent = d.totals.revC;
+    $('asof').className = 'os-asof live';
+    $('asof').innerHTML = 'Point-in-time Nifty 500 · window ' + qlab(d.window.start) + ' → ' + qlab(d.window.end) +
+      ' · rebuilt with the nightly fundamentals refresh · updated ' + esc(d.generated);
+    $('status').classList.add('hidden'); $('content').classList.remove('hidden');
 
     var pct = base ? (closed / base * 100) : 0;
-    document.getElementById('pctBig').textContent = pct.toFixed(1) + '% closed';
-    document.getElementById('barDone').style.width = pct.toFixed(2) + '%';
-    document.getElementById('barOpen').style.width = (100 - pct).toFixed(2) + '%';
-    document.getElementById('barSub').textContent =
-      closed.toLocaleString('en-IN') + ' cells filled · ' + open.toLocaleString('en-IN') + ' still open';
+    $('dStats').innerHTML =
+      '<div><span>Closed</span><b class="os-pos">' + closed.toLocaleString('en-IN') + '</b></div>' +
+      '<div title="cells open when the campaign started"><span>At campaign start</span><b>' + base.toLocaleString('en-IN') + '</b></div>' +
+      '<div><span>Still open</span><b class="warn">' + open.toLocaleString('en-IN') + '</b></div>' +
+      '<div><span>Revenue std</span><b>' + d.totals.revS + ' <small>open</small></b></div>' +
+      '<div><span>Revenue con</span><b>' + d.totals.revC + ' <small>open</small></b></div>' +
+      '<div><span>PAT std · con</span><b>' + d.totals.patS + ' · ' + d.totals.patC + ' <small>open</small></b></div>';
+    $('pctBig').textContent = pct.toFixed(1) + '% closed';
+    $('barDone').style.width = pct.toFixed(2) + '%';
+    $('barOpen').style.width = (100 - pct).toFixed(2) + '%';
+    $('barSub').textContent = closed.toLocaleString('en-IN') + ' cells filled · ' + open.toLocaleString('en-IN') + ' still open' +
+      (open === 0 ? ' — fully closed 🎉' : ' (revS ' + d.totals.revS + ' · revC ' + d.totals.revC + ' · patS ' + d.totals.patS + ' · patC ' + d.totals.patC + ')') +
+      ' · closed is counted against ' + base.toLocaleString('en-IN') + ' at campaign start';
 
-    var tb = document.getElementById('tbody'), html = [];
-    (d.rows || []).forEach(function(r, i){
-      var inwin = r.qe >= d.window.start && r.qe <= d.window.end;
+    var rows = d.rows || [];
+    // open on the newest quarter that has anything open in the chosen field (else the newest quarter)
+    S.q = Math.max(0, rows.length - 1);
+    for (var i = rows.length - 1; i >= 0; i--) { if ((rows[i].n || {})[S.f]) { S.q = i; break; } }
+    wire(); renderQuarters(); renderNames(); K.fitGrid($('grid')); drawChart();
+    var on = $('qList').querySelector('.os-row.on'); if (on) on.scrollIntoView({ block: 'nearest' });
+  }
+  function renderQuarters() {
+    var html = [];
+    (D.rows || []).forEach(function(r, i){
       var n = r.n || {}, na = r.na || {};
-      function cell(v){ return v ? '<td class="font-semibold text-slate-800">' + v + '</td>' : '<td class="z">0</td>'; }
-      html.push('<tr data-i="' + i + '" class="' + (inwin ? 'inwin' : '') + '">' +
-        '<td class="font-semibold text-slate-700">' + qlab(r.qe) + '</td>' +
-        '<td class="text-slate-500">' + r.members + '</td>' +
+      function cell(v){ return v ? '<span class="v">' + v + '</span>' : '<span class="z">0</span>'; }
+      html.push('<div class="os-row qr' + (inWin(r) ? '' : ' out') + (i === S.q ? ' on' : '') + '" role="option" data-i="' + i + '">' +
+        '<span class="n">' + qlab(r.qe) + (inWin(r) ? '<u title="inside the campaign window"></u>' : '') + '</span>' +
+        '<span class="m">' + r.members + '</span>' +
         cell(n.revS) + cell(n.revC) + cell(n.patS) + cell(n.patC) +
-        '<td class="text-slate-400">' + ((na.revC || 0) + (na.patC || 0) ? (na.revC || 0) : '<span class="z">0</span>') + '</td>' +
-      '</tr>');
+        '<span class="m">' + ((na.revC || 0) + (na.patC || 0) ? (na.revC || 0) : '<span class="z">0</span>') + '</span>' +
+      '</div>');
     });
-    tb.innerHTML = html.join('');
-
-    tb.addEventListener('click', function(ev){
-      var tr = ev.target.closest('tr[data-i]');
-      if (!tr) return;
-      var nxt = tr.nextElementSibling;
-      if (nxt && nxt.classList.contains('who')) { nxt.remove(); return; }
-      var r = d.rows[+tr.getAttribute('data-i')], who = r.who || {}, parts = [];
-      ['revS','revC','patS','patC'].forEach(function(f){
-        var list = who[f];
-        if (!list || !list.length) return;
-        var more = (r.n[f] || 0) - list.length;
-        parts.push('<div class="mb-1.5"><span class="text-[11px] font-bold text-slate-600 uppercase tracking-wide">' + f + '</span> ' +
-          list.map(function(s){ return '<span class="sym">' + esc(s) + '</span>'; }).join('') +
-          (more > 0 ? '<span class="text-[11px] text-slate-400"> +' + more + ' more</span>' : '') + '</div>');
-      });
-      var row = document.createElement('tr');
-      row.className = 'who';
-      row.innerHTML = '<td colspan="7">' + (parts.length ? parts.join('')
-        : '<span class="text-[11px] text-slate-400">Nothing open in this quarter.</span>') + '</td>';
-      tr.after(row);
+    $('qList').innerHTML = html.length ? html.join('') : '<div class="os-empty">No quarters in the file.</div>';
+  }
+  function renderNames() {
+    var r = (D.rows || [])[S.q];
+    $('fTabs').innerHTML = FIELDS.map(function (f) { return '<button type="button" data-v="' + f + '"' + (f === S.f ? ' class="on"' : '') + ' title="' + FL[f] + '">' + f + '<i>' + (r ? ((r.n || {})[f] || 0) : '—') + '</i></button>'; }).join('');
+    if (!r) { $('kTitle').textContent = ''; $('kCount').textContent = ''; $('kList').innerHTML = '<div class="os-empty">No quarter selected.</div>'; NAMES = []; return; }
+    var who = r.who || {}, any = FIELDS.some(function (f) { return who[f] && who[f].length; });
+    NAMES = (who[S.f] || []).slice();
+    var total = (r.n || {})[S.f] || 0, more = total - NAMES.length;
+    $('kTitle').textContent = 'Open in ' + qlab(r.qe);
+    $('kCount').textContent = FL[S.f] + ' · ' + total;
+    if (S.k >= NAMES.length) S.k = 0;
+    $('kList').innerHTML = NAMES.length ? NAMES.map(function (s, i) {
+        return '<div class="os-row kr' + (i === S.k ? ' on' : '') + '" role="option" data-i="' + i + '"><span class="n">' + esc(s) + '</span></div>'; }).join('') +
+        (more > 0 ? '<div class="os-note">+' + more + ' more — the file lists the first ' + NAMES.length + ' names.</div>' : '')
+      : '<div class="os-empty">' + (any ? 'No ' + FL[S.f] + ' cell is open in this quarter.' : 'Nothing open in this quarter.') + '</div>';
+    var s = NAMES[S.k];
+    if (s) { $('dOpen').href = './stock.html?sym=' + encodeURIComponent(s); $('dOpen').textContent = s + ' ↗'; $('dOpen').classList.remove('hidden'); } else $('dOpen').classList.add('hidden');
+    $('cTitle').innerHTML = 'Open <b>' + FL[S.f] + '</b> cells per quarter · selected <b>' + qlab(r.qe) + '</b>: ' + total + ' of ' + r.members + ' members';
+  }
+  // one bar per quarter for the chosen field
+  function drawChart() {
+    var LC = window.LightweightCharts, rows = D.rows || [];
+    if (!LC) { $('cMsg').textContent = 'Chart library did not load.'; return; }
+    if (!rows.length) { $('cMsg').textContent = 'No quarters to chart.'; return; }
+    var cs = getComputedStyle(document.documentElement), v = function (n) { return cs.getPropertyValue(n).trim(); };
+    var bd = v('--border') || '#2a3040', acc = v('--accent') || '#3d9488', mut = v('--text-faint') || '#6b7280';
+    if (!CH) {
+      var chart = LC.createChart($('cChart'), { autoSize: true,
+        layout: { background: { color: 'transparent' }, textColor: v('--text-muted') || '#9aa3b8', fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily },
+        grid: { vertLines: { visible: false }, horzLines: { color: bd } },
+        rightPriceScale: { borderColor: bd, scaleMargins: { top: .1, bottom: 0 } },
+        timeScale: { borderColor: bd, rightOffset: 1 }, crosshair: { mode: 0 }, handleScale: false, handleScroll: false });
+      var ser = chart.addSeries(LC.HistogramSeries, { priceFormat: { type: 'price', precision: 0, minMove: 1 }, priceLineVisible: false, lastValueVisible: false });
+      CH = { chart: chart, ser: ser, idx: {} };
+      chart.subscribeClick(function (p) { if (p && p.time != null && CH.idx[p.time] != null) { S.pane = 1; pickQuarter(CH.idx[p.time]); } });
+    }
+    CH.idx = {};
+    CH.ser.setData(rows.map(function (r, i) { var t = qISO(r.qe); CH.idx[t] = i;
+      return { time: t, value: (r.n || {})[S.f] || 0, color: i === S.q ? acc : (inWin(r) ? '#f59e0b' : mut + '66') }; }));
+    CH.chart.timeScale().fitContent();
+  }
+  function rebuildChart() { if (CH) { try { CH.chart.remove(); } catch (e) {} CH = null; } drawChart(); }
+  function markOn(listId, i) {
+    var el = $(listId), cur = el.querySelector('.os-row.on'); if (cur) cur.classList.remove('on');
+    var n = el.querySelector('.os-row[data-i="' + i + '"]'); if (n) { n.classList.add('on'); n.scrollIntoView({ block: 'nearest' }); }
+  }
+  function pickQuarter(i) { if (!(D.rows || [])[i]) return; S.q = i; S.k = 0; markOn('qList', i); renderNames(); drawChart(); }
+  function pickName(i) { if (NAMES[i] == null) return; S.k = i; markOn('kList', i); var s = NAMES[i]; $('dOpen').href = './stock.html?sym=' + encodeURIComponent(s); $('dOpen').textContent = s + ' ↗'; }
+  function setField(f) { S.f = f; S.k = 0; renderNames(); drawChart(); }
+  function wire() {
+    $('qList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 1; pickQuarter(+r.dataset.i); } };
+    $('kList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 2; pickName(+r.dataset.i); } };
+    $('fTabs').onclick = function (e) { var b = e.target.closest('button'); if (b) setField(b.dataset.v); };
+    window.addEventListener('resize', function () { K.fitGrid($('grid')); });
+    new MutationObserver(rebuildChart).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) return;
+      if (e.key >= '1' && e.key <= '4') { setField(FIELDS[+e.key - 1]); return; }
+      if (e.key === 'ArrowLeft') { S.pane = 1; e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { S.pane = 2; e.preventDefault(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); var d = e.key === 'ArrowDown' ? 1 : -1;
+        if (S.pane === 1) { var ni = Math.max(0, Math.min((D.rows || []).length - 1, S.q + d)); if (ni !== S.q) pickQuarter(ni); }
+        else { var nk = Math.max(0, Math.min(NAMES.length - 1, S.k + d)); if (nk !== S.k) pickName(nk); }
+        return;
+      }
+      if (e.key === 'Enter' && NAMES[S.k]) location.href = $('dOpen').href;
     });
   }
 })();
