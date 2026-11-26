@@ -8,92 +8,53 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="./theme.css" />
 <script src="./theme.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.2.1/dist/lightweight-charts.standalone.production.js"></script>
+<script src="./os-kit.js"></script>
 <style>
-  body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; font-feature-settings:"tnum" 1; }
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg)}
-
-  /* theme.css makes <body> a COLUMN flex container. A flex item's automatic minimum size
-   * then refuses to shrink below its content, so the matrix's natural width (~1380px) pushed
-   * <main> to 1424px inside a 1269px body and the whole PAGE panned sideways — measured, not
-   * guessed. min-width:0 is what lets the scroll stay inside .mwrap where it belongs. */
-  main{min-width:0;width:100%}
-
-  /* ---- the matrix -------------------------------------------------------
-   * Own scroller with sticky head + sticky Date/Members columns, so a 300-row
-   * × 20-column grid stays readable without the page itself scrolling sideways.
-   * .sw-grid opts out of theme.js's phone card-ification (see theme.js
-   * responsifyAll) — this IS a grid, cards would destroy it. */
-  .mwrap{overflow:auto;max-width:100%;max-height:70vh;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)}
-  table.mx{border-collapse:separate;border-spacing:0;font-size:12px;width:max-content;min-width:100%}
-  table.mx th, table.mx td{padding:.28rem .3rem;white-space:nowrap;text-align:center}
-  table.mx thead th{position:sticky;top:0;z-index:3;background:var(--surface-2);
-    border-bottom:1px solid var(--border);font-weight:700;color:var(--text-muted);font-size:11px;
-    padding:.5rem .45rem;cursor:pointer;user-select:none}
-  table.mx thead th.plain{cursor:default}
-  table.mx thead th:hover:not(.plain){color:var(--accent)}
-  /* second header row (open families' parameters) sticks BELOW the first — --h1 is the
-     measured height of row 1, set after each render */
-  table.mx thead tr:nth-child(2) th{top:var(--h1,28px);z-index:2}
-  table.mx thead tr:nth-child(2) th.d,
-  table.mx thead tr:nth-child(2) th.m{z-index:4}
-  table.mx thead th.sub{font-weight:600;font-size:10px;color:var(--text-faint);background:var(--surface-3)}
-  table.mx tbody td.d, table.mx thead th.d{position:sticky;left:0;z-index:2;background:var(--surface);
-    text-align:left;font-weight:600;padding-left:.7rem;border-right:1px solid var(--border)}
-  table.mx thead th.d{z-index:4;background:var(--surface-2)}
-  table.mx tbody td.m, table.mx thead th.m{position:sticky;left:var(--dw,86px);z-index:2;background:var(--surface);
-    text-align:right;color:var(--text-faint);font-weight:600;padding-right:.7rem;border-right:1px solid var(--border)}
-  table.mx thead th.m{z-index:4;background:var(--surface-2)}
-  table.mx tbody tr:hover td{background:var(--surface-2)}
-  table.mx tbody tr.yr td.d{color:var(--accent);font-weight:800}
-
-  /* one cell = a tinted pill; the tint IS the ratio, so a column reads as a ramp */
-  .pl{display:block;min-width:2.6rem;border-radius:var(--radius-sm);padding:.2rem .3rem;font-weight:700;
+  body{font-feature-settings:"tnum" 1}
+  #grid{grid-template-columns:minmax(270px,330px) minmax(230px,270px) minmax(0,1fr)}
+  #fHead,.fr{grid-template-columns:14px minmax(0,1fr) 62px 22px;gap:6px}
+  #mHead,.mr{grid-template-columns:minmax(0,1fr) 62px 62px;gap:6px}
+  html[data-theme] #fList .fr .n,html[data-theme] #fHead span:nth-child(2),html[data-theme] #mList .mr .n,html[data-theme] #mHead span:first-child{text-align:left}
+  .fr .car{color:var(--text-faint);font-size:11px;cursor:pointer;text-align:center}
+  .fr.sub .n{padding-left:10px;font-weight:500;color:var(--text-muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+  .fr .fl{color:#e11d48;font-weight:700;font-size:11px;text-align:right}
+  .mr.yr .n{color:var(--accent-text,var(--accent));font-weight:700}
+  .mr .m{text-align:right}
+  /* one cell = a tinted pill; the tint IS the ratio (same formula as the old matrix) */
+  .pl{display:block;border-radius:3px;padding:1px 4px;font-weight:700;text-align:center;font-size:12px;
     font-variant-numeric:tabular-nums;background:rgba(99,102,241,.12);color:var(--text)}
   .pl.on{color:#fff}
   .pl.na{background:transparent;color:var(--text-faint);font-weight:500}
   .pl.fg{outline:2px solid #f43f5e;outline-offset:-2px;color:#e11d48;background:rgba(244,63,94,.10);font-weight:800}
   html[data-theme="dark"] .pl.fg{color:#fda4af;background:rgba(244,63,94,.16)}
-
-  .chip{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:var(--radius-sm);
-    font-size:11px;font-weight:700;background:var(--surface-3);color:var(--text-muted)}
-  select.ctl, button.ctl, a.ctl{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-    padding:.35rem .6rem;font-size:12px;font-weight:600;color:var(--text)}
-  button.ctl, a.ctl{display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;
-    text-decoration:none;line-height:1.25;white-space:nowrap}
-  button.ctl:hover:not(:disabled), a.ctl:hover{border-color:var(--accent);color:var(--accent)}
-  button.ctl:disabled{opacity:.6;cursor:progress}
-  /* the ↻ spins while a re-read is in flight. The payload only changes when the nightly bake has
-     landed, so most refreshes come back byte-identical — without motion (and the note beside it)
-     a working button is indistinguishable from a dead one. */
+  #uni{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:12.5px;font-weight:600;color:var(--text);max-width:100%}
+  .grp{display:inline-flex;align-items:center;gap:6px;max-width:100%}
+  .lb{font-size:11.5px;color:var(--text-faint);margin-right:-2px}
   .spin{display:inline-block;animation:sw-spin .9s linear infinite}
   @keyframes sw-spin{to{transform:rotate(360deg)}}
-  /* the low end of the ramp is nearly invisible on a dark surface — outline the swatch
-     so "0%" still reads as a swatch and not as a gap in the legend */
-  .lgd{width:.85rem;height:.85rem;border-radius:var(--radius-sm);display:inline-block;vertical-align:-2px;
-    box-shadow:inset 0 0 0 1px var(--border-strong)}
-  /* ---- phones -----------------------------------------------------------
-   * theme.js scrollifies EVERY table ≥4 columns: it adds .sw-scrollx to this
-   * holder, and theme.css then sets overflow-y:hidden on it — which would clip
-   * 290 rows down to the ~20 that fit and make the rest unreachable. This holder
-   * scrolls BOTH ways by design, so take the x-scroll and keep the y.
-   * The sub-header's first cells carry text ("month"/"size") for the same
-   * reason: a blank leading header cell trips theme.js's sw-pin2 heuristic,
-   * which would unpin the date column and pin Members instead. */
-  @media (max-width:640px){
-    html[data-theme] .mwrap.sw-scrollx{overflow:auto;max-height:70vh}
-    html[data-theme] .mwrap.sw-scrollx table th,
-    html[data-theme] .mwrap.sw-scrollx table td{padding:.3rem .32rem;font-size:11px}
-    html[data-theme] .mwrap.sw-scrollx table thead th{padding:.45rem .35rem}
-    /* theme.css pins the first header cell at z-index:2 and outranks this page on
-       specificity — so the scrolling family headings (z-index:3) painted straight over
-       "Date". Re-assert the stack from inside .mwrap, where we outrank it back. */
-    html[data-theme] .mwrap.sw-scrollx table thead th.d,
-    html[data-theme] .mwrap.sw-scrollx table thead th.m{z-index:6}
-    html[data-theme] .mwrap.sw-scrollx table tbody td.d,
-    html[data-theme] .mwrap.sw-scrollx table tbody td.m{z-index:3}
-    .pl{min-width:2.2rem}
-  }
+  #stale{margin:8px 0;padding:8px 12px;border:1px solid #f59e0b;background:rgba(245,158,11,.10);color:var(--text);font-size:12px}
+  #unote{max-height:92px;overflow:auto;flex:0 0 auto}
+  #dStats{border-top:0;border-bottom:1px solid var(--border)}
+  #dLine{padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-muted);line-height:1.5}
+  #dLine b{color:var(--text);font-weight:600}
+  #cTitle{padding:8px 12px 0;font-size:12px;color:var(--text-muted)} #cTitle b{color:var(--text);font-weight:600}
+  #pD .os-chartwrap{min-height:200px}
+  #atDate{border-top:1px solid var(--border);padding:8px 10px;max-height:34%;overflow:auto;flex:0 0 auto}
+  #atDate .h{font-size:11px;color:var(--text-faint);margin:0 2px 5px}
+  #atDate .cs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+  .cp{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);padding:2px 3px 2px 7px;font-size:11.5px;color:var(--text-muted);background:transparent;cursor:pointer;border-radius:3px}
+  .cp:hover{border-color:var(--accent)} .cp.on{border-color:var(--accent);color:var(--text);font-weight:600}
+  .cp .pl{min-width:2.3rem;font-size:11.5px}
+  .lgd{width:.8rem;height:.8rem;border-radius:2px;display:inline-block;vertical-align:-2px;box-shadow:inset 0 0 0 1px var(--border-strong,var(--border))}
+  .xd{margin-top:8px;font-size:12px;color:var(--text-muted);line-height:1.55;border:1px solid var(--border);background:var(--surface)}
+  .xd summary{cursor:pointer;padding:7px 12px;color:var(--text-muted);font-weight:600}
+  .xd .in{padding:2px 12px 10px}
+  .fgr{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;padding:4px 0;border-bottom:1px solid var(--border);cursor:pointer}
+  .fgr:last-child{border-bottom:0} .fgr:hover b{color:var(--accent)}
+  .chip{display:inline-flex;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:700;background:var(--surface-2);color:var(--text-muted)}
+  @media (max-width:1180px){ #grid{grid-template-columns:minmax(240px,270px) minmax(200px,230px) minmax(0,1fr)} #fHead,.fr{grid-template-columns:14px minmax(0,1fr) 54px 20px} #mHead,.mr{grid-template-columns:minmax(0,1fr) 52px 54px} }
+  @media (max-width:899px){ #grid{grid-template-columns:minmax(0,1fr)} #atDate{max-height:none} .os-bar .keys{display:none} }
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800">
@@ -108,111 +69,90 @@
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-4 py-6">
-  <div class="mb-4 flex items-start gap-3 flex-wrap">
-    <div class="min-w-0">
-      <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-        Coverage
-      </h1>
-      <p class="text-sm text-slate-500 mt-1 max-w-3xl">
-        Every screening parameter the site holds, counted at every month-end, for every universe.
-        A cell is <b>how many of that date's members carried a usable value</b> — decided by the live
-        backtest engine's own <code class="text-[11px]">factorsAt()</code> / <code class="text-[11px]">fieldVal()</code>,
-        so it is literally what a strategy could see there. Columns are families; click one to open the
-        individual parameters underneath. Red rings are the smoke detector, not a verdict.
-      </p>
-    </div>
+<main id="pageMain" class="os-wide mx-auto px-4 py-4">
+  <div class="os-vbar">
+    <h1>Coverage</h1>
+    <div class="os-asof" id="banner">Loading coverage…</div>
   </div>
-
-  <div id="banner" class="card p-3 mb-4 text-xs text-slate-500">Loading coverage…</div>
-  <div id="stale" class="hidden card p-3 mb-4 text-xs" style="border-color:#f59e0b;background:rgba(245,158,11,.10);color:var(--text)"></div>
+  <div id="stale" class="hidden"></div>
 
   <div id="body" class="hidden">
-
-    <!-- controls -->
-    <div class="card p-3 mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
-      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Universe
-        <select id="uni" class="ctl"></select>
-      </label>
-      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">From
-        <select id="from" class="ctl">
-          <option value="0">Everything</option>
-          <option value="2010">2010</option>
-          <option value="2015">2015</option>
-          <option value="2020" selected>2020</option>
-          <option value="2024">2024</option>
-        </select>
-      </label>
-      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Show
-        <select id="mode" class="ctl">
-          <option value="n" selected>Counts</option>
-          <option value="p">% of members</option>
-        </select>
-      </label>
-      <label class="flex items-center gap-2 text-xs font-semibold text-slate-600">Order
-        <select id="ord" class="ctl">
-          <option value="desc" selected>Newest first</option>
-          <option value="asc">Oldest first</option>
-        </select>
-      </label>
-      <span class="grow"></span>
-      <span id="stamp" class="text-[11px] text-slate-400"></span>
-      <span id="rfNote" class="text-[11px] text-slate-400"></span>
-      <button id="rfBtn" type="button" class="ctl"
+    <div class="os-bar">
+      <span class="grp"><span class="lb">Universe</span><select id="uni" aria-label="Universe"></select></span>
+      <span class="grp"><span class="lb">From</span><div class="os-sg" data-for="from" role="group" aria-label="From year"><button type="button" data-v="0">All</button><button type="button" data-v="2010">2010</button><button type="button" data-v="2015">2015</button><button type="button" data-v="2020">2020</button><button type="button" data-v="2024">2024</button></div></span>
+      <span class="grp"><span class="lb">Show</span><div class="os-sg" data-for="mode" role="group" aria-label="Counts or percent"><button type="button" data-v="n">Counts</button><button type="button" data-v="p">% of members</button></div></span>
+      <span class="grp"><span class="lb">Order</span><div class="os-sg" data-for="ord" role="group" aria-label="Order"><button type="button" data-v="desc">Newest</button><button type="button" data-v="asc">Oldest</button></div></span>
+      <select id="from" class="hidden"><option value="0">Everything</option><option value="2010">2010</option><option value="2015">2015</option><option value="2020" selected>2020</option><option value="2024">2024</option></select>
+      <select id="mode" class="hidden"><option value="n" selected>Counts</option><option value="p">% of members</option></select>
+      <select id="ord" class="hidden"><option value="desc" selected>Newest first</option><option value="asc">Oldest first</option></select>
+      <span class="sp"></span>
+      <span id="rfNote" class="os-hint"></span>
+      <button id="rfBtn" type="button" class="os-btn"
         title="Re-read the baked payload from the server without reloading the page. It cannot make a new bake — it shows you whether one has landed.">
         <span id="rfIco">↻</span> Refresh
       </button>
-      <a id="rfWf" class="ctl" target="_blank" rel="noopener"
+      <a id="rfWf" class="os-btn" target="_blank" rel="noopener"
         href="https://github.com/dhruvan246/stocks-dashboard/actions/workflows/refresh-coverage.yml"
         title="The matrix is baked by CI (nightly, 01:10 IST). This opens the workflow so you can run it now; hit ↻ Refresh here once it lands (~3 min).">Re-run bake ↗</a>
     </div>
 
-    <!-- summary -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" data-jump="Overview">
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Members now</div><div id="sMem" class="text-2xl font-extrabold text-slate-800">–</div><div id="sMemSub" class="text-[11px] text-slate-400"></div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Parameters</div><div id="sPar" class="text-2xl font-extrabold text-slate-800">–</div><div id="sParSub" class="text-[11px] text-slate-400">in this matrix</div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Full-coverage families</div><div id="sFull" class="text-2xl font-extrabold text-emerald-600">–</div><div class="text-[11px] text-slate-400">≥99% at the latest date</div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">N/A (excluded)</div><div id="sNA" class="text-2xl font-extrabold text-slate-500">–</div><div id="sNASub" class="text-[11px] text-slate-400">cannot exist, not missing</div></div>
-      <div class="card p-3"><div class="text-[11px] uppercase tracking-wide text-slate-400 font-semibold">Red flags</div><div id="sFlag" class="text-2xl font-extrabold text-rose-600">–</div><div id="sFlagSub" class="text-[11px] text-slate-400">in the shown range</div></div>
+    <div class="os-grid" id="grid">
+      <section class="os-pane" id="pF" aria-label="Parameter families">
+        <div class="os-ph"><span class="ttl">Families</span><span class="r" id="fCount"></span></div>
+        <div class="os-ch" id="fHead"><span></span><span>Family / parameter</span><span title="Value at the latest month-end">Latest</span><span title="Red flags in the shown range">⚑</span></div>
+        <div class="os-list" id="fList" role="listbox" aria-label="Families and parameters"></div>
+        <div class="os-note" id="unote"></div>
+      </section>
+      <section class="os-pane" id="pM" aria-label="Month-ends">
+        <div class="os-ph"><span class="ttl" id="mTitle">Month-ends</span><span class="r" id="mCount"></span></div>
+        <div class="os-ch" id="mHead"><span>Month</span><span title="Universe size at this date">Members</span><span id="mVal">Count</span></div>
+        <div class="os-list" id="mList" role="listbox" aria-label="Month-ends"></div>
+      </section>
+      <section class="os-pane os-main" id="pD" aria-label="Detail and chart">
+        <div class="os-ph"><span class="ttl" id="dTitle"></span><span class="r" id="stamp"></span></div>
+        <div class="os-stats" id="dStats"></div>
+        <div id="dLine"></div>
+        <div id="cTitle"></div>
+        <div class="os-chartwrap"><div class="os-msg" id="cMsg"></div><div class="os-chart" id="cChart"></div></div>
+        <div id="atDate"></div>
+      </section>
+    </div>
+    <div class="os-bar" style="margin-top:8px;border:0;padding:0;background:transparent">
+      <span class="os-hint keys"><b>↑↓</b> move · <b>← →</b> switch list · <b>Enter</b> open / close a family's parameters</span>
+      <span class="sp"></span>
+      <span class="os-hint" style="white-space:normal">Tint = share of members covered
+        <i class="lgd" style="background:color-mix(in srgb, var(--accent) 8%, transparent)"></i> 0%
+        <i class="lgd" style="background:color-mix(in srgb, var(--accent) 40%, transparent)"></i> 50%
+        <i class="lgd" style="background:color-mix(in srgb, var(--accent) 92%, transparent)"></i> 100%
+        <i class="lgd" style="outline:2px solid #f43f5e;outline-offset:-2px;background:rgba(244,63,94,.12)"></i> flagged
+        · “–” = no membership roll for that date</span>
     </div>
 
-    <div id="unote" class="text-[11px] text-slate-500 mb-2"></div>
-
-    <div class="mwrap mb-2" data-jump="Matrix"><table class="mx sw-grid"><thead id="mhead"></thead><tbody id="mbody"></tbody></table></div>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 mb-6">
-      <span class="font-semibold text-slate-600">Tint = share of members covered</span>
-      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 8%, transparent)"></i> 0%</span>
-      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 40%, transparent)"></i> 50%</span>
-      <span><i class="lgd" style="background:color-mix(in srgb, var(--accent) 92%, transparent)"></i> 100%</span>
-      <span><i class="lgd" style="outline:2px solid #f43f5e;outline-offset:-2px;background:rgba(244,63,94,.12)"></i> flagged</span>
-      <span class="text-slate-400">· “–” = no membership roll for that date</span>
-    </div>
-
-    <!-- red flags -->
-    <div id="flagsBox" class="card p-4 mb-6" data-jump="Red flags">
-      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Red flags <span id="flagN" class="text-rose-600"></span></div>
-      <p class="text-[11px] text-slate-500 mb-3">
+    <details class="xd" id="flagsBox"><summary>Red flags <span id="flagN" style="color:#e11d48"></span></summary><div class="in">
+      <p style="margin-bottom:8px">
         A date is flagged when its coverage sits <b>below half its own neighbourhood median</b> (±6 month-ends,
         and only where that median is a real population, &gt;200) — or, for a universe with a real membership
         roll, when it covers <b>under 90% of that date's members while the neighbours clear it by ≥3 points</b>.
         Both checks require established coverage <i>before</i> the date, so the first month of a ramp is not a
-        crater. This finds holes; it does not diagnose them.
+        crater. This finds holes; it does not diagnose them. Click a flag to open it above.
       </p>
-      <div id="flags" class="text-xs"></div>
-    </div>
-
-    <!-- what each parameter means -->
-    <div class="card p-4 mb-6" data-jump="Columns">
-      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">What each column counts</div>
-      <div id="rules" class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px]"></div>
-    </div>
-
-    <div class="card p-4 mb-8" data-jump="Absent">
-      <div class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Deliberately absent</div>
-      <p class="text-[11px] text-slate-500 mb-2">These exist as fields but have no point-in-time history to count, so they get no column rather than a column of zeroes.</p>
-      <ul id="nohist" class="text-[11px] text-slate-600 space-y-1"></ul>
-    </div>
+      <div id="flags"></div></div>
+    </details>
+    <details class="xd"><summary>How to read this page</summary><div class="in">
+        Every screening parameter the site holds, counted at every month-end, for every universe.
+        A value is <b>how many of that date's members carried a usable value</b> — decided by the live
+        backtest engine's own <code>factorsAt()</code> / <code>fieldVal()</code>,
+        so it is literally what a strategy could see there. The left list is the families; a family shows its
+        weakest parameter, and ▸ (or Enter) opens the individual parameters underneath. The middle list is that
+        family or parameter at every month-end; the chart draws the same series, and the strip under the chart
+        shows every family at the selected month. Red rings are the smoke detector, not a verdict.
+        <div id="naLine" style="margin-top:8px"></div>
+    </div></details>
+    <details class="xd"><summary>What each column counts</summary><div class="in"><div id="rules" class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-[11px]"></div></div></details>
+    <details class="xd"><summary>Deliberately absent</summary><div class="in">
+      <p style="margin-bottom:6px">These exist as fields but have no point-in-time history to count, so they get no column rather than a column of zeroes.</p>
+      <ul id="nohist" class="text-[11px] space-y-1"></ul></div>
+    </details>
   </div>
 </main>
 
@@ -431,98 +371,102 @@
     return '<td><span class="' + cls + '"' + style + ' title="' + esc(title) + '">' + txt + '</span></td>';
   }
 
+  // ---------------------------------------------------------------- one-screen view
+  var K = window.OSKit;
+  var S = { fi: 0, pj: -1, di: -1, pane: 1 }, ITEMS = [], ROWS = [], FMAP = {}, PKEY = {}, CH = null, UIW = false;
+  function strip(td) { return td.replace(/^<td>/, '').replace(/<\/td>$/, ''); }
+
+  // One value = the same numbers and the same tooltip sentence the old matrix cell carried.
+  function at(it, di) {
+    var f = IDX.families[it.fi], mem = U.members[di];
+    if (it.pj >= 0) {
+      var p = f.params[it.pj], pi = PKEY[p.k], c = U.params[pi][di], na = naAt(pi, di);
+      return { c: c, mem: mem, na: na, fl: null, t:
+        (mem - na <= 0 && na > 0)
+          ? p.k + ' · ' + U.dates[di] + ' · not applicable to any of the ' + na +
+            ' members at this date — nothing to measure, so no percentage is shown'
+          : p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - na) +
+            (na ? ' (' + na + ' N/A — the parameter cannot exist for them, excluded)' : '') };
+    }
+    var fl = FMAP[f.id][di];
+    var pair = FAM[it.fi][di];
+    var c2 = (pair === -1) ? -1 : pair[0];
+    var fna = (pair === -1) ? 0 : (pair[2] || 0);
+    var weakest = (pair === -1) ? '' : f.params[pair[1]].k;
+    var t = ((mem - fna <= 0 && fna > 0)
+      ? f.label + ' · ' + U.dates[di] + ' · not applicable to any of the ' + fna +
+        ' members at this date — nothing to measure, so no percentage is shown'
+      : f.label + ' · ' + U.dates[di] + ' · ' + c2 + ' of ' + (mem - fna) +
+        (fna ? ' (' + fna + ' N/A, excluded)' : '')) +
+      (weakest ? ' · weakest: ' + weakest : '') +
+      (fl ? ' · FLAGGED (neighbours ≈ ' + fl.med + ')' : '');
+    return { c: c2, mem: mem, na: fna, fl: fl, t: t, weakest: (pair === -1 ? 0 : pair[1]) };
+  }
+  function pill(v) { return strip(cell(v.c, v.mem, !!v.fl, v.t, v.na)); }
+  function cur() { return { fi: S.fi, pj: S.pj }; }
+  function itName(it) { var f = IDX.families[it.fi]; return it.pj >= 0 ? f.label + ' · ' + f.params[it.pj].k : f.label; }
+  function itIndex() { for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].fi === S.fi && ITEMS[i].pj === S.pj) return i; return 0; }
+
   function render() {
     if (!U) return;
     PCT = $('mode').value === 'p';
     var fams = IDX.families, rows = rowIdx();
-    var shownFlags = [];
+    ROWS = rows;
+    Array.prototype.forEach.call(document.querySelectorAll('.os-sg[data-for]'), function (sg) {
+      var v = $(sg.getAttribute('data-for')).value;
+      Array.prototype.forEach.call(sg.querySelectorAll('button'), function (b) { b.classList.toggle('on', b.getAttribute('data-v') === v); });
+    });
 
     // flag lookup: family -> {dateIndex: reason}
-    var fmap = {};
+    FMAP = {};
     fams.forEach(function (f) {
       var list = U.flags[f.id] || [];
       var m = {}; list.forEach(function (x) { m[x.i] = x; });
-      fmap[f.id] = m;
+      FMAP[f.id] = m;
     });
+    PKEY = {}; U.paramKeys.forEach(function (k, i) { PKEY[k] = i; });
+    if (S.fi >= fams.length) { S.fi = 0; S.pj = -1; }
+    if (S.pj >= fams[S.fi].params.length) S.pj = -1;
+    if (rows.indexOf(S.di) < 0) S.di = rows.length ? rows[0] : -1;
 
-    // ---- header (two rows: families, then the open families' parameters)
-    var h1 = '<tr><th class="d plain">Date</th><th class="m plain" title="Universe size at this date">Members</th>';
-    var h2 = '<tr><th class="d sub plain">month</th><th class="m sub plain">size</th>';
-    var anyOpen = false;
-    fams.forEach(function (f) {
-      var open = !!OPEN[f.id], np = open ? f.params.length : 1;
-      if (open) anyOpen = true;
-      h1 += '<th colspan="' + np + '" data-fam="' + esc(f.id) + '" title="' + esc(f.note) + ' — click to ' + (open ? 'collapse' : 'expand') + '">' +
-        esc(f.label) + ' <span class="text-slate-400">' + (open ? '⌄' : '›') + '</span></th>';
-      h2 += open
-        ? f.params.map(function (p) { return '<th class="sub plain" title="' + esc(p.rule) + '">' + esc(p.k) + '</th>'; }).join('')
-        : '<th class="sub plain"></th>';
-    });
-    $('mhead').innerHTML = h1 + '</tr>' + (anyOpen ? h2 + '</tr>' : '');
-
-    // ---- body
-    var pKey = {}; U.paramKeys.forEach(function (k, i) { pKey[k] = i; });
-    var out = [], lastY = null;
+    // every family's flags in the shown range
+    var shownFlags = [], flagCnt = {};
     rows.forEach(function (di) {
-      var mem = U.members[di], yr = U.dates[di].slice(0, 4);
-      var isY = yr !== lastY; lastY = yr;
-      var tr = '<tr' + (isY ? ' class="yr"' : '') + '><td class="d">' + esc(U.months[di].slice(0, 7)) +
-        '</td><td class="m">' + (mem < 0 ? '–' : mem) + '</td>';
       fams.forEach(function (f, fi) {
-        var fl = fmap[f.id][di];
-        if (OPEN[f.id]) {
-          f.params.forEach(function (p) {
-            var pi = pKey[p.k], c = U.params[pi][di], na = naAt(pi, di);
-            tr += cell(c, mem, false,
-              (mem - na <= 0 && na > 0)
-                ? p.k + ' · ' + U.dates[di] + ' · not applicable to any of the ' + na +
-                  ' members at this date — nothing to measure, so no percentage is shown'
-                : p.k + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - na) +
-                  (na ? ' (' + na + ' N/A — the parameter cannot exist for them, excluded)' : ''),
-              na);
-          });
-        } else {
-          var pair = FAM[fi][di];
-          var c = (pair === -1) ? -1 : pair[0];
-          var fna = (pair === -1) ? 0 : (pair[2] || 0);
-          var weakest = (pair === -1) ? '' : f.params[pair[1]].k;
-          var t = ((mem - fna <= 0 && fna > 0)
-            ? f.label + ' · ' + U.dates[di] + ' · not applicable to any of the ' + fna +
-              ' members at this date — nothing to measure, so no percentage is shown'
-            : f.label + ' · ' + U.dates[di] + ' · ' + c + ' of ' + (mem - fna) +
-              (fna ? ' (' + fna + ' N/A, excluded)' : '')) +
-            (weakest ? ' · weakest: ' + weakest : '') +
-            (fl ? ' · FLAGGED (neighbours ≈ ' + fl.med + ')' : '');
-          tr += cell(c, mem, !!fl, t, fna);
-          if (fl) shownFlags.push({ fam: f, di: di, fl: fl, c: c, mem: mem, weakest: (pair === -1 ? 0 : pair[1]) });
-        }
+        var fl = FMAP[f.id][di]; if (!fl) return;
+        var pair = FAM[fi][di], c = (pair === -1) ? -1 : pair[0];
+        shownFlags.push({ fam: f, fi: fi, di: di, fl: fl, c: c, mem: U.members[di], weakest: (pair === -1 ? 0 : pair[1]) });
+        flagCnt[fi] = (flagCnt[fi] || 0) + 1;
       });
-      out.push(tr + '</tr>');
     });
-    $('mbody').innerHTML = out.join('');
 
-    // family headings toggle open/closed
-    Array.prototype.forEach.call($('mhead').querySelectorAll('th[data-fam]'), function (th) {
-      th.addEventListener('click', function () { var k = th.getAttribute('data-fam'); OPEN[k] = !OPEN[k]; render(); });
+    // ---- left: families (+ the open families' parameters)
+    var last = U.members.length - 1;
+    ITEMS = [];
+    var fh = [];
+    fams.forEach(function (f, fi) {
+      var open = !!OPEN[f.id], it = { fi: fi, pj: -1 };
+      ITEMS.push(it);
+      fh.push('<div class="os-row fr' + (S.fi === fi && S.pj < 0 ? ' on' : '') + '" role="option" data-i="' + (ITEMS.length - 1) + '" title="' + esc(f.note) + '">' +
+        '<span class="car" data-car="1" title="' + (open ? 'Close' : 'Open') + ' the parameters">' + (f.params.length > 1 ? (open ? '▾' : '▸') : '') + '</span>' +
+        '<span class="n">' + esc(f.label) + '</span>' + pill(at(it, last)) +
+        '<span class="fl">' + (flagCnt[fi] || '') + '</span></div>');
+      if (open) f.params.forEach(function (p, pj) {
+        var pit = { fi: fi, pj: pj };
+        ITEMS.push(pit);
+        fh.push('<div class="os-row fr sub' + (S.fi === fi && S.pj === pj ? ' on' : '') + '" role="option" data-i="' + (ITEMS.length - 1) + '" title="' + esc(p.rule) + '">' +
+          '<span></span><span class="n">' + esc(p.k) + '</span>' + pill(at(pit, last)) + '<span></span></div>');
+      });
     });
-    // Pin offsets can only be MEASURED, not assumed: the date column's width changes with the
-    // theme's font and the phone padding override, and header row 2 has to sit under row 1.
-    var tbl = document.querySelector('table.mx');
-    var d0 = $('mbody').querySelector('td.d');
-    if (d0) tbl.style.setProperty('--dw', d0.getBoundingClientRect().width + 'px');
-    var r1 = $('mhead').rows[0];
-    if (r1) tbl.style.setProperty('--h1', r1.getBoundingClientRect().height + 'px');
+    $('fList').innerHTML = fh.join('');
+    $('fCount').textContent = fams.length + ' families · ' + U.paramKeys.length + ' parameters';
+
+    renderMonths();
 
     // ---- summary + flags panel
-    var last = U.members.length - 1;
-    $('sMem').textContent = U.members[last] < 0 ? '–' : U.members[last];
-    $('sMemSub').textContent = U.name + ' · ' + U.dates[last];
-    $('sPar').textContent = U.paramKeys.length;
-    $('sParSub').textContent = fams.length + ' families';
     var full = fams.filter(function (f, fi) {
       var p = FAM[fi][last]; return p !== -1 && U.members[last] > 0 && p[0] / U.members[last] >= 0.99;
     }).length;
-    $('sFull').textContent = full + ' / ' + fams.length;
     // N/A total over the shown range, itemised — a cell that CANNOT exist is excluded from the
     // denominator above, so it has to be visible here or the 100% would be unexplained.
     var naTot = 0, naBy = [];
@@ -533,37 +477,185 @@
       rows.forEach(function (i) { if (U.members[i] > 0 && a[i] > 0) n += a[i]; });
       if (n) { naTot += n; naBy.push(k + ' ' + n); }
     });
-    $('sNA').textContent = naTot;
-    $('sNASub').textContent = naBy.length ? naBy.join(' · ') : 'cannot exist, not missing';
-
-    $('sFlag').textContent = shownFlags.length;
-    $('sFlagSub').textContent = 'in the shown range' + (anyOpen ? ' (collapsed families only)' : '');
-    $('unote').innerHTML = '<b class="text-slate-600">' + esc(U.name) + '</b> — ' + esc(U.note) +
-      (U.rollFrom ? ' Its membership roll starts <b>' + esc(U.rollFrom) + '</b>; earlier month-ends are left blank rather than back-filled with the oldest roll.' : '');
+    var naSub = naBy.length ? naBy.join(' · ') : 'cannot exist, not missing';
+    $('dStats').innerHTML =
+      '<div title="' + esc(U.name + ' · ' + U.dates[last]) + '"><span>Members now</span><b>' + (U.members[last] < 0 ? '–' : U.members[last]) + '</b></div>' +
+      '<div><span>Parameters</span><b>' + U.paramKeys.length + ' <small>· ' + fams.length + ' families</small></b></div>' +
+      '<div title="Families at ≥99% at the latest date"><span>Full coverage</span><b class="os-pos">' + full + ' / ' + fams.length + '</b></div>' +
+      '<div title="' + esc(naSub) + '"><span>N/A (excluded)</span><b>' + naTot + '</b></div>' +
+      '<div title="in the shown range"><span>Red flags</span><b' + (shownFlags.length ? ' class="os-neg"' : '') + '>' + shownFlags.length + '</b></div>' +
+      '<div><span>Month-ends shown</span><b>' + rows.length + '</b></div>';
+    $('unote').innerHTML = '<b>' + esc(U.name) + '</b> — ' + esc(U.note) +
+      (U.rollFrom ? ' Its membership roll starts <b>' + esc(U.rollFrom) + '</b>; earlier month-ends are left blank rather than back-filled with the oldest roll.' : '') +
+      '';
+    $('naLine').innerHTML = naBy.length ? '<b>N/A in the shown range (cannot exist, not missing — excluded from the denominator):</b> ' + esc(naBy.join(' · ')) : 'No N/A cells in the shown range.';
 
     $('flagN').textContent = '(' + shownFlags.length + ')';
     $('flags').innerHTML = shownFlags.length
       ? shownFlags.sort(function (a, b) { return b.di - a.di; }).map(function (x) {
           var pct = x.mem > 0 ? (x.c / x.mem * 100).toFixed(1) + '%' : '–';
-          return '<div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 py-1 border-b border-slate-100 last:border-0">' +
+          return '<div class="fgr" data-fi="' + x.fi + '" data-di="' + x.di + '">' +
             '<span class="chip">' + esc(U.dates[x.di]) + '</span>' +
-            '<b class="text-slate-700">' + esc(x.fam.label) + '</b>' +
-            '<span class="text-rose-600 font-bold">' + x.c + '</span>' +
-            '<span class="text-slate-400">of ' + x.mem + ' members (' + pct + ')</span>' +
-            '<span class="text-slate-400">·</span>' +
-            '<span class="text-slate-500">' + (x.fl.why === 'half'
+            '<b>' + esc(x.fam.label) + '</b>' +
+            '<span style="color:#e11d48;font-weight:700">' + x.c + '</span>' +
+            '<span>of ' + x.mem + ' members (' + pct + ')</span>' +
+            '<span>·</span>' +
+            '<span>' + (x.fl.why === 'half'
               ? 'neighbourhood median is ' + x.fl.med
               : 'neighbours cover ≈' + x.fl.med + ' of the same roll') + '</span>' +
-            '<span class="text-slate-400">· weakest: ' + esc(x.fam.params[x.weakest].k) + '</span>' +
+            '<span>· weakest: ' + esc(x.fam.params[x.weakest].k) + '</span>' +
           '</div>';
         }).join('')
-      : '<div class="text-slate-500">Nothing flagged in this range. Every family tracks its own neighbourhood.</div>';
+      : '<div>Nothing flagged in this range. Every family tracks its own neighbourhood.</div>';
 
+    $('banner').className = 'os-asof live';
     $('banner').innerHTML = '<b class="text-slate-700">' + esc(U.name) + '</b>' +
       '<span class="text-slate-300"> · </span>' + U.dates[0] + ' → ' + U.dates[last] +
       '<span class="text-slate-300"> · </span>coverage measured with the live backtest engine' +
       '<span class="text-slate-300"> · </span>data to ' + esc(U.dataEnd);
     $('body').classList.remove('hidden');
+    wireUI();
+    K.fitGrid($('grid'));
+    renderDetail(); drawChart(true);
+    var on = $('fList').querySelector('.os-row.on'); if (on) on.scrollIntoView({ block: 'nearest' });
+    on = $('mList').querySelector('.os-row.on'); if (on) on.scrollIntoView({ block: 'nearest' });
+  }
+
+  // ---- middle: the selected family / parameter at every shown month-end
+  function renderMonths() {
+    var it = cur(), out = [], lastY = null;
+    ROWS.forEach(function (di) {
+      var mem = U.members[di], yr = U.dates[di].slice(0, 4);
+      var isY = yr !== lastY; lastY = yr;
+      var v = at(it, di);
+      out.push('<div class="os-row mr' + (isY ? ' yr' : '') + (di === S.di ? ' on' : '') + '" role="option" data-i="' + di + '" title="' + esc(v.t) + '">' +
+        '<span class="n">' + esc(U.months[di].slice(0, 7)) + '</span><span class="m">' + (mem < 0 ? '–' : mem) + '</span>' + pill(v) + '</div>');
+    });
+    $('mList').innerHTML = out.length ? out.join('') : '<div class="os-empty">No month-ends in this range.</div>';
+    $('mTitle').textContent = itName(it);
+    $('mCount').textContent = ROWS.length + ' month-ends';
+    $('mVal').textContent = PCT ? '% of members' : 'Count';
+  }
+
+  // ---- right: the selected value in words + every family at the selected month
+  function renderDetail() {
+    var it = cur(), f = IDX.families[it.fi];
+    $('dTitle').textContent = itName(it);
+    if (S.di < 0) { $('dLine').textContent = 'No month-end in this range.'; $('atDate').innerHTML = ''; return; }
+    var v = at(it, S.di);
+    $('dLine').innerHTML = '<b>' + esc(v.t) + '</b><br>' + esc(it.pj >= 0 ? f.params[it.pj].rule : f.note);
+    var h = '<div class="h">Every family at ' + esc(U.dates[S.di]) + ' · ' + (U.members[S.di] < 0 ? 'no membership roll' : U.members[S.di] + ' members') + '</div><div class="cs">';
+    IDX.families.forEach(function (ff, fi) {
+      var x = at({ fi: fi, pj: -1 }, S.di);
+      h += '<button type="button" class="cp' + (fi === S.fi && S.pj < 0 ? ' on' : '') + '" data-fi="' + fi + '" data-pj="-1" title="' + esc(x.t) + '">' + esc(ff.label) + pill(x) + '</button>';
+    });
+    h += '</div>';
+    if (f.params.length > 1) {
+      h += '<div class="h">Parameters of ' + esc(f.label) + '</div><div class="cs">';
+      f.params.forEach(function (p, pj) {
+        var x = at({ fi: it.fi, pj: pj }, S.di);
+        h += '<button type="button" class="cp' + (pj === S.pj ? ' on' : '') + '" data-fi="' + it.fi + '" data-pj="' + pj + '" title="' + esc(x.t) + '">' + esc(p.k) + pill(x) + '</button>';
+      });
+      h += '</div>';
+    }
+    $('atDate').innerHTML = h;
+  }
+
+  // ---- chart: the middle list as a line (count, or % of the members that can have the value)
+  function drawChart(fit) {
+    var LC = window.LightweightCharts;
+    if (!LC) { $('cMsg').textContent = 'Chart library did not load.'; return; }
+    var cs = getComputedStyle(document.documentElement), g = function (n) { return cs.getPropertyValue(n).trim(); };
+    var bd = g('--border') || '#2a3040', acc = g('--accent') || '#3d9488', mut = g('--text-faint') || '#6b7280';
+    if (!CH) {
+      var chart = LC.createChart($('cChart'), { autoSize: true,
+        layout: { background: { color: 'transparent' }, textColor: g('--text-muted') || '#9aa3b8', fontSize: 11, fontFamily: getComputedStyle(document.body).fontFamily },
+        grid: { vertLines: { visible: false }, horzLines: { color: bd } },
+        rightPriceScale: { borderColor: bd, scaleMargins: { top: .12, bottom: .05 } },
+        timeScale: { borderColor: bd, rightOffset: 1 }, crosshair: { mode: 0 } });
+      var mem = chart.addSeries(LC.LineSeries, { color: mut, lineWidth: 1, lineStyle: 2, priceLineVisible: false, lastValueVisible: false, crosshairMarkerVisible: false });
+      var ser = chart.addSeries(LC.LineSeries, { color: acc, lineWidth: 2, priceLineVisible: false, lastValueVisible: true });
+      CH = { chart: chart, ser: ser, mem: mem, idx: {}, mk: LC.createSeriesMarkers ? LC.createSeriesMarkers(ser, []) : null };
+      chart.subscribeClick(function (p) { if (p && p.time != null && CH.idx[p.time] != null) { S.pane = 2; pickDate(CH.idx[p.time]); } });
+    }
+    var it = cur(), asc = ROWS.slice().sort(function (a, b) { return a - b; }), pts = [], mems = [], marks = [];
+    CH.idx = {};
+    asc.forEach(function (di) {
+      var v = at(it, di), t = U.dates[di];
+      if (v.c < 0 || v.mem < 0) return;
+      var den = Math.max(0, v.mem - (v.na || 0));
+      if (den === 0 && v.na > 0) return;
+      var r = den > 0 ? v.c / den : (v.c > 0 ? 1 : 0);
+      CH.idx[t] = di;
+      pts.push({ time: t, value: PCT ? +(r * 100).toFixed(2) : v.c });
+      if (!PCT) mems.push({ time: t, value: den });
+      if (v.fl) marks.push({ time: t, position: 'belowBar', color: '#f43f5e', shape: 'circle', text: 'flag' });
+      if (di === S.di) marks.push({ time: t, position: 'aboveBar', color: acc, shape: 'arrowDown' });
+    });
+    CH.ser.applyOptions({ priceFormat: PCT ? { type: 'custom', minMove: 0.01, formatter: function (x) { return x.toFixed(1) + '%'; } } : { type: 'price', precision: 0, minMove: 1 } });
+    CH.ser.setData(pts); CH.mem.setData(mems);
+    if (CH.mk) CH.mk.setMarkers(marks);
+    $('cMsg').textContent = pts.length ? '' : 'Nothing to chart: no membership roll, or the parameter does not apply to anyone, in this range.';
+    $('cTitle').innerHTML = '<b>' + esc(itName(it)) + '</b> · ' + (PCT ? '% of the members that can have a value' : 'members with a usable value (dashed = members that can have one)') +
+      ' · ' + asc.length + ' month-ends' + (marks.some(function (m) { return m.text; }) ? ' · red dots = flagged' : '');
+    if (fit) CH.chart.timeScale().fitContent();
+  }
+  function rebuildChart() { if (CH) { try { CH.chart.remove(); } catch (e) {} CH = null; } if (U) drawChart(true); }
+
+  function markOn(listId, i) {
+    var el = $(listId), c = el.querySelector('.os-row.on'); if (c) c.classList.remove('on');
+    var n = el.querySelector('.os-row[data-i="' + i + '"]'); if (n) { n.classList.add('on'); n.scrollIntoView({ block: 'nearest' }); }
+  }
+  function pickItem(fi, pj) {
+    var f = IDX.families[fi]; if (!f) return;
+    if (pj >= 0 && !OPEN[f.id]) { OPEN[f.id] = true; S.fi = fi; S.pj = pj; render(); return; }
+    S.fi = fi; S.pj = pj; markOn('fList', itIndex()); renderMonths(); renderDetail(); drawChart(true);
+    var on = $('mList').querySelector('.os-row.on'); if (on) on.scrollIntoView({ block: 'nearest' });
+  }
+  function pickDate(di) { if (ROWS.indexOf(di) < 0) return; S.di = di; markOn('mList', di); renderDetail(); drawChart(false); }
+  function toggleFam(fi) {
+    var f = IDX.families[fi]; if (!f || f.params.length < 2) return;
+    OPEN[f.id] = !OPEN[f.id];
+    if (!OPEN[f.id] && S.fi === fi) S.pj = -1;
+    render();
+  }
+  function wireUI() {
+    if (UIW) return; UIW = true;
+    Array.prototype.forEach.call(document.querySelectorAll('.os-sg[data-for]'), function (sg) {
+      sg.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        var sel = $(sg.getAttribute('data-for')); if (sel.value === b.getAttribute('data-v')) return;
+        sel.value = b.getAttribute('data-v'); sel.dispatchEvent(new Event('change'));
+      });
+    });
+    $('fList').onclick = function (e) {
+      var r = e.target.closest('.os-row'); if (!r) return;
+      var it = ITEMS[+r.dataset.i]; if (!it) return; S.pane = 1;
+      if (e.target.closest('[data-car]') && it.pj < 0) { toggleFam(it.fi); return; }
+      pickItem(it.fi, it.pj);
+    };
+    $('mList').onclick = function (e) { var r = e.target.closest('.os-row'); if (r) { S.pane = 2; pickDate(+r.dataset.i); } };
+    $('atDate').onclick = function (e) { var b = e.target.closest('.cp'); if (b) { S.pane = 1; pickItem(+b.dataset.fi, +b.dataset.pj); } };
+    $('flags').onclick = function (e) {
+      var r = e.target.closest('.fgr'); if (!r) return;
+      S.di = +r.dataset.di; pickItem(+r.dataset.fi, -1); pickDate(+r.dataset.di);
+      $('grid').scrollIntoView({ block: 'nearest' });
+    };
+    window.addEventListener('resize', function () { K.fitGrid($('grid')); });
+    new MutationObserver(rebuildChart).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || !U) return;
+      if (/^(INPUT|SELECT|TEXTAREA)$/.test((e.target.tagName || ''))) return;
+      if (e.key === 'ArrowLeft') { S.pane = 1; e.preventDefault(); return; }
+      if (e.key === 'ArrowRight') { S.pane = 2; e.preventDefault(); return; }
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault(); var d = e.key === 'ArrowDown' ? 1 : -1;
+        if (S.pane === 1) { var i = itIndex(), ni = Math.max(0, Math.min(ITEMS.length - 1, i + d)); if (ni !== i) pickItem(ITEMS[ni].fi, ITEMS[ni].pj); }
+        else { var k = ROWS.indexOf(S.di), nk = Math.max(0, Math.min(ROWS.length - 1, k + d)); if (nk !== k) pickDate(ROWS[nk]); }
+        return;
+      }
+      if (e.key === 'Enter' && S.pane === 1) { e.preventDefault(); toggleFam(S.fi); }
+    });
   }
 
   boot();
