@@ -601,7 +601,8 @@ async function addAllSeries(){
   try {
     const buf = await (await fetch('./idx_ohlc/_closes.bin')).arrayBuffer();
     b = JSON.parse(await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
-    for (const k in b.idx) if (/\b(TR|PR)\b/i.test(k)) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR (leverage, inverse, futures TR) rows */
+    const HIDE_IX = /\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend/i;
+    for (const k in b.idx) if (HIDE_IX.test(k) || HIDE_IX.test(b.idx[k].cur || '')) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR rows, no 50:50, 25/50 or Dividend names */
     tb = await fetch('./indices.json').then(r => r.json()).catch(() => null);
   } catch (e) { console.error('index history not loaded', e); return; }
   const day = iso => Math.round(Date.parse(iso + 'T00:00:00Z') / 864e5), iso = n => new Date(n * 864e5).toISOString().slice(0, 10);

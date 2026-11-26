@@ -179,7 +179,8 @@ let DATA=null, VIEW='table', GRP='broad', SORT={key:'pc',dir:-1}, DENSE=false, Q
 let HIST=null, REW=null, RROWS=null, XMEM=null, XHIST=null;     // close history of every series · rewound calendar position · rows on that date
 const IX=()=>RROWS||DATA.indices;
 
-fetch('./indices.json?cb='+Date.now()).then(r=>r.json()).then(d=>{ DATA=d; boot(); })
+const HIDE_IX=/\b(TR|PR)\b|\b50:50\b|\b25\/50\b|dividend/i;     /* user 2026-11-26: rows not wanted — Nifty 50 TR / PR series, names with 50:50, 25/50 or Dividend */
+fetch('./indices.json?cb='+Date.now()).then(r=>r.json()).then(d=>{ d.indices=d.indices.filter(x=>!HIDE_IX.test(x.n)&&!HIDE_IX.test(x.k)); DATA=d; boot(); })
   .catch(e=>{ $('status').textContent='Could not load indices.json — '+e; });
 
 function boot(){
@@ -419,7 +420,7 @@ async function loadHist(){
     const [b,xm,xh]=await Promise.all([gunzipJSON('./idx_ohlc/_closes.bin'),
       fetch('./nse_extra_indices/members.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null),
       fetch('./nse_extra_indices/history.json',{cache:'no-store'}).then(r=>r.json()).catch(()=>null)]);
-    for(const k in b.idx) if(/\b(TR|PR)\b/i.test(k)) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR (leverage, inverse, futures TR) rows */
+    for(const k in b.idx) if(HIDE_IX.test(k)||HIDE_IX.test(b.idx[k].cur||'')) delete b.idx[k];     /* user 2026-11-26: no Nifty 50 TR / PR (leverage, inverse, futures TR) rows */
     const day=iso=>Math.round(Date.parse(iso+'T00:00:00Z')/864e5), dn=[day(b.d0)]; for(const g of b.dd) dn.push(dn[dn.length-1]+g);
     HIST={dn, iso:n=>new Date(n*864e5).toISOString().slice(0,10), idx:b.idx}; XMEM=xm; XHIST=xh;
     if(XMEM&&XMEM.indices){ XMEM.byNorm={}; for(const n in XMEM.indices) XMEM.byNorm[normNm(n)]=Object.assign({name:n},XMEM.indices[n]); }
